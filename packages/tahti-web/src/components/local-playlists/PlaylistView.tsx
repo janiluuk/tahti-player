@@ -491,6 +491,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
         }}
       />
       <ConfirmDialog
+        destructive
         isOpen={deleting}
         title="Delete this playlist?"
         description={`“${summary?.name ?? ''}” and its ${summary?.trackCount ?? 0} entries will be deleted. The tracks stay in your library.`}

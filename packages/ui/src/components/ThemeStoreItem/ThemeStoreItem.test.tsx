@@ -43,6 +43,36 @@ describe('ThemeStoreItem', () => {
     expect(asFragment()).toMatchSnapshot();
   });
 
+  it('marks the active theme visibly and for assistive tech', () => {
+    const onApply = vi.fn();
+    const { getByRole, getByText, rerender } = render(
+      <ThemeStoreItem
+        {...DEFAULT_PROPS}
+        isInstalled
+        isActive
+        onApply={onApply}
+      />,
+    );
+    expect(getByRole('group', { name: 'Gruvbox' })).toHaveAttribute(
+      'aria-current',
+      'true',
+    );
+    expect(getByText('Active')).toBeTruthy();
+    const apply = getByRole('button', { name: 'Apply Gruvbox' });
+    expect(apply).toHaveAttribute('aria-pressed', 'true');
+    apply.click();
+    expect(onApply).not.toHaveBeenCalled();
+
+    rerender(
+      <ThemeStoreItem {...DEFAULT_PROPS} isInstalled onApply={onApply} />,
+    );
+    expect(getByRole('group', { name: 'Gruvbox' })).not.toHaveAttribute(
+      'aria-current',
+    );
+    getByRole('button', { name: 'Apply Gruvbox' }).click();
+    expect(onApply).toHaveBeenCalledOnce();
+  });
+
   it('hides apply and uninstall when those actions are omitted', () => {
     const { queryByTestId } = render(
       <ThemeStoreItem {...DEFAULT_PROPS} isInstalled />,

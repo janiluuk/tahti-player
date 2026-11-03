@@ -18,8 +18,6 @@ import {
   resolveChannelLookExtras,
   saveChannelLookExtras,
 } from '../api/channel-design';
-import { soundItemToPlayable } from '../api/client';
-import type { ChannelSoundItem, TahtiPlayable } from '../api/types';
 import { AutoplayUnmuteNotice } from '../components/AutoplayUnmuteNotice';
 import {
   ChannelBlockFrame,
@@ -28,7 +26,6 @@ import {
   ChannelHeroBlock,
   ChannelLayersPanel,
   ChannelListeningPartyBanner,
-  ChannelLiveChatNotice,
   ChannelLiveTracklist,
   ChannelNotFound,
   ChannelPageBackdrop,
@@ -43,10 +40,14 @@ import {
 } from '../components/channel-view';
 import { channelHeaderStats } from '../components/channel-view/channelHeaderStats';
 import { ChannelPageActions } from '../components/channel-view/ChannelPageActions';
+import {
+  ChannelPageSections,
+  type ChannelPageTab,
+} from '../components/channel-view/ChannelPageTabs';
 import { ChannelStoreSection } from '../components/channel-view/ChannelStoreSection';
 import { channelTrackMeta } from '../components/channel-view/channelTrackMeta';
 import { StreamManagerDialog } from '../components/channel-view/StreamManagerDialog';
-import { ChannelComments } from '../components/ChannelComments';
+import { useChannelPlayables } from '../components/channel-view/useChannelPlayables';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
 import { EntitySocialHeader } from '../components/EntitySocialHeader';
 import { PageError, PageLoading } from '../components/PageStates';
@@ -66,7 +67,6 @@ import {
 } from '../lib/channelPageLayout';
 import { cn } from '../lib/cn';
 import { colorSchemeCssVars, normalizeColorScheme } from '../lib/colorScheme';
-import { isPinned } from '../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { isSafeChannelLinkUrl } from '../lib/safeHref';
 import { useArtistFollow } from '../lib/useArtistFollow';
@@ -99,6 +99,7 @@ export function ChannelView({ slug }: { slug: string }) {
     revertLayout,
   } = useChannelLayoutEditing(slug);
   const [activeNavTabId, setActiveNavTabId] = useState<string | null>(null);
+  const [pageTab, setPageTab] = useState<ChannelPageTab>('music');
   const [navTabContentVisible, setNavTabContentVisible] = useState(true);
   const [lookDirty, setLookDirty] = useState(false);
   const [savingLook, setSavingLook] = useState(false);
@@ -176,23 +177,8 @@ export function ChannelView({ slug }: { slug: string }) {
     setEditing(Boolean(search.edit && isOwner));
   }, [search.edit, isOwner]);
 
-  const { pinnedPlayables, catalogPlayables } = useMemo(() => {
-    const pinnedItems = [...sounds]
-      .filter((item) => isPinned(item))
-      .sort((a, b) => (b.pinnedAt ?? '').localeCompare(a.pinnedAt ?? ''));
-    const pinnedIds = new Set(pinnedItems.map((i) => i.id));
-    const toPlayable = (item: ChannelSoundItem) =>
-      soundItemToPlayable(item, slug);
-    return {
-      pinnedPlayables: pinnedItems
-        .map(toPlayable)
-        .filter((p): p is TahtiPlayable => Boolean(p)),
-      catalogPlayables: sounds
-        .filter((item) => !pinnedIds.has(item.id))
-        .map(toPlayable)
-        .filter((p): p is TahtiPlayable => Boolean(p)),
-    };
-  }, [sounds, slug]);
+  const { pinnedPlayables, catalogPlayables, channelTrackIds } =
+    useChannelPlayables(sounds, slug);
 
   const getTrackMeta = useMemo(() => channelTrackMeta(sounds), [sounds]);
 
@@ -321,10 +307,9 @@ export function ChannelView({ slug }: { slug: string }) {
     (playbackStatus !== 'playing' && playbackStatus !== 'loading');
 
   const openChat = () => {
-    if (!chatOn) {
-      return;
+    if (chatOn) {
+      setPageTab('chat');
     }
-    void navigate({ to: '/chat/$slug', params: { slug } });
   };
 
   // Combined save for the single toolbar button: the layers menu embeds
@@ -423,6 +408,8 @@ export function ChannelView({ slug }: { slug: string }) {
         chatOn={chatOn}
         follow={isOwner ? null : follow}
         signedIn={Boolean(me)}
+        trackIds={channelTrackIds}
+        onOpenChat={openChat}
       />
       {live ? <ChannelLiveTracklist slug={slug} /> : null}
     </>
@@ -571,6 +558,29 @@ export function ChannelView({ slug }: { slug: string }) {
   // instance below; this page-wide ambient one is only the fallback for
   // layouts that don't include a hero block at all.
   const heroVisible = visibleItems.some((item) => item.type === 'hero');
+
+  const renderFrame = (item: ChannelPageItem) => {
+    if (!editing && !heroVisible && item.type === 'stats') {
+      return null;
+    }
+    return (
+      <ChannelBlockFrame
+        key={item.id}
+        item={item}
+        editing={editing}
+        selected={selectedId === item.id}
+        dragId={dragId}
+        setDragId={setDragId}
+        moveDrag={moveDrag}
+        setMoveDrag={setMoveDrag}
+        onSelect={setSelectedId}
+        updateLayout={updateLayout}
+        onRemove={removeLayoutItem}
+      >
+        {renderBlock(item)}
+      </ChannelBlockFrame>
+    );
+  };
   const headerStats = channelHeaderStats(channel, follow.followerCount);
 
   const pageBody = (
@@ -679,61 +689,52 @@ export function ChannelView({ slug }: { slug: string }) {
           </div>
         )}
 
+        {/* The hero carries the stage player, so it stays above the tabs. */}
+        {visibleItems.filter((i) => i.type === 'hero').map(renderFrame)}
+
         {!editing ? <ChannelListeningPartyBanner slug={slug} /> : null}
 
-        <div
-          key={activeNavTab?.id ?? 'no-tabs'}
-          className={
-            !editing && showNavTabs
-              ? `flex flex-col gap-2 transition-opacity duration-200 ${navTabContentVisible ? 'opacity-100' : 'opacity-0'}`
-              : 'contents'
-          }
-        >
-          {visibleItems.map((item) => {
-            if (!editing && !item.visible) {
-              return null;
-            }
-            if (!editing && !heroVisible && item.type === 'stats') {
-              return null;
-            }
-            return (
-              <ChannelBlockFrame
-                key={item.id}
-                item={item}
-                editing={editing}
-                selected={selectedId === item.id}
-                dragId={dragId}
-                setDragId={setDragId}
-                moveDrag={moveDrag}
-                setMoveDrag={setMoveDrag}
-                onSelect={setSelectedId}
-                updateLayout={updateLayout}
-                onRemove={removeLayoutItem}
-              >
-                {renderBlock(item)}
-              </ChannelBlockFrame>
-            );
-          })}
-        </div>
-        <ChannelStoreSection
-          storefront={storefront}
-          username={channel.user.username}
+        <ChannelPageSections
+          tab={pageTab}
+          onTabChange={setPageTab}
+          editing={editing}
+          chatOn={chatOn}
+          slug={slug}
           isOwner={isOwner}
-          hidden={editing || isRadioChannel}
+          music={
+            <>
+              <div
+                key={activeNavTab?.id ?? 'no-tabs'}
+                className={cn(
+                  editing
+                    ? 'flex flex-col gap-2'
+                    : 'grid grid-cols-1 gap-4 lg:grid-cols-2',
+                  !editing &&
+                    showNavTabs &&
+                    `transition-opacity duration-200 ${navTabContentVisible ? 'opacity-100' : 'opacity-0'}`,
+                )}
+                data-testid="channel-blocks"
+              >
+                {visibleItems.filter((i) => i.type !== 'hero').map(renderFrame)}
+              </div>
+              <ChannelStoreSection
+                storefront={storefront}
+                username={channel.user.username}
+                isOwner={isOwner}
+                hidden={editing || isRadioChannel}
+              />
+              {!editing ? (
+                <ChannelExtrasSections
+                  slug={slug}
+                  blocks={channelBlocks}
+                  widgets={discoWidgets}
+                  widgetsStatus={sectionStatus.widgets}
+                  onRetryWidgets={() => retrySection('widgets')}
+                />
+              ) : null}
+            </>
+          }
         />
-        {!editing ? (
-          <ChannelExtrasSections
-            slug={slug}
-            blocks={channelBlocks}
-            widgets={discoWidgets}
-            widgetsStatus={sectionStatus.widgets}
-            onRetryWidgets={() => retrySection('widgets')}
-          />
-        ) : null}
-        {!editing && live && chatOn ? (
-          <ChannelLiveChatNotice onOpenChat={openChat} />
-        ) : null}
-        {!editing ? <ChannelComments slug={slug} isOwner={isOwner} /> : null}
       </div>
     </div>
   );

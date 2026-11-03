@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 import { Button, ButtonLink, ViewShell } from '@tahti-player/ui';
@@ -9,6 +8,7 @@ import {
   type GreenRoomAccess,
 } from '../api/artist-settings';
 import { fetchProfile } from '../api/client';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -89,13 +89,11 @@ export function GreenRoomView({ username }: { username: string }) {
   );
 
   const backLink = (
-    <Link
+    <PageBackLink
       to="/u/$username"
       params={{ username }}
-      className="text-foreground-secondary mb-2 block text-xs hover:underline"
-    >
-      ← @{username}
-    </Link>
+      label={`@${username}`}
+    />
   );
   const subtitle = access
     ? `${access.artistDisplayName}'s pre-show preview`

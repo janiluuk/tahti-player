@@ -59,6 +59,9 @@ describe('CandidacyControl', () => {
     fireEvent.click(
       screen.getByRole('button', { name: 'Withdraw my candidacy' }),
     );
+    expect(
+      screen.getByRole('button', { name: 'Withdraw' }).className,
+    ).toContain('bg-accent-red');
     fireEvent.click(screen.getByRole('button', { name: 'Withdraw' }));
     expect(withdraw).toHaveBeenCalledWith(open!.id);
     await waitFor(() => expect(onChanged).toHaveBeenCalled());

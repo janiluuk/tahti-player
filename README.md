@@ -58,7 +58,7 @@ The [view guide](./packages/tahti-web/docs/VIEW-GUIDE.md) has screenshots of eve
 
 ## Development
 
-Requirements: Node.js 24 and pnpm 10 (`corepack enable`). The desktop app also needs Rust and the [Tauri 2](https://v2.tauri.app/start/prerequisites/) system dependencies; the web app doesn't.
+Requirements: Node.js 24 and pnpm 12 (`corepack enable`). The desktop app also needs Rust and the [Tauri 2](https://v2.tauri.app/start/prerequisites/) system dependencies; the web app doesn't.
 
 ```bash
 git clone https://github.com/janiluuk/tahti-player.git
@@ -94,7 +94,7 @@ On Linux the desktop app renders with the GPU. If the window stays blank or cras
 | `@tahti-player/tahti-cli` | The `tahti` command-line client |
 | `@tahti-player/tahti-ops` | Maintainer tooling: deploys, stack, tests |
 
-The API lives in [janiluuk/tahti-org](https://github.com/janiluuk/tahti-org). Its public docs are at [api.tahti.live/api](https://api.tahti.live/api). How the pieces fit together: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). Web app details and configuration: [`packages/tahti-web/README.md`](./packages/tahti-web/README.md).
+The API lives in [janiluuk/tahti-org](https://github.com/janiluuk/tahti-org). Its public docs are at [api.tahti.live/api](https://api.tahti.live/api). How the pieces fit together: [`docs/ARCHITECTURE.md`](./docs/ARCHITECTURE.md). Settled decisions: [`docs/DECISIONS.md`](./docs/DECISIONS.md). Web app details and configuration: [`packages/tahti-web/README.md`](./packages/tahti-web/README.md).
 
 ## Contributing
 

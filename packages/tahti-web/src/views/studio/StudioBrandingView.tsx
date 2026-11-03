@@ -151,6 +151,7 @@ export const StudioBrandingPanel: FC<{
 
       {tab === 'press-kit' ? <PressKitSection kit={kit} /> : null}
       <ConfirmDialog
+        destructive
         isOpen={pendingReplaceUpload !== null}
         title={`Replace all ${images.length} existing gallery images?`}
         description="This upload replaces every current gallery photo."
@@ -166,6 +167,7 @@ export const StudioBrandingPanel: FC<{
         }}
       />
       <ConfirmDialog
+        destructive
         isOpen={pendingImageDeleteId !== null}
         title="Remove this image from your gallery?"
         description="It will no longer appear in your public press kit or the downloadable zip."

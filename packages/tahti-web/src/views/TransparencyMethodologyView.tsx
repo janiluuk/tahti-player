@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 
 import { ViewShell } from '@tahti-player/ui';
 
+import { PageBackLink } from '../components/PageBackLink';
+
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="flex flex-col gap-2">
@@ -35,12 +37,7 @@ export function TransparencyMethodologyView() {
       title="Transparency methodology"
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-8' }}
     >
-      <Link
-        to="/transparency"
-        className="text-foreground-secondary text-xs hover:underline"
-      >
-        ← Transparency dashboard
-      </Link>
+      <PageBackLink to="/transparency" label="Transparency" />
 
       <Section title="Principles">
         <p className="text-foreground-secondary text-sm">

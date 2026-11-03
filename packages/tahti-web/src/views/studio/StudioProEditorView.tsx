@@ -28,6 +28,7 @@ import {
 import type { EditList } from '../../api/studio-types';
 import { createDefaultEditList } from '../../api/studio-types';
 import { ClientCapabilityNotice } from '../../components/ClientCapabilityNotice';
+import { PageBackLink } from '../../components/PageBackLink';
 import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -333,12 +334,7 @@ function ProEditor({ soundId }: { soundId: string }) {
         onKeyDown={onEditorKeyDown}
       >
         <div className="flex flex-wrap gap-3 text-xs">
-          <Link
-            to="/studio/sounds"
-            className="text-foreground-secondary hover:underline"
-          >
-            ← Music
-          </Link>
+          <PageBackLink to="/library/sounds" label="Sounds" />
           <Link
             to="/studio/sounds/$id"
             params={{ id: soundId }}
@@ -603,7 +599,7 @@ function ProEditor({ soundId }: { soundId: string }) {
             <Button variant="secondary" onClick={() => void render(false)}>
               Save as new revision
             </Button>
-            <Button onClick={() => void render(true)}>
+            <Button intent="danger" onClick={() => void render(true)}>
               Overwrite live version
             </Button>
           </Dialog.Actions>

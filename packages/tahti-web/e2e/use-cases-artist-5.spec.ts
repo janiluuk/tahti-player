@@ -79,6 +79,7 @@ test('an artist removes a listener comment from their channel page', async ({
 }) => {
   await signIn(page);
   await page.goto('/channel/artist');
+  await page.getByRole('tab', { name: 'Comments' }).click();
   const comments = page.getByTestId('channel-comments');
   const remove = comments.getByRole('button', {
     name: 'Delete comment by Listener One',

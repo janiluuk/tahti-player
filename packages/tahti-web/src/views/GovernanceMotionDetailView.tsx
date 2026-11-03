@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 import { Box, Button, ViewShell } from '@tahti-player/ui';
@@ -12,6 +11,7 @@ import { MotionCirculateControl } from '../components/governance/MotionCirculate
 import { MotionMeetingLinkControl } from '../components/governance/MotionMeetingLinkControl';
 import { MotionMeetingNote } from '../components/governance/MotionMeetingNote';
 import { MotionSeconders } from '../components/governance/MotionSeconders';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageLoading } from '../components/PageStates';
 import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
@@ -68,12 +68,7 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
         content: 'gap-6',
       }}
     >
-      <Link
-        to="/governance"
-        className="text-foreground-secondary inline-block w-fit text-xs underline-offset-2 hover:underline"
-      >
-        ← Back to governance
-      </Link>
+      <PageBackLink to="/governance" label="Governance" />
 
       {!user && (
         <Box variant="secondary" className="flex flex-col gap-3">

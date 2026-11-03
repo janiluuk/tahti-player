@@ -5,7 +5,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as discoWidgets from '../../api/disco-widgets';
 import * as discover from '../../api/discover';
 import * as listen from '../../api/listen';
-import * as radioPublic from '../../api/radio-public';
 import {
   clearListenSectionCache,
   LISTEN_CACHE_TTL_MS,
@@ -35,11 +34,9 @@ describe('useListenSections', () => {
 
     const { result } = renderHook(() => useListenSections(false));
     await waitFor(() => {
-      expect(result.current.radio.status).toBe('ready');
       expect(result.current.presets.status).toBe('ready');
       expect(result.current.discoWidgets.status).toBe('ready');
     });
-    expect(result.current.radio.data?.slug).toBe('tahti-radio');
     expect(result.current.onAir.status).toBe('loading');
     expect(result.current.latestTracks.status).toBe('loading');
   });
@@ -53,15 +50,11 @@ describe('useListenSections', () => {
       data: [],
       meta: apiFailure,
     });
-    vi.spyOn(radioPublic, 'fetchRadioStation').mockRejectedValue(
-      new Error('network'),
-    );
 
     const { result } = renderHook(() => useListenSections(false));
     await waitFor(() => {
       expect(result.current.onAir.status).toBe('error');
       expect(result.current.latestTracks.status).toBe('error');
-      expect(result.current.radio.status).toBe('error');
     });
     expect(result.current.presets.status).toBe('ready');
     expect(result.current.presets.data.length).toBeGreaterThan(0);

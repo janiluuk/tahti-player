@@ -63,6 +63,7 @@ export function DmBlockButton({
         {blocked ? 'Unblock' : 'Block'}
       </Button>
       <ConfirmDialog
+        destructive
         isOpen={confirming}
         title={`Block ${displayName}?`}
         description="You won't be able to message each other until you unblock them. They aren't told you blocked them."

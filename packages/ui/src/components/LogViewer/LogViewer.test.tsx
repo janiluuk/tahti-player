@@ -164,6 +164,27 @@ describe('LogViewer', () => {
     expect(onClear).toHaveBeenCalledOnce();
   });
 
+  it('keeps Export the only primary toolbar button', () => {
+    const { getByRole } = render(
+      <LogViewer
+        logs={sampleLogs}
+        scopes={[]}
+        onClear={vi.fn()}
+        onExport={vi.fn()}
+        onOpenLogFolder={vi.fn()}
+      />,
+    );
+    expect(getByRole('button', { name: /clear/i }).className).toContain(
+      'bg-secondary',
+    );
+    expect(
+      getByRole('button', { name: /open log folder/i }).className,
+    ).toContain('bg-secondary');
+    expect(getByRole('button', { name: /export/i }).className).toContain(
+      'bg-primary',
+    );
+  });
+
   it('calls onExport and shows loading state', async () => {
     const user = userEvent.setup();
     let resolveExport: () => void;

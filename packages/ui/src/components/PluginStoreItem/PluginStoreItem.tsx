@@ -135,6 +135,7 @@ export const PluginStoreItem: FC<PluginStoreItemProps> = ({
         ) : isInstalled ? (
           <Button
             disabled
+            variant="secondary"
             size={buttonSize}
             className={compact ? 'w-20' : 'w-28'}
           >

@@ -106,6 +106,7 @@ export function StudioScheduleView() {
           ) : null}
 
           <ConfirmDialog
+            destructive
             isOpen={pendingCancel !== null}
             title={`Cancel "${pendingCancel?.title ?? 'this show'}"?`}
             description="The scheduled episode is removed from your schedule and the public channel."

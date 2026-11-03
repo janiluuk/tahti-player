@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -22,6 +21,7 @@ import {
   type DiscussionTopicDetail,
 } from '../api/governance-discussions';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { ReportButton } from '../components/ReportButton';
 import { hasAccountRole } from '../lib/accountRoles';
@@ -312,12 +312,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
       title={topic?.title ?? 'Discussion'}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl', content: 'gap-4' }}
     >
-      <Link
-        to="/governance/discussions"
-        className="text-foreground-secondary w-fit text-xs underline-offset-2 hover:underline"
-      >
-        ← All discussions
-      </Link>
+      <PageBackLink to="/governance/discussions" label="Discussions" />
 
       {!user ? (
         <PageEmpty
@@ -457,6 +452,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
         </>
       )}
       <ConfirmDialog
+        destructive
         isOpen={removing !== null}
         title="Remove this reply?"
         description={

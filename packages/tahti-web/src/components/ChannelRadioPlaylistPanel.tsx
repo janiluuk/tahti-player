@@ -602,7 +602,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
           <Button variant="secondary" onClick={() => void confirmAdd('append')}>
             Append tracks
           </Button>
-          <Button onClick={() => void confirmAdd('overwrite')}>
+          <Button intent="danger" onClick={() => void confirmAdd('overwrite')}>
             Overwrite rotation
           </Button>
         </Dialog.Actions>

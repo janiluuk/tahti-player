@@ -4,6 +4,7 @@ import {
   LinkedinIcon,
   ListMusicIcon,
   MailIcon,
+  RssIcon,
   Share2Icon,
   TwitterIcon,
 } from 'lucide-react';
@@ -18,6 +19,7 @@ import {
 } from '@tahti-player/ui';
 
 import { fetchChannel } from '../api/client';
+import { channelRssFeedUrl } from '../lib/channelRssFeed';
 
 export function ChannelShareButton({
   channelSlug,
@@ -143,6 +145,17 @@ export function ChannelShareButton({
                 disabled={!playlistUrl}
                 aria-label="Copy playlist link"
                 toastMessage="Playlist link copied."
+              />
+            </div>
+            <div className="flex items-center justify-between gap-2">
+              <span className="flex items-center gap-2 text-sm font-medium">
+                <RssIcon size={16} aria-hidden />
+                RSS feed
+              </span>
+              <CopyButton
+                text={channelRssFeedUrl(channelSlug)}
+                aria-label="Copy RSS feed"
+                toastMessage="Feed link copied. Paste it into your podcast app."
               />
             </div>
             <div className="flex items-center gap-2 pt-1">

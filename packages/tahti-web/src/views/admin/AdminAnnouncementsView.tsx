@@ -281,6 +281,7 @@ export function AdminAnnouncementsView() {
               }}
             />
             <ConfirmDialog
+              destructive
               isOpen={pendingDelete !== null}
               title={`Delete "${pendingDelete?.title ?? ''}"?`}
               description="This announcement clip will be removed from the schedule for everyone."

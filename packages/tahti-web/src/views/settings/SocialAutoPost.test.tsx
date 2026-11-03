@@ -191,6 +191,11 @@ describe('SocialAutoPost', () => {
 
     const instagram = within(screen.getByRole('region', { name: 'Instagram' }));
     fireEvent.click(instagram.getByRole('button', { name: 'Disconnect' }));
+    expect(
+      within(screen.getByRole('dialog')).getByRole('button', {
+        name: 'Disconnect',
+      }).className,
+    ).toContain('bg-accent-red');
     await act(async () => {
       fireEvent.click(
         within(screen.getByRole('dialog')).getByRole('button', {
