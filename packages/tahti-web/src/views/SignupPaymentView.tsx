@@ -5,6 +5,7 @@ import { Button, InlineError } from '@tahti-player/ui';
 
 import { fetchMembership, startMembershipCheckout } from '../api/client';
 import type { MembershipStatus } from '../api/types';
+import { PageBackLink } from '../components/PageBackLink';
 import { assignStripeRedirectUrl } from '../lib/stripeRedirect';
 import { useAuthStore } from '../stores/authStore';
 
@@ -117,13 +118,11 @@ export function SignupPaymentView() {
       {error && <InlineError>{error}</InlineError>}
       {msg && <p className="text-sm">{msg}</p>}
 
-      <Link
+      <PageBackLink
         to="/settings/$section"
         params={{ section: 'account' }}
-        className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
-      >
-        ← Account
-      </Link>
+        label="Account"
+      />
     </div>
   );
 }

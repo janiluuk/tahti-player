@@ -76,7 +76,7 @@ export async function fetchAdminAnnouncements(): Promise<{
   if (isForceMock()) {
     return {
       data: {
-        clips: announcementState(),
+        clips: announcementState().map((clip) => ({ ...clip })),
         systemEnabled: mockAnnouncementsSystemEnabled,
       },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

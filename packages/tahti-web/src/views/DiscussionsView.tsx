@@ -10,6 +10,7 @@ import {
   markAllDiscussionsRead,
   type DiscussionTopic,
 } from '../api/governance-discussions';
+import { PageBackLink } from '../components/PageBackLink';
 import {
   PageEmpty,
   PageError,
@@ -132,12 +133,7 @@ export function DiscussionsView() {
       title="Discussions"
       classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl', content: 'gap-4' }}
     >
-      <Link
-        to="/governance"
-        className="text-foreground-secondary w-fit text-xs underline-offset-2 hover:underline"
-      >
-        ← Back to governance
-      </Link>
+      <PageBackLink to="/governance" label="Governance" />
       <p className="text-foreground-secondary text-sm">
         Topics the board opened for members to talk through. Nothing here is a
         vote; replying follows a topic so you hear about new replies.

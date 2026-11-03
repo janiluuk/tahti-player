@@ -1,5 +1,3 @@
-import { Link } from '@tanstack/react-router';
-import { ArrowLeftIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -11,6 +9,7 @@ import type {
   RevelatorRoyaltyReportRow,
   StudioRelease,
 } from '../../api/studio-types';
+import { PageBackLink } from '../../components/PageBackLink';
 import {
   PageEmpty,
   PageError,
@@ -57,13 +56,7 @@ export function StudioDistributionView() {
           title="Distribution"
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
-          <Link
-            to="/studio/releases"
-            className="text-foreground-secondary hover:text-foreground inline-flex items-center gap-1 text-xs underline underline-offset-2"
-          >
-            <ArrowLeftIcon size={12} aria-hidden />
-            Back to Releases
-          </Link>
+          <PageBackLink to="/studio/releases" label="Releases" />
 
           <section className="flex flex-col gap-3">
             <h2>
