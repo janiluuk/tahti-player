@@ -165,25 +165,31 @@ export const OrderSections: Story = {
     const canvas = within(canvasElement);
     await canvas.findByTestId('listen-dashboard');
     await expect(
-      canvas.queryByRole('button', { name: 'Move Tahti Radio' }),
+      canvas.queryByRole('button', {
+        name: 'Move Recently played and Tahti Selects',
+      }),
     ).toBeNull();
     const toggle = canvas.getByRole('button', { name: 'Order sections' });
     await userEvent.click(toggle);
     await expect(toggle).toHaveAttribute('aria-pressed', 'true');
-    const handle = canvas.getByRole('button', { name: 'Move Tahti Radio' });
+    const handle = canvas.getByRole('button', {
+      name: 'Move Recently played and Tahti Selects',
+    });
     await keyboardMoveDown(handle);
     await waitFor(() =>
       expect(dashboardBlockIds(canvasElement).slice(0, 2)).toEqual([
+        'new-releases',
         'recently-played',
-        'tahti-radio',
       ]),
     );
     await expect(useListenerWidgetsStore.getState().listenOrder[0]).toBe(
-      'recently-played',
+      'new-releases',
     );
     await userEvent.click(toggle);
     await expect(
-      canvas.queryByRole('button', { name: 'Move Tahti Radio' }),
+      canvas.queryByRole('button', {
+        name: 'Move Recently played and Tahti Selects',
+      }),
     ).toBeNull();
   },
 };
