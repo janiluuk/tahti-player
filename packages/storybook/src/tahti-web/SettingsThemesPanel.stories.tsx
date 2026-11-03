@@ -47,6 +47,26 @@ export const Browse: Story = {
   },
 };
 
+// Exactly one card is the applied theme: framed, badged "Active", aria-current
+// on the row and a pressed Apply button; the current name is pinned above the list.
+export const SelectedTheme: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const current = await canvas.findAllByRole('group', { current: true });
+    await expect(current).toHaveLength(1);
+    const row = current[0]!;
+    const name = row.getAttribute('aria-label') ?? '';
+    await expect(name).not.toBe('');
+    await expectVisible(within(row).getByText('Active'));
+    await expect(
+      within(row).getByRole('button', { name: `Apply ${name}` }),
+    ).toHaveAttribute('aria-pressed', 'true');
+    await expect(canvas.getByRole('status')).toHaveTextContent(
+      `Current theme: ${name}`,
+    );
+  },
+};
+
 // Import stays disabled until there is JSON, and says when it isn't JSON.
 export const ImportJson: Story = {
   play: async ({ canvasElement }) => {
