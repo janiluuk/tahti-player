@@ -6,7 +6,7 @@ import {
   render,
   screen,
 } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../../../../api/admin/admin-content-reports';
 import type { AdminContentReportRow } from '../../../../api/admin/admin-content-reports';
@@ -41,9 +41,25 @@ async function renderTab(rows: AdminContentReportRow[]) {
 }
 
 describe('ContentReportsTab', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-04T10:00:00.000Z'));
+  });
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
+
+  it('dates each report in the listing style', async () => {
+    await renderTab([
+      report({}),
+      report({ id: 'r2', createdAt: '2026-09-01T10:00:00.000Z' }),
+    ]);
+    const recent = screen.getByText('3 days ago');
+    expect(recent.tagName).toBe('TIME');
+    expect(recent.getAttribute('datetime')).toBe('2026-10-01T10:00:00.000Z');
+    expect(screen.getByText('1.9.2026').tagName).toBe('TIME');
   });
 
   it('links to the reported page and quotes a reported comment', async () => {

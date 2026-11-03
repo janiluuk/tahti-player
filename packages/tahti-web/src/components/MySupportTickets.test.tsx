@@ -6,15 +6,20 @@ import {
   render,
   screen,
 } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as support from '../api/support';
 import { MySupportTickets } from './MySupportTickets';
 
 describe('MySupportTickets', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-09-04T10:00:00.000Z'));
+  });
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it('lists requests with their status and the support replies', async () => {
@@ -62,6 +67,10 @@ describe('MySupportTickets', () => {
     expect(replies.textContent).toContain('Looking into it');
     expect(replies.textContent).toContain('Tahti support');
     expect(screen.getByText('No reply yet.')).toBeTruthy();
+    const sent = screen.getByText('3 days ago');
+    expect(sent.tagName).toBe('TIME');
+    expect(sent.getAttribute('datetime')).toBe('2026-09-01T10:00:00.000Z');
+    expect(screen.getByText('1.8.2026').tagName).toBe('TIME');
   });
 
   it('shows an empty state when there are no requests', async () => {

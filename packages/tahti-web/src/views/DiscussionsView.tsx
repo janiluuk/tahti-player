@@ -10,6 +10,7 @@ import {
   markAllDiscussionsRead,
   type DiscussionTopic,
 } from '../api/governance-discussions';
+import { ListingDate } from '../components/ListingDate';
 import { PageBackLink } from '../components/PageBackLink';
 import {
   PageEmpty,
@@ -40,14 +41,6 @@ function matchesFilter(topic: DiscussionTopic, filter: TopicFilter): boolean {
     default:
       return true;
   }
-}
-
-function lastActivity(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  });
 }
 
 function TopicRow({ topic }: { topic: DiscussionTopic }) {
@@ -87,12 +80,15 @@ function TopicRow({ topic }: { topic: DiscussionTopic }) {
             </Badge>
           ) : null}
         </span>
-        <span className="text-foreground-secondary text-xs">
-          Started by {topic.createdBy} ·{' '}
-          {topic.postCount === 1 ? '1 reply' : `${topic.postCount} replies`} ·
-          {topic.lastReplyBy
-            ? `last reply by ${topic.lastReplyBy}, ${lastActivity(topic.lastPostAt)}`
-            : `last activity ${lastActivity(topic.lastPostAt)}`}
+        <span className="text-foreground-secondary flex flex-wrap items-center gap-x-1 text-xs">
+          <span>
+            Started by {topic.createdBy} ·{' '}
+            {topic.postCount === 1 ? '1 reply' : `${topic.postCount} replies`} ·{' '}
+            {topic.lastReplyBy
+              ? `last reply by ${topic.lastReplyBy}`
+              : 'last activity'}
+          </span>
+          <ListingDate value={topic.lastPostAt} />
         </span>
       </Link>
     </li>

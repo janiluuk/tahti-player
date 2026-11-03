@@ -20,6 +20,7 @@ import {
   type AdminTheme,
   type AdminThemeVisibility,
 } from '../../../../api/admin';
+import { ListingDate } from '../../../../components/ListingDate';
 import {
   PageEmpty,
   PageError,
@@ -238,7 +239,7 @@ export function ThemesTab() {
                     </div>
                     <div className="text-foreground-secondary text-xs">
                       @{theme.authorUsername} ·{' '}
-                      {new Date(theme.createdAt).toLocaleDateString()}
+                      <ListingDate value={theme.createdAt} />
                       {theme.moderationNote
                         ? ` · Note: ${theme.moderationNote}`
                         : ''}

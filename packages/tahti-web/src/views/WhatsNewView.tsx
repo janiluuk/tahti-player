@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { Button, cn, Dialog, ViewShell } from '@tahti-player/ui';
 
+import { ListingDate } from '../components/ListingDate';
 import { PageBackLink } from '../components/PageBackLink';
 import {
   countHighlights,
@@ -107,13 +108,10 @@ function ReleaseEntry({
             {note.period}
             {note.version ? ` · v${note.version}` : ''}
           </span>
-          <span className="text-foreground-secondary text-xs">
-            {new Date(note.date).toLocaleDateString(undefined, {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-            })}
-          </span>
+          <ListingDate
+            value={note.date}
+            className="text-foreground-secondary text-xs"
+          />
         </div>
         <div className="border-border bg-background-secondary shadow-shadow flex-1 overflow-hidden rounded-md border-(length:--border-width)">
           {truncated ? (

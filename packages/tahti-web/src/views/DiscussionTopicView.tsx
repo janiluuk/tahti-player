@@ -21,6 +21,7 @@ import {
   type DiscussionTopicDetail,
 } from '../api/governance-discussions';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { ListingDate } from '../components/ListingDate';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { ReportButton } from '../components/ReportButton';
@@ -30,15 +31,6 @@ import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
 const REPLY_MAX = 5000;
-
-function postedAt(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, {
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
 
 function ReplyForm({
   topicId,
@@ -337,9 +329,8 @@ export function DiscussionTopicView({ id }: { id: string }) {
         <>
           <section className="flex flex-col gap-2">
             <p className="text-foreground-secondary flex flex-wrap items-center gap-2 text-xs">
-              <span>
-                Opened by {topic.createdBy} on {postedAt(topic.createdAt)}
-              </span>
+              <span>Opened by {topic.createdBy}</span>
+              <ListingDate value={topic.createdAt} />
               {topic.status === 'CLOSED' ? (
                 <Badge variant="pill" color="secondary">
                   Closed
@@ -381,9 +372,10 @@ export function DiscussionTopicView({ id }: { id: string }) {
                   {topic.posts.map((post) => (
                     <li key={post.id} className="px-3 py-2">
                       <div className="flex flex-wrap items-center justify-between gap-2">
-                        <p className="text-foreground-secondary text-xs">
-                          {post.author}, {postedAt(post.createdAt)}
-                          {post.editedAt ? ' (edited)' : null}
+                        <p className="text-foreground-secondary flex flex-wrap items-center gap-x-1.5 text-xs">
+                          <span>{post.author}</span>
+                          <ListingDate value={post.createdAt} />
+                          {post.editedAt ? <span>(edited)</span> : null}
                         </p>
                         <span className="flex items-center gap-1">
                           {post.mine ? null : (

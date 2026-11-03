@@ -11,6 +11,7 @@ import {
   type MySupportTicketReply,
   type SupportTicketStatus,
 } from '../api/support';
+import { ListingDate } from './ListingDate';
 import { PageEmpty, PageError } from './PageStates';
 
 const STATUS_BADGES: Record<
@@ -186,12 +187,9 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
                     {status.label}
                   </Badge>
                 </div>
-                <time
-                  dateTime={ticket.createdAt}
-                  className="text-foreground-secondary text-xs"
-                >
-                  Sent {new Date(ticket.createdAt).toLocaleDateString()}
-                </time>
+                <span className="text-foreground-secondary flex items-center gap-1 text-xs">
+                  Sent <ListingDate value={ticket.createdAt} />
+                </span>
                 <p className="text-foreground-secondary whitespace-pre-wrap">
                   {ticket.message}
                 </p>

@@ -22,6 +22,7 @@ import {
 } from '../api/api-tokens';
 import { toastWithUndo } from '../lib/undoToast';
 import { ConfirmDialog } from './ConfirmDialog';
+import { ListingDate } from './ListingDate';
 import {
   PageEmpty,
   PageError,
@@ -38,17 +39,6 @@ const EXPIRY_OPTIONS = [
 
 function isExpired(token: ApiToken): boolean {
   return Boolean(token.expiresAt && new Date(token.expiresAt) <= new Date());
-}
-
-function formatDate(value: string | null): string {
-  if (!value) {
-    return 'Never';
-  }
-  return new Date(value).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
 }
 
 export function ApiTokensPanel() {
@@ -224,15 +214,28 @@ export function ApiTokensPanel() {
                           </Badge>
                         ) : null}
                       </p>
-                      <p className="text-foreground-secondary text-xs">
-                        {token.scopes.includes('write')
-                          ? 'Read / write'
-                          : 'Read-only'}{' '}
-                        · last used {formatDate(token.lastUsedAt)} · created{' '}
-                        {formatDate(token.createdAt)}
-                        {token.expiresAt
-                          ? ` · ${isExpired(token) ? 'expired' : 'expires'} ${formatDate(token.expiresAt)}`
-                          : ''}
+                      <p className="text-foreground-secondary flex flex-wrap items-center gap-x-1 text-xs">
+                        <span>
+                          {token.scopes.includes('write')
+                            ? 'Read / write'
+                            : 'Read-only'}{' '}
+                          · last used
+                        </span>
+                        {token.lastUsedAt ? (
+                          <ListingDate value={token.lastUsedAt} />
+                        ) : (
+                          <span>never</span>
+                        )}
+                        <span>· created</span>
+                        <ListingDate value={token.createdAt} />
+                        {token.expiresAt ? (
+                          <>
+                            <span>
+                              · {isExpired(token) ? 'expired' : 'expires'}
+                            </span>
+                            <ListingDate value={token.expiresAt} />
+                          </>
+                        ) : null}
                       </p>
                     </div>
                     <Button
