@@ -54,7 +54,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | blocked | [desktop-pro-library.md](desktop-pro-library.md) | Real-music validation + Phases 6–7 untouched |
 | blocked | [desktop-smart-playlists.md](desktop-smart-playlists.md) | Manual check on real 10k+ desktop library |
 | blocked | [import-provider-set-to-native-library.md](import-provider-set-to-native-library.md) | Manual desktop run vs real hearthis.at / SoundCloud |
-| blocked | [desktop-ui-slowness.md](desktop-ui-slowness.md) | Waiting user manual test of 30 fps fix |
+| partial | [desktop-ui-slowness.md](desktop-ui-slowness.md) | GPU compositing back on by default; waiting on the user's scroll check |
 
 ## Fold rule (copy into CLAUDE / chat)
 
