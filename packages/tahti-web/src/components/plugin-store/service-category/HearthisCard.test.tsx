@@ -70,7 +70,7 @@ const collection = (id: string, permalink: string) => ({
 });
 
 const openPanel = async () => {
-  const gears = await screen.findAllByRole('button', { name: 'Configure' });
+  const gears = await screen.findAllByRole('button', { name: /^Configure/ });
   fireEvent.click(gears[gears.length - 1]!);
 };
 

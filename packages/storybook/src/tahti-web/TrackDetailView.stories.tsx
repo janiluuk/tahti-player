@@ -40,8 +40,8 @@ export const Listener: Story = {
   decorators: [withMockAuth(MOCK_USERS.listener)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await canvas.findByRole('button', { name: 'Download' });
-    await expect(canvas.queryByRole('button', { name: 'Edit' })).toBeNull();
+    await canvas.findByRole('button', { name: /^Download / });
+    await expect(canvas.queryByRole('button', { name: /^Edit / })).toBeNull();
     await expect(canvas.getByText(/^\d+ plays$/)).toBeInTheDocument();
   },
 };
@@ -52,7 +52,9 @@ export const Owner: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(await canvas.findByRole('button', { name: 'Edit' }));
+    await userEvent.click(
+      await canvas.findByRole('button', { name: /^Edit / }),
+    );
     await findDialog(canvasElement, 'Edit track');
     // Owners can't report their own track.
     await expect(canvas.queryByRole('button', { name: /^Report / })).toBeNull();
@@ -156,7 +158,7 @@ export const DownloadTrack: Story = {
     });
     try {
       await userEvent.click(
-        await canvas.findByRole('button', { name: 'Download' }),
+        await canvas.findByRole('button', { name: /^Download / }),
       );
       await waitFor(() => expect(downloads).toEqual(['tahti-sound.mp3']));
     } finally {
@@ -176,8 +178,10 @@ export const DownloadsOff: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await canvas.findByRole('button', { name: 'Play' });
-    await expect(canvas.queryByRole('button', { name: 'Download' })).toBeNull();
+    await canvas.findByRole('button', { name: /^Play / });
+    await expect(
+      canvas.queryByRole('button', { name: /^Download / }),
+    ).toBeNull();
   },
 };
 
@@ -197,7 +201,7 @@ export const SubscribersOnlySignedIn: Story = {
     await expect(
       gate.queryByRole('button', { name: 'Sign in to listen' }),
     ).toBeNull();
-    await expect(canvas.queryByRole('button', { name: 'Play' })).toBeNull();
+    await expect(canvas.queryByRole('button', { name: /^Play / })).toBeNull();
   },
 };
 

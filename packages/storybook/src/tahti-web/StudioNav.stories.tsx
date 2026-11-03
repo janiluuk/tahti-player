@@ -71,26 +71,19 @@ export const MobileOverflow: Story = {
   parameters: { viewport: { defaultViewport: 'mobile1' } },
 };
 
-const expectNestedTabs = async (
-  canvasElement: HTMLElement,
-  label: string,
-  selected: string,
-) => {
-  const nested = canvasElement.querySelector<HTMLElement>(
-    '[data-studio-nested-nav]',
-  );
-  await expect(nested).not.toBeNull();
-  const list = within(nested!).getByRole('tablist', { name: label });
+// Stats and Governance pick their sections from in-page chips, so Studio
+// adds no nested tab strip under them.
+const expectNoNestedTabs = async (canvasElement: HTMLElement) => {
   await expect(
-    within(list).getByRole('tab', { name: selected, selected: true }),
-  ).toBeVisible();
+    canvasElement.querySelector('[data-studio-nested-nav]'),
+  ).toBeNull();
 };
 
 export const StatsSubtabs: Story = {
   args: { current: '/studio/stats?tab=plays', global: true },
   decorators: [withTahtiRouter('/studio/stats?tab=plays')],
   play: async ({ canvasElement }) => {
-    await expectNestedTabs(canvasElement, 'Stats pages', 'Plays & listeners');
+    await expectNoNestedTabs(canvasElement);
   },
 };
 
@@ -98,7 +91,7 @@ export const GovernanceSubtabs: Story = {
   args: { current: '/studio/governance?tab=documents', global: true },
   decorators: [withTahtiRouter('/studio/governance?tab=documents')],
   play: async ({ canvasElement }) => {
-    await expectNestedTabs(canvasElement, 'Governance pages', 'Documents');
+    await expectNoNestedTabs(canvasElement);
   },
 };
 
