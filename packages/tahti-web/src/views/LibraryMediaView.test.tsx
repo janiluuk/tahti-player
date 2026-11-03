@@ -1,5 +1,11 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as userMedia from '../api/user-media';
@@ -138,5 +144,32 @@ describe('LibraryMediaView', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
     expect(screen.getByText('bg.png')).toBeTruthy();
     expect(screen.getByText('loop.mp4')).toBeTruthy();
+  });
+
+  it('removes a media file only after a red confirm', async () => {
+    vi.spyOn(userMedia, 'fetchUserMedia').mockResolvedValue({
+      data: [
+        {
+          id: '1',
+          filename: 'bg.png',
+          url: 'https://x/bg.png',
+          contentType: 'image/png',
+          sizeBytes: 1024,
+        },
+      ],
+      meta: { source: 'api' },
+    } as never);
+    const remove = vi
+      .spyOn(userMedia, 'deleteUserMedia')
+      .mockResolvedValue({ ok: true } as never);
+    render(<LibraryMediaView />);
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Remove bg.png' }),
+    );
+    const confirm = screen.getByRole('button', { name: 'Remove' });
+    expect(confirm.className).toContain('bg-accent-red');
+    expect(remove).not.toHaveBeenCalled();
+    fireEvent.click(confirm);
+    await waitFor(() => expect(remove).toHaveBeenCalledWith('1'));
   });
 });

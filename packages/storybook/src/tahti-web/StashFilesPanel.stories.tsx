@@ -4,7 +4,7 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withToaster } from './_fixtures/track-release';
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
-import { findToast } from './_lib/play';
+import { expectNoDialog, findDialog, findToast } from './_lib/play';
 
 const meta: Meta<typeof StashFilesPanel> = {
   title: 'Tahti/Studio/StashFilesPanel',
@@ -46,5 +46,26 @@ export const ShareRoundTrip: Story = {
     );
     await findToast(canvasElement, 'Share access revoked.');
     await waitFor(() => expect(canvas.queryByText('Link access')).toBeNull());
+  },
+};
+
+/** Delete asks first, with a red confirm. */
+export const ConfirmDelete: Story = {
+  render: () => (
+    <div className="max-w-xl">
+      <StashFilesPanel />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      await canvas.findByRole('button', { name: 'Delete stems-kick.wav' }),
+    );
+    const dialog = await findDialog(canvasElement, 'Delete "stems-kick.wav"?');
+    await expect(
+      dialog.getByRole('button', { name: 'Delete' }).className,
+    ).toContain('bg-accent-red');
+    await userEvent.click(dialog.getByRole('button', { name: 'Cancel' }));
+    await expectNoDialog(canvasElement);
   },
 };

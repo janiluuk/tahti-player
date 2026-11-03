@@ -440,6 +440,7 @@ function DestinationDialog({
       </form>
       <ConfirmDialog
         isOpen={confirmDelete && savedTarget !== null}
+        destructive
         title={
           savedTarget
             ? `Remove ${savedTarget.label ?? 'this destination'}?`

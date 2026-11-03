@@ -161,4 +161,43 @@ describe('PlayHistoryDialog', () => {
     );
     expect(play).not.toHaveBeenCalled();
   });
+
+  it('clears the history only after a red confirm', async () => {
+    const clearPlayHistory = vi.fn(async () => undefined);
+    const library = {
+      catalog: {
+        playHistory: vi.fn(async () => ({
+          total: 1,
+          entries: [
+            {
+              id: 1,
+              trackId: 'a',
+              title: 'Earlier',
+              artist: 'A',
+              playedAt: '2026-10-27 22:10:00',
+            },
+          ],
+        })),
+        clearPlayHistory,
+      },
+    } as unknown as TahtiNativeLibrary;
+    await act(async () => {
+      render(
+        <PlayHistoryDialog
+          isOpen
+          onClose={() => {}}
+          library={library}
+          onChanged={() => {}}
+        />,
+      );
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Clear history' }));
+    const confirm = screen.getByRole('button', { name: 'Clear' });
+    expect(confirm.className).toContain('bg-accent-red');
+    expect(clearPlayHistory).not.toHaveBeenCalled();
+    await act(async () => {
+      fireEvent.click(confirm);
+    });
+    expect(clearPlayHistory).toHaveBeenCalledTimes(1);
+  });
 });

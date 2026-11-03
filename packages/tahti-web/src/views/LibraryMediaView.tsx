@@ -210,6 +210,7 @@ export function LibraryMediaView() {
       )}
       <ConfirmDialog
         isOpen={pendingRemove !== null}
+        destructive
         title={
           pendingRemove
             ? `Remove ${pendingRemove.filename} from your media files?`

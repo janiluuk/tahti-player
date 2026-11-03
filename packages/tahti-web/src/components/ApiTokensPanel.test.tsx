@@ -7,7 +7,7 @@ import {
   screen,
 } from '@testing-library/react';
 import { toast } from 'sonner';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../api/api-tokens';
 import { ApiTokensPanel } from './ApiTokensPanel';
@@ -32,9 +32,14 @@ async function renderPanel(tokens: api.ApiToken[]) {
 }
 
 describe('ApiTokensPanel', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-09-03T00:00:00.000Z'));
+  });
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it('says the tokens failed to load instead of "No API tokens yet"', async () => {
@@ -91,8 +96,14 @@ describe('ApiTokensPanel', () => {
       { ...base, id: 't3', name: 'forever', expiresAt: null },
     ]);
     expect(screen.getAllByText('Expired')).toHaveLength(1);
-    expect(screen.getByText(/expired .*2020/)).toBeTruthy();
-    expect(screen.getByText(/expires .*2999/)).toBeTruthy();
+    expect(screen.getByText('· expired')).toBeTruthy();
+    expect(screen.getByText('1.1.2020').tagName).toBe('TIME');
+    expect(screen.getByText('· expires')).toBeTruthy();
+    expect(screen.getByText('1.1.2999').getAttribute('datetime')).toBe(
+      '2999-01-01T00:00:00.000Z',
+    );
+    expect(screen.getAllByText('never')).toHaveLength(3);
+    expect(screen.getAllByText('2 days ago')[0]!.tagName).toBe('TIME');
   });
 
   it('creates a token with the chosen expiry', async () => {

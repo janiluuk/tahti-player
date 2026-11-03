@@ -85,6 +85,9 @@ export const Host: Story = {
         canvasElement,
         `Remove ${GUEST_LISTENING} from the Jam?`,
       );
+      await expect(
+        dialog.getByRole('button', { name: 'Remove' }).className,
+      ).toContain('bg-accent-red');
       await userEvent.click(dialog.getByRole('button', { name: 'Remove' }));
       await expectNoDialog(canvasElement);
       await waitFor(() => expect(canvas.getByText('2 jamming')).toBeVisible());

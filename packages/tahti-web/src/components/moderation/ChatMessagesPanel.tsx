@@ -161,6 +161,7 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
       )}
       <ConfirmDialog
         isOpen={pending !== null}
+        destructive
         title={
           pending?.action === 'ban'
             ? `Ban ${pending.message.handle} from this chat?`

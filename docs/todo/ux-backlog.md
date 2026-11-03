@@ -34,14 +34,17 @@ new surface, one PR per row. After moving files, update `docs/VIEW-CATALOG.md`.
     Selects) and Overwrite live version are red. Log toolbar Clear and Open
     log folder, the plugin store Installed state and the email-change Back
     to Settings are secondary.
-  - Left: about 25 confirms still green - Studio events, updates, editor
-    projects, release detail, playlist editor, collection editor dialogs,
-    release smart links, artwork and radio presets, multistream and
-    multicast destinations, moderators, chat moderation, stash, duplicates,
-    desktop library, Library media, Jam guests, pinned announcements, disco
-    widgets, plugin-store categories, broadcast key reset. Pass
-    `destructive` to each (the release / playlist / collection pages wait
-    on the view-mode work there).
+  - 2026-11-03 (de-green 15): red confirms on artwork presets, multistream
+    and multicast destination removes, channel moderators, chat message
+    remove and ban, stash file delete, duplicates remove and merge, desktop
+    library track remove and stop watching, Library media, Jam guests,
+    pinned announcements, disco widgets, broadcast key reset, channel
+    comments and listening-history clear.
+  - Left: confirms still green - Studio events, updates, editor projects,
+    release detail, playlist editor, collection editor dialogs, release
+    smart links, radio presets, plugin-store categories, theme submissions.
+    Pass `destructive` to each (the release / playlist / collection / event
+    / update pages wait on the view-mode work there).
   - 2026-10-30: quieted jumps that were sitting next to a real action
     or beside an already-secondary control: smart-link empty Create
     release, container logs, back to the channel, Pro editor, gallery

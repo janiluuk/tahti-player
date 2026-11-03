@@ -186,6 +186,7 @@ export function MultistreamPanel({
       ) : null}
       <ConfirmDialog
         isOpen={pendingDeleteTarget !== null}
+        destructive
         title={
           pendingDeleteTarget
             ? `Remove ${pendingDeleteTarget.label || pendingDeleteTarget.provider}?`

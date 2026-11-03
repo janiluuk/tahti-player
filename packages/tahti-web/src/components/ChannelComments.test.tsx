@@ -87,12 +87,12 @@ describe('ChannelComments', () => {
         })[0]!,
       );
     });
+    const confirmRemove = within(
+      screen.getByRole('dialog', { name: 'Remove this comment?' }),
+    ).getByRole('button', { name: 'Remove' });
+    expect(confirmRemove.className).toContain('bg-accent-red');
     await act(async () => {
-      fireEvent.click(
-        within(
-          screen.getByRole('dialog', { name: 'Remove this comment?' }),
-        ).getByRole('button', { name: 'Remove' }),
-      );
+      fireEvent.click(confirmRemove);
     });
     await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
     await waitFor(() => expect(del).toHaveBeenCalledWith('c1'));

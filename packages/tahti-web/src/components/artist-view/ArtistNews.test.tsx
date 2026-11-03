@@ -1,5 +1,5 @@
 import { act, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { fetchArtistNewsFeed } from '../../api/artist-news';
 import { ArtistNews } from './ArtistNews';
@@ -27,8 +27,13 @@ async function renderNews(
 }
 
 describe('ArtistNews', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-09-30T10:00:00.000Z'));
+  });
   afterEach(() => {
     vi.clearAllMocks();
+    vi.useRealTimers();
   });
 
   it("links the artist's feed items", async () => {
@@ -46,6 +51,9 @@ describe('ArtistNews', () => {
         .getAttribute('href'),
     ).toBe('https://blog.example/new-ep');
     expect(screen.getByText('News')).toBeTruthy();
+    const date = screen.getByText('2 days ago');
+    expect(date.tagName).toBe('TIME');
+    expect(date.getAttribute('datetime')).toBe('2026-09-28T10:00:00.000Z');
   });
 
   it('keeps pinned announcements above the feed', async () => {

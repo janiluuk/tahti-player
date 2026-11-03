@@ -55,6 +55,8 @@ function renderView() {
 
 describe('DiscussionTopicView', () => {
   beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-20T13:00:00.000Z'));
     useAuthStore.setState({
       user: {
         id: 'u1',
@@ -72,6 +74,7 @@ describe('DiscussionTopicView', () => {
   afterEach(() => {
     useAuthStore.setState({ user: null, hydrated: true, loading: false });
     vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it('shows the topic and its replies, and posts a reply', async () => {
@@ -90,6 +93,13 @@ describe('DiscussionTopicView', () => {
     renderView();
     expect(await screen.findByText('Who plays?')).toBeInTheDocument();
     expect(screen.getByText('An ambient set?')).toBeInTheDocument();
+    const opened = screen.getByText('1 day ago');
+    expect(opened.tagName).toBe('TIME');
+    expect(opened).toHaveAttribute('datetime', TOPIC.createdAt);
+    expect(screen.getByText('3 hours ago')).toHaveAttribute(
+      'datetime',
+      TOPIC.posts[0]!.createdAt,
+    );
     fireEvent.change(screen.getByLabelText('Your reply'), {
       target: { value: 'Count me in' },
     });

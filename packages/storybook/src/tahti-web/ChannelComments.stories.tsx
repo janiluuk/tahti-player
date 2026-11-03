@@ -43,6 +43,9 @@ export const SignedInVisitor: Story = {
       'dialog',
       { name: 'Remove this comment?' },
     );
+    await expect(
+      within(confirmation).getByRole('button', { name: 'Remove' }).className,
+    ).toContain('bg-accent-red');
     await userEvent.click(
       within(confirmation).getByRole('button', { name: 'Remove' }),
     );

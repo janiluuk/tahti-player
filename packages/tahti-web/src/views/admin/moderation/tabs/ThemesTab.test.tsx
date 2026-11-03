@@ -50,9 +50,12 @@ describe('ThemesTab', () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it('lists pending themes and approves one', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-09-20T14:00:00.000Z'));
     const fetchThemes = vi
       .spyOn(admin, 'fetchAdminThemes')
       .mockResolvedValue({ ok: true, themes: [THEME] });
@@ -66,6 +69,9 @@ describe('ThemesTab', () => {
     expect(fetchThemes).toHaveBeenCalledWith('PENDING_REVIEW');
     expect(screen.getByText('Revontulet')).toBeTruthy();
     expect(screen.getByText(/@aurora/)).toBeTruthy();
+    const submitted = screen.getByText('4 hours ago');
+    expect(submitted.tagName).toBe('TIME');
+    expect(submitted.getAttribute('datetime')).toBe(THEME.createdAt);
 
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Approve' }));

@@ -169,11 +169,11 @@ describe('DiscoWidgetManagerPanel channel layout', () => {
     );
 
     fireEvent.click(screen.getAllByRole('button', { name: 'Remove' })[0]!);
-    fireEvent.click(
-      within(
-        screen.getByRole('dialog', { name: 'Remove Widget b?' }),
-      ).getByRole('button', { name: 'Remove' }),
-    );
+    const confirmRemove = within(
+      screen.getByRole('dialog', { name: 'Remove Widget b?' }),
+    ).getByRole('button', { name: 'Remove' });
+    expect(confirmRemove.className).toContain('bg-accent-red');
+    fireEvent.click(confirmRemove);
     await waitFor(() =>
       expect(blocksApi.deleteChannelBlock).toHaveBeenCalledWith('block-b'),
     );

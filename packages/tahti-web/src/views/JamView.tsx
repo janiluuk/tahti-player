@@ -368,6 +368,7 @@ export function JamView({ code }: { code: string }) {
       </div>
       <ConfirmDialog
         isOpen={removing !== null}
+        destructive
         title={`Remove ${removing?.displayName?.trim() || removing?.username || 'this guest'} from the Jam?`}
         description="They stop hearing the Jam and can't rejoin it with this link."
         confirmLabel="Remove"

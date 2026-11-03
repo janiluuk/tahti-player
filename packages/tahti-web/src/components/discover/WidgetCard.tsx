@@ -21,6 +21,7 @@ import type { LatestRelease } from '../../api/latest-releases';
 import type { DiscoverCollection, DiscoverTrackItem } from '../../api/types';
 import { cn } from '../../lib/cn';
 import type { DiscoverWidgetId } from '../../stores/discoverStore';
+import { ListingDate } from '../ListingDate';
 import { PageEmpty, PageError } from '../PageStates';
 import { STRIPED_LIST, STRIPED_ROW } from './listStripes';
 import { WidgetTrackRow } from './WidgetTrackRow';
@@ -225,7 +226,7 @@ export function WidgetCard({
                     release.artistDisplayName
                   )}{' '}
                   · {release.type.toLowerCase()} ·{' '}
-                  {new Date(release.releaseDate).toLocaleDateString()}
+                  <ListingDate value={release.releaseDate} />
                 </p>
               </div>
             </div>

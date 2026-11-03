@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { act, cleanup, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as membership from '../api/membership';
 import { MembershipInvoices } from './MembershipInvoices';
@@ -14,9 +14,14 @@ describe('formatInvoiceAmount', () => {
 });
 
 describe('MembershipInvoices', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2027-01-03T10:00:00.000Z'));
+  });
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it('lists invoices with status, PDF and a pay link for unpaid ones', async () => {
@@ -50,6 +55,10 @@ describe('MembershipInvoices', () => {
     });
     expect(screen.getByText('Paid')).toBeTruthy();
     expect(screen.getByText('Unpaid')).toBeTruthy();
+    expect(screen.getByText('2.1.2026').getAttribute('datetime')).toBe(
+      '2026-01-02T10:00:00.000Z',
+    );
+    expect(screen.getByText('1 day ago').tagName).toBe('TIME');
     expect(
       screen
         .getByRole('link', { name: 'Download invoice TAHTI-0042 as PDF' })

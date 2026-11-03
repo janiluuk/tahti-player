@@ -23,6 +23,7 @@ import {
   type AdminContentReportStatus,
 } from '../../../../api/admin';
 import { deleteComment } from '../../../../api/comments';
+import { ListingDate } from '../../../../components/ListingDate';
 import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { ModerationTabs } from '../ModerationTabs';
@@ -305,7 +306,7 @@ export function ContentReportsTab() {
                   <ReportTarget report={r} />
                   <div className="text-foreground-secondary text-xs">
                     {r.details ?? 'No details provided'} ·{' '}
-                    {new Date(r.createdAt).toLocaleDateString()}
+                    <ListingDate value={r.createdAt} />
                   </div>
                 </div>
                 <ReportActions report={r} onDone={reload} />

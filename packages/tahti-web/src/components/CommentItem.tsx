@@ -6,6 +6,7 @@ import { Button, MediaArtwork } from '@tahti-player/ui';
 import type { TrackComment } from '../api/types';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { useAuthStore } from '../stores/authStore';
+import { ListingDate } from './ListingDate';
 import { ReportButton } from './ReportButton';
 
 /** One track or channel comment: avatar, name, date, text, a report button
@@ -45,12 +46,10 @@ export function CommentItem({
             {comment.authorDisplayName}
           </span>
           {meta}
-          <time
+          <ListingDate
+            value={comment.createdAt}
             className="text-foreground-secondary text-xs"
-            dateTime={comment.createdAt}
-          >
-            {new Date(comment.createdAt).toLocaleDateString()}
-          </time>
+          />
         </div>
         <p className="mt-1 text-sm">{text ?? comment.body}</p>
       </div>

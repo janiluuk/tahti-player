@@ -7,19 +7,9 @@ import {
   fetchArtistNewsFeed,
   type ArtistNewsItem,
 } from '../../api/artist-news';
+import { ListingDate } from '../ListingDate';
 import { PageError } from '../PageStates';
 import { Eyebrow } from '../tahti/Eyebrow';
-
-const formatDate = (iso: string) => {
-  const date = new Date(iso);
-  return Number.isNaN(date.getTime())
-    ? null
-    : date.toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-      });
-};
 
 export function ArtistNews({
   news,
@@ -71,25 +61,20 @@ export function ArtistNews({
             {item.body}
           </li>
         ))}
-        {feed.map((item) => {
-          const date = item.pubDate ? formatDate(item.pubDate) : null;
-          return (
-            <li
-              key={item.link}
-              className="flex flex-wrap items-baseline justify-between gap-2 p-3 text-sm"
-            >
-              <ExternalLink href={item.link}>{item.title}</ExternalLink>
-              {date ? (
-                <time
-                  dateTime={item.pubDate ?? undefined}
-                  className="text-foreground-secondary text-xs"
-                >
-                  {date}
-                </time>
-              ) : null}
-            </li>
-          );
-        })}
+        {feed.map((item) => (
+          <li
+            key={item.link}
+            className="flex flex-wrap items-baseline justify-between gap-2 p-3 text-sm"
+          >
+            <ExternalLink href={item.link}>{item.title}</ExternalLink>
+            {item.pubDate ? (
+              <ListingDate
+                value={item.pubDate}
+                className="text-foreground-secondary text-xs"
+              />
+            ) : null}
+          </li>
+        ))}
       </ul>
     </section>
   );

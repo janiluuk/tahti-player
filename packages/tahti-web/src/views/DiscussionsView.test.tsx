@@ -54,6 +54,8 @@ function renderView() {
 
 describe('DiscussionsView', () => {
   beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-22T10:00:00.000Z'));
     useAuthStore.setState({
       user: {
         id: 'u1',
@@ -71,6 +73,7 @@ describe('DiscussionsView', () => {
   afterEach(() => {
     useAuthStore.setState({ user: null, hydrated: true, loading: false });
     vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it('lists topics with their state and links to each', async () => {
@@ -88,6 +91,9 @@ describe('DiscussionsView', () => {
     expect(screen.getByText(/2 replies/)).toBeInTheDocument();
     expect(screen.getByText('3 new replies')).toBeInTheDocument();
     expect(screen.getByText(/last reply by Liis Kask/)).toBeInTheDocument();
+    const lastPost = screen.getByText('2 days ago');
+    expect(lastPost.tagName).toBe('TIME');
+    expect(lastPost).toHaveAttribute('datetime', TOPIC.lastPostAt);
   });
 
   it('shows the API reason with a retry when the list fails', async () => {

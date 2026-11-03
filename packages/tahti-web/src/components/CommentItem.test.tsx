@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useAuthStore } from '../stores/authStore';
 import { CommentItem } from './CommentItem';
@@ -15,8 +15,13 @@ const COMMENT = {
 };
 
 describe('CommentItem', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-09-03T12:00:00.000Z'));
+  });
   afterEach(() => {
     cleanup();
+    vi.useRealTimers();
     useAuthStore.setState({ user: null });
   });
 
@@ -29,6 +34,9 @@ describe('CommentItem', () => {
     );
     expect(screen.getByText('Fan')).toBeTruthy();
     expect(screen.getByText('Nice drop')).toBeTruthy();
+    const time = screen.getByText('2 days ago');
+    expect(time.tagName).toBe('TIME');
+    expect(time.getAttribute('datetime')).toBe(COMMENT.createdAt);
     fireEvent.click(
       screen.getByRole('button', { name: 'Delete comment by Fan' }),
     );

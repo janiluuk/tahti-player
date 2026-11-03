@@ -468,6 +468,7 @@ export const StashFilesPanel = ({
       </StudioPanel>
       <ConfirmDialog
         isOpen={pendingDelete !== null}
+        destructive
         title={
           pendingDelete ? `Delete "${pendingDelete.filename}"?` : 'Delete file?'
         }

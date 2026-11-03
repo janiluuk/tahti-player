@@ -311,6 +311,7 @@ export function DuplicatesDialog({
       </Dialog.Root>
       <ConfirmDialog
         isOpen={merging !== null}
+        destructive
         title="Keep this one and merge the others into it?"
         description={`“${merging?.keep.title ?? ''}” keeps the best rating, the label, all tags, the combined play count and the playlist spots of ${merging?.others.length ?? 0} other ${merging?.others.length === 1 ? 'copy' : 'copies'}, which are then removed from the library. No audio file on disk is touched.`}
         confirmLabel="Merge"
@@ -325,6 +326,7 @@ export function DuplicatesDialog({
       />
       <ConfirmDialog
         isOpen={pending !== null}
+        destructive
         title="Remove this track from the library?"
         description={`“${pending?.title ?? ''}” is only removed from your Tahti library. The audio file on disk is not touched.`}
         confirmLabel="Remove"

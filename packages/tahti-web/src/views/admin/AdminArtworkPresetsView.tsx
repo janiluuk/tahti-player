@@ -207,6 +207,7 @@ export function AdminArtworkPresetsView() {
 
       <ConfirmDialog
         isOpen={pendingDelete !== null}
+        destructive
         title="Remove this artwork?"
         description="Covers already saved from it stay as they are."
         confirmLabel="Remove"

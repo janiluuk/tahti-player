@@ -214,6 +214,7 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
       )}
       <ConfirmDialog
         isOpen={pendingRotate !== null}
+        destructive
         title={
           pendingRotate
             ? `${CREDENTIAL_COPY[pendingRotate].action}?`

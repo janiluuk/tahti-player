@@ -66,6 +66,9 @@ describe('BroadcastCredentialsPanel rotation', () => {
     );
     const dialog = screen.getByRole('dialog');
     expect(dialog.textContent).toContain('keeps working for 24 hours');
+    expect(
+      within(dialog).getByRole('button', { name: 'Make a new one' }).className,
+    ).toContain('bg-accent-red');
     expect(rotate).not.toHaveBeenCalled();
     await act(async () => {
       fireEvent.click(

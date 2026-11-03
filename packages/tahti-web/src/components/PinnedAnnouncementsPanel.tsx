@@ -143,6 +143,7 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
       </div>
       <ConfirmDialog
         isOpen={pendingRemove !== null}
+        destructive
         title={
           pendingRemove
             ? `Remove “${pendingRemove.body}”?`

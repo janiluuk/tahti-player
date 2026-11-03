@@ -51,12 +51,15 @@ const signedIn = {
 
 describe('NotificationsView', () => {
   beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-27T13:00:00.000Z'));
     useAuthStore.setState({ user: signedIn, hydrated: true, loading: false });
     vi.spyOn(api, 'fetchNotificationUnreadCounts').mockResolvedValue(null);
   });
   afterEach(() => {
     useAuthStore.setState({ user: null, hydrated: true, loading: false });
     vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it('lists notifications, pages older ones and marks one read', async () => {
@@ -81,6 +84,9 @@ describe('NotificationsView', () => {
 
     expect(await screen.findByText('Title a')).toBeTruthy();
     expect(screen.getByText('1 unread')).toBeTruthy();
+    const [when] = screen.getAllByText('3 hours ago');
+    expect(when!.tagName).toBe('TIME');
+    expect(when!.getAttribute('datetime')).toBe('2026-10-27T10:00:00.000Z');
 
     fireEvent.click(screen.getByRole('button', { name: 'Show older' }));
     expect(await screen.findByText('Title c')).toBeTruthy();

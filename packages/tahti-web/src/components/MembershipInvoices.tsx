@@ -13,6 +13,7 @@ import {
   formatInvoiceAmount,
   type MembershipInvoice,
 } from '../api/membership';
+import { ListingDate } from './ListingDate';
 import { PageEmpty } from './PageStates';
 
 const STATUS_LABELS: Record<
@@ -88,12 +89,10 @@ export function MembershipInvoices() {
                       </span>
                     ) : null}
                   </div>
-                  <time
-                    dateTime={invoice.created}
+                  <ListingDate
+                    value={invoice.created}
                     className="text-foreground-secondary text-xs"
-                  >
-                    {new Date(invoice.created).toLocaleDateString()}
-                  </time>
+                  />
                 </div>
                 <div className="flex items-center gap-1.5">
                   {status ? (
