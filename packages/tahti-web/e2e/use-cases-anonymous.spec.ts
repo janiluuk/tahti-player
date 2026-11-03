@@ -89,3 +89,22 @@ test('anonymous: opens a channel page from Live now', async ({ page }) => {
   await expect(page).toHaveURL(/\/channel\/northern-lights$/);
   await expect(page.getByText('Something went wrong')).toHaveCount(0);
 });
+
+test('anonymous: opens a Tahti news post in its dialog', async ({ page }) => {
+  await page.goto('/news');
+  await expect(
+    page.getByRole('heading', { name: 'Platform news', level: 1 }),
+  ).toBeVisible();
+  await page
+    .getByRole('main')
+    .getByRole('button', { name: /^Tahti is open/ })
+    .click();
+  const dialog = page.getByRole('dialog');
+  await expect(
+    dialog.getByRole('heading', { name: /^Tahti is open/ }),
+  ).toBeVisible();
+  await page.keyboard.press('Escape');
+  await expect(
+    page.getByRole('heading', { name: 'Platform news', level: 1 }),
+  ).toBeVisible();
+});

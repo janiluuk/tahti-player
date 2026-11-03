@@ -634,6 +634,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             10:00:00.000
           </span>
           <button
+            aria-label="Filter by ERROR"
             class="inline-flex w-14 items-center justify-center rounded px-1.5 py-0.5 text-xs font-bold uppercase bg-accent-red text-accent-foreground cursor-pointer hover:opacity-80"
             data-testid="log-level"
             type="button"
@@ -641,6 +642,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             ERROR
           </button>
           <button
+            aria-label="Filter by plugins"
             class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
             data-testid="log-scope"
             type="button"
@@ -717,6 +719,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             10:00:01.000
           </span>
           <button
+            aria-label="Filter by WARN"
             class="inline-flex w-14 items-center justify-center rounded px-1.5 py-0.5 text-xs font-bold uppercase bg-accent-yellow text-accent-foreground cursor-pointer hover:opacity-80"
             data-testid="log-level"
             type="button"
@@ -724,6 +727,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             WARN
           </button>
           <button
+            aria-label="Filter by http"
             class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
             data-testid="log-scope"
             type="button"
@@ -800,6 +804,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             10:00:02.000
           </span>
           <button
+            aria-label="Filter by INFO"
             class="inline-flex w-14 items-center justify-center rounded px-1.5 py-0.5 text-xs font-bold uppercase bg-accent-cyan text-accent-foreground cursor-pointer hover:opacity-80"
             data-testid="log-level"
             type="button"
@@ -807,6 +812,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             INFO
           </button>
           <button
+            aria-label="Filter by app"
             class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
             data-testid="log-scope"
             type="button"
@@ -883,6 +889,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             10:00:03.000
           </span>
           <button
+            aria-label="Filter by DEBUG"
             class="inline-flex w-14 items-center justify-center rounded px-1.5 py-0.5 text-xs font-bold uppercase bg-accent-purple text-accent-foreground cursor-pointer hover:opacity-80"
             data-testid="log-level"
             type="button"
@@ -890,6 +897,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             DEBUG
           </button>
           <button
+            aria-label="Filter by streaming"
             class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
             data-testid="log-scope"
             type="button"
@@ -966,6 +974,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             10:00:04.000
           </span>
           <button
+            aria-label="Filter by TRACE"
             class="inline-flex w-14 items-center justify-center rounded px-1.5 py-0.5 text-xs font-bold uppercase bg-foreground/50 text-background cursor-pointer hover:opacity-80"
             data-testid="log-level"
             type="button"
@@ -973,6 +982,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             TRACE
           </button>
           <button
+            aria-label="Filter by playback"
             class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-foreground/10 text-foreground cursor-pointer hover:opacity-80"
             data-testid="log-scope"
             type="button"
@@ -1049,6 +1059,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             10:00:05.000
           </span>
           <button
+            aria-label="Filter by INFO"
             class="inline-flex w-14 items-center justify-center rounded px-1.5 py-0.5 text-xs font-bold uppercase bg-accent-cyan text-accent-foreground cursor-pointer hover:opacity-80"
             data-testid="log-level"
             type="button"
@@ -1056,6 +1067,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             INFO
           </button>
           <button
+            aria-label="Filter by youtube-music"
             class="block max-w-full min-w-0 truncate rounded-full px-2 py-0.5 text-center text-xs font-medium bg-accent-orange/50 text-accent-foreground cursor-pointer hover:opacity-80"
             data-testid="log-scope"
             type="button"
