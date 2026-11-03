@@ -418,7 +418,7 @@ downloadable.`,
   {
     path: ['hearthis', 'download-set'],
     usage:
-      'tahti hearthis download-set <permalink-or-url> [--out <dir>] [--dry-run] [--force] [--json]',
+      'tahti hearthis download-set <permalink-or-url> [--out <dir>] [--layout <l>] [--own] [--title <t>] [--dry-run] [--force] [--json]',
     summary: 'Download a hearthis.at Set into Artist/Album (year)/01 - Track',
     details: `Fetches the Set tracklist, then downloads every track that is
 downloadable for the authenticated hearthis.at visitor (public download
@@ -427,12 +427,22 @@ flag). Files go under:
 Uses hearthis.at's download_url (original upload — often WAV/FLAC), never
 the compressed stream preview. Skips tracks that are not downloadable and
 paths that already exist (unless --force).
-  --out <dir>   Destination root (default: current directory)
-  --dry-run     List paths without downloading
-  --force       Re-download even when the file already exists`,
+  --out <dir>     Destination root (default: current directory)
+  --layout <l>    discography (default): <Artist>/<Album (year)>/<NN> - <Track>
+                  album: <Artist> - <Album> (year)/<NN> - <Track>, where the
+                    Set title "Artist - Album - notes (year)" gives artist,
+                    album and year, and "Album - NN - " is dropped from titles
+                  set: <Set title>/<Track>, for DJ sets and mixes
+  --own           Only tracks uploaded by the Set's owner; numbering skips the rest
+  --title <t>     Use this Set title when the API does not return one
+  --dry-run       List paths without downloading
+  --force         Re-download even when the file already exists`,
     options: {
       ...JSON_OPTION,
       out: { type: 'string' },
+      layout: { type: 'string' },
+      own: { type: 'boolean', default: false },
+      title: { type: 'string' },
       'dry-run': { type: 'boolean', default: false },
       force: { type: 'boolean', default: false },
     },
@@ -441,6 +451,9 @@ paths that already exist (unless --force).
       runHearthisDownloadSet(config, positionals[0], {
         json: values.json,
         outDir: values.out || '.',
+        layout: values.layout || 'discography',
+        ownOnly: values.own,
+        title: values.title || null,
         dryRun: values['dry-run'],
         force: values.force,
       }),
