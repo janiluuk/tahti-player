@@ -283,15 +283,6 @@ async function downloadTrackFile(track, root, relativePathFor, { flac }) {
   };
 }
 
-async function pathExists(path) {
-  try {
-    await access(path);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
 const FLAC_SOURCES = new Set(['wav', 'aif', 'aiff']);
 
 export function encodeFlac(input, output) {
