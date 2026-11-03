@@ -1,7 +1,7 @@
 export const BPM_MIN = 40;
 export const BPM_MAX = 300;
-export const TAP_RESET_MS = 2000;
-export const TAP_WINDOW = 8;
+const TAP_RESET_MS = 2000;
+const TAP_WINDOW = 8;
 
 export type BpmRange = { min: number; max: number; factor: 1 | 2 | 0.5 };
 

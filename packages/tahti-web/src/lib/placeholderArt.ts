@@ -16,7 +16,7 @@ const PALETTES: Array<{ from: string; to: string }> = [
   { from: '#FB7185', to: '#A78BFA' },
 ];
 
-export const PLACEHOLDER_ARTWORK_COUNT = PALETTES.length;
+const PLACEHOLDER_ARTWORK_COUNT = PALETTES.length;
 
 function blobsForIndex(
   index: number,
@@ -51,7 +51,6 @@ function svgForIndex(index: number): string {
 }
 
 const cache = new Map<number, string>();
-export const GENERATED_ARTWORK_COUNT = 16;
 
 function seedToIndex(seed: string): number {
   let hash = 0;

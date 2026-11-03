@@ -114,17 +114,3 @@ export const EMBED_PROVIDER_HEIGHT: Record<EmbedProvider, number> = {
   BANDCAMP: 120,
   MIKSERI: 190,
 };
-
-/** Display name keyed by the lowercase playback form found on
- * `TahtiPlayable.embed.provider`; derived from the uppercase map so the two
- * never drift. */
-export const EMBED_PLAYBACK_PROVIDER_LABEL: Record<
-  EmbedPlaybackProvider,
-  string
-> = {
-  hearthis: EMBED_PROVIDER_LABEL.HEARTHIS,
-  mixcloud: EMBED_PROVIDER_LABEL.MIXCLOUD,
-  spotify: EMBED_PROVIDER_LABEL.SPOTIFY,
-  bandcamp: EMBED_PROVIDER_LABEL.BANDCAMP,
-  mikseri: EMBED_PROVIDER_LABEL.MIKSERI,
-};

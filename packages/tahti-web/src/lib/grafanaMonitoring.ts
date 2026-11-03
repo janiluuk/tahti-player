@@ -3,7 +3,7 @@
  * tahti-org/ops/monitoring/vimage6/README.md.
  */
 
-export const GRAFANA_BASE_URL =
+const GRAFANA_BASE_URL =
   import.meta.env.VITE_GRAFANA_URL?.replace(/\/$/, '') ||
   'https://grafana.tahti.live';
 
