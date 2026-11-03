@@ -1,4 +1,4 @@
-import { act, render } from '@testing-library/react';
+import { act, cleanup, render } from '@testing-library/react';
 
 import { DayOfWeekChart } from './DayOfWeekChart';
 import type { DayOfWeekChartLabels } from './types';
@@ -8,6 +8,14 @@ const labels: DayOfWeekChartLabels = {
 };
 
 describe('DayOfWeekChart', () => {
+  // Unmount while the fake clock still runs, so a timer the chart schedules
+  // on teardown is dropped instead of firing after jsdom is gone.
+  afterEach(() => {
+    cleanup();
+    vi.clearAllTimers();
+    vi.useRealTimers();
+  });
+
   it('(Snapshot) renders a week of listening data', async () => {
     vi.useFakeTimers();
     const { container } = render(
@@ -23,7 +31,6 @@ describe('DayOfWeekChart', () => {
     );
 
     await act(() => vi.advanceTimersByTimeAsync(5_000));
-    vi.useRealTimers();
 
     expect(container).toMatchSnapshot();
   });
@@ -41,7 +48,6 @@ describe('DayOfWeekChart', () => {
       />,
     );
     await act(() => vi.advanceTimersByTimeAsync(5_000));
-    vi.useRealTimers();
     expect(container.querySelectorAll('.recharts-bar')).toHaveLength(2);
   });
 });
