@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 import { Alert, Button, ClampedText } from '@tahti-player/ui';
@@ -12,6 +11,7 @@ import {
 import type { FanSubscriptionRow, FanTiersResponse } from '../api/types';
 import { CurrentFanSubscriptionCard } from '../components/CurrentFanSubscriptionCard';
 import { EntitySocialHeader } from '../components/EntitySocialHeader';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import type { FanCheckoutReturn } from '../lib/fanCheckoutReturn';
@@ -140,13 +140,11 @@ export function SubscribeView({
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col gap-6">
-      <Link
+      <PageBackLink
         to="/u/$username"
         params={{ username }}
-        className="text-foreground-secondary text-xs hover:underline"
-      >
-        ← @{username}
-      </Link>
+        label={`@${username}`}
+      />
 
       <EntitySocialHeader
         title={`Subscribe to ${data.artist.displayName}`}

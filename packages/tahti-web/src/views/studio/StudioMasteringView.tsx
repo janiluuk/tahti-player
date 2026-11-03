@@ -12,6 +12,7 @@ import {
 
 import { fetchEditorSource } from '../../api/studio';
 import type { EditorSource } from '../../api/studio-types';
+import { PageBackLink } from '../../components/PageBackLink';
 import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -97,12 +98,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex w-full max-w-[1400px] flex-col gap-6 px-1 py-2">
         <div className="flex flex-wrap gap-3 text-xs">
-          <Link
-            to="/studio/sounds"
-            className="text-foreground-secondary hover:underline"
-          >
-            ← Music
-          </Link>
+          <PageBackLink to="/library/sounds" label="Sounds" />
           <Link
             to="/studio/sounds/$id"
             params={{ id: soundId }}
