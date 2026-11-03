@@ -27,6 +27,11 @@ import { runFeed } from './commands/feed.mjs';
 import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
+import {
+  fetchHearthisUserSets,
+  filterSetsByTitle,
+  runHearthisUserSets,
+} from './commands/hearthis-user-sets.mjs';
 import { runImport } from './commands/import.mjs';
 import { runLibraryDelete } from './commands/library-delete.mjs';
 import { runLibraryDownload } from './commands/library-download.mjs';
@@ -403,6 +408,21 @@ Use \`tahti hearthis set <permalink>\` to inspect tracks in one set.`,
     run: (config, { values }) => runHearthisSets(config, { json: values.json }),
   },
   {
+    path: ['hearthis', 'user-sets'],
+    usage: 'tahti hearthis user-sets <handle> [--match <regex>] [--json]',
+    summary: 'List every Set of any public hearthis.at account',
+    details: `Reads hearthis.at's public API page by page, so it lists every Set (the
+Tahti \`hearthis sets\` route stops at 20). No token needed.
+  --match <regex>   Only Sets whose title matches, case-insensitive (e.g. "^(Yani|Don)")`,
+    options: { ...JSON_OPTION, match: { type: 'string' } },
+    positionals: 1,
+    run: (_config, { values, positionals }) =>
+      runHearthisUserSets(positionals[0], {
+        json: values.json,
+        match: values.match || null,
+      }),
+  },
+  {
     path: ['hearthis', 'set'],
     usage: 'tahti hearthis set <permalink-or-url> [--json]',
     summary: 'List tracks in one hearthis.at Set',
@@ -418,7 +438,7 @@ downloadable.`,
   {
     path: ['hearthis', 'download-set'],
     usage:
-      'tahti hearthis download-set <permalink-or-url>... [--out <dir>] [--layout <l>] [--own] [--title <t>] [--year <y>] [--sync] [--flac] [--no-artwork] [--dry-run] [--force] [--json]',
+      'tahti hearthis download-set <permalink-or-url>... | --from-user <handle> [--match <regex>] [--out <dir>] [--layout <l>] [--own] [--title <t>] [--year <y>] [--sync] [--flac] [--no-artwork] [--dry-run] [--force] [--json]',
     summary: 'Download a hearthis.at Set into Artist/Album (year)/01 - Track',
     details: `Fetches the Set tracklist, then downloads every track that is
 downloadable for the authenticated hearthis.at visitor (public download
@@ -435,6 +455,8 @@ paths that already exist (unless --force).
                   set: <Set title>/<Artist> - <Track>, for DJ sets and mixes
   --own           Only tracks uploaded by the Set's owner; numbering skips the rest
   --title <t>     Use this Set title when the API does not return one
+  --from-user <h> Download every Set of a hearthis.at account (with --match to pick)
+  --match <regex> With --from-user: only Sets whose title matches
   --year <y>      Album folder year when the Set title has none
   --sync          Update the folder like rsync: re-download files whose size
                   differs from hearthis.at, delete audio files that are no
@@ -449,6 +471,8 @@ paths that already exist (unless --force).
       out: { type: 'string' },
       layout: { type: 'string' },
       own: { type: 'boolean', default: false },
+      'from-user': { type: 'string' },
+      match: { type: 'string' },
       title: { type: 'string' },
       sync: { type: 'boolean', default: false },
       'no-artwork': { type: 'boolean', default: false },
@@ -478,8 +502,31 @@ paths that already exist (unless --force).
         force: values.force,
       };
       const results = [];
-      for (const permalink of positionals.length ? positionals : [undefined]) {
-        results.push(await runHearthisDownloadSet(config, permalink, options));
+      if (values['from-user']) {
+        if (positionals.length > 0) {
+          throw new CliError('Pass Set permalinks or --from-user, not both.');
+        }
+        const { sets } = await fetchHearthisUserSets(values['from-user']);
+        const chosen = filterSetsByTitle(sets, values.match || null);
+        if (chosen.length === 0) {
+          throw new CliError('No Sets match.');
+        }
+        for (const set of chosen) {
+          results.push(
+            await runHearthisDownloadSet(config, set.permalink, {
+              ...options,
+              title: values.title || set.title,
+            }),
+          );
+        }
+      } else {
+        for (const permalink of positionals.length
+          ? positionals
+          : [undefined]) {
+          results.push(
+            await runHearthisDownloadSet(config, permalink, options),
+          );
+        }
       }
       return {
         output: results.map((result) => result.output).join('\n\n'),

@@ -57,6 +57,13 @@ describe('main', () => {
     );
   });
 
+  it('refuses Set permalinks together with --from-user', async () => {
+    vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
+    await expect(
+      main(['hearthis', 'download-set', 'a-1', '--from-user', 'yaniho']),
+    ).rejects.toThrow(/not both/);
+  });
+
   it('refuses --title with more than one hearthis Set', async () => {
     vi.stubEnv('TAHTI_API_TOKEN', 'tahti_test');
     await expect(

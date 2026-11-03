@@ -49,6 +49,8 @@ pnpm --filter @tahti-player/tahti-cli exec tahti hearthis download-set 428061-96
 pnpm --filter @tahti-player/tahti-cli exec tahti hearthis download-set 192177-9675121 --layout set --own --title "Archive 2001-2009" --out ~/Music/Yaniho/Sets
 pnpm --filter @tahti-player/tahti-cli exec tahti hearthis download-set 192177-9675121 --layout set --own --title "Archive 2001-2009" --sync --flac --out ~/Music/Archive
 pnpm --filter @tahti-player/tahti-cli exec tahti hearthis download-set 428061-9675121 532908-9675121 --layout album --own --sync --out ~/Music/Albums
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis user-sets yaniho --match '^Archive'
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis download-set --from-user yaniho --match '^(Yani|Don)' --layout album --own --sync --out ~/Music/Albums
 ```
 
 Layout: `Artist/Album (year)/01 - Track.ext`
