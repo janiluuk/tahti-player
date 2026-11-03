@@ -294,6 +294,7 @@ export function AdminNewsView() {
                             <Button
                               size="sm"
                               variant="text"
+                              aria-label={`Delete ${post.headline}`}
                               onClick={() => setPendingDeletePost(post)}
                             >
                               <Trash2Icon

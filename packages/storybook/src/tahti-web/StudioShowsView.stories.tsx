@@ -46,9 +46,9 @@ export const Default: Story = {
       ).toBeVisible(),
     );
     await expectVisible(canvas.getByRole('link', { name: 'Boathouse Talk' }));
-    await expect(canvas.getAllByRole('link', { name: 'Manage' })).toHaveLength(
-      4,
-    );
+    await expect(
+      canvas.getAllByRole('link', { name: /^Manage / }),
+    ).toHaveLength(4);
   },
 };
 
