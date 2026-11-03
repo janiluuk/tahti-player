@@ -18,6 +18,7 @@ type PlayerBarVolumeProps = {
    * HTMLMediaElement.volume entirely; the hardware buttons are the only
    * working volume control), so mute is the only affordance worth showing. */
   hideSlider?: boolean;
+  labels?: { mute?: string; unmute?: string; volume?: string };
 };
 
 export const PlayerBarVolume: FC<PlayerBarVolumeProps> = ({
@@ -29,16 +30,20 @@ export const PlayerBarVolume: FC<PlayerBarVolumeProps> = ({
   disabled,
   className = '',
   hideSlider = false,
+  labels,
 }) => {
+  const muteLabel = muted
+    ? (labels?.unmute ?? 'Unmute')
+    : (labels?.mute ?? 'Mute');
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <Tooltip content={muted ? 'Unmute' : 'Mute'} side="top">
+      <Tooltip content={muteLabel} side="top">
         <Button
           size="icon"
           variant="text"
           disabled={disabled}
           onClick={onMuteToggle}
-          aria-label={muted ? 'Unmute' : 'Mute'}
+          aria-label={muteLabel}
           aria-pressed={muted}
         >
           {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
@@ -56,7 +61,10 @@ export const PlayerBarVolume: FC<PlayerBarVolumeProps> = ({
             disabled={disabled}
           >
             <span className="sr-only">
-              <Slider.Header label="Volume" showValue={false} />
+              <Slider.Header
+                label={labels?.volume ?? 'Volume'}
+                showValue={false}
+              />
             </span>
             <Slider.Surface>
               <Slider.Track />
