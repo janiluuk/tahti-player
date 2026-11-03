@@ -1,6 +1,6 @@
 import { spawn } from 'node:child_process';
 import { createWriteStream } from 'node:fs';
-import { access, mkdir, readdir, rename, stat, unlink } from 'node:fs/promises';
+import { mkdir, readdir, rename, stat, unlink } from 'node:fs/promises';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
