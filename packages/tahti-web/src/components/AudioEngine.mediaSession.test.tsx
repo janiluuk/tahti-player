@@ -200,11 +200,11 @@ describe('AudioEngine MediaSession integration', () => {
     renderEngine();
     act(() =>
       usePlayerStore.getState().play({
-        id: 'radio-widget:nrj-fi',
+        id: 'radio-widget:radio-nova',
         kind: 'radio',
-        title: 'NRJ',
+        title: 'Radio Nova',
         artist: 'Finnish · Pop / Hits',
-        streamUrl: 'https://example.test/nrj',
+        streamUrl: 'https://example.test/radio-nova',
         protocol: 'https',
       }),
     );
@@ -215,7 +215,7 @@ describe('AudioEngine MediaSession integration', () => {
 
     expect(metadataWrites.at(-1)).toMatchObject({
       title: 'Usa · Viivi',
-      artist: 'NRJ',
+      artist: 'Radio Nova',
     });
   });
 
