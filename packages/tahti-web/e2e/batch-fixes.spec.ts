@@ -67,3 +67,44 @@ test('opening a conversation does not remount the page', async ({ page }) => {
   await expect(page).toHaveURL(/\/messages\/[^/]+$/);
   await expect(recipient).toHaveValue('someone');
 });
+
+test('a show opens read-only; Edit details shows the defaults form', async ({
+  page,
+}) => {
+  await signIn(page);
+  await page.goto('/studio/shows/show-series-demo');
+  const main = page.getByRole('main');
+  await expect(main.getByRole('textbox', { name: 'Title' })).toHaveCount(0);
+  await main.getByRole('button', { name: 'Edit details' }).click();
+  await expect(main.getByRole('textbox', { name: 'Title' })).toBeVisible();
+  await expect(page).toHaveURL(/edit=true/);
+});
+
+test('a station favorited by its named button shows in Favorites', async ({
+  page,
+}) => {
+  await signIn(page, 'listener@tahti.live');
+  await page.goto('/');
+  await page
+    .getByRole('main')
+    .getByRole('button', { name: 'Favorite YleX' })
+    .click();
+  await page.goto('/library/favorites');
+  await expect(page.getByRole('main').getByText('YleX').first()).toBeVisible();
+});
+
+test('a direct conversation link opens that thread', async ({ page }) => {
+  await signIn(page, 'listener@tahti.live');
+  await page.goto('/messages');
+  const main = page.getByRole('main');
+  await main
+    .getByRole('button', { name: /^Listener One Loved the set/ })
+    .click();
+  await expect(page).toHaveURL(/\/messages\/[^/]+$/);
+  const url = page.url();
+  await page.goto('/');
+  await page.goto(url);
+  await expect(
+    page.getByRole('main').getByText('Loved the set last night!').first(),
+  ).toBeVisible();
+});
