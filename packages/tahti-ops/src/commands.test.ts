@@ -50,6 +50,29 @@ describe('shortcut commands', () => {
     ]);
   });
 
+  it('builds another branch with --ref and skips launching with --no-launch', async () => {
+    expect(
+      await main([
+        'desktop',
+        'latest',
+        '--ref',
+        'feat/x',
+        '--no-launch',
+        '--dry-run',
+      ]),
+    ).toBe(0);
+    const text = output();
+    expect(text).toContain('git fetch origin feat/x');
+    expect(text).toContain('origin/feat/x');
+    expect(text).not.toContain('launch desktop app');
+  });
+
+  it('rejects a --ref that is not a branch name', async () => {
+    await expect(
+      main(['desktop', 'latest', '--ref', 'x;rm', '--dry-run']),
+    ).rejects.toThrow(/Not a branch name/);
+  });
+
   it('rejects an unknown desktop mode', async () => {
     await expect(main(['desktop', 'nope'])).rejects.toThrow(
       /Unknown desktop mode/,

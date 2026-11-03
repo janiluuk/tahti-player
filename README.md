@@ -80,6 +80,8 @@ pnpm lint && pnpm type-check && pnpm test
 ```bash
 ln -s "$PWD/scripts/tahti-desktop" ~/.local/bin/tahti-desktop
 tahti-desktop            # latest master
+tahti-desktop --ref feat/x   # another branch
+tahti-desktop --no-launch    # build only
 tahti-desktop run        # this checkout instead
 tahti-desktop launch     # the last build, no compile
 ```

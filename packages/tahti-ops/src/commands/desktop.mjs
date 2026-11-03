@@ -8,7 +8,7 @@ import { runProgram, runScript, runSteps } from '../run-script.mjs';
 const MODES = {
   run: 'Build the desktop app (release, no installer) and launch it',
   latest:
-    'Build origin/master in its own worktree (.desktop-build) and launch it; leaves this checkout alone',
+    'Build origin/master (or --ref <branch>) in its own worktree (.desktop-build) and launch it (--no-launch to only build); leaves this checkout alone',
   launch: 'Launch the last desktop build without rebuilding (Linux)',
   dev: 'Run the desktop app in dev mode with hot reload',
   bundle: 'Build installers / packages (pnpm tauri build)',
@@ -21,7 +21,35 @@ const LATEST_DIR = '.desktop-build';
 const NO_BUNDLE_CONFIG =
   '{"build":{"beforeBuildCommand":""},"bundle":{"active":false,"createUpdaterArtifacts":false}}';
 
-function runLatest({ dryRun, extraArgs, env, root, ref = 'master' }) {
+export function parseLatestArgs(args) {
+  const rest = [];
+  let ref = 'master';
+  let launch = true;
+  for (let i = 0; i < args.length; i += 1) {
+    const arg = args[i];
+    if (arg === '--ref') {
+      const value = args[i + 1];
+      if (!value || value.startsWith('--')) {
+        throw new OpsError('--ref needs a branch name');
+      }
+      ref = value;
+      i += 1;
+    } else if (arg.startsWith('--ref=')) {
+      ref = arg.slice('--ref='.length);
+    } else if (arg === '--no-launch') {
+      launch = false;
+    } else {
+      rest.push(arg);
+    }
+  }
+  if (!/^[\w./-]+$/.test(ref)) {
+    throw new OpsError(`Not a branch name: ${ref}`);
+  }
+  return { ref, launch, rest };
+}
+
+function runLatest({ dryRun, extraArgs, env, root }) {
+  const { ref, launch, rest } = parseLatestArgs(extraArgs);
   const worktree = resolve(root, LATEST_DIR);
   const targetDir =
     env.CARGO_TARGET_DIR ?? resolve(root, 'packages/player/src-tauri/target');
@@ -54,11 +82,15 @@ function runLatest({ dryRun, extraArgs, env, root, ref = 'master' }) {
         [...player, 'tauri', 'build', '--no-bundle', '-c', NO_BUNDLE_CONFIG],
         'compile desktop app (release)',
       ),
-      step(
-        resolve(targetDir, 'release/tahti-player'),
-        extraArgs,
-        'launch desktop app',
-      ),
+      ...(launch
+        ? [
+            step(
+              resolve(targetDir, 'release/tahti-player'),
+              rest,
+              'launch desktop app',
+            ),
+          ]
+        : []),
     ],
     { dryRun },
   );
