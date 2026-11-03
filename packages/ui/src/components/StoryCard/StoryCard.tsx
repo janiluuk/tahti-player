@@ -45,9 +45,9 @@ export type StoryCardProps = {
 const STAGGER_MS = 70;
 const MAX_STAGGER_STEPS = 6;
 
-/** The one card for stories, news and feed items: the image fills a 16:9
- * frame and a dark gradient carries the kind pill, date, title and author
- * on top of it, so a row stays compact. */
+/** The one card for stories, news and feed items: a 16:9 image with the
+ * title overlaid on a gradient, then the kind and date, a short excerpt and
+ * the author below it. */
 export const StoryCard: FC<StoryCardProps> = ({
   imageSrc,
   media,
@@ -69,13 +69,15 @@ export const StoryCard: FC<StoryCardProps> = ({
   const avatarSrc = authorAvatarSrc ?? undefined;
   const initial = authorName.trim().charAt(0).toUpperCase();
   const authorRow = (
-    <span className="flex min-w-0 items-center gap-2 text-xs text-white/85">
+    <span className="text-foreground-secondary flex min-w-0 items-center gap-2 text-sm">
       <ImageReveal
         src={avatarSrc}
         alt=""
-        className="size-5 shrink-0 rounded-full bg-white/20"
+        className="bg-background-secondary size-6 shrink-0 rounded-full"
         placeholder={
-          <span className="text-[9px] font-bold text-white">{initial}</span>
+          <span className="text-foreground-secondary text-[10px] font-bold">
+            {initial}
+          </span>
         }
       />
       <span className="truncate">{authorName}</span>
@@ -111,12 +113,12 @@ export const StoryCard: FC<StoryCardProps> = ({
 
   const metaRow =
     kind || date ? (
-      <div className="flex flex-wrap items-center gap-2 text-xs text-white/85">
+      <div className="text-foreground-secondary flex flex-wrap items-center gap-2 text-sm">
         {kind ? (
           <Badge
             variant="pill"
             color="secondary"
-            className="border-transparent bg-white/20 font-medium text-white backdrop-blur-sm"
+            className="bg-foreground/10 text-foreground-secondary border-transparent font-medium"
           >
             {kind}
           </Badge>
@@ -129,15 +131,14 @@ export const StoryCard: FC<StoryCardProps> = ({
         ) : null}
       </div>
     ) : meta ? (
-      <p className="text-xs text-white/85">{meta}</p>
+      <p className="text-foreground-secondary text-sm">{meta}</p>
     ) : null;
 
   return (
     <article
       data-testid={testId}
       className={cn(
-        'group relative aspect-video min-w-0 overflow-hidden rounded-xl',
-        'bg-background-secondary',
+        'group flex min-w-0 flex-col gap-2',
         'motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-3 motion-safe:fill-mode-both motion-safe:duration-500',
         className,
       )}
@@ -145,45 +146,43 @@ export const StoryCard: FC<StoryCardProps> = ({
         animationDelay: `${Math.min(index, MAX_STAGGER_STEPS) * STAGGER_MS}ms`,
       }}
     >
-      <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
-        {media ?? (
-          <ImageReveal
-            src={imageSrc ?? undefined}
-            alt=""
-            className="size-full"
-            imgClassName="object-cover"
-            placeholder={imageFallback}
-          />
-        )}
-      </div>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"
-      />
-      {onOpen && !media ? (
-        <Button
-          variant="text"
-          size="flexible"
-          aria-label={openLabel}
-          data-testid="story-card-open"
-          className="focus-visible:ring-primary absolute inset-0 size-full rounded-xl p-0 hover:bg-transparent focus-visible:ring-2 active:scale-100"
-          onClick={onOpen}
+      <div className="bg-background-secondary relative aspect-video w-full overflow-hidden rounded-xl">
+        <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
+          {media ?? (
+            <ImageReveal
+              src={imageSrc ?? undefined}
+              alt=""
+              className="size-full"
+              imgClassName="object-cover"
+              placeholder={imageFallback}
+            />
+          )}
+        </div>
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/35 to-transparent"
         />
-      ) : null}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-1.5 p-3 text-white sm:p-4 [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
-        {metaRow}
-        <h3 className="line-clamp-2 text-base leading-snug font-bold text-white sm:text-lg">
+        {onOpen && !media ? (
+          <Button
+            variant="text"
+            size="flexible"
+            aria-label={openLabel}
+            data-testid="story-card-open"
+            className="focus-visible:ring-primary absolute inset-0 size-full rounded-xl p-0 hover:bg-transparent focus-visible:ring-2 active:scale-100"
+            onClick={onOpen}
+          />
+        ) : null}
+        <h3 className="pointer-events-none absolute inset-x-0 bottom-0 line-clamp-2 p-3 text-base leading-snug font-bold text-white sm:p-4 sm:text-lg [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
           {title}
         </h3>
-        {excerpt ? (
-          <p className="line-clamp-1 text-xs text-white/80">{excerpt}</p>
-        ) : null}
-        {authorName
-          ? renderAuthor
-            ? renderAuthor(authorRow)
-            : authorRow
-          : null}
       </div>
+      {metaRow}
+      {excerpt ? (
+        <p className="text-foreground-secondary line-clamp-2 text-sm leading-relaxed">
+          {excerpt}
+        </p>
+      ) : null}
+      {authorName ? (renderAuthor ? renderAuthor(authorRow) : authorRow) : null}
     </article>
   );
 };

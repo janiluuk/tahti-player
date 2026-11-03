@@ -15,8 +15,8 @@ Requests from the 2026-11-03 session not shipped yet. Shipped items moved to HIS
 
 ## Listen / Discover
 - [ ] Recently played: no text search (CardsRow `filterable={false}` is set; verify on live).
-- [ ] Rows sharing a line (Recently played + Tahti Selects) align the same with or without a search box.
-- [ ] Feed / news / community story cards: follow the reference layout (image on top; kind · date, title, excerpt, author), with the title overlaid on the image; update Storybook.
+- [x] Rows sharing a line align the same with or without a search box (CardsRow header keeps one height).
+- [x] Story / news / feed cards follow the reference layout with the title overlaid on the image; Storybook updated.
 
 ## Channel page
 - [ ] Play button in the standard top-left position with the other controls.
