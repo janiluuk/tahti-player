@@ -5,7 +5,6 @@ export { ArtistPageHero } from './ArtistPageHero';
 export {
   ArtistBioSection,
   ArtistEmbeds,
-  ArtistFeed,
   ArtistHeaderActions,
   ArtistLiveShows,
   ArtistTaggedIn,

@@ -20,6 +20,9 @@ type SectionTitleProps = Omit<ComponentProps<'div'>, 'title'> & {
   badgeColor?: SectionTitleBadgeColor;
   /** Let a long title and its badge wrap onto more lines instead of overflowing. */
   wrap?: boolean;
+  /** `inherit` takes the surrounding text color, for titles sitting on a
+   * custom background such as an artist's channel colors. */
+  tone?: 'default' | 'inherit';
 };
 
 export const SectionTitle: FC<SectionTitleProps> = ({
@@ -27,6 +30,7 @@ export const SectionTitle: FC<SectionTitleProps> = ({
   badge,
   badgeColor = 'purple',
   wrap = false,
+  tone = 'default',
   className,
   ...props
 }) => (
@@ -37,7 +41,8 @@ export const SectionTitle: FC<SectionTitleProps> = ({
   >
     <h2
       className={cn(
-        'text-foreground text-lg font-bold',
+        tone === 'default' && 'text-foreground',
+        'text-lg font-bold',
         !wrap && 'whitespace-nowrap',
       )}
     >

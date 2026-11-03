@@ -27,6 +27,7 @@ import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { ChannelVisualizer } from './ChannelVisualizer';
 import { EmbedSurface } from './EmbedSurface';
+import { useHearthisEmbedClaimed } from './HearthisEmbedHost';
 import { NowPlayingActionSheet } from './NowPlayingActionSheet';
 import { ConnectedSeekBar, PlayerLiveIndicator } from './PlayerSeekBar';
 import { VisualizerModeMenu } from './VisualizerModeMenu';
@@ -159,6 +160,9 @@ export function FullScreenPlayer() {
   useScreenWakeLock(open && keepScreenOn && isPlaying);
   const isLoading = status === 'loading';
   const embed = playable?.embed;
+  // The channel stage or a track row may already host this embed: a second
+  // widget would play the audio twice.
+  const embedHostedElsewhere = useHearthisEmbedClaimed();
   const restoredPending = usePlayerStore((s) => s.restoredPending);
   const reloadNonce = usePlayerStore((s) => s.reloadNonce);
 
@@ -295,7 +299,7 @@ export function FullScreenPlayer() {
         </div>
 
         <div className="flex w-full max-w-md flex-col items-center gap-2">
-          {embed ? (
+          {embed && !embedHostedElsewhere ? (
             <EmbedSurface
               provider={embed.provider}
               embedUri={embed.embedUri}

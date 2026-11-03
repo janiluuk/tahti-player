@@ -86,3 +86,18 @@ function cachedSvg(index: number): string {
   }
   return svg;
 }
+
+/** The bundled artwork presets (`public/artwork-presets/`), the same covers
+ * the API assigns as defaults. */
+export const DEFAULT_ARTWORK_COUNT = 16;
+
+/** Deterministic default cover for an item without artwork: one of the
+ * bundled presets, picked by hashing a stable id. */
+export function defaultArtworkUrl(seed: string): string {
+  let hash = 0;
+  for (let index = 0; index < seed.length; index += 1) {
+    hash = (hash * 31 + seed.charCodeAt(index)) % 100_003;
+  }
+  const preset = (hash % DEFAULT_ARTWORK_COUNT) + 1;
+  return `/artwork-presets/artwork-${String(preset).padStart(2, '0')}.webp`;
+}

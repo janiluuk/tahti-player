@@ -18,21 +18,16 @@ import { fetchOnAirChannels, type OnAirChannel } from '../../api/listen';
 import type { FetchMeta } from '../../api/mode';
 import {
   fetchEnabledInternetRadioPresets,
-  fetchRadioStation,
   type EnabledInternetRadioPreset,
 } from '../../api/radio-public';
-import type {
-  DiscoverTrackItem,
-  PublicChannel,
-  TahtiPlayable,
-} from '../../api/types';
+import type { DiscoverTrackItem, TahtiPlayable } from '../../api/types';
 import { discoverTrackPlayable } from '../../lib/discoverTrackPlayable';
 import { isPlausiblePublicName } from '../../lib/publicDisplayName';
 
 export type ListenSectionStatus = 'loading' | 'ready' | 'error';
 
 export type ListenSectionName =
-  'radio' | 'onAir' | 'presets' | 'latestTracks' | 'discoWidgets';
+  'onAir' | 'presets' | 'latestTracks' | 'discoWidgets';
 
 export type ListenSectionState<T> = { data: T; status: ListenSectionStatus };
 
@@ -49,10 +44,6 @@ function unwrap<T>({ data, meta }: { data: T; meta: FetchMeta }): T {
     throw new Error(meta.reason);
   }
   return data;
-}
-
-async function loadRadio(): Promise<PublicChannel | null> {
-  return (await fetchRadioStation()).data;
 }
 
 async function loadOnAir(): Promise<OnAirChannel[]> {
@@ -234,11 +225,10 @@ const NO_WIDGETS: DiscoWidgetRenderItem[] = [];
 export function useListenSections(signedIn: boolean, viewerId = '') {
   const [reloadKeys, setReloadKeys] = useState<
     Record<ListenSectionName, number>
-  >({ radio: 0, onAir: 0, presets: 0, latestTracks: 0, discoWidgets: 0 });
+  >({ onAir: 0, presets: 0, latestTracks: 0, discoWidgets: 0 });
 
   const loadWidgets = useCallback(() => loadDiscoWidgets(signedIn), [signedIn]);
 
-  const [radio] = useListenSection(loadRadio, null, reloadKeys.radio, 'radio');
   const [onAir] = useListenSection(
     loadOnAir,
     NO_CHANNELS,
@@ -269,7 +259,6 @@ export function useListenSections(signedIn: boolean, viewerId = '') {
   }, []);
 
   return {
-    radio,
     onAir,
     presets,
     latestTracks,

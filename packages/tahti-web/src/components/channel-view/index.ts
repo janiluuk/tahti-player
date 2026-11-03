@@ -20,7 +20,6 @@ export { ChannelTopBar } from './ChannelTopBar';
 export { ChannelUpcomingShows } from './ChannelUpcomingShows';
 export { ChannelListeningPartyBanner } from './ChannelListeningPartyBanner';
 export { ChannelExtrasSections } from './ChannelExtrasSections';
-export { ChannelLiveChatNotice } from './ChannelLiveChatNotice';
 export { ChannelPageActions } from './ChannelPageActions';
 export { useChannelData } from './useChannelData';
 export { useChannelLinksDraft } from './useChannelLinksDraft';
