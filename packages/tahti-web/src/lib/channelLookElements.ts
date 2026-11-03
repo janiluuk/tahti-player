@@ -98,10 +98,7 @@ export const CHANNEL_LOOK_ELEMENTS: readonly ChannelLookElement[] = [
   },
 ];
 
-export const DEFAULT_ARTIST_LOOK_VISIBILITY: Record<
-  ArtistLookBlockId,
-  boolean
-> = {
+const DEFAULT_ARTIST_LOOK_VISIBILITY: Record<ArtistLookBlockId, boolean> = {
   releases: true,
   tracks: true,
   latest: true,

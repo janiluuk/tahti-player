@@ -3,9 +3,9 @@ import type { NativeAnalysisDetail } from './native-library/analysis';
 export type NormalizationMode = 'off' | 'track' | 'album';
 
 /** ReplayGain 2.0 reference loudness, used when only analysis loudness is known. */
-export const REFERENCE_LUFS = -18;
-export const MAX_BOOST_DB = 12;
-export const MAX_CUT_DB = -24;
+const REFERENCE_LUFS = -18;
+const MAX_BOOST_DB = 12;
+const MAX_CUT_DB = -24;
 
 type GainSource = Pick<
   NativeAnalysisDetail,

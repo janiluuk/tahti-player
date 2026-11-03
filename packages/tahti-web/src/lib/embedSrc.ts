@@ -39,7 +39,7 @@ export function hearthisEmbedSrc(
   return `https://hearthis.at/embed/${encodeURIComponent(trackId)}/transparent_black/?${params.toString()}`;
 }
 
-export function mixcloudEmbedSrc(key: string): string {
+function mixcloudEmbedSrc(key: string): string {
   return `https://player-widget.mixcloud.com/widget/iframe/?feed=${encodeURIComponent(key)}&hide_cover=1&light=0`;
 }
 
@@ -61,7 +61,7 @@ export function bandcampEmbedSrc(uri: string): string {
   return `https://bandcamp.com/EmbeddedPlayer/${spec}/size=large/bgcol=ffffff/linkcol=0687f5/tracklist=false/artwork=small/transparent=true/`;
 }
 
-export function mikseriEmbedSrc(uri: string): string | null {
+function mikseriEmbedSrc(uri: string): string | null {
   let url: URL;
   try {
     url = new URL(uri);
@@ -113,18 +113,4 @@ export const EMBED_PROVIDER_HEIGHT: Record<EmbedProvider, number> = {
   SPOTIFY: 152,
   BANDCAMP: 120,
   MIKSERI: 190,
-};
-
-/** Display name keyed by the lowercase playback form found on
- * `TahtiPlayable.embed.provider`; derived from the uppercase map so the two
- * never drift. */
-export const EMBED_PLAYBACK_PROVIDER_LABEL: Record<
-  EmbedPlaybackProvider,
-  string
-> = {
-  hearthis: EMBED_PROVIDER_LABEL.HEARTHIS,
-  mixcloud: EMBED_PROVIDER_LABEL.MIXCLOUD,
-  spotify: EMBED_PROVIDER_LABEL.SPOTIFY,
-  bandcamp: EMBED_PROVIDER_LABEL.BANDCAMP,
-  mikseri: EMBED_PROVIDER_LABEL.MIKSERI,
 };

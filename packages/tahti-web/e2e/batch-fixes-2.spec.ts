@@ -80,3 +80,26 @@ test('a release has one Edit details toggle and keeps its title when published',
     main.getByRole('heading', { level: 1, name: 'Studio Sessions Vol. 1' }),
   ).toBeVisible();
 });
+
+test('old Studio moderation, playlists and collections addresses still redirect', async ({
+  page,
+}) => {
+  await signIn(page);
+  await page.goto('/studio/moderation');
+  await expect(page).toHaveURL(/\/settings\/channel\?tab=moderators$/);
+  await page.goto('/studio/playlists');
+  await expect(page).toHaveURL(/\/library\/collections$/);
+  await page.goto('/studio/collections');
+  await expect(page).toHaveURL(/\/library\/collections$/);
+  await expect(page.getByText('Page not found')).toHaveCount(0);
+});
+
+test('log level chips are named after the filter they apply', async ({
+  page,
+}) => {
+  await signInAsBoard(page);
+  await page.goto('/admin/logs');
+  await expect(
+    page.getByRole('button', { name: 'Filter by INFO' }).first(),
+  ).toBeVisible();
+});

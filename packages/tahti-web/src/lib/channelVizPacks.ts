@@ -55,7 +55,7 @@ export const CHANNEL_VIZ_PACKS: readonly ChannelVizPack[] = [
 /** The API has no field for a pack, so the choice rides in the channel's
  * `visualSettings` map (free string keys, partial settings values) under
  * this prefix with an empty settings object. */
-export const VIZ_PACK_KEY_PREFIX = 'pack:';
+const VIZ_PACK_KEY_PREFIX = 'pack:';
 
 const packById = new Map(CHANNEL_VIZ_PACKS.map((pack) => [pack.id, pack]));
 
@@ -65,7 +65,7 @@ export function channelVizPack(
   return id ? (packById.get(id) ?? null) : null;
 }
 
-export function isVizPackKey(key: string): boolean {
+function isVizPackKey(key: string): boolean {
   return key.startsWith(VIZ_PACK_KEY_PREFIX);
 }
 

@@ -1,10 +1,10 @@
 import type { ListeningPartyTimeline } from './listeningPartyTimeline';
 
 /** Re-seek once the local player is this far from the party. */
-export const PARTY_DRIFT_THRESHOLD_SEC = 2;
+const PARTY_DRIFT_THRESHOLD_SEC = 2;
 /** Give a seek this long to land before judging drift again, so a slow
  * buffer does not cause a seek loop. */
-export const PARTY_SEEK_SETTLE_MS = 4000;
+const PARTY_SEEK_SETTLE_MS = 4000;
 /** Near the end of a track the player may hand over to something else on
  * its own; that is the track ending, not the listener leaving. */
 const NATURAL_END_SEC = 3;
