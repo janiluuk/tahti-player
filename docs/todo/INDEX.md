@@ -25,6 +25,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Inbox chips, Overview merge, docs rewrite |
+| partial | [date-format-sweep.md](date-format-sweep.md) | One date style: helpers and cards done; replace the remaining one-off date formats in listings |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; left: embed downloads (product call) and keeping a stage-hosted embed across routes |
 | open    | [ux-backlog.md](ux-backlog.md) | All open UI/UX polish: small empty-state/catalog slices, liveliness, view modes + sort, shared profile/collection surfaces, Studio release lifecycle |
 | open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles (anonymous, listener, artist, admin) e2e matrix; missing use cases per role; all specs pass on the mock app; left: comment moderation, collaborative playlist undo, collection player, release publish flow, a few product calls in the findings |
