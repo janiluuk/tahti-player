@@ -1,6 +1,14 @@
 import { spawn } from 'node:child_process';
 import { createWriteStream } from 'node:fs';
-import { mkdir, readdir, rename, stat, unlink } from 'node:fs/promises';
+import {
+  mkdir,
+  readdir,
+  readFile,
+  rename,
+  stat,
+  unlink,
+  writeFile,
+} from 'node:fs/promises';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 import { Readable } from 'node:stream';
 import { pipeline } from 'node:stream/promises';
@@ -269,6 +277,28 @@ export async function downloadHearthisSet(
     }
   }
 
+  if (!dryRun) {
+    for (const folder of folders) {
+      if ((await listFiles(folder)).length === 0) {
+        continue;
+      }
+      const manifest = {
+        permalink: catalog.permalink,
+        title: albumTitle,
+        layout,
+        ownOnly,
+        flac,
+        coverName,
+        out: relative(folder, root) || '.',
+        syncedAt: new Date().toISOString(),
+      };
+      await writeFile(
+        join(folder, MANIFEST_NAME),
+        `${JSON.stringify(manifest, null, 2)}\n`,
+      ).catch(() => {});
+    }
+  }
+
   return {
     permalink: catalog.permalink,
     url: catalog.url,
@@ -392,6 +422,41 @@ async function fileSize(path) {
   } catch {
     return null;
   }
+}
+
+export const MANIFEST_NAME = '.hearthis-set.json';
+
+export async function findSetManifests(dir, depth = 4) {
+  const found = [];
+  const walk = async (folder, level) => {
+    let entries;
+    try {
+      entries = await readdir(folder, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const entry of entries) {
+      const path = join(folder, entry.name);
+      if (entry.isFile() && entry.name === MANIFEST_NAME) {
+        try {
+          const manifest = JSON.parse(await readFile(path, 'utf8'));
+          if (manifest?.permalink) {
+            found.push({ folder, manifest });
+          }
+        } catch {
+          continue;
+        }
+      } else if (
+        entry.isDirectory() &&
+        level < depth &&
+        !entry.name.startsWith('.')
+      ) {
+        await walk(path, level + 1);
+      }
+    }
+  };
+  await walk(resolve(dir), 0);
+  return found;
 }
 
 function escapeRegExp(value) {

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+import { resolve as resolvePath } from 'node:path';
 import { parseArgs } from 'node:util';
 
 import { CliError, resolveConfig } from './api-client.mjs';
@@ -24,7 +25,10 @@ import {
   runDiscussionsShow,
 } from './commands/discussions.mjs';
 import { runFeed } from './commands/feed.mjs';
-import { runHearthisDownloadSet } from './commands/hearthis-download-set.mjs';
+import {
+  findSetManifests,
+  runHearthisDownloadSet,
+} from './commands/hearthis-download-set.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
 import {
@@ -463,6 +467,8 @@ paths that already exist (unless --force).
                   longer in the Set (and leftover .partial files)
   --flac          Convert WAV/AIFF downloads to FLAC with ffmpeg (keeps tags);
                   --sync then treats the .flac as that track's file
+  --resync <dir>  Sync every folder under <dir> again from its .hearthis-set.json
+                  (written after each download: Set, layout and options)
   --exclude <re>  Skip tracks whose title matches (kept on disk with --sync)
   --tracks <list> Only these positions, e.g. 1,3-5 (others kept on disk with --sync)
   --cover-name <n> Cover file name without extension (default: cover; e.g. folder)
@@ -475,6 +481,7 @@ paths that already exist (unless --force).
       layout: { type: 'string' },
       own: { type: 'boolean', default: false },
       'from-user': { type: 'string' },
+      resync: { type: 'string' },
       exclude: { type: 'string' },
       tracks: { type: 'string' },
       'cover-name': { type: 'string' },
@@ -511,7 +518,38 @@ paths that already exist (unless --force).
         force: values.force,
       };
       const results = [];
-      if (values['from-user']) {
+      if (values.resync) {
+        if (positionals.length > 0 || values['from-user']) {
+          throw new CliError(
+            '--resync works on its own folder; drop the permalinks.',
+          );
+        }
+        const manifests = await findSetManifests(values.resync);
+        if (manifests.length === 0) {
+          throw new CliError(
+            `No ${'.hearthis-set.json'} found under ${values.resync}.`,
+          );
+        }
+        const seen = new Set();
+        for (const { folder, manifest } of manifests) {
+          if (seen.has(manifest.permalink)) {
+            continue;
+          }
+          seen.add(manifest.permalink);
+          results.push(
+            await runHearthisDownloadSet(config, manifest.permalink, {
+              ...options,
+              outDir: resolvePath(folder, manifest.out ?? '.'),
+              layout: manifest.layout ?? 'discography',
+              ownOnly: Boolean(manifest.ownOnly),
+              flac: Boolean(manifest.flac),
+              coverName: manifest.coverName ?? 'cover',
+              title: manifest.title ?? null,
+              sync: true,
+            }),
+          );
+        }
+      } else if (values['from-user']) {
         if (positionals.length > 0) {
           throw new CliError('Pass Set permalinks or --from-user, not both.');
         }
