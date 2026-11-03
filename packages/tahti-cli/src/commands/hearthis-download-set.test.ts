@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   downloadHearthisSet,
+  parseTrackSelection,
   runHearthisDownloadSet,
 } from './hearthis-download-set.mjs';
 
@@ -348,5 +349,51 @@ describe('runHearthisDownloadSet progress', () => {
       log: quiet,
     });
     expect(quiet).not.toHaveBeenCalled();
+  });
+});
+
+describe('downloadHearthisSet selection and cover name', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('parses track selections and rejects junk', () => {
+    expect([...parseTrackSelection('1,3-5')]).toEqual([1, 3, 4, 5]);
+    expect(() => parseTrackSelection('1,a')).toThrow(/--tracks/);
+  });
+
+  it('skips excluded tracks without deleting their files on --sync', async () => {
+    const outDir = await mkdtemp(join(tmpdir(), 'hearthis-exclude-'));
+    const album = join(outDir, 'Yaniho', 'Euphorizer LP (2024)');
+    await mkdir(album, { recursive: true });
+    await writeFile(join(album, '01 - Hysterizer.wav'), 'keep');
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (url: string) => {
+        if (url.includes('/imports/hearthis/')) {
+          const catalog = catalogResponse();
+          catalog.set.coverUrl = 'https://img.example/c.jpg' as unknown as null;
+          return { ok: true, json: async () => catalog };
+        }
+        return new Response('img', {
+          headers: { 'content-type': 'image/jpeg' },
+        });
+      }),
+    );
+
+    const result = await downloadHearthisSet(
+      { apiUrl: 'https://api.example.test', token: 'tahti_test' },
+      '378936-9675121',
+      { outDir, sync: true, exclude: '^hyster', coverName: 'folder' },
+    );
+
+    expect(result.rows[0]).toMatchObject({
+      status: 'skipped',
+      reason: 'not selected',
+    });
+    expect((await readdir(album)).sort()).toEqual([
+      '01 - Hysterizer.wav',
+      'folder.jpg',
+    ]);
   });
 });

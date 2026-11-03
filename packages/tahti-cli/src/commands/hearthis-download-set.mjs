@@ -37,6 +37,9 @@ export async function downloadHearthisSet(
     artwork = true,
     flac = false,
     yearOverride = null,
+    exclude = null,
+    tracks = null,
+    coverName = 'cover',
     onProgress,
   } = {},
 ) {
@@ -63,6 +66,8 @@ export async function downloadHearthisSet(
       trackTitle: track.title,
     });
 
+  const excludePattern = exclude ? compilePattern(exclude, '--exclude') : null;
+  const trackFilter = tracks ? parseTrackSelection(tracks) : null;
   const rows = [];
   const keep = new Set();
   const keepStems = new Set();
@@ -91,6 +96,21 @@ export async function downloadHearthisSet(
       pathFor(track, 'x', position).replace(/\.x$/, ''),
     );
     folders.add(dirname(stemPath));
+    if (
+      excludePattern?.test(track.title) ||
+      (trackFilter && !trackFilter.has(position))
+    ) {
+      keepStems.add(stemPath);
+      rows.push({
+        position,
+        title: track.title,
+        status: 'skipped',
+        reason: 'not selected',
+        path: null,
+      });
+      onProgress?.({ position, title: track.title, status: 'skipped' });
+      continue;
+    }
     if (!track.downloadable || !track.downloadUrl) {
       keepStems.add(stemPath);
       rows.push({
@@ -211,7 +231,7 @@ export async function downloadHearthisSet(
   if (artwork && coverUrl) {
     for (const folder of folders) {
       artworkResults.push(
-        await saveArtwork(coverUrl, folder, { dryRun, force, sync }),
+        await saveArtwork(coverUrl, folder, { dryRun, force, sync, coverName }),
       );
     }
   }
@@ -374,6 +394,36 @@ async function fileSize(path) {
   }
 }
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function compilePattern(pattern, flag) {
+  try {
+    return new RegExp(pattern, 'i');
+  } catch {
+    throw new CliError(`${flag} is not a valid pattern: ${pattern}`);
+  }
+}
+
+export function parseTrackSelection(value) {
+  const selected = new Set();
+  for (const part of String(value).split(',')) {
+    const match = /^\s*(\d+)\s*(?:-\s*(\d+))?\s*$/.exec(part);
+    if (!match) {
+      throw new CliError(
+        `--tracks takes numbers and ranges, e.g. 1,3-5 (got "${part}")`,
+      );
+    }
+    const from = Number(match[1]);
+    const to = Number(match[2] ?? match[1]);
+    for (let n = Math.min(from, to); n <= Math.max(from, to); n += 1) {
+      selected.add(n);
+    }
+  }
+  return selected;
+}
+
 async function sameStemFile(path) {
   const stem = path.slice(0, path.length - extname(path).length);
   const name = stem.slice(dirname(stem).length + 1);
@@ -408,9 +458,11 @@ export function largestCover(url) {
   return url ? url.replace(/w500_h500/, 'w1000_h1000') : null;
 }
 
-async function saveArtwork(url, folder, { dryRun, force, sync }) {
+async function saveArtwork(url, folder, { dryRun, force, sync, coverName }) {
   const existing = (await listFiles(folder)).find((name) =>
-    /^cover\.(jpe?g|png|webp)$/i.test(name),
+    new RegExp(`^${escapeRegExp(coverName)}\\.(jpe?g|png|webp)$`, 'i').test(
+      name,
+    ),
   );
   const existingPath = existing ? join(folder, existing) : null;
   if (existingPath && !force) {
@@ -425,7 +477,7 @@ async function saveArtwork(url, folder, { dryRun, force, sync }) {
   if (dryRun) {
     return {
       status: existingPath ? 'would-update' : 'would-download',
-      path: existingPath ?? join(folder, 'cover.jpg'),
+      path: existingPath ?? join(folder, `${coverName}.jpg`),
     };
   }
   try {
@@ -439,7 +491,7 @@ async function saveArtwork(url, folder, { dryRun, force, sync }) {
       : type.includes('webp')
         ? 'webp'
         : 'jpg';
-    const path = join(folder, `cover.${ext}`);
+    const path = join(folder, `${coverName}.${ext}`);
     await mkdir(folder, { recursive: true });
     await pipeline(
       Readable.fromWeb(response.body),
@@ -482,6 +534,9 @@ export async function runHearthisDownloadSet(
     artwork = true,
     flac = false,
     yearOverride = null,
+    exclude = null,
+    tracks = null,
+    coverName = 'cover',
     log = (line) => process.stderr.write(`${line}\n`),
   } = {},
 ) {
@@ -502,6 +557,9 @@ export async function runHearthisDownloadSet(
     artwork,
     flac,
     yearOverride,
+    exclude,
+    tracks,
+    coverName,
     onProgress: json
       ? undefined
       : (row) =>

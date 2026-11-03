@@ -463,6 +463,9 @@ paths that already exist (unless --force).
                   longer in the Set (and leftover .partial files)
   --flac          Convert WAV/AIFF downloads to FLAC with ffmpeg (keeps tags);
                   --sync then treats the .flac as that track's file
+  --exclude <re>  Skip tracks whose title matches (kept on disk with --sync)
+  --tracks <list> Only these positions, e.g. 1,3-5 (others kept on disk with --sync)
+  --cover-name <n> Cover file name without extension (default: cover; e.g. folder)
   --no-artwork    Skip the Set cover (saved as cover.jpg in each folder)
   --dry-run       List paths without downloading
   --force         Re-download even when the file already exists`,
@@ -472,6 +475,9 @@ paths that already exist (unless --force).
       layout: { type: 'string' },
       own: { type: 'boolean', default: false },
       'from-user': { type: 'string' },
+      exclude: { type: 'string' },
+      tracks: { type: 'string' },
+      'cover-name': { type: 'string' },
       match: { type: 'string' },
       title: { type: 'string' },
       sync: { type: 'boolean', default: false },
@@ -498,6 +504,9 @@ paths that already exist (unless --force).
         artwork: !values['no-artwork'],
         flac: values.flac,
         yearOverride: values.year ? Number(values.year) : null,
+        exclude: values.exclude || null,
+        tracks: values.tracks || null,
+        coverName: values['cover-name'] || 'cover',
         dryRun: values['dry-run'],
         force: values.force,
       };
