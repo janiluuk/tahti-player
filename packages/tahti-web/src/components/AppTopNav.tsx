@@ -1,6 +1,7 @@
 import { LogInIcon, MenuIcon, SearchIcon, XIcon } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BackButton,
   Button,
@@ -43,6 +44,7 @@ type AppTopNavProps = {
  * logo left, icon actions right, labels only inside the user dropdown.
  */
 export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
+  const { t } = useTranslation('web');
   const nav = useTopNavState();
   // A browser has its own back and forward; only the desktop app needs them.
   const desktopApp = isDesktopApp();
@@ -71,12 +73,12 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
     >
       <div className="flex min-w-0 items-center gap-2">
         {showMenuButton ? (
-          <Tooltip content="Open menu" side="top">
+          <Tooltip content={t('nav.openMenu')} side="top">
             <Button
               variant="text"
               size="icon-sm"
               className={iconBtnClass}
-              aria-label="Open menu"
+              aria-label={t('nav.openMenu')}
               onClick={onOpenMenu}
             >
               <MenuIcon size={18} />
@@ -91,13 +93,13 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
           <div className="hidden items-center gap-1 sm:flex">
             <BackButton
               disabled={!canGoBack}
-              title="Go back"
+              title={t('nav.goBack')}
               onClick={() => router.history.back()}
             />
             <BackButton
               direction="forward"
               disabled={!canGoForward}
-              title="Go forward"
+              title={t('nav.goForward')}
               onClick={() => router.history.forward()}
             />
           </div>
@@ -110,7 +112,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
 
       <div className="flex shrink-0 items-center gap-1" ref={popupRef}>
         <Tooltip
-          content="Search"
+          content={t('nav.search')}
           side="bottom"
           wrapperClassName="inline-flex sm:hidden"
         >
@@ -118,7 +120,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
             variant="text"
             size="icon-sm"
             className={iconBtnClass}
-            aria-label="Search"
+            aria-label={t('nav.search')}
             data-testid="topbar-search"
             onClick={() => setPhoneSearchOpen(true)}
           >
@@ -135,7 +137,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
           <UserMenu nav={nav} />
         ) : (
           <Tooltip
-            content="Log in"
+            content={t('nav.logIn')}
             side="bottom"
             wrapperClassName="inline-flex"
           >
@@ -143,7 +145,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
               variant="text"
               size="icon-sm"
               className={iconBtnClass}
-              aria-label="Log in"
+              aria-label={t('nav.logIn')}
               data-tour-id="topbar-login"
               onClick={() => openAuth('login')}
             >
@@ -168,7 +170,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
             onDone={() => setPhoneSearchOpen(false)}
           />
           <Tooltip
-            content="Close search"
+            content={t('nav.closeSearch')}
             side="bottom"
             wrapperClassName="inline-flex"
           >
@@ -176,7 +178,7 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
               variant="text"
               size="icon-sm"
               className={iconBtnClass}
-              aria-label="Close search"
+              aria-label={t('nav.closeSearch')}
               onClick={() => setPhoneSearchOpen(false)}
             >
               <XIcon size={16} />

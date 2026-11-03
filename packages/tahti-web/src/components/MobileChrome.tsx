@@ -10,6 +10,7 @@ import {
 import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip, useSkipEnterMotion } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../lib/accountRoles';
@@ -28,19 +29,19 @@ const PRIMARY = [
   {
     to: '/',
     id: 'listen' as const satisfies MobileItemId,
-    label: 'Listen',
+    labelKey: 'nav.listen',
     icon: ListMusicIcon,
   },
   {
     to: '/discover',
     id: 'discover' as const satisfies MobileItemId,
-    label: 'Discover',
+    labelKey: 'nav.discover',
     icon: CompassIcon,
   },
   {
     to: '/radio',
     id: 'radio' as const satisfies MobileItemId,
-    label: 'Radio',
+    labelKey: 'nav.radio',
     icon: RadioIcon,
   },
 ] as const;
@@ -48,7 +49,7 @@ const PRIMARY = [
 const STUDIO_TAB = {
   to: '/studio',
   id: 'studio' as const satisfies MobileItemId,
-  label: 'Studio',
+  labelKey: 'nav.studio' as const,
   icon: LayoutDashboardIcon,
 };
 
@@ -61,6 +62,7 @@ export function MobileBottomNav({
   onOpenMore,
   moreOpen = false,
 }: MobileBottomNavProps) {
+  const { t } = useTranslation('web');
   const pathname = useRouterState({ select: navigationPathname });
   const user = useAuthStore((state) => state.user);
   const signedOut = !user;
@@ -76,7 +78,7 @@ export function MobileBottomNav({
   return (
     <nav
       className="border-border bg-background z-40 flex h-16 shrink-0 items-stretch justify-around border-t px-1 pt-1 pb-[max(0.35rem,env(safe-area-inset-bottom))] md:hidden"
-      aria-label="Primary"
+      aria-label={t('nav.primary')}
       data-testid="mobile-bottom-nav"
       style={{ minHeight: 'var(--mobile-nav-h, 64px)' }}
     >
@@ -90,14 +92,14 @@ export function MobileBottomNav({
               variant="plain"
               size="flexible"
               aria-disabled="true"
-              aria-label="Studio"
+              aria-label={t('nav.studio')}
               onClick={(event) => {
                 event.preventDefault();
               }}
               className="text-foreground-secondary min-w-0 flex-1 cursor-not-allowed flex-col justify-center gap-0.5 px-1 py-1.5 text-[10px] tracking-wide whitespace-normal active:scale-100"
             >
               <Icon size={18} strokeWidth={2} />
-              <span className="truncate">{item.label}</span>
+              <span className="truncate">{t(item.labelKey)}</span>
             </Button>
           );
         }
@@ -114,7 +116,7 @@ export function MobileBottomNav({
             )}
           >
             <Icon size={18} strokeWidth={active ? 2.5 : 2} />
-            <span className="truncate">{item.label}</span>
+            <span className="truncate">{t(item.labelKey)}</span>
           </Link>
         );
       })}
@@ -123,7 +125,7 @@ export function MobileBottomNav({
         size="flexible"
         type="button"
         onClick={onOpenMore}
-        aria-label="More navigation"
+        aria-label={t('nav.moreNavigation')}
         aria-expanded={moreOpen}
         className={cn(
           'flex min-w-0 flex-1 flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[10px] tracking-wide hover:bg-transparent',
@@ -136,7 +138,7 @@ export function MobileBottomNav({
           size={18}
           strokeWidth={moreActive || moreOpen ? 2.5 : 2}
         />
-        <span className="truncate">More</span>
+        <span className="truncate">{t('nav.more')}</span>
       </Button>
     </nav>
   );
@@ -166,6 +168,7 @@ export function MobileDrawer({
   side = 'right',
   fullScreen = false,
 }: MobileDrawerProps) {
+  const { t } = useTranslation('web');
   const panelRef = useRef<HTMLDivElement>(null);
   const [closeTooltipArmed, setCloseTooltipArmed] = useState(false);
   const reducedMotion = useSkipEnterMotion();
@@ -284,12 +287,16 @@ export function MobileDrawer({
               ) : (
                 <span />
               )}
-              <Tooltip content="Close" side="top" disabled={!closeTooltipArmed}>
+              <Tooltip
+                content={t('actions.close')}
+                side="top"
+                disabled={!closeTooltipArmed}
+              >
                 <Button
                   size="icon"
                   variant="text"
                   onClick={onClose}
-                  aria-label="Close"
+                  aria-label={t('actions.close')}
                   className="size-11"
                 >
                   <XIcon size={16} />

@@ -2,6 +2,7 @@ import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { BookOpenIcon, GithubIcon, LogInIcon } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ExternalLink, SettingsPanel, Tooltip } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../lib/accountRoles';
@@ -12,6 +13,7 @@ import { useSettingsModalStore } from '../stores/settingsModalStore';
 import {
   fallbackSettingsSection,
   isSettingsSectionAvailable,
+  SETTINGS_GROUP_LABEL_KEYS,
   settingsNavFor,
   type SettingsSectionId,
 } from '../views/settings/settingsNav';
@@ -45,6 +47,7 @@ function DiscordIcon({ size = 18 }: { size?: number }) {
 
 /** Nuclear SettingsPanel modal wrapping Tahti settings sections. */
 export function ConnectedSettingsModal() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const locationHref = useRouterState({
     select: (state) => state.location.pathname + state.location.searchStr,
@@ -158,9 +161,9 @@ export function ConnectedSettingsModal() {
     const Icon = item.Icon;
     return {
       id: item.id,
-      label: item.label,
+      label: t(item.labelKey),
       icon: <Icon size={16} />,
-      group: item.group,
+      group: t(SETTINGS_GROUP_LABEL_KEYS[item.group]),
       // Settings dialog is p-0; pad sections. `min-w-0` + slightly tighter
       // mobile padding keep wide Add-ons / Themes bodies inside the pane.
       content: () => (
@@ -191,7 +194,7 @@ export function ConnectedSettingsModal() {
               onClick={() => openAuth('login')}
             >
               <LogInIcon size={14} aria-hidden />
-              <span className="ml-1.5">Log in</span>
+              <span className="ml-1.5">{t('settings.logIn')}</span>
             </Button>
           ) : null}
           <div className="border-border flex flex-col gap-2 border-t pt-2">
