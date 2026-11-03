@@ -5,3 +5,4 @@ export {
   peaksToWaveSurfer,
   PLACEHOLDER_PEAKS,
 } from './peaks';
+export { getDecodedPeaks } from './decodedPeaksCache';

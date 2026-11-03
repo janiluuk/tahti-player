@@ -1,5 +1,4 @@
 import { CellContext } from '@tanstack/react-table';
-import { Music } from 'lucide-react';
 
 import { Artwork, Track } from '@tahti-player/model';
 
@@ -22,10 +21,10 @@ export const ThumbnailCell = <T extends Track>({
   const isPlaying = meta?.isTrackPlaying?.(track) ?? false;
 
   return (
-    <td className="w-14 text-center">
+    <td className="w-16 p-0 text-center">
       <div className="flex w-full justify-center">
         <MediaArtwork
-          size="thumb"
+          size="md"
           src={artwork?.url}
           alt={track.title}
           imageReveal={false}
@@ -47,9 +46,6 @@ export const ThumbnailCell = <T extends Track>({
           playLabel={`${labels.play} ${track.title}`}
           pauseLabel={`${labels.pause} ${track.title}`}
           isPlaying={isPlaying}
-          placeholder={
-            <Music size={16} absoluteStrokeWidth className="opacity-20" />
-          }
         />
       </div>
     </td>

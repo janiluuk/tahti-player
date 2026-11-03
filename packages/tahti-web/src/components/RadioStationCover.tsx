@@ -1,4 +1,4 @@
-import { UploadCloudIcon } from 'lucide-react';
+import { PencilIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type FC, type RefObject } from 'react';
 import { toast } from 'sonner';
 
@@ -138,7 +138,7 @@ export const RadioStationCoverEditButton: FC<
           {busy ? (
             <Loader size="sm" shape="circle" />
           ) : (
-            <UploadCloudIcon size={18} aria-hidden />
+            <PencilIcon size={16} aria-hidden />
           )}
           {presentation === 'button' ? 'Edit cover image' : null}
         </Button>

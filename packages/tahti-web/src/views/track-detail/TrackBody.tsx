@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { InfoIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import { Button, MediaArtwork } from '@tahti-player/ui';
@@ -34,73 +35,74 @@ export function TrackBody({ page }: { page: TrackPage }) {
   const pendingComment =
     comments.find((comment) => comment.id === pendingDeleteId) ?? null;
 
+  const infoContent = (
+    <div className="flex flex-col">
+      {tracklist.length > 0 ? (
+        <ol className="flex flex-col gap-1.5 text-sm">
+          {tracklist.map((cue) => (
+            <li key={cue.id} className="flex flex-wrap items-baseline">
+              <Button
+                variant="text"
+                onClick={() => {
+                  if (cue.startSec != null) {
+                    jumpTo(cue.startSec);
+                  }
+                }}
+                className={cn(
+                  'hover:text-primary-strong h-auto rounded-none p-0 text-left whitespace-normal hover:bg-transparent active:scale-100 active:bg-transparent',
+                  cue.id === activeCueId && 'text-primary-strong font-medium',
+                )}
+              >
+                {cue.startSec != null ? (
+                  <span className="text-foreground-secondary mr-2 tabular-nums">
+                    {formatDuration(cue.startSec)}
+                  </span>
+                ) : null}
+                {cue.artist && cue.artistUsername
+                  ? cue.title
+                  : cueLabel(cue.artist, cue.title)}
+              </Button>
+              {cue.artist && cue.artistUsername ? (
+                <>
+                  <span className="mx-1">–</span>
+                  <Link
+                    to="/u/$username"
+                    params={{ username: cue.artistUsername }}
+                    className="text-primary-strong hover:underline"
+                  >
+                    {cue.artist}
+                  </Link>
+                </>
+              ) : null}
+            </li>
+          ))}
+        </ol>
+      ) : null}
+
+      <TrackDetailsBlock
+        detail={detail}
+        className={tracklist.length > 0 ? 'mt-6' : undefined}
+      />
+    </div>
+  );
+  const infoTab = {
+    id: 'info',
+    label: 'Info',
+    icon: <InfoIcon />,
+    content: infoContent,
+  };
+
   return (
     <section className="bg-background px-6 py-8 md:px-10">
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem]">
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_22rem]">
         <div className="min-w-0">
           {detail?.description ? (
             <div className="mb-6 text-sm leading-relaxed whitespace-pre-wrap">
               {detail.description}
             </div>
           ) : null}
-          {tracklist.length > 0 ? (
-            <ol className="flex flex-col gap-1.5 text-sm">
-              {tracklist.map((cue) => (
-                <li key={cue.id} className="flex flex-wrap items-baseline">
-                  <Button
-                    variant="text"
-                    onClick={() => {
-                      if (cue.startSec != null) {
-                        jumpTo(cue.startSec);
-                      }
-                    }}
-                    className={cn(
-                      'hover:text-primary-strong h-auto rounded-none p-0 text-left whitespace-normal hover:bg-transparent active:scale-100 active:bg-transparent',
-                      cue.id === activeCueId &&
-                        'text-primary-strong font-medium',
-                    )}
-                  >
-                    {cue.startSec != null ? (
-                      <span className="text-foreground-secondary mr-2 tabular-nums">
-                        {formatDuration(cue.startSec)}
-                      </span>
-                    ) : null}
-                    {cue.artist && cue.artistUsername
-                      ? cue.title
-                      : cueLabel(cue.artist, cue.title)}
-                  </Button>
-                  {cue.artist && cue.artistUsername ? (
-                    <>
-                      <span className="mx-1">–</span>
-                      <Link
-                        to="/u/$username"
-                        params={{ username: cue.artistUsername }}
-                        className="text-primary-strong hover:underline"
-                      >
-                        {cue.artist}
-                      </Link>
-                    </>
-                  ) : null}
-                </li>
-              ))}
-            </ol>
-          ) : null}
 
-          <TrackDetailsBlock
-            detail={detail}
-            className={tracklist.length > 0 ? 'mt-10' : undefined}
-          />
-
-          {detail?.channelSlug && playable.id ? (
-            <div className="mt-10">
-              <TrackAudience
-                channelSlug={detail.channelSlug}
-                soundId={soundIdFromPlayableId(playable.id) ?? playable.id}
-              />
-            </div>
-          ) : null}
-
-          <div className="mt-10">
+          <div>
             <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
               Comments
             </h2>
@@ -146,6 +148,16 @@ export function TrackBody({ page }: { page: TrackPage }) {
         </div>
 
         <div className="flex min-w-0 flex-col gap-6">
+          {detail?.channelSlug && playable.id ? (
+            <TrackAudience
+              channelSlug={detail.channelSlug}
+              soundId={soundIdFromPlayableId(playable.id) ?? playable.id}
+              leadingTabs={[infoTab]}
+              iconOnlyTabs
+            />
+          ) : (
+            infoContent
+          )}
           {relatedCollections.length > 0 ? (
             <div>
               <h2 className="mb-3 text-sm font-semibold tracking-wide uppercase">

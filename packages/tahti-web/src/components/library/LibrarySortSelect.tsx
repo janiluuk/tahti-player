@@ -1,11 +1,8 @@
-import { Select } from '@tahti-player/ui';
+import { SortMenuButton } from '@tahti-player/ui';
 
-import {
-  isLibrarySort,
-  LIBRARY_SORT_OPTIONS,
-  type LibrarySort,
-} from '../../lib/librarySort';
+import { LIBRARY_SORT_OPTIONS, type LibrarySort } from '../../lib/librarySort';
 
+/** Library lists' sort control (see `SortMenuButton`). */
 export function LibrarySortSelect({
   value,
   onChange,
@@ -16,16 +13,12 @@ export function LibrarySortSelect({
   label?: string;
 }) {
   return (
-    <Select
-      className="w-44"
-      aria-label={label}
+    <SortMenuButton
       options={LIBRARY_SORT_OPTIONS}
       value={value}
-      onValueChange={(next) => {
-        if (isLibrarySort(next)) {
-          onChange(next);
-        }
-      }}
+      onChange={onChange}
+      label={label}
+      defaultValue="newest"
     />
   );
 }

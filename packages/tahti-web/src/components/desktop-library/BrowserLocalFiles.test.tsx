@@ -45,7 +45,7 @@ describe('BrowserLocalFiles', () => {
     expect(
       toolbar.getByRole('searchbox', { name: 'Search local files' }),
     ).toBeTruthy();
-    expect(toolbar.getByRole('button', { name: 'Sort tracks' })).toBeTruthy();
+    expect(toolbar.getByRole('button', { name: /^Sort tracks/ })).toBeTruthy();
     expect(toolbar.getByRole('button', { name: /^Track size/ })).toBeTruthy();
   });
 

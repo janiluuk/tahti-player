@@ -1,6 +1,6 @@
 import { MessageCircleIcon } from 'lucide-react';
 
-import { Button, Tooltip, Waveform } from '@tahti-player/ui';
+import { Button, getDecodedPeaks, Tooltip, Waveform } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
 import { formatDuration } from '../lib/playableToTrack';
@@ -38,7 +38,14 @@ export function PlayerWaveform({
 
   const isCurrent = trackId == null || currentId === trackId;
   const totalDuration = durationSec ?? (isCurrent ? duration : 0);
-  const resolvedPeaks = peaks ?? (isCurrent ? currentPeaks : null);
+  // Tracks without stored peaks reuse what a list row already decoded for
+  // the same track, instead of the flat placeholder.
+  const decoded = trackId ? getDecodedPeaks(trackId)?.peaks[0] : undefined;
+  const resolvedPeaks =
+    (peaks?.length ? peaks : null) ??
+    (isCurrent && currentPeaks?.length ? currentPeaks : null) ??
+    decoded ??
+    null;
   const media = isCurrent ? audioElement : null;
   const progress =
     isCurrent && totalDuration > 0 ? currentTime / totalDuration : 0;
@@ -61,6 +68,7 @@ export function PlayerWaveform({
   return (
     <div className="relative w-full" data-track-id={trackId}>
       <Waveform
+        cacheKey={trackId}
         peaks={resolvedPeaks}
         durationSec={totalDuration}
         media={media}

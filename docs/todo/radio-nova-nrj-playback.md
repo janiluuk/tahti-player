@@ -73,3 +73,9 @@ Radio Nova and NRJ do not play. The other curated stations are not reported.
 
 Radio Nova and NRJ play on production in Chrome and Firefox, or the stations
 are replaced or removed with the reason recorded in HISTORY.
+
+- 2026-11-03: NRJ removed from the bundled station list, the mock presets
+  and its logo at the user's request. The production list also comes from
+  tahti-org's `InternetRadioPreset` rows: disable NRJ there (Admin → Radio
+  presets) to take it off every surface. Radio Nova stays; close this file
+  once Nova is confirmed playing on production.

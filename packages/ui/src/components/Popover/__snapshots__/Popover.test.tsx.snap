@@ -45,7 +45,7 @@ exports[`Popover > (Snapshot) renders menu with a section and a footer 1`] = `
       />
       <div
         animate="[object Object]"
-        class="text-primary-foreground bg-primary border-border rounded-md border-(length:--border-width) px-4 py-2 leading-5 select-none translate-y-0"
+        class="text-primary-foreground bg-primary border-border z-[80] rounded-md border-(length:--border-width) px-4 py-2 leading-5 select-none translate-y-0"
         data-anchor="bottom center"
         data-floating-ui-focusable=""
         data-headlessui-state="open"
@@ -159,7 +159,7 @@ exports[`Popover > (Snapshot) renders menu with items 1`] = `
       />
       <div
         animate="[object Object]"
-        class="text-primary-foreground bg-primary border-border rounded-md border-(length:--border-width) px-4 py-2 leading-5 select-none translate-y-0"
+        class="text-primary-foreground bg-primary border-border z-[80] rounded-md border-(length:--border-width) px-4 py-2 leading-5 select-none translate-y-0"
         data-anchor="bottom center"
         data-floating-ui-focusable=""
         data-headlessui-state="open"
@@ -260,7 +260,7 @@ exports[`Popover > (Snapshot) renders with all props 1`] = `
       />
       <div
         animate="[object Object]"
-        class="text-primary-foreground bg-primary border-border rounded-md border-(length:--border-width) px-4 py-2 leading-5 select-none translate-x-2 -translate-y-2"
+        class="text-primary-foreground bg-primary border-border z-[80] rounded-md border-(length:--border-width) px-4 py-2 leading-5 select-none translate-x-2 -translate-y-2"
         data-anchor="left center"
         data-floating-ui-focusable=""
         data-headlessui-state="open"
@@ -331,7 +331,7 @@ exports[`Popover > (Snapshot) renders with backdrop 1`] = `
       />
       <div
         animate="[object Object]"
-        class="text-primary-foreground bg-primary border-border rounded-md border-(length:--border-width) px-4 py-2 leading-5 select-none"
+        class="text-primary-foreground bg-primary border-border z-[80] rounded-md border-(length:--border-width) px-4 py-2 leading-5 select-none"
         data-headlessui-state="open"
         data-open=""
         exit="[object Object]"

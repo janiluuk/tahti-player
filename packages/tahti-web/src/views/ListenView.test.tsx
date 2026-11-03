@@ -110,7 +110,7 @@ describe('ListenView sections', () => {
     const tracks = await screen.findByTestId('listen-new-tracks');
     await waitFor(() =>
       expect(
-        within(tracks).getByRole('button', { name: 'Sort tracks' }),
+        within(tracks).getByRole('button', { name: /^Sort tracks/ }),
       ).toBeTruthy(),
     );
   });
