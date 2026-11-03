@@ -15,11 +15,11 @@ vi.mock('../api/radio-now-playing', () => ({
 
 const fetchMock = vi.mocked(fetchStationNowPlaying);
 
-const nrj = {
-  id: 'radio-widget:nrj-fi',
-  title: 'NRJ',
+const nova = {
+  id: 'radio-widget:radio-nova',
+  title: 'Radio Nova',
   artist: 'Finnish · Pop / Hits',
-  streamUrl: 'https://example.test/nrj',
+  streamUrl: 'https://example.test/radio-nova',
 };
 
 function setVisibility(state: DocumentVisibilityState) {
@@ -52,18 +52,21 @@ describe('usePlayerStationNowPlaying', () => {
   });
 
   it("shows the station's now-playing with its name second", async () => {
-    const { result } = renderHook(() => usePlayerStationNowPlaying(nrj));
+    const { result } = renderHook(() => usePlayerStationNowPlaying(nova));
     await flush();
-    expect(result.current).toEqual({ title: 'Usa · Viivi', artist: 'NRJ' });
+    expect(result.current).toEqual({
+      title: 'Usa · Viivi',
+      artist: 'Radio Nova',
+    });
     expect(fetchMock).toHaveBeenCalledWith({
-      programmingUrl: 'https://www.radioplay.fi/nrj',
-      streamUrl: 'https://example.test/nrj',
+      programmingUrl: 'https://www.radioplay.fi/radio-nova',
+      streamUrl: 'https://example.test/radio-nova',
     });
   });
 
   it('keeps the playable lines when the station says nothing', async () => {
     fetchMock.mockResolvedValue(null);
-    const { result } = renderHook(() => usePlayerStationNowPlaying(nrj));
+    const { result } = renderHook(() => usePlayerStationNowPlaying(nova));
     await flush();
     expect(result.current).toBeNull();
   });
@@ -82,7 +85,7 @@ describe('usePlayerStationNowPlaying', () => {
   });
 
   it('refreshes every 30 seconds only while the station plays', async () => {
-    const { result } = renderHook(() => usePlayerStationNowPlaying(nrj));
+    const { result } = renderHook(() => usePlayerStationNowPlaying(nova));
     await flush();
     await flush(30_000);
     expect(fetchMock).toHaveBeenCalledTimes(2);
@@ -98,7 +101,7 @@ describe('usePlayerStationNowPlaying', () => {
   });
 
   it('stops refreshing while the tab is hidden', async () => {
-    renderHook(() => usePlayerStationNowPlaying(nrj));
+    renderHook(() => usePlayerStationNowPlaying(nova));
     await flush();
     act(() => setVisibility('hidden'));
     await flush(90_000);
