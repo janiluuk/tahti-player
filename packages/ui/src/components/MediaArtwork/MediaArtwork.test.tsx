@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import { MediaArtwork } from './MediaArtwork';
+import { MediaArtwork, MediaArtworkDefaultProvider } from './MediaArtwork';
 
 describe('MediaArtwork play / queue', () => {
   it('uses a neutral text overlay on thumb and sm play controls', () => {
@@ -150,5 +150,50 @@ describe('MediaArtwork alt text', () => {
     for (const img of images) {
       expect(img).toHaveAttribute('alt', '');
     }
+  });
+});
+
+describe('MediaArtwork default artwork', () => {
+  const defaultSrc = (seed: string) => `/default/${seed}.webp`;
+
+  it('shows the default artwork instead of an empty thumbnail', () => {
+    const { container } = render(
+      <MediaArtworkDefaultProvider value={defaultSrc}>
+        <MediaArtwork seed="track-1" imageReveal={false} size="md" />
+      </MediaArtworkDefaultProvider>,
+    );
+    expect(container.querySelector('img')?.getAttribute('src')).toBe(
+      '/default/track-1.webp',
+    );
+    expect(screen.queryByTestId('media-artwork-fallback')).toBeNull();
+  });
+
+  it('swaps a cover that fails to load for the default artwork', () => {
+    const { container } = render(
+      <MediaArtworkDefaultProvider value={defaultSrc}>
+        <MediaArtwork
+          src="https://media.example/broken.jpg"
+          alt="Night Drive"
+          imageReveal={false}
+          size="md"
+        />
+      </MediaArtworkDefaultProvider>,
+    );
+    const img = container.querySelector('img')!;
+    fireEvent.error(img);
+    expect(container.querySelector('img')?.getAttribute('src')).toBe(
+      '/default/Night Drive.webp',
+    );
+  });
+
+  it('keeps an explicit placeholder as the empty state', () => {
+    render(
+      <MediaArtworkDefaultProvider value={defaultSrc}>
+        <MediaArtwork placeholder={<span>logo</span>} size="md" />
+      </MediaArtworkDefaultProvider>,
+    );
+    expect(screen.getByTestId('media-artwork-fallback')).toHaveTextContent(
+      'logo',
+    );
   });
 });

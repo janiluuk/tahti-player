@@ -137,7 +137,7 @@ describe('ArtistView', () => {
     expect(actions?.querySelector('button, a')).not.toBeNull();
   });
 
-  it('lays out popular tracks, related artists, releases and playlists in reference order', async () => {
+  it('lays out tracks, related artists, releases, playlists and stories in reference order', async () => {
     const { container } = await renderArtist('northern-lights');
     const order = [
       ...container.querySelectorAll('[data-testid^="artist-"]'),
@@ -149,6 +149,7 @@ describe('ArtistView', () => {
       'artist-related',
       'artist-releases',
       'artist-playlists',
+      'artist-story-feed',
     ]);
     expect(
       container.querySelector('[data-testid="artist-related"]')?.textContent,

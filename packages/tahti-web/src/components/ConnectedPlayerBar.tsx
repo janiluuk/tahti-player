@@ -308,8 +308,7 @@ export function ConnectedPlayerBar() {
   // transport.
   const seekBar = isLive || embed ? null : <ConnectedSeekBar />;
 
-  const embedHostedInRow =
-    embed?.provider === 'hearthis' && hearthisHostedInRow;
+  const embedHostedInRow = Boolean(embed) && hearthisHostedInRow;
   // The provider's widget at its own size, in a strip above the bar. It is
   // the transport for the track, so the bar leaves out play/pause.
   const embedStrip =
