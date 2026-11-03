@@ -388,78 +388,6 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 onClick={() => setEditOpen(true)}
               />
             ) : null}
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => void shareTrack()}
-            >
-              <Share2Icon size={14} aria-hidden className="mr-1.5" />
-              Share
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() =>
-                user
-                  ? setPlaylistOpen(true)
-                  : useAuthModalStore.getState().open('login')
-              }
-            >
-              <PlusIcon size={14} aria-hidden className="mr-1.5" />
-              Add
-            </Button>
-            {user && !isOwner && repost.state ? (
-              <Button
-                size="sm"
-                variant="secondary"
-                aria-pressed={repost.state.active}
-                onClick={() => {
-                  void repost.set(!repost.state?.active).then((result) => {
-                    if (!result.ok) {
-                      toast.error(result.error);
-                    } else if (result.data.active) {
-                      toast.success('Reposted.');
-                    }
-                  });
-                }}
-              >
-                <Repeat2Icon size={14} aria-hidden className="mr-1.5" />
-                {repost.state.active ? 'Reposted' : 'Repost'}
-              </Button>
-            ) : null}
-            {!isOwner ? (
-              <ReportButton
-                targetType="SOUND_ITEM"
-                targetId={id}
-                label={playable.title}
-              />
-            ) : null}
-            {accessGate ? null : showBuyTrack ? (
-              <Button
-                size="sm"
-                variant="default"
-                disabled={buyBusy || !detail}
-                onClick={startBuy}
-              >
-                <ShoppingBagIcon size={14} aria-hidden className="mr-1.5" />
-                {buyBusy ? 'Buying…' : 'Buy this track'}
-              </Button>
-            ) : showDownload ? (
-              <Button
-                size="sm"
-                variant="secondary"
-                aria-label={
-                  downloadBusy
-                    ? `Preparing download of ${playable.title}`
-                    : `Download ${playable.title}`
-                }
-                disabled={downloadBusy || !detail || Boolean(embedSrc)}
-                onClick={() => void downloadTrack()}
-              >
-                <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-                Download
-              </Button>
-            ) : null}
             <Tooltip
               content={
                 favorited
@@ -493,6 +421,96 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 />
               </Button>
             </Tooltip>
+            <Tooltip content="Share" side="top">
+              <Button
+                size="icon-sm"
+                className="size-9"
+                variant="secondary"
+                aria-label={`Share ${playable.title}`}
+                onClick={() => void shareTrack()}
+              >
+                <Share2Icon size={15} aria-hidden />
+              </Button>
+            </Tooltip>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() =>
+                user
+                  ? setPlaylistOpen(true)
+                  : useAuthModalStore.getState().open('login')
+              }
+            >
+              <PlusIcon size={14} aria-hidden className="mr-1.5" />
+              Add
+            </Button>
+            {user && !isOwner && repost.state ? (
+              <Tooltip
+                content={repost.state.active ? 'Reposted' : 'Repost'}
+                side="top"
+              >
+                <Button
+                  size="icon-sm"
+                  className="size-9"
+                  variant={repost.state.active ? 'default' : 'secondary'}
+                  aria-label={
+                    repost.state.active
+                      ? `Undo repost of ${playable.title}`
+                      : `Repost ${playable.title}`
+                  }
+                  aria-pressed={repost.state.active}
+                  onClick={() => {
+                    void repost.set(!repost.state?.active).then((result) => {
+                      if (!result.ok) {
+                        toast.error(result.error);
+                      } else if (result.data.active) {
+                        toast.success('Reposted.');
+                      }
+                    });
+                  }}
+                >
+                  <Repeat2Icon size={15} aria-hidden />
+                </Button>
+              </Tooltip>
+            ) : null}
+            {!isOwner ? (
+              <ReportButton
+                targetType="SOUND_ITEM"
+                targetId={id}
+                label={playable.title}
+              />
+            ) : null}
+            {accessGate ? null : showBuyTrack ? (
+              <Button
+                size="sm"
+                variant="default"
+                disabled={buyBusy || !detail}
+                onClick={startBuy}
+              >
+                <ShoppingBagIcon size={14} aria-hidden className="mr-1.5" />
+                {buyBusy ? 'Buying…' : 'Buy this track'}
+              </Button>
+            ) : showDownload ? (
+              <Tooltip
+                content={downloadBusy ? 'Preparing download' : 'Download'}
+                side="top"
+              >
+                <Button
+                  size="icon-sm"
+                  className="size-9"
+                  variant="secondary"
+                  aria-label={
+                    downloadBusy
+                      ? `Preparing download of ${playable.title}`
+                      : `Download ${playable.title}`
+                  }
+                  disabled={downloadBusy || !detail || Boolean(embedSrc)}
+                  onClick={() => void downloadTrack()}
+                >
+                  <DownloadIcon size={15} aria-hidden />
+                </Button>
+              </Tooltip>
+            ) : null}
           </div>
           {detail ? (
             <Link
