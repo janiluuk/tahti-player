@@ -2,6 +2,15 @@ import { spawn } from 'node:child_process';
 
 import { OpsError } from './paths.mjs';
 
+export function formatDuration(ms) {
+  const seconds = Math.round(ms / 1000);
+  if (seconds < 60) {
+    return `${seconds}s`;
+  }
+  const minutes = Math.floor(seconds / 60);
+  return `${minutes}m ${String(seconds % 60).padStart(2, '0')}s`;
+}
+
 export function formatCommand(scriptPath, args) {
   const quoted = [scriptPath, ...args].map((part) =>
     /[\s"$\\]/.test(part) ? JSON.stringify(part) : part,
@@ -89,6 +98,7 @@ export async function runProgram(program, args, options = {}) {
     };
   }
   log(`→ ${display}`);
+  const started = Date.now();
   const result = await new Promise((resolvePromise, reject) => {
     const child = spawn(program, args, { env, cwd, stdio: 'inherit' });
     child.on('error', (error) => {
@@ -98,10 +108,11 @@ export async function runProgram(program, args, options = {}) {
       resolvePromise({ exitCode: signal ? 1 : (code ?? 1), output: '' });
     });
   });
+  const took = formatDuration(Date.now() - started);
   log(
     result.exitCode === 0
-      ? `✓ ${display}`
-      : `✗ ${display} (exit ${result.exitCode})`,
+      ? `✓ ${display} (${took})`
+      : `✗ ${display} (exit ${result.exitCode}, ${took})`,
   );
   return { ...result, label: display };
 }
