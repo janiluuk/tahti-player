@@ -82,7 +82,8 @@ export const SwitchTabs: Story = {
       ).toBeVisible(),
     );
     await selectTab(canvas, 'Overview');
-    await expect(canvas.getByText('Details')).toBeVisible();
+    // The tab panel fades in; waiting avoids reading it at opacity 0.
+    await waitFor(() => expect(canvas.getByText('Details')).toBeVisible());
   },
 };
 
