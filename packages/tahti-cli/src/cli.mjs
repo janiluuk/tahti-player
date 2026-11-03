@@ -413,17 +413,24 @@ Use \`tahti hearthis set <permalink>\` to inspect tracks in one set.`,
   },
   {
     path: ['hearthis', 'user-sets'],
-    usage: 'tahti hearthis user-sets <handle> [--match <regex>] [--json]',
+    usage:
+      'tahti hearthis user-sets <handle> [--match <regex>] [--sort title|tracks] [--json]',
     summary: 'List every Set of any public hearthis.at account',
     details: `Reads hearthis.at's public API page by page, so it lists every Set (the
 Tahti \`hearthis sets\` route stops at 20). No token needed.
-  --match <regex>   Only Sets whose title matches, case-insensitive (e.g. "^(Yani|Don)")`,
-    options: { ...JSON_OPTION, match: { type: 'string' } },
+  --match <regex>   Only Sets whose title matches, case-insensitive (e.g. "^(Yani|Don)")
+  --sort <order>    title (A-Z) or tracks (most first); default is hearthis.at's order`,
+    options: {
+      ...JSON_OPTION,
+      match: { type: 'string' },
+      sort: { type: 'string' },
+    },
     positionals: 1,
     run: (_config, { values, positionals }) =>
       runHearthisUserSets(positionals[0], {
         json: values.json,
         match: values.match || null,
+        sort: values.sort || null,
       }),
   },
   {
