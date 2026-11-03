@@ -56,15 +56,15 @@ export const Default: Story = {
     await waitFor(() =>
       expect(
         canvas.getByRole('heading', {
-          name: 'Internet radio — Listen page defaults (6)',
+          name: 'Internet radio — Listen page defaults (5)',
         }),
       ).toBeVisible(),
     );
     await expect(canvas.getByText('YleX')).toBeVisible();
-    await expect(canvas.getAllByText('Enabled for everyone')).toHaveLength(6);
+    await expect(canvas.getAllByText('Enabled for everyone')).toHaveLength(5);
     await expect(
       canvas.getAllByRole('button', { name: 'Disable' }),
-    ).toHaveLength(6);
+    ).toHaveLength(5);
     await expect(canvas.getByTestId('tahti-radio-station')).toBeVisible();
     await expect(canvas.getByText(YLEX_STREAM)).toBeVisible();
     await expect(
