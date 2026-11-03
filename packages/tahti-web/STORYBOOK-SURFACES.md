@@ -55,7 +55,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Artist/AlbumPlayPromptDialog` | `tahti-web/AlbumPlayPromptDialog.stories.tsx` |
 | `Tahti/Media/AmbientTrackList` | `tahti-web/AmbientTrackList.stories.tsx` |
 | `Tahti/Media/AmbientTrackRow` | `tahti-web/AmbientTrackRow.stories.tsx` |
-| `Tahti/Chrome/API connection` | `tahti-web/ApiConnectionIndicator.stories.tsx` |
 | `Tahti/Chrome/AppShell` | `tahti-web/AppShell.stories.tsx` |
 | `Tahti/Chrome/AppTopNav` | `tahti-web/AppTopNav.stories.tsx` |
 | `Tahti/Artist/ArtistBackgroundMusicButton` | `tahti-web/ArtistBackgroundMusicButton.stories.tsx` |
@@ -152,7 +151,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Track/CommentItem` | `tahti-web/CommentItem.stories.tsx` |
 | `Tahti/Discover/CommunityStoriesWidget` | `tahti-web/CommunityStoriesWidget.stories.tsx` |
 | `Tahti/Player/ConnectedPlayerBar` | `tahti-web/ConnectedPlayerBar.stories.tsx` |
-| `Tahti/Player/ConnectedQueuePanel` | `tahti-web/ConnectedQueuePanel.stories.tsx` |
 | `Tahti/Player/ConnectedSettingsModal` | `tahti-web/ConnectedSettingsModal.stories.tsx` |
 | `Tahti/Layout/ConnectedStatusBar` | `tahti-web/ConnectedStatusBar.stories.tsx` |
 | `Tahti/Admin/ContentReportsTab` | `tahti-web/ContentReportsTab.stories.tsx` |
@@ -281,7 +279,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/ReleaseTrackAudioUpload` | `tahti-web/ReleaseTrackAudioUpload.stories.tsx` |
 | `Tahti/Track/ReleaseTracklistDialog` | `tahti-web/ReleaseTracklistDialog.stories.tsx` |
 | `Tahti/Settings/ReleaseVisualDefaultsPanel` | `tahti-web/ReleaseVisualDefaultsPanel.stories.tsx` |
-| `Tahti/Studio/ReleasesPanel` | `tahti-web/ReleasesPanel.stories.tsx` |
 | `Tahti/Misc/ReportButton` | `tahti-web/ReportButton.stories.tsx` |
 | `Tahti/Auth/ResetPasswordView` | `tahti-web/ResetPasswordView.stories.tsx` |
 | `Tahti/Misc/RightRailPanel` | `tahti-web/RightRailPanel.stories.tsx` |
