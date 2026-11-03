@@ -44,6 +44,7 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
       title: post.headline,
       teaser: post.summary,
       imageUrl: post.imageUrl || '/news-opening.svg',
+      kind: 'News',
       publishedAt: post.publishedAt,
       publishedLabel: humanizePastDate(post.publishedAt),
       onClick: () => setSelected(post),

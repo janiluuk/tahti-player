@@ -6,7 +6,6 @@ import {
   FlameIcon,
   HeartIcon,
   ListMusicIcon,
-  NewspaperIcon,
   ShuffleIcon,
   SparklesIcon,
   StarIcon,
@@ -41,7 +40,6 @@ export const WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
   'tahti-selects': 'Tahti Selects',
   'latest-releases': 'Latest releases',
   'random-track': 'Random track',
-  'community-stories': 'Community stories',
 };
 
 /** What each widget shows, for the Add a widget menu. */
@@ -78,10 +76,6 @@ export const WIDGET_MENU: Record<
   'random-track': {
     icon: DicesIcon,
     description: 'One track at random from the genres you pick',
-  },
-  'community-stories': {
-    icon: NewspaperIcon,
-    description: 'The newest posts from artists across Tahti',
   },
 };
 

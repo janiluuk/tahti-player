@@ -48,7 +48,7 @@ describe('CommunityStoriesWidget', () => {
       data: [story],
       meta: { source: 'api' },
     });
-    render(<CommunityStoriesWidget onRemove={vi.fn()} />);
+    render(<CommunityStoriesWidget />);
     expect(await screen.findByText('shared news')).toBeTruthy();
     expect(screen.getByText('1 day ago')).toBeTruthy();
     expect(
@@ -63,7 +63,7 @@ describe('CommunityStoriesWidget', () => {
       data: [],
       meta: { source: 'api', reason: 'HTTP 502' },
     });
-    render(<CommunityStoriesWidget onRemove={vi.fn()} />);
+    render(<CommunityStoriesWidget />);
     expect(
       await screen.findByText('Could not load community stories'),
     ).toBeTruthy();
@@ -74,7 +74,7 @@ describe('CommunityStoriesWidget', () => {
       data: [{ ...story, author: { ...story.author, displayName: '' } }],
       meta: { source: 'api' },
     });
-    render(<CommunityStoriesWidget onRemove={vi.fn()} />);
+    render(<CommunityStoriesWidget />);
     expect(await screen.findByText('resonant')).toBeTruthy();
   });
 
@@ -104,10 +104,10 @@ describe('CommunityStoriesWidget', () => {
         },
         meta: { source: 'api' },
       }));
-    render(<CommunityStoriesWidget onRemove={vi.fn()} />);
+    render(<CommunityStoriesWidget />);
     fireEvent.click(
       await screen.findByRole('button', {
-        name: 'Hi, I make the flutes you hear here',
+        name: 'Read Hi, I make the flutes you hear here',
       }),
     );
     const dialog = await screen.findByTestId('community-story');

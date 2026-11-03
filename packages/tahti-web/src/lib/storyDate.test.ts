@@ -14,7 +14,7 @@ describe('storyDate', () => {
   });
 
   it('shows the date after a week', () => {
-    expect(storyDate('2026-10-02T12:00:00.000Z', now)).toBe('Oct 2, 2026');
+    expect(storyDate('2026-10-02T12:00:00.000Z', now)).toMatch(/^2\.10\.2026$/);
   });
 
   it('returns nothing for a bad date', () => {

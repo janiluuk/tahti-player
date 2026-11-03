@@ -7,10 +7,12 @@ import { ButtonLink } from '@tahti-player/ui';
  * this always leads to the page's parent. */
 export function PageBackLink({
   to,
+  params,
   search,
   label,
 }: {
   to: string;
+  params?: Record<string, string>;
   search?: Record<string, string>;
   label: string;
 }) {
@@ -18,6 +20,7 @@ export function PageBackLink({
     <ButtonLink
       className="w-fit"
       to={to as never}
+      params={params as never}
       search={search as never}
       size="xs"
       variant="text"

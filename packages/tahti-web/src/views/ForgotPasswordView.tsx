@@ -1,8 +1,8 @@
-import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
 import { Button, Input } from '@tahti-player/ui';
 
+import { PageBackLink } from '../components/PageBackLink';
 import { useAuthStore } from '../stores/authStore';
 
 export function ForgotPasswordView() {
@@ -24,12 +24,7 @@ export function ForgotPasswordView() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col gap-6">
-      <Link
-        to="/login"
-        className="text-foreground-secondary text-xs hover:underline"
-      >
-        ← Login
-      </Link>
+      <PageBackLink to="/login" label="Log in" />
       <div>
         <h1 className="font-display text-3xl font-extrabold tracking-tight">
           Reset your password

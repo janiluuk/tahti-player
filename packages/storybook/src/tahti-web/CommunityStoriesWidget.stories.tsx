@@ -33,7 +33,7 @@ export const Default: Story = {
       ).toBeVisible(),
     );
     await expect(
-      canvas.getByRole('button', { name: 'Remove widget' }),
-    ).toBeVisible();
+      canvas.queryByRole('button', { name: 'Remove widget' }),
+    ).toBeNull();
   },
 };

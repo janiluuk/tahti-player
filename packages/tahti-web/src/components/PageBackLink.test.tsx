@@ -25,4 +25,20 @@ describe('PageBackLink', () => {
     );
     expect(router.state.location.search).toEqual({ tab: 'venues' });
   });
+
+  it('fills path params, so an artist sub-page links to its artist', async () => {
+    await renderWithRouter(
+      <PageBackLink
+        to="/u/$username"
+        params={{ username: 'northern-lights' }}
+        label="@northern-lights"
+      />,
+      { paths: ['/u/$username'] },
+    );
+    expect(
+      screen
+        .getByRole('link', { name: '@northern-lights' })
+        .getAttribute('href'),
+    ).toBe('/u/northern-lights');
+  });
 });

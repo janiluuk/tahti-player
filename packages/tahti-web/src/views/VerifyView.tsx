@@ -52,12 +52,6 @@ export function VerifyView() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col gap-6">
-      <Link
-        to="/join"
-        className="text-foreground-secondary text-xs hover:underline"
-      >
-        ← Join
-      </Link>
       <div>
         <h1 className="font-display text-3xl font-extrabold tracking-tight">
           {ok ? 'Email verified' : 'Verify email'}

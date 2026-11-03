@@ -1,10 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import {
-  ArrowLeftIcon,
-  CalendarPlusIcon,
-  MapPinIcon,
-  UsersIcon,
-} from 'lucide-react';
+import { CalendarPlusIcon, MapPinIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import {
@@ -21,6 +16,7 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageFrame } from '../components/PageHeader';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { VenueRecordings } from '../components/VenueRecordings';
@@ -74,14 +70,11 @@ export function VenueDetailView({ slug }: { slug: string }) {
   }, [slug, attempt]);
 
   const backLink = (
-    <Link
+    <PageBackLink
       to="/discover"
       search={{ tab: 'venues' }}
-      className="text-foreground-secondary inline-flex w-fit items-center gap-1.5 text-xs hover:underline"
-    >
-      <ArrowLeftIcon size={13} aria-hidden />
-      All venues
-    </Link>
+      label="All venues"
+    />
   );
 
   if (venue === undefined) {

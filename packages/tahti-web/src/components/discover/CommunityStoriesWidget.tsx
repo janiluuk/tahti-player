@@ -1,8 +1,7 @@
 import { Link } from '@tanstack/react-router';
-import { XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { Button, StoryCard, StoryRow, Tooltip } from '@tahti-player/ui';
+import { StoryCard, StoryRow } from '@tahti-player/ui';
 
 import {
   fetchCommunityStories,
@@ -18,9 +17,9 @@ type Load =
   | { state: 'error'; reason: string }
   | { state: 'ready'; stories: CommunityStory[] };
 
-/** Discover widget: the newest posts from every artist as wide story
- * cards, full width above the widget columns. */
-export function CommunityStoriesWidget({ onRemove }: { onRemove: () => void }) {
+/** The newest posts from every artist as wide story cards, at the top of
+ * Discover's Feed tab. */
+export function CommunityStoriesWidget() {
   const [load, setLoad] = useState<Load>({ state: 'loading' });
   const [attempt, setAttempt] = useState(0);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -44,20 +43,6 @@ export function CommunityStoriesWidget({ onRemove }: { onRemove: () => void }) {
     };
   }, [attempt]);
 
-  const removeButton = (
-    <Tooltip content="Remove widget" side="top">
-      <Button
-        size="icon-sm"
-        variant="text"
-        aria-label="Remove widget"
-        className="text-foreground-secondary hover:text-accent-red-strong"
-        onClick={onRemove}
-      >
-        <XIcon size={14} aria-hidden />
-      </Button>
-    </Tooltip>
-  );
-
   if (load.state !== 'ready' || load.stories.length === 0) {
     return (
       <section
@@ -65,10 +50,7 @@ export function CommunityStoriesWidget({ onRemove }: { onRemove: () => void }) {
         data-testid="community-stories"
         className="flex flex-col gap-3"
       >
-        <header className="flex items-center justify-between gap-3">
-          <h2 className="text-xl font-bold">Community stories</h2>
-          {removeButton}
-        </header>
+        <h2 className="text-xl font-bold">Community stories</h2>
         {load.state === 'loading' ? (
           <PageLoading label="Loading stories…" />
         ) : load.state === 'error' ? (
@@ -86,11 +68,7 @@ export function CommunityStoriesWidget({ onRemove }: { onRemove: () => void }) {
 
   return (
     <>
-      <StoryRow
-        title="Community stories"
-        actions={removeButton}
-        data-testid="community-stories"
-      >
+      <StoryRow title="Community stories" data-testid="community-stories">
         {load.stories.map((story, index) => (
           <StoryCard
             key={story.id}
@@ -98,16 +76,7 @@ export function CommunityStoriesWidget({ onRemove }: { onRemove: () => void }) {
             imageSrc={story.imageUrl}
             kind={POST_ACTIVITY_LABELS[story.category] ?? 'shared a story'}
             date={storyDate(story.publishAt)}
-            title={
-              <Button
-                variant="text"
-                size="flexible"
-                className="h-auto p-0 text-left text-lg leading-snug font-bold whitespace-normal hover:bg-transparent hover:underline active:scale-100"
-                onClick={() => setOpenId(story.id)}
-              >
-                {story.title ?? story.excerpt}
-              </Button>
-            }
+            title={story.title ?? story.excerpt}
             onOpen={() => setOpenId(story.id)}
             openLabel={`Read ${story.title ?? 'story'}`}
             excerpt={story.title ? story.excerpt : undefined}

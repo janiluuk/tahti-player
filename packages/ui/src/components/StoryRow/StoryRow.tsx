@@ -30,6 +30,9 @@ export const StoryRow: FC<StoryRowProps> = ({
   className,
   'data-testid': testId = 'story-row',
 }) => {
+  // Two rows can sit on one page (Feed); naming the buttons after the row
+  // keeps them distinguishable for screen readers.
+  const rowName = typeof title === 'string' ? title : undefined;
   const scroller = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(true);
@@ -80,7 +83,7 @@ export const StoryRow: FC<StoryRowProps> = ({
               variant="ghost"
               size="icon"
               className="rounded-full"
-              aria-label="Previous"
+              aria-label={rowName ? `Previous: ${rowName}` : 'Previous'}
               disabled={atStart}
               onClick={() => page(-1)}
             >
@@ -92,7 +95,7 @@ export const StoryRow: FC<StoryRowProps> = ({
               variant="ghost"
               size="icon"
               className="rounded-full"
-              aria-label="Next"
+              aria-label={rowName ? `Next: ${rowName}` : 'Next'}
               disabled={atEnd}
               onClick={() => page(1)}
             >

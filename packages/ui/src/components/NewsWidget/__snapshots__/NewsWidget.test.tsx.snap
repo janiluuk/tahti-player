@@ -80,65 +80,54 @@ exports[`NewsWidget > (Snapshot) renders a row of articles 1`] = `
     class="scrollbar-hide flex gap-3 overflow-x-auto overflow-y-visible [scroll-behavior:smooth] pb-2"
     style="scrollbar-width: none;"
   >
-    <div
-      class="border-border h-full rounded-md border-(length:--border-width) bg-background-secondary text-foreground shadow-shadow flex w-72 shrink-0 flex-col overflow-hidden p-0 sm:w-80"
+    <article
+      class="group relative aspect-video min-w-0 overflow-hidden rounded-xl bg-background-secondary motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-3 motion-safe:fill-mode-both motion-safe:duration-500 w-72 shrink-0 sm:w-80"
       data-testid="article-card"
+      style="animation-delay: 0ms;"
     >
       <div
-        class="relative overflow-hidden bg-background aspect-video w-full"
+        class="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
       >
         <div
-          class="pointer-events-none absolute inset-0 flex items-center justify-center"
+          class="relative overflow-hidden size-full"
         >
-          <svg
-            aria-hidden="true"
-            class="lucide lucide-newspaper text-foreground opacity-20"
-            fill="none"
-            height="32"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            viewBox="0 0 24 24"
-            width="32"
-            xmlns="http://www.w3.org/2000/svg"
+          <div
+            class="pointer-events-none absolute inset-0 flex items-center justify-center"
           >
-            <path
-              d="M15 18h-5"
+            <span
+              aria-hidden="true"
+              class="from-primary/40 to-accent-purple/40 flex size-full items-center justify-center bg-gradient-to-br text-4xl font-bold text-white/80"
             />
-            <path
-              d="M18 14h-8"
-            />
-            <path
-              d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-4 0v-9a2 2 0 0 1 2-2h2"
-            />
-            <rect
-              height="4"
-              rx="1"
-              width="8"
-              x="10"
-              y="6"
-            />
-          </svg>
+          </div>
         </div>
       </div>
       <div
-        class="flex flex-col gap-1 p-3"
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"
+      />
+      <div
+        class="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-1.5 p-3 text-white sm:p-4 [&_a]:pointer-events-auto [&_button]:pointer-events-auto"
       >
         <h3
-          class="text-foreground line-clamp-2 text-sm font-bold"
-          data-testid="article-card-title"
+          class="line-clamp-2 text-base leading-snug font-bold text-white sm:text-lg"
         >
-          Winter grants
+          <span
+            data-testid="article-card-title"
+          >
+            Winter grants
+          </span>
         </h3>
         <p
-          class="text-foreground-secondary line-clamp-2 text-xs"
-          data-testid="article-card-teaser"
+          class="line-clamp-1 text-xs text-white/80"
         >
-          Applications are open.
+          <span
+            data-testid="article-card-teaser"
+          >
+            Applications are open.
+          </span>
         </p>
       </div>
-    </div>
+    </article>
   </div>
 </div>
 `;

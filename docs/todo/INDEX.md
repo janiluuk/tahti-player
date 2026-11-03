@@ -25,11 +25,12 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Inbox chips, Overview merge, docs rewrite |
+| partial | [date-format-sweep.md](date-format-sweep.md) | One date style: helpers and cards done; replace the remaining one-off date formats in listings |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; left: embed downloads (product call) and keeping a stage-hosted embed across routes |
 | open    | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Plan: page anatomy rules (one header, one primary action, overflow, one toolbar), Settings account-only in 7 items, duplicate surfaces removed; 9 phases, absorbs navigation-simplification slices 1-3, 7, 9, 10 |
 | open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` shipped on ~40 confirms; ~25 confirms left) |
-| open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles (anonymous, listener, artist, admin) e2e matrix; missing use cases per role; all specs pass on the mock app; left: comment moderation, collaborative playlist undo, collection player, release publish flow, a few product calls in the findings |
-| open    | [navigation-flow-audit.md](navigation-flow-audit.md) | 180 routes, ~41 e2e-covered; back-link targets, dead links and nav inconsistencies |
+| open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles e2e matrix on the mock app; left: collection player (placement), Go live → green room, Radio/Discover journeys after their rework, Player seek/fullscreen, open findings |
+| open    | [navigation-flow-audit.md](navigation-flow-audit.md) | Back-link convention + checks; left: admin breadcrumbs skip the hub, release-track insights back target, StudioSoundView and ChatView back links (areas being reworked) |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
 | partial | [listening-party.md](listening-party.md) | Digital-only v1 merged (tahti-org#1029, tahti-player#1704); real-API check after deploy, then playout, formats/pre-orders/physical |
