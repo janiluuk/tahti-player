@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 
+import { signIn } from './helpers/auth';
+
 test('a new listener signs up, signs in and has no Studio or channel prompt', async ({
   page,
 }) => {
@@ -32,4 +34,19 @@ test('a new listener signs up, signs in and has no Studio or channel prompt', as
   await expect(page.getByText('Finish setting up your profile?')).toHaveCount(
     0,
   );
+});
+
+test('listener adds a track to a collaborative playlist and undoes it', async ({
+  page,
+}) => {
+  await signIn(page, 'listener@tahti.live');
+  await page.goto('/u/northern-lights/c/northern-lights-open-crate');
+  const add = page.getByRole('region', { name: 'Add to this playlist' });
+  await add.getByRole('textbox', { name: 'Search the catalog' }).fill('night');
+  const result = add.getByRole('button', { name: /^Add / }).first();
+  await result.click();
+  const toast = page.getByRole('region', { name: /Notifications/ });
+  await expect(toast.getByText(/^Added /)).toBeVisible();
+  await toast.getByRole('button', { name: 'Undo' }).click();
+  await expect(toast.getByText(/^Added /)).toHaveCount(0);
 });

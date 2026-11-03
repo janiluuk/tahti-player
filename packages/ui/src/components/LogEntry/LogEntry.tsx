@@ -182,7 +182,11 @@ const LogEntryImpl: FC<LogEntryProps> = ({
         data-testid="log-action-panel"
         className="absolute top-1 right-2 hidden group-hover:block"
       >
-        <CopyButton data-testid="log-copy-button" text={entry.message} />
+        <CopyButton
+          data-testid="log-copy-button"
+          text={entry.message}
+          aria-label={`Copy log: ${entry.message.slice(0, 60)}`}
+        />
       </div>
     </div>
   );

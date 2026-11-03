@@ -233,6 +233,7 @@ function toHostedListItem(
   );
 
   return {
+    headingLevel: 2,
     id: item.id,
     trackId: playerId,
     title: item.title,

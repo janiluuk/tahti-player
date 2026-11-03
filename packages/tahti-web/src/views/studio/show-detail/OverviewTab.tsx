@@ -275,6 +275,7 @@ export function OverviewTab({
                     params={{ episodeId: ep.id }}
                     size="sm"
                     variant="secondary"
+                    aria-label={`${ep.status === 'PENDING_APPROVAL' ? 'Review' : 'Open'} ${ep.title}`}
                   >
                     {ep.status === 'PENDING_APPROVAL' ? 'Review' : 'Open'}
                   </ButtonLink>

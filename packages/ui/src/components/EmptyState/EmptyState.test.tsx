@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { Inbox, Search, WifiOff } from 'lucide-react';
 
 import { Button } from '../Button';
@@ -74,5 +74,12 @@ describe('EmptyState', () => {
       <EmptyState title="Test" className="custom-class" />,
     );
     expect(getByTestId('empty-state')).toHaveClass('custom-class');
+  });
+
+  it('can be the page heading', () => {
+    render(<EmptyState title="Page not found" headingLevel={1} />);
+    expect(
+      screen.getByRole('heading', { level: 1, name: 'Page not found' }),
+    ).toBeInTheDocument();
   });
 });

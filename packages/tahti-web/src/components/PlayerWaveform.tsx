@@ -102,7 +102,7 @@ export function PlayerWaveform({
                 size="flexible"
                 aria-label={`Jump to comment: ${marker.label}`}
                 data-testid="waveform-comment-marker"
-                className="text-accent-yellow-strong relative size-5 justify-center rounded-full p-0 drop-shadow"
+                className="text-accent-yellow-strong relative size-6 justify-center rounded-full p-0 drop-shadow"
                 onClick={() => handleSeek(marker.fraction)}
               >
                 {icon}

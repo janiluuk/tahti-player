@@ -39,6 +39,7 @@ export const notFoundRoute = createRoute({
   component: () => (
     <PageEmpty
       icon="alert"
+      headingLevel={1}
       title="Page not found"
       description="There is nothing at this address. It may have moved or been removed."
       action={

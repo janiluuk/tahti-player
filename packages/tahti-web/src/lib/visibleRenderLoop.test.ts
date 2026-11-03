@@ -152,4 +152,20 @@ describe('startVisibleRenderLoop', () => {
     expect(frames.size).toBe(0);
     expect(render).not.toHaveBeenCalled();
   });
+
+  it('skips frames while the page scrolls and resumes once it is quiet', () => {
+    const render = vi.fn();
+    const now = vi.spyOn(performance, 'now');
+    startVisibleRenderLoop(element(), {
+      pauseWhileScrolling: true,
+      onResize: vi.fn(),
+      render,
+    });
+    now.mockReturnValue(1000);
+    document.dispatchEvent(new Event('scroll'));
+    runFrame(1050);
+    runFrame(1100);
+    runFrame(1200);
+    expect(render.mock.calls.map(([at]) => at)).toEqual([1200]);
+  });
 });

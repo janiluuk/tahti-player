@@ -13,7 +13,7 @@ export function LegalView({ slug }: { slug: string }) {
   if (!page) {
     return (
       <div className="mx-auto flex max-w-3xl flex-col gap-4">
-        <PageEmpty title="Page not found" />
+        <PageEmpty title="Page not found" headingLevel={1} />
       </div>
     );
   }

@@ -82,8 +82,8 @@ renders (route health) · ❌ nothing.
 - [x] Signs up as a listener (no channel) and lands on Listen; Studio is not in the sidebar (`use-cases-listener-4.spec.ts`; Join now has a Listener account type).
 - [x] Follows an artist → Library → Following; the Feed lists posts and releases and pages on (`use-cases-listener*.spec.ts`).
 - [x] Favorites a track or a radio station → Library → Favorites, and removes it (`use-cases-listener*.spec.ts`, `batch-fixes.spec.ts`). Releases cannot be favorited (Favorites holds channels and tracks).
-- [ ] Builds a playlist, reorders, adds to someone's collaborative playlist and undoes it. (Creating one from Add to playlist: covered.)
-- [ ] Plays a collection with the collection player; the row highlights.
+- [x] Builds a playlist from Add to playlist; adds a track to someone's collaborative playlist and undoes it (`use-cases-listener-4.spec.ts`; mock `*-open-crate` collections are collaborative).
+- [ ] Plays a collection with the collection player; the row highlights. (Blocked: `CollectionPlayerWidget` is not placed anywhere yet; placement is a product decision.)
 - [x] A played track shows in Library → History; listening stats and the history list switch tabs (`use-cases-listener*.spec.ts`).
 - [x] Comments on a track and deletes it, comments on a channel page, replies in a DM (`use-cases-listener*.spec.ts`, `use-cases-mixed-4.spec.ts`). Live chat bans are left under Artist.
 - [x] The avatar dot loses a dot after Mark all read (`use-cases-listener-3.spec.ts`).
@@ -95,11 +95,11 @@ renders (route health) · ❌ nothing.
 ### Artist
 
 - [x] Uploads a track end to end and lands on its page (`use-cases-artist-3.spec.ts`).
-- [ ] Creates a release, adds tracks and artwork, publishes; smart link page shows it. (Creating one: covered in `use-cases-artist-3.spec.ts`; tracks, artwork and publishing left.)
+- [ ] Creates a release, adds tracks and artwork, publishes; smart link page shows it. (Creating one: `use-cases-artist-3`; publishing a draft and opening its smart link: `use-cases-artist-5`; adding tracks and artwork left.)
 - [ ] Broadcast hub: agenda chips filter; Go live flow reaches the green room; schedules a show and an event; schedules and cancels a listening party. (Chips filter, Go live opens and links back, an event is added, a listening party is scheduled and cancelled (`use-cases-artist-5.spec.ts`): covered.)
 - [ ] Fans hub: writes and schedules a post; sends a newsletter; creates a membership tier; adds a store item; Earnings shows orders. (Publishes and schedules a post, saves a newsletter draft, creates a membership tier and a store price, toggles the Store: covered; Earnings lists a track purchase and a fan subscription (`listener-purchase-flow`, `fan-sub-and-track-purchase`). Sends a newsletter (`use-cases-artist-5.spec.ts`).)
 - [x] Profile hub cards open Settings panels and the Story saves (`roles-artist-admin-hubs.spec.ts`, `use-cases-artist-*.spec.ts`).
-- [ ] Moderates chat (ban, moderator add) and comments. (Adds and removes a moderator; bans a sender and lifts a ban (`use-cases-artist-5.spec.ts`): covered; comment moderation left.)
+- [ ] Moderates chat (ban, moderator add) and comments. (Adds and removes a moderator; bans a sender and lifts a ban; removes a listener comment from the channel page (`use-cases-artist-5.spec.ts`): covered.)
 - [x] Stats range picker and per-track insights from a release's stats tab (`use-cases-artist.spec.ts`, `routes-studio-stats.spec.ts`).
 - [x] Release detail tabs; the track editor's three tabs and renaming a track (`use-cases-artist*.spec.ts`).
 
@@ -171,6 +171,9 @@ is wrong and a suggested fix, then turn the agreed ones into slices.
 | Admin → Radio → rotation | The artist column shows "Tahti Radio submissions" (the playlist owner) for every row | mock data, fixed | The API already sends the track artist; the mock now does too |
 | Listening parties on the mock app | A scheduled party was gone after a reload | mock, fixed | Mock parties in sessionStorage |
 | Collections, playlists, sounds, releases, shows | Every page opened straight into its edit form | messy, fixed | Read-only by default; `EditIconButton` (Edit details) shows the form, `?edit=true` links open it |
+| Studio release (mock) | Publishing or saving any release renamed it "Mock EP" | mock, fixed | The mock patch merges into the seeded release |
+| Track rows, track page, Stats, 404 (axe) | `aria-label` on plain spans, an h3 straight under the h1, a chart div with a label, no h1 on Page not found | a11y, fixed | Screen-reader text, `headingLevel`, `role="img"`, `PageEmpty headingLevel={1}` |
+| Studio and admin lists | Several "More", "Manage", "Open", "Delete" and log "Copy" buttons with the same name | a11y, fixed | Named after the item |
 | Channel designer on the mock app | The slideshow PATCH had no mock branch ("Backdrop saved, but slideshow settings could not be updated"), and the look was lost on reload | mock, fixed | Mock gallery in localStorage, look in sessionStorage |
 
 ## Specs on the mock app

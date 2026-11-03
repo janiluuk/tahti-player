@@ -62,7 +62,7 @@ export const Overview: Story = {
       }),
     );
     await expectVisible(canvas.getByRole('heading', { name: 'Episodes' }));
-    await expectVisible(canvas.getByRole('link', { name: 'Review' }));
+    await expectVisible(canvas.getByRole('link', { name: /^Review / }));
   },
 };
 

@@ -1,8 +1,32 @@
 export type RenderSize = { width: number; height: number };
 
+const SCROLL_QUIET_MS = 150;
+let lastScrollAt = -Infinity;
+let scrollListening = false;
+
+function listenForScroll() {
+  if (scrollListening || typeof document === 'undefined') {
+    return;
+  }
+  scrollListening = true;
+  document.addEventListener(
+    'scroll',
+    () => {
+      lastScrollAt = performance.now();
+    },
+    { capture: true, passive: true },
+  );
+}
+
+export function isScrolling(now: number): boolean {
+  return now - lastScrollAt < SCROLL_QUIET_MS;
+}
+
 export type VisibleRenderLoopOptions = {
   /** Frames closer together than this are skipped (a frame-rate cap). */
   minFrameMs?: number;
+  /** Skip frames while the page scrolls, so scrolling keeps the frame budget. */
+  pauseWhileScrolling?: boolean;
   /** Called before a frame whenever the element's size changed since the last one. */
   onResize: (size: RenderSize) => void;
   render: (now: number) => void;
@@ -16,8 +40,16 @@ export type VisibleRenderLoopOptions = {
  */
 export function startVisibleRenderLoop(
   element: HTMLElement,
-  { minFrameMs = 0, onResize, render }: VisibleRenderLoopOptions,
+  {
+    minFrameMs = 0,
+    pauseWhileScrolling = false,
+    onResize,
+    render,
+  }: VisibleRenderLoopOptions,
 ): () => void {
+  if (pauseWhileScrolling) {
+    listenForScroll();
+  }
   let size: RenderSize = {
     width: element.clientWidth,
     height: element.clientHeight,
@@ -42,6 +74,9 @@ export function startVisibleRenderLoop(
     }
     frame = requestAnimationFrame(draw);
     if (now - lastFrame < minFrameMs) {
+      return;
+    }
+    if (pauseWhileScrolling && isScrolling(now)) {
       return;
     }
     lastFrame = now;

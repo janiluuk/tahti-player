@@ -1115,7 +1115,7 @@ function buildMockCollection(
     description: 'Mock public collection for the Nuclear × Tahti POC.',
     coverUrl: null,
     isPublic: true,
-    collaborative: false,
+    collaborative: slug.endsWith('-open-crate'),
     user: {
       username,
       displayName: mockChannel(username).user.displayName,

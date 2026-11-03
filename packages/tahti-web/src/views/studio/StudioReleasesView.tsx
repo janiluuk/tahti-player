@@ -344,7 +344,7 @@ export function StudioReleasesView() {
                           <Button
                             size="icon-sm"
                             variant="text"
-                            aria-label={openMoreId === r.id ? 'Less' : 'More'}
+                            aria-label={`${openMoreId === r.id ? 'Less' : 'More'} for ${r.title}`}
                             onClick={() =>
                               setOpenMoreId((id) => (id === r.id ? null : r.id))
                             }

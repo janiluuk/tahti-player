@@ -70,8 +70,8 @@ export const Comfortable: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByText('Progressive House')).toBeVisible();
-    await expect(canvas.getByLabelText('31 plays')).toBeVisible();
-    await expect(canvas.getByLabelText('15 downloads')).toBeVisible();
+    await expect(canvas.getByText('31 plays')).toBeInTheDocument();
+    await expect(canvas.getByText('15 downloads')).toBeInTheDocument();
   },
 };
 
@@ -138,7 +138,7 @@ export const WithLove: StoryObj<typeof AmbientTrackRow> = {
     await expect(
       canvas.getByRole('button', { name: /Unlike Set of progressive house/ }),
     ).toHaveAttribute('aria-pressed', 'true');
-    await expect(canvas.getByLabelText('57 plays')).toBeVisible();
+    await expect(canvas.getByText('57 plays')).toBeInTheDocument();
     await expect(canvas.queryByLabelText('2 likes')).toBeNull();
   },
 };

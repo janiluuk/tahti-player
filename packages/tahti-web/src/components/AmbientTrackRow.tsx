@@ -123,13 +123,10 @@ function TrackStats({
   for (const [key, value, icon, noun] of counts) {
     if (value != null) {
       parts.push(
-        <span
-          key={key}
-          className="inline-flex items-center gap-1"
-          aria-label={`${value} ${noun}`}
-        >
+        <span key={key} className="inline-flex items-center gap-1">
           {icon}
           <span aria-hidden>{value.toLocaleString()}</span>
+          <span className="sr-only">{`${value} ${noun}`}</span>
         </span>,
       );
     }
@@ -189,6 +186,7 @@ function LikeToggle({
 export type AmbientTrackRowProps = {
   trackId: string;
   title: string;
+  headingLevel?: 2 | 3;
   /** When set, replaces the plain title text (e.g. a router Link). */
   titleNode?: ReactNode;
   /** Status / error lines under the title (Studio Sounds). */
@@ -231,6 +229,7 @@ export type AmbientTrackRowProps = {
 function AmbientTrackRowView({
   trackId,
   title,
+  headingLevel = 3,
   titleNode,
   belowTitle,
   artist,
@@ -255,6 +254,7 @@ function AmbientTrackRowView({
   ambientRgb,
 }: AmbientTrackRowProps) {
   const rowRef = useRef<HTMLElement>(null);
+  const TitleHeading = headingLevel === 2 ? 'h2' : 'h3';
   const [visible, setVisible] = useState(false);
   useEffect(() => {
     if (!rowRef.current || typeof IntersectionObserver === 'undefined') {
@@ -351,14 +351,14 @@ function AmbientTrackRowView({
             >
               {artist}
             </p>
-            <h3
+            <TitleHeading
               className={cn(
                 'text-foreground line-clamp-2 font-bold sm:truncate',
                 layout.title,
               )}
             >
               {titleNode ?? title}
-            </h3>
+            </TitleHeading>
           </div>
           {genreLabel || (durationLabel && density === 'dense') ? (
             <div

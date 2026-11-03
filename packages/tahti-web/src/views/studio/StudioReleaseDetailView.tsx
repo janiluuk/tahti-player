@@ -328,18 +328,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                     <div className="flex flex-col gap-6">
                       {
                         <>
-                          <StudioPanel
-                            title="Details"
-                            action={
-                              <EditIconButton
-                                label="Edit details"
-                                editing={detailsExpanded}
-                                onClick={() =>
-                                  setDetailsExpanded(!detailsExpanded)
-                                }
-                              />
-                            }
-                          >
+                          <StudioPanel title="Details">
                             {detailsExpanded ? (
                               <Textarea
                                 label="Description"

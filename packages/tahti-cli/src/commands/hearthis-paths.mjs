@@ -70,7 +70,7 @@ function extensionFromName(fileName) {
   return AUDIO_EXTS.has(ext) ? ext : null;
 }
 
-function extensionFromContentType(mimeType) {
+export function extensionFromContentType(mimeType) {
   switch ((mimeType || '').split(';')[0].trim().toLowerCase()) {
     case 'audio/mpeg':
     case 'audio/mp3':

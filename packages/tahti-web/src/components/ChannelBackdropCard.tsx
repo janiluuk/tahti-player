@@ -460,7 +460,7 @@ export function ChannelBackdropCard({
                 }
               : undefined
           }
-          className={`absolute inset-x-0 bottom-0 z-[1] outline-none ${
+          className={`focus-visible:ring-primary absolute inset-x-0 bottom-0 z-[1] outline-none focus-visible:ring-2 focus-visible:ring-inset ${
             onEditBackground ? 'cursor-pointer' : ''
           } ${
             editable && backgroundSelected

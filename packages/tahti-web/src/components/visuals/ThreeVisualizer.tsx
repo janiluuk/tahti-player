@@ -129,6 +129,7 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
     const clock = new THREE.Clock();
     const stop = startVisibleRenderLoop(canvas, {
       minFrameMs: FRAME_INTERVAL_MS,
+      pauseWhileScrolling: true,
       onResize: ({ width, height }) => {
         renderer.setSize(width, height, false);
         camera.aspect = width / height;
