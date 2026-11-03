@@ -482,6 +482,7 @@ export async function runHearthisDownloadSet(
     artwork = true,
     flac = false,
     yearOverride = null,
+    log = (line) => process.stderr.write(`${line}\n`),
   } = {},
 ) {
   if (!permalinkOrUrl) {
@@ -501,6 +502,12 @@ export async function runHearthisDownloadSet(
     artwork,
     flac,
     yearOverride,
+    onProgress: json
+      ? undefined
+      : (row) =>
+          log(
+            `  ${String(row.position).padStart(2, '0')} ${row.title}: ${row.status}`,
+          ),
   });
 
   if (json) {

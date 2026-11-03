@@ -14,6 +14,7 @@ pnpm tahti-ops --help
 # desktop app (needs Rust + Tauri system packages)
 pnpm tahti-ops desktop run        # release build, then launch   (= pnpm desktop)
 pnpm tahti-ops desktop latest     # build origin/master in .desktop-build, then launch (= pnpm desktop:latest, scripts/tahti-desktop)
+pnpm tahti-ops desktop latest --ref feat/x --no-launch   # another branch, build only
 pnpm tahti-ops desktop launch     # launch the last build (Linux)
 pnpm tahti-ops desktop dev        # dev mode with hot reload     (= pnpm desktop:dev)
 pnpm tahti-ops desktop bundle     # installers / packages
@@ -21,7 +22,7 @@ pnpm tahti-ops desktop android    # debug build on a device/emulator (JDK 17+, A
 
 # tests
 pnpm tahti-ops test               # every package                (= pnpm test:all)
-pnpm tahti-ops test web ui        # chosen groups: web ui player storybook types lint all
+pnpm tahti-ops test web ui        # chosen groups: web ui player cli ops visualizer storybook types lint all
 pnpm tahti-ops test web -- src/views/ListenView.test.tsx
 
 # e2e
