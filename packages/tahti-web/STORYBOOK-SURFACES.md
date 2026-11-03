@@ -219,6 +219,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/ListenerWidgetsSection` | `tahti-web/ListenerWidgetsSection.stories.tsx` |
 | `Tahti/Widgets/ListenerWorldMap` | `tahti-web/ListenerWorldMap.stories.tsx` |
 | `Tahti/Release/ListeningPartyView` | `tahti-web/ListeningPartyView.stories.tsx` |
+| `Tahti/Components/Listing pieces` | `tahti-web/ListingPieces.stories.tsx` |
 | `Tahti/Desktop/LocalLibraryFilters` | `tahti-web/LocalLibraryFilters.stories.tsx` |
 | `Tahti/Auth/LoginView` | `tahti-web/LoginView.stories.tsx` |
 | `Tahti/Widgets/MapCommentForm` | `tahti-web/MapCommentForm.stories.tsx` |
