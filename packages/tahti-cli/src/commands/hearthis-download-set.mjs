@@ -7,11 +7,13 @@ import { pipeline } from 'node:stream/promises';
 import { CliError, requireToken } from '../api-client.mjs';
 import { formatTable } from '../format.mjs';
 import {
-  discographyRelativePath,
+  DOWNLOAD_LAYOUTS,
+  layoutRelativePath,
   pickAudioExtension,
   resolveAlbumArtist,
   resolveAlbumTitle,
   resolveAlbumYear,
+  resolveSetOwner,
 } from './hearthis-paths.mjs';
 import { fetchHearthisSetTracks } from './hearthis-set.mjs';
 
@@ -22,17 +24,59 @@ import { fetchHearthisSetTracks } from './hearthis-set.mjs';
 export async function downloadHearthisSet(
   config,
   permalinkOrUrl,
-  { outDir = '.', dryRun = false, force = false, onProgress } = {},
+  {
+    outDir = '.',
+    dryRun = false,
+    force = false,
+    layout = 'discography',
+    ownOnly = false,
+    title = null,
+    onProgress,
+  } = {},
 ) {
   requireToken(config);
+  if (!DOWNLOAD_LAYOUTS.includes(layout)) {
+    throw new CliError(
+      `Unknown layout: ${layout} (use ${DOWNLOAD_LAYOUTS.join(', ')})`,
+    );
+  }
   const catalog = await fetchHearthisSetTracks(config, permalinkOrUrl);
   const artist = resolveAlbumArtist(catalog.set, catalog.tracks);
-  const albumTitle = resolveAlbumTitle(catalog.set, catalog.permalink);
+  const albumTitle = resolveAlbumTitle(catalog.set, catalog.permalink, title);
   const year = resolveAlbumYear(catalog.set, catalog.tracks);
   const root = resolve(outDir);
+  const owner = resolveSetOwner(catalog.set, catalog.tracks);
+  const pathFor = (track, extension, position) =>
+    layoutRelativePath(layout, {
+      artist,
+      setTitle: albumTitle,
+      albumTitle,
+      year,
+      position,
+      trackTitle: track.title,
+      extension,
+    });
 
   const rows = [];
+  let nextPosition = 0;
   for (const track of catalog.tracks) {
+    if (ownOnly && owner && track.userPermalink !== owner) {
+      rows.push({
+        position: track.position,
+        title: track.title,
+        status: 'skipped',
+        reason: `uploaded by @${track.userPermalink}`,
+        path: null,
+      });
+      onProgress?.({
+        position: track.position,
+        title: track.title,
+        status: 'skipped',
+      });
+      continue;
+    }
+    nextPosition += 1;
+    const position = ownOnly ? nextPosition : track.position;
     if (!track.downloadable || !track.downloadUrl) {
       rows.push({
         position: track.position,
@@ -50,15 +94,8 @@ export async function downloadHearthisSet(
     }
 
     // First-pass path from filename hint; may adjust after Content-Type.
-    let extension = pickAudioExtension(track.downloadFilename, null);
-    let relativePath = discographyRelativePath({
-      artist,
-      albumTitle,
-      year,
-      position: track.position,
-      trackTitle: track.title,
-      extension,
-    });
+    const extension = pickAudioExtension(track.downloadFilename, null);
+    let relativePath = pathFor(track, extension, position);
     let absolute = join(root, relativePath);
 
     if (!force && (await pathExists(absolute))) {
@@ -94,13 +131,9 @@ export async function downloadHearthisSet(
     }
 
     try {
-      const saved = await downloadTrackFile(track, root, {
-        artist,
-        albumTitle,
-        year,
-        position: track.position,
-        trackTitle: track.title,
-      });
+      const saved = await downloadTrackFile(track, root, (ext) =>
+        pathFor(track, ext, position),
+      );
       relativePath = saved.relativePath;
       absolute = saved.absolutePath;
       rows.push({
@@ -142,7 +175,7 @@ export async function downloadHearthisSet(
   };
 }
 
-async function downloadTrackFile(track, root, pathParts) {
+async function downloadTrackFile(track, root, relativePathFor) {
   let response;
   try {
     response = await fetch(track.downloadUrl);
@@ -155,10 +188,7 @@ async function downloadTrackFile(track, root, pathParts) {
 
   const contentType = response.headers.get('content-type');
   const extension = pickAudioExtension(track.downloadFilename, contentType);
-  const relativePath = discographyRelativePath({
-    ...pathParts,
-    extension,
-  });
+  const relativePath = relativePathFor(extension);
   const absolutePath = join(root, relativePath);
 
   await mkdir(dirname(absolutePath), { recursive: true });
@@ -202,7 +232,15 @@ export function formatDownloadRows(rows) {
 export async function runHearthisDownloadSet(
   config,
   permalinkOrUrl,
-  { json = false, outDir = '.', dryRun = false, force = false } = {},
+  {
+    json = false,
+    outDir = '.',
+    dryRun = false,
+    force = false,
+    layout = 'discography',
+    ownOnly = false,
+    title = null,
+  } = {},
 ) {
   if (!permalinkOrUrl) {
     throw new CliError(
@@ -214,6 +252,9 @@ export async function runHearthisDownloadSet(
     outDir,
     dryRun,
     force,
+    layout,
+    ownOnly,
+    title,
   });
 
   if (json) {
