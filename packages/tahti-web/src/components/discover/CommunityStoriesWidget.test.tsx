@@ -49,7 +49,8 @@ describe('CommunityStoriesWidget', () => {
       meta: { source: 'api' },
     });
     render(<CommunityStoriesWidget onRemove={vi.fn()} />);
-    expect(await screen.findByText('News · 1 day ago')).toBeTruthy();
+    expect(await screen.findByText('shared news')).toBeTruthy();
+    expect(screen.getByText('1 day ago')).toBeTruthy();
     expect(
       screen.getByText('Hi, I make the flutes you hear here'),
     ).toBeTruthy();

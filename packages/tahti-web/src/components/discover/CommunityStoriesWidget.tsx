@@ -6,7 +6,7 @@ import { Button, StoryCard, StoryRow, Tooltip } from '@tahti-player/ui';
 
 import {
   fetchCommunityStories,
-  POST_CATEGORY_LABELS,
+  POST_ACTIVITY_LABELS,
   type CommunityStory,
 } from '../../api/community-stories';
 import { storyDate } from '../../lib/storyDate';
@@ -96,12 +96,8 @@ export function CommunityStoriesWidget({ onRemove }: { onRemove: () => void }) {
             key={story.id}
             index={index}
             imageSrc={story.imageUrl}
-            meta={[
-              POST_CATEGORY_LABELS[story.category] ?? 'Story',
-              storyDate(story.publishAt),
-            ]
-              .filter(Boolean)
-              .join(' · ')}
+            kind={POST_ACTIVITY_LABELS[story.category] ?? 'shared a story'}
+            date={storyDate(story.publishAt)}
             title={
               <Button
                 variant="text"
