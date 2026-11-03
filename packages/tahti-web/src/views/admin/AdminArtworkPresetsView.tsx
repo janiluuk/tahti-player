@@ -169,15 +169,18 @@ export function AdminArtworkPresetsView() {
                     key={preset.id}
                     className="border-border/40 bg-background-secondary flex list-none flex-col overflow-hidden rounded-lg border"
                   >
-                    <MediaArtwork
-                      src={preset.url}
-                      alt=""
-                      imageReveal={false}
+                    <div
                       className={cn(
-                        'aspect-square transition-opacity',
+                        'relative aspect-square transition-opacity',
                         !preset.enabled && 'opacity-40',
                       )}
-                    />
+                    >
+                      <MediaArtwork
+                        src={preset.url}
+                        alt=""
+                        imageReveal={false}
+                      />
+                    </div>
                     <div className="flex items-center justify-between gap-2 px-2 py-1.5">
                       <Toggle
                         label={`Enable artwork ${index + 1}`}

@@ -6,6 +6,7 @@ import { Badge, Button, Input, StatChip, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMembers } from '../api/client';
 import type { GovernanceMember } from '../api/types';
+import { PageBackLink } from '../components/PageBackLink';
 import {
   PageEmpty,
   PageError,
@@ -58,12 +59,7 @@ export function GovernanceMembersView() {
         content: 'gap-6',
       }}
     >
-      <Link
-        to="/governance"
-        className="text-foreground-secondary w-fit text-xs underline-offset-2 hover:underline"
-      >
-        ← Back to governance
-      </Link>
+      <PageBackLink to="/governance" label="Governance" />
 
       {!user && (
         <PageEmpty

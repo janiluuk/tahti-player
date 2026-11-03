@@ -11,6 +11,7 @@ import {
 
 import { registerVenue } from '../api/client';
 import { ImageUploadField } from '../components/ImageUploadField';
+import { PageBackLink } from '../components/PageBackLink';
 import { useAuthStore } from '../stores/authStore';
 
 export function VenueRegisterView() {
@@ -62,13 +63,11 @@ export function VenueRegisterView() {
         >
           Go to My venues
         </Link>
-        <Link
+        <PageBackLink
           to="/discover"
           search={{ tab: 'venues' }}
-          className="text-sm underline-offset-2 hover:underline"
-        >
-          ← Back to venues
-        </Link>
+          label="All venues"
+        />
       </ViewShell>
     );
   }
@@ -78,13 +77,11 @@ export function VenueRegisterView() {
       title="Register a venue"
       classes={{ root: 'px-0 pt-0 mx-auto max-w-lg' }}
     >
-      <Link
+      <PageBackLink
         to="/discover"
         search={{ tab: 'venues' }}
-        className="text-foreground-secondary mb-2 block w-fit text-xs hover:underline"
-      >
-        ← Venues
-      </Link>
+        label="All venues"
+      />
 
       <form
         className="flex flex-col gap-3"
