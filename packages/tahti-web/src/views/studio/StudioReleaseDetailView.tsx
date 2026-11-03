@@ -8,7 +8,6 @@ import {
   Link2Icon,
   MusicIcon,
   PartyPopperIcon,
-  PencilIcon,
   PlayIcon,
   Trash2Icon,
 } from 'lucide-react';
@@ -20,6 +19,7 @@ import {
   BackButtonLink,
   Button,
   ButtonLink,
+  EditIconButton,
   SaveButton,
   Tabs,
   Textarea,
@@ -133,7 +133,10 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     void navigate({
       to: '/studio/releases/$id',
       params: { id },
-      search: tab === 'overview' ? {} : { tab },
+      search: {
+        ...(detailsExpanded ? { edit: true as const } : {}),
+        ...(tab === 'overview' ? {} : { tab }),
+      },
       replace: true,
     });
   };
@@ -180,9 +183,13 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
               title={release.title}
               imageUrl={artworkPreview}
               imageAlt=""
-              onImageClick={() => setArtworkPickerOpen(true)}
+              onImageClick={
+                detailsExpanded ? () => setArtworkPickerOpen(true) : undefined
+              }
               onImageDelete={
-                artworkPreview ? () => setPendingArtworkDelete(true) : undefined
+                detailsExpanded && artworkPreview
+                  ? () => setPendingArtworkDelete(true)
+                  : undefined
               }
               subtitle={`${release.type} · ${release.state}`}
               description={description.trim() || undefined}
@@ -223,7 +230,14 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       <Trash2Icon size={16} aria-hidden />
                     </Button>
                   </Tooltip>
-                  <SaveButton saving={saving} onClick={() => void save()} />
+                  {detailsExpanded ? (
+                    <SaveButton saving={saving} onClick={() => void save()} />
+                  ) : null}
+                  <EditIconButton
+                    label="Edit details"
+                    editing={detailsExpanded}
+                    onClick={() => setDetailsExpanded(!detailsExpanded)}
+                  />
                 </>
               }
               data-testid="studio-release-social-header"
@@ -317,15 +331,13 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                           <StudioPanel
                             title="Details"
                             action={
-                              <Button
-                                className="gap-1.5"
-                                size="sm"
-                                variant="secondary"
-                                onClick={() => setDetailsExpanded((v) => !v)}
-                              >
-                                <PencilIcon size={14} aria-hidden />
-                                {detailsExpanded ? 'Done' : 'Edit details'}
-                              </Button>
+                              <EditIconButton
+                                label="Edit details"
+                                editing={detailsExpanded}
+                                onClick={() =>
+                                  setDetailsExpanded(!detailsExpanded)
+                                }
+                              />
                             }
                           >
                             {detailsExpanded ? (

@@ -167,7 +167,7 @@ export const EditStation: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await canvas.findByText('YleX');
-    await userEvent.click(canvas.getAllByRole('button', { name: 'Edit' })[0]!);
+    await userEvent.click(canvas.getByRole('button', { name: 'Edit YleX' }));
     const dialog = await findDialog(canvasElement, 'Edit station');
     await expect(dialog.getByRole('textbox', { name: 'Name' })).toHaveValue(
       'YleX',

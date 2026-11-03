@@ -10,9 +10,11 @@ import type { CollectionEditState } from './useCollectionEditState';
 export function TracklistPanel({
   state,
   isAlbumLike,
+  editing = true,
 }: {
   state: CollectionEditState;
   isAlbumLike: boolean;
+  editing?: boolean;
 }) {
   const {
     items,
@@ -45,7 +47,9 @@ export function TracklistPanel({
           items={[]}
           empty={{
             title: 'No tracks yet',
-            description: 'Add sound items below.',
+            description: editing
+              ? 'Add sound items below.'
+              : 'Click Edit to add tracks.',
           }}
         />
       ) : (
@@ -57,7 +61,7 @@ export function TracklistPanel({
             getItemId={(_t, index) => items[index]?.id ?? String(index)}
             features={{
               header: true,
-              reorderable: true,
+              reorderable: editing,
               filterable: true,
               sortable: false,
             }}
@@ -65,7 +69,7 @@ export function TracklistPanel({
               displayPosition: false,
               displayArtist: !isAlbumLike,
               displayDuration: true,
-              displayDeleteButton: true,
+              displayDeleteButton: editing,
               displayThumbnail: true,
               displayQueueControls: true,
             }}

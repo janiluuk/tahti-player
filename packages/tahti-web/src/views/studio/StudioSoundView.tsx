@@ -12,6 +12,7 @@ import { AddToPlaylistPanel } from '../../components/AddToPlaylistPanel';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { TrackInsightsPanel } from '../../components/TrackInsightsPanel';
+import { useEditMode } from '../../lib/useEditMode';
 import { DetailsTabContent } from './sound/DetailsTabContent';
 import { PlaylistsTabContent } from './sound/PlaylistsTabContent';
 import { ProcessingFailedAlert } from './sound/ProcessingFailedAlert';
@@ -32,6 +33,12 @@ export function StudioSoundView({ id }: { id: string }) {
     title,
     setItem,
   } = state;
+  const [editing, setEditing] = useEditMode();
+  const tabIds: ('details' | 'playlists' | 'insights')[] = [
+    ...(editing ? (['details'] as const) : []),
+    ...(!isAudioClip ? (['playlists'] as const) : []),
+    'insights',
+  ];
 
   return (
     <StudioGate requireChannel={false}>
@@ -48,7 +55,14 @@ export function StudioSoundView({ id }: { id: string }) {
             <PageLoading label="Loading…" />
           ) : (
             <>
-              <SoundHeader id={id} state={state} />
+              <SoundHeader
+                id={id}
+                state={state}
+                editing={editing}
+                onEditingChange={(next) => {
+                  setEditing(next);
+                }}
+              />
 
               {notReady && (
                 <Alert tone="neutral" aria-live="polite">
@@ -72,25 +86,22 @@ export function StudioSoundView({ id }: { id: string }) {
               )}
 
               <Tabs
-                selectedIndex={
-                  tab === 'details' ? 0 : tab === 'playlists' ? 1 : 2
-                }
-                onChange={(index) =>
-                  setTab(
-                    index === 0
-                      ? 'details'
-                      : index === 1
-                        ? 'playlists'
-                        : 'insights',
-                  )
-                }
+                selectedIndex={Math.max(
+                  0,
+                  tabIds.indexOf(tab === 'details' ? tabIds[0] : tab),
+                )}
+                onChange={(index) => setTab(tabIds[index] ?? tabIds[0])}
                 items={[
-                  {
-                    id: 'details',
-                    label: 'Details',
-                    icon: <TagsIcon size={15} />,
-                    content: <DetailsTabContent id={id} state={state} />,
-                  },
+                  ...(editing
+                    ? [
+                        {
+                          id: 'details' as const,
+                          label: 'Details',
+                          icon: <TagsIcon size={15} />,
+                          content: <DetailsTabContent id={id} state={state} />,
+                        },
+                      ]
+                    : []),
                   ...(!isAudioClip
                     ? [
                         {

@@ -15,6 +15,7 @@ import {
   Badge,
   Button,
   ButtonLink,
+  EditIconButton,
   SaveButton,
   Tooltip,
   TrackContextMenu,
@@ -28,9 +29,13 @@ import type { SoundEditorState } from './useSoundEditor';
 export function SoundHeader({
   id,
   state,
+  editing,
+  onEditingChange,
 }: {
   id: string;
   state: SoundEditorState;
+  editing: boolean;
+  onEditingChange: (next: boolean) => void;
 }) {
   const navigate = useNavigate();
   const {
@@ -47,7 +52,6 @@ export function SoundHeader({
     onAutoTrim,
     masteringEnabled,
     visibility,
-    tab,
     saving,
     title,
     save,
@@ -158,13 +162,18 @@ export function SoundHeader({
           >
             {visibility.charAt(0) + visibility.slice(1).toLowerCase()}
           </Badge>
-          {tab === 'details' ? (
+          {editing ? (
             <SaveButton
               saving={saving}
               disabled={!title.trim()}
               onClick={() => void save()}
             />
           ) : null}
+          <EditIconButton
+            label="Edit details"
+            editing={editing}
+            onClick={() => onEditingChange(!editing)}
+          />
         </>
       }
       data-testid="studio-sound-social-header"

@@ -3,7 +3,6 @@ import {
   EyeIcon,
   EyeOffIcon,
   ImageIcon,
-  PencilIcon,
   PlusIcon,
   Trash2Icon,
 } from 'lucide-react';
@@ -15,6 +14,7 @@ import {
   Breadcrumbs,
   Button,
   Dialog,
+  EditIconButton,
   Input,
   SaveButton,
   Textarea,
@@ -256,18 +256,11 @@ export function AdminNewsView() {
                             <p className="mt-1 text-sm">{post.summary}</p>
                           </div>
                           <div className="flex flex-wrap gap-2">
-                            <Button
-                              size="sm"
+                            <EditIconButton
+                              label={`Edit ${post.headline}`}
                               variant="text"
                               onClick={() => startEdit(post)}
-                            >
-                              <PencilIcon
-                                size={14}
-                                aria-hidden
-                                className="mr-1.5"
-                              />
-                              Edit
-                            </Button>
+                            />
                             <Button
                               size="sm"
                               variant="text"

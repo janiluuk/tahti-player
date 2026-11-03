@@ -155,6 +155,8 @@ test('artist library starts with a searchable archive and track tools', async ({
   const trackHref = await sketchLink.getAttribute('href');
   expect(trackHref).toMatch(/^\/t\//);
   await page.goto(trackHref!.replace('/t/', '/studio/sounds/'));
+  await expect(page.getByRole('tab', { name: 'Details' })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Edit details' }).click();
 
   await expect(page.getByRole('button', { name: 'Play track' })).toBeVisible();
   await expect(

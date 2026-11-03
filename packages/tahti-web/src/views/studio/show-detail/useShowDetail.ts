@@ -24,11 +24,17 @@ export function useShowDetail(id: string) {
     tab?: 'overview' | 'episodes' | 'recordings';
   };
   const showTab = search.tab ?? 'overview';
-  const setShowTab = (tab: 'overview' | 'episodes' | 'recordings') => {
+  const setShowTab = (
+    tab: 'overview' | 'episodes' | 'recordings',
+    edit?: boolean,
+  ) => {
     void navigate({
       to: '/studio/shows/$id',
       params: { id },
-      search: tab === 'overview' ? {} : { tab },
+      search: (prev: { edit?: boolean }) => ({
+        ...((edit ?? prev.edit) ? { edit: true as const } : {}),
+        ...(tab === 'overview' ? {} : { tab }),
+      }),
     });
   };
   const [show, setShow] = useState<StudioShowSeries | null>(null);

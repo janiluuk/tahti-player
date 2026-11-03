@@ -87,13 +87,21 @@ test('collection and playlist editors open from Collections', async ({
   });
   const collection = await firstHref(
     page,
-    'main a[href^="/studio/collections/"]',
+    'main a[href^="/studio/collections/"]:not([href*="?"])',
   );
-  const playlist = await firstHref(page, 'main a[href^="/studio/playlists/"]');
+  const playlist = await firstHref(
+    page,
+    'main a[href^="/studio/playlists/"]:not([href*="?"])',
+  );
 
   for (const path of [collection, playlist]) {
     await visit(page, errors, path);
-    await expectLanded(page, errors, path, SIDEBAR, 'Details');
+    await expectLanded(page, errors, path, SIDEBAR);
+    await expect(page.getByRole('heading', { name: 'Details' })).toHaveCount(0);
+    await page.getByRole('button', { name: 'Edit details' }).click();
+    await expect(
+      page.getByRole('heading', { name: 'Details', exact: true }).first(),
+    ).toBeVisible();
   }
 });
 
@@ -116,8 +124,8 @@ test('a sound, its editor, mastering and an editor project open from Editor', as
   await clickTo(page, errors, project);
   await expectLanded(page, errors, project, STUDIO_NAV, 'Timeline');
 
-  await visit(page, errors, sound);
-  await expectLanded(page, errors, sound, SIDEBAR, 'Revisions');
+  await visit(page, errors, `${sound}?edit=true`);
+  await expectLanded(page, errors, `${sound}?edit=true`, SIDEBAR, 'Revisions');
 
   await clickTo(page, errors, soundEditor);
   await expectLanded(page, errors, soundEditor, SIDEBAR, 'Stems');

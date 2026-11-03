@@ -4,6 +4,7 @@ import {
   movedSettingsSection,
   type MovedSettingsSection,
 } from '../lib/movedSettingsSections';
+import { editSearch } from '../lib/useEditMode';
 import { StudioSetupChannelRedirect } from '../views/studio/StudioSetupChannelRedirect';
 import { appLayoutRoute } from './router-core';
 import {
@@ -96,13 +97,14 @@ export const studioSoundItemRoute = createRoute({
   path: '/studio/sounds/$id',
   validateSearch: (
     search: Record<string, unknown>,
-  ): { tab?: 'details' | 'playlists' | 'insights' } => ({
+  ): { tab?: 'details' | 'playlists' | 'insights'; edit?: true } => ({
     tab:
       search.tab === 'details' ||
       search.tab === 'playlists' ||
       search.tab === 'insights'
         ? search.tab
         : undefined,
+    ...editSearch(search),
   }),
   component: function StudioSoundItemRoute() {
     const { id } = studioSoundItemRoute.useParams();
@@ -157,8 +159,11 @@ export const studioReleasesRoute = createRoute({
 export const studioReleaseDetailRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/releases/$id',
-  validateSearch: (search: Record<string, unknown>): { tab?: string } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: string; edit?: true } => ({
     tab: typeof search.tab === 'string' ? search.tab : undefined,
+    ...editSearch(search),
   }),
   component: function StudioReleaseDetailRoute() {
     const { id } = studioReleaseDetailRoute.useParams();
@@ -332,13 +337,14 @@ export const studioShowDetailRoute = createRoute({
   path: '/studio/shows/$id',
   validateSearch: (
     search: Record<string, unknown>,
-  ): { tab?: 'overview' | 'episodes' | 'recordings' } => ({
+  ): { tab?: 'overview' | 'episodes' | 'recordings'; edit?: true } => ({
     tab:
       search.tab === 'overview' ||
       search.tab === 'episodes' ||
       search.tab === 'recordings'
         ? search.tab
         : undefined,
+    ...editSearch(search),
   }),
   component: function StudioShowDetailRoute() {
     const { id } = studioShowDetailRoute.useParams();

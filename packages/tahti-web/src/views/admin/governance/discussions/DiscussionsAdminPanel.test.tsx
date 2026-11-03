@@ -88,7 +88,7 @@ describe('DiscussionsAdminPanel', () => {
     await renderWithRouter(<DiscussionsAdminPanel />, {
       paths: ['/governance/discussions/$id'],
     });
-    fireEvent.click(await screen.findByRole('button', { name: 'Edit' }));
+    fireEvent.click(await screen.findByRole('button', { name: /^Edit / }));
     const save = screen.getByRole('button', { name: 'Save' });
     expect(save).toBeDisabled();
     fireEvent.change(screen.getByLabelText('Title'), {

@@ -2,7 +2,13 @@ import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Badge, Button, Textarea, ViewShell } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  EditIconButton,
+  Textarea,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import {
   editDiscussionPost,
@@ -397,14 +403,11 @@ export function DiscussionTopicView({ id }: { id: string }) {
                           {post.mine &&
                           topic.status === 'OPEN' &&
                           editingId !== post.id ? (
-                            <Button
-                              size="sm"
+                            <EditIconButton
+                              label="Edit your reply"
                               variant="text"
-                              aria-label="Edit your reply"
                               onClick={() => setEditingId(post.id)}
-                            >
-                              Edit
-                            </Button>
+                            />
                           ) : null}
                           {canRemove(post) ? (
                             <Button

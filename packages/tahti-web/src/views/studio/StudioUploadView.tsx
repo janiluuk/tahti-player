@@ -114,6 +114,7 @@ function RecordedBroadcastCard({
             <ButtonLink
               to="/studio/sounds/$id"
               params={{ id: broadcast.soundId }}
+              search={{ edit: true }}
               size="icon-sm"
               variant="text"
               aria-label={`Edit ${title}`}
@@ -217,6 +218,7 @@ export function StudioUploadView() {
       void navigate({
         to: '/studio/sounds/$id',
         params: { id: result.itemId },
+        search: { edit: true },
       });
     } catch {
       setMessage('Could not upload the file.');

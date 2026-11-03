@@ -9,6 +9,7 @@ import {
   Badge,
   Button,
   Dialog,
+  EditIconButton,
   FilePicker,
   Input,
   SaveButton,
@@ -56,6 +57,7 @@ import { collectionItemToTrack } from '../../../lib/collectionTrackMapping';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
 import { trackTableLabels } from '../../../lib/trackTableLabels';
 import { toastWithUndo } from '../../../lib/undoToast';
+import { useEditMode } from '../../../lib/useEditMode';
 import { usePlayerStore } from '../../../stores/playerStore';
 import { useStudioContributions } from '../useStudioContributions';
 
@@ -66,6 +68,7 @@ const TRACK_ORDER_OPTIONS: SelectOption[] = [
 ];
 
 export function StudioPlaylistEditorView({ slug }: { slug: string }) {
+  const [editing, setEditing] = useEditMode();
   const [col, setCol] = useState<StudioCollection | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [sounds, setSounds] = useState<StudioSound[]>([]);
@@ -361,9 +364,11 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                 title={name || col.name}
                 imageUrl={coverUrl}
                 imageAlt=""
-                onImageClick={() => setUploadOpen(true)}
+                onImageClick={editing ? () => setUploadOpen(true) : undefined}
                 onImageDelete={
-                  coverUrl ? () => setPendingCoverDelete(true) : undefined
+                  editing && coverUrl
+                    ? () => setPendingCoverDelete(true)
+                    : undefined
                 }
                 subtitle={isDjSet ? 'DJ set' : 'Playlist'}
                 description={description.trim() || undefined}
@@ -376,9 +381,16 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     >
                       {isPublic ? 'Public' : 'Private'}
                     </Badge>
-                    <SaveButton
-                      saving={saving}
-                      onClick={() => void saveMeta()}
+                    {editing ? (
+                      <SaveButton
+                        saving={saving}
+                        onClick={() => void saveMeta()}
+                      />
+                    ) : null}
+                    <EditIconButton
+                      label="Edit details"
+                      editing={editing}
+                      onClick={() => setEditing(!editing)}
                     />
                   </>
                 }
@@ -397,56 +409,58 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                 </div>
               </EntitySocialHeader>
 
-              <StudioPanel title="Details">
-                <div className="flex flex-col gap-3">
-                  <Input
-                    autoComplete="off"
-                    label="Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                  <Textarea
-                    label="Description"
-                    tone="secondary"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    rows={2}
-                  />
-                  <div className="flex items-center justify-between gap-3 text-sm">
-                    <span>Public on profile</span>
-                    <Toggle
-                      label="Public on profile"
-                      checked={isPublic}
-                      onChange={(checked) => {
-                        setIsPublic(checked);
-                        if (!checked) {
-                          setCollaborative(false);
-                        }
-                      }}
+              {editing ? (
+                <StudioPanel title="Details">
+                  <div className="flex flex-col gap-3">
+                    <Input
+                      autoComplete="off"
+                      label="Name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
                     />
-                  </div>
-                  {!isDjSet ? (
+                    <Textarea
+                      label="Description"
+                      tone="secondary"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={2}
+                    />
                     <div className="flex items-center justify-between gap-3 text-sm">
-                      <span>Others can add tracks (collaborative)</span>
+                      <span>Public on profile</span>
                       <Toggle
-                        label="Others can add tracks (collaborative)"
-                        checked={collaborative}
-                        disabled={!isPublic}
-                        onChange={setCollaborative}
+                        label="Public on profile"
+                        checked={isPublic}
+                        onChange={(checked) => {
+                          setIsPublic(checked);
+                          if (!checked) {
+                            setCollaborative(false);
+                          }
+                        }}
                       />
                     </div>
-                  ) : null}
-                  <Select
-                    label="Track order"
-                    description="How tracks are ordered on the public page."
-                    value={trackSortMode}
-                    onValueChange={(value) =>
-                      setTrackSortMode(value as CollectionTrackSortMode)
-                    }
-                    options={TRACK_ORDER_OPTIONS}
-                  />
-                </div>
-              </StudioPanel>
+                    {!isDjSet ? (
+                      <div className="flex items-center justify-between gap-3 text-sm">
+                        <span>Others can add tracks (collaborative)</span>
+                        <Toggle
+                          label="Others can add tracks (collaborative)"
+                          checked={collaborative}
+                          disabled={!isPublic}
+                          onChange={setCollaborative}
+                        />
+                      </div>
+                    ) : null}
+                    <Select
+                      label="Track order"
+                      description="How tracks are ordered on the public page."
+                      value={trackSortMode}
+                      onValueChange={(value) =>
+                        setTrackSortMode(value as CollectionTrackSortMode)
+                      }
+                      options={TRACK_ORDER_OPTIONS}
+                    />
+                  </div>
+                </StudioPanel>
+              ) : null}
 
               <StudioPanel
                 title="Tracks"
@@ -455,7 +469,11 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                 {tracks.length === 0 ? (
                   <PageEmpty
                     title={`This ${kindLabel.toLowerCase()} is empty`}
-                    description="Add sound tracks or whole releases below."
+                    description={
+                      editing
+                        ? 'Add sound tracks or whole releases below.'
+                        : 'Click Edit details to add tracks.'
+                    }
                   />
                 ) : (
                   <div className="min-h-[200px]">
@@ -468,7 +486,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       }
                       features={{
                         header: true,
-                        reorderable: true,
+                        reorderable: editing,
                         filterable: false,
                         sortable: false,
                       }}
@@ -476,7 +494,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                         displayPosition: false,
                         displayArtist: false,
                         displayDuration: true,
-                        displayDeleteButton: true,
+                        displayDeleteButton: editing,
                         displayThumbnail: true,
                         displayQueueControls: true,
                       }}
@@ -556,76 +574,84 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                   </div>
                 )}
 
-                <div className="border-border mt-4 grid gap-3 border-t pt-4 sm:grid-cols-2">
-                  <div className="flex flex-col gap-2">
-                    <Select
-                      label="Add from Library"
-                      value={addSoundId}
-                      onValueChange={setAddSoundId}
-                      options={[
-                        { id: '', label: 'Select track…' },
-                        ...sounds
-                          .filter(
-                            (a) =>
-                              !items.some((item) => item.sound?.id === a.id),
+                {editing ? (
+                  <div className="border-border mt-4 grid gap-3 border-t pt-4 sm:grid-cols-2">
+                    <div className="flex flex-col gap-2">
+                      <Select
+                        label="Add from Library"
+                        value={addSoundId}
+                        onValueChange={setAddSoundId}
+                        options={[
+                          { id: '', label: 'Select track…' },
+                          ...sounds
+                            .filter(
+                              (a) =>
+                                !items.some((item) => item.sound?.id === a.id),
+                            )
+                            .map((a) => ({ id: a.id, label: a.title })),
+                        ]}
+                      />
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        disabled={!addSoundId}
+                        onClick={() => {
+                          void addItem(
+                            { soundId: addSoundId },
+                            'Track added.',
+                            () => setAddSoundId(''),
+                          );
+                        }}
+                      >
+                        <PlusIcon size={14} aria-hidden className="mr-1.5" />
+                        Add track
+                      </Button>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Select
+                        label="Add release"
+                        value={addReleaseId}
+                        onValueChange={setAddReleaseId}
+                        options={[
+                          { id: '', label: 'Select release…' },
+                          ...releases.map((r) => ({
+                            id: r.id,
+                            label: r.title,
+                          })),
+                        ]}
+                      />
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        disabled={!addReleaseId}
+                        onClick={() => {
+                          void addItem(
+                            { releaseId: addReleaseId },
+                            'Release added.',
+                            () => setAddReleaseId(''),
+                          );
+                        }}
+                      >
+                        <PlusIcon size={14} aria-hidden className="mr-1.5" />
+                        Add release
+                      </Button>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <CatalogTrackSearch
+                        label="Add any public track"
+                        excludeIds={items.flatMap((item) =>
+                          item.sound ? [item.sound.id] : [],
+                        )}
+                        onAdd={(track) =>
+                          addItem(
+                            { soundId: track.id },
+                            `Added ${track.title}.`,
                           )
-                          .map((a) => ({ id: a.id, label: a.title })),
-                      ]}
-                    />
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      disabled={!addSoundId}
-                      onClick={() => {
-                        void addItem(
-                          { soundId: addSoundId },
-                          'Track added.',
-                          () => setAddSoundId(''),
-                        );
-                      }}
-                    >
-                      <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                      Add track
-                    </Button>
+                        }
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <Select
-                      label="Add release"
-                      value={addReleaseId}
-                      onValueChange={setAddReleaseId}
-                      options={[
-                        { id: '', label: 'Select release…' },
-                        ...releases.map((r) => ({ id: r.id, label: r.title })),
-                      ]}
-                    />
-                    <Button
-                      size="sm"
-                      variant="secondary"
-                      disabled={!addReleaseId}
-                      onClick={() => {
-                        void addItem(
-                          { releaseId: addReleaseId },
-                          'Release added.',
-                          () => setAddReleaseId(''),
-                        );
-                      }}
-                    >
-                      <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                      Add release
-                    </Button>
-                  </div>
-                  <div className="sm:col-span-2">
-                    <CatalogTrackSearch
-                      label="Add any public track"
-                      excludeIds={items.flatMap((item) =>
-                        item.sound ? [item.sound.id] : [],
-                      )}
-                      onAdd={(track) =>
-                        addItem({ soundId: track.id }, `Added ${track.title}.`)
-                      }
-                    />
-                  </div>
-                </div>
+                ) : null}
               </StudioPanel>
             </>
           )}

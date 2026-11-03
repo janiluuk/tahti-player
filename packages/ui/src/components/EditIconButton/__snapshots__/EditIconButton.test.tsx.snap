@@ -1,0 +1,33 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`EditIconButton > (Snapshot) renders the pencil button 1`] = `
+<div>
+  <button
+    aria-label="Edit details"
+    class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-8 justify-center"
+    data-headlessui-state=""
+    type="button"
+  >
+    <svg
+      aria-hidden="true"
+      class="lucide lucide-pencil"
+      fill="none"
+      height="14"
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+      width="14"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"
+      />
+      <path
+        d="m15 5 4 4"
+      />
+    </svg>
+  </button>
+</div>
+`;

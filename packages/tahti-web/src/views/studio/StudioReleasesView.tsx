@@ -6,7 +6,6 @@ import {
   ExternalLinkIcon,
   LibraryIcon,
   MoreHorizontalIcon,
-  PencilIcon,
   PlusIcon,
   SearchIcon,
   Share2Icon,
@@ -19,6 +18,7 @@ import {
   ButtonLink,
   CopyButton,
   Dialog,
+  EditIconLink,
   ExternalLink,
   FilterChips,
   Input,
@@ -302,19 +302,12 @@ export function StudioReleasesView() {
                             </code>
                           </p>
                         </div>
-                        <ButtonLink
+                        <EditIconLink
                           to="/studio/releases/$id"
                           params={{ id: r.id }}
-                          size="sm"
-                          variant="secondary"
-                        >
-                          <PencilIcon
-                            size={14}
-                            aria-hidden
-                            className="mr-1.5"
-                          />
-                          Edit
-                        </ButtonLink>
+                          search={{ edit: true }}
+                          label={`Edit ${r.title}`}
+                        />
                         <Tooltip content="Stats" side="top">
                           <ButtonLink
                             to="/studio/releases/$id"

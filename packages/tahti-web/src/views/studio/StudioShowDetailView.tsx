@@ -7,6 +7,7 @@ import {
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { useEditMode } from '../../lib/useEditMode';
 import { EpisodesTab } from './show-detail/EpisodesTab';
 import { NewEpisodeDialog } from './show-detail/NewEpisodeDialog';
 import { OverviewTab } from './show-detail/OverviewTab';
@@ -17,6 +18,7 @@ import { useShowDetail } from './show-detail/useShowDetail';
 export function StudioShowDetailView({ id }: { id: string }) {
   const state = useShowDetail(id);
   const { show, loaded, showLoadError, showTab, msg, reload } = state;
+  const [editing, setEditing] = useEditMode();
 
   return (
     <StudioGate>
@@ -48,10 +50,21 @@ export function StudioShowDetailView({ id }: { id: string }) {
           </StudioPanel>
         ) : (
           <>
-            <ShowHeader show={show} state={state} />
+            <ShowHeader
+              show={show}
+              state={state}
+              editing={editing}
+              onEditingChange={(next) => {
+                if (next && showTab !== 'overview') {
+                  state.setShowTab('overview', true);
+                } else {
+                  setEditing(next);
+                }
+              }}
+            />
 
             {showTab === 'overview' ? (
-              <OverviewTab show={show} state={state} />
+              <OverviewTab show={show} state={state} editing={editing} />
             ) : showTab === 'episodes' ? (
               <EpisodesTab state={state} />
             ) : (

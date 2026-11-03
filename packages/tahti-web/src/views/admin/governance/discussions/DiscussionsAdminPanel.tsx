@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 import {
   Badge,
   Button,
+  EditIconButton,
   InlineError,
   Input,
   Textarea,
@@ -246,14 +247,12 @@ function TopicRow({
         </span>
       </div>
       <div className="flex gap-2">
-        <Button
-          size="sm"
+        <EditIconButton
+          label={`Edit ${topic.title}`}
           variant="text"
           disabled={busy}
           onClick={() => setEditing(true)}
-        >
-          Edit
-        </Button>
+        />
         <Button
           size="sm"
           variant="secondary"

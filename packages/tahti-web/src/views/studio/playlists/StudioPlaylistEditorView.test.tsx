@@ -75,7 +75,7 @@ function createEditorRouter() {
   return createRouter({
     routeTree: rootRoute.addChildren([editorRoute]),
     history: createMemoryHistory({
-      initialEntries: ['/studio/playlists/my-list'],
+      initialEntries: ['/studio/playlists/my-list?edit=true'],
     }),
   });
 }

@@ -6,7 +6,13 @@ import {
   PlusIcon,
 } from 'lucide-react';
 
-import { Badge, Button, SaveButton, Tooltip } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  EditIconButton,
+  SaveButton,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import type { StudioCollection } from '../../../api/studio-types';
 import {
@@ -21,9 +27,13 @@ import type { CollectionEditState } from './useCollectionEditState';
 export function CollectionHeader({
   col,
   state,
+  editing,
+  onEditingChange,
 }: {
   col: StudioCollection;
   state: CollectionEditState;
+  editing: boolean;
+  onEditingChange: (next: boolean) => void;
 }) {
   const {
     name,
@@ -62,8 +72,10 @@ export function CollectionHeader({
       title={name || col.name}
       imageUrl={coverUrl}
       imageAlt=""
-      onImageClick={() => setUploadTarget('cover')}
-      onImageDelete={coverUrl ? () => setPendingCoverDelete(true) : undefined}
+      onImageClick={editing ? () => setUploadTarget('cover') : undefined}
+      onImageDelete={
+        editing && coverUrl ? () => setPendingCoverDelete(true) : undefined
+      }
       backdropUrl={backdropUrl}
       subtitle={
         <>
@@ -77,41 +89,50 @@ export function CollectionHeader({
       stats={headerStats}
       actions={
         <>
-          <div className="group relative">
-            <Tooltip
-              content={backdropUrl ? 'Preview backdrop' : 'Change backdrop'}
-              side="top"
-            >
-              <Button
-                variant="secondary"
-                size="icon-sm"
-                className="bg-background border-border rounded-md border-(length:--border-width)"
-                aria-label={
-                  backdropUrl ? 'Preview backdrop' : 'Change backdrop'
-                }
-                onClick={() =>
-                  backdropUrl
-                    ? backdropChrome.openPreview()
-                    : setUploadTarget('backdrop')
-                }
+          {editing ? (
+            <div className="group relative">
+              <Tooltip
+                content={backdropUrl ? 'Preview backdrop' : 'Change backdrop'}
+                side="top"
               >
-                <ImageIcon size={14} aria-hidden />
-              </Button>
-            </Tooltip>
-            {backdropUrl ? (
-              <ImageSlotDeleteBadge
-                label="Backdrop"
-                onClick={backdropChrome.requestDelete}
-              />
-            ) : null}
-          </div>
+                <Button
+                  variant="secondary"
+                  size="icon-sm"
+                  className="bg-background border-border rounded-md border-(length:--border-width)"
+                  aria-label={
+                    backdropUrl ? 'Preview backdrop' : 'Change backdrop'
+                  }
+                  onClick={() =>
+                    backdropUrl
+                      ? backdropChrome.openPreview()
+                      : setUploadTarget('backdrop')
+                  }
+                >
+                  <ImageIcon size={14} aria-hidden />
+                </Button>
+              </Tooltip>
+              {backdropUrl ? (
+                <ImageSlotDeleteBadge
+                  label="Backdrop"
+                  onClick={backdropChrome.requestDelete}
+                />
+              ) : null}
+            </div>
+          ) : null}
           <Badge
             variant="pill"
             color={visibility === 'PUBLIC' ? 'green' : 'secondary'}
           >
             {visibility.charAt(0) + visibility.slice(1).toLowerCase()}
           </Badge>
-          <SaveButton saving={saving} onClick={() => void saveMeta()} />
+          {editing ? (
+            <SaveButton saving={saving} onClick={() => void saveMeta()} />
+          ) : null}
+          <EditIconButton
+            label="Edit details"
+            editing={editing}
+            onClick={() => onEditingChange(!editing)}
+          />
         </>
       }
       data-testid="studio-collection-social-header"
@@ -136,19 +157,21 @@ export function CollectionHeader({
             <ListPlusIcon size={16} aria-hidden />
           </Button>
         </Tooltip>
-        <Tooltip
-          content={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
-          side="top"
-        >
-          <Button
-            variant="secondary"
-            size="icon"
-            aria-label={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
-            onClick={() => setAddPickerOpen(true)}
+        {editing ? (
+          <Tooltip
+            content={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
+            side="top"
           >
-            <PlusIcon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
+            <Button
+              variant="secondary"
+              size="icon"
+              aria-label={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
+              onClick={() => setAddPickerOpen(true)}
+            >
+              <PlusIcon size={16} aria-hidden />
+            </Button>
+          </Tooltip>
+        ) : null}
         <StudioCollectionMoreMenu
           col={col}
           kindLabel={isAlbumLike ? 'album' : 'collection'}

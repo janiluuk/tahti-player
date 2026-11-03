@@ -21,6 +21,7 @@ export * from './ConfirmDialog';
 export * from './CopyButton';
 export * from './ExternalLink';
 export * from './Dialog';
+export * from './EditIconButton';
 export * from './DonutChart';
 export * from './FavoriteButton';
 export * from './FilePicker';

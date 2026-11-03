@@ -112,7 +112,7 @@ describe('MyVenuesView', () => {
     });
     await renderWithRouter(<MyVenuesView />);
     fireEvent.click(
-      await screen.findByRole('button', { name: 'Edit details' }),
+      await screen.findByRole('button', { name: 'Edit Kuudes Linja' }),
     );
     expect(screen.getByLabelText('Street address')).toHaveValue('Hämeentie 13');
   });

@@ -3,7 +3,6 @@ import {
   GlobeIcon,
   ListMusicIcon,
   LockIcon,
-  PencilIcon,
   PlusIcon,
   UsersIcon,
 } from 'lucide-react';
@@ -14,6 +13,7 @@ import {
   Button,
   ButtonLink,
   Dialog,
+  EditIconLink,
   Input,
   MediaArtwork,
   Toggle,
@@ -260,15 +260,12 @@ export function StudioPlaylistsView() {
                             : ''}
                       </p>
                     </div>
-                    <ButtonLink
+                    <EditIconLink
                       to="/studio/collections/$slug"
                       params={{ slug: c.slug }}
-                      size="sm"
-                      variant="secondary"
-                    >
-                      <PencilIcon size={14} aria-hidden className="mr-1.5" />
-                      Edit
-                    </ButtonLink>
+                      search={{ edit: true }}
+                      label={`Edit ${c.name}`}
+                    />
                   </li>
                 ))}
               </ul>

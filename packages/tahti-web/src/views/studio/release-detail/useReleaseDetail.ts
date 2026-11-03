@@ -21,6 +21,7 @@ import type {
 import type { TahtiPlayable } from '../../../api/types';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
 import { toastWithUndo } from '../../../lib/undoToast';
+import { useEditMode } from '../../../lib/useEditMode';
 import { useAuthStore } from '../../../stores/authStore';
 import { usePlayerStore } from '../../../stores/playerStore';
 
@@ -44,7 +45,7 @@ export function useReleaseDetail(id: string) {
   const [applyingArtwork, setApplyingArtwork] = useState(false);
   const [pendingArtworkDelete, setPendingArtworkDelete] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [detailsExpanded, setDetailsExpanded] = useState(false);
+  const [detailsExpanded, setDetailsExpanded] = useEditMode();
   const [soundsById, setSoundsById] = useState<Record<string, StudioSound>>({});
 
   useEffect(() => {

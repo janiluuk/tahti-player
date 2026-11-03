@@ -50,7 +50,7 @@ export const Upcoming: Story = {
       'href',
       'https://kuudeslinja.fi/events/midnight-cartography',
     );
-    const edits = canvas.getAllByRole('link', { name: 'Edit' });
+    const edits = canvas.getAllByRole('link', { name: /^Edit / });
     await expect(edits).toHaveLength(2);
     await expect(edits[0]).toHaveAttribute(
       'href',

@@ -49,9 +49,10 @@ export const Overview: Story = {
     await expect(
       canvas.getByRole('link', { name: 'Back to Shows' }),
     ).toHaveAttribute('href', '/studio/shows');
-    await expect(canvas.getByRole('textbox', { name: 'Title' })).toHaveValue(
-      'Friday Frequency',
-    );
+    await expect(canvas.queryByRole('textbox', { name: 'Title' })).toBeNull();
+    await expect(
+      canvas.getByRole('button', { name: 'Edit details' }),
+    ).toHaveAttribute('aria-pressed', 'false');
     await expectVisible(
       canvas.getByRole('button', { name: 'Book next 2h slot' }),
     );
@@ -65,10 +66,13 @@ export const Overview: Story = {
   },
 };
 
-// Saving the show defaults confirms with a toast.
+// Edit details reveals the show defaults form; saving confirms with a toast.
 export const SaveDefaults: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    await userEvent.click(
+      await canvas.findByRole('button', { name: 'Edit details' }),
+    );
     const title = await canvas.findByRole('textbox', { name: 'Title' });
     await userEvent.clear(title);
     await userEvent.type(title, 'Friday Frequency Live');
@@ -137,9 +141,10 @@ export const SingleShow: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expectVisible(await canvas.findByText('Live set · Single show'));
-    await expect(canvas.getByRole('textbox', { name: 'Tagline' })).toHaveValue(
-      'Deep electronics after dark',
-    );
+    await userEvent.click(canvas.getByRole('button', { name: 'Edit details' }));
+    await expect(
+      await canvas.findByRole('textbox', { name: 'Tagline' }),
+    ).toHaveValue('Deep electronics after dark');
     await expect(
       canvas.queryByRole('button', { name: 'New episode' }),
     ).toBeNull();

@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { Badge, Button, Textarea, Tooltip } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  EditIconButton,
+  Textarea,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { MAP_CASE_GROUPS } from '../../content/mapScreens';
@@ -172,16 +178,14 @@ function CommentRow({ comment }: { comment: MapComment }) {
       )}
       {!editing ? (
         <div className="mt-2 flex flex-wrap gap-2">
-          <Button
-            size="sm"
+          <EditIconButton
+            label="Edit comment"
             variant="text"
             onClick={() => {
               setDraft(comment.text);
               setEditing(true);
             }}
-          >
-            Edit
-          </Button>
+          />
           {resolved ? (
             <Button
               size="sm"
