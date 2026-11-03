@@ -63,7 +63,6 @@ export function useCollectionEditState(slug: string) {
     removeSlideshowFrame,
   } = useCollectionImages(slug, setCol);
   const [saving, setSaving] = useState(false);
-  const [detailsExpanded, setDetailsExpanded] = useState(false);
   const [pendingRemove, setPendingRemove] = useState<{
     id: string;
     title: string;
@@ -303,8 +302,6 @@ export function useCollectionEditState(slug: string) {
     removeCover,
     removeSlideshowFrame,
     saving,
-    detailsExpanded,
-    setDetailsExpanded,
     pendingRemove,
     setPendingRemove,
     items,

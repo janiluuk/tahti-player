@@ -89,7 +89,7 @@ vi.mock('../../api/studio', async (importOriginal) => {
   };
 });
 
-function createRouterFor() {
+function createRouterFor(entry = '/studio/collections/my-album?edit=true') {
   const rootRoute = createRootRoute({ component: () => <Outlet /> });
   const route = createRoute({
     getParentRoute: () => rootRoute,
@@ -99,7 +99,7 @@ function createRouterFor() {
   return createRouter({
     routeTree: rootRoute.addChildren([route]),
     history: createMemoryHistory({
-      initialEntries: ['/studio/collections/my-album'],
+      initialEntries: [entry],
     }),
   });
 }
@@ -131,7 +131,7 @@ afterEach(() => {
   useAuthStore.setState({ user: null, hydrated: true, loading: false });
 });
 
-async function renderView() {
+async function renderView(entry?: string) {
   useAuthStore.setState({
     user: {
       id: 'user-1',
@@ -146,7 +146,7 @@ async function renderView() {
     hydrated: true,
     loading: false,
   });
-  const router = createRouterFor();
+  const router = createRouterFor(entry);
   await act(async () => {
     root.render(<RouterProvider router={router} />);
     await new Promise((resolve) => setTimeout(resolve, 0));
@@ -156,10 +156,6 @@ async function renderView() {
 describe('StudioCollectionEditView add-track keeps unsaved details edits', () => {
   it('does not overwrite an in-progress title edit when a track is added', async () => {
     await renderView();
-
-    await act(async () =>
-      fireEvent.click(screen.getByRole('button', { name: 'Edit details' })),
-    );
 
     const titleInput = screen.getByLabelText('Title') as HTMLInputElement;
     await act(async () =>
@@ -217,13 +213,49 @@ describe('StudioCollectionEditView load failure', () => {
     collectionFailure = 'HTTP 502';
     await renderView();
     expect(screen.getByText('Could not load this collection')).toBeTruthy();
-    expect(screen.queryByRole('button', { name: 'Edit details' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Done editing' })).toBeNull();
 
     collectionFailure = null;
     await act(async () => {
       fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
       await new Promise((resolve) => setTimeout(resolve, 0));
     });
-    expect(screen.getByRole('button', { name: 'Edit details' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Done editing' })).toBeTruthy();
+  });
+});
+
+describe('StudioCollectionEditView read-only view', () => {
+  it('shows the header and tracks but no form until Edit details is pressed', async () => {
+    await renderView('/studio/collections/my-album');
+    expect(
+      container.querySelector(
+        '[data-testid="studio-collection-social-header"]',
+      ),
+    ).not.toBeNull();
+    expect(container.textContent).toContain('Tracklist');
+    expect(container.textContent).not.toContain('Text layer');
+    expect(
+      container.querySelector('button[aria-label="Save"]') ??
+        [...container.querySelectorAll('button')].find(
+          (button) => button.textContent === 'Save',
+        ),
+    ).toBeUndefined();
+    const edit = container.querySelector(
+      'button[aria-label="Edit details"]',
+    ) as HTMLButtonElement;
+    expect(edit).not.toBeNull();
+    expect(edit.getAttribute('aria-pressed')).toBe('false');
+    await act(async () => {
+      edit.click();
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(
+      container.querySelector('button[aria-label="Done editing"]'),
+    ).not.toBeNull();
+    expect(
+      [...container.querySelectorAll('button')].some(
+        (button) => button.textContent === 'Save',
+      ),
+    ).toBe(true);
   });
 });

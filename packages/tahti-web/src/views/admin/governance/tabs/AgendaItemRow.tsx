@@ -1,7 +1,7 @@
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { useState } from 'react';
 
-import { Button, InlineError, Input } from '@tahti-player/ui';
+import { Button, EditIconButton, InlineError, Input } from '@tahti-player/ui';
 
 import {
   deleteAdminAgendaItem,
@@ -129,14 +129,10 @@ export function AgendaItemRow({
             <ArrowDownIcon size={14} aria-hidden />
           </Button>
         ) : null}
-        <Button
-          size="sm"
-          variant="secondary"
-          aria-label={`Edit item ${item.position}: ${item.title}`}
+        <EditIconButton
+          label={`Edit item ${item.position}: ${item.title}`}
           onClick={() => setEditing(true)}
-        >
-          Edit
-        </Button>
+        />
         <Button
           size="sm"
           variant="secondary"

@@ -312,6 +312,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Player/StemMixer` | `tahti-web/StemMixer.stories.tsx` |
 | `Tahti/Studio/StreamManagerPanel` | `tahti-web/StreamManagerPanel.stories.tsx` |
 | `Tahti/Studio/StudioBrandingView` | `tahti-web/StudioBrandingView.stories.tsx` |
+| `Tahti/Studio/StudioCollectionEditView` | `tahti-web/StudioCollectionEditView.stories.tsx` |
 | `Tahti/Studio/StudioCollectionsView` | `tahti-web/StudioCollectionsView.stories.tsx` |
 | `Tahti/Studio/StudioDistributionView` | `tahti-web/StudioDistributionView.stories.tsx` |
 | `Tahti/Studio/StudioEventCreateView` | `tahti-web/StudioEventCreateView.stories.tsx` |
@@ -325,6 +326,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/StudioModerationView` | `tahti-web/StudioModerationView.stories.tsx` |
 | `Tahti/Studio/StudioNav` | `tahti-web/StudioNav.stories.tsx` |
 | `Tahti/Page/StudioPanel` | `tahti-web/StudioPanel.stories.tsx` |
+| `Tahti/Studio/StudioPlaylistEditorView` | `tahti-web/StudioPlaylistEditorView.stories.tsx` |
 | `Tahti/Studio/StudioPlaylistsView` | `tahti-web/StudioPlaylistsView.stories.tsx` |
 | `Tahti/Studio/StudioReleaseDetailView` | `tahti-web/StudioReleaseDetailView.stories.tsx` |
 | `Tahti/Studio/StudioScheduleView` | `tahti-web/StudioScheduleView.stories.tsx` |
@@ -389,6 +391,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/HistoryCharts/DayOfWeekChart` | `DayOfWeekChart.stories.tsx` |
 | `Components/Dialog` | `Dialog.stories.tsx` |
 | `Components/DonutChart` | `DonutChart.stories.tsx` |
+| `Components/EditIconButton` | `EditIconButton.stories.tsx` |
 | `Components/EmptyState` | `EmptyState.stories.tsx` |
 | `Components/ExternalLink` | `ExternalLink.stories.tsx` |
 | `Components/FavoriteButton` | `FavoriteButton.stories.tsx` |

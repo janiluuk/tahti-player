@@ -3,7 +3,6 @@ import {
   BanIcon,
   CheckCircle2Icon,
   ImageIcon,
-  PencilIcon,
   PlusIcon,
   Trash2Icon,
 } from 'lucide-react';
@@ -13,6 +12,7 @@ import {
   Badge,
   Button,
   Dialog,
+  EditIconButton,
   InlineError,
   Input,
   SaveButton,
@@ -274,15 +274,11 @@ export function InternetRadioPresetsPanel() {
                     )}
                     {preset.enabled ? 'Disable' : 'Enable for everyone'}
                   </Button>
-                  <Button
-                    className="gap-1.5"
-                    size="sm"
+                  <EditIconButton
+                    label={`Edit ${preset.name}`}
                     variant="text"
                     onClick={() => openEdit(preset)}
-                  >
-                    <PencilIcon size={14} aria-hidden />
-                    Edit
-                  </Button>
+                  />
                   <Button
                     className="gap-1.5"
                     size="sm"

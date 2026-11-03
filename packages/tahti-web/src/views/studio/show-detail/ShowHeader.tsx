@@ -1,6 +1,12 @@
 import { CircleDotIcon, InfoIcon, ListMusicIcon, PlusIcon } from 'lucide-react';
 
-import { Button, TabLabel, Tabs, Tooltip } from '@tahti-player/ui';
+import {
+  Button,
+  EditIconButton,
+  TabLabel,
+  Tabs,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import type { StudioShowSeries } from '../../../api/shows';
 import { EntitySocialHeader } from '../../../components/EntitySocialHeader';
@@ -9,9 +15,13 @@ import type { ShowDetailState } from './useShowDetail';
 export function ShowHeader({
   show,
   state,
+  editing,
+  onEditingChange,
 }: {
   show: StudioShowSeries;
   state: ShowDetailState;
+  editing: boolean;
+  onEditingChange: (next: boolean) => void;
 }) {
   const {
     thumbnailUrl,
@@ -34,19 +44,26 @@ export function ShowHeader({
         subtitle={`${show.showType === 'LIVE_SET' ? 'Live set' : 'Talk show'} · ${show.mode === 'SINGLE' ? 'Single show' : 'Series'}`}
         description={description.trim() || undefined}
         actions={
-          show.mode === 'SINGLE' ? undefined : (
-            <Tooltip content="New episode" side="top">
-              <Button
-                variant="secondary"
-                size="icon-sm"
-                className="bg-background border-border rounded-md border-(length:--border-width)"
-                onClick={() => setCreateOpen(true)}
-                aria-label="New episode"
-              >
-                <PlusIcon size={16} aria-hidden />
-              </Button>
-            </Tooltip>
-          )
+          <>
+            {show.mode === 'SINGLE' ? null : (
+              <Tooltip content="New episode" side="top">
+                <Button
+                  variant="secondary"
+                  size="icon-sm"
+                  className="bg-background border-border rounded-md border-(length:--border-width)"
+                  onClick={() => setCreateOpen(true)}
+                  aria-label="New episode"
+                >
+                  <PlusIcon size={16} aria-hidden />
+                </Button>
+              </Tooltip>
+            )}
+            <EditIconButton
+              label="Edit details"
+              editing={editing}
+              onClick={() => onEditingChange(!editing)}
+            />
+          </>
         }
         data-testid="studio-show-social-header"
       />

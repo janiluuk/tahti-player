@@ -3,7 +3,13 @@ import { CheckIcon, XIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Badge, Button, Textarea, Tooltip } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  EditIconButton,
+  Textarea,
+  Tooltip,
+} from '@tahti-player/ui';
 
 import { downloadMapCommentsCsv } from '../lib/mapCommentsCsv';
 import { mapPageTargetForPath } from '../lib/mapPageTarget';
@@ -76,16 +82,14 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
       )}
       {!editing ? (
         <div className="mt-2 flex flex-wrap gap-1">
-          <Button
-            size="sm"
+          <EditIconButton
+            label="Edit comment"
             variant="text"
             onClick={() => {
               setDraft(comment.text);
               setEditing(true);
             }}
-          >
-            Edit
-          </Button>
+          />
           {resolved ? (
             <Button
               size="sm"

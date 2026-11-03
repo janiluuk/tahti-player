@@ -8,6 +8,7 @@ import { PageError, PageLoading } from '../../components/PageStates';
 import { RestrictionNotice } from '../../components/RestrictionNotice';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { useEditMode } from '../../lib/useEditMode';
 import { CollectionDialogs } from './collection-edit/CollectionDialogs';
 import { CollectionHeader } from './collection-edit/CollectionHeader';
 import { DetailsPanel } from './collection-edit/DetailsPanel';
@@ -28,6 +29,7 @@ export function StudioCollectionEditView({
 }) {
   const state = useCollectionEditState(slug);
   const { col, isAlbumLike, loadError, reload } = state;
+  const [editing, setEditing] = useEditMode();
 
   return (
     <StudioGate requireChannel={false}>
@@ -61,26 +63,35 @@ export function StudioCollectionEditView({
             </StudioPanel>
           ) : (
             <>
-              <CollectionHeader col={col} state={state} />
-              <DetailsPanel state={state} />
-              <TextLayerPanel slug={slug} />
-              <TracklistPanel state={state} isAlbumLike={isAlbumLike} />
-              {col.id ? <RestrictionNotice type="UPLOAD" /> : null}
-              {col.id ? (
+              <CollectionHeader
+                col={col}
+                state={state}
+                editing={editing}
+                onEditingChange={setEditing}
+              />
+              {editing ? <DetailsPanel state={state} /> : null}
+              {editing ? <TextLayerPanel slug={slug} /> : null}
+              <TracklistPanel
+                state={state}
+                isAlbumLike={isAlbumLike}
+                editing={editing}
+              />
+              {editing && col.id ? <RestrictionNotice type="UPLOAD" /> : null}
+              {editing && col.id ? (
                 <MixcloudImportPanel
                   collectionId={col.id}
                   onAdded={() => void state.refreshItems()}
                   onUndoAdd={state.removeAddedSound}
                 />
               ) : null}
-              {col.id ? (
+              {editing && col.id ? (
                 <MikseriImportPanel
                   collectionId={col.id}
                   onAdded={() => void state.refreshItems()}
                   onUndoAdd={state.removeAddedSound}
                 />
               ) : null}
-              {col.id ? (
+              {editing && col.id ? (
                 <SpotifyImportPanel
                   collectionId={col.id}
                   onAdded={() => void state.refreshItems()}

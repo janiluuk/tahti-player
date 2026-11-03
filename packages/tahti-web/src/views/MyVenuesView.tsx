@@ -6,6 +6,7 @@ import {
   Box,
   Button,
   ButtonLink,
+  EditIconButton,
   Input,
   SectionTitle,
   ViewShell,
@@ -62,14 +63,11 @@ function VenueCard({
           }}
         />
       ) : (
-        <Button
-          size="sm"
-          variant="secondary"
+        <EditIconButton
+          label={`Edit ${venue.name}`}
           className="w-fit"
           onClick={() => setEditing(true)}
-        >
-          Edit details
-        </Button>
+        />
       )}
       <VenueShowsSection venue={venue} onChanged={onChanged} />
     </Box>

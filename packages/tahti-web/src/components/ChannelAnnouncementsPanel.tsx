@@ -1,10 +1,11 @@
-import { PencilIcon, PlayIcon, Trash2Icon } from 'lucide-react';
+import { PlayIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import {
   Button,
   Dialog,
+  EditIconButton,
   FilePicker,
   InlineError,
   SectionTitle,
@@ -274,15 +275,11 @@ export function ChannelAnnouncementsPanel() {
               >
                 <PlayIcon size={16} />
               </Button>
-              <Button
-                size="sm"
-                variant="secondary"
+              <EditIconButton
+                label={`Edit ${clip.title}`}
                 disabled={clip.renderStatus === 'PROCESSING'}
                 onClick={() => void openEditor(clip)}
-              >
-                <PencilIcon size={14} className="mr-1" />
-                Edit
-              </Button>
+              />
               <Button
                 size="icon-sm"
                 variant="text"

@@ -64,7 +64,9 @@ export const Default: Story = {
     await expectVisible(canvas.getByText('Collaborative'));
     await expectVisible(canvas.getByText('Private'));
     await expect(canvas.queryByText('Midnight Archive')).toBeNull();
-    await expect(canvas.getAllByRole('link', { name: 'Edit' })).toHaveLength(3);
+    await expect(canvas.getAllByRole('link', { name: /^Edit / })).toHaveLength(
+      3,
+    );
     await expect(
       canvas.getByRole('link', { name: 'Collections' }),
     ).toHaveAttribute('href', '/studio/collections');

@@ -2,7 +2,6 @@ import {
   CalendarClockIcon,
   CalendarDaysIcon,
   HistoryIcon,
-  PencilIcon,
   PlusIcon,
   Trash2Icon,
 } from 'lucide-react';
@@ -12,6 +11,7 @@ import { toast } from 'sonner';
 import {
   Button,
   ButtonLink,
+  EditIconLink,
   ExternalLink,
   Tabs,
   Tooltip,
@@ -91,15 +91,12 @@ export function StudioEventsView() {
               </div>
             </div>
             <div className="flex flex-wrap gap-1">
-              <ButtonLink
+              <EditIconLink
                 to="/studio/events/$eventId/edit"
                 params={{ eventId: event.id }}
-                size="sm"
+                label={`Edit ${event.title}`}
                 variant="text"
-              >
-                <PencilIcon size={14} aria-hidden className="mr-1.5" />
-                Edit
-              </ButtonLink>
+              />
               <Button
                 size="sm"
                 variant="text"

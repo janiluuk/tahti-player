@@ -18,6 +18,7 @@ import {
   Button,
   ButtonLink,
   Dialog,
+  EditIconLink,
   FilterChips,
   ImageReveal,
   Input,
@@ -586,14 +587,12 @@ export function StudioCollectionsView() {
                         <PlayIcon size={16} aria-hidden />
                       </Button>
                     </Tooltip>
-                    <ButtonLink
+                    <EditIconLink
                       to={editorRouteFor(c)}
                       params={{ slug: c.slug }}
-                      size="sm"
-                      variant="secondary"
-                    >
-                      Edit
-                    </ButtonLink>
+                      search={{ edit: true }}
+                      label={`Edit ${c.name}`}
+                    />
                     <StudioCollectionMoreMenu
                       col={c}
                       kindLabel={menuKindLabel(c)}

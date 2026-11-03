@@ -23,7 +23,7 @@ test('24/7 clip editor previews, activates, and deletes clips with Studio chrome
   ).toHaveAttribute('aria-selected', 'true');
   const section = page.locator('#channel-clips');
   await section
-    .getByRole('button', { name: 'Edit', exact: true })
+    .getByRole('button', { name: /^Edit / })
     .first()
     .click();
   const dialog = page.getByRole('dialog', { name: 'Edit clip' });

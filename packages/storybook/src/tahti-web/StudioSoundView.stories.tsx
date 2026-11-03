@@ -42,7 +42,25 @@ export const Ready: Story = {
   decorators: [withTahtiRouter(`/studio/sounds/${EDIT_SOUND.id}`)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    await canvas.findByRole('tab', { name: 'Insights' });
+    await expect(canvas.queryByRole('tab', { name: 'Details' })).toBeNull();
+    await expect(
+      canvas.getByRole('button', { name: 'Edit details' }),
+    ).toHaveAttribute('aria-pressed', 'false');
+    await expect(canvas.queryByRole('alert')).toBeNull();
+    await expect(canvas.queryByText(/Processing failed/)).toBeNull();
+  },
+};
+
+export const Editing: Story = {
+  args: { id: EDIT_SOUND.id },
+  decorators: [withTahtiRouter(`/studio/sounds/${EDIT_SOUND.id}?edit=true`)],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
     await canvas.findByRole('tab', { name: 'Details' });
+    await expect(
+      canvas.getByRole('button', { name: 'Done editing' }),
+    ).toHaveAttribute('aria-pressed', 'true');
     await expect(canvas.queryByRole('alert')).toBeNull();
     await expect(canvas.queryByText(/Processing failed/)).toBeNull();
   },

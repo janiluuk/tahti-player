@@ -28,9 +28,11 @@ function revokeBlobUrl(url: string) {
 export function OverviewTab({
   show,
   state,
+  editing,
 }: {
   show: StudioShowSeries;
   state: ShowDetailState;
+  editing: boolean;
 }) {
   const {
     title,
@@ -68,140 +70,142 @@ export function OverviewTab({
 
   return (
     <>
-      <StudioPanel
-        title="Show defaults"
-        description="Manage the show identity and defaults inherited by new episodes."
-      >
-        <form
-          className="flex flex-col gap-3"
-          onSubmit={(event) => {
-            event.preventDefault();
-            void saveMeta();
-          }}
+      {editing ? (
+        <StudioPanel
+          title="Show defaults"
+          description="Manage the show identity and defaults inherited by new episodes."
         >
-          <Input
-            label="Title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
-          <Input
-            label="Tagline"
-            description="Short line under the show name. New broadcasts start with it."
-            value={tagline}
-            onChange={(e) => setTagline(e.target.value)}
-            maxLength={200}
-          />
-          <Textarea
-            submitOnModEnter
-            label="Description"
-            tone="secondary"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={3}
-          />
-          <Input
-            label="When it airs"
-            description="Shown with your upcoming shows, e.g. Fridays 20:00."
-            value={scheduleNote}
-            onChange={(e) => setScheduleNote(e.target.value)}
-            maxLength={200}
-          />
-          <ShowImagePicker
-            label="Show thumbnail"
-            description="JPEG, PNG, WebP, or GIF"
-            value={thumbnailUrl}
-            file={thumbnailFile}
-            onFile={(file) => {
-              revokeBlobUrl(thumbnailUrl);
-              setThumbnailFile(file);
-              setThumbnailUrl(file ? URL.createObjectURL(file) : '');
+          <form
+            className="flex flex-col gap-3"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void saveMeta();
             }}
-            onUrlChange={setThumbnailUrl}
-          />
-          <ShowImagePicker
-            label="Show backdrop"
-            description="Wide JPEG, PNG, WebP, or GIF"
-            value={backdropUrl}
-            file={backdropFile}
-            onFile={(file) => {
-              revokeBlobUrl(backdropUrl);
-              setBackdropFile(file);
-              setBackdropUrl(file ? URL.createObjectURL(file) : '');
-            }}
-            onUrlChange={setBackdropUrl}
-          />
-          <Select
-            label="Visibility"
-            description="Who can see this show and its episodes."
-            value={visibility}
-            onValueChange={(value) =>
-              setVisibility(value as 'PUBLIC' | 'FAN_ONLY')
-            }
-            options={[
-              { id: 'PUBLIC', label: 'Public' },
-              { id: 'FAN_ONLY', label: 'Fans only' },
-            ]}
-          />
-          <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-3 rounded-md border p-3 text-sm">
-            <span>
-              <span className="block font-medium">
-                Publish recordings automatically
-              </span>
-              <span className="text-foreground-secondary block text-xs">
-                Recorded broadcasts of this show are published without a manual
-                approval step.
-              </span>
-            </span>
-            <Toggle
-              label="Publish recordings automatically"
-              checked={autoPublish}
-              onChange={setAutoPublish}
+          >
+            <Input
+              label="Title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
             />
-          </div>
-          {show.mode !== 'SINGLE' ? (
-            <div className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-md border p-3 text-sm">
-              <div className="flex items-center justify-between gap-3">
-                <span>
-                  <span className="block font-medium">
-                    Number episodes automatically
-                  </span>
-                  <span className="text-foreground-secondary block text-xs">
-                    New episodes get the next number in their title.
-                  </span>
+            <Input
+              label="Tagline"
+              description="Short line under the show name. New broadcasts start with it."
+              value={tagline}
+              onChange={(e) => setTagline(e.target.value)}
+              maxLength={200}
+            />
+            <Textarea
+              submitOnModEnter
+              label="Description"
+              tone="secondary"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+            />
+            <Input
+              label="When it airs"
+              description="Shown with your upcoming shows, e.g. Fridays 20:00."
+              value={scheduleNote}
+              onChange={(e) => setScheduleNote(e.target.value)}
+              maxLength={200}
+            />
+            <ShowImagePicker
+              label="Show thumbnail"
+              description="JPEG, PNG, WebP, or GIF"
+              value={thumbnailUrl}
+              file={thumbnailFile}
+              onFile={(file) => {
+                revokeBlobUrl(thumbnailUrl);
+                setThumbnailFile(file);
+                setThumbnailUrl(file ? URL.createObjectURL(file) : '');
+              }}
+              onUrlChange={setThumbnailUrl}
+            />
+            <ShowImagePicker
+              label="Show backdrop"
+              description="Wide JPEG, PNG, WebP, or GIF"
+              value={backdropUrl}
+              file={backdropFile}
+              onFile={(file) => {
+                revokeBlobUrl(backdropUrl);
+                setBackdropFile(file);
+                setBackdropUrl(file ? URL.createObjectURL(file) : '');
+              }}
+              onUrlChange={setBackdropUrl}
+            />
+            <Select
+              label="Visibility"
+              description="Who can see this show and its episodes."
+              value={visibility}
+              onValueChange={(value) =>
+                setVisibility(value as 'PUBLIC' | 'FAN_ONLY')
+              }
+              options={[
+                { id: 'PUBLIC', label: 'Public' },
+                { id: 'FAN_ONLY', label: 'Fans only' },
+              ]}
+            />
+            <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-3 rounded-md border p-3 text-sm">
+              <span>
+                <span className="block font-medium">
+                  Publish recordings automatically
                 </span>
-                <Toggle
-                  label="Number episodes automatically"
-                  checked={episodeNumberEnabled}
-                  onChange={setEpisodeNumberEnabled}
-                />
-              </div>
-              {episodeNumberEnabled ? (
-                <Input
-                  type="number"
-                  inputMode="numeric"
-                  variant="number"
-                  label="Next episode number"
-                  min={1}
-                  value={nextEpisodeNumberDraft}
-                  onChange={(e) =>
-                    setNextEpisodeNumberDraft(
-                      Math.max(1, Math.floor(Number(e.target.value)) || 1),
-                    )
-                  }
-                  className="w-24"
-                />
-              ) : null}
+                <span className="text-foreground-secondary block text-xs">
+                  Recorded broadcasts of this show are published without a
+                  manual approval step.
+                </span>
+              </span>
+              <Toggle
+                label="Publish recordings automatically"
+                checked={autoPublish}
+                onChange={setAutoPublish}
+              />
             </div>
-          ) : null}
-          <div className="flex justify-end">
-            <SaveButton
-              saving={savingMeta}
-              label="Save defaults"
-              type="submit"
-            />
-          </div>
-        </form>
-      </StudioPanel>
+            {show.mode !== 'SINGLE' ? (
+              <div className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-md border p-3 text-sm">
+                <div className="flex items-center justify-between gap-3">
+                  <span>
+                    <span className="block font-medium">
+                      Number episodes automatically
+                    </span>
+                    <span className="text-foreground-secondary block text-xs">
+                      New episodes get the next number in their title.
+                    </span>
+                  </span>
+                  <Toggle
+                    label="Number episodes automatically"
+                    checked={episodeNumberEnabled}
+                    onChange={setEpisodeNumberEnabled}
+                  />
+                </div>
+                {episodeNumberEnabled ? (
+                  <Input
+                    type="number"
+                    inputMode="numeric"
+                    variant="number"
+                    label="Next episode number"
+                    min={1}
+                    value={nextEpisodeNumberDraft}
+                    onChange={(e) =>
+                      setNextEpisodeNumberDraft(
+                        Math.max(1, Math.floor(Number(e.target.value)) || 1),
+                      )
+                    }
+                    className="w-24"
+                  />
+                ) : null}
+              </div>
+            ) : null}
+            <div className="flex justify-end">
+              <SaveButton
+                saving={savingMeta}
+                label="Save defaults"
+                type="submit"
+              />
+            </div>
+          </form>
+        </StudioPanel>
+      ) : null}
 
       <StudioPanel
         title="Schedule"

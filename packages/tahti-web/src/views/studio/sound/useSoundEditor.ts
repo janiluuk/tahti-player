@@ -63,7 +63,10 @@ export function useSoundEditor(id: string) {
     void navigate({
       to: '/studio/sounds/$id',
       params: { id },
-      search: next === 'details' ? {} : { tab: next },
+      search: (prev: { edit?: boolean }) => ({
+        ...(prev.edit ? { edit: true as const } : {}),
+        ...(next === 'details' ? {} : { tab: next }),
+      }),
     });
   };
   const [playlistOpen, setPlaylistOpen] = useState(false);

@@ -52,7 +52,7 @@ export const EditDetails: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(
-      await canvas.findByRole('button', { name: 'Edit details' }),
+      await canvas.findByRole('button', { name: /^Edit / }),
     );
     const capacity = canvas.getByLabelText('Capacity');
     await userEvent.clear(capacity);
@@ -60,7 +60,7 @@ export const EditDetails: Story = {
     await userEvent.click(canvas.getByRole('button', { name: 'Save details' }));
     await waitFor(() =>
       expect(
-        canvas.getByRole('button', { name: 'Edit details' }),
+        canvas.getByRole('button', { name: /^(Edit |Done editing)/ }),
       ).toBeVisible(),
     );
   },

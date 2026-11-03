@@ -106,6 +106,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
           <Link
             to="/studio/sounds/$id"
             params={{ id: soundId }}
+            search={{ edit: true }}
             className="text-foreground-secondary hover:underline"
           >
             Metadata
