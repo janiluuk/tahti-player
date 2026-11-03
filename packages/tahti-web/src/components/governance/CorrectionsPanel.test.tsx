@@ -115,6 +115,9 @@ describe('CorrectionsPanel', () => {
     fireEvent.click(
       await screen.findByRole('button', { name: 'Withdraw request' }),
     );
+    expect(
+      screen.getByRole('button', { name: 'Withdraw' }).className,
+    ).toContain('bg-accent-red');
     fireEvent.click(screen.getByRole('button', { name: 'Withdraw' }));
     expect(withdraw).toHaveBeenCalledWith('waiting');
     await waitFor(() => expect(fetchMine).toHaveBeenCalledTimes(2));

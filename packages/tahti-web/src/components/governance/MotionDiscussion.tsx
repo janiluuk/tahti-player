@@ -190,6 +190,7 @@ export function MotionDiscussion({
         </div>
       )}
       <ConfirmDialog
+        destructive
         isOpen={removing !== null}
         title="Remove this comment?"
         description={

@@ -328,6 +328,7 @@ export function AccountPanel() {
             <FanSubscriptionsBillingButton />
           ) : null}
           <ConfirmDialog
+            destructive
             isOpen={pendingCancel !== null}
             title={
               pendingCancel

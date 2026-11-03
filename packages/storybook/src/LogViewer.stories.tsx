@@ -1,5 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react-vite';
 import { useState } from 'react';
+import { expect, within } from 'storybook/test';
 
 import { LogViewer } from '@tahti-player/ui';
 
@@ -67,6 +68,18 @@ export const ManyLogs: Story = {
 };
 
 export const Empty: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('button', { name: /clear/i }).className,
+    ).toContain('bg-secondary');
+    await expect(
+      canvas.getByRole('button', { name: /open log folder/i }).className,
+    ).toContain('bg-secondary');
+    await expect(
+      canvas.getByRole('button', { name: /export/i }).className,
+    ).toContain('bg-primary');
+  },
   render: () => (
     <div className="bg-background h-[400px] p-4">
       <LogViewer

@@ -421,6 +421,7 @@ export function AdminNewsView() {
               </form>
             </Dialog.Root>
             <ConfirmDialog
+              destructive
               isOpen={pendingDeletePost !== null}
               title={
                 pendingDeletePost

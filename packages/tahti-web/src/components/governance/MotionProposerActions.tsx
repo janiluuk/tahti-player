@@ -169,6 +169,7 @@ export function MotionProposerActions({
       )}
       {error && <InlineError textSize="xs">{error}</InlineError>}
       <ConfirmDialog
+        destructive
         isOpen={confirming}
         title="Withdraw this motion?"
         description="The draft, its discussion and its seconds are deleted. This cannot be undone."

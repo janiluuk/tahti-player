@@ -278,6 +278,7 @@ export function SavedMapComments() {
         ))}
       </ul>
       <ConfirmDialog
+        destructive
         isOpen={confirmClear}
         title={`Clear all ${comments.length} saved comments?`}
         description="They are only stored in this browser, so they can't be recovered. Export CSV or copy them first if you still need them."

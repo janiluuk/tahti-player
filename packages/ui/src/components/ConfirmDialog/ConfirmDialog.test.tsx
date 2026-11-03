@@ -25,4 +25,34 @@ describe('ConfirmDialog', () => {
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(onCancel).toHaveBeenCalledTimes(1);
   });
+
+  it('paints the confirm red only when destructive', () => {
+    const { rerender } = render(
+      <ConfirmDialog
+        isOpen
+        title="Publish?"
+        description="Listeners see it right away."
+        confirmLabel="Publish"
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Publish' }).className,
+    ).not.toContain('bg-accent-red');
+    rerender(
+      <ConfirmDialog
+        isOpen
+        destructive
+        title="Delete item?"
+        description="This cannot be undone."
+        confirmLabel="Delete"
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+    );
+    expect(screen.getByRole('button', { name: 'Delete' }).className).toContain(
+      'bg-accent-red',
+    );
+  });
 });

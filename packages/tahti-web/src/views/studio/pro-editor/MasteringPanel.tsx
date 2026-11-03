@@ -284,6 +284,7 @@ export function MasteringPanel({ editList, onChange }: Props) {
       </StudioPanel>
 
       <ConfirmDialog
+        destructive
         isOpen={removeTarget !== null}
         title={`Remove ${removeTarget ? AUDIO_FX_PLUGINS[removeTarget].label : 'add-on'}?`}
         description="Takes it out of the mastering chain; its settings are kept if you add it again. You can undo this."

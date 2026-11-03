@@ -346,6 +346,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
         }}
       />
       <ConfirmDialog
+        destructive
         isOpen={deleting !== null}
         title="Delete this playlist?"
         description={`“${deleting?.name ?? ''}” and its ${deleting?.trackCount ?? 0} entries will be deleted. The tracks stay in your library.`}

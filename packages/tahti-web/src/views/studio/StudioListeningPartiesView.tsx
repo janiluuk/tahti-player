@@ -207,6 +207,7 @@ export function StudioListeningPartiesView() {
           />
         </ViewShell>
         <ConfirmDialog
+          destructive
           isOpen={pendingCancel !== null}
           title={
             pendingCancel

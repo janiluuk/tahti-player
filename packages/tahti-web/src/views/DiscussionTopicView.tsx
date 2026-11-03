@@ -457,6 +457,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
         </>
       )}
       <ConfirmDialog
+        destructive
         isOpen={removing !== null}
         title="Remove this reply?"
         description={

@@ -60,9 +60,11 @@ describe('Studio listening parties (offline mock)', () => {
     fireEvent.click(
       await screen.findByRole('button', { name: 'Cancel Polar Static' }),
     );
-    fireEvent.click(
-      await screen.findByRole('button', { name: 'Cancel party' }),
-    );
+    const confirmCancel = await screen.findByRole('button', {
+      name: 'Cancel party',
+    });
+    expect(confirmCancel.className).toContain('bg-accent-red');
+    fireEvent.click(confirmCancel);
     await waitFor(() =>
       expect(screen.getAllByRole('listitem')).toHaveLength(1),
     );

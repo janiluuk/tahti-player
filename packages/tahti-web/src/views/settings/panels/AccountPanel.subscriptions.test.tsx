@@ -88,6 +88,9 @@ describe('AccountPanel fan subscriptions', () => {
       .mockResolvedValue({ ok: false, error: 'Could not cancel with Stripe' });
 
     fireEvent.click(screen.getByRole('button', { name: 'Manage' }));
+    expect(
+      screen.getByRole('button', { name: 'Cancel subscription' }).className,
+    ).toContain('bg-accent-red');
     await act(async () => {
       fireEvent.click(
         screen.getByRole('button', { name: 'Cancel subscription' }),
