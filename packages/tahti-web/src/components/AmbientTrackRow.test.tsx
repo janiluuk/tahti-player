@@ -41,9 +41,9 @@ describe('AmbientTrackRow', () => {
     );
     expect(screen.getByText('Progressive House')).toBeTruthy();
     expect(screen.getByText('46:03')).toBeTruthy();
-    expect(screen.getByLabelText('3 likes')).toBeTruthy();
-    expect(screen.getByLabelText('31 plays')).toBeTruthy();
-    expect(screen.getByLabelText('15 downloads')).toBeTruthy();
+    expect(screen.getByText('3 likes')).toBeTruthy();
+    expect(screen.getByText('31 plays')).toBeTruthy();
+    expect(screen.getByText('15 downloads')).toBeTruthy();
     expect(screen.getByTestId('ambient-track-stats').textContent).toContain(
       'on ',
     );
@@ -68,7 +68,7 @@ describe('AmbientTrackRow', () => {
     button.click();
     expect(onToggle).toHaveBeenCalled();
     expect(screen.queryByLabelText('3 likes')).toBeNull();
-    expect(screen.getByLabelText('9 plays')).toBeTruthy();
+    expect(screen.getByText('9 plays')).toBeTruthy();
   });
 
   it('shows the comment count when the source has one', () => {
@@ -81,7 +81,7 @@ describe('AmbientTrackRow', () => {
         stats={{ plays: 9, comments: 4 }}
       />,
     );
-    expect(screen.getByLabelText('4 comments')).toBeTruthy();
+    expect(screen.getByText('4 comments')).toBeTruthy();
   });
 });
 

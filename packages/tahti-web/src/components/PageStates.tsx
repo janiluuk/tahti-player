@@ -58,9 +58,11 @@ export function PageEmpty({
   action,
   icon = 'inbox',
   className,
+  headingLevel,
   'data-testid': testId,
 }: {
   title: string;
+  headingLevel?: 1 | 2;
   description?: string;
   action?: ReactNode;
   icon?: 'inbox' | 'package' | 'radio' | 'alert';
@@ -82,6 +84,7 @@ export function PageEmpty({
       data-testid={testId}
       icon={<Icon size={40} className="opacity-40" />}
       title={title}
+      headingLevel={headingLevel}
       description={description}
       action={action}
     />

@@ -71,6 +71,7 @@ export function ListenerLoyalty({
           </p>
           <div
             className="h-44 w-full"
+            role="img"
             aria-label="Share still listening by % of track"
           >
             <DayOfWeekChart

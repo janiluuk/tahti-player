@@ -23,6 +23,8 @@ type EmptyStateProps = Omit<ComponentProps<'div'>, 'title'> &
   VariantProps<typeof emptyStateVariants> & {
     icon?: ReactNode;
     title: string;
+    /** 1 when the empty state is the whole page, e.g. "Page not found". */
+    headingLevel?: 1 | 2;
     description?: string;
     action?: ReactNode;
   };
@@ -30,6 +32,7 @@ type EmptyStateProps = Omit<ComponentProps<'div'>, 'title'> &
 export const EmptyState: FC<EmptyStateProps> = ({
   icon,
   title,
+  headingLevel = 2,
   description,
   action,
   size,
@@ -43,7 +46,11 @@ export const EmptyState: FC<EmptyStateProps> = ({
   >
     {icon && <div className="text-foreground">{icon}</div>}
     <div className="flex flex-col gap-1">
-      <h2 className="text-foreground text-lg font-bold">{title}</h2>
+      {headingLevel === 1 ? (
+        <h1 className="text-foreground text-lg font-bold">{title}</h1>
+      ) : (
+        <h2 className="text-foreground text-lg font-bold">{title}</h2>
+      )}
       {description && (
         <p className="text-foreground text-sm opacity-60">{description}</p>
       )}
