@@ -207,7 +207,8 @@ android runs \`tauri android init\` first when src-tauri/gen/android is missing.
   {
     path: ['test'],
     usage: 'tahti-ops test [<group>…] [--dry-run] [-- <vitest args>]',
-    summary: 'Run tests by group: web, ui, player, storybook, types, lint, all',
+    summary:
+      'Run tests by group: web, ui, player, cli, ops, visualizer, storybook, types, lint, all',
     details: `Groups (default: all):
 ${Object.entries(testGroups())
   .map(([name, group]) => `  ${name.padEnd(10)} ${group.summary}`)
