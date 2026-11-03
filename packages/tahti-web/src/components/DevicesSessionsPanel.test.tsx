@@ -7,7 +7,7 @@ import {
   screen,
   within,
 } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../api/sessions';
 import { DevicesSessionsPanel } from './DevicesSessionsPanel';
@@ -28,7 +28,7 @@ async function renderPanel() {
         id: 'phone',
         deviceLabel: 'Safari on iPhone',
         createdAt: '2026-10-02T00:00:00.000Z',
-        lastUsedAt: null,
+        lastUsedAt: '2026-10-02T09:00:00.000Z',
         current: false,
       },
     ],
@@ -40,9 +40,25 @@ async function renderPanel() {
 }
 
 describe('DevicesSessionsPanel', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-02T12:00:00.000Z'));
+  });
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.useRealTimers();
+  });
+
+  it('shows when each device signed in and was last active', async () => {
+    await renderPanel();
+    const signedIn = screen.getByText('1 day ago');
+    expect(signedIn.tagName).toBe('TIME');
+    expect(signedIn.getAttribute('datetime')).toBe('2026-10-01T00:00:00.000Z');
+    expect(screen.getByText('12 hours ago')).toBeTruthy();
+    expect(screen.getByText('3 hours ago').getAttribute('datetime')).toBe(
+      '2026-10-02T09:00:00.000Z',
+    );
   });
 
   it('confirms signing out one device with a red button', async () => {

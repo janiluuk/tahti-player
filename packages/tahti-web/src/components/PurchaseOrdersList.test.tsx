@@ -13,7 +13,7 @@ import {
   screen,
   within,
 } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as purchaseTiers from '../api/purchase-tiers';
 import { PurchaseOrdersList } from './PurchaseOrdersList';
@@ -43,9 +43,14 @@ async function renderList() {
 }
 
 describe('PurchaseOrdersList', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-09-20T15:00:00.000Z'));
+  });
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.useRealTimers();
   });
 
   it('lists sales with a total and shows the rest on request', async () => {
@@ -59,6 +64,9 @@ describe('PurchaseOrdersList', () => {
     expect(within(list).getAllByRole('listitem')).toHaveLength(20);
     expect(within(list).getByText('fan-0')).toBeTruthy();
     expect(within(list).getByText('Fan 1')).toBeTruthy();
+    const [date] = within(list).getAllByText('5 hours ago');
+    expect(date!.tagName).toBe('TIME');
+    expect(date!.getAttribute('datetime')).toBe('2026-09-20T10:00:00.000Z');
 
     fireEvent.click(screen.getByRole('button', { name: 'Show all 22' }));
     expect(within(list).getAllByRole('listitem')).toHaveLength(22);

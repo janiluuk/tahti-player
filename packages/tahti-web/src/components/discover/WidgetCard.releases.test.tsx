@@ -6,7 +6,7 @@ import {
   RouterProvider,
 } from '@tanstack/react-router';
 import { act, cleanup, render, screen, within } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { LatestRelease } from '../../api/latest-releases';
 import { WidgetCard } from './WidgetCard';
@@ -49,7 +49,14 @@ const RELEASE: LatestRelease = {
 };
 
 describe('WidgetCard latest releases', () => {
-  afterEach(cleanup);
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-09-26T06:00:00.000Z'));
+  });
+  afterEach(() => {
+    cleanup();
+    vi.useRealTimers();
+  });
 
   it('links each release to its smart link and its artist', async () => {
     const list = await renderReleases(RELEASE);
@@ -60,6 +67,9 @@ describe('WidgetCard latest releases', () => {
       '/u/tahti',
     );
     expect(list.getByText(/ep ·/)).toBeTruthy();
+    const date = list.getByText('1 day ago');
+    expect(date.tagName).toBe('TIME');
+    expect(date.getAttribute('datetime')).toBe(RELEASE.releaseDate);
   });
 
   it('shows the artist name without a link from an older API', async () => {

@@ -22,17 +22,11 @@ import {
   type NotificationUnreadCounts,
   type TahtiNotification,
 } from '../api/notifications';
+import { ListingDate } from '../components/ListingDate';
 import { PageEmpty, PageError } from '../components/PageStates';
 import { cn } from '../lib/cn';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
-
-function formatWhen(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  });
-}
 
 function NotificationText({
   notification,
@@ -296,15 +290,13 @@ export function NotificationsView() {
                     ) : (
                       <NotificationText notification={notification} />
                     )}
-                    <p className="text-foreground-secondary mt-1 text-xs">
+                    <p className="text-foreground-secondary mt-1 flex flex-wrap items-center gap-x-1 text-xs">
                       {kind === 'all' ? (
                         <span>
-                          {notificationKindLabel(notification.type)} ·{' '}
+                          {notificationKindLabel(notification.type)} ·
                         </span>
                       ) : null}
-                      <time dateTime={notification.createdAt}>
-                        {formatWhen(notification.createdAt)}
-                      </time>
+                      <ListingDate value={notification.createdAt} />
                     </p>
                   </div>
                   {needsAck ? (

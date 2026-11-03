@@ -10,25 +10,13 @@ import {
   type DeviceSession,
 } from '../api/sessions';
 import { ConfirmDialog } from './ConfirmDialog';
+import { ListingDate } from './ListingDate';
 import {
   PageEmpty,
   PageError,
   PageErrorBanner,
   PageLoading,
 } from './PageStates';
-
-function formatWhen(value: string | null): string {
-  if (!value) {
-    return '—';
-  }
-  return new Date(value).toLocaleString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
 
 export function DevicesSessionsPanel() {
   const [sessions, setSessions] = useState<DeviceSession[]>([]);
@@ -115,11 +103,15 @@ export function DevicesSessionsPanel() {
                   </Badge>
                 ) : null}
               </div>
-              <p className="text-foreground/70 text-sm">
-                Signed in {formatWhen(session.createdAt)}
-                {session.lastUsedAt
-                  ? ` · Last active ${formatWhen(session.lastUsedAt)}`
-                  : ''}
+              <p className="text-foreground/70 flex flex-wrap items-center gap-x-1 text-sm">
+                <span>Signed in</span>
+                <ListingDate value={session.createdAt} />
+                {session.lastUsedAt ? (
+                  <>
+                    <span>· Last active</span>
+                    <ListingDate value={session.lastUsedAt} />
+                  </>
+                ) : null}
               </p>
             </div>
             {!session.current ? (

@@ -4,6 +4,7 @@ import { Badge, FilterChips, SectionShell, ViewShell } from '@tahti-player/ui';
 
 import { fetchTransparencyResolutions } from '../api/client';
 import type { BoardResolution } from '../api/types';
+import { ListingDate } from '../components/ListingDate';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 
@@ -90,8 +91,8 @@ export function TransparencyResolutionsView() {
                       {badge.label}
                     </Badge>
                   </div>
-                  <p className="text-foreground-secondary mt-1 text-xs">
-                    Voted {new Date(resolution.votedAt).toLocaleDateString()}
+                  <p className="text-foreground-secondary mt-1 flex items-center gap-1 text-xs">
+                    Voted <ListingDate value={resolution.votedAt} />
                   </p>
                   <p className="mt-2 text-sm leading-relaxed">
                     {resolution.body}

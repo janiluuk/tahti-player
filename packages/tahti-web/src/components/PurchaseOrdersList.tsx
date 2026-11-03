@@ -7,6 +7,7 @@ import {
   fetchMyPurchaseOrders,
   type PurchaseOrderRow,
 } from '../api/purchase-tiers';
+import { ListingDate } from './ListingDate';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 const PAGE_SIZE = 20;
@@ -89,7 +90,7 @@ export function PurchaseOrdersList() {
                 >
                   {order.buyer.displayName || order.buyer.username}
                 </Link>{' '}
-                · {new Date(order.createdAt).toLocaleDateString()}
+                · <ListingDate value={order.createdAt} />
               </span>
             </span>
             <span className="font-semibold tabular-nums">
