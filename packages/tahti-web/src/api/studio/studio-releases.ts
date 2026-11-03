@@ -12,6 +12,83 @@ import { requestJson } from './studio-request';
 
 // ── Releases ────────────────────────────────────────────────────────────────
 
+function mockStudioReleaseRows(): StudioRelease[] {
+  return [
+    {
+      id: 'rel-mock-1',
+      title: 'After Hours',
+      type: 'ALBUM',
+      state: 'PUBLISHED',
+      releaseDate: '2026-06-01',
+      smartLinkSlug: 'after-hours',
+      smartLinkViewCount: 214,
+      showPoweredByFooter: false,
+      tracks: [
+        {
+          id: 't1',
+          position: 1,
+          title: 'Moonlight Drive',
+          soundId: 'arch-mock-1',
+          status: 'READY',
+          sourceKey: 'releases/mock/t1.wav',
+          fingerprintMatch: {
+            acoustidId: 'mock-acoustid-1',
+            score: 0.95,
+            title: 'Moonlight Drive',
+            artist: 'Northern Lights',
+          },
+        },
+        {
+          id: 't2',
+          position: 2,
+          title: 'Blue Hour',
+          soundId: 'arch-mock-2',
+          status: 'READY',
+          sourceKey: 'releases/mock/t2.wav',
+          fingerprintMatch: null,
+        },
+      ],
+      _count: { tracks: 2 },
+    },
+    {
+      id: 'rel-mock-2',
+      title: 'Neon Tide',
+      type: 'SINGLE',
+      state: 'PUBLISHED',
+      releaseDate: '2026-04-12',
+      smartLinkSlug: 'neon-tide',
+      smartLinkViewCount: 88,
+      tracks: [
+        {
+          id: 't3',
+          position: 1,
+          title: 'Neon Tide',
+          soundId: 'arch-mock-3',
+        },
+      ],
+      _count: { tracks: 1 },
+    },
+    {
+      id: 'rel-mock-3',
+      title: 'Studio Sessions Vol. 1',
+      type: 'EP',
+      state: 'DRAFT',
+      releaseDate: '2026-08-01',
+      smartLinkSlug: 'studio-sessions-vol-1',
+      smartLinkViewCount: 0,
+      tracks: [
+        {
+          id: 't4',
+          position: 1,
+          title: 'Session One',
+          soundId: 'arch-mock-4',
+        },
+      ],
+      _count: { tracks: 1 },
+    },
+  ];
+}
+
 export async function fetchStudioReleases(): Promise<{
   data: StudioReleaseList;
   meta: FetchMeta;
@@ -22,80 +99,7 @@ export async function fetchStudioReleases(): Promise<{
         page: 1,
         limit: 100,
         total: 3,
-        releases: [
-          {
-            id: 'rel-mock-1',
-            title: 'After Hours',
-            type: 'ALBUM',
-            state: 'PUBLISHED',
-            releaseDate: '2026-06-01',
-            smartLinkSlug: 'after-hours',
-            smartLinkViewCount: 214,
-            showPoweredByFooter: false,
-            tracks: [
-              {
-                id: 't1',
-                position: 1,
-                title: 'Moonlight Drive',
-                soundId: 'arch-mock-1',
-                status: 'READY',
-                sourceKey: 'releases/mock/t1.wav',
-                fingerprintMatch: {
-                  acoustidId: 'mock-acoustid-1',
-                  score: 0.95,
-                  title: 'Moonlight Drive',
-                  artist: 'Northern Lights',
-                },
-              },
-              {
-                id: 't2',
-                position: 2,
-                title: 'Blue Hour',
-                soundId: 'arch-mock-2',
-                status: 'READY',
-                sourceKey: 'releases/mock/t2.wav',
-                fingerprintMatch: null,
-              },
-            ],
-            _count: { tracks: 2 },
-          },
-          {
-            id: 'rel-mock-2',
-            title: 'Neon Tide',
-            type: 'SINGLE',
-            state: 'PUBLISHED',
-            releaseDate: '2026-04-12',
-            smartLinkSlug: 'neon-tide',
-            smartLinkViewCount: 88,
-            tracks: [
-              {
-                id: 't3',
-                position: 1,
-                title: 'Neon Tide',
-                soundId: 'arch-mock-3',
-              },
-            ],
-            _count: { tracks: 1 },
-          },
-          {
-            id: 'rel-mock-3',
-            title: 'Studio Sessions Vol. 1',
-            type: 'EP',
-            state: 'DRAFT',
-            releaseDate: '2026-08-01',
-            smartLinkSlug: 'studio-sessions-vol-1',
-            smartLinkViewCount: 0,
-            tracks: [
-              {
-                id: 't4',
-                position: 1,
-                title: 'Session One',
-                soundId: 'arch-mock-4',
-              },
-            ],
-            _count: { tracks: 1 },
-          },
-        ],
+        releases: mockStudioReleaseRows(),
       }),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
@@ -150,13 +154,18 @@ export async function patchStudioRelease(
     return {
       ok: true,
       data: {
+        ...(mockStudioReleaseRows().find((row) => row.id === id) ?? {
+          id,
+          title: 'Mock EP',
+          type: 'EP',
+          releaseDate: '2026-01-01',
+          smartLinkSlug: 'mock-ep',
+        }),
         id,
-        title: 'Mock EP',
-        type: 'EP',
         state: patch.state ?? 'PUBLISHED',
-        releaseDate: '2026-01-01',
-        description: patch.description,
-        smartLinkSlug: 'mock-ep',
+        ...(patch.description !== undefined
+          ? { description: patch.description }
+          : {}),
         smartLinkTargets: patch.smartLinkTargets ?? null,
         pinnedAt: patch.pinned ? new Date().toISOString() : null,
         showPoweredByFooter: patch.showPoweredByFooter ?? false,

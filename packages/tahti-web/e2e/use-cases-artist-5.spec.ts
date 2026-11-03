@@ -89,3 +89,23 @@ test('an artist removes a listener comment from their channel page', async ({
   await page.getByRole('button', { name: 'Remove', exact: true }).click();
   await expect(remove).toHaveCount(before - 1);
 });
+
+test('artist publishes a draft release and its smart link page opens', async ({
+  page,
+}) => {
+  await signIn(page);
+  await page.goto('/studio/releases/rel-mock-3');
+  const main = page.getByRole('main');
+  await expect(main.getByText('EP · DRAFT')).toBeVisible();
+  await main.getByRole('button', { name: 'Publish', exact: true }).click();
+  await page
+    .getByRole('dialog')
+    .getByRole('button', { name: 'Publish', exact: true })
+    .click();
+  await expect(main.getByText('EP · PUBLISHED')).toBeVisible();
+  await main.getByRole('link', { name: 'Open release embed' }).click();
+  await expect(page).toHaveURL(/\/r\/[^/]+$/);
+  await expect(
+    page.getByRole('heading', { name: /^Studio Sessions Vol/ }).first(),
+  ).toBeVisible();
+});
