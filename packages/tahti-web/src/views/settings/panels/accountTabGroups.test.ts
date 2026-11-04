@@ -25,11 +25,11 @@ const ALL_TABS = [
 describe('account tab groups', () => {
   it('puts every tab in exactly one of four groups', () => {
     const grouped = groupAccountTabs(ALL_TABS);
-    expect(grouped.map((entry) => entry.group.label)).toEqual([
-      'Sign-in & security',
-      'Membership & billing',
-      'Notifications',
-      'Privacy & data',
+    expect(grouped.map((entry) => entry.group.labelKey)).toEqual([
+      'settings.accountTabGroupSignInSecurity',
+      'settings.accountTabGroupMembershipBilling',
+      'settings.accountTabGroupNotifications',
+      'settings.accountTabGroupPrivacyData',
     ]);
     const placed = grouped.flatMap((entry) => entry.tabs.map((tab) => tab.id));
     expect([...placed].sort()).toEqual(ALL_TABS.map((tab) => tab.id).sort());
