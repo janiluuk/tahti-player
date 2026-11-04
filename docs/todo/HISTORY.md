@@ -1,3 +1,9 @@
+## 2026-11-04 - Batch 41 UX slices
+
+Sounds status extras/stats/retry; Upload import sources; Studio Groups +
+Listening parties; track comment remove; Radio formatAgo; channel/broadcast
+toasts. tahti-web 0.0.331 (#1827).
+
 ## 2026-11-04 - Batch 40 UX slices
 
 Finnish leftovers (actions, Studio Events/Groups, ThemesTab, Admin Radio,

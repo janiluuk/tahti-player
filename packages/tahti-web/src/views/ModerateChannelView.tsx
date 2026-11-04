@@ -3,6 +3,7 @@ import { Lock, ShieldOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, EmptyState, ViewShell } from '@tahti-player/ui';
 
 import {
@@ -27,6 +28,7 @@ type Load =
  * after, as its owner or as one of its moderators. A moderator needs no
  * channel of their own to get here, and can step down from the role. */
 export function ModerateChannelView({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
   const openAuth = useAuthModalStore((s) => s.open);
@@ -156,9 +158,9 @@ export function ModerateChannelView({ slug }: { slug: string }) {
       </ViewShell>
       <ConfirmDialog
         isOpen={confirmLeave}
-        title={`Stop moderating ${channel.displayName}?`}
-        description="You lose the moderator role on this channel. Only its owner can give it back."
-        confirmLabel="Stop moderating"
+        title={t('moderateChannel.stopTitle', { name: channel.displayName })}
+        description={t('moderateChannel.stopDescription')}
+        confirmLabel={t('moderateChannel.stopConfirm')}
         destructive
         onCancel={() => setConfirmLeave(false)}
         onConfirm={() => {
@@ -168,7 +170,9 @@ export function ModerateChannelView({ slug }: { slug: string }) {
               toast.error(result.error);
               return;
             }
-            toast.success(`You no longer moderate ${channel.displayName}.`);
+            toast.success(
+              t('toasts.stoppedModerating', { name: channel.displayName }),
+            );
             void navigate({ to: '/channel/$slug', params: { slug } });
           });
         }}

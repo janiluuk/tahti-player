@@ -23,6 +23,7 @@ How: `lib/relativeDate.ts` (`relativeDate`, `numericDate`) formats; `components/
 - Batch 39: No new ListingDate converts (Left was already chart/stats-only). Confirmed Kept: Studio stats charts (`StudioStatsDetailView`, `stats/*`, `useStatsData`), Library history chart helpers (`historyStats.ts`), ChannelViewBlocks next-up schedule, Radio `formatAgo` relative helper, AdminStreamManagerPanel listener counts + gone-live exact time, StudioUpdatesView sent-at exact, ChangeEmailForm expiry deadline.
 - Batch 40: `formatUploadDate` (Sounds list/row/table) and Studio home `RecentActivitySection` listing dates use `dateLocaleTag`. No new ListingDate converts; chart/stats Left unchanged.
 - Batch 41: No new ListingDate converts. Radio `formatAgo` short relative strings follow the app language (still Kept, not ListingDate). Listening parties remain `formatScheduleWindow`. Sounds stats strip duration is a count, not a listing date. Chart/stats Left unchanged.
+- Batch 42: No new ListingDate converts. Chart/stats Left unchanged (Studio stats + Library history stay `dateLocaleTag`).
 
 ## Kept as full timestamps (exact time matters)
 
@@ -39,4 +40,4 @@ How: `lib/relativeDate.ts` (`relativeDate`, `numericDate`) formats; `components/
 
 ## Left
 
-- [ ] Remaining chart/stats `toLocaleDateString` / `toLocaleString` in Studio (`StudioStatsDetailView`, `stats/*`) and Library history chart helpers (`historyStats.ts`) — stay chart-locale via `dateLocaleTag`, not `ListingDate`. Batches 38–41 moved desktop-library counts, AdminDashboard audit, HistoryStats range, channel next-up, stream-manager exact times, StudioUpdates sent-at, Sounds upload dates, Studio home recent activity, and Radio `formatAgo` i18n off the convert list into Kept (or locale-tagged listing helpers).
+- [ ] Remaining chart/stats `toLocaleDateString` / `toLocaleString` in Studio (`StudioStatsDetailView`, `stats/*`) and Library history chart helpers (`historyStats.ts`) — stay chart-locale via `dateLocaleTag`, not `ListingDate`. Batches 38–42 moved desktop-library counts, AdminDashboard audit, HistoryStats range, channel next-up, stream-manager exact times, StudioUpdates sent-at, Sounds upload dates, Studio home recent activity, and Radio `formatAgo` i18n off the convert list into Kept (or locale-tagged listing helpers).

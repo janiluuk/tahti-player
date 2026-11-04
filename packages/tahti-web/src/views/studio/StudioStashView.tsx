@@ -1,6 +1,7 @@
 import { ArchiveIcon, FolderInputIcon, Lock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -28,22 +29,26 @@ import { useAuthStore } from '../../stores/authStore';
 import { LibrarySectionTabs } from '../LibraryView';
 
 function ListenerStash({ embedded }: { embedded: boolean }) {
+  const { t } = useTranslation('web');
   return (
     <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-6 px-1 py-2">
       {!embedded ? <LibrarySectionTabs active="stash" /> : null}
       {!embedded ? (
-        <ViewShell title="Stash" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell
+          title={t('studioStash.title')}
+          classes={{ root: 'px-0 pt-0' }}
+        >
           <StudioPanel
-            title="Your files"
-            description="Private uploads you can share by link. Publishing tracks needs an artist channel."
+            title={t('studioStash.filesTitle')}
+            description={t('studioStash.filesDescription')}
           >
             <StashFilesPanel filesOnly />
           </StudioPanel>
         </ViewShell>
       ) : (
         <StudioPanel
-          title="Your files"
-          description="Private uploads you can share by link. Publishing tracks needs an artist channel."
+          title={t('studioStash.filesTitle')}
+          description={t('studioStash.filesDescription')}
         >
           <StashFilesPanel filesOnly />
         </StudioPanel>
@@ -53,6 +58,7 @@ function ListenerStash({ embedded }: { embedded: boolean }) {
 }
 
 export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
   const profileLoaded = useAuthStore((s) => s.profileLoaded);
@@ -87,23 +93,27 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
   }, [user, attempt]);
 
   if (!hydrated) {
-    return <PageLoading label="Loading session…" />;
+    return <PageLoading label={t('studioStash.loadingSession')} />;
   }
 
   if (!user) {
     return (
       <PageGate
-        page={embedded ? null : 'Stash'}
+        page={embedded ? null : t('studioStash.title')}
         icon={<Lock size={40} className="opacity-40" />}
-        title="Stash"
-        description="Sign in to upload private files and share them by link."
-        action={<Button onClick={() => openAuth('login')}>Log in</Button>}
+        title={t('studioStash.title')}
+        description={t('studioStash.gateDescription')}
+        action={
+          <Button onClick={() => openAuth('login')}>
+            {t('actions.signIn')}
+          </Button>
+        }
       />
     );
   }
 
   if (!profileLoaded) {
-    return <PageLoading label="Loading your account…" />;
+    return <PageLoading label={t('studioStash.loadingAccount')} />;
   }
 
   if (!hasStudioAccess(user)) {
@@ -115,13 +125,15 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
       selectedIndex={tab === 'files' ? 1 : 0}
       onChange={(index) => setTab(index === 1 ? 'files' : 'all')}
     >
-      <Tabs.List aria-label="Stash sections">
+      <Tabs.List aria-label={t('studioStash.sectionsAria')}>
         <Tabs.Tab>
-          <TabLabel icon={<ArchiveIcon size={14} />}>All stash</TabLabel>
+          <TabLabel icon={<ArchiveIcon size={14} />}>
+            {t('studioStash.allStash')}
+          </TabLabel>
         </Tabs.Tab>
         <Tabs.Tab>
           <TabLabel icon={<FolderInputIcon size={14} />}>
-            Move to stash
+            {t('studioStash.moveToStash')}
           </TabLabel>
         </Tabs.Tab>
       </Tabs.List>
@@ -133,25 +145,25 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
       <StashFilesPanel />
     ) : (
       <StudioPanel
-        title="Stash tracks"
-        description="Edit these items like any other track. They stay out of public listings."
+        title={t('studioStash.tracksTitle')}
+        description={t('studioStash.tracksDescription')}
       >
         {itemsLoading ? (
-          <PageLoading label="Loading your stash…" />
+          <PageLoading label={t('studioStash.loading')} />
         ) : loadError && items.length === 0 ? (
           <PageError
-            title="Could not load your stash"
+            title={t('studioStash.loadError')}
             description={loadError}
             onRetry={() => setAttempt((n) => n + 1)}
           />
         ) : items.length === 0 ? (
           <PageEmpty
-            title="No tracks in your stash yet"
-            description="Upload a private track, then move it here when you are ready to edit or share by link."
+            title={t('studioStash.emptyTitle')}
+            description={t('studioStash.emptyDescription')}
             className="mt-4"
             action={
               <ButtonLink to="/studio/upload" variant="secondary">
-                Upload a track
+                {t('studioStash.uploadTrack')}
               </ButtonLink>
             }
           />
@@ -187,7 +199,10 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
         {!embedded ? (
           <>
             {tabs}
-            <ViewShell title="Stash" classes={{ root: 'px-0 pt-0' }}>
+            <ViewShell
+              title={t('studioStash.title')}
+              classes={{ root: 'px-0 pt-0' }}
+            >
               {content}
             </ViewShell>
           </>

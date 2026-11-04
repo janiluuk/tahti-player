@@ -1,3 +1,15 @@
+## 2026-11-04 - Batch 42 UX slices (0.0.332)
+
+Finnish for track repost/share/purchase toasts, collaborative playlist add,
+artist more/bio/feed toasts, moderate-channel stop ConfirmDialog, channel
+stage labels/empty/hints, track-edit saved toast, Studio Shows/Stash/
+Revenue/Home empties, profile order dialogs, release versions/credits and
+TopLists empties, and TrackInfo/FollowList/Embed Close via `web.actions`.
+Dates: chart/stats Left unchanged. StudioShows + StudioHome Storybook
+headings use toBeInTheDocument. Skipped: ConfirmDialog miss (none left),
+radio widget redesign, performance audit, pageTour, admin hub English
+descriptions.
+
 ## 2026-11-04 - Batch 41 UX slices (0.0.331)
 
 Finnish for Sounds status extras/stats strip/retry, Upload import sources,

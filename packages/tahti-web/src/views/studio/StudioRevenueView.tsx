@@ -2,6 +2,7 @@ import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { CircleHelpIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Alert,
   Button,
@@ -48,6 +49,7 @@ function euros(cents: number | string): string {
 }
 
 export function StudioRevenueView() {
+  const { t } = useTranslation('web');
   const openTour = useTourStore((state) => state.start);
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as {
@@ -230,14 +232,14 @@ export function StudioRevenueView() {
               />
             </StudioPanel>
           ) : hasFanTiers === false ? (
-            <StudioPanel title="Fan subscriptions">
+            <StudioPanel title={t('studioRevenue.fanSubsTitle')}>
               <PageEmpty
                 data-testid="fan-subs-empty-state"
-                title="No fan subscriptions yet"
-                description="Set up subscription tiers so fans can support you directly."
+                title={t('studioRevenue.emptyFanSubsTitle')}
+                description={t('studioRevenue.emptyFanSubsDescription')}
                 action={
                   <Button variant="secondary" onClick={openTiers}>
-                    Open tiers editor
+                    {t('studioRevenue.openTiers')}
                   </Button>
                 }
               />
@@ -316,7 +318,7 @@ export function StudioRevenueView() {
 
               <StudioPanel title="Past grants">
                 {grants.length === 0 ? (
-                  <PageEmpty title="No disbursements yet" />
+                  <PageEmpty title={t('studioRevenue.emptyDisbursements')} />
                 ) : (
                   <ul className="divide-border divide-y">
                     {grants.map((g) => (

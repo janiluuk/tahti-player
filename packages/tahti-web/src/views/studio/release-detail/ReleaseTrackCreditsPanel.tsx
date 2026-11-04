@@ -2,6 +2,7 @@ import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input, SaveButton, Select, Tooltip } from '@tahti-player/ui';
 
 import { patchReleaseTrackCredits } from '../../../api/studio';
@@ -21,6 +22,7 @@ function TrackCreditsRow({
   track: StudioReleaseTrack;
   onSaved: (credits: TrackCredit[] | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const [credits, setCredits] = useState<TrackCredit[]>(track.credits ?? []);
   const [saving, setSaving] = useState(false);
 
@@ -55,7 +57,7 @@ function TrackCreditsRow({
         {track.position}. {track.title}
       </p>
       {credits.length === 0 && (
-        <PageEmpty title="No credits on this track yet." />
+        <PageEmpty title={t('studioReleaseDetail.creditsEmpty')} />
       )}
       <ul className="flex flex-col gap-2">
         {credits.map((credit, index) => (

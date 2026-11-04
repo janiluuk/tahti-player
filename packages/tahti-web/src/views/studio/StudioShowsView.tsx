@@ -9,6 +9,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -37,6 +38,7 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function StudioShowsView() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [shows, setShows] = useState<StudioShowSeries[]>([]);
   const [episodeCounts, setEpisodeCounts] = useState<Record<string, number>>(
@@ -129,14 +131,14 @@ export function StudioShowsView() {
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
         <ViewShell
-          title="Shows"
+          title={t('studioShows.title')}
           classes={{ root: 'px-0 pt-0' }}
           actions={
-            <Tooltip content="New show" side="top">
+            <Tooltip content={t('studioShows.newShow')} side="top">
               <Button
                 size="icon-sm"
                 onClick={() => setCreateOpen(true)}
-                aria-label="New show"
+                aria-label={t('studioShows.newShow')}
               >
                 <PlusIcon size={16} aria-hidden />
               </Button>
@@ -153,28 +155,27 @@ export function StudioShowsView() {
               <Dialog.Title>
                 <span className="inline-flex items-center gap-2">
                   <RadioIcon size={18} aria-hidden />
-                  New show
+                  {t('studioShows.createTitle')}
                 </span>
               </Dialog.Title>
               <Dialog.Description>
-                Episodes inherit description, cover, and the next episode
-                number.
+                {t('studioShows.createDescription')}
               </Dialog.Description>
               <div className="mt-4 flex flex-col gap-3">
                 <Input
-                  label="Show title"
+                  label={t('studioShows.showTitle')}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   autoFocus
                 />
                 <Textarea
                   submitOnModEnter
-                  label="Description"
+                  label={t('studioShows.description')}
                   tone="secondary"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={3}
-                  placeholder="Copied to every new episode"
+                  placeholder={t('studioShows.descriptionPlaceholder')}
                 />
                 <ShowImagePicker
                   label="Show thumbnail"
@@ -201,44 +202,45 @@ export function StudioShowsView() {
                 <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-3 rounded-md border p-3 text-sm">
                   <span>
                     <span className="block font-medium">
-                      Record broadcasts by default
+                      {t('studioShows.recordDefault')}
                     </span>
                     <span className="text-foreground-secondary block text-xs">
-                      New broadcasts for this show will start with recording
-                      enabled.
+                      {t('studioShows.recordDefaultHint')}
                     </span>
                   </span>
                   <Toggle
-                    label="Record broadcasts by default"
+                    label={t('studioShows.recordDefault')}
                     checked={autoPublish}
                     onChange={setAutoPublish}
                   />
                 </div>
                 <FilterChips
                   items={[
-                    { id: 'SERIES', label: 'Continuing series' },
-                    { id: 'SINGLE', label: 'Single show' },
+                    { id: 'SERIES', label: t('studioShows.modeSeries') },
+                    { id: 'SINGLE', label: t('studioShows.modeSingle') },
                   ]}
                   selected={mode}
                   onChange={(id) => setMode(id as ShowMode)}
-                  aria-label="Show mode"
+                  aria-label={t('studioShows.modeAria')}
                 />
                 {mode === 'SERIES' ? (
                   <FilterChips
                     items={[
-                      { id: '1', label: '1 hour' },
-                      { id: '2', label: '2 hours' },
+                      { id: '1', label: t('studioShows.oneHour') },
+                      { id: '2', label: t('studioShows.twoHours') },
                     ]}
                     selected={String(intervalHours)}
                     onChange={(id) => setIntervalHours(Number(id) as 1 | 2)}
-                    aria-label="Episode length"
+                    aria-label={t('studioShows.lengthAria')}
                   />
                 ) : null}
               </div>
               <Dialog.Actions>
-                <Dialog.Close>Cancel</Dialog.Close>
+                <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
                 <Button type="submit" disabled={busy || !title.trim()}>
-                  {busy ? 'Creating…' : 'Create show'}
+                  {busy
+                    ? t('studioShows.creating')
+                    : t('studioShows.createShow')}
                 </Button>
               </Dialog.Actions>
             </form>
@@ -246,24 +248,24 @@ export function StudioShowsView() {
 
           <StudioPanel>
             {loading ? (
-              <PageLoading label="Loading…" />
+              <PageLoading label={t('studioShows.loading')} />
             ) : loadError && shows.length === 0 ? (
               <PageError
-                title="Could not load your shows"
+                title={t('studioShows.loadError')}
                 description={loadError}
                 onRetry={reload}
               />
             ) : shows.length === 0 ? (
               <PageEmpty
-                title="No shows yet"
-                description="Create one to start numbering episodes."
+                title={t('studioShows.emptyTitle')}
+                description={t('studioShows.emptyDescription')}
                 action={
-                  <Tooltip content="New show" side="top">
+                  <Tooltip content={t('studioShows.newShow')} side="top">
                     <Button
                       size="icon-sm"
                       variant="secondary"
                       onClick={() => setCreateOpen(true)}
-                      aria-label="New show"
+                      aria-label={t('studioShows.newShow')}
                     >
                       <PlusIcon size={16} aria-hidden />
                     </Button>
@@ -277,8 +279,8 @@ export function StudioShowsView() {
                   type="search"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search shows…"
-                  aria-label="Search shows"
+                  placeholder={t('studioShows.searchPlaceholder')}
+                  aria-label={t('studioShows.searchPlaceholder')}
                   className="mb-4"
                   startAddon={
                     <SearchIcon size={14} aria-hidden className="opacity-70" />

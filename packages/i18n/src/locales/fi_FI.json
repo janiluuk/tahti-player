@@ -800,7 +800,11 @@
       "addToQueue": "Lisää jonoon",
       "inQueue": "Jonossa",
       "removeItem": "Poista {{title}}",
-      "revoke": "Kumoa"
+      "revoke": "Kumoa",
+      "repost": "Uudelleenjulkaise",
+      "reposted": "Uudelleenjulkaistu",
+      "repostItem": "Uudelleenjulkaise {{title}}",
+      "undoRepostItem": "Kumoa uudelleenjulkaisu: {{title}}"
     },
     "artistProfile": {
       "joined": "Liittynyt {{month}}"
@@ -1366,7 +1370,15 @@
       "uploadSourceUnavailable": "Tila ei saatavilla",
       "uploadSourceConnected": "Yhdistetty",
       "uploadSourceNotConnected": "Ei yhdistetty",
-      "uploadSourceNotAvailable": "Ei vielä saatavilla"
+      "uploadSourceNotAvailable": "Ei vielä saatavilla",
+      "trackOrderDescription": "Julkiset kappaleet näkyvät tässä järjestyksessä artistisivusi Tracks-välilehdellä. Kiinnitetyt kappaleet näkyvät silti ensin, ja uudet lataukset alkavat ylhäältä.",
+      "trackOrderEmpty": "Ei vielä julkisia kappaleita.",
+      "trackOrderButton": "Järjestä profiililla",
+      "collectionOrderTooltip": "Järjestä profiililla",
+      "collectionOrderAria": "Järjestä kokoelmat profiililla",
+      "collectionOrderTitle": "Kokoelmajärjestys profiililla",
+      "collectionOrderDescription": "Julkiset kokoelmat näkyvät tässä järjestyksessä artistisivullasi. Nostetut kokoelmat pysyvät ensimmäisinä.",
+      "collectionOrderEmpty": "Ei vielä julkisia kokoelmia."
     },
     "date": {
       "today": "Tänään",
@@ -1627,7 +1639,20 @@
       "broadcastShowNameRequired": "Lisää ohjelman nimi ennen tallennusta.",
       "broadcastShowSaved": "Ohjelman tiedot tallennettu.",
       "channelLinksInvalid": "Linkkien on oltava http(s)- tai mailto:-osoitteita",
-      "channelLookSaveFailed": "Muutoksia ei voitu tallentaa. Yritä uudelleen."
+      "channelLookSaveFailed": "Muutoksia ei voitu tallentaa. Yritä uudelleen.",
+      "reposted": "Uudelleenjulkaistu.",
+      "purchaseComplete": "Ostos valmis",
+      "checkoutNotStripe": "Kassan URL ei ollut Stripestä",
+      "addedNamed": "Lisätty {{title}}.",
+      "removedNamed": "Poistettu {{title}}.",
+      "feedLinkCopied": "Syötelinkki kopioitu. Liitä se podcast-sovellukseen.",
+      "couldNotCopyFeedLink": "Syötelinkkiä ei voitu kopioida.",
+      "fullBioSaved": "Pitkä bio tallennettu",
+      "couldNotSaveBio": "Biota ei voitu tallentaa. Yritä uudelleen.",
+      "couldNotSaveBioReason": "Biota ei voitu tallentaa: {{error}}",
+      "stoppedModerating": "Et enää moderoi kanavaa {{name}}.",
+      "couldNotStartStream": "Virtaa ei voitu käynnistää. Yritä uudelleen.",
+      "trackDetailsSaved": "Kappaleen tiedot tallennettu."
     },
     "settingsLogs": {
       "noLogs": "Ei lokimerkintöjä vielä. Tämän välilehden varoitukset, virheet ja soittimen tapahtumat näkyvät täällä.",
@@ -1648,7 +1673,13 @@
       "governanceEmptyDiscussions": "Ei ratkaisemattomia keskustelupäivityksiä.",
       "recentActivity": "Viimeisin toiminta",
       "recentActivityLoadError": "Viimeisintä toimintaa ei voitu ladata",
-      "recentActivityRefreshError": "Viimeisintä toimintaa ei voitu päivittää"
+      "recentActivityRefreshError": "Viimeisintä toimintaa ei voitu päivittää",
+      "recentBroadcasts": "Viimeisimmät lähetykset",
+      "broadcastsLoadError": "Viimeisimpiä lähetyksiä ei voitu ladata",
+      "noBroadcastsTitle": "Ei lähetyksiä vielä",
+      "noBroadcastsDescription": "Mene liveen kun olet valmis — valmiit ohjelmat tulevat tänne nauhoituksina.",
+      "goLive": "Mene liveen",
+      "viewAllRecordings": "Näytä kaikki nauhoitukset →"
     },
     "adminModeration": {
       "inbox": "Postilaatikko",
@@ -2259,7 +2290,10 @@
       "fingerprintNoAudioDescription": "Sormenjälki tarvitsee kappaleen äänitiedoston ensin.",
       "noDescription": "Kuvausta ei ole vielä asetettu.",
       "published": "Julkaistu",
-      "publish": "Julkaise"
+      "publish": "Julkaise",
+      "versionsEmptyTitle": "Tällä julkaisulla ei ole vielä kappaleita",
+      "versionsEmptyDescription": "Lisää ensin kappaleet, sitten hallitse niiden versioita.",
+      "creditsEmpty": "Tällä kappaleella ei ole vielä krediittejä."
     },
     "adminContentReports": {
       "filterAll": "Kaikki",
@@ -2505,7 +2539,93 @@
     },
     "collaborativePlaylist": {
       "title": "Lisää tälle soittolistalle",
-      "signedInHint": "Kuka tahansa kirjautunut voi lisätä julkisen kappaleen tälle yhteisölliselle soittolistalle. Omistaja saa ilmoituksen."
+      "signedInHint": "Kuka tahansa kirjautunut voi lisätä julkisen kappaleen tälle yhteisölliselle soittolistalle. Omistaja saa ilmoituksen.",
+      "noteLabel": "Muistiinpano (valinnainen)",
+      "notePlaceholder": "Miksi tämä kappale?",
+      "signInPrompt": "lisätäksesi kappaleita tälle yhteisölliselle soittolistalle."
+    },
+    "moderateChannel": {
+      "stopTitle": "Lopetetaanko kanavan {{name}} moderointi?",
+      "stopDescription": "Menetät moderaattorin roolin tällä kanavalla. Vain omistaja voi antaa sen takaisin.",
+      "stopConfirm": "Lopeta moderointi"
+    },
+    "channelStage": {
+      "loadingStream": "Ladataan virtaa",
+      "pauseStream": "Keskeytä virta",
+      "playLive": "Toista live",
+      "playStream": "Toista virta",
+      "offAirTitle": "Ei lähetyksessä",
+      "offAirDescription": "Tämä kanava ei lähetä juuri nyt. Selaa kappaleita alta tai palaa myöhemmin.",
+      "browseTracks": "Selaa kappaleita",
+      "nowPlaying": "Nyt soi",
+      "liveHint": "Live on käynnissä — paina Toista live visualisoijaa varten.",
+      "rotationHint": "24/7-kierto soi — paina Toista kuunnellaksesi."
+    },
+    "studioShows": {
+      "title": "Ohjelmat",
+      "newShow": "Uusi ohjelma",
+      "loading": "Ladataan…",
+      "loadError": "Ohjelmia ei voitu ladata",
+      "emptyTitle": "Ei ohjelmia vielä",
+      "emptyDescription": "Luo yksi aloittaaksesi jaksojen numeroinnin.",
+      "createTitle": "Uusi ohjelma",
+      "createDescription": "Jaksot perivät kuvauksen, kannen ja seuraavan jaksonumeron.",
+      "showTitle": "Ohjelman nimi",
+      "description": "Kuvaus",
+      "descriptionPlaceholder": "Kopioidaan jokaiseen uuteen jaksoon",
+      "recordDefault": "Tallenna lähetykset oletuksena",
+      "recordDefaultHint": "Tämän ohjelman uudet lähetykset alkavat tallennus päällä.",
+      "modeAria": "Ohjelman tyyppi",
+      "modeSeries": "Jatkuva sarja",
+      "modeSingle": "Yksittäinen ohjelma",
+      "lengthAria": "Jakson pituus",
+      "oneHour": "1 tunti",
+      "twoHours": "2 tuntia",
+      "creating": "Luodaan…",
+      "createShow": "Luo ohjelma",
+      "searchPlaceholder": "Hae ohjelmia"
+    },
+    "studioStash": {
+      "title": "Stash",
+      "sectionsAria": "Stash-osiot",
+      "allStash": "Koko stash",
+      "moveToStash": "Siirrä stashiin",
+      "tracksTitle": "Stash-kappaleet",
+      "tracksDescription": "Muokkaa näitä kuten mitä tahansa kappaletta. Ne pysyvät poissa julkisista listauksista.",
+      "loading": "Ladataan stashiasi…",
+      "loadError": "Stashia ei voitu ladata",
+      "emptyTitle": "Ei vielä kappaleita stashissa",
+      "emptyDescription": "Lataa yksityinen kappale ja siirrä se tänne, kun olet valmis muokkaamaan tai jakamaan linkillä.",
+      "uploadTrack": "Lataa kappale",
+      "filesTitle": "Tiedostosi",
+      "filesDescription": "Yksityisiä latauksia, joita voit jakaa linkillä. Kappaleiden julkaisu vaatii artistikanavan.",
+      "gateDescription": "Kirjaudu sisään ladataksesi yksityisiä tiedostoja ja jakaaksesi niitä linkillä.",
+      "loadingSession": "Ladataan istuntoa…",
+      "loadingAccount": "Ladataan tiliäsi…"
+    },
+    "studioRevenue": {
+      "fanSubsTitle": "Fanitilaukset",
+      "emptyFanSubsTitle": "Ei vielä fanitilauksia",
+      "emptyFanSubsDescription": "Luo tilaustasot, jotta fanit voivat tukea sinua suoraan.",
+      "openTiers": "Avaa tasoeditori",
+      "emptyDisbursements": "Ei vielä maksuja"
+    },
+    "studioStatsTop": {
+      "noListens": "Tältä jaksolta ei ole vielä kuunteluja",
+      "noTrackStats": "Ei vielä kappale­tilastoja",
+      "noCountryData": "Ei vielä maatietoja"
+    },
+    "trackInfo": {
+      "title": "Kappaleen tiedot",
+      "artistPage": "Artistisivu"
+    },
+    "artistMore": {
+      "more": "Lisää",
+      "moreActions": "Lisää toimintoja: {{name}}"
+    },
+    "embedDialog": {
+      "copyIframe": "Kopioi iframe-koodi",
+      "embedCopied": "Upotuskoodi kopioitu."
     }
   },
   "studioEditor": {

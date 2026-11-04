@@ -13,7 +13,7 @@ import {
 import { useState, type CSSProperties } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -61,6 +61,7 @@ function ArtistMoreMenu({
   subscriptionsOn: boolean;
 }) {
   const navigate = useNavigate();
+  const { t } = useTranslation('web');
   const { artist, channel } = profile;
   const [embedOpen, setEmbedOpen] = useState(false);
   const [reportOpen, setReportOpen] = useState(false);
@@ -92,9 +93,9 @@ function ArtistMoreMenu({
     }
     try {
       await navigator.clipboard.writeText(rssHref);
-      toast.success('Feed link copied. Paste it into your podcast app.');
+      toast.success(t('toasts.feedLinkCopied'));
     } catch {
-      toast.error('Could not copy the feed link.');
+      toast.error(t('toasts.couldNotCopyFeedLink'));
     }
   };
 
@@ -102,12 +103,14 @@ function ArtistMoreMenu({
     <>
       <Popover
         anchor="bottom end"
-        tooltip={{ content: 'More', side: 'top' }}
+        tooltip={{ content: t('artistMore.more'), side: 'top' }}
         trigger={
           <Button
             variant="secondary"
             size="icon-sm"
-            aria-label={`More actions for ${artist.displayName}`}
+            aria-label={t('artistMore.moreActions', {
+              name: artist.displayName,
+            })}
             className={headerButtonClass}
           >
             <MoreHorizontalIcon size={16} aria-hidden />
@@ -279,6 +282,7 @@ export function ArtistBioSection({
   surfaceStyle: CSSProperties;
   onFullBioSaved: (fullBio: string | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
   const [saving, setSaving] = useState(false);
@@ -297,14 +301,14 @@ export function ArtistBioSection({
     try {
       const result = await patchMeProfile({ fullBio: draft.trim() || null });
       if (!result.ok) {
-        toast.error(`Could not save your bio: ${result.error}`);
+        toast.error(t('toasts.couldNotSaveBioReason', { error: result.error }));
         return;
       }
       onFullBioSaved(result.data.fullBio ?? null);
       setEditing(false);
-      toast.success('Full bio saved');
+      toast.success(t('toasts.fullBioSaved'));
     } catch {
-      toast.error('Could not save your bio. Try again.');
+      toast.error(t('toasts.couldNotSaveBio'));
     } finally {
       setSaving(false);
     }

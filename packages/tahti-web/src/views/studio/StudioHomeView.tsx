@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { PageEmpty, PageError } from '../../components/PageStates';
@@ -16,6 +17,7 @@ import { UpcomingShowsSection } from './home/UpcomingShowsSection';
 import { useStudioHome } from './home/useStudioHome';
 
 export function StudioHomeView() {
+  const { t } = useTranslation('web');
   const stripeConfigured = useStripeConfigured();
   const state = useStudioHome();
   const {
@@ -71,20 +73,22 @@ export function StudioHomeView() {
               />
               <EmptyDiscographyPrompt state={state} />
               <RecentActivitySection />
-              <Group title="Recent broadcasts">
+              <Group title={t('studioHub.recentBroadcasts')}>
                 {broadcastsError && recentBroadcasts.length === 0 ? (
                   <PageError
-                    title="Could not load recent broadcasts"
+                    title={t('studioHub.broadcastsLoadError')}
                     description={broadcastsError}
                     onRetry={reloadOverview}
                   />
                 ) : recentBroadcasts.length === 0 ? (
                   <PageEmpty
                     className="border-border rounded-xl border"
-                    title="No broadcasts yet"
-                    description="Go live when you are ready — finished shows land here as recordings."
+                    title={t('studioHub.noBroadcastsTitle')}
+                    description={t('studioHub.noBroadcastsDescription')}
                     action={
-                      <ButtonLink to="/studio/go-live">Go live</ButtonLink>
+                      <ButtonLink to="/studio/go-live">
+                        {t('studioHub.goLive')}
+                      </ButtonLink>
                     }
                   />
                 ) : (
@@ -102,7 +106,7 @@ export function StudioHomeView() {
                         to="/library/recordings"
                         className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
                       >
-                        View all recordings →
+                        {t('studioHub.viewAllRecordings')}
                       </Link>
                     </div>
                   </div>

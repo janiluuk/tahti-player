@@ -454,7 +454,11 @@ export function TrackHero({ page }: { page: TrackPage }) {
             </Button>
             {user && !isOwner && repost.state ? (
               <Tooltip
-                content={repost.state.active ? 'Reposted' : 'Repost'}
+                content={
+                  repost.state.active
+                    ? t('actions.reposted')
+                    : t('actions.repost')
+                }
                 side="top"
               >
                 <Button
@@ -463,8 +467,8 @@ export function TrackHero({ page }: { page: TrackPage }) {
                   variant={repost.state.active ? 'default' : 'secondary'}
                   aria-label={
                     repost.state.active
-                      ? `Undo repost of ${playable.title}`
-                      : `Repost ${playable.title}`
+                      ? t('actions.undoRepostItem', { title: playable.title })
+                      : t('actions.repostItem', { title: playable.title })
                   }
                   aria-pressed={repost.state.active}
                   onClick={() => {
@@ -472,7 +476,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                       if (!result.ok) {
                         toast.error(result.error);
                       } else if (result.data.active) {
-                        toast.success('Reposted.');
+                        toast.success(t('toasts.reposted'));
                       }
                     });
                   }}

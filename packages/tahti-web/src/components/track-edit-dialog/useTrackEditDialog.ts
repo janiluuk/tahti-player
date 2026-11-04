@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import { parseCredits } from '../../api/distribution';
 import { setSoundAccess, type SoundAccess } from '../../api/purchase-tiers';
 import { fetchHearthisTrackById } from '../../api/sources';
@@ -424,7 +426,7 @@ export function useTrackEditDialog(
       backgroundUrl: result.data.backgroundUrl ?? '',
       tracklist: result.data.tracklist ?? [],
     }));
-    toast.success('Track details saved.');
+    toast.success(i18n.t('web:toasts.trackDetailsSaved'));
     onSaved?.(result.data);
   };
 
