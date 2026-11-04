@@ -18,7 +18,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, channel manager, one agenda of shows, events and parties, and tool cards), **Fans** (posts, newsletter, memberships, store, earnings) and **Profile** (artist profile and channel page settings). Each card opens a focused page.',
+          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, channel manager, one agenda of shows, events and parties, and tool cards), **Fans** (posts, newsletter, memberships, store, earnings, plus live chat on the page) and **Profile** (artist profile and channel page settings). Each card opens a focused page.',
       },
     },
   },
@@ -46,6 +46,7 @@ export const Fans: Story = {
       '/studio/audience?tab=store',
       '/studio/audience',
     ]);
+    await expect(canvas.getByRole('heading', { name: 'Chat' })).toBeVisible();
   },
 };
 
@@ -69,6 +70,14 @@ export const Profile: Story = {
       canvas.getByRole('list', { name: 'Channel page settings' }),
     ).getAllByRole('link');
     await expect(channel[0]).toHaveTextContent('Channel design');
+    const chat = channel.find((link) => /Chat/.test(link.textContent ?? ''));
+    const moderators = channel.find((link) =>
+      /Moderators/.test(link.textContent ?? ''),
+    );
+    await expect(chat).toBeDefined();
+    await expect(moderators).toBeDefined();
+    await expect(chat).toHaveAttribute('href', '/studio/fans');
+    await expect(moderators).toHaveAttribute('href', '/studio/fans');
   },
 };
 

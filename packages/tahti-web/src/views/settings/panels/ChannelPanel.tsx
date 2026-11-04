@@ -8,7 +8,13 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Button, InlineLoader, Input, Tabs } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonAnchor,
+  InlineLoader,
+  Input,
+  Tabs,
+} from '@tahti-player/ui';
 
 import {
   checkSlugAvailable,
@@ -23,10 +29,6 @@ import {
 } from '../../../api/studio-extras';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { GenrePicker } from '../../../components/GenrePicker';
-import { ChannelModeratorsPanel } from '../../../components/moderation/ChannelModeratorsPanel';
-import { ChatAccessPanel } from '../../../components/moderation/ChatAccessPanel';
-import { ChatBansPanel } from '../../../components/moderation/ChatBansPanel';
-import { ChatMessagesPanel } from '../../../components/moderation/ChatMessagesPanel';
 import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import {
@@ -66,7 +68,6 @@ export function ChannelPanel() {
   const [profileError, setProfileError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [slug, setSlug] = useState(channel?.slug ?? '');
-  const [bansVersion, setBansVersion] = useState(0);
   const [domain, setDomain] = useState('');
   const [note, setNote] = useState<{ text: string; failed: boolean } | null>(
     null,
@@ -351,54 +352,30 @@ export function ChannelPanel() {
           label: 'Chat',
           icon: <MessageSquare size={14} />,
           content: (
-            <div className="flex flex-col gap-6">
-              {!channelProfile ? (
-                profileError ? (
-                  profileFailed
-                ) : (
-                  <InlineLoader label="Loading…" />
-                )
-              ) : (
-                <div className="flex flex-col gap-5">
-                  <SettingsToggle
-                    label="Enable live chat on my channel"
-                    description="Allow listeners to chat while you are broadcasting."
-                    value={channelProfile.chatEnabled}
-                    onChange={(value) =>
-                      saveProfileSwitch(
-                        'chatEnabled',
-                        value,
-                        'Chat setting saved.',
-                      )
-                    }
-                  />
-                  <SettingsToggle
-                    label="Show today’s listener count in my chat"
-                    description="Listeners see how many people tuned in today."
-                    value={channelProfile.showDailyListeners ?? true}
-                    onChange={(value) =>
-                      saveProfileSwitch(
-                        'showDailyListeners',
-                        value,
-                        'Chat setting saved.',
-                      )
-                    }
-                  />
-                </div>
-              )}
-              <ChatAccessPanel />
-              <ChatMessagesPanel
-                onBanned={() => setBansVersion((v) => v + 1)}
-              />
-              <ChatBansPanel key={bansVersion} />
-            </div>
+            <StudioPanel
+              title="Chat moved to Fans"
+              description="Turn chat on or off, and moderate access, messages, bans and moderators, on Studio → Fans."
+            >
+              <ButtonAnchor href="/studio/fans" size="sm">
+                Open Fans chat
+              </ButtonAnchor>
+            </StudioPanel>
           ),
         },
         {
           id: 'moderators',
           label: 'Moderators',
           icon: <Shield size={14} />,
-          content: <ChannelModeratorsPanel />,
+          content: (
+            <StudioPanel
+              title="Moderators moved to Fans"
+              description="Add and remove chat moderators on Studio → Fans, under Chat."
+            >
+              <ButtonAnchor href="/studio/fans" size="sm">
+                Open Fans chat
+              </ButtonAnchor>
+            </StudioPanel>
+          ),
         },
       ]}
     />

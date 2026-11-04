@@ -9,6 +9,7 @@ import {
 import { HubCards, ViewShell, type HubCardItem } from '@tahti-player/ui';
 
 import { renderHubLink } from '../../components/HubLink';
+import { ChannelChatSettings } from '../../components/moderation/ChannelChatSettings';
 import { StudioGate } from '../../components/StudioGate';
 
 export const STUDIO_FANS_ITEMS: HubCardItem[] = [
@@ -55,7 +56,7 @@ export function StudioFansView() {
       <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-4 px-1 py-2">
         <ViewShell
           title="Fans"
-          subtitle="Everything between you and the people who support you: posts, the newsletter, memberships, the store and what you earn."
+          subtitle="Everything between you and the people who support you: posts, the newsletter, memberships, the store, chat and what you earn."
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
           <HubCards
@@ -63,6 +64,7 @@ export function StudioFansView() {
             items={STUDIO_FANS_ITEMS}
             renderLink={renderHubLink}
           />
+          <ChannelChatSettings />
         </ViewShell>
       </div>
     </StudioGate>

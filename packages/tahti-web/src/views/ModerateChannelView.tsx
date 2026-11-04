@@ -94,7 +94,7 @@ export function ModerateChannelView({ slug }: { slug: string }) {
       <EmptyState
         icon={<ShieldOff size={40} className="opacity-40" />}
         title="You don't moderate this channel"
-        description={`@${user.username} is not a moderator of this channel's chat. Its owner adds moderators in Settings.`}
+        description={`@${user.username} is not a moderator of this channel's chat. Its owner adds moderators under Studio → Fans.`}
         action={
           <ButtonLink
             to="/channel/$slug"
@@ -132,26 +132,9 @@ export function ModerateChannelView({ slug }: { slug: string }) {
                 Open channel
               </ButtonLink>
               {channel.isOwner && (
-                <>
-                  <ButtonLink
-                    to="/settings/$section"
-                    params={{ section: 'channel' }}
-                    search={{ tab: 'chat' }}
-                    size="sm"
-                    variant="text"
-                  >
-                    Chat settings
-                  </ButtonLink>
-                  <ButtonLink
-                    to="/settings/$section"
-                    params={{ section: 'channel' }}
-                    search={{ tab: 'moderators' }}
-                    size="sm"
-                    variant="text"
-                  >
-                    Moderators
-                  </ButtonLink>
-                </>
+                <ButtonLink to="/studio/fans" size="sm" variant="text">
+                  Chat settings
+                </ButtonLink>
               )}
               {!channel.isOwner && (
                 <Button

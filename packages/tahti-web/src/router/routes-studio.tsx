@@ -465,11 +465,7 @@ export const studioModerationRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/moderation',
   beforeLoad: () => {
-    throw redirect({
-      to: '/settings/$section',
-      params: { section: 'channel' },
-      search: { tab: 'moderators' },
-    });
+    throw redirect({ to: '/studio/fans' });
   },
 });
 

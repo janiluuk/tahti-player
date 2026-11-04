@@ -17,6 +17,12 @@ pages ship on mocks, with Listen together starting a Jam from the group
 playlist. Discover links to Groups; submissions show track titles. Bumped
 tahti-web `0.0.314`.
 
+## 2026-11-04 — Studio Fans chat (0.0.315)
+
+Studio → Fans hosts live-chat on/off and moderation (access, messages, bans,
+moderators). Settings → Channel Chat/Moderators and Profile hub cards point
+there; `/studio/moderation` redirects to Fans.
+
 ## 2026-11-04 - Channel manager on Broadcast
 
 Studio → Broadcast shows the channel stream manager (live status, rotation,

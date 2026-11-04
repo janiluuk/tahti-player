@@ -106,14 +106,14 @@ export const STUDIO_PROFILE_CHANNEL_ITEMS: HubCardItem[] = [
   },
   {
     id: 'chat',
-    href: '/settings/channel?tab=chat',
+    href: '/studio/fans',
     icon: MessageSquareIcon,
     title: 'Chat',
     description: 'Who can chat on your channel, and slow mode.',
   },
   {
     id: 'moderators',
-    href: '/settings/channel?tab=moderators',
+    href: '/studio/fans',
     icon: ShieldIcon,
     title: 'Moderators',
     description: 'People who can moderate your chat.',
