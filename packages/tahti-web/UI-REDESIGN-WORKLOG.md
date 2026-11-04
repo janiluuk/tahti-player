@@ -1,3 +1,9 @@
+## 2026-11-04 - Studio Updates StoryCard + newsletter remove (0.0.324)
+
+Studio → Posts uses a StoryCard grid (preview/edit/delete under each card).
+Newsletter drafts get a red ConfirmDialog remove (QUEUED hidden). Client
+`deleteNewsletterDraft` against org DELETE. Bumped tahti-web `0.0.324`.
+
 ## 2026-11-04 - Batch 32 follow-up: admin users role filter (0.0.323)
 
 Admin Users sends the BOARD/ARTIST filter to the server (`isBoard`, `tier`) so
@@ -43,7 +49,6 @@ labels, Settings Playback and Themes bodies, the Listen Radio and Coming up
 rows and non-Library page titles read from the `web` i18n namespace (English
 and Finnish). Deleted unused `importSoundBanner`; added a HomeComingUp story;
 VIEW-CATALOG story flags and todo hygiene (batch-30 folded into HISTORY).
-
 ## 2026-11-04 - Batch 31 ListingDate + Finnish chrome (0.0.318)
 
 ListingDate on governance history, account purchases, Studio editor/upload,

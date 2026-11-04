@@ -1,10 +1,4 @@
-import {
-  CalendarClockIcon,
-  EyeIcon,
-  PlusIcon,
-  SendIcon,
-  Trash2Icon,
-} from 'lucide-react';
+import { EyeIcon, PlusIcon, SendIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -12,13 +6,15 @@ import {
   Button,
   Dialog,
   EditIconButton,
-  ImageReveal,
+  StoryCard,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
+import { POST_CATEGORY_LABELS } from '../../api/community-stories';
 import {
   deleteArtistPost,
+  deleteNewsletterDraft,
   fetchArtistPosts,
   fetchNewsletterDrafts,
   isScheduledPost,
@@ -26,6 +22,7 @@ import {
   type ArtistPost,
   type NewsletterDraft,
 } from '../../api/studio-extras';
+import { artistPostStory } from '../../components/ArtistStoryFeed';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageLightbox } from '../../components/ImageLightbox';
 import {
@@ -36,6 +33,8 @@ import {
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { newsletterDeliverySummary } from '../../lib/newsletterDelivery';
+import { storyDate } from '../../lib/storyDate';
+import { useAuthStore } from '../../stores/authStore';
 import { NewDraftDialog } from './updates/NewDraftDialog';
 import { NewsletterSubscriberStats } from './updates/NewsletterSubscriberStats';
 import { PostDialog } from './updates/PostDialog';
@@ -66,10 +65,18 @@ export function StudioUpdatesView({
   );
   const [sendingId, setSendingId] = useState<string | null>(null);
   const [pendingSend, setPendingSend] = useState<NewsletterDraft | null>(null);
+  const [pendingDeleteDraft, setPendingDeleteDraft] =
+    useState<NewsletterDraft | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const user = useAuthStore((s) => s.user);
 
   const isEmpty = posts.length === 0 && drafts.length === 0;
+  const storyAuthor = {
+    username: user?.username ?? 'artist',
+    displayName: user?.displayName || user?.username || 'Artist',
+    avatarUrl: user?.avatarUrl ?? null,
+  };
 
   const reload = () => {
     setLoadError(null);
@@ -217,53 +224,37 @@ export function StudioUpdatesView({
                   }
                 />
               ) : (
-                <ul className="divide-border divide-y">
-                  {posts.map((p) => {
+                <ul
+                  className="grid gap-4 sm:grid-cols-2"
+                  data-testid="studio-posts-story-grid"
+                >
+                  {posts.map((p, index) => {
+                    const story = artistPostStory(p, storyAuthor);
                     const postTitle = p.title || 'Untitled';
+                    const kind = isScheduledPost(p)
+                      ? 'Scheduled'
+                      : (POST_CATEGORY_LABELS[story.category] ?? 'Story');
                     return (
                       <li
                         key={p.id}
-                        className="flex flex-wrap items-start justify-between gap-2 py-3 text-sm first:pt-0 last:pb-0"
+                        className="flex flex-col gap-2"
+                        data-testid="studio-post-story"
                       >
-                        <div className="min-w-56 flex-1">
-                          <div className="font-medium">{postTitle}</div>
-                          <p className="text-foreground-secondary mt-1 line-clamp-3 whitespace-pre-wrap">
-                            {p.body}
-                          </p>
-                          {p.images.length > 0 && (
-                            <div className="mt-2 flex gap-2 overflow-hidden">
-                              {p.images.map((image, index) => (
-                                <Button
-                                  key={`${image}-${index}`}
-                                  type="button"
-                                  variant="text"
-                                  className="bg-background-secondary size-16 shrink-0 overflow-hidden rounded-md p-0"
-                                  onClick={() =>
-                                    setLightbox({ images: p.images, index })
-                                  }
-                                  aria-label={`View image ${index + 1} full size`}
-                                >
-                                  <ImageReveal
-                                    src={image}
-                                    alt=""
-                                    className="size-full"
-                                  />
-                                </Button>
-                              ))}
-                            </div>
-                          )}
-                          {isScheduledPost(p) ? (
-                            <p className="text-foreground-secondary mt-1 flex items-center gap-1 text-xs">
-                              <CalendarClockIcon size={13} aria-hidden />
-                              Scheduled for{' '}
-                              {new Date(p.publishAt).toLocaleString()}
-                            </p>
-                          ) : (
-                            <p className="text-foreground-secondary mt-1 text-xs">
-                              {new Date(p.publishAt).toLocaleString()}
-                            </p>
-                          )}
-                        </div>
+                        <StoryCard
+                          index={index}
+                          imageSrc={story.imageUrl}
+                          kind={kind}
+                          date={storyDate(p.publishAt)}
+                          dateTime={p.publishAt}
+                          title={story.title ?? story.excerpt}
+                          excerpt={story.title ? story.excerpt : undefined}
+                          authorName={
+                            storyAuthor.displayName || storyAuthor.username
+                          }
+                          authorAvatarSrc={storyAuthor.avatarUrl}
+                          onOpen={() => setPreviewPost(p)}
+                          openLabel={`Preview ${postTitle}`}
+                        />
                         <div className="flex shrink-0 gap-1">
                           <Button
                             size="sm"
@@ -357,17 +348,35 @@ export function StudioUpdatesView({
                           </p>
                         ) : null}
                       </div>
-                      {(!d.state || d.state === 'DRAFT') && !d.sentAt && (
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          disabled={sendingId !== null}
-                          onClick={() => setPendingSend(d)}
-                        >
-                          <SendIcon size={16} aria-hidden className="mr-1.5" />
-                          Send
-                        </Button>
-                      )}
+                      <div className="flex shrink-0 gap-1">
+                        {(!d.state || d.state === 'DRAFT') && !d.sentAt && (
+                          <Button
+                            size="sm"
+                            variant="secondary"
+                            disabled={sendingId !== null}
+                            onClick={() => setPendingSend(d)}
+                          >
+                            <SendIcon
+                              size={16}
+                              aria-hidden
+                              className="mr-1.5"
+                            />
+                            Send
+                          </Button>
+                        )}
+                        {d.state !== 'QUEUED' && (
+                          <Tooltip content={`Remove ${d.subject}`} side="top">
+                            <Button
+                              size="icon-sm"
+                              variant="text"
+                              aria-label={`Remove ${d.subject}`}
+                              onClick={() => setPendingDeleteDraft(d)}
+                            >
+                              <Trash2Icon size={16} aria-hidden />
+                            </Button>
+                          </Tooltip>
+                        )}
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -479,6 +488,39 @@ export function StudioUpdatesView({
                 toast.success('Post deleted.');
               })
               .catch(() => toast.error('Could not delete the post.'));
+          }}
+        />
+
+        <ConfirmDialog
+          isOpen={pendingDeleteDraft !== null}
+          title={
+            pendingDeleteDraft
+              ? `Remove “${pendingDeleteDraft.subject}”?`
+              : 'Remove newsletter?'
+          }
+          description="This removes the draft or past send from your list. It cannot be undone."
+          confirmLabel="Remove"
+          destructive
+          onCancel={() => setPendingDeleteDraft(null)}
+          onConfirm={() => {
+            const draft = pendingDeleteDraft;
+            setPendingDeleteDraft(null);
+            if (!draft) {
+              return;
+            }
+            void deleteNewsletterDraft(draft.id)
+              .then((result) => {
+                if (!result.ok) {
+                  setMsg(result.error);
+                  toast.error(result.error);
+                  return;
+                }
+                setDrafts((current) =>
+                  current.filter((entry) => entry.id !== draft.id),
+                );
+                toast.success('Newsletter removed.');
+              })
+              .catch(() => toast.error('Could not remove the newsletter.'));
           }}
         />
       </div>

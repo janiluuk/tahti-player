@@ -1,8 +1,13 @@
-# Studio Updates as StoryCard posts
+# Studio Updates: StoryCard posts + remove newsletter
 
 **Status:** partial
 
-Draft PR #1809 (`feat/studio-updates-posts-storycard`): Studio Updates render
-as `StoryCard` posts and the newsletter surface is removed. The work is
-unmerged; batch 33 does not touch it. Finish or rebase that branch, then fold
-this file into `HISTORY.md`.
+PR [#1809](https://github.com/janiluuk/tahti-player/pull/1809).
+
+## Done
+
+1. [x] Org DELETE + client `deleteNewsletterDraft`.
+2. [x] ConfirmDialog remove UI + StoryCard posts grid + stories/tests.
+3. [ ] Merge → fold into HISTORY.
+
+tahti-web **0.0.324**.

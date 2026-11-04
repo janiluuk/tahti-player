@@ -47,3 +47,31 @@ export const NewsletterSendConfirmation: Story = {
     await expectNoDialog(canvasElement);
   },
 };
+
+export const PostsStoryCardGrid: Story = {
+  name: 'Posts as StoryCard grid',
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByTestId('studio-posts-story-grid'),
+    ).toBeVisible();
+  },
+};
+
+export const NewsletterRemoveConfirmation: Story = {
+  name: 'Newsletter remove confirmation (mock toast)',
+  args: { tab: 'newsletter' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const remove = await canvas.findByRole('button', {
+      name: /^Remove /,
+    });
+    await userEvent.click(remove);
+    const body = withinBody(canvasElement);
+    const confirm = await body.findByRole('button', { name: 'Remove' });
+    await expect(confirm).toBeVisible();
+    await userEvent.click(confirm);
+    await findToast(canvasElement, /Newsletter removed/);
+    await expectNoDialog(canvasElement);
+  },
+};

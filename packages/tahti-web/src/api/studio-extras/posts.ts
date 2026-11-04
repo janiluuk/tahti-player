@@ -285,6 +285,37 @@ export async function fetchNewsletterDrafts(): Promise<{
   }
 }
 
+export async function deleteNewsletterDraft(
+  draftId: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    const draft = mockDrafts.find((entry) => entry.id === draftId);
+    if (!draft) {
+      return { ok: false, error: 'Draft not found' };
+    }
+    if (draft.state === 'QUEUED') {
+      return {
+        ok: false,
+        error: 'Wait for the send to finish before removing it',
+      };
+    }
+    mockDrafts = mockDrafts.filter((entry) => entry.id !== draftId);
+    return { ok: true };
+  }
+  try {
+    await requestJson(
+      `/api/me/newsletter/drafts/${encodeURIComponent(draftId)}`,
+      { method: 'DELETE' },
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Delete failed',
+    };
+  }
+}
+
 export async function sendNewsletterDraft(
   draftId: string,
   audience?: 'all' | 'fans',
