@@ -28,11 +28,11 @@ changed, because it needs a product call or more than a mechanical fix.
 ## Dead code to decide on (not deleted)
 
 - [ ] Unwired API clients: `fetchRevelatorStatus` / `startRevelatorCheckout`
-  (only used inside `distribution.ts`), `fetchExportPlugins`. `importSoundBanner`
+  (only used inside `distribution.ts`). `fetchExportPlugins` is kept (tested client
+  for `GET /api/me/export-plugins`, sibling contract `export-plugin-contracts`)
+  until an `ExportProvider` UI consumes it. `importSoundBanner`
   was deleted (batch 32); `fetchStudioSoundFacets` is wired via
   `useUsedBeforeTags`.
-- [ ] `lib/locale.ts` browser/stored locale detection (`detectLocale`,
-  `applyLocale`) is only called from its test.
 - [ ] Store fields never read outside the store: `libraryStore` `syncNote`,
   `heardFavoritePlaylists` / `heardFavoriteArtists` / `markFavoriteHeard`,
   `favorite*Dates`; `mapNotesStore` `getDraft`, `listComments`,

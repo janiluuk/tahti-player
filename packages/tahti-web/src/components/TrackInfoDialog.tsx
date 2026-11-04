@@ -1,6 +1,7 @@
 import { HeartIcon, ListMusicIcon, ListPlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -48,6 +49,7 @@ export function TrackInfoDialog({
   onClose: () => void;
   track: TrackInfo | null;
 }) {
+  const { t } = useTranslation('web');
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
@@ -89,11 +91,18 @@ export function TrackInfoDialog({
                 )}
                 {playable && (
                   <div className="mt-2 flex items-center gap-1">
-                    <Tooltip content={favorited ? 'Loved' : 'Love'} side="top">
+                    <Tooltip
+                      content={
+                        favorited ? t('actions.loved') : t('actions.love')
+                      }
+                      side="top"
+                    >
                       <Button
                         size="icon-sm"
                         variant="text"
-                        aria-label={favorited ? 'Loved' : 'Love'}
+                        aria-label={
+                          favorited ? t('actions.loved') : t('actions.love')
+                        }
                         aria-pressed={favorited}
                         onClick={() => toggleFavoriteTrack(playable)}
                       >

@@ -9,6 +9,7 @@ import type { GovernanceMeeting } from '../api/types';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { MeetingAgendaItems } from '../components/governance/MeetingAgendaItems';
 import { MeetingConflicts } from '../components/governance/MeetingConflicts';
+import { ListingDate } from '../components/ListingDate';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { isSafeHref } from '../lib/safeHref';
@@ -134,17 +135,23 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
               </dd>
               <dt className="text-foreground-secondary">Notice published</dt>
               <dd>
-                {meeting.noticeAt
-                  ? new Date(meeting.noticeAt).toLocaleDateString()
-                  : 'Not yet published'}
+                {meeting.noticeAt ? (
+                  <ListingDate value={meeting.noticeAt} />
+                ) : (
+                  'Not yet published'
+                )}
               </dd>
               <dt className="text-foreground-secondary">Minutes</dt>
               <dd>
-                {meeting.minutesApprovedAt
-                  ? `Approved ${new Date(meeting.minutesApprovedAt).toLocaleDateString()}`
-                  : meeting.minutesKey
-                    ? 'Uploaded, pending approval'
-                    : 'Not yet uploaded'}
+                {meeting.minutesApprovedAt ? (
+                  <>
+                    Approved <ListingDate value={meeting.minutesApprovedAt} />
+                  </>
+                ) : meeting.minutesKey ? (
+                  'Uploaded, pending approval'
+                ) : (
+                  'Not yet uploaded'
+                )}
                 {meeting.minutesUrl && isSafeHref(meeting.minutesUrl) && (
                   <>
                     {' · '}

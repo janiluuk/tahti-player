@@ -41,6 +41,7 @@ import { AdminUserDeletePanel } from './admin-user/AdminUserDeletePanel';
 import { AdminUserEngagementPanel } from './admin-user/AdminUserEngagementPanel';
 import { AdminUserRestrictionsPanel } from './admin-user/AdminUserRestrictionsPanel';
 import { ImageLightbox } from './ImageLightbox';
+import { ListingDate } from './ListingDate';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
@@ -307,9 +308,11 @@ export function AdminUserEditPanel({
               Member since
             </dt>
             <dd>
-              {detail.memberSince
-                ? new Date(detail.memberSince).toLocaleDateString()
-                : 'Not a member'}
+              {detail.memberSince ? (
+                <ListingDate value={detail.memberSince} />
+              ) : (
+                'Not a member'
+              )}
             </dd>
           </div>
           <div>

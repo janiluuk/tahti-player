@@ -4,6 +4,7 @@ import { Button, InlineError } from '@tahti-player/ui';
 
 import { circulateMotion } from '../../api/governance-motion-circulate';
 import { ConfirmDialog } from '../ConfirmDialog';
+import { ListingDate } from '../ListingDate';
 
 /** Board only, on a draft: send members a notice asking for seconds. */
 export function MotionCirculateControl({
@@ -22,7 +23,7 @@ export function MotionCirculateControl({
     return (
       <p className="text-foreground-secondary text-xs">
         Circulated to members for seconds on{' '}
-        {new Date(circulatedAt).toLocaleDateString()}.
+        <ListingDate value={circulatedAt} />.
       </p>
     );
   }

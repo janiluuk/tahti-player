@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { CalendarCheckIcon } from 'lucide-react';
 
 import type { GovernanceMotionDetail } from '../../api/types';
+import { ListingDate } from '../ListingDate';
 
 export function MotionMeetingNote({
   meeting,
@@ -25,9 +26,12 @@ export function MotionMeetingNote({
         >
           {meeting.title}
         </Link>
-        {meeting.scheduledAt
-          ? `, ${new Date(meeting.scheduledAt).toLocaleDateString()}`
-          : ''}
+        {meeting.scheduledAt ? (
+          <>
+            {', '}
+            <ListingDate value={meeting.scheduledAt} />
+          </>
+        ) : null}
         {agendaItem
           ? `, agenda item ${agendaItem.position}: ${agendaItem.title}`
           : ''}

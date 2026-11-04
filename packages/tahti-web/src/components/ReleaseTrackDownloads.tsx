@@ -2,6 +2,7 @@ import { DownloadIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import {
@@ -17,6 +18,7 @@ export function ReleaseTrackDownloads({
   smartLinkSlug: string;
   tracks: SmartLinkTrack[];
 }) {
+  const { t } = useTranslation('web');
   const [busyId, setBusyId] = useState<string | null>(null);
   const downloadable = tracks.filter(
     (track): track is SmartLinkTrack & { id: string } =>
@@ -50,7 +52,7 @@ export function ReleaseTrackDownloads({
 
   return (
     <section className="flex flex-col gap-3" aria-label="Downloads">
-      <Eyebrow>Download</Eyebrow>
+      <Eyebrow>{t('actions.download')}</Eyebrow>
       <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
         {downloadable.map((track) => (
           <li
@@ -63,12 +65,14 @@ export function ReleaseTrackDownloads({
             <Button
               size="sm"
               variant="secondary"
-              aria-label={`Download ${track.title}`}
+              aria-label={t('actions.downloadItem', { title: track.title })}
               disabled={busyId === track.id}
               onClick={() => void download(track.id)}
             >
               <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-              {busyId === track.id ? 'Preparing…' : 'Download'}
+              {busyId === track.id
+                ? t('actions.preparing')
+                : t('actions.download')}
             </Button>
           </li>
         ))}
