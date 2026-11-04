@@ -1,5 +1,7 @@
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import type { SoundProcessingStatus } from '../../api/studio';
 import type { ProcessingJob } from '../../stores/processingJobsStore';
 
@@ -23,11 +25,16 @@ export function toastProcessingFailures(
     }
     toast.error(
       item.processingError
-        ? `Processing failed: ${item.processingError}`
-        : 'Processing failed',
+        ? i18n.t('web:toasts.processingFailedReason', {
+            reason: item.processingError,
+          })
+        : i18n.t('web:toasts.processingFailed'),
       {
         description: job.title,
-        action: { label: 'View sound', onClick: () => openSound(item.id) },
+        action: {
+          label: i18n.t('web:toasts.viewSound'),
+          onClick: () => openSound(item.id),
+        },
       },
     );
   }

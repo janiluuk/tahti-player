@@ -2,6 +2,7 @@ import { Cast, Mic, Radio as RadioIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   ButtonLink,
   InlineLoader,
@@ -41,6 +42,7 @@ export function BroadcastPanel({
 }: {
   section?: BroadcastSection;
 } = {}) {
+  const { t } = useTranslation('web');
   const closeSettings = useSettingsModalStore((s) => s.close);
   const [programme, setProgramme] = useState<ProgrammeView | null>(null);
   const [green, setGreen] = useState<GreenRoomPrefs | null>(null);
@@ -114,28 +116,28 @@ export function BroadcastPanel({
       content: !programme ? (
         programmeError ? (
           <PageError
-            title="Could not load your radio settings"
+            title={t('settingsBody.broadcast.radioLoadError')}
             description={programmeError}
             onRetry={retry}
           />
         ) : (
-          <InlineLoader label="Loading…" />
+          <InlineLoader label={t('settingsBody.loading')} />
         )
       ) : (
         <div className="flex flex-col gap-6">
           <SettingsToggle
-            label="Announcements enabled"
-            description="Allow platform/radio announcements on your channel programme."
+            label={t('settingsBody.broadcast.announcementsLabel')}
+            description={t('settingsBody.broadcast.announcementsDescription')}
             value={programme.announcementsEnabled}
             onChange={(v) => saveProgramme({ announcementsEnabled: v })}
           />
           <SettingsToggle
-            label="Fallback / autoplay when offline"
+            label={t('settingsBody.broadcast.fallbackLabel')}
             value={programme.fallbackEnabled}
             onChange={(v) => saveProgramme({ fallbackEnabled: v })}
           />
           <SettingsToggle
-            label="Auto-enroll new archive into fallback"
+            label={t('settingsBody.broadcast.autoEnrollLabel')}
             value={programme.fallbackAutoEnroll}
             onChange={(v) => saveProgramme({ fallbackAutoEnroll: v })}
           />
@@ -147,7 +149,7 @@ export function BroadcastPanel({
             size="sm"
             variant="secondary"
           >
-            Open schedule / programme
+            {t('settingsBody.broadcast.openSchedule')}
           </ButtonLink>
         </div>
       ),
@@ -159,27 +161,29 @@ export function BroadcastPanel({
       content: !green ? (
         greenError ? (
           <PageError
-            title="Could not load your green room settings"
+            title={t('settingsBody.broadcast.greenRoomLoadError')}
             description={greenError}
             onRetry={retry}
           />
         ) : (
-          <InlineLoader label="Loading…" />
+          <InlineLoader label={t('settingsBody.loading')} />
         )
       ) : (
         <div className="flex flex-col gap-6">
           <SettingsToggle
-            label="Open the green room when I go live"
-            description="Each new broadcast starts with its green room open, and invites the people below. You can still open or close it from Go Live."
+            label={t('settingsBody.broadcast.greenRoomDefaultLabel')}
+            description={t(
+              'settingsBody.broadcast.greenRoomDefaultDescription',
+            )}
             value={green.defaultEnabled}
             onChange={(defaultEnabled) => saveGreenRoom({ defaultEnabled })}
           />
           <div className="flex flex-col gap-1.5 text-sm">
             <span className="text-foreground text-sm font-semibold" aria-hidden>
-              Who gets invited
+              {t('settingsBody.broadcast.whoInvited')}
             </span>
             <SelectableTiles
-              aria-label="Who gets invited"
+              aria-label={t('settingsBody.broadcast.whoInvited')}
               items={GREEN_ROOM_POOL_OPTIONS}
               selected={green.invitePool}
               onChange={(value) => {
@@ -188,8 +192,7 @@ export function BroadcastPanel({
               className="grid-cols-2"
             />
             <span className="text-foreground-secondary text-xs">
-              Invited guests can listen before the stream goes public. You can
-              invite anyone else by handle from Go Live.
+              {t('settingsBody.broadcast.invitedHint')}
             </span>
           </div>
           <ButtonLink

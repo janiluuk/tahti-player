@@ -33,6 +33,7 @@ import {
   type StatsTopListSort,
   type StatsTopTrack,
 } from '../../../api/studio-extras';
+import { dateLocaleTag } from '../../../lib/locale';
 import { STUDIO_METRIC_TONES } from './metricTones';
 
 export const HEATMAP_DAY_THRESHOLD = 30;
@@ -68,10 +69,10 @@ const EMPTY_LIVE: ChannelLiveStats = {
 const formatBarLabel = (value: string, totalDays: number) => {
   const date = new Date(`${value}T12:00:00Z`);
   if (totalDays <= 7) {
-    return date.toLocaleDateString(undefined, { weekday: 'short' });
+    return date.toLocaleDateString(dateLocaleTag(), { weekday: 'short' });
   }
   if (totalDays <= 14) {
-    return date.toLocaleDateString(undefined, {
+    return date.toLocaleDateString(dateLocaleTag(), {
       month: 'short',
       day: 'numeric',
     });

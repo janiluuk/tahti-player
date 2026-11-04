@@ -111,6 +111,10 @@ describe('OAuthServiceCard', () => {
     await open();
     const button = await screen.findByRole('button', { name: 'Disconnect' });
     fireEvent.click(button);
+    const confirm = (
+      await screen.findAllByRole('button', { name: 'Disconnect' })
+    ).at(-1) as HTMLElement;
+    fireEvent.click(confirm);
     await waitFor(() =>
       expect(toast.error).toHaveBeenCalledWith(
         'Could not disconnect Bandcamp.',

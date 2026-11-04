@@ -22,6 +22,10 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | partial | [batch-34-slices-2026-11-04.md](batch-34-slices-2026-11-04.md) | Batch of 30 (29 done): ListingDate leftovers (revisions, news, recordings, episodes), schedule windows in the app language, Integrations/Add-ons/What's new/History/Following/Admin hubs/channel actions/auth toasts Finnish |
+| open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
+| open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
+| partial | [studio-updates-posts-storycard.md](studio-updates-posts-storycard.md) | Studio Updates as StoryCard posts, newsletter removed; draft #1809 unmerged |
+| partial | [batch-33-slices-2026-11-04.md](batch-33-slices-2026-11-04.md) | Batch of 30 (27 done): governance/admin ListingDate + numericDay, Library/Radio/Messages/player/Settings bodies Finnish, red OAuth disconnect, Library Media empty state |
 | partial | [library-management-port.md](library-management-port.md) | Port theDAW library management to Library Sounds: paged API client, facets/stats, bulk delete/edit |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
@@ -33,7 +37,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | open    | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Plan: page anatomy rules (one header, one primary action, overflow, one toolbar), Settings account-only in 7 items, duplicate surfaces removed; 9 phases, absorbs navigation-simplification slices 1-3, 7, 9, 10 |
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
-| open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` on events/updates/editor/playlist/collection/release, radio presets, theme submissions; left: plugin-store categories) |
+| open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` on events/updates/editor/playlist/collection/release, radio presets, theme submissions; plugin-store disconnect; left: none known) |
 | open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles e2e matrix on the mock app; left: collection player (placement), Go live → green room, Radio/Discover journeys after their rework, Player seek/fullscreen, open findings |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | Back-link convention + checks; left: admin breadcrumbs skip the hub, release-track insights back target |
 | open    | [view-first-and-test-hardening-leftovers.md](view-first-and-test-hardening-leftovers.md) | Release ops form-first, a gallery-wipe bug, stale-fetch guards, dead code needing a call, Storybook Tabs fade under load |

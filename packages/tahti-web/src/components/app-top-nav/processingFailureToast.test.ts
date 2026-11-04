@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { applyLocale } from '../../lib/locale';
 import { toastProcessingFailures } from './processingFailureToast';
 
 const { toast } = vi.hoisted(() => ({ toast: { error: vi.fn() } }));
@@ -43,5 +44,21 @@ describe('toastProcessingFailures', () => {
       vi.fn(),
     );
     expect(toast.error).not.toHaveBeenCalled();
+  });
+
+  it('speaks Finnish when the app language is Finnish', async () => {
+    await applyLocale('fi_FI');
+    try {
+      toastProcessingFailures(
+        [{ id: 'a', status: 'ERROR', processingError: 'Tiedosto on rikki.' }],
+        watched,
+        vi.fn(),
+      );
+      const [message, options] = toast.error.mock.calls[0]!;
+      expect(message).toBe('Käsittely epäonnistui: Tiedosto on rikki.');
+      expect(options.action.label).toBe('Näytä ääni');
+    } finally {
+      await applyLocale('en_US');
+    }
   });
 });

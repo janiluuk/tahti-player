@@ -27,3 +27,7 @@ export async function applyLocale(locale: WebLocale): Promise<void> {
 export function currentLocale(): WebLocale {
   return isWebLocale(i18n.language) ? i18n.language : DEFAULT_LOCALE;
 }
+
+export function dateLocaleTag(): string {
+  return toBcp47(currentLocale());
+}

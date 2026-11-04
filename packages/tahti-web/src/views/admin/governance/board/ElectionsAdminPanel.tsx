@@ -17,17 +17,10 @@ import {
   PageLoading,
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { numericDay } from '../../../../lib/relativeDate';
 import { BOARD_ROLE_OPTIONS } from './AddBoardTermForm';
 import { ElectionActions } from './ElectionActions';
 import { ElectionCandidates } from './ElectionCandidates';
-
-function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
 
 export function electionStage(election: AdminElection): {
   label: string;
@@ -202,7 +195,7 @@ export function ElectionsAdminPanel() {
                   {BOARD_ROLE_LABELS[election.role]} ·{' '}
                   {election.seats === 1 ? '1 seat' : `${election.seats} seats`}
                   {election.nominationsCloseAt
-                    ? ` · nominations close ${formatDay(election.nominationsCloseAt)}`
+                    ? ` · nominations close ${numericDay(election.nominationsCloseAt)}`
                     : ''}
                   {election.cancelReason ? ` · ${election.cancelReason}` : ''}
                 </p>

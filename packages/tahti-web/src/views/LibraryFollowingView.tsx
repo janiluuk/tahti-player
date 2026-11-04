@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button } from '@tahti-player/ui';
+import { Button, ButtonLink } from '@tahti-player/ui';
 
 import { fetchFollowList } from '../api/follows';
 import type { FollowListUser } from '../api/types';
@@ -63,6 +63,11 @@ export function LibraryFollowingView() {
         <PageEmpty
           title={t('library.following.emptyTitle')}
           description={t('library.following.emptyDescription')}
+          action={
+            <ButtonLink to="/discover" size="sm">
+              {t('nav.discover')}
+            </ButtonLink>
+          }
         />
       ) : null}
       {!loading && !error && hasMore ? (

@@ -27,6 +27,7 @@ import {
   weekdayLabelsShort,
   type RangePresetId,
 } from '../../lib/historyStats';
+import { dateLocaleTag } from '../../lib/locale';
 import { useThemeStore } from '../../plugins/themes';
 import type { HistoryEntry } from '../../stores/libraryStore';
 import { PageEmpty } from '../PageStates';
@@ -83,7 +84,7 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
     [history, presetId],
   );
   const rangeDates = rangeBounds
-    ? `${new Date(rangeBounds.from).toLocaleDateString(undefined, { dateStyle: 'medium' })} – ${new Date(rangeBounds.to).toLocaleDateString(undefined, { dateStyle: 'medium' })}`
+    ? `${new Date(rangeBounds.from).toLocaleDateString(dateLocaleTag(), { dateStyle: 'medium' })} – ${new Date(rangeBounds.to).toLocaleDateString(dateLocaleTag(), { dateStyle: 'medium' })}`
     : null;
 
   if (history.length === 0) {
@@ -204,7 +205,7 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
             colorScheme={isDark ? 'dark' : 'light'}
             formatValue={formatListeningDuration}
             formatDate={(date) =>
-              new Date(`${date}T00:00:00`).toLocaleDateString(undefined, {
+              new Date(`${date}T00:00:00`).toLocaleDateString(dateLocaleTag(), {
                 dateStyle: 'full',
               })
             }

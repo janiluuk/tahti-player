@@ -1,3 +1,14 @@
+## 2026-11-04 - Batch 33 dates + Finnish bodies (0.0.322)
+
+Governance meeting detail, admin user panel and engagement, artist mentions,
+distribution fee, motion seconders/circulate/discussion, member register and
+board/auditor/election/annual-report records use `ListingDate`, humanized
+dates or `numericDay` (`d.m.yyyy`). Finnish for Library Overview stats, Radio
+tabs, the Messages popover, the processing-failure toast, the full-screen
+player, the track hero and the Settings Account, Artist, Channel and Broadcast
+bodies. Plugin-store import cards confirm Disconnect in red. Library Media's
+empty state links to Studio → Branding. Confirm dialogs Storybook plays.
+
 ## 2026-11-04 - Batch 34: leftover dates and Finnish bodies (0.0.321)
 
 Revision, news, recording and episode dates use `ListingDate`; venue and
@@ -6442,3 +6453,7 @@ Studio track Insights adds the same pattern charts as Listen → History: time o
 
 Discover → From Tahti puts the type pill, date and teaser on the StoryCard image.
 “Show all news” is a secondary ButtonLink. StoryCard gains `kindColor`.
+
+## 2026-11-04 — Batch 33 second pass: Finnish switches and chart labels (0.0.322)
+
+Settings switches for channel autoplay, top lists, broadcast recording and auto-publish, comments and MusicBrainz are in Finnish, as are the Library Following page (its empty state now links to Discover), the Radio page description in `seo.ts`, and the track page play, pause and edit labels. Chart axes, the listening heatmap and the weekday and month labels in Studio stats and History follow the app language instead of the browser's. Legal-hold dates use `ListingDate`.

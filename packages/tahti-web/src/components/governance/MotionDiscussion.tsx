@@ -12,6 +12,7 @@ import type { GovernanceMotion } from '../../api/types';
 import { hasAccountRole } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { ConfirmDialog } from '../ConfirmDialog';
+import { ListingDate } from '../ListingDate';
 import { PageEmpty, PageError } from '../PageStates';
 
 export function MotionDiscussion({
@@ -130,9 +131,12 @@ export function MotionDiscussion({
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="text-foreground-secondary text-xs">
                       {c.authorDisplayName ?? 'Member'}
-                      {c.createdAt
-                        ? `, ${new Date(c.createdAt).toLocaleString()}`
-                        : ''}
+                      {c.createdAt ? (
+                        <>
+                          {', '}
+                          <ListingDate value={c.createdAt} />
+                        </>
+                      ) : null}
                     </div>
                     {canRemove(c) && (
                       <Button

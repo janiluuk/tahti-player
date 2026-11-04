@@ -135,7 +135,9 @@ export function AccountPanel() {
     void fetchMembership().then((r) => {
       setMembership(r.data);
       setMembershipError(
-        r.data ? null : (r.meta.reason ?? 'Membership is unavailable.'),
+        r.data
+          ? null
+          : (r.meta.reason ?? t('settingsBody.account.membershipUnavailable')),
       );
     });
   }, [user, membershipAttempt]);
@@ -148,13 +150,13 @@ export function AccountPanel() {
   if (!user) {
     return (
       <div className="flex flex-col gap-4">
-        <SettingsHint>Sign in to manage membership and security.</SettingsHint>
+        <SettingsHint>{t('settingsBody.account.signInPrompt')}</SettingsHint>
         <Button
           size="sm"
           onClick={() => useAuthModalStore.getState().open('login')}
         >
           <LogInIcon size={15} aria-hidden className="mr-1.5" />
-          Log in
+          {t('settings.logIn')}
         </Button>
       </div>
     );
@@ -163,13 +165,24 @@ export function AccountPanel() {
   const tabItems: TabsItem[] = [
     {
       id: 'session',
-      label: 'Session',
+      label: t('settingsBody.account.tabSession'),
       icon: <User size={14} />,
       content: (
         <div className="flex flex-col gap-6">
-          <SettingsInfo label="Signed in as" value={`@${user.username}`} />
-          <SettingsInfo label="Display name" value={user.displayName} />
-          {user.email && <SettingsInfo label="Email" value={user.email} />}
+          <SettingsInfo
+            label={t('settingsBody.account.signedInAs')}
+            value={`@${user.username}`}
+          />
+          <SettingsInfo
+            label={t('settingsBody.account.displayName')}
+            value={user.displayName}
+          />
+          {user.email && (
+            <SettingsInfo
+              label={t('settingsBody.account.email')}
+              value={user.email}
+            />
+          )}
           <div className="flex flex-wrap gap-2">
             <ButtonLink
               to="/help/$slug"
@@ -179,11 +192,11 @@ export function AccountPanel() {
               variant="secondary"
             >
               <Keyboard size={15} aria-hidden className="mr-1.5" />
-              Keyboard shortcuts
+              {t('settingsBody.account.keyboardShortcuts')}
             </ButtonLink>
             <Button size="sm" variant="text" onClick={() => void logout()}>
               <LogOutIcon size={15} aria-hidden className="mr-1.5" />
-              Log out
+              {t('nav.logOut')}
             </Button>
           </div>
         </div>
@@ -191,7 +204,7 @@ export function AccountPanel() {
     },
     {
       id: 'password-email',
-      label: 'Password & email',
+      label: t('settingsBody.account.tabPasswordEmail'),
       icon: <KeyRound size={14} />,
       content: (
         <div className="flex flex-col gap-8">
@@ -202,30 +215,30 @@ export function AccountPanel() {
     },
     {
       id: 'devices',
-      label: 'Devices',
+      label: t('settingsBody.account.tabDevices'),
       icon: <MonitorSmartphone size={14} />,
       content: <DevicesSessionsPanel />,
     },
     {
       id: 'two-factor',
-      label: 'Two-factor authentication',
+      label: t('settingsBody.account.tabTwoFactor'),
       icon: <Lock size={14} />,
       content: <SecurityTotpPanel />,
     },
     {
       id: 'api-tokens',
-      label: 'API tokens',
+      label: t('settingsBody.account.tabApiTokens'),
       icon: <KeyRound size={14} />,
       content: <ApiTokensPanel />,
     },
     {
       id: 'membership',
-      label: 'Membership',
+      label: t('settingsBody.account.tabMembership'),
       icon: <Wallet size={14} />,
       content:
         !membership && membershipError ? (
           <PageError
-            title="Could not load your membership"
+            title={t('settingsBody.account.membershipLoadError')}
             description={membershipError}
             onRetry={() => {
               setMembershipError(null);
@@ -233,7 +246,7 @@ export function AccountPanel() {
             }}
           />
         ) : !membership ? (
-          <PageLoading label="Loading membership…" />
+          <PageLoading label={t('settingsBody.account.membershipLoading')} />
         ) : (
           <div className="flex flex-col gap-6">
             <MembershipStatusPanel
@@ -253,7 +266,7 @@ export function AccountPanel() {
     },
     {
       id: 'governance',
-      label: 'Governance',
+      label: t('settingsBody.account.tabGovernance'),
       icon: <Landmark size={14} />,
       content: (
         <Suspense fallback={<PageLoading label="Loading governance…" />}>
@@ -263,36 +276,36 @@ export function AccountPanel() {
     },
     {
       id: 'storage',
-      label: 'Storage',
+      label: t('settingsBody.account.tabStorage'),
       icon: <Database size={14} />,
       content: <AccountStoragePanel />,
     },
     {
       id: 'notifications',
-      label: 'Notifications & visibility',
+      label: t('settingsBody.account.tabNotifications'),
       icon: <Bell size={14} />,
       content: <NotificationsVisibilityPanel />,
     },
     {
       id: 'mentions',
-      label: 'Mentions',
+      label: t('settingsBody.account.tabMentions'),
       icon: <AtSign size={14} />,
       content: <MentionsPanel />,
     },
     {
       id: 'subscriptions',
-      label: 'Your subs',
+      label: t('settingsBody.account.tabSubscriptions'),
       icon: <Wallet size={14} />,
       content: (
         <div className="flex flex-col gap-4">
           {subscriptionsError && subscriptions.length === 0 ? (
             <PageError
-              title="Could not load your fan subscriptions"
+              title={t('settingsBody.account.subscriptionsLoadError')}
               description={subscriptionsError}
               onRetry={() => void reloadSubscriptions()}
             />
           ) : subscriptions.length === 0 ? (
-            <PageEmpty title="No fan subscriptions on this account" />
+            <PageEmpty title={t('settingsBody.account.subscriptionsEmpty')} />
           ) : (
             <ul className="flex flex-col gap-2">
               {subscriptions.map((subscription) => (
@@ -364,17 +377,17 @@ export function AccountPanel() {
     },
     {
       id: 'purchases',
-      label: 'Purchases',
+      label: t('settingsBody.account.tabPurchases'),
       icon: <CreditCardIcon size={14} />,
       content:
         purchasesError && purchases.length === 0 ? (
           <PageError
-            title="Could not load your purchases"
+            title={t('settingsBody.account.purchasesLoadError')}
             description={purchasesError}
             onRetry={() => void reloadPurchases()}
           />
         ) : purchases.length === 0 ? (
-          <PageEmpty title="No track purchases on this account" />
+          <PageEmpty title={t('settingsBody.account.purchasesEmpty')} />
         ) : (
           <ul className="flex flex-col gap-2">
             {purchases.map((purchase) => (
@@ -420,7 +433,7 @@ export function AccountPanel() {
     },
     {
       id: 'privacy',
-      label: 'Privacy & data',
+      label: t('settingsBody.account.tabPrivacy'),
       icon: <Shield size={14} />,
       content: <PrivacyDataPanel username={user.username} />,
     },

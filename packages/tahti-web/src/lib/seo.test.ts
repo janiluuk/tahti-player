@@ -154,3 +154,16 @@ describe('syncDocumentMetadata / setPlaybackDocumentTitle', () => {
     expect(document.title).toBe('Real Channel Name live on Tahti');
   });
 });
+
+describe('metadataForPath radio description in Finnish', () => {
+  it('translates the Radio description', async () => {
+    await applyLocale('fi_FI');
+    try {
+      expect(metadataForPath('/radio').description).toBe(
+        'Kuuntele osuuskunnan Tahti Radio -lähetystä ja katso ohjelma-aikataulu.',
+      );
+    } finally {
+      await applyLocale('en_US');
+    }
+  });
+});

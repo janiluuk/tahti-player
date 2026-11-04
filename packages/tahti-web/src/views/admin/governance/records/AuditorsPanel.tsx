@@ -21,19 +21,12 @@ import {
   PageLoading,
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { numericDay } from '../../../../lib/relativeDate';
 
 const KIND_OPTIONS: Array<{ id: GovernanceAuditor['kind']; label: string }> = [
   { id: 'OPERATIONS_INSPECTOR', label: 'Operations inspector' },
   { id: 'AUDITOR', label: 'Auditor' },
 ];
-
-function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
 
 export function auditorServing(
   auditor: GovernanceAuditor,
@@ -287,8 +280,8 @@ export function AuditorsPanel() {
                 </Badge>
               </div>
               <p className="text-foreground-secondary text-xs">
-                {formatDay(auditor.termStart)} –{' '}
-                {auditor.termEnd ? formatDay(auditor.termEnd) : 'open-ended'}
+                {numericDay(auditor.termStart)} –{' '}
+                {auditor.termEnd ? numericDay(auditor.termEnd) : 'open-ended'}
               </p>
               {auditorServing(auditor) ? (
                 <EndAuditorTerm auditor={auditor} onEnded={() => void load()} />

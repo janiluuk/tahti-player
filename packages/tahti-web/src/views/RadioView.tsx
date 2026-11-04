@@ -328,7 +328,7 @@ export function RadioView() {
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
     >
       {loading ? (
-        <PageLoading label="Tuning Tahti Radio…" />
+        <PageLoading label={t('radio.tuning')} />
       ) : !station && stationError ? (
         <PageError
           title="Could not load Tahti Radio"
@@ -521,7 +521,7 @@ export function RadioView() {
               items={[
                 {
                   id: 'up-next',
-                  label: 'Up next',
+                  label: t('radio.tabUpNext'),
                   icon: <ListOrderedIcon size={14} />,
                   count:
                     !memberLive && rotation.length > 0
@@ -538,7 +538,7 @@ export function RadioView() {
                 },
                 {
                   id: 'shows',
-                  label: 'Shows',
+                  label: t('radio.tabShows'),
                   icon: <CalendarDaysIcon size={14} />,
                   count: upcoming.length > 0 ? upcoming.length : undefined,
                   content: (
@@ -552,23 +552,23 @@ export function RadioView() {
                 },
                 {
                   id: 'just-played',
-                  label: 'Just played',
+                  label: t('radio.tabJustPlayed'),
                   icon: <HistoryIcon size={14} />,
                   count: recent.length > 0 ? recent.length : undefined,
                   content:
                     sectionErrors.recent && recent.length === 0 ? (
                       <PageError
-                        title="Could not load recent plays"
+                        title={t('radio.recentLoadError')}
                         description={sectionErrors.recent}
                         onRetry={reload}
                       />
                     ) : recent.length === 0 ? (
-                      <PageEmpty title="No recent plays logged yet." />
+                      <PageEmpty title={t('radio.recentEmpty')} />
                     ) : (
                       <div className="flex flex-col gap-3">
                         {sectionErrors.recent ? (
                           <PageErrorBanner
-                            title="Could not refresh recent plays"
+                            title={t('radio.recentRefreshError')}
                             description={sectionErrors.recent}
                             onRetry={reload}
                           />
@@ -683,7 +683,7 @@ export function RadioView() {
                 },
                 {
                   id: 'featured',
-                  label: 'Featured',
+                  label: t('radio.tabFeatured'),
                   icon: <MicIcon size={14} />,
                   count: featured.length > 0 ? featured.length : undefined,
                   content:

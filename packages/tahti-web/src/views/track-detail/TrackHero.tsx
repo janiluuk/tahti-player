@@ -139,7 +139,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
       <div className="pointer-events-none absolute inset-0 bg-black/45" />
 
       <Tooltip
-        content="Back"
+        content={t('actions.back')}
         side="right"
         wrapperClassName={backButtonCornerClassName}
       >
@@ -147,7 +147,9 @@ export function TrackHero({ page }: { page: TrackPage }) {
           <BackButtonLink
             to="/u/$username"
             params={{ username: detail.channel.username }}
-            aria-label={`Back to ${detail.channel.displayName}`}
+            aria-label={t('actions.backTo', {
+              name: detail.channel.displayName,
+            })}
           />
         ) : (
           <BackButton
@@ -156,7 +158,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 ? router.history.back()
                 : void router.navigate({ to: '/' })
             }
-            aria-label="Back"
+            aria-label={t('actions.back')}
           />
         )}
       </Tooltip>
@@ -191,8 +193,8 @@ export function TrackHero({ page }: { page: TrackPage }) {
                   onClick={togglePlayback}
                   aria-label={
                     isPlaying
-                      ? `Pause ${playable.title}`
-                      : `Play ${playable.title}`
+                      ? t('actions.pauseItem', { title: playable.title })
+                      : t('actions.playItem', { title: playable.title })
                   }
                   className="size-14 shrink-0 justify-center rounded-full bg-white p-0 text-black shadow-xl hover:bg-white active:bg-white disabled:opacity-40"
                 >
@@ -386,7 +388,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
               <EditIconButton
                 className="size-9"
                 variant="default"
-                label={`Edit ${playable.title}`}
+                label={t('actions.editItem', { title: playable.title })}
                 onClick={() => setEditOpen(true)}
               />
             ) : null}
@@ -427,12 +429,12 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 />
               </Button>
             </Tooltip>
-            <Tooltip content="Share" side="top">
+            <Tooltip content={t('actions.share')} side="top">
               <Button
                 size="icon-sm"
                 className="size-9"
                 variant="secondary"
-                aria-label={`Share ${playable.title}`}
+                aria-label={t('actions.shareItem', { title: playable.title })}
                 onClick={() => void shareTrack()}
               >
                 <Share2Icon size={15} aria-hidden />
@@ -448,7 +450,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
               }
             >
               <PlusIcon size={14} aria-hidden className="mr-1.5" />
-              Add
+              {t('actions.add')}
             </Button>
             {user && !isOwner && repost.state ? (
               <Tooltip

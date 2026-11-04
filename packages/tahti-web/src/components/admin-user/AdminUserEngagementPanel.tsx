@@ -7,6 +7,7 @@ import {
   fetchAdminUserEngagement,
   type AdminUserEngagement,
 } from '../../api/admin';
+import { ListingDate } from '../ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import { StudioPanel } from '../StudioPanel';
 
@@ -170,7 +171,7 @@ export function AdminUserEngagementPanel({
                   <span className="min-w-0">
                     <span className="block break-words">{entry.reason}</span>
                     <span className="text-foreground-secondary text-xs">
-                      {new Date(entry.createdAt).toLocaleString()}
+                      <ListingDate value={entry.createdAt} />
                     </span>
                   </span>
                   <span className="font-semibold tabular-nums">

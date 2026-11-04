@@ -8,6 +8,7 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonAnchor,
@@ -59,6 +60,7 @@ function tabIndexFor(section: ChannelSettingsSection | null): number {
 }
 
 export function ChannelPanel() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const channelSection = useSettingsModalStore((s) => s.channelSection);
   const channel = user?.channel;
@@ -92,7 +94,7 @@ export function ChannelPanel() {
 
   const profileFailed = (
     <PageError
-      title="Could not load your channel profile"
+      title={t('settingsBody.channel.loadError')}
       description={profileError ?? undefined}
       onRetry={() => {
         setProfileError(null);
@@ -152,18 +154,18 @@ export function ChannelPanel() {
             profileError ? (
               profileFailed
             ) : (
-              <InlineLoader label="Loading…" />
+              <InlineLoader label={t('settingsBody.loading')} />
             )
           ) : (
             <div className="flex flex-col gap-4">
               <StudioPanel
-                title="Channel page"
-                description="What listeners can do when they open your channel."
+                title={t('settingsBody.channel.pageTitle')}
+                description={t('settingsBody.channel.pageDescription')}
               >
                 <div className="flex flex-col gap-5">
                   <SettingsToggle
-                    label="Show share button on my channel"
-                    description="Let listeners copy or share your channel link from your channel page."
+                    label={t('settingsBody.channel.showShareLabel')}
+                    description={t('settingsBody.channel.showShareDescription')}
                     value={channelProfile.showShareButton ?? true}
                     onChange={(value) =>
                       saveProfileSwitch(
@@ -353,11 +355,11 @@ export function ChannelPanel() {
           icon: <MessageSquare size={14} />,
           content: (
             <StudioPanel
-              title="Chat moved to Fans"
-              description="Turn chat on or off, and moderate access, messages, bans and moderators, on Studio → Fans."
+              title={t('settingsBody.channel.chatMovedTitle')}
+              description={t('settingsBody.channel.chatMovedDescription')}
             >
               <ButtonAnchor href="/studio/fans" size="sm">
-                Open Fans chat
+                {t('settingsBody.channel.openFansChat')}
               </ButtonAnchor>
             </StudioPanel>
           ),
@@ -368,11 +370,11 @@ export function ChannelPanel() {
           icon: <Shield size={14} />,
           content: (
             <StudioPanel
-              title="Moderators moved to Fans"
-              description="Add and remove chat moderators on Studio → Fans, under Chat."
+              title={t('settingsBody.channel.moderatorsMovedTitle')}
+              description={t('settingsBody.channel.moderatorsMovedDescription')}
             >
               <ButtonAnchor href="/studio/fans" size="sm">
-                Open Fans chat
+                {t('settingsBody.channel.openFansChat')}
               </ButtonAnchor>
             </StudioPanel>
           ),

@@ -1,7 +1,8 @@
 import type { StatsPlaysDay } from '../../../api/studio-extras';
+import { dateLocaleTag } from '../../../lib/locale';
 
 export const formatDate = (value: string) =>
-  new Date(`${value}T12:00:00Z`).toLocaleDateString(undefined, {
+  new Date(`${value}T12:00:00Z`).toLocaleDateString(dateLocaleTag(), {
     month: 'short',
     day: 'numeric',
   });

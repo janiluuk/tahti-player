@@ -35,6 +35,7 @@ import {
 import { safeCreditName } from '../../lib/displayName';
 import { DiscoWidgetsSection } from '../disco-widgets/DiscoWidgetsSection';
 import { EmbedButton } from '../EmbedButton';
+import { ListingDate } from '../ListingDate';
 import { NewsletterSubscribeToggle } from '../NewsletterSubscribeToggle';
 import { ReportButton } from '../ReportButton';
 import { ShowEpisodeList } from '../ShowEpisodeList';
@@ -489,7 +490,7 @@ export function ArtistTaggedIn({
               </p>
             </div>
             <span className="text-foreground-secondary shrink-0 text-xs">
-              {new Date(mention.createdAt).toLocaleDateString()}
+              <ListingDate value={mention.createdAt} />
             </span>
           </li>
         ))}

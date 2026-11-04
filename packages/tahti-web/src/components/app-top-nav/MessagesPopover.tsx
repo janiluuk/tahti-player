@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
@@ -9,6 +10,7 @@ import { type TopNavState } from './useTopNavState';
 
 /** The messages quick view; the account menu's Messages item opens it. */
 export function MessagesPopover({ nav }: { nav: TopNavState }) {
+  const { t } = useTranslation('web');
   const { messagesOpen, setMessagesOpen, conversations } = nav;
 
   return (
@@ -19,18 +21,20 @@ export function MessagesPopover({ nav }: { nav: TopNavState }) {
           role="menu"
         >
           <div className="flex items-center justify-between px-2 py-1">
-            <span className="text-sm font-semibold">Messages</span>
+            <span className="text-sm font-semibold">
+              {t('messagesPopover.title')}
+            </span>
             <Link
               to="/messages"
               role="menuitem"
               onClick={() => setMessagesOpen(false)}
               className="text-accent-cyan-strong text-xs hover:underline"
             >
-              Open all
+              {t('messagesPopover.openAll')}
             </Link>
           </div>
           {conversations.length === 0 ? (
-            <PageEmpty title="No messages yet." />
+            <PageEmpty title={t('messagesPopover.empty')} />
           ) : (
             conversations.slice(0, 5).map((conversation) => (
               <Link
@@ -65,7 +69,8 @@ export function MessagesPopover({ nav }: { nav: TopNavState }) {
                     ) : null}
                   </span>
                   <span className="text-foreground-secondary block truncate">
-                    {conversation.lastMessage?.body ?? 'No messages yet'}
+                    {conversation.lastMessage?.body ??
+                      t('messagesPopover.noMessages')}
                   </span>
                 </span>
               </Link>

@@ -6,6 +6,7 @@ import {
   fetchMemberRegister,
   type MemberRegisterRow,
 } from '../../../../api/admin/admin-member-register';
+import { ListingDate } from '../../../../components/ListingDate';
 import { PageEmpty, PageError } from '../../../../components/PageStates';
 import { CollapsibleRecord } from '../tabs/MeetingRecordPanels';
 
@@ -111,9 +112,12 @@ export function MemberRegisterPanel() {
                     <span className="font-medium">{row.displayName}</span>
                     <span className="text-foreground-secondary ml-1.5 text-xs">
                       @{row.username}
-                      {row.memberSince
-                        ? ` · since ${new Date(row.memberSince).toLocaleDateString()}`
-                        : ''}
+                      {row.memberSince ? (
+                        <>
+                          {' · since '}
+                          <ListingDate value={row.memberSince} />
+                        </>
+                      ) : null}
                     </span>
                   </span>
                   <Badge

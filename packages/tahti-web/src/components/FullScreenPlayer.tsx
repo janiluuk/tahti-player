@@ -1,6 +1,7 @@
 import { MaximizeIcon, MinimizeIcon, MoreHorizontalIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { formatArtistNames } from '@tahti-player/model';
 import {
   BackButton,
@@ -41,6 +42,7 @@ const ANIMATION_MS = 280;
  * arbitrary queue items yet — see the commit note for why that's
  * deliberately out of scope here. */
 export function FullScreenPlayer() {
+  const { t } = useTranslation('web');
   const isMobile = useIsMobile();
   const open = useLayoutStore((s) => s.fullScreenPlayerOpen);
   const setOpen = useLayoutStore((s) => s.setFullScreenPlayerOpen);
@@ -135,7 +137,7 @@ export function FullScreenPlayer() {
   const coverUrl = playable?.coverUrl ?? current?.track.artwork?.items[0]?.url;
   const stationNowPlaying = usePlayerStationNowPlaying(playable);
   const title =
-    stationNowPlaying?.title ?? playable?.title ?? 'Nothing playing';
+    stationNowPlaying?.title ?? playable?.title ?? t('player.nothingPlaying');
   const artist =
     stationNowPlaying?.artist ??
     playable?.artist ??
@@ -194,7 +196,7 @@ export function FullScreenPlayer() {
       style={{ ...bgStyle, transitionDuration: `${ANIMATION_MS}ms` }}
       role="dialog"
       aria-modal="true"
-      aria-label="Now playing, full screen"
+      aria-label={t('player.nowPlayingFullScreen')}
     >
       <div className="bg-background/35 absolute inset-0 backdrop-blur-md">
         <ChannelVisualizer
@@ -211,8 +213,8 @@ export function FullScreenPlayer() {
        * priority over this back button despite the button painting on
        * top visually. */}
       <div className="absolute inset-x-0 top-0 z-20 flex items-start justify-between p-4">
-        <Tooltip content="Back to player" side="right">
-          <BackButton onClick={close} aria-label="Minimize player" />
+        <Tooltip content={t('player.backToPlayer')} side="right">
+          <BackButton onClick={close} aria-label={t('player.minimize')} />
         </Tooltip>
         <div className="flex items-start gap-2">
           <VisualizerModeMenu
@@ -223,14 +225,22 @@ export function FullScreenPlayer() {
           />
           {canFillScreen ? (
             <Tooltip
-              content={screenFilled ? 'Exit full screen' : 'Full screen'}
+              content={
+                screenFilled
+                  ? t('player.exitFullScreen')
+                  : t('player.fullScreen')
+              }
               side="left"
             >
               <Button
                 size="icon"
                 variant="text"
                 onClick={toggleScreenFilled}
-                aria-label={screenFilled ? 'Exit full screen' : 'Full screen'}
+                aria-label={
+                  screenFilled
+                    ? t('player.exitFullScreen')
+                    : t('player.fullScreen')
+                }
                 aria-pressed={screenFilled}
                 className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
               >
@@ -243,12 +253,15 @@ export function FullScreenPlayer() {
             </Tooltip>
           ) : null}
           {playable ? (
-            <Tooltip content={`More options for ${title}`} side="left">
+            <Tooltip
+              content={t('player.moreOptionsFor', { title })}
+              side="left"
+            >
               <Button
                 size="icon"
                 variant="text"
                 onClick={() => setMenuOpen(true)}
-                aria-label={`More options for ${title}`}
+                aria-label={t('player.moreOptionsFor', { title })}
                 aria-haspopup="dialog"
                 className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
               >
@@ -316,7 +329,7 @@ export function FullScreenPlayer() {
             role="status"
             className="text-foreground-secondary h-4 text-xs tracking-wide uppercase"
           >
-            {isLoading ? 'Buffering…' : ''}
+            {isLoading ? t('player.buffering') : ''}
           </p>
           <PlayerBar.Controls
             hidePlayPause={Boolean(embed)}
@@ -329,11 +342,21 @@ export function FullScreenPlayer() {
             }
             showDiscovery={false}
             labels={{
-              shuffleOn: isLive ? 'Shuffle (archive only)' : 'Shuffle on',
-              shuffleOff: isLive ? 'Shuffle (archive only)' : 'Shuffle off',
-              repeatOff: isLive ? 'Loop stations off' : 'Repeat off',
-              repeatAll: isLive ? 'Loop stations' : 'Repeat all',
-              repeatOne: 'Repeat one',
+              shuffleOn: isLive
+                ? t('player.shuffleArchiveOnly')
+                : t('player.shuffleOn'),
+              shuffleOff: isLive
+                ? t('player.shuffleArchiveOnly')
+                : t('player.shuffleOff'),
+              repeatOff: isLive
+                ? t('player.loopStationsOff')
+                : t('player.repeatOff'),
+              repeatAll: isLive
+                ? t('player.loopStations')
+                : t('player.repeatAll'),
+              repeatOne: t('player.repeatOne'),
+              next: t('player.next'),
+              previous: t('player.previous'),
             }}
             onPlayPause={() => {
               if (!playable) {

@@ -209,8 +209,8 @@ export function metadataForPath(pathname: string): RouteMetadata {
 
   if (pathname.startsWith('/radio')) {
     return {
-      title: 'Tahti Radio',
-      description: 'Listen to the cooperative Tahti Radio stream and schedule.',
+      title: i18n.t('web:seo.radioTitle'),
+      description: i18n.t('web:seo.radioDescription'),
     };
   }
 

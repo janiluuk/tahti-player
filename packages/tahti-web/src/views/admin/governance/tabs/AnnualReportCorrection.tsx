@@ -9,14 +9,7 @@ import {
   type AnnualReportRevision,
 } from '../../../../api/admin/admin-annual-reports';
 import { PageEmpty } from '../../../../components/PageStates';
-
-function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
+import { relativeDate } from '../../../../lib/relativeDate';
 
 /** Correct an approved report and list the versions corrections replaced. */
 export function AnnualReportCorrection({
@@ -120,7 +113,7 @@ export function AnnualReportCorrection({
             {revisions.map((revision) => (
               <li key={revision.id} className="text-xs">
                 <span className="font-medium">
-                  Replaced {formatDay(revision.replacedAt)}
+                  Replaced {relativeDate(revision.replacedAt)}
                 </span>
                 {revision.downloadUrl ? (
                   <ExternalLink

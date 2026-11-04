@@ -21,6 +21,7 @@ import { Eyebrow } from '../../components/tahti/Eyebrow';
 import { StatNumber } from '../../components/tahti/StatNumber';
 import { flagEmoji } from '../../lib/countries';
 import { monthLabelsShort, weekdayLabelsShort } from '../../lib/historyStats';
+import { dateLocaleTag } from '../../lib/locale';
 import { useThemeStore } from '../../plugins/themes';
 
 const RANGES: Array<{ id: StatsPlaysRange; label: string }> = [
@@ -34,7 +35,10 @@ const HEATMAP_DAY_THRESHOLD = 30;
 
 function formatAxisDate(iso: string): string {
   const d = new Date(`${iso}T12:00:00Z`);
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  return d.toLocaleDateString(dateLocaleTag(), {
+    month: 'short',
+    day: 'numeric',
+  });
 }
 
 export function StudioStatsDetailView() {
@@ -76,9 +80,12 @@ export function StudioStatsDetailView() {
     () =>
       (data?.daily ?? []).map((day) =>
         (data?.daily.length ?? 0) <= 7
-          ? new Date(`${day.date}T12:00:00Z`).toLocaleDateString(undefined, {
-              weekday: 'short',
-            })
+          ? new Date(`${day.date}T12:00:00Z`).toLocaleDateString(
+              dateLocaleTag(),
+              {
+                weekday: 'short',
+              },
+            )
           : formatAxisDate(day.date),
       ),
     [data],

@@ -13,16 +13,9 @@ import {
   PageLoading,
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { numericDay } from '../../../../lib/relativeDate';
 import { AddBoardTermForm } from './AddBoardTermForm';
 import { EndBoardTermForm } from './EndBoardTermForm';
-
-function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
 
 export function isTermCurrent(term: AdminBoardTerm, now = new Date()): boolean {
   return (
@@ -104,8 +97,8 @@ export function BoardTermsPanel() {
                   </Badge>
                 </div>
                 <p className="text-foreground-secondary text-xs">
-                  {formatDay(term.termStart)} –{' '}
-                  {term.termEnd ? formatDay(term.termEnd) : 'open-ended'}
+                  {numericDay(term.termStart)} –{' '}
+                  {term.termEnd ? numericDay(term.termEnd) : 'open-ended'}
                   {term.endReason ? ` · ${term.endReason}` : ''}
                 </p>
                 {status.label !== 'Ended' ? (
