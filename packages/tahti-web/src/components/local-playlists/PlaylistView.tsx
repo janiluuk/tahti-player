@@ -17,6 +17,7 @@ import {
 } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   CatalogTable,
@@ -151,7 +152,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
     setBusy(true);
     try {
       await step.run();
-      toast.success(`Undid: ${step.label}.`);
+      toast.success(i18n.t('web:toasts.undidStep', { label: step.label }));
       await load();
     } catch (failure) {
       toast.error(
@@ -245,7 +246,9 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
     setBusy(true);
     try {
       if (await library.playlists.relinkEntry(id, entry.entryId)) {
-        toast.success(`Linked “${entry.title}” to the file you chose.`);
+        toast.success(
+          i18n.t('web:toasts.linkedEntryToFile', { title: entry.title }),
+        );
         await load();
       }
     } catch (failure) {
@@ -262,7 +265,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
       .filter((entry) => selectedIds.has(entry.entryId) && entry.track)
       .map((entry) => (entry.track as NonNullable<typeof entry.track>).id);
     if (!wanted.length) {
-      toast.error('None of the selected entries can be played.');
+      toast.error(i18n.t('web:toasts.noneSelectedEntriesPlayable'));
       return;
     }
     const playables = await preparePlayables(library, wanted, 'selected');
@@ -486,7 +489,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
         onClose={() => setRenaming(false)}
         onSubmit={async (name) => {
           await library.playlists.rename(id, name);
-          toast.success(`Renamed to “${name}”.`);
+          toast.success(i18n.t('web:toasts.renamedToNamedQuotes', { name }));
           await load();
         }}
       />
@@ -502,7 +505,11 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
           void library.playlists
             .delete(id)
             .then(() => {
-              toast.success(`Deleted “${summary?.name ?? 'playlist'}”.`);
+              toast.success(
+                i18n.t('web:toasts.deletedNamedQuotes', {
+                  name: summary?.name ?? 'playlist',
+                }),
+              );
               onBack();
             })
             .catch((failure: unknown) =>

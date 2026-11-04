@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Tooltip } from '@tahti-player/ui';
 
 import {
@@ -34,7 +35,7 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
   const saveImageUrl = async (sourceUrl: string) => {
     const saved = await storeImageUrl(sourceUrl);
     if (saved) {
-      toast.success('Profile picture saved.');
+      toast.success(i18n.t('web:toasts.profilePictureSaved'));
     }
     return saved;
   };

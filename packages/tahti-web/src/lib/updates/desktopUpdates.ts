@@ -1,6 +1,8 @@
 import { toast } from 'sonner';
 import { create } from 'zustand';
 
+import { i18n } from '@tahti-player/i18n';
+
 /** A newer desktop release the updater found. */
 export type DesktopUpdate = {
   version: string;
@@ -139,23 +141,26 @@ async function checkAndAnnounce() {
   if (!update) {
     return;
   }
-  toast.info(`Tahti Player ${update.version} is available`, {
-    id: 'desktop-update',
-    duration: Infinity,
-    action: {
-      label: 'Install',
-      onClick: () => {
-        void installAndOfferRestart();
+  toast.info(
+    i18n.t('web:toasts.desktopUpdateAvailable', { version: update.version }),
+    {
+      id: 'desktop-update',
+      duration: Infinity,
+      action: {
+        label: 'Install',
+        onClick: () => {
+          void installAndOfferRestart();
+        },
       },
     },
-  });
+  );
 }
 
 async function installAndOfferRestart() {
   await useDesktopUpdateStore.getState().install();
   const { status, error } = useDesktopUpdateStore.getState();
   if (status === 'ready') {
-    toast.success('Update installed', {
+    toast.success(i18n.t('web:toasts.updateInstalled'), {
       id: 'desktop-update',
       duration: Infinity,
       action: {
@@ -166,7 +171,7 @@ async function installAndOfferRestart() {
       },
     });
   } else if (error) {
-    toast.error(`Could not install the update: ${error}`, {
+    toast.error(i18n.t('web:toasts.couldNotInstallUpdate', { error }), {
       id: 'desktop-update',
     });
   }

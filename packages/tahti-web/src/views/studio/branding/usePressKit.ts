@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   deletePressKitImage,
   fetchMyPressKitImages,
@@ -72,7 +74,9 @@ export function usePressKit() {
   };
 
   useEffect(() => {
-    reload().catch(() => toast.error('Could not load your branding details.'));
+    reload().catch(() =>
+      toast.error(i18n.t('web:toasts.couldNotLoadBranding')),
+    );
   }, []);
 
   useEffect(() => subscribePressKitGalleryReload(() => void reload()), []);
@@ -154,7 +158,7 @@ export function usePressKit() {
         );
       }
     } catch {
-      toast.error('Could not update the photo gallery.');
+      toast.error(i18n.t('web:toasts.couldNotUpdatePhotoGallery'));
     } finally {
       setBusy(false);
     }

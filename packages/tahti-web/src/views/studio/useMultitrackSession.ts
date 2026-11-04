@@ -7,6 +7,7 @@ import {
   loadBlobOntoNewTrack,
   useEditorStore,
 } from '@tahti-player/audio-editor';
+import { i18n } from '@tahti-player/i18n';
 
 import {
   createEditorProject,
@@ -190,7 +191,7 @@ export function useMultitrackSession({
       setSessionSync('synced');
     } catch {
       setSessionSync('local');
-      toast.error('Could not load audio into the multitrack editor.');
+      toast.error(i18n.t('web:toasts.couldNotLoadMultitrackAudio'));
       try {
         useEditorStore.getState().loadProject({ tracks: [], clips: [] });
         const blob = await fetchEditorStreamBlob(soundId);
@@ -205,7 +206,7 @@ export function useMultitrackSession({
   const sendStemsToMultitrack = useCallback(
     async (job: StemJob) => {
       if (!job.files?.length) {
-        toast.error('This stem job has no files yet.');
+        toast.error(i18n.t('web:toasts.stemJobNoFiles'));
         return;
       }
       preferInternalEngine();
@@ -257,7 +258,7 @@ export function useMultitrackSession({
         setSessionSync('synced');
       } catch {
         setSessionSync('local');
-        toast.error('Could not send stems to Multitrack.');
+        toast.error(i18n.t('web:toasts.couldNotSendStemsToMultitrack'));
       } finally {
         setBusy(false);
       }

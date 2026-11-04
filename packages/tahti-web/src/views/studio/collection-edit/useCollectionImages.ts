@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import { setCollectionCoverFromUrl } from '../../../api/image-from-url';
 import {
   patchCollectionGallery,
@@ -47,7 +49,7 @@ export function useCollectionImages(
         current ? { ...current, coverUrl: result.coverUrl } : current,
       );
       setUploadTarget(null);
-      toast.success('Cover uploaded.');
+      toast.success(i18n.t('web:toasts.coverUploaded'));
       return;
     }
 
@@ -88,7 +90,7 @@ export function useCollectionImages(
       current ? { ...current, coverUrl: result.url } : current,
     );
     setUploadTarget(null);
-    toast.success('Cover saved.');
+    toast.success(i18n.t('web:toasts.coverSaved'));
     return true;
   };
 
@@ -123,7 +125,7 @@ export function useCollectionImages(
     }
     setCoverUrl(null);
     setCol((current) => (current ? { ...current, coverUrl: null } : current));
-    toast.success('Cover removed.');
+    toast.success(i18n.t('web:toasts.coverRemoved'));
   };
 
   const removeBackdrop = async () => {
@@ -145,7 +147,7 @@ export function useCollectionImages(
     setCol((current) =>
       current ? { ...current, backdropUrl: null } : current,
     );
-    toast.success('Backdrop removed.');
+    toast.success(i18n.t('web:toasts.backdropRemoved'));
   };
 
   /** Removing the last frame falls back to the empty placeholder (clears
@@ -167,7 +169,7 @@ export function useCollectionImages(
     }
     setSlideshowImages(next);
     setBackdropUrl(next[0] ?? null);
-    toast.success('Image removed from backdrop.');
+    toast.success(i18n.t('web:toasts.backdropImageRemoved'));
   };
 
   return {

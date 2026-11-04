@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 
 import { preferInternalEngine } from '@tahti-player/audio-core';
 import { MultitrackEditor } from '@tahti-player/audio-editor';
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -268,9 +269,9 @@ function ProEditor({ soundId }: { soundId: string }) {
         setDirty(false);
       }
       setMessage('Draft saved.');
-      toast.success('Draft saved.');
+      toast.success(i18n.t('web:toasts.draftSaved'));
     } catch {
-      toast.error('Could not save the draft. Try again.');
+      toast.error(i18n.t('web:toasts.couldNotSaveDraft'));
     } finally {
       setBusy(false);
     }
@@ -294,7 +295,9 @@ function ProEditor({ soundId }: { soundId: string }) {
       } else {
         // The render still uses the edits on screen; just say the draft
         // itself was not stored.
-        toast.warning(`Draft not saved: ${saveFirst.error}`);
+        toast.warning(
+          i18n.t('web:toasts.draftNotSavedReason', { error: saveFirst.error }),
+        );
       }
       const result = await renderEditorDraft(
         soundId,
@@ -321,7 +324,7 @@ function ProEditor({ soundId }: { soundId: string }) {
       setMessage(text);
       toast.success(text);
     } catch {
-      toast.error('Could not start the render. Try again.');
+      toast.error(i18n.t('web:toasts.couldNotStartRender'));
     } finally {
       setBusy(false);
     }
@@ -449,7 +452,7 @@ function ProEditor({ soundId }: { soundId: string }) {
                         a.download = file.name;
                         a.click();
                         URL.revokeObjectURL(url);
-                        toast.info('WAV downloaded as a fallback.');
+                        toast.info(i18n.t('web:toasts.wavDownloadedFallback'));
                       }
                     } finally {
                       setBusy(false);

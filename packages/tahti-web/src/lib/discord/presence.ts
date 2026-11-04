@@ -1,5 +1,7 @@
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import { usePlayerStore } from '../../stores/playerStore';
 import { createDesktopServiceStore } from '../desktopService';
 import { albumTitle } from '../playableToTrack';
@@ -72,7 +74,7 @@ function update(native: TahtiNativeDiscord) {
   const request = presence
     ? native.setActivity(presence).then((reconnected) => {
         if (reconnected) {
-          toast.info('Reconnected to Discord');
+          toast.info(i18n.t('web:toasts.reconnectedToDiscord'));
         }
       })
     : native.clearActivity();

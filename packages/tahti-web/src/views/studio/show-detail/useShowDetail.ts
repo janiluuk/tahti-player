@@ -2,6 +2,8 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   cancelShowBooking,
   createEpisode,
@@ -95,7 +97,7 @@ export function useShowDetail(id: string) {
         setShowLoadError(
           err instanceof Error ? err.message : 'Could not load the show.',
         );
-        toast.error('Could not load the show.');
+        toast.error(i18n.t('web:toasts.couldNotLoadShow'));
       })
       .finally(() => setLoaded(true));
     fetchEpisodesForShow(id)
@@ -108,7 +110,7 @@ export function useShowDetail(id: string) {
         setEpisodesLoadError(
           err instanceof Error ? err.message : 'Could not load the episodes.',
         );
-        toast.error('Could not load the episodes.');
+        toast.error(i18n.t('web:toasts.couldNotLoadEpisodes'));
       });
     const from = new Date().toISOString();
     const to = new Date(Date.now() + 14 * 24 * 3600_000).toISOString();
@@ -199,7 +201,7 @@ export function useShowDetail(id: string) {
       setNextEpisodeNumberDraft(r.data.nextEpisodeNumber);
       setThumbnailFile(null);
       setBackdropFile(null);
-      toast.success('Show details saved — new episodes will inherit these.');
+      toast.success(i18n.t('web:toasts.showDetailsSaved'));
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : 'Could not save the show.',
@@ -259,7 +261,7 @@ export function useShowDetail(id: string) {
       return;
     }
     if (source === 'upload' && !file) {
-      toast.error('Choose an audio file to upload.');
+      toast.error(i18n.t('web:toasts.chooseAudioFileToUpload'));
       return;
     }
     setBusy(true);
@@ -301,7 +303,7 @@ export function useShowDetail(id: string) {
         params: { episodeId: ep.data.id },
       });
     } catch {
-      toast.error('Could not create the episode.');
+      toast.error(i18n.t('web:toasts.couldNotCreateEpisode'));
     } finally {
       setBusy(false);
     }

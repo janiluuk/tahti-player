@@ -3,6 +3,7 @@ import { ArrowLeftIcon, CalendarPlusIcon, SaveIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -65,7 +66,7 @@ export function StudioListeningPartyFormView({
         }
         if (!data) {
           if (notFound) {
-            toast.error('That listening party could not be found.');
+            toast.error(i18n.t('web:toasts.listeningPartyNotFound'));
             void navigate({ to: '/studio/listening-parties' });
             return;
           }

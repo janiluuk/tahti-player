@@ -1,5 +1,6 @@
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Tooltip, type CatalogColumn } from '@tahti-player/ui';
 
 import { formatTotalDuration, pluralTracks } from '../../lib/libraryFormat';
@@ -92,7 +93,7 @@ export async function playPlaylist(
 ) {
   const trackIds = await library.playlists.trackIds(id);
   if (trackIds.length === 0) {
-    toast.error('None of this playlist’s tracks can be played.');
+    toast.error(i18n.t('web:toasts.nonePlaylistTracksPlayable'));
     return;
   }
   const ordered = options.shuffle ? shuffled(trackIds) : trackIds;
@@ -102,7 +103,7 @@ export async function playPlaylist(
     ? playables
     : [...playables.slice(start), ...playables.slice(0, start)];
   if (!head) {
-    toast.error('None of this playlist’s tracks can be played.');
+    toast.error(i18n.t('web:toasts.nonePlaylistTracksPlayable'));
     return;
   }
   usePlayerStore.getState().play(head, { enqueueRest: rest });
