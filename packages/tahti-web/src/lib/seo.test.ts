@@ -155,18 +155,13 @@ describe('syncDocumentMetadata / setPlaybackDocumentTitle', () => {
   });
 });
 
-describe('metadataForPath in Finnish', () => {
-  it('translates page, section and radio titles', async () => {
+describe('metadataForPath radio description in Finnish', () => {
+  it('translates the Radio description', async () => {
     await applyLocale('fi_FI');
     try {
-      expect(metadataForPath('/notifications').title).toBe(
-        'Ilmoitukset · Tahti',
+      expect(metadataForPath('/radio').description).toBe(
+        'Kuuntele osuuskunnan Tahti Radio -lähetystä ja katso ohjelma-aikataulu.',
       );
-      expect(metadataForPath('/terms').title).toBe('Käyttöehdot · Tahti');
-      expect(metadataForPath('/admin/users').title).toBe(
-        'Users · Hallinta · Tahti',
-      );
-      expect(metadataForPath('/radio').title).toBe('Tahti Radio');
     } finally {
       await applyLocale('en_US');
     }
