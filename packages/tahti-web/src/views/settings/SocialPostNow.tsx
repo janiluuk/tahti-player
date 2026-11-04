@@ -2,6 +2,7 @@ import { SendIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Badge, Button, Select, Textarea } from '@tahti-player/ui';
 
 import {
@@ -91,7 +92,11 @@ export function SocialPostNow({
         return;
       }
       setMessage('');
-      toast.success(`Queued for ${PLATFORM_NAMES[selected]}.`);
+      toast.success(
+        i18n.t('web:toasts.queuedForPlatform', {
+          platform: PLATFORM_NAMES[selected],
+        }),
+      );
       loadPosts();
     });
   };

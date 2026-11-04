@@ -3,6 +3,7 @@ import { BookOpenIcon, CopyIcon, DownloadIcon, LinkIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -117,7 +118,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       })
       .catch(() => {
         setCatalogError('Could not load the distribution details.');
-        toast.error('Could not load the distribution details.');
+        toast.error(i18n.t('web:toasts.couldNotLoadDistributionDetails'));
       })
       .finally(() => setLoading(false));
   };
@@ -181,9 +182,9 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         setForm(catalogToForm(r.data));
         setCredits(parseCredits(r.data.credits));
         setChecklist(r.data.checklist);
-        toast.success('Catalog saved.');
+        toast.success(i18n.t('web:toasts.catalogSaved'));
       })
-      .catch(() => toast.error('Could not save the catalog.'))
+      .catch(() => toast.error(i18n.t('web:toasts.couldNotSaveCatalog')))
       .finally(() => setBusy(false));
   };
 
@@ -197,7 +198,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       }
       if ('checkoutUrl' in r) {
         if (!assignStripeRedirectUrl(r.checkoutUrl)) {
-          toast.error('Checkout URL was not from Stripe');
+          toast.error(i18n.t('web:toasts.checkoutNotStripe'));
         }
         return;
       }
@@ -210,7 +211,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       setBilling((prev) => (prev ? { ...prev, paid: true } : prev));
       loadOps();
     } catch {
-      toast.error('Could not submit to Revelator.');
+      toast.error(i18n.t('web:toasts.couldNotSubmitRevelator'));
     } finally {
       setBusy(false);
     }
@@ -224,7 +225,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
     try {
       res = await fetchReleaseExportJson(release.id);
     } catch {
-      toast.error('Could not export the release.');
+      toast.error(i18n.t('web:toasts.couldNotExportRelease'));
       return;
     } finally {
       setBusy(false);
@@ -241,7 +242,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       a.download = `release-${release.smartLinkSlug}.json`;
       a.click();
       URL.revokeObjectURL(url);
-      toast.success('Exported JSON.');
+      toast.success(i18n.t('web:toasts.exportedJson'));
       return;
     }
     try {
@@ -252,7 +253,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       const text =
         mode === 'musicbrainz' ? pack.musicbrainzPrefill : pack.discogsPrefill;
       if (!text) {
-        toast.error(`Export missing ${mode} prefill`);
+        toast.error(i18n.t('web:toasts.exportMissingPrefill', { mode }));
         return;
       }
       await navigator.clipboard.writeText(text);
@@ -262,7 +263,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
           : 'Discogs prefill copied.',
       );
     } catch {
-      toast.error('Could not read export pack');
+      toast.error(i18n.t('web:toasts.couldNotReadExportPack'));
     }
   };
 

@@ -3,6 +3,7 @@ import { LogOutIcon, PauseIcon, PlayIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Badge, Button, CopyButton, TahtiJam } from '@tahti-player/ui';
 
 import {
@@ -115,7 +116,7 @@ export function JamView({ code }: { code: string }) {
       return next;
     });
     if (!updated) {
-      toast.error("Couldn't remove them from this Jam.");
+      toast.error(i18n.t('web:toasts.jamCouldNotRemoveMember'));
     }
   };
 
@@ -132,7 +133,7 @@ export function JamView({ code }: { code: string }) {
     });
     if (!updated) {
       setControlSupported(false);
-      toast.error("Couldn't change who controls this Jam.");
+      toast.error(i18n.t('web:toasts.jamCouldNotChangeControl'));
     }
   };
 
@@ -141,7 +142,7 @@ export function JamView({ code }: { code: string }) {
       return;
     }
     await pushJamState(session.id, toggledJamState(session)).catch(() => {
-      toast.error("Couldn't change playback for the Jam.");
+      toast.error(i18n.t('web:toasts.jamCouldNotChangePlayback'));
     });
   };
 

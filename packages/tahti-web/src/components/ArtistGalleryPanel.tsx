@@ -9,6 +9,7 @@ import {
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   HiddenFileInput,
@@ -149,7 +150,7 @@ export function ArtistGalleryPanel({
     if (results.some((r) => !r.ok)) {
       onChange(prev);
       setError('Some images could not be removed.');
-      toast.error('Some images could not be removed.');
+      toast.error(i18n.t('web:toasts.someImagesCouldNotBeRemoved'));
     }
   }
 

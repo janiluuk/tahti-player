@@ -2,6 +2,7 @@ import { StarIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Loader, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -97,7 +98,7 @@ export function TrackOrganizeDialog({
                 onChanged();
                 return load();
               })
-              .then(() => toast.success('Undone.'))
+              .then(() => toast.success(i18n.t('web:toasts.undone')))
               .catch((failure) =>
                 toast.error(
                   failure instanceof Error

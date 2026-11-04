@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import {
@@ -44,7 +45,9 @@ export function BlockedAccounts() {
       setBlocked((current) =>
         (current ?? []).filter((b) => b.username !== user.username),
       );
-      toast.success(`Unblocked ${user.displayName}.`);
+      toast.success(
+        i18n.t('web:toasts.unblockedNamed', { name: user.displayName }),
+      );
     });
   };
 

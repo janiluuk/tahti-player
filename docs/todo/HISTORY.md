@@ -1,3 +1,8 @@
+## 2026-11-04 - Batch 45 UX slices
+
+Studio playlist/editor/waveform/stats toasts; Admin comments/topics;
+materials; Spotify/SoundCloud; onboarding/order. tahti-web 0.0.335 (#1831).
+
 ## 2026-11-04 - Batch 44 UX slices
 
 Studio Recordings/Distribution/Editor; radio/channel/collection/release

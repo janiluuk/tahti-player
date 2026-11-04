@@ -2,6 +2,7 @@ import { ImageIcon, UploadCloudIcon } from 'lucide-react';
 import { useRef, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, HiddenFileInput, MediaArtwork } from '@tahti-player/ui';
 
 import { uploadUserMediaFile } from '../api/user-media';
@@ -77,7 +78,11 @@ export function RoundImageUploadButton({
       onChange(result.data.url);
       toast.success(`${label} updated.`);
     } catch {
-      toast.error(`Could not upload the ${label.toLowerCase()}.`);
+      toast.error(
+        i18n.t('web:toasts.couldNotUploadLabel', {
+          label: label.toLowerCase(),
+        }),
+      );
     } finally {
       setBusy(false);
     }

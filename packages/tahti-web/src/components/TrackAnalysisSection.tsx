@@ -2,6 +2,7 @@ import { ActivityIcon, HandIcon, Undo2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Input, Loader, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -207,7 +208,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
       );
       await load();
       onChanged?.();
-      toast.success('Correction saved.', {
+      toast.success(i18n.t('web:toasts.correctionSaved'), {
         action: {
           label: 'Undo',
           onClick: () => {

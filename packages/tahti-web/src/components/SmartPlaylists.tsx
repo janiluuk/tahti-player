@@ -9,6 +9,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, EditIconButton, Loader, Tooltip } from '@tahti-player/ui';
 
 import type {
@@ -50,7 +51,7 @@ async function playSmart(
 ) {
   const ids = await library.analysis.smart.trackIds(id);
   if (ids.length === 0) {
-    toast.error('No tracks match this smart playlist right now.');
+    toast.error(i18n.t('web:toasts.noSmartPlaylistMatches'));
     return;
   }
   const playables = await preparePlayables(
@@ -60,7 +61,7 @@ async function playSmart(
   );
   const [head, ...rest] = playables;
   if (!head) {
-    toast.error('None of the matching tracks can be played.');
+    toast.error(i18n.t('web:toasts.noMatchingTracksPlayable'));
     return;
   }
   usePlayerStore.getState().play(head, { enqueueRest: rest });
@@ -305,7 +306,11 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
               target.id,
               async () => {
                 await library.analysis.smart.remove(target.id);
-                toast.success(`Deleted “${target.name}”.`);
+                toast.success(
+                  i18n.t('web:toasts.deletedNamedQuotes', {
+                    name: target.name,
+                  }),
+                );
                 await load();
               },
               'Could not delete.',

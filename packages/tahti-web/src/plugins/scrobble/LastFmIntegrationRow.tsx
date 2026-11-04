@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, ExternalLink, Input } from '@tahti-player/ui';
 
 import {
@@ -44,7 +45,7 @@ export function LastFmIntegrationRow() {
       setOwnKeyOpen(true);
     }
     if (status === 'ok') {
-      toast.success('Last.fm scrobbling connected.');
+      toast.success(i18n.t('web:toasts.lastFmConnected'));
       void refresh();
     } else {
       toast.error(
@@ -70,7 +71,7 @@ export function LastFmIntegrationRow() {
           return;
         }
         setConnected(true);
-        toast.success('Last.fm scrobbling connected (mock).');
+        toast.success(i18n.t('web:toasts.lastFmConnectedMock'));
       });
       return;
     }
@@ -106,7 +107,7 @@ export function LastFmIntegrationRow() {
       return;
     }
     setConnected(false);
-    toast.success('Last.fm disconnected.');
+    toast.success(i18n.t('web:toasts.lastFmDisconnected'));
   };
 
   return (

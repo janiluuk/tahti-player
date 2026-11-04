@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -82,7 +83,7 @@ export function WriteTagsDialog({
       ].filter(Boolean);
       const message = `Wrote tags to ${n(result.written)} ${result.written === 1 ? 'file' : 'files'}.`;
       if (result.failed.length && result.written === 0) {
-        toast.error('No files were changed.', {
+        toast.error(i18n.t('web:toasts.noFilesChanged'), {
           description: notes.join('; '),
         });
       } else {
