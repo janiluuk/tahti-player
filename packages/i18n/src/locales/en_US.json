@@ -2723,7 +2723,7 @@
       "removeTitle": "Remove announcement?",
       "removeDescription": "The announcement is unpinned from your channel."
     },
-"studioRecordings": {
+    "studioRecordings": {
       "title": "Recordings",
       "browseShows": "Browse shows",
       "panelTitle": "Recordings ({{count}})",

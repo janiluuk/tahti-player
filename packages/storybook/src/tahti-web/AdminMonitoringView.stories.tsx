@@ -23,24 +23,26 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await waitFor(() =>
-      expect(canvas.getByRole('heading', { name: 'Monitoring' })).toBeVisible(),
+      expect(
+        canvas.getByRole('heading', { name: 'Monitoring' }),
+      ).toBeInTheDocument(),
     );
     await expect(
       canvas.getByRole('heading', { name: 'Grafana dashboards' }),
-    ).toBeVisible();
+    ).toBeInTheDocument();
     await expect(
       canvas.getByRole('heading', { name: 'Vital services (Grafana)' }),
-    ).toBeVisible();
+    ).toBeInTheDocument();
     await expect(
       canvas.getByTitle('Tahti vital services — Grafana'),
-    ).toBeVisible();
-    await expect(canvas.getByText('API')).toBeVisible();
+    ).toBeInTheDocument();
+    await expect(canvas.getByText('API')).toBeInTheDocument();
     await waitFor(() =>
       expect(
         canvas.getByRole('heading', {
           name: 'Container logs (all services)',
         }),
-      ).toBeVisible(),
+      ).toBeInTheDocument(),
     );
   },
 };

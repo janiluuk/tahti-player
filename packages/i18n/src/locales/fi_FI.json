@@ -2723,7 +2723,7 @@
       "removeTitle": "Poistetaanko ilmoitus?",
       "removeDescription": "Ilmoitus irrotetaan kanavaltasi."
     },
-"studioRecordings": {
+    "studioRecordings": {
       "title": "Nauhoitukset",
       "browseShows": "Selaa ohjelmia",
       "panelTitle": "Nauhoitukset ({{count}})",
