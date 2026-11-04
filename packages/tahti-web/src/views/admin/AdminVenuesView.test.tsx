@@ -69,9 +69,7 @@ describe('admin venues list', () => {
     });
     const name = await screen.findByText('Northern Lights Hall');
     const row = name.closest('li') ?? name.parentElement?.parentElement;
-    expect(row?.textContent).toContain(
-      `submitted ${new Date('2026-05-20T12:00:00.000Z').toLocaleDateString()}`,
-    );
+    expect(row?.textContent).toMatch(/submitted.*20\.5\.2026/);
     expect(document.body.textContent).not.toContain('cmabc123submitterid');
     expect(row?.textContent).not.toContain('submitted by');
   });

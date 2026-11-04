@@ -2,7 +2,8 @@ import type { LucideIcon } from 'lucide-react';
 
 export type TabGroup = {
   id: string;
-  label: string;
+  label?: string;
+  labelKey?: string;
   Icon: LucideIcon;
   /** Ids of the tabs shown under this group, in order. */
   tabIds: readonly string[];

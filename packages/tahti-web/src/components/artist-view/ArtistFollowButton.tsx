@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { FavoriteButton } from '@tahti-player/ui';
 
 import { useAuthModalStore } from '../../stores/authModalStore';
@@ -16,6 +17,7 @@ export function ArtistFollowButton({
   busy: boolean;
   onToggle: () => void;
 }) {
+  const { t } = useTranslation('web');
   const signedIn = useAuthStore((s) => Boolean(s.user));
   return (
     <FavoriteButton
@@ -26,9 +28,11 @@ export function ArtistFollowButton({
         signedIn ? onToggle() : useAuthModalStore.getState().open('login')
       }
       ariaLabelAdd={
-        signedIn ? `Follow ${displayName}` : `Log in to follow ${displayName}`
+        signedIn
+          ? t('actions.followArtist', { name: displayName })
+          : t('actions.logInToFollow', { name: displayName })
       }
-      ariaLabelRemove={`Unfollow ${displayName}`}
+      ariaLabelRemove={t('actions.unfollowArtist', { name: displayName })}
       className="bg-background border-border rounded-md border-(length:--border-width)"
       data-testid="artist-favorite-button"
     />

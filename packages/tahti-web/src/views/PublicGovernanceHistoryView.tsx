@@ -12,6 +12,7 @@ import {
 
 import { fetchPublicGovernanceMotions } from '../api/client';
 import type { PublicGovernanceMotion } from '../api/types';
+import { ListingDate } from '../components/ListingDate';
 import {
   PageEmpty,
   PageError,
@@ -99,7 +100,7 @@ export function PublicGovernanceHistoryView() {
                   />
                   <p className="text-foreground-secondary mt-1 text-xs">
                     Proposed by {motion.proposer} · Closed{' '}
-                    {new Date(motion.closedAt).toLocaleDateString()}
+                    <ListingDate value={motion.closedAt} />
                   </p>
                 </div>
                 <Badge variant="pill" color="secondary">

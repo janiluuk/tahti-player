@@ -15,6 +15,7 @@ import {
   type AdminMissedShow,
   type AdminMissedShowStatus,
 } from '../../api/admin';
+import { ListingDate } from '../../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { ModerationTabs } from './moderation/ModerationTabs';
@@ -34,8 +35,6 @@ const FILTER_TAB_ICONS = {
   ACTIONED: CheckIcon,
   DISMISSED: XIcon,
 };
-
-const formatDate = (iso: string) => new Date(iso).toLocaleString();
 
 export function AdminMissedShowsPanel() {
   const [filter, setFilter] = useState<(typeof FILTERS)[number]['id']>('ALL');
@@ -120,8 +119,9 @@ export function AdminMissedShowsPanel() {
                     {flag.channel.displayName} · @{flag.channel.username}
                   </div>
                   <div className="text-foreground-secondary mt-1 text-xs">
-                    Scheduled {formatDate(flag.scheduledLiveShow.startAt)} ·
-                    detected {formatDate(flag.detectedAt)}
+                    Scheduled{' '}
+                    <ListingDate value={flag.scheduledLiveShow.startAt} /> ·
+                    detected <ListingDate value={flag.detectedAt} />
                   </div>
                 </div>
                 <div className="flex shrink-0 flex-wrap gap-1.5">

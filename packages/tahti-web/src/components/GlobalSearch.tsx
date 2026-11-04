@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useDeferredValue, useEffect, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -104,6 +105,7 @@ export function GlobalSearch({
   fullWidth,
   onDone,
 }: GlobalSearchProps = {}) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SearchResponse>(EMPTY);
@@ -257,8 +259,8 @@ export function GlobalSearch({
           }}
           onFocus={() => setOpen(true)}
           onKeyDown={handleInputKeyDown}
-          placeholder="Search artists, tracks, playlists…"
-          aria-label="Search artists, tracks, and playlists"
+          placeholder={t('search.placeholder')}
+          aria-label={t('search.ariaLabel')}
           role="combobox"
           aria-expanded={open && hasQuery}
           aria-controls="global-search-listbox"
@@ -276,13 +278,13 @@ export function GlobalSearch({
           }
         />
         {query ? (
-          <Tooltip content="Clear search" side="top">
+          <Tooltip content={t('search.clear')} side="top">
             <Button
               type="button"
               size="icon-sm"
               variant="text"
               onClick={() => setQuery('')}
-              aria-label="Clear search"
+              aria-label={t('search.clear')}
               className="absolute top-1 right-1"
             >
               <XIcon size={14} aria-hidden />
@@ -295,18 +297,20 @@ export function GlobalSearch({
         <div
           id="global-search-listbox"
           role="listbox"
-          aria-label="Search results"
+          aria-label={t('search.results')}
           className="border-border bg-background shadow-shadow absolute top-full right-0 left-0 z-40 mt-1.5 max-h-[70vh] overflow-y-auto rounded-lg border p-1.5"
         >
           {loading ? (
             <div className="flex flex-col items-center gap-2 py-3">
               <Loader size="sm" />
-              <p className="text-foreground-secondary text-sm">Searching…</p>
+              <p className="text-foreground-secondary text-sm">
+                {t('search.searching')}
+              </p>
             </div>
           ) : !hasResults ? (
             <PageEmpty
-              title={`No results for “${trimmed}”.`}
-              description="Try another spelling, or browse Discover and Radio."
+              title={t('search.noResultsTitle', { query: trimmed })}
+              description={t('search.noResultsDescription')}
               action={
                 <div className="flex flex-wrap items-center justify-center gap-2">
                   <ButtonLink

@@ -16,6 +16,7 @@ import type {
   EditorTimeline,
 } from '../../api/studio-types';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { ListingDate } from '../../components/ListingDate';
 import {
   MultitrackTimeline,
   normalizeTimeline,
@@ -165,7 +166,7 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                       Updated
                     </dt>
                     <dd className="mt-0.5">
-                      {new Date(project.updatedAt).toLocaleString()}
+                      <ListingDate value={project.updatedAt} />
                     </dd>
                   </div>
                   <div>

@@ -10,6 +10,7 @@ import {
 import type { MembershipStatus } from '../api/types';
 import { membershipStatusLabel } from '../lib/membershipStatus';
 import { assignStripeRedirectUrl } from '../lib/stripeRedirect';
+import { ListingDate } from './ListingDate';
 
 function euros(cents: number): string {
   return `€${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}`;
@@ -93,13 +94,7 @@ export function MembershipStatusPanel({
   }
 
   if (membership.isMember) {
-    const dueLabel = membership.renewalDueAt
-      ? new Date(membership.renewalDueAt).toLocaleDateString(undefined, {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        })
-      : null;
+    const renewalDueAt = membership.renewalDueAt;
 
     return (
       <Box variant="tertiary" className="flex-col items-start gap-3">
@@ -116,17 +111,19 @@ export function MembershipStatusPanel({
             for automatic annual renewal and billing receipts.
           </Alert>
         )}
-        {dueLabel &&
+        {renewalDueAt &&
           !membership.hasStripeSubscription &&
           !membership.subscriptionMigrationRequired && (
             <p className="text-foreground-secondary text-sm">
-              Renewal due around {dueLabel}. Pay again from this panel when
-              reminded, or subscribe via Stripe on your next checkout.
+              Renewal due around <ListingDate value={renewalDueAt} />. Pay again
+              from this panel when reminded, or subscribe via Stripe on your
+              next checkout.
             </p>
           )}
-        {membership.hasStripeSubscription && dueLabel && (
+        {membership.hasStripeSubscription && renewalDueAt && (
           <p className="text-foreground-secondary text-sm">
-            Next renewal around {dueLabel} (Stripe subscription).
+            Next renewal around <ListingDate value={renewalDueAt} /> (Stripe
+            subscription).
           </p>
         )}
         {error && <InlineError>{error}</InlineError>}

@@ -32,11 +32,11 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; left: embed downloads (product call) and keeping a stage-hosted embed across routes |
 | open    | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Plan: page anatomy rules (one header, one primary action, overflow, one toolbar), Settings account-only in 7 items, duplicate surfaces removed; 9 phases, absorbs navigation-simplification slices 1-3, 7, 9, 10 |
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
-| partial | [batch-slices-2026-11-04.md](batch-slices-2026-11-04.md) | Ten slices: Fans CI (#1811), OverflowMenu/FilterBar, ViewShell play, ConfirmDialog destructive batch, catalog/sitemap hygiene |
+| partial | [batch-31-slices-2026-11-04.md](batch-31-slices-2026-11-04.md) | Batch of 30: ListingDate sweep, Finnish chrome, VIEW-CATALOG SetupPassword, nav back links, AmbientCard note |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
 | open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` on events/updates/editor/playlist/collection/release; left: radio presets, plugin-store categories, theme submissions) |
 | open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles e2e matrix on the mock app; left: collection player (placement), Go live → green room, Radio/Discover journeys after their rework, Player seek/fullscreen, open findings |
-| open    | [navigation-flow-audit.md](navigation-flow-audit.md) | Back-link convention + checks; left: admin breadcrumbs skip the hub, release-track insights back target, StudioSoundView and ChatView back links (areas being reworked) |
+| open    | [navigation-flow-audit.md](navigation-flow-audit.md) | Back-link convention + checks; left: admin breadcrumbs skip the hub, release-track insights back target |
 | open    | [view-first-and-test-hardening-leftovers.md](view-first-and-test-hardening-leftovers.md) | Release ops form-first, a gallery-wipe bug, stale-fetch guards, dead code needing a call, Storybook Tabs fade under load |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |

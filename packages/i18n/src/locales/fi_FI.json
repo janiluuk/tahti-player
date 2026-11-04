@@ -722,7 +722,11 @@
       "logs": "Lokit",
       "logsDescription": "Tämän välilehden varoitukset ja virheet sekä linkit palvelimen konttilokeihin",
       "language": "Kieli",
-      "languageDescription": "Valikoiden, painikkeiden ja päivämäärien kieli"
+      "languageDescription": "Valikoiden, painikkeiden ja päivämäärien kieli",
+      "accountTabGroupSignInSecurity": "Kirjautuminen ja tietoturva",
+      "accountTabGroupMembershipBilling": "Jäsenyys ja laskutus",
+      "accountTabGroupNotifications": "Ilmoitukset",
+      "accountTabGroupPrivacyData": "Yksityisyys ja data"
     },
     "language": {
       "label": "Kieli",
@@ -749,7 +753,30 @@
       "tryAgain": "Yritä uudelleen",
       "signIn": "Kirjaudu sisään",
       "upload": "Lähetä",
-      "confirm": "Vahvista"
+      "confirm": "Vahvista",
+      "followArtist": "Seuraa: {{name}}",
+      "unfollowArtist": "Lopeta seuraaminen: {{name}}",
+      "logInToFollow": "Kirjaudu sisään seurataksesi: {{name}}"
+    },
+    "search": {
+      "placeholder": "Hae artisteja, kappaleita, soittolistoja…",
+      "ariaLabel": "Hae artisteja, kappaleita ja soittolistoja",
+      "clear": "Tyhjennä haku",
+      "results": "Hakutulokset",
+      "searching": "Haetaan…",
+      "noResultsTitle": "Ei tuloksia haulle ”{{query}}”.",
+      "noResultsDescription": "Kokeile toista kirjoitusasua tai selaa Tutki- ja Radio-sivuja."
+    },
+    "notificationsPopover": {
+      "title": "Ilmoitukset",
+      "seeAll": "Näytä kaikki",
+      "refreshError": "Ilmoituksia ei voitu päivittää.",
+      "loadError": "Ilmoituksia ei voitu ladata",
+      "empty": "Ei ilmoituksia vielä",
+      "needsAcknowledgement": "Vaatii kuittauksen",
+      "acknowledge": "Kuittaa",
+      "showOlder": "Näytä vanhemmat",
+      "loading": "Ladataan…"
     },
     "player": {
       "next": "Seuraava",
@@ -871,7 +898,10 @@
       "nothingSavedTitle": "Ei vielä tallennettua",
       "nothingSavedDescription": "Seuraa artisteja ja tallenna suosikkeja Tutki-sivulta - ne näkyvät täällä.",
       "emptyLibraryTitle": "Kirjastosi on tyhjä",
-      "emptyLibraryDescription": "Kirjaudu sisään tallentaaksesi musiikkia, josta pidät, tai selaa Tutki-sivua."
+      "emptyLibraryDescription": "Kirjaudu sisään tallentaaksesi musiikkia, josta pidät, tai selaa Tutki-sivua.",
+      "embedsLoadError": "Tuotuja upotuksia ei voitu ladata",
+      "embedsEmptyTitle": "Ei tuotuja upotuksia vielä",
+      "embedsEmptyDescription": "Hearthis.at-, Mixcloud-, Spotify- ja Bandcamp-tuonnit näkyvät täällä palveluntarjoajan mukaan, kun olet tuonut niitä Asetukset → Lisäosat → Tuonti."
     },
     "date": {
       "today": "Tänään",

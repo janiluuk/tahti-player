@@ -23,6 +23,5 @@ use `BackButtonLink` with `aria-label="Back to …"`.
 | --- | --- | --- |
 | Admin pages inside a hub (Announcements, Artwork presets, News, …) | The breadcrumb reads Admin › Page while the back link above it names the hub (Content); the trail skips a level | 23 views; drop the breadcrumb or add the hub level is a design call |
 | `/studio/insights/release-tracks/$id` | Back link goes to the Releases list, not the release's Stats tab; the route only has the release track id | Needs `StudioReleaseDetailView` to pass the release id (release page is being reworked) |
-| `StudioSoundView` (`/studio/sounds/$id`) | `BackButtonLink` "Back to Music" points at `/studio/sounds`, which redirects to Library → Sounds | Sound page edit/view toggle is being reworked; mastering and the pro editor now link straight to Library → Sounds |
 | `/listen/*` aliases | `/listen/feed`, `/listen/favorites`, `/listen/history` are aliases with no nav entry | Documented in NAVIGATION-GAPS (batch 30) |
 | Cross-section moves (Listen ↔ Studio on phones) | No "Listen › Studio › Releases" trail; the logo is the main way out of Studio on narrow screens | Design call |

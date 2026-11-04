@@ -6,6 +6,7 @@ import {
   isCanceledAtPeriodEnd,
 } from '../lib/fanSubscriptionStatus';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
+import { ListingDate } from './ListingDate';
 
 function formatEur(cents: number) {
   return `€${(cents / 100).toFixed(cents % 100 === 0 ? 0 : 2)}/mo`;
@@ -19,9 +20,7 @@ export function CurrentFanSubscriptionCard({
 }: {
   subscription: FanSubscriptionRow;
 }) {
-  const periodEnd = subscription.currentPeriodEnd
-    ? new Date(subscription.currentPeriodEnd).toLocaleDateString()
-    : null;
+  const periodEnd = subscription.currentPeriodEnd;
   return (
     <div
       className="border-border bg-background flex flex-wrap items-center justify-between gap-3 rounded-lg border p-4"
@@ -33,11 +32,15 @@ export function CurrentFanSubscriptionCard({
         </div>
         <div className="text-foreground-secondary text-sm">
           {formatEur(subscription.amountCents)}
-          {periodEnd
-            ? isCanceledAtPeriodEnd(subscription)
-              ? `, ${fanSubscriptionStatusLabel(subscription)}`
-              : `, renews ${periodEnd}`
-            : null}
+          {periodEnd ? (
+            isCanceledAtPeriodEnd(subscription) ? (
+              `, ${fanSubscriptionStatusLabel(subscription)}`
+            ) : (
+              <>
+                , renews <ListingDate value={periodEnd} />
+              </>
+            )
+          ) : null}
         </div>
       </div>
       <Button

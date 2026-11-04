@@ -19,6 +19,7 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
+import { ListingDate } from '../../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 
@@ -171,7 +172,7 @@ export function AdminVenuesView() {
                                   on{' '}
                                 </>
                               ) : null}
-                              {new Date(venue.createdAt).toLocaleDateString()}
+                              <ListingDate value={venue.createdAt} />
                             </p>
                           </div>
                           <Button

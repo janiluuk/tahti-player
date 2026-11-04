@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, ButtonLink } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
@@ -7,6 +8,7 @@ import { type TopNavState } from './useTopNavState';
 /** The notifications quick view; the account menu's Notifications item
  * opens it. */
 export function NotificationsPopover({ nav }: { nav: TopNavState }) {
+  const { t } = useTranslation('web');
   const {
     notificationsOpen,
     setNotificationsOpen,
@@ -27,14 +29,16 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
           role="menu"
         >
           <div className="flex items-center justify-between gap-2 px-2 py-1">
-            <span className="text-sm font-semibold">Notifications</span>
+            <span className="text-sm font-semibold">
+              {t('notificationsPopover.title')}
+            </span>
             <ButtonLink
               to="/notifications"
               size="xs"
               variant="text"
               onClick={() => setNotificationsOpen(false)}
             >
-              See all
+              {t('notificationsPopover.seeAll')}
             </ButtonLink>
           </div>
           {notificationsError && notifications.length > 0 ? (
@@ -42,24 +46,27 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
               role="alert"
               className="text-accent-red-strong flex items-center justify-between gap-2 px-2 py-1 text-xs"
             >
-              <span>Could not refresh notifications.</span>
+              <span>{t('notificationsPopover.refreshError')}</span>
               <Button
                 size="xs"
                 variant="text"
                 onClick={() => void loadNotifications()}
               >
-                Retry
+                {t('actions.tryAgain')}
               </Button>
             </div>
           ) : null}
           {notificationsError && notifications.length === 0 ? (
             <PageError
-              title="Could not load notifications"
+              title={t('notificationsPopover.loadError')}
               description={notificationsError}
               onRetry={() => void loadNotifications()}
             />
           ) : notifications.length === 0 ? (
-            <PageEmpty title="No notifications yet" className="py-3" />
+            <PageEmpty
+              title={t('notificationsPopover.empty')}
+              className="py-3"
+            />
           ) : (
             <ul className="tahti-hide-scrollbar flex max-h-80 flex-col gap-1 overflow-y-auto">
               {notifications.map((notification) => (
@@ -76,7 +83,7 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
                     <div className="min-w-0 flex-1">
                       {notification.sticky && !notification.readAt ? (
                         <Badge variant="pill" color="yellow" className="mb-1">
-                          Needs acknowledgement
+                          {t('notificationsPopover.needsAcknowledgement')}
                         </Badge>
                       ) : null}
                       {notification.url ? (
@@ -119,7 +126,7 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
                           void acknowledgeNotification(notification.id)
                         }
                       >
-                        Acknowledge
+                        {t('notificationsPopover.acknowledge')}
                       </Button>
                     ) : null}
                   </div>
@@ -134,7 +141,9 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
                     disabled={loadingOlderNotifications}
                     onClick={() => void loadOlderNotifications()}
                   >
-                    {loadingOlderNotifications ? 'Loading…' : 'Show older'}
+                    {loadingOlderNotifications
+                      ? t('notificationsPopover.loading')
+                      : t('notificationsPopover.showOlder')}
                   </Button>
                 </li>
               ) : null}
