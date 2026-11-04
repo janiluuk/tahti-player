@@ -31,12 +31,6 @@ import { groupCountLabel, groupPersonName } from '../lib/groupPeople';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
-const ROLE_LABEL = {
-  OWNER: 'Owner',
-  ADMIN: 'Admin',
-  MEMBER: 'Member',
-} as const;
-
 export function GroupDetailView({ slug }: { slug: string }) {
   const { t } = useTranslation('web');
   const navigate = useNavigate();
@@ -47,6 +41,12 @@ export function GroupDetailView({ slug }: { slug: string }) {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
+  const roleLabel = {
+    OWNER: t('groupDetail.roleOwner'),
+    ADMIN: t('groupDetail.roleAdmin'),
+    MEMBER: t('groupDetail.roleMember'),
+  } as const;
+
   const reload = useCallback(() => {
     void fetchPublicGroup(slug).then(({ data, meta }) => {
       setGroup(data);
@@ -55,11 +55,11 @@ export function GroupDetailView({ slug }: { slug: string }) {
           ? null
           : meta.source === 'api' && meta.reason
             ? meta.reason
-            : 'This group does not exist or is private.',
+            : t('groupDetail.privateOrMissing'),
       );
       setLoading(false);
     });
-  }, [slug]);
+  }, [slug, t]);
 
   useEffect(() => {
     setLoading(true);
@@ -67,13 +67,13 @@ export function GroupDetailView({ slug }: { slug: string }) {
   }, [reload, me?.id]);
 
   if (loading && !group) {
-    return <PageLoading label="Loading group…" />;
+    return <PageLoading label={t('groupDetail.loading')} />;
   }
 
   if (!group) {
     return (
       <PageError
-        title="Group not found"
+        title={t('groupDetail.notFound')}
         description={error ?? undefined}
         onRetry={reload}
       />
@@ -97,7 +97,7 @@ export function GroupDetailView({ slug }: { slug: string }) {
         return;
       }
       toast.success(
-        result.pending ? 'Request sent to the group admins' : 'You joined',
+        result.pending ? t('groupDetail.requestSent') : t('groupDetail.joined'),
       );
       reload();
     } finally {
@@ -130,7 +130,7 @@ export function GroupDetailView({ slug }: { slug: string }) {
       const session = await createJam(group.collectionSlug);
       void navigate({ to: '/jam/$code', params: { code: session.code } });
     } catch {
-      toast.error("Couldn't start a Jam for this group's playlist.");
+      toast.error(t('groupDetail.jamError'));
     } finally {
       setBusy(false);
     }
@@ -149,21 +149,23 @@ export function GroupDetailView({ slug }: { slug: string }) {
           onClick={() => void leave()}
         >
           <LogOutIcon size={14} aria-hidden className="mr-1.5" />
-          Leave group
+          {t('groupDetail.leave')}
         </Button>
       );
     }
     if (group.viewer.joinRequestPending) {
       return (
         <Badge variant="pill" color="secondary">
-          Request pending
+          {t('groupDetail.requestPending')}
         </Badge>
       );
     }
     return (
       <Button size="sm" disabled={busy} onClick={() => void join()}>
         <UserPlusIcon size={14} aria-hidden className="mr-1.5" />
-        {group.joinPolicy === 'REQUEST' ? 'Request to join' : 'Join group'}
+        {group.joinPolicy === 'REQUEST'
+          ? t('groupDetail.requestToJoin')
+          : t('groupDetail.join')}
       </Button>
     );
   };
@@ -178,7 +180,7 @@ export function GroupDetailView({ slug }: { slug: string }) {
         <div className="flex flex-wrap items-start gap-4">
           <MediaArtwork
             src={group.coverUrl ?? undefined}
-            alt={`${group.name} cover`}
+            alt={t('groupDetail.coverAlt', { name: group.name })}
             size="lg"
             className="rounded-xl"
           />
@@ -189,7 +191,7 @@ export function GroupDetailView({ slug }: { slug: string }) {
               </p>
             ) : null}
             <p className="text-foreground-secondary text-xs">
-              Started by{' '}
+              {t('groupDetail.startedBy')}{' '}
               <Link
                 to="/u/$username"
                 params={{ username: group.createdBy.username }}
@@ -197,7 +199,9 @@ export function GroupDetailView({ slug }: { slug: string }) {
               >
                 {groupPersonName(group.createdBy)}
               </Link>
-              {role ? ` · You are ${ROLE_LABEL[role].toLowerCase()}` : ''}
+              {role
+                ? ` · ${t('groupDetail.youAre', { role: roleLabel[role].toLowerCase() })}`
+                : ''}
             </p>
             <div className="flex flex-wrap items-center gap-2">
               <ButtonLink
@@ -209,7 +213,7 @@ export function GroupDetailView({ slug }: { slug: string }) {
                 size="sm"
               >
                 <ListMusicIcon size={14} aria-hidden className="mr-1.5" />
-                Collective playlist
+                {t('groupDetail.collectivePlaylist')}
               </ButtonLink>
               <Button
                 size="sm"
@@ -218,7 +222,7 @@ export function GroupDetailView({ slug }: { slug: string }) {
                 onClick={() => void listenTogether()}
               >
                 <HeadphonesIcon size={14} aria-hidden className="mr-1.5" />
-                Listen together
+                {t('groupDetail.listenTogether')}
               </Button>
               {renderMembership()}
               {canManage ? (
@@ -229,26 +233,29 @@ export function GroupDetailView({ slug }: { slug: string }) {
                   variant="text"
                 >
                   <SettingsIcon size={14} aria-hidden className="mr-1.5" />
-                  Manage
+                  {t('actions.manage')}
                 </ButtonLink>
               ) : null}
             </div>
             <p className="text-foreground-secondary text-xs">
               {group.joinPolicy === 'REQUEST'
-                ? 'Admins approve new members.'
-                : 'Anyone can join.'}{' '}
+                ? t('groupDetail.joinPolicyRequest')
+                : t('groupDetail.joinPolicyOpen')}{' '}
               {group.submitPolicy === 'APPROVE'
-                ? 'New sounds are approved by admins first.'
-                : 'Members add sounds right away.'}
+                ? t('groupDetail.submitApprove')
+                : t('groupDetail.submitOpen')}
             </p>
           </div>
         </div>
 
         <StudioPanel
-          title="Members"
+          title={t('groupDetail.members')}
           description={groupCountLabel(group.memberCount, 'member', 'members')}
         >
-          <ul className="grid gap-2 sm:grid-cols-2" aria-label="Members">
+          <ul
+            className="grid gap-2 sm:grid-cols-2"
+            aria-label={t('groupDetail.members')}
+          >
             {group.members.map((member) => (
               <li
                 key={member.username}
@@ -262,7 +269,7 @@ export function GroupDetailView({ slug }: { slug: string }) {
                   {groupPersonName(member)}
                 </Link>
                 <Badge variant="pill" color="secondary">
-                  {ROLE_LABEL[member.role]}
+                  {roleLabel[member.role]}
                 </Badge>
               </li>
             ))}

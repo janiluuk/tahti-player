@@ -57,7 +57,9 @@ export const ValidInvite: Story = {
     await expect(canvas.getByText('Use at least 10 characters.')).toBeVisible();
     await userEvent.type(canvas.getByLabelText('Password'), '-enough');
     await userEvent.type(canvas.getByLabelText('Confirm password'), 'other');
-    await expect(canvas.getByText("Passwords don't match.")).toBeVisible();
+    await expect(
+      canvas.getByText(/Passwords do(?:n't| not) match\./),
+    ).toBeVisible();
     await expect(submit).toBeDisabled();
   },
 };

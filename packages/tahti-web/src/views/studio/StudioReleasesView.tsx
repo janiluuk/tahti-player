@@ -145,9 +145,9 @@ export function StudioReleasesView() {
       toast.error(i18n.t('web:toasts.releaseCreatedVisualizerFailed'));
     }
     const created = r.data;
-    toastWithUndo(`Created ${created.title}.`, {
+    toastWithUndo(t('studioReleases.createdToast', { title: created.title }), {
       undo: () => deleteStudioRelease(created.id),
-      undoneMessage: `Removed ${created.title}.`,
+      undoneMessage: t('studioReleases.removedToast', { title: created.title }),
       onUndone: () =>
         setReleases((current) =>
           current.filter((release) => release.id !== created.id),
@@ -312,9 +312,11 @@ export function StudioReleasesView() {
                           <p className="text-foreground-secondary truncate text-xs">
                             {r.type}, {r.state}
                             {typeof r._count?.tracks === 'number'
-                              ? `, ${r._count.tracks} tracks`
+                              ? `, ${t('studioReleases.tracksCount', { count: r._count.tracks })}`
                               : ''}
-                            {r.pinnedAt ? ', pinned to profile' : ''}
+                            {r.pinnedAt
+                              ? `, ${t('studioReleases.pinnedToProfile')}`
+                              : ''}
                             {' · '}
                             <code className="text-foreground-secondary">
                               /r/{r.smartLinkSlug}
@@ -325,16 +327,20 @@ export function StudioReleasesView() {
                           to="/studio/releases/$id"
                           params={{ id: r.id }}
                           search={{ edit: true }}
-                          label={`Edit ${r.title}`}
+                          label={t('studioReleases.editItem', {
+                            title: r.title,
+                          })}
                         />
-                        <Tooltip content="Stats" side="top">
+                        <Tooltip content={t('studioReleases.stats')} side="top">
                           <ButtonLink
                             to="/studio/releases/$id"
                             params={{ id: r.id }}
                             search={{ tab: 'stats' }}
                             size="icon-sm"
                             variant="text"
-                            aria-label={`Stats for ${r.title}`}
+                            aria-label={t('studioReleases.statsFor', {
+                              title: r.title,
+                            })}
                           >
                             <BarChart3Icon size={16} aria-hidden />
                           </ButtonLink>
@@ -343,27 +349,44 @@ export function StudioReleasesView() {
                           text={`${window.location.origin}/r/${r.smartLinkSlug}`}
                           size="icon-sm"
                           variant="text"
-                          aria-label={`Copy smartlink for ${r.title}`}
+                          aria-label={t('studioReleases.copySmartlink', {
+                            title: r.title,
+                          })}
                         />
                         {r.smartLinkTargets?.bandcamp ? (
-                          <Tooltip content="Open on Bandcamp" side="top">
+                          <Tooltip
+                            content={t('studioReleases.openBandcamp')}
+                            side="top"
+                          >
                             <ExternalLink
                               href={r.smartLinkTargets.bandcamp}
                               className="border-border size-8 justify-center overflow-hidden rounded border no-underline"
-                              aria-label={`Open ${r.title} on Bandcamp`}
+                              aria-label={t('studioReleases.openBandcampItem', {
+                                title: r.title,
+                              })}
                             >
                               <SourceServiceIcon id="bandcamp" size="detail" />
                             </ExternalLink>
                           </Tooltip>
                         ) : null}
                         <Tooltip
-                          content={openMoreId === r.id ? 'Less' : 'More'}
+                          content={
+                            openMoreId === r.id
+                              ? t('actions.less')
+                              : t('actions.more')
+                          }
                           side="top"
                         >
                           <Button
                             size="icon-sm"
                             variant="text"
-                            aria-label={`${openMoreId === r.id ? 'Less' : 'More'} for ${r.title}`}
+                            aria-label={t('studioReleases.moreFor', {
+                              action:
+                                openMoreId === r.id
+                                  ? t('actions.less')
+                                  : t('actions.more'),
+                              title: r.title,
+                            })}
                             onClick={() =>
                               setOpenMoreId((id) => (id === r.id ? null : r.id))
                             }
@@ -383,7 +406,10 @@ export function StudioReleasesView() {
                                 )
                               }
                             />
-                            <Tooltip content="Public link" side="top">
+                            <Tooltip
+                              content={t('studioReleases.publicLink')}
+                              side="top"
+                            >
                               <ButtonLink
                                 to="/r/$slug"
                                 params={{ slug: r.smartLinkSlug }}
@@ -394,7 +420,10 @@ export function StudioReleasesView() {
                                 <ExternalLinkIcon size={16} aria-hidden />
                               </ButtonLink>
                             </Tooltip>
-                            <Tooltip content="Distribution" side="top">
+                            <Tooltip
+                              content={t('studioReleases.distribution')}
+                              side="top"
+                            >
                               <ButtonLink
                                 to="/studio/distribution"
                                 size="icon-sm"

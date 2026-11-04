@@ -319,13 +319,18 @@ export const StashFilesPanel = ({
                     </div>
                   </div>
                   <div className="flex gap-1">
-                    <Tooltip content="Share access" side="top">
+                    <Tooltip
+                      content={i18n.t('web:actions.shareWith')}
+                      side="top"
+                    >
                       <Button
                         size="icon-sm"
                         variant={
                           sharingFileId === file.id ? 'secondary' : 'text'
                         }
-                        aria-label={`Share ${file.filename}`}
+                        aria-label={i18n.t('web:actions.shareItem', {
+                          title: file.filename,
+                        })}
                         aria-pressed={sharingFileId === file.id}
                         onClick={() =>
                           setSharingFileId((current) =>
@@ -336,7 +341,7 @@ export const StashFilesPanel = ({
                         <Share2Icon size={16} />
                       </Button>
                     </Tooltip>
-                    <Tooltip content="Play" side="top">
+                    <Tooltip content={i18n.t('web:actions.play')} side="top">
                       <Button
                         size="icon-sm"
                         variant="text"

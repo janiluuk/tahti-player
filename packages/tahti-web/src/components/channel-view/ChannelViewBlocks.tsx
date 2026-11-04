@@ -240,11 +240,15 @@ export function renderChannelBlock(
             className="text-foreground-secondary shrink-0 opacity-70"
           />
           <div className="min-w-0 flex-1">
-            <div className="text-sm font-bold tracking-tight">Navigation</div>
+            <div className="text-sm font-bold tracking-tight">
+              {i18n.t('web:channelBlocks.navigation')}
+            </div>
             <p className="text-foreground-secondary text-xs">
               {navTabCount >= 2
-                ? `${navTabCount} tabs shown under the player.`
-                : 'Off — add a second tab to show the bar under the player.'}
+                ? i18n.t('web:channelBlocks.navigationTabs', {
+                    count: navTabCount,
+                  })
+                : i18n.t('web:channelBlocks.navigationOff')}
             </p>
           </div>
         </section>
@@ -266,13 +270,15 @@ export function renderChannelBlock(
         <section
           className={`px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
         >
-          <h2 className="text-sm font-bold tracking-tight">Links</h2>
+          <h2 className="text-sm font-bold tracking-tight">
+            {i18n.t('web:channelBlocks.links')}
+          </h2>
           {links.length === 0 ? (
             <PageEmpty
               title={
                 editing
-                  ? 'Add links in the side panel to show them here.'
-                  : 'No links yet.'
+                  ? i18n.t('web:channelBlocks.linksEmptyEditing')
+                  : i18n.t('web:channelBlocks.linksEmpty')
               }
             />
           ) : (

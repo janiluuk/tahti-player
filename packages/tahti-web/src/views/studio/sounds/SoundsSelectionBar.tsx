@@ -14,7 +14,6 @@ import { AddToPlaylistPanel } from '../../../components/AddToPlaylistPanel';
 import { AddToReleasePanel } from '../../../components/AddToReleasePanel';
 import type { StudioSoundsState } from './useStudioSoundsState';
 
-/** Bulk actions over the checked Sounds rows; hidden until one is checked. */
 export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
   const { t } = useTranslation('web');
   const {
@@ -52,8 +51,8 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
       className="border-border bg-background-secondary mb-3 flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 text-sm"
     >
       <span className="font-medium">
-        {selectedIds.size === 1 ? '1 selected' : `${selectedIds.size} selected`}
-        {matching ? ` (all ${total})` : ''}
+        {t('library.soundsSelectedCount', { count: selectedIds.size })}
+        {matching ? ` ${t('library.soundsSelectedAll', { total })}` : ''}
       </span>
       {!matching ? (
         <Button
@@ -63,10 +62,10 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
           onClick={() => void selectAllMatching()}
         >
           {selectingAll
-            ? 'Selecting…'
+            ? t('library.soundsSelecting')
             : allShownSelected && total > filtered.length
-              ? `Select all ${total} matching`
-              : `Select all ${filtered.length} shown`}
+              ? t('library.soundsSelectAllMatching', { total })
+              : t('library.soundsSelectAllShown', { count: filtered.length })}
         </Button>
       ) : null}
       <div className="ml-auto flex flex-wrap items-center gap-2">
@@ -78,7 +77,7 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
           onClick={() => setBulkEditOpen(true)}
         >
           <PencilIcon size={15} aria-hidden />
-          Edit
+          {t('actions.edit')}
         </Button>
         <Button
           size="sm"
@@ -88,7 +87,7 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
           onClick={() => setReleaseOpen(true)}
         >
           <Disc3Icon size={15} aria-hidden />
-          Add to release
+          {t('library.soundsAddToRelease')}
         </Button>
         <Button
           size="sm"
@@ -97,7 +96,7 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
           onClick={() => setPlaylistOpen(true)}
         >
           <ListPlusIcon size={15} aria-hidden />
-          Add to playlist
+          {t('library.soundsAddToPlaylist')}
         </Button>
         <Button
           size="sm"
@@ -107,7 +106,7 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
           onClick={() => setPendingBulkDelete(true)}
         >
           <Trash2Icon size={15} aria-hidden />
-          Delete
+          {t('actions.delete')}
         </Button>
         <Button
           size="sm"
@@ -117,7 +116,7 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
           onClick={clearSelection}
         >
           <XIcon size={15} aria-hidden />
-          Clear
+          {t('actions.clear')}
         </Button>
       </div>
       <AddToReleasePanel

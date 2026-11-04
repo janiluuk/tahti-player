@@ -109,9 +109,9 @@ export function TrackDetailView({
         >
           <Dialog.Title>{translate('trackDetail.nameYourPrice')}</Dialog.Title>
           <Dialog.Description>
-            The artist set €
-            {((detail?.purchaseTierPriceCents ?? 0) / 100).toFixed(2)} as a
-            suggestion — pay that, more, or less (down to €0).
+            {translate('trackDetail.pwywDescription', {
+              amount: ((detail?.purchaseTierPriceCents ?? 0) / 100).toFixed(2),
+            })}
           </Dialog.Description>
           <div className="mt-4">
             <Input
@@ -125,7 +125,9 @@ export function TrackDetailView({
           <Dialog.Actions>
             <Dialog.Close>{translate('actions.cancel')}</Dialog.Close>
             <Button type="submit" disabled={buyBusy}>
-              {buyBusy ? 'Buying…' : 'Buy this track'}
+              {buyBusy
+                ? translate('trackDetail.buying')
+                : translate('trackDetail.buy')}
             </Button>
           </Dialog.Actions>
         </form>

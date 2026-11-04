@@ -29,7 +29,6 @@ const GENRE_OPTIONS = [
 
 type VisibilityChoice = '' | 'public' | 'private';
 
-/** Apply shared metadata to every checked sound. */
 export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
   const { t } = useTranslation('web');
   const { bulkEditOpen, setBulkEditOpen, selectedIds, applyBulkEdit } = state;
@@ -38,6 +37,7 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
   const [contentType, setContentType] = useState<ContentTypeId | ''>('');
   const [visibility, setVisibility] = useState<VisibilityChoice>('');
   const count = selectedIds.size;
+  const leaveUnchanged = t('library.soundsBulkLeaveUnchanged');
 
   const close = () => {
     setBulkEditOpen(false);
@@ -77,28 +77,26 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
 
   return (
     <Dialog.Root isOpen={bulkEditOpen} onClose={close} className="max-w-md">
-      <Dialog.Title>
-        Edit {count === 1 ? '1 sound' : `${count} sounds`}
-      </Dialog.Title>
+      <Dialog.Title>{t('library.soundsBulkEditTitle', { count })}</Dialog.Title>
       <Dialog.Description>
-        Only the fields you change are written. Titles stay as they are.
+        {t('library.soundsBulkEditDescription')}
       </Dialog.Description>
       <div className="mt-4 flex flex-col gap-4">
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-genre-label">Genre</span>
+          <span id="bulk-genre-label">{t('library.soundsBulkGenre')}</span>
           <Select
             id="bulk-genre"
             aria-labelledby="bulk-genre-label"
             value={genre}
             onValueChange={setGenre}
             options={[
-              { id: '', label: 'Leave unchanged' },
+              { id: '', label: leaveUnchanged },
               ...GENRE_OPTIONS.map((value) => ({ id: value, label: value })),
             ]}
           />
         </div>
         <label className="flex flex-col gap-1.5 text-sm" htmlFor="bulk-tags">
-          Tags
+          {t('library.soundsBulkTags')}
           <Input
             id="bulk-tags"
             name="bulk-tags"
@@ -107,11 +105,13 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
             placeholder={t('library.soundsBulkTagsPlaceholder')}
           />
           <span className="text-foreground-secondary text-xs">
-            Comma-separated. Replaces tags on every selected sound.
+            {t('library.soundsBulkTagsHint')}
           </span>
         </label>
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-content-type-label">Type</span>
+          <span id="bulk-content-type-label">
+            {t('library.soundsBulkType')}
+          </span>
           <Select
             id="bulk-content-type"
             aria-labelledby="bulk-content-type-label"
@@ -120,7 +120,7 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
               setContentType(value as ContentTypeId | '')
             }
             options={[
-              { id: '', label: 'Leave unchanged' },
+              { id: '', label: leaveUnchanged },
               ...SELECTABLE_CONTENT_TYPES.map((type) => ({
                 id: type.id,
                 label: type.label,
@@ -129,26 +129,28 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
           />
         </div>
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-visibility-label">Visibility</span>
+          <span id="bulk-visibility-label">
+            {t('library.soundsBulkVisibility')}
+          </span>
           <Select
             id="bulk-visibility"
             aria-labelledby="bulk-visibility-label"
             value={visibility}
             onValueChange={(value) => setVisibility(value as VisibilityChoice)}
             options={[
-              { id: '', label: 'Leave unchanged' },
-              { id: 'public', label: 'Public' },
-              { id: 'private', label: 'Private' },
+              { id: '', label: leaveUnchanged },
+              { id: 'public', label: t('library.soundsBulkPublic') },
+              { id: 'private', label: t('library.soundsBulkPrivate') },
             ]}
           />
         </div>
       </div>
       <Dialog.Actions>
         <Button type="button" variant="secondary" onClick={close}>
-          Cancel
+          {t('actions.cancel')}
         </Button>
         <Button type="button" onClick={apply}>
-          Apply
+          {t('actions.apply')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

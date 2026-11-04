@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   InlineError,
@@ -16,17 +17,27 @@ import {
   mentionerName,
   mentionSourcePath,
   mentionSourceTitle,
-  mentionSurfaceLabel,
   patchMentionSettings,
   setMentionMute,
   type Mention,
   type MentionSettings,
+  type MentionSurface,
 } from '../../../api/me-mentions';
 import { PageEmpty, PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { humanizePastDate } from '../../../lib/humanizeDate';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsToggle } from '../SettingsFields';
+
+const SURFACE_KEYS: Record<MentionSurface, string> = {
+  BIO: 'settingsBody.account.mentionSurfaceBio',
+  RELEASE: 'settingsBody.account.mentionSurfaceRelease',
+  ANNOUNCEMENT: 'settingsBody.account.mentionSurfaceAnnouncement',
+  NEWSLETTER: 'settingsBody.account.mentionSurfaceNewsletter',
+  TRACKLIST: 'settingsBody.account.mentionSurfaceTracklist',
+  CHAT: 'settingsBody.account.mentionSurfaceChat',
+  DISCUSSION: 'settingsBody.account.mentionSurfaceDiscussion',
+};
 
 function MentionSource({
   mention,
@@ -35,19 +46,23 @@ function MentionSource({
   mention: Mention;
   onOpen: () => void;
 }) {
-  const label = mentionSurfaceLabel(mention.surface);
+  const { t } = useTranslation('web');
+  const surfaceKey =
+    SURFACE_KEYS[mention.surface as MentionSurface] ??
+    'settingsBody.account.mentionSurfacePost';
+  const label = t(surfaceKey as 'settingsBody.account.mentionSurfacePost');
   const path = mentionSourcePath(mention);
   const title = mentionSourceTitle(mention);
   if (!path) {
     return (
       <span className="text-foreground-secondary">
-        mentioned you in {label}
+        {t('settingsBody.account.mentionsYouIn')} {label}
       </span>
     );
   }
   return (
     <span className="text-foreground-secondary">
-      mentioned you in{' '}
+      {t('settingsBody.account.mentionsYouIn')}{' '}
       <Link
         to={path as never}
         onClick={onOpen}
@@ -60,6 +75,7 @@ function MentionSource({
 }
 
 export function MentionsPanel() {
+  const { t } = useTranslation('web');
   const closeSettings = useSettingsModalStore((state) => state.close);
   const [settings, setSettings] = useState<MentionSettings | null>(null);
   const [mentions, setMentions] = useState<Mention[] | null>(null);
@@ -89,7 +105,7 @@ export function MentionsPanel() {
   if (error) {
     return (
       <PageError
-        title="Could not load your mention settings"
+        title={t('settingsBody.account.mentionsSettingsLoadError')}
         description={error}
         onRetry={() => {
           setError(null);
@@ -99,7 +115,7 @@ export function MentionsPanel() {
     );
   }
   if (!settings || !mentions) {
-    return <InlineLoader label="Loading…" />;
+    return <InlineLoader label={t('settingsBody.loading')} />;
   }
 
   const toggle = (
@@ -114,7 +130,7 @@ export function MentionsPanel() {
         toast.error(result.error);
         return;
       }
-      toast.success('Mention setting saved.');
+      toast.success(t('settingsBody.account.mentionsSaved'));
     });
   };
 
@@ -137,32 +153,32 @@ export function MentionsPanel() {
   return (
     <div className="flex flex-col gap-4">
       <StudioPanel
-        title="Mentions"
-        description="When another artist tags you as @username in a bio, release, announcement, newsletter, tracklist or chat."
+        title={t('settingsBody.account.mentionsTitle')}
+        description={t('settingsBody.account.mentionsDescription')}
       >
         <div className="flex flex-col gap-3">
           <SettingsToggle
-            label="Let artists mention me"
+            label={t('settingsBody.account.mentionsEnabled')}
             value={settings.mentionsEnabled}
             onChange={(value) => toggle('mentionsEnabled', value)}
           />
           <SettingsToggle
-            label="Show mentions on my public profile"
+            label={t('settingsBody.account.mentionsPublic')}
             value={settings.publicMentionsEnabled}
             onChange={(value) => toggle('publicMentionsEnabled', value)}
           />
         </div>
       </StudioPanel>
 
-      <StudioPanel title="Recent mentions">
+      <StudioPanel title={t('settingsBody.account.mentionsRecent')}>
         {mentionsError ? (
           <PageError
-            title="Could not load your mentions"
+            title={t('settingsBody.account.mentionsLoadError')}
             description={mentionsError}
             onRetry={load}
           />
         ) : mentions.length === 0 ? (
-          <PageEmpty title="Nobody has mentioned you yet" />
+          <PageEmpty title={t('settingsBody.account.mentionsEmpty')} />
         ) : (
           <ul className="divide-border divide-y">
             {mentions.map((mention) => (
@@ -201,7 +217,7 @@ export function MentionsPanel() {
                   }
                   onClick={() => mute(mention.mentioner.username, true)}
                 >
-                  Mute
+                  {t('settingsBody.account.mentionsMute')}
                 </Button>
               </li>
             ))}
@@ -210,8 +226,8 @@ export function MentionsPanel() {
       </StudioPanel>
 
       <StudioPanel
-        title="Muted"
-        description="Mentions from these people don't reach you."
+        title={t('settingsBody.account.mentionsMutedTitle')}
+        description={t('settingsBody.account.mentionsMutedDescription')}
       >
         {settings.muted.length > 0 ? (
           <ul className="divide-border divide-y">
@@ -234,7 +250,7 @@ export function MentionsPanel() {
                   disabled={busy}
                   onClick={() => mute(item.username, false)}
                 >
-                  Unmute
+                  {t('settingsBody.account.mentionsUnmute')}
                 </Button>
               </li>
             ))}
@@ -251,8 +267,8 @@ export function MentionsPanel() {
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            label="Mute a username"
-            placeholder="@username"
+            label={t('settingsBody.account.mentionsMuteUsername')}
+            placeholder={t('settingsBody.account.mentionsMutePlaceholder')}
             value={handle}
             onChange={(event) => setHandle(event.target.value)}
             className="max-w-xs"
@@ -263,7 +279,7 @@ export function MentionsPanel() {
             variant="secondary"
             disabled={busy || !handle.trim()}
           >
-            Mute
+            {t('settingsBody.account.mentionsMute')}
           </Button>
         </form>
         {muteError ? (

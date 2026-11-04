@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Box, Button, InlineError, Input } from '@tahti-player/ui';
 
 import { fetchResetPasswordInfo } from '../api/client';
@@ -15,9 +16,8 @@ function tokenFromSearch(): string {
   return new URLSearchParams(window.location.search).get('token') ?? '';
 }
 
-/** Password-reset link (`/reset-password?token=`) — resolves the account,
- * then lets the user pick a new password and signs them straight in. */
 export function ResetPasswordView() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const resetPassword = useAuthStore((s) => s.resetPassword);
   const loading = useAuthStore((s) => s.loading);
@@ -36,7 +36,7 @@ export function ResetPasswordView() {
 
   useEffect(() => {
     if (!token) {
-      setInfoError('Missing reset link token.');
+      setInfoError(t('auth.resetMissingToken'));
       return;
     }
     void fetchResetPasswordInfo(token).then((r) => {
@@ -46,7 +46,7 @@ export function ResetPasswordView() {
         setInfoError(r.error);
       }
     });
-  }, [token]);
+  }, [token, t]);
 
   const mismatch = confirm.length > 0 && password !== confirm;
   const problem = password.length > 0 ? passwordProblem(password) : null;
@@ -71,24 +71,27 @@ export function ResetPasswordView() {
     if (!done) {
       return;
     }
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       const hasChannel = Boolean(useAuthStore.getState().user?.channel);
       void navigate({ to: hasChannel ? '/studio' : '/feed' });
     }, 1200);
-    return () => clearTimeout(t);
+    return () => clearTimeout(timer);
   }, [done, navigate]);
 
   return (
     <div className="mx-auto flex max-w-md flex-col gap-6">
-      <PageBackLink to="/login" label="Log in" />
+      <PageBackLink to="/login" label={t('auth.logIn')} />
       <div>
         <h1 className="font-display text-3xl font-extrabold tracking-tight">
-          {done ? 'Password reset' : 'Choose a new password'}
+          {done ? t('auth.resetDoneTitle') : t('auth.resetTitle')}
         </h1>
         <p className="text-foreground-secondary mt-1 text-sm">
           {info
-            ? `Hi ${info.displayName}, set a new password for ${info.email}.`
-            : 'Open the reset link from your email, or one is already loaded below.'}
+            ? t('auth.resetGreeting', {
+                name: info.displayName,
+                email: info.email,
+              })
+            : t('auth.resetHint')}
         </p>
       </div>
 
@@ -97,24 +100,24 @@ export function ResetPasswordView() {
           variant="tertiary"
           className="h-auto w-auto flex-col gap-3 rounded-xl"
         >
-          <p className="text-sm">Signed in — taking you to your dashboard…</p>
+          <p className="text-sm">{t('auth.resetSignedIn')}</p>
         </Box>
       ) : infoError ? (
         <div className="flex flex-col gap-3">
           <InlineError>{infoError}</InlineError>
           <p className="text-foreground-secondary text-sm">
-            Request a new one from the{' '}
+            {t('auth.resetRequestNewPrefix')}{' '}
             <Link
               to="/forgot-password"
               className="underline-offset-2 hover:underline"
             >
-              password reset page
+              {t('auth.resetPasswordPage')}
             </Link>
-            , or{' '}
+            {t('auth.resetOr')}{' '}
             <Link to="/login" className="underline-offset-2 hover:underline">
-              log in
+              {t('auth.logIn').toLowerCase()}
             </Link>{' '}
-            if you remember your password.
+            {t('auth.resetIfRemember')}
           </p>
         </div>
       ) : (
@@ -126,7 +129,7 @@ export function ResetPasswordView() {
           }}
         >
           <Input
-            label="New password"
+            label={t('auth.resetNewPassword')}
             variant="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -136,16 +139,18 @@ export function ResetPasswordView() {
           />
           {problem && <InlineError>{problem}</InlineError>}
           <Input
-            label="Confirm new password"
+            label={t('auth.resetConfirmNewPassword')}
             variant="password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             autoComplete="new-password"
           />
-          {mismatch && <InlineError>Passwords don&apos;t match.</InlineError>}
+          {mismatch && (
+            <InlineError>{t('auth.passwordsDoNotMatch')}</InlineError>
+          )}
           {error && <InlineError>{error}</InlineError>}
           <Button disabled={!canSubmit} type="submit">
-            {loading ? 'Saving…' : 'Reset password & sign in'}
+            {loading ? t('auth.resetSaving') : t('auth.resetSubmit')}
           </Button>
         </form>
       )}

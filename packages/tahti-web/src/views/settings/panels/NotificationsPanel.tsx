@@ -92,7 +92,7 @@ export function NotificationsPanel() {
           />
         </div>
         <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
-          Tahti · @aurora_fi subscribed (€5/mo)
+          {t('settingsBody.account.notifySampleRevenue')}
         </p>
       </StudioPanel>
       {prefs.notifyStudioJobsInApp === undefined ? null : (
@@ -106,7 +106,7 @@ export function NotificationsPanel() {
             onChange={(value) => toggle('notifyStudioJobsInApp', value)}
           />
           <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
-            Tahti · Your edit of &ldquo;Night drive&rdquo; is ready
+            {t('settingsBody.account.notifySampleStudio')}
           </p>
         </StudioPanel>
       )}
@@ -120,7 +120,7 @@ export function NotificationsPanel() {
           onChange={(value) => toggle('notifyListenerActivityEmail', value)}
         />
         <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
-          Tahti · 3 new chat messages · 1 new comment
+          {t('settingsBody.account.notifySampleListener')}
         </p>
       </StudioPanel>
       <StudioPanel
@@ -133,7 +133,7 @@ export function NotificationsPanel() {
           onChange={(value) => toggle('notifyWeeklyRecapEmail', value)}
         />
         <p className="border-border bg-background mt-4 rounded-lg border px-3 py-2 text-xs">
-          Your week on Tahti · 1,247 plays · 89 downloads · €115.00 from fans
+          {t('settingsBody.account.notifySampleWeekly')}
         </p>
       </StudioPanel>
     </div>

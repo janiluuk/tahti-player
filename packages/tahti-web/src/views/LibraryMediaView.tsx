@@ -63,11 +63,15 @@ export function LibraryMediaView() {
     const hasImages = files.some((f) => !f.contentType.startsWith('video/'));
     const hasVideos = files.some((f) => f.contentType.startsWith('video/'));
     return [
-      { id: 'ALL', label: 'All' },
-      ...(hasImages ? [{ id: 'IMAGE', label: 'Images' }] : []),
-      ...(hasVideos ? [{ id: 'VIDEO', label: 'Videos' }] : []),
+      { id: 'ALL', label: t('library.mediaChipAll') },
+      ...(hasImages
+        ? [{ id: 'IMAGE', label: t('library.mediaChipImages') }]
+        : []),
+      ...(hasVideos
+        ? [{ id: 'VIDEO', label: t('library.mediaChipVideos') }]
+        : []),
     ];
-  }, [files]);
+  }, [files, t]);
 
   const visibleFiles = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -102,24 +106,24 @@ export function LibraryMediaView() {
 
   return (
     <StudioPanel
-      title="Media files"
-      description="Background images and videos stored in your Cloudflare R2 media library."
+      title={t('library.mediaTitle')}
+      description={t('library.mediaDescription')}
     >
       {loading ? (
-        <PageLoading label="Loading media…" />
+        <PageLoading label={t('library.mediaLoading')} />
       ) : loadError && files.length === 0 ? (
         <PageError
-          title="Could not load your media files"
+          title={t('library.mediaLoadError')}
           description={loadError}
           onRetry={() => void reload()}
         />
       ) : files.length === 0 ? (
         <PageEmpty
-          title="No media files yet"
-          description="Add background images or a video loop backdrop from Studio → Branding."
+          title={t('library.mediaEmptyTitle')}
+          description={t('library.mediaEmptyDescription')}
           action={
             <ButtonLink to="/studio/branding" size="sm" variant="secondary">
-              Open Branding
+              {t('library.mediaOpenBranding')}
             </ButtonLink>
           }
         />
@@ -128,28 +132,28 @@ export function LibraryMediaView() {
           <LibrarySectionToolbar
             query={query}
             onQueryChange={setQuery}
-            searchPlaceholder="Search media files…"
-            searchLabel="Search media files"
+            searchPlaceholder={t('library.mediaSearchPlaceholder')}
+            searchLabel={t('library.mediaSearchLabel')}
           >
             {kindChips.length > 2 ? (
               <FilterChips
                 items={kindChips}
                 selected={kindFilter}
                 onChange={setKindFilter}
-                aria-label="Filter media by type"
+                aria-label={t('library.mediaFilterAria')}
               />
             ) : null}
             {files.length > 1 ? (
               <LibrarySortSelect
                 value={sort}
                 onChange={setSort}
-                label="Sort media files"
+                label={t('library.mediaSortLabel')}
               />
             ) : null}
           </LibrarySectionToolbar>
           {visibleFiles.length === 0 ? (
             <LibraryFilteredEmpty
-              noun="media files"
+              noun={t('library.mediaNoun')}
               query={query}
               filtered={kindFilter !== 'ALL'}
               onClear={() => {
@@ -180,26 +184,35 @@ export function LibraryMediaView() {
                         )
                       }
                       title={file.filename}
-                      subtitle={`${isVideo ? 'Video' : 'Image'} · ${formatBytes(file.sizeBytes)}`}
+                      subtitle={`${isVideo ? t('library.mediaKindVideo') : t('library.mediaKindImage')} · ${formatBytes(file.sizeBytes)}`}
                       actions={
                         <>
-                          <Tooltip content="Open preview" side="top">
+                          <Tooltip
+                            content={t('library.mediaPreview')}
+                            side="top"
+                          >
                             <ExternalLink
                               href={file.url}
-                              aria-label={`Open ${file.filename}`}
+                              aria-label={t('library.mediaOpenAria', {
+                                name: file.filename,
+                              })}
                               className="text-foreground-secondary no-underline"
                             >
                               <PlayIcon size={16} aria-hidden />
                             </ExternalLink>
                           </Tooltip>
                           <Tooltip
-                            content={`Remove ${file.filename}`}
+                            content={t('library.mediaRemoveAria', {
+                              name: file.filename,
+                            })}
                             side="top"
                           >
                             <Button
                               size="icon-sm"
                               variant="text"
-                              aria-label={`Remove ${file.filename}`}
+                              aria-label={t('library.mediaRemoveAria', {
+                                name: file.filename,
+                              })}
                               onClick={() => setPendingRemove(file)}
                             >
                               <Trash2Icon
@@ -224,11 +237,11 @@ export function LibraryMediaView() {
         destructive
         title={
           pendingRemove
-            ? `Remove ${pendingRemove.filename} from your media files?`
-            : 'Remove media file?'
+            ? t('library.mediaRemoveNamed', { name: pendingRemove.filename })
+            : t('library.mediaRemoveTitle')
         }
-        description="The file is deleted from your media library."
-        confirmLabel="Remove"
+        description={t('library.mediaRemoveDescription')}
+        confirmLabel={t('actions.remove')}
         onCancel={() => setPendingRemove(null)}
         onConfirm={() => {
           const file = pendingRemove;
