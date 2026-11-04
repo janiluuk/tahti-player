@@ -14,6 +14,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -167,7 +168,7 @@ export function ReleaseSmartLinksPanel({
       return;
     }
     onTargetsSaved(cleaned);
-    toast.success('Smart-link targets saved.');
+    toast.success(i18n.t('web:toasts.smartLinksSaved'));
   };
 
   const moveTrack = async (trackId: string, targetId: string) => {
@@ -193,7 +194,7 @@ export function ReleaseSmartLinksPanel({
         next.map((track) => track.id),
       );
     } catch {
-      toast.error('Could not reorder the tracks.');
+      toast.error(i18n.t('web:toasts.couldNotReorderTracks'));
       return;
     } finally {
       setReordering(false);
@@ -221,7 +222,7 @@ export function ReleaseSmartLinksPanel({
       ...release,
       tracks: next.map((track, index) => ({ ...track, position: index + 1 })),
     });
-    toast.success('Track removed from release.');
+    toast.success(i18n.t('web:toasts.trackRemovedFromRelease'));
   };
 
   const addSound = async (item: StudioSound) => {

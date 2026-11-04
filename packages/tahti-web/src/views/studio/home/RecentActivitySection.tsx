@@ -2,6 +2,8 @@ import { Link } from '@tanstack/react-router';
 import { HeartHandshakeIcon, MusicIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import {
   fetchFanPayoutSummary,
   fetchRecentSounds,
@@ -36,6 +38,7 @@ const labelClass =
 /** Studio home: the newest uploads and this month's fan-subscription
  * income, as on the legacy dashboard. */
 export function RecentActivitySection() {
+  const { t } = useTranslation('web');
   const [sounds, setSounds] = useState<RecentSound[]>([]);
   const [incomeCents, setIncomeCents] = useState<number | null>(null);
   const [soundsError, setSoundsError] = useState<string | null>(null);
@@ -66,9 +69,9 @@ export function RecentActivitySection() {
 
   if (sounds.length === 0 && incomeCents == null) {
     return error ? (
-      <Group title="Recent activity">
+      <Group title={t('studioHub.recentActivity')}>
         <PageError
-          title="Could not load recent activity"
+          title={t('studioHub.recentActivityLoadError')}
           description={error}
           onRetry={retry}
         />
@@ -77,10 +80,10 @@ export function RecentActivitySection() {
   }
 
   return (
-    <Group title="Recent activity">
+    <Group title={t('studioHub.recentActivity')}>
       {error ? (
         <PageErrorBanner
-          title="Could not refresh recent activity"
+          title={t('studioHub.recentActivityRefreshError')}
           description={error}
           onRetry={retry}
         />

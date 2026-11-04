@@ -30,13 +30,6 @@ import { BroadcastRecordingToggles } from './BroadcastRecordingToggles';
 
 export type BroadcastSection = 'radio' | 'green-room' | 'multistream';
 
-const GREEN_ROOM_POOL_OPTIONS: SelectableTile[] = [
-  { id: 'MODERATORS_AND_SUBS', label: 'Moderators and fan subscribers' },
-  { id: 'SUBS_ONLY', label: 'Fan subscribers only' },
-  { id: 'EVERYONE', label: 'Everyone signed in' },
-  { id: 'MANUAL_ONLY', label: 'Only people I invite' },
-];
-
 export function BroadcastPanel({
   section,
 }: {
@@ -44,6 +37,24 @@ export function BroadcastPanel({
 } = {}) {
   const { t } = useTranslation('web');
   const closeSettings = useSettingsModalStore((s) => s.close);
+  const greenRoomPoolOptions: SelectableTile[] = [
+    {
+      id: 'MODERATORS_AND_SUBS',
+      label: t('settingsBody.broadcast.invitePoolModeratorsSubs'),
+    },
+    {
+      id: 'SUBS_ONLY',
+      label: t('settingsBody.broadcast.invitePoolSubsOnly'),
+    },
+    {
+      id: 'EVERYONE',
+      label: t('settingsBody.broadcast.invitePoolEveryone'),
+    },
+    {
+      id: 'MANUAL_ONLY',
+      label: t('settingsBody.broadcast.invitePoolManualOnly'),
+    },
+  ];
   const [programme, setProgramme] = useState<ProgrammeView | null>(null);
   const [green, setGreen] = useState<GreenRoomPrefs | null>(null);
   const [programmeError, setProgrammeError] = useState<string | null>(null);
@@ -111,7 +122,7 @@ export function BroadcastPanel({
   const items = [
     {
       id: 'radio',
-      label: 'Radio',
+      label: t('settingsBody.broadcast.radioTab'),
       icon: <RadioIcon size={14} />,
       content: !programme ? (
         programmeError ? (
@@ -156,7 +167,7 @@ export function BroadcastPanel({
     },
     {
       id: 'green-room',
-      label: 'Green room',
+      label: t('settingsBody.broadcast.greenRoomTab'),
       icon: <Mic size={14} />,
       content: !green ? (
         greenError ? (
@@ -184,7 +195,7 @@ export function BroadcastPanel({
             </span>
             <SelectableTiles
               aria-label={t('settingsBody.broadcast.whoInvited')}
-              items={GREEN_ROOM_POOL_OPTIONS}
+              items={greenRoomPoolOptions}
               selected={green.invitePool}
               onChange={(value) => {
                 saveGreenRoom({ invitePool: value as WireGreenRoomInvitePool });
@@ -203,14 +214,14 @@ export function BroadcastPanel({
             size="sm"
             variant="secondary"
           >
-            Open green room session
+            {t('settingsBody.broadcast.openGreenRoomSession')}
           </ButtonLink>
         </div>
       ),
     },
     {
       id: 'multistream',
-      label: 'Multistream',
+      label: t('settingsBody.broadcast.multistreamTab'),
       icon: <Cast size={14} />,
       content: (
         <div className="flex flex-col gap-6">
@@ -223,7 +234,7 @@ export function BroadcastPanel({
             size="sm"
             variant="secondary"
           >
-            Manage live destinations
+            {t('settingsBody.broadcast.manageLiveDestinations')}
           </ButtonLink>
         </div>
       ),

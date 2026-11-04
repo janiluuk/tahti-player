@@ -1,3 +1,7 @@
+import type { ParseKeys } from '@tahti-player/i18n';
+
+type WebKey = ParseKeys<'web'>;
+
 export type AdminModerationTabId =
   | 'support'
   | 'beta'
@@ -9,19 +13,19 @@ export type AdminModerationTabId =
 
 export type AdminModerationTabItem = {
   id: AdminModerationTabId;
-  label: string;
+  labelKey: WebKey;
 };
 
 /** One admin page, one tab per review queue — see AdminModerationView. Order
  * mirrors how often the board actually triages these day to day. */
 export const ADMIN_MODERATION_TABS: AdminModerationTabItem[] = [
-  { id: 'support', label: 'Support' },
-  { id: 'beta', label: 'Beta applications' },
-  { id: 'radio-submissions', label: 'Radio submissions' },
-  { id: 'content-reports', label: 'Content reports' },
-  { id: 'feature-requests', label: 'Feature requests' },
-  { id: 'missed-shows', label: 'Missed shows' },
-  { id: 'themes', label: 'Themes' },
+  { id: 'support', labelKey: 'adminModeration.support' },
+  { id: 'beta', labelKey: 'adminModeration.beta' },
+  { id: 'radio-submissions', labelKey: 'adminModeration.radioSubmissions' },
+  { id: 'content-reports', labelKey: 'adminModeration.contentReports' },
+  { id: 'feature-requests', labelKey: 'adminModeration.featureRequests' },
+  { id: 'missed-shows', labelKey: 'adminModeration.missedShows' },
+  { id: 'themes', labelKey: 'adminModeration.themes' },
 ];
 
 export const DEFAULT_ADMIN_MODERATION_TAB: AdminModerationTabId = 'support';

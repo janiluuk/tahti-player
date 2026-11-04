@@ -1,6 +1,7 @@
 import { ScrollTextIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Box,
@@ -22,6 +23,7 @@ import {
 import { isPlausiblePublicName } from '../lib/publicDisplayName';
 
 export function PublicGovernanceHistoryView() {
+  const { t } = useTranslation('web');
   const [motions, setMotions] = useState<PublicGovernanceMotion[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -57,14 +59,17 @@ export function PublicGovernanceHistoryView() {
       </ButtonLink>
 
       {!loading && motions.length > 0 && (
-        <StatChip value={motions.length} label="Closed motions" />
+        <StatChip
+          value={motions.length}
+          label={t('governancePublic.closedMotions')}
+        />
       )}
 
       {loading ? (
-        <PageLoading label="Loading governance history…" />
+        <PageLoading label={t('governancePublic.historyLoading')} />
       ) : loadError && motions.length === 0 ? (
         <PageError
-          title="Could not load governance history"
+          title={t('governancePublic.historyLoadError')}
           description={loadError}
           onRetry={() => {
             setLoading(true);
@@ -72,12 +77,12 @@ export function PublicGovernanceHistoryView() {
           }}
         />
       ) : motions.length === 0 ? (
-        <PageEmpty title="No closed advisory motions have been published yet." />
+        <PageEmpty title={t('governancePublic.noClosedMotions')} />
       ) : (
         <div className="flex flex-col gap-4">
           {loadError ? (
             <PageErrorBanner
-              title="Could not refresh governance history"
+              title={t('governancePublic.historyRefreshError')}
               description={loadError}
               onRetry={() => {
                 setLoading(true);
@@ -104,7 +109,7 @@ export function PublicGovernanceHistoryView() {
                   </p>
                 </div>
                 <Badge variant="pill" color="secondary">
-                  Closed
+                  {t('governancePublic.closed')}
                 </Badge>
               </div>
               <p className="text-sm">{motion.description}</p>

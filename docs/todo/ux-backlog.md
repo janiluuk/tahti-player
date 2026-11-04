@@ -48,6 +48,7 @@ new surface, one PR per row. After moving files, update `docs/VIEW-CATALOG.md`.
     Mixcloud, Google Drive) now confirm Disconnect in red; the plugin-store
     multicast destination remove was already red. A sweep of every
     `ConfirmDialog` found none left without `destructive` except deliberate
+    (batch 35 also marked `OrganizeFilesDialog` move as destructive).
     primaries (Rename, Publish, Submit, Go live, Circulate, Move files,
     Restart bot).
   - Left: none known. Publish / Go live / Send newsletter / Rename stay green

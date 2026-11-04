@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -73,6 +74,7 @@ const MODERATION_TAB_ICONS: Record<AdminModerationTabId, typeof UsersIcon> = {
  * Headless UI's Tabs unmount inactive panels by default, so switching tabs
  * here re-fetches that queue rather than loading all six up front. */
 export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [pendingCount, setPendingCount] = useState<number>();
   const [queueCounts, setQueueCounts] = useState<
@@ -103,18 +105,23 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
         >
           <div className="flex max-w-5xl flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
-              <BreadcrumbCurrent>Inbox</BreadcrumbCurrent>
+              <BreadcrumbLink to="/admin">
+                {t('adminModeration.admin')}
+              </BreadcrumbLink>
+              <BreadcrumbCurrent>
+                {t('adminModeration.inbox')}
+              </BreadcrumbCurrent>
             </Breadcrumbs>
             <FilterChips
-              aria-label="Inbox queues"
+              aria-label={t('adminModeration.queuesAria')}
               data-testid="inbox-queues"
               items={ADMIN_MODERATION_TABS.map((item) => {
                 const Icon = MODERATION_TAB_ICONS[item.id];
                 const count = queueCounts[item.id];
+                const label = t(item.labelKey);
                 return {
                   id: item.id,
-                  label: count ? `${item.label} (${count})` : item.label,
+                  label: count ? `${label} (${count})` : label,
                   icon: <Icon size={14} aria-hidden />,
                 };
               })}
@@ -128,7 +135,7 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
               }}
             />
             <ViewShell
-              title="Inbox"
+              title={t('adminModeration.inbox')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {tabContent(active)}

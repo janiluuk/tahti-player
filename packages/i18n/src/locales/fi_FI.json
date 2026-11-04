@@ -771,7 +771,21 @@
       "shareItem": "Jaa {{title}}",
       "backTo": "Takaisin: {{name}}",
       "showMore": "Näytä lisää",
-      "editItem": "Muokkaa: {{title}}"
+      "editItem": "Muokkaa: {{title}}",
+      "playAll": "Toista kaikki",
+      "addAllToQueue": "Lisää kaikki jonoon",
+      "startJam": "Aloita jam"
+    },
+    "artistProfile": {
+      "joined": "Liittynyt {{month}}"
+    },
+    "channelRename": {
+      "renamed": "Uusi nimi: {{slug}}.",
+      "streamKeyChanged": "Stream-avaimesi vaihtui — kopioi uusi avain Mene liveen -näkymästä OBS:iin tai enkooderiin ennen seuraavaa lähetystä.",
+      "redirectUntil": "Vanha osoitteesi ohjaa tänne {{date}} asti."
+    },
+    "fanSubscription": {
+      "endsOn": "Päättyy {{date}}"
     },
     "search": {
       "placeholder": "Hae artisteja, kappaleita, soittolistoja…",
@@ -1039,6 +1053,10 @@
       "emptyReleases": "Julkaisuja ei ole vielä julkaistu.",
       "emptyGenres": "Näissä tyylilajeissa ei vielä ole kappaleita.",
       "emptyDefault": "Täällä ei ole vielä mitään.",
+      "communityStories": "Yhteisön tarinat",
+      "emptyStories": "Ei tarinoita vielä. Artistien julkaisut näkyvät täällä.",
+      "storiesLoading": "Ladataan tarinoita…",
+      "storiesLoadError": "Yhteisön tarinoita ei voitu ladata",
       "widgets": {
         "thisWeekMostPlayed": "Tällä viikolla: eniten soitetut",
         "thisWeekLeastPlayed": "Tällä viikolla: vähiten soitetut",
@@ -1289,7 +1307,98 @@
     "toasts": {
       "processingFailed": "Käsittely epäonnistui",
       "processingFailedReason": "Käsittely epäonnistui: {{reason}}",
-      "viewSound": "Näytä ääni"
+      "viewSound": "Näytä ääni",
+      "deletedSound": "Poistettu “{{title}}”.",
+      "couldNotDeleteTrack": "Kappaletta ei voitu poistaa.",
+      "deletedSounds_one": "Poistettu 1 ääni.",
+      "deletedSounds_other": "Poistettu {{count}} ääntä.",
+      "updatedSounds_one": "Päivitetty 1 ääni.",
+      "updatedSounds_other": "Päivitetty {{count}} ääntä.",
+      "soundsSelected_one": "1 ääni valittu",
+      "soundsSelected_other": "{{count}} ääntä valittu",
+      "couldNotLoadMusic": "Musiikkia ei voitu ladata.",
+      "releaseDeleted": "Julkaisu poistettu.",
+      "releaseSaved": "Tallennettu.",
+      "couldNotSaveRelease": "Julkaisua ei voitu tallentaa.",
+      "couldNotPublishRelease": "Julkaisua ei voitu julkaista.",
+      "artworkRemoved": "Kansikuva poistettu.",
+      "artworkUploaded": "Kansikuva ladattu.",
+      "artworkSaved": "Kansikuva tallennettu.",
+      "smartLinksSaved": "Älylinkkien kohteet tallennettu.",
+      "trackRemovedFromRelease": "Kappale poistettu julkaisusta.",
+      "couldNotReorderTracks": "Kappaleita ei voitu järjestää uudelleen.",
+      "releaseCreatedVisualizerFailed": "Julkaisu luotiin, mutta sen visualisointia ei voitu tallentaa."
+    },
+    "settingsLogs": {
+      "noLogs": "Ei lokimerkintöjä vielä. Tämän välilehden varoitukset, virheet ja soittimen tapahtumat näkyvät täällä.",
+      "alert": "Nämä ovat vain tämän selainvälilehden asiakaslokit. Tuotannon konttilokit ja Grafana-mittarit löytyvät Administa.",
+      "containerLogs": "Konttilokit",
+      "monitoringHub": "Valvontakeskus",
+      "clear": "Tyhjennä",
+      "export": "Vie"
+    },
+    "studioHub": {
+      "emptyDiscographyTitle": "Diskografiassasi ei ole vielä mitään",
+      "emptyDiscographyDescription": "Lisää albumi tai kappale aloittaaksesi.",
+      "addAlbum": "Lisää albumi",
+      "addTrack": "Lisää kappale",
+      "governance": "Hallinto",
+      "governanceLoadError": "Hallintoa ei voitu ladata",
+      "governanceEmptyVotes": "Ei äänestyksiä odottamassa.",
+      "governanceEmptyDiscussions": "Ei ratkaisemattomia keskustelupäivityksiä.",
+      "recentActivity": "Viimeisin toiminta",
+      "recentActivityLoadError": "Viimeisintä toimintaa ei voitu ladata",
+      "recentActivityRefreshError": "Viimeisintä toimintaa ei voitu päivittää"
+    },
+    "adminModeration": {
+      "inbox": "Postilaatikko",
+      "queuesAria": "Postilaatikon jonot",
+      "admin": "Admin",
+      "support": "Tuki",
+      "beta": "Beta-hakemukset",
+      "radioSubmissions": "Radiolähetykset",
+      "contentReports": "Sisältöilmoitukset",
+      "featureRequests": "Ominaisuustoiveet",
+      "missedShows": "Myöhästyneet ohjelmat",
+      "themes": "Teemat"
+    },
+    "radioStation": {
+      "notFoundTitle": "Asemaa ei löytynyt",
+      "notFoundDescription": "Tätä radioasemaa ei ole Tahden asemanluettelossa.",
+      "backToRadio": "Takaisin radioon",
+      "onAir": "Lähetyksessä:",
+      "noNowPlaying": "Tämä asema ei kerro, mitä soi.",
+      "noStream": "Tälle asemalle ei ole vielä stream-osoitetta.",
+      "addToListen": "Lisää Kuuntele-näkymään",
+      "removeFromListen": "Poista Kuuntele-näkymästä",
+      "playing": "Soi",
+      "stationWebsite": "Aseman verkkosivu",
+      "programmeGuide": "Ohjelmaopas",
+      "controlsAria": "Aseman säätimet",
+      "otherStations": "Muut asemat"
+    },
+    "supportTickets": {
+      "yourRequests": "Pyyntösi",
+      "loadError": "Pyyntöjäsi ei voitu ladata",
+      "emptyTitle": "Ei tukipyyntöjä vielä",
+      "emptyDescription": "Kirjautuneena lähettämäsi pyynnöt ja vastauksemme näkyvät täällä.",
+      "noReply": "Ei vastausta vielä.",
+      "sent": "Lähetetty",
+      "markResolved": "Merkitse ratkaistuksi",
+      "loading": "Ladataan…"
+    },
+    "transparency": {
+      "noLedger": "Ei kirjausmerkintöjä vielä",
+      "ledgerLoadError": "Kirjanpitoa ei voitu ladata",
+      "latestLedger": "Viimeisimmät kirjaukset"
+    },
+    "governancePublic": {
+      "noClosedMotions": "Suljettuja neuvoa-antavia esityksiä ei ole vielä julkaistu.",
+      "historyLoadError": "Hallinnon historiaa ei voitu ladata",
+      "historyRefreshError": "Hallinnon historiaa ei voitu päivittää",
+      "historyLoading": "Ladataan hallinnon historiaa…",
+      "closed": "Suljettu",
+      "closedMotions": "Suljetut esitykset"
     },
     "settingsBody": {
       "loading": "Ladataan…",
@@ -1343,7 +1452,16 @@
         "greenRoomDefaultLabel": "Avaa green room, kun menen liveen",
         "greenRoomDefaultDescription": "Jokainen uusi lähetys alkaa green room auki ja kutsuu alla valitut henkilöt. Voit silti avata tai sulkea sen Mene liveen -näkymästä.",
         "whoInvited": "Ketä kutsutaan",
-        "invitedHint": "Kutsutut vieraat voivat kuunnella ennen kuin lähetys julkaistaan. Voit kutsua muita käyttäjätunnuksella Mene liveen -näkymästä."
+        "invitedHint": "Kutsutut vieraat voivat kuunnella ennen kuin lähetys julkaistaan. Voit kutsua muita käyttäjätunnuksella Mene liveen -näkymästä.",
+        "greenRoomTab": "Green room",
+        "multistreamTab": "Monilähetys",
+        "radioTab": "Radio",
+        "openGreenRoomSession": "Avaa green room -sessio",
+        "manageLiveDestinations": "Hallitse live-kohteita",
+        "invitePoolModeratorsSubs": "Moderaattorit ja fanitilaajat",
+        "invitePoolSubsOnly": "Vain fanitilaajat",
+        "invitePoolEveryone": "Kaikki kirjautuneet",
+        "invitePoolManualOnly": "Vain kutsumani henkilöt"
       },
       "artist": {
         "loadError": "Artistiprofiilia ei voitu ladata",

@@ -1,6 +1,9 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { apiBase } from '../api/client';
 import type { PublicProfile, TahtiPlayable } from '../api/types';
 import { playableFromStudioEmbed } from './embedPlayback';
+import { dateLocaleTag } from './locale';
 
 export const publicPressKitUrl = (username: string): string => {
   return `${apiBase()}/api/v1/u/${encodeURIComponent(username)}/press-kit.zip`;
@@ -42,11 +45,12 @@ export function artistJoinedLabel(
   if (Number.isNaN(joined.getTime())) {
     return null;
   }
-  return `Joined ${joined.toLocaleDateString(locale, {
+  const month = joined.toLocaleDateString(locale ?? dateLocaleTag(), {
     month: 'long',
     year: 'numeric',
     timeZone: 'UTC',
-  })}`;
+  });
+  return i18n.t('web:artistProfile.joined', { month });
 }
 
 /** Header subtitle: handle, then pronouns and join date when present. */

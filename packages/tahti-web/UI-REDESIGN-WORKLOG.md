@@ -1,3 +1,15 @@
+## 2026-11-04 - Batch 35 UX slices (0.0.325)
+
+Admin Catalog and Radio featured/history dates use `ListingDate`; Studio
+editor list Updated dates too. `channelRenameNote`, fan-sub "Ends on" and
+artist "Joined" go through i18n (+ `numericDate` for the rename redirect).
+Finnish for Settings Logs chrome, Studio hub empty/governance/recent titles,
+Admin Inbox tabs, Discover community stories empty, Radio station page,
+collection Play/queue/Jam actions, Broadcast green-room pool labels, support
+tickets chrome, transparency ledger empty, public governance history empty,
+and Studio sounds/releases toasts. `OrganizeFilesDialog` move confirm is red.
+`ListingDate` Storybook stories.
+
 ## 2026-11-04 - Studio Updates StoryCard + newsletter remove (0.0.324)
 
 Studio → Posts uses a StoryCard grid (preview/edit/delete under each card).

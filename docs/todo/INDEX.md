@@ -21,15 +21,12 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| partial | [batch-34-slices-2026-11-04.md](batch-34-slices-2026-11-04.md) | Batch of 30 (29 done): ListingDate leftovers (revisions, news, recordings, episodes), schedule windows in the app language, Integrations/Add-ons/What's new/History/Following/Admin hubs/channel actions/auth toasts Finnish |
+| partial | [batch-35-slices-2026-11-04.md](batch-35-slices-2026-11-04.md) | Batch of 30: remaining ListingDate leftovers, Finnish for Settings/Studio hub/Admin moderation/Discover/Radio/collection actions/green room/support/governance/toasts, polish + 0.0.325 |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
-| partial | [studio-updates-posts-storycard.md](studio-updates-posts-storycard.md) | Studio Updates as StoryCard posts, newsletter removed; draft #1809 unmerged |
-| partial | [batch-33-slices-2026-11-04.md](batch-33-slices-2026-11-04.md) | Batch of 30 (27 done): governance/admin ListingDate + numericDay, Library/Radio/Messages/player/Settings bodies Finnish, red OAuth disconnect, Library Media empty state |
 | partial | [library-management-port.md](library-management-port.md) | Port theDAW library management to Library Sounds: paged API client, facets/stats, bulk delete/edit |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
-| partial | [studio-updates-posts-storycard.md](studio-updates-posts-storycard.md) | Studio posts as StoryCard; DELETE newsletter draft client + ConfirmDialog + StoryCard grid |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Inbox chips, Overview merge, docs rewrite |
 | partial | [finnish-localization.md](finnish-localization.md) | Settings → Language (English/Suomi) plus Finnish for the chrome, player bar, Listen/Discover/Library headers and relative dates are done; left: shared buttons, Settings bodies, sub-pages, Studio/Admin, other date helpers |
 | partial | [date-format-sweep.md](date-format-sweep.md) | One date style: helpers, `ListingDate` and 15 listings done; about 70 one-off formats left (admin, governance, Studio, Library, ui tables) |

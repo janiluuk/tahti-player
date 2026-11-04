@@ -13,6 +13,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -127,7 +128,7 @@ export function StudioReleasesView() {
       resolveNewReleaseVisualizer(),
     );
     if (!visualResult.ok) {
-      toast.error('Release created, but its visualizer could not be saved.');
+      toast.error(i18n.t('web:toasts.releaseCreatedVisualizerFailed'));
     }
     const created = r.data;
     toastWithUndo(`Created ${created.title}.`, {

@@ -19,6 +19,7 @@ import {
   fetchStudioSounds,
 } from '../../api/studio';
 import type { EditorProjectRow, StudioSound } from '../../api/studio-types';
+import { ListingDate } from '../../components/ListingDate';
 import {
   PageEmpty,
   PageError,
@@ -251,9 +252,10 @@ export function StudioEditorListView() {
                   >
                     <div className="min-w-0 flex-1">
                       <p className="font-medium">{p.title}</p>
-                      <p className="text-foreground-secondary text-xs">
-                        Updated {new Date(p.updatedAt).toLocaleString()}
-                        {p.soundId ? ', linked sound' : ''}
+                      <p className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs">
+                        <span>Updated</span>
+                        <ListingDate value={p.updatedAt} />
+                        {p.soundId ? <span>, linked sound</span> : null}
                       </p>
                     </div>
                     <Tooltip content="Open session" side="top">

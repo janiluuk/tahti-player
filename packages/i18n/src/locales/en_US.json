@@ -771,7 +771,21 @@
       "shareItem": "Share {{title}}",
       "backTo": "Back to {{name}}",
       "showMore": "Show more",
-      "editItem": "Edit {{title}}"
+      "editItem": "Edit {{title}}",
+      "playAll": "Play all",
+      "addAllToQueue": "Add all to queue",
+      "startJam": "Start a Jam"
+    },
+    "artistProfile": {
+      "joined": "Joined {{month}}"
+    },
+    "channelRename": {
+      "renamed": "Renamed to {{slug}}.",
+      "streamKeyChanged": "Your stream key changed - copy the new key from Go live into OBS or your encoder before your next stream.",
+      "redirectUntil": "Your old address redirects here until {{date}}."
+    },
+    "fanSubscription": {
+      "endsOn": "Ends on {{date}}"
     },
     "search": {
       "placeholder": "Search artists, tracks, playlists…",
@@ -1039,6 +1053,10 @@
       "emptyReleases": "No releases published yet.",
       "emptyGenres": "No tracks in these genres yet.",
       "emptyDefault": "Nothing here yet.",
+      "communityStories": "Community stories",
+      "emptyStories": "No stories yet. Artists' posts will show up here.",
+      "storiesLoading": "Loading stories…",
+      "storiesLoadError": "Could not load community stories",
       "widgets": {
         "thisWeekMostPlayed": "This week: most played",
         "thisWeekLeastPlayed": "This week: least played",
@@ -1289,7 +1307,98 @@
     "toasts": {
       "processingFailed": "Processing failed",
       "processingFailedReason": "Processing failed: {{reason}}",
-      "viewSound": "View sound"
+      "viewSound": "View sound",
+      "deletedSound": "Deleted “{{title}}”.",
+      "couldNotDeleteTrack": "Could not delete the track.",
+      "deletedSounds_one": "Deleted 1 sound.",
+      "deletedSounds_other": "Deleted {{count}} sounds.",
+      "updatedSounds_one": "Updated 1 sound.",
+      "updatedSounds_other": "Updated {{count}} sounds.",
+      "soundsSelected_one": "1 sound selected",
+      "soundsSelected_other": "{{count}} sounds selected",
+      "couldNotLoadMusic": "Could not load your music.",
+      "releaseDeleted": "Release deleted.",
+      "releaseSaved": "Saved.",
+      "couldNotSaveRelease": "Could not save the release.",
+      "couldNotPublishRelease": "Could not publish the release.",
+      "artworkRemoved": "Artwork removed.",
+      "artworkUploaded": "Artwork uploaded.",
+      "artworkSaved": "Artwork saved.",
+      "smartLinksSaved": "Smart-link targets saved.",
+      "trackRemovedFromRelease": "Track removed from release.",
+      "couldNotReorderTracks": "Could not reorder the tracks.",
+      "releaseCreatedVisualizerFailed": "Release created, but its visualizer could not be saved."
+    },
+    "settingsLogs": {
+      "noLogs": "No log entries yet. Warnings, errors and player events from this tab show up here.",
+      "alert": "These are browser-tab client logs only. For production container logs and Grafana vitals, open Admin.",
+      "containerLogs": "Container logs",
+      "monitoringHub": "Monitoring hub",
+      "clear": "Clear",
+      "export": "Export"
+    },
+    "studioHub": {
+      "emptyDiscographyTitle": "Nothing in your discography yet",
+      "emptyDiscographyDescription": "Add an album or a track to start building it out.",
+      "addAlbum": "Add an album",
+      "addTrack": "Add a track",
+      "governance": "Governance",
+      "governanceLoadError": "Could not load governance",
+      "governanceEmptyVotes": "Nothing waiting for your vote.",
+      "governanceEmptyDiscussions": "No unresolved discussion updates.",
+      "recentActivity": "Recent activity",
+      "recentActivityLoadError": "Could not load recent activity",
+      "recentActivityRefreshError": "Could not refresh recent activity"
+    },
+    "adminModeration": {
+      "inbox": "Inbox",
+      "queuesAria": "Inbox queues",
+      "admin": "Admin",
+      "support": "Support",
+      "beta": "Beta applications",
+      "radioSubmissions": "Radio submissions",
+      "contentReports": "Content reports",
+      "featureRequests": "Feature requests",
+      "missedShows": "Missed shows",
+      "themes": "Themes"
+    },
+    "radioStation": {
+      "notFoundTitle": "Station not found",
+      "notFoundDescription": "This radio station isn't in the Tahti station list.",
+      "backToRadio": "Back to radio",
+      "onAir": "On air:",
+      "noNowPlaying": "This station doesn’t say what’s playing.",
+      "noStream": "No stream address for this station yet.",
+      "addToListen": "Add to Listen",
+      "removeFromListen": "Remove from Listen",
+      "playing": "Playing",
+      "stationWebsite": "Station website",
+      "programmeGuide": "Programme guide",
+      "controlsAria": "Station controls",
+      "otherStations": "Other stations"
+    },
+    "supportTickets": {
+      "yourRequests": "Your requests",
+      "loadError": "Could not load your requests",
+      "emptyTitle": "No support requests yet",
+      "emptyDescription": "Requests you send below while signed in, and our replies, appear here.",
+      "noReply": "No reply yet.",
+      "sent": "Sent",
+      "markResolved": "Mark resolved",
+      "loading": "Loading…"
+    },
+    "transparency": {
+      "noLedger": "No ledger entries yet",
+      "ledgerLoadError": "Could not load the ledger",
+      "latestLedger": "Latest ledger"
+    },
+    "governancePublic": {
+      "noClosedMotions": "No closed advisory motions have been published yet.",
+      "historyLoadError": "Could not load governance history",
+      "historyRefreshError": "Could not refresh governance history",
+      "historyLoading": "Loading governance history…",
+      "closed": "Closed",
+      "closedMotions": "Closed motions"
     },
     "settingsBody": {
       "loading": "Loading…",
@@ -1343,7 +1452,16 @@
         "greenRoomDefaultLabel": "Open the green room when I go live",
         "greenRoomDefaultDescription": "Each new broadcast starts with its green room open, and invites the people below. You can still open or close it from Go Live.",
         "whoInvited": "Who gets invited",
-        "invitedHint": "Invited guests can listen before the stream goes public. You can invite anyone else by handle from Go Live."
+        "invitedHint": "Invited guests can listen before the stream goes public. You can invite anyone else by handle from Go Live.",
+        "greenRoomTab": "Green room",
+        "multistreamTab": "Multistream",
+        "radioTab": "Radio",
+        "openGreenRoomSession": "Open green room session",
+        "manageLiveDestinations": "Manage live destinations",
+        "invitePoolModeratorsSubs": "Moderators and fan subscribers",
+        "invitePoolSubsOnly": "Fan subscribers only",
+        "invitePoolEveryone": "Everyone signed in",
+        "invitePoolManualOnly": "Only people I invite"
       },
       "artist": {
         "loadError": "Could not load your artist profile",

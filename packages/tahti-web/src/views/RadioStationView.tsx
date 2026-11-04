@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { CalendarDaysIcon, GlobeIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
@@ -32,6 +33,7 @@ import { usePlayerStore } from '../stores/playerStore';
  * `content/radioStations.ts`, instead of sending listeners off to the
  * broadcaster's site. */
 export function RadioStationView({ stationId }: { stationId: string }) {
+  const { t } = useTranslation('web');
   const base = radioStation(stationId);
   const stationOverrides = useListenerWidgetsStore((s) => s.stationOverrides);
   const override = stationOverrides[stationId];
@@ -56,11 +58,11 @@ export function RadioStationView({ stationId }: { stationId: string }) {
       <PageEmpty
         headingLevel={1}
         icon="radio"
-        title="Station not found"
-        description="This radio station isn't in the Tahti station list."
+        title={t('radioStation.notFoundTitle')}
+        description={t('radioStation.notFoundDescription')}
         action={
           <Link to="/radio" className="text-sm underline">
-            Back to radio
+            {t('radioStation.backToRadio')}
           </Link>
         }
       />
@@ -94,11 +96,14 @@ export function RadioStationView({ stationId }: { stationId: string }) {
       classes={{ content: 'gap-6' }}
       corner={
         <Tooltip
-          content="Back to radio"
+          content={t('radioStation.backToRadio')}
           side="right"
           wrapperClassName={backButtonCornerClassName}
         >
-          <BackButtonLink to="/radio" aria-label="Back to radio" />
+          <BackButtonLink
+            to="/radio"
+            aria-label={t('radioStation.backToRadio')}
+          />
         </Tooltip>
       }
     >
@@ -115,8 +120,8 @@ export function RadioStationView({ stationId }: { stationId: string }) {
               size="lg"
               onPlay={playable ? togglePlay : undefined}
               isPlaying={playing}
-              playLabel={`Play ${station.name}`}
-              pauseLabel={`Pause ${station.name}`}
+              playLabel={t('actions.playItem', { title: station.name })}
+              pauseLabel={t('actions.pauseItem', { title: station.name })}
               playDisabled={!playable}
             />
             <div className="absolute top-2 right-2 z-[2]">
@@ -134,27 +139,29 @@ export function RadioStationView({ stationId }: { stationId: string }) {
               </Badge>
               {playing ? (
                 <Badge variant="pill" color="red">
-                  Playing
+                  {t('radioStation.playing')}
                 </Badge>
               ) : null}
             </div>
             <div role="status" aria-live="polite" className="text-sm">
               {nowPlaying ? (
                 <p>
-                  <span className="text-foreground-secondary">On air: </span>
+                  <span className="text-foreground-secondary">
+                    {t('radioStation.onAir')}{' '}
+                  </span>
                   <span className="font-semibold">{nowPlaying}</span>
                 </p>
               ) : (
                 <p className="text-foreground-secondary">
                   {streamUrl
-                    ? 'This station doesn’t say what’s playing.'
-                    : 'No stream address for this station yet.'}
+                    ? t('radioStation.noNowPlaying')
+                    : t('radioStation.noStream')}
                 </p>
               )}
             </div>
             <div
               role="group"
-              aria-label="Station controls"
+              aria-label={t('radioStation.controlsAria')}
               className="flex flex-wrap gap-2"
             >
               <Button
@@ -163,7 +170,9 @@ export function RadioStationView({ stationId }: { stationId: string }) {
                 aria-pressed={onListen}
                 onClick={() => toggleStation(station.id)}
               >
-                {onListen ? 'Remove from Listen' : 'Add to Listen'}
+                {onListen
+                  ? t('radioStation.removeFromListen')
+                  : t('radioStation.addToListen')}
               </Button>
             </div>
             {playable ? (
@@ -174,7 +183,7 @@ export function RadioStationView({ stationId }: { stationId: string }) {
               />
             ) : null}
             <div className="flex items-center gap-2">
-              <Tooltip content="Station website" side="top">
+              <Tooltip content={t('radioStation.stationWebsite')} side="top">
                 <ButtonAnchor
                   href={station.detailUrl}
                   target="_blank"
@@ -188,7 +197,7 @@ export function RadioStationView({ stationId }: { stationId: string }) {
               </Tooltip>
               {station.programmingUrl &&
               station.programmingUrl !== station.detailUrl ? (
-                <Tooltip content="Programme guide" side="top">
+                <Tooltip content={t('radioStation.programmeGuide')} side="top">
                   <ButtonAnchor
                     href={station.programmingUrl}
                     target="_blank"
@@ -206,7 +215,7 @@ export function RadioStationView({ stationId }: { stationId: string }) {
         </div>
       </RadioStationDial>
       <CardsRow
-        title="Other stations"
+        title={t('radioStation.otherStations')}
         data-testid="other-stations"
         items={others.map((item) => ({
           id: `radio-widget:${item.id}`,

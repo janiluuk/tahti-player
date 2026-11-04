@@ -1,3 +1,29 @@
+## 2026-11-04 - Batch 35 UX slices
+
+ListingDate leftovers (Admin Catalog/Radio featured history, Studio editor
+list), Finnish for Settings Logs / Studio hub / Admin Inbox / Discover
+stories / Radio station / collection actions / green room pools / support /
+transparency / governance history / Studio toasts, OrganizeFiles destructive
+confirm, ListingDate stories. tahti-web 0.0.325.
+
+
+## 2026-11-04 - Studio Updates StoryCard posts
+
+Studio Updates render as StoryCard posts; newsletter draft remove via
+ConfirmDialog. DELETE client + stories/tests. tahti-web 0.0.324 (#1809).
+
+## 2026-11-04 - Batch 34 leftover dates and Finnish bodies
+
+Revision/news/recording/episode ListingDate, schedule windows in app
+language, Settings Integrations/Add-ons/What's new, Library History/Following,
+Admin hubs, channel actions, auth toasts. tahti-web 0.0.321 (#1820).
+
+## 2026-11-04 - Batch 33 governance dates and Finnish bodies
+
+Governance/admin ListingDate + numericDay, Library/Radio/Messages/player/
+Settings bodies Finnish, red OAuth disconnect, Library Media empty state.
+tahti-web 0.0.322 (#1817).
+
 ## 2026-11-04 - Batch slices (OverflowMenu / FilterBar PR)
 
 Ten slices from `batch-slices-2026-11-04.md`: Fans chat CI (#1811),

@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, InlineLoader, Textarea } from '@tahti-player/ui';
 
 import {
@@ -90,6 +91,7 @@ type MySupportTicketsProps = {
 };
 
 export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
+  const { t } = useTranslation('web');
   const [tickets, setTickets] = useState<MySupportTicket[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -157,11 +159,11 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
         id="my-support-tickets-title"
         className="font-display text-lg font-bold"
       >
-        Your requests
+        {t('supportTickets.yourRequests')}
       </h2>
       {error ? (
         <PageError
-          title="Could not load your requests"
+          title={t('supportTickets.loadError')}
           description={error}
           onRetry={() => {
             setError(null);
@@ -169,11 +171,11 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
           }}
         />
       ) : tickets === null ? (
-        <InlineLoader label="Loading…" />
+        <InlineLoader label={t('supportTickets.loading')} />
       ) : tickets.length === 0 ? (
         <PageEmpty
-          title="No support requests yet"
-          description="Requests you send below while signed in, and our replies, appear here."
+          title={t('supportTickets.emptyTitle')}
+          description={t('supportTickets.emptyDescription')}
         />
       ) : (
         <ul className="divide-border divide-y">
@@ -188,13 +190,14 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
                   </Badge>
                 </div>
                 <span className="text-foreground-secondary flex items-center gap-1 text-xs">
-                  Sent <ListingDate value={ticket.createdAt} />
+                  {t('supportTickets.sent')}{' '}
+                  <ListingDate value={ticket.createdAt} />
                 </span>
                 <p className="text-foreground-secondary whitespace-pre-wrap">
                   {ticket.message}
                 </p>
                 {ticket.replies.length === 0 ? (
-                  <PageEmpty title="No reply yet." />
+                  <PageEmpty title={t('supportTickets.noReply')} />
                 ) : (
                   <ul
                     aria-label={`Replies to ${ticket.subject}`}
@@ -229,11 +232,11 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
                     <Button
                       size="sm"
                       variant="text"
-                      aria-label={`Mark resolved: ${ticket.subject}`}
+                      aria-label={`${t('supportTickets.markResolved')}: ${ticket.subject}`}
                       disabled={closing === ticket.id}
                       onClick={() => void closeTicket(ticket.id)}
                     >
-                      Mark resolved
+                      {t('supportTickets.markResolved')}
                     </Button>
                     {closeError?.ticketId === ticket.id ? (
                       <span
