@@ -240,9 +240,11 @@ export function TrackBody({ page }: { page: TrackPage }) {
       <ConfirmDialog
         destructive
         isOpen={pendingDeleteId !== null}
-        title="Remove this comment?"
-        description={pendingComment?.body ?? 'The comment leaves this track.'}
-        confirmLabel="Remove"
+        title={t('trackDetail.removeCommentTitle')}
+        description={
+          pendingComment?.body ?? t('trackDetail.removeCommentDescription')
+        }
+        confirmLabel={t('trackDetail.removeCommentConfirm')}
         onCancel={() => setPendingDeleteId(null)}
         onConfirm={() => {
           const id = pendingDeleteId;

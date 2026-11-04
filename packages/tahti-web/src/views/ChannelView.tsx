@@ -2,6 +2,7 @@ import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
@@ -78,6 +79,7 @@ import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
 
 export function ChannelView({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as { edit?: boolean };
   const me = useAuthStore((s) => s.user);
@@ -331,7 +333,7 @@ export function ChannelView({ slug }: { slug: string }) {
           (link) => link.url.trim() && !isSafeChannelLinkUrl(link.url),
         );
         if (invalid) {
-          toast.error('Links must be http(s) or mailto: URLs');
+          toast.error(t('toasts.channelLinksInvalid'));
           return;
         }
         const result = await patchChannelVisual({
@@ -348,7 +350,7 @@ export function ChannelView({ slug }: { slug: string }) {
       }
       presetDraft.setNote(null);
     } catch {
-      toast.error('Could not save your changes. Try again.');
+      toast.error(t('toasts.channelLookSaveFailed'));
     } finally {
       setSavingLook(false);
     }

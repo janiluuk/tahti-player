@@ -29,6 +29,9 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
+      await canvas.findByRole('heading', { name: /^Groups$|^Ryhmät$/ }),
+    ).toBeInTheDocument();
+    await expect(
       await canvas.findByRole('link', {
         name: 'Open Trance Mixes and DJ Sets',
       }),

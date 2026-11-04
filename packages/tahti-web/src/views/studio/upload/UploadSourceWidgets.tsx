@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Card, CardGrid } from '@tahti-player/ui';
 
 import type { ConnectionStatus, IntegrationId } from '../../../api/sources';
@@ -24,12 +25,8 @@ const configurePluginFor = (id: IntegrationId) =>
         plugin.id === 'spotify'),
   );
 
-/** OAuth sources whose configure dialog lists the account's tracks to
- * import. The others connect, but there is nothing to import from them yet. */
 const OAUTH_IMPORT_UI = new Set<IntegrationId>(['soundcloud', 'google-drive']);
 
-/** Sources the upload page can import from: through a configure dialog, or
- * a Studio page to go to. Anything else would be a card that leads nowhere. */
 const UPLOAD_SOURCES = (importSourcePlugins as ImportSourcePlugin[]).filter(
   (source) =>
     source.id !== 'upload' &&
@@ -43,23 +40,27 @@ const UPLOAD_SOURCES = (importSourcePlugins as ImportSourcePlugin[]).filter(
 function sourceSubtitle(
   source: ImportSourcePlugin,
   status: ConnectionStatus | undefined,
+  t: TFunction<'web'>,
 ): string {
   if (source.kind !== 'oauth') {
-    return 'Ready';
+    return t('library.uploadSourceReady');
   }
   if (!status) {
-    return 'Checking…';
+    return t('library.uploadSourceChecking');
   }
   if (status.unavailable) {
-    return 'Status unavailable';
+    return t('library.uploadSourceUnavailable');
   }
   if (status.connected) {
-    return 'Connected';
+    return t('library.uploadSourceConnected');
   }
-  return status.configured ? 'Not connected' : 'Not available yet';
+  return status.configured
+    ? t('library.uploadSourceNotConnected')
+    : t('library.uploadSourceNotAvailable');
 }
 
 export function UploadSourceWidgets() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [statuses, setStatuses] = useState<
     Partial<Record<IntegrationId, ConnectionStatus>>
@@ -100,7 +101,7 @@ export function UploadSourceWidgets() {
         id="source-widgets-title"
         className="text-foreground-secondary mb-3 text-xs font-semibold tracking-wide uppercase"
       >
-        Import sources
+        {t('library.uploadSourcesTitle')}
       </h2>
       <CardGrid className="grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]">
         {UPLOAD_SOURCES.map((source) => {
@@ -109,7 +110,7 @@ export function UploadSourceWidgets() {
             <Card
               key={source.id}
               title={source.name}
-              subtitle={sourceSubtitle(source, status)}
+              subtitle={sourceSubtitle(source, status, t)}
               image={<SourceServiceIcon id={source.id} />}
               className={
                 source.kind === 'oauth' && !status?.connected

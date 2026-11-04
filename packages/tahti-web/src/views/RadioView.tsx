@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   Button,
@@ -92,16 +92,16 @@ function formatShowStart(iso: string): string {
 function formatAgo(iso: string): string {
   const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60_000);
   if (mins < 1) {
-    return 'just now';
+    return i18n.t('web:radio.agoJustNow');
   }
   if (mins < 60) {
-    return `${mins}m ago`;
+    return i18n.t('web:radio.agoMinutes', { count: mins });
   }
   const hours = Math.floor(mins / 60);
   if (hours < 24) {
-    return `${hours}h ago`;
+    return i18n.t('web:radio.agoHours', { count: hours });
   }
-  return `${Math.floor(hours / 24)}d ago`;
+  return i18n.t('web:radio.agoDays', { count: Math.floor(hours / 24) });
 }
 
 export function RadioView() {

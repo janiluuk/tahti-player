@@ -1,3 +1,5 @@
+import type { TFunction } from '@tahti-player/i18n';
+
 export function groupPersonName(person: {
   username: string;
   displayName: string;
@@ -9,20 +11,24 @@ export function groupPersonName(person: {
   return name;
 }
 
-export function groupCountLabel(
-  count: number,
-  singular: string,
-  plural: string,
-): string {
-  return `${count.toLocaleString()} ${count === 1 ? singular : plural}`;
+export function groupMembersLabel(count: number, t: TFunction<'web'>): string {
+  return t('studioGroups.members', { count });
 }
 
-export const JOIN_POLICY_OPTIONS = [
-  { id: 'OPEN', label: 'Anyone can join' },
-  { id: 'REQUEST', label: 'Request to join' },
-];
+export function groupSoundsLabel(count: number, t: TFunction<'web'>): string {
+  return t('studioGroups.sounds', { count });
+}
 
-export const SUBMIT_POLICY_OPTIONS = [
-  { id: 'OPEN', label: 'Members add right away' },
-  { id: 'APPROVE', label: 'Admins approve first' },
-];
+export function joinPolicyOptions(t: TFunction<'web'>) {
+  return [
+    { id: 'OPEN' as const, label: t('studioGroups.joinOpen') },
+    { id: 'REQUEST' as const, label: t('studioGroups.joinRequest') },
+  ];
+}
+
+export function submitPolicyOptions(t: TFunction<'web'>) {
+  return [
+    { id: 'OPEN' as const, label: t('studioGroups.submitOpen') },
+    { id: 'APPROVE' as const, label: t('studioGroups.submitApprove') },
+  ];
+}

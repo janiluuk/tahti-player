@@ -27,7 +27,11 @@ import {
 import { createJam } from '../api/jam';
 import { PageError, PageLoading } from '../components/PageStates';
 import { StudioPanel } from '../components/StudioPanel';
-import { groupCountLabel, groupPersonName } from '../lib/groupPeople';
+import {
+  groupMembersLabel,
+  groupPersonName,
+  groupSoundsLabel,
+} from '../lib/groupPeople';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -174,7 +178,7 @@ export function GroupDetailView({ slug }: { slug: string }) {
     <div className="mx-auto flex w-full max-w-4xl flex-col gap-4 px-1 py-2">
       <ViewShell
         title={group.name}
-        subtitle={`${groupCountLabel(group.memberCount, 'member', 'members')} · ${groupCountLabel(group.itemCount, 'sound', 'sounds')}`}
+        subtitle={`${groupMembersLabel(group.memberCount, t)} · ${groupSoundsLabel(group.itemCount, t)}`}
         classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
       >
         <div className="flex flex-wrap items-start gap-4">
@@ -250,7 +254,7 @@ export function GroupDetailView({ slug }: { slug: string }) {
 
         <StudioPanel
           title={t('groupDetail.members')}
-          description={groupCountLabel(group.memberCount, 'member', 'members')}
+          description={groupMembersLabel(group.memberCount, t)}
         >
           <ul
             className="grid gap-2 sm:grid-cols-2"

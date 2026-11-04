@@ -2,6 +2,7 @@ import { CheckCircle2Icon, ImageIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Input, SaveButton, Select } from '@tahti-player/ui';
 
 import { uploadProfileAvatar } from '../api/artist-settings';
@@ -32,6 +33,7 @@ const VISIBILITY_OPTIONS = [
 ];
 
 export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
+  const { t } = useTranslation('web');
   const [preflight, setPreflight] = useState<BroadcastPreflight | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -112,7 +114,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
   const save = async () => {
     const trimmedTitle = title.trim();
     if (!trimmedTitle) {
-      toast.error('Add a show name before saving.');
+      toast.error(t('toasts.broadcastShowNameRequired'));
       return;
     }
     setSaving(true);
@@ -134,7 +136,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
     setShowType(result.data.showType);
     setVisibility(result.data.visibility);
     setSeriesId(result.data.plannedLiveShow?.seriesId ?? '');
-    toast.success('Show info saved.');
+    toast.success(t('toasts.broadcastShowSaved'));
     onSaved?.();
   };
 

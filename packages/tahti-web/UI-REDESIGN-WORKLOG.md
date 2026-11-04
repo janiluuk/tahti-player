@@ -1,3 +1,13 @@
+## 2026-11-04 - Batch 41 UX slices (0.0.331)
+
+Finnish for Sounds status extras/stats strip/retry, Upload import sources,
+Studio Groups create+detail + Listening parties chrome/empty/ConfirmDialogs,
+track comment remove, Radio formatAgo, channel look + broadcast preflight
+toasts. Dates: formatAgo i18n Kept; Listening parties schedule Kept;
+chart/stats Left unchanged. StudioGroups + ListeningParties Storybook
+headings use toBeInTheDocument. Skipped: radio widget redesign,
+performance audit, pageTour, admin hub English descriptions.
+
 ## 2026-11-04 - Batch 40 UX slices (0.0.330)
 
 Finnish for add-to-playlist / ambient track edit-remove / track-table
