@@ -5,22 +5,7 @@ import { MediaArtwork } from '@tahti-player/ui';
 
 import type { PublicRadioShowEpisode } from '../api/shows';
 import { PageEmpty } from './PageStates';
-
-function formatDate(startAt: string, endAt: string) {
-  const start = new Date(startAt);
-  const end = new Date(endAt);
-  return `${start.toLocaleDateString([], {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-  })} · ${start.toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-  })}–${end.toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-  })}`;
-}
+import { ShowEpisodeWhen } from './ShowEpisodeWhen';
 
 function EpisodeIcon({ showType }: Pick<PublicRadioShowEpisode, 'showType'>) {
   const Icon = showType === 'TALK' ? MessageCircleIcon : MicIcon;
@@ -59,9 +44,10 @@ function EpisodeRow({ episode }: { episode: PublicRadioShowEpisode }) {
         {tagline ? (
           <div className="text-foreground-secondary text-sm">{tagline}</div>
         ) : null}
-        <div className="text-foreground-secondary text-xs">
-          {formatDate(episode.startAt, episode.endAt)}
-        </div>
+        <ShowEpisodeWhen
+          episode={episode}
+          className="text-foreground-secondary text-xs"
+        />
         {episode.description ? (
           <p className="mt-2 text-sm whitespace-pre-wrap">
             {episode.description}

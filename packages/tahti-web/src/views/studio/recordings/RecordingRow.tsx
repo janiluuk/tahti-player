@@ -4,7 +4,9 @@ import { CheckIcon, RadioIcon } from 'lucide-react';
 import { EditIconButton, Loader } from '@tahti-player/ui';
 
 import type { RecentBroadcast } from '../../../api/broadcast';
-import { formatDate, formatDuration, isPublished } from './helpers';
+import { ListingDate } from '../../../components/ListingDate';
+import { relativeDate } from '../../../lib/relativeDate';
+import { formatDuration, isPublished } from './helpers';
 
 /** Library row treatment — thumbnail
  * box, title, subtitle, status badge, and an edit action — reused here
@@ -20,7 +22,7 @@ export function RecordingRow({
   onEdit: (soundId: string) => void;
 }) {
   const title =
-    show.title || show.soundTitle || `Show ${formatDate(show.startedAt)}`;
+    show.title || show.soundTitle || `Show ${relativeDate(show.startedAt)}`;
   const published = isPublished(show);
   const processing = !show.soundId;
 
@@ -52,7 +54,7 @@ export function RecordingRow({
           <span className="block truncate font-semibold">{title}</span>
         )}
         <p className="text-foreground-secondary text-xs break-words">
-          {formatDate(show.startedAt)}
+          <ListingDate value={show.startedAt} />
           {show.durationSec ? ` · ${formatDuration(show.durationSec)}` : ''}
           {show.source
             ? ` · ${show.source.toLowerCase().replace('_', ' ')}`

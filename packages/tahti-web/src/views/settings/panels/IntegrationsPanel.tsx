@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, SectionShell } from '@tahti-player/ui';
 
 import { fetchMeIntegrations } from '../../../api/integrations';
@@ -22,39 +23,41 @@ import { ListenBrainzIntegrationRow } from '../../../plugins/scrobble/ListenBrai
 const DESKTOP_ONLY_INTEGRATIONS = [
   {
     id: 'jam',
+    labelKey: null,
     label: 'Tahti Jam',
-    description:
-      'Start a local web server that lets you control the player from other devices on your network.',
+    descriptionKey: 'settingsIntegrations.jamDescription',
   },
   {
     id: 'mcp',
-    label: 'MCP Server',
-    description:
-      'Start a local MCP server that allows AI tools to control the player.',
+    labelKey: 'settingsIntegrations.mcpLabel',
+    descriptionKey: 'settingsIntegrations.mcpDescription',
   },
   {
     id: 'mpd',
-    label: 'MPD Server',
-    description:
-      'Start a local MPD-compatible server so MPD clients can control the player.',
+    labelKey: 'settingsIntegrations.mpdLabel',
+    descriptionKey: 'settingsIntegrations.mpdDescription',
   },
   {
     id: 'discord',
+    labelKey: null,
     label: 'Discord Rich Presence',
-    description: "Show what you're listening to on your Discord profile.",
+    descriptionKey: 'settingsIntegrations.discordDescription',
   },
 ] as const;
 
 export function IntegrationsPanel() {
+  const { t } = useTranslation('web');
   const [loadError, setLoadError] = useState<string | null>(null);
   const reloadIntegrations = useCallback(() => {
     setLoadError(null);
     void fetchMeIntegrations().catch((err) => {
       setLoadError(
-        err instanceof Error ? err.message : 'Could not load integrations.',
+        err instanceof Error
+          ? err.message
+          : t('settingsIntegrations.loadError'),
       );
     });
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     reloadIntegrations();
@@ -77,11 +80,11 @@ export function IntegrationsPanel() {
       className="flex w-full max-w-xl flex-col"
       data-testid="integrations-panel"
     >
-      <SectionShell title="Scrobbling">
+      <SectionShell title={t('settingsIntegrations.scrobbling')}>
         <div className="flex flex-col gap-6">
           {loadError ? (
             <PageError
-              title="Couldn't load integrations"
+              title={t('settingsIntegrations.loadErrorTitle')}
               description={loadError}
               onRetry={reloadIntegrations}
             />
@@ -91,7 +94,7 @@ export function IntegrationsPanel() {
         </div>
       </SectionShell>
       <SectionShell
-        title="Desktop app"
+        title={t('settingsIntegrations.desktopApp')}
         className="border-border border-t pt-6"
         data-testid="integrations-desktop-only"
       >
@@ -105,14 +108,14 @@ export function IntegrationsPanel() {
             <div key={item.id} className="flex flex-col gap-2">
               <div className="flex items-center gap-3">
                 <span className="text-foreground text-sm font-semibold">
-                  {item.label}
+                  {item.labelKey ? t(item.labelKey) : item.label}
                 </span>
                 <Badge variant="pill" color="secondary">
-                  Desktop app only
+                  {t('settingsIntegrations.desktopOnly')}
                 </Badge>
               </div>
               <p className="text-foreground-secondary text-sm select-none">
-                {item.description}
+                {t(item.descriptionKey)}
               </p>
             </div>
           ))}

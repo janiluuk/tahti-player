@@ -1,27 +1,37 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { HubCards, ViewShell } from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
 import {
+  ADMIN_HUB_DESCRIPTION_KEYS,
   ADMIN_SECTIONS,
   adminHubItems,
+  adminPageLabelKey,
   AdminPageLayout,
-  PRIMARY,
+  adminSectionLabelKey,
 } from '../../components/AdminNav';
 import { renderHubLink } from '../../components/HubLink';
 import { PageEmpty } from '../../components/PageStates';
 import type { AdminHubId } from './adminHubs';
 
 export function AdminHubView({ hub }: { hub: AdminHubId }) {
-  const path = `/admin/hubs/${hub}`;
+  const { t } = useTranslation('web');
+  const path = `/admin/hubs/${hub}` as const;
   const section = ADMIN_SECTIONS.find((item) => item.hub === path);
-  const page = PRIMARY.find((item) => item.to === path);
-  const items = adminHubItems(path).map((item) => ({
-    id: item.to,
-    href: item.to,
-    icon: item.Icon,
-    title: item.label,
-    description: item.description,
-  }));
+  const sectionKey = section ? adminSectionLabelKey(section.id) : null;
+  const sectionTitle = sectionKey
+    ? t(sectionKey)
+    : (section?.label ?? t('adminNav.title'));
+  const items = adminHubItems(path).map((item) => {
+    const key = adminPageLabelKey(item.to);
+    return {
+      id: item.to,
+      href: item.to,
+      icon: item.Icon,
+      title: key ? t(key) : item.label,
+      description: item.description,
+    };
+  });
 
   return (
     <AdminGate>
@@ -29,18 +39,18 @@ export function AdminHubView({ hub }: { hub: AdminHubId }) {
         <AdminPageLayout current={path}>
           <div className="flex max-w-5xl flex-col gap-4">
             <ViewShell
-              title={section?.label ?? 'Admin'}
-              subtitle={page?.description}
+              title={sectionTitle}
+              subtitle={t(ADMIN_HUB_DESCRIPTION_KEYS[path])}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {items.length > 0 ? (
                 <HubCards
-                  aria-label={`${section?.label ?? 'Admin'} tools`}
+                  aria-label={t('adminNav.hubTools', { section: sectionTitle })}
                   items={items}
                   renderLink={renderHubLink}
                 />
               ) : (
-                <PageEmpty title="Nothing here yet" />
+                <PageEmpty title={t('adminNav.hubEmpty')} />
               )}
             </ViewShell>
           </div>

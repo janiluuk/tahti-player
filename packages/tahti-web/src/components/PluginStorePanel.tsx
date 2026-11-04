@@ -1,6 +1,7 @@
 import { ChevronDownIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Box, Button, Tabs } from '@tahti-player/ui';
 
 import {
@@ -30,7 +31,11 @@ import {
 } from './plugin-store/ServiceCategory';
 import { VisualizersCategory } from './plugin-store/ThemesCategory';
 
+const categoryKey = (id: PluginCategoryId) =>
+  id === 'listener' ? 'Listener' : id === 'artist' ? 'Artist' : 'Admin';
+
 export function PluginStorePanel() {
+  const { t } = useTranslation('web');
   const isOpen = useSettingsModalStore((state) => state.isOpen);
   const pluginCategory = useSettingsModalStore((state) => state.pluginCategory);
   const user = useAuthStore((state) => state.user);
@@ -69,7 +74,9 @@ export function PluginStorePanel() {
           label: (
             <span className="flex min-w-0 items-center gap-2">
               <candidate.icon size={14} aria-hidden className="shrink-0" />
-              <span className="truncate">{candidate.label}</span>
+              <span className="truncate">
+                {t(`settingsAddOns.category${categoryKey(candidate.id)}`)}
+              </span>
             </span>
           ),
           content: (
@@ -86,6 +93,7 @@ export function PluginStorePanel() {
 }
 
 function ScrobblingMovedNotice() {
+  const { t } = useTranslation('web');
   const setActiveTab = useSettingsModalStore((s) => s.setActiveTab);
   return (
     <Box
@@ -94,14 +102,14 @@ function ScrobblingMovedNotice() {
       data-testid="scrobbling-moved-notice"
     >
       <p className="text-foreground text-sm">
-        ListenBrainz and Last.fm scrobbling now live in Settings → Integrations.
+        {t('settingsAddOns.scrobblingMoved')}
       </p>
       <Button
         size="sm"
         variant="secondary"
         onClick={() => setActiveTab('integrations')}
       >
-        Open Integrations
+        {t('settingsAddOns.openIntegrations')}
       </Button>
     </Box>
   );
@@ -114,17 +122,16 @@ function AudienceBody({
   categoryId: PluginCategoryId;
   target: PluginCategoryTarget | null;
 }) {
+  const { t } = useTranslation('web');
   const category = PLUGIN_CATEGORIES.find(
     (candidate) => candidate.id === categoryId,
   )!;
 
   return (
     <div className="flex flex-col gap-5">
-      {category.description ? (
-        <p className="text-foreground-secondary text-sm">
-          {category.description}
-        </p>
-      ) : null}
+      <p className="text-foreground-secondary text-sm">
+        {t(`settingsAddOns.category${categoryKey(category.id)}Description`)}
+      </p>
       {categoryId === 'listener' ? <ListenerAddons target={target} /> : null}
       {categoryId === 'artist' ? <ArtistAddons target={target} /> : null}
       {categoryId === 'admin' ? <AdminAddons /> : null}
@@ -182,6 +189,7 @@ function AddonGroup({
 }
 
 function ListenerAddons({ target }: { target: PluginCategoryTarget | null }) {
+  const { t } = useTranslation('web');
   const initial =
     target === 'listen'
       ? 'listen'
@@ -194,29 +202,29 @@ function ListenerAddons({ target }: { target: PluginCategoryTarget | null }) {
   return (
     <>
       <AddonGroup
-        title="Radio"
-        description="Personal streams, station discovery and saved stations."
+        title={t('settingsAddOns.radio')}
+        description={t('settingsAddOns.radioDescription')}
         defaultOpen={initial === 'radio'}
       >
         <RadioCategory />
       </AddonGroup>
       <AddonGroup
-        title="Listen widgets"
-        description="Provider embeds and widgets for your personal Listen page."
+        title={t('settingsAddOns.listenWidgets')}
+        description={t('settingsAddOns.listenWidgetsDescription')}
         defaultOpen={initial === 'listen'}
       >
         <ListenAddonsPanel />
       </AddonGroup>
       <AddonGroup
-        title="Discover widgets"
-        description="Choose the discovery panels and listener add-ons you use."
+        title={t('settingsAddOns.discoverWidgets')}
+        description={t('settingsAddOns.discoverWidgetsDescription')}
         defaultOpen={initial === 'discovery'}
       >
         <DiscoveryCategory />
       </AddonGroup>
       <AddonGroup
-        title="Listening history"
-        description="Send eligible listens to your own external profile."
+        title={t('settingsAddOns.history')}
+        description={t('settingsAddOns.historyDescription')}
         defaultOpen={initial === 'history'}
       >
         <ScrobblingMovedNotice />
@@ -226,6 +234,7 @@ function ListenerAddons({ target }: { target: PluginCategoryTarget | null }) {
 }
 
 function ArtistAddons({ target }: { target: PluginCategoryTarget | null }) {
+  const { t } = useTranslation('web');
   const initial =
     target === 'export' || target === 'fingerprinting'
       ? 'releasing'
@@ -240,16 +249,16 @@ function ArtistAddons({ target }: { target: PluginCategoryTarget | null }) {
   return (
     <>
       <AddonGroup
-        title="Import"
-        description="Bring tracks and catalog references into your artist library."
+        title={t('settingsAddOns.import')}
+        description={t('settingsAddOns.importDescription')}
         defaultOpen={initial === 'import'}
       >
         <ServiceCategory categoryId="import" />
         {hasNativePlayer() ? <SoulseekAddonCard /> : null}
       </AddonGroup>
       <AddonGroup
-        title="Releasing and distribution"
-        description="Prepare release links, delivery targets and catalog matching."
+        title={t('settingsAddOns.releasing')}
+        description={t('settingsAddOns.releasingDescription')}
         defaultOpen={initial === 'releasing'}
       >
         <DspUrlPasteCard />
@@ -257,23 +266,23 @@ function ArtistAddons({ target }: { target: PluginCategoryTarget | null }) {
         <ServiceCategory categoryId="fingerprinting" />
       </AddonGroup>
       <AddonGroup
-        title="Broadcast destinations"
-        description="Mirror live broadcasts to external RTMP services."
+        title={t('settingsAddOns.broadcast')}
+        description={t('settingsAddOns.broadcastDescription')}
         defaultOpen={initial === 'broadcast'}
       >
         <MulticastCategory />
       </AddonGroup>
       <AddonGroup
-        title="Channel presentation"
-        description="Visual presets and public channel widgets."
+        title={t('settingsAddOns.channel')}
+        description={t('settingsAddOns.channelDescription')}
         defaultOpen={initial === 'channel'}
       >
         <VisualizersCategory />
         <ChannelCategory />
       </AddonGroup>
       <AddonGroup
-        title="Production tools"
-        description="Audio processing available in the Pro Editor."
+        title={t('settingsAddOns.production')}
+        description={t('settingsAddOns.productionDescription')}
         defaultOpen={initial === 'production'}
       >
         <AudioPluginsCategory />
@@ -283,10 +292,11 @@ function ArtistAddons({ target }: { target: PluginCategoryTarget | null }) {
 }
 
 function AdminAddons() {
+  const { t } = useTranslation('web');
   return (
     <AddonGroup
-      title="Platform operations"
-      description="Board-only integrations and operational tools."
+      title={t('settingsAddOns.operations')}
+      description={t('settingsAddOns.operationsDescription')}
       defaultOpen
     >
       <ToolsCategory />

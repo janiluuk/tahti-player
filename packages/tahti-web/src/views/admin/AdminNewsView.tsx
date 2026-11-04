@@ -33,6 +33,7 @@ import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ImageUploadField } from '../../components/ImageUploadField';
+import { ListingDate } from '../../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { AdminTestNotificationPanel } from './AdminTestNotificationPanel';
@@ -257,9 +258,14 @@ export function AdminNewsView() {
                             </div>
                             <p className="text-foreground-secondary text-xs">
                               By {post.authorName} ·{' '}
-                              {post.publishedAt
-                                ? `Published ${new Date(post.publishedAt).toLocaleDateString()}`
-                                : 'Draft'}
+                              {post.publishedAt ? (
+                                <>
+                                  Published{' '}
+                                  <ListingDate value={post.publishedAt} />
+                                </>
+                              ) : (
+                                'Draft'
+                              )}
                             </p>
                             <p className="mt-1 text-sm">{post.summary}</p>
                           </div>

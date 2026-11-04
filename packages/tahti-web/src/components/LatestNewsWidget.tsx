@@ -1,6 +1,7 @@
 import { ArrowRightIcon, SlidersHorizontalIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { toBcp47 } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -12,6 +13,7 @@ import {
 
 import { fetchRssArticles } from '../api/rss-feed';
 import { humanizePastDate } from '../lib/humanizeDate';
+import { currentLocale } from '../lib/locale';
 import { aggregateNews, type AggregatedArticle } from '../lib/newsAggregate';
 import {
   newsWidgetsOn,
@@ -100,6 +102,9 @@ export function LatestNewsWidget({
     publishedAt: article.publishedAt,
     publishedLabel: article.publishedAt
       ? humanizePastDate(article.publishedAt)
+      : undefined,
+    publishedTitle: article.publishedAt
+      ? new Date(article.publishedAt).toLocaleString(toBcp47(currentLocale()))
       : undefined,
     onClick: () => setOpen(article),
   });

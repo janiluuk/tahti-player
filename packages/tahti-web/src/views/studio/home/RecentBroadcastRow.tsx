@@ -1,7 +1,9 @@
 import { ButtonLink } from '@tahti-player/ui';
 
 import { type RecentBroadcast } from '../../../api/broadcast';
-import { formatBroadcastDate, formatBroadcastDuration } from './home-helpers';
+import { ListingDate } from '../../../components/ListingDate';
+import { relativeDate } from '../../../lib/relativeDate';
+import { formatBroadcastDuration } from './home-helpers';
 
 export function RecentBroadcastRow({
   broadcast,
@@ -11,7 +13,7 @@ export function RecentBroadcastRow({
   const title =
     broadcast.title ||
     broadcast.soundTitle ||
-    `Broadcast ${formatBroadcastDate(broadcast.startedAt)}`;
+    `Broadcast ${relativeDate(broadcast.startedAt)}`;
   const published = broadcast.soundStatus === 'READY';
 
   return (
@@ -22,7 +24,7 @@ export function RecentBroadcastRow({
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-bold">{title}</p>
         <p className="text-foreground-secondary text-xs break-words">
-          {formatBroadcastDate(broadcast.startedAt)}
+          <ListingDate value={broadcast.startedAt} />
           {broadcast.durationSec
             ? ` · ${formatBroadcastDuration(broadcast.durationSec)}`
             : ''}

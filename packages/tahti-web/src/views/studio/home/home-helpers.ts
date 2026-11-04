@@ -2,16 +2,6 @@ import { type StatsSummary } from '../../../api/studio-extras';
 
 export type Counts = { sounds: number; collections: number; releases: number };
 
-export function formatBroadcastDate(iso: string): string {
-  return new Date(iso).toLocaleString([], {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
 export function formatBroadcastDuration(seconds: number | undefined): string {
   if (!seconds) {
     return '';

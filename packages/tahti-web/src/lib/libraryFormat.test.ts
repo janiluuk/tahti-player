@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   formatLibrarySize,
   formatTotalDuration,
@@ -25,5 +27,15 @@ describe('libraryFormat', () => {
   it('pluralises track counts', () => {
     expect(pluralTracks(1)).toBe('1 track');
     expect(pluralTracks(1234)).toBe('1,234 tracks');
+  });
+
+  it('pluralises track counts in Finnish', async () => {
+    await i18n.changeLanguage('fi_FI');
+    try {
+      expect(pluralTracks(1)).toBe('1 kappale');
+      expect(pluralTracks(3)).toBe('3 kappaletta');
+    } finally {
+      await i18n.changeLanguage('en_US');
+    }
   });
 });

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { fetchFollowList } from '../api/follows';
@@ -9,6 +10,7 @@ import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { useAuthStore } from '../stores/authStore';
 
 export function LibraryFollowingView() {
+  const { t } = useTranslation('web');
   const username = useAuthStore((state) => state.user?.username ?? null);
   const [users, setUsers] = useState<FollowListUser[]>([]);
   const [hasMore, setHasMore] = useState(false);
@@ -41,7 +43,7 @@ export function LibraryFollowingView() {
   }, [load]);
 
   if (!username) {
-    return <PageEmpty title="Sign in to see who you follow" />;
+    return <PageEmpty title={t('library.following.signIn')} />;
   }
 
   return (
@@ -53,14 +55,14 @@ export function LibraryFollowingView() {
       {loading ? <PageLoading /> : null}
       {!loading && error ? (
         <PageError
-          title="Couldn't load who you follow"
+          title={t('library.following.loadError')}
           onRetry={() => void load(users.length)}
         />
       ) : null}
       {!loading && !error && users.length === 0 ? (
         <PageEmpty
-          title="You don't follow anyone yet"
-          description="Follow artists and channels from their pages. They show up here and in your feed."
+          title={t('library.following.emptyTitle')}
+          description={t('library.following.emptyDescription')}
         />
       ) : null}
       {!loading && !error && hasMore ? (
@@ -70,7 +72,7 @@ export function LibraryFollowingView() {
             size="sm"
             onClick={() => void load(users.length)}
           >
-            Show more
+            {t('library.following.showMore')}
           </Button>
         </div>
       ) : null}

@@ -19,6 +19,7 @@ import {
 } from '../api/sound-versions';
 import { usePolling } from '../hooks/usePolling';
 import { usePlayerStore } from '../stores/playerStore';
+import { ListingDate } from './ListingDate';
 import { PageEmpty, PageError } from './PageStates';
 import { Eyebrow } from './tahti/Eyebrow';
 import { VersionRenderProgress } from './VersionRenderProgress';
@@ -46,8 +47,15 @@ function formatRevisionMeta(version: SoundVersion): string {
   if (version.sourceChannels) {
     parts.push(version.sourceChannels === 1 ? 'mono' : 'stereo');
   }
-  parts.push(new Date(version.createdAt).toLocaleString());
   return parts.join(' · ');
+}
+
+function RevisionMeta({ version }: { version: SoundVersion }) {
+  return (
+    <>
+      {formatRevisionMeta(version)} · <ListingDate value={version.createdAt} />
+    </>
+  );
 }
 
 type AudioRevisionListProps = {
@@ -294,13 +302,13 @@ export function AudioRevisionList({
             <p>
               <span className="font-medium">A · {versionA.versionLabel}</span>
               <span className="text-foreground-secondary mt-1 block text-xs">
-                {formatRevisionMeta(versionA)}
+                <RevisionMeta version={versionA} />
               </span>
             </p>
             <p>
               <span className="font-medium">B · {versionB.versionLabel}</span>
               <span className="text-foreground-secondary mt-1 block text-xs">
-                {formatRevisionMeta(versionB)}
+                <RevisionMeta version={versionB} />
               </span>
             </p>
           </div>
@@ -382,7 +390,7 @@ export function AudioRevisionList({
                     ) : null}
                   </div>
                   <div className="text-foreground-secondary text-xs">
-                    {formatRevisionMeta(version)}
+                    <RevisionMeta version={version} />
                   </div>
                   {version.status === 'PENDING' ||
                   version.status === 'PROCESSING' ? (

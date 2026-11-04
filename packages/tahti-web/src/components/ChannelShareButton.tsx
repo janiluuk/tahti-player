@@ -66,25 +66,25 @@ export function ChannelShareButton({
   const socialLinks = [
     {
       id: 'twitter',
-      label: 'Share on X',
+      label: t('channelShare.shareOnX'),
       icon: TwitterIcon,
       href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
     },
     {
       id: 'facebook',
-      label: 'Share on Facebook',
+      label: t('channelShare.shareOnFacebook'),
       icon: FacebookIcon,
       href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
     },
     {
       id: 'linkedin',
-      label: 'Share on LinkedIn',
+      label: t('channelShare.shareOnLinkedIn'),
       icon: LinkedinIcon,
       href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
     },
     {
       id: 'email',
-      label: 'Share by email',
+      label: t('channelShare.shareByEmail'),
       icon: MailIcon,
       href: `mailto:?subject=${encodeURIComponent(text)}&body=${encodeURIComponent(url)}`,
     },
@@ -94,7 +94,7 @@ export function ChannelShareButton({
     <>
       {showTrigger ? (
         <Tooltip
-          content="Share or embed channel"
+          content={t('channelShare.shareOrEmbed')}
           side="bottom"
           wrapperClassName="inline-flex"
         >
@@ -110,12 +110,12 @@ export function ChannelShareButton({
         </Tooltip>
       ) : null}
       <Dialog.Root isOpen={open} onClose={() => setOpen(false)}>
-        <Dialog.Title>Share channel</Dialog.Title>
+        <Dialog.Title>{t('channelShare.title')}</Dialog.Title>
         <div className="mt-4 flex flex-col gap-5">
           <section className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <Share2Icon size={16} aria-hidden />
-              <h3 className="text-sm font-bold">Share</h3>
+              <h3 className="text-sm font-bold">{shareAction}</h3>
             </div>
             <p className="text-foreground-secondary text-sm">{text}</p>
             <div className="flex items-center gap-2">
@@ -124,8 +124,8 @@ export function ChannelShareButton({
               </code>
               <CopyButton
                 text={url}
-                aria-label="Copy channel link"
-                toastMessage="Link copied."
+                aria-label={t('channelShare.copyLink')}
+                toastMessage={t('channelShare.linkCopied')}
               />
             </div>
             <div className="flex items-center gap-2">
@@ -134,31 +134,31 @@ export function ChannelShareButton({
               </code>
               <CopyButton
                 text={text}
-                aria-label="Copy share message"
-                toastMessage="Message copied."
+                aria-label={t('channelShare.copyMessage')}
+                toastMessage={t('channelShare.messageCopied')}
               />
             </div>
             <div className="flex items-center justify-between gap-2">
               <span className="flex items-center gap-2 text-sm font-medium">
                 <ListMusicIcon size={16} aria-hidden />
-                Playlist
+                {t('channelShare.playlist')}
               </span>
               <CopyButton
                 text={playlistUrl ?? ''}
                 disabled={!playlistUrl}
-                aria-label="Copy playlist link"
-                toastMessage="Playlist link copied."
+                aria-label={t('channelShare.copyPlaylist')}
+                toastMessage={t('channelShare.playlistCopied')}
               />
             </div>
             <div className="flex items-center justify-between gap-2">
               <span className="flex items-center gap-2 text-sm font-medium">
                 <RssIcon size={16} aria-hidden />
-                RSS feed
+                {t('channelShare.rssFeed')}
               </span>
               <CopyButton
                 text={channelRssFeedUrl(channelSlug)}
-                aria-label="Copy RSS feed"
-                toastMessage="Feed link copied. Paste it into your podcast app."
+                aria-label={t('channelShare.copyRss')}
+                toastMessage={t('channelShare.feedCopied')}
               />
             </div>
             <div className="flex items-center gap-2 pt-1">
@@ -178,7 +178,7 @@ export function ChannelShareButton({
           <section className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <CodeIcon size={16} aria-hidden />
-              <h3 className="text-sm font-bold">Embed</h3>
+              <h3 className="text-sm font-bold">{t('channelShare.embed')}</h3>
             </div>
             <div className="flex items-center gap-2">
               <code className="border-border bg-background-secondary min-w-0 flex-1 overflow-x-auto rounded-md border px-3 py-2 text-sm whitespace-nowrap">
@@ -186,8 +186,8 @@ export function ChannelShareButton({
               </code>
               <CopyButton
                 text={embedUrl}
-                aria-label="Copy embed link"
-                toastMessage="Link copied."
+                aria-label={t('channelShare.copyEmbedLink')}
+                toastMessage={t('channelShare.linkCopied')}
               />
             </div>
             <div className="flex items-center gap-2">
@@ -196,14 +196,14 @@ export function ChannelShareButton({
               </code>
               <CopyButton
                 text={embedSnippet}
-                aria-label="Copy iframe code"
-                toastMessage="Embed code copied."
+                aria-label={t('channelShare.copyIframe')}
+                toastMessage={t('channelShare.embedCopied')}
               />
             </div>
           </section>
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Close</Dialog.Close>
+          <Dialog.Close>{t('actions.close')}</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
     </>

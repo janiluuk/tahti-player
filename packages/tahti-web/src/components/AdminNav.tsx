@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import { Badge, ButtonLink, TabLabel, Tabs } from '@tahti-player/ui';
 
 import { matchesSectionRoute } from '../lib/sectionNavigation';
@@ -62,6 +63,58 @@ export const ADMIN_TAB_ONLY_ROUTES = [
   '/admin/missed-shows',
   '/admin/storage/$userId',
 ] as const;
+
+const ADMIN_PAGE_KEYS = {
+  '/admin': 'adminPages.dashboard',
+  '/admin/logs': 'adminPages.logs',
+  '/admin/monitoring': 'adminPages.monitoring',
+  '/admin/moderation': 'adminPages.moderation',
+  '/admin/users': 'adminPages.users',
+  '/admin/content': 'adminPages.content',
+  '/admin/radio': 'adminPages.radio',
+  '/admin/news': 'adminPages.news',
+  '/admin/streams': 'adminPages.streams',
+  '/admin/venues': 'adminPages.venues',
+  '/admin/top-lists': 'adminPages.topLists',
+  '/admin/announcements': 'adminPages.announcements',
+  '/admin/storage': 'adminPages.storage',
+  '/admin/artwork-presets': 'adminPages.artworkPresets',
+  '/admin/financial': 'adminPages.financial',
+  '/admin/governance': 'adminPages.governance',
+  '/admin/addons': 'adminPages.addons',
+  '/admin/status': 'adminPages.status',
+  '/admin/vendors': 'adminPages.vendors',
+  '/admin/i18n': 'adminPages.i18n',
+  '/admin/tahti-selects': 'adminPages.tahtiSelects',
+  '/admin/orphan-pages': 'adminPages.orphanPages',
+  '/admin/map': 'adminPages.map',
+  '/admin/hubs/content': 'adminNav.sectionContent',
+  '/admin/hubs/coop': 'adminNav.sectionCoop',
+  '/admin/hubs/platform': 'adminNav.sectionPlatform',
+} as const satisfies Record<string, ParseKeys<'web'>>;
+
+const ADMIN_SECTION_KEYS = {
+  overview: 'adminNav.sectionOverview',
+  inbox: 'adminNav.sectionInbox',
+  people: 'adminNav.sectionPeople',
+  content: 'adminNav.sectionContent',
+  coop: 'adminNav.sectionCoop',
+  platform: 'adminNav.sectionPlatform',
+} as const satisfies Record<string, ParseKeys<'web'>>;
+
+export const ADMIN_HUB_DESCRIPTION_KEYS = {
+  '/admin/hubs/content': 'adminNav.hubContentDescription',
+  '/admin/hubs/coop': 'adminNav.hubCoopDescription',
+  '/admin/hubs/platform': 'adminNav.hubPlatformDescription',
+} as const satisfies Record<string, ParseKeys<'web'>>;
+
+export function adminPageLabelKey(to: string): ParseKeys<'web'> | null {
+  return ADMIN_PAGE_KEYS[to as keyof typeof ADMIN_PAGE_KEYS] ?? null;
+}
+
+export function adminSectionLabelKey(id: string): ParseKeys<'web'> | null {
+  return ADMIN_SECTION_KEYS[id as keyof typeof ADMIN_SECTION_KEYS] ?? null;
+}
 
 export const PRIMARY = [
   {
@@ -362,8 +415,17 @@ function useAdminNavParts(
   current: string | undefined,
   moderationPendingCount: number | undefined,
 ) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const section = adminSectionForPath(current);
+  const pageLabel = (item: { to: string; label: string }) => {
+    const key = adminPageLabelKey(item.to);
+    return key ? t(key) : item.label;
+  };
+  const sectionLabel = (item: { id: string; label: string }) => {
+    const key = adminSectionLabelKey(item.id);
+    return key ? t(key) : item.label;
+  };
 
   const selectedSectionIndex = ADMIN_SECTIONS.findIndex(
     (item) => item.id === section?.id,
@@ -389,12 +451,12 @@ function useAdminNavParts(
             : undefined
         }
       >
-        <Tabs.List aria-label="Admin sections" className="w-fit">
+        <Tabs.List aria-label={t('adminNav.sections')} className="w-fit">
           {ADMIN_SECTIONS.map((item) => (
             <Tabs.Tab key={item.id}>
               <TabLabel icon={item.items[0]?.icon}>
                 <span className="inline-flex items-center gap-1.5">
-                  {item.label}
+                  {sectionLabel(item)}
                   {item.id === 'inbox' && moderationPendingCount ? (
                     <Badge
                       variant="pill"
@@ -423,17 +485,19 @@ function useAdminNavParts(
           variant="text"
           className="gap-1.5"
           data-testid="admin-hub-back"
-          aria-label={`Back to ${section.label}`}
+          aria-label={t('adminNav.backTo', { section: sectionLabel(section) })}
         >
           <ArrowLeftIcon size={16} aria-hidden />
-          {section.label}
+          {sectionLabel(section)}
         </ButtonLink>
       ) : section && !section.hub && section.items.length > 1 ? (
         <SectionTabs
-          aria-label={`Admin ${section.label}`}
+          aria-label={t('adminNav.sectionPages', {
+            section: sectionLabel(section),
+          })}
           items={section.items.map((link) => ({
             id: link.to,
-            label: link.label,
+            label: pageLabel(link),
             icon: link.icon,
             to: link.to,
             active: isAdminNavItemActive(current, link.to),

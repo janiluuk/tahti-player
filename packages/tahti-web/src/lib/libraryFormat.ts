@@ -1,3 +1,7 @@
+import { i18n, toBcp47 } from '@tahti-player/i18n';
+
+import { currentLocale } from './locale';
+
 export function formatLibrarySize(bytes: number): string {
   if (bytes < 1024 * 1024) {
     return `${Math.max(1, Math.round(bytes / 1024))} KB`;
@@ -23,5 +27,8 @@ export function formatTotalDuration(seconds: number | null): string {
 }
 
 export function pluralTracks(count: number): string {
-  return count === 1 ? '1 track' : `${count.toLocaleString('en-US')} tracks`;
+  return i18n.t('web:library.trackCount', {
+    count,
+    formattedCount: count.toLocaleString(toBcp47(currentLocale())),
+  });
 }

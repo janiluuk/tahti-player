@@ -5,22 +5,7 @@ import { ButtonLink, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import type { PublicRadioShowEpisode } from '../api/shows';
 import { isGreenRoomWindow } from '../lib/radioSchedule';
-
-export function showDateLabel(episode: PublicRadioShowEpisode): string {
-  const start = new Date(episode.startAt);
-  const end = new Date(episode.endAt);
-  return `${start.toLocaleDateString([], {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-  })} · ${start.toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-  })}–${end.toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
-  })}`;
-}
+import { ShowEpisodeWhen } from './ShowEpisodeWhen';
 
 /** A titled list of scheduled/recorded show episodes, each with its cover
  * thumbnail — shared by the artist profile's "Live shows" section and the
@@ -53,9 +38,10 @@ export function ShowEpisodeList({
               <div className="font-medium">
                 {episode.title ?? episode.note ?? 'Tahti Radio show'}
               </div>
-              <div className="text-foreground-secondary text-xs">
-                {showDateLabel(episode)}
-              </div>
+              <ShowEpisodeWhen
+                episode={episode}
+                className="text-foreground-secondary text-xs"
+              />
               {episode.description ? (
                 <p className="text-foreground-secondary mt-1 text-xs">
                   {episode.description}
