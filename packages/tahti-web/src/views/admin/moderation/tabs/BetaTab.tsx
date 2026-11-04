@@ -17,6 +17,7 @@ import {
   type AdminBetaApplication,
   type AdminBetaStatus,
 } from '../../../../api/admin';
+import { ListingDate } from '../../../../components/ListingDate';
 import {
   PageEmpty,
   PageError,
@@ -160,7 +161,7 @@ export function BetaTab() {
                     </div>
                     <p className="text-foreground-secondary text-xs break-words">
                       {app.email} · {app.artistType} ·{' '}
-                      {new Date(app.createdAt).toLocaleDateString()}
+                      <ListingDate value={app.createdAt} />
                     </p>
                     {app.message && (
                       <p className="text-foreground-secondary mt-1 text-sm">

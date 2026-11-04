@@ -48,6 +48,7 @@ type PendingStreamConfirm = {
   description: string;
   confirmLabel: string;
   action: StreamAction;
+  destructive?: boolean;
 };
 
 function formatDuration(seconds: number): string {
@@ -285,6 +286,7 @@ export function AdminStreamManagerPanel({
                             description:
                               'This ends the broadcast immediately. The artist is notified that the board took it off the air.',
                             confirmLabel: 'Take offline',
+                            destructive: true,
                           })
                         }
                       >
@@ -450,6 +452,7 @@ export function AdminStreamManagerPanel({
         title={pendingConfirm?.title ?? 'Confirm'}
         description={pendingConfirm?.description ?? ''}
         confirmLabel={pendingConfirm?.confirmLabel}
+        destructive={pendingConfirm?.destructive}
         onCancel={() => setPendingConfirm(null)}
         onConfirm={() => {
           const pending = pendingConfirm;

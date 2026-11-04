@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
   addStudioCollectionItem,
+  fetchCollectionGallery,
   removeStudioCollectionItem,
 } from './studio-collections';
 
@@ -39,6 +40,18 @@ describe('addStudioCollectionItem', () => {
     expect(await addStudioCollectionItem('night', 's1')).toEqual({
       ok: true,
       itemId: null,
+    });
+  });
+
+  it('marks gallery fetch as not loaded when the API fails', async () => {
+    requestJson.mockRejectedValue(new Error('network'));
+    await expect(fetchCollectionGallery('night')).resolves.toEqual({
+      data: {
+        galleryMode: 'NONE',
+        slideshowImages: [],
+        videoBackgroundUrl: null,
+      },
+      meta: { loaded: false },
     });
   });
 

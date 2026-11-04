@@ -275,7 +275,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       label:
         recentItems.length > 0
           ? t('listen.recentlyPlayedAndSelects')
-          : 'Tahti Selects',
+          : t('listen.tahtiSelects'),
       content: (
         <div className="@container min-w-0">
           <div

@@ -63,6 +63,7 @@ export function useCollectionEditState(slug: string) {
     removeSlideshowFrame,
   } = useCollectionImages(slug, setCol);
   const [saving, setSaving] = useState(false);
+  const [galleryLoaded, setGalleryLoaded] = useState(false);
   const [pendingRemove, setPendingRemove] = useState<{
     id: string;
     title: string;
@@ -91,14 +92,20 @@ export function useCollectionEditState(slug: string) {
       setGenres((c.data.genres ?? []).join(', '));
       setTrackSortMode(c.data.trackSortMode ?? 'MANUAL');
       setCoverUrl(c.data.coverUrl ?? null);
-      setBackdropUrl(g.data.slideshowImages[0] ?? c.data.backdropUrl ?? null);
-      setSlideshowImages(
-        g.data.slideshowImages.length > 0
-          ? g.data.slideshowImages
-          : c.data.backdropUrl
-            ? [c.data.backdropUrl]
-            : [],
-      );
+      setGalleryLoaded(g.meta.loaded);
+      if (g.meta.loaded) {
+        setBackdropUrl(g.data.slideshowImages[0] ?? c.data.backdropUrl ?? null);
+        setSlideshowImages(
+          g.data.slideshowImages.length > 0
+            ? g.data.slideshowImages
+            : c.data.backdropUrl
+              ? [c.data.backdropUrl]
+              : [],
+        );
+      } else {
+        setBackdropUrl(c.data.backdropUrl ?? null);
+        setSlideshowImages(c.data.backdropUrl ? [c.data.backdropUrl] : []);
+      }
     });
   };
 
@@ -234,10 +241,15 @@ export function useCollectionEditState(slug: string) {
         genres: genreList.slice(0, 5),
         trackSortMode,
         backdropUrl: backdropUrl?.trim() || null,
-        gallery: {
-          slideshowImages,
-          galleryMode: slideshowImages.length > 1 ? 'STATIC_SLIDESHOW' : 'NONE',
-        },
+        ...(galleryLoaded
+          ? {
+              gallery: {
+                slideshowImages,
+                galleryMode:
+                  slideshowImages.length > 1 ? 'STATIC_SLIDESHOW' : 'NONE',
+              },
+            }
+          : {}),
       });
       if (!result.ok) {
         toast.error(result.error);

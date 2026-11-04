@@ -1,16 +1,10 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
-  CalendarDaysIcon,
-  CalendarIcon,
   HeartIcon,
   LayoutGridIcon,
   ListMusicIcon,
-  MicIcon,
-  PartyPopperIcon,
-  RadioIcon,
   RadioTowerIcon,
-  Settings2Icon,
   Share2Icon,
   SlidersHorizontalIcon,
   TrendingUpIcon,
@@ -85,46 +79,6 @@ export const SUBMENUS = {
     },
   ],
 } as const;
-
-/** The Broadcast hub's pages, all lit by the single "Broadcast" tab
- * (`studio.goLive` above); they link back with `BroadcastBackLink`. */
-export const BROADCAST_SUBNAV_ITEMS = [
-  {
-    to: '/studio/go-live',
-    labelKey: 'studio.onAir' as const,
-    icon: <RadioTowerIcon size={16} />,
-  },
-  {
-    to: '/studio/schedule',
-    labelKey: 'studio.schedule' as const,
-    icon: <CalendarDaysIcon size={16} />,
-  },
-  {
-    to: '/studio/events',
-    labelKey: 'studio.events' as const,
-    icon: <CalendarIcon size={16} />,
-  },
-  {
-    to: '/studio/listening-parties',
-    labelKey: 'studio.listeningParties' as const,
-    icon: <PartyPopperIcon size={16} />,
-  },
-  {
-    to: '/studio/shows',
-    labelKey: 'studio.shows' as const,
-    icon: <MicIcon size={16} />,
-  },
-  {
-    to: '/studio/channel',
-    labelKey: 'studio.channel' as const,
-    icon: <Settings2Icon size={16} />,
-  },
-  {
-    to: '/studio/channel?tab=radio',
-    labelKey: 'nav.radio' as const,
-    icon: <RadioIcon size={16} />,
-  },
-] as const;
 
 /** Releases, Distribution and Editor are one job (publish music). One Studio
  * "Music" tab stays lit; the three pages live in `CatalogSubNav`. */
@@ -286,48 +240,6 @@ export function litStudioSubmenuDestinations(
     .filter((item) => isSubmenuActive(current, item.to))
     .map((item) => item.to);
 }
-
-const RADIO_CHANNEL_TABS = new Set([
-  'radio',
-  'multicast',
-  'rotation',
-  'announcements',
-  'pinned',
-  'tahti-radio',
-]);
-
-function channelSearchTab(current: string | undefined): string | null {
-  const query = current?.split('?')[1];
-  if (!query) {
-    return null;
-  }
-  return new URLSearchParams(query).get('tab');
-}
-
-export const isBroadcastSubnavActive = (
-  current: string | undefined,
-  to: string,
-) => {
-  const pathname = current?.split('?')[0];
-  const tab = channelSearchTab(current);
-  if (to === '/studio/channel?tab=radio') {
-    return (
-      pathname === '/studio/channel' &&
-      tab !== null &&
-      RADIO_CHANNEL_TABS.has(tab)
-    );
-  }
-  if (to === '/studio/channel') {
-    return (
-      pathname === '/studio/channel' &&
-      (tab === null || !RADIO_CHANNEL_TABS.has(tab))
-    );
-  }
-  if (to === '/studio/go-live') {
-    return pathname === '/studio/go-live' || pathname === '/studio/info';
-  }
-  return pathname === to || pathname?.startsWith(`${to}/`) === true;
-};
 
 export function isStudioBroadcastGroup(current: string | undefined): boolean {
   const pathname = current?.split('?')[0] ?? '';

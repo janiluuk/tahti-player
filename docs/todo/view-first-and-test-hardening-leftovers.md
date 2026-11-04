@@ -19,17 +19,12 @@ changed, because it needs a product call or more than a mechanical fix.
 
 ## Bugs found, not fixed
 
-- [ ] Collection edit wipes the backdrop slideshow when the gallery GET fails:
-  `api/studio/studio-collections.ts` `fetchCollectionGallery` returns the
-  empty default with no error, `useCollectionEditState` seeds from it and
-  `saveMeta` always sends `gallery`. Needs a `meta` from the fetch and
-  skipping `gallery` in the patch when it was not loaded.
-- [ ] `components/channel-clips/ClipEditorDialog.tsx`: a cleared Every Nth
-  field saves `everyNth: 0` (`Number('')`); reuse
-  `views/admin/announcements/EveryNthInput`.
-- [ ] `views/admin/AdminStorageUserView.tsx` and
-  `components/track-edit-dialog/useTrackEditDialog.ts` (radio submission
-  lookup): fetches keyed on an id have no stale-response guard.
+- [x] Collection edit gallery GET failure (`fetchCollectionGallery` meta +
+  `useCollectionEditState` skips `gallery` patch when not loaded) — batch 30
+  slice 10.
+- [x] `ClipEditorDialog` Every Nth via `EveryNthInput` — batch 30 slice 9.
+- [x] Stale-fetch guards on `AdminStorageUserView` and track-edit radio
+  submission lookup — batch 30 slices 11–12.
 - [ ] `api/admin/admin-users.ts`: the BOARD/ARTIST role filter runs on the
   client after server pagination, so `total` counts one page.
 
@@ -45,9 +40,7 @@ changed, because it needs a product call or more than a mechanical fix.
   `favorite*Dates`; `mapNotesStore` `getDraft`, `listComments`,
   `isCaseApproved`.
 - [ ] Tests-only code: `views/studio/sounds/SoundRow.tsx`,
-  `plugins/youtube-liked-songs/parser.ts`, `StudioNav`
-  `BROADCAST_SUBNAV_ITEMS` / `isBroadcastSubnavActive` (its tab strip was
-  removed), `storageFormat.groupFilesByUser`, `renderAnnouncementTrim`,
+  `plugins/youtube-liked-songs/parser.ts`, `storageFormat.groupFilesByUser`, `renderAnnouncementTrim`,
   `fetchStickyNotifications`, `channelLookElements` adjacent/toggle helpers,
   `clampTimelineDuration`, `litStudioSubmenuDestinations`,
   `SIDEBAR_UNLIT_INTENTIONAL`, `encodeWavPcm16Blob`, go-live tab helpers.

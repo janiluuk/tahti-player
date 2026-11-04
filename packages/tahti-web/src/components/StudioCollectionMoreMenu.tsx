@@ -161,6 +161,7 @@ export function StudioCollectionMoreMenu({
         title={`Delete "${col.name}"?`}
         description={`This permanently deletes the ${kindLabel} and its track list. This cannot be undone.`}
         confirmLabel={deleting ? 'Deleting…' : 'Delete'}
+        destructive
         onCancel={() => setConfirmOpen(false)}
         onConfirm={confirmDelete}
       />

@@ -108,10 +108,17 @@ export function useTrackEditDialog(
       setRadioSubmission(null);
       return;
     }
+    let cancelled = false;
     void fetchMyRadioSubmissions().then(({ data }) => {
+      if (cancelled) {
+        return;
+      }
       const latest = data.find((s) => s.sound.id === soundId);
       setRadioSubmission(latest ?? null);
     });
+    return () => {
+      cancelled = true;
+    };
   }, [soundId]);
 
   useEffect(() => {

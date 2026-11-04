@@ -9,8 +9,9 @@ let collection: StudioCollection;
 const patchStudioCollection = vi.fn();
 const addStudioCollectionItem = vi.fn();
 const removeStudioCollectionItem = vi.fn();
-const { toast } = vi.hoisted(() => ({
+const { toast, galleryFetchMeta } = vi.hoisted(() => ({
   toast: { error: vi.fn(), success: vi.fn(), info: vi.fn() },
+  galleryFetchMeta: { loaded: true },
 }));
 
 vi.mock('sonner', () => ({ toast }));
@@ -33,6 +34,7 @@ vi.mock('../../../api/studio', async (importOriginal) => {
         slideshowImages: [],
         videoBackgroundUrl: null,
       },
+      meta: { loaded: galleryFetchMeta.loaded },
     }),
     patchStudioCollection: (...args: unknown[]) =>
       patchStudioCollection(...args),
@@ -74,6 +76,40 @@ describe('useCollectionEditState track order', () => {
     expect(patchStudioCollection).toHaveBeenCalledWith(
       'my-album',
       expect.objectContaining({ trackSortMode: 'TIME' }),
+    );
+  });
+});
+
+describe('useCollectionEditState gallery load', () => {
+  beforeEach(() => {
+    galleryFetchMeta.loaded = true;
+    collection = {
+      slug: 'my-album',
+      name: 'My Album',
+      items: [],
+      backdropUrl: 'https://cdn.example/backdrop.jpg',
+    };
+    patchStudioCollection.mockReset();
+    patchStudioCollection.mockImplementation(
+      async (slug: string, patch: Partial<StudioCollection>) => ({
+        ok: true,
+        data: { ...collection, slug, ...patch },
+      }),
+    );
+  });
+
+  it('does not send gallery in saveMeta when the gallery GET failed', async () => {
+    galleryFetchMeta.loaded = false;
+    const { result } = renderHook(() => useCollectionEditState('my-album'));
+    await waitFor(() => expect(result.current.col).not.toBeNull());
+
+    await act(async () => {
+      await result.current.saveMeta();
+    });
+
+    expect(patchStudioCollection).toHaveBeenCalledWith(
+      'my-album',
+      expect.not.objectContaining({ gallery: expect.anything() }),
     );
   });
 });

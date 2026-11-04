@@ -59,7 +59,7 @@ import { WidgetCard } from '../components/discover/WidgetCard';
 import {
   pickRandomTrack,
   TOP_LIST_WIDGET_IDS,
-  WIDGET_LABELS,
+  WIDGET_LABEL_KEYS,
 } from '../components/discover/widgetMeta';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { LatestNewsWidget } from '../components/LatestNewsWidget';
@@ -567,7 +567,7 @@ export function DiscoverView() {
                 >
                   <WidgetCard
                     id={id}
-                    title={WIDGET_LABELS[id]}
+                    title={t(WIDGET_LABEL_KEYS[id])}
                     subtitle={widgetData?.subtitle}
                     loading={widgetData?.loading ?? true}
                     error={widgetData?.error}

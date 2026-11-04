@@ -11,6 +11,7 @@ import {
 } from '../../../api/admin';
 import { PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { numericDate } from '../../../lib/relativeDate';
 
 const DAYS = 30;
 
@@ -71,7 +72,7 @@ export function CommunityStatsPanel() {
           value={stats.chatSeries.length > 0 ? formatCount(total) : '—'}
           sublabel={
             busiest
-              ? `Busiest ${new Date(`${busiest.date}T00:00:00Z`).toLocaleDateString()}: ${formatCount(busiest.count)}`
+              ? `Busiest ${numericDate(new Date(`${busiest.date}T00:00:00`))}: ${formatCount(busiest.count)}`
               : undefined
           }
         />

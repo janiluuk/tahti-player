@@ -473,6 +473,7 @@ export function InternetRadioPresetsPanel() {
           }
           description="Listeners lose this preset from the radio directory."
           confirmLabel="Remove"
+          destructive
           onCancel={() => setPendingRemove(null)}
           onConfirm={() => {
             const preset = pendingRemove;

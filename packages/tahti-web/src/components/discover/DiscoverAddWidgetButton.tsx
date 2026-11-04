@@ -4,7 +4,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Button, Popover } from '@tahti-player/ui';
 
 import type { DiscoverWidgetId } from '../../stores/discoverStore';
-import { WIDGET_LABELS, WIDGET_MENU } from './widgetMeta';
+import { WIDGET_LABEL_KEYS, WIDGET_MENU } from './widgetMeta';
 
 export function DiscoverAddWidgetButton({
   availableToAdd,
@@ -47,7 +47,9 @@ export function DiscoverAddWidgetButton({
               className="rounded-md"
             >
               <span className="flex flex-col">
-                <span className="font-semibold">{WIDGET_LABELS[id]}</span>
+                <span className="font-semibold">
+                  {t(WIDGET_LABEL_KEYS[id])}
+                </span>
                 <span className="text-xs opacity-80">{description}</span>
               </span>
             </Popover.Item>

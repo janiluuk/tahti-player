@@ -9,12 +9,10 @@ import {
   isGoLiveSessionTabActive,
 } from '../views/studio/go-live/goLiveTabs';
 import {
-  BROADCAST_SUBNAV_ITEMS,
   CATALOG_SUBNAV_ITEMS,
   getStudioPrimaryRoute,
   getStudioSubmenuItems,
   hasStudioNestedNav,
-  isBroadcastSubnavActive,
   isCatalogSubnavActive,
   isStudioBroadcastGroup,
   isStudioDetailRoute,
@@ -22,6 +20,58 @@ import {
   litStudioSubmenuDestinations,
   SUBMENUS,
 } from './StudioNav';
+
+const BROADCAST_SUBNAV_ITEMS = [
+  { to: '/studio/go-live', labelKey: 'studio.onAir' as const },
+  { to: '/studio/schedule', labelKey: 'studio.schedule' as const },
+  { to: '/studio/events', labelKey: 'studio.events' as const },
+  {
+    to: '/studio/listening-parties',
+    labelKey: 'studio.listeningParties' as const,
+  },
+  { to: '/studio/shows', labelKey: 'studio.shows' as const },
+  { to: '/studio/channel', labelKey: 'studio.channel' as const },
+  { to: '/studio/channel?tab=radio', labelKey: 'nav.radio' as const },
+] as const;
+
+const RADIO_CHANNEL_TABS = new Set([
+  'radio',
+  'multicast',
+  'rotation',
+  'announcements',
+  'pinned',
+  'tahti-radio',
+]);
+
+function channelSearchTab(current: string | undefined): string | null {
+  const query = current?.split('?')[1];
+  if (!query) {
+    return null;
+  }
+  return new URLSearchParams(query).get('tab');
+}
+
+const isBroadcastSubnavActive = (current: string | undefined, to: string) => {
+  const pathname = current?.split('?')[0];
+  const tab = channelSearchTab(current);
+  if (to === '/studio/channel?tab=radio') {
+    return (
+      pathname === '/studio/channel' &&
+      tab !== null &&
+      RADIO_CHANNEL_TABS.has(tab)
+    );
+  }
+  if (to === '/studio/channel') {
+    return (
+      pathname === '/studio/channel' &&
+      (tab === null || !RADIO_CHANNEL_TABS.has(tab))
+    );
+  }
+  if (to === '/studio/go-live') {
+    return pathname === '/studio/go-live' || pathname === '/studio/info';
+  }
+  return pathname === to || pathname?.startsWith(`${to}/`) === true;
+};
 
 describe('StudioNav section coverage', () => {
   // A submenu link whose own path doesn't resolve back to the primary

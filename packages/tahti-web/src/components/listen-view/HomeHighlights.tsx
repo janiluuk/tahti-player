@@ -2,6 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Card, CardsRow } from '@tahti-player/ui';
 
 import { fetchSmartLink, type FetchMeta } from '../../api/client';
@@ -19,10 +20,13 @@ import { smartLinkPlayables } from '../../views/smart-link/smartLinkTracks';
 import { ListenSection } from './ListenSection';
 import type { ListenSectionStatus } from './useListenSections';
 
-const ROW_LABELS = {
-  filterPlaceholder: 'Filter…',
-  nothingFound: 'Nothing matches that filter.',
-};
+function useRowLabels() {
+  const { t } = useTranslation('web');
+  return {
+    filterPlaceholder: t('listen.filterPlaceholder'),
+    nothingFound: t('listen.nothingFound'),
+  };
+}
 
 type Section<T> = { data: T[]; status: ListenSectionStatus };
 
@@ -112,6 +116,8 @@ const loadReleases = () => fetchLatestReleases(12);
 
 /** Curated Tahti Selects picks, with their artwork. */
 export function TahtiSelectsRow() {
+  const { t } = useTranslation('web');
+  const rowLabels = useRowLabels();
   const selects = useSection(loadSelects);
   const items: TrackRowItem[] = selects.data.map((track) => ({
     id: track.id,
@@ -121,21 +127,21 @@ export function TahtiSelectsRow() {
   return (
     <ListenSection
       data-testid="listen-tahti-selects"
-      title="Tahti Selects"
-      badge="Curated"
+      title={t('listen.tahtiSelects')}
+      badge={t('listen.curated')}
       badgeColor="orange"
       status={selects.status}
       empty={items.length === 0}
-      emptyTitle="No Selects picks yet"
+      emptyTitle={t('listen.noSelectsPicks')}
       onRetry={selects.retry}
     >
       <CardsRow
         data-testid="listen-tahti-selects"
-        title="Tahti Selects"
-        badge="Curated"
+        title={t('listen.tahtiSelects')}
+        badge={t('listen.curated')}
         badgeColor="orange"
         items={items}
-        labels={ROW_LABELS}
+        labels={rowLabels}
         renderItem={renderTrack}
       />
     </ListenSection>
@@ -144,6 +150,8 @@ export function TahtiSelectsRow() {
 
 /** The most played tracks of the past week, ranked. */
 export function TrendingRow() {
+  const { t } = useTranslation('web');
+  const rowLabels = useRowLabels();
   const trending = useSection(loadTrending);
   const items: TrackRowItem[] = trending.data
     .slice(0, 12)
@@ -156,22 +164,22 @@ export function TrendingRow() {
   return (
     <ListenSection
       data-testid="listen-trending"
-      title="Trending this week"
-      badge="Top plays"
+      title={t('listen.trendingThisWeek')}
+      badge={t('listen.topPlays')}
       badgeColor="purple"
       status={trending.status}
       empty={items.length === 0}
-      emptyTitle="Nothing has been played this week yet"
+      emptyTitle={t('listen.nothingPlayedWeek')}
       onRetry={trending.retry}
     >
       <CardsRow
         data-testid="listen-trending"
-        title="Trending this week"
+        title={t('listen.trendingThisWeek')}
         filterable={false}
-        badge="Top plays"
+        badge={t('listen.topPlays')}
         badgeColor="purple"
         items={items}
-        labels={ROW_LABELS}
+        labels={rowLabels}
         renderItem={renderTrack}
       />
     </ListenSection>
@@ -274,6 +282,8 @@ function ReleaseCard({ release }: { release: LatestRelease }) {
 
 /** Newest published releases from Tahti artists. */
 export function NewReleasesRow() {
+  const { t } = useTranslation('web');
+  const rowLabels = useRowLabels();
   const releases = useSection(loadReleases);
   const items: ReleaseRowItem[] = releases.data
     .filter((release) => Boolean(release.smartLinkSlug))
@@ -281,22 +291,22 @@ export function NewReleasesRow() {
   return (
     <ListenSection
       data-testid="listen-new-releases"
-      title="New releases"
-      badge="Releases"
+      title={t('listen.newReleases')}
+      badge={t('listen.releasesBadge')}
       badgeColor="blue"
       status={releases.status}
       empty={items.length === 0}
-      emptyTitle="No releases yet"
+      emptyTitle={t('listen.noReleasesYet')}
       onRetry={releases.retry}
     >
       <CardsRow
         data-testid="listen-new-releases"
-        title="New releases"
+        title={t('listen.newReleases')}
         filterable={false}
-        badge="Releases"
+        badge={t('listen.releasesBadge')}
         badgeColor="blue"
         items={items}
-        labels={ROW_LABELS}
+        labels={rowLabels}
         renderItem={({ release }: ReleaseRowItem) => (
           <ReleaseCard release={release} />
         )}

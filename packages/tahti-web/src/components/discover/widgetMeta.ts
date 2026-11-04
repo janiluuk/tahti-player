@@ -14,6 +14,8 @@ import {
   type CompassIcon,
 } from 'lucide-react';
 
+import type { ParseKeys } from '@tahti-player/i18n';
+
 import type { DiscoverTrackItem } from '../../api/types';
 import type { DiscoverWidgetId } from '../../stores/discoverStore';
 
@@ -27,19 +29,19 @@ export function pickRandomTrack(
   return pick ? [pick] : [];
 }
 
-export const WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
-  'this-week-most-played': 'This week: most played',
-  'this-week-least-played': 'This week: least played',
-  'new-to-you': 'New to you',
-  'latest-tracks': 'Latest tracks',
-  'most-played': 'Most played',
-  loved: 'Loved by the community',
-  'artist-of-the-week': 'Random artist of the week',
-  'random-artist': 'Random artist pick',
-  'public-playlists': 'Public playlists',
-  'tahti-selects': 'Tahti Selects',
-  'latest-releases': 'Latest releases',
-  'random-track': 'Random track',
+export const WIDGET_LABEL_KEYS: Record<DiscoverWidgetId, ParseKeys<'web'>> = {
+  'this-week-most-played': 'discover.widgets.thisWeekMostPlayed',
+  'this-week-least-played': 'discover.widgets.thisWeekLeastPlayed',
+  'new-to-you': 'discover.widgets.newToYou',
+  'latest-tracks': 'discover.widgets.latestTracks',
+  'most-played': 'discover.widgets.mostPlayed',
+  loved: 'discover.widgets.loved',
+  'artist-of-the-week': 'discover.widgets.artistOfTheWeek',
+  'random-artist': 'discover.widgets.randomArtist',
+  'public-playlists': 'discover.widgets.publicPlaylists',
+  'tahti-selects': 'discover.widgets.tahtiSelects',
+  'latest-releases': 'discover.widgets.latestReleases',
+  'random-track': 'discover.widgets.randomTrack',
 };
 
 /** What each widget shows, for the Add a widget menu. */

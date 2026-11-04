@@ -1,13 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
-import {
-  Badge,
-  Button,
-  EditIconButton,
-  Input,
-  Textarea,
-} from '@tahti-player/ui';
+import { Badge, Button, Input, Textarea } from '@tahti-player/ui';
 
 import {
   patchGovernanceMotion,
@@ -16,6 +10,8 @@ import {
 } from '../../api/client';
 import type { GovernanceMotion } from '../../api/types';
 import { toDatetimeLocalValue } from '../../lib/datetimeLocal';
+import { numericDate } from '../../lib/relativeDate';
+import { EditIconButton } from '../EditIconButton';
 import { MotionDiscussion } from './MotionDiscussion';
 import { MotionProposerActions } from './MotionProposerActions';
 import { MotionSecondControl } from './MotionSecondControl';
@@ -226,7 +222,7 @@ export function MotionCard({
       {m.state === 'DRAFT' && (
         <p className="text-foreground-secondary mt-1 text-xs">
           {m.openAt
-            ? `Voting opens ${new Date(m.openAt).toLocaleDateString()} after circulation period (bylaws §9).`
+            ? `Voting opens ${numericDate(new Date(m.openAt))} after circulation period (bylaws §9).`
             : 'Voting opens after circulation period (bylaws §9).'}
         </p>
       )}

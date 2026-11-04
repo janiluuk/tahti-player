@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { KeyRoundIcon, LogInIcon, UserPlusIcon } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -22,18 +23,6 @@ import { UsernameAvailabilityHint } from './UsernameAvailabilityHint';
 
 type AccountKind = ArtistKind | 'LISTENER';
 
-const ACCOUNT_KIND_OPTIONS: { id: AccountKind; label: string }[] = [
-  { id: 'LISTENER', label: 'Listener' },
-  { id: 'SINGLE', label: 'Artist' },
-  { id: 'COLLECTIVE', label: 'Band / Collective' },
-];
-
-const NAME_LABEL: Record<AccountKind, string> = {
-  LISTENER: 'Display name',
-  SINGLE: 'Artist name',
-  COLLECTIVE: 'Collective name',
-};
-
 const slugifyUsername = (value: string) =>
   value
     .toLowerCase()
@@ -46,6 +35,7 @@ function AuthDialogError({ message }: { message: string }) {
 }
 
 export const AuthDialog: FC = () => {
+  const { t } = useTranslation('web');
   const isOpen = useAuthModalStore((s) => s.isOpen);
   const mode = useAuthModalStore((s) => s.mode);
   const close = useAuthModalStore((s) => s.close);
@@ -103,11 +93,21 @@ export const AuthDialog: FC = () => {
     <LogInIcon size={18} aria-hidden />
   );
 
+  const accountKindOptions: { id: AccountKind; label: string }[] = [
+    { id: 'LISTENER', label: t('auth.listener') },
+    { id: 'SINGLE', label: t('auth.artist') },
+    { id: 'COLLECTIVE', label: t('auth.collective') },
+  ];
+  const nameLabel: Record<AccountKind, string> = {
+    LISTENER: t('auth.displayName'),
+    SINGLE: t('auth.artistName'),
+    COLLECTIVE: t('auth.collectiveName'),
+  };
   const title = totpChallengeId
-    ? 'Two-factor code'
+    ? t('auth.twoFactorTitle')
     : mode === 'join'
-      ? 'Join'
-      : 'Log in';
+      ? t('auth.join')
+      : t('auth.logIn');
   const passwordIssue = password.length > 0 ? passwordProblem(password) : null;
   const passwordsDoNotMatch =
     confirmPassword.length > 0 && password !== confirmPassword;
@@ -126,16 +126,16 @@ export const AuthDialog: FC = () => {
       </Dialog.Title>
       <Dialog.Description>
         {totpChallengeId
-          ? 'Enter the 6-digit code from your authenticator app or a backup code.'
+          ? t('auth.totpDescription')
           : mode === 'join'
-            ? 'Create an account, then verify your email.'
-            : 'Sign in to unlock your library, studio, and chat.'}
+            ? t('auth.joinDescription')
+            : t('auth.loginDescription')}
       </Dialog.Description>
 
       {totpChallengeId ? (
         <div className="mt-4 flex flex-col gap-3">
           <Input
-            label="Authentication or backup code"
+            label={t('auth.totpLabel')}
             value={totpCode}
             onChange={(e) => setTotpCode(e.target.value.trim())}
             autoComplete="one-time-code"
@@ -145,7 +145,7 @@ export const AuthDialog: FC = () => {
           {error ? <AuthDialogError message={error} /> : null}
           <Dialog.Actions>
             <Button variant="text" size="sm" onClick={() => cancelTotp()}>
-              Back
+              {t('auth.back')}
             </Button>
             <Button
               disabled={loading || totpCode.length < 6}
@@ -155,7 +155,7 @@ export const AuthDialog: FC = () => {
                   .catch(() => undefined);
               }}
             >
-              {loading ? 'Verifying…' : 'Verify'}
+              {loading ? t('auth.verifying') : t('auth.verify')}
             </Button>
           </Dialog.Actions>
         </div>
@@ -181,13 +181,13 @@ export const AuthDialog: FC = () => {
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            label="Email"
+            label={t('auth.email')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
           />
           <Input
-            label="Password"
+            label={t('auth.password')}
             variant="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -199,14 +199,14 @@ export const AuthDialog: FC = () => {
             onClick={handleClose}
             className="text-foreground-secondary self-start text-xs underline-offset-2 hover:underline"
           >
-            Forgot password?
+            {t('auth.forgotPassword')}
           </Link>
           <Dialog.Actions>
             <Button variant="text" size="sm" onClick={() => setMode('join')}>
-              Join
+              {t('auth.join')}
             </Button>
             <Button type="submit" disabled={loading || !email || !password}>
-              {loading ? 'Signing in…' : 'Sign in'}
+              {loading ? t('auth.signingIn') : t('auth.signIn')}
             </Button>
           </Dialog.Actions>
         </form>
@@ -219,7 +219,7 @@ export const AuthDialog: FC = () => {
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                label="Email"
+                label={t('auth.email')}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
@@ -227,18 +227,18 @@ export const AuthDialog: FC = () => {
             </div>
             <div className="flex flex-col gap-1.5 sm:col-span-2">
               <span className="text-foreground-secondary text-xs font-medium">
-                Account type
+                {t('auth.accountType')}
               </span>
               <SegmentedControl
-                aria-label="Account type"
-                options={ACCOUNT_KIND_OPTIONS}
+                aria-label={t('auth.accountType')}
+                options={accountKindOptions}
                 value={artistKind}
                 onChange={setArtistKind}
               />
             </div>
             <div className="flex flex-col gap-1 sm:col-span-2">
               <Input
-                label={NAME_LABEL[artistKind]}
+                label={nameLabel[artistKind]}
                 value={artistName}
                 onChange={(e) => setArtistName(e.target.value)}
                 autoComplete="name"
@@ -249,7 +249,7 @@ export const AuthDialog: FC = () => {
               />
             </div>
             <Input
-              label="Password"
+              label={t('auth.password')}
               variant="password"
               size="sm"
               value={password}
@@ -258,7 +258,7 @@ export const AuthDialog: FC = () => {
               autoComplete="new-password"
             />
             <Input
-              label="Confirm password"
+              label={t('auth.confirmPassword')}
               variant="password"
               size="sm"
               value={confirmPassword}
@@ -268,7 +268,7 @@ export const AuthDialog: FC = () => {
           </div>
           {passwordIssue ? <AuthDialogError message={passwordIssue} /> : null}
           {passwordsDoNotMatch ? (
-            <AuthDialogError message="Passwords do not match." />
+            <AuthDialogError message={t('auth.passwordsDoNotMatch')} />
           ) : null}
           {error ? <AuthDialogError message={error} /> : null}
           {message ? (
@@ -276,7 +276,7 @@ export const AuthDialog: FC = () => {
           ) : null}
           <Dialog.Actions>
             <Button variant="text" size="sm" onClick={() => setMode('login')}>
-              Log in
+              {t('auth.logIn')}
             </Button>
             <Button
               disabled={
@@ -311,7 +311,7 @@ export const AuthDialog: FC = () => {
                   .catch(() => undefined);
               }}
             >
-              {loading ? 'Creating…' : 'Create account'}
+              {loading ? t('auth.creating') : t('auth.createAccount')}
             </Button>
           </Dialog.Actions>
         </div>

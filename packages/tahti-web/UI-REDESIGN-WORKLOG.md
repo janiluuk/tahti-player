@@ -1,12 +1,17 @@
-## 2026-11-04 - OverflowMenu, FilterBar, destructive confirms (0.0.315)
+## 2026-11-04 - OverflowMenu, FilterBar, batch-30 slices (0.0.315)
 
 `@tahti-player/ui` adds OverflowMenu and FilterBar (phase-0 simplify
 primitives) with keyboard Storybook plays; ViewShell WithActions play tabs
-header actions. ConfirmDialog `destructive` on Studio events, updates,
-editor project, playlist editor, collection dialogs, release detail and
-smart-link track remove. VIEW-CATALOG marks Artist/Collection/Radio stories;
-NAVIGATION-SITEMAP drops stale BroadcastSubNav. Bumped ui `0.0.24`,
-tahti-web `0.0.315`.
+header actions. Batch 30: remaining danger `ConfirmDialog`s use
+`destructive` (Studio deletes/removes, admin stream take-offline, clip
+leave, radio presets, theme submissions, multistream remove). Collection
+edit skips `gallery` when the GET failed. Clip Every Nth uses
+`EveryNthInput`. Stale-fetch guards on admin storage user and track-edit
+radio submissions. Dead Broadcast subnav narrowed. ListingDate / relative
+dates / Library SEO / Discover widgets / Listen rows / Auth dialog /
+Share+Edit / Confirm defaults go through Finnish-aware i18n. Chat picker
+uses `PageBackLink`; `/listen/*` aliases documented. VIEW-CATALOG story
+status updates. Bumped ui `0.0.24`, tahti-web `0.0.315`.
 
 ## 2026-11-04 - Material Tags/Genre + Sets/Groups
 

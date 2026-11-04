@@ -17,7 +17,7 @@ type NavigationStructureState = {
 
 // Mirrors the real app's current nested navigation (see AppShell.tsx's
 // sidebar top level and StudioNav.tsx's SUBMENUS, the Fans hub cards and
-// BROADCAST_SUBNAV_ITEMS) so the draft widget starts by showing the whole
+// Broadcast hub routes) so the draft widget starts by showing the whole
 // real tree, not just its top level.
 const DEFAULT_ITEMS: NavigationStructureItem[] = [
   { id: 'listen', label: 'Listen', path: '/' },

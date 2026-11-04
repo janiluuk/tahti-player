@@ -450,6 +450,7 @@ function GroupDetail({ slug }: Props) {
         title={`Delete ${group.name}?`}
         description="The group and its collective playlist are removed for everyone. This cannot be undone."
         confirmLabel="Delete group"
+        destructive
         onCancel={() => setConfirmDelete(false)}
         onConfirm={() => void remove()}
       />

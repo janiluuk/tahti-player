@@ -671,6 +671,7 @@ export function WaveformEditor({
         title={confirm?.title ?? ''}
         description={confirm?.description ?? ''}
         confirmLabel={confirm?.confirmLabel}
+        destructive
         onCancel={() => setConfirm(null)}
         onConfirm={() => {
           confirm?.run();

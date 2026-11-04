@@ -12,6 +12,7 @@ import {
   type AdminRadioSubmission,
   type AdminRadioSubmissionStatus,
 } from '../../../../api/admin';
+import { ListingDate } from '../../../../components/ListingDate';
 import {
   PageEmpty,
   PageError,
@@ -268,7 +269,7 @@ export function RadioSubmissionsTab() {
                     <div className="text-foreground-secondary text-xs">
                       {row.submitter?.displayName ?? '—'} ·{' '}
                       {fmtDuration(row.sound.durationSec)} ·{' '}
-                      {new Date(row.createdAt).toLocaleDateString()}
+                      <ListingDate value={row.createdAt} />
                     </div>
                   </Button>
                   <Badge
