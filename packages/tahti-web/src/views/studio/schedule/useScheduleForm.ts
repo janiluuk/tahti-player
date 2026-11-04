@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useReducer } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   cancelScheduledShow,
   createShowSeries,
@@ -103,7 +105,7 @@ export function useScheduleForm() {
         }),
       )
       .catch(() => {
-        toast.error('Could not load your schedule.');
+        toast.error(i18n.t('web:toasts.couldNotLoadSchedule'));
         dispatch({ type: 'loadFailed' });
       });
   }, []);
@@ -122,7 +124,7 @@ export function useScheduleForm() {
   const saveRecurringSchedule = async () => {
     const selectedShow = shows.find((show) => show.id === selectedShowId);
     if (!selectedShow || !date || !time || frequencyDays.length === 0) {
-      toast.error('Choose a show, date, time, and at least one weekday.');
+      toast.error(i18n.t('web:toasts.chooseShowDateTimeWeekday'));
       return;
     }
     setBusy(true);
@@ -169,12 +171,12 @@ export function useScheduleForm() {
 
   const scheduleEpisode = async () => {
     if (!selectedShowId || !date || !time) {
-      toast.error('Choose a show, date, and time.');
+      toast.error(i18n.t('web:toasts.chooseShowDateTime'));
       return;
     }
     const startAt = fromLocalParts(date, time);
     if (!startAt) {
-      toast.error('Choose a valid date and time.');
+      toast.error(i18n.t('web:toasts.chooseValidDateTime'));
       return;
     }
     setBusy(true);
@@ -202,9 +204,9 @@ export function useScheduleForm() {
         return;
       }
       dispatch({ type: 'episodeCanceled', id });
-      toast.success('Scheduled show canceled.');
+      toast.success(i18n.t('web:toasts.scheduledShowCanceled'));
     } catch {
-      toast.error('Could not cancel the scheduled show.');
+      toast.error(i18n.t('web:toasts.couldNotCancelScheduledShow'));
     }
   };
 
@@ -278,7 +280,7 @@ export function useScheduleForm() {
   const saveSchedule = async () => {
     const nextBroadcastAt = fromLocalParts(date, time);
     if ((date || time) && !nextBroadcastAt) {
-      toast.error('Choose both a date and time.');
+      toast.error(i18n.t('web:toasts.chooseBothDateAndTime'));
       return;
     }
     setBusy(true);
@@ -286,7 +288,7 @@ export function useScheduleForm() {
     if (!selectedShow) {
       if (!note.trim()) {
         setBusy(false);
-        toast.error('Enter a show name to create a new show.');
+        toast.error(i18n.t('web:toasts.enterShowNameToCreate'));
         return;
       }
       const created = await createShowSeries({
@@ -326,7 +328,7 @@ export function useScheduleForm() {
       toast.error(result.error);
       return;
     }
-    toast.success('Next broadcast saved.');
+    toast.success(i18n.t('web:toasts.nextBroadcastSaved'));
     dispatch({
       type: 'scheduleSaved',
       schedule: result.data,

@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 
 import { encodeWav } from '@tahti-player/audio-editor';
 import { renderTakeMorph, type MorphCurve } from '@tahti-player/audio-rack';
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -209,7 +210,7 @@ export function TakeMetamorphDialog({
       const buffer = await render();
       const name = metamorphClipName(host, donor, settings);
       await onAddClip(encodeWav(buffer), name);
-      toast.success(`Added “${name}” to Multitrack.`);
+      toast.success(i18n.t('web:toasts.addedNamedToMultitrack', { name }));
       onClose();
     });
 

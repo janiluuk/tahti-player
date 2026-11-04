@@ -1,3 +1,8 @@
+## 2026-11-04 - Batch 47 UX slices
+
+Studio shows/go-live/pro-editor/branding/multitrack + desktop library
+toasts. tahti-web 0.0.337 (#1833).
+
 ## 2026-11-04 - Batch 46 UX slices
 
 Distribution/Jam/Hearthis/Radio Browser/scrobble/SmartPlaylists toasts.
