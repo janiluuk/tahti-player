@@ -24,6 +24,7 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { formatScheduleWindow } from '../../lib/scheduleTime';
 
 export function StudioEventsView() {
   const [events, setEvents] = useState<ArtistEvent[]>([]);
@@ -79,7 +80,7 @@ export function StudioEventsView() {
                   {event.title}
                 </Link>
                 <div className="text-foreground-secondary text-xs">
-                  {new Date(event.startAt).toLocaleString()} · {event.place},{' '}
+                  {formatScheduleWindow(event.startAt)} · {event.place},{' '}
                   {event.location}
                 </div>
                 {event.description && (

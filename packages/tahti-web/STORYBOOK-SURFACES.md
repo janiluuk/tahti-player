@@ -188,6 +188,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/FlowGallery` | `tahti-web/FlowGallery.stories.tsx` |
 | `Tahti/Listen/FollowListDialog` | `tahti-web/FollowListDialog.stories.tsx` |
 | `Tahti/Auth/ForgotPasswordView` | `tahti-web/ForgotPasswordView.stories.tsx` |
+| `Tahti/Dates/FormatScheduleWindow` | `tahti-web/FormatScheduleWindow.stories.tsx` |
 | `Tahti/Player/FullScreenPlayer` | `tahti-web/FullScreenPlayer.stories.tsx` |
 | `Tahti/Studio/Branding/GallerySection` | `tahti-web/GallerySection.stories.tsx` |
 | `Tahti/Studio/GenrePicker` | `tahti-web/GenrePicker.stories.tsx` |

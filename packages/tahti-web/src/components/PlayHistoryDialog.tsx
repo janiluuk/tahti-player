@@ -2,6 +2,7 @@ import { PlayIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Dialog, InlineError, Loader, Tooltip } from '@tahti-player/ui';
 
 import type {
@@ -83,7 +84,7 @@ export function PlayHistoryDialog({
       const playables = await preparePlayables(library, sessionIds, 'session');
       const [head, ...rest] = playables;
       if (!head) {
-        toast.error('None of these tracks can be played.');
+        toast.error(i18n.t('web:toasts.nonePlayable'));
         return;
       }
       play(head, { enqueueRest: rest });
@@ -99,7 +100,7 @@ export function PlayHistoryDialog({
   const clear = async () => {
     try {
       await library.catalog.clearPlayHistory();
-      toast.success('Listening history cleared.', {
+      toast.success(i18n.t('web:toasts.historyCleared'), {
         description: 'Play counts on tracks are unchanged.',
       });
       onChanged();

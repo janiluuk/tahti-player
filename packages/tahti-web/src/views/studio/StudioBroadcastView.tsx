@@ -34,6 +34,7 @@ import {
   type AgendaItem,
   type AgendaKind,
 } from '../../lib/broadcastAgenda';
+import { formatScheduleWindow } from '../../lib/scheduleTime';
 import { useAuthStore } from '../../stores/authStore';
 
 export const STUDIO_BROADCAST_ITEMS: HubCardItem[] = [
@@ -108,14 +109,7 @@ const FILTERS = [
   { id: 'party', label: 'Parties' },
 ];
 
-const formatStart = (iso: string) =>
-  new Date(iso).toLocaleString(undefined, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+const formatStart = (iso: string) => formatScheduleWindow(iso);
 
 function AgendaRow({ item }: { item: AgendaItem }) {
   return (

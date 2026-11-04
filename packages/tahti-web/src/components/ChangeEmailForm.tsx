@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useId, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -9,13 +10,12 @@ import {
   type PendingEmailChange,
 } from '../api/account-credentials';
 
-/** Settings → Account → Password & email: move the account to another
- * address. Nothing changes until the link sent there is opened. */
 export function ChangeEmailForm({
   currentEmail,
 }: {
   currentEmail: string | null;
 }) {
+  const { t } = useTranslation('web');
   const headingId = useId();
   const [newEmail, setNewEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -68,22 +68,27 @@ export function ChangeEmailForm({
     });
   };
 
+  const pendingUntil = pending
+    ? new Date(pending.expiresAt).toLocaleString(undefined, {
+        day: 'numeric',
+        month: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    : '';
+
   return (
     <section aria-labelledby={headingId} className="flex flex-col gap-3">
       <h3 id={headingId} className="font-semibold">
-        Change email
+        {t('settingsBody.account.changeEmail')}
       </h3>
       {pending ? (
         <div className="flex flex-wrap items-center gap-2 text-sm">
           <span>
-            Waiting for confirmation at {pending.newEmail} (the link works until{' '}
-            {new Date(pending.expiresAt).toLocaleString(undefined, {
-              day: 'numeric',
-              month: 'short',
-              hour: '2-digit',
-              minute: '2-digit',
+            {t('settingsBody.account.waitingConfirmation', {
+              email: pending.newEmail,
+              until: pendingUntil,
             })}
-            ).
           </span>
           <Button
             size="sm"
@@ -91,14 +96,15 @@ export function ChangeEmailForm({
             disabled={cancelling}
             onClick={cancel}
           >
-            {cancelling ? 'Cancelling…' : 'Cancel change'}
+            {cancelling
+              ? t('settingsBody.account.cancelling')
+              : t('settingsBody.account.cancelChange')}
           </Button>
         </div>
       ) : null}
       {currentEmail ? (
         <p className="text-foreground-secondary text-sm">
-          Now: {currentEmail}. We send a link to the new address, and tell this
-          one once the change is done.
+          {t('settingsBody.account.currentEmailNote', { email: currentEmail })}
         </p>
       ) : null}
       <form
@@ -109,7 +115,7 @@ export function ChangeEmailForm({
         }}
       >
         <Input
-          label="New email"
+          label={t('settingsBody.account.newEmail')}
           inputMode="email"
           autoCapitalize="none"
           autoCorrect="off"
@@ -119,7 +125,7 @@ export function ChangeEmailForm({
           autoComplete="email"
         />
         <Input
-          label="Password"
+          label={t('settingsBody.account.password')}
           variant="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
@@ -133,7 +139,9 @@ export function ChangeEmailForm({
         ) : null}
         <div>
           <Button type="submit" disabled={!canSubmit}>
-            {saving ? 'Sending…' : 'Send confirmation link'}
+            {saving
+              ? t('settingsBody.account.sending')
+              : t('settingsBody.account.sendConfirmationLink')}
           </Button>
         </div>
       </form>

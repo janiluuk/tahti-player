@@ -14,6 +14,7 @@ import { fetchMyEvents, type ArtistEvent } from '../../api/events';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { formatScheduleWindow } from '../../lib/scheduleTime';
 
 export function StudioEventView({ eventId }: { eventId: string }) {
   const [event, setEvent] = useState<ArtistEvent | null | undefined>(undefined);
@@ -63,7 +64,7 @@ export function StudioEventView({ eventId }: { eventId: string }) {
                   <CalendarDaysIcon size={16} aria-hidden />
                   <dd>
                     <time dateTime={event.startAt}>
-                      {new Date(event.startAt).toLocaleString()}
+                      {formatScheduleWindow(event.startAt)}
                     </time>
                   </dd>
                 </div>

@@ -1,3 +1,18 @@
+## 2026-11-04 - Batch 37 UX slices (0.0.327)
+
+Finnish for Settings Account password/email/privacy + storage, Artist
+story/people/connections/branding saves, Channel rename/slug/domain toasts;
+Library SoundFilters + Collections create dialog + Upload picker chrome;
+History Stats day/calendar/empty-range; Studio Sounds load-more and Releases
+chrome; Admin missed-shows filters/queue; Radio below-tabs chrome; channel
+blocks (embeds/tracks/chat); toast subset; editDetails/editInStudio/editFullBio
+via `web.actions`. Dates: Studio Broadcast/Events/Event/ListeningParties and
+AgmTab meetings → `formatScheduleWindow`; Agm voting windows + History Stats
+range → `numericDay`/`numericDate`; AdminDashboard audit kept exact.
+`FormatScheduleWindow` Storybook + `scheduleTime` tests. Skipped: ConfirmDialog
+destructive (none left), radio widget redesign, performance audit, pageTour,
+admin hub English descriptions.
+
 ## 2026-11-04 - Batch 36 UX slices (0.0.326)
 
 Settings Account cancel/storage, Artist identity fields, Channel domain tab Finnish;

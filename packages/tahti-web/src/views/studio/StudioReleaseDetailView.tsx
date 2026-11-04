@@ -235,7 +235,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                     <SaveButton saving={saving} onClick={() => void save()} />
                   ) : null}
                   <EditIconButton
-                    label="Edit details"
+                    label={i18n.t('web:actions.editDetails')}
                     editing={detailsExpanded}
                     onClick={() => setDetailsExpanded(!detailsExpanded)}
                   />

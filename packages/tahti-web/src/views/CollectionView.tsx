@@ -353,7 +353,7 @@ export function CollectionView({ slug }: { slug: string }) {
               <EditIconLink
                 to="/studio/collections/$slug"
                 params={{ slug }}
-                label="Edit in Studio"
+                label={t('actions.editInStudio')}
                 search={{ edit: true }}
                 className="bg-background border-border rounded-md border-(length:--border-width)"
               />

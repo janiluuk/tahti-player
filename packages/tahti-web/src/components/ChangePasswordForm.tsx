@@ -1,13 +1,13 @@
 import { useId, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import { changePassword } from '../api/account-credentials';
 import { PASSWORD_RULES_HINT, passwordProblem } from '../lib/passwordRules';
 
-/** Settings → Account → Password & email: change the password with the
- * current one; the API signs every other device out. */
 export function ChangePasswordForm() {
+  const { t } = useTranslation('web');
   const headingId = useId();
   const [current, setCurrent] = useState('');
   const [next, setNext] = useState('');
@@ -48,7 +48,7 @@ export function ChangePasswordForm() {
   return (
     <section aria-labelledby={headingId} className="flex flex-col gap-3">
       <h3 id={headingId} className="font-semibold">
-        Change password
+        {t('settingsBody.account.changePassword')}
       </h3>
       <form
         className="flex max-w-md flex-col gap-3"
@@ -58,14 +58,14 @@ export function ChangePasswordForm() {
         }}
       >
         <Input
-          label="Current password"
+          label={t('settingsBody.account.currentPassword')}
           variant="password"
           value={current}
           onChange={(event) => setCurrent(event.target.value)}
           autoComplete="current-password"
         />
         <Input
-          label="New password"
+          label={t('settingsBody.account.newPassword')}
           variant="password"
           value={next}
           onChange={(event) => setNext(event.target.value)}
@@ -74,24 +74,28 @@ export function ChangePasswordForm() {
         />
         {problem ? <InlineError>{problem}</InlineError> : null}
         <Input
-          label="Confirm new password"
+          label={t('settingsBody.account.confirmNewPassword')}
           variant="password"
           value={confirm}
           onChange={(event) => setConfirm(event.target.value)}
           autoComplete="new-password"
         />
         {mismatch ? (
-          <InlineError>Passwords don&apos;t match.</InlineError>
+          <InlineError>
+            {t('settingsBody.account.passwordsMismatch')}
+          </InlineError>
         ) : null}
         {error ? <InlineError>{error}</InlineError> : null}
         {done ? (
           <p role="status" className="text-sm">
-            {done} We emailed you to confirm the change.
+            {done} {t('settingsBody.account.emailConfirmNote')}
           </p>
         ) : null}
         <div>
           <Button type="submit" disabled={!canSubmit}>
-            {saving ? 'Changing…' : 'Change password'}
+            {saving
+              ? t('settingsBody.account.changing')
+              : t('settingsBody.account.changePasswordAction')}
           </Button>
         </div>
       </form>

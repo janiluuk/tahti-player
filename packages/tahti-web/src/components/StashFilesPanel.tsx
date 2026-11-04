@@ -2,7 +2,7 @@ import { PlayIcon, Share2Icon, Trash2Icon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, FilePicker, Input, Select, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -177,7 +177,7 @@ export const StashFilesPanel = ({
       return;
     }
     setMessage('Share access revoked.');
-    toast.success('Share access revoked.');
+    toast.success(i18n.t('web:toasts.shareAccessRevoked'));
     await reload();
   };
 

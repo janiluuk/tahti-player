@@ -331,18 +331,18 @@ export function RadioView() {
         <PageLoading label={t('radio.tuning')} />
       ) : !station && stationError ? (
         <PageError
-          title="Could not load Tahti Radio"
+          title={t('radio.loadErrorTitle')}
           description={stationError}
           onRetry={reload}
         />
       ) : !station ? (
         <PageEmpty
           icon="radio"
-          title="Radio unavailable"
-          description="Could not load the Tahti Radio station. Try again in a moment."
+          title={t('radio.unavailableTitle')}
+          description={t('radio.unavailableDescription')}
           action={
             <Button size="sm" variant="secondary" onClick={reload}>
-              Refresh
+              {t('actions.refresh')}
             </Button>
           }
         />
@@ -362,7 +362,7 @@ export function RadioView() {
                     <OnAirBadge />
                   ) : (
                     <span className="text-accent-red-strong font-mono text-xs font-semibold tracking-wide uppercase">
-                      Offline
+                      {t('radio.offline')}
                     </span>
                   )}
                 </div>
@@ -374,13 +374,13 @@ export function RadioView() {
               </div>
             </div>
             <div className="flex shrink-0 items-center gap-2">
-              <Tooltip content="Open Tahti Radio channel" side="top">
+              <Tooltip content={t('radio.openChannel')} side="top">
                 <ButtonLink
                   to="/channel/$slug"
                   params={{ slug: TAHTI_RADIO_SLUG }}
                   size="icon-sm"
                   variant="secondary"
-                  aria-label="Open Tahti Radio channel"
+                  aria-label={t('radio.openChannel')}
                 >
                   <RadioTowerIcon size={16} aria-hidden />
                 </ButtonLink>
@@ -406,7 +406,7 @@ export function RadioView() {
             </Box>
           ) : sectionErrors.relay ? (
             <PageErrorBanner
-              title="Could not check the member relay."
+              title={t('radio.memberRelayError')}
               description={sectionErrors.relay}
               onRetry={reload}
             />
@@ -415,8 +415,8 @@ export function RadioView() {
           {!online ? (
             <PageEmpty
               icon="radio"
-              title="Off air"
-              description="Browse live channels or check back soon."
+              title={t('radio.offAirTitle')}
+              description={t('radio.offAirDescription')}
               action={
                 <div className="flex flex-wrap gap-2">
                   <ButtonLink to="/" size="sm" variant="secondary">
@@ -434,7 +434,9 @@ export function RadioView() {
               logoUrl={stationLogo}
               info={
                 <RadioNowPlayingOverlay
-                  label={memberLive ? 'Live on the relay' : 'Now playing'}
+                  label={
+                    memberLive ? t('radio.liveOnRelay') : t('radio.nowPlaying')
+                  }
                   current={overlayCurrent}
                   next={overlayNext}
                   onCurrentInfo={
@@ -457,7 +459,9 @@ export function RadioView() {
                     actions={[
                       {
                         id: 'play',
-                        label: isRadioPlaying ? 'Pause Radio' : 'Play Radio',
+                        label: isRadioPlaying
+                          ? t('radio.pauseRadio')
+                          : t('radio.playRadio'),
                         icon: isRadioPlaying ? (
                           <PauseIcon size={16} className="fill-current" />
                         ) : (
@@ -689,12 +693,12 @@ export function RadioView() {
                   content:
                     sectionErrors.featured && featured.length === 0 ? (
                       <PageError
-                        title="Could not load member sets"
+                        title={t('radio.memberSetsError')}
                         description={sectionErrors.featured}
                         onRetry={reload}
                       />
                     ) : featured.length === 0 ? (
-                      <PageEmpty title="No member sets relayed yet." />
+                      <PageEmpty title={t('radio.memberSetsEmpty')} />
                     ) : (
                       <ul
                         className="border-border divide-border divide-y overflow-hidden rounded-lg border"

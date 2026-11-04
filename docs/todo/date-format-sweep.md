@@ -18,6 +18,7 @@ How: `lib/relativeDate.ts` (`relativeDate`, `numericDate`) formats; `components/
 - Batch 33, second pass: admin governance `LegalHoldsPanel`; chart, heatmap, weekday and month labels in Studio stats and History follow the app language (`dateLocaleTag()` in `lib/locale.ts`).
 - Batch 35: Admin Catalog latest content/broadcasts and Admin Radio featured/history → `ListingDate`; Studio editor list Updated → `ListingDate`; `channelRenameNote` redirect uses `numericDate`; artist "Joined" stays month/year via i18n.
 - Batch 36: `MotionMeetingLinkControl` meeting option → `numericDay`; `PlayHistoryDialog` → `ListingDate`.
+- Batch 37: Studio Broadcast agenda, Events/Event, ListeningParties → `formatScheduleWindow`; AgmTab meeting → `formatScheduleWindow`, voting windows → `numericDay`; HistoryStatsSection range → `numericDate`; AdminDashboardView recent audit documented Kept (exact).
 
 ## Kept as full timestamps (exact time matters)
 
@@ -33,4 +34,4 @@ How: `lib/relativeDate.ts` (`relativeDate`, `numericDate`) formats; `components/
 
 ## Left
 
-- [ ] Remaining one-off `toLocaleDateString` / `toLocaleString` in listings (`rg "toLocaleDateString|toLocaleString\(" packages/tahti-web/src packages/ui/src`): `AdminDashboardView` (audit events stay exact — see kept list); Studio (`StudioBroadcastView` agenda windows, `StudioStatsDetailView` chart labels, `stats/*`, `StudioEventsView` / `StudioEventView` / `StudioListeningPartiesView` schedule times); Library/desktop chart and count formatters (`HistoryStatsSection` range dates, `historyStats.ts`, `DesktopLibraryPanel`, `desktop-library/*`, `LocalLibrary*`, `SmartPlaylistDialog`, `WriteTagsDialog`, `SaveQueueLocalDialog`, `BackupRestoreDialog`); `ChannelViewBlocks` next show (schedule), `ObsPresetButton` / `CatalogTable` / `ShareList` (numbers); `AgmTab` voting windows. Decide per file: convert to `ListingDate`/`numericDay` or add to the kept list.
+- [ ] Remaining one-off `toLocaleDateString` / `toLocaleString` in listings (`rg "toLocaleDateString|toLocaleString\(" packages/tahti-web/src packages/ui/src`): Studio (`StudioStatsDetailView` chart labels, `stats/*`); Library/desktop chart and count formatters (`historyStats.ts` chart helpers, `DesktopLibraryPanel`, `desktop-library/*`, `LocalLibrary*`, `SmartPlaylistDialog`, `WriteTagsDialog`, `SaveQueueLocalDialog`, `BackupRestoreDialog`); `ChannelViewBlocks` next show (schedule Kept), `ObsPresetButton` / `CatalogTable` / `ShareList` (numbers). Decide per file: convert to `ListingDate`/`numericDay` or add to the kept list. Batch 37 moved Broadcast/Events/ListeningParties/AgmTab/HistoryStats range off this list.

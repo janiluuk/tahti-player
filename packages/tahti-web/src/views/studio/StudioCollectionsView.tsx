@@ -244,7 +244,7 @@ export function StudioCollectionsView() {
       })
       .catch(() => {
         setBusy(false);
-        toast.error('Could not create the collection.');
+        toast.error(t('toasts.couldNotCreateCollection'));
       });
   };
 
@@ -342,13 +342,13 @@ export function StudioCollectionsView() {
                       setCollaborative(false);
                     }
                   }}
-                  aria-label="Collection style"
+                  aria-label={t('library.collectionStyle')}
                 />
                 {style === 'ALBUM' || style === 'EP' ? (
                   <div className="grid gap-3 sm:grid-cols-2">
                     <Input
                       type="date"
-                      label="Release date"
+                      label={t('library.releaseDate')}
                       value={releaseDate}
                       onChange={(event) => setReleaseDate(event.target.value)}
                     />
@@ -361,7 +361,7 @@ export function StudioCollectionsView() {
                   </div>
                 ) : null}
                 <Select
-                  label="Visibility"
+                  label={t('library.visibility')}
                   value={visibility}
                   onValueChange={(value) => {
                     const nextVisibility = value as
@@ -372,16 +372,16 @@ export function StudioCollectionsView() {
                     }
                   }}
                   options={[
-                    { id: 'PUBLIC', label: 'Public' },
-                    { id: 'UNLISTED', label: 'Unlisted — direct link only' },
-                    { id: 'PRIVATE', label: 'Private — only you' },
+                    { id: 'PUBLIC', label: t('library.visibilityPublic') },
+                    { id: 'UNLISTED', label: t('library.visibilityUnlisted') },
+                    { id: 'PRIVATE', label: t('library.visibilityPrivate') },
                   ]}
                 />
                 {style === 'PLAYLIST' ? (
                   <div className="flex items-center justify-between gap-3 text-sm">
-                    <span>Others can add tracks</span>
+                    <span>{t('library.othersCanAdd')}</span>
                     <Toggle
-                      label="Others can add tracks"
+                      label={t('library.othersCanAdd')}
                       checked={collaborative}
                       disabled={visibility !== 'PUBLIC'}
                       onChange={setCollaborative}
@@ -390,10 +390,10 @@ export function StudioCollectionsView() {
                 ) : null}
               </div>
               <Dialog.Actions>
-                <Dialog.Close>Cancel</Dialog.Close>
+                <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
                 <Button type="submit" disabled={!name.trim() || busy}>
                   <PlusIcon size={16} aria-hidden className="mr-1.5" />
-                  {busy ? 'Creating…' : 'Create'}
+                  {busy ? t('library.creating') : t('library.create')}
                 </Button>
               </Dialog.Actions>
             </form>
@@ -406,8 +406,8 @@ export function StudioCollectionsView() {
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search collections…"
-                aria-label="Search collections"
+                placeholder={t('library.searchCollectionsPlaceholder')}
+                aria-label={t('library.searchCollections')}
                 startAddon={
                   <SearchIcon size={14} aria-hidden className="opacity-70" />
                 }
@@ -431,7 +431,10 @@ export function StudioCollectionsView() {
                   }
                 }}
               >
-                <Tabs.List aria-label="Collection types" className="flex-wrap">
+                <Tabs.List
+                  aria-label={t('library.collectionTypes')}
+                  className="flex-wrap"
+                >
                   <Tabs.Tab>
                     <TabLabel
                       icon={<LibraryIcon size={16} />}
@@ -453,7 +456,7 @@ export function StudioCollectionsView() {
               </Tabs.Root>
             </div>
             {loading ? (
-              <PageLoading label="Loading…" />
+              <PageLoading label={t('settingsBody.loading')} />
             ) : loadError && rows.length === 0 ? (
               <PageError
                 title={t('library.collectionsLoadError')}
@@ -576,9 +579,7 @@ export function StudioCollectionsView() {
                                 (item): item is TahtiPlayable => item !== null,
                               );
                             if (playables.length === 0) {
-                              toast.error(
-                                'Nothing in this collection can play yet.',
-                              );
+                              toast.error(t('library.nothingPlayable'));
                               return;
                             }
                             const [head, ...rest] = playables;

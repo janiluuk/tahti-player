@@ -18,7 +18,6 @@ import {
   Input,
   SaveButton,
   Select,
-  SelectableTile,
   SelectableTiles,
   Tabs,
   type SelectOption,
@@ -69,11 +68,6 @@ const PRONOUN_OPTIONS: SelectOption[] = [
   { id: 'she/they', label: 'she/they' },
   { id: 'he/they', label: 'he/they' },
   { id: 'other', label: 'Other' },
-];
-
-const ARTIST_KIND_OPTIONS: SelectableTile[] = [
-  { id: 'SINGLE', label: 'Solo artist' },
-  { id: 'COLLECTIVE', label: 'Band / collective' },
 ];
 
 const ARTIST_ROLE_OPTIONS = [
@@ -214,7 +208,7 @@ export function ArtistPanel() {
       if (result.ok) {
         setProfile(result.data);
         void refreshAuth();
-        toast.success('Artist info saved.');
+        toast.success(t('settingsBody.artist.artistInfoSaved'));
       }
     });
   };
@@ -378,23 +372,27 @@ export function ArtistPanel() {
           }}
         >
           <MentionTextarea
-            label="Short bio"
+            label={t('settingsBody.artist.shortBio')}
             rows={4}
             value={profile.bio ?? ''}
             onChange={(bio) => setProfile({ ...profile, bio })}
-            placeholder="The concise introduction shown on your profile."
+            placeholder={t('settingsBody.artist.shortBioPlaceholder')}
             submitOnModEnter
           />
           <MentionTextarea
-            label="Your story"
+            label={t('settingsBody.artist.yourStory')}
             rows={8}
             value={profile.fullBio ?? ''}
             onChange={(fullBio) => setProfile({ ...profile, fullBio })}
-            placeholder="Share your history, influences, milestones, and what listeners should know."
+            placeholder={t('settingsBody.artist.yourStoryPlaceholder')}
             submitOnModEnter
           />
           <div className="flex justify-end">
-            <SaveButton saving={busy} label="Save story" type="submit" />
+            <SaveButton
+              saving={busy}
+              label={t('settingsBody.artist.saveStory')}
+              type="submit"
+            />
           </div>
           {msg && <SettingsHint>{msg}</SettingsHint>}
         </form>
@@ -408,15 +406,20 @@ export function ArtistPanel() {
         <div className="flex flex-col gap-5">
           <div className="flex flex-col gap-1.5 text-sm">
             <span className="text-foreground text-sm font-semibold" aria-hidden>
-              Project type
+              {t('settingsBody.artist.projectType')}
             </span>
             <span className="text-foreground-secondary text-xs">
-              Tell listeners whether this profile represents one artist or a
-              collective.
+              {t('settingsBody.artist.projectTypeDescription')}
             </span>
             <SelectableTiles
-              aria-label="Project type"
-              items={ARTIST_KIND_OPTIONS}
+              aria-label={t('settingsBody.artist.projectType')}
+              items={[
+                { id: 'SINGLE', label: t('settingsBody.artist.soloArtist') },
+                {
+                  id: 'COLLECTIVE',
+                  label: t('settingsBody.artist.bandCollective'),
+                },
+              ]}
               selected={profile?.artistKind ?? 'SINGLE'}
               onChange={(kind) =>
                 profile &&
@@ -431,10 +434,10 @@ export function ArtistPanel() {
           <div className="flex flex-col gap-3">
             <div>
               <h3 className="text-foreground text-sm font-semibold">
-                Members and credits
+                {t('settingsBody.artist.membersCredits')}
               </h3>
               <p className="text-foreground-secondary mt-1 text-xs">
-                People shown alongside this project on its public artist page.
+                {t('settingsBody.artist.membersCreditsDescription')}
               </p>
             </div>
             <ChannelMembersEditor members={members} onChange={setMembers} />
@@ -442,7 +445,7 @@ export function ArtistPanel() {
           <div className="flex justify-end">
             <SaveButton
               saving={busy}
-              label="Save people settings"
+              label={t('settingsBody.artist.savePeople')}
               onClick={saveArtistInfo}
             />
           </div>
@@ -470,8 +473,7 @@ export function ArtistPanel() {
       ) : (
         <div className="flex flex-col gap-6">
           <SettingsHint>
-            Add the places listeners can find you. These links appear as branded
-            buttons on your public artist profile.
+            {t('settingsBody.artist.connectionsHint')}
           </SettingsHint>
           <form
             className="flex flex-col gap-6"
@@ -485,9 +487,9 @@ export function ArtistPanel() {
                   setSocialMsg(result.error);
                   return;
                 }
-                setSocialMsg('Connections saved.');
+                setSocialMsg(t('settingsBody.artist.connectionsSaved'));
                 setSocial(result.data);
-                toast.success('Connections saved.');
+                toast.success(t('settingsBody.artist.connectionsSaved'));
               });
             }}
           >
@@ -527,7 +529,10 @@ export function ArtistPanel() {
               ))}
             </div>
             <div className="flex justify-end">
-              <SaveButton label="Save social links" type="submit" />
+              <SaveButton
+                label={t('settingsBody.artist.saveSocialLinks')}
+                type="submit"
+              />
             </div>
           </form>
           {socialMsg && <SettingsHint>{socialMsg}</SettingsHint>}
@@ -592,6 +597,7 @@ export function ArtistPanel() {
 }
 
 export function ReleaseVisualDefaultsPanel() {
+  const { t } = useTranslation('web');
   const [preference, setPreference] = useState(() =>
     readReleaseVisualizerPreference(),
   );
@@ -600,30 +606,30 @@ export function ReleaseVisualDefaultsPanel() {
     const next = { ...preference, ...patch };
     setPreference(next);
     saveReleaseVisualizerPreference(next);
-    toast.success('Release visualizer default saved.');
+    toast.success(t('settingsBody.artist.visualizerSaved'));
   };
 
   return (
     <div className="flex flex-col gap-4">
-      <SettingsHint>
-        Choose the animated background used when you create a new release. You
-        can still change an individual release later from its visual settings.
-      </SettingsHint>
+      <SettingsHint>{t('settingsBody.artist.brandingHint')}</SettingsHint>
       <Select
-        label="New release background"
+        label={t('settingsBody.artist.newReleaseBackground')}
         value={preference.mode}
         onValueChange={(value) =>
           update({ mode: value as ReleaseVisualizerMode })
         }
         options={[
-          { id: 'specific', label: 'Use a specific visualizer' },
-          { id: 'random', label: 'Choose a random visualizer' },
-          { id: 'off', label: 'Off' },
+          {
+            id: 'specific',
+            label: t('settingsBody.artist.visualizerSpecific'),
+          },
+          { id: 'random', label: t('settingsBody.artist.visualizerRandom') },
+          { id: 'off', label: t('settingsBody.artist.visualizerOff') },
         ]}
       />
       {preference.mode === 'specific' && (
         <Select
-          label="Visualizer"
+          label={t('settingsBody.artist.visualizer')}
           value={preference.preset}
           onValueChange={(value) =>
             update({

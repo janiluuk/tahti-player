@@ -6,6 +6,7 @@ import {
   SearchIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Input,
@@ -30,6 +31,7 @@ import {
 } from './useStudioSoundsState';
 
 export function SoundFilters({ state }: { state: StudioSoundsState }) {
+  const { t } = useTranslation('web');
   const {
     query,
     setQuery,
@@ -53,7 +55,9 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
   const setView = useTrackListViewStore((store) => store.setView);
   const view =
     storedView === null || storedView === 'grid' ? 'comfortable' : storedView;
-  const sortLabel = sortDescending ? 'Descending' : 'Ascending';
+  const sortLabel = sortDescending
+    ? t('library.sortDescending')
+    : t('library.sortAscending');
 
   return (
     <>
@@ -61,17 +65,17 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
         <Input
           enterKeyHint="search"
           type="search"
-          aria-label="Search sounds"
+          aria-label={t('library.searchSounds')}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search…"
+          placeholder={t('library.searchPlaceholder')}
           className="max-w-md flex-1"
           startAddon={
             <SearchIcon size={14} aria-hidden className="opacity-70" />
           }
         />
         <Select
-          aria-label="Type"
+          aria-label={t('library.typeFilter')}
           value={contentTypeFilter}
           onValueChange={(value) =>
             setContentTypeFilter(value as ContentTypeFilter)
@@ -83,7 +87,11 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
           className="min-w-36"
         />
         <Tooltip
-          content={filtersOpen ? 'Collapse filters' : 'Expand filters'}
+          content={
+            filtersOpen
+              ? t('library.collapseFilters')
+              : t('library.expandFilters')
+          }
           side="top"
         >
           <Button
@@ -91,7 +99,11 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
             size="icon-sm"
             variant="secondary"
             aria-expanded={filtersOpen}
-            aria-label={filtersOpen ? 'Collapse filters' : 'Expand filters'}
+            aria-label={
+              filtersOpen
+                ? t('library.collapseFilters')
+                : t('library.expandFilters')
+            }
             onClick={() => setFiltersOpen((current) => !current)}
           >
             <FilterIcon size={15} aria-hidden />
@@ -107,12 +119,14 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
           data-testid="sound-sort-size"
         >
           <SortMenuButton
-            label="Sort by"
+            label={t('library.sortBy')}
             value={sortField}
             onChange={(value) => setSortField(value as SortField)}
             options={SORT_FIELDS.map((sortOption) => ({
               id: sortOption.id,
-              label: `By ${sortOption.label.toLowerCase()}`,
+              label: t('library.sortByField', {
+                field: sortOption.label.toLowerCase(),
+              }),
             }))}
           />
           <Tooltip content={sortLabel} side="top">
@@ -120,7 +134,7 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
               type="button"
               size="icon-sm"
               variant="secondary"
-              aria-label={`Sort order: ${sortLabel}`}
+              aria-label={t('library.sortOrder', { order: sortLabel })}
               onClick={() => setSortDescending((current) => !current)}
             >
               {sortDescending ? (
@@ -137,13 +151,13 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
           />
         </div>
         <span className="text-foreground-secondary text-xs">
-          Pinned {pinnedCount}
+          {t('library.pinnedCount', { count: pinnedCount })}
         </span>
       </div>
       {filtersOpen && (
         <div className="border-border mb-4 flex flex-wrap items-end gap-3 border-b pb-4">
           <Select
-            label="Source"
+            label={t('library.source')}
             value={embedFilter}
             onValueChange={(value) => setEmbedFilter(value as EmbedFilter)}
             options={EMBED_FILTERS.map((filterOption) => ({
@@ -154,14 +168,14 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
           />
           <Input
             type="date"
-            label="Uploaded from"
+            label={t('library.uploadedFrom')}
             value={uploadedFrom}
             onChange={(event) => setUploadedFrom(event.target.value)}
             className="min-w-36"
           />
           <Input
             type="date"
-            label="Uploaded to"
+            label={t('library.uploadedTo')}
             value={uploadedTo}
             onChange={(event) => setUploadedTo(event.target.value)}
             className="min-w-36"

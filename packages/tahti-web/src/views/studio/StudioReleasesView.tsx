@@ -13,7 +13,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -59,6 +59,7 @@ const RELEASE_TYPES = [
 ] as const;
 
 export function StudioReleasesView() {
+  const { t } = useTranslation('web');
   const [releases, setReleases] = useState<StudioRelease[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -147,26 +148,26 @@ export function StudioReleasesView() {
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
         <ViewShell
-          title="Releases"
+          title={t('studioReleases.title')}
           classes={{ root: 'px-0 pt-0' }}
           actions={
             <div className="flex items-center gap-2">
-              <Tooltip content="Distribution" side="top">
+              <Tooltip content={t('studioReleases.distribution')} side="top">
                 <ButtonLink
                   to="/studio/distribution"
                   size="icon-sm"
                   variant="text"
-                  aria-label="Distribution"
+                  aria-label={t('studioReleases.distribution')}
                 >
                   <Share2Icon size={16} aria-hidden />
                 </ButtonLink>
               </Tooltip>
               <ReleaseCsvImportButton onImported={reload} />
-              <Tooltip content="New release" side="top">
+              <Tooltip content={t('studioReleases.newRelease')} side="top">
                 <Button
                   size="icon-sm"
                   onClick={() => setCreateOpen(true)}
-                  aria-label="New release"
+                  aria-label={t('studioReleases.newRelease')}
                 >
                   <PlusIcon size={16} aria-hidden />
                 </Button>
@@ -184,7 +185,7 @@ export function StudioReleasesView() {
               <Dialog.Title>
                 <span className="inline-flex items-center gap-2">
                   <PlusIcon size={18} aria-hidden />
-                  New release
+                  {t('studioReleases.newRelease')}
                 </span>
               </Dialog.Title>
               <div className="mt-4 flex flex-col gap-3">
@@ -198,23 +199,25 @@ export function StudioReleasesView() {
                   items={RELEASE_TYPES}
                   selected={type}
                   onChange={setType}
-                  aria-label="Release type"
+                  aria-label={t('studioReleases.releaseType')}
                 />
                 <Input
                   type="date"
-                  label="Release date"
+                  label={t('studioReleases.releaseDate')}
                   value={releaseDate}
                   onChange={(event) => setReleaseDate(event.target.value)}
                 />
               </div>
               <Dialog.Actions>
-                <Dialog.Close>Cancel</Dialog.Close>
+                <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
                 <Button
                   type="submit"
                   disabled={creating || !title.trim() || !releaseDate}
                 >
                   <PlusIcon size={16} aria-hidden className="mr-1.5" />
-                  {creating ? 'Creating…' : 'Create'}
+                  {creating
+                    ? t('studioReleases.creating')
+                    : t('studioReleases.create')}
                 </Button>
               </Dialog.Actions>
             </form>
@@ -222,10 +225,10 @@ export function StudioReleasesView() {
 
           <StudioPanel>
             {loading ? (
-              <PageLoading label="Loading…" />
+              <PageLoading label={t('settingsBody.loading')} />
             ) : loadError && releases.length === 0 ? (
               <PageError
-                title="Could not load your releases"
+                title={t('studioReleases.loadError')}
                 description={loadError}
                 onRetry={() => {
                   setLoading(true);
@@ -234,15 +237,15 @@ export function StudioReleasesView() {
               />
             ) : releases.length === 0 ? (
               <PageEmpty
-                title="No releases yet"
-                description="Create one to share a public link."
+                title={t('studioReleases.emptyTitle')}
+                description={t('studioReleases.emptyDescription')}
                 action={
-                  <Tooltip content="New release" side="top">
+                  <Tooltip content={t('studioReleases.newRelease')} side="top">
                     <Button
                       size="icon-sm"
                       variant="secondary"
                       onClick={() => setCreateOpen(true)}
-                      aria-label="New release"
+                      aria-label={t('studioReleases.newRelease')}
                     >
                       <PlusIcon size={16} aria-hidden />
                     </Button>
@@ -254,10 +257,10 @@ export function StudioReleasesView() {
                 <Input
                   enterKeyHint="search"
                   type="search"
-                  aria-label="Search releases"
+                  aria-label={t('studioReleases.searchAria')}
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
-                  placeholder="Search by title…"
+                  placeholder={t('studioReleases.searchPlaceholder')}
                   className="mb-4 max-w-md"
                   startAddon={
                     <SearchIcon size={14} aria-hidden className="opacity-70" />
@@ -265,14 +268,16 @@ export function StudioReleasesView() {
                 />
                 {filteredReleases.length === 0 ? (
                   <PageEmpty
-                    title={`No releases match “${query.trim()}”`}
+                    title={t('studioReleases.noMatch', {
+                      query: query.trim(),
+                    })}
                     action={
                       <Button
                         size="sm"
                         variant="secondary"
                         onClick={() => setQuery('')}
                       >
-                        Clear search
+                        {t('actions.clearSearch')}
                       </Button>
                     }
                   />
