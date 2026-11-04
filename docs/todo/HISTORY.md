@@ -1,3 +1,9 @@
+## 2026-11-04 - Channel manager on Studio → Broadcast
+
+`StreamManagerPanel` lives on `/studio/broadcast` (Channel manager). Removed
+the duplicate Stream block from Studio Home. Storybook Hubs → Broadcast
+asserts the section. tahti-web `0.0.311`.
+
 ## 2026-11-04 - Identity avatar at the top
 
 Settings → Artist → Identity: larger profile avatar leads the form.

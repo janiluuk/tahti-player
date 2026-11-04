@@ -26,6 +26,7 @@ import { fetchMyListeningParties } from '../../api/listening-parties';
 import { fetchShowSchedule } from '../../api/shows/series';
 import { renderHubLink } from '../../components/HubLink';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
+import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import {
@@ -90,7 +91,7 @@ export const STUDIO_BROADCAST_ITEMS: HubCardItem[] = [
     href: '/studio/channel',
     icon: Settings2Icon,
     title: 'Channel',
-    description: 'Green room, stream keys and channel settings.',
+    description: 'Green room, radio tabs and channel settings.',
   },
 ];
 
@@ -148,7 +149,8 @@ function AgendaRow({ item }: { item: AgendaItem }) {
 }
 
 export function StudioBroadcastView() {
-  const live = useAuthStore((state) => state.user?.channel?.state === 'LIVE');
+  const channel = useAuthStore((state) => state.user?.channel);
+  const live = channel?.state === 'LIVE';
   const [agenda, setAgenda] = useState<AgendaItem[] | null>(null);
   const [filter, setFilter] = useState('all');
 
@@ -214,6 +216,29 @@ export function StudioBroadcastView() {
               {live ? 'Open the green room' : 'Go live'}
             </ButtonLink>
           </div>
+          {channel?.slug ? (
+            <section
+              aria-labelledby="broadcast-channel-manager-title"
+              data-testid="broadcast-channel-manager"
+              className="flex flex-col gap-3"
+            >
+              <div>
+                <h2
+                  id="broadcast-channel-manager-title"
+                  className="font-display text-lg font-bold tracking-tight"
+                >
+                  Channel manager
+                </h2>
+                <p className="text-foreground-secondary mt-1 text-sm">
+                  Live status, rotation and stream controls for your channel.
+                </p>
+              </div>
+              <StreamManagerPanel
+                slug={channel.slug}
+                channelState={channel.state ?? 'OFFLINE'}
+              />
+            </section>
+          ) : null}
           <StudioPanel
             title="Coming up"
             description="Shows, events and listening parties, soonest first."
