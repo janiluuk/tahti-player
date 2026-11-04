@@ -4,7 +4,7 @@ ListingDate leftovers (Admin Catalog/Radio featured history, Studio editor
 list), Finnish for Settings Logs / Studio hub / Admin Inbox / Discover
 stories / Radio station / collection actions / green room pools / support /
 transparency / governance history / Studio toasts, OrganizeFiles destructive
-confirm, ListingDate stories. tahti-web 0.0.325.
+confirm, ListingDate stories. tahti-web 0.0.325 (#1821).
 
 
 ## 2026-11-04 - Studio Updates StoryCard posts

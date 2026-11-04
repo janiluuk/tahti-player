@@ -1,6 +1,7 @@
 import { Cast, InfoIcon, SettingsIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Box, Button, PluginStoreItem, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -24,6 +25,7 @@ import {
 } from '../../stores/discoverStore';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { DiscoWidgetManagerPanel } from '../disco-widgets/DiscoWidgetManagerPanel';
+import { WIDGET_LABEL_KEYS } from '../discover/widgetMeta';
 import {
   MulticastConfigureDialog,
   type MulticastConfiguring,
@@ -281,22 +283,8 @@ const DISCOVER_WIDGET_DETAILS: Record<DiscoverWidgetId, string> = {
     'Play one track at random from the genres you pick, and roll again.',
 };
 
-const DISCOVER_WIDGET_LABELS: Record<DiscoverWidgetId, string> = {
-  'this-week-most-played': 'This week: most played',
-  'this-week-least-played': 'This week: least played',
-  'new-to-you': 'New to you',
-  'latest-tracks': 'Latest tracks',
-  'most-played': 'Most played',
-  loved: 'Loved by the community',
-  'artist-of-the-week': 'Artist of the week',
-  'random-artist': 'Random artist',
-  'public-playlists': 'Public playlists',
-  'tahti-selects': 'Tahti Selects',
-  'latest-releases': 'Latest releases',
-  'random-track': 'Random track',
-};
-
 function DiscoverWidgetPlugins() {
+  const { t } = useTranslation('web');
   const enabledWidgets = useDiscoverStore((state) => state.enabledWidgets);
   const addWidget = useDiscoverStore((state) => state.addWidget);
   const [showInfo, setShowInfo] = useState(false);
@@ -305,13 +293,13 @@ function DiscoverWidgetPlugins() {
     <section className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <h3 className="text-sm font-semibold tracking-wide uppercase">
-          Discover page widgets
+          {t('settingsAddOns.discoverWidgetsHeading')}
         </h3>
-        <Tooltip content="About Discover page widgets" side="top">
+        <Tooltip content={t('settingsAddOns.discoverWidgetsAbout')} side="top">
           <Button
             size="icon-sm"
             variant="secondary"
-            aria-label="About Discover page widgets"
+            aria-label={t('settingsAddOns.discoverWidgetsAbout')}
             aria-expanded={showInfo}
             onClick={() => setShowInfo((value) => !value)}
           >
@@ -331,8 +319,7 @@ function DiscoverWidgetPlugins() {
             aria-hidden
           />
           <p className="text-foreground text-sm">
-            Add these built-in discovery panels to your Discover page. Arrange
-            them and tune their filters from Discover.
+            {t('settingsAddOns.discoverWidgetsInfo')}
           </p>
         </Box>
       ) : null}
@@ -340,13 +327,13 @@ function DiscoverWidgetPlugins() {
         {ALL_WIDGET_IDS.map((id) => (
           <PluginStoreItem
             key={id}
-            name={DISCOVER_WIDGET_LABELS[id]}
+            name={t(WIDGET_LABEL_KEYS[id])}
             author="Tahti"
             description={DISCOVER_WIDGET_DETAILS[id]}
             category="Discover"
             isInstalled={enabledWidgets.includes(id)}
             onInstall={() => addWidget(id)}
-            labels={{ installed: 'Added' }}
+            labels={{ installed: t('settingsAddOns.added') }}
           />
         ))}
       </div>

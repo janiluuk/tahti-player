@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   SegmentedControl,
@@ -18,18 +19,18 @@ import { formatListeningDuration } from '../../lib/historyStats';
 import { useAuthStore } from '../../stores/authStore';
 import { PageError, PageLoading } from '../PageStates';
 
-const RANGE_OPTIONS: SegmentedControlOption<MyListeningRange>[] = [
-  { id: '7', label: '7 days' },
-  { id: '30', label: '30 days' },
-  { id: 'all', label: 'All time' },
-];
-
 const minutesLabel = (minutes: number) =>
   formatListeningDuration(minutes * 60_000);
 
 export function AcrossDevicesPanel() {
+  const { t } = useTranslation('web');
   const signedIn = useAuthStore((s) => Boolean(s.user));
   const navigate = useNavigate();
+  const RANGE_OPTIONS: SegmentedControlOption<MyListeningRange>[] = [
+    { id: '7', label: t('library.days7') },
+    { id: '30', label: t('library.days30') },
+    { id: 'all', label: t('library.allTime') },
+  ];
   const [range, setRange] = useState<MyListeningRange>('30');
   const [listening, setListening] = useState<MyListening | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(
@@ -68,35 +69,35 @@ export function AcrossDevicesPanel() {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h2 id="across-devices-title" className="text-lg font-bold">
-            Across your devices
+            {t('library.acrossDevicesTitle')}
           </h2>
           <p className="text-foreground-secondary text-sm">
-            Everything you listened to on Tahti while signed in, on any device.
+            {t('library.acrossDevicesDescription')}
           </p>
         </div>
         <SegmentedControl
-          aria-label="Period"
+          aria-label={t('library.period')}
           options={RANGE_OPTIONS}
           value={range}
           onChange={setRange}
         />
       </div>
       {status === 'loading' ? (
-        <PageLoading label="Loading your listening…" />
+        <PageLoading label={t('library.loadingListening')} />
       ) : status === 'error' || !listening ? (
         <PageError
-          title="Could not load your listening"
+          title={t('library.listeningLoadError')}
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 sm:max-w-md">
             <StatTile
-              label="Time listened"
+              label={t('library.timeListened')}
               value={minutesLabel(listening.minutes)}
             />
             <StatTile
-              label="Listens"
+              label={t('library.listens')}
               value={listening.listens.toLocaleString()}
             />
           </div>
@@ -106,7 +107,7 @@ export function AcrossDevicesPanel() {
                 <Box variant="tertiary" className="min-w-0 flex-col">
                   <TopList
                     data-testid="across-devices-artists"
-                    title="Top artists"
+                    title={t('library.topArtists')}
                     entries={listening.topArtists.map((artist) => ({
                       id: artist.username,
                       label: artist.displayName,
@@ -126,7 +127,7 @@ export function AcrossDevicesPanel() {
                 <Box variant="tertiary" className="min-w-0 flex-col">
                   <TopList
                     data-testid="across-devices-tracks"
-                    title="Top tracks"
+                    title={t('library.topTracks')}
                     entries={listening.topTracks.map((track) => ({
                       id: track.soundId,
                       label: track.title,

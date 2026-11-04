@@ -2,6 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { PauseIcon, PlayIcon, RadioIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   EditIconLink,
@@ -121,6 +122,7 @@ function RecordedBroadcastCard({
 }
 
 export function StudioUploadView() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const play = usePlayerStore((state) => state.play);
   const setStatus = usePlayerStore((state) => state.setStatus);
@@ -212,7 +214,10 @@ export function StudioUploadView() {
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
         <LibrarySectionTabs active="upload" />
-        <ViewShell title="Upload" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell
+          title={t('library.uploadTitle')}
+          classes={{ root: 'px-0 pt-0' }}
+        >
           <RestrictionNotice type="UPLOAD" />
           <div className="grid grid-cols-1 gap-4 min-[391px]:grid-cols-2">
             <div className="border-accent-cyan flex min-h-48 flex-col justify-center rounded-xl border border-dashed p-5 sm:p-6">
@@ -254,7 +259,7 @@ export function StudioUploadView() {
                 <InlineLoader label="Loading recordings…" className="mt-4" />
               ) : recordingsError && recordings.length === 0 ? (
                 <PageError
-                  title="Could not load recent recordings"
+                  title={t('library.recordingsLoadError')}
                   description={recordingsError}
                   onRetry={() => {
                     setRecordingsLoading(true);
@@ -264,7 +269,7 @@ export function StudioUploadView() {
               ) : recordings.length === 0 ? (
                 <PageEmpty
                   className="mt-4"
-                  title="No recordings yet"
+                  title={t('library.recordingsEmptyTitle')}
                   action={
                     <Link
                       to="/studio/go-live"

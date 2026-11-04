@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ExternalLink, Slider, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
@@ -40,6 +41,7 @@ export function StemMixer({
   files: StemFile[];
   defaultMix?: StemMix;
 }) {
+  const { t } = useTranslation('web');
   const audioRefs = useRef<Record<string, HTMLAudioElement | null>>({});
   const [playing, setPlaying] = useState(false);
   const [mix, setMix] = useState<StemMix>(defaultMix);
@@ -224,7 +226,7 @@ export function StemMixer({
                 </Tooltip>
                 <ExternalLink
                   href={f.url}
-                  aria-label={`Download ${f.label}`}
+                  aria-label={t('actions.downloadStem', { label: f.label })}
                   className="text-foreground-secondary p-1.5 no-underline"
                 >
                   <DownloadIcon size={14} aria-hidden />

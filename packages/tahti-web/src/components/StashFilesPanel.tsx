@@ -2,6 +2,7 @@ import { PlayIcon, Share2Icon, Trash2Icon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, FilePicker, Input, Select, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -51,6 +52,7 @@ export const StashFilesPanel = ({
   /** Listener Library Stash: upload/share files only, no catalog move. */
   filesOnly?: boolean;
 } = {}) => {
+  const { t } = useTranslation('web');
   const play = usePlayerStore((state) => state.play);
   const [files, setFiles] = useState<StashFile[]>([]);
   const [busy, setBusy] = useState(false);
@@ -402,7 +404,7 @@ export const StashFilesPanel = ({
                       }
                       options={[
                         { id: 'READ', label: 'Read-only' },
-                        { id: 'DOWNLOAD', label: 'Download' },
+                        { id: 'DOWNLOAD', label: t('actions.download') },
                       ]}
                     />
                     <Select
@@ -441,7 +443,7 @@ export const StashFilesPanel = ({
                           </div>
                           <div className="text-foreground-secondary">
                             {share.permission === 'DOWNLOAD'
-                              ? 'Download'
+                              ? t('actions.download')
                               : 'Read-only'}{' '}
                             · {formatExpiry(share.expiresAt)}
                           </div>

@@ -9,8 +9,8 @@ import {
 import { toast } from 'sonner';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { humanizePastDate } from '../lib/humanizeDate';
 import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
+import { relativeDate } from '../lib/relativeDate';
 import { playedAtDate } from '../lib/setTracklist';
 import { PlayHistoryDialog } from './PlayHistoryDialog';
 
@@ -107,10 +107,11 @@ describe('PlayHistoryDialog', () => {
         />,
       );
     });
-    const when = humanizePastDate(
+    const when = relativeDate(
       playedAtDate('2026-10-27 22:30:00')!.toISOString(),
     );
     const row = screen.getByText(/Later/).closest('li');
+    expect(row?.querySelector('time')).toBeTruthy();
     expect(row?.textContent).toContain(when);
     expect(screen.queryByText(/UTC/)).toBeNull();
     await act(async () => {

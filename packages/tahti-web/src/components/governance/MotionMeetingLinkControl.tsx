@@ -8,6 +8,7 @@ import type {
   GovernanceMeeting,
   GovernanceMotionDetail,
 } from '../../api/types';
+import { numericDay } from '../../lib/relativeDate';
 
 const NO_MEETING = '';
 
@@ -55,7 +56,7 @@ export function MotionMeetingLinkControl({
           ...meetings.map((meeting) => ({
             id: meeting.id,
             label: meeting.scheduledAt
-              ? `${meeting.title} (${new Date(meeting.scheduledAt).toLocaleDateString()})`
+              ? `${meeting.title} (${numericDay(meeting.scheduledAt)})`
               : meeting.title,
           })),
         ]}

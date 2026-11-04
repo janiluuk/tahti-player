@@ -4,7 +4,6 @@ import { toast } from 'sonner';
 
 import { Button, Dialog, InlineError, Loader, Tooltip } from '@tahti-player/ui';
 
-import { humanizePastDate } from '../lib/humanizeDate';
 import type {
   NativePlayLogEntry,
   TahtiNativeLibrary,
@@ -17,6 +16,7 @@ import {
 } from '../lib/setTracklist';
 import { usePlayerStore } from '../stores/playerStore';
 import { ConfirmDialog } from './ConfirmDialog';
+import { ListingDate } from './ListingDate';
 import { PageEmpty, PageError } from './PageStates';
 
 type Props = {
@@ -140,10 +140,12 @@ export function PlayHistoryDialog({
                     {entry.artist ? ` — ${entry.artist}` : ''}
                   </span>
                   <span className="text-foreground-secondary shrink-0 text-xs">
-                    {humanizePastDate(
-                      playedAtDate(entry.playedAt)?.toISOString() ??
-                        entry.playedAt,
-                    )}
+                    <ListingDate
+                      value={
+                        playedAtDate(entry.playedAt)?.toISOString() ??
+                        entry.playedAt
+                      }
+                    />
                   </span>
                 </li>
               ))}

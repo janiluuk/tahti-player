@@ -6,19 +6,13 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { TabLabel, Tabs } from '@tahti-player/ui';
 
 import { ChannelChatPanel } from '../ChannelChatPanel';
 import { ChannelComments } from '../ChannelComments';
 
 export type ChannelPageTab = 'music' | 'embeds' | 'comments' | 'chat';
-
-const TABS: { id: ChannelPageTab; label: string; Icon: typeof MusicIcon }[] = [
-  { id: 'music', label: 'Music', Icon: MusicIcon },
-  { id: 'embeds', label: 'Embeds', Icon: Link2Icon },
-  { id: 'comments', label: 'Comments', Icon: MessagesSquare },
-  { id: 'chat', label: 'Chat', Icon: MessageCircle },
-];
 
 /** The channel page's own sections under the stage: the music blocks, the
  * tracks hosted on other sites (embeds), the comment wall and the live chat
@@ -35,7 +29,31 @@ export function ChannelPageTabs({
   chatOn: boolean;
   embedsOn?: boolean;
 }) {
-  const tabs = TABS.filter(
+  const { t } = useTranslation('web');
+  const tabs = (
+    [
+      {
+        id: 'music' as const,
+        label: t('channelPage.tabMusic'),
+        Icon: MusicIcon,
+      },
+      {
+        id: 'embeds' as const,
+        label: t('channelPage.tabEmbeds'),
+        Icon: Link2Icon,
+      },
+      {
+        id: 'comments' as const,
+        label: t('channelPage.tabComments'),
+        Icon: MessagesSquare,
+      },
+      {
+        id: 'chat' as const,
+        label: t('channelPage.tabChat'),
+        Icon: MessageCircle,
+      },
+    ] as const
+  ).filter(
     (tab) => (tab.id !== 'chat' || chatOn) && (tab.id !== 'embeds' || embedsOn),
   );
   return (

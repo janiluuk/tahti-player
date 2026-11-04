@@ -266,14 +266,14 @@ export function ArtistPanel() {
             onProfileUploaded={(avatarUrl) => {
               setProfile({ ...profile, avatarUrl });
               void refreshAuth();
-              toast.success('Profile image updated.');
+              toast.success(t('settingsBody.artist.profileImageUpdated'));
             }}
             onGalleryUploaded={() => {
-              toast.success('Image added to your gallery.');
+              toast.success(t('settingsBody.artist.galleryImageAdded'));
             }}
           />
           <Input
-            label="Display name"
+            label={t('settingsBody.artist.displayName')}
             value={profile.displayName}
             onChange={(e) =>
               setProfile({ ...profile, displayName: e.target.value })
@@ -283,11 +283,10 @@ export function ArtistPanel() {
           <div className="flex flex-col gap-2">
             <div>
               <p className="text-foreground text-sm font-semibold">
-                What do you do?
+                {t('settingsBody.artist.whatDoYouDo')}
               </p>
               <p className="text-foreground-secondary mt-1 text-xs">
-                Choose the creative roles you want listeners to associate with
-                you.
+                {t('settingsBody.artist.rolesDescription')}
               </p>
             </div>
             <FilterChips
@@ -298,10 +297,10 @@ export function ArtistPanel() {
               }))}
               selected={artistRoles}
               onChange={setArtistRoles}
-              aria-label="Creative roles"
+              aria-label={t('settingsBody.artist.creativeRoles')}
             />
             <p className="text-foreground-secondary text-xs">
-              Selected:{' '}
+              {t('settingsBody.artist.selectedRoles')}{' '}
               {artistRoles.length > 0
                 ? artistRoles
                     .map(
@@ -310,12 +309,12 @@ export function ArtistPanel() {
                         role,
                     )
                     .join(', ')
-                : 'None yet'}
+                : t('settingsBody.artist.noneYet')}
             </p>
           </div>
           <PronounsField profile={profile} setProfile={setProfile} />
           <Select
-            label="Country"
+            label={t('settingsBody.artist.country')}
             value={profile.countryCode ?? ''}
             onValueChange={(value) =>
               setProfile({
@@ -324,7 +323,7 @@ export function ArtistPanel() {
               })
             }
             options={[
-              { id: '', label: 'Prefer not to say' },
+              { id: '', label: t('settingsBody.artist.preferNotToSay') },
               ...COUNTRIES.map((c) => ({
                 id: c.code,
                 label: `${flagEmoji(c.code)} ${c.name}`,
@@ -334,12 +333,12 @@ export function ArtistPanel() {
           {profile.countryCode && (
             <Input
               autoComplete="address-level2"
-              label="City / location"
+              label={t('settingsBody.artist.cityLocation')}
               value={profile.defaultLocation ?? ''}
               onChange={(e) =>
                 setProfile({ ...profile, defaultLocation: e.target.value })
               }
-              description="Optional — shown on your public profile"
+              description={t('settingsBody.artist.cityDescription')}
             />
           )}
           <Input
@@ -347,14 +346,18 @@ export function ArtistPanel() {
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            label="Tip jar URL"
+            label={t('settingsBody.artist.tipJarUrl')}
             value={profile.tipJarUrl ?? ''}
             onChange={(e) =>
               setProfile({ ...profile, tipJarUrl: e.target.value })
             }
           />
           <div className="flex justify-end">
-            <SaveButton saving={busy} label="Save identity" type="submit" />
+            <SaveButton
+              saving={busy}
+              label={t('settingsBody.artist.saveIdentity')}
+              type="submit"
+            />
           </div>
           {msg && <SettingsHint>{msg}</SettingsHint>}
         </form>

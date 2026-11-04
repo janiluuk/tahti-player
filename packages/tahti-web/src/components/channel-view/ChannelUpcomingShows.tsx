@@ -1,6 +1,8 @@
 import { CalendarClockIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import {
   fetchChannelSchedule,
   type PublicChannelSchedule,
@@ -29,6 +31,7 @@ export function formatShowDuration(minutes: number): string {
 }
 
 export function ChannelUpcomingShows({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const [schedule, setSchedule] = useState<PublicChannelSchedule | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -52,7 +55,7 @@ export function ChannelUpcomingShows({ slug }: { slug: string }) {
   if (error && schedule.shows.length === 0) {
     return (
       <PageError
-        title="Could not load the schedule"
+        title={t('channelPage.scheduleLoadError')}
         description={error}
         onRetry={() => setReloadKey((key) => key + 1)}
       />
@@ -61,7 +64,7 @@ export function ChannelUpcomingShows({ slug }: { slug: string }) {
   if (schedule.shows.length === 0) {
     return (
       <div role="status">
-        <PageEmpty title="No upcoming shows booked." />
+        <PageEmpty title={t('channelPage.upcomingEmpty')} />
       </div>
     );
   }

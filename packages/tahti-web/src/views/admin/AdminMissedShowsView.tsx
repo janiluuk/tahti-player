@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -37,6 +38,7 @@ const FILTER_TAB_ICONS = {
 };
 
 export function AdminMissedShowsPanel() {
+  const { t } = useTranslation('web');
   const [filter, setFilter] = useState<(typeof FILTERS)[number]['id']>('ALL');
   const [flags, setFlags] = useState<AdminMissedShow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,7 +100,7 @@ export function AdminMissedShowsPanel() {
         ) : error ? (
           <PageError description={error} />
         ) : flags.length === 0 ? (
-          <PageEmpty title="No missed shows in this view" />
+          <PageEmpty title={t('adminPages.missedShowsEmpty')} />
         ) : (
           <ul className="divide-border divide-y">
             {flags.map((flag) => (

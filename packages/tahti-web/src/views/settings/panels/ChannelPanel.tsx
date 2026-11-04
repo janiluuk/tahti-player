@@ -207,8 +207,7 @@ export function ChannelPanel() {
                 </div>
                 <div className="mt-4">
                   <SettingsHint>
-                    A channel with public tracks is listed in the Listen
-                    directory.
+                    {t('settingsBody.channel.directoryHint')}
                   </SettingsHint>
                 </div>
               </StudioPanel>
@@ -217,7 +216,7 @@ export function ChannelPanel() {
         },
         {
           id: 'domain',
-          label: 'Username & domain',
+          label: t('settingsBody.channel.tabDomain'),
           icon: <Globe size={14} />,
           content: (
             <div className="flex flex-col gap-6">
@@ -240,7 +239,7 @@ export function ChannelPanel() {
                   autoCapitalize="none"
                   autoCorrect="off"
                   spellCheck={false}
-                  label="Channel slug / username"
+                  label={t('settingsBody.channel.slugLabel')}
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                 />
@@ -251,20 +250,21 @@ export function ChannelPanel() {
                     disabled={!slug.trim()}
                     type="submit"
                   >
-                    Check availability
+                    {t('settingsBody.channel.checkAvailability')}
                   </Button>
                   <Button
                     size="sm"
                     disabled={!slug.trim() || slug.trim() === channel?.slug}
                     onClick={() => setConfirmingRename(true)}
                   >
-                    Rename
+                    {t('settingsBody.channel.rename')}
                   </Button>
                   <ConfirmDialog
+                    destructive
                     isOpen={confirmingRename}
                     title={`Rename your channel to ${slug.trim()}?`}
                     description="Your channel address changes, and your stream key may change with it, so an encoder such as OBS needs the new key before your next stream. The old address redirects for a while."
-                    confirmLabel="Rename"
+                    confirmLabel={t('settingsBody.channel.rename')}
                     onCancel={() => setConfirmingRename(false)}
                     onConfirm={() => {
                       setConfirmingRename(false);

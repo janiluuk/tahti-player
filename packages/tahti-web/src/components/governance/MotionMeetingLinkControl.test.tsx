@@ -1,8 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import * as client from '../../api/client';
 import * as link from '../../api/governance-motion-meeting';
 import type { GovernanceMotionDetail } from '../../api/types';
+import { numericDay } from '../../lib/relativeDate';
 import { MotionMeetingLinkControl } from './MotionMeetingLinkControl';
 
 const motion = {
@@ -54,5 +56,33 @@ describe('MotionMeetingLinkControl', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'Meeting not found',
     );
+  });
+
+  it('formats meeting option dates as d.m.yyyy', async () => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+    const scheduledAt = '2026-11-04T15:00:00.000Z';
+    vi.spyOn(client, 'fetchGovernanceMeetings').mockResolvedValue({
+      data: [
+        {
+          id: 'meet-1',
+          title: 'Board meeting',
+          scheduledAt,
+        },
+      ],
+      meta: { source: 'mock' },
+    } as never);
+    render(
+      <MotionMeetingLinkControl
+        motion={{ ...motion, meeting: null }}
+        onChanged={vi.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Put on a meeting' }));
+    fireEvent.click(await screen.findByRole('button', { name: /Meeting/ }));
+    expect(
+      await screen.findByRole('option', {
+        name: `Board meeting (${numericDay(scheduledAt)})`,
+      }),
+    ).toBeInTheDocument();
   });
 });
