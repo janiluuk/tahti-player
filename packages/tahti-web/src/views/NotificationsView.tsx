@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -33,11 +34,12 @@ function NotificationText({
 }: {
   notification: TahtiNotification;
 }) {
+  const { t } = useTranslation('web');
   return (
     <>
       {notification.type === 'BACKGROUND_JOB_FAILED' ? (
         <Badge variant="pill" color="red" className="mr-1.5 align-middle">
-          Failed
+          {t('notificationsPage.failedBadge')}
         </Badge>
       ) : null}
       <span className="font-semibold">{notification.title}</span>
@@ -51,6 +53,7 @@ function NotificationText({
 }
 
 export function NotificationsView() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
   const [items, setItems] = useState<TahtiNotification[]>([]);
@@ -111,7 +114,7 @@ export function NotificationsView() {
     setLoadingOlder(true);
     const result = await fetchNotifications(oldest.id, kindParam);
     if (result.meta.source === 'api' && result.meta.reason) {
-      setActionError('Could not load older notifications.');
+      setActionError(t('notificationsPage.olderError'));
     } else {
       setItems((current) => [...current, ...result.data]);
       setHasMore(result.hasMore);
@@ -128,7 +131,7 @@ export function NotificationsView() {
       );
       setUnreadCount((count) => Math.max(0, count - 1));
     } catch {
-      setActionError('Could not mark the notification read.');
+      setActionError(t('notificationsPage.markReadError'));
     }
   };
 
@@ -145,7 +148,7 @@ export function NotificationsView() {
         items.filter((item) => item.sticky && !item.readAt).length,
       );
     } catch {
-      setActionError('Could not mark notifications read.');
+      setActionError(t('notificationsPage.markAllReadError'));
     }
   };
 
@@ -154,7 +157,7 @@ export function NotificationsView() {
       await removeNotification(id);
       setItems((current) => current.filter((item) => item.id !== id));
     } catch {
-      setActionError('Could not remove the notification.');
+      setActionError(t('notificationsPage.removeError'));
     }
   };
 
@@ -163,7 +166,7 @@ export function NotificationsView() {
       await clearReadNotifications();
       setItems((current) => current.filter((item) => !item.readAt));
     } catch {
-      setActionError('Could not clear read notifications.');
+      setActionError(t('notificationsPage.clearReadError'));
     }
   };
 
@@ -171,14 +174,17 @@ export function NotificationsView() {
 
   if (hydrated && !user) {
     return (
-      <ViewShell title="Notifications" classes={{ root: 'px-0 pt-0' }}>
+      <ViewShell
+        title={t('notificationsPage.title')}
+        classes={{ root: 'px-0 pt-0' }}
+      >
         <PageEmpty
           icon="inbox"
-          title="Sign in to see your notifications"
-          description="New followers, releases from artists you follow, replies and payouts show up here."
+          title={t('notificationsPage.signInTitle')}
+          description={t('notificationsPage.signInDescription')}
           action={
             <Button onClick={() => useAuthModalStore.getState().open('login')}>
-              Sign in
+              {t('actions.signIn')}
             </Button>
           }
         />
@@ -187,11 +193,16 @@ export function NotificationsView() {
   }
 
   return (
-    <ViewShell title="Notifications" classes={{ root: 'px-0 pt-0' }}>
+    <ViewShell
+      title={t('notificationsPage.title')}
+      classes={{ root: 'px-0 pt-0' }}
+    >
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-foreground-secondary text-sm">
-            {unreadCount === 0 ? 'All caught up' : `${unreadCount} unread`}
+            {unreadCount === 0
+              ? t('notificationsPage.allCaughtUp')
+              : t('notificationsPage.unreadCount', { count: unreadCount })}
           </p>
           <div className="flex flex-wrap gap-2">
             <Button
@@ -200,7 +211,7 @@ export function NotificationsView() {
               disabled={unreadCount === 0}
               onClick={() => void markAllRead()}
             >
-              Mark all read
+              {t('notificationsPage.markAllRead')}
             </Button>
             <Button
               size="sm"
@@ -208,29 +219,37 @@ export function NotificationsView() {
               disabled={!hasRead}
               onClick={() => void clearRead()}
             >
-              Clear read
+              {t('notificationsPage.clearRead')}
             </Button>
           </div>
         </div>
         <FilterChips
           items={[
-            { id: 'all', label: 'All' },
+            { id: 'all', label: t('notificationsPage.filterAll') },
             ...NOTIFICATION_KINDS.map((item) => {
               const unread = counts?.byKind[item.id] ?? 0;
+              const kindLabels = {
+                social: t('notificationsPage.kindSocial'),
+                music: t('notificationsPage.kindMusic'),
+                money: t('notificationsPage.kindMoney'),
+                governance: t('notificationsPage.kindGovernance'),
+                other: t('notificationsPage.kindOther'),
+              } as const;
+              const label = kindLabels[item.id];
               return {
                 id: item.id,
-                label: unread > 0 ? `${item.label} (${unread})` : item.label,
+                label: unread > 0 ? `${label} (${unread})` : label,
               };
             }),
           ]}
           selected={kind}
           onChange={(id) => setKind(id as 'all' | NotificationKind)}
-          aria-label="Filter notifications by kind"
+          aria-label={t('notificationsPage.filterAria')}
         />
         {actionError ? <InlineError>{actionError}</InlineError> : null}
         {error && items.length === 0 ? (
           <PageError
-            title="Could not load notifications"
+            title={t('notificationsPage.loadError')}
             description={error}
             onRetry={() => void load()}
           />
@@ -238,20 +257,20 @@ export function NotificationsView() {
           kind === 'all' ? (
             <PageEmpty
               icon="inbox"
-              title="No notifications yet"
-              description="Follow artists and join the conversation; what happens shows up here."
+              title={t('notificationsPage.emptyTitle')}
+              description={t('notificationsPage.emptyDescription')}
             />
           ) : (
             <PageEmpty
               icon="inbox"
-              title="Nothing of this kind"
+              title={t('notificationsPage.emptyKindTitle')}
               action={
                 <Button
                   size="sm"
                   variant="secondary"
                   onClick={() => setKind('all')}
                 >
-                  Show all
+                  {t('notificationsPage.showAll')}
                 </Button>
               }
             />
@@ -272,7 +291,7 @@ export function NotificationsView() {
                   <div className="min-w-0 flex-1">
                     {needsAck ? (
                       <Badge variant="pill" color="yellow" className="mb-1">
-                        Needs acknowledgement
+                        {t('notificationsPage.needsAck')}
                       </Badge>
                     ) : null}
                     {notification.url ? (
@@ -305,25 +324,29 @@ export function NotificationsView() {
                       variant="secondary"
                       onClick={() => void markRead(notification.id)}
                     >
-                      Acknowledge
+                      {t('notificationsPage.acknowledge')}
                     </Button>
                   ) : unread ? (
                     <Button
                       size="xs"
                       variant="text"
-                      aria-label={`Mark read: ${notification.title}`}
+                      aria-label={t('notificationsPage.markReadAria', {
+                        title: notification.title,
+                      })}
                       onClick={() => void markRead(notification.id)}
                     >
-                      Mark read
+                      {t('notificationsPage.markRead')}
                     </Button>
                   ) : (
                     <Button
                       size="xs"
                       variant="text"
-                      aria-label={`Remove: ${notification.title}`}
+                      aria-label={t('notificationsPage.removeAria', {
+                        title: notification.title,
+                      })}
                       onClick={() => void removeOne(notification.id)}
                     >
-                      Remove
+                      {t('notificationsPage.remove')}
                     </Button>
                   )}
                 </li>

@@ -774,7 +774,10 @@
       "editItem": "Edit {{title}}",
       "playAll": "Play all",
       "addAllToQueue": "Add all to queue",
-      "startJam": "Start a Jam"
+      "startJam": "Start a Jam",
+      "downloadInvoice": "Download invoice as PDF",
+      "downloadInvoiceNamed": "Download invoice {{number}} as PDF",
+      "downloadStem": "Download {{label}}"
     },
     "artistProfile": {
       "joined": "Joined {{month}}"
@@ -838,7 +841,11 @@
       "operations": "Platform operations",
       "operationsDescription": "Board-only integrations and operational tools.",
       "scrobblingMoved": "ListenBrainz and Last.fm scrobbling now live in Settings → Integrations.",
-      "openIntegrations": "Open Integrations"
+      "openIntegrations": "Open Integrations",
+      "discoverWidgetsHeading": "Discover page widgets",
+      "discoverWidgetsAbout": "About Discover page widgets",
+      "discoverWidgetsInfo": "Add these built-in discovery panels to your Discover page. Arrange them and tune their filters from Discover.",
+      "added": "Added"
     },
     "settingsWhatsNew": {
       "title": "What's New",
@@ -890,7 +897,11 @@
       "i18n": "Languages",
       "tahtiSelects": "Tahti Selects",
       "orphanPages": "Orphan pages",
-      "map": "Map"
+      "map": "Map",
+      "missedShowsEmpty": "No missed shows in this view",
+      "venuesEmpty": "No venues found",
+      "venuesLoadError": "Could not load venues",
+      "venuesTitle": "Venues"
     },
     "channelShare": {
       "title": "Share channel",
@@ -920,7 +931,17 @@
       "openStreamManager": "Open Stream Manager",
       "moreActions": "More channel actions",
       "report": "Report",
-      "rssFeedOf": "RSS feed of {{name}}'s channel"
+      "rssFeedOf": "RSS feed of {{name}}'s channel",
+      "tabMusic": "Music",
+      "tabEmbeds": "Embeds",
+      "tabComments": "Comments",
+      "tabChat": "Chat",
+      "upcomingEmpty": "No upcoming shows booked.",
+      "scheduleLoadError": "Could not load the schedule",
+      "noBroadcastScheduled": "No broadcast currently scheduled.",
+      "followers": "Followers",
+      "offAirTitle": "Off air",
+      "offAirDescription": "This channel is not broadcasting right now. Browse the tracks below, or check back later."
     },
     "downloadGate": {
       "title": "Unlock this download",
@@ -1147,7 +1168,45 @@
       "followingSignIn": "Sign in to see who you follow",
       "followingLoadError": "Couldn't load who you follow",
       "followingEmptyTitle": "You don't follow anyone yet",
-      "followingEmptyDescription": "Follow artists and channels from their pages. They show up here and in your feed."
+      "followingEmptyDescription": "Follow artists and channels from their pages. They show up here and in your feed.",
+      "soundsTitle": "Sounds",
+      "soundsLoadError": "Could not load your sounds",
+      "soundsRefreshError": "Could not refresh your sounds",
+      "soundsEmptyTitle": "No sounds yet",
+      "soundsEmptyDescription": "Upload a file or import from Sources. Sounds can be tracks, clips, DJ sets, shows, or episodes.",
+      "soundsNoMatch": "No sounds match these filters",
+      "clearFilters": "Clear filters",
+      "collectionsTitle": "Collections",
+      "collectionsLoadError": "Could not load your collections",
+      "collectionsEmptyTitle": "No collections yet",
+      "collectionsEmptySavedTitle": "No collections saved yet",
+      "collectionsEmptyDescription": "Create an album, EP, DJ set, podcast, or playlist.",
+      "collectionsEmptySavedDescription": "Follow public playlists from artist pages, or browse Discover for collections to save.",
+      "collectionsNoMatch": "No collections match these filters.",
+      "newCollection": "New collection",
+      "browseDiscover": "Browse Discover",
+      "uploadTitle": "Upload",
+      "recordingsLoadError": "Could not load recent recordings",
+      "recordingsEmptyTitle": "No recordings yet",
+      "historyStatsEmptyTitle": "Nothing to show yet",
+      "historyStatsEmptyDescription": "Stats build up after about 30 seconds of play (or half the track). Come back once you've listened to something.",
+      "acrossDevicesTitle": "Across your devices",
+      "acrossDevicesDescription": "Everything you listened to on Tahti while signed in, on any device.",
+      "period": "Period",
+      "days7": "7 days",
+      "days30": "30 days",
+      "allTime": "All time",
+      "timeListened": "Time listened",
+      "listens": "Listens",
+      "topArtists": "Top artists",
+      "topTracks": "Top tracks",
+      "topChannels": "Top channels",
+      "loadingListening": "Loading your listening…",
+      "listeningLoadError": "Could not load your listening",
+      "dateRange": "Date range",
+      "timeOfDay": "Time of day",
+      "busiestHour": "Busiest hour",
+      "listeningTime": "Listening time"
     },
     "date": {
       "today": "Today",
@@ -1427,7 +1486,18 @@
         "subscriptionsLoadError": "Could not load your fan subscriptions",
         "subscriptionsEmpty": "No fan subscriptions on this account",
         "purchasesLoadError": "Could not load your purchases",
-        "purchasesEmpty": "No track purchases on this account"
+        "purchasesEmpty": "No track purchases on this account",
+        "cancelSubscriptionTitle": "Cancel subscription?",
+        "cancelSubscriptionNamed": "Cancel your {{tier}} subscription to {{artist}}?",
+        "cancelSubscriptionDescription": "You'll keep access until the end of the current billing period, then it won't renew.",
+        "cancelSubscriptionConfirm": "Cancel subscription",
+        "cancelSubscriptionBusy": "Cancelling…",
+        "keepSubscription": "Keep subscription",
+        "manage": "Manage",
+        "loadingStorage": "Loading storage usage…",
+        "unlimited": "Unlimited",
+        "storageUsedAria": "Storage used",
+        "loadingGovernance": "Loading governance…"
       },
       "channel": {
         "loadError": "Could not load your channel profile",
@@ -1439,7 +1509,12 @@
         "chatMovedDescription": "Turn chat on or off, and moderate access, messages, bans and moderators, on Studio → Fans.",
         "moderatorsMovedTitle": "Moderators moved to Fans",
         "moderatorsMovedDescription": "Add and remove chat moderators on Studio → Fans, under Chat.",
-        "openFansChat": "Open Fans chat"
+        "openFansChat": "Open Fans chat",
+        "tabDomain": "Username & domain",
+        "slugLabel": "Channel slug / username",
+        "checkAvailability": "Check availability",
+        "rename": "Rename",
+        "directoryHint": "A channel with public tracks is listed in the Listen directory."
       },
       "broadcast": {
         "radioLoadError": "Could not load your radio settings",
@@ -1473,7 +1548,21 @@
         "tabBranding": "Branding",
         "tabGallery": "Gallery",
         "tabPressKit": "Press kit",
-        "tabReleases": "Releases"
+        "tabReleases": "Releases",
+        "displayName": "Display name",
+        "saveIdentity": "Save identity",
+        "country": "Country",
+        "preferNotToSay": "Prefer not to say",
+        "cityLocation": "City / location",
+        "cityDescription": "Optional — shown on your public profile",
+        "tipJarUrl": "Tip jar URL",
+        "whatDoYouDo": "What do you do?",
+        "rolesDescription": "Choose the creative roles you want listeners to associate with you.",
+        "creativeRoles": "Creative roles",
+        "selectedRoles": "Selected:",
+        "noneYet": "None yet",
+        "profileImageUpdated": "Profile image updated.",
+        "galleryImageAdded": "Image added to your gallery."
       }
     },
     "toggles": {
@@ -1512,6 +1601,49 @@
         "uploadsLabel": "Allow comments on my new uploads",
         "uploadsDescription": "Tracks you upload from now on start with comments on. Each track keeps its own setting afterwards."
       }
+    },
+    "notificationsPage": {
+      "title": "Notifications",
+      "signInTitle": "Sign in to see your notifications",
+      "signInDescription": "New followers, releases from artists you follow, replies and payouts show up here.",
+      "allCaughtUp": "All caught up",
+      "unreadCount": "{{count}} unread",
+      "markAllRead": "Mark all read",
+      "clearRead": "Clear read",
+      "filterAll": "All",
+      "filterAria": "Filter notifications by kind",
+      "loadError": "Could not load notifications",
+      "emptyTitle": "No notifications yet",
+      "emptyDescription": "Follow artists and join the conversation; what happens shows up here.",
+      "emptyKindTitle": "Nothing of this kind",
+      "showAll": "Show all",
+      "needsAck": "Needs acknowledgement",
+      "acknowledge": "Acknowledge",
+      "markRead": "Mark read",
+      "remove": "Remove",
+      "markReadAria": "Mark read: {{title}}",
+      "removeAria": "Remove: {{title}}",
+      "failedBadge": "Failed",
+      "kindSocial": "Social",
+      "kindMusic": "Music",
+      "kindMoney": "Money",
+      "kindGovernance": "Governance",
+      "kindOther": "Other",
+      "olderError": "Could not load older notifications.",
+      "markReadError": "Could not mark the notification read.",
+      "markAllReadError": "Could not mark notifications read.",
+      "removeError": "Could not remove the notification.",
+      "clearReadError": "Could not clear read notifications."
+    },
+    "trackDetail": {
+      "commentsEmptyTitle": "No comments yet.",
+      "commentsEmptyDescription": "Be the first to comment.",
+      "genre": "Genre",
+      "genres": "Genres",
+      "tag": "Tag",
+      "tags": "Tags",
+      "licence": "Licence",
+      "recordedAt": "Recorded at"
     }
   },
   "studioEditor": {

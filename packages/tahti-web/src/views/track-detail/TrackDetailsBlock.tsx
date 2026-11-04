@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge } from '@tahti-player/ui';
 
 import type { PublicTrackDetail } from '../../api/types';
@@ -25,6 +26,7 @@ export function TrackDetailsBlock({
   detail: PublicTrackDetail | null | undefined;
   className?: string;
 }) {
+  const { t } = useTranslation('web');
   if (!detail) {
     return null;
   }
@@ -42,13 +44,26 @@ export function TrackDetailsBlock({
       </h2>
       <dl className="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-x-6 gap-y-2 text-sm">
         {genres.length > 0 ? (
-          <Row label={genres.length > 1 ? 'Genres' : 'Genre'}>
+          <Row
+            label={
+              genres.length > 1
+                ? t('trackDetail.genres')
+                : t('trackDetail.genre')
+            }
+          >
             {genres.join(' · ')}
           </Row>
         ) : null}
         {tags.length > 0 ? (
-          <Row label={tags.length > 1 ? 'Tags' : 'Tag'}>
-            <ul className="flex flex-wrap gap-1.5" aria-label="Tags">
+          <Row
+            label={
+              tags.length > 1 ? t('trackDetail.tags') : t('trackDetail.tag')
+            }
+          >
+            <ul
+              className="flex flex-wrap gap-1.5"
+              aria-label={t('trackDetail.tags')}
+            >
               {tags.map((tag) => (
                 <li key={tag}>
                   <Link to="/search" search={{ tag }}>
@@ -71,7 +86,7 @@ export function TrackDetailsBlock({
             <KeyCell value={musicalKey} />
           </Row>
         ) : null}
-        {license ? <Row label="Licence">{license}</Row> : null}
+        {license ? <Row label={t('trackDetail.licence')}>{license}</Row> : null}
         {credits.length > 0 ? (
           <Row label="Credits">
             <ul className="flex flex-col gap-1">
@@ -97,7 +112,7 @@ export function TrackDetailsBlock({
           </Row>
         ) : null}
         {venue ? (
-          <Row label="Recorded at">
+          <Row label={t('trackDetail.recordedAt')}>
             <Link
               to="/v/$slug"
               params={{ slug: venue.slug }}

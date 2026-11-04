@@ -1,6 +1,7 @@
 import { DownloadIcon, ExternalLinkIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   ButtonAnchor,
@@ -28,6 +29,7 @@ const STATUS_LABELS: Record<
 };
 
 export function MembershipInvoices() {
+  const { t } = useTranslation('web');
   const [invoices, setInvoices] = useState<MembershipInvoice[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -109,8 +111,10 @@ export function MembershipInvoices() {
                       variant="text"
                       aria-label={
                         invoice.number
-                          ? `Download invoice ${invoice.number} as PDF`
-                          : 'Download invoice as PDF'
+                          ? t('actions.downloadInvoiceNamed', {
+                              number: invoice.number,
+                            })
+                          : t('actions.downloadInvoice')
                       }
                     >
                       <DownloadIcon size={14} aria-hidden className="mr-1.5" />

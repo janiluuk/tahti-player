@@ -269,7 +269,11 @@ export function AccountPanel() {
       label: t('settingsBody.account.tabGovernance'),
       icon: <Landmark size={14} />,
       content: (
-        <Suspense fallback={<PageLoading label="Loading governance…" />}>
+        <Suspense
+          fallback={
+            <PageLoading label={t('settingsBody.account.loadingGovernance')} />
+          }
+        >
           <GovernanceView embedded />
         </Suspense>
       ),
@@ -333,7 +337,7 @@ export function AccountPanel() {
                       size="sm"
                       onClick={() => setPendingCancel(subscription)}
                     >
-                      Manage
+                      {t('settingsBody.account.manage')}
                     </Button>
                   )}
                 </li>
@@ -348,12 +352,21 @@ export function AccountPanel() {
             isOpen={pendingCancel !== null}
             title={
               pendingCancel
-                ? `Cancel your ${pendingCancel.tierName} subscription to ${pendingCancel.artist.displayName}?`
-                : 'Cancel subscription?'
+                ? t('settingsBody.account.cancelSubscriptionNamed', {
+                    tier: pendingCancel.tierName,
+                    artist: pendingCancel.artist.displayName,
+                  })
+                : t('settingsBody.account.cancelSubscriptionTitle')
             }
-            description="You'll keep access until the end of the current billing period, then it won't renew."
-            confirmLabel={cancelBusy ? 'Cancelling…' : 'Cancel subscription'}
-            cancelLabel="Keep subscription"
+            description={t(
+              'settingsBody.account.cancelSubscriptionDescription',
+            )}
+            confirmLabel={
+              cancelBusy
+                ? t('settingsBody.account.cancelSubscriptionBusy')
+                : t('settingsBody.account.cancelSubscriptionConfirm')
+            }
+            cancelLabel={t('settingsBody.account.keepSubscription')}
             onCancel={() => setPendingCancel(null)}
             onConfirm={() => {
               const target = pendingCancel;
@@ -484,6 +497,7 @@ function formatStorageBytes(bytes: number | null): string {
 }
 
 function AccountStoragePanel() {
+  const { t } = useTranslation('web');
   const [storage, setStorage] = useState<StorageUsage | null>(null);
 
   useEffect(() => {
@@ -491,7 +505,7 @@ function AccountStoragePanel() {
   }, []);
 
   if (!storage) {
-    return <InlineLoader label="Loading storage usage…" />;
+    return <InlineLoader label={t('settingsBody.account.loadingStorage')} />;
   }
 
   const usedPercent = storage.quotaBytes
@@ -520,7 +534,7 @@ function AccountStoragePanel() {
           label="Quota"
           value={
             storage.unlimited
-              ? 'Unlimited'
+              ? t('settingsBody.account.unlimited')
               : formatStorageBytes(storage.quotaBytes)
           }
         />
@@ -531,7 +545,7 @@ function AccountStoragePanel() {
             value={usedPercent}
             className="h-2"
             barClassName="transition-[width]"
-            aria-label="Storage used"
+            aria-label={t('settingsBody.account.storageUsedAria')}
           />
           <p className="text-foreground-secondary text-xs">
             {Math.round(usedPercent)}% of your available storage is in use.

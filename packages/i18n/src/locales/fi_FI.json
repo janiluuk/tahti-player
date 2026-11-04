@@ -774,7 +774,10 @@
       "editItem": "Muokkaa: {{title}}",
       "playAll": "Toista kaikki",
       "addAllToQueue": "Lisää kaikki jonoon",
-      "startJam": "Aloita jam"
+      "startJam": "Aloita jam",
+      "downloadInvoice": "Lataa lasku PDF-tiedostona",
+      "downloadInvoiceNamed": "Lataa lasku {{number}} PDF-tiedostona",
+      "downloadStem": "Lataa {{label}}"
     },
     "artistProfile": {
       "joined": "Liittynyt {{month}}"
@@ -838,7 +841,11 @@
       "operations": "Alustan ylläpito",
       "operationsDescription": "Vain hallituksen integraatiot ja ylläpitotyökalut.",
       "scrobblingMoved": "ListenBrainz- ja Last.fm-scrobblaus löytyy nyt kohdasta Asetukset → Integraatiot.",
-      "openIntegrations": "Avaa Integraatiot"
+      "openIntegrations": "Avaa Integraatiot",
+      "discoverWidgetsHeading": "Discover-sivun widgetit",
+      "discoverWidgetsAbout": "Tietoa Discover-sivun widgeteistä",
+      "discoverWidgetsInfo": "Lisää nämä sisäänrakennetut discovery-paneelit Discover-sivullesi. Järjestä ne ja säädä suodattimia Discoverissa.",
+      "added": "Lisätty"
     },
     "settingsWhatsNew": {
       "title": "Mitä uutta",
@@ -890,7 +897,11 @@
       "i18n": "Kielet",
       "tahtiSelects": "Tahti Selects",
       "orphanPages": "Orvot sivut",
-      "map": "Kartta"
+      "map": "Kartta",
+      "missedShowsEmpty": "Ei myöhästyneitä show'ta tässä näkymässä",
+      "venuesEmpty": "Ei tapahtumapaikkoja",
+      "venuesLoadError": "Tapahtumapaikkoja ei voitu ladata",
+      "venuesTitle": "Tapahtumapaikat"
     },
     "channelShare": {
       "title": "Jaa kanava",
@@ -920,7 +931,17 @@
       "openStreamManager": "Avaa Stream Manager",
       "moreActions": "Lisää kanavan toimintoja",
       "report": "Ilmoita",
-      "rssFeedOf": "Kanavan {{name}} RSS-syöte"
+      "rssFeedOf": "Kanavan {{name}} RSS-syöte",
+      "tabMusic": "Musiikki",
+      "tabEmbeds": "Upotukset",
+      "tabComments": "Kommentit",
+      "tabChat": "Chat",
+      "upcomingEmpty": "Ei tulevia show'ta varattuna.",
+      "scheduleLoadError": "Aikataulua ei voitu ladata",
+      "noBroadcastScheduled": "Ei tällä hetkellä aikataulutettua lähetystä.",
+      "followers": "Seuraajat",
+      "offAirTitle": "Ei lähetyksessä",
+      "offAirDescription": "Tämä kanava ei lähetä juuri nyt. Selaa kappaleita alla tai palaa myöhemmin."
     },
     "downloadGate": {
       "title": "Avaa tämä lataus",
@@ -1147,7 +1168,45 @@
       "followingSignIn": "Kirjaudu sisään nähdäksesi, ketä seuraat",
       "followingLoadError": "Seuraamiasi ei voitu ladata",
       "followingEmptyTitle": "Et seuraa vielä ketään",
-      "followingEmptyDescription": "Seuraa artisteja ja kanavia heidän sivuiltaan. He näkyvät täällä ja syötteessäsi."
+      "followingEmptyDescription": "Seuraa artisteja ja kanavia heidän sivuiltaan. He näkyvät täällä ja syötteessäsi.",
+      "soundsTitle": "Äänet",
+      "soundsLoadError": "Ääniä ei voitu ladata",
+      "soundsRefreshError": "Ääniä ei voitu päivittää",
+      "soundsEmptyTitle": "Ei vielä ääniä",
+      "soundsEmptyDescription": "Lataa tiedosto tai tuo Sourcesista. Äänet voivat olla kappaleita, clippejä, DJ-settejä, show'ta tai jaksoja.",
+      "soundsNoMatch": "Mikään ääni ei vastaa näitä suodattimia",
+      "clearFilters": "Tyhjennä suodattimet",
+      "collectionsTitle": "Kokoelmat",
+      "collectionsLoadError": "Kokoelmia ei voitu ladata",
+      "collectionsEmptyTitle": "Ei vielä kokoelmia",
+      "collectionsEmptySavedTitle": "Ei vielä tallennettuja kokoelmia",
+      "collectionsEmptyDescription": "Luo albumi, EP, DJ-setti, podcast tai soittolista.",
+      "collectionsEmptySavedDescription": "Seuraa julkisia soittolistoja artistisivuilta tai selaa Discoveria tallentaaksesi kokoelmia.",
+      "collectionsNoMatch": "Mikään kokoelma ei vastaa näitä suodattimia.",
+      "newCollection": "Uusi kokoelma",
+      "browseDiscover": "Selaa Discoveria",
+      "uploadTitle": "Lataa",
+      "recordingsLoadError": "Tuoreita tallenteita ei voitu ladata",
+      "recordingsEmptyTitle": "Ei vielä tallenteita",
+      "historyStatsEmptyTitle": "Ei vielä näytettävää",
+      "historyStatsEmptyDescription": "Tilastot kertyvät noin 30 sekunnin kuuntelun jälkeen (tai puolen kappaleen). Palaa kun olet kuunnellut jotain.",
+      "acrossDevicesTitle": "Kaikilla laitteillasi",
+      "acrossDevicesDescription": "Kaikki mitä kuuntelit Tahtissa kirjautuneena, millä tahansa laitteella.",
+      "period": "Jakso",
+      "days7": "7 päivää",
+      "days30": "30 päivää",
+      "allTime": "Koko aika",
+      "timeListened": "Kuunneltu aika",
+      "listens": "Kuuntelut",
+      "topArtists": "Suosituimmat artistit",
+      "topTracks": "Suosituimmat kappaleet",
+      "topChannels": "Suosituimmat kanavat",
+      "loadingListening": "Ladataan kuuntelua…",
+      "listeningLoadError": "Kuuntelua ei voitu ladata",
+      "dateRange": "Aikaväli",
+      "timeOfDay": "Vuorokaudenaika",
+      "busiestHour": "Vilkkain tunti",
+      "listeningTime": "Kuunteluaika"
     },
     "date": {
       "today": "Tänään",
@@ -1427,7 +1486,18 @@
         "subscriptionsLoadError": "Fanitilauksia ei voitu ladata",
         "subscriptionsEmpty": "Tilillä ei ole fanitilauksia",
         "purchasesLoadError": "Ostoja ei voitu ladata",
-        "purchasesEmpty": "Tilillä ei ole kappaleostoja"
+        "purchasesEmpty": "Tilillä ei ole kappaleostoja",
+        "cancelSubscriptionTitle": "Perutaanko tilaus?",
+        "cancelSubscriptionNamed": "Perutaanko {{tier}}-tilauksesi artistille {{artist}}?",
+        "cancelSubscriptionDescription": "Käyttöoikeus säilyy nykyisen laskutuskauden loppuun, sen jälkeen tilaus ei uusiudu.",
+        "cancelSubscriptionConfirm": "Peru tilaus",
+        "cancelSubscriptionBusy": "Perutaan…",
+        "keepSubscription": "Pidä tilaus",
+        "manage": "Hallitse",
+        "loadingStorage": "Ladataan tallennustilaa…",
+        "unlimited": "Rajoittamaton",
+        "storageUsedAria": "Käytetty tallennustila",
+        "loadingGovernance": "Ladataan hallintoa…"
       },
       "channel": {
         "loadError": "Kanavaprofiilia ei voitu ladata",
@@ -1439,7 +1509,12 @@
         "chatMovedDescription": "Chatin voi ottaa käyttöön tai poistaa, ja käyttöoikeuksia, viestejä, porttikieltoja ja moderaattoreita hallitaan kohdassa Studio → Fanit.",
         "moderatorsMovedTitle": "Moderaattorit siirtyivät Fanit-näkymään",
         "moderatorsMovedDescription": "Lisää ja poista chatin moderaattoreita kohdassa Studio → Fanit, Chatin alla.",
-        "openFansChat": "Avaa Fanien chat"
+        "openFansChat": "Avaa Fanien chat",
+        "tabDomain": "Käyttäjänimi ja domain",
+        "slugLabel": "Kanavan slug / käyttäjänimi",
+        "checkAvailability": "Tarkista saatavuus",
+        "rename": "Nimeä uudelleen",
+        "directoryHint": "Kanava, jolla on julkisia kappaleita, listataan Listen-hakemistossa."
       },
       "broadcast": {
         "radioLoadError": "Radioasetuksia ei voitu ladata",
@@ -1473,7 +1548,21 @@
         "tabBranding": "Ilme",
         "tabGallery": "Galleria",
         "tabPressKit": "Pressikitti",
-        "tabReleases": "Julkaisut"
+        "tabReleases": "Julkaisut",
+        "displayName": "Näyttönimi",
+        "saveIdentity": "Tallenna identiteetti",
+        "country": "Maa",
+        "preferNotToSay": "En halua sanoa",
+        "cityLocation": "Kaupunki / sijainti",
+        "cityDescription": "Valinnainen — näkyy julkisella profiilillasi",
+        "tipJarUrl": "Tippipurkin URL",
+        "whatDoYouDo": "Mitä teet?",
+        "rolesDescription": "Valitse luovat roolit, joihin haluat kuulijoiden yhdistävän sinut.",
+        "creativeRoles": "Luovat roolit",
+        "selectedRoles": "Valittu:",
+        "noneYet": "Ei vielä",
+        "profileImageUpdated": "Profiilikuva päivitetty.",
+        "galleryImageAdded": "Kuva lisätty galleriaasi."
       }
     },
     "toggles": {
@@ -1512,6 +1601,49 @@
         "uploadsLabel": "Salli kommentit uusille latauksilleni",
         "uploadsDescription": "Tästä lähtien lataamasi kappaleet alkavat kommentit päällä. Kukin kappale säilyttää oman asetuksensa jälkeenpäin."
       }
+    },
+    "notificationsPage": {
+      "title": "Ilmoitukset",
+      "signInTitle": "Kirjaudu nähdäksesi ilmoitukset",
+      "signInDescription": "Uudet seuraajat, seuraamiesi artistien julkaisut, vastaukset ja maksut näkyvät täällä.",
+      "allCaughtUp": "Kaikki ajan tasalla",
+      "unreadCount": "{{count}} lukematonta",
+      "markAllRead": "Merkitse kaikki luetuiksi",
+      "clearRead": "Tyhjennä luetut",
+      "filterAll": "Kaikki",
+      "filterAria": "Suodata ilmoituksia tyypin mukaan",
+      "loadError": "Ilmoituksia ei voitu ladata",
+      "emptyTitle": "Ei vielä ilmoituksia",
+      "emptyDescription": "Seuraa artisteja ja osallistu keskusteluun; tapahtumat näkyvät täällä.",
+      "emptyKindTitle": "Ei tämän tyyppisiä",
+      "showAll": "Näytä kaikki",
+      "needsAck": "Vaatii kuittausta",
+      "acknowledge": "Kuittaa",
+      "markRead": "Merkitse luetuksi",
+      "remove": "Poista",
+      "markReadAria": "Merkitse luetuksi: {{title}}",
+      "removeAria": "Poista: {{title}}",
+      "failedBadge": "Epäonnistui",
+      "kindSocial": "Sosiaalinen",
+      "kindMusic": "Musiikki",
+      "kindMoney": "Raha",
+      "kindGovernance": "Hallinto",
+      "kindOther": "Muu",
+      "olderError": "Vanhempia ilmoituksia ei voitu ladata.",
+      "markReadError": "Ilmoitusta ei voitu merkitä luetuksi.",
+      "markAllReadError": "Ilmoituksia ei voitu merkitä luetuiksi.",
+      "removeError": "Ilmoitusta ei voitu poistaa.",
+      "clearReadError": "Luettuja ilmoituksia ei voitu tyhjentää."
+    },
+    "trackDetail": {
+      "commentsEmptyTitle": "Ei vielä kommentteja.",
+      "commentsEmptyDescription": "Ole ensimmäinen kommentoija.",
+      "genre": "Genre",
+      "genres": "Genret",
+      "tag": "Tagi",
+      "tags": "Tagit",
+      "licence": "Lisenssi",
+      "recordedAt": "Äänitetty"
     }
   },
   "studioEditor": {

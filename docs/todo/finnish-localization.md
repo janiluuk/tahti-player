@@ -38,15 +38,15 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 - Batch 33: Library Overview stat cards and `formatPlayCount` plural (`web.library.plays`); Radio tabs, loading and recent-plays copy (`web.radio.*`); Messages popover (`web.messagesPopover.*`); processing-failure toast (`web.toasts.*`); FullScreenPlayer chrome and controls (`web.player.*`); `TrackHero` back, share and add; Settings Account tabs/session/membership/subscriptions/purchases, Artist tabs and load errors, Channel page and chat/moderator pointers, Broadcast radio and green room (`web.settingsBody.*`).
 - Batch 33, second pass: Settings switches for channel autoplay, top lists, broadcast recording/publish, comments and MusicBrainz (`web.toggles.*`); Library Following (`library.following*`); Radio `<title>` description (`seo.radio*`); `TrackHero` play/pause/edit; chart and heatmap date labels follow the app language.
 - Batch 35: Settings Logs chrome; Studio hub empty discography + governance/recent titles; Admin Inbox tabs; Discover community stories; Radio station page; collection Play/queue/Jam; Broadcast green-room pool labels; support tickets chrome; transparency ledger empty; public governance history; Studio sounds/releases toasts; artist Joined / channel rename / fan-sub Ends on.
+- Batch 36: Settings Account cancel/storage; Artist identity fields; Channel domain tab; Notifications page chrome; Library Sounds/Collections/Upload; History Stats + Across devices; channel tabs + upcoming empty; track comments/details labels; Admin missed-shows empty; Stash/Membership/StemMixer download via `web.actions`; Discover add-on widget labels via `WIDGET_LABEL_KEYS`.
 
 ## Left
 
-- [ ] Use `web.actions` in the remaining share/edit/follow call sites that still import `@tahti-player/ui` directly, and the other download labels (`StashFilesPanel`, `MembershipInvoices`, `StemMixer`). Ui components need `labels` props where the player must stay English-only.
-- [ ] Settings panel bodies: the forms inside Account, Artist, Channel and Broadcast (field labels, save buttons, toasts).
-- [ ] Notification item text and the other toasts (only the processing-failure toast is translated).
-- [ ] Listen: plugin-store `DISCOVER_WIDGET_LABELS`.
-- [ ] Library sub-pages: remaining page bodies (History Stats tab and Across your devices panel, Sounds, Collections, Upload). Overview stat cards, History list and Following are done.
-- [ ] Studio and Admin page bodies (admin hub card descriptions per page stay English), Radio below the tabs, channel pages, the rest of track and release pages (`ChannelView`, `track-detail` below the hero).
+- [ ] Use `web.actions` in the remaining share/edit/follow call sites that still import `@tahti-player/ui` directly. Ui components need `labels` props where the player must stay English-only. Stash/Membership/StemMixer download labels done in batch 36.
+- [ ] Settings panel bodies: remaining forms inside Account (password/email/privacy copy), Artist (story/people/connections/branding saves), Channel (rename confirm copy, slug toasts), beyond the batch 36 subsets. Broadcast panel chrome already i18n.
+- [ ] Notification **item** title/body from the API, and remaining toasts outside Notifications page chrome / processing-failure / Studio sounds-releases.
+- [ ] Library sub-pages: remaining page bodies inside Sounds/Collections/Upload (filters, dialogs) beyond chrome/empties. History Stats chart labels beyond the empty/top-list subset.
+- [ ] Studio and Admin page bodies beyond the batch 36 subsets (admin hub card descriptions per page stay English), Radio below the tabs, more channel blocks, release pages.
 - [ ] Views that do not call `useTranslation` render again only when something else changes, so a date or label can stay in the old language until then. Check this after more views are translated.
 - [ ] Route SEO descriptions and the default title (`lib/seo.ts`). The page tour (`lib/pageTour.ts`). Keyboard shortcuts help (`content/keyboardNavigation.ts` is a large content table).
 - [ ] Optional: detect a Finnish browser on first visit. `matchBrowserLocales` exists, but the default stays English until product decides.

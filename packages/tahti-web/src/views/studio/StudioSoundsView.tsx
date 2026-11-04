@@ -1,5 +1,6 @@
 import { Navigate } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ViewShell } from '@tahti-player/ui';
 
 import { AddToMusicActions } from '../../components/AddToMusicActions';
@@ -23,6 +24,7 @@ import { TrackOrderButton } from './sounds/TrackOrderButton';
 import { useStudioSoundsState } from './sounds/useStudioSoundsState';
 
 export function StudioSoundsView() {
+  const { t } = useTranslation('web');
   const state = useStudioSoundsState();
   const listener = useAuthStore(
     (auth) =>
@@ -50,7 +52,10 @@ export function StudioSoundsView() {
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
         <LibrarySectionTabs active="sounds" />
-        <ViewShell title="Sounds" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell
+          title={t('library.soundsTitle')}
+          classes={{ root: 'px-0 pt-0' }}
+        >
           <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
             <AddToMusicActions onUploaded={reload} />
             <TrackOrderButton />
@@ -60,32 +65,32 @@ export function StudioSoundsView() {
             <SoundFilters state={state} />
             {loadError && items.length > 0 ? (
               <PageErrorBanner
-                title="Could not refresh your sounds"
+                title={t('library.soundsRefreshError')}
                 description={loadError}
                 onRetry={reload}
               />
             ) : null}
             {loading ? (
-              <PageLoading label="Loading…" />
+              <PageLoading label={t('settingsBody.loading')} />
             ) : loadError && items.length === 0 ? (
               <PageError
-                title="Could not load your sounds"
+                title={t('library.soundsLoadError')}
                 description={loadError}
                 onRetry={reload}
               />
             ) : filtersActive && total === 0 ? (
               <PageEmpty
-                title="No sounds match these filters"
+                title={t('library.soundsNoMatch')}
                 action={
                   <Button size="sm" variant="secondary" onClick={clearFilters}>
-                    Clear filters
+                    {t('library.clearFilters')}
                   </Button>
                 }
               />
             ) : filtered.length === 0 ? (
               <PageEmpty
-                title="No sounds yet"
-                description="Upload a file or import from Sources. Sounds can be tracks, clips, DJ sets, shows, or episodes."
+                title={t('library.soundsEmptyTitle')}
+                description={t('library.soundsEmptyDescription')}
                 action={
                   <AddToMusicActions
                     align="center"

@@ -14,6 +14,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -144,6 +145,7 @@ function collectionItemPlayable(
 }
 
 export function StudioCollectionsView() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const play = usePlayerStore((s) => s.play);
   const [playingSlug, setPlayingSlug] = useState<string | null>(null);
@@ -281,19 +283,19 @@ export function StudioCollectionsView() {
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
         <LibrarySectionTabs active="collections" />
         <ViewShell
-          title="Collections"
+          title={t('library.collectionsTitle')}
           classes={{ root: 'px-0 pt-0' }}
           actions={
             canCreate ? (
               <div className="flex items-center gap-2">
                 <CollectionOrderButton />
-                <Tooltip content="New collection" side="top">
+                <Tooltip content={t('library.newCollection')} side="top">
                   <Button
                     size="icon-sm"
                     onClick={() => {
                       setCreateOpen(true);
                     }}
-                    aria-label="New collection"
+                    aria-label={t('library.newCollection')}
                   >
                     <PlusIcon size={16} aria-hidden />
                   </Button>
@@ -312,7 +314,7 @@ export function StudioCollectionsView() {
               <Dialog.Title>
                 <span className="inline-flex items-center gap-2">
                   <PlusIcon size={18} aria-hidden />
-                  New collection
+                  {t('library.newCollection')}
                 </span>
               </Dialog.Title>
               <Dialog.Description>
@@ -454,7 +456,7 @@ export function StudioCollectionsView() {
               <PageLoading label="Loading…" />
             ) : loadError && rows.length === 0 ? (
               <PageError
-                title="Could not load your collections"
+                title={t('library.collectionsLoadError')}
                 description={loadError}
                 onRetry={() => {
                   setLoading(true);
@@ -464,35 +466,37 @@ export function StudioCollectionsView() {
             ) : rows.length === 0 ? (
               <PageEmpty
                 title={
-                  canCreate ? 'No collections yet' : 'No collections saved yet'
+                  canCreate
+                    ? t('library.collectionsEmptyTitle')
+                    : t('library.collectionsEmptySavedTitle')
                 }
                 description={
                   canCreate
-                    ? 'Create an album, EP, DJ set, podcast, or playlist.'
-                    : 'Follow public playlists from artist pages, or browse Discover for collections to save.'
+                    ? t('library.collectionsEmptyDescription')
+                    : t('library.collectionsEmptySavedDescription')
                 }
                 action={
                   canCreate ? (
-                    <Tooltip content="New collection" side="top">
+                    <Tooltip content={t('library.newCollection')} side="top">
                       <Button
                         size="icon-sm"
                         variant="secondary"
                         onClick={() => setCreateOpen(true)}
-                        aria-label="New collection"
+                        aria-label={t('library.newCollection')}
                       >
                         <PlusIcon size={16} aria-hidden />
                       </Button>
                     </Tooltip>
                   ) : (
                     <ButtonLink to="/discover" size="sm" variant="secondary">
-                      Browse Discover
+                      {t('library.browseDiscover')}
                     </ButtonLink>
                   )
                 }
               />
             ) : filteredRows.length === 0 ? (
               <PageEmpty
-                title="No collections match these filters."
+                title={t('library.collectionsNoMatch')}
                 action={
                   <Button
                     variant="secondary"
@@ -501,7 +505,7 @@ export function StudioCollectionsView() {
                       setFilter('ALL');
                     }}
                   >
-                    Clear filters
+                    {t('library.clearFilters')}
                   </Button>
                 }
               />

@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { InfoIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import { CommentItem } from '../../components/CommentItem';
@@ -18,6 +19,7 @@ import { cueLabel } from './helpers';
 import { TrackDetailsBlock } from './TrackDetailsBlock';
 
 export function TrackBody({ page }: { page: TrackPage }) {
+  const { t } = useTranslation('web');
   const {
     detail,
     comments,
@@ -108,8 +110,8 @@ export function TrackBody({ page }: { page: TrackPage }) {
             </h2>
             {comments.length === 0 ? (
               <PageEmpty
-                title="No comments yet."
-                description="Be the first to comment."
+                title={t('trackDetail.commentsEmptyTitle')}
+                description={t('trackDetail.commentsEmptyDescription')}
               />
             ) : (
               <ul className="flex flex-col gap-4">

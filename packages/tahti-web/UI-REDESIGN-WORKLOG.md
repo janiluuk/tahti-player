@@ -1,3 +1,13 @@
+## 2026-11-04 - Batch 36 UX slices (0.0.326)
+
+Settings Account cancel/storage, Artist identity fields, Channel domain tab Finnish;
+Notifications page chrome; Library Sounds/Collections/Upload + History Stats /
+Across devices; channel tabs and upcoming empty; track comments/details labels;
+Admin missed-shows empty; Stash/Membership/StemMixer download via `web.actions`;
+Discover add-on widget labels via `WIDGET_LABEL_KEYS`; MotionMeetingLinkControl
+`numericDay`; PlayHistoryDialog `ListingDate`; Channel rename ConfirmDialog
+destructive.
+
 ## 2026-11-04 - Batch 35 UX slices (0.0.325)
 
 Admin Catalog and Radio featured/history dates use `ListingDate`; Studio

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   CalendarHeatmap,
@@ -61,6 +62,7 @@ function StatsTopList({
 }
 
 export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
+  const { t } = useTranslation('web');
   const isDark = useThemeStore((s) => s.dark);
   const [presetId, setPresetId] = useState<RangePresetId>('last30Days');
 
@@ -91,8 +93,8 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
     return (
       <PageEmpty
         data-testid="history-stats-empty"
-        title="Nothing to show yet"
-        description="Stats build up after about 30 seconds of play (or half the track). Come back once you've listened to something."
+        title={t('library.historyStatsEmptyTitle')}
+        description={t('library.historyStatsEmptyDescription')}
         className="flex-1"
       />
     );
@@ -114,7 +116,7 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
         )}
         <div data-testid="history-stats-range" className="w-44">
           <Select
-            aria-label="Date range"
+            aria-label={t('library.dateRange')}
             options={RANGE_PRESETS.map((p) => ({ id: p.id, label: p.label }))}
             value={presetId}
             onValueChange={(value) => setPresetId(value as RangePresetId)}
@@ -126,17 +128,17 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
         <div className="grid grid-cols-1 items-start gap-4 @2xl:grid-cols-2">
           <StatsTopList
             testId="history-top-artists"
-            title="Top artists"
+            title={t('library.topArtists')}
             entries={artists}
           />
           <StatsTopList
             testId="history-top-tracks"
-            title="Top tracks"
+            title={t('library.topTracks')}
             entries={tracks}
           />
           <StatsTopList
             testId="history-top-channels"
-            title="Top channels"
+            title={t('library.topChannels')}
             entries={channels}
             className="@2xl:col-span-2"
           />
@@ -146,12 +148,12 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
       {hasListening ? (
         <div className="flex flex-col items-stretch gap-4 @2xl:flex-row">
           <Box variant="tertiary" className="h-auto w-auto flex-col gap-3">
-            <h3 className="font-heading text-xl">Time of day</h3>
+            <h3 className="font-heading text-xl">{t('library.timeOfDay')}</h3>
             <ListeningClock
               values={hourlyValues}
               labels={{
-                busiestHour: 'Busiest hour',
-                busiestHourValue: 'Listening time',
+                busiestHour: t('library.busiestHour'),
+                busiestHourValue: t('library.listeningTime'),
               }}
               formatValue={formatListeningDuration}
               formatHour={formatHour}
