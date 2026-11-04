@@ -30,7 +30,7 @@ describe('HomeNews', () => {
 
     expect(await screen.findByText('Beta is open')).toBeVisible();
     expect(screen.queryByText('Older post')).toBeNull();
-    await userEvent.click(screen.getByRole('link', { name: 'All news' }));
+    await userEvent.click(screen.getByRole('link', { name: 'Show all news' }));
     expect(router.state.location.pathname).toBe('/news');
   });
 

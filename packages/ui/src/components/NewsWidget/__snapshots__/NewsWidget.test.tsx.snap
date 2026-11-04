@@ -106,27 +106,32 @@ exports[`NewsWidget > (Snapshot) renders a row of articles 1`] = `
         </div>
         <div
           aria-hidden="true"
-          class="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/35 to-transparent"
+          class="pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black/85 via-black/45 to-transparent"
         />
-        <h3
-          class="pointer-events-none absolute inset-x-0 bottom-0 line-clamp-2 p-3 text-base leading-snug font-bold text-white sm:p-4 sm:text-lg [&_a]:pointer-events-auto [&_button]:pointer-events-auto"
+        <div
+          class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col gap-1.5 p-3 sm:gap-2 sm:p-4 [&_a]:pointer-events-auto [&_button]:pointer-events-auto"
         >
-          <span
-            data-testid="article-card-title"
+          <h3
+            class="line-clamp-2 text-base leading-snug font-bold text-white sm:text-lg"
           >
-            Winter grants
-          </span>
-        </h3>
+            <span
+              data-testid="article-card-title"
+            >
+              Winter grants
+            </span>
+          </h3>
+          <p
+            class="line-clamp-2 text-sm leading-relaxed text-white/80"
+            data-testid="story-card-excerpt"
+          >
+            <span
+              data-testid="article-card-teaser"
+            >
+              Applications are open.
+            </span>
+          </p>
+        </div>
       </div>
-      <p
-        class="text-foreground-secondary line-clamp-2 text-sm leading-relaxed"
-      >
-        <span
-          data-testid="article-card-teaser"
-        >
-          Applications are open.
-        </span>
-      </p>
     </article>
   </div>
 </div>

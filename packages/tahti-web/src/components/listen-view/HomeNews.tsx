@@ -1,3 +1,4 @@
+import { ArrowRightIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { ButtonLink, NewsWidget } from '@tahti-player/ui';
@@ -45,6 +46,7 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
       teaser: post.summary,
       imageUrl: post.imageUrl || '/news-opening.svg',
       kind: 'News',
+      kindColor: 'yellow' as const,
       publishedAt: post.publishedAt,
       publishedLabel: humanizePastDate(post.publishedAt),
       onClick: () => setSelected(post),
@@ -80,10 +82,18 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
           badge="News"
           items={items}
           labels={LABELS}
+          more={
+            <ButtonLink
+              to="/news"
+              size="sm"
+              variant="secondary"
+              className="gap-1.5"
+            >
+              Show all news
+              <ArrowRightIcon size={14} aria-hidden />
+            </ButtonLink>
+          }
         />
-        <ButtonLink to="/news" size="xs" variant="text" className="self-start">
-          All news
-        </ButtonLink>
       </div>
     </ListenSection>
   );

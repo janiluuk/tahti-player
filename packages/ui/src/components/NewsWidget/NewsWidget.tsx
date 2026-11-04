@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Newspaper } from 'lucide-react';
-import { FC, useRef } from 'react';
+import { FC, useRef, type ReactNode } from 'react';
 
 import { cn } from '../../utils';
 import { Badge } from '../Badge';
@@ -21,6 +21,8 @@ export type NewsWidgetProps = {
   thumbnailUrl?: string;
   items: ArticleCardItem[];
   labels: NewsWidgetLabels;
+  /** e.g. Show all news — shown before the scroll arrows. */
+  more?: ReactNode;
   className?: string;
   'data-testid'?: string;
 };
@@ -35,6 +37,7 @@ export const NewsWidget: FC<NewsWidgetProps> = ({
   thumbnailUrl,
   items,
   labels,
+  more,
   className,
   'data-testid': testId = 'news-widget',
 }) => {
@@ -70,6 +73,7 @@ export const NewsWidget: FC<NewsWidgetProps> = ({
           )}
         </div>
         <div className="flex items-center gap-2">
+          {more}
           <Tooltip content="Scroll left" side="top">
             <Button
               data-testid="news-widget-scroll-left"
