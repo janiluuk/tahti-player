@@ -55,7 +55,7 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 ## Left
 
 - [ ] Use `web.actions` in the remaining share/edit/follow call sites that still import `@tahti-player/ui` directly. Ui components need `labels` props where the player must stay English-only. Batches 36–44 covered track repost, Close on TrackInfo/FollowList/Embed, collaborative add, CoverArt Cancel, channel-designer/artwork Cancel, and earlier playlist/edit/download subsets.
-- [ ] Notification **item** title/body from the API. Hardcoded `toast.*(English literal)` call sites in tahti-web were cleared through batch 48; keep sweeping ConfirmDialog copy / empty states / chrome labels.
+- [ ] Notification **item** title/body from the API. Hardcoded `toast.*(English literal)` call sites in tahti-web were cleared through batch 48. ConfirmDialog leftovers: [`confirm-dialog-finnish-leftovers.md`](confirm-dialog-finnish-leftovers.md); also empty states / chrome labels.
 - [ ] Library Upload page leftovers beyond dialog/import-source/release-track picker (batch 41–43). History Stats chart axis labels stay chart-kept. Genre option labels in bulk edit stay English catalog names.
 - [ ] Studio and Admin page bodies beyond the batch 41–44 Groups/Listening-parties/Shows/Stash/Revenue/Home/TopLists/release-empty/Fans-hub/ChannelComments/Recordings/Distribution/Editor-list subsets (admin hub card descriptions per page stay English), channel schedule “Next up” stays schedule Kept, more Radio station chrome beyond `formatAgo` and stage labels.
 - [ ] Views that do not call `useTranslation` render again only when something else changes, so a date or label can stay in the old language until then. Check this after more views are translated.
