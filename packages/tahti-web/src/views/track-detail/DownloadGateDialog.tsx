@@ -2,6 +2,7 @@ import { CheckIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog } from '@tahti-player/ui';
 
 import { followArtist } from '../../api/follows';
@@ -30,6 +31,7 @@ function Step({
   label: string;
   children: React.ReactNode;
 }) {
+  const { t } = useTranslation('web');
   return (
     <li className="border-border flex items-center justify-between gap-3 rounded-lg border px-3 py-2 text-sm">
       <span className="inline-flex items-center gap-2">
@@ -41,7 +43,9 @@ function Step({
           />
         ) : null}
         {label}
-        {done ? <span className="sr-only">(done)</span> : null}
+        {done ? (
+          <span className="sr-only">{t('downloadGate.done')}</span>
+        ) : null}
       </span>
       {done ? null : children}
     </li>
@@ -57,6 +61,7 @@ export function DownloadGateDialog({
   onClose,
   onDownload,
 }: Props) {
+  const { t } = useTranslation('web');
   const [status, setStatus] = useState(gates);
   const [busy, setBusy] = useState(false);
 
@@ -85,7 +90,7 @@ export function DownloadGateDialog({
         `${window.location.origin}/t/${soundId}`,
       );
     } catch {
-      toast.error('Could not copy the link — share the page address instead');
+      toast.error(t('downloadGate.copyFailed'));
     }
     const result = await acknowledgeRepost(channelSlug, soundId);
     if (result.ok) {
@@ -98,43 +103,45 @@ export function DownloadGateDialog({
 
   return (
     <Dialog.Root isOpen onClose={onClose}>
-      <Dialog.Title>Unlock this download</Dialog.Title>
+      <Dialog.Title>{t('downloadGate.title')}</Dialog.Title>
       <Dialog.Description>
-        {artist.displayName} gives this track away in return for a little
-        support.
+        {t('downloadGate.description', { name: artist.displayName })}
       </Dialog.Description>
       <ul className="mt-4 flex flex-col gap-2">
         {status.followRequired ? (
           <Step
             done={status.followSatisfied}
-            label={`Follow ${artist.displayName}`}
+            label={t('actions.followArtist', { name: artist.displayName })}
           >
             {signedIn ? (
               <Button size="xs" disabled={busy} onClick={() => void follow()}>
-                Follow
+                {t('actions.follow')}
               </Button>
             ) : (
               <span className="text-foreground-secondary text-xs">
-                Sign in to follow
+                {t('downloadGate.signInToFollow')}
               </span>
             )}
           </Step>
         ) : null}
         {status.repostRequired ? (
-          <Step done={status.repostSatisfied} label="Share this track">
+          <Step
+            done={status.repostSatisfied}
+            label={t('downloadGate.shareStep')}
+          >
             <Button
               size="xs"
               variant="secondary"
               disabled={busy}
               onClick={() => void share()}
             >
-              Copy link
+              {t('downloadGate.copyLink')}
             </Button>
           </Step>
         ) : null}
       </ul>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
         <Button
           disabled={busy || !status.canDownload}
           onClick={() => {
@@ -142,7 +149,7 @@ export function DownloadGateDialog({
             onDownload();
           }}
         >
-          Download
+          {t('actions.download')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

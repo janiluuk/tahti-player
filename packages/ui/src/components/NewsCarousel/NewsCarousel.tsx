@@ -23,6 +23,8 @@ export type NewsCarouselItem = {
   publishedAt?: string;
   /** Short date, e.g. `5 hours ago` or `Oct 30, 2026`. */
   publishedLabel?: string;
+  /** Tooltip with the full local timestamp; defaults to the browser locale. */
+  publishedTitle?: string;
   onClick?: () => void;
 };
 
@@ -175,9 +177,10 @@ const NewsCarouselCard: FC<{ item: NewsCarouselItem }> = ({ item }) => {
               className="shrink-0"
               dateTime={item.publishedAt}
               title={
-                item.publishedAt
+                item.publishedTitle ??
+                (item.publishedAt
                   ? new Date(item.publishedAt).toLocaleString()
-                  : undefined
+                  : undefined)
               }
             >
               {item.publishedLabel}

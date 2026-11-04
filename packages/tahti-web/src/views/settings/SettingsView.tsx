@@ -2,6 +2,8 @@ import { useRouterState } from '@tanstack/react-router';
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   isPluginCategoryTarget,
   pluginAudienceForTarget,
@@ -133,15 +135,17 @@ export function SettingsView() {
     })();
     if (status === 'connected') {
       toast.success(
-        providerLabel ? `${providerLabel} connected.` : 'Connected.',
+        providerLabel
+          ? i18n.t('web:authToasts.connected', { provider: providerLabel })
+          : i18n.t('web:authToasts.connectedGeneric'),
       );
     } else if (status === 'login') {
-      toast.info('Sign in to Tahti first, then connect.');
+      toast.info(i18n.t('web:authToasts.signInFirst'));
     } else if (status) {
       toast.error(
         providerLabel
-          ? `Could not connect ${providerLabel}. Try again.`
-          : 'Could not connect. Try again.',
+          ? i18n.t('web:authToasts.connectFailed', { provider: providerLabel })
+          : i18n.t('web:authToasts.connectFailedGeneric'),
       );
     }
     const socialToast = socialCallbackToast(social);

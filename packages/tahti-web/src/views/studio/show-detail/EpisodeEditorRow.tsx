@@ -1,6 +1,7 @@
 import { BarChart3Icon } from 'lucide-react';
 import { useState } from 'react';
 
+import { toBcp47 } from '@tahti-player/i18n';
 import {
   Button,
   EditIconButton,
@@ -10,7 +11,9 @@ import {
 } from '@tahti-player/ui';
 
 import { patchEpisode, type StudioEpisode } from '../../../api/shows';
+import { ListingDate } from '../../../components/ListingDate';
 import { Eyebrow } from '../../../components/tahti/Eyebrow';
+import { currentLocale } from '../../../lib/locale';
 import { episodeStatusLabel } from '../StudioShowsView';
 
 export function EpisodeEditorRow({
@@ -158,7 +161,7 @@ export function EpisodeEditorRow({
               Created
             </p>
             <p className="mt-1 text-sm font-medium">
-              {new Date(episode.createdAt).toLocaleDateString()}
+              <ListingDate value={episode.createdAt} />
             </p>
           </div>
           {episode.slotStartAt ? (
@@ -167,7 +170,9 @@ export function EpisodeEditorRow({
                 Scheduled
               </p>
               <p className="mt-1 text-sm font-medium">
-                {new Date(episode.slotStartAt).toLocaleString()}
+                {new Date(episode.slotStartAt).toLocaleString(
+                  toBcp47(currentLocale()),
+                )}
               </p>
             </div>
           ) : null}

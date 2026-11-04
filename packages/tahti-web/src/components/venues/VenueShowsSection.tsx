@@ -8,29 +8,13 @@ import {
   type MyVenue,
   type VenueBroadcast,
 } from '../../api/venues-manage';
+import { formatScheduleWindow } from '../../lib/scheduleTime';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { PageEmpty } from '../PageStates';
 import { RestrictionNotice } from '../RestrictionNotice';
 
 function formatShow(show: VenueBroadcast): string {
-  const start = new Date(show.startAt);
-  const day = start.toLocaleDateString(undefined, {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-  });
-  const time = start.toLocaleTimeString(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-  if (!show.endAt) {
-    return `${day} ${time}`;
-  }
-  const end = new Date(show.endAt).toLocaleTimeString(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-  return `${day} ${time}–${end}`;
+  return formatScheduleWindow(show.startAt, show.endAt, ' ');
 }
 
 function toIso(local: string): string | null {

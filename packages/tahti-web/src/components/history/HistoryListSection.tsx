@@ -2,7 +2,7 @@ import { FilterIcon, PlayIcon, PlusIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { toBcp47, useTranslation } from '@tahti-player/i18n';
+import { i18n, toBcp47, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   HistoryDayGroup,
@@ -26,11 +26,15 @@ async function resolvePlayableForReplay(
   try {
     const resolved = await resolveLocalPlayableForReplay(playable);
     if (!resolved) {
-      toast.error('Re-import this file from your library to play it again.');
+      toast.error(i18n.t('web:library.history.reimport'));
     }
     return resolved;
   } catch (error) {
-    toast.error(error instanceof Error ? error.message : 'Track unavailable.');
+    toast.error(
+      error instanceof Error
+        ? error.message
+        : i18n.t('web:library.history.trackUnavailable'),
+    );
     return null;
   }
 }
@@ -48,7 +52,7 @@ async function resolvePlayablesForReplay(
   const skipped = playables.length - available.length;
   if (skipped > 0) {
     toast.error(
-      `${skipped} ${skipped === 1 ? 'track is' : 'tracks are'} unavailable — re-import from your library to play again.`,
+      i18n.t('web:library.history.skippedUnavailable', { count: skipped }),
     );
   }
   return available;
@@ -142,8 +146,8 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
     return (
       <PageEmpty
         data-testid="history-empty-state"
-        title="Nothing played yet"
-        description="Tracks you play show up here after about 30 seconds (or half the track, if it's shorter)."
+        title={t('library.history.emptyTitle')}
+        description={t('library.history.emptyDescription')}
         className="flex-1"
       />
     );
@@ -164,8 +168,8 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
     );
     toast.success(
       added > 0
-        ? `Added ${added} ${added === 1 ? 'track' : 'tracks'} to the queue`
-        : 'Everything here is already queued',
+        ? t('library.history.addedToQueue', { count: added })
+        : t('library.history.allQueued'),
     );
   };
 
@@ -175,21 +179,21 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
         data-testid="history-list-toolbar"
         className="flex flex-wrap items-center gap-2"
       >
-        <Tooltip content="Play all" side="bottom">
+        <Tooltip content={t('library.history.playAll')} side="bottom">
           <Button
             size="icon"
-            aria-label="Play all"
+            aria-label={t('library.history.playAll')}
             disabled={filtered.length === 0}
             onClick={() => void playAll()}
           >
             <PlayIcon size={16} strokeWidth={3} />
           </Button>
         </Tooltip>
-        <Tooltip content="Add all to queue" side="bottom">
+        <Tooltip content={t('library.history.addAllToQueue')} side="bottom">
           <Button
             variant="secondary"
             size="icon"
-            aria-label="Add all to queue"
+            aria-label={t('library.history.addAllToQueue')}
             disabled={filtered.length === 0}
             onClick={() => void addAllToQueue()}
           >
@@ -206,24 +210,24 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
               setFilter(event.target.value);
               setPage(1);
             }}
-            placeholder="Filter history"
-            aria-label="Filter history"
+            placeholder={t('library.history.filter')}
+            aria-label={t('library.history.filter')}
             endAddon={
               <FilterIcon className="h-4 w-4" aria-hidden strokeWidth={3} />
             }
           />
           <Button variant="text" size="sm" onClick={clearHistory}>
-            Clear all
+            {t('library.history.clearAll')}
           </Button>
         </div>
       </div>
 
       {filtered.length === 0 ? (
         <PageEmpty
-          title={`Nothing in your history matches “${filter.trim()}”.`}
+          title={t('library.history.noMatch', { filter: filter.trim() })}
           action={
             <Button size="sm" variant="secondary" onClick={() => setFilter('')}>
-              Clear filter
+              {t('library.history.clearFilter')}
             </Button>
           }
         />
@@ -246,7 +250,7 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
                 key={`${p.id}-${entry.playedAt}`}
                 title={p.title}
                 artist={p.artist}
-                time={new Date(entry.playedAt).toLocaleTimeString(undefined, {
+                time={new Date(entry.playedAt).toLocaleTimeString(localeTag, {
                   hour: 'numeric',
                   minute: '2-digit',
                 })}
@@ -267,7 +271,7 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
                 labels={{
                   favorite: t('actions.addToFavorites'),
                   unfavorite: t('actions.removeFromFavorites'),
-                  addToQueue: 'Add to queue',
+                  addToQueue: t('library.history.addToQueue'),
                 }}
               />
             );
@@ -283,7 +287,7 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
           <div className="flex justify-end pr-1">
             <div data-testid="history-page-size" className="w-24">
               <Select
-                aria-label="Tracks per page"
+                aria-label={t('library.history.tracksPerPage')}
                 options={PAGE_SIZES.map((size) => ({
                   id: String(size),
                   label: String(size),
@@ -303,10 +307,10 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
                 totalPages={totalPages}
                 onPageChange={setPage}
                 labels={{
-                  navigation: 'Pagination',
-                  previous: 'Previous page',
-                  next: 'Next page',
-                  page: (n) => `Page ${n}`,
+                  navigation: t('library.history.pagination'),
+                  previous: t('library.history.previousPage'),
+                  next: t('library.history.nextPage'),
+                  page: (n) => t('library.history.page', { n }),
                 }}
               />
             </div>

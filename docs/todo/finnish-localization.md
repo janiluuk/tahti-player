@@ -33,15 +33,17 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 - Listen Radio row (title, badge, empty, curated-stations error) and the Coming up row (title, badge, filter, error, locale-aware event start).
 - Non-Library page `<title>` strings in `lib/seo.ts` (`web.seo.*`); route descriptions and the default title stay English.
 - Artist follow (`ArtistFollowButton` → `web.actions.followArtist` / `logInToFollow` / `unfollowArtist`); GlobalSearch; notifications popover chrome; Settings Account tab group headings; Library Embeds empty/load error (batch 31).
+- Batch 32 follow-up (#1818): `ReleaseTrackDownloads` and track-info Love / Loved via `web.actions`.
+- Batch 34: Settings → Integrations, Add-ons (group titles, category tabs, scrobbling notice) and What's new chrome; Library History (tabs, toolbar, filter, pagination, toasts, plural counts) and Following; Admin section tabs, page labels, hub titles and descriptions; channel page actions and the share dialog; track download gate; auth-flow toasts (connect, sign in to buy, device sign-out); `libraryFormat` track counts with a Finnish plural; `seo.ts` Library, Studio and Admin child titles.
 
 ## Left
 
 - [ ] Use `web.actions` in the remaining share/edit/follow call sites that still import `@tahti-player/ui` directly, and the other download labels (`StashFilesPanel`, `MembershipInvoices`, `StemMixer`). Ui components need `labels` props where the player must stay English-only.
-- [ ] Settings panel bodies: Account, Artist, Channel, Broadcast, Integrations, Add-ons and What's new.
+- [ ] Settings panel bodies: Account, Artist, Channel and Broadcast.
 - [ ] Messages popover, notification item text and toasts.
 - [ ] Listen: plugin-store `DISCOVER_WIDGET_LABELS`.
-- [ ] Library sub-pages: page bodies, Overview stat cards (tab `<title>` via seo is done).
-- [ ] Studio and Admin page bodies, Radio, channel pages, track and release pages (`ChannelView`, `track-detail` and `FullScreenPlayer` were being changed by other work and were left out).
+- [ ] Library sub-pages: remaining page bodies (History Stats tab and Across your devices panel, Sounds, Collections, Upload). Overview stat cards, History list and Following are done.
+- [ ] Studio and Admin page bodies (admin hub card descriptions per page stay English), Radio, channel pages, track and release pages (`ChannelView`, `track-detail` and `FullScreenPlayer` were being changed by other work and were left out).
 - [ ] Views that do not call `useTranslation` render again only when something else changes, so a date or label can stay in the old language until then. Check this after more views are translated.
 - [ ] Route SEO descriptions and the default title (`lib/seo.ts`). The page tour (`lib/pageTour.ts`). Keyboard shortcuts help (`content/keyboardNavigation.ts` is a large content table).
 - [ ] Optional: detect a Finnish browser on first visit. `matchBrowserLocales` exists, but the default stays English until product decides.

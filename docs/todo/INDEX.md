@@ -21,7 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| partial | [batch-32-slices-2026-11-04.md](batch-32-slices-2026-11-04.md) | Batch of 30: ListingDate on governance/account/admin listings, favorite/download/Playback/Themes/Radio/Coming up/seo Finnish, doc hygiene |
+| partial | [batch-34-slices-2026-11-04.md](batch-34-slices-2026-11-04.md) | Batch of 30 (29 done): ListingDate leftovers (revisions, news, recordings, episodes), schedule windows in the app language, Integrations/Add-ons/What's new/History/Following/Admin hubs/channel actions/auth toasts Finnish |
 | partial | [library-management-port.md](library-management-port.md) | Port theDAW library management to Library Sounds: paged API client, facets/stats, bulk delete/edit |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |

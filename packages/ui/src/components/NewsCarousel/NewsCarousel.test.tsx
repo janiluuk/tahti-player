@@ -44,6 +44,18 @@ describe('NewsCarousel', () => {
     );
   });
 
+  it('titles the date with the caller-supplied timestamp', () => {
+    render(
+      <NewsCarousel
+        items={[{ ...ITEMS[0], publishedTitle: '30.10.2026 klo 12.00' }]}
+      />,
+    );
+    expect(screen.getByText('Oct 30, 2026')).toHaveAttribute(
+      'title',
+      '30.10.2026 klo 12.00',
+    );
+  });
+
   it('opens a headline and renders the more link and extra actions', () => {
     const onClick = vi.fn();
     render(

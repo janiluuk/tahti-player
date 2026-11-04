@@ -21,6 +21,7 @@ import { PageFrame } from '../components/PageHeader';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { VenueRecordings } from '../components/VenueRecordings';
 import { countryFlagAndName } from '../lib/countries';
+import { formatScheduleWindow } from '../lib/scheduleTime';
 import { syncDocumentMetadata } from '../lib/seo';
 
 export function VenueDetailView({ slug }: { slug: string }) {
@@ -187,24 +188,7 @@ export function VenueDetailView({ slug }: { slug: string }) {
 }
 
 function formatShowTime(show: VenueUpcomingBroadcast): string {
-  const start = new Date(show.startAt);
-  const date = start.toLocaleDateString(undefined, {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'short',
-  });
-  const time = start.toLocaleTimeString(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-  if (!show.endAt) {
-    return `${date} ${time}`;
-  }
-  const end = new Date(show.endAt).toLocaleTimeString(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-  return `${date} ${time}–${end}`;
+  return formatScheduleWindow(show.startAt, show.endAt, ' ');
 }
 
 function VenueUpcomingShows({

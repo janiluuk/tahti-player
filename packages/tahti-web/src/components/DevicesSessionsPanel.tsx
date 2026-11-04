@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button } from '@tahti-player/ui';
 
 import {
@@ -19,6 +20,7 @@ import {
 } from './PageStates';
 
 export function DevicesSessionsPanel() {
+  const { t } = useTranslation('web');
   const [sessions, setSessions] = useState<DeviceSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -82,7 +84,7 @@ export function DevicesSessionsPanel() {
           disabled={busy}
           onClick={() => setSignOutAll(true)}
         >
-          Sign out everywhere
+          {t('authToasts.signOutEverywhere')}
         </Button>
       </div>
 
@@ -121,7 +123,7 @@ export function DevicesSessionsPanel() {
                 disabled={busy}
                 onClick={() => setPending(session)}
               >
-                Sign out
+                {t('authToasts.signOut')}
               </Button>
             ) : null}
           </li>
@@ -132,9 +134,9 @@ export function DevicesSessionsPanel() {
         destructive
         isOpen={Boolean(pending)}
         onCancel={() => setPending(null)}
-        title="Sign out this device?"
-        description="That session will need to sign in again."
-        confirmLabel="Sign out"
+        title={t('authToasts.signOutDeviceTitle')}
+        description={t('authToasts.signOutDeviceDescription')}
+        confirmLabel={t('authToasts.signOut')}
         onConfirm={() => {
           if (!pending || busy) {
             return;
@@ -144,11 +146,13 @@ export function DevicesSessionsPanel() {
             .then(() => {
               setSessions((rows) => rows.filter((s) => s.id !== pending.id));
               setPending(null);
-              toast.success('Device signed out');
+              toast.success(t('authToasts.deviceSignedOut'));
             })
             .catch((err) => {
               toast.error(
-                err instanceof Error ? err.message : 'Could not sign out',
+                err instanceof Error
+                  ? err.message
+                  : t('authToasts.signOutFailed'),
               );
             })
             .finally(() => setBusy(false));
@@ -159,9 +163,9 @@ export function DevicesSessionsPanel() {
         destructive
         isOpen={signOutAll}
         onCancel={() => setSignOutAll(false)}
-        title="Sign out everywhere?"
-        description="Every device, including this one, will need to sign in again."
-        confirmLabel="Sign out everywhere"
+        title={t('authToasts.signOutEverywhereTitle')}
+        description={t('authToasts.signOutEverywhereDescription')}
+        confirmLabel={t('authToasts.signOutEverywhere')}
         onConfirm={() => {
           if (busy) {
             return;
@@ -170,12 +174,14 @@ export function DevicesSessionsPanel() {
           void revokeAllDeviceSessions()
             .then(() => {
               setSignOutAll(false);
-              toast.success('Signed out everywhere');
+              toast.success(t('authToasts.signedOutEverywhere'));
               window.location.assign('/');
             })
             .catch((err) => {
               toast.error(
-                err instanceof Error ? err.message : 'Could not sign out',
+                err instanceof Error
+                  ? err.message
+                  : t('authToasts.signOutFailed'),
               );
             })
             .finally(() => setBusy(false));

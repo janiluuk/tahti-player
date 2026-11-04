@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { SparklesIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, cn, Dialog, ViewShell } from '@tahti-player/ui';
 
 import { ListingDate } from '../components/ListingDate';
@@ -81,6 +82,7 @@ function ReleaseEntry({
   isLast: boolean;
   onOpenFull: (note: ReleaseNote) => void;
 }) {
+  const { t } = useTranslation('web');
   const total = countHighlights(note);
   const truncated = total > PREVIEW_HIGHLIGHT_LIMIT;
   const hiddenCount = truncated ? total - PREVIEW_HIGHLIGHT_LIMIT : 0;
@@ -120,7 +122,9 @@ function ReleaseEntry({
               size="flexible"
               className="hover:bg-background-secondary/80 block w-full rounded-none p-3 text-left whitespace-normal active:scale-100 sm:p-4"
               onClick={() => onOpenFull(note)}
-              aria-label={`Read full update for ${note.period}`}
+              aria-label={t('settingsWhatsNew.readFullFor', {
+                period: note.period,
+              })}
             >
               <SectionList
                 sections={note.sections}
@@ -128,10 +132,10 @@ function ReleaseEntry({
               />
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <span className="text-primary-strong text-sm font-medium">
-                  Read full update
+                  {t('settingsWhatsNew.readFull')}
                 </span>
                 <span className="text-foreground-secondary text-xs">
-                  +{hiddenCount} more
+                  {t('settingsWhatsNew.moreCount', { count: hiddenCount })}
                 </span>
               </div>
             </Button>
@@ -148,17 +152,18 @@ function ReleaseEntry({
 
 /** Release notes timeline — embeddable under Settings. */
 export function WhatsNewPanel() {
+  const { t } = useTranslation('web');
   const [fullNote, setFullNote] = useState<ReleaseNote | null>(null);
 
   return (
     <div className="flex w-full flex-col">
       <p className="text-foreground-secondary mb-4 text-sm">
-        What changed in each two-week cycle, grouped by area.{' '}
+        {t('settingsWhatsNew.intro')}{' '}
         <Link
           to="/news"
           className="text-primary-strong font-medium underline-offset-2 hover:underline"
         >
-          See platform announcements
+          {t('settingsWhatsNew.announcements')}
         </Link>
         .
       </p>
@@ -183,14 +188,16 @@ export function WhatsNewPanel() {
             <Dialog.Title>{fullNote.period}</Dialog.Title>
             <Dialog.Description>
               {fullNote.version
-                ? `Around web v${fullNote.version}`
-                : 'Full update for this cycle'}
+                ? t('settingsWhatsNew.aroundVersion', {
+                    version: fullNote.version,
+                  })
+                : t('settingsWhatsNew.fullUpdate')}
             </Dialog.Description>
             <div className="mt-4 max-h-[60vh] overflow-y-auto pr-1">
               <SectionList sections={fullNote.sections} />
             </div>
             <Dialog.Actions>
-              <Dialog.Close>Close</Dialog.Close>
+              <Dialog.Close>{t('actions.close')}</Dialog.Close>
             </Dialog.Actions>
           </>
         ) : null}
@@ -200,9 +207,10 @@ export function WhatsNewPanel() {
 }
 
 export function WhatsNewView() {
+  const { t } = useTranslation('web');
   return (
-    <ViewShell title="What's New">
-      <PageBackLink to="/help" label="Help center" />
+    <ViewShell title={t('settingsWhatsNew.title')}>
+      <PageBackLink to="/help" label={t('nav.help')} />
       <div className="mx-auto flex w-full max-w-2xl flex-col">
         <WhatsNewPanel />
       </div>

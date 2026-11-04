@@ -3,6 +3,7 @@ import { PlayIcon } from 'lucide-react';
 
 import { ButtonLink } from '@tahti-player/ui';
 
+import { ListingDate } from '../../../components/ListingDate';
 import { PageEmpty, PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import type { ShowDetailState } from './useShowDetail';
@@ -52,9 +53,11 @@ export function RecordingsTab({ state }: { state: ShowDetailState }) {
                   {episode.title}
                 </Link>
                 <p className="text-foreground-secondary text-xs">
-                  {episode.slotStartAt
-                    ? new Date(episode.slotStartAt).toLocaleString()
-                    : 'Recorded episode'}{' '}
+                  {episode.slotStartAt ? (
+                    <ListingDate value={episode.slotStartAt} />
+                  ) : (
+                    'Recorded episode'
+                  )}{' '}
                   · {episode.status}
                 </p>
               </div>

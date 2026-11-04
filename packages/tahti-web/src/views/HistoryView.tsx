@@ -1,5 +1,6 @@
 import { BarChart3Icon, HistoryIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Tabs, ViewShell } from '@tahti-player/ui';
 
 import { AcrossDevicesPanel } from '../components/history/AcrossDevicesPanel';
@@ -19,6 +20,7 @@ import { useLibraryStore } from '../stores/libraryStore';
  * their natural height; a fixed-height `overflow-hidden` chain collapses
  * them to nothing when the parent has no definite height. */
 export function HistoryView({ embedded = false }: { embedded?: boolean }) {
+  const { t } = useTranslation('web');
   const history = useLibraryStore((s) => s.history);
 
   const tabs = (
@@ -29,7 +31,7 @@ export function HistoryView({ embedded = false }: { embedded?: boolean }) {
       items={[
         {
           id: 'stats',
-          label: 'Stats',
+          label: t('library.history.tabStats'),
           icon: <BarChart3Icon size={14} />,
           content: (
             <div className="flex flex-col gap-6">
@@ -40,7 +42,7 @@ export function HistoryView({ embedded = false }: { embedded?: boolean }) {
         },
         {
           id: 'listening-history',
-          label: 'Listening history',
+          label: t('library.history.tabListening'),
           icon: <HistoryIcon size={14} />,
           content: <HistoryListSection history={history} />,
         },
@@ -54,7 +56,7 @@ export function HistoryView({ embedded = false }: { embedded?: boolean }) {
 
   return (
     <ViewShell
-      title="History"
+      title={t('library.tabHistory')}
       data-testid="history-view"
       classes={{ root: 'px-0 pt-0' }}
     >

@@ -72,7 +72,7 @@ export function SettingsSectionBody({
         <Suspense
           fallback={
             <div className="flex min-h-48 items-center justify-center">
-              <Loader aria-label="Loading add-ons" />
+              <Loader aria-label={t('settingsAddOns.loading')} />
             </div>
           }
         >

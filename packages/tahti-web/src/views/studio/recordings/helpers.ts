@@ -1,16 +1,6 @@
 import type { RecentBroadcast } from '../../../api/broadcast';
 import type { ShowRefBySoundItemId } from '../../../api/shows';
 
-export function formatDate(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
 export function formatDuration(seconds: number | undefined): string {
   if (!seconds) {
     return '';

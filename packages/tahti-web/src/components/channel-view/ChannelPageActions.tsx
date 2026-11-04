@@ -10,6 +10,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Popover, Tooltip } from '@tahti-player/ui';
 
 import type { PublicChannel } from '../../api/types';
@@ -39,6 +40,7 @@ export function ChannelPageActions({
   onOpenStreamManager,
   follow,
 }: ChannelPageActionsProps) {
+  const { t } = useTranslation('web');
   const displayName = channel.user.displayName;
   const showShare = channel.user.showShareButton !== false;
   const [shareOpen, setShareOpen] = useState(false);
@@ -47,20 +49,20 @@ export function ChannelPageActions({
   const copyRss = async () => {
     try {
       await navigator.clipboard.writeText(channelRssFeedUrl(slug));
-      toast.success('Feed link copied. Paste it into your podcast app.');
+      toast.success(t('channelShare.feedCopied'));
     } catch {
-      toast.error('Could not copy the feed link.');
+      toast.error(t('channelShare.feedCopyFailed'));
     }
   };
 
   const streamManager =
     (isOwner || isAdministrator) && onOpenStreamManager ? (
-      <Tooltip content="Open Stream Manager" side="top">
+      <Tooltip content={t('channelPage.openStreamManager')} side="top">
         <Button
           size="icon-sm"
           variant="secondary"
           onClick={onOpenStreamManager}
-          aria-label="Open Stream Manager"
+          aria-label={t('channelPage.openStreamManager')}
         >
           <ListMusicIcon size={16} aria-hidden />
         </Button>
@@ -72,7 +74,7 @@ export function ChannelPageActions({
       <Button size="sm" variant="secondary" onClick={onEditDesign}>
         <span className="inline-flex items-center gap-1.5">
           <PencilIcon size={14} aria-hidden />
-          Edit design
+          {t('channelPage.editDesign')}
         </span>
       </Button>
     ) : null;
@@ -99,7 +101,7 @@ export function ChannelPageActions({
         aria-hidden
         className={follow.following ? 'fill-current' : undefined}
       />
-      {follow.following ? 'Following' : 'Follow'}
+      {follow.following ? t('actions.following') : t('actions.follow')}
     </Button>
   ) : null;
 
@@ -108,7 +110,7 @@ export function ChannelPageActions({
   const desktopRss = showShare ? null : (
     <RssFeedButton
       href={channelRssFeedUrl(slug)}
-      label={`RSS feed of ${displayName}'s channel`}
+      label={t('channelPage.rssFeedOf', { name: displayName })}
     />
   );
 
@@ -133,12 +135,12 @@ export function ChannelPageActions({
       <div className="sm:hidden">
         <Popover
           anchor="bottom end"
-          tooltip={{ content: 'More', side: 'top' }}
+          tooltip={{ content: t('nav.more'), side: 'top' }}
           trigger={
             <Button
               variant="secondary"
               size="icon-sm"
-              aria-label="More channel actions"
+              aria-label={t('channelPage.moreActions')}
             >
               <MoreHorizontalIcon size={16} aria-hidden />
             </Button>
@@ -151,7 +153,7 @@ export function ChannelPageActions({
                 icon={<PencilIcon size={16} />}
                 onClick={onEditDesign}
               >
-                Edit design
+                {t('channelPage.editDesign')}
               </Popover.Item>
             ) : null}
             {showShare ? (
@@ -159,7 +161,7 @@ export function ChannelPageActions({
                 icon={<Share2Icon size={16} />}
                 onClick={() => setShareOpen(true)}
               >
-                Share
+                {t('actions.share')}
               </Popover.Item>
             ) : null}
             {showShare ? null : (
@@ -167,7 +169,7 @@ export function ChannelPageActions({
                 icon={<RssIcon size={16} />}
                 onClick={() => void copyRss()}
               >
-                Copy RSS feed
+                {t('channelShare.copyRss')}
               </Popover.Item>
             )}
             {!isOwner ? (
@@ -175,7 +177,7 @@ export function ChannelPageActions({
                 icon={<FlagIcon size={16} />}
                 onClick={() => setReportOpen(true)}
               >
-                Report
+                {t('channelPage.report')}
               </Popover.Item>
             ) : null}
           </Popover.Menu>
