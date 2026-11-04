@@ -246,20 +246,25 @@ export function mockLeaveGroup(
 
 export function mockGroupMembership(_soundId: string): GroupMembershipEntry[] {
   const selected = membershipBySound.get(_soundId) ?? new Set();
-  return getStore().map((group) => ({
-    id: group.id,
-    slug: group.slug,
-    name: group.name,
-    coverUrl: group.coverUrl,
-    isPublic: group.isPublic,
-    submitPolicy: group.submitPolicy,
-    role: group.role,
-    collectionSlug: group.collectionSlug,
-    itemCount: group.itemCount,
-    member: selected.has(group.slug),
-    itemId: selected.has(group.slug) ? `mock-gitem-${group.slug}` : null,
-    submissionPending: false,
-  }));
+  return getStore()
+    .filter(
+      (group): group is MockGroup & { role: ArtistGroupRole } =>
+        group.role !== null,
+    )
+    .map((group) => ({
+      id: group.id,
+      slug: group.slug,
+      name: group.name,
+      coverUrl: group.coverUrl,
+      isPublic: group.isPublic,
+      submitPolicy: group.submitPolicy,
+      role: group.role,
+      collectionSlug: group.collectionSlug,
+      itemCount: group.itemCount,
+      member: selected.has(group.slug),
+      itemId: selected.has(group.slug) ? `mock-gitem-${group.slug}` : null,
+      submissionPending: false,
+    }));
 }
 
 export function mockSubmitGroupSound(
