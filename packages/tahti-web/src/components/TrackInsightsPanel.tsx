@@ -1,6 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
+  Box,
+  CalendarHeatmap,
+  DayOfWeekChart,
+  HorizontalScroll,
+  ListeningClock,
   SegmentedControl,
   StatTile,
   Tooltip,
@@ -13,6 +18,12 @@ import {
   type InsightsPeriod,
   type TrackInsights,
 } from '../api/track-insights';
+import {
+  formatHour,
+  monthLabelsShort,
+  weekdayLabelsShort,
+} from '../lib/historyStats';
+import { useThemeStore } from '../plugins/themes';
 import { AudienceBreakdown } from '../views/studio/stats/AudienceBreakdown';
 import { ListenerLocations } from '../views/studio/stats/ListenerLocations';
 import { ListenerLoyalty } from '../views/studio/stats/ListenerLoyalty';
@@ -28,6 +39,24 @@ const PERIOD_OPTIONS: SegmentedControlOption<InsightsPeriod>[] = [
   { id: 'all', label: 'All time' },
 ];
 
+const EMPTY_HOURS = Array.from({ length: 24 }, () => 0);
+const EMPTY_WEEK: TrackInsights['dayOfWeekUsers'] = [0, 0, 0, 0, 0, 0, 0];
+
+function formatListeners(count: number): string {
+  if (count === 1) {
+    return '1 listener';
+  }
+  return `${count.toLocaleString()} listeners`;
+}
+
+function hasAnyListeners(insights: TrackInsights): boolean {
+  return (
+    (insights.hourlyUsers ?? EMPTY_HOURS).some((n) => n > 0) ||
+    (insights.dayOfWeekUsers ?? EMPTY_WEEK).some((n) => n > 0) ||
+    (insights.dailyUsers ?? []).some((d) => d.users > 0)
+  );
+}
+
 export function TrackInsightsPanel({
   kind,
   id,
@@ -35,6 +64,7 @@ export function TrackInsightsPanel({
   kind: InsightsKind;
   id: string;
 }) {
+  const isDark = useThemeStore((s) => s.dark);
   const [period, setPeriod] = useState<InsightsPeriod>('30d');
   const [insights, setInsights] = useState<TrackInsights | null>(null);
   const [loading, setLoading] = useState(true);
@@ -75,6 +105,18 @@ export function TrackInsightsPanel({
   const maxDaily = insights
     ? Math.max(1, ...insights.daily.map((day) => day.downloads))
     : 1;
+
+  const calendarDays = useMemo(
+    () =>
+      (insights?.dailyUsers ?? []).map((day) => ({
+        date: day.date,
+        value: day.users,
+      })),
+    [insights],
+  );
+
+  const hourlyUsers = insights?.hourlyUsers ?? EMPTY_HOURS;
+  const dayOfWeekUsers = insights?.dayOfWeekUsers ?? EMPTY_WEEK;
 
   return (
     <div className="flex flex-col gap-4">
@@ -118,9 +160,83 @@ export function TrackInsightsPanel({
             />
           </div>
 
+          {hasAnyListeners(insights) ? (
+            <div
+              className="@container flex flex-col gap-4"
+              data-testid="track-insights-listening-patterns"
+            >
+              <div className="flex flex-col items-stretch gap-4 @2xl:flex-row">
+                <Box
+                  variant="tertiary"
+                  className="h-auto w-auto flex-col gap-3"
+                >
+                  <h3 className="font-heading text-xl">Time of day</h3>
+                  <ListeningClock
+                    values={hourlyUsers}
+                    labels={{
+                      busiestHour: 'Busiest hour',
+                      busiestHourValue: 'Listeners',
+                    }}
+                    formatValue={formatListeners}
+                    formatHour={formatHour}
+                  />
+                </Box>
+                <Box
+                  variant="tertiary"
+                  className="h-auto min-w-0 flex-1 flex-col gap-3"
+                >
+                  <h3 className="font-heading text-xl">Day of week</h3>
+                  <div className="relative min-h-48 w-full flex-1">
+                    <div className="absolute inset-0">
+                      <DayOfWeekChart
+                        values={dayOfWeekUsers}
+                        labels={{ weekdays: weekdayLabelsShort() }}
+                        formatValue={formatListeners}
+                      />
+                    </div>
+                  </div>
+                </Box>
+              </div>
+
+              <Box variant="tertiary" className="min-w-0 flex-col gap-3">
+                <h3 className="font-heading text-xl">Listening calendar</h3>
+                <HorizontalScroll
+                  label="Listening calendar"
+                  className="[direction:rtl]"
+                >
+                  <CalendarHeatmap
+                    className="mx-auto w-fit [direction:ltr]"
+                    days={calendarDays}
+                    labels={{
+                      months: monthLabelsShort(),
+                      weekdays: weekdayLabelsShort(),
+                      legendLess: 'Fewer listeners',
+                      legendMore: 'More listeners',
+                    }}
+                    colorScheme={isDark ? 'dark' : 'light'}
+                    formatValue={formatListeners}
+                    formatDate={(date) =>
+                      new Date(`${date}T00:00:00Z`).toLocaleDateString(
+                        undefined,
+                        { dateStyle: 'full', timeZone: 'UTC' },
+                      )
+                    }
+                  />
+                </HorizontalScroll>
+              </Box>
+            </div>
+          ) : (
+            <PageEmpty
+              data-testid="track-insights-listening-empty"
+              title="No listening patterns yet"
+              description="When people play this track, time of day, weekday and calendar charts will fill in here."
+            />
+          )}
+
           <StudioPanel title="Listener map">
             <p className="text-foreground-secondary mb-4 text-sm">
-              Anonymized countries for this track's counted plays and downloads.
+              Anonymized countries for this track&apos;s counted plays and
+              downloads.
             </p>
             <ListenerWorldMap data={insights.countries} countLabel="plays" />
             {listenWindow ? <ListenerLocations window={listenWindow} /> : null}

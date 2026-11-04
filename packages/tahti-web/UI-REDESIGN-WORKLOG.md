@@ -6357,3 +6357,7 @@ Listen drops the Tahti Radio bar, and "From Tahti" news moves to Discover. The a
 ## 2026-11-03 — De-green 20 (0.0.296)
 
 Confirming a delete, removal, revoke, block, sign-out, disconnect, withdrawal or cancellation now shows a red button (`ConfirmDialog destructive`) on about forty dialogs, from Studio sounds and devices to admin storage, news, add-ons and governance. Stopping a stream, overwriting or replacing a rotation and overwriting the live version are red too. Secondary controls that sat green (log Clear / Open folder, plugin Installed, Back to Settings after an email change) are now secondary.
+
+## 2026-11-04 — Track insights listening patterns (0.0.312)
+
+Studio track Insights adds the same pattern charts as Listen → History: time of day, day of week, and a listening calendar. Colour intensity is unique listeners (fingerprints from ListenSession), not play duration. Mock insights fill the charts for Storybook. Needs matching tahti-org TrackInsightsResponse fields (`hourlyUsers`, `dayOfWeekUsers`, `dailyUsers`).
