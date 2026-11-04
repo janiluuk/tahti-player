@@ -1,4 +1,4 @@
-## 2026-11-04 - OverflowMenu, FilterBar, batch-30 slices (0.0.315)
+## 2026-11-04 - OverflowMenu, FilterBar, batch-30 slices (0.0.316)
 
 `@tahti-player/ui` adds OverflowMenu and FilterBar (phase-0 simplify
 primitives) with keyboard Storybook plays; ViewShell WithActions play tabs
@@ -11,7 +11,7 @@ radio submissions. Dead Broadcast subnav narrowed. ListingDate / relative
 dates / Library SEO / Discover widgets / Listen rows / Auth dialog /
 Share+Edit / Confirm defaults go through Finnish-aware i18n. Chat picker
 uses `PageBackLink`; `/listen/*` aliases documented. VIEW-CATALOG story
-status updates. Bumped ui `0.0.24`, tahti-web `0.0.315`.
+status updates. Bumped ui `0.0.24`, tahti-web `0.0.316`.
 
 ## 2026-11-04 - Material Tags/Genre + Sets/Groups
 
