@@ -1,10 +1,15 @@
+import type { VariantProps } from 'class-variance-authority';
 import { ClockIcon } from 'lucide-react';
 import { type FC, type ReactNode } from 'react';
 
 import { cn } from '../../utils';
-import { Badge } from '../Badge';
+import { Badge, badgeVariants } from '../Badge';
 import { Button } from '../Button';
 import { ImageReveal } from '../ImageReveal';
+
+export type StoryCardKindColor = NonNullable<
+  VariantProps<typeof badgeVariants>['color']
+>;
 
 export type StoryCardProps = {
   /** Wide image shown when `media` is not given. */
@@ -12,11 +17,11 @@ export type StoryCardProps = {
   /** Replaces the image, e.g. artwork with a play control. Rendered in the
    * same 16:9 frame. */
   media?: ReactNode;
-  /** Activity type shown as a pill, e.g. `released a track`. Prefer with
-   * `date` over a free-form `meta` string. */
+  /** Activity type shown as a color pill on the image, e.g. `News`. */
   kind?: string;
-  /** Formatted date next to the kind pill, e.g. `14 hours ago`; shown with
-   * a clock icon. */
+  /** Pill colour for `kind`. Defaults to yellow so it reads on dark overlays. */
+  kindColor?: StoryCardKindColor;
+  /** Formatted date on the image, e.g. `14 hours ago`; shown with a clock. */
   date?: string;
   /** Machine-readable date for the `<time>` element. */
   dateTime?: string;
@@ -45,13 +50,13 @@ export type StoryCardProps = {
 const STAGGER_MS = 70;
 const MAX_STAGGER_STEPS = 6;
 
-/** The one card for stories, news and feed items: a 16:9 image with the
- * title overlaid on a gradient, then the kind and date, a short excerpt and
- * the author below it. */
+/** The one card for stories, news and feed items: a 16:9 image with the kind
+ * pill, date, title and teaser overlaid on a gradient, then the author below. */
 export const StoryCard: FC<StoryCardProps> = ({
   imageSrc,
   media,
   kind,
+  kindColor = 'yellow',
   date,
   dateTime,
   meta,
@@ -111,29 +116,6 @@ export const StoryCard: FC<StoryCardProps> = ({
     </span>
   );
 
-  const metaRow =
-    kind || date ? (
-      <div className="text-foreground-secondary flex flex-wrap items-center gap-2 text-sm">
-        {kind ? (
-          <Badge
-            variant="pill"
-            color="secondary"
-            className="bg-foreground/10 text-foreground-secondary border-transparent font-medium"
-          >
-            {kind}
-          </Badge>
-        ) : null}
-        {date ? (
-          <span className="inline-flex items-center gap-1">
-            <ClockIcon size={12} aria-hidden />
-            <time dateTime={dateTime}>{date}</time>
-          </span>
-        ) : null}
-      </div>
-    ) : meta ? (
-      <p className="text-foreground-secondary text-sm">{meta}</p>
-    ) : null;
-
   return (
     <article
       data-testid={testId}
@@ -160,7 +142,7 @@ export const StoryCard: FC<StoryCardProps> = ({
         </div>
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/35 to-transparent"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-3/4 bg-gradient-to-t from-black/85 via-black/45 to-transparent"
         />
         {onOpen && !media ? (
           <Button
@@ -172,16 +154,40 @@ export const StoryCard: FC<StoryCardProps> = ({
             onClick={onOpen}
           />
         ) : null}
-        <h3 className="pointer-events-none absolute inset-x-0 bottom-0 line-clamp-2 p-3 text-base leading-snug font-bold text-white sm:p-4 sm:text-lg [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
-          {title}
-        </h3>
+        {kind ? (
+          <div className="pointer-events-none absolute top-0 left-0 z-10 p-3 sm:p-4">
+            <Badge
+              variant="pill"
+              color={kindColor}
+              data-testid="story-card-kind"
+            >
+              {kind}
+            </Badge>
+          </div>
+        ) : null}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col gap-1.5 p-3 sm:gap-2 sm:p-4 [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
+          {date ? (
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-white/85">
+              <ClockIcon size={12} aria-hidden />
+              <time dateTime={dateTime}>{date}</time>
+            </span>
+          ) : null}
+          {!kind && !date && meta ? (
+            <p className="text-sm text-white/85">{meta}</p>
+          ) : null}
+          <h3 className="line-clamp-2 text-base leading-snug font-bold text-white sm:text-lg">
+            {title}
+          </h3>
+          {excerpt ? (
+            <p
+              data-testid="story-card-excerpt"
+              className="line-clamp-2 text-sm leading-relaxed text-white/80"
+            >
+              {excerpt}
+            </p>
+          ) : null}
+        </div>
       </div>
-      {metaRow}
-      {excerpt ? (
-        <p className="text-foreground-secondary line-clamp-2 text-sm leading-relaxed">
-          {excerpt}
-        </p>
-      ) : null}
       {authorName ? (renderAuthor ? renderAuthor(authorRow) : authorRow) : null}
     </article>
   );

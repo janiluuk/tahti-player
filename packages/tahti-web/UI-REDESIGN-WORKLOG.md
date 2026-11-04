@@ -6361,3 +6361,9 @@ Confirming a delete, removal, revoke, block, sign-out, disconnect, withdrawal or
 ## 2026-11-04 — Track insights listening patterns (0.0.312)
 
 Studio track Insights adds the same pattern charts as Listen → History: time of day, day of week, and a listening calendar. Colour intensity is unique listeners (fingerprints from ListenSession), not play duration. Mock insights fill the charts for Storybook. Needs matching tahti-org TrackInsightsResponse fields (`hourlyUsers`, `dayOfWeekUsers`, `dailyUsers`).
+
+
+## 2026-11-04 — Discover news card overlay (0.0.313)
+
+Discover → From Tahti puts the type pill, date and teaser on the StoryCard image.
+“Show all news” is a secondary ButtonLink. StoryCard gains `kindColor`.
