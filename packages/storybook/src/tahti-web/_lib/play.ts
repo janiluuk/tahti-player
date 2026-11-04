@@ -50,11 +50,13 @@ export async function selectTab(scope: Scope, name: Name) {
   await userEvent.click(tab);
   await waitFor(() => expect(tab).toHaveAttribute('aria-selected', 'true'));
   // Tabs' panel content fades in from opacity 0 on mount; wait it out.
+  // On a busy Storybook shard the fade can outlast waitFor's 1s default
+  // even with MotionGlobalConfig.skipAnimations.
   const panelId = tab.getAttribute('aria-controls');
   const panel = panelId ? tab.ownerDocument.getElementById(panelId) : null;
   if (panel) {
     const content = panel.firstElementChild ?? panel;
-    await waitFor(() => expect(content).toBeVisible());
+    await waitFor(() => expect(content).toBeVisible(), { timeout: 5_000 });
   }
   return tab;
 }
