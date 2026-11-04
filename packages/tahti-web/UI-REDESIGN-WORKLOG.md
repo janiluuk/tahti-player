@@ -1,4 +1,4 @@
-## 2026-11-04 - Batch 32 follow-up: admin users role filter (0.0.321)
+## 2026-11-04 - Batch 32 follow-up: admin users role filter (0.0.323)
 
 Admin Users sends the BOARD/ARTIST filter to the server (`isBoard`, `tier`) so
 `total` is the filtered count when the API honours it, with the page count as

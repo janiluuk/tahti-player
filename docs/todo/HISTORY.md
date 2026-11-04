@@ -5885,4 +5885,4 @@ tahti-web `0.0.296`.
 Admin Users sends `isBoard` / `tier` for the BOARD and ARTIST filters so the
 total is no longer one page when the API honours them; falls back to the page
 count otherwise. Fan subscription end dates use `numericDate`. tahti-web
-`0.0.321`; API confirmation stays in `view-first-and-test-hardening-leftovers.md`.
+`0.0.323`; API confirmation stays in `view-first-and-test-hardening-leftovers.md`.
