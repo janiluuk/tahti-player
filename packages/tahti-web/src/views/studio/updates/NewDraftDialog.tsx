@@ -2,6 +2,7 @@ import { SendIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Dialog, Input, SaveButton, Textarea, Toggle } from '@tahti-player/ui';
 
 import { createNewsletterDraft } from '../../../api/studio-extras';
@@ -34,11 +35,11 @@ export function NewDraftDialog({
         toast.error(r.error);
         return;
       }
-      toast.success('Draft saved.');
+      toast.success(i18n.t('web:toasts.draftSaved'));
       onSaved();
       onClose();
     } catch {
-      toast.error('Could not save the draft.');
+      toast.error(i18n.t('web:toasts.couldNotSaveDraft'));
     } finally {
       setBusy(false);
     }

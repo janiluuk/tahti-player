@@ -8,6 +8,7 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -161,7 +162,7 @@ export function PostDialog({
       onSaved();
       onClose();
     } catch {
-      toast.error('Could not save the post.');
+      toast.error(i18n.t('web:toasts.couldNotSavePost'));
     } finally {
       setBusy(false);
     }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, FilePicker, ImageReveal } from '@tahti-player/ui';
 
 import {
@@ -31,7 +32,7 @@ export function ProfileBackdropSection({
       return;
     }
     onChange(result.data.backdropUrl);
-    toast.success('Backdrop saved.');
+    toast.success(i18n.t('web:toasts.backdropSaved'));
   };
 
   const remove = async () => {

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   FilePicker,
@@ -52,7 +53,7 @@ export function ProfileLogoSection({
       logoUrl: result.data.logoUrl,
       logoPlacement: logoPlacement ?? 'AVATAR',
     });
-    toast.success('Logo saved.');
+    toast.success(i18n.t('web:toasts.logoSaved'));
   };
 
   const place = async (next: LogoPlacement) => {

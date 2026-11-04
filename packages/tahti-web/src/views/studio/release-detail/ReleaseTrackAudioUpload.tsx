@@ -2,6 +2,7 @@ import { UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Badge, Button, FilePicker } from '@tahti-player/ui';
 
 import type { StudioReleaseTrack } from '../../../api/studio-types';
@@ -17,11 +18,11 @@ export function reportReleaseTrackUpload(
   result: ReleaseTrackUploadResult,
 ): result is Extract<ReleaseTrackUploadResult, { ok: true }> {
   if (result.ok) {
-    toast.success('Audio uploaded. It is being processed now.');
+    toast.success(i18n.t('web:toasts.audioUploadedProcessing'));
     return true;
   }
   if (result.cancelled) {
-    toast.info('Upload cancelled.');
+    toast.info(i18n.t('web:toasts.uploadCancelled'));
   } else {
     toast.error(result.error);
   }

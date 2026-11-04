@@ -2,6 +2,7 @@ import { LayersIcon, SplitIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, InlineError, Loader, TabLabel, Tabs } from '@tahti-player/ui';
 
 import {
@@ -109,7 +110,7 @@ export function StemsPanel({
       }
       setStems((await fetchSoundStems(soundId)).data);
     } catch {
-      toast.error('Could not request the split. Try again.');
+      toast.error(i18n.t('web:toasts.couldNotRequestSplit'));
     } finally {
       setRequesting(false);
     }

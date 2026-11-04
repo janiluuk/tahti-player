@@ -202,7 +202,7 @@ export function usePressKit() {
       );
     } catch {
       setImages(images);
-      toast.error('Could not save the new photo order.');
+      toast.error(i18n.t('web:toasts.couldNotSavePhotoOrder'));
     }
   };
 
@@ -247,7 +247,7 @@ export function usePressKit() {
     }
     setProfile({ ...profile, avatarUrl: null });
     await refreshAuth();
-    toast.success('Profile picture removed.');
+    toast.success(i18n.t('web:toasts.profilePictureRemoved'));
   };
 
   const handleAvatarChange = (url: string) => {
@@ -272,12 +272,12 @@ export function usePressKit() {
       const result = await patchPressKitBio(pressKit.bioShort);
       if (result.ok) {
         setPressKit(result.data);
-        toast.success('Press kit bio saved.');
+        toast.success(i18n.t('web:toasts.pressKitBioSaved'));
       } else {
         toast.error(result.error);
       }
     } catch {
-      toast.error('Could not save the press kit bio.');
+      toast.error(i18n.t('web:toasts.couldNotSavePressKitBio'));
     }
   };
 
