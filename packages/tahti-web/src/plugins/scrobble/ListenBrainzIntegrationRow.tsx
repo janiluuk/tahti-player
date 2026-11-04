@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Dialog, Input, SaveButton } from '@tahti-player/ui';
 
 import {
@@ -34,7 +35,7 @@ export function ListenBrainzIntegrationRow() {
   const saveAndEnable = async () => {
     const trimmed = token.trim();
     if (!trimmed) {
-      toast.error('Paste your ListenBrainz user token first.');
+      toast.error(i18n.t('web:toasts.listenBrainzTokenRequired'));
       return;
     }
     setBusy(true);
@@ -49,7 +50,7 @@ export function ListenBrainzIntegrationRow() {
     setInstalled(true);
     setOpen(false);
     setToken('');
-    toast.success('ListenBrainz scrobbling enabled.');
+    toast.success(i18n.t('web:toasts.listenBrainzEnabled'));
     void refresh();
   };
 
@@ -63,7 +64,7 @@ export function ListenBrainzIntegrationRow() {
     }
     setInstalled(false);
     setToken('');
-    toast.success('ListenBrainz disconnected.');
+    toast.success(i18n.t('web:toasts.listenBrainzDisconnected'));
   };
 
   return (

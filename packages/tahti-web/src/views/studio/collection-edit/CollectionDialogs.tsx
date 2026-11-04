@@ -1,5 +1,6 @@
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Dialog, FilePicker } from '@tahti-player/ui';
 
 import { removeStudioCollectionItem } from '../../../api/studio';
@@ -117,7 +118,7 @@ export function CollectionDialogs({
           setPendingRemove(null);
           void removeStudioCollectionItem(slug, id).then((result) => {
             if (result.ok) {
-              toast.success('Track removed.');
+              toast.success(i18n.t('web:toasts.trackRemoved'));
               void refreshItems();
             } else {
               toast.error(result.error);

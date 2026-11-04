@@ -2,6 +2,7 @@ import { PlusIcon, TrashIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -102,7 +103,9 @@ export function SmartPlaylistDialog({
         editing?.id ?? null,
         draft,
       );
-      toast.success(`Saved “${saved.name}”.`);
+      toast.success(
+        i18n.t('web:toasts.savedNamedQuotes', { name: saved.name }),
+      );
       onSaved();
       onClose();
     } catch (failure) {

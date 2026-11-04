@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import {
@@ -45,7 +46,7 @@ export function TextLayerPanel({ slug }: { slug: string }) {
 
   const save = async () => {
     if (draft.mode !== 'NONE' && draft.text.trim().length === 0) {
-      toast.error('Add some text or pick "None" as the effect.');
+      toast.error(i18n.t('web:toasts.addTextOrNoneEffect'));
       return;
     }
     setSaving(true);
@@ -59,7 +60,7 @@ export function TextLayerPanel({ slug }: { slug: string }) {
       toast.error(res.error);
       return;
     }
-    toast.success('Text layer saved.');
+    toast.success(i18n.t('web:toasts.textLayerSaved'));
   };
 
   return (

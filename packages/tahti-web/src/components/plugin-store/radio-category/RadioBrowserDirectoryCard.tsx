@@ -2,6 +2,7 @@ import { PlusIcon, SearchIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   FilterChips,
@@ -100,7 +101,7 @@ export function RadioBrowserDirectoryCard() {
       .catch(() => undefined);
     searchStations({ limit: 20 })
       .then(setResults)
-      .catch(() => toast.error('Could not load Radio Browser stations.'));
+      .catch(() => toast.error(i18n.t('web:toasts.radioBrowserLoadFailed')));
   }, [enabled, loaded]);
 
   const runSearch = async () => {
@@ -120,7 +121,7 @@ export function RadioBrowserDirectoryCard() {
       }
     } catch {
       if (request === searchRequest.current) {
-        toast.error('Radio Browser search failed.');
+        toast.error(i18n.t('web:toasts.radioBrowserSearchFailed'));
       }
     } finally {
       if (request === searchRequest.current) {

@@ -2,6 +2,7 @@ import { FolderOpenIcon, TrashIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Dialog, InlineError, Loader, Tooltip } from '@tahti-player/ui';
 
 import { formatLibrarySize } from '../lib/libraryFormat';
@@ -144,9 +145,14 @@ export function DuplicatesDialog({
   const remove = async (track: NativeLibraryTrack) => {
     try {
       await library.remove(track.id);
-      toast.success(`Removed “${track.title}” from the library.`, {
-        description: 'The audio file on disk was not touched.',
-      });
+      toast.success(
+        i18n.t('web:toasts.removedTrackFromLibraryNamed', {
+          title: track.title,
+        }),
+        {
+          description: 'The audio file on disk was not touched.',
+        },
+      );
       onChanged();
       await load();
     } catch (failure) {

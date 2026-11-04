@@ -2,6 +2,7 @@ import { BotIcon, RotateCwIcon, SettingsIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -94,7 +95,7 @@ export function DiscordBotAddonCard() {
         toast.error(result.error);
         return;
       }
-      toast.success('Discord bot restarting');
+      toast.success(i18n.t('web:toasts.discordBotRestarting'));
     });
   };
 
@@ -116,7 +117,7 @@ export function DiscordBotAddonCard() {
       setClientId(result.data.clientId);
       setToken('');
       setInstalled(DISCORD_BOT_ADDON_ID, result.data.tokenConfigured);
-      toast.success('Discord bot settings saved');
+      toast.success(i18n.t('web:toasts.discordBotSettingsSaved'));
       setOpen(false);
     });
   };

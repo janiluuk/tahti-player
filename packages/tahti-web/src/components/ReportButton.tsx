@@ -2,6 +2,7 @@ import { FlagIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Dialog, Select, Textarea, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -67,7 +68,7 @@ export function ReportButton({
       toast.error(result.error);
       return;
     }
-    toast.success('Report sent. Thanks — the board will take a look.');
+    toast.success(i18n.t('web:toasts.reportSent'));
     close();
   };
 

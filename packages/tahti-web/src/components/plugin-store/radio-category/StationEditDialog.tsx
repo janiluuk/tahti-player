@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Dialog, Input, SaveButton } from '@tahti-player/ui';
 
 import {
@@ -35,7 +36,7 @@ export function StationEditDialog({
     try {
       setTestResult(await testRadioStream(streamUrl.trim()));
     } catch {
-      toast.error('Could not test the stream.');
+      toast.error(i18n.t('web:toasts.couldNotTestStream'));
     } finally {
       setTestBusy(false);
     }
@@ -62,7 +63,9 @@ export function StationEditDialog({
             streamUrl: streamUrl.trim() || null,
             detailUrl: String(form.get('detailUrl') ?? '').trim(),
           });
-          toast.success(`Saved ${station.name}.`);
+          toast.success(
+            i18n.t('web:toasts.savedStationNamed', { name: station.name }),
+          );
           onClose();
         }}
       >

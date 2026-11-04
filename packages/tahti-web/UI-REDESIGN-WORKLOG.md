@@ -6592,3 +6592,7 @@ Settings switches for channel autoplay, top lists, broadcast recording and auto-
 ## 2026-11-04 — Batch 45 UX slices (0.0.335)
 
 Studio playlist/collection/track-edit/waveform/stats toasts; Admin comments/topics; materials; Spotify/SoundCloud; onboarding/order. Finnish + en parity.
+
+## 2026-11-04 — Batch 46 UX slices (0.0.336)
+
+Studio distribution/collection/Jam toasts; Hearthis/Radio Browser/stations; Themes; Discord/Last.fm/ListenBrainz; Report/Blocked/SmartPlaylists; Discussion replies.

@@ -3,6 +3,7 @@ import { CircleHelpIcon, Eye, SettingsIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Badge,
   Box,
@@ -101,7 +102,9 @@ export function ThemesCategory() {
         theme.removable
           ? () => {
               removeCustomTheme(theme.id);
-              toast.success(`Removed ${theme.name}`);
+              toast.success(
+                i18n.t('web:toasts.removedThemeNamed', { name: theme.name }),
+              );
             }
           : undefined
       }

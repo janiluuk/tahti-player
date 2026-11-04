@@ -9,6 +9,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   ExternalLink,
@@ -129,7 +130,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       .catch(() => {
         if (request === libraryRequest.current) {
           setLibraryLoadError('Could not load your hearthis.at library.');
-          toast.error('Could not load your hearthis.at library.');
+          toast.error(i18n.t('web:toasts.hearthisLibraryLoadFailed'));
         }
       })
       .finally(() => {
@@ -172,10 +173,10 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       setHandle(value);
       setDraft('');
       setMsg('Saved.');
-      toast.success('hearthis.at username saved.');
+      toast.success(i18n.t('web:toasts.hearthisUsernameSaved'));
       loadLibrary();
     } catch {
-      toast.error('Could not save the hearthis.at username.');
+      toast.error(i18n.t('web:toasts.hearthisUsernameSaveFailed'));
     } finally {
       setSaving(false);
     }
@@ -273,7 +274,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       setMsg(
         'Already imported — each hearthis.at item can only be imported once.',
       );
-      toast.info('These hearthis.at tracks are already in your library.');
+      toast.info(i18n.t('web:toasts.hearthisTracksAlreadyInLibrary'));
       return;
     }
     setBusy(true);
@@ -332,7 +333,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
     );
     if (pendingTracks.length === 0) {
       setMsg('Already imported — no duplicate collection was created.');
-      toast.info('These hearthis.at items are already in your library.');
+      toast.info(i18n.t('web:toasts.hearthisItemsAlreadyInLibrary'));
       return;
     }
     const notificationId = toast.loading(`Import started for “${name}”…`);
@@ -347,7 +348,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
         setMsg(
           created.ok ? 'Created collection has no import ID.' : created.error,
         );
-        toast.error('Could not create the destination collection.', {
+        toast.error(i18n.t('web:toasts.couldNotCreateDestinationCollection'), {
           id: notificationId,
         });
         return;
@@ -546,7 +547,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                   : hearthisSourceAdapter.search(q.trim())
                 )
                   .then((result) => setHits(result.data))
-                  .catch(() => toast.error('hearthis.at search failed.'))
+                  .catch(() =>
+                    toast.error(i18n.t('web:toasts.hearthisSearchFailed')),
+                  )
                   .finally(() => setSearching(false));
               }}
             >

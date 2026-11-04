@@ -2,6 +2,7 @@ import { PlusIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Dialog, Input } from '@tahti-player/ui';
 
 import {
@@ -62,7 +63,7 @@ export function AddStationUrlDialog({
       }
     } catch {
       if (mine === request.current) {
-        toast.error('Could not resolve that stream URL.');
+        toast.error(i18n.t('web:toasts.couldNotResolveStreamUrl'));
       }
     } finally {
       if (mine === request.current) {
@@ -95,7 +96,7 @@ export function AddStationUrlDialog({
       programmingUrl: programmingUrl.trim() || undefined,
     });
     if (alreadySaved) {
-      toast.success(`Updated ${name} in your stations.`);
+      toast.success(i18n.t('web:toasts.updatedStationNamed', { name }));
     } else {
       toastWithUndo(`Added ${name} to your stations.`, {
         undo: async () => {

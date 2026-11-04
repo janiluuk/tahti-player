@@ -1,5 +1,7 @@
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import { fetchEditorSource } from '../../../api/studio';
 import type {
   StudioCollectionItem,
@@ -88,7 +90,7 @@ export function useCollectionPlayback(items: StudioCollectionItem[]) {
       }
     }
     if (queued === 0) {
-      toast.info('No playable tracks to queue.');
+      toast.info(i18n.t('web:toasts.noPlayableTracksToQueue'));
     } else {
       toast.success(
         `Added ${queued} track${queued === 1 ? '' : 's'} to the queue.`,

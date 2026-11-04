@@ -1,6 +1,8 @@
 import { useCallback, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import { retrySoundProcessing } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
 import { useProcessingJobsStore } from '../stores/processingJobsStore';
@@ -41,7 +43,9 @@ export function useRetrySoundProcessing(onRetried: (id: string) => void): {
         }
         startJobs([{ id: item.id, title: item.title, status: 'PENDING' }]);
         onRetriedRef.current(item.id);
-        toast.success(`Processing "${item.title}" again`);
+        toast.success(
+          i18n.t('web:toasts.processingAgainNamed', { title: item.title }),
+        );
       } finally {
         setRetryingId(null);
       }

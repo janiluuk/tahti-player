@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Input } from '@tahti-player/ui';
 
 /** "Suggest a station" toggle + form; sends the suggestion to the Tahti team
@@ -43,7 +44,7 @@ export function SuggestStationForm() {
       setStreamUrl('');
     } catch {
       setMsg('Could not send the suggestion.');
-      toast.error('Could not send the suggestion.');
+      toast.error(i18n.t('web:toasts.couldNotSendSuggestion'));
     } finally {
       setBusy(false);
     }

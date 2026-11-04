@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -119,7 +120,7 @@ function EditReplyForm({
       setError(result.error);
       return;
     }
-    toast.success('Reply updated.');
+    toast.success(i18n.t('web:toasts.replyUpdated'));
     onDone(result.data);
   };
 
@@ -290,7 +291,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
         toast.error(result.error);
         return;
       }
-      toast.success('Reply removed.');
+      toast.success(i18n.t('web:toasts.replyRemoved'));
       setTopic({
         ...topic,
         posts: topic.posts.filter((p) => p.id !== target.id),
