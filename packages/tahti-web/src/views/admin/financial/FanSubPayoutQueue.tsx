@@ -10,6 +10,7 @@ import {
   type AdminFanSubPayout,
   type AdminFanSubPayoutState,
 } from '../../../api/admin';
+import { ListingDate } from '../../../components/ListingDate';
 import {
   PageEmpty,
   PageError,
@@ -27,10 +28,14 @@ function formatEur(cents: number): string {
   return `€${(cents / 100).toLocaleString('fi-FI', { minimumFractionDigits: 2 })}`;
 }
 
-function formatPeriod(payout: AdminFanSubPayout): string {
-  const start = new Date(payout.forPeriodStart).toLocaleDateString();
-  const end = new Date(payout.forPeriodEnd).toLocaleDateString();
-  return `${start} – ${end}`;
+function PayoutPeriod({ payout }: { payout: AdminFanSubPayout }) {
+  return (
+    <>
+      <ListingDate value={payout.forPeriodStart} />
+      {' – '}
+      <ListingDate value={payout.forPeriodEnd} />
+    </>
+  );
 }
 
 export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
@@ -122,7 +127,8 @@ export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
                     </Badge>
                   </span>
                   <span className="text-foreground-secondary block text-xs">
-                    From {payout.subscriberDisplayName} · {formatPeriod(payout)}
+                    From {payout.subscriberDisplayName} ·{' '}
+                    <PayoutPeriod payout={payout} />
                   </span>
                 </span>
                 <span className="flex items-center gap-3">

@@ -31,7 +31,8 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 
 ## Left
 
-- [ ] Use `web.actions` in shared buttons: follow and favorite buttons, download buttons, and remaining share/edit call sites that still import `@tahti-player/ui` directly. Ui components need `labels` props where the player must stay English-only.
+- [ ] Use `web.actions` in shared buttons: favorite buttons, download buttons, and remaining share/edit call sites that still import `@tahti-player/ui` directly. Ui components need `labels` props where the player must stay English-only.
+- [x] Artist follow (`ArtistFollowButton` → `web.actions.followArtist` / `logInToFollow` / `unfollowArtist`); GlobalSearch; notifications popover chrome; Settings Account tab group headings; Library Embeds empty/load error (batch 31).
 - [ ] Settings panel bodies: Account, Artist, Channel, Broadcast, Playback, Integrations, Themes, Add-ons and What's new.
 - [ ] Notifications and Messages popovers, GlobalSearch, the auth dialog and toasts.
 - [ ] Listen sub-rows: Coming up, Radio section title/badge/empty copy; plugin-store `DISCOVER_WIDGET_LABELS`.

@@ -12,7 +12,7 @@ export type AccountTabGroup = TabGroup;
 export const ACCOUNT_TAB_GROUPS: readonly AccountTabGroup[] = [
   {
     id: 'sign-in',
-    label: 'Sign-in & security',
+    labelKey: 'settings.accountTabGroupSignInSecurity',
     Icon: Lock,
     tabIds: [
       'session',
@@ -24,19 +24,19 @@ export const ACCOUNT_TAB_GROUPS: readonly AccountTabGroup[] = [
   },
   {
     id: 'membership-billing',
-    label: 'Membership & billing',
+    labelKey: 'settings.accountTabGroupMembershipBilling',
     Icon: Wallet,
     tabIds: ['membership', 'governance', 'subscriptions', 'purchases'],
   },
   {
     id: 'notifications',
-    label: 'Notifications',
+    labelKey: 'settings.accountTabGroupNotifications',
     Icon: Bell,
     tabIds: ['notifications', 'mentions'],
   },
   {
     id: 'privacy-data',
-    label: 'Privacy & data',
+    labelKey: 'settings.accountTabGroupPrivacyData',
     Icon: Shield,
     tabIds: ['privacy', 'storage'],
   },

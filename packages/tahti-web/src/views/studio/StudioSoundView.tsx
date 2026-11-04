@@ -33,11 +33,14 @@ export function StudioSoundView({ id }: { id: string }) {
       <div className="studio-page-layout flex w-full flex-col gap-6">
         <div className="relative flex flex-col gap-6">
           <Tooltip
-            content="Back to Music"
+            content="Back to Library sounds"
             side="right"
             wrapperClassName={backButtonCornerClassName}
           >
-            <BackButtonLink to="/studio/sounds" aria-label="Back to Music" />
+            <BackButtonLink
+              to="/library/sounds"
+              aria-label="Back to Library sounds"
+            />
           </Tooltip>
           {!item ? (
             <PageLoading label="Loading…" />

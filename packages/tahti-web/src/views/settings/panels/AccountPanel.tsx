@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { lazy, Suspense, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonAnchor,
@@ -54,6 +55,7 @@ import { ChangePasswordForm } from '../../../components/ChangePasswordForm';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { DevicesSessionsPanel } from '../../../components/DevicesSessionsPanel';
 import { FanSubscriptionsBillingButton } from '../../../components/FanSubscriptionsBillingButton';
+import { ListingDate } from '../../../components/ListingDate';
 import { MembershipInvoices } from '../../../components/MembershipInvoices';
 import { MembershipStatusPanel } from '../../../components/MembershipStatusPanel';
 import {
@@ -91,6 +93,7 @@ function euros(cents: number | string): string {
 }
 
 export function AccountPanel() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const logout = useAuthStore((s) => s.logout);
   const closeSettings = useSettingsModalStore((s) => s.close);
@@ -396,7 +399,7 @@ export function AccountPanel() {
                     {' · '}
                     {euros(purchase.amountCents)}
                     {' · '}
-                    {new Date(purchase.createdAt).toLocaleDateString()}
+                    <ListingDate value={purchase.createdAt} />
                   </p>
                 </div>
                 {purchase.tracks[0] ? (
@@ -435,7 +438,9 @@ export function AccountPanel() {
         defaultIndex={landing.group}
         items={groupAccountTabs(tabItems).map(({ group, tabs }, index) => ({
           id: group.id,
-          label: group.label,
+          label: group.labelKey
+            ? t(group.labelKey as 'settings.accountTabGroupSignInSecurity')
+            : (group.label ?? group.id),
           icon: <group.Icon size={14} />,
           content: (
             <Tabs

@@ -1,3 +1,13 @@
+## 2026-11-04 - Batch 31 ListingDate + Finnish chrome (0.0.317)
+
+ListingDate on governance history, account purchases, Studio editor/upload,
+admin venues/missed shows/payout queue/legacy members, board terms, membership
+renewal and fan subscription renew dates. Feed meta uses `storyDate`. Finnish
+for artist follow labels, GlobalSearch, notifications popover, account tab
+groups, Library embeds empty states. SetupPassword VIEW-CATALOG; Studio sound
+back link to Library sounds. Folded batch-slices todo; AmbientCard documented
+as decided-keep.
+
 ## 2026-11-04 - Discover Groups tab (0.0.317)
 
 Discover gains a Groups tab (`?tab=groups`) that embeds `GroupsDirectory`

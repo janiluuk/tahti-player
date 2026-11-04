@@ -30,13 +30,6 @@ import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
 
-function formatFeedDate(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    day: 'numeric',
-    month: 'short',
-  });
-}
-
 const RELEASE_ACTIVITY: Record<string, string> = {
   SINGLE: 'released a single',
   EP: 'released an EP',
@@ -246,7 +239,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
               artistName: item.artist.displayName,
               artistUsername: item.artist.username,
               artworkUrl: item.bannerUrl,
-              meta: formatFeedDate(item.date),
+              meta: storyDate(item.date),
               playable,
             })
           }

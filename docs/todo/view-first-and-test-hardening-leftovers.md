@@ -51,8 +51,11 @@ changed, because it needs a product call or more than a mechanical fix.
   `/studio/collections/$slug`); removing it also drops
   `StudioCollectionEditView`'s `nav="library"`.
 - [ ] `@tahti-player/ui` exports with no consumer (library, keep unless
-  pruned on purpose): `AmbientCard`, `Mosaic`, `TopBar*`,
-  `BackButtonAnchor`, `BreadcrumbAnchor`, `Slider` subparts.
+  pruned on purpose): `Mosaic`, `TopBar*`, `BackButtonAnchor`,
+  `BreadcrumbAnchor`, `Slider` subparts.
+- [x] `AmbientCard` — decided keep (2026-11-04 batch 31): reserved for mosaic
+  / ambient grid layouts; no production consumer yet; do not delete without a
+  Storybook replacement plan.
 
 ## Tests
 

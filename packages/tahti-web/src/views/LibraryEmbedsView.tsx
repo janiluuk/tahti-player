@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { FilterChips } from '@tahti-player/ui';
 
 import type { IntegrationId } from '../api/sources';
@@ -36,6 +37,7 @@ const isEmbedItem = (item: StudioSound): item is EmbedItem =>
  * provider's own embedded widget (EmbedTrackRow) — never mixed in with
  * Tahti-hosted audio in the regular Tracks list. */
 export function LibraryEmbedsView() {
+  const { t } = useTranslation('web');
   const [items, setItems] = useState<StudioSound[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -143,7 +145,7 @@ export function LibraryEmbedsView() {
       ) : null}
       {loadError ? (
         <PageError
-          title="Could not load your imported embeds"
+          title={t('library.embedsLoadError')}
           description={loadError}
           onRetry={() => {
             setItems(null);
@@ -164,8 +166,8 @@ export function LibraryEmbedsView() {
           />
         ) : (
           <PageEmpty
-            title="No imported embeds yet"
-            description="Tracks imported from hearthis.at, Mixcloud, Spotify, or Bandcamp show up here, grouped by provider, once you import some from Settings → Add-ons → Import."
+            title={t('library.embedsEmptyTitle')}
+            description={t('library.embedsEmptyDescription')}
           />
         )
       ) : null}

@@ -1,3 +1,10 @@
+## 2026-11-04 - Batch slices (OverflowMenu / FilterBar PR)
+
+Ten slices from `batch-slices-2026-11-04.md`: Fans chat CI (#1811),
+OverflowMenu + FilterBar + ViewShell play, ConfirmDialog destructive batch,
+VIEW-CATALOG Artist/Collection/Radio + sitemap BroadcastSubNav hygiene.
+Folded when PR #1812 merged.
+
 ## 2026-11-04 - Material Tags / Genre cards
 
 Track edit Basics and sound Details use `MaterialTagsField` and

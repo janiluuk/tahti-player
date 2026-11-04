@@ -722,7 +722,11 @@
       "logs": "Logs",
       "logsDescription": "Client warnings and errors from this tab, plus links to server container logs",
       "language": "Language",
-      "languageDescription": "The language of menus, buttons and dates"
+      "languageDescription": "The language of menus, buttons and dates",
+      "accountTabGroupSignInSecurity": "Sign-in & security",
+      "accountTabGroupMembershipBilling": "Membership & billing",
+      "accountTabGroupNotifications": "Notifications",
+      "accountTabGroupPrivacyData": "Privacy & data"
     },
     "language": {
       "label": "Language",
@@ -749,7 +753,30 @@
       "tryAgain": "Try again",
       "signIn": "Sign in",
       "upload": "Upload",
-      "confirm": "Confirm"
+      "confirm": "Confirm",
+      "followArtist": "Follow {{name}}",
+      "unfollowArtist": "Unfollow {{name}}",
+      "logInToFollow": "Log in to follow {{name}}"
+    },
+    "search": {
+      "placeholder": "Search artists, tracks, playlists…",
+      "ariaLabel": "Search artists, tracks, and playlists",
+      "clear": "Clear search",
+      "results": "Search results",
+      "searching": "Searching…",
+      "noResultsTitle": "No results for “{{query}}”.",
+      "noResultsDescription": "Try another spelling, or browse Discover and Radio."
+    },
+    "notificationsPopover": {
+      "title": "Notifications",
+      "seeAll": "See all",
+      "refreshError": "Could not refresh notifications.",
+      "loadError": "Could not load notifications",
+      "empty": "No notifications yet",
+      "needsAcknowledgement": "Needs acknowledgement",
+      "acknowledge": "Acknowledge",
+      "showOlder": "Show older",
+      "loading": "Loading…"
     },
     "player": {
       "next": "Next",
@@ -871,7 +898,10 @@
       "nothingSavedTitle": "Nothing saved yet",
       "nothingSavedDescription": "Follow artists and save favorites from Discover — they show up here.",
       "emptyLibraryTitle": "Your library is empty",
-      "emptyLibraryDescription": "Sign in to save music you like, or browse Discover."
+      "emptyLibraryDescription": "Sign in to save music you like, or browse Discover.",
+      "embedsLoadError": "Could not load your imported embeds",
+      "embedsEmptyTitle": "No imported embeds yet",
+      "embedsEmptyDescription": "Tracks imported from hearthis.at, Mixcloud, Spotify, or Bandcamp show up here, grouped by provider, once you import some from Settings → Add-ons → Import."
     },
     "date": {
       "today": "Today",

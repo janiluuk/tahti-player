@@ -18,6 +18,7 @@ import {
 } from '../../api/broadcast';
 import { fetchEditorSource, uploadSoundFile } from '../../api/studio';
 import { ImportJobsPanel } from '../../components/ImportJobsPanel';
+import { ListingDate } from '../../components/ListingDate';
 import { PageEmpty, PageError } from '../../components/PageStates';
 import { RestrictionNotice } from '../../components/RestrictionNotice';
 import { StudioGate } from '../../components/StudioGate';
@@ -29,15 +30,6 @@ import {
 import { usePlayerStore } from '../../stores/playerStore';
 import { LibrarySectionTabs } from '../LibraryView';
 import { UploadSourceWidgets } from './upload/UploadSourceWidgets';
-
-function formatRecordingDate(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, {
-    day: 'numeric',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
 
 function formatRecordingDuration(seconds?: number | null): string {
   if (!seconds) {
@@ -98,7 +90,7 @@ function RecordedBroadcastCard({
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-semibold">{title}</div>
           <div className="text-foreground-secondary truncate text-xs">
-            {formatRecordingDate(broadcast.startedAt)} ·{' '}
+            <ListingDate value={broadcast.startedAt} /> ·{' '}
             {formatRecordingDuration(broadcast.durationSec)}
             {broadcast.soundId ? '' : ' · still processing'}
           </div>

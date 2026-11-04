@@ -8,16 +8,9 @@ import {
   fetchCurrentBoard,
   type BoardSeat,
 } from '../../api/governance-board';
+import { ListingDate } from '../ListingDate';
 import { PageEmpty, PageError } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
-
-function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
 
 /** Who sits on the board today, chair first (GET /api/v1/governance/board). */
 export function CurrentBoardPanel() {
@@ -65,8 +58,13 @@ export function CurrentBoardPanel() {
               ) : null}
               <div className="text-foreground-secondary mt-0.5 text-xs">
                 {BOARD_ROLE_LABELS[seat.role]} · since{' '}
-                {formatDay(seat.termStart)}
-                {seat.termEnd ? `, until ${formatDay(seat.termEnd)}` : ''}
+                <ListingDate value={seat.termStart} />
+                {seat.termEnd ? (
+                  <>
+                    {', until '}
+                    <ListingDate value={seat.termEnd} />
+                  </>
+                ) : null}
               </div>
             </li>
           ))}

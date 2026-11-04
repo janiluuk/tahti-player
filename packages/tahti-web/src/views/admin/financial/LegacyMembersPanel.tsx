@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { CopyButton } from '@tahti-player/ui';
 
 import { fetchLegacyMembers, type AdminLegacyMember } from '../../../api/admin';
+import { ListingDate } from '../../../components/ListingDate';
 import {
   PageEmpty,
   PageError,
@@ -83,9 +84,12 @@ export function LegacyMembersPanel() {
                 </div>
                 <div className="text-foreground-secondary text-xs">
                   @{member.username}
-                  {member.memberSince
-                    ? ` · member since ${new Date(member.memberSince).toLocaleDateString()}`
-                    : ''}
+                  {member.memberSince ? (
+                    <>
+                      {' · member since '}
+                      <ListingDate value={member.memberSince} />
+                    </>
+                  ) : null}
                 </div>
               </div>
               <div className="text-foreground-secondary text-xs">
