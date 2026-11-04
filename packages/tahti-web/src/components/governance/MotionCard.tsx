@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, Input, Textarea } from '@tahti-player/ui';
 
 import {
@@ -85,6 +86,7 @@ export function MotionCard({
   preloadedComments?: MotionComment[];
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [actionMsg, setActionMsg] = useState<string | null>(null);
   const [voting, setVoting] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
@@ -206,7 +208,7 @@ export function MotionCard({
         m.state === 'DRAFT' && (
           <div className="mt-2">
             <EditIconButton
-              label="Edit motion"
+              label={t('actions.editMotion')}
               variant="text"
               onClick={() => {
                 setEditTitle(m.title);

@@ -1,3 +1,9 @@
+## 2026-11-04 - Batch 37 UX slices
+
+Settings Account/Artist/Channel Finnish leftovers; Library/Studio/Admin/Radio
+chrome; schedule helpers Kept; Storybook FormatScheduleWindow + StudioUpdates
+play fixes. tahti-web 0.0.327 (#1823).
+
 ## 2026-11-04 - Batch 36 UX slices
 
 Settings Account/Artist/Channel Finnish subsets; Notifications chrome;

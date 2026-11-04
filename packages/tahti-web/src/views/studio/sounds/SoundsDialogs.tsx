@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Dialog } from '@tahti-player/ui';
 
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
@@ -7,6 +8,7 @@ import { SoundsBulkEditDialog } from './SoundsBulkEditDialog';
 import type { StudioSoundsState } from './useStudioSoundsState';
 
 export function SoundsDialogs({ state }: { state: StudioSoundsState }) {
+  const { t } = useTranslation('web');
   const {
     editingId,
     setEditingId,
@@ -38,15 +40,17 @@ export function SoundsDialogs({ state }: { state: StudioSoundsState }) {
         onClose={() => setStatsItem(null)}
         className="max-w-3xl"
       >
-        <Dialog.Title>{statsItem?.title ?? 'Track stats'}</Dialog.Title>
+        <Dialog.Title>
+          {statsItem?.title ?? t('library.soundsStatsTitle')}
+        </Dialog.Title>
         <Dialog.Description>
-          Plays, downloads, and listener geography for this track.
+          {t('library.soundsStatsDescription')}
         </Dialog.Description>
         {statsItem ? (
           <TrackInsightsPanel kind="sound" id={statsItem.id} />
         ) : null}
         <Dialog.Actions>
-          <Dialog.Close>Close</Dialog.Close>
+          <Dialog.Close>{t('actions.close')}</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
       <ConfirmDialog
@@ -54,11 +58,11 @@ export function SoundsDialogs({ state }: { state: StudioSoundsState }) {
         isOpen={pendingDeleteItem !== null}
         title={
           pendingDeleteItem
-            ? `Delete “${pendingDeleteItem.title}”?`
-            : 'Delete track?'
+            ? t('library.soundsDeleteNamed', { title: pendingDeleteItem.title })
+            : t('library.soundsDeleteTrack')
         }
-        description="This cannot be undone."
-        confirmLabel="Delete"
+        description={t('library.soundsCannotUndo')}
+        confirmLabel={t('actions.delete')}
         onCancel={() => setPendingDeleteItem(null)}
         onConfirm={confirmDelete}
       />
@@ -67,11 +71,13 @@ export function SoundsDialogs({ state }: { state: StudioSoundsState }) {
         isOpen={pendingBulkDelete}
         title={
           selectedIds.size === 1
-            ? 'Delete 1 selected sound?'
-            : `Delete ${selectedIds.size} selected sounds?`
+            ? t('library.soundsDeleteSelectedOne')
+            : t('library.soundsDeleteSelectedOther', {
+                count: selectedIds.size,
+              })
         }
-        description="This cannot be undone."
-        confirmLabel="Delete"
+        description={t('library.soundsCannotUndo')}
+        confirmLabel={t('actions.delete')}
         onCancel={() => setPendingBulkDelete(false)}
         onConfirm={confirmBulkDelete}
       />

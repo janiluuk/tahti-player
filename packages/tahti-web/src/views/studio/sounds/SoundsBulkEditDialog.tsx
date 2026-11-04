@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Select } from '@tahti-player/ui';
 
 import type { StudioSoundBulkPatch } from '../../../api/studio';
@@ -30,6 +31,7 @@ type VisibilityChoice = '' | 'public' | 'private';
 
 /** Apply shared metadata to every checked sound. */
 export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
+  const { t } = useTranslation('web');
   const { bulkEditOpen, setBulkEditOpen, selectedIds, applyBulkEdit } = state;
   const [genre, setGenre] = useState('');
   const [tags, setTags] = useState('');
@@ -102,7 +104,7 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
             name="bulk-tags"
             value={tags}
             onChange={(event) => setTags(event.target.value)}
-            placeholder="Leave blank to keep existing tags"
+            placeholder={t('library.soundsBulkTagsPlaceholder')}
           />
           <span className="text-foreground-secondary text-xs">
             Comma-separated. Replaces tags on every selected sound.

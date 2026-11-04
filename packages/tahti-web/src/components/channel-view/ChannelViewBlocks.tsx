@@ -73,7 +73,9 @@ function ChannelTrackRows({
   );
   const pinnedNote = useCallback(
     (item: TahtiPlayable) =>
-      pinnedIds.has(item.id) ? <Eyebrow tone="muted">Pinned</Eyebrow> : null,
+      pinnedIds.has(item.id) ? (
+        <Eyebrow tone="muted">{i18n.t('web:channelBlocks.pinned')}</Eyebrow>
+      ) : null,
     [pinnedIds],
   );
   return (
@@ -317,32 +319,36 @@ export function renderChannelBlock(
         >
           <h2 className="flex items-center gap-2 text-sm font-bold tracking-tight">
             <CalendarClockIcon size={16} aria-hidden />
-            Programming
+            {i18n.t('web:channelBlocks.programming')}
           </h2>
           {nextAt || channel.nextBroadcastNote ? (
             <p className="text-foreground-secondary text-sm">
               {nextAt
-                ? `Next up · ${nextAt.toLocaleDateString([], {
-                    weekday: 'short',
-                    month: 'short',
-                    day: 'numeric',
-                  })} · ${nextAt.toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}`
+                ? i18n.t('web:channelBlocks.nextUp', {
+                    when: `${nextAt.toLocaleDateString([], {
+                      weekday: 'short',
+                      month: 'short',
+                      day: 'numeric',
+                    })} · ${nextAt.toLocaleTimeString([], {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}`,
+                  })
                 : null}
               {nextAt && channel.nextBroadcastNote ? ' — ' : null}
               {channel.nextBroadcastNote}
             </p>
           ) : (
-            <PageEmpty title="No broadcast currently scheduled." />
+            <PageEmpty
+              title={i18n.t('web:channelBlocks.noBroadcastScheduled')}
+            />
           )}
           {slug === TAHTI_RADIO_SLUG ? <RadioProgrammingGrid /> : null}
           <Link
             to="/schedule"
             className="text-sm underline-offset-2 hover:underline"
           >
-            View full schedule →
+            {i18n.t('web:channelBlocks.viewFullSchedule')}
           </Link>
         </section>
       );
@@ -352,7 +358,10 @@ export function renderChannelBlock(
         <section
           className={`flex items-center gap-6 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
         >
-          <StatChip value={channel.followerCount ?? '—'} label="Followers" />
+          <StatChip
+            value={channel.followerCount ?? '—'}
+            label={i18n.t('web:channelBlocks.followers')}
+          />
         </section>
       );
     case 'events': {
@@ -361,12 +370,14 @@ export function renderChannelBlock(
           <section
             className={`flex flex-col gap-2 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
           >
-            <h2 className="text-sm font-bold tracking-tight">Live shows</h2>
+            <h2 className="text-sm font-bold tracking-tight">
+              {i18n.t('web:channelBlocks.liveShows')}
+            </h2>
             {ctx.sectionStatus.shows === 'loading' ? (
-              <PageLoading label="Loading shows…" />
+              <PageLoading label={i18n.t('web:channelBlocks.loadingShows')} />
             ) : (
               <PageError
-                title="Shows couldn't load"
+                title={i18n.t('web:channelBlocks.showsError')}
                 onRetry={() => ctx.onRetrySection('shows')}
               />
             )}
@@ -382,13 +393,15 @@ export function renderChannelBlock(
           <section
             className={`flex flex-col gap-2 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
           >
-            <h2 className="text-sm font-bold tracking-tight">Live shows</h2>
+            <h2 className="text-sm font-bold tracking-tight">
+              {i18n.t('web:channelBlocks.liveShows')}
+            </h2>
             <PageEmpty
-              title="No scheduled or past broadcasts yet"
+              title={i18n.t('web:channelBlocks.noShowsTitle')}
               description={
                 editing
-                  ? 'This block shows once there are some.'
-                  : 'Upcoming shows and past recordings will appear here.'
+                  ? i18n.t('web:channelBlocks.noShowsEditingDescription')
+                  : i18n.t('web:channelBlocks.noShowsDescription')
               }
             />
           </section>
@@ -398,11 +411,13 @@ export function renderChannelBlock(
         <section
           className={`flex flex-col gap-4 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
         >
-          <h2 className="text-sm font-bold tracking-tight">Live shows</h2>
+          <h2 className="text-sm font-bold tracking-tight">
+            {i18n.t('web:channelBlocks.liveShows')}
+          </h2>
           <div className="grid gap-5 lg:grid-cols-2">
             {ctx.liveShows.upcomingEpisodes.length > 0 ? (
               <ShowEpisodeList
-                title="Upcoming"
+                title={i18n.t('web:channelBlocks.upcoming')}
                 episodes={ctx.liveShows.upcomingEpisodes}
                 channelSlug={slug}
                 username={channel.user.username}
@@ -410,7 +425,7 @@ export function renderChannelBlock(
             ) : null}
             {ctx.liveShows.pastEpisodes.length > 0 ? (
               <ShowEpisodeList
-                title="Past recordings"
+                title={i18n.t('web:channelBlocks.pastRecordings')}
                 episodes={ctx.liveShows.pastEpisodes}
                 channelSlug={slug}
               />

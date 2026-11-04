@@ -41,13 +41,13 @@ export function DevicesSessionsPanel() {
   }, [attempt]);
 
   if (loading) {
-    return <PageLoading label="Loading devices…" />;
+    return <PageLoading label={t('settingsBody.account.devicesLoading')} />;
   }
 
   if (loadError && sessions.length === 0) {
     return (
       <PageError
-        title="Could not load devices"
+        title={t('settingsBody.account.devicesLoadError')}
         description={loadError}
         onRetry={() => setAttempt((n) => n + 1)}
       />
@@ -57,8 +57,8 @@ export function DevicesSessionsPanel() {
   if (sessions.length === 0) {
     return (
       <PageEmpty
-        title="No signed-in devices"
-        description="Sessions appear here after you sign in on a browser or app."
+        title={t('settingsBody.account.devicesEmptyTitle')}
+        description={t('settingsBody.account.devicesEmptyDescription')}
       />
     );
   }
@@ -67,16 +67,14 @@ export function DevicesSessionsPanel() {
     <div className="flex flex-col gap-4">
       {loadError ? (
         <PageErrorBanner
-          title="Could not refresh your devices"
+          title={t('settingsBody.account.devicesRefreshError')}
           description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : null}
       <div className="flex flex-wrap items-start justify-between gap-3">
         <p className="text-foreground/80 text-sm">
-          Each sign-in keeps its own session. Signing in elsewhere no longer
-          signs you out here. We email you when a device you haven&apos;t used
-          before signs in.
+          {t('settingsBody.account.devicesIntro')}
         </p>
         <Button
           size="sm"
@@ -97,20 +95,21 @@ export function DevicesSessionsPanel() {
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
                 <p className="truncate font-medium">
-                  {session.deviceLabel?.trim() || 'Unknown device'}
+                  {session.deviceLabel?.trim() ||
+                    t('settingsBody.account.unknownDevice')}
                 </p>
                 {session.current ? (
                   <Badge variant="pill" color="green">
-                    This device
+                    {t('settingsBody.account.thisDevice')}
                   </Badge>
                 ) : null}
               </div>
               <p className="text-foreground/70 flex flex-wrap items-center gap-x-1 text-sm">
-                <span>Signed in</span>
+                <span>{t('settingsBody.account.signedIn')}</span>
                 <ListingDate value={session.createdAt} />
                 {session.lastUsedAt ? (
                   <>
-                    <span>· Last active</span>
+                    <span>· {t('settingsBody.account.lastActive')}</span>
                     <ListingDate value={session.lastUsedAt} />
                   </>
                 ) : null}

@@ -2,6 +2,7 @@ import { CheckIcon, LinkIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   CopyButton,
@@ -48,6 +49,7 @@ function shareLinkFor(soundId: string, token: string): string {
  * reaction posted through a keyed visit must not fan out as a public
  * event — that's a backend guarantee this panel can't itself enforce. */
 export function SoundShareLinksSection({ soundId }: { soundId: string }) {
+  const { t } = useTranslation('web');
   const [shares, setShares] = useState<SoundShare[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -113,7 +115,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
       return;
     }
     setShares((current) => current.filter((share) => share.id !== shareId));
-    toast.success('Share link revoked.');
+    toast.success(t('toasts.shareLinkRevoked'));
   };
 
   return (

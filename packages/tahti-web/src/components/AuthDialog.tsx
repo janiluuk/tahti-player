@@ -11,7 +11,7 @@ import {
   SegmentedControl,
 } from '@tahti-player/ui';
 
-import { PASSWORD_RULES_HINT, passwordProblem } from '../lib/passwordRules';
+import { passwordProblem, passwordRulesHint } from '../lib/passwordRules';
 import {
   persistListenerSignup,
   persistPendingArtistKind,
@@ -254,7 +254,7 @@ export const AuthDialog: FC = () => {
               size="sm"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              description={PASSWORD_RULES_HINT}
+              description={passwordRulesHint()}
               autoComplete="new-password"
             />
             <Input

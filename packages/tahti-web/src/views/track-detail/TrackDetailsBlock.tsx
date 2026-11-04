@@ -77,18 +77,18 @@ export function TrackDetailsBlock({
           </Row>
         ) : null}
         {bpm !== null ? (
-          <Row label="BPM">
+          <Row label={t('trackDetail.bpm')}>
             <span className="tabular-nums">{bpm}</span>
           </Row>
         ) : null}
         {musicalKey ? (
-          <Row label="Key">
+          <Row label={t('trackDetail.key')}>
             <KeyCell value={musicalKey} />
           </Row>
         ) : null}
         {license ? <Row label={t('trackDetail.licence')}>{license}</Row> : null}
         {credits.length > 0 ? (
-          <Row label="Credits">
+          <Row label={t('trackDetail.credits')}>
             <ul className="flex flex-col gap-1">
               {credits.map((credit, index) => (
                 <li key={`${credit.role}-${credit.name}-${index}`}>

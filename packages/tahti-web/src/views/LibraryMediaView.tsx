@@ -2,6 +2,7 @@ import { PlayIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -33,6 +34,7 @@ function formatBytes(bytes: number): string {
 }
 
 export function LibraryMediaView() {
+  const { t } = useTranslation('web');
   const [files, setFiles] = useState<UserMediaFile[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -95,7 +97,7 @@ export function LibraryMediaView() {
       toast.error(result.error);
       return;
     }
-    toast.success('Media file removed.');
+    toast.success(t('toasts.mediaRemoved'));
   };
 
   return (

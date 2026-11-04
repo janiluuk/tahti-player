@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   FilePicker,
@@ -30,6 +31,7 @@ export function ImageUploadField({
   onChange,
   className,
 }: Props) {
+  const { t } = useTranslation('web');
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -51,7 +53,7 @@ export function ImageUploadField({
       return;
     }
     onChange(result.data.url);
-    toast.success(`${label} updated.`);
+    toast.success(t('toasts.imageUpdated', { label }));
   };
 
   return (

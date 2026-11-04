@@ -1,23 +1,24 @@
-/** The API's password rules (`PasswordSchema` in `@tahti/shared`), checked
- * before sending so the form can say what is missing. */
-export const PASSWORD_RULES_HINT =
-  'At least 10 characters, with a lowercase letter, an uppercase letter and a number';
+import { i18n } from '@tahti-player/i18n';
+
+export function passwordRulesHint(): string {
+  return i18n.t('web:settingsBody.account.passwordRulesHint');
+}
 
 export function passwordProblem(password: string): string | null {
   if (password.length < 10) {
-    return 'Use at least 10 characters.';
+    return i18n.t('web:settingsBody.account.passwordTooShort');
   }
   if (password.length > 128) {
-    return 'Use at most 128 characters.';
+    return i18n.t('web:settingsBody.account.passwordTooLong');
   }
   if (!/[a-z]/.test(password)) {
-    return 'Add a lowercase letter.';
+    return i18n.t('web:settingsBody.account.passwordNeedLower');
   }
   if (!/[A-Z]/.test(password)) {
-    return 'Add an uppercase letter.';
+    return i18n.t('web:settingsBody.account.passwordNeedUpper');
   }
   if (!/[0-9]/.test(password)) {
-    return 'Add a number.';
+    return i18n.t('web:settingsBody.account.passwordNeedNumber');
   }
   return null;
 }

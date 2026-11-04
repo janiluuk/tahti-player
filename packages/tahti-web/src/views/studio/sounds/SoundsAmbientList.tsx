@@ -154,7 +154,7 @@ function SoundRowActions({
         </Tooltip>
       ) : null}
       <EditIconButton
-        label={`Edit ${item.title}`}
+        label={t('actions.editNamed', { name: item.title })}
         onClick={() => setEditingId(item.id)}
       />
       <Tooltip content="Stats" side="top">

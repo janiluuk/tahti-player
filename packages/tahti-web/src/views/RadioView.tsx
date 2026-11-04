@@ -191,7 +191,8 @@ export function RadioView() {
         }),
         (err: unknown) => ({
           result: null,
-          reason: err instanceof Error ? err.message : 'Station fetch failed',
+          reason:
+            err instanceof Error ? err.message : t('radio.stationFetchFailed'),
         }),
       ),
       fetchRadio(),
@@ -277,7 +278,10 @@ export function RadioView() {
   const nextRotationTrack = nextTrack ?? rotation[0] ?? null;
   const nextBooking = upcoming[0] ?? null;
   const overlayCurrent: RadioOverlayItem | null = memberLive
-    ? { title: memberLive.title ?? 'Live set', subtitle: memberLive.name }
+    ? {
+        title: memberLive.title ?? t('radio.liveSet'),
+        subtitle: memberLive.name,
+      }
     : nowPlaying
       ? {
           title: nowPlaying.title,
@@ -297,8 +301,7 @@ export function RadioView() {
             subtitle: `${nextBooking.displayName}, ${formatShowStart(nextBooking.startAt)}`,
           }
         : null;
-  const TAGLINE =
-    '24/7 community radio — always on. Fair rotation when nobody is booked.';
+  const TAGLINE = t('radio.tagline');
   const description = [TAGLINE, station?.user.bio]
     .filter((s): s is string => Boolean(s))
     .sort((a, b) => a.length - b.length)[0];
@@ -323,7 +326,7 @@ export function RadioView() {
 
   return (
     <ViewShell
-      title="Radio"
+      title={t('radio.title')}
       data-testid="radio-view"
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
     >
@@ -392,7 +395,7 @@ export function RadioView() {
             <Box variant="secondary" className="items-start gap-2 text-sm">
               <span aria-hidden>🔴</span>
               <span>
-                Live now on the member relay: <strong>{memberLive.name}</strong>
+                {t('radio.liveNowOnRelay')} <strong>{memberLive.name}</strong>
                 {memberLive.title ? ` — ${memberLive.title}` : null}
                 {' · '}
                 <Link
@@ -400,7 +403,7 @@ export function RadioView() {
                   params={{ slug: memberLive.slug }}
                   className="underline-offset-2 hover:underline"
                 >
-                  Open {memberLive.slug}
+                  {t('radio.openSlug', { slug: memberLive.slug })}
                 </Link>
               </span>
             </Box>
@@ -420,10 +423,10 @@ export function RadioView() {
               action={
                 <div className="flex flex-wrap gap-2">
                   <ButtonLink to="/" size="sm" variant="secondary">
-                    Browse listen
+                    {t('radio.browseListen')}
                   </ButtonLink>
                   <Button size="sm" variant="secondary" onClick={reload}>
-                    Refresh
+                    {t('actions.refresh')}
                   </Button>
                 </div>
               }
@@ -447,7 +450,7 @@ export function RadioView() {
                             artistName: nowPlaying.artistName,
                             artistUsername: nowPlaying.artistUsername,
                             artworkUrl: nowPlaying.artworkUrl,
-                            meta: 'Live now',
+                            meta: t('radio.liveNow'),
                           })
                       : undefined
                   }

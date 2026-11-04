@@ -43,23 +43,36 @@ import { toastWithUndo } from '../../lib/undoToast';
 import { ReleaseCsvImportButton } from './ReleaseCsvImportButton';
 import { ReleasePinButton } from './ReleasePinButton';
 
-const RELEASE_TYPES = [
+const RELEASE_TYPE_DEFS = [
   {
     id: 'SINGLE',
-    label: 'Single',
+    labelKey: 'studioReleases.typeSingle',
     icon: <DiscAlbumIcon size={18} aria-hidden />,
   },
-  { id: 'EP', label: 'EP', icon: <DiscAlbumIcon size={18} aria-hidden /> },
-  { id: 'ALBUM', label: 'Album', icon: <Disc3Icon size={18} aria-hidden /> },
+  {
+    id: 'EP',
+    labelKey: 'studioReleases.typeEp',
+    icon: <DiscAlbumIcon size={18} aria-hidden />,
+  },
+  {
+    id: 'ALBUM',
+    labelKey: 'studioReleases.typeAlbum',
+    icon: <Disc3Icon size={18} aria-hidden />,
+  },
   {
     id: 'COMPILATION',
-    label: 'Compilation',
+    labelKey: 'studioReleases.typeCompilation',
     icon: <LibraryIcon size={18} aria-hidden />,
   },
 ] as const;
 
 export function StudioReleasesView() {
   const { t } = useTranslation('web');
+  const releaseTypes = RELEASE_TYPE_DEFS.map((item) => ({
+    id: item.id,
+    label: t(item.labelKey),
+    icon: item.icon,
+  }));
   const [releases, setReleases] = useState<StudioRelease[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -190,13 +203,13 @@ export function StudioReleasesView() {
               </Dialog.Title>
               <div className="mt-4 flex flex-col gap-3">
                 <Input
-                  label="Title"
+                  label={t('studioReleases.fieldTitle')}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   autoFocus
                 />
                 <FilterChips
-                  items={RELEASE_TYPES}
+                  items={releaseTypes}
                   selected={type}
                   onChange={setType}
                   aria-label={t('studioReleases.releaseType')}
@@ -376,7 +389,7 @@ export function StudioReleasesView() {
                                 params={{ slug: r.smartLinkSlug }}
                                 size="icon-sm"
                                 variant="text"
-                                aria-label="Public link"
+                                aria-label={t('studioReleases.publicLinkAria')}
                               >
                                 <ExternalLinkIcon size={16} aria-hidden />
                               </ButtonLink>
@@ -386,7 +399,9 @@ export function StudioReleasesView() {
                                 to="/studio/distribution"
                                 size="icon-sm"
                                 variant="text"
-                                aria-label="Distribution"
+                                aria-label={t(
+                                  'studioReleases.distributionAria',
+                                )}
                               >
                                 <Share2Icon size={16} aria-hidden />
                               </ButtonLink>

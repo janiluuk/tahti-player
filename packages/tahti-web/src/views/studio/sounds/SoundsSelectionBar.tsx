@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { AddToPlaylistPanel } from '../../../components/AddToPlaylistPanel';
@@ -15,6 +16,7 @@ import type { StudioSoundsState } from './useStudioSoundsState';
 
 /** Bulk actions over the checked Sounds rows; hidden until one is checked. */
 export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
+  const { t } = useTranslation('web');
   const {
     items,
     filtered,
@@ -45,7 +47,7 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
   return (
     <div
       role="toolbar"
-      aria-label="Selected sounds"
+      aria-label={t('library.soundsSelectedAria')}
       aria-busy={selectingAll || bulkBusy || undefined}
       className="border-border bg-background-secondary mb-3 flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 text-sm"
     >

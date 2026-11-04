@@ -1,6 +1,7 @@
 import { ListOrderedIcon } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { fetchProfile } from '../../../api/client';
@@ -9,6 +10,7 @@ import { ProfileOrderDialog } from '../../../components/ProfileOrderDialog';
 import { useAuthStore } from '../../../stores/authStore';
 
 export function TrackOrderButton() {
+  const { t } = useTranslation('web');
   const username = useAuthStore((s) => s.user?.username);
   const [open, setOpen] = useState(false);
 
@@ -35,7 +37,7 @@ export function TrackOrderButton() {
       </Button>
       <ProfileOrderDialog
         isOpen={open}
-        title="Track order on your profile"
+        title={t('library.trackOrderTitle')}
         description="Public tracks appear in this order on your artist page's Tracks tab. Pinned tracks still show first, and new uploads start at the top."
         empty="No public tracks yet."
         load={load}

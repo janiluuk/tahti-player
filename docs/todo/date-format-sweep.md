@@ -19,6 +19,7 @@ How: `lib/relativeDate.ts` (`relativeDate`, `numericDate`) formats; `components/
 - Batch 35: Admin Catalog latest content/broadcasts and Admin Radio featured/history → `ListingDate`; Studio editor list Updated → `ListingDate`; `channelRenameNote` redirect uses `numericDate`; artist "Joined" stays month/year via i18n.
 - Batch 36: `MotionMeetingLinkControl` meeting option → `numericDay`; `PlayHistoryDialog` → `ListingDate`.
 - Batch 37: Studio Broadcast agenda, Events/Event, ListeningParties → `formatScheduleWindow`; AgmTab meeting → `formatScheduleWindow`, voting windows → `numericDay`; HistoryStatsSection range → `numericDate`; AdminDashboardView recent audit documented Kept (exact).
+- Batch 38: Confirmed AdminDashboardView audit Kept; HistoryStatsSection day/range chart helpers stay chart-kept (`numericDate` for range already); desktop-library / LocalLibrary / SmartPlaylistDialog / WriteTagsDialog / SaveQueueLocalDialog / BackupRestoreDialog / ObsPresetButton / CatalogTable / ShareList documented as count or dialog Kept (not listing dates). Leftover `toLocale*` sweep note updated.
 
 ## Kept as full timestamps (exact time matters)
 
@@ -28,10 +29,11 @@ How: `lib/relativeDate.ts` (`relativeDate`, `numericDate`) formats; `components/
 - Audit / money trails: `moderation/moderationTime.ts`, `AdminUserRestrictionsPanel`, `LegalHoldsPanel`, `LedgerPanel`, `AdminDashboardView` recent audit events.
 - Support conversation note times in admin `SupportTab` (same as member `MySupportTickets`).
 - Upcoming and on-air show windows: `VenueDetailView`, `VenueShowsSection`, `ShowEpisodeWhen` (all through `lib/scheduleTime.ts`, which follows the app language), `EpisodeEditorRow` scheduled slot.
-- Counts, not dates: `SmartPlaylistDialog`, `SmartPlaylists`, `WriteTagsDialog` (`toLocaleString('en-US')` on numbers), `ui` `CatalogTable` and `ShareList`, `AdminGrantCycleView` (money/units), `StudioChannelView` (plays/downloads), `DuplicatesDialog`, `OrganizeFilesDialog` (`n()` counts), `PlayHistoryDialog` “Show more” count.
+- Counts, not dates: `SmartPlaylistDialog`, `SmartPlaylists`, `WriteTagsDialog` (`toLocaleString('en-US')` on numbers), `ui` `CatalogTable` and `ShareList`, `AdminGrantCycleView` (money/units), `StudioChannelView` (plays/downloads), `DuplicatesDialog`, `OrganizeFilesDialog` (`n()` counts), `PlayHistoryDialog` “Show more” count, desktop-library / `LocalLibrary*` count formatters, `SaveQueueLocalDialog` / `BackupRestoreDialog` count copy.
 - Studio stats chart labels and tooltips (`StudioStatsDetailView`, `stats/helpers.ts`, `useStatsData`, `PlaysTab` busiest day), Library history chart ranges (`HistoryStatsSection`, `historyStats.ts`), `ChannelViewBlocks` next show (schedule), `artistProfile` "Joined" month, `GovernanceMeetingDetailView` and `AgmTab` meeting and voting-window times, `ObsPresetButton`.
 - `ChangeEmailForm` confirmation-link expiry (a deadline with a time), `SavedMapComments` copy/CSV export text, and `TrackInsightsPanel` calendar heatmap tooltip (a chart label, not a listing).
+- Audit trail: `AdminDashboardView` recent audit events (exact timestamps).
 
 ## Left
 
-- [ ] Remaining one-off `toLocaleDateString` / `toLocaleString` in listings (`rg "toLocaleDateString|toLocaleString\(" packages/tahti-web/src packages/ui/src`): Studio (`StudioStatsDetailView` chart labels, `stats/*`); Library/desktop chart and count formatters (`historyStats.ts` chart helpers, `DesktopLibraryPanel`, `desktop-library/*`, `LocalLibrary*`, `SmartPlaylistDialog`, `WriteTagsDialog`, `SaveQueueLocalDialog`, `BackupRestoreDialog`); `ChannelViewBlocks` next show (schedule Kept), `ObsPresetButton` / `CatalogTable` / `ShareList` (numbers). Decide per file: convert to `ListingDate`/`numericDay` or add to the kept list. Batch 37 moved Broadcast/Events/ListeningParties/AgmTab/HistoryStats range off this list.
+- [ ] Remaining chart/stats `toLocaleDateString` / `toLocaleString` in Studio (`StudioStatsDetailView`, `stats/*`) and Library history chart helpers (`historyStats.ts`) — stay chart-locale via `dateLocaleTag`, not `ListingDate`. Batch 38 moved desktop-library / LocalLibrary / SmartPlaylist / WriteTags / SaveQueue / BackupRestore / ObsPreset / CatalogTable / ShareList / AdminDashboard audit / HistoryStats range off the convert list into Kept.

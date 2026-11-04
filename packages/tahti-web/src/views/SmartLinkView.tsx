@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon, MusicIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type FC } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonAnchor,
@@ -41,6 +42,7 @@ import {
 type SmartLinkViewProps = { slug: string };
 
 export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
+  const { t } = useTranslation('web');
   const [data, setData] = useState<SmartLinkData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -60,10 +62,13 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
         setData(result.data);
         const { release, artist } = result.data;
         syncDocumentMetadata(window.location.pathname, {
-          title: `${release.title} by ${artist.displayName} on Tahti`,
+          title: t('smartLink.docTitle', {
+            title: release.title,
+            artist: artist.displayName,
+          }),
           description:
             release.description ??
-            `Listen to ${release.title} and find its official links on Tahti.`,
+            t('smartLink.docDescription', { title: release.title }),
           image: release.artworkUrl ?? artist.avatarUrl ?? undefined,
         });
       })
@@ -71,7 +76,9 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
         if (!cancelled) {
           setData(null);
           setLoadError(
-            err instanceof Error ? err.message : 'Could not load this release.',
+            err instanceof Error
+              ? err.message
+              : t('smartLink.loadErrorFallback'),
           );
         }
       })
@@ -95,13 +102,13 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
   );
 
   if (loading) {
-    return <PageLoading label="Loading release…" />;
+    return <PageLoading label={t('smartLink.loading')} />;
   }
 
   if (loadError) {
     return (
       <PageError
-        title="Could not load this release"
+        title={t('smartLink.loadError')}
         description={loadError}
         onRetry={() => setAttempt((n) => n + 1)}
       />
@@ -112,8 +119,8 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
     return (
       <PageEmpty
         headingLevel={1}
-        title="Release not found"
-        description="This release may have been removed or is not available."
+        title={t('smartLink.notFoundTitle')}
+        description={t('smartLink.notFoundDescription')}
       />
     );
   }
@@ -139,7 +146,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
       ? [
           {
             key: 'tracks',
-            label: 'Tracks',
+            label: t('smartLink.tracks'),
             value: playables.length,
             icon: MusicIcon,
           },
@@ -224,12 +231,12 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
       <CollectionTrackList
         items={playables}
         getTrackMeta={trackMeta}
-        title="Tracks"
+        title={t('smartLink.tracks')}
         empty={
           smartLinkLockedTracks(data).length === 0
             ? {
-                title: 'No playable tracks yet',
-                description: 'Listen on the services below.',
+                title: t('smartLink.noPlayableTitle'),
+                description: t('smartLink.noPlayableDescription'),
               }
             : null
         }
@@ -242,7 +249,10 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
         tracks={data.release.tracks ?? []}
       />
 
-      <section className="flex flex-col gap-2" aria-label="Listen on">
+      <section
+        className="flex flex-col gap-2"
+        aria-label={t('smartLink.listenOn')}
+      >
         <Eyebrow>Listen on</Eyebrow>
         {targets.length === 0 ? (
           <ButtonAnchor
