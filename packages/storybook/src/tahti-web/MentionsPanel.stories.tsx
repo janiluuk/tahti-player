@@ -37,7 +37,7 @@ export const Default: Story = {
     const canvas = within(canvasElement);
     await expect(
       await canvas.findByRole('heading', {
-        name: /mentions|maininnat/i,
+        name: /^Mentions$|^Maininnat$/,
       }),
     ).toBeInTheDocument();
     await expect(

@@ -63,7 +63,9 @@ export const ValidLink: Story = {
       canvas.getByLabelText('Confirm new password'),
       'different',
     );
-    await expect(canvas.getByText("Passwords don't match.")).toBeVisible();
+    await expect(
+      canvas.getByText(/Passwords do(?:n't| not) match\./),
+    ).toBeVisible();
     await expect(submit).toBeDisabled();
 
     await userEvent.clear(canvas.getByLabelText('Confirm new password'));
@@ -71,7 +73,9 @@ export const ValidLink: Story = {
       canvas.getByLabelText('Confirm new password'),
       'Short1-enough',
     );
-    await expect(canvas.queryByText("Passwords don't match.")).toBeNull();
+    await expect(
+      canvas.queryByText(/Passwords do(?:n't| not) match\./),
+    ).toBeNull();
     await expect(submit).toBeEnabled();
   },
 };
