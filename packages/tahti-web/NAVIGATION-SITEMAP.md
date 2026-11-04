@@ -18,14 +18,14 @@ home; navigation structure is unchanged from 2026-10-03.
 **2026-10-03 changes:** Studio's submenu is Overview · Stats ·
 Governance · Posts · Audience · Releases · Editor · Broadcast. "Perform" is
 gone: its pages sit under the **Broadcast** item (label `studio.goLive`)
-with a nested `BroadcastSubNav` (Go Live · Schedule · Events · Shows ·
-Channel · Radio). Admin Governance absorbed Annual reports, Grants and AGM
-as tabs, and Disco widgets became Add-ons. `/venues` redirects to the
-Discover Venues tab. The right rail is the queue only; chat and
-notifications are top-bar controls and channel chat opens at
-`/chat/$slug` (`docs/DECISIONS.md`, 2026-09-28). New public routes since
-the last pass: `/search?tag=` (tracks by tag), `/v/$slug` "Recorded here",
-`/studio/events/$eventId/edit`.
+— Go Live · Schedule · Events · Shows · Channel · Radio (flat StudioNav
+links; the old nested `BroadcastSubNav` was removed). Admin Governance
+absorbed Annual reports, Grants and AGM as tabs, and Disco widgets became
+Add-ons. `/venues` redirects to the Discover Venues tab. The right rail is
+the queue only; chat and notifications are top-bar controls and channel
+chat opens at `/chat/$slug` (`docs/DECISIONS.md`, 2026-09-28). New public
+routes since the last pass: `/search?tag=` (tracks by tag), `/v/$slug`
+"Recorded here", `/studio/events/$eventId/edit`.
 
 On ordinary app surfaces the chrome in this table must stay on screen at
 every moment (including route transitions). It may disappear only on

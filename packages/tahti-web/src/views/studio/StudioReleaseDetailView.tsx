@@ -290,6 +290,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
               title="Delete this release?"
               description="Its tracklist, smart link and stats are removed. Tracks you uploaded stay in your library. This can't be undone."
               confirmLabel="Delete release"
+              destructive
               onCancel={() => setConfirmDelete(false)}
               onConfirm={() => {
                 setConfirmDelete(false);
@@ -302,6 +303,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
               title="Remove artwork?"
               description="The release will fall back to its default placeholder until you upload new artwork."
               confirmLabel="Remove artwork"
+              destructive
               onCancel={() => setPendingArtworkDelete(false)}
               onConfirm={() => {
                 setPendingArtworkDelete(false);

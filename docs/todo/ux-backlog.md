@@ -40,11 +40,11 @@ new surface, one PR per row. After moving files, update `docs/VIEW-CATALOG.md`.
     library track remove and stop watching, Library media, Jam guests,
     pinned announcements, disco widgets, broadcast key reset, channel
     comments and listening-history clear.
-  - Left: confirms still green - Studio events, updates, editor projects,
-    release detail, playlist editor, collection editor dialogs, release
-    smart links, radio presets, plugin-store categories, theme submissions.
-    Pass `destructive` to each (the release / playlist / collection / event
-    / update pages wait on the view-mode work there).
+  - Left: confirms still green - radio presets, plugin-store categories,
+    theme submissions. Pass `destructive` to each.
+  - 2026-11-04: de-greened Studio events, updates (send + delete), editor
+    project delete, playlist editor remove/cover, collection editor dialogs,
+    release detail delete/artwork, release smart-link track remove.
   - 2026-10-30: quieted jumps that were sitting next to a real action
     or beside an already-secondary control: smart-link empty Create
     release, container logs, back to the channel, Pro editor, gallery

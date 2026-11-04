@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PencilIcon, PlusIcon, Trash2Icon } from 'lucide-react';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { Button, ViewShell } from '@tahti-player/ui';
 
@@ -75,6 +76,16 @@ export const WithActions: Story = {
       </ViewShell>
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const add = canvas.getByRole('button', { name: 'Add new' });
+    await userEvent.tab();
+    await expect(add).toHaveFocus();
+    await userEvent.tab();
+    await expect(canvas.getByRole('button', { name: 'Edit' })).toHaveFocus();
+    await userEvent.tab();
+    await expect(canvas.getByRole('button', { name: 'Delete' })).toHaveFocus();
+  },
 };
 
 export const NestedUnderAppPadding: Story = {

@@ -438,6 +438,7 @@ export function StudioUpdatesView({
               : 'This emails all of your subscribers now. It cannot be undone.'
           }
           confirmLabel="Send newsletter"
+          destructive
           onCancel={() => setPendingSend(null)}
           onConfirm={() => {
             const draft = pendingSend;
@@ -457,6 +458,7 @@ export function StudioUpdatesView({
           }
           description="This cannot be undone."
           confirmLabel="Delete"
+          destructive
           onCancel={() => setPendingDeletePost(null)}
           onConfirm={() => {
             const post = pendingDeletePost;

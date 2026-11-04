@@ -107,6 +107,7 @@ export function CollectionDialogs({
         title={`Remove "${pendingRemove?.title}"?`}
         description={`This removes the track from this ${isAlbumLike ? 'album' : 'collection'}. It stays in your library.`}
         confirmLabel="Remove"
+        destructive
         onCancel={() => setPendingRemove(null)}
         onConfirm={() => {
           if (!pendingRemove) {
@@ -130,6 +131,7 @@ export function CollectionDialogs({
         title="Remove cover image?"
         description="The collection will fall back to its default placeholder until you upload a new cover."
         confirmLabel="Remove cover"
+        destructive
         onCancel={() => setPendingCoverDelete(false)}
         onConfirm={() => {
           setPendingCoverDelete(false);
@@ -166,6 +168,7 @@ export function CollectionDialogs({
         title="Remove this image from the backdrop?"
         description="It will be removed from the slideshow immediately."
         confirmLabel="Remove"
+        destructive
         onCancel={() => setPendingFrameDelete(null)}
         onConfirm={() => {
           const url = pendingFrameDelete;

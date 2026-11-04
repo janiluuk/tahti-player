@@ -1,0 +1,85 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`FilterBar > (Snapshot) renders search and chips 1`] = `
+<div>
+  <div
+    class="flex w-full flex-wrap items-center gap-3"
+    data-testid="filter-bar"
+  >
+    <div
+      class="min-w-48 flex-1 basis-48"
+    >
+      <div
+        class="flex w-full flex-col gap-2"
+      >
+        <div
+          class="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2"
+        >
+          <div
+            class="bg-background-secondary text-foreground-secondary border-border flex max-w-[55%] min-w-0 items-center border-r-(length:--border-width) px-3 text-xs"
+          >
+            <svg
+              aria-hidden="true"
+              class="lucide lucide-search"
+              fill="none"
+              height="14"
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              viewBox="0 0 24 24"
+              width="14"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m21 21-4.34-4.34"
+              />
+              <circle
+                cx="11"
+                cy="11"
+                r="8"
+              />
+            </svg>
+          </div>
+          <input
+            aria-label="Search"
+            class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            data-headlessui-state=""
+            id="input-:r0:"
+            placeholder="Search…"
+            type="search"
+            value=""
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex flex-wrap items-center gap-2"
+    >
+      <div
+        aria-label="Filter options"
+        class="flex flex-wrap gap-2"
+        data-testid="filter-chips"
+        role="radiogroup"
+      >
+        <button
+          aria-checked="true"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 bg-primary text-primary-foreground border-primary"
+          role="radio"
+          type="button"
+        >
+          All
+        </button>
+        <button
+          aria-checked="false"
+          class="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-full border-(length:--border-width) px-3 py-1 text-sm font-medium transition-colors disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 border-border text-foreground hover:bg-background-secondary bg-transparent"
+          role="radio"
+          type="button"
+        >
+          Live
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;

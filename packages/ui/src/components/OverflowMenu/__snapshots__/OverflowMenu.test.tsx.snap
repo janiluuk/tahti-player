@@ -1,0 +1,52 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`OverflowMenu > (Snapshot) renders the trigger 1`] = `
+<div>
+  <div
+    class="relative"
+    data-headlessui-state=""
+  >
+    <div>
+      <button
+        aria-expanded="false"
+        aria-label="More actions"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-8 justify-center"
+        data-headlessui-state=""
+        data-testid="overflow-menu"
+        id="headlessui-popover-button-:r2:"
+        type="button"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-ellipsis"
+          fill="none"
+          height="16"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+          width="16"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <circle
+            cx="12"
+            cy="12"
+            r="1"
+          />
+          <circle
+            cx="19"
+            cy="12"
+            r="1"
+          />
+          <circle
+            cx="5"
+            cy="12"
+            r="1"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+`;
