@@ -41,7 +41,7 @@ Next 30 UX slices after batch 45 (#1831). Branch
 21–24. Notes-only Kept — done
 25. Storybook — none required — done
 26. Update finnish-localization — done
-27. Fold batch-45 after merge — pending
+27. Fold batch-45 after merge — done
 28. WORKPLAN strip — skipped
 29. batch46I18n.test.ts — done
 30. Version 0.0.336 + UI-REDESIGN-WORKLOG — done
