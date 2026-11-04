@@ -2,6 +2,7 @@ import { MailIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -100,6 +101,7 @@ function AnonymousForm({
   artistDisplayName,
   iconOnly = false,
 }: Props) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState('');
   const [busy, setBusy] = useState(false);
@@ -152,7 +154,7 @@ function AnonymousForm({
             return;
           }
           if (r.alreadySubscribed) {
-            toast.success('You’re already subscribed.');
+            toast.success(t('toasts.newsletterAlreadySubscribed'));
             setOpen(false);
             return;
           }

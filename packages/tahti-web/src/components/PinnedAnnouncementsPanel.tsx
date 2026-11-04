@@ -2,6 +2,7 @@ import { PinIcon, SendIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineLoader, Input, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -16,6 +17,7 @@ import { PageEmpty, PageError } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
 export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const [items, setItems] = useState<PinnedAnnouncement[]>([]);
   const [body, setBody] = useState('');
   const [loading, setLoading] = useState(true);
@@ -146,11 +148,13 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
         destructive
         title={
           pendingRemove
-            ? `Remove “${pendingRemove.body}”?`
-            : 'Remove announcement?'
+            ? t('pinnedAnnouncements.removeNamed', {
+                body: pendingRemove.body,
+              })
+            : t('pinnedAnnouncements.removeTitle')
         }
-        description="The announcement is unpinned from your channel."
-        confirmLabel="Remove"
+        description={t('pinnedAnnouncements.removeDescription')}
+        confirmLabel={t('actions.remove')}
         onCancel={() => setPendingRemove(null)}
         onConfirm={() => {
           const item = pendingRemove;

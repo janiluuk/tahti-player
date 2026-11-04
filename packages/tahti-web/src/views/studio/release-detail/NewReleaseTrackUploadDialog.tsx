@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, FilePicker, Input } from '@tahti-player/ui';
 
 import { addStudioReleaseTrack } from '../../../api/studio';
@@ -14,9 +15,6 @@ function titleFromFilename(name: string): string {
   return name.replace(/\.[^.]+$/, '').trim();
 }
 
-/** Create a new release track and upload its audio in one step. If the
- * upload is cancelled or fails, the track stays on the release without
- * audio so it can be uploaded again from the tracklist. */
 export function NewReleaseTrackUploadDialog({
   releaseId,
   isOpen,
@@ -33,6 +31,7 @@ export function NewReleaseTrackUploadDialog({
     patch: Pick<StudioReleaseTrack, 'sourceKey' | 'status'>,
   ) => void;
 }) {
+  const { t } = useTranslation('web');
   const [title, setTitle] = useState('');
   const [file, setFile] = useState<File | null>(null);
   const [creating, setCreating] = useState(false);
@@ -80,9 +79,9 @@ export function NewReleaseTrackUploadDialog({
 
   return (
     <Dialog.Root isOpen={isOpen} onClose={close}>
-      <Dialog.Title>Upload a new track</Dialog.Title>
+      <Dialog.Title>{t('library.uploadNewReleaseTrackTitle')}</Dialog.Title>
       <Dialog.Description>
-        Adds a track to this release from an audio file on your device.
+        {t('library.uploadNewReleaseTrackDescription')}
       </Dialog.Description>
       <form
         onSubmit={(event) => {
@@ -93,9 +92,9 @@ export function NewReleaseTrackUploadDialog({
         <div className="flex flex-col gap-3 py-3">
           <FilePicker
             labels={{
-              title: 'Audio file',
-              description: 'WAV, FLAC, MP3, AAC or AIFF',
-              browse: 'Choose audio file',
+              title: t('library.audioFile'),
+              description: t('library.releaseAudioFormats'),
+              browse: t('library.chooseAudioFileBrowse'),
             }}
             accept={RELEASE_TRACK_AUDIO_TYPES.join(',')}
             disabled={busy}
@@ -112,7 +111,7 @@ export function NewReleaseTrackUploadDialog({
             }}
           />
           <Input
-            label="Track title"
+            label={t('library.releaseTrackTitle')}
             value={title}
             disabled={busy}
             onChange={(event) => setTitle(event.target.value)}
@@ -127,10 +126,12 @@ export function NewReleaseTrackUploadDialog({
         </div>
         <Dialog.Actions>
           <Button variant="text" disabled={busy} onClick={close}>
-            Cancel
+            {t('actions.cancel')}
           </Button>
           <Button disabled={busy || !file || !title.trim()} type="submit">
-            {busy ? 'Uploading…' : 'Upload track'}
+            {busy
+              ? t('library.uploading')
+              : t('library.uploadTrackDialogTitle')}
           </Button>
         </Dialog.Actions>
       </form>

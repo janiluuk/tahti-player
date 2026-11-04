@@ -1378,7 +1378,18 @@
       "collectionOrderAria": "Järjestä kokoelmat profiililla",
       "collectionOrderTitle": "Kokoelmajärjestys profiililla",
       "collectionOrderDescription": "Julkiset kokoelmat näkyvät tässä järjestyksessä artistisivullasi. Nostetut kokoelmat pysyvät ensimmäisinä.",
-      "collectionOrderEmpty": "Ei vielä julkisia kokoelmia."
+      "collectionOrderEmpty": "Ei vielä julkisia kokoelmia.",
+      "uploadTrackDialogTitle": "Lataa kappale",
+      "uploadTrackDialogDescription": "Lisää ääntä Musiikki-arkistoosi.",
+      "openFullUploadPage": "Avaa koko lataussivu",
+      "titleOptionalPlaceholder": "Valinnainen — oletuksena tiedostonimi",
+      "audioFile": "Äänitiedosto",
+      "audioFormatsLabel": "FLAC · WAV · AIFF · MP3 · M4A · OGG · enintään 4 Gt",
+      "uploadNewReleaseTrackTitle": "Lataa uusi kappale",
+      "uploadNewReleaseTrackDescription": "Lisää kappaleen tähän julkaisuun äänitiedostosta laitteeltasi.",
+      "releaseTrackTitle": "Kappaleen nimi",
+      "releaseAudioFormats": "WAV, FLAC, MP3, AAC tai AIFF",
+      "chooseAudioFileBrowse": "Valitse äänitiedosto"
     },
     "date": {
       "today": "Tänään",
@@ -1652,7 +1663,37 @@
       "couldNotSaveBioReason": "Biota ei voitu tallentaa: {{error}}",
       "stoppedModerating": "Et enää moderoi kanavaa {{name}}.",
       "couldNotStartStream": "Virtaa ei voitu käynnistää. Yritä uudelleen.",
-      "trackDetailsSaved": "Kappaleen tiedot tallennettu."
+      "trackDetailsSaved": "Kappaleen tiedot tallennettu.",
+      "couldNotUploadLabel": "Ei voitu ladata: {{label}}.",
+      "channelDesignerLoadFailed": "Kanavasuunnittelijaa ei voitu ladata. Yritä uudelleen.",
+      "channelLookJpegPngWebp": "Valitse JPEG-, PNG- tai WebP-kuvia.",
+      "channelLookMaxBackgroundImages": "Käytä enintään 10 taustakuvaa.",
+      "channelLookImageUploadFailed": "Kuvan lataus epäonnistui. Yritä uudelleen.",
+      "channelLookImagesAdded_one": "1 kuva lisätty diaesitykseen.",
+      "channelLookImagesAdded_other": "{{count}} kuvaa lisätty diaesitykseen.",
+      "channelLookMaxGalleryImages": "Käytä enintään 10 galleriakuvaa.",
+      "channelLookNeedGalleryImage": "Lisää vähintään yksi kuva valittuun galleriaan.",
+      "channelLookGalleryHttps": "Gallerian kuvien on käytettävä julkisia HTTPS-osoitteita.",
+      "channelLookBackdropGalleryWarn": "Tausta tallennettiin, mutta diaesityksen asetuksia ei voitu päivittää.",
+      "channelLookSaved": "Ulkoasu tallennettu — julkinen kanava ottaa sen käyttöön.",
+      "channelLookSaveRetry": "Ulkoasua ei voitu tallentaa. Yritä uudelleen.",
+      "channelLookPreviousRestored": "Edellinen tallennus palautettu — paina Tallenna pitääksesi sen.",
+      "channelLookReset": "Palautettu viimeiseen tallennettuun versioon.",
+      "presetPendingBackdrop": "Lataa tai tyhjennä odottava taustatiedosto ennen esiasetuksen tallennusta.",
+      "presetNameRequired": "Anna esiasetukselle nimi.",
+      "presetSaveFailed": "Esiasetusta ei voitu tallentaa. Yritä uudelleen.",
+      "presetSavedNamed": "Tallennettu \"{{name}}\"",
+      "presetDeleteFailed": "Esiasetusta ei voitu poistaa. Yritä uudelleen.",
+      "presetDeletedNamed": "Poistettu \"{{name}}\"",
+      "backdropFileTooLarge": "Tiedoston on oltava enintään 10 Mt.",
+      "backdropFileType": "Käytä MP4/WebM-videota tai JPEG/PNG/WebP/GIF-kuvaa.",
+      "releaseNoPlayableTracks": "Tälle julkaisulle ei ole toistettavia kappaleita.",
+      "releaseLoadFailed": "Julkaisua ei voitu ladata. Yritä uudelleen.",
+      "overlaySaved": "Peittokuva tallennettu.",
+      "overlayCoverUpdated": "Peittokuvan kansikuva päivitetty.",
+      "radioPlaylistApplied": "Käytössä “{{name}}” — {{count}} kappaletta.",
+      "radioRotationUpdated": "Kierto päivitetty.",
+      "newsletterAlreadySubscribed": "Olet jo tilaaja."
     },
     "settingsLogs": {
       "noLogs": "Ei lokimerkintöjä vielä. Tämän välilehden varoitukset, virheet ja soittimen tapahtumat näkyvät täällä.",
@@ -2626,6 +2667,57 @@
     "embedDialog": {
       "copyIframe": "Kopioi iframe-koodi",
       "embedCopied": "Upotuskoodi kopioitu."
+    },
+    "coverArt": {
+      "uploadImage": "Lataa kuva",
+      "saving": "Tallennetaan…",
+      "loadingArtwork": "Ladataan kansikuvia…",
+      "useArtwork": "Käytä kansikuvaa {{n}}"
+    },
+    "dm": {
+      "block": "Estä",
+      "unblock": "Poista esto",
+      "blockedNamed": "Estetty {{name}}.",
+      "unblockedNamed": "Esto poistettu: {{name}}.",
+      "blockConfirmTitle": "Estetäänkö {{name}}?",
+      "blockConfirmDescription": "Ette voi lähettää viestejä toisillenne, ennen kuin poistat eston. Heille ei kerrota, että estit heidät."
+    },
+    "channelComments": {
+      "title": "Kommentit",
+      "emptyTitle": "Ei kommentteja vielä",
+      "emptyFirstSignedIn": "Ole ensimmäinen, joka jättää viestin tälle kanavalle.",
+      "emptyFirstGuest": "Kirjaudu sisään jättääksesi ensimmäisen viestin.",
+      "emptyDisabled": "Kommentit on poistettu käytöstä tällä kanavalla.",
+      "logInToComment": "Kirjaudu kommentoidaksesi",
+      "writeAria": "Kirjoita kommentti",
+      "placeholder": "Kerro jotain tästä kanavasta…",
+      "posting": "Lähetetään…",
+      "post": "Lähetä kommentti",
+      "removeTitle": "Poistetaanko tämä kommentti?",
+      "removeFallbackDescription": "Kommentti poistuu kanavalta.",
+      "commentPosted": "Kommentti lähetetty.",
+      "commentRemoved": "Kommentti poistettu.",
+      "ariaLabel": "Kanavan kommentit"
+    },
+    "pinnedAnnouncements": {
+      "removeNamed": "Poistetaanko “{{body}}”?",
+      "removeTitle": "Poistetaanko ilmoitus?",
+      "removeDescription": "Ilmoitus irrotetaan kanavaltasi."
+    },
+    "studioFans": {
+      "title": "Fanit",
+      "subtitle": "Kaikki sinun ja tukijoidesi välillä: julkaisut, uutiskirje, jäsenyydet, kauppa, chat ja tulot.",
+      "ariaLabel": "Fanityökalut",
+      "postsTitle": "Julkaisut",
+      "postsDescription": "Päivitykset kanavasivullasi ja seuraajien syötteissä.",
+      "newsletterTitle": "Uutiskirje",
+      "newsletterDescription": "Lähetä julkaisu sähköpostitse tilanneille faneille.",
+      "membershipsTitle": "Jäsenyydet",
+      "membershipsDescription": "Kuukausittaiset tukitasot, joihin fanit voivat tilata.",
+      "storeTitle": "Kauppa",
+      "storeDescription": "Mitä myyt kanavasivullasi, ja kappaleiden myynti.",
+      "earningsTitle": "Tulot",
+      "earningsDescription": "Tilaajat, tilaukset, maksut, apurahat ja Stripe-tili."
     }
   },
   "studioEditor": {

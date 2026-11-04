@@ -2,6 +2,7 @@ import { UploadIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -20,11 +21,8 @@ type UploadResult =
 export type CoverArtPickerDialogProps = {
   isOpen: boolean;
   onClose: () => void;
-  /** e.g. "Cover art"; titles the dialog and the toasts. */
   label: string;
   value?: string | null;
-  /** Saves the chosen image; `source` says whether it was just uploaded or
-   * picked from the gallery. Resolve `false` to keep the dialog open. */
   onSelect: (
     url: string,
     source: 'upload' | 'gallery',
@@ -47,8 +45,6 @@ async function loadGallery(): Promise<string[]> {
   return [...new Set([...own, ...presets.data.map((preset) => preset.url)])];
 }
 
-/** Upload a new cover, or pick one from the artwork presets combined with
- * the user's own uploaded images. */
 export function CoverArtPickerDialog({
   isOpen,
   onClose,
@@ -59,6 +55,7 @@ export function CoverArtPickerDialog({
   accept = IMAGE_UPLOAD_ACCEPT_ATTR,
   extra,
 }: CoverArtPickerDialogProps) {
+  const { t } = useTranslation('web');
   const [gallery, setGallery] = useState<GalleryState>({ status: 'loading' });
   const [busy, setBusy] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -83,7 +80,7 @@ export function CoverArtPickerDialog({
     setBusy(true);
     try {
       if ((await onSelect(url, 'gallery')) !== false) {
-        toast.success(`${label} updated.`);
+        toast.success(t('toasts.imageUpdated', { label }));
         onClose();
       }
     } finally {
@@ -104,11 +101,13 @@ export function CoverArtPickerDialog({
         return;
       }
       if ((await onSelect(result.data.url, 'upload')) !== false) {
-        toast.success(`${label} updated.`);
+        toast.success(t('toasts.imageUpdated', { label }));
         onClose();
       }
     } catch {
-      toast.error(`Could not upload the ${label.toLowerCase()}.`);
+      toast.error(
+        t('toasts.couldNotUploadLabel', { label: label.toLowerCase() }),
+      );
     } finally {
       setBusy(false);
     }
@@ -129,7 +128,7 @@ export function CoverArtPickerDialog({
           onClick={() => inputRef.current?.click()}
         >
           <UploadIcon size={16} aria-hidden />
-          {busy ? 'Saving…' : 'Upload image'}
+          {busy ? t('coverArt.saving') : t('coverArt.uploadImage')}
         </Button>
         <HiddenFileInput
           ref={inputRef}
@@ -138,14 +137,14 @@ export function CoverArtPickerDialog({
           onFiles={(files) => void handleFiles(files)}
         />
         {gallery.status === 'loading' ? (
-          <InlineLoader label="Loading artwork…" className="py-6" />
+          <InlineLoader label={t('coverArt.loadingArtwork')} className="py-6" />
         ) : gallery.urls.length > 0 ? (
           <ImageThumbnailPicker
             className="max-h-[50vh] grid-cols-4 gap-2 overflow-y-auto p-0.5 sm:grid-cols-5 lg:grid-cols-5"
             items={gallery.urls.map((url, index) => ({
               id: url,
               imageUrl: url,
-              ariaLabel: `Use artwork ${index + 1}`,
+              ariaLabel: t('coverArt.useArtwork', { n: index + 1 }),
             }))}
             selected={value ?? null}
             onSelect={(url) => {
@@ -158,7 +157,7 @@ export function CoverArtPickerDialog({
         {extra}
       </div>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
       </Dialog.Actions>
     </Dialog.Root>
   );

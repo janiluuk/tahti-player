@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   channelLookExtrasFromPatch,
   fetchChannelVisual,
@@ -159,7 +161,7 @@ export function useChannelLook({
         if (request === loadRequestRef.current) {
           setLoadFailed(true);
           setVisual(null);
-          toast.error('Could not load the channel designer. Try again.');
+          toast.error(i18n.t('web:toasts.channelDesignerLoadFailed'));
         }
         return false;
       });
@@ -304,11 +306,11 @@ export function useChannelLook({
       ['image/jpeg', 'image/png', 'image/webp'].includes(file.type),
     );
     if (imageFiles.length === 0) {
-      toast.error('Choose JPEG, PNG, or WebP images.');
+      toast.error(i18n.t('web:toasts.channelLookJpegPngWebp'));
       return;
     }
     if (galleryImageList.length + imageFiles.length > 10) {
-      toast.error('Use up to 10 background images.');
+      toast.error(i18n.t('web:toasts.channelLookMaxBackgroundImages'));
       return;
     }
     setGalleryFiles(imageFiles);
@@ -319,7 +321,7 @@ export function useChannelLook({
         imageFiles.map((file) => uploadUserMediaFile(file)),
       );
     } catch {
-      toast.error('Image upload failed. Try again.');
+      toast.error(i18n.t('web:toasts.channelLookImageUploadFailed'));
       return;
     } finally {
       setBusy(false);
@@ -329,15 +331,15 @@ export function useChannelLook({
       result.ok ? [result.data.url] : [],
     );
     if (uploadedUrls.length > 0) {
-      // Append to the *current* list — the user may have reordered or
-      // removed images while the upload ran.
       setGalleryImages((current) =>
         [...splitGalleryImages(current), ...uploadedUrls].join('\n'),
       );
       setGalleryMode('STATIC_SLIDESHOW');
       markDirty();
       toast.success(
-        `${uploadedUrls.length} image${uploadedUrls.length === 1 ? '' : 's'} added to the slideshow.`,
+        i18n.t('web:toasts.channelLookImagesAdded', {
+          count: uploadedUrls.length,
+        }),
       );
     }
     const errors = uploads.flatMap((result) =>
@@ -427,15 +429,15 @@ export function useChannelLook({
     const previousBaseline = baselineSnapshot;
     const images = splitGalleryImages(galleryImages);
     if (images.length > 10) {
-      toast.error('Use up to 10 gallery images.');
+      toast.error(i18n.t('web:toasts.channelLookMaxGalleryImages'));
       return;
     }
     if (galleryMode !== 'NONE' && images.length === 0) {
-      toast.error('Add at least one image for the selected gallery.');
+      toast.error(i18n.t('web:toasts.channelLookNeedGalleryImage'));
       return;
     }
     if (images.some((image) => !/^https:\/\/\S+$/i.test(image))) {
-      toast.error('Gallery images must use public HTTPS URLs.');
+      toast.error(i18n.t('web:toasts.channelLookGalleryHttps'));
       return;
     }
     setBusy(true);
@@ -511,11 +513,9 @@ export function useChannelLook({
     });
     setBusy(false);
     if (!galleryResult.ok) {
-      toast.warning(
-        'Backdrop saved, but slideshow settings could not be updated.',
-      );
+      toast.warning(i18n.t('web:toasts.channelLookBackdropGalleryWarn'));
     } else {
-      toast.success('Look saved — public channel will pick this up.');
+      toast.success(i18n.t('web:toasts.channelLookSaved'));
     }
     if (previousBaseline) {
       setPreviousSave(previousBaseline);
@@ -543,12 +543,11 @@ export function useChannelLook({
     });
   };
 
-  // A thrown network error used to leave the designer stuck on `busy`.
   const save = async () => {
     try {
       await saveLook();
     } catch {
-      toast.error('Could not save your look. Try again.');
+      toast.error(i18n.t('web:toasts.channelLookSaveRetry'));
     } finally {
       setBusy(false);
     }
@@ -645,17 +644,14 @@ export function useChannelLook({
     applySnapshot(previousSave);
     setAppliedPresetName(null);
     markDirty();
-    toast.success('Previous save restored — press Save to keep it.');
+    toast.success(i18n.t('web:toasts.channelLookPreviousRestored'));
   };
 
-  /** Discards unsaved edits, restoring the live saved look — same replay
-   * as `revertAppliedPreset` above, gated by an explicit confirm since
-   * this can throw away more than a single unsaved preset apply. */
   const confirmReset = async () => {
     setResetConfirmOpen(false);
     if (await loadFromServer()) {
       setAppliedPresetName(null);
-      toast.success('Reset to your last saved version.');
+      toast.success(i18n.t('web:toasts.channelLookReset'));
     }
   };
 

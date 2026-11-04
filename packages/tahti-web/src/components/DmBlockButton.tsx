@@ -2,13 +2,12 @@ import { BanIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { blockUser, unblockUser } from '../api/blocks';
 import { ConfirmDialog } from './ConfirmDialog';
 
-/** Block or unblock the other person in a direct-message thread. Blocking
- * asks first; while blocked, neither side can message the other. */
 export function DmBlockButton({
   username,
   displayName,
@@ -20,6 +19,7 @@ export function DmBlockButton({
   blocked: boolean;
   onChange: (blocked: boolean) => void;
 }) {
+  const { t } = useTranslation('web');
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
 
@@ -32,7 +32,7 @@ export function DmBlockButton({
         return;
       }
       onChange(false);
-      toast.success(`Unblocked ${displayName}.`);
+      toast.success(t('dm.unblockedNamed', { name: displayName }));
     });
   };
 
@@ -46,7 +46,7 @@ export function DmBlockButton({
         return;
       }
       onChange(true);
-      toast.success(`Blocked ${displayName}.`);
+      toast.success(t('dm.blockedNamed', { name: displayName }));
     });
   };
 
@@ -60,14 +60,14 @@ export function DmBlockButton({
         className="gap-1.5"
       >
         <BanIcon size={14} aria-hidden />
-        {blocked ? 'Unblock' : 'Block'}
+        {blocked ? t('dm.unblock') : t('dm.block')}
       </Button>
       <ConfirmDialog
         destructive
         isOpen={confirming}
-        title={`Block ${displayName}?`}
-        description="You won't be able to message each other until you unblock them. They aren't told you blocked them."
-        confirmLabel="Block"
+        title={t('dm.blockConfirmTitle', { name: displayName })}
+        description={t('dm.blockConfirmDescription')}
+        confirmLabel={t('dm.block')}
         onCancel={() => setConfirming(false)}
         onConfirm={block}
       />

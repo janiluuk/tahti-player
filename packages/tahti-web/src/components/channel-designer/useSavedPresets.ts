@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   deleteChannelVisualPreset,
   fetchChannelVisualPresets,
@@ -11,14 +13,12 @@ import type { buildVisualPatch } from './buildVisualPatch';
 
 type Options = {
   reloadToken: number;
-  /** Patch of the current draft, as `buildVisualPatch` makes it. */
   buildDraftPatch: () => ReturnType<typeof buildVisualPatch>;
   hasPendingBackdropFile: boolean;
   appliedPresetName: string | null;
   clearAppliedPresetName: () => void;
 };
 
-/** The owner's saved looks: list, save-as dialog and delete confirm. */
 export function useSavedPresets({
   reloadToken,
   buildDraftPatch,
@@ -52,9 +52,7 @@ export function useSavedPresets({
 
   const openSavePresetModal = () => {
     if (hasPendingBackdropFile) {
-      toast.error(
-        'Upload or clear the pending backdrop file before saving a preset.',
-      );
+      toast.error(i18n.t('web:toasts.presetPendingBackdrop'));
       return;
     }
     setPresetNameInput('');
@@ -64,7 +62,7 @@ export function useSavedPresets({
   const confirmSavePreset = async () => {
     const name = presetNameInput.trim();
     if (!name) {
-      toast.error('Give the preset a name.');
+      toast.error(i18n.t('web:toasts.presetNameRequired'));
       return;
     }
     const patch = buildDraftPatch();
@@ -76,7 +74,7 @@ export function useSavedPresets({
     try {
       result = await saveChannelVisualPreset(name, patch);
     } catch {
-      toast.error('Could not save the preset. Try again.');
+      toast.error(i18n.t('web:toasts.presetSaveFailed'));
       return;
     } finally {
       setPresetBusy(false);
@@ -89,7 +87,7 @@ export function useSavedPresets({
       result.data,
       ...prev.filter((p) => p.id !== result.data.id),
     ]);
-    toast.success(`Saved "${name}"`);
+    toast.success(i18n.t('web:toasts.presetSavedNamed', { name }));
     setSavePresetOpen(false);
   };
 
@@ -103,7 +101,7 @@ export function useSavedPresets({
     try {
       result = await deleteChannelVisualPreset(target.id);
     } catch {
-      toast.error('Could not delete the preset. Try again.');
+      toast.error(i18n.t('web:toasts.presetDeleteFailed'));
       return;
     } finally {
       setPresetBusy(false);
@@ -116,7 +114,9 @@ export function useSavedPresets({
     if (appliedPresetName === target.name) {
       clearAppliedPresetName();
     }
-    toast.success(`Deleted "${target.name}"`);
+    toast.success(
+      i18n.t('web:toasts.presetDeletedNamed', { name: target.name }),
+    );
     setDeletePresetTarget(null);
   };
 

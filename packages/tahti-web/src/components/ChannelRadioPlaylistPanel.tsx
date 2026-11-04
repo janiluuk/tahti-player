@@ -2,6 +2,7 @@ import { ListMusicIcon, PlusIcon, RadioIcon } from 'lucide-react';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -46,6 +47,7 @@ const isPlaylist = (collection: StudioCollection) =>
   collection.style === 'CUSTOM';
 
 export const ChannelRadioPlaylistPanel: FC = () => {
+  const { t } = useTranslation('web');
   const [programme, setProgramme] = useState<ProgrammeView | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [playlists, setPlaylists] = useState<StudioCollection[]>([]);
@@ -243,7 +245,12 @@ export const ChannelRadioPlaylistPanel: FC = () => {
       return;
     }
     applyProgramme(result.data);
-    toast.success(`Using “${data.name}” with ${soundIds.length} tracks.`);
+    toast.success(
+      t('toasts.radioPlaylistApplied', {
+        name: data.name,
+        count: soundIds.length,
+      }),
+    );
   };
 
   const saveRotation = async (
@@ -277,7 +284,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
       return;
     }
     applyProgramme(result.data);
-    toast.success('Rotation updated.');
+    toast.success(t('toasts.radioRotationUpdated'));
   };
 
   const createInline = async () => {
