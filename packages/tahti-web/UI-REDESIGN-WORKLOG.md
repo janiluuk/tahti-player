@@ -1,4 +1,4 @@
-## 2026-11-04 - Batch 31 ListingDate + Finnish chrome (0.0.317)
+## 2026-11-04 - Batch 31 ListingDate + Finnish chrome (0.0.318)
 
 ListingDate on governance history, account purchases, Studio editor/upload,
 admin venues/missed shows/payout queue/legacy members, board terms, membership
