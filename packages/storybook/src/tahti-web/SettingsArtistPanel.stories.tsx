@@ -58,11 +58,12 @@ export const Identity: Story = {
     await expect(form).toBeTruthy();
     const avatar = within(form!).getByTestId('identity-avatar');
     await expect(avatar).toBeVisible();
-    const changeImage = within(avatar).getByRole('button', {
-      name: 'Change profile image',
-    });
-    await userEvent.hover(changeImage);
-    await expect(changeImage).toBeVisible();
+    await expect(
+      within(avatar).getByRole('button', { name: 'Change profile image' }),
+    ).toBeInTheDocument();
+    await expect(
+      within(avatar).getByText('Click to change your profile image'),
+    ).toBeVisible();
     const formChildren = [...(form?.children ?? [])] as HTMLElement[];
     await expect(formChildren[0]).toBe(avatar);
     await expect(
