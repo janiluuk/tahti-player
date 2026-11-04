@@ -237,6 +237,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Track/MaterialTagsField` | `tahti-web/MaterialTagsField.stories.tsx` |
 | `Tahti/Media/MediaIconActions` | `tahti-web/MediaIconActions.stories.tsx` |
 | `Tahti/Community/MentionTextarea` | `tahti-web/MentionTextarea.stories.tsx` |
+| `Tahti/Settings/MentionsPanel` | `tahti-web/MentionsPanel.stories.tsx` |
 | `Tahti/Widgets/MermaidDiagram` | `tahti-web/MermaidDiagram.stories.tsx` |
 | `Tahti/Social/MessagesView` | `tahti-web/MessagesView.stories.tsx` |
 | `Tahti/Components/Messaging pieces` | `tahti-web/MessagingPieces.stories.tsx` |

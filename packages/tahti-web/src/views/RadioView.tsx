@@ -624,7 +624,9 @@ export function RadioView() {
                                       playable,
                                     })
                                   }
-                                  aria-label={`Track info for ${item.title}`}
+                                  aria-label={t('radio.trackInfoFor', {
+                                    title: item.title,
+                                  })}
                                   className="shrink-0 p-0"
                                 >
                                   <MediaArtwork
@@ -670,8 +672,12 @@ export function RadioView() {
                                       playable && enqueue(playable),
                                     playDisabled: !playable,
                                     queueDisabled: !playable,
-                                    playLabel: `Play ${item.title}`,
-                                    queueLabel: `Queue ${item.title}`,
+                                    playLabel: t('actions.playItem', {
+                                      title: item.title,
+                                    }),
+                                    queueLabel: t('actions.queueItem', {
+                                      title: item.title,
+                                    }),
                                     queued: Boolean(
                                       playable &&
                                       queue.some(

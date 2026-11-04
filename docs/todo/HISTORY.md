@@ -1,3 +1,8 @@
+## 2026-11-04 - Batch 38 UX slices
+
+Settings/Library/Studio/Admin/Radio/channel Finnish leftovers; Kept date
+sweep; DevicesSessionsPanel story. tahti-web 0.0.328 (#1824).
+
 ## 2026-11-04 - Batch 37 UX slices
 
 Settings Account/Artist/Channel Finnish leftovers; Library/Studio/Admin/Radio

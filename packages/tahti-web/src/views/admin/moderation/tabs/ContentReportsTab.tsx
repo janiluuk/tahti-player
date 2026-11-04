@@ -109,7 +109,9 @@ function ReportActions({
           ? t('adminContentReports.statusActioned')
           : t('adminContentReports.statusDismissed')}
         {report.resolvedByDisplayName
-          ? ` by ${report.resolvedByDisplayName}`
+          ? ` ${t('adminContentReports.resolvedBy', {
+              name: report.resolvedByDisplayName,
+            })}`
           : ''}
         {report.resolutionNote && (
           <p className="mt-0.5">{report.resolutionNote}</p>
@@ -161,7 +163,9 @@ function ReportActions({
         setConfirmingDelete(false);
         if (!resolved.ok) {
           setError(
-            `The comment is deleted, but the report is still open: ${resolved.error}`,
+            t('adminContentReports.commentDeletedStillOpen', {
+              error: resolved.error,
+            }),
           );
           return;
         }

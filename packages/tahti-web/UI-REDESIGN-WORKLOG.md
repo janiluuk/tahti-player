@@ -1,3 +1,15 @@
+## 2026-11-04 - Batch 39 UX slices (0.0.329)
+
+Finnish for Notifications sample lines, Mentions panel, reset/setup
+password, Library Media, Sounds selection/bulk-edit, Studio Releases
+toolbar + release detail leftovers, Admin content-reports resolve copy,
+Radio just-played labels, channel navigation/links, Group detail, track
+buy/PWYW, Stash share/play via `web.actions`. Dates: Kept notes for
+remaining chart/stats and schedule/exact-time helpers (no new
+ListingDate). MentionsPanel Storybook; GroupDetailView not-found play
+uses toBeInTheDocument. Skipped: radio widget redesign, performance
+audit, pageTour, admin hub English descriptions.
+
 ## 2026-11-04 - Batch 38 UX slices (0.0.328)
 
 Finnish for Settings Devices/2FA/API tokens/Notifications visibility,

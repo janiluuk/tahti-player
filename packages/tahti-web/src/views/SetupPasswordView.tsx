@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Box, Button, InlineError, Input } from '@tahti-player/ui';
 
 import { fetchSetupPasswordInfo } from '../api/client';
@@ -15,11 +16,8 @@ function tokenFromSearch(): string {
   return new URLSearchParams(window.location.search).get('token') ?? '';
 }
 
-/** One-time invite link (`/setup-password?token=`) — lets a passwordless
- * account (board-invited, imported from a legacy import) set an initial
- * password. Prod has no separate "change password" settings page — TOTP is
- * the only ongoing account-security control, alongside this one-time flow. */
 export function SetupPasswordView() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const setupPassword = useAuthStore((s) => s.setupPassword);
   const loading = useAuthStore((s) => s.loading);
@@ -38,7 +36,7 @@ export function SetupPasswordView() {
 
   useEffect(() => {
     if (!token) {
-      setInfoError('Missing setup link token.');
+      setInfoError(t('auth.setupMissingToken'));
       return;
     }
     void fetchSetupPasswordInfo(token).then((r) => {
@@ -48,7 +46,7 @@ export function SetupPasswordView() {
         setInfoError(r.error);
       }
     });
-  }, [token]);
+  }, [token, t]);
 
   const mismatch = confirm.length > 0 && password !== confirm;
   const problem = password.length > 0 ? passwordProblem(password) : null;
@@ -73,24 +71,27 @@ export function SetupPasswordView() {
     if (!done) {
       return;
     }
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       const hasChannel = Boolean(useAuthStore.getState().user?.channel);
       void navigate({ to: hasChannel ? '/studio' : '/feed' });
     }, 1200);
-    return () => clearTimeout(t);
+    return () => clearTimeout(timer);
   }, [done, navigate]);
 
   return (
     <div className="mx-auto flex max-w-md flex-col gap-6">
-      <PageBackLink to="/login" label="Log in" />
+      <PageBackLink to="/login" label={t('auth.logIn')} />
       <div>
         <h1 className="font-display text-3xl font-extrabold tracking-tight">
-          {done ? 'Password set' : 'Set your password'}
+          {done ? t('auth.setupDoneTitle') : t('auth.setupTitle')}
         </h1>
         <p className="text-foreground-secondary mt-1 text-sm">
           {info
-            ? `Welcome, ${info.displayName} — finish setting up ${info.email}.`
-            : 'Open the invite link from your email, or one is already loaded below.'}
+            ? t('auth.setupGreeting', {
+                name: info.displayName,
+                email: info.email,
+              })
+            : t('auth.setupHint')}
         </p>
       </div>
 
@@ -99,17 +100,17 @@ export function SetupPasswordView() {
           variant="tertiary"
           className="h-auto w-auto flex-col gap-3 rounded-xl"
         >
-          <p className="text-sm">Signed in — taking you to your dashboard…</p>
+          <p className="text-sm">{t('auth.setupSignedIn')}</p>
         </Box>
       ) : infoError ? (
         <div className="flex flex-col gap-3">
           <InlineError>{infoError}</InlineError>
           <p className="text-foreground-secondary text-sm">
-            Ask whoever invited you for a fresh link, or{' '}
+            {t('auth.setupAskFresh')}{' '}
             <Link to="/login" className="underline-offset-2 hover:underline">
-              log in
+              {t('auth.logIn').toLowerCase()}
             </Link>{' '}
-            if you already have a password.
+            {t('auth.setupIfHavePassword')}
           </p>
         </div>
       ) : (
@@ -121,7 +122,7 @@ export function SetupPasswordView() {
           }}
         >
           <Input
-            label="Password"
+            label={t('auth.password')}
             variant="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -131,16 +132,18 @@ export function SetupPasswordView() {
           />
           {problem && <InlineError>{problem}</InlineError>}
           <Input
-            label="Confirm password"
+            label={t('auth.confirmPassword')}
             variant="password"
             value={confirm}
             onChange={(e) => setConfirm(e.target.value)}
             autoComplete="new-password"
           />
-          {mismatch && <InlineError>Passwords don&apos;t match.</InlineError>}
+          {mismatch && (
+            <InlineError>{t('auth.passwordsDoNotMatch')}</InlineError>
+          )}
           {error && <InlineError>{error}</InlineError>}
           <Button disabled={!canSubmit} type="submit">
-            {loading ? 'Setting password…' : 'Set password'}
+            {loading ? t('auth.setupSetting') : t('auth.setupSubmit')}
           </Button>
         </form>
       )}

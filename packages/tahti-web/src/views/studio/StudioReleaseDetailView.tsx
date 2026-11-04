@@ -159,7 +159,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout relative flex w-full flex-col gap-6 px-1 py-2">
         <Tooltip
-          content="Back to Releases"
+          content={t('studioReleaseDetail.backToReleases')}
           side="right"
           wrapperClassName={backButtonCornerClassName}
         >
@@ -204,7 +204,10 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
               stats={headerStats}
               actions={
                 <>
-                  <Tooltip content="Open release embed" side="top">
+                  <Tooltip
+                    content={t('studioReleaseDetail.openEmbedAria')}
+                    side="top"
+                  >
                     <ButtonLink
                       to="/r/$slug"
                       params={{ slug: release.smartLinkSlug }}
@@ -215,7 +218,10 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       <Code2Icon size={16} aria-hidden />
                     </ButtonLink>
                   </Tooltip>
-                  <Tooltip content="Schedule listening party" side="top">
+                  <Tooltip
+                    content={t('studioReleaseDetail.schedulePartyAria')}
+                    side="top"
+                  >
                     <ButtonLink
                       to="/studio/listening-parties/new"
                       search={{ releaseId: release.id }}
@@ -227,7 +233,10 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       <PartyPopperIcon size={16} aria-hidden />
                     </ButtonLink>
                   </Tooltip>
-                  <Tooltip content="Delete release" side="top">
+                  <Tooltip
+                    content={t('studioReleaseDetail.deleteAria')}
+                    side="top"
+                  >
                     <Button
                       size="icon"
                       variant="secondary"
@@ -256,7 +265,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                 disabled={!release.tracks?.length}
               >
                 <PlayIcon size={16} aria-hidden className="mr-1.5" />
-                Play
+                {t('actions.play')}
               </Button>
             </EntitySocialHeader>
 
@@ -354,7 +363,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                             ) : (
                               <p className="text-foreground-secondary text-sm">
                                 {description.trim() ||
-                                  'No description set yet.'}
+                                  t('studioReleaseDetail.noDescription')}
                               </p>
                             )}
                           </StudioPanel>
@@ -499,8 +508,8 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                                 className="mr-1.5"
                               />
                               {release.state === 'PUBLISHED'
-                                ? 'Published'
-                                : 'Publish'}
+                                ? t('studioReleaseDetail.published')
+                                : t('studioReleaseDetail.publish')}
                             </Button>
                           </div>
                           {release.state === 'PUBLISHED' ? (

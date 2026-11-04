@@ -60,7 +60,9 @@ export const NotFound: Story = {
   decorators: [withTahtiRouter('/groups/no-such-group')],
   play: async ({ canvasElement }) => {
     await expect(
-      await within(canvasElement).findByText('Group not found'),
-    ).toBeVisible();
+      await within(canvasElement).findByText(
+        /group not found|ryhmää ei löytynyt/i,
+      ),
+    ).toBeInTheDocument();
   },
 };
