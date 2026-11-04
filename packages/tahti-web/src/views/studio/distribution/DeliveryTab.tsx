@@ -120,7 +120,7 @@ export function DeliveryTab({
             'Fee waived (Studio included)'
           ) : (
             <>
-Distribution fee paid
+              Distribution fee paid
               {billing.distributionPaidAt ? (
                 <>
                   {' '}

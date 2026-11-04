@@ -145,7 +145,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
               <dd>
                 {meeting.minutesApprovedAt ? (
                   <>
-Approved <ListingDate value={meeting.minutesApprovedAt} />
+                    Approved <ListingDate value={meeting.minutesApprovedAt} />
                   </>
                 ) : meeting.minutesKey ? (
                   'Uploaded, pending approval'
