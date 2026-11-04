@@ -1,4 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import {
+  resetMockArtistPosts,
+  resetMockNewsletterDrafts,
+} from '@tahti-web/api/studio-extras/posts';
 import { StudioUpdatesView } from '@tahti-web/views/studio/StudioUpdatesView';
 import { expect, userEvent, within } from 'storybook/test';
 
@@ -33,6 +37,12 @@ export const Default: Story = {};
 export const NewsletterSendConfirmation: Story = {
   name: 'Newsletter send confirmation (mock toast)',
   args: { tab: 'newsletter' },
+  loaders: [
+    async () => {
+      resetMockArtistPosts();
+      resetMockNewsletterDrafts();
+    },
+  ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const send = await canvas.findByRole('button', { name: /^Send$/ });
@@ -50,17 +60,30 @@ export const NewsletterSendConfirmation: Story = {
 
 export const PostsStoryCardGrid: Story = {
   name: 'Posts as StoryCard grid',
+  loaders: [
+    async () => {
+      resetMockArtistPosts();
+      resetMockNewsletterDrafts();
+    },
+  ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      await canvas.findByTestId('studio-posts-story-grid'),
-    ).toBeVisible();
+    const card = await canvas.findByTestId('studio-post-story');
+    await expect(card).toBeVisible();
+    await expect(canvas.getByText('New set up')).toBeVisible();
+    await expect(canvas.getByTestId('studio-posts-story-grid')).toBeVisible();
   },
 };
 
 export const NewsletterRemoveConfirmation: Story = {
   name: 'Newsletter remove confirmation (mock toast)',
   args: { tab: 'newsletter' },
+  loaders: [
+    async () => {
+      resetMockArtistPosts();
+      resetMockNewsletterDrafts();
+    },
+  ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const remove = await canvas.findByRole('button', {

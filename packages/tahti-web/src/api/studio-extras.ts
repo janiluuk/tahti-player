@@ -87,4 +87,6 @@ export {
   deleteNewsletterDraft,
   createNewsletterDraft,
   postChatReaction,
+  resetMockArtistPosts,
+  resetMockNewsletterDrafts,
 } from './studio-extras/posts';
