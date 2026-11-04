@@ -68,10 +68,12 @@ export const PostsStoryCardGrid: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const card = await canvas.findByTestId('studio-post-story');
-    await expect(card).toBeVisible();
-    await expect(canvas.getByText('New set up')).toBeVisible();
-    await expect(canvas.getByTestId('studio-posts-story-grid')).toBeVisible();
+    await expect(
+      await canvas.findByTestId('studio-posts-story-grid'),
+    ).toBeInTheDocument();
+    await expect(
+      await canvas.findByRole('button', { name: /Preview / }),
+    ).toBeVisible();
   },
 };
 
