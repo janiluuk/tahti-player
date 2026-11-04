@@ -794,7 +794,13 @@
       "less": "Vähemmän",
       "stats": "Tilastot",
       "manage": "Hallitse",
-      "queueItem": "Lisää jonoon {{title}}"
+      "queueItem": "Lisää jonoon {{title}}",
+      "addToPlaylist": "Lisää soittolistalle",
+      "addToPlaylistItem": "Lisää {{title}} soittolistalle",
+      "addToQueue": "Lisää jonoon",
+      "inQueue": "Jonossa",
+      "removeItem": "Poista {{title}}",
+      "revoke": "Kumoa"
     },
     "artistProfile": {
       "joined": "Liittynyt {{month}}"
@@ -1268,6 +1274,13 @@
       "uploadFile": "Lataa tiedosto",
       "uploading": "Ladataan…",
       "loadingRecordings": "Ladataan tallenteita…",
+      "stillProcessing": "käsitellään vielä",
+      "processing": "Käsitellään",
+      "processingFailed": "Käsittely epäonnistui",
+      "uploadedOn": ", ladattu {{date}}",
+      "noTracksYet": "Ei kappaleita vielä.",
+      "noTracksMatch": "Mikään kappale ei vastaa hakua “{{query}}”.",
+      "filterTracks": "Suodata kappaleita",
       "visibilityPublic": "Julkinen",
       "collectionTitle": "Otsikko",
       "collectionGenres": "Genret",
@@ -1571,7 +1584,18 @@
       "shareLinkRevoked": "Jakolinkki kumottu.",
       "imageUpdated": "{{label}} päivitetty.",
       "leftGroup": "Poistuit ryhmästä",
-      "mediaRemoved": "Mediatiedosto poistettu."
+      "mediaRemoved": "Mediatiedosto poistettu.",
+      "linkCopied": "Linkki kopioitu",
+      "couldNotCopyLink": "Linkkiä ei voitu kopioida",
+      "jamStartFailed": "Jamia ei voitu aloittaa tälle soittolistalle.",
+      "couldNotLoadPosts": "Julkaisuja ja uutiskirjeitä ei voitu ladata.",
+      "couldNotSendNewsletter": "Uutiskirjettä ei voitu lähettää.",
+      "postDeleted": "Julkaisu poistettu.",
+      "couldNotDeletePost": "Julkaisua ei voitu poistaa.",
+      "newsletterRemoved": "Uutiskirje poistettu.",
+      "couldNotRemoveNewsletter": "Uutiskirjettä ei voitu poistaa.",
+      "eventRemoved": "Poistettu “{{title}}”.",
+      "groupCreated": "Luotu {{name}}"
     },
     "settingsLogs": {
       "noLogs": "Ei lokimerkintöjä vielä. Tämän välilehden varoitukset, virheet ja soittimen tapahtumat näkyvät täällä.",
@@ -2272,6 +2296,100 @@
       "roleOwner": "Omistaja",
       "roleAdmin": "Ylläpitäjä",
       "roleMember": "Jäsen"
+    },
+    "studioEvents": {
+      "title": "Tapahtumat",
+      "addEvent": "Lisää tapahtuma",
+      "upcoming": "Tulossa",
+      "past": "Menneet",
+      "upcomingTitle": "Tulevat tapahtumat",
+      "upcomingDescription": "Festivaalit, live-esiintymiset ja julkiset tilaisuudet.",
+      "pastTitle": "Menneet tapahtumat",
+      "pastDescription": "Aiemmat esiintymisesi ja esityksesi.",
+      "empty": "Ei tapahtumia vielä",
+      "ticketsLink": "Liput / tapahtuman linkki",
+      "remove": "Poista",
+      "removeConfirmTitle": "Poistetaanko tapahtuma?",
+      "removeConfirmTitleNamed": "Poistetaanko “{{title}}”?",
+      "removeConfirmDescription": "Tapahtuma poistuu tulevista ja menneistä listoista.",
+      "loading": "Ladataan…"
+    },
+    "studioGroups": {
+      "title": "Ryhmät",
+      "subtitle": "Kollektiiveja yhteisellä soittolistalla. Jäsenet lisäävät ääniä; ylläpitäjät voivat hyväksyä ne ensin.",
+      "newGroup": "Uusi ryhmä",
+      "yourGroups": "Omat ryhmäsi",
+      "emptyTitle": "Ei ryhmiä vielä",
+      "emptyDescription": "Aloita ryhmä jakaaksesi yhteisen soittolistan muiden artistien kanssa.",
+      "loading": "Ladataan ryhmiäsi…",
+      "loadError": "Ryhmiäsi ei voitu ladata",
+      "open": "Avaa"
+    },
+    "adminThemes": {
+      "title": "Yhteisöteemat",
+      "description": "Hyväksyntä avaa pull requestin, joka lisää teeman tahti-registryyn; se menee liveen kun PR yhdistetään.",
+      "show": "Näytä",
+      "filterPending": "Odottaa tarkistusta",
+      "filterRejected": "Hylätty",
+      "filterAll": "Kaikki teemat",
+      "badgePending": "Odottaa tarkistusta",
+      "badgeRejected": "Hylätty",
+      "badgePrivate": "Yksityinen",
+      "prPending": "Avataan registry-PR…",
+      "prOpened": "Registry-PR auki",
+      "prError": "Registry-PR epäonnistui",
+      "loadError": "Teemoja ei voitu ladata",
+      "loading": "Ladataan teemoja…",
+      "emptyPending": "Ei teemoja odottamassa tarkistusta",
+      "empty": "Ei teemoja täällä",
+      "note": "Huomautus: {{note}}",
+      "pullRequest": "Pull request",
+      "approve": "Hyväksy",
+      "retryApproval": "Yritä hyväksyntää uudelleen",
+      "reject": "Hylkää",
+      "rejectTitle": "Hylkää {{name}}",
+      "rejectDescription": "Tekijä saa tämän huomautuksen hylkäyksen yhteydessä.",
+      "rejectNote": "Huomautus tekijälle",
+      "rejecting": "Hylätään…",
+      "rejectConfirm": "Hylkää teema"
+    },
+    "adminRadio": {
+      "memberRelay": "Jäsenvälitys:",
+      "memberRelayLive": "{{name}} · /c/{{slug}}",
+      "memberRelayIdle": "ei live-jäsenkanavaa · rotaation pitäisi jatkua"
+    },
+    "soundShare": {
+      "empty": "Ei jakolinkkejä vielä.",
+      "revokeTitle": "Kumotaanko tämä jakolinkki?",
+      "revokeDescription": "Se lakkaa toimimasta heti.",
+      "revokeAria": "Kumoa linkki"
+    },
+    "stash": {
+      "empty": "Ei stash-tiedostoja vielä",
+      "loadError": "Stash-tiedostoja ei voitu ladata",
+      "deleteTitle": "Poistetaanko tiedosto?",
+      "deleteTitleNamed": "Poistetaanko \"{{filename}}\"?",
+      "deleteDescription": "Tiedosto poistuu stashistasi."
+    },
+    "playHistory": {
+      "clearTitle": "Tyhjennetäänkö kuunteluhistoria?",
+      "clearDescription": "Aiempien kuuntelujen lista poistetaan. Jokainen kappale säilyttää toistomääränsä ja viimeksi toistetun päivän.",
+      "clearAria": "Tyhjennä historia"
+    },
+    "collectionPage": {
+      "tracks": "Kappaleet",
+      "followers": "Seuraajat",
+      "emptyTracksTitle": "Ei kappaleita tällä soittolistalla",
+      "emptyTracksOwner": "Lisää kappaleita hakutuloksista tai kirjastostasi.",
+      "emptyTracksGuest": "Tällä soittolistalla ei ole vielä kappaleita.",
+      "loading": "Ladataan kokoelmaa…",
+      "loadError": "Tätä kokoelmaa ei voitu ladata",
+      "notFound": "Kokoelmaa ei löytynyt",
+      "notFoundDescription": "Kokoelma on ehkä poistettu tai se ei ole saatavilla."
+    },
+    "collaborativePlaylist": {
+      "title": "Lisää tälle soittolistalle",
+      "signedInHint": "Kuka tahansa kirjautunut voi lisätä julkisen kappaleen tälle yhteisölliselle soittolistalle. Omistaja saa ilmoituksen."
     }
   },
   "studioEditor": {

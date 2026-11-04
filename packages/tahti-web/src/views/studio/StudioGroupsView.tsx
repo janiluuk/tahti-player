@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -39,6 +40,7 @@ const ROLE_LABEL = {
 } as const;
 
 export function StudioGroupsView() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [groups, setGroups] = useState<MyArtistGroup[]>([]);
   const [loading, setLoading] = useState(true);
@@ -80,7 +82,7 @@ export function StudioGroupsView() {
         toast.error(result.error);
         return;
       }
-      toast.success(`Created ${result.data.name}`);
+      toast.success(t('toasts.groupCreated', { name: result.data.name }));
       void navigate({
         to: '/studio/groups/$slug',
         params: { slug: result.data.slug },
@@ -92,12 +94,12 @@ export function StudioGroupsView() {
 
   const renderList = () => {
     if (loading) {
-      return <PageLoading label="Loading your groups…" />;
+      return <PageLoading label={t('studioGroups.loading')} />;
     }
     if (error && groups.length === 0) {
       return (
         <PageError
-          title="Could not load your groups"
+          title={t('studioGroups.loadError')}
           description={error}
           onRetry={reload}
         />
@@ -106,8 +108,8 @@ export function StudioGroupsView() {
     if (groups.length === 0) {
       return (
         <PageEmpty
-          title="No groups yet"
-          description="Start a group to share a collective playlist with other artists."
+          title={t('studioGroups.emptyTitle')}
+          description={t('studioGroups.emptyDescription')}
         />
       );
     }
@@ -156,9 +158,9 @@ export function StudioGroupsView() {
                 params={{ slug: group.slug }}
                 size="sm"
                 variant="secondary"
-                aria-label={`Open ${group.name}`}
+                aria-label={`${t('studioGroups.open')} ${group.name}`}
               >
-                Open
+                {t('studioGroups.open')}
               </ButtonLink>
             </li>
           );
@@ -171,14 +173,14 @@ export function StudioGroupsView() {
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
         <ViewShell
-          title="Groups"
-          subtitle="Collectives with a shared playlist. Members add sounds; admins can approve them first."
+          title={t('studioGroups.title')}
+          subtitle={t('studioGroups.subtitle')}
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
           actions={
             creating ? null : (
               <Button size="sm" onClick={() => setCreating(true)}>
                 <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                New group
+                {t('studioGroups.newGroup')}
               </Button>
             )
           }
@@ -243,7 +245,9 @@ export function StudioGroupsView() {
               </form>
             </StudioPanel>
           ) : null}
-          <StudioPanel title="Your groups">{renderList()}</StudioPanel>
+          <StudioPanel title={t('studioGroups.yourGroups')}>
+            {renderList()}
+          </StudioPanel>
         </ViewShell>
       </div>
     </StudioGate>

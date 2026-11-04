@@ -34,22 +34,8 @@ import {
 import { isPinned } from '../../../lib/pinnedTracks';
 import { useDominantColor } from '../../../lib/useDominantColor';
 import { usePlayerStore } from '../../../stores/playerStore';
+import { formatUploadDate } from './SoundsAmbientList';
 import type { StudioSoundsState } from './useStudioSoundsState';
-
-function formatUploadDate(value: string | undefined): string | null {
-  if (!value) {
-    return null;
-  }
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return null;
-  }
-  return new Intl.DateTimeFormat(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  }).format(date);
-}
 
 function ambientStyle(
   rgb: [number, number, number] | null,
@@ -145,12 +131,14 @@ export function SoundRow({
           {processing ? (
             <TrackProcessing />
           ) : failed ? (
-            'Processing failed'
+            t('library.processingFailed')
           ) : (
             item.status
           )}
           {formatUploadDate(item.createdAt)
-            ? `, uploaded ${formatUploadDate(item.createdAt)}`
+            ? t('library.uploadedOn', {
+                date: formatUploadDate(item.createdAt)!,
+              })
             : ''}
           {isPinned(item) ? ', pinned' : ''}
           {item.durationSec != null

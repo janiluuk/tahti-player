@@ -101,7 +101,7 @@ function RecordedBroadcastCard({
           <div className="text-foreground-secondary truncate text-xs">
             <ListingDate value={broadcast.startedAt} /> ·{' '}
             {formatRecordingDuration(broadcast.durationSec)}
-            {broadcast.soundId ? '' : ' · still processing'}
+            {broadcast.soundId ? '' : ` · ${t('library.stillProcessing')}`}
           </div>
         </div>
         {broadcast.soundId ? (
@@ -110,7 +110,7 @@ function RecordedBroadcastCard({
             params={{ id: broadcast.soundId }}
             search={{ edit: true }}
             variant="text"
-            label={`Edit ${title}`}
+            label={t('actions.editNamed', { name: title })}
           />
         ) : null}
       </div>

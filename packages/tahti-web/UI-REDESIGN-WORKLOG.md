@@ -1,3 +1,15 @@
+## 2026-11-04 - Batch 40 UX slices (0.0.330)
+
+Finnish for add-to-playlist / ambient track edit-remove / track-table
+queue labels via `web.actions`; Library Upload still-processing + Sounds
+processing lines; Studio Events + Groups chrome; ThemesTab moderation;
+Admin Radio member-relay; Collection empty/stats; collaborative playlist
+section; Stash/share/play-history ConfirmDialogs; Studio Updates + Now
+Playing toasts. Dates: `formatUploadDate` and Studio home recent activity
+use `dateLocaleTag`; chart/stats Left unchanged. AddToPlaylistButton
+Storybook play uses toBeInTheDocument. Skipped: radio widget redesign,
+performance audit, pageTour, admin hub English descriptions.
+
 ## 2026-11-04 - Batch 39 UX slices (0.0.329)
 
 Finnish for Notifications sample lines, Mentions panel, reset/setup

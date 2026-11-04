@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -27,6 +28,7 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
 
 export function StudioEventsView() {
+  const { t } = useTranslation('web');
   const [events, setEvents] = useState<ArtistEvent[]>([]);
   const [loading, setLoading] = useState(true);
   const [pendingRemove, setPendingRemove] = useState<ArtistEvent | null>(null);
@@ -56,7 +58,7 @@ export function StudioEventsView() {
 
   const renderEvents = (items: ArtistEvent[]) =>
     items.length === 0 ? (
-      <PageEmpty title="No events listed yet" />
+      <PageEmpty title={t('studioEvents.empty')} />
     ) : (
       <ul className="flex flex-col gap-2">
         {items.map((event) => (
@@ -93,7 +95,7 @@ export function StudioEventsView() {
                     href={event.eventUrl}
                     className="text-primary-strong text-xs"
                   >
-                    Tickets / event link
+                    {t('studioEvents.ticketsLink')}
                   </ExternalLink>
                 )}
               </div>
@@ -102,7 +104,7 @@ export function StudioEventsView() {
               <EditIconLink
                 to="/studio/events/$eventId/edit"
                 params={{ eventId: event.id }}
-                label={`Edit ${event.title}`}
+                label={t('actions.editNamed', { name: event.title })}
                 variant="text"
               />
               <Button
@@ -111,7 +113,7 @@ export function StudioEventsView() {
                 onClick={() => setPendingRemove(event)}
               >
                 <Trash2Icon size={14} aria-hidden className="mr-1.5" />
-                Remove
+                {t('studioEvents.remove')}
               </Button>
             </div>
           </li>
@@ -123,14 +125,14 @@ export function StudioEventsView() {
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
         <ViewShell
-          title="Events"
+          title={t('studioEvents.title')}
           classes={{ root: 'px-0 pt-0' }}
           actions={
-            <Tooltip content="Add event" side="top">
+            <Tooltip content={t('studioEvents.addEvent')} side="top">
               <ButtonLink
                 to="/studio/events/new"
                 size="icon-sm"
-                aria-label="Add event"
+                aria-label={t('studioEvents.addEvent')}
               >
                 <PlusIcon size={16} aria-hidden />
               </ButtonLink>
@@ -143,15 +145,15 @@ export function StudioEventsView() {
             items={[
               {
                 id: 'upcoming',
-                label: 'Upcoming',
+                label: t('studioEvents.upcoming'),
                 icon: <CalendarClockIcon size={14} />,
                 content: (
                   <StudioPanel
-                    title="Upcoming events"
-                    description="Festivals, live shows, and public appearances."
+                    title={t('studioEvents.upcomingTitle')}
+                    description={t('studioEvents.upcomingDescription')}
                   >
                     {loading ? (
-                      <PageLoading label="Loading…" />
+                      <PageLoading label={t('studioEvents.loading')} />
                     ) : (
                       renderEvents(upcomingEvents)
                     )}
@@ -160,15 +162,15 @@ export function StudioEventsView() {
               },
               {
                 id: 'past',
-                label: 'Past',
+                label: t('studioEvents.past'),
                 icon: <HistoryIcon size={14} />,
                 content: (
                   <StudioPanel
-                    title="Past events"
-                    description="Your previous appearances and performances."
+                    title={t('studioEvents.pastTitle')}
+                    description={t('studioEvents.pastDescription')}
                   >
                     {loading ? (
-                      <PageLoading label="Loading…" />
+                      <PageLoading label={t('studioEvents.loading')} />
                     ) : (
                       renderEvents(pastEvents)
                     )}
@@ -181,10 +183,14 @@ export function StudioEventsView() {
         <ConfirmDialog
           isOpen={pendingRemove !== null}
           title={
-            pendingRemove ? `Remove “${pendingRemove.title}”?` : 'Remove event?'
+            pendingRemove
+              ? t('studioEvents.removeConfirmTitleNamed', {
+                  title: pendingRemove.title,
+                })
+              : t('studioEvents.removeConfirmTitle')
           }
-          description="The event leaves your upcoming and past lists."
-          confirmLabel="Remove"
+          description={t('studioEvents.removeConfirmDescription')}
+          confirmLabel={t('studioEvents.remove')}
           destructive
           onCancel={() => setPendingRemove(null)}
           onConfirm={() => {
@@ -198,7 +204,7 @@ export function StudioEventsView() {
                 toast.error(result.error);
                 return;
               }
-              toast.success(`Removed “${event.title}”.`);
+              toast.success(t('toasts.eventRemoved', { title: event.title }));
               reload();
             });
           }}

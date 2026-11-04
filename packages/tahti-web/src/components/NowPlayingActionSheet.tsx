@@ -67,9 +67,9 @@ export function NowPlayingActionSheet({ isOpen, onClose, playable }: Props) {
     }
     try {
       await navigator.clipboard.writeText(url);
-      toast.success('Link copied');
+      toast.success(t('toasts.linkCopied'));
     } catch {
-      toast.error('Could not copy link');
+      toast.error(t('toasts.couldNotCopyLink'));
     }
   };
 

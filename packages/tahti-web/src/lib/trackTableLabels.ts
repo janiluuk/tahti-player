@@ -21,11 +21,21 @@ export const trackTableLabels: TrackTableLabels = {
   get pause() {
     return i18n.t('web:actions.pause');
   },
-  playAll: 'Play all',
-  addAllToQueue: 'Add all to queue',
-  addToQueue: 'Add to queue',
-  inQueue: 'In queue',
+  get playAll() {
+    return i18n.t('web:actions.playAll');
+  },
+  get addAllToQueue() {
+    return i18n.t('web:actions.addAllToQueue');
+  },
+  get addToQueue() {
+    return i18n.t('web:actions.addToQueue');
+  },
+  get inQueue() {
+    return i18n.t('web:actions.inQueue');
+  },
   trackOptions: 'Track options',
   remove: 'Remove from list',
-  filterPlaceholder: 'Filter tracks',
+  get filterPlaceholder() {
+    return i18n.t('web:library.filterTracks');
+  },
 };

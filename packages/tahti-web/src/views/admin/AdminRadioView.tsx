@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   BreadcrumbCurrent,
@@ -55,6 +56,7 @@ const ADMIN_RADIO_TAB_LABELS: Record<AdminRadioTabId, string> = {
 };
 
 export function AdminRadioView() {
+  const { t } = useTranslation('web');
   const play = usePlayerStore((state) => state.play);
   const currentId = usePlayerStore((state) => state.currentId);
   const playbackStatus = usePlayerStore((state) => state.status);
@@ -262,11 +264,14 @@ export function AdminRadioView() {
                               </div>
                             </div>
                             <p className="text-foreground-secondary mt-3 text-xs">
-                              Member relay:{' '}
+                              {t('adminRadio.memberRelay')}{' '}
                               {data.nowPlaying.live &&
                               data.nowPlaying.artistName
-                                ? `${data.nowPlaying.artistName} · /c/${data.nowPlaying.slug}`
-                                : 'no live member channel · rotation should continue'}
+                                ? t('adminRadio.memberRelayLive', {
+                                    name: data.nowPlaying.artistName,
+                                    slug: data.nowPlaying.slug,
+                                  })
+                                : t('adminRadio.memberRelayIdle')}
                             </p>
                           </StudioPanel>
 

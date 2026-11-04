@@ -214,13 +214,13 @@ export function CollectionView({ slug }: { slug: string }) {
   const coverScheme = useMemo(() => schemeFromCoverRgb(coverRgb), [coverRgb]);
 
   if (loading) {
-    return <PageLoading label="Loading collection…" />;
+    return <PageLoading label={t('collectionPage.loading')} />;
   }
 
   if (loadError) {
     return (
       <PageError
-        title="Could not load this collection"
+        title={t('collectionPage.loadError')}
         description={loadError}
         onRetry={() => setAttempt((n) => n + 1)}
       />
@@ -231,8 +231,8 @@ export function CollectionView({ slug }: { slug: string }) {
     return (
       <PageEmpty
         headingLevel={1}
-        title="Collection not found"
-        description="This collection may have been removed or is not available."
+        title={t('collectionPage.notFound')}
+        description={t('collectionPage.notFoundDescription')}
       />
     );
   }
@@ -251,7 +251,7 @@ export function CollectionView({ slug }: { slug: string }) {
       ? [
           {
             key: 'tracks',
-            label: 'Tracks',
+            label: t('collectionPage.tracks'),
             value: playables.length,
             icon: MusicIcon,
           },
@@ -261,7 +261,7 @@ export function CollectionView({ slug }: { slug: string }) {
       ? [
           {
             key: 'subscribers',
-            label: 'Followers',
+            label: t('collectionPage.followers'),
             value: subscription.subscriberCount,
             icon: UsersIcon,
           },
@@ -291,7 +291,7 @@ export function CollectionView({ slug }: { slug: string }) {
       const session = await createJam(slug);
       void navigate({ to: '/jam/$code', params: { code: session.code } });
     } catch {
-      toast.error("Couldn't start a Jam for this playlist.");
+      toast.error(t('toasts.jamStartFailed'));
     }
   };
 
@@ -501,10 +501,10 @@ export function CollectionView({ slug }: { slug: string }) {
             return line ? <CollectionContribution line={line} /> : null;
           }}
           empty={{
-            title: 'No tracks in this playlist',
+            title: t('collectionPage.emptyTracksTitle'),
             description: isOwner
-              ? 'Add tracks from search results or your library.'
-              : "This playlist doesn't have any tracks yet.",
+              ? t('collectionPage.emptyTracksOwner')
+              : t('collectionPage.emptyTracksGuest'),
           }}
         />
 

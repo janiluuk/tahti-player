@@ -2,6 +2,7 @@ import { EyeIcon, PlusIcon, SendIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -89,16 +90,16 @@ export function StudioUpdatesView({
         setDrafts(n.data);
         setLoadError(reasons[0] ?? null);
         if (reasons[0]) {
-          toast.error('Could not load posts and newsletters.');
+          toast.error(i18n.t('web:toasts.couldNotLoadPosts'));
         }
       })
       .catch((err) => {
         setLoadError(
           err instanceof Error
             ? err.message
-            : 'Could not load posts and newsletters.',
+            : i18n.t('web:toasts.couldNotLoadPosts'),
         );
-        toast.error('Could not load posts and newsletters.');
+        toast.error(i18n.t('web:toasts.couldNotLoadPosts'));
       })
       .finally(() => setLoaded(true));
   };
@@ -125,7 +126,7 @@ export function StudioUpdatesView({
       );
       reload();
     } catch {
-      toast.error('Could not send the newsletter.');
+      toast.error(i18n.t('web:toasts.couldNotSendNewsletter'));
     } finally {
       setSendingId(null);
     }
@@ -485,9 +486,11 @@ export function StudioUpdatesView({
                 setPosts((current) =>
                   current.filter((entry) => entry.id !== post.id),
                 );
-                toast.success('Post deleted.');
+                toast.success(i18n.t('web:toasts.postDeleted'));
               })
-              .catch(() => toast.error('Could not delete the post.'));
+              .catch(() =>
+                toast.error(i18n.t('web:toasts.couldNotDeletePost')),
+              );
           }}
         />
 
@@ -518,9 +521,11 @@ export function StudioUpdatesView({
                 setDrafts((current) =>
                   current.filter((entry) => entry.id !== draft.id),
                 );
-                toast.success('Newsletter removed.');
+                toast.success(i18n.t('web:toasts.newsletterRemoved'));
               })
-              .catch(() => toast.error('Could not remove the newsletter.'));
+              .catch(() =>
+                toast.error(i18n.t('web:toasts.couldNotRemoveNewsletter')),
+              );
           }}
         />
       </div>
