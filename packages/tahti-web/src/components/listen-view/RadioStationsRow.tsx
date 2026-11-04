@@ -8,6 +8,7 @@ import {
   type SetStateAction,
 } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { CardsRow } from '@tahti-player/ui';
 
 import type { EnabledInternetRadioPreset } from '../../api/client';
@@ -29,11 +30,6 @@ import { RadioRowCard, type RadioRowItem } from './RadioRowCard';
 import type { ListenSectionState } from './useListenSections';
 
 const NOW_PLAYING_POLL_MS = 45_000;
-
-const ROW_LABELS = {
-  filterPlaceholder: 'Filter stations…',
-  nothingFound: 'Nothing matches that filter.',
-};
 
 function radioItemPlayable(
   item: RadioRowItem,
@@ -209,6 +205,11 @@ export function RadioStationsRow({
   };
 
   const favoriteIds = new Set(favoriteTracks.map((track) => track.id));
+  const { t } = useTranslation('web');
+  const rowLabels = {
+    filterPlaceholder: t('listen.filterStations'),
+    nothingFound: t('listen.nothingFound'),
+  };
 
   return (
     <>
@@ -231,7 +232,7 @@ export function RadioStationsRow({
           badge="Internet radio"
           badgeColor="cyan"
           items={items}
-          labels={ROW_LABELS}
+          labels={rowLabels}
           renderItem={(item) => {
             const favorite = radioItemPlayable(item);
             return (

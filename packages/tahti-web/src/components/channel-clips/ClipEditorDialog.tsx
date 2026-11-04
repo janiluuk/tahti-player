@@ -23,6 +23,7 @@ import {
 } from '../../api/clip-editor';
 import { isForceMock } from '../../api/mode';
 import type { ProgrammeItem } from '../../api/studio-extras';
+import { EveryNthInput } from '../../views/admin/announcements/EveryNthInput';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { WaveformSeekbar } from '../tahti/WaveformSeekbar';
 
@@ -614,19 +615,10 @@ export function ClipEditorDialog({
                     }}
                   />
                   {placement.scheduleMode === 'EVERY_NTH' && (
-                    <Input
-                      label="Number of programs"
-                      type="number"
-                      inputMode="numeric"
-                      enterKeyHint="done"
-                      min={2}
-                      max={100}
+                    <EveryNthInput
                       value={placement.everyNth ?? 3}
-                      onChange={(e) => {
-                        setPlacement((p) => ({
-                          ...p,
-                          everyNth: Number(e.target.value),
-                        }));
+                      onCommit={(everyNth) => {
+                        setPlacement((p) => ({ ...p, everyNth }));
                         setDirty(true);
                       }}
                     />
@@ -687,6 +679,7 @@ export function ClipEditorDialog({
         title="Leave the clip editor?"
         description="Unsaved title and placement changes will be lost. A generated preview is retained for your next visit; your on-air clip stays unchanged."
         confirmLabel="Leave editor"
+        destructive
         onCancel={() => setDiscard(false)}
         onConfirm={onClose}
       />

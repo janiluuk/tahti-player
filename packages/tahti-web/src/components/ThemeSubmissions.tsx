@@ -124,6 +124,7 @@ export function ThemeSubmissions({
         }
         description="The theme leaves your submissions. An applied copy on this device is left as it is."
         confirmLabel="Delete"
+        destructive
         onCancel={() => setPendingDelete(null)}
         onConfirm={() => {
           const theme = pendingDelete;

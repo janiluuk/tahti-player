@@ -156,6 +156,7 @@ export function MulticastCategory() {
         }
         description="This stream destination stops receiving the broadcast."
         confirmLabel="Remove"
+        destructive
         onCancel={() => setPendingRemove(null)}
         onConfirm={() => {
           const target = pendingRemove;

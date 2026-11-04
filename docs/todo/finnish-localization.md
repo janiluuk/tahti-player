@@ -22,17 +22,22 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 - Library: every tab, page titles, overview heading, catalog error and the empty states.
 - Common actions in the catalog under `web.actions` (Play, Pause, Share, Edit, Save, Cancel, Delete, Close, Download, Follow, Favorite and others). So far they are used only on the surfaces listed above.
 - `relativeDate` ("juuri nyt", "5 minuuttia sitten", "1 päivä sitten").
+- `humanizeDate.ts` / `storyDate.ts` (delegate to `relativeDate`).
+- `ListingDate` `<time title>` locale via `currentLocale` + `toBcp47`.
+- tahti-web `ConfirmDialog` wrapper defaults (`web.actions.confirm` / `cancel`); `EditIconButton` wrapper default label; `ChannelShareButton` trigger share label.
+- Discover widget titles (`WIDGET_LABEL_KEYS` + `discover.widgets.*`).
+- Listen sub-rows: Tahti Selects, New releases, Trending, Radio filter labels; Listen section order label for Selects-only layout.
+- Library tab `<title>` strings in `lib/seo.ts` (`library.tab*` + `nav.library`).
 
 ## Left
 
-- [ ] Use `web.actions` in shared buttons: `ShareButton`, `EditIconButton`, `ConfirmDialog` defaults, follow and favorite buttons, and download buttons. Ui components need `labels` props for this.
+- [ ] Use `web.actions` in shared buttons: follow and favorite buttons, download buttons, and remaining share/edit call sites that still import `@tahti-player/ui` directly. Ui components need `labels` props where the player must stay English-only.
 - [ ] Settings panel bodies: Account, Artist, Channel, Broadcast, Playback, Integrations, Themes, Add-ons and What's new.
 - [ ] Notifications and Messages popovers, GlobalSearch, the auth dialog and toasts.
-- [ ] Sub-rows on Listen (Tahti Selects, New releases, Trending, Coming up, Radio) and Discover widget titles (`WIDGET_LABELS`).
-- [ ] Library sub-pages: Favorites, History, Following, Sounds, Collections, Upload, Media, Stash and Embeds. The Overview stat cards.
+- [ ] Listen sub-rows: Coming up, Radio section title/badge/empty copy; plugin-store `DISCOVER_WIDGET_LABELS`.
+- [ ] Library sub-pages: page bodies, Overview stat cards (tab `<title>` via seo is done).
 - [ ] Studio and Admin page bodies, Radio, channel pages, track and release pages (`ChannelView`, `track-detail` and `FullScreenPlayer` were being changed by other work and were left out).
-- [ ] Other date helpers: `humanizeDate.ts`, `storyDate.ts` and the `ListingDate` title (`toLocaleString`). `numericDate` (`d.m.yyyy`) needs no change.
 - [ ] Views that do not call `useTranslation` render again only when something else changes, so a date or label can stay in the old language until then. Check this after more views are translated.
-- [ ] Page `<title>` and SEO strings (`lib/seo.ts`). The page tour (`lib/pageTour.ts`). Keyboard shortcuts help.
+- [ ] Page `<title>` and SEO strings beyond Library tabs (`lib/seo.ts`). The page tour (`lib/pageTour.ts`). Keyboard shortcuts help.
 - [ ] Optional: detect a Finnish browser on first visit. `matchBrowserLocales` exists, but the default stays English until product decides.
 - [ ] When Settings is reduced to account-only (`simplify-studio-library-settings-admin.md`), move Language into Appearance.

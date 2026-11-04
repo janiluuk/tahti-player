@@ -487,17 +487,17 @@ const DEFAULT_COLLECTION_GALLERY: CollectionGallery = {
 
 export async function fetchCollectionGallery(
   slug: string,
-): Promise<{ data: CollectionGallery }> {
+): Promise<{ data: CollectionGallery; meta: { loaded: boolean } }> {
   if (isForceMock()) {
-    return { data: DEFAULT_COLLECTION_GALLERY };
+    return { data: DEFAULT_COLLECTION_GALLERY, meta: { loaded: true } };
   }
   try {
     const { data } = await requestJson<CollectionGallery>(
       `/api/me/collections/${encodeURIComponent(slug)}/gallery`,
     );
-    return { data };
+    return { data, meta: { loaded: true } };
   } catch {
-    return { data: DEFAULT_COLLECTION_GALLERY };
+    return { data: DEFAULT_COLLECTION_GALLERY, meta: { loaded: false } };
   }
 }
 

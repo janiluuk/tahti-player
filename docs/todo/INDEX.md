@@ -21,6 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
+| partial | [batch-30-slices-2026-11-04.md](batch-30-slices-2026-11-04.md) | Batch of 30: destructive confirms, gallery/stale-fetch, VIEW-CATALOG, dates, Finnish, auth/share i18n, nav aliases |
 | partial | [library-management-port.md](library-management-port.md) | Port theDAW library management to Library Sounds: paged API client, facets/stats, bulk delete/edit |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |

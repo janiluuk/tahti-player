@@ -6,6 +6,7 @@ import { Badge, Button, Select, ViewShell } from '@tahti-player/ui';
 import { fetchChatHistory, fetchDirectory } from '../api/client';
 import type { ChannelDirectoryItem } from '../api/types';
 import { ChannelChatPanel } from '../components/ChannelChatPanel';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageLoading } from '../components/PageStates';
 import {
   chatActivity,
@@ -179,12 +180,7 @@ export function ChatView({ slug }: { slug?: string }) {
       }}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <Link
-          to="/chat"
-          className="text-foreground-secondary text-xs hover:underline"
-        >
-          ← Chat picker
-        </Link>
+        <PageBackLink to="/chat" label="Chat picker" />
         <div className="flex flex-wrap items-center gap-2">
           <Link
             to="/channel/$slug"

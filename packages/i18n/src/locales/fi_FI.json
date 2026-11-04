@@ -748,7 +748,8 @@
       "removeFromFavorites": "Poista suosikeista",
       "tryAgain": "Yritä uudelleen",
       "signIn": "Kirjaudu sisään",
-      "upload": "Lähetä"
+      "upload": "Lähetä",
+      "confirm": "Vahvista"
     },
     "player": {
       "next": "Seuraava",
@@ -798,7 +799,16 @@
       "nobodyLive": "Kukaan ei ole nyt livenä",
       "replayingBelow": "Viimeisimmät lähetykset uusitaan alla.",
       "liveChannelsAppear": "Livekanavat näkyvät täällä, kun artisti aloittaa lähetyksen.",
-      "noNewTracks": "Ei vielä uusia kappaleita"
+      "noNewTracks": "Ei vielä uusia kappaleita",
+      "tahtiSelects": "Tahti Selects",
+      "curated": "Kuratoitu",
+      "noSelectsPicks": "Ei Selects-valintoja vielä",
+      "trendingThisWeek": "Nousussa tällä viikolla",
+      "topPlays": "Eniten soitetut",
+      "nothingPlayedWeek": "Tällä viikolla ei ole vielä soitettu mitään",
+      "releasesBadge": "Julkaisut",
+      "noReleasesYet": "Ei julkaisuja vielä",
+      "filterStations": "Suodata asemia…"
     },
     "discover": {
       "tabDiscover": "Tutki",
@@ -820,7 +830,21 @@
       "emptySelects": "Tahti Selects -kierrossa ei ole nyt kappaleita.",
       "emptyReleases": "Julkaisuja ei ole vielä julkaistu.",
       "emptyGenres": "Näissä tyylilajeissa ei vielä ole kappaleita.",
-      "emptyDefault": "Täällä ei ole vielä mitään."
+      "emptyDefault": "Täällä ei ole vielä mitään.",
+      "widgets": {
+        "thisWeekMostPlayed": "Tällä viikolla: eniten soitetut",
+        "thisWeekLeastPlayed": "Tällä viikolla: vähiten soitetut",
+        "newToYou": "Uutta sinulle",
+        "latestTracks": "Uusimmat kappaleet",
+        "mostPlayed": "Eniten soitetut",
+        "loved": "Yhteisön suosikit",
+        "artistOfTheWeek": "Viikon satunnainen artisti",
+        "randomArtist": "Satunnainen artisti",
+        "publicPlaylists": "Julkiset soittolistat",
+        "tahtiSelects": "Tahti Selects",
+        "latestReleases": "Uusimmat julkaisut",
+        "randomTrack": "Satunnainen kappale"
+      }
     },
     "library": {
       "sections": "Kirjaston osiot",
@@ -849,6 +873,8 @@
       "emptyLibraryDescription": "Kirjaudu sisään tallentaaksesi musiikkia, josta pidät, tai selaa Tutki-sivua."
     },
     "date": {
+      "today": "Tänään",
+      "yesterday": "Eilen",
       "justNow": "juuri nyt",
       "minutesAgo_one": "{{count}} minuutti sitten",
       "minutesAgo_other": "{{count}} minuuttia sitten",
@@ -856,6 +882,34 @@
       "hoursAgo_other": "{{count}} tuntia sitten",
       "daysAgo_one": "{{count}} päivä sitten",
       "daysAgo_other": "{{count}} päivää sitten"
+    },
+    "auth": {
+      "logIn": "Kirjaudu",
+      "join": "Liity",
+      "twoFactorTitle": "Kaksivaiheinen koodi",
+      "loginDescription": "Kirjaudu sisään avataksesi kirjaston, studion ja chatin.",
+      "joinDescription": "Luo tili ja vahvista sähköpostisi.",
+      "totpDescription": "Syötä 6-numeroinen koodi autentikointisovelluksesta tai varakoodi.",
+      "email": "Sähköposti",
+      "password": "Salasana",
+      "confirmPassword": "Vahvista salasana",
+      "forgotPassword": "Unohtuiko salasana?",
+      "signingIn": "Kirjaudutaan…",
+      "signIn": "Kirjaudu",
+      "creating": "Luodaan…",
+      "createAccount": "Luo tili",
+      "back": "Takaisin",
+      "verifying": "Vahvistetaan…",
+      "verify": "Vahvista",
+      "totpLabel": "Autentikointi- tai varakoodi",
+      "accountType": "Tilin tyyppi",
+      "listener": "Kuuntelija",
+      "artist": "Artisti",
+      "collective": "Bändi / kollektiivi",
+      "displayName": "Näyttönimi",
+      "artistName": "Artistinimi",
+      "collectiveName": "Kollektiivin nimi",
+      "passwordsDoNotMatch": "Salasanat eivät täsmää."
     }
   },
   "studioEditor": {

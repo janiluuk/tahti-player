@@ -34,11 +34,18 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let cancelled = false;
     setLoading(true);
+    setDetail(null);
     void fetchAdminStorageUserFiles(userId).then((res) => {
-      setDetail(res.data);
-      setLoading(false);
+      if (!cancelled) {
+        setDetail(res.data);
+        setLoading(false);
+      }
     });
+    return () => {
+      cancelled = true;
+    };
   }, [userId]);
 
   const pct = detail

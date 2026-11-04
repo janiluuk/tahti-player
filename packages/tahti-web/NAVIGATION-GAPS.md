@@ -11,6 +11,17 @@ Building those per-screen diagrams required grep-verifying every real
 was removed on 2026-10-28). Findings below are real, source-grounded gaps in the
 **Nuclear (this client)** navigation graph, not documentation drift.
 
+## 2026-11-04 — `/listen/*` legacy aliases (no main-menu entry)
+
+`src/router/routes-listen.tsx` keeps a few **`/listen/…` paths** for bookmarks
+and inbound links; they are not listed in chrome.
+
+| Path | Behavior |
+| --- | --- |
+| `/listen/feed` | Redirect to `/discover?tab=feed` |
+| `/listen/favorites` | Redirect to `/library/favorites` |
+| `/listen/history` | Renders `ListenView` with the History tab (same content as opening history from Listen; `/library/history` is the Library tab URL) |
+
 ## 2026-10-03 - Atlas refresh: redirect targets and resolved orphans
 
 Re-checked the route tree (`src/router/routes-*.tsx`), chrome, and the

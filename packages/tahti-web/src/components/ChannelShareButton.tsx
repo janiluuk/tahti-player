@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   CopyButton,
@@ -36,6 +37,8 @@ export function ChannelShareButton({
   onOpenChange?: (open: boolean) => void;
   showTrigger?: boolean;
 }) {
+  const { t } = useTranslation('web');
+  const shareAction = t('actions.share');
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const open = openProp ?? uncontrolledOpen;
   const setOpen = onOpenChange ?? setUncontrolledOpen;
@@ -99,10 +102,10 @@ export function ChannelShareButton({
             size={iconOnly ? 'icon-sm' : 'sm'}
             variant="secondary"
             onClick={() => setOpen(true)}
-            aria-label={`Share ${displayName}`}
+            aria-label={`${shareAction} ${displayName}`}
           >
             <Share2Icon size={16} aria-hidden />
-            {!iconOnly && <span className="ml-1.5">Share</span>}
+            {!iconOnly && <span className="ml-1.5">{shareAction}</span>}
           </Button>
         </Tooltip>
       ) : null}

@@ -159,6 +159,7 @@ export function ModerateChannelView({ slug }: { slug: string }) {
         title={`Stop moderating ${channel.displayName}?`}
         description="You lose the moderator role on this channel. Only its owner can give it back."
         confirmLabel="Stop moderating"
+        destructive
         onCancel={() => setConfirmLeave(false)}
         onConfirm={() => {
           setConfirmLeave(false);

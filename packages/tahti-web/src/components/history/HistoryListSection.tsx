@@ -2,6 +2,7 @@ import { FilterIcon, PlayIcon, PlusIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { toBcp47, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   HistoryDayGroup,
@@ -13,6 +14,7 @@ import {
 } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../../api/types';
+import { currentLocale } from '../../lib/locale';
 import { resolveLocalPlayableForReplay } from '../../lib/nativeLibrary';
 import { useLibraryStore, type HistoryEntry } from '../../stores/libraryStore';
 import { usePlayerStore } from '../../stores/playerStore';
@@ -66,18 +68,23 @@ function dayKey(playedAt: string): string {
   return playedAt.slice(0, 10);
 }
 
-function dayMarker(key: string): string {
+function dayMarker(
+  key: string,
+  localeTag: string,
+  todayLabel: string,
+  yesterdayLabel: string,
+): string {
   const today = dayKey(new Date().toISOString());
   const yesterday = dayKey(
     new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
   );
   if (key === today) {
-    return 'Today';
+    return todayLabel;
   }
   if (key === yesterday) {
-    return 'Yesterday';
+    return yesterdayLabel;
   }
-  return new Date(`${key}T00:00:00`).toLocaleDateString(undefined, {
+  return new Date(`${key}T00:00:00`).toLocaleDateString(localeTag, {
     dateStyle: 'full',
   });
 }
@@ -102,6 +109,8 @@ function groupByDay(
 }
 
 export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
+  const { t } = useTranslation('web');
+  const localeTag = toBcp47(currentLocale());
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const isFavoriteTrack = useLibraryStore((s) => s.isFavoriteTrack);
   const clearHistory = useLibraryStore((s) => s.clearHistory);
@@ -221,7 +230,15 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
       ) : null}
 
       {groups.map((group) => (
-        <HistoryDayGroup key={group.key} marker={dayMarker(group.key)}>
+        <HistoryDayGroup
+          key={group.key}
+          marker={dayMarker(
+            group.key,
+            localeTag,
+            t('date.today'),
+            t('date.yesterday'),
+          )}
+        >
           {group.entries.map((entry) => {
             const p = entry.playable;
             return (

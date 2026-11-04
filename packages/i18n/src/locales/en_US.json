@@ -748,7 +748,8 @@
       "removeFromFavorites": "Remove from favorites",
       "tryAgain": "Try again",
       "signIn": "Sign in",
-      "upload": "Upload"
+      "upload": "Upload",
+      "confirm": "Confirm"
     },
     "player": {
       "next": "Next",
@@ -798,7 +799,16 @@
       "nobodyLive": "Nobody is live right now",
       "replayingBelow": "Recent broadcasts are replaying below.",
       "liveChannelsAppear": "Live channels show up here when an artist goes on air.",
-      "noNewTracks": "No new tracks yet"
+      "noNewTracks": "No new tracks yet",
+      "tahtiSelects": "Tahti Selects",
+      "curated": "Curated",
+      "noSelectsPicks": "No Selects picks yet",
+      "trendingThisWeek": "Trending this week",
+      "topPlays": "Top plays",
+      "nothingPlayedWeek": "Nothing has been played this week yet",
+      "releasesBadge": "Releases",
+      "noReleasesYet": "No releases yet",
+      "filterStations": "Filter stations…"
     },
     "discover": {
       "tabDiscover": "Discover",
@@ -820,7 +830,21 @@
       "emptySelects": "No tracks in the Tahti Selects rotation right now.",
       "emptyReleases": "No releases published yet.",
       "emptyGenres": "No tracks in these genres yet.",
-      "emptyDefault": "Nothing here yet."
+      "emptyDefault": "Nothing here yet.",
+      "widgets": {
+        "thisWeekMostPlayed": "This week: most played",
+        "thisWeekLeastPlayed": "This week: least played",
+        "newToYou": "New to you",
+        "latestTracks": "Latest tracks",
+        "mostPlayed": "Most played",
+        "loved": "Loved by the community",
+        "artistOfTheWeek": "Random artist of the week",
+        "randomArtist": "Random artist pick",
+        "publicPlaylists": "Public playlists",
+        "tahtiSelects": "Tahti Selects",
+        "latestReleases": "Latest releases",
+        "randomTrack": "Random track"
+      }
     },
     "library": {
       "sections": "Library sections",
@@ -849,6 +873,8 @@
       "emptyLibraryDescription": "Sign in to save music you like, or browse Discover."
     },
     "date": {
+      "today": "Today",
+      "yesterday": "Yesterday",
       "justNow": "just now",
       "minutesAgo_one": "{{count}} minute ago",
       "minutesAgo_other": "{{count}} minutes ago",
@@ -856,6 +882,34 @@
       "hoursAgo_other": "{{count}} hours ago",
       "daysAgo_one": "{{count}} day ago",
       "daysAgo_other": "{{count}} days ago"
+    },
+    "auth": {
+      "logIn": "Log in",
+      "join": "Join",
+      "twoFactorTitle": "Two-factor code",
+      "loginDescription": "Sign in to unlock your library, studio, and chat.",
+      "joinDescription": "Create an account, then verify your email.",
+      "totpDescription": "Enter the 6-digit code from your authenticator app or a backup code.",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "forgotPassword": "Forgot password?",
+      "signingIn": "Signing in…",
+      "signIn": "Sign in",
+      "creating": "Creating…",
+      "createAccount": "Create account",
+      "back": "Back",
+      "verifying": "Verifying…",
+      "verify": "Verify",
+      "totpLabel": "Authentication or backup code",
+      "accountType": "Account type",
+      "listener": "Listener",
+      "artist": "Artist",
+      "collective": "Band / Collective",
+      "displayName": "Display name",
+      "artistName": "Artist name",
+      "collectiveName": "Collective name",
+      "passwordsDoNotMatch": "Passwords do not match."
     }
   },
   "studioEditor": {

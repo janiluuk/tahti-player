@@ -1,3 +1,5 @@
+import { i18n, type ParseKeys } from '@tahti-player/i18n';
+
 export type RouteMetadata = {
   title: string;
   description: string;
@@ -22,17 +24,11 @@ const PAGE_TITLES: [string, string][] = [
   ['/discover', 'Discover'],
   ['/favorites', 'Favorites'],
   ['/listen/favorites', 'Favorites'],
-  ['/library/favorites', 'Favorites'],
   ['/feed', 'Feed'],
   ['/notifications', 'Notifications'],
   ['/listen/feed', 'Feed'],
   ['/history', 'History'],
   ['/listen/history', 'History'],
-  ['/library/history', 'History'],
-  ['/library/following', 'Following'],
-  ['/library/sounds', 'Tracks'],
-  ['/library/smartlinks', 'Smart links'],
-  ['/library/local', 'Local files'],
   ['/messages', 'Messages'],
   ['/governance/feature-requests', 'Feature requests'],
   ['/governance/history', 'Closed decisions'],
@@ -62,11 +58,23 @@ const PAGE_TITLES: [string, string][] = [
   ['/jam', 'Jam'],
 ];
 
+const LIBRARY_PAGE_TITLE_KEYS: [string, ParseKeys<'web'>][] = [
+  ['/library/favorites', 'library.tabFavorites'],
+  ['/library/history', 'library.tabHistory'],
+  ['/library/following', 'library.tabFollowing'],
+  ['/library/sounds', 'library.tabSounds'],
+  ['/library/smartlinks', 'library.tabSmartLinks'],
+  ['/library/local', 'library.tabLocal'],
+];
+
 const SECTION_NAMES: [string, string][] = [
   ['/studio', 'Studio'],
   ['/admin', 'Admin'],
-  ['/library', 'Library'],
 ];
+
+function librarySectionTitle(): string {
+  return i18n.t('web:nav.library');
+}
 
 function sentenceCase(value: string): string {
   const words = decodeURIComponent(value).split('-').filter(Boolean).join(' ');
@@ -78,6 +86,22 @@ function matchesPrefix(pathname: string, prefix: string): boolean {
 }
 
 function pageTitleForPath(pathname: string): string | null {
+  const libraryPage = LIBRARY_PAGE_TITLE_KEYS.find(([prefix]) =>
+    matchesPrefix(pathname, prefix),
+  );
+  if (libraryPage) {
+    return `${i18n.t(`web:${libraryPage[1]}`)} · Tahti`;
+  }
+  if (matchesPrefix(pathname, '/library')) {
+    const child = pathname
+      .slice('/library'.length)
+      .split('/')
+      .filter(Boolean)[0];
+    const section = librarySectionTitle();
+    return child
+      ? `${sentenceCase(child)} · ${section} · Tahti`
+      : `${section} · Tahti`;
+  }
   const page = PAGE_TITLES.find(([prefix]) => matchesPrefix(pathname, prefix));
   if (page) {
     return `${page[1]} · Tahti`;

@@ -20,6 +20,7 @@ import {
   type AdminSupportTicket,
   type AdminSupportTicketDetail,
 } from '../../../../api/admin';
+import { ListingDate } from '../../../../components/ListingDate';
 import {
   PageEmpty,
   PageError,
@@ -277,7 +278,7 @@ export function SupportTab() {
                       </div>
                       <div className="text-foreground-secondary truncate text-xs">
                         {requesterLabel(t)} · {t.category} ·{' '}
-                        {new Date(t.createdAt).toLocaleDateString()}
+                        <ListingDate value={t.createdAt} />
                       </div>
                     </Button>
                   </li>
@@ -309,7 +310,7 @@ export function SupportTab() {
                   </div>
                   <p className="text-foreground-secondary text-xs">
                     {requesterLabel(detail)} · {detail.category} ·{' '}
-                    {new Date(detail.createdAt).toLocaleDateString()}
+                    <ListingDate value={detail.createdAt} />
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-1.5">

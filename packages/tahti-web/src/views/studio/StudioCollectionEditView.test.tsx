@@ -83,6 +83,7 @@ vi.mock('../../api/studio', async (importOriginal) => {
         slideshowImages: [],
         videoBackgroundUrl: null,
       },
+      meta: { loaded: true },
     }),
     addStudioCollectionItem: (...args: unknown[]) =>
       addStudioCollectionItem(...args),

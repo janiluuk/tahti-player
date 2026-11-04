@@ -43,7 +43,7 @@ export const ChannelChat: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      canvas.getByRole('link', { name: '← Chat picker' }),
+      canvas.getByRole('link', { name: 'Chat picker' }),
     ).toHaveAttribute('href', '/chat');
     await expect(
       canvas.getByRole('link', { name: 'Open channel' }),
