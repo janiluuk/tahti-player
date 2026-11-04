@@ -3,6 +3,7 @@ import { GroupDetailView } from '@tahti-web/views/GroupDetailView';
 import { expect, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { expectVisible } from './_lib/play';
 
 const meta: Meta<typeof GroupDetailView> = {
   title: 'Tahti/Groups/GroupDetailView',
@@ -47,10 +48,10 @@ export const Member: Story = {
   decorators: [withTahtiRouter('/groups/finland-djs')],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
+    await expectVisible(
       await canvas.findByRole('button', { name: /Leave group/ }),
-    ).toBeVisible();
-    await expect(canvas.getByRole('list', { name: 'Members' })).toBeVisible();
+    );
+    await expectVisible(await canvas.findByRole('list', { name: 'Members' }));
   },
 };
 
