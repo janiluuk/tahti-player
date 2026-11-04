@@ -1,3 +1,10 @@
+## 2026-11-04 - Batch 32 follow-up: admin users role filter (0.0.321)
+
+Admin Users sends the BOARD/ARTIST filter to the server (`isBoard`, `tier`) so
+`total` is the filtered count when the API honours it, with the page count as
+fallback. Fan subscription "Ends on" uses `numericDate` like the listings.
+Tests: role filter requests and fallback, Finnish Settings → Playback.
+
 ## 2026-11-04 - Batch 33 dates + Finnish bodies (0.0.322)
 
 Governance meeting detail, admin user panel and engagement, artist mentions,
@@ -175,6 +182,7 @@ Every multi-line field inside a form now submits with Cmd/Ctrl+Enter, the
 usual shortcut for comments and posts, while Enter keeps adding new lines.
 New `submitOnModEnter` prop on the library `Textarea`. Bumped tahti-web
 `0.0.268`.
+
 ## 2026-10-26 - UX batch 106 (Enter key labels)
 
 Every search field shows a Search key on phone keyboards, message and reply
@@ -187,6 +195,7 @@ Thirty more single-action groups submit on Enter: account recovery and
 verification, playlist and preset saves, comments and announcements, studio
 upload / publish / revision tools, governance records, API tokens and artist
 settings. Bumped tahti-web `0.0.266`.
+
 ## 2026-10-26 - UX batch 107 (Enter submits)
 
 Thirty forms that needed a mouse click now submit on Enter: password set-up
@@ -200,12 +209,14 @@ Keys, tokens, slugs, JSON / CSV and nine more username fields no longer get
 auto-capitalised, autocorrected or spell-checked on phones; release IDs get
 the numeric keypad and the two money fields the decimal keypad. Bumped
 tahti-web `0.0.263`.
+
 ## 2026-10-26 - UX batch 105 (autofill)
 
 Name fields for playlists, tiers, themes, presets, credits and other people,
 and venue address fields, no longer get the listener's own name or address
 suggested by browser autofill; the listener's own city does. RTMP address
 fields get the URL keyboard. Bumped tahti-web `0.0.262`.
+
 ## 2026-10-26 - UX batch 103 (URL keyboards, username fields)
 
 Twenty-four URL fields bring up the URL keyboard on phones, and six username
@@ -218,6 +229,7 @@ Twenty-one search fields are `type="search"`, five email fields bring up the
 email keyboard and autofill, three navigation buttons are real links, and
 links that open a new tab say so to screen readers (`ExternalLink`,
 `ButtonAnchor`). Bumped tahti-web `0.0.259`.
+
 ## 2026-10-24 - UX batch 101 (tooltips, field names, SectionTitle)
 
 Twenty-two icon-only buttons show a tooltip, twenty-two unnamed fields get an
@@ -483,7 +495,6 @@ Product flags: Distribution is a Studio sibling tab next to Releases; Chat hub l
 
 Thirty more bare empty strings → `PageEmpty` across governance, studio, add-ons, hearthis, and shared `PlayableTrackTable` / radio episode lists.
 
-
 ## 2026-10-18 — CSP unblock external radio streams
 
 PR 1078's starter CSP limited `media-src` (and `connect-src`) to Tahti CDN /
@@ -568,6 +579,7 @@ Channel edit / designer tools dock into the Nuclear right rail on desktop
 again. Top Broadcast menu: booking calendar modal, 24/7 rotation → Stream
 Manager dialog, Broadcast Studio + duplicate Stream Manager entries
 removed; Go Live panel no longer embeds Stream Manager.
+
 ## 2026-09-11 — v0.0.113: shared apiBase + remaining visibility-aware polls
 
 API modules share `apiBase` from `api/http.ts`. Pro Editor, Jam, notification
@@ -5654,7 +5666,7 @@ remaining line in `help-keyboard-navigation.md`. Added a "Keyboard
 shortcuts" `Button` (next to Log out) to Settings → Account → Session,
 linking to `/help/$slug` (`slug: 'keyboard-shortcuts'`) via the same
 `<Link onClick={closeSettings}>` pattern already used elsewhere in
-`SettingsPanels.tsx` (Governance, Go Live, Stripe). The remapping *store*
+`SettingsPanels.tsx` (Governance, Go Live, Stripe). The remapping _store_
 itself was out of this deep link's scope per the doc's original text
 (player-only today) and isn't addressed here.
 
@@ -5950,6 +5962,7 @@ list, so nothing else relied on it). Live-verified before/after with
 Playwright screenshots.
 
 **Logged, not fixed this round (per explicit "add to todo" requests):**
+
 - `continue-listening-card-missing-isplaying.md` — Listen page's
   "Continue listening" card never shows a pause icon; found the exact
   cause (`Card`'s `isPlaying` prop is simply never passed there, unlike
@@ -6303,6 +6316,7 @@ New visitors now get Nuclear Green (`custom:nuclear-green`, the original Nuclear
 ## 2026-09-25 — Screenshots in the Spotify theme, dark and light
 
 README, redesign and atlas screenshots are recaptured in the Spotify theme, once in dark and once in light (light files carry a `--light` suffix), signed in as the board (admin) user with no notification badges, message counts or toasts, and with a seeded listening history. Both READMEs use `<picture>` so GitHub shows the capture matching the viewer's theme, and the screen atlas (`/more`) has a Dark / Light toggle that falls back to the dark shot when an older shot has no light capture. The Spotify theme gained a Spotify-style light palette (the registry theme only shipped a dark one) and neutral secondary colours in both modes. Shared capture setup lives in `scripts/lib/captureSetup.mjs` (`CAPTURE_THEME_MODE=dark|light`); mock messages now honour a read-state localStorage key, like mock notifications.
+
 ## 2026-09-25 — Nuclear queue bar replaces the tabbed right rail
 
 The right rail now follows the Nuclear desktop queue bar: collapse button, Chat and Notifications toggles, then clear queue and a "more" menu (save as playlist, save locally on desktop, randomize order) in the header, with the queue filling the rest. Chat and notifications open in the same rail from their toggles; pressing the active one goes back to the queue. Collapsed, the rail shows queue artwork plus chat and notification buttons. The header is the shared `QueueHeaderActions` from `@tahti-player/ui`, also used by the desktop player. Bumped `packages/tahti-web/package.json` to `0.0.141`.
@@ -6340,21 +6354,17 @@ it cannot expand into a full-width band. Claim registration uses
 
 Spotify, Mixcloud, Bandcamp and hearthis.at embeds now behave the same as Tahti-hosted tracks: they show in the same track tables (playlists and artist profiles no longer push them into a separate "Elsewhere" section), they play in the shared player bar and the full-screen player the exact same way (a new provider-agnostic `EmbedSurface` widget stands in for the hearthis-only one in the bar and full-screen player, while rows keep their inline hearthis widget and single-iframe claim), and you can favorite any of them — favorited or queued embedded tracks replay from Favorites, History and the queue bar instead of silently doing nothing (mixcloud/spotify/bandcamp ones were previously dead entries once favorited). The track detail page keeps its own inline provider player as before. Embeds stay out of the 24/7 radio fallback rotation, where they can't play unattended. Bumped `packages/tahti-web/package.json` to `0.0.211`.
 
-
 ## 2026-10-20 — Admin Grafana monitoring hub (0.0.230)
 
 Admin dashboard Monitoring panel links to Grafana (vital services, lab overview, infrastructure, Docker/OS) and container logs. New `/admin/monitoring` embeds the vital-services dashboard (kiosk iframe) and live Loki container logs, with per-service Grafana + app-log shortcuts. Bumped `packages/tahti-web/package.json` to `0.0.230`.
-
 
 ## 2026-10-20 — What's New biweekly cycles + full-update modal (0.0.231)
 
 What's New is rebuilt as ~two-week cycles with Listen / Studio / Library / Admin / Settings / Desktop / Platform sections, filled from merged feature PRs since early September. Long cycles show four bullets on the timeline; click opens a modal with the full list. Bumped `packages/tahti-web/package.json` to `0.0.231`.
 
-
 ## 2026-10-20 — Settings Logs board-only + dialog click fix (0.0.232)
 
 Settings → Logs is board-only, with links to Admin container logs and Monitoring. DialogRoot lets backdrop clicks through (`pointer-events-none` on the centering layer) and SettingsPanel forces `overflow-hidden` so Chromium does not double-scroll the pane. Bumped `packages/tahti-web/package.json` to `0.0.232`.
-
 
 ## 2026-10-20 — Admin page comments + atlas CSV export (0.0.233)
 
@@ -6382,7 +6392,6 @@ Persistent selected-block borders and Editing labels connect the canvas to the c
 
 Validation: focused component tests, designer Playwright journeys, type-check and lint. The separate governance navigation check still expects an unavailable Account Governance tab.
 
-
 ## 2026-10-30 — Listing waveforms, mobile rows and opening news
 
 WaveSurfer now renders listing peaks and decodes missing playable audio on visibility, caching 4096 samples. Mobile rows use larger art, a readable title and full-width waveform/actions. Pending uploads show an animated processing panel and refresh until ready. News opens in an illustrated modal with humanized calendar dates and board-only editing; opening copy is included in mock content. Discover is denser and channel visualizers default to varied advanced modes. Version 0.0.282. Live news copy still requires an authenticated admin update.
@@ -6402,6 +6411,7 @@ New **Random track** Discover widget (also listed in the plugin store's Discover
 ## 2026-10-30 — Phone keyboards, undo, composers, logo blocks (0.0.286)
 
 Library year, length and bitrate filters, smart-playlist limits, clip times, analysis BPM and storage quota open the matching phone keyboard. Link and email fields stop auto-correcting. Creating or duplicating a local playlist can be undone. Page-comment edits, pasted tracklists, the artist bio and story, account-deletion requests, correction answers and radio-station approvals submit with Cmd/Ctrl+Enter. Confirm-delete, cancel-election, picker cancel and copy-link are no longer the green primary. Studio add-ons can place a channel logo (upload, width, remove, undo) without touching the profile logo.
+
 ## 2026-10-30 — Listing toolbar on one row (0.0.286)
 
 Track listings put the filter box, sort dropdown and size control on one row. The inline size switcher became `TrackViewPicker`: an icon button showing the current view that opens a popover (Large / Medium / Small, plus Grid and List where offered). `AmbientTrackList` gains `toolbarStart` (a filter box leads the row and the toolbar stays up when nothing matches) and `hideViewPicker`. The remembered view moved to `stores/trackListViewStore` (same `localStorage` key) so a picker outside the list stays in sync. Library → Sounds: Sort by and an order icon button move up beside search and Type, with the size picker in that row. Desktop library local files: search moves into the list toolbar. Stories: `AmbientTrackList` TrackSizePopover / FilterSortAndSizeRow / WithGrid plays, `StudioSoundsView` FilterRow.
@@ -6413,6 +6423,7 @@ Announcement trim, station-ID clip, episode trim, schedule and show episode numb
 ## 2026-10-30 — Favourites in Library, signed-out menus stay (0.0.288)
 
 Favourites is a Library tab at `/library/favorites`. The sidebar item is gone; `/favorites` and `/listen/favorites` redirect there. A visitor can open Library and Favourites without a sign-in dialog and sees the local list (or the empty state). Studio and Admin stay in the sidebar when signed out, grayed and not links; the phone Studio tab is the same. Other Library tabs stay visible and disabled until there is an account. Rejecting an add-on is danger; Open Storybook and the MusicBrainz "open prefilled editor" actions are secondary.
+
 ## 2026-10-30 — Composer submit and release artwork (0.0.288)
 
 News headlines and “Read more” use the shared button and link. Approving a radio submission, publishing a news post, suspending an account, importing theme JSON, booking a radio slot and saving the next broadcast submit from the text area (Cmd/Ctrl+Enter). Draft news, reject, and the weekly schedule stay separate clicks. Studio release artwork opens the shared cover picker (upload and gallery) and still offers a URL and the generator.
@@ -6440,6 +6451,7 @@ Other stations on a radio station page use playable thumbnails. Listener cards n
 ## 2026-11-03 — Channel page tabs, default artwork, Chat activity (0.0.296)
 
 Listen drops the Tahti Radio bar, and "From Tahti" news moves to Discover. The artist profile loses the Popular tracks rank pills and uses the standard list with a filter box; embeds get their own section, and headings take the page's own text color so they read on dark artist colors. Missing or broken covers show the default artwork (admin presets) everywhere through `MediaArtwork`. The channel page puts Music, Comments and Chat in tabs under the stage, sets small blocks such as Live shows side by side, gives show episodes thumbnails, shows the artist's posts as story cards, moves the Live / 24/7 rotation / Offline pill into the stage, hosts a playing embed in the stage, and folds the RSS feed into Share. `/chat` picks a channel from a dropdown and lists each room's activity in the last 24 hours.
+
 ## 2026-11-03 — De-green 20 (0.0.296)
 
 Confirming a delete, removal, revoke, block, sign-out, disconnect, withdrawal or cancellation now shows a red button (`ConfirmDialog destructive`) on about forty dialogs, from Studio sounds and devices to admin storage, news, add-ons and governance. Stopping a stream, overwriting or replacing a rotation and overwriting the live version are red too. Secondary controls that sat green (log Clear / Open folder, plugin Installed, Back to Settings after an email change) are now secondary.
@@ -6447,7 +6459,6 @@ Confirming a delete, removal, revoke, block, sign-out, disconnect, withdrawal or
 ## 2026-11-04 — Track insights listening patterns (0.0.312)
 
 Studio track Insights adds the same pattern charts as Listen → History: time of day, day of week, and a listening calendar. Colour intensity is unique listeners (fingerprints from ListenSession), not play duration. Mock insights fill the charts for Storybook. Needs matching tahti-org TrackInsightsResponse fields (`hourlyUsers`, `dayOfWeekUsers`, `dailyUsers`).
-
 
 ## 2026-11-04 — Discover news card overlay (0.0.313)
 

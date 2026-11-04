@@ -5,6 +5,7 @@ import {
   hasPortalManagedSubscription,
   isCanceledAtPeriodEnd,
 } from './fanSubscriptionStatus';
+import { numericDate } from './relativeDate';
 
 const END = '2026-11-01T00:00:00.000Z';
 
@@ -16,7 +17,7 @@ describe('fanSubscriptionStatusLabel', () => {
         canceledAt: '2026-10-01T00:00:00.000Z',
         currentPeriodEnd: END,
       }),
-    ).toBe(`Ends on ${new Date(END).toLocaleDateString()}`);
+    ).toBe(`Ends on ${numericDate(new Date(END))}`);
   });
 
   it('falls back to the state when there is no period end', () => {
