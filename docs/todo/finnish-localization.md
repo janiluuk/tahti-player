@@ -35,15 +35,16 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 - Artist follow (`ArtistFollowButton` → `web.actions.followArtist` / `logInToFollow` / `unfollowArtist`); GlobalSearch; notifications popover chrome; Settings Account tab group headings; Library Embeds empty/load error (batch 31).
 - Batch 32 follow-up (#1818): `ReleaseTrackDownloads` and track-info Love / Loved via `web.actions`.
 - Batch 34: Settings → Integrations, Add-ons (group titles, category tabs, scrobbling notice) and What's new chrome; Library History (tabs, toolbar, filter, pagination, toasts, plural counts) and Following; Admin section tabs, page labels, hub titles and descriptions; channel page actions and the share dialog; track download gate; auth-flow toasts (connect, sign in to buy, device sign-out); `libraryFormat` track counts with a Finnish plural; `seo.ts` Library, Studio and Admin child titles.
+- Batch 33: Library Overview stat cards and `formatPlayCount` plural (`web.library.plays`); Radio tabs, loading and recent-plays copy (`web.radio.*`); Messages popover (`web.messagesPopover.*`); processing-failure toast (`web.toasts.*`); FullScreenPlayer chrome and controls (`web.player.*`); `TrackHero` back, share and add; Settings Account tabs/session/membership/subscriptions/purchases, Artist tabs and load errors, Channel page and chat/moderator pointers, Broadcast radio and green room (`web.settingsBody.*`).
 
 ## Left
 
 - [ ] Use `web.actions` in the remaining share/edit/follow call sites that still import `@tahti-player/ui` directly, and the other download labels (`StashFilesPanel`, `MembershipInvoices`, `StemMixer`). Ui components need `labels` props where the player must stay English-only.
-- [ ] Settings panel bodies: Account, Artist, Channel and Broadcast.
-- [ ] Messages popover, notification item text and toasts.
+- [ ] Settings panel bodies: the forms inside Account, Artist, Channel and Broadcast (field labels, save buttons, toasts).
+- [ ] Notification item text and the other toasts (only the processing-failure toast is translated).
 - [ ] Listen: plugin-store `DISCOVER_WIDGET_LABELS`.
 - [ ] Library sub-pages: remaining page bodies (History Stats tab and Across your devices panel, Sounds, Collections, Upload). Overview stat cards, History list and Following are done.
-- [ ] Studio and Admin page bodies (admin hub card descriptions per page stay English), Radio, channel pages, track and release pages (`ChannelView`, `track-detail` and `FullScreenPlayer` were being changed by other work and were left out).
+- [ ] Studio and Admin page bodies (admin hub card descriptions per page stay English), Radio below the tabs, channel pages, the rest of track and release pages (`ChannelView`, `track-detail` below the hero).
 - [ ] Views that do not call `useTranslation` render again only when something else changes, so a date or label can stay in the old language until then. Check this after more views are translated.
 - [ ] Route SEO descriptions and the default title (`lib/seo.ts`). The page tour (`lib/pageTour.ts`). Keyboard shortcuts help (`content/keyboardNavigation.ts` is a large content table).
 - [ ] Optional: detect a Finnish browser on first visit. `matchBrowserLocales` exists, but the default stays English until product decides.

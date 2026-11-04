@@ -33,6 +33,10 @@ changed, because it needs a product call or more than a mechanical fix.
   until an `ExportProvider` UI consumes it. `importSoundBanner`
   was deleted (batch 32); `fetchStudioSoundFacets` is wired via
   `useUsedBeforeTags`.
+- [x] `lib/locale.ts` locale note is stale (batch 33): `detectLocale` is gone
+  and `applyLocale` is called from `stores/languageStore.ts`; nothing to delete.
+- [ ] `lib/relativeDate.ts` `numericDate` is now used by `numericDay` and
+  `relativeDate` only; keep both, they are the one absolute date style.
 - [ ] Store fields never read outside the store: `libraryStore` `syncNote`,
   `heardFavoritePlaylists` / `heardFavoriteArtists` / `markFavoriteHeard`,
   `favorite*Dates`; `mapNotesStore` `getDraft`, `listComments`,

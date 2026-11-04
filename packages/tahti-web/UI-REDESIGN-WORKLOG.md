@@ -1,3 +1,14 @@
+## 2026-11-04 - Batch 33 dates + Finnish bodies (0.0.322)
+
+Governance meeting detail, admin user panel and engagement, artist mentions,
+distribution fee, motion seconders/circulate/discussion, member register and
+board/auditor/election/annual-report records use `ListingDate`, humanized
+dates or `numericDay` (`d.m.yyyy`). Finnish for Library Overview stats, Radio
+tabs, the Messages popover, the processing-failure toast, the full-screen
+player, the track hero and the Settings Account, Artist, Channel and Broadcast
+bodies. Plugin-store import cards confirm Disconnect in red. Library Media's
+empty state links to Studio → Branding. Confirm dialogs Storybook plays.
+
 ## 2026-11-04 - Batch 34: leftover dates and Finnish bodies (0.0.321)
 
 Revision, news, recording and episode dates use `ListingDate`; venue and

@@ -94,7 +94,6 @@ export function TrackHero({ page }: { page: TrackPage }) {
     startBuy,
     accessGate,
   } = page;
-  const { t } = useTranslation('web');
   const mixVersion = mixVersionLabel(playable.title, detail?.mixVersion);
   const canGoBack = useCanGoBack();
   const like = useSoundEngagement('like', detail?.channelSlug, id);
