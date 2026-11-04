@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import { MAX_HEADER_VIDEO_BYTES } from '../../api/channel-design';
 import { HEADER_MEDIA_TYPES } from './slideshowOptions';
 
-/** A backdrop video/image picked for upload on the next save, plus its blob
- * preview URL (revoked whenever the file is replaced, dropped, or the
- * designer unmounts). */
 export function usePendingBackdropFile(markDirty: () => void) {
   const [pendingVideoFile, setPendingVideoFile] = useState<File | null>(null);
   const [pendingVideoPreviewUrl, setPendingVideoPreviewUrl] = useState<
@@ -30,11 +29,11 @@ export function usePendingBackdropFile(markDirty: () => void) {
       return;
     }
     if (file.size > MAX_HEADER_VIDEO_BYTES) {
-      toast.error('File must be 10 MB or smaller.');
+      toast.error(i18n.t('web:toasts.backdropFileTooLarge'));
       return;
     }
     if (!HEADER_MEDIA_TYPES.includes(file.type)) {
-      toast.error('Use an MP4/WebM video or a JPEG/PNG/WebP/GIF image.');
+      toast.error(i18n.t('web:toasts.backdropFileType'));
       return;
     }
     if (pendingVideoPreviewUrl) {
@@ -45,7 +44,6 @@ export function usePendingBackdropFile(markDirty: () => void) {
     markDirty();
   };
 
-  /** Drops a picked-but-not-uploaded backdrop file (and its blob URL). */
   const discardPendingVideo = () => {
     if (pendingPreviewUrlRef.current) {
       URL.revokeObjectURL(pendingPreviewUrlRef.current);

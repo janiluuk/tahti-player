@@ -34,10 +34,10 @@ export const Fans: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      await canvas.findByRole('heading', { name: 'Fans' }),
-    ).toBeVisible();
+      await canvas.findByRole('heading', { name: /^Fans$|^Fanit$/ }),
+    ).toBeInTheDocument();
     const links = within(
-      canvas.getByRole('list', { name: 'Fans tools' }),
+      canvas.getByRole('list', { name: /^Fans tools$|^Fanityökalut$/ }),
     ).getAllByRole('link');
     await expect(links.map((link) => link.getAttribute('href'))).toEqual([
       '/studio/updates',

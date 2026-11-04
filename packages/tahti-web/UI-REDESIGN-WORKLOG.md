@@ -1,3 +1,14 @@
+## 2026-11-04 - Batch 43 UX slices (0.0.333)
+
+Finnish for UploadTrackDialog + release track upload picker, CoverArtPicker,
+DmBlock ConfirmDialog/toasts, channel-designer presets/backdrop/look toasts,
+HomeHighlights release toasts, stream overlay + radio playlist toasts,
+newsletter already-subscribed toast, ChannelComments empty/ConfirmDialog,
+PinnedAnnouncements remove ConfirmDialog, and Studio Fans hub. Dates:
+chart/stats Left confirmed Kept via `dateLocaleTag` (no new ListingDate).
+Studio Hubs Fans Storybook heading uses toBeInTheDocument. Skipped: radio
+widget redesign, performance audit, pageTour, admin hub English descriptions.
+
 ## 2026-11-04 - Batch 42 UX slices (0.0.332)
 
 Finnish for track repost/share/purchase toasts, collaborative playlist add,

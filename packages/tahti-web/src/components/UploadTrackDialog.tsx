@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -12,10 +13,7 @@ import {
 } from '@tahti-player/ui';
 
 import { uploadSoundFile } from '../api/studio';
-import {
-  UPLOAD_AUDIO_ACCEPT,
-  UPLOAD_AUDIO_FORMATS_LABEL,
-} from '../lib/uploadAudioFormats';
+import { UPLOAD_AUDIO_ACCEPT } from '../lib/uploadAudioFormats';
 
 type Props = {
   isOpen: boolean;
@@ -24,6 +22,7 @@ type Props = {
 };
 
 export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [title, setTitle] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -44,7 +43,7 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
 
   const submit = async () => {
     if (!file) {
-      setError('Choose an audio file.');
+      setError(t('library.chooseAudioFile'));
       return;
     }
     setBusy(true);
@@ -75,25 +74,27 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
         <Dialog.Title>
           <span className="inline-flex items-center gap-2">
             <UploadIcon size={18} aria-hidden />
-            Upload track
+            {t('library.uploadTrackDialogTitle')}
           </span>
         </Dialog.Title>
         <Dialog.Description>
-          Add audio to your Music archive.
+          {t('library.uploadTrackDialogDescription')}
         </Dialog.Description>
         <div className="mt-4 flex flex-col gap-3">
           <Input
-            label="Title"
+            label={t('library.collectionTitle')}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Optional — defaults to filename"
+            placeholder={t('library.titleOptionalPlaceholder')}
             autoFocus
           />
           <FilePicker
             labels={{
-              title: 'Audio file',
-              description: UPLOAD_AUDIO_FORMATS_LABEL,
-              browse: file ? 'Choose another file' : 'Choose audio',
+              title: t('library.audioFile'),
+              description: t('library.audioFormatsLabel'),
+              browse: file
+                ? t('library.chooseAnotherFile')
+                : t('library.chooseAudio'),
             }}
             accept={UPLOAD_AUDIO_ACCEPT}
             selectedFiles={file ? [file] : []}
@@ -109,12 +110,12 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
             className="mr-auto"
             onClick={handleClose}
           >
-            Open full upload page
+            {t('library.openFullUploadPage')}
           </ButtonLink>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
           <Button type="submit" disabled={busy || !file}>
             <UploadIcon size={16} aria-hidden className="mr-1.5" />
-            {busy ? 'Uploading…' : 'Upload'}
+            {busy ? t('library.uploading') : t('actions.upload')}
           </Button>
         </Dialog.Actions>
       </form>

@@ -196,6 +196,7 @@ function releaseTypeLabel(type: string): string {
 type ReleaseRowItem = { id: string; title: string; release: LatestRelease };
 
 function ReleaseCard({ release }: { release: LatestRelease }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const type = releaseTypeLabel(release.type);
   const [playables, setPlayables] = useState<TahtiPlayable[]>([]);
@@ -224,12 +225,12 @@ function ReleaseCard({ release }: { release: LatestRelease }) {
             );
       setPlayables(tracks);
       if (tracks.length === 0) {
-        toast.info('No playable tracks are available for this release.');
+        toast.info(t('toasts.releaseNoPlayableTracks'));
         return;
       }
       playFromList(tracks, 0);
     } catch {
-      toast.error('Could not load this release. Try again.');
+      toast.error(t('toasts.releaseLoadFailed'));
     } finally {
       setLoading(false);
     }

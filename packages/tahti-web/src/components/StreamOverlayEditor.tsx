@@ -2,6 +2,7 @@ import { ImageIcon, RotateCcwIcon, UploadCloudIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ColorField,
@@ -92,6 +93,7 @@ function OverlayTextPreview({
  * Go Live stream manager (StreamManagerPanel) and from Manage → Multicast →
  * Overlay, so it owns its own fetch/save rather than taking props for it. */
 export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
+  const { t } = useTranslation('web');
   const channelSlug = useAuthStore((s) => s.user?.channel?.slug);
   const [overlay, setOverlay] = useState({
     streamOverlayTitle: '',
@@ -182,7 +184,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
         toast.error(result.error);
         return;
       }
-      toast.success('Overlay saved.');
+      toast.success(t('toasts.overlaySaved'));
       onSaved?.();
     });
   };
@@ -205,7 +207,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       ...current,
       streamOverlayCoverUrl: result.data.url,
     }));
-    toast.success('Overlay cover updated.');
+    toast.success(t('toasts.overlayCoverUpdated'));
     setCoverUploadOpen(false);
   };
 

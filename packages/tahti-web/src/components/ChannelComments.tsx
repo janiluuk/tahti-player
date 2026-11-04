@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Textarea } from '@tahti-player/ui';
 
 import {
@@ -18,8 +19,6 @@ import { PageEmpty } from './PageStates';
 
 const MAX_COMMENT_LENGTH = 2000;
 
-/** Comments on the channel itself (not on one of its tracks). Hidden when
- * the artist turned them off and nobody commented before that. */
 export function ChannelComments({
   slug,
   isOwner,
@@ -27,6 +26,7 @@ export function ChannelComments({
   slug: string;
   isOwner: boolean;
 }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const openAuth = useAuthModalStore((s) => s.open);
   const [comments, setComments] = useState<TrackComment[] | null>(null);
@@ -72,9 +72,9 @@ export function ChannelComments({
     const created = result.data;
     setComments((current) => [...(current ?? []), created]);
     setBody('');
-    toastWithUndo('Comment posted.', {
+    toastWithUndo(t('channelComments.commentPosted'), {
       undo: () => deleteComment(created.id),
-      undoneMessage: 'Comment removed.',
+      undoneMessage: t('channelComments.commentRemoved'),
       onUndone: () => {
         setComments((current) =>
           (current ?? []).filter((comment) => comment.id !== created.id),
@@ -96,22 +96,25 @@ export function ChannelComments({
     );
   };
 
+  const emptyDescription = enabled
+    ? user
+      ? t('channelComments.emptyFirstSignedIn')
+      : t('channelComments.emptyFirstGuest')
+    : t('channelComments.emptyDisabled');
+
   return (
-    <section className="flex flex-col gap-3" aria-label="Channel comments">
+    <section
+      className="flex flex-col gap-3"
+      aria-label={t('channelComments.ariaLabel')}
+    >
       <h2 className="text-sm font-semibold tracking-wide uppercase">
-        Comments
+        {t('channelComments.title')}
       </h2>
       {comments.length === 0 ? (
         <PageEmpty
           className="items-start p-0 text-left"
-          title="No comments yet"
-          description={
-            enabled
-              ? user
-                ? 'Be the first to leave a note for this channel.'
-                : 'Log in to be the first to leave a note.'
-              : 'Comments are off for this channel.'
-          }
+          title={t('channelComments.emptyTitle')}
+          description={emptyDescription}
           action={
             !user && enabled ? (
               <Button
@@ -119,7 +122,7 @@ export function ChannelComments({
                 size="sm"
                 onClick={() => openAuth('login')}
               >
-                Log in to comment
+                {t('channelComments.logInToComment')}
               </Button>
             ) : undefined
           }
@@ -143,7 +146,7 @@ export function ChannelComments({
       {!enabled ? (
         comments.length > 0 ? (
           <p className="text-foreground-secondary text-sm">
-            Comments are off for this channel.
+            {t('channelComments.emptyDisabled')}
           </p>
         ) : null
       ) : user ? (
@@ -154,8 +157,8 @@ export function ChannelComments({
         >
           <Textarea
             submitOnModEnter
-            aria-label="Write a comment"
-            placeholder="Say something about this channel…"
+            aria-label={t('channelComments.writeAria')}
+            placeholder={t('channelComments.placeholder')}
             value={body}
             maxLength={MAX_COMMENT_LENGTH}
             onChange={(event) => setBody(event.target.value)}
@@ -167,7 +170,7 @@ export function ChannelComments({
             className="w-full shrink-0 sm:w-auto sm:self-auto"
             disabled={posting || !body.trim()}
           >
-            {posting ? 'Posting…' : 'Post comment'}
+            {posting ? t('channelComments.posting') : t('channelComments.post')}
           </Button>
         </form>
       ) : comments.length > 0 ? (
@@ -177,15 +180,17 @@ export function ChannelComments({
           className="self-start"
           onClick={() => openAuth('login')}
         >
-          Log in to comment
+          {t('channelComments.logInToComment')}
         </Button>
       ) : null}
       <ConfirmDialog
         isOpen={pendingDeleteId !== null}
         destructive
-        title="Remove this comment?"
-        description={pendingComment?.body ?? 'The comment leaves this channel.'}
-        confirmLabel="Remove"
+        title={t('channelComments.removeTitle')}
+        description={
+          pendingComment?.body ?? t('channelComments.removeFallbackDescription')
+        }
+        confirmLabel={t('actions.remove')}
         onCancel={() => setPendingDeleteId(null)}
         onConfirm={() => {
           const id = pendingDeleteId;

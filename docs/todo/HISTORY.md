@@ -1,3 +1,8 @@
+## 2026-11-04 - Batch 42 UX slices
+
+Track/channel/Studio empties + toasts; date Kept notes; StudioShows/Home
+Storybook plays; groupPeople tests. tahti-web 0.0.332 (#1828).
+
 ## 2026-11-04 - Batch 41 UX slices
 
 Sounds status extras/stats/retry; Upload import sources; Studio Groups +

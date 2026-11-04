@@ -1378,7 +1378,18 @@
       "collectionOrderAria": "Order collections on your profile",
       "collectionOrderTitle": "Collection order on your profile",
       "collectionOrderDescription": "Public collections appear in this order on your artist page. Featured collections stay first.",
-      "collectionOrderEmpty": "No public collections yet."
+      "collectionOrderEmpty": "No public collections yet.",
+      "uploadTrackDialogTitle": "Upload track",
+      "uploadTrackDialogDescription": "Add audio to your Music archive.",
+      "openFullUploadPage": "Open full upload page",
+      "titleOptionalPlaceholder": "Optional — defaults to filename",
+      "audioFile": "Audio file",
+      "audioFormatsLabel": "FLAC · WAV · AIFF · MP3 · M4A · OGG · max 4 GB",
+      "uploadNewReleaseTrackTitle": "Upload a new track",
+      "uploadNewReleaseTrackDescription": "Adds a track to this release from an audio file on your device.",
+      "releaseTrackTitle": "Track title",
+      "releaseAudioFormats": "WAV, FLAC, MP3, AAC or AIFF",
+      "chooseAudioFileBrowse": "Choose audio file"
     },
     "date": {
       "today": "Today",
@@ -1652,7 +1663,37 @@
       "couldNotSaveBioReason": "Could not save your bio: {{error}}",
       "stoppedModerating": "You no longer moderate {{name}}.",
       "couldNotStartStream": "Could not start the stream. Try again.",
-      "trackDetailsSaved": "Track details saved."
+      "trackDetailsSaved": "Track details saved.",
+      "couldNotUploadLabel": "Could not upload the {{label}}.",
+      "channelDesignerLoadFailed": "Could not load the channel designer. Try again.",
+      "channelLookJpegPngWebp": "Choose JPEG, PNG, or WebP images.",
+      "channelLookMaxBackgroundImages": "Use up to 10 background images.",
+      "channelLookImageUploadFailed": "Image upload failed. Try again.",
+      "channelLookImagesAdded_one": "1 image added to the slideshow.",
+      "channelLookImagesAdded_other": "{{count}} images added to the slideshow.",
+      "channelLookMaxGalleryImages": "Use up to 10 gallery images.",
+      "channelLookNeedGalleryImage": "Add at least one image for the selected gallery.",
+      "channelLookGalleryHttps": "Gallery images must use public HTTPS URLs.",
+      "channelLookBackdropGalleryWarn": "Backdrop saved, but slideshow settings could not be updated.",
+      "channelLookSaved": "Look saved — public channel will pick this up.",
+      "channelLookSaveRetry": "Could not save your look. Try again.",
+      "channelLookPreviousRestored": "Previous save restored — press Save to keep it.",
+      "channelLookReset": "Reset to your last saved version.",
+      "presetPendingBackdrop": "Upload or clear the pending backdrop file before saving a preset.",
+      "presetNameRequired": "Give the preset a name.",
+      "presetSaveFailed": "Could not save the preset. Try again.",
+      "presetSavedNamed": "Saved \"{{name}}\"",
+      "presetDeleteFailed": "Could not delete the preset. Try again.",
+      "presetDeletedNamed": "Deleted \"{{name}}\"",
+      "backdropFileTooLarge": "File must be 10 MB or smaller.",
+      "backdropFileType": "Use an MP4/WebM video or a JPEG/PNG/WebP/GIF image.",
+      "releaseNoPlayableTracks": "No playable tracks are available for this release.",
+      "releaseLoadFailed": "Could not load this release. Try again.",
+      "overlaySaved": "Overlay saved.",
+      "overlayCoverUpdated": "Overlay cover updated.",
+      "radioPlaylistApplied": "Using “{{name}}” with {{count}} tracks.",
+      "radioRotationUpdated": "Rotation updated.",
+      "newsletterAlreadySubscribed": "You're already subscribed."
     },
     "settingsLogs": {
       "noLogs": "No log entries yet. Warnings, errors and player events from this tab show up here.",
@@ -2626,6 +2667,57 @@
     "embedDialog": {
       "copyIframe": "Copy iframe code",
       "embedCopied": "Embed code copied."
+    },
+    "coverArt": {
+      "uploadImage": "Upload image",
+      "saving": "Saving…",
+      "loadingArtwork": "Loading artwork…",
+      "useArtwork": "Use artwork {{n}}"
+    },
+    "dm": {
+      "block": "Block",
+      "unblock": "Unblock",
+      "blockedNamed": "Blocked {{name}}.",
+      "unblockedNamed": "Unblocked {{name}}.",
+      "blockConfirmTitle": "Block {{name}}?",
+      "blockConfirmDescription": "You won't be able to message each other until you unblock them. They aren't told you blocked them."
+    },
+    "channelComments": {
+      "title": "Comments",
+      "emptyTitle": "No comments yet",
+      "emptyFirstSignedIn": "Be the first to leave a note for this channel.",
+      "emptyFirstGuest": "Log in to be the first to leave a note.",
+      "emptyDisabled": "Comments are off for this channel.",
+      "logInToComment": "Log in to comment",
+      "writeAria": "Write a comment",
+      "placeholder": "Say something about this channel…",
+      "posting": "Posting…",
+      "post": "Post comment",
+      "removeTitle": "Remove this comment?",
+      "removeFallbackDescription": "The comment leaves this channel.",
+      "commentPosted": "Comment posted.",
+      "commentRemoved": "Comment removed.",
+      "ariaLabel": "Channel comments"
+    },
+    "pinnedAnnouncements": {
+      "removeNamed": "Remove “{{body}}”?",
+      "removeTitle": "Remove announcement?",
+      "removeDescription": "The announcement is unpinned from your channel."
+    },
+    "studioFans": {
+      "title": "Fans",
+      "subtitle": "Everything between you and the people who support you: posts, the newsletter, memberships, the store, chat and what you earn.",
+      "ariaLabel": "Fans tools",
+      "postsTitle": "Posts",
+      "postsDescription": "Updates on your channel page and in your followers’ feeds.",
+      "newsletterTitle": "Newsletter",
+      "newsletterDescription": "Email a post to the fans who signed up for it.",
+      "membershipsTitle": "Memberships",
+      "membershipsDescription": "Monthly support tiers fans can subscribe to.",
+      "storeTitle": "Store",
+      "storeDescription": "What is for sale on your channel page, and your track sales.",
+      "earningsTitle": "Earnings",
+      "earningsDescription": "Subscribers, orders, payouts, grants and the Stripe account."
     }
   },
   "studioEditor": {
