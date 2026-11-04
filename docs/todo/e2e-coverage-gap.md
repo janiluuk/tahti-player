@@ -8,8 +8,9 @@ navigation. Roles: **Anonymous** (signed out), **Listener** (account, no
 channel), **Artist** (channel owner), **Admin** (board).
 
 How the suite runs: the `e2e-mock` job in `ci.yml` runs `roles-*`,
-`use-cases-*`, `routes-uncovered`, `view-before-edit` and `batch-fixes*` on
-every code PR against the mock app (not a required check yet). Locally:
+`use-cases-*`, `routes-uncovered`, `view-before-edit` and `batch-fixes*`
+against the mock app on **master pushes and manual `workflow_dispatch`**
+(not on pull requests; not a required check). Locally:
 `VITE_FORCE_MOCK=1 pnpm exec vite --port 5196 --strictPort` in
 `packages/tahti-web`, then `PLAYWRIGHT_BASE_URL=http://localhost:5196 pnpm
 exec playwright test <specs>` (on a Mac set `PLAYWRIGHT_CHROMIUM_PATH` to
