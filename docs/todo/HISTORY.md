@@ -1,3 +1,9 @@
+## 2026-11-04 - Batch 44 UX slices
+
+Studio Recordings/Distribution/Editor; radio/channel/collection/release
+toasts; Go live + playlist + multistream ConfirmDialogs; channel-designer
+actions; Monitoring story visibility. tahti-web 0.0.334 (#1830).
+
 ## 2026-11-04 - Batch 43 UX slices
 
 Upload/cover pickers; DmBlock; channel-designer/overlay/radio/newsletter

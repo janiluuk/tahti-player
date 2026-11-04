@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -145,7 +146,7 @@ function CommentRow({ comment }: { comment: MapComment }) {
             event.preventDefault();
             if (updateComment(comment.id, draft)) {
               setEditing(false);
-              toast.success('Comment updated');
+              toast.success(i18n.t('web:toasts.commentUpdated'));
             }
           }}
         >
@@ -201,7 +202,7 @@ function CommentRow({ comment }: { comment: MapComment }) {
               variant="secondary"
               onClick={() => {
                 resolveComment(comment.id);
-                toast.success('Comment resolved');
+                toast.success(i18n.t('web:toasts.commentResolved'));
               }}
             >
               Resolve
@@ -288,7 +289,7 @@ export function SavedMapComments() {
         onConfirm={() => {
           clearComments();
           setConfirmClear(false);
-          toast.success('Saved comments cleared');
+          toast.success(i18n.t('web:toasts.savedCommentsCleared'));
         }}
       />
     </section>

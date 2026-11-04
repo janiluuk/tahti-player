@@ -13,6 +13,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   Input,
@@ -183,7 +184,7 @@ export function OnboardingView() {
       }
       const known = useAuthStore.getState();
       if (!known.profileLoaded) {
-        toast.error('Could not load your account. Try again in a moment.');
+        toast.error(i18n.t('web:toasts.couldNotLoadAccount'));
         return;
       }
       if (!known.user?.channel) {
@@ -216,7 +217,7 @@ export function OnboardingView() {
       }
       await refresh();
       markOnboardingSeen(user.id);
-      toast.success('Profile set up.');
+      toast.success(i18n.t('web:toasts.profileSetUp'));
       void navigate({ to: '/studio' });
     } catch (err) {
       toast.error(

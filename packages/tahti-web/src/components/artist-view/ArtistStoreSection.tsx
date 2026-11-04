@@ -59,11 +59,11 @@ function StoreTierRow({
     }
     if ('checkoutUrl' in result) {
       if (!assignStripeRedirectUrl(result.checkoutUrl)) {
-        toast.error('Checkout URL was not from Stripe');
+        toast.error(i18n.t('web:toasts.checkoutNotStripe'));
       }
       return;
     }
-    toast.success(`Bought ${tier.name}`);
+    toast.success(i18n.t('web:toasts.boughtNamed', { name: tier.name }));
   };
 
   return (

@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import type { Track } from '@tahti-player/model';
 import { Button, Dialog, TrackTable } from '@tahti-player/ui';
 
@@ -166,7 +167,7 @@ export function PlayableTrackTable({
       enqueue(item);
     }
     if (newItems.length === 0) {
-      toast.info('All listed tracks are already in the queue.');
+      toast.info(i18n.t('web:toasts.allTracksAlreadyQueued'));
     } else {
       undoQueueAdd(
         newItems,

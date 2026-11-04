@@ -8,6 +8,8 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import { fetchGrantEstimate, type GrantEstimate } from '../../../api/revenue';
 import {
   fetchChannelEgressStats,
@@ -231,7 +233,7 @@ export function useStatsData() {
       })
       .catch(() => {
         if (!cancelled) {
-          toast.error('Could not load the top lists.');
+          toast.error(i18n.t('web:toasts.couldNotLoadTopLists'));
         }
       });
     return () => {
@@ -254,7 +256,7 @@ export function useStatsData() {
       })
       .catch(() => {
         if (!cancelled) {
-          toast.error('Could not load the hourly breakdown.');
+          toast.error(i18n.t('web:toasts.couldNotLoadHourlyBreakdown'));
         }
       })
       .finally(() => {

@@ -3,6 +3,7 @@ import { CheckIcon, XIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -50,7 +51,7 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
             event.preventDefault();
             if (updateComment(comment.id, draft)) {
               setEditing(false);
-              toast.success('Comment updated');
+              toast.success(i18n.t('web:toasts.commentUpdated'));
             }
           }}
         >
@@ -106,7 +107,7 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
               variant="secondary"
               onClick={() => {
                 resolveComment(comment.id);
-                toast.success('Comment resolved');
+                toast.success(i18n.t('web:toasts.commentResolved'));
               }}
             >
               <CheckIcon size={12} aria-hidden className="mr-1" />

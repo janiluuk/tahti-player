@@ -132,7 +132,7 @@ export function PlayableTrackContextMenu({
           undoneMessage: `Removed from ${name}.`,
         });
       } else {
-        toast.success(`Added to ${name}`);
+        toast.success(i18n.t('web:toasts.addedToNamed', { name }));
       }
       return;
     }
