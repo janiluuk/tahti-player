@@ -10,6 +10,7 @@ import {
 } from '@tahti-player/ui';
 
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { ListingDate } from '../../components/ListingDate';
 import { MAP_CASE_GROUPS } from '../../content/mapScreens';
 import { downloadMapCommentsCsv } from '../../lib/mapCommentsCsv';
 import { useMapNotesStore, type MapComment } from '../../stores/mapNotesStore';
@@ -132,7 +133,7 @@ function CommentRow({ comment }: { comment: MapComment }) {
         <span>{comment.kind}</span>
         <span>{comment.title}</span>
         {comment.pack ? <span>pack {comment.pack}</span> : null}
-        <span>{new Date(comment.submittedAt).toLocaleString()}</span>
+        <ListingDate value={comment.submittedAt} />
         <Badge variant="pill" color={resolved ? 'green' : 'orange'}>
           {resolved ? 'Resolved' : 'Open'}
         </Badge>

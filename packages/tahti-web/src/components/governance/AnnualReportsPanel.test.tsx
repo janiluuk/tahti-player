@@ -20,9 +20,8 @@ describe('AnnualReportsPanel', () => {
         name: 'Annual report 2025 (opens in a new tab)',
       }),
     ).toHaveAttribute('href', 'https://tahti.live/reports/annual-2025.md');
-    expect(
-      screen.getByText(/^Approved .* · filed with the register/),
-    ).toBeInTheDocument();
+    expect(screen.getAllByText('Approved')).toHaveLength(2);
+    expect(screen.getByText(/· filed with the register/)).toBeInTheDocument();
     expect(screen.getByText('Annual report 2024')).not.toHaveAttribute('href');
     expect(screen.getByText(/· corrected/)).toBeInTheDocument();
   });

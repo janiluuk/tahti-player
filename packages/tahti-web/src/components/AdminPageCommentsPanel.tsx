@@ -16,6 +16,7 @@ import { mapPageTargetForPath } from '../lib/mapPageTarget';
 import { useLayoutStore } from '../stores/layoutStore';
 import { useMapNotesStore, type MapComment } from '../stores/mapNotesStore';
 import { usePageCommentsRailStore } from '../stores/pageCommentsRailStore';
+import { ListingDate } from './ListingDate';
 import { MapCommentForm } from './MapCommentForm';
 import { PageEmpty } from './PageStates';
 
@@ -37,9 +38,10 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
         <Badge variant="pill" color={resolved ? 'green' : 'orange'}>
           {resolved ? 'Resolved' : 'Open'}
         </Badge>
-        <span className="text-foreground-secondary text-[10px] tracking-wide uppercase">
-          {new Date(comment.submittedAt).toLocaleString()}
-        </span>
+        <ListingDate
+          value={comment.submittedAt}
+          className="text-foreground-secondary text-[10px] tracking-wide uppercase"
+        />
       </div>
       {editing ? (
         <form

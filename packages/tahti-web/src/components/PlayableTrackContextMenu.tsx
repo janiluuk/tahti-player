@@ -15,6 +15,7 @@ import type { ReactNode } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import type { QueueItem, Track } from '@tahti-player/model';
 import { Input, TrackContextMenu } from '@tahti-player/ui';
 
@@ -58,6 +59,7 @@ export function PlayableTrackContextMenu({
   const toggleFavoriteTrack = useLibraryStore(
     (state) => state.toggleFavoriteTrack,
   );
+  const { t } = useTranslation('web');
   const isFavorite = useLibraryStore((state) =>
     state.favoriteTracks.some((item) => item.id === track.source.id),
   );
@@ -196,7 +198,9 @@ export function PlayableTrackContextMenu({
               }
             }}
           >
-            {isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            {isFavorite
+              ? t('actions.removeFromFavorites')
+              : t('actions.addToFavorites')}
           </TrackContextMenu.Action>
           {soundId ? (
             <TrackContextMenu.Submenu>

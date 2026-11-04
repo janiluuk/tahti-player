@@ -265,8 +265,8 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
                   );
                 }}
                 labels={{
-                  favorite: 'Add to favorites',
-                  unfavorite: 'Remove from favorites',
+                  favorite: t('actions.addToFavorites'),
+                  unfavorite: t('actions.removeFromFavorites'),
                   addToQueue: 'Add to queue',
                 }}
               />

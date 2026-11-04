@@ -532,30 +532,6 @@ export async function uploadSoundBanner(
   }
 }
 
-export async function importSoundBanner(
-  soundId: string,
-  sourceUrl: string,
-): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    return { ok: true, url: sourceUrl };
-  }
-  try {
-    const { data } = await requestJson<{ url: string }>(
-      `/api/me/sound/${encodeURIComponent(soundId)}/banner/from-url`,
-      {
-        method: 'POST',
-        body: JSON.stringify({ sourceUrl }),
-      },
-    );
-    return { ok: true, url: data.url };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Artwork import failed',
-    };
-  }
-}
-
 export async function deleteStudioSound(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {

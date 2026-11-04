@@ -19,20 +19,18 @@ changed, because it needs a product call or more than a mechanical fix.
 
 ## Bugs found, not fixed
 
-- [x] Collection edit gallery GET failure (`fetchCollectionGallery` meta +
-  `useCollectionEditState` skips `gallery` patch when not loaded) — batch 30
-  slice 10.
-- [x] `ClipEditorDialog` Every Nth via `EveryNthInput` — batch 30 slice 9.
-- [x] Stale-fetch guards on `AdminStorageUserView` and track-edit radio
-  submission lookup — batch 30 slices 11–12.
 - [ ] `api/admin/admin-users.ts`: the BOARD/ARTIST role filter runs on the
-  client after server pagination, so `total` counts one page.
+  client after server pagination, so `total` counts one page. `adminUsersExportCsvUrl`
+  already sends `isBoard=true|false` for BOARD / ARTIST; sending the same on the
+  list call fixes `total` once `../tahti-org` confirms `GET /api/admin/users`
+  honours `isBoard` (not checked: sibling not in this checkout).
 
 ## Dead code to decide on (not deleted)
 
-- [ ] Unwired API clients: `fetchStudioSoundFacets` (library-management-port
-  may still want it), `importSoundBanner`, `fetchRevelatorStatus` /
-  `startRevelatorCheckout`, `fetchExportPlugins`.
+- [ ] Unwired API clients: `fetchRevelatorStatus` / `startRevelatorCheckout`
+  (only used inside `distribution.ts`), `fetchExportPlugins`. `importSoundBanner`
+  was deleted (batch 32); `fetchStudioSoundFacets` is wired via
+  `useUsedBeforeTags`.
 - [ ] `lib/locale.ts` browser/stored locale detection (`detectLocale`,
   `applyLocale`) is only called from its test.
 - [ ] Store fields never read outside the store: `libraryStore` `syncNote`,

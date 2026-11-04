@@ -9,6 +9,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ActionSheet } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
@@ -40,6 +41,7 @@ export function NowPlayingActionSheet({ isOpen, onClose, playable }: Props) {
   const user = useAuthStore((s) => s.user);
   const closeFullScreen = useLayoutStore((s) => s.setFullScreenPlayerOpen);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
+  const { t } = useTranslation('web');
   const isFavorite = useLibraryStore((s) =>
     s.favoriteTracks.some((t) => t.id === playable.id),
   );
@@ -116,7 +118,9 @@ export function NowPlayingActionSheet({ isOpen, onClose, playable }: Props) {
           }
           onClick={() => toggleFavoriteTrack(playable)}
         >
-          {isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+          {isFavorite
+            ? t('actions.removeFromFavorites')
+            : t('actions.addToFavorites')}
         </ActionSheet.Action>
         {soundId ? (
           <ActionSheet.Action

@@ -215,21 +215,21 @@ export function RadioStationsRow({
     <>
       <ListenSection
         data-testid={testId}
-        title="Radio"
-        badge="Internet radio"
+        title={t('listen.radio')}
+        badge={t('listen.internetRadioBadge')}
         badgeColor="cyan"
         status={items.length > 0 ? 'ready' : presets.status}
         empty={items.length === 0}
-        emptyTitle="No radio stations yet"
+        emptyTitle={t('listen.noRadioStations')}
         emptyDescription={
-          signedIn ? 'Add stations from the widget store.' : undefined
+          signedIn ? t('listen.addStationsFromStore') : undefined
         }
         onRetry={onRetry}
       >
         <CardsRow
           data-testid={testId}
-          title="Radio"
-          badge="Internet radio"
+          title={t('listen.radio')}
+          badge={t('listen.internetRadioBadge')}
           badgeColor="cyan"
           items={items}
           labels={rowLabels}
@@ -253,7 +253,10 @@ export function RadioStationsRow({
           }}
         />
         {presets.status === 'error' ? (
-          <PageError title="Curated stations couldn't load" onRetry={onRetry} />
+          <PageError
+            title={t('listen.curatedStationsError')}
+            onRetry={onRetry}
+          />
         ) : null}
       </ListenSection>
       <RemoveWidgetDialog

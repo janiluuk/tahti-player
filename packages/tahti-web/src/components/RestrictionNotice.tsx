@@ -8,6 +8,7 @@ import {
   type MyRestriction,
   type RestrictionType,
 } from '../api/me-restrictions';
+import { ListingDate } from './ListingDate';
 
 const BLOCKED: Record<RestrictionType, string> = {
   UPLOAD: 'Uploads are blocked',
@@ -15,23 +16,22 @@ const BLOCKED: Record<RestrictionType, string> = {
   LOGIN: 'Sign-in is blocked',
 };
 
-function untilLabel(expiresAt: string | null): string {
-  if (!expiresAt) {
-    return '';
-  }
-  return ` until ${new Date(expiresAt).toLocaleDateString(undefined, {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  })}`;
-}
-
 function RestrictionAlert({ restriction }: { restriction: MyRestriction }) {
   return (
     <Alert
       tone="warning"
       icon={<BanIcon aria-hidden className="size-4" />}
-      title={`${BLOCKED[restriction.type]}${untilLabel(restriction.expiresAt)}`}
+      title={
+        <>
+          {BLOCKED[restriction.type]}
+          {restriction.expiresAt ? (
+            <>
+              {' until '}
+              <ListingDate value={restriction.expiresAt} />
+            </>
+          ) : null}
+        </>
+      }
     >
       <p>Reason: {restriction.reason}</p>
       <p className="mt-1">

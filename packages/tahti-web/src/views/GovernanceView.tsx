@@ -52,6 +52,7 @@ import { ElectionsPanel } from '../components/governance/ElectionsPanel';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
 import { LatestDiscussionsPanel } from '../components/governance/LatestDiscussionsPanel';
 import { MotionCard } from '../components/governance/MotionCard';
+import { ListingDate } from '../components/ListingDate';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { hasAccountRole } from '../lib/accountRoles';
@@ -445,9 +446,11 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                         {meeting.title}
                       </Link>
                       <div className="text-foreground-secondary mt-0.5 text-xs">
-                        {meeting.scheduledAt
-                          ? new Date(meeting.scheduledAt).toLocaleDateString()
-                          : 'Date not listed'}{' '}
+                        {meeting.scheduledAt ? (
+                          <ListingDate value={meeting.scheduledAt} />
+                        ) : (
+                          'Date not listed'
+                        )}{' '}
                         · {meeting.state}
                         {meeting.quorumMet !== null &&
                           ` · quorum ${meeting.quorumMet ? 'met' : 'not met'}`}

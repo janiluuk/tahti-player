@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BackButton,
   backButtonCornerClassName,
@@ -44,6 +45,7 @@ import { TrackAccessGate } from './TrackAccessGate';
 import { mixVersionLabel } from './trackDetails';
 
 export function TrackHero({ page }: { page: TrackPage }) {
+  const { t } = useTranslation('web');
   const {
     id,
     isOwner,
@@ -391,8 +393,10 @@ export function TrackHero({ page }: { page: TrackPage }) {
             <Tooltip
               content={
                 favorited
-                  ? `Remove from favorites: ${playable.title}`
-                  : `Favorite ${playable.title}`
+                  ? t('actions.removeFromFavoritesItem', {
+                      title: playable.title,
+                    })
+                  : t('actions.favoriteItem', { title: playable.title })
               }
               side="top"
             >
@@ -402,8 +406,10 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 variant="secondary"
                 aria-label={
                   favorited
-                    ? `Remove from favorites: ${playable.title}`
-                    : `Favorite ${playable.title}`
+                    ? t('actions.removeFromFavoritesItem', {
+                        title: playable.title,
+                      })
+                    : t('actions.favoriteItem', { title: playable.title })
                 }
                 onClick={() => {
                   toggleFavoriteTrack(playable);
@@ -492,7 +498,11 @@ export function TrackHero({ page }: { page: TrackPage }) {
               </Button>
             ) : showDownload ? (
               <Tooltip
-                content={downloadBusy ? 'Preparing download' : 'Download'}
+                content={
+                  downloadBusy
+                    ? t('actions.preparingDownload')
+                    : t('actions.download')
+                }
                 side="top"
               >
                 <Button
@@ -501,8 +511,10 @@ export function TrackHero({ page }: { page: TrackPage }) {
                   variant="secondary"
                   aria-label={
                     downloadBusy
-                      ? `Preparing download of ${playable.title}`
-                      : `Download ${playable.title}`
+                      ? t('actions.preparingDownloadOf', {
+                          title: playable.title,
+                        })
+                      : t('actions.downloadItem', { title: playable.title })
                   }
                   disabled={downloadBusy || !detail || Boolean(embedSrc)}
                   onClick={() => void downloadTrack()}

@@ -20,42 +20,42 @@ function displaySlug(value: string): string {
     .join(' ');
 }
 
-const PAGE_TITLES: [string, string][] = [
-  ['/discover', 'Discover'],
-  ['/favorites', 'Favorites'],
-  ['/listen/favorites', 'Favorites'],
-  ['/feed', 'Feed'],
-  ['/notifications', 'Notifications'],
-  ['/listen/feed', 'Feed'],
-  ['/history', 'History'],
-  ['/listen/history', 'History'],
-  ['/messages', 'Messages'],
-  ['/governance/feature-requests', 'Feature requests'],
-  ['/governance/history', 'Closed decisions'],
-  ['/governance/members', 'Member directory'],
-  ['/governance', 'Governance'],
-  ['/transparency', 'Transparency'],
-  ['/help', 'Help'],
-  ['/news', 'Platform news'],
-  ['/whats-new', 'What’s new'],
-  ['/schedule', 'Schedule'],
-  ['/search', 'Search'],
-  ['/settings', 'Settings'],
-  ['/venues', 'Venues'],
-  ['/chat', 'Chat'],
-  ['/status', 'Status'],
-  ['/more', 'Tahti map'],
-  ['/about', 'About'],
-  ['/what-is-it', 'What is it'],
-  ['/how-it-works', 'How it works'],
-  ['/for-artists', 'For artists'],
-  ['/terms', 'Terms of service'],
-  ['/privacy', 'Privacy policy'],
-  ['/agpl', 'Source code & AGPL licence'],
-  ['/subscribe', 'Subscribe'],
-  ['/newsletter', 'Newsletter'],
-  ['/moderate', 'Chat moderation'],
-  ['/jam', 'Jam'],
+const PAGE_TITLE_KEYS: [string, ParseKeys<'web'>][] = [
+  ['/discover', 'seo.discover'],
+  ['/favorites', 'seo.favorites'],
+  ['/listen/favorites', 'seo.favorites'],
+  ['/feed', 'seo.feed'],
+  ['/notifications', 'seo.notifications'],
+  ['/listen/feed', 'seo.feed'],
+  ['/history', 'seo.history'],
+  ['/listen/history', 'seo.history'],
+  ['/messages', 'seo.messages'],
+  ['/governance/feature-requests', 'seo.featureRequests'],
+  ['/governance/history', 'seo.closedDecisions'],
+  ['/governance/members', 'seo.memberDirectory'],
+  ['/governance', 'seo.governance'],
+  ['/transparency', 'seo.transparency'],
+  ['/help', 'seo.help'],
+  ['/news', 'seo.platformNews'],
+  ['/whats-new', 'seo.whatsNew'],
+  ['/schedule', 'seo.schedule'],
+  ['/search', 'seo.search'],
+  ['/settings', 'seo.settings'],
+  ['/venues', 'seo.venues'],
+  ['/chat', 'seo.chat'],
+  ['/status', 'seo.status'],
+  ['/more', 'seo.tahtiMap'],
+  ['/about', 'seo.about'],
+  ['/what-is-it', 'seo.whatIsIt'],
+  ['/how-it-works', 'seo.howItWorks'],
+  ['/for-artists', 'seo.forArtists'],
+  ['/terms', 'seo.termsOfService'],
+  ['/privacy', 'seo.privacyPolicy'],
+  ['/agpl', 'seo.agpl'],
+  ['/subscribe', 'seo.subscribe'],
+  ['/newsletter', 'seo.newsletter'],
+  ['/moderate', 'seo.chatModeration'],
+  ['/jam', 'seo.jam'],
 ];
 
 const LIBRARY_PAGE_TITLE_KEYS: [string, ParseKeys<'web'>][] = [
@@ -67,9 +67,9 @@ const LIBRARY_PAGE_TITLE_KEYS: [string, ParseKeys<'web'>][] = [
   ['/library/local', 'library.tabLocal'],
 ];
 
-const SECTION_NAMES: [string, string][] = [
-  ['/studio', 'Studio'],
-  ['/admin', 'Admin'],
+const SECTION_NAME_KEYS: [string, ParseKeys<'web'>][] = [
+  ['/studio', 'seo.studio'],
+  ['/admin', 'seo.admin'],
 ];
 
 function librarySectionTitle(): string {
@@ -102,20 +102,26 @@ function pageTitleForPath(pathname: string): string | null {
       ? `${sentenceCase(child)} · ${section} · Tahti`
       : `${section} · Tahti`;
   }
-  const page = PAGE_TITLES.find(([prefix]) => matchesPrefix(pathname, prefix));
-  if (page) {
-    return `${page[1]} · Tahti`;
-  }
-  const section = SECTION_NAMES.find(([prefix]) =>
+  const page = PAGE_TITLE_KEYS.find(([prefix]) =>
     matchesPrefix(pathname, prefix),
   );
-  if (!section) {
+  if (page) {
+    return `${i18n.t(`web:${page[1]}`)} · Tahti`;
+  }
+  const sectionEntry = SECTION_NAME_KEYS.find(([prefix]) =>
+    matchesPrefix(pathname, prefix),
+  );
+  if (!sectionEntry) {
     return null;
   }
-  const child = pathname.slice(section[0].length).split('/').filter(Boolean)[0];
+  const section = i18n.t(`web:${sectionEntry[1]}`);
+  const child = pathname
+    .slice(sectionEntry[0].length)
+    .split('/')
+    .filter(Boolean)[0];
   return child
-    ? `${sentenceCase(child)} · ${section[1]} · Tahti`
-    : `${section[1]} · Tahti`;
+    ? `${sentenceCase(child)} · ${section} · Tahti`
+    : `${section} · Tahti`;
 }
 
 export function metadataForPath(pathname: string): RouteMetadata {

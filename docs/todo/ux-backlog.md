@@ -44,7 +44,9 @@ new surface, one PR per row. After moving files, update `docs/VIEW-CATALOG.md`.
     projects/release detail/playlist/collection/group/smart links, theme
     submissions, radio presets, multistream remove, moderate stop, stream
     take-offline, waveform clears, clip leave editor.
-  - Left: Publish / Go live / Send newsletter / Rename stay green on purpose.
+  - Left: plugin-store category removal. Publish / Go live / Send newsletter /
+    Rename stay green on purpose. Radio presets and theme submissions are done
+    (batch 30).
   - 2026-10-30: quieted jumps that were sitting next to a real action
     or beside an already-secondary control: smart-link empty Create
     release, container logs, back to the channel, Pro editor, gallery

@@ -3,6 +3,7 @@ import { DownloadIcon, PencilIcon, PlusIcon, TrashIcon } from 'lucide-react';
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Input } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
@@ -92,6 +93,7 @@ export function PlayableAmbientTrackList({
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const navigate = useNavigate();
+  const { t } = useTranslation('web');
   const [playlistTarget, setPlaylistTarget] = useState<{
     soundId: string;
     title: string;
@@ -236,8 +238,10 @@ export function PlayableAmbientTrackList({
                     ? [
                         {
                           id: 'download',
-                          label: `Download ${item.title}`,
-                          title: 'Download',
+                          label: t('actions.downloadItem', {
+                            title: item.title,
+                          }),
+                          title: t('actions.download'),
                           icon: <DownloadIcon size={16} />,
                           onClick: () => {
                             void downloadTrackFromRow(

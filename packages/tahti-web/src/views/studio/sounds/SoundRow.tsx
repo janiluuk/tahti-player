@@ -6,6 +6,7 @@ import {
   RotateCcwIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Checkbox,
@@ -69,6 +70,7 @@ export function SoundRow({
   item: StudioSound;
   state: StudioSoundsState;
 }) {
+  const { t } = useTranslation('web');
   const {
     busyId,
     embedOpenId,
@@ -235,7 +237,7 @@ export function SoundRow({
               variant="text"
               disabled={busyId === item.id}
               onClick={() => void downloadItem(item)}
-              aria-label={`Download ${item.title}`}
+              aria-label={t('actions.downloadItem', { title: item.title })}
             >
               <DownloadIcon size={16} aria-hidden />
             </Button>

@@ -3,6 +3,7 @@ import { DownloadIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ExternalLink, Tooltip } from '@tahti-player/ui';
 
 import { fetchEditorSource, fetchStudioSound } from '../../../api/studio';
@@ -30,6 +31,7 @@ export function ReleaseTrackRow({
   sound?: StudioSound;
 }) {
   const play = usePlayerStore((state) => state.play);
+  const { t } = useTranslation('web');
   const [downloading, setDownloading] = useState(false);
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [embed, setEmbed] = useState<{
@@ -110,11 +112,14 @@ export function ReleaseTrackRow({
         </Tooltip>
       ) : null}
       {releaseId && track.status === 'READY' ? (
-        <Tooltip content={`Download ${track.title}`} side="top">
+        <Tooltip
+          content={t('actions.downloadItem', { title: track.title })}
+          side="top"
+        >
           <Button
             size="icon-sm"
             variant="secondary"
-            aria-label={`Download ${track.title}`}
+            aria-label={t('actions.downloadItem', { title: track.title })}
             disabled={downloading}
             onClick={() => {
               setDownloading(true);

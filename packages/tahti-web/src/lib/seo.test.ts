@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it } from 'vitest';
 
+import { applyLocale } from './locale';
 import {
   metadataForPath,
   playbackDocumentTitle,
@@ -44,6 +45,20 @@ describe('metadataForPath', () => {
     ['/jam/abc123', 'Jam · Tahti'],
   ])('provides route-aware metadata for %s', (path, title) => {
     expect(metadataForPath(path).title).toBe(title);
+  });
+
+  it('titles pages and Studio sections in Finnish when the language is Finnish', async () => {
+    await applyLocale('fi_FI');
+    try {
+      expect(metadataForPath('/discover').title).toBe('Löydä · Tahti');
+      expect(metadataForPath('/terms').title).toBe('Käyttöehdot · Tahti');
+      expect(metadataForPath('/studio/go-live').title).toBe(
+        'Go live · Studio · Tahti',
+      );
+      expect(metadataForPath('/admin').title).toBe('Ylläpito · Tahti');
+    } finally {
+      await applyLocale('en_US');
+    }
   });
 
   it('names the notifications page', () => {

@@ -23,9 +23,10 @@ describe('RestrictionNotice', () => {
       },
     ]);
     render(<RestrictionNotice type="UPLOAD" />);
-    expect(
-      await screen.findByText(/^Uploads are blocked until .*2026$/),
-    ).toBeTruthy();
+    const title = await screen.findByText(/^Uploads are blocked until/);
+    expect(title.querySelector('time')?.getAttribute('dateTime')).toBe(
+      '2026-11-03T12:00:00.000Z',
+    );
     expect(screen.getByText('Reason: Copyright strikes')).toBeTruthy();
     expect(screen.queryByText(/No-shows/)).toBeNull();
   });
