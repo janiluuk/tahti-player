@@ -71,10 +71,7 @@ describe('check-api-routes', () => {
       normalizePath('/api/channels/{slug}'),
     ];
     expect(
-      isServed(
-        normalizePath('/api/channels/${slug}/${action}'),
-        channelRoutes,
-      ),
+      isServed(normalizePath('/api/channels/${slug}/${action}'), channelRoutes),
     ).toBe(true);
     expect(
       isServed(normalizePath('/api/channels/tahti-radio'), channelRoutes),
