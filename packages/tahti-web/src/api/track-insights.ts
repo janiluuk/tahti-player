@@ -39,18 +39,34 @@ export type TrackInsights = {
     displayName: string;
     count: number;
   }>;
+  hourlyUsers: number[];
+  dayOfWeekUsers: [number, number, number, number, number, number, number];
+  dailyUsers: Array<{ date: string; users: number }>;
 };
 
 function mockInsights(period: InsightsPeriod, title: string): TrackInsights {
   const days = period === '7d' ? 7 : period === '30d' ? 30 : 90;
-  const daily = Array.from({ length: Math.min(days, 30) }, (_, i) => {
+  const dayCount = Math.min(days, 90);
+  const daily = Array.from({ length: dayCount }, (_, i) => {
     const d = new Date();
-    d.setDate(d.getDate() - (Math.min(days, 30) - 1 - i));
+    d.setUTCDate(d.getUTCDate() - (dayCount - 1 - i));
     return {
       date: d.toISOString().slice(0, 10),
       downloads: Math.round(Math.random() * 12),
     };
   });
+  const dailyUsers = daily.map((day) => ({
+    date: day.date,
+    users: Math.max(0, Math.round(day.downloads * 0.7 + Math.random() * 4)),
+  }));
+  const hourlyUsers = Array.from({ length: 24 }, (_, hour) =>
+    hour >= 18 && hour <= 23
+      ? 8 + Math.round(Math.random() * 12)
+      : Math.round(Math.random() * 5),
+  );
+  const dayOfWeekUsers: TrackInsights['dayOfWeekUsers'] = [
+    4, 5, 6, 7, 12, 18, 15,
+  ];
   const totalDownloads = daily.reduce((sum, d) => sum + d.downloads, 0);
   return {
     title,
@@ -64,6 +80,9 @@ function mockInsights(period: InsightsPeriod, title: string): TrackInsights {
       { countryCode: 'US', displayName: 'United States', count: 9 },
       { countryCode: 'SE', displayName: 'Sweden', count: 6 },
     ],
+    hourlyUsers,
+    dayOfWeekUsers,
+    dailyUsers,
   };
 }
 

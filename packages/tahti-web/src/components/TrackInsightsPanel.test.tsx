@@ -10,6 +10,28 @@ vi.mock('../components/ListenerWorldMap', () => ({
   ListenerWorldMap: () => null,
 }));
 
+const EMPTY_HOURS = Array.from({ length: 24 }, () => 0);
+const EMPTY_WEEK: insights.TrackInsights['dayOfWeekUsers'] = [
+  0, 0, 0, 0, 0, 0, 0,
+];
+
+function baseInsights(
+  overrides: Partial<insights.TrackInsights> = {},
+): insights.TrackInsights {
+  return {
+    title: 'Track',
+    period: '30d',
+    totalPlays: 4,
+    totalDownloads: 2,
+    daily: [],
+    countries: [],
+    hourlyUsers: EMPTY_HOURS,
+    dayOfWeekUsers: EMPTY_WEEK,
+    dailyUsers: [],
+    ...overrides,
+  };
+}
+
 describe('TrackInsightsPanel', () => {
   afterEach(() => {
     cleanup();
@@ -41,14 +63,7 @@ describe('TrackInsightsPanel', () => {
 
   it("narrows the listener panels to a sound's own listens", async () => {
     vi.spyOn(insights, 'fetchTrackInsights').mockResolvedValue({
-      data: {
-        title: 'Track',
-        period: '30d',
-        totalPlays: 4,
-        totalDownloads: 2,
-        daily: [],
-        countries: [],
-      },
+      data: baseInsights(),
       meta: { source: 'api' },
     });
     const loyalty = vi.spyOn(extras, 'fetchStatsLoyalty').mockResolvedValue({
@@ -74,14 +89,7 @@ describe('TrackInsightsPanel', () => {
 
   it('leaves the listener panels out for release tracks', async () => {
     vi.spyOn(insights, 'fetchTrackInsights').mockResolvedValue({
-      data: {
-        title: 'Track',
-        period: '30d',
-        totalPlays: 4,
-        totalDownloads: 2,
-        daily: [],
-        countries: [],
-      },
+      data: baseInsights(),
       meta: { source: 'api' },
     });
     const loyalty = vi.spyOn(extras, 'fetchStatsLoyalty');
@@ -90,5 +98,42 @@ describe('TrackInsightsPanel', () => {
     });
     expect(loyalty).not.toHaveBeenCalled();
     expect(screen.queryByText('Listener loyalty')).toBeNull();
+  });
+
+  it('shows listening pattern charts when unique listeners exist', async () => {
+    const hourlyUsers = Array.from({ length: 24 }, (_, hour) =>
+      hour === 20 ? 9 : 0,
+    );
+    vi.spyOn(insights, 'fetchTrackInsights').mockResolvedValue({
+      data: baseInsights({
+        hourlyUsers,
+        dayOfWeekUsers: [1, 2, 3, 4, 5, 8, 6],
+        dailyUsers: [{ date: '2026-11-03', users: 4 }],
+      }),
+      meta: { source: 'api' },
+    });
+    await act(async () => {
+      render(<TrackInsightsPanel kind="sound" id="s1" />);
+    });
+    expect(
+      screen.getByTestId('track-insights-listening-patterns'),
+    ).toBeTruthy();
+    expect(screen.getByText('Time of day')).toBeTruthy();
+    expect(screen.getByText('Day of week')).toBeTruthy();
+    expect(screen.getByText('Listening calendar')).toBeTruthy();
+  });
+
+  it('shows an empty listening-patterns state when nobody listened', async () => {
+    vi.spyOn(insights, 'fetchTrackInsights').mockResolvedValue({
+      data: baseInsights(),
+      meta: { source: 'api' },
+    });
+    await act(async () => {
+      render(<TrackInsightsPanel kind="sound" id="s1" />);
+    });
+    expect(screen.getByTestId('track-insights-listening-empty')).toBeTruthy();
+    expect(
+      screen.queryByTestId('track-insights-listening-patterns'),
+    ).toBeNull();
   });
 });

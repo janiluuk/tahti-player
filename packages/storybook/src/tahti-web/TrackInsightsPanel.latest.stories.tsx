@@ -9,7 +9,7 @@ const meta: Meta<typeof TrackInsightsPanel> = {
     docs: {
       description: {
         component:
-          'Track performance metrics, listener geography, and daily downloads. Lives on Studio → Music → Sounds via track Insights.',
+          'Track performance metrics, listening patterns (time of day / day of week / calendar by unique listeners), listener geography, and daily downloads. Lives on Studio → Music → Sounds via track Insights.',
       },
     },
   },
