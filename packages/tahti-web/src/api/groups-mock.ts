@@ -240,6 +240,9 @@ export function mockFetchPublicGroups(q?: string): {
         description: summary.description,
         coverUrl: summary.coverUrl,
         isPublic: summary.isPublic,
+        joinPolicy: summary.joinPolicy,
+        submitPolicy: summary.submitPolicy,
+        collectionSlug: summary.collectionSlug,
         memberCount: summary.memberCount,
         itemCount: summary.itemCount,
       };

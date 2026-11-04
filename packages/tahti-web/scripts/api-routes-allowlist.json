@@ -1,3 +1,17 @@
 {
-  "/api/admin/i18n/languages": "The API has no translation routes. Admin \u2192 Languages shows \"Not available yet\" on a 404 instead of offering Add/Import."
+  "/api/admin/i18n/languages": "The API has no translation routes. Admin → Languages shows \"Not available yet\" on a 404 instead of offering Add/Import.",
+  "/api/me/groups": "Artist groups land with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/me/groups/:param": "Artist groups land with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/me/groups/:param/join": "Artist groups land with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/me/groups/:param/join-requests": "Artist groups land with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/me/groups/:param/join-requests/:param/resolve": "Artist groups land with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/me/groups/:param/members/me": "Artist groups land with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/me/groups/:param/sounds": "Artist groups land with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/me/groups/:param/submissions": "Artist groups land with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/me/groups/:param/submissions/:param/approve": "Artist groups land with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/me/groups/:param/submissions/:param/reject": "Artist groups land with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/me/sound/:param/group-membership": "Artist groups land with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/me/sound/:param/set-membership": "Set membership lands with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/v1/groups": "Artist groups land with tahti-org#1051; drop after that OpenAPI release.",
+  "/api/v1/groups/:param": "Artist groups land with tahti-org#1051; drop after that OpenAPI release."
 }

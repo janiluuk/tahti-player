@@ -41,19 +41,55 @@ function segments(normalized) {
     .map((part) => (part.includes(PARAM) ? PARAM : part));
 }
 
+/**
+ * Align called segments to a served path.
+ *
+ * Params match params; literals match equal literals. A caller param may stand
+ * for a concrete served segment (`/${action}` → `/pause`), and a concrete
+ * caller segment may stand for a served param (`/tahti-radio` → `/{slug}`),
+ * but not both in the same path — otherwise
+ * `/api/me/sound/${id}/group-membership` falsely matches
+ * `/api/me/sound/shares/{id}`. When the call is only a prefix of the served
+ * path, a trailing caller param may also cover a literal (`` `/api/foo${id}` ``).
+ */
+function pathAligns(want, have) {
+  if (have.length < want.length) {
+    return false;
+  }
+  let callerParamToLiteral = false;
+  let callerLiteralToParam = false;
+  for (let index = 0; index < want.length; index += 1) {
+    const part = want[index];
+    const other = have[index];
+    if (part === PARAM && other === PARAM) {
+      continue;
+    }
+    if (part === other) {
+      continue;
+    }
+    if (part === PARAM) {
+      if (callerLiteralToParam) {
+        return false;
+      }
+      callerParamToLiteral = true;
+      continue;
+    }
+    if (other === PARAM) {
+      if (callerParamToLiteral) {
+        return false;
+      }
+      callerLiteralToParam = true;
+      continue;
+    }
+    return false;
+  }
+  return true;
+}
+
 /** True when `called` is a served path, or the start of one. */
 export function isServed(called, servedPaths) {
   const want = segments(called);
-  return servedPaths.some((served) => {
-    const have = segments(served);
-    if (have.length < want.length) {
-      return false;
-    }
-    return want.every(
-      (part, index) =>
-        part === PARAM || have[index] === PARAM || part === have[index],
-    );
-  });
+  return servedPaths.some((served) => pathAligns(want, segments(served)));
 }
 
 /** Allowlist entries the API serves now: the exception has expired. */
@@ -62,13 +98,7 @@ export function servedAllowances(entries, servedPaths) {
     const want = segments(normalizePath(entry));
     return servedPaths.some((served) => {
       const have = segments(served);
-      return (
-        have.length === want.length &&
-        want.every(
-          (part, index) =>
-            part === PARAM || have[index] === PARAM || part === have[index],
-        )
-      );
+      return have.length === want.length && pathAligns(want, have);
     });
   });
 }
@@ -146,6 +176,16 @@ function main() {
     for (const entry of missing) {
       console.error(`  ${entry}`);
     }
+    console.error(
+      'CI checks the latest tahti-org GitHub release OpenAPI (production).',
+    );
+    console.error(
+      'Merge the API PR first and wait for that release, or add each path to',
+    );
+    console.error(
+      'packages/tahti-web/scripts/api-routes-allowlist.json with a reason',
+    );
+    console.error('(remove the entries once the matching release ships).');
   }
   if (stale.length > 0) {
     console.error('Allowlist entries no longer used (remove them):');

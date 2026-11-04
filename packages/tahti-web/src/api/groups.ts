@@ -307,7 +307,7 @@ export async function fetchPublicGroups(query?: {
     const { data } = await requestJson<{
       items: ArtistGroupSummary[];
       total: number;
-    }>(`/api/v1/groups${qs ? `?${qs}` : ''}`);
+    }>('/api/v1/groups' + (qs ? `?${qs}` : ''));
     return { data, meta: { source: 'api' } };
   } catch (err) {
     if (allowMockFallback()) {
