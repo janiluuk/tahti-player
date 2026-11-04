@@ -2,6 +2,7 @@ import { ActivityIcon, PauseIcon, PlayIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Loader } from '@tahti-player/ui';
 
 import type {
@@ -39,7 +40,7 @@ export async function runAnalysis(
         description: `${analysisResultMessage(result)}. Run it again to continue where it left off.`,
       });
     } else {
-      toast.success('Analysis finished.', {
+      toast.success(i18n.t('web:toasts.analysisFinished'), {
         description: analysisResultMessage(result),
       });
     }

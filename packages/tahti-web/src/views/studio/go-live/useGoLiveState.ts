@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   fetchAutoRecordEnabled,
   fetchBroadcastPreflight,
@@ -188,7 +190,7 @@ export function useGoLiveState() {
     try {
       result = await postGoLive();
     } catch {
-      toast.error('Could not go live.');
+      toast.error(i18n.t('web:toasts.couldNotGoLive'));
       return;
     } finally {
       setBusy(false);
@@ -203,7 +205,7 @@ export function useGoLiveState() {
       tone: 'success',
       text: 'You’re live. The rotation has handed over to your broadcast.',
     });
-    toast.success('You’re live.');
+    toast.success(i18n.t('web:toasts.youreLive'));
     playStream();
     if (!isMock) {
       void refresh();

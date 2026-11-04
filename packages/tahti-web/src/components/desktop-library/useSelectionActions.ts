@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import type { TahtiPlayable } from '../../api/types';
 import type {
   NativeFacetFilter,
@@ -122,7 +124,7 @@ export function useSelectionActions({
       if (playables?.length) {
         action(playables);
       } else if (playables) {
-        toast.error('None of these tracks can be played.');
+        toast.error(i18n.t('web:toasts.noneTracksPlayable'));
       }
     } catch (error) {
       toast.error(

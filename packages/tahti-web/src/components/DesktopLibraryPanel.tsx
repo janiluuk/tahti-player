@@ -2,6 +2,7 @@ import { LaptopIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { EmptyState } from '@tahti-player/ui';
 
 import { usePersistedCatalogTable } from '../hooks/usePersistedCatalogTable';
@@ -168,7 +169,7 @@ export function DesktopLibraryPanel() {
     void nativeLibrary?.takeRecoveryNotice?.().then(
       (movedTo) => {
         if (movedTo) {
-          toast.warning('Your library file was damaged and has been reset.', {
+          toast.warning(i18n.t('web:toasts.libraryFileDamagedReset'), {
             description: `The damaged file was kept at ${movedTo}. Restore a catalog backup to get your ratings, tags and playlists back, then rescan your folders.`,
             duration: Infinity,
           });

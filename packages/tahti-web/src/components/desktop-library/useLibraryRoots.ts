@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import type {
   NativeLibraryRoot,
   NativeRootScanResult,
@@ -84,11 +86,13 @@ export function useLibraryRoots(
       );
     }
     if (result.cancelled) {
-      toast.info('Scan cancelled.');
+      toast.info(i18n.t('web:toasts.scanCancelled'));
     } else if (parts.length) {
-      toast.success(`Scan complete: ${parts.join(', ')}.`);
+      toast.success(
+        i18n.t('web:toasts.scanCompleteParts', { parts: parts.join(', ') }),
+      );
     } else if (!result.errors.length) {
-      toast.success('Scan complete: nothing changed.');
+      toast.success(i18n.t('web:toasts.scanCompleteNothingChanged'));
     }
   };
 

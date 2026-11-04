@@ -8,6 +8,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Loader } from '@tahti-player/ui';
 
 import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
@@ -36,7 +37,7 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
     try {
       const summary = await library.catalog.exportBackup();
       if (summary) {
-        toast.success('Catalog backed up.', {
+        toast.success(i18n.t('web:toasts.catalogBackedUp'), {
           description: `${summary.tracks.toLocaleString('en-US')} tracks, ${summary.playlists.toLocaleString('en-US')} playlists and ${summary.edits.toLocaleString('en-US')} edited tags saved. Your music files are not included.`,
         });
       }

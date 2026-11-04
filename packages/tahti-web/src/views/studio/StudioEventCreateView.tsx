@@ -3,6 +3,7 @@ import { ArrowLeftIcon, CalendarPlusIcon, SaveIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -64,7 +65,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
       }
       const event = result.data.find((candidate) => candidate.id === eventId);
       if (!event) {
-        toast.error('That event could not be found.');
+        toast.error(i18n.t('web:toasts.eventNotFound'));
         void navigate({ to: '/studio/events' });
         return;
       }

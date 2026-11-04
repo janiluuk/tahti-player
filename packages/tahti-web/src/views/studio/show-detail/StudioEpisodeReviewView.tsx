@@ -2,6 +2,7 @@ import { CheckIcon, RadioIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
@@ -131,7 +132,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
       setMsg(text);
       toast.success(text);
     } catch {
-      toast.error('Could not approve the episode.');
+      toast.error(i18n.t('web:toasts.couldNotApproveEpisode'));
     } finally {
       setBusy(false);
     }
@@ -164,7 +165,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
       setMsg(text);
       (r.ok ? toast.success : toast.error)(text);
     } catch {
-      toast.error('Could not queue the render.');
+      toast.error(i18n.t('web:toasts.couldNotQueueRender'));
     } finally {
       setBusy(false);
     }

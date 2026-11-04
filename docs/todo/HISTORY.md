@@ -1,3 +1,8 @@
+## 2026-11-04 - Batch 46 UX slices
+
+Distribution/Jam/Hearthis/Radio Browser/scrobble/SmartPlaylists toasts.
+tahti-web 0.0.336 (#1832).
+
 ## 2026-11-04 - Batch 45 UX slices
 
 Studio playlist/editor/waveform/stats toasts; Admin comments/topics;

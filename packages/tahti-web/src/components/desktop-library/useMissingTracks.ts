@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import type {
   NativeLibraryTrack,
   TahtiNativeLibrary,
@@ -28,7 +30,7 @@ export function useMissingTracks(
       setUnavailable(missing);
       await refresh();
       if (missing.length === 0) {
-        toast.success('All library files are available.');
+        toast.success(i18n.t('web:toasts.allLibraryFilesAvailable'));
       } else {
         toast.info(
           missing.length === 1
@@ -54,7 +56,9 @@ export function useMissingTracks(
         return;
       }
       await refresh();
-      toast.success(`Located “${replacement.title}”.`);
+      toast.success(
+        i18n.t('web:toasts.locatedNamedQuotes', { title: replacement.title }),
+      );
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Relink failed.');
     } finally {

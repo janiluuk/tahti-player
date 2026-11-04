@@ -2,6 +2,7 @@ import { TrashIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, FilePicker, Input, Tooltip } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../../api/types';
@@ -55,7 +56,7 @@ export function BrowserLocalFiles() {
   const onFiles = (files: readonly File[]) => {
     const added = addFiles(files);
     if (added.length === 0) {
-      toast.error('Choose an audio file.');
+      toast.error(i18n.t('web:toasts.chooseAudioFile'));
       return;
     }
     toast.success(
@@ -110,7 +111,9 @@ export function BrowserLocalFiles() {
                   return;
                 }
                 remove(track.id);
-                toast.success(`Removed “${item.title}”.`);
+                toast.success(
+                  i18n.t('web:toasts.removedNamedQuotes', { name: item.title }),
+                );
               }}
               onBulkRemove={(items) => {
                 for (const item of items) {
@@ -151,7 +154,11 @@ export function BrowserLocalFiles() {
                       aria-label={`Remove ${track.title}`}
                       onClick={() => {
                         remove(track.id);
-                        toast.success(`Removed “${track.title}”.`);
+                        toast.success(
+                          i18n.t('web:toasts.removedNamedQuotes', {
+                            name: track.title,
+                          }),
+                        );
                       }}
                     >
                       <TrashIcon size={14} aria-hidden />

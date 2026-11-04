@@ -10,6 +10,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   EditIconButton,
@@ -336,7 +337,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
             return;
           }
           await library.playlists.rename(renaming.id, name);
-          toast.success(`Renamed to “${name}”.`);
+          toast.success(i18n.t('web:toasts.renamedToNamedQuotes', { name }));
           await load();
         }}
       />
@@ -355,7 +356,11 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
               target.id,
               async () => {
                 await library.playlists.delete(target.id);
-                toast.success(`Deleted “${target.name}”.`);
+                toast.success(
+                  i18n.t('web:toasts.deletedNamedQuotes', {
+                    name: target.name,
+                  }),
+                );
               },
               'Could not delete playlist.',
             );

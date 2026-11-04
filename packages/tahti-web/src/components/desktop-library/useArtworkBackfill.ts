@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import type {
   NativeArtworkBackfill,
   NativeArtworkBackfillResult,
@@ -23,17 +25,27 @@ function report(result: NativeArtworkBackfillResult) {
     .join(' ');
   const description = details || undefined;
   if (result.cancelled) {
-    toast.info(`Stopped. Found artwork for ${tracks(result.found)}.`, {
-      id: TOAST_ID,
-      description,
-    });
+    toast.info(
+      i18n.t('web:toasts.stoppedFoundArtworkFor', {
+        count: tracks(result.found),
+      }),
+      {
+        id: TOAST_ID,
+        description,
+      },
+    );
   } else if (result.checked === 0) {
-    toast.success('No tracks are missing artwork.', { id: TOAST_ID });
-  } else {
-    toast.success(`Found artwork for ${tracks(result.found)}.`, {
+    toast.success(i18n.t('web:toasts.noTracksMissingArtwork'), {
       id: TOAST_ID,
-      description,
     });
+  } else {
+    toast.success(
+      i18n.t('web:toasts.foundArtworkFor', { count: tracks(result.found) }),
+      {
+        id: TOAST_ID,
+        description,
+      },
+    );
   }
 }
 

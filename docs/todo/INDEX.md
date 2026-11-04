@@ -11,7 +11,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [batch-46-slices-2026-11-04.md](batch-46-slices-2026-11-04.md) | Batch of 30: Finnish leftovers, date Kept sweep, polish + 0.0.336 |
+| open    | [batch-47-slices-2026-11-04.md](batch-47-slices-2026-11-04.md) | Batch of 30: Finnish leftovers, date Kept sweep, polish + 0.0.337 |
 | partial | [beta-launch-findings.md](beta-launch-findings.md) | Test releases on the front page; open Studio/listener/platform findings from the beta e2e run and the legacy parity sweep |
 | open    | [final-season-hardening.md](final-season-hardening.md) | Batch A/B and the deploy-bundle API-origin assert shipped; left: P2 hardening (CSRF/CORS, CSP enforce, upload magic, SR pass) |
 | partial | [first-100-users-infra.md](first-100-users-infra.md) | Verified on vimage 2026-11-02: rate limits fail closed, disk fine; backup restore test + vimage6 push fixed in tahti-org#1042; left: leaked restore containers, MinIO mirror + DR alias |
