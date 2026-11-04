@@ -258,6 +258,18 @@ export function ArtistPanel() {
             saveArtistInfo();
           }}
         >
+          <ArtistImagePurposePicker
+            avatarUrl={profile.avatarUrl}
+            displayName={profile.displayName}
+            onProfileUploaded={(avatarUrl) => {
+              setProfile({ ...profile, avatarUrl });
+              void refreshAuth();
+              toast.success('Profile image updated.');
+            }}
+            onGalleryUploaded={() => {
+              toast.success('Image added to your gallery.');
+            }}
+          />
           <Input
             label="Display name"
             value={profile.displayName}
@@ -299,18 +311,6 @@ export function ArtistPanel() {
                 : 'None yet'}
             </p>
           </div>
-          <ArtistImagePurposePicker
-            avatarUrl={profile.avatarUrl}
-            displayName={profile.displayName}
-            onProfileUploaded={(avatarUrl) => {
-              setProfile({ ...profile, avatarUrl });
-              void refreshAuth();
-              toast.success('Profile image updated.');
-            }}
-            onGalleryUploaded={() => {
-              toast.success('Image added to your gallery.');
-            }}
-          />
           <PronounsField profile={profile} setProfile={setProfile} />
           <Select
             label="Country"
