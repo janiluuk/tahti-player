@@ -6,6 +6,7 @@ import {
   NewspaperIcon,
   SlidersHorizontalIcon,
   UsersIcon,
+  UsersRoundIcon,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
@@ -62,6 +63,7 @@ import {
   WIDGET_LABEL_KEYS,
 } from '../components/discover/widgetMeta';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
+import { GroupsDirectory } from '../components/GroupsDirectory';
 import { LatestNewsWidget } from '../components/LatestNewsWidget';
 import { HomeNews } from '../components/listen-view/HomeNews';
 import { PageError, PageLoading } from '../components/PageStates';
@@ -109,6 +111,7 @@ const DISCOVER_TABS: Array<{
   { id: 'discover', labelKey: 'discover.tabDiscover', icon: CompassIcon },
   { id: 'feed', labelKey: 'discover.tabFeed', icon: NewspaperIcon },
   { id: 'artists', labelKey: 'discover.tabArtists', icon: UsersIcon },
+  { id: 'groups', labelKey: 'discover.tabGroups', icon: UsersRoundIcon },
   { id: 'venues', labelKey: 'discover.tabVenues', icon: MapPinIcon },
 ];
 
@@ -410,22 +413,12 @@ export function DiscoverView() {
         title={t('nav.discover')}
         classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         actions={
-          <div className="flex flex-wrap items-center gap-2">
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => void navigate({ to: '/groups' })}
-            >
-              <UsersIcon size={14} aria-hidden className="mr-1.5" />
-              Groups
-            </Button>
-            {activeTab === 'discover' ? (
-              <DiscoverAddWidgetButton
-                availableToAdd={availableToAdd}
-                onAdd={addWidget}
-              />
-            ) : null}
-          </div>
+          activeTab === 'discover' ? (
+            <DiscoverAddWidgetButton
+              availableToAdd={availableToAdd}
+              onAdd={addWidget}
+            />
+          ) : undefined
         }
       >
         {activeTab === 'venues' ? (
@@ -457,6 +450,8 @@ export function DiscoverView() {
             </Suspense>
           </div>
         ) : null}
+
+        {activeTab === 'groups' ? <GroupsDirectory /> : null}
 
         {activeTab === 'discover' ? <HomeNews /> : null}
 

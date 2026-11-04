@@ -13,7 +13,7 @@ const meta: Meta<typeof DiscoverView> = {
     docs: {
       description: {
         component:
-          'The Discover page (`/discover`) with Discover / Artists / Venues tabs (`?tab=`). Discover has the genre / type / unheard filters, news feeds and the widget columns (with "add widget"); Artists is the directory browser; Venues lists verified venues with a "Register a venue" link.',
+          'The Discover page (`/discover`) with Discover / Feed / Artists / Groups / Venues tabs (`?tab=`). Discover has the genre / type / unheard filters, news feeds and the widget columns (with "add widget"); Artists is the directory browser; Groups lists public artist collectives (same `GroupsDirectory` as `/groups`); Venues lists verified venues with a "Register a venue" link.',
       },
     },
   },
@@ -36,9 +36,16 @@ export const Default: Story = {
       await expect(genres).toHaveAttribute('aria-expanded', 'false');
     });
 
-    await step('switch to Artists, Venues and back', async () => {
+    await step('switch to Artists, Groups, Venues and back', async () => {
       await selectTab(canvas, /Artists/);
       await expect(canvas.queryByTestId('discover-filters')).toBeNull();
+      await selectTab(canvas, /Groups/);
+      await waitFor(() =>
+        expect(canvas.getByTestId('discover-groups')).toBeVisible(),
+      );
+      await waitFor(() =>
+        expect(canvas.getByRole('link', { name: 'Ambient Lab' })).toBeVisible(),
+      );
       await selectTab(canvas, /Venues/);
       await waitFor(() =>
         expect(
@@ -53,6 +60,22 @@ export const Default: Story = {
         expect(canvas.getByTestId('discover-filters')).toBeVisible(),
       );
     });
+  },
+};
+
+export const GroupsTab: Story = {
+  decorators: [withTahtiRouter('/discover?tab=groups')],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByTestId('discover-groups'),
+    ).toBeInTheDocument();
+    await expect(
+      await canvas.findByRole('link', { name: 'Trance Mixes and DJ Sets' }),
+    ).toHaveAttribute('href', '/groups/trance-mixes');
+    await expect(
+      canvas.getByRole('link', { name: 'Vinyl Crate Diggers' }),
+    ).toBeVisible();
   },
 };
 

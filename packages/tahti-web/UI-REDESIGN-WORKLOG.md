@@ -1,3 +1,10 @@
+## 2026-11-04 - Discover Groups tab (0.0.317)
+
+Discover gains a Groups tab (`?tab=groups`) that embeds `GroupsDirectory`
+(Storybook `Tahti/Discover/GroupsDirectory`). Five ready public mock
+collectives; README and VIEW-GUIDE document Groups for listeners and
+artists. Bumped tahti-web `0.0.317`.
+
 ## 2026-11-04 - OverflowMenu, FilterBar, batch-30 slices (0.0.316)
 
 `@tahti-player/ui` adds OverflowMenu and FilterBar (phase-0 simplify

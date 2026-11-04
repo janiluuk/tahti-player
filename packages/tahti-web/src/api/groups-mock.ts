@@ -1,4 +1,5 @@
 import type {
+  ArtistGroupRole,
   ArtistGroupSummary,
   GroupMembershipEntry,
   MyArtistGroup,
@@ -6,9 +7,12 @@ import type {
 } from './groups';
 import { onMockOverridesReset } from './mock-overrides';
 
-type MockGroup = MyArtistGroup & {
+type MockGroup = ArtistGroupSummary & {
   founderUsername: string;
   members: PublicGroupDetail['members'];
+  role: ArtistGroupRole | null;
+  pendingJoinRequestCount: number;
+  pendingSubmissionCount: number;
 };
 
 const SEED: MockGroup[] = [
@@ -54,6 +58,66 @@ const SEED: MockGroup[] = [
       { username: 'demo', displayName: 'Demo Artist', role: 'MEMBER' },
     ],
   },
+  {
+    id: 'mock-group-ambient',
+    slug: 'ambient-lab',
+    name: 'Ambient Lab',
+    description: 'Slow, spacious, and late-night listening rooms.',
+    coverUrl: null,
+    isPublic: true,
+    joinPolicy: 'OPEN',
+    submitPolicy: 'OPEN',
+    collectionSlug: 'group-ambient-lab',
+    memberCount: 34,
+    itemCount: 190,
+    role: null,
+    pendingJoinRequestCount: 0,
+    pendingSubmissionCount: 0,
+    founderUsername: 'aurora',
+    members: [
+      { username: 'aurora', displayName: 'Aurora', role: 'OWNER' },
+      { username: 'drift', displayName: 'Drift', role: 'ADMIN' },
+    ],
+  },
+  {
+    id: 'mock-group-vinyl',
+    slug: 'vinyl-crate',
+    name: 'Vinyl Crate Diggers',
+    description: 'Sample packs, crate finds, and dusty edits.',
+    coverUrl: null,
+    isPublic: true,
+    joinPolicy: 'OPEN',
+    submitPolicy: 'APPROVE',
+    collectionSlug: 'group-vinyl-crate',
+    memberCount: 21,
+    itemCount: 77,
+    role: null,
+    pendingJoinRequestCount: 0,
+    pendingSubmissionCount: 0,
+    founderUsername: 'needle',
+    members: [{ username: 'needle', displayName: 'Needle', role: 'OWNER' }],
+  },
+  {
+    id: 'mock-group-live-electronics',
+    slug: 'live-electronics',
+    name: 'Live Electronics',
+    description: 'Modular, laptop sets, and club-ready experiments.',
+    coverUrl: null,
+    isPublic: true,
+    joinPolicy: 'REQUEST',
+    submitPolicy: 'APPROVE',
+    collectionSlug: 'group-live-electronics',
+    memberCount: 15,
+    itemCount: 63,
+    role: null,
+    pendingJoinRequestCount: 0,
+    pendingSubmissionCount: 0,
+    founderUsername: 'circuit',
+    members: [
+      { username: 'circuit', displayName: 'Circuit', role: 'OWNER' },
+      { username: 'patch', displayName: 'Patch', role: 'MEMBER' },
+    ],
+  },
 ];
 
 let store: MockGroup[] | null = null;
@@ -77,6 +141,9 @@ function getStore(): MockGroup[] {
 }
 
 function asMyGroup(group: MockGroup): MyArtistGroup {
+  if (!group.role) {
+    throw new Error(`Group ${group.slug} has no membership role`);
+  }
   return {
     id: group.id,
     slug: group.slug,
@@ -96,7 +163,9 @@ function asMyGroup(group: MockGroup): MyArtistGroup {
 }
 
 export function mockFetchMyGroups(): MyArtistGroup[] {
-  return getStore().map(asMyGroup);
+  return getStore()
+    .filter((group) => group.role !== null)
+    .map(asMyGroup);
 }
 
 export function mockCreateGroup(input: {
@@ -177,20 +246,25 @@ export function mockLeaveGroup(
 
 export function mockGroupMembership(_soundId: string): GroupMembershipEntry[] {
   const selected = membershipBySound.get(_soundId) ?? new Set();
-  return getStore().map((group) => ({
-    id: group.id,
-    slug: group.slug,
-    name: group.name,
-    coverUrl: group.coverUrl,
-    isPublic: group.isPublic,
-    submitPolicy: group.submitPolicy,
-    role: group.role,
-    collectionSlug: group.collectionSlug,
-    itemCount: group.itemCount,
-    member: selected.has(group.slug),
-    itemId: selected.has(group.slug) ? `mock-gitem-${group.slug}` : null,
-    submissionPending: false,
-  }));
+  return getStore()
+    .filter(
+      (group): group is MockGroup & { role: ArtistGroupRole } =>
+        group.role !== null,
+    )
+    .map((group) => ({
+      id: group.id,
+      slug: group.slug,
+      name: group.name,
+      coverUrl: group.coverUrl,
+      isPublic: group.isPublic,
+      submitPolicy: group.submitPolicy,
+      role: group.role,
+      collectionSlug: group.collectionSlug,
+      itemCount: group.itemCount,
+      member: selected.has(group.slug),
+      itemId: selected.has(group.slug) ? `mock-gitem-${group.slug}` : null,
+      submissionPending: false,
+    }));
 }
 
 export function mockSubmitGroupSound(
@@ -231,22 +305,19 @@ export function mockFetchPublicGroups(q?: string): {
         g.name.toLowerCase().includes(needle) ||
         g.slug.includes(needle),
     )
-    .map((g) => {
-      const summary = asMyGroup(g);
-      return {
-        id: summary.id,
-        slug: summary.slug,
-        name: summary.name,
-        description: summary.description,
-        coverUrl: summary.coverUrl,
-        isPublic: summary.isPublic,
-        joinPolicy: summary.joinPolicy,
-        submitPolicy: summary.submitPolicy,
-        collectionSlug: summary.collectionSlug,
-        memberCount: summary.memberCount,
-        itemCount: summary.itemCount,
-      };
-    });
+    .map((g) => ({
+      id: g.id,
+      slug: g.slug,
+      name: g.name,
+      description: g.description,
+      coverUrl: g.coverUrl,
+      isPublic: g.isPublic,
+      joinPolicy: g.joinPolicy,
+      submitPolicy: g.submitPolicy,
+      collectionSlug: g.collectionSlug,
+      memberCount: g.memberCount,
+      itemCount: g.itemCount,
+    }));
   return { items, total: items.length };
 }
 
