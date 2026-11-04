@@ -85,7 +85,9 @@ export const Default: Story = {
 export const EditTags: Story = {
   play: async ({ canvasElement, args }) => {
     const dialog = await openEditor(canvasElement);
-    await expect(dialog.getByText('2 / 20')).toBeVisible();
+    await expect(
+      dialog.getByRole('button', { name: 'Remove Helsinki' }),
+    ).toBeVisible();
     await userEvent.click(
       dialog.getByRole('button', { name: 'Remove Helsinki' }),
     );
@@ -104,7 +106,7 @@ export const EditTags: Story = {
     await dialog.findByRole('button', { name: 'Remove field recordings' });
 
     await userEvent.type(
-      dialog.getByRole('combobox', { name: 'Add a subgenre' }),
+      dialog.getByRole('combobox', { name: 'Add a sub-genre' }),
       'Dub techno',
     );
     await userEvent.click(

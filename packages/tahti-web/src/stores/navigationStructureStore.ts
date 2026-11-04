@@ -57,6 +57,7 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
             path: '/studio/distribution',
           },
           { id: 'studio-editor', label: 'Editor', path: '/studio/editor' },
+          { id: 'studio-groups', label: 'Groups', path: '/studio/groups' },
         ],
       },
       {

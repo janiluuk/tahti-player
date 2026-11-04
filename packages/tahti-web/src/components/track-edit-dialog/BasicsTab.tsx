@@ -1,15 +1,17 @@
 import { HelpCircleIcon } from 'lucide-react';
 
-import { CreatableCombobox, Input, Select, Tooltip } from '@tahti-player/ui';
+import { Input, Select, Tooltip } from '@tahti-player/ui';
 
 import { uploadSoundBanner } from '../../api/studio';
 import { SELECTABLE_CONTENT_TYPES } from '../../content/contentTypes';
-import { capitalizeGenre, PRESET_GENRES } from '../../lib/genres';
+import { useUsedBeforeTags } from '../../hooks/useUsedBeforeTags';
 import { BackdropUploadButton } from '../BackdropUploadButton';
+import { MaterialGenreField } from '../MaterialGenreField';
+import { MaterialGroupsField } from '../MaterialGroupsField';
+import { MaterialSetsField } from '../MaterialSetsField';
+import { MaterialTagsField } from '../MaterialTagsField';
 import { MentionTextarea } from '../MentionTextarea';
 import { RoundImageUploadButton } from '../RoundImageUploadButton';
-import { SubgenreTagInput } from '../SubgenreTagInput';
-import { TrackTagInput } from '../TrackTagInput';
 import type { TrackEditDialogState } from './useTrackEditDialog';
 
 export function BasicsTab({
@@ -20,6 +22,8 @@ export function BasicsTab({
   state: TrackEditDialogState;
 }) {
   const { form, setForm, user, isAudioClip, updateArtwork } = state;
+  const usedBefore = useUsedBeforeTags();
+
   return (
     <div className="flex flex-col gap-4">
       <div className="relative overflow-hidden rounded-xl">
@@ -97,39 +101,33 @@ export function BasicsTab({
         onChange={(description) => setForm({ ...form, description })}
       />
       {!isAudioClip ? (
-        <div className="flex flex-col gap-4 sm:flex-row">
-          <div className="flex-1">
-            <CreatableCombobox
-              label="Genre"
-              options={[...PRESET_GENRES]}
-              value={form.genre ?? ''}
-              onValueChange={(genre) => setForm({ ...form, genre })}
-              normalize={capitalizeGenre}
-            />
-          </div>
-          <div className="w-full min-w-0 sm:w-44">
-            <Input
-              type="date"
-              label="Release date"
-              value={form.releaseDate ?? ''}
-              onChange={(event) =>
-                setForm({ ...form, releaseDate: event.target.value })
-              }
-              className="w-full min-w-[11rem]"
-            />
-          </div>
-        </div>
-      ) : null}
-      {!isAudioClip ? (
-        <SubgenreTagInput
-          value={form.subGenres ?? []}
-          onChange={(subGenres) => setForm({ ...form, subGenres })}
+        <Input
+          type="date"
+          label="Release date"
+          value={form.releaseDate ?? ''}
+          onChange={(event) =>
+            setForm({ ...form, releaseDate: event.target.value })
+          }
+          className="w-full max-w-xs min-w-[11rem]"
         />
       ) : null}
-      <TrackTagInput
+      {!isAudioClip ? (
+        <MaterialGenreField
+          genre={form.genre ?? ''}
+          onGenreChange={(genre) => setForm({ ...form, genre })}
+          subGenres={form.subGenres ?? []}
+          onSubGenresChange={(subGenres) => setForm({ ...form, subGenres })}
+        />
+      ) : null}
+      <MaterialTagsField
         value={form.tags ?? []}
         onChange={(tags) => setForm({ ...form, tags })}
+        usedBefore={usedBefore}
       />
+      <div className="grid gap-4 lg:grid-cols-2">
+        <MaterialSetsField soundId={soundId} />
+        <MaterialGroupsField soundId={soundId} />
+      </div>
     </div>
   );
 }

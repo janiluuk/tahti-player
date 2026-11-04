@@ -15,6 +15,7 @@ import {
   SlidersHorizontalIcon,
   TrendingUpIcon,
   UserRoundIcon,
+  UsersIcon,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
@@ -143,6 +144,11 @@ export const CATALOG_SUBNAV_ITEMS = [
     labelKey: 'studio.editor' as const,
     icon: <SlidersHorizontalIcon size={16} />,
   },
+  {
+    to: '/studio/groups',
+    labelKey: 'studio.groups' as const,
+    icon: <UsersIcon size={16} />,
+  },
 ] as const;
 
 const pathMatches = (pathname: string, prefix: string) =>
@@ -163,6 +169,7 @@ const SECTION_PREFIXES: Record<string, readonly string[]> = {
     '/studio/releases',
     '/studio/distribution',
     '/studio/editor',
+    '/studio/groups',
     '/studio/mastering',
     '/studio/setup-channel',
     '/studio/broadcast',
@@ -238,6 +245,8 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
       pathname?.startsWith('/studio/distribution/') === true ||
       pathname === '/studio/editor' ||
       pathname?.startsWith('/studio/editor/') === true ||
+      pathname === '/studio/groups' ||
+      pathname?.startsWith('/studio/groups/') === true ||
       pathname === '/studio/mastering' ||
       pathname?.startsWith('/studio/mastering/') === true
     );
@@ -346,6 +355,8 @@ export function isStudioCatalogGroup(current: string | undefined): boolean {
     pathname.startsWith('/studio/distribution/') ||
     pathname === '/studio/editor' ||
     pathname.startsWith('/studio/editor/') ||
+    pathname === '/studio/groups' ||
+    pathname.startsWith('/studio/groups/') ||
     pathname === '/studio/mastering' ||
     pathname.startsWith('/studio/mastering/')
   );
@@ -367,6 +378,9 @@ export const isCatalogSubnavActive = (
       pathMatches(pathname, '/studio/editor') ||
       pathMatches(pathname, '/studio/mastering')
     );
+  }
+  if (to === '/studio/groups') {
+    return pathMatches(pathname, '/studio/groups');
   }
   return pathname === to;
 };

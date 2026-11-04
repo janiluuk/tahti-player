@@ -56,7 +56,7 @@ export const AddTag: Story = {
       'Helsinki',
       'field recordings',
     ]);
-    await expect(canvas.getByText('3 / 20')).toBeVisible();
+    await expect(canvas.getByText('field recordings')).toBeVisible();
   },
 };
 

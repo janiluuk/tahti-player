@@ -46,7 +46,7 @@ export const PickSuggestion: Story = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await userEvent.type(
-      canvas.getByRole('combobox', { name: 'Add a subgenre' }),
+      canvas.getByRole('combobox', { name: 'Add a sub-genre' }),
       'dub',
     );
     await userEvent.click(

@@ -344,6 +344,14 @@ export const GreenRoomView = lazyRouteComponent(
   () => import('../views/GreenRoomView'),
   'GreenRoomView',
 );
+export const GroupsDirectoryView = lazyRouteComponent(
+  () => import('../views/GroupsDirectoryView'),
+  'GroupsDirectoryView',
+);
+export const GroupDetailView = lazyRouteComponent(
+  () => import('../views/GroupDetailView'),
+  'GroupDetailView',
+);
 export const JamView = lazyRouteComponent(
   () => import('../views/JamView'),
   'JamView',
@@ -436,6 +444,14 @@ export const StudioListeningPartiesView = lazyRouteComponent(
 export const StudioListeningPartyFormView = lazyRouteComponent(
   () => import('../views/studio/StudioListeningPartyFormView'),
   'StudioListeningPartyFormView',
+);
+export const StudioGroupsView = lazyRouteComponent(
+  () => import('../views/studio/StudioGroupsView'),
+  'StudioGroupsView',
+);
+export const StudioGroupDetailView = lazyRouteComponent(
+  () => import('../views/studio/StudioGroupDetailView'),
+  'StudioGroupDetailView',
 );
 export const StudioEventsView = lazyRouteComponent(
   () => import('../views/studio/StudioEventsView'),

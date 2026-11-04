@@ -39,12 +39,26 @@ describe('TrackTagInput', () => {
     render(<TrackTagInput value={full} onChange={vi.fn()} />);
 
     expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
-    expect(screen.getByText('20 / 20')).toBeInTheDocument();
+    expect(screen.getByText('Tags')).toBeInTheDocument();
   });
 
   it('offers the add field below the limit', () => {
     render(<TrackTagInput value={[]} onChange={vi.fn()} />);
     expect(screen.getByRole('combobox')).toBeInTheDocument();
-    expect(screen.getByText('0 / 20')).toBeInTheDocument();
+    expect(screen.getByText('Tags')).toBeInTheDocument();
+  });
+
+  it('shows Used before quick-adds', () => {
+    render(
+      <TrackTagInput
+        value={['drone']}
+        onChange={vi.fn()}
+        usedBefore={['House', 'Techno']}
+      />,
+    );
+    expect(screen.getByText('Used before:')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Add House' }),
+    ).toBeInTheDocument();
   });
 });

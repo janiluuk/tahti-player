@@ -675,6 +675,7 @@
       "distribution": "Distribution",
       "upload": "Upload",
       "editor": "Editor",
+      "groups": "Groups",
       "goLive": "Broadcast",
       "onAir": "Go live",
       "schedule": "Schedule",

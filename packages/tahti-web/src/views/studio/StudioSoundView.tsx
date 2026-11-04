@@ -8,7 +8,6 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
-import { AddToPlaylistPanel } from '../../components/AddToPlaylistPanel';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { TrackInsightsPanel } from '../../components/TrackInsightsPanel';
@@ -21,18 +20,7 @@ import { useSoundEditor } from './sound/useSoundEditor';
 
 export function StudioSoundView({ id }: { id: string }) {
   const state = useSoundEditor(id);
-  const {
-    item,
-    tab,
-    setTab,
-    notReady,
-    hasError,
-    isAudioClip,
-    playlistOpen,
-    setPlaylistOpen,
-    title,
-    setItem,
-  } = state;
+  const { item, tab, setTab, notReady, hasError, isAudioClip, setItem } = state;
   const [editing, setEditing] = useEditMode();
   const tabIds: ('details' | 'playlists' | 'insights')[] = [
     ...(editing ? (['details'] as const) : []),
@@ -127,12 +115,6 @@ export function StudioSoundView({ id }: { id: string }) {
               />
             </>
           )}
-          <AddToPlaylistPanel
-            isOpen={playlistOpen}
-            soundId={id}
-            trackTitle={item?.title ?? title}
-            onClose={() => setPlaylistOpen(false)}
-          />
         </div>
       </div>
     </StudioGate>

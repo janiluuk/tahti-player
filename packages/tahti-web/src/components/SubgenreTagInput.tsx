@@ -7,18 +7,20 @@ type Props = {
 };
 
 /** Chips for a sound's `subGenres` - up to 12 entries, 40 chars each, the
- * limits SoundMetadataFieldsSchema enforces. */
+ * limits SoundMetadataFieldsSchema enforces. Prefer `MaterialGenreField`
+ * when editing main genre + subgenres together. */
 export function SubgenreTagInput({ value, onChange, suggestions }: Props) {
   return (
     <TagChipInput
-      label="Subgenres"
-      addLabel="Add a subgenre"
-      placeholder="Search or type to add a subgenre…"
+      label="Sub-Genres"
+      addLabel="Add a sub-genre"
+      placeholder="# Add a sub-genre"
       maxCount={12}
       maxLength={40}
       value={value}
       onChange={onChange}
       suggestions={suggestions}
+      usedBefore={suggestions}
     />
   );
 }

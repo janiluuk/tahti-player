@@ -51,6 +51,8 @@ export function useSoundEditor(id: string) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [genre, setGenre] = useState('');
+  const [subGenres, setSubGenres] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
   const [contentType, setContentType] = useState('TRACK');
   const [visibility, setVisibility] = useState<TrackVisibility>('PUBLIC');
   const [releaseDate, setReleaseDate] = useState('');
@@ -69,7 +71,6 @@ export function useSoundEditor(id: string) {
       }),
     });
   };
-  const [playlistOpen, setPlaylistOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [pinBusy, setPinBusy] = useState(false);
   const [rotationBusy, setRotationBusy] = useState(false);
@@ -87,6 +88,8 @@ export function useSoundEditor(id: string) {
       setTitle(res.data.title);
       setDescription(res.data.description ?? '');
       setGenre(res.data.genre ? capitalizeGenre(res.data.genre) : '');
+      setSubGenres(res.data.subGenres ?? []);
+      setTags(res.data.tags ?? []);
       setContentType(res.data.contentType ?? 'TRACK');
       setVisibility(visibilityFromIsPublic(res.data.isPublic));
       setReleaseDate(releaseDateFromReleasedAt(res.data.releasedAt));
@@ -148,7 +151,13 @@ export function useSoundEditor(id: string) {
         {
           title,
           description,
-          ...(isAudioClip ? { genre: null } : { genre: genre || null }),
+          ...(isAudioClip
+            ? { genre: null, subGenres: [], tags }
+            : {
+                genre: genre || null,
+                subGenres,
+                tags,
+              }),
           contentType,
           isPublic: visibility === 'PUBLIC',
           ...(isAudioClip ? {} : releasedAtFromReleaseDate(releaseDate)),
@@ -326,6 +335,10 @@ export function useSoundEditor(id: string) {
     setDescription,
     genre,
     setGenre,
+    subGenres,
+    setSubGenres,
+    tags,
+    setTags,
     contentType,
     setContentType,
     visibility,
@@ -338,8 +351,6 @@ export function useSoundEditor(id: string) {
     setCommentsEnabled,
     tab,
     setTab,
-    playlistOpen,
-    setPlaylistOpen,
     saving,
     pinBusy,
     rotationBusy,

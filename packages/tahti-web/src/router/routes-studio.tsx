@@ -21,6 +21,8 @@ import {
   StudioFansView,
   StudioGoLiveView,
   StudioGovernanceView,
+  StudioGroupDetailView,
+  StudioGroupsView,
   StudioHomeView,
   StudioListeningPartiesView,
   StudioListeningPartyFormView,
@@ -506,6 +508,21 @@ export const studioEventEditRoute = createRoute({
   component: function StudioEventEditRoute() {
     const { eventId } = studioEventEditRoute.useParams();
     return <StudioEventCreateView eventId={eventId} />;
+  },
+});
+
+export const studioGroupsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/groups',
+  component: StudioGroupsView,
+});
+
+export const studioGroupDetailRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/groups/$slug',
+  component: function StudioGroupDetailRoute() {
+    const { slug } = studioGroupDetailRoute.useParams();
+    return <StudioGroupDetailView slug={slug} />;
   },
 });
 

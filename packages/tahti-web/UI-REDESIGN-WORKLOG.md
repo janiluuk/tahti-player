@@ -1,3 +1,12 @@
+## 2026-11-04 - Material Tags/Genre + Sets/Groups
+
+Track edit Basics and sound Details use Tags and Genre cards (Used before
+quick-adds, main genre + sub-genres). Sets and Groups membership lists
+toggle collections and collective group playlists. Studio and public group
+pages ship on mocks, with Listen together starting a Jam from the group
+playlist. Discover links to Groups; submissions show track titles. Bumped
+tahti-web `0.0.314`.
+
 ## 2026-11-04 - Channel manager on Broadcast
 
 Studio → Broadcast shows the channel stream manager (live status, rotation,
@@ -11,13 +20,13 @@ Settings → Artist → Identity puts the profile avatar first and larger
 
 ## 2026-11-03 - Batch of 30, round 3
 
-Artist header folds Open channel and fan-tiers into More; community guidelines show as a Listen banner instead of a sticky toast; Studio Stats uses in-page section chips (no nested Stats/Governance tab strip); Messages has one compose field; Music pages use FilterChips; more controls named after their item; not-found empties are h1; de-greened a few secondary actions. Bumped tahti-web `0.0.294`.
+Artist header folds Open channel and fan-tiers into More; community guidelines show as a Listen banner instead of a sticky toast; Studio Stats uses in-page section chips (no nested Stats/Governance tab strip); Messages has one compose field; Music pages use FilterChips; more controls named after their item; not-found empties are h1; de-greened a few secondary actions. Bumped tahti-web `0.0.312`.
 
 ## 2026-11-03 - Community / feed story cards: activity pills
 
 Story cards show the activity type as a soft pill (`released a track`,
 `shared news`, `posted an announcement`, …) with a humanized date beside it,
-on My feed and Discover → Community stories. Bumped tahti-web `0.0.294`.
+on My feed and Discover → Community stories. Bumped tahti-web `0.0.312`.
 
 ## 2026-10-30 - Navigation fixes and undo on more creates
 

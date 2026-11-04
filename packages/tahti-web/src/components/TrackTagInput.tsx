@@ -1,22 +1,19 @@
-import { TagChipInput } from './TagChipInput';
+import { MaterialTagsField } from './MaterialTagsField';
 
 type Props = {
   value: string[];
   onChange: (next: string[]) => void;
+  usedBefore?: string[];
 };
 
 /** Chips for a sound's free-form `tags` - up to 20 entries, 40 chars each,
  * the limits SoundMetadataFieldsSchema enforces. */
-export function TrackTagInput({ value, onChange }: Props) {
+export function TrackTagInput({ value, onChange, usedBefore }: Props) {
   return (
-    <TagChipInput
-      label="Tags"
-      addLabel="Add a tag"
-      placeholder="Mood, series, place… press Enter to add"
-      maxCount={20}
-      maxLength={40}
+    <MaterialTagsField
       value={value}
       onChange={onChange}
+      usedBefore={usedBefore}
     />
   );
 }
