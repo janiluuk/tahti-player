@@ -2,6 +2,7 @@ import { ShoppingBagIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Input } from '@tahti-player/ui';
 
 import {
@@ -34,14 +35,14 @@ function StoreTierRow({
 
   const buy = async () => {
     if (!signedIn) {
-      toast.error('Sign in to buy');
+      toast.error(i18n.t('web:auth.signInToBuy'));
       return;
     }
     let amountCents: number | undefined;
     if (tier.priceOptional) {
       const parsed = Number(amount.replace(',', '.'));
       if (!Number.isFinite(parsed) || parsed < 0) {
-        toast.error('Enter an amount of at least €0.');
+        toast.error(i18n.t('web:auth.amountMin'));
         return;
       }
       amountCents = Math.round(parsed * 100);

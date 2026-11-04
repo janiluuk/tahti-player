@@ -1,5 +1,7 @@
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import { isHeaderImageUrl } from '../../api/channel-design';
 import { postTrackComment } from '../../api/client';
 import { deleteComment } from '../../api/comments';
@@ -253,7 +255,7 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
       return;
     }
     if (!user) {
-      toast.error('Sign in to buy this track');
+      toast.error(i18n.t('web:auth.signInToBuyTrack'));
       return;
     }
     setBuyBusy(true);

@@ -19,7 +19,7 @@ describe('metadataForPath', () => {
     ['/r/summer-release', 'Summer Release on Tahti'],
     ['/radio', 'Tahti Radio'],
     ['/studio', 'Studio · Tahti'],
-    ['/studio/go-live', 'Go live · Studio · Tahti'],
+    ['/studio/go-live', 'Broadcast · Studio · Tahti'],
     ['/studio/releases/abc/edit', 'Releases · Studio · Tahti'],
     ['/admin/content-reports', 'Content reports · Admin · Tahti'],
     ['/library', 'Library · Tahti'],
@@ -53,9 +53,18 @@ describe('metadataForPath', () => {
       expect(metadataForPath('/discover').title).toBe('Löydä · Tahti');
       expect(metadataForPath('/terms').title).toBe('Käyttöehdot · Tahti');
       expect(metadataForPath('/studio/go-live').title).toBe(
-        'Go live · Studio · Tahti',
+        'Lähetys · Studio · Tahti',
+      );
+      expect(metadataForPath('/studio/releases/abc/edit').title).toBe(
+        'Julkaisut · Studio · Tahti',
       );
       expect(metadataForPath('/admin').title).toBe('Ylläpito · Tahti');
+      expect(metadataForPath('/admin/top-lists').title).toBe(
+        'Huippulistat · Ylläpito · Tahti',
+      );
+      expect(metadataForPath('/library/collections').title).toBe(
+        'Kokoelmat · Kirjasto · Tahti',
+      );
     } finally {
       await applyLocale('en_US');
     }

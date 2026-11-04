@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   fetchAuthMe,
   loginRequest,
@@ -246,7 +248,7 @@ export const useAuthStore = create<AuthState>()(
           sessionMutationVersion += 1;
           const challengeId = get().totpChallengeId;
           if (!challengeId) {
-            set({ error: 'No TOTP challenge — sign in again.' });
+            set({ error: i18n.t('web:auth.noTotpChallenge') });
             throw new Error('No TOTP challenge');
           }
           set({ loading: true, error: null });

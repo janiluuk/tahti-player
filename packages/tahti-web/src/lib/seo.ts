@@ -81,6 +81,24 @@ function sentenceCase(value: string): string {
   return words.charAt(0).toUpperCase() + words.slice(1);
 }
 
+function camelSlug(value: string): string {
+  return decodeURIComponent(value)
+    .split('-')
+    .filter(Boolean)
+    .map((part, index) =>
+      index === 0 ? part : part.charAt(0).toUpperCase() + part.slice(1),
+    )
+    .join('');
+}
+
+function childTitle(child: string, keyFor: (camel: string) => string): string {
+  const camel = camelSlug(child);
+  const key = keyFor(camel);
+  return camel && i18n.exists(`web:${key}`)
+    ? i18n.t(`web:${key}` as 'web:nav.library')
+    : sentenceCase(child);
+}
+
 function matchesPrefix(pathname: string, prefix: string): boolean {
   return pathname === prefix || pathname.startsWith(`${prefix}/`);
 }
@@ -99,7 +117,7 @@ function pageTitleForPath(pathname: string): string | null {
       .filter(Boolean)[0];
     const section = librarySectionTitle();
     return child
-      ? `${sentenceCase(child)} · ${section} · Tahti`
+      ? `${childTitle(child, (camel) => `library.tab${camel.charAt(0).toUpperCase()}${camel.slice(1)}`)} · ${section} · Tahti`
       : `${section} · Tahti`;
   }
   const page = PAGE_TITLE_KEYS.find(([prefix]) =>
@@ -119,8 +137,9 @@ function pageTitleForPath(pathname: string): string | null {
     .slice(sectionEntry[0].length)
     .split('/')
     .filter(Boolean)[0];
+  const childNamespace = sectionEntry[0] === '/admin' ? 'adminPages' : 'studio';
   return child
-    ? `${sentenceCase(child)} · ${section} · Tahti`
+    ? `${childTitle(child, (camel) => `${childNamespace}.${camel}`)} · ${section} · Tahti`
     : `${section} · Tahti`;
 }
 
