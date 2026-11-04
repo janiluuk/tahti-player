@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import {
   fetchTopListsOptOut,
   setTopListsOptOut,
@@ -8,6 +10,7 @@ import {
 import { SettingsToggle } from '../SettingsFields';
 
 export function TopListsToggle() {
+  const { t } = useTranslation('web');
   const [optOut, setOptOut] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -28,8 +31,8 @@ export function TopListsToggle() {
 
   return (
     <SettingsToggle
-      label="Put my new uploads in the top lists"
-      description="Tracks you upload from now on can be ranked in Tahti's public top lists. Tracks you've already uploaded keep their own setting."
+      label={t('toggles.topLists.label')}
+      description={t('toggles.topLists.description')}
       value={!optOut}
       onChange={(include) => {
         const previous = optOut;
@@ -41,7 +44,7 @@ export function TopListsToggle() {
             return;
           }
           setOptOut(result.optOut);
-          toast.success('Visibility setting saved.');
+          toast.success(t('toggles.topLists.saved'));
         });
       }}
     />

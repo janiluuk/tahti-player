@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import {
   fetchAutoRecordEnabled,
   patchAutoRecordEnabled,
@@ -12,6 +14,7 @@ import {
 import { SettingsToggle } from '../SettingsFields';
 
 export function BroadcastRecordingToggles() {
+  const { t } = useTranslation('web');
   const [autoRecord, setAutoRecord] = useState<boolean | null>(null);
   const [autoPublish, setAutoPublish] = useState<boolean | null>(null);
 
@@ -40,8 +43,8 @@ export function BroadcastRecordingToggles() {
     <>
       {autoRecord !== null ? (
         <SettingsToggle
-          label="Record my broadcasts"
-          description="Save each finished broadcast to your library as a recording. We notify you when it is saved, or if it could not be."
+          label={t('toggles.recording.recordLabel')}
+          description={t('toggles.recording.recordDescription')}
           value={autoRecord}
           onChange={(value) => {
             const previous = autoRecord;
@@ -52,15 +55,15 @@ export function BroadcastRecordingToggles() {
                 toast.error(result.error);
                 return;
               }
-              toast.success('Recording setting saved.');
+              toast.success(t('toggles.recording.recordSaved'));
             });
           }}
         />
       ) : null}
       {autoPublish !== null && autoRecord !== false ? (
         <SettingsToggle
-          label="Publish recordings automatically"
-          description="New broadcast recordings are public as soon as they're saved. You can still change this for a single show before going live."
+          label={t('toggles.recording.publishLabel')}
+          description={t('toggles.recording.publishDescription')}
           value={autoPublish}
           onChange={(value) => {
             const previous = autoPublish;
@@ -72,7 +75,7 @@ export function BroadcastRecordingToggles() {
                 return;
               }
               setAutoPublish(result.autoPublish);
-              toast.success('Publishing setting saved.');
+              toast.success(t('toggles.recording.publishSaved'));
             });
           }}
         />

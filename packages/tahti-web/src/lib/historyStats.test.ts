@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
 import type { HistoryEntry } from '../stores/libraryStore';
-import { dailyListeningMs } from './historyStats';
+import {
+  dailyListeningMs,
+  monthLabelsShort,
+  weekdayLabelsShort,
+} from './historyStats';
+import { applyLocale } from './locale';
 
 function entry(playedAt: string): HistoryEntry {
   return {
@@ -47,5 +52,18 @@ describe('dailyListeningMs', () => {
     );
     expect(days.map((d) => d.date)).toContain('2026-09-22');
     expect(days.map((d) => d.date)).not.toContain('2026-09-21');
+  });
+});
+
+describe('calendar labels', () => {
+  it('follow the app language', async () => {
+    expect(weekdayLabelsShort()[0]).toBe('Mon');
+    await applyLocale('fi_FI');
+    try {
+      expect(weekdayLabelsShort()[0]).toBe('ma');
+      expect(monthLabelsShort()).toHaveLength(12);
+    } finally {
+      await applyLocale('en_US');
+    }
   });
 });

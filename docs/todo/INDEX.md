@@ -22,6 +22,9 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | partial | [batch-34-slices-2026-11-04.md](batch-34-slices-2026-11-04.md) | Batch of 30 (29 done): ListingDate leftovers (revisions, news, recordings, episodes), schedule windows in the app language, Integrations/Add-ons/What's new/History/Following/Admin hubs/channel actions/auth toasts Finnish |
+| open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
+| open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
+| partial | [studio-updates-posts-storycard.md](studio-updates-posts-storycard.md) | Studio Updates as StoryCard posts, newsletter removed; draft #1809 unmerged |
 | partial | [batch-33-slices-2026-11-04.md](batch-33-slices-2026-11-04.md) | Batch of 30 (27 done): governance/admin ListingDate + numericDay, Library/Radio/Messages/player/Settings bodies Finnish, red OAuth disconnect, Library Media empty state |
 | partial | [library-management-port.md](library-management-port.md) | Port theDAW library management to Library Sounds: paged API client, facets/stats, bulk delete/edit |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |

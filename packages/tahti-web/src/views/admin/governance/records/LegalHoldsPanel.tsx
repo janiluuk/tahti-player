@@ -7,6 +7,7 @@ import {
   type GovernanceLegalHold,
   type LegalHoldKind,
 } from '../../../../api/admin/admin-governance-legal-holds';
+import { ListingDate } from '../../../../components/ListingDate';
 import {
   PageEmpty,
   PageError,
@@ -20,14 +21,6 @@ const KIND_LABELS: Record<LegalHoldKind, string> = {
   RESOLUTION: 'Resolution',
   ANNUAL_REPORT: 'Annual report',
 };
-
-function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
 
 /** Everything under a legal hold, in one place. Held records are not
  * regenerated, corrected, archived or deleted until released where they live. */
@@ -76,7 +69,7 @@ export function LegalHoldsPanel() {
                 <span className="font-medium">{hold.title}</span>
               </div>
               <p className="text-foreground-secondary text-xs">
-                Held since {formatDay(hold.legalHoldAt)}
+                Held since <ListingDate value={hold.legalHoldAt} />
                 {hold.legalHoldReason ? ` · ${hold.legalHoldReason}` : ''}
               </p>
             </li>

@@ -769,7 +769,9 @@
       "add": "Lisää",
       "back": "Takaisin",
       "shareItem": "Jaa {{title}}",
-      "backTo": "Takaisin: {{name}}"
+      "backTo": "Takaisin: {{name}}",
+      "showMore": "Näytä lisää",
+      "editItem": "Muokkaa: {{title}}"
     },
     "search": {
       "placeholder": "Hae artisteja, kappaleita, soittolistoja…",
@@ -1123,7 +1125,11 @@
       "noPlaysYet": "Ei kuuntelukertoja vielä",
       "topSoundsAllTime": "Suosituimmat äänet · koko ajalta",
       "plays_one": "{{n}} kuuntelu",
-      "plays_other": "{{n}} kuuntelua"
+      "plays_other": "{{n}} kuuntelua",
+      "followingSignIn": "Kirjaudu sisään nähdäksesi, ketä seuraat",
+      "followingLoadError": "Seuraamiasi ei voitu ladata",
+      "followingEmptyTitle": "Et seuraa vielä ketään",
+      "followingEmptyDescription": "Seuraa artisteja ja kanavia heidän sivuiltaan. He näkyvät täällä ja syötteessäsi."
     },
     "date": {
       "today": "Tänään",
@@ -1260,7 +1266,9 @@
       "chatModeration": "Keskustelun moderointi",
       "jam": "Jam",
       "studio": "Studio",
-      "admin": "Ylläpito"
+      "admin": "Ylläpito",
+      "radioTitle": "Tahti Radio",
+      "radioDescription": "Kuuntele osuuskunnan Tahti Radio -lähetystä ja katso ohjelma-aikataulu."
     },
     "radio": {
       "tabUpNext": "Seuraavaksi",
@@ -1348,6 +1356,43 @@
         "tabGallery": "Galleria",
         "tabPressKit": "Pressikitti",
         "tabReleases": "Julkaisut"
+      }
+    },
+    "toggles": {
+      "channelAutoplay": {
+        "label": "Aloita toisto, kun joku avaa kanavani",
+        "description": "Kanavasi alkaa soida itsestään äänettömänä, kunnes kuuntelija ottaa äänen päälle. Jos hän kuuntelee jo jotain, toisto siirtyy pehmeästi kanavallesi. Kuuntelijat voivat kytkeä tämän pois itseltään.",
+        "saved": "Automaattisen toiston asetus tallennettu."
+      },
+      "topLists": {
+        "label": "Lisää uudet lataukseni huippulistoille",
+        "description": "Tästä lähtien lataamasi kappaleet voivat sijoittua Tahden julkisille huippulistoille. Aiemmin lataamasi kappaleet säilyttävät oman asetuksensa.",
+        "saved": "Näkyvyysasetus tallennettu."
+      },
+      "musicbrainz": {
+        "label": "Tarjoa MusicBrainz-rekisteröintiä",
+        "description": "Julkaisun jälkeen kysytään, rekisteröidäänkö se MusicBrainziin.",
+        "loading": "Ladataan MusicBrainz-asetusta…",
+        "offeredAgain": "MusicBrainz-rekisteröintiä tarjotaan jatkossa taas.",
+        "notOffered": "MusicBrainz-rekisteröintiä ei tarjota julkaisun jälkeen."
+      },
+      "recording": {
+        "recordLabel": "Tallenna lähetykseni",
+        "recordDescription": "Tallenna jokainen päättynyt lähetys kirjastoosi äänitteenä. Ilmoitamme, kun se on tallennettu tai jos tallennus epäonnistui.",
+        "recordSaved": "Tallennusasetus tallennettu.",
+        "publishLabel": "Julkaise äänitteet automaattisesti",
+        "publishDescription": "Uudet lähetysäänitteet ovat julkisia heti, kun ne on tallennettu. Voit silti muuttaa tätä yksittäiselle ohjelmalle ennen lähetyksen alkua.",
+        "publishSaved": "Julkaisuasetus tallennettu."
+      },
+      "comments": {
+        "loadError": "Kommenttiasetuksia ei voitu ladata",
+        "saved": "Kommenttiasetus tallennettu.",
+        "channelLabel": "Salli kommentit kanavallani",
+        "channelDescription": "Kuuntelijat voivat jättää kommentteja kanavasivullesi.",
+        "newChannelLabel": "Salli kommentit kanavallani, kun se luodaan",
+        "newChannelDescription": "Kanavasi alkaa kommentit päällä tai pois päältä, kun otat sen käyttöön. Voit muuttaa tätä jälkeenpäin.",
+        "uploadsLabel": "Salli kommentit uusille latauksilleni",
+        "uploadsDescription": "Tästä lähtien lataamasi kappaleet alkavat kommentit päällä. Kukin kappale säilyttää oman asetuksensa jälkeenpäin."
       }
     }
   },

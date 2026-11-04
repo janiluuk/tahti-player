@@ -1,4 +1,5 @@
 import type { HistoryEntry } from '../stores/libraryStore';
+import { dateLocaleTag } from './locale';
 
 /** Nuclear desktop tracks real listening duration per play (native
  * player, local SQLite). Tahti-web only logs a play event with a
@@ -238,27 +239,24 @@ export function formatListeningDuration(ms: number): string {
 }
 
 export function formatHour(hour: number): string {
-  return new Date(2000, 0, 1, hour).toLocaleTimeString(undefined, {
+  return new Date(2000, 0, 1, hour).toLocaleTimeString(dateLocaleTag(), {
     hour: 'numeric',
   });
 }
 
-const WEEKDAY_LABELS_MONDAY_FIRST = (() => {
-  // Sun 2023-01-01 .. Sat 2023-01-07: pick the Monday-first week from it.
-  const base = new Date(2023, 0, 2); // a Monday
+export function weekdayLabelsShort(): string[] {
+  const base = new Date(2023, 0, 2);
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(base);
     d.setDate(base.getDate() + i);
-    return d.toLocaleDateString(undefined, { weekday: 'short' });
+    return d.toLocaleDateString(dateLocaleTag(), { weekday: 'short' });
   });
-})();
-
-export function weekdayLabelsShort(): string[] {
-  return WEEKDAY_LABELS_MONDAY_FIRST;
 }
 
 export function monthLabelsShort(): string[] {
   return Array.from({ length: 12 }, (_, i) =>
-    new Date(2000, i, 1).toLocaleDateString(undefined, { month: 'short' }),
+    new Date(2000, i, 1).toLocaleDateString(dateLocaleTag(), {
+      month: 'short',
+    }),
   );
 }

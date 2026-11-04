@@ -3,7 +3,13 @@ import { afterEach, describe, expect, it } from 'vitest';
 
 import { i18n } from '@tahti-player/i18n';
 
-import { applyLocale, currentLocale, isWebLocale, WEB_LOCALES } from './locale';
+import {
+  applyLocale,
+  currentLocale,
+  dateLocaleTag,
+  isWebLocale,
+  WEB_LOCALES,
+} from './locale';
 
 describe('web locale', () => {
   afterEach(async () => {
@@ -24,5 +30,11 @@ describe('web locale', () => {
     expect(currentLocale()).toBe('fi_FI');
     expect(i18n.t('web:nav.listen')).toBe('Kuuntele');
     expect(document.documentElement.lang).toBe('fi-FI');
+  });
+
+  it('gives the BCP 47 tag dates are formatted in', async () => {
+    expect(dateLocaleTag()).toBe('en-US');
+    await applyLocale('fi_FI');
+    expect(dateLocaleTag()).toBe('fi-FI');
   });
 });

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import {
   fetchCommentSettings,
   setChannelCommentsEnabled,
@@ -12,6 +14,7 @@ import { PageError } from '../../../components/PageStates';
 import { SettingsToggle } from '../SettingsFields';
 
 export function CommentSettingsToggles() {
+  const { t } = useTranslation('web');
   const [settings, setSettings] = useState<CommentSettings | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -37,7 +40,7 @@ export function CommentSettingsToggles() {
   if (!settings && loadError) {
     return (
       <PageError
-        title="Could not load your comment settings"
+        title={t('toggles.comments.loadError')}
         description={loadError}
         onRetry={() => {
           setLoadError(null);
@@ -69,7 +72,7 @@ export function CommentSettingsToggles() {
       setSettings((current) =>
         current ? { ...current, [key]: result.enabled } : current,
       );
-      toast.success('Comment setting saved.');
+      toast.success(t('toggles.comments.saved'));
     });
   };
 
@@ -77,8 +80,8 @@ export function CommentSettingsToggles() {
     <>
       {settings.channelCommentsEnabled !== null ? (
         <SettingsToggle
-          label="Allow comments on my channel"
-          description="Listeners can leave comments on your channel page."
+          label={t('toggles.comments.channelLabel')}
+          description={t('toggles.comments.channelDescription')}
           value={settings.channelCommentsEnabled}
           onChange={(value) =>
             save('channelCommentsEnabled', value, setChannelCommentsEnabled)
@@ -88,8 +91,8 @@ export function CommentSettingsToggles() {
         // The channel default only applies when the channel is created, so
         // once a channel exists the live switch above replaces it.
         <SettingsToggle
-          label="Allow comments on my channel when it is created"
-          description="Your channel starts with comments on or off when you set it up. You can change it afterwards."
+          label={t('toggles.comments.newChannelLabel')}
+          description={t('toggles.comments.newChannelDescription')}
           value={settings.newChannelCommentsEnabled}
           onChange={(value) =>
             save(
@@ -101,8 +104,8 @@ export function CommentSettingsToggles() {
         />
       )}
       <SettingsToggle
-        label="Allow comments on my new uploads"
-        description="Tracks you upload from now on start with comments on. Each track keeps its own setting afterwards."
+        label={t('toggles.comments.uploadsLabel')}
+        description={t('toggles.comments.uploadsDescription')}
         value={settings.newUploadCommentsEnabled}
         onChange={(value) =>
           save('newUploadCommentsEnabled', value, setNewUploadCommentsEnabled)

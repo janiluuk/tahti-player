@@ -48,7 +48,7 @@ describe('ReportsTab', () => {
     expect(await screen.findByText('Draft')).toBeInTheDocument();
     expect(screen.getByText('Published')).toBeInTheDocument();
     expect(screen.getByText('On legal hold')).toBeInTheDocument();
-    expect(screen.getByText(/filed .* \(PRH-123\)/)).toBeInTheDocument();
+    expect(document.body.textContent).toMatch(/filed .* \(PRH-123\)/);
   });
 
   it('reloads the list after generating instead of inserting the answer', async () => {

@@ -769,7 +769,9 @@
       "add": "Add",
       "back": "Back",
       "shareItem": "Share {{title}}",
-      "backTo": "Back to {{name}}"
+      "backTo": "Back to {{name}}",
+      "showMore": "Show more",
+      "editItem": "Edit {{title}}"
     },
     "search": {
       "placeholder": "Search artists, tracks, playlists…",
@@ -1123,7 +1125,11 @@
       "noPlaysYet": "No plays yet",
       "topSoundsAllTime": "Top sounds · all time",
       "plays_one": "{{n}} play",
-      "plays_other": "{{n}} plays"
+      "plays_other": "{{n}} plays",
+      "followingSignIn": "Sign in to see who you follow",
+      "followingLoadError": "Couldn't load who you follow",
+      "followingEmptyTitle": "You don't follow anyone yet",
+      "followingEmptyDescription": "Follow artists and channels from their pages. They show up here and in your feed."
     },
     "date": {
       "today": "Today",
@@ -1260,7 +1266,9 @@
       "chatModeration": "Chat moderation",
       "jam": "Jam",
       "studio": "Studio",
-      "admin": "Admin"
+      "admin": "Admin",
+      "radioTitle": "Tahti Radio",
+      "radioDescription": "Listen to the cooperative Tahti Radio stream and schedule."
     },
     "radio": {
       "tabUpNext": "Up next",
@@ -1348,6 +1356,43 @@
         "tabGallery": "Gallery",
         "tabPressKit": "Press kit",
         "tabReleases": "Releases"
+      }
+    },
+    "toggles": {
+      "channelAutoplay": {
+        "label": "Start playing when someone opens my channel",
+        "description": "Your channel starts on its own, muted until the listener unmutes it. If they are already listening to something, it fades over to your channel. Listeners can switch this off for themselves.",
+        "saved": "Autoplay setting saved."
+      },
+      "topLists": {
+        "label": "Put my new uploads in the top lists",
+        "description": "Tracks you upload from now on can be ranked in Tahti's public top lists. Tracks you've already uploaded keep their own setting.",
+        "saved": "Visibility setting saved."
+      },
+      "musicbrainz": {
+        "label": "Offer MusicBrainz registration",
+        "description": "After you publish a release, ask whether to register it on MusicBrainz.",
+        "loading": "Loading MusicBrainz preference…",
+        "offeredAgain": "MusicBrainz registration will be offered again.",
+        "notOffered": "MusicBrainz registration won’t be offered after publish."
+      },
+      "recording": {
+        "recordLabel": "Record my broadcasts",
+        "recordDescription": "Save each finished broadcast to your library as a recording. We notify you when it is saved, or if it could not be.",
+        "recordSaved": "Recording setting saved.",
+        "publishLabel": "Publish recordings automatically",
+        "publishDescription": "New broadcast recordings are public as soon as they're saved. You can still change this for a single show before going live.",
+        "publishSaved": "Publishing setting saved."
+      },
+      "comments": {
+        "loadError": "Could not load your comment settings",
+        "saved": "Comment setting saved.",
+        "channelLabel": "Allow comments on my channel",
+        "channelDescription": "Listeners can leave comments on your channel page.",
+        "newChannelLabel": "Allow comments on my channel when it is created",
+        "newChannelDescription": "Your channel starts with comments on or off when you set it up. You can change it afterwards.",
+        "uploadsLabel": "Allow comments on my new uploads",
+        "uploadsDescription": "Tracks you upload from now on start with comments on. Each track keeps its own setting afterwards."
       }
     }
   },

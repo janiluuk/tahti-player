@@ -43,6 +43,19 @@ flight, so the batch ships `0.0.322` after the rebase. `ListingDate` /
 
 27 of 30 done.
 
+## Second pass (same branch)
+
+Landed on top of the first pass after finding it already pushed.
+
+- [x] Studio stats axis/day labels and History heatmap, weekday and month labels follow the app language (`dateLocaleTag()` in `lib/locale.ts`); slices 13 and 14 stay skipped for listing dates, since these are chart labels.
+- [x] Date: admin governance `LegalHoldsPanel` held since → `ListingDate`
+- [x] Finnish: Settings switches for channel autoplay, top lists, broadcast recording/publish, comments and MusicBrainz (`web.toggles.*`)
+- [x] Finnish: Library Following page strings, Discover action in its empty state, `actions.showMore`
+- [x] Finnish: Radio `<title>` and description in `seo.ts` (`seo.radioTitle`, `seo.radioDescription`)
+- [x] Finnish: `TrackHero` play, pause and edit labels
+- [x] Tests: locale tag, Finnish weekday labels, Finnish processing toast, Finnish Radio description
+- [x] INDEX rows for `finish-wip-2026-11-04`, `performance-audit-spa-2026-11-04`, `studio-updates-posts-storycard` (stubs)
+
 ## Skipped
 
 - 13 Studio stats: the `toLocaleDateString` calls are chart axis labels and tooltips, and the rest are `toLocaleString()` on counts, not listing dates.
@@ -51,5 +64,6 @@ flight, so the batch ships `0.0.322` after the rebase. `ListingDate` /
 
 ## Not changed on purpose
 
+- `OverviewTab` voting activity log stays exact (audit trail).
 - `GovernanceView` / `AgmTab` / `MotionMeetingNote` meeting and voting-window times stay exact.
 - `WORKPLAN.md` has no checkboxes to strip.

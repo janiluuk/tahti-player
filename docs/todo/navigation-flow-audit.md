@@ -19,6 +19,8 @@ a `ButtonLink`) with the parent page's name as the label ("Governance",
 "Stats", "All venues"), placed first in the page body. Entity cover headers
 use `BackButtonLink` with `aria-label="Back to …"`.
 
+2026-11-04 (batch 33): re-checked the governance meeting detail, admin governance panels and Library Following. Back links are present; the Library Following empty state now links to Discover so the page is not a dead end.
+
 ## Open
 
 | Where | Issue | Why not fixed yet |

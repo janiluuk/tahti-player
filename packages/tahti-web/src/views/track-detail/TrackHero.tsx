@@ -193,8 +193,8 @@ export function TrackHero({ page }: { page: TrackPage }) {
                   onClick={togglePlayback}
                   aria-label={
                     isPlaying
-                      ? `Pause ${playable.title}`
-                      : `Play ${playable.title}`
+                      ? t('actions.pauseItem', { title: playable.title })
+                      : t('actions.playItem', { title: playable.title })
                   }
                   className="size-14 shrink-0 justify-center rounded-full bg-white p-0 text-black shadow-xl hover:bg-white active:bg-white disabled:opacity-40"
                 >
@@ -388,7 +388,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
               <EditIconButton
                 className="size-9"
                 variant="default"
-                label={`Edit ${playable.title}`}
+                label={t('actions.editItem', { title: playable.title })}
                 onClick={() => setEditOpen(true)}
               />
             ) : null}

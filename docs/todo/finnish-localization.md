@@ -36,6 +36,7 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 - Batch 32 follow-up (#1818): `ReleaseTrackDownloads` and track-info Love / Loved via `web.actions`.
 - Batch 34: Settings → Integrations, Add-ons (group titles, category tabs, scrobbling notice) and What's new chrome; Library History (tabs, toolbar, filter, pagination, toasts, plural counts) and Following; Admin section tabs, page labels, hub titles and descriptions; channel page actions and the share dialog; track download gate; auth-flow toasts (connect, sign in to buy, device sign-out); `libraryFormat` track counts with a Finnish plural; `seo.ts` Library, Studio and Admin child titles.
 - Batch 33: Library Overview stat cards and `formatPlayCount` plural (`web.library.plays`); Radio tabs, loading and recent-plays copy (`web.radio.*`); Messages popover (`web.messagesPopover.*`); processing-failure toast (`web.toasts.*`); FullScreenPlayer chrome and controls (`web.player.*`); `TrackHero` back, share and add; Settings Account tabs/session/membership/subscriptions/purchases, Artist tabs and load errors, Channel page and chat/moderator pointers, Broadcast radio and green room (`web.settingsBody.*`).
+- Batch 33, second pass: Settings switches for channel autoplay, top lists, broadcast recording/publish, comments and MusicBrainz (`web.toggles.*`); Library Following (`library.following*`); Radio `<title>` description (`seo.radio*`); `TrackHero` play/pause/edit; chart and heatmap date labels follow the app language.
 
 ## Left
 
