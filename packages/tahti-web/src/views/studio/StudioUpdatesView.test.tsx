@@ -21,7 +21,18 @@ const { toast } = vi.hoisted(() => ({
 vi.mock('sonner', () => ({ toast, Toaster: () => null }));
 
 const sendNewsletterDraft = vi.fn();
+const deleteNewsletterDraft = vi.fn();
 let artistPosts: ArtistPost[] = [];
+let newsletterDrafts = [
+  {
+    id: 'draft-1',
+    subject: 'September update',
+    bodyMd: 'Hello!',
+    subscribersOnly: false,
+    state: 'DRAFT' as string | undefined,
+    sentAt: null as string | null,
+  },
+];
 
 vi.mock('../../api/studio-extras', async (importOriginal) => {
   const actual =
@@ -33,16 +44,7 @@ vi.mock('../../api/studio-extras', async (importOriginal) => {
       meta: { source: 'mock' as const },
     }),
     fetchNewsletterDrafts: async () => ({
-      data: [
-        {
-          id: 'draft-1',
-          subject: 'September update',
-          bodyMd: 'Hello!',
-          subscribersOnly: false,
-          state: 'DRAFT',
-          sentAt: null,
-        },
-      ],
+      data: [...newsletterDrafts],
       meta: { source: 'mock' as const },
     }),
     fetchNewsletterSubscriberStats: async () => ({
@@ -55,6 +57,8 @@ vi.mock('../../api/studio-extras', async (importOriginal) => {
       meta: { source: 'mock' as const },
     }),
     sendNewsletterDraft: (...args: unknown[]) => sendNewsletterDraft(...args),
+    deleteNewsletterDraft: (...args: unknown[]) =>
+      deleteNewsletterDraft(...args),
   };
 });
 
@@ -77,8 +81,19 @@ let root: Root;
 beforeEach(() => {
   vi.stubEnv('VITE_FORCE_MOCK', '1');
   sendNewsletterDraft.mockResolvedValue({ ok: true, queued: 42 });
+  deleteNewsletterDraft.mockResolvedValue({ ok: true });
   toast.success.mockClear();
   toast.error.mockClear();
+  newsletterDrafts = [
+    {
+      id: 'draft-1',
+      subject: 'September update',
+      bodyMd: 'Hello!',
+      subscribersOnly: false,
+      state: 'DRAFT',
+      sentAt: null,
+    },
+  ];
   container = document.createElement('div');
   document.body.appendChild(container);
   root = createRoot(container);
@@ -191,7 +206,7 @@ describe('StudioUpdatesView posts', () => {
     createdAt: '2026-01-01T00:00:00.000Z',
   });
 
-  it('marks scheduled posts and lets the artist edit a post', async () => {
+  it('renders posts as StoryCards and lets the artist edit a post', async () => {
     const scheduledAt = '2099-06-01T09:00:00.000Z';
     artistPosts = [
       post('scheduled', scheduledAt),
@@ -199,11 +214,9 @@ describe('StudioUpdatesView posts', () => {
     ];
     await renderView();
 
-    const scheduledLabels = screen.getAllByText(/Scheduled for/);
-    expect(scheduledLabels).toHaveLength(1);
-    expect(scheduledLabels[0]!.textContent).toContain(
-      new Date(scheduledAt).toLocaleString(),
-    );
+    expect(screen.getByTestId('studio-posts-story-grid')).toBeInTheDocument();
+    expect(screen.getAllByTestId('studio-post-story')).toHaveLength(2);
+    expect(screen.getByText('Scheduled')).toBeInTheDocument();
 
     await act(async () =>
       fireEvent.click(
@@ -214,5 +227,43 @@ describe('StudioUpdatesView posts', () => {
     expect(screen.getByLabelText('Title (optional)')).toHaveValue(
       'Post scheduled',
     );
+  });
+});
+
+describe('StudioUpdatesView newsletter remove', () => {
+  it('asks for confirmation before removing a draft', async () => {
+    await renderView('newsletter');
+
+    await act(async () =>
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Remove September update' }),
+      ),
+    );
+    expect(deleteNewsletterDraft).not.toHaveBeenCalled();
+    expect(screen.getByText('Remove “September update”?')).toBeInTheDocument();
+
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Remove' })),
+    );
+
+    expect(deleteNewsletterDraft).toHaveBeenCalledWith('draft-1');
+    expect(toast.success).toHaveBeenCalledWith('Newsletter removed.');
+  });
+
+  it('hides remove while a send is queued', async () => {
+    newsletterDrafts = [
+      {
+        id: 'draft-q',
+        subject: 'Queued send',
+        bodyMd: 'Wait',
+        subscribersOnly: false,
+        state: 'QUEUED',
+        sentAt: null,
+      },
+    ];
+    await renderView('newsletter');
+    expect(
+      screen.queryByRole('button', { name: 'Remove Queued send' }),
+    ).toBeNull();
   });
 });
