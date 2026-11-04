@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
@@ -134,10 +135,17 @@ export function playQueueFavoriteActions(opts: {
   if (opts.onFavorite) {
     actions.push({
       ariaLabel: opts.itemName
-        ? `${opts.favorited ? 'Remove from favorites:' : 'Favorite'} ${opts.itemName}`
+        ? i18n.t(
+            opts.favorited
+              ? 'web:actions.removeFromFavoritesItem'
+              : 'web:actions.favoriteItem',
+            { title: opts.itemName },
+          )
         : undefined,
       id: 'favorite',
-      label: opts.favorited ? 'Favorited' : 'Favorite',
+      label: i18n.t(
+        opts.favorited ? 'web:actions.favorited' : 'web:actions.favorite',
+      ),
       icon: (
         <HeartIcon
           size={16}

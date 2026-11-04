@@ -1,5 +1,5 @@
 import { VoteIcon } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 
 import { Badge, InlineLoader } from '@tahti-player/ui';
 
@@ -8,31 +8,33 @@ import {
   fetchGovernanceElections,
   type GovernanceElection,
 } from '../../api/governance-elections';
+import { ListingDate } from '../ListingDate';
 import { PageEmpty, PageError } from '../PageStates';
 import { CandidacyControl } from './CandidacyControl';
 import { GovernancePanel } from './GovernancePanel';
 
-function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
-
-function electionStatus(election: GovernanceElection): string {
+function electionStatus(election: GovernanceElection): ReactNode {
   if (election.cancelledAt) {
     return election.cancelReason
       ? `Cancelled: ${election.cancelReason}`
       : 'Cancelled';
   }
   if (election.decidedAt) {
-    return `Decided ${formatDay(election.decidedAt)}`;
+    return (
+      <>
+        Decided <ListingDate value={election.decidedAt} />
+      </>
+    );
   }
   if (election.nominationsOpen) {
-    return election.nominationsCloseAt
-      ? `Nominations open until ${formatDay(election.nominationsCloseAt)}`
-      : 'Nominations open';
+    return election.nominationsCloseAt ? (
+      <>
+        Nominations open until{' '}
+        <ListingDate value={election.nominationsCloseAt} />
+      </>
+    ) : (
+      'Nominations open'
+    );
   }
   return 'Nominations closed, waiting for the meeting';
 }

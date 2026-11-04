@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, EmptyState, Loader, Tooltip } from '@tahti-player/ui';
 
 import { fetchChannel } from '../../api/client';
@@ -87,14 +88,15 @@ export function ChannelStagePlayer({
     currentId && trackIds?.has(currentId) ? activePlayable : null;
   const stageEmbed = currentPlayable?.embed ? currentPlayable : null;
   useHearthisEmbedClaim(Boolean(stageEmbed));
+  const { t } = useTranslation('web');
   const favorited = follow?.following ?? false;
   const favoriteLabel = signedIn
-    ? `Follow ${channel.user.displayName}`
-    : 'Favorite';
+    ? `${t('actions.follow')} ${channel.user.displayName}`
+    : t('actions.favorite');
   const favoriteTooltip = favorited
     ? signedIn
-      ? 'Following'
-      : 'Favorited'
+      ? t('actions.following')
+      : t('actions.favorited')
     : favoriteLabel;
   const navigate = useNavigate();
   const onAir = live && channelAirState(channel) === 'on-air';

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import type { RepeatMode } from '@tahti-player/model';
 import {
   Input,
@@ -21,38 +22,29 @@ import { usePlayerStore } from '../../../stores/playerStore';
 import { MyRadioStations } from '../MyRadioStations';
 import { SettingsToggle } from '../SettingsFields';
 
-const REPEAT_OPTIONS = [
-  { id: 'off', label: 'Off' },
-  { id: 'all', label: 'Repeat queue' },
-  { id: 'one', label: 'Repeat track' },
-] as const satisfies readonly { id: RepeatMode; label: string }[];
-
-const NORMALIZATION_OPTIONS = [
-  { id: 'off', label: 'Off' },
-  { id: 'track', label: 'Track' },
-  { id: 'album', label: 'Album' },
-] as const satisfies readonly { id: NormalizationMode; label: string }[];
-
 function NormalizationField() {
+  const { t } = useTranslation('web');
+  const options = [
+    { id: 'off', label: t('settingsPlayback.off') },
+    { id: 'track', label: t('settingsPlayback.track') },
+    { id: 'album', label: t('settingsPlayback.album') },
+  ] as const satisfies readonly { id: NormalizationMode; label: string }[];
   const normalization = usePlaybackPrefsStore((s) => s.normalization);
   const setNormalization = usePlaybackPrefsStore((s) => s.setNormalization);
   return (
     <div className="flex flex-col gap-2">
       <span className="text-foreground text-sm font-semibold">
-        Volume normalization
+        {t('settingsPlayback.normalization')}
       </span>
       <SegmentedControl
-        aria-label="Volume normalization"
-        options={NORMALIZATION_OPTIONS}
+        aria-label={t('settingsPlayback.normalization')}
+        options={options}
         value={normalization}
         onChange={setNormalization}
         className="self-start"
       />
       <p className="text-foreground-secondary text-sm select-none">
-        Evens out loudness between local library files using their ReplayGain
-        tags, or the loudness measured by Audio analysis. Album keeps the level
-        differences within an album. Never raises a track past its peak. Streams
-        and radio are not changed.
+        {t('settingsPlayback.normalizationDescription')}
       </p>
     </div>
   );
@@ -61,6 +53,7 @@ function NormalizationField() {
 const SECTION_DIVIDER = 'border-border border-t pt-6';
 
 function SkipDurationField() {
+  const { t } = useTranslation('web');
   const skipSeconds = usePlaybackPrefsStore((s) => s.skipSeconds);
   const setSkipSeconds = usePlaybackPrefsStore((s) => s.setSkipSeconds);
   const [draft, setDraft] = useState(String(skipSeconds));
@@ -88,8 +81,11 @@ function SkipDurationField() {
         variant="number"
         min={SKIP_SECONDS_MIN}
         max={SKIP_SECONDS_MAX}
-        label="Skip duration"
-        description={`Number of seconds to skip forward/backward with Shift+←/→ and media keys (${SKIP_SECONDS_MIN}–${SKIP_SECONDS_MAX}).`}
+        label={t('settingsPlayback.skipDuration')}
+        description={t('settingsPlayback.skipDurationDescription', {
+          min: SKIP_SECONDS_MIN,
+          max: SKIP_SECONDS_MAX,
+        })}
         value={draft}
         onChange={(event) => setDraft(event.target.value)}
         onBlur={commit}
@@ -99,6 +95,12 @@ function SkipDurationField() {
 }
 
 export function PlaybackPanel() {
+  const { t } = useTranslation('web');
+  const repeatOptions = [
+    { id: 'off', label: t('settingsPlayback.off') },
+    { id: 'all', label: t('settingsPlayback.repeatQueue') },
+    { id: 'one', label: t('settingsPlayback.repeatTrack') },
+  ] as const satisfies readonly { id: RepeatMode; label: string }[];
   const volume = usePlayerStore((s) => s.volume);
   const muted = usePlayerStore((s) => s.muted);
   const channelAutoplay = usePlaybackPrefsStore((s) => s.channelAutoplay);
@@ -116,39 +118,39 @@ export function PlaybackPanel() {
 
   return (
     <div className="flex w-full max-w-xl flex-col" data-testid="playback-panel">
-      <SectionShell title="Output">
+      <SectionShell title={t('settingsPlayback.output')}>
         <div className="flex flex-col gap-6">
           <div className="px-2">
             <Slider
-              label="Volume"
-              description="Output level for tracks, radio and live streams."
+              label={t('settingsPlayback.volume')}
+              description={t('settingsPlayback.volumeDescription')}
               showFooter
               unit="%"
               min={0}
               max={100}
               step={1}
-              startLabel="Quiet"
-              endLabel="Loud"
+              startLabel={t('settingsPlayback.quiet')}
+              endLabel={t('settingsPlayback.loud')}
               value={Math.round(volume * 100)}
               onValueChange={(value) => setVolume(value / 100)}
             />
           </div>
           <SettingsToggle
-            label="Mute"
-            description="Silence playback without changing the volume level."
+            label={t('settingsPlayback.mute')}
+            description={t('settingsPlayback.muteDescription')}
             value={muted}
             onChange={() => toggleMute()}
           />
           <SettingsToggle
-            label="Let channels start playing on their own"
-            description="A channel whose artist allows it starts muted when you open its page. Off means nothing plays until you press play."
+            label={t('settingsPlayback.channelAutoplay')}
+            description={t('settingsPlayback.channelAutoplayDescription')}
             value={channelAutoplay}
             onChange={(value) => setChannelAutoplay(value)}
           />
           {'wakeLock' in navigator ? (
             <SettingsToggle
-              label="Keep the screen on in full screen"
-              description="While the full-screen player is playing, your phone or tablet does not dim or lock."
+              label={t('settingsPlayback.keepScreenOn')}
+              description={t('settingsPlayback.keepScreenOnDescription')}
               value={keepScreenOn}
               onChange={(value) => setKeepScreenOn(value)}
             />
@@ -156,37 +158,45 @@ export function PlaybackPanel() {
           {hasLocalAnalysis ? <NormalizationField /> : null}
         </div>
       </SectionShell>
-      <SectionShell title="Queue" className={SECTION_DIVIDER}>
+      <SectionShell
+        title={t('settingsPlayback.queue')}
+        className={SECTION_DIVIDER}
+      >
         <div className="flex flex-col gap-6">
           <SettingsToggle
-            label="Shuffle"
-            description="Pick the next queued track at random."
+            label={t('settingsPlayback.shuffle')}
+            description={t('settingsPlayback.shuffleDescription')}
             value={shuffle}
             onChange={() => toggleShuffle()}
           />
           <div className="flex flex-col gap-2">
             <span className="text-foreground text-sm font-semibold">
-              Repeat
+              {t('settingsPlayback.repeat')}
             </span>
             <SegmentedControl
-              aria-label="Repeat"
-              options={REPEAT_OPTIONS}
+              aria-label={t('settingsPlayback.repeat')}
+              options={repeatOptions}
               value={repeatMode}
               onChange={setRepeatMode}
               className="self-start"
             />
             <p className="text-foreground-secondary text-sm select-none">
-              What happens when the queue reaches its last track. For radio, any
-              repeat loops the station list.
+              {t('settingsPlayback.repeatDescription')}
             </p>
           </div>
         </div>
       </SectionShell>
-      <SectionShell title="Skipping" className={SECTION_DIVIDER}>
+      <SectionShell
+        title={t('settingsPlayback.skipping')}
+        className={SECTION_DIVIDER}
+      >
         <SkipDurationField />
       </SectionShell>
       {signedIn ? (
-        <SectionShell title="My radio stations" className={SECTION_DIVIDER}>
+        <SectionShell
+          title={t('settingsPlayback.myRadioStations')}
+          className={SECTION_DIVIDER}
+        >
           <MyRadioStations />
         </SectionShell>
       ) : null}

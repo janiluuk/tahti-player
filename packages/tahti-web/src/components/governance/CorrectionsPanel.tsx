@@ -15,6 +15,7 @@ import {
   type GovernanceCorrection,
 } from '../../api/governance-corrections';
 import { ConfirmDialog } from '../ConfirmDialog';
+import { ListingDate } from '../ListingDate';
 import { PageError } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
 
@@ -27,14 +28,6 @@ const STATE_LABELS: Record<
   REJECTED: { label: 'Rejected', color: 'red' },
   WITHDRAWN: { label: 'Withdrawn', color: 'secondary' },
 };
-
-function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
 
 function CorrectionItem({
   correction,
@@ -73,7 +66,7 @@ function CorrectionItem({
         </Badge>
       </div>
       <p className="text-foreground-secondary text-xs">
-        Sent {formatDay(correction.createdAt)}
+        Sent <ListingDate value={correction.createdAt} />
       </p>
       <p className="whitespace-pre-line">{correction.details}</p>
       {correction.resolutionNote ? (

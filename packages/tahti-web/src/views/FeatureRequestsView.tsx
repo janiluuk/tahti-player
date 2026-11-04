@@ -19,6 +19,7 @@ import {
   type MotionComment,
 } from '../api/client';
 import type { FeatureRequest, FeatureRequestStatus } from '../api/types';
+import { ListingDate } from '../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -333,9 +334,12 @@ export function FeatureRequestsView({
                           <li key={c.id} className="px-3 py-2">
                             <div className="text-foreground-secondary text-xs">
                               {c.authorDisplayName ?? 'Member'}
-                              {c.createdAt
-                                ? `, ${new Date(c.createdAt).toLocaleString()}`
-                                : ''}
+                              {c.createdAt ? (
+                                <>
+                                  {', '}
+                                  <ListingDate value={c.createdAt} />
+                                </>
+                              ) : null}
                             </div>
                             <p className="mt-1">{c.body}</p>
                           </li>

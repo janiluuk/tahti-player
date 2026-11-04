@@ -11,6 +11,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { useShallow } from 'zustand/react/shallow';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -43,6 +44,7 @@ import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint } from '../SettingsFields';
 
 export function ThemesPanel() {
+  const { t } = useTranslation('web');
   const {
     themes,
     customThemes,
@@ -134,10 +136,7 @@ export function ThemesPanel() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <SettingsHint>
-          Choose a palette and the light, dark, or time-of-day appearance that
-          suits you.
-        </SettingsHint>
+        <SettingsHint>{t('settingsThemes.hint')}</SettingsHint>
         <div className="flex flex-wrap items-center gap-4">
           <ThemeController
             isDark={dark}
@@ -156,14 +155,16 @@ export function ThemesPanel() {
                 }
                 setColorMode(dark ? 'dark' : 'light');
               }}
-              label="Dynamic theme"
+              label={t('settingsThemes.dynamicTheme')}
             />
-            <span className="text-sm font-medium">Dynamic</span>
-            <Tooltip content="Dark from 7pm to 7am, light the rest of the day.">
+            <span className="text-sm font-medium">
+              {t('settingsThemes.dynamic')}
+            </span>
+            <Tooltip content={t('settingsThemes.dynamicTooltip')}>
               <CircleHelpIcon
                 size={14}
                 className="text-foreground-secondary"
-                aria-label="What Dynamic does"
+                aria-label={t('settingsThemes.dynamicHelp')}
               />
             </Tooltip>
           </div>
@@ -177,7 +178,7 @@ export function ThemesPanel() {
         items={[
           {
             id: 'browse',
-            label: 'Browse',
+            label: t('settingsThemes.browse'),
             icon: <LayoutGrid size={14} />,
             content: (
               <div className="flex flex-col gap-3">
@@ -195,7 +196,7 @@ export function ThemesPanel() {
                       aria-hidden
                     />
                     <span>
-                      Current theme:{' '}
+                      {t('settingsThemes.currentTheme')}{' '}
                       <span className="font-semibold">{activeThemeName}</span>
                     </span>
                   </p>
@@ -209,7 +210,7 @@ export function ThemesPanel() {
                         key={theme.id}
                         name={theme.name}
                         headingLevel={2}
-                        description="Built-in theme"
+                        description={t('settingsThemes.builtIn')}
                         author="Tahti"
                         palette={theme.palette}
                         isInstalled
@@ -217,19 +218,23 @@ export function ThemesPanel() {
                         onInstall={() => setTheme(theme.id)}
                         onApply={() => setTheme(theme.id)}
                         labels={{
-                          apply: 'Apply',
-                          active: 'Active',
+                          apply: t('settingsThemes.apply'),
+                          active: t('settingsThemes.active'),
                         }}
                         accessory={
                           configurable ? (
                             <Tooltip
-                              content={`Configure ${theme.name}`}
+                              content={t('settingsThemes.configure', {
+                                name: theme.name,
+                              })}
                               side="top"
                             >
                               <Button
                                 size="icon-sm"
                                 variant="secondary"
-                                aria-label={`Configure ${theme.name}`}
+                                aria-label={t('settingsThemes.configure', {
+                                  name: theme.name,
+                                })}
                                 onClick={() => setConfiguringThemeId(theme.id)}
                               >
                                 <Settings2Icon size={14} aria-hidden />
@@ -245,7 +250,7 @@ export function ThemesPanel() {
                 {customEntries.length > 0 && (
                   <div className="flex flex-col gap-1.5">
                     <h2 className="text-foreground-secondary text-xs uppercase">
-                      Your imported themes
+                      {t('settingsThemes.importedThemes')}
                     </h2>
                     <div className="flex flex-col gap-1.5">
                       {customEntries.map(([id, theme]) => {
@@ -261,8 +266,13 @@ export function ThemesPanel() {
                           <ThemeStoreItem
                             key={id}
                             name={theme.name}
-                            description={theme.description ?? 'Imported theme'}
-                            author={theme.author ?? 'Imported'}
+                            description={
+                              theme.description ??
+                              t('settingsThemes.importedTheme')
+                            }
+                            author={
+                              theme.author ?? t('settingsThemes.imported')
+                            }
                             palette={palette}
                             tags={theme.tags}
                             isInstalled
@@ -271,21 +281,26 @@ export function ThemesPanel() {
                             onApply={() => setTheme(id)}
                             onUninstall={() => removeCustomTheme(id)}
                             labels={{
-                              apply: 'Apply',
-                              active: 'Active',
-                              uninstall: 'Remove',
+                              apply: t('settingsThemes.apply'),
+                              active: t('settingsThemes.active'),
+                              uninstall: t('settingsThemes.remove'),
                             }}
                             accessory={
                               <>
                                 {configurable ? (
                                   <Tooltip
-                                    content={`Configure ${theme.name}`}
+                                    content={t('settingsThemes.configure', {
+                                      name: theme.name,
+                                    })}
                                     side="top"
                                   >
                                     <Button
                                       size="icon-sm"
                                       variant="secondary"
-                                      aria-label={`Configure ${theme.name}`}
+                                      aria-label={t(
+                                        'settingsThemes.configure',
+                                        { name: theme.name },
+                                      )}
                                       onClick={() => setConfiguringThemeId(id)}
                                     >
                                       <Settings2Icon size={14} aria-hidden />
@@ -293,13 +308,17 @@ export function ThemesPanel() {
                                   </Tooltip>
                                 ) : null}
                                 <Tooltip
-                                  content={`Rename ${theme.name}`}
+                                  content={t('settingsThemes.rename', {
+                                    name: theme.name,
+                                  })}
                                   side="top"
                                 >
                                   <Button
                                     size="icon-sm"
                                     variant="secondary"
-                                    aria-label={`Rename ${theme.name}`}
+                                    aria-label={t('settingsThemes.rename', {
+                                      name: theme.name,
+                                    })}
                                     onClick={() =>
                                       setRenamingTheme({
                                         id,
@@ -312,13 +331,20 @@ export function ThemesPanel() {
                                 </Tooltip>
                                 {signedIn && !isPresetCustomThemeId(id) ? (
                                   <Tooltip
-                                    content="Submit to the community catalog"
+                                    content={t(
+                                      'settingsThemes.submitToCatalog',
+                                    )}
                                     side="top"
                                   >
                                     <Button
                                       size="icon-sm"
                                       variant="secondary"
-                                      aria-label={`Submit ${theme.name} to the community`}
+                                      aria-label={t(
+                                        'settingsThemes.submitToCommunity',
+                                        {
+                                          name: theme.name,
+                                        },
+                                      )}
                                       disabled={
                                         submittingId === id ||
                                         submissions.some(
@@ -338,7 +364,12 @@ export function ThemesPanel() {
                                               return;
                                             }
                                             toast.success(
-                                              `${theme.name} was sent for review. The board approves themes before they appear in the catalog.`,
+                                              t(
+                                                'settingsThemes.sentForReview',
+                                                {
+                                                  name: theme.name,
+                                                },
+                                              ),
                                             );
                                             loadSubmissions();
                                           },
@@ -349,11 +380,19 @@ export function ThemesPanel() {
                                     </Button>
                                   </Tooltip>
                                 ) : null}
-                                <Tooltip content="Export theme JSON" side="top">
+                                <Tooltip
+                                  content={t('settingsThemes.exportJson')}
+                                  side="top"
+                                >
                                   <Button
                                     size="icon-sm"
                                     variant="secondary"
-                                    aria-label={`Export ${theme.name} as JSON`}
+                                    aria-label={t(
+                                      'settingsThemes.exportAsJson',
+                                      {
+                                        name: theme.name,
+                                      },
+                                    )}
                                     onClick={() => exportTheme(id, theme)}
                                   >
                                     <Download size={14} aria-hidden />
@@ -369,7 +408,7 @@ export function ThemesPanel() {
                 )}
                 {submissionsError ? (
                   <PageError
-                    title="Could not load your community submissions"
+                    title={t('settingsThemes.submissionsError')}
                     description={submissionsError}
                     onRetry={loadSubmissions}
                   />
@@ -384,7 +423,7 @@ export function ThemesPanel() {
           },
           {
             id: 'editor',
-            label: 'Editor',
+            label: t('settingsThemes.editor'),
             icon: <Pencil size={14} />,
             content: themeSection === 1 ? <ThemeEditor /> : null,
           },
@@ -396,7 +435,7 @@ export function ThemesPanel() {
         onClose={() => setConfiguringThemeId(null)}
         className="max-w-lg"
       >
-        <Dialog.Title>Configure theme</Dialog.Title>
+        <Dialog.Title>{t('settingsThemes.configureTheme')}</Dialog.Title>
         <div className="mt-4 flex flex-col gap-4">
           <div className="border-border h-40 overflow-hidden rounded-lg border">
             <ChannelVisualizer
@@ -411,7 +450,7 @@ export function ThemesPanel() {
           />
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Done</Dialog.Close>
+          <Dialog.Close>{t('settingsThemes.done')}</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
 
@@ -428,11 +467,11 @@ export function ThemesPanel() {
             setRenamingTheme(null);
           }}
         >
-          <Dialog.Title>Rename theme</Dialog.Title>
+          <Dialog.Title>{t('settingsThemes.renameTheme')}</Dialog.Title>
           <div className="mt-4">
             <Input
               autoComplete="off"
-              label="Name"
+              label={t('settingsThemes.name')}
               value={renamingTheme?.name ?? ''}
               onChange={(e) =>
                 setRenamingTheme((cur) =>
@@ -443,9 +482,9 @@ export function ThemesPanel() {
             />
           </div>
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
             <Button type="submit" disabled={!renamingTheme?.name.trim()}>
-              Save
+              {t('actions.save')}
             </Button>
           </Dialog.Actions>
         </form>

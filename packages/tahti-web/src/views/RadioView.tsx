@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   Button,
@@ -104,6 +105,7 @@ function formatAgo(iso: string): string {
 }
 
 export function RadioView() {
+  const { t } = useTranslation('web');
   const [station, setStation] = useState<PublicChannel | null>(null);
   const [relay, setRelay] = useState<RadioNowPlaying | null>(null);
   const [recent, setRecent] = useState<RadioRecentlyPlayedItem[]>([]);
@@ -467,7 +469,9 @@ export function RadioView() {
                       },
                       {
                         id: 'favorite',
-                        label: favorited ? 'Favorited' : 'Favorite',
+                        label: favorited
+                          ? t('actions.favorited')
+                          : t('actions.favorite'),
                         icon: (
                           <HeartIcon
                             size={16}

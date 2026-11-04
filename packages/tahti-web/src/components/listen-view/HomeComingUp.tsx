@@ -1,27 +1,26 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { toBcp47, useTranslation } from '@tahti-player/i18n';
 import { Card, CardsRow } from '@tahti-player/ui';
 
 import {
   fetchUpcomingEvents,
   type UpcomingEvent,
 } from '../../api/upcoming-events';
+import { currentLocale } from '../../lib/locale';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { PageError } from '../PageStates';
 
-const ROW_LABELS = {
-  filterPlaceholder: 'Filter events…',
-  nothingFound: 'Nothing matches that filter.',
-};
-
-const dateFormat = new Intl.DateTimeFormat(undefined, {
-  weekday: 'short',
-  day: 'numeric',
-  month: 'short',
-  hour: '2-digit',
-  minute: '2-digit',
-});
+function formatEventStart(value: string): string {
+  return new Intl.DateTimeFormat(toBcp47(currentLocale()), {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(value));
+}
 
 type EventRowItem = { id: string; title: string; event: UpcomingEvent };
 
@@ -48,7 +47,7 @@ function EventCard({ event }: { event: UpcomingEvent }) {
       subtitle={
         <span className="flex flex-col">
           <span className="font-semibold">
-            {dateFormat.format(new Date(event.startAt))}
+            {formatEventStart(event.startAt)}
           </span>
           <span>
             {event.artistDisplayName} · {event.place}
@@ -62,6 +61,7 @@ function EventCard({ event }: { event: UpcomingEvent }) {
 }
 
 export function HomeComingUp() {
+  const { t } = useTranslation('web');
   const [events, setEvents] = useState<UpcomingEvent[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -86,7 +86,7 @@ export function HomeComingUp() {
     return (
       <div data-testid="listen-coming-up-error">
         <PageError
-          title="Could not load upcoming events"
+          title={t('listen.couldNotLoadEvents')}
           description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />
@@ -101,11 +101,14 @@ export function HomeComingUp() {
   return (
     <CardsRow
       data-testid="listen-coming-up"
-      title="Coming up"
-      badge="Events"
+      title={t('listen.comingUp')}
+      badge={t('listen.eventsBadge')}
       badgeColor="cyan"
       items={items}
-      labels={ROW_LABELS}
+      labels={{
+        filterPlaceholder: t('listen.filterEvents'),
+        nothingFound: t('listen.nothingFound'),
+      }}
       renderItem={({ event }: EventRowItem) => <EventCard event={event} />}
     />
   );

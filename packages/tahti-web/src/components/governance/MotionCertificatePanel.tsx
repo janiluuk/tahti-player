@@ -8,19 +8,12 @@ import {
   type MotionCertificate,
   type MotionTally,
 } from '../../api/governance-motion-certificate';
+import { ListingDate } from '../ListingDate';
 import { GovernancePanel } from './GovernancePanel';
 import { MotionResultCorrectionForm } from './MotionResultCorrectionForm';
 
 function tallyText(tally: MotionTally): string {
   return `${tally.YES} yes · ${tally.NO} no · ${tally.ABSTAIN} abstain`;
-}
-
-function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
 }
 
 /** The closed motion's result certificate: the count fixed at closing, a
@@ -58,7 +51,7 @@ export function MotionCertificatePanel({
           {certificate.eligibleMemberCount !== null
             ? ` of ${certificate.eligibleMemberCount} eligible members`
             : ''}{' '}
-          · closed {formatDay(certificate.closedAt)}
+          · closed <ListingDate value={certificate.closedAt} />
           {certificate.advisory ? ' · advisory' : ''}
         </span>
       </div>
@@ -85,7 +78,7 @@ export function MotionCertificatePanel({
           {certificate.corrections.map((correction) => (
             <li key={correction.id}>
               <span className="font-medium">
-                Corrected {formatDay(correction.createdAt)}
+                Corrected <ListingDate value={correction.createdAt} />
               </span>
               {correction.tally ? ` · ${tallyText(correction.tally)}` : ''}
               {correction.matchesRecord ? '' : ' · does not chain'}

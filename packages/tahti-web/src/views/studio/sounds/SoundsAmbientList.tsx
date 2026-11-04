@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { BarChart3Icon, DownloadIcon, RotateCcwIcon } from 'lucide-react';
 import { useMemo, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, EditIconButton, InlineError, Tooltip } from '@tahti-player/ui';
 
 import { fetchEditorSource } from '../../../api/studio';
@@ -131,6 +132,7 @@ function SoundRowActions({
     setStatsItem,
     setPendingDeleteItem,
   } = state;
+  const { t } = useTranslation('web');
   const hasEmbed = isEmbedSound(item);
 
   return (
@@ -145,7 +147,7 @@ function SoundRowActions({
             variant="text"
             disabled={busyId === item.id}
             onClick={() => void downloadItem(item)}
-            aria-label={`Download ${item.title}`}
+            aria-label={t('actions.downloadItem', { title: item.title })}
           >
             <DownloadIcon size={14} aria-hidden />
           </Button>

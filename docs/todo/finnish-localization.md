@@ -28,17 +28,21 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 - Discover widget titles (`WIDGET_LABEL_KEYS` + `discover.widgets.*`).
 - Listen sub-rows: Tahti Selects, New releases, Trending, Radio filter labels; Listen section order label for Selects-only layout.
 - Library tab `<title>` strings in `lib/seo.ts` (`library.tab*` + `nav.library`).
+- Favorite, download and track-table play/favorite labels via `web.actions` (`MediaIconActions`, `TrackHero`, `CollectionView`, `RadioView`, context menu, action sheet, `trackTableLabels`, channel stage, sound/release download buttons).
+- Settings → Playback and Themes bodies (`web.settingsPlayback`, `web.settingsThemes`).
+- Listen Radio row (title, badge, empty, curated-stations error) and the Coming up row (title, badge, filter, error, locale-aware event start).
+- Non-Library page `<title>` strings in `lib/seo.ts` (`web.seo.*`); route descriptions and the default title stay English.
+- Artist follow (`ArtistFollowButton` → `web.actions.followArtist` / `logInToFollow` / `unfollowArtist`); GlobalSearch; notifications popover chrome; Settings Account tab group headings; Library Embeds empty/load error (batch 31).
 
 ## Left
 
-- [ ] Use `web.actions` in shared buttons: favorite buttons, download buttons, and remaining share/edit call sites that still import `@tahti-player/ui` directly. Ui components need `labels` props where the player must stay English-only.
-- [x] Artist follow (`ArtistFollowButton` → `web.actions.followArtist` / `logInToFollow` / `unfollowArtist`); GlobalSearch; notifications popover chrome; Settings Account tab group headings; Library Embeds empty/load error (batch 31).
-- [ ] Settings panel bodies: Account, Artist, Channel, Broadcast, Playback, Integrations, Themes, Add-ons and What's new.
-- [ ] Notifications and Messages popovers, GlobalSearch, the auth dialog and toasts.
-- [ ] Listen sub-rows: Coming up, Radio section title/badge/empty copy; plugin-store `DISCOVER_WIDGET_LABELS`.
+- [ ] Use `web.actions` in the remaining share/edit/follow call sites that still import `@tahti-player/ui` directly, and the other download labels (`StashFilesPanel`, `MembershipInvoices`, `ReleaseTrackDownloads`, `StemMixer`). Ui components need `labels` props where the player must stay English-only.
+- [ ] Settings panel bodies: Account, Artist, Channel, Broadcast, Integrations, Add-ons and What's new.
+- [ ] Messages popover, notification item text and toasts.
+- [ ] Listen: plugin-store `DISCOVER_WIDGET_LABELS`.
 - [ ] Library sub-pages: page bodies, Overview stat cards (tab `<title>` via seo is done).
 - [ ] Studio and Admin page bodies, Radio, channel pages, track and release pages (`ChannelView`, `track-detail` and `FullScreenPlayer` were being changed by other work and were left out).
 - [ ] Views that do not call `useTranslation` render again only when something else changes, so a date or label can stay in the old language until then. Check this after more views are translated.
-- [ ] Page `<title>` and SEO strings beyond Library tabs (`lib/seo.ts`). The page tour (`lib/pageTour.ts`). Keyboard shortcuts help.
+- [ ] Route SEO descriptions and the default title (`lib/seo.ts`). The page tour (`lib/pageTour.ts`). Keyboard shortcuts help (`content/keyboardNavigation.ts` is a large content table).
 - [ ] Optional: detect a Finnish browser on first visit. `matchBrowserLocales` exists, but the default stays English until product decides.
 - [ ] When Settings is reduced to account-only (`simplify-studio-library-settings-admin.md`), move Language into Appearance.

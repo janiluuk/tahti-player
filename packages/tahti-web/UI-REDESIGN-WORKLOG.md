@@ -1,3 +1,13 @@
+## 2026-11-04 - Batch 32: listing dates and Finnish (0.0.319)
+
+`ListingDate` on governance Elections, Corrections, Annual reports, Result
+certificate and the meetings list, restriction notices, fan payout history,
+feature-request comments and saved page comments. Favorite and download
+labels, Settings Playback and Themes bodies, the Listen Radio and Coming up
+rows and non-Library page titles read from the `web` i18n namespace (English
+and Finnish). Deleted unused `importSoundBanner`; added a HomeComingUp story;
+VIEW-CATALOG story flags and todo hygiene (batch-30 folded into HISTORY).
+
 ## 2026-11-04 - Batch 31 ListingDate + Finnish chrome (0.0.318)
 
 ListingDate on governance history, account purchases, Studio editor/upload,

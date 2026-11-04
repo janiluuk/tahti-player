@@ -10,6 +10,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
@@ -111,6 +112,7 @@ function contributionsByPlayableId(
 }
 
 export function CollectionView({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const [collection, setCollection] = useState<
     (PublicCollection & Partial<CollectionTextLayer>) | null
   >(null);
@@ -359,8 +361,10 @@ export function CollectionView({ slug }: { slug: string }) {
               <Tooltip
                 content={
                   isFavorite
-                    ? `Remove from favorites: ${collection.name}`
-                    : `Favorite ${collection.name}`
+                    ? t('actions.removeFromFavoritesItem', {
+                        title: collection.name,
+                      })
+                    : t('actions.favoriteItem', { title: collection.name })
                 }
                 side="top"
               >
@@ -371,8 +375,10 @@ export function CollectionView({ slug }: { slug: string }) {
                   aria-pressed={isFavorite}
                   aria-label={
                     isFavorite
-                      ? `Remove from favorites: ${collection.name}`
-                      : `Favorite ${collection.name}`
+                      ? t('actions.removeFromFavoritesItem', {
+                          title: collection.name,
+                        })
+                      : t('actions.favoriteItem', { title: collection.name })
                   }
                   onClick={() =>
                     toggleFavoritePlaylist({
@@ -427,8 +433,10 @@ export function CollectionView({ slug }: { slug: string }) {
                 aria-pressed={isFavorite}
                 aria-label={
                   isFavorite
-                    ? `Remove from favorites: ${collection.name}`
-                    : `Favorite ${collection.name}`
+                    ? t('actions.removeFromFavoritesItem', {
+                        title: collection.name,
+                      })
+                    : t('actions.favoriteItem', { title: collection.name })
                 }
                 onClick={() =>
                   toggleFavoritePlaylist({
@@ -440,7 +448,7 @@ export function CollectionView({ slug }: { slug: string }) {
                 }
               >
                 <BookmarkIcon size={15} aria-hidden className="mr-1.5" />
-                {isFavorite ? 'Favorited' : 'Favorite'}
+                {isFavorite ? t('actions.favorited') : t('actions.favorite')}
               </Button>
             ) : null}
             {!isOwner && collection.isPublic && subscription ? (

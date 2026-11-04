@@ -7,26 +7,29 @@ import {
   fetchAnnualReports,
   type PublishedAnnualReport,
 } from '../../api/governance-annual-reports';
+import { ListingDate } from '../ListingDate';
 import { PageEmpty, PageError } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
 
-function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
-
-function reportDetails(report: PublishedAnnualReport): string {
-  const parts = [`Approved ${formatDay(report.approvedAt)}`];
-  if (report.filedAt) {
-    parts.push(`filed with the register ${formatDay(report.filedAt)}`);
-  }
-  if (report.correctedAt) {
-    parts.push(`corrected ${formatDay(report.correctedAt)}`);
-  }
-  return parts.join(' · ');
+function ReportDetails({ report }: { report: PublishedAnnualReport }) {
+  return (
+    <span className="inline-flex flex-wrap items-center gap-x-1">
+      <span>Approved</span>
+      <ListingDate value={report.approvedAt} />
+      {report.filedAt ? (
+        <>
+          <span>· filed with the register</span>
+          <ListingDate value={report.filedAt} />
+        </>
+      ) : null}
+      {report.correctedAt ? (
+        <>
+          <span>· corrected</span>
+          <ListingDate value={report.correctedAt} />
+        </>
+      ) : null}
+    </span>
+  );
 }
 
 /** Yearly reports the board approved and published
@@ -79,7 +82,7 @@ export function AnnualReportsPanel() {
                 <span className="font-medium">Annual report {report.year}</span>
               )}
               <div className="text-foreground-secondary mt-0.5 text-xs">
-                {reportDetails(report)}
+                <ReportDetails report={report} />
               </div>
             </li>
           ))}

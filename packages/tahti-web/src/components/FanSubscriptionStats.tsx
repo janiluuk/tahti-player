@@ -20,6 +20,7 @@ import {
 
 import type { FanPayoutStats } from '../api/revenue';
 import type { RevenueOrderRow } from '../lib/revenueOrders';
+import { ListingDate } from './ListingDate';
 import { PageEmpty } from './PageStates';
 
 type FanSubscriptionStatsProps = {
@@ -150,7 +151,7 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
               orders.map((order) => (
                 <DataTableRow key={order.id}>
                   <DataTableCell className="text-foreground-secondary">
-                    {order.date.toLocaleDateString()}
+                    <ListingDate value={order.date.toISOString()} />
                   </DataTableCell>
                   <DataTableCell className="font-medium">
                     {order.description}
