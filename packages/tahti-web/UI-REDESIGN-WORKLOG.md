@@ -1,3 +1,8 @@
+## 2026-11-04 - Identity avatar at the top
+
+Settings → Artist → Identity puts the profile avatar first and larger
+(`size-40` / `sm:size-48`). Bumped tahti-web `0.0.310`.
+
 ## 2026-11-03 - Batch of 30, round 3
 
 Artist header folds Open channel and fan-tiers into More; community guidelines show as a Listen banner instead of a sticky toast; Studio Stats uses in-page section chips (no nested Stats/Governance tab strip); Messages has one compose field; Music pages use FilterChips; more controls named after their item; not-found empties are h1; de-greened a few secondary actions. Bumped tahti-web `0.0.294`.

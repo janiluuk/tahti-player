@@ -52,8 +52,22 @@ export const Identity: Story = {
       'aria-selected',
       'true',
     );
+    const form = (
+      await canvas.findByRole('textbox', { name: 'Display name' })
+    ).closest('form');
+    await expect(form).toBeTruthy();
+    const avatar = within(form!).getByTestId('identity-avatar');
+    await expect(avatar).toBeVisible();
     await expect(
-      await canvas.findByRole('textbox', { name: 'Display name' }),
+      within(avatar).getByRole('button', { name: 'Change profile image' }),
+    ).toBeInTheDocument();
+    await expect(
+      within(avatar).getByText('Click to change your profile image'),
+    ).toBeVisible();
+    const formChildren = [...(form?.children ?? [])] as HTMLElement[];
+    await expect(formChildren[0]).toBe(avatar);
+    await expect(
+      canvas.getByRole('textbox', { name: 'Display name' }),
     ).toHaveValue('Demo Artist');
     await expectVisible(canvas.getByRole('group', { name: 'Creative roles' }));
     // A solo artist has no People tab.

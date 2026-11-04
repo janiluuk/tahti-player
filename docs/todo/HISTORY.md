@@ -1,3 +1,8 @@
+## 2026-11-04 - Identity avatar at the top
+
+Settings → Artist → Identity: larger profile avatar leads the form.
+tahti-web `0.0.310`.
+
 ## 2026-10-30 - Shared library row, channel releases, editor empty tracklist
 
 Media, embeds and smart links use one library row. Channel pages show the

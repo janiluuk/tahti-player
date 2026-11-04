@@ -154,35 +154,43 @@ export const ArtistImagePurposePicker: FC<Props> = ({
 
   return (
     <>
-      <div className="group relative inline-flex">
-        <div className="border-border bg-background-secondary flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 text-xl font-bold">
-          {avatarUrl ? (
-            <MediaArtwork
-              src={avatarUrl}
-              alt=""
-              imageReveal={false}
-              className="relative size-full"
-            />
-          ) : (
-            displayName.slice(0, 1).toUpperCase()
-          )}
-        </div>
-        <Tooltip
-          content="Change profile image"
-          side="bottom"
-          wrapperClassName="absolute inset-0"
-        >
-          <Button
-            variant="plain"
-            size="flexible"
-            type="button"
-            onClick={() => setPickerOpen(true)}
-            aria-label="Change profile image"
-            className="bg-background/80 text-foreground flex size-full items-center justify-center rounded-full whitespace-normal opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 active:scale-100"
+      <div
+        className="flex flex-col items-center gap-2 self-center sm:self-start"
+        data-testid="identity-avatar"
+      >
+        <div className="group relative inline-flex">
+          <div className="border-border bg-background-secondary flex size-40 items-center justify-center overflow-hidden rounded-full border-2 text-4xl font-bold sm:size-48">
+            {avatarUrl ? (
+              <MediaArtwork
+                src={avatarUrl}
+                alt=""
+                imageReveal={false}
+                className="relative size-full"
+              />
+            ) : (
+              displayName.slice(0, 1).toUpperCase()
+            )}
+          </div>
+          <Tooltip
+            content="Change profile image"
+            side="bottom"
+            wrapperClassName="absolute inset-0"
           >
-            <UploadCloudIcon size={20} aria-hidden />
-          </Button>
-        </Tooltip>
+            <Button
+              variant="plain"
+              size="flexible"
+              type="button"
+              onClick={() => setPickerOpen(true)}
+              aria-label="Change profile image"
+              className="bg-background/80 text-foreground flex size-full items-center justify-center rounded-full whitespace-normal opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 active:scale-100"
+            >
+              <UploadCloudIcon size={28} aria-hidden />
+            </Button>
+          </Tooltip>
+        </div>
+        <p className="text-foreground-secondary text-center text-xs sm:text-left">
+          Click to change your profile image
+        </p>
       </div>
 
       <Dialog.Root
