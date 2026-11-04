@@ -192,8 +192,11 @@ export async function fetchAdminUsers(filters: {
     if (filters.q) {
       qs.set('search', filters.q);
     }
-    if (filters.role === 'ARTIST' || filters.role === 'BOARD') {
+    if (filters.role === 'BOARD') {
+      qs.set('isBoard', 'true');
+    } else if (filters.role === 'ARTIST') {
       qs.set('tier', 'ARTIST');
+      qs.set('isBoard', 'false');
     } else if (filters.role === 'LISTENER') {
       qs.set('tier', 'FREE');
     }
@@ -210,9 +213,10 @@ export async function fetchAdminUsers(filters: {
     const filteredUsers = filters.role
       ? users.filter((user) => user.role === filters.role)
       : users;
+    const serverFiltered = filteredUsers.length === users.length;
     return {
       data: filteredUsers,
-      total: filters.role ? filteredUsers.length : data.total,
+      total: serverFiltered ? data.total : filteredUsers.length,
       meta: { source: 'api' },
     };
   } catch (err) {

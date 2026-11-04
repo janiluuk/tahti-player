@@ -1,3 +1,10 @@
+## 2026-11-04 - Batch 32 follow-up: admin users role filter (0.0.323)
+
+Admin Users sends the BOARD/ARTIST filter to the server (`isBoard`, `tier`) so
+`total` is the filtered count when the API honours it, with the page count as
+fallback. Fan subscription "Ends on" uses `numericDate` like the listings.
+Tests: role filter requests and fallback, Finnish Settings → Playback.
+
 ## 2026-11-04 - Batch 33 dates + Finnish bodies (0.0.322)
 
 Governance meeting detail, admin user panel and engagement, artist mentions,

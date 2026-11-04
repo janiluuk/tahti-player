@@ -5879,3 +5879,10 @@ tahti-web `0.0.296`.
 - **Batch 31 slices** (2026-11-04, #1815, tahti-web `0.0.318`, `batch-31-slices-2026-11-04.md`): `ListingDate` on governance history, account purchases, Studio editor/upload, admin venues, missed shows, payout queue, legacy members, board terms and membership / fan subscription renewals; Finnish for artist follow, GlobalSearch, the notifications popover, account tab groups and Library embeds empty states; SetupPassword catalog flag, Studio sound back link, `AmbientCard` decided keep. Skipped: Broadcast agenda times (exact), grant cycle (no listing dates), `pageTour` (large), FilterBar (not on master yet).
 
 - **Batch 32 slices** (2026-11-04, #1816, tahti-web `0.0.319`, follow-up #1818 `0.0.320`, `batch-32-slices-2026-11-04.md`): `ListingDate` on governance Elections/Corrections/Annual reports/meetings, restriction notices, fan payouts and comments; favorite/download labels, Settings Playback and Themes, Radio and Coming up rows and non-Library page titles in Finnish; dead `importSoundBanner` removed; HomeComingUp story. Follow-up: meeting notice/minutes, motion seconders/circulation/notes, admin member since, distribution fee paid date; `ReleaseTrackDownloads` and track-info Love labels.
+
+## 2026-11-04 - Batch 32 follow-up (admin users role filter)
+
+Admin Users sends `isBoard` / `tier` for the BOARD and ARTIST filters so the
+total is no longer one page when the API honours them; falls back to the page
+count otherwise. Fan subscription end dates use `numericDate`. tahti-web
+`0.0.323`; API confirmation stays in `view-first-and-test-hardening-leftovers.md`.

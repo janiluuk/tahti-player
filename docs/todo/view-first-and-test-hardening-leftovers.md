@@ -19,11 +19,12 @@ changed, because it needs a product call or more than a mechanical fix.
 
 ## Bugs found, not fixed
 
-- [ ] `api/admin/admin-users.ts`: the BOARD/ARTIST role filter runs on the
-  client after server pagination, so `total` counts one page. `adminUsersExportCsvUrl`
-  already sends `isBoard=true|false` for BOARD / ARTIST; sending the same on the
-  list call fixes `total` once `../tahti-org` confirms `GET /api/admin/users`
-  honours `isBoard` (not checked: sibling not in this checkout).
+- [ ] `api/admin/admin-users.ts`: the BOARD/ARTIST role filter now sends
+  `isBoard` (and `tier` for ARTIST) on the list call like the CSV export, and
+  keeps the server `total` only when the client filter agrees with the page
+  (otherwise the page count, as before). Left: confirm `../tahti-org`
+  `GET /api/admin/users` honours `isBoard` (sibling not in this checkout), then
+  drop the client-side filter.
 
 ## Dead code to decide on (not deleted)
 

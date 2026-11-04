@@ -1,4 +1,5 @@
 import type { FanSubscriptionRow } from '../api/types';
+import { numericDate } from './relativeDate';
 
 type StatusFields = Pick<
   FanSubscriptionRow,
@@ -20,7 +21,7 @@ export function isCanceledAtPeriodEnd(sub: StatusFields): boolean {
 export function fanSubscriptionStatusLabel(sub: StatusFields): string {
   const end = periodEnd(sub);
   if (isCanceledAtPeriodEnd(sub) && end) {
-    return `Ends on ${end.toLocaleDateString()}`;
+    return `Ends on ${numericDate(end)}`;
   }
   return sub.state;
 }

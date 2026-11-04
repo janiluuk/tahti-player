@@ -17,6 +17,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as client from '../../../api/client';
 import type { AuthUser } from '../../../api/types';
+import { numericDate } from '../../../lib/relativeDate';
 import { useAuthStore } from '../../../stores/authStore';
 import { AccountPanel } from './AccountPanel';
 
@@ -116,9 +117,7 @@ describe('AccountPanel fan subscriptions', () => {
     ]);
 
     expect(
-      screen.getByText(
-        new RegExp(`Ends on ${new Date(END).toLocaleDateString()}`),
-      ),
+      screen.getByText(new RegExp(`Ends on ${numericDate(new Date(END))}`)),
     ).toBeTruthy();
     expect(screen.queryByRole('button', { name: 'Manage' })).toBeNull();
   });

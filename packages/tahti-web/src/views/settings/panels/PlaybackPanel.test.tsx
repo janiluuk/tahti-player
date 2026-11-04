@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { applyLocale } from '../../../lib/locale';
 import { usePlaybackPrefsStore } from '../../../stores/playbackPrefsStore';
 import { PlaybackPanel } from './PlaybackPanel';
 
@@ -26,5 +27,21 @@ describe('PlaybackPanel volume normalization', () => {
     fireEvent.click(screen.getByRole('radio', { name: 'Album' }));
 
     expect(usePlaybackPrefsStore.getState().normalization).toBe('album');
+  });
+});
+
+describe('PlaybackPanel in Finnish', () => {
+  afterEach(async () => {
+    cleanup();
+    await applyLocale('en_US');
+  });
+
+  it('translates the section titles and queue controls', async () => {
+    await applyLocale('fi_FI');
+    render(<PlaybackPanel />);
+
+    expect(screen.getByText('Ulostulo')).toBeTruthy();
+    expect(screen.getByText('Satunnaistoisto')).toBeTruthy();
+    expect(screen.getByRole('radio', { name: 'Toista jono' })).toBeTruthy();
   });
 });
