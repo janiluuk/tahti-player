@@ -6454,6 +6454,6 @@ Studio track Insights adds the same pattern charts as Listen → History: time o
 Discover → From Tahti puts the type pill, date and teaser on the StoryCard image.
 “Show all news” is a secondary ButtonLink. StoryCard gains `kindColor`.
 
-## 2026-11-04 — Batch 33 second pass: Finnish switches and chart labels (0.0.320)
+## 2026-11-04 — Batch 33 second pass: Finnish switches and chart labels (0.0.322)
 
 Settings switches for channel autoplay, top lists, broadcast recording and auto-publish, comments and MusicBrainz are in Finnish, as are the Library Following page (its empty state now links to Discover), the Radio page description in `seo.ts`, and the track page play, pause and edit labels. Chart axes, the listening heatmap and the weekday and month labels in Studio stats and History follow the app language instead of the browser's. Legal-hold dates use `ListingDate`.
