@@ -2,6 +2,7 @@ import { SendIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Input, Textarea } from '@tahti-player/ui';
 
 import { sendAdminTestNotification } from '../../api/admin';
@@ -30,7 +31,9 @@ export function AdminTestNotificationPanel() {
       toast.error(result.error);
       return;
     }
-    toast.success(`Test notification sent to @${targetUsername}.`);
+    toast.success(
+      i18n.t('web:toasts.testNotificationSent', { username: targetUsername }),
+    );
     setTitle('');
     setBody('');
     setUrl('');

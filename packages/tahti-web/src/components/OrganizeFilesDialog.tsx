@@ -2,6 +2,7 @@ import { FolderOpenIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -131,7 +132,7 @@ export function OrganizeFilesDialog({
       ].filter(Boolean);
       const verb = move ? 'Moved' : 'Copied';
       if (result.errors.length && result.done === 0) {
-        toast.error('No files were organized.', {
+        toast.error(i18n.t('web:toasts.noFilesOrganized'), {
           description: notes.join('; '),
         });
       } else {

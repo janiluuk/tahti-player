@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Alert } from '@tahti-player/ui';
 
 import type { EditList } from '../../../api/studio-types';
@@ -310,7 +311,7 @@ export function WaveformEditor({
     }
     onChange({ ...editList, cuts: mergeCuts([...editList.cuts, selection]) });
     setSelection(null);
-    toast.info('Cut marked (removed on render).');
+    toast.info(i18n.t('web:toasts.cutMarked'));
   };
 
   const trimToSelection = () => {
@@ -326,17 +327,17 @@ export function WaveformEditor({
         selection.end,
       ),
     });
-    toast.info('Trimmed to selection (head/tail marked as cuts).');
+    toast.info(i18n.t('web:toasts.trimmedToSelection'));
   };
 
   const trimSilence = () => {
     if (!data || duration <= 0) {
-      toast.info('No waveform loaded yet to trim.');
+      toast.info(i18n.t('web:toasts.noWaveformLoaded'));
       return;
     }
     const range = audibleRange(data);
     if (!range) {
-      toast.info('The whole file is below the silence threshold.');
+      toast.info(i18n.t('web:toasts.wholeFileBelowSilence'));
       return;
     }
     const start = range.start / data.sampleRate;
@@ -346,11 +347,11 @@ export function WaveformEditor({
       ...(duration - end > 0.05 ? [{ start: end, end: duration }] : []),
     ];
     if (found.length === 0) {
-      toast.info('No leading/trailing silence found.');
+      toast.info(i18n.t('web:toasts.noLeadingTrailingSilence'));
       return;
     }
     onChange({ ...editList, cuts: mergeCuts([...editList.cuts, ...found]) });
-    toast.success('Trimmed leading/trailing silence (below -48 dBFS).');
+    toast.success(i18n.t('web:toasts.trimmedSilence'));
   };
 
   const addFade = (type: 'in' | 'out') => {
@@ -362,7 +363,7 @@ export function WaveformEditor({
         (c) => selection.start >= c.start && selection.start < c.end,
       )
     ) {
-      toast.error('A fade cannot start inside a cut.');
+      toast.error(i18n.t('web:toasts.fadeCannotStartInCut'));
       return;
     }
     onChange({
@@ -377,7 +378,7 @@ export function WaveformEditor({
         },
       ].sort((a, b) => a.at - b.at),
     });
-    toast.info(`Fade ${type} added (applied on render).`);
+    toast.info(i18n.t('web:toasts.fadeAdded', { type }));
   };
 
   const addMarker = () => {
@@ -479,7 +480,7 @@ export function WaveformEditor({
               confirmLabel: 'Clear cuts',
               run: () => {
                 onChange({ ...editList, cuts: [] });
-                toast.success('Cuts cleared.');
+                toast.success(i18n.t('web:toasts.cutsCleared'));
               },
             })
           }

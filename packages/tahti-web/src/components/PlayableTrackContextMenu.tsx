@@ -127,12 +127,12 @@ export function PlayableTrackContextMenu({
     if (result.ok) {
       const { itemId } = result;
       if (itemId) {
-        toastWithUndo(`Added to ${name}`, {
+        toastWithUndo(t('toasts.addedToNamed', { name }), {
           undo: () => removeStudioCollectionItem(slug, itemId),
-          undoneMessage: `Removed from ${name}.`,
+          undoneMessage: t('toasts.removedFromNamed', { name }),
         });
       } else {
-        toast.success(`Added to ${name}`);
+        toast.success(t('toasts.addedToNamed', { name }));
       }
       return;
     }

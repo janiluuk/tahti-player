@@ -247,12 +247,12 @@ export function useReleaseDetail(id: string) {
   const playFirstTrack = async () => {
     const firstTrack = release?.tracks?.[0];
     if (!firstTrack?.soundId) {
-      toast.info('The first track is not playable yet.');
+      toast.info(i18n.t('web:toasts.firstTrackNotPlayable'));
       return;
     }
     const source = await fetchEditorSource(firstTrack.soundId);
     if (!source.data.url) {
-      toast.info('The first track is still being prepared.');
+      toast.info(i18n.t('web:toasts.firstTrackStillPreparing'));
       return;
     }
     play({

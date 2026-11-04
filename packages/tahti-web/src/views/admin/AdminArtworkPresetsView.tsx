@@ -2,6 +2,7 @@ import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -118,7 +119,7 @@ export function AdminArtworkPresetsView() {
           }
         : current,
     );
-    toast.success('Artwork removed.');
+    toast.success(i18n.t('web:toasts.artworkRemoved'));
   };
 
   return (

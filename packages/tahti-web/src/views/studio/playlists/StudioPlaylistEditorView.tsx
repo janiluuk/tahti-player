@@ -123,7 +123,15 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
         setSounds(a.data);
         setReleases(r.data.releases);
       })
-      .catch(() => toast.error(`Could not load the ${kindLabel}.`));
+      .catch(() =>
+        toast.error(
+          t(
+            isDjSet
+              ? 'toasts.couldNotLoadDjSet'
+              : 'toasts.couldNotLoadPlaylist',
+          ),
+        ),
+      );
   };
 
   useEffect(() => {
@@ -136,14 +144,14 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
     try {
       const fresh = await fetchStudioCollection(slug);
       if (fresh.meta.source === 'api' && fresh.meta.reason) {
-        toast.error('Could not refresh the tracklist.');
+        toast.error(t('toasts.couldNotRefreshTracklist'));
         return;
       }
       setCol((current) =>
         current ? { ...current, items: fresh.data.items } : fresh.data,
       );
     } catch {
-      toast.error('Could not refresh the tracklist.');
+      toast.error(t('toasts.couldNotRefreshTracklist'));
     }
   };
 
@@ -191,7 +199,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
       await refreshItems();
       return true;
     } catch {
-      toast.error('Could not add the item.');
+      toast.error(t('toasts.couldNotAddItem'));
       return false;
     }
   };
@@ -214,9 +222,15 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
       setCol((current) =>
         current ? { ...current, ...r.data, items: current.items } : r.data,
       );
-      toast.success(`${isDjSet ? 'DJ set' : 'Playlist'} settings saved.`);
+      toast.success(
+        t(
+          isDjSet
+            ? 'toasts.djSetSettingsSaved'
+            : 'toasts.playlistSettingsSaved',
+        ),
+      );
     } catch {
-      toast.error('Could not save the settings.');
+      toast.error(t('toasts.couldNotSaveSettings'));
     } finally {
       setSaving(false);
     }
@@ -238,7 +252,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
       current ? { ...current, coverUrl: result.coverUrl } : current,
     );
     setUploadOpen(false);
-    toast.success('Cover uploaded.');
+    toast.success(t('toasts.coverUploaded'));
   };
 
   const removeCover = async () => {
@@ -249,7 +263,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
     }
     setCoverUrl(null);
     setCol((current) => (current ? { ...current, coverUrl: null } : current));
-    toast.success('Cover removed.');
+    toast.success(t('toasts.coverRemoved'));
   };
 
   const playSound = async (sound: {
@@ -328,7 +342,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
         }
       })
       .catch(() => {
-        toast.error('Could not save the new order.');
+        toast.error(t('toasts.couldNotSaveOrder'));
         void refreshItems();
       });
   };

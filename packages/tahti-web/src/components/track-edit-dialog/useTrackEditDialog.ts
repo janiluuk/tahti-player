@@ -224,7 +224,7 @@ export function useTrackEditDialog(
     const track = await fetchHearthisTrackById(item.embedUri);
     setDownloadingEmbed(false);
     if (!track?.streamUrl) {
-      toast.error('This HearThis track is not available for download.');
+      toast.error(i18n.t('web:toasts.hearthisNotDownloadable'));
       return;
     }
     const link = document.createElement('a');
@@ -294,7 +294,7 @@ export function useTrackEditDialog(
       return;
     }
     setEditList(next);
-    toast.success('Queued as a new version — activate it below when ready.');
+    toast.success(i18n.t('web:toasts.queuedAsNewVersion'));
     setRevisionTick((tick) => tick + 1);
   };
 
@@ -311,7 +311,7 @@ export function useTrackEditDialog(
     const base = editList ?? createDefaultEditList(item?.durationSec ?? 180);
     const cuts = autoTrimCuts(peaks, base.sourceDuration);
     if (cuts.length === 0) {
-      toast.info('No leading/trailing silence detected.');
+      toast.info(i18n.t('web:toasts.noSilenceDetected'));
       return;
     }
     void runQuickEdit(
@@ -329,7 +329,7 @@ export function useTrackEditDialog(
     void submitTrackToRadioRotation(soundId)
       .then((result) => {
         if (result.ok) {
-          toast.success('Submitted to Tahti Radio for review.');
+          toast.success(i18n.t('web:toasts.radioSubmittedForReview'));
           setRadioSubmission({
             id: 'pending-local',
             status: 'PENDING',

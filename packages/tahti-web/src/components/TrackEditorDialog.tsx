@@ -2,6 +2,7 @@ import { Undo2Icon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -168,7 +169,7 @@ export function TrackEditorDialog({
                     .restoreEdits(outcome.undo)
                     .then(() => {
                       onChanged();
-                      toast.success('Edit undone.');
+                      toast.success(i18n.t('web:toasts.editUndone'));
                     })
                     .catch((failure) =>
                       toast.error(

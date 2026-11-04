@@ -2,6 +2,8 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   fetchEditorDraft,
   fetchEditorSource,
@@ -139,7 +141,7 @@ export function useSoundEditor(id: string) {
       toast.success(success);
       return true;
     } catch {
-      toast.error('Could not update the track.');
+      toast.error(i18n.t('web:toasts.couldNotUpdateTrack'));
       return false;
     }
   };
@@ -252,7 +254,7 @@ export function useSoundEditor(id: string) {
         seekTo(startAt);
       }
     } catch {
-      toast.error('Could not load the audio.');
+      toast.error(i18n.t('web:toasts.couldNotLoadAudio'));
     } finally {
       setPlayBusy(false);
     }

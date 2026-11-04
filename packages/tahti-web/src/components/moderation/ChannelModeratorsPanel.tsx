@@ -2,6 +2,7 @@ import { Trash2Icon, UserRoundPlusIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Input, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -146,7 +147,7 @@ export function ChannelModeratorsPanel() {
               toast.error(result.error);
               return;
             }
-            toast.success('Moderator removed.');
+            toast.success(i18n.t('web:toasts.moderatorRemoved'));
             reload();
           });
         }}

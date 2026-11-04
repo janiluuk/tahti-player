@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   ExternalLink,
@@ -129,7 +130,7 @@ export function OAuthServiceCard({
         if (r.needsReconnect) {
           // The API already dropped the dead token, so re-read the status:
           // the card falls back to Connect instead of an empty track list.
-          toast.error('Your SoundCloud connection expired. Connect again.');
+          toast.error(i18n.t('web:toasts.soundcloudExpired'));
           setStatusTick((n) => n + 1);
         }
       })
@@ -185,9 +186,9 @@ export function OAuthServiceCard({
       setProfileUrl(value);
       setProfileDraft(value);
       setProfileMsg('Saved.');
-      toast.success('SoundCloud profile URL saved.');
+      toast.success(i18n.t('web:toasts.soundcloudProfileSaved'));
     } catch {
-      toast.error('Could not save the SoundCloud profile URL.');
+      toast.error(i18n.t('web:toasts.soundcloudProfileSaveFailed'));
     }
   };
 
@@ -195,9 +196,13 @@ export function OAuthServiceCard({
     setBusy(true);
     try {
       await adapter.disconnect();
-      toast.success(`Disconnected ${plugin.name}.`);
+      toast.success(
+        i18n.t('web:toasts.disconnectedNamed', { name: plugin.name }),
+      );
     } catch {
-      toast.error(`Could not disconnect ${plugin.name}.`);
+      toast.error(
+        i18n.t('web:toasts.couldNotDisconnectNamed', { name: plugin.name }),
+      );
     } finally {
       setBusy(false);
       setStatusTick((n) => n + 1);
@@ -218,7 +223,7 @@ export function OAuthServiceCard({
       setBandcampMessage(text);
       (result.ok ? toast.success : toast.error)(text);
     } catch {
-      toast.error('Bandcamp import failed.');
+      toast.error(i18n.t('web:toasts.bandcampImportFailed'));
     } finally {
       setBandcampImporting(null);
     }
@@ -241,7 +246,7 @@ export function OAuthServiceCard({
       setScMessage(text);
       (r.ok ? toast.success : toast.error)(text);
     } catch {
-      toast.error('SoundCloud import failed.');
+      toast.error(i18n.t('web:toasts.soundcloudImportFailed'));
     } finally {
       setScBusy(false);
     }

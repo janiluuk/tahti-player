@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -59,7 +60,7 @@ function NewTopicForm({ onCreated }: { onCreated: () => void }) {
       setError(result.error);
       return;
     }
-    toast.success('Topic opened. Every member is notified.');
+    toast.success(i18n.t('web:toasts.topicOpened'));
     setTitle('');
     setBody('');
     setPinned(false);
@@ -138,7 +139,7 @@ function EditTopicForm({
       setError(result.error);
       return;
     }
-    toast.success('Topic updated.');
+    toast.success(i18n.t('web:toasts.topicUpdated'));
     onDone(true);
   };
 

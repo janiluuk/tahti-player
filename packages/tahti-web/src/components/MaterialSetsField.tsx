@@ -2,6 +2,7 @@ import { ListMusicIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Input, Select, Toggle } from '@tahti-player/ui';
 
 import {
@@ -103,7 +104,9 @@ export function MaterialSetsField({ soundId }: Props) {
                 : row,
             ) ?? null,
         );
-        toast.success(`Removed from ${entry.name}`);
+        toast.success(
+          i18n.t('web:toasts.removedFromNamed', { name: entry.name }),
+        );
         return;
       }
       const added = await addStudioCollectionItem(entry.slug, { soundId });
@@ -145,7 +148,7 @@ export function MaterialSetsField({ soundId }: Props) {
           },
         });
       } else {
-        toast.success(`Added to ${entry.name}`);
+        toast.success(i18n.t('web:toasts.addedToNamed', { name: entry.name }));
       }
     } finally {
       setBusyId(null);
@@ -188,7 +191,7 @@ export function MaterialSetsField({ soundId }: Props) {
       setRows((prev) => [entry, ...(prev ?? [])]);
       setCreating(false);
       setNewName('');
-      toast.success(`Created ${name}`);
+      toast.success(i18n.t('web:toasts.createdNamed', { name }));
     } finally {
       setCreateBusy(false);
     }

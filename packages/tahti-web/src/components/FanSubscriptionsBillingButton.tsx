@@ -2,6 +2,7 @@ import { CreditCardIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { startFanSubscriptionsPortal } from '../api/membership';
@@ -20,7 +21,7 @@ export function FanSubscriptionsBillingButton() {
     }
     if (!assignStripeRedirectUrl(result.portalUrl)) {
       setBusy(false);
-      toast.error('Billing portal URL was not from Stripe');
+      toast.error(i18n.t('web:toasts.billingPortalNotStripe'));
     }
   };
 

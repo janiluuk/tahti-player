@@ -118,7 +118,7 @@ export function useCollectionEditState(slug: string) {
     try {
       const fresh = await fetchStudioCollection(slug);
       if (fresh.meta.source === 'api' && fresh.meta.reason) {
-        toast.error('Could not refresh the tracklist.');
+        toast.error(i18n.t('web:toasts.couldNotRefreshTracklist'));
         return null;
       }
       setCol((current) =>
@@ -126,7 +126,7 @@ export function useCollectionEditState(slug: string) {
       );
       return fresh.data.items;
     } catch {
-      toast.error('Could not refresh the tracklist.');
+      toast.error(i18n.t('web:toasts.couldNotRefreshTracklist'));
       return null;
     }
   };

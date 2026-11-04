@@ -2,6 +2,7 @@ import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Dialog, SaveButton } from '@tahti-player/ui';
 
 import { PageEmpty, PageError, PageLoading } from './PageStates';
@@ -76,7 +77,7 @@ export function ProfileOrderDialog({
       toast.error(result.error);
       return;
     }
-    toast.success('Order saved.');
+    toast.success(i18n.t('web:toasts.orderSaved'));
     onClose();
   };
 

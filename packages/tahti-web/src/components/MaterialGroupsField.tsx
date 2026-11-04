@@ -2,6 +2,7 @@ import { UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Input, Select, Toggle } from '@tahti-player/ui';
 
 import {
@@ -93,7 +94,9 @@ export function MaterialGroupsField({ soundId }: Props) {
                 : row,
             ) ?? null,
         );
-        toast.success(`Removed from ${entry.name}`);
+        toast.success(
+          i18n.t('web:toasts.removedFromNamed', { name: entry.name }),
+        );
         return;
       }
       const submitted = await submitGroupSound(entry.slug, soundId);
@@ -108,7 +111,7 @@ export function MaterialGroupsField({ soundId }: Props) {
               row.id === id ? { ...row, submissionPending: true } : row,
             ) ?? null,
         );
-        toast.success('Submitted for approval');
+        toast.success(i18n.t('web:toasts.submittedForApproval'));
         return;
       }
       setRows(
@@ -146,7 +149,7 @@ export function MaterialGroupsField({ soundId }: Props) {
           },
         });
       } else {
-        toast.success(`Added to ${entry.name}`);
+        toast.success(i18n.t('web:toasts.addedToNamed', { name: entry.name }));
       }
     } finally {
       setBusyId(null);
@@ -188,7 +191,7 @@ export function MaterialGroupsField({ soundId }: Props) {
       setRows((prev) => [entry, ...(prev ?? [])]);
       setCreating(false);
       setNewName('');
-      toast.success(`Created ${name}`);
+      toast.success(i18n.t('web:toasts.createdNamed', { name }));
     } finally {
       setCreateBusy(false);
     }

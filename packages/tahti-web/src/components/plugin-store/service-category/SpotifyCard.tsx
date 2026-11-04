@@ -2,6 +2,7 @@ import { ListPlusIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, ButtonLink, Input, PluginStoreItem } from '@tahti-player/ui';
 
 import {
@@ -58,9 +59,9 @@ export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
       }
       setProfile(result.data.profile);
       setMessage(null);
-      toast.success('Spotify profile linked.');
+      toast.success(i18n.t('web:toasts.spotifyLinked'));
     } catch {
-      toast.error('Could not link the Spotify profile.');
+      toast.error(i18n.t('web:toasts.spotifyLinkFailed'));
     } finally {
       setBusy(false);
     }
@@ -72,12 +73,12 @@ export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
       const result = await unlinkSpotifyArtistProfile();
       if (result.ok) {
         setProfile(null);
-        toast.success('Spotify profile unlinked.');
+        toast.success(i18n.t('web:toasts.spotifyUnlinked'));
       } else {
         toast.error(result.error);
       }
     } catch {
-      toast.error('Could not unlink the Spotify profile.');
+      toast.error(i18n.t('web:toasts.spotifyUnlinkFailed'));
     } finally {
       setBusy(false);
     }
