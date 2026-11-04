@@ -1,5 +1,6 @@
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, ButtonLink, Dialog, Tabs, ViewShell } from '@tahti-player/ui';
 
 import {
@@ -159,6 +160,7 @@ function GoLiveTabContent({
 }
 
 export function StudioGoLiveView() {
+  const { t } = useTranslation('web');
   const state = useGoLiveState();
   const searchTab = useRouterState({
     select: (s) => {
@@ -271,9 +273,9 @@ export function StudioGoLiveView() {
 
           <ConfirmDialog
             isOpen={confirmGoLive}
-            title="Go live now?"
-            description="Your broadcast replaces the channel rotation and listeners start hearing it immediately."
-            confirmLabel="Go live"
+            title={t('studioGoLive.confirmTitle')}
+            description={t('studioGoLive.confirmDescription')}
+            confirmLabel={t('studioGoLive.confirmLabel')}
             onCancel={() => setConfirmGoLive(false)}
             onConfirm={() => {
               setConfirmGoLive(false);

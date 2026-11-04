@@ -2,6 +2,7 @@ import { MusicIcon, PlayIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import type { Track } from '@tahti-player/model';
 import {
   backButtonCornerClassName,
@@ -68,6 +69,7 @@ const TRACK_ORDER_OPTIONS: SelectOption[] = [
 ];
 
 export function StudioPlaylistEditorView({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const [editing, setEditing] = useEditMode();
   const [col, setCol] = useState<StudioCollection | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -681,15 +683,19 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
               />
             </div>
             <Dialog.Actions>
-              <Dialog.Close>Cancel</Dialog.Close>
+              <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
             </Dialog.Actions>
           </Dialog.Root>
 
           <ConfirmDialog
             isOpen={pendingRemove !== null}
-            title={`Remove "${pendingRemove?.title}"?`}
-            description={`This removes the track from this ${kindLabel}. It stays in your library.`}
-            confirmLabel="Remove"
+            title={t('studioPlaylistEditor.removeTrackTitle', {
+              title: pendingRemove?.title ?? '',
+            })}
+            description={t('studioPlaylistEditor.removeTrackDescription', {
+              kind: kindLabel,
+            })}
+            confirmLabel={t('actions.remove')}
             destructive
             onCancel={() => setPendingRemove(null)}
             onConfirm={() => {
@@ -705,10 +711,10 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     toast.error(r.error);
                     return;
                   }
-                  toast.success('Removed.');
+                  toast.success(t('toasts.playlistItemRemoved'));
                   await refreshItems();
                 } catch {
-                  toast.error('Could not remove the item.');
+                  toast.error(t('toasts.playlistItemRemoveFailed'));
                 }
               })();
             }}
@@ -716,9 +722,11 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
 
           <ConfirmDialog
             isOpen={pendingCoverDelete}
-            title="Remove cover image?"
-            description={`The ${kindLabel} will fall back to its default placeholder until you upload a new cover.`}
-            confirmLabel="Remove cover"
+            title={t('studioPlaylistEditor.removeCoverTitle')}
+            description={t('studioPlaylistEditor.removeCoverDescription', {
+              kind: kindLabel,
+            })}
+            confirmLabel={t('studioPlaylistEditor.removeCover')}
             destructive
             onCancel={() => setPendingCoverDelete(false)}
             onConfirm={() => {

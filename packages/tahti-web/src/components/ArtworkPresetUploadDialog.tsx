@@ -1,6 +1,7 @@
 import { UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, FilePicker, InlineError } from '@tahti-player/ui';
 
 import { uploadUserMediaFile } from '../api/user-media';
@@ -11,12 +12,12 @@ type Props = {
   onUploaded: (url: string) => void;
 };
 
-/** Uploads a new image for Admin → Artwork presets. */
 export function ArtworkPresetUploadDialog({
   isOpen,
   onClose,
   onUploaded,
 }: Props) {
+  const { t } = useTranslation('web');
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +71,7 @@ export function ArtworkPresetUploadDialog({
         {error && <InlineError className="mt-2">{error}</InlineError>}
       </div>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
         <Button onClick={() => void submit()} disabled={busy || !file}>
           <UploadIcon size={16} aria-hidden className="mr-1.5" />
           {busy ? 'Uploading…' : 'Upload'}

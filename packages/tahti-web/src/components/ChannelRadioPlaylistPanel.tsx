@@ -214,7 +214,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
       return;
     }
     applyProgramme(result.data);
-    toast.success('24/7 settings saved.');
+    toast.success(t('toasts.radio247SettingsSaved'));
   };
 
   const applySelected = async () => {

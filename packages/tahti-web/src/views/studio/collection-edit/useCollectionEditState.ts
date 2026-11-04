@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import type { Track } from '@tahti-player/model';
 
 import {
@@ -213,7 +214,7 @@ export function useCollectionEditState(slug: string) {
       next.map((i) => i.id),
     ).then((result) => {
       if (result.ok) {
-        toast.success('Tracklist reordered.');
+        toast.success(i18n.t('web:toasts.collectionTracklistReordered'));
       } else {
         toast.error(result.error);
         void refreshItems();
@@ -229,7 +230,7 @@ export function useCollectionEditState(slug: string) {
         .map((genre) => genre.trim())
         .filter(Boolean);
       if (genreList.length > 5) {
-        toast.info('Only the first 5 genres are kept.');
+        toast.info(i18n.t('web:toasts.collectionGenresTrimmed'));
       }
       const result = await patchStudioCollection(slug, {
         name: name.trim() || slug,
@@ -265,9 +266,9 @@ export function useCollectionEditState(slug: string) {
             }
           : result.data,
       );
-      toast.success('Collection details saved.');
+      toast.success(i18n.t('web:toasts.collectionDetailsSaved'));
     } catch {
-      toast.error('Could not save the collection details.');
+      toast.error(i18n.t('web:toasts.collectionDetailsSaveFailed'));
     } finally {
       setSaving(false);
     }

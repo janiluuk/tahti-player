@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog } from '@tahti-player/ui';
 
 type Props = {
@@ -7,6 +8,7 @@ type Props = {
 };
 
 export function ResetConfirmDialog({ isOpen, onClose, onConfirm }: Props) {
+  const { t } = useTranslation('web');
   return (
     <Dialog.Root isOpen={isOpen} onClose={onClose}>
       <Dialog.Title>Reset unsaved changes?</Dialog.Title>
@@ -15,9 +17,9 @@ export function ResetConfirmDialog({ isOpen, onClose, onConfirm }: Props) {
         restores your live look. This can&apos;t be undone.
       </Dialog.Description>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
         <Button onClick={onConfirm} variant="secondary">
-          Reset
+          {t('actions.reset')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

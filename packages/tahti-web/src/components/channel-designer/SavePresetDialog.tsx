@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input } from '@tahti-player/ui';
 
 type Props = {
@@ -17,6 +18,7 @@ export function SavePresetDialog({
   onClose,
   onConfirm,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <Dialog.Root
       isOpen={isOpen}
@@ -44,7 +46,7 @@ export function SavePresetDialog({
           autoFocus
         />
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
           <Button disabled={presetBusy} type="submit">
             Save preset
           </Button>

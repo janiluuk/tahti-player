@@ -1,3 +1,14 @@
+## 2026-11-04 - Batch 44 UX slices (0.0.334)
+
+Finnish for Studio Recordings / Distribution / Editor list chrome and empties,
+radio 24/7 + rotation source + channel-created + Tahti Radio submit toasts,
+collection reorder/save and release version/credits toasts, Go live +
+playlist/multistream ConfirmDialogs, channel-designer and artwork Cancel via
+`web.actions`, grant-report visibility toast. Dates: chart/stats Left still
+Kept via `dateLocaleTag` (no new ListingDate). StudioDistribution Storybook
+heading uses toBeInTheDocument. Skipped: radio widget redesign, performance
+audit, pageTour, admin hub English descriptions.
+
 ## 2026-11-04 - Batch 43 UX slices (0.0.333)
 
 Finnish for UploadTrackDialog + release track upload picker, CoverArtPicker,

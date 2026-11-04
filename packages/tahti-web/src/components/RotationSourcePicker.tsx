@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Select } from '@tahti-player/ui';
 
 import {
@@ -12,9 +13,8 @@ import { StudioPanel } from './StudioPanel';
 
 const DEFAULT_SOURCE = '';
 
-/** Where the 24/7 rotation takes its tracks from: the tracks marked for
- * rotation (default) or one of the channel owner's collections. */
 export function RotationSourcePicker({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const [options, setOptions] = useState<FallbackCollectionOption[] | null>(
     null,
   );
@@ -52,25 +52,25 @@ export function RotationSourcePicker({ slug }: { slug: string }) {
       toast.error(result.error);
       return;
     }
-    toast.success('Rotation source saved.');
+    toast.success(t('toasts.rotationSourceSaved'));
   };
 
   return (
     <StudioPanel
-      title="Rotation source"
-      description="Play the 24/7 rotation from one of your collections instead of the tracks you marked for rotation."
+      title={t('rotationSource.title')}
+      description={t('rotationSource.description')}
     >
       <div className="sm:max-w-sm">
         <Select
-          label="Play from"
+          label={t('rotationSource.playFrom')}
           value={selected}
           disabled={saving}
           onValueChange={(value) => void change(value)}
           options={[
-            { id: DEFAULT_SOURCE, label: 'Tracks marked for rotation' },
+            { id: DEFAULT_SOURCE, label: t('rotationSource.markedTracks') },
             ...options.map((option) => ({
               id: option.id,
-              label: `${option.name} (${option.trackCount} ${option.trackCount === 1 ? 'track' : 'tracks'})`,
+              label: `${option.name} (${t('rotationSource.tracks', { count: option.trackCount })})`,
             })),
           ]}
         />

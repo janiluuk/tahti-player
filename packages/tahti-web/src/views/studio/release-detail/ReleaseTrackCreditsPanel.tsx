@@ -44,7 +44,7 @@ function TrackCreditsRow({
     }
     setCredits(result.credits ?? []);
     onSaved(result.credits);
-    toast.success(`Credits saved for ${track.title}.`);
+    toast.success(t('toasts.creditsSavedNamed', { title: track.title }));
   };
 
   const roleOptions = Array.from(

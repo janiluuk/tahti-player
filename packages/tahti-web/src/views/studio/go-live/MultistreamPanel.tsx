@@ -2,6 +2,7 @@ import { ListMusicIcon, PlusIcon, PowerIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -22,8 +23,6 @@ import {
 } from '../../../plugins/multicast';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 
-/** Multistream destinations: list, enable/disable, add, configure and remove
- * (with confirmation). Owns the dialogs' state. */
 export function MultistreamPanel({
   targets,
   reload,
@@ -33,6 +32,7 @@ export function MultistreamPanel({
   reload: () => void | Promise<void>;
   loadError?: string | null;
 }) {
+  const { t } = useTranslation('web');
   const [showAddDestination, setShowAddDestination] = useState(false);
   const [configuringDestination, setConfiguringDestination] =
     useState<MulticastConfiguring | null>(null);
@@ -105,13 +105,20 @@ export function MultistreamPanel({
                               toast.error(result.error);
                               return;
                             }
+                            const name =
+                              target.label ||
+                              multicastProviderLabel(target.provider);
                             toast.success(
-                              `${target.label || multicastProviderLabel(target.provider)} ${nextEnabled ? 'enabled' : 'disabled'}.`,
+                              nextEnabled
+                                ? t('toasts.multistreamEnabledNamed', { name })
+                                : t('toasts.multistreamDisabledNamed', {
+                                    name,
+                                  }),
                             );
                             void reload();
                           })
                           .catch(() => {
-                            toast.error('Could not update the destination.');
+                            toast.error(t('toasts.multistreamCouldNotUpdate'));
                           });
                       }}
                     >
@@ -171,7 +178,7 @@ export function MultistreamPanel({
             ))}
         </ul>
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
       {configuringDestination ? (
@@ -189,11 +196,13 @@ export function MultistreamPanel({
         destructive
         title={
           pendingDeleteTarget
-            ? `Remove ${pendingDeleteTarget.label || pendingDeleteTarget.provider}?`
-            : 'Remove destination?'
+            ? t('multistream.removeTitleNamed', {
+                name: pendingDeleteTarget.label || pendingDeleteTarget.provider,
+              })
+            : t('multistream.removeTitle')
         }
-        description="This deletes the saved stream key."
-        confirmLabel="Remove"
+        description={t('multistream.removeDescription')}
+        confirmLabel={t('actions.remove')}
         onCancel={() => setPendingDeleteTarget(null)}
         onConfirm={() => {
           const target = pendingDeleteTarget;
@@ -207,11 +216,11 @@ export function MultistreamPanel({
                 toast.error(result.error);
                 return;
               }
-              toast.success('Destination removed.');
+              toast.success(t('toasts.multistreamDestinationRemoved'));
               reload();
             })
             .catch(() => {
-              toast.error('Could not remove the destination.');
+              toast.error(t('toasts.multistreamCouldNotRemove'));
             });
         }}
       />

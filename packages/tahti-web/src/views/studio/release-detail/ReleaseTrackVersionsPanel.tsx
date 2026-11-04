@@ -28,6 +28,7 @@ function TrackVersions({
   releaseId: string;
   track: ReleaseTrack;
 }) {
+  const { t } = useTranslation('web');
   const [versions, setVersions] = useState<ReleaseTrackVersion[] | null>(null);
   const [switchingId, setSwitchingId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
@@ -90,7 +91,7 @@ function TrackVersions({
       return;
     }
     setVersions(result.data);
-    toast.success('Version switched.');
+    toast.success(t('toasts.versionSwitched'));
   };
 
   return (
