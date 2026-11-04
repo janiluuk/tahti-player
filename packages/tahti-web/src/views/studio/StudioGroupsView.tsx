@@ -28,16 +28,11 @@ import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import {
-  groupCountLabel,
-  JOIN_POLICY_OPTIONS,
-  SUBMIT_POLICY_OPTIONS,
+  groupMembersLabel,
+  groupSoundsLabel,
+  joinPolicyOptions,
+  submitPolicyOptions,
 } from '../../lib/groupPeople';
-
-const ROLE_LABEL = {
-  OWNER: 'Owner',
-  ADMIN: 'Admin',
-  MEMBER: 'Member',
-} as const;
 
 export function StudioGroupsView() {
   const { t } = useTranslation('web');
@@ -52,6 +47,12 @@ export function StudioGroupsView() {
   const [joinPolicy, setJoinPolicy] = useState<GroupJoinPolicy>('OPEN');
   const [submitPolicy, setSubmitPolicy] = useState<GroupSubmitPolicy>('OPEN');
   const [busy, setBusy] = useState(false);
+
+  const roleLabel = {
+    OWNER: t('groupDetail.roleOwner'),
+    ADMIN: t('groupDetail.roleAdmin'),
+    MEMBER: t('groupDetail.roleMember'),
+  } as const;
 
   const reload = () => {
     void fetchMyGroups().then(({ data, meta }) => {
@@ -134,22 +135,22 @@ export function StudioGroupsView() {
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-medium">{group.name}</span>
                     <Badge variant="pill" color="secondary">
-                      {ROLE_LABEL[group.role]}
+                      {roleLabel[group.role]}
                     </Badge>
                     {group.isPublic ? null : (
                       <Badge variant="pill" color="secondary">
-                        Private
+                        {t('studioGroups.privateBadge')}
                       </Badge>
                     )}
                     {pending > 0 ? (
                       <Badge variant="pill" color="orange">
-                        {pending} to review
+                        {t('studioGroups.toReview', { count: pending })}
                       </Badge>
                     ) : null}
                   </div>
                   <p className="text-foreground-secondary text-xs">
-                    {groupCountLabel(group.memberCount, 'member', 'members')} ·{' '}
-                    {groupCountLabel(group.itemCount, 'sound', 'sounds')}
+                    {groupMembersLabel(group.memberCount, t)} ·{' '}
+                    {groupSoundsLabel(group.itemCount, t)}
                   </p>
                 </div>
               </div>
@@ -187,59 +188,59 @@ export function StudioGroupsView() {
         >
           {creating ? (
             <StudioPanel
-              title="New group"
-              description="You become the owner. The collective playlist is created for you."
+              title={t('studioGroups.createPanelTitle')}
+              description={t('studioGroups.createPanelDescription')}
             >
               <form
                 className="flex flex-col gap-3"
                 onSubmit={(event) => void submit(event)}
               >
                 <Input
-                  label="Name"
+                  label={t('studioGroups.name')}
                   value={name}
                   onChange={(event) => setName(event.target.value)}
-                  placeholder="Trance Mixes and DJ Sets"
+                  placeholder={t('studioGroups.namePlaceholder')}
                   required
                 />
                 <Textarea
-                  label="Description"
+                  label={t('studioGroups.description')}
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
                   rows={3}
                 />
                 <Select
-                  label="Who can join"
+                  label={t('studioGroups.whoCanJoin')}
                   value={joinPolicy}
                   onValueChange={(value) =>
                     setJoinPolicy(value as GroupJoinPolicy)
                   }
-                  options={JOIN_POLICY_OPTIONS}
+                  options={joinPolicyOptions(t)}
                 />
                 <Select
-                  label="New sounds"
+                  label={t('studioGroups.newSounds')}
                   value={submitPolicy}
                   onValueChange={(value) =>
                     setSubmitPolicy(value as GroupSubmitPolicy)
                   }
-                  options={SUBMIT_POLICY_OPTIONS}
+                  options={submitPolicyOptions(t)}
                 />
                 <Toggle
-                  label="Public"
+                  label={t('studioGroups.public')}
                   showLabel
-                  description="Public groups appear in the groups directory."
+                  description={t('studioGroups.publicDescription')}
                   checked={isPublic}
                   onChange={setIsPublic}
                 />
                 <div className="flex gap-2">
                   <Button type="submit" disabled={busy || !name.trim()}>
-                    Create group
+                    {t('studioGroups.createGroup')}
                   </Button>
                   <Button
                     type="button"
                     variant="text"
                     onClick={() => setCreating(false)}
                   >
-                    Cancel
+                    {t('actions.cancel')}
                   </Button>
                 </div>
               </form>

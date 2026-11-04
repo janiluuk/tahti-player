@@ -1,14 +1,15 @@
 import { SearchIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, ButtonLink, Input, MediaArtwork } from '@tahti-player/ui';
 
 import { fetchPublicGroups, type ArtistGroupSummary } from '../api/groups';
-import { groupCountLabel } from '../lib/groupPeople';
+import { groupMembersLabel, groupSoundsLabel } from '../lib/groupPeople';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 
-/** Public groups browser used on Discover → Groups and `/groups`. */
 export function GroupsDirectory() {
+  const { t } = useTranslation('web');
   const [query, setQuery] = useState('');
   const [groups, setGroups] = useState<ArtistGroupSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,12 +39,12 @@ export function GroupsDirectory() {
 
   const renderList = () => {
     if (loading) {
-      return <PageLoading label="Loading groups…" />;
+      return <PageLoading label={t('studioGroups.loading')} />;
     }
     if (error && groups.length === 0) {
       return (
         <PageError
-          title="Could not load groups"
+          title={t('studioGroups.loadError')}
           description={error}
           onRetry={() => setAttempt((value) => value + 1)}
         />
@@ -52,13 +53,20 @@ export function GroupsDirectory() {
     if (groups.length === 0) {
       return (
         <PageEmpty
-          title={query.trim() ? 'No groups match that search' : 'No groups yet'}
-          description="Artists can start a group from Studio → Groups."
+          title={
+            query.trim()
+              ? t('studioGroups.searchEmpty')
+              : t('studioGroups.emptyTitle')
+          }
+          description={t('studioGroups.directoryEmptyDescription')}
         />
       );
     }
     return (
-      <ul className="grid gap-3 sm:grid-cols-2" aria-label="Groups">
+      <ul
+        className="grid gap-3 sm:grid-cols-2"
+        aria-label={t('studioGroups.title')}
+      >
         {groups.map((group) => (
           <li
             key={group.id}
@@ -81,12 +89,12 @@ export function GroupsDirectory() {
                 {group.name}
               </ButtonLink>
               <p className="text-foreground-secondary text-xs">
-                {groupCountLabel(group.memberCount, 'member', 'members')} ·{' '}
-                {groupCountLabel(group.itemCount, 'sound', 'sounds')}
+                {groupMembersLabel(group.memberCount, t)} ·{' '}
+                {groupSoundsLabel(group.itemCount, t)}
               </p>
               {group.joinPolicy === 'REQUEST' ? (
                 <Badge variant="pill" color="secondary" className="mt-1">
-                  Request to join
+                  {t('studioGroups.joinRequest')}
                 </Badge>
               ) : null}
             </div>
@@ -105,8 +113,8 @@ export function GroupsDirectory() {
           aria-hidden
         />
         <Input
-          aria-label="Search groups"
-          placeholder="Search groups"
+          aria-label={t('studioGroups.searchLabel')}
+          placeholder={t('studioGroups.searchLabel')}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           className="pl-9"

@@ -21,15 +21,15 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [batch-40-slices-2026-11-04.md](batch-40-slices-2026-11-04.md) | Batch of 30: Finnish leftovers, dateLocaleTag upload/home dates, polish + 0.0.330 |
+| open    | [batch-41-slices-2026-11-04.md](batch-41-slices-2026-11-04.md) | Batch of 30: Finnish leftovers, date Kept sweep, polish + 0.0.331 |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
 | partial | [library-management-port.md](library-management-port.md) | Port theDAW library management to Library Sounds: paged API client, facets/stats, bulk delete/edit |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Inbox chips, Overview merge, docs rewrite |
-| partial | [finnish-localization.md](finnish-localization.md) | Settings → Language plus chrome/player/Listen/Discover/Library and batches 31–39 Settings/Studio/Admin/Radio/channel subsets; left: more web.actions sites, API notification bodies, Upload prose, SEO/pageTour/keyboard help |
-| partial | [date-format-sweep.md](date-format-sweep.md) | One date style: helpers, `ListingDate`, listings + Kept notes through batch 39; left: chart/stats `toLocale*` stay chart-locale |
+| partial | [finnish-localization.md](finnish-localization.md) | Settings → Language plus chrome/player/Listen/Discover/Library and batches 31–41 Settings/Studio/Admin/Radio/channel subsets; left: more web.actions sites, API notification bodies, Upload leftovers, SEO/pageTour/keyboard help |
+| partial | [date-format-sweep.md](date-format-sweep.md) | One date style: helpers, `ListingDate`, listings + Kept notes through batch 41; left: chart/stats `toLocale*` stay chart-locale |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org, unpushed), NRJ, server-side peaks, Recently played search, track page like-button check |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; left: embed downloads (product call) and keeping a stage-hosted embed across routes |
 | open    | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Plan: page anatomy rules (one header, one primary action, overflow, one toolbar), Settings account-only in 7 items, duplicate surfaces removed; 9 phases, absorbs navigation-simplification slices 1-3, 7, 9, 10 |

@@ -32,6 +32,11 @@ export const Upcoming: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
+      await canvas.findByRole('heading', {
+        name: /^Listening parties$|^Kuuntelujuhlat$/,
+      }),
+    ).toBeInTheDocument();
+    await expect(
       await canvas.findByRole('link', { name: 'Reschedule Polar Static' }),
     ).toHaveAttribute(
       'href',

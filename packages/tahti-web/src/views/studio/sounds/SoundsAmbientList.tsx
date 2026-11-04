@@ -18,16 +18,12 @@ import {
   canRetrySoundProcessing,
   useRetrySoundProcessing,
 } from '../../../hooks/useRetrySoundProcessing';
-import {
-  EMBED_PROVIDER_LABEL,
-  embedSrcFor,
-  type EmbedProvider,
-} from '../../../lib/embedSrc';
+import { embedSrcFor, type EmbedProvider } from '../../../lib/embedSrc';
 import { dateLocaleTag } from '../../../lib/locale';
-import { isPinned } from '../../../lib/pinnedTracks';
 import { formatDuration } from '../../../lib/playableToTrack';
 import { usePlayerStore } from '../../../stores/playerStore';
 import { SoundsListTable } from './SoundsListTable';
+import { soundStatusExtras } from './soundStatusExtras';
 import type { StudioSoundsState } from './useStudioSoundsState';
 
 export function formatUploadDate(value: string | undefined): string | null {
@@ -85,10 +81,6 @@ function isProcessingSound(item: StudioSound): boolean {
 function SoundStatusLine({ item }: { item: StudioSound }) {
   const { t } = useTranslation('web');
   const failed = item.status === 'ERROR';
-  const embedSrc =
-    item.embedProvider && item.embedUri
-      ? embedSrcFor(item.embedProvider, item.embedUri)
-      : null;
   const uploaded = formatUploadDate(item.createdAt);
   return (
     <>
@@ -99,19 +91,43 @@ function SoundStatusLine({ item }: { item: StudioSound }) {
             ? t('library.processingFailed')
             : item.status}
         {uploaded ? t('library.uploadedOn', { date: uploaded }) : ''}
-        {isPinned(item) ? ', pinned' : ''}
-        {item.durationSec != null
-          ? `, ${Math.round(item.durationSec / 60)} min`
-          : ''}
-        {item.genre ? `, ${item.genre}` : ''}
-        {item.isPublic === false ? ', private' : ''}
-        {item.downloadsEnabled === false ? ', downloads off' : ''}
-        {embedSrc ? `, via ${EMBED_PROVIDER_LABEL[item.embedProvider!]}` : ''}
+        {soundStatusExtras(item, t)}
       </p>
       {failed && item.processingError ? (
         <InlineError textSize="xs" announce={false}>
           {item.processingError}
         </InlineError>
+      ) : null}
+    </>
+  );
+}
+
+function SoundStatusWithRetry({
+  item,
+  retry,
+}: {
+  item: StudioSound;
+  retry: {
+    retry: (item: Pick<StudioSound, 'id' | 'title'>) => Promise<void>;
+    retryingId: string | null;
+  };
+}) {
+  const { t } = useTranslation('web');
+  return (
+    <>
+      <SoundStatusLine item={item} />
+      {canRetrySoundProcessing(item) ? (
+        <Button
+          size="xs"
+          variant="secondary"
+          disabled={retry.retryingId === item.id}
+          onClick={() => void retry.retry(item)}
+          aria-label={t('library.soundRetryAria', { title: item.title })}
+          className="mt-1"
+        >
+          <RotateCcwIcon size={14} aria-hidden className="mr-1" />
+          {t('library.soundRetry')}
+        </Button>
       ) : null}
     </>
   );
@@ -206,22 +222,7 @@ function toHostedListItem(
 
   const titleNode: ReactNode = <SoundTitle item={item} />;
   const belowTitle: ReactNode = (
-    <>
-      <SoundStatusLine item={item} />
-      {canRetrySoundProcessing(item) ? (
-        <Button
-          size="xs"
-          variant="secondary"
-          disabled={retry.retryingId === item.id}
-          onClick={() => void retry.retry(item)}
-          aria-label={`Retry processing ${item.title}`}
-          className="mt-1"
-        >
-          <RotateCcwIcon size={14} aria-hidden className="mr-1" />
-          Retry
-        </Button>
-      ) : null}
-    </>
+    <SoundStatusWithRetry item={item} retry={retry} />
   );
 
   return {

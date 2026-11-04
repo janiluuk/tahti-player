@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -36,15 +37,17 @@ import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import {
-  groupCountLabel,
+  groupMembersLabel,
   groupPersonName,
-  JOIN_POLICY_OPTIONS,
-  SUBMIT_POLICY_OPTIONS,
+  groupSoundsLabel,
+  joinPolicyOptions,
+  submitPolicyOptions,
 } from '../../lib/groupPeople';
 
 type Props = { slug: string };
 
 function GroupDetail({ slug }: Props) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [group, setGroup] = useState<MyArtistGroup | null>(null);
   const [founder, setFounder] = useState<string | null>(null);
@@ -104,7 +107,7 @@ function GroupDetail({ slug }: Props) {
         setError(
           meta.source === 'api' && meta.reason
             ? meta.reason
-            : 'This group does not exist or you are not a member.',
+            : t('studioGroups.notMember'),
         );
       }
       setLoading(false);
@@ -136,7 +139,7 @@ function GroupDetail({ slug }: Props) {
         return;
       }
       applyGroup({ ...group, ...result.data });
-      toast.success('Group saved');
+      toast.success(t('studioGroups.saved'));
     } finally {
       setSaving(false);
     }
@@ -156,8 +159,10 @@ function GroupDetail({ slug }: Props) {
       setRequests((prev) => prev.filter((row) => row.id !== request.id));
       toast.success(
         action === 'APPROVE'
-          ? `${groupPersonName(request.user)} joined`
-          : 'Request declined',
+          ? t('studioGroups.memberJoined', {
+              name: groupPersonName(request.user),
+            })
+          : t('studioGroups.requestDeclined'),
       );
     } finally {
       setBusyId(null);
@@ -180,7 +185,9 @@ function GroupDetail({ slug }: Props) {
       }
       setSubmissions((prev) => prev.filter((row) => row.id !== submission.id));
       toast.success(
-        action === 'approve' ? 'Added to the playlist' : 'Submission declined',
+        action === 'approve'
+          ? t('studioGroups.submissionAdded')
+          : t('studioGroups.submissionDeclined'),
       );
     } finally {
       setBusyId(null);
@@ -194,18 +201,18 @@ function GroupDetail({ slug }: Props) {
       toast.error(result.error);
       return;
     }
-    toast.success('Group deleted');
+    toast.success(t('studioGroups.deleted'));
     void navigate({ to: '/studio/groups' });
   };
 
   if (loading && !group) {
-    return <PageLoading label="Loading group…" />;
+    return <PageLoading label={t('studioGroups.loadingGroup')} />;
   }
 
   if (!group) {
     return (
       <PageError
-        title="Group not found"
+        title={t('studioGroups.notFound')}
         description={error ?? undefined}
         onRetry={reload}
       />
@@ -216,7 +223,7 @@ function GroupDetail({ slug }: Props) {
     <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
       <ViewShell
         title={group.name}
-        subtitle={`${groupCountLabel(group.memberCount, 'member', 'members')} · ${groupCountLabel(group.itemCount, 'sound', 'sounds')}`}
+        subtitle={`${groupMembersLabel(group.memberCount, t)} · ${groupSoundsLabel(group.itemCount, t)}`}
         classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         actions={
           <div className="flex flex-wrap items-center gap-2">
@@ -224,10 +231,10 @@ function GroupDetail({ slug }: Props) {
               to="/studio/groups"
               size="sm"
               variant="text"
-              aria-label="Back to groups"
+              aria-label={t('studioGroups.backToGroups')}
             >
               <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
-              Groups
+              {t('studioGroups.groups')}
             </ButtonLink>
             <ButtonLink
               to="/groups/$slug"
@@ -236,7 +243,7 @@ function GroupDetail({ slug }: Props) {
               variant="secondary"
             >
               <ExternalLinkIcon size={14} aria-hidden className="mr-1.5" />
-              Public page
+              {t('studioGroups.publicPage')}
             </ButtonLink>
             {founder ? (
               <ButtonLink
@@ -246,7 +253,7 @@ function GroupDetail({ slug }: Props) {
                 variant="secondary"
               >
                 <ListMusicIcon size={14} aria-hidden className="mr-1.5" />
-                Collective playlist
+                {t('studioGroups.collectivePlaylist')}
               </ButtonLink>
             ) : null}
           </div>
@@ -254,57 +261,57 @@ function GroupDetail({ slug }: Props) {
       >
         {canManage ? (
           <StudioPanel
-            title="Settings"
-            description="Who can join and how new sounds reach the collective playlist."
+            title={t('studioGroups.settingsTitle')}
+            description={t('studioGroups.settingsDescription')}
           >
             <form
               className="flex flex-col gap-3"
               onSubmit={(event) => void save(event)}
             >
               <Input
-                label="Name"
+                label={t('studioGroups.name')}
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 required
               />
               <Textarea
-                label="Description"
+                label={t('studioGroups.description')}
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
                 rows={3}
               />
               <Input
-                label="Cover image URL"
+                label={t('studioGroups.coverUrl')}
                 value={coverUrl}
                 onChange={(event) => setCoverUrl(event.target.value)}
                 placeholder="https://"
               />
               <Select
-                label="Who can join"
+                label={t('studioGroups.whoCanJoin')}
                 value={joinPolicy}
                 onValueChange={(value) =>
                   setJoinPolicy(value as GroupJoinPolicy)
                 }
-                options={JOIN_POLICY_OPTIONS}
+                options={joinPolicyOptions(t)}
               />
               <Select
-                label="New sounds"
+                label={t('studioGroups.newSounds')}
                 value={submitPolicy}
                 onValueChange={(value) =>
                   setSubmitPolicy(value as GroupSubmitPolicy)
                 }
-                options={SUBMIT_POLICY_OPTIONS}
+                options={submitPolicyOptions(t)}
               />
               <Toggle
-                label="Public"
+                label={t('studioGroups.public')}
                 showLabel
-                description="Public groups appear in the groups directory."
+                description={t('studioGroups.publicDescription')}
                 checked={isPublic}
                 onChange={setIsPublic}
               />
               <div className="flex flex-wrap gap-2">
                 <Button type="submit" disabled={saving || !name.trim()}>
-                  Save settings
+                  {t('studioGroups.saveSettings')}
                 </Button>
                 {group.role === 'OWNER' ? (
                   <Button
@@ -312,25 +319,24 @@ function GroupDetail({ slug }: Props) {
                     variant="text"
                     onClick={() => setConfirmDelete(true)}
                   >
-                    Delete group
+                    {t('studioGroups.deleteGroup')}
                   </Button>
                 ) : null}
               </div>
             </form>
           </StudioPanel>
         ) : (
-          <StudioPanel title="Your membership">
+          <StudioPanel title={t('studioGroups.membershipTitle')}>
             <p className="text-foreground-secondary text-sm">
-              You are a member. Add sounds to this group from a sound&apos;s
-              Groups card in your library. Owners and admins manage settings.
+              {t('studioGroups.membershipDescription')}
             </p>
           </StudioPanel>
         )}
 
         {canManage ? (
           <StudioPanel
-            title="Join requests"
-            description="People asking to join this group."
+            title={t('studioGroups.joinRequestsTitle')}
+            description={t('studioGroups.joinRequestsDescription')}
             action={
               requests.length > 0 ? (
                 <Badge variant="pill" color="orange">
@@ -340,7 +346,7 @@ function GroupDetail({ slug }: Props) {
             }
           >
             {requests.length === 0 ? (
-              <PageEmpty title="No pending requests" />
+              <PageEmpty title={t('studioGroups.joinRequestsEmpty')} />
             ) : (
               <ul className="flex flex-col gap-2">
                 {requests.map((request) => (
@@ -361,7 +367,7 @@ function GroupDetail({ slug }: Props) {
                         disabled={busyId === request.id}
                         onClick={() => void resolveRequest(request, 'APPROVE')}
                       >
-                        Approve
+                        {t('studioGroups.approve')}
                       </Button>
                       <Button
                         size="sm"
@@ -369,7 +375,7 @@ function GroupDetail({ slug }: Props) {
                         disabled={busyId === request.id}
                         onClick={() => void resolveRequest(request, 'REJECT')}
                       >
-                        Decline
+                        {t('studioGroups.decline')}
                       </Button>
                     </div>
                   </li>
@@ -381,8 +387,8 @@ function GroupDetail({ slug }: Props) {
 
         {canManage ? (
           <StudioPanel
-            title="Sound submissions"
-            description="Sounds waiting to join the collective playlist."
+            title={t('studioGroups.submissionsTitle')}
+            description={t('studioGroups.submissionsDescription')}
             action={
               submissions.length > 0 ? (
                 <Badge variant="pill" color="orange">
@@ -392,7 +398,7 @@ function GroupDetail({ slug }: Props) {
             }
           >
             {submissions.length === 0 ? (
-              <PageEmpty title="No pending submissions" />
+              <PageEmpty title={t('studioGroups.submissionsEmpty')} />
             ) : (
               <ul className="flex flex-col gap-2">
                 {submissions.map((submission) => (
@@ -409,7 +415,9 @@ function GroupDetail({ slug }: Props) {
                         {submission.sound.title}
                       </Link>
                       <p className="text-foreground-secondary text-xs">
-                        by {groupPersonName(submission.submittedBy)}
+                        {t('studioGroups.submittedBy', {
+                          name: groupPersonName(submission.submittedBy),
+                        })}
                       </p>
                       {submission.note ? (
                         <p className="text-foreground-secondary text-xs">
@@ -425,7 +433,7 @@ function GroupDetail({ slug }: Props) {
                           void resolveSubmission(submission, 'approve')
                         }
                       >
-                        Approve
+                        {t('studioGroups.approve')}
                       </Button>
                       <Button
                         size="sm"
@@ -435,7 +443,7 @@ function GroupDetail({ slug }: Props) {
                           void resolveSubmission(submission, 'reject')
                         }
                       >
-                        Reject
+                        {t('studioGroups.reject')}
                       </Button>
                     </div>
                   </li>
@@ -447,9 +455,9 @@ function GroupDetail({ slug }: Props) {
       </ViewShell>
       <ConfirmDialog
         isOpen={confirmDelete}
-        title={`Delete ${group.name}?`}
-        description="The group and its collective playlist are removed for everyone. This cannot be undone."
-        confirmLabel="Delete group"
+        title={t('studioGroups.deleteTitle', { name: group.name })}
+        description={t('studioGroups.deleteDescription')}
+        confirmLabel={t('studioGroups.deleteGroup')}
         destructive
         onCancel={() => setConfirmDelete(false)}
         onConfirm={() => void remove()}

@@ -1,3 +1,9 @@
+## 2026-11-04 - Batch 40 UX slices
+
+Finnish leftovers (actions, Studio Events/Groups, ThemesTab, Admin Radio,
+Collection/Stash/share ConfirmDialogs, toasts); upload/home dates via
+dateLocaleTag; AddToPlaylistButton play. tahti-web 0.0.330 (#1826).
+
 ## 2026-11-04 - Batch 39 UX slices
 
 Mentions/Notifications; Library Media; Studio sounds/releases; Content

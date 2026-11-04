@@ -31,10 +31,10 @@ import {
   EMBED_PROVIDER_LABEL,
   embedSrcFor,
 } from '../../../lib/embedSrc';
-import { isPinned } from '../../../lib/pinnedTracks';
 import { useDominantColor } from '../../../lib/useDominantColor';
 import { usePlayerStore } from '../../../stores/playerStore';
 import { formatUploadDate } from './SoundsAmbientList';
+import { soundStatusExtras } from './soundStatusExtras';
 import type { StudioSoundsState } from './useStudioSoundsState';
 
 function ambientStyle(
@@ -140,14 +140,7 @@ export function SoundRow({
                 date: formatUploadDate(item.createdAt)!,
               })
             : ''}
-          {isPinned(item) ? ', pinned' : ''}
-          {item.durationSec != null
-            ? `, ${Math.round(item.durationSec / 60)} min`
-            : ''}
-          {item.genre ? `, ${item.genre}` : ''}
-          {item.isPublic === false ? ', private' : ''}
-          {item.downloadsEnabled === false ? ', downloads off' : ''}
-          {embedSrc ? `, via ${EMBED_PROVIDER_LABEL[item.embedProvider!]}` : ''}
+          {soundStatusExtras(item, t)}
         </p>
         {failed && item.processingError ? (
           <InlineError textSize="xs" announce={false}>
@@ -161,10 +154,10 @@ export function SoundRow({
           variant="secondary"
           disabled={retryingId === item.id}
           onClick={() => void retry(item)}
-          aria-label={`Retry processing ${item.title}`}
+          aria-label={t('library.soundRetryAria', { title: item.title })}
         >
           <RotateCcwIcon size={14} aria-hidden className="mr-1" />
-          Retry
+          {t('library.soundRetry')}
         </Button>
       ) : null}
       <div

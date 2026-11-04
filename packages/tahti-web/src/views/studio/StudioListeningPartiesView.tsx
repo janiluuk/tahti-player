@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -31,24 +32,32 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
 
-const STATE_BADGE: Record<
-  ListeningPartyState,
-  { label: string; color: 'green' | 'blue' | 'secondary' | 'red' }
-> = {
-  SCHEDULED: { label: 'Scheduled', color: 'blue' },
-  LIVE: { label: 'Live', color: 'green' },
-  ENDED: { label: 'Ended', color: 'secondary' },
-  CANCELED: { label: 'Canceled', color: 'red' },
-};
-
-/** Studio → Listening parties: the artist's parties, with reschedule and
- * cancel while a party has not started. */
 export function StudioListeningPartiesView() {
+  const { t } = useTranslation('web');
   const [parties, setParties] = useState<ListeningPartySummaryDto[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [pendingCancel, setPendingCancel] =
     useState<ListeningPartySummaryDto | null>(null);
+
+  const stateBadge: Record<
+    ListeningPartyState,
+    { label: string; color: 'green' | 'blue' | 'secondary' | 'red' }
+  > = {
+    SCHEDULED: {
+      label: t('studioListeningParties.stateScheduled'),
+      color: 'blue',
+    },
+    LIVE: { label: t('studioListeningParties.stateLive'), color: 'green' },
+    ENDED: {
+      label: t('studioListeningParties.stateEnded'),
+      color: 'secondary',
+    },
+    CANCELED: {
+      label: t('studioListeningParties.stateCanceled'),
+      color: 'red',
+    },
+  };
 
   const reload = () => {
     void fetchMyListeningParties().then(({ data, meta }) => {
@@ -69,12 +78,12 @@ export function StudioListeningPartiesView() {
 
   const renderList = (items: ListeningPartySummaryDto[], empty: string) => {
     if (loading) {
-      return <PageLoading label="Loading…" />;
+      return <PageLoading label={t('studioListeningParties.loading')} />;
     }
     if (error && parties.length === 0) {
       return (
         <PageError
-          title="Could not load your listening parties"
+          title={t('studioListeningParties.loadError')}
           description={error}
           onRetry={reload}
         />
@@ -86,7 +95,7 @@ export function StudioListeningPartiesView() {
     return (
       <ul className="flex flex-col gap-2">
         {items.map((party) => {
-          const badge = STATE_BADGE[party.state];
+          const badge = stateBadge[party.state];
           return (
             <li
               key={party.id}
@@ -122,7 +131,7 @@ export function StudioListeningPartiesView() {
                   variant="text"
                 >
                   <ExternalLinkIcon size={14} aria-hidden className="mr-1.5" />
-                  Open
+                  {t('studioListeningParties.open')}
                 </ButtonLink>
                 {party.state === 'SCHEDULED' ? (
                   <>
@@ -131,19 +140,23 @@ export function StudioListeningPartiesView() {
                       params={{ partyId: party.id }}
                       size="sm"
                       variant="text"
-                      aria-label={`Reschedule ${party.release.title}`}
+                      aria-label={t('studioListeningParties.rescheduleAria', {
+                        title: party.release.title,
+                      })}
                     >
                       <PencilIcon size={14} aria-hidden className="mr-1.5" />
-                      Reschedule
+                      {t('studioListeningParties.reschedule')}
                     </ButtonLink>
                     <Button
                       size="sm"
                       variant="text"
-                      aria-label={`Cancel ${party.release.title}`}
+                      aria-label={t('studioListeningParties.cancelAria', {
+                        title: party.release.title,
+                      })}
                       onClick={() => setPendingCancel(party)}
                     >
                       <XCircleIcon size={14} aria-hidden className="mr-1.5" />
-                      Cancel
+                      {t('studioListeningParties.cancel')}
                     </Button>
                   </>
                 ) : null}
@@ -159,14 +172,14 @@ export function StudioListeningPartiesView() {
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
         <ViewShell
-          title="Listening parties"
+          title={t('studioListeningParties.title')}
           classes={{ root: 'px-0 pt-0' }}
           actions={
-            <Tooltip content="Schedule listening party" side="top">
+            <Tooltip content={t('studioListeningParties.schedule')} side="top">
               <ButtonLink
                 to="/studio/listening-parties/new"
                 size="icon-sm"
-                aria-label="Schedule listening party"
+                aria-label={t('studioListeningParties.schedule')}
               >
                 <PlusIcon size={16} aria-hidden />
               </ButtonLink>
@@ -179,24 +192,29 @@ export function StudioListeningPartiesView() {
             items={[
               {
                 id: 'upcoming',
-                label: 'Upcoming',
+                label: t('studioListeningParties.upcoming'),
                 icon: <CalendarClockIcon size={14} />,
                 content: (
                   <StudioPanel
-                    title="Upcoming parties"
-                    description="Fans hear the release once, start to finish, with you in the chat."
+                    title={t('studioListeningParties.upcomingTitle')}
+                    description={t(
+                      'studioListeningParties.upcomingDescription',
+                    )}
                   >
-                    {renderList(upcoming, 'No listening parties scheduled')}
+                    {renderList(
+                      upcoming,
+                      t('studioListeningParties.emptyUpcoming'),
+                    )}
                   </StudioPanel>
                 ),
               },
               {
                 id: 'past',
-                label: 'Past',
+                label: t('studioListeningParties.past'),
                 icon: <HistoryIcon size={14} />,
                 content: (
-                  <StudioPanel title="Past parties">
-                    {renderList(past, 'No past listening parties')}
+                  <StudioPanel title={t('studioListeningParties.pastTitle')}>
+                    {renderList(past, t('studioListeningParties.emptyPast'))}
                   </StudioPanel>
                 ),
               },
@@ -208,11 +226,13 @@ export function StudioListeningPartiesView() {
           isOpen={pendingCancel !== null}
           title={
             pendingCancel
-              ? `Cancel the ${pendingCancel.release.title} listening party?`
-              : 'Cancel listening party?'
+              ? t('studioListeningParties.cancelTitle', {
+                  title: pendingCancel.release.title,
+                })
+              : t('studioListeningParties.cancelTitleFallback')
           }
-          description="The party page tells visitors it was canceled. This cannot be undone."
-          confirmLabel="Cancel party"
+          description={t('studioListeningParties.cancelDescription')}
+          confirmLabel={t('studioListeningParties.cancelConfirm')}
           onCancel={() => setPendingCancel(null)}
           onConfirm={() => {
             const party = pendingCancel;
@@ -226,7 +246,7 @@ export function StudioListeningPartiesView() {
                 return;
               }
               toast.success(
-                `Canceled the ${party.release.title} listening party.`,
+                t('toasts.partyCanceled', { title: party.release.title }),
               );
               reload();
             });
