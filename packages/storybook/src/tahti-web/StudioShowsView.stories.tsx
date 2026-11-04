@@ -32,7 +32,9 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expectVisible(canvas.getByRole('heading', { name: 'Shows' }));
+    await expect(
+      await canvas.findByRole('heading', { name: /^Shows$|^Ohjelmat$/ }),
+    ).toBeInTheDocument();
     const show = await canvas.findByRole('link', { name: 'Friday Frequency' });
     await expect(show).toHaveAttribute(
       'href',
@@ -56,12 +58,18 @@ export const Empty: Story = {
   parameters: { mockData: mockData({ showSeries: () => [] }) },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expectVisible(await canvas.findByText('No shows yet'));
+    await expect(
+      await canvas.findByText(/^No shows yet$|^Ei ohjelmia vielä$/),
+    ).toBeInTheDocument();
     await expectVisible(
-      canvas.getByText('Create one to start numbering episodes.'),
+      canvas.getByText(
+        /^Create one to start numbering episodes\.$|^Luo yksi aloittaaksesi jaksojen numeroinnin\.$/,
+      ),
     );
     await expect(
-      canvas.getAllByRole('button', { name: 'New show' }),
+      canvas.getAllByRole('button', {
+        name: /^New show$|^Uusi ohjelma$/,
+      }),
     ).toHaveLength(2);
   },
 };

@@ -200,9 +200,9 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     const url = `${window.location.origin}/t/${id}`;
     try {
       await navigator.clipboard.writeText(url);
-      toast.success('Track link copied');
+      toast.success(i18n.t('web:toasts.linkCopied'));
     } catch {
-      toast.error('Could not copy link');
+      toast.error(i18n.t('web:toasts.couldNotCopyLink'));
     }
   };
 
@@ -276,12 +276,12 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     }
     if ('checkoutUrl' in result) {
       if (!assignStripeRedirectUrl(result.checkoutUrl)) {
-        toast.error('Checkout URL was not from Stripe');
+        toast.error(i18n.t('web:toasts.checkoutNotStripe'));
       }
       return;
     }
     setPurchaseBump((value) => value + 1);
-    toast.success('Purchase complete');
+    toast.success(i18n.t('web:toasts.purchaseComplete'));
     await downloadTrack();
   };
 

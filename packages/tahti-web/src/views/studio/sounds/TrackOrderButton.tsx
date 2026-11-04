@@ -33,13 +33,13 @@ export function TrackOrderButton() {
     <>
       <Button variant="secondary" size="sm" onClick={() => setOpen(true)}>
         <ListOrderedIcon size={14} aria-hidden className="mr-1.5" />
-        Order on your profile
+        {t('library.trackOrderButton')}
       </Button>
       <ProfileOrderDialog
         isOpen={open}
         title={t('library.trackOrderTitle')}
-        description="Public tracks appear in this order on your artist page's Tracks tab. Pinned tracks still show first, and new uploads start at the top."
-        empty="No public tracks yet."
+        description={t('library.trackOrderDescription')}
+        empty={t('library.trackOrderEmpty')}
         load={load}
         save={reorderPublicTracks}
         onClose={() => setOpen(false)}

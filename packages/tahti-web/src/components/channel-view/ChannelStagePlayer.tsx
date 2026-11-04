@@ -135,17 +135,17 @@ export function ChannelStagePlayer({
           play(playable);
         }
       })
-      .catch(() => toast.error('Could not start the stream. Try again.'));
+      .catch(() => toast.error(t('toasts.couldNotStartStream')));
   };
 
   const hasControls = live || Boolean(channel.hlsUrl);
   const playLabel = channelIsLoading
-    ? 'Loading stream'
+    ? t('channelStage.loadingStream')
     : channelIsPlaying
-      ? 'Pause stream'
+      ? t('channelStage.pauseStream')
       : onAir
-        ? 'Play live'
-        : 'Play stream';
+        ? t('channelStage.playLive')
+        : t('channelStage.playStream');
 
   // A track without decoded peaks would draw a row of flat placeholder
   // bars; an embed shows its provider's widget instead, anything else
@@ -196,7 +196,7 @@ export function ChannelStagePlayer({
       >
         {airBadge}
         <div className="min-w-0">
-          <Eyebrow tone="muted">Now playing</Eyebrow>
+          <Eyebrow tone="muted">{t('channelStage.nowPlaying')}</Eyebrow>
           <p className="truncate text-lg font-bold">{stageEmbed.title}</p>
           <p className="text-foreground-secondary truncate text-sm">
             {stageEmbed.artist}
@@ -227,8 +227,8 @@ export function ChannelStagePlayer({
             aria-hidden
           />
         }
-        title="Off air"
-        description="This channel is not broadcasting right now. Browse the tracks below, or check back later."
+        title={t('channelStage.offAirTitle')}
+        description={t('channelStage.offAirDescription')}
         action={
           <Button
             size="sm"
@@ -239,7 +239,7 @@ export function ChannelStagePlayer({
                 ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }}
           >
-            Browse tracks
+            {t('channelStage.browseTracks')}
           </Button>
         }
       />
@@ -300,8 +300,8 @@ export function ChannelStagePlayer({
           ) : (
             <p className="text-sm text-white/80">
               {onAir
-                ? 'Stream is live — hit Play live to drive the visualizer.'
-                : '24/7 rotation is playing — press Play to listen.'}
+                ? t('channelStage.liveHint')
+                : t('channelStage.rotationHint')}
             </p>
           )}
         </div>

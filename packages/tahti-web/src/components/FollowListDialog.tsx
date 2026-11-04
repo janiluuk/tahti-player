@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, MediaArtwork } from '@tahti-player/ui';
 
 import type { FollowListUser } from '../api/types';
@@ -69,12 +70,13 @@ export function FollowListDialog({
   onLoadMore,
   onClose,
 }: FollowListDialogProps) {
+  const { t } = useTranslation('web');
   return (
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
       title={title}
-      actions={<Dialog.Close>Close</Dialog.Close>}
+      actions={<Dialog.Close>{t('actions.close')}</Dialog.Close>}
     >
       <div className="max-h-[60vh] overflow-y-auto" data-testid="follow-list">
         <FollowListRows users={users} onSelect={onClose} />

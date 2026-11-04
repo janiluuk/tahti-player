@@ -41,10 +41,10 @@ export function CollaborativePlaylistAdd({
             {t('collaborativePlaylist.signedInHint')}
           </p>
           <Input
-            label="Note (optional)"
+            label={t('collaborativePlaylist.noteLabel')}
             value={note}
             maxLength={200}
-            placeholder="Why this track?"
+            placeholder={t('collaborativePlaylist.notePlaceholder')}
             onChange={(event) => setNote(event.target.value)}
           />
           <CatalogTrackSearch
@@ -61,13 +61,15 @@ export function CollaborativePlaylistAdd({
               }
               const { itemId } = result;
               if (itemId) {
-                toastWithUndo(`Added ${track.title}.`, {
+                toastWithUndo(t('toasts.addedNamed', { title: track.title }), {
                   undo: () => removeOwnCollaborativeAdd(slug, itemId),
-                  undoneMessage: `Removed ${track.title}.`,
+                  undoneMessage: t('toasts.removedNamed', {
+                    title: track.title,
+                  }),
                   onUndone: () => onAdded(),
                 });
               } else {
-                toast.success(`Added ${track.title}.`);
+                toast.success(t('toasts.addedNamed', { title: track.title }));
               }
               setNote('');
               onAdded();
@@ -78,9 +80,9 @@ export function CollaborativePlaylistAdd({
       ) : (
         <p className="text-foreground-secondary text-sm">
           <Link to="/login" className="underline">
-            Sign in
+            {t('actions.signIn')}
           </Link>{' '}
-          to add tracks to this collaborative playlist.
+          {t('collaborativePlaylist.signInPrompt')}
         </p>
       )}
     </section>

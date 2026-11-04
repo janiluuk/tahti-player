@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, FilePicker, Input } from '@tahti-player/ui';
 
 import {
@@ -188,6 +189,7 @@ export function ReleaseTrackVersionsPanel({
   releaseId: string;
   tracks: ReleaseTrack[];
 }) {
+  const { t } = useTranslation('web');
   return (
     <StudioPanel
       title="Track versions"
@@ -195,8 +197,8 @@ export function ReleaseTrackVersionsPanel({
     >
       {tracks.length === 0 ? (
         <PageEmpty
-          title="No tracks on this release yet"
-          description="Add tracks first, then manage their versions."
+          title={t('studioReleaseDetail.versionsEmptyTitle')}
+          description={t('studioReleaseDetail.versionsEmptyDescription')}
         />
       ) : (
         <ul

@@ -65,7 +65,7 @@ export function TrackInfoDialog({
       <Dialog.Root isOpen={isOpen && Boolean(track)} onClose={onClose}>
         {track && (
           <>
-            <Dialog.Title>Track info</Dialog.Title>
+            <Dialog.Title>{t('trackInfo.title')}</Dialog.Title>
             <div className="mt-4 flex items-start gap-4">
               <div className="bg-surface-secondary flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg text-lg font-bold tracking-tight">
                 <ImageReveal
@@ -166,7 +166,7 @@ export function TrackInfoDialog({
             )}
 
             <Dialog.Actions>
-              <Dialog.Close>Close</Dialog.Close>
+              <Dialog.Close>{t('actions.close')}</Dialog.Close>
               {track.artistUsername ? (
                 <ButtonLink
                   to="/u/$username"
@@ -174,7 +174,7 @@ export function TrackInfoDialog({
                   onClick={onClose}
                   variant="secondary"
                 >
-                  Artist page
+                  {t('trackInfo.artistPage')}
                 </ButtonLink>
               ) : null}
             </Dialog.Actions>

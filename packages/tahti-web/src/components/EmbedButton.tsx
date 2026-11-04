@@ -1,6 +1,7 @@
 import { CodeIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, CopyButton, Dialog, Tooltip } from '@tahti-player/ui';
 
 export type EmbedTarget =
@@ -40,6 +41,7 @@ export function EmbedButton({
   onOpenChange?: (open: boolean) => void;
   showTrigger?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const open = openProp ?? uncontrolledOpen;
   const setOpen = onOpenChange ?? setUncontrolledOpen;
@@ -101,14 +103,14 @@ export function EmbedButton({
               </code>
               <CopyButton
                 text={snippet}
-                aria-label="Copy iframe code"
-                toastMessage="Embed code copied."
+                aria-label={t('embedDialog.copyIframe')}
+                toastMessage={t('embedDialog.embedCopied')}
               />
             </div>
           </div>
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Close</Dialog.Close>
+          <Dialog.Close>{t('actions.close')}</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
     </>

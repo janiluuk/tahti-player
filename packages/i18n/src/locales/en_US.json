@@ -800,7 +800,11 @@
       "addToQueue": "Add to queue",
       "inQueue": "In queue",
       "removeItem": "Remove {{title}}",
-      "revoke": "Revoke"
+      "revoke": "Revoke",
+      "repost": "Repost",
+      "reposted": "Reposted",
+      "repostItem": "Repost {{title}}",
+      "undoRepostItem": "Undo repost of {{title}}"
     },
     "artistProfile": {
       "joined": "Joined {{month}}"
@@ -1366,7 +1370,15 @@
       "uploadSourceUnavailable": "Status unavailable",
       "uploadSourceConnected": "Connected",
       "uploadSourceNotConnected": "Not connected",
-      "uploadSourceNotAvailable": "Not available yet"
+      "uploadSourceNotAvailable": "Not available yet",
+      "trackOrderDescription": "Public tracks appear in this order on your artist page's Tracks tab. Pinned tracks still show first, and new uploads start at the top.",
+      "trackOrderEmpty": "No public tracks yet.",
+      "trackOrderButton": "Order on your profile",
+      "collectionOrderTooltip": "Order on your profile",
+      "collectionOrderAria": "Order collections on your profile",
+      "collectionOrderTitle": "Collection order on your profile",
+      "collectionOrderDescription": "Public collections appear in this order on your artist page. Featured collections stay first.",
+      "collectionOrderEmpty": "No public collections yet."
     },
     "date": {
       "today": "Today",
@@ -1627,7 +1639,20 @@
       "broadcastShowNameRequired": "Add a show name before saving.",
       "broadcastShowSaved": "Show info saved.",
       "channelLinksInvalid": "Links must be http(s) or mailto: URLs",
-      "channelLookSaveFailed": "Could not save your changes. Try again."
+      "channelLookSaveFailed": "Could not save your changes. Try again.",
+      "reposted": "Reposted.",
+      "purchaseComplete": "Purchase complete",
+      "checkoutNotStripe": "Checkout URL was not from Stripe",
+      "addedNamed": "Added {{title}}.",
+      "removedNamed": "Removed {{title}}.",
+      "feedLinkCopied": "Feed link copied. Paste it into your podcast app.",
+      "couldNotCopyFeedLink": "Could not copy the feed link.",
+      "fullBioSaved": "Full bio saved",
+      "couldNotSaveBio": "Could not save your bio. Try again.",
+      "couldNotSaveBioReason": "Could not save your bio: {{error}}",
+      "stoppedModerating": "You no longer moderate {{name}}.",
+      "couldNotStartStream": "Could not start the stream. Try again.",
+      "trackDetailsSaved": "Track details saved."
     },
     "settingsLogs": {
       "noLogs": "No log entries yet. Warnings, errors and player events from this tab show up here.",
@@ -1648,7 +1673,13 @@
       "governanceEmptyDiscussions": "No unresolved discussion updates.",
       "recentActivity": "Recent activity",
       "recentActivityLoadError": "Could not load recent activity",
-      "recentActivityRefreshError": "Could not refresh recent activity"
+      "recentActivityRefreshError": "Could not refresh recent activity",
+      "recentBroadcasts": "Recent broadcasts",
+      "broadcastsLoadError": "Could not load recent broadcasts",
+      "noBroadcastsTitle": "No broadcasts yet",
+      "noBroadcastsDescription": "Go live when you are ready — finished shows land here as recordings.",
+      "goLive": "Go live",
+      "viewAllRecordings": "View all recordings →"
     },
     "adminModeration": {
       "inbox": "Inbox",
@@ -2259,7 +2290,10 @@
       "fingerprintNoAudioDescription": "Fingerprinting needs a track's audio file on file first.",
       "noDescription": "No description set yet.",
       "published": "Published",
-      "publish": "Publish"
+      "publish": "Publish",
+      "versionsEmptyTitle": "No tracks on this release yet",
+      "versionsEmptyDescription": "Add tracks first, then manage their versions.",
+      "creditsEmpty": "No credits on this track yet."
     },
     "adminContentReports": {
       "filterAll": "All",
@@ -2505,7 +2539,93 @@
     },
     "collaborativePlaylist": {
       "title": "Add to this playlist",
-      "signedInHint": "Anyone signed in can add a public track to this collaborative playlist. The owner gets a notification."
+      "signedInHint": "Anyone signed in can add a public track to this collaborative playlist. The owner gets a notification.",
+      "noteLabel": "Note (optional)",
+      "notePlaceholder": "Why this track?",
+      "signInPrompt": "to add tracks to this collaborative playlist."
+    },
+    "moderateChannel": {
+      "stopTitle": "Stop moderating {{name}}?",
+      "stopDescription": "You lose the moderator role on this channel. Only its owner can give it back.",
+      "stopConfirm": "Stop moderating"
+    },
+    "channelStage": {
+      "loadingStream": "Loading stream",
+      "pauseStream": "Pause stream",
+      "playLive": "Play live",
+      "playStream": "Play stream",
+      "offAirTitle": "Off air",
+      "offAirDescription": "This channel is not broadcasting right now. Browse the tracks below, or check back later.",
+      "browseTracks": "Browse tracks",
+      "nowPlaying": "Now playing",
+      "liveHint": "Stream is live — hit Play live to drive the visualizer.",
+      "rotationHint": "24/7 rotation is playing — press Play to listen."
+    },
+    "studioShows": {
+      "title": "Shows",
+      "newShow": "New show",
+      "loading": "Loading…",
+      "loadError": "Could not load your shows",
+      "emptyTitle": "No shows yet",
+      "emptyDescription": "Create one to start numbering episodes.",
+      "createTitle": "New show",
+      "createDescription": "Episodes inherit description, cover, and the next episode number.",
+      "showTitle": "Show title",
+      "description": "Description",
+      "descriptionPlaceholder": "Copied to every new episode",
+      "recordDefault": "Record broadcasts by default",
+      "recordDefaultHint": "New broadcasts for this show will start with recording enabled.",
+      "modeAria": "Show mode",
+      "modeSeries": "Continuing series",
+      "modeSingle": "Single show",
+      "lengthAria": "Episode length",
+      "oneHour": "1 hour",
+      "twoHours": "2 hours",
+      "creating": "Creating…",
+      "createShow": "Create show",
+      "searchPlaceholder": "Search shows"
+    },
+    "studioStash": {
+      "title": "Stash",
+      "sectionsAria": "Stash sections",
+      "allStash": "All stash",
+      "moveToStash": "Move to stash",
+      "tracksTitle": "Stash tracks",
+      "tracksDescription": "Edit these items like any other track. They stay out of public listings.",
+      "loading": "Loading your stash…",
+      "loadError": "Could not load your stash",
+      "emptyTitle": "No tracks in your stash yet",
+      "emptyDescription": "Upload a private track, then move it here when you are ready to edit or share by link.",
+      "uploadTrack": "Upload a track",
+      "filesTitle": "Your files",
+      "filesDescription": "Private uploads you can share by link. Publishing tracks needs an artist channel.",
+      "gateDescription": "Sign in to upload private files and share them by link.",
+      "loadingSession": "Loading session…",
+      "loadingAccount": "Loading your account…"
+    },
+    "studioRevenue": {
+      "fanSubsTitle": "Fan subscriptions",
+      "emptyFanSubsTitle": "No fan subscriptions yet",
+      "emptyFanSubsDescription": "Set up subscription tiers so fans can support you directly.",
+      "openTiers": "Open tiers editor",
+      "emptyDisbursements": "No disbursements yet"
+    },
+    "studioStatsTop": {
+      "noListens": "No listens recorded for this period yet",
+      "noTrackStats": "No track stats yet",
+      "noCountryData": "No country data yet"
+    },
+    "trackInfo": {
+      "title": "Track info",
+      "artistPage": "Artist page"
+    },
+    "artistMore": {
+      "more": "More",
+      "moreActions": "More actions for {{name}}"
+    },
+    "embedDialog": {
+      "copyIframe": "Copy iframe code",
+      "embedCopied": "Embed code copied."
     }
   },
   "studioEditor": {
