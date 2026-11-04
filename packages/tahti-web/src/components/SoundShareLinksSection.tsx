@@ -173,12 +173,12 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
                   variant="text"
                   toastMessage="Link copied."
                 />
-                <Tooltip content="Revoke link" side="top">
+                <Tooltip content={t('soundShare.revokeAria')} side="top">
                   <Button
                     size="icon-sm"
                     variant="text"
                     disabled={busy}
-                    aria-label="Revoke link"
+                    aria-label={t('soundShare.revokeAria')}
                     onClick={() => setPendingRevokeId(share.id)}
                   >
                     <XIcon size={13} aria-hidden />
@@ -189,7 +189,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
           ))}
         </ul>
       ) : (
-        <PageEmpty title="No share links yet." />
+        <PageEmpty title={t('soundShare.empty')} />
       )}
 
       <form
@@ -236,9 +236,9 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
       <ConfirmDialog
         destructive
         isOpen={pendingRevokeId !== null}
-        title="Revoke this share link?"
-        description="It will stop working immediately."
-        confirmLabel="Revoke"
+        title={t('soundShare.revokeTitle')}
+        description={t('soundShare.revokeDescription')}
+        confirmLabel={t('actions.revoke')}
         onCancel={() => setPendingRevokeId(null)}
         onConfirm={() => {
           const shareId = pendingRevokeId;

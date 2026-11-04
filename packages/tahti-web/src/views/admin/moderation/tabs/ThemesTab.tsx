@@ -1,6 +1,7 @@
 import { CheckIcon, ExternalLinkIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -28,37 +29,27 @@ import {
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 
-const FILTERS: { id: AdminThemeVisibility | ''; label: string }[] = [
-  { id: 'PENDING_REVIEW', label: 'Waiting for review' },
-  { id: 'REJECTED', label: 'Rejected' },
-  { id: '', label: 'All themes' },
-];
-
-const PR_LABELS: Record<AdminTheme['prStatus'], string | null> = {
-  NONE: null,
-  PENDING: 'Opening registry PR…',
-  OPENED: 'Registry PR open',
-  ERROR: 'Registry PR failed',
-};
-
-function visibilityBadge(theme: AdminTheme) {
+function visibilityBadge(
+  theme: AdminTheme,
+  labels: { pending: string; rejected: string; privateLabel: string },
+) {
   switch (theme.visibility) {
     case 'PENDING_REVIEW':
       return (
         <Badge variant="pill" color="yellow">
-          Waiting for review
+          {labels.pending}
         </Badge>
       );
     case 'REJECTED':
       return (
         <Badge variant="pill" color="red">
-          Rejected
+          {labels.rejected}
         </Badge>
       );
     default:
       return (
         <Badge variant="pill" color="secondary">
-          Private
+          {labels.privateLabel}
         </Badge>
       );
   }
@@ -73,6 +64,7 @@ function RejectDialog({
   onClose: () => void;
   onRejected: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [note, setNote] = useState('');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -84,9 +76,11 @@ function RejectDialog({
 
   return (
     <Dialog.Root isOpen={theme !== null} onClose={onClose} className="max-w-lg">
-      <Dialog.Title>Reject {theme?.name}</Dialog.Title>
+      <Dialog.Title>
+        {t('adminThemes.rejectTitle', { name: theme?.name ?? '' })}
+      </Dialog.Title>
       <Dialog.Description>
-        The author gets this note with the rejection.
+        {t('adminThemes.rejectDescription')}
       </Dialog.Description>
       <form
         className="contents"
@@ -109,7 +103,7 @@ function RejectDialog({
       >
         <Textarea
           submitOnModEnter
-          label="Note to the author"
+          label={t('adminThemes.rejectNote')}
           value={note}
           rows={4}
           maxLength={2000}
@@ -118,10 +112,12 @@ function RejectDialog({
         {error ? <InlineError className="mt-2">{error}</InlineError> : null}
         <Dialog.Actions>
           <Button type="button" variant="secondary" onClick={onClose}>
-            Cancel
+            {t('actions.cancel')}
           </Button>
           <Button disabled={pending || !note.trim()} type="submit">
-            {pending ? 'Rejecting…' : 'Reject theme'}
+            {pending
+              ? t('adminThemes.rejecting')
+              : t('adminThemes.rejectConfirm')}
           </Button>
         </Dialog.Actions>
       </form>
@@ -130,6 +126,7 @@ function RejectDialog({
 }
 
 export function ThemesTab() {
+  const { t } = useTranslation('web');
   const [filter, setFilter] = useState<AdminThemeVisibility | ''>(
     'PENDING_REVIEW',
   );
@@ -138,6 +135,19 @@ export function ThemesTab() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [rejecting, setRejecting] = useState<AdminTheme | null>(null);
+
+  const filters: { id: AdminThemeVisibility | ''; label: string }[] = [
+    { id: 'PENDING_REVIEW', label: t('adminThemes.filterPending') },
+    { id: 'REJECTED', label: t('adminThemes.filterRejected') },
+    { id: '', label: t('adminThemes.filterAll') },
+  ];
+
+  const prLabels: Record<AdminTheme['prStatus'], string | null> = {
+    NONE: null,
+    PENDING: t('adminThemes.prPending'),
+    OPENED: t('adminThemes.prOpened'),
+    ERROR: t('adminThemes.prError'),
+  };
 
   const load = useCallback(async () => {
     setLoadError(null);
@@ -169,16 +179,16 @@ export function ThemesTab() {
 
   return (
     <StudioPanel
-      title="Community themes"
-      description="Approving opens a pull request that adds the theme to the tahti-registry catalog; it goes live when that PR is merged."
+      title={t('adminThemes.title')}
+      description={t('adminThemes.description')}
       action={
         <Select
-          label="Show"
+          label={t('adminThemes.show')}
           value={filter}
           onValueChange={(value) =>
             setFilter(value as AdminThemeVisibility | '')
           }
-          options={FILTERS}
+          options={filters}
           className="min-w-44"
         />
       }
@@ -188,24 +198,24 @@ export function ThemesTab() {
       ) : null}
       {loadError ? (
         <PageError
-          title="Couldn't load themes"
+          title={t('adminThemes.loadError')}
           description={loadError}
           onRetry={() => void load()}
         />
       ) : themes === null ? (
-        <PageLoading label="Loading themes…" />
+        <PageLoading label={t('adminThemes.loading')} />
       ) : themes.length === 0 ? (
         <PageEmpty
           title={
             filter === 'PENDING_REVIEW'
-              ? 'No themes waiting for review'
-              : 'No themes here'
+              ? t('adminThemes.emptyPending')
+              : t('adminThemes.empty')
           }
         />
       ) : (
         <ul className="divide-border divide-y">
           {themes.map((theme) => {
-            const prLabel = PR_LABELS[theme.prStatus];
+            const prLabel = prLabels[theme.prStatus];
             return (
               <li
                 key={theme.id}
@@ -227,7 +237,11 @@ export function ThemesTab() {
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2 font-medium">
                       {theme.name}
-                      {visibilityBadge(theme)}
+                      {visibilityBadge(theme, {
+                        pending: t('adminThemes.badgePending'),
+                        rejected: t('adminThemes.badgeRejected'),
+                        privateLabel: t('adminThemes.badgePrivate'),
+                      })}
                       {prLabel ? (
                         <Badge
                           variant="pill"
@@ -241,7 +255,7 @@ export function ThemesTab() {
                       @{theme.authorUsername} ·{' '}
                       <ListingDate value={theme.createdAt} />
                       {theme.moderationNote
-                        ? ` · Note: ${theme.moderationNote}`
+                        ? ` · ${t('adminThemes.note', { note: theme.moderationNote })}`
                         : ''}
                     </div>
                   </div>
@@ -260,7 +274,7 @@ export function ThemesTab() {
                         aria-hidden
                         className="mr-1.5"
                       />
-                      Pull request
+                      {t('adminThemes.pullRequest')}
                     </ButtonAnchor>
                   ) : null}
                   {theme.visibility === 'PENDING_REVIEW' ? (
@@ -274,8 +288,8 @@ export function ThemesTab() {
                       >
                         <CheckIcon size={14} aria-hidden className="mr-1.5" />
                         {theme.prStatus === 'ERROR'
-                          ? 'Retry approval'
-                          : 'Approve'}
+                          ? t('adminThemes.retryApproval')
+                          : t('adminThemes.approve')}
                       </Button>
                       <Button
                         size="sm"
@@ -284,7 +298,7 @@ export function ThemesTab() {
                         onClick={() => setRejecting(theme)}
                       >
                         <XIcon size={14} aria-hidden className="mr-1.5" />
-                        Reject
+                        {t('adminThemes.reject')}
                       </Button>
                     </>
                   ) : null}

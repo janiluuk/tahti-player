@@ -297,12 +297,12 @@ export const StashFilesPanel = ({
       <StudioPanel>
         {filesError && files.length === 0 ? (
           <PageError
-            title="Could not load stash files"
+            title={t('stash.loadError')}
             description={filesError}
             onRetry={() => void reload()}
           />
         ) : files.length === 0 ? (
-          <PageEmpty title="No stash files yet" />
+          <PageEmpty title={t('stash.empty')} />
         ) : (
           <ul className="divide-border divide-y">
             {files.map((file) => (
@@ -477,10 +477,14 @@ export const StashFilesPanel = ({
         isOpen={pendingDelete !== null}
         destructive
         title={
-          pendingDelete ? `Delete "${pendingDelete.filename}"?` : 'Delete file?'
+          pendingDelete
+            ? t('stash.deleteTitleNamed', {
+                filename: pendingDelete.filename,
+              })
+            : t('stash.deleteTitle')
         }
-        description="This removes the file from your stash."
-        confirmLabel="Delete"
+        description={t('stash.deleteDescription')}
+        confirmLabel={t('actions.delete')}
         onCancel={() => setPendingDelete(null)}
         onConfirm={() => {
           const file = pendingDelete;

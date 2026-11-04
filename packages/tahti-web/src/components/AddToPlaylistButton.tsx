@@ -1,6 +1,7 @@
 import { ListPlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import { AddToPlaylistPanel } from './AddToPlaylistPanel';
@@ -11,7 +12,6 @@ type Props = {
   size?: 'sm' | 'default' | 'icon-sm' | 'icon';
   variant?: 'secondary' | 'text' | 'default';
   className?: string;
-  /** When true, show icon only (default). Pass false for icon + label. */
   iconOnly?: boolean;
 };
 
@@ -23,12 +23,14 @@ export function AddToPlaylistButton({
   className,
   iconOnly = true,
 }: Props) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
+  const label = t('actions.addToPlaylist');
 
   return (
     <>
       <Tooltip
-        content="Add to playlist"
+        content={label}
         side="top"
         disabled={!iconOnly}
         wrapperClassName="inline-flex"
@@ -44,10 +46,10 @@ export function AddToPlaylistButton({
           variant={variant}
           className={className}
           onClick={() => setOpen(true)}
-          aria-label="Add to playlist"
+          aria-label={label}
         >
           <ListPlusIcon size={16} aria-hidden />
-          {!iconOnly ? <span className="ml-1.5">Add to playlist</span> : null}
+          {!iconOnly ? <span className="ml-1.5">{label}</span> : null}
         </Button>
       </Tooltip>
       <AddToPlaylistPanel

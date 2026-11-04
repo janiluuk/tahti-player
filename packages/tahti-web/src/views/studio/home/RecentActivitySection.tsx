@@ -10,6 +10,7 @@ import {
   type RecentSound,
 } from '../../../api/studio/studio-recent';
 import { PageError, PageErrorBanner } from '../../../components/PageStates';
+import { dateLocaleTag } from '../../../lib/locale';
 import { Group } from './HomeTiles';
 
 const money = new Intl.NumberFormat(undefined, {
@@ -17,10 +18,12 @@ const money = new Intl.NumberFormat(undefined, {
   currency: 'EUR',
 });
 
-const dateFormat = new Intl.DateTimeFormat(undefined, {
-  day: 'numeric',
-  month: 'short',
-});
+function formatActivityDate(value: string): string {
+  return new Intl.DateTimeFormat(dateLocaleTag(), {
+    day: 'numeric',
+    month: 'short',
+  }).format(new Date(value));
+}
 
 function duration(sec: number | null): string | null {
   if (sec == null) {
@@ -115,7 +118,7 @@ export function RecentActivitySection() {
                   <span className="text-foreground-secondary shrink-0 text-xs tabular-nums">
                     {[
                       duration(sound.durationSec),
-                      dateFormat.format(new Date(sound.createdAt)),
+                      formatActivityDate(sound.createdAt),
                     ]
                       .filter(Boolean)
                       .join(' · ')}

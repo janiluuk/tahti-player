@@ -794,7 +794,13 @@
       "less": "Less",
       "stats": "Stats",
       "manage": "Manage",
-      "queueItem": "Queue {{title}}"
+      "queueItem": "Queue {{title}}",
+      "addToPlaylist": "Add to playlist",
+      "addToPlaylistItem": "Add {{title}} to a playlist",
+      "addToQueue": "Add to queue",
+      "inQueue": "In queue",
+      "removeItem": "Remove {{title}}",
+      "revoke": "Revoke"
     },
     "artistProfile": {
       "joined": "Joined {{month}}"
@@ -1268,6 +1274,13 @@
       "uploadFile": "Upload file",
       "uploading": "Uploading…",
       "loadingRecordings": "Loading recordings…",
+      "stillProcessing": "still processing",
+      "processing": "Processing",
+      "processingFailed": "Processing failed",
+      "uploadedOn": ", uploaded {{date}}",
+      "noTracksYet": "No tracks yet.",
+      "noTracksMatch": "No tracks match “{{query}}”.",
+      "filterTracks": "Filter tracks",
       "visibilityPublic": "Public",
       "collectionTitle": "Title",
       "collectionGenres": "Genres",
@@ -1571,7 +1584,18 @@
       "shareLinkRevoked": "Share link revoked.",
       "imageUpdated": "{{label}} updated.",
       "leftGroup": "You left the group",
-      "mediaRemoved": "Media file removed."
+      "mediaRemoved": "Media file removed.",
+      "linkCopied": "Link copied",
+      "couldNotCopyLink": "Could not copy link",
+      "jamStartFailed": "Couldn't start a Jam for this playlist.",
+      "couldNotLoadPosts": "Could not load posts and newsletters.",
+      "couldNotSendNewsletter": "Could not send the newsletter.",
+      "postDeleted": "Post deleted.",
+      "couldNotDeletePost": "Could not delete the post.",
+      "newsletterRemoved": "Newsletter removed.",
+      "couldNotRemoveNewsletter": "Could not remove the newsletter.",
+      "eventRemoved": "Removed “{{title}}”.",
+      "groupCreated": "Created {{name}}"
     },
     "settingsLogs": {
       "noLogs": "No log entries yet. Warnings, errors and player events from this tab show up here.",
@@ -2272,6 +2296,100 @@
       "roleOwner": "Owner",
       "roleAdmin": "Admin",
       "roleMember": "Member"
+    },
+    "studioEvents": {
+      "title": "Events",
+      "addEvent": "Add event",
+      "upcoming": "Upcoming",
+      "past": "Past",
+      "upcomingTitle": "Upcoming events",
+      "upcomingDescription": "Festivals, live shows, and public appearances.",
+      "pastTitle": "Past events",
+      "pastDescription": "Your previous appearances and performances.",
+      "empty": "No events listed yet",
+      "ticketsLink": "Tickets / event link",
+      "remove": "Remove",
+      "removeConfirmTitle": "Remove event?",
+      "removeConfirmTitleNamed": "Remove “{{title}}”?",
+      "removeConfirmDescription": "The event leaves your upcoming and past lists.",
+      "loading": "Loading…"
+    },
+    "studioGroups": {
+      "title": "Groups",
+      "subtitle": "Collectives with a shared playlist. Members add sounds; admins can approve them first.",
+      "newGroup": "New group",
+      "yourGroups": "Your groups",
+      "emptyTitle": "No groups yet",
+      "emptyDescription": "Start a group to share a collective playlist with other artists.",
+      "loading": "Loading your groups…",
+      "loadError": "Could not load your groups",
+      "open": "Open"
+    },
+    "adminThemes": {
+      "title": "Community themes",
+      "description": "Approving opens a pull request that adds the theme to the tahti-registry catalog; it goes live when that PR is merged.",
+      "show": "Show",
+      "filterPending": "Waiting for review",
+      "filterRejected": "Rejected",
+      "filterAll": "All themes",
+      "badgePending": "Waiting for review",
+      "badgeRejected": "Rejected",
+      "badgePrivate": "Private",
+      "prPending": "Opening registry PR…",
+      "prOpened": "Registry PR open",
+      "prError": "Registry PR failed",
+      "loadError": "Couldn't load themes",
+      "loading": "Loading themes…",
+      "emptyPending": "No themes waiting for review",
+      "empty": "No themes here",
+      "note": "Note: {{note}}",
+      "pullRequest": "Pull request",
+      "approve": "Approve",
+      "retryApproval": "Retry approval",
+      "reject": "Reject",
+      "rejectTitle": "Reject {{name}}",
+      "rejectDescription": "The author gets this note with the rejection.",
+      "rejectNote": "Note to the author",
+      "rejecting": "Rejecting…",
+      "rejectConfirm": "Reject theme"
+    },
+    "adminRadio": {
+      "memberRelay": "Member relay:",
+      "memberRelayLive": "{{name}} · /c/{{slug}}",
+      "memberRelayIdle": "no live member channel · rotation should continue"
+    },
+    "soundShare": {
+      "empty": "No share links yet.",
+      "revokeTitle": "Revoke this share link?",
+      "revokeDescription": "It will stop working immediately.",
+      "revokeAria": "Revoke link"
+    },
+    "stash": {
+      "empty": "No stash files yet",
+      "loadError": "Could not load stash files",
+      "deleteTitle": "Delete file?",
+      "deleteTitleNamed": "Delete \"{{filename}}\"?",
+      "deleteDescription": "This removes the file from your stash."
+    },
+    "playHistory": {
+      "clearTitle": "Clear the listening history?",
+      "clearDescription": "The list of past listens is deleted. Each track keeps its play count and last-played date.",
+      "clearAria": "Clear history"
+    },
+    "collectionPage": {
+      "tracks": "Tracks",
+      "followers": "Followers",
+      "emptyTracksTitle": "No tracks in this playlist",
+      "emptyTracksOwner": "Add tracks from search results or your library.",
+      "emptyTracksGuest": "This playlist doesn't have any tracks yet.",
+      "loading": "Loading collection…",
+      "loadError": "Could not load this collection",
+      "notFound": "Collection not found",
+      "notFoundDescription": "This collection may have been removed or is not available."
+    },
+    "collaborativePlaylist": {
+      "title": "Add to this playlist",
+      "signedInHint": "Anyone signed in can add a public track to this collaborative playlist. The owner gets a notification."
     }
   },
   "studioEditor": {

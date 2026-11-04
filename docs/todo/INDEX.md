@@ -21,7 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [batch-39-slices-2026-11-04.md](batch-39-slices-2026-11-04.md) | Batch of 30: Settings/Library/Studio/Admin/Radio Finnish leftovers, date Kept sweep, polish + 0.0.329 |
+| open    | [batch-40-slices-2026-11-04.md](batch-40-slices-2026-11-04.md) | Batch of 30: Finnish leftovers, dateLocaleTag upload/home dates, polish + 0.0.330 |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
 | partial | [library-management-port.md](library-management-port.md) | Port theDAW library management to Library Sounds: paged API client, facets/stats, bulk delete/edit |

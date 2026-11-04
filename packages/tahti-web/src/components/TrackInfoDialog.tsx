@@ -117,11 +117,11 @@ export function TrackInfoDialog({
                       </Button>
                     </Tooltip>
                     {soundId && (
-                      <Tooltip content="Add to playlist" side="top">
+                      <Tooltip content={t('actions.addToPlaylist')} side="top">
                         <Button
                           size="icon-sm"
                           variant="text"
-                          aria-label="Add to playlist"
+                          aria-label={t('actions.addToPlaylist')}
                           onClick={() => setPlaylistOpen(true)}
                         >
                           <ListPlusIcon size={16} />

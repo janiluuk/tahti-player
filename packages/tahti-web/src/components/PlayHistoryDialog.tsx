@@ -2,7 +2,7 @@ import { PlayIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, InlineError, Loader, Tooltip } from '@tahti-player/ui';
 
 import type {
@@ -34,6 +34,7 @@ export function PlayHistoryDialog({
   library,
   onChanged,
 }: Props) {
+  const { t } = useTranslation('web');
   const [entries, setEntries] = useState<NativePlayLogEntry[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -187,12 +188,12 @@ export function PlayHistoryDialog({
               <PlayIcon size={16} aria-hidden />
             </Button>
           </Tooltip>
-          <Tooltip content="Clear history" side="top">
+          <Tooltip content={t('playHistory.clearAria')} side="top">
             <Button
               size="icon"
               variant="text"
               intent="danger"
-              aria-label="Clear history"
+              aria-label={t('playHistory.clearAria')}
               disabled={total === 0}
               onClick={() => setConfirmClear(true)}
             >
@@ -204,9 +205,9 @@ export function PlayHistoryDialog({
       <ConfirmDialog
         isOpen={confirmClear}
         destructive
-        title="Clear the listening history?"
-        description="The list of past listens is deleted. Each track keeps its play count and last-played date."
-        confirmLabel="Clear"
+        title={t('playHistory.clearTitle')}
+        description={t('playHistory.clearDescription')}
+        confirmLabel={t('actions.clear')}
         onCancel={() => setConfirmClear(false)}
         onConfirm={() => {
           setConfirmClear(false);

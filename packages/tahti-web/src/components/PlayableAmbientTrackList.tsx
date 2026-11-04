@@ -31,7 +31,7 @@ import { TrackSortButton } from './TrackSortButton';
 
 export function PlayableAmbientTrackList({
   items,
-  emptyMessage = 'No tracks yet.',
+  emptyMessage,
   getAnnotation,
   compactActions,
   playAll = false,
@@ -94,6 +94,7 @@ export function PlayableAmbientTrackList({
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const navigate = useNavigate();
   const { t } = useTranslation('web');
+  const resolvedEmptyMessage = emptyMessage ?? t('library.noTracksYet');
   const [playlistTarget, setPlaylistTarget] = useState<{
     soundId: string;
     title: string;
@@ -125,16 +126,16 @@ export function PlayableAmbientTrackList({
       <Input
         enterKeyHint="search"
         type="search"
-        aria-label="Filter tracks"
-        placeholder="Filter tracks"
+        aria-label={t('library.filterTracks')}
+        placeholder={t('library.filterTracks')}
         value={query}
         onChange={(event) => setQuery(event.target.value)}
       />
     ) : undefined;
   const shownEmptyMessage =
     filterable && query.trim() && items.length > 0
-      ? `No tracks match “${query.trim()}”.`
-      : emptyMessage;
+      ? t('library.noTracksMatch', { query: query.trim() })
+      : resolvedEmptyMessage;
 
   // Built without the playback position: a progress tick then only replaces
   // the current row, and the memoized rows skip re-rendering.
@@ -224,8 +225,10 @@ export function PlayableAmbientTrackList({
                     ? [
                         {
                           id: 'add-to-playlist',
-                          label: `Add ${item.title} to a playlist`,
-                          title: 'Add to playlist',
+                          label: t('actions.addToPlaylistItem', {
+                            title: item.title,
+                          }),
+                          title: t('actions.addToPlaylist'),
                           icon: <PlusIcon size={16} />,
                           onClick: () =>
                             setPlaylistTarget({ soundId, title: item.title }),
@@ -271,7 +274,7 @@ export function PlayableAmbientTrackList({
                     ? [
                         {
                           id: 'edit',
-                          label: 'Edit',
+                          label: t('actions.edit'),
                           icon: <PencilIcon size={16} />,
                           onClick: () => onEdit(item),
                         },
@@ -283,8 +286,10 @@ export function PlayableAmbientTrackList({
                     ? [
                         {
                           id: 'remove',
-                          label: `Remove ${item.title}`,
-                          title: 'Remove',
+                          label: t('actions.removeItem', {
+                            title: item.title,
+                          }),
+                          title: t('actions.remove'),
                           icon: <TrashIcon size={16} />,
                           onClick: () => onRemove(item),
                         },
@@ -314,6 +319,7 @@ export function PlayableAmbientTrackList({
       enqueue,
       setStatus,
       toggleFavoriteTrack,
+      t,
     ],
   );
 

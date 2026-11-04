@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Input } from '@tahti-player/ui';
 
 import {
@@ -22,19 +23,22 @@ export function CollaborativePlaylistAdd({
   existingSoundIds: readonly string[];
   onAdded: () => void;
 }) {
+  const { t } = useTranslation('web');
   const signedIn = Boolean(useAuthStore((state) => state.user));
   const [note, setNote] = useState('');
 
   return (
-    <section aria-label="Add to this playlist" className="flex flex-col gap-2">
+    <section
+      aria-label={t('collaborativePlaylist.title')}
+      className="flex flex-col gap-2"
+    >
       <h2>
-        <Eyebrow>Add to this playlist</Eyebrow>
+        <Eyebrow>{t('collaborativePlaylist.title')}</Eyebrow>
       </h2>
       {signedIn ? (
         <>
           <p className="text-foreground-secondary text-xs">
-            Anyone signed in can add a public track to this collaborative
-            playlist. The owner gets a notification.
+            {t('collaborativePlaylist.signedInHint')}
           </p>
           <Input
             label="Note (optional)"

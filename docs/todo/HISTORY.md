@@ -1,3 +1,9 @@
+## 2026-11-04 - Batch 39 UX slices
+
+Mentions/Notifications; Library Media; Studio sounds/releases; Content
+reports; Radio/channel; password reset/setup i18n; MentionsPanel story.
+tahti-web 0.0.329 (#1825).
+
 ## 2026-11-04 - Batch 38 UX slices
 
 Settings/Library/Studio/Admin/Radio/channel Finnish leftovers; Kept date

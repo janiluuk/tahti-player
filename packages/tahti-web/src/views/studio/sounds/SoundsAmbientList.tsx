@@ -23,6 +23,7 @@ import {
   embedSrcFor,
   type EmbedProvider,
 } from '../../../lib/embedSrc';
+import { dateLocaleTag } from '../../../lib/locale';
 import { isPinned } from '../../../lib/pinnedTracks';
 import { formatDuration } from '../../../lib/playableToTrack';
 import { usePlayerStore } from '../../../stores/playerStore';
@@ -37,7 +38,7 @@ export function formatUploadDate(value: string | undefined): string | null {
   if (Number.isNaN(date.getTime())) {
     return null;
   }
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(dateLocaleTag(), {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
@@ -82,22 +83,22 @@ function isProcessingSound(item: StudioSound): boolean {
 }
 
 function SoundStatusLine({ item }: { item: StudioSound }) {
+  const { t } = useTranslation('web');
   const failed = item.status === 'ERROR';
   const embedSrc =
     item.embedProvider && item.embedUri
       ? embedSrcFor(item.embedProvider, item.embedUri)
       : null;
+  const uploaded = formatUploadDate(item.createdAt);
   return (
     <>
       <p className="text-foreground-secondary text-xs">
         {isProcessingSound(item)
-          ? 'Processing'
+          ? t('library.processing')
           : failed
-            ? 'Processing failed'
+            ? t('library.processingFailed')
             : item.status}
-        {formatUploadDate(item.createdAt)
-          ? `, uploaded ${formatUploadDate(item.createdAt)}`
-          : ''}
+        {uploaded ? t('library.uploadedOn', { date: uploaded }) : ''}
         {isPinned(item) ? ', pinned' : ''}
         {item.durationSec != null
           ? `, ${Math.round(item.durationSec / 60)} min`
