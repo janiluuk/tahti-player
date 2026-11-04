@@ -22,7 +22,7 @@ describe('metadataForPath', () => {
     ['/studio/releases/abc/edit', 'Releases · Studio · Tahti'],
     ['/admin/content-reports', 'Content reports · Admin · Tahti'],
     ['/library', 'Library · Tahti'],
-    ['/library/sounds', 'Tracks · Tahti'],
+    ['/library/sounds', 'Sounds · Tahti'],
     ['/library/collections', 'Collections · Library · Tahti'],
     ['/discover', 'Discover · Tahti'],
     ['/governance/members', 'Member directory · Tahti'],
