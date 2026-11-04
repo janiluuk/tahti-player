@@ -84,6 +84,7 @@ export {
   fetchNewsletterDrafts,
   fetchNewsletterSubscriberStats,
   sendNewsletterDraft,
+  deleteNewsletterDraft,
   createNewsletterDraft,
   postChatReaction,
 } from './studio-extras/posts';
