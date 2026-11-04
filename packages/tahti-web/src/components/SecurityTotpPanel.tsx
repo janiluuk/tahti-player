@@ -8,6 +8,7 @@ import {
 import { QRCodeSVG } from 'qrcode.react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input, SectionShell } from '@tahti-player/ui';
 
 import {
@@ -23,6 +24,7 @@ function formatSecret(secret: string): string {
 }
 
 export function SecurityTotpPanel() {
+  const { t } = useTranslation('web');
   const [enabled, setEnabled] = useState<boolean | null>(null);
   const [statusError, setStatusError] = useState<string | null>(null);
   const [statusAttempt, setStatusAttempt] = useState(0);
@@ -52,7 +54,7 @@ export function SecurityTotpPanel() {
           setStatusError(
             cause instanceof Error
               ? cause.message
-              : 'Two-factor authentication is unavailable.',
+              : t('settingsBody.account.totpUnavailable'),
           );
         }
       });
@@ -63,38 +65,42 @@ export function SecurityTotpPanel() {
 
   if (enabled === null) {
     return (
-      <SectionShell title="Two-factor authentication">
+      <SectionShell title={t('settingsBody.account.totpTitle')}>
         {statusError ? (
           <PageError
-            title="Could not load two-factor authentication"
+            title={t('settingsBody.account.totpLoadError')}
             description={statusError}
             onRetry={() => setStatusAttempt((attempt) => attempt + 1)}
           />
         ) : (
-          <PageLoading label="Loading two-factor authentication…" />
+          <PageLoading label={t('settingsBody.account.totpLoading')} />
         )}
       </SectionShell>
     );
   }
 
   return (
-    <SectionShell title="Two-factor authentication">
+    <SectionShell title={t('settingsBody.account.totpTitle')}>
       <div className="flex flex-col gap-4">
         <p className="text-foreground-secondary text-sm">
-          We email you whenever two-step sign-in is turned on or off.
+          {t('settingsBody.account.totpEmailNote')}
         </p>
         <p className="text-sm">
-          Status:{' '}
+          {t('settingsBody.account.totpStatus')}{' '}
           <span className="font-medium">
-            {enabled ? 'Enabled' : 'Disabled'}
+            {enabled
+              ? t('settingsBody.account.totpEnabled')
+              : t('settingsBody.account.totpDisabled')}
           </span>
         </p>
 
         {backupCodes && (
           <div className="border-border rounded-lg border px-3 py-2">
-            <p className="text-sm font-medium">Save these backup codes</p>
+            <p className="text-sm font-medium">
+              {t('settingsBody.account.totpBackupTitle')}
+            </p>
             <p className="text-foreground-secondary mt-1 text-xs">
-              Shown once. Store them somewhere safe.
+              {t('settingsBody.account.totpBackupDescription')}
             </p>
             <ul className="mt-2 grid grid-cols-2 gap-1 font-mono text-xs">
               {backupCodes.map((c) => (
@@ -108,7 +114,7 @@ export function SecurityTotpPanel() {
               onClick={() => setBackupCodes(null)}
             >
               <CheckIcon size={15} aria-hidden className="mr-1.5" />
-              Done
+              {t('settingsBody.account.totpDone')}
             </Button>
           </div>
         )}
@@ -131,7 +137,9 @@ export function SecurityTotpPanel() {
             }}
           >
             <KeyRoundIcon size={15} aria-hidden className="mr-1.5" />
-            {pending ? 'Starting…' : 'Enable 2FA'}
+            {pending
+              ? t('settingsBody.account.totpStarting')
+              : t('settingsBody.account.totpEnable')}
           </Button>
         )}
 
@@ -156,8 +164,7 @@ export function SecurityTotpPanel() {
             }}
           >
             <p className="text-foreground-secondary text-xs">
-              Scan this QR code with your authenticator app, then enter the
-              6-digit code it generates.
+              {t('settingsBody.account.totpScanHint')}
             </p>
             <div className="flex w-fit rounded-lg bg-white p-3">
               <QRCodeSVG
@@ -165,11 +172,11 @@ export function SecurityTotpPanel() {
                 size={192}
                 level="M"
                 includeMargin
-                aria-label="Authenticator setup QR code"
+                aria-label={t('settingsBody.account.totpQrAria')}
               />
             </div>
             <p className="text-foreground-secondary text-xs">
-              If you cannot scan it, enter this setup key manually:
+              {t('settingsBody.account.totpManualHint')}
             </p>
             <code className="border-border bg-background rounded border px-2 py-1 text-xs break-all">
               {formatSecret(setup.secret)}
@@ -178,10 +185,10 @@ export function SecurityTotpPanel() {
               href={setup.otpauthUri}
               className="text-xs underline-offset-2 hover:underline"
             >
-              Open otpauth link
+              {t('settingsBody.account.totpOpenLink')}
             </a>
             <Input
-              label="Confirmation code"
+              label={t('settingsBody.account.totpConfirmCode')}
               value={confirmCode}
               onChange={(e) => setConfirmCode(e.target.value)}
               inputMode="numeric"
@@ -194,7 +201,7 @@ export function SecurityTotpPanel() {
                 type="submit"
               >
                 <ShieldCheckIcon size={15} aria-hidden className="mr-1.5" />
-                Confirm
+                {t('settingsBody.account.totpConfirm')}
               </Button>
               <Button
                 size="sm"
@@ -206,7 +213,7 @@ export function SecurityTotpPanel() {
                 }}
               >
                 <XIcon size={15} aria-hidden className="mr-1.5" />
-                Cancel
+                {t('actions.cancel')}
               </Button>
             </div>
           </form>
@@ -219,7 +226,7 @@ export function SecurityTotpPanel() {
             onClick={() => setDisabling(true)}
           >
             <ShieldOffIcon size={15} aria-hidden className="mr-1.5" />
-            Disable 2FA
+            {t('settingsBody.account.totpDisable')}
           </Button>
         )}
 
@@ -243,7 +250,7 @@ export function SecurityTotpPanel() {
             }}
           >
             <Input
-              label="Current password"
+              label={t('settingsBody.account.currentPassword')}
               variant="password"
               value={disablePassword}
               onChange={(e) => setDisablePassword(e.target.value)}
@@ -256,7 +263,7 @@ export function SecurityTotpPanel() {
                 type="submit"
               >
                 <ShieldOffIcon size={15} aria-hidden className="mr-1.5" />
-                Confirm disable
+                {t('settingsBody.account.totpConfirmDisable')}
               </Button>
               <Button
                 size="sm"
@@ -268,7 +275,7 @@ export function SecurityTotpPanel() {
                 }}
               >
                 <XIcon size={15} aria-hidden className="mr-1.5" />
-                Cancel
+                {t('actions.cancel')}
               </Button>
             </div>
           </form>

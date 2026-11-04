@@ -125,11 +125,7 @@ export function ChannelPanel() {
   };
 
   if (!user) {
-    return (
-      <SettingsHint>
-        Sign in with a channel to edit design and discovery.
-      </SettingsHint>
-    );
+    return <SettingsHint>{t('settingsBody.channel.signInHint')}</SettingsHint>;
   }
 
   return (
@@ -140,7 +136,7 @@ export function ChannelPanel() {
       items={[
         {
           id: 'appearance',
-          label: 'Channel Designer',
+          label: t('settingsBody.channel.tabDesigner'),
           icon: <Paintbrush size={14} />,
           content: (
             <StudioBrandingPanel section="channel-designer" hideSectionNav />
@@ -148,7 +144,7 @@ export function ChannelPanel() {
         },
         {
           id: 'discovery',
-          label: 'Discovery',
+          label: t('settingsBody.channel.tabDiscovery'),
           icon: <Compass size={14} />,
           content: !channelProfile ? (
             profileError ? (
@@ -372,7 +368,7 @@ export function ChannelPanel() {
         },
         {
           id: 'chat',
-          label: 'Chat',
+          label: t('settingsBody.channel.tabChat'),
           icon: <MessageSquare size={14} />,
           content: (
             <StudioPanel
@@ -387,7 +383,7 @@ export function ChannelPanel() {
         },
         {
           id: 'moderators',
-          label: 'Moderators',
+          label: t('settingsBody.channel.tabModerators'),
           icon: <Shield size={14} />,
           content: (
             <StudioPanel

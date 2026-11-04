@@ -14,7 +14,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
@@ -58,6 +58,7 @@ import { ReleaseTrackVersionsPanel } from './release-detail/ReleaseTrackVersions
 import { useReleaseDetail } from './release-detail/useReleaseDetail';
 
 export function StudioReleaseDetailView({ id }: { id: string }) {
+  const { t } = useTranslation('web');
   const {
     user,
     currentId,
@@ -147,7 +148,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
       ? [
           {
             key: 'tracks',
-            label: 'Tracks',
+            label: t('studioReleaseDetail.tabTracks'),
             value: release.tracks.length,
             icon: MusicIcon,
           },
@@ -162,20 +163,26 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
           side="right"
           wrapperClassName={backButtonCornerClassName}
         >
-          <BackButtonLink to="/studio/releases" aria-label="Back to Releases" />
+          <BackButtonLink
+            to="/studio/releases"
+            aria-label={t('studioReleaseDetail.backToReleases')}
+          />
         </Tooltip>
         {!release ? (
           <StudioPanel>
             {loaded && loadError ? (
               <PageError
-                title="Could not load this release"
+                title={t('studioReleaseDetail.loadError')}
                 description={loadError}
                 onRetry={retryLoad}
               />
             ) : loaded ? (
-              <PageEmpty headingLevel={1} title="Release not found in list" />
+              <PageEmpty
+                headingLevel={1}
+                title={t('studioReleaseDetail.notFound')}
+              />
             ) : (
-              <PageLoading label="Loading…" />
+              <PageLoading label={t('settingsBody.loading')} />
             )}
           </StudioPanel>
         ) : (
@@ -203,7 +210,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       params={{ slug: release.smartLinkSlug }}
                       size="icon"
                       variant="secondary"
-                      aria-label="Open release embed"
+                      aria-label={t('studioReleaseDetail.openEmbedAria')}
                     >
                       <Code2Icon size={16} aria-hidden />
                     </ButtonLink>
@@ -214,7 +221,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       search={{ releaseId: release.id }}
                       size="icon"
                       variant="secondary"
-                      aria-label="Schedule listening party"
+                      aria-label={t('studioReleaseDetail.schedulePartyAria')}
                       disabled={!release.tracks?.length}
                     >
                       <PartyPopperIcon size={16} aria-hidden />
@@ -224,7 +231,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                     <Button
                       size="icon"
                       variant="secondary"
-                      aria-label="Delete release"
+                      aria-label={t('studioReleaseDetail.deleteAria')}
                       disabled={deleting}
                       onClick={() => setConfirmDelete(true)}
                     >
@@ -256,7 +263,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
             <CoverArtPickerDialog
               isOpen={artworkPickerOpen}
               onClose={() => setArtworkPickerOpen(false)}
-              label="Release artwork"
+              label={t('studioReleaseDetail.artworkLabel')}
               value={artworkPreview}
               upload={uploadArtworkFile}
               onSelect={selectReleaseArtwork}
@@ -276,9 +283,9 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
 
             <ConfirmDialog
               isOpen={confirmPublish}
-              title="Publish this release?"
-              description="Publishing makes the release and its smart link visible to listeners."
-              confirmLabel="Publish"
+              title={t('studioReleaseDetail.publishTitle')}
+              description={t('studioReleaseDetail.publishDescription')}
+              confirmLabel={t('studioReleaseDetail.publishConfirm')}
               onCancel={() => setConfirmPublish(false)}
               onConfirm={() => {
                 setConfirmPublish(false);
@@ -288,9 +295,9 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
 
             <ConfirmDialog
               isOpen={confirmDelete}
-              title="Delete this release?"
-              description="Its tracklist, smart link and stats are removed. Tracks you uploaded stay in your library. This can't be undone."
-              confirmLabel="Delete release"
+              title={t('studioReleaseDetail.deleteTitle')}
+              description={t('studioReleaseDetail.deleteDescription')}
+              confirmLabel={t('studioReleaseDetail.deleteConfirm')}
               destructive
               onCancel={() => setConfirmDelete(false)}
               onConfirm={() => {
@@ -301,9 +308,9 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
 
             <ConfirmDialog
               isOpen={pendingArtworkDelete}
-              title="Remove artwork?"
-              description="The release will fall back to its default placeholder until you upload new artwork."
-              confirmLabel="Remove artwork"
+              title={t('studioReleaseDetail.removeArtworkTitle')}
+              description={t('studioReleaseDetail.removeArtworkDescription')}
+              confirmLabel={t('studioReleaseDetail.removeArtworkConfirm')}
               destructive
               onCancel={() => setPendingArtworkDelete(false)}
               onConfirm={() => {
@@ -325,16 +332,20 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
               items={[
                 {
                   id: 'overview',
-                  label: 'Overview',
+                  label: t('studioReleaseDetail.tabOverview'),
                   icon: <LayoutDashboardIcon size={14} />,
                   content: (
                     <div className="flex flex-col gap-6">
                       {
                         <>
-                          <StudioPanel title="Details">
+                          <StudioPanel
+                            title={t('studioReleaseDetail.detailsTitle')}
+                          >
                             {detailsExpanded ? (
                               <Textarea
-                                label="Description"
+                                label={t(
+                                  'studioReleaseDetail.descriptionLabel',
+                                )}
                                 tone="secondary"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
@@ -349,7 +360,9 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                           </StudioPanel>
 
                           {release.tracks && release.tracks.length > 0 && (
-                            <StudioPanel title="Tracks">
+                            <StudioPanel
+                              title={t('studioReleaseDetail.tracksTitle')}
+                            >
                               <div className="min-h-[200px]">
                                 <TrackTable
                                   tracks={releaseTracks}
@@ -503,8 +516,10 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       }
                       {
                         <StudioPanel
-                          title="Track credits"
-                          description="Who played, sang, wrote or produced each track."
+                          title={t('studioReleaseDetail.creditsTitle')}
+                          description={t(
+                            'studioReleaseDetail.creditsDescription',
+                          )}
                         >
                           {release.tracks && release.tracks.length > 0 ? (
                             <ReleaseTrackCreditsPanel
@@ -527,8 +542,10 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                             />
                           ) : (
                             <PageEmpty
-                              title="No tracks on this release yet"
-                              description="Add tracks first, then credit the people on each one."
+                              title={t('studioReleaseDetail.noTracksTitle')}
+                              description={t(
+                                'studioReleaseDetail.noTracksDescription',
+                              )}
                             />
                           )}
                         </StudioPanel>
@@ -538,7 +555,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                 },
                 {
                   id: 'links',
-                  label: 'Links',
+                  label: t('studioReleaseDetail.tabLinks'),
                   icon: <Link2Icon size={14} />,
                   content: (
                     <div className="flex flex-col gap-6">
@@ -571,8 +588,10 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       }
                       {
                         <StudioPanel
-                          title="Export release"
-                          description="Prepare this release for MusicBrainz and manage its distribution metadata."
+                          title={t('studioReleaseDetail.exportTitle')}
+                          description={t(
+                            'studioReleaseDetail.exportDescription',
+                          )}
                         >
                           <MusicBrainzSubmissionAssistant
                             mode="release"
@@ -589,13 +608,13 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                 },
                 {
                   id: 'stats',
-                  label: 'Stats',
+                  label: t('studioReleaseDetail.tabStats'),
                   icon: <BarChart3Icon size={14} />,
                   content: <ReleaseStatsPanel tracks={release.tracks ?? []} />,
                 },
                 {
                   id: 'advanced',
-                  label: 'Advanced',
+                  label: t('studioReleaseDetail.tabAdvanced'),
                   icon: <LayersIcon size={14} />,
                   content: (
                     <div className="flex flex-col gap-6">
@@ -607,8 +626,10 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       }
                       {
                         <StudioPanel
-                          title="Fingerprinting"
-                          description="Optional. Checks each track against AcoustID's public database of released music, so you get a heads-up if it matches something already out there — nothing is blocked either way. Every upload is checked automatically; use the buttons below only to re-check a track you just replaced, or to check one on demand."
+                          title={t('studioReleaseDetail.fingerprintTitle')}
+                          description={t(
+                            'studioReleaseDetail.fingerprintDescription',
+                          )}
                         >
                           {(() => {
                             const fingerprintable = (
@@ -617,8 +638,12 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                             if (fingerprintable.length === 0) {
                               return (
                                 <PageEmpty
-                                  title="No tracks have audio uploaded yet"
-                                  description="Fingerprinting needs a track's audio file on file first."
+                                  title={t(
+                                    'studioReleaseDetail.fingerprintNoAudioTitle',
+                                  )}
+                                  description={t(
+                                    'studioReleaseDetail.fingerprintNoAudioDescription',
+                                  )}
                                 />
                               );
                             }

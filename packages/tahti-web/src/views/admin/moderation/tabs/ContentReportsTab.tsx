@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonAnchor,
@@ -28,12 +29,20 @@ import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { ModerationTabs } from '../ModerationTabs';
 
-const FILTERS: { id: AdminContentReportStatus | 'all'; label: string }[] = [
-  { id: 'all', label: 'All' },
-  { id: 'OPEN', label: 'Open' },
-  { id: 'REVIEWING', label: 'Reviewing' },
-  { id: 'ACTIONED', label: 'Actioned' },
-  { id: 'DISMISSED', label: 'Dismissed' },
+const FILTER_DEFS: {
+  id: AdminContentReportStatus | 'all';
+  labelKey:
+    | 'adminContentReports.filterAll'
+    | 'adminContentReports.filterOpen'
+    | 'adminContentReports.filterReviewing'
+    | 'adminContentReports.filterActioned'
+    | 'adminContentReports.filterDismissed';
+}[] = [
+  { id: 'all', labelKey: 'adminContentReports.filterAll' },
+  { id: 'OPEN', labelKey: 'adminContentReports.filterOpen' },
+  { id: 'REVIEWING', labelKey: 'adminContentReports.filterReviewing' },
+  { id: 'ACTIONED', labelKey: 'adminContentReports.filterActioned' },
+  { id: 'DISMISSED', labelKey: 'adminContentReports.filterDismissed' },
 ];
 
 const FILTER_TAB_ICONS = {
@@ -47,13 +56,14 @@ const FILTER_TAB_ICONS = {
 /** What the report points at: a link to its page and, for a comment, the
  * text. Older API versions send none of these fields. */
 function ReportTarget({ report }: { report: AdminContentReportRow }) {
+  const { t } = useTranslation('web');
   if (report.targetLabel === undefined) {
     return null;
   }
   if (!report.targetLabel || !report.targetUrl) {
     return (
       <p className="text-foreground-secondary text-xs">
-        The reported item has been removed.
+        {t('adminContentReports.itemRemoved')}
       </p>
     );
   }
@@ -86,6 +96,7 @@ function ReportActions({
   report: AdminContentReportRow;
   onDone: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [note, setNote] = useState('');
   const [pending, setPending] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -94,7 +105,9 @@ function ReportActions({
   if (report.status === 'ACTIONED' || report.status === 'DISMISSED') {
     return (
       <div className="text-foreground-secondary text-xs">
-        {report.status === 'ACTIONED' ? 'Actioned' : 'Dismissed'}
+        {report.status === 'ACTIONED'
+          ? t('adminContentReports.statusActioned')
+          : t('adminContentReports.statusDismissed')}
         {report.resolvedByDisplayName
           ? ` by ${report.resolvedByDisplayName}`
           : ''}
@@ -142,7 +155,7 @@ function ReportActions({
       void resolveContentReport(
         report.id,
         'ACTIONED',
-        note.trim() || 'Comment deleted',
+        note.trim() || t('adminContentReports.defaultNote'),
       ).then((resolved) => {
         setPending(false);
         setConfirmingDelete(false);
@@ -160,8 +173,8 @@ function ReportActions({
   return (
     <div className="flex flex-col gap-1.5">
       <Input
-        aria-label="Resolution note"
-        placeholder="Resolution note (optional)"
+        aria-label={t('adminContentReports.resolutionNoteAria')}
+        placeholder={t('adminContentReports.resolutionNotePlaceholder')}
         value={note}
         onChange={(e) => setNote(e.target.value)}
         className="h-7 max-w-xs text-xs"
@@ -208,7 +221,9 @@ function ReportActions({
             onClick={removeComment}
           >
             <Trash2Icon size={14} aria-hidden />
-            {confirmingDelete ? 'Confirm delete' : 'Delete comment'}
+            {confirmingDelete
+              ? t('adminContentReports.confirmDelete')
+              : t('adminContentReports.deleteComment')}
           </Button>
         ) : null}
       </div>
@@ -224,21 +239,36 @@ function ReportActions({
 
 type TargetFilter = AdminContentReportRow['targetType'] | 'all';
 
-const TARGET_OPTIONS: { id: TargetFilter; label: string }[] = [
-  { id: 'all', label: 'Everything' },
-  { id: 'SOUND_ITEM', label: 'Tracks' },
-  { id: 'RELEASE', label: 'Releases' },
-  { id: 'CHANNEL', label: 'Channels' },
-  { id: 'COLLECTION', label: 'Collections' },
-  { id: 'COMMENT', label: 'Comments' },
-  { id: 'MOTION_COMMENT', label: 'Motion comments' },
-  { id: 'DISCUSSION_POST', label: 'Discussion replies' },
+const TARGET_DEFS: {
+  id: TargetFilter;
+  labelKey:
+    | 'adminContentReports.typeEverything'
+    | 'adminContentReports.typeTracks'
+    | 'adminContentReports.typeReleases'
+    | 'adminContentReports.typeChannels'
+    | 'adminContentReports.typeCollections'
+    | 'adminContentReports.typeComments'
+    | 'adminContentReports.typeMotionComments'
+    | 'adminContentReports.typeDiscussionReplies';
+}[] = [
+  { id: 'all', labelKey: 'adminContentReports.typeEverything' },
+  { id: 'SOUND_ITEM', labelKey: 'adminContentReports.typeTracks' },
+  { id: 'RELEASE', labelKey: 'adminContentReports.typeReleases' },
+  { id: 'CHANNEL', labelKey: 'adminContentReports.typeChannels' },
+  { id: 'COLLECTION', labelKey: 'adminContentReports.typeCollections' },
+  { id: 'COMMENT', labelKey: 'adminContentReports.typeComments' },
+  { id: 'MOTION_COMMENT', labelKey: 'adminContentReports.typeMotionComments' },
+  {
+    id: 'DISCUSSION_POST',
+    labelKey: 'adminContentReports.typeDiscussionReplies',
+  },
 ];
 
 /** Content reports tab — ported as-is from the standalone admin route (see
  * AdminModerationView). Anonymous reports of channels, releases, archive
  * items, and collections — reporting needs no account. */
 export function ContentReportsTab() {
+  const { t } = useTranslation('web');
   const [filter, setFilter] = useState<AdminContentReportStatus | 'all'>(
     'OPEN',
   );
@@ -268,27 +298,31 @@ export function ContentReportsTab() {
 
       <ModerationTabs
         activeId={filter}
-        items={FILTERS.map((item) => ({
-          ...item,
+        items={FILTER_DEFS.map((item) => ({
+          id: item.id,
+          label: t(item.labelKey),
           icon: FILTER_TAB_ICONS[item.id],
         }))}
-        ariaLabel="Content report status"
+        ariaLabel={t('adminContentReports.statusAria')}
         onChange={(id) => setFilter(id as AdminContentReportStatus | 'all')}
       />
 
       <Select
-        label="Reported"
+        label={t('adminContentReports.reported')}
         value={target}
         onValueChange={(value) => setTarget(value as TargetFilter)}
-        options={TARGET_OPTIONS}
+        options={TARGET_DEFS.map((item) => ({
+          id: item.id,
+          label: t(item.labelKey),
+        }))}
         className="max-w-xs"
       />
 
       <StudioPanel>
         {loading ? (
-          <PageLoading label="Loading content reports…" />
+          <PageLoading label={t('adminContentReports.loading')} />
         ) : reports.length === 0 ? (
-          <PageEmpty title="No reports in this view." />
+          <PageEmpty title={t('adminContentReports.empty')} />
         ) : (
           <ul className="divide-border divide-y">
             {reports.map((r) => (
@@ -305,7 +339,7 @@ export function ContentReportsTab() {
                   </div>
                   <ReportTarget report={r} />
                   <div className="text-foreground-secondary text-xs">
-                    {r.details ?? 'No details provided'} ·{' '}
+                    {r.details ?? t('adminContentReports.noDetails')} ·{' '}
                     <ListingDate value={r.createdAt} />
                   </div>
                 </div>

@@ -4,7 +4,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import { changePassword } from '../api/account-credentials';
-import { PASSWORD_RULES_HINT, passwordProblem } from '../lib/passwordRules';
+import { passwordProblem, passwordRulesHint } from '../lib/passwordRules';
 
 export function ChangePasswordForm() {
   const { t } = useTranslation('web');
@@ -69,7 +69,7 @@ export function ChangePasswordForm() {
           variant="password"
           value={next}
           onChange={(event) => setNext(event.target.value)}
-          description={PASSWORD_RULES_HINT}
+          description={passwordRulesHint()}
           autoComplete="new-password"
         />
         {problem ? <InlineError>{problem}</InlineError> : null}

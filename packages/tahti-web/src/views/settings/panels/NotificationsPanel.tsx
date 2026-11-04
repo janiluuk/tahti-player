@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { InlineLoader, SectionTitle } from '@tahti-player/ui';
 
 import {
@@ -21,6 +22,7 @@ import { GrantReportAttributionToggle } from './GrantReportAttributionToggle';
 import { TopListsToggle } from './TopListsToggle';
 
 export function NotificationsPanel() {
+  const { t } = useTranslation('web');
   const [prefs, setPrefs] = useState<NotificationPrefs | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -47,13 +49,13 @@ export function NotificationsPanel() {
       return;
     }
     setPrefs(result.data);
-    toast.success('Notification preference saved.');
+    toast.success(t('settingsBody.account.notifyPrefsSaved'));
   };
 
   if (!prefs && loadError) {
     return (
       <PageError
-        title="Could not load your notification settings"
+        title={t('settingsBody.account.notifyPrefsLoadError')}
         description={loadError}
         onRetry={() => {
           setLoadError(null);
@@ -64,7 +66,7 @@ export function NotificationsPanel() {
   }
 
   if (!prefs) {
-    return <InlineLoader label="Loading…" />;
+    return <InlineLoader label={t('settingsBody.loading')} />;
   }
 
   const toggle = (key: keyof NotificationPrefs, value: boolean) => {
@@ -74,17 +76,17 @@ export function NotificationsPanel() {
   return (
     <div className="flex flex-col gap-4">
       <StudioPanel
-        title="Revenue moves"
-        description="When fans subscribe or cancel, someone buys a track, a payout completes or you are awarded a grant."
+        title={t('settingsBody.account.notifyRevenueTitle')}
+        description={t('settingsBody.account.notifyRevenueDescription')}
       >
         <div className="flex flex-col gap-3">
           <SettingsToggle
-            label="Email me"
+            label={t('settingsBody.account.notifyEmailMe')}
             value={prefs.notifyMoneyMovesEmail}
             onChange={(value) => toggle('notifyMoneyMovesEmail', value)}
           />
           <SettingsToggle
-            label="In-app"
+            label={t('settingsBody.account.notifyInApp')}
             value={prefs.notifyMoneyMovesInApp}
             onChange={(value) => toggle('notifyMoneyMovesInApp', value)}
           />
@@ -95,11 +97,11 @@ export function NotificationsPanel() {
       </StudioPanel>
       {prefs.notifyStudioJobsInApp === undefined ? null : (
         <StudioPanel
-          title="Studio work"
-          description="When an upload can't be processed, or a render, stems split, export, import or distribution finishes or fails."
+          title={t('settingsBody.account.notifyStudioTitle')}
+          description={t('settingsBody.account.notifyStudioDescription')}
         >
           <SettingsToggle
-            label="In-app"
+            label={t('settingsBody.account.notifyInApp')}
             value={prefs.notifyStudioJobsInApp}
             onChange={(value) => toggle('notifyStudioJobsInApp', value)}
           />
@@ -109,11 +111,11 @@ export function NotificationsPanel() {
         </StudioPanel>
       )}
       <StudioPanel
-        title="Listener actions"
-        description="A daily email digest of new chat messages, comments, and broadcast feedback."
+        title={t('settingsBody.account.notifyListenerTitle')}
+        description={t('settingsBody.account.notifyListenerDescription')}
       >
         <SettingsToggle
-          label="Email digest, daily"
+          label={t('settingsBody.account.notifyListenerEmail')}
           value={prefs.notifyListenerActivityEmail}
           onChange={(value) => toggle('notifyListenerActivityEmail', value)}
         />
@@ -122,11 +124,11 @@ export function NotificationsPanel() {
         </p>
       </StudioPanel>
       <StudioPanel
-        title="Weekly recap"
-        description="A Sunday summary of your activity and audience."
+        title={t('settingsBody.account.notifyWeeklyTitle')}
+        description={t('settingsBody.account.notifyWeeklyDescription')}
       >
         <SettingsToggle
-          label="Email me"
+          label={t('settingsBody.account.notifyEmailMe')}
           value={prefs.notifyWeeklyRecapEmail}
           onChange={(value) => toggle('notifyWeeklyRecapEmail', value)}
         />
@@ -139,6 +141,7 @@ export function NotificationsPanel() {
 }
 
 export function NotificationsVisibilityPanel() {
+  const { t } = useTranslation('web');
   const [profile, setProfile] = useState<ProfileFields | null>(null);
   const [savingKey, setSavingKey] = useState<keyof ProfileFields | null>(null);
   const [profileError, setProfileError] = useState<string | null>(null);
@@ -176,7 +179,7 @@ export function NotificationsVisibilityPanel() {
         return;
       }
       setProfile(result.data);
-      toast.success('Visibility setting saved.');
+      toast.success(t('settingsBody.account.visibilitySaved'));
     });
   };
 
@@ -200,7 +203,7 @@ export function NotificationsVisibilityPanel() {
         return;
       }
       setProfile(result.data);
-      toast.success('Visibility setting saved.');
+      toast.success(t('settingsBody.account.visibilitySaved'));
     });
   };
 
@@ -208,17 +211,17 @@ export function NotificationsVisibilityPanel() {
     <div className="flex flex-col gap-6">
       <div>
         <SectionTitle
-          title="Visibility"
+          title={t('settingsBody.account.visibilityTitle')}
           wrap
           className="font-display tracking-tight"
         />
         <p className="text-foreground-secondary mt-1 text-sm">
-          Choose what appears publicly on your profile and channel.
+          {t('settingsBody.account.visibilityDescription')}
         </p>
       </div>
       {!profile && profileError ? (
         <PageError
-          title="Could not load your visibility settings"
+          title={t('settingsBody.account.visibilityLoadError')}
           description={profileError}
           onRetry={() => {
             setProfileError(null);
@@ -226,51 +229,51 @@ export function NotificationsVisibilityPanel() {
           }}
         />
       ) : !profile ? (
-        <InlineLoader label="Loading…" />
+        <InlineLoader label={t('settingsBody.loading')} />
       ) : (
         <div className="flex flex-col gap-4">
           <StudioPanel
-            title="Your profile"
-            description="What visitors see on your profile and artist page."
+            title={t('settingsBody.account.visibilityProfileTitle')}
+            description={t('settingsBody.account.visibilityProfileDescription')}
           >
             <div className="flex flex-col gap-5">
               <SettingsToggle
-                label="Show join date on my profile"
+                label={t('settingsBody.account.visibilityShowJoinDate')}
                 value={profile.showJoinDate ?? true}
                 onChange={(value) => updateVisibility('showJoinDate', value)}
               />
               <SettingsToggle
-                label="Show my followers on my profile"
+                label={t('settingsBody.account.visibilityShowFollowers')}
                 value={profile.showFollowers ?? true}
                 onChange={(value) => updateVisibility('showFollowers', value)}
               />
               <SettingsToggle
-                label="Show who I follow on my profile"
+                label={t('settingsBody.account.visibilityShowFollowing')}
                 value={profile.showFollowing ?? true}
                 onChange={(value) => updateVisibility('showFollowing', value)}
               />
               <SettingsToggle
-                label="Show tracks I like on my profile"
+                label={t('settingsBody.account.visibilityShowLikes')}
                 value={profile.showLikes ?? true}
                 onChange={(value) => updateVisibility('showLikes', value)}
               />
               <SettingsToggle
-                label="Show my connections on my artist profile"
+                label={t('settingsBody.account.visibilityShowConnections')}
                 value={profile.socialLinks?.showConnections !== 'false'}
                 onChange={updateConnectionsVisibility}
               />
             </div>
           </StudioPanel>
           <StudioPanel
-            title="Uploads and comments"
-            description="Where your tracks can show up and who can comment."
+            title={t('settingsBody.account.visibilityUploadsTitle')}
+            description={t('settingsBody.account.visibilityUploadsDescription')}
           >
             <div className="flex flex-col gap-5">
               <TopListsToggle />
               <CommentSettingsToggles />
             </div>
           </StudioPanel>
-          <StudioPanel title="Grant reports">
+          <StudioPanel title={t('settingsBody.account.visibilityGrantTitle')}>
             <GrantReportAttributionToggle
               profile={profile}
               onSaved={setProfile}
@@ -280,18 +283,18 @@ export function NotificationsVisibilityPanel() {
       )}
       <div className="border-border border-t pt-5">
         <SectionTitle
-          title="Notifications"
+          title={t('settingsBody.account.notificationsSectionTitle')}
           wrap
           className="font-display tracking-tight"
         />
         <p className="text-foreground-secondary mt-1 mb-5 text-sm">
-          Choose which activity reaches you by email or in the app.
+          {t('settingsBody.account.notificationsSectionDescription')}
         </p>
         <NotificationsPanel />
       </div>
       {savingKey ? (
         <p className="text-foreground-secondary text-xs" role="status">
-          Saving visibility…
+          {t('settingsBody.account.visibilitySaving')}
         </p>
       ) : null}
     </div>

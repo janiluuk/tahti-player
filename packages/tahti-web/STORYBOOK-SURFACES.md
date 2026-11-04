@@ -164,6 +164,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Components/Data strips` | `tahti-web/DataStrips.stories.tsx` |
 | `Tahti/Studio/Distribution/DeliveryTab` | `tahti-web/DeliveryTab.stories.tsx` |
 | `Tahti/Misc/DesktopLibraryPanel` | `tahti-web/DesktopLibraryPanel.stories.tsx` |
+| `Tahti/Settings/DevicesSessionsPanel` | `tahti-web/DevicesSessionsPanel.stories.tsx` |
 | `Tahti/Discover/DirectoryArtistCardGrid` | `tahti-web/DirectoryArtistCardGrid.stories.tsx` |
 | `Tahti/Widgets/DiscoWidgetManagerPanel` | `tahti-web/DiscoWidgetManagerPanel.stories.tsx` |
 | `Tahti/Widgets/DiscoWidgetsSection` | `tahti-web/DiscoWidgetsSection.stories.tsx` |

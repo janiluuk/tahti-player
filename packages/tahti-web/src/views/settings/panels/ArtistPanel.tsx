@@ -61,31 +61,45 @@ import { ARTIST_TAB_GROUPS } from './artistTabGroups';
 import { MusicBrainzOfferToggle } from './MusicBrainzOfferToggle';
 import { groupTabs, tabLanding } from './tabGroups';
 
-const PRONOUN_OPTIONS: SelectOption[] = [
-  { id: 'she/her', label: 'she/her' },
-  { id: 'he/him', label: 'he/him' },
-  { id: 'they/them', label: 'they/them' },
-  { id: 'she/they', label: 'she/they' },
-  { id: 'he/they', label: 'he/they' },
-  { id: 'other', label: 'Other' },
-];
-
-const ARTIST_ROLE_OPTIONS = [
-  ['producer', 'Producer'],
-  ['dj', 'DJ'],
-  ['band', 'Band'],
-  ['live-performer', 'Live performer'],
-  ['instrumentalist', 'Instrumentalist'],
-  ['singer', 'Singer / vocalist'],
-  ['songwriter', 'Songwriter'],
-  ['composer', 'Composer'],
-  ['sound-engineer', 'Sound engineer'],
-  ['visual-artist', 'Visual artist'],
-  ['curator', 'Curator / label'],
+const PRONOUN_IDS = [
+  'she/her',
+  'he/him',
+  'they/them',
+  'she/they',
+  'he/they',
+  'other',
 ] as const;
 
-const PRONOUN_PRESET_IDS = new Set(
-  PRONOUN_OPTIONS.map((o) => o.id).filter((id) => id !== 'other'),
+const ARTIST_ROLE_IDS = [
+  'producer',
+  'dj',
+  'band',
+  'live-performer',
+  'instrumentalist',
+  'singer',
+  'songwriter',
+  'composer',
+  'sound-engineer',
+  'visual-artist',
+  'curator',
+] as const;
+
+const ARTIST_ROLE_LABEL_KEYS = {
+  producer: 'settingsBody.artist.roleProducer',
+  dj: 'settingsBody.artist.roleDj',
+  band: 'settingsBody.artist.roleBand',
+  'live-performer': 'settingsBody.artist.roleLivePerformer',
+  instrumentalist: 'settingsBody.artist.roleInstrumentalist',
+  singer: 'settingsBody.artist.roleSinger',
+  songwriter: 'settingsBody.artist.roleSongwriter',
+  composer: 'settingsBody.artist.roleComposer',
+  'sound-engineer': 'settingsBody.artist.roleSoundEngineer',
+  'visual-artist': 'settingsBody.artist.roleVisualArtist',
+  curator: 'settingsBody.artist.roleCurator',
+} as const;
+
+const PRONOUN_PRESET_IDS: ReadonlySet<string> = new Set(
+  PRONOUN_IDS.filter((id) => id !== 'other'),
 );
 
 function parseArtistRoles(profile: ProfileFields): string[] {
@@ -113,7 +127,6 @@ function detectCountryCode(): string | null {
   return null;
 }
 
-/** Optional pronouns dropdown — common options plus a free-text "Other". */
 function PronounsField({
   profile,
   setProfile,
@@ -121,15 +134,20 @@ function PronounsField({
   profile: ProfileFields;
   setProfile: (p: ProfileFields) => void;
 }) {
+  const { t } = useTranslation('web');
   const current = profile.pronouns ?? '';
   const isCustom = current !== '' && !PRONOUN_PRESET_IDS.has(current);
   const [showCustomInput, setShowCustomInput] = useState(isCustom);
+  const pronounOptions: SelectOption[] = PRONOUN_IDS.map((id) => ({
+    id,
+    label: id === 'other' ? t('settingsBody.artist.pronounsOther') : id,
+  }));
 
   return (
     <div className="flex flex-col gap-2">
       <div className="w-fit min-w-40">
         <Select
-          label="Pronouns"
+          label={t('settingsBody.artist.pronouns')}
           value={showCustomInput ? 'other' : current}
           onValueChange={(id) => {
             if (id === 'other') {
@@ -139,13 +157,13 @@ function PronounsField({
             setShowCustomInput(false);
             setProfile({ ...profile, pronouns: id });
           }}
-          placeholder="Not set"
-          options={PRONOUN_OPTIONS}
+          placeholder={t('settingsBody.artist.pronounsNotSet')}
+          options={pronounOptions}
         />
       </div>
       {showCustomInput && (
         <Input
-          label="Custom pronouns"
+          label={t('settingsBody.artist.pronounsCustom')}
           value={isCustom ? current : ''}
           onChange={(e) => setProfile({ ...profile, pronouns: e.target.value })}
         />
@@ -222,9 +240,9 @@ export function ArtistPanel() {
           className="underline-offset-2 hover:underline"
           onClick={() => useAuthModalStore.getState().open('login')}
         >
-          Sign in
+          {t('actions.signIn')}
         </Button>{' '}
-        to edit artist profile.
+        {t('settingsBody.artist.signInHintSuffix')}
       </SettingsHint>
     );
   }
@@ -285,9 +303,9 @@ export function ArtistPanel() {
             </div>
             <FilterChips
               multiple
-              items={ARTIST_ROLE_OPTIONS.map(([id, label]) => ({
+              items={ARTIST_ROLE_IDS.map((id) => ({
                 id,
-                label,
+                label: t(ARTIST_ROLE_LABEL_KEYS[id]),
               }))}
               selected={artistRoles}
               onChange={setArtistRoles}
@@ -297,10 +315,14 @@ export function ArtistPanel() {
               {t('settingsBody.artist.selectedRoles')}{' '}
               {artistRoles.length > 0
                 ? artistRoles
-                    .map(
-                      (role) =>
-                        ARTIST_ROLE_OPTIONS.find(([id]) => id === role)?.[1] ??
-                        role,
+                    .map((role) =>
+                      role in ARTIST_ROLE_LABEL_KEYS
+                        ? t(
+                            ARTIST_ROLE_LABEL_KEYS[
+                              role as keyof typeof ARTIST_ROLE_LABEL_KEYS
+                            ],
+                          )
+                        : role,
                     )
                     .join(', ')
                 : t('settingsBody.artist.noneYet')}

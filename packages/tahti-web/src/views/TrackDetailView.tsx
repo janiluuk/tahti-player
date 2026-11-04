@@ -1,5 +1,6 @@
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Dialog, Input } from '@tahti-player/ui';
 
 import { AddToPlaylistPanel } from '../components/AddToPlaylistPanel';
@@ -16,21 +17,17 @@ export function TrackDetailView({
   shareKey,
 }: {
   id: string;
-  /** Present when this page was opened via a PRIVATE/STASH sound's share
-   * link (`/t/$id?key=...`, see SoundShareLinksSection). Passed through to
-   * every fetch/comment call so the backend can serve the otherwise-private
-   * sound and log the visit/interaction to the audit log instead of
-   * treating it as public activity. */
   shareKey?: string;
 }) {
-  const t = useTrackDetail(id, shareKey);
-  const { playable, loading, loadError, retryLoad } = t;
+  const { t: translate } = useTranslation('web');
+  const track = useTrackDetail(id, shareKey);
+  const { playable, loading, loadError, retryLoad } = track;
 
   if (!playable) {
     if (loading) {
       return (
         <div className="flex min-h-full items-center justify-center">
-          <PageLoading label="Loading track…" />
+          <PageLoading label={translate('trackDetail.loading')} />
         </div>
       );
     }
@@ -38,7 +35,7 @@ export function TrackDetailView({
       return (
         <div className="mx-auto flex max-w-lg flex-col py-10">
           <PageError
-            title="Could not load this track"
+            title={translate('trackDetail.loadError')}
             description={loadError}
             onRetry={retryLoad}
           />
@@ -48,8 +45,8 @@ export function TrackDetailView({
     return (
       <div className="mx-auto flex max-w-lg flex-col py-10">
         <PageEmpty
-          title="Track unavailable"
-          description="This track doesn't exist, isn't public, or was removed."
+          title={translate('trackDetail.unavailableTitle')}
+          description={translate('trackDetail.unavailableDescription')}
           action={
             <ButtonLink className="w-fit" to="/" size="sm" variant="secondary">
               Back to Listen
@@ -60,7 +57,7 @@ export function TrackDetailView({
     );
   }
 
-  const page = buildTrackPage(t, playable);
+  const page = buildTrackPage(track, playable);
   const {
     detail,
     playlistOpen,
@@ -103,14 +100,14 @@ export function TrackDetailView({
             e.preventDefault();
             const eurosN = Number(pwywAmt.replace(',', '.'));
             if (!Number.isFinite(eurosN) || eurosN < 0) {
-              toast.error('Enter an amount of €0 or more.');
+              toast.error(translate('trackDetail.amountInvalid'));
               return;
             }
             setPwywOpen(false);
             void buyTrack(Math.round(eurosN * 100));
           }}
         >
-          <Dialog.Title>Name your price</Dialog.Title>
+          <Dialog.Title>{translate('trackDetail.nameYourPrice')}</Dialog.Title>
           <Dialog.Description>
             The artist set €
             {((detail?.purchaseTierPriceCents ?? 0) / 100).toFixed(2)} as a
@@ -119,14 +116,14 @@ export function TrackDetailView({
           <div className="mt-4">
             <Input
               inputMode="decimal"
-              label="Amount (€)"
+              label={translate('trackDetail.amountLabel')}
               value={pwywAmt}
               onChange={(e) => setPwywAmt(e.target.value)}
               autoFocus
             />
           </div>
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>{translate('actions.cancel')}</Dialog.Close>
             <Button type="submit" disabled={buyBusy}>
               {buyBusy ? 'Buying…' : 'Buy this track'}
             </Button>

@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon, LockIcon } from 'lucide-react';
 import type { FC } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ExternalLink } from '@tahti-player/ui';
 
 import type { SmartLinkView } from '../../api/smart-link-types';
@@ -41,6 +42,7 @@ function CreditName({ credit }: { credit: SmartLinkCredit }) {
 export const SmartLinkLockedTracks: FC<{ data: SmartLinkView }> = ({
   data,
 }) => {
+  const { t } = useTranslation('web');
   const signedIn = useAuthStore((s) => Boolean(s.user));
   const locked = smartLinkLockedTracks(data);
   const first = locked[0];
@@ -50,7 +52,7 @@ export const SmartLinkLockedTracks: FC<{ data: SmartLinkView }> = ({
   return (
     <section
       className="flex flex-col gap-3"
-      aria-label="Locked tracks"
+      aria-label={t('smartLink.lockedTracksAria')}
       data-testid="smart-link-locked-tracks"
     >
       {/* TrackAccessGate is styled for the dark track hero, so it keeps a dark
@@ -92,6 +94,7 @@ export const SmartLinkLockedTracks: FC<{ data: SmartLinkView }> = ({
 export const SmartLinkReleaseCredits: FC<{ data: SmartLinkView }> = ({
   data,
 }) => {
+  const { t } = useTranslation('web');
   const trackCredits = smartLinkTrackCredits(data);
   const pLine = rightsLine(data.release.pLine);
   const cLine = rightsLine(data.release.cLine);
@@ -112,7 +115,10 @@ export const SmartLinkReleaseCredits: FC<{ data: SmartLinkView }> = ({
   }
 
   return (
-    <section className="flex flex-col gap-3 text-sm" aria-label="Credits">
+    <section
+      className="flex flex-col gap-3 text-sm"
+      aria-label={t('smartLink.creditsAria')}
+    >
       {trackCredits.length > 0 ? (
         <>
           <Eyebrow>Credits</Eyebrow>

@@ -318,11 +318,11 @@ export function StudioCollectionsView() {
                 </span>
               </Dialog.Title>
               <Dialog.Description>
-                Choose a type and give it a title.
+                {t('library.collectionCreateDescription')}
               </Dialog.Description>
               <div className="mt-4 flex flex-col gap-3">
                 <Input
-                  label="Title"
+                  label={t('library.collectionTitle')}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   autoFocus
@@ -353,9 +353,9 @@ export function StudioCollectionsView() {
                       onChange={(event) => setReleaseDate(event.target.value)}
                     />
                     <Input
-                      label="Genres"
+                      label={t('library.collectionGenres')}
                       value={genres}
-                      placeholder="Electronic, Ambient"
+                      placeholder={t('library.collectionGenresPlaceholder')}
                       onChange={(event) => setGenres(event.target.value)}
                     />
                   </div>
@@ -552,7 +552,7 @@ export function StudioCollectionsView() {
                       <Button
                         size="icon-sm"
                         variant="secondary"
-                        aria-label={`Play ${c.name}`}
+                        aria-label={t('library.playNamed', { name: c.name })}
                         disabled={playingSlug === c.slug}
                         onClick={() => {
                           if (playingSlug) {
@@ -596,7 +596,7 @@ export function StudioCollectionsView() {
                       to={editorRouteFor(c)}
                       params={{ slug: c.slug }}
                       search={{ edit: true }}
-                      label={`Edit ${c.name}`}
+                      label={t('library.editNamed', { name: c.name })}
                     />
                     <StudioCollectionMoreMenu
                       col={c}

@@ -9,6 +9,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -37,6 +38,7 @@ const ROLE_LABEL = {
 } as const;
 
 export function GroupDetailView({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const me = useAuthStore((s) => s.user);
   const openAuth = useAuthModalStore((s) => s.open);
@@ -111,7 +113,7 @@ export function GroupDetailView({ slug }: { slug: string }) {
         toast.error(result.error);
         return;
       }
-      toast.success('You left the group');
+      toast.success(t('toasts.leftGroup'));
       reload();
     } finally {
       setBusy(false);

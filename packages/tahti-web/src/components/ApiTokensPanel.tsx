@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Alert,
   Badge,
@@ -30,18 +31,18 @@ import {
   PageLoading,
 } from './PageStates';
 
-const EXPIRY_OPTIONS = [
-  { id: 'never', label: 'Never' },
-  { id: '30', label: '30 days' },
-  { id: '90', label: '90 days' },
-  { id: '365', label: '1 year' },
-];
-
 function isExpired(token: ApiToken): boolean {
   return Boolean(token.expiresAt && new Date(token.expiresAt) <= new Date());
 }
 
 export function ApiTokensPanel() {
+  const { t } = useTranslation('web');
+  const expiryOpts = [
+    { id: 'never', label: t('settingsBody.account.apiTokensExpiryNever') },
+    { id: '30', label: t('settingsBody.account.apiTokensExpiry30') },
+    { id: '90', label: t('settingsBody.account.apiTokensExpiry90') },
+    { id: '365', label: t('settingsBody.account.apiTokensExpiry365') },
+  ];
   const [tokens, setTokens] = useState<ApiToken[]>([]);
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
@@ -89,9 +90,9 @@ export function ApiTokensPanel() {
       setName('');
       setCanWrite(false);
       setExpiry('never');
-      toastWithUndo('API token created.', {
+      toastWithUndo(t('settingsBody.account.apiTokensCreatedToast'), {
         undo: () => revokeApiToken(view.id),
-        undoneMessage: 'API token revoked.',
+        undoneMessage: t('settingsBody.account.apiTokensRevokedToast'),
         onUndone: () => {
           setTokens((current) => current.filter((item) => item.id !== view.id));
           setRevealedToken(null);
@@ -107,22 +108,18 @@ export function ApiTokensPanel() {
         return;
       }
       setTokens((current) => current.filter((item) => item.id !== token.id));
-      toast.success('API token revoked.');
+      toast.success(t('settingsBody.account.apiTokensRevokedToast'));
     });
   };
 
   return (
-    <SectionShell title="API tokens">
+    <SectionShell title={t('settingsBody.account.apiTokensTitle')}>
       <p className="text-foreground-secondary mb-4 text-sm">
-        Personal tokens for scripts and third-party integrations. Each token is
-        shown only once when created, and we email you whenever a new one is
-        made.
+        {t('settingsBody.account.apiTokensIntro')}
       </p>
       <div className="mb-4 flex flex-col gap-2" data-testid="api-tokens-mcp">
         <p className="text-foreground-secondary text-sm">
-          AI tools such as Claude Code or Cursor can use a token with Tahti’s
-          MCP server: search, your likes and playlists, and with write access
-          liking, following and adding to playlists.
+          {t('settingsBody.account.apiTokensMcpIntro')}
         </p>
         <div className="flex items-center gap-2">
           <code className="border-border bg-background-secondary min-w-0 flex-1 overflow-x-auto rounded-md border px-3 py-2 text-sm whitespace-nowrap">
@@ -130,24 +127,24 @@ export function ApiTokensPanel() {
           </code>
           <CopyButton
             text={mcpEndpointUrl()}
-            aria-label="Copy MCP server URL"
-            toastMessage="URL copied."
+            aria-label={t('settingsBody.account.apiTokensCopyMcpAria')}
+            toastMessage={t('settingsBody.account.apiTokensUrlCopied')}
           />
         </div>
       </div>
       {loading ? (
-        <PageLoading label="Loading API tokens…" />
+        <PageLoading label={t('settingsBody.account.apiTokensLoading')} />
       ) : (
         <div className="flex flex-col gap-4">
           {revealedToken ? (
             <Alert
               tone="warning"
               className="text-foreground"
-              title="New token — copy it now; it will not be shown again."
+              title={t('settingsBody.account.apiTokensNewAlert')}
             >
               <div className="mt-2 flex flex-wrap gap-2">
                 <Input
-                  aria-label="New API token"
+                  aria-label={t('settingsBody.account.apiTokensNewAria')}
                   value={revealedToken}
                   readOnly
                   onFocus={(event) => event.currentTarget.select()}
@@ -156,15 +153,15 @@ export function ApiTokensPanel() {
                   text={revealedToken}
                   size="sm"
                   variant="secondary"
-                  toastMessage="Token copied."
-                  aria-label="Copy API token"
+                  toastMessage={t('settingsBody.account.apiTokensTokenCopied')}
+                  aria-label={t('settingsBody.account.apiTokensCopyTokenAria')}
                 />
                 <Button
                   size="sm"
                   variant="text"
                   onClick={() => setRevealedToken(null)}
                 >
-                  Dismiss
+                  {t('settingsBody.account.apiTokensDismiss')}
                 </Button>
               </div>
             </Alert>
@@ -172,7 +169,7 @@ export function ApiTokensPanel() {
 
           {loadError && tokens.length === 0 ? (
             <PageError
-              title="Could not load your API tokens"
+              title={t('settingsBody.account.apiTokensLoadError')}
               description={loadError}
               onRetry={() => {
                 setLoading(true);
@@ -181,14 +178,14 @@ export function ApiTokensPanel() {
             />
           ) : tokens.length === 0 ? (
             <PageEmpty
-              title="No API tokens yet"
-              description="Create one for scripted access to the Tahti API."
+              title={t('settingsBody.account.apiTokensEmptyTitle')}
+              description={t('settingsBody.account.apiTokensEmptyDescription')}
             />
           ) : (
             <>
               {loadError ? (
                 <PageErrorBanner
-                  title="Could not refresh your API tokens"
+                  title={t('settingsBody.account.apiTokensRefreshError')}
                   description={loadError}
                   onRetry={() => {
                     setLoading(true);
@@ -210,28 +207,35 @@ export function ApiTokensPanel() {
                         </span>
                         {isExpired(token) ? (
                           <Badge variant="pill" color="red">
-                            Expired
+                            {t('settingsBody.account.apiTokensExpired')}
                           </Badge>
                         ) : null}
                       </p>
                       <p className="text-foreground-secondary flex flex-wrap items-center gap-x-1 text-xs">
                         <span>
                           {token.scopes.includes('write')
-                            ? 'Read / write'
-                            : 'Read-only'}{' '}
-                          · last used
+                            ? t('settingsBody.account.apiTokensReadWrite')
+                            : t('settingsBody.account.apiTokensReadOnly')}{' '}
+                          · {t('settingsBody.account.apiTokensLastUsed')}
                         </span>
                         {token.lastUsedAt ? (
                           <ListingDate value={token.lastUsedAt} />
                         ) : (
-                          <span>never</span>
+                          <span>
+                            {t('settingsBody.account.apiTokensNever')}
+                          </span>
                         )}
-                        <span>· created</span>
+                        <span>
+                          · {t('settingsBody.account.apiTokensCreated')}
+                        </span>
                         <ListingDate value={token.createdAt} />
                         {token.expiresAt ? (
                           <>
                             <span>
-                              · {isExpired(token) ? 'expired' : 'expires'}
+                              ·{' '}
+                              {isExpired(token)
+                                ? t('settingsBody.account.apiTokensExpiredAt')
+                                : t('settingsBody.account.apiTokensExpires')}
                             </span>
                             <ListingDate value={token.expiresAt} />
                           </>
@@ -243,7 +247,7 @@ export function ApiTokensPanel() {
                       variant="secondary"
                       onClick={() => setPendingRevoke(token)}
                     >
-                      Revoke
+                      {t('settingsBody.account.apiTokensRevoke')}
                     </Button>
                   </li>
                 ))}
@@ -257,7 +261,7 @@ export function ApiTokensPanel() {
               className="self-start"
               onClick={() => setAdding(true)}
             >
-              New token
+              {t('settingsBody.account.apiTokensNew')}
             </Button>
           ) : (
             <form
@@ -270,28 +274,25 @@ export function ApiTokensPanel() {
               {error ? <InlineError>{error}</InlineError> : null}
               <Input
                 autoComplete="off"
-                label="Name"
+                label={t('settingsBody.account.apiTokensName')}
                 value={name}
                 maxLength={64}
-                placeholder="e.g. archive importer"
+                placeholder={t('settingsBody.account.apiTokensNamePlaceholder')}
                 onChange={(event) => setName(event.target.value)}
               />
               <div className="text-foreground-secondary flex items-center justify-between gap-3 text-sm">
-                <span>
-                  Allow write access (create, update, and delete). Leave off for
-                  read-only access.
-                </span>
+                <span>{t('settingsBody.account.apiTokensWriteHint')}</span>
                 <Toggle
-                  label="Allow write access"
+                  label={t('settingsBody.account.apiTokensWriteLabel')}
                   checked={canWrite}
                   onChange={setCanWrite}
                 />
               </div>
               <Select
-                label="Expires"
+                label={t('settingsBody.account.apiTokensExpiresLabel')}
                 value={expiry}
                 onValueChange={setExpiry}
-                options={EXPIRY_OPTIONS}
+                options={expiryOpts}
               />
               <div className="flex flex-wrap gap-2">
                 <Button
@@ -299,7 +300,9 @@ export function ApiTokensPanel() {
                   disabled={saving || name.trim().length === 0}
                   type="submit"
                 >
-                  {saving ? 'Creating…' : 'Create token'}
+                  {saving
+                    ? t('settingsBody.account.apiTokensCreating')
+                    : t('settingsBody.account.apiTokensCreate')}
                 </Button>
                 <Button
                   size="sm"
@@ -309,7 +312,7 @@ export function ApiTokensPanel() {
                     setError(null);
                   }}
                 >
-                  Cancel
+                  {t('actions.cancel')}
                 </Button>
               </div>
             </form>
@@ -320,10 +323,14 @@ export function ApiTokensPanel() {
         destructive
         isOpen={pendingRevoke !== null}
         title={
-          pendingRevoke ? `Revoke “${pendingRevoke.name}”?` : 'Revoke token?'
+          pendingRevoke
+            ? t('settingsBody.account.apiTokensRevokeNamed', {
+                name: pendingRevoke.name,
+              })
+            : t('settingsBody.account.apiTokensRevokeTitle')
         }
-        description="Anything using this token will stop working immediately."
-        confirmLabel="Revoke"
+        description={t('settingsBody.account.apiTokensRevokeDescription')}
+        confirmLabel={t('settingsBody.account.apiTokensRevoke')}
         onCancel={() => setPendingRevoke(null)}
         onConfirm={() => {
           const token = pendingRevoke;

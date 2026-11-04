@@ -388,7 +388,7 @@ export const StashFilesPanel = ({
                         autoCapitalize="none"
                         autoCorrect="off"
                         spellCheck={false}
-                        label="Share with"
+                        label={t('actions.shareWith')}
                         value={granteeUsername}
                         onChange={(event) =>
                           setGranteeUsername(event.target.value)

@@ -1,3 +1,17 @@
+## 2026-11-04 - Batch 38 UX slices (0.0.328)
+
+Finnish for Settings Devices/2FA/API tokens/Notifications visibility,
+password rules, Artist pronouns/roles, Channel settings tabs; Library
+Sounds dialogs + Collections create fields; Studio Releases types and
+release detail chrome; Admin content-reports filters; Radio below-tabs
+leftovers; channel shows/programming/stats blocks; track detail and
+smart-link public release chrome; toast/action subset. Dates: Kept notes
+for AdminDashboard audit, HistoryStats charts, desktop-library counts,
+SaveQueue/BackupRestore/WriteTags/SmartPlaylist, ObsPreset/CatalogTable/
+ShareList. DevicesSessionsPanel Storybook. Skipped: ConfirmDialog
+destructive (none left), radio widget redesign, performance audit,
+pageTour, admin hub English descriptions.
+
 ## 2026-11-04 - Batch 37 UX slices (0.0.327)
 
 Finnish for Settings Account password/email/privacy + storage, Artist

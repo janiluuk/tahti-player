@@ -5,7 +5,7 @@ import { Box, Button, InlineError, Input } from '@tahti-player/ui';
 
 import { fetchResetPasswordInfo } from '../api/client';
 import { PageBackLink } from '../components/PageBackLink';
-import { PASSWORD_RULES_HINT, passwordProblem } from '../lib/passwordRules';
+import { passwordProblem, passwordRulesHint } from '../lib/passwordRules';
 import { useAuthStore } from '../stores/authStore';
 
 function tokenFromSearch(): string {
@@ -130,7 +130,7 @@ export function ResetPasswordView() {
             variant="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            description={PASSWORD_RULES_HINT}
+            description={passwordRulesHint()}
             autoComplete="new-password"
             autoFocus
           />

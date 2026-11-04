@@ -83,7 +83,11 @@ function RecordedBroadcastCard({
             variant="secondary"
             disabled={loading || !broadcast.soundId}
             onClick={onPlay}
-            aria-label={`${isPlaying ? 'Pause' : 'Play'} ${title}`}
+            aria-label={
+              isPlaying
+                ? t('library.pauseRecordingNamed', { title })
+                : t('library.playRecordingNamed', { title })
+            }
           >
             {isPlaying ? (
               <PauseIcon size={14} aria-hidden />
