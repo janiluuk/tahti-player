@@ -39,7 +39,6 @@ tabs stay visible and disabled without an account. The no-login-wall
 principle is in `docs/DECISIONS.md` and `TAHTI.md`. The Studio / Library /
 Admin regroup in `navigation-simplification.md` is still open. tahti-web
 `0.0.288`.
-
 ## 2026-10-30 - UX batch 119 composer submit and release artwork
 
 News headlines and read-more links use the button components. Approving a
@@ -76,7 +75,6 @@ gates stay as they were. tahti-web `0.0.274`.
 ## 2026-10-27 - UX batch 113 thirty empty states
 
 Thirty-two list empties render through `PageEmpty`. tahti-web `0.0.273`.
-
 ## 2026-10-30 - UX batch 116 navigation, undo, and composers
 
 Channel owners open Green room instead of a blank Setup tab. Radio deep
@@ -127,7 +125,6 @@ corrections, candidacy, resolutions and declarations, annual report
 correction, admin user engagement / restrictions, test notification, news,
 radio presets, add-on register and publish, studio events, shows, show
 defaults, episodes, updates drafts and posts. tahti-web `0.0.268`.
-
 ## 2026-10-26 - UX batch 106 thirty-seven Enter key slices
 
 Phone keyboards label the Enter key for what it does. All thirty search
@@ -148,7 +145,6 @@ profile URL, stash share, inline radio playlist, conflict declaration, annual
 report year, release track upload, motion draft, board resolution, API token,
 artist identity and social links, organize files (a move still asks first)
 and BPM / key correction. Save-queue Enter test added. tahti-web `0.0.266`.
-
 ## 2026-10-26 - UX batch 107 thirty Enter-submits slices
 
 Thirty input groups that only submitted on a button click are now real
@@ -174,7 +170,6 @@ keypad; fan tier price and tip amount get the decimal keypad. Nine more
 username fields get the same treatment as batch 103 (hearthis username x2,
 credits x3, admin delete confirm, Soulseek, test notification, beta
 invite). tahti-web `0.0.263`.
-
 ## 2026-10-26 - UX batch 105 thirty-one autofill slices
 
 Browsers offered the listener's own name or address in fields that hold
@@ -187,7 +182,6 @@ location and the tracklist artist. Onboarding and settings city use
 `address-level2`, since that is the listener's own city. The two RTMP
 address fields get the URL keyboard with autocorrect off. tahti-web
 `0.0.262`.
-
 ## 2026-10-26 - UX batch 103 thirty URL and handle field slices
 
 Twenty-four URL fields get `inputMode="url"` so phones show the URL keyboard
@@ -213,7 +207,6 @@ top bar upload button, Verify "Continue to login" and the episode
 review "Back to show" are `ButtonLink`s, so they can be opened in a new tab.
 `ExternalLink` and `ButtonAnchor` with `target="_blank"` tell screen readers
 "(opens in a new tab)". tahti-web `0.0.259`.
-
 ## 2026-10-24 - UX batch 101 sixty tooltip, field-name and heading slices
 
 Twenty-two icon-only buttons that had no tooltip get one (page comments
@@ -244,7 +237,6 @@ keeps none), so an account's first sign-in on a device now starts with the
 plays made there while signed out instead of an empty Recently played row;
 an account's own history is never replaced. Story `New listener starts on
 radio`; the Order story now uses a listener with history. tahti-web `0.0.257`.
-
 ## 2026-10-23 - UX batch 100 sixty error-line and tooltip slices
 
 Fixes from batch 98: `Tooltip`'s wrapper is a block `div`, so the two admin
@@ -442,11 +434,10 @@ slices. Shipped as `0.0.242`.
 ## 2026-10-21 - UX batch 87 thirty slices
 
 Folded `ux-batch-87-thirty.md`. `DataTable` primitive in `@tahti-player/ui`
-
-- 9 files of raw tables migrated; 10 load-honesty fixes (`PageError` + Retry;
-  `fetchAdminGrants` now reports per-year failures in `meta`); 10 library swaps
-  (`SegmentedControl`, `StatTile`, `Meter`, `Alert`, `SectionTitle`,
-  `ExternalLink`). Shipped as `0.0.241`.
++ 9 files of raw tables migrated; 10 load-honesty fixes (`PageError` + Retry;
+`fetchAdminGrants` now reports per-year failures in `meta`); 10 library swaps
+(`SegmentedControl`, `StatTile`, `Meter`, `Alert`, `SectionTitle`,
+`ExternalLink`). Shipped as `0.0.241`.
 
 ## 2026-10-21 — UX batch 86 twenty slices
 
@@ -523,6 +514,9 @@ Folded `spotify-listen-widget-tracks.md`. tahti-org #876 + tahti-player #1387:
 public Spotify playlists render as `PlayableTrackTable` (embed playback);
 compact Listen widgets dialog layout fix. Live needs API deploy of #876.
 
+
+
+
 ## 2026-10-19 — UX sweep batch 3 PageEmpty (tahti-player #1259)
 
 Folded `ux-sweep-batch-3.md`. Thirty more bare empties → `PageEmpty`
@@ -548,6 +542,7 @@ CSP `blob:`/`wasm-unsafe-eval` + theme FOUC → `/theme-boot.js`, soft-filter
 for implausible public names, plus batch-2 app/spec slices. Ops leftovers
 only (not tracked as open todos): beta `TAHTI_E2E_PASSWORD` re-run, fan-
 purchase fixtures.
+
 
 ## 2026-10-19 — Beta e2e gallery rerun (map assets, #1151)
 
@@ -576,25 +571,25 @@ collections sort, track waveform theme tokens, archive Upload navigation,
 Go Live series preselect + subnav, sticky notification dismiss, listener
 journey sign-in, Upload 390px stack, and listener/signed-out Library empty copy.
 
-| Slices                                   | PRs   |
-| ---------------------------------------- | ----- |
-| Dashboard / channel redirects            | #1054 |
-| Studio home tile accent colours          | #1055 |
-| Mock tag tracks                          | #1058 |
-| Messages empty EmptyState                | #1059 |
-| Collections newest-first                 | #1060 |
-| Studio Distribution tile + chat docs     | #1071 |
-| Onboarding toast duration                | #1084 |
-| Track waveform theme tokens              | #1095 |
+| Slices | PRs |
+| --- | --- |
+| Dashboard / channel redirects | #1054 |
+| Studio home tile accent colours | #1055 |
+| Mock tag tracks | #1058 |
+| Messages empty EmptyState | #1059 |
+| Collections newest-first | #1060 |
+| Studio Distribution tile + chat docs | #1071 |
+| Onboarding toast duration | #1084 |
+| Track waveform theme tokens | #1095 |
 | Empty archive Upload → `/library/upload` | #1096 |
 | Listener / signed-out Library empty copy | #1097 |
-| Go Live preselects new series            | #1101 |
-| Go Live session subnav overflow          | #1102 |
-| Richer mock studio archive               | #1103 |
-| Mock sticky notification dismiss         | #1104 |
-| Listener journey `listener@` sign-in     | #1105 |
-| Stable mock Jam + invalid empty state    | #1106 |
-| Studio Upload stack at 390px             | #1107 |
+| Go Live preselects new series | #1101 |
+| Go Live session subnav overflow | #1102 |
+| Richer mock studio archive | #1103 |
+| Mock sticky notification dismiss | #1104 |
+| Listener journey `listener@` sign-in | #1105 |
+| Stable mock Jam + invalid empty state | #1106 |
+| Studio Upload stack at 390px | #1107 |
 
 ## 2026-10-18 — Batch 72: smooth desktop-app feel (20 slices)
 
@@ -602,25 +597,25 @@ Lazy chunks, intent/idle prefetch, purposeful motion (honours
 `prefers-reduced-motion`), scroll restore, and press/ambient polish so
 tahti-web feels closer to the desktop player.
 
-| Slices                                             | PRs   |
-| -------------------------------------------------- | ----- |
+| Slices | PRs |
+| --- | --- |
 | Intent preload, shimmer loading bar, chrome motion | #1056 |
-| Lazy FullScreenPlayer                              | #1057 |
-| Idle Studio/Library/Radio prefetch                 | #1063 |
-| ViewShell enter fade                               | #1064 |
-| Scroll restore per pathname                        | #1065 |
-| Theme cross-fade                                   | #1066 |
-| Player bar enter                                   | #1067 |
-| Right-rail panel fade                              | #1068 |
-| MediaArtwork play press scale                      | #1069 |
-| Ambient pause when hidden / reduced-motion         | #1070 |
-| Deferred GlobalSearch results                      | #1086 |
-| Optimistic sidebar `aria-current`                  | #1087 |
-| Studio home tile stagger                           | #1088 |
-| Mobile drawer spring exit                          | #1089 |
-| Lazy-route Suspense skeleton                       | #1090 |
-| Listen card hover prefetch (Channel/Radio)         | #1091 |
-| CardsRow / Discover `content-visibility`           | #1092 |
+| Lazy FullScreenPlayer | #1057 |
+| Idle Studio/Library/Radio prefetch | #1063 |
+| ViewShell enter fade | #1064 |
+| Scroll restore per pathname | #1065 |
+| Theme cross-fade | #1066 |
+| Player bar enter | #1067 |
+| Right-rail panel fade | #1068 |
+| MediaArtwork play press scale | #1069 |
+| Ambient pause when hidden / reduced-motion | #1070 |
+| Deferred GlobalSearch results | #1086 |
+| Optimistic sidebar `aria-current` | #1087 |
+| Studio home tile stagger | #1088 |
+| Mobile drawer spring exit | #1089 |
+| Lazy-route Suspense skeleton | #1090 |
+| Listen card hover prefetch (Channel/Radio) | #1091 |
+| CardsRow / Discover `content-visibility` | #1092 |
 
 Completed task notes folded here so `docs/todo/` stays current.
 
@@ -698,6 +693,7 @@ Getting started, How it works, Queue, Favorites, Playlists, History,
 Stats, Themes, Theme store, Discover, Plugins and providers, and the
 docs home banner. Root README / VIEW-GUIDE / redesign-shots refreshed in
 the same atlas docs PR.
+
 
 ## 2026-09-21 — Listen widget: hearthis.at config UX + broken set-embed add (all 3 asks shipped)
 
@@ -1034,7 +1030,6 @@ present / "Delete" absent in the new preview. Full `tahti-web` vitest
 suite: 517/517 (the 13 "failures" vitest reports are pre-existing
 Playwright e2e specs it isn't configured to run, unrelated).
 `tsc --noEmit`/`eslint` clean.
-
 ## 2026-09-15 — governance-gap-list.md #15: voting window adjustment shipped
 
 User decision: scope and build the backend support the gap list's #15
@@ -1083,7 +1078,7 @@ are clean. Removed the entire "Cross-repo work" section from WORKPLAN.md
 Found incidentally while designing the ChannelDesigner/ArtistView/ChannelView
 extraction plan (not a pre-tracked ticket): `ChannelView.tsx` called 3 hooks
 (a `useLayoutEffect` + 2 `useEffect`s docking the layers-menu into the right
-rail) _after_ two conditional early returns — `if (loading) return
+rail) *after* two conditional early returns — `if (loading) return
 <PageLoading/>`, `if (!channel) return <PageEmpty/>` — and (until this same
 pass moved it) a third, `if (!editing) return ...`. Since `loading`/
 `channel`/`editing` all change within the same mounted `ChannelView`
@@ -1106,7 +1101,7 @@ hit a real TS "used before declaration" error against `updateLayout`/
 `removeLayoutItem`/`applyPreset` (declared later in the file) — fixed by
 wrapping in inline arrow functions (`onRemove={(id) => removeLayoutItem(id)}`),
 which is a legitimate fix (deferred closure reference, not a workaround):
-those functions are only _called_ later from user interaction, long after
+those functions are only *called* later from user interaction, long after
 the whole render pass — including their own `const` declarations further
 down — has finished executing, so no temporal-dead-zone issue exists at
 runtime, only in TS's conservative static check for direct (non-deferred)
@@ -1265,7 +1260,7 @@ Two other candidates from the audit were investigated and left as-is on
 purpose: `StudioScheduleView.tsx`'s "Your next broadcasts" section needs
 full-bleed content (image thumbnails, no padding) that conflicts with
 `StudioPanel`'s fixed `p-5 sm:p-6`, and `StudioHomeView.tsx`'s "Have your
-say" governance card is the _only_ bordered box among that dashboard's
+say" governance card is the *only* bordered box among that dashboard's
 sibling sections (which are all flat, borderless lists) — forcing it onto
 `StudioPanel` would make it inconsistent with its own page rather than more
 consistent. `OverviewTab.tsx`'s 3 stat tiles (value + label + sublabel) are
@@ -1277,7 +1272,7 @@ or `Box`.
 optional `label` prop (renders visible text next to the icon, defaults to
 `icon-sm` size unless a label is given) and proper clipboard-failure
 handling (`try/catch` → `toast.error`, was previously silent on failure).
-`TrackDetailView.tsx`'s "Share" button was investigated but _not_ swapped
+`TrackDetailView.tsx`'s "Share" button was investigated but *not* swapped
 onto the enhanced `CopyButton`: it already has its own icon (`Share2Icon`),
 label, and toast handling — forcing it onto `CopyButton` would replace the
 descriptive share icon with a generic copy icon, a real downgrade, not a
@@ -1300,26 +1295,25 @@ to force the check.
 ## 2026-09-15 — Governance restyle: sibling detail pages
 
 Follow-on to the same day's `/governance` restyle. Extended the `Box`-panel
++ icon treatment to four pages that still had bare `SectionShell` headings
+or plain bordered lists:
 
-- icon treatment to four pages that still had bare `SectionShell` headings
-  or plain bordered lists:
-
-* Extracted the local `GovernancePanel` helper out of `GovernanceView.tsx`
+- Extracted the local `GovernancePanel` helper out of `GovernanceView.tsx`
   into `components/governance/GovernancePanel.tsx` so it's shared, not
   duplicated.
-* `GovernanceMotionDetailView.tsx` — signed-out/forbidden messages now use
+- `GovernanceMotionDetailView.tsx` — signed-out/forbidden messages now use
   `Box variant="secondary"` instead of a plain `border p-4` div.
-* `GovernanceMeetingDetailView.tsx` — Overview/Quorum & attendance/Agenda
+- `GovernanceMeetingDetailView.tsx` — Overview/Quorum & attendance/Agenda
   swapped from bare `SectionShell` to `GovernancePanel` with per-section
   icons (Users/CalendarCheck/ScrollText).
-* `GovernanceMembersView.tsx` — added a 2-up `StatChip` row (member count,
+- `GovernanceMembersView.tsx` — added a 2-up `StatChip` row (member count,
   board count) above the search input; existing bordered list unchanged
   (matches the pattern of `GovernanceView.tsx`'s own motions list, which
   also isn't Box-wrapped).
-* `PublicGovernanceHistoryView.tsx` (`/governance/history`, "Closed
+- `PublicGovernanceHistoryView.tsx` (`/governance/history`, "Closed
   decisions") — top link became an icon `Button` pill, added a `StatChip`
   for the closed-motion count, and each motion row is now a `Box
-variant="tertiary"` card instead of a plain bordered `<li>`.
+  variant="tertiary"` card instead of a plain bordered `<li>`.
 
 Out of scope: `TransparencyView.tsx` (`/transparency`) — a separate,
 table-heavy page; left for its own design pass if wanted.
@@ -1352,7 +1346,6 @@ content. Backdrop rendering (`ChannelBackdropCard` in the hero case,
 `EntitySocialHeader` in the fallback) was not touched. `eslint` and
 `tsc --noEmit` clean on the changed file; no existing tests reference either
 `data-testid`.
-
 ## 2026-09-15 — hearthis.at import never worked for any playlist (root cause: missing install call)
 
 User report (not from a todo file): "the hearthis.at import does not work,
@@ -1398,7 +1391,6 @@ fetch, source adapters, studio collections all need mocking) and the fix
 itself is a single conditional call to an already-tested API function
 (`installMeIntegration`, `api/integrations.test.ts`); verified by tracing
 the full request path and the real hearthis.at API instead.
-
 ## 2026-09-15 — navigation-audit.md closed: collections split is intentional
 
 `navigation-audit.md`'s one open product question — is `/studio/collections`
@@ -1411,7 +1403,6 @@ surface (simpler viewer, embedded in `LibraryView`'s tab set). No code
 change. Rest of the audit (parent/back links, duplicate pages, active-tab
 consistency, stable content regions, transition animations) already
 found no other gaps.
-
 ## 2026-09-15 — Listen bugs batch (2026-09-14), item #5 finished
 
 `listen-bugs-batch-2026-09-14.md` — done, all 5 items. Items 1/2/4/5 shipped
@@ -1514,14 +1505,13 @@ tree: `packages/tahti-web`'s vitest config had been switched to a global
 `environment: 'jsdom'` (`vite.config.ts`) with `@testing-library/jest-dom` +
 `jsdom` added and a `src/test/setup.ts`, but it was half-broken — running the
 package's own suite (not the whole monorepo) surfaced real regressions:
-
 - `setup.ts`'s `localStorage` mock was a permanent-null stub (`getItem: () =>
-null` always, `setItem` a no-op) — write-then-read round-trips silently
+  null` always, `setItem` a no-op) — write-then-read round-trips silently
   failed (`locale.test.ts`, `libraryStore.test.ts`,
   `mock-commerce-ledger.test.ts`). Root cause: jsdom's own `localStorage`/
   `sessionStorage` aren't reliably exposed as globals under this vitest 4 +
   jsdom 26 combo (confirmed via a throwaway debug test — `typeof
-window.localStorage` was `'undefined'`), which is what the original,
+  window.localStorage` was `'undefined'`), which is what the original,
   broken stub was trying to work around. Replaced it with a real in-memory
   `Storage` polyfill assigned only when the global is missing.
 - jsdom's `Blob` has no `arrayBuffer()`/`text()`/`stream()` — broke
@@ -1529,9 +1519,9 @@ window.localStorage` was `'undefined'`), which is what the original,
   `node:buffer`) in `setup.ts` instead of opting that file out of jsdom
   (which would have reintroduced a `window`-is-undefined crash in
   `setupDomMocks()` for that one file).
-  Verified: full `tahti-web` unit suite (515/515, 91/91 files), `tsc --noEmit`,
-  `eslint` all clean; `packages/ui`'s `Card`/`CardGrid`/`CardsRow` suites
-  re-checked after the `MediaArtwork` change (10/10, no snapshot diffs).
+Verified: full `tahti-web` unit suite (515/515, 91/91 files), `tsc --noEmit`,
+`eslint` all clean; `packages/ui`'s `Card`/`CardGrid`/`CardsRow` suites
+re-checked after the `MediaArtwork` change (10/10, no snapshot diffs).
 
 ## 2026-09-12 — Visual snapshot diffs: real CSS rendering, inline PR images
 
@@ -1651,7 +1641,6 @@ local `VITE_FORCE_MOCK=1` dev server is sufficient, no backend work required.
 New `e2e/listener-purchase-flow.spec.ts`, two tests covering all 3 scenarios
 from the doc's spec (Test 1+3 combined into one continuous flow since Test 3
 is just "then check the artist side of the same purchase"):
-
 - Artist uploads a track (reusing the existing `mastering-target-quiet.wav`
   fixture rather than needing a new one or the missing `riff.wav` the sibling
   test depends on), sets it Public, attaches a purchase tier via the same
@@ -1666,9 +1655,9 @@ is just "then check the artist side of the same purchase"):
 **Found and fixed a real bug while writing this**: buying a track in mock
 mode never showed up in the buyer's own Purchases tab. `checkoutPurchaseTier`'s
 mock branch called `recordMockTrackPurchase` (writes to the
-`mock-commerce-ledger`, localStorage-backed — feeds the _artist's_ order
+`mock-commerce-ledger`, localStorage-backed — feeds the *artist's* order
 list and access-gating) but nothing ever appended to `mock-session.ts`'s
-`purchases` array, which is what the _buyer's_ own Purchases tab reads from.
+`purchases` array, which is what the *buyer's* own Purchases tab reads from.
 Added `mockRecordPurchase` (mirrors the existing `mockActivateSubscription`
 pattern for subscriptions) and wired it in alongside the ledger call;
 threaded a `trackId` through `checkoutPurchaseTier`'s opts so the row's
@@ -1825,13 +1814,13 @@ ask:
   don't expose; documented as a known limitation, not silently papered
   over.
 - **Gap #1 — motion detail view** (2026-09-08): `fetchGovernanceMotion(id)`
-  - `GovernanceMotionDetail` type + `/governance/motions/$id` route
-    (`GovernanceMotionDetailView.tsx`). The list's per-motion card (badge,
-    tally, vote buttons, board open/close controls, discussion thread) was
-    extracted out of `GovernanceView.tsx` into a shared, self-contained
-    `components/governance/MotionCard.tsx` so the detail page reuses it
-    with `description` + `defaultExpanded` — all 6 existing
-    `GovernanceView.test.tsx` tests passed unchanged after the extraction.
+  + `GovernanceMotionDetail` type + `/governance/motions/$id` route
+  (`GovernanceMotionDetailView.tsx`). The list's per-motion card (badge,
+  tally, vote buttons, board open/close controls, discussion thread) was
+  extracted out of `GovernanceView.tsx` into a shared, self-contained
+  `components/governance/MotionCard.tsx` so the detail page reuses it
+  with `description` + `defaultExpanded` — all 6 existing
+  `GovernanceView.test.tsx` tests passed unchanged after the extraction.
 - **Gap #3 — public resolutions page** (2026-09-08):
   `fetchTransparencyResolutions(year)` + new
   `TransparencyResolutionsView.tsx` at `/transparency/resolutions`
@@ -2120,7 +2109,7 @@ Folded from `help-keyboard-navigation.md`. Added a "Keyboard shortcuts"
 button to Settings → Account → Session (next to Log out), linking to
 `/help/$slug` (`slug: 'keyboard-shortcuts'`) — the article shipped in the
 0.0.58 pass this doc was already tracking. Closes the doc's one remaining
-line ("Settings remapping deep link"); the remapping _store_ itself
+line ("Settings remapping deep link"); the remapping *store* itself
 (player-only today, per the doc's original scope) was never in this deep
 link's scope and isn't addressed here.
 
@@ -2389,6 +2378,7 @@ Favorites is `/favorites` (standalone ViewShell). `/listen/favorites` and
 genres) is Discover → Artists (`DirectoryArtistsBrowser`); removed from
 Listen home.
 
+
 ## 2026-09-04 — Look extras API source of truth
 
 Sibling tahti-org#435 merged + prod migrated. Nuclear designer/artist/channel
@@ -2410,6 +2400,7 @@ Branding, Schedule, Events, Go live, Shows, Upload, Updates.
 public channel fields win (including `false`/`null`); localStorage only
 fills omitted keys. Designer caches only after successful PATCH. Channel
 page Links/Text overlay save PATCHes the API.
+
 
 ## 2026-09-04 — Channel Designer artist-page full control
 
@@ -2449,6 +2440,7 @@ look extras on `/api/me/channel/visual` and normalizes `channelLinksJson`.
 - `EntitySocialHeader.tsx`, `ArtistView.tsx`, `ChannelView.tsx`,
   `ChannelBackdropCard.tsx`, `ChannelDesigner.tsx`, `channel-design.ts`
 - Storybook: EntitySocialHeader GRADIENT story
+
 
 ## 2026-09-04 — Fan-sub + track purchase e2e (mock Vite)
 
@@ -2752,11 +2744,9 @@ Status at fold: done (2026-09-05).
 ## What shipped
 
 `packages/tahti-web/src/content/pluginStoreCategories.ts`:
-
 - Category `audio-plugins`'s `label` renamed "Audio plugins" → "Audio tools".
 
 `packages/tahti-web/src/components/PluginStorePanel.tsx`:
-
 - The "Mastering (reference matching)" row is now named "Reference
   Match" with `author="Pro Editor"` (previously "Client-side · always
   available"), matching how the actual Pro Editor DSP chain plugins
@@ -2905,7 +2895,6 @@ Status at fold: done (2026-09-05).
 ## Background
 
 Two user reports:
-
 1. Pasting a hearthis.at **set** page URL (e.g.
    `https://hearthis.at/yaniho/set/recorded-sets-from-gigs/`) into the
    Listen "hearthis.at" add-on failed — `toEmbedUrl` only recognized a bare
@@ -3008,7 +2997,6 @@ Status at fold: executed. Shell + Browser tab, Stations Save → Listen, and the
 Playwright smoke test (`e2e/plugin-store.spec.ts`, 2026-09-04) are all done.
 
 Executed:
-
 1. ConfigurableCard + Configure dialog (no inline dump on Activate)
 2. Tabs Browser | Stations
 3. Browser: Input startAddon SearchIcon, FilterChips multi-genre, flag Select
@@ -3081,7 +3069,6 @@ Status at fold: done (2026-09-05), with one interpretation call flagged below.
 ## What shipped
 
 `BroadcastPreflightPanel.tsx`:
-
 - `showType` and `visibility` were hand-rolled radio-button "segmented
   control" `fieldset`s (`role="radiogroup"`, `sr-only` radio inputs).
   Replaced both with the shared `Select` component, same 2-column grid
@@ -3148,7 +3135,7 @@ Status at fold: done (2026-09-05).
 as `user?.channel?.state === 'LIVE' && !broadcast.signalConnected` and
 rendered it as a **red pulsing error** state. But per
 `resolveBroadcastPresence` (`lib/broadcastPresence.ts`), a channel's DB
-`state` reads `'LIVE'` both for a genuine live broadcast _and_ for the
+`state` reads `'LIVE'` both for a genuine live broadcast *and* for the
 24/7 fallback rotation carrying the channel — only `signalConnected &&
 state === 'LIVE'` is a real broadcast. So `hasConnectionIssue` was
 mathematically identical to `broadcast.kind === 'rotation'`: the normal,
@@ -3165,14 +3152,14 @@ Status at fold: done.
 
 Migrated listener hubs from `PageHeader`/`PageFrame` to `ViewShell`:
 
-| Page             | Title            | Subtitle                               |
-| ---------------- | ---------------- | -------------------------------------- |
-| Chat (picker)    | Chat             | Pick a channel to open chat.           |
-| Chat (slug)      | Chat             | `{slug}`                               |
-| Governance       | Governance       | Vote on cooperative motions.           |
+| Page | Title | Subtitle |
+| --- | --- | --- |
+| Chat (picker) | Chat | Pick a channel to open chat. |
+| Chat (slug) | Chat | `{slug}` |
+| Governance | Governance | Vote on cooperative motions. |
 | Feature requests | Feature requests | Propose and vote on what Tahti builds. |
-| More             | Tahti map        | Screens, flows, and feature parity.    |
-| Transparency     | Transparency     | Public co-op ledger.                   |
+| More | Tahti map | Screens, flows, and feature parity. |
+| Transparency | Transparency | Public co-op ledger. |
 
 Back/actions/meta moved into children. `embedded` Governance / Feature
 
@@ -3202,7 +3189,6 @@ Folded from `viewshell-next-15-rounds.md`.
 Status at fold: done (`0.0.61`). Deploy after push.
 
 ## Round 1 (`124f932cc` / `0.0.60`)
-
 Feed, Favorites, Account, Messages, Status, Library, Studio Home/Stats/Shows/Playlists/Upload, Admin Users/Streams/Content/Selects/Status.
 
 ---
@@ -3508,7 +3494,6 @@ second "Releases" tab, moved Tracks into it out of Home, exited
 editing, and confirmed the live tab bar renders, Home hides Tracks,
 and clicking Releases swaps to show only Tracks with About/Subscribe
 hidden.
-
 ## 2026-09-07 — Continue-listening pause icon + mobile topbar notifications/messages
 
 Folded from `continue-listening-card-missing-isplaying.md` and
@@ -3521,7 +3506,7 @@ Folded from `continue-listening-card-missing-isplaying.md` and
   restarting when already the current track.
 - `AppTopNav.tsx`: on mobile (`useIsMobile()`), the standalone
   Notifications/Messages top-bar buttons are hidden (`isMobile &&
-'hidden'`, popovers untouched so they still anchor/render when
+  'hidden'`, popovers untouched so they still anchor/render when
   opened) and two new menu items are added to the user-menu dropdown
   instead, each opening the same existing popover state
   (`setNotificationsOpen`/`setMessagesOpen`) and each carrying its own
@@ -4104,7 +4089,7 @@ hide, and `ColorSchemeFields`'s `variant="generic"` labels). Decision made:
 Visualization becomes a true 5th mutually-exclusive `HeaderStyleTabs` option
 that replaces the header treatment, not an orthogonal always-on layer.
 
-Found that `VISUALIZATION` already existed as a _UI-only_ tab (added
+Found that `VISUALIZATION` already existed as a *UI-only* tab (added
 2026-09-06 in `bf65e292`) that never persisted — selecting it only set local
 `backdropFocusTab` state in `ChannelDesigner.tsx`, so it never survived
 reload/save and the previously-selected header style kept rendering
@@ -4199,7 +4184,6 @@ User request (not from a todo file): "look into optimization of the CI workflows
 Investigated both `tahti-player` and `tahti-org` workflows via a read-only subagent survey before editing. `tahti-org`'s CI was already in decent shape (Turbo remote cache configured, e2e already path-filtered to skip on non-backend changes — an older open todo about that had already been resolved elsewhere). `tahti-player`'s `ci.yml`/`coverage.yml` had no persistent Turbo cache at all (every push rebuilt every package from scratch) and reinstalled Playwright's Chromium binary from scratch on every failed-test retry.
 
 Implemented, isolated in worktrees, tested (YAML validated), committed, and opened as PRs rather than merged directly:
-
 - **tahti-player** [PR #77](https://github.com/janiluuk/tahti-player/pull/77): cache `node_modules/.cache/turbo` in `ci.yml` + `coverage.yml` (restore-keys fallback); split Playwright install into a cached browser-binary step + an always-run OS-deps step; swap hand-rolled cargo `actions/cache` for `Swatinem/rust-cache`.
 - **tahti-org** [PR #519](https://github.com/janiluuk/tahti-org/pull/519): drop `needs: lint` from `typecheck`/`test` (neither consumes lint's output; `all-checks` already gates on all three independently — this only serialized every run behind lint's time for no reason); switch `website-docker`'s validation build to buildx + GHA layer cache, matching the `release` job's already-cached Docker builds.
 
@@ -4240,7 +4224,6 @@ No `tsc`/`eslint`/test run needed — docs-only change, no source files touched.
 User request: refresh the Tahti map's (`/more`) screenshots with dark-theme-amber, rich real data, admin privileges, mobile shots, updated annotations, and a component↔page Storybook index; separately, review Storybook for broken components and fix them.
 
 **Screenshot refresh — scope narrowed live, with the user's sign-off, after two findings:**
-
 1. `beta.tahti.live`'s `localStorage` auth-injection trick (what `scripts/capture-map-screens.mjs` already used) no longer authenticates — every gated route now server-side-gates to a real "Log in" wall. Confirmed by actually capturing several (admin/studio/library all came back as login walls) before reverting those specific files via `git checkout` rather than keeping the regression.
 2. User declined to hand over credentials in chat (correctly refused per policy) and instead logged into beta.tahti.live themselves in their own Chrome; `claude-in-chrome` then drove that already-authenticated tab for the gated captures — no password ever seen or entered by the assistant.
 
@@ -4251,12 +4234,11 @@ Delivered: `scripts/capture-map-screens.mjs` now also injects the `tahti-web-the
 **Storybook component↔page index:** all 21 existing `storybookUrl` deep links verified still resolve against the live Storybook index (none stale). Added 12 more for previously-unlinked map cases with a confident matching story (`auth-login`/`auth-join`/`auth-totp`→`AuthDialog`, `listener-favorites`→`FavoritesView`, `artist-archive-item`→`TrackDetailView`, `artist-money-tiers`→`FanTiersEditor`, `artist-money-fan-subs`→`FanSubscriptionStats`, `artist-channel-announcements`→`PinnedAnnouncementsPanel`, `edge-studio-logged-out`/`artist-setup-channel`→`StudioGate`, `settings-themes`/`artist-settings`→`ConnectedSettingsModal`) — 33/33 now verified resolving. 44 map cases remain without a matching story (mostly full-page Views this Storybook doesn't have story coverage for at all, not broken links).
 
 **Storybook broken-component audit:** wrote a Playwright script (visits every `Tahti/*` story's `iframe.html`, checks console/page errors and rendered output) against all 457 stories, cross-checked flags against `document.body` (not just `#storybook-root`, since portal-based Dialogs render outside it) to kill ~38 false positives, and hand-verified the rest against each component's actual logic before touching anything. Found and fixed 6 genuine bugs:
-
 - `ApiConnectionIndicator`'s only story could never show its "API disconnected" pill — the component's real health-probe effect short-circuits whenever `isForceMock()` is true, which Storybook always sets (`.storybook/main.ts`). Added a Storybook-only `previewFailed` prop (no production behavior change — component isn't mounted anywhere yet) and split the one misleading `Default` story into `Connected`/`Failed`.
 - `AdminStorageUserView`'s `Default` story used `userId="mock-user-1"`, which doesn't exist in `admin-storage.ts`'s mock fixture (real ids are `u-1`/`u-2`/`u-3`) — its own code comment claiming "any plausible-looking id resolves" was wrong. Story always rendered the "Could not load this user's storage" error state instead of real data. Fixed to use `u-1`.
 - `RadioListItem`, `ConnectedStatusBar`, and `AudienceVisibilitySection`'s `StashWithTier` story all render an internal `<Link>` with no router context in their stories, throwing `Cannot read properties of null (reading '__store')` and rendering nothing. Added the existing `withTahtiRouter` decorator to each (`AudienceVisibilitySection` only crashed in the STASH-tier state, since that's the only branch with a `<Link>`).
 - `RadioStationCover.stories.tsx` and `FavoritesView.stories.tsx` both pointed at a dead external image host (`streamurl.link`, 403); swapped to `picsum.photos`, this codebase's established Storybook placeholder-image convention.
-  Confirmed each fix live post-rebuild (re-ran the same audit script against just the touched story ids — all clean). Noted but left alone: `PageStates`' `Error`/`AllStates` stories and 3 `--empty`-suffixed stories (`DiscoWidgetsSection`, `ListenerWidgetsSection`, `StemPlayer`) are all _intentionally_ empty/error-showing by their own doc comments, not bugs; ~10 stories have a benign cosmetic 404 (missing avatar/font asset or a fake third-party SoundCloud embed URL) that doesn't break rendering — not investigated further.
+Confirmed each fix live post-rebuild (re-ran the same audit script against just the touched story ids — all clean). Noted but left alone: `PageStates`' `Error`/`AllStates` stories and 3 `--empty`-suffixed stories (`DiscoWidgetsSection`, `ListenerWidgetsSection`, `StemPlayer`) are all *intentionally* empty/error-showing by their own doc comments, not bugs; ~10 stories have a benign cosmetic 404 (missing avatar/font asset or a fake third-party SoundCloud embed URL) that doesn't break rendering — not investigated further.
 
 Verified: `tsc --noEmit` / `eslint` clean across `tahti-web` and `storybook` packages, full unit suite (516/516), `tahti-web` `vite build` and `storybook build` both succeed.
 
@@ -4279,7 +4261,9 @@ Zero console errors across the whole pass. Nothing left open — folded and dele
 
 Implemented `channel-designer-backdrop-fold-and-widgets.md`'s 5-item ask in full:
 
-1-3. **Bio, CTA (Subscribe), and avatar folded into the backdrop.** `about`/`subscribe`/`avatar` remain real `ChannelPageItem` types (their `visible` flag persists, and an old saved layout's Navigation tab can still harmlessly reference their id — new `BACKDROP_FOLDED_ITEM_TYPES` constant marks them) but are no longer independently addable/draggable Layers-list blocks. `ChannelBackdropCard` gained `avatarVisible`/`bioVisible`/`subscribeVisible`/`subscribeLabel` props (avatar defaults `true` — it was always shown before this toggle existed) and now renders the Subscribe CTA as a real button linking to `/subscribe/$username`. `ChannelDesigner` gained an "Identity" toggle section (avatar/bio/Subscribe switches) rendered only when nested inside `ChannelView`'s editing mode (the only caller with a real page `layout` to toggle — `ArtistView`/`StudioBrandingView`/`ChannelSetupDialog` are unaffected). `ChannelViewBlocks.tsx`'s `about`/`subscribe` cases now return `null` (kept only for the exhaustiveness guard; they never actually run since `ChannelView` filters `BACKDROP_FOLDED_ITEM_TYPES` out of the rendered item list, the Layers menu's hidden-catalog, and Navigation-tab candidates before `renderBlock` ever sees them). Existing saved layouts predating the `avatar` item type backfill it `visible: true` via `normalizeLayout` (every other new type defaults hidden) so nothing changes for channels that never touched this. 4. Releases/latest-releases/collections confirmed untouched — still independent addable blocks, as asked. 5. **New `feed` block** — configurable update-type filters (`FEED_FILTER_OPTIONS`: releases/shows/announcements) and a tracklist/cards/both display toggle, wired into `ChannelView`'s look-panel (its own `lookOpenSection === 'feed'` case) the same way the `playlist`/`navigation` blocks already have dedicated config panels. No real "channel update/post" data model exists anywhere in this codebase yet (checked `ListenView.tsx`'s unrelated listener-facing feed and `channel-designer/LayoutOnlyLookHint.tsx`'s unrelated artist-profile feed look-element) — the block's own copy says so explicitly ("Feed has no live update source wired in yet") rather than faking data or silently no-oping. Wiring a real backend for this is a separate, larger follow-up, not attempted here.
+1-3. **Bio, CTA (Subscribe), and avatar folded into the backdrop.** `about`/`subscribe`/`avatar` remain real `ChannelPageItem` types (their `visible` flag persists, and an old saved layout's Navigation tab can still harmlessly reference their id — new `BACKDROP_FOLDED_ITEM_TYPES` constant marks them) but are no longer independently addable/draggable Layers-list blocks. `ChannelBackdropCard` gained `avatarVisible`/`bioVisible`/`subscribeVisible`/`subscribeLabel` props (avatar defaults `true` — it was always shown before this toggle existed) and now renders the Subscribe CTA as a real button linking to `/subscribe/$username`. `ChannelDesigner` gained an "Identity" toggle section (avatar/bio/Subscribe switches) rendered only when nested inside `ChannelView`'s editing mode (the only caller with a real page `layout` to toggle — `ArtistView`/`StudioBrandingView`/`ChannelSetupDialog` are unaffected). `ChannelViewBlocks.tsx`'s `about`/`subscribe` cases now return `null` (kept only for the exhaustiveness guard; they never actually run since `ChannelView` filters `BACKDROP_FOLDED_ITEM_TYPES` out of the rendered item list, the Layers menu's hidden-catalog, and Navigation-tab candidates before `renderBlock` ever sees them). Existing saved layouts predating the `avatar` item type backfill it `visible: true` via `normalizeLayout` (every other new type defaults hidden) so nothing changes for channels that never touched this.
+4. Releases/latest-releases/collections confirmed untouched — still independent addable blocks, as asked.
+5. **New `feed` block** — configurable update-type filters (`FEED_FILTER_OPTIONS`: releases/shows/announcements) and a tracklist/cards/both display toggle, wired into `ChannelView`'s look-panel (its own `lookOpenSection === 'feed'` case) the same way the `playlist`/`navigation` blocks already have dedicated config panels. No real "channel update/post" data model exists anywhere in this codebase yet (checked `ListenView.tsx`'s unrelated listener-facing feed and `channel-designer/LayoutOnlyLookHint.tsx`'s unrelated artist-profile feed look-element) — the block's own copy says so explicitly ("Feed has no live update source wired in yet") rather than faking data or silently no-oping. Wiring a real backend for this is a separate, larger follow-up, not attempted here.
 
 Verified: `tsc --noEmit` / `eslint` clean (`tahti-web` + `storybook`), full unit suite 517/517 (one pre-existing test, `channelPageLayout.test.ts`'s "fills in every missing type as a hidden default entry", needed updating to expect `avatar`'s intentional `visible: true` backfill exception — not a regression, the test just predated this ticket's own documented design choice), `vite build` and `storybook build` both succeed. Added `SubscribeCtaVisible`/`AvatarAndBioHidden` stories to `ChannelBackdropCard.stories.tsx`.
 
@@ -4365,14 +4349,12 @@ The player `RemoteControl` tests sometimes stayed on "connecting" in CI (PR #142
 - `simulateConnectionFailure()` now fails each new source after the reconnect delay (fake timers), as a real retry sequence does.
 - New `useEventSource.test.ts` (3 cases); two of them failed before the fix (4 sources instead of 2, and a reconnect after unmount).
 - Player suite 707 passing; 8 parallel runs of the remote control tests pass. Locally, Node 26's built-in `localStorage` breaks about 325 player tests (on master too); run with `NODE_OPTIONS=--no-experimental-webstorage`. CI uses Node 24 and is unaffected.
-
 ## 2026-09-25 — Close the WORKPLAN "Storybook / design-system sweeps" epic
 
 - **Studio/Admin UX punch list:** its last open item, the Schedule view's icon-only card/list toggle (`schedule/ScheduledTimes.tsx`), now uses a new `SegmentedControl` in `@tahti-player/ui`. The control is a radio group, with a per-option tooltip when `iconOnly` is set. Story and 2 tests included. All five punch-list themes are closed.
 - **Input sweep:** the remaining hand-rolled color pickers (`ThemeEditor`, `StreamOverlayEditor`, `channel-designer/PageBackgroundField`, `channel-designer/AccentPairFields`) now use `Input type="color"`, and `governance/MotionCard`'s description field uses `Textarea` (it also gained an accessible name). `Input`'s wrapper is `shrink-0` for the color variant instead of `w-full`, so a swatch in a flex row no longer takes the label's space. That also fixes the earlier `ColorSchemeFields` migration. Only the color-swatch snapshot changed.
 - **Deliberate exceptions:** hidden `type="hidden"` form fields (MusicBrainz submission), hidden `type="file"` inputs opened from a button (`FilePicker` is a drop zone, a different UX), and `track-detail/TrackHero`'s transparent inline comment field over the dark hero. `Input`'s wrapper and padding would change that layout, and it was not checked visually.
 - Checks: tahti-web 921 passing, ui 360 passing, `tsc`/`eslint` clean. Schedule in mock mode shows "Artist channel required" for the mock artist, so the toggle itself was not seen in the browser.
-
 ## 2026-09-25 — Nuclear UI reference port (tahti-web 0.0.140)
 
 Visual-parity port of six tahti-web surfaces from the original Nuclear screenshots (`~/Pictures/*.png`), with user scoping decisions for the desktop-only rows.
@@ -4413,7 +4395,6 @@ Reported on a phone (beta.tahti.live): the Feed cards overlapped and track table
 - **`CardsRow`:** the filter and scroll buttons wrap under the title when there is no room.
 - **Storybook:** `TrackTable` Mobile view (375px) and Browser view (1280px), and a `CardsRow` Mobile view.
 - Checks: ui 361 passing, tahti-web 947 passing, `tsc`/`eslint` clean. Checked in mock mode at 390px (in a same-origin iframe, as Chrome would not go narrower) and at desktop width, and both TrackTable stories in Storybook. Not checked on a real phone.
-
 ## 2026-09-25 — Fix radio station link routing to "Artist not found"; bigger back arrow on channel page
 
 Clicking a playing radio station's name in the desktop now-playing bar (`ConnectedPlayerBar.tsx`) always built an artist-profile link (`/u/$username`) from `playable.channelSlug`, regardless of `playable.kind`. For a radio playable that slug is a station/channel slug, not a username, so `ArtistView`'s `fetchProfile` 404s and renders "Artist not found". Fix: branch on `playable.kind === 'radio'` and, only for the one real radio channel that currently has a page (`tahti-radio`, matching the existing `/channel/$slug` `ChannelView` radio page from `radio-channel-page.md`), navigate there instead; other radio playables (the 6 external Finnish presets, RadioBrowser directory stations) have no page by product decision, so the click is now inert rather than broken.
@@ -4444,7 +4425,7 @@ Recovered from an unpushed stash on `feat/plugin-store-native-library` (never pu
 Shipped in one pass (no todo file). The full-screen player has a "More options" button in the top-right, next to Back. It opens a new `@tahti-player/ui` `ActionSheet`: a bottom sheet on phones and a centered panel from `sm` up, with a header (cover, title, artist) and a list of actions. The sheet has a story (`Components/ActionSheet`) and a unit test.
 
 - **Actions (each shown only when it works):** Go to channel and Share for Tahti live/radio items (a channel URL through `navigator.share`, falling back to copying the link). Add or remove from favorites for any item. Add to playlist for sound items. Open in Pro Editor for signed-in users on sound items. Internet-radio stations share the `radio:` id prefix but aren't channels, so they get favorites only. Sound items have no public share page yet, so they have no Share action.
-- **Fix:** `Dialog.Root` takes a new `layerClassName` prop. `AddToPlaylistPanel` uses `z-[70]` because it used to open _behind_ the full-screen player (`z-[60]`). That also affected the existing inline "Add to playlist" button there.
+- **Fix:** `Dialog.Root` takes a new `layerClassName` prop. `AddToPlaylistPanel` uses `z-[70]` because it used to open *behind* the full-screen player (`z-[60]`). That also affected the existing inline "Add to playlist" button there.
 - Escape only closes the full-screen player when the key press starts inside it, so it now closes an open sheet or dialog first.
 - Checks: ui ActionSheet and Dialog tests (11) pass; tahti-web `tsc` and `eslint` are clean. Checked in mock mode at 400px width: radio actions, Go to channel navigating and closing the player, Escape, and sound actions with the playlist dialog on top.
 
@@ -4476,7 +4457,6 @@ Shipped in one pass (no todo file). The full-screen player has a "More options" 
   - Uses the capture theme, quiet storage and a collapsed right rail; set `CAPTURE_THEME_MODE=light` for light mode.
 - **Audio:** a 214 s excerpt (to match `arch-mock-2`'s length, since the editor keeps the draft's duration) of the user's own track "Yaniho - XPRMNT LP - 02 - ADHD 3D" (50 s to 264 s). The zoomed shot covers the breakdown into the drop at 1:17 to 1:47. The audio lives only in a temp file and isn't committed.
 - **Shots:** `packages/tahti-web/docs/redesign-shots/studio-sound-editor-waveform{,-zoomed}{,--light}.png`; `SCREEN-ATLAS.md`'s sound-editor row is now `shot`. The red marks in the overview are the editor's clipping indicators on genuinely clipped peaks in the master.
-
 ## 2026-09-26 — API slow requests: root cause was disk-stalled Redis
 
 `docs/todo/api-slow-requests.md`: ~1% of `tahti-stack-api` requests took 0.5s or more (maxima 47-69s). Loki and Prometheus showed the slowness wasn't the uncached health checks (the first theory). It came in two episodes (09-22 21:15-22:10, 09-23 ~03:00-12:30). In both, vimage's `/opt` disk (`sdd`, a Kingston A400 DRAM-less SATA SSD holding all of `/opt/docker`) was ~95% busy from MinIO writes. Redis (AOF) stalled on it, and each request waited up to the node-redis 5s timeout on several Redis calls in a row. Redis was also carrying 1.1M leaked BullMQ job records (stored cron ticks lose `removeOnComplete`) and taking RDB snapshots every few minutes on top of AOF.
@@ -4588,6 +4568,7 @@ Slices came from the CUTOVER and GAP-MAPPING ledgers (no `docs/todo/` file cover
 - **Pro Editor CORS (#236)**: preview no longer goes silent on `cdn.tahti.live` (no CORS header); plays unprocessed with a warning until a routable copy loads. The Caddy header fix in tahti-org is still open.
 - **Payout queue (#237)**, GAP-MAPPING financial: pending/failed fan-sub payouts with Retry.
 - **Checks:** each PR ran tahti-web type-check, lint and the touched tests (e.g. `src/views src/components src/stores` 531 passed on #230). Nothing was tried against the live API or in a browser.
+
 
 ## 2026-09-29 - Ten todo slices, seventh batch (#239-#248)
 
@@ -4911,6 +4892,7 @@ Part of `docs/todo/storybook-parity-and-atlas-refresh.md` (still open for the re
 - **Capture scripts**: the fan-subs atlas shot follows `/settings/audience` to Studio → Audience. The README guide capture waits for page content and retries a blank or crashed page in a fresh browser, after Chromium died on a few pages in every run.
 - **Checks:** Mermaid parse tests, tahti-web type-check, eslint and Prettier on the changed sources, the size guard, and a look at the smallest and a sample of the new images. Older orphan screenshots for tabs that no longer exist were not removed.
 
+
 ## 2026-10-04 - Ten cross-repo slices, thirty-fifth batch (tahti-player #484-#486, tahti-org #692-#698)
 
 Leftovers from batch 34, plus a sweep of newsletters and account deletion.
@@ -5122,6 +5104,7 @@ Found by comparing every `/api/...` path in `tahti-web/src` with the API's route
 - **tahti-org side**: approved themes open their pull request in `tahti-registry` instead of tahti-org, `GET /api/v1/themes/gallery` reads the registry catalog, and `PATCH /api/me/musicbrainz/default` answers 400 instead of 500 without a body.
 - **Checks:** the touched tests (bulk bar, Languages page, the route check's helpers), type-check, eslint and Prettier. Neither page was opened against a live API; the bulk delete was exercised against the API only in tahti-org's own route test. `check:api-routes` is not in CI.
 
+
 ## 2026-10-09 - Ten slices, forty-eighth batch (tahti-player #600-#602, tahti-org #754-#760)
 
 A sweep of channel chat moderation, which nobody had tried end to end. A ban needed a fingerprint hash that no screen showed, no route removed a message, and a moderator had no page to moderate from.
@@ -5154,7 +5137,6 @@ The two open developer items of the project roadmap (`tahti-org/docs/project-roa
 - **Decisions the roadmap left open**: the fade durations above; "nothing playing" means an idle or failed player or an untouched restored queue, and a track the listener paused is left alone. One audio element plays at a time, so the fade is out-then-in, not an overlap.
 - **Stacks**: #605 on #604, #608 on #607, #611 on #610; tahti-org #762 on #761.
 - **Checks:** per PR the touched tests, type-check, eslint, Prettier and the size guard. All web branches of batches 48 and 49 merged together pass the tahti-web (2,364), ui (402), player (707) and themes suites and the 953 Storybook plays. Autoplay and the fade were not seen or heard in a browser: the mock channels do not carry the setting, and nothing autoplays until tahti-org#762 is deployed. The roadmap rows are not ticked yet (tahti-org folds at merge).
-
 ## 2026-10-09 - Twenty slices, fiftieth batch (plan + editor/viz fold; tahti-player #598, #599, #613)
 
 Fold of the theDAW editor/rack/viz port and the Pro polish that followed it, plus a plan file for the next twenty implementation slices (`docs/todo/next-twenty-slices.md`). Chat moderation and PLAT-085/086 stay in the forty-eighth and forty-ninth fold PRs (#603, #612).
@@ -5164,6 +5146,7 @@ Fold of the theDAW editor/rack/viz port and the Pro polish that followed it, plu
 - **Pro polish + stems (#613)**: Multitrack track vol/pan Sliders, store zoom, clip drag and split at playhead; AdvancedVisualizer Tahti tokens; FullScreenPlayer per-channel viz mode in localStorage; Pro Multitrack find-or-creates `/api/me/editor/projects` with hydrate + debounced metadata PATCH (FX/blobs stay OPFS); Bounce uploads a WAV revision via sound versions prepare/complete; StemsPanel “Send to Multitrack” loads stem blobs onto lanes.
 - **Next twenty (plan only)**: `next-twenty-slices.md` lists region inpaint, init/reference + Chimera, live bus FX, viz packs, stem-aware live mix, automation, MIDI clips, metamorph, prompt↔score lite, five Storybook parity slices, drawer scrim / tooltip links / listener capture, remaining Finnish radio scrapers, and `check:api-routes` in CI.
 - **Checks:** #598/#599 merged; #613 open with package and Studio Pro tests listed in its plan. The twenty plan slices are not implemented in this fold. Left open: items in `next-twenty-slices.md`; chat moderation and autoplay folds (#603, #612) until those stacks merge.
+
 
 ## 2026-10-10 - Fifteen slices, fifty-first batch (tahti-player #613, #615-#630)
 
@@ -5249,6 +5232,7 @@ A fifth sweep batch, asked for right after the 52 master-based PRs of batches 52
 - **Checks:** per PR the touched tests or the reason there are none, Prettier and the size guard, plus Storybook plays where a story covers the view; each layout fix was re-measured in the mock app at the widths its PR lists, with screenshots. All 15 branches merged together (no textual conflicts) pass the tahti-web type-check and suite (2,490 tests, 5 expected failures), the ui type-check and suite (403), the player suite (707) and the size guard. #701's first PR body named tests that do not exist (the filtered run had matched no file and run the whole suite); corrected, and #706's width claim was corrected after checking 390 px. Not tried against the live API, on a real phone, with a screen reader, or in the desktop player.
 - **Left open:** see `sweep-leftovers.md`.
 
+
 ## 2026-10-14 - Fifteen slices, fifty-eighth batch (tahti-player #722-#735)
 
 A sixth sweep batch, run while another session worked on the governance slices from tahti-org's new member APIs (#714 on). That work is expected to be the fifty-seventh batch, so this one is the fifty-eighth and stays out of governance, notification preferences and hearthis. Sources: the batch 56 leftovers, and the crawler on master with every open branch merged in, at 360, 600, 768 and 1280 px as a board artist, 390 px as a listener and 390 px signed out, logging overflow, controls past the right edge, one-word text columns, console warnings and failed requests.
@@ -5266,6 +5250,7 @@ A sixth sweep batch, run while another session worked on the governance slices f
 - **Fix:** `withTahtiRouter` keeps one router per story, and the project `mount` in `.storybook/preview.ts` waits for it to resolve before the play runs (`storyRouterSettled`).
 - **Checks:** full `vitest --project storybook` run; a production build swept in headless Chromium went from 112 failing stories to none (the remaining console noise is external audio/embed URLs).
 
+
 ## 2026-10-14 - Desktop MCP rebuilt, Tahti API MCP tools (tahti-player #737-#740, tahti-org #801)
 
 Asked for as "concentrate on the MCP side of things, see what exists and how this could be improved", then "do both, start with 1 and the docs fix".
@@ -5278,6 +5263,8 @@ Asked for as "concentrate on the MCP side of things, see what exists and how thi
 - **Account MCP in tahti-web (#740):** Settings → Account → API tokens shows the MCP URL with a copy button; the Help article explains both ways to connect.
 - **Checks:** `cargo test --lib` (286), tahti-web `lib/mcp`, `McpIntegrationRow` and `ApiTokensPanel` tests, the Settings and Help Storybook plays, tahti-org `routes/mcp` (10, through a real MCP client). Not tried: the running desktop app with a real MCP client (no headless display), or the account tools against staging.
 - **Left:** MPD, the HTTP remote-control API and Discord Rich Presence still don't start in the desktop app; Nuclear's `plugin-sdk/src/mcp` metadata and `player/src/services/bridge` dispatcher are unused.
+
+
 
 ## 2026-10-14 - Desktop MPD, Discord and Tahti Jam rebuilt on tahti-web (tahti-player #741-#743)
 
@@ -5405,6 +5392,7 @@ Asked for as "implement the next 20 slices of todo, try concentrate on making th
 - **Checks:** per-PR type-check / eslint / Prettier / touched tests; snapshot updates for player TrackTable and now-playing titles. Not tried on a real phone or against the live API.
 - **Left open:** listener Library Stash tab (product decision); full channel art-direction redesign (needs a reference). Polish still open after this fold: #897 (`Now` → accent green + extracted `StationCardSubtitle` test) and #898 (unify remaining “Temporarily offline” copy to “Off air” on `/radio`).
 
+
 ## 2026-10-16 - Artist lifecycle e2e batches 1–2 (#905–#940)
 
 Asked for as "after these do 20 more slices and add pr, merge all".
@@ -5419,10 +5407,12 @@ Asked for as "after these do 20 more slices and add pr, merge all".
 
 Folded `fix-shift-play-ci.md`. clickRowPlay uses aria-label prefix (#929); player snapshots updated with Shift+click queue labels (#918). Master CI follow-ups (fi onAir, chat story, mock collection re-seed) in the same fix PR.
 
+
 ## 2026-10-16 - Radio widget prev/next + CI snapshot soft-pass
 
 - **Radio (#943):** Listen Radio row and Radio Browser add-ons call `playFromList` so the player bar prev/next switches neighboring stations (skip streamless rows). Folded `radio-widget-prev-next-stations.md`.
 - **CI (#944):** `test-core` soft-passes when Vitest fails only on standing snapshot mismatches already on master (`newCount: 0`); prefer a green master run for the snapshot baseline. Root cause of most red batch-PR checks was MediaArtwork Shift+click snapshot drift + Storybook copy flakes — fixed earlier on master; historical checks on deleted branches stay red.
+
 
 ## 2026-10-16 - Shift+play Storybook coverage
 
@@ -5435,6 +5425,7 @@ Folded `settings-audit.md`. Channel & chat (Chat + Moderators), share toggle, Br
 ## 2026-10-16 - Queue collapse overlap fold (batch 66 #8)
 
 Folded `queue-collapse-button-overlap.md`. Layout pad shipped in #850; Storybook `RightRailPanel/NoToggleOverlap` asserts the collapse toggle does not intersect the first queue row on web. Desktop-player-only reports remain welcome if they return.
+
 
 ## 2026-10-16 - Batch 66 UX / UI (tahti-player #948–#967, #949)
 
@@ -5449,6 +5440,7 @@ Asked for as merge of green batch-66 PRs, then the next twenty slices (batch 67)
 - **Storybook / CI (#951, #954, #957, #960, #964, #966, #967):** fold settings-audit; Combobox states; playlist empty; queue collapse no-overlap play; designer load states; soft-pass unit; phone More Close tooltip delay.
 - **Checks:** per-PR CI green before squash merge; #949 and #960 rebased after INDEX conflicts.
 - **Left open:** batch 67 plan in `next-twenty-slices.md`; real Centrifugo Send; channel art-direction redesign; desktop-only leftovers.
+
 
 ## 2026-10-17 — Hearthis row embed + Library Tracks ambient (visual check folded)
 
@@ -5526,6 +5518,7 @@ Asked for as "start working on new branch the todo list", then "merge them when 
 - **Bulk + row actions (#1168, #1170):** Sounds rows get a checkbox and a "Selected sounds" toolbar (Select all, Add to playlist, Clear); `AddToPlaylistPanel` takes `soundIds`; new `@tahti-player/ui` `Checkbox` with a story. Collections rows reuse the editors' "⋮" menu (Make private/public, Delete); `PopoverItem` gets opt-in `closeOnClick` because popover items never closed their popover.
 - **Cleanup (#1166):** removed `MyDiscographyView`, unreachable since #551 (`/library/sounds` renders `StudioSoundsView`).
 - **Todos (#1160, #1169):** Radio Nova / NRJ not playing in production (`radio-nova-nrj-playback.md`); roadmap epic for staying signed in with JWT + rotating refresh tokens (`auth-refresh-tokens.md`) — noted there that every login currently revokes all other sessions (SEC-010) and sessions never slide.
+
 
 ## 2026-10-19 — Batch 75: dead ends and failed loads (tahti-player #1200-#1255)
 
@@ -5630,7 +5623,7 @@ Asked for as "open pr for it, then do 30 more slices of cross-repo work", with m
 
 ## 2026-10-27 — Cross-repo batch 112: notifications, data export, support, listening follow-ups
 
-- **Master CI**: "API routes exist" checks against the latest tahti-org _release_; routes merged since (#883 and this batch) sit in `api-routes-allowlist.json` until the next release (#1501 and the slices that call them).
+- **Master CI**: "API routes exist" checks against the latest tahti-org *release*; routes merged since (#883 and this batch) sit in `api-routes-allowlist.json` until the next release (#1501 and the slices that call them).
 - **Notifications** (org #900, #901, #902, #911, #914–#916; web #1502–#1504, #1510–#1512): a `/notifications` page (paging, mark read, sticky acknowledge, Remove, Clear read, kind filter with unread counts, a kind label per row; the phone account menu opens it). New board notices: support requests and requester replies (`SUPPORT_TICKET`, also for beta applications), content reports (`CONTENT_REPORTED`). Proposers and voters are told when the board moves a feature request (`FEATURE_REQUEST_UPDATED`).
 - **Support** (org #899, #912; web #1507): the requester is told when the board resolves a ticket and can mark their own request resolved (replying reopens it).
 - **Data export** (org #905–#909; web #1509): release metadata and tracks, chat messages and track reactions, feature requests and governance activity (comments, seconds, own votes, correction requests), support follow-ups, radio stations, themes, embeds, downloads and Tahti Jams. `/privacy` and Settings → Account describe the contents.
@@ -5722,6 +5715,7 @@ Studio → Channel → Radio → 24/7 now includes a clip library and editor wit
 - **Docs** (#1693, #1694): manual and Help center.
 - Also: Discover widget menu readable, new widgets fade in on top, All clears genres (#1679); the channel store editor rebased onto master (#1668).
 
+
 ## 2026-10-28 — admin Status shows silent live streams
 
 Admin → Status lists the new `live-streams` check (org #1031): LIVE channels whose HLS playlists stopped updating, with slug and how long. The page now renders the API's 503 body instead of "Could not load status" whenever a check is down.
@@ -5779,11 +5773,9 @@ Discover widgets now use a `Masonry` layout (`@tahti-player/ui`, story `Layout/M
 ## 2026-10-30 - Track rows lead with the artwork
 
 `AmbientTrackRow` artwork is a fixed square per size: Large 96px on phones / 176px from `sm` (was 112px), Medium 80px / 128px (was 80-96px), Small 48px (was 40px). Play / pause moved onto the artwork (`MediaArtwork` overlay, revealed on row hover, always visible while playing) and the separate round play column is gone, so titles get the width. Large and Medium show the duration as a chip on the artwork; Small keeps it in the meta column. The genre pill is hidden on phones so the title fits. Story: `AmbientTrackList` ArtworkFirst (176px square, play overlay label).
-
 ## 2026-10-30 - Artist branding: image link in the avatar dialog, colours only without a picture
 
 Settings → Artist → Branding: the profile-picture "Image URL" box moved from the panel into the picker dialog opened by clicking the avatar (`RoundImageUploadButton` gained a `pickerExtra` slot rendered in `CoverArtPickerDialog`; a saved link closes the dialog). Avatar colour swatches only show when there is no profile picture; with one, a hint says they apply only without a picture. Profile picture and profile backdrop now share a row (`lg` and up, stacked below). Stories: `ProfilePictureSection` NoPicture / WithPicture, `StudioBrandingView` Branding checks the row and the missing inline URL box.
-
 ## 2026-10-30 - UX batch 121 twenty library, de-green, undo and keyboard slices
 
 Library components: the artist page now-playing cover, the image-slot preview, channel designer backdrop preview and channel backdrop card use `ImageReveal`, and the clip editor trim controls use `Slider`. De-green: playlist editor Add track / Add release and Mixcloud per-row Add are secondary. Undo: Mikseri, Mixcloud and Spotify imports into a collection (`removeAddedSound` in `useCollectionEditState` finds the item by sound id). Keyboards: chat handle, multistream key, onboarding domain, custom domain, test-notification link, library key filter, both track-analysis key fields, and the Mixcloud and Spotify query fields stop auto-capitalising / autocorrecting (URL keyboard on the domain and link fields).
@@ -5855,7 +5847,6 @@ tahti-org#1038 gives `/api/v1/search` track results `audioUrl` (through the acce
 - **2026-11-03 · Listen, artist profile and channel page cleanup (tahti-web 0.0.296):** Tahti Radio bar off Listen, From Tahti news on Discover; profile Popular tracks pills removed, list-only filterable tracks with embeds in their own section, readable section titles on artist colors; default artwork for missing/broken covers via `MediaArtworkDefaultProvider` (rule in `CLAUDE.md`); channel page Music/Comments/Chat tabs, compact two-column blocks, show thumbnails, story-card feed, air pill in the stage, embed hosted in the stage, RSS inside Share; `/chat` dropdown with 24h activity. Open follow-ups stay in `listen-artist-channel-cleanup.md`.
 - **Docs audit** (2026-11-03): `docs/DECISIONS.md` regrouped into Date / Decision / Why / Link tables by area, with the settled decisions from the AI DJ, add-ons audience and wavesurfer todos added; org/API/money decisions (incl. the director salary record) consolidated in `../tahti-org/docs/DECISIONS.md` instead. README pnpm requirement fixed (12, per `packageManager`), same in `AGENTS.md`.
 - **Themes: selected theme stands out** (2026-11-03): Settings → Themes pins "Current theme: <name>" above the lists; the applied card has a primary frame, an "Active" badge with a check and a filled check button; `ThemeStoreItem` rows are named groups with `aria-current` and the Apply button (`Apply <name>`) exposes `aria-pressed`. Unit tests in `ThemeStoreItem.test.tsx` and `ThemesPanel.test.tsx`, Storybook plays `ThemeStoreItem/Active` and `SettingsThemesPanel/SelectedTheme`.
-
 ## 2026-11-03 - De-green 20: red confirms for one-way actions
 
 `ConfirmDialog` takes `destructive`, which paints the confirm red. About
@@ -5868,7 +5859,6 @@ Replace rotation and Overwrite live version are red. Log toolbar Clear and
 Open log folder, the plugin store Installed state and the email-change Back
 to Settings are secondary. About 25 confirms remain in `ux-backlog.md`.
 tahti-web `0.0.296`.
-
 - **E2E coverage and navigation slices** (2026-11-03, `e2e-coverage-gap.md`, `navigation-flow-audit.md`): hand-rolled "← …" back links became `PageBackLink` named after the parent (governance meeting, motion, members, discussions and topic; transparency resolutions and methodology; forgot/reset/setup password → Log in; signup payment; subscribe and green room → the artist; venue register and venue page → All venues; radio show → Radio; mastering, pro editor and sound insights → Library Sounds instead of a "Music" link that redirected there; editor project, distribution, release-track insights); `/studio/insights` linked back to itself and now leads to Stats; Verify lost a second "Join" link; `PageBackLink` takes `params`. Admin → Artwork presets drew every preset stacked in one strip (fill-size artwork without a positioned card), and the mock announcements list never re-rendered after a switch. New e2e: `use-cases-nav-back-links`, `use-cases-admin-4` (announcement clip off + every Nth, preset disable/remove, top list grouping/order, mark notifications read), `use-cases-artist-6` (new show, notification filter + mark read), `use-cases-anonymous-2` (Jam invite and track comment ask to log in, phone More → Library), `use-cases-listener-5` (no Studio on a phone, queue a track); `routes-studio-stats` follows the Stats section chips. Finished checklist lines and fixed-finding rows left both todo files.
 - **Date format sweep, 15 listings** (2026-11-03, `date-format-sweep.md`): new `ListingDate` (clock icon + `<time>` with a full-timestamp title, "3 hours ago" inside a week, `d.m.yyyy` after; date-only values read as the local day) replaces one-off `toLocaleDateString`/`toLocaleString` in comments, governance discussions list and topic replies, Notifications, artist News feed, My support tickets, sales list, membership invoices, API tokens, signed-in devices, What's New, Discover latest releases, transparency resolutions, Admin content reports and Admin theme review. Schedules, show times, support reply times and audit/ledger dates stay full timestamps. tahti-web `0.0.303`.
 - **Batch of 30, round 4** (2026-11-03): tooling and coverage while another session ran UX rounds. `tahti-desktop` / `tahti-ops desktop latest` gains `--ref <branch>`, `--no-launch` (prints the binary path), `--clean`, a clear "install Rust" error and `--help`; `tahti-ops test` gains cli, ops and visualizer groups; the tahti CLI's `hearthis user-sets <handle> [--match]` lists every Set through hearthis.at's public API (past the 20-Set limit of me-sets), and `download-set` takes several Sets or `--from-user <handle> --match <regex>`, prints a progress line per track and a summary; new stories for every extracted Studio panel left (branding sections, stems) and twelve small tahti-web components. Still open: WebGL "bad image data / Texture is immutable" on track and release pages (not the waterRipple artwork texture).
