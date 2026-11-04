@@ -1,3 +1,13 @@
+## 2026-11-04 - Batch 34: leftover dates and Finnish bodies (0.0.321)
+
+Revision, news, recording and episode dates use `ListingDate`; venue and
+upcoming-show windows keep their time of day and follow the app language
+(`lib/scheduleTime.ts`, `ShowEpisodeWhen`). Finnish for Settings Integrations,
+Add-ons and What's new, Library History and Following, Admin section tabs and
+hub pages, the channel actions and share dialog, the track download gate,
+auth-flow toasts, track counts and Library/Studio/Admin page titles.
+`NewsCarousel` takes a `publishedTitle` for its date tooltip.
+
 ## 2026-11-04 - Batch 32 follow-up (0.0.320)
 
 Batch 32 (#1816) took 0.0.319 while a parallel run built the same slices, so
