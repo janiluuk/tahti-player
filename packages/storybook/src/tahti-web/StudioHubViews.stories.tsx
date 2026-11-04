@@ -18,7 +18,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, one agenda of shows, events and parties, and tool cards), **Fans** (posts, newsletter, memberships, store, earnings) and **Profile** (artist profile and channel page settings). Each card opens a focused page.',
+          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, channel manager, one agenda of shows, events and parties, and tool cards), **Fans** (posts, newsletter, memberships, store, earnings) and **Profile** (artist profile and channel page settings). Each card opens a focused page.',
       },
     },
   },
@@ -83,6 +83,10 @@ export const Broadcast: Story = {
     await expect(canvas.getByTestId('broadcast-air-banner')).toHaveTextContent(
       /Off air|On air/,
     );
+    await expect(
+      canvas.getByRole('heading', { name: 'Channel manager' }),
+    ).toBeVisible();
+    await expect(canvas.getByTestId('broadcast-channel-manager')).toBeVisible();
     const agenda = await canvas.findByRole('list', { name: 'Coming up' });
     const all = within(agenda).getAllByTestId('broadcast-agenda-row').length;
     await userEvent.click(canvas.getByRole('radio', { name: 'Events' }));

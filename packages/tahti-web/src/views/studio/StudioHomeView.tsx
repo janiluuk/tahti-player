@@ -3,7 +3,6 @@ import { Link } from '@tanstack/react-router';
 import { Badge, Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { PageEmpty, PageError } from '../../components/PageStates';
-import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { useStripeConfigured } from '../../hooks/useStripeConfigured';
 import { accountRoleLabel, getAccountRole } from '../../lib/accountRoles';
@@ -71,12 +70,6 @@ export function StudioHomeView() {
                 stripeConfigured={stripeConfigured}
               />
               <EmptyDiscographyPrompt state={state} />
-              <Group title="Stream">
-                <StreamManagerPanel
-                  slug={channel.slug}
-                  channelState={channel.state ?? 'OFFLINE'}
-                />
-              </Group>
               <RecentActivitySection />
               <Group title="Recent broadcasts">
                 {broadcastsError && recentBroadcasts.length === 0 ? (
