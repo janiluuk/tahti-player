@@ -1,3 +1,9 @@
+## 2026-11-04 - Batch 43 UX slices
+
+Upload/cover pickers; DmBlock; channel-designer/overlay/radio/newsletter
+toasts; ChannelComments; Studio Fans; chart/stats Kept notes. tahti-web
+0.0.333 (#1829).
+
 ## 2026-11-04 - Batch 42 UX slices
 
 Track/channel/Studio empties + toasts; date Kept notes; StudioShows/Home

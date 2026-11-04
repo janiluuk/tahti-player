@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { fetchAllRoyalties } from '../../api/distribution';
@@ -23,6 +24,7 @@ import { euros } from './distribution/distribution-helpers';
 import { ReleaseOpsPanel } from './distribution/ReleaseOpsPanel';
 
 export function StudioDistributionView() {
+  const { t } = useTranslation('web');
   const [releases, setReleases] = useState<StudioRelease[]>([]);
   const [allRoyalties, setAllRoyalties] = useState<RevelatorRoyaltyReportRow[]>(
     [],
@@ -45,49 +47,52 @@ export function StudioDistributionView() {
           roy.meta.source === 'api' ? (roy.meta.reason ?? null) : null,
         );
       })
-      .catch(() => toast.error('Could not load your releases.'))
+      .catch(() => toast.error(t('studioDistribution.toastLoadFailed')))
       .finally(() => setLoading(false));
-  }, [attempt]);
+  }, [attempt, t]);
 
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
         <ViewShell
-          title="Distribution"
+          title={t('studioDistribution.title')}
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
-          <PageBackLink to="/studio/releases" label="Releases" />
+          <PageBackLink
+            to="/studio/releases"
+            label={t('studioDistribution.releases')}
+          />
 
           <section className="flex flex-col gap-3">
             <h2>
-              <Eyebrow>Releases</Eyebrow>
+              <Eyebrow>{t('studioDistribution.releases')}</Eyebrow>
             </h2>
             {!loading && loadError && releases.length > 0 ? (
               <PageErrorBanner
-                title="Could not refresh your releases."
+                title={t('studioDistribution.refreshError')}
                 description={loadError}
                 onRetry={() => setAttempt((n) => n + 1)}
               />
             ) : null}
             {loading ? (
-              <PageLoading label="Loading…" />
+              <PageLoading label={t('studioDistribution.loading')} />
             ) : loadError && releases.length === 0 ? (
               <PageError
-                title="Could not load your releases"
+                title={t('studioDistribution.loadError')}
                 description={loadError}
                 onRetry={() => setAttempt((n) => n + 1)}
               />
             ) : releases.length === 0 ? (
               <PageEmpty
-                title="No releases yet"
-                description="Create one under Releases first."
+                title={t('studioDistribution.emptyTitle')}
+                description={t('studioDistribution.emptyDescription')}
                 action={
                   <ButtonLink
                     to="/studio/releases"
                     size="sm"
                     variant="secondary"
                   >
-                    Releases
+                    {t('studioDistribution.releases')}
                   </ButtonLink>
                 }
               />
@@ -100,14 +105,14 @@ export function StudioDistributionView() {
 
           {!loading && royaltiesError ? (
             <PageErrorBanner
-              title="Could not load your royalty reports."
+              title={t('studioDistribution.royaltiesError')}
               description={royaltiesError}
               onRetry={() => setAttempt((n) => n + 1)}
             />
           ) : null}
 
           {allRoyalties.length > 0 && (
-            <StudioPanel title="All royalty reports">
+            <StudioPanel title={t('studioDistribution.royaltiesTitle')}>
               <ul className="divide-border divide-y text-sm">
                 {allRoyalties.map((row) => (
                   <li

@@ -7,6 +7,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Toggle } from '@tahti-player/ui';
 
 import {
@@ -72,7 +73,7 @@ export function StudioRadioSubmissionPanel() {
       toast.error(result.error);
       return;
     }
-    toast.success('Tracks submitted to Tahti Radio.');
+    toast.success(i18n.t('web:toasts.radioTracksSubmitted'));
     setSelected([]);
     setNote('');
     setOpen(false);

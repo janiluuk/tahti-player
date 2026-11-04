@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { RadioIcon, SearchIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Input, SortMenuButton } from '@tahti-player/ui';
 
 import {
@@ -22,6 +23,7 @@ export function RecordingsPanel({
   state: RecordingsState;
   action?: ReactNode;
 }) {
+  const { t } = useTranslation('web');
   const {
     recordings,
     loading,
@@ -41,8 +43,8 @@ export function RecordingsPanel({
   return (
     <>
       <StudioPanel
-        title={`Recordings (${recordings.length})`}
-        description="Every completed show recording, grouped by show — drafts that haven't been published yet are pinned at the top."
+        title={t('studioRecordings.panelTitle', { count: recordings.length })}
+        description={t('studioRecordings.panelDescription')}
         action={action}
       >
         <div className="mb-4 flex flex-col gap-2 sm:flex-row">
@@ -51,27 +53,27 @@ export function RecordingsPanel({
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search recordings…"
-            aria-label="Search recordings"
+            placeholder={t('studioRecordings.searchPlaceholder')}
+            aria-label={t('studioRecordings.searchAria')}
             endAddon={<SearchIcon size={16} aria-hidden />}
           />
           <SortMenuButton
-            label="Sort recordings"
+            label={t('studioRecordings.sortLabel')}
             value={sort}
             onChange={(value) => setSort(value as SortKey)}
             options={[
-              { id: 'newest', label: 'Newest first' },
-              { id: 'oldest', label: 'Oldest first' },
-              { id: 'title', label: 'Title A–Z' },
+              { id: 'newest', label: t('studioRecordings.sortNewest') },
+              { id: 'oldest', label: t('studioRecordings.sortOldest') },
+              { id: 'title', label: t('studioRecordings.sortTitle') },
             ]}
             defaultValue="newest"
           />
         </div>
         {loading ? (
-          <PageLoading label="Loading…" />
+          <PageLoading label={t('studioRecordings.loading')} />
         ) : loadError && recordings.length === 0 ? (
           <PageError
-            title="Could not load your recordings"
+            title={t('studioRecordings.loadError')}
             description={loadError}
             onRetry={reload}
           />
@@ -79,19 +81,19 @@ export function RecordingsPanel({
           <PageEmpty
             title={
               recordings.length === 0
-                ? 'No recorded shows yet'
-                : 'No recordings match your search'
+                ? t('studioRecordings.emptyTitle')
+                : t('studioRecordings.emptySearch')
             }
             description={
               recordings.length === 0
-                ? 'Enable recording when you go live and completed shows will appear here.'
+                ? t('studioRecordings.emptyDescription')
                 : undefined
             }
             action={
               recordings.length === 0 ? (
                 <ButtonLink to="/studio/go-live" variant="secondary">
                   <RadioIcon size={14} aria-hidden className="mr-1" />
-                  Open broadcast studio
+                  {t('studioRecordings.openBroadcast')}
                 </ButtonLink>
               ) : (
                 <Button
@@ -99,7 +101,7 @@ export function RecordingsPanel({
                   variant="secondary"
                   onClick={() => setQuery('')}
                 >
-                  Clear search
+                  {t('actions.clearSearch')}
                 </Button>
               )
             }
@@ -109,7 +111,9 @@ export function RecordingsPanel({
             {drafts.length > 0 ? (
               <div className="flex flex-col gap-2">
                 <h3 className="text-primary-strong text-xs font-semibold tracking-wide uppercase">
-                  Drafts · not yet published ({drafts.length})
+                  {t('studioRecordings.draftsHeading', {
+                    count: drafts.length,
+                  })}
                 </h3>
                 <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
                   {drafts.map((show, index) => (

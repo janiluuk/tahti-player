@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog } from '@tahti-player/ui';
 
 import type { ChannelVisualPreset } from '../../api/channel-design';
@@ -15,6 +16,7 @@ export function DeletePresetDialog({
   onClose,
   onConfirm,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <Dialog.Root
       isOpen={target !== null}
@@ -30,7 +32,7 @@ export function DeletePresetDialog({
         affected.
       </Dialog.Description>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
         <Button disabled={presetBusy} variant="secondary" onClick={onConfirm}>
           Delete preset
         </Button>

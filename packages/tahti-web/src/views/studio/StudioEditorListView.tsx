@@ -1,6 +1,7 @@
 import { AudioLinesIcon, FolderOpenIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -32,6 +33,7 @@ import { contentTypeLabel } from '../../content/contentTypes';
 import { toastWithUndo } from '../../lib/undoToast';
 
 export function StudioEditorListView() {
+  const { t } = useTranslation('web');
   const [projects, setProjects] = useState<EditorProjectRow[]>([]);
   const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [createOpen, setCreateOpen] = useState(false);
@@ -71,15 +73,12 @@ export function StudioEditorListView() {
   }, [sounds, libraryQuery, libraryType]);
 
   const formatLibraryType = (type: string) =>
-    type === 'ALL' ? 'All' : contentTypeLabel(type);
+    type === 'ALL' ? t('studioEditorList.allTypes') : contentTypeLabel(type);
 
   const reload = () => {
     void Promise.all([fetchEditorProjects(), fetchStudioSounds()]).then(
       ([p, a]) => {
         setProjects(p.data);
-        // EMBED_ONLY items (hearthis.at, Mixcloud, Spotify, Bandcamp) have
-        // no Tahti-hosted audio file, so there's nothing for the Pro
-        // Editor to open or trim — keep them out of "Open from library".
         setSounds(a.data.filter((item) => !item.embedProvider));
         setLoadError(p.meta.source === 'api' ? (p.meta.reason ?? null) : null);
         setSoundsError(
@@ -117,23 +116,30 @@ export function StudioEditorListView() {
           return;
         }
         const created = r.data;
-        setMessage(`Created ${created.title}`);
+        setMessage(
+          t('studioEditorList.createdNamed', { title: created.title }),
+        );
         closeCreate();
         reload();
-        toastWithUndo(`Created ${created.title}.`, {
-          undo: () => deleteEditorProject(created.id),
-          undoneMessage: `Removed ${created.title}.`,
-          onUndone: () => {
-            setMessage(null);
-            setProjects((current) =>
-              current.filter((project) => project.id !== created.id),
-            );
+        toastWithUndo(
+          t('studioEditorList.createdNamedPeriod', { title: created.title }),
+          {
+            undo: () => deleteEditorProject(created.id),
+            undoneMessage: t('studioEditorList.removedNamed', {
+              title: created.title,
+            }),
+            onUndone: () => {
+              setMessage(null);
+              setProjects((current) =>
+                current.filter((project) => project.id !== created.id),
+              );
+            },
           },
-        });
+        );
       })
       .catch(() => {
         setBusy(false);
-        setMessage('Could not create the project.');
+        setMessage(t('studioEditorList.createFailed'));
       });
   };
 
@@ -141,18 +147,18 @@ export function StudioEditorListView() {
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex w-full max-w-[1400px] flex-col gap-6 px-1 py-2">
         <ViewShell
-          title="Editor"
+          title={t('studioEditorList.title')}
           classes={{ root: 'px-0 pt-0' }}
           actions={
             projects.length > 0 && (
-              <Tooltip content="New session" side="top">
+              <Tooltip content={t('studioEditorList.newSession')} side="top">
                 <Button
                   size="icon-sm"
                   onClick={() => {
                     setMessage(null);
                     setCreateOpen(true);
                   }}
-                  aria-label="New session"
+                  aria-label={t('studioEditorList.newSession')}
                 >
                   <PlusIcon size={16} aria-hidden />
                 </Button>
@@ -176,22 +182,22 @@ export function StudioEditorListView() {
               <Dialog.Title>
                 <span className="inline-flex items-center gap-2">
                   <AudioLinesIcon size={18} aria-hidden />
-                  New session
+                  {t('studioEditorList.newSession')}
                 </span>
               </Dialog.Title>
               <div className="mt-4 flex flex-col gap-3">
                 <Input
-                  label="Title"
+                  label={t('studioEditorList.titleLabel')}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Untitled session"
+                  placeholder={t('studioEditorList.titlePlaceholder')}
                   autoFocus
                 />
                 <Select
-                  label="Seed from sound (optional)"
+                  label={t('studioEditorList.seedLabel')}
                   value={soundId}
                   onValueChange={setSoundItemId}
-                  placeholder="None"
+                  placeholder={t('studioEditorList.seedNone')}
                   options={sounds.map((item) => ({
                     id: item.id,
                     label: item.title,
@@ -199,28 +205,30 @@ export function StudioEditorListView() {
                 />
               </div>
               <Dialog.Actions>
-                <Dialog.Close>Cancel</Dialog.Close>
+                <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
                 <Button type="submit" disabled={busy}>
                   <PlusIcon size={16} aria-hidden className="mr-1.5" />
-                  {busy ? 'Creating…' : 'Create'}
+                  {busy
+                    ? t('studioEditorList.creating')
+                    : t('studioEditorList.create')}
                 </Button>
               </Dialog.Actions>
             </form>
           </Dialog.Root>
 
-          <StudioPanel title="Projects">
+          <StudioPanel title={t('studioEditorList.projectsTitle')}>
             {loadError && projects.length > 0 ? (
               <PageErrorBanner
-                title="Could not refresh your editor projects"
+                title={t('studioEditorList.refreshError')}
                 description={loadError}
                 onRetry={reload}
               />
             ) : null}
             {loading ? (
-              <PageLoading label="Loading…" />
+              <PageLoading label={t('studioEditorList.loading')} />
             ) : loadError && projects.length === 0 ? (
               <PageError
-                title="Could not load your editor projects"
+                title={t('studioEditorList.loadError')}
                 description={loadError}
                 onRetry={() => {
                   setLoading(true);
@@ -229,14 +237,17 @@ export function StudioEditorListView() {
               />
             ) : projects.length === 0 ? (
               <PageEmpty
-                title="No editor projects yet."
+                title={t('studioEditorList.emptyTitle')}
                 action={
-                  <Tooltip content="New session" side="top">
+                  <Tooltip
+                    content={t('studioEditorList.newSession')}
+                    side="top"
+                  >
                     <Button
                       size="icon-sm"
                       variant="secondary"
                       onClick={() => setCreateOpen(true)}
-                      aria-label="New session"
+                      aria-label={t('studioEditorList.newSession')}
                     >
                       <PlusIcon size={16} aria-hidden />
                     </Button>
@@ -253,30 +264,40 @@ export function StudioEditorListView() {
                     <div className="min-w-0 flex-1">
                       <p className="font-medium">{p.title}</p>
                       <p className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs">
-                        <span>Updated</span>
+                        <span>{t('studioEditorList.updated')}</span>
                         <ListingDate value={p.updatedAt} />
-                        {p.soundId ? <span>, linked sound</span> : null}
+                        {p.soundId ? (
+                          <span>{t('studioEditorList.linkedSound')}</span>
+                        ) : null}
                       </p>
                     </div>
-                    <Tooltip content="Open session" side="top">
+                    <Tooltip
+                      content={t('studioEditorList.openSession')}
+                      side="top"
+                    >
                       <ButtonLink
                         to="/studio/editor/$id"
                         params={{ id: p.id }}
                         size="icon-sm"
                         variant="secondary"
-                        aria-label={`Open ${p.title}`}
+                        aria-label={t('studioEditorList.openNamed', {
+                          title: p.title,
+                        })}
                       >
                         <FolderOpenIcon size={16} aria-hidden />
                       </ButtonLink>
                     </Tooltip>
                     {p.soundId && (
-                      <Tooltip content="Pro editor" side="top">
+                      <Tooltip
+                        content={t('studioEditorList.proEditor')}
+                        side="top"
+                      >
                         <ButtonLink
                           to="/studio/sounds/$id/editor"
                           params={{ id: p.soundId }}
                           size="icon-sm"
                           variant="text"
-                          aria-label="Pro editor"
+                          aria-label={t('studioEditorList.proEditor')}
                         >
                           <AudioLinesIcon size={16} aria-hidden />
                         </ButtonLink>
@@ -289,8 +310,8 @@ export function StudioEditorListView() {
           </StudioPanel>
 
           <StudioPanel
-            title="Open from library"
-            description="Choose a library item to open in the pro editor."
+            title={t('studioEditorList.openFromLibrary')}
+            description={t('studioEditorList.openFromLibraryDescription')}
           >
             <Button
               size="sm"
@@ -302,7 +323,7 @@ export function StudioEditorListView() {
               }}
             >
               <FolderOpenIcon size={16} aria-hidden className="mr-1.5" />
-              Open from library
+              {t('studioEditorList.openFromLibrary')}
             </Button>
           </StudioPanel>
 
@@ -311,10 +332,9 @@ export function StudioEditorListView() {
             onClose={() => setLibraryOpen(false)}
             className="max-w-4xl"
           >
-            <Dialog.Title>Open from library</Dialog.Title>
+            <Dialog.Title>{t('studioEditorList.openFromLibrary')}</Dialog.Title>
             <Dialog.Description>
-              Browse your library by content type, then open an item in the pro
-              editor.
+              {t('studioEditorList.libraryDialogDescription')}
             </Dialog.Description>
             <div className="mt-4 grid min-h-[22rem] gap-4 md:grid-cols-[12rem_1fr]">
               <Tabs.Root
@@ -331,7 +351,7 @@ export function StudioEditorListView() {
                 tabClassName="shrink-0 justify-start px-3 py-2 text-left data-[selected]:bg-primary data-[selected]:text-primary-foreground"
               >
                 <Tabs.List
-                  aria-label="Library content types"
+                  aria-label={t('studioEditorList.libraryTypesAria')}
                   className="w-auto"
                 >
                   {libraryTypes.map((type) => (
@@ -345,19 +365,19 @@ export function StudioEditorListView() {
                   type="search"
                   value={libraryQuery}
                   onChange={(event) => setLibraryQuery(event.target.value)}
-                  placeholder="Search library…"
-                  aria-label="Search library"
+                  placeholder={t('studioEditorList.searchLibrary')}
+                  aria-label={t('studioEditorList.searchLibraryAria')}
                 />
                 {soundsError && sounds.length > 0 ? (
                   <PageErrorBanner
-                    title="Could not refresh your library"
+                    title={t('studioEditorList.libraryRefreshError')}
                     description={soundsError}
                     onRetry={reload}
                   />
                 ) : null}
                 {soundsError && sounds.length === 0 ? (
                   <PageError
-                    title="Could not load your library"
+                    title={t('studioEditorList.libraryLoadError')}
                     description={soundsError}
                     onRetry={reload}
                   />
@@ -365,8 +385,8 @@ export function StudioEditorListView() {
                   <PageEmpty
                     title={
                       sounds.length === 0
-                        ? 'Upload content in Library first.'
-                        : 'No library items match this selection.'
+                        ? t('studioEditorList.libraryEmptyUpload')
+                        : t('studioEditorList.libraryEmptyFilter')
                     }
                   />
                 ) : (
@@ -381,7 +401,8 @@ export function StudioEditorListView() {
                             {item.title}
                           </p>
                           <p className="text-foreground-secondary truncate text-xs">
-                            {item.artistName || 'Unknown artist'}
+                            {item.artistName ||
+                              t('studioEditorList.unknownArtist')}
                             {item.genre ? ` · ${item.genre}` : ''}
                           </p>
                         </div>
@@ -397,7 +418,7 @@ export function StudioEditorListView() {
                             aria-hidden
                             className="mr-1.5"
                           />
-                          Open
+                          {t('studioEditorList.open')}
                         </ButtonLink>
                       </li>
                     ))}

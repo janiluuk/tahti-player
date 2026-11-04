@@ -2,6 +2,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import { Button, Dialog, InlineError } from '@tahti-player/ui';
 
 import { provisionChannel } from '../api/channel-provision';
@@ -32,7 +33,7 @@ export function ChannelSetupDialog() {
     await refresh();
     setBusy(false);
     setDesignStep(true);
-    toast.success('Channel created.');
+    toast.success(i18n.t('web:toasts.channelCreated'));
   };
 
   if ((user?.channel || !profileLoaded) && !designStep) {

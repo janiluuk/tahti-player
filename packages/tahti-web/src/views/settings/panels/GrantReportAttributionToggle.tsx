@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import { patchMeProfile, type ProfileFields } from '../../../api/studio-extras';
 import { SettingsToggle } from '../SettingsFields';
 
 export const GRANT_REPORT_ATTRIBUTION_LABEL =
   'Show my name in the annual grant report';
 
-/** Hidden unless the profile carries the flag, so a failed profile load
- * (or an API without it) never shows a toggle in the wrong state. */
 export function GrantReportAttributionToggle({
   profile,
   onSaved,
@@ -38,7 +38,7 @@ export function GrantReportAttributionToggle({
           }
           setValue(result.data.publicAttribution ?? next);
           onSaved(result.data);
-          toast.success('Visibility setting saved.');
+          toast.success(i18n.t('web:toasts.visibilitySettingSaved'));
         });
       }}
     />

@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { StudioGate } from '../../components/StudioGate';
@@ -10,11 +11,12 @@ export function StudioRecordingsView({
 }: {
   embedded?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const state = useRecordingsState();
 
   const browseShowsAction = (
     <ButtonLink to="/studio/shows" size="sm" variant="secondary">
-      Browse shows
+      {t('studioRecordings.browseShows')}
     </ButtonLink>
   );
 
@@ -25,7 +27,10 @@ export function StudioRecordingsView({
       {!embedded ? (
         <>
           <LibrarySectionTabs active="recordings" />
-          <ViewShell title="Recordings" classes={{ root: 'px-0 pt-0' }}>
+          <ViewShell
+            title={t('studioRecordings.title')}
+            classes={{ root: 'px-0 pt-0' }}
+          >
             <div className="mb-4">{browseShowsAction}</div>
             <RecordingsPanel state={state} />
           </ViewShell>
