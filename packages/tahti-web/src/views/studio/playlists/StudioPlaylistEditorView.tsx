@@ -690,6 +690,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
             title={`Remove "${pendingRemove?.title}"?`}
             description={`This removes the track from this ${kindLabel}. It stays in your library.`}
             confirmLabel="Remove"
+            destructive
             onCancel={() => setPendingRemove(null)}
             onConfirm={() => {
               if (!pendingRemove) {
@@ -718,6 +719,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
             title="Remove cover image?"
             description={`The ${kindLabel} will fall back to its default placeholder until you upload a new cover.`}
             confirmLabel="Remove cover"
+            destructive
             onCancel={() => setPendingCoverDelete(false)}
             onConfirm={() => {
               setPendingCoverDelete(false);

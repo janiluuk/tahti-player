@@ -609,6 +609,7 @@ export function ReleaseSmartLinksPanel({
         }
         description="The track leaves this release. It stays in your library."
         confirmLabel="Remove"
+        destructive
         onCancel={() => setPendingRemoveTrack(null)}
         onConfirm={() => {
           const track = pendingRemoveTrack;

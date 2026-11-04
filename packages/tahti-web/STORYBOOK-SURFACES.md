@@ -417,6 +417,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/ExternalLink` | `ExternalLink.stories.tsx` |
 | `Components/FavoriteButton` | `FavoriteButton.stories.tsx` |
 | `Components/FilePicker` | `FilePicker.stories.tsx` |
+| `Components/FilterBar` | `FilterBar.stories.tsx` |
 | `Components/FilterChips` | `FilterChips.stories.tsx` |
 | `Components/HistoryDayGroup` | `HistoryDayGroup.stories.tsx` |
 | `Components/HistoryRow` | `HistoryRow.stories.tsx` |
@@ -438,6 +439,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Audio/MultitrackEditor` | `MultitrackEditor.stories.tsx` |
 | `Media/NewsCarousel` | `NewsCarousel.stories.tsx` |
 | `Components/NewsWidget` | `NewsWidget.stories.tsx` |
+| `Components/OverflowMenu` | `OverflowMenu.stories.tsx` |
 | `Components/Pagination` | `Pagination.stories.tsx` |
 | `Audio/PianoRoll` | `PianoRoll.stories.tsx` |
 | `Layout/PlayerBar` | `PlayerBar.stories.tsx` |

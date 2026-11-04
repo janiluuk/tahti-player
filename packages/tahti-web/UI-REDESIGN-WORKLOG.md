@@ -1,3 +1,13 @@
+## 2026-11-04 - OverflowMenu, FilterBar, destructive confirms (0.0.315)
+
+`@tahti-player/ui` adds OverflowMenu and FilterBar (phase-0 simplify
+primitives) with keyboard Storybook plays; ViewShell WithActions play tabs
+header actions. ConfirmDialog `destructive` on Studio events, updates,
+editor project, playlist editor, collection dialogs, release detail and
+smart-link track remove. VIEW-CATALOG marks Artist/Collection/Radio stories;
+NAVIGATION-SITEMAP drops stale BroadcastSubNav. Bumped ui `0.0.24`,
+tahti-web `0.0.315`.
+
 ## 2026-11-04 - Material Tags/Genre + Sets/Groups
 
 Track edit Basics and sound Details use Tags and Genre cards (Used before

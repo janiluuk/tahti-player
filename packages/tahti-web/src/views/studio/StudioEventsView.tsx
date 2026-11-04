@@ -184,6 +184,7 @@ export function StudioEventsView() {
           }
           description="The event leaves your upcoming and past lists."
           confirmLabel="Remove"
+          destructive
           onCancel={() => setPendingRemove(null)}
           onConfirm={() => {
             const event = pendingRemove;

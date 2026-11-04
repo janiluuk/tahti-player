@@ -205,6 +205,7 @@ export function StudioEditorProjectView({ id }: { id: string }) {
           }
           description="This removes the multitrack session. Linked archive audio stays in your library."
           confirmLabel="Delete"
+          destructive
           onCancel={() => setConfirmDelete(false)}
           onConfirm={() => {
             setConfirmDelete(false);
