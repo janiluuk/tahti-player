@@ -31,7 +31,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: track edit bug, embed track API fix (tahti-org, unpushed), NRJ, peaks caching, channel page items, story card layout, Finnish locale |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; left: embed downloads (product call) and keeping a stage-hosted embed across routes |
 | open    | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Plan: page anatomy rules (one header, one primary action, overflow, one toolbar), Settings account-only in 7 items, duplicate surfaces removed; 9 phases, absorbs navigation-simplification slices 1-3, 7, 9, 10 |
-| partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 implemented (web + org local); OpenAPI + Discover entry done; left: commit/deploy org, e2e |
+| partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [batch-slices-2026-11-04.md](batch-slices-2026-11-04.md) | Ten slices: Fans CI (#1811), OverflowMenu/FilterBar, ViewShell play, ConfirmDialog destructive batch, catalog/sitemap hygiene |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
 | open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` on events/updates/editor/playlist/collection/release; left: radio presets, plugin-store categories, theme submissions) |

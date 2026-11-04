@@ -12,8 +12,10 @@ Artists run or join groups that share one collective playlist. Members submit so
 - API client + mocks; unit tests in `groups.test.ts`.
 - Studio `/studio/groups`, `/studio/groups/$slug` (settings, join requests, submissions with sound titles).
 - Public `/groups`, `/groups/$slug` (join/leave, collective playlist via founder `createdBy`, Listen together → Jam).
-- Discover header **Groups** button → `/groups`.
-- Stories + VIEW-CATALOG rows. tahti-web `0.0.312`.
+- Discover → **Groups** tab (`?tab=groups`) embeds `GroupsDirectory`; `/groups` keeps the same grid under ViewShell.
+- Mock seeds five ready public groups (Trance Mixes, Finland DJs, Ambient Lab, Vinyl Crate Diggers, Live Electronics).
+- README + VIEW-GUIDE document Groups for listeners and artists.
+- Stories: `GroupsDirectory`, `GroupsDirectoryView`, Studio/public detail; DiscoverView GroupsTab play.
 
 ## Shipped (tahti-org, local — not committed/pushed)
 

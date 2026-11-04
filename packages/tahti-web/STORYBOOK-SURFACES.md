@@ -195,6 +195,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Media/GlowMediaTile` | `tahti-web/GlowMediaTile.stories.tsx` |
 | `Tahti/Governance/Member panels` | `tahti-web/GovernanceMemberPanels.stories.tsx` |
 | `Tahti/Groups/GroupDetailView` | `tahti-web/GroupDetailView.stories.tsx` |
+| `Tahti/Discover/GroupsDirectory` | `tahti-web/GroupsDirectory.stories.tsx` |
 | `Tahti/Groups/GroupsDirectoryView` | `tahti-web/GroupsDirectoryView.stories.tsx` |
 | `Tahti/Studio/Distribution/GuideDetail` | `tahti-web/GuideDetail.stories.tsx` |
 | `Tahti/Reference/Help center` | `tahti-web/HelpView.stories.tsx` |

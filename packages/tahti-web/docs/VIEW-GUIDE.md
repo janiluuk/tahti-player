@@ -62,9 +62,10 @@ Find live channels and open a station.
 
 <picture><source media="(prefers-color-scheme: light)" srcset="./readme-shots/listen-discover--light.png" /><img src="./readme-shots/listen-discover.png" alt="Discover" width="1680" /></picture>
 
-Explore tracks, artists and collections.
+Explore tracks, artists, groups and venues. Discover → Groups lists public
+artist collectives (searchable; same grid as `/groups`).
 
-`/discover`
+`/discover` · `/discover?tab=groups`
 
 ### Your feed
 

@@ -12,7 +12,7 @@ Free to use, no account needed to listen.
 
 - **Live channels and archives.** Watch artists broadcast live, or replay past shows and tracks.
 - **Tahti Radio.** A 24/7 stream with a weekly schedule of live shows, plus a curated set of Finnish internet radio stations.
-- **Discover.** New releases, trending tracks, upcoming shows, venues and artist profiles with their news and events.
+- **Discover.** New releases, trending tracks, upcoming shows, venues, artist profiles and **Groups** — public artist collectives that share one playlist (join, listen together as a Jam).
 - **Chat.** Talk with the artist and other listeners during a broadcast, with live emoji reactions.
 - **Your library.** Follow artists, like and repost tracks, build playlists and pick up where you left off.
 - **Support artists directly.** Subscribe to an artist, buy tracks, and unlock fan-only downloads and chat rooms.
@@ -29,6 +29,7 @@ Your channel, your music, your income.
 - **Design it.** Set your channel's look, backdrop, logo and press kit.
 - **Earn.** Offer fan subscription tiers and paid tracks, and get paid out through Stripe. Distribute to streaming services from the studio.
 - **Grow.** See who listens, which links get clicked and how downloads convert. Send updates to your subscribers and auto-post releases to Mastodon and Bluesky.
+- **Groups.** Start or join an artist collective from Studio → Groups. Members submit sounds to a shared playlist; the public finds groups under Discover → Groups.
 
 <picture><source media="(prefers-color-scheme: light)" srcset="./packages/tahti-web/docs/redesign-shots/studio-go-live-v1--light.png" /><img src="./packages/tahti-web/docs/redesign-shots/studio-go-live-v1.png" alt="Go Live wizard with OBS connection details" /></picture>
 
