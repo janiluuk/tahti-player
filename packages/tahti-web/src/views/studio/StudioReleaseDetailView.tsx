@@ -14,6 +14,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
@@ -109,7 +110,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
       toast.error(result.error);
       return;
     }
-    toast.success('Release deleted.');
+    toast.success(i18n.t('web:toasts.releaseDeleted'));
     void navigate({ to: '/studio/releases' });
   };
 

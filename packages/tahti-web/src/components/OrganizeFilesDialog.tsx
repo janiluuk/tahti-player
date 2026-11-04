@@ -275,6 +275,7 @@ export function OrganizeFilesDialog({
         title="Move these files?"
         description={`This moves ${n(plan?.ready ?? 0)} ${files(plan?.ready ?? 0)} out of their current folders into ${destination}. Other programs that use the old locations will no longer find them.`}
         confirmLabel="Move files"
+        destructive
         onCancel={() => setConfirmingMove(false)}
         onConfirm={() => void run()}
       />

@@ -1,10 +1,13 @@
 import { Link } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import { PageEmpty, PageError } from '../../../components/PageStates';
 import { Group } from './HomeTiles';
 import type { StudioHomeState } from './useStudioHome';
 
 export function GovernanceSection({ state }: { state: StudioHomeState }) {
+  const { t } = useTranslation('web');
   const {
     governanceVotes,
     unresolvedRequests,
@@ -15,9 +18,9 @@ export function GovernanceSection({ state }: { state: StudioHomeState }) {
 
   if (governanceError) {
     return (
-      <Group title="Governance">
+      <Group title={t('studioHub.governance')}>
         <PageError
-          title="Could not load governance"
+          title={t('studioHub.governanceLoadError')}
           description={governanceError}
           onRetry={reloadGovernance}
         />
@@ -26,7 +29,7 @@ export function GovernanceSection({ state }: { state: StudioHomeState }) {
   }
 
   return (
-    <Group title="Governance">
+    <Group title={t('studioHub.governance')}>
       <div className="border-border bg-background-secondary/30 @container rounded-xl border p-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -50,7 +53,7 @@ export function GovernanceSection({ state }: { state: StudioHomeState }) {
             </p>
             {governanceVotes.length === 0 &&
             unresolvedRequests.every((request) => request.youVoted) ? (
-              <PageEmpty title="Nothing waiting for your vote." />
+              <PageEmpty title={t('studioHub.governanceEmptyVotes')} />
             ) : (
               <ul className="divide-border divide-y">
                 {[
@@ -90,7 +93,7 @@ export function GovernanceSection({ state }: { state: StudioHomeState }) {
               Ongoing discussions
             </p>
             {discussionUpdates.length === 0 ? (
-              <PageEmpty title="No unresolved discussion updates." />
+              <PageEmpty title={t('studioHub.governanceEmptyDiscussions')} />
             ) : (
               <ul className="divide-border divide-y">
                 {discussionUpdates.map((item) => (

@@ -2,6 +2,8 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   bulkDeleteStudioSounds,
   bulkPatchStudioSounds,
@@ -222,7 +224,7 @@ export function useStudioSoundsState() {
         if (seq !== requestSeq.current) {
           return;
         }
-        toast.error('Could not load your music.');
+        toast.error(i18n.t('web:toasts.couldNotLoadMusic'));
       })
       .finally(() => {
         if (seq !== requestSeq.current) {
@@ -457,9 +459,7 @@ export function useStudioSoundsState() {
       setSelectedIds(new Set(result.data.ids));
       setAllMatchingSelected(true);
       toast.success(
-        result.data.total === 1
-          ? '1 sound selected'
-          : `${result.data.total} sounds selected`,
+        i18n.t('web:toasts.soundsSelected', { count: result.data.total }),
       );
     } finally {
       if (seq === requestSeq.current) {
@@ -481,7 +481,7 @@ export function useStudioSoundsState() {
           toast.error(result.error);
           return;
         }
-        toast.success(`Deleted “${item.title}”.`);
+        toast.success(i18n.t('web:toasts.deletedSound', { title: item.title }));
         setSelectedIds((prev) => {
           if (!prev.has(item.id)) {
             return prev;
@@ -493,7 +493,7 @@ export function useStudioSoundsState() {
         setAllMatchingSelected(false);
         reload();
       } catch {
-        toast.error('Could not delete the track.');
+        toast.error(i18n.t('web:toasts.couldNotDeleteTrack'));
       }
     })();
   };
@@ -521,9 +521,7 @@ export function useStudioSoundsState() {
           return;
         }
         toast.success(
-          result.data.deleted === 1
-            ? 'Deleted 1 sound.'
-            : `Deleted ${result.data.deleted} sounds.`,
+          i18n.t('web:toasts.deletedSounds', { count: result.data.deleted }),
         );
         clearSelection();
         reload();
@@ -557,9 +555,7 @@ export function useStudioSoundsState() {
           return;
         }
         toast.success(
-          result.data.updated === 1
-            ? 'Updated 1 sound.'
-            : `Updated ${result.data.updated} sounds.`,
+          i18n.t('web:toasts.updatedSounds', { count: result.data.updated }),
         );
         setBulkEditOpen(false);
         reload();

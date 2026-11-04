@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FanSubscriptionRow } from '../api/types';
 import { numericDate } from './relativeDate';
 
@@ -21,7 +23,7 @@ export function isCanceledAtPeriodEnd(sub: StatusFields): boolean {
 export function fanSubscriptionStatusLabel(sub: StatusFields): string {
   const end = periodEnd(sub);
   if (isCanceledAtPeriodEnd(sub) && end) {
-    return `Ends on ${numericDate(end)}`;
+    return i18n.t('web:fanSubscription.endsOn', { date: numericDate(end) });
   }
   return sub.state;
 }

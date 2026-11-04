@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   DataTable,
@@ -42,6 +43,7 @@ function centsLabel(raw: string) {
 }
 
 export function TransparencyView() {
+  const { t } = useTranslation('web');
   const [ytd, setYtd] = useState<TransparencyYtd | null>(null);
   const [grants, setGrants] = useState<TransparencyGrantReport | null>(null);
   const [ledger, setLedger] = useState<TransparencyLedgerEntry[]>([]);
@@ -245,17 +247,17 @@ export function TransparencyView() {
             </SectionShell>
           )}
 
-          <SectionShell title="Latest ledger">
+          <SectionShell title={t('transparency.latestLedger')}>
             {ledgerError && ledger.length === 0 ? (
               <PageError
-                title="Could not load the ledger"
+                title={t('transparency.ledgerLoadError')}
                 description={ledgerError}
                 onRetry={() => setAttempt((n) => n + 1)}
               />
             ) : ledger.length === 0 ? (
-              <PageEmpty title="No ledger entries yet" />
+              <PageEmpty title={t('transparency.noLedger')} />
             ) : (
-              <HorizontalScroll label="Latest ledger">
+              <HorizontalScroll label={t('transparency.latestLedger')}>
                 <DataTable>
                   <DataTableHead>
                     <DataTableRow>

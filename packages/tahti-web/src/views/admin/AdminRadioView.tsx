@@ -34,6 +34,7 @@ import {
 import { fetchRadioStation } from '../../api/client';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
+import { ListingDate } from '../../components/ListingDate';
 import { MulticastSection } from '../../components/MulticastSection';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -45,15 +46,6 @@ import {
   type AdminRadioTabId,
 } from './adminRadioTabs';
 import { InternetRadioPresetsPanel } from './InternetRadioPresetsPanel';
-
-function fmt(iso: string): string {
-  return new Date(iso).toLocaleString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
 
 const ADMIN_RADIO_TAB_LABELS: Record<AdminRadioTabId, string> = {
   feature: 'Feature',
@@ -312,11 +304,18 @@ export function AdminRadioView() {
                                       <div className="font-medium">
                                         {ch.artistName}
                                       </div>
-                                      <div className="text-foreground-secondary text-xs">
-                                        /c/{ch.slug} ·{' '}
-                                        {ch.lastFeaturedAt
-                                          ? `last featured ${fmt(ch.lastFeaturedAt)}`
-                                          : 'never featured'}
+                                      <div className="text-foreground-secondary flex flex-wrap items-center gap-1 text-xs">
+                                        <span>/c/{ch.slug} ·</span>
+                                        {ch.lastFeaturedAt ? (
+                                          <>
+                                            <span>last featured</span>
+                                            <ListingDate
+                                              value={ch.lastFeaturedAt}
+                                            />
+                                          </>
+                                        ) : (
+                                          <span>never featured</span>
+                                        )}
                                       </div>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
@@ -457,9 +456,10 @@ export function AdminRadioView() {
                                   className="flex items-center justify-between py-2.5 text-sm first:pt-0 last:pb-0"
                                 >
                                   <span>{item.artistName}</span>
-                                  <span className="text-foreground-secondary text-xs">
-                                    {fmt(item.featuredAt)}
-                                  </span>
+                                  <ListingDate
+                                    value={item.featuredAt}
+                                    className="text-foreground-secondary text-xs"
+                                  />
                                 </li>
                               ))}
                             </ul>

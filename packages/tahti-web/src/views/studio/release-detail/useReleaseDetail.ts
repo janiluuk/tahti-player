@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import type { Track } from '@tahti-player/model';
 
 import { setReleaseArtworkFromUrl } from '../../../api/image-from-url';
@@ -152,9 +153,9 @@ export function useReleaseDetail(id: string) {
         return;
       }
       setRelease(result.data);
-      toast.success('Saved.');
+      toast.success(i18n.t('web:toasts.releaseSaved'));
     } catch {
-      toast.error('Could not save the release.');
+      toast.error(i18n.t('web:toasts.couldNotSaveRelease'));
     } finally {
       setSaving(false);
     }
@@ -175,7 +176,7 @@ export function useReleaseDetail(id: string) {
         onUndone: (result) => setRelease(result.data),
       });
     } catch {
-      toast.error('Could not publish the release.');
+      toast.error(i18n.t('web:toasts.couldNotPublishRelease'));
     } finally {
       setPublishing(false);
     }
@@ -188,7 +189,7 @@ export function useReleaseDetail(id: string) {
       return;
     }
     setArtworkPreview(null);
-    toast.success('Artwork removed.');
+    toast.success(i18n.t('web:toasts.artworkRemoved'));
   };
 
   const uploadArtworkFile = async (file: File) => {
@@ -225,7 +226,7 @@ export function useReleaseDetail(id: string) {
       return;
     }
     setArtworkPreview(result.artworkUrl);
-    toast.success('Artwork uploaded.');
+    toast.success(i18n.t('web:toasts.artworkUploaded'));
     setArtworkPickerOpen(false);
   };
 
@@ -238,7 +239,7 @@ export function useReleaseDetail(id: string) {
       return false;
     }
     setArtworkPreview(result.url);
-    toast.success('Artwork saved.');
+    toast.success(i18n.t('web:toasts.artworkSaved'));
     setArtworkPickerOpen(false);
     return true;
   };

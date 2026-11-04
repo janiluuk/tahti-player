@@ -1,6 +1,7 @@
 import { Trash2, Upload } from 'lucide-react';
 import { useMemo } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Alert, Button, ButtonLink, LogViewer } from '@tahti-player/ui';
 
 import {
@@ -10,11 +11,6 @@ import {
   useClientLogs,
 } from '../../../lib/clientLogs';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
-
-const LABELS = {
-  noLogsMessage:
-    'No log entries yet. Warnings, errors and player events from this tab show up here.',
-};
 
 function exportLogs(text: string) {
   const blob = new Blob([text], { type: 'text/plain' });
@@ -28,16 +24,14 @@ function exportLogs(text: string) {
 
 /** Board-only: client-side log buffer for this tab, plus links to server logs. */
 export function LogsPanel() {
+  const { t } = useTranslation('web');
   const logs = useClientLogs();
   const scopes = useMemo(() => clientLogScopes(logs), [logs]);
   const closeSettings = useSettingsModalStore((s) => s.close);
 
   return (
     <div className="flex h-[calc(100dvh-20rem)] min-h-96 flex-col gap-4">
-      <Alert tone="neutral">
-        These are browser-tab client logs only. For production container logs
-        and Grafana vitals, open Admin.
-      </Alert>
+      <Alert tone="neutral">{t('settingsLogs.alert')}</Alert>
       <div className="flex flex-wrap gap-2">
         <ButtonLink
           to="/admin/logs"
@@ -46,7 +40,7 @@ export function LogsPanel() {
           variant="secondary"
           onClick={() => closeSettings()}
         >
-          Container logs
+          {t('settingsLogs.containerLogs')}
         </ButtonLink>
         <ButtonLink
           to="/admin/monitoring"
@@ -54,7 +48,7 @@ export function LogsPanel() {
           variant="secondary"
           onClick={() => closeSettings()}
         >
-          Monitoring hub
+          {t('settingsLogs.monitoringHub')}
         </ButtonLink>
       </div>
       <div className="min-h-0 flex-1">
@@ -64,14 +58,14 @@ export function LogsPanel() {
           onClear={clearClientLogs}
           onExport={() => exportLogs(serializeClientLogs(logs))}
           onOpenLogFolder={() => {}}
-          labels={LABELS}
+          labels={{ noLogsMessage: t('settingsLogs.noLogs') }}
         >
           <div className="flex flex-wrap items-center gap-2">
             <LogViewer.SearchInput />
             <div className="flex gap-2">
               <Button size="sm" variant="secondary" onClick={clearClientLogs}>
                 <Trash2 className="mr-1 size-4" aria-hidden />
-                Clear
+                {t('settingsLogs.clear')}
               </Button>
               <Button
                 size="sm"
@@ -80,7 +74,7 @@ export function LogsPanel() {
                 onClick={() => exportLogs(serializeClientLogs(logs))}
               >
                 <Upload className="mr-1 size-4" aria-hidden />
-                Export
+                {t('settingsLogs.export')}
               </Button>
             </div>
           </div>

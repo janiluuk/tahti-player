@@ -21,6 +21,7 @@ import {
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminPageLayout } from '../../components/AdminNav';
+import { ListingDate } from '../../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
@@ -32,13 +33,6 @@ function formatDuration(durationSec: number | null | undefined): string {
   }
   const minutes = Math.floor(durationSec / 60);
   return `${minutes}:${String(durationSec % 60).padStart(2, '0')}`;
-}
-
-function formatDate(value: string): string {
-  return new Date(value).toLocaleString(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  });
 }
 
 export function AdminContentView() {
@@ -148,12 +142,10 @@ export function AdminContentView() {
                                     : ''}
                                 </p>
                               </div>
-                              <time
+                              <ListingDate
+                                value={item.createdAt}
                                 className="text-foreground-secondary text-xs"
-                                dateTime={item.createdAt}
-                              >
-                                {formatDate(item.createdAt)}
-                              </time>
+                              />
                             </li>
                           ))}
                         </ul>
@@ -188,12 +180,10 @@ export function AdminContentView() {
                                   {formatDuration(broadcast.durationSec)}
                                 </p>
                               </div>
-                              <time
+                              <ListingDate
+                                value={broadcast.recordedAt}
                                 className="text-foreground-secondary text-xs"
-                                dateTime={broadcast.recordedAt}
-                              >
-                                {formatDate(broadcast.recordedAt)}
-                              </time>
+                              />
                             </li>
                           ))}
                         </ul>

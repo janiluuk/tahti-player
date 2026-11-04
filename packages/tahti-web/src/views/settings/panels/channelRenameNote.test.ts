@@ -1,22 +1,21 @@
 import { describe, expect, it } from 'vitest';
 
+import { numericDate } from '../../../lib/relativeDate';
 import { channelRenameNote } from './channelRenameNote';
 
 describe('channelRenameNote', () => {
   it('warns that the stream key changed and when the old address stops redirecting', () => {
-    const note = channelRenameNote(
-      {
-        slug: 'new-name',
-        rtmpStreamKey: 'new-name__abc',
-        previousSlugRedirectExpiresAt: '2026-12-31T12:00:00.000Z',
-      },
-      'en-GB',
-    );
+    const until = '2026-12-31T12:00:00.000Z';
+    const note = channelRenameNote({
+      slug: 'new-name',
+      rtmpStreamKey: 'new-name__abc',
+      previousSlugRedirectExpiresAt: until,
+    });
     expect(note).toContain('Renamed to new-name.');
     expect(note).toContain('Your stream key changed');
     expect(note).toContain('OBS');
     expect(note).toContain(
-      'Your old address redirects here until 31 December 2026.',
+      `Your old address redirects here until ${numericDate(new Date(until))}.`,
     );
   });
 

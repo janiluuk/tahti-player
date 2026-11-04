@@ -403,15 +403,15 @@ export function CollectionView({ slug }: { slug: string }) {
               disabled={playables.length === 0}
             >
               <PlayIcon size={16} aria-hidden className="mr-1.5" />
-              Play
+              {t('actions.play')}
             </Button>
-            <Tooltip content="Add all to queue" side="top">
+            <Tooltip content={t('actions.addAllToQueue')} side="top">
               <Button
                 variant="secondary"
                 size="icon"
                 onClick={queueAll}
                 disabled={playables.length === 0}
-                aria-label="Add all to queue"
+                aria-label={t('actions.addAllToQueue')}
               >
                 <ListPlusIcon size={16} aria-hidden />
               </Button>
@@ -425,7 +425,7 @@ export function CollectionView({ slug }: { slug: string }) {
             ) : null}
             <Button variant="secondary" onClick={() => void startJam()}>
               <RadioIcon size={15} aria-hidden className="mr-1.5" />
-              Start a Jam
+              {t('actions.startJam')}
             </Button>
             {!isOwner ? (
               <Button

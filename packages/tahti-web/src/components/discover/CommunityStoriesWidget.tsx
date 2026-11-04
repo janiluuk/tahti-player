@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { StoryCard, StoryRow } from '@tahti-player/ui';
 
 import {
@@ -20,6 +21,7 @@ type Load =
 /** The newest posts from every artist as wide story cards, at the top of
  * Discover's Feed tab. */
 export function CommunityStoriesWidget() {
+  const { t } = useTranslation('web');
   const [load, setLoad] = useState<Load>({ state: 'loading' });
   const [attempt, setAttempt] = useState(0);
   const [openId, setOpenId] = useState<string | null>(null);
@@ -46,21 +48,21 @@ export function CommunityStoriesWidget() {
   if (load.state !== 'ready' || load.stories.length === 0) {
     return (
       <section
-        aria-label="Community stories"
+        aria-label={t('discover.communityStories')}
         data-testid="community-stories"
         className="flex flex-col gap-3"
       >
-        <h2 className="text-xl font-bold">Community stories</h2>
+        <h2 className="text-xl font-bold">{t('discover.communityStories')}</h2>
         {load.state === 'loading' ? (
-          <PageLoading label="Loading stories…" />
+          <PageLoading label={t('discover.storiesLoading')} />
         ) : load.state === 'error' ? (
           <PageError
-            title="Could not load community stories"
+            title={t('discover.storiesLoadError')}
             description={load.reason}
             onRetry={() => setAttempt((n) => n + 1)}
           />
         ) : (
-          <PageEmpty title="No stories yet. Artists' posts will show up here." />
+          <PageEmpty title={t('discover.emptyStories')} />
         )}
       </section>
     );
@@ -68,7 +70,10 @@ export function CommunityStoriesWidget() {
 
   return (
     <>
-      <StoryRow title="Community stories" data-testid="community-stories">
+      <StoryRow
+        title={t('discover.communityStories')}
+        data-testid="community-stories"
+      >
         {load.stories.map((story, index) => (
           <StoryCard
             key={story.id}
