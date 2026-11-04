@@ -72,8 +72,9 @@ export const PostsStoryCardGrid: Story = {
       await canvas.findByTestId('studio-posts-story-grid'),
     ).toBeInTheDocument();
     await expect(
-      await canvas.findByRole('button', { name: /Preview / }),
-    ).toBeVisible();
+      await canvas.findByTestId('studio-post-story'),
+    ).toBeInTheDocument();
+    await expect(await canvas.findByTestId('story-card')).toBeInTheDocument();
   },
 };
 
