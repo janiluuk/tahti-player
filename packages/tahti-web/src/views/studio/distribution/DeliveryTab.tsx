@@ -12,6 +12,7 @@ import type {
   RevelatorRoyaltyReportRow,
 } from '../../../api/studio-types';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
+import { ListingDate } from '../../../components/ListingDate';
 import {
   PageEmpty,
   PageError,
@@ -115,13 +116,19 @@ export function DeliveryTab({
       )}
       {billing?.paid && (
         <p className="text-foreground-secondary text-xs">
-          {billing.waived
-            ? 'Fee waived (Studio included)'
-            : `Distribution fee paid${
-                billing.distributionPaidAt
-                  ? ` on ${new Date(billing.distributionPaidAt).toLocaleDateString()}`
-                  : ''
-              }`}
+          {billing.waived ? (
+            'Fee waived (Studio included)'
+          ) : (
+            <>
+              Distribution fee paid
+              {billing.distributionPaidAt ? (
+                <>
+                  {' '}
+                  <ListingDate value={billing.distributionPaidAt} />
+                </>
+              ) : null}
+            </>
+          )}
         </p>
       )}
       <Button

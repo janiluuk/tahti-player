@@ -1,3 +1,11 @@
+## 2026-11-04 - Batch 32 follow-up (0.0.320)
+
+Batch 32 (#1816) took 0.0.319 while a parallel run built the same slices, so
+this ships only what it missed: `ListingDate` on meeting notice and minutes
+dates, motion seconders, circulation and meeting notes, admin member since and
+the distribution fee paid date; Finnish release download rows
+(`ReleaseTrackDownloads`) and the track info Love button. Batch 31 todo folded.
+
 ## 2026-11-04 - Batch 32: listing dates and Finnish (0.0.319)
 
 `ListingDate` on governance Elections, Corrections, Annual reports, Result

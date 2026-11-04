@@ -4,6 +4,7 @@ import {
   fetchMotionSeconders,
   type MotionSeconder,
 } from '../../api/governance-motion-detail';
+import { ListingDate } from '../ListingDate';
 import { PageError } from '../PageStates';
 
 export function MotionSeconders({
@@ -67,7 +68,7 @@ export function MotionSeconders({
               </span>
             </span>
             <span className="text-foreground-secondary text-xs">
-              {new Date(s.secondedAt).toLocaleDateString()}
+              <ListingDate value={s.secondedAt} />
             </span>
           </li>
         ))}

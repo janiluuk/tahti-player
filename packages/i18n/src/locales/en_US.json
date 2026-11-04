@@ -762,7 +762,10 @@
       "removeFromFavoritesItem": "Remove from favorites: {{title}}",
       "downloadItem": "Download {{title}}",
       "preparingDownload": "Preparing download",
-      "preparingDownloadOf": "Preparing download of {{title}}"
+      "preparingDownloadOf": "Preparing download of {{title}}",
+      "preparing": "Preparing…",
+      "love": "Love",
+      "loved": "Loved"
     },
     "search": {
       "placeholder": "Search artists, tracks, playlists…",

@@ -36,7 +36,7 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 
 ## Left
 
-- [ ] Use `web.actions` in the remaining share/edit/follow call sites that still import `@tahti-player/ui` directly, and the other download labels (`StashFilesPanel`, `MembershipInvoices`, `ReleaseTrackDownloads`, `StemMixer`). Ui components need `labels` props where the player must stay English-only.
+- [ ] Use `web.actions` in the remaining share/edit/follow call sites that still import `@tahti-player/ui` directly, and the other download labels (`StashFilesPanel`, `MembershipInvoices`, `StemMixer`). Ui components need `labels` props where the player must stay English-only.
 - [ ] Settings panel bodies: Account, Artist, Channel, Broadcast, Integrations, Add-ons and What's new.
 - [ ] Messages popover, notification item text and toasts.
 - [ ] Listen: plugin-store `DISCOVER_WIDGET_LABELS`.

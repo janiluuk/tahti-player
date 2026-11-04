@@ -762,7 +762,10 @@
       "removeFromFavoritesItem": "Poista suosikeista: {{title}}",
       "downloadItem": "Lataa {{title}}",
       "preparingDownload": "Valmistellaan latausta",
-      "preparingDownloadOf": "Valmistellaan kohteen {{title}} latausta"
+      "preparingDownloadOf": "Valmistellaan kohteen {{title}} latausta",
+      "preparing": "Valmistellaan…",
+      "love": "Tykkää",
+      "loved": "Tykätty"
     },
     "search": {
       "placeholder": "Hae artisteja, kappaleita, soittolistoja…",

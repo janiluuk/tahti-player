@@ -52,3 +52,21 @@ only on listings, never on schedule or booking times.
 - `SavedMapComments` copy/CSV export text keeps full timestamps.
 - Event start times in the Coming up row stay exact (schedule), but are now locale-aware.
 - `StudioSoundView` back link, `CurrentBoardPanel` dates and the `SetupPasswordView` catalog flag landed in #1815.
+
+## Follow-up (tahti-web `0.0.320`)
+
+A second run of the same batch was cut while #1816 merged, so it kept only the
+slices #1816 missed. Everything else in that run duplicated #1816 and was dropped.
+
+1. [x] Date: `GovernanceMeetingDetailView` notice published and minutes approved → `ListingDate` (meeting date and time stay exact)
+2. [x] Date: `MotionSeconders` → `ListingDate`
+3. [x] Date: `MotionCirculateControl` → `ListingDate`
+4. [x] Date: `MotionMeetingNote` meeting date → `ListingDate`
+5. [x] Date: `AdminUserEditPanel` member since → `ListingDate`
+6. [x] Date: `DeliveryTab` distribution fee paid date → `ListingDate`
+7. [x] Download labels: `ReleaseTrackDownloads` (eyebrow, per-track label, preparing) → `web.actions`
+8. [x] Favorite: `TrackInfoDialog` Love / Loved → `web.actions.love` / `loved`
+9. [x] Fold batch-31 (#1815 merged) into HISTORY, delete its todo and INDEX row
+10. [x] Dead code: `fetchExportPlugins` documented keep; stale `lib/locale.ts` item removed (`applyLocale` is used by `languageStore`, `detectLocale` no longer exists)
+11. [x] `date-format-sweep` and `finnish-localization` lists synced
+12. [x] Version `0.0.320` + UI-REDESIGN-WORKLOG
