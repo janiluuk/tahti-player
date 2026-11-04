@@ -180,44 +180,30 @@ describe('ChannelPanel chat and moderators', () => {
     vi.restoreAllMocks();
   });
 
-  it('gathers the chat settings, chat access and bans on the Chat tab', async () => {
-    api.patchMeProfile.mockResolvedValue({
-      ok: true,
-      data: { ...profile, chatEnabled: false },
-    });
+  it('points the Chat tab at Studio → Fans', async () => {
     await act(async () => {
       render(<ChannelPanel />);
     });
     await act(async () => {
       fireEvent.click(screen.getByRole('tab', { name: /Chat/ }));
     });
-    expect(screen.getByText('chat access panel')).toBeTruthy();
-    expect(screen.getByText('chat messages panel')).toBeTruthy();
-    expect(screen.getByText('chat bans panel')).toBeTruthy();
-    expect(screen.queryByText('moderators panel')).toBeNull();
+    expect(screen.getByText('Chat moved to Fans')).toBeTruthy();
     expect(
-      screen.getByRole('switch', {
-        name: 'Show today’s listener count in my chat',
-      }),
-    ).toBeTruthy();
-
-    await act(async () => {
-      fireEvent.click(
-        screen.getByRole('switch', { name: 'Enable live chat on my channel' }),
-      );
-    });
-    expect(api.patchMeProfile).toHaveBeenCalledWith({ chatEnabled: false });
+      screen.getByRole('link', { name: 'Open Fans chat' }),
+    ).toHaveAttribute('href', '/studio/fans');
   });
 
-  it('puts the channel moderators on their own tab', async () => {
+  it('points the Moderators tab at Studio → Fans', async () => {
     await act(async () => {
       render(<ChannelPanel />);
     });
     await act(async () => {
       fireEvent.click(screen.getByRole('tab', { name: /Moderators/ }));
     });
-    expect(screen.getByText('moderators panel')).toBeTruthy();
-    expect(screen.queryByText('chat bans panel')).toBeNull();
+    expect(screen.getByText('Moderators moved to Fans')).toBeTruthy();
+    expect(
+      screen.getByRole('link', { name: 'Open Fans chat' }),
+    ).toHaveAttribute('href', '/studio/fans');
   });
 
   it('opens on the tab a link asks for', async () => {
@@ -230,7 +216,7 @@ describe('ChannelPanel chat and moderators', () => {
         .getByRole('tab', { name: /Moderators/ })
         .getAttribute('aria-selected'),
     ).toBe('true');
-    expect(screen.getByText('moderators panel')).toBeTruthy();
+    expect(screen.getByText('Moderators moved to Fans')).toBeTruthy();
     window.history.replaceState(null, '', '/settings/channel');
   });
 

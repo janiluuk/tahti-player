@@ -13,7 +13,6 @@ import {
 import {
   expectNoDialog,
   expectVisible,
-  findToast,
   openDialog,
   selectTab,
 } from './_lib/play';
@@ -26,7 +25,7 @@ const meta: Meta<typeof ChannelPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Channel & chat: Channel Designer (its own stories live under Tahti/Channel Designer), Discovery (share button and the rest of how the channel is found), Username & domain (slug availability, rename with a confirm, custom domain), Chat (live chat, listener count, chat access and bans) and Moderators.',
+          'Settings → Channel & chat: Channel Designer (its own stories live under Tahti/Channel Designer), Discovery (share button and the rest of how the channel is found), Username & domain (slug availability, rename with a confirm, custom domain). Chat and Moderators tabs point at Studio → Fans.',
       },
     },
   },
@@ -104,22 +103,21 @@ export const Chat: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await selectTab(canvas, 'Chat');
-    const chat = await canvas.findByRole('switch', {
-      name: 'Enable live chat on my channel',
-    });
-    await expect(chat).toHaveAttribute('aria-checked', 'true');
-    await expectVisible(
-      canvas.getByRole('switch', {
-        name: 'Show today’s listener count in my chat',
-      }),
-    );
-    await userEvent.click(chat);
-    await findToast(canvasElement, 'Chat setting saved.');
-    await waitFor(() => expect(chat).toHaveAttribute('aria-checked', 'false'));
-    // The offline profile mock keeps saves, so switch chat back on for the
-    // next run.
-    await userEvent.click(chat);
-    await waitFor(() => expect(chat).toHaveAttribute('aria-checked', 'true'));
+    await expectVisible(await canvas.findByText('Chat moved to Fans'));
+    await expect(
+      canvas.getByRole('link', { name: 'Open Fans chat' }),
+    ).toHaveAttribute('href', '/studio/fans');
+  },
+};
+
+export const Moderators: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await selectTab(canvas, 'Moderators');
+    await expectVisible(await canvas.findByText('Moderators moved to Fans'));
+    await expect(
+      canvas.getByRole('link', { name: 'Open Fans chat' }),
+    ).toHaveAttribute('href', '/studio/fans');
   },
 };
 

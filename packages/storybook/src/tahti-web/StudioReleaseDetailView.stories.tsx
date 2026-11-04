@@ -10,7 +10,7 @@ import {
 } from './_fixtures/track-release';
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { mockData } from './_lib/mock-data';
-import { findDialog, findToast, selectTab } from './_lib/play';
+import { expectVisible, findDialog, findToast, selectTab } from './_lib/play';
 
 type Scope = ReturnType<typeof within>;
 
@@ -82,8 +82,7 @@ export const SwitchTabs: Story = {
       ).toBeVisible(),
     );
     await selectTab(canvas, 'Overview');
-    // The tab panel fades in; waiting avoids reading it at opacity 0.
-    await waitFor(() => expect(canvas.getByText('Details')).toBeVisible());
+    await expectVisible(await canvas.findByText('Track credits'));
   },
 };
 
