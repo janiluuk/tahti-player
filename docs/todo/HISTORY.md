@@ -1,3 +1,11 @@
+## 2026-11-04 - Material Tags / Genre cards
+
+Track edit Basics and sound Details use `MaterialTagsField` and
+`MaterialGenreField` (red icon cards, chips, Used before, main genre +
+sub-genres). Stories under `Tahti/Track/MaterialTagsField` and
+`MaterialGenreField`. Sets and Groups assignment cards ship with
+`artist-groups.md`. tahti-web `0.0.314`.
+
 ## 2026-11-04 - Channel manager on Studio → Broadcast
 
 `StreamManagerPanel` lives on `/studio/broadcast` (Channel manager). Removed

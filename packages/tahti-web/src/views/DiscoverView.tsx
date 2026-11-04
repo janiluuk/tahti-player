@@ -1,16 +1,11 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
-  Blocks,
   ChevronDownIcon,
   CompassIcon,
   MapPinIcon,
   NewspaperIcon,
-  PauseIcon,
-  PlayIcon,
-  Plus,
   SlidersHorizontalIcon,
   UsersIcon,
-  XIcon,
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
@@ -20,11 +15,9 @@ import {
   Button,
   FilterChips,
   Masonry,
-  Popover,
   Select,
   TabLabel,
   Tabs,
-  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -56,19 +49,22 @@ import type {
 } from '../api/types';
 import { DirectoryArtistsBrowser } from '../components/DirectoryArtistsBrowser';
 import { CommunityStoriesWidget } from '../components/discover/CommunityStoriesWidget';
+import { DiscoverAddWidgetButton } from '../components/discover/DiscoverAddWidgetButton';
+import {
+  DiscoverWaveformPlayer,
+  type DiscoverSelection,
+} from '../components/discover/DiscoverWaveformPlayer';
 import { RandomTrackGenres } from '../components/discover/RandomTrackGenres';
 import { WidgetCard } from '../components/discover/WidgetCard';
 import {
   pickRandomTrack,
   TOP_LIST_WIDGET_IDS,
   WIDGET_LABELS,
-  WIDGET_MENU,
 } from '../components/discover/widgetMeta';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { LatestNewsWidget } from '../components/LatestNewsWidget';
 import { HomeNews } from '../components/listen-view/HomeNews';
 import { PageError, PageLoading } from '../components/PageStates';
-import { WaveformSeekbar } from '../components/tahti/WaveformSeekbar';
 import { VenuesDirectory } from '../components/VenuesDirectory';
 import { CONTENT_TYPES } from '../content/contentTypes';
 import { hasAccountRole } from '../lib/accountRoles';
@@ -99,11 +95,6 @@ type WidgetData = {
   releases?: LatestRelease[];
   subtitle?: string;
   artist?: DiscoverArtistOfWeek;
-};
-
-type DiscoverSelection = {
-  item: DiscoverTrackItem;
-  playable: TahtiPlayable;
 };
 
 const FeedView = lazy(() =>
@@ -419,12 +410,22 @@ export function DiscoverView() {
         title={t('nav.discover')}
         classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         actions={
-          activeTab === 'discover' ? (
-            <DiscoverAddWidgetButton
-              availableToAdd={availableToAdd}
-              onAdd={addWidget}
-            />
-          ) : undefined
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => void navigate({ to: '/groups' })}
+            >
+              <UsersIcon size={14} aria-hidden className="mr-1.5" />
+              Groups
+            </Button>
+            {activeTab === 'discover' ? (
+              <DiscoverAddWidgetButton
+                availableToAdd={availableToAdd}
+                onAdd={addWidget}
+              />
+            ) : null}
+          </div>
         }
       >
         {activeTab === 'venues' ? (
@@ -657,143 +658,5 @@ export function DiscoverView() {
         )}
       </ViewShell>
     </div>
-  );
-}
-
-function DiscoverAddWidgetButton({
-  availableToAdd,
-  onAdd,
-}: {
-  availableToAdd: DiscoverWidgetId[];
-  onAdd: (id: DiscoverWidgetId) => void;
-}) {
-  const { t } = useTranslation('web');
-  if (availableToAdd.length === 0) {
-    return null;
-  }
-
-  return (
-    <Popover
-      anchor="bottom end"
-      tooltip={{ content: t('discover.addWidget'), side: 'top' }}
-      trigger={
-        <Button
-          size="icon"
-          variant="secondary"
-          aria-label={t('discover.addWidget')}
-          data-testid="discover-add-widget"
-        >
-          <Plus size={17} aria-hidden />
-          <Blocks size={15} aria-hidden />
-        </Button>
-      }
-      panelClassName="w-72 px-1"
-    >
-      <Popover.Menu>
-        {availableToAdd.map((id) => {
-          const { icon: Icon, description } = WIDGET_MENU[id];
-          return (
-            <Popover.Item
-              key={id}
-              closeOnClick
-              onClick={() => onAdd(id)}
-              icon={<Icon size={16} aria-hidden />}
-              className="rounded-md"
-            >
-              <span className="flex flex-col">
-                <span className="font-semibold">{WIDGET_LABELS[id]}</span>
-                <span className="text-xs opacity-80">{description}</span>
-              </span>
-            </Popover.Item>
-          );
-        })}
-      </Popover.Menu>
-    </Popover>
-  );
-}
-
-function DiscoverWaveformPlayer({
-  selection,
-  onClose,
-}: {
-  selection: DiscoverSelection;
-  onClose: () => void;
-}) {
-  const currentId = usePlayerStore((state) => state.currentId);
-  const status = usePlayerStore((state) => state.status);
-  const currentTime = usePlayerStore((state) => state.currentTime);
-  const duration = usePlayerStore((state) => state.duration);
-  const currentPeaks = usePlayerStore((state) => state.currentPeaks);
-  const play = usePlayerStore((state) => state.play);
-  const setStatus = usePlayerStore((state) => state.setStatus);
-  const seekTo = usePlayerStore((state) => state.seekTo);
-  const isCurrent = currentId === selection.playable.id;
-  const isPlaying = isCurrent && (status === 'playing' || status === 'loading');
-  const progress = isCurrent && duration > 0 ? currentTime / duration : 0;
-  const peaks = (isCurrent ? currentPeaks : null) ?? selection.playable.peaks;
-
-  return (
-    <section
-      className="border-border bg-background-secondary rounded-md border p-4 shadow-sm"
-      aria-label="Waveform player"
-    >
-      <div className="flex items-start gap-3">
-        <Button
-          type="button"
-          variant="text"
-          size="flexible"
-          className="bg-foreground text-background hover:bg-foreground/90 flex size-10 shrink-0 items-center justify-center rounded-full transition-transform hover:scale-105"
-          onClick={() => {
-            if (isCurrent) {
-              setStatus(isPlaying ? 'paused' : 'playing');
-            } else {
-              play(selection.playable);
-            }
-          }}
-          aria-label={
-            isPlaying ? 'Pause selected track' : 'Play selected track'
-          }
-        >
-          {isPlaying ? <PauseIcon size={17} /> : <PlayIcon size={17} />}
-        </Button>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold">
-            {selection.playable.title}
-          </p>
-          <p className="text-foreground-secondary truncate text-xs">
-            {selection.playable.artist}
-          </p>
-          <WaveformSeekbar
-            trackId={selection.playable.id}
-            progress={progress}
-            peaks={peaks}
-            label={selection.playable.title}
-            durationSec={isCurrent ? duration : undefined}
-            className="mt-3 h-9 w-full"
-            onSeek={
-              isCurrent && duration > 0
-                ? (fraction) => seekTo(fraction * duration)
-                : undefined
-            }
-          />
-        </div>
-        <Tooltip
-          content="Close waveform player"
-          side="top"
-          wrapperClassName="shrink-0"
-        >
-          <Button
-            type="button"
-            variant="text"
-            size="icon-sm"
-            className="text-foreground-secondary hover:text-foreground shrink-0"
-            onClick={onClose}
-            aria-label="Close waveform player"
-          >
-            <XIcon size={16} />
-          </Button>
-        </Tooltip>
-      </div>
-    </section>
   );
 }

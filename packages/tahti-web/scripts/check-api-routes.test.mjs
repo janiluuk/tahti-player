@@ -49,6 +49,35 @@ describe('check-api-routes', () => {
     ).toBe(false);
   });
 
+  it('does not let a param swallow a different literal segment', () => {
+    const withShares = [
+      normalizePath('/api/me/sound/shares/{id}'),
+      normalizePath('/api/me/sound/{id}/shares'),
+    ];
+    expect(
+      isServed(
+        normalizePath('/api/me/sound/${id}/group-membership'),
+        withShares,
+      ),
+    ).toBe(false);
+    expect(
+      servedAllowances(['/api/me/sound/:param/group-membership'], withShares),
+    ).toEqual([]);
+  });
+
+  it('allows a caller param for a concrete action, or a concrete slug for {slug}', () => {
+    const channelRoutes = [
+      normalizePath('/api/channels/{slug}/pause'),
+      normalizePath('/api/channels/{slug}'),
+    ];
+    expect(
+      isServed(normalizePath('/api/channels/${slug}/${action}'), channelRoutes),
+    ).toBe(true);
+    expect(
+      isServed(normalizePath('/api/channels/tahti-radio'), channelRoutes),
+    ).toBe(true);
+  });
+
   it('finds quoted and template paths with their line', () => {
     const source =
       "const a = '/api/me/blocks';\nconst b = `/api/me/blocks/${name}`;\n";

@@ -320,6 +320,18 @@ export async function fetchStudioSoundFacets(
         count,
       }));
     }
+    if (fields.includes('tag')) {
+      const counts = new Map<string, number>();
+      for (const item of filtered) {
+        for (const tag of item.tags ?? []) {
+          counts.set(tag, (counts.get(tag) ?? 0) + 1);
+        }
+      }
+      facets.tag = [...counts.entries()].map(([value, count]) => ({
+        value,
+        count,
+      }));
+    }
     return {
       data: { facets, total: filtered.length },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

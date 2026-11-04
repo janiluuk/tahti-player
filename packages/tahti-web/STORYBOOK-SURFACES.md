@@ -194,6 +194,8 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/GlobalSearch` | `tahti-web/GlobalSearch.stories.tsx` |
 | `Tahti/Media/GlowMediaTile` | `tahti-web/GlowMediaTile.stories.tsx` |
 | `Tahti/Governance/Member panels` | `tahti-web/GovernanceMemberPanels.stories.tsx` |
+| `Tahti/Groups/GroupDetailView` | `tahti-web/GroupDetailView.stories.tsx` |
+| `Tahti/Groups/GroupsDirectoryView` | `tahti-web/GroupsDirectoryView.stories.tsx` |
 | `Tahti/Studio/Distribution/GuideDetail` | `tahti-web/GuideDetail.stories.tsx` |
 | `Tahti/Reference/Help center` | `tahti-web/HelpView.stories.tsx` |
 | `Tahti/History/HistoryListSection` | `tahti-web/HistoryListSection.stories.tsx` |
@@ -224,6 +226,10 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Desktop/LocalLibraryFilters` | `tahti-web/LocalLibraryFilters.stories.tsx` |
 | `Tahti/Auth/LoginView` | `tahti-web/LoginView.stories.tsx` |
 | `Tahti/Widgets/MapCommentForm` | `tahti-web/MapCommentForm.stories.tsx` |
+| `Tahti/Track/MaterialGenreField` | `tahti-web/MaterialGenreField.stories.tsx` |
+| `Tahti/Track/MaterialGroupsField` | `tahti-web/MaterialGroupsField.stories.tsx` |
+| `Tahti/Track/MaterialSetsField` | `tahti-web/MaterialSetsField.stories.tsx` |
+| `Tahti/Track/MaterialTagsField` | `tahti-web/MaterialTagsField.stories.tsx` |
 | `Tahti/Media/MediaIconActions` | `tahti-web/MediaIconActions.stories.tsx` |
 | `Tahti/Community/MentionTextarea` | `tahti-web/MentionTextarea.stories.tsx` |
 | `Tahti/Widgets/MermaidDiagram` | `tahti-web/MermaidDiagram.stories.tsx` |
@@ -333,6 +339,8 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/StudioEventsView` | `tahti-web/StudioEventsView.stories.tsx` |
 | `Tahti/Studio/StudioGate` | `tahti-web/StudioGate.stories.tsx` |
 | `Tahti/Studio/StudioGoLiveView` | `tahti-web/StudioGoLiveView.stories.tsx` |
+| `Tahti/Studio/StudioGroupDetailView` | `tahti-web/StudioGroupDetailView.stories.tsx` |
+| `Tahti/Studio/StudioGroupsView` | `tahti-web/StudioGroupsView.stories.tsx` |
 | `Tahti/Studio/StudioHomeView` | `tahti-web/StudioHomeView.stories.tsx` |
 | `Tahti/Studio/Hubs` | `tahti-web/StudioHubViews.stories.tsx` |
 | `Tahti/Studio/StudioListeningPartiesView` | `tahti-web/StudioListeningPartiesView.stories.tsx` |

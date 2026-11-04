@@ -16,6 +16,8 @@ import {
   ChatView,
   CollectionView,
   GreenRoomView,
+  GroupDetailView,
+  GroupsDirectoryView,
   JamView,
   ListeningPartyView,
   MessagesView,
@@ -326,6 +328,21 @@ export const artistRoute = createRoute({
   component: function ArtistRoute() {
     const { username } = artistRoute.useParams();
     return <ArtistView username={username} />;
+  },
+});
+
+export const groupsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/groups',
+  component: GroupsDirectoryView,
+});
+
+export const groupDetailRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/groups/$slug',
+  component: function GroupDetailRoute() {
+    const { slug } = groupDetailRoute.useParams();
+    return <GroupDetailView slug={slug} />;
   },
 });
 

@@ -1,16 +1,12 @@
-import {
-  CreatableCombobox,
-  Input,
-  Select,
-  Textarea,
-  Toggle,
-} from '@tahti-player/ui';
+import { Input, Select, Textarea, Toggle } from '@tahti-player/ui';
 
 import { AudienceVisibilitySection } from '../../../components/AudienceVisibilitySection';
 import { AudioRevisionList } from '../../../components/AudioRevisionList';
 import { DownloadsSwitch } from '../../../components/DownloadsSwitch';
+import { MaterialGenreField } from '../../../components/MaterialGenreField';
+import { MaterialTagsField } from '../../../components/MaterialTagsField';
 import { SELECTABLE_CONTENT_TYPES } from '../../../content/contentTypes';
-import { capitalizeGenre, PRESET_GENRES } from '../../../lib/genres';
+import { useUsedBeforeTags } from '../../../hooks/useUsedBeforeTags';
 import type { SoundEditorState } from './useSoundEditor';
 
 export function DetailsTabContent({
@@ -34,6 +30,10 @@ export function DetailsTabContent({
     setReleaseDate,
     genre,
     setGenre,
+    subGenres,
+    setSubGenres,
+    tags,
+    setTags,
     visibility,
     setVisibility,
     downloadsEnabled,
@@ -43,6 +43,7 @@ export function DetailsTabContent({
     quickMsg,
     revisionTick,
   } = state;
+  const usedBefore = useUsedBeforeTags();
 
   if (!item) {
     return null;
@@ -75,25 +76,14 @@ export function DetailsTabContent({
           rows={4}
         />
         {!isAudioClip ? (
-          <div className="flex flex-col gap-4 sm:flex-row">
-            <div className="w-full min-w-0 sm:w-44">
-              <Input
-                type="date"
-                label="Release date"
-                value={releaseDate}
-                onChange={(event) => setReleaseDate(event.target.value)}
-                className="w-full min-w-[11rem]"
-              />
-            </div>
-            <div className="flex-1">
-              <CreatableCombobox
-                label="Genre"
-                options={[...PRESET_GENRES]}
-                value={genre}
-                onValueChange={setGenre}
-                normalize={capitalizeGenre}
-              />
-            </div>
+          <div className="w-full min-w-0 sm:col-span-2 sm:w-44">
+            <Input
+              type="date"
+              label="Release date"
+              value={releaseDate}
+              onChange={(event) => setReleaseDate(event.target.value)}
+              className="w-full min-w-[11rem]"
+            />
           </div>
         ) : null}
         <AudienceVisibilitySection
@@ -106,7 +96,7 @@ export function DetailsTabContent({
             onChange={setDownloadsEnabled}
           />
         ) : null}
-        <div className="border-border flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
+        <div className="border-border flex items-center justify-between gap-3 rounded-lg border p-3 text-sm sm:col-span-2">
           <span>
             <span className="block font-medium">Allow comments</span>
             <span className="text-foreground-secondary block text-xs">
@@ -119,6 +109,25 @@ export function DetailsTabContent({
             onChange={setCommentsEnabled}
           />
         </div>
+      </div>
+
+      {!isAudioClip ? (
+        <div className="mt-4">
+          <MaterialGenreField
+            genre={genre}
+            onGenreChange={setGenre}
+            subGenres={subGenres}
+            onSubGenresChange={setSubGenres}
+          />
+        </div>
+      ) : null}
+
+      <div className="mt-4">
+        <MaterialTagsField
+          value={tags}
+          onChange={setTags}
+          usedBefore={usedBefore}
+        />
       </div>
 
       {quickMsg && (

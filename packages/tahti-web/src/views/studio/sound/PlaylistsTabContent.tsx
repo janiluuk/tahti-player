@@ -1,7 +1,9 @@
-import { ArchiveIcon, ListMusicIcon, RadioTowerIcon } from 'lucide-react';
+import { ArchiveIcon, RadioTowerIcon } from 'lucide-react';
 
 import { Button } from '@tahti-player/ui';
 
+import { MaterialGroupsField } from '../../../components/MaterialGroupsField';
+import { MaterialSetsField } from '../../../components/MaterialSetsField';
 import type { SoundEditorState } from './useSoundEditor';
 
 export function PlaylistsTabContent({
@@ -13,7 +15,6 @@ export function PlaylistsTabContent({
 }) {
   const {
     item,
-    setPlaylistOpen,
     rotationBusy,
     toggleRotation,
     saving,
@@ -26,29 +27,11 @@ export function PlaylistsTabContent({
   }
 
   return (
-    <section className="border-border bg-background-secondary/30 flex flex-col gap-5 rounded-xl border p-5">
-      <div className="flex items-start gap-3">
-        <ListMusicIcon
-          size={28}
-          className="text-primary-strong shrink-0"
-          aria-hidden
-        />
-        <div>
-          <h2 className="font-semibold">Add to playlists</h2>
-          <p className="text-foreground-secondary text-sm">
-            Add this track to one or more playlists, or create a new playlist
-            without leaving the track page.
-          </p>
-        </div>
+    <div className="flex flex-col gap-5">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <MaterialSetsField soundId={item.id} />
+        <MaterialGroupsField soundId={item.id} />
       </div>
-      <Button
-        size="sm"
-        className="self-start"
-        onClick={() => setPlaylistOpen(true)}
-      >
-        <ListMusicIcon size={15} aria-hidden className="mr-1.5" />
-        Choose playlists
-      </Button>
       <div className="border-border grid gap-3 border-t pt-4 sm:grid-cols-2">
         {!isAudioClip ? (
           <Button
@@ -70,6 +53,6 @@ export function PlaylistsTabContent({
           Move to private stash
         </Button>
       </div>
-    </section>
+    </div>
   );
 }
