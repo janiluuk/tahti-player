@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { i18n } from '@tahti-player/i18n';
 
-import { numericDate, relativeDate } from './relativeDate';
+import { numericDate, numericDay, relativeDate } from './relativeDate';
 
 const now = new Date('2026-10-30T12:00:00.000Z');
 
@@ -56,5 +56,17 @@ describe('relativeDate', () => {
 describe('numericDate', () => {
   it('has no leading zeros', () => {
     expect(numericDate(new Date(2026, 0, 5))).toBe('5.1.2026');
+  });
+});
+
+describe('numericDay', () => {
+  it('formats an ISO string as d.m.yyyy', () => {
+    expect(numericDay(new Date(2026, 11, 24, 12).toISOString())).toBe(
+      '24.12.2026',
+    );
+  });
+
+  it('is empty for an unparsable value', () => {
+    expect(numericDay('nope')).toBe('');
   });
 });

@@ -15,6 +15,7 @@ import type { BandcampAlbum, SoundcloudTrack } from '../../../api/sources';
 import { fetchMeProfile, patchMeProfile } from '../../../api/studio-extras';
 import { oauthAdapterFor } from '../../../plugins/import-sources';
 import { usePluginInstallStore } from '../../../stores/pluginInstallStore';
+import { ConfirmDialog } from '../../ConfirmDialog';
 import { PageEmpty } from '../../PageStates';
 import type { ServiceAction, ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
@@ -40,6 +41,7 @@ export function OAuthServiceCard({
     username?: string | null;
   } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [confirmDisconnect, setConfirmDisconnect] = useState(false);
   const [statusTick, setStatusTick] = useState(0);
   const [bandcampImporting, setBandcampImporting] = useState<string | null>(
     null,
@@ -280,7 +282,7 @@ export function OAuthServiceCard({
             variant="secondary"
             className="self-start"
             disabled={busy}
-            onClick={() => void disconnect()}
+            onClick={() => setConfirmDisconnect(true)}
           >
             {busy ? 'Disconnecting…' : 'Disconnect'}
           </Button>
@@ -476,6 +478,18 @@ export function OAuthServiceCard({
           )}
         </>
       )}
+      <ConfirmDialog
+        destructive
+        isOpen={confirmDisconnect}
+        title={`Disconnect ${plugin.name}?`}
+        description="Tahti forgets the saved sign-in. Imported tracks stay in your library."
+        confirmLabel="Disconnect"
+        onCancel={() => setConfirmDisconnect(false)}
+        onConfirm={() => {
+          setConfirmDisconnect(false);
+          void disconnect();
+        }}
+      />
     </ConfigurableCard>
   );
 }

@@ -763,9 +763,13 @@
       "downloadItem": "Download {{title}}",
       "preparingDownload": "Preparing download",
       "preparingDownloadOf": "Preparing download of {{title}}",
-      "preparing": "Preparing…",
+"preparing": "Preparing…",
       "love": "Love",
-      "loved": "Loved"
+      "loved": "Loved",
+      "add": "Add",
+      "back": "Back",
+      "shareItem": "Share {{title}}",
+      "backTo": "Back to {{name}}"
     },
     "search": {
       "placeholder": "Search artists, tracks, playlists…",
@@ -959,7 +963,14 @@
       "nothingPlaying": "Nothing playing",
       "pickChannel": "Pick a channel to listen",
       "cantPlay": "Can’t play this.",
-      "stationUnavailable": "Station unavailable"
+      "stationUnavailable": "Station unavailable",
+      "backToPlayer": "Back to player",
+      "minimize": "Minimize player",
+      "fullScreen": "Full screen",
+      "exitFullScreen": "Exit full screen",
+      "nowPlayingFullScreen": "Now playing, full screen",
+      "moreOptionsFor": "More options for {{title}}",
+      "buffering": "Buffering…"
     },
     "listen": {
       "sections": "Listen sections",
@@ -1102,7 +1113,17 @@
       "emptyLibraryDescription": "Sign in to save music you like, or browse Discover.",
       "embedsLoadError": "Could not load your imported embeds",
       "embedsEmptyTitle": "No imported embeds yet",
-      "embedsEmptyDescription": "Tracks imported from hearthis.at, Mixcloud, Spotify, or Bandcamp show up here, grouped by provider, once you import some from Settings → Add-ons → Import."
+      "embedsEmptyDescription": "Tracks imported from hearthis.at, Mixcloud, Spotify, or Bandcamp show up here, grouped by provider, once you import some from Settings → Add-ons → Import.",
+      "totalSounds": "Total sounds",
+      "storageUsed": "Storage used",
+      "unlimitedPlan": "Unlimited plan",
+      "storageOf": "of {{size}}",
+      "storageDefault": "Audio and files",
+      "topSound": "Top sound",
+      "noPlaysYet": "No plays yet",
+      "topSoundsAllTime": "Top sounds · all time",
+      "plays_one": "{{n}} play",
+      "plays_other": "{{n}} plays"
     },
     "date": {
       "today": "Today",
@@ -1240,6 +1261,94 @@
       "jam": "Jam",
       "studio": "Studio",
       "admin": "Admin"
+    },
+    "radio": {
+      "tabUpNext": "Up next",
+      "tabShows": "Shows",
+      "tabJustPlayed": "Just played",
+      "tabFeatured": "Featured",
+      "tuning": "Tuning Tahti Radio…",
+      "recentLoadError": "Could not load recent plays",
+      "recentRefreshError": "Could not refresh recent plays",
+      "recentEmpty": "No recent plays logged yet."
+    },
+    "messagesPopover": {
+      "title": "Messages",
+      "openAll": "Open all",
+      "empty": "No messages yet.",
+      "noMessages": "No messages yet"
+    },
+    "toasts": {
+      "processingFailed": "Processing failed",
+      "processingFailedReason": "Processing failed: {{reason}}",
+      "viewSound": "View sound"
+    },
+    "settingsBody": {
+      "loading": "Loading…",
+      "account": {
+        "signInPrompt": "Sign in to manage membership and security.",
+        "tabSession": "Session",
+        "tabPasswordEmail": "Password & email",
+        "tabDevices": "Devices",
+        "tabTwoFactor": "Two-factor authentication",
+        "tabApiTokens": "API tokens",
+        "tabMembership": "Membership",
+        "tabGovernance": "Governance",
+        "tabStorage": "Storage",
+        "tabNotifications": "Notifications & visibility",
+        "tabMentions": "Mentions",
+        "tabSubscriptions": "Your subs",
+        "tabPurchases": "Purchases",
+        "tabPrivacy": "Privacy & data",
+        "signedInAs": "Signed in as",
+        "displayName": "Display name",
+        "email": "Email",
+        "keyboardShortcuts": "Keyboard shortcuts",
+        "membershipLoadError": "Could not load your membership",
+        "membershipLoading": "Loading membership…",
+        "membershipUnavailable": "Membership is unavailable.",
+        "subscriptionsLoadError": "Could not load your fan subscriptions",
+        "subscriptionsEmpty": "No fan subscriptions on this account",
+        "purchasesLoadError": "Could not load your purchases",
+        "purchasesEmpty": "No track purchases on this account"
+      },
+      "channel": {
+        "loadError": "Could not load your channel profile",
+        "pageTitle": "Channel page",
+        "pageDescription": "What listeners can do when they open your channel.",
+        "showShareLabel": "Show share button on my channel",
+        "showShareDescription": "Let listeners copy or share your channel link from your channel page.",
+        "chatMovedTitle": "Chat moved to Fans",
+        "chatMovedDescription": "Turn chat on or off, and moderate access, messages, bans and moderators, on Studio → Fans.",
+        "moderatorsMovedTitle": "Moderators moved to Fans",
+        "moderatorsMovedDescription": "Add and remove chat moderators on Studio → Fans, under Chat.",
+        "openFansChat": "Open Fans chat"
+      },
+      "broadcast": {
+        "radioLoadError": "Could not load your radio settings",
+        "announcementsLabel": "Announcements enabled",
+        "announcementsDescription": "Allow platform/radio announcements on your channel programme.",
+        "fallbackLabel": "Fallback / autoplay when offline",
+        "autoEnrollLabel": "Auto-enroll new archive into fallback",
+        "openSchedule": "Open schedule / programme",
+        "greenRoomLoadError": "Could not load your green room settings",
+        "greenRoomDefaultLabel": "Open the green room when I go live",
+        "greenRoomDefaultDescription": "Each new broadcast starts with its green room open, and invites the people below. You can still open or close it from Go Live.",
+        "whoInvited": "Who gets invited",
+        "invitedHint": "Invited guests can listen before the stream goes public. You can invite anyone else by handle from Go Live."
+      },
+      "artist": {
+        "loadError": "Could not load your artist profile",
+        "connectionsLoadError": "Could not load your connections",
+        "tabIdentity": "Identity",
+        "tabStory": "Story",
+        "tabPeople": "People",
+        "tabConnections": "Connections",
+        "tabBranding": "Branding",
+        "tabGallery": "Gallery",
+        "tabPressKit": "Press kit",
+        "tabReleases": "Releases"
+      }
     }
   },
   "studioEditor": {

@@ -2,15 +2,8 @@ import { Badge, ExternalLink } from '@tahti-player/ui';
 
 import type { AdminAnnualReport } from '../../../../api/admin';
 import type { GovernanceMeeting } from '../../../../api/types';
+import { relativeDate } from '../../../../lib/relativeDate';
 import { AnnualReportActions } from './AnnualReportActions';
-
-function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
 
 /** Where the report stands, newest step first. */
 export function annualReportStage(report: AdminAnnualReport): {
@@ -27,20 +20,20 @@ export function annualReportStage(report: AdminAnnualReport): {
 }
 
 function reportTimeline(report: AdminAnnualReport): string {
-  const parts = [`Generated ${formatDay(report.generatedAt)}`];
+  const parts = [`Generated ${relativeDate(report.generatedAt)}`];
   if (report.approvedAt) {
-    parts.push(`approved ${formatDay(report.approvedAt)}`);
+    parts.push(`approved ${relativeDate(report.approvedAt)}`);
   }
   if (report.publishedAt) {
-    parts.push(`published ${formatDay(report.publishedAt)}`);
+    parts.push(`published ${relativeDate(report.publishedAt)}`);
   }
   if (report.filedAt) {
     parts.push(
-      `filed ${formatDay(report.filedAt)}${report.filingReference ? ` (${report.filingReference})` : ''}`,
+      `filed ${relativeDate(report.filedAt)}${report.filingReference ? ` (${report.filingReference})` : ''}`,
     );
   }
   if (report.correctedAt) {
-    parts.push(`corrected ${formatDay(report.correctedAt)}`);
+    parts.push(`corrected ${relativeDate(report.correctedAt)}`);
   }
   return parts.join(' · ');
 }

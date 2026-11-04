@@ -13,6 +13,7 @@ import {
   PageLoading,
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { relativeDate } from '../../../../lib/relativeDate';
 import { AnswerCorrectionForm } from './AnswerCorrectionForm';
 
 const SUBJECT_FOR_BOARD = {
@@ -28,14 +29,6 @@ const STATE_LABELS = {
 } as const;
 
 type Filter = 'waiting' | 'all';
-
-function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  });
-}
 
 /** Members' correction requests, the longest-waiting first. */
 export function CorrectionsQueuePanel() {
@@ -110,7 +103,7 @@ export function CorrectionsQueuePanel() {
                   {row.requester.memberNumber !== null
                     ? ` · member #${row.requester.memberNumber}`
                     : ''}{' '}
-                  · sent {formatDay(row.createdAt)}
+                  · sent {relativeDate(row.createdAt)}
                   {row.recordKind
                     ? ` · ${row.recordKind.toLowerCase().replace('_', ' ')} ${row.recordId}`
                     : ''}

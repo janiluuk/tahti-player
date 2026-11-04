@@ -468,11 +468,16 @@ export function AdminUserEditPanel({
         <StudioPanel
           title="Account access"
           description={
-            detail.suspendedAt
-              ? `Suspended ${new Date(detail.suspendedAt).toLocaleString()}${
-                  detail.suspendReason ? ` · ${detail.suspendReason}` : ''
-                }. Restoring it emails them a sign-in link.`
-              : 'Suspension blocks sign-in immediately and is audited. They are emailed your reason, and see it when they try to sign in.'
+            detail.suspendedAt ? (
+              <>
+                {'Suspended '}
+                <ListingDate value={detail.suspendedAt} />
+                {detail.suspendReason ? ` · ${detail.suspendReason}` : ''}
+                {'. Restoring it emails them a sign-in link.'}
+              </>
+            ) : (
+              'Suspension blocks sign-in immediately and is audited. They are emailed your reason, and see it when they try to sign in.'
+            )
           }
         >
           <form

@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   FilterChips,
@@ -160,6 +161,7 @@ function PronounsField({
 }
 
 export function ArtistPanel() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const refreshAuth = useAuthStore((s) => s.refresh);
   const artistSection = useSettingsModalStore((s) => s.artistSection);
@@ -235,18 +237,18 @@ export function ArtistPanel() {
 
   const profilePending = profileError ? (
     <PageError
-      title="Could not load your artist profile"
+      title={t('settingsBody.artist.loadError')}
       description={profileError}
       onRetry={() => setAttempt((n) => n + 1)}
     />
   ) : (
-    <InlineLoader label="Loading…" />
+    <InlineLoader label={t('settingsBody.loading')} />
   );
 
   const tabItems: TabsItem[] = [
     {
       id: 'identity',
-      label: 'Identity',
+      label: t('settingsBody.artist.tabIdentity'),
       icon: <UserCircle2 size={14} />,
       content: !profile ? (
         profilePending
@@ -360,7 +362,7 @@ export function ArtistPanel() {
     },
     {
       id: 'story',
-      label: 'Story',
+      label: t('settingsBody.artist.tabStory'),
       icon: <UserCircle2 size={14} />,
       content: !profile ? (
         profilePending
@@ -397,7 +399,7 @@ export function ArtistPanel() {
     },
     {
       id: 'people',
-      label: 'People',
+      label: t('settingsBody.artist.tabPeople'),
       icon: <Users size={14} />,
       content: (
         <div className="flex flex-col gap-5">
@@ -447,12 +449,12 @@ export function ArtistPanel() {
     },
     {
       id: 'connections',
-      label: 'Connections',
+      label: t('settingsBody.artist.tabConnections'),
       icon: <Share2 size={14} />,
       content: !social ? (
         socialError ? (
           <PageError
-            title="Could not load your connections"
+            title={t('settingsBody.artist.connectionsLoadError')}
             description={socialError}
             onRetry={() => {
               setSocialError(null);
@@ -460,7 +462,7 @@ export function ArtistPanel() {
             }}
           />
         ) : (
-          <InlineLoader label="Loading…" />
+          <InlineLoader label={t('settingsBody.loading')} />
         )
       ) : (
         <div className="flex flex-col gap-6">
@@ -534,25 +536,25 @@ export function ArtistPanel() {
     },
     {
       id: 'branding',
-      label: 'Branding',
+      label: t('settingsBody.artist.tabBranding'),
       icon: <Paintbrush size={14} />,
       content: <StudioBrandingPanel section="branding" />,
     },
     {
       id: 'gallery',
-      label: 'Gallery',
+      label: t('settingsBody.artist.tabGallery'),
       icon: <Images size={14} />,
       content: <StudioBrandingPanel section="gallery" />,
     },
     {
       id: 'press-kit',
-      label: 'Press kit',
+      label: t('settingsBody.artist.tabPressKit'),
       icon: <Download size={14} />,
       content: <StudioBrandingPanel section="press-kit" />,
     },
     {
       id: 'release-visuals',
-      label: 'Releases',
+      label: t('settingsBody.artist.tabReleases'),
       icon: <Sparkles size={14} />,
       content: <ReleaseVisualDefaultsPanel />,
     },

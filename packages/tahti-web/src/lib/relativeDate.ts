@@ -10,6 +10,12 @@ export function numericDate(date: Date): string {
   return `${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
 }
 
+/** `numericDate` for an ISO string; empty for an unparsable value. */
+export function numericDay(value: string): string {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? '' : numericDate(date);
+}
+
 /** The one date style for listings: humanized in the app language inside a
  * week ("just now",
  * "45 minutes ago", "3 hours ago", "2 days ago"), `d.m.yyyy` after that.

@@ -20,6 +20,7 @@ import {
   type GovernanceNoticeDelivery,
 } from '../../../../api/admin';
 import { ConfirmDialog } from '../../../../components/ConfirmDialog';
+import { ListingDate } from '../../../../components/ListingDate';
 import { PageEmpty } from '../../../../components/PageStates';
 
 export function CollapsibleRecord({
@@ -262,8 +263,7 @@ export function NoticeDeliveriesPanel({ meetingId }: { meetingId: string }) {
                     : 'Unnamed member'}
                 </div>
                 <div className="text-foreground-secondary text-xs">
-                  {record.email} · sent{' '}
-                  {new Date(record.sentAt).toLocaleString()}
+                  {record.email} · sent <ListingDate value={record.sentAt} />
                 </div>
               </div>
               {record.bouncedAt ? (

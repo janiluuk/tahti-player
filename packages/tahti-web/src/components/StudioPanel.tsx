@@ -12,7 +12,7 @@ export function StudioPanel({
   title?: string;
   /** Optional leading icon rendered before the title. */
   icon?: ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
-  description?: string;
+  description?: ReactNode;
   action?: ReactNode;
   children: ReactNode;
   className?: string;

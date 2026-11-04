@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 
 import {
   Button,
+  ButtonLink,
   ExternalLink,
   FilterChips,
   ImageReveal,
@@ -111,7 +112,15 @@ export function LibraryMediaView() {
           onRetry={() => void reload()}
         />
       ) : files.length === 0 ? (
-        <PageEmpty title="No media files yet. Add background images or a Video loop backdrop from Artist → Branding." />
+        <PageEmpty
+          title="No media files yet"
+          description="Add background images or a video loop backdrop from Studio → Branding."
+          action={
+            <ButtonLink to="/studio/branding" size="sm" variant="secondary">
+              Open Branding
+            </ButtonLink>
+          }
+        />
       ) : (
         <div className="flex flex-col gap-4">
           <LibrarySectionToolbar

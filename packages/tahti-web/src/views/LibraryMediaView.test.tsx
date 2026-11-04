@@ -1,14 +1,9 @@
 // @vitest-environment jsdom
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as userMedia from '../api/user-media';
+import { renderWithRouter } from '../test/renderWithRouter';
 import { LibraryMediaView } from './LibraryMediaView';
 
 describe('LibraryMediaView', () => {
@@ -22,7 +17,9 @@ describe('LibraryMediaView', () => {
       data: [],
       meta: { source: 'api', reason: 'HTTP 502' },
     });
-    render(<LibraryMediaView />);
+    await renderWithRouter(<LibraryMediaView />, {
+      paths: ['/studio/branding'],
+    });
     expect(
       await screen.findByText('Could not load your media files'),
     ).toBeTruthy();
@@ -31,6 +28,9 @@ describe('LibraryMediaView', () => {
     fetch.mockResolvedValue({ data: [], meta: { source: 'api' } });
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText(/No media files yet/)).toBeTruthy();
+    expect(
+      screen.getByRole('link', { name: 'Open Branding' }).getAttribute('href'),
+    ).toBe('/studio/branding');
   });
 
   it('filters by kind and clears the filter from the empty state', async () => {
@@ -53,7 +53,9 @@ describe('LibraryMediaView', () => {
       ],
       meta: { source: 'api' },
     } as never);
-    render(<LibraryMediaView />);
+    await renderWithRouter(<LibraryMediaView />, {
+      paths: ['/studio/branding'],
+    });
     expect(await screen.findByText('bg.png')).toBeTruthy();
     expect(screen.getByText('loop.mp4')).toBeTruthy();
 
@@ -92,7 +94,9 @@ describe('LibraryMediaView', () => {
       ],
       meta: { source: 'api' },
     });
-    render(<LibraryMediaView />);
+    await renderWithRouter(<LibraryMediaView />, {
+      paths: ['/studio/branding'],
+    });
     await screen.findByText('b-old.png');
 
     const names = () =>
@@ -129,7 +133,9 @@ describe('LibraryMediaView', () => {
       ],
       meta: { source: 'api' },
     } as never);
-    render(<LibraryMediaView />);
+    await renderWithRouter(<LibraryMediaView />, {
+      paths: ['/studio/branding'],
+    });
     await screen.findByText('bg.png');
 
     fireEvent.change(
@@ -164,7 +170,9 @@ describe('LibraryMediaView', () => {
     const remove = vi
       .spyOn(userMedia, 'deleteUserMedia')
       .mockResolvedValue({ ok: true } as never);
-    render(<LibraryMediaView />);
+    await renderWithRouter(<LibraryMediaView />, {
+      paths: ['/studio/branding'],
+    });
     fireEvent.click(
       await screen.findByRole('button', { name: 'Remove bg.png' }),
     );

@@ -363,7 +363,7 @@ function LibraryStats() {
         <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
           <Music2Icon size={18} className="text-primary-strong" aria-hidden />
           <p className="text-foreground-secondary mt-2 text-xs uppercase">
-            Total sounds
+            {t('library.totalSounds')}
           </p>
           <p className="mt-1 text-2xl font-bold tabular-nums">
             {soundCount === null || soundsError ? '—' : soundCount}
@@ -376,17 +376,19 @@ function LibraryStats() {
             aria-hidden
           />
           <p className="text-foreground-secondary mt-2 text-xs uppercase">
-            Storage used
+            {t('library.storageUsed')}
           </p>
           <p className="mt-1 text-2xl font-bold tabular-nums">
             {storage ? formatBytes(storage.usedBytes) : '—'}
           </p>
           <p className="text-foreground-secondary text-xs">
             {storage?.unlimited
-              ? 'Unlimited plan'
+              ? t('library.unlimitedPlan')
               : storage?.quotaBytes
-                ? `of ${formatBytes(storage.quotaBytes)}`
-                : 'Audio and files'}
+                ? t('library.storageOf', {
+                    size: formatBytes(storage.quotaBytes),
+                  })
+                : t('library.storageDefault')}
           </p>
         </div>
         <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
@@ -396,7 +398,7 @@ function LibraryStats() {
             aria-hidden
           />
           <p className="text-foreground-secondary mt-2 text-xs uppercase">
-            Top sound
+            {t('library.topSound')}
           </p>
           <p className="mt-1 truncate text-sm font-bold">
             {topTracks[0]?.title ?? '—'}
@@ -404,14 +406,14 @@ function LibraryStats() {
           <p className="text-foreground-secondary text-xs">
             {topTracks[0]
               ? formatPlayCount(topTracks[0].plays)
-              : 'No plays yet'}
+              : t('library.noPlaysYet')}
           </p>
         </div>
       </div>
       {topTracks.length > 0 ? (
         <div className="mt-4">
           <TopList
-            title="Top sounds · all time"
+            title={t('library.topSoundsAllTime')}
             formatValue={formatPlayCount}
             entries={topTracks.map((track) => ({
               id: track.soundId,

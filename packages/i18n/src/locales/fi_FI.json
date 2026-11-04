@@ -763,9 +763,13 @@
       "downloadItem": "Lataa {{title}}",
       "preparingDownload": "Valmistellaan latausta",
       "preparingDownloadOf": "Valmistellaan kohteen {{title}} latausta",
-      "preparing": "Valmistellaan…",
+"preparing": "Valmistellaan…",
       "love": "Tykkää",
-      "loved": "Tykätty"
+      "loved": "Tykätty",
+      "add": "Lisää",
+      "back": "Takaisin",
+      "shareItem": "Jaa {{title}}",
+      "backTo": "Takaisin: {{name}}"
     },
     "search": {
       "placeholder": "Hae artisteja, kappaleita, soittolistoja…",
@@ -959,7 +963,14 @@
       "nothingPlaying": "Ei toistoa",
       "pickChannel": "Valitse kuunneltava kanava",
       "cantPlay": "Tätä ei voi toistaa.",
-      "stationUnavailable": "Asema ei ole saatavilla"
+      "stationUnavailable": "Asema ei ole saatavilla",
+      "backToPlayer": "Takaisin soittimeen",
+      "minimize": "Pienennä soitin",
+      "fullScreen": "Koko näyttö",
+      "exitFullScreen": "Poistu koko näytöstä",
+      "nowPlayingFullScreen": "Nyt soi, koko näyttö",
+      "moreOptionsFor": "Lisää valintoja: {{title}}",
+      "buffering": "Puskuroidaan…"
     },
     "listen": {
       "sections": "Kuuntele-osiot",
@@ -1102,7 +1113,17 @@
       "emptyLibraryDescription": "Kirjaudu sisään tallentaaksesi musiikkia, josta pidät, tai selaa Tutki-sivua.",
       "embedsLoadError": "Tuotuja upotuksia ei voitu ladata",
       "embedsEmptyTitle": "Ei tuotuja upotuksia vielä",
-      "embedsEmptyDescription": "Hearthis.at-, Mixcloud-, Spotify- ja Bandcamp-tuonnit näkyvät täällä palveluntarjoajan mukaan, kun olet tuonut niitä Asetukset → Lisäosat → Tuonti."
+      "embedsEmptyDescription": "Hearthis.at-, Mixcloud-, Spotify- ja Bandcamp-tuonnit näkyvät täällä palveluntarjoajan mukaan, kun olet tuonut niitä Asetukset → Lisäosat → Tuonti.",
+      "totalSounds": "Äänet yhteensä",
+      "storageUsed": "Tallennustila käytössä",
+      "unlimitedPlan": "Rajoittamaton paketti",
+      "storageOf": "kiintiö {{size}}",
+      "storageDefault": "Äänet ja tiedostot",
+      "topSound": "Suosituin ääni",
+      "noPlaysYet": "Ei kuuntelukertoja vielä",
+      "topSoundsAllTime": "Suosituimmat äänet · koko ajalta",
+      "plays_one": "{{n}} kuuntelu",
+      "plays_other": "{{n}} kuuntelua"
     },
     "date": {
       "today": "Tänään",
@@ -1240,6 +1261,94 @@
       "jam": "Jam",
       "studio": "Studio",
       "admin": "Ylläpito"
+    },
+    "radio": {
+      "tabUpNext": "Seuraavaksi",
+      "tabShows": "Ohjelmat",
+      "tabJustPlayed": "Juuri soitettu",
+      "tabFeatured": "Esillä",
+      "tuning": "Viritetään Tahti Radiota…",
+      "recentLoadError": "Viimeisimpiä soittoja ei voitu ladata",
+      "recentRefreshError": "Viimeisimpiä soittoja ei voitu päivittää",
+      "recentEmpty": "Soittoja ei ole vielä kirjattu."
+    },
+    "messagesPopover": {
+      "title": "Viestit",
+      "openAll": "Avaa kaikki",
+      "empty": "Ei viestejä vielä.",
+      "noMessages": "Ei viestejä vielä"
+    },
+    "toasts": {
+      "processingFailed": "Käsittely epäonnistui",
+      "processingFailedReason": "Käsittely epäonnistui: {{reason}}",
+      "viewSound": "Näytä ääni"
+    },
+    "settingsBody": {
+      "loading": "Ladataan…",
+      "account": {
+        "signInPrompt": "Kirjaudu hallitaksesi jäsenyyttä ja tietoturvaa.",
+        "tabSession": "Istunto",
+        "tabPasswordEmail": "Salasana ja sähköposti",
+        "tabDevices": "Laitteet",
+        "tabTwoFactor": "Kaksivaiheinen tunnistus",
+        "tabApiTokens": "API-avaimet",
+        "tabMembership": "Jäsenyys",
+        "tabGovernance": "Hallinto",
+        "tabStorage": "Tallennustila",
+        "tabNotifications": "Ilmoitukset ja näkyvyys",
+        "tabMentions": "Maininnat",
+        "tabSubscriptions": "Tilaukseni",
+        "tabPurchases": "Ostot",
+        "tabPrivacy": "Yksityisyys ja data",
+        "signedInAs": "Kirjautunut käyttäjänä",
+        "displayName": "Näyttönimi",
+        "email": "Sähköposti",
+        "keyboardShortcuts": "Pikanäppäimet",
+        "membershipLoadError": "Jäsenyyttä ei voitu ladata",
+        "membershipLoading": "Ladataan jäsenyyttä…",
+        "membershipUnavailable": "Jäsenyys ei ole saatavilla.",
+        "subscriptionsLoadError": "Fanitilauksia ei voitu ladata",
+        "subscriptionsEmpty": "Tilillä ei ole fanitilauksia",
+        "purchasesLoadError": "Ostoja ei voitu ladata",
+        "purchasesEmpty": "Tilillä ei ole kappaleostoja"
+      },
+      "channel": {
+        "loadError": "Kanavaprofiilia ei voitu ladata",
+        "pageTitle": "Kanavasivu",
+        "pageDescription": "Mitä kuuntelijat voivat tehdä avatessaan kanavasi.",
+        "showShareLabel": "Näytä jakopainike kanavallani",
+        "showShareDescription": "Anna kuuntelijoiden kopioida tai jakaa kanavasi linkki kanavasivulta.",
+        "chatMovedTitle": "Chat siirtyi Fanit-näkymään",
+        "chatMovedDescription": "Chatin voi ottaa käyttöön tai poistaa, ja käyttöoikeuksia, viestejä, porttikieltoja ja moderaattoreita hallitaan kohdassa Studio → Fanit.",
+        "moderatorsMovedTitle": "Moderaattorit siirtyivät Fanit-näkymään",
+        "moderatorsMovedDescription": "Lisää ja poista chatin moderaattoreita kohdassa Studio → Fanit, Chatin alla.",
+        "openFansChat": "Avaa Fanien chat"
+      },
+      "broadcast": {
+        "radioLoadError": "Radioasetuksia ei voitu ladata",
+        "announcementsLabel": "Tiedotteet käytössä",
+        "announcementsDescription": "Salli alustan ja radion tiedotteet kanavasi ohjelmassa.",
+        "fallbackLabel": "Varasoitto / automaattisoitto offline-tilassa",
+        "autoEnrollLabel": "Lisää uusi arkisto automaattisesti varasoittoon",
+        "openSchedule": "Avaa aikataulu / ohjelma",
+        "greenRoomLoadError": "Green room -asetuksia ei voitu ladata",
+        "greenRoomDefaultLabel": "Avaa green room, kun menen liveen",
+        "greenRoomDefaultDescription": "Jokainen uusi lähetys alkaa green room auki ja kutsuu alla valitut henkilöt. Voit silti avata tai sulkea sen Mene liveen -näkymästä.",
+        "whoInvited": "Ketä kutsutaan",
+        "invitedHint": "Kutsutut vieraat voivat kuunnella ennen kuin lähetys julkaistaan. Voit kutsua muita käyttäjätunnuksella Mene liveen -näkymästä."
+      },
+      "artist": {
+        "loadError": "Artistiprofiilia ei voitu ladata",
+        "connectionsLoadError": "Yhteyksiä ei voitu ladata",
+        "tabIdentity": "Henkilöllisyys",
+        "tabStory": "Tarina",
+        "tabPeople": "Ihmiset",
+        "tabConnections": "Yhteydet",
+        "tabBranding": "Ilme",
+        "tabGallery": "Galleria",
+        "tabPressKit": "Pressikitti",
+        "tabReleases": "Julkaisut"
+      }
     }
   },
   "studioEditor": {
