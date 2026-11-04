@@ -13,6 +13,7 @@ import {
 import { useState, type CSSProperties } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -351,7 +352,7 @@ export function ArtistBioSection({
           </p>
           {isOwner && (
             <EditIconButton
-              label="Edit full bio"
+              label={i18n.t('web:actions.editFullBio')}
               className="mt-2"
               onClick={() => startEditing(artist.fullBio ?? '')}
             />

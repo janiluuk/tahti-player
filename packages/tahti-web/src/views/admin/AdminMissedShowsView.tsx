@@ -21,13 +21,21 @@ import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { ModerationTabs } from './moderation/ModerationTabs';
 
-const FILTERS: Array<{ id: AdminMissedShowStatus | 'ALL'; label: string }> = [
-  { id: 'ALL', label: 'All' },
-  { id: 'OPEN', label: 'Open' },
-  { id: 'REVIEWING', label: 'Reviewing' },
-  { id: 'ACTIONED', label: 'Actioned' },
-  { id: 'DISMISSED', label: 'Dismissed' },
-];
+const FILTER_IDS = [
+  'ALL',
+  'OPEN',
+  'REVIEWING',
+  'ACTIONED',
+  'DISMISSED',
+] as const satisfies ReadonlyArray<AdminMissedShowStatus | 'ALL'>;
+
+const FILTER_LABEL_KEYS: Record<(typeof FILTER_IDS)[number], string> = {
+  ALL: 'adminMissedShows.filterAll',
+  OPEN: 'adminMissedShows.filterOpen',
+  REVIEWING: 'adminMissedShows.filterReviewing',
+  ACTIONED: 'adminMissedShows.filterActioned',
+  DISMISSED: 'adminMissedShows.filterDismissed',
+};
 
 const FILTER_TAB_ICONS = {
   ALL: ListFilterIcon,
@@ -39,13 +47,13 @@ const FILTER_TAB_ICONS = {
 
 export function AdminMissedShowsPanel() {
   const { t } = useTranslation('web');
-  const [filter, setFilter] = useState<(typeof FILTERS)[number]['id']>('ALL');
+  const [filter, setFilter] = useState<(typeof FILTER_IDS)[number]>('ALL');
   const [flags, setFlags] = useState<AdminMissedShow[]>([]);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const load = (nextFilter: (typeof FILTERS)[number]['id']) => {
+  const load = (nextFilter: (typeof FILTER_IDS)[number]) => {
     setLoading(true);
     setError(null);
     void fetchAdminMissedShows(
@@ -81,22 +89,25 @@ export function AdminMissedShowsPanel() {
       <StudioPanel>
         <ModerationTabs
           activeId={filter}
-          items={FILTERS.map((item) => ({
-            ...item,
-            icon: FILTER_TAB_ICONS[item.id],
+          items={FILTER_IDS.map((id) => ({
+            id,
+            label: t(FILTER_LABEL_KEYS[id] as 'adminMissedShows.filterAll'),
+            icon: FILTER_TAB_ICONS[id],
           }))}
-          ariaLabel="Missed show status"
+          ariaLabel={t('adminMissedShows.statusAria')}
           onChange={(id) => {
-            const nextFilter = id as (typeof FILTERS)[number]['id'];
+            const nextFilter = id as (typeof FILTER_IDS)[number];
             setFilter(nextFilter);
             load(nextFilter);
           }}
         />
       </StudioPanel>
 
-      <StudioPanel title={`Queue · ${flags.length}`}>
+      <StudioPanel
+        title={t('adminMissedShows.queueTitle', { count: flags.length })}
+      >
         {loading ? (
-          <PageLoading label="Loading missed shows…" />
+          <PageLoading label={t('adminMissedShows.loading')} />
         ) : error ? (
           <PageError description={error} />
         ) : flags.length === 0 ? (
@@ -128,7 +139,10 @@ export function AdminMissedShowsPanel() {
                 </div>
                 <div className="flex shrink-0 flex-wrap gap-1.5">
                   {flag.status !== 'REVIEWING' && (
-                    <Tooltip content="Mark reviewing" side="top">
+                    <Tooltip
+                      content={t('adminMissedShows.markReviewing')}
+                      side="top"
+                    >
                       <Button
                         size="icon-sm"
                         variant="secondary"
@@ -141,7 +155,10 @@ export function AdminMissedShowsPanel() {
                     </Tooltip>
                   )}
                   {flag.status !== 'ACTIONED' && (
-                    <Tooltip content="Mark actioned" side="top">
+                    <Tooltip
+                      content={t('adminMissedShows.markActioned')}
+                      side="top"
+                    >
                       <Button
                         size="icon-sm"
                         variant="secondary"
@@ -154,7 +171,7 @@ export function AdminMissedShowsPanel() {
                     </Tooltip>
                   )}
                   {flag.status !== 'DISMISSED' && (
-                    <Tooltip content="Dismiss missed show" side="top">
+                    <Tooltip content={t('adminMissedShows.dismiss')} side="top">
                       <Button
                         size="icon-sm"
                         variant="secondary"

@@ -26,10 +26,10 @@ import {
   type ListeningPartySummaryDto,
 } from '../../api/listening-parties';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
-import { PARTY_START_FORMAT } from '../../components/listening-party/format';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { formatScheduleWindow } from '../../lib/scheduleTime';
 
 const STATE_BADGE: Record<
   ListeningPartyState,
@@ -110,10 +110,7 @@ export function StudioListeningPartiesView() {
                     dateTime={party.startAt}
                     className="text-foreground-secondary text-xs"
                   >
-                    {new Date(party.startAt).toLocaleString(
-                      undefined,
-                      PARTY_START_FORMAT,
-                    )}
+                    {formatScheduleWindow(party.startAt)}
                   </time>
                 </div>
               </div>

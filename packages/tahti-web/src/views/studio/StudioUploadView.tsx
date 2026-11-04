@@ -2,7 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { PauseIcon, PlayIcon, RadioIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   EditIconLink,
@@ -34,7 +34,7 @@ import { UploadSourceWidgets } from './upload/UploadSourceWidgets';
 
 function formatRecordingDuration(seconds?: number | null): string {
   if (!seconds) {
-    return 'Duration unavailable';
+    return i18n.t('web:library.durationUnavailable');
   }
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
@@ -60,18 +60,22 @@ function RecordedBroadcastCard({
   onPlay: () => void;
   onSeek: (fraction: number) => void;
 }) {
+  const { t } = useTranslation('web');
   const playableId = `broadcast:${broadcast.id}`;
   const isCurrent = currentId === playableId;
   const isPlaying = isCurrent && status === 'playing';
   const progressDuration =
     isCurrent && duration > 0 ? duration : (broadcast.durationSec ?? 0);
-  const title = broadcast.title || broadcast.soundTitle || 'Recorded broadcast';
+  const title =
+    broadcast.title || broadcast.soundTitle || t('library.recordedBroadcast');
 
   return (
     <li className="border-border bg-background-secondary rounded-lg border p-3">
       <div className="flex items-start gap-3">
         <Tooltip
-          content={isPlaying ? 'Pause recording' : 'Play recording'}
+          content={
+            isPlaying ? t('library.pauseRecording') : t('library.playRecording')
+          }
           side="top"
         >
           <Button
@@ -184,7 +188,7 @@ export function StudioUploadView() {
 
   const submit = async () => {
     if (!file) {
-      setMessage('Choose an audio file.');
+      setMessage(t('library.chooseAudioFile'));
       return;
     }
     setBusy(true);
@@ -204,7 +208,7 @@ export function StudioUploadView() {
         search: { edit: true },
       });
     } catch {
-      setMessage('Could not upload the file.');
+      setMessage(t('library.couldNotUpload'));
     } finally {
       setBusy(false);
     }
@@ -223,9 +227,11 @@ export function StudioUploadView() {
             <div className="border-accent-cyan flex min-h-48 flex-col justify-center rounded-xl border border-dashed p-5 sm:p-6">
               <FilePicker
                 labels={{
-                  title: 'Choose audio file',
+                  title: t('library.chooseAudioFileTitle'),
                   description: UPLOAD_AUDIO_FORMATS_LABEL,
-                  browse: file ? 'Choose another file' : 'Choose audio',
+                  browse: file
+                    ? t('library.chooseAnotherFile')
+                    : t('library.chooseAudio'),
                 }}
                 accept={UPLOAD_AUDIO_ACCEPT}
                 selectedFiles={file ? [file] : []}
@@ -241,11 +247,11 @@ export function StudioUploadView() {
               <div className="flex flex-wrap gap-2">
                 <Button
                   disabled={busy || !file}
-                  aria-label="Upload file"
+                  aria-label={t('library.uploadFile')}
                   onClick={() => void submit()}
                 >
                   <UploadIcon size={16} aria-hidden className="mr-1.5" />
-                  {busy ? 'Uploading…' : 'Upload'}
+                  {busy ? t('library.uploading') : t('actions.upload')}
                 </Button>
               </div>
             </div>
@@ -256,7 +262,10 @@ export function StudioUploadView() {
                 Last recorded broadcasts
               </div>
               {recordingsLoading ? (
-                <InlineLoader label="Loading recordings…" className="mt-4" />
+                <InlineLoader
+                  label={t('library.loadingRecordings')}
+                  className="mt-4"
+                />
               ) : recordingsError && recordings.length === 0 ? (
                 <PageError
                   title={t('library.recordingsLoadError')}

@@ -38,7 +38,9 @@ import type {
 } from '../../../../api/types';
 import { PageEmpty } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { numericDay } from '../../../../lib/relativeDate';
 import { isSafeHref } from '../../../../lib/safeHref';
+import { formatScheduleWindow } from '../../../../lib/scheduleTime';
 import { GovernanceDocumentRow } from '../records/GovernanceDocumentRow';
 import { LegalHoldControl } from '../records/LegalHoldControl';
 import { MemberRegisterPanel } from '../records/MemberRegisterPanel';
@@ -446,7 +448,7 @@ export function AgmTab() {
                 </div>
                 <p className="text-foreground-secondary mt-1 text-xs">
                   {meeting.scheduledAt
-                    ? new Date(meeting.scheduledAt).toLocaleString()
+                    ? formatScheduleWindow(meeting.scheduledAt)
                     : 'Date not scheduled'}{' '}
                   · {meeting.presentCount}/{meeting.eligibleMemberCount ?? '—'}{' '}
                   present
@@ -608,8 +610,7 @@ export function AgmTab() {
                   </div>
                 </div>
                 <div className="text-foreground-secondary text-xs">
-                  Opens {new Date(m.openAt).toLocaleDateString('fi-FI')} ·
-                  Closes {new Date(m.closeAt).toLocaleDateString('fi-FI')}
+                  Opens {numericDay(m.openAt)} · Closes {numericDay(m.closeAt)}
                 </div>
               </li>
             ))}

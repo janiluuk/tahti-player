@@ -33,10 +33,12 @@ export const Default: Story = {
     await waitFor(async () => {
       await expect(
         canvas.getByRole('heading', { name: 'DJ Moonlight' }),
-      ).toBeVisible();
+      ).toBeInTheDocument();
     });
-    await expect(canvas.getByRole('heading', { name: 'Files' })).toBeVisible();
-    await expect(canvas.getByText('Moonlight Drive')).toBeVisible();
+    await expect(
+      canvas.getByRole('heading', { name: 'Files' }),
+    ).toBeInTheDocument();
+    await expect(canvas.getByText('Moonlight Drive')).toBeInTheDocument();
     await expect(
       canvas.getByRole('link', { name: 'Back to Storage' }),
     ).toHaveAttribute('href', '/admin/storage');

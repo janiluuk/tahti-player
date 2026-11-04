@@ -29,6 +29,7 @@ import {
   type RangePresetId,
 } from '../../lib/historyStats';
 import { dateLocaleTag } from '../../lib/locale';
+import { numericDate } from '../../lib/relativeDate';
 import { useThemeStore } from '../../plugins/themes';
 import type { HistoryEntry } from '../../stores/libraryStore';
 import { PageEmpty } from '../PageStates';
@@ -86,7 +87,7 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
     [history, presetId],
   );
   const rangeDates = rangeBounds
-    ? `${new Date(rangeBounds.from).toLocaleDateString(dateLocaleTag(), { dateStyle: 'medium' })} – ${new Date(rangeBounds.to).toLocaleDateString(dateLocaleTag(), { dateStyle: 'medium' })}`
+    ? `${numericDate(new Date(rangeBounds.from))} – ${numericDate(new Date(rangeBounds.to))}`
     : null;
 
   if (history.length === 0) {
@@ -163,7 +164,7 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
             variant="tertiary"
             className="h-auto min-w-0 flex-1 flex-col gap-3"
           >
-            <h3 className="font-heading text-xl">Day of week</h3>
+            <h3 className="font-heading text-xl">{t('library.dayOfWeek')}</h3>
             {/* recharts' ResponsiveContainer needs a definite height; the
                 absolute layer gives it one while the box stretches to match
                 the clock beside it. */}
@@ -181,18 +182,20 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
       ) : (
         <PageEmpty
           data-testid="history-stats-empty"
-          title="Nothing in this range"
-          description="Try a wider range, or come back once you've listened to something more recently."
+          title={t('library.historyStatsEmptyRangeTitle')}
+          description={t('library.historyStatsEmptyRangeDescription')}
           className="flex-1"
         />
       )}
 
       <Box variant="tertiary" className="min-w-0 flex-col gap-3">
-        <h3 className="font-heading text-xl">Listening calendar</h3>
+        <h3 className="font-heading text-xl">
+          {t('library.listeningCalendar')}
+        </h3>
         {/* An rtl scroller starts at its right edge, so a pane too narrow
             for the whole year opens on the most recent weeks. */}
         <HorizontalScroll
-          label="Listening calendar"
+          label={t('library.listeningCalendar')}
           className="[direction:rtl]"
         >
           <CalendarHeatmap
@@ -201,8 +204,8 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
             labels={{
               months: monthLabelsShort(),
               weekdays: weekdayLabelsShort(),
-              legendLess: 'Less',
-              legendMore: 'More',
+              legendLess: t('library.legendLess'),
+              legendMore: t('library.legendMore'),
             }}
             colorScheme={isDark ? 'dark' : 'light'}
             formatValue={formatListeningDuration}

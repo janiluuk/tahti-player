@@ -1,3 +1,11 @@
+## 2026-11-04 - Batch 36 UX slices
+
+Settings Account/Artist/Channel Finnish subsets; Notifications chrome;
+Library Sounds/Collections/Upload + History Stats/Across devices; channel
+tabs; track comments/details; admin missed-shows empty; download →
+web.actions; Discover widget labels; numericDay + ListingDate leftovers;
+channel rename destructive. tahti-web 0.0.326 (#1822).
+
 ## 2026-11-04 - Batch 35 UX slices
 
 ListingDate leftovers (Admin Catalog/Radio featured history, Studio editor

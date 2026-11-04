@@ -35,30 +35,47 @@ export type NewsletterDelivery = {
   bounced: number;
 };
 
-export let mockPosts: ArtistPost[] = [
-  {
-    id: 'post-mock-1',
-    title: 'New set up',
-    body: 'Archive just dropped — listen on the channel.',
-    linkUrl: null,
-    linkLabel: null,
-    images: [],
-    publishAt: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
-  },
-];
+function defaultMockPosts(): ArtistPost[] {
+  const now = new Date().toISOString();
+  return [
+    {
+      id: 'post-mock-1',
+      title: 'New set up',
+      body: 'Archive just dropped — listen on the channel.',
+      linkUrl: null,
+      linkLabel: null,
+      images: [],
+      publishAt: now,
+      createdAt: now,
+    },
+  ];
+}
 
-export let mockDrafts: NewsletterDraft[] = [
-  {
-    id: 'nl-mock-1',
-    subject: 'This week on the channel',
-    bodyMd: 'Thanks for tuning in.',
-    state: 'DRAFT',
-    subscribersOnly: false,
-    createdAt: new Date().toISOString(),
-    sentAt: null,
-  },
-];
+function defaultMockDrafts(): NewsletterDraft[] {
+  return [
+    {
+      id: 'nl-mock-1',
+      subject: 'This week on the channel',
+      bodyMd: 'Thanks for tuning in.',
+      state: 'DRAFT',
+      subscribersOnly: false,
+      createdAt: new Date().toISOString(),
+      sentAt: null,
+    },
+  ];
+}
+
+export let mockPosts: ArtistPost[] = defaultMockPosts();
+
+export let mockDrafts: NewsletterDraft[] = defaultMockDrafts();
+
+export function resetMockArtistPosts(): void {
+  mockPosts = defaultMockPosts();
+}
+
+export function resetMockNewsletterDrafts(): void {
+  mockDrafts = defaultMockDrafts();
+}
 
 export async function fetchArtistPosts(): Promise<{
   data: ArtistPost[];

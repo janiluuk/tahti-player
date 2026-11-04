@@ -111,7 +111,9 @@ export function StudioSoundsView() {
                       disabled={loadingMore}
                       onClick={loadMore}
                     >
-                      {loadingMore ? 'Loading…' : 'Load more'}
+                      {loadingMore
+                        ? t('settingsBody.loading')
+                        : t('actions.loadMore')}
                     </Button>
                   </div>
                 ) : null}

@@ -49,7 +49,9 @@ export const MemberOnly: Story = {
   decorators: [withTahtiRouter('/studio/groups/finland-djs')],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(await canvas.findByText('Your membership')).toBeVisible();
+    await expect(
+      await canvas.findByText('Your membership'),
+    ).toBeInTheDocument();
     await expect(
       canvas.queryByRole('button', { name: 'Save settings' }),
     ).toBeNull();

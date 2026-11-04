@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 
+import { i18n } from '@tahti-player/i18n';
 import { Badge, Button, StatChip, Tooltip } from '@tahti-player/ui';
 
 import type { ChannelLink } from '../../api/channel-design';
@@ -104,14 +105,14 @@ export function ChannelEmbedsSection({
     <ProfileSection
       id="channel-block-embeds"
       className="gap-3"
-      title="Embeds"
+      title={i18n.t('web:channelBlocks.embeds')}
       data-testid="channel-embeds"
     >
       <ChannelTrackRows
         items={embeds}
         pinnedPlayables={pinnedPlayables}
         getTrackMeta={getTrackMeta}
-        emptyMessage="No embeds on this channel."
+        emptyMessage={i18n.t('web:channelBlocks.embedsEmpty')}
       />
     </ProfileSection>
   );
@@ -127,24 +128,27 @@ function ChannelSoundSections({ ctx }: { ctx: ChannelBlockRenderContext }) {
     <ProfileSection
       id="channel-block-sound"
       className="gap-3"
-      title={ctx.editing ? undefined : 'Tracks'}
+      title={ctx.editing ? undefined : i18n.t('web:channelBlocks.tracks')}
       status={ctx.sectionStatus.sounds}
-      loadingLabel="Loading tracks…"
-      errorTitle="Tracks couldn't load"
-      errorDescription="The rest of the channel still works."
+      loadingLabel={i18n.t('web:channelBlocks.loadingTracks')}
+      errorTitle={i18n.t('web:channelBlocks.tracksErrorTitle')}
+      errorDescription={i18n.t('web:channelBlocks.tracksErrorDescription')}
       onRetry={() => ctx.onRetrySection('sounds')}
       empty={
         tracks.length > 0
           ? null
           : embeds.length > 0
             ? {
-                title: 'No tracks hosted on Tahti',
-                description: "This channel's music is on the Embeds tab.",
+                title: i18n.t('web:channelBlocks.noTracksHosted'),
+                description: i18n.t(
+                  'web:channelBlocks.noTracksHostedDescription',
+                ),
               }
             : {
-                title: 'No public tracks yet',
-                description:
-                  'When this channel publishes tracks, they show up here. Offline listening still works from Discover and Radio.',
+                title: i18n.t('web:channelBlocks.noPublicTracks'),
+                description: i18n.t(
+                  'web:channelBlocks.noPublicTracksDescription',
+                ),
               }
       }
     >
@@ -152,7 +156,7 @@ function ChannelSoundSections({ ctx }: { ctx: ChannelBlockRenderContext }) {
         items={tracks}
         pinnedPlayables={ctx.pinnedPlayables}
         getTrackMeta={ctx.getTrackMeta}
-        emptyMessage="No public tracks for this channel yet."
+        emptyMessage={i18n.t('web:channelBlocks.noPublicTracksEmpty')}
       />
     </ProfileSection>
   );
@@ -197,20 +201,25 @@ export function renderChannelBlock(
             className="text-foreground-secondary shrink-0 opacity-70"
           />
           <div className="min-w-0 flex-1">
-            <div className="text-sm font-bold tracking-tight">Live chat</div>
+            <div className="text-sm font-bold tracking-tight">
+              {i18n.t('web:channelBlocks.liveChat')}
+            </div>
             <p className="text-foreground-secondary text-xs">
               {ctx.chatOn
-                ? 'Open the live chat page to talk with the artist and other fans.'
-                : 'Chat is disabled for this channel.'}
+                ? i18n.t('web:channelBlocks.chatOpenDescription')
+                : i18n.t('web:channelBlocks.chatDisabled')}
             </p>
           </div>
           {ctx.chatOn ? (
-            <Tooltip content="Open live chat" side="top">
+            <Tooltip
+              content={i18n.t('web:channelBlocks.openLiveChat')}
+              side="top"
+            >
               <Button
                 size="icon-sm"
                 variant="secondary"
                 onClick={ctx.onOpenChat}
-                aria-label="Open live chat"
+                aria-label={i18n.t('web:channelBlocks.openLiveChat')}
               >
                 <MessageCircle size={16} aria-hidden />
               </Button>

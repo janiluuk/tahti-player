@@ -171,7 +171,7 @@ export function ChannelPanel() {
                       saveProfileSwitch(
                         'showShareButton',
                         value,
-                        'Share button setting saved.',
+                        t('toasts.shareButtonSaved'),
                       )
                     }
                   />
@@ -179,8 +179,10 @@ export function ChannelPanel() {
                 </div>
               </StudioPanel>
               <StudioPanel
-                title="Genres"
-                description={`Up to ${MAX_GENRES}. They help listeners find you.`}
+                title={t('settingsBody.channel.genres')}
+                description={t('settingsBody.channel.genresDescription', {
+                  max: MAX_GENRES,
+                })}
               >
                 <div className="flex flex-col gap-2">
                   <GenrePicker
@@ -226,10 +228,18 @@ export function ChannelPanel() {
                   event.preventDefault();
                   void checkSlugAvailable(slug.trim()).then((r) => {
                     if (r.available) {
-                      say(`${slug.trim()} is available.`);
+                      say(
+                        t('settingsBody.channel.slugAvailable', {
+                          slug: slug.trim(),
+                        }),
+                      );
                     } else {
                       sayFailed(
-                        `Not available${r.reason ? ` (${r.reason})` : ''}`,
+                        r.reason
+                          ? t('settingsBody.channel.slugNotAvailableReason', {
+                              reason: r.reason,
+                            })
+                          : t('settingsBody.channel.slugNotAvailable'),
                       );
                     }
                   });
@@ -262,8 +272,10 @@ export function ChannelPanel() {
                   <ConfirmDialog
                     destructive
                     isOpen={confirmingRename}
-                    title={`Rename your channel to ${slug.trim()}?`}
-                    description="Your channel address changes, and your stream key may change with it, so an encoder such as OBS needs the new key before your next stream. The old address redirects for a while."
+                    title={t('settingsBody.channel.renameTitle', {
+                      slug: slug.trim(),
+                    })}
+                    description={t('settingsBody.channel.renameDescription')}
                     confirmLabel={t('settingsBody.channel.rename')}
                     onCancel={() => setConfirmingRename(false)}
                     onConfirm={() => {
@@ -288,7 +300,10 @@ export function ChannelPanel() {
                       sayFailed(r.error);
                     } else {
                       say(
-                        `Add TXT ${r.txtHost} = ${r.txtRecord}, then Verify.`,
+                        t('settingsBody.channel.domainTxtHint', {
+                          host: r.txtHost,
+                          record: r.txtRecord,
+                        }),
                       );
                     }
                   });
@@ -299,11 +314,17 @@ export function ChannelPanel() {
                   autoCapitalize="none"
                   autoCorrect="off"
                   spellCheck={false}
-                  label="Custom domain"
+                  label={t('settingsBody.channel.customDomain')}
                   description={
                     channel?.customDomain
-                      ? `Current: ${channel.customDomain}${channel.customDomainVerified ? ' (verified)' : ' (pending)'}`
-                      : 'Requires membership. Add DNS TXT then verify.'
+                      ? channel.customDomainVerified
+                        ? t('settingsBody.channel.domainCurrentVerified', {
+                            domain: channel.customDomain,
+                          })
+                        : t('settingsBody.channel.domainCurrentPending', {
+                            domain: channel.customDomain,
+                          })
+                      : t('settingsBody.channel.domainRequiresMembership')
                   }
                   value={domain}
                   onChange={(e) => setDomain(e.target.value)}
@@ -311,7 +332,7 @@ export function ChannelPanel() {
                 />
                 <div className="flex flex-wrap gap-2">
                   <Button size="sm" disabled={!domain.trim()} type="submit">
-                    Set domain
+                    {t('settingsBody.channel.setDomain')}
                   </Button>
                   <Button
                     size="sm"
@@ -321,16 +342,16 @@ export function ChannelPanel() {
                         if (!r.ok) {
                           sayFailed(r.error);
                         } else if (r.verified) {
-                          say('Domain verified.');
+                          say(t('settingsBody.channel.domainVerified'));
                         } else {
                           sayFailed(
-                            'Not verified yet. DNS changes can take a while to show.',
+                            t('settingsBody.channel.domainNotVerified'),
                           );
                         }
                       });
                     }}
                   >
-                    Verify DNS
+                    {t('settingsBody.channel.verifyDomain')}
                   </Button>
                 </div>
               </form>

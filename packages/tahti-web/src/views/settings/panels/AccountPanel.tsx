@@ -258,8 +258,7 @@ export function AccountPanel() {
             />
             <MembershipInvoices />
             <SettingsHint>
-              We email you before your membership year ends, and notify you if
-              it lapses and the account goes back to Free.
+              {t('settingsBody.account.membershipRenewalHint')}
             </SettingsHint>
           </div>
         ),
@@ -519,19 +518,21 @@ function AccountStoragePanel() {
           <Database size={19} aria-hidden />
         </div>
         <div>
-          <h2 className="font-semibold">Your storage</h2>
+          <h2 className="font-semibold">
+            {t('settingsBody.account.yourStorage')}
+          </h2>
           <p className="text-foreground-secondary mt-1 text-sm">
-            Audio, images, releases, and other files saved to your account.
+            {t('settingsBody.account.storageDescription')}
           </p>
         </div>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
         <SettingsInfo
-          label="Used"
+          label={t('settingsBody.account.used')}
           value={formatStorageBytes(storage.usedBytes)}
         />
         <SettingsInfo
-          label="Quota"
+          label={t('settingsBody.account.quota')}
           value={
             storage.unlimited
               ? t('settingsBody.account.unlimited')
@@ -548,19 +549,21 @@ function AccountStoragePanel() {
             aria-label={t('settingsBody.account.storageUsedAria')}
           />
           <p className="text-foreground-secondary text-xs">
-            {Math.round(usedPercent)}% of your available storage is in use.
+            {t('settingsBody.account.storagePercentUsed', {
+              percent: Math.round(usedPercent),
+            })}
           </p>
         </div>
       ) : null}
       <SettingsHint>
-        Membership accounts receive expanded storage according to the current
-        Tahti storage policy.
+        {t('settingsBody.account.storageMembershipHint')}
       </SettingsHint>
     </div>
   );
 }
 
 function PrivacyDataPanel({ username }: { username: string }) {
+  const { t } = useTranslation('web');
   const [reason, setReason] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
@@ -579,7 +582,9 @@ function PrivacyDataPanel({ username }: { username: string }) {
       }
       setReason('');
       setMessage(
-        `Deletion request submitted (ticket ${result.ticketId}). The Tahti team will follow up by email.`,
+        t('settingsBody.account.deletionSubmitted', {
+          ticketId: result.ticketId,
+        }),
       );
     });
   };
@@ -587,10 +592,9 @@ function PrivacyDataPanel({ username }: { username: string }) {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="font-semibold">Your data</h2>
+        <h2 className="font-semibold">{t('settingsBody.account.yourData')}</h2>
         <p className="text-foreground-secondary mt-1 text-sm">
-          Download a copy of your account data or request deletion under GDPR.
-          Deletion requests are reviewed manually.
+          {t('settingsBody.account.yourDataDescription')}
         </p>
       </div>
       <div className="grid gap-3 sm:grid-cols-2">
@@ -603,14 +607,11 @@ function PrivacyDataPanel({ username }: { username: string }) {
         >
           <Download size={17} aria-hidden />
           <span>
-            <span className="block text-sm font-semibold">Data export</span>
+            <span className="block text-sm font-semibold">
+              {t('settingsBody.account.dataExport')}
+            </span>
             <span className="text-foreground-secondary block text-xs">
-              Your profile, uploads, releases, posts, comments, chat, likes,
-              follows, messages you sent, purchases, subscriptions, support
-              requests, governance activity and discussions, downloads,
-              listening, venues, radio submissions, store tiers, restrictions,
-              notifications, grants, add-ons, devices, shares, email changes and
-              your settings, as JSON
+              {t('settingsBody.account.dataExportDescription')}
             </span>
           </span>
         </ButtonAnchor>
@@ -622,9 +623,11 @@ function PrivacyDataPanel({ username }: { username: string }) {
         >
           <Download size={17} aria-hidden />
           <span>
-            <span className="block text-sm font-semibold">Press kit</span>
+            <span className="block text-sm font-semibold">
+              {t('settingsBody.account.pressKit')}
+            </span>
             <span className="text-foreground-secondary block text-xs">
-              Your artist metadata as JSON
+              {t('settingsBody.account.pressKitDescription')}
             </span>
           </span>
         </ButtonAnchor>
@@ -633,11 +636,12 @@ function PrivacyDataPanel({ username }: { username: string }) {
       <div className="border-accent-red/40 bg-accent-red/5 flex flex-col gap-3 rounded-lg border p-4">
         <div className="flex items-center gap-2">
           <Trash2 size={17} className="text-accent-red-strong" aria-hidden />
-          <h2 className="font-semibold">Request account deletion</h2>
+          <h2 className="font-semibold">
+            {t('settingsBody.account.requestDeletion')}
+          </h2>
         </div>
         <p className="text-foreground-secondary text-sm">
-          This starts a manual review. Your uploads and account data are removed
-          according to the retention periods in the privacy policy.
+          {t('settingsBody.account.requestDeletionDescription')}
         </p>
         <form
           className="flex flex-col gap-3"
@@ -650,8 +654,8 @@ function PrivacyDataPanel({ username }: { username: string }) {
             value={reason}
             rows={3}
             maxLength={2000}
-            placeholder="Tell us briefly why you want to delete the account."
-            aria-label="Reason for deletion request"
+            placeholder={t('settingsBody.account.deletionReasonPlaceholder')}
+            aria-label={t('settingsBody.account.deletionReasonAria')}
             onChange={(event) => setReason(event.target.value)}
             submitOnModEnter
           />
@@ -664,7 +668,9 @@ function PrivacyDataPanel({ username }: { username: string }) {
               disabled={pending || !reason.trim()}
             >
               <Trash2 size={15} aria-hidden className="mr-1.5" />
-              {pending ? 'Submitting…' : 'Submit request'}
+              {pending
+                ? t('settingsBody.account.submitting')
+                : t('settingsBody.account.submitRequest')}
             </Button>
             {message ? (
               <p className="text-foreground-secondary text-xs" role="status">
@@ -678,7 +684,7 @@ function PrivacyDataPanel({ username }: { username: string }) {
         to="/privacy"
         className="text-foreground-secondary text-xs hover:underline"
       >
-        Read the full privacy policy for @{username}
+        {t('settingsBody.account.readPrivacyPolicy', { username })}
       </Link>
     </div>
   );
