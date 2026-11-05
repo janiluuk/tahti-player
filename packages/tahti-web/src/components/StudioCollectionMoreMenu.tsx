@@ -112,7 +112,7 @@ export function StudioCollectionMoreMenu({
         tooltip={{ content: 'More options', side: 'top' }}
         trigger={
           <Button
-            variant="secondary"
+            variant="text"
             size="icon"
             aria-label={
               onDeleted
@@ -149,7 +149,7 @@ export function StudioCollectionMoreMenu({
           <Popover.Item
             closeOnClick
             intent="danger"
-            icon={<Trash2Icon size={16} />}
+            icon={<Trash2Icon className="text-accent-red" size={16} />}
             onClick={() => setConfirmOpen(true)}
           >
             Delete {kindLabel}

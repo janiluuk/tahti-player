@@ -18,7 +18,13 @@ The seek bar sits under the controls, with the time played on its left and the t
 
 Press the artwork or the track title in the player bar, or **V**, to open the full-screen player with a larger cover, the visualizer and the queue. On a phone, expand the compact player above the bottom navigation.
 
+On a touch screen, swipe left or right in the full-screen player to change track.
+
 To stop a phone or tablet from dimming while the full-screen player plays, turn on **Settings → Playback → Keep the screen on in full screen**.
+
+### Driving mode
+
+Where the browser allows it, the full-screen player has a **Driving mode (full screen)** button at the top right. It fills the whole screen with bigger artwork and controls, hides the rest, and lets you tap the left or right edge for the previous or next track. The screen stays on while it plays. Press the button again (**Exit full screen**) to leave.
 
 ## Visualizers
 
@@ -28,7 +34,7 @@ Visualizer colours drift slowly between nearby tones while they play. With your 
 
 ## Tracks from hearthis.at, Mixcloud and other services
 
-Some tracks on Tahti play from another service's own player (hearthis.at, Mixcloud, Spotify, Bandcamp or Mikseri.net). When you play one, that player appears at its own size just above the player bar, and you use its play and pause buttons; the player bar shows the track but no play/pause of its own, with **Plays in the … player above**. Next, previous, shuffle and repeat still move through your queue. Pressing play on the track again starts its player from the beginning.
+Some tracks on Tahti play from another service's own player (hearthis.at, Mixcloud, Spotify, Bandcamp or Mikseri.net). When you play one, a compact version of that player appears just above the player bar, and you use its play and pause buttons; the player bar shows the track but no play/pause of its own, with **Plays in the … player above**. Next, previous, shuffle and repeat still move through your queue. Pressing play on the track again starts its player from the beginning.
 
 ## When something won't play
 

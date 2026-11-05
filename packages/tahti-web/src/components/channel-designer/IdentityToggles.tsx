@@ -34,10 +34,15 @@ export function IdentityToggles({ layout, onLayoutChange }: Props) {
             type: 'subscribe' as const,
             label: 'Show Subscribe button',
           },
+          {
+            type: 'headerStats' as const,
+            label: 'Show follower and play counts',
+          },
         ] satisfies { type: ChannelPageItemType; label: string }[]
       ).map(({ type, label }) => {
         const row = layout.find((i) => i.type === type);
-        const checked = row?.visible ?? type === 'avatar';
+        const checked =
+          row?.visible ?? (type === 'avatar' || type === 'headerStats');
         return (
           <div
             key={type}

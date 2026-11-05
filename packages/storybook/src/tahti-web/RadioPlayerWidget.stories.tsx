@@ -24,7 +24,7 @@ import {
   PlayIcon,
 } from 'lucide-react';
 import { useState } from 'react';
-import { expect, fn, userEvent, within } from 'storybook/test';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 import { selectTab } from './_lib/play';
@@ -216,7 +216,12 @@ export const OnAir: Story = {
     await expect(canvas.getByTestId('radio-player-widget')).toBeVisible();
     await expect(canvas.getByTestId('radio-visualizer-hero')).toBeVisible();
     await expect(canvas.getByTestId('radio-now-playing-overlay')).toBeVisible();
-    await expect(canvas.getByTestId('radio-up-next-rotation')).toBeVisible();
+    // The first tab's panel fades in from opacity 0; on a busy shard that
+    // can outlast waitFor's 1s default.
+    await waitFor(
+      () => expect(canvas.getByTestId('radio-up-next-rotation')).toBeVisible(),
+      { timeout: 5_000 },
+    );
   },
 };
 

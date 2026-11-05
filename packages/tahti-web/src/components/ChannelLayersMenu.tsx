@@ -373,7 +373,7 @@ export function ChannelLayersMenu({
                       aria-label={`Remove ${meta.label} from page`}
                       onClick={() => onRemove(item.id)}
                     >
-                      <Trash2Icon size={14} />
+                      <Trash2Icon className="text-accent-red" size={14} />
                     </Button>
                   </Tooltip>
                 </li>

@@ -135,7 +135,11 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
                     aria-label={`Delete ${item.body}`}
                     onClick={() => setPendingRemove(item)}
                   >
-                    <Trash2Icon size={16} aria-hidden />
+                    <Trash2Icon
+                      className="text-accent-red"
+                      size={16}
+                      aria-hidden
+                    />
                   </Button>
                 </Tooltip>
               </li>

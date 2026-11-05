@@ -159,7 +159,11 @@ export function MyRadioStations({
                   disabled={removingId === station.id}
                   onClick={() => void remove(station.id)}
                 >
-                  <Trash2Icon size={14} aria-hidden />
+                  <Trash2Icon
+                    className="text-accent-red"
+                    size={14}
+                    aria-hidden
+                  />
                 </Button>
               </li>
             );

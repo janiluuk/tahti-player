@@ -6,6 +6,8 @@ description: Go live from OBS, Mixxx, Traktor or a phone, mirror to other platfo
 
 Everything for going live is under **Studio → Broadcast**. Its tabs: **Prep**, **Credentials**, **Recording**, **Destinations**, **Green room**, **Schedule**, **Events**, **Shows**, **Channel** and **Radio**.
 
+The **Channel manager** at the top of **Studio → Broadcast** shows your channel's live status and its rotation (what plays while you're offline), with the stream controls.
+
 ## Before you start (Prep)
 
 The checklist shows what's ready: show title, stream credentials and the encoder signal. **Confirm show info** sets what listeners see: show name, tagline, type, visibility and whether it's an episode of a series.

@@ -73,22 +73,11 @@ describe('right rail is the queue only', () => {
     ).toBe('queue');
   });
 
-  it('opens the full-screen player from the queue header', async () => {
-    useLayoutStore.getState().setFullScreenPlayerOpen(false);
-    usePlayerStore.getState().clearQueue();
-    await renderInRouter(<RightRailHeaderActions />);
-    expect(screen.getByTestId('queue-fullscreen-button')).toBeDisabled();
-    cleanup();
+  it('has no full-screen button in the queue header', async () => {
     usePlayerStore.getState().hydrateQueue([SAMPLE], SAMPLE.id);
     await renderInRouter(<RightRailHeaderActions />);
-    const enabled = screen.getByTestId('queue-fullscreen-button');
-    expect(enabled).not.toBeDisabled();
-    await act(async () => {
-      enabled.click();
-    });
-    expect(useLayoutStore.getState().fullScreenPlayerOpen).toBe(true);
+    expect(screen.queryByTestId('queue-fullscreen-button')).toBeNull();
     usePlayerStore.getState().clearQueue();
-    useLayoutStore.getState().setFullScreenPlayerOpen(false);
   });
 
   it('moves a saved chat or notifications rail back to the queue', async () => {

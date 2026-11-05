@@ -119,7 +119,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
                 aria-label="Remove photo"
                 onClick={onDeleteCurrent}
               >
-                <Trash2Icon size={18} aria-hidden />
+                <Trash2Icon className="text-accent-red" size={18} aria-hidden />
               </Button>
             </Tooltip>
           ) : null}

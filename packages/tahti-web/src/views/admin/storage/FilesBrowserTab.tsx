@@ -153,7 +153,7 @@ function FileRow({
             aria-label={`Delete ${f.title}`}
             onClick={() => onDelete(f)}
           >
-            <Trash2Icon size={15} aria-hidden />
+            <Trash2Icon className="text-accent-red" size={15} aria-hidden />
           </Button>
         </Tooltip>
       </div>

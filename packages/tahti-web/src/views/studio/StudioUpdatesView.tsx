@@ -279,7 +279,11 @@ export function StudioUpdatesView({
                               aria-label={`Delete ${postTitle}`}
                               onClick={() => setPendingDeletePost(p)}
                             >
-                              <Trash2Icon size={16} aria-hidden />
+                              <Trash2Icon
+                                className="text-accent-red"
+                                size={16}
+                                aria-hidden
+                              />
                             </Button>
                           </Tooltip>
                         </div>
@@ -374,7 +378,11 @@ export function StudioUpdatesView({
                               aria-label={`Remove ${d.subject}`}
                               onClick={() => setPendingDeleteDraft(d)}
                             >
-                              <Trash2Icon size={16} aria-hidden />
+                              <Trash2Icon
+                                className="text-accent-red"
+                                size={16}
+                                aria-hidden
+                              />
                             </Button>
                           </Tooltip>
                         )}

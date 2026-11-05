@@ -374,7 +374,7 @@ export const StashFilesPanel = ({
                         aria-label={`Delete ${file.filename}`}
                         onClick={() => setPendingDelete(file)}
                       >
-                        <Trash2Icon size={16} />
+                        <Trash2Icon className="text-accent-red" size={16} />
                       </Button>
                     </Tooltip>
                   </div>

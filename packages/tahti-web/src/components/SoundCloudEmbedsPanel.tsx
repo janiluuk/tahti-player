@@ -136,7 +136,11 @@ export function SoundCloudEmbedsPanel() {
                     disabled={removingId === embed.id}
                     onClick={() => void remove(embed.id)}
                   >
-                    <Trash2Icon size={14} aria-hidden />
+                    <Trash2Icon
+                      className="text-accent-red"
+                      size={14}
+                      aria-hidden
+                    />
                   </Button>
                 </li>
               ))}

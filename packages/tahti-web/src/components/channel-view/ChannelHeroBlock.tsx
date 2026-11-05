@@ -121,13 +121,6 @@ export function ChannelHeroBlock({
               onClick: () => updateLayout((prev) => addItemType(prev, 'about')),
             }
           : null,
-        !layout.find((i) => i.type === 'stats')?.visible
-          ? {
-              id: 'stats',
-              label: 'Stats',
-              onClick: () => updateLayout((prev) => addItemType(prev, 'stats')),
-            }
-          : null,
       ].filter((chip): chip is NonNullable<typeof chip> => Boolean(chip))
     : undefined;
 

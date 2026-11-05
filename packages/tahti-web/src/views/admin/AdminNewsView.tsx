@@ -317,7 +317,7 @@ export function AdminNewsView() {
                               <Trash2Icon
                                 size={14}
                                 aria-hidden
-                                className="mr-1.5"
+                                className="text-accent-red mr-1.5"
                               />
                               Delete
                             </Button>

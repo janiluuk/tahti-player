@@ -34,6 +34,7 @@
 * [Shows, schedule and events](user-manual/studio/shows-and-events.md)
 * [Stats and earnings](user-manual/studio/stats-and-earnings.md)
 * [Posts, newsletter and moderation](user-manual/studio/posts-and-moderation.md)
+* [Groups](user-manual/studio/groups.md)
 
 ## Your account
 

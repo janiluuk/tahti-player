@@ -335,7 +335,7 @@ export const MultitrackTimeline = ({
                     })
                   }
                 >
-                  <Trash2Icon size={13} />
+                  <Trash2Icon className="text-accent-red" size={13} />
                 </Button>
               </div>
               <div className="flex items-center gap-1">

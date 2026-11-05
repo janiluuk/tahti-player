@@ -13,6 +13,7 @@ A red dot on your avatar means you have unread notifications. **Notifications** 
 - Filter by kind: **All**, **Social**, **Music**, **Money**, **Governance** or **Other**. Each chip shows how many unread notifications it has, and each notification is labelled with its kind.
 - **Mark read** or **Remove** a single notification, **Mark all read**, or **Clear read** to remove everything you've already read.
 - Notifications about Studio work that failed stand out, so a failed upload or export isn't missed.
+- [Group](../studio/groups.md) notices (join requests and answers, sound submissions, being removed, a role change, a deleted group) are filed under **Social**. Listening party notices (a party scheduled, starting or changed) are filed under **Music**.
 
 The blue light at the top left is separate: it lists work still in progress, such as uploads and imports being processed.
 

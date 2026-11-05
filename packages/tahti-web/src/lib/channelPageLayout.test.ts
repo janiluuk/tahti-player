@@ -162,7 +162,7 @@ describe('normalizeLayout', () => {
     // avatar was always shown unconditionally, so it backfills visible
     // (see normalizeLayout's own comment) unlike every other type here.
     const remaining = CHANNEL_PAGE_ITEM_TYPES.filter(
-      (t) => t !== 'hero' && t !== 'avatar',
+      (t) => t !== 'hero' && t !== 'avatar' && t !== 'headerStats',
     );
     for (const type of remaining) {
       const item = out.find((i) => i.type === type);
@@ -170,6 +170,8 @@ describe('normalizeLayout', () => {
       expect(item?.visible).toBe(false);
     }
     expect(out.find((i) => i.type === 'avatar')?.visible).toBe(true);
+    // Same for 'headerStats': the header always showed the counts.
+    expect(out.find((i) => i.type === 'headerStats')?.visible).toBe(true);
   });
 });
 

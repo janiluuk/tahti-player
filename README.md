@@ -26,7 +26,8 @@ Your channel, your music, your income.
 - **Go live.** Stream from OBS to your channel and to other platforms at the same time. Invite guests into a green room before the show.
 - **Publish.** Upload tracks, build releases and albums with full credits, and share them with smart links and embeds.
 - **Program your channel.** Schedule shows and keep a 24/7 rotation running when you're offline.
-- **Design it.** Set your channel's look, backdrop, logo and press kit.
+- **Your own artist page.** Every channel gets `yourname.tahti.live`, a page you design yourself in the Channel Designer: colors, header style (solid, video or image, slideshow, visualization, gradient), the player stage and visualizer, which sections show, a top bar announcement, and saved looks to switch between. Use your own domain from **Settings → Channel & chat → Username & domain**. See [Your channel and profile](packages/docs/user-manual/studio/your-channel.md).
+- **Design it.** Set your logo, gallery and press kit.
 - **Earn.** Offer fan subscription tiers and paid tracks, and get paid out through Stripe. Distribute to streaming services from the studio.
 - **Grow.** See who listens, which links get clicked and how downloads convert. Send updates to your subscribers and auto-post releases to Mastodon and Bluesky.
 - **Groups.** Start or join an artist collective from Studio → Groups. Members submit sounds to a shared playlist; the public finds groups under Discover → Groups.

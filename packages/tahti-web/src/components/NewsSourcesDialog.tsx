@@ -106,7 +106,11 @@ export function NewsSourcesDialog({
                       aria-label={`Remove ${source.label}`}
                       onClick={() => removeInstance(source.id)}
                     >
-                      <TrashIcon size={14} aria-hidden />
+                      <TrashIcon
+                        className="text-accent-red"
+                        size={14}
+                        aria-hidden
+                      />
                     </Button>
                   </Tooltip>
                 </li>

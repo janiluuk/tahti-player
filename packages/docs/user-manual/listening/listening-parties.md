@@ -10,7 +10,7 @@ A listening party is a scheduled première: at the start time, the artist's rele
 
 Parties have their own page at `/party/<id>`. You reach it from the artist's link, or from the banner on their channel page while a party is coming up or live.
 
-- **Before the start** the page counts down to showtime. Choose **Join at the start** and leave the page open: playback begins on its own when the party starts.
+- **Before the start** the page counts down to showtime. Choose **Join at the start** and leave the page open: playback begins on its own when the party starts. Signed in, **Remind me** gets you a notification when the party starts; the button then reads **Reminder set**, and pressing it again removes the reminder. The page also shows how many people want a reminder.
 - **During the party** choose **Join the party**. Playback starts in the player at the point everyone else has reached, so joining late puts you in sync, not at track one. If your player drifts more than a couple of seconds, the page nudges it back.
 - **Leave** stops following the party. Playing something else also leaves it.
 
@@ -31,7 +31,7 @@ When the party is over, the page says so and links to the release once it is pub
 2. Pick the start time (at least five minutes from now, and within a year) and, if you like, a note to listeners. The note shows on the party page.
 3. Share the party link. Your channel page also shows a banner for it.
 
-Your parties are listed under **Studio → Broadcast → Listening parties**. Until a party starts you can **Reschedule** it (new time or note) or **Cancel** it. Two parties on your channel cannot overlap.
+Your parties are listed under **Studio → Broadcast → Listening parties**. A scheduled party shows how many fans asked for a reminder (for example "12 reminders"). Until a party starts you can **Reschedule** it (new time or note) or **Cancel** it. Two parties on your channel cannot overlap.
 
 During the party, chat as you normally would; the chat posts a "Now playing" line as each track starts. Fans buy through your purchase tiers, which the party page shows while your store is open and Stripe is connected; set them up under **Studio → Fans → Store**.
 
