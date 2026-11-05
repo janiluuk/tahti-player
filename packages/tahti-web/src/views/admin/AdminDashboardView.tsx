@@ -105,7 +105,7 @@ export function AdminDashboardView() {
               ) : !data ? (
                 <StudioPanel>
                   <PageError
-                    title="Couldn't load the dashboard"
+                    title={t('loadErrors.couldnTLoadTheDashboard')}
                     description={error ?? undefined}
                     onRetry={() => setAttempt((n) => n + 1)}
                   />

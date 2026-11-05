@@ -31,8 +31,10 @@ const EMBED_ITEMS = [
 type Props = ComponentProps<typeof ChannelLayersPanel>;
 
 /** The Look panel fades in on the next frame after a selection. */
+// Panels fade in; on a busy Storybook shard that can outlast waitFor's 1s
+// default.
 const fadedIn = (element: HTMLElement) =>
-  waitFor(() => expect(element).toBeVisible());
+  waitFor(() => expect(element).toBeVisible(), { timeout: 5_000 });
 
 /** Owns the layout / selection / links state the way ChannelView's
  * editing mode does, and reports every change to the story's spies. */

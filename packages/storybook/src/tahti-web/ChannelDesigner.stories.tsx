@@ -128,8 +128,10 @@ async function findPreview(canvasElement: HTMLElement) {
 }
 
 /** The ChannelElementEditor and its Look panels fade in on the next frame. */
+// Panels fade in; on a busy Storybook shard that can outlast waitFor's 1s
+// default.
 const fadedIn = (element: HTMLElement) =>
-  waitFor(() => expect(element).toBeVisible());
+  waitFor(() => expect(element).toBeVisible(), { timeout: 5_000 });
 
 export const Full: Story = {
   name: 'Full (preview + controls)',

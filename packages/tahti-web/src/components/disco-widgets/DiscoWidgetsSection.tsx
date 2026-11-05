@@ -1,3 +1,5 @@
+import { useTranslation } from '@tahti-player/i18n';
+
 import type { DiscoWidgetRenderItem } from '../../api/disco-widgets';
 import { PageError } from '../PageStates';
 import { DiscoWidgetFrame } from './DiscoWidgetFrame';
@@ -13,8 +15,11 @@ export function DiscoWidgetsSection({
   status?: 'loading' | 'ready' | 'error';
   onRetry?: () => void;
 }) {
+  const { t } = useTranslation('web');
   if (status === 'error') {
-    return <PageError title="Widgets couldn't load" onRetry={onRetry} />;
+    return (
+      <PageError title={t('loadErrors.widgetsCouldnTLoad')} onRetry={onRetry} />
+    );
   }
   if (widgets.length === 0) {
     return null;

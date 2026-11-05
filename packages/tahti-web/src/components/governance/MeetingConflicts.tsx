@@ -1,6 +1,7 @@
 import { ScaleIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge } from '@tahti-player/ui';
 
 import {
@@ -14,6 +15,7 @@ import { GovernancePanel } from './GovernancePanel';
  * record them. Hidden until there is something to show; a failed load is
  * shown, since hiding it would read as "no conflicts declared". */
 export function MeetingConflicts({ meetingId }: { meetingId: string }) {
+  const { t } = useTranslation('web');
   const [records, setRecords] = useState<MemberConflictDeclaration[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -37,7 +39,7 @@ export function MeetingConflicts({ meetingId }: { meetingId: string }) {
     return (
       <GovernancePanel title="Conflicts of interest" icon={ScaleIcon}>
         <PageErrorBanner
-          title="Couldn't load declared conflicts"
+          title={t('loadErrors.couldnTLoadDeclaredConflicts')}
           description={error}
           onRetry={() => setAttempt((n) => n + 1)}
         />

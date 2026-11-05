@@ -174,7 +174,7 @@ export function AdminRadioView() {
               ) : loadError ? (
                 <StudioPanel>
                   <PageError
-                    title="Could not load Tahti Radio"
+                    title={t('loadErrors.couldNotLoadTahtiRadio')}
                     description={loadError}
                     onRetry={() => {
                       setLoading(true);

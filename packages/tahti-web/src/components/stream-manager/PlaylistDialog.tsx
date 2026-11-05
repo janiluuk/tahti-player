@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, InlineLoader } from '@tahti-player/ui';
 
 import { ConfirmDialog } from '../ConfirmDialog';
@@ -5,6 +6,7 @@ import { PageError } from '../PageStates';
 import type { StreamManagerState } from './useStreamManagerState';
 
 export function PlaylistDialog({ state }: { state: StreamManagerState }) {
+  const { t } = useTranslation('web');
   const {
     playlistDialogOpen,
     setPlaylistDialogOpen,
@@ -61,7 +63,7 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
               <InlineLoader label="Loading playlist…" />
             ) : previewError ? (
               <PageError
-                title="Could not load this playlist"
+                title={t('loadErrors.couldNotLoadThisPlaylist')}
                 description={previewError}
                 onRetry={() => void previewCollection(selectedCollectionSlug)}
               />

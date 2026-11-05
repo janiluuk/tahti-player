@@ -97,9 +97,10 @@ function EmbedLoadError({
   message: string;
   onRetry: () => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <PageError
-      title="Could not load this embed"
+      title={t('loadErrors.couldNotLoadThisEmbed')}
       description={message}
       onRetry={onRetry}
     />

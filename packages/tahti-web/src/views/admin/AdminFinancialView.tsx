@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -21,6 +22,7 @@ import { formatEur, LedgerPanel } from './financial/LedgerPanel';
 import { LegacyMembersPanel } from './financial/LegacyMembersPanel';
 
 export function AdminFinancialView() {
+  const { t } = useTranslation('web');
   const [overview, setOverview] = useState<AdminFinancialOverview | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -53,7 +55,7 @@ export function AdminFinancialView() {
                 <PageLoading label="Loading financial data…" />
               ) : !overview ? (
                 <PageError
-                  title="Could not load financial data"
+                  title={t('loadErrors.couldNotLoadFinancialData')}
                   description={loadError ?? undefined}
                   onRetry={() => {
                     setLoading(true);

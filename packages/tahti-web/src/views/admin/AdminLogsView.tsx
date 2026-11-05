@@ -79,7 +79,7 @@ function RecentAuditEntries() {
         <PageLoading label="Loading recent audit entries…" />
       ) : loadError && entries.length === 0 ? (
         <PageError
-          title="Could not load recent audit entries"
+          title={t('loadErrors.couldNotLoadRecentAuditEntries')}
           description={loadError}
           onRetry={() => {
             setLoading(true);

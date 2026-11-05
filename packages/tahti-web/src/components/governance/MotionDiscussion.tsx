@@ -115,7 +115,7 @@ export function MotionDiscussion({
         <div className="border-border mt-3 flex flex-col gap-2 border-t pt-3">
           {!commentsLoaded && loadError ? (
             <PageError
-              title="Could not load the discussion"
+              title={t('loadErrors.couldNotLoadTheDiscussion')}
               description={loadError}
               onRetry={() => {
                 setLoadError(null);

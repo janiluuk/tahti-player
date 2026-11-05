@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Card, CardGrid, SectionShell } from '@tahti-player/ui';
 
 import {
@@ -13,6 +14,7 @@ import { PageError } from '../PageStates';
 /** Collections you subscribed to on other people's pages. Hidden until
  * there is at least one. */
 export function SubscribedCollections() {
+  const { t } = useTranslation('web');
   const [items, setItems] = useState<SubscribedCollection[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -35,7 +37,7 @@ export function SubscribedCollections() {
     return (
       <SectionShell title="Subscribed">
         <PageError
-          title="Could not load subscribed collections"
+          title={t('loadErrors.couldNotLoadSubscribedCollections')}
           description={loadError}
           onRetry={() => setReloadKey((key) => key + 1)}
         />

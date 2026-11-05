@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, FilterChips, SectionShell, ViewShell } from '@tahti-player/ui';
 
 import { fetchTransparencyResolutions } from '../api/client';
@@ -25,6 +26,7 @@ function outcomeBadge(outcome: string): {
 }
 
 export function TransparencyResolutionsView() {
+  const { t } = useTranslation('web');
   const [year, setYear] = useState(CURRENT_YEAR);
   const [resolutions, setResolutions] = useState<BoardResolution[]>([]);
   const [loading, setLoading] = useState(true);
@@ -70,7 +72,7 @@ export function TransparencyResolutionsView() {
         <PageLoading label="Loading resolutions…" />
       ) : loadError && resolutions.length === 0 ? (
         <PageError
-          title="Could not load the resolutions"
+          title={t('loadErrors.couldNotLoadTheResolutions')}
           description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />

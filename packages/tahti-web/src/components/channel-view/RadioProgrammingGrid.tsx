@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge } from '@tahti-player/ui';
 
 import { fetchPublicRadioSlots, type PublicRadioSlot } from '../../api/shows';
@@ -55,6 +56,7 @@ export function groupSlotsByDay(
 /** The week ahead of booked live shows on Tahti Radio, for its channel
  * page's Programming block. */
 export function RadioProgrammingGrid({ nowMs }: { nowMs?: number }) {
+  const { t } = useTranslation('web');
   const [state, setState] = useState<
     | { status: 'loading' }
     | { status: 'error' }
@@ -94,7 +96,7 @@ export function RadioProgrammingGrid({ nowMs }: { nowMs?: number }) {
     );
   }
   if (state.status === 'error') {
-    return <PageError title="This week's shows couldn't be loaded." />;
+    return <PageError title={t('loadErrors.thisWeekSShowsCouldnT')} />;
   }
   if (state.days.length === 0) {
     return (

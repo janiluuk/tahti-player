@@ -1,6 +1,7 @@
 import { PencilLineIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, InlineError, Select, Textarea } from '@tahti-player/ui';
 
 import {
@@ -102,6 +103,7 @@ function CorrectionItem({
 /** Ask the board to correct your member-register data or a governance
  * record, and follow its answer (/api/v1/governance/corrections). */
 export function CorrectionsPanel() {
+  const { t } = useTranslation('web');
   const [corrections, setCorrections] = useState<GovernanceCorrection[] | null>(
     null,
   );
@@ -198,7 +200,7 @@ export function CorrectionsPanel() {
         </div>
       ) : loadError ? (
         <PageError
-          title="Could not load your requests"
+          title={t('loadErrors.couldNotLoadYourRequests')}
           description={loadError}
           onRetry={() => void load()}
         />

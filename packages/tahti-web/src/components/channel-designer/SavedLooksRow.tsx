@@ -1,5 +1,6 @@
 import { Trash2Icon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import type { ChannelVisualPreset } from '../../api/channel-design';
@@ -24,10 +25,11 @@ export function SavedLooksRow({
   onApply,
   onRequestDelete,
 }: Props) {
+  const { t } = useTranslation('web');
   if (loadError && presets.length === 0) {
     return (
       <PageError
-        title="Could not load your saved looks"
+        title={t('loadErrors.couldNotLoadYourSavedLooks')}
         description={loadError}
         onRetry={onRetry}
       />

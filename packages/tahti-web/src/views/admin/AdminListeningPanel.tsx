@@ -61,7 +61,7 @@ export function AdminListeningPanel() {
           <PageLoading label="Loading listening…" />
         ) : error ? (
           <PageError
-            title="Could not load listening"
+            title={t('loadErrors.couldNotLoadListening')}
             description={error}
             onRetry={() => setAttempt((n) => n + 1)}
           />

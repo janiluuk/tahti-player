@@ -198,7 +198,7 @@ export function NewsView() {
 
         {!loading && loadError && entries.length === 0 && (
           <PageError
-            title="Could not load the news"
+            title={t('loadErrors.couldNotLoadTheNews')}
             description={loadError}
             onRetry={() => setAttempt((n) => n + 1)}
           />
