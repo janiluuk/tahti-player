@@ -112,7 +112,7 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
           <InlineLoader label="Loading announcements…" />
         ) : loadError ? (
           <PageError
-            title="Could not load announcements"
+            title={t('loadErrors.couldNotLoadAnnouncements')}
             description={loadError}
             onRetry={reload}
           />

@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import {
@@ -17,6 +18,7 @@ function euros(cents: number): string {
 }
 
 export function PurchaseOrdersList() {
+  const { t } = useTranslation('web');
   const [orders, setOrders] = useState<PurchaseOrderRow[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [showAll, setShowAll] = useState(false);
@@ -47,7 +49,7 @@ export function PurchaseOrdersList() {
   if (!orders) {
     return (
       <PageError
-        title="Couldn't load sales"
+        title={t('loadErrors.couldnTLoadSales')}
         description={loadError ?? undefined}
         onRetry={() => setAttempt((current) => current + 1)}
       />
@@ -56,8 +58,8 @@ export function PurchaseOrdersList() {
   if (orders.length === 0) {
     return (
       <PageEmpty
-        title="No track sales yet"
-        description="Paid purchases of your tracks show up here."
+        title={t('empties.noTrackSalesYet')}
+        description={t('empties.paidPurchasesOfYourTracksShow')}
       />
     );
   }

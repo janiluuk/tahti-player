@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Toggle } from '@tahti-player/ui';
 
 import {
@@ -81,6 +82,7 @@ export function AddToPlaylistPanel({
   trackTitle,
   onClose,
 }: Props) {
+  const { t } = useTranslation('web');
   const ids = soundIds ?? (soundId ? [soundId] : []);
   const bulk = ids.length > 1;
   const user = useAuthStore((s) => s.user);
@@ -305,8 +307,8 @@ export function AddToPlaylistPanel({
             {collections.length === 0 && (
               <PageEmpty
                 className="col-span-full"
-                title="No playlists yet"
-                description="Create one to save this track."
+                title={t('empties.noPlaylistsYet')}
+                description={t('empties.createOneToSaveThisTrack')}
                 action={
                   <Button variant="secondary" onClick={() => setCreating(true)}>
                     New

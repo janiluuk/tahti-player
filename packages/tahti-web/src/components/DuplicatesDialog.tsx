@@ -2,7 +2,7 @@ import { FolderOpenIcon, TrashIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, InlineError, Loader, Tooltip } from '@tahti-player/ui';
 
 import { formatLibrarySize } from '../lib/libraryFormat';
@@ -53,6 +53,7 @@ export function DuplicatesDialog({
   library,
   onChanged,
 }: Props) {
+  const { t } = useTranslation('web');
   const [groups, setGroups] = useState<NativeDuplicateGroup[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [hashing, setHashing] = useState<{
@@ -218,8 +219,8 @@ export function DuplicatesDialog({
             </p>
           ) : groups.length === 0 ? (
             <PageEmpty
-              title="No duplicates found"
-              description="Use “Compare file contents” to check for exact copies."
+              title={t('empties.noDuplicatesFound')}
+              description={t('empties.useCompareFileContentsToCheck')}
             />
           ) : (
             groups.map((group) => (

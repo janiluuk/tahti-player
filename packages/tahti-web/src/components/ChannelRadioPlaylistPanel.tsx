@@ -356,7 +356,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
   if (loadError && !programme) {
     return (
       <PageError
-        title="Could not load the 24/7 programme"
+        title={t('loadErrors.couldNotLoadThe247')}
         description={loadError}
         onRetry={reload}
       />

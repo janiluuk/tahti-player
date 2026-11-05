@@ -118,7 +118,7 @@ export function StudioRadioSubmissionPanel() {
           <PageLoading label="Loading submissions…" />
         ) : submissionsError && submissions.length === 0 ? (
           <PageError
-            title="Could not load your submissions"
+            title={t('loadErrors.couldNotLoadYourSubmissions')}
             description={submissionsError}
             onRetry={() => {
               setLoading(true);

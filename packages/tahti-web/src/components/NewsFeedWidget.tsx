@@ -1,6 +1,7 @@
 import { XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Loader,
@@ -26,6 +27,7 @@ export function NewsFeedWidget({
   instance: ListenerWidgetInstance;
   onRemove?: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [items, setItems] = useState<ArticleCardItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
@@ -81,8 +83,8 @@ export function NewsFeedWidget({
         </div>
       ) : failed ? (
         <PageError
-          title="Couldn’t load this feed"
-          description="Check the RSS URL and try again."
+          title={t('loadErrors.couldnTLoadThisFeed')}
+          description={t('loadErrors.checkTheRssUrlAndTry')}
           onRetry={() => setReloadKey((key) => key + 1)}
         />
       ) : (

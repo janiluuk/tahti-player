@@ -74,7 +74,7 @@ export function ChannelPlaylistPicker({
   if (loadError && playlists.length === 0) {
     return (
       <PageError
-        title="Could not load playlists"
+        title={t('loadErrors.couldNotLoadPlaylists')}
         description={loadError}
         onRetry={() => setAttempt((current) => current + 1)}
       />

@@ -113,7 +113,7 @@ export function AddToPlaylistDialog({
           <InlineLoader label="Loading…" />
         ) : loadError ? (
           <PageError
-            title="Could not load your playlists"
+            title={t('loadErrors.couldNotLoadYourPlaylists')}
             description={loadError}
             onRetry={() => setAttempt((n) => n + 1)}
           />

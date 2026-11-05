@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Input, Select } from '@tahti-player/ui';
 
 import {
@@ -56,6 +57,7 @@ function inCatalog(sound: StudioSound): boolean {
 }
 
 function StoreTrackAssigner({ revision }: { revision: number }) {
+  const { t } = useTranslation('web');
   const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [tiers, setTiers] = useState<PurchaseTierRow[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -131,7 +133,7 @@ function StoreTrackAssigner({ revision }: { revision: number }) {
         <PageLoading label="Loading your tracks…" />
       ) : loadError && catalog.length === 0 ? (
         <PageError
-          title="Could not load your tracks"
+          title={t('loadErrors.couldNotLoadYourTracks')}
           description={loadError}
           onRetry={reload}
         />
@@ -143,8 +145,8 @@ function StoreTrackAssigner({ revision }: { revision: number }) {
         <>
           {inStore.length === 0 ? (
             <PageEmpty
-              title="Nothing is in the Store yet"
-              description="Choose a price on a track below. That track is what fans see."
+              title={t('empties.nothingIsInTheStoreYet')}
+              description={t('empties.chooseAPriceOnATrack')}
             />
           ) : (
             <p className="text-foreground-secondary text-xs">
@@ -159,8 +161,8 @@ function StoreTrackAssigner({ revision }: { revision: number }) {
           />
           {visible.length === 0 ? (
             <PageEmpty
-              title="No tracks match"
-              description="Clear the search, or publish a track so it can go in the Store."
+              title={t('empties.noTracksMatch')}
+              description={t('empties.clearTheSearchOrPublishA')}
             />
           ) : (
             <ul className="flex flex-col gap-2">

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -53,6 +54,7 @@ function euros(cents: number): string {
 }
 
 export function FanTiersEditor() {
+  const { t } = useTranslation('web');
   const [tiers, setTiers] = useState<FanTierRow[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -112,7 +114,7 @@ export function FanTiersEditor() {
 
       {loaded && loadError && tiers.length > 0 ? (
         <PageErrorBanner
-          title="Could not refresh your fan tiers."
+          title={t('loadErrors.couldNotRefreshYourFanTiers')}
           description={loadError}
           onRetry={reload}
         />
@@ -122,14 +124,14 @@ export function FanTiersEditor() {
         <PageLoading label="Loading tiers…" />
       ) : loadError && tiers.length === 0 ? (
         <PageError
-          title="Could not load your fan tiers"
+          title={t('loadErrors.couldNotLoadYourFanTiers')}
           description={loadError}
           onRetry={reload}
         />
       ) : tiers.length === 0 ? (
         <PageEmpty
-          title="No tiers yet"
-          description="Add a tier so fans can subscribe to support you."
+          title={t('empties.noTiersYet')}
+          description={t('empties.addATierSoFansCan')}
         />
       ) : (
         <ul className="flex flex-col gap-2">

@@ -9,7 +9,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, EditIconButton, Loader, Tooltip } from '@tahti-player/ui';
 
 import type {
@@ -69,6 +69,7 @@ async function playSmart(
 
 /** Smart playlists: saved rule sets; counts follow library changes as they happen. */
 export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
+  const { t } = useTranslation('web');
   const [lists, setLists] = useState<NativeSmartPlaylist[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [counts, setCounts] = useState<Record<string, number>>({});
@@ -149,7 +150,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
       </div>
       {lists === null ? null : loadError && lists.length === 0 ? (
         <PageError
-          title="Could not load your smart playlists"
+          title={t('loadErrors.couldNotLoadYourSmartPlaylists')}
           description={loadError}
           onRetry={() => void load()}
         />

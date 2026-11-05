@@ -3,7 +3,7 @@ import { CheckIcon, XIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -122,6 +122,7 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
 
 /** Board-only right-rail panel: same map-notes store as the Tahti atlas. */
 export function AdminPageCommentsPanel() {
+  const { t } = useTranslation('web');
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const target = useMemo(() => mapPageTargetForPath(pathname), [pathname]);
   const comments = useMapNotesStore((s) => s.comments);
@@ -191,8 +192,8 @@ export function AdminPageCommentsPanel() {
 
       {forPage.length === 0 ? (
         <PageEmpty
-          title="No comments for this page yet"
-          description="Saved notes also appear under Saved comments on the Tahti atlas."
+          title={t('empties.noCommentsForThisPageYet')}
+          description={t('empties.savedNotesAlsoAppearUnderSaved')}
         />
       ) : (
         <ul className="tahti-hide-scrollbar flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">

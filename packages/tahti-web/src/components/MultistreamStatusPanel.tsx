@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, ButtonLink } from '@tahti-player/ui';
 
 import {
@@ -24,6 +25,7 @@ const STATUS_BADGE: Record<
 
 /** Whether each multistream destination is receiving the stream right now. */
 export function MultistreamStatusPanel({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const [targets, setTargets] = useState<RtmpTargetLiveStatus[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -63,7 +65,7 @@ export function MultistreamStatusPanel({ slug }: { slug: string }) {
     >
       {error ? (
         <PageErrorBanner
-          title="Couldn't check multistream status"
+          title={t('loadErrors.couldnTCheckMultistreamStatus')}
           description={
             targets?.length ? 'Showing the last known status.' : error
           }

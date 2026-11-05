@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Input } from '@tahti-player/ui';
 
 import {
@@ -47,6 +48,7 @@ type Props = {
 };
 
 export function ChannelChatPanel({ slug, compact, rail }: Props) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [accessNote, setAccessNote] = useState<string | null>(null);
@@ -590,8 +592,8 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       >
         {messages.length === 0 && (
           <PageEmpty
-            title="No messages yet"
-            description="Say hi to start the chat."
+            title={t('empties.noMessages')}
+            description={t('empties.sayHiToStartTheChat')}
           />
         )}
         {messages.map((m) => (

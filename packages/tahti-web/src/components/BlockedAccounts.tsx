@@ -72,7 +72,7 @@ export function BlockedAccounts() {
         <PageLoading label="Loading blocked accounts…" />
       ) : loadError && blocked.length === 0 ? (
         <PageError
-          title="Could not load blocked accounts"
+          title={t('loadErrors.couldNotLoadBlockedAccounts')}
           description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />

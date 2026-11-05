@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ImageReveal } from '@tahti-player/ui';
 
 import { fetchVenues } from '../api/client';
@@ -14,6 +15,7 @@ import {
 } from './PageStates';
 
 export function VenuesDirectory() {
+  const { t } = useTranslation('web');
   const [venues, setVenues] = useState<VenueDirectoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -44,7 +46,7 @@ export function VenuesDirectory() {
   if (loadError && venues.length === 0) {
     return (
       <PageError
-        title="Could not load venues"
+        title={t('loadErrors.couldNotLoadVenues')}
         description={loadError}
         onRetry={() => setAttempt((n) => n + 1)}
       />
@@ -54,8 +56,8 @@ export function VenuesDirectory() {
   if (venues.length === 0) {
     return (
       <PageEmpty
-        title="No verified venues"
-        description="No verified venues are available right now."
+        title={t('empties.noVerifiedVenues')}
+        description={t('empties.noVerifiedVenuesAreAvailableRight')}
         action={
           <Link
             to="/venues/register"
@@ -72,7 +74,7 @@ export function VenuesDirectory() {
     <div className="flex flex-col gap-3">
       {loadError ? (
         <PageErrorBanner
-          title="Could not refresh venues"
+          title={t('loadErrors.couldNotRefreshVenues')}
           description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />
