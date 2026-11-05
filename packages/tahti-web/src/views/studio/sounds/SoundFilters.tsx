@@ -50,6 +50,11 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
     setUploadedFrom,
     uploadedTo,
     setUploadedTo,
+    genreFilter,
+    setGenreFilter,
+    tagFilter,
+    setTagFilter,
+    facets,
   } = state;
   const storedView = useTrackListViewStore((store) => store.view);
   const setView = useTrackListViewStore((store) => store.setView);
@@ -164,6 +169,42 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
               id: filterOption.id,
               label: filterOption.label,
             }))}
+            className="min-w-40"
+          />
+          <Select
+            label={t('library.genreFilter')}
+            value={genreFilter || 'ALL'}
+            onValueChange={(value) =>
+              setGenreFilter(value === 'ALL' ? '' : value)
+            }
+            options={[
+              { id: 'ALL', label: t('library.allGenres') },
+              ...facets.genre.map((facet) => ({
+                id: facet.value,
+                label: t('library.facetOption', {
+                  value: facet.value,
+                  count: facet.count,
+                }),
+              })),
+            ]}
+            className="min-w-40"
+          />
+          <Select
+            label={t('library.tagFilter')}
+            value={tagFilter || 'ALL'}
+            onValueChange={(value) =>
+              setTagFilter(value === 'ALL' ? '' : value)
+            }
+            options={[
+              { id: 'ALL', label: t('library.allTags') },
+              ...facets.tag.map((facet) => ({
+                id: facet.value,
+                label: t('library.facetOption', {
+                  value: facet.value,
+                  count: facet.count,
+                }),
+              })),
+            ]}
             className="min-w-40"
           />
           <Input
