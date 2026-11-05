@@ -21,7 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [batch-50-slices-2026-11-05.md](batch-50-slices-2026-11-05.md) | Finnish/chrome empties + Open channel action (~30 slices); tahti-web 0.0.341 |
+| open    | [empty-state-create-ctas.md](empty-state-create-ctas.md) | PageEmpty createables: CTA button with icon + title; inventory flagged (Studio/Library/Admin/Radio/community) |
 | open    | [batch-50-slices-2026-11-05.md](batch-50-slices-2026-11-05.md) | Finnish/chrome empties + Open channel action (~30 slices); tahti-web 0.0.341 |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
