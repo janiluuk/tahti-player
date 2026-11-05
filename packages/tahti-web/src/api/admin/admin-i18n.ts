@@ -1,4 +1,5 @@
 import type { FetchMeta } from '../client';
+import { clearGetCache } from '../getCache';
 import { apiBase, getJson, sendJson } from '../http';
 import {
   allowMockFallback,
@@ -162,6 +163,7 @@ export async function importAdminLanguageCsv(
       `${apiBase()}/api/admin/i18n/languages/${encodeURIComponent(code)}/import`,
       { method: 'POST', credentials: 'include', body: form },
     );
+    clearGetCache();
     if (!res.ok) {
       throw new Error(`import → ${res.status}`);
     }
