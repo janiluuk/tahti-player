@@ -172,7 +172,7 @@ const locations: ElementLocation[] = [
     pages: 'Settings → Add-ons → Listen, Listen add-widget dialog',
   },
   {
-    element: 'ListenWidgetStoreDialog',
+    element: 'AddListenWidgetDialog',
     kind: 'Component',
     pages: 'Listen header',
   },

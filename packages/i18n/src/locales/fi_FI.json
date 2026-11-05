@@ -3701,6 +3701,23 @@
       "loadingSmartlinks": "Ladataan smartlinkkejä…",
       "loadingTheListeningParty": "Ladataan kuuntelujuhlaa…",
       "loadingYourVenues": "Ladataan tapahtumapaikkojasi…"
+    },
+    "addListenWidget": {
+      "open": "Lisää uusi kuuntelu-widget",
+      "title": "Lisää kuuntelu-widget",
+      "chooseService": "Valitse palvelu, josta soittolista lisätään.",
+      "allAddons": "Selaa kaikkia lisäosia (uutissyötteet, radio, listat)",
+      "allAddonsTitle": "Kaikki Kuuntele-lisäosat",
+      "back": "Takaisin",
+      "fromService": "Lisää soittolista palvelusta {{service}}",
+      "playlistUrl": "Soittolistan linkki",
+      "example": "Esimerkki: {{example}}",
+      "rowName": "Rivin nimi",
+      "yourPlaylists": "Omat {{service}}-soittolistasi",
+      "trackCount_one": "{{count}} kappale",
+      "trackCount_other": "{{count}} kappaletta",
+      "add": "Lisää",
+      "added": "{{name}} lisätty Kuuntele-sivulle"
     }
   },
   "studioEditor": {
