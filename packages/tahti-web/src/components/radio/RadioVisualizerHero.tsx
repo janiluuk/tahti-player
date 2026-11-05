@@ -3,29 +3,29 @@ import type { ReactNode } from 'react';
 import { Box, MediaArtwork } from '@tahti-player/ui';
 
 import type { PublicChannel } from '../../api/types';
+import { cn } from '../../lib/cn';
 import { radioVisualizerPreset } from '../../lib/radioVisualizer';
 import { ChannelVisualizer } from '../ChannelVisualizer';
 
 /** Radio's on-air hero: the station visualizer as a large backdrop with the
  * station logo (the only Tahti Radio logo on the page), what is playing and
- * the station actions laid over it. */
+ * the station actions laid over it. When `embedded`, skip the outer Box so a
+ * parent (RadioPlayerWidget) can own the chrome. */
 export function RadioVisualizerHero({
   station,
   logoUrl,
   info,
   actions,
+  embedded = false,
 }: {
   station: PublicChannel;
   logoUrl: string | null;
   info: ReactNode;
   actions: ReactNode;
+  embedded?: boolean;
 }) {
-  return (
-    <Box
-      variant="secondary"
-      className="relative flex min-h-[340px] flex-col overflow-hidden rounded-xl p-0 sm:min-h-[440px]"
-      data-testid="radio-visualizer-hero"
-    >
+  const body = (
+    <>
       <div className="absolute inset-0 opacity-80">
         <ChannelVisualizer
           preset={radioVisualizerPreset(station.slug, station.visualPreset)}
@@ -55,6 +55,27 @@ export function RadioVisualizerHero({
           <div className="flex flex-wrap items-start gap-3">{actions}</div>
         </div>
       </div>
+    </>
+  );
+
+  const shellClass =
+    'relative flex min-h-[340px] flex-col overflow-hidden p-0 sm:min-h-[440px]';
+
+  if (embedded) {
+    return (
+      <div className={shellClass} data-testid="radio-visualizer-hero">
+        {body}
+      </div>
+    );
+  }
+
+  return (
+    <Box
+      variant="secondary"
+      className={cn(shellClass, 'rounded-xl')}
+      data-testid="radio-visualizer-hero"
+    >
+      {body}
     </Box>
   );
 }

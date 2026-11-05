@@ -11,15 +11,14 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   Button,
   ButtonLink,
-  MediaArtwork,
-  Tabs,
   Tooltip,
   ViewShell,
+  type TabsItem,
 } from '@tahti-player/ui';
 
 import {
@@ -44,15 +43,11 @@ import type {
   PublicChannel,
   RadioNowPlaying,
   RadioRecentlyPlayedItem,
-  TahtiPlayable,
 } from '../api/types';
 import { useRotationNowPlaying } from '../components/channel-view/useRotationNowPlaying';
 import { RadioStationsRow } from '../components/listen-view/RadioStationsRow';
 import { useRadioPresets } from '../components/listen-view/useListenSections';
-import {
-  MediaIconActions,
-  playQueueFavoriteActions,
-} from '../components/MediaIconActions';
+import { MediaIconActions } from '../components/MediaIconActions';
 import {
   PageEmpty,
   PageError,
@@ -62,11 +57,16 @@ import {
 import { AddStationsPanel } from '../components/radio/AddStationsPanel';
 import { FavoriteStationsRow } from '../components/radio/FavoriteStationsRow';
 import { RadioBookedShowsPanel } from '../components/radio/RadioBookedShowsPanel';
+import { RadioFeaturedPanel } from '../components/radio/RadioFeaturedPanel';
+import {
+  formatRadioAgo,
+  RadioJustPlayedPanel,
+} from '../components/radio/RadioJustPlayedPanel';
 import {
   RadioNowPlayingOverlay,
   type RadioOverlayItem,
 } from '../components/radio/RadioNowPlayingOverlay';
-import { RadioVisualizerHero } from '../components/radio/RadioVisualizerHero';
+import { RadioPlayerWidget } from '../components/radio/RadioPlayerWidget';
 import { RadioBookingCalendar } from '../components/RadioBookingCalendar';
 import { RadioUpNextPanel } from '../components/RadioUpNextPanel';
 import { StationUnavailableNotice } from '../components/StationUnavailableNotice';
@@ -87,21 +87,6 @@ function formatShowStart(iso: string): string {
     hour: '2-digit',
     minute: '2-digit',
   });
-}
-
-function formatAgo(iso: string): string {
-  const mins = Math.floor((Date.now() - new Date(iso).getTime()) / 60_000);
-  if (mins < 1) {
-    return i18n.t('web:radio.agoJustNow');
-  }
-  if (mins < 60) {
-    return i18n.t('web:radio.agoMinutes', { count: mins });
-  }
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) {
-    return i18n.t('web:radio.agoHours', { count: hours });
-  }
-  return i18n.t('web:radio.agoDays', { count: Math.floor(hours / 24) });
 }
 
 export function RadioView() {
@@ -324,6 +309,86 @@ export function RadioView() {
     });
   };
 
+  const queueIds = new Set(queue.map((item) => item.id));
+  const playerTabs: TabsItem[] = [
+    {
+      id: 'up-next',
+      label: t('radio.tabUpNext'),
+      icon: <ListOrderedIcon size={14} />,
+      count: !memberLive && rotation.length > 0 ? rotation.length : undefined,
+      content: (
+        <RadioUpNextPanel
+          onRotation={!memberLive}
+          rotation={rotation}
+          rotationError={sectionErrors.rotation}
+          onRetryRotation={reloadRotation}
+        />
+      ),
+    },
+    {
+      id: 'shows',
+      label: t('radio.tabShows'),
+      icon: <CalendarDaysIcon size={14} />,
+      count: upcoming.length > 0 ? upcoming.length : undefined,
+      content: (
+        <RadioBookedShowsPanel
+          bookings={upcoming}
+          error={sectionErrors.upcoming}
+          onRetry={reloadUpcoming}
+          onBook={user ? () => setCalendarOpen(true) : undefined}
+        />
+      ),
+    },
+    {
+      id: 'just-played',
+      label: t('radio.tabJustPlayed'),
+      icon: <HistoryIcon size={14} />,
+      count: recent.length > 0 ? recent.length : undefined,
+      content: (
+        <RadioJustPlayedPanel
+          items={recent}
+          error={sectionErrors.recent}
+          onRetry={reload}
+          handlers={{
+            currentId,
+            playerStatus,
+            queueIds,
+            onPlay: play,
+            onTogglePause: () =>
+              setPlayerStatus(
+                playerStatus === 'playing' || playerStatus === 'loading'
+                  ? 'paused'
+                  : 'playing',
+              ),
+            onQueue: enqueue,
+            onTrackInfo: (item, playable) =>
+              setInfoTrack({
+                title: item.title,
+                artistName: item.artistName,
+                artistUsername: item.artistUsername,
+                artworkUrl: item.artworkUrl,
+                meta: formatRadioAgo(item.playedAt),
+                playable: playable ?? undefined,
+              }),
+          }}
+        />
+      ),
+    },
+    {
+      id: 'featured',
+      label: t('radio.tabFeatured'),
+      icon: <MicIcon size={14} />,
+      count: featured.length > 0 ? featured.length : undefined,
+      content: (
+        <RadioFeaturedPanel
+          items={featured}
+          error={sectionErrors.featured}
+          onRetry={reload}
+        />
+      ),
+    },
+  ];
+
   return (
     <ViewShell
       title={t('radio.title')}
@@ -415,327 +480,114 @@ export function RadioView() {
             />
           ) : null}
 
-          {!online ? (
-            <PageEmpty
-              icon="radio"
-              title={t('radio.offAirTitle')}
-              description={t('radio.offAirDescription')}
-              action={
-                <div className="flex flex-wrap gap-2">
-                  <ButtonLink to="/" size="sm" variant="secondary">
-                    {t('radio.browseListen')}
-                  </ButtonLink>
-                  <Button size="sm" variant="secondary" onClick={reload}>
-                    {t('actions.refresh')}
-                  </Button>
-                </div>
-              }
-            />
-          ) : (
-            <RadioVisualizerHero
-              station={station}
-              logoUrl={stationLogo}
-              info={
-                <RadioNowPlayingOverlay
-                  label={
-                    memberLive ? t('radio.liveOnRelay') : t('radio.nowPlaying')
-                  }
-                  current={overlayCurrent}
-                  next={overlayNext}
-                  onCurrentInfo={
-                    !memberLive && nowPlaying
-                      ? () =>
-                          setInfoTrack({
-                            title: nowPlaying.title,
-                            artistName: nowPlaying.artistName,
-                            artistUsername: nowPlaying.artistUsername,
-                            artworkUrl: nowPlaying.artworkUrl,
-                            meta: t('radio.liveNow'),
-                          })
-                      : undefined
-                  }
+          <RadioPlayerWidget
+            station={station}
+            logoUrl={stationLogo}
+            online={online}
+            offlineContent={
+              <PageEmpty
+                icon="radio"
+                title={t('radio.offAirTitle')}
+                description={t('radio.offAirDescription')}
+                action={
+                  <div className="flex flex-wrap gap-2">
+                    <ButtonLink to="/" size="sm" variant="secondary">
+                      {t('radio.browseListen')}
+                    </ButtonLink>
+                    <Button size="sm" variant="secondary" onClick={reload}>
+                      {t('actions.refresh')}
+                    </Button>
+                  </div>
+                }
+              />
+            }
+            info={
+              <RadioNowPlayingOverlay
+                label={
+                  memberLive ? t('radio.liveOnRelay') : t('radio.nowPlaying')
+                }
+                current={overlayCurrent}
+                next={overlayNext}
+                onCurrentInfo={
+                  !memberLive && nowPlaying
+                    ? () =>
+                        setInfoTrack({
+                          title: nowPlaying.title,
+                          artistName: nowPlaying.artistName,
+                          artistUsername: nowPlaying.artistUsername,
+                          artworkUrl: nowPlaying.artworkUrl,
+                          meta: t('radio.liveNow'),
+                        })
+                    : undefined
+                }
+              />
+            }
+            actions={
+              <>
+                <MediaIconActions
+                  actions={[
+                    {
+                      id: 'play',
+                      label: isRadioPlaying
+                        ? t('radio.pauseRadio')
+                        : t('radio.playRadio'),
+                      icon: isRadioPlaying ? (
+                        <PauseIcon size={16} className="fill-current" />
+                      ) : (
+                        <PlayIcon size={16} className="fill-current" />
+                      ),
+                      onClick: playStation,
+                      active: isRadioPlaying,
+                      disableWhenActive: false,
+                    },
+                    {
+                      id: 'favorite',
+                      label: favorited
+                        ? t('actions.favorited')
+                        : t('actions.favorite'),
+                      icon: (
+                        <HeartIcon
+                          size={16}
+                          className={
+                            favorited
+                              ? 'text-accent-red-strong fill-current'
+                              : undefined
+                          }
+                        />
+                      ),
+                      onClick: () =>
+                        toggleFavoriteChannel({
+                          slug: TAHTI_RADIO_SLUG,
+                          displayName: station.user.displayName,
+                          avatarUrl: station.user.avatarUrl,
+                        }),
+                      active: favorited,
+                      variant: 'text',
+                    },
+                  ]}
                 />
-              }
-              actions={
-                <>
-                  <MediaIconActions
-                    actions={[
-                      {
-                        id: 'play',
-                        label: isRadioPlaying
-                          ? t('radio.pauseRadio')
-                          : t('radio.playRadio'),
-                        icon: isRadioPlaying ? (
-                          <PauseIcon size={16} className="fill-current" />
-                        ) : (
-                          <PlayIcon size={16} className="fill-current" />
-                        ),
-                        onClick: playStation,
-                        active: isRadioPlaying,
-                        disableWhenActive: false,
-                      },
-                      {
-                        id: 'favorite',
-                        label: favorited
-                          ? t('actions.favorited')
-                          : t('actions.favorite'),
-                        icon: (
-                          <HeartIcon
-                            size={16}
-                            className={
-                              favorited
-                                ? 'text-accent-red-strong fill-current'
-                                : undefined
-                            }
-                          />
-                        ),
-                        onClick: () =>
-                          toggleFavoriteChannel({
-                            slug: TAHTI_RADIO_SLUG,
-                            displayName: station.user.displayName,
-                            avatarUrl: station.user.avatarUrl,
-                          }),
-                        active: favorited,
-                        variant: 'text',
-                      },
-                    ]}
-                  />
-                  <ButtonLink
-                    to="/channel/$slug"
-                    params={{ slug: TAHTI_RADIO_SLUG }}
-                    size="sm"
-                    variant="secondary"
-                  >
-                    Open channel
-                  </ButtonLink>
-                </>
-              }
-            />
-          )}
-
-          <StationUnavailableNotice
-            playableId={radioPlayableId}
-            streamUrl={station?.hlsUrl}
-            onPlay={playStation}
+                <ButtonLink
+                  to="/channel/$slug"
+                  params={{ slug: TAHTI_RADIO_SLUG }}
+                  size="sm"
+                  variant="secondary"
+                >
+                  Open channel
+                </ButtonLink>
+              </>
+            }
+            notice={
+              <StationUnavailableNotice
+                playableId={radioPlayableId}
+                streamUrl={station?.hlsUrl}
+                onPlay={playStation}
+                className="mx-4 my-3"
+              />
+            }
+            selectedTabIndex={RADIO_TABS.indexOf(activeTab)}
+            onTabChange={selectTab}
+            tabs={playerTabs}
           />
-
-          <section className="flex flex-col gap-3">
-            <Tabs
-              listClassName="border-border border-b"
-              panelClassName="pt-3"
-              selectedIndex={RADIO_TABS.indexOf(activeTab)}
-              onChange={selectTab}
-              items={[
-                {
-                  id: 'up-next',
-                  label: t('radio.tabUpNext'),
-                  icon: <ListOrderedIcon size={14} />,
-                  count:
-                    !memberLive && rotation.length > 0
-                      ? rotation.length
-                      : undefined,
-                  content: (
-                    <RadioUpNextPanel
-                      onRotation={!memberLive}
-                      rotation={rotation}
-                      rotationError={sectionErrors.rotation}
-                      onRetryRotation={reloadRotation}
-                    />
-                  ),
-                },
-                {
-                  id: 'shows',
-                  label: t('radio.tabShows'),
-                  icon: <CalendarDaysIcon size={14} />,
-                  count: upcoming.length > 0 ? upcoming.length : undefined,
-                  content: (
-                    <RadioBookedShowsPanel
-                      bookings={upcoming}
-                      error={sectionErrors.upcoming}
-                      onRetry={reloadUpcoming}
-                      onBook={user ? () => setCalendarOpen(true) : undefined}
-                    />
-                  ),
-                },
-                {
-                  id: 'just-played',
-                  label: t('radio.tabJustPlayed'),
-                  icon: <HistoryIcon size={14} />,
-                  count: recent.length > 0 ? recent.length : undefined,
-                  content:
-                    sectionErrors.recent && recent.length === 0 ? (
-                      <PageError
-                        title={t('radio.recentLoadError')}
-                        description={sectionErrors.recent}
-                        onRetry={reload}
-                      />
-                    ) : recent.length === 0 ? (
-                      <PageEmpty title={t('radio.recentEmpty')} />
-                    ) : (
-                      <div className="flex flex-col gap-3">
-                        {sectionErrors.recent ? (
-                          <PageErrorBanner
-                            title={t('radio.recentRefreshError')}
-                            description={sectionErrors.recent}
-                            onRetry={reload}
-                          />
-                        ) : null}
-                        <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
-                          {recent.map((item) => {
-                            const playable: TahtiPlayable | null =
-                              item.audioUrl && item.soundId
-                                ? {
-                                    id: `sound:${item.soundId}`,
-                                    kind: 'sound',
-                                    title: item.title,
-                                    artist: item.artistName,
-                                    coverUrl: item.artworkUrl ?? undefined,
-                                    streamUrl: item.audioUrl,
-                                    protocol: 'https',
-                                  }
-                                : null;
-                            const isPlaying = Boolean(
-                              playable && playable.id === currentId,
-                            );
-                            const isActivelyPlaying =
-                              isPlaying &&
-                              (playerStatus === 'playing' ||
-                                playerStatus === 'loading');
-                            return (
-                              <li
-                                key={item.id}
-                                className={`flex items-center gap-3 border-l-4 px-3 py-2 transition-colors ${
-                                  isPlaying
-                                    ? 'border-l-accent-cyan bg-accent-cyan/10'
-                                    : 'border-l-transparent'
-                                }`}
-                              >
-                                <Button
-                                  type="button"
-                                  variant="text"
-                                  size="flexible"
-                                  onClick={() =>
-                                    setInfoTrack({
-                                      title: item.title,
-                                      artistName: item.artistName,
-                                      artistUsername: item.artistUsername,
-                                      artworkUrl: item.artworkUrl,
-                                      meta: formatAgo(item.playedAt),
-                                      playable,
-                                    })
-                                  }
-                                  aria-label={t('radio.trackInfoFor', {
-                                    title: item.title,
-                                  })}
-                                  className="shrink-0 p-0"
-                                >
-                                  <MediaArtwork
-                                    size="sm"
-                                    src={item.artworkUrl}
-                                    alt=""
-                                    className="bg-surface-secondary rounded-md text-[10px] font-bold"
-                                    placeholder={item.title
-                                      .slice(0, 2)
-                                      .toUpperCase()}
-                                  />
-                                </Button>
-                                <div className="min-w-0 flex-1">
-                                  <Link
-                                    to="/t/$id"
-                                    params={{ id: item.id }}
-                                    className={`block truncate text-sm leading-6 font-medium underline-offset-2 hover:underline ${
-                                      isPlaying ? 'text-accent-cyan-strong' : ''
-                                    }`}
-                                  >
-                                    {item.title}
-                                  </Link>
-                                  <div className="text-foreground-secondary truncate text-xs">
-                                    {item.artistName}
-                                  </div>
-                                </div>
-                                <span className="text-foreground-secondary hidden shrink-0 text-xs sm:inline">
-                                  {formatAgo(item.playedAt)}
-                                </span>
-                                <MediaIconActions
-                                  actions={playQueueFavoriteActions({
-                                    itemName: item.title,
-                                    onPlay: () => playable && play(playable),
-                                    onTogglePause: () =>
-                                      setPlayerStatus(
-                                        playerStatus === 'playing' ||
-                                          playerStatus === 'loading'
-                                          ? 'paused'
-                                          : 'playing',
-                                      ),
-                                    isPlaying: isActivelyPlaying,
-                                    onQueue: () =>
-                                      playable && enqueue(playable),
-                                    playDisabled: !playable,
-                                    queueDisabled: !playable,
-                                    playLabel: t('actions.playItem', {
-                                      title: item.title,
-                                    }),
-                                    queueLabel: t('actions.queueItem', {
-                                      title: item.title,
-                                    }),
-                                    queued: Boolean(
-                                      playable &&
-                                      queue.some(
-                                        (queueItem) =>
-                                          queueItem.id === playable.id,
-                                      ),
-                                    ),
-                                  })}
-                                />
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    ),
-                },
-                {
-                  id: 'featured',
-                  label: t('radio.tabFeatured'),
-                  icon: <MicIcon size={14} />,
-                  count: featured.length > 0 ? featured.length : undefined,
-                  content:
-                    sectionErrors.featured && featured.length === 0 ? (
-                      <PageError
-                        title={t('radio.memberSetsError')}
-                        description={sectionErrors.featured}
-                        onRetry={reload}
-                      />
-                    ) : featured.length === 0 ? (
-                      <PageEmpty title={t('radio.memberSetsEmpty')} />
-                    ) : (
-                      <ul
-                        className="border-border divide-border divide-y overflow-hidden rounded-lg border"
-                        data-testid="radio-featured"
-                      >
-                        {featured.map((item) => (
-                          <li
-                            key={`${item.channelId}-${item.featuredAt}`}
-                            className="flex items-center gap-3 px-3 py-2"
-                          >
-                            <Link
-                              to="/channel/$slug"
-                              params={{ slug: item.slug }}
-                              className="min-w-0 flex-1 truncate text-sm font-medium underline-offset-2 hover:underline"
-                            >
-                              {item.artistName || item.slug}
-                            </Link>
-                            <span className="text-foreground-secondary shrink-0 text-xs">
-                              {formatAgo(item.featuredAt)}
-                            </span>
-                          </li>
-                        ))}
-                      </ul>
-                    ),
-                },
-              ]}
-            />
-          </section>
         </div>
       )}
 

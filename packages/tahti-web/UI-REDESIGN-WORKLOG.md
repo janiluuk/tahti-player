@@ -1,3 +1,10 @@
+## 2026-11-05 - Tahti Radio player widget (0.0.340)
+
+Consolidated on-air player + Up next / Shows / Just played / Featured into
+`RadioPlayerWidget` (Storybook `Tahti/Radio/RadioPlayerWidget`). Wired on
+`/radio`; extracted Just played and Featured panels. Skipped: performance
+audit, pageTour, admin hub English descriptions.
+
 ## 2026-11-04 - Batch 44 UX slices (0.0.334)
 
 Finnish for Studio Recordings / Distribution / Editor list chrome and empties,

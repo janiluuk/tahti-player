@@ -287,6 +287,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Settings/RadioBrowserDirectory` | `tahti-web/RadioBrowserDirectory.stories.tsx` |
 | `Tahti/Widgets/PluginStorePanel/Radio category` | `tahti-web/RadioCategory.stories.tsx` |
 | `Tahti/Radio/RadioListItem` | `tahti-web/RadioListItem.stories.tsx` |
+| `Tahti/Radio/RadioPlayerWidget` | `tahti-web/RadioPlayerWidget.stories.tsx` |
 | `Tahti/Channel/RadioProgrammingGrid` | `tahti-web/RadioProgrammingGrid.stories.tsx` |
 | `Tahti/Channel/RadioScheduleView` | `tahti-web/RadioScheduleView.stories.tsx` |
 | `Tahti/Radio/RadioShowEpisodeList` | `tahti-web/RadioShowEpisodeList.stories.tsx` |
