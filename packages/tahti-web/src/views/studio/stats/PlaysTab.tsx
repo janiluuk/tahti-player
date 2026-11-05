@@ -1,5 +1,6 @@
 import { DownloadIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   CalendarHeatmap,
@@ -29,6 +30,7 @@ export function PlaysTab({
   state: StatsData;
   active: boolean;
 }) {
+  const { t } = useTranslation('web');
   const isDark = useThemeStore((s) => s.dark);
   const {
     listenerGeo,
@@ -97,7 +99,7 @@ export function PlaysTab({
             </Button>
           </div>
           {plays.daily.length === 0 ? (
-            <PageEmpty title="No plays in this period." />
+            <PageEmpty title={t('empties.noPlaysPeriod')} />
           ) : useHeatmap ? (
             <HorizontalScroll label="Daily plays">
               <CalendarHeatmap

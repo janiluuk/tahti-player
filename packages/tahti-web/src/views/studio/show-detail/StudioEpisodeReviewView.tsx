@@ -2,7 +2,7 @@ import { CheckIcon, RadioIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
@@ -40,6 +40,7 @@ import { trimToCuts } from '../episodeTrim';
 import { episodeStatusLabel } from '../StudioShowsView';
 
 export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
+  const { t } = useTranslation('web');
   const [episode, setEpisode] = useState<StudioEpisode | null>(null);
   const [show, setShow] = useState<StudioShowSeries | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -106,7 +107,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
               onRetry={() => setAttempt((n) => n + 1)}
             />
           ) : notFound ? (
-            <PageEmpty headingLevel={1} title="Episode not found" />
+            <PageEmpty headingLevel={1} title={t('empties.episodeNotFound')} />
           ) : (
             <PageLoading label="Loading…" />
           )}

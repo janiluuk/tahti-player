@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { CalendarPlusIcon, MapPinIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   ButtonAnchor,
@@ -198,6 +199,7 @@ function VenueUpcomingShows({
   slug: string;
   broadcasts: VenueUpcomingBroadcast[];
 }) {
+  const { t } = useTranslation('web');
   const feedUrl = venueCalendarFeedUrl(slug);
   return (
     <section
@@ -224,7 +226,7 @@ function VenueUpcomingShows({
         </div>
       </div>
       {broadcasts.length === 0 ? (
-        <PageEmpty title="No shows booked here yet." />
+        <PageEmpty title={t('empties.noVenueShows')} />
       ) : (
         <ul className="divide-border mt-2 divide-y">
           {broadcasts.map((show) => (

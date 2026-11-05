@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { RotateCcwIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, InlineError, Select } from '@tahti-player/ui';
 
 import {
@@ -39,6 +40,7 @@ function PayoutPeriod({ payout }: { payout: AdminFanSubPayout }) {
 }
 
 export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
+  const { t } = useTranslation('web');
   const [state, setState] = useState<'' | AdminFanSubPayoutState>('');
   const [rows, setRows] = useState<AdminFanSubPayout[] | null>(null);
   const [total, setTotal] = useState(0);
@@ -98,7 +100,7 @@ export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
       ) : !rows ? (
         <PageError title="Couldn't load payouts" onRetry={() => void load()} />
       ) : rows.length === 0 ? (
-        <PageEmpty title="Nothing waiting to be paid out" />
+        <PageEmpty title={t('empties.nothingToPayOut')} />
       ) : (
         <>
           <ul

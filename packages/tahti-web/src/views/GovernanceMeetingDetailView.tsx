@@ -1,6 +1,7 @@
 import { CalendarCheckIcon, ScrollTextIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, ExternalLink, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMeetings } from '../api/client';
@@ -22,6 +23,7 @@ const TYPE_LABEL: Record<GovernanceMeeting['type'], string> = {
 };
 
 export function GovernanceMeetingDetailView({ id }: { id: string }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const [meeting, setMeeting] = useState<GovernanceMeeting | null>(null);
   const [loading, setLoading] = useState(true);
@@ -195,7 +197,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
               meetingId={meeting.id}
               fallback={
                 agenda.length === 0 ? (
-                  <PageEmpty title="No agenda published yet." />
+                  <PageEmpty title={t('empties.noAgenda')} />
                 ) : (
                   <ul className="flex flex-col gap-3">
                     {agenda.map((item) => (

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   CalendarHeatmap,
   DayOfWeekChart,
@@ -42,6 +43,7 @@ function formatAxisDate(iso: string): string {
 }
 
 export function StudioStatsDetailView() {
+  const { t } = useTranslation('web');
   const isDark = useThemeStore((state) => state.dark);
   const [range, setRange] = useState<StatsPlaysRange>('30');
   const [data, setData] = useState<StatsPlays | null>(null);
@@ -133,7 +135,7 @@ export function StudioStatsDetailView() {
                 </p>
 
                 {data.daily.length === 0 ? (
-                  <PageEmpty title="No daily activity in this range" />
+                  <PageEmpty title={t('empties.noDailyActivity')} />
                 ) : useHeatmap ? (
                   <HorizontalScroll label="Daily activity" className="mt-4">
                     <CalendarHeatmap

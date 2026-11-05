@@ -1,6 +1,7 @@
 import { CloudIcon, ExternalLinkIcon, HardDriveIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, DonutChart, Meter, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -25,6 +26,7 @@ import {
 import { DiskSpaceCard, QuotaEditor, STORAGE_TYPE_COLORS } from './shared';
 
 function TopUsersChart({ users }: { users: AdminStorageUserRow[] }) {
+  const { t } = useTranslation('web');
   const top = useMemo(
     () => [...users].sort((a, b) => b.usedBytes - a.usedBytes).slice(0, 8),
     [users],
@@ -32,7 +34,7 @@ function TopUsersChart({ users }: { users: AdminStorageUserRow[] }) {
   const max = Math.max(...top.map((u) => u.usedBytes), 1);
 
   if (top.length === 0) {
-    return <PageEmpty title="No usage recorded yet" />;
+    return <PageEmpty title={t('empties.noUsageRecorded')} />;
   }
 
   return (
@@ -71,6 +73,7 @@ function TopUsersChart({ users }: { users: AdminStorageUserRow[] }) {
 }
 
 function StorageTypeBreakdown({ files }: { files: AdminFileRow[] }) {
+  const { t } = useTranslation('web');
   const breakdown = useMemo(() => {
     const totals = new Map<string, number>();
     files.forEach((file) => {
@@ -90,7 +93,7 @@ function StorageTypeBreakdown({ files }: { files: AdminFileRow[] }) {
       description="How total stored file usage is distributed across content types."
     >
       {breakdown.length === 0 || totalBytes === 0 ? (
-        <PageEmpty title="No file usage recorded yet" />
+        <PageEmpty title={t('empties.noFileUsageRecorded')} />
       ) : (
         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
           <DonutChart
@@ -131,6 +134,7 @@ function StorageTypeBreakdown({ files }: { files: AdminFileRow[] }) {
 }
 
 export function StorageOverviewTab() {
+  const { t } = useTranslation('web');
   const [overview, setOverview] = useState<AdminStorageOverview | null>(null);
   const [files, setFiles] = useState<AdminFileRow[]>([]);
   const [loading, setLoading] = useState(true);
@@ -213,7 +217,7 @@ export function StorageOverviewTab() {
         </div>
 
         {overview.users.length === 0 ? (
-          <PageEmpty title="No usage recorded yet" />
+          <PageEmpty title={t('empties.noUsageRecorded')} />
         ) : (
           <ul className="divide-border divide-y">
             {overview.users.map((row) => {

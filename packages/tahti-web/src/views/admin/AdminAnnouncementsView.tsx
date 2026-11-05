@@ -154,7 +154,7 @@ export function AdminAnnouncementsView() {
                 {loading ? (
                   <PageLoading label="Loading announcements…" />
                 ) : clips.length === 0 ? (
-                  <PageEmpty title="No system announcement clips yet." />
+                  <PageEmpty title={t('empties.noAnnouncementClips')} />
                 ) : (
                   <ul className="divide-border divide-y">
                     {clips.map((clip) => (

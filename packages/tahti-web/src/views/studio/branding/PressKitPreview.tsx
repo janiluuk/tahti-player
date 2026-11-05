@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { ImageReveal } from '@tahti-player/ui';
 
 import { type PressKitImageItem } from '../../../api/artist-settings';
@@ -12,6 +13,7 @@ export function PressKitPreview({
   bio: string | null;
   images: PressKitImageItem[];
 }) {
+  const { t } = useTranslation('web');
   return (
     <div className="border-border bg-background overflow-hidden rounded-xl border shadow-lg">
       <div className="via-primary/30 relative min-h-48 overflow-hidden bg-gradient-to-br from-black/80 to-black/80 p-5 text-white sm:min-h-56">
@@ -32,7 +34,7 @@ export function PressKitPreview({
         {bio ? (
           <p className="text-foreground text-sm leading-relaxed">{bio}</p>
         ) : (
-          <PageEmpty title="No bio yet." />
+          <PageEmpty title={t('empties.noBio')} />
         )}
         {images.length > 1 ? (
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">

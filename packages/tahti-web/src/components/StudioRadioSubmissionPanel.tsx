@@ -7,7 +7,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Toggle } from '@tahti-player/ui';
 
 import {
@@ -30,6 +30,7 @@ const isSingleTrack = (item: StudioSound) =>
   item.contentType !== 'CLIP';
 
 export function StudioRadioSubmissionPanel() {
+  const { t } = useTranslation('web');
   const [sounds, setSounds] = useState<StudioSound[]>([]);
   const [submissions, setSubmissions] = useState<RadioSubmission[]>([]);
   const [selected, setSelected] = useState<string[]>([]);
@@ -125,7 +126,7 @@ export function StudioRadioSubmissionPanel() {
             }}
           />
         ) : submissions.length === 0 ? (
-          <PageEmpty title="No submissions yet" />
+          <PageEmpty title={t('empties.noRadioSubmissions')} />
         ) : (
           <ul className="border-border divide-border divide-y rounded-lg border">
             {submissions.map((submission) => (

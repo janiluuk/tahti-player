@@ -1,6 +1,7 @@
 import { ListMusicIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineLoader, Select } from '@tahti-player/ui';
 
 import { fetchStudioCollections } from '../api/studio';
@@ -30,6 +31,7 @@ export function ChannelPlaylistPicker({
   applyOnChange = false,
   onPick,
 }: Props) {
+  const { t } = useTranslation('web');
   const [playlists, setPlaylists] = useState<StudioCollection[]>([]);
   const [selectedSlug, setSelectedSlug] = useState(initialSlug ?? '');
   const [loading, setLoading] = useState(true);
@@ -80,9 +82,7 @@ export function ChannelPlaylistPicker({
   }
 
   if (playlists.length === 0) {
-    return (
-      <PageEmpty title="No playlists in your library yet. Create one under Studio → Collections." />
-    );
+    return <PageEmpty title={t('empties.noLibraryPlaylists')} />;
   }
 
   return (

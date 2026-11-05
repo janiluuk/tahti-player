@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -94,6 +95,7 @@ export function RadioBookingCalendar({
   onBooked?: () => void;
   scope?: 'all' | 'mine';
 }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const [monthCursor, setMonthCursor] = useState(() =>
@@ -413,7 +415,7 @@ export function RadioBookingCalendar({
               onRetry={reload}
             />
           ) : selectedBookings.length === 0 ? (
-            <PageEmpty title="No slots booked yet." />
+            <PageEmpty title={t('empties.noSlotsBooked')} />
           ) : (
             <ul className="flex flex-col gap-1.5">
               {selectedBookings.map((b) => (

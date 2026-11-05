@@ -2,6 +2,7 @@ import { Trash2Icon } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ExternalLink, Input, MediaArtwork } from '@tahti-player/ui';
 
 import {
@@ -18,6 +19,7 @@ const MAX_EMBEDS = 20;
 
 /** SoundCloud tracks shown on the artist's channel, added by public URL. */
 export function SoundCloudEmbedsPanel() {
+  const { t } = useTranslation('web');
   const [embeds, setEmbeds] = useState<ArtistEmbed[] | null>(null);
   const [failed, setFailed] = useState(false);
   const [url, setUrl] = useState('');
@@ -140,7 +142,7 @@ export function SoundCloudEmbedsPanel() {
               ))}
             </ul>
           ) : embeds ? (
-            <PageEmpty title="No SoundCloud tracks yet." />
+            <PageEmpty title={t('empties.noSoundCloudTracks')} />
           ) : null}
         </div>
       )}

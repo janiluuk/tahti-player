@@ -2,6 +2,7 @@ import { Trash2Icon } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input, MediaArtwork } from '@tahti-player/ui';
 
 import {
@@ -23,6 +24,7 @@ export function MyRadioStations({
 }: {
   onChange?: (stations: MyRadioStation[]) => void;
 } = {}) {
+  const { t } = useTranslation('web');
   const play = usePlayerStore((s) => s.play);
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
@@ -159,7 +161,7 @@ export function MyRadioStations({
           })}
         </ul>
       ) : stations ? (
-        <PageEmpty title="No stations yet. Add one with its stream URL." />
+        <PageEmpty title={t('empties.noRadioStations')} />
       ) : null}
       <form
         className="flex flex-col gap-3"

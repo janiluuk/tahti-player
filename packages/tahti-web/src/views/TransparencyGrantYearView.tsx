@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   DataTable,
   DataTableBody,
@@ -21,6 +22,7 @@ function centsLabel(raw: string | number) {
 }
 
 export function TransparencyGrantYearView({ year }: { year: number }) {
+  const { t } = useTranslation('web');
   const [report, setReport] = useState<TransparencyGrantReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [failed, setFailed] = useState(false);
@@ -78,7 +80,7 @@ export function TransparencyGrantYearView({ year }: { year: number }) {
             />
           </div>
           {report.grants.length === 0 ? (
-            <PageEmpty title="No grants were made this year." />
+            <PageEmpty title={t('empties.noGrantsThisYear')} />
           ) : (
             <DataTable>
               <DataTableHead>

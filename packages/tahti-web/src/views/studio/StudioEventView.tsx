@@ -1,6 +1,7 @@
 import { CalendarDaysIcon, MapPinIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
@@ -17,6 +18,7 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
 
 export function StudioEventView({ eventId }: { eventId: string }) {
+  const { t } = useTranslation('web');
   const [event, setEvent] = useState<ArtistEvent | null | undefined>(undefined);
 
   useEffect(() => {
@@ -44,7 +46,7 @@ export function StudioEventView({ eventId }: { eventId: string }) {
         {event === undefined ? (
           <PageLoading label="Loading…" />
         ) : event === null ? (
-          <PageEmpty title="That event could not be found" />
+          <PageEmpty title={t('empties.eventNotFound')} />
         ) : (
           <ViewShell
             title={event.title}
