@@ -363,3 +363,41 @@ export function mockApproveSubmission(): { ok: true } {
 export function mockRejectSubmission(): { ok: true } {
   return { ok: true };
 }
+
+export type MockGroupMember = PublicGroupDetail['members'][number] & {
+  avatarUrl: string | null;
+  joinedAt: string;
+};
+
+const ROLE_ORDER = { OWNER: 0, ADMIN: 1, MEMBER: 2 } as const;
+
+export function mockFetchGroupMembers(slug: string): MockGroupMember[] {
+  const group = getStore().find((row) => row.slug === slug);
+  if (!group) {
+    return [];
+  }
+  return group.members
+    .map((member, index) => ({
+      ...member,
+      avatarUrl: null,
+      joinedAt: new Date(Date.UTC(2026, 8, 1 + index)).toISOString(),
+    }))
+    .sort((a, b) => ROLE_ORDER[a.role] - ROLE_ORDER[b.role]);
+}
+
+export function mockRemoveGroupMember(
+  slug: string,
+  username: string,
+): { ok: true } | { ok: false; error: string } {
+  const group = getStore().find((row) => row.slug === slug);
+  const member = group?.members.find((m) => m.username === username);
+  if (!group || !member) {
+    return { ok: false, error: 'Member not found' };
+  }
+  if (member.role === 'OWNER') {
+    return { ok: false, error: 'The group owner cannot be removed' };
+  }
+  group.members = group.members.filter((m) => m.username !== username);
+  group.memberCount = Math.max(0, group.memberCount - 1);
+  return { ok: true };
+}
