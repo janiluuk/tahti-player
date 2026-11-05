@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   DataTable,
   DataTableBody,
@@ -26,6 +27,7 @@ function stateClass(state: string): string {
 }
 
 export function StatusView() {
+  const { t } = useTranslation('web');
   const [data, setData] = useState<PlatformStatus | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -60,7 +62,7 @@ export function StatusView() {
       {loading && <PageLoading label="Checking…" />}
       {!loading && !data && (
         <PageError
-          title="Could not load platform status"
+          title={t('loadErrors.couldNotLoadPlatformStatus')}
           description={loadError ?? undefined}
           onRetry={() => setAttempt((n) => n + 1)}
         />
@@ -98,8 +100,8 @@ export function StatusView() {
           </dl>
           {Object.keys(data.checks).length === 0 ? (
             <PageError
-              title="No health checks reported"
-              description="The API did not answer."
+              title={t('loadErrors.noHealthChecksReported')}
+              description={t('loadErrors.theApiDidNotAnswer')}
               onRetry={() => setAttempt((n) => n + 1)}
             />
           ) : (

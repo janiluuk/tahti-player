@@ -36,6 +36,7 @@ import { AudioPluginToggleRow } from './shared';
 // ── Multicast / Audio tools ─────────────────────────────────────────────────
 
 export function MulticastCategory() {
+  const { t } = useTranslation('web');
   const [targets, setTargets] = useState<RtmpTarget[] | null>(null);
   const [configuring, setConfiguring] = useState<MulticastConfiguring | null>(
     null,
@@ -62,7 +63,7 @@ export function MulticastCategory() {
         <PageLoading label="Loading multistream destinations…" />
       ) : loadError && targets.length === 0 ? (
         <PageError
-          title="Could not load stream destinations"
+          title={t('loadErrors.couldNotLoadStreamDestinations')}
           description={loadError}
           onRetry={reload}
         />
@@ -240,13 +241,14 @@ export function ToolsCategory() {
 // section — see the file-level doc comment on PluginCategoryId. ───────────
 
 export function DiscoveryCategory() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
 
   if (!user) {
     return (
       <PageEmpty
-        title="Sign in to install Discover add-ons"
-        description="Add-ons on your Listen and Discover pages need an account."
+        title={t('empties.signInToInstallDiscoverAdd')}
+        description={t('empties.addOnsOnYourListenAnd')}
       />
     );
   }
@@ -342,13 +344,14 @@ function DiscoverWidgetPlugins() {
 }
 
 export function ChannelCategory() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
 
   if (!user?.channel) {
     return (
       <PageEmpty
-        title="Set up a channel first"
-        description="Go live or finish channel setup to install add-ons on your public page."
+        title={t('empties.setUpAChannelFirst')}
+        description={t('empties.goLiveOrFinishChannelSetup')}
       />
     );
   }

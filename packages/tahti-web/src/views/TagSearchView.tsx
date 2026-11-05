@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { fetchTracksByTag } from '../api/listen';
@@ -16,6 +17,7 @@ type State =
 /** `/search?tag=` - public tracks carrying one tag, reached from the tag
  * chips on a track page. */
 export function TagSearchView({ tag }: { tag?: string }) {
+  const { t } = useTranslation('web');
   const trimmed = tag?.trim() ?? '';
   const [state, setState] = useState<State>({ status: 'loading' });
 
@@ -51,14 +53,14 @@ export function TagSearchView({ tag }: { tag?: string }) {
     >
       {!trimmed ? (
         <PageEmpty
-          title="No tag chosen"
-          description="Open a tag on a track page to see other tracks with it."
+          title={t('empties.noTagChosen')}
+          description={t('empties.openATagOnATrack')}
         />
       ) : state.status === 'loading' ? (
         <PageLoading />
       ) : state.status === 'error' ? (
         <PageError
-          title="Couldn't load tracks for this tag"
+          title={t('loadErrors.couldnTLoadTracksForThis')}
           description={state.error}
           onRetry={() => load()}
         />
@@ -69,7 +71,7 @@ export function TagSearchView({ tag }: { tag?: string }) {
               ? `No tracks tagged “${trimmed}” in mock fixtures`
               : `No public tracks tagged “${trimmed}” yet`
           }
-          description="Try a tag from a track page, or browse Discover and Radio."
+          description={t('empties.tryATagFromATrack')}
           action={
             <div className="flex flex-wrap items-center justify-center gap-2">
               <ButtonLink to="/discover" size="sm" variant="secondary">

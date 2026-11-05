@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon, Link2Icon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   ButtonLink,
   FilterChips,
@@ -44,6 +45,7 @@ function releaseTargets(release: StudioRelease): Array<[string, string]> {
 }
 
 export function LibrarySmartLinksView() {
+  const { t } = useTranslation('web');
   const [releases, setReleases] = useState<StudioRelease[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -114,7 +116,7 @@ export function LibrarySmartLinksView() {
             <PageLoading label="Loading smartlinks…" />
           ) : loadError && releases.length === 0 ? (
             <PageError
-              title="Could not load your smartlinks"
+              title={t('loadErrors.couldNotLoadYourSmartlinks')}
               description={loadError}
               onRetry={() => {
                 setLoading(true);
@@ -123,8 +125,8 @@ export function LibrarySmartLinksView() {
             />
           ) : releases.length === 0 ? (
             <PageEmpty
-              title="No releases yet"
-              description="Create a release to get its public smartlink page."
+              title={t('empties.noReleasesYet')}
+              description={t('empties.createAReleaseToGetIts')}
               action={
                 <ButtonLink to="/studio/releases" size="sm" variant="secondary">
                   Create release

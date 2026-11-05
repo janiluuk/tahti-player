@@ -77,7 +77,7 @@ export function DeliveryTab({
     <div className="flex flex-col gap-3">
       {platformsError ? (
         <PageError
-          title="Could not check platform status"
+          title={t('loadErrors.couldNotCheckPlatformStatus')}
           description={platformsError}
           onRetry={() => setPlatformsAttempt((n) => n + 1)}
         />
@@ -174,14 +174,14 @@ export function DeliveryTab({
             <PageLoading label="Loading…" />
           ) : royaltiesError && royalties.length === 0 ? (
             <PageError
-              title="Could not load royalty reports"
+              title={t('loadErrors.couldNotLoadRoyaltyReports')}
               description={royaltiesError}
               onRetry={onRetryRoyalties}
             />
           ) : royalties.length === 0 ? (
             <PageEmpty
-              title="No reports yet"
-              description="Synced monthly after DSP delivery."
+              title={t('empties.noReportsYet')}
+              description={t('empties.syncedMonthlyAfterDspDelivery')}
             />
           ) : (
             <ul className="divide-border divide-y text-xs">

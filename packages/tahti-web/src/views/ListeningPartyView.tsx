@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ViewShell } from '@tahti-player/ui';
 
 import type { ListeningPartyDto } from '../api/listening-parties';
@@ -94,6 +95,7 @@ function ListeningPartyPage({
 
 /** `/party/:id`: a release played once, start to finish, at a set time. */
 export function ListeningPartyView({ id }: { id: string }) {
+  const { t } = useTranslation('web');
   const { load, reload } = useListeningParty(id);
 
   if (load.status === 'ready') {
@@ -109,12 +111,12 @@ export function ListeningPartyView({ id }: { id: string }) {
         <PageEmpty
           headingLevel={1}
           icon="alert"
-          title="Listening party not found"
-          description="The link may be wrong, or the artist removed the party."
+          title={t('empties.listeningPartyNotFound')}
+          description={t('empties.theLinkMayBeWrongOr')}
         />
       ) : (
         <PageError
-          title="Could not load this listening party"
+          title={t('loadErrors.couldNotLoadThisListeningParty')}
           description={load.error}
           onRetry={reload}
         />

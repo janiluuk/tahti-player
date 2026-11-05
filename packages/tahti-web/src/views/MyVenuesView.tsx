@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { MapPinIcon, SearchIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   Button,
@@ -76,6 +77,7 @@ function VenueCard({
 
 /** Venues the signed-in user registered (GET /api/me/venues). */
 export function MyVenuesView() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const [venues, setVenues] = useState<MyVenue[] | null>(null);
   const [failed, setFailed] = useState(false);
@@ -128,7 +130,7 @@ export function MyVenuesView() {
       />
       {!user ? (
         <PageEmpty
-          title="Sign in to manage your venues"
+          title={t('empties.signInToManageYourVenues')}
           action={
             <Link
               to="/login"
@@ -142,7 +144,7 @@ export function MyVenuesView() {
         <PageLoading label="Loading your venues…" />
       ) : failed ? (
         <PageError
-          title="Could not load your venues"
+          title={t('loadErrors.couldNotLoadYourVenues')}
           onRetry={() => {
             setVenues(null);
             void load();
@@ -150,8 +152,8 @@ export function MyVenuesView() {
         />
       ) : venues.length === 0 ? (
         <PageEmpty
-          title="No venues yet"
-          description="Register a venue to list it in the directory and book shows there."
+          title={t('empties.noVenuesYet')}
+          description={t('empties.registerAVenueToListIt')}
           action={registerLink}
         />
       ) : (

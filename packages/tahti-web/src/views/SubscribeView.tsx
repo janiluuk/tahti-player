@@ -124,7 +124,7 @@ export function SubscribeView({
   if (loadError) {
     return (
       <PageError
-        title="Could not load subscription tiers"
+        title={t('loadErrors.couldNotLoadSubscriptionTiers')}
         description={loadError}
         onRetry={() => setAttempt((n) => n + 1)}
       />
@@ -134,8 +134,8 @@ export function SubscribeView({
   if (!data) {
     return (
       <PageEmpty
-        title="Artist not found"
-        description="This artist may have been removed or is not available."
+        title={t('empties.artistNotFound')}
+        description={t('empties.thisArtistMayHaveBeenRemoved')}
       />
     );
   }

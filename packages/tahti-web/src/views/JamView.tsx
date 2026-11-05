@@ -3,7 +3,7 @@ import { LogOutIcon, PauseIcon, PlayIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, CopyButton, TahtiJam } from '@tahti-player/ui';
 
 import {
@@ -46,6 +46,7 @@ function GlassPanel({
 }
 
 export function JamView({ code }: { code: string }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const userId = useAuthStore((s) => s.user?.id);
   const openAuth = useAuthModalStore((s) => s.open);
@@ -166,8 +167,8 @@ export function JamView({ code }: { code: string }) {
         <div className="flex flex-1 flex-col justify-center">
           <PageEmpty
             icon="inbox"
-            title="Log in to join this Jam"
-            description="A Jam plays the host's music in sync for everyone in it, so the host needs to see who joined."
+            title={t('empties.logInToJoinThisJam')}
+            description={t('empties.aJamPlaysTheHostS')}
             action={<Button onClick={() => openAuth('login')}>Log in</Button>}
           />
         </div>
@@ -192,7 +193,7 @@ export function JamView({ code }: { code: string }) {
           <PageEmpty
             headingLevel={1}
             icon="alert"
-            title="Jam not found"
+            title={t('empties.jamNotFound')}
             description={
               joinError ||
               'That code is not an open Jam. Check the link, or go back to Listen.'
@@ -210,8 +211,8 @@ export function JamView({ code }: { code: string }) {
         <div className="flex flex-1 flex-col justify-center">
           <PageEmpty
             icon="alert"
-            title="This Jam has ended"
-            description="The host closed the session."
+            title={t('empties.thisJamHasEnded')}
+            description={t('empties.theHostClosedTheSession')}
             action={backToListen}
           />
         </div>
@@ -226,8 +227,8 @@ export function JamView({ code }: { code: string }) {
           <PageEmpty
             headingLevel={1}
             icon="alert"
-            title="You are no longer in this Jam"
-            description="The host removed you from the session."
+            title={t('empties.youAreNoLongerInThis')}
+            description={t('empties.theHostRemovedYouFromThe')}
             action={backToListen}
           />
         </div>

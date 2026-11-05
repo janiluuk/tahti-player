@@ -1,6 +1,7 @@
 import { PlusIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -199,6 +200,7 @@ const ATTENDANCE_BADGE_COLOR: Record<
  * and are add-only (re-submitting a name adds another row rather than
  * editing the existing one). */
 function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [records, setRecords] = useState<GovernanceAttendanceItem[]>([]);
   const [loading, setLoading] = useState(false);
@@ -226,7 +228,7 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
       {loading ? (
         <InlineLoader label="Loading…" textSize="xs" />
       ) : records.length === 0 ? (
-        <PageEmpty title="No attendance recorded yet." />
+        <PageEmpty title={t('empties.noAttendanceRecordedYet')} />
       ) : (
         <ul className="divide-border mb-3 divide-y text-sm">
           {records.map((record) => (
@@ -326,6 +328,7 @@ function MinutesUploadButton({
 }
 
 export function AgmTab() {
+  const { t } = useTranslation('web');
   const [motions, setMotions] = useState<AdminMotion[]>([]);
   const [meetings, setMeetings] = useState<GovernanceMeeting[]>([]);
   const [documents, setDocuments] = useState<GovernanceDocument[]>([]);
@@ -420,7 +423,7 @@ export function AgmTab() {
           </Button>
         </form>
         {meetings.length === 0 ? (
-          <PageEmpty title="No persisted meeting records yet. Create the meeting record before publishing notice or minutes." />
+          <PageEmpty title={t('empties.noPersistedMeetingRecordsYetCreate')} />
         ) : (
           <ul className="divide-border divide-y">
             {meetings.map((meeting) => (
@@ -594,7 +597,7 @@ export function AgmTab() {
             className="justify-center py-4"
           />
         ) : motions.length === 0 ? (
-          <PageEmpty title="No open or draft motions." />
+          <PageEmpty title={t('empties.noOpenOrDraftMotions')} />
         ) : (
           <ul className="divide-border divide-y">
             {motions.map((m) => (
@@ -743,7 +746,7 @@ export function AgmTab() {
             />
           </div>
           {documents.length === 0 ? (
-            <PageEmpty title="No governance documents yet." />
+            <PageEmpty title={t('empties.noGovernanceDocumentsYet')} />
           ) : (
             <ul className="mt-2 space-y-1 text-xs">
               {documents.map((document) => (

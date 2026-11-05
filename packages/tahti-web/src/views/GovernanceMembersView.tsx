@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { LandmarkIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, Input, StatChip, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMembers } from '../api/client';
@@ -17,6 +18,7 @@ import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
 export function GovernanceMembersView() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const [members, setMembers] = useState<GovernanceMember[]>([]);
   const [loading, setLoading] = useState(true);
@@ -64,8 +66,8 @@ export function GovernanceMembersView() {
       {!user && (
         <PageEmpty
           icon="inbox"
-          title="Sign in to view the member directory"
-          description="Use a cooperative membership account to see who belongs to the co-op."
+          title={t('empties.signInToViewTheMember')}
+          description={t('empties.useACooperativeMembershipAccountTo')}
           action={
             <Button onClick={() => useAuthModalStore.getState().open('login')}>
               Sign in
@@ -103,14 +105,14 @@ export function GovernanceMembersView() {
           />
           {loadError && members.length > 0 ? (
             <PageErrorBanner
-              title="Could not refresh the member directory."
+              title={t('loadErrors.couldNotRefreshTheMemberDirectory')}
               description={loadError}
               onRetry={() => setAttempt((n) => n + 1)}
             />
           ) : null}
           {loadError && members.length === 0 ? (
             <PageError
-              title="Could not load the member directory"
+              title={t('loadErrors.couldNotLoadTheMemberDirectory')}
               description={loadError}
               onRetry={() => setAttempt((n) => n + 1)}
             />

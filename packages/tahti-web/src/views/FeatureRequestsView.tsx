@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -42,6 +43,7 @@ export function FeatureRequestsView({
 }: {
   embedded?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const closeSettings = useSettingsModalStore((s) => s.close);
   const [requests, setRequests] = useState<FeatureRequest[]>([]);
@@ -221,7 +223,7 @@ export function FeatureRequestsView({
 
       {user && !loading && !forbidden && loadError && requests.length === 0 && (
         <PageError
-          title="Could not load feature requests"
+          title={t('loadErrors.couldNotLoadFeatureRequests')}
           description={loadError}
           onRetry={() => {
             setLoading(true);
@@ -236,8 +238,8 @@ export function FeatureRequestsView({
         !loadError &&
         requests.length === 0 && (
           <PageEmpty
-            title="No feature requests yet"
-            description="Be the first to propose an idea for Tahti."
+            title={t('empties.noFeatureRequestsYet')}
+            description={t('empties.beTheFirstToProposeAn')}
           />
         )}
 
@@ -319,14 +321,14 @@ export function FeatureRequestsView({
                   <div className="border-border mt-3 flex flex-col gap-2 border-t pt-3">
                     {commentsError && comments.length === 0 ? (
                       <PageError
-                        title="Could not load comments"
+                        title={t('loadErrors.couldNotLoadComments')}
                         description={commentsError}
                         onRetry={() => openThread(r.id)}
                       />
                     ) : comments.length === 0 ? (
                       <PageEmpty
-                        title="No comments yet."
-                        description="Be the first to comment."
+                        title={t('empties.noComments')}
+                        description={t('empties.beTheFirstToComment')}
                       />
                     ) : (
                       <ul className="border-border divide-border divide-y overflow-hidden rounded-md border text-sm">
