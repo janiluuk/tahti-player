@@ -3,24 +3,21 @@
 **Status:** partial
 
 Consolidates `e2e-beta-ux-findings.md` (real-backend e2e run on beta.tahti.live,
-2026-10-19) and `admin-studio-parity-sweep.md` (legacy tahti-org `apps/web`
-admin/Studio vs tahti-web, 2026-10-20). Fixed items are in HISTORY; only open
-work is listed here.
+2026-10-19) and `admin-studio-parity-sweep.md` (admin and Studio API sweep,
+2026-10-20). Fixed items are in HISTORY; only open work is listed here.
 
 How these were found:
 
 - Journeys: `packages/tahti-web/scripts/journeys/{listener,artist}-tasks-journey.mjs`
   (+ `task-lib.mjs`); docs in `packages/tahti-web/docs/E2E-JOURNEYS.md`.
-- Parity sweep: for each of the 124 legacy `/admin/*` and `/dashboard/*` pages,
-  the `/api/...` endpoints it calls vs the ones tahti-web calls, plus the reverse
-  over every tahti-org `/api/me/*` and `/api/admin/*` route. Admin has endpoint
-  parity.
+- API sweep: every tahti-org `/api/me/*` and `/api/admin/*` route vs the
+  endpoints tahti-web calls. Admin has endpoint parity.
 
 ## Ops
 
 The domain switch is done (every host serves the SPA since 2026-10-21;
 Next `apps/web` removed 2026-10-28). Remaining host/build decisions are in
-[`packages/tahti-web/CUTOVER.md`](../../packages/tahti-web/CUTOVER.md).
+[`final-season-hardening.md`](final-season-hardening.md) (Hosting and ops still open).
 
 - [ ] **Beta content** — test releases ("asdada", "test") show in the front
   page's New releases row; unpublish them on the owning account.
@@ -45,7 +42,7 @@ Next `apps/web` removed 2026-10-28). Remaining host/build decisions are in
 - [x] Tracks rows have aria-labels / tooltips on icon actions.
 - [ ] Sign-in lands an artist on `/`, not Studio (product call).
 - [ ] **Channel add-on block layout** (parity): add-on widgets render on the
-  channel page via `/api/v1/channels/:slug/addons`, but the legacy order/width
+  channel page via `/api/v1/channels/:slug/addons`, but the stored order/width
   (Full / Half / Third) and logo block (`/api/me/channel/blocks*`,
   `/api/v1/channels/:slug/blocks`) have no editor or renderer.
   - 2026-10-27 (batch 90): renderer and add-on width editor. The channel page

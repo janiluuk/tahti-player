@@ -2,8 +2,8 @@
 /**
  * Anonymous visitor journey — no login. Home/listen -> radio -> a public
  * channel -> artist profile -> fan-tier subscribe -> smart link -> venues ->
- * help -> login/join forms. Route list from docs/SCREEN-ATLAS.md "Anonymous
- * / public". Captures light + dark (see lib.mjs for why never tahti-dark).
+ * help -> login/join forms. Captures light + dark (see lib.mjs for why
+ * never tahti-dark).
  *
  *   VITE_FORCE_MOCK=1 pnpm --filter @tahti-player/tahti-web dev -- --port 5195
  *   node scripts/journeys/anonymous-journey.mjs
