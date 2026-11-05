@@ -100,7 +100,7 @@ export function AdminDashboardView() {
             >
               {loading ? (
                 <StudioPanel>
-                  <PageLoading label="Loading dashboard…" />
+                  <PageLoading label={t('loading.loadingDashboard')} />
                 </StudioPanel>
               ) : !data ? (
                 <StudioPanel>

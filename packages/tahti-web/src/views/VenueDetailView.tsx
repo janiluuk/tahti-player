@@ -84,7 +84,7 @@ export function VenueDetailView({ slug }: { slug: string }) {
     return (
       <PageFrame maxWidth="3xl">
         {backLink}
-        <PageLoading label="Loading venue…" />
+        <PageLoading label={t('loading.loadingVenue')} />
       </PageFrame>
     );
   }

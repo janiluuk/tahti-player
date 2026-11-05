@@ -68,7 +68,7 @@ export function BoardTermsPanel() {
     <StudioPanel title="Board terms">
       <AddBoardTermForm onAdded={() => void load()} />
       {sorted === null ? (
-        <PageLoading label="Loading board terms…" />
+        <PageLoading label={t('loading.loadingBoardTerms')} />
       ) : loadError && sorted.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadBoardTerms')}

@@ -136,7 +136,7 @@ export function BetaTab() {
 
       <StudioPanel>
         {loading ? (
-          <PageLoading label="Loading applications…" />
+          <PageLoading label={t('loading.loadingApplications')} />
         ) : loadError && apps.length === 0 ? (
           <PageError
             title={t('loadErrors.couldNotLoadBetaApplications')}

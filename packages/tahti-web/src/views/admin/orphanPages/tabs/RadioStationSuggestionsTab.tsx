@@ -61,7 +61,7 @@ export function RadioStationSuggestionsTab() {
 
       {loading ? (
         <StudioPanel>
-          <PageLoading label="Loading station suggestions…" />
+          <PageLoading label={t('loading.loadingStationSuggestions')} />
         </StudioPanel>
       ) : items.length === 0 ? (
         <StudioPanel>

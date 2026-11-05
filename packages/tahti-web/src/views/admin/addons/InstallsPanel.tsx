@@ -1,5 +1,6 @@
 import { ArrowDownIcon, ArrowUpIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -35,6 +36,7 @@ export function InstallsPanel({
   onMove: (install: AdminAddonInstall, direction: 'up' | 'down') => void;
   onRemove: (install: AdminAddonInstall) => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <div className="border-border mt-2 flex flex-col gap-4 border-t pt-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
@@ -62,7 +64,7 @@ export function InstallsPanel({
       />
       {error ? <InlineError>{error}</InlineError> : null}
       {loading ? (
-        <PageLoading label="Loading installs…" />
+        <PageLoading label={t('loading.loadingInstalls')} />
       ) : installs.length === 0 ? (
         <PageEmpty title={`Nothing installed on "${surface}" yet.`} />
       ) : (

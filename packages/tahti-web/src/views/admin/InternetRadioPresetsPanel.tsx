@@ -215,7 +215,7 @@ export function InternetRadioPresetsPanel() {
           <InlineError className="mb-3">{listError}</InlineError>
         ) : null}
         {loading ? (
-          <PageLoading label="Loading stations…" />
+          <PageLoading label={t('loading.loadingStations')} />
         ) : presets.length === 0 ? (
           <PageEmpty
             title={t('empties.noInternetRadioStationsYet')}

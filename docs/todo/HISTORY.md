@@ -1,3 +1,11 @@
+## 2026-11-05 - Batch 60 UX slices
+
+Finnish loading labels (`web.loading.*`) in 50 more files, mostly admin
+(dashboard, users, storage, logs, financial, governance records, elections,
+grants, transparency, top lists, languages, add-ons, radio, station
+suggestions, Selects) plus venues, news, profile and search. tahti-web
+0.0.351.
+
 ## 2026-11-05 - Batch 59 UX slices
 
 Finnish loading labels (`web.loading.*`) in the next 30 files: green room,

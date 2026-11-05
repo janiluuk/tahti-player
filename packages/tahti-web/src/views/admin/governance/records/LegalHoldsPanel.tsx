@@ -45,7 +45,7 @@ export function LegalHoldsPanel() {
   return (
     <StudioPanel title="Legal holds">
       {holds === null ? (
-        <PageLoading label="Loading legal holds…" />
+        <PageLoading label={t('loading.loadingLegalHolds')} />
       ) : loadError && holds.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadLegalHolds')}

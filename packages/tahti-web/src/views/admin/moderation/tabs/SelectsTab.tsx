@@ -300,7 +300,7 @@ export function SelectsTab() {
         }
       >
         {loading ? (
-          <PageLoading label="Loading Selects rotation…" />
+          <PageLoading label={t('loading.loadingSelectsRotation')} />
         ) : items.length === 0 ? (
           <PageEmpty title={t('empties.nothingInRotationYetUseThe')} />
         ) : (

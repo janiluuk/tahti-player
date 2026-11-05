@@ -81,7 +81,7 @@ export function AdminStatusView() {
             >
               <StudioPanel>
                 {loading ? (
-                  <PageLoading label="Loading service status…" />
+                  <PageLoading label={t('loading.loadingServiceStatus')} />
                 ) : !data ? (
                   <PageError description={t('loadErrors.couldNotLoadStatus')} />
                 ) : (

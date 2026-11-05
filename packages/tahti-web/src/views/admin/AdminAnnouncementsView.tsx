@@ -152,7 +152,7 @@ export function AdminAnnouncementsView() {
                   }}
                 />
                 {loading ? (
-                  <PageLoading label="Loading announcements…" />
+                  <PageLoading label={t('loading.loadingAnnouncements')} />
                 ) : clips.length === 0 ? (
                   <PageEmpty title={t('empties.noAnnouncementClips')} />
                 ) : (

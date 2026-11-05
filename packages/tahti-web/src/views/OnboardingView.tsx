@@ -13,7 +13,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Input,
@@ -86,6 +86,7 @@ const ARTIST_KIND_OPTIONS: SelectableTile[] = [
 type SlugStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid';
 
 export function OnboardingView() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const refresh = useAuthStore((s) => s.refresh);
@@ -245,7 +246,7 @@ export function OnboardingView() {
       classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl' }}
     >
       {loading ? (
-        <PageLoading label="Loading your profile…" />
+        <PageLoading label={t('loading.loadingYourProfile')} />
       ) : (
         <>
           <Tabs

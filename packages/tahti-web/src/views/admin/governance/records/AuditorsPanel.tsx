@@ -247,7 +247,7 @@ export function AuditorsPanel() {
     <StudioPanel title="Auditors">
       <AddAuditorForm onAdded={() => void load()} />
       {auditors === null ? (
-        <PageLoading label="Loading auditors…" />
+        <PageLoading label={t('loading.loadingAuditors')} />
       ) : loadError && auditors.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadAuditors')}

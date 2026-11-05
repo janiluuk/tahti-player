@@ -69,7 +69,7 @@ export function TransparencyResolutionsView() {
       />
 
       {loading ? (
-        <PageLoading label="Loading resolutions…" />
+        <PageLoading label={t('loading.loadingResolutions')} />
       ) : loadError && resolutions.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadTheResolutions')}

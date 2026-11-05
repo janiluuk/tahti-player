@@ -96,7 +96,7 @@ export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
     >
       {error ? <InlineError className="mb-3">{error}</InlineError> : null}
       {loading && !rows ? (
-        <PageLoading label="Loading payouts…" />
+        <PageLoading label={t('loading.loadingPayouts')} />
       ) : !rows ? (
         <PageError
           title={t('loadErrors.couldnTLoadPayouts')}

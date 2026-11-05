@@ -65,7 +65,7 @@ export function CorrectionsQueuePanel() {
         ]}
       />
       {rows === null ? (
-        <PageLoading label="Loading requests…" />
+        <PageLoading label={t('loading.loadingRequests')} />
       ) : loadError && rows.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadCorrectionRequests')}

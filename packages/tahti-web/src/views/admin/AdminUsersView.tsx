@@ -128,7 +128,7 @@ export const AdminUsersView = () => {
 
                 <div className="min-h-0 flex-1 overflow-y-auto">
                   {loading ? (
-                    <PageLoading label="Loading users…" />
+                    <PageLoading label={t('loading.loadingUsers')} />
                   ) : loadError && users.length === 0 ? (
                     <PageError
                       title={t('loadErrors.couldNotLoadUsers')}

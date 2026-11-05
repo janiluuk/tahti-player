@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -40,6 +41,7 @@ const EMPTY: Record<Field, string> = {
 /** The association's registered identity and contacts, which members see on
  * Governance. An empty field is cleared. */
 export function AssociationEditPanel() {
+  const { t } = useTranslation('web');
   const [values, setValues] = useState<Record<Field, string> | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,7 +63,7 @@ export function AssociationEditPanel() {
   if (!values) {
     return (
       <StudioPanel title="The association">
-        <PageLoading label="Loading the association's details…" />
+        <PageLoading label={t('loading.loadingTheAssociationSDetails')} />
       </StudioPanel>
     );
   }

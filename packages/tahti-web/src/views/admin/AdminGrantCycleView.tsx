@@ -133,7 +133,7 @@ export function AdminGrantCycleView() {
               </div>
 
               {loading ? (
-                <PageLoading label="Loading grant preview…" />
+                <PageLoading label={t('loading.loadingGrantPreview')} />
               ) : !preview ? (
                 <PageError
                   title={t('loadErrors.couldNotLoadTheGrantPreview')}

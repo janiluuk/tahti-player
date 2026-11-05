@@ -61,7 +61,7 @@ export function TransparencyGrantYearView({ year }: { year: number }) {
     >
       <PageBackLink to="/transparency" label="Transparency" />
       {loading ? (
-        <PageLoading label="Loading grant report…" />
+        <PageLoading label={t('loading.loadingGrantReport')} />
       ) : failed ? (
         <PageError
           title={`Could not load the ${year} grant report`}

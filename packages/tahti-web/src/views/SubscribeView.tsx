@@ -118,7 +118,7 @@ export function SubscribeView({
   }, [user, username]);
 
   if (loading) {
-    return <PageLoading label="Loading tiers…" />;
+    return <PageLoading label={t('loading.loadingTiers')} />;
   }
 
   if (loadError) {

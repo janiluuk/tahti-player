@@ -42,7 +42,7 @@ export function GrantsTab() {
     <>
       <StudioPanel title="Disbursement history">
         {loading ? (
-          <PageLoading label="Loading grant cycles…" />
+          <PageLoading label={t('loading.loadingGrantCycles')} />
         ) : loadError && history.length === 0 ? (
           <PageError
             title={t('loadErrors.couldNotLoadGrantCycles')}

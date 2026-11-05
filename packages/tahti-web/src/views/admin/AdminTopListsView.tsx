@@ -140,7 +140,7 @@ export function AdminTopListsView() {
 
             {loading ? (
               <StudioPanel>
-                <PageLoading label="Loading top lists…" />
+                <PageLoading label={t('loading.loadingTopLists')} />
               </StudioPanel>
             ) : loadError && buckets.length === 0 ? (
               <StudioPanel>

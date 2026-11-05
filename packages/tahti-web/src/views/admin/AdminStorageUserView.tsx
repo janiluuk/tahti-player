@@ -81,7 +81,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
 
             {loading ? (
               <StudioPanel>
-                <PageLoading label="Loading storage details…" />
+                <PageLoading label={t('loading.loadingStorageDetails')} />
               </StudioPanel>
             ) : !detail ? (
               <StudioPanel>
