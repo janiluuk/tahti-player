@@ -93,7 +93,8 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
                   class="grid grid-cols-[repeat(auto-fit,minmax(10rem,1fr))] gap-4 pr-2 pb-4"
                 >
                   <div
-                    class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary"
+                    class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+                    data-layout="card"
                     data-surface="brand"
                     data-testid="card"
                   >
@@ -170,7 +171,8 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
                     </div>
                   </div>
                   <div
-                    class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary"
+                    class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+                    data-layout="card"
                     data-surface="brand"
                     data-testid="card"
                   >
@@ -247,7 +249,8 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
                     </div>
                   </div>
                   <div
-                    class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary"
+                    class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+                    data-layout="card"
                     data-surface="brand"
                     data-testid="card"
                   >
@@ -324,7 +327,8 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
                     </div>
                   </div>
                   <div
-                    class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary"
+                    class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+                    data-layout="card"
                     data-surface="brand"
                     data-testid="card"
                   >
@@ -401,7 +405,8 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
                     </div>
                   </div>
                   <div
-                    class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary"
+                    class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+                    data-layout="card"
                     data-surface="brand"
                     data-testid="card"
                   >

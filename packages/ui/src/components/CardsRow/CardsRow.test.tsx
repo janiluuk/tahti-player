@@ -127,14 +127,20 @@ describe('CardsRow', () => {
     expect(screen.getByTestId('cards-row-filter')).toBeInTheDocument();
   });
 
-  it('toggles between cards and list from the toolbar icon', async () => {
+  it('cycles cards → full artwork → list → cards from the toolbar icon', async () => {
     Wrapper.mount({ defaultLayout: 'cards' });
+    const toggle = () => screen.getByTestId('cards-row-layout-toggle');
 
     expect(Wrapper.container).toHaveAttribute('data-layout', 'cards');
-    await userEvent.click(screen.getByTestId('cards-row-layout-toggle'));
+    expect(toggle()).toHaveAccessibleName('Show full artwork');
+    await userEvent.click(toggle());
+    expect(Wrapper.container).toHaveAttribute('data-layout', 'full');
+    expect(screen.getByTestId('cards-row-full')).toBeInTheDocument();
+    expect(toggle()).toHaveAccessibleName('Show as list');
+    await userEvent.click(toggle());
     expect(Wrapper.container).toHaveAttribute('data-layout', 'list');
     expect(screen.getByTestId('cards-row-list')).toBeInTheDocument();
-    await userEvent.click(screen.getByTestId('cards-row-layout-toggle'));
+    await userEvent.click(toggle());
     expect(Wrapper.container).toHaveAttribute('data-layout', 'cards');
   });
 });
@@ -154,5 +160,28 @@ describe('CardsRow without a filter', () => {
     );
     expect(screen.queryByTestId('cards-row-filter')).toBeNull();
     expect(screen.getByTestId('cards-row-layout-toggle')).toBeTruthy();
+  });
+});
+
+describe('CardsRow with custom cards', () => {
+  it('draws a rendered Card as a row in list view and full width in full view', async () => {
+    const { render } = await import('@testing-library/react');
+    const { CardsRow } = await import('./CardsRow');
+    const { Card } = await import('../Card');
+    const props = {
+      title: 'Tahti Selects',
+      items: [{ id: 'a', title: 'Aurora' }],
+      labels: { filterPlaceholder: 'Filter…', nothingFound: 'None' },
+      renderItem: (item: { id: string; title: string }) => (
+        <Card title={item.title} onPlay={() => undefined} />
+      ),
+    };
+    const { rerender } = render(<CardsRow {...props} layout="list" />);
+    expect(screen.getByTestId('card')).toHaveAttribute('data-layout', 'row');
+    rerender(<CardsRow {...props} layout="full" />);
+    expect(screen.getByTestId('card')).toHaveAttribute('data-layout', 'full');
+    expect(screen.getByTestId('card').className).toContain('w-full');
+    rerender(<CardsRow {...props} layout="cards" />);
+    expect(screen.getByTestId('card')).toHaveAttribute('data-layout', 'card');
   });
 });

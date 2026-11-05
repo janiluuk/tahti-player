@@ -1,9 +1,10 @@
 import { CassetteTape } from 'lucide-react';
-import { FC, ReactNode } from 'react';
+import { FC, ReactNode, useContext } from 'react';
 
 import { cn } from '../../utils';
 import { Box } from '../Box';
 import { MediaArtwork } from '../MediaArtwork';
+import { CardLayoutContext } from './CardLayoutContext';
 
 type CardProps = {
   src?: string;
@@ -53,23 +54,128 @@ export const Card: FC<CardProps> = ({
   favorited,
   onTitleClick,
 }) => {
+  const layout = useContext(CardLayoutContext);
   const hasOverlays = Boolean(onPlay || onQueue || onFavorite);
   const named = itemName || (typeof title === 'string' && title ? title : null);
-  const isNeutral = surface === 'neutral';
+  // A row sits on the page background, so it always uses the neutral text.
+  const isNeutral = surface === 'neutral' || layout === 'row';
   const titleClass = isNeutral ? 'text-foreground' : 'text-primary-foreground';
   const subtitleClass = isNeutral
     ? 'text-foreground-secondary'
     : 'text-primary-foreground';
 
+  const artwork = image ?? (
+    <MediaArtwork
+      size="fill"
+      src={src}
+      alt={typeof title === 'string' ? title : ''}
+      imageReveal={imageReveal}
+      onPlay={onPlay}
+      playLabel={playLabel ?? (named ? `Play ${named}` : undefined)}
+      pauseLabel={pauseLabel ?? (named ? `Pause ${named}` : undefined)}
+      isPlaying={isPlaying}
+      playDisabled={playDisabled}
+      onQueue={onQueue}
+      queueLabel={queueLabel ?? (named ? `Queue ${named}` : undefined)}
+      queueDisabled={queueDisabled}
+      onFavorite={onFavorite}
+      favorited={favorited}
+      favoriteLabel={named ? `Favorite ${named}` : undefined}
+      unfavoriteLabel={named ? `Remove ${named} from favorites` : undefined}
+      onArtworkClick={hasOverlays ? onClick : undefined}
+      placeholder={
+        <CassetteTape
+          size={layout === 'row' ? 20 : 96}
+          absoluteStrokeWidth
+          className="opacity-20"
+        />
+      }
+    />
+  );
+
+  const titleBlock = (title || subtitle) && (
+    <div className="min-w-0">
+      {title &&
+        (onTitleClick ? (
+          <button
+            type="button"
+            data-testid="card-title"
+            onClick={(e) => {
+              e.stopPropagation();
+              onTitleClick();
+            }}
+            className={cn(
+              'block w-full truncate text-left text-sm font-bold hover:underline',
+              titleClass,
+            )}
+          >
+            {title}
+          </button>
+        ) : (
+          <div
+            data-testid="card-title"
+            className={cn('truncate text-sm font-bold', titleClass)}
+          >
+            {title}
+          </div>
+        ))}
+      {subtitle && (
+        <div className={cn('truncate text-xs', subtitleClass)}>{subtitle}</div>
+      )}
+    </div>
+  );
+
+  if (layout === 'row') {
+    return (
+      <div
+        data-testid="card"
+        data-layout="row"
+        data-playing={isPlaying || undefined}
+        data-surface={surface}
+        role={onClick && !hasOverlays ? 'button' : undefined}
+        tabIndex={onClick && !hasOverlays ? 0 : undefined}
+        className={cn(
+          'hover:bg-background-secondary flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left',
+          onClick && !hasOverlays && 'cursor-pointer',
+          isPlaying && 'bg-background-secondary',
+          className,
+        )}
+        onClick={hasOverlays ? undefined : onClick}
+        onKeyDown={
+          onClick && !hasOverlays
+            ? (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  onClick();
+                }
+              }
+            : undefined
+        }
+      >
+        <div className="relative size-12 shrink-0 overflow-hidden rounded">
+          {artwork}
+        </div>
+        <div className="min-w-0 flex-1 [&_[data-testid=card-title]]:font-semibold">
+          {titleBlock}
+        </div>
+        {artworkOverlay ? (
+          <div className="shrink-0">{artworkOverlay}</div>
+        ) : null}
+      </div>
+    );
+  }
+
   return (
     <div
       data-testid="card"
+      data-layout={layout}
       data-playing={isPlaying || undefined}
       data-surface={surface}
       role={onClick && !hasOverlays ? 'button' : undefined}
       tabIndex={onClick && !hasOverlays ? 0 : undefined}
       className={cn(
-        'border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all',
+        'border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all',
+        layout === 'full' ? 'w-full' : 'w-46',
         isNeutral
           ? 'bg-background-secondary text-foreground'
           : 'text-primary-foreground bg-primary',
@@ -96,36 +202,7 @@ export const Card: FC<CardProps> = ({
         shadow="none"
         className="relative aspect-square w-full items-center justify-center overflow-hidden p-0"
       >
-        {image ?? (
-          <MediaArtwork
-            size="fill"
-            src={src}
-            alt={typeof title === 'string' ? title : ''}
-            imageReveal={imageReveal}
-            onPlay={onPlay}
-            playLabel={playLabel ?? (named ? `Play ${named}` : undefined)}
-            pauseLabel={pauseLabel ?? (named ? `Pause ${named}` : undefined)}
-            isPlaying={isPlaying}
-            playDisabled={playDisabled}
-            onQueue={onQueue}
-            queueLabel={queueLabel ?? (named ? `Queue ${named}` : undefined)}
-            queueDisabled={queueDisabled}
-            onFavorite={onFavorite}
-            favorited={favorited}
-            favoriteLabel={named ? `Favorite ${named}` : undefined}
-            unfavoriteLabel={
-              named ? `Remove ${named} from favorites` : undefined
-            }
-            onArtworkClick={hasOverlays ? onClick : undefined}
-            placeholder={
-              <CassetteTape
-                size={96}
-                absoluteStrokeWidth
-                className="opacity-20"
-              />
-            }
-          />
-        )}
+        {artwork}
         {artworkOverlay ? (
           <div className="pointer-events-none absolute top-2 left-2 z-10">
             {artworkOverlay}
@@ -133,39 +210,7 @@ export const Card: FC<CardProps> = ({
         ) : null}
       </Box>
 
-      {(title || subtitle) && (
-        <div className="min-w-0">
-          {title &&
-            (onTitleClick ? (
-              <button
-                type="button"
-                data-testid="card-title"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onTitleClick();
-                }}
-                className={cn(
-                  'block w-full truncate text-left text-sm font-bold hover:underline',
-                  titleClass,
-                )}
-              >
-                {title}
-              </button>
-            ) : (
-              <div
-                data-testid="card-title"
-                className={cn('truncate text-sm font-bold', titleClass)}
-              >
-                {title}
-              </div>
-            ))}
-          {subtitle && (
-            <div className={cn('truncate text-xs', subtitleClass)}>
-              {subtitle}
-            </div>
-          )}
-        </div>
-      )}
+      {titleBlock}
     </div>
   );
 };
