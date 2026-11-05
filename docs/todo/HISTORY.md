@@ -1,3 +1,10 @@
+## 2026-11-05 - Tahti Radio consolidated player widget
+
+`RadioPlayerWidget` folds the visualizer / now-playing / play-favorite
+controls with Up next, Shows, Just played and Featured into one Storybook
+surface (`Tahti/Radio/RadioPlayerWidget`); `RadioView` uses it. Extracted
+`RadioJustPlayedPanel` and `RadioFeaturedPanel`. tahti-web 0.0.340.
+
 ## 2026-11-05 - Batch 49 UX slices
 
 Studio/Admin ConfirmDialog Finnish leftovers; StudioHubViews story plays.
