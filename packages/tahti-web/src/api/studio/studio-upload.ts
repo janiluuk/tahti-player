@@ -2,6 +2,7 @@ import type { FetchMeta } from '../client';
 import { getMockSessionUser } from '../mock-session';
 import { registerMockUploadedSound } from '../mock-uploads';
 import { isForceMock } from '../mode';
+import { RequestJsonError } from '../request-json';
 import { mockSoundStore } from './studio-mock';
 import { requestJson } from './studio-request';
 
@@ -93,11 +94,21 @@ export async function uploadSoundFile(input: {
     );
     return { ok: true, itemId: done.itemId, meta: { source: 'api' } };
   } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Upload failed',
-    };
+    return { ok: false, error: uploadErrorMessage(err) };
   }
+}
+
+export const NOT_AUDIO_MESSAGE =
+  'This file is not an audio file. Upload MP3, WAV, FLAC, AAC/M4A, OGG or AIFF.';
+
+/** The API answers 415 `not_audio` when the uploaded bytes are not audio;
+ * show its sentence, not the code. */
+function uploadErrorMessage(err: unknown): string {
+  if (err instanceof RequestJsonError && err.status === 415) {
+    const body = err.body as { message?: unknown } | undefined;
+    return typeof body?.message === 'string' ? body.message : NOT_AUDIO_MESSAGE;
+  }
+  return err instanceof Error ? err.message : 'Upload failed';
 }
 
 function titleFromFilename(filename: string): string {
