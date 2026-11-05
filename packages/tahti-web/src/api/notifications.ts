@@ -121,6 +121,32 @@ function buildMockNotifications(
       sticky: false,
       createdAt: new Date(Date.now() - 2 * 3600_000).toISOString(),
     },
+    {
+      id: 'notification-mock-group-request',
+      type: 'GROUP_JOIN_REQUESTED',
+      actor: { username: 'needle', displayName: 'Needle', avatarUrl: null },
+      title: 'New request to join your group',
+      body: 'Someone asked to join Trance Mixes and DJ Sets.',
+      url: '/studio/groups/trance-mixes',
+      readAt: null,
+      sticky: false,
+      createdAt: new Date(Date.now() - 3 * 3600_000).toISOString(),
+    },
+    {
+      id: 'notification-mock-party',
+      type: 'LISTENING_PARTY_SCHEDULED',
+      actor: {
+        username: 'northern-lights',
+        displayName: 'Northern Lights',
+        avatarUrl: null,
+      },
+      title: 'Northern Lights scheduled a listening party',
+      body: '"Polar Static" · in two days',
+      url: '/party/lp-mock-scheduled',
+      readAt: null,
+      sticky: false,
+      createdAt: new Date(Date.now() - 5 * 3600_000).toISOString(),
+    },
   ];
   for (const item of extras) {
     if (!dismissed.has(item.id)) {
@@ -179,6 +205,13 @@ const NOTIFICATION_KIND_TYPES: Record<
     'MODERATOR_ADDED',
     'TRACK_SHARED',
     'GREEN_ROOM_INVITE',
+    'GROUP_JOIN_REQUESTED',
+    'GROUP_JOIN_RESOLVED',
+    'GROUP_SUBMISSION_RECEIVED',
+    'GROUP_SUBMISSION_RESOLVED',
+    'GROUP_MEMBER_REMOVED',
+    'GROUP_ROLE_CHANGED',
+    'GROUP_DELETED',
   ],
   music: [
     'NEW_POST',
@@ -202,6 +235,9 @@ const NOTIFICATION_KIND_TYPES: Record<
     'THEME_UNDER_REVIEW',
     'THEME_APPROVED',
     'THEME_REJECTED',
+    'LISTENING_PARTY_SCHEDULED',
+    'LISTENING_PARTY_STARTING',
+    'LISTENING_PARTY_CHANGED',
   ],
   money: [
     'NEW_FAN_SUBSCRIBER',
