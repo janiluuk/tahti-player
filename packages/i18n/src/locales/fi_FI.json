@@ -1084,6 +1084,7 @@
     "channelPage": {
       "editDesign": "Muokkaa ulkoasua",
       "openStreamManager": "Avaa Stream Manager",
+      "openRadio": "Avaa radiosivu",
       "moreActions": "Lisää kanavan toimintoja",
       "report": "Ilmoita",
       "rssFeedOf": "Kanavan {{name}} RSS-syöte",
@@ -1160,7 +1161,10 @@
       "minimize": "Pienennä soitin",
       "fullScreen": "Koko näyttö",
       "exitFullScreen": "Poistu koko näytöstä",
+      "enterDrivingMode": "Ajotila (koko näyttö)",
       "nowPlayingFullScreen": "Nyt soi, koko näyttö",
+      "nowPlayingDriving": "Nyt soi, ajotila",
+      "swipeTracks": "Vaihda kappaletta pyyhkäisemällä vasemmalle tai oikealle",
       "moreOptionsFor": "Lisää valintoja: {{title}}",
       "buffering": "Puskuroidaan…"
     },

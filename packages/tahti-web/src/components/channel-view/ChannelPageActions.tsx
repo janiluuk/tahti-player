@@ -4,6 +4,7 @@ import {
   ListMusicIcon,
   MoreHorizontalIcon,
   PencilIcon,
+  RadioTowerIcon,
   RssIcon,
   Share2Icon,
 } from 'lucide-react';
@@ -11,7 +12,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, Popover, Tooltip } from '@tahti-player/ui';
+import { Button, ButtonLink, Popover, Tooltip } from '@tahti-player/ui';
 
 import type { PublicChannel } from '../../api/types';
 import { channelRssFeedUrl } from '../../lib/channelRssFeed';
@@ -54,6 +55,21 @@ export function ChannelPageActions({
       toast.error(t('channelShare.feedCopyFailed'));
     }
   };
+
+  const openRadio =
+    channel.channelKind === 'RADIO' ? (
+      <Tooltip content={t('channelPage.openRadio')} side="top">
+        <ButtonLink
+          to="/radio"
+          size="icon-sm"
+          variant="secondary"
+          aria-label={t('channelPage.openRadio')}
+          data-testid="channel-open-radio"
+        >
+          <RadioTowerIcon size={16} aria-hidden />
+        </ButtonLink>
+      </Tooltip>
+    ) : null;
 
   const streamManager =
     (isOwner || isAdministrator) && onOpenStreamManager ? (
@@ -125,6 +141,7 @@ export function ChannelPageActions({
     >
       <ChannelVizPackLabel channel={channel} />
       {followButton}
+      {openRadio}
       {streamManager}
       <div className="hidden items-center gap-2 sm:flex">
         {editDesign}

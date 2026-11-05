@@ -1084,6 +1084,7 @@
     "channelPage": {
       "editDesign": "Edit design",
       "openStreamManager": "Open Stream Manager",
+      "openRadio": "Open radio page",
       "moreActions": "More channel actions",
       "report": "Report",
       "rssFeedOf": "RSS feed of {{name}}'s channel",
@@ -1160,7 +1161,10 @@
       "minimize": "Minimize player",
       "fullScreen": "Full screen",
       "exitFullScreen": "Exit full screen",
+      "enterDrivingMode": "Driving mode (full screen)",
       "nowPlayingFullScreen": "Now playing, full screen",
+      "nowPlayingDriving": "Now playing, driving mode",
+      "swipeTracks": "Swipe left or right to change track",
       "moreOptionsFor": "More options for {{title}}",
       "buffering": "Buffering…"
     },

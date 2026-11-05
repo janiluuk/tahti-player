@@ -2,6 +2,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { PublicChannel } from '../../api/types';
+import { renderWithRouter } from '../../test/renderWithRouter';
 import { ChannelPageActions } from './ChannelPageActions';
 
 vi.mock('../ChannelShareButton', () => ({
@@ -132,5 +133,34 @@ describe('ChannelPageActions', () => {
     expect(
       screen.getByRole('button', { name: /RSS feed of Night Drive/ }),
     ).toBeInTheDocument();
+  });
+
+  it('hides the radio page link on non-radio channels', () => {
+    render(
+      <ChannelPageActions
+        channel={channel}
+        slug="night-drive"
+        isOwner={false}
+        isAdministrator={false}
+      />,
+    );
+    expect(screen.queryByTestId('channel-open-radio')).toBeNull();
+  });
+
+  it('links RADIO channels to the radio page', async () => {
+    const { router } = await renderWithRouter(
+      <ChannelPageActions
+        channel={{ ...channel, channelKind: 'RADIO' }}
+        slug="tahti-radio"
+        isOwner={false}
+        isAdministrator={false}
+      />,
+      { paths: ['/radio'] },
+    );
+
+    const link = screen.getByTestId('channel-open-radio');
+    expect(link).toHaveAttribute('href', '/radio');
+    fireEvent.click(link);
+    expect(router.state.location.pathname).toBe('/radio');
   });
 });

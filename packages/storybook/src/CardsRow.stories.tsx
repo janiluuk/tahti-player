@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Horizontally scrolling card row used on the desktop player dashboard. `badgeColor` keys the title pill to section meaning (live = green, radio = cyan, history = yellow). Orphan in tahti-web: Listen On air / Radio / artists and Discover Artists use CardGrid+Card (DirectoryArtistCardGrid) with per-item overlays CardsRowItem cannot represent. Missing states: per-item overlay/actions slot.',
+          'Horizontally scrolling card row (Listen rails, radio presets). Toolbar icon toggles cards ↔ compact list; phones default to list. `badgeColor` keys the title pill (live = green, radio = cyan, history = yellow). Missing states: per-item overlay/actions slot on the default Card path.',
       },
     },
   },
@@ -24,6 +24,8 @@ type Story = StoryObj<typeof meta>;
 const labels = {
   filterPlaceholder: 'Filter albums...',
   nothingFound: 'No albums match your filter',
+  showAsCards: 'Show as cards',
+  showAsList: 'Show as list',
 };
 
 const items = [
@@ -94,21 +96,56 @@ export const WithItems: Story = {
     title: 'Top Albums',
     items,
     labels,
+    defaultLayout: 'cards',
   },
 };
 
-/** Phone width (375px): the filter and scroll buttons wrap under the title. */
+/** Phone width (375px): list is the default; toolbar icon switches to cards. */
 export const MobileView: Story = {
   args: {
     title: 'Your feed',
     items,
     labels,
   },
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
   render: (args) => (
     <div style={{ width: 375 }}>
       <CardsRow {...args} />
     </div>
   ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByTestId('cards-row')).toHaveAttribute(
+      'data-layout',
+      'list',
+    );
+    await expect(canvas.getByTestId('cards-row-list')).toBeVisible();
+    await userEvent.click(canvas.getByTestId('cards-row-layout-toggle'));
+    await expect(canvas.getByTestId('cards-row')).toHaveAttribute(
+      'data-layout',
+      'cards',
+    );
+  },
+};
+
+export const ListMode: Story = {
+  args: {
+    title: 'Top Albums',
+    items,
+    labels,
+    defaultLayout: 'list',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByTestId('cards-row-list')).toBeVisible();
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Show as cards' }),
+    );
+    await expect(canvas.getByTestId('cards-row')).toHaveAttribute(
+      'data-layout',
+      'cards',
+    );
+  },
 };
 
 export const WithBadge: Story = {

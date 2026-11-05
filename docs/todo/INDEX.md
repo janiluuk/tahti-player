@@ -21,7 +21,8 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [empty-state-create-ctas.md](empty-state-create-ctas.md) | PageEmpty createables: CTA button with icon + title; inventory flagged (Studio/Library/Admin/Radio/community) |
+| open    | [ambient-track-list-mobile.md](ambient-track-list-mobile.md) | Phone: AmbientTrackList/Playable default to list; denser rows + larger art; densities misaligned on narrow |
+| open    | [empty-state-create-ctas.md](empty-state-create-ctas.md) | PageEmpty createables: icon+title `action` on empties; full 2026-11-05 inventory (Priority A/B, Near vs Gap) |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [discover-listen-widget-audit-2026-11-05.md](discover-listen-widget-audit-2026-11-05.md) | Discover/Listen widget audit findings: inconsistent headings/pills/arrows/cards, unstyled Venues tab, crowded phone tabs, nav highlight jumps |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |

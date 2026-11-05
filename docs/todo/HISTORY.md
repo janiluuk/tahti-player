@@ -16,6 +16,17 @@ Radio, Listen, artist profile, embeds, governance and transparency, Studio
 and Admin (dashboard, listening, users, storage, content, announcements,
 financial, streams, workers, cron, station suggestions). tahti-web 0.0.342
 (#1844).
+## 2026-11-05 - CardsRow list toggle + driving fullscreen
+
+`CardsRow` toolbar icon toggles cards ↔ compact list (mobile defaults to
+list). Full-screen player: horizontal swipe changes track; browser complete
+fullscreen is driving mode (large transport, edge prev/next, secondary
+chrome hidden). tahti-web 0.0.343.
+
+## 2026-11-05 - Radio channel open radio page
+
+RADIO `ChannelPageActions` icon → `/radio`; hidden for other kinds.
+RadioStationView website Globe only when `detailUrl` is set.
 
 ## 2026-11-05 - Batch 50 UX slices
 
