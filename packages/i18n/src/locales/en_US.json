@@ -2739,7 +2739,17 @@
       "submissionDeclined": "Submission declined",
       "searchLabel": "Search groups",
       "searchEmpty": "No groups match that search",
-      "directoryEmptyDescription": "Artists can start a group from Studio → Groups."
+      "directoryEmptyDescription": "Artists can start a group from Studio → Groups.",
+      "membersTitle": "Members",
+      "membersDescription": "Everyone in the group. Owners and admins can remove members; only the owner can remove an admin.",
+      "membersLoading": "Loading members…",
+      "membersLoadError": "Could not load the members",
+      "membersEmpty": "No members yet",
+      "removeMember": "Remove",
+      "removeMemberNamed": "Remove {{name}} from the group",
+      "removeMemberTitle": "Remove {{name}}?",
+      "removeMemberDescription": "They leave the group and are told. Tracks they added stay in the collective playlist.",
+      "memberRemoved": "{{name}} removed"
     },
     "studioListeningParties": {
       "title": "Listening parties",

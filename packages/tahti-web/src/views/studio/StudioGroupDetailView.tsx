@@ -43,6 +43,7 @@ import {
   joinPolicyOptions,
   submitPolicyOptions,
 } from '../../lib/groupPeople';
+import { GroupMembersPanel } from './groups/GroupMembersPanel';
 
 type Props = { slug: string };
 
@@ -332,6 +333,21 @@ function GroupDetail({ slug }: Props) {
             </p>
           </StudioPanel>
         )}
+
+        <GroupMembersPanel
+          slug={group.slug}
+          viewerRole={group.role}
+          onMembersChanged={() =>
+            setGroup((current) =>
+              current
+                ? {
+                    ...current,
+                    memberCount: Math.max(0, current.memberCount - 1),
+                  }
+                : current,
+            )
+          }
+        />
 
         {canManage ? (
           <StudioPanel

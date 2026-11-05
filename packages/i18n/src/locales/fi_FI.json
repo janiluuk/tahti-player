@@ -2739,7 +2739,17 @@
       "submissionDeclined": "Ehdotus hylätty",
       "searchLabel": "Hae ryhmiä",
       "searchEmpty": "Mikään ryhmä ei vastaa hakua",
-      "directoryEmptyDescription": "Artistit voivat aloittaa ryhmän Studiosta → Ryhmät."
+      "directoryEmptyDescription": "Artistit voivat aloittaa ryhmän Studiosta → Ryhmät.",
+      "membersTitle": "Jäsenet",
+      "membersDescription": "Kaikki ryhmän jäsenet. Omistaja ja ylläpitäjät voivat poistaa jäseniä; vain omistaja voi poistaa ylläpitäjän.",
+      "membersLoading": "Ladataan jäseniä…",
+      "membersLoadError": "Jäseniä ei voitu ladata",
+      "membersEmpty": "Ei vielä jäseniä",
+      "removeMember": "Poista",
+      "removeMemberNamed": "Poista {{name}} ryhmästä",
+      "removeMemberTitle": "Poistetaanko {{name}}?",
+      "removeMemberDescription": "Hän poistuu ryhmästä ja saa siitä ilmoituksen. Hänen lisäämänsä kappaleet jäävät yhteiseen soittolistaan.",
+      "memberRemoved": "{{name}} poistettu"
     },
     "studioListeningParties": {
       "title": "Kuuntelujuhlat",
