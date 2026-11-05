@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import type { FC, ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   DataTable,
@@ -72,110 +73,116 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
   orders,
   exportUrl,
   footnote,
-}) => (
-  <section
-    aria-label="Fan subscription summary"
-    className="@container flex max-w-full min-w-0 flex-col gap-4"
-  >
-    <div
-      data-tour-id="revenue-stats"
-      data-testid="fan-order-stats"
-      className="grid min-w-0 grid-cols-1 gap-2 @[16rem]:grid-cols-2 @xl:grid-cols-[repeat(4,minmax(0,1fr))]"
+}) => {
+  const { t } = useTranslation('web');
+  return (
+    <section
+      aria-label="Fan subscription summary"
+      className="@container flex max-w-full min-w-0 flex-col gap-4"
     >
-      <FanStat
-        label="Active subscribers"
-        value={stats.activeSubscribers.toLocaleString()}
-        icon={UsersIcon}
-      />
-      <FanStat
-        label="This month"
-        value={euros(stats.thisMonthNetCents)}
-        icon={CircleDollarSignIcon}
-      />
-      <FanStat
-        label="Paid out YTD"
-        value={euros(stats.paidYtdNetCents)}
-        icon={CalendarCheckIcon}
-      />
-      <FanStat
-        label="Pending payouts"
-        value={stats.pending.toLocaleString()}
-        icon={Clock3Icon}
-      />
-    </div>
+      <div
+        data-tour-id="revenue-stats"
+        data-testid="fan-order-stats"
+        className="grid min-w-0 grid-cols-1 gap-2 @[16rem]:grid-cols-2 @xl:grid-cols-[repeat(4,minmax(0,1fr))]"
+      >
+        <FanStat
+          label="Active subscribers"
+          value={stats.activeSubscribers.toLocaleString()}
+          icon={UsersIcon}
+        />
+        <FanStat
+          label="This month"
+          value={euros(stats.thisMonthNetCents)}
+          icon={CircleDollarSignIcon}
+        />
+        <FanStat
+          label="Paid out YTD"
+          value={euros(stats.paidYtdNetCents)}
+          icon={CalendarCheckIcon}
+        />
+        <FanStat
+          label="Pending payouts"
+          value={stats.pending.toLocaleString()}
+          icon={Clock3Icon}
+        />
+      </div>
 
-    <div className="text-foreground-secondary flex flex-wrap items-center justify-between gap-2 text-xs">
-      <p>
-        Paid in the last 30 days: {stats.paidLast30Days.toLocaleString()}
-        {stats.failed > 0 ? (
-          <span className="text-accent-red-strong">
-            {' '}
-            · Failed payouts: {stats.failed.toLocaleString()}
-          </span>
-        ) : (
-          ' · No failed payouts'
-        )}
-      </p>
-      {exportUrl ? (
-        <a
-          href={exportUrl}
-          className="text-foreground inline-flex items-center gap-1.5 font-semibold underline-offset-2 hover:underline"
-        >
-          <DownloadIcon size={14} aria-hidden />
-          Export subscribers
-        </a>
-      ) : null}
-    </div>
+      <div className="text-foreground-secondary flex flex-wrap items-center justify-between gap-2 text-xs">
+        <p>
+          Paid in the last 30 days: {stats.paidLast30Days.toLocaleString()}
+          {stats.failed > 0 ? (
+            <span className="text-accent-red-strong">
+              {' '}
+              · Failed payouts: {stats.failed.toLocaleString()}
+            </span>
+          ) : (
+            ' · No failed payouts'
+          )}
+        </p>
+        {exportUrl ? (
+          <a
+            href={exportUrl}
+            className="text-foreground inline-flex items-center gap-1.5 font-semibold underline-offset-2 hover:underline"
+          >
+            <DownloadIcon size={14} aria-hidden />
+            Export subscribers
+          </a>
+        ) : null}
+      </div>
 
-    <div data-tour-id="revenue-orders" data-testid="fan-order-list">
-      <h3 className="mb-2 text-sm font-bold">Payout history</h3>
-      <HorizontalScroll label="Payout history">
-        <DataTable className="min-w-[430px]">
-          <DataTableHead>
-            <DataTableRow>
-              <DataTableHeaderCell>Date</DataTableHeaderCell>
-              <DataTableHeaderCell>Description</DataTableHeaderCell>
-              <DataTableHeaderCell>Gross</DataTableHeaderCell>
-              <DataTableHeaderCell>Net to you</DataTableHeaderCell>
-              <DataTableHeaderCell>State</DataTableHeaderCell>
-            </DataTableRow>
-          </DataTableHead>
-          <DataTableBody>
-            {orders.length === 0 ? (
+      <div data-tour-id="revenue-orders" data-testid="fan-order-list">
+        <h3 className="mb-2 text-sm font-bold">Payout history</h3>
+        <HorizontalScroll label="Payout history">
+          <DataTable className="min-w-[430px]">
+            <DataTableHead>
               <DataTableRow>
-                <DataTableCell colSpan={5} className="py-4">
-                  <PageEmpty title="No payouts yet." />
-                </DataTableCell>
+                <DataTableHeaderCell>Date</DataTableHeaderCell>
+                <DataTableHeaderCell>Description</DataTableHeaderCell>
+                <DataTableHeaderCell>Gross</DataTableHeaderCell>
+                <DataTableHeaderCell>Net to you</DataTableHeaderCell>
+                <DataTableHeaderCell>State</DataTableHeaderCell>
               </DataTableRow>
-            ) : (
-              orders.map((order) => (
-                <DataTableRow key={order.id}>
-                  <DataTableCell className="text-foreground-secondary">
-                    <ListingDate value={order.date.toISOString()} />
-                  </DataTableCell>
-                  <DataTableCell className="font-medium">
-                    {order.description}
-                  </DataTableCell>
-                  <DataTableCell className="tabular-nums">
-                    {order.grossCents == null ? '—' : euros(order.grossCents)}
-                  </DataTableCell>
-                  <DataTableCell className="font-semibold tabular-nums">
-                    {order.state === 'PENDING' ? '—' : euros(order.netCents)}
-                  </DataTableCell>
-                  <DataTableCell>
-                    <Badge variant="pill" color={payoutStateColor(order.state)}>
-                      {order.state}
-                    </Badge>
+            </DataTableHead>
+            <DataTableBody>
+              {orders.length === 0 ? (
+                <DataTableRow>
+                  <DataTableCell colSpan={5} className="py-4">
+                    <PageEmpty title={t('empties.noPayouts')} />
                   </DataTableCell>
                 </DataTableRow>
-              ))
-            )}
-          </DataTableBody>
-        </DataTable>
-      </HorizontalScroll>
-      {footnote ? (
-        <p className="text-foreground-secondary mt-3 text-xs">{footnote}</p>
-      ) : null}
-    </div>
-  </section>
-);
+              ) : (
+                orders.map((order) => (
+                  <DataTableRow key={order.id}>
+                    <DataTableCell className="text-foreground-secondary">
+                      <ListingDate value={order.date.toISOString()} />
+                    </DataTableCell>
+                    <DataTableCell className="font-medium">
+                      {order.description}
+                    </DataTableCell>
+                    <DataTableCell className="tabular-nums">
+                      {order.grossCents == null ? '—' : euros(order.grossCents)}
+                    </DataTableCell>
+                    <DataTableCell className="font-semibold tabular-nums">
+                      {order.state === 'PENDING' ? '—' : euros(order.netCents)}
+                    </DataTableCell>
+                    <DataTableCell>
+                      <Badge
+                        variant="pill"
+                        color={payoutStateColor(order.state)}
+                      >
+                        {order.state}
+                      </Badge>
+                    </DataTableCell>
+                  </DataTableRow>
+                ))
+              )}
+            </DataTableBody>
+          </DataTable>
+        </HorizontalScroll>
+        {footnote ? (
+          <p className="text-foreground-secondary mt-3 text-xs">{footnote}</p>
+        ) : null}
+      </div>
+    </section>
+  );
+};

@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { MediaArtwork } from '@tahti-player/ui';
 
 import type { RadioShowUpcomingTrack } from '../api/shows';
@@ -25,11 +26,12 @@ export function RadioUpNextPanel({
   rotationError?: string;
   onRetryRotation: () => void;
 }) {
+  const { t } = useTranslation('web');
   if (!onRotation) {
     return (
       <PageEmpty
-        title="A member set is on air"
-        description="The rotation picks up again when the live set ends."
+        title={t('radio.memberSetOnAir')}
+        description={t('radio.memberSetOnAirDescription')}
       />
     );
   }
@@ -38,22 +40,22 @@ export function RadioUpNextPanel({
       className="flex flex-col gap-2"
       data-testid="radio-up-next-rotation"
     >
-      <h3 className={HEADING_CLASS}>Next in rotation</h3>
+      <h3 className={HEADING_CLASS}>{t('radio.nextInRotation')}</h3>
       {rotationError && rotation.length > 0 ? (
         <PageErrorBanner
-          title="Could not refresh the rotation"
+          title={t('radio.rotationRefreshError')}
           description={rotationError}
           onRetry={onRetryRotation}
         />
       ) : null}
       {rotationError && rotation.length === 0 ? (
         <PageError
-          title="Could not load the rotation"
+          title={t('radio.rotationLoadError')}
           description={rotationError}
           onRetry={onRetryRotation}
         />
       ) : rotation.length === 0 ? (
-        <PageEmpty title="The rotation playlist is empty" />
+        <PageEmpty title={t('radio.rotationEmpty')} />
       ) : (
         <ol className={LIST_CLASS}>
           {rotation.map((track) => (

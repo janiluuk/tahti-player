@@ -1,6 +1,7 @@
 import { TrashIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
 
 import { isHttpUrl } from '../lib/parseRss';
@@ -27,6 +28,7 @@ export function NewsSourcesDialog({
   isOpen: boolean;
   onClose: () => void;
 }) {
+  const { t } = useTranslation('web');
   const instances = useListenerWidgetsStore((state) => state.instances);
   const addInstance = useListenerWidgetsStore((state) => state.addInstance);
   const installType = useListenerWidgetsStore((state) => state.installType);
@@ -78,7 +80,7 @@ export function NewsSourcesDialog({
         <section className="flex flex-col gap-2">
           <h3 className="text-sm font-bold">Your sources</h3>
           {sources.length === 0 ? (
-            <PageEmpty title="No sources yet. Add one below." />
+            <PageEmpty title={t('empties.noNewsSources')} />
           ) : (
             <ul
               aria-label="Your sources"

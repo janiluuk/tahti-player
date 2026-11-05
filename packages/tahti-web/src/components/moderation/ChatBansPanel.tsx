@@ -2,6 +2,7 @@ import { Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -30,6 +31,7 @@ type Props = {
 /** The people barred from posting in the channel's chat, and lifting a ban.
  * Bans are set from a message, under Recent messages. */
 export function ChatBansPanel({ slug: slugProp }: Props) {
+  const { t } = useTranslation('web');
   const ownSlug = useAuthStore((s) => s.user?.channel?.slug ?? '');
   const slug = slugProp ?? ownSlug;
   const [bans, setBans] = useState<ChatBan[]>([]);
@@ -54,7 +56,7 @@ export function ChatBansPanel({ slug: slugProp }: Props) {
       {loading ? (
         <PageLoading label="Loading…" />
       ) : bans.length === 0 ? (
-        <PageEmpty title="Nobody is banned" />
+        <PageEmpty title={t('empties.nobodyBanned')} />
       ) : (
         <ul className="flex flex-col gap-2">
           {bans.map((ban) => (

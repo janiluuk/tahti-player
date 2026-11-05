@@ -1,6 +1,7 @@
 import { PauseIcon, PlayIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -73,6 +74,7 @@ export function AudioRevisionList({
   coverUrl,
   reloadToken = 0,
 }: AudioRevisionListProps) {
+  const { t } = useTranslation('web');
   const currentId = usePlayerStore((state) => state.currentId);
   const playerStatus = usePlayerStore((state) => state.status);
   const currentTime = usePlayerStore((state) => state.currentTime);
@@ -361,7 +363,7 @@ export function AudioRevisionList({
           onRetry={load}
         />
       ) : listed.length === 0 ? (
-        <PageEmpty title="No revisions yet." />
+        <PageEmpty title={t('empties.noRevisions')} />
       ) : (
         <ul className="flex flex-col gap-1.5">
           {listed.map((version) => {

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, Select, ViewShell } from '@tahti-player/ui';
 
 import { fetchChatHistory, fetchDirectory } from '../api/client';
@@ -60,6 +61,7 @@ function useChatActivity(channels: ChannelDirectoryItem[] | null) {
 }
 
 function ChatPicker() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [channels, setChannels] = useState<ChannelDirectoryItem[] | null>(null);
   const [selected, setSelected] = useState('');
@@ -131,7 +133,7 @@ function ChatPicker() {
         {channels === null || activity === null ? (
           <PageLoading label="Checking chat rooms…" />
         ) : activity.length === 0 ? (
-          <PageEmpty title="No chat activity in the last 24 hours." />
+          <PageEmpty title={t('empties.noChatActivity')} />
         ) : (
           <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
             {activity.map(({ channel, activity: row }) => (
@@ -166,6 +168,7 @@ function ChatPicker() {
 }
 
 export function ChatView({ slug }: { slug?: string }) {
+  const { t } = useTranslation('web');
   if (!slug) {
     return <ChatPicker />;
   }
@@ -187,7 +190,7 @@ export function ChatView({ slug }: { slug?: string }) {
             params={{ slug }}
             className="text-foreground-secondary text-sm underline-offset-2 hover:underline"
           >
-            Open channel
+            {t('actions.openChannel')}
           </Link>
         </div>
       </div>

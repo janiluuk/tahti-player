@@ -2,6 +2,7 @@ import { BanIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, InlineError, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -31,6 +32,7 @@ type Props = {
 /** The channel's latest chat messages for the people who run the room:
  * remove a message, or ban whoever sent it. */
 export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
+  const { t } = useTranslation('web');
   const ownSlug = useAuthStore((s) => s.user?.channel?.slug ?? '');
   const slug = slugProp ?? ownSlug;
   const [messages, setMessages] = useState<ModerationChatMessage[]>([]);
@@ -96,7 +98,7 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
       ) : loadError ? (
         <InlineError>{loadError}</InlineError>
       ) : messages.length === 0 ? (
-        <PageEmpty title="No messages yet" />
+        <PageEmpty title={t('empties.noMessages')} />
       ) : (
         <ul className="flex max-h-96 flex-col gap-2 overflow-y-auto">
           {messages.map((message) => (
