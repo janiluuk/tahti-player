@@ -154,7 +154,7 @@ export function StorageOverviewTab() {
   if (loading) {
     return (
       <StudioPanel>
-        <PageLoading label="Loading storage…" />
+        <PageLoading label={t('loading.loadingStorage')} />
       </StudioPanel>
     );
   }

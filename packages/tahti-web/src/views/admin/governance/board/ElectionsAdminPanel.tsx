@@ -166,7 +166,7 @@ export function ElectionsAdminPanel() {
     <StudioPanel title="Elections">
       <NewElectionForm onCreated={() => void load()} />
       {elections === null ? (
-        <PageLoading label="Loading elections…" />
+        <PageLoading label={t('loading.loadingElections')} />
       ) : loadError && elections.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadElections')}

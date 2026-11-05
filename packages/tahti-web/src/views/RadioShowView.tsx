@@ -183,7 +183,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
   usePolling(reloadNowPlaying, NOW_PLAYING_POLL_MS);
 
   if (loading) {
-    return <PageLoading label="Loading show…" />;
+    return <PageLoading label={t('loading.loadingShow')} />;
   }
 
   if (!show && loadError) {

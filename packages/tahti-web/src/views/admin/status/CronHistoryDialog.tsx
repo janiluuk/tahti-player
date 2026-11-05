@@ -74,7 +74,7 @@ export function CronHistoryDialog({
       {error ? (
         <InlineError>{error}</InlineError>
       ) : runs === null ? (
-        <PageLoading label="Loading runs…" />
+        <PageLoading label={t('loading.loadingRuns')} />
       ) : runs.length === 0 ? (
         <PageEmpty title={t('empties.jobNeverRan')} />
       ) : (

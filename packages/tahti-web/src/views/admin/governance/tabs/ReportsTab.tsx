@@ -81,7 +81,7 @@ export function ReportsTab() {
       </StudioPanel>
       <StudioPanel title="Generated reports">
         {loading ? (
-          <PageLoading label="Loading reports…" />
+          <PageLoading label={t('loading.loadingReports')} />
         ) : reports.length === 0 ? (
           <PageEmpty title={t('empties.noAnnualReportsGeneratedYet')} />
         ) : (

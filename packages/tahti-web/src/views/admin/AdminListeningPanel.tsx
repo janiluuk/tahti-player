@@ -58,7 +58,7 @@ export function AdminListeningPanel() {
           aria-label="Listening period"
         />
         {!data ? (
-          <PageLoading label="Loading listening…" />
+          <PageLoading label={t('loading.loadingListening')} />
         ) : error ? (
           <PageError
             title={t('loadErrors.couldNotLoadListening')}

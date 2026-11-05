@@ -61,7 +61,7 @@ export function LegacyMembersPanel() {
           onRetry={() => void load()}
         />
       ) : members === null ? (
-        <PageLoading label="Loading members…" />
+        <PageLoading label={t('loading.loadingMembers')} />
       ) : members.length === 0 ? (
         <PageEmpty title={t('empties.noLegacyMembers')} />
       ) : (

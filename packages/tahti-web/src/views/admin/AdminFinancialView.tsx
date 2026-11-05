@@ -52,7 +52,7 @@ export function AdminFinancialView() {
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {loading ? (
-                <PageLoading label="Loading financial data…" />
+                <PageLoading label={t('loading.loadingFinancialData')} />
               ) : !overview ? (
                 <PageError
                   title={t('loadErrors.couldNotLoadFinancialData')}

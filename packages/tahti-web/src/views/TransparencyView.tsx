@@ -120,7 +120,7 @@ export function TransparencyView() {
       </div>
 
       {loading ? (
-        <PageLoading label="Loading transparency…" />
+        <PageLoading label={t('loading.loadingTransparency')} />
       ) : failed ? (
         <PageError
           title={t('loadErrors.couldNotLoadTransparencyData')}

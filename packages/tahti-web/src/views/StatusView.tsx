@@ -59,7 +59,7 @@ export function StatusView() {
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-4' }}
     >
       <PageBackLink to="/help" label="Help center" />
-      {loading && <PageLoading label="Checking…" />}
+      {loading && <PageLoading label={t('loading.checking')} />}
       {!loading && !data && (
         <PageError
           title={t('loadErrors.couldNotLoadPlatformStatus')}

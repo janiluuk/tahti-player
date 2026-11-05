@@ -150,7 +150,7 @@ export function AdminArtworkPresetsView() {
             }
           >
             {state.status === 'loading' ? (
-              <PageLoading label="Loading artwork…" />
+              <PageLoading label={t('loading.loadingArtwork')} />
             ) : state.status === 'error' ? (
               <PageError
                 title={t('loadErrors.couldNotLoadArtworkPresets')}

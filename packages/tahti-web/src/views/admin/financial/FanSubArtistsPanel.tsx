@@ -50,7 +50,7 @@ export function FanSubArtistsPanel() {
       description="Active subscribers, monthly revenue and paid-out total per artist, highest monthly revenue first."
     >
       {loading && !rows ? (
-        <PageLoading label="Loading artists…" />
+        <PageLoading label={t('loading.loadingArtists')} />
       ) : !rows ? (
         <PageError
           title={t('loadErrors.couldnTLoadArtists')}

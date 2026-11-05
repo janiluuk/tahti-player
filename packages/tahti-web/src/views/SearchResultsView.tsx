@@ -69,7 +69,7 @@ export function SearchResultsView({ q }: { q: string }) {
           <GlobalSearch fullWidth autoFocus />
         </div>
       ) : state.status === 'loading' ? (
-        <PageLoading label="Searching…" />
+        <PageLoading label={t('loading.searching')} />
       ) : state.status === 'error' ? (
         <PageError
           title={t('loadErrors.couldNotLoadSearchResults')}

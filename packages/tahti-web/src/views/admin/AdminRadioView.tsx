@@ -169,7 +169,7 @@ export function AdminRadioView() {
 
               {loading || !data ? (
                 <StudioPanel>
-                  <PageLoading label="Loading radio…" />
+                  <PageLoading label={t('loading.loadingRadio')} />
                 </StudioPanel>
               ) : loadError ? (
                 <StudioPanel>

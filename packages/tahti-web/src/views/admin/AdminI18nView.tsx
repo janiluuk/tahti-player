@@ -132,7 +132,7 @@ export function AdminI18nView() {
 
               <StudioPanel>
                 {loading ? (
-                  <PageLoading label="Loading languages…" />
+                  <PageLoading label={t('loading.loadingLanguages')} />
                 ) : unavailable ? (
                   <p className="text-foreground-secondary text-sm">
                     Not available yet. This server has no translation

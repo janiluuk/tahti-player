@@ -120,7 +120,7 @@ export function AdminVenuesView() {
                   </p>
                   {error ? <InlineError>{error}</InlineError> : null}
                   {loading ? (
-                    <PageLoading label="Loading venues…" />
+                    <PageLoading label={t('loading.loadingVenues')} />
                   ) : loadError && venues.length === 0 ? (
                     <PageError
                       title={t('loadErrors.couldNotLoadVenues')}

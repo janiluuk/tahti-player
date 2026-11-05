@@ -194,7 +194,7 @@ export function NewsView() {
           .
         </p>
 
-        {loading && <PageLoading label="Loading announcements…" />}
+        {loading && <PageLoading label={t('loading.loadingAnnouncements')} />}
 
         {!loading && loadError && entries.length === 0 && (
           <PageError

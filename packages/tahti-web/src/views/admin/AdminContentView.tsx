@@ -77,7 +77,7 @@ export function AdminContentView() {
               </div>
               {!data ? (
                 <StudioPanel>
-                  <PageLoading label="Loading content overview…" />
+                  <PageLoading label={t('loading.loadingContentOverview')} />
                 </StudioPanel>
               ) : loadError ? (
                 <StudioPanel>

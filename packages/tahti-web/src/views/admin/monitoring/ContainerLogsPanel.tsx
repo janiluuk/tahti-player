@@ -75,7 +75,7 @@ export function ContainerLogsPanel({
         </Alert>
       )}
       {loading ? (
-        <PageLoading label="Loading logs…" />
+        <PageLoading label={t('loading.loadingLogs')} />
       ) : logs.length === 0 ? (
         <PageEmpty title={t('empties.noLogLinesInTheLast')} />
       ) : (

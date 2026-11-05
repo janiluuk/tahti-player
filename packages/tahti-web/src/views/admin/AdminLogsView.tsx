@@ -76,7 +76,7 @@ function RecentAuditEntries() {
   return (
     <StudioPanel title="Recent audit entries">
       {loading ? (
-        <PageLoading label="Loading recent audit entries…" />
+        <PageLoading label={t('loading.loadingRecentAuditEntries')} />
       ) : loadError && entries.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadRecentAuditEntries')}

@@ -120,7 +120,7 @@ export function RadioSubmissionsTab() {
 
       {loading ? (
         <StudioPanel>
-          <PageLoading label="Loading radio submissions…" />
+          <PageLoading label={t('loading.loadingRadioSubmissions')} />
         </StudioPanel>
       ) : loadError && items.length === 0 ? (
         <StudioPanel>

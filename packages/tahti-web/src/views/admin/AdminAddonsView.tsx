@@ -152,7 +152,7 @@ export function AdminAddonsView() {
                 <InlineError>{error}</InlineError>
               ) : null}
               {loading ? (
-                <PageLoading label="Loading add-on catalog…" />
+                <PageLoading label={t('loading.loadingAddOnCatalog')} />
               ) : visibleAddons.length === 0 ? (
                 <PageEmpty
                   title={

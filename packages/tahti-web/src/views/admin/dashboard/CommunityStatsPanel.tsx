@@ -1,6 +1,7 @@
 import { LifeBuoyIcon, MailIcon, MessagesSquareIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { StatTile, type StatTone } from '@tahti-player/ui';
 
 import {
@@ -32,6 +33,7 @@ function mailboxSublabel(box: AdminMailbox | undefined): string {
 }
 
 export function CommunityStatsPanel() {
+  const { t } = useTranslation('web');
   const [stats, setStats] = useState<AdminCommunityStats | null>(null);
 
   useEffect(() => {
@@ -49,7 +51,7 @@ export function CommunityStatsPanel() {
   if (!stats) {
     return (
       <StudioPanel title="Chat and mail">
-        <PageLoading label="Loading chat and mail stats…" />
+        <PageLoading label={t('loading.loadingChatAndMailStats')} />
       </StudioPanel>
     );
   }

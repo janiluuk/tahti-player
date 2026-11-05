@@ -125,7 +125,7 @@ export function AdminNewsView() {
 
               <StudioPanel>
                 {loading ? (
-                  <PageLoading label="Loading news…" />
+                  <PageLoading label={t('loading.loadingNews')} />
                 ) : loadError && posts.length === 0 ? (
                   <PageError
                     title={t('loadErrors.couldNotLoadNewsPosts')}

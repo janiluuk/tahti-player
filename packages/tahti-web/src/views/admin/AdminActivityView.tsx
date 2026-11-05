@@ -252,7 +252,7 @@ export function AdminActivityView({
       />
 
       {loading ? (
-        <PageLoading label="Loading activity…" />
+        <PageLoading label={t('loading.loadingActivity')} />
       ) : error && !loaded ? (
         <PageError
           title={t('loadErrors.couldnTLoadActivity')}

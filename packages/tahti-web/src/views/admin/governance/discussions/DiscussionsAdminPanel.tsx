@@ -317,7 +317,7 @@ export function DiscussionsAdminPanel() {
       <div className="flex flex-col gap-4">
         <NewTopicForm onCreated={load} />
         {loading ? (
-          <PageLoading label="Loading topics…" />
+          <PageLoading label={t('loading.loadingTopics')} />
         ) : loadError && topics.length === 0 ? (
           <PageError
             title={t('loadErrors.couldNotLoadTheTopics')}
