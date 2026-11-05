@@ -86,7 +86,7 @@ test('old Studio moderation, playlists and collections addresses still redirect'
 }) => {
   await signIn(page);
   await page.goto('/studio/moderation');
-  await expect(page).toHaveURL(/\/settings\/channel\?tab=moderators$/);
+  await expect(page).toHaveURL(/\/studio\/fans$/);
   await page.goto('/studio/playlists');
   await expect(page).toHaveURL(/\/library\/collections$/);
   await page.goto('/studio/collections');
