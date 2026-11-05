@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, userEvent, within } from 'storybook/test';
 
-import { CardsRow } from '@tahti-player/ui';
+import { Card, CardsRow } from '@tahti-player/ui';
 
 const meta = {
   title: 'Components/CardsRow',
@@ -213,5 +213,54 @@ export const TahtiRadioRow: Story = {
     title: 'Radio',
     items: radioItems,
     labels: radioLabels,
+  },
+};
+
+/** The size button cycles cards → full artwork → list; full artwork stretches
+ * each tile to the column so phones show one big cover per row. */
+export const FullArtwork: Story = {
+  args: {
+    title: 'Top Albums',
+    items,
+    labels,
+    defaultLayout: 'cards',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Show full artwork' }),
+    );
+    await expect(canvas.getByTestId('cards-row')).toHaveAttribute(
+      'data-layout',
+      'full',
+    );
+    await expect(canvas.getByTestId('cards-row-full')).toBeInTheDocument();
+    await userEvent.click(canvas.getByRole('button', { name: 'Show as list' }));
+    await expect(canvas.getByTestId('cards-row-list')).toBeInTheDocument();
+  },
+};
+
+/** Rows that render their own `Card` (Listen widgets) draw it as a compact
+ * row in list view instead of a full tile per line. */
+export const CustomCardsAsRows: Story = {
+  args: {
+    title: 'Tahti Selects',
+    items,
+    labels,
+    defaultLayout: 'list',
+    renderItem: (item) => (
+      <Card
+        surface="neutral"
+        src={item.imageUrl}
+        title={item.title}
+        subtitle={item.subtitle}
+        onPlay={() => undefined}
+      />
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const cards = canvas.getAllByTestId('card');
+    await expect(cards[0]).toHaveAttribute('data-layout', 'row');
   },
 };

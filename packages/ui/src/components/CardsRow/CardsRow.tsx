@@ -3,15 +3,16 @@ import {
   ChevronLeft,
   ChevronRight,
   Filter,
-  LayoutGrid,
+  GalleryHorizontal,
   List,
+  Square,
 } from 'lucide-react';
 import { ReactNode, useEffect, useState } from 'react';
 
 import { cn } from '../../utils';
 import { Badge } from '../Badge';
 import { Button } from '../Button';
-import { Card } from '../Card';
+import { Card, CardLayoutContext } from '../Card';
 import { EmptyState } from '../EmptyState';
 import { Input } from '../Input';
 import { MediaArtwork } from '../MediaArtwork';
@@ -32,6 +33,7 @@ export type CardsRowLabels = {
   clearFilter?: string;
   showAsCards?: string;
   showAsList?: string;
+  showAsFull?: string;
 };
 
 export type CardsRowBadgeColor =
@@ -45,7 +47,15 @@ export type CardsRowBadgeColor =
   | 'secondary'
   | 'inverted';
 
-export type CardsRowLayout = 'cards' | 'list';
+/** `list`: compact rows. `cards`: one horizontally scrolling row of tiles.
+ * `full`: tiles as wide as the column, to browse the artwork. */
+export type CardsRowLayout = 'list' | 'cards' | 'full';
+
+const NEXT_LAYOUT: Record<CardsRowLayout, CardsRowLayout> = {
+  list: 'cards',
+  cards: 'full',
+  full: 'list',
+};
 
 const MOBILE_QUERY = '(max-width: 767px)';
 
@@ -116,7 +126,7 @@ export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   /** Uncontrolled start layout. On phones, list wins unless this or `layout` is set. */
   defaultLayout?: CardsRowLayout;
   onLayoutChange?: (layout: CardsRowLayout) => void;
-  /** Toolbar icon that toggles cards ↔ list (default on). */
+  /** Toolbar icon that cycles list → cards → full (default on). */
   allowListToggle?: boolean;
 };
 
@@ -169,12 +179,24 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
     showControls,
   } = useCardsRow(items);
 
-  const showAsCards = labels.showAsCards ?? 'Show as cards';
-  const showAsList = labels.showAsList ?? 'Show as list';
+  const layoutLabels: Record<CardsRowLayout, string> = {
+    list: labels.showAsList ?? 'Show as list',
+    cards: labels.showAsCards ?? 'Show as cards',
+    full: labels.showAsFull ?? 'Show full artwork',
+  };
+  const nextLayout = NEXT_LAYOUT[layout];
+  const NextLayoutIcon =
+    nextLayout === 'list'
+      ? List
+      : nextLayout === 'cards'
+        ? GalleryHorizontal
+        : Square;
   const isList = layout === 'list';
-  const showScroll = showControls && !isList;
+  const isFull = layout === 'full';
+  const showScroll = showControls && layout === 'cards';
   const showFilter =
-    filterable && (showControls || isList || !isEmpty(filterText.trim()));
+    filterable &&
+    (showControls || layout !== 'cards' || !isEmpty(filterText.trim()));
 
   return (
     <div
@@ -255,20 +277,15 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
             </div>
           ) : null}
           {allowListToggle ? (
-            <Tooltip content={isList ? showAsCards : showAsList} side="top">
+            <Tooltip content={layoutLabels[nextLayout]} side="top">
               <Button
                 data-testid="cards-row-layout-toggle"
                 size="icon"
                 variant="noShadow"
-                aria-label={isList ? showAsCards : showAsList}
-                aria-pressed={isList}
-                onClick={() => setLayout(isList ? 'cards' : 'list')}
+                aria-label={layoutLabels[nextLayout]}
+                onClick={() => setLayout(nextLayout)}
               >
-                {isList ? (
-                  <LayoutGrid size={16} aria-hidden />
-                ) : (
-                  <List size={16} aria-hidden />
-                )}
+                <NextLayoutIcon size={16} aria-hidden />
               </Button>
             </Tooltip>
           ) : null}
@@ -301,8 +318,10 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
         >
           {filteredItems.map((item) =>
             renderItem ? (
-              <li key={item.id} className="list-none p-1.5">
-                {renderItem(item)}
+              <li key={item.id} className="list-none p-1 *:w-full">
+                <CardLayoutContext.Provider value="row">
+                  {renderItem(item)}
+                </CardLayoutContext.Provider>
               </li>
             ) : (
               <li key={item.id} className="list-none">
@@ -327,6 +346,30 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
             ),
           )}
         </ul>
+      ) : isFull ? (
+        <CardLayoutContext.Provider value="full">
+          <div
+            data-testid="cards-row-full"
+            className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+          >
+            {filteredItems.map((item) =>
+              renderItem ? (
+                <div key={item.id} className="min-w-0 *:w-full">
+                  {renderItem(item)}
+                </div>
+              ) : (
+                <Card
+                  key={item.id}
+                  src={item.imageUrl}
+                  title={item.title}
+                  subtitle={item.subtitle}
+                  onClick={item.onClick}
+                  surface={cardSurface}
+                />
+              ),
+            )}
+          </div>
+        </CardLayoutContext.Provider>
       ) : (
         <div
           ref={scrollContainerRef}
