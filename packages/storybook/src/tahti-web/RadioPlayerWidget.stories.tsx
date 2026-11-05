@@ -237,8 +237,11 @@ export const FeaturedTab: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await selectTab(canvas, /Featured/);
-    await expect(canvas.getByTestId('radio-featured')).toBeVisible();
-    await expect(canvas.getByText('Northern Lights')).toBeVisible();
+    const featured = canvas.getByTestId('radio-featured');
+    await expect(featured).toBeInTheDocument();
+    await expect(
+      within(featured).getByRole('link', { name: 'Northern Lights' }),
+    ).toBeInTheDocument();
   },
 };
 
