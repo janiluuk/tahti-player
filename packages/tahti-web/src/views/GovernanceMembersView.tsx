@@ -76,7 +76,7 @@ export function GovernanceMembersView() {
         />
       )}
 
-      {user && loading && <PageLoading label="Loading members…" />}
+      {user && loading && <PageLoading label={t('loading.loadingMembers')} />}
 
       {user && !loading && members.length > 0 && (
         <div className="grid grid-cols-2 gap-3">

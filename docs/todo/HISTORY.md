@@ -1,3 +1,18 @@
+## 2026-11-05 - Batch 59 UX slices
+
+Finnish loading labels (`web.loading.*`) in the next 30 files: green room,
+channel, designer, discussions, embeds, engagement, history, listeners,
+meetings, members, motions, multistream, smartlinks, stories, submissions,
+listening party, track, venues, widgets and feed. tahti-web 0.0.350.
+
+## 2026-11-05 - Batch 58 UX slices
+
+Finnish loading labels (`web.loading.*`, new) in the 30 files with the most
+`PageLoading` labels, 41 labels: Studio and Admin gates, embeds, chat,
+moderation, admin moderation, workers and storage, release ops, playlists and
+releases, stream manager, fan and purchase tiers, multicast, sales and the
+booking calendar. tahti-web 0.0.349.
+
 ## 2026-11-05 - Batch 57 UX slices
 
 The last 37 English `PageEmpty` / `PageError` strings get Finnish: admin

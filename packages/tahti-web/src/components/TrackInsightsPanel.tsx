@@ -132,7 +132,7 @@ export function TrackInsightsPanel({
       </div>
 
       {loading ? (
-        <PageLoading label="Loading…" />
+        <PageLoading label={t('loading.loading')} />
       ) : loadError && !insights ? (
         <PageError
           title={t('loadErrors.couldNotLoadInsights')}

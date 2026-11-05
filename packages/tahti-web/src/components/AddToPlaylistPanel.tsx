@@ -254,7 +254,7 @@ export function AddToPlaylistPanel({
             to save tracks to a playlist.
           </p>
         ) : collections === null ? (
-          <PageLoading label="Loading playlists…" />
+          <PageLoading label={t('loading.loadingPlaylists')} />
         ) : loadError && collections.length === 0 ? (
           <p className="text-foreground-secondary text-sm">{loadError}</p>
         ) : (

@@ -407,7 +407,7 @@ export function RadioBookingCalendar({
           </div>
 
           {loading ? (
-            <PageLoading label="Loading…" />
+            <PageLoading label={t('loading.loading')} />
           ) : loadError && bookings.length === 0 ? (
             <PageError
               title={t('loadErrors.couldNotLoadBookings')}

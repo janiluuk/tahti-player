@@ -130,7 +130,7 @@ function StoreTrackAssigner({ revision }: { revision: number }) {
         </p>
       </div>
       {!loaded ? (
-        <PageLoading label="Loading your tracks…" />
+        <PageLoading label={t('loading.loadingYourTracks')} />
       ) : loadError && catalog.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadYourTracks')}

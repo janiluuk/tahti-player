@@ -3,7 +3,8 @@
 exports[`Card > (Snapshot) renders correctly 1`] = `
 <div>
   <div
-    class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary"
+    class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+    data-layout="card"
     data-surface="brand"
     data-testid="card"
   >
@@ -90,7 +91,8 @@ exports[`Card > (Snapshot) renders correctly 1`] = `
 exports[`Card > (Snapshot) renders the neutral surface 1`] = `
 <div>
   <div
-    class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all bg-background-secondary text-foreground"
+    class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 bg-background-secondary text-foreground"
+    data-layout="card"
     data-surface="neutral"
     data-testid="card"
   >

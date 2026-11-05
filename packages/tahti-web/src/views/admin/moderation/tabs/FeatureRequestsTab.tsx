@@ -83,7 +83,7 @@ function QuarterlyReportsPanel() {
         </InlineError>
       )}
       {loading ? (
-        <PageLoading label="Loading reports…" />
+        <PageLoading label={t('loading.loadingReports')} />
       ) : reports.length === 0 ? (
         <PageEmpty title={t('empties.noQuarterlyReportsGeneratedYet')} />
       ) : (
@@ -279,7 +279,7 @@ export function FeatureRequestsTab() {
 
       <StudioPanel>
         {loading ? (
-          <PageLoading label="Loading feature requests…" />
+          <PageLoading label={t('loading.loadingFeatureRequests')} />
         ) : rows.length === 0 ? (
           <PageEmpty title={t('empties.noFeatureRequestsInThisView')} />
         ) : (

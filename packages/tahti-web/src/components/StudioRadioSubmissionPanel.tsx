@@ -115,7 +115,7 @@ export function StudioRadioSubmissionPanel() {
         description="Track review decisions and any feedback from the Tahti Radio team."
       >
         {loading ? (
-          <PageLoading label="Loading submissions…" />
+          <PageLoading label={t('loading.loadingSubmissions')} />
         ) : submissionsError && submissions.length === 0 ? (
           <PageError
             title={t('loadErrors.couldNotLoadYourSubmissions')}

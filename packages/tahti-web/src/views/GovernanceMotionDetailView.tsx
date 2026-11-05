@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Box, Button, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMembers, fetchGovernanceMotion } from '../api/client';
@@ -19,6 +20,7 @@ import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 
 export function GovernanceMotionDetailView({ id }: { id: string }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const isBoard = hasAccountRole(user, 'BOARD');
   const [motion, setMotion] = useState<GovernanceMotionDetail | null>(null);
@@ -85,7 +87,7 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
         </Box>
       )}
 
-      {user && loading && <PageLoading label="Loading motion…" />}
+      {user && loading && <PageLoading label={t('loading.loadingMotion')} />}
 
       {user && !loading && forbidden && (
         <Box variant="secondary" className="flex flex-col gap-3">

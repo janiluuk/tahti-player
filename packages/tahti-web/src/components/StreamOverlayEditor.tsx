@@ -216,7 +216,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
     overlay.streamOverlayTitle.trim() || overlay.streamOverlaySubtitle.trim();
 
   if (!loaded) {
-    return <PageLoading label="Loading overlay…" />;
+    return <PageLoading label={t('loading.loadingOverlay')} />;
   }
 
   if (loadError) {

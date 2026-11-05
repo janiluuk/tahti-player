@@ -320,7 +320,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
           }
         />
       ) : loading ? (
-        <PageLoading label="Loading the discussion…" />
+        <PageLoading label={t('loading.loadingTheDiscussion')} />
       ) : !topic ? (
         <PageError
           title={t('loadErrors.couldNotLoadThisDiscussion')}

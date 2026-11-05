@@ -67,7 +67,7 @@ export function ModerateChannelView({ slug }: { slug: string }) {
   }, [userId, slug, attempt]);
 
   if (!hydrated) {
-    return <PageLoading label="Loading session…" />;
+    return <PageLoading label={t('loading.loadingSession')} />;
   }
   if (!user) {
     return (
@@ -80,7 +80,7 @@ export function ModerateChannelView({ slug }: { slug: string }) {
     );
   }
   if (load.state === 'loading') {
-    return <PageLoading label="Loading…" />;
+    return <PageLoading label={t('loading.loading')} />;
   }
   if (load.state === 'error') {
     return (

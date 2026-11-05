@@ -20,7 +20,7 @@ export function designerBoot(opts: {
     );
   }
   if (!opts.ready) {
-    return <PageLoading label="Loading designer…" />;
+    return <PageLoading label={i18n.t('web:loading.loadingDesigner')} />;
   }
   return null;
 }

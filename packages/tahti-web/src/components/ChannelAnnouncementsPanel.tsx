@@ -224,7 +224,7 @@ export function ChannelAnnouncementsPanel() {
         }}
       />
       {loading ? (
-        <PageLoading label="Loading announcements…" />
+        <PageLoading label={t('loading.loadingAnnouncements')} />
       ) : loadError && clips.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadYourAnnouncementClips')}

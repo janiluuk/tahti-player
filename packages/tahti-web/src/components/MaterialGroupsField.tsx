@@ -2,7 +2,7 @@ import { UsersIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Select, Toggle } from '@tahti-player/ui';
 
 import {
@@ -30,6 +30,7 @@ type Props = {
 
 /** Groups card — submit/remove this sound on collective group playlists. */
 export function MaterialGroupsField({ soundId }: Props) {
+  const { t } = useTranslation('web');
   const [rows, setRows] = useState<GroupMembershipEntry[] | null>(null);
   const [search, setSearch] = useState('');
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -204,7 +205,7 @@ export function MaterialGroupsField({ soundId }: Props) {
       description="Groups you run or belong to. Some groups approve new sounds first."
     >
       {rows == null ? (
-        <PageLoading label="Loading groups…" />
+        <PageLoading label={t('loading.loadingGroups')} />
       ) : (
         <MaterialMembershipList
           search={search}

@@ -101,7 +101,7 @@ export function ChannelPlaylistBlock({
   );
 
   if (loading) {
-    return <PageLoading label="Loading playlist…" />;
+    return <PageLoading label={t('loading.loadingPlaylist')} />;
   }
 
   if (loadError) {

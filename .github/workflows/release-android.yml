@@ -1,0 +1,137 @@
+name: Android APK
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing player@X.Y.Z tag to build'
+        required: true
+        type: string
+      publish:
+        description: 'Attach the verified APK to the GitHub Release'
+        default: false
+        type: boolean
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+      publish:
+        default: false
+        type: boolean
+    secrets:
+      ANDROID_KEYSTORE_BASE64:
+        required: true
+      ANDROID_KEYSTORE_PASSWORD:
+        required: true
+      ANDROID_KEY_ALIAS:
+        required: true
+      ANDROID_KEY_PASSWORD:
+        required: true
+
+concurrency:
+  group: android-apk-${{ inputs.tag }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  DO_NOT_TRACK: 1
+  RELEASE_TAG: ${{ inputs.tag }}
+
+jobs:
+  apk:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Validate release inputs and signing secrets
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        shell: bash
+        run: |
+          [[ "$RELEASE_TAG" =~ ^player@[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo 'Expected an existing player@X.Y.Z tag'; exit 1; }
+          for name in ANDROID_KEYSTORE_BASE64 ANDROID_KEYSTORE_PASSWORD ANDROID_KEY_ALIAS ANDROID_KEY_PASSWORD; do
+            if [ -z "${!name}" ]; then
+              echo "::error::Missing repository secret: $name"
+              exit 1
+            fi
+          done
+
+      - uses: actions/checkout@v7
+        with:
+          ref: refs/tags/${{ inputs.tag }}
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+
+      - uses: pnpm/action-setup@v5
+
+      - name: Verify tag matches the application version
+        run: node -e 'const c = require("./packages/player/src-tauri/tauri.conf.json"); if (`player@${c.version}` !== process.env.RELEASE_TAG) throw new Error("Tag and application version differ")'
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install Android build tools
+        run: |
+          sdkmanager --install 'ndk;27.0.12077973' 'build-tools;35.0.0'
+          echo "NDK_HOME=$ANDROID_HOME/ndk/27.0.12077973" >> "$GITHUB_ENV"
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,armv7-linux-androideabi,i686-linux-android,x86_64-linux-android
+
+      - uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cargo/registry/
+            ~/.cargo/git/
+            packages/player/src-tauri/target/
+          key: ${{ runner.os }}-android-apk-${{ hashFiles('**/Cargo.lock') }}
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Prepare signing key
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          node -e 'const fs = require("node:fs"); const path = require("node:path"); fs.writeFileSync(path.join(process.env.RUNNER_TEMP, "tahti-android-release.jks"), Buffer.from(process.env.ANDROID_KEYSTORE_BASE64, "base64"), { mode: 0o600 })'
+          echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/tahti-android-release.jks" >> "$GITHUB_ENV"
+
+      - name: Build, sign and verify APK
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: pnpm build:android:release
+
+      - name: Upload signed APK and checksum
+        uses: actions/upload-artifact@v4
+        with:
+          name: tahti-player-android-${{ inputs.tag }}
+          path: |
+            artifacts/android/*.apk
+            artifacts/android/*.apk.sha256
+          if-no-files-found: error
+
+      - name: Publish APK to GitHub Release
+        if: inputs.publish
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          fail_on_unmatched_files: true
+          files: |
+            artifacts/android/*.apk
+            artifacts/android/*.apk.sha256
+
+      - name: Remove temporary signing key
+        if: always()
+        run: rm -f "$RUNNER_TEMP/tahti-android-release.jks"

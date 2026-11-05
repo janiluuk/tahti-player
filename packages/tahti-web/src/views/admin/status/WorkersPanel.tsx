@@ -70,7 +70,7 @@ function WorkerHistoryDialog({
       {error ? (
         <InlineError>{error}</InlineError>
       ) : history === null ? (
-        <PageLoading label="Loading history…" />
+        <PageLoading label={t('loading.loadingHistory')} />
       ) : history.length === 0 ? (
         <PageEmpty title={t('empties.noJobsRecorded')} />
       ) : (
@@ -151,7 +151,7 @@ export function WorkersPanel() {
           onRetry={() => void load()}
         />
       ) : workers === null ? (
-        <PageLoading label="Loading workers…" />
+        <PageLoading label={t('loading.loadingWorkers')} />
       ) : workers.length === 0 ? (
         <PageEmpty title={t('empties.noWorkersReported')} />
       ) : (

@@ -44,7 +44,7 @@ export function PurchaseOrdersList() {
   }, [attempt]);
 
   if (loading && !orders) {
-    return <PageLoading label="Loading sales…" />;
+    return <PageLoading label={t('loading.loadingSales')} />;
   }
   if (!orders) {
     return (

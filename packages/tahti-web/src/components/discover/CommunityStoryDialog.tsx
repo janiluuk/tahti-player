@@ -93,7 +93,7 @@ export function CommunityStoryDialog({
           {load.state === 'loading' ? (
             <>
               <Dialog.Title>Community story</Dialog.Title>
-              <PageLoading label="Loading story…" />
+              <PageLoading label={t('loading.loadingStory')} />
             </>
           ) : load.state === 'error' ? (
             <>

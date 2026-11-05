@@ -54,7 +54,7 @@ export function ChatBansPanel({ slug: slugProp }: Props) {
       description="People who can no longer post in this chat. To ban someone, use Ban on one of their messages under Recent messages."
     >
       {loading ? (
-        <PageLoading label="Loading…" />
+        <PageLoading label={t('loading.loading')} />
       ) : bans.length === 0 ? (
         <PageEmpty title={t('empties.nobodyBanned')} />
       ) : (

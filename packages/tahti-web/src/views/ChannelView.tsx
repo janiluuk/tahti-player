@@ -264,7 +264,7 @@ export function ChannelView({ slug }: { slug: string }) {
   useEditRail(editing && !isMobile, 'Channel design', layersMenu);
 
   if (loading) {
-    return <PageLoading label="Loading channel…" />;
+    return <PageLoading label={t('loading.loadingChannel')} />;
   }
 
   if (!channel && channelFailed) {

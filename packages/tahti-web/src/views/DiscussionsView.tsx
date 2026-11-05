@@ -170,7 +170,7 @@ export function DiscussionsView() {
           }
         />
       ) : loading ? (
-        <PageLoading label="Loading discussions…" />
+        <PageLoading label={t('loading.loadingDiscussions')} />
       ) : loadError && topics.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadTheDiscussions')}

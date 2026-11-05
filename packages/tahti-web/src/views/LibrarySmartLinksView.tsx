@@ -113,7 +113,7 @@ export function LibrarySmartLinksView() {
         </ButtonLink>
         <StudioPanel>
           {loading ? (
-            <PageLoading label="Loading smartlinks…" />
+            <PageLoading label={t('loading.loadingSmartlinks')} />
           ) : loadError && releases.length === 0 ? (
             <PageError
               title={t('loadErrors.couldNotLoadYourSmartlinks')}

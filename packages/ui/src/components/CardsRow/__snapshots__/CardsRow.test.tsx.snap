@@ -130,8 +130,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
       </div>
       <div>
         <button
-          aria-label="Show as list"
-          aria-pressed="false"
+          aria-label="Show full artwork"
           class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-10 justify-center"
           data-headlessui-state=""
           data-testid="cards-row-layout-toggle"
@@ -139,7 +138,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         >
           <svg
             aria-hidden="true"
-            class="lucide lucide-list"
+            class="lucide lucide-square"
             fill="none"
             height="16"
             stroke="currentColor"
@@ -150,23 +149,12 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
             width="16"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <path
-              d="M3 12h.01"
-            />
-            <path
-              d="M3 18h.01"
-            />
-            <path
-              d="M3 6h.01"
-            />
-            <path
-              d="M8 12h13"
-            />
-            <path
-              d="M8 18h13"
-            />
-            <path
-              d="M8 6h13"
+            <rect
+              height="18"
+              rx="2"
+              width="18"
+              x="3"
+              y="3"
             />
           </svg>
         </button>
@@ -178,7 +166,8 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
     style="scrollbar-width: none;"
   >
     <div
-      class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+      data-layout="card"
       data-surface="brand"
       data-testid="card"
     >
@@ -260,7 +249,8 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
       </div>
     </div>
     <div
-      class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+      data-layout="card"
       data-surface="brand"
       data-testid="card"
     >
@@ -342,7 +332,8 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
       </div>
     </div>
     <div
-      class="border-border shadow-shadow flex w-46 flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+      data-layout="card"
       data-surface="brand"
       data-testid="card"
     >

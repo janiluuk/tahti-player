@@ -4,6 +4,7 @@ import { resolve } from 'node:path';
 
 import { OpsError, playerRoot } from '../paths.mjs';
 import { runProgram, runScript, runSteps } from '../run-script.mjs';
+import { runAndroidRelease } from './android-release.mjs';
 
 const MODES = {
   run: 'Build the desktop app (release, no installer) and launch it',
@@ -13,7 +14,7 @@ const MODES = {
   dev: 'Run the desktop app in dev mode with hot reload',
   bundle: 'Build installers / packages (pnpm tauri build)',
   android:
-    'Build and run a debug build on an Android device/emulator (needs JDK 17+, ANDROID_HOME)',
+    'Run a debug build, or use android release [--target aarch64] for a signed APK (JDK 17+, Android SDK/NDK)',
 };
 
 const ANDROID_GEN_DIR = 'packages/player/src-tauri/gen/android';
@@ -143,6 +144,14 @@ function checkAndroidToolchain(env) {
 function runAndroid({ dryRun, extraArgs, env, root }) {
   if (!dryRun) {
     checkAndroidToolchain(env);
+  }
+  if (extraArgs[0] === 'release') {
+    return runAndroidRelease({
+      dryRun,
+      extraArgs: extraArgs.slice(1),
+      env,
+      root,
+    });
   }
   const tauri = ['--filter', '@tahti-player/player', 'tauri', 'android'];
   const steps = [];

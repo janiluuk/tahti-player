@@ -211,7 +211,7 @@ export function AdminUserEditPanel({
   if (detailLoading) {
     return (
       <StudioPanel>
-        <PageLoading label="Loading user details…" />
+        <PageLoading label={t('loading.loadingUserDetails')} />
       </StudioPanel>
     );
   }

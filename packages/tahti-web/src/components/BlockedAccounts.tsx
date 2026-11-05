@@ -69,7 +69,7 @@ export function BlockedAccounts() {
         conversation in Messages.
       </p>
       {blocked === null ? (
-        <PageLoading label="Loading blocked accounts…" />
+        <PageLoading label={t('loading.loadingBlockedAccounts')} />
       ) : loadError && blocked.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadBlockedAccounts')}

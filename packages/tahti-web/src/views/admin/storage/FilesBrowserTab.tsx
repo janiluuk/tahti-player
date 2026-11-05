@@ -423,7 +423,7 @@ export function FilesBrowserTab() {
           description="Every matching file, grouped by uploader with a running total per user."
         >
           {loading ? (
-            <PageLoading label="Loading storage users…" />
+            <PageLoading label={t('loading.loadingStorageUsers')} />
           ) : groupedRows.length === 0 ? (
             <PageEmpty
               title={filtered ? 'No files match these filters' : 'No files yet'}
@@ -478,7 +478,7 @@ export function FilesBrowserTab() {
       ) : (
         <StudioPanel>
           {loading ? (
-            <PageLoading label="Loading files…" />
+            <PageLoading label={t('loading.loadingFiles')} />
           ) : files.length === 0 ? (
             <PageEmpty
               title={filtered ? 'No files match these filters' : 'No files yet'}

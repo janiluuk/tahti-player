@@ -36,7 +36,7 @@ export function ChannelNotFound({ slug }: { slug: string }) {
   }, [slug, navigate]);
 
   if (checking) {
-    return <PageLoading label="Loading channel…" />;
+    return <PageLoading label={t('loading.loadingChannel')} />;
   }
 
   return (

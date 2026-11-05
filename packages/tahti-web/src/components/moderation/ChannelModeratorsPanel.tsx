@@ -69,7 +69,7 @@ export function ChannelModeratorsPanel() {
     >
       <div className="flex flex-col gap-4">
         {loading ? (
-          <PageLoading label="Loading…" />
+          <PageLoading label={t('loading.loading')} />
         ) : mods.length === 0 ? (
           <PageEmpty title={t('empties.noModerators')} />
         ) : (
