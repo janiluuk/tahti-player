@@ -1,3 +1,8 @@
+## 2026-11-05 - Batch 49 UX slices
+
+Studio/Admin ConfirmDialog Finnish leftovers; StudioHubViews story plays.
+tahti-web 0.0.339 (#1837).
+
 ## 2026-11-04 - Batch 48 UX slices
 
 Schedule/branding/stems/updates/release-audio toasts; cleared remaining
