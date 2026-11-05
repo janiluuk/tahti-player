@@ -12,7 +12,6 @@ export {
   resolveHeaderDesignMode,
   type HeaderDesignMode,
 } from './HeaderStyleTabs';
-export { IdentityToggles } from './IdentityToggles';
 export { TopBarTextField } from './TopBarTextField';
 export { LAYOUT_ONLY_LOOK_IDS, LayoutOnlyLookHint } from './LayoutOnlyLookHint';
 export { OverlayConfigDialog } from './OverlayConfigDialog';

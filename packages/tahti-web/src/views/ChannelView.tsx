@@ -39,6 +39,7 @@ import {
   useEditRail,
   usePresetLookDraft,
 } from '../components/channel-view';
+import { ChannelFeatureSettings } from '../components/channel-view/ChannelFeatureSettings';
 import { channelHeaderStats } from '../components/channel-view/channelHeaderStats';
 import { ChannelPageActions } from '../components/channel-view/ChannelPageActions';
 import {
@@ -239,11 +240,13 @@ export function ChannelView({ slug }: { slug: string }) {
   const avatarVisible =
     layout.find((i) => i.type === 'avatar')?.visible ?? true;
   const bioVisible = layout.find((i) => i.type === 'about')?.visible ?? true;
+  const subscribeOn =
+    layout.find((i) => i.type === 'subscribe')?.visible ?? false;
   const subscribeVisible =
     channel?.channelKind !== 'RADIO' &&
     !isOwner &&
     hasFanTiers === true &&
-    (layout.find((i) => i.type === 'subscribe')?.visible ?? false);
+    subscribeOn;
   const layersMenu =
     editing && channel ? (
       <ChannelLayersPanel
@@ -438,6 +441,14 @@ export function ChannelView({ slug }: { slug: string }) {
     </>
   );
 
+  const featureSettings = editing ? (
+    <ChannelFeatureSettings
+      layout={layout}
+      updateLayout={updateLayout}
+      isRadioChannel={channel.channelKind === 'RADIO'}
+    />
+  ) : null;
+
   const pageActions = !editing ? (
     <ChannelPageActions
       channel={channel}
@@ -480,13 +491,12 @@ export function ChannelView({ slug }: { slug: string }) {
             navTabs={navTabs}
             activeNavTab={activeNavTab}
             onSelectNavTab={setActiveNavTabId}
-            layout={layout}
-            updateLayout={updateLayout}
             avatarVisible={avatarVisible}
             bioVisible={bioVisible}
-            subscribeVisible={subscribeVisible}
+            subscribeVisible={editing ? subscribeOn : subscribeVisible}
+            showOffFeatures={editing}
             stagePlayer={stagePlayer}
-            identityActions={pageActions}
+            identityActions={editing ? featureSettings : pageActions}
           />
         );
       default:
@@ -555,9 +565,10 @@ export function ChannelView({ slug }: { slug: string }) {
   };
   const showHeaderStats =
     layout.find((item) => item.type === 'headerStats')?.visible ?? true;
-  const headerStats = showHeaderStats
-    ? channelHeaderStats(channel, follow.followerCount)
-    : [];
+  const headerStats =
+    showHeaderStats || editing
+      ? channelHeaderStats(channel, follow.followerCount)
+      : [];
 
   const pageBody = (
     <div
@@ -600,9 +611,9 @@ export function ChannelView({ slug }: { slug: string }) {
           </Tooltip>
         ) : null}
         {!heroVisible && <ChannelTopBar text={channel.topBarText} />}
-        {!heroVisible && pageActions ? (
+        {!heroVisible && (pageActions ?? featureSettings) ? (
           <div className="flex flex-wrap items-center justify-end gap-2 pl-14">
-            {pageActions}
+            {pageActions ?? featureSettings}
           </div>
         ) : null}
 
@@ -648,6 +659,7 @@ export function ChannelView({ slug }: { slug: string }) {
                   : null
               }
               stats={headerStats}
+              statsDimmed={editing && !showHeaderStats}
               data-testid="channel-social-header"
             />
           </div>

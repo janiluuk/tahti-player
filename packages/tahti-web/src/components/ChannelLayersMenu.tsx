@@ -1,6 +1,4 @@
 import {
-  EyeIcon,
-  EyeOffIcon,
   GripVerticalIcon,
   ImageIcon,
   LayersIcon,
@@ -14,13 +12,10 @@ import { useEffect, useState } from 'react';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
-  BACKDROP_FOLDED_ITEM_TYPES,
   CHANNEL_LAYOUT_PRESETS,
   CHANNEL_PAGE_ITEM_META,
-  CHANNEL_PAGE_ITEM_TYPES,
   type ChannelLayoutPresetId,
   type ChannelPageItem,
-  type ChannelPageItemType,
 } from '../lib/channelPageLayout';
 import { ChannelPlaylistPicker } from './ChannelPlaylistPicker';
 
@@ -35,10 +30,8 @@ type Props = {
   lookOpenSection?: string | null;
   activePresetId: ChannelLayoutPresetId | null;
   onSelect: (id: string) => void;
-  onToggleVisible: (id: string) => void;
   onResize: (id: string, width: NonNullable<ChannelPageItem['width']>) => void;
   onRemove: (id: string) => void;
-  onAdd: (type: ChannelPageItemType) => void;
   embedItems?: Array<{
     id: string;
     label: string;
@@ -65,10 +58,8 @@ export function ChannelLayersMenu({
   lookOpenSection,
   activePresetId,
   onSelect,
-  onToggleVisible,
   onResize,
   onRemove,
-  onAdd,
   embedItems = [],
   onAddEmbed,
   onAddPlaylist,
@@ -88,14 +79,6 @@ export function ChannelLayersMenu({
       setPanel('layers');
     }
   }, [selectedId, lookOpenSection]);
-
-  const hiddenCatalog = CHANNEL_PAGE_ITEM_TYPES.filter((type) => {
-    if (BACKDROP_FOLDED_ITEM_TYPES.includes(type)) {
-      return false;
-    }
-    const row = items.find((i) => i.type === type);
-    return !row || !row.visible;
-  });
 
   const usedPlaylistSlugs = items
     .filter((item) => item.type === 'playlist' && item.playlistSlug)
@@ -346,25 +329,6 @@ export function ChannelLayersMenu({
                       </Button>
                     ))}
                   </div>
-                  <Tooltip
-                    content={item.visible ? 'Hide layer' : 'Show layer'}
-                    side="top"
-                  >
-                    <Button
-                      type="button"
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={`${item.visible ? 'Hide' : 'Show'} ${meta.label}`}
-                      aria-pressed={item.visible}
-                      onClick={() => onToggleVisible(item.id)}
-                    >
-                      {item.visible ? (
-                        <EyeIcon size={14} />
-                      ) : (
-                        <EyeOffIcon size={14} />
-                      )}
-                    </Button>
-                  </Tooltip>
                   <Tooltip content="Remove from page" side="top">
                     <Button
                       type="button"
@@ -403,35 +367,15 @@ export function ChannelLayersMenu({
             </div>
             <div className="border-border border-t pt-3">
               <p className="text-foreground-secondary mb-2 text-xs">
-                Add a hidden block back onto the channel page.
+                Add an embed to the channel page. Turn sections on and off in
+                Settings on the channel header.
               </p>
-              {hiddenCatalog.length === 0 && embedItems.length === 0 ? (
+              {embedItems.length === 0 ? (
                 <p className="text-foreground-secondary text-xs">
-                  Every block type is already on the page.
+                  No embeds to add.
                 </p>
               ) : (
                 <ul className="flex flex-col gap-1">
-                  {hiddenCatalog.map((type) => {
-                    const meta = CHANNEL_PAGE_ITEM_META[type];
-                    return (
-                      <li key={type}>
-                        <Button
-                          size="sm"
-                          variant="secondary"
-                          className="w-full justify-start"
-                          onClick={() => {
-                            onAdd(type);
-                            setPanel('layers');
-                          }}
-                        >
-                          <span className="inline-flex items-center gap-2">
-                            <PlusIcon size={14} />
-                            {meta.label}
-                          </span>
-                        </Button>
-                      </li>
-                    );
-                  })}
                   {embedItems.map((embed) => (
                     <li key={embed.id}>
                       <Button

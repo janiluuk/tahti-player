@@ -3703,6 +3703,23 @@
       "loadingTheListeningParty": "Loading the listening party…",
       "loadingYourVenues": "Loading your venues…"
     },
+    "channelFeatures": {
+      "settings": "Settings",
+      "header": "Header",
+      "sections": "Page sections",
+      "avatar": "Avatar",
+      "bio": "Bio",
+      "subscribe": "Subscribe button",
+      "counts": "Follower and play counts",
+      "stage": "Live stage",
+      "tracks": "Tracks",
+      "feed": "Feed",
+      "shows": "Live shows",
+      "links": "Links",
+      "navigation": "Navigation tabs",
+      "programming": "Programming",
+      "hint": "Features that are off stay faded on the page while you edit. Visitors don't see them."
+    },
     "addListenWidget": {
       "open": "Add new listen widget",
       "title": "Add a listen widget",

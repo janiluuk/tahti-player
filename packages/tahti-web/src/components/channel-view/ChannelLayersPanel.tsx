@@ -9,7 +9,6 @@ import {
   type ChannelLookElementId,
 } from '../../lib/channelLookElements';
 import {
-  addItemType,
   addPlaylistItem,
   BACKDROP_FOLDED_ITEM_TYPES,
   CHANNEL_PAGE_ITEM_META,
@@ -141,19 +140,10 @@ export function ChannelLayersPanel({
       lookOpenSection={lookOpenSection}
       activePresetId={activePresetId}
       onSelect={onSelect}
-      onToggleVisible={(id) => {
-        updateLayout((prev) => {
-          const row = prev.find((i) => i.id === id);
-          return row ? setItemVisible(prev, id, !row.visible) : prev;
-        });
-      }}
       onResize={(id, width) => {
         updateLayout((prev) => setItemWidth(prev, id, width));
       }}
       onRemove={(id) => removeLayoutItem(id)}
-      onAdd={(type: ChannelPageItemType) => {
-        updateLayout((prev) => addItemType(prev, type));
-      }}
       embedItems={embedItems}
       onAddEmbed={(embedInstanceId) => {
         updateLayout((prev) => {

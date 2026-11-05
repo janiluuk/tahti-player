@@ -91,7 +91,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Channel/Designer/ColorSchemeFields` | `tahti-web/ChannelDesignerColorSchemeFields.stories.tsx` |
 | `Tahti/Channel/Designer/DeletePresetDialog` | `tahti-web/ChannelDesignerDeletePresetDialog.stories.tsx` |
 | `Tahti/Channel/Designer/HeaderStyleTabs` | `tahti-web/ChannelDesignerHeaderStyleTabs.stories.tsx` |
-| `Tahti/Channel/Designer/IdentityToggles` | `tahti-web/ChannelDesignerIdentityToggles.stories.tsx` |
 | `Tahti/Channel/Designer/LayoutOnlyLookHint` | `tahti-web/ChannelDesignerLayoutOnlyLookHint.stories.tsx` |
 | `Tahti/Channel/Designer/OverlayConfigDialog` | `tahti-web/ChannelDesignerOverlayConfigDialog.stories.tsx` |
 | `Tahti/Channel/Designer/PageBackgroundField` | `tahti-web/ChannelDesignerPageBackgroundField.stories.tsx` |
@@ -113,6 +112,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Channel/Designer/VisualizerPickerDialog` | `tahti-web/ChannelDesignerVisualizerPickerDialog.stories.tsx` |
 | `Tahti/Channel/Designer/EditToolbar` | `tahti-web/ChannelEditToolbar.stories.tsx` |
 | `Tahti/Channel/Designer/ElementEditor` | `tahti-web/ChannelElementEditor.stories.tsx` |
+| `Tahti/Channel/Designer/ChannelFeatureSettings` | `tahti-web/ChannelFeatureSettings.stories.tsx` |
 | `Tahti/Channel/ChannelHeroBlock` | `tahti-web/ChannelHeroBlock.stories.tsx` |
 | `Tahti/Channel/Designer/LayersMenu` | `tahti-web/ChannelLayersMenu.stories.tsx` |
 | `Tahti/Channel/Designer/LayersPanel` | `tahti-web/ChannelLayersPanel.stories.tsx` |
