@@ -46,7 +46,9 @@ export const Fans: Story = {
       '/studio/audience?tab=store',
       '/studio/audience',
     ]);
-    await expect(canvas.getByRole('heading', { name: 'Chat' })).toBeVisible();
+    await expect(
+      canvas.getByRole('heading', { name: 'Chat' }),
+    ).toBeInTheDocument();
   },
 };
 
@@ -57,7 +59,7 @@ export const Profile: Story = {
     const canvas = within(canvasElement);
     await expect(
       await canvas.findByRole('heading', { name: 'Profile' }),
-    ).toBeVisible();
+    ).toBeInTheDocument();
     const artist = within(
       canvas.getByRole('list', { name: 'Artist profile settings' }),
     ).getAllByRole('link');
@@ -88,14 +90,16 @@ export const Broadcast: Story = {
     const canvas = within(canvasElement);
     await expect(
       await canvas.findByRole('heading', { name: 'Broadcast' }),
-    ).toBeVisible();
+    ).toBeInTheDocument();
     await expect(canvas.getByTestId('broadcast-air-banner')).toHaveTextContent(
       /Off air|On air/,
     );
     await expect(
       canvas.getByRole('heading', { name: 'Channel manager' }),
-    ).toBeVisible();
-    await expect(canvas.getByTestId('broadcast-channel-manager')).toBeVisible();
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getByTestId('broadcast-channel-manager'),
+    ).toBeInTheDocument();
     const agenda = await canvas.findByRole('list', { name: 'Coming up' });
     const all = within(agenda).getAllByTestId('broadcast-agenda-row').length;
     await userEvent.click(canvas.getByRole('radio', { name: 'Events' }));

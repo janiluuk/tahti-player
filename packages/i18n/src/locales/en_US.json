@@ -3010,6 +3010,131 @@
       "storeDescription": "What is for sale on your channel page, and your track sales.",
       "earningsTitle": "Earnings",
       "earningsDescription": "Subscribers, orders, payouts, grants and the Stripe account."
+    },
+    "studioSchedule": {
+      "title": "Schedule",
+      "panelTitle": "Scheduled show episodes",
+      "panelDescription": "One-off and recurring episodes generated from your shows.",
+      "cancelTitleNamed": "Cancel \"{{title}}\"?",
+      "cancelTitle": "Cancel \"this show\"?",
+      "cancelDescription": "The scheduled episode is removed from your schedule and the public channel.",
+      "cancelConfirm": "Cancel episode"
+    },
+    "studioUpdates": {
+      "sendTitleNamed": "Send “{{subject}}”?",
+      "sendTitle": "Send “this newsletter”?",
+      "sendDescription": "This emails all of your subscribers now. It cannot be undone.",
+      "sendConfirm": "Send newsletter",
+      "deletePostTitleNamed": "Delete “{{title}}”?",
+      "deletePostTitle": "Delete post?",
+      "deletePostDescription": "This cannot be undone.",
+      "removeNewsletterTitleNamed": "Remove “{{subject}}”?",
+      "removeNewsletterTitle": "Remove newsletter?",
+      "removeNewsletterDescription": "This removes the draft or past send from your list. It cannot be undone.",
+      "sendDescriptionFans": "This emails all of your fan subscribers now. It cannot be undone.",
+      "untitledPost": "Untitled"
+    },
+    "studioBranding": {
+      "replaceGalleryTitle": "Replace all {{count}} existing gallery images?",
+      "replaceGalleryDescription": "This upload replaces every current gallery photo.",
+      "replaceConfirm": "Replace",
+      "removeImageTitle": "Remove this image from your gallery?",
+      "removeImageDescription": "It will no longer appear in your public press kit or the downloadable zip.",
+      "removeImageConfirm": "Remove image"
+    },
+    "studioEditorProject": {
+      "deleteTitleNamed": "Delete “{{title}}”?",
+      "deleteTitle": "Delete this project?",
+      "deleteDescription": "This removes the multitrack session. Linked archive audio stays in your library."
+    },
+    "studioGoLiveCredentials": {
+      "rotateStreamKeyTitle": "Make a new stream key?",
+      "rotateIcecastTitle": "Make a new Icecast password?",
+      "rotateKeyTitle": "Make a new key?",
+      "rotateLiveDescription": "You're live, so the current {{name}} keeps working for 24 hours. Update your software before then.",
+      "rotateOfflineDescription": "The current {{name}} stops working right away. Update your software before you next go live.",
+      "rotateConfirm": "Make a new one",
+      "streamKeyName": "stream key",
+      "passwordName": "password",
+      "streamKeyAction": "Make a new stream key",
+      "icecastAction": "Make a new Icecast password",
+      "streamKeySaved": "New stream key ready. Paste it into your broadcasting software.",
+      "icecastSaved": "New Icecast password ready. Paste it into your DJ software."
+    },
+    "studioDistributionSubmit": {
+      "title": "Submit to Revelator?",
+      "descriptionPaid": "This sends the release to Revelator for distribution to stores.",
+      "descriptionCheckout": "You will be taken to checkout to pay {{amount}}. Submitting sends this release to stores.",
+      "confirm": "Submit"
+    },
+    "releaseSmartLinks": {
+      "removeTitleNamed": "Remove \"{{title}}\" from this release?",
+      "removeTitle": "Remove track?",
+      "removeDescription": "The track leaves this release. It stays in your library."
+    },
+    "studioCollectionEdit": {
+      "removeTrackTitle": "Remove \"{{title}}\"?",
+      "removeTrackDescription": "This removes the track from this {{kind}}. It stays in your library.",
+      "removeCoverTitle": "Remove cover image?",
+      "removeCoverDescription": "The collection will fall back to its default placeholder until you upload a new cover.",
+      "removeCoverConfirm": "Remove cover",
+      "removeBackdropTitle": "Remove this image from the backdrop?",
+      "removeBackdropDescription": "It will be removed from the slideshow immediately.",
+      "kindAlbum": "album",
+      "kindCollection": "collection"
+    },
+    "masteringPanel": {
+      "removeTitleNamed": "Remove {{name}}?",
+      "removeTitle": "Remove add-on?",
+      "removeDescription": "Takes it out of the mastering chain; its settings are kept if you add it again. You can undo this."
+    },
+    "adminNews": {
+      "deleteTitleNamed": "Delete \"{{headline}}\"?",
+      "deleteTitle": "Delete news post?",
+      "deleteDescription": "This can't be undone."
+    },
+    "adminAnnouncements": {
+      "deleteTitleNamed": "Delete \"{{title}}\"?",
+      "deleteDescription": "This announcement clip will be removed from the schedule for everyone."
+    },
+    "adminRadioPresets": {
+      "removeTitleNamed": "Remove {{name}}?",
+      "removeTitle": "Remove station?",
+      "removeDescription": "Listeners lose this preset from the radio directory."
+    },
+    "adminStorage": {
+      "deleteFileTitleNamed": "Delete \"{{title}}\" permanently?",
+      "deleteFileTitle": "Delete file?",
+      "deleteFileDescription": "This removes the file from platform storage. The artist is notified that the board removed it.",
+      "deleteBulkTitle_one": "Delete {{count}} file permanently?",
+      "deleteBulkTitle_other": "Delete {{count}} files permanently?",
+      "deleteBulkDescription": "This removes the selected files from platform storage. It cannot be undone. Each artist is notified that the board removed their track."
+    },
+    "adminAddons": {
+      "deleteTitleNamed": "Delete \"{{name}}\" permanently?",
+      "deleteTitle": "Delete add-on?",
+      "deleteDescription": "Removes the add-on, every published version and every install, everywhere. This can't be undone; Disable is the reversible option.",
+      "removeInstallTitleNamed": "Remove \"{{name}}\" from {{surface}}?",
+      "removeInstallTitle": "Remove install?",
+      "removeInstallDescription": "Stops it rendering on this surface immediately. It stays available to reinstall.",
+      "disableTitleNamed": "Disable \"{{name}}\"?",
+      "disableTitle": "Disable add-on?",
+      "disableDescription": "Stops it rendering everywhere it's installed immediately, and notifies the author. Only a fresh bundle publish brings it back.",
+      "disableConfirm": "Disable"
+    },
+    "adminArtworkPresets": {
+      "removeTitle": "Remove this artwork?",
+      "removeDescription": "Covers already saved from it stay as they are."
+    },
+    "governanceConfirm": {
+      "removeDeclarationTitleNamed": "Remove the declaration for {{name}}?",
+      "removeDeclarationTitle": "Remove declaration?",
+      "removeDeclarationDescription": "The conflict note leaves this meeting's record.",
+      "removeAgendaTitleNamed": "Remove \"{{title}}\" from the agenda?",
+      "removeAgendaDescription": "The items after it move up a place.",
+      "publishReportTitle": "Publish annual report {{year}}?",
+      "publishReportDescription": "Members will be able to read and download it from Governance.",
+      "publishConfirm": "Publish"
     }
   },
   "studioEditor": {

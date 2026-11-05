@@ -1,5 +1,6 @@
 import { PlusIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -27,6 +28,8 @@ import { SCOPES } from './addons/shared';
 import { useAdminAddons } from './addons/useAdminAddons';
 
 export function AdminAddonsView() {
+  const { t } = useTranslation('web');
+
   const {
     scope,
     setScope,
@@ -219,11 +222,13 @@ export function AdminAddonsView() {
                 isOpen={deleteTarget !== null}
                 title={
                   deleteTarget
-                    ? `Delete "${deleteTarget.name}" permanently?`
-                    : 'Delete add-on?'
+                    ? t('adminAddons.deleteTitleNamed', {
+                        name: deleteTarget.name,
+                      })
+                    : t('adminAddons.deleteTitle')
                 }
-                description="Removes the add-on, every published version and every install, everywhere. This can't be undone; Disable is the reversible option."
-                confirmLabel="Delete"
+                description={t('adminAddons.deleteDescription')}
+                confirmLabel={t('actions.delete')}
                 onCancel={() => setDeleteTarget(null)}
                 onConfirm={() => deleteTarget && removeAddon(deleteTarget)}
               />
@@ -263,11 +268,14 @@ export function AdminAddonsView() {
                 isOpen={removeInstallTarget !== null}
                 title={
                   removeInstallTarget
-                    ? `Remove "${removeInstallTarget.widget.name}" from ${surface}?`
-                    : 'Remove install?'
+                    ? t('adminAddons.removeInstallTitleNamed', {
+                        name: removeInstallTarget.widget.name,
+                        surface,
+                      })
+                    : t('adminAddons.removeInstallTitle')
                 }
-                description="Stops it rendering on this surface immediately. It stays available to reinstall."
-                confirmLabel="Remove"
+                description={t('adminAddons.removeInstallDescription')}
+                confirmLabel={t('actions.remove')}
                 onCancel={() => setRemoveInstallTarget(null)}
                 onConfirm={() =>
                   removeInstallTarget && removeInstall(removeInstallTarget)

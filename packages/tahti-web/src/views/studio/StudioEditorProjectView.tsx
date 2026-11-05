@@ -2,6 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import { AudioLinesIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, InlineError, ViewShell } from '@tahti-player/ui';
 
 import {
@@ -27,6 +28,7 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function StudioEditorProjectView({ id }: { id: string }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [project, setProject] = useState<EditorProjectDetail | null>(null);
   const [timeline, setTimeline] = useState<EditorTimeline | null>(null);
@@ -202,10 +204,14 @@ export function StudioEditorProjectView({ id }: { id: string }) {
         <ConfirmDialog
           isOpen={confirmDelete}
           title={
-            project ? `Delete “${project.title}”?` : 'Delete this project?'
+            project
+              ? t('studioEditorProject.deleteTitleNamed', {
+                  title: project.title,
+                })
+              : t('studioEditorProject.deleteTitle')
           }
-          description="This removes the multitrack session. Linked archive audio stays in your library."
-          confirmLabel="Delete"
+          description={t('studioEditorProject.deleteDescription')}
+          confirmLabel={t('actions.delete')}
           destructive
           onCancel={() => setConfirmDelete(false)}
           onConfirm={() => {

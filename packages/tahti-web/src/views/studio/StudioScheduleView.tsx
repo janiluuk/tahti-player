@@ -1,5 +1,6 @@
 import { PlusIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ImageReveal, Tooltip, ViewShell } from '@tahti-player/ui';
 
 import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
@@ -18,6 +19,7 @@ import { ScheduleEditorDialog } from './schedule/ScheduleEditorDialog';
 import { useScheduleForm } from './schedule/useScheduleForm';
 
 export function StudioScheduleView() {
+  const { t } = useTranslation('web');
   const form = useScheduleForm();
   const {
     shows,
@@ -108,9 +110,15 @@ export function StudioScheduleView() {
           <ConfirmDialog
             destructive
             isOpen={pendingCancel !== null}
-            title={`Cancel "${pendingCancel?.title ?? 'this show'}"?`}
-            description="The scheduled episode is removed from your schedule and the public channel."
-            confirmLabel="Cancel episode"
+            title={
+              pendingCancel?.title
+                ? t('studioSchedule.cancelTitleNamed', {
+                    title: pendingCancel.title,
+                  })
+                : t('studioSchedule.cancelTitle')
+            }
+            description={t('studioSchedule.cancelDescription')}
+            confirmLabel={t('studioSchedule.cancelConfirm')}
             onCancel={() => setPendingCancel(null)}
             onConfirm={() => {
               const target = pendingCancel;

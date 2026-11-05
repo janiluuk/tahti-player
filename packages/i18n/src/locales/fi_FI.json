@@ -3010,6 +3010,131 @@
       "storeDescription": "Mitä myyt kanavasivullasi, ja kappaleiden myynti.",
       "earningsTitle": "Tulot",
       "earningsDescription": "Tilaajat, tilaukset, maksut, apurahat ja Stripe-tili."
+    },
+    "studioSchedule": {
+      "title": "Aikataulu",
+      "panelTitle": "Ajastetut ohjelmajaksot",
+      "panelDescription": "Yksittäiset ja toistuvat jaksot ohjelmistasi.",
+      "cancelTitleNamed": "Peruutetaanko \"{{title}}\"?",
+      "cancelTitle": "Peruutetaanko \"tämä ohjelma\"?",
+      "cancelDescription": "Ajastettu jakso poistetaan aikataulustasi ja julkiselta kanavalta.",
+      "cancelConfirm": "Peruuta jakso"
+    },
+    "studioUpdates": {
+      "sendTitleNamed": "Lähetetäänkö “{{subject}}”?",
+      "sendTitle": "Lähetetäänkö “tämä uutiskirje”?",
+      "sendDescription": "Tämä lähettää sähköpostin kaikille tilaajillesi nyt. Sitä ei voi perua.",
+      "sendConfirm": "Lähetä uutiskirje",
+      "deletePostTitleNamed": "Poistetaanko “{{title}}”?",
+      "deletePostTitle": "Poistetaanko julkaisu?",
+      "deletePostDescription": "Tätä ei voi perua.",
+      "removeNewsletterTitleNamed": "Poistetaanko “{{subject}}”?",
+      "removeNewsletterTitle": "Poistetaanko uutiskirje?",
+      "removeNewsletterDescription": "Tämä poistaa luonnoksen tai aiemman lähetyksen listaltasi. Sitä ei voi perua.",
+      "sendDescriptionFans": "Tämä lähettää sähköpostin kaikille fanitilaajillesi nyt. Sitä ei voi perua.",
+      "untitledPost": "Nimetön"
+    },
+    "studioBranding": {
+      "replaceGalleryTitle": "Korvataanko kaikki {{count}} nykyistä galleriakuvaa?",
+      "replaceGalleryDescription": "Tämä lataus korvaa jokaisen nykyisen galleriakuvan.",
+      "replaceConfirm": "Korvaa",
+      "removeImageTitle": "Poistetaanko tämä kuva galleriasta?",
+      "removeImageDescription": "Se ei enää näy julkisessa press kitissäsi eikä ladattavassa zipissä.",
+      "removeImageConfirm": "Poista kuva"
+    },
+    "studioEditorProject": {
+      "deleteTitleNamed": "Poistetaanko “{{title}}”?",
+      "deleteTitle": "Poistetaanko tämä projekti?",
+      "deleteDescription": "Tämä poistaa moniraitasession. Linkitetty arkistoääni jää kirjastoosi."
+    },
+    "studioGoLiveCredentials": {
+      "rotateStreamKeyTitle": "Tehdäänkö uusi stream-avain?",
+      "rotateIcecastTitle": "Tehdäänkö uusi Icecast-salasana?",
+      "rotateKeyTitle": "Tehdäänkö uusi avain?",
+      "rotateLiveDescription": "Olet livenä, joten nykyinen {{name}} toimii vielä 24 tuntia. Päivitä ohjelmistosi ennen sitä.",
+      "rotateOfflineDescription": "Nykyinen {{name}} lakkaa toimimasta heti. Päivitä ohjelmistosi ennen seuraavaa liveä.",
+      "rotateConfirm": "Tee uusi",
+      "streamKeyName": "stream-avain",
+      "passwordName": "salasana",
+      "streamKeyAction": "Tee uusi stream-avain",
+      "icecastAction": "Tee uusi Icecast-salasana",
+      "streamKeySaved": "Uusi stream-avain valmis. Liitä se lähetysohjelmaasi.",
+      "icecastSaved": "Uusi Icecast-salasana valmis. Liitä se DJ-ohjelmaasi."
+    },
+    "studioDistributionSubmit": {
+      "title": "Lähetetäänkö Revelatoriin?",
+      "descriptionPaid": "Tämä lähettää julkaisun Revelatoriin jakeluun kauppoihin.",
+      "descriptionCheckout": "Sinut viedään kassalle maksamaan {{amount}}. Lähetys vie tämän julkaisun kauppoihin.",
+      "confirm": "Lähetä"
+    },
+    "releaseSmartLinks": {
+      "removeTitleNamed": "Poistetaanko \"{{title}}\" tästä julkaisusta?",
+      "removeTitle": "Poistetaanko kappale?",
+      "removeDescription": "Kappale poistuu tästä julkaisusta. Se jää kirjastoosi."
+    },
+    "studioCollectionEdit": {
+      "removeTrackTitle": "Poistetaanko \"{{title}}\"?",
+      "removeTrackDescription": "Tämä poistaa kappaleen tästä {{kind}}. Se jää kirjastoosi.",
+      "removeCoverTitle": "Poistetaanko kansikuva?",
+      "removeCoverDescription": "Kokoelma palaa oletuspaikkamerkkiin, kunnes lataat uuden kannen.",
+      "removeCoverConfirm": "Poista kansikuva",
+      "removeBackdropTitle": "Poistetaanko tämä kuva taustasta?",
+      "removeBackdropDescription": "Se poistetaan diaesityksestä heti.",
+      "kindAlbum": "albumi",
+      "kindCollection": "kokoelma"
+    },
+    "masteringPanel": {
+      "removeTitleNamed": "Poistetaanko {{name}}?",
+      "removeTitle": "Poistetaanko lisäosa?",
+      "removeDescription": "Poistaa sen mastering-ketjusta; asetukset säilyvät, jos lisäät sen uudelleen. Voit perua tämän."
+    },
+    "adminNews": {
+      "deleteTitleNamed": "Poistetaanko \"{{headline}}\"?",
+      "deleteTitle": "Poistetaanko uutinen?",
+      "deleteDescription": "Tätä ei voi perua."
+    },
+    "adminAnnouncements": {
+      "deleteTitleNamed": "Poistetaanko \"{{title}}\"?",
+      "deleteDescription": "Tämä ilmoitusclippi poistetaan aikataulusta kaikilta."
+    },
+    "adminRadioPresets": {
+      "removeTitleNamed": "Poistetaanko {{name}}?",
+      "removeTitle": "Poistetaanko asema?",
+      "removeDescription": "Kuuntelijat menettävät tämän aseman radiohakemistosta."
+    },
+    "adminStorage": {
+      "deleteFileTitleNamed": "Poistetaanko \"{{title}}\" pysyvästi?",
+      "deleteFileTitle": "Poistetaanko tiedosto?",
+      "deleteFileDescription": "Tämä poistaa tiedoston alustan tallennustilasta. Artistille ilmoitetaan, että hallitus poisti sen.",
+      "deleteBulkTitle_one": "Poistetaanko {{count}} tiedosto pysyvästi?",
+      "deleteBulkTitle_other": "Poistetaanko {{count}} tiedostoa pysyvästi?",
+      "deleteBulkDescription": "Tämä poistaa valitut tiedostot alustan tallennustilasta. Sitä ei voi perua. Jokaiselle artistille ilmoitetaan, että hallitus poisti heidän kappaleensa."
+    },
+    "adminAddons": {
+      "deleteTitleNamed": "Poistetaanko \"{{name}}\" pysyvästi?",
+      "deleteTitle": "Poistetaanko lisäosa?",
+      "deleteDescription": "Poistaa lisäosan, kaikki julkaistut versiot ja kaikki asennukset kaikkialta. Tätä ei voi perua; Poista käytöstä on peruutettava vaihtoehto.",
+      "removeInstallTitleNamed": "Poistetaanko \"{{name}}\" pinnalta {{surface}}?",
+      "removeInstallTitle": "Poistetaanko asennus?",
+      "removeInstallDescription": "Lopettaa sen renderöinnin tällä pinnalla heti. Se jää uudelleen asennettavaksi.",
+      "disableTitleNamed": "Poistetaanko \"{{name}}\" käytöstä?",
+      "disableTitle": "Poistetaanko lisäosa käytöstä?",
+      "disableDescription": "Lopettaa sen renderöinnin kaikkialla missä se on asennettu heti, ja ilmoittaa tekijälle. Vain uusi bundle-julkaisu tuo sen takaisin.",
+      "disableConfirm": "Poista käytöstä"
+    },
+    "adminArtworkPresets": {
+      "removeTitle": "Poistetaanko tämä kansikuva?",
+      "removeDescription": "Siitä jo tallennetut kannet säilyvät ennallaan."
+    },
+    "governanceConfirm": {
+      "removeDeclarationTitleNamed": "Poistetaanko ilmoitus henkilölle {{name}}?",
+      "removeDeclarationTitle": "Poistetaanko ilmoitus?",
+      "removeDeclarationDescription": "Eturistiriitahuomautus poistuu tämän kokouksen kirjauksesta.",
+      "removeAgendaTitleNamed": "Poistetaanko \"{{title}}\" esityslistalta?",
+      "removeAgendaDescription": "Sen jälkeiset kohdat siirtyvät ylöspäin.",
+      "publishReportTitle": "Julkaistaanko vuosikertomus {{year}}?",
+      "publishReportDescription": "Jäsenet voivat lukea ja ladata sen Governance-osiosta.",
+      "publishConfirm": "Julkaise"
     }
   },
   "studioEditor": {

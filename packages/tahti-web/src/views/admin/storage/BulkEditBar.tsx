@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Select } from '@tahti-player/ui';
 
 import {
@@ -52,6 +53,8 @@ export function BulkEditBar({
   onApplied: (updated: number) => void;
   onDeleted: (deleted: number, kept: number) => void;
 }) {
+  const { t } = useTranslation('web');
+
   const [genre, setGenre] = useState(UNCHANGED);
   const [contentType, setContentType] = useState(UNCHANGED);
   const [visibility, setVisibility] = useState(UNCHANGED);
@@ -170,9 +173,9 @@ export function BulkEditBar({
       <ConfirmDialog
         destructive
         isOpen={confirmingDelete}
-        title={`Delete ${count} ${count === 1 ? 'file' : 'files'} permanently?`}
-        description="This removes the selected files from platform storage. It cannot be undone. Each artist is notified that the board removed their track."
-        confirmLabel="Delete"
+        title={t('adminStorage.deleteBulkTitle', { count })}
+        description={t('adminStorage.deleteBulkDescription')}
+        confirmLabel={t('actions.delete')}
         onCancel={() => setConfirmingDelete(false)}
         onConfirm={() => {
           setConfirmingDelete(false);

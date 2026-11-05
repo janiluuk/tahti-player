@@ -9,6 +9,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -24,23 +25,8 @@ import type { GoLiveState } from './useGoLiveState';
 
 type Credential = 'rtmp' | 'icecast';
 
-const CREDENTIAL_COPY: Record<
-  Credential,
-  { name: string; action: string; saved: string }
-> = {
-  rtmp: {
-    name: 'stream key',
-    action: 'Make a new stream key',
-    saved: 'New stream key ready. Paste it into your broadcasting software.',
-  },
-  icecast: {
-    name: 'password',
-    action: 'Make a new Icecast password',
-    saved: 'New Icecast password ready. Paste it into your DJ software.',
-  },
-};
-
 export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
+  const { t } = useTranslation('web');
   const {
     settings,
     setSettings,
@@ -56,6 +42,21 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
 
   const [pendingRotate, setPendingRotate] = useState<Credential | null>(null);
   const [rotating, setRotating] = useState(false);
+
+  const credentialCopy = (credential: Credential) =>
+    credential === 'rtmp'
+      ? {
+          name: t('studioGoLiveCredentials.streamKeyName'),
+          action: t('studioGoLiveCredentials.streamKeyAction'),
+          saved: t('studioGoLiveCredentials.streamKeySaved'),
+          rotateTitle: t('studioGoLiveCredentials.rotateStreamKeyTitle'),
+        }
+      : {
+          name: t('studioGoLiveCredentials.passwordName'),
+          action: t('studioGoLiveCredentials.icecastAction'),
+          saved: t('studioGoLiveCredentials.icecastSaved'),
+          rotateTitle: t('studioGoLiveCredentials.rotateIcecastTitle'),
+        };
 
   const rotate = async (credential: Credential) => {
     setPendingRotate(null);
@@ -82,16 +83,16 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
             }
         : current,
     );
-    toast.success(CREDENTIAL_COPY[credential].saved);
+    toast.success(credentialCopy(credential).saved);
   };
 
   const rotateButton = (credential: Credential) => (
-    <Tooltip content={CREDENTIAL_COPY[credential].action}>
+    <Tooltip content={credentialCopy(credential).action}>
       <Button
         size="icon-sm"
         variant="secondary"
         disabled={rotating}
-        aria-label={CREDENTIAL_COPY[credential].action}
+        aria-label={credentialCopy(credential).action}
         onClick={() => setPendingRotate(credential)}
       >
         <RotateCcwKeyIcon size={14} aria-hidden />
@@ -217,15 +218,23 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
         destructive
         title={
           pendingRotate
-            ? `${CREDENTIAL_COPY[pendingRotate].action}?`
-            : 'Make a new key?'
+            ? credentialCopy(pendingRotate).rotateTitle
+            : t('studioGoLiveCredentials.rotateKeyTitle')
         }
         description={
           channelState === 'LIVE'
-            ? `You're live, so the current ${pendingRotate ? CREDENTIAL_COPY[pendingRotate].name : 'key'} keeps working for 24 hours. Update your software before then.`
-            : `The current ${pendingRotate ? CREDENTIAL_COPY[pendingRotate].name : 'key'} stops working right away. Update your software before you next go live.`
+            ? t('studioGoLiveCredentials.rotateLiveDescription', {
+                name: pendingRotate
+                  ? credentialCopy(pendingRotate).name
+                  : t('studioGoLiveCredentials.streamKeyName'),
+              })
+            : t('studioGoLiveCredentials.rotateOfflineDescription', {
+                name: pendingRotate
+                  ? credentialCopy(pendingRotate).name
+                  : t('studioGoLiveCredentials.streamKeyName'),
+              })
         }
-        confirmLabel="Make a new one"
+        confirmLabel={t('studioGoLiveCredentials.rotateConfirm')}
         onCancel={() => setPendingRotate(null)}
         onConfirm={() => {
           if (pendingRotate) {

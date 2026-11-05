@@ -1,6 +1,7 @@
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, EditIconButton, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -23,6 +24,8 @@ export function AgendaItemRow({
   onMoveUp?: () => void;
   onMoveDown?: () => void;
 }) {
+  const { t } = useTranslation('web');
+
   const [editing, setEditing] = useState(false);
   const [title, setTitle] = useState(item.title);
   const [description, setDescription] = useState(item.description ?? '');
@@ -147,9 +150,11 @@ export function AgendaItemRow({
       <ConfirmDialog
         destructive
         isOpen={confirmDelete}
-        title={`Remove "${item.title}" from the agenda?`}
-        description="The items after it move up a place."
-        confirmLabel="Remove"
+        title={t('governanceConfirm.removeAgendaTitleNamed', {
+          title: item.title,
+        })}
+        description={t('governanceConfirm.removeAgendaDescription')}
+        confirmLabel={t('actions.remove')}
         onCancel={() => setConfirmDelete(false)}
         onConfirm={() => {
           setConfirmDelete(false);

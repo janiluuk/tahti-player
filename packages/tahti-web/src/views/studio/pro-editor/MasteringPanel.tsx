@@ -10,6 +10,7 @@ import {
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Card,
@@ -40,6 +41,7 @@ type Props = {
 
 /** Normalization, master gain and the drag-to-reorder audio add-on chain. */
 export function MasteringPanel({ editList, onChange }: Props) {
+  const { t } = useTranslation('web');
   const [collapsed, setCollapsed] = useState(true);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [removeTarget, setRemoveTarget] = useState<ProEditorPluginId | null>(
@@ -286,9 +288,15 @@ export function MasteringPanel({ editList, onChange }: Props) {
       <ConfirmDialog
         destructive
         isOpen={removeTarget !== null}
-        title={`Remove ${removeTarget ? AUDIO_FX_PLUGINS[removeTarget].label : 'add-on'}?`}
-        description="Takes it out of the mastering chain; its settings are kept if you add it again. You can undo this."
-        confirmLabel="Remove"
+        title={
+          removeTarget
+            ? t('masteringPanel.removeTitleNamed', {
+                name: AUDIO_FX_PLUGINS[removeTarget].label,
+              })
+            : t('masteringPanel.removeTitle')
+        }
+        description={t('masteringPanel.removeDescription')}
+        confirmLabel={t('actions.remove')}
         onCancel={() => setRemoveTarget(null)}
         onConfirm={() => {
           if (removeTarget) {

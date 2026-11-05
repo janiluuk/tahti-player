@@ -2,7 +2,7 @@ import { PlusIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -35,6 +35,8 @@ type LoadState =
   | { status: 'ready'; presets: ArtworkPreset[] };
 
 export function AdminArtworkPresetsView() {
+  const { t } = useTranslation('web');
+
   const [state, setState] = useState<LoadState>({ status: 'loading' });
   const [uploadOpen, setUploadOpen] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<ArtworkPreset | null>(
@@ -209,9 +211,9 @@ export function AdminArtworkPresetsView() {
       <ConfirmDialog
         isOpen={pendingDelete !== null}
         destructive
-        title="Remove this artwork?"
-        description="Covers already saved from it stay as they are."
-        confirmLabel="Remove"
+        title={t('adminArtworkPresets.removeTitle')}
+        description={t('adminArtworkPresets.removeDescription')}
+        confirmLabel={t('actions.remove')}
         onCancel={() => setPendingDelete(null)}
         onConfirm={() => {
           const preset = pendingDelete;

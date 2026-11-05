@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { SectionTitle, TabLabel, Tabs } from '@tahti-player/ui';
 
 import { ChannelDesigner } from '../../components/ChannelDesigner';
@@ -40,6 +41,7 @@ export const StudioBrandingPanel: FC<{
   hideSectionNav?: boolean;
   onSectionChange?: (section: StudioBrandingSection) => void;
 }> = ({ section, hideSectionNav = section != null, onSectionChange }) => {
+  const { t } = useTranslation('web');
   const kit = usePressKit();
   const {
     user,
@@ -153,9 +155,11 @@ export const StudioBrandingPanel: FC<{
       <ConfirmDialog
         destructive
         isOpen={pendingReplaceUpload !== null}
-        title={`Replace all ${images.length} existing gallery images?`}
-        description="This upload replaces every current gallery photo."
-        confirmLabel="Replace"
+        title={t('studioBranding.replaceGalleryTitle', {
+          count: images.length,
+        })}
+        description={t('studioBranding.replaceGalleryDescription')}
+        confirmLabel={t('studioBranding.replaceConfirm')}
         onCancel={() => setPendingReplaceUpload(null)}
         onConfirm={() => {
           const pending = pendingReplaceUpload;
@@ -169,9 +173,9 @@ export const StudioBrandingPanel: FC<{
       <ConfirmDialog
         destructive
         isOpen={pendingImageDeleteId !== null}
-        title="Remove this image from your gallery?"
-        description="It will no longer appear in your public press kit or the downloadable zip."
-        confirmLabel="Remove image"
+        title={t('studioBranding.removeImageTitle')}
+        description={t('studioBranding.removeImageDescription')}
+        confirmLabel={t('studioBranding.removeImageConfirm')}
         onCancel={() => setPendingImageDeleteId(null)}
         onConfirm={() => {
           const id = pendingImageDeleteId;
