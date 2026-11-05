@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { CopyButton } from '@tahti-player/ui';
 
 import { fetchLegacyMembers, type AdminLegacyMember } from '../../../api/admin';
@@ -18,6 +19,7 @@ function memberName(member: AdminLegacyMember): string {
 }
 
 export function LegacyMembersPanel() {
+  const { t } = useTranslation('web');
   const [members, setMembers] = useState<AdminLegacyMember[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -61,7 +63,7 @@ export function LegacyMembersPanel() {
       ) : members === null ? (
         <PageLoading label="Loading members…" />
       ) : members.length === 0 ? (
-        <PageEmpty title="Every member is on a Stripe subscription (or Stripe is off)" />
+        <PageEmpty title={t('empties.noLegacyMembers')} />
       ) : (
         <ul className="divide-border divide-y">
           {members.map((member) => (

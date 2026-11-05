@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -36,6 +37,7 @@ function formatDuration(durationSec: number | null | undefined): string {
 }
 
 export function AdminContentView() {
+  const { t } = useTranslation('web');
   const [data, setData] = useState<AdminContentOverview | null>(null);
 
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -116,7 +118,7 @@ export function AdminContentView() {
                       description="The newest tracks, shows, releases, and other catalog items."
                     >
                       {data.latestContent.length === 0 ? (
-                        <PageEmpty title="No content has been added yet." />
+                        <PageEmpty title={t('empties.noContentAdded')} />
                       ) : (
                         <ul className="divide-border divide-y">
                           {data.latestContent.map((item) => (
@@ -156,7 +158,7 @@ export function AdminContentView() {
                       description="Recent broadcasts captured by the platform recorder."
                     >
                       {data.latestBroadcasts.length === 0 ? (
-                        <PageEmpty title="No recorded broadcasts yet." />
+                        <PageEmpty title={t('empties.noRecordedBroadcasts')} />
                       ) : (
                         <ul className="divide-border divide-y">
                           {data.latestBroadcasts.map((broadcast) => (

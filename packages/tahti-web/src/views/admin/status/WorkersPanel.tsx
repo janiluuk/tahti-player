@@ -1,6 +1,7 @@
 import { HistoryIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, Dialog, InlineError } from '@tahti-player/ui';
 
 import {
@@ -33,6 +34,7 @@ function WorkerHistoryDialog({
   worker: AdminWorker | null;
   onClose: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [history, setHistory] = useState<AdminWorkerJobEvent[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -70,7 +72,7 @@ function WorkerHistoryDialog({
       ) : history === null ? (
         <PageLoading label="Loading history…" />
       ) : history.length === 0 ? (
-        <PageEmpty title="No jobs recorded yet" />
+        <PageEmpty title={t('empties.noJobsRecorded')} />
       ) : (
         <ul className="divide-border max-h-96 divide-y overflow-y-auto">
           {history.map((event) => (
@@ -112,6 +114,7 @@ function WorkerHistoryDialog({
 }
 
 export function WorkersPanel() {
+  const { t } = useTranslation('web');
   const [workers, setWorkers] = useState<AdminWorker[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [historyFor, setHistoryFor] = useState<AdminWorker | null>(null);
@@ -150,7 +153,7 @@ export function WorkersPanel() {
       ) : workers === null ? (
         <PageLoading label="Loading workers…" />
       ) : workers.length === 0 ? (
-        <PageEmpty title="No workers have reported in" />
+        <PageEmpty title={t('empties.noWorkersReported')} />
       ) : (
         <ul className="divide-border divide-y">
           {workers.map((worker) => (

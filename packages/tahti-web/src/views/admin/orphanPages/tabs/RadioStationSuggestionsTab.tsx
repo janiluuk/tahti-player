@@ -1,6 +1,7 @@
 import { CheckCircle2Icon, RadioIcon, XCircleIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, ImageReveal, Loader, Textarea } from '@tahti-player/ui';
 
 import {
@@ -29,6 +30,7 @@ function statusBadge(status: AdminRadioStationSuggestionStatus): {
 /** Radio station suggestions tab — ported as-is from the standalone
  * `/admin/radio-station-suggestions` route (see AdminOrphanPagesView). */
 export function RadioStationSuggestionsTab() {
+  const { t } = useTranslation('web');
   const [items, setItems] = useState<AdminRadioStationSuggestion[]>([]);
   const [loading, setLoading] = useState(true);
   const [notes, setNotes] = useState<Record<string, string>>({});
@@ -63,7 +65,7 @@ export function RadioStationSuggestionsTab() {
         </StudioPanel>
       ) : items.length === 0 ? (
         <StudioPanel>
-          <PageEmpty title="No pending station suggestions" />
+          <PageEmpty title={t('empties.noStationSuggestions')} />
         </StudioPanel>
       ) : (
         <StudioPanel>

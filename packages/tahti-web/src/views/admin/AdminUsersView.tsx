@@ -1,6 +1,7 @@
 import { DownloadIcon, SearchIcon, UserRoundIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonAnchor,
@@ -25,6 +26,7 @@ import { StudioPanel } from '../../components/StudioPanel';
 const ROLES = ['', 'BOARD', 'ARTIST', 'LISTENER'] as const;
 
 export const AdminUsersView = () => {
+  const { t } = useTranslation('web');
   const [query, setQuery] = useState('');
   const [role, setRole] = useState('');
   const [isMember, setIsMember] = useState('');
@@ -152,7 +154,7 @@ export const AdminUsersView = () => {
                         }
                       />
                     ) : (
-                      <PageEmpty title="No users yet" />
+                      <PageEmpty title={t('empties.noUsers')} />
                     )
                   ) : (
                     <SelectableList

@@ -145,7 +145,7 @@ export function AdminStreamManagerPanel({
   const streamList = loading ? (
     <PageLoading label="Loading streams…" />
   ) : streams.length === 0 ? (
-    <PageEmpty title="No channels are live right now." />
+    <PageEmpty title={t('empties.noLiveChannels')} />
   ) : (
     <ul className="divide-border divide-y">
       {streams.map((stream) => (

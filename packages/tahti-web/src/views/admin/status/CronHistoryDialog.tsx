@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Dialog, InlineError } from '@tahti-player/ui';
 
 import {
@@ -23,6 +24,7 @@ export function CronHistoryDialog({
   jobName: string | null;
   onClose: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [runs, setRuns] = useState<AdminCronRun[] | null>(null);
   const [total, setTotal] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -74,7 +76,7 @@ export function CronHistoryDialog({
       ) : runs === null ? (
         <PageLoading label="Loading runs…" />
       ) : runs.length === 0 ? (
-        <PageEmpty title="This job hasn't run yet" />
+        <PageEmpty title={t('empties.jobNeverRan')} />
       ) : (
         <ul className="divide-border max-h-96 divide-y overflow-y-auto">
           {runs.map((run) => (

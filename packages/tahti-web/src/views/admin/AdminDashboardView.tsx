@@ -1,6 +1,7 @@
 import { ExternalLinkIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Alert,
   Badge,
@@ -47,6 +48,7 @@ function healthChip(ok: boolean): { label: string; color: 'green' | 'orange' } {
 }
 
 export function AdminDashboardView() {
+  const { t } = useTranslation('web');
   const [data, setData] = useState<AdminDashboard | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -198,7 +200,7 @@ export function AdminDashboardView() {
 
                   <StudioPanel title="Needs action">
                     {data.actionRows.length === 0 ? (
-                      <PageEmpty title="Nothing needs action right now." />
+                      <PageEmpty title={t('empties.nothingNeedsAction')} />
                     ) : (
                       <ul className="divide-border divide-y">
                         {data.actionRows.map((row) => (

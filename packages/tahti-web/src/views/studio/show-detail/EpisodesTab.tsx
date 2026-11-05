@@ -1,9 +1,12 @@
+import { useTranslation } from '@tahti-player/i18n';
+
 import { PageEmpty, PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { EpisodeEditorRow } from './EpisodeEditorRow';
 import type { ShowDetailState } from './useShowDetail';
 
 export function EpisodesTab({ state }: { state: ShowDetailState }) {
+  const { t } = useTranslation('web');
   const { episodes, setEpisodes, episodesLoadError, reload } = state;
 
   return (
@@ -18,7 +21,7 @@ export function EpisodesTab({ state }: { state: ShowDetailState }) {
           onRetry={reload}
         />
       ) : episodes.length === 0 ? (
-        <PageEmpty title="No episodes have been created for this show yet." />
+        <PageEmpty title={t('empties.noShowEpisodes')} />
       ) : (
         <ul className="flex flex-col gap-3">
           {episodes.map((episode) => (

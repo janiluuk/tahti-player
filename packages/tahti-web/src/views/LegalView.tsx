@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { ExternalLink } from '@tahti-player/ui';
 
 import { LegalHubLinks } from '../components/LegalHubLinks';
@@ -9,11 +10,12 @@ import { getLegalPage } from '../content/legal';
 const PRODUCTION = 'https://tahti.live';
 
 export function LegalView({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const page = getLegalPage(slug);
   if (!page) {
     return (
       <div className="mx-auto flex max-w-3xl flex-col gap-4">
-        <PageEmpty title="Page not found" headingLevel={1} />
+        <PageEmpty title={t('empties.pageNotFound')} headingLevel={1} />
       </div>
     );
   }

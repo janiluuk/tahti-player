@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   DataTable,
@@ -22,6 +23,7 @@ import { StudioPanel } from '../../../components/StudioPanel';
 import { formatEur } from './LedgerPanel';
 
 export function FanSubArtistsPanel() {
+  const { t } = useTranslation('web');
   const [rows, setRows] = useState<AdminFanSubArtist[] | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -52,7 +54,7 @@ export function FanSubArtistsPanel() {
       ) : !rows ? (
         <PageError title="Couldn't load artists" onRetry={() => void load()} />
       ) : rows.length === 0 ? (
-        <PageEmpty title="No active fan subscriptions" />
+        <PageEmpty title={t('empties.noActiveFanSubscriptions')} />
       ) : (
         <HorizontalScroll label="Fan subscriptions by artist">
           <DataTable data-testid="fansub-artists">

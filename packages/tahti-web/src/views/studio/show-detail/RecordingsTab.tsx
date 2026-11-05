@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { PlayIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink } from '@tahti-player/ui';
 
 import { ListingDate } from '../../../components/ListingDate';
@@ -9,6 +10,7 @@ import { StudioPanel } from '../../../components/StudioPanel';
 import type { ShowDetailState } from './useShowDetail';
 
 export function RecordingsTab({ state }: { state: ShowDetailState }) {
+  const { t } = useTranslation('web');
   const { episodes, episodesLoadError, bookingsLoadError, reload } = state;
   const recordings = episodes.filter(
     (episode) => episode.source === 'broadcast',
@@ -27,7 +29,7 @@ export function RecordingsTab({ state }: { state: ShowDetailState }) {
         />
       ) : recordings.length === 0 ? (
         <>
-          <PageEmpty title="No recordings from this show yet." />
+          <PageEmpty title={t('empties.noShowRecordings')} />
           {bookingsLoadError ? (
             <p className="text-foreground-secondary mt-2 text-xs">
               Upcoming bookings could not be refreshed: {bookingsLoadError}

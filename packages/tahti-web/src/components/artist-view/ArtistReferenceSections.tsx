@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useMemo } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Card, CardGrid, MediaArtwork } from '@tahti-player/ui';
 
 import type {
@@ -151,11 +152,12 @@ export function ArtistReleasesGrid({
   onToggleFavorite: (playable: TahtiPlayable) => void;
   onTitleClick: (release: PublicProfileRelease) => void;
 }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   return (
     <ProfileSection title="Releases" data-testid="artist-releases">
       {releases.length === 0 ? (
-        <PageEmpty title="No releases yet." />
+        <PageEmpty title={t('empties.noReleases')} />
       ) : (
         <CardGrid className="grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] pr-0">
           {releases.map(({ release, playable }) => {
@@ -221,11 +223,12 @@ export function ArtistPlaylistsGrid({
   collections: PublicProfileCollection[];
   username: string;
 }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   return (
     <ProfileSection title="Playlists" data-testid="artist-playlists">
       {collections.length === 0 ? (
-        <PageEmpty title="No playlists yet." />
+        <PageEmpty title={t('empties.noPlaylists')} />
       ) : (
         <CardGrid className="grid-cols-[repeat(auto-fill,minmax(10rem,1fr))] pr-0">
           {collections.map((collection) => (
