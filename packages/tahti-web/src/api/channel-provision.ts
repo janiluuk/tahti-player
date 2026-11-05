@@ -1,3 +1,4 @@
+import { clearGetCache } from './getCache';
 import { apiBase } from './http';
 import { getMockSessionUser, setMockSessionUser } from './mock-session';
 import { isForceMock } from './mode';
@@ -26,6 +27,7 @@ export async function provisionChannel(): Promise<
       credentials: 'include',
       headers: { Accept: 'application/json' },
     });
+    clearGetCache();
     if (!res.ok) {
       let detail = `Provision failed (${res.status})`;
       try {

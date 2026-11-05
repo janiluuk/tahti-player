@@ -2,6 +2,8 @@
  * `admin.ts` and available for other domain clients to adopt without
  * duplicating fetch helpers. */
 
+import { cachedGet, clearGetCache } from './getCache';
+
 export const apiBase = () => {
   if (import.meta.env.VITE_TAHTI_API_URL?.startsWith('http')) {
     return import.meta.env.VITE_TAHTI_API_URL.replace(/\/$/, '');
@@ -9,18 +11,21 @@ export const apiBase = () => {
   return '/tahti-api';
 };
 
-export async function getJson<T>(path: string): Promise<T> {
-  const res = await fetch(`${apiBase()}${path}`, {
-    credentials: 'include',
-    headers: { Accept: 'application/json' },
+export function getJson<T>(path: string): Promise<T> {
+  const url = `${apiBase()}${path}`;
+  return cachedGet(url, async () => {
+    const res = await fetch(url, {
+      credentials: 'include',
+      headers: { Accept: 'application/json' },
+    });
+    if (!res.ok) {
+      throw new Error(`${path} → ${res.status}`);
+    }
+    return (await res.json()) as T;
   });
-  if (!res.ok) {
-    throw new Error(`${path} → ${res.status}`);
-  }
-  return (await res.json()) as T;
 }
 
-export async function sendJson<T>(
+async function sendJsonUncached<T>(
   path: string,
   method: 'POST' | 'PATCH' | 'PUT' | 'DELETE',
   body?: unknown,
@@ -50,6 +55,21 @@ export async function sendJson<T>(
     return undefined as T;
   }
   return (await res.json()) as T;
+}
+
+export async function sendJson<T>(
+  path: string,
+  method: 'POST' | 'PATCH' | 'PUT' | 'DELETE',
+  body?: unknown,
+): Promise<T> {
+  // Cleared on both sides of the write: before, so nothing cached is served
+  // while it runs; after, so a GET that raced it is not kept either.
+  clearGetCache();
+  try {
+    return await sendJsonUncached<T>(path, method, body);
+  } finally {
+    clearGetCache();
+  }
 }
 
 export async function mutate(

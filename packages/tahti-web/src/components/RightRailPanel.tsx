@@ -1,5 +1,5 @@
 import { ListMusicIcon, MessageSquareIcon } from 'lucide-react';
-import type { ReactNode } from 'react';
+import { lazy, Suspense, type ReactNode } from 'react';
 
 import { Button, cn, QueuePanel, Tooltip } from '@tahti-player/ui';
 
@@ -7,8 +7,16 @@ import { useLayoutStore } from '../stores/layoutStore';
 import { usePageCommentsRailStore } from '../stores/pageCommentsRailStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useRightRailOverrideStore } from '../stores/rightRailOverrideStore';
-import { AdminPageCommentsPanel } from './AdminPageCommentsPanel';
+import { PageLoading } from './PageStates';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
+
+// Admin-only, and it pulls in the whole screen atlas (content/mapScreens), so
+// it stays out of the app shell chunk.
+const AdminPageCommentsPanel = lazy(() =>
+  import('./AdminPageCommentsPanel').then((m) => ({
+    default: m.AdminPageCommentsPanel,
+  })),
+);
 
 const COLLAPSED_LABELS = {
   removeButton: 'Remove from queue',
@@ -119,7 +127,9 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
             </p>
           </div>
           <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-y-auto p-2">
-            <AdminPageCommentsPanel />
+            <Suspense fallback={<PageLoading />}>
+              <AdminPageCommentsPanel />
+            </Suspense>
           </div>
         </aside>
       </RightRailPanelFade>
