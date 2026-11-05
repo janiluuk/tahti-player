@@ -10,6 +10,7 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, InlineError } from '@tahti-player/ui';
 
 import {
@@ -32,6 +33,7 @@ function currentQuarterLabel(): string {
 }
 
 function QuarterlyReportsPanel() {
+  const { t } = useTranslation('web');
   const [reports, setReports] = useState<GovernanceQuarterlyReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -83,7 +85,7 @@ function QuarterlyReportsPanel() {
       {loading ? (
         <PageLoading label="Loading reports…" />
       ) : reports.length === 0 ? (
-        <PageEmpty title="No quarterly reports generated yet." />
+        <PageEmpty title={t('empties.noQuarterlyReportsGeneratedYet')} />
       ) : (
         <ul className="divide-border mt-2 divide-y">
           {reports.map((report) => (
@@ -238,6 +240,7 @@ function RowActions({
 /** Feature requests tab — ported as-is from the standalone admin route (see
  * AdminModerationView). Member-suggested features, ranked by votes. */
 export function FeatureRequestsTab() {
+  const { t } = useTranslation('web');
   const [filter, setFilter] = useState<AdminFeatureRequestStatus | 'all'>(
     'OPEN',
   );
@@ -278,7 +281,7 @@ export function FeatureRequestsTab() {
         {loading ? (
           <PageLoading label="Loading feature requests…" />
         ) : rows.length === 0 ? (
-          <PageEmpty title="No feature requests in this view" />
+          <PageEmpty title={t('empties.noFeatureRequestsInThisView')} />
         ) : (
           <ul className="divide-border divide-y">
             {rows.map((r) => {

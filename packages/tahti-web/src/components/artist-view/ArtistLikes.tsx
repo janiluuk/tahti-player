@@ -1,6 +1,8 @@
 import { HeartIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import {
   fetchUserLikes,
   likedTrackMeta,
@@ -12,6 +14,7 @@ import { PlayableAmbientTrackList } from '../PlayableAmbientTrackList';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 export function ArtistLikes({ username }: { username: string }) {
+  const { t } = useTranslation('web');
   const [items, setItems] = useState<TahtiPlayable[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -48,7 +51,7 @@ export function ArtistLikes({ username }: { username: string }) {
   if (loadError) {
     return (
       <PageError
-        title="Could not load liked tracks"
+        title={t('loadErrors.couldNotLoadLikedTracks')}
         description={loadError}
         onRetry={() => setReloadKey((key) => key + 1)}
       />

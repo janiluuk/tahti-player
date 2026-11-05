@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   ButtonLink,
@@ -143,6 +144,7 @@ function AgendaRow({ item }: { item: AgendaItem }) {
 }
 
 export function StudioBroadcastView() {
+  const { t } = useTranslation('web');
   const channel = useAuthStore((state) => state.user?.channel);
   const live = channel?.state === 'LIVE';
   const [agenda, setAgenda] = useState<AgendaItem[] | null>(null);
@@ -248,8 +250,8 @@ export function StudioBroadcastView() {
                 <PageLoading />
               ) : shown.length === 0 ? (
                 <PageEmpty
-                  title="Nothing coming up"
-                  description="Schedule a show, add an event or plan a listening party."
+                  title={t('empties.nothingComingUp')}
+                  description={t('empties.scheduleAShowAddAnEvent')}
                 />
               ) : (
                 <ul aria-label="Coming up" className="flex flex-col">

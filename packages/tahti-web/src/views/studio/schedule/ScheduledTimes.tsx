@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -38,6 +39,7 @@ export function ScheduledTimes({
   items: ScheduleCard[];
   onEdit: () => void;
 }) {
+  const { t } = useTranslation('web');
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [selectedShow, setSelectedShow] = useState<ScheduleCard | null>(null);
   const [viewMode, setViewMode] = useState<'cards' | 'list'>('cards');
@@ -67,8 +69,8 @@ export function ScheduledTimes({
       {items.length === 0 ? (
         <div className="px-4 py-5">
           <PageEmpty
-            title="Nothing scheduled yet"
-            description="Pick a local date and time below to tell listeners when you return."
+            title={t('empties.nothingScheduledYet')}
+            description={t('empties.pickALocalDateAndTime')}
           />
         </div>
       ) : (

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, Input } from '@tahti-player/ui';
 
 import {
@@ -73,6 +74,7 @@ function requesterLabel(t: {
  * (tahti-org 02beac67); a board reply is `kind: 'MESSAGE'`, an automatic
  * transition record is `kind: 'STATUS_CHANGE'`. */
 export function SupportTab() {
+  const { t } = useTranslation('web');
   const [filter, setFilter] = useState<SupportFilter>('OPEN');
   const [query, setQuery] = useState('');
   const [tickets, setTickets] = useState<AdminSupportTicket[]>([]);
@@ -225,13 +227,13 @@ export function SupportTab() {
             <PageLoading label="Loading support tickets…" />
           ) : loadError && tickets.length === 0 ? (
             <PageError
-              title="Could not load support tickets"
+              title={t('loadErrors.couldNotLoadSupportTickets')}
               description={loadError}
               onRetry={() => setAttempt((n) => n + 1)}
             />
           ) : tickets.length === 0 ? (
             <PageEmpty
-              title="No tickets in this view"
+              title={t('empties.noTicketsInThisView')}
               action={
                 query.trim() ? (
                   <Button

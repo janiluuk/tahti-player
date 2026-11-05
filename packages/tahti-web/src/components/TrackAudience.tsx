@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   SoundAudience,
@@ -53,6 +54,7 @@ export function TrackAudience({
   leadingTabs?: TabsItem[];
   iconOnlyTabs?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [load, setLoad] = useState<Load>({ state: 'loading' });
   const [attempt, setAttempt] = useState(0);
   const [loadingMore, setLoadingMore] = useState<SoundAudienceTab | null>(null);
@@ -111,7 +113,7 @@ export function TrackAudience({
   if (load.state === 'error') {
     return (
       <PageError
-        title="Could not load who listened"
+        title={t('loadErrors.couldNotLoadWhoListened')}
         description={load.reason}
         onRetry={() => setAttempt((n) => n + 1)}
       />

@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -47,6 +48,7 @@ function fmtDuration(sec: number | null): string {
 /** Tahti Selects tab — ported as-is from the standalone admin route (see
  * AdminModerationView). Always-on curated rotation, editorial review. */
 export function SelectsTab() {
+  const { t } = useTranslation('web');
   const play = usePlayerStore((s) => s.play);
   const currentId = usePlayerStore((state) => state.currentId);
   const playbackStatus = usePlayerStore((state) => state.status);
@@ -300,7 +302,7 @@ export function SelectsTab() {
         {loading ? (
           <PageLoading label="Loading Selects rotation…" />
         ) : items.length === 0 ? (
-          <PageEmpty title="Nothing in rotation yet — use the plus button to add tracks." />
+          <PageEmpty title={t('empties.nothingInRotationYetUseThe')} />
         ) : (
           <TahtiRotationPlaylistEditor
             items={items}
@@ -415,7 +417,7 @@ export function SelectsTab() {
             <div className="border-border min-h-0 overflow-auto rounded-md border">
               {browseError ? (
                 <PageError
-                  title="Couldn't load archive tracks"
+                  title={t('loadErrors.couldnTLoadArchiveTracks')}
                   description={browseError}
                   onRetry={() => setBrowseAttempt((n) => n + 1)}
                 />

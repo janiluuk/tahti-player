@@ -2,6 +2,7 @@ import { CheckCircle2Icon, PlayIcon, XCircleIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, ImageReveal, Textarea } from '@tahti-player/ui';
 
 import {
@@ -46,6 +47,7 @@ function fmtDuration(sec: number | null): string {
 /** Radio submissions tab — ported as-is from the standalone admin route
  * (see AdminModerationView). Audits tracks submitted for Tahti Radio. */
 export function RadioSubmissionsTab() {
+  const { t } = useTranslation('web');
   const play = usePlayerStore((s) => s.play);
   const [items, setItems] = useState<AdminRadioSubmission[]>([]);
   const [loading, setLoading] = useState(true);
@@ -123,7 +125,7 @@ export function RadioSubmissionsTab() {
       ) : loadError && items.length === 0 ? (
         <StudioPanel>
           <PageError
-            title="Could not load radio submissions"
+            title={t('loadErrors.couldNotLoadRadioSubmissions')}
             description={loadError}
             onRetry={() => {
               setLoading(true);
@@ -133,7 +135,7 @@ export function RadioSubmissionsTab() {
         </StudioPanel>
       ) : items.length === 0 ? (
         <StudioPanel>
-          <PageEmpty title="No unaudited radio submissions" />
+          <PageEmpty title={t('empties.noUnauditedRadioSubmissions')} />
         </StudioPanel>
       ) : (
         <>

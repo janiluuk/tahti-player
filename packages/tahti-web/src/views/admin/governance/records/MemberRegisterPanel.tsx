@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, InlineLoader, Input } from '@tahti-player/ui';
 
 import {
@@ -30,6 +31,7 @@ function statusLabel(status: string | null): string {
 /** The member register, searchable by name, username or member number.
  * Emails stay in the CSV export; the list shows names only. */
 export function MemberRegisterPanel() {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [rows, setRows] = useState<MemberRegisterRow[] | null>(null);
   const [query, setQuery] = useState('');
@@ -69,7 +71,7 @@ export function MemberRegisterPanel() {
         <InlineLoader label="Loading…" textSize="xs" />
       ) : loadError && rows.length === 0 ? (
         <PageError
-          title="Could not load the member register"
+          title={t('loadErrors.couldNotLoadTheMemberRegister')}
           description={loadError}
           onRetry={() => setRows(null)}
         />
@@ -85,7 +87,7 @@ export function MemberRegisterPanel() {
           />
           {shown.length === 0 ? (
             <PageEmpty
-              title="No member matches."
+              title={t('empties.noMemberMatches')}
               action={
                 q ? (
                   <Button

@@ -390,8 +390,8 @@ export function ReleaseSmartLinksPanel({
       >
         {tracks.length === 0 ? (
           <PageEmpty
-            title="No tracks yet"
-            description="Add tracks from your library or upload audio files to build this release."
+            title={t('empties.noTracksYet')}
+            description={t('empties.addTracksFromYourLibraryOr')}
           />
         ) : (
           <ol className="flex flex-col gap-2">

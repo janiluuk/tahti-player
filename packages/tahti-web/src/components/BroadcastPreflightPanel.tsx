@@ -97,7 +97,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
   if (!preflight) {
     return (
       <PageError
-        title="Could not load your show details"
+        title={t('loadErrors.couldNotLoadYourShowDetails')}
         description={loadError ?? undefined}
         onRetry={() => {
           setLoaded(false);

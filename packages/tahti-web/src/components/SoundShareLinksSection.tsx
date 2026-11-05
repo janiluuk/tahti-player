@@ -136,7 +136,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
         <InlineLoader label="Loading…" textSize="xs" />
       ) : loadError ? (
         <PageError
-          title="Could not load share links"
+          title={t('loadErrors.couldNotLoadShareLinks')}
           description={loadError}
           onRetry={reload}
         />

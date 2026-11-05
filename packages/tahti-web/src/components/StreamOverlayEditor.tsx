@@ -222,7 +222,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
   if (loadError) {
     return (
       <PageError
-        title="Could not load your stream overlay"
+        title={t('loadErrors.couldNotLoadYourStreamOverlay')}
         description={loadError}
         onRetry={() => {
           setLoaded(false);

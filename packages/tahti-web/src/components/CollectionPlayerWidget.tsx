@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { CollectionPlayer } from '@tahti-player/ui';
 
 import { fetchCollection } from '../api/client';
@@ -22,6 +23,7 @@ export function CollectionPlayerWidget({
   limit?: number;
   kindLabel?: string;
 }) {
+  const { t } = useTranslation('web');
   const [collection, setCollection] = useState<PublicCollection | null>(null);
   const [failed, setFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -59,7 +61,7 @@ export function CollectionPlayerWidget({
   if (failed) {
     return (
       <PageError
-        title="Couldn't load this collection"
+        title={t('loadErrors.couldnTLoadThisCollection')}
         onRetry={() => setAttempt((n) => n + 1)}
       />
     );

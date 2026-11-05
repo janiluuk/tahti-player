@@ -126,7 +126,7 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
         <PageLoading label="Loading restrictions…" />
       ) : !items ? (
         <PageError
-          title="Couldn't load restrictions"
+          title={t('loadErrors.couldnTLoadRestrictions')}
           onRetry={() => void load()}
         />
       ) : (

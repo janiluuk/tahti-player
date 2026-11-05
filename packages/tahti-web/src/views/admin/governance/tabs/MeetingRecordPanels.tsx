@@ -98,7 +98,7 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
       {records === null ? (
         <InlineLoader label="Loading…" textSize="xs" />
       ) : records.length === 0 ? (
-        <PageEmpty title="No conflicts declared for this meeting." />
+        <PageEmpty title={t('empties.noConflictsDeclaredForThisMeeting')} />
       ) : (
         <ul className="divide-border mb-3 divide-y text-sm">
           {records.map((record) => (
@@ -218,6 +218,7 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
 }
 
 export function NoticeDeliveriesPanel({ meetingId }: { meetingId: string }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [records, setRecords] = useState<GovernanceNoticeDelivery[] | null>(
     null,
@@ -253,7 +254,7 @@ export function NoticeDeliveriesPanel({ meetingId }: { meetingId: string }) {
       ) : records === null ? (
         <InlineLoader label="Loading…" textSize="xs" />
       ) : records.length === 0 ? (
-        <PageEmpty title="No meeting notice has been sent yet." />
+        <PageEmpty title={t('empties.noMeetingNoticeHasBeenSent')} />
       ) : (
         <ul className="divide-border divide-y text-sm">
           {records.map((record) => (

@@ -2,7 +2,7 @@ import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, SaveButton } from '@tahti-player/ui';
 
 import { PageEmpty, PageError, PageLoading } from './PageStates';
@@ -26,6 +26,7 @@ export function ProfileOrderDialog({
   save: (ids: string[]) => Promise<{ ok: true } | { ok: false; error: string }>;
   onClose: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [items, setItems] = useState<OrderItem[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -90,7 +91,7 @@ export function ProfileOrderDialog({
           <PageLoading label="Loading…" />
         ) : loadError && items.length === 0 ? (
           <PageError
-            title="Could not load the list"
+            title={t('loadErrors.couldNotLoadTheList')}
             description={loadError}
             onRetry={() => setAttempt((current) => current + 1)}
           />

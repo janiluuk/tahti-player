@@ -1,6 +1,7 @@
 import { CalendarIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ExternalLink } from '@tahti-player/ui';
 
 import { fetchChannelEvents, type ArtistEvent } from '../../api/events';
@@ -17,6 +18,7 @@ const dateFormat: Intl.DateTimeFormatOptions = {
 };
 
 export function ArtistUpcomingEvents({ channelSlug }: { channelSlug: string }) {
+  const { t } = useTranslation('web');
   const [events, setEvents] = useState<ArtistEvent[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -40,7 +42,7 @@ export function ArtistUpcomingEvents({ channelSlug }: { channelSlug: string }) {
   if (loadError) {
     return (
       <PageError
-        title="Could not load upcoming events"
+        title={t('loadErrors.couldNotLoadUpcomingEvents')}
         description={loadError}
         onRetry={() => setReloadKey((key) => key + 1)}
       />

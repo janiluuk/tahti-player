@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ExternalLink } from '@tahti-player/ui';
 
 import type { PinnedAnnouncement } from '../../api/announcements';
@@ -18,6 +19,7 @@ export function ArtistNews({
   news: PinnedAnnouncement[];
   username: string;
 }) {
+  const { t } = useTranslation('web');
   const [feed, setFeed] = useState<ArtistNewsItem[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -41,7 +43,7 @@ export function ArtistNews({
   if (loadError && news.length === 0 && feed.length === 0) {
     return (
       <PageError
-        title="Could not load news"
+        title={t('loadErrors.couldNotLoadNews')}
         description={loadError}
         onRetry={() => setReloadKey((key) => key + 1)}
       />
