@@ -1,9 +1,16 @@
+## 2026-11-05 - Batch 50 UX slices
+
+Finnish for `web.actions.openChannel`, radio up-next/shows chrome, and
+PageEmpty titles (`web.empties.*`) across admin radio, moderation, studio
+dialogs, governance, and listen/fan/venue. Empty-state create-CTA inventory
+filed as `empty-state-create-ctas.md`. tahti-web 0.0.341 (#1842).
+
 ## 2026-11-05 - Tahti Radio consolidated player widget
 
 `RadioPlayerWidget` folds the visualizer / now-playing / play-favorite
 controls with Up next, Shows, Just played and Featured into one Storybook
 surface (`Tahti/Radio/RadioPlayerWidget`); `RadioView` uses it. Extracted
-`RadioJustPlayedPanel` and `RadioFeaturedPanel`. tahti-web 0.0.340.
+`RadioJustPlayedPanel` and `RadioFeaturedPanel`. tahti-web 0.0.340 (#1841).
 
 ## 2026-11-05 - Batch 49 UX slices
 
