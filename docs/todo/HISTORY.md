@@ -5998,3 +5998,5 @@ Admin Users sends `isBoard` / `tier` for the BOARD and ARTIST filters so the
 total is no longer one page when the API honours them; falls back to the page
 count otherwise. Fan subscription end dates use `numericDate`. tahti-web
 `0.0.323`; API confirmation stays in `view-first-and-test-hardening-leftovers.md`.
+
+- **Batch 50 UX slices** (2026-11-05, #1842, tahti-web 0.0.341): Finnish for "Open channel" (`web.actions.openChannel`) on Radio, Chat, Moderate, artist profile, embeds and admin stream manager; Radio up-next, booked shows and schedule empties and errors via `web.radio.*`; `PageEmpty` titles via `web.empties.*` for admin Radio, moderation (moderators, bans, messages), Studio dialogs (add to playlist, tracklist, credits, play history, pinned announcements, release tracklist, audio revisions, fingerprint), admin logs, restrictions, user messages, vendors, governance (elections, annual reports, association, board, motion comments) and Listen/fan/venue (chat, payouts, invoices, blocked accounts, venue shows, world map, track insights, news sources, add-ons). Leftovers became batch 51.

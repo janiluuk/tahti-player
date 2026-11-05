@@ -131,7 +131,7 @@ export function ModerateChannelView({ slug }: { slug: string }) {
                 size="sm"
                 variant="secondary"
               >
-                Open channel
+                {t('actions.openChannel')}
               </ButtonLink>
               {channel.isOwner && (
                 <ButtonLink to="/studio/fans" size="sm" variant="text">

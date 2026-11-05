@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   Button,
@@ -142,6 +143,7 @@ export function ListenAddonsPanel({
   initialTab?: 'installed' | 'available';
   compact?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [installTab, setInstallTab] = useState<'installed' | 'available'>(
     initialTab,
   );
@@ -782,7 +784,7 @@ export function ListenAddonsPanel({
         })}
       </div>
       {installTab === 'installed' && installedCount === 0 ? (
-        <PageEmpty title="Nothing installed yet — check Available." />
+        <PageEmpty title={t('empties.nothingInstalled')} />
       ) : null}
       {installTab === 'available' && availableCount === 0 ? (
         <p className="text-foreground-secondary text-sm">

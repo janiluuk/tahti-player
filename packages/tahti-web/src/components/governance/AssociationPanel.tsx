@@ -1,6 +1,7 @@
 import { Building2Icon } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ExternalLink, InlineLoader } from '@tahti-player/ui';
 
 import {
@@ -40,6 +41,7 @@ function hasDetails(profile: AssociationProfile): boolean {
 /** The association's registered identity, contacts and serving auditors
  * (GET /api/v1/governance/association). */
 export function AssociationPanel() {
+  const { t } = useTranslation('web');
   const [profile, setProfile] = useState<AssociationProfile | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'failed'>('loading');
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -118,12 +120,12 @@ export function AssociationPanel() {
               ) : null}
             </dl>
           ) : (
-            <PageEmpty title="The board has not entered the association's details yet." />
+            <PageEmpty title={t('empties.noAssociationDetails')} />
           )}
           <div className="flex flex-col gap-1">
             <h3 className="text-sm font-semibold">Auditors</h3>
             {profile.auditors.length === 0 ? (
-              <PageEmpty title="No auditor or operations inspector is serving." />
+              <PageEmpty title={t('empties.noAuditor')} />
             ) : (
               <ul className="flex flex-col gap-1">
                 {profile.auditors.map((auditor) => (

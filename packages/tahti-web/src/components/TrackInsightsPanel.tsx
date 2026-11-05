@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   CalendarHeatmap,
@@ -64,6 +65,7 @@ export function TrackInsightsPanel({
   kind: InsightsKind;
   id: string;
 }) {
+  const { t } = useTranslation('web');
   const isDark = useThemeStore((s) => s.dark);
   const [period, setPeriod] = useState<InsightsPeriod>('30d');
   const [insights, setInsights] = useState<TrackInsights | null>(null);
@@ -138,7 +140,7 @@ export function TrackInsightsPanel({
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : !insights ? (
-        <PageEmpty title="No insights for this track yet" />
+        <PageEmpty title={t('empties.noTrackInsights')} />
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
@@ -244,7 +246,7 @@ export function TrackInsightsPanel({
 
           <StudioPanel title="Downloads by day">
             {insights.daily.length === 0 ? (
-              <PageEmpty title="No downloads in this period" />
+              <PageEmpty title={t('empties.noDownloadsPeriod')} />
             ) : (
               <div className="flex h-32 items-end gap-1">
                 {insights.daily.map((day) => (

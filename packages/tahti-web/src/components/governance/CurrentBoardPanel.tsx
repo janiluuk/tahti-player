@@ -1,6 +1,7 @@
 import { ShieldCheckIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { InlineLoader } from '@tahti-player/ui';
 
 import {
@@ -14,6 +15,7 @@ import { GovernancePanel } from './GovernancePanel';
 
 /** Who sits on the board today, chair first (GET /api/v1/governance/board). */
 export function CurrentBoardPanel() {
+  const { t } = useTranslation('web');
   const [seats, setSeats] = useState<BoardSeat[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -45,7 +47,7 @@ export function CurrentBoardPanel() {
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : seats.length === 0 ? (
-        <PageEmpty title="No board terms are recorded yet." />
+        <PageEmpty title={t('empties.noBoardTerms')} />
       ) : (
         <ul className="divide-border divide-y">
           {seats.map((seat) => (

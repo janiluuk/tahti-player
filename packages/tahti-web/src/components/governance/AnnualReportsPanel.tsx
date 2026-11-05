@@ -1,6 +1,7 @@
 import { BookOpenIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ExternalLink, InlineLoader } from '@tahti-player/ui';
 
 import {
@@ -35,6 +36,7 @@ function ReportDetails({ report }: { report: PublishedAnnualReport }) {
 /** Yearly reports the board approved and published
  * (GET /api/v1/governance/annual-reports). */
 export function AnnualReportsPanel() {
+  const { t } = useTranslation('web');
   const [reports, setReports] = useState<PublishedAnnualReport[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -66,7 +68,7 @@ export function AnnualReportsPanel() {
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : reports.length === 0 ? (
-        <PageEmpty title="No annual report has been published yet." />
+        <PageEmpty title={t('empties.noAnnualReport')} />
       ) : (
         <ul className="divide-border divide-y">
           {reports.map((report) => (

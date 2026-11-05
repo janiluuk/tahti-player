@@ -117,7 +117,7 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
             onRetry={reload}
           />
         ) : items.length === 0 ? (
-          <PageEmpty title="No pinned announcements yet." />
+          <PageEmpty title={t('empties.noPinnedAnnouncements')} />
         ) : (
           <ul className="border-border divide-border divide-y rounded-lg border">
             {items.map((item) => (

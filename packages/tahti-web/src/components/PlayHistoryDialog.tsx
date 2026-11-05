@@ -129,7 +129,7 @@ export function PlayHistoryDialog({
               onRetry={() => void load(0)}
             />
           ) : entries.length === 0 && !loading ? (
-            <PageEmpty title="Nothing yet. A listen counts after 30 seconds of a local track." />
+            <PageEmpty title={t('empties.playHistoryNothing')} />
           ) : (
             <ul className="flex flex-col gap-1">
               {entries.map((entry) => (

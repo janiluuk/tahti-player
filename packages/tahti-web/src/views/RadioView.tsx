@@ -572,7 +572,7 @@ export function RadioView() {
                   size="sm"
                   variant="secondary"
                 >
-                  Open channel
+                  {t('actions.openChannel')}
                 </ButtonLink>
               </>
             }

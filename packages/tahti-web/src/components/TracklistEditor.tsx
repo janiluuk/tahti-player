@@ -16,6 +16,7 @@ import {
   type FC,
 } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   HiddenFileInput,
@@ -55,6 +56,7 @@ export const TracklistEditor: FC<Props> = ({
   value,
   onChange,
 }) => {
+  const { t } = useTranslation('web');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedId, setSelectedId] = useState<string | null>(
     value[0]?.id ?? null,
@@ -174,7 +176,7 @@ export const TracklistEditor: FC<Props> = ({
     <ol className="border-border divide-border divide-y rounded-xl border">
       {value.length === 0 ? (
         <li className="list-none p-4">
-          <PageEmpty title="No tracks added yet." />
+          <PageEmpty title={t('empties.noTracksAdded')} />
         </li>
       ) : (
         value.map((entry, index) => (

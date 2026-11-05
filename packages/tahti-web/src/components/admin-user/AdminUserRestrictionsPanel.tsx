@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, InlineError, Select, Textarea } from '@tahti-player/ui';
 
 import {
@@ -59,6 +60,7 @@ function describeRestriction(restriction: AccountRestriction): string {
 }
 
 export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
+  const { t } = useTranslation('web');
   const [items, setItems] = useState<AccountRestriction[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [type, setType] = useState<AccountRestrictionType>('UPLOAD');
@@ -130,7 +132,7 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
       ) : (
         <div className="flex flex-col gap-4" data-testid="admin-restrictions">
           {active.length === 0 ? (
-            <PageEmpty title="No active restrictions" />
+            <PageEmpty title={t('empties.noRestrictions')} />
           ) : (
             <ul className="divide-border divide-y text-sm">
               {active.map((item) => (

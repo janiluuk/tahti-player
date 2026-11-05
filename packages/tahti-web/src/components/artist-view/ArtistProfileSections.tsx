@@ -130,7 +130,7 @@ function ArtistMoreMenu({
                 });
               }}
             >
-              Open channel
+              {t('actions.openChannel')}
             </Popover.Item>
           ) : null}
           {canSubscribeFanTiers ? (

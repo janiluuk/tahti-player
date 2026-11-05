@@ -1,3 +1,10 @@
+## 2026-11-05 - Batch 50 UX slices (0.0.341)
+
+Finnish for `web.actions.openChannel`, radio up-next/shows chrome empties, admin
+radio / moderation / studio dialog / governance / listen-fan-venue PageEmpty
+titles via `web.empties.*`. Skipped: pageTour, keyboard help, SEO descriptions,
+performance audit, admin hub card English descriptions.
+
 ## 2026-11-05 - Tahti Radio player widget (0.0.340)
 
 Consolidated on-air player + Up next / Shows / Just played / Featured into

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineLoader, Input } from '@tahti-player/ui';
 
 import {
@@ -30,6 +31,7 @@ export function MotionDiscussion({
   onMessage: (message: string) => void;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [comments, setComments] = useState<MotionComment[]>(
     preloadedComments ?? [],
@@ -123,7 +125,7 @@ export function MotionDiscussion({
           ) : !commentsLoaded ? (
             <InlineLoader label="Loading…" textSize="xs" />
           ) : comments.length === 0 ? (
-            <PageEmpty title="No comments yet." />
+            <PageEmpty title={t('empties.noComments')} />
           ) : (
             <ul className="border-border divide-border divide-y overflow-hidden rounded-md border text-sm">
               {comments.map((c) => (

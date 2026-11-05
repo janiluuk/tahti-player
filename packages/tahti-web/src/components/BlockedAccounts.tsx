@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import {
@@ -15,6 +15,7 @@ import { PageEmpty, PageError, PageLoading } from './PageStates';
 /** The accounts you blocked from messaging you, each with an Unblock
  * button. Blocking itself happens from a direct-message thread. */
 export function BlockedAccounts() {
+  const { t } = useTranslation('web');
   const [blocked, setBlocked] = useState<BlockedUser[] | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -76,7 +77,7 @@ export function BlockedAccounts() {
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : blocked.length === 0 ? (
-        <PageEmpty title="You haven't blocked anyone" />
+        <PageEmpty title={t('empties.noBlockedAccounts')} />
       ) : (
         <ul className="divide-border divide-y">
           {blocked.map((user) => (

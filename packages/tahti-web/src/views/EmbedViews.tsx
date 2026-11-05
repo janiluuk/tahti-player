@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ExternalLink, ImageReveal } from '@tahti-player/ui';
 
 import {
@@ -106,6 +107,7 @@ function EmbedLoadError({
 }
 
 export function EmbedChannelView({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const { result, loading, error, retry } = useEmbedLoad(
     () => fetchEmbedChannel(slug),
     slug,
@@ -149,7 +151,7 @@ export function EmbedChannelView({ slug }: { slug: string }) {
                 href={`https://tahti.live/c/${data.slug}`}
                 className="text-foreground-secondary text-xs"
               >
-                Open channel
+                {t('actions.openChannel')}
               </ExternalLink>
             )}
           </div>

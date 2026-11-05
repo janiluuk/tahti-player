@@ -2,6 +2,7 @@ import { ListPlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, InlineLoader, Input, Loader } from '@tahti-player/ui';
 
 import { formatTotalDuration, pluralTracks } from '../lib/libraryFormat';
@@ -31,6 +32,7 @@ export function AddToPlaylistDialog({
   summary,
   onAdded,
 }: Props) {
+  const { t } = useTranslation('web');
   const [playlists, setPlaylists] = useState<NativePlaylistSummary[] | null>(
     null,
   );
@@ -116,7 +118,7 @@ export function AddToPlaylistDialog({
             onRetry={() => setAttempt((n) => n + 1)}
           />
         ) : playlists.length === 0 ? (
-          <PageEmpty title="No playlists yet — create one below." />
+          <PageEmpty title={t('empties.noPlaylistsCreate')} />
         ) : (
           playlists.map((playlist) => (
             <Button

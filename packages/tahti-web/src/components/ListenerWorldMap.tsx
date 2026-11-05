@@ -1,6 +1,8 @@
 import { MapPinIcon } from 'lucide-react';
 import { useMemo, type FC } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import { PageEmpty } from './PageStates';
 import worldCountryPaths from './worldCountryPaths.json';
 
@@ -38,6 +40,7 @@ export const ListenerWorldMap: FC<ListenerWorldMapProps> = ({
   countLabel = 'listeners',
   compact = false,
 }) => {
+  const { t } = useTranslation('web');
   const maxCount = Math.max(1, ...data.map((point) => point.count));
   const countsByCode = useMemo(() => {
     const map = new Map<string, ListenerGeoPoint>();
@@ -147,7 +150,7 @@ export const ListenerWorldMap: FC<ListenerWorldMapProps> = ({
       </div>
 
       {topCountries.length === 0 ? (
-        <PageEmpty title="No listener location data yet." />
+        <PageEmpty title={t('empties.noListenerLocations')} />
       ) : (
         <ol
           className={

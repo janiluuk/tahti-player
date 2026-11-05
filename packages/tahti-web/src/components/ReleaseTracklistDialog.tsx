@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Dialog, ImageReveal } from '@tahti-player/ui';
 
 import type { PublicProfileRelease, TahtiPlayable } from '../api/types';
@@ -53,6 +54,7 @@ export function ReleaseTracklistDialog({
   artistName: string;
   channelSlug?: string;
 }) {
+  const { t } = useTranslation('web');
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
   const currentId = usePlayerStore((s) => s.currentId);
@@ -95,7 +97,7 @@ export function ReleaseTracklistDialog({
           </div>
 
           {tracks.length === 0 ? (
-            <PageEmpty title="No tracklist for this release" />
+            <PageEmpty title={t('empties.noTracklist')} />
           ) : (
             <ul className="divide-border mt-4 flex max-h-96 flex-col divide-y overflow-y-auto">
               {tracks.map((track) => {
