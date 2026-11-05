@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -60,6 +61,7 @@ export function AdminUserEditPanel({
   onUserUpdated?: (user: AdminUserDetail) => void;
   onUserDeleted?: (userId: string) => void;
 }) {
+  const { t } = useTranslation('web');
   const me = useAuthStore((s) => s.user);
   const [detail, setDetail] = useState<AdminUserDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
@@ -535,7 +537,7 @@ export function AdminUserEditPanel({
         >
           <div className="border-border bg-background flex max-h-64 min-h-36 flex-col gap-2 overflow-y-auto rounded-lg border p-3">
             {messages.length === 0 ? (
-              <PageEmpty title="No messages yet. Start the conversation below." />
+              <PageEmpty title={t('empties.noMessagesStart')} />
             ) : (
               messages.map((message) => (
                 <div

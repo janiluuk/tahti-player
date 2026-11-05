@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Alert,
   BreadcrumbCurrent,
@@ -53,6 +54,7 @@ function toAuditLogEntry(entry: AdminAuditRow): LogEntryData {
 }
 
 function RecentAuditEntries() {
+  const { t } = useTranslation('web');
   const [entries, setEntries] = useState<AdminAuditRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -85,7 +87,7 @@ function RecentAuditEntries() {
           }}
         />
       ) : entries.length === 0 ? (
-        <PageEmpty title="No recent audit entries." />
+        <PageEmpty title={t('empties.noAuditEntries')} />
       ) : (
         <div className="h-[50vh]">
           <LogViewer.Root

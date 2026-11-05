@@ -73,7 +73,7 @@ export function MultistreamPanel({
             onRetry={() => void reload()}
           />
         ) : targets.length === 0 ? (
-          <PageEmpty title="No destinations configured." />
+          <PageEmpty title={t('empties.noMultistreamDestinations')} />
         ) : (
           <ul className="flex flex-col gap-2">
             {targets.map((target) => (

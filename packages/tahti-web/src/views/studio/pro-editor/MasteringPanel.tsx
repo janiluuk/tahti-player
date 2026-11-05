@@ -177,7 +177,7 @@ export function MasteringPanel({ editList, onChange }: Props) {
 
             <div className="flex flex-row items-start gap-3 overflow-x-auto pb-2">
               {visiblePluginChain.length === 0 ? (
-                <PageEmpty title="No audio add-ons in the chain yet." />
+                <PageEmpty title={t('empties.noAudioAddonsInChain')} />
               ) : (
                 visiblePluginChain.map((id) => {
                   const meta = AUDIO_FX_PLUGINS[id];

@@ -1,6 +1,7 @@
 import { ArrowLeftIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   BreadcrumbCurrent,
@@ -29,6 +30,7 @@ import {
 import { usePlayerStore } from '../../stores/playerStore';
 
 export function AdminStorageUserView({ userId }: { userId: string }) {
+  const { t } = useTranslation('web');
   const play = usePlayerStore((s) => s.play);
   const [detail, setDetail] = useState<AdminStorageUserDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -129,7 +131,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                     description="Oldest first, with a running total of storage used over time."
                   >
                     {detail.files.length === 0 ? (
-                      <PageEmpty title="No files uploaded yet" />
+                      <PageEmpty title={t('empties.noFilesUploaded')} />
                     ) : (
                       <ul className="divide-border divide-y">
                         {detail.files.map((f) => (

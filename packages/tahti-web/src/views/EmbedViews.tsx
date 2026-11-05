@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ExternalLink, ImageReveal } from '@tahti-player/ui';
 
 import {
@@ -106,6 +107,7 @@ function EmbedLoadError({
 }
 
 export function EmbedChannelView({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const { result, loading, error, retry } = useEmbedLoad(
     () => fetchEmbedChannel(slug),
     slug,
@@ -120,7 +122,9 @@ export function EmbedChannelView({ slug }: { slug: string }) {
     <EmbedChrome>
       {loading && <PageLoading label="Loading embed…" />}
       {!loading && error && <EmbedLoadError message={error} onRetry={retry} />}
-      {!loading && !error && !data && <PageEmpty title="Channel unavailable" />}
+      {!loading && !error && !data && (
+        <PageEmpty title={t('empties.channelUnavailable')} />
+      )}
       {!loading && data && (
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
@@ -149,7 +153,7 @@ export function EmbedChannelView({ slug }: { slug: string }) {
                 href={`https://tahti.live/c/${data.slug}`}
                 className="text-foreground-secondary text-xs"
               >
-                Open channel
+                {t('actions.openChannel')}
               </ExternalLink>
             )}
           </div>
@@ -165,6 +169,7 @@ export function EmbedChannelView({ slug }: { slug: string }) {
 }
 
 export function EmbedReleaseView({ id }: { id: string }) {
+  const { t } = useTranslation('web');
   const { result, loading, error, retry } = useEmbedLoad(
     () => fetchEmbedRelease(id),
     id,
@@ -177,7 +182,9 @@ export function EmbedReleaseView({ id }: { id: string }) {
     <EmbedChrome>
       {loading && <PageLoading label="Loading embed…" />}
       {!loading && error && <EmbedLoadError message={error} onRetry={retry} />}
-      {!loading && !error && !data && <PageEmpty title="Release unavailable" />}
+      {!loading && !error && !data && (
+        <PageEmpty title={t('empties.releaseUnavailable')} />
+      )}
       {!loading && data && (
         <div className="flex flex-col gap-3">
           <div className="flex items-center gap-3">
@@ -254,6 +261,7 @@ export function EmbedCollectionView({
   slug: string;
   username?: string;
 }) {
+  const { t } = useTranslation('web');
   const { result, loading, error, retry } = useEmbedLoad(
     () => fetchEmbedCollection(slug),
     slug,
@@ -272,7 +280,7 @@ export function EmbedCollectionView({
       {loading && <PageLoading label="Loading embed…" />}
       {!loading && error && <EmbedLoadError message={error} onRetry={retry} />}
       {!loading && !error && !data && (
-        <PageEmpty title="Collection unavailable" />
+        <PageEmpty title={t('empties.collectionUnavailable')} />
       )}
       {!loading && data && (
         <div className="flex flex-col gap-3">

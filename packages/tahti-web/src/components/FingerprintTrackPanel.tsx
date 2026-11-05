@@ -1,6 +1,7 @@
 import { CheckCircle2Icon, FingerprintIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError } from '@tahti-player/ui';
 
 import type { FingerprintMatch, StudioReleaseTrack } from '../api/studio-types';
@@ -26,6 +27,7 @@ export function FingerprintTrackPanel({
   track: StudioReleaseTrack;
   onUpdated: (match: FingerprintMatch | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const [busy, setBusy] = useState<'refingerprint' | 'check' | null>(null);
   const [checkResult, setCheckResult] = useState<
     FingerprintMatch | 'none' | null
@@ -104,7 +106,7 @@ export function FingerprintTrackPanel({
       </div>
 
       {checkResult === 'none' && (
-        <PageEmpty title="No match found. Nothing was changed." />
+        <PageEmpty title={t('empties.fingerprintNoMatch')} />
       )}
       {checkResult && checkResult !== 'none' && (
         <div className="border-border bg-background rounded-md border-(length:--border-width) p-3">

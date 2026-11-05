@@ -1,6 +1,7 @@
 import { ArrowDownIcon, ArrowUpIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   InlineError,
@@ -61,6 +62,7 @@ function sortedForEditing(items: ProgrammeItem[]): ProgrammeItem[] {
 }
 
 export function ChannelRotationPanel() {
+  const { t } = useTranslation('web');
   const [slugInput, setSlugInput] = useState('');
   const [slug, setSlug] = useState<string | null>(null);
   const [settings, setSettings] = useState<AdminProgrammeSettings | null>(null);
@@ -205,7 +207,7 @@ export function ChannelRotationPanel() {
           </p>
 
           {items.length === 0 ? (
-            <PageEmpty title="This channel has no ready tracks" />
+            <PageEmpty title={t('empties.channelNoReadyTracks')} />
           ) : (
             <ol className="divide-border divide-y">
               {items.map((item, index) => (

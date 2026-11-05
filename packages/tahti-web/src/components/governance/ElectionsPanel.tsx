@@ -1,6 +1,7 @@
 import { VoteIcon } from 'lucide-react';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, InlineLoader } from '@tahti-player/ui';
 
 import { BOARD_ROLE_LABELS } from '../../api/governance-board';
@@ -46,6 +47,7 @@ function ElectionItem({
   election: GovernanceElection;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const seats = election.seats === 1 ? '1 seat' : `${election.seats} seats`;
   return (
     <li className="flex flex-col gap-1.5 py-3 text-sm first:pt-0 last:pb-0">
@@ -62,7 +64,7 @@ function ElectionItem({
         {electionStatus(election)}
       </div>
       {election.candidates.length === 0 ? (
-        <PageEmpty title="No candidates yet." />
+        <PageEmpty title={t('empties.noCandidates')} />
       ) : (
         <ul
           aria-label={`Candidates in ${election.title}`}
@@ -101,6 +103,7 @@ function ElectionItem({
 /** Board elections with the members standing in them
  * (GET /api/v1/governance/elections). */
 export function ElectionsPanel() {
+  const { t } = useTranslation('web');
   const [elections, setElections] = useState<GovernanceElection[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -127,7 +130,7 @@ export function ElectionsPanel() {
           onRetry={() => void load()}
         />
       ) : elections.length === 0 ? (
-        <PageEmpty title="No board elections have been called yet." />
+        <PageEmpty title={t('empties.noElections')} />
       ) : (
         <ul className="divide-border divide-y">
           {elections.map((election) => (

@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -66,6 +67,7 @@ function bookingTitle(booking: StudioShowBooking): string {
 }
 
 export function RadioScheduleView() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const openChannelSetup = useChannelSetupModalStore((s) => s.open);
   const ownChannelSlug = user?.channel?.slug ?? null;
@@ -325,7 +327,7 @@ export function RadioScheduleView() {
               Your next two weeks
             </div>
             {upcomingBookings.length === 0 ? (
-              <PageEmpty title="No upcoming shows booked." />
+              <PageEmpty title={t('empties.noUpcomingShows')} />
             ) : (
               <ul className="flex flex-col gap-2">
                 {upcomingBookings.map((booking) => (

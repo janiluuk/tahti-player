@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   Button,
@@ -112,6 +113,7 @@ const QUICK_LINKS = [
 ];
 
 export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const isBoard = hasAccountRole(user, 'BOARD');
   const closeSettings = useSettingsModalStore((s) => s.close);
@@ -376,7 +378,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 onRetry={reload}
               />
             ) : requests.length === 0 ? (
-              <PageEmpty title="No topics yet." />
+              <PageEmpty title={t('empties.noTopics')} />
             ) : (
               <ul className="divide-border divide-y">
                 {requests
@@ -428,7 +430,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 onRetry={reload}
               />
             ) : meetings.length === 0 ? (
-              <PageEmpty title="No published meeting records yet." />
+              <PageEmpty title={t('empties.noMeetingRecords')} />
             ) : (
               <ul className="divide-border divide-y">
                 {meetings.map((meeting) => {
@@ -493,7 +495,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 onRetry={reload}
               />
             ) : documents.length === 0 ? (
-              <PageEmpty title="No governance documents have been published yet." />
+              <PageEmpty title={t('empties.noGovernanceDocuments')} />
             ) : (
               <ul className="divide-border divide-y">
                 {documents.map((document) => (
@@ -534,7 +536,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 onRetry={reload}
               />
             ) : reports.length === 0 ? (
-              <PageEmpty title="No quarterly feature-request reviews have been published yet." />
+              <PageEmpty title={t('empties.noFeatureReviews')} />
             ) : (
               <ul className="divide-border divide-y">
                 {reports.map((report) => (
@@ -573,7 +575,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 onRetry={reload}
               />
             ) : members.length === 0 ? (
-              <PageEmpty title="No member directory is published yet." />
+              <PageEmpty title={t('empties.noMemberDirectory')} />
             ) : (
               <ul className="divide-border divide-y">
                 {members.slice(0, 8).map((member) => (
@@ -710,7 +712,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             onRetry={reload}
           />
         ) : (
-          <PageEmpty title="No motions yet" />
+          <PageEmpty title={t('empties.noMotions')} />
         ))}
 
       {user && motions.length > 0 && (

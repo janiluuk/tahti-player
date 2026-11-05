@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -225,6 +225,7 @@ function FollowControls({
 }
 
 export function DiscussionTopicView({ id }: { id: string }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const [topic, setTopic] = useState<DiscussionTopicDetail | null>(null);
   const [loading, setLoading] = useState(true);
@@ -354,7 +355,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
                 : `${Math.max(topic.postCount, topic.posts.length)} replies`}
             </h2>
             {topic.posts.length === 0 ? (
-              <PageEmpty title="No replies yet." />
+              <PageEmpty title={t('empties.noReplies')} />
             ) : (
               <>
                 {topic.hasEarlierPosts ? (

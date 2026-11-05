@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonAnchor,
@@ -69,6 +70,7 @@ export function AdminStreamManagerPanel({
 }: {
   showHeading?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [streams, setStreams] = useState<AdminLiveStreamRow[]>([]);
   const [streamStats, setStreamStats] = useState<
     Record<string, ChannelManageStats>
@@ -143,7 +145,7 @@ export function AdminStreamManagerPanel({
   const streamList = loading ? (
     <PageLoading label="Loading streams…" />
   ) : streams.length === 0 ? (
-    <PageEmpty title="No channels are live right now." />
+    <PageEmpty title={t('empties.noLiveChannels')} />
   ) : (
     <ul className="divide-border divide-y">
       {streams.map((stream) => (
@@ -441,7 +443,7 @@ export function AdminStreamManagerPanel({
                 rel="noreferrer"
                 variant="secondary"
               >
-                Open channel
+                {t('actions.openChannel')}
               </ButtonAnchor>
             </Dialog.Actions>
           </>

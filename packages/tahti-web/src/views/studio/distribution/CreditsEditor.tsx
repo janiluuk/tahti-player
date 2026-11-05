@@ -1,5 +1,6 @@
 import { PlusIcon, Trash2Icon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Select, Tooltip } from '@tahti-player/ui';
 
 import type {
@@ -18,11 +19,12 @@ export function CreditsEditor({
   setCredits: (credits: ReleaseCredit[]) => void;
   busy: boolean;
 }) {
+  const { t } = useTranslation('web');
   return (
     <div>
       <p className="mb-2 text-xs font-medium">Credits & roles</p>
       {credits.length === 0 && (
-        <PageEmpty title="No credits yet — add writers, performers, producers, etc." />
+        <PageEmpty title={t('empties.noDistributionCredits')} />
       )}
       <ul className="flex flex-col gap-2">
         {credits.map((credit, index) => (

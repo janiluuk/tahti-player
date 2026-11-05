@@ -1,6 +1,7 @@
 import { ChevronDownIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Select, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -22,6 +23,7 @@ type Props = {
  * this, same role vocabulary as release credits (StudioDistributionView's
  * "Credits & roles" editor). */
 export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
+  const { t } = useTranslation('web');
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -52,7 +54,9 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
       </Button>
       {expanded && (
         <div className="border-border border-t p-4 pt-3">
-          {value.length === 0 && <PageEmpty title="No extra credits yet." />}
+          {value.length === 0 && (
+            <PageEmpty title={t('empties.noExtraCredits')} />
+          )}
           <ul className="flex flex-col gap-2">
             {value.map((credit, index) => (
               <li

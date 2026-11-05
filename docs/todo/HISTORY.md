@@ -1,9 +1,16 @@
+## 2026-11-05 - Batch 50 UX slices
+
+Finnish for `web.actions.openChannel`, radio up-next/shows chrome, and
+PageEmpty titles (`web.empties.*`) across admin radio, moderation, studio
+dialogs, governance, and listen/fan/venue. Empty-state create-CTA inventory
+filed as `empty-state-create-ctas.md`. tahti-web 0.0.341 (#1842).
+
 ## 2026-11-05 - Tahti Radio consolidated player widget
 
 `RadioPlayerWidget` folds the visualizer / now-playing / play-favorite
 controls with Up next, Shows, Just played and Featured into one Storybook
 surface (`Tahti/Radio/RadioPlayerWidget`); `RadioView` uses it. Extracted
-`RadioJustPlayedPanel` and `RadioFeaturedPanel`. tahti-web 0.0.340.
+`RadioJustPlayedPanel` and `RadioFeaturedPanel`. tahti-web 0.0.340 (#1841).
 
 ## 2026-11-05 - Batch 49 UX slices
 
@@ -5998,3 +6005,6 @@ Admin Users sends `isBoard` / `tier` for the BOARD and ARTIST filters so the
 total is no longer one page when the API honours them; falls back to the page
 count otherwise. Fan subscription end dates use `numericDate`. tahti-web
 `0.0.323`; API confirmation stays in `view-first-and-test-hardening-leftovers.md`.
+
+- **Batch 50 UX slices** (2026-11-05, #1842, tahti-web 0.0.341): Finnish for "Open channel" (`web.actions.openChannel`) on Radio, Chat, Moderate, artist profile, embeds and admin stream manager; Radio up-next, booked shows and schedule empties and errors via `web.radio.*`; `PageEmpty` titles via `web.empties.*` for admin Radio, moderation (moderators, bans, messages), Studio dialogs (add to playlist, tracklist, credits, play history, pinned announcements, release tracklist, audio revisions, fingerprint), admin logs, restrictions, user messages, vendors, governance (elections, annual reports, association, board, motion comments) and Listen/fan/venue (chat, payouts, invoices, blocked accounts, venue shows, world map, track insights, news sources, add-ons). Leftovers became batch 51.
+- **Batch 51 UX slices** (2026-11-05, tahti-web 0.0.342): 30 slices of Finnish `PageEmpty` titles (54 strings, 43 files) via `web.empties.*` across Radio, Listen, artist profile, embeds, governance and transparency, Studio (events, shows, episodes, stats, branding, mastering, distribution, go live) and Admin (dashboard, listening, users, storage, content, announcements, financial, streams, workers, cron, station suggestions). Not-found and "unavailable" pages included. Left in `finnish-localization.md`: AgmTab, AgendaItemsPanel and multi-line titles.

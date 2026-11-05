@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ExternalLink,
@@ -30,6 +30,7 @@ export function OAuthServiceCard({
   plugin: ServicePlugin;
   action: Extract<ServiceAction, { kind: 'oauth' }>;
 }) {
+  const { t } = useTranslation('web');
   const adapter = useMemo(
     () => oauthAdapterFor(action.integrationId, action.oauthPath),
     [action.integrationId, action.oauthPath],
@@ -376,7 +377,7 @@ export function OAuthServiceCard({
                 )}
               </div>
               {scTracks.length === 0 ? (
-                <PageEmpty title="No downloadable tracks on this SoundCloud account." />
+                <PageEmpty title={t('empties.noDownloadableSoundCloud')} />
               ) : (
                 <ul className="flex flex-col gap-2">
                   {scTracks.map((track) => (

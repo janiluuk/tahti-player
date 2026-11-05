@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Alert, Button, ClampedText } from '@tahti-player/ui';
 
 import {
@@ -45,6 +46,7 @@ export function SubscribeView({
   username: string;
   checkoutReturn?: FanCheckoutReturn;
 }) {
+  const { t } = useTranslation('web');
   const [data, setData] = useState<FanTiersResponse | null>(null);
   const [meta, setMeta] = useState<FetchMeta | null>(null);
   const [loading, setLoading] = useState(true);
@@ -220,7 +222,7 @@ export function SubscribeView({
           {note && <p className="text-foreground-secondary text-sm">{note}</p>}
 
           {data.tiers.length === 0 ? (
-            <PageEmpty title="No active fan tiers yet." />
+            <PageEmpty title={t('empties.noFanTiers')} />
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
               {data.tiers.map((tier) => (

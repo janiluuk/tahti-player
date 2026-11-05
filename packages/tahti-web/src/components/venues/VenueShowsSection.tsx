@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -34,6 +35,7 @@ export function VenueShowsSection({
   venue: MyVenue;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const headingId = useId();
   const [booking, setBooking] = useState(false);
   const [startAt, setStartAt] = useState('');
@@ -96,7 +98,7 @@ export function VenueShowsSection({
         Upcoming shows
       </h3>
       {shows.length === 0 ? (
-        <PageEmpty title="No shows booked here yet." />
+        <PageEmpty title={t('empties.noVenueShows')} />
       ) : (
         <ul className="divide-border divide-y">
           {shows.map((show) => (

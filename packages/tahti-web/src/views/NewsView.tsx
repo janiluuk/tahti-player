@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { CalendarDaysIcon, ExternalLinkIcon, SparklesIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonAnchor,
@@ -137,6 +138,7 @@ function TimelineEntry({
 const INITIAL_COUNT = 5;
 
 export function NewsView() {
+  const { t } = useTranslation('web');
   const [selected, setSelected] = useState<Announcement | null>(null);
   const [entries, setEntries] = useState<Announcement[]>([]);
   const [loading, setLoading] = useState(true);
@@ -220,7 +222,7 @@ export function NewsView() {
         )}
 
         {!loading && !loadError && entries.length === 0 && (
-          <PageEmpty title="No announcements yet." />
+          <PageEmpty title={t('empties.noAnnouncements')} />
         )}
 
         {visibleEntries.map((entry, index) => (

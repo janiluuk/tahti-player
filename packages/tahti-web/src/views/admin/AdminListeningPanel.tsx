@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { FilterChips, ShareList } from '@tahti-player/ui';
 
 import {
@@ -21,6 +22,7 @@ const RANGES = [
 
 /** Platform listening for the board, from listen sessions (Admin → Content). */
 export function AdminListeningPanel() {
+  const { t } = useTranslation('web');
   const [range, setRange] = useState<AdminListeningRange>('30');
   const [data, setData] = useState<AdminListening | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +66,7 @@ export function AdminListeningPanel() {
             onRetry={() => setAttempt((n) => n + 1)}
           />
         ) : data.listens === 0 ? (
-          <PageEmpty title="No listening in this period." />
+          <PageEmpty title={t('empties.noListeningPeriod')} />
         ) : (
           <>
             <dl className="grid gap-3 sm:grid-cols-3">

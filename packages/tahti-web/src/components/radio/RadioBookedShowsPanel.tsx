@@ -6,6 +6,7 @@ import {
   MicIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink } from '@tahti-player/ui';
 
 import type { StudioShowBooking } from '../../api/shows';
@@ -88,6 +89,7 @@ export function RadioBookedShowsPanel({
   onRetry: () => void;
   onBook?: () => void;
 }) {
+  const { t } = useTranslation('web');
   const days = groupBookingsByDay(bookings, new Date());
   return (
     <section
@@ -99,29 +101,29 @@ export function RadioBookedShowsPanel({
         {onBook ? (
           <Button size="sm" variant="secondary" onClick={onBook}>
             <CalendarPlusIcon size={15} className="mr-1.5" aria-hidden />
-            Book a slot
+            {t('radio.bookASlot')}
           </Button>
         ) : null}
         <ButtonLink to="/schedule" size="sm" variant="secondary">
           <CalendarDaysIcon size={15} className="mr-1.5" aria-hidden />
-          Full schedule
+          {t('radio.fullSchedule')}
         </ButtonLink>
       </div>
       {error && bookings.length > 0 ? (
         <PageErrorBanner
-          title="Could not refresh the schedule"
+          title={t('radio.scheduleRefreshError')}
           description={error}
           onRetry={onRetry}
         />
       ) : null}
       {error && bookings.length === 0 ? (
         <PageError
-          title="Could not load the schedule"
+          title={t('radio.scheduleLoadError')}
           description={error}
           onRetry={onRetry}
         />
       ) : days.length === 0 ? (
-        <PageEmpty title="Nothing booked yet. Fair rotation plays when nobody is." />
+        <PageEmpty title={t('radio.nothingBooked')} />
       ) : (
         days.map((day) => (
           <div key={day.key} className="flex flex-col gap-2">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   BreadcrumbCurrent,
@@ -263,6 +264,7 @@ function VendorTable({ vendors }: { vendors: readonly Vendor[] }) {
 }
 
 export function AdminVendorsContent() {
+  const { t } = useTranslation('web');
   const [integrations, setIntegrations] = useState<AdminIntegrationStatus[]>(
     [],
   );
@@ -313,7 +315,7 @@ export function AdminVendorsContent() {
               ))}
             </ul>
           ) : (
-            <PageEmpty title="No explicit launch blockers are recorded." />
+            <PageEmpty title={t('empties.noLaunchBlockers')} />
           )}
         </StudioPanel>
 

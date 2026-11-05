@@ -280,7 +280,9 @@ export function AdminRadioView() {
                             description="Drag tracks into the exact order listeners will hear between live shows."
                           >
                             {rotation.length === 0 ? (
-                              <PageEmpty title="Nothing is in rotation yet" />
+                              <PageEmpty
+                                title={t('empties.adminRadioNoRotation')}
+                              />
                             ) : (
                               <TahtiRotationPlaylistEditor
                                 items={rotation}
@@ -297,7 +299,9 @@ export function AdminRadioView() {
                             description="Opting a channel out, or back in, notifies its owner."
                           >
                             {data.eligible.length === 0 ? (
-                              <PageEmpty title="No member channels are live right now" />
+                              <PageEmpty
+                                title={t('empties.adminRadioNoLiveMembers')}
+                              />
                             ) : (
                               <ul className="divide-border divide-y">
                                 {data.eligible.map((ch) => (
@@ -397,7 +401,9 @@ export function AdminRadioView() {
                       content:
                         data.optedOut.length === 0 ? (
                           <StudioPanel title="Opted out">
-                            <PageEmpty title="No channels have opted out" />
+                            <PageEmpty
+                              title={t('empties.adminRadioNoOptOuts')}
+                            />
                           </StudioPanel>
                         ) : (
                           <StudioPanel
@@ -452,7 +458,9 @@ export function AdminRadioView() {
                       content: (
                         <StudioPanel title="Feature history">
                           {data.history.length === 0 ? (
-                            <PageEmpty title="No history yet" />
+                            <PageEmpty
+                              title={t('empties.adminRadioNoHistory')}
+                            />
                           ) : (
                             <ul className="divide-border divide-y">
                               {data.history.map((item, i) => (

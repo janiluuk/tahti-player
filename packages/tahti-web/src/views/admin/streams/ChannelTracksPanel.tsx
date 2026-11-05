@@ -1,6 +1,7 @@
 import { SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -117,6 +118,7 @@ function TrackEditDialog({
 }
 
 export function ChannelTracksPanel() {
+  const { t } = useTranslation('web');
   const [slugInput, setSlugInput] = useState('');
   const [slug, setSlug] = useState<string | null>(null);
   const [sounds, setSounds] = useState<AdminChannelSound[]>([]);
@@ -177,7 +179,7 @@ export function ChannelTracksPanel() {
 
       {slug ? (
         sounds.length === 0 ? (
-          <PageEmpty title="This channel has no tracks" />
+          <PageEmpty title={t('empties.channelNoTracks')} />
         ) : (
           <ul
             className="divide-border mt-4 divide-y"

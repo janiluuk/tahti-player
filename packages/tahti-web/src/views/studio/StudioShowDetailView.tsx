@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
@@ -16,6 +17,7 @@ import { ShowHeader } from './show-detail/ShowHeader';
 import { useShowDetail } from './show-detail/useShowDetail';
 
 export function StudioShowDetailView({ id }: { id: string }) {
+  const { t } = useTranslation('web');
   const state = useShowDetail(id);
   const { show, loaded, showLoadError, showTab, msg, reload } = state;
   const [editing, setEditing] = useEditMode();
@@ -45,7 +47,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
                 onRetry={reload}
               />
             ) : (
-              <PageEmpty headingLevel={1} title="Show not found" />
+              <PageEmpty headingLevel={1} title={t('empties.showNotFound')} />
             )}
           </StudioPanel>
         ) : (

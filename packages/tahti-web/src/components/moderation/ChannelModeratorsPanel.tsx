@@ -2,7 +2,7 @@ import { Trash2Icon, UserRoundPlusIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -19,6 +19,7 @@ import { StudioPanel } from '../StudioPanel';
 /** The people the channel owner trusts to moderate the channel's chat:
  * the list, adding one by username, and removing one after a confirm. */
 export function ChannelModeratorsPanel() {
+  const { t } = useTranslation('web');
   const [mods, setMods] = useState<ModeratorRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState('');
@@ -70,7 +71,7 @@ export function ChannelModeratorsPanel() {
         {loading ? (
           <PageLoading label="Loading…" />
         ) : mods.length === 0 ? (
-          <PageEmpty title="No moderators yet" />
+          <PageEmpty title={t('empties.noModerators')} />
         ) : (
           <ul className="flex flex-col gap-2">
             {mods.map((moderator) => (
