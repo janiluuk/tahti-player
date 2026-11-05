@@ -4,10 +4,10 @@ import {
   loadChannelLayoutPresetId,
   loadChannelPageLayout,
   saveChannelLayoutPresetId,
-  saveChannelPageLayout,
   type ChannelLayoutPresetId,
   type ChannelPageItem,
 } from '../lib/channelPageLayout';
+import { persistChannelPageLayout } from '../lib/persistChannelPageLayout';
 
 export type MoveDragState = {
   id: string;
@@ -76,7 +76,7 @@ export function useChannelLayoutEditing(slug: string) {
 
   const saveLayout = () => {
     savedPreset.current = activePresetId;
-    saveChannelPageLayout(slug, layout);
+    void persistChannelPageLayout(slug, layout);
     saveChannelLayoutPresetId(slug, activePresetId);
     setLayoutDirty(false);
   };

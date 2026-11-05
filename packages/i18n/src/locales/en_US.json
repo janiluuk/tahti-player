@@ -2196,7 +2196,8 @@
       "addedNamedToMultitrack": "Added “{{name}}” to Multitrack.",
       "couldNotSavePost": "Could not save the post.",
       "audioUploadedProcessing": "Audio uploaded. It is being processed now.",
-      "uploadCancelled": "Upload cancelled."
+      "uploadCancelled": "Upload cancelled.",
+      "channelLayoutSaveFailed": "Could not save the page layout. It is kept on this device."
     },
     "settingsLogs": {
       "noLogs": "No log entries yet. Warnings, errors and player events from this tab show up here.",

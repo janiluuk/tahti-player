@@ -10,11 +10,11 @@ import {
 } from '../../lib/channelLookElements';
 import {
   loadChannelPageLayout,
-  saveChannelPageLayout,
   setItemVisible,
   type ChannelPageItem,
   type ChannelPageItemType,
 } from '../../lib/channelPageLayout';
+import { persistChannelPageLayout } from '../../lib/persistChannelPageLayout';
 
 type Options = {
   layoutSlug: string;
@@ -65,7 +65,7 @@ export function useLookVisibility({
       onLayoutChange(toggle);
       return;
     }
-    saveChannelPageLayout(
+    void persistChannelPageLayout(
       layoutSlug,
       toggle(loadChannelPageLayout(layoutSlug)),
     );

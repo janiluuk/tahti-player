@@ -2196,7 +2196,8 @@
       "addedNamedToMultitrack": "Lisätty “{{name}}” Multitrackiin.",
       "couldNotSavePost": "Julkaisua ei voitu tallentaa.",
       "audioUploadedProcessing": "Ääni ladattu. Sitä käsitellään nyt.",
-      "uploadCancelled": "Lataus peruutettu."
+      "uploadCancelled": "Lataus peruutettu.",
+      "channelLayoutSaveFailed": "Sivun asettelua ei voitu tallentaa. Se säilyy tällä laitteella."
     },
     "settingsLogs": {
       "noLogs": "Ei lokimerkintöjä vielä. Tämän välilehden varoitukset, virheet ja soittimen tapahtumat näkyvät täällä.",

@@ -1,3 +1,4 @@
+import type { ChannelPageItem } from '../../lib/channelPageLayout';
 import type { FetchMeta } from '.././client';
 import { mockFixture } from '.././mock-overrides';
 import {
@@ -88,6 +89,8 @@ export type ChannelVisualPatch = {
   useBackgroundGradient?: boolean;
   backgroundColorSchemeJson?: string | null;
   channelLinks?: ChannelLink[] | null;
+  /** Channel page layout (sections, Identity toggles); null clears. */
+  pageLayout?: ChannelPageItem[] | null;
   textOverlayMode?: string;
   textOverlayText?: string;
   textOverlayAlign?: string;
@@ -119,6 +122,7 @@ export const CHANNEL_VISUAL_API_PATCH_KEYS = [
   'playerOverlayText',
   'playerOverlayAlign',
   'channelLinks',
+  'pageLayout',
 ] as const;
 
 export type ChannelVisualApiPatch = Pick<

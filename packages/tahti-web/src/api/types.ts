@@ -84,6 +84,8 @@ export type PublicChannel = {
   brandAccentPreset?: string | null;
   /** Short line shown in a strip across the top of the channel hero. */
   topBarText?: string | null;
+  /** Channel Designer page layout (JSON array); null = player default. */
+  pageLayoutJson?: string | null;
   /** Now-playing title/artist overlay layout — see
    * content/nowPlayingOverlayPresets.ts. Defaults to 'classic' when unset. */
   nowPlayingOverlayStyle?: string | null;

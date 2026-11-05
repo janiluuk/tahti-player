@@ -16,6 +16,8 @@ export type ChannelVisual = {
   brandAccentPreset: string | null;
   /** Short line shown in a strip across the top of the channel hero. */
   topBarText?: string | null;
+  /** Saved channel page layout (JSON array), see `parseChannelPageLayout`. */
+  pageLayoutJson?: string | null;
   slideshowPreset?: string | null;
   slideshowIntervalSeconds?: number;
   slideshowTransitionMs?: number;
