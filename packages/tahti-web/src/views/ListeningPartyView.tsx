@@ -8,6 +8,7 @@ import { ListeningPartyChat } from '../components/listening-party/ListeningParty
 import { ListeningPartyHero } from '../components/listening-party/ListeningPartyHero';
 import { ListeningPartyJoinButton } from '../components/listening-party/ListeningPartyJoinButton';
 import { ListeningPartyLinerNotes } from '../components/listening-party/ListeningPartyLinerNotes';
+import { ListeningPartyReminderButton } from '../components/listening-party/ListeningPartyReminderButton';
 import { ListeningPartyTracklist } from '../components/listening-party/ListeningPartyTracklist';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { useListeningParty } from '../hooks/useListeningParty';
@@ -57,12 +58,18 @@ function ListeningPartyPage({
           party={party}
           clock={clock}
           actions={
-            <ListeningPartyJoinButton
-              state={clock.state}
-              joined={joined}
-              onJoin={() => setJoined(true)}
-              onLeave={leave}
-            />
+            <>
+              <ListeningPartyJoinButton
+                state={clock.state}
+                joined={joined}
+                onJoin={() => setJoined(true)}
+                onLeave={leave}
+              />
+              <ListeningPartyReminderButton
+                partyId={party.id}
+                state={clock.state}
+              />
+            </>
           }
         />
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)]">
