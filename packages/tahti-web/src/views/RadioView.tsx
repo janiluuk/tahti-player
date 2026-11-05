@@ -566,7 +566,7 @@ export function RadioView() {
                     },
                   ]}
                 />
-<ButtonLink
+                <ButtonLink
                   to="/channel/$slug"
                   params={{ slug: TAHTI_RADIO_SLUG }}
                   size="sm"
