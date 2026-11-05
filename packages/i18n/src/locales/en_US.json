@@ -1484,7 +1484,17 @@
       "uploadNewReleaseTrackDescription": "Adds a track to this release from an audio file on your device.",
       "releaseTrackTitle": "Track title",
       "releaseAudioFormats": "WAV, FLAC, MP3, AAC or AIFF",
-      "chooseAudioFileBrowse": "Choose audio file"
+      "chooseAudioFileBrowse": "Choose audio file",
+      "mixOrder": "Mix order",
+      "mixOrderTitle": "Suggested mix order",
+      "mixOrderDescription": "Your selection ordered for a smooth mix: the slowest track with a key first, then the closest key on the Camelot wheel and tempo each time. Nothing changes until you add them to a playlist.",
+      "mixOrderLoading": "Working out the order…",
+      "mixOrderError": "Could not suggest an order",
+      "mixOrderNoKeys": "None of these tracks has a key set, so there is nothing to order by. Add keys in the track editor.",
+      "mixOrderUnplaced_one": "{{count}} track has no key and goes at the end:",
+      "mixOrderUnplaced_other": "{{count}} tracks have no key and go at the end:",
+      "mixOrderBpm": "{{bpm}} BPM",
+      "mixOrderUse": "Add to a playlist in this order"
     },
     "date": {
       "today": "Today",

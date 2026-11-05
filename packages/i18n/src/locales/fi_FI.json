@@ -1484,7 +1484,17 @@
       "uploadNewReleaseTrackDescription": "Lisää kappaleen tähän julkaisuun äänitiedostosta laitteeltasi.",
       "releaseTrackTitle": "Kappaleen nimi",
       "releaseAudioFormats": "WAV, FLAC, MP3, AAC tai AIFF",
-      "chooseAudioFileBrowse": "Valitse äänitiedosto"
+      "chooseAudioFileBrowse": "Valitse äänitiedosto",
+      "mixOrder": "Miksausjärjestys",
+      "mixOrderTitle": "Ehdotettu miksausjärjestys",
+      "mixOrderDescription": "Valintasi järjestettynä sujuvaa miksausta varten: ensin hitain kappale, jolla on sävellaji, sitten aina lähin sävellaji Camelot-kehällä ja tempo. Mikään ei muutu ennen kuin lisäät ne soittolistalle.",
+      "mixOrderLoading": "Lasketaan järjestystä…",
+      "mixOrderError": "Järjestystä ei voitu ehdottaa",
+      "mixOrderNoKeys": "Yhdelläkään kappaleella ei ole sävellajia, joten järjestettävää ei ole. Lisää sävellajit kappaleen muokkaimessa.",
+      "mixOrderUnplaced_one": "{{count}} kappaleella ei ole sävellajia, ja se tulee loppuun:",
+      "mixOrderUnplaced_other": "{{count}} kappaleella ei ole sävellajia, ja ne tulevat loppuun:",
+      "mixOrderBpm": "{{bpm}} BPM",
+      "mixOrderUse": "Lisää soittolistalle tässä järjestyksessä"
     },
     "date": {
       "today": "Tänään",
