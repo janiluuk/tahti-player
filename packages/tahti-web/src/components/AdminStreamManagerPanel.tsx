@@ -202,7 +202,7 @@ export function AdminStreamManagerPanel({
                   </div>
                   <div className="ml-auto flex shrink-0 items-center gap-1">
                     {stream.hlsUrl ? (
-                      <Tooltip content="Listen" side="top">
+                      <Tooltip content={t('tooltips.listen')} side="top">
                         <ButtonAnchor
                           href={stream.hlsUrl}
                           target="_blank"
@@ -215,7 +215,7 @@ export function AdminStreamManagerPanel({
                         </ButtonAnchor>
                       </Tooltip>
                     ) : null}
-                    <Tooltip content="Details" side="top">
+                    <Tooltip content={t('tooltips.details')} side="top">
                       <Button
                         size="icon-sm"
                         variant="text"
@@ -225,7 +225,7 @@ export function AdminStreamManagerPanel({
                         <EyeIcon size={14} aria-hidden />
                       </Button>
                     </Tooltip>
-                    <Tooltip content="Restart stream" side="top">
+                    <Tooltip content={t('tooltips.restartStream')} side="top">
                       <Button
                         size="icon-sm"
                         variant="secondary"
@@ -243,7 +243,7 @@ export function AdminStreamManagerPanel({
                         <RotateCwIcon size={14} aria-hidden />
                       </Button>
                     </Tooltip>
-                    <Tooltip content="Skip current item" side="top">
+                    <Tooltip content={t('tooltips.skipCurrentItem')} side="top">
                       <Button
                         size="icon-sm"
                         variant="secondary"
@@ -254,7 +254,7 @@ export function AdminStreamManagerPanel({
                         <SkipForwardIcon size={14} aria-hidden />
                       </Button>
                     </Tooltip>
-                    <Tooltip content="Pause stream" side="top">
+                    <Tooltip content={t('tooltips.pauseStream')} side="top">
                       <Button
                         size="icon-sm"
                         variant="secondary"
@@ -265,7 +265,7 @@ export function AdminStreamManagerPanel({
                         <PauseIcon size={14} aria-hidden />
                       </Button>
                     </Tooltip>
-                    <Tooltip content="Resume stream" side="top">
+                    <Tooltip content={t('tooltips.resumeStream')} side="top">
                       <Button
                         size="icon-sm"
                         variant="secondary"
@@ -276,7 +276,7 @@ export function AdminStreamManagerPanel({
                         <PlayIcon size={14} aria-hidden />
                       </Button>
                     </Tooltip>
-                    <Tooltip content="Force offline" side="top">
+                    <Tooltip content={t('tooltips.forceOffline')} side="top">
                       <Button
                         size="icon-sm"
                         variant="text"
@@ -336,7 +336,7 @@ export function AdminStreamManagerPanel({
                   )}
                 </Button>
               </Tooltip>
-              <Tooltip content="Refresh live streams" side="top">
+              <Tooltip content={t('tooltips.refreshLiveStreams')} side="top">
                 <Button
                   type="button"
                   size="icon-sm"

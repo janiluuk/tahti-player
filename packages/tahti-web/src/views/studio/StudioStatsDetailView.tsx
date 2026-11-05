@@ -110,7 +110,7 @@ export function StudioStatsDetailView() {
 
           {loading ? (
             <StudioPanel>
-              <PageLoading label="Loading plays…" />
+              <PageLoading label={t('loading.loadingPlays')} />
             </StudioPanel>
           ) : !data ? (
             <StudioPanel>

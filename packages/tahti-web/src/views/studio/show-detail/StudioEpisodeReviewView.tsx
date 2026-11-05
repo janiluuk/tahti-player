@@ -109,7 +109,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
           ) : notFound ? (
             <PageEmpty headingLevel={1} title={t('empties.episodeNotFound')} />
           ) : (
-            <PageLoading label="Loading…" />
+            <PageLoading label={t('loading.loading')} />
           )}
         </div>
       </StudioGate>

@@ -61,7 +61,7 @@ export function StudioCollectionEditView({
             </StudioPanel>
           ) : !col ? (
             <StudioPanel>
-              <PageLoading label="Loading…" />
+              <PageLoading label={t('loading.loading')} />
             </StudioPanel>
           ) : (
             <>

@@ -53,7 +53,7 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
   if (loading) {
     return active ? (
       <StudioPanel title="Download gates">
-        <PageLoading label="Loading download gates…" />
+        <PageLoading label={t('loading.loadingDownloadGates')} />
       </StudioPanel>
     ) : null;
   }

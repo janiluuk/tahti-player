@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { lazy, Suspense } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { SectionShell, ViewShell } from '@tahti-player/ui';
 
 import { HelpLinkCard } from '../../components/HelpLinkCard';
@@ -86,6 +87,7 @@ export function StudioGovernanceView({
 }: {
   tab?: StudioGovernanceTab;
 }) {
+  const { t } = useTranslation('web');
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
@@ -95,7 +97,9 @@ export function StudioGovernanceView({
           ) : tab === 'documents' ? (
             <GovernanceDocumentsTab />
           ) : (
-            <Suspense fallback={<PageLoading label="Loading governance…" />}>
+            <Suspense
+              fallback={<PageLoading label={t('loading.loadingGovernance')} />}
+            >
               {tab === 'topics' ? (
                 <LazyFeatureRequestsView embedded />
               ) : (

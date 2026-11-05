@@ -108,7 +108,7 @@ export function AudienceBreakdown({
       }
     >
       {status === 'loading' ? (
-        <PageLoading label="Loading audience…" />
+        <PageLoading label={t('loading.loadingAudience')} />
       ) : status === 'error' ? (
         <PageError
           title={t('loadErrors.couldNotLoadTheAudienceBreakdown')}

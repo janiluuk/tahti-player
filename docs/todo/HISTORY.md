@@ -1,3 +1,11 @@
+## 2026-11-05 - Batch 61 UX slices
+
+Finnish for the last 23 loading labels (no English `PageLoading` label left)
+and the tooltips in the 7 files with the most of them, in a new
+`web.tooltips.*` group: admin stream manager, local playlists and the
+playlist browser, the image lightbox, desktop library row actions, the artist
+gallery and the navigation structure widget. tahti-web 0.0.352.
+
 ## 2026-11-05 - Batch 60 UX slices
 
 Finnish loading labels (`web.loading.*`) in 50 more files, mostly admin

@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { PlugIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import {
@@ -27,6 +28,7 @@ function StatusPill({ ok, label }: { ok: boolean; label: string }) {
 }
 
 export function StudioStripeView() {
+  const { t } = useTranslation('web');
   const [connect, setConnect] = useState<FanConnectStatus | null>(null);
   const [payouts, setPayouts] = useState<FanPayoutStats | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -55,7 +57,7 @@ export function StudioStripeView() {
           ) : null}
 
           {!ready ? (
-            <PageLoading label="Loading Stripe…" />
+            <PageLoading label={t('loading.loadingStripe')} />
           ) : !enabled ? (
             <StudioPanel
               title="Stripe is not enabled"

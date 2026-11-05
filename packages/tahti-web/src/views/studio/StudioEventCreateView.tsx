@@ -3,7 +3,7 @@ import { ArrowLeftIcon, CalendarPlusIcon, SaveIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -31,6 +31,7 @@ import { toastWithUndo } from '../../lib/undoToast';
 
 /** Add a new event, or edit an existing one when `eventId` is given. */
 export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const editing = eventId !== undefined;
   const [loadingEvent, setLoadingEvent] = useState(editing);
@@ -112,7 +113,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
         >
           <StudioPanel title="Event details">
             {loadingEvent ? (
-              <PageLoading label="Loading…" />
+              <PageLoading label={t('loading.loading')} />
             ) : (
               <form
                 className="flex flex-col gap-4"

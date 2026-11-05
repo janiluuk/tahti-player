@@ -44,7 +44,7 @@ export function StudioEventView({ eventId }: { eventId: string }) {
           <BackButtonLink to="/studio/events" aria-label="Back to Events" />
         </Tooltip>
         {event === undefined ? (
-          <PageLoading label="Loading…" />
+          <PageLoading label={t('loading.loading')} />
         ) : event === null ? (
           <PageEmpty title={t('empties.eventNotFound')} />
         ) : (

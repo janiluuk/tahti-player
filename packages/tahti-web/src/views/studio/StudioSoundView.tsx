@@ -1,5 +1,6 @@
 import { BarChart3Icon, ListMusicIcon, TagsIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Alert,
   backButtonCornerClassName,
@@ -19,6 +20,7 @@ import { SoundHeader } from './sound/SoundHeader';
 import { useSoundEditor } from './sound/useSoundEditor';
 
 export function StudioSoundView({ id }: { id: string }) {
+  const { t } = useTranslation('web');
   const state = useSoundEditor(id);
   const { item, tab, setTab, notReady, hasError, isAudioClip, setItem } = state;
   const [editing, setEditing] = useEditMode();
@@ -43,7 +45,7 @@ export function StudioSoundView({ id }: { id: string }) {
             />
           </Tooltip>
           {!item ? (
-            <PageLoading label="Loading…" />
+            <PageLoading label={t('loading.loading')} />
           ) : (
             <>
               <SoundHeader
