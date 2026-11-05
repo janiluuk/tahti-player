@@ -509,7 +509,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
 
       {open &&
         (loading ? (
-          <PageLoading label="Loading…" />
+          <PageLoading label={t('loading.loading')} />
         ) : !form ? (
           catalogError ? (
             <PageError
@@ -518,7 +518,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
               onRetry={loadOps}
             />
           ) : (
-            <PageLoading label="Loading…" />
+            <PageLoading label={t('loading.loading')} />
           )
         ) : (
           <Tabs

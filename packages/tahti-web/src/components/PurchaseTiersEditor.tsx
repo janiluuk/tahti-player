@@ -139,7 +139,7 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
       </div>
 
       {!loaded ? (
-        <PageLoading label="Loading tiers…" />
+        <PageLoading label={t('loading.loadingTiers')} />
       ) : loadError && tiers.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadYourPurchaseTiers')}

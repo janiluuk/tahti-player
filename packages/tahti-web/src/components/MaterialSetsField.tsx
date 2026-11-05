@@ -2,7 +2,7 @@ import { ListMusicIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Select, Toggle } from '@tahti-player/ui';
 
 import {
@@ -42,6 +42,7 @@ type Props = {
 
 /** Sets card — toggle membership in the artist's collections for one sound. */
 export function MaterialSetsField({ soundId }: Props) {
+  const { t } = useTranslation('web');
   const [rows, setRows] = useState<SetMembershipEntry[] | null>(null);
   const [search, setSearch] = useState('');
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -204,7 +205,7 @@ export function MaterialSetsField({ soundId }: Props) {
       description="Click a set to add this upload or to take it out again — it is saved right away."
     >
       {rows == null ? (
-        <PageLoading label="Loading sets…" />
+        <PageLoading label={t('loading.loadingSets')} />
       ) : (
         <MaterialMembershipList
           search={search}

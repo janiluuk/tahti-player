@@ -122,7 +122,7 @@ export function ChannelStoryFeed({
   }, [slug]);
 
   if (posts === null) {
-    return editing ? <PageLoading label="Loading stories…" /> : null;
+    return editing ? <PageLoading label={t('loading.loadingStories')} /> : null;
   }
   if (posts.length === 0) {
     return editing ? (

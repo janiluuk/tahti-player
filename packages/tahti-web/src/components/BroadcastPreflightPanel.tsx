@@ -91,7 +91,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
   }, [attempt]);
 
   if (!loaded) {
-    return <PageLoading label="Loading show info…" />;
+    return <PageLoading label={t('loading.loadingShowInfo')} />;
   }
 
   if (!preflight) {

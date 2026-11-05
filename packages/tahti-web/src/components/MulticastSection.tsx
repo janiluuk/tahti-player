@@ -509,7 +509,7 @@ function DestinationsGrid({
         </Tooltip>
       </div>
       {loading ? (
-        <PageLoading label="Loading destinations…" />
+        <PageLoading label={t('loading.loadingDestinations')} />
       ) : loadError && targets.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadYourDestinations')}

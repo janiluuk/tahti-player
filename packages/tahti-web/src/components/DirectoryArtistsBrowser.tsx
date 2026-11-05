@@ -135,7 +135,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
   if (loading) {
     return (
       <section className="flex flex-col gap-4" aria-label="Browse artists">
-        <PageLoading label="Loading artists…" />
+        <PageLoading label={t('loading.loadingArtists')} />
       </section>
     );
   }

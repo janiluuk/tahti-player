@@ -1,6 +1,7 @@
 import { LayoutDashboard, Lock } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { hasStudioAccess } from '../lib/accountRoles';
@@ -22,6 +23,7 @@ export function StudioGate({
   requireChannel = true,
   embedded = false,
 }: Props) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
   const profileLoaded = useAuthStore((s) => s.profileLoaded);
@@ -29,7 +31,7 @@ export function StudioGate({
   const openChannelSetup = useChannelSetupModalStore((s) => s.open);
 
   if (!hydrated) {
-    return <PageLoading label="Loading session…" />;
+    return <PageLoading label={t('loading.loadingSession')} />;
   }
 
   if (!user) {
@@ -45,7 +47,7 @@ export function StudioGate({
   }
 
   if (!hasStudioAccess(user) && !profileLoaded) {
-    return <PageLoading label="Loading your account…" />;
+    return <PageLoading label={t('loading.loadingYourAccount')} />;
   }
 
   if (!hasStudioAccess(user)) {
@@ -70,7 +72,7 @@ export function StudioGate({
   }
 
   if (requireChannel && !user.channel && !profileLoaded) {
-    return <PageLoading label="Loading your channel…" />;
+    return <PageLoading label={t('loading.loadingYourChannel')} />;
   }
 
   if (requireChannel && !user.channel) {
