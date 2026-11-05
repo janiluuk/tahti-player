@@ -3260,6 +3260,14 @@
       "publishReportTitle": "Publish annual report {{year}}?",
       "publishReportDescription": "Members will be able to read and download it from Governance.",
       "publishConfirm": "Publish"
+    },
+    "listeningParty": {
+      "remindMe": "Remind me",
+      "reminderOn": "Reminder set",
+      "reminderSet": "We'll tell you when it starts",
+      "reminderOff": "Reminder removed",
+      "reminderCount_one": "{{count}} person wants a reminder",
+      "reminderCount_other": "{{count}} people want a reminder"
     }
   },
   "studioEditor": {

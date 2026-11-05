@@ -3260,6 +3260,14 @@
       "publishReportTitle": "Julkaistaanko vuosikertomus {{year}}?",
       "publishReportDescription": "Jäsenet voivat lukea ja ladata sen Governance-osiosta.",
       "publishConfirm": "Julkaise"
+    },
+    "listeningParty": {
+      "remindMe": "Muistuta minua",
+      "reminderOn": "Muistutus asetettu",
+      "reminderSet": "Kerromme, kun se alkaa",
+      "reminderOff": "Muistutus poistettu",
+      "reminderCount_one": "{{count}} henkilö haluaa muistutuksen",
+      "reminderCount_other": "{{count}} henkilöä haluaa muistutuksen"
     }
   },
   "studioEditor": {
