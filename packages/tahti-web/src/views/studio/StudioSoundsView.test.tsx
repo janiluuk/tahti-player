@@ -106,6 +106,51 @@ describe('StudioSoundsView', () => {
     expect(await screen.findByText(/Moonlight Drive/)).toBeTruthy();
   });
 
+  it('filters by a genre picked from the library facets', async () => {
+    const page = vi.spyOn(studio, 'fetchStudioSoundsPage').mockResolvedValue({
+      data: { items: [sound], total: 1 },
+      meta: { source: 'api' },
+    });
+    vi.spyOn(studio, 'fetchStudioSoundStats').mockResolvedValue({
+      data: emptyStats,
+      meta: { source: 'api' },
+    });
+    vi.spyOn(studio, 'fetchStudioSoundFacets').mockResolvedValue({
+      data: {
+        facets: {
+          genre: [
+            { value: 'house', count: 1 },
+            { value: 'ambient', count: 3 },
+          ],
+          tag: [{ value: 'live', count: 2 }],
+        },
+        total: 4,
+      },
+      meta: { source: 'api' },
+    });
+    await renderWithRouter(<StudioSoundsView />);
+    await screen.findByText(/Moonlight Drive/);
+    fireEvent.click(screen.getByRole('button', { name: 'Expand filters' }));
+    const genre = await screen.findByRole('button', { name: /Genre/ });
+    await act(async () => {
+      fireEvent.click(genre);
+    });
+    const options = await screen.findAllByRole('option');
+    expect(options.map((o) => o.textContent?.replace('✓', ''))).toEqual([
+      'All genres',
+      'ambient (3)',
+      'house (1)',
+    ]);
+    await act(async () => {
+      fireEvent.click(screen.getByRole('option', { name: 'ambient (3)' }));
+    });
+    await vi.waitFor(() =>
+      expect(page).toHaveBeenLastCalledWith(
+        expect.objectContaining({ genre: 'ambient' }),
+      ),
+    );
+  });
+
   it('refreshes a pending upload until processing completes', async () => {
     const fetch = vi
       .spyOn(studio, 'fetchStudioSoundsPage')

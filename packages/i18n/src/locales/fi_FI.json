@@ -1484,7 +1484,12 @@
       "uploadNewReleaseTrackDescription": "Lisää kappaleen tähän julkaisuun äänitiedostosta laitteeltasi.",
       "releaseTrackTitle": "Kappaleen nimi",
       "releaseAudioFormats": "WAV, FLAC, MP3, AAC tai AIFF",
-      "chooseAudioFileBrowse": "Valitse äänitiedosto"
+      "chooseAudioFileBrowse": "Valitse äänitiedosto",
+      "genreFilter": "Tyylilaji",
+      "tagFilter": "Tagi",
+      "allGenres": "Kaikki tyylilajit",
+      "allTags": "Kaikki tagit",
+      "facetOption": "{{value}} ({{count}})"
     },
     "date": {
       "today": "Tänään",

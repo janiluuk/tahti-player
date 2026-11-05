@@ -10,6 +10,7 @@ import {
   deleteStudioSound,
   fetchEditorSource,
   fetchStudioSoundDownload,
+  fetchStudioSoundFacets,
   fetchStudioSoundIds,
   fetchStudioSoundsPage,
   fetchStudioSoundStats,
@@ -98,6 +99,8 @@ function toServerFilter(input: {
   embedFilter: EmbedFilter;
   uploadedFrom: string;
   uploadedTo: string;
+  genre?: string;
+  tag?: string;
 }): StudioSoundListFilter {
   return {
     ...(input.query.trim() ? { q: input.query.trim() } : {}),
@@ -111,6 +114,8 @@ function toServerFilter(input: {
         : {}),
     ...(input.uploadedFrom ? { uploadedFrom: input.uploadedFrom } : {}),
     ...(input.uploadedTo ? { uploadedTo: input.uploadedTo } : {}),
+    ...(input.genre ? { genre: input.genre } : {}),
+    ...(input.tag ? { tag: input.tag } : {}),
   };
 }
 
@@ -138,6 +143,12 @@ export function useStudioSoundsState() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [uploadedFrom, setUploadedFrom] = useState('');
   const [uploadedTo, setUploadedTo] = useState('');
+  const [genreFilter, setGenreFilter] = useState('');
+  const [tagFilter, setTagFilter] = useState('');
+  const [facets, setFacets] = useState<{
+    genre: Array<{ value: string; count: number }>;
+    tag: Array<{ value: string; count: number }>;
+  }>({ genre: [], tag: [] });
   const [busyId, setBusyId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [embedOpenId, setEmbedOpenId] = useState<string | null>(null);
@@ -183,9 +194,42 @@ export function useStudioSoundsState() {
         embedFilter,
         uploadedFrom,
         uploadedTo,
+        genre: genreFilter,
+        tag: tagFilter,
       }),
-    [contentTypeFilter, debouncedQuery, embedFilter, uploadedFrom, uploadedTo],
+    [
+      contentTypeFilter,
+      debouncedQuery,
+      embedFilter,
+      uploadedFrom,
+      uploadedTo,
+      genreFilter,
+      tagFilter,
+    ],
   );
+
+  useEffect(() => {
+    if (!filtersOpen) {
+      return;
+    }
+    let active = true;
+    void fetchStudioSoundFacets(['genre', 'tag']).then(({ data }) => {
+      if (!active) {
+        return;
+      }
+      const sorted = (values: Array<{ value: string; count: number }> = []) =>
+        [...values].sort(
+          (a, b) => b.count - a.count || a.value.localeCompare(b.value),
+        );
+      setFacets({
+        genre: sorted(data.facets.genre),
+        tag: sorted(data.facets.tag),
+      });
+    });
+    return () => {
+      active = false;
+    };
+  }, [filtersOpen]);
 
   const listSort = apiSort(sortField, sortDescending);
 
@@ -297,6 +341,8 @@ export function useStudioSoundsState() {
     }
     setUploadedFrom('');
     setUploadedTo('');
+    setGenreFilter('');
+    setTagFilter('');
   };
 
   const filtersActive =
@@ -304,7 +350,9 @@ export function useStudioSoundsState() {
     embedFilter !== 'ALL' ||
     contentTypeFilter !== 'ALL' ||
     Boolean(uploadedFrom) ||
-    Boolean(uploadedTo);
+    Boolean(uploadedTo) ||
+    Boolean(genreFilter) ||
+    Boolean(tagFilter);
 
   const filtered = useMemo(() => {
     const ordered = sortPinnedFirst(items);
@@ -593,6 +641,11 @@ export function useStudioSoundsState() {
     setUploadedFrom,
     uploadedTo,
     setUploadedTo,
+    genreFilter,
+    setGenreFilter,
+    tagFilter,
+    setTagFilter,
+    facets,
     busyId,
     editingId,
     setEditingId,

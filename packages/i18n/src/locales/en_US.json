@@ -1484,7 +1484,12 @@
       "uploadNewReleaseTrackDescription": "Adds a track to this release from an audio file on your device.",
       "releaseTrackTitle": "Track title",
       "releaseAudioFormats": "WAV, FLAC, MP3, AAC or AIFF",
-      "chooseAudioFileBrowse": "Choose audio file"
+      "chooseAudioFileBrowse": "Choose audio file",
+      "genreFilter": "Genre",
+      "tagFilter": "Tag",
+      "allGenres": "All genres",
+      "allTags": "All tags",
+      "facetOption": "{{value}} ({{count}})"
     },
     "date": {
       "today": "Today",
