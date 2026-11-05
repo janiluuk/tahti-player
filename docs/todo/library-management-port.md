@@ -12,11 +12,10 @@ files already have this stack; this todo is cloud Sounds only.
 
 - [x] `studio-sounds` client: page / ids / facets / stats / bulk-delete / bulk-patch
 - [x] Server-driven `useStudioSoundsState` (debounce `q`, discard stale)
-- [x] Stats strip on the Sounds list (facet dropdowns deferred; filters already map to the API)
+- [x] Stats strip on the Sounds list; Genre/Tag facet filters (#1855); Mix order from the selection (#1851, tahti-org#1070)
 - [x] Selection bar: select-all matching, bulk delete, bulk edit
 - [x] Route allowlist / API-REFERENCE / tests
 
 ## Deferred
 
-- Suggest-playlist UI (waits on org endpoint)
 - Native desktop Phase 6–7 leftovers (`desktop-pro-library.md`)

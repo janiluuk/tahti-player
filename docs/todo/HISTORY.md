@@ -6008,3 +6008,14 @@ count otherwise. Fan subscription end dates use `numericDate`. tahti-web
 
 - **Batch 50 UX slices** (2026-11-05, #1842, tahti-web 0.0.341): Finnish for "Open channel" (`web.actions.openChannel`) on Radio, Chat, Moderate, artist profile, embeds and admin stream manager; Radio up-next, booked shows and schedule empties and errors via `web.radio.*`; `PageEmpty` titles via `web.empties.*` for admin Radio, moderation (moderators, bans, messages), Studio dialogs (add to playlist, tracklist, credits, play history, pinned announcements, release tracklist, audio revisions, fingerprint), admin logs, restrictions, user messages, vendors, governance (elections, annual reports, association, board, motion comments) and Listen/fan/venue (chat, payouts, invoices, blocked accounts, venue shows, world map, track insights, news sources, add-ons). Leftovers became batch 51.
 - **Batch 51 UX slices** (2026-11-05, tahti-web 0.0.342): 30 slices of Finnish `PageEmpty` titles (54 strings, 43 files) via `web.empties.*` across Radio, Listen, artist profile, embeds, governance and transparency, Studio (events, shows, episodes, stats, branding, mastering, distribution, go live) and Admin (dashboard, listening, users, storage, content, announcements, financial, streams, workers, cron, station suggestions). Not-found and "unavailable" pages included. Left in `finnish-localization.md`: AgmTab, AgendaItemsPanel and multi-line titles.
+
+## 2026-11-05 - Cross-repo batch 122 (30 slices)
+
+Reverse route diff (now nearly empty: chat ban-from-message was already
+wired through a path helper) plus a sweep of artist groups and listening
+parties for missing member management and "nobody is told" gaps.
+
+- **tahti-org** #1052 track detail sends `embedProvider`/`embedUri`; #1053 ten group/party notification types (one migration); groups chain #1054 members list → #1055 remove → #1056 role → #1057 hand over (playlist and founder link move) → #1058–#1064 notices (join request, answer, submission, submission answer, removed, role, deleted) → #1065 public pages honour founder blocks; parties chain #1066 followers told on schedule → #1067 `ListeningPartyReminder` + `/api/v1/listening-parties/:id/reminder` → #1068 worker `listening-party-reminders` → #1069 moved/cancelled notices; #1070 `POST /api/me/sound/suggest-playlist` (Camelot helpers in `@tahti/shared`); #1071 upload complete answers 415 `not_audio` (magic bytes).
+- **tahti-web** #1843 Studio group Members panel → #1846 role + hand over; #1847 inbox kinds for the new types; #1848 Remind me on party pages (allowlist entry until the org release) → #1849 reminder counts in Studio; #1851 Mix order for selected sounds; #1853 readable 415 upload message; #1854 Discover default artwork instead of letter tiles; #1855 Genre/Tag facet filters on Sounds.
+- Also: Discover/Listen widget audit (mock app, desktop + phone) filed as `discover-listen-widget-audit-2026-11-05.md`.
+

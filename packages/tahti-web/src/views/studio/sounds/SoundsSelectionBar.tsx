@@ -1,5 +1,6 @@
 import {
   Disc3Icon,
+  ListOrderedIcon,
   ListPlusIcon,
   PencilIcon,
   Trash2Icon,
@@ -10,8 +11,10 @@ import { useState } from 'react';
 import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
+import type { MixOrderTrack } from '../../../api/studio/sound-mix-order';
 import { AddToPlaylistPanel } from '../../../components/AddToPlaylistPanel';
 import { AddToReleasePanel } from '../../../components/AddToReleasePanel';
+import { SoundsMixOrderDialog } from './SoundsMixOrderDialog';
 import type { StudioSoundsState } from './useStudioSoundsState';
 
 export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
@@ -31,6 +34,9 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
   } = state;
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [releaseOpen, setReleaseOpen] = useState(false);
+  const [mixOpen, setMixOpen] = useState(false);
+  const [mixTracks, setMixTracks] = useState<MixOrderTrack[]>([]);
+  const [orderedIds, setOrderedIds] = useState<string[] | null>(null);
   const selected = items.filter((item) => selectedIds.has(item.id));
 
   if (selectedIds.size === 0) {
@@ -91,9 +97,32 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
         </Button>
         <Button
           size="sm"
+          variant="secondary"
+          className="gap-1.5"
+          disabled={bulkBusy || selected.length < 2}
+          onClick={() => {
+            setMixTracks(
+              selected.map((item) => ({
+                id: item.id,
+                title: item.title,
+                bpm: item.effectiveBpm ?? item.bpm ?? null,
+                key: item.effectiveKey ?? item.musicalKey ?? null,
+              })),
+            );
+            setMixOpen(true);
+          }}
+        >
+          <ListOrderedIcon size={15} aria-hidden />
+          {t('library.mixOrder')}
+        </Button>
+        <Button
+          size="sm"
           className="gap-1.5"
           disabled={bulkBusy}
-          onClick={() => setPlaylistOpen(true)}
+          onClick={() => {
+            setOrderedIds(null);
+            setPlaylistOpen(true);
+          }}
         >
           <ListPlusIcon size={15} aria-hidden />
           {t('library.soundsAddToPlaylist')}
@@ -126,9 +155,19 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
       />
       <AddToPlaylistPanel
         isOpen={playlistOpen}
-        soundIds={[...selectedIds]}
+        soundIds={orderedIds ?? [...selectedIds]}
         trackTitle={selected[0]?.title ?? ''}
         onClose={() => setPlaylistOpen(false)}
+      />
+      <SoundsMixOrderDialog
+        isOpen={mixOpen}
+        tracks={mixTracks}
+        onClose={() => setMixOpen(false)}
+        onUseOrder={(ids) => {
+          setMixOpen(false);
+          setOrderedIds(ids);
+          setPlaylistOpen(true);
+        }}
       />
     </div>
   );
