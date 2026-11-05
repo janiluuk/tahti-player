@@ -1,6 +1,6 @@
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Dialog, FilePicker } from '@tahti-player/ui';
 
 import { removeStudioCollectionItem } from '../../../api/studio';
@@ -19,6 +19,7 @@ export function CollectionDialogs({
   state: CollectionEditState;
   isAlbumLike: boolean;
 }) {
+  const { t } = useTranslation('web');
   const {
     addPickerOpen,
     setAddPickerOpen,
@@ -105,9 +106,17 @@ export function CollectionDialogs({
 
       <ConfirmDialog
         isOpen={pendingRemove !== null}
-        title={`Remove "${pendingRemove?.title}"?`}
-        description={`This removes the track from this ${isAlbumLike ? 'album' : 'collection'}. It stays in your library.`}
-        confirmLabel="Remove"
+        title={t('studioCollectionEdit.removeTrackTitle', {
+          title: pendingRemove?.title ?? '',
+        })}
+        description={t('studioCollectionEdit.removeTrackDescription', {
+          kind: t(
+            isAlbumLike
+              ? 'studioCollectionEdit.kindAlbum'
+              : 'studioCollectionEdit.kindCollection',
+          ),
+        })}
+        confirmLabel={t('actions.remove')}
         destructive
         onCancel={() => setPendingRemove(null)}
         onConfirm={() => {
@@ -129,9 +138,9 @@ export function CollectionDialogs({
 
       <ConfirmDialog
         isOpen={pendingCoverDelete}
-        title="Remove cover image?"
-        description="The collection will fall back to its default placeholder until you upload a new cover."
-        confirmLabel="Remove cover"
+        title={t('studioCollectionEdit.removeCoverTitle')}
+        description={t('studioCollectionEdit.removeCoverDescription')}
+        confirmLabel={t('studioCollectionEdit.removeCoverConfirm')}
         destructive
         onCancel={() => setPendingCoverDelete(false)}
         onConfirm={() => {
@@ -166,9 +175,9 @@ export function CollectionDialogs({
 
       <ConfirmDialog
         isOpen={pendingFrameDelete !== null}
-        title="Remove this image from the backdrop?"
-        description="It will be removed from the slideshow immediately."
-        confirmLabel="Remove"
+        title={t('studioCollectionEdit.removeBackdropTitle')}
+        description={t('studioCollectionEdit.removeBackdropDescription')}
+        confirmLabel={t('actions.remove')}
         destructive
         onCancel={() => setPendingFrameDelete(null)}
         onConfirm={() => {

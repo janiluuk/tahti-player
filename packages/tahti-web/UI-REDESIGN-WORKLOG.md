@@ -6604,3 +6604,7 @@ Studio multitrack/shows/go-live/pro-editor/branding collection-image toasts; des
 ## 2026-11-04 — Batch 48 UX slices (0.0.338)
 
 Studio schedule/branding leftovers, stems/updates/release audio upload toasts; fold batch 47.
+
+## 2026-11-05 — Batch 49 UX slices (0.0.339)
+
+Studio/Admin ConfirmDialog Finnish: schedule, updates, branding, editor, go-live credentials, distribution submit, smart-links, collection dialogs, mastering, news/announcements/radio presets/storage/addons/artwork, governance.

@@ -21,7 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [confirm-dialog-finnish-leftovers.md](confirm-dialog-finnish-leftovers.md) | Studio/Admin ConfirmDialog title/description Finnish after toast sweep (batches 45–48) |
+| open    | [batch-49-slices-2026-11-05.md](batch-49-slices-2026-11-05.md) | Batch of 30: ConfirmDialog Finnish leftovers + 0.0.339 |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
 | partial | [library-management-port.md](library-management-port.md) | Port theDAW library management to Library Sounds: paged API client, facets/stats, bulk delete/edit |

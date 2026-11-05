@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Select } from '@tahti-player/ui';
 
 import {
@@ -26,6 +27,8 @@ export function AnnualReportActions({
   meetings: GovernanceMeeting[];
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
+
   const [approving, setApproving] = useState(false);
   const [confirmPublish, setConfirmPublish] = useState(false);
   const [meetingId, setMeetingId] = useState(NO_MEETING);
@@ -109,9 +112,11 @@ export function AnnualReportActions({
       <AnnualReportLegalHold report={report} onChanged={onChanged} />
       <ConfirmDialog
         isOpen={confirmPublish}
-        title={`Publish annual report ${report.year}?`}
-        description="Members will be able to read and download it from Governance."
-        confirmLabel="Publish"
+        title={t('governanceConfirm.publishReportTitle', {
+          year: report.year,
+        })}
+        description={t('governanceConfirm.publishReportDescription')}
+        confirmLabel={t('governanceConfirm.publishConfirm')}
         onCancel={() => setConfirmPublish(false)}
         onConfirm={() => {
           setConfirmPublish(false);

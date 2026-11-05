@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -161,6 +162,8 @@ function FileRow({
 }
 
 export function FilesBrowserTab() {
+  const { t } = useTranslation('web');
+
   const play = usePlayerStore((s) => s.play);
   const [query, setQuery] = useState('');
   const [files, setFiles] = useState<AdminFileRow[]>([]);
@@ -532,11 +535,13 @@ export function FilesBrowserTab() {
         isOpen={pendingDeleteFile !== null}
         title={
           pendingDeleteFile
-            ? `Delete "${pendingDeleteFile.title}" permanently?`
-            : 'Delete file?'
+            ? t('adminStorage.deleteFileTitleNamed', {
+                title: pendingDeleteFile.title,
+              })
+            : t('adminStorage.deleteFileTitle')
         }
-        description="This removes the file from platform storage. The artist is notified that the board removed it."
-        confirmLabel="Delete"
+        description={t('adminStorage.deleteFileDescription')}
+        confirmLabel={t('actions.delete')}
         onCancel={() => setPendingDeleteFile(null)}
         onConfirm={() => {
           const file = pendingDeleteFile;

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -39,6 +40,8 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { AdminTestNotificationPanel } from './AdminTestNotificationPanel';
 
 export function AdminNewsView() {
+  const { t } = useTranslation('web');
+
   const [posts, setPosts] = useState<AdminNewsPost[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -431,11 +434,13 @@ export function AdminNewsView() {
               isOpen={pendingDeletePost !== null}
               title={
                 pendingDeletePost
-                  ? `Delete "${pendingDeletePost.headline}"?`
-                  : 'Delete news post?'
+                  ? t('adminNews.deleteTitleNamed', {
+                      headline: pendingDeletePost.headline,
+                    })
+                  : t('adminNews.deleteTitle')
               }
-              description="This can't be undone."
-              confirmLabel="Delete"
+              description={t('adminNews.deleteDescription')}
+              confirmLabel={t('actions.delete')}
               onCancel={() => setPendingDeletePost(null)}
               onConfirm={() => {
                 const post = pendingDeletePost;

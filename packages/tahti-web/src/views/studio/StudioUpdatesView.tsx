@@ -2,7 +2,7 @@ import { EyeIcon, PlusIcon, SendIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -48,6 +48,7 @@ export function StudioUpdatesView({
 }: {
   tab?: StudioUpdatesTab;
 }) {
+  const { t } = useTranslation('web');
   const [posts, setPosts] = useState<ArtistPost[]>([]);
   const [drafts, setDrafts] = useState<NewsletterDraft[]>([]);
   const [msg, setMsg] = useState<string | null>(null);
@@ -441,13 +442,19 @@ export function StudioUpdatesView({
 
         <ConfirmDialog
           isOpen={pendingSend !== null}
-          title={`Send “${pendingSend?.subject ?? 'this newsletter'}”?`}
+          title={
+            pendingSend?.subject
+              ? t('studioUpdates.sendTitleNamed', {
+                  subject: pendingSend.subject,
+                })
+              : t('studioUpdates.sendTitle')
+          }
           description={
             pendingSend?.subscribersOnly
-              ? 'This emails all of your fan subscribers now. It cannot be undone.'
-              : 'This emails all of your subscribers now. It cannot be undone.'
+              ? t('studioUpdates.sendDescriptionFans')
+              : t('studioUpdates.sendDescription')
           }
-          confirmLabel="Send newsletter"
+          confirmLabel={t('studioUpdates.sendConfirm')}
           destructive
           onCancel={() => setPendingSend(null)}
           onConfirm={() => {
@@ -463,11 +470,14 @@ export function StudioUpdatesView({
           isOpen={pendingDeletePost !== null}
           title={
             pendingDeletePost
-              ? `Delete “${pendingDeletePost.title || 'Untitled'}”?`
-              : 'Delete post?'
+              ? t('studioUpdates.deletePostTitleNamed', {
+                  title:
+                    pendingDeletePost.title || t('studioUpdates.untitledPost'),
+                })
+              : t('studioUpdates.deletePostTitle')
           }
-          description="This cannot be undone."
-          confirmLabel="Delete"
+          description={t('studioUpdates.deletePostDescription')}
+          confirmLabel={t('actions.delete')}
           destructive
           onCancel={() => setPendingDeletePost(null)}
           onConfirm={() => {
@@ -498,11 +508,13 @@ export function StudioUpdatesView({
           isOpen={pendingDeleteDraft !== null}
           title={
             pendingDeleteDraft
-              ? `Remove “${pendingDeleteDraft.subject}”?`
-              : 'Remove newsletter?'
+              ? t('studioUpdates.removeNewsletterTitleNamed', {
+                  subject: pendingDeleteDraft.subject,
+                })
+              : t('studioUpdates.removeNewsletterTitle')
           }
-          description="This removes the draft or past send from your list. It cannot be undone."
-          confirmLabel="Remove"
+          description={t('studioUpdates.removeNewsletterDescription')}
+          confirmLabel={t('actions.remove')}
           destructive
           onCancel={() => setPendingDeleteDraft(null)}
           onConfirm={() => {

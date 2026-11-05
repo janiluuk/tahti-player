@@ -14,7 +14,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -67,6 +67,7 @@ export function ReleaseSmartLinksPanel({
   onTargetsSaved: (targets: Record<string, string>) => void;
   onReleaseChange: (release: StudioRelease) => void;
 }) {
+  const { t } = useTranslation('web');
   const [targets, setTargets] = useState<Record<string, string>>(
     release.smartLinkTargets ?? {},
   );
@@ -605,11 +606,13 @@ export function ReleaseSmartLinksPanel({
         isOpen={pendingRemoveTrack !== null}
         title={
           pendingRemoveTrack
-            ? `Remove "${pendingRemoveTrack.title}" from this release?`
-            : 'Remove track?'
+            ? t('releaseSmartLinks.removeTitleNamed', {
+                title: pendingRemoveTrack.title,
+              })
+            : t('releaseSmartLinks.removeTitle')
         }
-        description="The track leaves this release. It stays in your library."
-        confirmLabel="Remove"
+        description={t('releaseSmartLinks.removeDescription')}
+        confirmLabel={t('actions.remove')}
         destructive
         onCancel={() => setPendingRemoveTrack(null)}
         onConfirm={() => {

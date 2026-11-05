@@ -1,6 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -59,6 +60,8 @@ export function CollapsibleRecord({
 }
 
 export function ConflictsPanel({ meetingId }: { meetingId: string }) {
+  const { t } = useTranslation('web');
+
   const [open, setOpen] = useState(false);
   const [records, setRecords] = useState<
     GovernanceConflictDeclaration[] | null
@@ -184,11 +187,13 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
         isOpen={pendingRemove !== null}
         title={
           pendingRemove
-            ? `Remove the declaration for ${pendingRemove.displayName}?`
-            : 'Remove declaration?'
+            ? t('governanceConfirm.removeDeclarationTitleNamed', {
+                name: pendingRemove.displayName,
+              })
+            : t('governanceConfirm.removeDeclarationTitle')
         }
-        description="The conflict note leaves this meeting's record."
-        confirmLabel="Remove"
+        description={t('governanceConfirm.removeDeclarationDescription')}
+        confirmLabel={t('actions.remove')}
         onCancel={() => setPendingRemove(null)}
         onConfirm={() => {
           const record = pendingRemove;

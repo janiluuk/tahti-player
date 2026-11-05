@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -91,6 +92,8 @@ function draftFromPreset(
 }
 
 export function InternetRadioPresetsPanel() {
+  const { t } = useTranslation('web');
+
   const [presets, setPresets] = useState<AdminInternetRadioPreset[]>([]);
   const [loading, setLoading] = useState(true);
   const [editorOpen, setEditorOpen] = useState(false);
@@ -469,10 +472,14 @@ export function InternetRadioPresetsPanel() {
         <ConfirmDialog
           isOpen={pendingRemove !== null}
           title={
-            pendingRemove ? `Remove ${pendingRemove.name}?` : 'Remove station?'
+            pendingRemove
+              ? t('adminRadioPresets.removeTitleNamed', {
+                  name: pendingRemove.name,
+                })
+              : t('adminRadioPresets.removeTitle')
           }
-          description="Listeners lose this preset from the radio directory."
-          confirmLabel="Remove"
+          description={t('adminRadioPresets.removeDescription')}
+          confirmLabel={t('actions.remove')}
           destructive
           onCancel={() => setPendingRemove(null)}
           onConfirm={() => {

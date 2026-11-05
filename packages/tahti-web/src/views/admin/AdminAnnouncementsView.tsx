@@ -1,6 +1,7 @@
 import { PlayIcon, ScissorsIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   BreadcrumbCurrent,
@@ -42,6 +43,8 @@ function fmtDuration(sec: number | null): string {
 }
 
 export function AdminAnnouncementsView() {
+  const { t } = useTranslation('web');
+
   const play = usePlayerStore((s) => s.play);
   const [clips, setClips] = useState<AdminAnnouncementClip[]>([]);
   const [systemEnabled, setSystemEnabled] = useState(true);
@@ -283,9 +286,11 @@ export function AdminAnnouncementsView() {
             <ConfirmDialog
               destructive
               isOpen={pendingDelete !== null}
-              title={`Delete "${pendingDelete?.title ?? ''}"?`}
-              description="This announcement clip will be removed from the schedule for everyone."
-              confirmLabel="Delete"
+              title={t('adminAnnouncements.deleteTitleNamed', {
+                title: pendingDelete?.title ?? '',
+              })}
+              description={t('adminAnnouncements.deleteDescription')}
+              confirmLabel={t('actions.delete')}
               onCancel={() => setPendingDelete(null)}
               onConfirm={() => {
                 const clip = pendingDelete;

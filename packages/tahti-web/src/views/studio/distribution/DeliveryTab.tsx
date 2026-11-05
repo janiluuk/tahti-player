@@ -1,6 +1,7 @@
 import { SendIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import {
@@ -51,6 +52,7 @@ export function DeliveryTab({
 }) {
   const [platforms, setPlatforms] = useState<DistributionPlatformMode[]>([]);
   const [platformsError, setPlatformsError] = useState<string | null>(null);
+  const { t } = useTranslation('web');
   const [platformsAttempt, setPlatformsAttempt] = useState(0);
 
   useEffect(() => {
@@ -149,13 +151,15 @@ export function DeliveryTab({
 
       <ConfirmDialog
         isOpen={confirmSubmit}
-        title="Submit to Revelator?"
+        title={t('studioDistributionSubmit.title')}
         description={
           billing && !billing.paid && billing.feeCents > 0
-            ? `You will be taken to checkout to pay ${euros(billing.feeCents)}. Submitting sends this release to stores.`
-            : 'This sends the release to Revelator for distribution to stores.'
+            ? t('studioDistributionSubmit.descriptionCheckout', {
+                amount: euros(billing.feeCents),
+              })
+            : t('studioDistributionSubmit.descriptionPaid')
         }
-        confirmLabel="Submit"
+        confirmLabel={t('studioDistributionSubmit.confirm')}
         onCancel={() => setConfirmSubmit(false)}
         onConfirm={() => {
           setConfirmSubmit(false);
