@@ -82,7 +82,7 @@ export function AdminContentView() {
               ) : loadError ? (
                 <StudioPanel>
                   <PageError
-                    title="Could not load the content overview"
+                    title={t('loadErrors.couldNotLoadTheContentOverview')}
                     description={loadError}
                     onRetry={() => {
                       setData(null);

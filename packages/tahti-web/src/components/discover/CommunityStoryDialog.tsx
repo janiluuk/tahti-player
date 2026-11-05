@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonAnchor, Dialog, MediaArtwork } from '@tahti-player/ui';
 
 import {
@@ -51,6 +52,7 @@ export function CommunityStoryDialog({
   onOpen: (id: string) => void;
   onClose: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [load, setLoad] = useState<Load>({ state: 'loading' });
   const [attempt, setAttempt] = useState(0);
 
@@ -97,7 +99,7 @@ export function CommunityStoryDialog({
             <>
               <Dialog.Title>Community story</Dialog.Title>
               <PageError
-                title="Could not load this story"
+                title={t('loadErrors.couldNotLoadThisStory')}
                 description={load.reason}
                 onRetry={() => setAttempt((n) => n + 1)}
               />

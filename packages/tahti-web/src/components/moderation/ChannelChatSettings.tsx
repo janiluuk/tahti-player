@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { InlineLoader, SectionTitle } from '@tahti-player/ui';
 
 import {
@@ -22,6 +23,7 @@ export function ChannelChatSettings({
 }: {
   headingId?: string;
 }) {
+  const { t } = useTranslation('web');
   const [profile, setProfile] = useState<ProfileFields | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -83,7 +85,7 @@ export function ChannelChatSettings({
       {!profile ? (
         loadError ? (
           <PageError
-            title="Could not load chat settings"
+            title={t('loadErrors.couldNotLoadChatSettings')}
             description={loadError}
             onRetry={() => setAttempt((n) => n + 1)}
           />

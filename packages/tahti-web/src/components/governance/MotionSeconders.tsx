@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import {
   fetchMotionSeconders,
   type MotionSeconder,
@@ -14,6 +16,7 @@ export function MotionSeconders({
   motionId: string;
   refreshKey?: unknown;
 }) {
+  const { t } = useTranslation('web');
   const [seconders, setSeconders] = useState<MotionSeconder[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -36,7 +39,7 @@ export function MotionSeconders({
   if (loadError && seconders.length === 0) {
     return (
       <PageError
-        title="Could not load who seconded this motion"
+        title={t('loadErrors.couldNotLoadWhoSecondedThis')}
         description={loadError}
         onRetry={() => setAttempt((n) => n + 1)}
       />

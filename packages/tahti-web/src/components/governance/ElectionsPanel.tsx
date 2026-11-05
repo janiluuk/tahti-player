@@ -125,7 +125,7 @@ export function ElectionsPanel() {
         <InlineLoader label="Loading elections…" />
       ) : loadError ? (
         <PageError
-          title="Could not load the elections"
+          title={t('loadErrors.couldNotLoadTheElections')}
           description={loadError}
           onRetry={() => void load()}
         />

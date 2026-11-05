@@ -71,7 +71,7 @@ export function AssociationPanel() {
         <InlineLoader label="Loading…" />
       ) : state === 'failed' || !profile ? (
         <PageError
-          title="Could not load the association's details"
+          title={t('loadErrors.couldNotLoadTheAssociationS')}
           description={loadError ?? undefined}
           onRetry={() => setAttempt((n) => n + 1)}
         />

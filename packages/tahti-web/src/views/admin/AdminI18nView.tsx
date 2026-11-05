@@ -1,6 +1,7 @@
 import { PlusIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   BreadcrumbCurrent,
@@ -27,6 +28,7 @@ import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function AdminI18nView() {
+  const { t } = useTranslation('web');
   const [languages, setLanguages] = useState<AdminLanguage[]>([]);
   const [loading, setLoading] = useState(true);
   const [unavailable, setUnavailable] = useState(false);
@@ -139,7 +141,7 @@ export function AdminI18nView() {
                   </p>
                 ) : loadError && languages.length === 0 ? (
                   <PageError
-                    title="Could not load languages"
+                    title={t('loadErrors.couldNotLoadLanguages')}
                     description={loadError}
                     onRetry={reload}
                   />

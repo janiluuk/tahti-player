@@ -439,7 +439,7 @@ export function RadioScheduleView() {
 
           {weekError ? (
             <PageError
-              title="Could not load this week's bookings"
+              title={t('loadErrors.couldNotLoadThisWeekS')}
               description={weekError}
               onRetry={() => setWeekAttempt((n) => n + 1)}
             />

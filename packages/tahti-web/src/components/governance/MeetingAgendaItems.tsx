@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { InlineLoader } from '@tahti-player/ui';
 
 import {
@@ -67,6 +68,7 @@ export function MeetingAgendaItems({
   meetingId: string;
   fallback: ReactNode;
 }) {
+  const { t } = useTranslation('web');
   const [items, setItems] = useState<MemberAgendaItem[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -89,7 +91,7 @@ export function MeetingAgendaItems({
   if (loadError) {
     return (
       <PageError
-        title="Could not load the agenda"
+        title={t('loadErrors.couldNotLoadTheAgenda')}
         description={loadError}
         onRetry={() => {
           setItems(null);

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { SectionTitle, type CardsRowBadgeColor } from '@tahti-player/ui';
 
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
@@ -36,6 +37,7 @@ export function ListenSection({
   'data-testid': testId,
   children,
 }: ListenSectionProps) {
+  const { t } = useTranslation('web');
   if (status === 'ready' && !empty) {
     return children;
   }
@@ -52,7 +54,7 @@ export function ListenSection({
       ) : status === 'error' ? (
         <PageError
           title={`${title} couldn't load`}
-          description="The rest of Listen still works."
+          description={t('loadErrors.theRestOfListenStillWorks')}
           onRetry={onRetry}
         />
       ) : (

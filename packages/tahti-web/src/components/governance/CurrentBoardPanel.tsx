@@ -42,7 +42,7 @@ export function CurrentBoardPanel() {
         <InlineLoader label="Loading the board…" />
       ) : loadError ? (
         <PageError
-          title="Could not load the board"
+          title={t('loadErrors.couldNotLoadTheBoard')}
           description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />

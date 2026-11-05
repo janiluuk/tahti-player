@@ -63,7 +63,7 @@ export function AnnualReportsPanel() {
         <InlineLoader label="Loading annual reports…" />
       ) : loadError ? (
         <PageError
-          title="Could not load the annual reports"
+          title={t('loadErrors.couldNotLoadTheAnnualReports')}
           description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />

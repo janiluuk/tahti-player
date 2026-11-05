@@ -92,7 +92,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
 
       {user && !loading && loadError && (
         <PageError
-          title="Could not load this meeting"
+          title={t('loadErrors.couldNotLoadThisMeeting')}
           description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />

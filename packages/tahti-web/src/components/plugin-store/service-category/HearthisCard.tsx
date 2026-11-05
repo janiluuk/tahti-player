@@ -9,7 +9,7 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ExternalLink,
@@ -53,6 +53,7 @@ import { readImportedIds, writeImportedIds } from './hearthisImports';
 const NEW_PLAYLIST_DESTINATION = '__new_playlist__';
 
 export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const play = usePlayerStore((s) => s.play);
@@ -639,7 +640,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
 
           {showLibraryError ? (
             <PageError
-              title="Could not load your hearthis.at library"
+              title={t('loadErrors.couldNotLoadYourHearthisAt')}
               description={libraryLoadError ?? undefined}
               onRetry={loadLibrary}
             />
