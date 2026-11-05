@@ -60,4 +60,4 @@ All six rows from the first audit are resolved (checked 2026-10-15): `isListenSi
 
 ## Out of scope
 
-Legacy Next nav (removed 2026-10-28); atlas-navigation-structure-widget (draft only).
+atlas-navigation-structure-widget (draft only).
