@@ -10,7 +10,7 @@ Canonical pointers when both checkouts are open:
 | Governance status | `../tahti-org/docs/governance-worklog.md` |
 | Legacy route map (old `/dashboard/*` URLs, now redirected) | `../tahti-org/docs/flows/site-map.md` |
 | Web deploy ops (every public host) | `deploy/README.md` here + `../tahti-org/ops/beta-tahti-live.md` |
-| Cutover outcome + open host/build items | `CUTOVER.md` here (tahti-org pointer: `../tahti-org/ops/nuclear-web-cutover.md`) |
+| Open host/build items | `docs/todo/final-season-hardening.md` |
 | Plugin/theme Store catalog | Sibling `../tahti-registry` (`plugins.json`, `themes/`). After plugin add/change, check that repo (new listing or version bump). |
 
 ## Checkout names

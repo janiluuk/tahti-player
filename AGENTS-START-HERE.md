@@ -20,8 +20,7 @@ Do not invent sibling API shapes. Inspect `../tahti-org` routes/DTOs first. Do n
 | tahti-web UI / Studio / Listen / Admin | [`packages/tahti-web/AGENTS.md`](packages/tahti-web/AGENTS.md) | Workflow + ViewShell / Storybook rules |
 | What product already does | [`packages/tahti-web/FEATURES-REMAINING.md`](packages/tahti-web/FEATURES-REMAINING.md) | Do not open full FEATURES matrix |
 | Next engineering slices | [`packages/tahti-web/WORKPLAN.md`](packages/tahti-web/WORKPLAN.md) | Open sections only |
-| Hosting, deploy, open post-cutover ops | [`packages/tahti-web/CUTOVER.md`](packages/tahti-web/CUTOVER.md) + [`packages/tahti-web/deploy/README.md`](packages/tahti-web/deploy/README.md) | Only if deploy/host scope |
-| Post-cutover regression ledger | [`packages/tahti-web/GAP-MAPPING.md`](packages/tahti-web/GAP-MAPPING.md) | Only if checking a legacy URL or flow still works |
+| Hosting, deploy, open host ops | [`packages/tahti-web/deploy/README.md`](packages/tahti-web/deploy/README.md) + [`docs/todo/final-season-hardening.md`](docs/todo/final-season-hardening.md) | Only if deploy/host scope |
 | Player core / plugins / themes | Root [`AGENTS.md`](AGENTS.md) + [`docs/agent/`](docs/agent/) | Matching on-demand file only |
 | How the system fits together (repos, infra, request flow) | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) + [`docs/DATA-FLOW.md`](docs/DATA-FLOW.md) | Have the "why does X talk to Y" answer |
 | Settled forks / “already decided” | [`docs/DECISIONS.md`](docs/DECISIONS.md) | Matching decision |
@@ -58,8 +57,6 @@ Status values: `open` | `blocked` | `partial` | (file deleted when done — neve
 | `FEATURES-REMAINING.md` | Open product gaps only |
 | `FEATURES.md` | Full capability matrix (shipped + remaining) |
 | `WORKPLAN.md` | Open engineering slices only |
-| `CUTOVER.md` | Cutover outcome (done) + open host/build items |
-| `GAP-MAPPING.md` | Legacy-URL / flow regression ledger (Next `apps/web` removed 2026-10-28) |
 | `UI-REDESIGN-WORKLOG.md` | Chronological ship diary (append only) |
 | `docs/DECISIONS.md` | Settled design forks (org/API/money: `../tahti-org/docs/DECISIONS.md`) |
 | `docs/VIEW-CATALOG.md` | View index with Storybook coverage and unification candidates |

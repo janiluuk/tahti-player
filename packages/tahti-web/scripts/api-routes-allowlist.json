@@ -1,4 +1,3 @@
 {
-  "/api/admin/i18n/languages": "The API has no translation routes. Admin → Languages shows \"Not available yet\" on a 404 instead of offering Add/Import.",
-  "/api/v1/listening-parties/:param/reminder": "Listening party reminders (GET/POST/DELETE) are in janiluuk/tahti-org#1067, not yet in a release. Remove once that release ships."
+  "/api/admin/i18n/languages": "The API has no translation routes. Admin → Languages shows \"Not available yet\" on a 404 instead of offering Add/Import."
 }
