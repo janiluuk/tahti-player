@@ -232,25 +232,37 @@ describe('FullScreenPlayer full screen button', () => {
     Reflect.deleteProperty(document, 'fullscreenElement');
   });
 
-  it('fills the screen and goes back', async () => {
+  it('fills the screen into driving mode and goes back', async () => {
     await open('playing');
-    fireEvent.click(screen.getByRole('button', { name: 'Full screen' }));
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Driving mode (full screen)' }),
+    );
     expect(requestFullscreen).toHaveBeenCalled();
 
     const exit = await screen.findByRole('button', {
       name: 'Exit full screen',
     });
     expect(exit.getAttribute('aria-pressed')).toBe('true');
+    expect(screen.getByTestId('full-screen-player')).toHaveAttribute(
+      'data-driving',
+      'true',
+    );
+    expect(screen.getByTestId('driving-prev')).toBeTruthy();
+    expect(screen.queryByTestId('player-shuffle-button')).toBeNull();
     fireEvent.click(exit);
     expect(exitFullscreen).toHaveBeenCalled();
     expect(
-      await screen.findByRole('button', { name: 'Full screen' }),
+      await screen.findByRole('button', {
+        name: 'Driving mode (full screen)',
+      }),
     ).toBeTruthy();
   });
 
   it('leaves full screen when the player is minimized', async () => {
     await open('playing');
-    fireEvent.click(screen.getByRole('button', { name: 'Full screen' }));
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Driving mode (full screen)' }),
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Minimize player' }));
     expect(exitFullscreen).toHaveBeenCalled();
   });
@@ -261,6 +273,46 @@ describe('FullScreenPlayer full screen button', () => {
       get: () => false,
     });
     await open('playing');
-    expect(screen.queryByRole('button', { name: 'Full screen' })).toBeNull();
+    expect(
+      screen.queryByRole('button', { name: 'Driving mode (full screen)' }),
+    ).toBeNull();
+  });
+
+  it('changes track on a horizontal swipe of the stage', async () => {
+    usePlayerStore
+      .getState()
+      .playFromList(
+        [TRACK, { ...TRACK, id: 'sound:def', title: 'Day Ride' }],
+        0,
+      );
+    usePlayerStore.setState({ status: 'playing' });
+    useLayoutStore.setState({ fullScreenPlayerOpen: true });
+    await act(async () => {
+      render(<FullScreenPlayer />);
+    });
+
+    const stage = screen.getByTestId('full-screen-player-stage');
+    const swipe = (type: string, clientX: number) => {
+      const event = new Event(type, { bubbles: true }) as Event & {
+        clientX: number;
+        clientY: number;
+        pointerId: number;
+        pointerType: string;
+        isPrimary: boolean;
+      };
+      Object.assign(event, {
+        clientX,
+        clientY: 100,
+        pointerId: 1,
+        pointerType: 'touch',
+        isPrimary: true,
+      });
+      fireEvent(stage, event);
+    };
+    await act(async () => {
+      swipe('pointerdown', 200);
+      swipe('pointerup', 80);
+    });
+    expect(usePlayerStore.getState().currentId).toBe('sound:def');
   });
 });

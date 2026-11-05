@@ -1128,7 +1128,10 @@
       "minimize": "Minimize player",
       "fullScreen": "Full screen",
       "exitFullScreen": "Exit full screen",
+      "enterDrivingMode": "Driving mode (full screen)",
       "nowPlayingFullScreen": "Now playing, full screen",
+      "nowPlayingDriving": "Now playing, driving mode",
+      "swipeTracks": "Swipe left or right to change track",
       "moreOptionsFor": "More options for {{title}}",
       "buffering": "Buffering…"
     },

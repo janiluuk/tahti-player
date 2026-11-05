@@ -2,6 +2,7 @@ import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
 import { FullScreenPlayer } from '@tahti-web/components/FullScreenPlayer';
 import { useLayoutStore } from '@tahti-web/stores/layoutStore';
 import { usePlayerStore } from '@tahti-web/stores/playerStore';
+import { useEffect } from 'react';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import type { QueueItem } from '@tahti-player/model';
@@ -114,4 +115,64 @@ export const LiveChannel: Story = {
       ],
     }),
   ],
+};
+
+/** Browser fullscreen = driving mode: large transport, edge prev/next,
+ * swipe between tracks, secondary chrome hidden. */
+export const DrivingMode: Story = {
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  decorators: [
+    withSeededFullScreenPlayer({
+      queue: [
+        mockQueueItem('archive:1', 'Midnight Drift', 'Northern Lights', 245000),
+        mockQueueItem('archive:2', 'Polar Static', 'Northern Lights', 312000),
+        mockQueueItem('archive:3', 'After Hours', 'DJ Moonlight', 198000),
+      ],
+    }),
+    (Story) => {
+      useEffect(() => {
+        const descriptor = Object.getOwnPropertyDescriptor(
+          Document.prototype,
+          'fullscreenElement',
+        );
+        Object.defineProperty(document, 'fullscreenElement', {
+          configurable: true,
+          get: () => document.documentElement,
+        });
+        document.dispatchEvent(new Event('fullscreenchange'));
+        return () => {
+          if (descriptor) {
+            Object.defineProperty(
+              Document.prototype,
+              'fullscreenElement',
+              descriptor,
+            );
+          } else {
+            delete (document as { fullscreenElement?: Element })
+              .fullscreenElement;
+          }
+          document.dispatchEvent(new Event('fullscreenchange'));
+        };
+      }, []);
+      return <Story />;
+    },
+  ],
+  play: async ({ canvasElement }) => {
+    const body = withinBody(canvasElement);
+    const player = within(
+      await body.findByRole('dialog', {
+        name: 'Now playing, driving mode',
+      }),
+    );
+    await waitFor(() =>
+      expect(
+        player.getByRole('heading', { name: 'Midnight Drift' }),
+      ).toBeVisible(),
+    );
+    await expect(player.getByTestId('driving-prev')).toBeInTheDocument();
+    await expect(player.getByTestId('driving-next')).toBeInTheDocument();
+    await expect(
+      player.queryByTestId('player-shuffle-button'),
+    ).not.toBeInTheDocument();
+  },
 };

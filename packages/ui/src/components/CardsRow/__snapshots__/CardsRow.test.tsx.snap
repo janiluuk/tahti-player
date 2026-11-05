@@ -3,6 +3,7 @@
 exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
 <div
   class="flex flex-col gap-3"
+  data-layout="cards"
   data-testid="cards-row"
 >
   <div
@@ -18,7 +19,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
       </h2>
     </div>
     <div
-      class="min-w-64 flex-1 items-center justify-end gap-2 flex"
+      class="flex flex-1 items-center justify-end gap-2 min-w-64"
       data-testid="cards-row-controls"
     >
       <div
@@ -126,6 +127,49 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
             </svg>
           </button>
         </div>
+      </div>
+      <div>
+        <button
+          aria-label="Show as list"
+          aria-pressed="false"
+          class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-primary-foreground bg-primary border-border border-(length:--border-width) size-10 justify-center"
+          data-headlessui-state=""
+          data-testid="cards-row-layout-toggle"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-list"
+            fill="none"
+            height="16"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="16"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3 12h.01"
+            />
+            <path
+              d="M3 18h.01"
+            />
+            <path
+              d="M3 6h.01"
+            />
+            <path
+              d="M8 12h13"
+            />
+            <path
+              d="M8 18h13"
+            />
+            <path
+              d="M8 6h13"
+            />
+          </svg>
+        </button>
       </div>
     </div>
   </div>

@@ -21,8 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [cardsrow-list-and-driving-fullscreen.md](cardsrow-list-and-driving-fullscreen.md) | CardsRow cards↔list toolbar (mobile list default); FullScreenPlayer swipe + driving mode |
-| open    | [radio-channel-open-radio-page.md](radio-channel-open-radio-page.md) | RADIO channel page: icon → `/radio`; hide otherwise; station website only if `detailUrl` |
+| open    | [ambient-track-list-mobile.md](ambient-track-list-mobile.md) | Phone: AmbientTrackList/Playable default to list; denser rows + larger art; densities misaligned on narrow |
 | open    | [empty-state-create-ctas.md](empty-state-create-ctas.md) | PageEmpty createables: icon+title `action` on empties; full 2026-11-05 inventory (Priority A/B, Near vs Gap) |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
