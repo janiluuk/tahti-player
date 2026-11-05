@@ -1,4 +1,5 @@
 import {
+  BellIcon,
   CalendarClockIcon,
   ExternalLinkIcon,
   HistoryIcon,
@@ -26,6 +27,7 @@ import {
   type ListeningPartyState,
   type ListeningPartySummaryDto,
 } from '../../api/listening-parties';
+import { fetchPartyReminder } from '../../api/listening-party-reminders';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
@@ -68,6 +70,33 @@ export function StudioListeningPartiesView() {
   };
 
   useEffect(reload, []);
+
+  const [reminderCounts, setReminderCounts] = useState<Record<string, number>>(
+    {},
+  );
+  const scheduledIds = parties
+    .filter((party) => party.state === 'SCHEDULED')
+    .map((party) => party.id)
+    .join(',');
+  useEffect(() => {
+    if (!scheduledIds) {
+      return;
+    }
+    let active = true;
+    void Promise.all(
+      scheduledIds.split(',').map(async (id) => {
+        const { data } = await fetchPartyReminder(id);
+        return [id, data?.count ?? 0] as const;
+      }),
+    ).then((entries) => {
+      if (active) {
+        setReminderCounts(Object.fromEntries(entries));
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, [scheduledIds]);
 
   const upcoming = parties
     .filter((party) => party.state === 'SCHEDULED' || party.state === 'LIVE')
@@ -121,6 +150,14 @@ export function StudioListeningPartiesView() {
                   >
                     {formatScheduleWindow(party.startAt)}
                   </time>
+                  {party.state === 'SCHEDULED' && reminderCounts[party.id] ? (
+                    <span className="text-foreground-secondary ml-2 inline-flex items-center gap-1 text-xs">
+                      <BellIcon size={12} aria-hidden />
+                      {t('studioListeningParties.reminders', {
+                        count: reminderCounts[party.id],
+                      })}
+                    </span>
+                  ) : null}
                 </div>
               </div>
               <div className="flex flex-wrap gap-1">
