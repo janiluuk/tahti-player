@@ -25,6 +25,7 @@ import {
 import { fetchChannel } from '../api/client';
 import type { OnAirChannel } from '../api/listen';
 import type { TahtiPlayable } from '../api/types';
+import { AddListenWidgetDialog } from '../components/AddListenWidgetDialog';
 import { DiscoWidgetsSection } from '../components/disco-widgets/DiscoWidgetsSection';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { GuidelinesBanner } from '../components/GuidelinesBanner';
@@ -42,7 +43,6 @@ import {
 } from '../components/listen-view/useListenSections';
 import { WelcomeStrip } from '../components/listen-view/WelcomeStrip';
 import { useListenerWidgetBlocks } from '../components/ListenerWidgetsSection';
-import { ListenWidgetStoreDialog } from '../components/ListenWidgetStoreDialog';
 import { PageLoading } from '../components/PageStates';
 import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { radioStationIdForPlayable } from '../content/radioStations';
@@ -500,7 +500,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                   )}
                 </Button>
               </Tooltip>
-              {signedIn ? <ListenWidgetStoreDialog /> : null}
+              <AddListenWidgetDialog />
             </>
           ) : undefined
         }

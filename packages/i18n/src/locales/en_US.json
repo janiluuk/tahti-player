@@ -3700,6 +3700,23 @@
       "loadingSmartlinks": "Loading smartlinks…",
       "loadingTheListeningParty": "Loading the listening party…",
       "loadingYourVenues": "Loading your venues…"
+    },
+    "addListenWidget": {
+      "open": "Add new listen widget",
+      "title": "Add a listen widget",
+      "chooseService": "Choose the service to add a playlist from.",
+      "allAddons": "Browse all add-ons (news feeds, radio, charts)",
+      "allAddonsTitle": "All Listen add-ons",
+      "back": "Back",
+      "fromService": "Add a playlist from {{service}}",
+      "playlistUrl": "Playlist link",
+      "example": "Example: {{example}}",
+      "rowName": "Row name",
+      "yourPlaylists": "Your {{service}} playlists",
+      "trackCount_one": "{{count}} track",
+      "trackCount_other": "{{count}} tracks",
+      "add": "Add",
+      "added": "Added {{name}} to Listen"
     }
   },
   "studioEditor": {

@@ -6,6 +6,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 
 | Story title | File |
 | --- | --- |
+| `Tahti/Widgets/AddListenWidgetDialog` | `tahti-web/AddListenWidgetDialog.stories.tsx` |
 | `Tahti/Studio/AddToMusicActions` | `tahti-web/AddToMusicActions.stories.tsx` |
 | `Tahti/Media/AddToPlaylistButton` | `tahti-web/AddToPlaylistButton.stories.tsx` |
 | `Tahti/Media/AddToPlaylistPanel` | `tahti-web/AddToPlaylistPanel.stories.tsx` |
@@ -221,7 +222,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/ListenAddonsPanel` | `tahti-web/ListenAddonsPanel.stories.tsx` |
 | `Tahti/Listen/ListenSection` | `tahti-web/ListenSection.stories.tsx` |
 | `Tahti/Listen/ListenView` | `tahti-web/ListenView.stories.tsx` |
-| `Tahti/Widgets/ListenWidgetStoreDialog` | `tahti-web/ListenWidgetStoreDialog.stories.tsx` |
 | `Tahti/Widgets/ListenerWidgetEmbed` | `tahti-web/ListenerWidgetEmbed.stories.tsx` |
 | `Tahti/Widgets/ListenerWidgetsSection` | `tahti-web/ListenerWidgetsSection.stories.tsx` |
 | `Tahti/Widgets/ListenerWorldMap` | `tahti-web/ListenerWorldMap.stories.tsx` |
