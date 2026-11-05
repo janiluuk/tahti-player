@@ -3702,6 +3702,23 @@
       "loadingSmartlinks": "Ladataan smartlinkkejä…",
       "loadingTheListeningParty": "Ladataan kuuntelujuhlaa…",
       "loadingYourVenues": "Ladataan tapahtumapaikkojasi…"
+    },
+    "channelFeatures": {
+      "settings": "Asetukset",
+      "header": "Yläosa",
+      "sections": "Sivun osiot",
+      "avatar": "Profiilikuva",
+      "bio": "Esittely",
+      "subscribe": "Tilaa-painike",
+      "counts": "Seuraaja- ja kuuntelumäärät",
+      "stage": "Live-lava",
+      "tracks": "Kappaleet",
+      "feed": "Syöte",
+      "shows": "Live-lähetykset",
+      "links": "Linkit",
+      "navigation": "Välilehdet",
+      "programming": "Ohjelmisto",
+      "hint": "Pois päältä olevat ominaisuudet näkyvät sivulla himmeinä muokatessa. Vierailijat eivät näe niitä."
     }
   },
   "studioEditor": {

@@ -48,6 +48,9 @@ export type ChannelBackdropCardProps = {
   avatarVisible?: boolean;
   bioVisible?: boolean;
   subscribeVisible?: boolean;
+  /** While editing: avatar, bio and Subscribe that are off still render,
+   * faded, so the artist sees where they go. */
+  showOffFeatures?: boolean;
   subscribeLabel?: string;
 
   headerStyle: string;
@@ -130,6 +133,7 @@ export function ChannelBackdropCard({
   avatarVisible = true,
   bioVisible = true,
   subscribeVisible = false,
+  showOffFeatures = false,
   subscribeLabel = 'Subscribe',
   headerStyle,
   topBarText,
@@ -284,9 +288,10 @@ export function ChannelBackdropCard({
         style={{ color: fg }}
       >
         <div className="flex flex-wrap items-center gap-4 sm:gap-6">
-          {avatarVisible ? (
+          {avatarVisible || showOffFeatures ? (
             <div
-              className="relative flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 text-3xl font-bold sm:size-32 sm:text-4xl"
+              data-off={!avatarVisible || undefined}
+              className="relative flex size-24 shrink-0 items-center justify-center overflow-hidden rounded-full border-2 text-3xl font-bold data-off:opacity-40 sm:size-32 sm:text-4xl"
               style={{ borderColor: accent, background: bg }}
             >
               {avatarUrl ? (
@@ -348,9 +353,9 @@ export function ChannelBackdropCard({
                 {channelSlug ? ` · /${channelSlug}` : ''}
               </div>
             </div>
-            {bioVisible && bio ? (
+            {(bioVisible || showOffFeatures) && bio ? (
               <ClampedText
-                wrapperClassName="mt-1"
+                wrapperClassName={bioVisible ? 'mt-1' : 'mt-1 opacity-40'}
                 className="text-sm whitespace-pre-wrap opacity-90"
               >
                 {bio}
@@ -366,7 +371,7 @@ export function ChannelBackdropCard({
               {identityActions}
             </div>
           ) : null}
-          {subscribeVisible ? (
+          {subscribeVisible || showOffFeatures ? (
             <ButtonLink
               to="/subscribe/$username"
               params={{ username }}
@@ -374,7 +379,8 @@ export function ChannelBackdropCard({
               size="sm"
               variant="secondary"
               data-testid="channel-backdrop-subscribe-cta"
-              className="shrink-0"
+              data-off={!subscribeVisible || undefined}
+              className="shrink-0 data-off:opacity-40"
             >
               {subscribeLabel}
             </ButtonLink>

@@ -1,11 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChannelLayersMenu } from '@tahti-web/components/ChannelLayersMenu';
 import {
-  addItemType,
   addPlaylistItem,
   defaultChannelPageLayout,
   moveItem,
-  setItemVisible,
   setItemWidth,
   type ChannelLayoutPresetId,
   type ChannelPageItem,
@@ -43,10 +41,8 @@ const meta: Meta<typeof ChannelLayersMenu> = {
     lookOpenSection: null,
     embedItems: EMBED_ITEMS,
     onSelect: fn(),
-    onToggleVisible: fn(),
     onResize: fn(),
     onRemove: fn(),
-    onAdd: fn(),
     onAddEmbed: fn(),
     onAddPlaylist: fn(),
     onReorder: fn(),
@@ -59,7 +55,7 @@ type Story = StoryObj<typeof meta>;
 
 type MenuProps = ComponentProps<typeof ChannelLayersMenu>;
 
-/** Full select / reorder / hide / resize / add / preset wiring against
+/** Full select / reorder / resize / add / preset wiring against
  * local state, the same shape ChannelLayersPanel passes in. Every change is
  * also reported to the story's spies. */
 function InteractiveMenu(args: MenuProps) {
@@ -79,13 +75,6 @@ function InteractiveMenu(args: MenuProps) {
           setSelectedId(id);
           args.onSelect(id);
         }}
-        onToggleVisible={(id) => {
-          setItems((current) => {
-            const row = current.find((i) => i.id === id);
-            return setItemVisible(current, id, !row?.visible);
-          });
-          args.onToggleVisible(id);
-        }}
         onResize={(id, width) => {
           setItems((current) => setItemWidth(current, id, width));
           args.onResize(id, width);
@@ -93,10 +82,6 @@ function InteractiveMenu(args: MenuProps) {
         onRemove={(id) => {
           setItems((current) => current.filter((i) => i.id !== id));
           args.onRemove(id);
-        }}
-        onAdd={(type) => {
-          setItems((current) => addItemType(current, type));
-          args.onAdd(type);
         }}
         onAddEmbed={(embedInstanceId) => {
           setItems((current) => [
@@ -162,14 +147,6 @@ export const Interactive: Story = {
 
     const tracksRow = within(layerRow(canvas, /^Tracks/));
     await userEvent.click(
-      tracksRow.getByRole('button', { name: 'Hide Tracks' }),
-    );
-    await expect(args.onToggleVisible).toHaveBeenCalledWith('sound');
-    await expect(
-      tracksRow.getByRole('button', { name: 'Show Tracks' }),
-    ).toBeVisible();
-
-    await userEvent.click(
       tracksRow.getByRole('button', { name: 'compact width for Tracks' }),
     );
     await expect(args.onResize).toHaveBeenCalledWith('sound', 'compact');
@@ -227,21 +204,16 @@ export const LookPanel: Story = {
   },
 };
 
-export const EverythingOnPage: Story = {
-  name: 'Add tab: every block already on the page',
-  args: {
-    items: defaultChannelPageLayout().map((item) => ({
-      ...item,
-      visible: true,
-    })),
-    embedItems: [],
-  },
+export const NoEmbedsToAdd: Story = {
+  name: 'Add tab: no embeds to add',
+  args: { embedItems: [] },
   render: (args) => <InteractiveMenu {...args} />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'Add' }));
+    await expect(canvas.getByText('No embeds to add.')).toBeVisible();
     await expect(
-      canvas.getByText('Every block type is already on the page.'),
+      canvas.getByText(/Turn sections on and off in Settings/),
     ).toBeVisible();
   },
 };

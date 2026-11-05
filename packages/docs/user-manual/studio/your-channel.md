@@ -13,7 +13,7 @@ The page is yours to design. You choose everything on it:
 - **Look:** colors, accents, the page background and the header style (solid colors, video or image, slideshow, visualization or gradient).
 - **Stage:** the player with its own backdrop, visualizer, gradient and now-playing overlay.
 - **Sections:** which blocks show and which stay hidden (releases, tracks, latest, feed, news, player), plus a top bar line for announcements.
-- **Identity:** your avatar, bio and Subscribe button, each one optional.
+- **Header details:** your avatar, bio, Subscribe button and follower and play counts, each one optional.
 - **Saved looks:** keep several designs and switch between them.
 
 Design it in the [Channel Designer](#channel-designer).
@@ -30,7 +30,8 @@ Your channel page still shows Tahti's navigation and player bar around it, so li
 
 Open **Settings → Channel & chat → Channel Designer**, or **Edit design** on your channel page. The preview shows what listeners see.
 
-- Pick a block (releases, tracks, latest, feed, news, player, backdrop) and hide it with the eye button. **Next section** steps through them.
+- **Settings** on the channel header turns features on and off: header details (avatar, bio, Subscribe button, follower and play counts) and page sections (live stage, tracks, feed, live shows, links, navigation tabs). While you edit, features that are off stay on the page, faded, so you can see where they go; visitors don't see them.
+- Pick a block (releases, tracks, latest, feed, news, player, backdrop) to edit it. **Next section** steps through them. **Layers** reorders and resizes blocks and adds embeds and playlists.
 - **Player** sets the stage: a video or image, a text **Overlay** (**Configure text**), a **Gradient** (optionally separate from the page) and a **Visualizer** (**Choose visualizer**, with a tune panel for speed and other settings).
 - **Backdrop** (**Edit backdrop design**) sets the **Header style**: **Solid** colors, **Video / image**, **Slideshow** (static or animated effects), **Visualization** or **Gradient**, plus page background, accents and the **Top bar** text.
 - Presets give you a starting look. Save your own with **More channel design options → Save preset**; saved looks show as buttons you can apply, keep or delete. **Save layout** when you're done, or **Reset** to throw away unsaved changes.
