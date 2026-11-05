@@ -22,7 +22,7 @@ Shipped: deploy builds fail if the client bundle inlines an absolute
 | --- | --- | --- | --- | --- |
 | 20 | Host-only cookies + shrink credentialed `*.tahti.live` CORS / CSRF plan | tahti-org | Phase-7 double-submit never shipped; XSS on any subdomain = session | M |
 | 21 | Enforce CSP (today report-only on API edge) | tahti-org | `infra/Caddyfile` `(security_headers)` | M |
-| 22 | Upload magic / stricter `audio/*` verification | tahti-org | prepare/complete | M |
+| 22 | Upload magic / stricter `audio/*` verification | tahti-org | PR'd 2026-11-05: tahti-org#1071 (415 `not_audio` on complete) + web message #1853; close once merged | M |
 | 23 | Screen-reader pass on listen + studio critical paths | tahti-web | Also listed in CUTOVER "Still open" | L |
 | 24 | Ambient WebGL cost (opt-in already; desktop CPU) | tahti-web / player | Known; reduced-motion/pause exist | M |
 | 25 | Auth user PII in `localStorage` (`tahti-web-auth`) | tahti-web | Done in #1764: the snapshot drops the email and channel extras | S |

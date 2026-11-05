@@ -23,6 +23,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | ------- | ---- | -------- |
 | open    | [empty-state-create-ctas.md](empty-state-create-ctas.md) | PageEmpty createables: CTA button with icon + title; inventory flagged (Studio/Library/Admin/Radio/community) |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
+| open    | [discover-listen-widget-audit-2026-11-05.md](discover-listen-widget-audit-2026-11-05.md) | Discover/Listen widget audit findings: inconsistent headings/pills/arrows/cards, unstyled Venues tab, crowded phone tabs, nav highlight jumps |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
 | partial | [library-management-port.md](library-management-port.md) | Port theDAW library management to Library Sounds: paged API client, facets/stats, bulk delete/edit |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
