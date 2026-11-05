@@ -79,6 +79,11 @@ const oldStudioBookmarks: RouteVisit[] = [
     heading: /^Studio$/,
     url: /\/studio$/,
   },
+  {
+    path: '/studio/moderation',
+    heading: /^Fans$/,
+    url: /\/studio\/fans$/,
+  },
 ];
 
 // Old Studio bookmarks for pages that moved into the Settings dialog.
@@ -97,11 +102,6 @@ const oldStudioSettingsBookmarks: RouteVisit[] = [
     path: '/studio/branding?tab=channel-designer',
     heading: 'Channel & chat',
     url: /\/settings\/channel$/,
-  },
-  {
-    path: '/studio/moderation',
-    heading: 'Channel & chat',
-    url: /\/settings\/channel\?tab=moderators$/,
   },
 ];
 
@@ -169,14 +169,13 @@ test('old Studio bookmarks land on the page that replaced them', async ({
   }
 });
 
-test('old Studio branding and moderation bookmarks open their Settings tab', async ({
+test('old Studio branding bookmarks open their Settings tab', async ({
   page,
 }) => {
   const errors = collectPageErrors(page);
   for (const route of oldStudioSettingsBookmarks) {
     await expectSettingsDialog(page, errors, route);
   }
-  await expect(selectedTab(page, 'Moderators')).toBeVisible();
 
   await expectSettingsDialog(page, errors, {
     path: '/settings/channel?tab=moderators',

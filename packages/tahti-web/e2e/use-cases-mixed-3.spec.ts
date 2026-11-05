@@ -38,17 +38,17 @@ test('listener: a scheduled party offers to join at the start', async ({
 
 test('artist: adds a chat moderator and removes one', async ({ page }) => {
   await signIn(page);
-  await open(page, '/settings/channel?tab=moderators');
-  const dialog = page.getByRole('dialog', { name: 'Settings' });
-  const add = dialog.getByRole('button', { name: 'Add moderator' });
+  await open(page, '/studio/fans');
+  const chat = page.getByTestId('fans-chat-settings');
+  const add = chat.getByRole('button', { name: 'Add moderator' });
   await expect(add).toBeDisabled();
-  await dialog.getByRole('textbox', { name: 'Username' }).fill('listener-one');
+  await chat.getByRole('textbox', { name: 'Username' }).fill('listener-one');
   await expect(add).toBeEnabled();
   await add.click();
   await expect(
-    dialog.getByRole('button', { name: /^Remove .* as moderator$/ }),
+    chat.getByRole('button', { name: /^Remove .* as moderator$/ }),
   ).not.toHaveCount(0);
-  const removeAda = dialog.getByRole('button', {
+  const removeAda = chat.getByRole('button', {
     name: 'Remove Ada Mod as moderator',
   });
   await removeAda.click();
