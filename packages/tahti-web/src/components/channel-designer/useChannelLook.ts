@@ -32,6 +32,10 @@ import {
   type NowPlayingOverlaySettings,
 } from '../../content/nowPlayingOverlayPresets';
 import {
+  parseChannelPageLayout,
+  saveChannelPageLayout,
+} from '../../lib/channelPageLayout';
+import {
   channelVizPackId,
   withChannelVizPack,
 } from '../../lib/channelVizPacks';
@@ -144,6 +148,14 @@ export function useChannelLook({
         // instead of overwriting fresher state.
         if (request !== loadRequestRef.current) {
           return false;
+        }
+        // The server copy of the page layout wins over this browser's, so
+        // the toggles here start from what visitors see.
+        const serverLayout = parseChannelPageLayout(
+          visualResult.data.pageLayoutJson,
+        );
+        if (serverLayout) {
+          saveChannelPageLayout(layoutSlug, serverLayout);
         }
         const loaded = buildLoadedLook(
           visualResult.data,

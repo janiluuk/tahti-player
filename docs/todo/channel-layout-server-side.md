@@ -1,13 +1,15 @@
-# Channel page layout is saved only in the owner's browser
+# Channel page layout is saved on the channel
 
-**Status:** blocked
+**Status:** partial
 
-The Channel Designer's look (colors, backdrop, header style, player, visualizer) is saved through the API, but the page layout is not. `lib/channelPageLayout.ts` keeps it in `localStorage` (`tahti.channelPageLayout.<slug>`), so visitors and the owner's other devices always get `defaultChannelPageLayout()`.
+The Channel Designer's page layout (which sections show, block widths and offsets, navigation tabs, the Identity toggles) used to live only in the owner's `localStorage`, so visitors always got `defaultChannelPageLayout()`.
 
-Affected settings: which sections show (releases, tracks, latest, feed, news, events, chat, programming, navigation tabs, embeds, playlists), block widths and offsets, and the Identity toggles (Show avatar, Show bio, Show Subscribe button, Show follower and play counts).
+## Done
 
-## Needs
+- [x] tahti-org #1075: `Channel.pageLayoutJson`, `pageLayout` on `PATCH /api/me/channel/visual`, returned on `GET /api/channels/:slug` and the owner's visual.
+- [x] tahti-web: `ChannelView` applies the channel's `pageLayoutJson` (and seeds this browser's copy); the designer's look load does the same; saving the layout and the Settings-side toggles go through `persistChannelPageLayout` (local + API, toast on failure); an owner's existing local layout is uploaded once when the channel has none.
 
-- [ ] tahti-org: a channel field for the layout (JSON, validated like the look), returned on the public channel and saved from the designer. Blocked: tahti-org change, not started.
-- [ ] tahti-web: load the layout from the channel response, fall back to localStorage once to migrate an existing local layout, then save through the API.
-- [ ] Docs: `packages/docs/user-manual/studio/your-channel.md` already describes these settings as part of the page; check it still matches once they persist.
+## Left
+
+- [ ] Deploy tahti-org #1075 (and #1074 before it), then ship this.
+- [ ] `loadArtistLookVisibility` (player and backdrop on/off in the designer) is still per browser; fold it into the page layout or the look if visitors should see it.

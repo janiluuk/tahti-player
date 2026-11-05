@@ -61,6 +61,7 @@ import { useChannelAutoplay } from '../hooks/useChannelAutoplay';
 import { useChannelLayoutEditing } from '../hooks/useChannelLayoutEditing';
 import { useHasFanTiers } from '../hooks/useHasFanTiers';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { useServerChannelLayout } from '../hooks/useServerChannelLayout';
 import { hasAccountRole } from '../lib/accountRoles';
 import { avatarPoster } from '../lib/avatarPoster';
 import {
@@ -144,6 +145,15 @@ export function ChannelView({ slug }: { slug: string }) {
     me && channel && me.username === channel.user.username,
   );
   const isAdministrator = hasAccountRole(me, 'BOARD');
+
+  useServerChannelLayout({
+    slug,
+    channel,
+    isOwner,
+    editing,
+    layoutDirty,
+    setLayout,
+  });
   const follow = useArtistFollow(
     channel
       ? {

@@ -355,10 +355,41 @@ export function saveChannelPageLayout(
   slug: string,
   items: ChannelPageItem[],
 ): void {
-  localStorage.setItem(
-    storageKey(slug),
-    JSON.stringify(normalizeLayout(items)),
-  );
+  try {
+    localStorage.setItem(
+      storageKey(slug),
+      JSON.stringify(normalizeLayout(items)),
+    );
+  } catch {
+    // Storage full or blocked: the server copy (pageLayoutJson) still holds.
+  }
+}
+
+export function hasLocalChannelPageLayout(slug: string): boolean {
+  try {
+    return localStorage.getItem(storageKey(slug)) != null;
+  } catch {
+    return false;
+  }
+}
+
+/** The layout a channel response carries in `pageLayoutJson`, or null when
+ * it is unset or not a usable array. */
+export function parseChannelPageLayout(
+  json: string | null | undefined,
+): ChannelPageItem[] | null {
+  if (!json) {
+    return null;
+  }
+  try {
+    const parsed = JSON.parse(json) as unknown;
+    if (!Array.isArray(parsed) || parsed.length === 0) {
+      return null;
+    }
+    return normalizeLayout(parsed as ChannelPageItem[]);
+  } catch {
+    return null;
+  }
 }
 
 export function loadChannelLayoutPresetId(
