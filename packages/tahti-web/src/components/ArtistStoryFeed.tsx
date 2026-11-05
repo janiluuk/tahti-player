@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { StoryCard, StoryRow } from '@tahti-player/ui';
 
 import {
@@ -105,6 +106,7 @@ export function ChannelStoryFeed({
   author: StoryAuthor;
   editing: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [posts, setPosts] = useState<ArtistPost[] | null>(null);
   useEffect(() => {
     let cancelled = false;
@@ -125,8 +127,8 @@ export function ChannelStoryFeed({
   if (posts.length === 0) {
     return editing ? (
       <PageEmpty
-        title="No stories yet"
-        description="Posts you publish in Studio show up here as story cards."
+        title={t('empties.noStoriesYet')}
+        description={t('empties.postsYouPublishInStudioShow')}
       />
     ) : null;
   }

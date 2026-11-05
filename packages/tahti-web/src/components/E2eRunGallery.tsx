@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -61,11 +62,12 @@ function StatusBadge({ status }: { status: E2eStatus }) {
 }
 
 function StepStrip({ test }: { test: E2eTest }) {
+  const { t } = useTranslation('web');
   if (!test.steps.length) {
     return (
       <PageEmpty
         className="px-4 pb-4"
-        title="No screenshots were captured for this test."
+        title={t('empties.noScreenshotsWereCapturedForThis')}
       />
     );
   }
@@ -179,6 +181,7 @@ function visibleTests(run: E2eRun, filter: StatusFilter): E2eTest[] {
 }
 
 export function E2eRunGallery() {
+  const { t } = useTranslation('web');
   const [runId, setRunId] = useState(E2E_RUNS[0]!.id);
   const [filter, setFilter] = useState<StatusFilter | null>(null);
   const run = E2E_RUNS.find((r) => r.id === runId) ?? E2E_RUNS[0]!;
@@ -242,7 +245,7 @@ export function E2eRunGallery() {
           ))}
         </ul>
       ) : (
-        <PageEmpty title="No tests match this filter." />
+        <PageEmpty title={t('empties.noTestsMatch')} />
       )}
     </section>
   );

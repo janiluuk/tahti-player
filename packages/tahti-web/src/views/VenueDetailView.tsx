@@ -26,6 +26,7 @@ import { formatScheduleWindow } from '../lib/scheduleTime';
 import { syncDocumentMetadata } from '../lib/seo';
 
 export function VenueDetailView({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const [venue, setVenue] = useState<VenueProfile | null | undefined>(
     undefined,
   );
@@ -93,7 +94,7 @@ export function VenueDetailView({ slug }: { slug: string }) {
       <PageFrame maxWidth="3xl">
         {backLink}
         <PageError
-          title="Could not load this venue"
+          title={t('loadErrors.couldNotLoadThisVenue')}
           description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />
@@ -108,7 +109,7 @@ export function VenueDetailView({ slug }: { slug: string }) {
         <PageEmpty
           headingLevel={1}
           icon="alert"
-          title="Venue not found"
+          title={t('empties.venueNotFound')}
           description={`No verified venue matches "${slug}".`}
           action={
             <Link

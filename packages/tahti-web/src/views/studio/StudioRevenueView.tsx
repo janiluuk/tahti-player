@@ -216,8 +216,10 @@ export function StudioRevenueView() {
             <StudioPanel title="Payments">
               <PageEmpty
                 data-testid="revenue-stripe-disconnected"
-                title="Stripe is not connected"
-                description="Connect Stripe before fan subscriptions, track sales, or grant payouts can reach you."
+                title={t('empties.stripeIsNotConnected')}
+                description={t(
+                  'empties.connectStripeBeforeFanSubscriptionsTrack',
+                )}
                 action={
                   <ButtonLink to="/studio/stripe">Open Stripe setup</ButtonLink>
                 }
@@ -226,7 +228,7 @@ export function StudioRevenueView() {
           ) : tiersError && hasFanTiers === null ? (
             <StudioPanel title="Fan subscriptions">
               <PageError
-                title="Could not load your fan tiers"
+                title={t('loadErrors.couldNotLoadYourFanTiers')}
                 description={tiersError}
                 onRetry={() => setAttempt((n) => n + 1)}
               />

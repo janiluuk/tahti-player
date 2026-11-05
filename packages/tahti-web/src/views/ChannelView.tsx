@@ -270,8 +270,8 @@ export function ChannelView({ slug }: { slug: string }) {
   if (!channel && channelFailed) {
     return (
       <PageError
-        title="Couldn't load this channel"
-        description="Check your connection and try again."
+        title={t('loadErrors.couldnTLoadThisChannel')}
+        description={t('loadErrors.checkYourConnectionAndTryAgain')}
         onRetry={retryChannel}
       />
     );

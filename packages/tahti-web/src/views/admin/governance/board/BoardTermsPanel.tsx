@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge } from '@tahti-player/ui';
 
 import {
@@ -39,6 +40,7 @@ function termStatus(term: AdminBoardTerm): {
 
 /** Every board term the association has recorded, current ones first. */
 export function BoardTermsPanel() {
+  const { t } = useTranslation('web');
   const [terms, setTerms] = useState<AdminBoardTerm[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -69,7 +71,7 @@ export function BoardTermsPanel() {
         <PageLoading label="Loading board terms…" />
       ) : loadError && sorted.length === 0 ? (
         <PageError
-          title="Could not load board terms"
+          title={t('loadErrors.couldNotLoadBoardTerms')}
           description={loadError}
           onRetry={() => {
             setTerms(null);
@@ -77,7 +79,7 @@ export function BoardTermsPanel() {
           }}
         />
       ) : sorted.length === 0 ? (
-        <PageEmpty title="No board terms recorded yet" />
+        <PageEmpty title={t('empties.noBoardTermsRecordedYet')} />
       ) : (
         <ul className="divide-border divide-y">
           {sorted.map((term) => {

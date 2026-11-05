@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -226,6 +227,7 @@ function EndAuditorTerm({
 
 /** Auditors and operations inspectors elected by the general meeting. */
 export function AuditorsPanel() {
+  const { t } = useTranslation('web');
   const [auditors, setAuditors] = useState<GovernanceAuditor[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -248,7 +250,7 @@ export function AuditorsPanel() {
         <PageLoading label="Loading auditors…" />
       ) : loadError && auditors.length === 0 ? (
         <PageError
-          title="Could not load auditors"
+          title={t('loadErrors.couldNotLoadAuditors')}
           description={loadError}
           onRetry={() => {
             setAuditors(null);
@@ -256,7 +258,7 @@ export function AuditorsPanel() {
           }}
         />
       ) : auditors.length === 0 ? (
-        <PageEmpty title="No auditors recorded yet" />
+        <PageEmpty title={t('empties.noAuditorsRecordedYet')} />
       ) : (
         <ul className="divide-border divide-y">
           {auditors.map((auditor) => (

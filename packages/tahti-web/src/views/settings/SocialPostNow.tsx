@@ -2,7 +2,7 @@ import { SendIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, Select, Textarea } from '@tahti-player/ui';
 
 import {
@@ -57,6 +57,7 @@ export function SocialPostNow({
 }: {
   settings: SocialAutoPostSettings;
 }) {
+  const { t } = useTranslation('web');
   const platforms = connectedPlatforms(settings);
   const [platform, setPlatform] = useState<SocialPostPlatform | null>(
     platforms[0] ?? null,
@@ -180,14 +181,14 @@ export function SocialPostNow({
         </div>
       ) : postsError ? (
         <PageError
-          title="Could not load recent posts"
+          title={t('loadErrors.couldNotLoadRecentPosts')}
           description={postsError}
           onRetry={loadPosts}
         />
       ) : posts && selected ? (
         <PageEmpty
-          title="Nothing posted yet."
-          description="Use Post now above to queue your first message."
+          title={t('empties.nothingPostedYet')}
+          description={t('empties.usePostNowAboveToQueue')}
         />
       ) : null}
     </div>

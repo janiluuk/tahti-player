@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { ArrowDown, ArrowUp, Settings2 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -49,6 +50,7 @@ export function DiscoWidgetManagerPanel({
   description?: string;
   compact?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [widgets, setWidgets] = useState<DiscoWidgetStoreItem[]>([]);
   const [installs, setInstalls] = useState<DiscoWidgetInstallView[]>([]);
   const [loading, setLoading] = useState(true);
@@ -305,8 +307,8 @@ export function DiscoWidgetManagerPanel({
           ) : null}
           {installs.length === 0 ? (
             <PageEmpty
-              title="Nothing installed yet"
-              description="Add one from the store below."
+              title={t('empties.nothingInstalledYet')}
+              description={t('empties.addOneFromTheStoreBelow')}
             />
           ) : (
             <div

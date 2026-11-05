@@ -2,6 +2,7 @@ import { Link, useParams } from '@tanstack/react-router';
 import { CheckIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -42,6 +43,7 @@ const formatEurString = (cents: string) =>
   formatEur(Number.parseInt(cents, 10));
 
 export function AdminGrantCycleView() {
+  const { t } = useTranslation('web');
   const { year: rawYear } = useParams({ strict: false }) as { year: string };
   const year = Number.parseInt(rawYear, 10);
   const [preview, setPreview] = useState<AdminGrantPreview | null>(null);
@@ -134,7 +136,7 @@ export function AdminGrantCycleView() {
                 <PageLoading label="Loading grant preview…" />
               ) : !preview ? (
                 <PageError
-                  title="Could not load the grant preview"
+                  title={t('loadErrors.couldNotLoadTheGrantPreview')}
                   onRetry={load}
                 />
               ) : (
@@ -168,7 +170,9 @@ export function AdminGrantCycleView() {
                     {preview.artists.length === 0 ? (
                       <PageEmpty
                         title={`No artist activity in ${year}`}
-                        description="Downloads and fan subscriptions count toward a grant; none were recorded this year."
+                        description={t(
+                          'empties.downloadsAndFanSubscriptionsCountToward',
+                        )}
                       />
                     ) : (
                       <HorizontalScroll label="Per-artist allocation preview">

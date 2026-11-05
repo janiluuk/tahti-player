@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
@@ -96,6 +97,7 @@ type Tab = 'stage' | 'gallery' | 'design';
 const RELATED_ARTIST_LIMIT = 5;
 
 export function ArtistProfilePage({ username }: { username: string }) {
+  const { t } = useTranslation('web');
   const me = useAuthStore((s) => s.user);
   const profileLoaded = useAuthStore((s) => s.profileLoaded);
   const [tab, setTab] = useState<Tab>('stage');
@@ -238,7 +240,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
   if (loadError) {
     return (
       <PageError
-        title="Could not load this artist"
+        title={t('loadErrors.couldNotLoadThisArtist')}
         description={loadError}
         onRetry={retry}
       />
@@ -249,8 +251,8 @@ export function ArtistProfilePage({ username }: { username: string }) {
     return (
       <PageEmpty
         headingLevel={1}
-        title="Artist not found"
-        description="This artist profile may have been removed or is not available."
+        title={t('empties.artistNotFound')}
+        description={t('empties.thisArtistProfileMayHaveBeen')}
       />
     );
   }

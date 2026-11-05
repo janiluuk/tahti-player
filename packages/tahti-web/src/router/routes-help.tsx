@@ -1,5 +1,6 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink } from '@tahti-player/ui';
 
 import { PageEmpty } from '../components/PageStates';
@@ -31,22 +32,27 @@ export const helpGovernanceRedirectRoute = createRoute({
   },
 });
 
-/** Any address no other route claims. It lives under the app layout so the
- * sidebar, top bar and player stay on screen instead of a bare error. */
-export const notFoundRoute = createRoute({
-  getParentRoute: () => appLayoutRoute,
-  path: '$',
-  component: () => (
+function NotFoundPage() {
+  const { t } = useTranslation('web');
+  return (
     <PageEmpty
       icon="alert"
       headingLevel={1}
-      title="Page not found"
-      description="There is nothing at this address. It may have moved or been removed."
+      title={t('empties.pageNotFound')}
+      description={t('empties.thereIsNothingAtThisAddress')}
       action={
         <ButtonLink to="/" size="sm" variant="secondary">
           Back to Listen
         </ButtonLink>
       }
     />
-  ),
+  );
+}
+
+/** Any address no other route claims. It lives under the app layout so the
+ * sidebar, top bar and player stay on screen instead of a bare error. */
+export const notFoundRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '$',
+  component: NotFoundPage,
 });

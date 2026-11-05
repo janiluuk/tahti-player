@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, InlineError, Input, Select } from '@tahti-player/ui';
 
 import {
@@ -145,6 +146,7 @@ function NewElectionForm({ onCreated }: { onCreated: () => void }) {
 
 /** Board elections: call one, follow it to the result. */
 export function ElectionsAdminPanel() {
+  const { t } = useTranslation('web');
   const [elections, setElections] = useState<AdminElection[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -167,7 +169,7 @@ export function ElectionsAdminPanel() {
         <PageLoading label="Loading elections…" />
       ) : loadError && elections.length === 0 ? (
         <PageError
-          title="Could not load elections"
+          title={t('loadErrors.couldNotLoadElections')}
           description={loadError}
           onRetry={() => {
             setElections(null);
@@ -175,7 +177,7 @@ export function ElectionsAdminPanel() {
           }}
         />
       ) : elections.length === 0 ? (
-        <PageEmpty title="No elections called yet" />
+        <PageEmpty title={t('empties.noElectionsCalledYet')} />
       ) : (
         <ul className="divide-border divide-y">
           {elections.map((election) => {

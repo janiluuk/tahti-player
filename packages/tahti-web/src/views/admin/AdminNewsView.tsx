@@ -128,7 +128,7 @@ export function AdminNewsView() {
                   <PageLoading label="Loading news…" />
                 ) : loadError && posts.length === 0 ? (
                   <PageError
-                    title="Could not load news posts"
+                    title={t('loadErrors.couldNotLoadNewsPosts')}
                     description={loadError}
                     onRetry={() => {
                       setLoading(true);
@@ -137,7 +137,7 @@ export function AdminNewsView() {
                   />
                 ) : posts.length === 0 ? (
                   <PageEmpty
-                    title="No news posts yet"
+                    title={t('empties.noNewsPostsYet')}
                     action={
                       <Tooltip content="Write post" side="top">
                         <Button
