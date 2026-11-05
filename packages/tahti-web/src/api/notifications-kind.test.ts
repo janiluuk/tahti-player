@@ -40,6 +40,24 @@ describe('notificationKindOf', () => {
     expect(notificationKindOf('DISCUSSION_OPENED')).toBe('governance');
     expect(notificationKindOf('DISCUSSION_CLOSED')).toBe('governance');
     expect(notificationKindOf('DISCUSSION_MENTION')).toBe('governance');
+    for (const type of [
+      'GROUP_JOIN_REQUESTED',
+      'GROUP_JOIN_RESOLVED',
+      'GROUP_SUBMISSION_RECEIVED',
+      'GROUP_SUBMISSION_RESOLVED',
+      'GROUP_MEMBER_REMOVED',
+      'GROUP_ROLE_CHANGED',
+      'GROUP_DELETED',
+    ]) {
+      expect(notificationKindOf(type)).toBe('social');
+    }
+    for (const type of [
+      'LISTENING_PARTY_SCHEDULED',
+      'LISTENING_PARTY_STARTING',
+      'LISTENING_PARTY_CHANGED',
+    ]) {
+      expect(notificationKindOf(type)).toBe('music');
+    }
   });
 
   it('labels a type by its kind', () => {
