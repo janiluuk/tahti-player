@@ -401,3 +401,37 @@ export function mockRemoveGroupMember(
   group.memberCount = Math.max(0, group.memberCount - 1);
   return { ok: true };
 }
+
+export function mockSetGroupMemberRole(
+  slug: string,
+  username: string,
+  role: 'ADMIN' | 'MEMBER',
+): { ok: true } | { ok: false; error: string } {
+  const member = getStore()
+    .find((row) => row.slug === slug)
+    ?.members.find((m) => m.username === username);
+  if (!member || member.role === 'OWNER') {
+    return { ok: false, error: 'Member not found' };
+  }
+  member.role = role;
+  return { ok: true };
+}
+
+export function mockTransferGroup(
+  slug: string,
+  username: string,
+): { ok: true } | { ok: false; error: string } {
+  const group = getStore().find((row) => row.slug === slug);
+  const heir = group?.members.find((m) => m.username === username);
+  if (!group || !heir) {
+    return { ok: false, error: 'Member not found' };
+  }
+  for (const member of group.members) {
+    if (member.role === 'OWNER') {
+      member.role = 'ADMIN';
+    }
+  }
+  heir.role = 'OWNER';
+  group.role = 'ADMIN';
+  return { ok: true };
+}

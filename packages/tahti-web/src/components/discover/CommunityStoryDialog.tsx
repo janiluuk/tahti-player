@@ -6,13 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import {
-  Button,
-  ButtonAnchor,
-  Dialog,
-  ImageReveal,
-  MediaArtwork,
-} from '@tahti-player/ui';
+import { Button, ButtonAnchor, Dialog, MediaArtwork } from '@tahti-player/ui';
 
 import {
   fetchCommunityStory,
@@ -211,17 +205,14 @@ function StoryBody({
           onClick={onClose}
           className="text-foreground-secondary hover:text-foreground flex w-fit items-center gap-2 text-sm"
         >
-          <ImageReveal
-            src={story.author.avatarUrl ?? undefined}
-            alt=""
-            className="bg-background-secondary size-6 shrink-0 rounded-full"
-            imgClassName="object-cover"
-            placeholder={
-              <span className="text-[10px] font-bold">
-                {author.charAt(0).toUpperCase()}
-              </span>
-            }
-          />
+          <span className="size-6 shrink-0 overflow-hidden rounded-full">
+            <MediaArtwork
+              src={story.author.avatarUrl ?? undefined}
+              alt=""
+              seed={story.author.username}
+              size="fill"
+            />
+          </span>
           {author}
         </Link>
       </div>
