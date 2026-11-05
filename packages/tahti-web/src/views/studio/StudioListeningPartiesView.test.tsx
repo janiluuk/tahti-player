@@ -55,6 +55,14 @@ describe('Studio listening parties (offline mock)', () => {
     );
   });
 
+  it('shows how many people asked for a reminder on a scheduled party', async () => {
+    await renderWithRouter(<StudioListeningPartiesView />);
+    const rows = await screen.findAllByRole('listitem');
+    const [live, scheduled] = rows;
+    expect(await within(scheduled!).findByText('12 reminders')).toBeTruthy();
+    expect(within(live!).queryByText(/reminder/)).toBeNull();
+  });
+
   it('cancels a scheduled party after confirming', async () => {
     await renderWithRouter(<StudioListeningPartiesView />);
     fireEvent.click(

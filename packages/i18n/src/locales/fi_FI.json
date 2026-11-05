@@ -2849,7 +2849,9 @@
       "cancelTitle": "Peruutetaanko kuuntelujuhla {{title}}?",
       "cancelTitleFallback": "Peruutetaanko kuuntelujuhla?",
       "cancelDescription": "Juhlan sivu kertoo vierailijoille, että se peruttiin. Tätä ei voi perua.",
-      "cancelConfirm": "Peruuta juhla"
+      "cancelConfirm": "Peruuta juhla",
+      "reminders_one": "{{count}} muistutus",
+      "reminders_other": "{{count}} muistutusta"
     },
     "adminThemes": {
       "title": "Yhteisöteemat",

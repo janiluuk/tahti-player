@@ -2849,7 +2849,9 @@
       "cancelTitle": "Cancel the {{title}} listening party?",
       "cancelTitleFallback": "Cancel listening party?",
       "cancelDescription": "The party page tells visitors it was canceled. This cannot be undone.",
-      "cancelConfirm": "Cancel party"
+      "cancelConfirm": "Cancel party",
+      "reminders_one": "{{count}} reminder",
+      "reminders_other": "{{count}} reminders"
     },
     "adminThemes": {
       "title": "Community themes",
