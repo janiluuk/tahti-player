@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { Maximize2Icon, Trash2Icon } from 'lucide-react';
+import { Trash2Icon } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 
 import { Button, ButtonLink, QueuePanel, Tooltip } from '@tahti-player/ui';
@@ -7,7 +7,6 @@ import { Button, ButtonLink, QueuePanel, Tooltip } from '@tahti-player/ui';
 import { cn } from '../lib/cn';
 import { queueWithPlaybackStatus } from '../lib/queueItemStatus';
 import { soundIdFromPlayableId } from '../lib/soundId';
-import { useLayoutStore } from '../stores/layoutStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { useQueueBarActions } from './useQueueBarActions';
@@ -54,10 +53,6 @@ export function SidebarQueuePanel({
     [favoriteTracks],
   );
   const { requestClear, menuItems, dialogs } = useQueueBarActions();
-  const setFullScreenPlayerOpen = useLayoutStore(
-    (s) => s.setFullScreenPlayerOpen,
-  );
-  const hasPlayable = currentId != null;
 
   const soundIdFor = useCallback(
     (id: string) => {
@@ -129,19 +124,6 @@ export function SidebarQueuePanel({
 
       {toolbar ? (
         <div className="border-border flex shrink-0 items-center justify-center gap-1 border-t px-2 py-1.5">
-          <Tooltip content="Open full-screen player" side="top">
-            <Button
-              size="icon-sm"
-              variant="text"
-              disabled={!hasPlayable}
-              onClick={() => setFullScreenPlayerOpen(true)}
-              className="text-foreground-secondary hover:text-foreground"
-              aria-label="Open full-screen player"
-              data-testid="queue-fullscreen-button"
-            >
-              <Maximize2Icon size={15} aria-hidden />
-            </Button>
-          </Tooltip>
           <Tooltip content="Clear queue" side="top">
             <Button
               size="icon-sm"
@@ -151,7 +133,7 @@ export function SidebarQueuePanel({
               className="text-foreground-secondary hover:text-accent-red-strong"
               aria-label="Clear queue"
             >
-              <Trash2Icon size={15} aria-hidden />
+              <Trash2Icon className="text-accent-red" size={15} aria-hidden />
             </Button>
           </Tooltip>
           {menuItems.map((item) => (

@@ -102,7 +102,7 @@ export function SoundHeader({
             <Tooltip content="Quick edits" side="top">
               <TrackContextMenu.Trigger>
                 <Button
-                  variant="secondary"
+                  variant="text"
                   size="icon-sm"
                   className="bg-background border-border rounded-md border-(length:--border-width)"
                   disabled={notReady || hasError}

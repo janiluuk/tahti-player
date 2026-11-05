@@ -290,7 +290,9 @@ export function PlayableAmbientTrackList({
                             title: item.title,
                           }),
                           title: t('actions.remove'),
-                          icon: <TrashIcon size={16} />,
+                          icon: (
+                            <TrashIcon className="text-accent-red" size={16} />
+                          ),
                           onClick: () => onRemove(item),
                         },
                       ]

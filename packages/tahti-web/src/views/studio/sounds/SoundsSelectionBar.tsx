@@ -134,7 +134,7 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
           disabled={bulkBusy}
           onClick={() => setPendingBulkDelete(true)}
         >
-          <Trash2Icon size={15} aria-hidden />
+          <Trash2Icon className="text-accent-red" size={15} aria-hidden />
           {t('actions.delete')}
         </Button>
         <Button

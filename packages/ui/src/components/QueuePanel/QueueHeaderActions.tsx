@@ -107,11 +107,12 @@ export const QueueHeaderActions: FC<QueueHeaderActionsProps> = ({
           <Button
             data-testid="clear-queue-button"
             size="icon"
+            variant="text"
             aria-label={clearLabel}
             disabled={clearDisabled}
             onClick={onClearQueue}
           >
-            <Trash2Icon />
+            <Trash2Icon className="text-accent-red" />
           </Button>
         </Tooltip>
       ) : null}
@@ -121,6 +122,7 @@ export const QueueHeaderActions: FC<QueueHeaderActionsProps> = ({
           trigger={
             <Button
               size="icon"
+              variant="text"
               data-testid="queue-more-button"
               aria-label={moreLabel}
             >

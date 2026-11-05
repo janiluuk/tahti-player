@@ -1081,7 +1081,8 @@
       "noTracksFound": "No tracks found."
     },
     "artistProfile": {
-      "joined": "Joined {{month}}"
+      "joined": "Joined {{month}}",
+      "tahtiMember": "Tahti ry member"
     },
     "channelRename": {
       "renamed": "Renamed to {{slug}}.",

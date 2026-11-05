@@ -266,7 +266,11 @@ export function ChannelMembersEditor({
                     disabled={removingId === member.id}
                     onClick={() => void remove(member.id)}
                   >
-                    <Trash2Icon size={14} aria-hidden />
+                    <Trash2Icon
+                      className="text-accent-red"
+                      size={14}
+                      aria-hidden
+                    />
                   </Button>
                 </div>
               )}

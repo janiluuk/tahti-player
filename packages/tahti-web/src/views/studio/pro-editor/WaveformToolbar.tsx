@@ -31,12 +31,14 @@ function ToolButton({
   shortcut,
   icon: Icon,
   disabled,
+  danger,
   onClick,
 }: {
   label: string;
   shortcut?: string;
   icon: LucideIcon;
   disabled?: boolean;
+  danger?: boolean;
   onClick: () => void;
 }) {
   return (
@@ -49,7 +51,11 @@ function ToolButton({
         aria-label={label}
         aria-keyshortcuts={shortcut}
       >
-        <Icon size={16} aria-hidden />
+        <Icon
+          size={16}
+          aria-hidden
+          className={danger ? 'text-accent-red' : undefined}
+        />
       </Button>
     </Tooltip>
   );
@@ -207,6 +213,7 @@ export function WaveformToolbar(props: ToolbarProps) {
         <ToolButton
           label="Clear all cuts"
           icon={Trash2Icon}
+          danger
           disabled={!props.hasCuts}
           onClick={props.onClearCuts}
         />

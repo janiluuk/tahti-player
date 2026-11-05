@@ -7,7 +7,7 @@ import {
 import { useCallback, useMemo } from 'react';
 
 import { i18n } from '@tahti-player/i18n';
-import { Badge, Button, StatChip, Tooltip } from '@tahti-player/ui';
+import { Badge, Button, Tooltip } from '@tahti-player/ui';
 
 import type { ChannelLink } from '../../api/channel-design';
 import type { PublicRadioShow } from '../../api/shows';
@@ -359,17 +359,6 @@ export function renderChannelBlock(
         </section>
       );
     }
-    case 'stats':
-      return (
-        <section
-          className={`flex items-center gap-6 px-4 py-3 ${editing ? '' : 'border-border rounded-lg border'}`}
-        >
-          <StatChip
-            value={channel.followerCount ?? '—'}
-            label={i18n.t('web:channelBlocks.followers')}
-          />
-        </section>
-      );
     case 'events': {
       if (ctx.sectionStatus.shows !== 'ready') {
         return (
@@ -475,6 +464,11 @@ export function renderChannelBlock(
           }}
         />
       );
+    case 'stats':
+    case 'headerStats':
+      // Followers and plays show in the social header; `headerStats` only
+      // switches them on and off there.
+      return null;
     default: {
       // Exhaustiveness guard: adding a type to CHANNEL_PAGE_ITEM_TYPES
       // without a matching case here used to compile fine and silently

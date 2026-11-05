@@ -1081,7 +1081,8 @@
       "noTracksFound": "Kappaleita ei löytynyt."
     },
     "artistProfile": {
-      "joined": "Liittynyt {{month}}"
+      "joined": "Liittynyt {{month}}",
+      "tahtiMember": "Tahti ry:n jäsen"
     },
     "channelRename": {
       "renamed": "Uusi nimi: {{slug}}.",

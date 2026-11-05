@@ -129,7 +129,11 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
                       onChange(value.filter((_, i) => i !== index))
                     }
                   >
-                    <Trash2Icon size={14} aria-hidden />
+                    <Trash2Icon
+                      className="text-accent-red"
+                      size={14}
+                      aria-hidden
+                    />
                   </Button>
                 </Tooltip>
               </li>

@@ -96,7 +96,7 @@ export function BackdropPanel({
                 aria-label="Remove backdrop"
                 onClick={onRemoveBackdrop}
               >
-                <Trash2Icon size={15} aria-hidden />
+                <Trash2Icon className="text-accent-red" size={15} aria-hidden />
               </Button>
             </Tooltip>
           ) : null}

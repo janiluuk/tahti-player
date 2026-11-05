@@ -16,16 +16,16 @@ vi.mock('./ChannelVisualizer', () => ({ ChannelVisualizer: () => null }));
 describe('TahtiMemberBadge', () => {
   afterEach(cleanup);
 
-  it('shows the badge and explains it in a tooltip for members', () => {
+  it('shows a check-mark pill named Tahti ry member for members', () => {
     render(<TahtiMemberBadge isMember />);
     const badge = screen.getByTestId('tahti-member-badge');
-    expect(badge.textContent).toBe('Tahti ry member');
+    expect(badge.getAttribute('aria-label')).toBe('Tahti ry member');
+    expect(badge.textContent).toBe('');
+    expect(badge.querySelector('svg')).toBeTruthy();
     act(() => {
       fireEvent.focus(badge);
     });
-    expect(screen.getByRole('tooltip').textContent).toMatch(
-      /member of the association/,
-    );
+    expect(screen.getByRole('tooltip').textContent).toBe('Tahti ry member');
   });
 
   it.each([false, undefined, null])(

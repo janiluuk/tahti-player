@@ -288,7 +288,11 @@ export function InternetRadioPresetsPanel() {
                     variant="text"
                     onClick={() => setPendingRemove(preset)}
                   >
-                    <Trash2Icon size={14} aria-hidden />
+                    <Trash2Icon
+                      className="text-accent-red"
+                      size={14}
+                      aria-hidden
+                    />
                     Remove
                   </Button>
                 </div>

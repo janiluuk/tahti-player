@@ -476,7 +476,11 @@ export function ReleaseSmartLinksPanel({
                       })
                     }
                   >
-                    <Trash2Icon size={15} aria-hidden />
+                    <Trash2Icon
+                      className="text-accent-red"
+                      size={15}
+                      aria-hidden
+                    />
                   </Button>
                 </Tooltip>
               </li>

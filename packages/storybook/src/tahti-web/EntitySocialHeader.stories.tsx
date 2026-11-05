@@ -246,7 +246,7 @@ export const ArtistMemberWithNameplate: Story = {
     await expect(nameplate).toHaveStyle({
       backgroundColor: 'rgb(245, 158, 11)',
     });
-    await expect(canvas.getByTestId('tahti-member-badge')).toHaveTextContent(
+    await expect(canvas.getByTestId('tahti-member-badge')).toHaveAccessibleName(
       'Tahti ry member',
     );
   },
