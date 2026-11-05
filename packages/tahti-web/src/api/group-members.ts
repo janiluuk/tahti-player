@@ -1,6 +1,11 @@
 import type { FetchMeta } from './client';
 import type { ArtistGroupRole } from './groups';
-import { mockFetchGroupMembers, mockRemoveGroupMember } from './groups-mock';
+import {
+  mockFetchGroupMembers,
+  mockRemoveGroupMember,
+  mockSetGroupMemberRole,
+  mockTransferGroup,
+} from './groups-mock';
 import { apiErrorMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -58,6 +63,52 @@ export async function removeGroupMember(
     return {
       ok: false,
       error: err instanceof Error ? err.message : 'Could not remove member',
+    };
+  }
+}
+
+/** Owner only: make a member an admin, or an admin a member again. */
+export async function setGroupMemberRole(
+  slug: string,
+  username: string,
+  role: 'ADMIN' | 'MEMBER',
+): Promise<Result> {
+  if (isForceMock()) {
+    return mockSetGroupMemberRole(slug, username, role);
+  }
+  try {
+    await requestJson(
+      `${groupPath(slug)}/members/${encodeURIComponent(username)}`,
+      { method: 'PATCH', body: JSON.stringify({ role }) },
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not change the role',
+    };
+  }
+}
+
+/** Owner only: hand the group and its playlist to another member; you stay as admin. */
+export async function transferArtistGroup(
+  slug: string,
+  username: string,
+): Promise<Result> {
+  if (isForceMock()) {
+    return mockTransferGroup(slug, username);
+  }
+  try {
+    await requestJson(`${groupPath(slug)}/transfer`, {
+      method: 'POST',
+      body: JSON.stringify({ username }),
+    });
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        err instanceof Error ? err.message : 'Could not hand over the group',
     };
   }
 }
