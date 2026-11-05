@@ -373,7 +373,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             ) : null}
             {loadErrors.requests && requests.length === 0 ? (
               <PageError
-                title="Could not load topics"
+                title={t('loadErrors.couldNotLoadTopics')}
                 description={loadErrors.requests}
                 onRetry={reload}
               />
@@ -425,7 +425,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             ) : null}
             {loadErrors.meetings && meetings.length === 0 ? (
               <PageError
-                title="Could not load meetings"
+                title={t('loadErrors.couldNotLoadMeetings')}
                 description={loadErrors.meetings}
                 onRetry={reload}
               />
@@ -490,7 +490,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             ) : null}
             {loadErrors.documents && documents.length === 0 ? (
               <PageError
-                title="Could not load documents"
+                title={t('loadErrors.couldNotLoadDocuments')}
                 description={loadErrors.documents}
                 onRetry={reload}
               />
@@ -531,7 +531,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             ) : null}
             {loadErrors.reports && reports.length === 0 ? (
               <PageError
-                title="Could not load reviews"
+                title={t('loadErrors.couldNotLoadReviews')}
                 description={loadErrors.reports}
                 onRetry={reload}
               />
@@ -570,7 +570,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             ) : null}
             {loadErrors.members && members.length === 0 ? (
               <PageError
-                title="Could not load the member directory"
+                title={t('loadErrors.couldNotLoadTheMemberDirectory')}
                 description={loadErrors.members}
                 onRetry={reload}
               />
@@ -707,7 +707,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
         motions.length === 0 &&
         (loadErrors.motions ? (
           <PageError
-            title="Could not load motions"
+            title={t('loadErrors.couldNotLoadMotions')}
             description={loadErrors.motions}
             onRetry={reload}
           />

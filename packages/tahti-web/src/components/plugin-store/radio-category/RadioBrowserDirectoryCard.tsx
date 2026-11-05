@@ -2,7 +2,7 @@ import { PlusIcon, SearchIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   FilterChips,
@@ -46,6 +46,7 @@ import {
 import { SuggestStationForm } from './SuggestStationForm';
 
 export function RadioBrowserDirectoryCard() {
+  const { t } = useTranslation('web');
   const enabled = useRadioBrowserStore((s) => s.enabled);
   const setEnabled = useRadioBrowserStore((s) => s.setEnabled);
   const play = usePlayerStore((s) => s.play);
@@ -223,8 +224,10 @@ export function RadioBrowserDirectoryCard() {
                       </div>
                       {savedStations.length === 0 ? (
                         <PageEmpty
-                          title="No saved stations yet"
-                          description="Save stations from Browser to show them on Listen."
+                          title={t('empties.noSavedStationsYet')}
+                          description={t(
+                            'empties.saveStationsFromBrowserToShow',
+                          )}
                         />
                       ) : (
                         <ul className="grid grid-cols-1 gap-1.5 sm:grid-cols-2">
@@ -395,8 +398,8 @@ export function RadioBrowserDirectoryCard() {
                       </h3>
                       {results.length === 0 ? (
                         <PageEmpty
-                          title="No stations found"
-                          description="Try another search or clear the filters."
+                          title={t('empties.noStationsFound')}
+                          description={t('empties.tryAnotherSearchOrClearThe')}
                         />
                       ) : (
                         <ul className="grid max-h-72 grid-cols-1 gap-1.5 overflow-y-auto sm:grid-cols-2">

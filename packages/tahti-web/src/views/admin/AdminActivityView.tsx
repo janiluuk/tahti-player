@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   FilterChips,
   LogViewer,
@@ -174,6 +175,7 @@ export function AdminActivityView({
 }: {
   embedded?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [entries, setEntries] = useState<AdminActivityEntry[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -253,7 +255,7 @@ export function AdminActivityView({
         <PageLoading label="Loading activity…" />
       ) : error && !loaded ? (
         <PageError
-          title="Couldn't load activity"
+          title={t('loadErrors.couldnTLoadActivity')}
           description={error}
           onRetry={() => {
             setLoading(true);
@@ -264,8 +266,8 @@ export function AdminActivityView({
         <div className="flex flex-col gap-3">
           {error ? (
             <PageErrorBanner
-              title="Couldn't refresh activity"
-              description="Showing the last loaded entries."
+              title={t('loadErrors.couldnTRefreshActivity')}
+              description={t('loadErrors.showingTheLastLoadedEntries')}
               onRetry={() => void load()}
             />
           ) : null}

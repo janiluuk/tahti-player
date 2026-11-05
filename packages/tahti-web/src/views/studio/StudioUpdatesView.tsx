@@ -141,14 +141,14 @@ export function StudioUpdatesView({
       >
         {loaded && loadError && isEmpty ? (
           <PageError
-            title="Could not load posts and newsletters"
+            title={t('loadErrors.couldNotLoadPostsAndNewsletters')}
             description={loadError}
             onRetry={reload}
           />
         ) : null}
         {loaded && loadError && !isEmpty ? (
           <PageErrorBanner
-            title="Could not refresh posts and newsletters"
+            title={t('loadErrors.couldNotRefreshPostsAndNewsletters')}
             description={loadError}
             onRetry={reload}
           />
@@ -196,7 +196,7 @@ export function StudioUpdatesView({
             <StudioPanel>
               {posts.length === 0 ? (
                 <PageEmpty
-                  title="No posts yet"
+                  title={t('empties.noPostsYet')}
                   description={
                     isEmpty
                       ? 'Share news, show notes, or tour dates with your followers.'
@@ -297,7 +297,7 @@ export function StudioUpdatesView({
             <StudioPanel>
               {drafts.length === 0 ? (
                 <PageEmpty
-                  title="No drafts yet"
+                  title={t('empties.noDraftsYet')}
                   description={
                     isEmpty
                       ? 'Draft a newsletter or post when you are ready to publish.'

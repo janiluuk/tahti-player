@@ -2,7 +2,7 @@ import { LayersIcon, SplitIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Loader, TabLabel, Tabs } from '@tahti-player/ui';
 
 import {
@@ -30,6 +30,7 @@ export function StemsPanel({
   /** When set, READY jobs offer “Send to Multitrack” (one lane per stem). */
   onSendToMultitrack?: (job: StemJob) => void | Promise<void>;
 }) {
+  const { t } = useTranslation('web');
   const [stems, setStems] = useState<StemJob[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [loadAttempt, setLoadAttempt] = useState(0);
@@ -171,14 +172,14 @@ export function StemsPanel({
 
       {loadError && stems.length === 0 ? (
         <PageError
-          title="Could not load stem jobs"
+          title={t('loadErrors.couldNotLoadStemJobs')}
           description={loadError}
           onRetry={() => setLoadAttempt((n) => n + 1)}
         />
       ) : stems.length === 0 ? (
         <PageEmpty
-          title="No stem jobs yet — request a split above."
-          description="Splits are cached for 7 days, then cleared automatically."
+          title={t('empties.noStemJobsYetRequestA')}
+          description={t('empties.splitsAreCachedFor7Days')}
         />
       ) : (
         <ul className="divide-border divide-y">

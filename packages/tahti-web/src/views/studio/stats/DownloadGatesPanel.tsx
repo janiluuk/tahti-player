@@ -1,6 +1,7 @@
 import { BanIcon, DownloadIcon, Repeat2Icon, UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   DataTable,
@@ -26,6 +27,7 @@ import { StudioPanel } from '../../../components/StudioPanel';
 import { STUDIO_METRIC_TONES } from './metricTones';
 
 export function DownloadGatesPanel({ active }: { active: boolean }) {
+  const { t } = useTranslation('web');
   const [stats, setStats] = useState<DownloadGateStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +62,7 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
     return error && active ? (
       <StudioPanel title="Download gates">
         <PageError
-          title="Could not load download gates"
+          title={t('loadErrors.couldNotLoadDownloadGates')}
           description={error}
           onRetry={() => setReloadKey((key) => key + 1)}
         />
@@ -106,8 +108,8 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
         </div>
         {stats.items.length === 0 ? (
           <PageEmpty
-            title="No gated tracks"
-            description="Turn on a follow or repost gate in a track's download settings."
+            title={t('empties.noGatedTracks')}
+            description={t('empties.turnOnAFollowOrRepost')}
           />
         ) : (
           <HorizontalScroll label="Gated downloads" className="mt-4">

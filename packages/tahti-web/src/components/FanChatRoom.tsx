@@ -1,6 +1,7 @@
 import { ArrowLeftIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -27,6 +28,7 @@ export function FanChatRoom({
   rail?: boolean;
   onLeave: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [messages, setMessages] = useState<FanMessage[]>([]);
   const [input, setInput] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -246,8 +248,8 @@ export function FanChatRoom({
       >
         {messages.length === 0 && (
           <PageEmpty
-            title="Just fans in here"
-            description="Only the artist and their subscribers see this room."
+            title={t('empties.justFansInHere')}
+            description={t('empties.onlyTheArtistAndTheirSubscribers')}
           />
         )}
         {messages.map((m) => (

@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { MediaArtwork, SectionTitle, ViewShell } from '@tahti-player/ui';
 
 import { fetchSearch } from '../api/listen';
@@ -21,6 +22,7 @@ const rowClass =
 /** Every artist, track and playlist matching `q` — where Enter in the top
  * bar search goes. Without a query it offers the search box. */
 export function SearchResultsView({ q }: { q: string }) {
+  const { t } = useTranslation('web');
   const query = q.trim();
   const [state, setState] = useState<State>({ status: 'loading' });
   const [attempt, setAttempt] = useState(0);
@@ -70,7 +72,7 @@ export function SearchResultsView({ q }: { q: string }) {
         <PageLoading label="Searching…" />
       ) : state.status === 'error' ? (
         <PageError
-          title="Could not load search results"
+          title={t('loadErrors.couldNotLoadSearchResults')}
           description={state.message}
           onRetry={() => setAttempt((n) => n + 1)}
         />
@@ -80,7 +82,7 @@ export function SearchResultsView({ q }: { q: string }) {
         0 ? (
         <PageEmpty
           title={`No results for “${query}”`}
-          description="Try another spelling, or browse Discover and Radio."
+          description={t('empties.tryAnotherSpellingOrBrowseDiscover')}
         />
       ) : (
         <div className="flex flex-col gap-8">

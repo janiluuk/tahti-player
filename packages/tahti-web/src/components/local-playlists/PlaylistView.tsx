@@ -17,7 +17,7 @@ import {
 } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   CatalogTable,
@@ -53,6 +53,7 @@ type ViewProps = {
 
 /** One playlist: entries in order, reorder, multi-remove with undo, play/shuffle. */
 export function PlaylistView({ library, id, onBack }: ViewProps) {
+  const { t } = useTranslation('web');
   const table = usePersistedCatalogTable(
     'tahti-local-playlist-table',
     PLAYLIST_COLUMNS,
@@ -292,7 +293,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
     return (
       <EmptyState
         size="sm"
-        title="Playlist unavailable"
+        title={t('empties.playlistUnavailable')}
         description={error}
         action={
           <Button variant="secondary" onClick={onBack}>
@@ -382,8 +383,8 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
       </div>
       {entries.length === 0 && !loading ? (
         <PageEmpty
-          title="This playlist is empty"
-          description="Select tracks in Tracks and choose Add to playlist, or save your queue here."
+          title={t('empties.thisPlaylistIsEmpty')}
+          description={t('empties.selectTracksInTracksAndChoose')}
           className="flex-1"
         />
       ) : (

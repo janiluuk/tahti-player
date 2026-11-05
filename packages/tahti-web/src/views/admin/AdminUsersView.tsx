@@ -131,14 +131,14 @@ export const AdminUsersView = () => {
                     <PageLoading label="Loading users…" />
                   ) : loadError && users.length === 0 ? (
                     <PageError
-                      title="Could not load users"
+                      title={t('loadErrors.couldNotLoadUsers')}
                       description={loadError}
                       onRetry={() => setAttempt((n) => n + 1)}
                     />
                   ) : users.length === 0 ? (
                     query.trim() || role || isMember ? (
                       <PageEmpty
-                        title="No users match these filters"
+                        title={t('empties.noUsersMatchTheseFilters')}
                         action={
                           <Button
                             size="sm"

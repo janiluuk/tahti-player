@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -476,6 +477,7 @@ function DestinationsGrid({
   scope: RtmpTargetScope;
   description: string;
 }) {
+  const { t } = useTranslation('web');
   const [targets, setTargets] = useState<RtmpTarget[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -510,7 +512,7 @@ function DestinationsGrid({
         <PageLoading label="Loading destinations…" />
       ) : loadError && targets.length === 0 ? (
         <PageError
-          title="Could not load your destinations"
+          title={t('loadErrors.couldNotLoadYourDestinations')}
           description={loadError}
           onRetry={() => {
             setLoading(true);
@@ -522,7 +524,7 @@ function DestinationsGrid({
           {loadError ? (
             <div className="mb-3">
               <PageErrorBanner
-                title="Could not refresh your destinations"
+                title={t('loadErrors.couldNotRefreshYourDestinations')}
                 description={loadError}
                 onRetry={() => {
                   setLoading(true);

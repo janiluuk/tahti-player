@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Input, ViewShell } from '@tahti-player/ui';
 
 import { fetchBlockedUsers } from '../api/blocks';
@@ -26,6 +27,7 @@ import { useAuthStore } from '../stores/authStore';
 export function MessagesView({
   threadId: threadIdProp,
 }: { threadId?: string } = {}) {
+  const { t } = useTranslation('web');
   const routeParams = useParams({ strict: false }) as { id?: string };
   const threadId = threadIdProp ?? routeParams.id;
   const user = useAuthStore((s) => s.user);
@@ -269,7 +271,7 @@ export function MessagesView({
             {inboxError && inbox.length === 0 ? (
               <li className="p-3">
                 <PageError
-                  title="Could not load your conversations"
+                  title={t('loadErrors.couldNotLoadYourConversations')}
                   description={inboxError}
                   onRetry={reloadInbox}
                 />
@@ -277,8 +279,8 @@ export function MessagesView({
             ) : inbox.length === 0 ? (
               <li className="p-3">
                 <PageEmpty
-                  title="No conversations yet"
-                  description="Search for someone above, or find artists on Discover."
+                  title={t('empties.noConversationsYet')}
+                  description={t('empties.searchForSomeoneAboveOrFind')}
                   action={
                     <ButtonLink
                       to="/discover"
@@ -330,7 +332,7 @@ export function MessagesView({
             {!activeId ? (
               <div className="p-4">
                 <PageEmpty
-                  title="Select a conversation"
+                  title={t('empties.selectAConversation')}
                   description={
                     inbox.length === 0
                       ? 'Search for someone above, or find artists on Discover.'
@@ -353,7 +355,7 @@ export function MessagesView({
             ) : threadError ? (
               <div className="p-4">
                 <PageError
-                  title="Could not load this conversation"
+                  title={t('loadErrors.couldNotLoadThisConversation')}
                   description={threadError}
                   onRetry={() => loadThread(activeId)}
                 />

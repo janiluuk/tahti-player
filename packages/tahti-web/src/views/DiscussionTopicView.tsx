@@ -311,8 +311,8 @@ export function DiscussionTopicView({ id }: { id: string }) {
       {!user ? (
         <PageEmpty
           icon="inbox"
-          title="Sign in to read this discussion"
-          description="Discussions are open to Tahti ry members."
+          title={t('empties.signInToReadThisDiscussion')}
+          description={t('empties.discussionsAreOpenToTahtiRy')}
           action={
             <Button onClick={() => useAuthModalStore.getState().open('login')}>
               Sign in
@@ -323,7 +323,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
         <PageLoading label="Loading the discussion…" />
       ) : !topic ? (
         <PageError
-          title="Could not load this discussion"
+          title={t('loadErrors.couldNotLoadThisDiscussion')}
           description={loadError ?? 'Topic not found'}
           onRetry={reload}
         />

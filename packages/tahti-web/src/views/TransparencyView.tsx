@@ -123,7 +123,7 @@ export function TransparencyView() {
         <PageLoading label="Loading transparency…" />
       ) : failed ? (
         <PageError
-          title="Could not load transparency data"
+          title={t('loadErrors.couldNotLoadTransparencyData')}
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : (
@@ -131,7 +131,7 @@ export function TransparencyView() {
           {!ytd && ytdError && (
             <SectionShell title="Year to date">
               <PageError
-                title="Could not load year-to-date figures"
+                title={t('loadErrors.couldNotLoadYearToDate')}
                 description={ytdError}
                 onRetry={() => setAttempt((n) => n + 1)}
               />
@@ -183,7 +183,7 @@ export function TransparencyView() {
           {!grants && grantsError && (
             <SectionShell title="Grants">
               <PageError
-                title="Could not load the grants report"
+                title={t('loadErrors.couldNotLoadTheGrantsReport')}
                 description={grantsError}
                 onRetry={() => setAttempt((n) => n + 1)}
               />

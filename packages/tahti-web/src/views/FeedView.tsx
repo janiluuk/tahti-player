@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -51,6 +52,7 @@ function feedActivity(item: FeedItem): string {
 }
 
 export function FeedView({ embedded = false }: { embedded?: boolean }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
   const [items, setItems] = useState<FeedItem[]>([]);
@@ -172,8 +174,8 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
     return wrapFeed(
       <PageEmpty
         icon="inbox"
-        title="Sign in to see your feed"
-        description="Follow artists to build a personal timeline of what they share."
+        title={t('empties.signInToSeeYourFeed')}
+        description={t('empties.followArtistsToBuildAPersonal')}
         action={
           <div className="flex flex-wrap items-center justify-center gap-2">
             <Button onClick={() => useAuthModalStore.getState().open('login')}>
@@ -287,14 +289,14 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
     <>
       {loadError && items.length > 0 ? (
         <PageErrorBanner
-          title="Could not refresh your feed."
+          title={t('loadErrors.couldNotRefreshYourFeed')}
           description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : null}
       {loadError && items.length === 0 ? (
         <PageError
-          title="Could not load your feed"
+          title={t('loadErrors.couldNotLoadYourFeed')}
           description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />

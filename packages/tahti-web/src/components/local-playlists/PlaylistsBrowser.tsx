@@ -10,7 +10,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   EditIconButton,
@@ -40,6 +40,7 @@ type BrowserProps = {
 };
 
 export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
+  const { t } = useTranslation('web');
   const [playlists, setPlaylists] = useState<NativePlaylistSummary[] | null>(
     null,
   );
@@ -137,7 +138,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
       {error ? (
         <EmptyState
           size="sm"
-          title="Playlists unavailable"
+          title={t('empties.playlistsUnavailable')}
           description={error}
           action={
             <Button variant="secondary" onClick={() => void load()}>
@@ -150,8 +151,8 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
         <InlineLoader label="Loading…" className="flex-1 justify-center" />
       ) : playlists.length === 0 ? (
         <PageEmpty
-          title="No playlists yet"
-          description="Create one here, or select tracks in Tracks and choose Add to playlist."
+          title={t('empties.noPlaylistsYet')}
+          description={t('empties.createOneHereOrSelectTracks')}
           action={
             <Button variant="secondary" onClick={() => setCreating(true)}>
               New playlist

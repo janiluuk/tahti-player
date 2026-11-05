@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -290,6 +290,7 @@ function TopicRow({
 /** Admin → Governance → Discussions: open topics for members and keep them
  * tidy (pin, close, reopen). */
 export function DiscussionsAdminPanel() {
+  const { t } = useTranslation('web');
   const [topics, setTopics] = useState<DiscussionTopic[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -319,12 +320,12 @@ export function DiscussionsAdminPanel() {
           <PageLoading label="Loading topics…" />
         ) : loadError && topics.length === 0 ? (
           <PageError
-            title="Could not load the topics"
+            title={t('loadErrors.couldNotLoadTheTopics')}
             description={loadError}
             onRetry={load}
           />
         ) : topics.length === 0 ? (
-          <PageEmpty title="No topics yet" />
+          <PageEmpty title={t('empties.noTopicsYet')} />
         ) : (
           <ul className="divide-border divide-y" aria-label="Topics">
             {topics.map((topic) => (

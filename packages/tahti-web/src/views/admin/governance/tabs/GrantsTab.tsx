@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -19,6 +20,7 @@ function formatEur(cents: number): string {
 }
 
 export function GrantsTab() {
+  const { t } = useTranslation('web');
   const [history, setHistory] = useState<AdminGrantYearSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -43,17 +45,17 @@ export function GrantsTab() {
           <PageLoading label="Loading grant cycles…" />
         ) : loadError && history.length === 0 ? (
           <PageError
-            title="Could not load grant cycles"
+            title={t('loadErrors.couldNotLoadGrantCycles')}
             description={loadError}
             onRetry={reload}
           />
         ) : history.length === 0 ? (
-          <PageEmpty title="No grant cycles have been run yet." />
+          <PageEmpty title={t('empties.noGrantCyclesHaveBeenRun')} />
         ) : (
           <>
             {loadError ? (
               <PageErrorBanner
-                title="Some years could not be loaded"
+                title={t('loadErrors.someYearsCouldNotBeLoaded')}
                 description={loadError}
                 onRetry={reload}
               />

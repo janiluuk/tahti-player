@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   ButtonLink,
   Card,
@@ -24,6 +25,7 @@ import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 
 export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
   const favoriteChannels = useLibraryStore((s) => s.favoriteChannels);
@@ -72,8 +74,8 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
       <SectionShell title="Channels">
         {favoriteChannels.length === 0 && radioFavorites.length === 0 ? (
           <PageEmpty
-            title="No favorite channels"
-            description="Heart one from Discover → Artists or a channel page."
+            title={t('empties.noFavoriteChannels')}
+            description={t('empties.heartOneFromDiscoverArtistsOr')}
             action={
               <ButtonLink
                 className="w-fit"
@@ -181,8 +183,8 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
       <SectionShell title="Tracks">
         {audioFavorites.length === 0 ? (
           <PageEmpty
-            title="No favorite tracks"
-            description="Heart a track on its page or in any track list."
+            title={t('empties.noFavoriteTracks')}
+            description={t('empties.heartATrackOnItsPage')}
             action={
               <ButtonLink
                 className="w-fit"
@@ -199,7 +201,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
         )}
         {likesError ? (
           <PageError
-            title="Could not load your likes"
+            title={t('loadErrors.couldNotLoadYourLikes')}
             description={likesError}
             onRetry={() => setLikesAttempt((n) => n + 1)}
           />

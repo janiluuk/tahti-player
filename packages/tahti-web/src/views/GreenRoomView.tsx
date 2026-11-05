@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import {
@@ -19,6 +20,7 @@ import { usePlayerStore } from '../stores/playerStore';
  * server-side — this view only reflects the state it is handed.
  */
 export function GreenRoomView({ username }: { username: string }) {
+  const { t } = useTranslation('web');
   const [access, setAccess] = useState<GreenRoomAccess | null>(null);
   const [channelSlug, setChannelSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -121,8 +123,8 @@ export function GreenRoomView({ username }: { username: string }) {
       >
         {backLink}
         <PageEmpty
-          title="Sign in required"
-          description="Log in to join this green room."
+          title={t('empties.signInRequired')}
+          description={t('empties.logInToJoinThisGreen')}
           action={
             <Button size="sm" onClick={() => openAuth('login')}>
               Log in
@@ -143,7 +145,7 @@ export function GreenRoomView({ username }: { username: string }) {
         {backLink}
         <PageEmpty
           icon="alert"
-          title="Green room unavailable"
+          title={t('empties.greenRoomUnavailable')}
           description={error ?? 'Could not load green room access.'}
           action={checkAgain}
         />
@@ -160,7 +162,7 @@ export function GreenRoomView({ username }: { username: string }) {
       >
         {backLink}
         <PageEmpty
-          title="Not open yet"
+          title={t('empties.notOpenYet')}
           description={`${access.artistDisplayName} has not opened the green room for this broadcast yet.`}
           action={checkAgain}
         />
@@ -177,7 +179,7 @@ export function GreenRoomView({ username }: { username: string }) {
       >
         {backLink}
         <PageEmpty
-          title="Invite required"
+          title={t('empties.inviteRequired')}
           description={`You are not on the guest list for ${access.artistDisplayName}'s green room.`}
         />
       </ViewShell>
@@ -194,7 +196,7 @@ export function GreenRoomView({ username }: { username: string }) {
         {backLink}
         <PageEmpty
           icon="radio"
-          title="On air"
+          title={t('empties.onAir')}
           description={`${access.artistDisplayName} is now live — the show has moved to the public channel.`}
           action={
             channelSlug ? (
@@ -223,7 +225,7 @@ export function GreenRoomView({ username }: { username: string }) {
         {backLink}
         <PageEmpty
           icon="radio"
-          title="Waiting for preview"
+          title={t('empties.waitingForPreview')}
           description={`The green room opens when ${access.artistDisplayName} starts their preview stream.`}
         />
       </ViewShell>

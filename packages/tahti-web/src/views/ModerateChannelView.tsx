@@ -73,8 +73,8 @@ export function ModerateChannelView({ slug }: { slug: string }) {
     return (
       <EmptyState
         icon={<Lock size={40} className="opacity-40" />}
-        title="Chat moderation"
-        description="Sign in to look after the chat of a channel you moderate."
+        title={t('empties.chatModeration')}
+        description={t('empties.signInToLookAfterThe')}
         action={<Button onClick={() => openAuth('login')}>Log in</Button>}
       />
     );
@@ -95,7 +95,7 @@ export function ModerateChannelView({ slug }: { slug: string }) {
     return (
       <EmptyState
         icon={<ShieldOff size={40} className="opacity-40" />}
-        title="You don't moderate this channel"
+        title={t('empties.youDonTModerateThisChannel')}
         description={`@${user.username} is not a moderator of this channel's chat. Its owner adds moderators under Studio → Fans.`}
         action={
           <ButtonLink

@@ -153,14 +153,14 @@ export function AdminArtworkPresetsView() {
               <PageLoading label="Loading artwork…" />
             ) : state.status === 'error' ? (
               <PageError
-                title="Could not load artwork presets"
+                title={t('loadErrors.couldNotLoadArtworkPresets')}
                 description={state.message}
                 onRetry={() => void load()}
               />
             ) : state.presets.length === 0 ? (
               <PageEmpty
-                title="No artwork presets yet"
-                description="Add artwork to use it as a default cover."
+                title={t('empties.noArtworkPresetsYet')}
+                description={t('empties.addArtworkToUseItAs')}
               />
             ) : (
               <ul

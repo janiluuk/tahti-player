@@ -1,6 +1,7 @@
 import { LibraryIcon, ListFilterIcon, XIcon } from 'lucide-react';
 import type { MutableRefObject } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, EmptyState, Input } from '@tahti-player/ui';
 
 import type { usePersistedCatalogTable } from '../../hooks/usePersistedCatalogTable';
@@ -140,6 +141,7 @@ export function DesktopLibraryContent({
   onBatchDialog,
   onRemove,
 }: Props) {
+  const { t } = useTranslation('web');
   if (!library) {
     return <BrowserLocalFiles />;
   }
@@ -319,7 +321,7 @@ export function DesktopLibraryContent({
           ) : error ? (
             <EmptyState
               size="sm"
-              title="Desktop library unavailable"
+              title={t('empties.desktopLibraryUnavailable')}
               description={error}
               action={
                 <Button variant="secondary" onClick={onRefresh}>
@@ -330,8 +332,8 @@ export function DesktopLibraryContent({
             />
           ) : hasActiveScope && !loading && !busy ? (
             <PageEmpty
-              title="No tracks match"
-              description="Nothing in your library fits the current search, group and filters."
+              title={t('empties.noTracksMatch')}
+              description={t('empties.nothingInYourLibraryFitsThe')}
               action={
                 <Button variant="secondary" onClick={onClearScope}>
                   Clear search and filters
@@ -341,7 +343,7 @@ export function DesktopLibraryContent({
             />
           ) : (
             <PageEmpty
-              title="Desktop library"
+              title={t('empties.desktopLibrary')}
               description={
                 loading || busy
                   ? 'Loading library…'

@@ -3,6 +3,7 @@ import { BellOffIcon, PinIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, FilterChips, ViewShell } from '@tahti-player/ui';
 
 import {
@@ -96,6 +97,7 @@ function TopicRow({ topic }: { topic: DiscussionTopic }) {
 }
 
 export function DiscussionsView() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const [topics, setTopics] = useState<DiscussionTopic[]>([]);
   const [loading, setLoading] = useState(true);
@@ -159,8 +161,8 @@ export function DiscussionsView() {
       {!user ? (
         <PageEmpty
           icon="inbox"
-          title="Sign in to read the discussions"
-          description="Discussions are open to Tahti ry members."
+          title={t('empties.signInToReadTheDiscussions')}
+          description={t('empties.discussionsAreOpenToTahtiRy')}
           action={
             <Button onClick={() => useAuthModalStore.getState().open('login')}>
               Sign in
@@ -171,7 +173,7 @@ export function DiscussionsView() {
         <PageLoading label="Loading discussions…" />
       ) : loadError && topics.length === 0 ? (
         <PageError
-          title="Could not load the discussions"
+          title={t('loadErrors.couldNotLoadTheDiscussions')}
           description={loadError}
           onRetry={retry}
         />
@@ -179,7 +181,7 @@ export function DiscussionsView() {
         <>
           {loadError ? (
             <PageErrorBanner
-              title="Could not refresh the discussions."
+              title={t('loadErrors.couldNotRefreshTheDiscussions')}
               description={loadError}
               onRetry={retry}
             />
@@ -187,8 +189,8 @@ export function DiscussionsView() {
           {topics.length === 0 ? (
             <PageEmpty
               icon="inbox"
-              title="No discussions yet"
-              description="When the board opens a topic, it shows up here and you get a notification."
+              title={t('empties.noDiscussionsYet')}
+              description={t('empties.whenTheBoardOpensATopic')}
             />
           ) : (
             <>
@@ -201,8 +203,8 @@ export function DiscussionsView() {
               {shown.length === 0 ? (
                 <PageEmpty
                   icon="inbox"
-                  title="No topics here"
-                  description="Try another filter."
+                  title={t('empties.noTopicsHere')}
+                  description={t('empties.tryAnotherFilter')}
                   action={
                     <Button
                       size="sm"

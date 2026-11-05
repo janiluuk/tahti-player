@@ -2,7 +2,7 @@ import { TrashIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, FilePicker, Input, Tooltip } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../../api/types';
@@ -24,6 +24,7 @@ const FILE_LABELS = {
 
 /** Browser-only library: files are kept in memory, no desktop catalog. */
 export function BrowserLocalFiles() {
+  const { t } = useTranslation('web');
   const [query, setQuery] = useState('');
   const tracks = useLocalLibraryStore((s) => s.tracks);
   const addFiles = useLocalLibraryStore((s) => s.addFiles);
@@ -80,8 +81,8 @@ export function BrowserLocalFiles() {
       </p>
       {tracks.length === 0 ? (
         <PageEmpty
-          title="Local library"
-          description="Import files to play them in the Tahti player. Soulseek search lands here after the desktop add-on is connected."
+          title={t('empties.localLibrary')}
+          description={t('empties.importFilesToPlayThemIn')}
           className="flex-1"
         />
       ) : (

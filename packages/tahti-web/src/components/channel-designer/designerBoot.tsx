@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import { i18n } from '@tahti-player/i18n';
+
 import { PageError, PageLoading } from '../PageStates';
 
 /** Early-return UI while the channel look is loading or failed. */
@@ -11,8 +13,8 @@ export function designerBoot(opts: {
   if (opts.loadFailed) {
     return (
       <PageError
-        title="Could not load the channel designer"
-        description="Check your connection and try again."
+        title={i18n.t('web:loadErrors.couldNotLoadTheChannelDesigner')}
+        description={i18n.t('web:loadErrors.checkYourConnectionAndTryAgain')}
         onRetry={opts.onRetry}
       />
     );

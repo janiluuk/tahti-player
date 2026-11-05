@@ -2,6 +2,7 @@ import { PlayIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -29,6 +30,7 @@ import { VoiceRecorder } from './channel-clips/VoiceRecorder';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 export function ChannelAnnouncementsPanel() {
+  const { t } = useTranslation('web');
   const [clips, setClips] = useState<AnnouncementClip[]>([]);
   const [programs, setPrograms] = useState<ProgrammeItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -225,14 +227,14 @@ export function ChannelAnnouncementsPanel() {
         <PageLoading label="Loading announcements…" />
       ) : loadError && clips.length === 0 ? (
         <PageError
-          title="Could not load your announcement clips"
+          title={t('loadErrors.couldNotLoadYourAnnouncementClips')}
           description={loadError}
           onRetry={reload}
         />
       ) : clips.length === 0 ? (
         <PageEmpty
-          title="No announcement clips yet"
-          description="Give your channel a voice. Record a station ID or upload an announcement."
+          title={t('empties.noAnnouncementClipsYet')}
+          description={t('empties.giveYourChannelAVoiceRecord')}
         />
       ) : (
         <ul className="border-border divide-border divide-y rounded-lg border">

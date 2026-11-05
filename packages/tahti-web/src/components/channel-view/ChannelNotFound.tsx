@@ -1,12 +1,15 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import { fetchChannelSlugRedirect } from '../../api/channel-redirect';
 import { PageEmpty, PageLoading } from '../PageStates';
 
 /** Shown for an unknown slug. A channel renamed in the last 30 days keeps a
  * redirect from its old address, so check that before saying it's gone. */
 export function ChannelNotFound({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [checking, setChecking] = useState(true);
 
@@ -39,8 +42,8 @@ export function ChannelNotFound({ slug }: { slug: string }) {
   return (
     <PageEmpty
       headingLevel={1}
-      title="Channel not found"
-      description="This channel may have been removed or is not available."
+      title={t('empties.channelNotFound')}
+      description={t('empties.thisChannelMayHaveBeenRemoved')}
     />
   );
 }

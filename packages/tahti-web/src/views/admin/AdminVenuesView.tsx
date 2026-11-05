@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { CheckIcon, MapPinIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -24,6 +25,7 @@ import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function AdminVenuesView() {
+  const { t } = useTranslation('web');
   const [venues, setVenues] = useState<AdminVenue[]>([]);
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(true);
@@ -121,13 +123,13 @@ export function AdminVenuesView() {
                     <PageLoading label="Loading venues…" />
                   ) : loadError && venues.length === 0 ? (
                     <PageError
-                      title="Could not load venues"
+                      title={t('loadErrors.couldNotLoadVenues')}
                       description={loadError}
                       onRetry={reload}
                     />
                   ) : filteredVenues.length === 0 ? (
                     <PageEmpty
-                      title="No venues found"
+                      title={t('empties.noVenuesFound')}
                       action={
                         query ? (
                           <Button

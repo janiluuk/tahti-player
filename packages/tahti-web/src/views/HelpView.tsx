@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Box,
@@ -218,6 +219,7 @@ function HelpGuideCard({ article }: { article: HelpArticle }) {
 }
 
 export function HelpHubView() {
+  const { t } = useTranslation('web');
   const [query, setQuery] = useState('');
   const startTour = useTourStore((state) => state.start);
   const visibleGroups = useMemo(
@@ -310,7 +312,7 @@ export function HelpHubView() {
 
         {visibleGroups.length === 0 ? (
           <PageEmpty
-            title="No guides match"
+            title={t('empties.noGuidesMatch')}
             description={`Try another search${query ? ` instead of “${query}”` : ''}.`}
             action={
               <Button
@@ -397,6 +399,7 @@ function getRelatedArticles(slug: string): HelpArticle[] {
 }
 
 export function HelpArticleView({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const article = getHelpArticle(slug);
   if (!article) {
     return (
@@ -404,7 +407,7 @@ export function HelpArticleView({ slug }: { slug: string }) {
         <PageEmpty
           headingLevel={1}
           icon="alert"
-          title="Article not found"
+          title={t('empties.articleNotFound')}
           description={`No help page for ${slug}.`}
           action={
             <ButtonLink

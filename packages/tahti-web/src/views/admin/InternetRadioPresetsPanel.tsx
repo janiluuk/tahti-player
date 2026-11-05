@@ -218,8 +218,8 @@ export function InternetRadioPresetsPanel() {
           <PageLoading label="Loading stations…" />
         ) : presets.length === 0 ? (
           <PageEmpty
-            title="No internet radio stations yet"
-            description="Add one to offer it as a default."
+            title={t('empties.noInternetRadioStationsYet')}
+            description={t('empties.addOneToOfferItAs')}
           />
         ) : (
           <ul className="divide-border divide-y">

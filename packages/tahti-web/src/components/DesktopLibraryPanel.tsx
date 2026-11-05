@@ -2,7 +2,7 @@ import { LaptopIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { EmptyState } from '@tahti-player/ui';
 
 import { usePersistedCatalogTable } from '../hooks/usePersistedCatalogTable';
@@ -41,6 +41,7 @@ import type { BrowseKind } from './LocalLibraryBrowse';
 import { NATIVE_TRACK_COLUMNS, toNativeSort } from './nativeTrackColumns';
 
 export function DesktopLibraryPanel() {
+  const { t } = useTranslation('web');
   const nativePlayer = hasNativePlayer();
   const nativeLibrary = getNativeLibrary();
   const initialView = useRef(loadViewState()).current;
@@ -373,8 +374,8 @@ export function DesktopLibraryPanel() {
         <EmptyState
           size="sm"
           icon={<LaptopIcon size={28} className="opacity-50" />}
-          title="Desktop app only"
-          description="Local library import needs the Tahti Player desktop app. Install it to import and play files stored on this device."
+          title={t('empties.desktopAppOnly')}
+          description={t('empties.localLibraryImportNeedsTheTahti')}
           className="flex-1"
         />
       </div>

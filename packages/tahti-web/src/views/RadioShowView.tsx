@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { CalendarIcon, MicIcon, RadioIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   ButtonLink,
   ClampedText,
@@ -122,6 +123,7 @@ function NowPlayingSection({
 }
 
 export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
+  const { t } = useTranslation('web');
   const [show, setShow] = useState<PublicRadioShow | null>(null);
   const [loading, setLoading] = useState(true);
   const [nowPlayingTrack, setNowPlayingTrack] =
@@ -187,7 +189,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
   if (!show && loadError) {
     return (
       <PageError
-        title="Could not load show"
+        title={t('loadErrors.couldNotLoadShow')}
         description={loadError}
         onRetry={() => setReloadKey((key) => key + 1)}
       />
@@ -198,8 +200,8 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
     return (
       <PageEmpty
         headingLevel={1}
-        title="Show not found"
-        description="This Tahti Radio show is not available."
+        title={t('empties.showNotFound')}
+        description={t('empties.thisTahtiRadioShowIsNot')}
       />
     );
   }

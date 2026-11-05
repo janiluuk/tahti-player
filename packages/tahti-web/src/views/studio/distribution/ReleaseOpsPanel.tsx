@@ -3,7 +3,7 @@ import { BookOpenIcon, CopyIcon, DownloadIcon, LinkIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -50,6 +50,7 @@ import {
 import { GuidesTab } from './GuidesTab';
 
 export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [catalog, setCatalog] = useState<ReleaseCatalog | null>(null);
   const [form, setForm] = useState<CatalogForm | null>(null);
@@ -271,7 +272,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
     <div className="flex flex-col gap-4">
       {catalogError ? (
         <PageError
-          title="Could not load the catalog"
+          title={t('loadErrors.couldNotLoadTheCatalog')}
           description={catalogError}
           onRetry={loadOps}
         />
@@ -451,7 +452,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
     <div className="flex flex-col gap-3">
       {billingError ? (
         <PageError
-          title="Could not load billing"
+          title={t('loadErrors.couldNotLoadBilling')}
           description={billingError}
           onRetry={loadOps}
         />
@@ -512,7 +513,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         ) : !form ? (
           catalogError ? (
             <PageError
-              title="Could not load the catalog"
+              title={t('loadErrors.couldNotLoadTheCatalog')}
               description={catalogError}
               onRetry={loadOps}
             />
