@@ -1,6 +1,7 @@
 import { ExternalLinkIcon, LinkIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ShareList } from '@tahti-player/ui';
 
 import {
@@ -30,6 +31,7 @@ export function ReferrerSources({
 }: {
   window: Omit<StatsAudienceWindow, 'includeBots'>;
 }) {
+  const { t } = useTranslation('web');
   const [sources, setSources] = useState<StatsAudience | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(
     'loading',
@@ -70,7 +72,7 @@ export function ReferrerSources({
         <PageLoading label="Loading sources…" />
       ) : status === 'error' ? (
         <PageError
-          title="Could not load where listeners came from"
+          title={t('loadErrors.couldNotLoadWhereListenersCame')}
           onRetry={() => setReloadKey((key) => key + 1)}
         />
       ) : (

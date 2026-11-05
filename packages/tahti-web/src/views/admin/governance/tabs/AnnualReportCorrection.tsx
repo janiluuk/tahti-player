@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ExternalLink, InlineError, Textarea } from '@tahti-player/ui';
 
 import {
@@ -19,6 +20,7 @@ export function AnnualReportCorrection({
   report: AdminAnnualReport;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [writing, setWriting] = useState(false);
   const [note, setNote] = useState('');
   const [busy, setBusy] = useState(false);
@@ -107,7 +109,7 @@ export function AnnualReportCorrection({
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       {revisions !== null ? (
         revisions.length === 0 ? (
-          <PageEmpty title="No earlier versions are kept." />
+          <PageEmpty title={t('empties.noEarlierVersionsAreKept')} />
         ) : (
           <ul aria-label="Earlier versions" className="flex flex-col gap-1">
             {revisions.map((revision) => (

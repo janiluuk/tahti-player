@@ -1,6 +1,7 @@
 import { ExternalLinkIcon, EyeIcon, PercentIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { StatTile } from '@tahti-player/ui';
 
 import {
@@ -13,6 +14,7 @@ import { dspServiceLabel } from '../../../lib/dspServices';
 import { STUDIO_METRIC_TONES } from '../stats/metricTones';
 
 export function ReleaseSmartLinkStats({ releaseId }: { releaseId: string }) {
+  const { t } = useTranslation('web');
   const [stats, setStats] = useState<ReleaseSmartLinkAnalytics | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -36,7 +38,7 @@ export function ReleaseSmartLinkStats({ releaseId }: { releaseId: string }) {
     return (
       <StudioPanel title="Smart link stats">
         <PageError
-          title="Couldn't load smart link stats"
+          title={t('loadErrors.couldnTLoadSmartLinkStats')}
           description={error}
           onRetry={() => setAttempt((n) => n + 1)}
         />

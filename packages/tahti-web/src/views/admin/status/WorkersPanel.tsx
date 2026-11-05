@@ -146,7 +146,7 @@ export function WorkersPanel() {
     >
       {error ? (
         <PageError
-          title="Couldn't load workers"
+          title={t('loadErrors.couldnTLoadWorkers')}
           description={error}
           onRetry={() => void load()}
         />

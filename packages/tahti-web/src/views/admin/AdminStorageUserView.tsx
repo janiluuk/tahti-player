@@ -85,7 +85,9 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
               </StudioPanel>
             ) : !detail ? (
               <StudioPanel>
-                <PageError description="Could not load this user's storage." />
+                <PageError
+                  description={t('loadErrors.couldNotLoadThisUserS')}
+                />
               </StudioPanel>
             ) : (
               <>

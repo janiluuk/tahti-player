@@ -3,7 +3,7 @@ import { ArrowLeftIcon, CalendarPlusIcon, SaveIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -43,6 +43,7 @@ export function StudioListeningPartyFormView({
   partyId?: string;
   releaseId?: string;
 } = {}) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const editing = partyId !== undefined;
   const [releases, setReleases] = useState<StudioRelease[]>([]);
@@ -161,7 +162,7 @@ export function StudioListeningPartyFormView({
               <PageLoading label="Loading…" />
             ) : loadError ? (
               <PageError
-                title="Could not load"
+                title={t('loadErrors.couldNotLoad')}
                 description={loadError}
                 onRetry={() => setAttempt((n) => n + 1)}
               />

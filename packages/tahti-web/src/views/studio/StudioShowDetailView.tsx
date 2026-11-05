@@ -42,7 +42,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
               <PageLoading label="Loading…" />
             ) : showLoadError ? (
               <PageError
-                title="Could not load this show"
+                title={t('loadErrors.couldNotLoadThisShow')}
                 description={showLoadError}
                 onRetry={reload}
               />

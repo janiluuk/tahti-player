@@ -1,5 +1,6 @@
 import { CalendarIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink } from '@tahti-player/ui';
 
 import { PageError } from '../../../components/PageStates';
@@ -7,13 +8,14 @@ import { Group } from './HomeTiles';
 import type { StudioHomeState } from './useStudioHome';
 
 export function UpcomingShowsSection({ state }: { state: StudioHomeState }) {
+  const { t } = useTranslation('web');
   const { upcomingShows, scheduleError, reloadOverview } = state;
 
   if (scheduleError && upcomingShows.length === 0) {
     return (
       <Group title="Upcoming shows">
         <PageError
-          title="Could not load upcoming shows"
+          title={t('loadErrors.couldNotLoadUpcomingShows')}
           description={scheduleError}
           onRetry={reloadOverview}
         />

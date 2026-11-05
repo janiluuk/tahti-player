@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Alert, LogViewer, type LogEntryData } from '@tahti-player/ui';
 
 import {
@@ -39,6 +40,7 @@ export function ContainerLogsPanel({
   title,
   heightClassName = 'h-[50vh]',
 }: ContainerLogsPanelProps) {
+  const { t } = useTranslation('web');
   const [entries, setEntries] = useState<AdminLogEntry[]>([]);
   const [lokiReachable, setLokiReachable] = useState(true);
   const [loading, setLoading] = useState(true);
@@ -75,7 +77,7 @@ export function ContainerLogsPanel({
       {loading ? (
         <PageLoading label="Loading logs…" />
       ) : logs.length === 0 ? (
-        <PageEmpty title="No log lines in the last hour." />
+        <PageEmpty title={t('empties.noLogLinesInTheLast')} />
       ) : (
         <div className={heightClassName}>
           <LogViewer.Root

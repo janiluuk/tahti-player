@@ -68,7 +68,7 @@ export function MultistreamPanel({
       >
         {loadError && targets.length === 0 ? (
           <PageError
-            title="Could not load destinations"
+            title={t('loadErrors.couldNotLoadDestinations')}
             description={loadError}
             onRetry={() => void reload()}
           />

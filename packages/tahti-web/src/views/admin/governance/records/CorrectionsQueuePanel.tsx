@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, SegmentedControl } from '@tahti-player/ui';
 
 import {
@@ -32,6 +33,7 @@ type Filter = 'waiting' | 'all';
 
 /** Members' correction requests, the longest-waiting first. */
 export function CorrectionsQueuePanel() {
+  const { t } = useTranslation('web');
   const [filter, setFilter] = useState<Filter>('waiting');
   const [rows, setRows] = useState<AdminGovernanceCorrection[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -66,7 +68,7 @@ export function CorrectionsQueuePanel() {
         <PageLoading label="Loading requests…" />
       ) : loadError && rows.length === 0 ? (
         <PageError
-          title="Could not load correction requests"
+          title={t('loadErrors.couldNotLoadCorrectionRequests')}
           description={loadError}
           onRetry={() => {
             setRows(null);

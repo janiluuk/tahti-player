@@ -52,7 +52,10 @@ export function FanSubArtistsPanel() {
       {loading && !rows ? (
         <PageLoading label="Loading artists…" />
       ) : !rows ? (
-        <PageError title="Couldn't load artists" onRetry={() => void load()} />
+        <PageError
+          title={t('loadErrors.couldnTLoadArtists')}
+          onRetry={() => void load()}
+        />
       ) : rows.length === 0 ? (
         <PageEmpty title={t('empties.noActiveFanSubscriptions')} />
       ) : (

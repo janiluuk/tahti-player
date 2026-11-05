@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { ListFilterIcon, SearchIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   FilterChips,
@@ -44,6 +45,7 @@ const SORTS: { id: AdminTopListSort; label: string }[] = [
 ];
 
 export function AdminTopListsView() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const play = usePlayerStore((state) => state.play);
   const [period, setPeriod] = useState<AdminTopListPeriod>('month');
@@ -143,7 +145,7 @@ export function AdminTopListsView() {
             ) : loadError && buckets.length === 0 ? (
               <StudioPanel>
                 <PageError
-                  title="Could not load top lists"
+                  title={t('loadErrors.couldNotLoadTopLists')}
                   description={loadError}
                   onRetry={() => setAttempt((n) => n + 1)}
                 />

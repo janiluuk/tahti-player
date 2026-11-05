@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Input,
@@ -38,6 +39,7 @@ import { LegalHoldControl } from '../records/LegalHoldControl';
 type ResolutionOutcome = 'PASSED' | 'FAILED' | 'DEFERRED';
 
 export function OverviewTab() {
+  const { t } = useTranslation('web');
   const [overview, setOverview] = useState<AdminGovernanceOverview | null>(
     null,
   );
@@ -203,7 +205,7 @@ export function OverviewTab() {
             </h3>
           </div>
           {votingActivity.length === 0 ? (
-            <PageEmpty title="No voting activity recorded." />
+            <PageEmpty title={t('empties.noVotingActivityRecorded')} />
           ) : (
             <ul className="divide-border divide-y">
               {votingActivity.slice(0, 12).map((entry) => (

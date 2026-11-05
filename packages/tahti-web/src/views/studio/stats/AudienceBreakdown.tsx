@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ShareList, Toggle } from '@tahti-player/ui';
 
 import {
@@ -49,6 +50,7 @@ export function AudienceBreakdown({
 }: {
   window: Omit<StatsAudienceWindow, 'includeBots'>;
 }) {
+  const { t } = useTranslation('web');
   const [ignoreBots, setIgnoreBots] = useState(true);
   const [audience, setAudience] = useState<
     Partial<Record<StatsAudienceDimension, StatsAudience>>
@@ -109,7 +111,7 @@ export function AudienceBreakdown({
         <PageLoading label="Loading audience…" />
       ) : status === 'error' ? (
         <PageError
-          title="Could not load the audience breakdown"
+          title={t('loadErrors.couldNotLoadTheAudienceBreakdown')}
           onRetry={() => setReloadKey((key) => key + 1)}
         />
       ) : total === 0 ? (

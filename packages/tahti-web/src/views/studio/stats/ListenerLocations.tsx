@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ShareList } from '@tahti-player/ui';
 
 import {
@@ -22,6 +23,7 @@ export function ListenerLocations({
 }: {
   window: Omit<StatsAudienceWindow, 'includeBots'>;
 }) {
+  const { t } = useTranslation('web');
   const [locations, setLocations] = useState<StatsLocations | null>(null);
   const [failed, setFailed] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
@@ -48,7 +50,7 @@ export function ListenerLocations({
   if (failed) {
     return (
       <PageError
-        title="Could not load listener locations"
+        title={t('loadErrors.couldNotLoadListenerLocations')}
         onRetry={() => setReloadKey((key) => key + 1)}
       />
     );

@@ -97,7 +97,12 @@ export function MyRadioStations({
   };
 
   if (failed) {
-    return <PageError title="Couldn't load your stations" onRetry={load} />;
+    return (
+      <PageError
+        title={t('loadErrors.couldnTLoadYourStations')}
+        onRetry={load}
+      />
+    );
   }
 
   return (

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { StatTile } from '@tahti-player/ui';
 
 import {
@@ -10,6 +11,7 @@ import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 
 export function NewsletterSubscriberStats() {
+  const { t } = useTranslation('web');
   const [stats, setStats] = useState<Stats | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
@@ -33,7 +35,7 @@ export function NewsletterSubscriberStats() {
     return (
       <StudioPanel title="Subscribers">
         <PageError
-          title="Couldn't load subscriber stats"
+          title={t('loadErrors.couldnTLoadSubscriberStats')}
           description={error}
           onRetry={() => setAttempt((n) => n + 1)}
         />
