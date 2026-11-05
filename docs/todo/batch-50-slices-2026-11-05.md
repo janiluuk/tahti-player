@@ -60,12 +60,17 @@ Bump tahti-web to **0.0.341**.
 29. [x] BlockedAccounts: haven't blocked
 30. [x] VenueShowsSection: no shows; ListenerWorldMap: no location data; TrackInsightsPanel empties; NewsSourcesDialog; ListenAddonsPanel installed empty
 
-## Skip
+## Skip (→ batch 51 candidates)
 
 - pageTour / keyboardNavigation (large tables)
 - SEO route descriptions
 - performance audit
-- admin hub card English descriptions (separate pass if time)
+- Admin hub card `PRIMARY[].description` (`AdminNav.tsx`) still English
+- Studio Broadcast / Profile / Schedule / Go live / Updates / Revenue hub chrome
+- Admin News / Announcements / Artwork / Add-ons / Internet radio presets shells
+- Feed / Discussion / Jam empties; go-live credentials / multistream / green-room chrome
+- `web.actions.editDetails` / editNamed call sites still literal
+- Storybook plays: `toBeVisible` → `toBeInTheDocument` on AdminHubView and Studio/Radio stories
 
 ## Done when
 
