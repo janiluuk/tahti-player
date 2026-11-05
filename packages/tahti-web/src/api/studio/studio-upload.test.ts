@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { uploadSoundFile } from './studio-upload';
+import { NOT_AUDIO_MESSAGE, uploadSoundFile } from './studio-upload';
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status });
@@ -53,5 +53,33 @@ describe('uploadSoundFile', () => {
     });
 
     expect(result).toEqual({ ok: false, error: 'contentType: Invalid' });
+  });
+
+  it('says a file is not audio when the API refuses it, not "not_audio"', async () => {
+    const respond = (complete: unknown) =>
+      vi
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValueOnce(
+          json({
+            uploadId: 'raw/me/x.mp3',
+            uploadUrl: 'https://s3.example/put',
+          }),
+        )
+        .mockResolvedValueOnce(new Response(null, { status: 200 }))
+        .mockResolvedValueOnce(json(complete, 415));
+    const file = new File(['%PDF'], 'song.mp3', { type: 'audio/mpeg' });
+
+    respond({ error: 'not_audio', message: 'This file is not an audio file.' });
+    expect(await uploadSoundFile({ file })).toEqual({
+      ok: false,
+      error: 'This file is not an audio file.',
+    });
+
+    vi.restoreAllMocks();
+    respond({ error: 'not_audio' });
+    expect(await uploadSoundFile({ file })).toEqual({
+      ok: false,
+      error: NOT_AUDIO_MESSAGE,
+    });
   });
 });
