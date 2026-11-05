@@ -98,7 +98,10 @@ export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
       {loading && !rows ? (
         <PageLoading label="Loading payouts…" />
       ) : !rows ? (
-        <PageError title="Couldn't load payouts" onRetry={() => void load()} />
+        <PageError
+          title={t('loadErrors.couldnTLoadPayouts')}
+          onRetry={() => void load()}
+        />
       ) : rows.length === 0 ? (
         <PageEmpty title={t('empties.nothingToPayOut')} />
       ) : (

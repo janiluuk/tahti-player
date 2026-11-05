@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { DownloadIcon, SlidersHorizontalIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonAnchor,
@@ -28,6 +29,7 @@ const STAGE_LABELS: Record<MasteringStage, string> = {
 };
 
 export function StudioMasteringView({ soundId }: { soundId: string }) {
+  const { t } = useTranslation('web');
   const [source, setSource] = useState<EditorSource | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -121,7 +123,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
             <PageLoading label="Loading track…" />
           ) : loadError || !source ? (
             <PageError
-              title="Could not load this track"
+              title={t('loadErrors.couldNotLoadThisTrack')}
               description={loadError ?? 'Source audio is unavailable.'}
               onRetry={() => setAttempt((n) => n + 1)}
             />

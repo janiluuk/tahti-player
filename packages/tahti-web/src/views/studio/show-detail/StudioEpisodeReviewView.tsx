@@ -102,7 +102,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
         <div className="studio-page-layout flex w-full flex-col">
           {loadError ? (
             <PageError
-              title="Could not load this episode"
+              title={t('loadErrors.couldNotLoadThisEpisode')}
               description={loadError}
               onRetry={() => setAttempt((n) => n + 1)}
             />

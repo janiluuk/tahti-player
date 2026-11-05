@@ -1,6 +1,7 @@
 import { FileTextIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input, Loader } from '@tahti-player/ui';
 
 import {
@@ -15,6 +16,7 @@ import { StudioPanel } from '../../../../components/StudioPanel';
 import { AnnualReportRow } from './AnnualReportRow';
 
 export function ReportsTab() {
+  const { t } = useTranslation('web');
   const [reports, setReports] = useState<AdminAnnualReport[]>([]);
   const [year, setYear] = useState(String(new Date().getUTCFullYear() - 1));
   const [loading, setLoading] = useState(true);
@@ -81,7 +83,7 @@ export function ReportsTab() {
         {loading ? (
           <PageLoading label="Loading reports…" />
         ) : reports.length === 0 ? (
-          <PageEmpty title="No annual reports generated yet" />
+          <PageEmpty title={t('empties.noAnnualReportsGeneratedYet')} />
         ) : (
           <ul className="divide-border divide-y">
             {reports.map((report) => (

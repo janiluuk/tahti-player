@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { DayOfWeekChart } from '@tahti-player/ui';
 
 import {
@@ -17,6 +18,7 @@ export function ListenerLoyalty({
 }: {
   window: Omit<StatsAudienceWindow, 'includeBots'>;
 }) {
+  const { t } = useTranslation('web');
   const [loyalty, setLoyalty] = useState<StatsLoyalty | null>(null);
   const [failed, setFailed] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
@@ -50,7 +52,7 @@ export function ListenerLoyalty({
     >
       {failed ? (
         <PageError
-          title="Could not load listener loyalty"
+          title={t('loadErrors.couldNotLoadListenerLoyalty')}
           onRetry={() => setReloadKey((key) => key + 1)}
         />
       ) : !loyalty ? null : loyalty.points.length === 0 ? (

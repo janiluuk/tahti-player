@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState, type FC } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { FilterChips, SectionTitle, ViewShell } from '@tahti-player/ui';
 
 import { PageError } from '../../components/PageStates';
@@ -26,6 +27,7 @@ const STATS_SECTIONS = [
 export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
   tab: activeTab = 'overview',
 }) => {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const state = useStatsData();
   const ready = !state.loading && !state.loadError;
@@ -74,7 +76,7 @@ export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
           <RangeControls state={state} />
           {state.loadError && !state.loading ? (
             <PageError
-              title="Could not load your stats"
+              title={t('loadErrors.couldNotLoadYourStats')}
               description={state.loadError}
               onRetry={state.reload}
             />

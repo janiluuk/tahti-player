@@ -322,7 +322,7 @@ export function AdminVendorsContent() {
         {statusError && integrations.length === 0 ? (
           <StudioPanel title="Distribution status">
             <PageError
-              title="Could not check live integration status"
+              title={t('loadErrors.couldNotCheckLiveIntegrationStatus')}
               description={`The blocker list above uses the recorded status only. ${statusError}`}
               onRetry={() => setAttempt((n) => n + 1)}
             />

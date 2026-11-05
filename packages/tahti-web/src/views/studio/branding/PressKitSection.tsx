@@ -1,5 +1,6 @@
 import { DownloadIcon, Trash2Icon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   FilePicker,
@@ -23,6 +24,7 @@ import { PressKitPreview } from './PressKitPreview';
 import type { PressKitState } from './usePressKit';
 
 export function PressKitSection({ kit }: { kit: PressKitState }) {
+  const { t } = useTranslation('web');
   const {
     user,
     profile,
@@ -51,7 +53,7 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
       >
         {pressKitError ? (
           <PageError
-            title="Could not load your press kit bio"
+            title={t('loadErrors.couldNotLoadYourPressKit')}
             description={pressKitError}
             onRetry={() => void reload()}
           />

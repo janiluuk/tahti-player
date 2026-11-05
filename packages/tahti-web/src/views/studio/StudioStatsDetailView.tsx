@@ -115,7 +115,7 @@ export function StudioStatsDetailView() {
           ) : !data ? (
             <StudioPanel>
               <PageError
-                title="Couldn't load plays"
+                title={t('loadErrors.couldnTLoadPlays')}
                 description={error ?? undefined}
                 onRetry={() => setAttempt((n) => n + 1)}
               />

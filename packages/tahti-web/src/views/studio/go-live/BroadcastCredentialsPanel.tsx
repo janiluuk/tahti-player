@@ -104,7 +104,7 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
     if (!settings && settingsError) {
       return (
         <PageError
-          title="Could not load your stream settings"
+          title={t('loadErrors.couldNotLoadYourStreamSettings')}
           description={settingsError}
           onRetry={() => void reload()}
         />

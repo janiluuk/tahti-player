@@ -1,3 +1,12 @@
+## 2026-11-05 - Batch 57 UX slices
+
+The last 37 English `PageEmpty` / `PageError` strings get Finnish: admin
+status, storage, top lists, vendors, financial and governance panels, Studio
+collections, listening party form, mastering, shows, stats, press kit, go
+live, episodes and recordings, and newsletter stats. Every empty state and
+load error in tahti-web now goes through `web.empties.*` /
+`web.loadErrors.*`. tahti-web 0.0.348.
+
 ## 2026-11-05 - Batch 56 UX slices
 
 Finnish for 30 load errors, one per file: channel designer saved looks, radio

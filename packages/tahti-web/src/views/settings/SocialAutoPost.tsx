@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   InlineError,
@@ -217,6 +218,7 @@ function PlatformForm({
 }
 
 export function SocialAutoPost() {
+  const { t } = useTranslation('web');
   const [settings, setSettings] = useState<SocialAutoPostSettings | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [version, setVersion] = useState(0);
@@ -246,7 +248,7 @@ export function SocialAutoPost() {
   if (!settings) {
     return (
       <PageError
-        title="Could not load auto-posting settings"
+        title={t('loadErrors.couldNotLoadAutoPostingSettings')}
         onRetry={() => {
           setLoaded(false);
           load();

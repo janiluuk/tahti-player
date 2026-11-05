@@ -16,7 +16,7 @@ export function EpisodesTab({ state }: { state: ShowDetailState }) {
     >
       {episodesLoadError ? (
         <PageError
-          title="Could not load episodes"
+          title={t('loadErrors.couldNotLoadEpisodes')}
           description={episodesLoadError}
           onRetry={reload}
         />

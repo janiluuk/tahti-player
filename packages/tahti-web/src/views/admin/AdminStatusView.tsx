@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   BreadcrumbCurrent,
@@ -27,6 +28,7 @@ import { CronHistoryDialog } from './status/CronHistoryDialog';
 import { WorkersPanel } from './status/WorkersPanel';
 
 export function AdminStatusView() {
+  const { t } = useTranslation('web');
   const [data, setData] = useState<AdminStatusData | null>(null);
   const [dashboard, setDashboard] = useState<AdminDashboard | null>(null);
   const [platform, setPlatform] = useState<PlatformStatus | null>(null);
@@ -81,7 +83,7 @@ export function AdminStatusView() {
                 {loading ? (
                   <PageLoading label="Loading service status…" />
                 ) : !data ? (
-                  <PageError description="Could not load status." />
+                  <PageError description={t('loadErrors.couldNotLoadStatus')} />
                 ) : (
                   <>
                     <div className="mb-4 flex flex-wrap items-center gap-3 text-sm">

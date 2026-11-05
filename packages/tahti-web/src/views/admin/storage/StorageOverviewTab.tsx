@@ -162,7 +162,7 @@ export function StorageOverviewTab() {
   if (!overview) {
     return (
       <StudioPanel>
-        <PageError description="Could not load storage usage." />
+        <PageError description={t('loadErrors.couldNotLoadStorageUsage')} />
       </StudioPanel>
     );
   }

@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
@@ -27,6 +28,7 @@ export function StudioCollectionEditView({
   /** Which top navigation this page was reached through. */
   nav?: 'studio' | 'library';
 }) {
+  const { t } = useTranslation('web');
   const state = useCollectionEditState(slug);
   const { col, isAlbumLike, loadError, reload } = state;
   const [editing, setEditing] = useEditMode();
@@ -52,7 +54,7 @@ export function StudioCollectionEditView({
           {!col && loadError ? (
             <StudioPanel>
               <PageError
-                title="Could not load this collection"
+                title={t('loadErrors.couldNotLoadThisCollection')}
                 description={loadError}
                 onRetry={reload}
               />

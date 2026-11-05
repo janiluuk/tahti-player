@@ -56,7 +56,7 @@ export function LegacyMembersPanel() {
       </p>
       {error ? (
         <PageError
-          title="Couldn't load the migration queue"
+          title={t('loadErrors.couldnTLoadTheMigrationQueue')}
           description={error}
           onRetry={() => void load()}
         />

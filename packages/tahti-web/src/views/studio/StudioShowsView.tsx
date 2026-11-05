@@ -288,7 +288,7 @@ export function StudioShowsView() {
                 />
                 {filteredShows.length === 0 ? (
                   <PageEmpty
-                    title="No shows match this search."
+                    title={t('empties.noShowsMatchThisSearch')}
                     action={
                       <Button
                         size="sm"

@@ -2,6 +2,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Input,
@@ -45,6 +46,7 @@ export function SpotifyImportPanel({
     soundId: string,
   ) => Promise<{ ok: true } | { ok: false; error: string }>;
 }) {
+  const { t } = useTranslation('web');
   const [mode, setMode] = useState<Mode>('search');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<SpotifyTrack[] | null>(null);
@@ -149,7 +151,7 @@ export function SpotifyImportPanel({
         ) : null}
         {results === null ? null : results.length === 0 ? (
           <PageEmpty
-            title="No tracks found."
+            title={t('empties.noTracksFound')}
             description={
               mode === 'mine'
                 ? 'Link your Spotify artist profile in Add-ons → Spotify first.'

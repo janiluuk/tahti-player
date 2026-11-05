@@ -23,7 +23,7 @@ export function RecordingsTab({ state }: { state: ShowDetailState }) {
     >
       {episodesLoadError ? (
         <PageError
-          title="Could not load recordings"
+          title={t('loadErrors.couldNotLoadRecordings')}
           description={episodesLoadError}
           onRetry={reload}
         />
