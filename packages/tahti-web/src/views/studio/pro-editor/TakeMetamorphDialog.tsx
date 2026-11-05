@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 
 import { encodeWav } from '@tahti-player/audio-editor';
 import { renderTakeMorph, type MorphCurve } from '@tahti-player/audio-rack';
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -69,6 +69,7 @@ export function TakeMetamorphDialog({
   onAddClip: (blob: Blob, name: string) => void | Promise<void>;
   loadTake?: TakeLoader;
 }) {
+  const { t } = useTranslation('web');
   const [versions, setVersions] = useState<SoundVersion[] | null>(null);
   const [hostId, setHostId] = useState('');
   const [donorId, setDonorId] = useState('');
@@ -237,8 +238,8 @@ export function TakeMetamorphDialog({
           <InlineLoader label="Loading versions…" />
         ) : versions.length < 2 ? (
           <PageEmpty
-            title="Two versions needed"
-            description="Upload or render another revision of this sound first, then morph between them."
+            title={t('empties.twoVersionsNeeded')}
+            description={t('empties.uploadOrRenderAnotherRevisionOf')}
           />
         ) : (
           <>

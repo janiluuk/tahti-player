@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, Dialog, Input } from '@tahti-player/ui';
 
 import {
@@ -70,6 +71,7 @@ const FILTER_TAB_ICONS = {
  * (see AdminModerationView). Approving creates an artist account and emails
  * a password setup link. */
 export function BetaTab() {
+  const { t } = useTranslation('web');
   const [filter, setFilter] = useState<AdminBetaStatus | 'all'>('PENDING');
   const [apps, setApps] = useState<AdminBetaApplication[]>([]);
   const [loading, setLoading] = useState(true);
@@ -137,12 +139,12 @@ export function BetaTab() {
           <PageLoading label="Loading applications…" />
         ) : loadError && apps.length === 0 ? (
           <PageError
-            title="Could not load beta applications"
+            title={t('loadErrors.couldNotLoadBetaApplications')}
             description={loadError}
             onRetry={reload}
           />
         ) : apps.length === 0 ? (
-          <PageEmpty title="No applications in this view" />
+          <PageEmpty title={t('empties.noApplicationsInThisView')} />
         ) : (
           <ul className="divide-border divide-y">
             {apps.map((app) => {

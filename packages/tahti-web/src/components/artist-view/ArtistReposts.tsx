@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { Repeat2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { MediaArtwork } from '@tahti-player/ui';
 
 import { fetchUserReposts, type RepostedTrack } from '../../api/user-reposts';
@@ -10,6 +11,7 @@ import { PageError } from '../PageStates';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 export function ArtistReposts({ username }: { username: string }) {
+  const { t } = useTranslation('web');
   const [items, setItems] = useState<RepostedTrack[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
@@ -33,7 +35,7 @@ export function ArtistReposts({ username }: { username: string }) {
   if (loadError) {
     return (
       <PageError
-        title="Could not load reposts"
+        title={t('loadErrors.couldNotLoadReposts')}
         description={loadError}
         onRetry={() => setReloadKey((key) => key + 1)}
       />

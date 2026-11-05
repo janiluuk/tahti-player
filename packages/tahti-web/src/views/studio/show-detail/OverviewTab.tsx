@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { CalendarPlusIcon, MicIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -34,6 +35,7 @@ export function OverviewTab({
   state: ShowDetailState;
   editing: boolean;
 }) {
+  const { t } = useTranslation('web');
   const {
     title,
     setTitle,
@@ -228,8 +230,8 @@ export function OverviewTab({
           </p>
         ) : (
           <PageEmpty
-            title="No upcoming slots"
-            description="Book an interval for this show."
+            title={t('empties.noUpcomingSlots')}
+            description={t('empties.bookAnIntervalForThisShow')}
           />
         )}
         <div className="mt-3 flex flex-wrap gap-2">

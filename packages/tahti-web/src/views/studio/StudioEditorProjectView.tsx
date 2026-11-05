@@ -193,8 +193,8 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                 {!project.soundId && (
                   <PageEmpty
                     className="mt-4"
-                    title="No archive seed"
-                    description="Create a project from an archive item, or open Library → Audio editor."
+                    title={t('empties.noArchiveSeed')}
+                    description={t('empties.createAProjectFromAnArchive')}
                   />
                 )}
               </StudioPanel>

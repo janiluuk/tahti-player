@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { AudioLinesIcon, DownloadIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   SegmentedControl,
   StatTile,
@@ -36,6 +37,7 @@ export function ReleaseStatsPanel({
 }: {
   tracks: StudioReleaseTrack[];
 }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [period, setPeriod] = useState<InsightsPeriod>('30d');
   const [stats, setStats] = useState<TrackStats[] | null>(null);
@@ -94,8 +96,8 @@ export function ReleaseStatsPanel({
   if (tracks.length === 0) {
     return (
       <PageEmpty
-        title="No tracks yet"
-        description="Add tracks to this release to see its stats."
+        title={t('empties.noTracksYet')}
+        description={t('empties.addTracksToThisReleaseTo')}
       />
     );
   }

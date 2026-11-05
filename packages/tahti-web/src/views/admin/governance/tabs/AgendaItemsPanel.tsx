@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, InlineLoader, Input } from '@tahti-player/ui';
 
 import {
@@ -16,6 +17,7 @@ import { CollapsibleRecord } from './MeetingRecordPanels';
 /** A meeting's agenda as numbered items the minutes can record an outcome
  * for (GET /api/admin/governance/meetings/:id/agenda-items). */
 export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<GovernanceAgendaItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -71,7 +73,7 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
         <InlineLoader label="Loading…" textSize="xs" />
       ) : loadError && items.length === 0 ? (
         <PageError
-          title="Could not load agenda items"
+          title={t('loadErrors.couldNotLoadAgendaItems')}
           description={loadError}
           onRetry={() => {
             setItems(null);
@@ -79,7 +81,7 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
           }}
         />
       ) : items.length === 0 ? (
-        <PageEmpty title="No agenda items yet." />
+        <PageEmpty title={t('empties.noAgendaItemsYet')} />
       ) : (
         <ol className="flex flex-col gap-2 text-sm">
           {items.map((item, index) => (

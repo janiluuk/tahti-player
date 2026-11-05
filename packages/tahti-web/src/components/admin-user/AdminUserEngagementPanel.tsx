@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input, Select, Textarea } from '@tahti-player/ui';
 
 import {
@@ -98,6 +99,7 @@ export function AdminUserEngagementPanel({
   userId: string;
   refreshKey?: number;
 }) {
+  const { t } = useTranslation('web');
   const currentYear = new Date().getUTCFullYear();
   const [year, setYear] = useState(currentYear);
   const [data, setData] = useState<AdminUserEngagement | null>(null);
@@ -148,7 +150,7 @@ export function AdminUserEngagementPanel({
         <PageLoading label="Loading engagement…" />
       ) : failed || !data ? (
         <PageError
-          title="Couldn't load engagement"
+          title={t('loadErrors.couldnTLoadEngagement')}
           onRetry={() => void load()}
         />
       ) : (

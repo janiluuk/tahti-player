@@ -1,6 +1,7 @@
 import { SlidersHorizontalIcon } from 'lucide-react';
 import { useMemo, useState, type FC } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, FilterChips, Input } from '@tahti-player/ui';
 
 import {
@@ -28,6 +29,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
   loading = false,
   liveIndicator = 'badge',
 }) => {
+  const { t } = useTranslation('web');
   const [query, setQuery] = useState('');
   const [genre, setGenre] = useState('all');
   const [artistType, setArtistType] = useState('all');
@@ -207,7 +209,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
 
       {filtered.length === 0 ? (
         <PageEmpty
-          title="No artists match"
+          title={t('empties.noArtistsMatch')}
           description={`${query ? `“${query}”` : 'Try another filter'}${genre !== 'all' ? ` in ${genre}` : ''}.`}
           action={
             <Button

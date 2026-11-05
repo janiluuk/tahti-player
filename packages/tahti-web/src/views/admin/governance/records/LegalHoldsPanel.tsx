@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge } from '@tahti-player/ui';
 
 import {
@@ -25,6 +26,7 @@ const KIND_LABELS: Record<LegalHoldKind, string> = {
 /** Everything under a legal hold, in one place. Held records are not
  * regenerated, corrected, archived or deleted until released where they live. */
 export function LegalHoldsPanel() {
+  const { t } = useTranslation('web');
   const [holds, setHolds] = useState<GovernanceLegalHold[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -46,7 +48,7 @@ export function LegalHoldsPanel() {
         <PageLoading label="Loading legal holds…" />
       ) : loadError && holds.length === 0 ? (
         <PageError
-          title="Could not load legal holds"
+          title={t('loadErrors.couldNotLoadLegalHolds')}
           description={loadError}
           onRetry={() => {
             setHolds(null);
@@ -54,7 +56,7 @@ export function LegalHoldsPanel() {
           }}
         />
       ) : holds.length === 0 ? (
-        <PageEmpty title="Nothing is on legal hold" />
+        <PageEmpty title={t('empties.nothingIsOnLegalHold')} />
       ) : (
         <ul className="divide-border divide-y">
           {holds.map((hold) => (

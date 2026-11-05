@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 
 import { preferInternalEngine } from '@tahti-player/audio-core';
 import { MultitrackEditor } from '@tahti-player/audio-editor';
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -68,6 +68,7 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
 }
 
 function ProEditor({ soundId }: { soundId: string }) {
+  const { t } = useTranslation('web');
   const masteringEnabled = useMasteringFeatureStore((state) => state.enabled);
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [title, setTitle] = useState('');
@@ -400,8 +401,8 @@ function ProEditor({ soundId }: { soundId: string }) {
             </StudioPanel>
           ) : loadFailed || !editList ? (
             <PageError
-              title="Could not load the editor"
-              description="Check your connection."
+              title={t('loadErrors.couldNotLoadTheEditor')}
+              description={t('loadErrors.checkYourConnection')}
               onRetry={() => setLoadAttempt((n) => n + 1)}
             />
           ) : (
