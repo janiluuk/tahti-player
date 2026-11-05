@@ -60,7 +60,7 @@ export function MulticastCategory() {
         Stream destinations
       </h3>
       {targets == null ? (
-        <PageLoading label="Loading multistream destinations…" />
+        <PageLoading label={t('loading.loadingMultistreamDestinations')} />
       ) : loadError && targets.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadStreamDestinations')}

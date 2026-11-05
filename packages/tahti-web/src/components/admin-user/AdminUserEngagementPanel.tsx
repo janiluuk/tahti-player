@@ -147,7 +147,7 @@ export function AdminUserEngagementPanel({
       }
     >
       {loading ? (
-        <PageLoading label="Loading engagement…" />
+        <PageLoading label={t('loading.loadingEngagement')} />
       ) : failed || !data ? (
         <PageError
           title={t('loadErrors.couldnTLoadEngagement')}

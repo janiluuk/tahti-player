@@ -506,7 +506,9 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
         }
       >
         {tab === 'history' ? (
-          <Suspense fallback={<PageLoading label="Loading history…" />}>
+          <Suspense
+            fallback={<PageLoading label={t('loading.loadingHistory')} />}
+          >
             <HistoryView embedded />
           </Suspense>
         ) : null}

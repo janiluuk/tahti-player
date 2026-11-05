@@ -109,7 +109,7 @@ export function GreenRoomView({ username }: { username: string }) {
         classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl' }}
       >
         {backLink}
-        <PageLoading label="Checking green room access…" />
+        <PageLoading label={t('loading.checkingGreenRoomAccess')} />
       </ViewShell>
     );
   }

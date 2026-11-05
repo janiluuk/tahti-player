@@ -106,7 +106,7 @@ export function ListeningPartyView({ id }: { id: string }) {
   return (
     <ViewShell title="Listening party" classes={SHELL_CLASSES}>
       {load.status === 'loading' ? (
-        <PageLoading label="Loading the listening party…" />
+        <PageLoading label={t('loading.loadingTheListeningParty')} />
       ) : load.status === 'not-found' ? (
         <PageEmpty
           headingLevel={1}

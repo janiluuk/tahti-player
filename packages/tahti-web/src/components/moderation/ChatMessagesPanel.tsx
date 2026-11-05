@@ -94,7 +94,7 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
       description="The last 100 messages in this chat, fan room included. Remove one, or ban whoever sent it."
     >
       {loading ? (
-        <PageLoading label="Loading…" />
+        <PageLoading label={t('loading.loading')} />
       ) : loadError ? (
         <InlineError>{loadError}</InlineError>
       ) : messages.length === 0 ? (

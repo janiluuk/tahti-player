@@ -40,7 +40,7 @@ export function VenuesDirectory() {
   }, [attempt]);
 
   if (loading) {
-    return <PageLoading label="Loading venues…" />;
+    return <PageLoading label={t('loading.loadingVenues')} />;
   }
 
   if (loadError && venues.length === 0) {

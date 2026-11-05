@@ -113,7 +113,7 @@ export function LibraryEmbedsView() {
   }, [items]);
 
   if (items === null) {
-    return <PageLoading label="Loading embeds…" />;
+    return <PageLoading label={t('loading.loadingEmbeds')} />;
   }
 
   const hasAnyEmbeds = (items ?? []).some(isEmbedItem);
