@@ -112,7 +112,11 @@ export function StudioEventsView() {
                 variant="text"
                 onClick={() => setPendingRemove(event)}
               >
-                <Trash2Icon size={14} aria-hidden className="mr-1.5" />
+                <Trash2Icon
+                  size={14}
+                  aria-hidden
+                  className="text-accent-red mr-1.5"
+                />
                 {t('studioEvents.remove')}
               </Button>
             </div>

@@ -244,7 +244,11 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       disabled={deleting}
                       onClick={() => setConfirmDelete(true)}
                     >
-                      <Trash2Icon size={16} aria-hidden />
+                      <Trash2Icon
+                        className="text-accent-red"
+                        size={16}
+                        aria-hidden
+                      />
                     </Button>
                   </Tooltip>
                   {detailsExpanded ? (

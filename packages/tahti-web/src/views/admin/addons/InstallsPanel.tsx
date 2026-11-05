@@ -125,7 +125,11 @@ export function InstallsPanel({
                   disabled={pending}
                   onClick={() => onRemove(install)}
                 >
-                  <Trash2Icon size={16} aria-hidden />
+                  <Trash2Icon
+                    className="text-accent-red"
+                    size={16}
+                    aria-hidden
+                  />
                 </Button>
               </Tooltip>
             </li>

@@ -193,15 +193,16 @@ export const ProgrammingNothingScheduled: Story = {
   },
 };
 
-export const Stats: Story = {
+/** Followers and plays moved into the social header (Identity → Show
+ * follower and play counts), so an old saved `stats` block draws nothing. */
+export const StatsInHeaderOnly: Story = {
   args: {
     item: { id: 'stats-1', type: 'stats', visible: true },
     ctx: blockContext(),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getByText('Followers')).toBeVisible();
-    await expect(canvas.getByText(/1,?284/)).toBeVisible();
+    await expect(canvas.queryByText('Followers')).toBeNull();
   },
 };
 

@@ -37,7 +37,7 @@ export const OverflowMenu: FC<OverflowMenuProps> = ({
       trigger ?? (
         <Button
           size="icon-sm"
-          variant="secondary"
+          variant="text"
           aria-label={label}
           data-testid={testId}
         >

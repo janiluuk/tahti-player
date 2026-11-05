@@ -1,10 +1,7 @@
 # localStorage keys
 
-Audit for the (now finished) cutover plan's §1.4 ("Document localStorage keys: theme, chat handle,
-favorites/history scopes"). Everything the app writes to `localStorage`,
-grouped by owner. All keys are plain strings under the origin's storage —
-no IndexedDB, no service worker, nothing Next.js-specific to account for
-at cutover (confirms the other two §1.4 boxes).
+Everything the app writes to `localStorage`, grouped by owner. All keys are
+plain strings under the origin's storage — no IndexedDB, no service worker.
 
 ## Zustand `persist` stores (JSON blobs, one key each)
 

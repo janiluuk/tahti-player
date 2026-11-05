@@ -192,7 +192,11 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
                             aria-label={`Remove ${imageLabel}`}
                             onClick={() => setPendingImageDeleteId(image.id)}
                           >
-                            <Trash2Icon size={14} aria-hidden />
+                            <Trash2Icon
+                              className="text-accent-red"
+                              size={14}
+                              aria-hidden
+                            />
                           </Button>
                         </Tooltip>
                       </div>

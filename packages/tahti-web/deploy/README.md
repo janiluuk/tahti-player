@@ -1,6 +1,6 @@
 # Deploy `tahti-web` (every public host)
 
-Deploys this package onto **vimage** beside the tahti-org stack (`/srv/tahti`), talking to the **public** API. Despite the `beta` names (`tahti-beta-web`, `/srv/tahti-beta`, `deploy:tahti-beta`), this container serves production: since 2026-10-21 Pi4 NPM forwards every public host (apex, `www`, `app`, `beta`, `admin`, `staging`, `<slug>.tahti.live`, radio, embed) to it. Open decisions on a production-named build: [`../CUTOVER.md`](../CUTOVER.md).
+Deploys this package onto **vimage** beside the tahti-org stack (`/srv/tahti`), talking to the **public** API. Despite the `beta` names (`tahti-beta-web`, `/srv/tahti-beta`, `deploy:tahti-beta`), this container serves production: since 2026-10-21 Pi4 NPM forwards every public host (apex, `www`, `app`, `beta`, `admin`, `staging`, `<slug>.tahti.live`, radio, embed) to it. Open decisions on a production-named build: [`docs/todo/final-season-hardening.md`](../../../docs/todo/final-season-hardening.md).
 
 ## Quick deploy
 

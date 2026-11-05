@@ -95,7 +95,7 @@ export function StudioSoundRowMenu({
           </TrackContextMenu.Submenu>
         ) : null}
         <TrackContextMenu.Action
-          icon={<Trash2Icon size={16} />}
+          icon={<Trash2Icon className="text-accent-red" size={16} />}
           onClick={onDelete}
         >
           Delete

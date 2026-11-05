@@ -4,14 +4,36 @@ description: Design your channel page, set up your artist profile, gallery and p
 
 # Your channel and profile
 
+## Your artist page at yourname.tahti.live
+
+Every channel has its own address: **`yourname.tahti.live`**, where `yourname` is your channel's username. Opening it takes listeners straight to your channel page, so it works as your artist website. Put it in your bio, on posters and in your email signature.
+
+The page is yours to design. You choose everything on it:
+
+- **Look:** colors, accents, the page background and the header style (solid colors, video or image, slideshow, visualization or gradient).
+- **Stage:** the player with its own backdrop, visualizer, gradient and now-playing overlay.
+- **Sections:** which blocks show and which stay hidden (releases, tracks, latest, feed, news, player), plus a top bar line for announcements.
+- **Identity:** your avatar, bio and Subscribe button, each one optional.
+- **Saved looks:** keep several designs and switch between them.
+
+Design it in the [Channel Designer](#channel-designer).
+
+**Changing the address:** rename your channel in **Settings → Channel & chat → Username & domain**. The old address keeps redirecting to the new one for a while, so links you've already shared still work.
+
+**Your own domain:** in the same tab, enter a domain you own under **Custom domain** (for example `music.example.com`) and choose **Set domain**. Add the TXT record shown to your domain's DNS, then choose **Verify**. DNS changes can take a while to show up. A custom domain requires a Tahti membership.
+
+{% hint style="info" %}
+Your channel page still shows Tahti's navigation and player bar around it, so listeners can keep listening and browse the rest of Tahti. `radio.tahti.live` is the Tahti Radio page, and some names (such as `www`, `api` and `help`) are reserved and can't be channel addresses.
+{% endhint %}
+
 ## Channel Designer
 
 Open **Settings → Channel & chat → Channel Designer**, or **Edit design** on your channel page. The preview shows what listeners see.
 
-- Pick a block (releases, tracks, latest, feed, news, player, backdrop) and hide it with the eye button.
-- **Player** sets the stage, visualizer, gradient and now-playing overlay.
-- **Backdrop** sets the header style, a video, image or slideshow backdrop, and page colors.
-- Presets give you a starting look. **Save layout** when you're done, or **Revert changes** to go back to what you last saved.
+- Pick a block (releases, tracks, latest, feed, news, player, backdrop) and hide it with the eye button. **Next section** steps through them.
+- **Player** sets the stage: a video or image, a text **Overlay** (**Configure text**), a **Gradient** (optionally separate from the page) and a **Visualizer** (**Choose visualizer**, with a tune panel for speed and other settings).
+- **Backdrop** (**Edit backdrop design**) sets the **Header style**: **Solid** colors, **Video / image**, **Slideshow** (static or animated effects), **Visualization** or **Gradient**, plus page background, accents and the **Top bar** text.
+- Presets give you a starting look. Save your own with **More channel design options → Save preset**; saved looks show as buttons you can apply, keep or delete. **Save layout** when you're done, or **Reset** to throw away unsaved changes.
 
 Other **Channel & chat** tabs: **Discovery** (show or hide the share button), **Username & domain** (rename your channel, or use your own domain), **Chat** (who can chat) and **Moderators**.
 

@@ -13,6 +13,7 @@ export const CHANNEL_PAGE_ITEM_TYPES = [
   'programming',
   'avatar',
   'feed',
+  'headerStats',
 ] as const;
 
 export type ChannelPageItemType = (typeof CHANNEL_PAGE_ITEM_TYPES)[number];
@@ -32,6 +33,8 @@ export const BACKDROP_FOLDED_ITEM_TYPES: ChannelPageItemType[] = [
   'about',
   'subscribe',
   'avatar',
+  'stats',
+  'headerStats',
 ];
 
 /** One tab of a `navigation` block: a label plus which other visible
@@ -96,7 +99,11 @@ export const CHANNEL_PAGE_ITEM_META: Record<
   },
   stats: {
     label: 'Stats',
-    hint: 'Follower count',
+    hint: 'Replaced by the counts in the header (headerStats)',
+  },
+  headerStats: {
+    label: 'Header counts',
+    hint: 'Followers and plays in the header — toggle from Identity',
   },
   events: {
     label: 'Live shows',
@@ -188,6 +195,7 @@ export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
       item('chat', false),
       item('links', false),
       item('stats', false),
+      item('headerStats', true),
     ],
     look: {
       visualPreset: 'MINIMAL',
@@ -214,6 +222,7 @@ export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
       item('chat', false),
       item('links', false),
       item('stats', false),
+      item('headerStats', true),
     ],
     look: {
       visualPreset: 'AURORA',
@@ -240,6 +249,7 @@ export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
       item('links', true),
       item('chat', false),
       item('stats', true),
+      item('headerStats', true),
     ],
     look: {
       visualPreset: 'WAVEFORM_BARS',
@@ -266,6 +276,7 @@ export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
       item('links', false),
       item('chat', false),
       item('stats', false),
+      item('headerStats', true),
     ],
     look: {
       visualPreset: 'WAVEFORM_BARS',
@@ -300,6 +311,7 @@ export function defaultChannelPageLayout(): Array<{
     item('links', false),
     item('subscribe', true),
     item('stats', false),
+    item('headerStats', true),
     item('events', false),
     item('chat', false),
     item('navigation', false),
@@ -472,7 +484,12 @@ export function normalizeLayout(items: ChannelPageItem[]): ChannelPageItem[] {
       // before this change is missing the item entirely, and the avatar
       // was always shown unconditionally, so backfill it visible rather
       // than following every other type's "new blocks default off" rule.
-      out.push({ ...def, visible: def.type === 'avatar' });
+      // Same for 'headerStats': the header always showed the counts before
+      // the toggle existed.
+      out.push({
+        ...def,
+        visible: def.type === 'avatar' || def.type === 'headerStats',
+      });
     }
   }
   return out;

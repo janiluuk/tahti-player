@@ -7,8 +7,7 @@ text list per screenshot (see `src/content/mapScreens.ts`'s `actions` /
 
 Building those per-screen diagrams required grep-verifying every real
 `<Link to="…">` / `navigate({ to: '…' })` in each Nuclear view against the
-`/more` atlas's claims (the legacy Next `apps/web` side was not re-verified; it
-was removed on 2026-10-28). Findings below are real, source-grounded gaps in the
+`/more` atlas's claims. Findings below are real, source-grounded gaps in the
 **Nuclear (this client)** navigation graph, not documentation drift.
 
 ## 2026-11-04 — `/listen/*` legacy aliases (no main-menu entry)
@@ -142,8 +141,8 @@ Rows marked resolved were re-checked 2026-10-03 (see above).
 3. **Upload → Music was not durable.** `StudioUploadView` used to stay on
    the upload form after a successful upload, showing a local "Open in
    Music" link that vanished on refresh (ephemeral React state, no route).
-   Now it navigates straight to `/studio/archive/$id` — see
-   `CUTOVER.md`'s `FEATURES.md` "Upload job detail" line.
+   Now it navigates straight to `/studio/archive/$id` — see the
+   `FEATURES.md` "Upload job detail" line.
 
 4. **`/studio/archive/$id` didn't handle a still-processing track.** Landing
    there right after upload (or refreshing while a file is transcoding)

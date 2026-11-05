@@ -131,7 +131,11 @@ export function SlideshowControls({
                   aria-label={`Remove slideshow image ${index + 1}`}
                   onClick={() => onRemove(index)}
                 >
-                  <Trash2Icon size={14} aria-hidden />
+                  <Trash2Icon
+                    className="text-accent-red"
+                    size={14}
+                    aria-hidden
+                  />
                 </Button>
               </Tooltip>
             </div>

@@ -106,7 +106,7 @@ export function ChannelLinksEditor({
                   aria-label="Remove link"
                   onClick={() => removeLink(i)}
                 >
-                  <Trash2Icon size={14} />
+                  <Trash2Icon className="text-accent-red" size={14} />
                 </Button>
               </Tooltip>
             </div>

@@ -155,7 +155,7 @@ export function ChannelPageActions({
           tooltip={{ content: t('nav.more'), side: 'top' }}
           trigger={
             <Button
-              variant="secondary"
+              variant="text"
               size="icon-sm"
               aria-label={t('channelPage.moreActions')}
             >

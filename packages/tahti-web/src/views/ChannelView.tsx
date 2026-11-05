@@ -543,7 +543,11 @@ export function ChannelView({ slug }: { slug: string }) {
       </ChannelBlockFrame>
     );
   };
-  const headerStats = channelHeaderStats(channel, follow.followerCount);
+  const showHeaderStats =
+    layout.find((item) => item.type === 'headerStats')?.visible ?? true;
+  const headerStats = showHeaderStats
+    ? channelHeaderStats(channel, follow.followerCount)
+    : [];
 
   const pageBody = (
     <div

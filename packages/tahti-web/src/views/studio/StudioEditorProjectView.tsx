@@ -117,7 +117,11 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                   disabled={deleting}
                   aria-label={`Delete ${project.title}`}
                 >
-                  <Trash2Icon size={16} aria-hidden className="mr-1.5" />
+                  <Trash2Icon
+                    size={16}
+                    aria-hidden
+                    className="text-accent-red mr-1.5"
+                  />
                   Delete
                 </Button>
                 {project.soundId ? (

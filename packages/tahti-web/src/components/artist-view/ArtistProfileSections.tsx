@@ -106,7 +106,7 @@ function ArtistMoreMenu({
         tooltip={{ content: t('artistMore.more'), side: 'top' }}
         trigger={
           <Button
-            variant="secondary"
+            variant="text"
             size="icon-sm"
             aria-label={t('artistMore.moreActions', {
               name: artist.displayName,
