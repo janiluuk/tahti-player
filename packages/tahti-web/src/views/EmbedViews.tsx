@@ -121,7 +121,7 @@ export function EmbedChannelView({ slug }: { slug: string }) {
 
   return (
     <EmbedChrome>
-      {loading && <PageLoading label="Loading embed…" />}
+      {loading && <PageLoading label={t('loading.loadingEmbed')} />}
       {!loading && error && <EmbedLoadError message={error} onRetry={retry} />}
       {!loading && !error && !data && (
         <PageEmpty title={t('empties.channelUnavailable')} />
@@ -181,7 +181,7 @@ export function EmbedReleaseView({ id }: { id: string }) {
 
   return (
     <EmbedChrome>
-      {loading && <PageLoading label="Loading embed…" />}
+      {loading && <PageLoading label={t('loading.loadingEmbed')} />}
       {!loading && error && <EmbedLoadError message={error} onRetry={retry} />}
       {!loading && !error && !data && (
         <PageEmpty title={t('empties.releaseUnavailable')} />
@@ -278,7 +278,7 @@ export function EmbedCollectionView({
 
   return (
     <EmbedChrome>
-      {loading && <PageLoading label="Loading embed…" />}
+      {loading && <PageLoading label={t('loading.loadingEmbed')} />}
       {!loading && error && <EmbedLoadError message={error} onRetry={retry} />}
       {!loading && !error && !data && (
         <PageEmpty title={t('empties.collectionUnavailable')} />

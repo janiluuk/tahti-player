@@ -98,7 +98,7 @@ function ChatPicker() {
       }}
     >
       {channels === null ? (
-        <PageLoading label="Loading channels…" />
+        <PageLoading label={t('loading.loadingChannels')} />
       ) : (
         <form
           className="flex items-end gap-2"
@@ -131,7 +131,7 @@ function ChatPicker() {
           Activity in the last 24 hours
         </h2>
         {channels === null || activity === null ? (
-          <PageLoading label="Checking chat rooms…" />
+          <PageLoading label={t('loading.checkingChatRooms')} />
         ) : activity.length === 0 ? (
           <PageEmpty title={t('empties.noChatActivity')} />
         ) : (

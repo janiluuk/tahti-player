@@ -88,7 +88,7 @@ export function ProfileOrderDialog({
       <Dialog.Description>{description}</Dialog.Description>
       <div className="max-h-96 overflow-y-auto py-4">
         {items === null ? (
-          <PageLoading label="Loading…" />
+          <PageLoading label={t('loading.loading')} />
         ) : loadError && items.length === 0 ? (
           <PageError
             title={t('loadErrors.couldNotLoadTheList')}

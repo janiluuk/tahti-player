@@ -139,7 +139,7 @@ export function AddToReleasePanel({
             onRetry={() => setAttempt((n) => n + 1)}
           />
         ) : releases === null ? (
-          <PageLoading label="Loading releases…" />
+          <PageLoading label={t('loading.loadingReleases')} />
         ) : releases.length === 0 ? (
           <PageEmpty
             title={t('empties.noReleasesYet')}

@@ -143,7 +143,7 @@ export function AdminStreamManagerPanel({
   };
 
   const streamList = loading ? (
-    <PageLoading label="Loading streams…" />
+    <PageLoading label={t('loading.loadingStreams')} />
   ) : streams.length === 0 ? (
     <PageEmpty title={t('empties.noLiveChannels')} />
   ) : (

@@ -1,6 +1,7 @@
 import { ShieldAlertIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../lib/accountRoles';
@@ -9,12 +10,13 @@ import { useAuthStore } from '../stores/authStore';
 import { PageGate, PageLoading } from './PageStates';
 
 export function AdminGate({ children }: { children: ReactNode }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
   const openAuth = useAuthModalStore((s) => s.open);
 
   if (!hydrated) {
-    return <PageLoading label="Loading session…" />;
+    return <PageLoading label={t('loading.loadingSession')} />;
   }
 
   if (!user) {

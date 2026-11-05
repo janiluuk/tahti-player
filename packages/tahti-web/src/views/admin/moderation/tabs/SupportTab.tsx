@@ -224,7 +224,7 @@ export function SupportTab() {
       <div className="grid gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
         <StudioPanel className="max-h-[32rem] overflow-y-auto p-0 sm:p-0">
           {loading ? (
-            <PageLoading label="Loading support tickets…" />
+            <PageLoading label={t('loading.loadingSupportTickets')} />
           ) : loadError && tickets.length === 0 ? (
             <PageError
               title={t('loadErrors.couldNotLoadSupportTickets')}
@@ -296,7 +296,7 @@ export function SupportTab() {
               Select a ticket.
             </p>
           ) : detailLoading || !detail ? (
-            <PageLoading label="Loading ticket…" />
+            <PageLoading label={t('loading.loadingTicket')} />
           ) : (
             <>
               <div className="border-border flex flex-wrap items-start justify-between gap-3 border-b px-4 py-3">
