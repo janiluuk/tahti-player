@@ -220,7 +220,31 @@ MAP_BASE_URL=http://127.0.0.1:5173 MAP_ACCOUNT=listener node packages/tahti-web/
 BASE=http://127.0.0.1:5173 node packages/tahti-web/scripts/audit-signed-out.mjs
 ```
 
-See [`docs/SCREEN-ATLAS.md`](./docs/SCREEN-ATLAS.md#listener-pass) for what each pass covers.
+`capture-map-screens.mjs` signs in as the board artist by default. With
+`MAP_ACCOUNT=listener` it signs in as the mock `listener@tahti.live` account
+(no channel, no Studio or Admin role) and captures the public and listener
+shots plus what a listener meets on their own profile, Studio (`/studio`,
+`/studio/go-live`, `/studio/releases`, `/library/upload`) and `/admin`. The
+shots go to `docs/listener-shots/`, which is not committed and not read by the
+`/more` atlas, so the artist shots and `sitemap.json` are never touched.
+`MAP_VIEWPORT=mobile` and `MAP_SHOT_IDS` work the same way.
+
+As the listener, `audit-signed-out.mjs` fails when a listener page opens
+sign-in, throws a page error, shows owner tools (Edit design, Full studio
+settings, Go live and similar) or shows the account's email address; when a
+Studio page does not offer "Create your channel" or shows the Studio tab bar;
+when `/admin` does not say Board access is required; and when Settings lists
+Channel & chat or Broadcast. The Studio menu entry, Library's artist tabs and
+the listener's own profile are open product questions, so they are listed
+under "To look at" instead of failing.
+
+Redesign shots for the `/more` atlas come from the mock app:
+
+```bash
+# from packages/tahti-web
+VITE_FORCE_MOCK=1 pnpm exec vite --port 5190 --strictPort
+REDESIGN_BASE_URL=http://127.0.0.1:5190 node scripts/capture-atlas-shots.mjs
+```
 
 ## Documentation and architecture
 

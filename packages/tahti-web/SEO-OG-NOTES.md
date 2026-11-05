@@ -4,8 +4,7 @@
 path. Bot OG works for a channel on the apex (`/c/tahti-radio` with a
 `facebookexternalhit` user agent returns `og:title`, checked 2026-10-28). The
 full crawler QA across `/u`, `/r`, `/t`, `/v` and collections is still open
-(verify, tracked in [`CUTOVER.md`](./CUTOVER.md)). §6 describes the removed
-Next client and is historical.
+(verify, tracked in [`final-season-hardening.md`](../../docs/todo/final-season-hardening.md)).
 
 **Status (2026-08-24): both parts implemented.** Part 1 (client-side sync
 on real data resolve) landed in `src/lib/seo.ts` /
@@ -16,8 +15,8 @@ on real data resolve) landed in `src/lib/seo.ts` /
 [`deploy/nginx.conf`](./deploy/nginx.conf). Remaining: deploy the API route
 to production, then do the Phase 7.4 curl-as-crawler QA pass for real.
 
-Written 2026-08-24, ahead of implementing the last open item under
-[CUTOVER.md](./CUTOVER.md)'s "SEO minimum (P0)" checklist:
+Written 2026-08-24, ahead of implementing the last open item of the
+"SEO minimum (P0)" checklist:
 
 > robots.txt, a static + API-fed sitemap index, canonical tags, and
 > route-aware browser metadata for `/c`, `/u`, `/r` are implemented.
@@ -141,23 +140,6 @@ Grepped root and `packages/tahti-web` `package.json` for
 `ssr`. Only hits: `prettier-plugin-astro` (unrelated formatting plugin) and
 `@playwright/test` (e2e testing only, not rendering). Nothing installed
 addresses this today.
-
-## 6. Next.js (`apps/web`) parity baseline (historical; `apps/web` removed 2026-10-28)
-
-- `apps/web/src/app/u/[username]/page.tsx:84-121` has real
-  `generateMetadata`: title `` `${displayName} (@${username})` ``,
-  description = bio (160 chars, with fallback), canonical via
-  `resolveChannelUrl`, `openGraph.images` from `avatarUrl` when present.
-  **This is the only concrete spec to generalize from.**
-- `apps/web/src/app/c/[slug]/page.tsx` and `.../r/[slug]/page.tsx` — **no
-  `generateMetadata` at all** in either. Channel and release pages
-  currently just inherit the static root-layout metadata (title "Tahti —
-  your channel, always on", no `openGraph` block at all).
-
-**Implication:** this isn't "port Next.js's channel/release OG behavior
-into the SPA" — that behavior doesn't exist in production today either.
-It's "define it for the first time," generalizing the `/u/[username]`
-pattern and using `SmartLinkView`/embed-view shapes as the data source.
 
 ## Recommended approach
 

@@ -7,7 +7,7 @@ It is **not** the upstream Nuclear project. Do not open Nuclear PRs from this tr
 
 ## Product in one paragraph
 
-**Tahti** is a Finnish nonprofit broadcasting platform for independent artists (live channels, archive, fan subscriptions). This fork adds `@tahti-player/tahti-web` - the Nuclear-UI listen, studio and admin SPA. It is the only Tahti web client: it serves every public host (apex, `www`, `app`, `beta`, `admin`, `<slug>.tahti.live`, radio, embed) against the production API. The Next.js `apps/web` it replaced was removed from tahti-org on 2026-10-28 ([`packages/tahti-web/CUTOVER.md`](./packages/tahti-web/CUTOVER.md)).
+**Tahti** is a Finnish nonprofit broadcasting platform for independent artists (live channels, archive, fan subscriptions). This fork adds `@tahti-player/tahti-web` - the Nuclear-UI listen, studio and admin SPA. It is the only Tahti web client: it serves every public host (apex, `www`, `app`, `beta`, `admin`, `<slug>.tahti.live`, radio, embed) against the production API. Open hosting ops: [`docs/todo/final-season-hardening.md`](./docs/todo/final-season-hardening.md).
 
 ## Remotes
 
@@ -45,7 +45,7 @@ Public API reference: [`https://api.tahti.live/api`](https://api.tahti.live/api)
 
 ## What this client is, and how it should look
 
-`tahti-web` is Tahti's production web client, built on Nuclear's UI and talking to the tahti-org API. It replaced the Next.js `apps/web` (removed 2026-10-28). It is a real product, not a prototype.
+`tahti-web` is Tahti's production client: a standalone player built on Nuclear's UI, talking to the Tahti API. It is a real product, not a prototype.
 
 Because of that, treat every screen as a professional app, not a demo: prioritize clarity, simplicity, and practicality over decoration. Custom Tahti-specific widgets are expected (channels, archives, fingerprinting, fan tiers — none of that exists in stock Nuclear), but they should read as a natural, restrained extension of Nuclear's own design language, not a bolted-on skin. When in doubt, favor the plainer, more legible option.
 
