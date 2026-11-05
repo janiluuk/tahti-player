@@ -182,35 +182,46 @@ export function RadioStationView({ stationId }: { stationId: string }) {
                 onPlay={() => play(playable)}
               />
             ) : null}
-            <div className="flex items-center gap-2">
-              <Tooltip content={t('radioStation.stationWebsite')} side="top">
-                <ButtonAnchor
-                  href={station.detailUrl}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  size="icon-sm"
-                  variant="secondary"
-                  aria-label={`${station.name} website`}
-                >
-                  <GlobeIcon size={16} aria-hidden />
-                </ButtonAnchor>
-              </Tooltip>
-              {station.programmingUrl &&
-              station.programmingUrl !== station.detailUrl ? (
-                <Tooltip content={t('radioStation.programmeGuide')} side="top">
-                  <ButtonAnchor
-                    href={station.programmingUrl}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    size="icon-sm"
-                    variant="secondary"
-                    aria-label={`${station.name} programme guide`}
+            {station.detailUrl || station.programmingUrl ? (
+              <div className="flex items-center gap-2">
+                {station.detailUrl ? (
+                  <Tooltip
+                    content={t('radioStation.stationWebsite')}
+                    side="top"
                   >
-                    <CalendarDaysIcon size={16} aria-hidden />
-                  </ButtonAnchor>
-                </Tooltip>
-              ) : null}
-            </div>
+                    <ButtonAnchor
+                      href={station.detailUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      size="icon-sm"
+                      variant="secondary"
+                      aria-label={`${station.name} website`}
+                      data-testid="station-website"
+                    >
+                      <GlobeIcon size={16} aria-hidden />
+                    </ButtonAnchor>
+                  </Tooltip>
+                ) : null}
+                {station.programmingUrl &&
+                station.programmingUrl !== station.detailUrl ? (
+                  <Tooltip
+                    content={t('radioStation.programmeGuide')}
+                    side="top"
+                  >
+                    <ButtonAnchor
+                      href={station.programmingUrl}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      size="icon-sm"
+                      variant="secondary"
+                      aria-label={`${station.name} programme guide`}
+                    >
+                      <CalendarDaysIcon size={16} aria-hidden />
+                    </ButtonAnchor>
+                  </Tooltip>
+                ) : null}
+              </div>
+            ) : null}
           </div>
         </div>
       </RadioStationDial>

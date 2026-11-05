@@ -1051,6 +1051,7 @@
     "channelPage": {
       "editDesign": "Muokkaa ulkoasua",
       "openStreamManager": "Avaa Stream Manager",
+      "openRadio": "Avaa radiosivu",
       "moreActions": "Lisää kanavan toimintoja",
       "report": "Ilmoita",
       "rssFeedOf": "Kanavan {{name}} RSS-syöte",

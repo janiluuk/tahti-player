@@ -1,6 +1,12 @@
 import isEmpty from 'lodash-es/isEmpty';
-import { ChevronLeft, ChevronRight, Filter } from 'lucide-react';
-import { ReactNode } from 'react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Filter,
+  LayoutGrid,
+  List,
+} from 'lucide-react';
+import { ReactNode, useEffect, useState } from 'react';
 
 import { cn } from '../../utils';
 import { Badge } from '../Badge';
@@ -8,6 +14,7 @@ import { Button } from '../Button';
 import { Card } from '../Card';
 import { EmptyState } from '../EmptyState';
 import { Input } from '../Input';
+import { MediaArtwork } from '../MediaArtwork';
 import { Tooltip } from '../Tooltip';
 import { useCardsRow } from './useCardsRow';
 
@@ -23,6 +30,8 @@ export type CardsRowLabels = {
   filterPlaceholder: string;
   nothingFound: string;
   clearFilter?: string;
+  showAsCards?: string;
+  showAsList?: string;
 };
 
 export type CardsRowBadgeColor =
@@ -35,6 +44,31 @@ export type CardsRowBadgeColor =
   | 'blue'
   | 'secondary'
   | 'inverted';
+
+export type CardsRowLayout = 'cards' | 'list';
+
+const MOBILE_QUERY = '(max-width: 767px)';
+
+function usePrefersListOnMobile(): boolean {
+  const [prefersList, setPrefersList] = useState(() =>
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      ? window.matchMedia(MOBILE_QUERY).matches
+      : false,
+  );
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') {
+      return;
+    }
+    const mql = window.matchMedia(MOBILE_QUERY);
+    const onChange = () => setPrefersList(mql.matches);
+    onChange();
+    mql.addEventListener('change', onChange);
+    return () => mql.removeEventListener('change', onChange);
+  }, []);
+
+  return prefersList;
+}
 
 export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   title: string;
@@ -49,6 +83,13 @@ export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   cardSurface?: 'brand' | 'neutral';
   /** Shows the filter box beside the scroll buttons. */
   filterable?: boolean;
+  /** Controlled cards/list layout. */
+  layout?: CardsRowLayout;
+  /** Uncontrolled start layout. On phones, list wins unless this or `layout` is set. */
+  defaultLayout?: CardsRowLayout;
+  onLayoutChange?: (layout: CardsRowLayout) => void;
+  /** Toolbar icon that toggles cards ↔ list (default on). */
+  allowListToggle?: boolean;
 };
 
 export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
@@ -62,7 +103,33 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
   renderItem,
   filterable = true,
   cardSurface = 'brand',
+  layout: layoutProp,
+  defaultLayout,
+  onLayoutChange,
+  allowListToggle = true,
 }: CardsRowProps<T>) => {
+  const prefersListOnMobile = usePrefersListOnMobile();
+  const uncontrolledDefault =
+    defaultLayout ?? (prefersListOnMobile ? 'list' : 'cards');
+  const [internalLayout, setInternalLayout] =
+    useState<CardsRowLayout>(uncontrolledDefault);
+  const controlled = layoutProp !== undefined;
+  const layout = controlled ? layoutProp : internalLayout;
+
+  useEffect(() => {
+    if (controlled || defaultLayout !== undefined) {
+      return;
+    }
+    setInternalLayout(prefersListOnMobile ? 'list' : 'cards');
+  }, [controlled, defaultLayout, prefersListOnMobile]);
+
+  const setLayout = (next: CardsRowLayout) => {
+    if (!controlled) {
+      setInternalLayout(next);
+    }
+    onLayoutChange?.(next);
+  };
+
   const {
     filterText,
     setFilterText,
@@ -74,10 +141,19 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
     showControls,
   } = useCardsRow(items);
 
+  const showAsCards = labels.showAsCards ?? 'Show as cards';
+  const showAsList = labels.showAsList ?? 'Show as list';
+  const isList = layout === 'list';
+  const showScroll = showControls && !isList;
+  const showFilter =
+    filterable && (showControls || isList || !isEmpty(filterText.trim()));
+
   return (
-    <div data-testid={testId} className={cn('flex flex-col gap-3', className)}>
-      {/* Same header height with or without the filter and arrows, so rows
-       * sharing a line start their cards at the same height. */}
+    <div
+      data-testid={testId}
+      data-layout={layout}
+      className={cn('flex flex-col gap-3', className)}
+    >
       <div className="flex min-h-10 flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div className="flex items-center gap-2">
           <h2 className="text-foreground text-lg font-bold whitespace-nowrap">
@@ -96,13 +172,11 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
         <div
           data-testid="cards-row-controls"
           className={cn(
-            filterable
-              ? 'min-w-64 flex-1 items-center justify-end gap-2'
-              : 'flex-1 items-center justify-end gap-2',
-            showControls ? 'flex' : 'hidden',
+            'flex min-w-0 flex-1 items-center justify-end gap-2',
+            showFilter ? 'min-w-64' : undefined,
           )}
         >
-          {filterable ? (
+          {showFilter ? (
             <Input
               data-testid="cards-row-filter"
               size="sm"
@@ -126,59 +200,127 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
               }
             />
           ) : null}
-          <div className="flex items-center gap-2">
-            <Tooltip content="Scroll left" side="top">
+          {showScroll ? (
+            <div className="flex items-center gap-2">
+              <Tooltip content="Scroll left" side="top">
+                <Button
+                  data-testid="cards-row-scroll-left"
+                  size="icon"
+                  onClick={scrollLeft}
+                  variant="noShadow"
+                  aria-label="Scroll left"
+                >
+                  <ChevronLeft size={16} />
+                </Button>
+              </Tooltip>
+              <Tooltip content="Scroll right" side="top">
+                <Button
+                  data-testid="cards-row-scroll-right"
+                  size="icon"
+                  onClick={scrollRight}
+                  variant="noShadow"
+                  aria-label="Scroll right"
+                >
+                  <ChevronRight size={16} />
+                </Button>
+              </Tooltip>
+            </div>
+          ) : null}
+          {allowListToggle ? (
+            <Tooltip content={isList ? showAsCards : showAsList} side="top">
               <Button
-                data-testid="cards-row-scroll-left"
+                data-testid="cards-row-layout-toggle"
                 size="icon"
-                onClick={scrollLeft}
                 variant="noShadow"
-                aria-label="Scroll left"
+                aria-label={isList ? showAsCards : showAsList}
+                aria-pressed={isList}
+                onClick={() => setLayout(isList ? 'cards' : 'list')}
               >
-                <ChevronLeft size={16} />
+                {isList ? (
+                  <LayoutGrid size={16} aria-hidden />
+                ) : (
+                  <List size={16} aria-hidden />
+                )}
               </Button>
             </Tooltip>
-            <Tooltip content="Scroll right" side="top">
-              <Button
-                data-testid="cards-row-scroll-right"
-                size="icon"
-                onClick={scrollRight}
-                variant="noShadow"
-                aria-label="Scroll right"
-              >
-                <ChevronRight size={16} />
-              </Button>
-            </Tooltip>
-          </div>
+          ) : null}
         </div>
       </div>
 
-      <div
-        ref={scrollContainerRef}
-        className="scrollbar-hide flex gap-2 overflow-x-auto overflow-y-visible [scroll-behavior:smooth] pb-2"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-      >
-        {isEmpty(filteredItems) ? (
-          <EmptyState
-            data-testid="cards-row-nothing-found"
-            size="sm"
-            title={labels.nothingFound}
-            className="w-full py-8"
-            action={
-              filterText ? (
-                <Button
-                  data-testid="cards-row-nothing-found-clear"
-                  size="sm"
-                  variant="secondary"
-                  onClick={clearFilter}
+      {isEmpty(filteredItems) ? (
+        <EmptyState
+          data-testid="cards-row-nothing-found"
+          size="sm"
+          title={labels.nothingFound}
+          className="w-full py-8"
+          action={
+            filterText ? (
+              <Button
+                data-testid="cards-row-nothing-found-clear"
+                size="sm"
+                variant="secondary"
+                onClick={clearFilter}
+              >
+                {labels.clearFilter ?? 'Clear filter'}
+              </Button>
+            ) : undefined
+          }
+        />
+      ) : isList ? (
+        <ul
+          data-testid="cards-row-list"
+          className="border-border/40 divide-border/40 flex flex-col divide-y overflow-hidden rounded-md border"
+        >
+          {filteredItems.map((item) =>
+            renderItem ? (
+              <li key={item.id} className="list-none p-1.5">
+                {renderItem(item)}
+              </li>
+            ) : (
+              <li key={item.id} className="list-none">
+                <button
+                  type="button"
+                  data-testid="cards-row-list-item"
+                  className={cn(
+                    'hover:bg-background-secondary flex w-full items-center gap-3 px-3 py-2 text-left',
+                    item.onClick ? 'cursor-pointer' : 'cursor-default',
+                  )}
+                  onClick={item.onClick}
+                  disabled={!item.onClick}
                 >
-                  {labels.clearFilter ?? 'Clear filter'}
-                </Button>
-              ) : undefined
-            }
-          />
-        ) : (
-          filteredItems.map((item) =>
+                  <MediaArtwork
+                    src={item.imageUrl}
+                    alt=""
+                    seed={item.id}
+                    size="thumb"
+                    imageReveal={false}
+                    className="shrink-0"
+                  />
+                  <span className="min-w-0 flex-1">
+                    <span
+                      data-testid="card-title"
+                      className="text-foreground block truncate text-sm font-semibold"
+                    >
+                      {item.title}
+                    </span>
+                    {item.subtitle ? (
+                      <span className="text-foreground-secondary block truncate text-xs">
+                        {item.subtitle}
+                      </span>
+                    ) : null}
+                  </span>
+                </button>
+              </li>
+            ),
+          )}
+        </ul>
+      ) : (
+        <div
+          ref={scrollContainerRef}
+          className="scrollbar-hide flex gap-2 overflow-x-auto overflow-y-visible [scroll-behavior:smooth] pb-2"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {filteredItems.map((item) =>
             renderItem ? (
               <div
                 key={item.id}
@@ -197,9 +339,9 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
                 surface={cardSurface}
               />
             ),
-          )
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

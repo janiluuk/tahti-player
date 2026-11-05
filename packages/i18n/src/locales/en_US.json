@@ -1051,6 +1051,7 @@
     "channelPage": {
       "editDesign": "Edit design",
       "openStreamManager": "Open Stream Manager",
+      "openRadio": "Open radio page",
       "moreActions": "More channel actions",
       "report": "Report",
       "rssFeedOf": "RSS feed of {{name}}'s channel",

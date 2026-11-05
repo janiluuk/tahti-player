@@ -21,7 +21,9 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [empty-state-create-ctas.md](empty-state-create-ctas.md) | PageEmpty createables: CTA button with icon + title; inventory flagged (Studio/Library/Admin/Radio/community) |
+| open    | [cardsrow-list-and-driving-fullscreen.md](cardsrow-list-and-driving-fullscreen.md) | CardsRow cards↔list toolbar (mobile list default); FullScreenPlayer swipe + driving mode |
+| open    | [radio-channel-open-radio-page.md](radio-channel-open-radio-page.md) | RADIO channel page: icon → `/radio`; hide otherwise; station website only if `detailUrl` |
+| open    | [empty-state-create-ctas.md](empty-state-create-ctas.md) | PageEmpty createables: icon+title `action` on empties; full 2026-11-05 inventory (Priority A/B, Near vs Gap) |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
 | partial | [library-management-port.md](library-management-port.md) | Port theDAW library management to Library Sounds: paged API client, facets/stats, bulk delete/edit |

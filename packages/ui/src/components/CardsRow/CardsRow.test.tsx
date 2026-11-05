@@ -102,31 +102,45 @@ describe('CardsRow', () => {
     expect(handleClick).toHaveBeenCalledOnce();
   });
 
-  it('hides the filter and scroll buttons when every card fits', () => {
+  it('hides the filter and scroll buttons when every card fits, keeps layout toggle', () => {
     Wrapper.overflow(600, 800);
-    Wrapper.mount();
+    Wrapper.mount({ defaultLayout: 'cards' });
 
-    expect(Wrapper.controls).toHaveClass('hidden');
+    expect(screen.queryByTestId('cards-row-filter')).toBeNull();
+    expect(screen.queryByTestId('cards-row-scroll-left')).toBeNull();
+    expect(screen.getByTestId('cards-row-layout-toggle')).toBeInTheDocument();
   });
 
   it('shows the filter and scroll buttons when cards overflow the row', () => {
-    Wrapper.mount();
+    Wrapper.mount({ defaultLayout: 'cards' });
 
-    expect(Wrapper.controls).not.toHaveClass('hidden');
+    expect(screen.getByTestId('cards-row-filter')).toBeInTheDocument();
+    expect(screen.getByTestId('cards-row-scroll-left')).toBeInTheDocument();
   });
 
   it('keeps the filter visible while a filter is applied', async () => {
-    Wrapper.mount();
+    Wrapper.mount({ defaultLayout: 'cards' });
     Wrapper.overflow(200, 800);
 
     await Wrapper.filter.type('midnight');
 
-    expect(Wrapper.controls).not.toHaveClass('hidden');
+    expect(screen.getByTestId('cards-row-filter')).toBeInTheDocument();
+  });
+
+  it('toggles between cards and list from the toolbar icon', async () => {
+    Wrapper.mount({ defaultLayout: 'cards' });
+
+    expect(Wrapper.container).toHaveAttribute('data-layout', 'cards');
+    await userEvent.click(screen.getByTestId('cards-row-layout-toggle'));
+    expect(Wrapper.container).toHaveAttribute('data-layout', 'list');
+    expect(screen.getByTestId('cards-row-list')).toBeInTheDocument();
+    await userEvent.click(screen.getByTestId('cards-row-layout-toggle'));
+    expect(Wrapper.container).toHaveAttribute('data-layout', 'cards');
   });
 });
 
 describe('CardsRow without a filter', () => {
-  it('keeps the scroll buttons and drops the filter box', async () => {
+  it('keeps the layout toggle and drops the filter box', async () => {
     const { render } = await import('@testing-library/react');
     const { CardsRow } = await import('./CardsRow');
     render(
@@ -135,9 +149,10 @@ describe('CardsRow without a filter', () => {
         items={[{ id: 'a', title: 'A' }]}
         labels={{ filterPlaceholder: 'Filter…', nothingFound: 'None' }}
         filterable={false}
+        defaultLayout="cards"
       />,
     );
     expect(screen.queryByTestId('cards-row-filter')).toBeNull();
-    expect(screen.getByTestId('cards-row-scroll-left')).toBeTruthy();
+    expect(screen.getByTestId('cards-row-layout-toggle')).toBeTruthy();
   });
 });

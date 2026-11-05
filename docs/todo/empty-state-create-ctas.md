@@ -2,6 +2,10 @@
 
 **Status:** open
 
+Inventory source: tahti-web `PageEmpty` scan (2026-11-05) — ~243 empties
+without `action`; this file is the shippable subset where the user can
+create/add. INDEX: [`INDEX.md`](INDEX.md) → this row.
+
 ## Pattern
 
 When a `PageEmpty` means “nothing here yet” **and the viewer can create or add
@@ -26,7 +30,9 @@ incoming review queues).
 
 ### Studio
 - [ ] `TracklistEditor` — no pins → Add pin (`Plus`) · focus add form
+- [ ] `ReleaseTracklistDialog` — `empties.noTracklist` → Add pin / open editor (`ListPlus`)
 - [ ] `TrackCreditsEditor` — no credits → Add credit (`Plus`) · **Near**
+- [ ] `ReleaseTrackCreditsPanel` — `studioReleaseDetail.creditsEmpty` → Add credit (`Plus`)
 - [ ] `collection-edit/TracklistPanel` — no tracks → Add tracks (`Plus`)
 - [ ] `StudioPlaylistEditorView` — empty playlist/collection → Add tracks (`ListPlus`)
 - [ ] `StudioReleaseDetailView` — no tracks / no audio → Add / Upload (`Plus`/`Upload`)
@@ -47,6 +53,8 @@ incoming review queues).
 - [ ] `ChannelRotationEditor` — Add from playlist (`ListMusic`) · **Near**
 - [ ] `StudioRadioSubmissionPanel` — Submit to radio (`Radio`)
 - [ ] `StudioEditorListView` library empty → Upload track (`Upload`) · **Gap**
+- [ ] `go-live/MultistreamPanel` — no destinations → Add destination (`Plus`) · **Near** (panel header)
+- [ ] `StudioEditorProjectView` — no archive seed → Open library / new session (`FolderOpen`) · **Gap**
 
 ### Library
 - [ ] `local-playlists/PlaylistView` — empty playlist → Add tracks (`ListPlus`) · **Gap**
@@ -55,6 +63,7 @@ incoming review queues).
 - [ ] `LibraryEmbedsView` — Import embed (`Link`) · **Gap**
 - [ ] `ChannelPlaylistPicker` — New collection (`Plus`)
 - [ ] `StashFilesPanel` / desktop library empties — Upload / Import (`Upload`) · **Near**
+- [ ] `desktop-library/DesktopLibraryContent` — empty facet groups → Import files (`Upload`) · **Near** (toolbar)
 
 ### Admin
 - [ ] `AdminArtworkPresetsView` — Add artwork (`Plus`) · **Near**
@@ -62,13 +71,18 @@ incoming review queues).
 - [ ] `AdminAnnouncementsView` — Upload audio (`Upload`) · **Near**
 - [ ] `AdminAddonsView` — Register add-on (`Plus`)
 - [ ] `AdminRadioView` rotation empty → Add to Selects (`ListPlus`)
-- [ ] Governance: Discussions topics, Agenda items, Elections, Board terms — Add… · **Near**
-- [ ] `SelectsTab` — Add content (`Plus`) · **Near**
+- [ ] `governance/discussions/DiscussionsAdminPanel` — New topic (`Plus`) · **Near**
+- [ ] `governance/tabs/AgendaItemsPanel` — Add agenda item (`Plus`) · **Near**
+- [ ] `governance/board/ElectionsAdminPanel` — New election (`Plus`) · **Near**
+- [ ] `governance/board/BoardTermsPanel` — Add board term (`UserPlus`) · **Near**
+- [ ] `SelectsTab` — Add content (`Plus`) · **Near** (title already mentions +)
+- [ ] `admin/moderation/tabs/ThemesTab` — empty catalog → Submit theme / registry docs (`Palette`) · optional
 
 ### Radio
 - [ ] `RadioBookedShowsPanel` — Book a slot (`CalendarPlus`) when `onBook` exists
 - [ ] `RadioBookingCalendar` — Book slot (`CalendarPlus`)
 - [ ] `RadioBrowserDirectoryCard` / `MyRadioStations` — Add station (`Plus`) · **Near**
+- [ ] `RadioView` — `radio.memberSetsEmpty` → Create member set (`Plus`) if product path exists
 - [ ] `ChannelProgrammingGrid` — Book show (`CalendarPlus`)
 
 ### Listen / community / settings
@@ -86,10 +100,9 @@ incoming review queues).
 ## Priority B — weaker / optional
 
 - [ ] `PressKitPreview` — Edit bio (`Pencil`) · **Near**
-- [ ] `StudioRevenueView` empty disbursements → Connect Stripe
-- [ ] `StudioEditorProjectView` — Open library (`FolderOpen`)
-- [ ] `RadioView` member-sets empty → Create set (if product path exists)
-- [ ] `admin/streams/ChannelTracksPanel` — nudge artist upload
+- [ ] `StudioRevenueView` — `studioRevenue.emptyDisbursements` → Connect Stripe (`CircleDollarSign`)
+- [ ] `admin/streams/ChannelTracksPanel` — nudge artist upload (`Upload`)
+- [ ] `AdminUsersView` — “No users yet” only if board gets an invite/create path (none today)
 
 ## Done when
 
