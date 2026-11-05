@@ -197,7 +197,8 @@ ${Object.entries(desktopModes())
 
 Needs Rust and the Tauri system packages (see AGENTS.md → Environment).
 latest shares this checkout's Rust target dir, so rebuilds are incremental.
-android runs \`tauri android init\` first when src-tauri/gen/android is missing.`,
+android runs \`tauri android init\` first when src-tauri/gen/android is missing.
+android release builds a signed APK and checksum in artifacts/android; use --target aarch64 for a phone-only build.`,
     passthrough: true,
     run: (_parsed, argv) => {
       const { dryRun, args } = splitDryRun(argv);

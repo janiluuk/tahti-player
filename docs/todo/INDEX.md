@@ -64,6 +64,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
+| partial | [android-apk-release.md](android-apk-release.md) | Signed APK command and Android APK workflow shipped; left: repo secrets + first real run, then `ANDROID_RELEASES_ENABLED` |
 | partial | [dj-catalog-hardening.md](dj-catalog-hardening.md) | Camelot/Open Key, mixable tracks, tap tempo, Prepare playlist; cues and DJ-software import still need Rust |
 | blocked | [desktop-pro-library.md](desktop-pro-library.md) | Real-music validation + Phases 6–7 untouched |
 | blocked | [desktop-smart-playlists.md](desktop-smart-playlists.md) | Manual check on real 10k+ desktop library |

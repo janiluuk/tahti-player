@@ -29,6 +29,7 @@
     "player:build:run": "pnpm tahti-ops desktop run",
     "player:run": "pnpm tahti-ops desktop launch",
     "build:android:run": "pnpm tahti-ops desktop android",
+    "build:android:release": "pnpm tahti-ops desktop android release",
     "lint": "turbo lint",
     "check:file-size": "pnpm tahti-ops check size",
     "check:guards": "node scripts/generate-storybook-surfaces.mjs --check && pnpm check:file-size",

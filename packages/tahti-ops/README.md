@@ -19,6 +19,7 @@ pnpm tahti-ops desktop launch     # launch the last build (Linux)
 pnpm tahti-ops desktop dev        # dev mode with hot reload     (= pnpm desktop:dev)
 pnpm tahti-ops desktop bundle     # installers / packages
 pnpm tahti-ops desktop android    # debug build on a device/emulator (JDK 17+, ANDROID_HOME)
+pnpm tahti-ops desktop android release [--target aarch64]   # signed APK + .sha256 in artifacts/android (= pnpm build:android:release)
 
 # tests
 pnpm tahti-ops test               # every package                (= pnpm test:all)
@@ -111,3 +112,34 @@ Cron entries may still call `backup.sh` directly on the host; operators use
 | `TAHTI_ORG_ROOT` | Path to the tahti-org checkout (default: `../tahti-org`) |
 | `DEPLOY_HOST` | SSH host for `env` / `deploy stack` (default `vimage`; `local` for this machine) |
 | `DEPLOY_PATH` | Project path on the host (default `/srv/tahti`) |
+
+## Android release APK
+
+`pnpm build:android:release` (`tahti-ops desktop android release`) builds the
+release APK with Tauri, aligns it with `zipalign`, signs it with `apksigner`,
+verifies the signature and writes
+`artifacts/android/tahti-player-<version>-<target|universal>.apk` plus a
+`.sha256` checksum. `--target aarch64` builds for phones only, which is much
+faster than the universal APK. `--dry-run` prints the steps without building.
+
+Needs JDK 17+, the Android SDK (`ANDROID_HOME` or `ANDROID_SDK_ROOT`) with
+build-tools and the NDK (or `NDK_HOME`), and these variables:
+
+| Variable | What |
+| --- | --- |
+| `ANDROID_KEYSTORE_PATH` | Path to the release keystore (`.jks`) |
+| `ANDROID_KEYSTORE_PASSWORD` | Keystore password |
+| `ANDROID_KEY_ALIAS` | Key alias in the keystore |
+| `ANDROID_KEY_PASSWORD` | Key password |
+
+The command stops with a message naming what is missing before it builds.
+
+In GitHub, **Actions → Android APK → Run workflow** builds an existing
+`player@X.Y.Z` tag, checks the tag matches `tauri.conf.json`, and uploads the
+signed APK and checksum as a workflow artifact. Tick **publish** to also attach
+them to the GitHub Release. The workflow reads the repository secrets
+`ANDROID_KEYSTORE_BASE64` (the keystore, base64-encoded), `ANDROID_KEYSTORE_PASSWORD`,
+`ANDROID_KEY_ALIAS` and `ANDROID_KEY_PASSWORD`. **Release Player** calls it
+after the desktop release only when the repository variable
+`ANDROID_RELEASES_ENABLED` is `true`.
+
