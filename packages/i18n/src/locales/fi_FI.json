@@ -2697,7 +2697,18 @@
       "removeMemberNamed": "Poista {{name}} ryhmästä",
       "removeMemberTitle": "Poistetaanko {{name}}?",
       "removeMemberDescription": "Hän poistuu ryhmästä ja saa siitä ilmoituksen. Hänen lisäämänsä kappaleet jäävät yhteiseen soittolistaan.",
-      "memberRemoved": "{{name}} poistettu"
+      "memberRemoved": "{{name}} poistettu",
+      "makeAdmin": "Tee ylläpitäjäksi",
+      "makeAdminNamed": "Tee {{name}} ylläpitäjäksi",
+      "makeMember": "Tee jäseneksi",
+      "makeMemberNamed": "Tee {{name}} taas jäseneksi",
+      "madeAdmin": "{{name}} on nyt ylläpitäjä",
+      "madeMember": "{{name}} on taas jäsen",
+      "handOver": "Luovuta",
+      "handOverNamed": "Luovuta ryhmä käyttäjälle {{name}}",
+      "handOverTitle": "Luovutetaanko ryhmä käyttäjälle {{name}}?",
+      "handOverDescription": "Hänestä tulee omistaja, ja yhteinen soittolista siirtyy hänelle. Sinä jäät ryhmään ylläpitäjäksi. Vain hän voi luovuttaa sen takaisin.",
+      "handedOver": "{{name}} omistaa nyt ryhmän"
     },
     "studioListeningParties": {
       "title": "Kuuntelujuhlat",

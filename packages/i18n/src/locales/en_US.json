@@ -2697,7 +2697,18 @@
       "removeMemberNamed": "Remove {{name}} from the group",
       "removeMemberTitle": "Remove {{name}}?",
       "removeMemberDescription": "They leave the group and are told. Tracks they added stay in the collective playlist.",
-      "memberRemoved": "{{name}} removed"
+      "memberRemoved": "{{name}} removed",
+      "makeAdmin": "Make admin",
+      "makeAdminNamed": "Make {{name}} an admin",
+      "makeMember": "Make member",
+      "makeMemberNamed": "Make {{name}} a member again",
+      "madeAdmin": "{{name}} is now an admin",
+      "madeMember": "{{name}} is a member again",
+      "handOver": "Hand over",
+      "handOverNamed": "Hand the group over to {{name}}",
+      "handOverTitle": "Hand the group over to {{name}}?",
+      "handOverDescription": "They become the owner, along with the collective playlist. You stay in the group as an admin. Only they can hand it back.",
+      "handedOver": "{{name}} now owns the group"
     },
     "studioListeningParties": {
       "title": "Listening parties",
