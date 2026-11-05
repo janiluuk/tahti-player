@@ -141,7 +141,7 @@ export function MyVenuesView() {
           }
         />
       ) : venues === null ? (
-        <PageLoading label="Loading your venues…" />
+        <PageLoading label={t('loading.loadingYourVenues')} />
       ) : failed ? (
         <PageError
           title={t('loadErrors.couldNotLoadYourVenues')}

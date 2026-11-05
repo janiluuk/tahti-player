@@ -108,7 +108,7 @@ export function TrackAudience({
   }, [channelSlug, soundId, attempt]);
 
   if (load.state === 'loading') {
-    return <PageLoading label="Loading listeners…" />;
+    return <PageLoading label={t('loading.loadingListeners')} />;
   }
   if (load.state === 'error') {
     return (

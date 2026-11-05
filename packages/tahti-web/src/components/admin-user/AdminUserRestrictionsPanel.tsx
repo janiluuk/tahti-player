@@ -123,7 +123,7 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
       description="Block one thing without suspending the whole account. The reason is shown to the user."
     >
       {loading && !items ? (
-        <PageLoading label="Loading restrictions…" />
+        <PageLoading label={t('loading.loadingRestrictions')} />
       ) : !items ? (
         <PageError
           title={t('loadErrors.couldnTLoadRestrictions')}

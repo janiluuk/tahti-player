@@ -88,7 +88,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
         </p>
       )}
 
-      {user && loading && <PageLoading label="Loading meeting…" />}
+      {user && loading && <PageLoading label={t('loading.loadingMeeting')} />}
 
       {user && !loading && loadError && (
         <PageError

@@ -146,7 +146,7 @@ export function FeatureRequestsView({
         </div>
       )}
 
-      {user && loading && <PageLoading label="Loading requests…" />}
+      {user && loading && <PageLoading label={t('loading.loadingRequests')} />}
 
       {user && !loading && forbidden && (
         <div className="border-border flex flex-col gap-3 rounded-lg border p-4">

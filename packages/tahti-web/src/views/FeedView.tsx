@@ -167,7 +167,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
     );
 
   if (!hydrated || (user && loading)) {
-    return wrapFeed(<PageLoading label="Loading your feed…" />);
+    return wrapFeed(<PageLoading label={t('loading.loadingYourFeed')} />);
   }
 
   if (!user) {

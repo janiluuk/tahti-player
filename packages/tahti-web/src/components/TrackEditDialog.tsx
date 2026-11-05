@@ -7,6 +7,7 @@ import {
   TagsIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Dialog, InlineError, SaveButton, Tabs } from '@tahti-player/ui';
 
 import type { StudioSound, TracklistEntry } from '../api/studio-types';
@@ -28,6 +29,7 @@ type Props = {
 };
 
 export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
+  const { t } = useTranslation('web');
   const state = useTrackEditDialog(soundId, onSaved);
   const {
     isOpen,
@@ -52,7 +54,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
         <Dialog.Title>Edit track</Dialog.Title>
 
         {loading ? (
-          <PageLoading label="Loading track…" />
+          <PageLoading label={t('loading.loadingTrack')} />
         ) : item ? (
           <Tabs
             className="mt-3"

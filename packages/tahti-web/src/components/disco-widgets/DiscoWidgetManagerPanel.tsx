@@ -253,7 +253,7 @@ export function DiscoWidgetManagerPanel({
         <p className="text-foreground-secondary text-sm">{description}</p>
       )}
       {loading ? (
-        <PageLoading label="Loading widgets…" />
+        <PageLoading label={t('loading.loadingWidgets')} />
       ) : (
         <>
           {scope === 'ARTIST' ? (

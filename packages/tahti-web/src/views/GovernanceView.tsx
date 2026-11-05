@@ -317,7 +317,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
         </Box>
       )}
 
-      {user && loading && <PageLoading label="Loading motions…" />}
+      {user && loading && <PageLoading label={t('loading.loadingMotions')} />}
 
       {user && !loading && forbidden && (
         <Box variant="secondary" className="flex flex-col gap-3">
