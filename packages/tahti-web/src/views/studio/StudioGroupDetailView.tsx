@@ -337,6 +337,11 @@ function GroupDetail({ slug }: Props) {
         <GroupMembersPanel
           slug={group.slug}
           viewerRole={group.role}
+          onTransferred={() =>
+            setGroup((current) =>
+              current ? { ...current, role: 'ADMIN' } : current,
+            )
+          }
           onMembersChanged={() =>
             setGroup((current) =>
               current

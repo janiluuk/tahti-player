@@ -1484,7 +1484,17 @@
       "uploadNewReleaseTrackDescription": "Lisää kappaleen tähän julkaisuun äänitiedostosta laitteeltasi.",
       "releaseTrackTitle": "Kappaleen nimi",
       "releaseAudioFormats": "WAV, FLAC, MP3, AAC tai AIFF",
-      "chooseAudioFileBrowse": "Valitse äänitiedosto"
+      "chooseAudioFileBrowse": "Valitse äänitiedosto",
+      "mixOrder": "Miksausjärjestys",
+      "mixOrderTitle": "Ehdotettu miksausjärjestys",
+      "mixOrderDescription": "Valintasi järjestettynä sujuvaa miksausta varten: ensin hitain kappale, jolla on sävellaji, sitten aina lähin sävellaji Camelot-kehällä ja tempo. Mikään ei muutu ennen kuin lisäät ne soittolistalle.",
+      "mixOrderLoading": "Lasketaan järjestystä…",
+      "mixOrderError": "Järjestystä ei voitu ehdottaa",
+      "mixOrderNoKeys": "Yhdelläkään kappaleella ei ole sävellajia, joten järjestettävää ei ole. Lisää sävellajit kappaleen muokkaimessa.",
+      "mixOrderUnplaced_one": "{{count}} kappaleella ei ole sävellajia, ja se tulee loppuun:",
+      "mixOrderUnplaced_other": "{{count}} kappaleella ei ole sävellajia, ja ne tulevat loppuun:",
+      "mixOrderBpm": "{{bpm}} BPM",
+      "mixOrderUse": "Lisää soittolistalle tässä järjestyksessä"
     },
     "date": {
       "today": "Tänään",
@@ -2802,7 +2812,18 @@
       "removeMemberNamed": "Poista {{name}} ryhmästä",
       "removeMemberTitle": "Poistetaanko {{name}}?",
       "removeMemberDescription": "Hän poistuu ryhmästä ja saa siitä ilmoituksen. Hänen lisäämänsä kappaleet jäävät yhteiseen soittolistaan.",
-      "memberRemoved": "{{name}} poistettu"
+      "memberRemoved": "{{name}} poistettu",
+      "makeAdmin": "Tee ylläpitäjäksi",
+      "makeAdminNamed": "Tee {{name}} ylläpitäjäksi",
+      "makeMember": "Tee jäseneksi",
+      "makeMemberNamed": "Tee {{name}} taas jäseneksi",
+      "madeAdmin": "{{name}} on nyt ylläpitäjä",
+      "madeMember": "{{name}} on taas jäsen",
+      "handOver": "Luovuta",
+      "handOverNamed": "Luovuta ryhmä käyttäjälle {{name}}",
+      "handOverTitle": "Luovutetaanko ryhmä käyttäjälle {{name}}?",
+      "handOverDescription": "Hänestä tulee omistaja, ja yhteinen soittolista siirtyy hänelle. Sinä jäät ryhmään ylläpitäjäksi. Vain hän voi luovuttaa sen takaisin.",
+      "handedOver": "{{name}} omistaa nyt ryhmän"
     },
     "studioListeningParties": {
       "title": "Kuuntelujuhlat",
@@ -3250,6 +3271,14 @@
       "publishReportTitle": "Julkaistaanko vuosikertomus {{year}}?",
       "publishReportDescription": "Jäsenet voivat lukea ja ladata sen Governance-osiosta.",
       "publishConfirm": "Julkaise"
+    },
+    "listeningParty": {
+      "remindMe": "Muistuta minua",
+      "reminderOn": "Muistutus asetettu",
+      "reminderSet": "Kerromme, kun se alkaa",
+      "reminderOff": "Muistutus poistettu",
+      "reminderCount_one": "{{count}} henkilö haluaa muistutuksen",
+      "reminderCount_other": "{{count}} henkilöä haluaa muistutuksen"
     }
   },
   "studioEditor": {

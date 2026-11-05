@@ -4,6 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   fetchGroupMembers,
   removeGroupMember,
+  setGroupMemberRole,
+  transferArtistGroup,
   type GroupMember,
 } from '../../../api/group-members';
 import { useAuthStore } from '../../../stores/authStore';
@@ -13,6 +15,8 @@ import { canRemoveMember, GroupMembersPanel } from './GroupMembersPanel';
 vi.mock('../../../api/group-members', () => ({
   fetchGroupMembers: vi.fn(),
   removeGroupMember: vi.fn(),
+  setGroupMemberRole: vi.fn(),
+  transferArtistGroup: vi.fn(),
 }));
 vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
 
@@ -89,5 +93,63 @@ describe('GroupMembersPanel', () => {
     expect(removeGroupMember).toHaveBeenCalledWith('crew', 'fan');
     expect(onMembersChanged).toHaveBeenCalled();
     expect(screen.queryByRole('link', { name: 'FAN' })).toBeNull();
+  });
+
+  it('shows role and hand-over controls to the owner only', async () => {
+    await renderWithRouter(
+      <GroupMembersPanel slug="crew" viewerRole="ADMIN" />,
+    );
+    await screen.findByRole('list', { name: 'Members' });
+    expect(screen.queryByRole('button', { name: /^Make/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /^Hand/ })).toBeNull();
+  });
+
+  it('lets the owner promote a member and demote an admin', async () => {
+    useAuthStore.setState({ user: { username: 'owner' } as never });
+    vi.mocked(setGroupMemberRole).mockResolvedValue({ ok: true });
+    await renderWithRouter(
+      <GroupMembersPanel slug="crew" viewerRole="OWNER" />,
+    );
+    await act(async () => {
+      fireEvent.click(
+        await screen.findByRole('button', { name: 'Make FAN an admin' }),
+      );
+    });
+    expect(setGroupMemberRole).toHaveBeenCalledWith('crew', 'fan', 'ADMIN');
+    expect(
+      screen.getByRole('button', { name: 'Make FAN a member again' }),
+    ).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Make ADMIN a member again' }),
+      );
+    });
+    expect(setGroupMemberRole).toHaveBeenLastCalledWith(
+      'crew',
+      'admin',
+      'MEMBER',
+    );
+  });
+
+  it('hands the group over after confirming', async () => {
+    useAuthStore.setState({ user: { username: 'owner' } as never });
+    vi.mocked(transferArtistGroup).mockResolvedValue({ ok: true });
+    const onTransferred = vi.fn();
+    await renderWithRouter(
+      <GroupMembersPanel
+        slug="crew"
+        viewerRole="OWNER"
+        onTransferred={onTransferred}
+      />,
+    );
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Hand the group over to FAN' }),
+    );
+    expect(screen.getByText('Hand the group over to FAN?')).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Hand over' }));
+    });
+    expect(transferArtistGroup).toHaveBeenCalledWith('crew', 'fan');
+    expect(onTransferred).toHaveBeenCalled();
   });
 });

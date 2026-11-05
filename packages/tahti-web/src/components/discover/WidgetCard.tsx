@@ -11,8 +11,8 @@ import {
   Button,
   ButtonLink,
   Dialog,
-  ImageReveal,
   Loader,
+  MediaArtwork,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -156,17 +156,15 @@ export function WidgetCard({
         />
       ) : artist ? (
         <div className="flex flex-1 flex-col items-center text-center">
-          <ImageReveal
-            src={artist.avatarUrl ?? undefined}
-            alt={`${artist.displayName} profile`}
-            className="bg-background-secondary size-40 rounded-full"
-            imgClassName="object-cover"
-            placeholder={
-              <span className="text-foreground-secondary text-4xl font-bold">
-                {artist.displayName.charAt(0).toUpperCase()}
-              </span>
-            }
-          />
+          <div className="size-40 overflow-hidden rounded-full">
+            <MediaArtwork
+              src={artist.avatarUrl ?? undefined}
+              alt={`${artist.displayName} profile`}
+              seed={artist.channelSlug}
+              size="fill"
+              className="rounded-full"
+            />
+          </div>
           <h3 className="mt-4 text-lg font-semibold">{artist.displayName}</h3>
           <p className="text-foreground-secondary mt-2 line-clamp-4 max-w-xl text-sm">
             {artist.bio ?? 'Discover this artist’s music on Tahti.'}
@@ -194,16 +192,14 @@ export function WidgetCard({
                 aria-hidden
                 className="shrink-0"
               >
-                <ImageReveal
-                  src={release.artworkUrl ?? undefined}
-                  alt=""
-                  className="bg-primary size-12 rounded"
-                  placeholder={
-                    <span className="text-primary-foreground text-xs font-bold">
-                      {release.title.charAt(0).toUpperCase()}
-                    </span>
-                  }
-                />
+                <div className="size-12 overflow-hidden rounded">
+                  <MediaArtwork
+                    src={release.artworkUrl ?? undefined}
+                    alt=""
+                    seed={release.smartLinkSlug}
+                    size="fill"
+                  />
+                </div>
               </Link>
               <div className="min-w-0">
                 <Link
@@ -244,16 +240,14 @@ export function WidgetCard({
               }}
               className={cn('flex items-center gap-3 p-2', STRIPED_ROW)}
             >
-              <ImageReveal
-                src={collection.coverUrl ?? undefined}
-                alt=""
-                className="bg-primary size-12 shrink-0 rounded"
-                placeholder={
-                  <span className="text-primary-foreground text-xs font-bold">
-                    {collection.name.charAt(0).toUpperCase()}
-                  </span>
-                }
-              />
+              <div className="size-12 shrink-0 overflow-hidden rounded">
+                <MediaArtwork
+                  src={collection.coverUrl ?? undefined}
+                  alt=""
+                  seed={`${collection.ownerUsername}/${collection.slug}`}
+                  size="fill"
+                />
+              </div>
               <div className="min-w-0">
                 <h3 className="truncate text-sm font-semibold">
                   {collection.name}

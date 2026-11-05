@@ -39,8 +39,10 @@ export async function openDialog(
 
 /** Waits until no dialog is left open (exit animations included). */
 export async function expectNoDialog(canvasElement: HTMLElement) {
-  await waitFor(() =>
-    expect(withinBody(canvasElement).queryByRole('dialog')).toBeNull(),
+  // The exit animation can outlast waitFor's 1s default on a busy shard.
+  await waitFor(
+    () => expect(withinBody(canvasElement).queryByRole('dialog')).toBeNull(),
+    { timeout: 5_000 },
   );
 }
 

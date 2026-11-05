@@ -1484,7 +1484,17 @@
       "uploadNewReleaseTrackDescription": "Adds a track to this release from an audio file on your device.",
       "releaseTrackTitle": "Track title",
       "releaseAudioFormats": "WAV, FLAC, MP3, AAC or AIFF",
-      "chooseAudioFileBrowse": "Choose audio file"
+      "chooseAudioFileBrowse": "Choose audio file",
+      "mixOrder": "Mix order",
+      "mixOrderTitle": "Suggested mix order",
+      "mixOrderDescription": "Your selection ordered for a smooth mix: the slowest track with a key first, then the closest key on the Camelot wheel and tempo each time. Nothing changes until you add them to a playlist.",
+      "mixOrderLoading": "Working out the order…",
+      "mixOrderError": "Could not suggest an order",
+      "mixOrderNoKeys": "None of these tracks has a key set, so there is nothing to order by. Add keys in the track editor.",
+      "mixOrderUnplaced_one": "{{count}} track has no key and goes at the end:",
+      "mixOrderUnplaced_other": "{{count}} tracks have no key and go at the end:",
+      "mixOrderBpm": "{{bpm}} BPM",
+      "mixOrderUse": "Add to a playlist in this order"
     },
     "date": {
       "today": "Today",
@@ -2802,7 +2812,18 @@
       "removeMemberNamed": "Remove {{name}} from the group",
       "removeMemberTitle": "Remove {{name}}?",
       "removeMemberDescription": "They leave the group and are told. Tracks they added stay in the collective playlist.",
-      "memberRemoved": "{{name}} removed"
+      "memberRemoved": "{{name}} removed",
+      "makeAdmin": "Make admin",
+      "makeAdminNamed": "Make {{name}} an admin",
+      "makeMember": "Make member",
+      "makeMemberNamed": "Make {{name}} a member again",
+      "madeAdmin": "{{name}} is now an admin",
+      "madeMember": "{{name}} is a member again",
+      "handOver": "Hand over",
+      "handOverNamed": "Hand the group over to {{name}}",
+      "handOverTitle": "Hand the group over to {{name}}?",
+      "handOverDescription": "They become the owner, along with the collective playlist. You stay in the group as an admin. Only they can hand it back.",
+      "handedOver": "{{name}} now owns the group"
     },
     "studioListeningParties": {
       "title": "Listening parties",
@@ -3250,6 +3271,14 @@
       "publishReportTitle": "Publish annual report {{year}}?",
       "publishReportDescription": "Members will be able to read and download it from Governance.",
       "publishConfirm": "Publish"
+    },
+    "listeningParty": {
+      "remindMe": "Remind me",
+      "reminderOn": "Reminder set",
+      "reminderSet": "We'll tell you when it starts",
+      "reminderOff": "Reminder removed",
+      "reminderCount_one": "{{count}} person wants a reminder",
+      "reminderCount_other": "{{count}} people want a reminder"
     }
   },
   "studioEditor": {

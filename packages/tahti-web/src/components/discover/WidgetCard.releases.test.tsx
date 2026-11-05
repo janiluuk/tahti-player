@@ -8,6 +8,8 @@ import {
 import { act, cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { MediaArtworkDefaultProvider } from '@tahti-player/ui';
+
 import type { LatestRelease } from '../../api/latest-releases';
 import { WidgetCard } from './WidgetCard';
 
@@ -15,18 +17,20 @@ async function renderReleases(release: LatestRelease) {
   const router = createRouter({
     routeTree: createRootRoute({
       component: () => (
-        <WidgetCard
-          id="latest-releases"
-          title="Latest releases"
-          loading={false}
-          items={[]}
-          releases={[release]}
-          emptyMessage="No releases published yet."
-          canMoveUp={false}
-          canMoveDown={false}
-          onMove={vi.fn()}
-          onRemove={vi.fn()}
-        />
+        <MediaArtworkDefaultProvider value={(seed) => `/artwork/${seed}.webp`}>
+          <WidgetCard
+            id="latest-releases"
+            title="Latest releases"
+            loading={false}
+            items={[]}
+            releases={[release]}
+            emptyMessage="No releases published yet."
+            canMoveUp={false}
+            canMoveDown={false}
+            onMove={vi.fn()}
+            onRemove={vi.fn()}
+          />
+        </MediaArtworkDefaultProvider>
       ),
     }),
     history: createMemoryHistory({ initialEntries: ['/'] }),
@@ -79,5 +83,14 @@ describe('WidgetCard latest releases', () => {
     });
     expect(list.queryByRole('link', { name: 'Tahti' })).toBeNull();
     expect(list.getByText(/Tahti/)).toBeTruthy();
+  });
+
+  it('shows the default artwork, not a letter, when a release has no cover', async () => {
+    const list = await renderReleases(RELEASE);
+    expect(list.queryByText('N')).toBeNull();
+    const art = list.getByRole('presentation', {
+      hidden: true,
+    }) as HTMLImageElement;
+    expect(art.getAttribute('src')).toBe('/artwork/night-drive.webp');
   });
 });

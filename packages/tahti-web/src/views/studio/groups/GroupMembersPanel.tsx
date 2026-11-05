@@ -8,6 +8,8 @@ import { Badge, Button, ConfirmDialog, MediaArtwork } from '@tahti-player/ui';
 import {
   fetchGroupMembers,
   removeGroupMember,
+  setGroupMemberRole,
+  transferArtistGroup,
   type GroupMember,
 } from '../../../api/group-members';
 import type { ArtistGroupRole } from '../../../api/groups';
@@ -24,6 +26,8 @@ type Props = {
   slug: string;
   viewerRole: ArtistGroupRole;
   onMembersChanged?: () => void;
+  /** Called after the owner hands the group over (they are now an admin). */
+  onTransferred?: () => void;
 };
 
 /** Who may remove whom: owner and admins remove members, only the owner
@@ -46,6 +50,7 @@ export function GroupMembersPanel({
   slug,
   viewerRole,
   onMembersChanged,
+  onTransferred,
 }: Props) {
   const { t } = useTranslation('web');
   const viewerUsername = useAuthStore((s) => s.user?.username);
@@ -55,6 +60,8 @@ export function GroupMembersPanel({
   const [error, setError] = useState<string | null>(null);
   const [removing, setRemoving] = useState<GroupMember | null>(null);
   const [busy, setBusy] = useState(false);
+  const [handingTo, setHandingTo] = useState<GroupMember | null>(null);
+  const [roleBusy, setRoleBusy] = useState<string | null>(null);
 
   const roleLabel = {
     OWNER: t('groupDetail.roleOwner'),
@@ -97,6 +104,47 @@ export function GroupMembersPanel({
     setTotal((count) => Math.max(0, count - 1));
     setRemoving(null);
     onMembersChanged?.();
+  };
+
+  const changeRole = async (member: GroupMember) => {
+    const role = member.role === 'ADMIN' ? 'MEMBER' : 'ADMIN';
+    setRoleBusy(member.username);
+    const result = await setGroupMemberRole(slug, member.username, role);
+    setRoleBusy(null);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    toast.success(
+      t(
+        role === 'ADMIN' ? 'studioGroups.madeAdmin' : 'studioGroups.madeMember',
+        {
+          name: groupPersonName(member),
+        },
+      ),
+    );
+    setMembers((rows) =>
+      rows.map((m) => (m.username === member.username ? { ...m, role } : m)),
+    );
+  };
+
+  const confirmHandOver = async () => {
+    if (!handingTo) {
+      return;
+    }
+    setBusy(true);
+    const result = await transferArtistGroup(slug, handingTo.username);
+    setBusy(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    toast.success(
+      t('studioGroups.handedOver', { name: groupPersonName(handingTo) }),
+    );
+    setHandingTo(null);
+    await load();
+    onTransferred?.();
   };
 
   return (
@@ -149,18 +197,52 @@ export function GroupMembersPanel({
                   {roleLabel[member.role]}
                 </Badge>
               </div>
-              {canRemoveMember(viewerRole, member, viewerUsername) ? (
-                <Button
-                  size="sm"
-                  variant="text"
-                  aria-label={t('studioGroups.removeMemberNamed', {
-                    name: groupPersonName(member),
-                  })}
-                  onClick={() => setRemoving(member)}
-                >
-                  {t('studioGroups.removeMember')}
-                </Button>
-              ) : null}
+              <div className="flex flex-wrap gap-1">
+                {viewerRole === 'OWNER' && member.role !== 'OWNER' ? (
+                  <>
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      disabled={roleBusy === member.username}
+                      aria-label={t(
+                        member.role === 'ADMIN'
+                          ? 'studioGroups.makeMemberNamed'
+                          : 'studioGroups.makeAdminNamed',
+                        { name: groupPersonName(member) },
+                      )}
+                      onClick={() => void changeRole(member)}
+                    >
+                      {t(
+                        member.role === 'ADMIN'
+                          ? 'studioGroups.makeMember'
+                          : 'studioGroups.makeAdmin',
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="text"
+                      aria-label={t('studioGroups.handOverNamed', {
+                        name: groupPersonName(member),
+                      })}
+                      onClick={() => setHandingTo(member)}
+                    >
+                      {t('studioGroups.handOver')}
+                    </Button>
+                  </>
+                ) : null}
+                {canRemoveMember(viewerRole, member, viewerUsername) ? (
+                  <Button
+                    size="sm"
+                    variant="text"
+                    aria-label={t('studioGroups.removeMemberNamed', {
+                      name: groupPersonName(member),
+                    })}
+                    onClick={() => setRemoving(member)}
+                  >
+                    {t('studioGroups.removeMember')}
+                  </Button>
+                ) : null}
+              </div>
             </li>
           ))}
         </ul>
@@ -177,6 +259,20 @@ export function GroupMembersPanel({
         onConfirm={() => {
           if (!busy) {
             void confirmRemove();
+          }
+        }}
+      />
+      <ConfirmDialog
+        isOpen={handingTo !== null}
+        title={t('studioGroups.handOverTitle', {
+          name: handingTo ? groupPersonName(handingTo) : '',
+        })}
+        description={t('studioGroups.handOverDescription')}
+        confirmLabel={t('studioGroups.handOver')}
+        onCancel={() => setHandingTo(null)}
+        onConfirm={() => {
+          if (!busy) {
+            void confirmHandOver();
           }
         }}
       />
