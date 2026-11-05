@@ -42,6 +42,7 @@ type MountOptions = {
   badgeColor?: CardsRowBadgeColor;
   items?: CardsRowItem[];
   labels?: CardsRowLabels;
+  defaultLayout?: 'cards' | 'list';
 };
 
 export const CardsRowWrapper = {
@@ -52,6 +53,7 @@ export const CardsRowWrapper = {
       badgeColor,
       items = defaultItems,
       labels = defaultLabels,
+      defaultLayout = 'cards',
     } = options;
 
     return render(
@@ -61,6 +63,7 @@ export const CardsRowWrapper = {
         badgeColor={badgeColor}
         items={items}
         labels={labels}
+        defaultLayout={defaultLayout}
       />,
     );
   },

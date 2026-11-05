@@ -53,6 +53,10 @@ type PlayerBarControlsProps = {
   onRepeatToggle: () => void;
   onDiscoveryToggle?: () => void;
   showDiscovery: boolean;
+  /** Shuffle control; hide in driving mode where only play/skip matter. */
+  showShuffle?: boolean;
+  /** Repeat control; hide in driving mode. */
+  showRepeat?: boolean;
   /** Leaves out play/pause, e.g. while a provider's embedded widget is the
    * transport and its play state can't be read. */
   hidePlayPause?: boolean;
@@ -78,6 +82,8 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
   onRepeatToggle,
   onDiscoveryToggle,
   showDiscovery,
+  showShuffle = true,
+  showRepeat = true,
   hidePlayPause = false,
   className = '',
   size = 'default',
@@ -100,35 +106,43 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
         className,
       )}
     >
-      <Tooltip
-        content={isShuffleActive ? labels?.shuffleOn : labels?.shuffleOff}
-        side="top"
-      >
-        <Button
-          size="icon"
-          variant={isShuffleActive && !large ? 'default' : 'text'}
-          className={cn(
-            large ? 'size-11 rounded-full' : 'rounded-full',
-            glass,
-            large && isShuffleActive && 'bg-accent-green/80 text-black',
-          )}
-          onClick={onShuffleToggle}
-          aria-label={isShuffleActive ? labels?.shuffleOn : labels?.shuffleOff}
-          aria-pressed={isShuffleActive}
-          data-testid="player-shuffle-button"
+      {showShuffle ? (
+        <Tooltip
+          content={isShuffleActive ? labels?.shuffleOn : labels?.shuffleOff}
+          side="top"
         >
-          <Shuffle size={iconSize} />
-        </Button>
-      </Tooltip>
+          <Button
+            size="icon"
+            variant={isShuffleActive && !large ? 'default' : 'text'}
+            className={cn(
+              large ? 'size-11 rounded-full' : 'rounded-full',
+              glass,
+              large && isShuffleActive && 'bg-accent-green/80 text-black',
+            )}
+            onClick={onShuffleToggle}
+            aria-label={
+              isShuffleActive ? labels?.shuffleOn : labels?.shuffleOff
+            }
+            aria-pressed={isShuffleActive}
+            data-testid="player-shuffle-button"
+          >
+            <Shuffle size={iconSize} />
+          </Button>
+        </Tooltip>
+      ) : null}
       <Tooltip content={labels?.previous ?? 'Previous'} side="top">
         <Button
           size="icon"
           variant="text"
-          className={cn(large ? 'size-11 rounded-full' : 'rounded-full', glass)}
+          className={cn(
+            large ? 'size-11 rounded-full' : 'rounded-full',
+            glass,
+            large && !showShuffle && 'size-14',
+          )}
           onClick={onPrevious}
           aria-label={labels?.previous ?? 'Previous'}
         >
-          <SkipBack size={iconSize} />
+          <SkipBack size={large && !showShuffle ? 28 : iconSize} />
         </Button>
       </Tooltip>
       {hidePlayPause ? null : (
@@ -138,7 +152,7 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
             onClick={onPlayPause}
             className={cn(
               'active:bg-accent-green rounded-full shadow-md active:text-black',
-              large ? 'size-16' : 'size-10',
+              large ? (showShuffle ? 'size-16' : 'size-20') : 'size-10',
               isPlaying && 'bg-accent-green text-black',
               large && !isPlaying && 'bg-white/90 text-black hover:bg-white',
             )}
@@ -152,13 +166,13 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
             {isLoading ? (
               <Loader
                 shape="circle"
-                size={playIconSize}
+                size={showShuffle ? playIconSize : playIconSize + 6}
                 data-testid="player-loading-spinner"
               />
             ) : isPlaying ? (
-              <Pause size={playIconSize} />
+              <Pause size={showShuffle ? playIconSize : playIconSize + 6} />
             ) : (
-              <Play size={playIconSize} />
+              <Play size={showShuffle ? playIconSize : playIconSize + 6} />
             )}
           </Button>
         </Tooltip>
@@ -167,32 +181,38 @@ export const PlayerBarControls: FC<PlayerBarControlsProps> = ({
         <Button
           size="icon"
           variant="text"
-          className={cn(large ? 'size-11 rounded-full' : 'rounded-full', glass)}
+          className={cn(
+            large ? 'size-11 rounded-full' : 'rounded-full',
+            glass,
+            large && !showShuffle && 'size-14',
+          )}
           onClick={onNext}
           aria-label={labels?.next ?? 'Next'}
           data-testid="player-next-button"
         >
-          <SkipForward size={iconSize} />
+          <SkipForward size={large && !showShuffle ? 28 : iconSize} />
         </Button>
       </Tooltip>
-      <Tooltip content={labels?.[REPEAT_LABEL_KEY[repeatMode]]} side="top">
-        <Button
-          size="icon"
-          variant={repeatMode !== 'off' && !large ? 'default' : 'text'}
-          className={cn(
-            large ? 'size-11 rounded-full' : 'rounded-full',
-            glass,
-            large && repeatMode !== 'off' && 'bg-accent-green/80 text-black',
-          )}
-          onClick={onRepeatToggle}
-          aria-label={labels?.[REPEAT_LABEL_KEY[repeatMode]]}
-          aria-pressed={repeatMode !== 'off'}
-          data-testid="player-repeat-button"
-        >
-          {repeatMode === 'one' && <Repeat1 size={iconSize} />}
-          {repeatMode !== 'one' && <Repeat size={iconSize} />}
-        </Button>
-      </Tooltip>
+      {showRepeat ? (
+        <Tooltip content={labels?.[REPEAT_LABEL_KEY[repeatMode]]} side="top">
+          <Button
+            size="icon"
+            variant={repeatMode !== 'off' && !large ? 'default' : 'text'}
+            className={cn(
+              large ? 'size-11 rounded-full' : 'rounded-full',
+              glass,
+              large && repeatMode !== 'off' && 'bg-accent-green/80 text-black',
+            )}
+            onClick={onRepeatToggle}
+            aria-label={labels?.[REPEAT_LABEL_KEY[repeatMode]]}
+            aria-pressed={repeatMode !== 'off'}
+            data-testid="player-repeat-button"
+          >
+            {repeatMode === 'one' && <Repeat1 size={iconSize} />}
+            {repeatMode !== 'one' && <Repeat size={iconSize} />}
+          </Button>
+        </Tooltip>
+      ) : null}
       {showDiscovery && (
         <Tooltip
           content={

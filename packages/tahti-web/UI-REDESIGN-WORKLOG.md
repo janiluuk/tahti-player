@@ -1,3 +1,11 @@
+## 2026-11-05 - CardsRow list toggle + driving fullscreen (0.0.343)
+
+`CardsRow` toolbar icon toggles cards ↔ compact list (phones default to
+list). Full-screen player: swipe left/right changes track; browser complete
+fullscreen is driving mode — larger art/transport, edge prev/next, hide
+shuffle/repeat/visualizer menu/add-to-playlist. Storybook: CardsRow ListMode
++ MobileView; FullScreenPlayer DrivingMode.
+
 ## 2026-11-05 - Batch 50 UX slices (0.0.341)
 
 Finnish for `web.actions.openChannel`, radio up-next/shows chrome empties, admin

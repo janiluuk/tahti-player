@@ -1,4 +1,10 @@
-import { MaximizeIcon, MinimizeIcon, MoreHorizontalIcon } from 'lucide-react';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MaximizeIcon,
+  MinimizeIcon,
+  MoreHorizontalIcon,
+} from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -13,6 +19,7 @@ import {
 } from '@tahti-player/ui';
 import type { VisualizerMode } from '@tahti-player/visualizer';
 
+import { useHorizontalSwipe } from '../hooks/useHorizontalSwipe';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { useScreenWakeLock } from '../hooks/useScreenWakeLock';
 import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
@@ -40,7 +47,12 @@ const ANIMATION_MS = 280;
  * follows the current track's cover art (sampled via useDominantColor)
  * since there's no per-track/channel colour override wired up for
  * arbitrary queue items yet — see the commit note for why that's
- * deliberately out of scope here. */
+ * deliberately out of scope here.
+ *
+ * Browser “complete” fullscreen (`document.fullscreenElement`) is driving
+ * mode: bigger art and transport, edge prev/next taps, secondary chrome
+ * hidden. Touch swipe left/right always changes track while this overlay
+ * is open. */
 export function FullScreenPlayer() {
   const { t } = useTranslation('web');
   const isMobile = useIsMobile();
@@ -70,6 +82,7 @@ export function FullScreenPlayer() {
   const rootRef = useRef<HTMLDivElement>(null);
   const canFillScreen =
     typeof document !== 'undefined' && document.fullscreenEnabled;
+  const driving = screenFilled;
 
   useEffect(() => {
     const onChange = () => setScreenFilled(Boolean(document.fullscreenElement));
@@ -83,8 +96,6 @@ export function FullScreenPlayer() {
       void document.exitFullscreen().catch(() => undefined);
       return;
     }
-    // The whole page goes full screen, not just this overlay, so the
-    // dialogs it opens (which portal to the body) still show.
     void document.documentElement.requestFullscreen().catch(() => undefined);
   };
 
@@ -115,9 +126,6 @@ export function FullScreenPlayer() {
       if (e.key !== 'Escape') {
         return;
       }
-      // Dialogs opened from here (options sheet, add to playlist) portal
-      // outside this overlay and close themselves on Escape via a later
-      // window listener, so only react to presses that start in here.
       const target = e.target as Node | null;
       if (target === document.body || rootRef.current?.contains(target)) {
         setOpen(false);
@@ -159,32 +167,34 @@ export function FullScreenPlayer() {
     [channelKey],
   );
   const isPlaying = status === 'playing' || status === 'loading';
-  useScreenWakeLock(open && keepScreenOn && isPlaying);
+  useScreenWakeLock(open && (keepScreenOn || driving) && isPlaying);
   const isLoading = status === 'loading';
   const embed = playable?.embed;
-  // The channel stage or a track row may already host this embed: a second
-  // widget would play the audio twice.
   const embedHostedElsewhere = useHearthisEmbedClaimed();
   const restoredPending = usePlayerStore((s) => s.restoredPending);
   const reloadNonce = usePlayerStore((s) => s.reloadNonce);
 
   const rgb = useDominantColor(coverUrl);
+  const swipe = useHorizontalSwipe({
+    onPrev: previous,
+    onNext: next,
+    threshold: driving ? 40 : 60,
+  });
 
   if (!mounted) {
     return null;
   }
 
-  // background-color (opaque) + background-image (the tint) as two
-  // separate properties -- the shorthand `background: <gradient>` was
-  // replacing the element's only opaque layer with one whose center
-  // stop is 35% alpha, so the page underneath showed straight through
-  // the middle of the fixed overlay instead of being covered by it.
   const bgStyle = rgb
     ? {
         backgroundColor: 'var(--background)',
         backgroundImage: `radial-gradient(circle at 50% 20%, rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.18), transparent 70%)`,
       }
     : undefined;
+
+  const dialogLabel = driving
+    ? t('player.nowPlayingDriving')
+    : t('player.nowPlayingFullScreen');
 
   return (
     <div
@@ -196,7 +206,9 @@ export function FullScreenPlayer() {
       style={{ ...bgStyle, transitionDuration: `${ANIMATION_MS}ms` }}
       role="dialog"
       aria-modal="true"
-      aria-label={t('player.nowPlayingFullScreen')}
+      aria-label={dialogLabel}
+      data-driving={driving || undefined}
+      data-testid="full-screen-player"
     >
       <div className="bg-background/35 absolute inset-0 backdrop-blur-md">
         <ChannelVisualizer
@@ -207,28 +219,29 @@ export function FullScreenPlayer() {
         />
       </div>
 
-      {/* Must outrank the content column below: that div is `absolute`'s
-       * only in-flow sibling here, so flex-1 stretches it to cover this
-       * same top strip. Equal z-index would let DOM order hand it click
-       * priority over this back button despite the button painting on
-       * top visually. */}
       <div className="absolute inset-x-0 top-0 z-20 flex items-start justify-between p-4">
         <Tooltip content={t('player.backToPlayer')} side="right">
-          <BackButton onClick={close} aria-label={t('player.minimize')} />
+          <BackButton
+            onClick={close}
+            aria-label={t('player.minimize')}
+            className={driving ? 'size-14' : undefined}
+          />
         </Tooltip>
         <div className="flex items-start gap-2">
-          <VisualizerModeMenu
-            mode={engineMode}
-            onModeChange={onEngineModeChange}
-            triggerClassName="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
-            panelClassName="z-[70]"
-          />
+          {!driving ? (
+            <VisualizerModeMenu
+              mode={engineMode}
+              onModeChange={onEngineModeChange}
+              triggerClassName="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
+              panelClassName="z-[70]"
+            />
+          ) : null}
           {canFillScreen ? (
             <Tooltip
               content={
                 screenFilled
                   ? t('player.exitFullScreen')
-                  : t('player.fullScreen')
+                  : t('player.enterDrivingMode')
               }
               side="left"
             >
@@ -239,20 +252,23 @@ export function FullScreenPlayer() {
                 aria-label={
                   screenFilled
                     ? t('player.exitFullScreen')
-                    : t('player.fullScreen')
+                    : t('player.enterDrivingMode')
                 }
                 aria-pressed={screenFilled}
-                className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
+                className={cn(
+                  'rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50',
+                  driving ? 'size-14' : 'size-12',
+                )}
               >
                 {screenFilled ? (
-                  <MinimizeIcon size={28} aria-hidden />
+                  <MinimizeIcon size={driving ? 32 : 28} aria-hidden />
                 ) : (
                   <MaximizeIcon size={28} aria-hidden />
                 )}
               </Button>
             </Tooltip>
           ) : null}
-          {playable ? (
+          {playable && !driving ? (
             <Tooltip
               content={t('player.moreOptionsFor', { title })}
               side="left"
@@ -272,12 +288,52 @@ export function FullScreenPlayer() {
         </div>
       </div>
 
-      <div className="tahti-hide-scrollbar relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center gap-4 overflow-y-auto px-6 pt-14 pb-4">
+      <div
+        role="group"
+        aria-label={t('player.swipeTracks')}
+        aria-keyshortcuts="ArrowLeft ArrowRight"
+        tabIndex={0}
+        className="tahti-hide-scrollbar relative z-10 flex min-h-0 flex-1 touch-pan-y flex-col items-center justify-center gap-4 overflow-y-auto px-6 pt-14 pb-4 outline-none"
+        data-testid="full-screen-player-stage"
+        {...swipe}
+      >
+        {driving ? (
+          <>
+            <button
+              type="button"
+              data-testid="driving-prev"
+              className="absolute inset-y-16 left-0 z-10 w-[22%] max-w-40 cursor-pointer border-0 bg-transparent"
+              aria-label={t('player.previous')}
+              onClick={previous}
+            />
+            <button
+              type="button"
+              data-testid="driving-next"
+              className="absolute inset-y-16 right-0 z-10 w-[22%] max-w-40 cursor-pointer border-0 bg-transparent"
+              aria-label={t('player.next')}
+              onClick={next}
+            />
+            <div
+              className="pointer-events-none absolute inset-y-1/3 left-2 flex items-center opacity-40"
+              aria-hidden
+            >
+              <ChevronLeftIcon size={40} />
+            </div>
+            <div
+              className="pointer-events-none absolute inset-y-1/3 right-2 flex items-center opacity-40"
+              aria-hidden
+            >
+              <ChevronRightIcon size={40} />
+            </div>
+          </>
+        ) : null}
+
         <div
           className={cn(
-            // Sized to the window height so artwork, title and controls fit
-            // without the column scrolling.
-            'flex aspect-square w-[min(14rem,30vh)] shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-2xl sm:w-[min(18rem,34vh)] md:w-[min(22rem,36vh)]',
+            'flex aspect-square shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-2xl',
+            driving
+              ? 'w-[min(20rem,48vh)] sm:w-[min(24rem,52vh)]'
+              : 'w-[min(14rem,30vh)] sm:w-[min(18rem,34vh)] md:w-[min(22rem,36vh)]',
             isLive
               ? 'border-white/20 bg-white/10 p-6 inset-ring inset-ring-white/10 backdrop-blur-xl backdrop-saturate-150 sm:p-8'
               : 'border-border bg-background-secondary',
@@ -294,16 +350,31 @@ export function FullScreenPlayer() {
           ) : null}
         </div>
 
-        <div className="bg-background/35 max-w-md shrink-0 rounded-xl px-5 py-2 text-center backdrop-blur-md">
-          <h1 className="line-clamp-2 text-xl font-bold tracking-tight sm:text-2xl">
+        <div
+          className={cn(
+            'bg-background/35 max-w-md shrink-0 rounded-xl px-5 py-2 text-center backdrop-blur-md',
+            driving && 'max-w-lg px-6 py-4',
+          )}
+        >
+          <h1
+            className={cn(
+              'line-clamp-2 font-bold tracking-tight',
+              driving ? 'text-3xl sm:text-4xl' : 'text-xl sm:text-2xl',
+            )}
+          >
             {title}
           </h1>
           {artist && (
-            <p className="text-foreground-secondary mt-0.5 truncate text-base">
+            <p
+              className={cn(
+                'text-foreground-secondary mt-0.5 truncate',
+                driving ? 'text-lg sm:text-xl' : 'text-base',
+              )}
+            >
               {artist}
             </p>
           )}
-          {soundId && playable ? (
+          {soundId && playable && !driving ? (
             <div className="mt-2 flex justify-center">
               <AddToPlaylistButton
                 soundId={soundId}
@@ -315,7 +386,12 @@ export function FullScreenPlayer() {
           ) : null}
         </div>
 
-        <div className="flex w-full max-w-md flex-col items-center gap-2">
+        <div
+          className={cn(
+            'flex w-full flex-col items-center gap-2',
+            driving ? 'max-w-lg gap-4' : 'max-w-md',
+          )}
+        >
           {embed && !embedHostedElsewhere ? (
             <EmbedSurface
               provider={embed.provider}
@@ -341,6 +417,8 @@ export function FullScreenPlayer() {
               isLive ? (repeatMode === 'off' ? 'off' : 'all') : repeatMode
             }
             showDiscovery={false}
+            showShuffle={!driving}
+            showRepeat={!driving}
             labels={{
               shuffleOn: isLive
                 ? t('player.shuffleArchiveOnly')
@@ -375,16 +453,16 @@ export function FullScreenPlayer() {
             </div>
           ) : isRealLive ? (
             <PlayerLiveIndicator />
-          ) : isLive ? null : (
+          ) : isLive ? null : driving ? (
+            <div className="text-foreground-secondary w-full text-center text-sm tabular-nums">
+              <ConnectedSeekBar />
+            </div>
+          ) : (
             <div className="w-full">
               <ConnectedSeekBar />
             </div>
           )}
-          {/* Mobile has no software volume control (iOS Safari ignores
-           * HTMLMediaElement.volume entirely) — the device's hardware
-           * buttons are the only real control there, so the slider is
-           * just dead UI on mobile. */}
-          {!isMobile && (
+          {!isMobile && !driving && (
             <PlayerBar.Volume
               value={muted ? 0 : Math.round(volume * 100)}
               onValueChange={(v) => setVolume(v / 100)}

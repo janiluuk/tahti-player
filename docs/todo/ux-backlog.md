@@ -16,6 +16,10 @@ keep their own files:
 Rule of thumb: library components only (`@tahti-player/ui`), Storybook story per
 new surface, one PR per row. After moving files, update `docs/VIEW-CATALOG.md`.
 
+Create/add empty states (`PageEmpty` + icon CTA): full per-file checklist in
+[empty-state-create-ctas.md](empty-state-create-ctas.md) (INDEX engineering
+backlog).
+
 ## Liveliness
 
 - [ ] De-green `Button` (primary-heavy everywhere; Cards and the MediaArtwork
