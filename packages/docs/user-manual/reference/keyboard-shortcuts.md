@@ -13,7 +13,7 @@ The same list is in the app under **Help → Keyboard shortcuts**. Shortcuts are
 | Skip past the top bar and sidebar to the page | `Tab` (first stop on every page), then `Enter` |
 | Listen | `Alt` `1` |
 | Radio | `Alt` `2` |
-| Feed | `Alt` `3` |
+| Discover | `Alt` `3` |
 | My Library | `Alt` `4` |
 | Studio | `Alt` `5` |
 

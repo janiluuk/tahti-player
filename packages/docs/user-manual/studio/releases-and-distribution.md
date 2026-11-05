@@ -25,7 +25,7 @@ After you publish, the release page offers to **register it on MusicBrainz**, th
 - **New collection** (the **+**) creates one; pick its style.
 - On its page, **+** (**Add content**) adds tracks from your library. Tracks still being processed are shown but can't be added until they're ready.
 - Set its visibility (Public, Unlisted or Private), design its cover and text layer, and delete it from the **⋮** menu.
-- **Sort** orders its track list (default order, title, artist, newest release, shortest or longest first); the choice is remembered.
+- The sort icon orders its track list (default order, title, artist, newest release, shortest or longest first); the choice is remembered.
 
 Public playlists can be subscribed to, embedded and played together in a [Jam](../listening/jam.md).
 

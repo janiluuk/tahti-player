@@ -11,9 +11,11 @@ description: Plays, listeners and top lists, per-track insights, fan tiers, sell
 - **Plays over time**, split into downloads and smart-link clicks per day. **Download CSV** saves the range as date, plays, downloads and smart-link clicks.
 - The **listener map**, with **Countries** and **Cities** lists showing each one's share of listens. A city only appears once enough people listened from it.
 - **Listener loyalty**: the share of listens still going at each tenth of a track, summed up as how many got halfway and how many listened to the end.
-- **Audience**: the share of listens by browser, operating system, device type and maker, where the listen came from (the referring site) and what it was listened on. Bot traffic is left out by default.
+- **Audience**: the share of listens by browser, operating system, device type and maker, and what it was listened on. Bot traffic is left out by default.
 
-Each track's **Insights** tab shows the same listener panels narrowed to that track, for 7 days, 30 days or all time.
+**Where listeners came from**, on the Stats overview, lists the sites listeners were on before they opened Tahti, with the number of listens from each in the selected period. **Direct or unknown** means no referring site (a typed address, a bookmark, an app or a link opened from a chat); sites with only a few listens are grouped as **Other sites**.
+
+Each track's **Insights** tab shows the same listener panels narrowed to that track, for 7 days, 30 days or all time, including where its listeners came from. It also shows when people listen, as in your own listening history: **Time of day**, **Day of week** and a **Listening calendar**, shaded by how many different listeners played the track rather than by minutes played.
 
 The Studio home shows plays today, total plays and downloads, and followers. The Stats overview also shows how download gates (follow or share to download) convert.
 
