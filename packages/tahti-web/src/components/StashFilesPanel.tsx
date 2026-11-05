@@ -235,14 +235,14 @@ export const StashFilesPanel = ({
           soundItems.length === 0 &&
           collections.length === 0 ? (
             <PageError
-              title="Could not load your library"
+              title={t('loadErrors.couldNotLoadYourLibrary')}
               description={moveListsError}
               onRetry={() => setMoveListsAttempt((current) => current + 1)}
             />
           ) : soundItems.length === 0 && collections.length === 0 ? (
             <PageEmpty
-              title="Nothing to move"
-              description="Everything in your library is already private or there is nothing to move."
+              title={t('empties.nothingToMove')}
+              description={t('empties.everythingInYourLibraryIsAlready')}
             />
           ) : (
             <div className="flex flex-col gap-2">

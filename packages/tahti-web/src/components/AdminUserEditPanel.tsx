@@ -220,7 +220,7 @@ export function AdminUserEditPanel({
     return (
       <StudioPanel className="flex min-h-72 items-center justify-center">
         <PageError
-          title="Could not load this account"
+          title={t('loadErrors.couldNotLoadThisAccount')}
           description={detailError ?? undefined}
           onRetry={() => setDetailAttempt((n) => n + 1)}
         />

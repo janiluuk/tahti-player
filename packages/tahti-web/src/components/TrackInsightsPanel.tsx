@@ -135,7 +135,7 @@ export function TrackInsightsPanel({
         <PageLoading label="Loading…" />
       ) : loadError && !insights ? (
         <PageError
-          title="Could not load insights"
+          title={t('loadErrors.couldNotLoadInsights')}
           description={loadError}
           onRetry={() => setAttempt((n) => n + 1)}
         />
@@ -230,8 +230,8 @@ export function TrackInsightsPanel({
           ) : (
             <PageEmpty
               data-testid="track-insights-listening-empty"
-              title="No listening patterns yet"
-              description="When people play this track, time of day, weekday and calendar charts will fill in here."
+              title={t('empties.noListeningPatternsYet')}
+              description={t('empties.whenPeoplePlayThisTrackTime')}
             />
           )}
 

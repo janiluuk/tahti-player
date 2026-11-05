@@ -1,6 +1,7 @@
 import { ListMusicIcon, PauseIcon, PlayIcon, Trash2Icon } from 'lucide-react';
 import { FC, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Box, Button, Select, Tooltip } from '@tahti-player/ui';
 
 import type { ProgrammeItem } from '../api/studio-extras';
@@ -49,6 +50,7 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
   libraryGroups = [],
   onAddGroup,
 }) => {
+  const { t } = useTranslation('web');
   const [draggedId, setDraggedId] = useState<string | null>(null);
 
   return (
@@ -130,8 +132,8 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
 
       {items.length === 0 ? (
         <PageEmpty
-          title="Rotation is empty"
-          description="Choose a playlist above or add a ready archive track."
+          title={t('empties.rotationIsEmpty')}
+          description={t('empties.chooseAPlaylistAboveOrAdd')}
         />
       ) : (
         <ol className="border-border divide-border divide-y overflow-hidden rounded-lg border">

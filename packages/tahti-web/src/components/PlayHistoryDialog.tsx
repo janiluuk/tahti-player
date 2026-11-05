@@ -124,7 +124,7 @@ export function PlayHistoryDialog({
         <div className="flex max-h-[50vh] flex-col gap-1 overflow-y-auto py-2">
           {error && entries.length === 0 ? (
             <PageError
-              title="Could not load your listening history"
+              title={t('loadErrors.couldNotLoadYourListeningHistory')}
               description={error}
               onRetry={() => void load(0)}
             />

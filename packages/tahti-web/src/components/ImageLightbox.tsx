@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { FC, useEffect, useRef } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, ImageReveal, Tooltip } from '@tahti-player/ui';
 
 import { PageEmpty } from './PageStates';
@@ -33,6 +34,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
   onClose,
   onDeleteCurrent,
 }) => {
+  const { t } = useTranslation('web');
   const panelRef = useRef<HTMLDivElement>(null);
   const image = images[index];
   const canNavigate = images.length > 1 && Boolean(onIndexChange);
@@ -75,8 +77,8 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
             </Tooltip>
           </div>
           <PageEmpty
-            title="No photos to show"
-            description="This gallery is empty."
+            title={t('empties.noPhotosToShow')}
+            description={t('empties.thisGalleryIsEmpty')}
           />
         </div>
       </Dialog.Root>

@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Card, CardGrid } from '@tahti-player/ui';
 
 import { fetchCollection } from '../api/client';
@@ -40,13 +41,6 @@ function collectionToPlayables(col: PublicCollection): TahtiPlayable[] {
   return out;
 }
 
-const NO_PLAYABLE_TRACKS = (
-  <PageEmpty
-    title="No playable tracks yet"
-    description="This playlist has no playable tracks yet."
-  />
-);
-
 type Props = {
   playlistSlug: string;
   display?: 'tracklist' | 'cards';
@@ -58,6 +52,7 @@ export function ChannelPlaylistBlock({
   display = 'tracklist',
   editing,
 }: Props) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const play = usePlayerStore((state) => state.play);
   const enqueue = usePlayerStore((state) => state.enqueue);
@@ -112,7 +107,7 @@ export function ChannelPlaylistBlock({
   if (loadError) {
     return (
       <PageError
-        title="Could not load playlist"
+        title={t('loadErrors.couldNotLoadPlaylist')}
         description={
           editing
             ? `${loadError} Pick another in widget settings, or try again.`
@@ -126,7 +121,7 @@ export function ChannelPlaylistBlock({
   if (!collection) {
     return (
       <PageEmpty
-        title="Playlist unavailable"
+        title={t('empties.playlistUnavailable')}
         description={
           editing
             ? 'This playlist could not be loaded. Pick another in widget settings.'
@@ -170,7 +165,10 @@ export function ChannelPlaylistBlock({
         </Link>
       </div>
       {playables.length === 0 ? (
-        NO_PLAYABLE_TRACKS
+        <PageEmpty
+          title={t('empties.noPlayableTracksYet')}
+          description={t('empties.thisPlaylistHasNoPlayableTracks')}
+        />
       ) : display === 'cards' ? (
         <CardGrid className="grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-4">
           {playables.map((item) => {

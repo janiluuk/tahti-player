@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog } from '@tahti-player/ui';
 
 import {
@@ -23,6 +24,7 @@ export function AddToReleasePanel({
   tracks: Track[];
   onClose: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [releases, setReleases] = useState<StudioRelease[] | null>(null);
   const [addingId, setAddingId] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -132,7 +134,7 @@ export function AddToReleasePanel({
       <div className="mt-3 flex max-h-72 flex-col gap-1 overflow-y-auto">
         {loadError ? (
           <PageError
-            title="Could not load releases"
+            title={t('loadErrors.couldNotLoadReleases')}
             description={loadError}
             onRetry={() => setAttempt((n) => n + 1)}
           />
@@ -140,8 +142,8 @@ export function AddToReleasePanel({
           <PageLoading label="Loading releases…" />
         ) : releases.length === 0 ? (
           <PageEmpty
-            title="No releases yet"
-            description="Create a release, then add these tracks to it."
+            title={t('empties.noReleasesYet')}
+            description={t('empties.createAReleaseThenAddThese')}
           />
         ) : (
           releases.map((release) => (

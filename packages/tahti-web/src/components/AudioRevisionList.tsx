@@ -358,7 +358,7 @@ export function AudioRevisionList({
 
       {loadError && listed.length === 0 ? (
         <PageError
-          title="Could not load revisions"
+          title={t('loadErrors.couldNotLoadRevisions')}
           description={loadError}
           onRetry={load}
         />

@@ -1,6 +1,7 @@
 import { CircleDollarSignIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -25,6 +26,7 @@ function euros(cents: number): string {
 }
 
 export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
+  const { t } = useTranslation('web');
   const [tiers, setTiers] = useState<PurchaseTierRow[]>([]);
   const [loaded, setLoaded] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -91,7 +93,7 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
     <div className="flex flex-col gap-4">
       {storeEnabled === null && storeError ? (
         <PageError
-          title="Could not load your store settings"
+          title={t('loadErrors.couldNotLoadYourStoreSettings')}
           description={storeError}
           onRetry={reloadStoreSettings}
         />
@@ -140,14 +142,14 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
         <PageLoading label="Loading tiers…" />
       ) : loadError && tiers.length === 0 ? (
         <PageError
-          title="Could not load your purchase tiers"
+          title={t('loadErrors.couldNotLoadYourPurchaseTiers')}
           description={loadError}
           onRetry={reload}
         />
       ) : tiers.length === 0 ? (
         <PageEmpty
-          title="No prices yet"
-          description="Add a price first. Then choose which tracks use it in the list below."
+          title={t('empties.noPricesYet')}
+          description={t('empties.addAPriceFirstThenChoose')}
         />
       ) : (
         <ul className="flex flex-col gap-2">

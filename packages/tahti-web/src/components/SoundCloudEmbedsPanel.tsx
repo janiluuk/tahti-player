@@ -82,7 +82,7 @@ export function SoundCloudEmbedsPanel() {
     >
       {failed ? (
         <PageError
-          title="Couldn't load your SoundCloud tracks"
+          title={t('loadErrors.couldnTLoadYourSoundcloudTracks')}
           onRetry={load}
         />
       ) : (

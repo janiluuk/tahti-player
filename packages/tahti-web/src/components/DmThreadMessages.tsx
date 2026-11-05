@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError } from '@tahti-player/ui';
 
 import type { ChatDm } from '../api/messages';
@@ -21,6 +22,7 @@ export function DmThreadMessages({
   olderError = false,
   onLoadOlder,
 }: Props) {
+  const { t } = useTranslation('web');
   const scrollRef = useRef<HTMLDivElement>(null);
   const distanceFromBottom = useRef<number | null>(null);
 
@@ -71,8 +73,8 @@ export function DmThreadMessages({
       )}
       {messages.length === 0 ? (
         <PageEmpty
-          title="No messages yet"
-          description="Say hello — your first message starts the thread."
+          title={t('empties.noMessages')}
+          description={t('empties.sayHelloYourFirstMessageStarts')}
         />
       ) : (
         messages.map((m) => (

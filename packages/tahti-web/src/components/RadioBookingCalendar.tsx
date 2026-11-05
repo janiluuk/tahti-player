@@ -410,7 +410,7 @@ export function RadioBookingCalendar({
             <PageLoading label="Loading…" />
           ) : loadError && bookings.length === 0 ? (
             <PageError
-              title="Could not load bookings"
+              title={t('loadErrors.couldNotLoadBookings')}
               description={loadError}
               onRetry={reload}
             />
@@ -605,7 +605,7 @@ export function RadioBookingCalendar({
           />
           {showsError ? (
             <PageErrorBanner
-              title="Could not load your shows"
+              title={t('loadErrors.couldNotLoadYourShows')}
               description={showsError}
               onRetry={loadShows}
             />
