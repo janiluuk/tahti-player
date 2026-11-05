@@ -114,7 +114,7 @@ export function ReleaseStatsPanel({
       </div>
 
       {stats === null ? (
-        <PageLoading label="Loading…" />
+        <PageLoading label={t('loading.loading')} />
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">

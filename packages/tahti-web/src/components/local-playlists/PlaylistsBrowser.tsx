@@ -193,7 +193,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                 />
               ) : (
                 <>
-                  <Tooltip content="Play" side="top">
+                  <Tooltip content={t('tooltips.play')} side="top">
                     <Button
                       size="icon-sm"
                       variant="text"
@@ -210,7 +210,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                       <PlayIcon size={14} aria-hidden />
                     </Button>
                   </Tooltip>
-                  <Tooltip content="Shuffle" side="top">
+                  <Tooltip content={t('tooltips.shuffle')} side="top">
                     <Button
                       size="icon-sm"
                       variant="text"
@@ -230,7 +230,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                       <ShuffleIcon size={14} aria-hidden />
                     </Button>
                   </Tooltip>
-                  <Tooltip content="Duplicate" side="top">
+                  <Tooltip content={t('tooltips.duplicate')} side="top">
                     <Button
                       size="icon-sm"
                       variant="text"
@@ -260,7 +260,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                       <CopyIcon size={14} aria-hidden />
                     </Button>
                   </Tooltip>
-                  <Tooltip content="Export as M3U8" side="top">
+                  <Tooltip content={t('tooltips.exportAsM3u8')} side="top">
                     <Button
                       size="icon-sm"
                       variant="text"
@@ -275,7 +275,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                     label={`Rename ${playlist.name}`}
                     onClick={() => setRenaming(playlist)}
                   />
-                  <Tooltip content="Delete" side="top">
+                  <Tooltip content={t('tooltips.delete')} side="top">
                     <Button
                       size="icon-sm"
                       variant="text"

@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -86,6 +87,7 @@ const isDeepLinkedRadioTab = (
 const DESIGNER_TABS = new Set(['design', 'profile']);
 
 function ChannelOverallStats() {
+  const { t } = useTranslation('web');
   const [stats, setStats] = useState<
     Partial<Record<StatsPlaysRange, StatsPlays>>
   >({});
@@ -115,7 +117,7 @@ function ChannelOverallStats() {
   return (
     <StudioPanel title="Overall statistics">
       {RADIO_STATS_RANGES.every((range) => !stats[range]) ? (
-        <PageLoading label="Loading statistics…" />
+        <PageLoading label={t('loading.loadingStatistics')} />
       ) : (
         <div className="grid gap-3 sm:grid-cols-3">
           {RADIO_STATS_RANGES.map((range) => {

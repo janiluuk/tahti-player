@@ -120,7 +120,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
 
         <ViewShell title="Reference mastering" classes={{ root: 'px-0 pt-0' }}>
           {loading ? (
-            <PageLoading label="Loading track…" />
+            <PageLoading label={t('loading.loadingTrack')} />
           ) : loadError || !source ? (
             <PageError
               title={t('loadErrors.couldNotLoadThisTrack')}

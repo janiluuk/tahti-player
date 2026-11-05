@@ -104,7 +104,7 @@ export function StudioEditorProjectView({ id }: { id: string }) {
         <PageBackLink to="/studio/editor" label="Editor" />
         {!project ? (
           <StudioPanel>
-            <PageLoading label="Loading project…" />
+            <PageLoading label={t('loading.loadingProject')} />
           </StudioPanel>
         ) : (
           <>

@@ -1,5 +1,6 @@
 import { FolderOpenIcon, InfoIcon, PlayIcon, TrashIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, EditIconButton, Tooltip } from '@tahti-player/ui';
 
 import type { NativeLibraryTrack } from '../../lib/nativeLibrary';
@@ -28,6 +29,7 @@ export function TrackRowActions({
   onInspect,
   onRemove,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <>
       <>
@@ -42,7 +44,7 @@ export function TrackRowActions({
           </Button>
         ) : (
           <>
-            <Tooltip content="Play" side="top">
+            <Tooltip content={t('tooltips.play')} side="top">
               <Button
                 size="icon-sm"
                 variant="text"
@@ -52,7 +54,7 @@ export function TrackRowActions({
                 <PlayIcon size={14} aria-hidden />
               </Button>
             </Tooltip>
-            <Tooltip content="Add to queue" side="top">
+            <Tooltip content={t('tooltips.addToQueue')} side="top">
               <Button
                 size="sm"
                 variant="text"
@@ -62,7 +64,7 @@ export function TrackRowActions({
                 Queue
               </Button>
             </Tooltip>
-            <Tooltip content="Reveal in folder" side="top">
+            <Tooltip content={t('tooltips.revealInFolder')} side="top">
               <Button
                 size="icon-sm"
                 variant="text"
@@ -79,7 +81,7 @@ export function TrackRowActions({
           label={`Edit tags for ${track.title}`}
           onClick={() => onEdit(track)}
         />
-        <Tooltip content="Details (I)" side="top">
+        <Tooltip content={t('tooltips.detailsI')} side="top">
           <Button
             size="icon-sm"
             variant="text"
@@ -89,7 +91,7 @@ export function TrackRowActions({
             <InfoIcon size={14} aria-hidden />
           </Button>
         </Tooltip>
-        <Tooltip content="Remove from library" side="top">
+        <Tooltip content={t('tooltips.removeFromLibrary')} side="top">
           <Button
             size="icon-sm"
             variant="text"

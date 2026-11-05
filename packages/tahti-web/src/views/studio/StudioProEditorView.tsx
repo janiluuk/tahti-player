@@ -397,7 +397,7 @@ function ProEditor({ soundId }: { soundId: string }) {
 
           {loading ? (
             <StudioPanel>
-              <PageLoading label="Loading editor…" />
+              <PageLoading label={t('loading.loadingEditor')} />
             </StudioPanel>
           ) : loadFailed || !editList ? (
             <PageError

@@ -39,7 +39,7 @@ export function StudioShowDetailView({ id }: { id: string }) {
         {!show ? (
           <StudioPanel>
             {!loaded ? (
-              <PageLoading label="Loading…" />
+              <PageLoading label={t('loading.loading')} />
             ) : showLoadError ? (
               <PageError
                 title={t('loadErrors.couldNotLoadThisShow')}

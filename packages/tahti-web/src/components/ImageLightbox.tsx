@@ -65,7 +65,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
           className="relative px-6 pt-8 pb-4 outline-none"
         >
           <div className="absolute top-0 right-0 z-10 flex gap-1">
-            <Tooltip content="Close" side="top">
+            <Tooltip content={t('tooltips.close')} side="top">
               <Button
                 size="icon-sm"
                 variant="secondary"
@@ -111,7 +111,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
       >
         <div className="absolute top-0 right-0 z-10 flex gap-1">
           {onDeleteCurrent ? (
-            <Tooltip content="Remove photo" side="top">
+            <Tooltip content={t('tooltips.removePhoto')} side="top">
               <Button
                 size="icon-sm"
                 variant="secondary"
@@ -123,7 +123,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
               </Button>
             </Tooltip>
           ) : null}
-          <Tooltip content="Close" side="top">
+          <Tooltip content={t('tooltips.close')} side="top">
             <Button
               size="icon-sm"
               variant="secondary"
@@ -136,7 +136,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
         </div>
         {canNavigate ? (
           <>
-            <Tooltip content="Previous image" side="top">
+            <Tooltip content={t('tooltips.previousImage')} side="top">
               <Button
                 size="icon-sm"
                 variant="secondary"
@@ -147,7 +147,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
                 <ChevronLeftIcon size={20} aria-hidden />
               </Button>
             </Tooltip>
-            <Tooltip content="Next image" side="top">
+            <Tooltip content={t('tooltips.nextImage')} side="top">
               <Button
                 size="icon-sm"
                 variant="secondary"

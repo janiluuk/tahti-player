@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -210,6 +211,7 @@ function NavigationItem({
   onAddChild: (parentId: string, label: string, path: string) => void;
   siblings: NavigationStructureItem[];
 }) {
+  const { t } = useTranslation('web');
   const children = item.children ?? [];
   const [expanded, setExpanded] = useState(true);
   const [addingChild, setAddingChild] = useState(false);
@@ -263,7 +265,7 @@ function NavigationItem({
           </p>
         </div>
         <div className="ml-auto flex items-center gap-2">
-          <Tooltip content="Add sub-item" side="top">
+          <Tooltip content={t('tooltips.addSubItem')} side="top">
             <Button
               size="icon-sm"
               variant="text"
@@ -276,7 +278,7 @@ function NavigationItem({
               <PlusIcon size={15} aria-hidden />
             </Button>
           </Tooltip>
-          <Tooltip content="Move up" side="top">
+          <Tooltip content={t('tooltips.moveUp')} side="top">
             <Button
               size="icon-sm"
               variant="text"
@@ -287,7 +289,7 @@ function NavigationItem({
               <ChevronUpIcon size={15} aria-hidden />
             </Button>
           </Tooltip>
-          <Tooltip content="Move down" side="top">
+          <Tooltip content={t('tooltips.moveDown')} side="top">
             <Button
               size="icon-sm"
               variant="text"
@@ -298,7 +300,7 @@ function NavigationItem({
               <ChevronDownIcon size={15} aria-hidden />
             </Button>
           </Tooltip>
-          <Tooltip content="Remove" side="top">
+          <Tooltip content={t('tooltips.remove')} side="top">
             <Button
               size="icon-sm"
               variant="text"

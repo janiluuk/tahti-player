@@ -343,7 +343,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
           <ShuffleIcon size={14} aria-hidden />
           Shuffle
         </Button>
-        <Tooltip content="Undo (Ctrl+Z)" side="top">
+        <Tooltip content={t('tooltips.undoCtrlZ')} side="top">
           <Button
             size="icon-sm"
             variant="text"
@@ -354,7 +354,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
             <Undo2Icon size={14} aria-hidden />
           </Button>
         </Tooltip>
-        <Tooltip content="Export as M3U8" side="top">
+        <Tooltip content={t('tooltips.exportAsM3u8')} side="top">
           <Button
             size="icon-sm"
             variant="text"
@@ -369,7 +369,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
           label="Rename playlist"
           onClick={() => setRenaming(true)}
         />
-        <Tooltip content="Delete playlist" side="top">
+        <Tooltip content={t('tooltips.deletePlaylist')} side="top">
           <Button
             size="icon-sm"
             variant="text"
@@ -438,7 +438,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
           renderActions={(entry) => (
             <>
               {entry.unavailable ? (
-                <Tooltip content="Locate the file" side="top">
+                <Tooltip content={t('tooltips.locateTheFile')} side="top">
                   <Button
                     size="icon-sm"
                     variant="text"
@@ -449,7 +449,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
                   </Button>
                 </Tooltip>
               ) : null}
-              <Tooltip content="Play from here" side="top">
+              <Tooltip content={t('tooltips.playFromHere')} side="top">
                 <Button
                   size="icon-sm"
                   variant="text"
@@ -462,7 +462,7 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
                   <PlayIcon size={14} aria-hidden />
                 </Button>
               </Tooltip>
-              <Tooltip content="Remove from playlist" side="top">
+              <Tooltip content={t('tooltips.removeFromPlaylist')} side="top">
                 <Button
                   size="icon-sm"
                   variant="text"

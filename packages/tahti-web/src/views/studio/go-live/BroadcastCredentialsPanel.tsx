@@ -111,7 +111,7 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
       );
     }
     if (!settings) {
-      return <PageLoading label="Loading stream settings…" />;
+      return <PageLoading label={t('loading.loadingStreamSettings')} />;
     }
     if (ingest === 'obs') {
       return (

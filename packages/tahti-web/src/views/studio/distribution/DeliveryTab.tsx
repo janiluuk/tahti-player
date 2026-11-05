@@ -171,7 +171,7 @@ export function DeliveryTab({
         <div className="border-border border-t pt-3">
           <p className="mb-1 text-xs font-medium">Royalty reports</p>
           {!royaltiesLoaded ? (
-            <PageLoading label="Loading…" />
+            <PageLoading label={t('loading.loading')} />
           ) : royaltiesError && royalties.length === 0 ? (
             <PageError
               title={t('loadErrors.couldNotLoadRoyaltyReports')}

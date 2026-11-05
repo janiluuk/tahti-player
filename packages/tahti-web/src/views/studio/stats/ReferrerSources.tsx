@@ -69,7 +69,7 @@ export function ReferrerSources({
       description={`The site a listener was on before they opened Tahti, by listens in this period. Direct means no referring site: a typed address, a bookmark, an app or a shared link opened from a chat. Sites with fewer than ${minBucket} listens are grouped as Other sites.`}
     >
       {status === 'loading' ? (
-        <PageLoading label="Loading sources…" />
+        <PageLoading label={t('loading.loadingSources')} />
       ) : status === 'error' ? (
         <PageError
           title={t('loadErrors.couldNotLoadWhereListenersCame')}

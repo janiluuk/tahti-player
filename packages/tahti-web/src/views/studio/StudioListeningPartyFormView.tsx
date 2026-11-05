@@ -159,7 +159,7 @@ export function StudioListeningPartyFormView({
         >
           <StudioPanel title="Party details">
             {loading ? (
-              <PageLoading label="Loading…" />
+              <PageLoading label={t('loading.loading')} />
             ) : loadError ? (
               <PageError
                 title={t('loadErrors.couldNotLoad')}

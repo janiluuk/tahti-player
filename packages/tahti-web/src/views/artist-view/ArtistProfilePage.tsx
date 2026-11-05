@@ -234,7 +234,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
   const followListState = useFollowList(username, followList);
 
   if (loading) {
-    return <PageLoading label="Loading artist…" />;
+    return <PageLoading label={t('loading.loadingArtist')} />;
   }
 
   if (loadError) {

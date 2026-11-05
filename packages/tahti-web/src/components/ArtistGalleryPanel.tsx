@@ -9,7 +9,7 @@ import {
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   HiddenFileInput,
@@ -50,6 +50,7 @@ export function ArtistGalleryPanel({
   onChange,
   showUpload = true,
 }: Props) {
+  const { t } = useTranslation('web');
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -221,7 +222,10 @@ export function ArtistGalleryPanel({
           ) : null}
           {isOwner && showUpload ? (
             <>
-              <Tooltip content="Upload more gallery images" side="top">
+              <Tooltip
+                content={t('tooltips.uploadMoreGalleryImages')}
+                side="top"
+              >
                 <Button
                   size="icon-sm"
                   variant="secondary"
@@ -316,7 +320,7 @@ export function ArtistGalleryPanel({
                         <CheckIcon size={14} aria-hidden />
                       </Button>
                     </Tooltip>
-                    <Tooltip content="Remove photo" side="top">
+                    <Tooltip content={t('tooltips.removePhoto')} side="top">
                       <Button
                         type="button"
                         size="icon-sm"
@@ -329,7 +333,7 @@ export function ArtistGalleryPanel({
                       </Button>
                     </Tooltip>
                     <div className="absolute inset-x-1.5 bottom-1.5 flex justify-between opacity-0 transition-opacity group-hover:opacity-100">
-                      <Tooltip content="Move earlier" side="top">
+                      <Tooltip content={t('tooltips.moveEarlier')} side="top">
                         <Button
                           type="button"
                           size="icon-sm"
@@ -342,7 +346,7 @@ export function ArtistGalleryPanel({
                           <ChevronLeftIcon size={14} />
                         </Button>
                       </Tooltip>
-                      <Tooltip content="Move later" side="top">
+                      <Tooltip content={t('tooltips.moveLater')} side="top">
                         <Button
                           type="button"
                           size="icon-sm"

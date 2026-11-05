@@ -372,7 +372,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
             </StudioPanel>
           ) : !col ? (
             <StudioPanel>
-              <PageLoading label="Loading…" />
+              <PageLoading label={t('loading.loading')} />
             </StudioPanel>
           ) : (
             <>
