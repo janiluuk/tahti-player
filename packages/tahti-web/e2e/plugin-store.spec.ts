@@ -215,16 +215,48 @@ async function clearListenAddons(
   });
 }
 
+/** The add-on store now opens from the Listen "Add new listen widget"
+ * dialog's "Browse all add-ons" link. */
+async function openListenAddonStore(
+  page: import('@playwright/test').Page,
+): Promise<void> {
+  await page.getByRole('button', { name: 'Add new listen widget' }).click();
+  await page.getByRole('button', { name: /Browse all add-ons/ }).click();
+}
+
+test('Add new listen widget adds a playlist row from a pasted link', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await clearListenAddons(page);
+  await page.reload();
+  await page.getByRole('button', { name: 'Add new listen widget' }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByTestId('add-listen-widget-service-youtube').click();
+  await expect(
+    dialog.getByText(/^Example: https:\/\/www\.youtube\.com/),
+  ).toBeVisible();
+  await dialog
+    .getByLabel('Playlist link')
+    .fill('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
+  await dialog.getByLabel('Row name').fill('Late night picks');
+  await dialog.getByTestId('add-listen-widget-submit').click();
+  await expect(dialog).toBeHidden();
+  await expect(
+    page.getByRole('main').locator('[data-widget-type="youtube"]'),
+  ).toBeVisible();
+});
+
 test('Listen add-widget dialog lists every Listen store add-on', async ({
   page,
 }) => {
   await signIn(page);
   await clearListenAddons(page);
   await page.goto('/');
-  await page.getByRole('button', { name: 'Add Listen widgets' }).click();
+  await openListenAddonStore(page);
   const dialog = page.getByRole('dialog');
   await expect(
-    dialog.getByRole('heading', { name: 'Add Listen widgets' }),
+    dialog.getByRole('heading', { name: 'All Listen add-ons' }),
   ).toBeVisible();
   await expect(
     dialog.getByTestId('plugin-store-item-name').getByText('Favorites'),
@@ -256,7 +288,7 @@ test('Listen add-widget picker installs, configures, and uninstalls every Listen
   await signIn(page);
   await clearListenAddons(page);
   await page.goto('/');
-  await page.getByRole('button', { name: 'Add Listen widgets' }).click();
+  await openListenAddonStore(page);
   const dialog = page.getByRole('dialog');
 
   for (const addon of LISTEN_EMBED_ADDONS) {
@@ -266,7 +298,7 @@ test('Listen add-widget picker installs, configures, and uninstalls every Listen
       .filter({ hasText: addon.name });
     await card.getByRole('button', { name: 'Install' }).click();
     await expect(
-      dialog.getByRole('heading', { name: 'Add Listen widgets' }),
+      dialog.getByRole('heading', { name: 'All Listen add-ons' }),
     ).toBeVisible();
     await dialog.getByLabel(`Add a ${addon.name} link`).fill(addon.url);
     await dialog
@@ -303,7 +335,7 @@ test('Listen add-widget picker installs, configures, and uninstalls every Listen
     section.getByRole('heading', { name: 'Channels' }),
   ).toBeVisible();
 
-  await page.getByRole('button', { name: 'Add Listen widgets' }).click();
+  await openListenAddonStore(page);
   const again = page.getByRole('dialog');
   await again.getByRole('tab', { name: /Installed/ }).click();
   for (const addon of [...LISTEN_EMBED_ADDONS].reverse()) {
@@ -326,7 +358,7 @@ test('Settings Add-ons Listen tab can add and remove a widget on Listen', async 
   await clearListenAddons(page);
   await page.goto('/');
   await expect(
-    page.getByRole('button', { name: 'Add Listen widgets' }),
+    page.getByRole('button', { name: 'Add new listen widget' }),
   ).toBeVisible();
   await page.goto('/settings/plugin-store?category=listen');
 
@@ -357,7 +389,7 @@ test('Settings Add-ons Listen tab can add and remove a widget on Listen', async 
 
   await page.goto('/');
   await expect(
-    page.getByRole('button', { name: 'Add Listen widgets' }),
+    page.getByRole('button', { name: 'Add new listen widget' }),
   ).toBeVisible();
   await expect(
     page.getByRole('main').locator('[data-widget-type="youtube"]'),
@@ -371,7 +403,7 @@ test('Settings Add-ons Listen tab can add and remove a widget on Listen', async 
 
   await page.goto('/');
   await expect(
-    page.getByRole('button', { name: 'Add Listen widgets' }),
+    page.getByRole('button', { name: 'Add new listen widget' }),
   ).toBeVisible();
   await expect(
     page.getByRole('main').locator('[data-widget-type]'),

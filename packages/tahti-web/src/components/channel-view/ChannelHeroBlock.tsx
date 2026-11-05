@@ -4,11 +4,7 @@ import { Button } from '@tahti-player/ui';
 
 import type { PublicChannel } from '../../api/types';
 import { avatarPoster } from '../../lib/avatarPoster';
-import type {
-  ChannelNavigationTab,
-  ChannelPageItem,
-} from '../../lib/channelPageLayout';
-import { addItemType } from '../../lib/channelPageLayout';
+import type { ChannelNavigationTab } from '../../lib/channelPageLayout';
 import type { NormalizedColorScheme } from '../../lib/colorScheme';
 import { ChannelBackdropCard } from '../ChannelBackdropCard';
 
@@ -42,18 +38,14 @@ export type ChannelHeroBlockProps = {
   navTabs: ChannelNavigationTab[];
   activeNavTab: ChannelNavigationTab | null;
   onSelectNavTab: (id: string) => void;
-  layout: ChannelPageItem[];
-  updateLayout: (
-    updater:
-      ChannelPageItem[] | ((prev: ChannelPageItem[]) => ChannelPageItem[]),
-    opts?: { clearPreset?: boolean },
-  ) => void;
   /** Bio/CTA/avatar folded into the backdrop -- see BACKDROP_FOLDED_ITEM_TYPES
    * in channelPageLayout.ts. Derived from `layout`'s 'about'/'subscribe'/
    * 'avatar' items by ChannelView, not read from `layout` here directly. */
   avatarVisible: boolean;
   bioVisible: boolean;
   subscribeVisible: boolean;
+  /** While editing: features that are off stay in place, faded. */
+  showOffFeatures?: boolean;
   /** The player-stage content (now-playing overlay, play/favorite/chat
    * controls) -- built once in `ChannelView.tsx` and reused verbatim here
    * and in that file's hidden-hero fallback. */
@@ -83,11 +75,10 @@ export function ChannelHeroBlock({
   navTabs,
   activeNavTab,
   onSelectNavTab,
-  layout,
-  updateLayout,
   avatarVisible,
   bioVisible,
   subscribeVisible,
+  showOffFeatures = false,
   stagePlayer,
   identityActions,
 }: ChannelHeroBlockProps) {
@@ -105,24 +96,6 @@ export function ChannelHeroBlock({
             : () => onSelectNavTab(tab.id),
       }))
     : [];
-  const stageQuickAdd = editing
-    ? [
-        !layout.find((i) => i.type === 'links')?.visible
-          ? {
-              id: 'links',
-              label: 'Links',
-              onClick: () => updateLayout((prev) => addItemType(prev, 'links')),
-            }
-          : null,
-        !layout.find((i) => i.type === 'about')?.visible
-          ? {
-              id: 'about',
-              label: 'Bio',
-              onClick: () => updateLayout((prev) => addItemType(prev, 'about')),
-            }
-          : null,
-      ].filter((chip): chip is NonNullable<typeof chip> => Boolean(chip))
-    : undefined;
 
   return (
     <div className="flex flex-col gap-0">
@@ -146,6 +119,7 @@ export function ChannelHeroBlock({
         avatarVisible={avatarVisible}
         bioVisible={bioVisible}
         subscribeVisible={subscribeVisible}
+        showOffFeatures={showOffFeatures}
         headerStyle={channel.headerStyle ?? 'GRADIENT'}
         topBarText={channel.topBarText}
         videoBackgroundUrl={channel.videoBackgroundUrl}
@@ -190,7 +164,7 @@ export function ChannelHeroBlock({
       >
         {stagePlayer}
       </div>
-      {stageNavItems.length > 0 || (stageQuickAdd?.length ?? 0) > 0 ? (
+      {stageNavItems.length > 0 ? (
         <nav
           aria-label="Channel navigation"
           className={
@@ -231,18 +205,6 @@ export function ChannelHeroBlock({
               </span>
             ),
           )}
-          {stageQuickAdd?.map((chip) => (
-            <Button
-              key={chip.id}
-              type="button"
-              variant="text"
-              size="flexible"
-              onClick={chip.onClick}
-              className="border-border text-foreground-secondary hover:bg-background-secondary ml-auto rounded-full border px-2.5 py-1 text-[10px] normal-case"
-            >
-              + {chip.label}
-            </Button>
-          ))}
         </nav>
       ) : null}
     </div>

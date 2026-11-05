@@ -26,7 +26,6 @@ import {
   BackdropPanel,
   DeletePresetDialog,
   DesignerToolbar,
-  IdentityToggles,
   LAYOUT_ONLY_LOOK_IDS,
   LayoutOnlyLookHint,
   OverlayConfigDialog,
@@ -392,19 +391,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       />
     );
 
-    // Bio/CTA/avatar folded into the backdrop instead of being separate
-    // draggable page blocks (see BACKDROP_FOLDED_ITEM_TYPES in
-    // channelPageLayout.ts) -- only rendered when this ChannelDesigner
-    // instance is nested inside ChannelView's editing mode, which is the
-    // only caller that owns a real page `layout` to toggle.
-    const identityTogglesSlot =
-      layout && onLayoutChange ? (
-        <IdentityToggles layout={layout} onLayoutChange={onLayoutChange} />
-      ) : null;
-
     const backdropPanel = (
       <>
-        {identityTogglesSlot}
         <TopBarTextField
           value={visual.topBarText ?? ''}
           onChange={(topBarText) => applyLocal({ topBarText })}

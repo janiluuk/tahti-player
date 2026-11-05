@@ -1,11 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import {
-  ChannelHeroBlock,
-  type ChannelHeroBlockProps,
-} from '@tahti-web/components/channel-view';
-import type { ChannelPageItem } from '@tahti-web/lib/channelPageLayout';
+import { ChannelHeroBlock } from '@tahti-web/components/channel-view';
 import { normalizeColorScheme } from '@tahti-web/lib/colorScheme';
-import { useState } from 'react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { CHANNEL_NAME, CHANNEL_SLUG, storyChannel } from './_fixtures/channel';
@@ -13,28 +8,6 @@ import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
 const channel = storyChannel({ headerStyle: 'GRADIENT' });
 const scheme = normalizeColorScheme(channel.colorScheme);
-
-const BASE_LAYOUT: ChannelPageItem[] = [
-  { id: 'hero-1', type: 'hero', visible: true },
-  { id: 'sound-1', type: 'sound', visible: true },
-];
-
-/** Keeps `layout` in state so quick-add chips behave as on the page. */
-function HeroWithLayout(props: ChannelHeroBlockProps) {
-  const [layout, setLayout] = useState(props.layout);
-  return (
-    <ChannelHeroBlock
-      {...props}
-      layout={layout}
-      updateLayout={(updater) => {
-        props.updateLayout(updater);
-        setLayout((prev) =>
-          typeof updater === 'function' ? updater(prev) : updater,
-        );
-      }}
-    />
-  );
-}
 
 const meta: Meta<typeof ChannelHeroBlock> = {
   title: 'Tahti/Channel/ChannelHeroBlock',
@@ -44,7 +17,7 @@ const meta: Meta<typeof ChannelHeroBlock> = {
     docs: {
       description: {
         component:
-          "The channel page's hero block: the designed backdrop (name, avatar, bio, subscribe), the player stage, and the optional navigation bar. While editing, chips add the Links, Bio and Stats blocks that are missing.",
+          "The channel page's hero block: the designed backdrop (name, avatar, bio, subscribe), the player stage, and the optional navigation bar. While editing, features that are off (avatar, bio, Subscribe) stay in place, faded.",
       },
     },
   },
@@ -66,8 +39,6 @@ const meta: Meta<typeof ChannelHeroBlock> = {
     navTabs: [],
     activeNavTab: null,
     onSelectNavTab: fn(),
-    layout: BASE_LAYOUT,
-    updateLayout: fn(),
     avatarVisible: true,
     bioVisible: true,
     subscribeVisible: true,
@@ -79,7 +50,7 @@ const meta: Meta<typeof ChannelHeroBlock> = {
   },
   render: (args) => (
     <div className="max-w-4xl">
-      <HeroWithLayout {...args} />
+      <ChannelHeroBlock {...args} />
     </div>
   ),
   decorators: [withMockAuth(null), withTahtiRouter(`/channel/${CHANNEL_SLUG}`)],
@@ -128,25 +99,19 @@ export const NavigationTabs: Story = {
   },
 };
 
-export const EditingQuickAdd: Story = {
+export const EditingShowsOffFeatures: Story = {
+  name: 'Editing: features that are off stay faded',
   args: {
     editing: true,
+    showOffFeatures: true,
+    bioVisible: false,
     subscribeVisible: false,
-    layout: [...BASE_LAYOUT, { id: 'stats-1', type: 'stats', visible: true }],
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    const nav = within(await canvas.findByTestId('channel-stage-nav'));
-    await expect(nav.getByRole('button', { name: '+ Bio' })).toBeVisible();
-    await expect(nav.queryByRole('button', { name: '+ Stats' })).toBeNull();
-    await expect(
-      canvas.queryByTestId('channel-backdrop-subscribe-cta'),
-    ).toBeNull();
-    await userEvent.click(nav.getByRole('button', { name: '+ Links' }));
-    await expect(args.updateLayout).toHaveBeenCalledOnce();
-    await waitFor(() =>
-      expect(nav.queryByRole('button', { name: '+ Links' })).toBeNull(),
-    );
+    const subscribe = canvas.getByTestId('channel-backdrop-subscribe-cta');
+    await expect(subscribe).toHaveAttribute('data-off', 'true');
+    await expect(canvas.queryByRole('button', { name: /^\+ / })).toBeNull();
     await userEvent.click(
       canvas.getByRole('button', { name: 'Edit backdrop design' }),
     );

@@ -158,15 +158,12 @@ export const EveryBlockPanel: Story = {
 
     await openLayer(/^Background/);
     await fadedIn(await canvas.findByTestId('channel-backdrop-panel'));
-    await expect(
-      canvas.getByRole('switch', { name: 'Show Subscribe button' }),
-    ).not.toBeChecked();
     await expect(args.onSelect).toHaveBeenLastCalledWith('header');
   },
 };
 
-export const AddEmbedAndBlock: Story = {
-  name: 'Add an embed and a hidden block',
+export const AddEmbed: Story = {
+  name: 'Add an embed',
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'Add' }));
@@ -177,10 +174,7 @@ export const AddEmbedAndBlock: Story = {
       canvas.getByRole('button', { name: /^External embed/ }),
     ).toBeVisible();
 
-    await userEvent.click(canvas.getByRole('button', { name: 'Add' }));
-    await userEvent.click(canvas.getByRole('button', { name: 'Chat' }));
-    await expect(canvas.getByRole('button', { name: /^Chat/ })).toBeVisible();
-    await expect(args.updateLayout).toHaveBeenCalledTimes(2);
+    await expect(args.updateLayout).toHaveBeenCalledOnce();
   },
 };
 

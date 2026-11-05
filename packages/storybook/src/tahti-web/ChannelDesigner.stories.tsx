@@ -282,18 +282,6 @@ export const FullEditLook: Story = {
       preview.getByTestId('channel-backdrop-top-bar'),
     ).toHaveTextContent('Live tonight 21:00');
 
-    await expect(
-      preview.queryByTestId('channel-backdrop-subscribe-cta'),
-    ).toBeNull();
-    await userEvent.click(
-      canvas.getByRole('switch', { name: 'Show Subscribe button' }),
-    );
-    await expect(
-      preview.getByTestId('channel-backdrop-subscribe-cta'),
-    ).toBeVisible();
-    await userEvent.click(canvas.getByRole('switch', { name: 'Show bio' }));
-    await expect(args.onLayoutChange).toHaveBeenCalledTimes(2);
-
     await userEvent.click(save);
     await waitFor(() => expect(args.onSaved).toHaveBeenCalledOnce());
     await waitFor(() => expect(save).toBeDisabled());

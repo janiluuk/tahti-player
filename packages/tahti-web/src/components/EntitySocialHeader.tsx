@@ -79,6 +79,8 @@ export type EntitySocialHeaderProps = {
   /** Top-right actions (favorite, edit, …). */
   actions?: ReactNode;
   stats?: EntitySocialStat[];
+  /** Fades the counts (shown while editing even though they are off). */
+  statsDimmed?: boolean;
   /** Backdrop image / video poster under the primary scrim. */
   backdropUrl?: string | null;
   /** Transparent artist logo over the avatar, the cover, or both. */
@@ -130,6 +132,7 @@ export function EntitySocialHeader({
   description,
   actions,
   stats = [],
+  statsDimmed = false,
   backdropUrl,
   logo,
   headerStyle,
@@ -455,7 +458,14 @@ export function EntitySocialHeader({
       </div>
 
       {activeStats.length > 0 ? (
-        <div className="flex flex-wrap gap-3">
+        <div
+          data-testid="entity-social-stats"
+          className={
+            statsDimmed
+              ? 'flex flex-wrap gap-3 opacity-40'
+              : 'flex flex-wrap gap-3'
+          }
+        >
           {activeStats.map((stat) => {
             const chip = (
               <StatChip
