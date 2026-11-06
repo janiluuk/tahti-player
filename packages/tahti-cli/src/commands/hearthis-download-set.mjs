@@ -48,16 +48,21 @@ export async function downloadHearthisSet(
     exclude = null,
     tracks = null,
     coverName = 'cover',
+    catalog: prefetched = null,
+    writeManifest = true,
     onProgress,
   } = {},
 ) {
-  requireToken(config);
+  if (!prefetched) {
+    requireToken(config);
+  }
   if (!DOWNLOAD_LAYOUTS.includes(layout)) {
     throw new CliError(
       `Unknown layout: ${layout} (use ${DOWNLOAD_LAYOUTS.join(', ')})`,
     );
   }
-  const catalog = await fetchHearthisSetTracks(config, permalinkOrUrl);
+  const catalog =
+    prefetched ?? (await fetchHearthisSetTracks(config, permalinkOrUrl));
   const artist = resolveAlbumArtist(catalog.set, catalog.tracks);
   const albumTitle = resolveAlbumTitle(catalog.set, catalog.permalink, title);
   const year = yearOverride ?? resolveAlbumYear(catalog.set, catalog.tracks);
@@ -84,6 +89,7 @@ export async function downloadHearthisSet(
   for (const track of catalog.tracks) {
     if (ownOnly && owner && track.userPermalink !== owner) {
       rows.push({
+        id: track.id,
         position: track.position,
         title: track.title,
         status: 'skipped',
@@ -110,6 +116,7 @@ export async function downloadHearthisSet(
     ) {
       keepStems.add(stemPath);
       rows.push({
+        id: track.id,
         position,
         title: track.title,
         status: 'skipped',
@@ -122,6 +129,7 @@ export async function downloadHearthisSet(
     if (!track.downloadable || !track.downloadUrl) {
       keepStems.add(stemPath);
       rows.push({
+        id: track.id,
         position: track.position,
         title: track.title,
         status: 'skipped',
@@ -162,6 +170,7 @@ export async function downloadHearthisSet(
 
     if (!force && !changed && localSize !== null) {
       rows.push({
+        id: track.id,
         position: track.position,
         title: track.title,
         status: 'skipped',
@@ -178,6 +187,7 @@ export async function downloadHearthisSet(
 
     if (dryRun) {
       rows.push({
+        id: track.id,
         position: track.position,
         title: track.title,
         status: changed ? 'would-update' : 'would-download',
@@ -203,6 +213,7 @@ export async function downloadHearthisSet(
       absolute = saved.absolutePath;
       keep.add(absolute);
       rows.push({
+        id: track.id,
         position: track.position,
         title: track.title,
         status: changed ? 'updated' : 'downloaded',
@@ -216,6 +227,7 @@ export async function downloadHearthisSet(
       });
     } catch (error) {
       rows.push({
+        id: track.id,
         position: track.position,
         title: track.title,
         status: 'failed',
@@ -277,7 +289,7 @@ export async function downloadHearthisSet(
     }
   }
 
-  if (!dryRun) {
+  if (!dryRun && writeManifest) {
     for (const folder of folders) {
       if ((await listFiles(folder)).length === 0) {
         continue;

@@ -1,7 +1,7 @@
 import { CliError } from '../api-client.mjs';
 import { formatTable } from '../format.mjs';
 
-const HEARTHIS_API = 'https://api-v2.hearthis.at';
+export const HEARTHIS_API = 'https://api-v2.hearthis.at';
 const PAGE_SIZE = 20;
 const MAX_PAGES = 50;
 
