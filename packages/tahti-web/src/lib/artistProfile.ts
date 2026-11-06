@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { apiBase } from '../api/client';
+import { apiBase } from '../api/http';
 import type { PublicProfile, TahtiPlayable } from '../api/types';
 import { playableFromStudioEmbed } from './embedPlayback';
 import { dateLocaleTag } from './locale';
