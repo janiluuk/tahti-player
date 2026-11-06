@@ -42,8 +42,12 @@ describe('HomeHighlights', () => {
 
     await renderWithRouter(<TrendingRow />);
 
-    expect(await screen.findByRole('link', { name: '1. First' })).toBeVisible();
-    expect(screen.getByRole('link', { name: '2. Second' })).toBeVisible();
+    expect(await screen.findByRole('link', { name: 'First' })).toBeVisible();
+    expect(screen.getByRole('link', { name: 'Second' })).toBeVisible();
+    const ranks = screen.getAllByTestId('track-rank');
+    expect(ranks).toHaveLength(2);
+    expect(ranks[0]).toHaveTextContent('Rank 1');
+    expect(ranks[1]).toHaveTextContent('Rank 2');
   });
 
   it('plays a release from its card, shows its type pill and preserves its title link', async () => {

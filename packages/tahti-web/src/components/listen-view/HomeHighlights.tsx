@@ -70,6 +70,7 @@ function TrackCard({
   track: DiscoverTrackItem;
   rank?: number;
 }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const { isPlaying, loading, togglePlay, queue } =
     useDiscoverTrackPlayback(track);
@@ -78,9 +79,21 @@ function TrackCard({
     <Card
       surface="neutral"
       src={track.coverUrl ?? placeholderArtworkUrl(soundId)}
+      artworkOverlay={
+        rank ? (
+          <Badge
+            variant="pill"
+            color="inverted"
+            data-testid="track-rank"
+            className="tabular-nums"
+          >
+            <span className="sr-only">{t('listen.rank', { rank })}</span>
+            <span aria-hidden>{rank}</span>
+          </Badge>
+        ) : undefined
+      }
       title={
         <Link to="/t/$id" params={{ id: soundId }} className="hover:underline">
-          {rank ? `${rank}. ` : ''}
           {track.title}
         </Link>
       }

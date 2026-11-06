@@ -1,8 +1,9 @@
 import { Link } from '@tanstack/react-router';
+import { ArrowRightIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { ImageReveal } from '@tahti-player/ui';
+import { ButtonLink, MediaArtwork } from '@tahti-player/ui';
 
 import { fetchVenues } from '../api/client';
 import type { VenueDirectoryItem } from '../api/types';
@@ -59,12 +60,9 @@ export function VenuesDirectory() {
         title={t('empties.noVerifiedVenues')}
         description={t('empties.noVerifiedVenuesAreAvailableRight')}
         action={
-          <Link
-            to="/venues/register"
-            className="text-sm font-medium underline-offset-2 hover:underline"
-          >
-            Register a venue
-          </Link>
+          <ButtonLink to="/venues/register" size="sm">
+            {t('discover.registerVenue')}
+          </ButtonLink>
         }
       />
     );
@@ -87,14 +85,21 @@ export function VenuesDirectory() {
           const photo = venue.photos?.[1] ?? venue.photos?.[0];
           return (
             <li key={venue.id} className="flex gap-4 px-4 py-3">
-              {photo ? (
-                <ImageReveal
+              <Link
+                to="/v/$slug"
+                params={{ slug: venue.slug }}
+                tabIndex={-1}
+                aria-hidden
+                className="h-16 w-24 shrink-0 overflow-hidden rounded-md"
+              >
+                <MediaArtwork
+                  size="fill"
                   src={photo}
                   alt=""
-                  className="h-16 w-24 shrink-0 rounded-md"
+                  seed={venue.slug}
                 />
-              ) : null}
-              <div className="flex min-w-0 flex-col gap-1">
+              </Link>
+              <div className="flex min-w-0 flex-col items-start gap-1">
                 <Link
                   to="/v/$slug"
                   params={{ slug: venue.slug }}
@@ -109,15 +114,20 @@ export function VenuesDirectory() {
                   {venue.capacity != null ? ` — cap. ${venue.capacity}` : ''}
                 </div>
                 {venue.description && (
-                  <p className="text-foreground text-sm">{venue.description}</p>
+                  <p className="text-foreground line-clamp-2 text-sm">
+                    {venue.description}
+                  </p>
                 )}
-                <Link
+                <ButtonLink
                   to="/v/$slug"
                   params={{ slug: venue.slug }}
-                  className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
+                  size="xs"
+                  variant="secondary"
+                  className="mt-1 gap-1"
                 >
-                  View venue →
-                </Link>
+                  {t('discover.viewVenue')}
+                  <ArrowRightIcon size={14} aria-hidden />
+                </ButtonLink>
               </div>
             </li>
           );

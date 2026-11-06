@@ -49,8 +49,11 @@ export const NewsWidget: FC<NewsWidgetProps> = ({
 
   return (
     <div data-testid={testId} className={cn('flex flex-col gap-3', className)}>
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
+      <div
+        data-testid="news-widget-header"
+        className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2"
+      >
+        <div className="flex min-w-0 items-center gap-2">
           {thumbnailUrl ? (
             <ImageReveal
               src={thumbnailUrl}
@@ -61,7 +64,9 @@ export const NewsWidget: FC<NewsWidgetProps> = ({
               }
             />
           ) : null}
-          <h2 className="text-foreground text-lg font-bold">{title}</h2>
+          <h2 className="text-foreground text-lg font-bold whitespace-nowrap">
+            {title}
+          </h2>
           {badge && (
             <Badge
               data-testid="news-widget-badge"
@@ -72,7 +77,7 @@ export const NewsWidget: FC<NewsWidgetProps> = ({
             </Badge>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="ml-auto flex shrink-0 items-center gap-2">
           {more}
           <Tooltip content="Scroll left" side="top">
             <Button
