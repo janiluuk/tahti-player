@@ -41,13 +41,9 @@ incoming review queues).
 - [ ] `ReleaseTrackVersionsPanel` — Upload version (`Upload`)
 - [ ] `MasteringPanel` — Add effect (`Plus`) · **Near**
 - [ ] `StemsPanel` — Request split (`Sparkles`)
-- [ ] `StudioEventsView` — Add event (`CalendarPlus`) · **Near**
-- [ ] `StudioGroupsView` — New group (`Plus`) · **Near**
-- [ ] `StudioListeningPartiesView` — Schedule party (`CalendarPlus`) · **Near**
 - [ ] `StudioBroadcastView` — Nothing coming up → Schedule (`CalendarPlus`)
 - [ ] `schedule/ScheduledTimes` — Add schedule (`CalendarPlus`)
 - [ ] `show-detail/OverviewTab` + `EpisodesTab` — Book slot / New episode · **Near**
-- [ ] `FanTiersEditor` / `PurchaseTiersEditor` — New tier (`Plus`) · **Near**
 - [ ] `ChannelStoreEditor` — Set price (`Tag`) · **Near**
 - [ ] `ChannelAnnouncementsPanel` — Record / upload clip · **Near**
 - [ ] `ChannelRotationEditor` — Add from playlist (`ListMusic`) · **Near**
@@ -66,15 +62,10 @@ incoming review queues).
 - [ ] `desktop-library/DesktopLibraryContent` — empty facet groups → Import files (`Upload`) · **Near** (toolbar)
 
 ### Admin
-- [ ] `AdminArtworkPresetsView` — Add artwork (`Plus`) · **Near**
-- [ ] `InternetRadioPresetsPanel` — Add station (`Plus`) · **Near**
 - [ ] `AdminAnnouncementsView` — Upload audio (`Upload`) · **Near**
 - [ ] `AdminAddonsView` — Register add-on (`Plus`)
 - [ ] `AdminRadioView` rotation empty → Add to Selects (`ListPlus`)
-- [ ] `governance/discussions/DiscussionsAdminPanel` — New topic (`Plus`) · **Near**
 - [ ] `governance/tabs/AgendaItemsPanel` — Add agenda item (`Plus`) · **Near**
-- [ ] `governance/board/ElectionsAdminPanel` — New election (`Plus`) · **Near**
-- [ ] `governance/board/BoardTermsPanel` — Add board term (`UserPlus`) · **Near**
 - [ ] `SelectsTab` — Add content (`Plus`) · **Near** (title already mentions +)
 - [ ] `admin/moderation/tabs/ThemesTab` — empty catalog → Submit theme / registry docs (`Palette`) · optional
 
@@ -93,7 +84,6 @@ incoming review queues).
 - [ ] `PinnedAnnouncementsPanel` — Pin announcement (`Send`) · **Near**
 - [ ] `ListenAddonsPanel` / `DiscoWidgetManagerPanel` — Browse / install (`Puzzle`)
 - [ ] `ChannelModeratorsPanel` — Add moderator (`UserPlus`) · **Near**
-- [ ] `ApiTokensPanel` — New token (`KeyRound`) · **Near**
 - [ ] `SocialPostNow` — Post now (`Send`) · **Near**
 - [ ] `MySupportTickets` — New request (`LifeBuoy`)
 
@@ -103,6 +93,14 @@ incoming review queues).
 - [ ] `StudioRevenueView` — `studioRevenue.emptyDisbursements` → Connect Stripe (`CircleDollarSign`)
 - [ ] `admin/streams/ChannelTracksPanel` — nudge artist upload (`Upload`)
 - [ ] `AdminUsersView` — “No users yet” only if board gets an invite/create path (none today)
+
+## Shipped
+
+Events, listening parties, groups, fan and purchase tiers, API tokens,
+admin artwork and internet radio presets, governance discussions, elections
+and board terms (feat/slices-e-backlog). Where the create button sat right
+next to the empty (API tokens, governance forms), it now lives only in the
+empty state while the list is empty.
 
 ## Done when
 

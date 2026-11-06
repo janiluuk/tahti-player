@@ -137,11 +137,11 @@ export function AdminArtworkPresetsView() {
             subtitle="Enabled artwork becomes the cover of tracks, playlists and channels that have none, and is offered in every cover picker."
             classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             actions={
-              <Tooltip content="Add artwork" side="top">
+              <Tooltip content={t('adminPresets.addArtwork')} side="top">
                 <Button
                   type="button"
                   size="icon-sm"
-                  aria-label="Add artwork"
+                  aria-label={t('adminPresets.addArtwork')}
                   onClick={() => setUploadOpen(true)}
                 >
                   <PlusIcon size={18} aria-hidden />
@@ -161,6 +161,16 @@ export function AdminArtworkPresetsView() {
               <PageEmpty
                 title={t('empties.noArtworkPresetsYet')}
                 description={t('empties.addArtworkToUseItAs')}
+                action={
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setUploadOpen(true)}
+                  >
+                    <PlusIcon size={16} aria-hidden />
+                    {t('adminPresets.addArtwork')}
+                  </Button>
+                }
               />
             ) : (
               <ul
