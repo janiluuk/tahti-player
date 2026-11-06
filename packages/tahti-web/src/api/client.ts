@@ -1,3 +1,4 @@
+import { profileTrackToPlayable } from '../lib/artistProfile';
 import { requestJson } from './client-request';
 import type { MotionComment } from './governance-member';
 import { apiBase } from './http';
@@ -358,27 +359,18 @@ export async function fetchArtistPlayables(username: string): Promise<{
   data: TahtiPlayable[];
   meta: FetchMeta;
 }> {
-  const profile = await fetchProfile(username);
-  const data = profile.data.tracks.flatMap((track) => {
-    if (!track.playUrl) {
-      return [];
-    }
-    return [
-      {
-        id: `sound:${track.id}`,
-        kind: 'sound' as const,
-        title: track.title,
-        artist: track.artistName ?? profile.data.artist.displayName,
-        coverUrl: track.bannerUrl ?? undefined,
-        streamUrl: track.playUrl,
-        protocol: track.playUrl.includes('.m3u8')
-          ? ('hls' as const)
-          : ('https' as const),
-        channelSlug: profile.data.channel?.slug,
-      },
-    ];
+  const { data: profile, meta } = await fetchProfile(username);
+  const data = profile.tracks.flatMap((track) => {
+    const item = track.playUrl
+      ? profileTrackToPlayable(
+          track,
+          profile.artist.displayName,
+          profile.channel?.slug,
+        )
+      : null;
+    return item ? [item] : [];
   });
-  return { data, meta: profile.meta };
+  return { data, meta };
 }
 
 export async function fetchCollection(slug: string): Promise<{
