@@ -585,6 +585,7 @@ export function RadioView() {
               />
             }
             selectedTabIndex={RADIO_TABS.indexOf(activeTab)}
+            defaultExpanded={search.tab !== undefined}
             onTabChange={selectTab}
             tabs={playerTabs}
           />

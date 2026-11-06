@@ -25,7 +25,6 @@ import {
 } from '@tahti-player/ui';
 
 import { startAuthSession } from '../api/auth-session-client';
-import { useAutoHideNavWhilePlaying } from '../hooks/useAutoHideNavWhilePlaying';
 import { useIsCompactDesktop, useIsMobile } from '../hooks/useIsMobile';
 import { useOpenedOnce } from '../hooks/useOpenedOnce';
 import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
@@ -363,10 +362,6 @@ export function AppShell() {
   const playerStatus = usePlayerStore((state) => state.status);
   const isLivePlayback = usePlayerStore((state) => state.isLive);
   const toggleTour = useTourStore((state) => state.toggle);
-  const mobileNavHidden = useAutoHideNavWhilePlaying(
-    isMobile,
-    playerStatus === 'playing',
-  );
 
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const bottomQueueOpen = useLayoutStore((s) => s.bottomQueueOpen);
@@ -623,12 +618,7 @@ export function AppShell() {
         className={isMobile ? 'tahti-mobile-shell' : undefined}
       >
         <SkipToContent />
-        {!fullScreenPlayerOpen && (
-          <AppTopNav
-            showMenuButton={isMobile}
-            onOpenMenu={() => setMobileNavOpen(true)}
-          />
-        )}
+        {!fullScreenPlayerOpen && <AppTopNav />}
         <AmbientBackground />
         <NotificationToasts />
 
@@ -659,12 +649,10 @@ export function AppShell() {
               </RouteContent>
             </main>
             {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
-            {!mobileNavHidden && (
-              <MobileBottomNav
-                onOpenMore={() => setMobileNavOpen(true)}
-                moreOpen={mobileNavOpen}
-              />
-            )}
+            <MobileBottomNav
+              onOpenMore={() => setMobileNavOpen(true)}
+              moreOpen={mobileNavOpen}
+            />
           </div>
         ) : (
           <PlayerWorkspace className="tahti-ambient-surface">

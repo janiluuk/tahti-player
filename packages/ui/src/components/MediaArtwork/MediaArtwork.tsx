@@ -67,6 +67,10 @@ export type MediaArtworkProps = {
   playLabel?: string;
   pauseLabel?: string;
   isPlaying?: boolean;
+  /** Keeps the pause control hover-only while playing, for list thumbnails
+   * where a resting control would cover the artwork. The row shows which
+   * track is current. */
+  hideActivePlay?: boolean;
   /** Shows a spinner on the play control while the stream buffers. */
   isLoading?: boolean;
   playDisabled?: boolean;
@@ -130,6 +134,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   playLabel = 'Play',
   pauseLabel = 'Pause',
   isPlaying = false,
+  hideActivePlay = false,
   isLoading = false,
   playDisabled,
   onQueue,
@@ -372,7 +377,9 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   data-testid="media-artwork-play"
                   className={cn(
                     'pointer-events-auto size-6 rounded-full text-white active:scale-[0.96] motion-reduce:active:scale-100',
-                    isPlaying || isLoading ? 'opacity-100' : overlayReveal,
+                    (isPlaying && !hideActivePlay) || isLoading
+                      ? 'opacity-100'
+                      : overlayReveal,
                   )}
                   onClick={handlePlayClick}
                 >
@@ -422,7 +429,9 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   data-testid="media-artwork-play"
                   className={cn(
                     'pointer-events-auto rounded-full active:scale-[0.96] motion-reduce:active:scale-100',
-                    isPlaying || isLoading ? 'opacity-100' : overlayReveal,
+                    (isPlaying && !hideActivePlay) || isLoading
+                      ? 'opacity-100'
+                      : overlayReveal,
                     size === 'thumb'
                       ? 'text-white'
                       : ['shadow-md', size === 'md' ? 'size-9' : 'size-11'],
