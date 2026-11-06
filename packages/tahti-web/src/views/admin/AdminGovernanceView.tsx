@@ -17,6 +17,7 @@ import {
 } from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { DiscussionsAdminPanel } from './governance/discussions/DiscussionsAdminPanel';
 import {
@@ -92,6 +93,7 @@ export function AdminGovernanceView({ tab }: { tab?: AdminGovernanceTabId }) {
           <div className="flex max-w-4xl flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="coop" />
               <BreadcrumbLink to="/admin/governance">Governance</BreadcrumbLink>
               <BreadcrumbCurrent>{activeLabel}</BreadcrumbCurrent>
             </Breadcrumbs>

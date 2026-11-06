@@ -115,6 +115,13 @@ const DISCOVER_TABS: Array<{
   { id: 'venues', labelKey: 'discover.tabVenues', icon: MapPinIcon },
 ];
 
+function discoverTabLabelKey(tab: DiscoverTab): ParseKeys<'web'> {
+  return (
+    DISCOVER_TABS.find((item) => item.id === tab)?.labelKey ??
+    'discover.tabDiscover'
+  );
+}
+
 export function DiscoverView() {
   const { t } = useTranslation('web');
   const enabledWidgets = useDiscoverStore((s) => s.enabledWidgets);
@@ -410,7 +417,11 @@ export function DiscoverView() {
         </Tabs.List>
       </Tabs.Root>
       <ViewShell
-        title={t('nav.discover')}
+        title={
+          activeTab === 'discover'
+            ? t('nav.discover')
+            : t(discoverTabLabelKey(activeTab))
+        }
         classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         actions={
           activeTab === 'discover' ? (

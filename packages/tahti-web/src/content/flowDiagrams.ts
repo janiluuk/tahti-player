@@ -126,7 +126,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Radio --> Schedule["/schedule · public programme"]
   Public --> Discover["/discover · Artists · Venues tabs"]
   Public --> TagSearch["/search?tag= · tracks by tag"]
-  Public --> Favorites["/favorites"]
+  Public --> Favorites["/library/favorites"]
   Public --> Channel["/channel/$slug · upcoming shows · stage up next"]
   Public --> Artist["/u/$username"]
   Artist --> Collection["/u/$username/c/$slug"]
@@ -142,7 +142,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Public --> Trust["/transparency/* · /about · /terms · /privacy · /agpl"]
   Public --> StudioGate["/studio · sign-in prompt (StudioGate)"]
   Login["/login · /join · /verify · password reset"] --> Session["Signed in"]
-  Session --> Feed["/listen/feed · /feed"]
+  Session --> Feed["/discover?tab=feed"]
   Session --> History["/listen/history"]
   Session --> Library["/library · Tracks · Collections · Upload · Recordings · Media · Stash · Embeds · Smart links"]
   Session --> Messages["/messages · /messages/$id"]
@@ -531,7 +531,9 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     AC["/c/:slug"] --> Ch["/channel/:slug"]
     AS["/u/:username/subscribe"] --> Sub["/subscribe/:username"]
     AV["/venues"] --> Disc["/discover?tab=venues"]
-    AL["/listen · /listen/favorites · /library/favorites · /history"] --> Home["/ · /favorites · /listen/history"]
+    AL["/listen · /history"] --> Home["/ · /listen/history"]
+    AF["/listen/feed · /feed"] --> DF["/discover?tab=feed"]
+    AFav["/favorites · /listen/favorites"] --> LFav["/library/favorites"]
     AStu["/studio/archive* · /studio/upload · /studio/stash · /studio/recordings · /studio/playlists"] --> Lib["/studio/sounds* · /library/* · /studio/collections"]
     AAdm["/admin/agm · grants · reports"] --> Gov["/admin/governance/:tab"]
     AMod["/admin/support · beta · radio-submissions · content-reports · feature-requests · missed-shows"] --> Mod["/admin/moderation/:tab"]
@@ -955,12 +957,12 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
 
   subgraph listen["Listen"]
     L["/ Listen directory"]
-    Feed["/listen/feed"]
+    Feed["/discover?tab=feed"]
     R["/radio"]
     D["/discover"]
     C["/channel/:slug"]
     U["/u/:username"]
-    LF["/favorites"]
+    LF["/library/favorites"]
     LH["/listen/history"]
     T["/t/:id"]
     TS["/search?tag="]
@@ -1020,10 +1022,10 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Listen --> Radio["Radio · /radio"]:::pub
   Radio --> Show["Radio show · /radio/show/:slug · episodes"]:::pub
   Listen --> Discover["Discover · /discover · artists · venues"]:::pub
-  Listen --> Fav["Favorites · /favorites"]:::pub
+  Listen --> Fav["Favorites · /library/favorites"]:::pub
   Listen --> Channel["Channel · /c/:slug → /channel/:slug"]:::pub
   Listen --> Profile["Artist · /u/:username"]:::pub
-  Listen --> Feed["Feed · /listen/feed"]:::auth
+  Discover --> Feed["Feed · /discover?tab=feed"]:::auth
   Listen --> Hist["History · /listen/history"]:::auth
   Channel --> Playback["Player · visualizer · queue · up next"]:::pub
   Channel --> Chat["Chat · /chat/:slug"]:::pub
@@ -1067,8 +1069,8 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   A([Open tahti.live]) --> L["/ Listen"]
   L --> R["/radio"]
   L --> D["/discover"]
-  L --> Fav["/favorites"]
-  L --> Feed["/listen/feed"]
+  L --> Fav["/library/favorites"]
+  D --> Feed["/discover?tab=feed"]
   L --> Hist["/listen/history"]
   L --> St["/studio · StudioGate sign-in prompt"]
   L --> C["/channel/:slug"]
@@ -1114,8 +1116,8 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Onb --> L["/ Listen"]
   Auth --> L
   L --> Lib["/library · tabs + subscribed collections"]
-  L --> Feed["/listen/feed"]
-  L --> Fav["/favorites · liked tracks"]
+  L --> Feed["/discover?tab=feed"]
+  L --> Fav["/library/favorites · liked tracks"]
   L --> Hist["/listen/history"]
   L --> Sub["/subscribe/:artist"]
   L --> Acc["Settings → Account"]
@@ -1399,8 +1401,8 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
       'Library tabs, subscribe checkout, DMs with role badges, Jam guest control, governance member vs gated.',
     mermaid: `flowchart TD
   Auth --> Lib["/library"]
-  Auth --> Feed["/listen/feed"]
-  Auth --> LF["/favorites · /listen/history"]
+  Auth --> Feed["/discover?tab=feed"]
+  Auth --> LF["/library/favorites · /listen/history"]
   Auth --> Sub["/subscribe/:artist → Stripe"]
   Auth --> DM["/messages · Artist / Moderator badges"]
   Auth --> Jam["/jam/:code"]

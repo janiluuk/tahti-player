@@ -21,6 +21,7 @@ import {
   type AdminContentOverview,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ListingDate } from '../../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
@@ -59,6 +60,7 @@ export function AdminContentView() {
           <div className="flex flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="content" />
               <BreadcrumbCurrent>Catalog</BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell

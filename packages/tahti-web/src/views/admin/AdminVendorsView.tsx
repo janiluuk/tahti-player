@@ -14,6 +14,7 @@ import {
   type AdminIntegrationStatus,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -412,6 +413,7 @@ export function AdminVendorsView() {
           <div className="flex max-w-5xl flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="platform" />
               <BreadcrumbCurrent>Vendors</BreadcrumbCurrent>
             </Breadcrumbs>
             <AdminVendorsContent />

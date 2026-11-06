@@ -25,7 +25,7 @@ import { useAuthStore } from '../stores/authStore';
 
 const DRAWER_SPRING = { type: 'spring', stiffness: 420, damping: 40 } as const;
 
-const PRIMARY = [
+export const MOBILE_PRIMARY_TABS = [
   {
     to: '/',
     id: 'listen' as const satisfies MobileItemId,
@@ -33,16 +33,16 @@ const PRIMARY = [
     icon: ListMusicIcon,
   },
   {
-    to: '/discover',
-    id: 'discover' as const satisfies MobileItemId,
-    labelKey: 'nav.discover',
-    icon: CompassIcon,
-  },
-  {
     to: '/radio',
     id: 'radio' as const satisfies MobileItemId,
     labelKey: 'nav.radio',
     icon: RadioIcon,
+  },
+  {
+    to: '/discover',
+    id: 'discover' as const satisfies MobileItemId,
+    labelKey: 'nav.discover',
+    icon: CompassIcon,
   },
 ] as const;
 
@@ -69,7 +69,9 @@ export function MobileBottomNav({
   const showStudio =
     hasAccountRole(user, 'ARTIST') || hasAccountRole(user, 'BOARD');
   const items =
-    showStudio || signedOut ? [...PRIMARY, STUDIO_TAB] : [...PRIMARY];
+    showStudio || signedOut
+      ? [...MOBILE_PRIMARY_TABS, STUDIO_TAB]
+      : [...MOBILE_PRIMARY_TABS];
   const mobileActive = activeMobileItem(pathname);
   const moreActive = isMobileMoreRoute(pathname, {
     studioIsPrimary: showStudio,

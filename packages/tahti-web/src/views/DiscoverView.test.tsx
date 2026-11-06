@@ -184,6 +184,17 @@ describe('DiscoverView', () => {
     ).not.toBeNull();
   });
 
+  it.each([
+    ['/discover', 'Discover'],
+    ['/discover?tab=artists', 'Artists'],
+    ['/discover?tab=venues', 'Venues'],
+    ['/discover?tab=groups', 'Groups'],
+  ])('titles %s with its own heading', async (path, heading) => {
+    const { container } = await renderDiscover(path);
+
+    expect(container.querySelector('h1')?.textContent).toBe(heading);
+  });
+
   describe('allOrSpecific', () => {
     it('picking All clears every specific choice', () => {
       expect(allOrSpecific(['Techno', '__all__'], ['Techno'])).toEqual([]);

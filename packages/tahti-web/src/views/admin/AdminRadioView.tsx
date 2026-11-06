@@ -34,6 +34,7 @@ import {
 } from '../../api/admin';
 import { fetchRadioStation } from '../../api/client';
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ListingDate } from '../../components/ListingDate';
 import { MulticastSection } from '../../components/MulticastSection';
@@ -152,6 +153,7 @@ export function AdminRadioView() {
           <div className="flex max-w-4xl flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="content" />
               <BreadcrumbLink to="/admin/radio">Radio</BreadcrumbLink>
               <BreadcrumbCurrent>
                 {ADMIN_RADIO_TAB_LABELS[activeTab]}
