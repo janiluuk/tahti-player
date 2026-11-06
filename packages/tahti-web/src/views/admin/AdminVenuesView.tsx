@@ -19,6 +19,7 @@ import {
   type AdminVenue,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ListingDate } from '../../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
@@ -98,6 +99,7 @@ export function AdminVenuesView() {
           <div className="flex max-w-4xl flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="content" />
               <BreadcrumbCurrent>Venues</BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell

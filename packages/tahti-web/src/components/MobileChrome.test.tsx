@@ -3,7 +3,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { act } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { MobileDrawer } from './MobileChrome';
+import { MOBILE_PRIMARY_TABS, MobileDrawer } from './MobileChrome';
 
 afterEach(() => {
   cleanup();
@@ -79,5 +79,15 @@ describe('MobileDrawer', () => {
       screen.getByRole('button', { name: 'Close' }).parentElement!,
     );
     expect(screen.getByRole('tooltip')).toHaveTextContent('Close');
+  });
+});
+
+describe('MobileBottomNav tabs', () => {
+  it('lists Listen, Radio, Discover in the desktop sidebar order', () => {
+    expect(MOBILE_PRIMARY_TABS.map((tab) => tab.id)).toEqual([
+      'listen',
+      'radio',
+      'discover',
+    ]);
   });
 });

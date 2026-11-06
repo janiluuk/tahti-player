@@ -18,6 +18,7 @@ import {
   type AdminStorageUserDetail,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -61,6 +62,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
           <div className="mx-auto flex max-w-4xl flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="platform" />
               <BreadcrumbLink to="/admin/storage">Storage</BreadcrumbLink>
               <BreadcrumbLink to="/admin/storage" search={{ tab: 'files' }}>
                 Files

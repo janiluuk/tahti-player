@@ -5,6 +5,7 @@ import {
 } from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { MoreView } from '../MoreView';
 
@@ -16,6 +17,7 @@ export function AdminMapView() {
           <div className="flex flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="platform" />
               <BreadcrumbCurrent>Map</BreadcrumbCurrent>
             </Breadcrumbs>
             <MoreView />

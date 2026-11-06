@@ -23,6 +23,7 @@ import {
   type AdminLanguage,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -105,6 +106,7 @@ export function AdminI18nView() {
           <div className="flex max-w-4xl flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="platform" />
               <BreadcrumbCurrent>Languages</BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell

@@ -47,7 +47,7 @@ vi.mock('../../api/admin', () => ({
 describe('admin venues list', () => {
   afterEach(cleanup);
 
-  it('shows the Admin → Venues breadcrumb', async () => {
+  it('shows the Admin → Content → Venues breadcrumb', async () => {
     await renderWithRouter(<AdminVenuesView />, {
       paths: ['/u/$username'],
     });
@@ -60,6 +60,10 @@ describe('admin venues list', () => {
     expect(screen.getByRole('link', { name: 'Admin' })).toHaveAttribute(
       'href',
       '/admin',
+    );
+    expect(screen.getByTestId('admin-hub-breadcrumb')).toHaveAttribute(
+      'href',
+      '/admin/hubs/content',
     );
   });
 

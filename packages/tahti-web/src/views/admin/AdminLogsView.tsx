@@ -22,6 +22,7 @@ import {
 
 import { fetchAdminDashboard, type AdminAuditRow } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -187,6 +188,7 @@ export function AdminLogsView() {
           <div className="flex max-w-6xl flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="platform" />
               <BreadcrumbLink to="/admin/logs">Logs</BreadcrumbLink>
               <BreadcrumbCurrent>
                 {LOGS_TAB_LABELS[TAB_IDS[selectedIndex] ?? 'activity']}
