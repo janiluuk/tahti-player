@@ -36,6 +36,9 @@ function EventCard({ event }: { event: UpcomingEvent }) {
       window.open(event.eventUrl, '_blank', 'noopener,noreferrer');
     }
   };
+  const venue = event.location
+    ? `${event.place}, ${event.location}`
+    : event.place;
   return (
     <Card
       surface="neutral"
@@ -43,15 +46,30 @@ function EventCard({ event }: { event: UpcomingEvent }) {
         event.avatarUrl ??
         placeholderArtworkUrl(event.channelSlug ?? event.artistUsername)
       }
-      title={event.title}
+      itemName={event.title}
+      title={
+        <span
+          data-testid="event-card-title"
+          className="line-clamp-2 whitespace-normal"
+          title={event.title}
+        >
+          {event.title}
+        </span>
+      }
       subtitle={
         <span className="flex flex-col">
-          <span className="font-semibold">
+          <span className="truncate font-semibold">
             {formatEventStart(event.startAt)}
           </span>
-          <span>
-            {event.artistDisplayName} · {event.place}
-            {event.location ? `, ${event.location}` : ''}
+          <span className="truncate" title={event.artistDisplayName}>
+            {event.artistDisplayName}
+          </span>
+          <span
+            data-testid="event-card-venue"
+            className="line-clamp-2 whitespace-normal"
+            title={venue}
+          >
+            {venue}
           </span>
         </span>
       }

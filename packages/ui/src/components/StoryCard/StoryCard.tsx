@@ -6,6 +6,7 @@ import { cn } from '../../utils';
 import { Badge, badgeVariants } from '../Badge';
 import { Button } from '../Button';
 import { ImageReveal } from '../ImageReveal';
+import { MediaArtwork } from '../MediaArtwork';
 
 export type StoryCardKindColor = NonNullable<
   VariantProps<typeof badgeVariants>['color']
@@ -14,6 +15,9 @@ export type StoryCardKindColor = NonNullable<
 export type StoryCardProps = {
   /** Wide image shown when `media` is not given. */
   imageSrc?: string | null;
+  /** Stable id (story id, username) that picks the default artwork when
+   * there is no image; falls back to `authorName`. */
+  artworkSeed?: string;
   /** Replaces the image, e.g. artwork with a play control. Rendered in the
    * same 16:9 frame. */
   media?: ReactNode;
@@ -54,6 +58,7 @@ const MAX_STAGGER_STEPS = 6;
  * pill, date, title and teaser overlaid on a gradient, then the author below. */
 export const StoryCard: FC<StoryCardProps> = ({
   imageSrc,
+  artworkSeed,
   media,
   kind,
   kindColor = 'yellow',
@@ -89,33 +94,6 @@ export const StoryCard: FC<StoryCardProps> = ({
     </span>
   );
 
-  const imageFallback = avatarSrc ? (
-    <span
-      className="relative flex size-full items-center justify-center"
-      data-testid="story-card-avatar-cover"
-      aria-hidden
-    >
-      <img
-        src={avatarSrc}
-        alt=""
-        className="absolute inset-0 size-full scale-125 object-cover opacity-60 blur-2xl"
-      />
-      <span className="from-background/10 to-background/50 absolute inset-0 bg-gradient-to-b" />
-      <img
-        src={avatarSrc}
-        alt=""
-        className="relative size-24 rounded-full object-cover shadow-lg ring-2 ring-white/20"
-      />
-    </span>
-  ) : (
-    <span
-      className="from-primary/40 to-accent-purple/40 flex size-full items-center justify-center bg-gradient-to-br text-4xl font-bold text-white/80"
-      aria-hidden
-    >
-      {initial}
-    </span>
-  );
-
   return (
     <article
       data-testid={testId}
@@ -131,12 +109,11 @@ export const StoryCard: FC<StoryCardProps> = ({
       <div className="bg-background-secondary relative aspect-video w-full overflow-hidden rounded-xl">
         <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100">
           {media ?? (
-            <ImageReveal
+            <MediaArtwork
+              size="fill"
               src={imageSrc ?? undefined}
               alt=""
-              className="size-full"
-              imgClassName="object-cover"
-              placeholder={imageFallback}
+              seed={artworkSeed || authorName}
             />
           )}
         </div>

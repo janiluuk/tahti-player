@@ -79,6 +79,7 @@ export function CommunityStoriesWidget() {
             key={story.id}
             index={index}
             imageSrc={story.imageUrl}
+            artworkSeed={story.id}
             kind={POST_ACTIVITY_LABELS[story.category] ?? 'shared a story'}
             date={storyDate(story.publishAt)}
             title={story.title ?? story.excerpt}

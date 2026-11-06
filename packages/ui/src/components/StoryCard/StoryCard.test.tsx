@@ -2,6 +2,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { MediaArtworkDefaultProvider } from '../MediaArtwork';
 import { StoryCard } from './StoryCard';
 
 describe('StoryCard', () => {
@@ -45,23 +46,36 @@ describe('StoryCard', () => {
     expect(screen.getByRole('link').getAttribute('href')).toBe('/u/aurora');
   });
 
-  it("uses the author's avatar as the cover when the story has no image", () => {
-    render(
-      <StoryCard
-        imageSrc={null}
-        meta="Story"
-        title="Hello"
-        authorName="Aurora"
-        authorAvatarSrc="https://example.com/avatar.png"
-      />,
+  it('shows the default artwork, not the avatar or an initial, when the story has no image', () => {
+    const { container } = render(
+      <MediaArtworkDefaultProvider value={(seed) => `/default/${seed}.jpg`}>
+        <StoryCard
+          imageSrc={null}
+          artworkSeed="story-1"
+          meta="Story"
+          title="Hello"
+          authorName="Aurora"
+          authorAvatarSrc="https://example.com/avatar.png"
+        />
+      </MediaArtworkDefaultProvider>,
     );
-    expect(screen.getByTestId('story-card-avatar-cover')).toBeTruthy();
+    expect(
+      container.querySelector('img[src="/default/story-1.jpg"]'),
+    ).toBeTruthy();
+    expect(
+      container.querySelectorAll('img[src="https://example.com/avatar.png"]'),
+    ).toHaveLength(1);
   });
 
-  it('shows the initial when there is neither image nor avatar', () => {
-    render(<StoryCard meta="Story" title="Hello" authorName="aurora" />);
-    expect(screen.queryByTestId('story-card-avatar-cover')).toBeNull();
-    expect(screen.getAllByText('A').length).toBeGreaterThan(0);
+  it('seeds the default artwork with the author when no seed is given', () => {
+    const { container } = render(
+      <MediaArtworkDefaultProvider value={(seed) => `/default/${seed}.jpg`}>
+        <StoryCard meta="Story" title="Hello" authorName="aurora" />
+      </MediaArtworkDefaultProvider>,
+    );
+    expect(
+      container.querySelector('img[src="/default/aurora.jpg"]'),
+    ).toBeTruthy();
   });
 
   it('opens the story from its image when onOpen is given', () => {
