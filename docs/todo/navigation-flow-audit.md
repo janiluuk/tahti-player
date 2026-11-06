@@ -21,7 +21,7 @@ use `BackButtonLink` with `aria-label="Back to …"`.
 
 2026-11-04 (batch 33): re-checked the governance meeting detail, admin governance panels and Library Following. Back links are present; the Library Following empty state now links to Discover so the page is not a dead end.
 
-2026-11-06 (PR_NUM): admin pages inside a hub show Admin › Hub › Page
+2026-11-06 (#1880): admin pages inside a hub show Admin › Hub › Page
 (`AdminHubBreadcrumb`, guarded by `AdminNav.test.ts`); release track insights
 opened from a release take `?release=` and go back to that release's Stats tab.
 
