@@ -29,6 +29,7 @@ import {
   findSetManifests,
   runHearthisDownloadSet,
 } from './commands/hearthis-download-set.mjs';
+import { runHearthisRelease } from './commands/hearthis-release.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
 import {
@@ -64,6 +65,7 @@ import {
 import { runReleasesList } from './commands/releases-list.mjs';
 import { runReleasesShow } from './commands/releases-show.mjs';
 import { runSearch, SEARCH_PAGE_SIZE } from './commands/search.mjs';
+import { runSoundsUpload } from './commands/sounds-upload.mjs';
 import { MAX_STASH_LIMIT, runStashList } from './commands/stash-list.mjs';
 import { runStats, STATS_RANGES } from './commands/stats.mjs';
 import { runTrack } from './commands/track.mjs';
@@ -401,6 +403,34 @@ any file fails.
     },
   },
   {
+    path: ['sounds', 'upload'],
+    usage:
+      'tahti sounds upload <file>... [--title <t>] [--genre <g>] [--tag <t>...] [--description <t>] [--ignore-tags] [--json]',
+    summary: 'Upload audio files as new sounds in your library',
+    details: `Uploads each file the way tahti-web does: POST /api/uploads/prepare for a
+storage URL, a PUT of the file, then POST /api/uploads/complete. The title,
+artist, genre and BPM come from the file's tags unless given here; without a
+title tag the file name is used. Unlike \`tahti import\`, nothing is skipped
+because its title is already in your library. Needs a token with the write
+scope. Exits with 1 when any file fails.
+  --title <t>        Sound title (one file only)
+  --genre <g>        Genre for every file
+  --tag <t>          A tag; repeat or comma-separate for more (at most 20)
+  --description <t>  Description for every file
+  --ignore-tags      Do not read the files' own tags`,
+    options: {
+      ...JSON_OPTION,
+      title: { type: 'string' },
+      genre: { type: 'string' },
+      tag: { type: 'string', multiple: true },
+      description: { type: 'string' },
+      'ignore-tags': { type: 'boolean', default: false },
+    },
+    positionals: Infinity,
+    run: (config, { values, positionals }) =>
+      runSoundsUpload(config, positionals, values),
+  },
+  {
     path: ['hearthis', 'sets'],
     usage: 'tahti hearthis sets [--json]',
     summary: 'List your hearthis.at Sets (playlists / album-like groups)',
@@ -592,6 +622,62 @@ paths that already exist (unless --force).
         exitCode: Math.max(0, ...results.map((result) => result.exitCode)),
       };
     },
+  },
+  {
+    path: ['hearthis', 'release'],
+    usage:
+      'tahti hearthis release <set-or-track-url> [--out <dir>] [--title <t>] [--type <t>] [--date <YYYY-MM-DD>] [--tracks <list>] [--flac] [--force-new] [--dry-run] [--json]',
+    summary: 'Re-make a hearthis.at Set or track as a draft Tahti release',
+    details: `Reads the Set (GET /api/v1/imports/hearthis/sets/:permalink/tracks) or the
+single track (hearthis.at's public API), downloads the original audio of the
+tracks uploaded by the Set's owner into <out> like \`hearthis download-set
+--own\`, uploads each file as a sound in Set order, then creates a draft
+release from those sounds (POST /api/me/releases), sets the Set cover
+(POST /api/me/releases/:id/artwork/from-url) and prints the release URL.
+Title, description, release date (earliest track date), genre and track order
+come from hearthis.at; each sound gets the track's genre, tags, BPM and
+description. A single track becomes a one-track single. The new tracks play
+the uploaded audio; no hearthis.at embed is created.
+Stops before uploading when you already have a release with the same title,
+or when a chosen track is not downloadable. Progress is kept in
+<out>/.tahti-release-<permalink>.json: a rerun skips sounds already uploaded,
+and reports the release instead of creating it twice.
+  --out <dir>          Download folder and state file location (default: .)
+  --title <t>          Release title (default: the Set title)
+  --type <t>           One of: ${RELEASE_TYPES.map((type) => type.toLowerCase()).join(', ')} (default: single for 1 track,
+                       ep for 2-6, album for more)
+  --date <YYYY-MM-DD>  Release date
+  --tracks <list>      Only these positions among the owner's tracks, e.g. 1,3-5
+  --flac               Convert WAV/AIFF downloads to FLAC with ffmpeg first
+  --force-new          Create the release even when one has the same title
+  --dry-run            Show the release and tracks without downloading,
+                       uploading or creating anything
+TAHTI_WEB_URL sets the web address in the printed URL when the API is not
+on an api.<host> address.`,
+    options: {
+      ...JSON_OPTION,
+      out: { type: 'string' },
+      title: { type: 'string' },
+      type: { type: 'string' },
+      date: { type: 'string' },
+      tracks: { type: 'string' },
+      flac: { type: 'boolean', default: false },
+      'force-new': { type: 'boolean', default: false },
+      'dry-run': { type: 'boolean', default: false },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runHearthisRelease(config, positionals[0], {
+        json: values.json,
+        outDir: values.out || '.',
+        title: values.title || null,
+        type: values.type || null,
+        date: values.date || null,
+        tracks: values.tracks || null,
+        flac: values.flac,
+        forceNew: values['force-new'],
+        dryRun: values['dry-run'],
+      }),
   },
   {
     path: ['notifications', 'list'],

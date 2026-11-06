@@ -1,0 +1,69 @@
+{
+  "permalink": "378936-9675121",
+  "url": "https://hearthis.at/set/378936-9675121/",
+  "set": {
+    "id": "378936",
+    "permalink": "378936-9675121",
+    "url": "https://hearthis.at/set/378936-9675121/",
+    "title": "Recorded sets from gigs",
+    "description": "Recordings of past sets 2001-2026",
+    "trackCount": 3,
+    "coverUrl": "https://img.hearthis.at/5/5/4/_/uploads/9675121/image_set/378936/w500_h500_q70_ptrue_v2_m1750137509----cropped_1750137500455.jpg?m=1750137509",
+    "username": "Yaniho",
+    "userPermalink": "yaniho",
+    "year": null
+  },
+  "tracks": [
+    {
+      "id": "13068863",
+      "url": "https://hearthis.at/yaniho/nightriders-vol-43-set-of-melodic-trance-8112025/",
+      "title": "Nightriders vol. 43 - Set of melodic trance @ Kalamaja, 11/2025",
+      "username": "Yaniho",
+      "userPermalink": "yaniho",
+      "durationSec": 2219,
+      "coverUrl": "https://img.hearthis.at/6/8/8/_/uploads/9675121/image_track/13068863/w500_h500_q70_ptrue_v2_m1762783787----cropped_1762783727886.jpg?m=1762783787",
+      "genre": "Trance",
+      "streamUrl": "https://hearthis.app/yaniho/nightriders-vol-43-set-of-melodic-trance-8112025/listen/?s=sR0",
+      "position": 1,
+      "kind": "DJ-Set",
+      "releaseDate": "2025-11-09 02:01:51",
+      "downloadable": true,
+      "downloadUrl": "https://hearthis.app/yaniho/nightriders-vol-43-set-of-melodic-trance-8112025/download/?secret=oDFa3",
+      "downloadFilename": "Nightriders vol. 43 - Set of melodic trance, 8.11.2025.wav"
+    },
+    {
+      "id": "10804335",
+      "url": "https://hearthis.at/yaniho/producer-dj-set-of-trance-nightclub-wenla-helsinki-170224/",
+      "title": "Producer set of Trance  @ Nightclub Wenla, Helsinki, 17.02.24",
+      "username": "Yaniho",
+      "userPermalink": "yaniho",
+      "durationSec": 6783,
+      "coverUrl": "https://img.hearthis.at/2/6/6/_/uploads/9675121/image_track/10804335/w500_h500_q70_ptrue_v2_m1750256094----cropped_1750128476662.jpg?m=1750256094",
+      "genre": "Trance",
+      "streamUrl": "https://hearthis.app/yaniho/producer-dj-set-of-trance-nightclub-wenla-helsinki-170224/listen/?s=rAd",
+      "position": 2,
+      "kind": null,
+      "releaseDate": "2024-02-18 04:14:30",
+      "downloadable": true,
+      "downloadUrl": "https://hearthis.app/yaniho/producer-dj-set-of-trance-nightclub-wenla-helsinki-170224/download/?secret=QZVl0",
+      "downloadFilename": "Producer set of Trance  @ Nightclub Wenla, Helsinki, 17.02.24.wav"
+    },
+    {
+      "id": "8693340",
+      "url": "https://hearthis.at/yaniho/upbeat-progressive-set-suvilahti-helsinki-burning-man-event-08042023/",
+      "title": "Upbeat progressive set @ Suvilahti, Helsinki - Burning Man event , 08.04.2023",
+      "username": "Yaniho",
+      "userPermalink": "yaniho",
+      "durationSec": 3724,
+      "coverUrl": "https://img.hearthis.at/2/7/0/_/uploads/9675121/image_track/8693340/w500_h500_q70_ptrue_v2_----cropped_1694120526072.jpg",
+      "genre": "Progressive House",
+      "streamUrl": "https://hearthis.app/yaniho/upbeat-progressive-set-suvilahti-helsinki-burning-man-event-08042023/listen/?s=yhL",
+      "position": 3,
+      "kind": null,
+      "releaseDate": "2023-04-10 19:01:34",
+      "downloadable": true,
+      "downloadUrl": "https://hearthis.app/yaniho/upbeat-progressive-set-suvilahti-helsinki-burning-man-event-08042023/download/?secret=Lploq",
+      "downloadFilename": "Upbeat progressive set @ Suvilahti, Helsinki - Burning Man event , 08.04.2023.wav"
+    }
+  ]
+}

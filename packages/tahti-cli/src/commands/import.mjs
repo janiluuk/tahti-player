@@ -1,35 +1,17 @@
-import { openAsBlob } from 'node:fs';
 import { readdir, stat } from 'node:fs/promises';
 import { basename, extname, join, relative, resolve } from 'node:path';
 
-import { apiGet, apiPost, CliError, requireToken } from '../api-client.mjs';
+import { apiGet, CliError, requireToken } from '../api-client.mjs';
 import { readAudioTags } from '../audio-tags.mjs';
 import { formatTable } from '../format.mjs';
+import {
+  AUDIO_TYPES,
+  MAX_FILE_BYTES,
+  titleFromFilename,
+  uploadSoundFile,
+} from '../sound-upload.mjs';
 
-/** Extensions the importer picks up, with the content type sent to the API
- * (which only accepts `audio/*`). */
-export const AUDIO_TYPES = {
-  '.mp3': 'audio/mpeg',
-  '.flac': 'audio/flac',
-  '.wav': 'audio/wav',
-  '.aif': 'audio/aiff',
-  '.aiff': 'audio/aiff',
-  '.m4a': 'audio/mp4',
-  '.aac': 'audio/aac',
-  '.ogg': 'audio/ogg',
-  '.opus': 'audio/opus',
-};
-
-/** The API's own limit on one upload (PrepareUploadSchema in @tahti/shared). */
-export const MAX_FILE_BYTES = 2 * 1024 * 1024 * 1024;
-const MAX_TITLE_LENGTH = 200;
-
-/** "01_night-drive.flac" -> "01 night-drive": the file name without its
- * extension, underscores as spaces, trimmed to the API's title limit. */
-export function titleFromFilename(file) {
-  const name = basename(file, extname(file)).replace(/_+/g, ' ').trim();
-  return (name || basename(file)).slice(0, MAX_TITLE_LENGTH);
-}
+export { AUDIO_TYPES, MAX_FILE_BYTES, titleFromFilename };
 
 /** Audio files in `folder`, sorted by path. Hidden files and folders are
  * skipped; subfolders are only entered with `recursive`. */
@@ -66,43 +48,6 @@ export async function findAudioFiles(folder, { recursive = false } = {}) {
   };
   await walk(root);
   return found.sort((a, b) => a.localeCompare(b));
-}
-
-async function uploadFile(path, title, sizeBytes, config, metadata) {
-  const contentType = AUDIO_TYPES[extname(path).toLowerCase()];
-  const prepared = await apiPost(
-    '/api/uploads/prepare',
-    { filename: basename(path), contentType, fileSizeBytes: sizeBytes, title },
-    config,
-  );
-  let put;
-  try {
-    put = await fetch(prepared.uploadUrl, {
-      method: 'PUT',
-      headers: { 'Content-Type': contentType },
-      body: await openAsBlob(path, { type: contentType }),
-    });
-  } catch (error) {
-    throw new CliError(`Upload failed: ${error?.message ?? error}`);
-  }
-  if (!put.ok) {
-    throw new CliError(`Upload failed (HTTP ${put.status})`);
-  }
-  const etag = (put.headers.get('etag') ?? '').replace(/"/g, '');
-  if (!etag) {
-    throw new CliError('Upload failed: storage returned no ETag');
-  }
-  const done = await apiPost(
-    '/api/uploads/complete',
-    {
-      uploadId: prepared.uploadId,
-      etag,
-      title,
-      ...(Object.keys(metadata).length > 0 ? { metadata } : {}),
-    },
-    config,
-  );
-  return done.itemId ?? null;
 }
 
 /**
@@ -164,7 +109,11 @@ export async function importFolder(
       result.status = 'would upload';
     } else {
       try {
-        result.id = await uploadFile(path, title, size, config, metadata);
+        result.id = await uploadSoundFile(config, path, {
+          title,
+          metadata,
+          sizeBytes: size,
+        });
         existing.add(title.toLowerCase());
       } catch (error) {
         result.status = 'failed';
