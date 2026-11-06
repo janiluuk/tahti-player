@@ -1849,6 +1849,8 @@
       "radioDescription": "Listen to the cooperative Tahti Radio stream and schedule."
     },
     "radio": {
+      "expandPlayer": "Expand player",
+      "minimizePlayer": "Minimize player",
       "tabUpNext": "Up next",
       "tabShows": "Shows",
       "tabJustPlayed": "Just played",

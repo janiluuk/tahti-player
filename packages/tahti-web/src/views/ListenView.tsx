@@ -289,6 +289,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
             {recentItems.length > 0 ? (
               <div className="min-w-0">
                 <CardsRow
+                  defaultLayout="cards"
                   data-testid="listen-recently-played"
                   title={t('listen.recentlyPlayed')}
                   filterable={false}
@@ -335,6 +336,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           onRetry={() => sections.retry('onAir')}
         >
           <CardsRow
+            defaultLayout="cards"
             data-testid="listen-on-air"
             title={t('listen.liveNow')}
             badge={t('listen.liveBadge')}
@@ -356,6 +358,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
             label: t('listen.replays'),
             content: (
               <CardsRow
+                defaultLayout="cards"
                 data-testid="listen-replays"
                 title={t('listen.replays')}
                 badge={t('listen.replayBadge')}

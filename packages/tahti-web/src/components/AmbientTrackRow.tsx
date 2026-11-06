@@ -337,6 +337,7 @@ function AmbientTrackRowView({
           size="fill"
           imageReveal={Boolean(coverUrl)}
           isPlaying={isPlaying}
+          hideActivePlay={density === 'dense'}
           onPlay={playable ? onPlay : undefined}
           playLabel={`Play ${title}`}
           pauseLabel={`Pause ${title}`}

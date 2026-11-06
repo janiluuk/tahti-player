@@ -29,6 +29,22 @@ describe('MediaArtwork play / queue', () => {
     expect(play.className).not.toMatch(/bg-primary/);
   });
 
+  it('keeps the pause control at rest while playing unless hideActivePlay', () => {
+    const { rerender } = render(
+      <MediaArtwork size="md" onPlay={vi.fn()} isPlaying />,
+    );
+    expect(screen.getByTestId('media-artwork-play').className).not.toMatch(
+      /group-hover:opacity-100/,
+    );
+
+    rerender(
+      <MediaArtwork size="md" onPlay={vi.fn()} isPlaying hideActivePlay />,
+    );
+    expect(screen.getByTestId('media-artwork-play').className).toMatch(
+      /group-hover:opacity-100/,
+    );
+  });
+
   it('plays on click and queues on Shift+click when onQueue is set', () => {
     const onPlay = vi.fn();
     const onQueue = vi.fn();

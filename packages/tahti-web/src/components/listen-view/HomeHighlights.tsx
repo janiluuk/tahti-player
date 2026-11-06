@@ -136,6 +136,7 @@ export function TahtiSelectsRow() {
       onRetry={selects.retry}
     >
       <CardsRow
+        defaultLayout="cards"
         data-testid="listen-tahti-selects"
         title={t('listen.tahtiSelects')}
         badge={t('listen.curated')}
@@ -173,6 +174,7 @@ export function TrendingRow() {
       onRetry={trending.retry}
     >
       <CardsRow
+        defaultLayout="cards"
         data-testid="listen-trending"
         title={t('listen.trendingThisWeek')}
         filterable={false}
@@ -301,6 +303,7 @@ export function NewReleasesRow() {
       onRetry={releases.retry}
     >
       <CardsRow
+        defaultLayout="cards"
         data-testid="listen-new-releases"
         title={t('listen.newReleases')}
         filterable={false}
