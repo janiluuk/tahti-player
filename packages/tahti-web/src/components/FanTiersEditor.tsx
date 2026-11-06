@@ -65,6 +65,10 @@ export function FanTiersEditor() {
   const [perks, setPerks] = useState<string[]>(['FAN_CHAT']);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const openCreate = () => {
+    setMsg(null);
+    setCreateOpen(true);
+  };
 
   const reload = () => {
     void fetchMyFanTiers().then((r) => {
@@ -91,23 +95,20 @@ export function FanTiersEditor() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-foreground-secondary text-xs">
-          Fan subscription tiers, perks, and pricing.
+          {t('tiers.fanIntro')}
         </p>
         <Tooltip
-          content="New tier"
+          content={t('tiers.newTier')}
           side="bottom"
           wrapperClassName="inline-flex"
         >
           <Button
             size="sm"
-            onClick={() => {
-              setMsg(null);
-              setCreateOpen(true);
-            }}
-            aria-label="New tier"
+            onClick={openCreate}
+            aria-label={t('tiers.newTier')}
           >
             <PlusIcon size={16} aria-hidden className="mr-1.5" />
-            New tier
+            {t('tiers.newTier')}
           </Button>
         </Tooltip>
       </div>
@@ -132,6 +133,12 @@ export function FanTiersEditor() {
         <PageEmpty
           title={t('empties.noTiersYet')}
           description={t('empties.addATierSoFansCan')}
+          action={
+            <Button size="sm" variant="secondary" onClick={openCreate}>
+              <PlusIcon size={16} aria-hidden />
+              {t('tiers.newTier')}
+            </Button>
+          }
         />
       ) : (
         <ul className="flex flex-col gap-2">
