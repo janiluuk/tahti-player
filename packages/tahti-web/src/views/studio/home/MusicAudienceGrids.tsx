@@ -15,6 +15,8 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import { Group, StudioActionTile } from './HomeTiles';
 import type { StudioHomeState } from './useStudioHome';
 
@@ -34,41 +36,42 @@ export function MusicAudienceGrids({
   state: StudioHomeState;
   stripeConfigured: boolean;
 }) {
+  const { t } = useTranslation('web');
   const { counts } = state;
 
   return (
     <>
-      <Group title="Broadcast">
+      <Group title={t('studioHomeGrid.broadcast')}>
         <ShortcutGrid>
           <StudioActionTile
             to="/studio/go-live"
             icon={RadioIcon}
-            label="Go live"
-            subtitle="Keys, signal, on-air"
+            label={t('studioHomeGrid.goLive')}
+            subtitle={t('studioHomeGrid.keysSignalOnAir')}
             color="bg-accent-red"
           />
           <StudioActionTile
             to="/studio/schedule"
             icon={CalendarIcon}
-            label="Schedule"
-            subtitle="Next show & programme"
+            label={t('studioHomeGrid.schedule')}
+            subtitle={t('studioHomeGrid.nextShowProgramme')}
             color="bg-accent-blue"
           />
         </ShortcutGrid>
       </Group>
-      <Group title="Music">
+      <Group title={t('studioHomeGrid.music')}>
         <ShortcutGrid>
           <StudioActionTile
             to="/studio/shows"
             icon={MicIcon}
-            label="Shows"
-            subtitle="Episodes & slots"
+            label={t('studioHomeGrid.shows')}
+            subtitle={t('studioHomeGrid.episodesSlots')}
             color="bg-accent-purple"
           />
           <StudioActionTile
             to="/studio/sounds"
             icon={LibraryBigIcon}
-            label="Music"
+            label={t('studioHomeGrid.music')}
             subtitle={
               counts.sounds ? `${counts.sounds} items` : 'Tracks & files'
             }
@@ -77,14 +80,14 @@ export function MusicAudienceGrids({
           <StudioActionTile
             to="/library/upload"
             icon={UploadCloudIcon}
-            label="Upload"
-            subtitle="Add audio"
+            label={t('studioHomeGrid.upload')}
+            subtitle={t('studioHomeGrid.addAudio')}
             color="bg-accent-blue"
           />
           <StudioActionTile
             to="/studio/collections"
             icon={DiscAlbumIcon}
-            label="Collections"
+            label={t('studioHomeGrid.collections')}
             subtitle={
               counts.collections
                 ? `${counts.collections} collections`
@@ -95,7 +98,7 @@ export function MusicAudienceGrids({
           <StudioActionTile
             to="/studio/releases"
             icon={RocketIcon}
-            label="Releases"
+            label={t('studioHomeGrid.releases')}
             subtitle={
               counts.releases ? `${counts.releases} releases` : 'Share releases'
             }
@@ -105,50 +108,50 @@ export function MusicAudienceGrids({
             <StudioActionTile
               to="/studio/distribution"
               icon={Share2Icon}
-              label="Distribution"
-              subtitle="Delivery status & royalties"
+              label={t('studioHomeGrid.distribution')}
+              subtitle={t('studioHomeGrid.deliveryStatusRoyalties')}
               color="bg-accent-cyan"
             />
           ) : null}
         </ShortcutGrid>
       </Group>
-      <Group title="Audience & channel">
+      <Group title={t('studioHomeGrid.audienceChannel')}>
         <ShortcutGrid>
           <StudioActionTile
             to="/studio/updates"
             icon={NewspaperIcon}
-            label="Posts"
-            subtitle="Updates & newsletter"
+            label={t('studioHomeGrid.posts')}
+            subtitle={t('studioHomeGrid.updatesNewsletter')}
             color="bg-accent-blue"
           />
           <StudioActionTile
             to="/studio/stats"
             icon={BarChart3Icon}
-            label="Stats"
-            subtitle="Plays & downloads"
+            label={t('studioHomeGrid.stats')}
+            subtitle={t('studioHomeGrid.playsDownloads')}
             color="bg-accent-cyan"
           />
           <StudioActionTile
             to="/studio/audience"
             icon={WalletIcon}
-            label="Earnings"
-            subtitle="Orders & grants"
+            label={t('studioHomeGrid.earnings')}
+            subtitle={t('studioHomeGrid.ordersGrants')}
             color="bg-accent-yellow"
           />
           {stripeConfigured ? (
             <StudioActionTile
               to="/studio/stripe"
               icon={CreditCardIcon}
-              label="Stripe"
-              subtitle="Payout account"
+              label={t('studioHomeGrid.stripe')}
+              subtitle={t('studioHomeGrid.payoutAccount')}
               color="bg-accent-yellow"
             />
           ) : null}
           <StudioActionTile
             to="/studio/channel"
             icon={LayoutTemplateIcon}
-            label="Channel look"
-            subtitle="Design & domain"
+            label={t('studioHomeGrid.channelLook')}
+            subtitle={t('studioHomeGrid.designDomain')}
             color="bg-accent-purple"
           />
         </ShortcutGrid>

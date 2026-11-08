@@ -65,6 +65,13 @@ describe('metadataForPath', () => {
       expect(metadataForPath('/library/collections').title).toBe(
         'Kokoelmat · Kirjasto · Tahti',
       );
+      expect(metadataForPath('/u/aino-k').title).toBe('Aino K Tahdissa');
+      expect(metadataForPath('/c/night-shift').description).toBe(
+        'Kuuntele kanavan Night Shift livelähetystä, arkistoa ja ohjelmaa Tahdissa.',
+      );
+      expect(metadataForPath('/').title).toBe(
+        'Tahti · Itsenäistä musiikkia, livenä',
+      );
     } finally {
       await applyLocale('en_US');
     }

@@ -21,7 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [ambient-track-list-mobile.md](ambient-track-list-mobile.md) | Phone: AmbientTrackList/Playable default to list; denser rows + larger art; densities misaligned on narrow |
+| partial | [ambient-track-list-mobile.md](ambient-track-list-mobile.md) | Phone list default shipped; left: AmbientTrackRow phone layout (alignment across densities, larger thumb) — needs a visual pass at 390 px |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | open    | [empty-state-create-ctas.md](empty-state-create-ctas.md) | PageEmpty createables: 30 more shipped 2026-11-08 (#1884-#1888); left: 15 Studio/Library/Radio/community empties + Priority B |
 | open    | [collection-sort-dialog.md](collection-sort-dialog.md) | Sort sounds modal for a collection (icon button, Sort by: own order/latest/A–Z…), arrow-key moves from the drag handle, Move to top; API sort-direction work |

@@ -2,6 +2,8 @@ import { useState, type ReactNode } from 'react';
 
 import { Card, CardGrid, cn } from '@tahti-player/ui';
 
+import { usePhoneViewport } from '../hooks/usePhoneViewport';
+import { resolveTrackListView } from '../lib/trackListViewResolve';
 import {
   useTrackListViewStore,
   type TrackListView,
@@ -74,14 +76,18 @@ export function AmbientTrackList({
   const shouldPersist = initialView ? false : (persistDensity ?? !controlled);
   const storedView = useTrackListViewStore((state) => state.view);
   const storeView = useTrackListViewStore((state) => state.setView);
-  const [internal, setInternal] = useState<AmbientTrackListView>(
-    initialView ?? defaultDensity,
-  );
-  const view: AmbientTrackListView = controlled
-    ? densityProp
-    : shouldPersist
-      ? (storedView ?? defaultDensity)
-      : internal;
+  const [picked, setPicked] = useState<AmbientTrackListView | null>(null);
+  const isPhone = usePhoneViewport();
+  const view: AmbientTrackListView = resolveTrackListView({
+    controlledView: controlled ? densityProp : undefined,
+    persist: shouldPersist,
+    storedView,
+    pickedView: picked,
+    initialView,
+    defaultDensity,
+    isPhone,
+    hasList: Boolean(renderList),
+  });
   const showList = view === 'list' && Boolean(renderList);
   const showGrid = view === 'grid' && allowGrid;
   const density: AmbientTrackRowDensity =
@@ -101,7 +107,7 @@ export function AmbientTrackList({
       if (shouldPersist) {
         storeView(next);
       } else {
-        setInternal(next);
+        setPicked(next);
       }
     }
     if (next !== 'list' && next !== 'grid') {

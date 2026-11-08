@@ -91,11 +91,15 @@ export function AdminDashboardView() {
         <AdminPageLayout current="/admin">
           <div className="flex flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
-              <BreadcrumbCurrent>Dashboard</BreadcrumbCurrent>
+              <BreadcrumbLink to="/admin">
+                {t('adminDashboard.admin')}
+              </BreadcrumbLink>
+              <BreadcrumbCurrent>
+                {t('adminDashboard.dashboard')}
+              </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Dashboard"
+              title={t('adminDashboard.dashboard')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {loading ? (
@@ -112,7 +116,7 @@ export function AdminDashboardView() {
                 </StudioPanel>
               ) : (
                 <>
-                  <StudioPanel title="System health">
+                  <StudioPanel title={t('adminDashboard.systemHealth')}>
                     <div className="grid gap-3 sm:grid-cols-2">
                       {(
                         [
@@ -148,17 +152,17 @@ export function AdminDashboardView() {
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <ButtonLink to="/admin/status" size="sm" variant="text">
-                        Status checks
+                        {t('adminDashboard.statusChecks')}
                       </ButtonLink>
                       <ButtonLink
                         to="/admin/monitoring"
                         size="sm"
                         variant="text"
                       >
-                        Monitoring
+                        {t('adminDashboard.monitoring')}
                       </ButtonLink>
                       <ButtonLink to="/admin/logs" size="sm" variant="text">
-                        View logs
+                        {t('adminDashboard.viewLogs')}
                       </ButtonLink>
                     </div>
                   </StudioPanel>
@@ -198,7 +202,7 @@ export function AdminDashboardView() {
                     ))}
                   </div>
 
-                  <StudioPanel title="Needs action">
+                  <StudioPanel title={t('adminDashboard.needsAction')}>
                     {data.actionRows.length === 0 ? (
                       <PageEmpty title={t('empties.nothingNeedsAction')} />
                     ) : (
@@ -231,7 +235,7 @@ export function AdminDashboardView() {
                                 variant="text"
                                 onClick={() => setSelectedAction(row)}
                               >
-                                View details
+                                {t('adminDashboard.viewDetails')}
                               </Button>
                             </div>
                           </li>
@@ -257,7 +261,9 @@ export function AdminDashboardView() {
                           {selectedAction.actionLabel}”.
                         </Alert>
                         <Dialog.Actions>
-                          <Dialog.Close>Close</Dialog.Close>
+                          <Dialog.Close>
+                            {t('adminDashboard.close')}
+                          </Dialog.Close>
                           <ButtonLink to={selectedAction.href}>
                             {selectedAction.actionLabel}
                           </ButtonLink>
@@ -266,10 +272,11 @@ export function AdminDashboardView() {
                     ) : null}
                   </Dialog.Root>
 
-                  <StudioPanel title="Monitoring">
+                  <StudioPanel title={t('adminDashboard.monitoring')}>
                     <p className="text-foreground-secondary mb-3 text-sm">
-                      Grafana vitals, infrastructure, and container logs for the
-                      production stack.
+                      {t(
+                        'adminDashboard.grafanaVitalsInfrastructureAndContainer',
+                      )}
                     </p>
                     <div className="mb-4 flex flex-wrap gap-2">
                       <ButtonLink
@@ -277,7 +284,7 @@ export function AdminDashboardView() {
                         size="sm"
                         variant="secondary"
                       >
-                        Operations hub
+                        {t('adminDashboard.operationsHub')}
                       </ButtonLink>
                       <ButtonLink
                         to="/admin/logs"
@@ -285,7 +292,7 @@ export function AdminDashboardView() {
                         size="sm"
                         variant="text"
                       >
-                        Container logs
+                        {t('adminDashboard.containerLogs')}
                       </ButtonLink>
                       {(
                         Object.values(GRAFANA_DASHBOARDS) as Array<{
@@ -316,7 +323,7 @@ export function AdminDashboardView() {
                         size="sm"
                         variant="text"
                       >
-                        Grafana Loki
+                        {t('adminDashboard.grafanaLoki')}
                         <ExternalLinkIcon
                           size={12}
                           aria-hidden
@@ -341,7 +348,7 @@ export function AdminDashboardView() {
                                 size="sm"
                                 variant="text"
                               >
-                                Grafana
+                                {t('adminDashboard.grafana')}
                               </ButtonAnchor>
                               <ButtonLink
                                 to="/admin/logs"
@@ -352,7 +359,7 @@ export function AdminDashboardView() {
                                 size="sm"
                                 variant="text"
                               >
-                                Logs
+                                {t('adminDashboard.logs')}
                               </ButtonLink>
                             </div>
                           </li>
@@ -378,7 +385,7 @@ export function AdminDashboardView() {
 
                   {moreOpen ? (
                     <>
-                      <StudioPanel title="Finance YTD">
+                      <StudioPanel title={t('adminDashboard.financeYtd')}>
                         <StatNumber className="block text-3xl">
                           {euros(data.financeYtdCents.surplus)}
                         </StatNumber>
@@ -408,7 +415,7 @@ export function AdminDashboardView() {
                         </StudioPanel>
                       ) : null}
 
-                      <StudioPanel title="Queue health">
+                      <StudioPanel title={t('adminDashboard.queueHealth')}>
                         <ul className="divide-border divide-y">
                           {data.queues.map((queue) => (
                             <li
@@ -427,7 +434,7 @@ export function AdminDashboardView() {
                         </ul>
                       </StudioPanel>
 
-                      <StudioPanel title="Cron jobs">
+                      <StudioPanel title={t('adminDashboard.cronJobs')}>
                         <ul className="divide-border divide-y">
                           {data.cronJobs.map((job) => (
                             <li
@@ -452,7 +459,9 @@ export function AdminDashboardView() {
                         </ul>
                       </StudioPanel>
 
-                      <StudioPanel title="Recent audit events">
+                      <StudioPanel
+                        title={t('adminDashboard.recentAuditEvents')}
+                      >
                         <ul className="divide-border divide-y">
                           {data.audit.map((row) => (
                             <li

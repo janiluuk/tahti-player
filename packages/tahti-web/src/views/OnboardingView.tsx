@@ -242,7 +242,7 @@ export function OnboardingView() {
 
   return (
     <ViewShell
-      title="Welcome to Tahti"
+      title={t('onboarding.welcomeToTahti')}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl' }}
     >
       {loading ? (
@@ -261,7 +261,7 @@ export function OnboardingView() {
                   <div className="flex flex-col gap-6">
                     <div className="flex items-center gap-4">
                       <RoundImageUploadButton
-                        label="Profile photo"
+                        label={t('onboarding.profilePhoto')}
                         value={avatarUrl}
                         sizeClassName="h-16 w-16"
                         accept={AVATAR_UPLOAD_ACCEPT}
@@ -281,7 +281,7 @@ export function OnboardingView() {
                         }}
                       />
                       <p className="text-foreground-secondary text-xs">
-                        Optional — JPEG, PNG, or WebP.
+                        {t('onboarding.optionalJpegPngOrWebp')}
                       </p>
                     </div>
                     <div className="flex flex-col gap-1.5 text-sm">
@@ -289,10 +289,10 @@ export function OnboardingView() {
                         className="text-foreground-secondary text-xs uppercase"
                         aria-hidden
                       >
-                        I am a…
+                        {t('onboarding.iAmA')}
                       </span>
                       <SelectableTiles
-                        aria-label="I am a…"
+                        aria-label={t('onboarding.iAmA')}
                         items={ARTIST_KIND_OPTIONS}
                         selected={artistKind}
                         onChange={(id) =>
@@ -310,7 +310,7 @@ export function OnboardingView() {
                     <div className="grid gap-6 sm:grid-cols-2">
                       <div className="flex flex-col gap-4">
                         <Input
-                          label="Display name"
+                          label={t('onboarding.displayName')}
                           value={displayName}
                           onChange={(e) => setDisplayName(e.target.value)}
                         />
@@ -321,7 +321,7 @@ export function OnboardingView() {
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}
                         rows={9}
-                        placeholder="Tell listeners what you do…"
+                        placeholder={t('onboarding.tellListenersWhatYouDo')}
                       />
                     </div>
                   </div>
@@ -334,7 +334,7 @@ export function OnboardingView() {
                 content: (
                   <div className="flex flex-col gap-4">
                     <Select
-                      label="Country"
+                      label={t('onboarding.country')}
                       value={countryCode}
                       onValueChange={setCountryCode}
                       options={[
@@ -347,17 +347,17 @@ export function OnboardingView() {
                     />
                     <Input
                       autoComplete="address-level2"
-                      label="City / location"
+                      label={t('onboarding.cityLocation')}
                       value={defaultLocation}
                       onChange={(e) => setDefaultLocation(e.target.value)}
-                      description="Optional — shown on your public profile"
+                      description={t('onboarding.optionalShownOnYourPublic')}
                     />
                     <div className="flex flex-col gap-1.5">
                       <Input
                         autoCapitalize="none"
                         autoCorrect="off"
                         spellCheck={false}
-                        label="Your Tahti domain"
+                        label={t('onboarding.yourTahtiDomain')}
                         value={slug}
                         onChange={(e) =>
                           setSlug(
@@ -422,11 +422,10 @@ export function OnboardingView() {
                 content: (
                   <div className="flex flex-col gap-3">
                     <p className="text-foreground-secondary text-sm">
-                      Light or dark? We started you off matching your device —
-                      change it any time in Settings.
+                      {t('onboarding.lightOrDarkWeStarted')}
                     </p>
                     <SelectableTiles
-                      aria-label="Appearance"
+                      aria-label={t('onboarding.appearance')}
                       items={APPEARANCE_OPTIONS}
                       selected={colorMode}
                       onChange={(id) => setColorMode(id as ColorMode)}
@@ -484,7 +483,7 @@ export function OnboardingView() {
               disabled={saving}
               onClick={() => void finish(true)}
             >
-              Skip for now
+              {t('onboarding.skipForNow')}
             </Button>
             <Button
               disabled={saving || (slugChanged && slugStatus === 'taken')}

@@ -1,5 +1,7 @@
+// @vitest-environment jsdom
 import { describe, expect, it } from 'vitest';
 
+import { applyLocale } from './locale';
 import { getPageTourSteps } from './pageTour';
 
 function ids(pathname: string): string[] {
@@ -101,5 +103,44 @@ describe('getPageTourSteps', () => {
     expect(getPageTourSteps('/studio').map((step) => step.id)).not.toContain(
       'disco-widgets',
     );
+  });
+});
+
+describe('page tour text', () => {
+  const paths = [
+    '/',
+    '/studio/fans',
+    '/studio/audience',
+    '/studio/stripe',
+    '/studio/upload',
+    '/library/sounds',
+    '/admin/users',
+    '/radio',
+    '/u/aino',
+    '/some/unknown',
+  ];
+
+  it('resolves every step to real text', () => {
+    for (const path of paths) {
+      for (const step of getPageTourSteps(path)) {
+        expect(step.label).not.toMatch(/pageTour\./);
+        expect(step.description).not.toMatch(/pageTour\./);
+        expect(step.description.length).toBeGreaterThan(10);
+      }
+    }
+  });
+
+  it('reads the tour in Finnish when the language is Finnish', async () => {
+    await applyLocale('fi_FI');
+    try {
+      const steps = getPageTourSteps('/');
+      expect(steps[0]?.label).toBe('Etusivu');
+      expect(steps.find((step) => step.id === 'nav-listen')?.label).toBe(
+        'Kuuntele',
+      );
+    } finally {
+      await applyLocale('en_US');
+    }
+    expect(getPageTourSteps('/')[0]?.label).toBe('Home');
   });
 });
