@@ -50,8 +50,8 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
   return (
     <>
       <StudioPanel
-        title="Press kit story"
-        description="A concise introduction for promoters, venues, and journalists."
+        title={t('pressKit.pressKitStory')}
+        description={t('pressKit.aConciseIntroductionForPromoters')}
       >
         {pressKitError ? (
           <PageError
@@ -70,7 +70,7 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
           <Textarea
             ref={bioRef}
             submitOnModEnter
-            label="Short bio"
+            label={t('pressKit.shortBio')}
             fieldClassName={pressKitError ? 'hidden' : undefined}
             tone="secondary"
             rows={5}
@@ -93,16 +93,20 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
                 }
               >
                 <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-                Download ZIP
+                {t('pressKit.downloadZip')}
               </Button>
             ) : null}
-            <SaveButton disabled={!pressKit} label="Save bio" type="submit" />
+            <SaveButton
+              disabled={!pressKit}
+              label={t('pressKit.saveBio')}
+              type="submit"
+            />
           </div>
         </form>
       </StudioPanel>
       <StudioPanel
-        title="Photos"
-        description="Drop in high-resolution promotional photos. Drag to reorder them; the first included photo leads the preview and download."
+        title={t('pressKit.photos')}
+        description={t('pressKit.dropInHighResolutionPromotional')}
       >
         <FilePicker
           accept={ACCEPTED_IMAGES}
@@ -121,8 +125,7 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
         />
         {images.length === 0 ? (
           <p className="text-foreground-secondary mt-3 text-sm">
-            Your press kit is empty. Add a bio and at least one photo to enable
-            the download.
+            {t('pressKit.yourPressKitIsEmpty')}
           </p>
         ) : (
           <p className="text-foreground-secondary mt-4 mb-3 text-sm">
@@ -163,7 +166,7 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
                     <Input
                       aria-label={`Title for image ${image.position + 1}`}
                       value={image.title ?? ''}
-                      placeholder="Photo title or credit"
+                      placeholder={t('pressKit.photoTitleOrCredit')}
                       onChange={(event) => {
                         const title = event.target.value;
                         setImages((current) =>
@@ -181,7 +184,9 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
                       }
                     />
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs">Include in press kit</span>
+                      <span className="text-xs">
+                        {t('pressKit.includeInPressKit')}
+                      </span>
                       <div className="flex items-center gap-2">
                         <Toggle
                           label={`Include ${image.title || `image ${image.position + 1}`} in press kit`}
@@ -212,8 +217,8 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
         )}
       </StudioPanel>
       <StudioPanel
-        title="Press kit preview"
-        description="What a promoter sees when opening your press kit."
+        title={t('pressKit.pressKitPreview')}
+        description={t('pressKit.whatAPromoterSeesWhen')}
       >
         <PressKitPreview
           displayName={profile?.displayName ?? user?.displayName ?? 'Artist'}

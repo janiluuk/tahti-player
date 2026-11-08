@@ -154,15 +154,17 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
           <ImageIcon size={18} aria-hidden />
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className="text-base font-semibold">Confirm show info</h2>
+          <h2 className="text-base font-semibold">
+            {t('broadcastPreflight.confirmShowInfo')}
+          </h2>
           <p className="text-foreground-secondary mt-0.5 text-xs">
-            Check what listeners will see before you start the encoder.
+            {t('broadcastPreflight.checkWhatListenersWillSee')}
           </p>
         </div>
         <RoundImageUploadButton
           value={avatarUrl}
           onChange={setAvatarUrl}
-          label="Show avatar"
+          label={t('broadcastPreflight.showAvatar')}
           sizeClassName="h-12 w-12"
           upload={uploadAvatar}
         />
@@ -176,31 +178,31 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
       >
         <div className="grid gap-2.5 sm:grid-cols-2">
           <Input
-            label="Show name"
+            label={t('broadcastPreflight.showName')}
             size="sm"
             value={title}
             onChange={(event) => {
               setTitle(event.target.value);
               markDirty();
             }}
-            placeholder="Show name"
+            placeholder={t('broadcastPreflight.showName')}
           />
           <Input
-            label="Tagline"
+            label={t('broadcastPreflight.tagline')}
             size="sm"
             value={tagline}
             onChange={(event) => {
               setTagline(event.target.value);
               markDirty();
             }}
-            placeholder="What is this broadcast about?"
+            placeholder={t('broadcastPreflight.whatIsThisBroadcastAbout')}
             maxLength={200}
           />
         </div>
 
         <div className="mt-2.5 grid gap-2.5 sm:grid-cols-2">
           <Select
-            label="Show type"
+            label={t('broadcastPreflight.showType')}
             value={showType}
             onValueChange={(value) => {
               setShowType(value as BroadcastPreflight['showType']);
@@ -209,7 +211,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
             options={SHOW_TYPE_OPTIONS}
           />
           <Select
-            label="Visibility"
+            label={t('broadcastPreflight.visibility')}
             value={visibility}
             onValueChange={(value) => {
               setVisibility(value as BroadcastPreflight['visibility']);
@@ -222,7 +224,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
         <div className="mt-2.5 grid gap-2.5 sm:grid-cols-[minmax(0,1fr)_7rem]">
           {series.length > 0 && (
             <Select
-              label="Series episode"
+              label={t('broadcastPreflight.seriesEpisode')}
               value={seriesId}
               disabled={Boolean(preflight.plannedLiveShow)}
               onValueChange={(value) => {
@@ -252,7 +254,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
               type="number"
               inputMode="numeric"
               variant="number"
-              label="Episode"
+              label={t('broadcastPreflight.episode')}
               size="sm"
               min={1}
               value={episodeNumber ?? ''}
@@ -263,12 +265,12 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
 
         <div className="border-border/70 mt-3 flex items-center justify-between gap-3 border-t pt-3">
           <p className="text-foreground-secondary text-[11px]">
-            This appears on your channel while you are live.
+            {t('broadcastPreflight.thisAppearsOnYourChannel')}
           </p>
           <SaveButton
             size="sm"
             saving={saving}
-            label="Save show info"
+            label={t('broadcastPreflight.saveShowInfo')}
             type="submit"
           />
         </div>
@@ -278,10 +280,11 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
 }
 
 export function ShowInfoConfirmed() {
+  const { t } = useTranslation('web');
   return (
     <span className="text-accent-green-strong inline-flex items-center gap-1 text-xs font-semibold">
       <CheckCircle2Icon size={15} aria-hidden />
-      Confirmed
+      {t('broadcastPreflight.confirmed')}
     </span>
   );
 }

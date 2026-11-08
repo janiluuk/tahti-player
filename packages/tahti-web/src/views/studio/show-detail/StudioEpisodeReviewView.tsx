@@ -201,7 +201,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
             <>
               <Eyebrow>Episode #{episode.episodeNumber}</Eyebrow>
               <EditIconButton
-                label="Edit details"
+                label={t('episodeReview.editDetails')}
                 editing={editing}
                 onClick={() => {
                   if (!editing) {
@@ -233,8 +233,8 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
 
           {editing ? (
             <StudioPanel
-              title="Public show details"
-              description="What listeners see when they open this show from the Tahti Radio schedule."
+              title={t('episodeReview.publicShowDetails')}
+              description={t('episodeReview.whatListenersSeeWhenThey')}
             >
               <form
                 className="flex flex-col gap-3"
@@ -244,13 +244,13 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                 }}
               >
                 <Input
-                  label="Episode title"
+                  label={t('episodeReview.episodeTitle')}
                   value={publicTitle}
                   onChange={(event) => setPublicTitle(event.target.value)}
                 />
                 <Textarea
                   submitOnModEnter
-                  label="Description"
+                  label={t('episodeReview.description')}
                   tone="secondary"
                   value={publicDescription}
                   onChange={(event) => setPublicDescription(event.target.value)}
@@ -259,7 +259,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                 <div className="flex justify-end">
                   <SaveButton
                     saving={savingDetails}
-                    label="Save public details"
+                    label={t('episodeReview.savePublicDetails')}
                     type="submit"
                   />
                 </div>
@@ -269,8 +269,8 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
 
           {needsApproval && (
             <StudioPanel
-              title="Review before approve"
-              description="Recorded episodes must be approved before they can go live. Trim and normalize, then approve."
+              title={t('episodeReview.reviewBeforeApprove')}
+              description={t('episodeReview.recordedEpisodesMustBeApproved')}
               className="flex flex-col gap-3"
             >
               <div className="grid gap-3 sm:grid-cols-2">
@@ -278,7 +278,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                   type="number"
                   inputMode="decimal"
                   variant="number"
-                  label="Trim start (sec)"
+                  label={t('episodeReview.trimStartSec')}
                   min={0}
                   step={0.1}
                   value={trimStart}
@@ -288,7 +288,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                   type="number"
                   inputMode="decimal"
                   variant="number"
-                  label="Trim end (sec, 0 = full)"
+                  label={t('episodeReview.trimEndSec0Full')}
                   min={0}
                   step={0.1}
                   value={trimEnd}
@@ -296,9 +296,11 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                 />
               </div>
               <div className="flex items-center justify-between gap-3 text-sm">
-                <span>Peak normalize / loudness (stream target)</span>
+                <span>
+                  {t('episodeReview.peakNormalizeLoudnessStreamTarget')}
+                </span>
                 <Toggle
-                  label="Peak normalize / loudness (stream target)"
+                  label={t('episodeReview.peakNormalizeLoudnessStreamTarget')}
                   checked={normalize}
                   onChange={setNormalize}
                 />
@@ -311,7 +313,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                     size="sm"
                     variant="secondary"
                   >
-                    Open full editor
+                    {t('episodeReview.openFullEditor')}
                   </ButtonLink>
                   <Button
                     size="sm"
@@ -330,7 +332,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                     variant="secondary"
                   >
                     <RadioIcon size={14} aria-hidden className="mr-1" />
-                    Go Live to record
+                    {t('episodeReview.goLiveToRecord')}
                   </ButtonLink>
                   <p className="text-foreground-secondary w-full text-xs">
                     After the broadcast ends, open Studio → Recordings to edit
@@ -362,7 +364,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                   size="sm"
                   variant="secondary"
                 >
-                  Open in Library
+                  {t('episodeReview.openInLibrary')}
                 </ButtonLink>
               )}
             </section>
@@ -376,7 +378,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
             size="sm"
             variant="text"
           >
-            Back to show
+            {t('episodeReview.backToShow')}
           </ButtonLink>
         </ViewShell>
       </div>
