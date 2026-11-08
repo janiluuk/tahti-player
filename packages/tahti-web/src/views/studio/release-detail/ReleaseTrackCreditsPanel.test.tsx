@@ -38,6 +38,25 @@ describe('ReleaseTrackCreditsPanel', () => {
     expect(screen.getByText('No credits on this track yet.')).toBeTruthy();
   });
 
+  it('adds the first credit from the empty state', () => {
+    render(
+      <ReleaseTrackCreditsPanel
+        releaseId="r1"
+        tracks={[tracks[1]]}
+        onTrackCreditsSaved={vi.fn()}
+      />,
+    );
+    expect(screen.getAllByRole('button', { name: /Add credit/ })).toHaveLength(
+      1,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /Add credit/ }));
+    expect(screen.getByLabelText('Name for credit 1 on Closer')).toBeTruthy();
+    expect(screen.queryByText('No credits on this track yet.')).toBeNull();
+    expect(screen.getAllByRole('button', { name: /Add credit/ })).toHaveLength(
+      1,
+    );
+  });
+
   it('saves the credits added to one track', async () => {
     const patch = vi
       .spyOn(studio, 'patchReleaseTrackCredits')

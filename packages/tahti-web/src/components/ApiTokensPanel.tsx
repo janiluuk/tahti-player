@@ -1,3 +1,4 @@
+import { KeyRoundIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -112,6 +113,8 @@ export function ApiTokensPanel() {
     });
   };
 
+  const showEmpty = !loadError && tokens.length === 0;
+
   return (
     <SectionShell title={t('settingsBody.account.apiTokensTitle')}>
       <p className="text-foreground-secondary mb-4 text-sm">
@@ -180,6 +183,14 @@ export function ApiTokensPanel() {
             <PageEmpty
               title={t('settingsBody.account.apiTokensEmptyTitle')}
               description={t('settingsBody.account.apiTokensEmptyDescription')}
+              action={
+                adding ? undefined : (
+                  <Button size="sm" onClick={() => setAdding(true)}>
+                    <KeyRoundIcon size={16} aria-hidden />
+                    {t('settingsBody.account.apiTokensNew')}
+                  </Button>
+                )
+              }
             />
           ) : (
             <>
@@ -256,13 +267,16 @@ export function ApiTokensPanel() {
           )}
 
           {!adding ? (
-            <Button
-              size="sm"
-              className="self-start"
-              onClick={() => setAdding(true)}
-            >
-              {t('settingsBody.account.apiTokensNew')}
-            </Button>
+            showEmpty ? null : (
+              <Button
+                size="sm"
+                className="self-start"
+                onClick={() => setAdding(true)}
+              >
+                <KeyRoundIcon size={16} aria-hidden />
+                {t('settingsBody.account.apiTokensNew')}
+              </Button>
+            )
           ) : (
             <form
               className="border-border flex flex-col gap-3 border-t pt-4"

@@ -78,4 +78,17 @@ describe('PurchaseTiersEditor store section', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText('No prices yet')).toBeTruthy();
   });
+
+  it('opens the new price dialog from the empty state', async () => {
+    vi.spyOn(purchaseTiers, 'fetchStoreSettings').mockResolvedValue({
+      ok: true,
+      storeEnabled: false,
+    });
+    render(<PurchaseTiersEditor />);
+    await screen.findByText('No prices yet');
+    fireEvent.click(screen.getByRole('button', { name: 'New tier' }));
+    expect(
+      await screen.findByRole('dialog', { name: 'New purchase tier' }),
+    ).toBeTruthy();
+  });
 });

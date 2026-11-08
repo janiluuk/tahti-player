@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import {
   CalendarClockIcon,
   CalendarDaysIcon,
+  CalendarPlusIcon,
   HistoryIcon,
   PlusIcon,
   Trash2Icon,
@@ -56,9 +57,19 @@ export function StudioEventsView() {
     (event) => new Date(event.startAt).getTime() < now,
   );
 
-  const renderEvents = (items: ArtistEvent[]) =>
+  const renderEvents = (items: ArtistEvent[], withCreate = false) =>
     items.length === 0 ? (
-      <PageEmpty title={t('studioEvents.empty')} />
+      <PageEmpty
+        title={t('studioEvents.empty')}
+        action={
+          withCreate ? (
+            <ButtonLink to="/studio/events/new" size="sm" variant="secondary">
+              <CalendarPlusIcon size={16} aria-hidden />
+              {t('studioEvents.addEvent')}
+            </ButtonLink>
+          ) : undefined
+        }
+      />
     ) : (
       <ul className="flex flex-col gap-2">
         {items.map((event) => (
@@ -159,7 +170,7 @@ export function StudioEventsView() {
                     {loading ? (
                       <PageLoading label={t('studioEvents.loading')} />
                     ) : (
-                      renderEvents(upcomingEvents)
+                      renderEvents(upcomingEvents, true)
                     )}
                   </StudioPanel>
                 ),

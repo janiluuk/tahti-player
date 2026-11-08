@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../../api/artist-settings';
+import { applyLocale } from '../../lib/locale';
 import { ChannelModeratorsPanel } from './ChannelModeratorsPanel';
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
@@ -96,5 +97,23 @@ describe('ChannelModeratorsPanel', () => {
       fireEvent.click(screen.getByRole('button', { name: 'Remove' }));
     });
     expect(remove).toHaveBeenCalledWith('m1');
+  });
+
+  it('shows its chrome in Finnish', async () => {
+    await act(async () => {
+      await applyLocale('fi_FI');
+    });
+    try {
+      await renderPanel([ADA]);
+      expect(screen.getByText('Kanavan moderaattorit')).toBeTruthy();
+      expect(screen.getByLabelText('Käyttäjänimi')).toBeTruthy();
+      expect(
+        screen.getByRole('button', { name: 'Poista Ada Mod moderaattoreista' }),
+      ).toBeTruthy();
+    } finally {
+      await act(async () => {
+        await applyLocale('en_US');
+      });
+    }
   });
 });

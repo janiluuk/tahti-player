@@ -25,6 +25,7 @@ type Props = {
 export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
   const { t } = useTranslation('web');
   const [expanded, setExpanded] = useState(false);
+  const addCredit = () => onChange([...value, { role: 'writer', name: '' }]);
 
   return (
     <div className="border-border rounded-xl border">
@@ -55,7 +56,20 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
       {expanded && (
         <div className="border-border border-t p-4 pt-3">
           {value.length === 0 && (
-            <PageEmpty title={t('empties.noExtraCredits')} />
+            <PageEmpty
+              title={t('empties.noExtraCredits')}
+              action={
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  disabled={disabled}
+                  onClick={addCredit}
+                >
+                  <PlusIcon size={16} aria-hidden />
+                  {t('emptyActions.addCredit')}
+                </Button>
+              }
+            />
           )}
           <ul className="flex flex-col gap-2">
             {value.map((credit, index) => (
@@ -139,16 +153,18 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
               </li>
             ))}
           </ul>
-          <Button
-            size="sm"
-            variant="secondary"
-            className="mt-2"
-            disabled={disabled}
-            onClick={() => onChange([...value, { role: 'writer', name: '' }])}
-          >
-            <PlusIcon size={14} aria-hidden className="mr-1.5" />
-            Add credit
-          </Button>
+          {value.length > 0 && (
+            <Button
+              size="sm"
+              variant="secondary"
+              className="mt-2"
+              disabled={disabled}
+              onClick={addCredit}
+            >
+              <PlusIcon size={14} aria-hidden className="mr-1.5" />
+              {t('emptyActions.addCredit')}
+            </Button>
+          )}
         </div>
       )}
     </div>

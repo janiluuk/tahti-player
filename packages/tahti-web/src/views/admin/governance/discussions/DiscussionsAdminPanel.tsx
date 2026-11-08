@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { PlusIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -27,23 +28,18 @@ import {
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 
-function NewTopicForm({ onCreated }: { onCreated: () => void }) {
-  const [open, setOpen] = useState(false);
+function NewTopicForm({
+  onClose,
+  onCreated,
+}: {
+  onClose: () => void;
+  onCreated: () => void;
+}) {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [pinned, setPinned] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  if (!open) {
-    return (
-      <div>
-        <Button size="sm" onClick={() => setOpen(true)}>
-          Open a topic
-        </Button>
-      </div>
-    );
-  }
 
   const canSubmit = title.trim().length >= 3 && body.trim().length > 0;
 
@@ -64,7 +60,7 @@ function NewTopicForm({ onCreated }: { onCreated: () => void }) {
     setTitle('');
     setBody('');
     setPinned(false);
-    setOpen(false);
+    onClose();
     onCreated();
   };
 
@@ -104,7 +100,7 @@ function NewTopicForm({ onCreated }: { onCreated: () => void }) {
           type="button"
           size="sm"
           variant="text"
-          onClick={() => setOpen(false)}
+          onClick={() => onClose()}
         >
           Cancel
         </Button>
@@ -294,6 +290,8 @@ export function DiscussionsAdminPanel() {
   const [topics, setTopics] = useState<DiscussionTopic[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [composing, setComposing] = useState(false);
+  const showEmpty = !loading && !loadError && topics.length === 0;
 
   const load = useCallback(() => {
     void fetchDiscussionTopics().then((result) => {
@@ -315,7 +313,16 @@ export function DiscussionsAdminPanel() {
       description="Topics members can reply to. Nothing here is a vote; use motions for decisions."
     >
       <div className="flex flex-col gap-4">
-        <NewTopicForm onCreated={load} />
+        {composing ? (
+          <NewTopicForm onClose={() => setComposing(false)} onCreated={load} />
+        ) : loading || showEmpty ? null : (
+          <div>
+            <Button size="sm" onClick={() => setComposing(true)}>
+              <PlusIcon size={16} aria-hidden />
+              {t('adminGovernance.openTopic')}
+            </Button>
+          </div>
+        )}
         {loading ? (
           <PageLoading label={t('loading.loadingTopics')} />
         ) : loadError && topics.length === 0 ? (
@@ -325,7 +332,21 @@ export function DiscussionsAdminPanel() {
             onRetry={load}
           />
         ) : topics.length === 0 ? (
-          <PageEmpty title={t('empties.noTopicsYet')} />
+          <PageEmpty
+            title={t('empties.noTopicsYet')}
+            action={
+              composing ? undefined : (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setComposing(true)}
+                >
+                  <PlusIcon size={16} aria-hidden />
+                  {t('adminGovernance.openTopic')}
+                </Button>
+              )
+            }
+          />
         ) : (
           <ul className="divide-border divide-y" aria-label="Topics">
             {topics.map((topic) => (

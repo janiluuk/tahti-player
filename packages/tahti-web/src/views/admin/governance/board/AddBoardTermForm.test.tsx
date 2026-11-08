@@ -33,8 +33,7 @@ describe('AddBoardTermForm', () => {
       .spyOn(board, 'createAdminBoardTerm')
       .mockResolvedValue({ ok: true });
     const onAdded = vi.fn();
-    render(<AddBoardTermForm onAdded={onAdded} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Add a board term' }));
+    render(<AddBoardTermForm onClose={vi.fn()} onAdded={onAdded} />);
     fireEvent.change(screen.getByLabelText('Member'), {
       target: { value: 'liis' },
     });
@@ -58,8 +57,7 @@ describe('AddBoardTermForm', () => {
 
   it('asks for the member and start day first', () => {
     const create = vi.spyOn(board, 'createAdminBoardTerm');
-    render(<AddBoardTermForm onAdded={vi.fn()} />);
-    fireEvent.click(screen.getByRole('button', { name: 'Add a board term' }));
+    render(<AddBoardTermForm onClose={vi.fn()} onAdded={vi.fn()} />);
     fireEvent.click(screen.getByRole('button', { name: 'Save term' }));
     expect(screen.getByRole('alert')).toHaveTextContent(
       'Choose the member and the day the term starts.',

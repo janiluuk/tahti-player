@@ -57,6 +57,7 @@ export const TracklistEditor: FC<Props> = ({
   onChange,
 }) => {
   const { t } = useTranslation('web');
+  const pinInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedId, setSelectedId] = useState<string | null>(
     value[0]?.id ?? null,
@@ -176,7 +177,19 @@ export const TracklistEditor: FC<Props> = ({
     <ol className="border-border divide-border divide-y rounded-xl border">
       {value.length === 0 ? (
         <li className="list-none p-4">
-          <PageEmpty title={t('empties.noTracksAdded')} />
+          <PageEmpty
+            title={t('empties.noTracksAdded')}
+            action={
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => pinInputRef.current?.focus()}
+              >
+                <MapPinPlusIcon size={16} aria-hidden />
+                {t('emptyActions.addPin')}
+              </Button>
+            }
+          />
         </li>
       ) : (
         value.map((entry, index) => (
@@ -255,6 +268,7 @@ export const TracklistEditor: FC<Props> = ({
                   }}
                 >
                   <Input
+                    ref={pinInputRef}
                     label="Add track name"
                     placeholder="Artist — title"
                     value={newTitle}

@@ -458,6 +458,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                                           kind: 'release-tracks',
                                           id: t.source.id,
                                         },
+                                        search: { release: release.id },
                                       });
                                     },
                                   }}
@@ -623,7 +624,12 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                   id: 'stats',
                   label: t('studioReleaseDetail.tabStats'),
                   icon: <BarChart3Icon size={14} />,
-                  content: <ReleaseStatsPanel tracks={release.tracks ?? []} />,
+                  content: (
+                    <ReleaseStatsPanel
+                      releaseId={release.id}
+                      tracks={release.tracks ?? []}
+                    />
+                  ),
                 },
                 {
                   id: 'advanced',

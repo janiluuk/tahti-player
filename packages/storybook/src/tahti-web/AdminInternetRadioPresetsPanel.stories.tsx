@@ -46,6 +46,13 @@ const withoutYleXPreset: Decorator = (Story) => {
   return <Story />;
 };
 
+const withoutPresets: Decorator = (Story) => {
+  for (const preset of listMockInternetRadioPresets()) {
+    deleteMockInternetRadioPreset(preset.id);
+  }
+  return <Story />;
+};
+
 export default meta;
 type Story = StoryObj<typeof meta>;
 
@@ -175,5 +182,18 @@ export const EditStation: Story = {
     await expect(
       dialog.getByRole('button', { name: 'Save changes' }),
     ).toBeVisible();
+  },
+};
+
+/** No presets yet: the empty state offers Add station. */
+export const Empty: Story = {
+  decorators: [withoutPresets],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByText('No internet radio stations yet');
+    const adds = canvas.getAllByRole('button', { name: 'Add station' });
+    await expect(adds).toHaveLength(2);
+    await userEvent.click(adds[1]!);
+    await findDialog(canvasElement, 'Add internet radio station');
   },
 };

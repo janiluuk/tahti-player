@@ -20,11 +20,26 @@ export function CreditsEditor({
   busy: boolean;
 }) {
   const { t } = useTranslation('web');
+  const addCredit = () =>
+    setCredits([...credits, { role: 'writer', name: '' }]);
   return (
     <div>
       <p className="mb-2 text-xs font-medium">Credits & roles</p>
       {credits.length === 0 && (
-        <PageEmpty title={t('empties.noDistributionCredits')} />
+        <PageEmpty
+          title={t('empties.noDistributionCredits')}
+          action={
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={busy}
+              onClick={addCredit}
+            >
+              <PlusIcon size={16} aria-hidden />
+              {t('emptyActions.addCredit')}
+            </Button>
+          }
+        />
       )}
       <ul className="flex flex-col gap-2">
         {credits.map((credit, index) => (
@@ -99,16 +114,18 @@ export function CreditsEditor({
           </li>
         ))}
       </ul>
-      <Button
-        size="sm"
-        variant="secondary"
-        className="mt-2"
-        disabled={busy}
-        onClick={() => setCredits([...credits, { role: 'writer', name: '' }])}
-      >
-        <PlusIcon size={14} aria-hidden className="mr-1.5" />
-        Add credit
-      </Button>
+      {credits.length > 0 && (
+        <Button
+          size="sm"
+          variant="secondary"
+          className="mt-2"
+          disabled={busy}
+          onClick={addCredit}
+        >
+          <PlusIcon size={14} aria-hidden className="mr-1.5" />
+          {t('emptyActions.addCredit')}
+        </Button>
+      )}
     </div>
   );
 }

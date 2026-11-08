@@ -177,7 +177,21 @@ export function MasteringPanel({ editList, onChange }: Props) {
 
             <div className="flex flex-row items-start gap-3 overflow-x-auto pb-2">
               {visiblePluginChain.length === 0 ? (
-                <PageEmpty title={t('empties.noAudioAddonsInChain')} />
+                <PageEmpty
+                  title={t('empties.noAudioAddonsInChain')}
+                  action={
+                    addablePluginIds.length > 0 ? (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => setPickerOpen(true)}
+                      >
+                        <PlusIcon size={16} aria-hidden />
+                        {t('emptyActions.addAudioAddon')}
+                      </Button>
+                    ) : undefined
+                  }
+                />
               ) : (
                 visiblePluginChain.map((id) => {
                   const meta = AUDIO_FX_PLUGINS[id];
@@ -269,7 +283,7 @@ export function MasteringPanel({ editList, onChange }: Props) {
                 })
               )}
 
-              {addablePluginIds.length > 0 && (
+              {visiblePluginChain.length > 0 && addablePluginIds.length > 0 && (
                 <Button
                   size="sm"
                   variant="secondary"
@@ -277,7 +291,7 @@ export function MasteringPanel({ editList, onChange }: Props) {
                   className="shrink-0 self-start"
                 >
                   <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                  Add audio add-on
+                  {t('emptyActions.addAudioAddon')}
                 </Button>
               )}
             </div>

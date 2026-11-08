@@ -107,5 +107,10 @@ export const Empty: Story = {
     const empty = await canvas.findByText('No events listed yet');
     // The tab panel fades in from opacity 0 on mount.
     await waitFor(() => expect(empty).toBeVisible());
+    const addLinks = canvas.getAllByRole('link', { name: 'Add event' });
+    await expect(addLinks).toHaveLength(2);
+    for (const link of addLinks) {
+      await expect(link).toHaveAttribute('href', '/studio/events/new');
+    }
   },
 };

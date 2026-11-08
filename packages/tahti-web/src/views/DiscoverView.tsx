@@ -1,9 +1,10 @@
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import {
   ChevronDownIcon,
   CompassIcon,
   MapPinIcon,
   NewspaperIcon,
+  PlusIcon,
   SlidersHorizontalIcon,
   UsersIcon,
   UsersRoundIcon,
@@ -14,6 +15,7 @@ import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import {
   Button,
+  ButtonLink,
   FilterChips,
   Masonry,
   Select,
@@ -67,6 +69,10 @@ import { GroupsDirectory } from '../components/GroupsDirectory';
 import { LatestNewsWidget } from '../components/LatestNewsWidget';
 import { HomeNews } from '../components/listen-view/HomeNews';
 import { PageError, PageLoading } from '../components/PageStates';
+import {
+  PHONE_SCROLL_TAB_LIST,
+  useSelectedTabInView,
+} from '../components/SectionTabs';
 import { VenuesDirectory } from '../components/VenuesDirectory';
 import { CONTENT_TYPES } from '../content/contentTypes';
 import { hasAccountRole } from '../lib/accountRoles';
@@ -114,6 +120,13 @@ const DISCOVER_TABS: Array<{
   { id: 'groups', labelKey: 'discover.tabGroups', icon: UsersRoundIcon },
   { id: 'venues', labelKey: 'discover.tabVenues', icon: MapPinIcon },
 ];
+
+function discoverTabLabelKey(tab: DiscoverTab): ParseKeys<'web'> {
+  return (
+    DISCOVER_TABS.find((item) => item.id === tab)?.labelKey ??
+    'discover.tabDiscover'
+  );
+}
 
 export function DiscoverView() {
   const { t } = useTranslation('web');
@@ -165,6 +178,10 @@ export function DiscoverView() {
   const [reloadKey, setReloadKey] = useState(0);
   const search = useSearch({ strict: false }) as { tab?: string };
   const activeTab = discoverTabFromSearch(search.tab);
+  const activeTabIndex = DISCOVER_TABS.findIndex(
+    (item) => item.id === activeTab,
+  );
+  const tabRowRef = useSelectedTabInView(activeTabIndex);
   const navigate = useNavigate();
 
   const filters = useMemo(
@@ -381,36 +398,42 @@ export function DiscoverView() {
   return (
     <div className="relative flex w-full max-w-7xl flex-col gap-3 sm:gap-4">
       <DiscoverGatewayBackground />
-      <Tabs.Root
-        selectedIndex={Math.max(
-          0,
-          DISCOVER_TABS.findIndex((item) => item.id === activeTab),
-        )}
-        onChange={(index) => {
-          const next = DISCOVER_TABS[index];
-          if (!next) {
-            return;
-          }
-          void navigate({
-            to: '/discover',
-            search: next.id === 'discover' ? {} : { tab: next.id },
-          });
-        }}
-      >
-        <Tabs.List aria-label={t('discover.sections')}>
-          {DISCOVER_TABS.map((item) => (
-            <Tabs.Tab key={item.id}>
-              <span data-testid={`discover-tab-${item.id}`}>
-                <TabLabel icon={<item.icon size={14} />}>
-                  {t(item.labelKey)}
-                </TabLabel>
-              </span>
-            </Tabs.Tab>
-          ))}
-        </Tabs.List>
-      </Tabs.Root>
+      <div ref={tabRowRef} className="min-w-0">
+        <Tabs.Root
+          selectedIndex={Math.max(0, activeTabIndex)}
+          onChange={(index) => {
+            const next = DISCOVER_TABS[index];
+            if (!next) {
+              return;
+            }
+            void navigate({
+              to: '/discover',
+              search: next.id === 'discover' ? {} : { tab: next.id },
+            });
+          }}
+        >
+          <Tabs.List
+            aria-label={t('discover.sections')}
+            className={PHONE_SCROLL_TAB_LIST}
+          >
+            {DISCOVER_TABS.map((item) => (
+              <Tabs.Tab key={item.id}>
+                <span data-testid={`discover-tab-${item.id}`}>
+                  <TabLabel icon={<item.icon size={14} />}>
+                    {t(item.labelKey)}
+                  </TabLabel>
+                </span>
+              </Tabs.Tab>
+            ))}
+          </Tabs.List>
+        </Tabs.Root>
+      </div>
       <ViewShell
-        title={t('nav.discover')}
+        title={
+          activeTab === 'discover'
+            ? t('nav.discover')
+            : t(discoverTabLabelKey(activeTab))
+        }
         classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         actions={
           activeTab === 'discover' ? (
@@ -423,19 +446,14 @@ export function DiscoverView() {
       >
         {activeTab === 'venues' ? (
           <header className="mb-4 flex flex-wrap items-center gap-2">
-            <Link
-              to="/venues/register"
-              className="text-sm font-medium underline-offset-2 hover:underline"
-            >
+            <ButtonLink to="/venues/register" size="sm" className="gap-1.5">
+              <PlusIcon size={15} aria-hidden />
               {t('discover.registerVenue')}
-            </Link>
+            </ButtonLink>
             {user ? (
-              <Link
-                to="/venues/mine"
-                className="text-sm font-medium underline-offset-2 hover:underline"
-              >
+              <ButtonLink to="/venues/mine" size="sm" variant="secondary">
                 {t('discover.myVenues')}
-              </Link>
+              </ButtonLink>
             ) : null}
           </header>
         ) : null}

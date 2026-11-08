@@ -51,10 +51,12 @@ export function ChannelModeratorsPanel() {
       setUsername('');
       const created = result.data;
       toastWithUndo(
-        `Added ${created.displayName} as moderator. They've been notified.`,
+        t('channelModerators.added', { name: created.displayName }),
         {
           undo: () => removeModerator(created.id),
-          undoneMessage: `Removed ${created.displayName}.`,
+          undoneMessage: t('channelModerators.undone', {
+            name: created.displayName,
+          }),
           onUndone: () => reload(),
         },
       );
@@ -64,8 +66,8 @@ export function ChannelModeratorsPanel() {
 
   return (
     <StudioPanel
-      title="Channel moderators"
-      description="People you trust to look after your channel's chat: they can remove messages and ban people from posting. They cannot change your channel or its settings. Tahti tells them when you add them."
+      title={t('channelModerators.title')}
+      description={t('channelModerators.description')}
     >
       <div className="flex flex-col gap-4">
         {loading ? (
@@ -82,11 +84,13 @@ export function ChannelModeratorsPanel() {
                 <span>
                   {moderator.displayName} (@{moderator.username})
                 </span>
-                <Tooltip content="Remove moderator" side="top">
+                <Tooltip content={t('channelModerators.remove')} side="top">
                   <Button
                     size="icon-sm"
                     variant="text"
-                    aria-label={`Remove ${moderator.displayName} as moderator`}
+                    aria-label={t('channelModerators.removeNamed', {
+                      name: moderator.displayName,
+                    })}
                     onClick={() => setPendingRemove(moderator)}
                   >
                     <Trash2Icon
@@ -112,17 +116,17 @@ export function ChannelModeratorsPanel() {
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            label="Username"
+            label={t('channelModerators.username')}
             value={username}
             onChange={(event) => setUsername(event.target.value)}
-            placeholder="listener-handle"
+            placeholder={t('channelModerators.usernamePlaceholder')}
             className="min-w-0 sm:min-w-48"
           />
-          <Tooltip content="Add moderator" side="top">
+          <Tooltip content={t('channelModerators.add')} side="top">
             <Button
               size="icon-sm"
               disabled={!handle}
-              aria-label="Add moderator"
+              aria-label={t('channelModerators.add')}
               type="submit"
             >
               <UserRoundPlusIcon size={15} aria-hidden />
@@ -135,11 +139,13 @@ export function ChannelModeratorsPanel() {
         destructive
         title={
           pendingRemove
-            ? `Remove ${pendingRemove.displayName} as moderator?`
-            : 'Remove moderator?'
+            ? t('channelModerators.removeConfirmNamed', {
+                name: pendingRemove.displayName,
+              })
+            : t('channelModerators.removeConfirm')
         }
-        description="They lose chat moderation on this channel."
-        confirmLabel="Remove"
+        description={t('channelModerators.removeConfirmDescription')}
+        confirmLabel={t('actions.remove')}
         onCancel={() => setPendingRemove(null)}
         onConfirm={() => {
           const moderator = pendingRemove;

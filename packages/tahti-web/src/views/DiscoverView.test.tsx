@@ -152,6 +152,22 @@ describe('DiscoverView', () => {
     expect(container.textContent).toContain('Register a venue');
   });
 
+  it('keeps the section tabs on one scrollable row instead of wrapping', async () => {
+    const { container } = await renderDiscover('/discover?tab=venues');
+    const tablist = container.querySelector('[role="tablist"]');
+    expect(tablist?.className).toContain('flex-nowrap');
+    expect(tablist?.className).toContain('overflow-x-auto');
+  });
+
+  it('shows Register a venue as a button link', async () => {
+    const { container } = await renderDiscover('/discover?tab=venues');
+    const register = Array.from(container.querySelectorAll('a')).find(
+      (a) => a.textContent === 'Register a venue',
+    );
+    expect(register?.getAttribute('href')).toBe('/venues/register');
+    expect(register?.className).toContain('h-9');
+  });
+
   it('links a signed-in visitor to their own venues', async () => {
     const { container } = await renderDiscover('/discover?tab=venues');
     expect(container.textContent).not.toContain('My venues');
@@ -182,6 +198,17 @@ describe('DiscoverView', () => {
     expect(
       container.querySelector('[aria-label="Browse artists"]'),
     ).not.toBeNull();
+  });
+
+  it.each([
+    ['/discover', 'Discover'],
+    ['/discover?tab=artists', 'Artists'],
+    ['/discover?tab=venues', 'Venues'],
+    ['/discover?tab=groups', 'Groups'],
+  ])('titles %s with its own heading', async (path, heading) => {
+    const { container } = await renderDiscover(path);
+
+    expect(container.querySelector('h1')?.textContent).toBe(heading);
   });
 
   describe('allOrSpecific', () => {

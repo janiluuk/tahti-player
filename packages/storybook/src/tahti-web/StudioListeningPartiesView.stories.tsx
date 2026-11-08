@@ -78,8 +78,12 @@ export const ConfirmCancel: Story = {
 export const Empty: Story = {
   parameters: { mockData: mockData({ myListeningParties: () => [] }) },
   play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
     await expectVisible(
-      await within(canvasElement).findByText('No listening parties scheduled'),
+      await canvas.findByText('No listening parties scheduled'),
     );
+    await expect(
+      canvas.getByRole('link', { name: 'Schedule party' }),
+    ).toHaveAttribute('href', '/studio/listening-parties/new');
   },
 };

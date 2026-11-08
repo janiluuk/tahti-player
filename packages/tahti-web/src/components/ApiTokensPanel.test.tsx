@@ -174,4 +174,15 @@ describe('ApiTokensPanel', () => {
     });
     expect(create).toHaveBeenCalledWith('cli', ['read'], undefined);
   });
+
+  it('offers New token on the empty state and hides it while adding', async () => {
+    await renderPanel([]);
+    expect(screen.getByText('No API tokens yet')).toBeTruthy();
+    expect(screen.getAllByRole('button', { name: 'New token' })).toHaveLength(
+      1,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'New token' }));
+    expect(screen.queryByRole('button', { name: 'New token' })).toBeNull();
+    expect(screen.getByRole('button', { name: 'Create token' })).toBeTruthy();
+  });
 });

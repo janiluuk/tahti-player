@@ -1,14 +1,19 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import type { ReactNode } from 'react';
+import { fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { MediaArtworkDefaultProvider } from '@tahti-player/ui';
+
 import * as client from '../api/client';
+import { renderWithRouter } from '../test/renderWithRouter';
 import { VenuesDirectory } from './VenuesDirectory';
 
-vi.mock('@tanstack/react-router', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@tanstack/react-router')>()),
-  Link: ({ children }: { children: ReactNode }) => <a>{children}</a>,
-}));
+const renderDirectory = () =>
+  renderWithRouter(
+    <MediaArtworkDefaultProvider value={(seed) => `/artwork/${seed}.webp`}>
+      <VenuesDirectory />
+    </MediaArtworkDefaultProvider>,
+    { paths: ['/v/$slug', '/venues/register'] },
+  );
 
 const venue = {
   id: 'v1',
@@ -30,8 +35,8 @@ describe('VenuesDirectory', () => {
       data: [{ ...venue, photos: ['https://cdn.example.com/kaiku.jpg'] }],
       meta: { source: 'api' },
     } as Awaited<ReturnType<typeof client.fetchVenues>>);
-    const { container } = render(<VenuesDirectory />);
-    await screen.findByText('View venue →');
+    const { container } = await renderDirectory();
+    await screen.findByRole('link', { name: 'View venue' });
     expect(
       container.querySelector('img[src="https://cdn.example.com/kaiku.jpg"]'),
     ).toBeTruthy();
@@ -50,8 +55,8 @@ describe('VenuesDirectory', () => {
       ],
       meta: { source: 'api' },
     } as Awaited<ReturnType<typeof client.fetchVenues>>);
-    const { container } = render(<VenuesDirectory />);
-    await screen.findByText('View venue →');
+    const { container } = await renderDirectory();
+    await screen.findByRole('link', { name: 'View venue' });
     expect(
       container.querySelector('img[src="https://cdn.example.com/wide.jpg"]'),
     ).toBeTruthy();
@@ -62,7 +67,7 @@ describe('VenuesDirectory', () => {
       data: [],
       meta: { source: 'api', reason: 'HTTP 502' },
     } as Awaited<ReturnType<typeof client.fetchVenues>>);
-    render(<VenuesDirectory />);
+    await renderDirectory();
     expect(await screen.findByText('Could not load venues')).toBeTruthy();
     expect(screen.queryByText('No verified venues')).toBeNull();
 
@@ -72,5 +77,28 @@ describe('VenuesDirectory', () => {
     } as Awaited<ReturnType<typeof client.fetchVenues>>);
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText('Kaiku')).toBeTruthy();
+  });
+
+  it('shows the default artwork and a View venue button when a venue has no photo', async () => {
+    vi.spyOn(client, 'fetchVenues').mockResolvedValue({
+      data: [{ ...venue, photos: [] }],
+      meta: { source: 'api' },
+    } as Awaited<ReturnType<typeof client.fetchVenues>>);
+    const { container } = await renderDirectory();
+    const view = await screen.findByRole('link', { name: 'View venue' });
+    expect(view.getAttribute('href')).toBe('/v/kaiku');
+    expect(
+      container.querySelector('img[src="/artwork/kaiku.webp"]'),
+    ).toBeTruthy();
+  });
+
+  it('offers Register a venue as a button link when there are none', async () => {
+    vi.spyOn(client, 'fetchVenues').mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    } as Awaited<ReturnType<typeof client.fetchVenues>>);
+    await renderDirectory();
+    const link = await screen.findByRole('link', { name: 'Register a venue' });
+    expect(link.getAttribute('href')).toBe('/venues/register');
   });
 });

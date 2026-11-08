@@ -57,14 +57,14 @@ describe('ReleaseStatsPanel', () => {
   });
 
   it('totals plays, downloads and countries across the tracks', async () => {
-    render(<ReleaseStatsPanel tracks={tracks} />);
+    render(<ReleaseStatsPanel releaseId="rel-1" tracks={tracks} />);
     expect(await screen.findByText('40')).toBeTruthy();
     expect(screen.getByText('7')).toBeTruthy();
     expect(screen.getByText('FI 6')).toBeTruthy();
   });
 
   it('colours plays and downloads like the Studio stats tiles', async () => {
-    render(<ReleaseStatsPanel tracks={tracks} />);
+    render(<ReleaseStatsPanel releaseId="rel-1" tracks={tracks} />);
     const plays = await screen.findByText('40');
     expect(plays.closest<HTMLElement>('[data-tone]')?.dataset.tone).toBe(
       'blue',
@@ -75,7 +75,7 @@ describe('ReleaseStatsPanel', () => {
   });
 
   it('ranks tracks by plays and opens a track insights page', async () => {
-    render(<ReleaseStatsPanel tracks={tracks} />);
+    render(<ReleaseStatsPanel releaseId="rel-1" tracks={tracks} />);
     await screen.findByText('Loud One');
     const labels = screen
       .getAllByText(/ One$/)
@@ -85,11 +85,12 @@ describe('ReleaseStatsPanel', () => {
     expect(navigate).toHaveBeenCalledWith({
       to: '/studio/insights/$kind/$id',
       params: { kind: 'release-tracks', id: 't1' },
+      search: { release: 'rel-1' },
     });
   });
 
   it('asks for tracks when the release has none', () => {
-    render(<ReleaseStatsPanel tracks={[]} />);
+    render(<ReleaseStatsPanel releaseId="rel-1" tracks={[]} />);
     expect(screen.getByText('No tracks yet')).toBeTruthy();
   });
 });

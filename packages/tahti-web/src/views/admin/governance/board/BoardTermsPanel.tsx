@@ -1,7 +1,8 @@
+import { UserPlusIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Badge } from '@tahti-player/ui';
+import { Badge, Button } from '@tahti-player/ui';
 
 import {
   fetchAdminBoardTerms,
@@ -43,6 +44,7 @@ export function BoardTermsPanel() {
   const { t } = useTranslation('web');
   const [terms, setTerms] = useState<AdminBoardTerm[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [composing, setComposing] = useState(false);
 
   const load = useCallback(async () => {
     const result = await fetchAdminBoardTerms();
@@ -63,10 +65,21 @@ export function BoardTermsPanel() {
           b.termStart.localeCompare(a.termStart),
       )
     : null;
+  const showEmpty = sorted?.length === 0 && !loadError;
 
   return (
     <StudioPanel title="Board terms">
-      <AddBoardTermForm onAdded={() => void load()} />
+      {composing ? (
+        <AddBoardTermForm
+          onClose={() => setComposing(false)}
+          onAdded={() => void load()}
+        />
+      ) : sorted === null || showEmpty ? null : (
+        <Button size="sm" className="w-fit" onClick={() => setComposing(true)}>
+          <UserPlusIcon size={16} aria-hidden />
+          {t('adminGovernance.addBoardTerm')}
+        </Button>
+      )}
       {sorted === null ? (
         <PageLoading label={t('loading.loadingBoardTerms')} />
       ) : loadError && sorted.length === 0 ? (
@@ -79,7 +92,21 @@ export function BoardTermsPanel() {
           }}
         />
       ) : sorted.length === 0 ? (
-        <PageEmpty title={t('empties.noBoardTermsRecordedYet')} />
+        <PageEmpty
+          title={t('empties.noBoardTermsRecordedYet')}
+          action={
+            composing ? undefined : (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setComposing(true)}
+              >
+                <UserPlusIcon size={16} aria-hidden />
+                {t('adminGovernance.addBoardTerm')}
+              </Button>
+            )
+          }
+        />
       ) : (
         <ul className="divide-border divide-y">
           {sorted.map((term) => {
