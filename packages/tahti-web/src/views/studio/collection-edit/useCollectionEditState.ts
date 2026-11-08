@@ -20,6 +20,7 @@ import type {
 } from '../../../api/studio-types';
 import { useImageSlotChrome } from '../../../components/imageSlot/useImageSlotChrome';
 import { collectionItemToTrack } from '../../../lib/collectionTrackMapping';
+import { apiTrackSortMode, type SoundSortMode } from '../../../lib/sortSounds';
 import { toastWithUndo } from '../../../lib/undoToast';
 import { useCollectionImages } from './useCollectionImages';
 import { useCollectionPlayback } from './useCollectionPlayback';
@@ -222,6 +223,30 @@ export function useCollectionEditState(slug: string) {
     });
   };
 
+  const saveSoundOrder = async (
+    ids: string[],
+    mode: SoundSortMode,
+  ): Promise<{ ok: true } | { ok: false; error: string }> => {
+    const reordered = await reorderStudioCollectionItems(slug, ids);
+    if (!reordered.ok) {
+      return reordered;
+    }
+    const nextMode = apiTrackSortMode(mode);
+    if (nextMode !== trackSortMode) {
+      const patched = await patchStudioCollection(slug, {
+        trackSortMode: nextMode,
+      });
+      if (!patched.ok) {
+        return patched;
+      }
+      setTrackSortMode(nextMode);
+    }
+    const byId = new Map(items.map((item) => [item.id, item]));
+    const next = ids.flatMap((id) => byId.get(id) ?? []);
+    setCol((c) => (c ? { ...c, items: next, trackSortMode: nextMode } : c));
+    return { ok: true };
+  };
+
   const saveMeta = async () => {
     setSaving(true);
     try {
@@ -335,6 +360,7 @@ export function useCollectionEditState(slug: string) {
     addSound,
     removeAddedSound,
     onReorder,
+    saveSoundOrder,
     saveMeta,
     refreshItems,
     backdropChrome,

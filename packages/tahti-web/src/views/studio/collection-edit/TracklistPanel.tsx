@@ -1,7 +1,13 @@
-import { TrackTable } from '@tahti-player/ui';
+import { ArrowUpDownIcon } from 'lucide-react';
+import { useMemo, useState } from 'react';
+
+import { useTranslation } from '@tahti-player/i18n';
+import { Button, Tooltip, TrackTable } from '@tahti-player/ui';
 
 import { CollectionTrackList } from '../../../components/CollectionTrackList';
+import { SortSoundsDialog } from '../../../components/SortSoundsDialog';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { soundSortModeFromApi } from '../../../lib/sortSounds';
 import { trackTableLabels } from '../../../lib/trackTableLabels';
 import { useStudioContributions } from '../useStudioContributions';
 import { NowPlayingBar } from './NowPlayingBar';
@@ -28,13 +34,41 @@ export function TracklistPanel({
     togglePlayItem,
     onReorder,
     setPendingRemove,
+    saveSoundOrder,
+    trackSortMode,
   } = state;
+  const { t } = useTranslation('web');
   const { rowHeight, getTrackAnnotation } = useStudioContributions(items);
+  const [sortOpen, setSortOpen] = useState(false);
+  const sortable = useMemo(
+    () =>
+      items.map((item) => ({
+        id: item.id,
+        title: item.sound?.title ?? item.release?.title ?? item.id,
+        date: item.sound?.createdAt ?? item.release?.releaseDate ?? null,
+        artworkUrl: item.sound?.bannerUrl ?? item.release?.artworkUrl ?? null,
+      })),
+    [items],
+  );
 
   return (
     <StudioPanel
       title={isAlbumLike ? 'Tracklist' : 'Items'}
       description={`${items.length} track${items.length === 1 ? '' : 's'}`}
+      action={
+        editing && items.length > 1 ? (
+          <Tooltip content={t('sortSounds.open')} side="top">
+            <Button
+              size="icon-sm"
+              variant="secondary"
+              aria-label={t('sortSounds.open')}
+              onClick={() => setSortOpen(true)}
+            >
+              <ArrowUpDownIcon size={16} aria-hidden />
+            </Button>
+          </Tooltip>
+        ) : undefined
+      }
     >
       <div className="mb-3 flex flex-col gap-3">
         {nowPlayingItem?.sound && (
@@ -133,6 +167,13 @@ export function TracklistPanel({
           />
         </div>
       )}
+      <SortSoundsDialog
+        isOpen={sortOpen}
+        sounds={sortable}
+        initialMode={soundSortModeFromApi(trackSortMode)}
+        onSave={saveSoundOrder}
+        onClose={() => setSortOpen(false)}
+      />
     </StudioPanel>
   );
 }

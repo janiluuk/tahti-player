@@ -3907,6 +3907,26 @@
       "newSupportRequest": "New request",
       "writeBio": "Write a bio",
       "uploadTrack": "Upload track"
+    },
+    "sortSounds": {
+      "title": "Sort sounds",
+      "sortBy": "Sort by",
+      "hint": "Drag an entry, or click its handle and move it with the arrow keys (Home and End jump to the ends).",
+      "handle": "Reorder {{title}}",
+      "moved": "{{title}} moved to position {{position}} of {{count}}",
+      "toTop": "Move to top",
+      "toBottom": "Move to bottom",
+      "toTopNamed": "Move {{title}} to top",
+      "toBottomNamed": "Move {{title}} to bottom",
+      "save": "Save order",
+      "open": "Sort sounds",
+      "mode": {
+        "OWN": "Own order",
+        "NEWEST": "Newest first",
+        "OLDEST": "Oldest first",
+        "TITLE_ASC": "Title A–Z",
+        "TITLE_DESC": "Title Z–A"
+      }
     }
   },
   "studioEditor": {

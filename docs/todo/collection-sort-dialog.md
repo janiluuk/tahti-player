@@ -1,6 +1,6 @@
 # Collection sounds: Sort dialog + Move to top
 
-**Status:** open
+**Status:** partial
 
 User request 2026-11-08 (screenshot: "Sort Sounds" modal — Sort by select,
 "Drag an entry, or focus it and move it with the arrow keys", numbered rows
@@ -23,6 +23,27 @@ with drag handle, artwork, title, date; Cancel / Save order).
 - A **Move to top** icon button per row (and probably Move to bottom), so long
   collections don't need dragging an item from the bottom.
 - Cancel discards; Save order persists.
+
+## Shipped (web, 2026-11-08)
+
+`components/SortSoundsDialog.tsx` behind a Sort sounds icon button on the
+Studio collection editor's Tracklist panel (edit mode, 2+ items): Sort by
+Own order / Newest first / Oldest first / Title A–Z / Title Z–A, numbered
+rows with drag handle, `MediaArtwork`, title and date; drag, or click the
+handle and use ArrowUp/ArrowDown/Home/End (focus stays on the handle, a live
+region announces the new position); Move to top / Move to bottom per row.
+Save sends the shown order to `PUT /api/me/collections/:slug/reorder` and
+sets `trackSortMode` TIME/NAME for Oldest first / A–Z; Newest first and Z–A
+are saved as own order. Helpers in `lib/sortSounds.ts` (tested), story
+`SortSoundsDialog.stories.tsx`.
+
+## Left
+
+- tahti-org: direction-aware sort modes so Newest first / Z–A stay sorted
+  when new sounds are added (today they are saved as a fixed own order).
+- The same button on `StudioPlaylistEditorView` (/studio/playlists) and the
+  owner's public collection page.
+- Check the public read paths apply the stored mode (see below).
 
 ## What exists
 
