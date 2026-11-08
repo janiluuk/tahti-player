@@ -1,8 +1,8 @@
-import { ListMusicIcon } from 'lucide-react';
+import { ListMusicIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, InlineLoader, Select } from '@tahti-player/ui';
+import { Button, ButtonLink, InlineLoader, Select } from '@tahti-player/ui';
 
 import { fetchStudioCollections } from '../api/studio';
 import type { StudioCollection } from '../api/studio-types';
@@ -82,7 +82,17 @@ export function ChannelPlaylistPicker({
   }
 
   if (playlists.length === 0) {
-    return <PageEmpty title={t('empties.noLibraryPlaylists')} />;
+    return (
+      <PageEmpty
+        title={t('empties.noLibraryPlaylists')}
+        action={
+          <ButtonLink to="/library/collections" size="sm" variant="secondary">
+            <PlusIcon size={16} aria-hidden />
+            {t('emptyActions.newCollection')}
+          </ButtonLink>
+        }
+      />
+    );
   }
 
   return (

@@ -3906,7 +3906,12 @@
       "addFeed": "Lisää syöte",
       "newSupportRequest": "Uusi pyyntö",
       "writeBio": "Kirjoita esittely",
-      "uploadTrack": "Lataa kappale"
+      "uploadTrack": "Lataa kappale",
+      "newEpisode": "Uusi jakso",
+      "addTracks": "Lisää kappaleita",
+      "newCollection": "Uusi kokoelma",
+      "openLibrary": "Avaa kirjasto",
+      "addFirstModerator": "Lisää ensimmäinen moderaattori"
     }
   },
   "studioEditor": {
