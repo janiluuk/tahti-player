@@ -50,7 +50,7 @@ const MOCK_ADDONS: AdminAddon[] = [
     slug: 'random-artist-week',
     scope: 'LISTENER',
     status: 'APPROVED',
-    name: 'Random artist of the week',
+    name: 'Artist of the week',
     description: 'Highlights one artist from the community each week.',
     authorName: 'Tahti',
     categories: ['social', 'new-releases'],

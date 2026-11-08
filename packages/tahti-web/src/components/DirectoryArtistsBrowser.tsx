@@ -18,6 +18,9 @@ const ARTIST_TYPE_OPTIONS = [
   { id: 'radio-host', label: 'Radio host' },
 ] as const;
 
+const GENRE_CHIP_LIMIT = 8;
+const MORE_GENRES = '__more-genres';
+
 type DirectoryArtistsBrowserProps = {
   artists: ChannelDirectoryItem[];
   loading?: boolean;
@@ -101,16 +104,36 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
       });
   }, [artists, query, genre, artistType, activeOnly]);
 
-  const chipItems = useMemo(
-    () => [
+  const [allGenres, setAllGenres] = useState(false);
+  const chipItems = useMemo(() => {
+    const shown = allGenres
+      ? genres
+      : genres.filter(
+          (genreEntry, index) =>
+            index < GENRE_CHIP_LIMIT || genreEntry.name === genre,
+        );
+    const hidden = genres.length - shown.length;
+    return [
       { id: 'all', label: `All (${artists.length})` },
-      ...genres.map((genreEntry) => ({
+      ...shown.map((genreEntry) => ({
         id: genreEntry.name,
-        label: `${genreEntry.name} (${genreEntry.count})`,
+        label:
+          genreEntry.count > 1
+            ? `${genreEntry.name} (${genreEntry.count})`
+            : genreEntry.name,
       })),
-    ],
-    [genres, artists.length],
-  );
+      ...(hidden > 0
+        ? [
+            {
+              id: MORE_GENRES,
+              label: t('discover.moreGenres', { count: hidden }),
+            },
+          ]
+        : allGenres && genres.length > GENRE_CHIP_LIMIT
+          ? [{ id: MORE_GENRES, label: t('discover.fewerGenres') }]
+          : []),
+    ];
+  }, [genres, artists.length, allGenres, genre, t]);
 
   const artistTypeChipItems = useMemo(
     () => [
@@ -181,7 +204,11 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
               aria-label="Genre"
               items={chipItems}
               selected={genre}
-              onChange={setGenre}
+              onChange={(id) =>
+                id === MORE_GENRES
+                  ? setAllGenres((current) => !current)
+                  : setGenre(id)
+              }
             />
           ) : null}
         </div>

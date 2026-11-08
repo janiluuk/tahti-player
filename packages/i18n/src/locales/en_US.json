@@ -1393,13 +1393,16 @@
         "latestTracks": "Latest tracks",
         "mostPlayed": "Most played",
         "loved": "Loved by the community",
-        "artistOfTheWeek": "Random artist of the week",
-        "randomArtist": "Random artist pick",
+        "artistOfTheWeek": "Artist of the week",
+        "randomArtist": "Rotating artist pick",
         "publicPlaylists": "Public playlists",
         "tahtiSelects": "Tahti Selects",
         "latestReleases": "Latest releases",
         "randomTrack": "Random track"
-      }
+      },
+      "moreGenres": "+{{count}} more",
+      "fewerGenres": "Fewer genres",
+      "groupsSearchPlaceholder": "Group name, genre…"
     },
     "library": {
       "sections": "Library sections",
@@ -3906,7 +3909,12 @@
       "addFeed": "Add feed",
       "newSupportRequest": "New request",
       "writeBio": "Write a bio",
-      "uploadTrack": "Upload track"
+      "uploadTrack": "Upload track",
+      "newEpisode": "New episode",
+      "addTracks": "Add tracks",
+      "newCollection": "New collection",
+      "openLibrary": "Open library",
+      "addFirstModerator": "Add your first moderator"
     }
   },
   "studioEditor": {

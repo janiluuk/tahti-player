@@ -373,7 +373,13 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   hydrateQueue: (items, currentId) => {
     const queue = items.map(toQueueItem);
     const current = queue.some((q) => q.id === currentId) ? currentId : null;
+    const peaksById = items.reduce(
+      (cache, item) => rememberPeaks(cache, item.id, item.peaks),
+      get().peaksById,
+    );
     set({
+      peaksById,
+      currentPeaks: current ? peaksFor(peaksById, current) : null,
       queue,
       currentId: current,
       status: current ? 'paused' : 'idle',
