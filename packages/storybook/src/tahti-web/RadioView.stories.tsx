@@ -137,7 +137,7 @@ export const UpNextRotation: Story = {
     const canvas = within(canvasElement);
     await expandPlayer(canvas);
     const rotation = await canvas.findByTestId('radio-up-next-rotation');
-    await expect(rotation).toBeVisible();
+    await waitFor(() => expect(rotation).toBeVisible());
     await expect(within(rotation).getByText('Aurora Drift')).toBeVisible();
     await expect(within(rotation).getAllByRole('listitem')).toHaveLength(3);
     const overlay = canvas.getByTestId('radio-now-playing-overlay');
