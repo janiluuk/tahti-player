@@ -98,12 +98,16 @@ export function AdminVenuesView() {
         <AdminPageLayout current="/admin/venues">
           <div className="flex max-w-4xl flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminVenuesView.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="content" />
-              <BreadcrumbCurrent>Venues</BreadcrumbCurrent>
+              <BreadcrumbCurrent>
+                {t('adminVenuesView.venues')}
+              </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Venues"
+              title={t('adminVenuesView.venues')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <StudioPanel>
@@ -111,14 +115,13 @@ export function AdminVenuesView() {
                   <Input
                     enterKeyHint="search"
                     type="search"
-                    label="Search venues"
+                    label={t('adminVenuesView.searchVenues')}
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
-                    placeholder="Name, city, slug, or submitter"
+                    placeholder={t('adminVenuesView.nameCitySlugOrSubmitter')}
                   />
                   <p className="text-foreground-secondary text-xs">
-                    Verifying a venue, or taking the verification back, notifies
-                    the person who registered it.
+                    {t('adminVenuesView.verifyingAVenueOrTaking')}
                   </p>
                   {error ? <InlineError>{error}</InlineError> : null}
                   {loading ? (
@@ -139,7 +142,7 @@ export function AdminVenuesView() {
                             variant="secondary"
                             onClick={() => setQuery('')}
                           >
-                            Clear search
+                            {t('adminVenuesView.clearSearch')}
                           </Button>
                         ) : undefined
                       }

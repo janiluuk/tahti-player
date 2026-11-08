@@ -96,16 +96,19 @@ export function StudioStatsDetailView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <PageBackLink to="/studio/stats" label="Stats" />
+        <PageBackLink
+          to="/studio/stats"
+          label={t('studioStatsDetailView.stats')}
+        />
         <ViewShell
-          title="Insights"
+          title={t('studioStatsDetailView.insights')}
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
           <FilterChips
             items={RANGES}
             selected={range}
             onChange={(id) => setRange(id as StatsPlaysRange)}
-            aria-label="Plays time range"
+            aria-label={t('studioStatsDetailView.playsTimeRange')}
           />
 
           {loading ? (
@@ -137,7 +140,10 @@ export function StudioStatsDetailView() {
                 {data.daily.length === 0 ? (
                   <PageEmpty title={t('empties.noDailyActivity')} />
                 ) : useHeatmap ? (
-                  <HorizontalScroll label="Daily activity" className="mt-4">
+                  <HorizontalScroll
+                    label={t('studioStatsDetailView.dailyActivity')}
+                    className="mt-4"
+                  >
                     <CalendarHeatmap
                       days={data.daily.map((day) => ({
                         date: day.date,
@@ -166,7 +172,9 @@ export function StudioStatsDetailView() {
               </StudioPanel>
 
               {(data.downloadCountries?.length ?? 0) > 0 ? (
-                <StudioPanel title="Download countries">
+                <StudioPanel
+                  title={t('studioStatsDetailView.downloadCountries')}
+                >
                   <ul className="flex flex-col gap-2 text-sm">
                     {data.downloadCountries!.map((country) => (
                       <li

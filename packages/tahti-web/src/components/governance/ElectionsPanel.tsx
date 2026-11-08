@@ -55,7 +55,7 @@ function ElectionItem({
         <span className="font-medium">{election.title}</span>
         {election.youAreCandidate ? (
           <Badge variant="pill" color="green">
-            You are standing
+            {t('electionsPanel.youAreStanding')}
           </Badge>
         ) : null}
       </div>
@@ -83,7 +83,7 @@ function ElectionItem({
               ) : null}
               {candidate.elected ? (
                 <Badge variant="pill" color="green" className="ml-1.5">
-                  Elected
+                  {t('electionsPanel.elected')}
                 </Badge>
               ) : null}
               {candidate.statement ? (
@@ -120,9 +120,9 @@ export function ElectionsPanel() {
   }, [load]);
 
   return (
-    <GovernancePanel title="Board elections" icon={VoteIcon}>
+    <GovernancePanel title={t('electionsPanel.boardElections')} icon={VoteIcon}>
       {elections === null ? (
-        <InlineLoader label="Loading elections…" />
+        <InlineLoader label={t('electionsPanel.loadingElections')} />
       ) : loadError ? (
         <PageError
           title={t('loadErrors.couldNotLoadTheElections')}

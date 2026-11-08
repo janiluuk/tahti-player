@@ -60,6 +60,7 @@ export function ArtistPopularTracks({
   isOwner: boolean;
   onEditTrack: (soundId: string | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const getTrackMeta = useMemo(() => profileTrackMeta(tracks), [tracks]);
   const split = useMemo(() => splitEmbedPlayables(items), [items]);
   const onEdit = isOwner
@@ -68,7 +69,10 @@ export function ArtistPopularTracks({
   return (
     <>
       {split.tracks.length > 0 ? (
-        <ProfileSection title="Tracks" data-testid="artist-popular">
+        <ProfileSection
+          title={t('artistReferenceSections.tracks')}
+          data-testid="artist-popular"
+        >
           <PlayableAmbientTrackList
             items={split.tracks}
             playAll
@@ -76,20 +80,23 @@ export function ArtistPopularTracks({
             allowGrid={false}
             className="bg-background-secondary"
             getTrackMeta={getTrackMeta}
-            emptyMessage="No playable tracks on this profile."
+            emptyMessage={t('artistReferenceSections.noPlayableTracksOnThis')}
             onEdit={onEdit}
           />
         </ProfileSection>
       ) : null}
       {split.embeds.length > 0 ? (
-        <ProfileSection title="Embeds" data-testid="artist-embeds">
+        <ProfileSection
+          title={t('artistReferenceSections.embeds')}
+          data-testid="artist-embeds"
+        >
           <PlayableAmbientTrackList
             items={split.embeds}
             playAll
             filterable
             allowGrid={false}
             className="bg-background-secondary"
-            emptyMessage="No embeds on this profile."
+            emptyMessage={t('artistReferenceSections.noEmbedsOnThisProfile')}
             onEdit={onEdit}
           />
         </ProfileSection>
@@ -103,8 +110,12 @@ export function ArtistRelatedArtists({
 }: {
   artists: RelatedArtist[];
 }) {
+  const { t } = useTranslation('web');
   return (
-    <ProfileSection title="Related artists" data-testid="artist-related">
+    <ProfileSection
+      title={t('artistReferenceSections.relatedArtists')}
+      data-testid="artist-related"
+    >
       <ul className="divide-border bg-primary text-primary-foreground border-border divide-y-(length:--border-width) border-(length:--border-width)">
         {artists.map((related) => (
           <li key={related.username}>
@@ -155,7 +166,10 @@ export function ArtistReleasesGrid({
   const { t } = useTranslation('web');
   const navigate = useNavigate();
   return (
-    <ProfileSection title="Releases" data-testid="artist-releases">
+    <ProfileSection
+      title={t('artistReferenceSections.releases')}
+      data-testid="artist-releases"
+    >
       {releases.length === 0 ? (
         <PageEmpty title={t('empties.noReleases')} />
       ) : (
@@ -226,7 +240,10 @@ export function ArtistPlaylistsGrid({
   const { t } = useTranslation('web');
   const navigate = useNavigate();
   return (
-    <ProfileSection title="Playlists" data-testid="artist-playlists">
+    <ProfileSection
+      title={t('artistReferenceSections.playlists')}
+      data-testid="artist-playlists"
+    >
       {collections.length === 0 ? (
         <PageEmpty title={t('empties.noPlaylists')} />
       ) : (

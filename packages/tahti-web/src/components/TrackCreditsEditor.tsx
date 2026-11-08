@@ -43,8 +43,7 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
             {value.length > 0 ? ` (${value.length})` : ''}
           </span>
           <span className="text-foreground-secondary block text-xs">
-            Writers, performers, producers, etc. beyond your channel&apos;s
-            usual roster.
+            {t('trackCreditsEditor.writersPerformersProducersEtcBeyond')}
           </span>
         </span>
         <ChevronDownIcon
@@ -85,7 +84,7 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
                   }))}
                   value={credit.role}
                   disabled={disabled}
-                  label="Credit role"
+                  label={t('trackCreditsEditor.creditRole')}
                   onValueChange={(role) => {
                     const next = [...value];
                     next[index] = {
@@ -97,9 +96,9 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
                 />
                 <Input
                   value={credit.name}
-                  placeholder="Name"
+                  placeholder={t('trackCreditsEditor.name')}
                   disabled={disabled}
-                  aria-label="Credit name"
+                  aria-label={t('trackCreditsEditor.creditName')}
                   onChange={(event) => {
                     const next = [...value];
                     next[index] = { ...credit, name: event.target.value };
@@ -116,7 +115,7 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
                   placeholder="@username"
                   disabled={disabled}
                   maxLength={33}
-                  aria-label="Tahti username"
+                  aria-label={t('trackCreditsEditor.tahtiUsername')}
                   onChange={(event) => {
                     const raw = event.target.value
                       .trim()

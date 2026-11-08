@@ -61,14 +61,14 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
             Active rotation · {items.length}
           </h3>
           <p className="text-foreground-secondary text-xs">
-            Reordering switches playback to In order.
+            {t('channelRotationEditor.reorderingSwitchesPlaybackToIn')}
           </p>
         </div>
         {onAdd && availableItems.length > 0 ? (
           <div className="flex items-center gap-2 text-xs">
             <Select
-              label="Quick add"
-              placeholder="Choose track…"
+              label={t('channelRotationEditor.quickAdd')}
+              placeholder={t('channelRotationEditor.chooseTrack')}
               options={availableItems.map((item) => ({
                 id: item.id,
                 label: item.title,
@@ -91,10 +91,10 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
         <div className="mb-4 flex flex-col gap-2">
           <div>
             <h4 className="text-xs font-semibold tracking-wide uppercase">
-              Add from library
+              {t('channelRotationEditor.addFromLibrary')}
             </h4>
             <p className="text-foreground-secondary mt-1 text-xs">
-              Choose a content group to append or replace the active rotation.
+              {t('channelRotationEditor.chooseAContentGroupTo')}
             </p>
           </div>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
@@ -221,7 +221,10 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
                       </Button>
                     </Tooltip>
                   ) : null}
-                  <Tooltip content="Remove" side="top">
+                  <Tooltip
+                    content={t('channelRotationEditor.remove')}
+                    side="top"
+                  >
                     <Button
                       size="icon-sm"
                       variant="text"

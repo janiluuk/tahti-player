@@ -79,8 +79,8 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
 
   return (
     <StudioPanel
-      title="Pinned announcements"
-      description="Short messages shown above chat on your channel. Keep up to three current announcements."
+      title={t('pinnedAnnouncementsPanel.pinnedAnnouncements')}
+      description={t('pinnedAnnouncementsPanel.shortMessagesShownAboveChat')}
     >
       <div className="flex flex-col gap-3">
         <form
@@ -94,13 +94,16 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
             label=""
             value={body}
             onChange={(event) => setBody(event.target.value)}
-            placeholder="Write an announcement…"
+            placeholder={t('pinnedAnnouncementsPanel.writeAnAnnouncement')}
           />
-          <Tooltip content="Pin announcement" side="top">
+          <Tooltip
+            content={t('pinnedAnnouncementsPanel.pinAnnouncement')}
+            side="top"
+          >
             <Button
               size="icon-sm"
               variant="secondary"
-              aria-label="Pin announcement"
+              aria-label={t('pinnedAnnouncementsPanel.pinAnnouncement')}
               disabled={busy || !body.trim()}
               type="submit"
             >
@@ -109,7 +112,9 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
           </Tooltip>
         </form>
         {loading ? (
-          <InlineLoader label="Loading announcements…" />
+          <InlineLoader
+            label={t('pinnedAnnouncementsPanel.loadingAnnouncements')}
+          />
         ) : loadError ? (
           <PageError
             title={t('loadErrors.couldNotLoadAnnouncements')}

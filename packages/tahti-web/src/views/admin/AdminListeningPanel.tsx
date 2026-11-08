@@ -47,15 +47,15 @@ export function AdminListeningPanel() {
 
   return (
     <StudioPanel
-      title="Listening"
-      description="How much people listen on Tahti, where, and which channels they spend the time with. Bots are left out."
+      title={t('adminListeningPanel.listening')}
+      description={t('adminListeningPanel.howMuchPeopleListenOn')}
     >
       <div className="flex flex-col gap-4">
         <FilterChips
           items={RANGES}
           selected={range}
           onChange={(id) => setRange(id as AdminListeningRange)}
-          aria-label="Listening period"
+          aria-label={t('adminListeningPanel.listeningPeriod')}
         />
         {!data ? (
           <PageLoading label={t('loading.loadingListening')} />
@@ -91,7 +91,7 @@ export function AdminListeningPanel() {
             </dl>
             <div className="grid gap-6 lg:grid-cols-2">
               <ShareList
-                title="Listened on"
+                title={t('adminListeningPanel.listenedOn')}
                 headingLevel={3}
                 items={data.surfaces.map((item) => ({
                   id: item.name,
@@ -100,7 +100,9 @@ export function AdminListeningPanel() {
                 }))}
               />
               <div>
-                <h3 className="mb-2 text-sm font-semibold">Top channels</h3>
+                <h3 className="mb-2 text-sm font-semibold">
+                  {t('adminListeningPanel.topChannels')}
+                </h3>
                 <ol className="divide-border divide-y text-sm">
                   {data.topChannels.map((channel) => (
                     <li

@@ -115,7 +115,7 @@ function ChannelOverallStats() {
   }, []);
 
   return (
-    <StudioPanel title="Overall statistics">
+    <StudioPanel title={t('studioChannelView.overallStatistics')}>
       {RADIO_STATS_RANGES.every((range) => !stats[range]) ? (
         <PageLoading label={t('loading.loadingStatistics')} />
       ) : (
@@ -147,6 +147,7 @@ function ChannelOverallStats() {
 }
 
 export function StudioChannelView() {
+  const { t } = useTranslation('web');
   const search = useSearch({ strict: false }) as { tab?: string };
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
@@ -285,7 +286,7 @@ export function StudioChannelView() {
           classes={{ root: 'px-0 pt-0' }}
         >
           {tab === 'setup' && !channel && (
-            <StudioPanel title="Channel setup">
+            <StudioPanel title={t('studioChannelView.channelSetup')}>
               <div className="flex flex-col items-start gap-3">
                 <p className="text-foreground-secondary text-sm">
                   Create {user?.username ?? 'your-name'}.tahti.live to unlock
@@ -312,9 +313,9 @@ export function StudioChannelView() {
                     <ChannelOverallStats />
                   </>
                 ) : (
-                  <StudioPanel title="Stream manager">
+                  <StudioPanel title={t('studioChannelView.streamManager')}>
                     <p className="text-foreground-secondary text-sm">
-                      Create your channel first to manage its stream.
+                      {t('studioChannelView.createYourChannelFirstTo')}
                     </p>
                   </StudioPanel>
                 )
@@ -353,7 +354,7 @@ export function StudioChannelView() {
                       aria-hidden
                       className="mr-1.5"
                     />
-                    Open Green Room chat
+                    {t('studioChannelView.openGreenRoomChat')}
                   </ButtonLink>
                 ) : null}
                 <ButtonLink
@@ -362,7 +363,7 @@ export function StudioChannelView() {
                   size="sm"
                   variant="secondary"
                 >
-                  Session on Broadcast
+                  {t('studioChannelView.sessionOnBroadcast')}
                 </ButtonLink>
               </div>
               <BroadcastPanel section="green-room" />

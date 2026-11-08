@@ -193,7 +193,7 @@ function ReportActions({
             onClick={() => resolve('REVIEWING')}
           >
             <Clock3Icon size={14} aria-hidden />
-            Start review
+            {t('contentReportsTab.startReview')}
           </Button>
         )}
         <Button
@@ -203,7 +203,7 @@ function ReportActions({
           onClick={() => resolve('ACTIONED')}
         >
           <CheckCircle2Icon size={14} aria-hidden />
-          Mark actioned
+          {t('contentReportsTab.markActioned')}
         </Button>
         <Button
           className="gap-1.5"
@@ -213,7 +213,7 @@ function ReportActions({
           onClick={() => resolve('DISMISSED')}
         >
           <XCircleIcon size={14} aria-hidden />
-          Dismiss
+          {t('contentReportsTab.dismiss')}
         </Button>
         {canDeleteComment ? (
           <Button
@@ -233,7 +233,7 @@ function ReportActions({
       </div>
       {confirmingDelete ? (
         <p className="text-foreground-secondary text-xs">
-          The commenter is notified that the board removed their comment.
+          {t('contentReportsTab.theCommenterIsNotifiedThat')}
         </p>
       ) : null}
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}
@@ -296,8 +296,7 @@ export function ContentReportsTab() {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-foreground-secondary text-sm">
-        Anonymous reports of channels, releases, tracks, collections and
-        comments — reporting needs no account.
+        {t('contentReportsTab.anonymousReportsOfChannelsReleases')}
       </p>
 
       <ModerationTabs

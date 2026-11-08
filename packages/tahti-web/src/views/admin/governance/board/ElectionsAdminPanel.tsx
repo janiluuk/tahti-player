@@ -50,6 +50,7 @@ function NewElectionForm({
   onClose: () => void;
   onCreated: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [title, setTitle] = useState('');
   const [role, setRole] = useState<GovernanceBoardRole>('MEMBER');
   const [seats, setSeats] = useState('1');
@@ -92,13 +93,13 @@ function NewElectionForm({
       }}
     >
       <Input
-        label="Title"
+        label={t('electionsAdminPanel.title')}
         value={title}
         maxLength={200}
         onChange={(e) => setTitle(e.target.value)}
       />
       <Select
-        label="Role"
+        label={t('electionsAdminPanel.role')}
         value={role}
         onValueChange={(value) => {
           setRole(value as GovernanceBoardRole);
@@ -110,14 +111,14 @@ function NewElectionForm({
       />
       <div className="flex flex-wrap gap-2">
         <Input
-          label="Seats"
+          label={t('electionsAdminPanel.seats')}
           inputMode="numeric"
           value={seats}
           disabled={role === 'CHAIR'}
           onChange={(e) => setSeats(e.target.value)}
         />
         <Input
-          label="Nominations close (optional)"
+          label={t('electionsAdminPanel.nominationsCloseOptional')}
           type="date"
           value={closeAt}
           onChange={(e) => setCloseAt(e.target.value)}
@@ -126,7 +127,7 @@ function NewElectionForm({
       {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy}>
-          Call election
+          {t('electionsAdminPanel.callElection')}
         </Button>
         <Button
           type="button"
@@ -135,7 +136,7 @@ function NewElectionForm({
           disabled={busy}
           onClick={() => onClose()}
         >
-          Cancel
+          {t('electionsAdminPanel.cancel')}
         </Button>
       </div>
     </form>
@@ -163,7 +164,7 @@ export function ElectionsAdminPanel() {
   }, [load]);
 
   return (
-    <StudioPanel title="Elections">
+    <StudioPanel title={t('electionsAdminPanel.elections')}>
       {composing ? (
         <NewElectionForm
           onClose={() => setComposing(false)}

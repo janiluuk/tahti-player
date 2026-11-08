@@ -109,7 +109,7 @@ export function LibrarySmartLinksView() {
     <StudioGate requireChannel={false} embedded>
       <div className="mt-2 flex flex-col gap-4">
         <ButtonLink className="w-fit" to="/studio/releases" size="sm">
-          New release
+          {t('librarySmartLinksView.newRelease')}
         </ButtonLink>
         <StudioPanel>
           {loading ? (
@@ -129,7 +129,7 @@ export function LibrarySmartLinksView() {
               description={t('empties.createAReleaseToGetIts')}
               action={
                 <ButtonLink to="/studio/releases" size="sm" variant="secondary">
-                  Create release
+                  {t('librarySmartLinksView.createRelease')}
                 </ButtonLink>
               }
             />
@@ -147,14 +147,16 @@ export function LibrarySmartLinksView() {
                     items={dspChips}
                     selected={dspFilter}
                     onChange={setDspFilter}
-                    aria-label="Filter smartlinks by platform"
+                    aria-label={t(
+                      'librarySmartLinksView.filterSmartlinksByPlatform',
+                    )}
                   />
                 ) : null}
                 {releases.length > 1 ? (
                   <LibrarySortSelect
                     value={sort}
                     onChange={setSort}
-                    label="Sort smartlinks"
+                    label={t('librarySmartLinksView.sortSmartlinks')}
                   />
                 ) : null}
               </LibrarySectionToolbar>
@@ -224,9 +226,14 @@ export function LibrarySmartLinksView() {
                                 size="sm"
                                 variant="secondary"
                               >
-                                Manage
+                                {t('librarySmartLinksView.manage')}
                               </ButtonLink>
-                              <Tooltip content="Open smartlink" side="top">
+                              <Tooltip
+                                content={t(
+                                  'librarySmartLinksView.openSmartlink',
+                                )}
+                                side="top"
+                              >
                                 <ButtonLink
                                   to="/r/$slug"
                                   params={{ slug: release.smartLinkSlug }}

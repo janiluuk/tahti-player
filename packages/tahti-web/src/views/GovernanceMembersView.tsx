@@ -55,13 +55,16 @@ export function GovernanceMembersView() {
 
   return (
     <ViewShell
-      title="Member directory"
+      title={t('governanceMembersView.memberDirectory')}
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-2xl',
         content: 'gap-6',
       }}
     >
-      <PageBackLink to="/governance" label="Governance" />
+      <PageBackLink
+        to="/governance"
+        label={t('governanceMembersView.governance')}
+      />
 
       {!user && (
         <PageEmpty
@@ -70,7 +73,7 @@ export function GovernanceMembersView() {
           description={t('empties.useACooperativeMembershipAccountTo')}
           action={
             <Button onClick={() => useAuthModalStore.getState().open('login')}>
-              Sign in
+              {t('governanceMembersView.signIn')}
             </Button>
           }
         />
@@ -82,12 +85,12 @@ export function GovernanceMembersView() {
         <div className="grid grid-cols-2 gap-3">
           <StatChip
             value={members.length}
-            label="Members"
+            label={t('governanceMembersView.members')}
             icon={<UsersIcon size={16} aria-hidden />}
           />
           <StatChip
             value={members.filter((m) => m.isBoard).length}
-            label="Board"
+            label={t('governanceMembersView.board')}
             icon={<LandmarkIcon size={16} aria-hidden />}
           />
         </div>
@@ -100,8 +103,8 @@ export function GovernanceMembersView() {
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            aria-label="Search by name or username"
-            placeholder="Search by name or username"
+            aria-label={t('governanceMembersView.searchByNameOrUsername')}
+            placeholder={t('governanceMembersView.searchByNameOrUsername')}
           />
           {loadError && members.length > 0 ? (
             <PageErrorBanner
@@ -130,7 +133,7 @@ export function GovernanceMembersView() {
                     variant="secondary"
                     onClick={() => setQuery('')}
                   >
-                    Clear search
+                    {t('governanceMembersView.clearSearch')}
                   </Button>
                 ) : undefined
               }
@@ -149,7 +152,7 @@ export function GovernanceMembersView() {
                     <div className="flex shrink-0 items-center gap-2">
                       {member.isBoard && (
                         <Badge variant="pill" color="cyan">
-                          Board
+                          {t('governanceMembersView.board')}
                         </Badge>
                       )}
                       {member.memberNumber != null && (

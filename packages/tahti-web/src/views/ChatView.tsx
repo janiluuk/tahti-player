@@ -90,8 +90,8 @@ function ChatPicker() {
 
   return (
     <ViewShell
-      title="Chat"
-      subtitle="Pick a channel to join its chat room."
+      title={t('chatView.chat')}
+      subtitle={t('chatView.pickAChannelToJoin')}
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-lg',
         content: 'gap-6',
@@ -111,14 +111,14 @@ function ChatPicker() {
         >
           <div className="min-w-0 flex-1">
             <Select
-              label="Channel"
+              label={t('chatView.channel')}
               options={options}
               value={target}
               onValueChange={setSelected}
             />
           </div>
           <Button type="submit" disabled={!target}>
-            Open chat
+            {t('chatView.openChat')}
           </Button>
         </form>
       )}
@@ -128,7 +128,7 @@ function ChatPicker() {
         data-testid="chat-activity"
       >
         <h2 id="chat-activity-heading" className="text-sm font-bold">
-          Activity in the last 24 hours
+          {t('chatView.activityInTheLast24')}
         </h2>
         {channels === null || activity === null ? (
           <PageLoading label={t('loading.checkingChatRooms')} />
@@ -175,7 +175,7 @@ export function ChatView({ slug }: { slug?: string }) {
 
   return (
     <ViewShell
-      title="Chat"
+      title={t('chatView.chat')}
       subtitle={slug}
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-lg',
@@ -183,7 +183,7 @@ export function ChatView({ slug }: { slug?: string }) {
       }}
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <PageBackLink to="/chat" label="Chat picker" />
+        <PageBackLink to="/chat" label={t('chatView.chatPicker')} />
         <div className="flex flex-wrap items-center gap-2">
           <Link
             to="/channel/$slug"

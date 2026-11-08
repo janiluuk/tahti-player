@@ -154,10 +154,12 @@ export function StudioListeningPartyFormView({
           title={
             editing ? 'Reschedule listening party' : 'Schedule listening party'
           }
-          subtitle="Everyone hears the release once, start to finish, at the same time."
+          subtitle={t(
+            'studioListeningPartyFormView.everyoneHearsTheReleaseOnce',
+          )}
           classes={{ root: 'px-0 pt-0' }}
         >
-          <StudioPanel title="Party details">
+          <StudioPanel title={t('studioListeningPartyFormView.partyDetails')}>
             {loading ? (
               <PageLoading label={t('loading.loading')} />
             ) : loadError ? (
@@ -178,13 +180,15 @@ export function StudioListeningPartyFormView({
               >
                 {editing ? (
                   <p className="text-sm">
-                    <span className="text-foreground-secondary">Release </span>
+                    <span className="text-foreground-secondary">
+                      {t('studioListeningPartyFormView.release')}{' '}
+                    </span>
                     <span className="font-medium">{releaseTitle}</span>
                   </p>
                 ) : (
                   <Select
                     id="listening-party-release"
-                    label="Release"
+                    label={t('studioListeningPartyFormView.release')}
                     placeholder={
                       releases.length === 0
                         ? 'Add tracks to a release first'
@@ -200,7 +204,7 @@ export function StudioListeningPartyFormView({
                 )}
                 <Input
                   type="datetime-local"
-                  label="Starts"
+                  label={t('studioListeningPartyFormView.starts')}
                   value={startAt}
                   onChange={(event) => setStartAt(event.target.value)}
                   error={
@@ -209,12 +213,16 @@ export function StudioListeningPartyFormView({
                 />
                 <Textarea
                   submitOnModEnter
-                  label="Note to listeners (optional)"
+                  label={t(
+                    'studioListeningPartyFormView.noteToListenersOptional',
+                  )}
                   value={hostNote}
                   maxLength={LISTENING_PARTY_HOST_NOTE_MAX}
                   onChange={(event) => setHostNote(event.target.value)}
                   rows={4}
-                  placeholder="What to expect, what to listen for, when you will be in the chat…"
+                  placeholder={t(
+                    'studioListeningPartyFormView.whatToExpectWhatTo',
+                  )}
                 />
                 <div className="flex flex-wrap gap-2">
                   <ButtonLink
@@ -223,7 +231,7 @@ export function StudioListeningPartyFormView({
                     variant="secondary"
                   >
                     <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
-                    Cancel
+                    {t('studioListeningPartyFormView.cancel')}
                   </ButtonLink>
                   <Button size="sm" type="submit" disabled={!canSubmit}>
                     {busy ? (

@@ -71,7 +71,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
 
   const body = (
     <div className="flex flex-col gap-6">
-      <SectionShell title="Channels">
+      <SectionShell title={t('favoritesView.channels')}>
         {favoriteChannels.length === 0 && radioFavorites.length === 0 ? (
           <PageEmpty
             title={t('empties.noFavoriteChannels')}
@@ -84,7 +84,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
                 size="sm"
                 variant="secondary"
               >
-                Browse artists
+                {t('favoritesView.browseArtists')}
               </ButtonLink>
             }
           />
@@ -180,7 +180,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
         )}
       </SectionShell>
 
-      <SectionShell title="Tracks">
+      <SectionShell title={t('favoritesView.tracks')}>
         {audioFavorites.length === 0 ? (
           <PageEmpty
             title={t('empties.noFavoriteTracks')}
@@ -192,7 +192,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
                 size="sm"
                 variant="secondary"
               >
-                Find music
+                {t('favoritesView.findMusic')}
               </ButtonLink>
             }
           />
@@ -209,11 +209,11 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
       </SectionShell>
 
       {likedTracks.length > 0 ? (
-        <SectionShell title="Liked on Tahti">
+        <SectionShell title={t('favoritesView.likedOnTahti')}>
           <PlayableAmbientTrackList
             items={likedTracks}
             getTrackMeta={likedTrackMeta}
-            emptyMessage="No liked tracks yet."
+            emptyMessage={t('favoritesView.noLikedTracksYet')}
           />
         </SectionShell>
       ) : null}
@@ -225,7 +225,10 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
   }
 
   return (
-    <ViewShell title="Favorites" classes={{ root: 'px-0 pt-0' }}>
+    <ViewShell
+      title={t('favoritesView.favorites')}
+      classes={{ root: 'px-0 pt-0' }}
+    >
       {body}
     </ViewShell>
   );

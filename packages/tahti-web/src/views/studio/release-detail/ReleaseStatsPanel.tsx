@@ -108,7 +108,7 @@ export function ReleaseStatsPanel({
     <div className="flex flex-col gap-4">
       <div className="flex justify-end">
         <SegmentedControl
-          aria-label="Period"
+          aria-label={t('releaseStatsPanel.period')}
           options={PERIOD_OPTIONS}
           value={period}
           onChange={setPeriod}
@@ -121,13 +121,13 @@ export function ReleaseStatsPanel({
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <StatTile
-              label="Plays"
+              label={t('releaseStatsPanel.plays')}
               value={totals.plays.toLocaleString()}
               tone={STUDIO_METRIC_TONES.plays}
               icon={<AudioLinesIcon size={16} />}
             />
             <StatTile
-              label="Downloads"
+              label={t('releaseStatsPanel.downloads')}
               value={totals.downloads.toLocaleString()}
               tone={STUDIO_METRIC_TONES.downloads}
               icon={<DownloadIcon size={16} />}
@@ -136,7 +136,7 @@ export function ReleaseStatsPanel({
 
           <StudioPanel>
             <TopList
-              title="Tracks by plays"
+              title={t('releaseStatsPanel.tracksByPlays')}
               formatValue={formatPlayCount}
               entries={ranked.map(({ track, insights }) => ({
                 id: track.id,
@@ -156,10 +156,9 @@ export function ReleaseStatsPanel({
             />
           </StudioPanel>
 
-          <StudioPanel title="Listener map">
+          <StudioPanel title={t('releaseStatsPanel.listenerMap')}>
             <p className="text-foreground-secondary mb-4 text-sm">
-              Anonymized countries for this release's counted plays and
-              downloads.
+              {t('releaseStatsPanel.anonymizedCountriesForThisRelease')}
             </p>
             <ListenerWorldMap data={totals.countries} countLabel="plays" />
           </StudioPanel>

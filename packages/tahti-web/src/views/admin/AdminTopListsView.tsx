@@ -95,7 +95,7 @@ export function AdminTopListsView() {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/top-lists">
           <ViewShell
-            title="Top lists"
+            title={t('adminTopListsView.topLists')}
             classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
           >
             <div className="flex flex-col gap-3">
@@ -104,8 +104,8 @@ export function AdminTopListsView() {
                 type="search"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search title, artist, or channel…"
-                aria-label="Search top lists"
+                placeholder={t('adminTopListsView.searchTitleArtistOrChannel')}
+                aria-label={t('adminTopListsView.searchTopLists')}
                 className="max-w-xl"
                 startAddon={
                   <SearchIcon size={16} aria-hidden className="opacity-70" />
@@ -121,19 +121,19 @@ export function AdminTopListsView() {
                   items={PERIODS}
                   selected={period}
                   onChange={(id) => setPeriod(id as AdminTopListPeriod)}
-                  aria-label="Top list period"
+                  aria-label={t('adminTopListsView.topListPeriod')}
                 />
                 <FilterChips
                   items={DIMENSIONS}
                   selected={dimension}
                   onChange={(id) => setDimension(id as AdminTopListDimension)}
-                  aria-label="Top list grouping"
+                  aria-label={t('adminTopListsView.topListGrouping')}
                 />
                 <FilterChips
                   items={SORTS}
                   selected={sort}
                   onChange={(id) => setSort(id as AdminTopListSort)}
-                  aria-label="Top list order"
+                  aria-label={t('adminTopListsView.topListOrder')}
                 />
               </div>
             </div>
@@ -170,7 +170,7 @@ export function AdminTopListsView() {
                         variant="secondary"
                         onClick={() => setQuery('')}
                       >
-                        Clear search
+                        {t('adminTopListsView.clearSearch')}
                       </Button>
                     ) : undefined
                   }

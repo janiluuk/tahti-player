@@ -51,7 +51,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
   return (
     <>
       <Dialog.Root isOpen={isOpen} onClose={onClose} className="max-w-4xl">
-        <Dialog.Title>Edit track</Dialog.Title>
+        <Dialog.Title>{t('trackEditDialog.editTrack')}</Dialog.Title>
 
         {loading ? (
           <PageLoading label={t('loading.loadingTrack')} />
@@ -105,20 +105,23 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                 icon: <Settings2Icon size={15} />,
                 content: (
                   <div className="flex flex-col gap-8">
-                    <section aria-label="Audio" className="flex flex-col gap-3">
+                    <section
+                      aria-label={t('trackEditDialog.audio')}
+                      className="flex flex-col gap-3"
+                    >
                       <h3 className="flex items-center gap-2 text-sm font-semibold">
                         <AudioLinesIcon size={15} aria-hidden />
-                        Audio
+                        {t('trackEditDialog.audio')}
                       </h3>
                       <AudioTab soundId={soundId!} item={item} state={state} />
                     </section>
                     <section
-                      aria-label="Export"
+                      aria-label={t('trackEditDialog.export')}
                       className="flex flex-col gap-3"
                     >
                       <h3 className="flex items-center gap-2 text-sm font-semibold">
                         <ArrowUpFromLineIcon size={15} aria-hidden />
-                        Export
+                        {t('trackEditDialog.export')}
                       </h3>
                       <TrackExportPanel soundId={item.id} />
                       <TrackExportConnections />
@@ -134,12 +137,12 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
         {loadError && <InlineError className="mt-3">{loadError}</InlineError>}
 
         <Dialog.Actions>
-          <Dialog.Close>Close</Dialog.Close>
+          <Dialog.Close>{t('trackEditDialog.close')}</Dialog.Close>
           {item ? (
             <SaveButton
               disabled={!form.title?.trim()}
               saving={saving}
-              label="Save changes"
+              label={t('trackEditDialog.saveChanges')}
               onClick={() => void save()}
             />
           ) : null}

@@ -75,7 +75,7 @@ export function BulkEditBar({
   return (
     <div
       role="region"
-      aria-label="Edit selected files"
+      aria-label={t('bulkEditBar.editSelectedFiles')}
       className="border-border bg-background-secondary flex flex-col gap-3 rounded-md border p-3"
     >
       <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
@@ -83,12 +83,12 @@ export function BulkEditBar({
           {count} {count === 1 ? 'file' : 'files'} selected
         </span>
         <Button size="sm" variant="text" onClick={onClear}>
-          Clear selection
+          {t('bulkEditBar.clearSelection')}
         </Button>
       </div>
       <div className="flex flex-wrap items-end gap-2">
         <Select
-          label="Genre"
+          label={t('bulkEditBar.genre')}
           value={genre}
           onValueChange={setGenre}
           options={[
@@ -102,7 +102,7 @@ export function BulkEditBar({
           className="min-w-36"
         />
         <Select
-          label="Type"
+          label={t('bulkEditBar.type')}
           value={contentType}
           onValueChange={setContentType}
           options={[
@@ -115,7 +115,7 @@ export function BulkEditBar({
           className="min-w-36"
         />
         <Select
-          label="Visibility"
+          label={t('bulkEditBar.visibility')}
           value={visibility}
           onValueChange={setVisibility}
           options={[
@@ -126,7 +126,7 @@ export function BulkEditBar({
           className="min-w-32"
         />
         <Select
-          label="License"
+          label={t('bulkEditBar.license')}
           value={license}
           onValueChange={setLicense}
           options={[

@@ -157,27 +157,33 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
 
   if (loading) {
     return (
-      <section className="flex flex-col gap-4" aria-label="Browse artists">
+      <section
+        className="flex flex-col gap-4"
+        aria-label={t('directoryArtistsBrowser.browseArtists')}
+      >
         <PageLoading label={t('loading.loadingArtists')} />
       </section>
     );
   }
 
   return (
-    <section className="flex flex-col gap-4" aria-label="Browse artists">
+    <section
+      className="flex flex-col gap-4"
+      aria-label={t('directoryArtistsBrowser.browseArtists')}
+    >
       <div className="border-border bg-background-secondary/40 flex flex-col gap-3 rounded-xl border p-3 sm:p-4">
         <div className="flex flex-wrap items-center gap-2">
           <Input
             enterKeyHint="search"
             type="search"
-            label="Search"
+            label={t('directoryArtistsBrowser.search')}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Artist name, username, genre…"
+            placeholder={t('directoryArtistsBrowser.artistNameUsernameGenre')}
             className="min-w-48 flex-1"
           />
           <FilterChips
-            aria-label="Directory controls"
+            aria-label={t('directoryArtistsBrowser.directoryControls')}
             multiple
             items={[
               {
@@ -201,7 +207,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
           />
           {genres.length > 0 ? (
             <FilterChips
-              aria-label="Genre"
+              aria-label={t('directoryArtistsBrowser.genre')}
               items={chipItems}
               selected={genre}
               onChange={(id) =>
@@ -217,10 +223,10 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
           <div className="border-border flex flex-col gap-3 border-t pt-3">
             <div>
               <p className="text-foreground-secondary mb-1.5 text-xs font-semibold tracking-wide uppercase">
-                Artist type
+                {t('directoryArtistsBrowser.artistType')}
               </p>
               <FilterChips
-                aria-label="Artist type"
+                aria-label={t('directoryArtistsBrowser.artistType')}
                 items={artistTypeChipItems}
                 selected={artistType}
                 onChange={setArtistType}
@@ -249,7 +255,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
                 setActiveOnly(false);
               }}
             >
-              Clear filters
+              {t('directoryArtistsBrowser.clearFilters')}
             </Button>
           }
         />

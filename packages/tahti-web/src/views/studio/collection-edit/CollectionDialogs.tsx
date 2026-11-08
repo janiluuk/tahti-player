@@ -69,7 +69,7 @@ export function CollectionDialogs({
       <CoverArtPickerDialog
         isOpen={uploadTarget === 'cover'}
         onClose={() => setUploadTarget(null)}
-        label="Cover art"
+        label={t('collectionDialogs.coverArt')}
         value={coverUrl}
         upload={uploadCoverFile}
         onSelect={applyCover}
@@ -82,9 +82,9 @@ export function CollectionDialogs({
           }
         }}
       >
-        <Dialog.Title>Upload backdrop</Dialog.Title>
+        <Dialog.Title>{t('collectionDialogs.uploadBackdrop')}</Dialog.Title>
         <Dialog.Description>
-          Choose one image for a still backdrop, or several for a slideshow.
+          {t('collectionDialogs.chooseOneImageForA')}
         </Dialog.Description>
         <div className="mt-4">
           <FilePicker
@@ -100,7 +100,7 @@ export function CollectionDialogs({
           />
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('collectionDialogs.cancel')}</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
 
@@ -152,7 +152,7 @@ export function CollectionDialogs({
       <ImageSlotPreviewDialog
         isOpen={backdropChrome.previewOpen && pendingFrameDelete === null}
         onClose={backdropChrome.closePreview}
-        label="Backdrop"
+        label={t('collectionDialogs.backdrop')}
         src={backdropUrl}
         frames={
           slideshowImages.length > 1

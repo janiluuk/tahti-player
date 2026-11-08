@@ -7302,6 +7302,398 @@
       "postWhenIGoLive": "Post when I go live",
       "postText": "Post text",
       "tahtiForgetsTheSavedCredentials": "Tahti forgets the saved credentials and stops posting there."
+    },
+    "transparencyGrantYearView": {
+      "publishedAs": "Published as",
+      "amount": "Amount",
+      "state": "State",
+      "transparency": "Transparency",
+      "total": "Total",
+      "grants": "Grants",
+      "disbursed": "Disbursed"
+    },
+    "studioListeningPartyFormView": {
+      "release": "Release",
+      "cancel": "Cancel",
+      "everyoneHearsTheReleaseOnce": "Everyone hears the release once, start to finish, at the same time.",
+      "partyDetails": "Party details",
+      "starts": "Starts",
+      "noteToListenersOptional": "Note to listeners (optional)",
+      "whatToExpectWhatTo": "What to expect, what to listen for, when you will be in the chat…"
+    },
+    "governanceMembersView": {
+      "signIn": "Sign in",
+      "clearSearch": "Clear search",
+      "board": "Board",
+      "memberDirectory": "Member directory",
+      "governance": "Governance",
+      "members": "Members",
+      "searchByNameOrUsername": "Search by name or username"
+    },
+    "favoritesView": {
+      "browseArtists": "Browse artists",
+      "findMusic": "Find music",
+      "channels": "Channels",
+      "tracks": "Tracks",
+      "likedOnTahti": "Liked on Tahti",
+      "noLikedTracksYet": "No liked tracks yet.",
+      "favorites": "Favorites"
+    },
+    "meetingRecordPanels": {
+      "remove": "Remove",
+      "bounced": "Bounced",
+      "sent": "Sent",
+      "loading": "Loading…",
+      "memberName": "Member name",
+      "matter": "Matter",
+      "steppedOutOfTheDecision": "Stepped out of the decision"
+    },
+    "annualReportCorrection": {
+      "correctReport": "Correct report",
+      "earlierVersions": "Earlier versions",
+      "regenerateCorrectedReport": "Regenerate corrected report",
+      "cancel": "Cancel",
+      "download": "Download",
+      "whatDoesTheCorrectionChange": "What does the correction change?",
+      "theReportIsRegeneratedFrom": "The report is regenerated from today's records. The replaced version is kept with this note."
+    },
+    "electionsAdminPanel": {
+      "callElection": "Call election",
+      "cancel": "Cancel",
+      "title": "Title",
+      "role": "Role",
+      "seats": "Seats",
+      "nominationsCloseOptional": "Nominations close (optional)",
+      "elections": "Elections"
+    },
+    "fanSubArtistsPanel": {
+      "artist": "Artist",
+      "subscribers": "Subscribers",
+      "paidOut": "Paid out",
+      "ready": "Ready",
+      "fanSubscriptionsByArtist": "Fan subscriptions by artist",
+      "activeSubscribersMonthlyRevenueAnd": "Active subscribers, monthly revenue and paid-out total per artist, highest monthly revenue first."
+    },
+    "adminTopListsView": {
+      "clearSearch": "Clear search",
+      "topLists": "Top lists",
+      "searchTitleArtistOrChannel": "Search title, artist, or channel…",
+      "searchTopLists": "Search top lists",
+      "topListPeriod": "Top list period",
+      "topListGrouping": "Top list grouping",
+      "topListOrder": "Top list order"
+    },
+    "adminContentView": {
+      "admin": "Admin",
+      "catalog": "Catalog",
+      "topLists": "Top lists",
+      "latestContent": "Latest content",
+      "theNewestTracksShowsReleases": "The newest tracks, shows, releases, and other catalog items.",
+      "latestRecordedBroadcasts": "Latest recorded broadcasts",
+      "recentBroadcastsCapturedByThe": "Recent broadcasts captured by the platform recorder."
+    },
+    "motionDiscussion": {
+      "remove": "Remove",
+      "commentRemoved": "Comment removed.",
+      "post": "Post",
+      "loading": "Loading…",
+      "addAComment": "Add a comment",
+      "addAComment2": "Add a comment…",
+      "removeThisComment": "Remove this comment?"
+    },
+    "directoryArtistsBrowser": {
+      "artistType": "Artist type",
+      "clearFilters": "Clear filters",
+      "browseArtists": "Browse artists",
+      "search": "Search",
+      "artistNameUsernameGenre": "Artist name, username, genre…",
+      "directoryControls": "Directory controls",
+      "genre": "Genre"
+    },
+    "artistReferenceSections": {
+      "tracks": "Tracks",
+      "noPlayableTracksOnThis": "No playable tracks on this profile.",
+      "embeds": "Embeds",
+      "noEmbedsOnThisProfile": "No embeds on this profile.",
+      "relatedArtists": "Related artists",
+      "releases": "Releases",
+      "playlists": "Playlists"
+    },
+    "adminUserEngagementPanel": {
+      "addAnAdjustment": "Add an adjustment",
+      "units": "Units",
+      "reason": "Reason",
+      "shownInTheAuditLog": "Shown in the audit log",
+      "engagement": "Engagement",
+      "unitsCountTowardTheYearly": "Units count toward the yearly grant split. Board adjustments are included in the total and audited.",
+      "year": "Year"
+    },
+    "studioShowsView": {
+      "clearSearch": "Clear search",
+      "manage": "Manage",
+      "showThumbnail": "Show thumbnail",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP, or GIF",
+      "showBackdrop": "Show backdrop",
+      "wideJpegPngWebpOr": "Wide JPEG, PNG, WebP, or GIF"
+    },
+    "studioEventView": {
+      "start": "Start",
+      "place": "Place",
+      "description": "Description",
+      "ticketsEventLink": "Tickets / event link",
+      "backToEvents": "Back to Events",
+      "eventDetails": "Event details"
+    },
+    "studioChannelView": {
+      "createYourChannelFirstTo": "Create your channel first to manage its stream.",
+      "openGreenRoomChat": "Open Green Room chat",
+      "sessionOnBroadcast": "Session on Broadcast",
+      "overallStatistics": "Overall statistics",
+      "channelSetup": "Channel setup",
+      "streamManager": "Stream manager"
+    },
+    "releaseStatsPanel": {
+      "anonymizedCountriesForThisRelease": "Anonymized countries for this release's counted plays and downloads.",
+      "period": "Period",
+      "plays": "Plays",
+      "downloads": "Downloads",
+      "tracksByPlays": "Tracks by plays",
+      "listenerMap": "Listener map"
+    },
+    "multistreamPanel": {
+      "addMultistreamDestination": "Add multistream destination",
+      "chooseAPlatformToConfigure": "Choose a platform to configure.",
+      "multistream": "Multistream",
+      "destinationsForThisSessionAdd": "Destinations for this session. Add or edit targets here; Settings → Broadcast only mirrors the same list for convenience.",
+      "addDestination": "Add destination",
+      "removeDestination": "Remove destination"
+    },
+    "creditsEditor": {
+      "creditsRoles": "Credits & roles",
+      "creditRole": "Credit role",
+      "name": "Name",
+      "creditName": "Credit name",
+      "tahtiUsername": "Tahti username",
+      "removeCredit": "Remove credit"
+    },
+    "librarySmartLinksView": {
+      "newRelease": "New release",
+      "createRelease": "Create release",
+      "manage": "Manage",
+      "filterSmartlinksByPlatform": "Filter smartlinks by platform",
+      "sortSmartlinks": "Sort smartlinks",
+      "openSmartlink": "Open smartlink"
+    },
+    "chatView": {
+      "openChat": "Open chat",
+      "activityInTheLast24": "Activity in the last 24 hours",
+      "chat": "Chat",
+      "pickAChannelToJoin": "Pick a channel to join its chat room.",
+      "channel": "Channel",
+      "chatPicker": "Chat picker"
+    },
+    "bulkEditBar": {
+      "clearSelection": "Clear selection",
+      "editSelectedFiles": "Edit selected files",
+      "genre": "Genre",
+      "type": "Type",
+      "visibility": "Visibility",
+      "license": "License"
+    },
+    "radioSubmissionsTab": {
+      "auditTracksSubmittedForTahti": "Audit tracks submitted for Tahti Radio rotation.",
+      "approveToRadio": "Approve to radio",
+      "reject": "Reject",
+      "theArtistIsNotifiedWhen": "The artist is notified when you approve (a private track is made public), and when you reject with a note.",
+      "auditing": "Auditing",
+      "noteToTheArtistOptional": "Note to the artist (optional)"
+    },
+    "agendaItemRow": {
+      "saveItem": "Save item",
+      "cancel": "Cancel",
+      "remove": "Remove",
+      "title": "Title",
+      "description": "Description",
+      "whatTheMeetingDecided": "What the meeting decided"
+    },
+    "adminVenuesView": {
+      "admin": "Admin",
+      "venues": "Venues",
+      "verifyingAVenueOrTaking": "Verifying a venue, or taking the verification back, notifies the person who registered it.",
+      "clearSearch": "Clear search",
+      "searchVenues": "Search venues",
+      "nameCitySlugOrSubmitter": "Name, city, slug, or submitter"
+    },
+    "adminFinancialView": {
+      "admin": "Admin",
+      "financial": "Financial",
+      "activeSubscriptions": "Active subscriptions",
+      "pendingPayouts": "Pending payouts",
+      "failedPayouts": "Failed payouts",
+      "fanSubscriptions": "Fan subscriptions"
+    },
+    "chatMessagesPanel": {
+      "fanRoom": "Fan room",
+      "banned": "Banned",
+      "recentMessages": "Recent messages",
+      "theLast100MessagesIn": "The last 100 messages in this chat, fan room included. Remove one, or ban whoever sent it.",
+      "banSender": "Ban sender",
+      "removeMessage": "Remove message"
+    },
+    "fanTiersEditor": {
+      "newTier": "New tier",
+      "cancel": "Cancel",
+      "name": "Name",
+      "priceMonth": "Price (€ / month)",
+      "description": "Description",
+      "perks": "Perks"
+    },
+    "embedButton": {
+      "embed": "Embed",
+      "pasteThisIntoAnySite": "Paste this into any site to embed a live player.",
+      "link": "Link",
+      "iframeCode": "Iframe code",
+      "embedArtistChannel": "Embed artist channel",
+      "copyEmbedLink": "Copy embed link"
+    },
+    "channelRotationEditor": {
+      "reorderingSwitchesPlaybackToIn": "Reordering switches playback to In order.",
+      "addFromLibrary": "Add from library",
+      "chooseAContentGroupTo": "Choose a content group to append or replace the active rotation.",
+      "quickAdd": "Quick add",
+      "chooseTrack": "Choose track…",
+      "remove": "Remove"
+    },
+    "newsletterSubscriberStats": {
+      "subscribers": "Subscribers",
+      "confirmed": "Confirmed",
+      "newIn30Days": "New in 30 days",
+      "fansOnly": "Fans only",
+      "getFanOnlySends": "Get fan-only sends"
+    },
+    "studioStatsView": {
+      "stats": "Stats",
+      "statsSections": "Stats sections",
+      "overview": "Overview",
+      "playsAndListeners": "Plays and listeners",
+      "topLists": "Top lists"
+    },
+    "studioStatsDetailView": {
+      "stats": "Stats",
+      "insights": "Insights",
+      "playsTimeRange": "Plays time range",
+      "dailyActivity": "Daily activity",
+      "downloadCountries": "Download countries"
+    },
+    "studioScheduleView": {
+      "cancel": "Cancel",
+      "schedule": "Schedule",
+      "addNextBroadcast": "Add next broadcast",
+      "scheduledShowEpisodes": "Scheduled show episodes",
+      "oneOffAndRecurringEpisodes": "One-off and recurring episodes generated from your shows."
+    },
+    "releaseSmartLinkStats": {
+      "smartLinkStats": "Smart link stats",
+      "visitsToThisReleaseS": "Visits to this release's smart link and clicks through to each service.",
+      "views": "Views",
+      "clicks": "Clicks",
+      "clickThrough": "Click-through"
+    },
+    "collectionDialogs": {
+      "uploadBackdrop": "Upload backdrop",
+      "chooseOneImageForA": "Choose one image for a still backdrop, or several for a slideshow.",
+      "cancel": "Cancel",
+      "coverArt": "Cover art",
+      "backdrop": "Backdrop"
+    },
+    "embedViews": {
+      "notLiveRightNowOpen": "Not live right now — open the full channel for archive playback.",
+      "openSmartLink": "Open smart link",
+      "queue": "Queue",
+      "openCollection": "Open collection"
+    },
+    "contentReportsTab": {
+      "startReview": "Start review",
+      "markActioned": "Mark actioned",
+      "dismiss": "Dismiss",
+      "theCommenterIsNotifiedThat": "The commenter is notified that the board removed their comment.",
+      "anonymousReportsOfChannelsReleases": "Anonymous reports of channels, releases, tracks, collections and comments — reporting needs no account."
+    },
+    "adminLogsView": {
+      "openInGrafanaExplore": "Open in Grafana Explore",
+      "dockerMetrics": "Docker metrics",
+      "admin": "Admin",
+      "logs": "Logs",
+      "recentAuditEntries": "Recent audit entries"
+    },
+    "adminListeningPanel": {
+      "topChannels": "Top channels",
+      "listening": "Listening",
+      "howMuchPeopleListenOn": "How much people listen on Tahti, where, and which channels they spend the time with. Bots are left out.",
+      "listeningPeriod": "Listening period",
+      "listenedOn": "Listened on"
+    },
+    "adminAddonsView": {
+      "admin": "Admin",
+      "addOns": "Add-ons",
+      "registerANewAddOn": "Register a new add-on",
+      "addOnTypes": "Add-on types",
+      "addOnReviewStatus": "Add-on review status"
+    },
+    "manageDialog": {
+      "enabledByDefault": "Enabled by default",
+      "disableAddOn": "Disable add-on",
+      "saveSettings": "Save settings",
+      "defaultSettingsJson": "Default settings (JSON)",
+      "startingSettingsEveryNewInstall": "Starting settings every new install gets. Leave empty to clear. Existing installs are not changed."
+    },
+    "trackEditDialog": {
+      "editTrack": "Edit track",
+      "audio": "Audio",
+      "export": "Export",
+      "close": "Close",
+      "saveChanges": "Save changes"
+    },
+    "trackCreditsEditor": {
+      "writersPerformersProducersEtcBeyond": "Writers, performers, producers, etc. beyond your channel's usual roster.",
+      "creditRole": "Credit role",
+      "name": "Name",
+      "creditName": "Credit name",
+      "tahtiUsername": "Tahti username"
+    },
+    "pinnedAnnouncementsPanel": {
+      "pinnedAnnouncements": "Pinned announcements",
+      "shortMessagesShownAboveChat": "Short messages shown above chat on your channel. Keep up to three current announcements.",
+      "writeAnAnnouncement": "Write an announcement…",
+      "pinAnnouncement": "Pin announcement",
+      "loadingAnnouncements": "Loading announcements…"
+    },
+    "nowPlayingActionSheet": {
+      "goToChannel": "Go to channel",
+      "share": "Share",
+      "addToPlaylist": "Add to playlist",
+      "openInProEditor": "Open in Pro Editor",
+      "nowPlayingOptions": "Now playing options"
+    },
+    "motionCard": {
+      "saveChanges": "Save changes",
+      "cancel": "Cancel",
+      "motionTitle": "Motion title",
+      "motionDescription": "Motion description",
+      "votingCloses": "Voting closes"
+    },
+    "electionsPanel": {
+      "youAreStanding": "You are standing",
+      "elected": "Elected",
+      "boardElections": "Board elections",
+      "loadingElections": "Loading elections…"
+    },
+    "globalSearch": {
+      "discover": "Discover",
+      "radio": "Radio",
+      "artists": "Artists",
+      "tracks": "Tracks",
+      "playlists": "Playlists"
     }
   },
   "studioEditor": {

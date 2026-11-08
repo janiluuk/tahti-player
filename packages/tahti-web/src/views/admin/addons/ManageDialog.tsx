@@ -70,7 +70,9 @@ export function ManageDialog({
         >
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-medium">Enabled by default</p>
+              <p className="text-sm font-medium">
+                {t('manageDialog.enabledByDefault')}
+              </p>
               <p className="text-foreground-secondary text-xs">
                 Renders for every {addon.scope.toLowerCase()} surface with no
                 explicit install.
@@ -79,7 +81,7 @@ export function ManageDialog({
             <Toggle
               checked={addon.enabledByDefault}
               disabled={pending}
-              label="Enabled by default"
+              label={t('manageDialog.enabledByDefault')}
               onChange={(checked) => onSetEnabledByDefault(addon, checked)}
             />
           </div>
@@ -88,8 +90,8 @@ export function ManageDialog({
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            label="Default settings (JSON)"
-            description="Starting settings every new install gets. Leave empty to clear. Existing installs are not changed."
+            label={t('manageDialog.defaultSettingsJson')}
+            description={t('manageDialog.startingSettingsEveryNewInstall')}
             aria-invalid={configError ? true : undefined}
             value={configText}
             rows={5}
@@ -108,10 +110,10 @@ export function ManageDialog({
               disabled={pending}
               onClick={() => setConfirmDisable(true)}
             >
-              Disable add-on
+              {t('manageDialog.disableAddOn')}
             </Button>
             <Button disabled={pending} type="submit">
-              Save settings
+              {t('manageDialog.saveSettings')}
             </Button>
           </div>
         </form>

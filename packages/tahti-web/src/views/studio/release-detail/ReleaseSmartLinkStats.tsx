@@ -36,7 +36,7 @@ export function ReleaseSmartLinkStats({ releaseId }: { releaseId: string }) {
 
   if (error) {
     return (
-      <StudioPanel title="Smart link stats">
+      <StudioPanel title={t('releaseSmartLinkStats.smartLinkStats')}>
         <PageError
           title={t('loadErrors.couldnTLoadSmartLinkStats')}
           description={error}
@@ -60,24 +60,24 @@ export function ReleaseSmartLinkStats({ releaseId }: { releaseId: string }) {
 
   return (
     <StudioPanel
-      title="Smart link stats"
-      description="Visits to this release's smart link and clicks through to each service."
+      title={t('releaseSmartLinkStats.smartLinkStats')}
+      description={t('releaseSmartLinkStats.visitsToThisReleaseS')}
     >
       <div className="grid gap-3 sm:grid-cols-3">
         <StatTile
-          label="Views"
+          label={t('releaseSmartLinkStats.views')}
           value={stats.smartLinkViewCount.toLocaleString()}
           tone={STUDIO_METRIC_TONES.smartLinkViews}
           icon={<EyeIcon size={16} />}
         />
         <StatTile
-          label="Clicks"
+          label={t('releaseSmartLinkStats.clicks')}
           value={stats.totalClicks.toLocaleString()}
           tone={STUDIO_METRIC_TONES.smartLinkClicks}
           icon={<ExternalLinkIcon size={16} />}
         />
         <StatTile
-          label="Click-through"
+          label={t('releaseSmartLinkStats.clickThrough')}
           value={clickRate === null ? '—' : `${clickRate}%`}
           tone={STUDIO_METRIC_TONES.clickThrough}
           icon={<PercentIcon size={16} />}
