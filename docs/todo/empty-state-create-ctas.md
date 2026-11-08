@@ -30,32 +30,23 @@ incoming review queues).
 
 ### Studio
 - [ ] `collection-edit/TracklistPanel` — no tracks → Add tracks (`Plus`)
-- [ ] `StudioPlaylistEditorView` — empty playlist/collection → Add tracks (`ListPlus`)
 - [ ] `StudioReleaseDetailView` — no tracks / no audio → Add / Upload (`Plus`/`Upload`)
-- [ ] `StemsPanel` — Request split (`Sparkles`)
-- [ ] `show-detail/EpisodesTab` — New episode · **Near** (Overview's Book slot shipped)
-- [ ] `StudioEditorProjectView` — no archive seed → Open library / new session (`FolderOpen`) · **Gap**
 
 ### Library
-- [ ] `ChannelPlaylistPicker` — New collection (`Plus`)
-- [ ] `StashFilesPanel` / desktop library empties — Upload / Import (`Upload`) · **Near**
 
 ### Admin
 - [ ] `admin/moderation/tabs/ThemesTab` — empty catalog → Submit theme / registry docs (`Palette`) · optional
 
 ### Radio
-- [ ] `RadioBookingCalendar` — Book slot (`CalendarPlus`)
 - [ ] `RadioView` — `radio.memberSetsEmpty` → Create member set (`Plus`) if product path exists
 - [ ] `ChannelProgrammingGrid` — Book show (`CalendarPlus`)
 
 ### Listen / community / settings
 - [ ] `DiscussionTopicView` / `TrackBody` / `ChannelComments` — Reply / comment
 - [ ] `ListenAddonsPanel` / `DiscoWidgetManagerPanel` — Browse / install (`Puzzle`)
-- [ ] `ChannelModeratorsPanel` — Add moderator (`UserPlus`) · **Near**
 
 ## Priority B — weaker / optional
 
-- [ ] `StudioRevenueView` — `studioRevenue.emptyDisbursements` → Connect Stripe (`CircleDollarSign`)
 - [ ] `admin/streams/ChannelTracksPanel` — nudge artist upload (`Upload`)
 - [ ] `AdminUsersView` — “No users yet” only if board gets an invite/create path (none today)
 
@@ -79,7 +70,16 @@ Read and skipped (create control is the list itself or sits directly above
 the empty, or there is no create path): `ReleaseTracklistDialog` (public
 listener dialog), `ChannelStoreEditor`, `ChannelRotationEditor`,
 `ReleaseTrackVersionsPanel` (empty means no tracks), `AdminAnnouncementsView`,
-`PinnedAnnouncementsPanel`, `SocialPostNow`. Where the create button sat right
+`PinnedAnnouncementsPanel`, `SocialPostNow`.
+
+2026-11-08 second batch (#1891): show episodes (Episodes tab + Overview),
+release credits with no tracks (Add tracks → tracks tab), channel layer
+playlist picker (New collection), editor project (Open library), channel
+moderators (Add your first moderator), Studio playlist editor (Add tracks →
+edit mode). Read and skipped: `StemsPanel`, `StashFilesPanel` (control right
+above), `RadioBookingCalendar` (Book a slot already under the day),
+`StudioRevenueView` (already had CTAs; past grants are informational),
+`ListenAddonsPanel` (800-line limit), track comments (composer elsewhere). Where the create button sat right
 next to the empty (API tokens, governance forms), it now lives only in the
 empty state while the list is empty.
 
