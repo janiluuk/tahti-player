@@ -14,7 +14,7 @@ import { LanguagePanel } from './LanguagePanel';
 describe('LanguagePanel', () => {
   afterEach(async () => {
     cleanup();
-    await useLanguageStore.getState().setLocale('en_US');
+    await useLanguageStore.getState().setChoice('en_US');
     localStorage.removeItem(LANGUAGE_STORAGE_KEY);
   });
 
@@ -38,5 +38,17 @@ describe('LanguagePanel', () => {
     expect(document.documentElement.lang).toBe('fi-FI');
     expect(screen.getByRole('button', { name: /Kieli/ })).toBeTruthy();
     expect(localStorage.getItem(LANGUAGE_STORAGE_KEY)).toContain('fi_FI');
+  });
+
+  it('offers the browser language and follows it on auto', async () => {
+    await renderWithRouter(<LanguagePanel />);
+    await userEvent.click(screen.getByRole('button', { name: /Language/ }));
+    await userEvent.click(
+      await screen.findByRole('option', { name: /^Browser language/ }),
+    );
+    await waitFor(() =>
+      expect(useLanguageStore.getState().choice).toBe('auto'),
+    );
+    expect(localStorage.getItem(LANGUAGE_STORAGE_KEY)).toContain('auto');
   });
 });

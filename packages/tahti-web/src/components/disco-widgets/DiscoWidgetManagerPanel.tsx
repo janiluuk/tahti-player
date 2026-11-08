@@ -276,7 +276,7 @@ export function DiscoWidgetManagerPanel({
                         />
                       ) : null}
                       <SegmentedControl
-                        aria-label="Width of this logo on your channel"
+                        aria-label={t('discoWidgetManager.widthOfThisLogoOn')}
                         value={block.width}
                         onChange={(width) =>
                           void handleLogoWidth(block.id, width)
@@ -288,7 +288,7 @@ export function DiscoWidgetManagerPanel({
                         variant="secondary"
                         onClick={() => void handleRemoveLogo(block.id)}
                       >
-                        Remove logo
+                        {t('discoWidgetManager.removeLogo')}
                       </Button>
                     </div>
                   );
@@ -331,18 +331,24 @@ export function DiscoWidgetManagerPanel({
                     labels={{ installed: 'Installed' }}
                     accessory={
                       <div className="flex flex-wrap items-center gap-2">
-                        <Tooltip content="Move up" side="top">
+                        <Tooltip
+                          content={t('discoWidgetManager.moveUp')}
+                          side="top"
+                        >
                           <Button
                             size="icon-sm"
                             variant="secondary"
                             disabled={isPending || index === 0}
                             onClick={() => void handleMove(install.id, 'up')}
-                            aria-label="Move up"
+                            aria-label={t('discoWidgetManager.moveUp')}
                           >
                             <ArrowUp size={15} aria-hidden />
                           </Button>
                         </Tooltip>
-                        <Tooltip content="Move down" side="top">
+                        <Tooltip
+                          content={t('discoWidgetManager.moveDown')}
+                          side="top"
+                        >
                           <Button
                             size="icon-sm"
                             variant="secondary"
@@ -350,13 +356,16 @@ export function DiscoWidgetManagerPanel({
                               isPending || index === installs.length - 1
                             }
                             onClick={() => void handleMove(install.id, 'down')}
-                            aria-label="Move down"
+                            aria-label={t('discoWidgetManager.moveDown')}
                           >
                             <ArrowDown size={15} aria-hidden />
                           </Button>
                         </Tooltip>
                         {compact ? null : (
-                          <Tooltip content="Configure widget" side="top">
+                          <Tooltip
+                            content={t('discoWidgetManager.configureWidget')}
+                            side="top"
+                          >
                             <Button
                               size="icon-sm"
                               variant="secondary"
@@ -379,7 +388,7 @@ export function DiscoWidgetManagerPanel({
                           />
                         ) : null}
                         <Toggle
-                          label="Enabled"
+                          label={t('discoWidgetManager.enabled')}
                           checked={install.enabled}
                           disabled={isPending}
                           onChange={(checked) =>
@@ -392,7 +401,7 @@ export function DiscoWidgetManagerPanel({
                           disabled={isPending}
                           onClick={() => setPendingRemoveId(install.id)}
                         >
-                          Remove
+                          {t('discoWidgetManager.remove')}
                         </Button>
                       </div>
                     }
@@ -404,15 +413,15 @@ export function DiscoWidgetManagerPanel({
 
           <div className="flex flex-col gap-3">
             <h3 className="text-sm font-semibold tracking-wide uppercase">
-              Browse the store
+              {t('discoWidgetManager.browseTheStore')}
             </h3>
             <Input
               enterKeyHint="search"
               type="search"
-              placeholder="Search widgets…"
+              placeholder={t('discoWidgetManager.searchWidgets')}
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              aria-label="Search Disco-widgets"
+              aria-label={t('discoWidgetManager.searchDiscoWidgets')}
             />
             <p className="text-foreground-secondary text-xs">
               Don&apos;t see what you need? Anyone can build a widget —{' '}
@@ -444,7 +453,7 @@ export function DiscoWidgetManagerPanel({
                       variant="secondary"
                       onClick={() => setSearch('')}
                     >
-                      Clear search
+                      {t('discoWidgetManager.clearSearch')}
                     </Button>
                   ) : undefined
                 }
@@ -487,10 +496,9 @@ export function DiscoWidgetManagerPanel({
         isOpen={configuringId !== null}
         onClose={() => setConfiguringId(null)}
       >
-        <Dialog.Title>Configure widget</Dialog.Title>
+        <Dialog.Title>{t('discoWidgetManager.configureWidget')}</Dialog.Title>
         <Dialog.Description>
-          Choose whether this widget is visible and adjust its order on the
-          Listen page.
+          {t('discoWidgetManager.chooseWhetherThisWidgetIs')}
         </Dialog.Description>
         {configuringId
           ? (() => {
@@ -507,10 +515,10 @@ export function DiscoWidgetManagerPanel({
                   <p className="font-semibold">{install.widget.name}</p>
                   <div className="flex items-center justify-between gap-3 text-sm">
                     <span className="text-foreground-secondary">
-                      Show this widget on Listen
+                      {t('discoWidgetManager.showThisWidgetOnListen')}
                     </span>
                     <Toggle
-                      label="Show this widget on Listen"
+                      label={t('discoWidgetManager.showThisWidgetOnListen')}
                       checked={install.enabled}
                       disabled={isPending}
                       onChange={(checked) =>
@@ -526,7 +534,7 @@ export function DiscoWidgetManagerPanel({
                       onClick={() => void handleMove(install.id, 'up')}
                     >
                       <ArrowUp size={15} aria-hidden />
-                      Move earlier
+                      {t('discoWidgetManager.moveEarlier')}
                     </Button>
                     <Button
                       size="sm"
@@ -537,7 +545,7 @@ export function DiscoWidgetManagerPanel({
                       onClick={() => void handleMove(install.id, 'down')}
                     >
                       <ArrowDown size={15} aria-hidden />
-                      Move later
+                      {t('discoWidgetManager.moveLater')}
                     </Button>
                   </div>
                 </div>
@@ -545,7 +553,7 @@ export function DiscoWidgetManagerPanel({
             })()
           : null}
         <Dialog.Actions>
-          <Dialog.Close>Done</Dialog.Close>
+          <Dialog.Close>{t('discoWidgetManager.done')}</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
       <ConfirmDialog
@@ -559,8 +567,8 @@ export function DiscoWidgetManagerPanel({
               }?`
             : 'Remove widget?'
         }
-        description="It leaves this page. You can install it again from the list."
-        confirmLabel="Remove"
+        description={t('discoWidgetManager.itLeavesThisPageYou')}
+        confirmLabel={t('discoWidgetManager.remove')}
         onCancel={() => setPendingRemoveId(null)}
         onConfirm={() => {
           const id = pendingRemoveId;

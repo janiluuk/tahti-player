@@ -154,7 +154,7 @@ function ArtistMoreMenu({
                 window.location.assign(publicPressKitUrl(artist.username));
               }}
             >
-              Download press kit
+              {t('artistProfileSections.downloadPressKit')}
             </Popover.Item>
           ) : null}
           {rssHref ? (
@@ -162,7 +162,7 @@ function ArtistMoreMenu({
               icon={<RssIcon size={16} />}
               onClick={() => void copyRss()}
             >
-              Copy RSS feed
+              {t('artistProfileSections.copyRssFeed')}
             </Popover.Item>
           ) : null}
           {canEmbed ? (
@@ -170,7 +170,7 @@ function ArtistMoreMenu({
               icon={<CodeIcon size={16} />}
               onClick={() => setEmbedOpen(true)}
             >
-              Embed
+              {t('artistProfileSections.embed')}
             </Popover.Item>
           ) : null}
           {canReport ? (
@@ -178,7 +178,7 @@ function ArtistMoreMenu({
               icon={<FlagIcon size={16} />}
               onClick={() => setReportOpen(true)}
             >
-              Report
+              {t('artistProfileSections.report')}
             </Popover.Item>
           ) : null}
           {canBlock ? (
@@ -222,6 +222,7 @@ export function ArtistHeaderActions({
   isSelf: boolean;
   onEditLook: () => void;
 }) {
+  const { t } = useTranslation('web');
   const { artist, channel, fanTiers } = profile;
   const subscriptionsOn = artist.freeSubscriptionsEnabled !== false;
   return (
@@ -253,7 +254,7 @@ export function ArtistHeaderActions({
           variant="secondary"
           className={headerButtonClass}
         >
-          Edit design
+          {t('artistProfileSections.editDesign')}
         </ButtonLink>
       ) : isOwner ? (
         <Button
@@ -262,7 +263,7 @@ export function ArtistHeaderActions({
           className={headerButtonClass}
           onClick={onEditLook}
         >
-          Edit look
+          {t('artistProfileSections.editLook')}
         </Button>
       ) : null}
     </>
@@ -328,10 +329,10 @@ export function ArtistBioSection({
           }}
         >
           <Textarea
-            aria-label="Full bio"
+            aria-label={t('artistProfileSections.fullBio')}
             autoFocus
             rows={6}
-            placeholder="Share your full history — how you got started, your influences, milestones…"
+            placeholder={t('artistProfileSections.shareYourFullHistoryHow')}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             submitOnModEnter
@@ -344,7 +345,7 @@ export function ArtistBioSection({
               disabled={saving}
               onClick={() => setEditing(false)}
             >
-              Cancel
+              {t('artistProfileSections.cancel')}
             </Button>
             <SaveButton saving={saving} type="submit" />
           </div>
@@ -379,7 +380,7 @@ export function ArtistBioSection({
             to="/studio/channel"
             className="text-foreground-secondary underline-offset-2 hover:underline"
           >
-            Full studio settings
+            {t('artistProfileSections.fullStudioSettings')}
           </Link>
         </div>
       )}
@@ -398,6 +399,7 @@ export function ArtistLiveShows({
   username: string;
   surfaceStyle: CSSProperties;
 }) {
+  const { t } = useTranslation('web');
   return (
     <section
       className="flex flex-col gap-4 rounded-2xl border p-4 sm:p-6"
@@ -406,16 +408,16 @@ export function ArtistLiveShows({
       <div>
         <div className="flex items-center gap-2">
           <CalendarDays size={18} aria-hidden />
-          <SectionTitle title="Live shows" />
+          <SectionTitle title={t('artistProfileSections.liveShows')} />
         </div>
         <p className="text-foreground-secondary mt-1 text-sm">
-          Upcoming broadcasts and recordings from this artist on Tahti Radio.
+          {t('artistProfileSections.upcomingBroadcastsAndRecordingsFrom')}
         </p>
       </div>
       <div className="grid gap-5 lg:grid-cols-2">
         {shows.upcomingEpisodes.length > 0 ? (
           <ShowEpisodeList
-            title="Upcoming"
+            title={t('artistProfileSections.upcoming')}
             episodes={shows.upcomingEpisodes}
             channelSlug={channelSlug}
             username={username}
@@ -423,7 +425,7 @@ export function ArtistLiveShows({
         ) : null}
         {shows.pastEpisodes.length > 0 ? (
           <ShowEpisodeList
-            title="Past recordings"
+            title={t('artistProfileSections.pastRecordings')}
             episodes={shows.pastEpisodes}
             channelSlug={channelSlug}
           />
@@ -468,12 +470,13 @@ export function ArtistTaggedIn({
   mentions: PublicMention[];
   surfaceStyle: CSSProperties;
 }) {
+  const { t } = useTranslation('web');
   return (
     <section className="rounded-2xl border p-4 sm:p-6" style={surfaceStyle}>
       <div className="mb-3">
-        <SectionTitle title="Tagged in" />
+        <SectionTitle title={t('artistProfileSections.taggedIn')} />
         <p className="text-foreground-secondary mt-1 text-sm">
-          Projects and artist pages where this artist has been credited.
+          {t('artistProfileSections.projectsAndArtistPagesWhere')}
         </p>
       </div>
       <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
@@ -505,13 +508,14 @@ export function ArtistTaggedIn({
 }
 
 export function ArtistEmbeds({ embeds }: { embeds: ArtistProfileEmbed[] }) {
+  const { t } = useTranslation('web');
   return (
     <section className="flex flex-col gap-3">
-      <Eyebrow>Elsewhere</Eyebrow>
+      <Eyebrow>{t('artistProfileSections.elsewhere')}</Eyebrow>
       <div
         className="grid gap-3 lg:grid-cols-2"
         role="group"
-        aria-label="Artist embeds"
+        aria-label={t('artistProfileSections.artistEmbeds')}
       >
         {embeds.map((embed) => (
           <div

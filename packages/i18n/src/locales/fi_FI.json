@@ -730,7 +730,8 @@
     },
     "language": {
       "label": "Kieli",
-      "description": "Valikot, painikkeet ja päivämäärät näytetään tällä kielellä. Nimet ja otsikot pysyvät tekijöidensä kirjoittamina."
+      "description": "Valikot, painikkeet ja päivämäärät näytetään tällä kielellä. Nimet ja otsikot pysyvät tekijöidensä kirjoittamina.",
+      "auto": "Selaimen kieli ({{language}})"
     },
     "actions": {
       "play": "Toista",
@@ -1851,7 +1852,22 @@
       "studio": "Studio",
       "admin": "Ylläpito",
       "radioTitle": "Tahti Radio",
-      "radioDescription": "Kuuntele osuuskunnan Tahti Radio -lähetystä ja katso ohjelma-aikataulu."
+      "radioDescription": "Kuuntele osuuskunnan Tahti Radio -lähetystä ja katso ohjelma-aikataulu.",
+      "defaultTitle": "Tahti · Itsenäistä musiikkia, livenä",
+      "defaultDescription": "Kuuntele itsenäisiä artisteja, livekanavia, radiota ja häviöttömiä julkaisuja Tahdissa.",
+      "channelTitle": "{{name}} livenä Tahdissa",
+      "channelDescription": "Kuuntele kanavan {{name}} livelähetystä, arkistoa ja ohjelmaa Tahdissa.",
+      "collectionTitle": "{{collection}} – {{owner}} Tahdissa",
+      "collectionDescription": "Kuuntele kokoelmaa {{collection}} ({{owner}}) Tahdissa.",
+      "onTahti": "{{name}} Tahdissa",
+      "profileDescription": "Tutustu artistin {{name}} musiikkiin, julkaisuihin, kokoelmiin ja livekanavaan Tahdissa.",
+      "venueDescription": "{{name}} on vahvistettu tapahtumapaikka Tahdissa.",
+      "releaseDescription": "Kuuntele julkaisua {{name}} ja löydä sen viralliset linkit Tahdissa.",
+      "subscribeTitle": "Tilaa {{name}} · Tahti",
+      "subscribeDescription": "Tue artistia {{name}} fanitilauksella Tahdissa.",
+      "moderateTitle": "{{name}}: chatin moderointi · Tahti",
+      "studioTitle": "Studio · Tahti",
+      "studioDescription": "Hallitse musiikkiasi, kanavaasi, lähetyksiäsi ja yleisöäsi Tahdissa."
     },
     "radio": {
       "expandPlayer": "Laajenna soitin",
@@ -3427,7 +3443,24 @@
     "adminNews": {
       "deleteTitleNamed": "Poistetaanko \"{{headline}}\"?",
       "deleteTitle": "Poistetaanko uutinen?",
-      "deleteDescription": "Tätä ei voi perua."
+      "deleteDescription": "Tätä ei voi perua.",
+      "admin": "Ylläpito",
+      "news": "Uutiset",
+      "cancel": "Peruuta",
+      "includesImage": "Sisältää kuvan",
+      "includesLink": "Sisältää linkin",
+      "delete": "Poista",
+      "writeANewsPost": "Kirjoita uutinen",
+      "saveAsDraft": "Tallenna luonnoksena",
+      "writePost": "Kirjoita julkaisu",
+      "headline": "Otsikko",
+      "summary": "Tiivistelmä",
+      "newsImage": "Uutiskuva",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP tai GIF",
+      "linkUrl": "Linkin osoite",
+      "linkLabel": "Linkin teksti",
+      "readMore": "Lue lisää",
+      "shortSummary": "Lyhyt tiivistelmä"
     },
     "adminAnnouncements": {
       "deleteTitleNamed": "Poistetaanko \"{{title}}\"?",
@@ -3934,6 +3967,709 @@
         "OLDEST": "Vanhin ensin",
         "TITLE_ASC": "Nimi A–Ö",
         "TITLE_DESC": "Nimi Ö–A"
+      }
+    },
+    "scheduleEditor": {
+      "nextPlannedBroadcast": "Seuraava suunniteltu lähetys",
+      "thisIsShownOnYour": "Tämä näkyy julkisella kanavallasi, jotta kuuntelijat tietävät milloin palata.",
+      "quickPick": "Pikavalinta",
+      "nextFriday": "Ensi perjantai",
+      "taglineAirTimeVisibilityRecording": "Iskulause, lähetysaika, näkyvyys, tallennus ja numerointi ovat ohjelman omia asetuksia — muuta niitä ohjelman sivulla. Tässä ne koskevat vain uutta ohjelmaa.",
+      "publishRecordingsAutomatically": "Julkaise tallenteet automaattisesti",
+      "numberEpisodesAutomatically": "Numeroi jaksot automaattisesti",
+      "weeklyRecurrence": "Viikoittainen toisto",
+      "selectDaysToGenerateEpisodes": "Valitse päivät, joille jaksot luodaan automaattisesti; jätä tyhjäksi kertaluonteiselle ohjelmalle.",
+      "stopRecurringSchedule": "Lopeta toistuva aikataulu",
+      "scheduleEpisode": "Ajoita jakso",
+      "cancel": "Peruuta",
+      "date": "Päivämäärä",
+      "localTime": "Paikallinen aika",
+      "clearPlannedTime": "Tyhjennä suunniteltu aika",
+      "showTagline": "Ohjelman iskulause",
+      "optionalSubtitle": "Valinnainen alaotsikko",
+      "whenItAirs": "Milloin se lähetetään",
+      "visibility": "Näkyvyys",
+      "startEpisode": "Ensimmäinen jakso",
+      "durationExtraMinutes": "Kesto: lisäminuutit",
+      "saveWeeklySchedule": "Tallenna viikkoaikataulu",
+      "venue": "Tapahtumapaikka",
+      "optionalVenue": "Valinnainen tapahtumapaikka",
+      "location": "Sijainti",
+      "cityCountryOrOnline": "Kaupunki, maa tai verkossa",
+      "episodeArtwork": "Jakson kansikuva",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP tai GIF",
+      "saveNextBroadcast": "Tallenna seuraava lähetys"
+    },
+    "showOverview": {
+      "publishRecordingsAutomatically": "Julkaise tallenteet automaattisesti",
+      "recordedBroadcastsOfThisShow": "Ohjelman tallennetut lähetykset julkaistaan ilman erillistä hyväksyntää.",
+      "numberEpisodesAutomatically": "Numeroi jaksot automaattisesti",
+      "newEpisodesGetTheNext": "Uudet jaksot saavat otsikkoonsa seuraavan numeron.",
+      "streamLive": "Lähetä livenä",
+      "showDefaults": "Ohjelman oletukset",
+      "manageTheShowIdentityAnd": "Hallitse ohjelman tunnistetta ja oletuksia, jotka uudet jaksot perivät.",
+      "title": "Otsikko",
+      "tagline": "Iskulause",
+      "shortLineUnderTheShow": "Lyhyt rivi ohjelman nimen alla. Uudet lähetykset alkavat sillä.",
+      "description": "Kuvaus",
+      "whenItAirs": "Milloin se lähetetään",
+      "shownWithYourUpcomingShows": "Näytetään tulevien ohjelmiesi kanssa, esim. perjantaisin klo 20.",
+      "showThumbnail": "Ohjelman pikkukuva",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP tai GIF",
+      "showBackdrop": "Ohjelman taustakuva",
+      "wideJpegPngWebpOr": "Leveä JPEG, PNG, WebP tai GIF",
+      "visibility": "Näkyvyys",
+      "whoCanSeeThisShow": "Kuka näkee tämän ohjelman ja sen jaksot.",
+      "nextEpisodeNumber": "Seuraavan jakson numero",
+      "saveDefaults": "Tallenna oletukset",
+      "schedule": "Aikataulu",
+      "episodes": "Jaksot"
+    },
+    "radioPlaylist": {
+      "onePlaceForEverythingThat": "Yksi paikka kaikelle, mikä soi livelähetysten välissä.",
+      "programme": "Ohjelmisto",
+      "activeRotation": "Aktiivinen kierto",
+      "playlistSource": "Soittolistan lähde",
+      "chooseAPlaylistThenPublish": "Valitse soittolista ja julkaise sen arkistokappaleet kiertoon.",
+      "usePlaylist": "Käytä soittolistaa",
+      "create": "Luo",
+      "offlineProgrammeSettings": "Lähetysten välisen ohjelmiston asetukset",
+      "keepTheRotationPredictableOr": "Pidä kierto ennustettavana tai anna Tahdin tasapainottaa se.",
+      "addTracksToActiveRotation": "Lisää kappaleita aktiiviseen kiertoon",
+      "appendKeepsTheCurrentRotation": "Lisää loppuun säilyttää nykyisen kierron ja lisää valitut kappaleet.",
+      "overwriteReplacesTheActiveRotation": "Korvaa vaihtaa aktiivisen kierron tähän valintaan.",
+      "cancel": "Peruuta",
+      "appendTracks": "Lisää loppuun",
+      "overwriteRotation": "Korvaa kierto",
+      "playlist": "Soittolista",
+      "editTracks": "Muokkaa kappaleita",
+      "createPlaylist": "Luo soittolista",
+      "playlistName": "Soittolistan nimi",
+      "rotationMode": "Kiertotila",
+      "autoAddUploads": "Lisää lataukset automaattisesti",
+      "addNewReadyUploadsTo": "Lisää uudet valmiit lataukset kiertoon automaattisesti",
+      "playClipsBetweenPrograms": "Soita klippejä ohjelmien välissä",
+      "includeActiveClipsFromThe": "Ota mukaan aktiiviset klipit alla olevasta editorista",
+      "saveSettings": "Tallenna asetukset"
+    },
+    "studioHomeGrid": {
+      "broadcast": "Lähetys",
+      "goLive": "Mene liveen",
+      "keysSignalOnAir": "Avaimet, signaali, lähetys",
+      "schedule": "Aikataulu",
+      "nextShowProgramme": "Seuraava ohjelma ja ohjelmisto",
+      "music": "Musiikki",
+      "shows": "Ohjelmat",
+      "episodesSlots": "Jaksot ja ajat",
+      "upload": "Lataa",
+      "addAudio": "Lisää ääntä",
+      "collections": "Kokoelmat",
+      "releases": "Julkaisut",
+      "distribution": "Jakelu",
+      "deliveryStatusRoyalties": "Toimitustila ja rojaltit",
+      "audienceChannel": "Yleisö ja kanava",
+      "posts": "Julkaisut",
+      "updatesNewsletter": "Päivitykset ja uutiskirje",
+      "stats": "Tilastot",
+      "playsDownloads": "Soitot ja lataukset",
+      "earnings": "Tulot",
+      "ordersGrants": "Tilaukset ja apurahat",
+      "stripe": "Stripe",
+      "payoutAccount": "Tilitystili",
+      "channelLook": "Kanavan ulkoasu",
+      "designDomain": "Ulkoasu ja verkkotunnus"
+    },
+    "waveformToolbar": {
+      "editorTools": "Editorin työkalut",
+      "transport": "Toisto",
+      "previewSelection": "Esikuuntele valinta",
+      "history": "Historia",
+      "undo": "Kumoa",
+      "redo": "Tee uudelleen",
+      "selection": "Valinta",
+      "startSelectionAtPlayhead": "Aloita valinta toistokohdasta",
+      "endSelectionAtPlayhead": "Lopeta valinta toistokohtaan",
+      "cutAndTrim": "Leikkaa ja rajaa",
+      "cutSelection": "Leikkaa valinta",
+      "trimToSelection": "Rajaa valintaan",
+      "trimLeadingTrailingSilence": "Poista hiljaisuus alusta ja lopusta",
+      "clearAllCuts": "Poista kaikki leikkaukset",
+      "clearSelection": "Tyhjennä valinta",
+      "fades": "Häivytykset",
+      "fadeInOverSelection": "Häivytä sisään valinnan yli",
+      "fadeOutOverSelection": "Häivytä ulos valinnan yli",
+      "addMarkerAtPlayhead": "Lisää merkki toistokohtaan",
+      "zoom": "Zoomaus",
+      "zoomOut": "Loitonna",
+      "zoomIn": "Lähennä",
+      "zoomToSelection": "Zoomaa valintaan",
+      "showWholeTrack": "Näytä koko kappale",
+      "snapToZero": "Kohdista nollakohtaan",
+      "moveSelectionEdgesToThe": "Siirrä valinnan reunat lähimpään nollakohtaan, jotta leikkaukset eivät naksu",
+      "skipCuts": "Ohita leikkaukset",
+      "jumpOverCutRegionsDuring": "Hyppää leikattujen kohtien yli toiston aikana"
+    },
+    "studioStripe": {
+      "fanSubOrdersStillAppear": "Fanitilaukset näkyvät edelleen Yleisö-kohdassa. Ota Stripe käyttöön yhdistääksesi tilitystilin ja avataksesi Express-hallintapaneelin.",
+      "backToAudience": "Takaisin Yleisöön",
+      "startResumeOnboarding": "Aloita tai jatka käyttöönottoa",
+      "openStripeExpressDashboard": "Avaa Stripe Express -hallintapaneeli",
+      "orderFlowAndGrantsLive": "Tilausten kulku ja apurahat ovat Yleisö-kohdassa",
+      "stripe": "Stripe",
+      "stripeIsNotEnabled": "Stripe ei ole käytössä",
+      "thisDashboardIsOnlyAdded": "Tämä näkymä lisätään Studioon vain, kun Stripe on määritetty palvelimelle.",
+      "payoutAccount": "Tilitystili",
+      "stripeConnectMustBePayments": "Stripe Connectin on oltava valmis maksuille, ennen kuin fanitilausten rahat voivat siirtyä pankkiisi.",
+      "stripeOn": "Stripe käytössä",
+      "accountConnected": "Tili yhdistetty",
+      "detailsSubmitted": "Tiedot lähetetty",
+      "chargesEnabled": "Veloitukset käytössä",
+      "paymentsReady": "Maksut valmiina",
+      "chargesThroughStripe": "Veloitukset Stripen kautta",
+      "theSameFanSubOrders": "Samat fanitilaukset kuin Yleisö-kohdassa, rajattuna tähän tilitystiliin."
+    },
+    "downloadGates": {
+      "track": "Kappale",
+      "gate": "Ehto",
+      "downloads": "Lataukset",
+      "blocked": "Estetty",
+      "reposts": "Uudelleenjaot",
+      "follow": "Seuraa",
+      "repost": "Jaa uudelleen",
+      "downloadGates": "Latausehdot",
+      "followAndRepostGatesOn": "Ilmaislatausten seuraa- ja jaa-ehdot viimeisen 14 päivän ajalta.",
+      "passedTheGate": "Ehdon täyttäneet",
+      "stoppedAtAGate": "Ehtoon pysähtyneet",
+      "toUnlockADownload": "Latauksen avaamiseksi",
+      "followers": "Seuraajat",
+      "currentAudience": "Nykyinen yleisö",
+      "gatedDownloads": "Ehdolliset lataukset"
+    },
+    "localLibraryFilters": {
+      "filterTracks": "Suodata kappaleita",
+      "narrowTheListByYear": "Rajaa listaa vuoden, keston, formaatin ja muun mukaan. Suodattimet yhdistyvät hakuun ja selaamaasi ryhmään.",
+      "analysis": "Analyysi",
+      "format": "Formaatti",
+      "availability": "Saatavuus",
+      "rating": "Arvio",
+      "colorLabel": "Värimerkintä",
+      "clearAll": "Tyhjennä kaikki",
+      "cancel": "Peruuta",
+      "apply": "Käytä",
+      "yearFrom": "Vuodesta",
+      "yearTo": "Vuoteen",
+      "longerThanMinutes": "Pidempi kuin (minuuttia)",
+      "shorterThanMinutes": "Lyhyempi kuin (minuuttia)",
+      "bitrateAtLeastKbps": "Bittinopeus vähintään (kbps)",
+      "addedSince": "Lisätty alkaen",
+      "bpmFrom": "BPM alkaen",
+      "bpmTo": "BPM enintään",
+      "keyEGAmF": "Sävellaji (esim. Am, F#, 8A)",
+      "louderThanLufs": "Äänekkäämpi kuin (LUFS)",
+      "watchedFolder": "Seurattu kansio"
+    },
+    "episodeReview": {
+      "peakNormalizeLoudnessStreamTarget": "Huippunormalisointi / äänekkyys (striimin tavoite)",
+      "openFullEditor": "Avaa koko editori",
+      "goLiveToRecord": "Mene liveen tallentaaksesi",
+      "openInLibrary": "Avaa kirjastossa",
+      "backToShow": "Takaisin ohjelmaan",
+      "editDetails": "Muokkaa tietoja",
+      "publicShowDetails": "Ohjelman julkiset tiedot",
+      "whatListenersSeeWhenThey": "Mitä kuuntelijat näkevät avatessaan tämän ohjelman Tahti Radion aikataulusta.",
+      "episodeTitle": "Jakson otsikko",
+      "description": "Kuvaus",
+      "savePublicDetails": "Tallenna julkiset tiedot",
+      "reviewBeforeApprove": "Tarkista ennen hyväksyntää",
+      "recordedEpisodesMustBeApproved": "Tallennetut jaksot on hyväksyttävä ennen julkaisua. Rajaa ja normalisoi, sitten hyväksy.",
+      "trimStartSec": "Rajauksen alku (s)",
+      "trimEndSec0Full": "Rajauksen loppu (s, 0 = koko)"
+    },
+    "clipEditor": {
+      "editClip": "Muokkaa klippiä",
+      "offlineDemoProcessingIsSimulated": "Offline-demo: käsittely on simuloitu. Esikuuntelu soittaa alkuperäisen äänen.",
+      "trimPolishYourVoiceAnd": "Rajaa, viimeistele äänesi ja valitse, missä kohtaa 24/7-kiertoa se soi.",
+      "loadingAudio": "Ladataan ääntä…",
+      "retry": "Yritä uudelleen",
+      "original": "Alkuperäinen",
+      "processed": "Käsitelty",
+      "yourOriginalStaysUnchangedProcessed": "Alkuperäinen pysyy ennallaan. Käsitellyt klipit tallennetaan häviöttömänä WAV-tiedostona. Häviöllinen alkuperäinen ei parane muokkaamalla.",
+      "openOriginalAudio": "Avaa alkuperäinen ääni",
+      "chooseAValidStartAnd": "Valitse kelvollinen alku ja loppu alkuperäisen sisältä ja häivytykset, jotka mahtuvat valintaan (enintään 30 sekuntia kumpikin).",
+      "chooseAProgramCurrentlyIn": "Valitse ohjelma, joka on nyt kierrossasi.",
+      "close": "Sulje",
+      "saveInactive": "Tallenna ei-aktiivisena",
+      "saveAmpActivate": "Tallenna ja aktivoi",
+      "audio": "Ääni",
+      "clipTitle": "Klipin nimi",
+      "clipWaveform": "Klipin aaltomuoto",
+      "loopSelection": "Toista valinta silmukkana",
+      "voiceSound": "Äänen sävy",
+      "placement": "Sijoittelu",
+      "frequency": "Toistuvuus",
+      "program": "Ohjelma",
+      "chooseAProgram": "Valitse ohjelma",
+      "leaveTheClipEditor": "Poistutaanko klippieditorista?",
+      "unsavedTitleAndPlacementChanges": "Tallentamattomat nimen ja sijoittelun muutokset menetetään. Luotu esikuuntelu säilyy seuraavaa kertaa varten; lähetyksessä oleva klippi pysyy ennallaan.",
+      "leaveEditor": "Poistu editorista"
+    },
+    "broadcastPreflight": {
+      "confirmShowInfo": "Vahvista ohjelman tiedot",
+      "checkWhatListenersWillSee": "Tarkista, mitä kuuntelijat näkevät, ennen kuin käynnistät enkooderin.",
+      "thisAppearsOnYourChannel": "Tämä näkyy kanavallasi, kun olet livenä.",
+      "confirmed": "Vahvistettu",
+      "showAvatar": "Ohjelman kuva",
+      "showName": "Ohjelman nimi",
+      "tagline": "Iskulause",
+      "whatIsThisBroadcastAbout": "Mistä tämä lähetys kertoo?",
+      "showType": "Ohjelman tyyppi",
+      "visibility": "Näkyvyys",
+      "seriesEpisode": "Sarjan jakso",
+      "episode": "Jakso",
+      "saveShowInfo": "Tallenna ohjelman tiedot"
+    },
+    "pressKit": {
+      "downloadZip": "Lataa ZIP",
+      "yourPressKitIsEmpty": "Lehdistöpakettisi on tyhjä. Lisää esittely ja vähintään yksi kuva, niin lataus tulee käyttöön.",
+      "includeInPressKit": "Mukaan lehdistöpakettiin",
+      "pressKitStory": "Lehdistöpaketin tarina",
+      "aConciseIntroductionForPromoters": "Tiivis esittely promoottoreille, tapahtumapaikoille ja toimittajille.",
+      "shortBio": "Lyhyt esittely",
+      "saveBio": "Tallenna esittely",
+      "photos": "Kuvat",
+      "dropInHighResolutionPromotional": "Pudota tähän korkearesoluutioisia promokuvia. Järjestä vetämällä; ensimmäinen mukana oleva kuva näkyy esikatselun ja latauksen kärjessä.",
+      "photoTitleOrCredit": "Kuvan nimi tai kuvaaja",
+      "pressKitPreview": "Lehdistöpaketin esikatselu",
+      "whatAPromoterSeesWhen": "Mitä promoottori näkee avatessaan lehdistöpakettisi."
+    },
+    "releaseOps": {
+      "catalogMethods": "Luettelointitavat",
+      "selectAtLeastOneCatalog": "Valitse vähintään yksi luettelointitapa tallentaaksesi luettelotiedot.",
+      "exportJson": "Vie JSON",
+      "copyMusicbrainzPrefill": "Kopioi MusicBrainz-esitäyttö",
+      "addOnMusicbrainz": "Lisää MusicBrainziin",
+      "copyDiscogsPrefill": "Kopioi Discogs-esitäyttö",
+      "searchOnDiscogs": "Hae Discogsista",
+      "upcEan": "UPC / EAN",
+      "musicbrainzReleaseMbid": "MusicBrainz-julkaisun MBID",
+      "musicbrainzArtistMbid": "MusicBrainz-artistin MBID",
+      "discogsReleaseId": "Discogs-julkaisun tunnus",
+      "saveCatalog": "Tallenna luettelotiedot"
+    },
+    "themeVisualization": {
+      "someThemesCanShowA": "Jotkin teemat voivat näyttää hillityn taustan, joka liikkuu musiikin mukana.",
+      "backgroundVisualizationSettingsAreNot": "Taustavisualisoinnin asetuksia ei vielä ole tälle teemalle.",
+      "showAnimatedBackground": "Näytä animoitu tausta",
+      "turnItOffToUse": "Poista käytöstä, jos haluat pysäytetyn taustan tai vähemmän näytönohjaimen kuormaa.",
+      "presets": "Esiasetukset",
+      "softColourFieldsThatDrift": "Pehmeitä värikenttiä, jotka liikkuvat toiston mukana.",
+      "howVisibleTheAmbienceIs": "Kuinka näkyvä tunnelma on teeman päällä.",
+      "howQuicklyTheColorFields": "Kuinka nopeasti värikentät muuttuvat.",
+      "howStronglyPlaybackLevelsInfluence": "Kuinka voimakkaasti toiston taso vaikuttaa animaatioon.",
+      "audioReactivity": "Reagointi ääneen",
+      "letTheBackgroundRespondTo": "Anna taustan reagoida soittimen nykyiseen tasoon.",
+      "backgroundVisualizations": "Taustavisualisoinnit",
+      "opacity": "Peittävyys",
+      "motionSpeed": "Liikkeen nopeus",
+      "intensity": "Voimakkuus"
+    },
+    "studioRevenue2": {
+      "dismiss": "Sulje",
+      "earningsGuide": "Tulo-opas",
+      "openStripeSetup": "Avaa Stripen käyttöönotto",
+      "stripeDashboard": "Stripe-hallintapaneeli",
+      "openStripeDashboard": "Avaa Stripe-hallintapaneeli",
+      "thisPageHasMoved": "Tämä sivu on siirtynyt",
+      "help": "Ohje",
+      "helpTakeAGuidedTour": "Ohje — opastettu kierros tilausten hallintaan",
+      "fanSubscriptionTiers": "Fanitilausten tasot",
+      "setTheMonthlySupportTiers": "Määritä kuukausittaiset tukitasot, joita fanit voivat tilata.",
+      "channelStore": "Kanavan kauppa",
+      "followTheStepsNothingIs": "Seuraa vaiheita. Kanavasivullasi ei myydä mitään, ennen kuin lisäät sen kauppaan.",
+      "trackSales": "Kappalemyynti",
+      "paidOneTimePurchasesNewest": "Maksetut kertaostot, uusin ensin.",
+      "payments": "Maksut",
+      "fanSubscriptions": "Fanitilaukset",
+      "orderManagement": "Tilausten hallinta",
+      "subscribersNetRevenuePayoutHealth": "Tilaajat, nettotulot, tilitysten tila sekä viimeisimmät fanitilaus- ja jakelutilitykset.",
+      "orderFlow": "Tilauksen kulku",
+      "whatHappensToATypical": "Mitä tyypilliselle 5 €:n kuukausitilaukselle tapahtuu.",
+      "stripe": "Stripe",
+      "payoutAccountAndExpressDashboard": "Tilitystili ja Express-hallintapaneeli — näkyy Studiossa vain, kun Stripe on käytössä.",
+      "pastGrants": "Aiemmat apurahat"
+    },
+    "smartLinks": {
+      "addTracksFromLibrary": "Lisää kappaleita kirjastosta",
+      "uploadANewTrack": "Lataa uusi kappale",
+      "fillAll": "Täytä kaikki",
+      "addOns": "Lisäosat",
+      "searchYourSoundsAndAdd": "Hae ääniäsi ja lisää ne tähän julkaisuun.",
+      "added": "Lisätty",
+      "clearSearch": "Tyhjennä haku",
+      "done": "Valmis",
+      "smartLinkDestinations": "Älylinkin kohteet",
+      "spotifyAndSoundcloudUseThe": "Spotify ja SoundCloud käyttävät upotus-, tuonti- ja vientilisäosiesi striimiosoitteita. Täytä kaikki ja muokkaa sitten mitä tahansa linkkiä.",
+      "pathForEveryService": "Polku kaikille palveluille",
+      "spotifyAndSoundcloudCopyYour": "Spotify ja SoundCloud kopioivat lisäosiesi striimiosoitteet. Muihin palveluihin lisätään tämä polku.",
+      "saveDestinations": "Tallenna kohteet",
+      "smartLinkPlaylist": "Älylinkin soittolista",
+      "arrangeTheReleaseOrderPlay": "Järjestä julkaisu, soita kappale, poista se, lisää ääntä kirjastostasi tai lataa se laitteeltasi.",
+      "dragToReorder": "Järjestä vetämällä",
+      "moveUp": "Siirrä ylös",
+      "moveDown": "Siirrä alas",
+      "removeFromRelease": "Poista julkaisusta",
+      "search": "Haku",
+      "type": "Tyyppi"
+    },
+    "streamOverlay": {
+      "rtmpHasNoBuiltIn": "RTMP:ssä ei ole sisäänrakennettua otsikkotietoa, joten YouTube-, Twitch- ym. peilit näyttävät staattisen videokuvan, johon tämä kansi on upotettu. Jätä kansi tyhjäksi käyttääksesi parhaillaan soivaa, tai avataria kun mitään ei ole livenä.",
+      "overlayCover": "Peittokuvan kansi",
+      "wideJpegPngOrWebp": "Leveä JPEG, PNG tai WebP. Latautuu heti valittaessa.",
+      "overlayBackdrop": "Peittokuvan tausta",
+      "showOverlayTitle": "Näytä peittokuvan otsikko",
+      "bakeATitleAndSubtitle": "Upota otsikko ja alaotsikko videokuvaan.",
+      "darkenBehindText": "Tummenna tekstin taustaa",
+      "addsASemiTransparentScrim": "Lisää puoliläpinäkyvän tummennuksen, jotta otsikot pysyvät luettavina kirjavan kansikuvan päällä.",
+      "howTheStreamOverlayWorks": "Miten striimin peittokuva toimii",
+      "overlayVisualizer": "Peittokuvan visualisoija",
+      "overlayTitle": "Peittokuvan otsikko",
+      "yourDisplayName": "Näyttönimesi",
+      "overlaySubtitle": "Peittokuvan alaotsikko",
+      "overlayTextColor": "Peittokuvan tekstin väri",
+      "resetToDefaultColors": "Palauta oletusvärit",
+      "saveOverlay": "Tallenna peittokuva"
+    },
+    "radioSchedule": {
+      "yourNextTwoWeeks": "Seuraavat kaksi viikkoasi",
+      "thisWeek": "Tämä viikko",
+      "cancel": "Peruuta",
+      "signIn": "Kirjaudu",
+      "setUpAChannel": "Perusta kanava",
+      "clickAnOpenHourAbove": "Napsauta vapaata tuntia yllä aloittaaksesi varauksen — napsauta omaa aikaasi nähdäksesi tai peruaksesi sen.",
+      "yourBookingsClickToView": "Omat varauksesi (napsauta nähdäksesi)",
+      "bookedByOthers": "Muiden varaamat",
+      "cancelThisBooking": "Perutaanko tämä varaus?",
+      "keepBooking": "Pidä varaus",
+      "close": "Sulje",
+      "cancelBooking": "Peru varaus",
+      "schedule": "Aikataulu",
+      "greenRoom": "Odotushuone",
+      "previousWeek": "Edellinen viikko",
+      "nextWeek": "Seuraava viikko",
+      "weeklySchedule": "Viikkoaikataulu",
+      "showType": "Ohjelman tyyppi",
+      "note": "Huomautus",
+      "saveChanges": "Tallenna muutokset"
+    },
+    "venueRegister": {
+      "goToMyVenues": "Siirry omiin tapahtumapaikkoihin",
+      "registerAVenue": "Rekisteröi tapahtumapaikka",
+      "submitted": "Lähetetty",
+      "allVenues": "Kaikki tapahtumapaikat",
+      "urlSlug": "URL-tunniste",
+      "venueName": "Tapahtumapaikan nimi",
+      "streetAddress": "Katuosoite",
+      "city": "Kaupunki",
+      "countryCode": "Maakoodi",
+      "capacityOptional": "Kapasiteetti (valinnainen)",
+      "descriptionOptional": "Kuvaus (valinnainen)",
+      "venueImage": "Tapahtumapaikan kuva",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP tai GIF",
+      "coverArt": "Kansikuva",
+      "venueWebsiteOptional": "Tapahtumapaikan verkkosivu (valinnainen)"
+    },
+    "onboarding": {
+      "optionalJpegPngOrWebp": "Valinnainen — JPEG, PNG tai WebP.",
+      "iAmA": "Olen…",
+      "lightOrDarkWeStarted": "Vaalea vai tumma? Aloitimme laitteesi mukaisella — vaihda milloin tahansa Asetuksista.",
+      "skipForNow": "Ohita toistaiseksi",
+      "welcomeToTahti": "Tervetuloa Tahtiin",
+      "profilePhoto": "Profiilikuva",
+      "displayName": "Näyttönimi",
+      "tellListenersWhatYouDo": "Kerro kuuntelijoille, mitä teet…",
+      "country": "Maa",
+      "cityLocation": "Kaupunki / sijainti",
+      "optionalShownOnYourPublic": "Valinnainen — näkyy julkisessa profiilissasi",
+      "yourTahtiDomain": "Tahti-verkkotunnuksesi",
+      "appearance": "Ulkoasu"
+    },
+    "adminDashboard": {
+      "admin": "Ylläpito",
+      "dashboard": "Kojelauta",
+      "statusChecks": "Tilatarkistukset",
+      "monitoring": "Valvonta",
+      "viewLogs": "Näytä lokit",
+      "viewDetails": "Näytä tiedot",
+      "close": "Sulje",
+      "grafanaVitalsInfrastructureAndContainer": "Tuotantoympäristön Grafana-mittarit, infrastruktuuri ja konttien lokit.",
+      "operationsHub": "Ylläpitokeskus",
+      "containerLogs": "Konttien lokit",
+      "grafanaLoki": "Grafana Loki",
+      "grafana": "Grafana",
+      "logs": "Lokit",
+      "systemHealth": "Järjestelmän tila",
+      "needsAction": "Vaatii toimia",
+      "financeYtd": "Talous vuoden alusta",
+      "queueHealth": "Jonojen tila",
+      "cronJobs": "Ajastetut työt",
+      "recentAuditEvents": "Viimeisimmät tarkastustapahtumat"
+    },
+    "proEditor": {
+      "metadata": "Metatiedot",
+      "projects": "Projektit",
+      "mastering": "Masterointi",
+      "renderVersion": "Renderöi versio",
+      "saveSession": "Tallenna istunto",
+      "bounce": "Miksaa tiedostoksi",
+      "overwriteReplacesWhatAposS": "Korvaa vaihtaa nyt julkaistun version. Tallenna uutena versiona renderöi ja lisää sen versiohistoriaan koskematta julkaistuun versioon — aktivoi se sieltä, kun olet valmis.",
+      "cancel": "Peruuta",
+      "saveAsNewRevision": "Tallenna uutena versiona",
+      "overwriteLiveVersion": "Korvaa julkaistu versio",
+      "leaveWithoutSaving": "Poistutaanko tallentamatta?",
+      "yourEditsToThisTrack": "Muokkauksiasi tähän kappaleeseen ei ole tallennettu luonnokseksi. Ne menetetään, jos poistut nyt.",
+      "stay": "Jää",
+      "leaveWithoutSaving2": "Poistu tallentamatta",
+      "sounds": "Äänet",
+      "studioEditor": "Studion editori",
+      "editorMode": "Editorin tila",
+      "export": "Vie",
+      "versionLabel": "Version nimi",
+      "saveDraft": "Tallenna luonnos",
+      "multitrackSession": "Moniraitaistunto"
+    },
+    "discoWidgetManager": {
+      "removeLogo": "Poista logo",
+      "remove": "Poista",
+      "browseTheStore": "Selaa kauppaa",
+      "clearSearch": "Tyhjennä haku",
+      "configureWidget": "Määritä widget",
+      "chooseWhetherThisWidgetIs": "Valitse, näkyykö tämä widget, ja säädä sen järjestystä Kuuntele-sivulla.",
+      "showThisWidgetOnListen": "Näytä tämä widget Kuuntele-sivulla",
+      "moveEarlier": "Siirrä aiemmaksi",
+      "moveLater": "Siirrä myöhemmäksi",
+      "done": "Valmis",
+      "widthOfThisLogoOn": "Tämän logon leveys kanavallasi",
+      "moveUp": "Siirrä ylös",
+      "moveDown": "Siirrä alas",
+      "enabled": "Käytössä",
+      "searchWidgets": "Hae widgettejä…",
+      "searchDiscoWidgets": "Hae Disco-widgettejä",
+      "itLeavesThisPageYou": "Se poistuu tältä sivulta. Voit asentaa sen uudelleen listasta."
+    },
+    "artistProfileSections": {
+      "downloadPressKit": "Lataa lehdistöpaketti",
+      "copyRssFeed": "Kopioi RSS-syöte",
+      "embed": "Upota",
+      "report": "Ilmoita",
+      "editDesign": "Muokkaa ulkoasua",
+      "editLook": "Muokkaa ilmettä",
+      "cancel": "Peruuta",
+      "fullStudioSettings": "Kaikki Studion asetukset",
+      "upcomingBroadcastsAndRecordingsFrom": "Artistin tulevat lähetykset ja tallenteet Tahti Radiossa.",
+      "projectsAndArtistPagesWhere": "Projektit ja artistisivut, joissa tämä artisti on mainittu tekijänä.",
+      "elsewhere": "Muualla",
+      "fullBio": "Koko esittely",
+      "shareYourFullHistoryHow": "Kerro koko tarinasi — miten aloitit, vaikutteesi, virstanpylväät…",
+      "liveShows": "Liveohjelmat",
+      "upcoming": "Tulossa",
+      "pastRecordings": "Aiemmat tallenteet",
+      "taggedIn": "Mainittu",
+      "artistEmbeds": "Artistin upotukset"
+    },
+    "playlistEditor": {
+      "play": "Toista",
+      "publicOnProfile": "Julkinen profiilissa",
+      "othersCanAddTracksCollaborative": "Muut voivat lisätä kappaleita (yhteinen)",
+      "addTrack": "Lisää kappale",
+      "addRelease": "Lisää julkaisu",
+      "uploadCover": "Lataa kansikuva",
+      "backToCollections": "Takaisin kokoelmiin",
+      "editDetails": "Muokkaa tietoja",
+      "details": "Tiedot",
+      "name": "Nimi",
+      "description": "Kuvaus",
+      "trackOrder": "Kappalejärjestys",
+      "howTracksAreOrderedOn": "Miten kappaleet järjestetään julkisella sivulla.",
+      "tracks": "Kappaleet",
+      "addFromLibrary": "Lisää kirjastosta",
+      "addAnyPublicTrack": "Lisää mikä tahansa julkinen kappale"
+    },
+    "pageTour": {
+      "steps": {
+        "navListen": {
+          "label": "Kuuntele",
+          "description": "Selaa kanavahakemistoa ja katso, kuka on juuri nyt livenä — Tahdin etusivu."
+        },
+        "navRadio": {
+          "label": "Radio",
+          "description": "Tahti Radio — jäsenten yhteinen 24/7-lähetys ja sen ohjelma-aikataulu."
+        },
+        "navFeed": {
+          "label": "Syöte",
+          "description": "Seuraamiesi artistien ja kanavien päivitykset ja julkaisut."
+        },
+        "navDiscover": {
+          "label": "Löydä",
+          "description": "Löydä uusia artisteja ja kanavia seuraamiesi lisäksi."
+        },
+        "navLibrary": {
+          "label": "Oma kirjasto",
+          "description": "Kappaleesi, kokoelmasi, soittolistasi ja kuunteluhistoriasi."
+        },
+        "navMessages": {
+          "label": "Viestit",
+          "description": "Yksityisviestit artistien ja muiden kuuntelijoiden kanssa."
+        },
+        "navStudio": {
+          "label": "Studio",
+          "description": "Artistin työtila — lähetykset, lataukset, julkaisut ja kanavan työkalut."
+        },
+        "navCoop": {
+          "label": "Osuuskunta",
+          "description": "Jäsenille: aloitteet, keskustelut, asiakirjat ja osuuskunnan toiminta."
+        },
+        "navAdmin": {
+          "label": "Ylläpito",
+          "description": "Hallituksen työkalut alustan moderointiin ja ylläpitoon."
+        },
+        "navMore": {
+          "label": "Lisää",
+          "description": "Ominaisuuskartta ja näkymäatlas — mitä on olemassa ja missä."
+        },
+        "navSettings": {
+          "label": "Asetukset",
+          "description": "Tili-, artisti-, ilmoitus- ja ulkoasuasetukset."
+        },
+        "topbarSchedule": {
+          "label": "Radion ohjelma",
+          "description": "Katso, mitä Tahti Radiossa on tulossa seuraavaksi."
+        },
+        "topbarGolive": {
+          "label": "Lähetys",
+          "description": "Siirry suoraan aloittamaan lähetys kanavallasi."
+        },
+        "topbarUpload": {
+          "label": "Lataa",
+          "description": "Lisää uusi kappale tai julkaisu kirjastoosi."
+        },
+        "topbarAccount": {
+          "label": "Tilivalikko",
+          "description": "Ilmoitukset, viestit, artistipaneeli ja kanava, asetukset ja uloskirjautuminen. Piste avatarissa tarkoittaa lukematonta."
+        },
+        "topbarLogin": {
+          "label": "Kirjaudu",
+          "description": "Kirjaudu seurataksesi artisteja, keskustellaksesi ja käyttääksesi Studion työkaluja."
+        },
+        "revenueStats": {
+          "label": "Tilaustilastot",
+          "description": "Aktiiviset tilaajat, kuluvan kuun netto, vuoden tilitykset ja odottavat tilaukset — samat luvut kuin tuotannon Studio → Tulot."
+        },
+        "revenueOrders": {
+          "label": "Tilityshistoria",
+          "description": "Viimeisimmät fanitilausveloitukset ja jakelurojaltit yhdessä päivätyssä listassa (uusin ensin, enintään kaksitoista)."
+        },
+        "revenueFlow": {
+          "label": "Tilauksen kulku",
+          "description": "Tyypillinen 5 €:n tilaus: maksunvälittäjän kulut, Tahdin 2 %:n toimintamaksu ja loput sinulle."
+        },
+        "revenueHelp": {
+          "label": "Tulo-opas",
+          "description": "Avaa ohjekeskuksen artikkeli rahan kulusta, apurahoista ja siitä, mitä tapahtuu kun fani peruu tilauksen."
+        },
+        "revenueConnect": {
+          "label": "Stripe-hallintapaneeli",
+          "description": "Kun Stripe on käytössä, avaa Studion Stripe-näkymä nähdäksesi Connect-tilan ja Express-tilitystilin."
+        },
+        "discoWidgets": {
+          "label": "Disco-widgetit",
+          "description": "Sivulla näkyvät pienet lisäosat: Kuuntele-sivulla asentamasi (Asetukset → Lisäosat → Löytäminen), artistin tai kanavan sivulla artistin valitsemat. Kukin toimii omassa hiekkalaatikossaan eikä näe tiliäsi."
+        },
+        "stripeStatus": {
+          "label": "Tilitystili",
+          "description": "Onko Stripe käytössä, onko Connect-tilisi luotu ja ovatko maksut valmiina."
+        },
+        "stripeActions": {
+          "label": "Express-hallintapaneeli",
+          "description": "Viimeistele käyttöönotto tai avaa tämän tilitystilin Stripe Express -hallintapaneeli."
+        },
+        "stripeCharges": {
+          "label": "Stripe-veloitukset",
+          "description": "Tämän Stripe-tilin kautta käsitellyt fanitilaukset — samat rahat kuin Yleisö-näkymässä, ilman apurahoja."
+        }
+      },
+      "purpose": {
+        "studioFans": {
+          "label": "Fanit",
+          "description": "Yksi kortti kutakin fanityökalua kohden: julkaisut, uutiskirje, jäsenyydet, kauppa ja tulosi."
+        },
+        "studioAudience": {
+          "label": "Tulot",
+          "description": "Kanavasi fanitilaustilastot, viimeisimmät tilaukset ja tulojen kulku. Jäsenyydet ja kauppa avautuvat kohdasta Studio → Fanit."
+        },
+        "studioProfile": {
+          "label": "Profiili",
+          "description": "Miltä näytät kuuntelijoille: jokainen kortti avaa yhden osan artistiprofiilin tai kanavasivun asetuksista."
+        },
+        "studioStripe": {
+          "label": "Stripe-tilitykset",
+          "description": "Connect-tila ja Express-hallintapaneeli fanitilaustulojen vastaanottamiseen."
+        },
+        "studioShows": {
+          "label": "Ohjelmat ja aikataulu",
+          "description": "Suunnittele tulevat lähetykset, muokkaa seuraavaa ohjelmaa ja hallitse kanavasi aikataulua."
+        },
+        "studioBroadcast": {
+          "label": "Lähetys",
+          "description": "Lähetyksessä tai ei, Mene liveen, kaikki tulossa oleva (ohjelmat, tapahtumat, kuuntelujuhlat) ja kortit kullekin lähetystyökalulle."
+        },
+        "studioGoLive": {
+          "label": "Mene liveen",
+          "description": "Aloita tai valmistele livelähetys kanavallasi."
+        },
+        "studioUpload": {
+          "label": "Lataa",
+          "description": "Lisää uusia kappaleita ja julkaisuja kirjastoosi."
+        },
+        "studio": {
+          "label": "Studio",
+          "description": "Artistin työtila — lähetykset, kirjasto, kanavan työkalut ja yleisö."
+        },
+        "librarySounds": {
+          "label": "Kappaleet",
+          "description": "Lataamasi kappaleet ja niiden koodauksen tila."
+        },
+        "library": {
+          "label": "Kirjasto",
+          "description": "Kappaleesi, julkaisusi, kokoelmasi, tallenteesi ja kuunteluhistoriasi."
+        },
+        "admin": {
+          "label": "Ylläpito",
+          "description": "Hallituksen työkalut käyttäjien ja sisällön moderointiin sekä alustan ylläpitoon."
+        },
+        "messages": {
+          "label": "Viestit",
+          "description": "Yksityisviestit artistien ja muiden kuuntelijoiden kanssa."
+        },
+        "radio": {
+          "label": "Tahti Radio",
+          "description": "Jäsenten yhteinen 24/7-lähetys ja sen ohjelma-aikataulu."
+        },
+        "discover": {
+          "label": "Löydä",
+          "description": "Löydä uusia artisteja ja kanavia seuraamiesi lisäksi."
+        },
+        "settings": {
+          "label": "Asetukset",
+          "description": "Tili-, artisti-, ilmoitus- ja ulkoasuasetukset."
+        },
+        "feed": {
+          "label": "Syöte",
+          "description": "Seuraamiesi artistien ja kanavien päivitykset ja julkaisut."
+        },
+        "home": {
+          "label": "Etusivu",
+          "description": "Tahdin etusivu — kuka on livenä, kanavahakemisto ja oikotiet Kuuntele-, Radio- ja Studio-osioihin."
+        }
       }
     }
   },

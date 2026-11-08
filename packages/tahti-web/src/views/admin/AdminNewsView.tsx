@@ -100,19 +100,21 @@ export function AdminNewsView() {
         <AdminPageLayout current="/admin/news">
           <div className="flex flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminNews.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="content" />
-              <BreadcrumbCurrent>News</BreadcrumbCurrent>
+              <BreadcrumbCurrent>{t('adminNews.news')}</BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="News"
+              title={t('adminNews.news')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
               actions={
-                <Tooltip content="Write post" side="top">
+                <Tooltip content={t('adminNews.writePost')} side="top">
                   <Button
                     size="icon-sm"
                     onClick={() => setComposeOpen(true)}
-                    aria-label="Write post"
+                    aria-label={t('adminNews.writePost')}
                   >
                     <PlusIcon size={16} aria-hidden />
                   </Button>
@@ -141,11 +143,11 @@ export function AdminNewsView() {
                   <PageEmpty
                     title={t('empties.noNewsPostsYet')}
                     action={
-                      <Tooltip content="Write post" side="top">
+                      <Tooltip content={t('adminNews.writePost')} side="top">
                         <Button
                           size="icon-sm"
                           onClick={() => setComposeOpen(true)}
-                          aria-label="Write post"
+                          aria-label={t('adminNews.writePost')}
                         >
                           <PlusIcon size={16} aria-hidden />
                         </Button>
@@ -180,21 +182,21 @@ export function AdminNewsView() {
                             }}
                           >
                             <Input
-                              label="Headline"
+                              label={t('adminNews.headline')}
                               value={editHeadline}
                               onChange={(e) => setEditHeadline(e.target.value)}
                             />
                             <Textarea
                               submitOnModEnter
-                              label="Summary"
+                              label={t('adminNews.summary')}
                               tone="secondary"
                               value={editSummary}
                               onChange={(e) => setEditSummary(e.target.value)}
                               rows={3}
                             />
                             <ImageUploadField
-                              label="News image"
-                              description="JPEG, PNG, WebP, or GIF"
+                              label={t('adminNews.newsImage')}
+                              description={t('adminNews.jpegPngWebpOrGif')}
                               value={editImageUrl}
                               onChange={setEditImageUrl}
                             />
@@ -203,7 +205,7 @@ export function AdminNewsView() {
                               autoCapitalize="none"
                               autoCorrect="off"
                               spellCheck={false}
-                              label="Link URL"
+                              label={t('adminNews.linkUrl')}
                               value={editLinkUrl}
                               onChange={(event) =>
                                 setEditLinkUrl(event.target.value)
@@ -211,12 +213,12 @@ export function AdminNewsView() {
                               placeholder="https://…"
                             />
                             <Input
-                              label="Link label"
+                              label={t('adminNews.linkLabel')}
                               value={editLinkLabel}
                               onChange={(event) =>
                                 setEditLinkLabel(event.target.value)
                               }
-                              placeholder="Read more"
+                              placeholder={t('adminNews.readMore')}
                             />
                             <div className="flex justify-end gap-2">
                               <Button
@@ -224,7 +226,7 @@ export function AdminNewsView() {
                                 variant="text"
                                 onClick={() => setEditingId(null)}
                               >
-                                Cancel
+                                {t('adminNews.cancel')}
                               </Button>
                               <SaveButton saving={busy} type="submit" />
                             </div>
@@ -245,7 +247,7 @@ export function AdminNewsView() {
                                     className="text-primary-strong"
                                   />
                                   <span className="sr-only">
-                                    Includes image
+                                    {t('adminNews.includesImage')}
                                   </span>
                                 </>
                               ) : null}
@@ -256,7 +258,9 @@ export function AdminNewsView() {
                                     aria-hidden
                                     className="text-primary-strong"
                                   />
-                                  <span className="sr-only">Includes link</span>
+                                  <span className="sr-only">
+                                    {t('adminNews.includesLink')}
+                                  </span>
                                 </>
                               ) : null}
                               {post.headline}
@@ -321,7 +325,7 @@ export function AdminNewsView() {
                                 aria-hidden
                                 className="text-accent-red mr-1.5"
                               />
-                              Delete
+                              {t('adminNews.delete')}
                             </Button>
                           </div>
                         </li>
@@ -334,7 +338,7 @@ export function AdminNewsView() {
             </ViewShell>
 
             <Dialog.Root isOpen={composeOpen} onClose={closeCompose}>
-              <Dialog.Title>Write a news post</Dialog.Title>
+              <Dialog.Title>{t('adminNews.writeANewsPost')}</Dialog.Title>
               <form
                 className="mt-4 flex flex-col gap-3"
                 onSubmit={(event) => {
@@ -359,13 +363,13 @@ export function AdminNewsView() {
                 }}
               >
                 <Input
-                  label="Headline"
+                  label={t('adminNews.headline')}
                   value={headline}
                   onChange={(e) => setHeadline(e.target.value)}
                   autoFocus
                 />
                 <Textarea
-                  label="Short summary"
+                  label={t('adminNews.shortSummary')}
                   tone="secondary"
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
@@ -373,8 +377,8 @@ export function AdminNewsView() {
                   submitOnModEnter
                 />
                 <ImageUploadField
-                  label="News image"
-                  description="JPEG, PNG, WebP, or GIF"
+                  label={t('adminNews.newsImage')}
+                  description={t('adminNews.jpegPngWebpOrGif')}
                   value={imageUrl}
                   onChange={setImageUrl}
                 />
@@ -383,19 +387,19 @@ export function AdminNewsView() {
                   autoCapitalize="none"
                   autoCorrect="off"
                   spellCheck={false}
-                  label="Link URL"
+                  label={t('adminNews.linkUrl')}
                   value={linkUrl}
                   onChange={(event) => setLinkUrl(event.target.value)}
                   placeholder="https://…"
                 />
                 <Input
-                  label="Link label"
+                  label={t('adminNews.linkLabel')}
                   value={linkLabel}
                   onChange={(event) => setLinkLabel(event.target.value)}
-                  placeholder="Read more"
+                  placeholder={t('adminNews.readMore')}
                 />
                 <Dialog.Actions>
-                  <Dialog.Close>Cancel</Dialog.Close>
+                  <Dialog.Close>{t('adminNews.cancel')}</Dialog.Close>
                   <Button
                     type="button"
                     variant="secondary"
@@ -420,7 +424,7 @@ export function AdminNewsView() {
                       });
                     }}
                   >
-                    Save as draft
+                    {t('adminNews.saveAsDraft')}
                   </Button>
                   <Button
                     type="submit"

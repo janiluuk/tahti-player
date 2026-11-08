@@ -52,7 +52,7 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
 
   if (loading) {
     return active ? (
-      <StudioPanel title="Download gates">
+      <StudioPanel title={t('downloadGates.downloadGates')}>
         <PageLoading label={t('loading.loadingDownloadGates')} />
       </StudioPanel>
     ) : null;
@@ -60,7 +60,7 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
 
   if (!stats) {
     return error && active ? (
-      <StudioPanel title="Download gates">
+      <StudioPanel title={t('downloadGates.downloadGates')}>
         <PageError
           title={t('loadErrors.couldNotLoadDownloadGates')}
           description={error}
@@ -73,37 +73,37 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
   return (
     <div className={active ? '' : 'hidden'}>
       <StudioPanel
-        title="Download gates"
-        description="Follow and repost gates on your free downloads over the last 14 days."
+        title={t('downloadGates.downloadGates')}
+        description={t('downloadGates.followAndRepostGatesOn')}
       >
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <StatTile
-            label="Downloads"
+            label={t('downloadGates.downloads')}
             tone={STUDIO_METRIC_TONES.downloads}
             icon={<DownloadIcon size={16} />}
             value={stats.totals.countedDownloads.toLocaleString()}
-            sublabel="Passed the gate"
+            sublabel={t('downloadGates.passedTheGate')}
           />
           <StatTile
-            label="Blocked"
+            label={t('downloadGates.blocked')}
             tone={STUDIO_METRIC_TONES.gateBlocked}
             icon={<BanIcon size={16} />}
             value={stats.totals.blockedAttempts.toLocaleString()}
-            sublabel="Stopped at a gate"
+            sublabel={t('downloadGates.stoppedAtAGate')}
           />
           <StatTile
-            label="Reposts"
+            label={t('downloadGates.reposts')}
             tone={STUDIO_METRIC_TONES.reposts}
             icon={<Repeat2Icon size={16} />}
             value={stats.totals.repostAcks.toLocaleString()}
-            sublabel="To unlock a download"
+            sublabel={t('downloadGates.toUnlockADownload')}
           />
           <StatTile
-            label="Followers"
+            label={t('downloadGates.followers')}
             tone={STUDIO_METRIC_TONES.followers}
             icon={<UsersIcon size={16} />}
             value={stats.artistFollowerCount.toLocaleString()}
-            sublabel="Current audience"
+            sublabel={t('downloadGates.currentAudience')}
           />
         </div>
         {stats.items.length === 0 ? (
@@ -112,20 +112,27 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
             description={t('empties.turnOnAFollowOrRepost')}
           />
         ) : (
-          <HorizontalScroll label="Gated downloads" className="mt-4">
+          <HorizontalScroll
+            label={t('downloadGates.gatedDownloads')}
+            className="mt-4"
+          >
             <DataTable className="min-w-[32rem]" data-testid="download-gates">
               <DataTableHead>
                 <DataTableRow>
-                  <DataTableHeaderCell>Track</DataTableHeaderCell>
-                  <DataTableHeaderCell>Gate</DataTableHeaderCell>
-                  <DataTableHeaderCell className="text-right">
-                    Downloads
+                  <DataTableHeaderCell>
+                    {t('downloadGates.track')}
+                  </DataTableHeaderCell>
+                  <DataTableHeaderCell>
+                    {t('downloadGates.gate')}
                   </DataTableHeaderCell>
                   <DataTableHeaderCell className="text-right">
-                    Blocked
+                    {t('downloadGates.downloads')}
                   </DataTableHeaderCell>
                   <DataTableHeaderCell className="text-right">
-                    Reposts
+                    {t('downloadGates.blocked')}
+                  </DataTableHeaderCell>
+                  <DataTableHeaderCell className="text-right">
+                    {t('downloadGates.reposts')}
                   </DataTableHeaderCell>
                 </DataTableRow>
               </DataTableHead>
@@ -139,12 +146,12 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
                       <div className="flex flex-wrap gap-1">
                         {item.followToDownload && (
                           <Badge variant="pill" color="blue">
-                            Follow
+                            {t('downloadGates.follow')}
                           </Badge>
                         )}
                         {item.repostToDownload && (
                           <Badge variant="pill" color="purple">
-                            Repost
+                            {t('downloadGates.repost')}
                           </Badge>
                         )}
                       </div>

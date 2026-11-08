@@ -338,20 +338,20 @@ function ProEditor({ soundId }: { soundId: string }) {
         onKeyDown={onEditorKeyDown}
       >
         <div className="flex flex-wrap gap-3 text-xs">
-          <PageBackLink to="/library/sounds" label="Sounds" />
+          <PageBackLink to="/library/sounds" label={t('proEditor.sounds')} />
           <Link
             to="/studio/sounds/$id"
             params={{ id: soundId }}
             search={{ edit: true }}
             className="text-foreground-secondary hover:underline"
           >
-            Metadata
+            {t('proEditor.metadata')}
           </Link>
           <Link
             to="/studio/editor"
             className="text-foreground-secondary hover:underline"
           >
-            Projects
+            {t('proEditor.projects')}
           </Link>
           {masteringEnabled && (
             <Link
@@ -359,7 +359,7 @@ function ProEditor({ soundId }: { soundId: string }) {
               params={{ id: soundId }}
               className="text-foreground-secondary hover:underline"
             >
-              Mastering
+              {t('proEditor.mastering')}
             </Link>
           )}
         </div>
@@ -368,14 +368,17 @@ function ProEditor({ soundId }: { soundId: string }) {
           title={title || 'Pro editor'}
           classes={{ root: 'px-0 pt-0' }}
         >
-          <ClientCapabilityNotice kind="partial" title="Studio editor">
+          <ClientCapabilityNotice
+            kind="partial"
+            title={t('proEditor.studioEditor')}
+          >
             Trim mode keeps the draft/render pipeline. Multitrack mode ports
             theDAW&apos;s browser rack + live mixer; bounce downloads a WAV you
             can attach as a version after render.
           </ClientCapabilityNotice>
 
           <SegmentedControl
-            aria-label="Editor mode"
+            aria-label={t('proEditor.editorMode')}
             className="w-fit"
             options={EDITOR_MODE_OPTIONS}
             value={editorMode}
@@ -472,7 +475,7 @@ function ProEditor({ soundId }: { soundId: string }) {
                       }
                     />
 
-                    <StudioPanel title="Export">
+                    <StudioPanel title={t('proEditor.export')}>
                       <form
                         className="flex flex-col gap-3"
                         onSubmit={(event) => {
@@ -481,7 +484,7 @@ function ProEditor({ soundId }: { soundId: string }) {
                         }}
                       >
                         <Input
-                          label="Version label"
+                          label={t('proEditor.versionLabel')}
                           value={versionLabel}
                           onChange={(e) => setVersionLabel(e.target.value)}
                         />
@@ -497,11 +500,11 @@ function ProEditor({ soundId }: { soundId: string }) {
                               aria-hidden
                               className="mr-1.5"
                             />
-                            Render version
+                            {t('proEditor.renderVersion')}
                           </Button>
                           <SaveButton
                             saving={busy}
-                            label="Save draft"
+                            label={t('proEditor.saveDraft')}
                             type="submit"
                           />
                         </div>
@@ -534,7 +537,7 @@ function ProEditor({ soundId }: { soundId: string }) {
                     soundId={soundId}
                     onAdded={setVersionLabel}
                   />
-                  <StudioPanel title="Multitrack session">
+                  <StudioPanel title={t('proEditor.multitrackSession')}>
                     <div className="flex flex-col gap-3">
                       <p
                         className="text-foreground-secondary text-sm"
@@ -549,7 +552,7 @@ function ProEditor({ soundId }: { soundId: string }) {
                               : 'Open Multitrack to link an editor project for this sound.'}
                       </p>
                       <Input
-                        label="Version label"
+                        label={t('proEditor.versionLabel')}
                         value={versionLabel}
                         onChange={(e) => setVersionLabel(e.target.value)}
                       />
@@ -560,12 +563,13 @@ function ProEditor({ soundId }: { soundId: string }) {
                           disabled={busy || !editorProjectId}
                           onClick={() => void persistSession()}
                         >
-                          Save session
+                          {t('proEditor.saveSession')}
                         </Button>
                       </div>
                       <p className="text-foreground-secondary text-sm">
-                        <strong>Bounce</strong> uploads a WAV revision via sound
-                        versions. Full mix FX remain local until bounce.
+                        <strong>{t('proEditor.bounce')}</strong> uploads a WAV
+                        revision via sound versions. Full mix FX remain local
+                        until bounce.
                       </p>
                       {message && (
                         <p
@@ -593,18 +597,15 @@ function ProEditor({ soundId }: { soundId: string }) {
             Render “{versionLabel.trim() || DEFAULT_VERSION_LABEL}”
           </Dialog.Title>
           <Dialog.Description>
-            Overwrite replaces what&apos;s live right now. Save as a new
-            revision renders and adds it to Revision history without touching
-            the current live version — activate it there whenever you&apos;re
-            ready.
+            {t('proEditor.overwriteReplacesWhatAposS')}
           </Dialog.Description>
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>{t('proEditor.cancel')}</Dialog.Close>
             <Button variant="secondary" onClick={() => void render(false)}>
-              Save as new revision
+              {t('proEditor.saveAsNewRevision')}
             </Button>
             <Button intent="danger" onClick={() => void render(true)}>
-              Overwrite live version
+              {t('proEditor.overwriteLiveVersion')}
             </Button>
           </Dialog.Actions>
         </Dialog.Root>
@@ -613,15 +614,14 @@ function ProEditor({ soundId }: { soundId: string }) {
           isOpen={leaveGuard.status === 'blocked'}
           onClose={() => leaveGuard.reset?.()}
         >
-          <Dialog.Title>Leave without saving?</Dialog.Title>
+          <Dialog.Title>{t('proEditor.leaveWithoutSaving')}</Dialog.Title>
           <Dialog.Description>
-            Your edits to this track haven&apos;t been saved as a draft. They
-            will be lost if you leave now.
+            {t('proEditor.yourEditsToThisTrack')}
           </Dialog.Description>
           <Dialog.Actions>
-            <Dialog.Close>Stay</Dialog.Close>
+            <Dialog.Close>{t('proEditor.stay')}</Dialog.Close>
             <Button intent="danger" onClick={() => leaveGuard.proceed?.()}>
-              Leave without saving
+              {t('proEditor.leaveWithoutSaving2')}
             </Button>
           </Dialog.Actions>
         </Dialog.Root>
