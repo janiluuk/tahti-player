@@ -14,15 +14,15 @@ const meta: Meta<typeof LanguagePanel> = {
     docs: {
       description: {
         component:
-          'Settings → Language: English or Suomi for menus, buttons and dates. Applies at once, sets `<html lang>` and is remembered in this browser. Missing states: loading/error (the Finnish catalog is a lazy chunk; a failed fetch keeps English).',
+          'Settings → Language: the browser language (default), English or Suomi for menus, buttons and dates. Applies at once, sets `<html lang>` and is remembered in this browser. Missing states: loading/error (the Finnish catalog is a lazy chunk; a failed fetch keeps English).',
       },
     },
   },
   decorators: [withPageSurface()],
   beforeEach: async () => {
-    await useLanguageStore.getState().setLocale('en_US');
+    await useLanguageStore.getState().setChoice('en_US');
     return async () => {
-      await useLanguageStore.getState().setLocale('en_US');
+      await useLanguageStore.getState().setChoice('en_US');
     };
   },
 };

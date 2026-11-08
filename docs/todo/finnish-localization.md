@@ -74,5 +74,4 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 - [ ] Studio and Admin page bodies beyond batches 41–50 (admin hub card descriptions per page stay English), channel schedule “Next up” stays schedule Kept, more Radio station chrome beyond up-next/shows empties.
 - [ ] Views that do not call `useTranslation` render again only when something else changes, so a date or label can stay in the old language until then. Check this after more views are translated.
 - [ ] Route SEO descriptions and the default title (`lib/seo.ts`). The page tour (`lib/pageTour.ts`).
-- [ ] Optional: detect a Finnish browser on first visit. `matchBrowserLocales` exists, but the default stays English until product decides.
 - [ ] When Settings is reduced to account-only (`simplify-studio-library-settings-admin.md`), move Language into Appearance.
