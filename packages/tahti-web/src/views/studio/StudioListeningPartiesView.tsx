@@ -1,6 +1,7 @@
 import {
   BellIcon,
   CalendarClockIcon,
+  CalendarPlusIcon,
   ExternalLinkIcon,
   HistoryIcon,
   PencilIcon,
@@ -105,7 +106,11 @@ export function StudioListeningPartiesView() {
     (party) => party.state === 'ENDED' || party.state === 'CANCELED',
   );
 
-  const renderList = (items: ListeningPartySummaryDto[], empty: string) => {
+  const renderList = (
+    items: ListeningPartySummaryDto[],
+    empty: string,
+    withCreate = false,
+  ) => {
     if (loading) {
       return <PageLoading label={t('studioListeningParties.loading')} />;
     }
@@ -119,7 +124,23 @@ export function StudioListeningPartiesView() {
       );
     }
     if (items.length === 0) {
-      return <PageEmpty title={empty} />;
+      return (
+        <PageEmpty
+          title={empty}
+          action={
+            withCreate ? (
+              <ButtonLink
+                to="/studio/listening-parties/new"
+                size="sm"
+                variant="secondary"
+              >
+                <CalendarPlusIcon size={16} aria-hidden />
+                {t('studioListeningParties.scheduleParty')}
+              </ButtonLink>
+            ) : undefined
+          }
+        />
+      );
     }
     return (
       <ul className="flex flex-col gap-2">
@@ -241,6 +262,7 @@ export function StudioListeningPartiesView() {
                     {renderList(
                       upcoming,
                       t('studioListeningParties.emptyUpcoming'),
+                      true,
                     )}
                   </StudioPanel>
                 ),

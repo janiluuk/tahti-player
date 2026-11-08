@@ -26,4 +26,19 @@ describe('FanTiersEditor', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText('No tiers yet')).toBeTruthy();
   });
+
+  it('opens the new tier dialog from the empty state', async () => {
+    vi.spyOn(fanTiers, 'fetchMyFanTiers').mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    });
+    render(<FanTiersEditor />);
+    await screen.findByText('No tiers yet');
+    const ctas = screen.getAllByRole('button', { name: 'New tier' });
+    expect(ctas).toHaveLength(2);
+    fireEvent.click(ctas[1]!);
+    expect(
+      await screen.findByRole('dialog', { name: 'New tier' }),
+    ).toBeTruthy();
+  });
 });

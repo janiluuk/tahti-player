@@ -206,7 +206,7 @@ export function InternetRadioPresetsPanel() {
             </Button>
             <Button size="sm" onClick={() => openNew()}>
               <PlusIcon size={15} aria-hidden className="mr-1.5" />
-              Add station
+              {t('adminPresets.addStation')}
             </Button>
           </div>
         }
@@ -220,6 +220,12 @@ export function InternetRadioPresetsPanel() {
           <PageEmpty
             title={t('empties.noInternetRadioStationsYet')}
             description={t('empties.addOneToOfferItAs')}
+            action={
+              <Button size="sm" variant="secondary" onClick={() => openNew()}>
+                <PlusIcon size={16} aria-hidden />
+                {t('adminPresets.addStation')}
+              </Button>
+            }
           />
         ) : (
           <ul className="divide-border divide-y">

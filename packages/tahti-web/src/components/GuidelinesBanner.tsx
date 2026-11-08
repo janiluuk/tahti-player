@@ -1,3 +1,5 @@
+import { ScrollTextIcon } from 'lucide-react';
+
 import { Alert, Button, ButtonAnchor } from '@tahti-player/ui';
 
 import { useNotificationInboxStore } from '../stores/notificationInboxStore';
@@ -14,7 +16,8 @@ export function GuidelinesBanner() {
 
   return (
     <Alert
-      tone="info"
+      tone="neutral"
+      icon={<ScrollTextIcon size={16} className="text-primary" aria-hidden />}
       title={sticky.title}
       data-testid="guidelines-banner"
       className="mb-2"

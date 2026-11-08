@@ -25,6 +25,8 @@ function TrackCreditsRow({
   const { t } = useTranslation('web');
   const [credits, setCredits] = useState<TrackCredit[]>(track.credits ?? []);
   const [saving, setSaving] = useState(false);
+  const addCredit = () =>
+    setCredits((current) => [...current, { role: 'vocals', name: '' }]);
 
   const update = (index: number, patch: Partial<TrackCredit>) => {
     setCredits((current) =>
@@ -57,7 +59,20 @@ function TrackCreditsRow({
         {track.position}. {track.title}
       </p>
       {credits.length === 0 && (
-        <PageEmpty title={t('studioReleaseDetail.creditsEmpty')} />
+        <PageEmpty
+          title={t('studioReleaseDetail.creditsEmpty')}
+          action={
+            <Button
+              size="sm"
+              variant="secondary"
+              disabled={saving}
+              onClick={addCredit}
+            >
+              <PlusIcon size={16} aria-hidden />
+              {t('emptyActions.addCredit')}
+            </Button>
+          }
+        />
       )}
       <ul className="flex flex-col gap-2">
         {credits.map((credit, index) => (
@@ -117,17 +132,17 @@ function TrackCreditsRow({
         ))}
       </ul>
       <div className="flex flex-wrap items-center gap-2">
-        <Button
-          size="sm"
-          variant="secondary"
-          disabled={saving || credits.length >= 20}
-          onClick={() =>
-            setCredits((current) => [...current, { role: 'vocals', name: '' }])
-          }
-        >
-          <PlusIcon size={14} aria-hidden className="mr-1.5" />
-          Add credit
-        </Button>
+        {credits.length > 0 && (
+          <Button
+            size="sm"
+            variant="secondary"
+            disabled={saving || credits.length >= 20}
+            onClick={addCredit}
+          >
+            <PlusIcon size={14} aria-hidden className="mr-1.5" />
+            {t('emptyActions.addCredit')}
+          </Button>
+        )}
         <SaveButton
           saving={saving}
           label="Save credits"

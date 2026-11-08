@@ -30,6 +30,7 @@ import {
   type AdminGrantPreview,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -101,6 +102,7 @@ export function AdminGrantCycleView() {
           <div className="flex max-w-5xl flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="coop" />
               <BreadcrumbLink to="/admin/governance">Governance</BreadcrumbLink>
               <BreadcrumbLink
                 to="/admin/governance/$tab"

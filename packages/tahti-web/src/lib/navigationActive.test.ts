@@ -32,8 +32,6 @@ describe('navigation active states', () => {
     ['/chat', 'chat'],
     ['/chat/northern-lights', 'chat'],
     ['/u/demo-artist', 'listen'],
-    ['/search', 'listen'],
-    ['/search?q=techno', 'listen'],
     ['/v/helsinki-club', 'listen'],
     ['/listen/favorites', 'library'],
     ['/favorites', 'library'],
@@ -42,6 +40,7 @@ describe('navigation active states', () => {
     ['/radio/show/northern-lights', 'radio'],
     ['/discover', 'discover'],
     ['/discover?tab=artists', 'discover'],
+    ['/discover?tab=feed', 'discover'],
     ['/studio', 'studio'],
     ['/studio/go-live', 'studio'],
     ['/studio/schedule', 'studio'],
@@ -100,13 +99,26 @@ describe('navigation active states', () => {
   it('lights Library on the phone for Favorites', () => {
     expect(activeMobileItem('/')).toBe('listen');
     expect(activeMobileItem('/u/demo-artist')).toBe('listen');
-    expect(activeMobileItem('/search')).toBe('listen');
     expect(activeMobileItem('/listen/favorites')).toBe('library');
     expect(activeMobileItem('/favorites')).toBe('library');
     expect(activeMobileItem('/library/favorites')).toBe('library');
     expect(activeMobileItem('/library')).toBe('library');
     expect(activeMobileItem('/studio/sounds')).toBe('library');
     expect(activeMobileItem('/studio/go-live')).toBe('studio');
+  });
+
+  it('leaves Listen unlit on search results, which the top bar opens from any section', () => {
+    expect(activeSidebarItem('/search')).toBeNull();
+    expect(activeSidebarItem('/search?q=techno')).toBeNull();
+    expect(activeSidebarItem('/search?tag=ambient')).toBeNull();
+    expect(activeMobileItem('/search?q=techno')).toBeNull();
+    expect(isMobileMoreRoute('/search', { studioIsPrimary: true })).toBe(false);
+  });
+
+  it('lights the redirect targets of the old Listen feed and favorites links', () => {
+    expect(activeSidebarItem('/discover?tab=feed')).toBe('discover');
+    expect(activeSidebarItem('/library/favorites')).toBe('library');
+    expect(activeMobileItem('/discover?tab=feed')).toBe('discover');
   });
 
   it('lights More for destinations that are not primary phone tabs', () => {

@@ -71,6 +71,7 @@ export function ArtistStoryFeed({
             key={story.id}
             index={index}
             imageSrc={story.imageUrl}
+            artworkSeed={story.id}
             meta={[
               POST_CATEGORY_LABELS[story.category] ?? 'Story',
               storyDate(story.publishAt),

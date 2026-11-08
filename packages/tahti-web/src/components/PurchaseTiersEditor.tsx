@@ -37,6 +37,10 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
   const [priceOptional, setPriceOptional] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const openCreate = () => {
+    setMsg(null);
+    setCreateOpen(true);
+  };
   const [storeEnabled, setStoreEnabledState] = useState<boolean | null>(null);
   const [savingStore, setSavingStore] = useState(false);
 
@@ -117,23 +121,20 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
       )}
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-foreground-secondary text-xs">
-          A price is what a fan pays. Add one, then put tracks on it below.
+          {t('tiers.purchaseIntro')}
         </p>
         <Tooltip
-          content="New purchase tier"
+          content={t('tiers.newPurchaseTier')}
           side="bottom"
           wrapperClassName="inline-flex"
         >
           <Button
             size="sm"
-            onClick={() => {
-              setMsg(null);
-              setCreateOpen(true);
-            }}
-            aria-label="New purchase tier"
+            onClick={openCreate}
+            aria-label={t('tiers.newPurchaseTier')}
           >
             <PlusIcon size={16} aria-hidden className="mr-1.5" />
-            New tier
+            {t('tiers.newTier')}
           </Button>
         </Tooltip>
       </div>
@@ -150,6 +151,12 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
         <PageEmpty
           title={t('empties.noPricesYet')}
           description={t('empties.addAPriceFirstThenChoose')}
+          action={
+            <Button size="sm" variant="secondary" onClick={openCreate}>
+              <PlusIcon size={16} aria-hidden />
+              {t('tiers.newTier')}
+            </Button>
+          }
         />
       ) : (
         <ul className="flex flex-col gap-2">

@@ -46,6 +46,32 @@ describe('fetchTahtiSelects', () => {
     ]);
   });
 
+  it('keeps the server waveform peaks on each row', async () => {
+    vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response(
+        JSON.stringify({
+          items: [
+            {
+              soundId: 's1',
+              title: 'Northern Lights',
+              artistName: 'Aino',
+              artistUsername: 'aino',
+              channelSlug: 'aino',
+              bannerUrl: null,
+              durationSec: 240,
+              audioUrl: 'https://cdn.example/s1.mp3',
+              gate: null,
+              peaks: [5, 220, 70],
+            },
+          ],
+        }),
+        { status: 200 },
+      ),
+    );
+    const result = await fetchTahtiSelects();
+    expect(result.data[0]?.peaks).toEqual([5, 220, 70]);
+  });
+
   it('returns no rows when the gallery cannot be read', async () => {
     vi.spyOn(globalThis, 'fetch').mockResolvedValue(
       new Response('{}', { status: 500 }),

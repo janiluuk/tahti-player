@@ -561,12 +561,20 @@ export const studioInsightsIndexRoute = createRoute({
 export const studioInsightsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/insights/$kind/$id',
+  validateSearch: (search: Record<string, unknown>): { release?: string } => ({
+    release:
+      typeof search.release === 'string' && search.release
+        ? search.release
+        : undefined,
+  }),
   component: function StudioInsightsRoute() {
     const { kind, id } = studioInsightsRoute.useParams();
+    const { release } = studioInsightsRoute.useSearch();
     return (
       <StudioTrackInsightsView
         kind={kind === 'release-tracks' ? 'release-tracks' : 'sound'}
         id={id}
+        releaseId={release}
       />
     );
   },

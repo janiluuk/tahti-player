@@ -245,6 +245,7 @@ export function StudioUpdatesView({
                         <StoryCard
                           index={index}
                           imageSrc={story.imageUrl}
+                          artworkSeed={story.id}
                           kind={kind}
                           date={storyDate(p.publishAt)}
                           dateTime={p.publishAt}

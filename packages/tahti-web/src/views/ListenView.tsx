@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
+  Badge,
   Button,
   Card,
   CardsRow,
@@ -217,13 +218,31 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
             </Link>
           }
           subtitle={
-            <span className="font-semibold">
-              {playing
-                ? t('listen.playingNow')
-                : channel.state === 'LIVE'
-                  ? t('listen.liveNow')
-                  : t('listen.replayBadge')}
-            </span>
+            playing ? (
+              <span className="font-semibold">{t('listen.playingNow')}</span>
+            ) : (
+              `@${channel.user.username}`
+            )
+          }
+          artworkOverlay={
+            channel.state === 'LIVE' ? (
+              <Badge
+                variant="pill"
+                color="red"
+                data-testid="on-air-live-marker"
+                className="gap-1 font-bold tracking-wide uppercase"
+              >
+                <span
+                  aria-hidden
+                  className="size-1.5 rounded-full bg-current motion-safe:animate-pulse"
+                />
+                {t('listen.liveBadge')}
+              </Badge>
+            ) : (
+              <Badge variant="pill" color="secondary">
+                {t('listen.replayBadge')}
+              </Badge>
+            )
           }
           src={channel.user.avatarUrl ?? placeholderArtworkUrl(channel.slug)}
           isPlaying={playing}
