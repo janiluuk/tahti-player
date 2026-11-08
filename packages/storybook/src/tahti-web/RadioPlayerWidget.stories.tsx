@@ -89,6 +89,7 @@ function DemoWidget({
       <RadioPlayerWidget
         station={STATION}
         logoUrl={STATION.user.avatarUrl}
+        artworkUrl="https://picsum.photos/seed/polar/400/400"
         online={online}
         offlineContent={
           <PageEmpty
@@ -103,7 +104,7 @@ function DemoWidget({
             current={{
               title: 'Aurora Drift',
               subtitle: 'Northern Lights',
-              artworkUrl: null,
+              artworkUrl: 'https://picsum.photos/seed/polar/400/400',
             }}
             next={{
               title: 'Night Transit',

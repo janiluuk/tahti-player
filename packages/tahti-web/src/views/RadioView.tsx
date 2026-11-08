@@ -483,6 +483,7 @@ export function RadioView() {
           <RadioPlayerWidget
             station={station}
             logoUrl={stationLogo}
+            artworkUrl={overlayCurrent?.artworkUrl ?? null}
             online={online}
             offlineContent={
               <PageEmpty

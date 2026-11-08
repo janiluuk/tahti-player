@@ -7,13 +7,15 @@ import { cn } from '../../lib/cn';
 import { radioVisualizerPreset } from '../../lib/radioVisualizer';
 import { ChannelVisualizer } from '../ChannelVisualizer';
 
-/** Radio's on-air hero: the station visualizer as a large backdrop with the
- * station logo (the only Tahti Radio logo on the page), what is playing and
- * the station actions laid over it. When `embedded`, skip the outer Box so a
+/** Radio's on-air hero: the station visualizer as a large backdrop with one
+ * thumbnail (the playing track's cover, else the station logo), what is
+ * playing and the station actions laid over it. The scrim takes
+ * `--radio-ambient` from the parent widget when set. When `embedded`, skip the outer Box so a
  * parent (RadioPlayerWidget) can own the chrome. */
 export function RadioVisualizerHero({
   station,
   logoUrl,
+  artworkUrl = null,
   info,
   actions,
   embedded = false,
@@ -21,6 +23,7 @@ export function RadioVisualizerHero({
 }: {
   station: PublicChannel;
   logoUrl: string | null;
+  artworkUrl?: string | null;
   info: ReactNode;
   actions: ReactNode;
   embedded?: boolean;
@@ -29,7 +32,7 @@ export function RadioVisualizerHero({
 }) {
   const body = (
     <>
-      <div className="absolute inset-0 opacity-80">
+      <div className="absolute inset-0">
         <ChannelVisualizer
           preset={radioVisualizerPreset(station.slug, station.visualPreset)}
           colorSchemeJson={station.colorSchemeJson}
@@ -40,7 +43,7 @@ export function RadioVisualizerHero({
       </div>
       <div
         aria-hidden
-        className="from-background/90 via-background/30 absolute inset-0 bg-linear-to-t to-transparent"
+        className="absolute inset-0 bg-linear-to-t from-[rgb(var(--radio-ambient,12_12_16)/0.7)] via-[rgb(var(--radio-ambient,12_12_16)/0.15)] to-transparent"
       />
       <div
         className={cn(
@@ -53,11 +56,11 @@ export function RadioVisualizerHero({
         <div data-testid="radio-station-logo" className="shrink-0 self-start">
           <MediaArtwork
             size="md"
-            src={logoUrl}
-            alt="Tahti Radio"
-            fit="contain"
+            src={artworkUrl || logoUrl}
+            alt={artworkUrl ? '' : 'Tahti Radio'}
+            fit={artworkUrl ? 'cover' : 'contain'}
             className={cn(
-              'bg-surface-secondary rounded-xl font-bold tracking-tight',
+              'bg-surface-secondary rounded-xl font-bold tracking-tight shadow-lg ring-1 ring-white/15',
               compact
                 ? 'size-14 min-w-14 text-lg'
                 : 'size-20 min-w-20 text-2xl sm:size-28 sm:min-w-28',
