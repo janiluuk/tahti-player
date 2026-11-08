@@ -3892,7 +3892,12 @@
       "browseTracks": "Browse tracks",
       "importFiles": "Import files",
       "importEmbeds": "Import tracks",
-      "createRelease": "Create release"
+      "createRelease": "Create release",
+      "addAgendaItem": "Add agenda item",
+      "addStation": "Add station",
+      "registerAddon": "Register add-on",
+      "addContent": "Add content",
+      "addToSelects": "Add to Tahti Selects"
     }
   },
   "studioEditor": {

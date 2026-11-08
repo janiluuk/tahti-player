@@ -162,6 +162,18 @@ export function AdminAddonsView() {
                       ? 'No add-ons need review right now.'
                       : 'No add-ons registered for this type yet.'
                   }
+                  action={
+                    needsReviewOnly ? undefined : (
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        onClick={openRegister}
+                      >
+                        <PlusIcon size={16} aria-hidden />
+                        {t('emptyActions.registerAddon')}
+                      </Button>
+                    )
+                  }
                 />
               ) : (
                 <div className="grid gap-4 md:grid-cols-2">

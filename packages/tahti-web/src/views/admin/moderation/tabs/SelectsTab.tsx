@@ -302,7 +302,19 @@ export function SelectsTab() {
         {loading ? (
           <PageLoading label={t('loading.loadingSelectsRotation')} />
         ) : items.length === 0 ? (
-          <PageEmpty title={t('empties.nothingInRotationYetUseThe')} />
+          <PageEmpty
+            title={t('empties.nothingInRotationYetUseThe')}
+            action={
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setPickerOpen(true)}
+              >
+                <PlusIcon size={16} aria-hidden />
+                {t('emptyActions.addContent')}
+              </Button>
+            }
+          />
         ) : (
           <TahtiRotationPlaylistEditor
             items={items}

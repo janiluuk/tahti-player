@@ -98,7 +98,7 @@ export function RadioBookedShowsPanel({
       aria-label="Booked shows"
     >
       <div className="flex flex-wrap items-center gap-2">
-        {onBook ? (
+        {onBook && days.length > 0 ? (
           <Button size="sm" variant="secondary" onClick={onBook}>
             <CalendarPlusIcon size={15} className="mr-1.5" aria-hidden />
             {t('radio.bookASlot')}
@@ -123,7 +123,17 @@ export function RadioBookedShowsPanel({
           onRetry={onRetry}
         />
       ) : days.length === 0 ? (
-        <PageEmpty title={t('radio.nothingBooked')} />
+        <PageEmpty
+          title={t('radio.nothingBooked')}
+          action={
+            onBook ? (
+              <Button size="sm" variant="secondary" onClick={onBook}>
+                <CalendarPlusIcon size={16} aria-hidden />
+                {t('radio.bookASlot')}
+              </Button>
+            ) : undefined
+          }
+        />
       ) : (
         days.map((day) => (
           <div key={day.key} className="flex flex-col gap-2">
