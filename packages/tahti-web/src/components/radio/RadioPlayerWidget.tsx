@@ -1,18 +1,31 @@
 import { Maximize2, Minimize2 } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Box, Button, Tabs, Tooltip, type TabsItem } from '@tahti-player/ui';
 
 import type { PublicChannel } from '../../api/types';
+import { useDominantColor } from '../../lib/useDominantColor';
 import { RadioVisualizerHero } from './RadioVisualizerHero';
+
+const AMBIENT_FALLBACK = '12 12 16';
+const AMBIENT_DARKEN = 0.55;
+
+export function radioAmbient(rgb: [number, number, number] | null): string {
+  if (!rgb) {
+    return AMBIENT_FALLBACK;
+  }
+  return rgb.map((c) => Math.round(c * AMBIENT_DARKEN)).join(' ');
+}
 
 /** On-air player + Up next / Shows / Just played / Featured in one surface.
  * Starts minimized (a short now-playing strip); the corner button expands it
- * to the full visualizer and tabs. */
+ * to the full visualizer and tabs. The playing track's cover sets
+ * `--radio-ambient`, which tints the scrim and the now-playing card. */
 export function RadioPlayerWidget({
   station,
   logoUrl,
+  artworkUrl = null,
   online,
   offlineContent,
   info,
@@ -25,6 +38,7 @@ export function RadioPlayerWidget({
 }: {
   station: PublicChannel;
   logoUrl: string | null;
+  artworkUrl?: string | null;
   online: boolean;
   offlineContent?: ReactNode;
   info: ReactNode;
@@ -41,6 +55,7 @@ export function RadioPlayerWidget({
     ? t('radio.minimizePlayer')
     : t('radio.expandPlayer');
   const ToggleIcon = expanded ? Minimize2 : Maximize2;
+  const ambient = radioAmbient(useDominantColor(artworkUrl));
 
   return (
     <Box
@@ -48,6 +63,7 @@ export function RadioPlayerWidget({
       className="relative flex flex-col overflow-hidden rounded-xl p-0"
       data-testid="radio-player-widget"
       data-expanded={expanded}
+      style={{ '--radio-ambient': ambient } as CSSProperties}
     >
       <div className="absolute top-3 right-3 z-20">
         <Tooltip content={toggleLabel} side="left">
@@ -67,6 +83,7 @@ export function RadioPlayerWidget({
         <RadioVisualizerHero
           station={station}
           logoUrl={logoUrl}
+          artworkUrl={artworkUrl}
           info={info}
           actions={actions}
           embedded
