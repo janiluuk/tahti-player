@@ -89,8 +89,8 @@ function StorageTypeBreakdown({ files }: { files: AdminFileRow[] }) {
 
   return (
     <StudioPanel
-      title="Storage by file type"
-      description="How total stored file usage is distributed across content types."
+      title={t('storageOverview.storageByFileType')}
+      description={t('storageOverview.howTotalStoredFileUsage')}
     >
       {breakdown.length === 0 || totalBytes === 0 ? (
         <PageEmpty title={t('empties.noFileUsageRecorded')} />
@@ -172,12 +172,12 @@ export function StorageOverviewTab() {
       <div className="grid gap-4 md:grid-cols-2">
         <DiskSpaceCard
           icon={HardDriveIcon}
-          title="Local server disk"
+          title={t('storageOverview.localServerDisk')}
           space={overview.localDisk}
         />
         <DiskSpaceCard
           icon={CloudIcon}
-          title="Object storage"
+          title={t('storageOverview.objectStorage')}
           space={overview.objectStorage}
         />
       </div>
@@ -185,32 +185,36 @@ export function StorageOverviewTab() {
       <StorageTypeBreakdown files={files} />
 
       <StudioPanel
-        title="Top users by storage usage"
-        description="The heaviest storage accounts across the platform."
+        title={t('storageOverview.topUsersByStorageUsage')}
+        description={t('storageOverview.theHeaviestStorageAccountsAcross')}
       >
         <TopUsersChart users={overview.users} />
       </StudioPanel>
 
       <StudioPanel
-        title="All users"
-        description="Quota vs. usage for every account with recorded storage."
+        title={t('storageOverview.allUsers')}
+        description={t('storageOverview.quotaVsUsageForEvery')}
       >
         <div className="mb-4 flex flex-wrap gap-6">
           <div>
-            <div className="text-foreground-secondary text-xs">Total used</div>
+            <div className="text-foreground-secondary text-xs">
+              {t('storageOverview.totalUsed')}
+            </div>
             <div className="text-lg font-semibold">
               {formatBytes(overview.totalUsedBytes)}
             </div>
           </div>
           <div>
-            <div className="text-foreground-secondary text-xs">Total quota</div>
+            <div className="text-foreground-secondary text-xs">
+              {t('storageOverview.totalQuota')}
+            </div>
             <div className="text-lg font-semibold">
               {formatBytes(overview.totalQuotaBytes)}
             </div>
           </div>
           <div>
             <div className="text-foreground-secondary text-xs">
-              Users with usage
+              {t('storageOverview.usersWithUsage')}
             </div>
             <div className="text-lg font-semibold">{overview.userCount}</div>
           </div>
@@ -262,7 +266,10 @@ export function StorageOverviewTab() {
                       displayName={row.displayName}
                       onSaved={reload}
                     />
-                    <Tooltip content="View files" side="top">
+                    <Tooltip
+                      content={t('storageOverview.viewFiles')}
+                      side="top"
+                    >
                       <ButtonLink
                         to="/admin/storage/$userId"
                         params={{ userId: row.userId }}

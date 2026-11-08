@@ -1,6 +1,7 @@
 import { DownloadIcon, PlusIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonAnchor,
@@ -44,6 +45,7 @@ function currentMonth(now = new Date()): { start: string; end: string } {
 }
 
 function LedgerEntryForm({ onSaved }: { onSaved: () => void }) {
+  const { t } = useTranslation('web');
   const month = currentMonth();
   const [category, setCategory] = useState<string>(LEDGER_CATEGORIES[0]);
   const [amount, setAmount] = useState('');
@@ -81,7 +83,7 @@ function LedgerEntryForm({ onSaved }: { onSaved: () => void }) {
     >
       <div className="grid gap-3 sm:grid-cols-2">
         <Select
-          label="Category"
+          label={t('ledger.category')}
           value={category}
           onValueChange={setCategory}
           options={LEDGER_CATEGORIES.map((ledgerCategory) => ({
@@ -90,7 +92,7 @@ function LedgerEntryForm({ onSaved }: { onSaved: () => void }) {
           }))}
         />
         <Input
-          label="Amount (€)"
+          label={t('ledger.amount')}
           inputMode="decimal"
           value={amount}
           onChange={(event) => setAmount(event.target.value)}
@@ -102,25 +104,25 @@ function LedgerEntryForm({ onSaved }: { onSaved: () => void }) {
         />
         <Input
           type="date"
-          label="Period start"
+          label={t('ledger.periodStart')}
           value={periodStart}
           onChange={(event) => setPeriodStart(event.target.value)}
         />
         <Input
           type="date"
-          label="Period end"
+          label={t('ledger.periodEnd')}
           value={periodEnd}
           onChange={(event) => setPeriodEnd(event.target.value)}
         />
       </div>
       <Input
-        label="Description"
+        label={t('ledger.description')}
         value={description}
         onChange={(event) => setDescription(event.target.value)}
       />
       <Input
-        label="Reference (optional)"
-        description="Invoice or bank reference."
+        label={t('ledger.referenceOptional')}
+        description={t('ledger.invoiceOrBankReference')}
         value={externalRef}
         onChange={(event) => setExternalRef(event.target.value)}
       />
@@ -130,7 +132,7 @@ function LedgerEntryForm({ onSaved }: { onSaved: () => void }) {
           size="sm"
           disabled={!amount.trim() || !description.trim()}
           saving={saving}
-          label="Save entry"
+          label={t('ledger.saveEntry')}
           type="submit"
         />
       </div>
@@ -149,15 +151,16 @@ export function LedgerPanel({
   onYearChange: (year: number) => void;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [showForm, setShowForm] = useState(false);
 
   return (
     <StudioPanel
-      title="Ledger entries"
+      title={t('ledger.ledgerEntries')}
       action={
         <div className="flex flex-wrap items-center gap-2">
           <Select
-            label="Year"
+            label={t('ledger.year')}
             value={String(year)}
             onValueChange={(value) => onYearChange(Number(value))}
             options={ledgerYears().map((option) => ({
@@ -173,7 +176,7 @@ export function LedgerPanel({
             variant="secondary"
           >
             <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-            Export CSV
+            {t('ledger.exportCsv')}
           </ButtonAnchor>
           <Tooltip content={showForm ? 'Cancel entry' : 'Add entry'} side="top">
             <Button

@@ -77,7 +77,7 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
   const { t } = useTranslation('web');
   return (
     <section
-      aria-label="Fan subscription summary"
+      aria-label={t('fanSubStats.fanSubscriptionSummary')}
       className="@container flex max-w-full min-w-0 flex-col gap-4"
     >
       <div
@@ -86,22 +86,22 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
         className="grid min-w-0 grid-cols-1 gap-2 @[16rem]:grid-cols-2 @xl:grid-cols-[repeat(4,minmax(0,1fr))]"
       >
         <FanStat
-          label="Active subscribers"
+          label={t('fanSubStats.activeSubscribers')}
           value={stats.activeSubscribers.toLocaleString()}
           icon={UsersIcon}
         />
         <FanStat
-          label="This month"
+          label={t('fanSubStats.thisMonth')}
           value={euros(stats.thisMonthNetCents)}
           icon={CircleDollarSignIcon}
         />
         <FanStat
-          label="Paid out YTD"
+          label={t('fanSubStats.paidOutYtd')}
           value={euros(stats.paidYtdNetCents)}
           icon={CalendarCheckIcon}
         />
         <FanStat
-          label="Pending payouts"
+          label={t('fanSubStats.pendingPayouts')}
           value={stats.pending.toLocaleString()}
           icon={Clock3Icon}
         />
@@ -125,22 +125,34 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
             className="text-foreground inline-flex items-center gap-1.5 font-semibold underline-offset-2 hover:underline"
           >
             <DownloadIcon size={14} aria-hidden />
-            Export subscribers
+            {t('fanSubStats.exportSubscribers')}
           </a>
         ) : null}
       </div>
 
       <div data-tour-id="revenue-orders" data-testid="fan-order-list">
-        <h3 className="mb-2 text-sm font-bold">Payout history</h3>
-        <HorizontalScroll label="Payout history">
+        <h3 className="mb-2 text-sm font-bold">
+          {t('fanSubStats.payoutHistory')}
+        </h3>
+        <HorizontalScroll label={t('fanSubStats.payoutHistory')}>
           <DataTable className="min-w-[430px]">
             <DataTableHead>
               <DataTableRow>
-                <DataTableHeaderCell>Date</DataTableHeaderCell>
-                <DataTableHeaderCell>Description</DataTableHeaderCell>
-                <DataTableHeaderCell>Gross</DataTableHeaderCell>
-                <DataTableHeaderCell>Net to you</DataTableHeaderCell>
-                <DataTableHeaderCell>State</DataTableHeaderCell>
+                <DataTableHeaderCell>
+                  {t('fanSubStats.date')}
+                </DataTableHeaderCell>
+                <DataTableHeaderCell>
+                  {t('fanSubStats.description')}
+                </DataTableHeaderCell>
+                <DataTableHeaderCell>
+                  {t('fanSubStats.gross')}
+                </DataTableHeaderCell>
+                <DataTableHeaderCell>
+                  {t('fanSubStats.netToYou')}
+                </DataTableHeaderCell>
+                <DataTableHeaderCell>
+                  {t('fanSubStats.state')}
+                </DataTableHeaderCell>
               </DataTableRow>
             </DataTableHead>
             <DataTableBody>

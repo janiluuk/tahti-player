@@ -80,11 +80,11 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
         content: 'gap-6',
       }}
     >
-      <PageBackLink to="/governance" label="Governance" />
+      <PageBackLink to="/governance" label={t('meetingDetail.governance')} />
 
       {!user && (
         <p className="text-foreground-secondary text-sm">
-          Sign in with a cooperative membership account to view meeting records.
+          {t('meetingDetail.signInWithACooperative')}
         </p>
       )}
 
@@ -99,12 +99,14 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
       )}
 
       {user && !loading && notFound && (
-        <p className="text-foreground-secondary text-sm">Meeting not found.</p>
+        <p className="text-foreground-secondary text-sm">
+          {t('meetingDetail.meetingNotFound')}
+        </p>
       )}
 
       {user && !loading && !loadError && meeting && (
         <>
-          <GovernancePanel title="Overview" icon={UsersIcon}>
+          <GovernancePanel title={t('meetingDetail.overview')} icon={UsersIcon}>
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="pill" color="secondary">
                 {TYPE_LABEL[meeting.type]}
@@ -114,13 +116,17 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
               </Badge>
             </div>
             <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-              <dt className="text-foreground-secondary">Scheduled</dt>
+              <dt className="text-foreground-secondary">
+                {t('meetingDetail.scheduled')}
+              </dt>
               <dd>
                 {meeting.scheduledAt
                   ? new Date(meeting.scheduledAt).toLocaleString()
                   : 'Not listed'}
               </dd>
-              <dt className="text-foreground-secondary">Location</dt>
+              <dt className="text-foreground-secondary">
+                {t('meetingDetail.location')}
+              </dt>
               <dd>
                 {meeting.location ?? 'Not listed'}
                 {meeting.remoteUrl && isSafeHref(meeting.remoteUrl) && (
@@ -130,12 +136,14 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                       href={meeting.remoteUrl}
                       className="no-underline underline-offset-2 hover:underline"
                     >
-                      Join remotely
+                      {t('meetingDetail.joinRemotely')}
                     </ExternalLink>
                   </>
                 )}
               </dd>
-              <dt className="text-foreground-secondary">Notice published</dt>
+              <dt className="text-foreground-secondary">
+                {t('meetingDetail.noticePublished')}
+              </dt>
               <dd>
                 {meeting.noticeAt ? (
                   <ListingDate value={meeting.noticeAt} />
@@ -143,11 +151,14 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                   'Not yet published'
                 )}
               </dd>
-              <dt className="text-foreground-secondary">Minutes</dt>
+              <dt className="text-foreground-secondary">
+                {t('meetingDetail.minutes')}
+              </dt>
               <dd>
                 {meeting.minutesApprovedAt ? (
                   <>
-                    Approved <ListingDate value={meeting.minutesApprovedAt} />
+                    {t('meetingDetail.approved')}{' '}
+                    <ListingDate value={meeting.minutesApprovedAt} />
                   </>
                 ) : meeting.minutesKey ? (
                   'Uploaded, pending approval'
@@ -161,7 +172,7 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                       href={meeting.minutesUrl}
                       className="no-underline underline-offset-2 hover:underline"
                     >
-                      Download
+                      {t('meetingDetail.download')}
                     </ExternalLink>
                   </>
                 )}
@@ -169,9 +180,14 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
             </dl>
           </GovernancePanel>
 
-          <GovernancePanel title="Quorum & attendance" icon={CalendarCheckIcon}>
+          <GovernancePanel
+            title={t('meetingDetail.quorumAttendance')}
+            icon={CalendarCheckIcon}
+          >
             <dl className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-              <dt className="text-foreground-secondary">Quorum</dt>
+              <dt className="text-foreground-secondary">
+                {t('meetingDetail.quorum')}
+              </dt>
               <dd>
                 {meeting.quorumMet === null
                   ? 'Not yet determined'
@@ -181,18 +197,25 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                 {meeting.quorumRequired !== null &&
                   ` (${meeting.quorumRequired} required)`}
               </dd>
-              <dt className="text-foreground-secondary">Present</dt>
+              <dt className="text-foreground-secondary">
+                {t('meetingDetail.present')}
+              </dt>
               <dd>
                 {meeting.presentCount}
                 {meeting.eligibleMemberCount !== null &&
                   ` of ${meeting.eligibleMemberCount} eligible`}
               </dd>
-              <dt className="text-foreground-secondary">Attendance recorded</dt>
+              <dt className="text-foreground-secondary">
+                {t('meetingDetail.attendanceRecorded')}
+              </dt>
               <dd>{meeting.attendanceCount}</dd>
             </dl>
           </GovernancePanel>
 
-          <GovernancePanel title="Agenda" icon={ScrollTextIcon}>
+          <GovernancePanel
+            title={t('meetingDetail.agenda')}
+            icon={ScrollTextIcon}
+          >
             <MeetingAgendaItems
               meetingId={meeting.id}
               fallback={

@@ -108,8 +108,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
     <div className="flex min-h-0 flex-1 flex-col gap-2">
       <div className="flex items-center gap-2">
         <p className="text-foreground-secondary flex-1 text-xs">
-          Local playlists live on this device and work offline. They are
-          separate from your Tahti cloud collections.
+          {t('localPlaylists.localPlaylistsLiveOnThis')}
         </p>
         <Button
           className="gap-1.5"
@@ -132,7 +131,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
           onClick={() => setCreating(true)}
         >
           <PlusIcon size={14} aria-hidden />
-          New playlist
+          {t('localPlaylists.newPlaylist')}
         </Button>
       </div>
       {error ? (
@@ -142,20 +141,23 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
           description={error}
           action={
             <Button variant="secondary" onClick={() => void load()}>
-              Retry
+              {t('localPlaylists.retry')}
             </Button>
           }
           className="flex-1"
         />
       ) : playlists === null ? (
-        <InlineLoader label="Loading…" className="flex-1 justify-center" />
+        <InlineLoader
+          label={t('localPlaylists.loading')}
+          className="flex-1 justify-center"
+        />
       ) : playlists.length === 0 ? (
         <PageEmpty
           title={t('empties.noPlaylistsYet')}
           description={t('empties.createOneHereOrSelectTracks')}
           action={
             <Button variant="secondary" onClick={() => setCreating(true)}>
-              New playlist
+              {t('localPlaylists.newPlaylist')}
             </Button>
           }
           className="flex-1"
@@ -163,7 +165,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
       ) : (
         <ul
           className="tahti-hide-scrollbar flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto"
-          aria-label="Playlists"
+          aria-label={t('localPlaylists.playlists')}
         >
           {playlists.map((playlist) => (
             <li
@@ -189,7 +191,7 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                   size="inline"
                   shape="circle"
                   className="mx-2"
-                  label="Working"
+                  label={t('localPlaylists.working')}
                 />
               ) : (
                 <>
@@ -309,8 +311,8 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
       <SmartPlaylists library={library} onPlaylistCreated={() => void load()} />
       <PlaylistNameDialog
         isOpen={creating}
-        title="New playlist"
-        confirmLabel="Create"
+        title={t('localPlaylists.newPlaylist')}
+        confirmLabel={t('localPlaylists.create')}
         onClose={() => setCreating(false)}
         onSubmit={async (name) => {
           const created = await library.playlists.create(name);
@@ -329,8 +331,8 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
       />
       <PlaylistNameDialog
         isOpen={renaming !== null}
-        title="Rename playlist"
-        confirmLabel="Rename"
+        title={t('localPlaylists.renamePlaylist')}
+        confirmLabel={t('localPlaylists.rename')}
         initialName={renaming?.name}
         onClose={() => setRenaming(null)}
         onSubmit={async (name) => {
@@ -345,9 +347,9 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
       <ConfirmDialog
         destructive
         isOpen={deleting !== null}
-        title="Delete this playlist?"
+        title={t('localPlaylists.deleteThisPlaylist')}
         description={`“${deleting?.name ?? ''}” and its ${deleting?.trackCount ?? 0} entries will be deleted. The tracks stay in your library.`}
-        confirmLabel="Delete"
+        confirmLabel={t('localPlaylists.delete')}
         onCancel={() => setDeleting(null)}
         onConfirm={() => {
           const target = deleting;

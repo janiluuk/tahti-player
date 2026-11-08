@@ -234,6 +234,7 @@ const STATUS_COLOR: Record<VendorStatus, 'green' | 'yellow' | 'red'> = {
 };
 
 function VendorTable({ vendors }: { vendors: readonly Vendor[] }) {
+  const { t } = useTranslation('web');
   return (
     <ul className="divide-border divide-y break-words">
       {vendors.map((v) => (
@@ -255,7 +256,7 @@ function VendorTable({ vendors }: { vendors: readonly Vendor[] }) {
           </div>
           {v.dpaRequired ? (
             <Badge variant="pill" color="orange">
-              DPA required
+              {t('adminVendors.dpaRequired')}
             </Badge>
           ) : null}
         </li>
@@ -297,12 +298,12 @@ export function AdminVendorsContent() {
   return (
     <div className="flex flex-col gap-6">
       <ViewShell
-        title="Vendors"
+        title={t('adminVendors.vendors')}
         classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
       >
         <StudioPanel
           title={`${blockers.length} launch blockers · ${pending.length} checks pending`}
-          description="A vendor is not considered live until its credentials, contract, callback/webhook, DPA, and operational test are confirmed."
+          description={t('adminVendors.aVendorIsNotConsidered')}
         >
           {blockers.length > 0 ? (
             <ul className="text-foreground-secondary flex flex-col gap-2 text-sm break-words">
@@ -321,7 +322,7 @@ export function AdminVendorsContent() {
         </StudioPanel>
 
         {statusError && integrations.length === 0 ? (
-          <StudioPanel title="Distribution status">
+          <StudioPanel title={t('adminVendors.distributionStatus')}>
             <PageError
               title={t('loadErrors.couldNotCheckLiveIntegrationStatus')}
               description={`The blocker list above uses the recorded status only. ${statusError}`}
@@ -331,7 +332,7 @@ export function AdminVendorsContent() {
         ) : null}
 
         {integrations.length > 0 && (
-          <StudioPanel title="Distribution status">
+          <StudioPanel title={t('adminVendors.distributionStatus')}>
             <ul className="flex flex-col gap-2 break-words">
               {integrations.map((row) => (
                 <li key={row.name} className="flex items-center gap-3 text-sm">
@@ -350,17 +351,19 @@ export function AdminVendorsContent() {
           </StudioPanel>
         )}
 
-        <StudioPanel title="Critical vendors">
+        <StudioPanel title={t('adminVendors.criticalVendors')}>
           <VendorTable vendors={CRITICAL_VENDORS} />
         </StudioPanel>
 
-        <StudioPanel title="Integrations">
+        <StudioPanel title={t('adminVendors.integrations')}>
           <VendorTable vendors={integrationVendors} />
         </StudioPanel>
 
         <StudioPanel
-          title="DSP & catalog partners"
-          description="Distribution partners artists reach through Studio → Distribution — no vendor account for us to configure beyond Revelator."
+          title={t('adminVendors.dspCatalogPartners')}
+          description={t(
+            'adminVendors.distributionPartnersArtistsReachThrough',
+          )}
         >
           <ul className="divide-border divide-y break-words">
             {DISTRIBUTION_ACTIONS.map((row) => (
@@ -378,8 +381,10 @@ export function AdminVendorsContent() {
         </StudioPanel>
 
         <StudioPanel
-          title="Cooperative governance & local culture-organisation actions"
-          description="Open questions for the board/legal counsel — not legal advice, and not something this tool has verified or completed."
+          title={t(
+            'adminVendors.cooperativeGovernanceLocalCultureOrganisation',
+          )}
+          description={t('adminVendors.openQuestionsForTheBoard')}
         >
           <ul className="divide-border divide-y break-words">
             {COOPERATIVE_ACTIONS.map((row) => (
@@ -406,15 +411,18 @@ export function AdminVendorsContent() {
 }
 
 export function AdminVendorsView() {
+  const { t } = useTranslation('web');
   return (
     <AdminGate>
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/vendors">
           <div className="flex max-w-5xl flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminVendors.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbCurrent>Vendors</BreadcrumbCurrent>
+              <BreadcrumbCurrent>{t('adminVendors.vendors')}</BreadcrumbCurrent>
             </Breadcrumbs>
             <AdminVendorsContent />
           </div>

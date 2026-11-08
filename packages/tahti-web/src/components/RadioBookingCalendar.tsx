@@ -286,13 +286,13 @@ export function RadioBookingCalendar({
           <Dialog.Title>
             {scope === 'mine' ? 'My channel schedule' : 'Tahti Radio schedule'}
           </Dialog.Title>
-          <Tooltip content="Open full calendar" side="top">
+          <Tooltip content={t('bookingCalendar.openFullCalendar')} side="top">
             <ButtonLink
               to="/schedule"
               onClick={onClose}
               size="icon-sm"
               variant="text"
-              aria-label="Open full calendar"
+              aria-label={t('bookingCalendar.openFullCalendar')}
             >
               <CalendarDaysIcon size={16} aria-hidden />
             </ButtonLink>
@@ -305,11 +305,11 @@ export function RadioBookingCalendar({
         </Dialog.Description>
 
         <div className="mt-4 flex items-center justify-between">
-          <Tooltip content="Previous month" side="top">
+          <Tooltip content={t('bookingCalendar.previousMonth')} side="top">
             <Button
               size="icon-sm"
               variant="text"
-              aria-label="Previous month"
+              aria-label={t('bookingCalendar.previousMonth')}
               onClick={() =>
                 setMonthCursor(
                   (m) => new Date(m.getFullYear(), m.getMonth() - 1, 1),
@@ -326,22 +326,22 @@ export function RadioBookingCalendar({
             })}
           </div>
           {user && (
-            <Tooltip content="Book a slot" side="top">
+            <Tooltip content={t('bookingCalendar.bookASlot')} side="top">
               <Button
                 size="icon-sm"
                 variant="secondary"
-                aria-label="Book a slot"
+                aria-label={t('bookingCalendar.bookASlot')}
                 onClick={() => setBookingFormOpen(true)}
               >
                 <CalendarPlusIcon size={15} aria-hidden />
               </Button>
             </Tooltip>
           )}
-          <Tooltip content="Next month" side="top">
+          <Tooltip content={t('bookingCalendar.nextMonth')} side="top">
             <Button
               size="icon-sm"
               variant="text"
-              aria-label="Next month"
+              aria-label={t('bookingCalendar.nextMonth')}
               onClick={() =>
                 setMonthCursor(
                   (m) => new Date(m.getFullYear(), m.getMonth() + 1, 1),
@@ -464,13 +464,13 @@ export function RadioBookingCalendar({
                 onClick={onClose}
                 className="text-foreground underline-offset-2 hover:underline"
               >
-                Sign in
+                {t('bookingCalendar.signIn')}
               </Link>{' '}
               to book a slot.
             </p>
           ) : isPastDay ? (
             <p className="text-foreground-secondary text-sm">
-              Pick a day from today onward to book.
+              {t('bookingCalendar.pickADayFromToday')}
             </p>
           ) : (
             <Button
@@ -479,7 +479,7 @@ export function RadioBookingCalendar({
               onClick={() => setBookingFormOpen(true)}
             >
               <CalendarPlusIcon size={15} aria-hidden className="mr-1.5" />
-              Book a slot
+              {t('bookingCalendar.bookASlot')}
             </Button>
           )}
 
@@ -491,7 +491,7 @@ export function RadioBookingCalendar({
         </div>
 
         <Dialog.Actions>
-          <Dialog.Close>Close</Dialog.Close>
+          <Dialog.Close>{t('bookingCalendar.close')}</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
 
@@ -526,7 +526,7 @@ export function RadioBookingCalendar({
             <div className="mt-4 flex flex-col gap-3 text-sm">
               <div>
                 <span className="text-foreground-secondary block text-xs uppercase">
-                  When
+                  {t('bookingCalendar.when')}
                 </span>
                 {new Date(selectedBooking.startAt).toLocaleDateString([], {
                   weekday: 'long',
@@ -547,7 +547,7 @@ export function RadioBookingCalendar({
             <Dialog.Actions>
               {selectedBooking.isMine && selectedBooking.showId ? (
                 <EditIconLink
-                  label="Edit show"
+                  label={t('bookingCalendar.editShow')}
                   to="/studio/shows/$id"
                   params={{ id: selectedBooking.showId }}
                   onClick={() => {
@@ -566,10 +566,10 @@ export function RadioBookingCalendar({
                   }}
                   variant="secondary"
                 >
-                  Open show
+                  {t('bookingCalendar.openShow')}
                 </ButtonLink>
               )}
-              <Dialog.Close>Close</Dialog.Close>
+              <Dialog.Close>{t('bookingCalendar.close')}</Dialog.Close>
             </Dialog.Actions>
           </>
         ) : null}
@@ -580,7 +580,7 @@ export function RadioBookingCalendar({
         onClose={() => setBookingFormOpen(false)}
         className="max-w-3xl"
       >
-        <Dialog.Title>Book a Tahti Radio slot</Dialog.Title>
+        <Dialog.Title>{t('bookingCalendar.bookATahtiRadioSlot')}</Dialog.Title>
         <Dialog.Description>
           Add the show details for your{' '}
           {selectedDate.toLocaleDateString([], {
@@ -599,7 +599,7 @@ export function RadioBookingCalendar({
         >
           <Input
             type="time"
-            label="Start"
+            label={t('bookingCalendar.start')}
             value={startTime}
             onChange={(event) => setStartTime(event.target.value)}
           />
@@ -643,7 +643,7 @@ export function RadioBookingCalendar({
             </p>
           )}
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>{t('bookingCalendar.cancel')}</Dialog.Close>
             <Button size="sm" type="submit" disabled={busy}>
               {busy ? 'Booking…' : `Book ${durationHours}h slot`}
             </Button>

@@ -8,7 +8,7 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -55,6 +55,7 @@ export function PostDialog({
   onSaved: () => void;
   onImageClick: (imageUrl: string) => void;
 }) {
+  const { t } = useTranslation('web');
   const editing = post !== undefined;
   const canSchedule = !post || isScheduledPost(post);
   const initialPublishAt =
@@ -198,8 +199,8 @@ export function PostDialog({
           </Dialog.Title>
           <div className="mt-4 flex flex-col gap-3">
             <Select
-              label="Type"
-              description="Shown on the post card, e.g. in Community stories."
+              label={t('postDialog.type')}
+              description={t('postDialog.shownOnThePostCard')}
               value={category}
               onValueChange={(value) => setCategory(value as PostCategory)}
               options={(
@@ -207,7 +208,7 @@ export function PostDialog({
               ).map((id) => ({ id, label: POST_CATEGORY_LABELS[id] }))}
             />
             <Input
-              label="Title (optional)"
+              label={t('postDialog.titleOptional')}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               maxLength={160}
@@ -215,7 +216,7 @@ export function PostDialog({
             />
             <Textarea
               submitOnModEnter
-              label="Body"
+              label={t('postDialog.body')}
               tone="secondary"
               value={body}
               onChange={(e) => setBody(e.target.value)}
@@ -224,7 +225,7 @@ export function PostDialog({
               required
             />
             <Input
-              label="Link (optional)"
+              label={t('postDialog.linkOptional')}
               inputMode="url"
               autoCapitalize="none"
               autoCorrect="off"
@@ -236,8 +237,8 @@ export function PostDialog({
               error={linkError}
             />
             <Input
-              label="Link label (optional)"
-              description="Shown instead of the address, e.g. “Get tickets”."
+              label={t('postDialog.linkLabelOptional')}
+              description={t('postDialog.shownInsteadOfTheAddress')}
               value={linkLabel}
               onChange={(e) => setLinkLabel(e.target.value)}
               maxLength={100}
@@ -245,7 +246,7 @@ export function PostDialog({
             />
             {canSchedule && (
               <Input
-                label="Publish at (optional)"
+                label={t('postDialog.publishAtOptional')}
                 type="datetime-local"
                 description={
                   editing
@@ -273,7 +274,7 @@ export function PostDialog({
             />
           </div>
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>{t('postDialog.cancel')}</Dialog.Close>
             <Button
               type="button"
               variant="secondary"
@@ -281,7 +282,7 @@ export function PostDialog({
               onClick={() => setPreviewOpen(true)}
             >
               <EyeIcon size={16} aria-hidden className="mr-1.5" />
-              Preview
+              {t('postDialog.preview')}
             </Button>
             <Button type="submit" disabled={!canSubmit || busy}>
               <SubmitIcon size={16} aria-hidden className="mr-1.5" />
@@ -292,7 +293,7 @@ export function PostDialog({
       </Dialog.Root>
 
       <Dialog.Root isOpen={previewOpen} onClose={() => setPreviewOpen(false)}>
-        <Dialog.Title>Post preview</Dialog.Title>
+        <Dialog.Title>{t('postDialog.postPreview')}</Dialog.Title>
         <div className="mt-4">
           <PostPreview
             title={title.trim() || null}
@@ -309,7 +310,7 @@ export function PostDialog({
           />
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Close</Dialog.Close>
+          <Dialog.Close>{t('postDialog.close')}</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
     </>

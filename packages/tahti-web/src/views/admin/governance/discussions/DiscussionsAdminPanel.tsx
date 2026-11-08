@@ -35,6 +35,7 @@ function NewTopicForm({
   onClose: () => void;
   onCreated: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
   const [pinned, setPinned] = useState(false);
@@ -73,24 +74,28 @@ function NewTopicForm({
       }}
     >
       <Input
-        label="Title"
+        label={t('adminDiscussions.title')}
         value={title}
         maxLength={160}
         onChange={(event) => setTitle(event.target.value)}
         required
       />
       <Textarea
-        label="What should members talk about?"
+        label={t('adminDiscussions.whatShouldMembersTalkAbout')}
         submitOnModEnter
         value={body}
         maxLength={10000}
         rows={5}
         onChange={(event) => setBody(event.target.value)}
       />
-      <Toggle label="Pin to the top" checked={pinned} onChange={setPinned} />
+      <Toggle
+        label={t('adminDiscussions.pinToTheTop')}
+        checked={pinned}
+        onChange={setPinned}
+      />
       {error ? <InlineError>{error}</InlineError> : null}
       <p className="text-foreground-secondary text-xs">
-        Every member gets a notification when the topic opens.
+        {t('adminDiscussions.everyMemberGetsANotification')}
       </p>
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy || !canSubmit}>
@@ -102,7 +107,7 @@ function NewTopicForm({
           variant="text"
           onClick={() => onClose()}
         >
-          Cancel
+          {t('adminDiscussions.cancel')}
         </Button>
       </div>
     </form>
@@ -116,6 +121,7 @@ function EditTopicForm({
   topic: DiscussionTopic;
   onDone: (saved: boolean) => void;
 }) {
+  const { t } = useTranslation('web');
   const [title, setTitle] = useState(topic.title);
   const [body, setBody] = useState(topic.body);
   const [busy, setBusy] = useState(false);
@@ -148,14 +154,14 @@ function EditTopicForm({
       }}
     >
       <Input
-        label="Title"
+        label={t('adminDiscussions.title')}
         value={title}
         maxLength={160}
         onChange={(event) => setTitle(event.target.value)}
         required
       />
       <Textarea
-        label="Topic text"
+        label={t('adminDiscussions.topicText')}
         submitOnModEnter
         value={body}
         maxLength={10000}
@@ -173,7 +179,7 @@ function EditTopicForm({
           variant="text"
           onClick={() => onDone(false)}
         >
-          Cancel
+          {t('adminDiscussions.cancel')}
         </Button>
       </div>
     </form>
@@ -187,6 +193,7 @@ function TopicRow({
   topic: DiscussionTopic;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [busy, setBusy] = useState(false);
   const [editing, setEditing] = useState(false);
 
@@ -232,7 +239,7 @@ function TopicRow({
           {topic.postCount === 1 ? '1 reply' : `${topic.postCount} replies`}
           {topic.pinned ? (
             <Badge variant="pill" color="yellow">
-              Pinned
+              {t('adminDiscussions.pinned')}
             </Badge>
           ) : null}
           <Badge
@@ -309,8 +316,8 @@ export function DiscussionsAdminPanel() {
 
   return (
     <StudioPanel
-      title="Discussions"
-      description="Topics members can reply to. Nothing here is a vote; use motions for decisions."
+      title={t('adminDiscussions.discussions')}
+      description={t('adminDiscussions.topicsMembersCanReplyTo')}
     >
       <div className="flex flex-col gap-4">
         {composing ? (
@@ -348,7 +355,10 @@ export function DiscussionsAdminPanel() {
             }
           />
         ) : (
-          <ul className="divide-border divide-y" aria-label="Topics">
+          <ul
+            className="divide-border divide-y"
+            aria-label={t('adminDiscussions.topics')}
+          >
             {topics.map((topic) => (
               <TopicRow key={topic.id} topic={topic} onChanged={load} />
             ))}

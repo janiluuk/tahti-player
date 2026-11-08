@@ -213,9 +213,9 @@ export function SupportTab() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search subject, message, requester…"
+            placeholder={t('supportTab.searchSubjectMessageRequester')}
             size="sm"
-            aria-label="Search support tickets"
+            aria-label={t('supportTab.searchSupportTickets')}
             endAddon={<SearchIcon size={16} aria-hidden />}
           />
         </div>
@@ -241,36 +241,38 @@ export function SupportTab() {
                     variant="secondary"
                     onClick={() => setQuery('')}
                   >
-                    Clear search
+                    {t('supportTab.clearSearch')}
                   </Button>
                 ) : undefined
               }
             />
           ) : (
             <ul className="divide-border divide-y">
-              {tickets.map((t) => {
-                const badge = statusBadge(t.status);
+              {tickets.map((ticket) => {
+                const badge = statusBadge(ticket.status);
                 return (
-                  <li key={t.id}>
+                  <li key={ticket.id}>
                     <Button
                       variant="text"
                       size="flexible"
-                      onClick={() => setSelectedId(t.id)}
+                      onClick={() => setSelectedId(ticket.id)}
                       className={`block w-full rounded-none px-3 py-2.5 text-left text-sm font-normal whitespace-normal active:scale-100 ${
-                        selectedId === t.id ? 'bg-background-secondary' : ''
+                        selectedId === ticket.id
+                          ? 'bg-background-secondary'
+                          : ''
                       }`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <span
                           className="line-clamp-2 min-w-0 font-medium break-words"
-                          title={t.subject}
+                          title={ticket.subject}
                         >
-                          {t.subject}
+                          {ticket.subject}
                         </span>
                         <span className="flex shrink-0 items-center gap-1.5">
-                          {t.awaitingReply ? (
+                          {ticket.awaitingReply ? (
                             <Badge variant="pill" color="red">
-                              Needs reply
+                              {t('supportTab.needsReply')}
                             </Badge>
                           ) : null}
                           <Badge variant="pill" color={badge.color}>
@@ -279,8 +281,8 @@ export function SupportTab() {
                         </span>
                       </div>
                       <div className="text-foreground-secondary truncate text-xs">
-                        {requesterLabel(t)} · {t.category} ·{' '}
-                        <ListingDate value={t.createdAt} />
+                        {requesterLabel(ticket)} · {ticket.category} ·{' '}
+                        <ListingDate value={ticket.createdAt} />
                       </div>
                     </Button>
                   </li>
@@ -293,7 +295,7 @@ export function SupportTab() {
         <StudioPanel className="flex min-h-[24rem] min-w-0 flex-col p-0 sm:p-0">
           {!selectedId ? (
             <p className="text-foreground-secondary p-4 text-sm">
-              Select a ticket.
+              {t('supportTab.selectATicket')}
             </p>
           ) : detailLoading || !detail ? (
             <PageLoading label={t('loading.loadingTicket')} />
@@ -325,7 +327,7 @@ export function SupportTab() {
                       onClick={() => setStatus('IN_PROGRESS')}
                     >
                       <CircleDotIcon size={14} aria-hidden />
-                      Start progress
+                      {t('supportTab.startProgress')}
                     </Button>
                   )}
                   {detail.status !== 'RESOLVED' ? (
@@ -336,7 +338,7 @@ export function SupportTab() {
                       onClick={() => setStatus('RESOLVED')}
                     >
                       <CheckIcon size={14} aria-hidden />
-                      Resolve
+                      {t('supportTab.resolve')}
                     </Button>
                   ) : (
                     <Button
@@ -347,7 +349,7 @@ export function SupportTab() {
                       onClick={() => setStatus('OPEN')}
                     >
                       <Clock3Icon size={14} aria-hidden />
-                      Reopen
+                      {t('supportTab.reopen')}
                     </Button>
                   )}
                 </div>
@@ -356,7 +358,7 @@ export function SupportTab() {
               <div className="flex-1 space-y-3 overflow-y-auto p-4 text-sm">
                 <div className="bg-background-secondary rounded-lg px-3 py-2">
                   <div className="text-foreground-secondary text-[10px] tracking-wide uppercase">
-                    Original request
+                    {t('supportTab.originalRequest')}
                   </div>
                   {detail.message}
                 </div>
@@ -396,10 +398,10 @@ export function SupportTab() {
                     enterKeyHint="send"
                     value={reply}
                     onChange={(e) => setReply(e.target.value)}
-                    placeholder="Write a reply…"
+                    placeholder={t('supportTab.writeAReply')}
                     size="sm"
                     className="flex-1"
-                    aria-label="Reply to ticket"
+                    aria-label={t('supportTab.replyToTicket')}
                   />
                   <Button
                     className="gap-1.5"
@@ -408,7 +410,7 @@ export function SupportTab() {
                     type="submit"
                   >
                     <SendIcon size={14} aria-hidden />
-                    Reply
+                    {t('supportTab.reply')}
                   </Button>
                 </form>
               </div>

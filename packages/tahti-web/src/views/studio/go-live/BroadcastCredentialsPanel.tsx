@@ -116,17 +116,29 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
     if (ingest === 'obs') {
       return (
         <div className="flex flex-col gap-2">
-          <CopyField label="Server" value={settings.rtmp.server} />
-          <CopyField label="Stream key" value={settings.rtmp.streamKey} />
+          <CopyField
+            label={t('broadcastCredentials.server')}
+            value={settings.rtmp.server}
+          />
+          <CopyField
+            label={t('broadcastCredentials.streamKey')}
+            value={settings.rtmp.streamKey}
+          />
         </div>
       );
     }
     return (
       <div className="flex flex-col gap-2">
-        <CopyField label="Server" value={settings.icecast.server} />
-        <CopyField label="Mount" value={settings.icecast.mount} />
         <CopyField
-          label="Password"
+          label={t('broadcastCredentials.server')}
+          value={settings.icecast.server}
+        />
+        <CopyField
+          label={t('broadcastCredentials.mount')}
+          value={settings.icecast.mount}
+        />
+        <CopyField
+          label={t('broadcastCredentials.password')}
           value={settings.icecast.password}
           action={rotateButton('icecast')}
         />
@@ -136,7 +148,7 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
 
   return (
     <StudioPanel
-      title="Connect broadcasting software"
+      title={t('broadcastCredentials.connectBroadcastingSoftware')}
       action={
         <Tooltip
           content={
@@ -167,9 +179,12 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
     >
       {settings && (
         <div className="flex flex-col gap-2">
-          <CopyField label="Server" value={settings.rtmp.server} />
           <CopyField
-            label="Stream key"
+            label={t('broadcastCredentials.server')}
+            value={settings.rtmp.server}
+          />
+          <CopyField
+            label={t('broadcastCredentials.streamKey')}
             value={settings.rtmp.streamKey}
             maskable
             action={rotateButton('rtmp')}
@@ -207,7 +222,9 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
           {renderCredentials()}
           {ingest === 'obs' && settings && slug ? (
             <div className="border-border bg-background-secondary/40 mt-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border p-3">
-              <p className="text-sm font-semibold">Ready-made OBS setup</p>
+              <p className="text-sm font-semibold">
+                {t('broadcastCredentials.readyMadeObsSetup')}
+              </p>
               <ObsPresetButton />
             </div>
           ) : null}

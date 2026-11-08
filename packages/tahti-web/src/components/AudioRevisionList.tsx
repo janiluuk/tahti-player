@@ -230,11 +230,10 @@ export function AudioRevisionList({
     <section className="flex flex-col gap-4" data-testid="audio-revision-list">
       <div>
         <h2>
-          <Eyebrow>Revisions</Eyebrow>
+          <Eyebrow>{t('audioRevisions.revisions')}</Eyebrow>
         </h2>
         <p className="text-foreground-secondary mt-1 text-xs">
-          Every upload, editor save, or quick fix is a new audio file. Preview
-          and compare before making one live.
+          {t('audioRevisions.everyUploadEditorSaveOr')}
         </p>
       </div>
 
@@ -263,7 +262,7 @@ export function AudioRevisionList({
         />
         <Input
           autoComplete="off"
-          label="Revision name"
+          label={t('audioRevisions.revisionName')}
           value={label}
           onChange={(event) => setLabel(event.target.value)}
         />
@@ -278,11 +277,11 @@ export function AudioRevisionList({
           data-testid="revision-compare"
         >
           <p className="text-xs font-semibold tracking-wide uppercase">
-            Compare
+            {t('audioRevisions.compare')}
           </p>
           <div className="grid gap-3 sm:grid-cols-2">
             <Select
-              label="Version A"
+              label={t('audioRevisions.versionA')}
               value={resolvedCompareA}
               onValueChange={setCompareA}
               options={readyVersions.map((version) => ({
@@ -291,7 +290,7 @@ export function AudioRevisionList({
               }))}
             />
             <Select
-              label="Version B"
+              label={t('audioRevisions.versionB')}
               value={resolvedCompareB}
               onValueChange={setCompareB}
               options={readyVersions.map((version) => ({
@@ -321,7 +320,7 @@ export function AudioRevisionList({
               disabled={previewBusy !== null}
               onClick={() => void previewVersion(versionA, false)}
             >
-              Play A
+              {t('audioRevisions.playA')}
             </Button>
             <Button
               size="sm"
@@ -329,7 +328,7 @@ export function AudioRevisionList({
               disabled={previewBusy !== null}
               onClick={() => void previewVersion(versionB, false)}
             >
-              Play B
+              {t('audioRevisions.playB')}
             </Button>
             <Button
               size="sm"
@@ -344,7 +343,7 @@ export function AudioRevisionList({
                 void previewVersion(next, true);
               }}
             >
-              Switch A/B
+              {t('audioRevisions.switchAB')}
             </Button>
           </div>
         </div>
@@ -382,7 +381,7 @@ export function AudioRevisionList({
                     v{version.versionNumber} — {version.versionLabel}
                     {version.isActive ? (
                       <Badge variant="pill" color="green">
-                        Active
+                        {t('audioRevisions.active')}
                       </Badge>
                     ) : null}
                     {version.status !== 'READY' ? (
@@ -432,7 +431,7 @@ export function AudioRevisionList({
                       variant="text"
                       onClick={() => onDownload(version.id)}
                     >
-                      Download
+                      {t('audioRevisions.download')}
                     </Button>
                   ) : null}
                   {!version.isActive && version.status === 'READY' ? (

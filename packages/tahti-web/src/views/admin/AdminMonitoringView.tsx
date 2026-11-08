@@ -1,6 +1,7 @@
 import { ExternalLinkIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Alert,
   BreadcrumbCurrent,
@@ -26,6 +27,7 @@ import {
 import { ContainerLogsPanel } from './monitoring/ContainerLogsPanel';
 
 export function AdminMonitoringView() {
+  const { t } = useTranslation('web');
   const [logService, setLogService] = useState<string | undefined>(undefined);
   const vitalUid = GRAFANA_DASHBOARDS.vital.uid;
   const embedSrc = grafanaDashboardEmbedUrl(vitalUid);
@@ -36,20 +38,22 @@ export function AdminMonitoringView() {
         <AdminPageLayout current="/admin/monitoring">
           <div className="flex flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
-              <BreadcrumbCurrent>Monitoring</BreadcrumbCurrent>
+              <BreadcrumbLink to="/admin">
+                {t('adminMonitoring.admin')}
+              </BreadcrumbLink>
+              <BreadcrumbCurrent>
+                {t('adminMonitoring.monitoring')}
+              </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Monitoring"
+              title={t('adminMonitoring.monitoring')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <Alert tone="neutral">
-                Grafana embeds need you signed in at grafana.tahti.live in this
-                browser. If the panel is blank, open Grafana in a new tab and
-                sign in, then reload this page.
+                {t('adminMonitoring.grafanaEmbedsNeedYouSigned')}
               </Alert>
 
-              <StudioPanel title="Grafana dashboards">
+              <StudioPanel title={t('adminMonitoring.grafanaDashboards')}>
                 <div className="flex flex-wrap gap-2">
                   {(
                     Object.values(GRAFANA_DASHBOARDS) as Array<{
@@ -87,16 +91,16 @@ export function AdminMonitoringView() {
                     size="sm"
                     variant="secondary"
                   >
-                    Grafana Explore (Loki)
+                    {t('adminMonitoring.grafanaExploreLoki')}
                     <ExternalLinkIcon size={12} aria-hidden className="ml-1" />
                   </ButtonAnchor>
                   <ButtonLink to="/admin/logs" size="sm" variant="text">
-                    Full logs page
+                    {t('adminMonitoring.fullLogsPage')}
                   </ButtonLink>
                 </div>
               </StudioPanel>
 
-              <StudioPanel title="Services">
+              <StudioPanel title={t('adminMonitoring.services')}>
                 <ul className="divide-border divide-y">
                   {MONITORING_SERVICES.map((svc) => {
                     const dash = GRAFANA_DASHBOARDS[svc.grafana.dashboard];
@@ -135,7 +139,7 @@ export function AdminMonitoringView() {
                             size="sm"
                             variant="text"
                           >
-                            Grafana logs
+                            {t('adminMonitoring.grafanaLogs')}
                           </ButtonAnchor>
                           <ButtonLink
                             to="/admin/logs"
@@ -146,7 +150,7 @@ export function AdminMonitoringView() {
                             size="sm"
                             variant="text"
                           >
-                            App logs
+                            {t('adminMonitoring.appLogs')}
                           </ButtonLink>
                           <Button
                             type="button"
@@ -167,10 +171,10 @@ export function AdminMonitoringView() {
                 </ul>
               </StudioPanel>
 
-              <StudioPanel title="Vital services (Grafana)">
+              <StudioPanel title={t('adminMonitoring.vitalServicesGrafana')}>
                 <div className="border-border bg-background-secondary aspect-[16/10] w-full overflow-hidden rounded-md border">
                   <iframe
-                    title="Tahti vital services — Grafana"
+                    title={t('adminMonitoring.tahtiVitalServicesGrafana')}
                     src={embedSrc}
                     className="h-full w-full border-0"
                     referrerPolicy="no-referrer-when-downgrade"
@@ -186,7 +190,7 @@ export function AdminMonitoringView() {
                     variant="text"
                     className="!px-0"
                   >
-                    Open full vital services dashboard
+                    {t('adminMonitoring.openFullVitalServicesDashboard')}
                     <ExternalLinkIcon size={12} aria-hidden className="ml-1" />
                   </ButtonAnchor>
                 </p>

@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, FilterChips, Slider } from '@tahti-player/ui';
 
 import type { EditList, ProEditorPluginId } from '../../../api/studio-types';
@@ -45,6 +46,7 @@ function FrequencySlider({
 /** The parameter controls of one audio add-on in the mastering chain.
  * Ranges match what the render accepts (`@tahti/audio-edit` schema). */
 export function PluginControls({ id, editList, onChange }: Props) {
+  const { t } = useTranslation('web');
   if (id === 'eq') {
     const setBand = (
       index: number,
@@ -99,7 +101,7 @@ export function PluginControls({ id, editList, onChange }: Props) {
     return (
       <div className="grid gap-2 sm:grid-cols-2">
         <Slider
-          label="Threshold"
+          label={t('pluginControls.threshold')}
           value={editList.comp.thresholdDb}
           min={-60}
           max={0}
@@ -109,7 +111,7 @@ export function PluginControls({ id, editList, onChange }: Props) {
           onValueChange={(thresholdDb) => setComp({ thresholdDb })}
         />
         <Slider
-          label="Ratio"
+          label={t('pluginControls.ratio')}
           value={editList.comp.ratio}
           min={1}
           max={20}
@@ -119,7 +121,7 @@ export function PluginControls({ id, editList, onChange }: Props) {
           onValueChange={(ratio) => setComp({ ratio })}
         />
         <Slider
-          label="Attack"
+          label={t('pluginControls.attack')}
           value={editList.comp.attackMs}
           min={0.1}
           max={500}
@@ -129,7 +131,7 @@ export function PluginControls({ id, editList, onChange }: Props) {
           onValueChange={(attackMs) => setComp({ attackMs })}
         />
         <Slider
-          label="Release"
+          label={t('pluginControls.release')}
           value={editList.comp.releaseMs}
           min={1}
           max={5000}
@@ -139,7 +141,7 @@ export function PluginControls({ id, editList, onChange }: Props) {
           onValueChange={(releaseMs) => setComp({ releaseMs })}
         />
         <Slider
-          label="Makeup"
+          label={t('pluginControls.makeup')}
           value={editList.comp.makeupDb}
           min={0}
           max={24}
@@ -158,7 +160,7 @@ export function PluginControls({ id, editList, onChange }: Props) {
     return (
       <div className="grid gap-2 sm:grid-cols-2">
         <Slider
-          label="Ceiling"
+          label={t('pluginControls.ceiling')}
           value={Math.max(-3, editList.limiter.ceilingDb)}
           min={-3}
           max={0}
@@ -168,7 +170,7 @@ export function PluginControls({ id, editList, onChange }: Props) {
           onValueChange={(ceilingDb) => setLimiter({ ceilingDb })}
         />
         <Slider
-          label="Release"
+          label={t('pluginControls.release')}
           value={editList.limiter.releaseMs}
           min={1}
           max={1000}
@@ -189,10 +191,10 @@ export function PluginControls({ id, editList, onChange }: Props) {
       <div className="flex flex-col gap-3">
         <div>
           <p className="text-foreground-secondary mb-2 text-xs uppercase">
-            Filter type
+            {t('pluginControls.filterType')}
           </p>
           <FilterChips
-            aria-label="Filter type"
+            aria-label={t('pluginControls.filterType')}
             items={FILTER_MODES.map((option) => ({
               id: option.id,
               label: option.label,
@@ -215,7 +217,7 @@ export function PluginControls({ id, editList, onChange }: Props) {
           ) : null}
         </div>
         <FrequencySlider
-          label="Freq"
+          label={t('pluginControls.freq')}
           value={editList.filter.freq}
           onChange={(freq) =>
             onChange({ ...editList, filter: { ...editList.filter, freq } })
@@ -223,7 +225,7 @@ export function PluginControls({ id, editList, onChange }: Props) {
         />
         <div>
           <p className="text-foreground-secondary mb-2 text-xs uppercase">
-            Slope
+            {t('pluginControls.slope')}
           </p>
           <div className="flex flex-wrap gap-2">
             {FILTER_SLOPES.map((option) => {

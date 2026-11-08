@@ -191,7 +191,7 @@ export function InternetRadioPresetsPanel() {
       <TahtiRadioStationPanel />
       <StudioPanel
         title={`Internet radio — Listen page defaults (${presets.length})`}
-        description="Stations toggled on here appear in the radio feed on the Listen page for every visitor, signed in or not — not just listeners who add it to their own library."
+        description={t('radioPresetsAdmin.stationsToggledOnHereAppear')}
         action={
           <div className="flex flex-wrap gap-2">
             <Button
@@ -202,7 +202,7 @@ export function InternetRadioPresetsPanel() {
               onClick={testAll}
             >
               <ActivityIcon size={15} aria-hidden />
-              Test all
+              {t('radioPresetsAdmin.testAll')}
             </Button>
             <Button size="sm" onClick={() => openNew()}>
               <PlusIcon size={15} aria-hidden className="mr-1.5" />
@@ -299,7 +299,7 @@ export function InternetRadioPresetsPanel() {
                       size={14}
                       aria-hidden
                     />
-                    Remove
+                    {t('radioPresetsAdmin.remove')}
                   </Button>
                 </div>
               </li>
@@ -320,7 +320,7 @@ export function InternetRadioPresetsPanel() {
             {editingId ? 'Edit station' : 'Add internet radio station'}
           </Dialog.Title>
           <Dialog.Description>
-            Shown as a default in the Listen page radio feed once enabled.
+            {t('radioPresetsAdmin.shownAsADefaultIn')}
           </Dialog.Description>
           <form
             onSubmit={(event) => {
@@ -350,7 +350,7 @@ export function InternetRadioPresetsPanel() {
                   }}
                 />
                 <span className="text-foreground-secondary text-xs">
-                  Station logo — JPEG, PNG, or WebP. Hover the image to replace.
+                  {t('radioPresetsAdmin.stationLogoJpegPngOr')}
                 </span>
                 {catalogLogoForName(draft.name) ? (
                   <Button
@@ -392,14 +392,14 @@ export function InternetRadioPresetsPanel() {
                     }}
                   >
                     <ImageIcon size={14} aria-hidden />
-                    Use catalog logo
+                    {t('radioPresetsAdmin.useCatalogLogo')}
                   </Button>
                 ) : null}
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <Input
                   autoComplete="off"
-                  label="Name"
+                  label={t('radioPresetsAdmin.name')}
                   value={draft.name}
                   placeholder="Radio Helsinki"
                   onChange={(event) =>
@@ -407,9 +407,9 @@ export function InternetRadioPresetsPanel() {
                   }
                 />
                 <Input
-                  label="Genre"
+                  label={t('radioPresetsAdmin.genre')}
                   value={draft.genre ?? ''}
-                  placeholder="World"
+                  placeholder={t('radioPresetsAdmin.world')}
                   onChange={(event) =>
                     setDraft({ ...draft, genre: event.target.value })
                   }
@@ -417,10 +417,12 @@ export function InternetRadioPresetsPanel() {
               </div>
               <Textarea
                 submitOnModEnter
-                label="Description"
+                label={t('radioPresetsAdmin.description')}
                 value={draft.description ?? ''}
                 rows={2}
-                placeholder="What listeners should expect from this station."
+                placeholder={t(
+                  'radioPresetsAdmin.whatListenersShouldExpectFrom',
+                )}
                 onChange={(event) =>
                   setDraft({ ...draft, description: event.target.value })
                 }
@@ -430,10 +432,12 @@ export function InternetRadioPresetsPanel() {
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                label="Stream URL"
+                label={t('radioPresetsAdmin.streamUrl')}
                 value={draft.streamUrl ?? ''}
                 placeholder="https://stream.example.com/live.mp3"
-                description="Direct, playable HTTPS stream URL."
+                description={t(
+                  'radioPresetsAdmin.directPlayableHttpsStreamUrl',
+                )}
                 onChange={(event) =>
                   setDraft({ ...draft, streamUrl: event.target.value })
                 }
@@ -447,7 +451,7 @@ export function InternetRadioPresetsPanel() {
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                label="Programming URL (optional)"
+                label={t('radioPresetsAdmin.programmingUrlOptional')}
                 value={draft.programmingUrl ?? ''}
                 placeholder="https://example.com/now-playing"
                 description="“What's on now” endpoint, if the station exposes one — display-only."
@@ -458,12 +462,12 @@ export function InternetRadioPresetsPanel() {
               {error ? <InlineError>{error}</InlineError> : null}
             </div>
             <Dialog.Actions>
-              <Dialog.Close>Cancel</Dialog.Close>
+              <Dialog.Close>{t('radioPresetsAdmin.cancel')}</Dialog.Close>
               {editingId ? (
                 <SaveButton
                   disabled={pending || !draft.name.trim()}
                   saving={pending}
-                  label="Save changes"
+                  label={t('radioPresetsAdmin.saveChanges')}
                   type="submit"
                 />
               ) : (
@@ -473,7 +477,7 @@ export function InternetRadioPresetsPanel() {
                   type="submit"
                 >
                   <PlusIcon size={14} aria-hidden />
-                  Add station
+                  {t('radioPresetsAdmin.addStation')}
                 </Button>
               )}
             </Dialog.Actions>

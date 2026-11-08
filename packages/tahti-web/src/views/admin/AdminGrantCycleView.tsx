@@ -101,14 +101,18 @@ export function AdminGrantCycleView() {
         <AdminPageLayout current="/admin/governance">
           <div className="flex max-w-5xl flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('grantCycle.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="coop" />
-              <BreadcrumbLink to="/admin/governance">Governance</BreadcrumbLink>
+              <BreadcrumbLink to="/admin/governance">
+                {t('grantCycle.governance')}
+              </BreadcrumbLink>
               <BreadcrumbLink
                 to="/admin/governance/$tab"
                 params={{ tab: 'grants' }}
               >
-                Grants
+                {t('grantCycle.grants')}
               </BreadcrumbLink>
               <BreadcrumbCurrent>{year}</BreadcrumbCurrent>
             </Breadcrumbs>
@@ -122,7 +126,7 @@ export function AdminGrantCycleView() {
                   size="sm"
                   variant="secondary"
                 >
-                  Board CSV
+                  {t('grantCycle.boardCsv')}
                 </ButtonAnchor>
                 <ButtonLink
                   to="/admin/governance/$tab"
@@ -130,7 +134,7 @@ export function AdminGrantCycleView() {
                   size="sm"
                   variant="secondary"
                 >
-                  All cycles
+                  {t('grantCycle.allCycles')}
                 </ButtonLink>
               </div>
 
@@ -145,12 +149,12 @@ export function AdminGrantCycleView() {
                 <>
                   <div className="@container">
                     <div className="grid grid-cols-1 gap-3 @md:grid-cols-2 @4xl:grid-cols-4">
-                      <StudioPanel title="Pool">
+                      <StudioPanel title={t('grantCycle.pool')}>
                         <div className="text-xl font-bold">
                           {formatEur(preview.poolCents)}
                         </div>
                       </StudioPanel>
-                      <StudioPanel title="Engagement units">
+                      <StudioPanel title={t('grantCycle.engagementUnits')}>
                         <div className="text-xl font-bold">
                           {preview.totalUnits.toLocaleString()}
                         </div>
@@ -160,7 +164,7 @@ export function AdminGrantCycleView() {
                           {eligible.length}
                         </div>
                       </StudioPanel>
-                      <StudioPanel title="Below threshold">
+                      <StudioPanel title={t('grantCycle.belowThreshold')}>
                         <div className="text-xl font-bold">
                           {belowThreshold}
                         </div>
@@ -168,7 +172,9 @@ export function AdminGrantCycleView() {
                     </div>
                   </div>
 
-                  <SectionShell title="Per-artist allocation preview">
+                  <SectionShell
+                    title={t('grantCycle.perArtistAllocationPreview')}
+                  >
                     {preview.artists.length === 0 ? (
                       <PageEmpty
                         title={`No artist activity in ${year}`}
@@ -177,20 +183,26 @@ export function AdminGrantCycleView() {
                         )}
                       />
                     ) : (
-                      <HorizontalScroll label="Per-artist allocation preview">
+                      <HorizontalScroll
+                        label={t('grantCycle.perArtistAllocationPreview')}
+                      >
                         <DataTable>
                           <DataTableHead>
                             <DataTableRow>
-                              <DataTableHeaderCell>Artist</DataTableHeaderCell>
                               <DataTableHeaderCell>
-                                Downloads
+                                {t('grantCycle.artist')}
                               </DataTableHeaderCell>
                               <DataTableHeaderCell>
-                                Fan subs
+                                {t('grantCycle.downloads')}
                               </DataTableHeaderCell>
-                              <DataTableHeaderCell>Units</DataTableHeaderCell>
+                              <DataTableHeaderCell>
+                                {t('grantCycle.fanSubs')}
+                              </DataTableHeaderCell>
+                              <DataTableHeaderCell>
+                                {t('grantCycle.units')}
+                              </DataTableHeaderCell>
                               <DataTableHeaderCell className="text-right">
-                                Grant
+                                {t('grantCycle.grant')}
                               </DataTableHeaderCell>
                             </DataTableRow>
                           </DataTableHead>
@@ -238,7 +250,7 @@ export function AdminGrantCycleView() {
                   </SectionShell>
 
                   {!alreadyRun && (
-                    <StudioPanel title="Approve disbursement">
+                    <StudioPanel title={t('grantCycle.approveDisbursement')}>
                       <p className="text-foreground-secondary text-sm">
                         This creates grant ledger entries for {eligible.length}{' '}
                         eligible artists and notifies each of them of their
@@ -261,7 +273,7 @@ export function AdminGrantCycleView() {
                               aria-hidden
                               className="mr-1.5"
                             />
-                            Approve distribution
+                            {t('grantCycle.approveDistribution')}
                           </>
                         )}
                       </Button>

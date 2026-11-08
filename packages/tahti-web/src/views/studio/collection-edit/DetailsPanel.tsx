@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import {
   FilterChips,
   Input,
@@ -18,6 +19,7 @@ const TRACK_ORDER_OPTIONS: SelectOption[] = [
 ];
 
 export function DetailsPanel({ state }: { state: CollectionEditState }) {
+  const { t } = useTranslation('web');
   const {
     name,
     setName,
@@ -36,23 +38,23 @@ export function DetailsPanel({ state }: { state: CollectionEditState }) {
   } = state;
 
   return (
-    <StudioPanel title="Details">
+    <StudioPanel title={t('collectionDetails.details')}>
       <div className="grid gap-4 sm:grid-cols-2">
         <Input
-          label="Title"
+          label={t('collectionDetails.title')}
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <Input
-          label="Release date"
+          label={t('collectionDetails.releaseDate')}
           type="date"
           value={releaseDate}
           onChange={(event) => setReleaseDate(event.target.value)}
         />
         <Input
-          label="Genres"
+          label={t('collectionDetails.genres')}
           value={genres}
-          placeholder="Electronic, Ambient"
+          placeholder={t('collectionDetails.electronicAmbient')}
           onChange={(event) => setGenres(event.target.value)}
         />
         <div className="flex flex-col gap-1 text-sm">
@@ -60,18 +62,18 @@ export function DetailsPanel({ state }: { state: CollectionEditState }) {
             className="text-foreground-secondary text-xs uppercase"
             aria-hidden
           >
-            Style
+            {t('collectionDetails.style')}
           </span>
           <FilterChips
-            aria-label="Style"
+            aria-label={t('collectionDetails.style')}
             items={COLLECTION_STYLES}
             selected={style}
             onChange={setStyle}
           />
         </div>
         <Select
-          label="Track order"
-          description="How tracks are ordered on the public page."
+          label={t('collectionDetails.trackOrder')}
+          description={t('collectionDetails.howTracksAreOrderedOn')}
           value={trackSortMode}
           onValueChange={(value) =>
             setTrackSortMode(value as CollectionTrackSortMode)
@@ -79,7 +81,7 @@ export function DetailsPanel({ state }: { state: CollectionEditState }) {
           options={TRACK_ORDER_OPTIONS}
         />
         <Textarea
-          label="Description"
+          label={t('collectionDetails.description')}
           fieldClassName="sm:col-span-2"
           tone="secondary"
           value={description}
@@ -88,8 +90,8 @@ export function DetailsPanel({ state }: { state: CollectionEditState }) {
         />
         <section className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-lg border p-3 sm:col-span-2">
           <Select
-            label="Visibility"
-            description="Choose who can find this collection."
+            label={t('collectionDetails.visibility')}
+            description={t('collectionDetails.chooseWhoCanFindThis')}
             value={visibility}
             onValueChange={(value) => setVisibility(value as typeof visibility)}
             options={[

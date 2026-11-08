@@ -1,5 +1,6 @@
 import { DownloadIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Toggle } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../api/studio-types';
@@ -23,6 +24,7 @@ export function SharingTab({
   item: StudioSound;
   state: TrackEditDialogState;
 }) {
+  const { t } = useTranslation('web');
   const {
     form,
     setForm,
@@ -39,8 +41,7 @@ export function SharingTab({
   return (
     <div className="flex flex-col gap-3">
       <p className="text-foreground-secondary text-xs">
-        Choose where this track can appear and whether it can be selected for
-        shared programming.
+        {t('trackSharing.chooseWhereThisTrackCan')}
       </p>
       <AudienceVisibilitySection
         visibility={visibilityFromIsPublic(form.isPublic)}
@@ -85,9 +86,9 @@ export function SharingTab({
         <HearthisEmbedImport soundId={soundId} />
       ) : null}
       <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-2 rounded-lg border p-2.5 text-sm">
-        <span className="font-medium">Allow comments</span>
+        <span className="font-medium">{t('trackSharing.allowComments')}</span>
         <Toggle
-          label="Allow comments"
+          label={t('trackSharing.allowComments')}
           checked={form.commentsEnabled ?? true}
           onChange={(commentsEnabled) => setForm({ ...form, commentsEnabled })}
         />
@@ -97,15 +98,14 @@ export function SharingTab({
           <div className="flex items-start justify-between gap-3 text-sm">
             <span>
               <span className="block font-medium">
-                Add to my channel&apos;s rotation
+                {t('trackSharing.addToMyChannelApos')}
               </span>
               <span className="text-foreground-secondary block text-xs">
-                Plays automatically on your channel when you aren&apos;t live,
-                so listeners always hear something instead of dead air.
+                {t('trackSharing.playsAutomaticallyOnYourChannel')}
               </span>
             </span>
             <Toggle
-              label="Add to my channel's rotation"
+              label={t('trackSharing.addToMyChannelS')}
               checked={form.isFallback ?? false}
               onChange={(isFallback) => setForm({ ...form, isFallback })}
             />
@@ -113,7 +113,9 @@ export function SharingTab({
 
           <div className="border-border/60 flex items-center gap-3 border-t pt-3">
             <div className="min-w-0 flex-1 text-sm">
-              <span className="block font-medium">Tahti Radio rotation</span>
+              <span className="block font-medium">
+                {t('trackSharing.tahtiRadioRotation')}
+              </span>
               <span className="text-foreground-secondary block text-xs">
                 {radioSubmission?.status === 'PENDING'
                   ? 'Submitted — waiting on board review.'
@@ -151,14 +153,14 @@ export function SharingTab({
       <div className="border-border flex items-start justify-between gap-3 rounded-lg border p-3 text-sm">
         <span>
           <span className="block font-medium">
-            Allow discovery analytics and top lists
+            {t('trackSharing.allowDiscoveryAnalyticsAndTop')}
           </span>
           <span className="text-foreground-secondary block text-xs">
-            Allow eligible listener activity to contribute to discovery lists.
+            {t('trackSharing.allowEligibleListenerActivityTo')}
           </span>
         </span>
         <Toggle
-          label="Allow discovery analytics and top lists"
+          label={t('trackSharing.allowDiscoveryAnalyticsAndTop')}
           checked={form.topListsEligible ?? true}
           onChange={(topListsEligible) =>
             setForm({ ...form, topListsEligible })
@@ -167,14 +169,15 @@ export function SharingTab({
       </div>
       <div className="border-border flex items-start justify-between gap-3 rounded-lg border p-3 text-sm">
         <span>
-          <span className="block font-medium">Allow Tahti Selects</span>
+          <span className="block font-medium">
+            {t('trackSharing.allowTahtiSelects')}
+          </span>
           <span className="text-foreground-secondary block text-xs">
-            Let the Tahti team consider this track for curated Tahti Selects
-            programming.
+            {t('trackSharing.letTheTahtiTeamConsider')}
           </span>
         </span>
         <Toggle
-          label="Allow Tahti Selects"
+          label={t('trackSharing.allowTahtiSelects')}
           checked={form.selectsOptIn ?? false}
           onChange={(selectsOptIn) => setForm({ ...form, selectsOptIn })}
         />

@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Alert,
   Badge,
@@ -88,6 +89,7 @@ function SpaceLine({
   space: SetImportSpace;
   onRecheck: () => void;
 }) {
+  const { t } = useTranslation('web');
   if (space.status === 'idle') {
     return null;
   }
@@ -95,7 +97,7 @@ function SpaceLine({
     return (
       <p className="text-foreground-secondary flex items-center gap-2 text-xs">
         <Loader size="xs" shape="circle" />
-        Checking file sizes…
+        {t('providerSetImport.checkingFileSizes')}
       </p>
     );
   }
@@ -112,7 +114,7 @@ function SpaceLine({
       <p className="text-foreground-secondary">{spaceSummary(space)}</p>
       {verdict === 'tight' ? (
         <Alert tone="warning" className="px-3 py-2 text-xs">
-          The set fits, but leaves little room on the disk.
+          {t('providerSetImport.theSetFitsButLeaves')}
         </Alert>
       ) : null}
       {verdict === 'notEnough' ? (
@@ -123,7 +125,7 @@ function SpaceLine({
               {formatBytes(neededBytes - (freeBytes ?? 0))} and check again.
             </span>
             <Button variant="text" size="xs" onClick={onRecheck}>
-              Check again
+              {t('providerSetImport.checkAgain')}
             </Button>
           </span>
         </Alert>
@@ -133,10 +135,11 @@ function SpaceLine({
 }
 
 function TrackRows({ rows }: { rows: SetImportRow[] }) {
+  const { t } = useTranslation('web');
   return (
     <ol
       className="border-border flex max-h-[40vh] flex-col overflow-y-auto rounded-md border text-sm"
-      aria-label="Tracks in the set"
+      aria-label={t('providerSetImport.tracksInTheSet')}
     >
       {rows.map((row, index) => (
         <li
@@ -160,7 +163,7 @@ function TrackRows({ rows }: { rows: SetImportRow[] }) {
           </Tooltip>
           {row.state === 'failed' ? (
             <Badge variant="pill" color="red">
-              Failed
+              {t('providerSetImport.failed')}
             </Badge>
           ) : null}
           <span
@@ -188,6 +191,7 @@ export function ProviderSetImportDialog({
   providerImport,
   onImported,
 }: Props) {
+  const { t } = useTranslation('web');
   const state = useProviderSetImport({
     isOpen,
     source,
@@ -210,9 +214,7 @@ export function ProviderSetImportDialog({
     >
       <Dialog.Title>Import a {source.label} set</Dialog.Title>
       <Dialog.Description>
-        Downloads the tracks the uploader offers for download and adds them to
-        your library as local files. Tracks that are only streamable are left
-        out.
+        {t('providerSetImport.downloadsTheTracksTheUploader')}
       </Dialog.Description>
 
       {state.error ? <InlineError>{state.error}</InlineError> : null}
@@ -232,20 +234,20 @@ export function ProviderSetImportDialog({
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                label="Set link"
+                label={t('providerSetImport.setLink')}
                 placeholder={source.linkPlaceholder}
                 value={state.link}
                 onChange={(event) => state.setLink(event.target.value)}
               />
             </div>
             <Button type="submit" disabled={!state.link.trim()}>
-              Load set
+              {t('providerSetImport.loadSet')}
             </Button>
           </form>
           {state.yourSets.length > 0 ? (
             <div className="flex flex-col gap-1">
               <p className="text-foreground-secondary text-xs font-medium">
-                Your sets
+                {t('providerSetImport.yourSets')}
               </p>
               {state.yourSets.map((set) => (
                 <Button
@@ -274,7 +276,10 @@ export function ProviderSetImportDialog({
       ) : null}
 
       {state.phase === 'loading' ? (
-        <InlineLoader label="Loading the set…" className="py-2" />
+        <InlineLoader
+          label={t('providerSetImport.loadingTheSet')}
+          className="py-2"
+        />
       ) : null}
 
       {state.phase === 'review' ||
@@ -284,7 +289,7 @@ export function ProviderSetImportDialog({
           {state.phase === 'review' ? (
             <>
               <Input
-                label="Playlist and folder name"
+                label={t('providerSetImport.playlistAndFolderName')}
                 value={state.title}
                 onChange={(event) => state.setTitle(event.target.value)}
               />
@@ -317,11 +322,9 @@ export function ProviderSetImportDialog({
           <TrackRows rows={state.rows} />
           {state.phase === 'review' ? (
             <div className="flex items-center justify-between gap-3 text-sm">
-              <span aria-hidden>
-                Add the set to a playlist in its original order
-              </span>
+              <span aria-hidden>{t('providerSetImport.addTheSetToA')}</span>
               <Toggle
-                label="Add the set to a playlist in its original order"
+                label={t('providerSetImport.addTheSetToA')}
                 checked={state.makePlaylist}
                 onChange={state.setMakePlaylist}
               />
@@ -333,7 +336,7 @@ export function ProviderSetImportDialog({
       <Dialog.Actions>
         {state.phase === 'running' ? (
           <Button variant="text" intent="danger" onClick={state.cancel}>
-            Cancel download
+            {t('providerSetImport.cancelDownload')}
           </Button>
         ) : (
           <Dialog.Close>
@@ -343,7 +346,7 @@ export function ProviderSetImportDialog({
         {state.phase === 'review' ? (
           <>
             <Button variant="text" onClick={state.back}>
-              Back
+              {t('providerSetImport.back')}
             </Button>
             <Button
               disabled={
@@ -358,7 +361,7 @@ export function ProviderSetImportDialog({
         {state.phase === 'running' ? (
           <Button className="gap-1.5" disabled>
             <Loader size="inline" shape="circle" />
-            Downloading…
+            {t('providerSetImport.downloading')}
           </Button>
         ) : null}
         {state.phase === 'done' && state.failedCount > 0 ? (

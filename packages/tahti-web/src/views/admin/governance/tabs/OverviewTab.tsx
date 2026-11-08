@@ -173,20 +173,25 @@ export function OverviewTab() {
   return (
     <>
       <StudioPanel
-        title="Member activity"
-        description="Voting and discussion activity across motions and feature topics."
+        title={t('adminGovernanceOverview.memberActivity')}
+        description={t(
+          'adminGovernanceOverview.votingAndDiscussionActivityAcross',
+        )}
       >
         <div className="grid gap-3 sm:grid-cols-3">
-          <StatTile value={totalVotes} label="Votes recorded" />
+          <StatTile
+            value={totalVotes}
+            label={t('adminGovernanceOverview.votesRecorded')}
+          />
           <StatTile
             value={discussionCount}
-            label="Discussions"
-            sublabel="Subjects with comments"
+            label={t('adminGovernanceOverview.discussions')}
+            sublabel={t('adminGovernanceOverview.subjectsWithComments')}
           />
           <StatTile
             value={totalComments}
-            label="Comments"
-            sublabel="Recorded governance comments"
+            label={t('adminGovernanceOverview.comments')}
+            sublabel={t('adminGovernanceOverview.recordedGovernanceComments')}
           />
         </div>
 
@@ -201,7 +206,7 @@ export function OverviewTab() {
               id="governance-voting-activity"
               className="text-xs font-semibold tracking-wide uppercase"
             >
-              Recent voting activity
+              {t('adminGovernanceOverview.recentVotingActivity')}
             </h3>
           </div>
           {votingActivity.length === 0 ? (
@@ -247,10 +252,9 @@ export function OverviewTab() {
         </p>
       </StudioPanel>
 
-      <StudioPanel title="Board resolutions">
+      <StudioPanel title={t('adminGovernanceOverview.boardResolutions')}>
         <p className="text-foreground-secondary text-sm">
-          Record formal board decisions here. These are separate from advisory
-          member motions and can be published after approval.
+          {t('adminGovernanceOverview.recordFormalBoardDecisionsHere')}
         </p>
         <form
           onSubmit={(event) => {
@@ -278,11 +282,11 @@ export function OverviewTab() {
             <Input
               value={resolutionTitle}
               onChange={(event) => setResolutionTitle(event.target.value)}
-              aria-label="Resolution title"
-              placeholder="Resolution title"
+              aria-label={t('adminGovernanceOverview.resolutionTitle')}
+              placeholder={t('adminGovernanceOverview.resolutionTitle')}
             />
             <Select
-              aria-label="Outcome"
+              aria-label={t('adminGovernanceOverview.outcome')}
               value={resolutionOutcome}
               onValueChange={(value) =>
                 setResolutionOutcome(value as ResolutionOutcome)
@@ -297,8 +301,8 @@ export function OverviewTab() {
               submitOnModEnter
               value={resolutionBody}
               onChange={(event) => setResolutionBody(event.target.value)}
-              aria-label="Resolution body"
-              placeholder="Resolution body"
+              aria-label={t('adminGovernanceOverview.resolutionBody')}
+              placeholder={t('adminGovernanceOverview.resolutionBody')}
               rows={4}
               className="sm:col-span-2"
             />
@@ -306,22 +310,22 @@ export function OverviewTab() {
               value={resolutionFor}
               onChange={(event) => setResolutionFor(event.target.value)}
               inputMode="numeric"
-              aria-label="Votes for"
-              placeholder="Votes for"
+              aria-label={t('adminGovernanceOverview.votesFor')}
+              placeholder={t('adminGovernanceOverview.votesFor')}
             />
             <Input
               value={resolutionAgainst}
               onChange={(event) => setResolutionAgainst(event.target.value)}
               inputMode="numeric"
-              aria-label="Votes against"
-              placeholder="Votes against"
+              aria-label={t('adminGovernanceOverview.votesAgainst')}
+              placeholder={t('adminGovernanceOverview.votesAgainst')}
             />
             <Input
               value={resolutionAbstain}
               onChange={(event) => setResolutionAbstain(event.target.value)}
               inputMode="numeric"
-              aria-label="Abstentions"
-              placeholder="Abstentions"
+              aria-label={t('adminGovernanceOverview.abstentions')}
+              placeholder={t('adminGovernanceOverview.abstentions')}
             />
           </div>
           <SaveButton
@@ -333,7 +337,7 @@ export function OverviewTab() {
               !resolutionBody.trim()
             }
             saving={resolutionBusy}
-            label="Record resolution"
+            label={t('adminGovernanceOverview.recordResolution')}
             type="submit"
           />
         </form>
@@ -368,7 +372,7 @@ export function OverviewTab() {
                   }}
                 >
                   <EyeIcon size={14} aria-hidden className="mr-1.5" />
-                  Publish
+                  {t('adminGovernanceOverview.publish')}
                 </Button>
               )}
               <div className="w-full">

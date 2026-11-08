@@ -111,7 +111,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
           title={editing ? 'Edit event' : 'Add event'}
           classes={{ root: 'px-0 pt-0' }}
         >
-          <StudioPanel title="Event details">
+          <StudioPanel title={t('eventCreate.eventDetails')}>
             {loadingEvent ? (
               <PageLoading label={t('loading.loading')} />
             ) : (
@@ -153,21 +153,21 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
               >
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <Input
-                    label="Title"
+                    label={t('eventCreate.title')}
                     value={title}
                     onChange={(event) => setTitle(event.target.value)}
                   />
                   <Input
-                    label="Place"
+                    label={t('eventCreate.place')}
                     value={place}
                     onChange={(event) => setPlace(event.target.value)}
-                    placeholder="Northern Lights Hall"
+                    placeholder={t('eventCreate.northernLightsHall')}
                   />
                   <div className="flex flex-col gap-1">
                     <Select
                       id="event-venue"
-                      label="Venue from directory"
-                      placeholder="Choose a venue or enter one below"
+                      label={t('eventCreate.venueFromDirectory')}
+                      placeholder={t('eventCreate.chooseAVenueOrEnter')}
                       options={venues.map((venue) => ({
                         id: venue.slug,
                         label: `${venue.name}${venue.city ? ` · ${venue.city}` : ''}`,
@@ -191,14 +191,13 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                         role="alert"
                         className="text-accent-red-strong flex flex-wrap items-center gap-2 text-xs"
                       >
-                        Could not load the venue directory. Type the place
-                        above, or
+                        {t('eventCreate.couldNotLoadTheVenue')}
                         <Button
                           size="sm"
                           variant="secondary"
                           onClick={() => setVenuesAttempt((n) => n + 1)}
                         >
-                          Retry
+                          {t('eventCreate.retry')}
                         </Button>
                       </div>
                     ) : null}
@@ -206,21 +205,21 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                       to="/venues/register"
                       className="text-primary-strong text-xs hover:underline"
                     >
-                      Register a new venue
+                      {t('eventCreate.registerANewVenue')}
                     </Link>
                   </div>
                   <Input
-                    label="Location"
+                    label={t('eventCreate.location')}
                     value={location}
                     onChange={(event) => setLocation(event.target.value)}
-                    placeholder="Helsinki, Finland"
+                    placeholder={t('eventCreate.helsinkiFinland')}
                   />
                   <Input
                     inputMode="url"
                     autoCapitalize="none"
                     autoCorrect="off"
                     spellCheck={false}
-                    label="Tickets / event link (optional)"
+                    label={t('eventCreate.ticketsEventLinkOptional')}
                     value={eventUrl}
                     onChange={(event) => setEventUrl(event.target.value)}
                     placeholder="https://tickets.example/event"
@@ -228,22 +227,22 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                 </div>
                 <Textarea
                   submitOnModEnter
-                  label="Description"
+                  label={t('eventCreate.description')}
                   value={description}
                   onChange={(event) => setDescription(event.target.value)}
                   rows={3}
-                  placeholder="What should people expect — set details, door time, ticketing…"
+                  placeholder={t('eventCreate.whatShouldPeopleExpectSet')}
                 />
                 <Input
                   type="datetime-local"
-                  label="Start"
+                  label={t('eventCreate.start')}
                   value={startAt}
                   onChange={(event) => setStartAt(event.target.value)}
                 />
                 <div className="flex flex-wrap gap-2">
                   <ButtonLink to="/studio/events" size="sm" variant="secondary">
                     <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
-                    Cancel
+                    {t('eventCreate.cancel')}
                   </ButtonLink>
                   <Button size="sm" disabled={!canSubmit || busy} type="submit">
                     {busy ? (

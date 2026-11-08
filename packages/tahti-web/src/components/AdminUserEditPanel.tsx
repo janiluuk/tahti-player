@@ -258,7 +258,7 @@ export function AdminUserEditPanel({
                 </Badge>
                 {detail.suspendedAt ? (
                   <Badge variant="pill" color="red">
-                    Suspended
+                    {t('adminUserEdit.suspended')}
                   </Badge>
                 ) : null}
               </div>
@@ -273,7 +273,7 @@ export function AdminUserEditPanel({
             </div>
           </div>
           <div className="flex gap-2">
-            <Tooltip content="Message user" side="top">
+            <Tooltip content={t('adminUserEdit.messageUser')} side="top">
               <Button
                 size="icon-sm"
                 variant="secondary"
@@ -284,7 +284,7 @@ export function AdminUserEditPanel({
                 <MessageSquareIcon size={15} aria-hidden />
               </Button>
             </Tooltip>
-            <Tooltip content="View profile" side="top">
+            <Tooltip content={t('adminUserEdit.viewProfile')} side="top">
               <ButtonLink
                 to="/u/$username"
                 params={{ username: detail.username }}
@@ -307,7 +307,7 @@ export function AdminUserEditPanel({
         <dl className="border-border mt-4 grid gap-3 border-t pt-4 text-sm @sm:grid-cols-2 @2xl:grid-cols-4">
           <div>
             <dt className="text-foreground-secondary text-xs uppercase">
-              Member since
+              {t('adminUserEdit.memberSince')}
             </dt>
             <dd>
               {detail.memberSince ? (
@@ -319,7 +319,7 @@ export function AdminUserEditPanel({
           </div>
           <div>
             <dt className="text-foreground-secondary text-xs uppercase">
-              Followers
+              {t('adminUserEdit.followers')}
             </dt>
             <dd>
               {publicProfile?.artist.followerCount ?? 'Hidden or unavailable'}
@@ -327,7 +327,7 @@ export function AdminUserEditPanel({
           </div>
           <div>
             <dt className="text-foreground-secondary text-xs uppercase">
-              Artist type
+              {t('adminUserEdit.artistType')}
             </dt>
             <dd>
               {publicProfile?.channel?.artistKind ??
@@ -336,7 +336,7 @@ export function AdminUserEditPanel({
           </div>
           <div>
             <dt className="text-foreground-secondary text-xs uppercase">
-              Published material
+              {t('adminUserEdit.publishedMaterial')}
             </dt>
             <dd>
               {publicProfile
@@ -349,7 +349,7 @@ export function AdminUserEditPanel({
         <dl className="mt-5 grid gap-3 @sm:grid-cols-2 @2xl:grid-cols-4">
           <div className="bg-background-secondary rounded-lg p-3">
             <dt className="text-foreground-secondary text-xs uppercase">
-              Engagement
+              {t('adminUserEdit.engagement')}
             </dt>
             <dd className="font-display mt-1 text-xl font-bold">
               {detail.engagementUnitsYtd}
@@ -358,7 +358,7 @@ export function AdminUserEditPanel({
           </div>
           <div className="bg-background-secondary rounded-lg p-3">
             <dt className="text-foreground-secondary text-xs uppercase">
-              Fan subscriptions
+              {t('adminUserEdit.fanSubscriptions')}
             </dt>
             <dd className="font-display mt-1 text-xl font-bold">
               {detail.fanSubscriptionsAsArtist}
@@ -367,7 +367,7 @@ export function AdminUserEditPanel({
           </div>
           <div className="bg-background-secondary rounded-lg p-3">
             <dt className="text-foreground-secondary text-xs uppercase">
-              Channel
+              {t('adminUserEdit.channel')}
             </dt>
             <dd className="mt-1 text-sm font-medium">
               {detail.channel?.state ?? 'No channel'}
@@ -389,7 +389,7 @@ export function AdminUserEditPanel({
           </div>
           <div className="bg-background-secondary rounded-lg p-3">
             <dt className="text-foreground-secondary text-xs uppercase">
-              Payments
+              {t('adminUserEdit.payments')}
             </dt>
             <dd className="mt-1 text-sm font-medium">
               {detail.stripeConnectChargesEnabled
@@ -402,11 +402,11 @@ export function AdminUserEditPanel({
 
       <div className="grid gap-4 @3xl:grid-cols-2">
         <StudioPanel
-          title="Account details"
-          description="Access, membership, and governance roles. Changing the plan, membership or board seat notifies the account."
+          title={t('adminUserEdit.accountDetails')}
+          description={t('adminUserEdit.accessMembershipAndGovernanceRoles')}
           action={
             <EditIconButton
-              label="Edit account details"
+              label={t('adminUserEdit.editAccountDetails')}
               editing={accountEditing}
               onClick={() => {
                 if (accountEditing) {
@@ -426,7 +426,7 @@ export function AdminUserEditPanel({
               }}
             >
               <Select
-                label="Role"
+                label={t('adminUserEdit.role')}
                 value={editRole}
                 onValueChange={(value) => setEditRole(value as AccountRole)}
                 options={ROLES.map((value) => ({
@@ -435,40 +435,50 @@ export function AdminUserEditPanel({
                 }))}
               />
               <Input
-                label="Member number"
+                label={t('adminUserEdit.memberNumber')}
                 inputMode="numeric"
                 value={editMemberNumber}
                 onChange={(event) => setEditMemberNumber(event.target.value)}
-                placeholder="Not assigned"
+                placeholder={t('adminUserEdit.notAssigned')}
               />
               <div className="flex items-center justify-between gap-3 text-sm">
-                <span>Association member</span>
+                <span>{t('adminUserEdit.associationMember')}</span>
                 <Toggle
-                  label="Association member"
+                  label={t('adminUserEdit.associationMember')}
                   checked={editMember}
                   onChange={setEditMember}
                 />
               </div>
               <div className="flex justify-end">
-                <SaveButton saving={busy} label="Save account" type="submit" />
+                <SaveButton
+                  saving={busy}
+                  label={t('adminUserEdit.saveAccount')}
+                  type="submit"
+                />
               </div>
             </form>
           ) : (
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-              <dt className="text-foreground-secondary">Role</dt>
+              <dt className="text-foreground-secondary">
+                {t('adminUserEdit.role')}
+              </dt>
               <dd>
                 {detail.role.charAt(0) + detail.role.slice(1).toLowerCase()}
               </dd>
-              <dt className="text-foreground-secondary">Member number</dt>
+              <dt className="text-foreground-secondary">
+                {t('adminUserEdit.memberNumber')}
+              </dt>
               <dd>{detail.memberNumber ?? 'Not assigned'}</dd>
-              <dt className="text-foreground-secondary">Association member</dt>
+              <dt className="text-foreground-secondary">
+                {t('adminUserEdit.associationMember')}
+              </dt>
               <dd>{detail.isMember ? 'Yes' : 'No'}</dd>
             </dl>
           )}
         </StudioPanel>
 
         <StudioPanel
-          title="Account access"
+          title={t('adminUserEdit.accountAccess')}
           description={
             detail.suspendedAt ? (
               <>
@@ -491,13 +501,13 @@ export function AdminUserEditPanel({
           >
             {!detail.suspendedAt ? (
               <Textarea
-                label="Suspension reason"
+                label={t('adminUserEdit.suspensionReason')}
                 tone="secondary"
                 value={suspendReason}
                 onChange={(event) => setSuspendReason(event.target.value)}
                 rows={4}
                 maxLength={500}
-                placeholder="Required before suspending"
+                placeholder={t('adminUserEdit.requiredBeforeSuspending')}
                 submitOnModEnter
               />
             ) : null}
@@ -533,7 +543,7 @@ export function AdminUserEditPanel({
       {messageOpen ? (
         <StudioPanel
           title={`Message ${detail.displayName}`}
-          description="This uses the same direct-message thread the user sees in Messages."
+          description={t('adminUserEdit.thisUsesTheSameDirect')}
         >
           <div className="border-border bg-background flex max-h-64 min-h-36 flex-col gap-2 overflow-y-auto rounded-lg border p-3">
             {messages.length === 0 ? (
@@ -568,13 +578,13 @@ export function AdminUserEditPanel({
               aria-label={`Message ${detail.displayName}`}
               value={messageBody}
               onChange={(event) => setMessageBody(event.target.value)}
-              placeholder="Write a message…"
+              placeholder={t('adminUserEdit.writeAMessage')}
             />
-            <Tooltip content="Send message" side="top">
+            <Tooltip content={t('adminUserEdit.sendMessage')} side="top">
               <Button
                 size="icon"
                 disabled={busy || !messageBody.trim()}
-                aria-label="Send message"
+                aria-label={t('adminUserEdit.sendMessage')}
                 type="submit"
               >
                 <SendIcon size={16} aria-hidden />

@@ -55,10 +55,10 @@ export function StatusView() {
 
   return (
     <ViewShell
-      title="Status"
+      title={t('statusPage.status')}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-4' }}
     >
-      <PageBackLink to="/help" label="Help center" />
+      <PageBackLink to="/help" label={t('statusPage.helpCenter')} />
       {loading && <PageLoading label={t('loading.checking')} />}
       {!loading && !data && (
         <PageError
@@ -77,13 +77,13 @@ export function StatusView() {
           <dl className="text-foreground-secondary grid gap-2 text-sm sm:grid-cols-2">
             {data.version && (
               <div>
-                <dt className="text-xs uppercase">Version</dt>
+                <dt className="text-xs uppercase">{t('statusPage.version')}</dt>
                 <dd className="text-foreground">{data.version}</dd>
               </div>
             )}
             {typeof data.uptimeSec === 'number' && (
               <div>
-                <dt className="text-xs uppercase">Uptime</dt>
+                <dt className="text-xs uppercase">{t('statusPage.uptime')}</dt>
                 <dd className="text-foreground">
                   {Math.floor(data.uptimeSec / 60)} min
                 </dd>
@@ -91,7 +91,7 @@ export function StatusView() {
             )}
             {data.ts && (
               <div>
-                <dt className="text-xs uppercase">Checked</dt>
+                <dt className="text-xs uppercase">{t('statusPage.checked')}</dt>
                 <dd className="text-foreground">
                   {new Date(data.ts).toLocaleString()}
                 </dd>
@@ -109,10 +109,18 @@ export function StatusView() {
               <DataTable>
                 <DataTableHead>
                   <DataTableRow>
-                    <DataTableHeaderCell>Check</DataTableHeaderCell>
-                    <DataTableHeaderCell>State</DataTableHeaderCell>
-                    <DataTableHeaderCell>Latency</DataTableHeaderCell>
-                    <DataTableHeaderCell>Detail</DataTableHeaderCell>
+                    <DataTableHeaderCell>
+                      {t('statusPage.check')}
+                    </DataTableHeaderCell>
+                    <DataTableHeaderCell>
+                      {t('statusPage.state')}
+                    </DataTableHeaderCell>
+                    <DataTableHeaderCell>
+                      {t('statusPage.latency')}
+                    </DataTableHeaderCell>
+                    <DataTableHeaderCell>
+                      {t('statusPage.detail')}
+                    </DataTableHeaderCell>
                   </DataTableRow>
                 </DataTableHead>
                 <DataTableBody>
@@ -149,17 +157,17 @@ export function StatusView() {
 
       <dl className="text-foreground-secondary border-border grid gap-2 border-t pt-4 text-sm sm:grid-cols-3">
         <div>
-          <dt className="text-xs uppercase">Client version</dt>
+          <dt className="text-xs uppercase">{t('statusPage.clientVersion')}</dt>
           <dd className="text-foreground">{__APP_VERSION__.split('+')[0]}</dd>
         </div>
         <div>
-          <dt className="text-xs uppercase">Tagged</dt>
+          <dt className="text-xs uppercase">{t('statusPage.tagged')}</dt>
           <dd className="text-foreground">
             {new Date(__RELEASE_TAG_DATE__).toLocaleString()}
           </dd>
         </div>
         <div>
-          <dt className="text-xs uppercase">Deployed</dt>
+          <dt className="text-xs uppercase">{t('statusPage.deployed')}</dt>
           <dd className="text-foreground">
             {new Date(__BUILD_TIME__).toLocaleString()}
           </dd>
