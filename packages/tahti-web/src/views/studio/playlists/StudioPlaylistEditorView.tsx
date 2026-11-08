@@ -352,13 +352,13 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
       <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
         <div className="relative flex flex-col gap-6">
           <Tooltip
-            content="Back to Collections"
+            content={t('playlistEditor.backToCollections')}
             side="right"
             wrapperClassName={backButtonCornerClassName}
           >
             <BackButtonLink
               to="/studio/collections"
-              aria-label="Back to Collections"
+              aria-label={t('playlistEditor.backToCollections')}
             />
           </Tooltip>
 
@@ -404,7 +404,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       />
                     ) : null}
                     <EditIconButton
-                      label="Edit details"
+                      label={t('playlistEditor.editDetails')}
                       editing={editing}
                       onClick={() => setEditing(!editing)}
                     />
@@ -419,32 +419,32 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     disabled={items.length === 0}
                   >
                     <PlayIcon size={16} aria-hidden className="mr-1.5" />
-                    Play
+                    {t('playlistEditor.play')}
                   </Button>
                   <StudioCollectionMoreMenu col={col} kindLabel={kindLabel} />
                 </div>
               </EntitySocialHeader>
 
               {editing ? (
-                <StudioPanel title="Details">
+                <StudioPanel title={t('playlistEditor.details')}>
                   <div className="flex flex-col gap-3">
                     <Input
                       autoComplete="off"
-                      label="Name"
+                      label={t('playlistEditor.name')}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
                     <Textarea
-                      label="Description"
+                      label={t('playlistEditor.description')}
                       tone="secondary"
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       rows={2}
                     />
                     <div className="flex items-center justify-between gap-3 text-sm">
-                      <span>Public on profile</span>
+                      <span>{t('playlistEditor.publicOnProfile')}</span>
                       <Toggle
-                        label="Public on profile"
+                        label={t('playlistEditor.publicOnProfile')}
                         checked={isPublic}
                         onChange={(checked) => {
                           setIsPublic(checked);
@@ -456,9 +456,13 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     </div>
                     {!isDjSet ? (
                       <div className="flex items-center justify-between gap-3 text-sm">
-                        <span>Others can add tracks (collaborative)</span>
+                        <span>
+                          {t('playlistEditor.othersCanAddTracksCollaborative')}
+                        </span>
                         <Toggle
-                          label="Others can add tracks (collaborative)"
+                          label={t(
+                            'playlistEditor.othersCanAddTracksCollaborative',
+                          )}
                           checked={collaborative}
                           disabled={!isPublic}
                           onChange={setCollaborative}
@@ -466,8 +470,8 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       </div>
                     ) : null}
                     <Select
-                      label="Track order"
-                      description="How tracks are ordered on the public page."
+                      label={t('playlistEditor.trackOrder')}
+                      description={t('playlistEditor.howTracksAreOrderedOn')}
                       value={trackSortMode}
                       onValueChange={(value) =>
                         setTrackSortMode(value as CollectionTrackSortMode)
@@ -479,7 +483,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
               ) : null}
 
               <StudioPanel
-                title="Tracks"
+                title={t('playlistEditor.tracks')}
                 description={`${items.length} item${items.length === 1 ? '' : 's'}`}
               >
                 {tracks.length === 0 ? (
@@ -594,7 +598,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                   <div className="border-border mt-4 grid gap-3 border-t pt-4 sm:grid-cols-2">
                     <div className="flex flex-col gap-2">
                       <Select
-                        label="Add from Library"
+                        label={t('playlistEditor.addFromLibrary')}
                         value={addSoundId}
                         onValueChange={setAddSoundId}
                         options={[
@@ -620,12 +624,12 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                         }}
                       >
                         <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                        Add track
+                        {t('playlistEditor.addTrack')}
                       </Button>
                     </div>
                     <div className="flex flex-col gap-2">
                       <Select
-                        label="Add release"
+                        label={t('playlistEditor.addRelease')}
                         value={addReleaseId}
                         onValueChange={setAddReleaseId}
                         options={[
@@ -649,12 +653,12 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                         }}
                       >
                         <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                        Add release
+                        {t('playlistEditor.addRelease')}
                       </Button>
                     </div>
                     <div className="sm:col-span-2">
                       <CatalogTrackSearch
-                        label="Add any public track"
+                        label={t('playlistEditor.addAnyPublicTrack')}
                         excludeIds={items.flatMap((item) =>
                           item.sound ? [item.sound.id] : [],
                         )}
@@ -680,7 +684,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
               }
             }}
           >
-            <Dialog.Title>Upload cover</Dialog.Title>
+            <Dialog.Title>{t('playlistEditor.uploadCover')}</Dialog.Title>
             <Dialog.Description>
               Choose an image for this {kindLabel}&apos;s cover art.
             </Dialog.Description>
