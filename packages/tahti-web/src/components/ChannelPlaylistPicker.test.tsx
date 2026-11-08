@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as studio from '../api/studio';
+import { renderWithRouter } from '../test/renderWithRouter';
 import { ChannelPlaylistPicker } from './ChannelPlaylistPicker';
 
 describe('ChannelPlaylistPicker', () => {
@@ -18,7 +19,7 @@ describe('ChannelPlaylistPicker', () => {
         data: [],
         meta: { source: 'api', reason: 'HTTP 502' },
       });
-    render(<ChannelPlaylistPicker onPick={() => undefined} />);
+    await renderWithRouter(<ChannelPlaylistPicker onPick={() => undefined} />);
     expect(await screen.findByText('Could not load playlists')).toBeTruthy();
     expect(screen.getByText('HTTP 502')).toBeTruthy();
     expect(screen.queryByText(/No playlists in your library yet/)).toBeNull();
@@ -28,5 +29,8 @@ describe('ChannelPlaylistPicker', () => {
     expect(
       await screen.findByText(/No playlists in your library yet/),
     ).toBeTruthy();
+    expect(
+      screen.getByRole('link', { name: /New collection/ }).getAttribute('href'),
+    ).toBe('/library/collections');
   });
 });
