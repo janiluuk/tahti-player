@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Toggle, Tooltip } from '@tahti-player/ui';
 
 const Divider = () => <div className="bg-border mx-1 h-6 w-px" aria-hidden />;
@@ -124,13 +125,14 @@ export type ToolbarProps = {
 /** Transport, history, edit, fade, marker and zoom tools above the
  * waveform. Each button names its keyboard shortcut in its tooltip. */
 export function WaveformToolbar(props: ToolbarProps) {
+  const { t } = useTranslation('web');
   return (
     <div
       role="toolbar"
-      aria-label="Editor tools"
+      aria-label={t('waveformToolbar.editorTools')}
       className="border-border bg-background-secondary flex flex-wrap items-center gap-1 rounded-t-xl border-b px-3 py-2"
     >
-      <Group label="Transport">
+      <Group label={t('waveformToolbar.transport')}>
         <Button
           size="sm"
           onClick={props.onTogglePlay}
@@ -144,7 +146,7 @@ export function WaveformToolbar(props: ToolbarProps) {
           {props.playing ? 'Pause' : 'Play'}
         </Button>
         <ToolButton
-          label="Preview selection"
+          label={t('waveformToolbar.previewSelection')}
           shortcut="P"
           icon={Volume2Icon}
           disabled={!props.hasSelection}
@@ -154,16 +156,16 @@ export function WaveformToolbar(props: ToolbarProps) {
 
       <Divider />
 
-      <Group label="History">
+      <Group label={t('waveformToolbar.history')}>
         <ToolButton
-          label="Undo"
+          label={t('waveformToolbar.undo')}
           shortcut="Control+Z"
           icon={Undo2Icon}
           disabled={!props.canUndo}
           onClick={props.onUndo}
         />
         <ToolButton
-          label="Redo"
+          label={t('waveformToolbar.redo')}
           shortcut="Control+Shift+Z"
           icon={Redo2Icon}
           disabled={!props.canRedo}
@@ -173,15 +175,15 @@ export function WaveformToolbar(props: ToolbarProps) {
 
       <Divider />
 
-      <Group label="Selection">
+      <Group label={t('waveformToolbar.selection')}>
         <ToolButton
-          label="Start selection at playhead"
+          label={t('waveformToolbar.startSelectionAtPlayhead')}
           shortcut="["
           icon={ArrowLeftToLineIcon}
           onClick={props.onSelectionStart}
         />
         <ToolButton
-          label="End selection at playhead"
+          label={t('waveformToolbar.endSelectionAtPlayhead')}
           shortcut="]"
           icon={ArrowRightToLineIcon}
           onClick={props.onSelectionEnd}
@@ -190,35 +192,35 @@ export function WaveformToolbar(props: ToolbarProps) {
 
       <Divider />
 
-      <Group label="Cut and trim">
+      <Group label={t('waveformToolbar.cutAndTrim')}>
         <ToolButton
-          label="Cut selection"
+          label={t('waveformToolbar.cutSelection')}
           shortcut="Delete"
           icon={ScissorsIcon}
           disabled={!props.hasSelection}
           onClick={props.onCut}
         />
         <ToolButton
-          label="Trim to selection"
+          label={t('waveformToolbar.trimToSelection')}
           shortcut="T"
           icon={CropIcon}
           disabled={!props.hasSelection}
           onClick={props.onTrim}
         />
         <ToolButton
-          label="Trim leading/trailing silence"
+          label={t('waveformToolbar.trimLeadingTrailingSilence')}
           icon={VolumeXIcon}
           onClick={props.onTrimSilence}
         />
         <ToolButton
-          label="Clear all cuts"
+          label={t('waveformToolbar.clearAllCuts')}
           icon={Trash2Icon}
           danger
           disabled={!props.hasCuts}
           onClick={props.onClearCuts}
         />
         <ToolButton
-          label="Clear selection"
+          label={t('waveformToolbar.clearSelection')}
           shortcut="Escape"
           icon={XIcon}
           disabled={!props.hasSelection}
@@ -228,16 +230,16 @@ export function WaveformToolbar(props: ToolbarProps) {
 
       <Divider />
 
-      <Group label="Fades">
+      <Group label={t('waveformToolbar.fades')}>
         <ToolButton
-          label="Fade in over selection"
+          label={t('waveformToolbar.fadeInOverSelection')}
           shortcut="I"
           icon={TrendingUpIcon}
           disabled={!props.hasSelection}
           onClick={props.onFadeIn}
         />
         <ToolButton
-          label="Fade out over selection"
+          label={t('waveformToolbar.fadeOutOverSelection')}
           shortcut="O"
           icon={TrendingDownIcon}
           disabled={!props.hasSelection}
@@ -248,7 +250,7 @@ export function WaveformToolbar(props: ToolbarProps) {
       <Divider />
 
       <ToolButton
-        label="Add marker at playhead"
+        label={t('waveformToolbar.addMarkerAtPlayhead')}
         shortcut="M"
         icon={MapPinIcon}
         onClick={props.onAddMarker}
@@ -256,28 +258,28 @@ export function WaveformToolbar(props: ToolbarProps) {
 
       <Divider />
 
-      <Group label="Zoom">
+      <Group label={t('waveformToolbar.zoom')}>
         <ToolButton
-          label="Zoom out"
+          label={t('waveformToolbar.zoomOut')}
           shortcut="-"
           icon={ZoomOutIcon}
           onClick={props.onZoomOut}
         />
         <ToolButton
-          label="Zoom in"
+          label={t('waveformToolbar.zoomIn')}
           shortcut="+"
           icon={ZoomInIcon}
           onClick={props.onZoomIn}
         />
         <ToolButton
-          label="Zoom to selection"
+          label={t('waveformToolbar.zoomToSelection')}
           shortcut="Z"
           icon={ScanSearchIcon}
           disabled={!props.hasSelection}
           onClick={props.onZoomToSelection}
         />
         <ToolButton
-          label="Show whole track"
+          label={t('waveformToolbar.showWholeTrack')}
           shortcut="0"
           icon={Maximize2Icon}
           disabled={!props.isZoomed}
@@ -289,14 +291,14 @@ export function WaveformToolbar(props: ToolbarProps) {
 
       <div className="flex flex-wrap items-center gap-4 text-xs">
         <LabeledToggle
-          label="Snap to zero"
-          hint="Move selection edges to the nearest zero crossing so cuts don't click"
+          label={t('waveformToolbar.snapToZero')}
+          hint={t('waveformToolbar.moveSelectionEdgesToThe')}
           checked={props.snapToZero}
           onChange={props.onSnapChange}
         />
         <LabeledToggle
-          label="Skip cuts"
-          hint="Jump over cut regions during playback"
+          label={t('waveformToolbar.skipCuts')}
+          hint={t('waveformToolbar.jumpOverCutRegionsDuring')}
           checked={props.skipCuts}
           onChange={props.onSkipCutsChange}
         />
