@@ -1,5 +1,6 @@
 import { CheckIcon, SettingsIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import type {
@@ -53,12 +54,13 @@ export function PlayerOverlayControls({
   avatarUrl,
   onConfigureText,
 }: Props) {
+  const { t } = useTranslation('web');
   const activePresetId = resolveNowPlayingOverlayPreset(nowPlayingStyle);
 
   return (
     <div className="flex flex-col gap-5" data-testid="channel-player-overlay">
       <div className="flex flex-col gap-3">
-        <Eyebrow>Stage overlay</Eyebrow>
+        <Eyebrow>{t('playerOverlayControls.stageOverlay')}</Eyebrow>
         <ChannelTextOverlayEditor
           value={playerOverlay}
           onChange={onPlayerOverlayChange}
@@ -78,14 +80,14 @@ export function PlayerOverlayControls({
           />
           {!playerOverlay.text?.trim() && (
             <p className="text-foreground-secondary text-xs">
-              Preview — enter text above to see it on the player stage.
+              {t('playerOverlayControls.previewEnterTextAboveTo')}
             </p>
           )}
         </div>
       </div>
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-3">
-          <Eyebrow>Now playing</Eyebrow>
+          <Eyebrow>{t('playerOverlayControls.nowPlaying')}</Eyebrow>
           <Button
             className="gap-1.5"
             size="sm"
@@ -93,11 +95,11 @@ export function PlayerOverlayControls({
             onClick={onConfigureText}
           >
             <SettingsIcon size={14} aria-hidden />
-            Configure text
+            {t('playerOverlayControls.configureText')}
           </Button>
         </div>
         <p className="text-foreground-secondary text-xs">
-          How the title and artist sit over live audio or an archive track.
+          {t('playerOverlayControls.howTheTitleAndArtist')}
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           {NOW_PLAYING_OVERLAY_PRESETS.map((preset) => {
@@ -129,7 +131,7 @@ export function PlayerOverlayControls({
                   <div className="relative w-full">
                     <NowPlayingOverlay
                       presetId={preset.id}
-                      title="Sample Track"
+                      title={t('playerOverlayControls.sampleTrack')}
                       artist={displayName}
                       artworkUrl={avatarUrl}
                       compact

@@ -1,6 +1,7 @@
 import { PlusIcon, RadioTowerIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import { fetchRadioStation } from '../../api/client';
@@ -9,6 +10,7 @@ import { RADIO_STATIONS, type RadioStation } from '../../content/radioStations';
 import { StationHealthCell } from './StationHealthCell';
 
 export function StreamUrlText({ url }: { url: string | null }) {
+  const { t } = useTranslation('web');
   return url ? (
     <code
       className="text-foreground-secondary block truncate text-xs"
@@ -18,7 +20,7 @@ export function StreamUrlText({ url }: { url: string | null }) {
     </code>
   ) : (
     <span className="text-foreground-secondary text-xs">
-      No stream URL — won’t be playable
+      {t('adminStationSections.noStreamUrlWonT')}
     </span>
   );
 }
@@ -26,6 +28,7 @@ export function StreamUrlText({ url }: { url: string | null }) {
 /** Tahti Radio's own stream: read-only here, since the rotation encoder on
  * the stream host writes it. */
 export function TahtiRadioStationPanel() {
+  const { t } = useTranslation('web');
   const [hlsUrl, setHlsUrl] = useState<string | null | undefined>(undefined);
 
   useEffect(() => {
@@ -42,8 +45,8 @@ export function TahtiRadioStationPanel() {
 
   return (
     <StudioPanel
-      title="Tahti Radio"
-      description="The always-on station. Its stream comes from the rotation encoder on the stream host; an outage there is fixed on the host, not here."
+      title={t('adminStationSections.tahtiRadio')}
+      description={t('adminStationSections.theAlwaysOnStationIts')}
     >
       <div
         className="flex flex-wrap items-center gap-3"
@@ -53,9 +56,13 @@ export function TahtiRadioStationPanel() {
           <RadioTowerIcon size={20} aria-hidden />
         </div>
         <div className="min-w-0 flex-1 basis-56">
-          <div className="font-medium">Tahti Radio</div>
+          <div className="font-medium">
+            {t('adminStationSections.tahtiRadio')}
+          </div>
           {hlsUrl === undefined ? (
-            <span className="text-foreground-secondary text-xs">Loading…</span>
+            <span className="text-foreground-secondary text-xs">
+              {t('adminStationSections.loading')}
+            </span>
           ) : (
             <StreamUrlText url={hlsUrl} />
           )}
@@ -74,6 +81,7 @@ export function CatalogStationsPanel({
   presetNames: ReadonlySet<string>;
   onAdd: (station: RadioStation) => void;
 }) {
+  const { t } = useTranslation('web');
   const stations = RADIO_STATIONS.filter(
     (station) => !presetNames.has(station.name),
   );
@@ -83,7 +91,7 @@ export function CatalogStationsPanel({
   return (
     <StudioPanel
       title={`Built-in catalog (${stations.length})`}
-      description="Stations listeners can add from the widget store. Add one as a preset to manage it here and offer it on the Listen page."
+      description={t('adminStationSections.stationsListenersCanAddFrom')}
     >
       <ul className="divide-border divide-y">
         {stations.map((station) => (
@@ -113,7 +121,7 @@ export function CatalogStationsPanel({
               onClick={() => onAdd(station)}
             >
               <PlusIcon size={14} aria-hidden />
-              Add as preset
+              {t('adminStationSections.addAsPreset')}
             </Button>
           </li>
         ))}

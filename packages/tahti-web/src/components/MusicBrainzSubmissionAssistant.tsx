@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   Button,
@@ -33,6 +34,7 @@ export function MusicBrainzSubmissionAssistant({
   barcode,
   tracks = [],
 }: Props) {
+  const { t } = useTranslation('web');
   const [isOpen, setIsOpen] = useState(false);
   const isRelease = mode === 'release';
   const recordingUrl = `${RECORDING_EDITOR_URL}?edit-recording.name=${encodeURIComponent(title)}`;
@@ -58,10 +60,11 @@ export function MusicBrainzSubmissionAssistant({
         onClose={() => setIsOpen(false)}
         className="max-w-lg"
       >
-        <Dialog.Title>MusicBrainz submission</Dialog.Title>
+        <Dialog.Title>
+          {t('musicBrainzAssistant.musicbrainzSubmission')}
+        </Dialog.Title>
         <Dialog.Description>
-          Review the prepared metadata here, then finish the edit in
-          MusicBrainz. This page stays open in its own tab.
+          {t('musicBrainzAssistant.reviewThePreparedMetadataHere')}
         </Dialog.Description>
         <Box
           variant="tertiary"
@@ -90,15 +93,14 @@ export function MusicBrainzSubmissionAssistant({
           ) : null}
         </Box>
         <p className="text-foreground-secondary mt-3 text-xs">
-          MusicBrainz requires the final release or recording edit in its web
-          editor. Beta prepares the metadata and keeps your work in this tab.
+          {t('musicBrainzAssistant.musicbrainzRequiresTheFinalRelease')}
         </p>
         <Dialog.Actions>
           <CopyButton
             text={metadataText}
             size="sm"
             variant="text"
-            aria-label="Copy metadata"
+            aria-label={t('musicBrainzAssistant.copyMetadata')}
           />
           {isRelease ? (
             <form action={RELEASE_EDITOR_URL} method="post" target="_blank">
@@ -142,7 +144,7 @@ export function MusicBrainzSubmissionAssistant({
                 variant="secondary"
                 onClick={() => setIsOpen(false)}
               >
-                Open prefilled release editor
+                {t('musicBrainzAssistant.openPrefilledReleaseEditor')}
               </Button>
             </form>
           ) : (
@@ -154,7 +156,7 @@ export function MusicBrainzSubmissionAssistant({
               variant="secondary"
               onClick={() => setIsOpen(false)}
             >
-              Open prefilled track editor
+              {t('musicBrainzAssistant.openPrefilledTrackEditor')}
             </ButtonAnchor>
           )}
         </Dialog.Actions>

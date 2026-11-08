@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Tooltip } from '@tahti-player/ui';
 
 import {
@@ -17,6 +17,7 @@ import { AvatarThemePicker } from './AvatarThemePicker';
 import type { PressKitState } from './usePressKit';
 
 export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
+  const { t } = useTranslation('web');
   const { avatarUrl, handleAvatarChange, profile, setProfile } = kit;
   const [fetching, setFetching] = useState(false);
 
@@ -41,12 +42,12 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
   };
   return (
     <StudioPanel
-      title="Profile picture"
-      description="Use a clear square portrait or mark. Click the picture to upload one, pick from your gallery or paste an image link."
+      title={t('profilePicture.profilePicture')}
+      description={t('profilePicture.useAClearSquarePortrait')}
     >
       <div className="flex flex-wrap items-center gap-5">
         <RoundImageUploadButton
-          label="Profile picture"
+          label={t('profilePicture.profilePicture')}
           gallery
           onPick={storeImageUrl}
           value={avatarUrl}
@@ -78,16 +79,14 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
             side="bottom"
             content={
               <p className="max-w-64 text-xs leading-relaxed">
-                JPEG, PNG, WebP, or GIF. An animated GIF shows its first frame
-                and plays when someone hovers it. The original is kept for
-                full-size use.
+                {t('profilePicture.jpegPngWebpOrGif')}
               </p>
             }
           >
             <span
               tabIndex={0}
               role="img"
-              aria-label="Accepted image formats"
+              aria-label={t('profilePicture.acceptedImageFormats')}
               className="text-foreground-secondary hover:text-foreground inline-flex size-4 cursor-help items-center justify-center rounded-full border border-current"
             >
               <span className="text-[10px] leading-none font-bold">?</span>
@@ -100,7 +99,7 @@ export function ProfilePictureSection({ kit }: { kit: PressKitState }) {
           className="text-foreground-secondary mt-5 text-xs"
           data-testid="avatar-theme-hint"
         >
-          The avatar colour shows only when there is no profile picture.
+          {t('profilePicture.theAvatarColourShowsOnly')}
         </p>
       ) : profile ? (
         <div className="mt-5">

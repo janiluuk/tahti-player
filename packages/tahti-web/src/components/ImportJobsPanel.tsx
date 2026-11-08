@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, TrackProcessing } from '@tahti-player/ui';
 
 import {
@@ -24,11 +25,12 @@ function sourceLabel(source: string): string {
 }
 
 function JobStatus({ job }: { job: CloudImportJob }) {
+  const { t } = useTranslation('web');
   if (job.status === 'QUEUED') {
-    return <TrackProcessing label="Queued" />;
+    return <TrackProcessing label={t('importJobs.queued')} />;
   }
   if (job.status === 'DOWNLOADING') {
-    return <TrackProcessing label="Importing" />;
+    return <TrackProcessing label={t('importJobs.importing')} />;
   }
   if (job.status === 'DONE') {
     return job.soundId ? (
@@ -37,11 +39,11 @@ function JobStatus({ job }: { job: CloudImportJob }) {
         params={{ id: job.soundId }}
         className="text-accent-green-strong text-xs font-semibold hover:underline"
       >
-        Imported — open track
+        {t('importJobs.importedOpenTrack')}
       </Link>
     ) : (
       <span className="text-accent-green-strong text-xs font-semibold">
-        Imported
+        {t('importJobs.imported')}
       </span>
     );
   }
@@ -56,6 +58,7 @@ function JobStatus({ job }: { job: CloudImportJob }) {
  * while any import is still queued or downloading; hidden when there are
  * none. */
 export function ImportJobsPanel() {
+  const { t } = useTranslation('web');
   const [jobs, setJobs] = useState<CloudImportJob[]>([]);
   const load = useCallback(() => {
     void fetchCloudImportJobs().then(({ data }) => setJobs(data));
@@ -76,10 +79,10 @@ export function ImportJobsPanel() {
         id="import-jobs-title"
         className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase"
       >
-        Import progress
+        {t('importJobs.importProgress')}
       </h2>
       <p className="text-foreground-secondary text-xs">
-        If an import fails, we notify you.
+        {t('importJobs.ifAnImportFailsWe')}
       </p>
       <ul className="flex flex-col gap-2 text-sm">
         {jobs.map((job) => (

@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Input, Select, Textarea, Toggle } from '@tahti-player/ui';
 
 import { AudienceVisibilitySection } from '../../../components/AudienceVisibilitySection';
@@ -16,6 +17,7 @@ export function DetailsTabContent({
   id: string;
   state: SoundEditorState;
 }) {
+  const { t } = useTranslation('web');
   const {
     item,
     user,
@@ -53,12 +55,12 @@ export function DetailsTabContent({
     <>
       <div className="grid gap-4 sm:grid-cols-2">
         <Input
-          label="Title"
+          label={t('soundDetailsTab.title')}
           value={title}
           onChange={(event) => setTitle(event.target.value)}
         />
         <Select
-          label="Content type"
+          label={t('soundDetailsTab.contentType')}
           value={contentType}
           onValueChange={setContentType}
           options={SELECTABLE_CONTENT_TYPES.map(({ id, label }) => ({
@@ -68,7 +70,7 @@ export function DetailsTabContent({
         />
         <Textarea
           id="sound-description"
-          label="Description"
+          label={t('soundDetailsTab.description')}
           fieldClassName="sm:col-span-2"
           tone="secondary"
           value={description}
@@ -79,7 +81,7 @@ export function DetailsTabContent({
           <div className="w-full min-w-0 sm:col-span-2 sm:w-44">
             <Input
               type="date"
-              label="Release date"
+              label={t('soundDetailsTab.releaseDate')}
               value={releaseDate}
               onChange={(event) => setReleaseDate(event.target.value)}
               className="w-full min-w-[11rem]"
@@ -98,13 +100,15 @@ export function DetailsTabContent({
         ) : null}
         <div className="border-border flex items-center justify-between gap-3 rounded-lg border p-3 text-sm sm:col-span-2">
           <span>
-            <span className="block font-medium">Allow comments</span>
+            <span className="block font-medium">
+              {t('soundDetailsTab.allowComments')}
+            </span>
             <span className="text-foreground-secondary block text-xs">
-              Listeners can discuss this track on its public page.
+              {t('soundDetailsTab.listenersCanDiscussThisTrack')}
             </span>
           </span>
           <Toggle
-            label="Allow comments"
+            label={t('soundDetailsTab.allowComments')}
             checked={commentsEnabled}
             onChange={setCommentsEnabled}
           />

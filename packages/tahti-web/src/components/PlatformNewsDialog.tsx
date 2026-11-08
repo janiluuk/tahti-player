@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, EditIconButton, Input, Textarea } from '@tahti-player/ui';
 
 import { updateNewsPost } from '../api/admin';
@@ -17,6 +18,7 @@ export function PlatformNewsDialog({
   onClose: () => void;
   onUpdated: (post: Announcement) => void;
 }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const [editing, setEditing] = useState(false);
   const [headline, setHeadline] = useState(post.headline);
@@ -74,7 +76,7 @@ export function PlatformNewsDialog({
               }}
             >
               <Input
-                aria-label="Headline"
+                aria-label={t('platformNews.headline')}
                 value={headline}
                 onChange={(event) => setHeadline(event.target.value)}
                 maxLength={200}
@@ -82,7 +84,7 @@ export function PlatformNewsDialog({
                 disabled={busy}
               />
               <Textarea
-                aria-label="Article"
+                aria-label={t('platformNews.article')}
                 submitOnModEnter
                 value={summary}
                 onChange={(event) => setSummary(event.target.value)}
@@ -92,7 +94,7 @@ export function PlatformNewsDialog({
                 rows={6}
               />
               <Input
-                aria-label="Image URL"
+                aria-label={t('platformNews.imageUrl')}
                 type="text"
                 inputMode="url"
                 autoCapitalize="none"
@@ -117,13 +119,13 @@ export function PlatformNewsDialog({
                   disabled={busy}
                   onClick={() => setEditing(false)}
                 >
-                  Cancel
+                  {t('platformNews.cancel')}
                 </Button>
               </div>
             </form>
           ) : (
             <EditIconButton
-              label="Edit article"
+              label={t('platformNews.editArticle')}
               variant="text"
               className="self-start"
               onClick={() => setEditing(true)}

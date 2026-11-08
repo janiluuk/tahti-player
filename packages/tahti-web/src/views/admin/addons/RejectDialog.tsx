@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Textarea } from '@tahti-player/ui';
 
 import { type AdminAddon } from '../../../api/admin';
@@ -15,6 +16,7 @@ export function RejectDialog({
   onCancel: () => void;
   onConfirm: (moderationNote: string) => void;
 }) {
+  const { t } = useTranslation('web');
   const [note, setNote] = useState('');
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export function RejectDialog({
     >
       <Dialog.Title>Reject {addon?.name}?</Dialog.Title>
       <Dialog.Description>
-        A reason is required — the author is notified with it.
+        {t('addonReject.aReasonIsRequiredThe')}
       </Dialog.Description>
       <form
         className="contents"
@@ -42,20 +44,20 @@ export function RejectDialog({
       >
         <Textarea
           submitOnModEnter
-          aria-label="Rejection reason"
+          aria-label={t('addonReject.rejectionReason')}
           value={note}
           rows={3}
-          placeholder="Why is this add-on being rejected?"
+          placeholder={t('addonReject.whyIsThisAddOn')}
           onChange={(event) => setNote(event.target.value)}
         />
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('addonReject.cancel')}</Dialog.Close>
           <Button
             disabled={pending || !note.trim()}
             intent="danger"
             type="submit"
           >
-            Reject
+            {t('addonReject.reject')}
           </Button>
         </Dialog.Actions>
       </form>

@@ -1,5 +1,6 @@
 import { ActivityIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button } from '@tahti-player/ui';
 
 import { streamFailureLabel } from '../../lib/streamFailure';
@@ -17,16 +18,17 @@ function checkedTime(checkedAt: number): string {
 }
 
 function HealthBadge({ health }: { health: StationHealth | undefined }) {
+  const { t } = useTranslation('web');
   if (!health) {
-    return <Badge variant="pill">Not checked</Badge>;
+    return <Badge variant="pill">{t('stationHealth.notChecked')}</Badge>;
   }
   switch (health.state) {
     case 'checking':
-      return <Badge variant="pill">Checking…</Badge>;
+      return <Badge variant="pill">{t('stationHealth.checking')}</Badge>;
     case 'ok':
       return (
         <Badge variant="pill" color="green">
-          Working
+          {t('stationHealth.working')}
         </Badge>
       );
     case 'unavailable':
@@ -38,7 +40,7 @@ function HealthBadge({ health }: { health: StationHealth | undefined }) {
     case 'unknown':
       return (
         <Badge variant="pill" color="yellow">
-          Couldn’t verify
+          {t('stationHealth.couldnTVerify')}
         </Badge>
       );
   }
@@ -54,6 +56,7 @@ export function StationHealthCell({
   streamUrl: string | null;
   name: string;
 }) {
+  const { t } = useTranslation('web');
   const health = useStationHealth(streamUrl, { precheck: false });
   const check = useStationHealthStore((s) => s.check);
   const checking = health?.state === 'checking';
@@ -65,7 +68,7 @@ export function StationHealthCell({
       {streamUrl ? (
         <HealthBadge health={health} />
       ) : (
-        <Badge variant="pill">No stream URL</Badge>
+        <Badge variant="pill">{t('stationHealth.noStreamUrl')}</Badge>
       )}
       {health && health.state !== 'checking' ? (
         <span className="text-foreground-secondary text-xs">

@@ -2,7 +2,7 @@ import { FlagIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Select, Textarea, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -42,6 +42,7 @@ export function ReportButton({
   onOpenChange?: (open: boolean) => void;
   showTrigger?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
   const open = openProp ?? uncontrolledOpen;
   const setOpen = onOpenChange ?? setUncontrolledOpen;
@@ -75,7 +76,7 @@ export function ReportButton({
   return (
     <>
       {showTrigger ? (
-        <Tooltip content="Report" side="top">
+        <Tooltip content={t('reportButton.report')} side="top">
           <Button
             size="icon-sm"
             variant={variant}
@@ -89,8 +90,7 @@ export function ReportButton({
       <Dialog.Root isOpen={open} onClose={close} className="max-w-md">
         <Dialog.Title>Report {label}</Dialog.Title>
         <Dialog.Description>
-          Reports go to the Tahti board&apos;s moderation queue. You don&apos;t
-          need an account, and the artist doesn&apos;t see who reported.
+          {t('reportButton.reportsGoToTheTahti')}
         </Dialog.Description>
         <form
           className="contents"
@@ -101,14 +101,14 @@ export function ReportButton({
         >
           <div className="mt-4 flex flex-col gap-3">
             <Select
-              label="Reason"
+              label={t('reportButton.reason')}
               value={reason}
               onValueChange={(value) => setReason(value as ContentReportReason)}
               options={REASONS}
             />
             <Textarea
               submitOnModEnter
-              label="Details (optional)"
+              label={t('reportButton.detailsOptional')}
               rows={4}
               maxLength={MAX_DETAILS}
               value={details}
@@ -116,7 +116,7 @@ export function ReportButton({
             />
           </div>
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>{t('reportButton.cancel')}</Dialog.Close>
             <Button size="sm" disabled={sending} type="submit">
               {sending ? 'Sending…' : 'Send report'}
             </Button>

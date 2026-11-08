@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, Dialog } from '@tahti-player/ui';
 
 import type { ColorScheme, VisualPreset } from '../../api/channel-design';
@@ -31,14 +32,15 @@ export function VisualizerPickerDialog({
   avatarUrl,
   previewGradient,
 }: Props) {
+  const { t } = useTranslation('web');
   if (!isOpen) {
     return null;
   }
   return (
     <Dialog.Root isOpen onClose={onClose} className="max-w-3xl">
-      <Dialog.Title>Choose visualizer</Dialog.Title>
+      <Dialog.Title>{t('visualizerPicker.chooseVisualizer')}</Dialog.Title>
       <Dialog.Description>
-        Preview each animated stage and choose the one that fits your channel.
+        {t('visualizerPicker.previewEachAnimatedStageAnd')}
       </Dialog.Description>
       <div className="mt-2 grid gap-4 lg:grid-cols-[minmax(14rem,18rem)_minmax(0,1fr)]">
         <div className="grid content-start gap-2 sm:grid-cols-2 lg:grid-cols-1">
@@ -91,7 +93,7 @@ export function VisualizerPickerDialog({
                     </span>
                     {meta.audioReactive ? (
                       <Badge variant="pill" color="blue">
-                        Audio reactive
+                        {t('visualizerPicker.audioReactive')}
                       </Badge>
                     ) : null}
                   </span>
@@ -124,13 +126,13 @@ export function VisualizerPickerDialog({
           )}
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent p-4 pt-16 text-white">
             <div className="text-xs font-semibold tracking-wide uppercase">
-              Live preview
+              {t('visualizerPicker.livePreview')}
             </div>
             <div className="mt-1 flex flex-wrap items-center gap-2 text-lg font-bold">
               {selectedPreset.replace(/_/g, ' ')}
               {visualizerMetadata(selectedPreset).audioReactive ? (
                 <Badge variant="pill" color="blue">
-                  Audio reactive
+                  {t('visualizerPicker.audioReactive')}
                 </Badge>
               ) : null}
             </div>
@@ -138,8 +140,10 @@ export function VisualizerPickerDialog({
         </div>
       </div>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
-        <Button onClick={onConfirm}>Use visualizer</Button>
+        <Dialog.Close>{t('visualizerPicker.cancel')}</Dialog.Close>
+        <Button onClick={onConfirm}>
+          {t('visualizerPicker.useVisualizer')}
+        </Button>
       </Dialog.Actions>
     </Dialog.Root>
   );

@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Dialog, ExternalLink } from '@tahti-player/ui';
 
 import { flagEmoji } from '../../../lib/countries';
@@ -10,6 +11,7 @@ export function StationDetailsDialog({
   station: SavedBrowserStation | null;
   onClose: () => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <Dialog.Root
       isOpen={station !== null}
@@ -33,11 +35,11 @@ export function StationDetailsDialog({
                 href={station.homepage}
                 className="text-accent-blue-strong"
               >
-                Visit website
+                {t('stationDetails.visitWebsite')}
               </ExternalLink>
             ) : (
               <span className="text-foreground-secondary text-xs">
-                No website on file for this station.
+                {t('stationDetails.noWebsiteOnFileFor')}
               </span>
             )}
             {station.programmingUrl ? (
@@ -45,16 +47,16 @@ export function StationDetailsDialog({
                 href={station.programmingUrl}
                 className="text-accent-blue-strong"
               >
-                View current programme
+                {t('stationDetails.viewCurrentProgramme')}
               </ExternalLink>
             ) : (
               <span className="text-foreground-secondary text-xs">
-                No programming link configured for this station.
+                {t('stationDetails.noProgrammingLinkConfiguredFor')}
               </span>
             )}
           </div>
           <Dialog.Actions>
-            <Dialog.Close>Close</Dialog.Close>
+            <Dialog.Close>{t('stationDetails.close')}</Dialog.Close>
           </Dialog.Actions>
         </>
       )}

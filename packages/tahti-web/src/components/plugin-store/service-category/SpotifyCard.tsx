@@ -2,7 +2,7 @@ import { ListPlusIcon, XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Input, PluginStoreItem } from '@tahti-player/ui';
 
 import {
@@ -16,6 +16,7 @@ import type { ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
 
 export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
+  const { t } = useTranslation('web');
   const [profile, setProfile] = useState<SpotifyArtistProfile | null>(null);
   const [configured, setConfigured] = useState(true);
   const [artistUrl, setArtistUrl] = useState('');
@@ -91,7 +92,7 @@ export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
         <PluginStoreItem
           name={plugin.name}
           author={plugin.author}
-          description="Link your Spotify artist profile, then add its tracks to your collections as embeds."
+          description={t('spotifyCard.linkYourSpotifyArtistProfile')}
           isInstalled={Boolean(profile)}
           onInstall={open}
           labels={{
@@ -103,16 +104,15 @@ export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
     >
       {!configured ? (
         <p className="text-foreground-secondary text-sm">
-          Spotify import is not available until the platform Spotify credentials
-          are configured.
+          {t('spotifyCard.spotifyImportIsNotAvailable')}
         </p>
       ) : profile ? (
         <>
           <div className="flex flex-wrap items-center gap-2 text-sm">
             <span>Linked{profile.name ? `: ${profile.name}` : ''}</span>
             <ButtonLink to="/studio/collections" size="sm" variant="secondary">
-              <ListPlusIcon size={14} aria-hidden className="mr-1.5" /> Add to a
-              collection
+              <ListPlusIcon size={14} aria-hidden className="mr-1.5" />{' '}
+              {t('spotifyCard.addToACollection')}
             </ButtonLink>
             <Button
               size="sm"
@@ -120,12 +120,12 @@ export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
               disabled={busy}
               onClick={() => void unlink()}
             >
-              <XIcon size={14} aria-hidden className="mr-1.5" /> Unlink
+              <XIcon size={14} aria-hidden className="mr-1.5" />{' '}
+              {t('spotifyCard.unlink')}
             </Button>
           </div>
           <p className="text-foreground-secondary text-xs">
-            Open a collection and use Add from Spotify; Your tracks lists this
-            artist&apos;s catalogue.
+            {t('spotifyCard.openACollectionAndUse')}
           </p>
         </>
       ) : (
@@ -141,7 +141,7 @@ export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            label="Spotify artist URL"
+            label={t('spotifyCard.spotifyArtistUrl')}
             value={artistUrl}
             onChange={(event) => setArtistUrl(event.target.value)}
             placeholder="https://open.spotify.com/artist/…"

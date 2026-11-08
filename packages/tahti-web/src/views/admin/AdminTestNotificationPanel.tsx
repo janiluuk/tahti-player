@@ -2,13 +2,14 @@ import { SendIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Textarea } from '@tahti-player/ui';
 
 import { sendAdminTestNotification } from '../../api/admin';
 import { StudioPanel } from '../../components/StudioPanel';
 
 export function AdminTestNotificationPanel() {
+  const { t } = useTranslation('web');
   const [username, setUsername] = useState('');
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -41,8 +42,8 @@ export function AdminTestNotificationPanel() {
 
   return (
     <StudioPanel
-      title="Send a test notification"
-      description="Delivers one notification to a single member, e.g. to check how a message looks before an announcement."
+      title={t('adminTestNotificationPanel.sendATestNotification')}
+      description={t('adminTestNotificationPanel.deliversOneNotificationToA')}
     >
       <form
         className="flex flex-col gap-3"
@@ -57,21 +58,21 @@ export function AdminTestNotificationPanel() {
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          label="Username"
+          label={t('adminTestNotificationPanel.username')}
           value={username}
           maxLength={33}
           placeholder="@username"
           onChange={(event) => setUsername(event.target.value)}
         />
         <Input
-          label="Title"
+          label={t('adminTestNotificationPanel.title')}
           value={title}
           maxLength={120}
           onChange={(event) => setTitle(event.target.value)}
         />
         <Textarea
           submitOnModEnter
-          label="Message (optional)"
+          label={t('adminTestNotificationPanel.messageOptional')}
           value={body}
           maxLength={500}
           rows={3}
@@ -82,7 +83,7 @@ export function AdminTestNotificationPanel() {
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          label="Link (optional)"
+          label={t('adminTestNotificationPanel.linkOptional')}
           value={url}
           maxLength={300}
           placeholder="/news"

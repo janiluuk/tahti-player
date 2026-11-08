@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -15,6 +16,7 @@ export function EndBoardTermForm({
   term: AdminBoardTerm;
   onEnded: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [termEnd, setTermEnd] = useState(new Date().toISOString().slice(0, 10));
   const [reason, setReason] = useState('');
@@ -30,7 +32,7 @@ export function EndBoardTermForm({
         aria-label={`End term early: ${term.displayName}`}
         onClick={() => setOpen(true)}
       >
-        End term early
+        {t('endBoardTerm.endTermEarly')}
       </Button>
     );
   }
@@ -58,19 +60,19 @@ export function EndBoardTermForm({
       }}
     >
       <Input
-        label="Term ends on"
+        label={t('endBoardTerm.termEndsOn')}
         type="date"
         value={termEnd}
         onChange={(e) => setTermEnd(e.target.value)}
       />
       <Input
-        label="Why (optional)"
+        label={t('endBoardTerm.whyOptional')}
         value={reason}
         maxLength={500}
         onChange={(e) => setReason(e.target.value)}
       />
       <Button type="submit" size="sm" intent="danger" disabled={busy}>
-        End term
+        {t('endBoardTerm.endTerm')}
       </Button>
       <Button
         type="button"
@@ -79,7 +81,7 @@ export function EndBoardTermForm({
         disabled={busy}
         onClick={() => setOpen(false)}
       >
-        Cancel
+        {t('endBoardTerm.cancel')}
       </Button>
       {error ? (
         <InlineError textSize="xs" className="w-full">

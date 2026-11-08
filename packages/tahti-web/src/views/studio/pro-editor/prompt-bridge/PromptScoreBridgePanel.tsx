@@ -1,5 +1,6 @@
 import { useId, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Alert, CopyButton, FilePicker, Textarea } from '@tahti-player/ui';
 
 import { StudioPanel } from '../../../../components/StudioPanel';
@@ -22,6 +23,7 @@ const MAX_MIDI_BYTES = 2 * 1024 * 1024;
 export function PromptScoreBridgePanel({
   initial,
 }: PromptScoreBridgePanelProps) {
+  const { t } = useTranslation('web');
   const promptId = useId();
   const [loaded, setLoaded] = useState<LoadedPhrase | null>(initial ?? null);
   const [error, setError] = useState<string | null>(null);
@@ -57,8 +59,8 @@ export function PromptScoreBridgePanel({
 
   return (
     <StudioPanel
-      title="Describe a melody"
-      description="Drop a short MIDI phrase to get a plain description and a prompt snippet you can copy into a generator. Everything runs in this browser."
+      title={t('promptScoreBridge.describeAMelody')}
+      description={t('promptScoreBridge.dropAShortMidiPhrase')}
     >
       <div className="flex flex-col gap-4">
         <FilePicker
@@ -85,7 +87,7 @@ export function PromptScoreBridgePanel({
         {description ? (
           <>
             <ul
-              aria-label="Melody description"
+              aria-label={t('promptScoreBridge.melodyDescription')}
               className="text-foreground-secondary flex flex-col gap-1 text-sm"
             >
               {describePhrase(description).map((text) => (
@@ -95,11 +97,11 @@ export function PromptScoreBridgePanel({
             <div className="flex flex-col gap-2">
               <div className="flex items-center justify-between gap-2">
                 <label htmlFor={promptId} className="text-sm font-semibold">
-                  Prompt snippet
+                  {t('promptScoreBridge.promptSnippet')}
                 </label>
                 <CopyButton
                   text={prompt}
-                  label="Copy"
+                  label={t('promptScoreBridge.copy')}
                   variant="secondary"
                   toastMessage="Prompt snippet copied"
                   disabled={!prompt.trim()}

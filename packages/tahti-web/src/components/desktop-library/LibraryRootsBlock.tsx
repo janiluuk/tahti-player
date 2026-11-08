@@ -5,6 +5,7 @@ import {
   TrashIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Loader, Toggle, Tooltip } from '@tahti-player/ui';
 
 import type { NativeLibraryRoot } from '../../lib/nativeLibrary';
@@ -38,13 +39,16 @@ export function LibraryRootsBlock({
   onStopWatching,
   onChangeWatching,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <div
       className="border-border flex flex-col gap-1.5 rounded-md border p-2"
       data-testid="library-roots"
     >
       <div className="flex items-center gap-1">
-        <p className="flex-1 text-xs font-semibold">Watched folders</p>
+        <p className="flex-1 text-xs font-semibold">
+          {t('libraryRoots.watchedFolders')}
+        </p>
         <Button
           className="gap-1.5"
           size="sm"
@@ -61,7 +65,7 @@ export function LibraryRootsBlock({
         </Button>
         {roots.length > 0 && canToggleWatching ? (
           <Toggle
-            label="Watch folders for changes"
+            label={t('libraryRoots.watchFoldersForChanges')}
             checked={watching}
             onChange={(enabled) => onChangeWatching(enabled)}
           />
@@ -85,8 +89,7 @@ export function LibraryRootsBlock({
       </div>
       {roots.length === 0 ? (
         <p className="text-foreground-secondary text-xs">
-          Add a folder to keep it in sync — new files are picked up on rescan
-          and moved drives can be relinked in one step.
+          {t('libraryRoots.addAFolderToKeep')}
         </p>
       ) : (
         <ul className="flex flex-col gap-1">
@@ -118,7 +121,10 @@ export function LibraryRootsBlock({
                   </p>
                 </div>
               </Tooltip>
-              <Tooltip content="Relink to another folder" side="top">
+              <Tooltip
+                content={t('libraryRoots.relinkToAnotherFolder')}
+                side="top"
+              >
                 <Button
                   size="icon-sm"
                   variant="text"
@@ -133,7 +139,7 @@ export function LibraryRootsBlock({
                   )}
                 </Button>
               </Tooltip>
-              <Tooltip content="Stop watching" side="top">
+              <Tooltip content={t('libraryRoots.stopWatching')} side="top">
                 <Button
                   size="icon-sm"
                   variant="text"

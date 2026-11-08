@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -38,6 +39,7 @@ export function StationIdClipForm({
   /** Current position when this track is the one playing. */
   playheadSec: number | null;
 }) {
+  const { t } = useTranslation('web');
   const [title, setTitle] = useState('');
   const [start, setStart] = useState('0');
   const [end, setEnd] = useState(
@@ -77,14 +79,14 @@ export function StationIdClipForm({
       }}
     >
       <div>
-        <p className="font-medium">Make a station ID clip</p>
+        <p className="font-medium">{t('stationIdClip.makeAStationIdClip')}</p>
         <p className="text-foreground-secondary text-sm">
           Up to {SOUND_CLIP_MAX_DURATION_SEC} seconds of this track, added to
           your channel&apos;s announcements.
         </p>
       </div>
       <Input
-        label="Clip title (optional)"
+        label={t('stationIdClip.clipTitleOptional')}
         value={title}
         maxLength={120}
         onChange={(event) => setTitle(event.target.value)}
@@ -95,7 +97,7 @@ export function StationIdClipForm({
             type="number"
             inputMode="decimal"
             variant="number"
-            label="Start (s)"
+            label={t('stationIdClip.startS')}
             size="sm"
             min={0}
             step={0.1}
@@ -109,7 +111,7 @@ export function StationIdClipForm({
               className="self-start"
               onClick={() => setStart(playhead)}
             >
-              Use playhead
+              {t('stationIdClip.usePlayhead')}
             </Button>
           ) : null}
         </div>
@@ -118,7 +120,7 @@ export function StationIdClipForm({
             type="number"
             inputMode="decimal"
             variant="number"
-            label="End (s)"
+            label={t('stationIdClip.endS')}
             size="sm"
             min={0}
             step={0.1}
@@ -132,7 +134,7 @@ export function StationIdClipForm({
               className="self-start"
               onClick={() => setEnd(playhead)}
             >
-              Use playhead
+              {t('stationIdClip.usePlayhead')}
             </Button>
           ) : null}
         </div>

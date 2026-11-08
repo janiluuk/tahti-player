@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   InlineError,
@@ -26,6 +27,7 @@ export function SupportContactForm({
 }: {
   onSubmitted?: () => void;
 } = {}) {
+  const { t } = useTranslation('web');
   const email = useAuthStore((s) => s.user?.email);
   const [contactEmail, setContactEmail] = useState('');
   const [category, setCategory] = useState<SupportTicketCategory>('OTHER');
@@ -38,7 +40,9 @@ export function SupportContactForm({
   if (ticketId) {
     return (
       <div className="border-border bg-background-secondary/30 rounded-lg border p-4 text-sm">
-        <p className="font-medium">We received your message.</p>
+        <p className="font-medium">
+          {t('supportContact.weReceivedYourMessage')}
+        </p>
         <p className="text-foreground-secondary mt-1">
           Expect a reply within two business days for engagement and billing
           questions.
@@ -72,7 +76,11 @@ export function SupportContactForm({
         });
       }}
     >
-      <SectionTitle title="Contact support" wrap className="font-display" />
+      <SectionTitle
+        title={t('supportContact.contactSupport')}
+        wrap
+        className="font-display"
+      />
       {!email && (
         <Input
           inputMode="email"
@@ -80,14 +88,14 @@ export function SupportContactForm({
           autoCorrect="off"
           spellCheck={false}
           autoComplete="email"
-          label="Your email"
+          label={t('supportContact.yourEmail')}
           value={contactEmail}
           onChange={(e) => setContactEmail(e.target.value)}
           required
         />
       )}
       <Select
-        label="Category"
+        label={t('supportContact.category')}
         options={CATEGORIES.map((option) => ({
           id: option.value,
           label: option.label,
@@ -96,7 +104,7 @@ export function SupportContactForm({
         onValueChange={(value) => setCategory(value as SupportTicketCategory)}
       />
       <Input
-        label="Subject"
+        label={t('supportContact.subject')}
         value={subject}
         onChange={(e) => setSubject(e.target.value)}
         required
@@ -104,7 +112,7 @@ export function SupportContactForm({
       />
       <Textarea
         submitOnModEnter
-        label="Message"
+        label={t('supportContact.message')}
         tone="secondary"
         className="min-h-[8rem]"
         value={message}

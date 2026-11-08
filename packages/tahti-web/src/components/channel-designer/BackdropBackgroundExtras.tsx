@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Toggle, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -26,13 +27,14 @@ export function BackdropBackgroundExtras({
   backgroundVisualPreset,
   onBackgroundVisualPreset,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <section className="flex flex-col gap-4">
       <Toggle
         checked={useBackgroundGradient}
         onChange={onUseBackgroundGradient}
-        label="Full separate background palette"
-        description="Optional — edit every background color independently of header accents. The Background swatch above always works."
+        label={t('backdropExtras.fullSeparateBackgroundPalette')}
+        description={t('backdropExtras.optionalEditEveryBackgroundColor')}
         showLabel
         labelClassName="border-border bg-background-secondary/40 items-start gap-3 rounded-lg border p-3 font-semibold"
       />
@@ -44,15 +46,13 @@ export function BackdropBackgroundExtras({
         />
       ) : (
         <p className="text-foreground-secondary text-xs">
-          The page currently matches the header colors. Turn on a separate
-          palette to style the background on its own.
+          {t('backdropExtras.thePageCurrentlyMatchesThe')}
         </p>
       )}
       <div className="flex flex-col gap-2">
-        <Eyebrow>Background visualizer</Eyebrow>
+        <Eyebrow>{t('backdropExtras.backgroundVisualizer')}</Eyebrow>
         <p className="text-foreground-secondary text-xs">
-          Ambient WebGL behind the artist and channel pages — separate from the
-          header/player visualizer.
+          {t('backdropExtras.ambientWebglBehindTheArtist')}
         </p>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {BACKGROUND_VISUAL_PRESETS.map((preset) => {

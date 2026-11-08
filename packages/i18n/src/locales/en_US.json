@@ -5861,6 +5861,384 @@
       "postText": "Post text",
       "save": "Save",
       "tahtiForgetsTheSavedSign": "Tahti forgets the saved sign-in and stops posting there."
+    },
+    "transparencyMethodology": {
+      "tahtiRyIsAFinnish": "Tahti ry is a Finnish registered nonprofit association (yhdistys, Y-tunnus 3368171-8). All income and expenditure is accounted for and published here monthly after board approval. Data is final once a month is marked “finalized”.",
+      "theGoalIsRadicalTransparency": "The goal is radical transparency: any member or interested party can verify that the organisation runs at cost, surpluses are returned to artists, and no hidden fees exist.",
+      "download": "Download",
+      "fanSubscription": "Fan subscription",
+      "passiveStreamingHlsPlaybackDoes": "Passive streaming (HLS playback) does not generate engagement units. This prevents gaming via bots or loop plays.",
+      "theTreasurerManuallyEntersInfrastructure": "The treasurer manually enters infrastructure invoices, salary, and other costs via the admin panel. All entries are audit-logged.",
+      "allEndpointsReturnJsonAnd": "All endpoints return JSON and are CORS-open for third-party use.",
+      "platformStatus": "Platform status",
+      "transparencyMethodology": "Transparency methodology",
+      "transparency": "Transparency",
+      "principles": "Principles",
+      "revenueCategories": "Revenue categories",
+      "costCategories": "Cost categories",
+      "disbursements": "Disbursements",
+      "howSurplusIsCalculated": "How surplus is calculated",
+      "engagementUnitsGrantFormula": "Engagement units (grant formula)",
+      "dataPipeline": "Data pipeline",
+      "publicApi": "Public API"
+    },
+    "listeningPartyHero": {
+      "startsIn": "Starts in",
+      "playingNow": "Playing now",
+      "openTheRelease": "Open the release",
+      "theArtistCanceledThisListening": "The artist canceled this listening party.",
+      "preRelease": "Pre-release",
+      "listeningParty": "Listening party"
+    },
+    "collectionAddTracks": {
+      "chooseLibraryTracksToAdd": "Choose library tracks to add. Tracks already in this collection are hidden.",
+      "clearSearch": "Clear search",
+      "done": "Done",
+      "searchTracksByTitleGenre": "Search tracks by title, genre, or type…",
+      "searchLibraryTracks": "Search library tracks",
+      "availableLibraryTracks": "Available library tracks"
+    },
+    "writeTags": {
+      "writeTagsToFiles": "Write tags to files",
+      "savesYourEditedFieldsInto": "Saves your edited fields into the audio files themselves, so other players see them too. Tracks with no edits are left alone. Each file is tagged on a copy and checked before it replaces the original.",
+      "checking": "Checking…",
+      "skipped": "Skipped",
+      "cancel": "Cancel",
+      "keepABackupCopyOf": "Keep a backup copy of each original next to it"
+    },
+    "publishToRelease": {
+      "addToARelease": "Add to a release",
+      "addsACopyOfThis": "Adds a copy of this track as the release's last track.",
+      "release": "Release",
+      "chooseARelease": "Choose a release",
+      "audio": "Audio",
+      "trackTitleOnTheRelease": "Track title on the release"
+    },
+    "musicBrainzAssistant": {
+      "musicbrainzSubmission": "MusicBrainz submission",
+      "reviewThePreparedMetadataHere": "Review the prepared metadata here, then finish the edit in MusicBrainz. This page stays open in its own tab.",
+      "musicbrainzRequiresTheFinalRelease": "MusicBrainz requires the final release or recording edit in its web editor. Beta prepares the metadata and keeps your work in this tab.",
+      "openPrefilledReleaseEditor": "Open prefilled release editor",
+      "openPrefilledTrackEditor": "Open prefilled track editor",
+      "copyMetadata": "Copy metadata"
+    },
+    "playerOverlayControls": {
+      "stageOverlay": "Stage overlay",
+      "previewEnterTextAboveTo": "Preview — enter text above to see it on the player stage.",
+      "nowPlaying": "Now playing",
+      "configureText": "Configure text",
+      "howTheTitleAndArtist": "How the title and artist sit over live audio or an archive track.",
+      "sampleTrack": "Sample Track"
+    },
+    "spotifyCard": {
+      "spotifyImportIsNotAvailable": "Spotify import is not available until the platform Spotify credentials are configured.",
+      "addToACollection": "Add to a collection",
+      "unlink": "Unlink",
+      "openACollectionAndUse": "Open a collection and use Add from Spotify; Your tracks lists this artist's catalogue.",
+      "linkYourSpotifyArtistProfile": "Link your Spotify artist profile, then add its tracks to your collections as embeds.",
+      "spotifyArtistUrl": "Spotify artist URL"
+    },
+    "videoOrImage": {
+      "videoOrImageBackdrop": "Video or image backdrop",
+      "uploadAnMp4WebmVideo": "Upload an MP4/WebM video or image, up to 10 MB.",
+      "removeBackdrop": "Remove backdrop",
+      "showUrlField": "Show URL field",
+      "youtubeVideoOrImageUrl": "YouTube, video, or image URL",
+      "youtubeBackdropPreview": "YouTube backdrop preview"
+    },
+    "studioProfile": {
+      "profile": "Profile",
+      "howYouLookToListeners": "How you look to listeners: your artist profile and your channel page. Each card opens its own settings.",
+      "artistProfile": "Artist profile",
+      "artistProfileSettings": "Artist profile settings",
+      "channelPage": "Channel page",
+      "channelPageSettings": "Channel page settings"
+    },
+    "soundDetailsTab": {
+      "allowComments": "Allow comments",
+      "listenersCanDiscussThisTrack": "Listeners can discuss this track on its public page.",
+      "title": "Title",
+      "contentType": "Content type",
+      "description": "Description",
+      "releaseDate": "Release date"
+    },
+    "visualizerPicker": {
+      "chooseVisualizer": "Choose visualizer",
+      "previewEachAnimatedStageAnd": "Preview each animated stage and choose the one that fits your channel.",
+      "audioReactive": "Audio reactive",
+      "livePreview": "Live preview",
+      "cancel": "Cancel",
+      "useVisualizer": "Use visualizer"
+    },
+    "supportContact": {
+      "weReceivedYourMessage": "We received your message.",
+      "contactSupport": "Contact support",
+      "yourEmail": "Your email",
+      "category": "Category",
+      "subject": "Subject",
+      "message": "Message"
+    },
+    "venueDetails": {
+      "cancel": "Cancel",
+      "name": "Name",
+      "streetAddress": "Street address",
+      "city": "City",
+      "capacity": "Capacity",
+      "description": "Description"
+    },
+    "adminStationSections": {
+      "noStreamUrlWonT": "No stream URL — won’t be playable",
+      "loading": "Loading…",
+      "addAsPreset": "Add as preset",
+      "tahtiRadio": "Tahti Radio",
+      "theAlwaysOnStationIts": "The always-on station. Its stream comes from the rotation encoder on the stream host; an outage there is fixed on the host, not here.",
+      "stationsListenersCanAddFrom": "Stations listeners can add from the widget store. Add one as a preset to manage it here and offer it on the Listen page."
+    },
+    "trackEditAnalysis": {
+      "version": "Version",
+      "useDetectedBpmAndKey": "Use detected BPM and key",
+      "madeWithGenerativeAi": "Made with generative AI",
+      "showsAnAiGeneratedLabel": "Shows an AI-generated label on the track page."
+    },
+    "purchaseAccess": {
+      "whoCanPlayIt": "Who can play it",
+      "limitItToYourFan": "Limit it to your fan subscribers, or sell it with a one-time purchase tier. Fan subscribers can always play gated tracks.",
+      "couldNotLoadYourPurchase": "Could not load your purchase tiers, so they are missing from this list.",
+      "retry": "Retry",
+      "managePurchaseTiers": "Manage purchase tiers",
+      "access": "Access"
+    },
+    "legalHold": {
+      "onLegalHold": "On legal hold",
+      "releaseHold": "Release hold",
+      "hold": "Hold",
+      "cancel": "Cancel",
+      "legalHold": "Legal hold",
+      "reasonForTheHold": "Reason for the hold"
+    },
+    "showHeader": {
+      "overview": "Overview",
+      "episodes": "Episodes",
+      "recordings": "Recordings",
+      "newEpisode": "New episode",
+      "editDetails": "Edit details",
+      "showSections": "Show sections"
+    },
+    "importJobs": {
+      "importedOpenTrack": "Imported — open track",
+      "imported": "Imported",
+      "importProgress": "Import progress",
+      "ifAnImportFailsWe": "If an import fails, we notify you.",
+      "queued": "Queued",
+      "importing": "Importing"
+    },
+    "addBoardTerm": {
+      "saveTerm": "Save term",
+      "cancel": "Cancel",
+      "member": "Member",
+      "role": "Role",
+      "termStarts": "Term starts",
+      "termEndsOptional": "Term ends (optional)"
+    },
+    "adminTestNotificationPanel": {
+      "sendATestNotification": "Send a test notification",
+      "deliversOneNotificationToA": "Delivers one notification to a single member, e.g. to check how a message looks before an announcement.",
+      "username": "Username",
+      "title": "Title",
+      "messageOptional": "Message (optional)",
+      "linkOptional": "Link (optional)"
+    },
+    "musicBrainzRegister": {
+      "musicbrainzIsTheOpenMusic": "MusicBrainz is the open music database that players and stores use to identify releases.",
+      "alwaysOfferThis": "Always offer this",
+      "donTAskAgain": "Don’t ask again",
+      "stopOffering": "Stop offering",
+      "registerThisReleaseOnMusicbrainz": "Register this release on MusicBrainz"
+    },
+    "annualReportLegalHold": {
+      "releaseHold": "Release hold",
+      "holdReport": "Hold report",
+      "cancel": "Cancel",
+      "legalHold": "Legal hold",
+      "reasonForTheHold": "Reason for the hold"
+    },
+    "backdropExtras": {
+      "thePageCurrentlyMatchesThe": "The page currently matches the header colors. Turn on a separate palette to style the background on its own.",
+      "backgroundVisualizer": "Background visualizer",
+      "ambientWebglBehindTheArtist": "Ambient WebGL behind the artist and channel pages — separate from the header/player visualizer.",
+      "fullSeparateBackgroundPalette": "Full separate background palette",
+      "optionalEditEveryBackgroundColor": "Optional — edit every background color independently of header accents. The Background swatch above always works."
+    },
+    "stationHealth": {
+      "notChecked": "Not checked",
+      "checking": "Checking…",
+      "working": "Working",
+      "couldnTVerify": "Couldn’t verify",
+      "noStreamUrl": "No stream URL"
+    },
+    "statsRange": {
+      "applyPeriod": "Apply period",
+      "pickDatesAndApplyTo": "Pick dates and apply to load plays for that window.",
+      "statsTimeRange": "Stats time range",
+      "customPeriod": "Custom period",
+      "from": "From"
+    },
+    "endBoardTerm": {
+      "endTermEarly": "End term early",
+      "endTerm": "End term",
+      "cancel": "Cancel",
+      "termEndsOn": "Term ends on",
+      "whyOptional": "Why (optional)"
+    },
+    "designerToolbar": {
+      "savePreset": "Save preset",
+      "reset": "Reset",
+      "revertChanges": "Revert changes",
+      "moreChannelDesignOptions": "More channel design options",
+      "restorePreviousSave": "Restore previous save"
+    },
+    "textOverlayEditor": {
+      "textEffect": "Text effect",
+      "yourText": "Your text",
+      "shortHeadlineOrTaglineMax": "Short headline or tagline (max 120 characters).",
+      "newAlbumOutNowListen": "New album out now — listen live",
+      "alignment": "Alignment"
+    },
+    "addonReject": {
+      "aReasonIsRequiredThe": "A reason is required — the author is notified with it.",
+      "cancel": "Cancel",
+      "reject": "Reject",
+      "rejectionReason": "Rejection reason",
+      "whyIsThisAddOn": "Why is this add-on being rejected?"
+    },
+    "stationDetails": {
+      "visitWebsite": "Visit website",
+      "noWebsiteOnFileFor": "No website on file for this station.",
+      "viewCurrentProgramme": "View current programme",
+      "noProgrammingLinkConfiguredFor": "No programming link configured for this station.",
+      "close": "Close"
+    },
+    "platformStats": {
+      "tahtiInNumbers": "Tahti in numbers",
+      "broadcastingArtists": "Broadcasting artists",
+      "broadcastsThisMonth": "Broadcasts this month",
+      "hoursOnAir": "Hours on air",
+      "musicStored": "Music stored"
+    },
+    "jamRow": {
+      "anyoneWithThisLinkCan": "Anyone with this link can control the player. A new link unpairs every device paired before.",
+      "newPairingLink": "New pairing link",
+      "tahtiJam": "Tahti Jam",
+      "controlThePlayerFromA": "Control the player from a phone or another computer on your network. Scan the code to pair a device; only paired devices can control it.",
+      "tahtiJamPairingQrCode": "Tahti Jam pairing QR code"
+    },
+    "pageTourSpotlight": {
+      "back": "Back",
+      "next": "Next",
+      "pageTour": "Page tour",
+      "closeTour": "Close tour"
+    },
+    "mixcloudImport": {
+      "addFromMixcloud": "Add from Mixcloud",
+      "cloudcastsAreEmbeddedFromMixcloud": "Cloudcasts are embedded from Mixcloud; Tahti never copies the audio.",
+      "mixcloudSource": "Mixcloud source",
+      "mixcloudCloudcasts": "Mixcloud cloudcasts"
+    },
+    "libraryRoots": {
+      "watchedFolders": "Watched folders",
+      "addAFolderToKeep": "Add a folder to keep it in sync — new files are picked up on rescan and moved drives can be relinked in one step.",
+      "watchFoldersForChanges": "Watch folders for changes",
+      "relinkToAnotherFolder": "Relink to another folder",
+      "stopWatching": "Stop watching"
+    },
+    "stationIdClip": {
+      "makeAStationIdClip": "Make a station ID clip",
+      "usePlayhead": "Use playhead",
+      "clipTitleOptional": "Clip title (optional)",
+      "startS": "Start (s)",
+      "endS": "End (s)"
+    },
+    "themeSubmissions": {
+      "yourCommunitySubmissions": "Your community submissions",
+      "pullRequest": "Pull request",
+      "submitAgain": "Submit again",
+      "theThemeLeavesYourSubmissions": "The theme leaves your submissions. An applied copy on this device is left as it is.",
+      "delete": "Delete"
+    },
+    "platformNews": {
+      "cancel": "Cancel",
+      "headline": "Headline",
+      "article": "Article",
+      "imageUrl": "Image URL",
+      "editArticle": "Edit article"
+    },
+    "reportButton": {
+      "reportsGoToTheTahti": "Reports go to the Tahti board's moderation queue. You don't need an account, and the artist doesn't see who reported.",
+      "cancel": "Cancel",
+      "report": "Report",
+      "reason": "Reason",
+      "detailsOptional": "Details (optional)"
+    },
+    "motionCorrection": {
+      "correctTheResult": "Correct the result",
+      "addCorrection": "Add correction",
+      "cancel": "Cancel",
+      "whatIsBeingCorrected": "What is being corrected",
+      "correctTheCountToo": "Correct the count too"
+    },
+    "promptScoreBridge": {
+      "promptSnippet": "Prompt snippet",
+      "describeAMelody": "Describe a melody",
+      "dropAShortMidiPhrase": "Drop a short MIDI phrase to get a plain description and a prompt snippet you can copy into a generator. Everything runs in this browser.",
+      "melodyDescription": "Melody description",
+      "copy": "Copy"
+    },
+    "profilePicture": {
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP, or GIF. An animated GIF shows its first frame and plays when someone hovers it. The original is kept for full-size use.",
+      "theAvatarColourShowsOnly": "The avatar colour shows only when there is no profile picture.",
+      "profilePicture": "Profile picture",
+      "useAClearSquarePortrait": "Use a clear square portrait or mark. Click the picture to upload one, pick from your gallery or paste an image link.",
+      "acceptedImageFormats": "Accepted image formats"
+    },
+    "addonPublish": {
+      "uploadTheWidgetAposS": "Upload the widget's JavaScript bundle (an ES module, up to 2 MB). Publishing sends the add-on back to review, even if it was approved.",
+      "cancel": "Cancel",
+      "version": "Version",
+      "changelogOptional": "Changelog (optional)",
+      "whatChangedInThisVersion": "What changed in this version?"
+    },
+    "adminUserDelete": {
+      "deleteAccount": "Delete account…",
+      "cancel": "Cancel",
+      "deleteAccount2": "Delete account",
+      "gdprDeletionPersonalDataIs": "GDPR deletion: personal data is anonymized, the membership and fan subscriptions are cancelled and newsletter sign-ups removed. This can’t be undone.",
+      "usernameToConfirm": "Username to confirm"
+    },
+    "annualReportFiling": {
+      "saveFiling": "Save filing",
+      "clearFiling": "Clear filing",
+      "cancel": "Cancel",
+      "filedWithTheRegisterOn": "Filed with the register on",
+      "registerReferenceOptional": "Register reference (optional)"
+    },
+    "channelSetup": {
+      "designYourChannel": "Design your channel",
+      "chooseTheLookForYour": "Choose the look for your new channel. You can fine-tune it later from the public channel page.",
+      "finishSetup": "Finish setup",
+      "createYourChannel": "Create your channel",
+      "cancel": "Cancel"
+    },
+    "verifyView": {
+      "continueToLogin": "Continue to login",
+      "join": "Join",
+      "verificationToken": "Verification token",
+      "fromTokenInTheEmail": "From ?token= in the email link"
+    },
+    "showEpisodeList": {
+      "showDetails": "Show details",
+      "listenToRecording": "Listen to recording",
+      "greenRoom": "Green room",
+      "openGreenRoom": "Open green room"
     }
   },
   "studioEditor": {

@@ -1,6 +1,7 @@
 import { ExternalLinkIcon, RotateCcwIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, ButtonAnchor, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -30,6 +31,7 @@ export function ThemeSubmissions({
   onChanged: () => void;
   onError: (message: string) => void;
 }) {
+  const { t } = useTranslation('web');
   const [pendingDelete, setPendingDelete] = useState<MyTheme | null>(null);
 
   if (themes.length === 0) {
@@ -51,7 +53,7 @@ export function ThemeSubmissions({
   return (
     <div className="flex flex-col gap-1.5">
       <h3 className="text-foreground-secondary text-xs uppercase">
-        Your community submissions
+        {t('themeSubmissions.yourCommunitySubmissions')}
       </h3>
       <ul className="divide-border border-border divide-y rounded-lg border">
         {themes.map((theme) => (
@@ -82,7 +84,7 @@ export function ThemeSubmissions({
                   variant="text"
                 >
                   <ExternalLinkIcon size={14} aria-hidden className="mr-1.5" />
-                  Pull request
+                  {t('themeSubmissions.pullRequest')}
                 </ButtonAnchor>
               ) : null}
               {theme.visibility === 'REJECTED' ||
@@ -93,7 +95,7 @@ export function ThemeSubmissions({
                   onClick={() => run(submitThemeForReview(theme.id))}
                 >
                   <RotateCcwIcon size={14} aria-hidden className="mr-1.5" />
-                  Submit again
+                  {t('themeSubmissions.submitAgain')}
                 </Button>
               ) : null}
               {theme.visibility !== 'PENDING_REVIEW' ? (
@@ -126,8 +128,8 @@ export function ThemeSubmissions({
             ? `Delete the ${pendingDelete.name} submission?`
             : 'Delete submission?'
         }
-        description="The theme leaves your submissions. An applied copy on this device is left as it is."
-        confirmLabel="Delete"
+        description={t('themeSubmissions.theThemeLeavesYourSubmissions')}
+        confirmLabel={t('themeSubmissions.delete')}
         destructive
         onCancel={() => setPendingDelete(null)}
         onConfirm={() => {

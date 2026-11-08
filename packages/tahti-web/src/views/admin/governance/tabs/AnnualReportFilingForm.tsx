@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -15,6 +16,7 @@ export function AnnualReportFilingForm({
   report: AdminAnnualReport;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [filedAt, setFiledAt] = useState(report.filedAt?.slice(0, 10) ?? '');
   const [reference, setReference] = useState(report.filingReference ?? '');
@@ -70,19 +72,19 @@ export function AnnualReportFilingForm({
       }}
     >
       <Input
-        label="Filed with the register on"
+        label={t('annualReportFiling.filedWithTheRegisterOn')}
         type="date"
         value={filedAt}
         onChange={(e) => setFiledAt(e.target.value)}
       />
       <Input
-        label="Register reference (optional)"
+        label={t('annualReportFiling.registerReferenceOptional')}
         value={reference}
         maxLength={100}
         onChange={(e) => setReference(e.target.value)}
       />
       <Button type="submit" size="sm" disabled={busy}>
-        Save filing
+        {t('annualReportFiling.saveFiling')}
       </Button>
       {report.filedAt ? (
         <Button
@@ -92,7 +94,7 @@ export function AnnualReportFilingForm({
           disabled={busy}
           onClick={() => save(true)}
         >
-          Clear filing
+          {t('annualReportFiling.clearFiling')}
         </Button>
       ) : null}
       <Button
@@ -102,7 +104,7 @@ export function AnnualReportFilingForm({
         disabled={busy}
         onClick={() => setOpen(false)}
       >
-        Cancel
+        {t('annualReportFiling.cancel')}
       </Button>
       {error ? (
         <InlineError textSize="xs" className="w-full">

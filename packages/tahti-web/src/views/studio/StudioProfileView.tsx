@@ -13,6 +13,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   HubCards,
   SectionTitle,
@@ -121,21 +122,25 @@ export const STUDIO_PROFILE_CHANNEL_ITEMS: HubCardItem[] = [
 ];
 
 export function StudioProfileView() {
+  const { t } = useTranslation('web');
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-4 px-1 py-2">
         <ViewShell
-          title="Profile"
-          subtitle="How you look to listeners: your artist profile and your channel page. Each card opens its own settings."
+          title={t('studioProfile.profile')}
+          subtitle={t('studioProfile.howYouLookToListeners')}
           classes={{ root: 'px-0 pt-0', content: 'gap-5' }}
         >
           <section
             className="flex flex-col gap-2"
             aria-labelledby="profile-artist"
           >
-            <SectionTitle id="profile-artist" title="Artist profile" />
+            <SectionTitle
+              id="profile-artist"
+              title={t('studioProfile.artistProfile')}
+            />
             <HubCards
-              aria-label="Artist profile settings"
+              aria-label={t('studioProfile.artistProfileSettings')}
               items={STUDIO_PROFILE_ARTIST_ITEMS}
               renderLink={renderHubLink}
             />
@@ -144,9 +149,12 @@ export function StudioProfileView() {
             className="flex flex-col gap-2"
             aria-labelledby="profile-channel"
           >
-            <SectionTitle id="profile-channel" title="Channel page" />
+            <SectionTitle
+              id="profile-channel"
+              title={t('studioProfile.channelPage')}
+            />
             <HubCards
-              aria-label="Channel page settings"
+              aria-label={t('studioProfile.channelPageSettings')}
               items={STUDIO_PROFILE_CHANNEL_ITEMS}
               renderLink={renderHubLink}
             />

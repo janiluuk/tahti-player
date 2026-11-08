@@ -1,5 +1,6 @@
 import { CircleDotIcon, InfoIcon, ListMusicIcon, PlusIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   EditIconButton,
@@ -23,6 +24,7 @@ export function ShowHeader({
   editing: boolean;
   onEditingChange: (next: boolean) => void;
 }) {
+  const { t } = useTranslation('web');
   const {
     thumbnailUrl,
     backdropUrl,
@@ -46,20 +48,20 @@ export function ShowHeader({
         actions={
           <>
             {show.mode === 'SINGLE' ? null : (
-              <Tooltip content="New episode" side="top">
+              <Tooltip content={t('showHeader.newEpisode')} side="top">
                 <Button
                   variant="secondary"
                   size="icon-sm"
                   className="bg-background border-border rounded-md border-(length:--border-width)"
                   onClick={() => setCreateOpen(true)}
-                  aria-label="New episode"
+                  aria-label={t('showHeader.newEpisode')}
                 >
                   <PlusIcon size={16} aria-hidden />
                 </Button>
               </Tooltip>
             )}
             <EditIconButton
-              label="Edit details"
+              label={t('showHeader.editDetails')}
               editing={editing}
               onClick={() => onEditingChange(!editing)}
             />
@@ -78,21 +80,23 @@ export function ShowHeader({
           );
         }}
       >
-        <Tabs.List aria-label="Show sections">
+        <Tabs.List aria-label={t('showHeader.showSections')}>
           <Tabs.Tab>
-            <TabLabel icon={<InfoIcon size={14} />}>Overview</TabLabel>
+            <TabLabel icon={<InfoIcon size={14} />}>
+              {t('showHeader.overview')}
+            </TabLabel>
           </Tabs.Tab>
           <Tabs.Tab>
             <TabLabel
               icon={<ListMusicIcon size={14} />}
               count={episodes.length}
             >
-              Episodes
+              {t('showHeader.episodes')}
             </TabLabel>
           </Tabs.Tab>
           <Tabs.Tab>
             <TabLabel icon={<CircleDotIcon size={14} />} count={recordingCount}>
-              Recordings
+              {t('showHeader.recordings')}
             </TabLabel>
           </Tabs.Tab>
         </Tabs.List>

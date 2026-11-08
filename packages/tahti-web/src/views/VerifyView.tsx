@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Box, Button, ButtonLink, InlineError, Input } from '@tahti-player/ui';
 
 import { useAuthStore } from '../stores/authStore';
@@ -13,6 +14,7 @@ function tokenFromSearch(): string {
 }
 
 export function VerifyView() {
+  const { t } = useTranslation('web');
   const verify = useAuthStore((s) => s.verify);
   const loading = useAuthStore((s) => s.loading);
   const error = useAuthStore((s) => s.error);
@@ -68,7 +70,7 @@ export function VerifyView() {
           className="h-auto w-auto flex-col gap-3 rounded-xl"
         >
           <p className="text-sm">{message}</p>
-          <ButtonLink to="/login">Continue to login</ButtonLink>
+          <ButtonLink to="/login">{t('verifyView.continueToLogin')}</ButtonLink>
         </Box>
       ) : (
         <form
@@ -82,10 +84,10 @@ export function VerifyView() {
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            label="Verification token"
+            label={t('verifyView.verificationToken')}
             value={token}
             onChange={(e) => setToken(e.target.value)}
-            description="From ?token= in the email link"
+            description={t('verifyView.fromTokenInTheEmail')}
           />
           {error && <InlineError>{error}</InlineError>}
           {message && !error && (
@@ -100,7 +102,7 @@ export function VerifyView() {
       <p className="text-foreground-secondary text-sm">
         Need an account?{' '}
         <Link to="/join" className="underline-offset-2 hover:underline">
-          Join
+          {t('verifyView.join')}
         </Link>
       </p>
     </div>
