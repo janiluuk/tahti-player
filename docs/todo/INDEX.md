@@ -22,8 +22,15 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | open    | [ambient-track-list-mobile.md](ambient-track-list-mobile.md) | Phone: AmbientTrackList/Playable default to list; denser rows + larger art; densities misaligned on narrow |
+<<<<<<< HEAD
+| open    | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti` CLI: hearthis.at track or set → audio files → uploaded sounds → re-made Tahti release |
+| open    | [empty-state-create-ctas.md](empty-state-create-ctas.md) | PageEmpty createables: 30 more shipped 2026-11-08 (#1884-#1888); left: 15 Studio/Library/Radio/community empties + Priority B |
+| open    | [collection-sort-dialog.md](collection-sort-dialog.md) | Sort sounds modal for a collection (icon button, Sort by: own order/latest/A–Z…), arrow-key moves from the drag handle, Move to top; API sort-direction work |
+| open    | [channel-page-metrics-about-events.md](channel-page-metrics-about-events.md) | Channel page: followers/following/plays today/yesterday/total/downloads with per-metric public toggle, tidy About, upcoming + past events incl. ones the artist plays at |
+=======
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | open    | [empty-state-create-ctas.md](empty-state-create-ctas.md) | PageEmpty createables: icon+title `action` on empties; full 2026-11-05 inventory (Priority A/B, Near vs Gap) |
+>>>>>>> origin/master
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [discover-listen-widget-audit-2026-11-05.md](discover-listen-widget-audit-2026-11-05.md) | Discover/Listen widget audit findings: inconsistent headings/pills/arrows/cards, unstyled Venues tab, crowded phone tabs, Live now cards |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
