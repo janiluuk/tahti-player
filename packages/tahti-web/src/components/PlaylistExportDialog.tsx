@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, FilterChips, Loader } from '@tahti-player/ui';
 
 import type {
@@ -50,6 +51,7 @@ type Props = {
 
 /** Chooses relative or absolute paths, then asks where to save the M3U8. */
 export function PlaylistExportDialog({ playlist, library, onClose }: Props) {
+  const { t } = useTranslation('web');
   const [style, setStyle] = useState<NativeExportStyle>('relative');
   const [busy, setBusy] = useState(false);
 
@@ -79,15 +81,14 @@ export function PlaylistExportDialog({ playlist, library, onClose }: Props) {
     >
       <Dialog.Title>Export “{playlist?.name}”</Dialog.Title>
       <Dialog.Description>
-        Saves an M3U8 file (UTF-8) with every entry in order, repeats included.
-        Entries whose file is missing are kept with their last known path.
+        {t('playlistExportDialog.savesAnM3u8FileUtf')}
       </Dialog.Description>
       <div className="flex flex-col gap-2 py-2">
         <span className="text-sm font-medium" aria-hidden>
-          File paths
+          {t('playlistExportDialog.filePaths')}
         </span>
         <FilterChips
-          aria-label="File paths"
+          aria-label={t('playlistExportDialog.filePaths')}
           items={[
             { id: 'relative', label: 'Relative to the saved file' },
             { id: 'absolute', label: 'Full paths' },
@@ -102,7 +103,7 @@ export function PlaylistExportDialog({ playlist, library, onClose }: Props) {
         </p>
       </div>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('playlistExportDialog.cancel')}</Dialog.Close>
         <Button className="gap-1.5" disabled={busy} onClick={() => void run()}>
           {busy ? <Loader size="inline" shape="circle" /> : null}
           Choose where to save…

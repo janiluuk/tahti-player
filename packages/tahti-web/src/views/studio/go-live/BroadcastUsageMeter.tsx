@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Alert, Button, Meter } from '@tahti-player/ui';
 
 import type { BroadcastUsage } from '../../../api/broadcast';
@@ -37,6 +38,7 @@ export function usageWarning(usage: BroadcastUsage): string | null {
 }
 
 export function BroadcastUsageMeter({ usage }: { usage: BroadcastUsage }) {
+  const { t } = useTranslation('web');
   if (usage.unlimited) {
     return null;
   }
@@ -48,7 +50,9 @@ export function BroadcastUsageMeter({ usage }: { usage: BroadcastUsage }) {
   return (
     <div className="flex flex-col gap-2" data-testid="broadcast-usage">
       <div className="flex items-center justify-between gap-3 text-sm">
-        <span className="text-foreground-secondary">Weekly live time</span>
+        <span className="text-foreground-secondary">
+          {t('broadcastUsageMeter.weeklyLiveTime')}
+        </span>
         <span className="text-foreground tabular-nums">
           {used} of {cap} used this week
         </span>
@@ -73,7 +77,7 @@ export function BroadcastUsageMeter({ usage }: { usage: BroadcastUsage }) {
                 variant="secondary"
                 onClick={() => useSettingsModalStore.getState().open('account')}
               >
-                Get unlimited live time
+                {t('broadcastUsageMeter.getUnlimitedLiveTime')}
               </Button>
             ) : null}
           </div>

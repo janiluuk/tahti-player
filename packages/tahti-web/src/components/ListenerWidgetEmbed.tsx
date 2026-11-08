@@ -1,6 +1,7 @@
 import { XIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   Button,
@@ -40,6 +41,7 @@ function SpotifyPlaylistTracks({
   instance: ListenerWidgetInstance;
   onRemove?: () => void;
 }) {
+  const { t } = useTranslation('web');
   const type = listenerWidgetType(instance.typeId);
   const embedUrl = type?.toEmbedUrl(instance.input);
   const [status, setStatus] = useState<'loading' | 'ready' | 'fallback'>(
@@ -102,12 +104,15 @@ function SpotifyPlaylistTracks({
         ) : null}
       </div>
       {status === 'loading' ? (
-        <InlineLoader label="Loading playlist…" className="py-6" />
+        <InlineLoader
+          label={t('listenerWidgetEmbed.loadingPlaylist')}
+          className="py-6"
+        />
       ) : null}
       {status === 'ready' ? (
         <PlayableAmbientTrackList
           items={items}
-          emptyMessage="This playlist has no tracks."
+          emptyMessage={t('listenerWidgetEmbed.thisPlaylistHasNoTracks')}
           compactActions
         />
       ) : null}
@@ -130,8 +135,7 @@ function SpotifyPlaylistTracks({
             />
           ) : (
             <InlineError textSize="xs">
-              Couldn&apos;t load this Spotify playlist — remove it and try a
-              public playlist link again.
+              {t('listenerWidgetEmbed.couldnAposTLoadThis')}
             </InlineError>
           )}
         </div>

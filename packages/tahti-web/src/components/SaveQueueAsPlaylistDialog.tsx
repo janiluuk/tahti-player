@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -20,6 +21,7 @@ type Props = {
  * tracks (composing the same createStudioCollection/addStudioCollectionItem
  * calls AddToPlaylistPanel uses for single tracks — no new persistence). */
 export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {
+  const { t } = useTranslation('web');
   const queue = usePlayerStore((s) => s.queue);
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
@@ -69,7 +71,9 @@ export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {
 
   return (
     <Dialog.Root isOpen={isOpen} onClose={handleClose} className="max-w-md">
-      <Dialog.Title>Save queue as playlist</Dialog.Title>
+      <Dialog.Title>
+        {t('saveQueueAsPlaylistDialog.saveQueueAsPlaylist')}
+      </Dialog.Title>
       <Dialog.Description>
         Creates a new playlist from the {soundIds.length}{' '}
         {soundIds.length === 1 ? 'track' : 'tracks'} in your queue that are part
@@ -86,14 +90,14 @@ export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {
         }}
       >
         <Input
-          label="Playlist name"
+          label={t('saveQueueAsPlaylistDialog.playlistName')}
           value={name}
           onChange={(event) => setName(event.target.value)}
           autoFocus
         />
         {error && <InlineError className="mt-2">{error}</InlineError>}
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('saveQueueAsPlaylistDialog.cancel')}</Dialog.Close>
           <Button
             disabled={busy || !name.trim() || soundIds.length === 0}
             type="submit"

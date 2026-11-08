@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import { fetchStatsPlays, type StatsPlays } from '../../../api/studio-extras';
 import { StudioPanel } from '../../../components/StudioPanel';
 
 export function ScheduleAnalytics() {
+  const { t } = useTranslation('web');
   const [stats, setStats] = useState<
     Partial<Record<'1' | '7' | '30', StatsPlays>>
   >({});
@@ -24,8 +27,8 @@ export function ScheduleAnalytics() {
 
   return (
     <StudioPanel
-      title="Broadcast analytics"
-      description="Recent listening activity around your scheduled broadcasts."
+      title={t('scheduleAnalytics.broadcastAnalytics')}
+      description={t('scheduleAnalytics.recentListeningActivityAroundYour')}
     >
       <div className="grid gap-3 sm:grid-cols-3">
         {(['1', '7', '30'] as const).map((range) => (

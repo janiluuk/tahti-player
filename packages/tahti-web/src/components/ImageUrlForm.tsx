@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input } from '@tahti-player/ui';
 
 const isHttpUrl = (value: string) => {
@@ -19,6 +20,7 @@ export function ImageUrlForm({
   busy: boolean;
   onSubmit: (url: string) => Promise<boolean>;
 }) {
+  const { t } = useTranslation('web');
   const [url, setUrl] = useState('');
   const trimmed = url.trim();
   const valid = isHttpUrl(trimmed);
@@ -43,8 +45,8 @@ export function ImageUrlForm({
         autoCapitalize="none"
         autoCorrect="off"
         spellCheck={false}
-        label="Image URL"
-        description="A direct link to a JPEG, PNG or WebP image. Tahti keeps its own copy."
+        label={t('imageUrlForm.imageUrl')}
+        description={t('imageUrlForm.aDirectLinkToA')}
         value={url}
         placeholder="https://example.com/cover.jpg"
         error={trimmed && !valid ? 'Enter a full http(s) link' : undefined}

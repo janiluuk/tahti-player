@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { SelectableTiles, type SelectableTile } from '@tahti-player/ui';
 import { VISUALIZER_MODE_LABELS } from '@tahti-player/visualizer';
 
@@ -30,6 +31,7 @@ type Props = {
 /** Channel-night viz pack: replaces the preset with a rotating set of
  * Advanced/Cymatics scenes, and listeners see its name on the channel. */
 export function ChannelVizPackPicker({ value, onChange, disabled }: Props) {
+  const { t } = useTranslation('web');
   const selected = channelVizPack(value)?.id ?? NO_PACK;
 
   return (
@@ -37,13 +39,12 @@ export function ChannelVizPackPicker({ value, onChange, disabled }: Props) {
       className="flex flex-col gap-2"
       data-testid="channel-viz-pack-picker"
     >
-      <Eyebrow>Show pack</Eyebrow>
+      <Eyebrow>{t('channelVizPackPicker.showPack')}</Eyebrow>
       <p className="text-foreground-secondary text-xs">
-        Listeners see the pack name on your channel while the header shows the
-        visualizer.
+        {t('channelVizPackPicker.listenersSeeThePackName')}
       </p>
       <SelectableTiles
-        aria-label="Visualizer pack"
+        aria-label={t('channelVizPackPicker.visualizerPack')}
         className="sm:grid-cols-2"
         items={PACK_TILES}
         selected={selected}

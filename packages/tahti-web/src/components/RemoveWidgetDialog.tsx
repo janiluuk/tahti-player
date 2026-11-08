@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog } from '@tahti-player/ui';
 
 type Props = {
@@ -16,6 +17,7 @@ export function RemoveWidgetDialog({
   onCancel,
   onConfirm,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <Dialog.Root isOpen={isOpen} onClose={onCancel}>
       <Dialog.Title>Remove {label}?</Dialog.Title>
@@ -24,9 +26,9 @@ export function RemoveWidgetDialog({
         from Manage widgets.
       </Dialog.Description>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('removeWidgetDialog.cancel')}</Dialog.Close>
         <Button variant="secondary" intent="danger" onClick={onConfirm}>
-          Remove
+          {t('removeWidgetDialog.remove')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

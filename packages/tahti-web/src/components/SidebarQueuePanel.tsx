@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Trash2Icon } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, QueuePanel, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
@@ -30,6 +31,7 @@ export function SidebarQueuePanel({
   /** Off when the host renders the queue actions itself (right-rail header). */
   toolbar?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
@@ -112,10 +114,10 @@ export function SidebarQueuePanel({
           emptyAction={
             <div className="flex flex-wrap items-center justify-center gap-2">
               <ButtonLink to="/discover" size="sm" variant="secondary">
-                Discover
+                {t('sidebarQueuePanel.discover')}
               </ButtonLink>
               <ButtonLink to="/radio" size="sm" variant="secondary">
-                Radio
+                {t('sidebarQueuePanel.radio')}
               </ButtonLink>
             </div>
           }
@@ -124,14 +126,14 @@ export function SidebarQueuePanel({
 
       {toolbar ? (
         <div className="border-border flex shrink-0 items-center justify-center gap-1 border-t px-2 py-1.5">
-          <Tooltip content="Clear queue" side="top">
+          <Tooltip content={t('sidebarQueuePanel.clearQueue')} side="top">
             <Button
               size="icon-sm"
               variant="text"
               disabled={queue.length === 0}
               onClick={requestClear}
               className="text-foreground-secondary hover:text-accent-red-strong"
-              aria-label="Clear queue"
+              aria-label={t('sidebarQueuePanel.clearQueue')}
             >
               <Trash2Icon className="text-accent-red" size={15} aria-hidden />
             </Button>

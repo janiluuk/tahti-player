@@ -1,14 +1,16 @@
 import { AlertCircle, Inbox, PackageOpen, Radio } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Alert, Button, CenteredLoader, EmptyState } from '@tahti-player/ui';
 
 export function RouteChunkSkeleton() {
+  const { t } = useTranslation('web');
   return (
     <div
       className="flex flex-col gap-3 px-1 py-2"
       role="status"
-      aria-label="Loading page"
+      aria-label={t('pageStates.loadingPage')}
     >
       <div className="bg-background-secondary/70 h-6 w-40 max-w-[55%] rounded-md motion-safe:animate-pulse" />
       <div className="bg-background-secondary/50 h-4 w-full max-w-md rounded-md motion-safe:animate-pulse" />
@@ -100,6 +102,7 @@ export function PageError({
   description?: string;
   onRetry?: () => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <EmptyState
       size="sm"
@@ -111,7 +114,7 @@ export function PageError({
       action={
         onRetry ? (
           <Button size="sm" onClick={onRetry} variant="secondary">
-            Retry
+            {t('pageStates.retry')}
           </Button>
         ) : undefined
       }
@@ -128,13 +131,14 @@ export function PageErrorBanner({
   description?: string;
   onRetry?: () => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <Alert tone="error" title={title}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         {description ? <span>{description}</span> : <span />}
         {onRetry ? (
           <Button size="sm" variant="secondary" onClick={onRetry}>
-            Retry
+            {t('pageStates.retry')}
           </Button>
         ) : null}
       </div>

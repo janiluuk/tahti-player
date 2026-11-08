@@ -1,5 +1,7 @@
 import { Link } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import type {
   ListeningPartyCredit,
   ListeningPartyDto,
@@ -51,6 +53,7 @@ export function ListeningPartyLinerNotes({
 }: {
   party: ListeningPartyDto;
 }) {
+  const { t } = useTranslation('web');
   const { release } = party;
   const creditedTracks = [...party.tracks]
     .sort((a, b) => a.position - b.position)
@@ -63,8 +66,11 @@ export function ListeningPartyLinerNotes({
     return null;
   }
   return (
-    <section aria-label="Liner notes" className="flex flex-col gap-4">
-      <Eyebrow>Liner notes</Eyebrow>
+    <section
+      aria-label={t('listeningPartyLinerNotes.linerNotes')}
+      className="flex flex-col gap-4"
+    >
+      <Eyebrow>{t('listeningPartyLinerNotes.linerNotes')}</Eyebrow>
       {release.commentary ? (
         <p className="text-sm leading-relaxed whitespace-pre-wrap">
           {release.commentary}
@@ -73,9 +79,12 @@ export function ListeningPartyLinerNotes({
       {hasCredits ? (
         <div className="flex flex-col gap-3">
           <h3 className="text-foreground-secondary text-xs tracking-wide uppercase">
-            Credits
+            {t('listeningPartyLinerNotes.credits')}
           </h3>
-          <CreditList credits={release.credits} label="Release credits" />
+          <CreditList
+            credits={release.credits}
+            label={t('listeningPartyLinerNotes.releaseCredits')}
+          />
           {creditedTracks.map((track) => (
             <div key={track.id} className="flex flex-col gap-1">
               <h4 className="text-sm font-medium">

@@ -6524,6 +6524,228 @@
       "nothingWillPlayOnThis": "Nothing will play on this channel while it's not live. Add tracks to the rotation so listeners always hear something.",
       "manage247Rotation": "Manage 24/7 rotation",
       "the247RotationIs": "The 24/7 rotation is empty"
+    },
+    "sidebarQueuePanel": {
+      "discover": "Discover",
+      "radio": "Radio",
+      "clearQueue": "Clear queue"
+    },
+    "saveQueueLocalDialog": {
+      "saveQueueAsLocalPlaylist": "Save queue as local playlist",
+      "cancel": "Cancel",
+      "playlistName": "Playlist name"
+    },
+    "saveQueueAsPlaylistDialog": {
+      "saveQueueAsPlaylist": "Save queue as playlist",
+      "cancel": "Cancel",
+      "playlistName": "Playlist name"
+    },
+    "pluginStoreShared": {
+      "done": "Done",
+      "installed": "Installed",
+      "available": "Available"
+    },
+    "dspUrlPasteCard": {
+      "pasteADspUrlTo": "Paste a DSP URL to open Studio releases (smart-link targets).",
+      "openReleasesEditor": "Open releases editor",
+      "streamingServiceUrl": "Streaming service URL"
+    },
+    "playlistNameDialog": {
+      "cancel": "Cancel",
+      "name": "Name"
+    },
+    "playlistExportDialog": {
+      "savesAnM3u8FileUtf": "Saves an M3U8 file (UTF-8) with every entry in order, repeats included. Entries whose file is missing are kept with their last known path.",
+      "filePaths": "File paths",
+      "cancel": "Cancel"
+    },
+    "playableTrackTable": {
+      "thisAddsEveryTrackIn": "This adds every track in this list to your play queue.",
+      "cancel": "Cancel",
+      "addToQueue": "Add to queue"
+    },
+    "obsPresetButton": {
+      "downloadObsPreset": "Download OBS preset",
+      "recommendedObsSettings": "Recommended OBS settings",
+      "downloadAnObsSceneCollection": "Download an OBS scene collection (Scene Collection → Import in OBS)"
+    },
+    "chatAccessPanel": {
+      "onlyFanSubscribersCanPost": "Only fan subscribers can post",
+      "chatAccess": "Chat access",
+      "turnThisOnToLet": "Turn this on to let only your active fan subscribers post in your channel chat."
+    },
+    "localLibraryAnalysis": {
+      "audioAnalysis": "Audio analysis",
+      "stop": "Stop",
+      "starting": "Starting"
+    },
+    "listeningPartyLinerNotes": {
+      "linerNotes": "Liner notes",
+      "credits": "Credits",
+      "releaseCredits": "Release credits"
+    },
+    "listenerWidgetEmbed": {
+      "couldnAposTLoadThis": "Couldn't load this Spotify playlist — remove it and try a public playlist link again.",
+      "loadingPlaylist": "Loading playlist…",
+      "thisPlaylistHasNoTracks": "This playlist has no tracks."
+    },
+    "imageUrlForm": {
+      "imageUrl": "Image URL",
+      "aDirectLinkToA": "A direct link to a JPEG, PNG or WebP image. Tahti keeps its own copy."
+    },
+    "motionMeetingLinkControl": {
+      "saveMeeting": "Save meeting",
+      "cancel": "Cancel",
+      "meeting": "Meeting"
+    },
+    "motionCertificatePanel": {
+      "corrected": "Corrected",
+      "resultCertificate": "Result certificate",
+      "corrections": "Corrections"
+    },
+    "motionAgendaItemControl": {
+      "saveAgendaItem": "Save agenda item",
+      "cancel": "Cancel",
+      "agendaItem": "Agenda item"
+    },
+    "genrePicker": {
+      "genres": "Genres",
+      "addAGenre": "Add a genre",
+      "searchOrTypeToAdd": "Search or type to add a genre…"
+    },
+    "clearQueueConfirmDialog": {
+      "clearQueue": "Clear queue?",
+      "cancel": "Cancel",
+      "clearQueue2": "Clear queue"
+    },
+    "channelNavigationEditor": {
+      "addAnotherBlockToThe": "Add another block to the page first, then assign it to a tab here.",
+      "addTab": "Add tab",
+      "removeTab": "Remove tab"
+    },
+    "channelVizPackPicker": {
+      "showPack": "Show pack",
+      "listenersSeeThePackName": "Listeners see the pack name on your channel while the header shows the visualizer.",
+      "visualizerPack": "Visualizer pack"
+    },
+    "appliedPresetBanner": {
+      "applied": "Applied",
+      "revert": "Revert",
+      "keep": "Keep"
+    },
+    "catalogTrackSearch": {
+      "trackTitle": "Track title",
+      "catalogResults": "Catalog results"
+    },
+    "processingIndicator": {
+      "processingTracks": "Processing tracks",
+      "thisStatusUpdatesAutomaticallyYou": "This status updates automatically. You’ll get a notification when a track is ready.",
+      "trackProcessingStatus": "Track processing status"
+    },
+    "broadcastControls": {
+      "bookingCalendar": "Booking calendar",
+      "broadcastStatus": "Broadcast status",
+      "openUpload": "Open upload"
+    },
+    "aiGeneratedBadge": {
+      "aiGenerated": "AI-generated",
+      "theArtistMarkedThisTrack": "The artist marked this track as made with generative AI"
+    },
+    "scheduleAnalytics": {
+      "broadcastAnalytics": "Broadcast analytics",
+      "recentListeningActivityAroundYour": "Recent listening activity around your scheduled broadcasts."
+    },
+    "broadcastUsageMeter": {
+      "weeklyLiveTime": "Weekly live time",
+      "getUnlimitedLiveTime": "Get unlimited live time"
+    },
+    "textLayerPanel": {
+      "textLayer": "Text layer",
+      "aStyledHeadlineShownOn": "A styled headline shown on the public page of this collection."
+    },
+    "groupsDirectoryView": {
+      "groups": "Groups",
+      "artistCollectivesWithAShared": "Artist collectives with a shared playlist."
+    },
+    "annualReportRow": {
+      "onLegalHold": "On legal hold",
+      "download": "Download"
+    },
+    "adminStreamsView": {
+      "admin": "Admin",
+      "streams": "Streams"
+    },
+    "adminStorageView": {
+      "admin": "Admin",
+      "storage": "Storage"
+    },
+    "adminSelectsView": {
+      "admin": "Admin",
+      "tahtiSelects": "Tahti Selects"
+    },
+    "adminGovernanceView": {
+      "admin": "Admin",
+      "governance": "Governance"
+    },
+    "recordedAtVenuePicker": {
+      "recordedAtOptional": "Recorded at (optional)",
+      "shownOnTheTrackPage": "Shown on the track page, linking to the venue."
+    },
+    "streamManagerPanel": {
+      "activeRotation": "Active rotation",
+      "streamStats": "Stream stats"
+    },
+    "removeWidgetDialog": {
+      "cancel": "Cancel",
+      "remove": "Remove"
+    },
+    "releaseTracksToRotation": {
+      "addFromYourReleases": "Add from your releases",
+      "putAReleasedTrackInto": "Put a released track into the 24/7 rotation without uploading it again."
+    },
+    "googleDriveImport": {
+      "pickAudioFilesFromYour": "Pick audio files from your Google Drive. Tahti fetches them on the server and adds them to your tracks.",
+      "uploadFiles": "Upload files"
+    },
+    "pageStates": {
+      "retry": "Retry",
+      "loadingPage": "Loading page"
+    },
+    "mpdIntegrationRow": {
+      "mpdServer": "MPD server",
+      "letsAnMpdClientSuch": "Lets an MPD client such as mpc, ncmpcpp or a phone app control playback and the queue. It listens on this computer only."
+    },
+    "mcpIntegrationRow": {
+      "mcpServer": "MCP server",
+      "letsAnAiToolSuch": "Lets an AI tool such as Claude Code or Cursor control playback, the queue, your library and radio. It listens on this computer only."
+    },
+    "materialTagsField": {
+      "tags": "Tags",
+      "helpListenersFindItGenres": "Help listeners find it — genres, moods, instruments. Separate several tags with commas."
+    },
+    "localLibraryBrowse": {
+      "browseLocalLibrary": "Browse local library",
+      "addToPlaylist": "Add to playlist"
+    },
+    "homeNews": {
+      "showAllNews": "Show all news",
+      "fromTahti": "From Tahti"
+    },
+    "listeningPartyTracklist": {
+      "tracklist": "Tracklist",
+      "nowPlaying": "Now playing"
+    },
+    "listenerWidgetsSection": {
+      "listenAddOns": "Listen add-ons",
+      "manageWidgets": "Manage widgets"
+    },
+    "jamParticipantList": {
+      "host": "Host",
+      "canControl": "Can control"
+    },
+    "guidelinesBanner": {
+      "readGuidelines": "Read guidelines",
+      "acknowledge": "Acknowledge"
     }
   },
   "studioEditor": {

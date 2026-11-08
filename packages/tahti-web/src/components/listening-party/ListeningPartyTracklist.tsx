@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge } from '@tahti-player/ui';
 
 import type { ListeningPartyTrack } from '../../api/listening-parties';
@@ -14,11 +15,15 @@ export function ListeningPartyTracklist({
   tracks: ListeningPartyTrack[];
   clock: ListeningPartyClock;
 }) {
+  const { t } = useTranslation('web');
   const ordered = [...tracks].sort((a, b) => a.position - b.position);
   const current = clock.nowPlaying;
   return (
-    <section aria-label="Tracklist" className="flex flex-col gap-3">
-      <Eyebrow>Tracklist</Eyebrow>
+    <section
+      aria-label={t('listeningPartyTracklist.tracklist')}
+      className="flex flex-col gap-3"
+    >
+      <Eyebrow>{t('listeningPartyTracklist.tracklist')}</Eyebrow>
       <ol className="border-border divide-border divide-y overflow-hidden rounded-xl border">
         {ordered.map((track) => {
           const playing = current?.trackId === track.id;
@@ -43,7 +48,7 @@ export function ListeningPartyTracklist({
               </span>
               {playing ? (
                 <Badge variant="pill" color="green">
-                  Now playing
+                  {t('listeningPartyTracklist.nowPlaying')}
                 </Badge>
               ) : null}
               <span className="text-foreground-secondary shrink-0 text-xs tabular-nums">

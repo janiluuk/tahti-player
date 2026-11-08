@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Toggle } from '@tahti-player/ui';
 
 import {
@@ -12,6 +13,7 @@ import { StudioPanel } from '../StudioPanel';
 /** Who may post in the channel chat. Renders nothing until the setting has
  * loaded, or when the API has no chat settings for this account. */
 export function ChatAccessPanel() {
+  const { t } = useTranslation('web');
   const [subscribersOnly, setSubscribersOnly] = useState<boolean | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -50,15 +52,15 @@ export function ChatAccessPanel() {
 
   return (
     <StudioPanel
-      title="Chat access"
-      description="Turn this on to let only your active fan subscribers post in your channel chat."
+      title={t('chatAccessPanel.chatAccess')}
+      description={t('chatAccessPanel.turnThisOnToLet')}
     >
       <div className="flex items-center justify-between gap-3 text-sm">
         <span className="font-semibold" aria-hidden>
-          Only fan subscribers can post
+          {t('chatAccessPanel.onlyFanSubscribersCanPost')}
         </span>
         <Toggle
-          label="Only fan subscribers can post"
+          label={t('chatAccessPanel.onlyFanSubscribersCanPost')}
           checked={subscribersOnly}
           disabled={saving}
           onChange={change}

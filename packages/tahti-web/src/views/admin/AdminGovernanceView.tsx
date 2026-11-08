@@ -9,6 +9,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -78,6 +79,7 @@ const GOVERNANCE_TAB_ITEMS: ModerationTabItem[] = ADMIN_GOVERNANCE_TABS.map(
  * redirect into `/admin/governance/$tab` (router.tsx), the canonical,
  * addressable URL for each tab — same convention as `/admin/moderation/$tab`. */
 export function AdminGovernanceView({ tab }: { tab?: AdminGovernanceTabId }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const active = isAdminGovernanceTabId(tab)
     ? tab
@@ -92,9 +94,13 @@ export function AdminGovernanceView({ tab }: { tab?: AdminGovernanceTabId }) {
         <AdminPageLayout current="/admin/governance">
           <div className="flex max-w-4xl flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminGovernanceView.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="coop" />
-              <BreadcrumbLink to="/admin/governance">Governance</BreadcrumbLink>
+              <BreadcrumbLink to="/admin/governance">
+                {t('adminGovernanceView.governance')}
+              </BreadcrumbLink>
               <BreadcrumbCurrent>{activeLabel}</BreadcrumbCurrent>
             </Breadcrumbs>
             <ModerationTabs
@@ -110,7 +116,7 @@ export function AdminGovernanceView({ tab }: { tab?: AdminGovernanceTabId }) {
               }}
             />
             <ViewShell
-              title="Governance"
+              title={t('adminGovernanceView.governance')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {tabContent(active)}

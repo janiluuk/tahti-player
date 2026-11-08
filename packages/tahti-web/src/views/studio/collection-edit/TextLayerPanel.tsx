@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import {
@@ -16,6 +16,7 @@ import { ChannelTextOverlayView } from '../../../components/ChannelTextOverlayVi
 import { StudioPanel } from '../../../components/StudioPanel';
 
 export function TextLayerPanel({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const [draft, setDraft] = useState<TextOverlayDraft | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -65,8 +66,8 @@ export function TextLayerPanel({ slug }: { slug: string }) {
 
   return (
     <StudioPanel
-      title="Text layer"
-      description="A styled headline shown on the public page of this collection."
+      title={t('textLayerPanel.textLayer')}
+      description={t('textLayerPanel.aStyledHeadlineShownOn')}
       action={
         <Button size="sm" onClick={() => void save()} disabled={saving}>
           {saving ? 'Saving…' : 'Save text layer'}

@@ -6524,6 +6524,228 @@
       "nothingWillPlayOnThis": "Tällä kanavalla ei soi mitään, kun se ei ole livenä. Lisää kappaleita rotaatioon, jotta kuuntelijat kuulevat aina jotain.",
       "manage247Rotation": "Hallitse 24/7-rotaatiota",
       "the247RotationIs": "24/7-rotaatio on tyhjä"
+    },
+    "sidebarQueuePanel": {
+      "discover": "Löydä",
+      "radio": "Radio",
+      "clearQueue": "Tyhjennä jono"
+    },
+    "saveQueueLocalDialog": {
+      "saveQueueAsLocalPlaylist": "Tallenna jono paikalliseksi soittolistaksi",
+      "cancel": "Peruuta",
+      "playlistName": "Soittolistan nimi"
+    },
+    "saveQueueAsPlaylistDialog": {
+      "saveQueueAsPlaylist": "Tallenna jono soittolistaksi",
+      "cancel": "Peruuta",
+      "playlistName": "Soittolistan nimi"
+    },
+    "pluginStoreShared": {
+      "done": "Valmis",
+      "installed": "Asennettu",
+      "available": "Saatavilla"
+    },
+    "dspUrlPasteCard": {
+      "pasteADspUrlTo": "Liitä suoratoistopalvelun osoite avataksesi Studion julkaisut (älylinkkien kohteet).",
+      "openReleasesEditor": "Avaa julkaisueditori",
+      "streamingServiceUrl": "Suoratoistopalvelun osoite"
+    },
+    "playlistNameDialog": {
+      "cancel": "Peruuta",
+      "name": "Nimi"
+    },
+    "playlistExportDialog": {
+      "savesAnM3u8FileUtf": "Tallentaa M3U8-tiedoston (UTF-8), jossa on kaikki merkinnät järjestyksessä toistot mukaan lukien. Merkinnät, joiden tiedosto puuttuu, säilytetään viimeisellä tunnetulla polulla.",
+      "filePaths": "Tiedostopolut",
+      "cancel": "Peruuta"
+    },
+    "playableTrackTable": {
+      "thisAddsEveryTrackIn": "Tämä lisää jokaisen tämän listan kappaleen soittojonoosi.",
+      "cancel": "Peruuta",
+      "addToQueue": "Lisää jonoon"
+    },
+    "obsPresetButton": {
+      "downloadObsPreset": "Lataa OBS-esiasetus",
+      "recommendedObsSettings": "Suositellut OBS-asetukset",
+      "downloadAnObsSceneCollection": "Lataa OBS-kohdekokoelma (Scene Collection → Import OBS:ssä)"
+    },
+    "chatAccessPanel": {
+      "onlyFanSubscribersCanPost": "Vain fanitilaajat voivat kirjoittaa",
+      "chatAccess": "Keskustelun käyttöoikeus",
+      "turnThisOnToLet": "Kytke tämä päälle, jos haluat, että vain aktiiviset fanitilaajasi voivat kirjoittaa kanavasi keskusteluun."
+    },
+    "localLibraryAnalysis": {
+      "audioAnalysis": "Äänianalyysi",
+      "stop": "Pysäytä",
+      "starting": "Käynnistetään"
+    },
+    "listeningPartyLinerNotes": {
+      "linerNotes": "Kansiteksti",
+      "credits": "Tekijät",
+      "releaseCredits": "Julkaisun tekijät"
+    },
+    "listenerWidgetEmbed": {
+      "couldnAposTLoadThis": "Tätä Spotify-soittolistaa ei voitu ladata. Poista se ja kokeile julkisen soittolistan linkkiä uudelleen.",
+      "loadingPlaylist": "Ladataan soittolistaa…",
+      "thisPlaylistHasNoTracks": "Tällä soittolistalla ei ole kappaleita."
+    },
+    "imageUrlForm": {
+      "imageUrl": "Kuvan osoite",
+      "aDirectLinkToA": "Suora linkki JPEG-, PNG- tai WebP-kuvaan. Tahti tallentaa siitä oman kopion."
+    },
+    "motionMeetingLinkControl": {
+      "saveMeeting": "Tallenna kokous",
+      "cancel": "Peruuta",
+      "meeting": "Kokous"
+    },
+    "motionCertificatePanel": {
+      "corrected": "Korjattu",
+      "resultCertificate": "Tulostodistus",
+      "corrections": "Korjaukset"
+    },
+    "motionAgendaItemControl": {
+      "saveAgendaItem": "Tallenna asiakohta",
+      "cancel": "Peruuta",
+      "agendaItem": "Asiakohta"
+    },
+    "genrePicker": {
+      "genres": "Tyylilajit",
+      "addAGenre": "Lisää tyylilaji",
+      "searchOrTypeToAdd": "Hae tai kirjoita lisätäksesi tyylilajin…"
+    },
+    "clearQueueConfirmDialog": {
+      "clearQueue": "Tyhjennetäänkö jono?",
+      "cancel": "Peruuta",
+      "clearQueue2": "Tyhjennä jono"
+    },
+    "channelNavigationEditor": {
+      "addAnotherBlockToThe": "Lisää ensin sivulle toinen lohko ja liitä se sitten välilehteen tässä.",
+      "addTab": "Lisää välilehti",
+      "removeTab": "Poista välilehti"
+    },
+    "channelVizPackPicker": {
+      "showPack": "Näytä paketti",
+      "listenersSeeThePackName": "Kuuntelijat näkevät paketin nimen kanavallasi, kun otsake näyttää visualisoinnin.",
+      "visualizerPack": "Visualisointipaketti"
+    },
+    "appliedPresetBanner": {
+      "applied": "Käytössä",
+      "revert": "Palauta",
+      "keep": "Pidä"
+    },
+    "catalogTrackSearch": {
+      "trackTitle": "Kappaleen nimi",
+      "catalogResults": "Luettelon tulokset"
+    },
+    "processingIndicator": {
+      "processingTracks": "Käsitellään kappaleita",
+      "thisStatusUpdatesAutomaticallyYou": "Tila päivittyy automaattisesti. Saat ilmoituksen, kun kappale on valmis.",
+      "trackProcessingStatus": "Kappaleiden käsittelyn tila"
+    },
+    "broadcastControls": {
+      "bookingCalendar": "Varauskalenteri",
+      "broadcastStatus": "Lähetyksen tila",
+      "openUpload": "Avaa lataus"
+    },
+    "aiGeneratedBadge": {
+      "aiGenerated": "Tekoälyllä tehty",
+      "theArtistMarkedThisTrack": "Artisti on merkinnyt tämän kappaleen generatiivisella tekoälyllä tehdyksi"
+    },
+    "scheduleAnalytics": {
+      "broadcastAnalytics": "Lähetysten analytiikka",
+      "recentListeningActivityAroundYour": "Viimeaikainen kuuntelu ajastettujen lähetystesi ympärillä."
+    },
+    "broadcastUsageMeter": {
+      "weeklyLiveTime": "Viikon liveaika",
+      "getUnlimitedLiveTime": "Hanki rajaton liveaika"
+    },
+    "textLayerPanel": {
+      "textLayer": "Tekstikerros",
+      "aStyledHeadlineShownOn": "Muotoiltu otsikko, joka näkyy tämän kokoelman julkisella sivulla."
+    },
+    "groupsDirectoryView": {
+      "groups": "Ryhmät",
+      "artistCollectivesWithAShared": "Artistikollektiiveja, joilla on yhteinen soittolista."
+    },
+    "annualReportRow": {
+      "onLegalHold": "Oikeudellisessa pidossa",
+      "download": "Lataa"
+    },
+    "adminStreamsView": {
+      "admin": "Ylläpito",
+      "streams": "Lähetykset"
+    },
+    "adminStorageView": {
+      "admin": "Ylläpito",
+      "storage": "Tallennustila"
+    },
+    "adminSelectsView": {
+      "admin": "Ylläpito",
+      "tahtiSelects": "Tahti Selects"
+    },
+    "adminGovernanceView": {
+      "admin": "Ylläpito",
+      "governance": "Hallinto"
+    },
+    "recordedAtVenuePicker": {
+      "recordedAtOptional": "Äänitetty paikassa (valinnainen)",
+      "shownOnTheTrackPage": "Näytetään kappaleen sivulla linkkinä tapahtumapaikkaan."
+    },
+    "streamManagerPanel": {
+      "activeRotation": "Aktiivinen rotaatio",
+      "streamStats": "Lähetyksen tilastot"
+    },
+    "removeWidgetDialog": {
+      "cancel": "Peruuta",
+      "remove": "Poista"
+    },
+    "releaseTracksToRotation": {
+      "addFromYourReleases": "Lisää julkaisuistasi",
+      "putAReleasedTrackInto": "Lisää julkaistu kappale 24/7-rotaatioon lataamatta sitä uudelleen."
+    },
+    "googleDriveImport": {
+      "pickAudioFilesFromYour": "Valitse äänitiedostoja Google Drivesta. Tahti hakee ne palvelimella ja lisää ne kappaleisiisi.",
+      "uploadFiles": "Lataa tiedostoja"
+    },
+    "pageStates": {
+      "retry": "Yritä uudelleen",
+      "loadingPage": "Ladataan sivua"
+    },
+    "mpdIntegrationRow": {
+      "mpdServer": "MPD-palvelin",
+      "letsAnMpdClientSuch": "Antaa MPD-asiakkaan, kuten mpc:n, ncmpcpp:n tai puhelinsovelluksen, ohjata toistoa ja jonoa. Kuuntelee vain tällä tietokoneella."
+    },
+    "mcpIntegrationRow": {
+      "mcpServer": "MCP-palvelin",
+      "letsAnAiToolSuch": "Antaa tekoälytyökalun, kuten Claude Coden tai Cursorin, ohjata toistoa, jonoa, kirjastoasi ja radiota. Kuuntelee vain tällä tietokoneella."
+    },
+    "materialTagsField": {
+      "tags": "Tunnisteet",
+      "helpListenersFindItGenres": "Auta kuuntelijoita löytämään se: tyylilajit, tunnelmat, soittimet. Erota tunnisteet pilkuilla."
+    },
+    "localLibraryBrowse": {
+      "browseLocalLibrary": "Selaa paikallista kirjastoa",
+      "addToPlaylist": "Lisää soittolistaan"
+    },
+    "homeNews": {
+      "showAllNews": "Näytä kaikki uutiset",
+      "fromTahti": "Tahdilta"
+    },
+    "listeningPartyTracklist": {
+      "tracklist": "Kappalelista",
+      "nowPlaying": "Nyt soi"
+    },
+    "listenerWidgetsSection": {
+      "listenAddOns": "Kuuntele-lisäosat",
+      "manageWidgets": "Hallitse pienoisohjelmia"
+    },
+    "jamParticipantList": {
+      "host": "Isäntä",
+      "canControl": "Voi ohjata"
+    },
+    "guidelinesBanner": {
+      "readGuidelines": "Lue ohjeet",
+      "acknowledge": "Kuittaa"
     }
   },
   "studioEditor": {

@@ -1,6 +1,7 @@
 import { ShieldCheckIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge } from '@tahti-player/ui';
 
 import {
@@ -25,6 +26,7 @@ export function MotionCertificatePanel({
   motionId: string;
   isBoard?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [certificate, setCertificate] = useState<MotionCertificate | null>(
     null,
   );
@@ -43,7 +45,10 @@ export function MotionCertificatePanel({
   }
 
   return (
-    <GovernancePanel title="Result certificate" icon={ShieldCheckIcon}>
+    <GovernancePanel
+      title={t('motionCertificatePanel.resultCertificate')}
+      icon={ShieldCheckIcon}
+    >
       <div className="flex flex-wrap items-center gap-2 text-sm">
         <span className="font-medium">{tallyText(certificate.tally)}</span>
         <span className="text-foreground-secondary text-xs">
@@ -74,11 +79,15 @@ export function MotionCertificatePanel({
         </p>
       ) : null}
       {certificate.corrections.length > 0 ? (
-        <ul aria-label="Corrections" className="flex flex-col gap-1 text-xs">
+        <ul
+          aria-label={t('motionCertificatePanel.corrections')}
+          className="flex flex-col gap-1 text-xs"
+        >
           {certificate.corrections.map((correction) => (
             <li key={correction.id}>
               <span className="font-medium">
-                Corrected <ListingDate value={correction.createdAt} />
+                {t('motionCertificatePanel.corrected')}{' '}
+                <ListingDate value={correction.createdAt} />
               </span>
               {correction.tally ? ` · ${tallyText(correction.tally)}` : ''}
               {correction.matchesRecord ? '' : ' · does not chain'}

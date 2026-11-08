@@ -1,6 +1,7 @@
 import { ArrowRightIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, NewsWidget } from '@tahti-player/ui';
 
 import { fetchAnnouncements } from '../../api/client';
@@ -15,6 +16,7 @@ const LABELS = { nothingFound: 'No news yet.' };
 
 /** The latest Tahti news posts on Discover, linking to /news. */
 export function HomeNews({ limit = 3 }: { limit?: number }) {
+  const { t } = useTranslation('web');
   const [selected, setSelected] = useState<Announcement | null>(null);
   const [posts, setPosts] = useState<Announcement[]>([]);
   const [status, setStatus] = useState<ListenSectionStatus>('loading');
@@ -55,7 +57,7 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
   return (
     <ListenSection
       data-testid="home-news"
-      title="From Tahti"
+      title={t('homeNews.fromTahti')}
       badge="News"
       badgeColor="yellow"
       status={status}
@@ -78,7 +80,7 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
       ) : null}
       <div className="flex flex-col gap-2" data-testid="home-news">
         <NewsWidget
-          title="From Tahti"
+          title={t('homeNews.fromTahti')}
           badge="News"
           items={items}
           labels={LABELS}
@@ -89,7 +91,7 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
               variant="secondary"
               className="gap-1.5"
             >
-              Show all news
+              {t('homeNews.showAllNews')}
               <ArrowRightIcon size={14} aria-hidden />
             </ButtonLink>
           }

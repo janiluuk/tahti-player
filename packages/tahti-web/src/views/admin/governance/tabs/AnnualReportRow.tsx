@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, ExternalLink } from '@tahti-player/ui';
 
 import type { AdminAnnualReport } from '../../../../api/admin';
@@ -47,6 +48,7 @@ export function AnnualReportRow({
   meetings: GovernanceMeeting[];
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const stage = annualReportStage(report);
   return (
     <li className="flex flex-col gap-1.5 py-3 text-sm first:pt-0 last:pb-0">
@@ -57,7 +59,7 @@ export function AnnualReportRow({
         </Badge>
         {report.legalHoldAt ? (
           <Badge variant="pill" color="red">
-            On legal hold
+            {t('annualReportRow.onLegalHold')}
           </Badge>
         ) : null}
         {report.downloadUrl ? (
@@ -65,7 +67,7 @@ export function AnnualReportRow({
             href={report.downloadUrl}
             className="ml-auto text-xs no-underline underline-offset-2 hover:underline"
           >
-            Download
+            {t('annualReportRow.download')}
           </ExternalLink>
         ) : null}
       </div>
