@@ -130,7 +130,7 @@ describe('Waveform', () => {
     expect(onSeek).toHaveBeenLastCalledWith(0);
   });
 
-  it('marks itself ready and recolours on theme change', async () => {
+  it('draws known peaks without a loading state and recolours on theme change', async () => {
     vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
       cb(0);
       return 1;
@@ -139,8 +139,6 @@ describe('Waveform', () => {
     await vi.waitFor(() => expect(instances).toHaveLength(1));
     const ws = instances[0]!;
     const el = screen.getByRole('img');
-    expect(el).toHaveAttribute('data-state', 'loading');
-    act(() => ws.handlers.ready?.());
     expect(el).toHaveAttribute('data-state', 'ready');
     document.documentElement.setAttribute('data-theme', 'dark');
     await vi.waitFor(() =>
@@ -185,6 +183,39 @@ describe('waveform audio fallback', () => {
     await vi.waitFor(() => expect(instances).toHaveLength(2));
     expect(instances[1]!.options.url).toBeUndefined();
     expect(instances[1]!.options.peaks).toEqual([[0, 0.8, 0.2]]);
+  });
+  it('decodes again under the same key once the audio file changed', async () => {
+    const first = render(
+      <Waveform
+        cacheKey="track-9"
+        audioUrl="https://audio.test/v1.mp3?sig=a"
+        durationSec={12}
+      />,
+    );
+    await vi.waitFor(() => expect(instances).toHaveLength(1));
+    act(() => instances[0]!.handlers.decode!(12));
+    first.unmount();
+
+    const same = render(
+      <Waveform
+        cacheKey="track-9"
+        audioUrl="https://audio.test/v1.mp3?sig=b"
+        durationSec={12}
+      />,
+    );
+    await vi.waitFor(() => expect(instances).toHaveLength(2));
+    expect(instances[1]!.options.url).toBeUndefined();
+    same.unmount();
+
+    render(
+      <Waveform
+        cacheKey="track-9"
+        audioUrl="https://audio.test/v2.mp3?sig=c"
+        durationSec={12}
+      />,
+    );
+    await vi.waitFor(() => expect(instances).toHaveLength(3));
+    expect(instances[2]!.options.url).toBe('https://audio.test/v2.mp3?sig=c');
   });
   it('does not fetch audio when peaks already exist', async () => {
     render(
