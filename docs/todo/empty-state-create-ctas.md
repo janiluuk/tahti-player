@@ -29,67 +29,32 @@ incoming review queues).
 ## Priority A — clear create, often Near
 
 ### Studio
-- [ ] `TracklistEditor` — no pins → Add pin (`Plus`) · focus add form
-- [ ] `ReleaseTracklistDialog` — `empties.noTracklist` → Add pin / open editor (`ListPlus`)
-- [ ] `TrackCreditsEditor` — no credits → Add credit (`Plus`) · **Near**
-- [ ] `ReleaseTrackCreditsPanel` — `studioReleaseDetail.creditsEmpty` → Add credit (`Plus`)
 - [ ] `collection-edit/TracklistPanel` — no tracks → Add tracks (`Plus`)
 - [ ] `StudioPlaylistEditorView` — empty playlist/collection → Add tracks (`ListPlus`)
 - [ ] `StudioReleaseDetailView` — no tracks / no audio → Add / Upload (`Plus`/`Upload`)
-- [ ] `ReleaseSmartLinksPanel` — no tracks → Add from library (`Plus`) · **Near**
-- [ ] `ReleaseTrackCreditsPanel` / `distribution/CreditsEditor` — Add credit · **Near**
-- [ ] `ReleaseTrackVersionsPanel` — Upload version (`Upload`)
-- [ ] `MasteringPanel` — Add effect (`Plus`) · **Near**
 - [ ] `StemsPanel` — Request split (`Sparkles`)
-- [ ] `StudioBroadcastView` — Nothing coming up → Schedule (`CalendarPlus`)
-- [ ] `schedule/ScheduledTimes` — Add schedule (`CalendarPlus`)
-- [ ] `show-detail/OverviewTab` + `EpisodesTab` — Book slot / New episode · **Near**
-- [ ] `ChannelStoreEditor` — Set price (`Tag`) · **Near**
-- [ ] `ChannelAnnouncementsPanel` — Record / upload clip · **Near**
-- [ ] `ChannelRotationEditor` — Add from playlist (`ListMusic`) · **Near**
-- [ ] `StudioRadioSubmissionPanel` — Submit to radio (`Radio`)
-- [ ] `StudioEditorListView` library empty → Upload track (`Upload`) · **Gap**
-- [ ] `go-live/MultistreamPanel` — no destinations → Add destination (`Plus`) · **Near** (panel header)
+- [ ] `show-detail/EpisodesTab` — New episode · **Near** (Overview's Book slot shipped)
 - [ ] `StudioEditorProjectView` — no archive seed → Open library / new session (`FolderOpen`) · **Gap**
 
 ### Library
-- [ ] `local-playlists/PlaylistView` — empty playlist → Add tracks (`ListPlus`) · **Gap**
-- [ ] `AddToPlaylistDialog` — Create playlist (`ListPlus`) · **Near**
-- [ ] `AddToReleasePanel` — Create release (`Plus`) · **Gap**
-- [ ] `LibraryEmbedsView` — Import embed (`Link`) · **Gap**
 - [ ] `ChannelPlaylistPicker` — New collection (`Plus`)
 - [ ] `StashFilesPanel` / desktop library empties — Upload / Import (`Upload`) · **Near**
-- [ ] `desktop-library/DesktopLibraryContent` — empty facet groups → Import files (`Upload`) · **Near** (toolbar)
 
 ### Admin
-- [ ] `AdminAnnouncementsView` — Upload audio (`Upload`) · **Near**
-- [ ] `AdminAddonsView` — Register add-on (`Plus`)
-- [ ] `AdminRadioView` rotation empty → Add to Selects (`ListPlus`)
-- [ ] `governance/tabs/AgendaItemsPanel` — Add agenda item (`Plus`) · **Near**
-- [ ] `SelectsTab` — Add content (`Plus`) · **Near** (title already mentions +)
 - [ ] `admin/moderation/tabs/ThemesTab` — empty catalog → Submit theme / registry docs (`Palette`) · optional
 
 ### Radio
-- [ ] `RadioBookedShowsPanel` — Book a slot (`CalendarPlus`) when `onBook` exists
 - [ ] `RadioBookingCalendar` — Book slot (`CalendarPlus`)
-- [ ] `RadioBrowserDirectoryCard` / `MyRadioStations` — Add station (`Plus`) · **Near**
 - [ ] `RadioView` — `radio.memberSetsEmpty` → Create member set (`Plus`) if product path exists
 - [ ] `ChannelProgrammingGrid` — Book show (`CalendarPlus`)
 
 ### Listen / community / settings
-- [ ] `FeatureRequestsView` — Propose idea / Post comment · **Near**
-- [ ] `GovernanceView` — Submit draft (`ScrollText`) · **Near**
 - [ ] `DiscussionTopicView` / `TrackBody` / `ChannelComments` — Reply / comment
-- [ ] `NewsSourcesDialog` — Add feed (`Rss`) · **Near**
-- [ ] `PinnedAnnouncementsPanel` — Pin announcement (`Send`) · **Near**
 - [ ] `ListenAddonsPanel` / `DiscoWidgetManagerPanel` — Browse / install (`Puzzle`)
 - [ ] `ChannelModeratorsPanel` — Add moderator (`UserPlus`) · **Near**
-- [ ] `SocialPostNow` — Post now (`Send`) · **Near**
-- [ ] `MySupportTickets` — New request (`LifeBuoy`)
 
 ## Priority B — weaker / optional
 
-- [ ] `PressKitPreview` — Edit bio (`Pencil`) · **Near**
 - [ ] `StudioRevenueView` — `studioRevenue.emptyDisbursements` → Connect Stripe (`CircleDollarSign`)
 - [ ] `admin/streams/ChannelTracksPanel` — nudge artist upload (`Upload`)
 - [ ] `AdminUsersView` — “No users yet” only if board gets an invite/create path (none today)
@@ -98,7 +63,23 @@ incoming review queues).
 
 Events, listening parties, groups, fan and purchase tiers, API tokens,
 admin artwork and internet radio presets, governance discussions, elections
-and board terms (feat/slices-e-backlog). Where the create button sat right
+and board terms (feat/slices-e-backlog). 2026-11-08 batch (#1884-#1888,
+30 slices): tracklist pins, track / release-track / distribution credits,
+mastering add-ons, smart-link tracks, multistream destinations, announcement
+clips, schedule, broadcast agenda (create link follows the filter), radio
+submissions, show slot booking, editor library upload; Library add to
+playlist, desktop playlist (Browse tracks), desktop library and facet groups
+(Import files), embeds (import add-ons), add to release (Create release);
+admin add-ons, Selects, admin radio rotation (link to Selects), governance
+agenda; Radio Book a slot, Settings radio stations; feature requests,
+governance Top topics, news sources, support requests, press kit bio. Strings
+in `web.emptyActions` (en + fi).
+
+Read and skipped (create control is the list itself or sits directly above
+the empty, or there is no create path): `ReleaseTracklistDialog` (public
+listener dialog), `ChannelStoreEditor`, `ChannelRotationEditor`,
+`ReleaseTrackVersionsPanel` (empty means no tracks), `AdminAnnouncementsView`,
+`PinnedAnnouncementsPanel`, `SocialPostNow`. Where the create button sat right
 next to the empty (API tokens, governance forms), it now lives only in the
 empty state while the list is empty.
 
