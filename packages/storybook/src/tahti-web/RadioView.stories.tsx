@@ -24,6 +24,12 @@ const meta: Meta<typeof RadioView> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const expandPlayer = async (canvas: ReturnType<typeof within>) => {
+  await userEvent.click(
+    await canvas.findByRole('button', { name: 'Expand player' }),
+  );
+};
+
 // Signed out: on air with the 24/7 rotation, the member relay banner, and
 // the Up next / Shows / Just played / Featured tabs.
 export const Visitor: Story = {
@@ -61,6 +67,7 @@ export const JustPlayed: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await canvas.findByRole('button', { name: 'Play Radio' });
+    await expandPlayer(canvas);
     await selectTab(canvas, /Just played/);
     await userEvent.click(
       await canvas.findByRole('button', { name: 'Track info for Route 550' }),
@@ -75,6 +82,7 @@ export const Featured: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await canvas.findByRole('button', { name: 'Play Radio' });
+    await expandPlayer(canvas);
     await selectTab(canvas, /Featured/);
     await waitFor(() =>
       expect(canvas.getByTestId('radio-featured')).toBeVisible(),
@@ -90,6 +98,7 @@ export const ShowsVisitor: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await canvas.findByRole('button', { name: 'Play Radio' });
+    await expandPlayer(canvas);
     await selectTab(canvas, /Shows/);
     const shows = await canvas.findByTestId('radio-booked-shows');
     await expect(
@@ -107,6 +116,7 @@ export const BookASlot: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await canvas.findByRole('button', { name: 'Play Radio' });
+    await expandPlayer(canvas);
     await selectTab(canvas, /Shows/);
     await userEvent.click(
       await canvas.findByRole('button', { name: /Book a slot/ }),
@@ -125,6 +135,7 @@ export const UpNextRotation: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    await expandPlayer(canvas);
     const rotation = await canvas.findByTestId('radio-up-next-rotation');
     await expect(rotation).toBeVisible();
     await expect(within(rotation).getByText('Aurora Drift')).toBeVisible();
