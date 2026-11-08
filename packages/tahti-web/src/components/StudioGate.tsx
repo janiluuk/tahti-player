@@ -39,9 +39,13 @@ export function StudioGate({
       <PageGate
         page={embedded ? null : 'Studio'}
         icon={<Lock size={40} className="opacity-40" />}
-        title="Studio"
-        description="Sign in to manage your catalog, uploads, and audio editor."
-        action={<Button onClick={() => openAuth('login')}>Log in</Button>}
+        title={t('studioGate.studio')}
+        description={t('studioGate.signInToManageYour')}
+        action={
+          <Button onClick={() => openAuth('login')}>
+            {t('studioGate.logIn')}
+          </Button>
+        }
       />
     );
   }
@@ -55,15 +59,15 @@ export function StudioGate({
       <PageGate
         page={embedded ? null : 'Studio'}
         icon={<LayoutDashboard size={40} className="opacity-40" />}
-        title="Studio is for artists"
+        title={t('studioGate.studioIsForArtists')}
         description={`@${user.username} is a listener account. Create your channel to upload, release and broadcast. Listening needs none of it.`}
         action={
           <div className="flex flex-wrap justify-center gap-2">
             <Button size="sm" onClick={openChannelSetup}>
-              Create your channel
+              {t('studioGate.createYourChannel')}
             </Button>
             <Button size="sm" variant="text" onClick={() => openAuth('login')}>
-              Switch account
+              {t('studioGate.switchAccount')}
             </Button>
           </div>
         }
@@ -80,12 +84,12 @@ export function StudioGate({
       <PageGate
         page={embedded ? null : 'Studio'}
         icon={<LayoutDashboard size={40} className="opacity-40" />}
-        title="Artist channel required"
+        title={t('studioGate.artistChannelRequired')}
         description={`Signed in as @${user.username}, but this account has no channel yet.`}
         action={
           <div className="flex flex-wrap justify-center gap-2">
             <Button size="sm" onClick={openChannelSetup}>
-              Create channel
+              {t('studioGate.createChannel')}
             </Button>
           </div>
         }

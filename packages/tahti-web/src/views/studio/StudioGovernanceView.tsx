@@ -25,9 +25,10 @@ export type StudioGovernanceTab = 'motions' | 'topics' | 'documents' | 'guide';
 
 /** The cooperative's records: transparency, grants, history, structure. */
 function GovernanceDocumentsTab() {
+  const { t } = useTranslation('web');
   return (
     <SectionShell
-      title="Governance documents"
+      title={t('studioGovernanceView.governanceDocuments')}
       data-testid="governance-documents"
     >
       <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -42,40 +43,36 @@ function GovernanceDocumentsTab() {
 }
 
 function GovernanceGuideTab() {
+  const { t } = useTranslation('web');
   return (
     <div className="flex flex-col gap-6">
-      <SectionShell title="Where governance lives">
+      <SectionShell title={t('studioGovernanceView.whereGovernanceLives')}>
         <p className="text-sm leading-relaxed">
           Listeners open Governance from Settings → Account. Artists use Studio
           → Governance. Board users use Admin → Governance and Admin → AGM.
         </p>
         <p className="text-foreground-secondary mt-2 text-sm leading-relaxed">
-          The active subtab always follows the page you opened, so you can use
-          browser back and shared links without losing your place.
+          {t('studioGovernanceView.theActiveSubtabAlwaysFollows')}
         </p>
       </SectionShell>
-      <SectionShell title="Discussions">
+      <SectionShell title={t('studioGovernanceView.discussions')}>
         <p className="text-sm leading-relaxed">
           The board opens discussion topics for members to talk something
           through before anything is decided. Open them from Governance →
           Discussions; every member is notified when a topic opens.
         </p>
         <p className="text-foreground-secondary mt-2 text-sm leading-relaxed">
-          Replying follows a topic, so new replies notify you; mute it to keep
-          following without notifications. You can remove your own reply while
-          the topic is open. A discussion is not a vote: decisions go through
-          motions.
+          {t('studioGovernanceView.replyingFollowsATopicSo')}
         </p>
       </SectionShell>
-      <SectionShell title="Advisory consultation and official votes">
+      <SectionShell
+        title={t('studioGovernanceView.advisoryConsultationAndOfficialVotes')}
+      >
         <p className="text-sm leading-relaxed">
-          Advisory discussions and votes collect member input. They are clearly
-          separate from binding association decisions.
+          {t('studioGovernanceView.advisoryDiscussionsAndVotesCollect')}
         </p>
         <p className="text-foreground-secondary mt-2 text-sm leading-relaxed">
-          Do not treat an advisory result as an official AGM ballot. Official
-          records are published when the association&rsquo;s eligibility,
-          quorum, ballot, minutes, and result contracts are in place.
+          {t('studioGovernanceView.doNotTreatAnAdvisory')}
         </p>
       </SectionShell>
     </div>
@@ -91,7 +88,10 @@ export function StudioGovernanceView({
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <ViewShell title="Governance" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell
+          title={t('studioGovernanceView.governance')}
+          classes={{ root: 'px-0 pt-0' }}
+        >
           {tab === 'guide' ? (
             <GovernanceGuideTab />
           ) : tab === 'documents' ? (

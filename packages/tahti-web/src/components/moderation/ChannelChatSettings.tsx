@@ -76,10 +76,9 @@ export function ChannelChatSettings({
       aria-labelledby={headingId}
       data-testid="fans-chat-settings"
     >
-      <SectionTitle id={headingId} title="Chat" />
+      <SectionTitle id={headingId} title={t('channelChatSettings.chat')} />
       <p className="text-foreground-secondary -mt-2 text-sm">
-        Turn chat on for your channel, then moderate who can post, recent
-        messages, bans and moderators.
+        {t('channelChatSettings.turnChatOnForYour')}
       </p>
 
       {!profile ? (
@@ -90,21 +89,21 @@ export function ChannelChatSettings({
             onRetry={() => setAttempt((n) => n + 1)}
           />
         ) : (
-          <InlineLoader label="Loading…" />
+          <InlineLoader label={t('channelChatSettings.loading')} />
         )
       ) : (
         <div className="flex flex-col gap-5">
           <SettingsToggle
-            label="Enable live chat on my channel"
-            description="When this is off, listeners do not see a chat on your channel page."
+            label={t('channelChatSettings.enableLiveChatOnMy')}
+            description={t('channelChatSettings.whenThisIsOffListeners')}
             value={profile.chatEnabled}
             onChange={(value) =>
               saveSwitch('chatEnabled', value, 'Chat setting saved.')
             }
           />
           <SettingsToggle
-            label="Show today’s listener count in my chat"
-            description="Listeners see how many people tuned in today."
+            label={t('channelChatSettings.showTodaySListenerCount')}
+            description={t('channelChatSettings.listenersSeeHowManyPeople')}
             value={profile.showDailyListeners ?? true}
             onChange={(value) =>
               saveSwitch('showDailyListeners', value, 'Chat setting saved.')
@@ -122,8 +121,7 @@ export function ChannelChatSettings({
         </div>
       ) : profile ? (
         <p className="text-foreground-secondary text-sm">
-          Turn chat on above to manage who can post, messages, bans and
-          moderators.
+          {t('channelChatSettings.turnChatOnAboveTo')}
         </p>
       ) : null}
     </section>

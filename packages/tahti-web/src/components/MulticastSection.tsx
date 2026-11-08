@@ -113,6 +113,7 @@ function DestinationDialog({
   onSaved: (target: RtmpTarget) => void;
   onDeleted: () => void;
 }) {
+  const { t } = useTranslation('web');
   const provider = multicastProviders.find((p) => p.id === state.providerId);
   const [providerId, setProviderId] = useState(state.providerId);
   const selectedProvider = multicastProviders.find((p) => p.id === providerId);
@@ -291,28 +292,32 @@ function DestinationDialog({
               {savedTarget && !fieldsEditing ? (
                 <div className="flex items-start justify-between gap-3">
                   <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-                    <dt className="text-foreground-secondary">Label</dt>
+                    <dt className="text-foreground-secondary">
+                      {t('multicastSection.label')}
+                    </dt>
                     <dd>{savedTarget.label || selectedProvider?.label}</dd>
-                    <dt className="text-foreground-secondary">Stream key</dt>
+                    <dt className="text-foreground-secondary">
+                      {t('multicastSection.streamKey')}
+                    </dt>
                     <dd>···{savedTarget.keyLast4 ?? '····'}</dd>
                     {isCustom ? (
                       <>
                         <dt className="text-foreground-secondary">
-                          RTMP address
+                          {t('multicastSection.rtmpAddress')}
                         </dt>
                         <dd className="break-all">{savedTarget.rtmpUrl}</dd>
                       </>
                     ) : null}
                   </dl>
                   <EditIconButton
-                    label="Edit destination"
+                    label={t('multicastSection.editDestination')}
                     onClick={() => setFieldsEditing(true)}
                   />
                 </div>
               ) : (
                 <>
                   <Input
-                    label="Label"
+                    label={t('multicastSection.label')}
                     value={label}
                     onChange={(event) => setLabel(event.target.value)}
                     placeholder={selectedProvider?.label}
@@ -335,7 +340,7 @@ function DestinationDialog({
                       autoCapitalize="none"
                       autoCorrect="off"
                       spellCheck={false}
-                      label="RTMP address"
+                      label={t('multicastSection.rtmpAddress')}
                       value={rtmpUrl}
                       onChange={(event) => setRtmpUrl(event.target.value)}
                       placeholder="rtmp://example.com/live"
@@ -408,7 +413,7 @@ function DestinationDialog({
           )}
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('multicastSection.cancel')}</Dialog.Close>
           {providerId && savedTarget && (
             <Button
               intent="danger"
@@ -425,7 +430,7 @@ function DestinationDialog({
                 <SaveButton
                   disabled={saving || !label.trim()}
                   saving={saving}
-                  label="Save changes"
+                  label={t('multicastSection.saveChanges')}
                   type="submit"
                 />
               ) : null
@@ -447,8 +452,8 @@ function DestinationDialog({
             ? `Remove ${savedTarget.label ?? 'this destination'}?`
             : 'Remove destination?'
         }
-        description="This stream destination stops receiving the broadcast."
-        confirmLabel="Remove"
+        description={t('multicastSection.thisStreamDestinationStopsReceiving')}
+        confirmLabel={t('multicastSection.remove')}
         onCancel={() => setConfirmDelete(false)}
         onConfirm={() => {
           if (!savedTarget) {
@@ -497,11 +502,11 @@ function DestinationsGrid({
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-3">
         <p className="text-foreground-secondary text-sm">{description}</p>
-        <Tooltip content="Add destination" side="top">
+        <Tooltip content={t('multicastSection.addDestination')} side="top">
           <Button
             size="icon-sm"
             variant="secondary"
-            aria-label="Add destination"
+            aria-label={t('multicastSection.addDestination')}
             onClick={() => setEditing({ providerId: null, target: null })}
           >
             <PlusIcon size={17} aria-hidden />

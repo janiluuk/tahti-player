@@ -241,15 +241,15 @@ export function HelpHubView() {
 
   return (
     <ViewShell
-      title="Help"
+      title={t('helpView.help')}
       data-testid="help-view"
       classes={{ root: 'px-0 pt-0 mx-auto max-w-full min-w-0 pb-8' }}
     >
       <div className="mb-4 flex flex-wrap items-center gap-2">
-        <Tooltip content="Take a guided tour of this page" side="bottom">
+        <Tooltip content={t('helpView.takeAGuidedTourOf')} side="bottom">
           <Button
             size="icon-sm"
-            aria-label="Take Tour"
+            aria-label={t('helpView.takeTour')}
             className="bg-accent-purple hover:bg-accent-purple/90 text-white"
             onClick={() => startTour()}
           >
@@ -258,13 +258,16 @@ export function HelpHubView() {
         </Tooltip>
       </div>
 
-      <SectionShell title="Pick a path" data-testid="help-quick-start">
+      <SectionShell
+        title={t('helpView.pickAPath')}
+        data-testid="help-quick-start"
+      >
         <div
           data-help-hub-panel
           className="mb-3 flex items-end justify-between gap-3"
         >
           <p className="text-foreground-secondary text-xs font-bold tracking-[0.16em] uppercase">
-            Quick start
+            {t('helpView.quickStart')}
           </p>
           <Badge variant="pill" color="secondary">
             {HELP_ARTICLES.length} guides
@@ -291,21 +294,24 @@ export function HelpHubView() {
         </div>
       </SectionShell>
 
-      <SectionShell title="Browse all help" data-testid="help-guide-index">
+      <SectionShell
+        title={t('helpView.browseAllHelp')}
+        data-testid="help-guide-index"
+      >
         <div
           data-help-hub-panel
           className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
         >
           <p className="text-foreground-secondary text-xs font-bold tracking-[0.16em] uppercase">
-            Guide index
+            {t('helpView.guideIndex')}
           </p>
           <Input
             enterKeyHint="search"
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search guides…"
-            aria-label="Search help guides"
+            placeholder={t('helpView.searchGuides')}
+            aria-label={t('helpView.searchHelpGuides')}
             className="w-full sm:max-w-sm"
             startAddon={
               <SearchIcon size={16} aria-hidden className="opacity-70" />
@@ -323,7 +329,7 @@ export function HelpHubView() {
                 variant="secondary"
                 onClick={() => setQuery('')}
               >
-                Clear search
+                {t('helpView.clearSearch')}
               </Button>
             }
           />
@@ -366,7 +372,10 @@ export function HelpHubView() {
         )}
       </SectionShell>
 
-      <SectionShell title="Policies and service" data-testid="help-policies">
+      <SectionShell
+        title={t('helpView.policiesAndService')}
+        data-testid="help-policies"
+      >
         <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {SERVICE_DOCUMENTS.map((item) => (
             <Link key={item.title} to={item.to as never} className="min-w-0">
@@ -382,7 +391,7 @@ export function HelpHubView() {
           href={`${PRODUCTION}/help`}
           className="no-underline underline-offset-2 hover:underline"
         >
-          Open tahti.live/help
+          {t('helpView.openTahtiLiveHelp')}
         </ExternalLink>
         .
       </p>
@@ -419,7 +428,7 @@ export function HelpArticleView({ slug }: { slug: string }) {
               size="sm"
               variant="secondary"
             >
-              Back to help hub
+              {t('helpView.backToHelpHub')}
             </ButtonLink>
           }
         />
@@ -437,7 +446,7 @@ export function HelpArticleView({ slug }: { slug: string }) {
         back={
           <ButtonLink className="w-fit" to="/help" size="xs" variant="text">
             <ArrowLeftIcon size={14} aria-hidden className="mr-1" />
-            Help center
+            {t('helpView.helpCenter')}
           </ButtonLink>
         }
         meta={
@@ -457,9 +466,12 @@ export function HelpArticleView({ slug }: { slug: string }) {
           <Box variant="tertiary" shadow="default" className="flex-col gap-3">
             <div className="flex items-center gap-2 text-sm font-bold">
               <ListIcon size={16} aria-hidden />
-              In this guide
+              {t('helpView.inThisGuide')}
             </div>
-            <nav className="flex flex-col gap-2" aria-label="Article sections">
+            <nav
+              className="flex flex-col gap-2"
+              aria-label={t('helpView.articleSections')}
+            >
               {slug === 'keyboard-shortcuts'
                 ? KEYBOARD_NAVIGATION_SECTIONS.map((section, index) => (
                     <a
@@ -570,10 +582,10 @@ export function HelpArticleView({ slug }: { slug: string }) {
 
           {related.length > 0 && (
             <nav
-              aria-label="Related guides"
+              aria-label={t('helpView.relatedGuides')}
               className="border-border mt-8 border-t pt-5"
             >
-              <SectionShell title="Related guides">
+              <SectionShell title={t('helpView.relatedGuides')}>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {related.map((item) => (
                     <Link

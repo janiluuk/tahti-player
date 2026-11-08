@@ -228,8 +228,8 @@ export const StashFilesPanel = ({
 
       {!filesOnly ? (
         <StudioPanel
-          title="Add from your library"
-          description="Move tracks and collections into your private stash. Private items are removed from public listings."
+          title={t('stashFilesPanel.addFromYourLibrary')}
+          description={t('stashFilesPanel.moveTracksAndCollectionsInto')}
         >
           {moveListsError &&
           soundItems.length === 0 &&
@@ -263,7 +263,7 @@ export const StashFilesPanel = ({
                       disabled={busy}
                       onClick={() => void moveTrackToStash(item)}
                     >
-                      Move track
+                      {t('stashFilesPanel.moveTrack')}
                     </Button>
                   </div>
                 ))}
@@ -285,7 +285,7 @@ export const StashFilesPanel = ({
                       disabled={busy}
                       onClick={() => void moveCollectionToStash(collection)}
                     >
-                      Move collection
+                      {t('stashFilesPanel.moveCollection')}
                     </Button>
                   </div>
                 ))}
@@ -367,7 +367,7 @@ export const StashFilesPanel = ({
                         <PlayIcon size={16} className="fill-current" />
                       </Button>
                     </Tooltip>
-                    <Tooltip content="Delete" side="top">
+                    <Tooltip content={t('stashFilesPanel.delete')} side="top">
                       <Button
                         size="icon-sm"
                         variant="text"
@@ -402,7 +402,7 @@ export const StashFilesPanel = ({
                       />
                     </div>
                     <Select
-                      label="Permission"
+                      label={t('stashFilesPanel.permission')}
                       value={permission}
                       onValueChange={(value) =>
                         setPermission(value as 'READ' | 'DOWNLOAD')
@@ -413,7 +413,7 @@ export const StashFilesPanel = ({
                       ]}
                     />
                     <Select
-                      label="Expires"
+                      label={t('stashFilesPanel.expires')}
                       value={String(expiryDays)}
                       onValueChange={(value) => setExpiryDays(Number(value))}
                       options={EXPIRY_OPTIONS.map((days) => ({
@@ -427,7 +427,7 @@ export const StashFilesPanel = ({
                     <div className="flex justify-end sm:col-span-2">
                       <Button size="sm" disabled={busy} type="submit">
                         <Share2Icon size={14} aria-hidden className="mr-1.5" />
-                        Grant access
+                        {t('stashFilesPanel.grantAccess')}
                       </Button>
                     </div>
                   </form>
@@ -453,7 +453,10 @@ export const StashFilesPanel = ({
                             · {formatExpiry(share.expiresAt)}
                           </div>
                         </div>
-                        <Tooltip content="Revoke access" side="top">
+                        <Tooltip
+                          content={t('stashFilesPanel.revokeAccess')}
+                          side="top"
+                        >
                           <Button
                             size="icon-sm"
                             variant="text"

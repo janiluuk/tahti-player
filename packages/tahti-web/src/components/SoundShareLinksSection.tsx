@@ -123,17 +123,18 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
       <div>
         <span className="flex items-center gap-1.5 text-sm font-medium">
           <LinkIcon size={14} aria-hidden />
-          Share link
+          {t('soundShareLinksSection.shareLink')}
         </span>
         <span className="text-foreground-secondary block text-xs">
-          Anyone with the link opens this track&apos;s normal page and player
-          without it being public. Reactions and comments made through it are
-          logged, not broadcast.
+          {t('soundShareLinksSection.anyoneWithTheLinkOpens')}
         </span>
       </div>
 
       {loading ? (
-        <InlineLoader label="Loading…" textSize="xs" />
+        <InlineLoader
+          label={t('soundShareLinksSection.loading')}
+          textSize="xs"
+        />
       ) : loadError ? (
         <PageError
           title={t('loadErrors.couldNotLoadShareLinks')}
@@ -169,7 +170,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
                 </code>
                 <CopyButton
                   text={shareLinkFor(soundId, share.token)}
-                  aria-label="Copy share link"
+                  aria-label={t('soundShareLinksSection.copyShareLink')}
                   variant="text"
                   toastMessage="Link copied."
                 />
@@ -204,14 +205,14 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
           autoCorrect="off"
           spellCheck={false}
           className="flex-1"
-          label="Limit to a username (optional)"
+          label={t('soundShareLinksSection.limitToAUsernameOptional')}
           value={granteeUsername}
           onChange={(e) => setGranteeUsername(e.target.value)}
           placeholder="@username, or leave empty for link access"
-          description="A named member gets a notification with the link."
+          description={t('soundShareLinksSection.aNamedMemberGetsA')}
         />
         <Select
-          label="Access"
+          label={t('soundShareLinksSection.access')}
           value={permission}
           onValueChange={(value) => setPermission(value as 'READ' | 'DOWNLOAD')}
           options={[
@@ -220,7 +221,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
           ]}
         />
         <Select
-          label="Expires"
+          label={t('soundShareLinksSection.expires')}
           value={String(expiryDays)}
           onValueChange={(value) => setExpiryDays(Number(value))}
           options={EXPIRY_OPTIONS.map((days) => ({
@@ -230,7 +231,7 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
         />
         <Button size="sm" disabled={busy} type="submit">
           <CheckIcon size={14} aria-hidden className="mr-1.5" />
-          Create link
+          {t('soundShareLinksSection.createLink')}
         </Button>
       </form>
       <ConfirmDialog

@@ -165,7 +165,7 @@ export function DesktopLibraryContent({
           {busy ? 'Working…' : 'Import files'}
         </Button>
         <Button variant="text" onClick={onImportFolder} disabled={busy}>
-          Import folder
+          {t('desktopLibraryContent.importFolder')}
         </Button>
         {onImportSet ? (
           <>
@@ -174,20 +174,20 @@ export function DesktopLibraryContent({
               onClick={() => onImportSet('hearthis')}
               disabled={busy}
             >
-              Import hearthis.at set
+              {t('desktopLibraryContent.importHearthisAtSet')}
             </Button>
             <Button
               variant="text"
               onClick={() => onImportSet('soundcloud')}
               disabled={busy}
             >
-              Import SoundCloud set
+              {t('desktopLibraryContent.importSoundcloudSet')}
             </Button>
           </>
         ) : null}
         {onImportItunes ? (
           <Button variant="text" onClick={onImportItunes} disabled={busy}>
-            Import iTunes library
+            {t('desktopLibraryContent.importItunesLibrary')}
           </Button>
         ) : null}
         {unavailableCount > 0 ? (
@@ -203,7 +203,7 @@ export function DesktopLibraryContent({
             onClick={onCancelImport}
           >
             <XIcon size={14} aria-hidden />
-            Cancel
+            {t('desktopLibraryContent.cancel')}
           </Button>
         ) : null}
       </div>
@@ -287,8 +287,8 @@ export function DesktopLibraryContent({
               <Input
                 enterKeyHint="search"
                 type="search"
-                label="Search desktop library"
-                placeholder="Title, artist, album, genre or path"
+                label={t('desktopLibraryContent.searchDesktopLibrary')}
+                placeholder={t('desktopLibraryContent.titleArtistAlbumGenreOr')}
                 value={query}
                 onChange={(event) => onQueryChange(event.target.value)}
               />
@@ -333,7 +333,7 @@ export function DesktopLibraryContent({
               description={error}
               action={
                 <Button variant="secondary" onClick={onRefresh}>
-                  Retry
+                  {t('desktopLibraryContent.retry')}
                 </Button>
               }
               className="flex-1"
@@ -344,7 +344,7 @@ export function DesktopLibraryContent({
               description={t('empties.nothingInYourLibraryFitsThe')}
               action={
                 <Button variant="secondary" onClick={onClearScope}>
-                  Clear search and filters
+                  {t('desktopLibraryContent.clearSearchAndFilters')}
                 </Button>
               }
               className="flex-1"

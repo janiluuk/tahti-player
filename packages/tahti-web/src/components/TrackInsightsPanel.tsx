@@ -124,7 +124,7 @@ export function TrackInsightsPanel({
     <div className="flex flex-col gap-4">
       <div className="flex justify-end">
         <SegmentedControl
-          aria-label="Period"
+          aria-label={t('trackInsightsPanel.period')}
           options={PERIOD_OPTIONS}
           value={period}
           onChange={setPeriod}
@@ -145,7 +145,7 @@ export function TrackInsightsPanel({
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <StatTile
-              label="Plays"
+              label={t('trackInsightsPanel.plays')}
               value={
                 <StatNumber className="text-2xl">
                   {insights.totalPlays.toLocaleString()}
@@ -153,7 +153,7 @@ export function TrackInsightsPanel({
               }
             />
             <StatTile
-              label="Downloads"
+              label={t('trackInsightsPanel.downloads')}
               value={
                 <StatNumber className="text-2xl">
                   {insights.totalDownloads.toLocaleString()}
@@ -172,7 +172,9 @@ export function TrackInsightsPanel({
                   variant="tertiary"
                   className="h-auto w-auto flex-col gap-3"
                 >
-                  <h3 className="font-heading text-xl">Time of day</h3>
+                  <h3 className="font-heading text-xl">
+                    {t('trackInsightsPanel.timeOfDay')}
+                  </h3>
                   <ListeningClock
                     values={hourlyUsers}
                     labels={{
@@ -187,7 +189,9 @@ export function TrackInsightsPanel({
                   variant="tertiary"
                   className="h-auto min-w-0 flex-1 flex-col gap-3"
                 >
-                  <h3 className="font-heading text-xl">Day of week</h3>
+                  <h3 className="font-heading text-xl">
+                    {t('trackInsightsPanel.dayOfWeek')}
+                  </h3>
                   <div className="relative min-h-48 w-full flex-1">
                     <div className="absolute inset-0">
                       <DayOfWeekChart
@@ -201,9 +205,11 @@ export function TrackInsightsPanel({
               </div>
 
               <Box variant="tertiary" className="min-w-0 flex-col gap-3">
-                <h3 className="font-heading text-xl">Listening calendar</h3>
+                <h3 className="font-heading text-xl">
+                  {t('trackInsightsPanel.listeningCalendar')}
+                </h3>
                 <HorizontalScroll
-                  label="Listening calendar"
+                  label={t('trackInsightsPanel.listeningCalendar')}
                   className="[direction:rtl]"
                 >
                   <CalendarHeatmap
@@ -235,16 +241,15 @@ export function TrackInsightsPanel({
             />
           )}
 
-          <StudioPanel title="Listener map">
+          <StudioPanel title={t('trackInsightsPanel.listenerMap')}>
             <p className="text-foreground-secondary mb-4 text-sm">
-              Anonymized countries for this track&apos;s counted plays and
-              downloads.
+              {t('trackInsightsPanel.anonymizedCountriesForThisTrack')}
             </p>
             <ListenerWorldMap data={insights.countries} countLabel="plays" />
             {listenWindow ? <ListenerLocations window={listenWindow} /> : null}
           </StudioPanel>
 
-          <StudioPanel title="Downloads by day">
+          <StudioPanel title={t('trackInsightsPanel.downloadsByDay')}>
             {insights.daily.length === 0 ? (
               <PageEmpty title={t('empties.noDownloadsPeriod')} />
             ) : (

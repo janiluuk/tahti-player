@@ -119,8 +119,10 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
 
   return (
     <StudioPanel
-      title="Restrictions"
-      description="Block one thing without suspending the whole account. The reason is shown to the user."
+      title={t('adminUserRestrictionsPanel.restrictions')}
+      description={t(
+        'adminUserRestrictionsPanel.blockOneThingWithoutSuspending',
+      )}
     >
       {loading && !items ? (
         <PageLoading label={t('loading.loadingRestrictions')} />
@@ -158,7 +160,7 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
                     aria-label={`Lift ${TYPE_LABELS[item.type].toLowerCase()} restriction`}
                     onClick={() => void lift(item)}
                   >
-                    Lift
+                    {t('adminUserRestrictionsPanel.lift')}
                   </Button>
                 </li>
               ))}
@@ -167,7 +169,7 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
 
           <form
             className="border-border flex flex-col gap-3 border-t pt-4"
-            aria-label="Add a restriction"
+            aria-label={t('adminUserRestrictionsPanel.addARestriction')}
             onSubmit={(event) => {
               event.preventDefault();
               if (reason.trim() && !busy) {
@@ -177,7 +179,7 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
           >
             <div className="grid gap-3 sm:grid-cols-2">
               <Select
-                label="Restrict"
+                label={t('adminUserRestrictionsPanel.restrict')}
                 value={type}
                 onValueChange={(value) =>
                   setType(value as AccountRestrictionType)
@@ -198,18 +200,18 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
             </p>
             <Textarea
               submitOnModEnter
-              label="Reason"
+              label={t('adminUserRestrictionsPanel.reason')}
               tone="secondary"
               value={reason}
               onChange={(event) => setReason(event.target.value)}
               rows={2}
               maxLength={500}
-              placeholder="Shown to the user"
+              placeholder={t('adminUserRestrictionsPanel.shownToTheUser')}
             />
             {error ? <InlineError>{error}</InlineError> : null}
             <div className="flex justify-end">
               <Button type="submit" size="sm" disabled={busy || !reason.trim()}>
-                Add restriction
+                {t('adminUserRestrictionsPanel.addRestriction')}
               </Button>
             </div>
           </form>

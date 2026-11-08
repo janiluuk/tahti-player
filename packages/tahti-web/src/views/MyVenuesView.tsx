@@ -27,6 +27,7 @@ function VenueCard({
   venue: MyVenue;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const verified = Boolean(venue.verifiedAt);
   const [editing, setEditing] = useState(false);
   return (
@@ -47,11 +48,11 @@ function VenueCard({
           params={{ slug: venue.slug }}
           className="w-fit text-sm font-medium underline-offset-2 hover:underline"
         >
-          Public page
+          {t('myVenuesView.publicPage')}
         </Link>
       ) : (
         <p className="text-foreground-secondary text-xs">
-          It appears in the venue directory once the board has verified it.
+          {t('myVenuesView.itAppearsInTheVenue')}
         </p>
       )}
       {editing ? (
@@ -114,19 +115,19 @@ export function MyVenuesView() {
 
   const registerLink = (
     <ButtonLink to="/venues/register" size="sm" className="w-fit">
-      Register a venue
+      {t('myVenuesView.registerAVenue')}
     </ButtonLink>
   );
 
   return (
     <ViewShell
-      title="My venues"
+      title={t('myVenuesView.myVenues')}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-4' }}
     >
       <PageBackLink
         to="/discover"
         search={{ tab: 'venues' }}
-        label="All venues"
+        label={t('myVenuesView.allVenues')}
       />
       {!user ? (
         <PageEmpty
@@ -136,7 +137,7 @@ export function MyVenuesView() {
               to="/login"
               className="text-sm font-medium underline-offset-2 hover:underline"
             >
-              Log in
+              {t('myVenuesView.logIn')}
             </Link>
           }
         />
@@ -163,8 +164,8 @@ export function MyVenuesView() {
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search venues…"
-            aria-label="Search venues"
+            placeholder={t('myVenuesView.searchVenues')}
+            aria-label={t('myVenuesView.searchVenues2')}
             className="max-w-md"
             startAddon={
               <SearchIcon size={14} aria-hidden className="opacity-70" />
@@ -179,7 +180,7 @@ export function MyVenuesView() {
                   variant="secondary"
                   onClick={() => setQuery('')}
                 >
-                  Clear search
+                  {t('myVenuesView.clearSearch')}
                 </Button>
               }
             />

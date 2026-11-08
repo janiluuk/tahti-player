@@ -55,10 +55,10 @@ export function PlaysTab({
   return (
     <div className={active ? 'grid gap-6' : 'hidden'}>
       <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
-        <StudioPanel title="Listener map">
+        <StudioPanel title={t('playsTab.listenerMap')}>
           <div className="mb-3 flex flex-wrap justify-between gap-2">
             <p className="text-foreground-secondary text-sm">
-              Anonymized countries from channel listening and downloads.
+              {t('playsTab.anonymizedCountriesFromChannelListening')}
             </p>
             <span className="text-foreground-secondary text-xs tabular-nums">
               Peak day: {live.peakDailyListeners.toLocaleString()} listeners
@@ -76,7 +76,7 @@ export function PlaysTab({
           ) : null}
         </StudioPanel>
 
-        <StudioPanel title="Plays over time">
+        <StudioPanel title={t('playsTab.playsOverTime')}>
           <div className="mb-3 flex flex-wrap items-end justify-between gap-2">
             <div>
               <StatNumber className="block text-3xl">
@@ -95,13 +95,13 @@ export function PlaysTab({
               onClick={() => downloadPlaysCsv(plays.daily)}
             >
               <DownloadIcon size={14} aria-hidden />
-              <span className="ml-1.5">Download CSV</span>
+              <span className="ml-1.5">{t('playsTab.downloadCsv')}</span>
             </Button>
           </div>
           {plays.daily.length === 0 ? (
             <PageEmpty title={t('empties.noPlaysPeriod')} />
           ) : useHeatmap ? (
-            <HorizontalScroll label="Daily plays">
+            <HorizontalScroll label={t('playsTab.dailyPlays')}>
               <CalendarHeatmap
                 days={heatmapDays}
                 colorScheme={isDark ? 'dark' : 'light'}
@@ -145,23 +145,23 @@ export function PlaysTab({
           {splitDaily && !useHeatmap && plays.daily.length > 0 ? (
             <ul
               className="text-foreground-secondary mt-2 flex flex-wrap gap-4 text-xs"
-              aria-label="Chart legend"
+              aria-label={t('playsTab.chartLegend')}
             >
               <li className="flex items-center gap-1.5">
                 <span aria-hidden className="bg-primary size-2.5 rounded-sm" />
-                Downloads
+                {t('playsTab.downloads')}
               </li>
               <li className="flex items-center gap-1.5">
                 <span
                   aria-hidden
                   className="bg-accent-yellow size-2.5 rounded-sm"
                 />
-                Smart-link clicks
+                {t('playsTab.smartLinkClicks')}
               </li>
             </ul>
           ) : null}
           <p className="text-foreground-secondary mt-2 text-xs">
-            Click a day for hourly listening.
+            {t('playsTab.clickADayForHourly')}
           </p>
         </StudioPanel>
       </div>

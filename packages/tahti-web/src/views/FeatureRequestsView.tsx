@@ -119,7 +119,7 @@ export function FeatureRequestsView({
             size="sm"
             variant="secondary"
           >
-            Open full page
+            {t('featureRequestsView.openFullPage')}
           </ButtonLink>
         )}
         {user && !forbidden ? (
@@ -136,13 +136,13 @@ export function FeatureRequestsView({
       {!user && (
         <div className="border-border flex flex-col gap-3 rounded-lg border p-4">
           <p className="text-sm">
-            Sign in with a cooperative membership account to propose and vote.
+            {t('featureRequestsView.signInWithACooperative')}
           </p>
           <Button
             size="sm"
             onClick={() => useAuthModalStore.getState().open('login')}
           >
-            Log in
+            {t('featureRequestsView.logIn')}
           </Button>
         </div>
       )}
@@ -160,7 +160,7 @@ export function FeatureRequestsView({
             variant="secondary"
             onClick={() => useSettingsModalStore.getState().open('account')}
           >
-            Manage membership
+            {t('featureRequestsView.manageMembership')}
           </Button>
         </div>
       )}
@@ -189,7 +189,7 @@ export function FeatureRequestsView({
           }}
         >
           <Input
-            label="Title"
+            label={t('featureRequestsView.title')}
             value={newTitle}
             onChange={(e) => setNewTitle(e.target.value)}
             required
@@ -197,7 +197,7 @@ export function FeatureRequestsView({
           />
           <Textarea
             submitOnModEnter
-            label="Description"
+            label={t('featureRequestsView.description')}
             tone="secondary"
             className="min-h-[6rem] text-sm"
             value={newDescription}
@@ -363,11 +363,11 @@ export function FeatureRequestsView({
                     )}
                     <div className="flex flex-wrap gap-2">
                       <Input
-                        aria-label="Comment"
+                        aria-label={t('featureRequestsView.comment')}
                         className="min-w-[200px] flex-1"
                         value={commentBody}
                         onChange={(e) => setCommentBody(e.target.value)}
-                        placeholder="Add a comment…"
+                        placeholder={t('featureRequestsView.addAComment')}
                       />
                       <Button
                         size="sm"
@@ -396,7 +396,7 @@ export function FeatureRequestsView({
                           });
                         }}
                       >
-                        Post
+                        {t('featureRequestsView.post')}
                       </Button>
                     </div>
                   </div>
@@ -415,7 +415,7 @@ export function FeatureRequestsView({
 
   return (
     <ViewShell
-      title="Feature requests"
+      title={t('featureRequestsView.featureRequests')}
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-3xl',
         content: 'gap-6',

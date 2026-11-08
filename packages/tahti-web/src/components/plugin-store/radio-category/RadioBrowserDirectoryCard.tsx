@@ -183,13 +183,15 @@ export function RadioBrowserDirectoryCard() {
   return (
     <>
       <ConfigurableCard
-        title="Radio Browser directory"
+        title={t('radioBrowserDirectoryCard.radioBrowserDirectory')}
         dialogClassName="max-w-2xl"
         header={
           <AudioPluginToggleRow
             name="Radio Browser directory"
             author="radio-browser.info · community directory"
-            description="Finnish stations, your own M3U or stream URLs, and 50,000+ public internet radio stations to browse by genre and country."
+            description={t(
+              'radioBrowserDirectoryCard.finnishStationsYourOwnM3u',
+            )}
             enabled={enabled}
             onToggle={() => setEnabled(!enabled)}
           />
@@ -197,8 +199,7 @@ export function RadioBrowserDirectoryCard() {
       >
         {!enabled ? (
           <p className="text-foreground-secondary text-sm">
-            Activate the add-on to load Radio Browser, then use these tabs to
-            search, save, and enable stations.
+            {t('radioBrowserDirectoryCard.activateTheAddOnTo')}
           </p>
         ) : (
           <Tabs
@@ -211,7 +212,7 @@ export function RadioBrowserDirectoryCard() {
                     <div className="flex flex-col gap-2">
                       <div className="flex items-center justify-between gap-2">
                         <h3 className="font-display text-sm font-bold tracking-wide uppercase">
-                          Your stations
+                          {t('radioBrowserDirectoryCard.yourStations')}
                         </h3>
                         <Button
                           size="sm"
@@ -219,7 +220,7 @@ export function RadioBrowserDirectoryCard() {
                           onClick={() => setAddUrlOpen(true)}
                         >
                           <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                          Add URL
+                          {t('radioBrowserDirectoryCard.addUrl')}
                         </Button>
                       </div>
                       {savedStations.length === 0 ? (
@@ -258,7 +259,7 @@ export function RadioBrowserDirectoryCard() {
                     </div>
                     <div className="flex flex-col gap-2">
                       <h3 className="font-display text-sm font-bold tracking-wide uppercase">
-                        Finnish stations
+                        {t('radioBrowserDirectoryCard.finnishStations')}
                       </h3>
                       <ul className="grid max-h-80 grid-cols-1 gap-1.5 overflow-y-auto sm:grid-cols-2">
                         {curatedStations.map((station) => {
@@ -327,8 +328,12 @@ export function RadioBrowserDirectoryCard() {
                           type="search"
                           value={query}
                           onChange={(event) => setQuery(event.target.value)}
-                          placeholder="Search stations"
-                          aria-label="Search stations"
+                          placeholder={t(
+                            'radioBrowserDirectoryCard.searchStations',
+                          )}
+                          aria-label={t(
+                            'radioBrowserDirectoryCard.searchStations',
+                          )}
                           startAddon={
                             <SearchIcon
                               size={14}
@@ -337,13 +342,18 @@ export function RadioBrowserDirectoryCard() {
                             />
                           }
                           endAddon={
-                            <Tooltip content="Search" side="top">
+                            <Tooltip
+                              content={t('radioBrowserDirectoryCard.search')}
+                              side="top"
+                            >
                               <Button
                                 variant="text"
                                 size="flexible"
                                 disabled={searching}
                                 type="submit"
-                                aria-label="Search"
+                                aria-label={t(
+                                  'radioBrowserDirectoryCard.search',
+                                )}
                               >
                                 <SearchIcon size={14} aria-hidden />
                               </Button>
@@ -370,13 +380,13 @@ export function RadioBrowserDirectoryCard() {
                               items={genreOptions}
                               selected={genres}
                               onChange={setGenres}
-                              aria-label="Genres"
+                              aria-label={t('radioBrowserDirectoryCard.genres')}
                             />
                           ) : null}
                         </div>
                       ) : null}
                       <Select
-                        aria-label="Country"
+                        aria-label={t('radioBrowserDirectoryCard.country')}
                         className="w-full"
                         options={[
                           { id: '', label: 'All countries' },

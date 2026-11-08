@@ -135,9 +135,14 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
   };
 
   return (
-    <section className="flex flex-col gap-1" aria-label="Smart playlists">
+    <section
+      className="flex flex-col gap-1"
+      aria-label={t('smartPlaylists.smartPlaylists')}
+    >
       <div className="flex items-center gap-1">
-        <h3 className="flex-1 text-xs font-semibold">Smart playlists</h3>
+        <h3 className="flex-1 text-xs font-semibold">
+          {t('smartPlaylists.smartPlaylists')}
+        </h3>
         <Button
           className="gap-1.5"
           size="sm"
@@ -145,7 +150,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
           onClick={() => setEditing({ id: null, definition: EMPTY_SMART })}
         >
           <PlusIcon size={14} aria-hidden />
-          New smart playlist
+          {t('smartPlaylists.newSmartPlaylist')}
         </Button>
       </div>
       {lists === null ? null : loadError && lists.length === 0 ? (
@@ -185,11 +190,11 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                   size="inline"
                   shape="circle"
                   className="mx-2"
-                  label="Working"
+                  label={t('smartPlaylists.working')}
                 />
               ) : (
                 <>
-                  <Tooltip content="Play" side="top">
+                  <Tooltip content={t('smartPlaylists.play')} side="top">
                     <Button
                       size="icon-sm"
                       variant="text"
@@ -205,7 +210,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                       <PlayIcon size={14} aria-hidden />
                     </Button>
                   </Tooltip>
-                  <Tooltip content="Shuffle" side="top">
+                  <Tooltip content={t('smartPlaylists.shuffle')} side="top">
                     <Button
                       size="icon-sm"
                       variant="text"
@@ -221,7 +226,10 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                       <ShuffleIcon size={14} aria-hidden />
                     </Button>
                   </Tooltip>
-                  <Tooltip content="Save a fixed copy as a playlist" side="top">
+                  <Tooltip
+                    content={t('smartPlaylists.saveAFixedCopyAs')}
+                    side="top"
+                  >
                     <Button
                       size="icon-sm"
                       variant="text"
@@ -241,7 +249,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                       })
                     }
                   />
-                  <Tooltip content="Delete" side="top">
+                  <Tooltip content={t('smartPlaylists.delete')} side="top">
                     <Button
                       size="icon-sm"
                       variant="text"
@@ -266,8 +274,8 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
       />
       <PlaylistNameDialog
         isOpen={snapshotOf !== null}
-        title="Save a fixed copy (does not update)"
-        confirmLabel="Save copy"
+        title={t('smartPlaylists.saveAFixedCopyDoes')}
+        confirmLabel={t('smartPlaylists.saveCopy')}
         initialName={snapshotOf ? `${snapshotOf.name} (snapshot)` : ''}
         onClose={() => setSnapshotOf(null)}
         onSubmit={async (name) => {
@@ -295,9 +303,9 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
       <ConfirmDialog
         destructive
         isOpen={deleting !== null}
-        title="Delete this smart playlist?"
+        title={t('smartPlaylists.deleteThisSmartPlaylist')}
         description={`“${deleting?.name ?? ''}” will be deleted. Only the rules go; your tracks and files are not touched.`}
-        confirmLabel="Delete"
+        confirmLabel={t('smartPlaylists.delete')}
         onCancel={() => setDeleting(null)}
         onConfirm={() => {
           const target = deleting;

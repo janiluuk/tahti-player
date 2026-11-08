@@ -29,10 +29,9 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
         isOpen={playlistDialogOpen}
         onClose={() => setPlaylistDialogOpen(false)}
       >
-        <Dialog.Title>Choose a playlist</Dialog.Title>
+        <Dialog.Title>{t('playlistDialog.chooseAPlaylist')}</Dialog.Title>
         <Dialog.Description>
-          Preview a playlist, then add it to the rotation or replace the current
-          rotation with it.
+          {t('playlistDialog.previewAPlaylistThenAdd')}
         </Dialog.Description>
         <div className="grid gap-4 sm:grid-cols-[minmax(10rem,0.8fr)_minmax(0,1.2fr)]">
           <div className="border-border flex max-h-56 flex-col gap-1 overflow-y-auto rounded-lg border p-1">
@@ -60,7 +59,7 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
           </div>
           <div className="border-border min-h-32 rounded-lg border p-3">
             {playlistLoading ? (
-              <InlineLoader label="Loading playlist…" />
+              <InlineLoader label={t('playlistDialog.loadingPlaylist')} />
             ) : previewError ? (
               <PageError
                 title={t('loadErrors.couldNotLoadThisPlaylist')}
@@ -82,26 +81,25 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
                 </ul>
                 {(selectedCollection.items ?? []).length === 0 && (
                   <p className="text-foreground-secondary mt-2 text-xs">
-                    This playlist has no tracks.
+                    {t('playlistDialog.thisPlaylistHasNoTracks')}
                   </p>
                 )}
                 {(selectedCollection.items ?? []).length > 0 &&
                   !selectedPlaylistHasRotationTracks && (
                     <p className="text-foreground-secondary mt-2 text-xs">
-                      This playlist has no sound tracks that can play in 24/7
-                      rotation.
+                      {t('playlistDialog.thisPlaylistHasNoSound')}
                     </p>
                   )}
               </>
             ) : (
               <p className="text-foreground-secondary text-sm">
-                Choose a playlist to preview it.
+                {t('playlistDialog.chooseAPlaylistToPreview')}
               </p>
             )}
           </div>
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('playlistDialog.cancel')}</Dialog.Close>
           <Button
             variant="secondary"
             disabled={
@@ -111,7 +109,7 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
             }
             onClick={() => setPendingApply({ replace: false })}
           >
-            Add to rotation
+            {t('playlistDialog.addToRotation')}
           </Button>
           <Button
             disabled={
@@ -121,7 +119,7 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
             }
             onClick={() => setPendingApply({ replace: true })}
           >
-            Replace rotation
+            {t('playlistDialog.replaceRotation')}
           </Button>
         </Dialog.Actions>
       </Dialog.Root>

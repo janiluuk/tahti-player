@@ -97,7 +97,7 @@ export function MasteringPanel({ editList, onChange }: Props) {
   return (
     <>
       <StudioPanel
-        title="Mastering"
+        title={t('masteringPanelMore.mastering')}
         description={
           collapsed
             ? undefined
@@ -141,7 +141,7 @@ export function MasteringPanel({ editList, onChange }: Props) {
             {editList.loudnorm.enabled && (
               <div className="grid max-w-xl gap-2 sm:grid-cols-2">
                 <Slider
-                  label="Target loudness"
+                  label={t('masteringPanelMore.targetLoudness')}
                   value={editList.loudnorm.targetLufs}
                   min={-30}
                   max={-5}
@@ -151,7 +151,7 @@ export function MasteringPanel({ editList, onChange }: Props) {
                   onValueChange={(targetLufs) => setLoudnorm({ targetLufs })}
                 />
                 <Slider
-                  label="True peak"
+                  label={t('masteringPanelMore.truePeak')}
                   value={editList.loudnorm.targetTp}
                   min={-6}
                   max={0}
@@ -164,7 +164,7 @@ export function MasteringPanel({ editList, onChange }: Props) {
             )}
 
             <Slider
-              label="Master gain"
+              label={t('masteringPanelMore.masterGain')}
               value={editList.gainDb}
               min={-24}
               max={12}
@@ -232,7 +232,10 @@ export function MasteringPanel({ editList, onChange }: Props) {
                         <span className="text-foreground-secondary flex-1 truncate text-xs">
                           {meta.description}
                         </span>
-                        <Tooltip content="Move earlier" side="top">
+                        <Tooltip
+                          content={t('masteringPanelMore.moveEarlier')}
+                          side="top"
+                        >
                           <Button
                             size="icon-sm"
                             variant="text"
@@ -243,7 +246,10 @@ export function MasteringPanel({ editList, onChange }: Props) {
                             <ChevronLeftIcon size={14} aria-hidden />
                           </Button>
                         </Tooltip>
-                        <Tooltip content="Move later" side="top">
+                        <Tooltip
+                          content={t('masteringPanelMore.moveLater')}
+                          side="top"
+                        >
                           <Button
                             size="icon-sm"
                             variant="text"
@@ -321,7 +327,7 @@ export function MasteringPanel({ editList, onChange }: Props) {
       />
 
       <Dialog.Root isOpen={pickerOpen} onClose={() => setPickerOpen(false)}>
-        <Dialog.Title>Add an audio add-on</Dialog.Title>
+        <Dialog.Title>{t('masteringPanelMore.addAnAudioAddOn')}</Dialog.Title>
         <CardGrid className="grid-cols-[repeat(auto-fit,minmax(8rem,1fr))]">
           {addablePluginIds.map((id) => (
             <Card

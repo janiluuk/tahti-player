@@ -53,7 +53,7 @@ function QuarterlyReportsPanel() {
     <StudioPanel>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="font-display text-sm font-bold">
-          Quarterly review reports
+          {t('featureRequestsTab.quarterlyReviewReports')}
         </h2>
         <Button
           className="gap-1.5"
@@ -162,6 +162,7 @@ function RowActions({
   row: AdminFeatureRequestRow;
   onDone: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [pending, setPending] = useState(false);
   const terminal = row.status === 'DONE' || row.status === 'DECLINED';
 
@@ -187,7 +188,7 @@ function RowActions({
         onClick={() => apply('OPEN')}
       >
         <Clock3Icon size={14} aria-hidden />
-        Reopen
+        {t('featureRequestsTab.reopen')}
       </Button>
     );
   }
@@ -202,7 +203,7 @@ function RowActions({
         onClick={() => apply('PLANNED')}
       >
         <Clock3Icon size={14} aria-hidden />
-        Plan
+        {t('featureRequestsTab.plan')}
       </Button>
       <Button
         className="gap-1.5"
@@ -212,7 +213,7 @@ function RowActions({
         onClick={() => apply('IN_PROGRESS')}
       >
         <LoaderCircleIcon size={14} aria-hidden />
-        In progress
+        {t('featureRequestsTab.inProgress')}
       </Button>
       <Button
         className="gap-1.5"
@@ -221,7 +222,7 @@ function RowActions({
         onClick={() => apply('DONE')}
       >
         <CheckCircle2Icon size={14} aria-hidden />
-        Done
+        {t('featureRequestsTab.done')}
       </Button>
       <Button
         className="gap-1.5"
@@ -231,7 +232,7 @@ function RowActions({
         onClick={() => apply('DECLINED')}
       >
         <BanIcon size={14} aria-hidden />
-        Decline
+        {t('featureRequestsTab.decline')}
       </Button>
     </div>
   );
@@ -262,7 +263,7 @@ export function FeatureRequestsTab() {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-foreground-secondary text-sm">
-        Member-suggested features, ranked by votes. Review quarterly.
+        {t('featureRequestsTab.memberSuggestedFeaturesRankedBy')}
       </p>
 
       <QuarterlyReportsPanel />

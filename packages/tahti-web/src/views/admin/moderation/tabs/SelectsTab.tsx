@@ -160,8 +160,7 @@ export function SelectsTab() {
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <p className="text-foreground-secondary text-sm">
-          Always-on curated rotation — loops endlessly. Only public archive
-          items can be added.
+          {t('selectsTab.alwaysOnCuratedRotationLoops')}
         </p>
         <Button
           size="sm"
@@ -285,12 +284,12 @@ export function SelectsTab() {
               onClick={() => setGenerateOpen(true)}
             >
               <SparklesIcon size={14} aria-hidden className="mr-1.5" />
-              Fill from top list
+              {t('selectsTab.fillFromTopList')}
             </Button>
-            <Tooltip content="Add content to rotation" side="top">
+            <Tooltip content={t('selectsTab.addContentToRotation')} side="top">
               <Button
                 size="icon-sm"
-                aria-label="Add content to rotation"
+                aria-label={t('selectsTab.addContentToRotation')}
                 onClick={() => setPickerOpen(true)}
               >
                 <PlusIcon size={16} aria-hidden />
@@ -377,16 +376,13 @@ export function SelectsTab() {
         }}
         className="max-w-4xl"
       >
-        <Dialog.Title>Add content to Tahti Selects</Dialog.Title>
+        <Dialog.Title>{t('selectsTab.addContentToTahtiSelects')}</Dialog.Title>
         <Dialog.Description>
-          Browse public, ready archive content. Select one or more tracks, then
-          add them to the end of the rotation. Each artist is notified that
-          their track was picked; filling the rotation from the most-played list
-          sends nothing.
+          {t('selectsTab.browsePublicReadyArchiveContent')}
         </Dialog.Description>
         <div className="grid min-h-96 gap-4 md:grid-cols-[12rem_minmax(0,1fr)]">
           <nav
-            aria-label="Content types"
+            aria-label={t('selectsTab.contentTypes')}
             className="border-border flex gap-1 overflow-x-auto border-b pb-2 md:flex-col md:overflow-visible md:border-r md:border-b-0 md:pr-3"
           >
             <Button
@@ -395,18 +391,18 @@ export function SelectsTab() {
               aria-current="page"
             >
               <RadioTowerIcon size={15} aria-hidden className="mr-2" />
-              Tracks
+              {t('selectsTab.tracks')}
             </Button>
             {['Releases', 'Collections', 'Playlists'].map((type) => (
               <Tooltip
                 key={type}
-                content="This content type is not available from the Selects API"
+                content={t('selectsTab.thisContentTypeIsNot')}
                 side="right"
                 wrapperClassName="flex"
                 multiline
               >
                 <Button
-                  aria-description="This content type is not available from the Selects API"
+                  aria-description={t('selectsTab.thisContentTypeIsNot')}
                   variant="text"
                   className="justify-start opacity-50"
                   disabled
@@ -420,8 +416,8 @@ export function SelectsTab() {
             <Input
               enterKeyHint="search"
               type="search"
-              aria-label="Search content"
-              placeholder="Search tracks by title…"
+              aria-label={t('selectsTab.searchContent')}
+              placeholder={t('selectsTab.searchTracksByTitle')}
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               endAddon={<SearchIcon size={16} aria-hidden />}
@@ -443,7 +439,7 @@ export function SelectsTab() {
                 />
               ) : (
                 <ul
-                  aria-label="Available tracks"
+                  aria-label={t('selectsTab.availableTracks')}
                   className="divide-border divide-y"
                 >
                   {browse.map((item, index) => {
@@ -524,7 +520,7 @@ export function SelectsTab() {
             disabled={adding}
             onClick={() => setPickerOpen(false)}
           >
-            Cancel
+            {t('selectsTab.cancel')}
           </Button>
           <Button
             disabled={selectedIds.size === 0 || adding}

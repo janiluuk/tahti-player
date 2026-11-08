@@ -201,8 +201,8 @@ export function MaterialGroupsField({ soundId }: Props) {
   return (
     <MaterialMetaPanel
       icon={<UsersIcon size={14} strokeWidth={2.5} />}
-      title="Groups"
-      description="Groups you run or belong to. Some groups approve new sounds first."
+      title={t('materialGroupsField.groups')}
+      description={t('materialGroupsField.groupsYouRunOrBelong')}
     >
       {rows == null ? (
         <PageLoading label={t('loading.loadingGroups')} />
@@ -231,13 +231,13 @@ export function MaterialGroupsField({ soundId }: Props) {
             creating ? (
               <div className="border-border flex flex-col gap-2 rounded-lg border p-3">
                 <Input
-                  label="Name"
+                  label={t('materialGroupsField.name')}
                   value={newName}
                   onChange={(event) => setNewName(event.target.value)}
-                  placeholder="New group name"
+                  placeholder={t('materialGroupsField.newGroupName')}
                 />
                 <Select
-                  label="Who can join"
+                  label={t('materialGroupsField.whoCanJoin')}
                   value={joinPolicy}
                   onValueChange={(value) =>
                     setJoinPolicy(value as 'OPEN' | 'REQUEST')
@@ -248,7 +248,7 @@ export function MaterialGroupsField({ soundId }: Props) {
                   ]}
                 />
                 <Select
-                  label="New sounds"
+                  label={t('materialGroupsField.newSounds')}
                   value={submitPolicy}
                   onValueChange={(value) =>
                     setSubmitPolicy(value as 'OPEN' | 'APPROVE')
@@ -259,7 +259,7 @@ export function MaterialGroupsField({ soundId }: Props) {
                   ]}
                 />
                 <Toggle
-                  label="Public"
+                  label={t('materialGroupsField.public')}
                   checked={isPublic}
                   onChange={setIsPublic}
                 />
@@ -269,14 +269,14 @@ export function MaterialGroupsField({ soundId }: Props) {
                     disabled={createBusy || !newName.trim()}
                     onClick={() => void createGroup()}
                   >
-                    Create group
+                    {t('materialGroupsField.createGroup')}
                   </Button>
                   <Button
                     size="sm"
                     variant="text"
                     onClick={() => setCreating(false)}
                   >
-                    Cancel
+                    {t('materialGroupsField.cancel')}
                   </Button>
                 </div>
               </div>
@@ -285,7 +285,7 @@ export function MaterialGroupsField({ soundId }: Props) {
           footer={
             creating ? null : (
               <MaterialMembershipCreateFooter
-                label="New group"
+                label={t('materialGroupsField.newGroup')}
                 onClick={() => setCreating(true)}
               />
             )

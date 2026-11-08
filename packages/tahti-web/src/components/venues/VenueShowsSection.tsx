@@ -95,7 +95,7 @@ export function VenueShowsSection({
   return (
     <section aria-labelledby={headingId} className="flex flex-col gap-2">
       <h3 id={headingId} className="text-sm font-semibold">
-        Upcoming shows
+        {t('venueShowsSection.upcomingShows')}
       </h3>
       {shows.length === 0 ? (
         <PageEmpty title={t('empties.noVenueShows')} />
@@ -124,7 +124,7 @@ export function VenueShowsSection({
                   aria-label={`Cancel show on ${formatShow(show)}`}
                   onClick={() => setCancelling(show)}
                 >
-                  Cancel show
+                  {t('venueShowsSection.cancelShow')}
                 </Button>
               ) : null}
             </li>
@@ -135,13 +135,13 @@ export function VenueShowsSection({
       <ConfirmDialog
         destructive
         isOpen={cancelling !== null}
-        title="Cancel this show?"
+        title={t('venueShowsSection.cancelThisShow')}
         description={
           cancelling
             ? `${formatShow(cancelling)} will be taken off the venue page and its calendar feed. If an artist booked it, they are notified.`
             : ''
         }
-        confirmLabel="Cancel show"
+        confirmLabel={t('venueShowsSection.cancelShow')}
         cancelLabel="Keep it"
         onCancel={() => setCancelling(null)}
         onConfirm={() => {
@@ -160,19 +160,19 @@ export function VenueShowsSection({
           }}
         >
           <Input
-            label="Starts"
+            label={t('venueShowsSection.starts')}
             type="datetime-local"
             value={startAt}
             onChange={(e) => setStartAt(e.target.value)}
           />
           <Input
-            label="Ends (optional)"
+            label={t('venueShowsSection.endsOptional')}
             type="datetime-local"
             value={endAt}
             onChange={(e) => setEndAt(e.target.value)}
           />
           <Input
-            label="What is on (optional)"
+            label={t('venueShowsSection.whatIsOnOptional')}
             value={description}
             maxLength={500}
             onChange={(e) => setDescription(e.target.value)}
@@ -192,7 +192,7 @@ export function VenueShowsSection({
                 setError(null);
               }}
             >
-              Cancel
+              {t('venueShowsSection.cancel')}
             </Button>
           </div>
         </form>
@@ -203,7 +203,7 @@ export function VenueShowsSection({
           className="w-fit"
           onClick={() => setBooking(true)}
         >
-          Book a show
+          {t('venueShowsSection.bookAShow')}
         </Button>
       )}
     </section>

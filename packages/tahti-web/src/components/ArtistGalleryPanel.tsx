@@ -217,7 +217,7 @@ export function ArtistGalleryPanel({
               onClick={() => setLightbox(0)}
             >
               <Maximize2Icon size={14} aria-hidden className="mr-1.5" />
-              Start slideshow
+              {t('artistGalleryPanel.startSlideshow')}
             </Button>
           ) : null}
           {isOwner && showUpload ? (
@@ -326,7 +326,7 @@ export function ArtistGalleryPanel({
                         size="icon-sm"
                         variant="text"
                         className="bg-background/80 text-foreground absolute top-1.5 right-1.5 rounded-md p-1 opacity-0 transition-opacity group-hover:opacity-100"
-                        aria-label="Remove photo"
+                        aria-label={t('artistGalleryPanel.removePhoto')}
                         onClick={() => requestDelete(img.id)}
                       >
                         <Trash2Icon className="text-accent-red" size={14} />
@@ -339,7 +339,7 @@ export function ArtistGalleryPanel({
                           size="icon-sm"
                           variant="text"
                           className="bg-background/80 text-foreground rounded-md p-1 disabled:pointer-events-none disabled:opacity-30"
-                          aria-label="Move photo earlier"
+                          aria-label={t('artistGalleryPanel.movePhotoEarlier')}
                           disabled={index === 0}
                           onClick={() => moveBy(img.id, -1)}
                         >
@@ -352,7 +352,7 @@ export function ArtistGalleryPanel({
                           size="icon-sm"
                           variant="text"
                           className="bg-background/80 text-foreground rounded-md p-1 disabled:pointer-events-none disabled:opacity-30"
-                          aria-label="Move photo later"
+                          aria-label={t('artistGalleryPanel.movePhotoLater')}
                           disabled={index === images.length - 1}
                           onClick={() => moveBy(img.id, 1)}
                         >
@@ -396,9 +396,9 @@ export function ArtistGalleryPanel({
       <ConfirmDialog
         destructive
         isOpen={pendingDeleteId !== null}
-        title="Remove this photo?"
-        description="The photo is removed from your gallery immediately."
-        confirmLabel="Remove"
+        title={t('artistGalleryPanel.removeThisPhoto')}
+        description={t('artistGalleryPanel.thePhotoIsRemovedFrom')}
+        confirmLabel={t('artistGalleryPanel.remove')}
         onCancel={() => setPendingDeleteId(null)}
         onConfirm={() => {
           const id = pendingDeleteId;

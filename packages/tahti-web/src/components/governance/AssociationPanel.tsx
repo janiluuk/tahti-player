@@ -66,9 +66,12 @@ export function AssociationPanel() {
   }, [attempt]);
 
   return (
-    <GovernancePanel title="The association" icon={Building2Icon}>
+    <GovernancePanel
+      title={t('associationPanel.theAssociation')}
+      icon={Building2Icon}
+    >
       {state === 'loading' ? (
-        <InlineLoader label="Loading…" />
+        <InlineLoader label={t('associationPanel.loading')} />
       ) : state === 'failed' || !profile ? (
         <PageError
           title={t('loadErrors.couldNotLoadTheAssociationS')}
@@ -79,22 +82,36 @@ export function AssociationPanel() {
         <>
           {hasDetails(profile) ? (
             <dl className="grid gap-2 sm:grid-cols-2">
-              {profile.name ? <Fact label="Name" value={profile.name} /> : null}
+              {profile.name ? (
+                <Fact label={t('associationPanel.name')} value={profile.name} />
+              ) : null}
               {profile.businessId ? (
-                <Fact label="Business ID" value={profile.businessId} />
+                <Fact
+                  label={t('associationPanel.businessId')}
+                  value={profile.businessId}
+                />
               ) : null}
               {profile.registerNumber ? (
-                <Fact label="Register number" value={profile.registerNumber} />
+                <Fact
+                  label={t('associationPanel.registerNumber')}
+                  value={profile.registerNumber}
+                />
               ) : null}
               {profile.domicile ? (
-                <Fact label="Domicile" value={profile.domicile} />
+                <Fact
+                  label={t('associationPanel.domicile')}
+                  value={profile.domicile}
+                />
               ) : null}
               {profile.postalAddress ? (
-                <Fact label="Postal address" value={profile.postalAddress} />
+                <Fact
+                  label={t('associationPanel.postalAddress')}
+                  value={profile.postalAddress}
+                />
               ) : null}
               {profile.contactEmail ? (
                 <Fact
-                  label="Contact"
+                  label={t('associationPanel.contact')}
                   value={
                     <a
                       href={`mailto:${profile.contactEmail}`}
@@ -107,7 +124,7 @@ export function AssociationPanel() {
               ) : null}
               {profile.website ? (
                 <Fact
-                  label="Website"
+                  label={t('associationPanel.website')}
                   value={
                     <ExternalLink
                       href={profile.website}
@@ -123,7 +140,9 @@ export function AssociationPanel() {
             <PageEmpty title={t('empties.noAssociationDetails')} />
           )}
           <div className="flex flex-col gap-1">
-            <h3 className="text-sm font-semibold">Auditors</h3>
+            <h3 className="text-sm font-semibold">
+              {t('associationPanel.auditors')}
+            </h3>
             {profile.auditors.length === 0 ? (
               <PageEmpty title={t('empties.noAuditor')} />
             ) : (

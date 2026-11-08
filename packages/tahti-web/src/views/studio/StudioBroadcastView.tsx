@@ -193,7 +193,7 @@ export function StudioBroadcastView() {
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-4 px-1 py-2">
         <ViewShell
-          title="Broadcast"
+          title={t('studioBroadcastView.broadcast')}
           classes={{ root: 'px-0 pt-0', content: 'gap-5' }}
         >
           <div
@@ -237,10 +237,10 @@ export function StudioBroadcastView() {
                   id="broadcast-channel-manager-title"
                   className="font-display text-lg font-bold tracking-tight"
                 >
-                  Channel manager
+                  {t('studioBroadcastView.channelManager')}
                 </h2>
                 <p className="text-foreground-secondary mt-1 text-sm">
-                  Live status, rotation and stream controls for your channel.
+                  {t('studioBroadcastView.liveStatusRotationAndStream')}
                 </p>
               </div>
               <StreamManagerPanel
@@ -250,12 +250,14 @@ export function StudioBroadcastView() {
             </section>
           ) : null}
           <StudioPanel
-            title="Coming up"
-            description="Shows, events and listening parties, soonest first."
+            title={t('studioBroadcastView.comingUp')}
+            description={t(
+              'studioBroadcastView.showsEventsAndListeningParties',
+            )}
           >
             <div className="flex flex-col gap-3">
               <FilterChips
-                aria-label="Agenda filter"
+                aria-label={t('studioBroadcastView.agendaFilter')}
                 items={FILTERS}
                 selected={filter}
                 onChange={setFilter}
@@ -278,7 +280,10 @@ export function StudioBroadcastView() {
                   }
                 />
               ) : (
-                <ul aria-label="Coming up" className="flex flex-col">
+                <ul
+                  aria-label={t('studioBroadcastView.comingUp')}
+                  className="flex flex-col"
+                >
                   {shown.slice(0, 12).map((item) => (
                     <AgendaRow key={item.id} item={item} />
                   ))}
@@ -287,7 +292,7 @@ export function StudioBroadcastView() {
             </div>
           </StudioPanel>
           <HubCards
-            aria-label="Broadcast tools"
+            aria-label={t('studioBroadcastView.broadcastTools')}
             items={STUDIO_BROADCAST_ITEMS}
             renderLink={renderHubLink}
           />

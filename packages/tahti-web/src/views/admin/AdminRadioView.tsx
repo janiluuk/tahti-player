@@ -154,15 +154,19 @@ export function AdminRadioView() {
         <AdminPageLayout current="/admin/radio">
           <div className="flex max-w-4xl flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminRadioView.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="content" />
-              <BreadcrumbLink to="/admin/radio">Radio</BreadcrumbLink>
+              <BreadcrumbLink to="/admin/radio">
+                {t('adminRadioView.radio')}
+              </BreadcrumbLink>
               <BreadcrumbCurrent>
                 {ADMIN_RADIO_TAB_LABELS[activeTab]}
               </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Radio"
+              title={t('adminRadioView.radio')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {msg && (
@@ -281,7 +285,9 @@ export function AdminRadioView() {
 
                           <StudioPanel
                             title={`Current rotation (${rotation.length})`}
-                            description="Drag tracks into the exact order listeners will hear between live shows."
+                            description={t(
+                              'adminRadioView.dragTracksIntoTheExact',
+                            )}
                           >
                             {rotation.length === 0 ? (
                               <PageEmpty
@@ -310,7 +316,9 @@ export function AdminRadioView() {
 
                           <StudioPanel
                             title={`Eligible channels (${data.eligible.length})`}
-                            description="Opting a channel out, or back in, notifies its owner."
+                            description={t(
+                              'adminRadioView.optingAChannelOutOr',
+                            )}
                           >
                             {data.eligible.length === 0 ? (
                               <PageEmpty
@@ -362,7 +370,7 @@ export function AdminRadioView() {
                                           size={14}
                                           aria-hidden
                                         />
-                                        Move to front
+                                        {t('adminRadioView.moveToFront')}
                                       </Button>
                                       <Button
                                         className="gap-1.5"
@@ -381,7 +389,7 @@ export function AdminRadioView() {
                                         }}
                                       >
                                         <XCircleIcon size={14} aria-hidden />
-                                        Opt out
+                                        {t('adminRadioView.optOut')}
                                       </Button>
                                     </div>
                                   </li>
@@ -391,12 +399,16 @@ export function AdminRadioView() {
                           </StudioPanel>
 
                           <StudioPanel
-                            title="Multicast"
-                            description="Mirror Tahti Radio to YouTube, Twitch and other RTMP destinations."
+                            title={t('adminRadioView.multicast')}
+                            description={t(
+                              'adminRadioView.mirrorTahtiRadioToYoutube',
+                            )}
                           >
                             <MulticastSection
                               scope="radio"
-                              description="Destinations that receive the Tahti Radio stream."
+                              description={t(
+                                'adminRadioView.destinationsThatReceiveTheTahti',
+                              )}
                             />
                           </StudioPanel>
                         </div>
@@ -414,7 +426,7 @@ export function AdminRadioView() {
                       icon: <BanIcon size={14} aria-hidden />,
                       content:
                         data.optedOut.length === 0 ? (
-                          <StudioPanel title="Opted out">
+                          <StudioPanel title={t('adminRadioView.optedOut')}>
                             <PageEmpty
                               title={t('empties.adminRadioNoOptOuts')}
                             />
@@ -436,7 +448,7 @@ export function AdminRadioView() {
                                     </span>
                                     {ch.isLive && (
                                       <Badge variant="pill" color="green">
-                                        Live
+                                        {t('adminRadioView.live')}
                                       </Badge>
                                     )}
                                   </div>
@@ -457,7 +469,7 @@ export function AdminRadioView() {
                                     }}
                                   >
                                     <CheckCircle2Icon size={14} aria-hidden />
-                                    Re-enable
+                                    {t('adminRadioView.reEnable')}
                                   </Button>
                                 </li>
                               ))}
@@ -470,7 +482,7 @@ export function AdminRadioView() {
                       label: 'History',
                       icon: <HistoryIcon size={14} aria-hidden />,
                       content: (
-                        <StudioPanel title="Feature history">
+                        <StudioPanel title={t('adminRadioView.featureHistory')}>
                           {data.history.length === 0 ? (
                             <PageEmpty
                               title={t('empties.adminRadioNoHistory')}

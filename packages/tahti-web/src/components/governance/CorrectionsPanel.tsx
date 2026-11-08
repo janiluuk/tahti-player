@@ -37,6 +37,7 @@ function CorrectionItem({
   correction: GovernanceCorrection;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const state = STATE_LABELS[correction.state];
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -67,7 +68,8 @@ function CorrectionItem({
         </Badge>
       </div>
       <p className="text-foreground-secondary text-xs">
-        Sent <ListingDate value={correction.createdAt} />
+        {t('correctionsPanel.sent')}{' '}
+        <ListingDate value={correction.createdAt} />
       </p>
       <p className="whitespace-pre-line">{correction.details}</p>
       {correction.resolutionNote ? (
@@ -83,16 +85,16 @@ function CorrectionItem({
           disabled={busy}
           onClick={() => setConfirming(true)}
         >
-          Withdraw request
+          {t('correctionsPanel.withdrawRequest')}
         </Button>
       ) : null}
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <ConfirmDialog
         destructive
         isOpen={confirming}
-        title="Withdraw this request?"
-        description="The board will not answer it. It stays in your list as withdrawn."
-        confirmLabel="Withdraw"
+        title={t('correctionsPanel.withdrawThisRequest')}
+        description={t('correctionsPanel.theBoardWillNotAnswer')}
+        confirmLabel={t('correctionsPanel.withdraw')}
         onCancel={() => setConfirming(false)}
         onConfirm={withdraw}
       />
@@ -130,11 +132,12 @@ export function CorrectionsPanel() {
   const tooShort = details.trim().length < CORRECTION_DETAILS_MIN;
 
   return (
-    <GovernancePanel title="Request a correction" icon={PencilLineIcon}>
+    <GovernancePanel
+      title={t('correctionsPanel.requestACorrection')}
+      icon={PencilLineIcon}
+    >
       <p className="text-foreground-secondary text-sm">
-        Something wrong in your member details or in a published record? Tell
-        the board what is wrong and what it should be. You will see their answer
-        here.
+        {t('correctionsPanel.somethingWrongInYourMember')}
       </p>
       <form
         className="flex flex-col gap-2"
@@ -160,7 +163,7 @@ export function CorrectionsPanel() {
         }}
       >
         <Select
-          label="What needs correcting"
+          label={t('correctionsPanel.whatNeedsCorrecting')}
           value={subject}
           onValueChange={(value) => setSubject(value as CorrectionSubject)}
           options={(
@@ -169,7 +172,7 @@ export function CorrectionsPanel() {
         />
         <Textarea
           submitOnModEnter
-          label="What is wrong, and what should it be?"
+          label={t('correctionsPanel.whatIsWrongAndWhat')}
           rows={3}
           value={details}
           maxLength={CORRECTION_DETAILS_MAX}
@@ -181,13 +184,15 @@ export function CorrectionsPanel() {
         {error ? <InlineError textSize="xs">{error}</InlineError> : null}
         {sent ? (
           <p role="status" className="text-xs">
-            Sent. The board will answer here.
+            {t('correctionsPanel.sentTheBoardWillAnswer')}
           </p>
         ) : null}
       </form>
       {corrections && corrections.length > 0 ? (
         <div className="flex flex-col gap-1">
-          <h3 className="text-sm font-semibold">Your requests</h3>
+          <h3 className="text-sm font-semibold">
+            {t('correctionsPanel.yourRequests')}
+          </h3>
           <ul className="divide-border divide-y">
             {corrections.map((correction) => (
               <CorrectionItem
