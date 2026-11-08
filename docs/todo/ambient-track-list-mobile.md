@@ -1,6 +1,6 @@
 # AmbientTrackList mobile defaults
 
-**Status:** open
+**Status:** partial
 
 ## Goal
 
@@ -20,11 +20,15 @@ densities look misaligned and art reads too small.
 
 ## Plan
 
-- [ ] When viewport is phone and no explicit stored/controlled view, resolve to `list` (if `renderList`) else `dense`/`compact`
-- [ ] Do not overwrite a user-picked stored desktop view blindly — prefer: first visit / null store → mobile list; optional “mobile prefers list unless user picked on this device”
 - [ ] Tighten `AmbientTrackRow` phone layout (alignment across densities, larger thumb than current wrap)
-- [ ] Stories: `PhoneWidth` asserts list default; unit tests for view resolution
 - [ ] Consumers stay on the shared widget (Listen, Favorites, Search, Collections, channel, artist, local files)
+
+## Shipped
+
+Phones (≤767px) with no stored pick, controlled view or per-list starting
+view open as the plain list (dense rows when the listing has no list);
+`lib/trackListViewResolve.ts` + `hooks/usePhoneViewport.ts`, unit tests and
+the `PhoneDefaultsToList` story. A stored pick is never overwritten.
 
 ## Out of scope
 

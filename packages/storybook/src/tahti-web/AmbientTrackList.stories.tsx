@@ -326,6 +326,44 @@ export const PhoneWidth: Story = {
   ],
 };
 
+const stubPhoneViewport = () => {
+  const real = window.matchMedia;
+  window.matchMedia = (query: string) =>
+    query === '(max-width: 767px)'
+      ? ({
+          matches: true,
+          media: query,
+          onchange: null,
+          addEventListener: () => undefined,
+          removeEventListener: () => undefined,
+          addListener: () => undefined,
+          removeListener: () => undefined,
+          dispatchEvent: () => false,
+        } as MediaQueryList)
+      : real.call(window, query);
+  return () => {
+    window.matchMedia = real;
+  };
+};
+
+/** On a phone with nothing picked yet, a listing opens as its plain list. */
+export const PhoneDefaultsToList: Story = {
+  args: {
+    items: ITEMS,
+    renderList: () => <p>Plain table</p>,
+    persistDensity: false,
+    defaultDensity: 'compact',
+  },
+  beforeEach: stubPhoneViewport,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText('Plain table')).toBeVisible();
+    await expect(
+      canvas.getByTestId('ambient-track-list').getAttribute('data-density'),
+    ).toBe('list');
+  },
+};
+
 export const DecodeMissingPeaks: Story = {
   args: {
     items: ITEMS.map((item) => ({
