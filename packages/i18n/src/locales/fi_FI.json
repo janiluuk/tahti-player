@@ -3896,7 +3896,12 @@
       "browseTracks": "Selaa kappaleita",
       "importFiles": "Tuo tiedostoja",
       "importEmbeds": "Tuo kappaleita",
-      "createRelease": "Luo julkaisu"
+      "createRelease": "Luo julkaisu",
+      "addAgendaItem": "Lisää asialistalle",
+      "addStation": "Lisää asema",
+      "registerAddon": "Rekisteröi lisäosa",
+      "addContent": "Lisää sisältöä",
+      "addToSelects": "Lisää Tahti Selectsiin"
     }
   },
   "studioEditor": {

@@ -4,6 +4,7 @@ import {
   BanIcon,
   CheckCircle2Icon,
   HistoryIcon,
+  ListPlusIcon,
   PauseIcon,
   PlayIcon,
   RadioTowerIcon,
@@ -19,6 +20,7 @@ import {
   BreadcrumbLink,
   Breadcrumbs,
   Button,
+  ButtonLink,
   Tabs,
   ViewShell,
 } from '@tahti-player/ui';
@@ -284,6 +286,16 @@ export function AdminRadioView() {
                             {rotation.length === 0 ? (
                               <PageEmpty
                                 title={t('empties.adminRadioNoRotation')}
+                                action={
+                                  <ButtonLink
+                                    to="/admin/tahti-selects"
+                                    size="sm"
+                                    variant="secondary"
+                                  >
+                                    <ListPlusIcon size={16} aria-hidden />
+                                    {t('emptyActions.addToSelects')}
+                                  </ButtonLink>
+                                }
                               />
                             ) : (
                               <TahtiRotationPlaylistEditor

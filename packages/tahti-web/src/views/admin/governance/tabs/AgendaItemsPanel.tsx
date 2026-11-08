@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import { PlusIcon } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, InlineLoader, Input } from '@tahti-player/ui';
@@ -19,6 +20,7 @@ import { CollapsibleRecord } from './MeetingRecordPanels';
 export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
   const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
+  const titleInputRef = useRef<HTMLInputElement>(null);
   const [items, setItems] = useState<GovernanceAgendaItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -81,7 +83,19 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
           }}
         />
       ) : items.length === 0 ? (
-        <PageEmpty title={t('empties.noAgendaItemsYet')} />
+        <PageEmpty
+          title={t('empties.noAgendaItemsYet')}
+          action={
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => titleInputRef.current?.focus()}
+            >
+              <PlusIcon size={16} aria-hidden />
+              {t('emptyActions.addAgendaItem')}
+            </Button>
+          }
+        />
       ) : (
         <ol className="flex flex-col gap-2 text-sm">
           {items.map((item, index) => (
@@ -118,6 +132,7 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
         }}
       >
         <Input
+          ref={titleInputRef}
           label="New item"
           value={title}
           maxLength={300}

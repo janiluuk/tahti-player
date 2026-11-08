@@ -1,5 +1,5 @@
-import { Trash2Icon } from 'lucide-react';
-import { useEffect, useState, type FormEvent } from 'react';
+import { PlusIcon, Trash2Icon } from 'lucide-react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -25,6 +25,7 @@ export function MyRadioStations({
   onChange?: (stations: MyRadioStation[]) => void;
 } = {}) {
   const { t } = useTranslation('web');
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const play = usePlayerStore((s) => s.play);
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
@@ -170,13 +171,26 @@ export function MyRadioStations({
           })}
         </ul>
       ) : stations ? (
-        <PageEmpty title={t('empties.noRadioStations')} />
+        <PageEmpty
+          title={t('empties.noRadioStations')}
+          action={
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => nameInputRef.current?.focus()}
+            >
+              <PlusIcon size={16} aria-hidden />
+              {t('emptyActions.addStation')}
+            </Button>
+          }
+        />
       ) : null}
       <form
         className="flex flex-col gap-3"
         onSubmit={(event) => void add(event)}
       >
         <Input
+          ref={nameInputRef}
           label="Station name"
           value={name}
           onChange={(event) => setName(event.target.value)}
