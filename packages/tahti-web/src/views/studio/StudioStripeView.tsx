@@ -49,7 +49,10 @@ export function StudioStripeView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-4 px-1 py-2">
-        <ViewShell title="Stripe" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell
+          title={t('studioStripe.stripe')}
+          classes={{ root: 'px-0 pt-0' }}
+        >
           {message ? (
             <p className="text-foreground-secondary text-sm" role="status">
               {message}
@@ -60,12 +63,11 @@ export function StudioStripeView() {
             <PageLoading label={t('loading.loadingStripe')} />
           ) : !enabled ? (
             <StudioPanel
-              title="Stripe is not enabled"
-              description="This dashboard is only added to Studio when Stripe is configured on the instance."
+              title={t('studioStripe.stripeIsNotEnabled')}
+              description={t('studioStripe.thisDashboardIsOnlyAdded')}
             >
               <p className="text-foreground-secondary text-sm">
-                Fan-sub orders still appear under Audience. Turn Stripe on to
-                connect a payout account and open the Express dashboard.
+                {t('studioStripe.fanSubOrdersStillAppear')}
               </p>
               <ButtonLink
                 to="/studio/audience"
@@ -73,15 +75,15 @@ export function StudioStripeView() {
                 variant="secondary"
                 className="mt-3"
               >
-                Back to Audience
+                {t('studioStripe.backToAudience')}
               </ButtonLink>
             </StudioPanel>
           ) : (
             <>
               {connect ? (
                 <StudioPanel
-                  title="Payout account"
-                  description="Stripe Connect must be payments-ready before fan-sub orders can reach your bank."
+                  title={t('studioStripe.payoutAccount')}
+                  description={t('studioStripe.stripeConnectMustBePayments')}
                 >
                   <div
                     data-tour-id="stripe-status"
@@ -90,23 +92,23 @@ export function StudioStripeView() {
                   >
                     <StatusPill
                       ok={connect.stripeConfigured}
-                      label="Stripe on"
+                      label={t('studioStripe.stripeOn')}
                     />
                     <StatusPill
                       ok={Boolean(connect.accountId)}
-                      label="Account connected"
+                      label={t('studioStripe.accountConnected')}
                     />
                     <StatusPill
                       ok={connect.detailsSubmitted}
-                      label="Details submitted"
+                      label={t('studioStripe.detailsSubmitted')}
                     />
                     <StatusPill
                       ok={connect.chargesEnabled}
-                      label="Charges enabled"
+                      label={t('studioStripe.chargesEnabled')}
                     />
                     <StatusPill
                       ok={connect.paymentsReady}
-                      label="Payments ready"
+                      label={t('studioStripe.paymentsReady')}
                     />
                   </div>
 
@@ -144,7 +146,7 @@ export function StudioStripeView() {
                           aria-hidden
                           className="mr-1.5 shrink-0"
                         />
-                        Start / resume onboarding
+                        {t('studioStripe.startResumeOnboarding')}
                       </Button>
                     ) : null}
                     {connect.accountId ? (
@@ -171,7 +173,7 @@ export function StudioStripeView() {
                           });
                         }}
                       >
-                        Open Stripe Express dashboard
+                        {t('studioStripe.openStripeExpressDashboard')}
                       </Button>
                     ) : null}
                   </div>
@@ -180,8 +182,8 @@ export function StudioStripeView() {
 
               {payouts ? (
                 <StudioPanel
-                  title="Charges through Stripe"
-                  description="The same fan-sub orders as Audience, limited to this payout account."
+                  title={t('studioStripe.chargesThroughStripe')}
+                  description={t('studioStripe.theSameFanSubOrders')}
                 >
                   <div data-tour-id="stripe-charges">
                     <FanSubscriptionStats
@@ -199,7 +201,7 @@ export function StudioStripeView() {
                   to="/studio/audience"
                   className="text-foreground underline underline-offset-2"
                 >
-                  Order flow and grants live on Audience
+                  {t('studioStripe.orderFlowAndGrantsLive')}
                 </Link>
                 .
               </p>

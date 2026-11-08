@@ -76,11 +76,11 @@ function surfaceOf(element: Element): string {
   return getComputedStyle(document.body).backgroundColor;
 }
 
-/** Track titles keep the theme's text colour on the row's own surface, whatever the channel's own colour scheme paints around them. */
+/** Track titles keep the theme's text colour on the row's own surface, whatever the channel's own colour scheme paints around them. Phones open the listing as the plain list, so either row kind counts. */
 async function expectReadableTrackTitles(canvasElement: HTMLElement) {
   const canvas = within(canvasElement);
   const rows = await canvas.findAllByTestId(
-    'ambient-track-row',
+    /^(ambient-track-row|track-row)$/,
     {},
     { timeout: 5000 },
   );
