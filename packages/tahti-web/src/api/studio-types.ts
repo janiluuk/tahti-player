@@ -235,12 +235,16 @@ export type StudioCollectionItem = {
     /** Gated playback link from the collection route; the editor's own
      * source route only serves the owner's tracks. */
     audioUrl?: string | null;
+    createdAt?: string | null;
+    bannerUrl?: string | null;
   } | null;
   audioUrl?: string | null;
   release?: {
     id: string;
     title: string;
     smartLinkSlug?: string;
+    releaseDate?: string | null;
+    artworkUrl?: string | null;
   } | null;
   /** Another artist's track that has since gone private. */
   unavailable?: boolean;

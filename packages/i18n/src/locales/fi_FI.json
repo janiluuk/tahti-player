@@ -3949,6 +3949,26 @@
       "openLibrary": "Avaa kirjasto",
       "addFirstModerator": "Lisää ensimmäinen moderaattori"
     },
+    "sortSounds": {
+      "title": "Järjestä äänet",
+      "sortBy": "Järjestys",
+      "hint": "Vedä kohdetta tai napsauta sen kahvaa ja siirrä nuolinäppäimillä (Home ja End vievät ääripäihin).",
+      "handle": "Siirrä {{title}}",
+      "moved": "{{title}} siirretty sijalle {{position}}/{{count}}",
+      "toTop": "Siirrä ylimmäksi",
+      "toBottom": "Siirrä alimmaksi",
+      "toTopNamed": "Siirrä {{title}} ylimmäksi",
+      "toBottomNamed": "Siirrä {{title}} alimmaksi",
+      "save": "Tallenna järjestys",
+      "open": "Järjestä äänet",
+      "mode": {
+        "OWN": "Oma järjestys",
+        "NEWEST": "Uusin ensin",
+        "OLDEST": "Vanhin ensin",
+        "TITLE_ASC": "Nimi A–Ö",
+        "TITLE_DESC": "Nimi Ö–A"
+      }
+    },
     "scheduleEditor": {
       "nextPlannedBroadcast": "Seuraava suunniteltu lähetys",
       "thisIsShownOnYour": "Tämä näkyy julkisella kanavallasi, jotta kuuntelijat tietävät milloin palata.",
