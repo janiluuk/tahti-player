@@ -168,7 +168,10 @@ export function NewsView() {
   const hiddenCount = entries.length - INITIAL_COUNT;
 
   return (
-    <ViewShell title="Platform news" corner={<HistoryBackButton />}>
+    <ViewShell
+      title={t('newsView.platformNews')}
+      corner={<HistoryBackButton />}
+    >
       {selected ? (
         <PlatformNewsDialog
           key={selected.id}
@@ -189,7 +192,7 @@ export function NewsView() {
             to="/whats-new"
             className="text-primary-strong font-medium underline-offset-2 hover:underline"
           >
-            See what's new in each release
+            {t('newsView.seeWhatSNewIn')}
           </Link>
           .
         </p>
@@ -216,7 +219,7 @@ export function NewsView() {
               className="inline p-0 text-xs underline underline-offset-2"
               onClick={() => setAttempt((n) => n + 1)}
             >
-              Retry
+              {t('newsView.retry')}
             </Button>
           </p>
         )}

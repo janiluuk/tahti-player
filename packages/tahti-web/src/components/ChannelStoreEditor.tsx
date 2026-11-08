@@ -139,7 +139,7 @@ function StoreTrackAssigner({ revision }: { revision: number }) {
         />
       ) : activeTiers.length === 0 ? (
         <p className="text-foreground-secondary text-xs">
-          Your tracks are listed here once you have added a price above.
+          {t('channelStoreEditor.yourTracksAreListedHere')}
         </p>
       ) : (
         <>
@@ -155,7 +155,7 @@ function StoreTrackAssigner({ revision }: { revision: number }) {
             </p>
           )}
           <Input
-            label="Search tracks"
+            label={t('channelStoreEditor.searchTracks')}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
@@ -206,19 +206,15 @@ function StoreTrackAssigner({ revision }: { revision: number }) {
 }
 
 export function ChannelStoreEditor() {
+  const { t } = useTranslation('web');
   const [revision, setRevision] = useState(0);
 
   return (
     <div className="flex flex-col gap-4">
       <ol className="text-foreground-secondary flex list-decimal flex-col gap-1 pl-5 text-sm">
-        <li>
-          Turn the Store on. It stays hidden on your channel page until you do.
-        </li>
-        <li>Add a price. That is what a fan pays for a track.</li>
-        <li>
-          Put tracks in the Store. Each track you price shows up in the section.
-          Take a track out and it leaves the Store.
-        </li>
+        <li>{t('channelStoreEditor.turnTheStoreOnIt')}</li>
+        <li>{t('channelStoreEditor.addAPriceThatIs')}</li>
+        <li>{t('channelStoreEditor.putTracksInTheStore')}</li>
       </ol>
       <PurchaseTiersEditor onChanged={() => setRevision((n) => n + 1)} />
       <StoreTrackAssigner revision={revision} />

@@ -69,7 +69,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
               <Button
                 size="icon-sm"
                 variant="secondary"
-                aria-label="Close image viewer"
+                aria-label={t('imageLightbox.closeImageViewer')}
                 onClick={onClose}
               >
                 <XIcon size={18} aria-hidden />
@@ -116,7 +116,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
                 size="icon-sm"
                 variant="secondary"
                 className="text-accent-red-strong"
-                aria-label="Remove photo"
+                aria-label={t('imageLightbox.removePhoto')}
                 onClick={onDeleteCurrent}
               >
                 <Trash2Icon className="text-accent-red" size={18} aria-hidden />
@@ -127,7 +127,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
             <Button
               size="icon-sm"
               variant="secondary"
-              aria-label="Close image viewer"
+              aria-label={t('imageLightbox.closeImageViewer')}
               onClick={onClose}
             >
               <XIcon size={18} aria-hidden />
@@ -141,7 +141,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
                 size="icon-sm"
                 variant="secondary"
                 className="absolute top-1/2 left-0 z-10 -translate-y-1/2"
-                aria-label="Previous image"
+                aria-label={t('imageLightbox.previousImage')}
                 onClick={() => move(-1)}
               >
                 <ChevronLeftIcon size={20} aria-hidden />
@@ -152,7 +152,7 @@ export const ImageLightbox: FC<ImageLightboxProps> = ({
                 size="icon-sm"
                 variant="secondary"
                 className="absolute top-1/2 right-0 z-10 -translate-y-1/2"
-                aria-label="Next image"
+                aria-label={t('imageLightbox.nextImage')}
                 onClick={() => move(1)}
               >
                 <ChevronRightIcon size={20} aria-hidden />

@@ -88,7 +88,7 @@ export function SearchResultsView({ q }: { q: string }) {
         <div className="flex flex-col gap-8">
           {state.data.artists.length > 0 ? (
             <section className="flex flex-col gap-2">
-              <SectionTitle title="Artists" />
+              <SectionTitle title={t('searchResultsView.artists')} />
               <ul className="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3">
                 {state.data.artists.map((artist) => (
                   <li key={artist.username}>
@@ -116,13 +116,15 @@ export function SearchResultsView({ q }: { q: string }) {
           ) : null}
           {state.data.tracks.length > 0 ? (
             <section className="flex flex-col gap-2">
-              <SectionTitle title="Tracks" />
+              <SectionTitle title={t('searchResultsView.tracks')} />
               <SearchTrackResults tracks={state.data.tracks} />
             </section>
           ) : null}
           {state.data.collections.length > 0 ? (
             <section className="flex flex-col gap-2">
-              <SectionTitle title="Playlists and releases" />
+              <SectionTitle
+                title={t('searchResultsView.playlistsAndReleases')}
+              />
               <ul className="grid grid-cols-1 gap-1 sm:grid-cols-2 lg:grid-cols-3">
                 {state.data.collections.map((collection) => (
                   <li key={`${collection.ownerUsername}/${collection.slug}`}>

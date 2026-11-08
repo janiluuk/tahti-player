@@ -62,14 +62,14 @@ export function AssociationEditPanel() {
 
   if (!values) {
     return (
-      <StudioPanel title="The association">
+      <StudioPanel title={t('associationEditPanel.theAssociation')}>
         <PageLoading label={t('loading.loadingTheAssociationSDetails')} />
       </StudioPanel>
     );
   }
 
   return (
-    <StudioPanel title="The association">
+    <StudioPanel title={t('associationEditPanel.theAssociation')}>
       <form
         className="grid gap-3 sm:grid-cols-2"
         onSubmit={(e) => {
@@ -110,11 +110,11 @@ export function AssociationEditPanel() {
           {error ? <InlineError>{error}</InlineError> : null}
           {saved ? (
             <p role="status" className="text-sm">
-              Saved. Members see these details on Governance.
+              {t('associationEditPanel.savedMembersSeeTheseDetails')}
             </p>
           ) : null}
           <Button type="submit" size="sm" className="w-fit" disabled={busy}>
-            Save details
+            {t('associationEditPanel.saveDetails')}
           </Button>
         </div>
       </form>

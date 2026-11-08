@@ -112,10 +112,12 @@ export function SocialPostNow({
             submit();
           }}
         >
-          <h3 className="text-sm font-semibold">Post now</h3>
+          <h3 className="text-sm font-semibold">
+            {t('socialPostNow.postNow')}
+          </h3>
           {platforms.length > 1 ? (
             <Select
-              label="Post to"
+              label={t('socialPostNow.postTo')}
               value={selected}
               onValueChange={(value) =>
                 setPlatform(value as SocialPostPlatform)
@@ -129,7 +131,7 @@ export function SocialPostNow({
           ) : null}
           <Textarea
             submitOnModEnter
-            label="Message"
+            label={t('socialPostNow.message')}
             value={message}
             maxLength={500}
             rows={3}
@@ -150,7 +152,9 @@ export function SocialPostNow({
 
       {posts && posts.length > 0 ? (
         <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-semibold">Recent posts</h3>
+          <h3 className="text-sm font-semibold">
+            {t('socialPostNow.recentPosts')}
+          </h3>
           <ul
             className="divide-border divide-y text-sm"
             data-testid="social-posts"

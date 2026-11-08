@@ -7694,6 +7694,278 @@
       "artists": "Artistit",
       "tracks": "Kappaleet",
       "playlists": "Soittolistat"
+    },
+    "fanChatRoom": {
+      "fanRoom": "Fanihuone",
+      "send": "Lähetä",
+      "backToThePublicChat": "Takaisin julkiseen keskusteluun",
+      "fanRoomMessages": "Fanihuoneen viestit",
+      "messageTheFanRoom": "Kirjoita fanihuoneeseen"
+    },
+    "communityStoryDialog": {
+      "communityStory": "Yhteisön tarina",
+      "moreCommunityUpdates": "Lisää yhteisön päivityksiä",
+      "newer": "Uudempi",
+      "older": "Vanhempi",
+      "close": "Sulje"
+    },
+    "channelStoreEditor": {
+      "yourTracksAreListedHere": "Kappaleesi näkyvät tässä, kun olet lisännyt hinnan yllä.",
+      "turnTheStoreOnIt": "Ota kauppa käyttöön. Se pysyy piilossa kanavasivullasi, kunnes teet niin.",
+      "addAPriceThatIs": "Lisää hinta. Sen fani maksaa kappaleesta.",
+      "putTracksInTheStore": "Lisää kappaleita kauppaan. Jokainen hinnoittelemasi kappale näkyy osiossa. Kun poistat kappaleen, se poistuu kaupasta.",
+      "searchTracks": "Hae kappaleita"
+    },
+    "adminGate": {
+      "logIn": "Kirjaudu sisään",
+      "backToListen": "Takaisin Kuuntele-sivulle",
+      "boardAdmin": "Hallituksen ylläpito",
+      "signInWithABoard": "Kirjaudu hallituksen jäsenen tilillä jatkaaksesi.",
+      "boardAccessRequired": "Hallituksen oikeudet vaaditaan"
+    },
+    "addToPlaylistDialog": {
+      "addToPlaylist": "Lisää soittolistaan",
+      "cancel": "Peruuta",
+      "loading": "Ladataan…",
+      "newPlaylist": "Uusi soittolista",
+      "playlistName": "Soittolistan nimi"
+    },
+    "transparencyResolutionsView": {
+      "voted": "Äänestetty",
+      "boardResolutions": "Hallituksen päätökset",
+      "transparency": "Läpinäkyvyys",
+      "year": "Vuosi"
+    },
+    "governanceSection": {
+      "haveYourSay": "Kerro mielipiteesi",
+      "reviewOpenVotesAndFollow": "Käy läpi avoimet äänestykset ja seuraa ratkaisemattomia keskusteluja.",
+      "needsYourOpinion": "Tarvitsee mielipiteesi",
+      "ongoingDiscussions": "Käynnissä olevat keskustelut"
+    },
+    "spotifyImportPanel": {
+      "addFromSpotify": "Lisää Spotifysta",
+      "tracksAreEmbeddedFromSpotify": "Kappaleet upotetaan Spotifysta; Tahti ei koskaan kopioi ääntä.",
+      "spotifySource": "Spotify-lähde",
+      "spotifyTracks": "Spotify-kappaleet"
+    },
+    "smartLinkView": {
+      "playAll": "Soita kaikki",
+      "listenOn": "Kuuntele palvelussa",
+      "listen": "Kuuntele",
+      "poweredByTahti": "Toteutus: Tahti"
+    },
+    "socialPostNow": {
+      "postNow": "Julkaise nyt",
+      "recentPosts": "Viimeisimmät julkaisut",
+      "postTo": "Julkaise kohteeseen",
+      "message": "Viesti"
+    },
+    "moderateChannelView": {
+      "logIn": "Kirjaudu sisään",
+      "backToTheChannel": "Takaisin kanavalle",
+      "chatSettings": "Keskustelun asetukset",
+      "stopModerating": "Lopeta moderointi"
+    },
+    "governanceMotionDetailView": {
+      "signInWithACooperative": "Kirjaudu osuuskunnan jäsentilillä nähdäksesi tämän aloitteen.",
+      "logIn": "Kirjaudu sisään",
+      "manageMembership": "Hallitse jäsenyyttä",
+      "governance": "Hallinto"
+    },
+    "feedView": {
+      "logIn": "Kirjaudu sisään",
+      "discoverArtists": "Löydä artisteja",
+      "feed": "Syöte",
+      "yourFeed": "Oma syötteesi"
+    },
+    "annualReportActions": {
+      "recordApproval": "Kirjaa hyväksyntä",
+      "cancel": "Peruuta",
+      "publishToMembers": "Julkaise jäsenille",
+      "approvedAt": "Hyväksytty"
+    },
+    "memberRegisterPanel": {
+      "clearFilters": "Tyhjennä suodattimet",
+      "loading": "Ladataan…",
+      "findAMember": "Etsi jäsen",
+      "nameUsernameOrMemberNumber": "Nimi, käyttäjänimi tai jäsennumero"
+    },
+    "adminStatusView": {
+      "admin": "Ylläpito",
+      "status": "Tila",
+      "queueHealth": "Jonojen kunto",
+      "cronJobs": "Ajastetut tehtävät"
+    },
+    "stemMixer": {
+      "muteSoloOrTurnDown": "Mykistä, soolaa tai hiljennä stemmi toiston aikana. Vaihto-napsautus sooloon kuuntelee vain sen stemmin.",
+      "reset": "Palauta",
+      "resetStemMix": "Palauta stemmimiksaus",
+      "stemMix": "Stemmimiksaus"
+    },
+    "imageLightbox": {
+      "closeImageViewer": "Sulje kuvakatselin",
+      "removePhoto": "Poista kuva",
+      "previousImage": "Edellinen kuva",
+      "nextImage": "Seuraava kuva"
+    },
+    "browserLocalFiles": {
+      "tahtiPlayerDesktopRuntimeDetected": "Tahti Playerin työpöytäympäristö havaittu. Natiivikirjasto ei ole käytettävissä; selaintuonnit toimivat edelleen.",
+      "searchLocalFiles": "Hae paikallisia tiedostoja",
+      "titleArtistOrFileName": "Nimi, artisti tai tiedostonimi",
+      "remove": "Poista"
+    },
+    "channelAnnouncementsPanel": {
+      "pageMusic": "Sivun musiikki",
+      "loadingPreview": "Ladataan esikatselua…",
+      "cancel": "Peruuta",
+      "clipsBetweenPrograms": "Leikkeet ohjelmien välissä"
+    },
+    "studioUploadView": {
+      "uploadFirstAndWeLl": "Lataa ensin, niin luemme tiedostoon upotetun nimen ja artistin. Jos niitä ei ole, käytetään tiedostonimeä, ja voit nimetä sen editorissa myöhemmin. Voit poistua sivulta käsittelyn aikana; jos käsittely ei onnistu, ilmoitamme sinulle.",
+      "lastRecordedBroadcasts": "Viimeksi tallennetut lähetykset",
+      "goLiveToRecordOne": "Mene livenä tallentaaksesi lähetyksen."
+    },
+    "studioHomeView": {
+      "createYourChannel": "Luo kanavasi",
+      "studio": "Studio",
+      "accountStatus": "Tilin tila"
+    },
+    "studioBrandingView": {
+      "signInToDesignYour": "Kirjaudu sisään suunnitellaksesi julkista kanavaasi.",
+      "artistBranding": "Artistin brändi",
+      "channelDesigner": "Kanavan suunnittelu"
+    },
+    "topListsTab": {
+      "contentRankings": "Sisällön sijoitukset",
+      "topListGrouping": "Listan ryhmittely",
+      "topListOrder": "Listan järjestys"
+    },
+    "listenerLoyalty": {
+      "listenerLoyalty": "Kuuntelijoiden sitoutuminen",
+      "howFarIntoATrack": "Kuinka pitkälle kuuntelijat kuuntelivat kappaletta: kuuntelemassa olevien osuus jokaisella kymmenyksellä.",
+      "shareStillListeningByOf": "Kuuntelemassa olevien osuus % kappaleesta"
+    },
+    "audienceBreakdown": {
+      "theBreakdownFillsInAs": "Erittely täydentyy, kun ihmiset kuuntelevat.",
+      "audience": "Yleisö",
+      "ignoreBotTraffic": "Ohita bottiliikenne"
+    },
+    "soundsAmbientList": {
+      "embeds": "Upotukset",
+      "downloadOriginal": "Lataa alkuperäinen",
+      "stats": "Tilastot"
+    },
+    "soundRow": {
+      "playShiftClickToQueue": "Soita · Vaihto+napsautus lisää jonoon",
+      "downloadOriginal": "Lataa alkuperäinen",
+      "stats": "Tilastot"
+    },
+    "recordingsTab": {
+      "playRecording": "Soita tallenne",
+      "recordingsFromThisShow": "Tämän ohjelman tallenteet",
+      "broadcastRecordingsLinkedToThis": "Tähän ohjelmasarjaan liitetyt lähetysten tallenteet."
+    },
+    "myRadioStations": {
+      "stationName": "Aseman nimi",
+      "streamUrl": "Striimin osoite",
+      "genre": "Tyylilaji"
+    },
+    "searchResultsView": {
+      "artists": "Artistit",
+      "tracks": "Kappaleet",
+      "playlistsAndReleases": "Soittolistat ja julkaisut"
+    },
+    "newsView": {
+      "seeWhatSNewIn": "Katso, mitä uutta kussakin julkaisussa on",
+      "retry": "Yritä uudelleen",
+      "platformNews": "Alustan uutiset"
+    },
+    "collectionView": {
+      "linkedReleases": "Linkitetyt julkaisut",
+      "backToListen": "Takaisin Kuuntele-sivulle",
+      "signInToSubscribeTo": "Kirjaudu sisään tilataksesi tämän soittolistan"
+    },
+    "workersPanel": {
+      "close": "Sulje",
+      "history": "Historia",
+      "workers": "Työprosessit"
+    },
+    "reportsTab": {
+      "generateReport": "Luo raportti",
+      "year": "Vuosi",
+      "generatedReports": "Luodut raportit"
+    },
+    "grantsTab": {
+      "reviewADryRunAllocation": "Tarkista koejako vuosittain. Hyväksyntä on mahdollista vain, kun jako täsmää sentilleen.",
+      "disbursementHistory": "Maksatushistoria",
+      "previewAGrantCycle": "Esikatsele apurahakierrosta"
+    },
+    "agendaItemsPanel": {
+      "loading": "Ladataan…",
+      "newItem": "Uusi kohta",
+      "descriptionOptional": "Kuvaus (valinnainen)"
+    },
+    "associationEditPanel": {
+      "savedMembersSeeTheseDetails": "Tallennettu. Jäsenet näkevät nämä tiedot Hallinto-sivulla.",
+      "saveDetails": "Tallenna tiedot",
+      "theAssociation": "Yhdistys"
+    },
+    "legacyMembersPanel": {
+      "membersWithNoStripeSubscription": "Jäsenet, joilla ei vielä ole Stripe-tilausta. He siirtyvät maksamalla jäsenmaksunsa kassan kautta; siihen asti maksua ei peritä automaattisesti.",
+      "legacyMembershipMigration": "Vanhojen jäsenyyksien siirto",
+      "copyEmails": "Kopioi sähköpostiosoitteet"
+    },
+    "fanSubPayoutQueue": {
+      "payoutQueue": "Maksujono",
+      "fanSubscriptionPayoutsWaitingFor": "Fanitilausten maksut, jotka odottavat maksuprosessia. Epäonnistuneen maksun uudelleenyritys palauttaa sen jonoon.",
+      "show": "Näytä"
+    },
+    "adminArtworkPresetsView": {
+      "admin": "Ylläpito",
+      "artworkPresets": "Kansikuvapohjat",
+      "enabledArtworkBecomesTheCover": "Käytössä oleva kuva tulee kanneksi kappaleille, soittolistoille ja kanaville, joilla ei ole omaa, ja sitä tarjotaan jokaisessa kansikuvan valitsimessa."
+    },
+    "playHistoryDialog": {
+      "listeningHistory": "Kuunteluhistoria",
+      "localFilesYouHaveListened": "Kuuntelemasi paikalliset tiedostot, uusimmat ensin. Säilytetään vain tällä laitteella.",
+      "resume": "Jatka"
+    },
+    "multistreamStatusPanel": {
+      "manage": "Hallitse",
+      "multistreamStatus": "Monilähetyksen tila",
+      "whetherEachDestinationIsReceiving": "Vastaanottaako kukin kohde lähetystäsi juuri nyt. Päivittyy 15 sekunnin välein."
+    },
+    "chatBansPanel": {
+      "chatBans": "Keskustelun porttikiellot",
+      "peopleWhoCanNoLonger": "Henkilöt, jotka eivät voi enää kirjoittaa tähän keskusteluun. Anna porttikielto Viimeisimmät viestit -kohdan viestin Porttikielto-toiminnolla.",
+      "liftBan": "Poista porttikielto"
+    },
+    "annualReportsPanel": {
+      "approved": "Hyväksytty",
+      "annualReports": "Vuosikertomukset",
+      "loadingAnnualReports": "Ladataan vuosikertomuksia…"
+    },
+    "fingerprintTrackPanel": {
+      "matchOnFile": "Vastaavuus löytyi",
+      "noMatchOnFile": "Ei vastaavuutta",
+      "previewOnlyNotSaved": "Vain esikatselu, ei tallennettu"
+    },
+    "savePresetDialog": {
+      "savePreset": "Tallenna esiasetus",
+      "saveTheCurrentLookUnder": "Tallenna nykyinen ulkoasu nimellä, jotta voit palata siihen myöhemmin.",
+      "presetName": "Esiasetuksen nimi"
+    },
+    "libraryEmbedsView": {
+      "filterEmbedsByProvider": "Suodata upotukset palvelun mukaan",
+      "sortEmbeds": "Järjestä upotukset"
+    },
+    "tagSearchView": {
+      "discover": "Löydä",
+      "radio": "Radio"
+    },
+    "studioSoundView": {
+      "stillProcessingThisCanTake": "Käsitellään vielä. Pidemmissä tiedostoissa tämä voi kestää minuutin. Toisto, aaltomuoto ja pikakorjaukset avautuvat, kun se on valmis; alla olevia tietoja voi muokata ja tallentaa jo nyt.",
+      "backToLibrarySounds": "Takaisin kirjaston ääniin"
     }
   },
   "studioEditor": {

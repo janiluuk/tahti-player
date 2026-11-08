@@ -134,13 +134,13 @@ export function LibraryEmbedsView() {
               items={providerChips}
               selected={providerFilter}
               onChange={setProviderFilter}
-              aria-label="Filter embeds by provider"
+              aria-label={t('libraryEmbedsView.filterEmbedsByProvider')}
             />
           ) : null}
           <LibrarySortSelect
             value={sort}
             onChange={setSort}
-            label="Sort embeds"
+            label={t('libraryEmbedsView.sortEmbeds')}
           />
         </LibrarySectionToolbar>
       ) : null}

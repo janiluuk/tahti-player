@@ -24,9 +24,13 @@ export function AdminGate({ children }: { children: ReactNode }) {
       <PageGate
         page="Board admin"
         icon={<ShieldAlertIcon size={40} className="opacity-40" />}
-        title="Board admin"
-        description="Sign in with a board member account to continue."
-        action={<Button onClick={() => openAuth('login')}>Log in</Button>}
+        title={t('adminGate.boardAdmin')}
+        description={t('adminGate.signInWithABoard')}
+        action={
+          <Button onClick={() => openAuth('login')}>
+            {t('adminGate.logIn')}
+          </Button>
+        }
       />
     );
   }
@@ -36,11 +40,11 @@ export function AdminGate({ children }: { children: ReactNode }) {
       <PageGate
         page="Board admin"
         icon={<ShieldAlertIcon size={40} className="opacity-40" />}
-        title="Board access required"
+        title={t('adminGate.boardAccessRequired')}
         description={`Signed in as @${user.username}, but this account doesn't have the Board role.`}
         action={
           <ButtonLink to="/" size="sm" variant="secondary">
-            Back to Listen
+            {t('adminGate.backToListen')}
           </ButtonLink>
         }
       />

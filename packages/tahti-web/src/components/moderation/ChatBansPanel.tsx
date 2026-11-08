@@ -50,8 +50,8 @@ export function ChatBansPanel({ slug: slugProp }: Props) {
 
   return (
     <StudioPanel
-      title="Chat bans"
-      description="People who can no longer post in this chat. To ban someone, use Ban on one of their messages under Recent messages."
+      title={t('chatBansPanel.chatBans')}
+      description={t('chatBansPanel.peopleWhoCanNoLonger')}
     >
       {loading ? (
         <PageLoading label={t('loading.loading')} />
@@ -73,7 +73,7 @@ export function ChatBansPanel({ slug: slugProp }: Props) {
                   </time>
                 </div>
               </div>
-              <Tooltip content="Lift ban" side="top">
+              <Tooltip content={t('chatBansPanel.liftBan')} side="top">
                 <Button
                   size="icon-sm"
                   variant="text"

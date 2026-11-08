@@ -68,7 +68,7 @@ export function MemberRegisterPanel() {
       onToggle={() => setOpen((value) => !value)}
     >
       {rows === null ? (
-        <InlineLoader label="Loading…" textSize="xs" />
+        <InlineLoader label={t('memberRegisterPanel.loading')} textSize="xs" />
       ) : loadError && rows.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadTheMemberRegister')}
@@ -80,8 +80,8 @@ export function MemberRegisterPanel() {
           <Input
             enterKeyHint="search"
             type="search"
-            label="Find a member"
-            placeholder="Name, username or member number"
+            label={t('memberRegisterPanel.findAMember')}
+            placeholder={t('memberRegisterPanel.nameUsernameOrMemberNumber')}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -95,7 +95,7 @@ export function MemberRegisterPanel() {
                     variant="secondary"
                     onClick={() => setQuery('')}
                   >
-                    Clear filters
+                    {t('memberRegisterPanel.clearFilters')}
                   </Button>
                 ) : undefined
               }

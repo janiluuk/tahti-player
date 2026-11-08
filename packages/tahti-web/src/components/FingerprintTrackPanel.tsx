@@ -70,12 +70,12 @@ export function FingerprintTrackPanel({
         {track.fingerprintMatch ? (
           <span className="text-accent-yellow-strong flex items-center gap-1.5 text-xs">
             <FingerprintIcon size={14} aria-hidden />
-            Match on file
+            {t('fingerprintTrackPanel.matchOnFile')}
           </span>
         ) : (
           <span className="text-foreground-secondary flex items-center gap-1.5 text-xs">
             <CheckCircle2Icon size={14} aria-hidden />
-            No match on file
+            {t('fingerprintTrackPanel.noMatchOnFile')}
           </span>
         )}
       </div>
@@ -111,7 +111,7 @@ export function FingerprintTrackPanel({
       {checkResult && checkResult !== 'none' && (
         <div className="border-border bg-background rounded-md border-(length:--border-width) p-3">
           <p className="text-foreground-secondary mb-1 text-xs uppercase">
-            Preview only — not saved
+            {t('fingerprintTrackPanel.previewOnlyNotSaved')}
           </p>
           <MatchSummary match={checkResult} />
         </div>

@@ -116,10 +116,9 @@ export function PlayHistoryDialog({
   return (
     <>
       <Dialog.Root isOpen={isOpen} onClose={onClose} className="max-w-lg">
-        <Dialog.Title>Listening history</Dialog.Title>
+        <Dialog.Title>{t('playHistoryDialog.listeningHistory')}</Dialog.Title>
         <Dialog.Description>
-          Local files you have listened to, newest first. Kept on this device
-          only.
+          {t('playHistoryDialog.localFilesYouHaveListened')}
         </Dialog.Description>
         <div className="flex max-h-[50vh] flex-col gap-1 overflow-y-auto py-2">
           {error && entries.length === 0 ? (
@@ -177,11 +176,11 @@ export function PlayHistoryDialog({
           </p>
         ) : null}
         <Dialog.Actions>
-          <Tooltip content="Resume" side="top">
+          <Tooltip content={t('playHistoryDialog.resume')} side="top">
             <Button
               size="icon"
               variant="text"
-              aria-label="Resume"
+              aria-label={t('playHistoryDialog.resume')}
               disabled={sessionIds.length === 0}
               onClick={() => void resume()}
             >

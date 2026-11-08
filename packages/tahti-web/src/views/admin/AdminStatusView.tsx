@@ -72,11 +72,15 @@ export function AdminStatusView() {
         <AdminPageLayout current="/admin/status">
           <div className="flex flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
-              <BreadcrumbCurrent>Status</BreadcrumbCurrent>
+              <BreadcrumbLink to="/admin">
+                {t('adminStatusView.admin')}
+              </BreadcrumbLink>
+              <BreadcrumbCurrent>
+                {t('adminStatusView.status')}
+              </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Status"
+              title={t('adminStatusView.status')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <StudioPanel>
@@ -160,7 +164,7 @@ export function AdminStatusView() {
               </StudioPanel>
               {dashboard && (
                 <div className="grid gap-6 md:grid-cols-2">
-                  <StudioPanel title="Queue health">
+                  <StudioPanel title={t('adminStatusView.queueHealth')}>
                     <ul className="divide-border divide-y">
                       {dashboard.queues.map((queue) => (
                         <li
@@ -176,7 +180,7 @@ export function AdminStatusView() {
                       ))}
                     </ul>
                   </StudioPanel>
-                  <StudioPanel title="Cron jobs">
+                  <StudioPanel title={t('adminStatusView.cronJobs')}>
                     <ul className="divide-border divide-y">
                       {dashboard.cronJobs.map((job) => (
                         <li

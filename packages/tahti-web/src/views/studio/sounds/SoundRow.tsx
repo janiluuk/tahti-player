@@ -165,7 +165,7 @@ export function SoundRow({
         data-testid="sound-row-actions"
       >
         {!item.embedProvider ? (
-          <Tooltip content="Play · Shift+click to queue" side="top">
+          <Tooltip content={t('soundRow.playShiftClickToQueue')} side="top">
             <Button
               size="icon-sm"
               variant="secondary"
@@ -212,7 +212,7 @@ export function SoundRow({
           </div>
         ) : null}
         {!item.embedProvider ? (
-          <Tooltip content="Download original" side="top">
+          <Tooltip content={t('soundRow.downloadOriginal')} side="top">
             <Button
               size="icon-sm"
               variant="text"
@@ -228,7 +228,7 @@ export function SoundRow({
           label={t('actions.editNamed', { name: item.title })}
           onClick={() => setEditingId(item.id)}
         />
-        <Tooltip content="Stats" side="top">
+        <Tooltip content={t('soundRow.stats')} side="top">
           <Button
             size="icon-sm"
             variant="text"

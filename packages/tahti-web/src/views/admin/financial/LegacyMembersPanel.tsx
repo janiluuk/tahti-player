@@ -39,20 +39,18 @@ export function LegacyMembersPanel() {
 
   return (
     <StudioPanel
-      title="Legacy membership migration"
+      title={t('legacyMembersPanel.legacyMembershipMigration')}
       action={
         members && members.length > 0 ? (
           <CopyButton
             text={members.map((member) => member.email).join(', ')}
-            label="Copy emails"
+            label={t('legacyMembersPanel.copyEmails')}
           />
         ) : undefined
       }
     >
       <p className="text-foreground-secondary mb-3 text-sm">
-        Members with no Stripe subscription yet. They move over by paying their
-        membership through checkout; until then their fee isn't collected
-        automatically.
+        {t('legacyMembersPanel.membersWithNoStripeSubscription')}
       </p>
       {error ? (
         <PageError

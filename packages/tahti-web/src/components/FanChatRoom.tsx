@@ -220,17 +220,19 @@ export function FanChatRoom({
       }`}
     >
       <div className="border-border flex items-center gap-2 border-b px-3 py-2">
-        <Tooltip content="Back to the public chat" side="top">
+        <Tooltip content={t('fanChatRoom.backToThePublicChat')} side="top">
           <Button
             size="icon-sm"
             variant="text"
             onClick={onLeave}
-            aria-label="Back to the public chat"
+            aria-label={t('fanChatRoom.backToThePublicChat')}
           >
             <ArrowLeftIcon size={16} aria-hidden />
           </Button>
         </Tooltip>
-        <div className="font-display text-sm font-bold">Fan room</div>
+        <div className="font-display text-sm font-bold">
+          {t('fanChatRoom.fanRoom')}
+        </div>
         <span className="text-foreground-secondary text-xs">
           {connected ? 'Subscribers only' : 'Connecting…'}
         </span>
@@ -243,7 +245,7 @@ export function FanChatRoom({
       <div
         role="log"
         aria-live="polite"
-        aria-label="Fan room messages"
+        aria-label={t('fanChatRoom.fanRoomMessages')}
         className={`space-y-2 overflow-y-auto px-3 py-2 text-sm ${rail ? 'min-h-0 flex-1' : 'flex-1'}`}
       >
         {messages.length === 0 && (
@@ -272,13 +274,13 @@ export function FanChatRoom({
         <Input
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Message the fan room"
-          aria-label="Message the fan room"
+          placeholder={t('fanChatRoom.messageTheFanRoom')}
+          aria-label={t('fanChatRoom.messageTheFanRoom')}
           maxLength={500}
           disabled={!connected}
         />
         <Button type="submit" size="sm" disabled={!connected || !input.trim()}>
-          Send
+          {t('fanChatRoom.send')}
         </Button>
       </form>
     </div>

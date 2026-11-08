@@ -33,10 +33,11 @@ export function GovernanceSection({ state }: { state: StudioHomeState }) {
       <div className="border-border bg-background-secondary/30 @container rounded-xl border p-4">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <p className="text-sm font-bold">Have your say</p>
+            <p className="text-sm font-bold">
+              {t('governanceSection.haveYourSay')}
+            </p>
             <p className="text-foreground-secondary mt-1 text-xs">
-              Review open votes and follow discussions that are still
-              unresolved.
+              {t('governanceSection.reviewOpenVotesAndFollow')}
             </p>
           </div>
           <Link
@@ -49,7 +50,7 @@ export function GovernanceSection({ state }: { state: StudioHomeState }) {
         <div className="mt-4 grid grid-cols-1 gap-4 @xl:grid-cols-2">
           <div>
             <p className="text-foreground-secondary mb-2 text-xs font-semibold tracking-wide uppercase">
-              Needs your opinion
+              {t('governanceSection.needsYourOpinion')}
             </p>
             {governanceVotes.length === 0 &&
             unresolvedRequests.every((request) => request.youVoted) ? (
@@ -90,7 +91,7 @@ export function GovernanceSection({ state }: { state: StudioHomeState }) {
           </div>
           <div>
             <p className="text-foreground-secondary mb-2 text-xs font-semibold tracking-wide uppercase">
-              Ongoing discussions
+              {t('governanceSection.ongoingDiscussions')}
             </p>
             {discussionUpdates.length === 0 ? (
               <PageEmpty title={t('studioHub.governanceEmptyDiscussions')} />

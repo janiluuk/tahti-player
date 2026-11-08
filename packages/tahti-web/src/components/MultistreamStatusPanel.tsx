@@ -50,8 +50,10 @@ export function MultistreamStatusPanel({ slug }: { slug: string }) {
 
   return (
     <StudioPanel
-      title="Multistream status"
-      description="Whether each destination is receiving your stream right now. Refreshes every 15 seconds."
+      title={t('multistreamStatusPanel.multistreamStatus')}
+      description={t(
+        'multistreamStatusPanel.whetherEachDestinationIsReceiving',
+      )}
       action={
         <ButtonLink
           to="/studio/go-live"
@@ -59,7 +61,7 @@ export function MultistreamStatusPanel({ slug }: { slug: string }) {
           size="sm"
           variant="ghost"
         >
-          Manage
+          {t('multistreamStatusPanel.manage')}
         </ButtonLink>
       }
     >

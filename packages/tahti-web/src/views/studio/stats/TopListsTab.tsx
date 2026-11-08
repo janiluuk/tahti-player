@@ -39,7 +39,10 @@ export function TopListsTab({
 
   return (
     <div className={`${active ? '' : 'hidden'} grid gap-6 lg:grid-cols-2`}>
-      <StudioPanel title="Content rankings" className="lg:col-span-2">
+      <StudioPanel
+        title={t('topListsTab.contentRankings')}
+        className="lg:col-span-2"
+      >
         <div className="mb-4 flex flex-wrap gap-2">
           <FilterChips
             items={[
@@ -48,7 +51,7 @@ export function TopListsTab({
             ]}
             selected={topListDimension}
             onChange={(id) => setTopListDimension(id as StatsTopListDimension)}
-            aria-label="Top list grouping"
+            aria-label={t('topListsTab.topListGrouping')}
           />
           <FilterChips
             items={[
@@ -57,7 +60,7 @@ export function TopListsTab({
             ]}
             selected={topListSort}
             onChange={(id) => setTopListSort(id as StatsTopListSort)}
-            aria-label="Top list order"
+            aria-label={t('topListsTab.topListOrder')}
           />
         </div>
         {topLists.length === 0 ? (

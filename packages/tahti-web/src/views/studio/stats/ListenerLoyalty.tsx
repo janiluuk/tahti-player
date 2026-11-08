@@ -47,8 +47,8 @@ export function ListenerLoyalty({
 
   return (
     <StudioPanel
-      title="Listener loyalty"
-      description="How far into a track listeners got: the share still listening at each tenth of it."
+      title={t('listenerLoyalty.listenerLoyalty')}
+      description={t('listenerLoyalty.howFarIntoATrack')}
     >
       {failed ? (
         <PageError
@@ -74,7 +74,7 @@ export function ListenerLoyalty({
           <div
             className="h-44 w-full"
             role="img"
-            aria-label="Share still listening by % of track"
+            aria-label={t('listenerLoyalty.shareStillListeningByOf')}
           >
             <DayOfWeekChart
               values={loyalty.points.map((point) => point.share * 100)}

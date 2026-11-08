@@ -318,11 +318,14 @@ export function CollectionView({ slug }: { slug: string }) {
     <div className="-mx-6 -mt-6 min-h-full p-6 md:-mx-8 md:-mt-8 md:p-8">
       <PageFrame maxWidth="full" className="relative">
         <Tooltip
-          content="Back to Listen"
+          content={t('collectionView.backToListen')}
           side="right"
           wrapperClassName={backButtonCornerClassName}
         >
-          <BackButtonLink to="/" aria-label="Back to Listen" />
+          <BackButtonLink
+            to="/"
+            aria-label={t('collectionView.backToListen')}
+          />
         </Tooltip>
 
         <EntitySocialHeader
@@ -453,7 +456,7 @@ export function CollectionView({ slug }: { slug: string }) {
             ) : null}
             {!isOwner && collection.isPublic && subscription ? (
               <Tooltip
-                content="Sign in to subscribe to this playlist"
+                content={t('collectionView.signInToSubscribeTo')}
                 side="bottom"
                 disabled={Boolean(me)}
                 wrapperClassName="inline-flex"
@@ -511,7 +514,7 @@ export function CollectionView({ slug }: { slug: string }) {
         {collection.items.some((i) => i.release && !i.sound) && (
           <section className="flex flex-col gap-2">
             <h2>
-              <Eyebrow>Linked releases</Eyebrow>
+              <Eyebrow>{t('collectionView.linkedReleases')}</Eyebrow>
             </h2>
             <ul className="text-sm">
               {collection.items

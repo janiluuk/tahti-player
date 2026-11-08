@@ -76,8 +76,7 @@ export function BrowserLocalFiles() {
         onFiles={onFiles}
       />
       <p className="border-border bg-background-secondary text-foreground-secondary rounded-md border px-2 py-1.5 text-xs">
-        Tahti Player desktop runtime detected. Native library is unavailable;
-        browser imports remain available.
+        {t('browserLocalFiles.tahtiPlayerDesktopRuntimeDetected')}
       </p>
       {tracks.length === 0 ? (
         <PageEmpty
@@ -99,8 +98,8 @@ export function BrowserLocalFiles() {
                 <Input
                   enterKeyHint="search"
                   type="search"
-                  aria-label="Search local files"
-                  placeholder="Title, artist, or file name"
+                  aria-label={t('browserLocalFiles.searchLocalFiles')}
+                  placeholder={t('browserLocalFiles.titleArtistOrFileName')}
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                 />
@@ -147,7 +146,7 @@ export function BrowserLocalFiles() {
                       Re-import {track.fileName} to play
                     </p>
                   </div>
-                  <Tooltip content="Remove" side="top">
+                  <Tooltip content={t('browserLocalFiles.remove')} side="top">
                     <Button
                       size="icon-sm"
                       variant="text"

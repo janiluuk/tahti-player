@@ -28,9 +28,9 @@ export function SavePresetDialog({
         }
       }}
     >
-      <Dialog.Title>Save preset</Dialog.Title>
+      <Dialog.Title>{t('savePresetDialog.savePreset')}</Dialog.Title>
       <Dialog.Description>
-        Save the current look under a name so you can switch back to it later.
+        {t('savePresetDialog.saveTheCurrentLookUnder')}
       </Dialog.Description>
       <form
         onSubmit={(event) => {
@@ -39,7 +39,7 @@ export function SavePresetDialog({
         }}
       >
         <Input
-          label="Preset name"
+          label={t('savePresetDialog.presetName')}
           value={presetNameInput}
           onChange={(event) => onNameChange(event.target.value)}
           placeholder="e.g. Neon night"
@@ -48,7 +48,7 @@ export function SavePresetDialog({
         <Dialog.Actions>
           <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
           <Button disabled={presetBusy} type="submit">
-            Save preset
+            {t('savePresetDialog.savePreset')}
           </Button>
         </Dialog.Actions>
       </form>

@@ -158,7 +158,7 @@ function SoundRowActions({
       data-testid="sound-row-actions"
     >
       {!hasEmbed ? (
-        <Tooltip content="Download original" side="top">
+        <Tooltip content={t('soundsAmbientList.downloadOriginal')} side="top">
           <Button
             size="icon-sm"
             variant="text"
@@ -174,7 +174,7 @@ function SoundRowActions({
         label={t('actions.editNamed', { name: item.title })}
         onClick={() => setEditingId(item.id)}
       />
-      <Tooltip content="Stats" side="top">
+      <Tooltip content={t('soundsAmbientList.stats')} side="top">
         <Button
           size="icon-sm"
           variant="text"
@@ -296,6 +296,7 @@ export function SoundsAmbientList({
   items: StudioSound[];
   state: StudioSoundsState;
 }) {
+  const { t } = useTranslation('web');
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
   const currentTime = usePlayerStore((s) => s.currentTime);
@@ -372,7 +373,7 @@ export function SoundsAmbientList({
               id="sounds-embeds-heading"
               className="font-display text-lg font-bold tracking-tight"
             >
-              Embeds
+              {t('soundsAmbientList.embeds')}
             </h2>
             <p className="text-foreground-secondary mt-1 text-sm">
               hearthis.at, Spotify, Mixcloud and Bandcamp play in the provider

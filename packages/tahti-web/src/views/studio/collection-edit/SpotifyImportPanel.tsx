@@ -107,12 +107,12 @@ export function SpotifyImportPanel({
 
   return (
     <StudioPanel
-      title="Add from Spotify"
-      description="Tracks are embedded from Spotify; Tahti never copies the audio."
+      title={t('spotifyImportPanel.addFromSpotify')}
+      description={t('spotifyImportPanel.tracksAreEmbeddedFromSpotify')}
     >
       <div className="flex flex-col gap-3">
         <SegmentedControl
-          aria-label="Spotify source"
+          aria-label={t('spotifyImportPanel.spotifySource')}
           options={MODES}
           value={mode}
           onChange={switchMode}
@@ -159,7 +159,10 @@ export function SpotifyImportPanel({
             }
           />
         ) : (
-          <ul aria-label="Spotify tracks" className="flex flex-col gap-2">
+          <ul
+            aria-label={t('spotifyImportPanel.spotifyTracks')}
+            className="flex flex-col gap-2"
+          >
             {results.map((track) => (
               <li key={track.uri} className="flex items-center gap-3 text-sm">
                 <MediaArtwork

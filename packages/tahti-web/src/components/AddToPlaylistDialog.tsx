@@ -104,14 +104,14 @@ export function AddToPlaylistDialog({
 
   return (
     <Dialog.Root isOpen={isOpen} onClose={() => (busy ? undefined : onClose())}>
-      <Dialog.Title>Add to playlist</Dialog.Title>
+      <Dialog.Title>{t('addToPlaylistDialog.addToPlaylist')}</Dialog.Title>
       <Dialog.Description>
         {summary}. Tracks are added to the end; the same track can appear more
         than once.
       </Dialog.Description>
       <div className="flex max-h-[45vh] flex-col gap-1 overflow-y-auto py-2">
         {playlists === null ? (
-          <InlineLoader label="Loading…" />
+          <InlineLoader label={t('addToPlaylistDialog.loading')} />
         ) : loadError ? (
           <PageError
             title={t('loadErrors.couldNotLoadYourPlaylists')}
@@ -170,8 +170,8 @@ export function AddToPlaylistDialog({
       >
         <Input
           ref={nameInputRef}
-          label="New playlist"
-          placeholder="Playlist name"
+          label={t('addToPlaylistDialog.newPlaylist')}
+          placeholder={t('addToPlaylistDialog.playlistName')}
           value={name}
           onChange={(event) => setName(event.target.value)}
           className="flex-1"
@@ -187,7 +187,7 @@ export function AddToPlaylistDialog({
         </Button>
       </form>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('addToPlaylistDialog.cancel')}</Dialog.Close>
       </Dialog.Actions>
     </Dialog.Root>
   );

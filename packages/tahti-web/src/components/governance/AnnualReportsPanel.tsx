@@ -13,9 +13,10 @@ import { PageEmpty, PageError } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
 
 function ReportDetails({ report }: { report: PublishedAnnualReport }) {
+  const { t } = useTranslation('web');
   return (
     <span className="inline-flex flex-wrap items-center gap-x-1">
-      <span>Approved</span>
+      <span>{t('annualReportsPanel.approved')}</span>
       <ListingDate value={report.approvedAt} />
       {report.filedAt ? (
         <>
@@ -58,9 +59,12 @@ export function AnnualReportsPanel() {
   }, [attempt]);
 
   return (
-    <GovernancePanel title="Annual reports" icon={BookOpenIcon}>
+    <GovernancePanel
+      title={t('annualReportsPanel.annualReports')}
+      icon={BookOpenIcon}
+    >
       {reports === null ? (
-        <InlineLoader label="Loading annual reports…" />
+        <InlineLoader label={t('annualReportsPanel.loadingAnnualReports')} />
       ) : loadError ? (
         <PageError
           title={t('loadErrors.couldNotLoadTheAnnualReports')}

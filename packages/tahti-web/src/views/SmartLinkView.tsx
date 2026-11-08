@@ -223,7 +223,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
             }}
           >
             <PlayIcon size={15} aria-hidden className="mr-1.5" />
-            Play all
+            {t('smartLinkView.playAll')}
           </Button>
         ) : null}
       </EntitySocialHeader>
@@ -253,7 +253,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
         className="flex flex-col gap-2"
         aria-label={t('smartLink.listenOn')}
       >
-        <Eyebrow>Listen on</Eyebrow>
+        <Eyebrow>{t('smartLinkView.listenOn')}</Eyebrow>
         {targets.length === 0 ? (
           <ButtonAnchor
             href={data.releaseUrl}
@@ -276,7 +276,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
             >
               <span>{dspServiceLabel(name)}</span>
               <span className="text-foreground-secondary flex items-center gap-2 text-xs font-normal">
-                Listen
+                {t('smartLinkView.listen')}
                 <ExternalLinkIcon size={15} aria-hidden />
               </span>
             </ExternalLink>
@@ -316,7 +316,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
             size="xs"
             className="text-foreground-secondary hover:text-foreground text-xs"
           >
-            Powered by Tahti
+            {t('smartLinkView.poweredByTahti')}
           </ButtonLink>
         </footer>
       ) : null}

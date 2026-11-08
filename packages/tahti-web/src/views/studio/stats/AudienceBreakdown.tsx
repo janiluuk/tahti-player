@@ -96,11 +96,11 @@ export function AudienceBreakdown({
 
   return (
     <StudioPanel
-      title="Audience"
+      title={t('audienceBreakdown.audience')}
       description={`Shares of listens in this period. Names with fewer than ${minBucket} listens are grouped as Other.`}
       action={
         <Toggle
-          label="Ignore bot traffic"
+          label={t('audienceBreakdown.ignoreBotTraffic')}
           showLabel
           checked={ignoreBots}
           onChange={setIgnoreBots}
@@ -116,7 +116,7 @@ export function AudienceBreakdown({
         />
       ) : total === 0 ? (
         <p className="text-foreground-secondary text-sm">
-          The breakdown fills in as people listen.
+          {t('audienceBreakdown.theBreakdownFillsInAs')}
         </p>
       ) : (
         <div
