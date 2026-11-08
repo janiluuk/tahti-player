@@ -3,7 +3,7 @@ import { CircleHelpIcon, Eye, SettingsIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Box,
@@ -55,6 +55,7 @@ function asThemePalette(
 }
 
 export function ThemesCategory() {
+  const { t } = useTranslation('web');
   const themes = useThemeStore((s) => s.themes);
   const customThemes = useThemeStore((s) => s.customThemes);
   const themeId = useThemeStore((s) => s.themeId);
@@ -136,14 +137,16 @@ export function ThemesCategory() {
               }
               setColorMode(dark ? 'dark' : 'light');
             }}
-            label="Dynamic theme"
+            label={t('themesCategory.dynamicTheme')}
           />
-          <span className="text-sm font-medium">Dynamic</span>
-          <Tooltip content="Dark from 7pm to 7am, light the rest of the day.">
+          <span className="text-sm font-medium">
+            {t('themesCategory.dynamic')}
+          </span>
+          <Tooltip content={t('themesCategory.darkFrom7pmTo7am')}>
             <CircleHelpIcon
               size={14}
               className="text-foreground-secondary"
-              aria-label="What Dynamic does"
+              aria-label={t('themesCategory.whatDynamicDoes')}
             />
           </Tooltip>
         </div>
@@ -162,9 +165,11 @@ export function ThemesCategory() {
         ),
       )}
       <Box variant="tertiary" shadow="none" className="gap-2 py-3">
-        <p className="text-sm font-medium">Custom theme editor</p>
+        <p className="text-sm font-medium">
+          {t('themesCategory.customThemeEditor')}
+        </p>
         <p className="text-foreground-secondary text-xs">
-          Click a color to expand its sliders. Appearance uses the row above.
+          {t('themesCategory.clickAColorToExpand')}
         </p>
         <ThemeEditor />
       </Box>
@@ -181,6 +186,7 @@ function presetLabel(id: string): string {
 }
 
 export function VisualizersCategory() {
+  const { t } = useTranslation('web');
   const [preset, setPreset] = useState<string | null>(null);
   const [previewPreset, setPreviewPreset] = useState<string>('AURORA');
   const [settingsMap, setSettingsMap] = useState<VisualSettingsMap>({});
@@ -227,7 +233,7 @@ export function VisualizersCategory() {
         <div className="relative h-64 min-h-52">
           {previewPreset === 'MINIMAL' ? (
             <div className="bg-background text-foreground-secondary flex h-full items-center justify-center text-sm">
-              No animated background
+              {t('themesCategory.noAnimatedBackground')}
             </div>
           ) : (
             <ChannelVisualizer
@@ -242,7 +248,7 @@ export function VisualizersCategory() {
                 {presetLabel(previewPreset)}
                 {visualizerSupportsAudioReactive(previewPreset) ? (
                   <Badge variant="pill" color="blue">
-                    Audio reactive
+                    {t('themesCategory.audioReactive')}
                   </Badge>
                 ) : null}
               </p>
@@ -256,13 +262,13 @@ export function VisualizersCategory() {
         {visualizerSupportsAudioReactive(previewPreset) ? (
           <div className="border-border flex items-center justify-between gap-3 border-t px-4 py-3">
             <span className="text-foreground-secondary text-xs">
-              Audio reactivity
+              {t('themesCategory.audioReactivity')}
               <span className="text-foreground-tertiary ml-1">
                 (let the visualizer respond to the playing track)
               </span>
             </span>
             <Toggle
-              label="Audio reactivity"
+              label={t('themesCategory.audioReactivity')}
               checked={previewSettings.audioReactive}
               onChange={(checked) =>
                 saveTuning(previewPreset, {
@@ -342,13 +348,12 @@ export function VisualizersCategory() {
             Configure {presetLabel(configurationPreset)}
           </Dialog.Title>
           <Dialog.Description>
-            Tune this visualizer while its live preview stays visible behind the
-            dialog.
+            {t('themesCategory.tuneThisVisualizerWhileIts')}
           </Dialog.Description>
           <div className="flex flex-col gap-4">
             <div>
               <Slider
-                label="Speed"
+                label={t('themesCategory.speed')}
                 min={0.25}
                 max={2}
                 step={0.05}
@@ -367,13 +372,12 @@ export function VisualizersCategory() {
                 </Slider.Surface>
               </Slider>
               <p className="text-foreground-secondary mt-1 text-xs">
-                Controls how quickly the shapes, particles, and camera movement
-                evolve.
+                {t('themesCategory.controlsHowQuicklyTheShapes')}
               </p>
             </div>
             <div>
               <Slider
-                label="Intensity"
+                label={t('themesCategory.intensity')}
                 min={0.25}
                 max={2}
                 step={0.05}
@@ -392,12 +396,12 @@ export function VisualizersCategory() {
                 </Slider.Surface>
               </Slider>
               <p className="text-foreground-secondary mt-1 text-xs">
-                Controls how strongly the scene responds to audio levels.
+                {t('themesCategory.controlsHowStronglyTheScene')}
               </p>
             </div>
             <div>
               <Slider
-                label="Scale"
+                label={t('themesCategory.scale')}
                 min={0.5}
                 max={2}
                 step={0.05}
@@ -416,20 +420,20 @@ export function VisualizersCategory() {
                 </Slider.Surface>
               </Slider>
               <p className="text-foreground-secondary mt-1 text-xs">
-                Grows or shrinks the whole scene.
+                {t('themesCategory.growsOrShrinksTheWhole')}
               </p>
             </div>
             {visualizerSupportsAudioReactive(configurationPreset) ? (
               <div className="flex items-center justify-between gap-3 text-sm">
                 <span>
-                  Audio reactivity
+                  {t('themesCategory.audioReactivity')}
                   <span className="text-foreground-secondary ml-1 text-xs">
                     (respond to the playing track, instead of a gentle idle
                     animation)
                   </span>
                 </span>
                 <Toggle
-                  label="Audio reactivity"
+                  label={t('themesCategory.audioReactivity')}
                   checked={configurationSettings.audioReactive}
                   onChange={(checked) =>
                     saveTuning(configurationPreset, {
@@ -448,11 +452,11 @@ export function VisualizersCategory() {
                 saveTuning(configurationPreset, DEFAULT_VISUAL_PRESET_SETTINGS)
               }
             >
-              Reset to default
+              {t('themesCategory.resetToDefault')}
             </Button>
           </div>
           <Dialog.Actions>
-            <Dialog.Close>Done</Dialog.Close>
+            <Dialog.Close>{t('themesCategory.done')}</Dialog.Close>
           </Dialog.Actions>
         </Dialog.Root>
       ) : null}

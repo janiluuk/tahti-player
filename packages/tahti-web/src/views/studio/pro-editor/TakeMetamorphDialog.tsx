@@ -227,15 +227,13 @@ export function TakeMetamorphDialog({
 
   return (
     <Dialog.Root isOpen={isOpen} onClose={close} className="max-w-xl">
-      <Dialog.Title>Metamorph between takes</Dialog.Title>
+      <Dialog.Title>{t('takeMetamorph.metamorphBetweenTakes')}</Dialog.Title>
       <Dialog.Description>
-        Keep one version&apos;s timing and dynamics and bleed in the sound of
-        another. The result lands on a new Multitrack lane, ready to bounce as a
-        revision.
+        {t('takeMetamorph.keepOneVersionAposS')}
       </Dialog.Description>
       <div className="mt-4 flex min-w-0 flex-col gap-4">
         {versions === null ? (
-          <InlineLoader label="Loading versions…" />
+          <InlineLoader label={t('takeMetamorph.loadingVersions')} />
         ) : versions.length < 2 ? (
           <PageEmpty
             title={t('empties.twoVersionsNeeded')}
@@ -245,7 +243,7 @@ export function TakeMetamorphDialog({
           <>
             <div className="grid gap-3 sm:grid-cols-2">
               <Select
-                label="Keep the shape of"
+                label={t('takeMetamorph.keepTheShapeOf')}
                 options={versionOptions}
                 value={hostId}
                 onValueChange={(id) => {
@@ -254,7 +252,7 @@ export function TakeMetamorphDialog({
                 }}
               />
               <Select
-                label="Bleed in the sound of"
+                label={t('takeMetamorph.bleedInTheSoundOf')}
                 options={versionOptions}
                 value={donorId}
                 error={samePick ? 'Pick two different versions.' : undefined}
@@ -265,7 +263,7 @@ export function TakeMetamorphDialog({
               />
             </div>
             <Slider
-              label="Morph amount"
+              label={t('takeMetamorph.morphAmount')}
               min={0}
               max={100}
               step={1}
@@ -278,7 +276,7 @@ export function TakeMetamorphDialog({
             />
             <div className="grid items-end gap-3 sm:grid-cols-2">
               <Select
-                label="Crossfade curve"
+                label={t('takeMetamorph.crossfadeCurve')}
                 options={CURVE_OPTIONS}
                 value={curve}
                 onValueChange={(id) => setCurve(id as MorphCurve)}
@@ -287,12 +285,12 @@ export function TakeMetamorphDialog({
                 <Toggle
                   checked={rising}
                   onChange={setRising}
-                  label="Rise across the track"
+                  label={t('takeMetamorph.riseAcrossTheTrack')}
                 />
                 <span className="text-sm">
-                  Rise across the track
+                  {t('takeMetamorph.riseAcrossTheTrack')}
                   <span className="text-foreground-secondary block text-xs">
-                    Start as the first take, end at the amount above.
+                    {t('takeMetamorph.startAsTheFirstTake')}
                   </span>
                 </span>
               </div>
@@ -301,18 +299,18 @@ export function TakeMetamorphDialog({
               <InlineError>{error}</InlineError>
             ) : busy === 'render' ? (
               <p className="text-foreground-secondary text-sm" role="status">
-                Rendering the morph in your browser…
+                {t('takeMetamorph.renderingTheMorphInYour')}
               </p>
             ) : null}
           </>
         )}
       </div>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('takeMetamorph.cancel')}</Dialog.Close>
         {previewing ? (
           <Button className="gap-1.5" variant="secondary" onClick={stopPreview}>
             <PauseIcon size={16} aria-hidden />
-            Stop preview
+            {t('takeMetamorph.stopPreview')}
           </Button>
         ) : (
           <Button
@@ -322,7 +320,7 @@ export function TakeMetamorphDialog({
             onClick={() => void preview()}
           >
             <PlayIcon size={16} aria-hidden />
-            Preview
+            {t('takeMetamorph.preview')}
           </Button>
         )}
         <Button

@@ -92,12 +92,12 @@ export function TransparencyView() {
 
   return (
     <ViewShell
-      title="Transparency"
+      title={t('transparencyPage.transparency')}
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-4xl',
       }}
     >
-      <PageBackLink to="/governance" label="Governance" />
+      <PageBackLink to="/governance" label={t('transparencyPage.governance')} />
       <div className="mb-6 flex flex-col gap-1">
         <Link
           to="/transparency/methodology"
@@ -129,7 +129,7 @@ export function TransparencyView() {
       ) : (
         <>
           {!ytd && ytdError && (
-            <SectionShell title="Year to date">
+            <SectionShell title={t('transparencyPage.yearToDate')}>
               <PageError
                 title={t('loadErrors.couldNotLoadYearToDate')}
                 description={ytdError}
@@ -142,15 +142,15 @@ export function TransparencyView() {
             <SectionShell title={`YTD ${ytd.year}`}>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 <Stat
-                  label="Running surplus"
+                  label={t('transparencyPage.runningSurplus')}
                   value={centsLabel(ytd.runningSurplus)}
                 />
                 <Stat
-                  label="Months finalized"
+                  label={t('transparencyPage.monthsFinalized')}
                   value={String(ytd.monthsFinalized)}
                 />
                 <Stat
-                  label="Categories"
+                  label={t('transparencyPage.categories')}
                   value={String(Object.keys(ytd.byCategory).length)}
                 />
               </div>
@@ -161,8 +161,12 @@ export function TransparencyView() {
                 <DataTable>
                   <DataTableHead>
                     <DataTableRow>
-                      <DataTableHeaderCell>Category</DataTableHeaderCell>
-                      <DataTableHeaderCell>Amount</DataTableHeaderCell>
+                      <DataTableHeaderCell>
+                        {t('transparencyPage.category')}
+                      </DataTableHeaderCell>
+                      <DataTableHeaderCell>
+                        {t('transparencyPage.amount')}
+                      </DataTableHeaderCell>
                     </DataTableRow>
                   </DataTableHead>
                   <DataTableBody>
@@ -181,7 +185,7 @@ export function TransparencyView() {
           )}
 
           {!grants && grantsError && (
-            <SectionShell title="Grants">
+            <SectionShell title={t('transparencyPage.grants')}>
               <PageError
                 title={t('loadErrors.couldNotLoadTheGrantsReport')}
                 description={grantsError}
@@ -193,10 +197,16 @@ export function TransparencyView() {
           {grants && (
             <SectionShell title={`Grants ${grants.year}`}>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-                <Stat label="Total" value={centsLabel(grants.totalCents)} />
-                <Stat label="Count" value={String(grants.grantCount)} />
                 <Stat
-                  label="Disbursed"
+                  label={t('transparencyPage.total')}
+                  value={centsLabel(grants.totalCents)}
+                />
+                <Stat
+                  label={t('transparencyPage.count')}
+                  value={String(grants.grantCount)}
+                />
+                <Stat
+                  label={t('transparencyPage.disbursed')}
                   value={
                     grants.disbursedAt ? grants.disbursedAt.slice(0, 10) : '—'
                   }
@@ -209,9 +219,15 @@ export function TransparencyView() {
                 <DataTable>
                   <DataTableHead>
                     <DataTableRow>
-                      <DataTableHeaderCell>Published as</DataTableHeaderCell>
-                      <DataTableHeaderCell>Amount</DataTableHeaderCell>
-                      <DataTableHeaderCell>State</DataTableHeaderCell>
+                      <DataTableHeaderCell>
+                        {t('transparencyPage.publishedAs')}
+                      </DataTableHeaderCell>
+                      <DataTableHeaderCell>
+                        {t('transparencyPage.amount')}
+                      </DataTableHeaderCell>
+                      <DataTableHeaderCell>
+                        {t('transparencyPage.state')}
+                      </DataTableHeaderCell>
                     </DataTableRow>
                   </DataTableHead>
                   <DataTableBody>
@@ -261,10 +277,18 @@ export function TransparencyView() {
                 <DataTable>
                   <DataTableHead>
                     <DataTableRow>
-                      <DataTableHeaderCell>When</DataTableHeaderCell>
-                      <DataTableHeaderCell>Category</DataTableHeaderCell>
-                      <DataTableHeaderCell>Description</DataTableHeaderCell>
-                      <DataTableHeaderCell>Amount</DataTableHeaderCell>
+                      <DataTableHeaderCell>
+                        {t('transparencyPage.when')}
+                      </DataTableHeaderCell>
+                      <DataTableHeaderCell>
+                        {t('transparencyPage.category')}
+                      </DataTableHeaderCell>
+                      <DataTableHeaderCell>
+                        {t('transparencyPage.description')}
+                      </DataTableHeaderCell>
+                      <DataTableHeaderCell>
+                        {t('transparencyPage.amount')}
+                      </DataTableHeaderCell>
                     </DataTableRow>
                   </DataTableHead>
                   <DataTableBody>
