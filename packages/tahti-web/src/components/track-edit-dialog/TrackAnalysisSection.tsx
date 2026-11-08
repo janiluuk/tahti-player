@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Input, Toggle } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../api/studio-types';
@@ -47,6 +48,7 @@ export function TrackAnalysisSection({
   onChange: (next: TrackAnalysisForm) => void;
   showMusicFields: boolean;
 }) {
+  const { t } = useTranslation('web');
   const set = (patch: Partial<TrackAnalysisForm>) =>
     onChange({ ...value, ...patch });
   const detected = detectedSummary(item);
@@ -81,7 +83,7 @@ export function TrackAnalysisSection({
               onChange={(event) => set({ musicalKey: event.target.value })}
             />
             <Input
-              label="Version"
+              label={t('trackEditAnalysis.version')}
               placeholder="Original Mix"
               maxLength={MIX_VERSION_MAX_LENGTH}
               value={value.mixVersion}
@@ -90,7 +92,7 @@ export function TrackAnalysisSection({
             />
           </div>
           <ToggleRow
-            label="Use detected BPM and key"
+            label={t('trackEditAnalysis.useDetectedBpmAndKey')}
             hint={
               detected
                 ? `Detected: ${detected}. Turn off to enter your own.`
@@ -102,8 +104,8 @@ export function TrackAnalysisSection({
         </>
       ) : null}
       <ToggleRow
-        label="Made with generative AI"
-        hint="Shows an AI-generated label on the track page."
+        label={t('trackEditAnalysis.madeWithGenerativeAi')}
+        hint={t('trackEditAnalysis.showsAnAiGeneratedLabel')}
         checked={value.isAiGenerated}
         onChange={(isAiGenerated) => set({ isAiGenerated })}
       />

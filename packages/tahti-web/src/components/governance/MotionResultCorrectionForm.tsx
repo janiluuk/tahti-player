@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input, Textarea, Toggle } from '@tahti-player/ui';
 
 import {
@@ -24,6 +25,7 @@ export function MotionResultCorrectionForm({
   current: MotionTally;
   onCorrected: () => void;
 }) {
+  const { t } = useTranslation('web');
   const noteId = useId();
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState('');
@@ -44,7 +46,7 @@ export function MotionResultCorrectionForm({
         className="w-fit"
         onClick={() => setOpen(true)}
       >
-        Correct the result
+        {t('motionCorrection.correctTheResult')}
       </Button>
     );
   }
@@ -83,14 +85,14 @@ export function MotionResultCorrectionForm({
       <Textarea
         submitOnModEnter
         id={noteId}
-        label="What is being corrected"
+        label={t('motionCorrection.whatIsBeingCorrected')}
         rows={2}
         value={note}
         maxLength={2000}
         onChange={(e) => setNote(e.target.value)}
       />
       <Toggle
-        label="Correct the count too"
+        label={t('motionCorrection.correctTheCountToo')}
         showLabel
         checked={withCount}
         onChange={setWithCount}
@@ -111,7 +113,7 @@ export function MotionResultCorrectionForm({
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy || !note.trim()}>
-          Add correction
+          {t('motionCorrection.addCorrection')}
         </Button>
         <Button
           type="button"
@@ -120,7 +122,7 @@ export function MotionResultCorrectionForm({
           disabled={busy}
           onClick={() => setOpen(false)}
         >
-          Cancel
+          {t('motionCorrection.cancel')}
         </Button>
       </div>
     </form>

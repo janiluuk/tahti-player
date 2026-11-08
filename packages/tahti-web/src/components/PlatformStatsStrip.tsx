@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { StatTile } from '@tahti-player/ui';
 
 import { fetchPlatformStats, type PlatformStats } from '../api/platform-stats';
@@ -14,6 +15,7 @@ function storageLabel(bytes: number): string {
 }
 
 export function PlatformStatsStrip() {
+  const { t } = useTranslation('web');
   const [stats, setStats] = useState<PlatformStats | null>(null);
 
   useEffect(() => {
@@ -34,23 +36,23 @@ export function PlatformStatsStrip() {
 
   return (
     <section
-      aria-label="Tahti in numbers"
+      aria-label={t('platformStats.tahtiInNumbers')}
       className="grid grid-cols-2 gap-3 sm:grid-cols-4"
     >
       <StatTile
-        label="Broadcasting artists"
+        label={t('platformStats.broadcastingArtists')}
         value={numberFormat.format(stats.activeArtists)}
       />
       <StatTile
-        label="Broadcasts this month"
+        label={t('platformStats.broadcastsThisMonth')}
         value={numberFormat.format(stats.broadcastsThisMonth)}
       />
       <StatTile
-        label="Hours on air"
+        label={t('platformStats.hoursOnAir')}
         value={numberFormat.format(stats.totalHours)}
       />
       <StatTile
-        label="Music stored"
+        label={t('platformStats.musicStored')}
         value={storageLabel(stats.totalStorageBytes)}
       />
     </section>

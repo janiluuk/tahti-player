@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -15,6 +16,7 @@ export function AnnualReportLegalHold({
   report: AdminAnnualReport;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [writing, setWriting] = useState(false);
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
@@ -48,7 +50,7 @@ export function AnnualReportLegalHold({
             disabled={busy}
             onClick={() => apply(null)}
           >
-            Release hold
+            {t('annualReportLegalHold.releaseHold')}
           </Button>
         </div>
       ) : writing ? (
@@ -64,13 +66,13 @@ export function AnnualReportLegalHold({
           }}
         >
           <Input
-            label="Reason for the hold"
+            label={t('annualReportLegalHold.reasonForTheHold')}
             value={reason}
             maxLength={500}
             onChange={(e) => setReason(e.target.value)}
           />
           <Button type="submit" size="sm" disabled={busy}>
-            Hold report
+            {t('annualReportLegalHold.holdReport')}
           </Button>
           <Button
             type="button"
@@ -79,7 +81,7 @@ export function AnnualReportLegalHold({
             disabled={busy}
             onClick={() => setWriting(false)}
           >
-            Cancel
+            {t('annualReportLegalHold.cancel')}
           </Button>
         </form>
       ) : (
@@ -89,7 +91,7 @@ export function AnnualReportLegalHold({
           className="w-fit"
           onClick={() => setWriting(true)}
         >
-          Legal hold
+          {t('annualReportLegalHold.legalHold')}
         </Button>
       )}
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}

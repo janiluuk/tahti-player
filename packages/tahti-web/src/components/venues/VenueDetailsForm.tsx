@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input, Textarea } from '@tahti-player/ui';
 
 import {
@@ -20,6 +21,7 @@ export function VenueDetailsForm({
   onSaved: (venue: MyVenue) => void;
   onCancel: () => void;
 }) {
+  const { t } = useTranslation('web');
   const descriptionId = useId();
   const [name, setName] = useState(venue.name);
   const [address, setAddress] = useState(venue.address);
@@ -73,27 +75,27 @@ export function VenueDetailsForm({
     >
       <Input
         autoComplete="off"
-        label="Name"
+        label={t('venueDetails.name')}
         value={name}
         maxLength={120}
         onChange={(e) => setName(e.target.value)}
       />
       <Input
         autoComplete="off"
-        label="Street address"
+        label={t('venueDetails.streetAddress')}
         value={address}
         maxLength={200}
         onChange={(e) => setAddress(e.target.value)}
       />
       <Input
         autoComplete="off"
-        label="City"
+        label={t('venueDetails.city')}
         value={city}
         maxLength={80}
         onChange={(e) => setCity(e.target.value)}
       />
       <Input
-        label="Capacity"
+        label={t('venueDetails.capacity')}
         inputMode="numeric"
         value={capacity}
         onChange={(e) => setCapacity(e.target.value)}
@@ -101,7 +103,7 @@ export function VenueDetailsForm({
       <Textarea
         submitOnModEnter
         id={descriptionId}
-        label="Description"
+        label={t('venueDetails.description')}
         rows={4}
         value={description}
         maxLength={DESCRIPTION_MAX}
@@ -119,7 +121,7 @@ export function VenueDetailsForm({
           disabled={busy}
           onClick={onCancel}
         >
-          Cancel
+          {t('venueDetails.cancel')}
         </Button>
       </div>
     </form>

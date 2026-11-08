@@ -1,6 +1,7 @@
 import { useEffect, useState, type ComponentProps } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Alert, Button } from '@tahti-player/ui';
 
 import {
@@ -19,6 +20,7 @@ type AssistantProps = Omit<
  * remembering "always offer" / "don't ask again" for the next release
  * (`/api/me/musicbrainz/default`, as the legacy release page did). */
 export function MusicBrainzRegisterPrompt(props: AssistantProps) {
+  const { t } = useTranslation('web');
   const [pref, setPref] = useState<MusicbrainzDefault | undefined>(undefined);
   const [saving, setSaving] = useState(false);
 
@@ -55,12 +57,12 @@ export function MusicBrainzRegisterPrompt(props: AssistantProps) {
   };
 
   return (
-    <Alert tone="neutral" title="Register this release on MusicBrainz">
+    <Alert
+      tone="neutral"
+      title={t('musicBrainzRegister.registerThisReleaseOnMusicbrainz')}
+    >
       <div className="flex flex-col gap-2">
-        <span>
-          MusicBrainz is the open music database that players and stores use to
-          identify releases.
-        </span>
+        <span>{t('musicBrainzRegister.musicbrainzIsTheOpenMusic')}</span>
         <div className="flex flex-wrap items-center gap-2">
           <MusicBrainzSubmissionAssistant mode="release" {...props} />
           {pref === null ? (
@@ -71,7 +73,7 @@ export function MusicBrainzRegisterPrompt(props: AssistantProps) {
                 disabled={saving}
                 onClick={() => void save(true)}
               >
-                Always offer this
+                {t('musicBrainzRegister.alwaysOfferThis')}
               </Button>
               <Button
                 size="sm"
@@ -79,7 +81,7 @@ export function MusicBrainzRegisterPrompt(props: AssistantProps) {
                 disabled={saving}
                 onClick={() => void save(false)}
               >
-                Don’t ask again
+                {t('musicBrainzRegister.donTAskAgain')}
               </Button>
             </>
           ) : (
@@ -89,7 +91,7 @@ export function MusicBrainzRegisterPrompt(props: AssistantProps) {
               disabled={saving}
               onClick={() => void save(false)}
             >
-              Stop offering
+              {t('musicBrainzRegister.stopOffering')}
             </Button>
           )}
         </div>

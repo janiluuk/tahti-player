@@ -3,6 +3,7 @@ import { DiscIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Select } from '@tahti-player/ui';
 
 import { publishSoundToRelease } from '../../api/publish-to-release';
@@ -23,6 +24,7 @@ export function PublishToReleaseSection({
   soundId: string;
   title: string;
 }) {
+  const { t } = useTranslation('web');
   const [releases, setReleases] = useState<StudioRelease[] | null>(null);
   const [versions, setVersions] = useState<SoundVersion[]>([]);
   const [releaseId, setReleaseId] = useState('');
@@ -82,9 +84,9 @@ export function PublishToReleaseSection({
           aria-hidden
         />
         <div>
-          <p className="font-medium">Add to a release</p>
+          <p className="font-medium">{t('publishToRelease.addToARelease')}</p>
           <p className="text-foreground-secondary text-sm">
-            Adds a copy of this track as the release&apos;s last track.
+            {t('publishToRelease.addsACopyOfThis')}
           </p>
         </div>
       </div>
@@ -99,8 +101,8 @@ export function PublishToReleaseSection({
       ) : (
         <>
           <Select
-            label="Release"
-            placeholder="Choose a release"
+            label={t('publishToRelease.release')}
+            placeholder={t('publishToRelease.chooseARelease')}
             value={releaseId}
             onValueChange={setReleaseId}
             options={releases.map((release) => ({
@@ -110,7 +112,7 @@ export function PublishToReleaseSection({
           />
           {versions.length > 0 ? (
             <Select
-              label="Audio"
+              label={t('publishToRelease.audio')}
               value={versionId}
               onValueChange={setVersionId}
               options={[
@@ -130,7 +132,7 @@ export function PublishToReleaseSection({
             }}
           >
             <Input
-              label="Track title on the release"
+              label={t('publishToRelease.trackTitleOnTheRelease')}
               placeholder={title}
               value={trackTitle}
               maxLength={200}

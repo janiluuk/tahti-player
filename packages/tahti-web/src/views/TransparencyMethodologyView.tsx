@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ViewShell } from '@tahti-player/ui';
 
 import { PageBackLink } from '../components/PageBackLink';
@@ -32,28 +33,27 @@ function CategoryList({
 }
 
 export function TransparencyMethodologyView() {
+  const { t } = useTranslation('web');
   return (
     <ViewShell
-      title="Transparency methodology"
+      title={t('transparencyMethodology.transparencyMethodology')}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-8' }}
     >
-      <PageBackLink to="/transparency" label="Transparency" />
+      <PageBackLink
+        to="/transparency"
+        label={t('transparencyMethodology.transparency')}
+      />
 
-      <Section title="Principles">
+      <Section title={t('transparencyMethodology.principles')}>
         <p className="text-foreground-secondary text-sm">
-          Tahti ry is a Finnish registered nonprofit association (yhdistys,
-          Y-tunnus 3368171-8). All income and expenditure is accounted for and
-          published here monthly after board approval. Data is final once a
-          month is marked &ldquo;finalized&rdquo;.
+          {t('transparencyMethodology.tahtiRyIsAFinnish')}
         </p>
         <p className="text-foreground-secondary text-sm">
-          The goal is radical transparency: any member or interested party can
-          verify that the organisation runs at cost, surpluses are returned to
-          artists, and no hidden fees exist.
+          {t('transparencyMethodology.theGoalIsRadicalTransparency')}
         </p>
       </Section>
 
-      <Section title="Revenue categories">
+      <Section title={t('transparencyMethodology.revenueCategories')}>
         <CategoryList
           entries={[
             {
@@ -76,7 +76,7 @@ export function TransparencyMethodologyView() {
         />
       </Section>
 
-      <Section title="Cost categories">
+      <Section title={t('transparencyMethodology.costCategories')}>
         <CategoryList
           entries={[
             {
@@ -107,7 +107,7 @@ export function TransparencyMethodologyView() {
         />
       </Section>
 
-      <Section title="Disbursements">
+      <Section title={t('transparencyMethodology.disbursements')}>
         <CategoryList
           entries={[
             {
@@ -122,7 +122,7 @@ export function TransparencyMethodologyView() {
         />
       </Section>
 
-      <Section title="How surplus is calculated">
+      <Section title={t('transparencyMethodology.howSurplusIsCalculated')}>
         <p className="text-foreground-secondary text-sm">
           Surplus = total revenue − total costs (including salaries and
           professional services). Disbursements and reserve transfers are not
@@ -132,7 +132,7 @@ export function TransparencyMethodologyView() {
         </p>
       </Section>
 
-      <Section title="Engagement units (grant formula)">
+      <Section title={t('transparencyMethodology.engagementUnitsGrantFormula')}>
         <p className="text-foreground-secondary text-sm">
           Grants are allocated proportionally by <em>engagement units</em>, not
           passive listener-hours. An engagement unit is a weighted measure that
@@ -140,21 +140,24 @@ export function TransparencyMethodologyView() {
         </p>
         <ul className="text-foreground-secondary list-disc space-y-1 pl-5 text-sm">
           <li>
-            <strong className="text-foreground">Download</strong> of a free
-            track = 1 unit (listener committed enough to download)
+            <strong className="text-foreground">
+              {t('transparencyMethodology.download')}
+            </strong>{' '}
+            of a free track = 1 unit (listener committed enough to download)
           </li>
           <li>
-            <strong className="text-foreground">Fan subscription</strong> =
-            engagement_euros × multiplier (fan paid real money)
+            <strong className="text-foreground">
+              {t('transparencyMethodology.fanSubscription')}
+            </strong>{' '}
+            = engagement_euros × multiplier (fan paid real money)
           </li>
         </ul>
         <p className="text-foreground-secondary text-sm">
-          Passive streaming (HLS playback) does not generate engagement units.
-          This prevents gaming via bots or loop plays.
+          {t('transparencyMethodology.passiveStreamingHlsPlaybackDoes')}
         </p>
       </Section>
 
-      <Section title="Data pipeline">
+      <Section title={t('transparencyMethodology.dataPipeline')}>
         <ol className="text-foreground-secondary list-decimal space-y-1 pl-5 text-sm">
           <li>
             Stripe webhooks automatically create{' '}
@@ -162,8 +165,9 @@ export function TransparencyMethodologyView() {
             entries.
           </li>
           <li>
-            The treasurer manually enters infrastructure invoices, salary, and
-            other costs via the admin panel. All entries are audit-logged.
+            {t(
+              'transparencyMethodology.theTreasurerManuallyEntersInfrastructure',
+            )}
           </li>
           <li>
             On the first of each month a background job aggregates the prior
@@ -178,9 +182,9 @@ export function TransparencyMethodologyView() {
         </ol>
       </Section>
 
-      <Section title="Public API">
+      <Section title={t('transparencyMethodology.publicApi')}>
         <p className="text-foreground-secondary text-sm">
-          All endpoints return JSON and are CORS-open for third-party use.
+          {t('transparencyMethodology.allEndpointsReturnJsonAnd')}
         </p>
         <ul className="text-foreground-secondary list-disc space-y-1 pl-5 text-sm">
           <li>
@@ -207,7 +211,7 @@ export function TransparencyMethodologyView() {
       <footer className="text-foreground-secondary border-border border-t pt-4 text-xs">
         Tahti ry — Y-tunnus 3368171-8 — Helsinki, Finland.{' '}
         <Link to="/status" className="underline-offset-2 hover:underline">
-          Platform status
+          {t('transparencyMethodology.platformStatus')}
         </Link>
       </footer>
     </ViewShell>

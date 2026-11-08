@@ -1,6 +1,7 @@
 import { Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -19,6 +20,7 @@ export function AdminUserDeletePanel({
   isSelf: boolean;
   onDeleted?: (result: AdminAccountDeletionResult) => void;
 }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [typed, setTyped] = useState('');
   const [busy, setBusy] = useState(false);
@@ -56,8 +58,8 @@ export function AdminUserDeletePanel({
 
   return (
     <StudioPanel
-      title="Delete account"
-      description="GDPR deletion: personal data is anonymized, the membership and fan subscriptions are cancelled and newsletter sign-ups removed. This can’t be undone."
+      title={t('adminUserDelete.deleteAccount2')}
+      description={t('adminUserDelete.gdprDeletionPersonalDataIs')}
     >
       {done ? (
         <p className="text-sm" role="status">
@@ -77,7 +79,7 @@ export function AdminUserDeletePanel({
             onClick={() => setOpen(true)}
           >
             <Trash2Icon size={14} aria-hidden className="mr-1.5" />
-            Delete account…
+            {t('adminUserDelete.deleteAccount')}
           </Button>
         </>
       )}
@@ -92,7 +94,7 @@ export function AdminUserDeletePanel({
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          aria-label="Username to confirm"
+          aria-label={t('adminUserDelete.usernameToConfirm')}
           value={typed}
           onChange={(event) => setTyped(event.target.value)}
           autoComplete="off"
@@ -100,7 +102,7 @@ export function AdminUserDeletePanel({
         />
         {error ? <InlineError className="mt-2">{error}</InlineError> : null}
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('adminUserDelete.cancel')}</Dialog.Close>
           <Button
             intent="danger"
             disabled={busy || typed.trim() !== user.username}

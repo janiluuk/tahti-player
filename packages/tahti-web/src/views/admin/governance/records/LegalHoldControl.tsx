@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -22,6 +23,7 @@ export function LegalHoldControl({
   legalHoldAt?: string | null;
   legalHoldReason?: string | null;
 }) {
+  const { t } = useTranslation('web');
   const [held, setHeld] = useState(Boolean(legalHoldAt));
   const [heldReason, setHeldReason] = useState(legalHoldReason ?? null);
   const [writing, setWriting] = useState(false);
@@ -50,7 +52,7 @@ export function LegalHoldControl({
       {held ? (
         <div className="flex flex-wrap items-center gap-2 text-xs">
           <Badge variant="pill" color="red">
-            On legal hold
+            {t('legalHold.onLegalHold')}
           </Badge>
           {heldReason ? (
             <span className="text-foreground-secondary">{heldReason}</span>
@@ -62,7 +64,7 @@ export function LegalHoldControl({
             aria-label={`Release hold: ${title}`}
             onClick={() => apply(null)}
           >
-            Release hold
+            {t('legalHold.releaseHold')}
           </Button>
         </div>
       ) : writing ? (
@@ -74,13 +76,13 @@ export function LegalHoldControl({
           }}
         >
           <Input
-            label="Reason for the hold"
+            label={t('legalHold.reasonForTheHold')}
             value={reason}
             maxLength={500}
             onChange={(e) => setReason(e.target.value)}
           />
           <Button type="submit" size="sm" disabled={busy || !reason.trim()}>
-            Hold
+            {t('legalHold.hold')}
           </Button>
           <Button
             type="button"
@@ -89,7 +91,7 @@ export function LegalHoldControl({
             disabled={busy}
             onClick={() => setWriting(false)}
           >
-            Cancel
+            {t('legalHold.cancel')}
           </Button>
         </form>
       ) : (
@@ -100,7 +102,7 @@ export function LegalHoldControl({
           aria-label={`Legal hold: ${title}`}
           onClick={() => setWriting(true)}
         >
-          Legal hold
+          {t('legalHold.legalHold')}
         </Button>
       )}
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}

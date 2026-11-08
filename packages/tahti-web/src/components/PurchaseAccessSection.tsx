@@ -1,6 +1,7 @@
 import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Select, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -40,6 +41,7 @@ export function PurchaseAccessSection({
   access: SoundAccess;
   onAccessChange: (access: SoundAccess) => void;
 }) {
+  const { t } = useTranslation('web');
   const [tiers, setTiers] = useState<PurchaseTierRow[]>([]);
   const [tiersFailed, setTiersFailed] = useState(false);
   const [attempt, setAttempt] = useState(0);
@@ -59,18 +61,19 @@ export function PurchaseAccessSection({
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <div>
-          <p className="text-sm font-medium">Who can play it</p>
+          <p className="text-sm font-medium">
+            {t('purchaseAccess.whoCanPlayIt')}
+          </p>
           <p className="text-foreground-secondary text-xs">
-            Limit it to your fan subscribers, or sell it with a one-time
-            purchase tier. Fan subscribers can always play gated tracks.
+            {t('purchaseAccess.limitItToYourFan')}
           </p>
         </div>
-        <Tooltip content="Manage purchase tiers" side="top">
+        <Tooltip content={t('purchaseAccess.managePurchaseTiers')} side="top">
           <ButtonLink
             to="/studio/audience"
             size="icon-sm"
             variant="secondary"
-            aria-label="Manage purchase tiers"
+            aria-label={t('purchaseAccess.managePurchaseTiers')}
           >
             <PlusIcon size={15} aria-hidden />
           </ButtonLink>
@@ -78,7 +81,7 @@ export function PurchaseAccessSection({
       </div>
       <div className="sm:max-w-xs">
         <Select
-          label="Access"
+          label={t('purchaseAccess.access')}
           options={[
             { id: '', label: 'Everyone' },
             { id: SUBSCRIBERS_OPTION, label: 'Fan subscribers only' },
@@ -96,14 +99,13 @@ export function PurchaseAccessSection({
           role="alert"
           className="text-accent-red-strong flex flex-wrap items-center gap-2 text-xs"
         >
-          Could not load your purchase tiers, so they are missing from this
-          list.
+          {t('purchaseAccess.couldNotLoadYourPurchase')}
           <Button
             size="sm"
             variant="secondary"
             onClick={() => setAttempt((n) => n + 1)}
           >
-            Retry
+            {t('purchaseAccess.retry')}
           </Button>
         </div>
       ) : null}

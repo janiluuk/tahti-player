@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, FilterChips, Input } from '@tahti-player/ui';
 
 import type { StatsPlaysRange } from '../../../api/studio-extras';
@@ -14,6 +15,7 @@ const RANGE_CHIPS: Array<{ id: StatsPlaysRange; label: string }> = [
 ];
 
 export function RangeControls({ state }: { state: StatsData }) {
+  const { t } = useTranslation('web');
   const {
     range,
     setRange,
@@ -42,10 +44,10 @@ export function RangeControls({ state }: { state: StatsData }) {
             setCustomTo(end);
           }
         }}
-        aria-label="Stats time range"
+        aria-label={t('statsRange.statsTimeRange')}
       />
       {range === 'custom' ? (
-        <StudioPanel className="!p-4" title="Custom period">
+        <StudioPanel className="!p-4" title={t('statsRange.customPeriod')}>
           <form
             className="flex flex-wrap items-end gap-3"
             onSubmit={(event) => {
@@ -55,7 +57,7 @@ export function RangeControls({ state }: { state: StatsData }) {
           >
             <Input
               type="date"
-              label="From"
+              label={t('statsRange.from')}
               value={customFrom}
               max={customTo || todayUtc()}
               onChange={(event) => setCustomFrom(event.target.value)}
@@ -73,7 +75,7 @@ export function RangeControls({ state }: { state: StatsData }) {
               disabled={!customFrom || !customTo || customTo < customFrom}
               type="submit"
             >
-              Apply period
+              {t('statsRange.applyPeriod')}
             </Button>
           </form>
           {appliedCustom ? (
@@ -83,7 +85,7 @@ export function RangeControls({ state }: { state: StatsData }) {
             </p>
           ) : (
             <p className="text-foreground-secondary mt-2 text-xs">
-              Pick dates and apply to load plays for that window.
+              {t('statsRange.pickDatesAndApplyTo')}
             </p>
           )}
         </StudioPanel>

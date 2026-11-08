@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -34,6 +35,7 @@ export function PublishDialog({
   onCancel: () => void;
   onPublish: (addon: AdminAddon, input: AdminAddonPublishInput) => void;
 }) {
+  const { t } = useTranslation('web');
   const [version, setVersion] = useState('');
   const [changelog, setChangelog] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -57,8 +59,7 @@ export function PublishDialog({
     >
       <Dialog.Title>Publish a version of {addon?.name}</Dialog.Title>
       <Dialog.Description>
-        Upload the widget&apos;s JavaScript bundle (an ES module, up to 2 MB).
-        Publishing sends the add-on back to review, even if it was approved.
+        {t('addonPublish.uploadTheWidgetAposS')}
       </Dialog.Description>
       <form
         className="flex flex-col gap-4"
@@ -70,7 +71,7 @@ export function PublishDialog({
         }}
       >
         <Input
-          label="Version"
+          label={t('addonPublish.version')}
           value={version}
           placeholder="1.0.0"
           error={version && !versionValid ? 'Use the form 1.0.0' : undefined}
@@ -95,16 +96,16 @@ export function PublishDialog({
         ) : null}
         <Textarea
           submitOnModEnter
-          label="Changelog (optional)"
+          label={t('addonPublish.changelogOptional')}
           value={changelog}
           rows={3}
           maxLength={2000}
-          placeholder="What changed in this version?"
+          placeholder={t('addonPublish.whatChangedInThisVersion')}
           onChange={(event) => setChangelog(event.target.value)}
         />
         {error ? <InlineError>{error}</InlineError> : null}
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('addonPublish.cancel')}</Dialog.Close>
           <Button
             type="submit"
             disabled={pending || !file || !versionValid || tooBig}

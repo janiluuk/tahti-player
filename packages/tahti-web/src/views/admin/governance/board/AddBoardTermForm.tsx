@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input, Select } from '@tahti-player/ui';
 
 import { createAdminBoardTerm } from '../../../../api/admin/admin-governance-board';
@@ -21,6 +22,7 @@ export function AddBoardTermForm({
   onClose: () => void;
   onAdded: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [member, setMember] = useState<PickedMember | null>(null);
   const [role, setRole] = useState<GovernanceBoardRole>('MEMBER');
   const [termStart, setTermStart] = useState('');
@@ -59,22 +61,26 @@ export function AddBoardTermForm({
         });
       }}
     >
-      <MemberPicker label="Member" value={member} onChange={setMember} />
+      <MemberPicker
+        label={t('addBoardTerm.member')}
+        value={member}
+        onChange={setMember}
+      />
       <Select
-        label="Role"
+        label={t('addBoardTerm.role')}
         value={role}
         onValueChange={(value) => setRole(value as GovernanceBoardRole)}
         options={BOARD_ROLE_OPTIONS}
       />
       <div className="flex flex-wrap gap-2">
         <Input
-          label="Term starts"
+          label={t('addBoardTerm.termStarts')}
           type="date"
           value={termStart}
           onChange={(e) => setTermStart(e.target.value)}
         />
         <Input
-          label="Term ends (optional)"
+          label={t('addBoardTerm.termEndsOptional')}
           type="date"
           value={termEnd}
           onChange={(e) => setTermEnd(e.target.value)}
@@ -83,7 +89,7 @@ export function AddBoardTermForm({
       {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy}>
-          Save term
+          {t('addBoardTerm.saveTerm')}
         </Button>
         <Button
           type="button"
@@ -92,7 +98,7 @@ export function AddBoardTermForm({
           disabled={busy}
           onClick={() => onClose()}
         >
-          Cancel
+          {t('addBoardTerm.cancel')}
         </Button>
       </div>
     </form>

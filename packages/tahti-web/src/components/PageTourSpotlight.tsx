@@ -2,6 +2,7 @@ import { useRouterState } from '@tanstack/react-router';
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, KeyCombo, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
@@ -20,6 +21,7 @@ function targetFor(step: TourStep): HTMLElement | null {
  * see `lib/pageTour.ts`.
  */
 export function PageTourSpotlight() {
+  const { t } = useTranslation('web');
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const open = useTourStore((s) => s.open);
   const stepIndex = useTourStore((s) => s.stepIndex);
@@ -125,7 +127,11 @@ export function PageTourSpotlight() {
   const veil = 'fixed z-[100] bg-black/80 transition-all duration-150';
 
   return (
-    <div aria-hidden={false} role="dialog" aria-label="Page tour">
+    <div
+      aria-hidden={false}
+      role="dialog"
+      aria-label={t('pageTourSpotlight.pageTour')}
+    >
       {rect && (
         <>
           <div className={veil} style={{ inset: 0, height: rect.top }} />
@@ -166,13 +172,17 @@ export function PageTourSpotlight() {
       <div className="border-border bg-background pointer-events-auto fixed bottom-8 left-1/2 z-[102] w-[min(90vw,420px)] -translate-x-1/2 rounded-xl border p-4 shadow-xl">
         <div className="flex items-start justify-between gap-2">
           <h2 className="font-display text-sm font-bold">{step.label}</h2>
-          <Tooltip content="Close tour" side="top" wrapperClassName="shrink-0">
+          <Tooltip
+            content={t('pageTourSpotlight.closeTour')}
+            side="top"
+            wrapperClassName="shrink-0"
+          >
             <Button
               variant="text"
               size="icon-sm"
               type="button"
               onClick={close}
-              aria-label="Close tour"
+              aria-label={t('pageTourSpotlight.closeTour')}
               className="text-foreground-secondary hover:text-foreground -mt-1 -mr-1 size-6"
             >
               <XIcon size={16} />
@@ -194,7 +204,7 @@ export function PageTourSpotlight() {
               className="text-foreground-secondary hover:text-foreground gap-1 text-xs font-medium hover:bg-transparent disabled:opacity-30"
             >
               <ChevronLeftIcon size={14} aria-hidden />
-              Back
+              {t('pageTourSpotlight.back')}
             </Button>
             <div className="flex items-center gap-1">
               {steps.map((s, index) => (
@@ -215,7 +225,7 @@ export function PageTourSpotlight() {
               onClick={() => setStepIndex(stepIndex + 1)}
               className="text-foreground-secondary hover:text-foreground gap-1 text-xs font-medium hover:bg-transparent disabled:opacity-30"
             >
-              Next
+              {t('pageTourSpotlight.next')}
               <ChevronRightIcon size={14} aria-hidden />
             </Button>
           </div>

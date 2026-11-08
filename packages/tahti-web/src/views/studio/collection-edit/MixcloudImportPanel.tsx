@@ -2,6 +2,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Input,
@@ -47,6 +48,7 @@ export function MixcloudImportPanel({
     soundId: string,
   ) => Promise<{ ok: true } | { ok: false; error: string }>;
 }) {
+  const { t } = useTranslation('web');
   const [mode, setMode] = useState<Mode>('search');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<MixcloudCloudcast[] | null>(null);
@@ -107,12 +109,12 @@ export function MixcloudImportPanel({
 
   return (
     <StudioPanel
-      title="Add from Mixcloud"
-      description="Cloudcasts are embedded from Mixcloud; Tahti never copies the audio."
+      title={t('mixcloudImport.addFromMixcloud')}
+      description={t('mixcloudImport.cloudcastsAreEmbeddedFromMixcloud')}
     >
       <div className="flex flex-col gap-3">
         <SegmentedControl
-          aria-label="Mixcloud source"
+          aria-label={t('mixcloudImport.mixcloudSource')}
           options={MODES}
           value={mode}
           onChange={switchMode}
@@ -156,7 +158,10 @@ export function MixcloudImportPanel({
             }
           />
         ) : (
-          <ul aria-label="Mixcloud cloudcasts" className="flex flex-col gap-2">
+          <ul
+            aria-label={t('mixcloudImport.mixcloudCloudcasts')}
+            className="flex flex-col gap-2"
+          >
             {results.map((cloudcast) => (
               <li
                 key={cloudcast.url}

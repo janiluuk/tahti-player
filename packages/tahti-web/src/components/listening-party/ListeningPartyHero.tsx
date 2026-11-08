@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, MediaArtwork } from '@tahti-player/ui';
 
 import type { ListeningPartyDto } from '../../api/listening-parties';
@@ -28,12 +29,13 @@ function StateLine({
   party: ListeningPartyDto;
   clock: ListeningPartyClock;
 }) {
+  const { t } = useTranslation('web');
   switch (clock.state) {
     case 'SCHEDULED':
       return (
         <p className="text-lg font-semibold tabular-nums" role="timer">
           <span className="text-foreground-secondary mr-2 text-sm font-normal">
-            Starts in
+            {t('listeningPartyHero.startsIn')}
           </span>
           {formatCountdown(clock.msUntilStart)}
         </p>
@@ -44,7 +46,9 @@ function StateLine({
       );
       return (
         <p className="text-sm">
-          <span className="text-foreground-secondary">Playing now </span>
+          <span className="text-foreground-secondary">
+            {t('listeningPartyHero.playingNow')}{' '}
+          </span>
           <span className="font-semibold tabular-nums">
             {clock.nowPlaying?.position}/{party.tracks.length}
           </span>
@@ -74,7 +78,7 @@ function StateLine({
                 params={{ slug: party.release.smartLinkSlug }}
                 className="text-primary-strong hover:underline"
               >
-                Open the release
+                {t('listeningPartyHero.openTheRelease')}
               </Link>
             </>
           ) : null}
@@ -83,7 +87,7 @@ function StateLine({
     case 'CANCELED':
       return (
         <p className="text-foreground-secondary text-sm">
-          The artist canceled this listening party.
+          {t('listeningPartyHero.theArtistCanceledThisListening')}
         </p>
       );
   }
@@ -101,6 +105,7 @@ export function ListeningPartyHero({
   clock: ListeningPartyClock;
   actions?: ReactNode;
 }) {
+  const { t } = useTranslation('web');
   const { release, host, channel } = party;
   const label = STATE_LABEL[clock.state];
   const runningTime = formatRunningTime(
@@ -108,7 +113,7 @@ export function ListeningPartyHero({
   );
   return (
     <section
-      aria-label="Listening party"
+      aria-label={t('listeningPartyHero.listeningParty')}
       className="border-border bg-background-secondary flex flex-col gap-5 rounded-xl border p-4 sm:flex-row sm:p-6"
     >
       <MediaArtwork
@@ -122,7 +127,7 @@ export function ListeningPartyHero({
           <Eyebrow tone={label.tone}>{label.text}</Eyebrow>
           {release.isPreRelease ? (
             <Badge variant="pill" color="purple">
-              Pre-release
+              {t('listeningPartyHero.preRelease')}
             </Badge>
           ) : null}
         </div>

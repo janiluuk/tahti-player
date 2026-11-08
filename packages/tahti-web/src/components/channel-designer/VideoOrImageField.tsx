@@ -1,5 +1,6 @@
 import { LinkIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   FilePicker,
@@ -44,12 +45,13 @@ export function VideoOrImageField({
   isImage = false,
   onRemove,
 }: Props) {
+  const { t } = useTranslation('web');
   const urlToggle = (
-    <Tooltip content="Show URL field" side="top">
+    <Tooltip content={t('videoOrImage.showUrlField')} side="top">
       <Button
         size="icon-sm"
         variant="text"
-        aria-label="Show URL field"
+        aria-label={t('videoOrImage.showUrlField')}
         aria-pressed={urlOpen}
         onClick={() => onUrlOpenChange(!urlOpen)}
       >
@@ -64,7 +66,7 @@ export function VideoOrImageField({
       autoCapitalize="none"
       autoCorrect="off"
       spellCheck={false}
-      label="YouTube, video, or image URL"
+      label={t('videoOrImage.youtubeVideoOrImageUrl')}
       value={url}
       placeholder="https://youtube.com/watch?v=… or https://…/backdrop.jpg"
       onChange={(event) => onUrlChange(event.target.value)}
@@ -109,9 +111,9 @@ export function VideoOrImageField({
       data-testid="channel-video-image-field"
     >
       <div>
-        <Eyebrow>Video or image backdrop</Eyebrow>
+        <Eyebrow>{t('videoOrImage.videoOrImageBackdrop')}</Eyebrow>
         <p className="text-foreground-secondary mt-1 text-xs">
-          Upload an MP4/WebM video or image, up to 10 MB.
+          {t('videoOrImage.uploadAnMp4WebmVideo')}
         </p>
       </div>
       {picker}
@@ -120,7 +122,7 @@ export function VideoOrImageField({
         <div className="border-border bg-background relative overflow-hidden rounded-lg border">
           {youtubeEmbedUrl(url) && !previewUrl ? (
             <iframe
-              title="YouTube backdrop preview"
+              title={t('videoOrImage.youtubeBackdropPreview')}
               src={youtubeEmbedUrl(url) ?? undefined}
               className="pointer-events-none aspect-video w-full"
               allow="autoplay; encrypted-media"
@@ -152,7 +154,7 @@ export function VideoOrImageField({
           className="self-start"
           onClick={onRemove}
         >
-          Remove backdrop
+          {t('videoOrImage.removeBackdrop')}
         </Button>
       ) : null}
     </div>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -39,6 +39,7 @@ export function WriteTagsDialog({
   ids,
   onChanged,
 }: Props) {
+  const { t } = useTranslation('web');
   const [preview, setPreview] = useState<NativeWriteTagsPreview | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [keepBackup, setKeepBackup] = useState(true);
@@ -106,18 +107,16 @@ export function WriteTagsDialog({
       onClose={() => (busy ? undefined : onClose())}
       className="max-w-lg"
     >
-      <Dialog.Title>Write tags to files</Dialog.Title>
+      <Dialog.Title>{t('writeTags.writeTagsToFiles')}</Dialog.Title>
       <Dialog.Description>
-        Saves your edited fields into the audio files themselves, so other
-        players see them too. Tracks with no edits are left alone. Each file is
-        tagged on a copy and checked before it replaces the original.
+        {t('writeTags.savesYourEditedFieldsInto')}
       </Dialog.Description>
       {error ? (
         <InlineError>{error}</InlineError>
       ) : !preview ? (
         <p className="text-foreground-secondary flex items-center gap-2 text-sm">
           <Loader size="inline" shape="circle" />
-          Checking…
+          {t('writeTags.checking')}
         </p>
       ) : (
         <div className="flex max-h-[45vh] flex-col gap-2 overflow-y-auto py-2 text-sm">
@@ -132,7 +131,7 @@ export function WriteTagsDialog({
           </p>
           {preview.skipped.length > 0 ? (
             <div className="flex flex-col gap-0.5 text-xs">
-              <p className="font-medium">Skipped</p>
+              <p className="font-medium">{t('writeTags.skipped')}</p>
               {preview.skipped.slice(0, 8).map((skip) => (
                 <Tooltip key={skip.path} content={skip.path} side="top">
                   <p className="truncate">
@@ -143,14 +142,14 @@ export function WriteTagsDialog({
             </div>
           ) : null}
           <Toggle
-            label="Keep a backup copy of each original next to it"
+            label={t('writeTags.keepABackupCopyOf')}
             checked={keepBackup}
             onChange={setKeepBackup}
           />
         </div>
       )}
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('writeTags.cancel')}</Dialog.Close>
         <Button
           className="gap-1.5"
           disabled={busy || !preview || preview.writable === 0}

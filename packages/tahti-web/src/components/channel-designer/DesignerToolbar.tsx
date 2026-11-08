@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Popover, Tooltip } from '@tahti-player/ui';
 
 type Props = {
@@ -31,6 +32,7 @@ export function DesignerToolbar({
   saveButton,
   openChannelLink,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <div className="flex flex-wrap items-center justify-end gap-3">
       <Popover
@@ -39,7 +41,7 @@ export function DesignerToolbar({
           <Button
             type="button"
             variant="secondary"
-            aria-label="More channel design options"
+            aria-label={t('designerToolbar.moreChannelDesignOptions')}
             className="gap-1.5"
           >
             …
@@ -52,23 +54,23 @@ export function DesignerToolbar({
             icon={<BookmarkPlusIcon size={16} />}
             onClick={onOpenSavePresetModal}
           >
-            Save preset
+            {t('designerToolbar.savePreset')}
           </Popover.Item>
           <Popover.Item
             icon={<RotateCcwIcon size={16} />}
             disabled={!dirty || busy}
             onClick={onRequestReset}
           >
-            Reset
+            {t('designerToolbar.reset')}
           </Popover.Item>
         </Popover.Menu>
       </Popover>
       {hasPreviousSave ? (
-        <Tooltip content="Restore previous save" side="top">
+        <Tooltip content={t('designerToolbar.restorePreviousSave')} side="top">
           <Button
             size="icon-sm"
             variant="secondary"
-            aria-label="Restore previous save"
+            aria-label={t('designerToolbar.restorePreviousSave')}
             onClick={onRestorePreviousSave}
           >
             <Undo2Icon size={15} aria-hidden />
@@ -81,7 +83,7 @@ export function DesignerToolbar({
         onClick={onRequestReset}
       >
         <RotateCcwIcon size={15} aria-hidden />
-        Revert changes
+        {t('designerToolbar.revertChanges')}
       </Button>
       {saveButton}
       {openChannelLink}

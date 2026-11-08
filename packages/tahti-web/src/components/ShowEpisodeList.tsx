@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { Mic } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import type { PublicRadioShowEpisode } from '../api/shows';
@@ -21,6 +22,7 @@ export function ShowEpisodeList({
   channelSlug?: string;
   username?: string;
 }) {
+  const { t } = useTranslation('web');
   return (
     <div className="flex flex-col gap-2">
       <h3 className="text-foreground text-sm font-semibold">{title}</h3>
@@ -54,7 +56,7 @@ export function ShowEpisodeList({
                     params={{ channelSlug }}
                     className="text-primary-strong underline-offset-2 hover:underline"
                   >
-                    Show details
+                    {t('showEpisodeList.showDetails')}
                   </Link>
                 ) : null}
                 {episode.recording ? (
@@ -62,13 +64,13 @@ export function ShowEpisodeList({
                     href={episode.recording.channelItemUrl}
                     className="text-primary-strong underline-offset-2 hover:underline"
                   >
-                    Listen to recording
+                    {t('showEpisodeList.listenToRecording')}
                   </a>
                 ) : null}
               </div>
             </div>
             {username && isGreenRoomWindow(episode) ? (
-              <Tooltip content="Green room" side="top">
+              <Tooltip content={t('showEpisodeList.greenRoom')} side="top">
                 <ButtonLink
                   to="/u/$username/green-room"
                   params={{ username }}
@@ -76,7 +78,7 @@ export function ShowEpisodeList({
 
                   size="icon-sm"
                   variant="secondary"
-                  aria-label="Open green room"
+                  aria-label={t('showEpisodeList.openGreenRoom')}
                 >
                   <Mic size={16} aria-hidden />
                 </ButtonLink>

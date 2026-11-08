@@ -1,6 +1,7 @@
 import { PauseIcon, PlayIcon, PlusIcon, SearchIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
@@ -47,6 +48,7 @@ export function AddTracksDialog({
   onPause: () => void;
   onAdd: (sound: StudioSound) => void;
 }) {
+  const { t } = useTranslation('web');
   const [query, setQuery] = useState('');
 
   const available = useMemo(() => {
@@ -67,8 +69,7 @@ export function AddTracksDialog({
     <Dialog.Root isOpen={isOpen} onClose={onClose} className="max-w-3xl">
       <Dialog.Title>{title}</Dialog.Title>
       <Dialog.Description>
-        Choose library tracks to add. Tracks already in this collection are
-        hidden.
+        {t('collectionAddTracks.chooseLibraryTracksToAdd')}
       </Dialog.Description>
       <div className="mt-4 flex min-w-0 flex-col gap-3">
         <Input
@@ -76,8 +77,8 @@ export function AddTracksDialog({
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search tracks by title, genre, or type…"
-          aria-label="Search library tracks"
+          placeholder={t('collectionAddTracks.searchTracksByTitleGenre')}
+          aria-label={t('collectionAddTracks.searchLibraryTracks')}
           endAddon={<SearchIcon size={16} aria-hidden />}
         />
         <div className="border-border max-h-96 min-h-0 overflow-auto rounded-md border">
@@ -95,13 +96,13 @@ export function AddTracksDialog({
                     variant="secondary"
                     onClick={() => setQuery('')}
                   >
-                    Clear search
+                    {t('collectionAddTracks.clearSearch')}
                   </Button>
                 ) : undefined
               }
             />
           ) : (
-            <ul aria-label="Available library tracks">
+            <ul aria-label={t('collectionAddTracks.availableLibraryTracks')}>
               {available.map((sound, index) => {
                 const previewing = isPreviewing(sound);
                 const notReady = notReadyLabel(sound.status ?? '');
@@ -165,7 +166,7 @@ export function AddTracksDialog({
         </div>
       </div>
       <Dialog.Actions>
-        <Dialog.Close>Done</Dialog.Close>
+        <Dialog.Close>{t('collectionAddTracks.done')}</Dialog.Close>
       </Dialog.Actions>
     </Dialog.Root>
   );

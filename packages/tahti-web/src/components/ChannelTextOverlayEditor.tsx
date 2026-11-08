@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Input, Select } from '@tahti-player/ui';
 
 import {
@@ -38,10 +39,11 @@ export function ChannelTextOverlayEditor({
   value: TextOverlayDraft;
   onChange: (next: TextOverlayDraft) => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <div className="flex flex-col gap-3">
       <Select
-        label="Text effect"
+        label={t('textOverlayEditor.textEffect')}
         options={MODE_OPTIONS}
         value={value.mode}
         onValueChange={(mode) => onChange({ ...value, mode })}
@@ -49,16 +51,16 @@ export function ChannelTextOverlayEditor({
       {value.mode !== 'NONE' && (
         <>
           <Input
-            label="Your text"
-            description="Short headline or tagline (max 120 characters)."
+            label={t('textOverlayEditor.yourText')}
+            description={t('textOverlayEditor.shortHeadlineOrTaglineMax')}
             size="sm"
             value={value.text}
             maxLength={120}
-            placeholder="New album out now — listen live"
+            placeholder={t('textOverlayEditor.newAlbumOutNowListen')}
             onChange={(e) => onChange({ ...value, text: e.target.value })}
           />
           <Select
-            label="Alignment"
+            label={t('textOverlayEditor.alignment')}
             options={ALIGN_OPTIONS}
             value={value.align}
             onValueChange={(align) => onChange({ ...value, align })}

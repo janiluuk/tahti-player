@@ -2,7 +2,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, InlineError } from '@tahti-player/ui';
 
 import { provisionChannel } from '../api/channel-provision';
@@ -12,6 +12,7 @@ import { ChannelControlsWidget } from './ChannelControlsWidget';
 import { ChannelDesigner } from './ChannelDesigner';
 
 export function ChannelSetupDialog() {
+  const { t } = useTranslation('web');
   const isOpen = useChannelSetupModalStore((state) => state.isOpen);
   const close = useChannelSetupModalStore((state) => state.close);
   const user = useAuthStore((state) => state.user);
@@ -50,10 +51,9 @@ export function ChannelSetupDialog() {
         }}
         className="max-w-4xl"
       >
-        <Dialog.Title>Design your channel</Dialog.Title>
+        <Dialog.Title>{t('channelSetup.designYourChannel')}</Dialog.Title>
         <Dialog.Description>
-          Choose the look for your new channel. You can fine-tune it later from
-          the public channel page.
+          {t('channelSetup.chooseTheLookForYour')}
         </Dialog.Description>
         <div className="mt-4 max-h-[65vh] overflow-auto">
           <ChannelControlsWidget
@@ -81,7 +81,7 @@ export function ChannelSetupDialog() {
               close();
             }}
           >
-            Finish setup
+            {t('channelSetup.finishSetup')}
           </Button>
         </Dialog.Actions>
       </Dialog.Root>
@@ -90,7 +90,7 @@ export function ChannelSetupDialog() {
 
   return (
     <Dialog.Root isOpen={isOpen} onClose={close} className="max-w-lg">
-      <Dialog.Title>Create your channel</Dialog.Title>
+      <Dialog.Title>{t('channelSetup.createYourChannel')}</Dialog.Title>
       <Dialog.Description>
         Create {user?.username ?? 'your-name'}.tahti.live to unlock
         broadcasting, uploads, and your public channel designer.
@@ -98,7 +98,7 @@ export function ChannelSetupDialog() {
       {error ? <InlineError className="mt-4">{error}</InlineError> : null}
       <Dialog.Actions>
         <Button variant="text" size="sm" onClick={close} disabled={busy}>
-          Cancel
+          {t('channelSetup.cancel')}
         </Button>
         <Button onClick={() => void createChannel()} disabled={busy || !user}>
           {!busy ? <PlusIcon size={14} aria-hidden className="mr-1.5" /> : null}
