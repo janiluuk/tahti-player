@@ -169,7 +169,11 @@ export function JamView({ code }: { code: string }) {
             icon="inbox"
             title={t('empties.logInToJoinThisJam')}
             description={t('empties.aJamPlaysTheHostS')}
-            action={<Button onClick={() => openAuth('login')}>Log in</Button>}
+            action={
+              <Button onClick={() => openAuth('login')}>
+                {t('jamPage.logIn')}
+              </Button>
+            }
           />
         </div>
       </TahtiJam>
@@ -182,7 +186,7 @@ export function JamView({ code }: { code: string }) {
       variant="secondary"
       onClick={() => void navigate({ to: '/' })}
     >
-      Back to Listen
+      {t('jamPage.backToListen')}
     </Button>
   );
 
@@ -281,7 +285,7 @@ export function JamView({ code }: { code: string }) {
           </div>
           <div className="flex items-center gap-2">
             <span className="text-foreground-secondary hidden text-xs font-semibold tracking-wide uppercase sm:inline">
-              Code
+              {t('jamPage.code')}
             </span>
             <code className="bg-background-secondary/60 rounded px-2 py-1 text-sm font-bold tracking-widest">
               {session.code}
@@ -307,11 +311,11 @@ export function JamView({ code }: { code: string }) {
               >
                 {session.isPlaying ? (
                   <>
-                    <PauseIcon size={16} /> Pause for everyone
+                    <PauseIcon size={16} /> {t('jamPage.pauseForEveryone')}
                   </>
                 ) : (
                   <>
-                    <PlayIcon size={16} /> Play for everyone
+                    <PlayIcon size={16} /> {t('jamPage.playForEveryone')}
                   </>
                 )}
               </Button>
@@ -321,7 +325,7 @@ export function JamView({ code }: { code: string }) {
                 className="gap-1.5"
                 onClick={() => setAudioUnlocked(true)}
               >
-                <PlayIcon size={16} /> Play along
+                <PlayIcon size={16} /> {t('jamPage.playAlong')}
               </Button>
             ) : null}
           </div>
@@ -355,7 +359,7 @@ export function JamView({ code }: { code: string }) {
               className="text-accent-red-strong border-accent-red/40 hover:bg-accent-red/10 gap-1.5"
               onClick={() => void endForEveryone()}
             >
-              <XIcon size={16} /> End Jam for everyone
+              <XIcon size={16} /> {t('jamPage.endJamForEveryone')}
             </Button>
           ) : (
             <Button
@@ -363,7 +367,7 @@ export function JamView({ code }: { code: string }) {
               variant="secondary"
               onClick={() => void leave()}
             >
-              <LogOutIcon size={16} /> Leave Jam
+              <LogOutIcon size={16} /> {t('jamPage.leaveJam')}
             </Button>
           )}
         </div>
@@ -372,8 +376,8 @@ export function JamView({ code }: { code: string }) {
         isOpen={removing !== null}
         destructive
         title={`Remove ${removing?.displayName?.trim() || removing?.username || 'this guest'} from the Jam?`}
-        description="They stop hearing the Jam and can't rejoin it with this link."
-        confirmLabel="Remove"
+        description={t('jamPage.theyStopHearingTheJam')}
+        confirmLabel={t('jamPage.remove')}
         onCancel={() => setRemoving(null)}
         onConfirm={() => {
           if (removing) {

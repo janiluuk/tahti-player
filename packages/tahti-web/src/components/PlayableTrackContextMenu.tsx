@@ -158,7 +158,7 @@ export function PlayableTrackContextMenu({
               }
             }}
           >
-            Play now
+            {t('trackContextMenu.playNow')}
           </TrackContextMenu.Action>
           <TrackContextMenu.Action
             icon={<ListStartIcon size={16} />}
@@ -169,7 +169,7 @@ export function PlayableTrackContextMenu({
               }
             }}
           >
-            Play next
+            {t('trackContextMenu.playNext')}
           </TrackContextMenu.Action>
           <TrackContextMenu.Action
             icon={<ListEndIcon size={16} />}
@@ -180,7 +180,7 @@ export function PlayableTrackContextMenu({
               }
             }}
           >
-            Add to queue
+            {t('trackContextMenu.addToQueue')}
           </TrackContextMenu.Action>
           <TrackContextMenu.Action
             icon={
@@ -207,18 +207,18 @@ export function PlayableTrackContextMenu({
               <TrackContextMenu.Submenu.Trigger
                 icon={<ListMusicIcon size={16} />}
               >
-                Add to playlist
+                {t('trackContextMenu.addToPlaylist')}
               </TrackContextMenu.Submenu.Trigger>
               <TrackContextMenu.Submenu.Content>
                 {showPlaylistFilter ? (
                   <div onKeyDown={(event) => event.stopPropagation()}>
                     <Input
                       enterKeyHint="search"
-                      aria-label="Filter playlists"
+                      aria-label={t('trackContextMenu.filterPlaylists')}
                       type="search"
                       size="sm"
                       variant="borderless"
-                      placeholder="Filter playlists"
+                      placeholder={t('trackContextMenu.filterPlaylists')}
                       value={playlistFilter}
                       onChange={(event) =>
                         setPlaylistFilter(event.target.value)
@@ -234,7 +234,7 @@ export function PlayableTrackContextMenu({
                     onClick={() => undefined}
                     data-testid="playlist-submenu-error"
                   >
-                    Could not load playlists
+                    {t('trackContextMenu.couldNotLoadPlaylists')}
                   </TrackContextMenu.Action>
                 ) : null}
                 {visiblePlaylists.map((collection) => (
@@ -256,7 +256,7 @@ export function PlayableTrackContextMenu({
                   icon={<PlusIcon size={16} />}
                   onClick={() => setCreatePlaylistOpen(true)}
                 >
-                  New playlist…
+                  {t('trackContextMenu.newPlaylist')}
                 </TrackContextMenu.Action>
               </TrackContextMenu.Submenu.Content>
             </TrackContextMenu.Submenu>
@@ -264,7 +264,7 @@ export function PlayableTrackContextMenu({
           {showAudioTools ? (
             <TrackContextMenu.Submenu>
               <TrackContextMenu.Submenu.Trigger icon={<WrenchIcon size={16} />}>
-                Audio tools
+                {t('trackContextMenu.audioTools')}
               </TrackContextMenu.Submenu.Trigger>
               <TrackContextMenu.Submenu.Content>
                 <TrackContextMenu.Action
@@ -276,7 +276,7 @@ export function PlayableTrackContextMenu({
                     })
                   }
                 >
-                  Open in Pro Editor
+                  {t('trackContextMenu.openInProEditor')}
                 </TrackContextMenu.Action>
                 {masteringEnabled ? (
                   <TrackContextMenu.Action
@@ -288,7 +288,7 @@ export function PlayableTrackContextMenu({
                       })
                     }
                   >
-                    Reference mastering
+                    {t('trackContextMenu.referenceMastering')}
                   </TrackContextMenu.Action>
                 ) : null}
               </TrackContextMenu.Submenu.Content>

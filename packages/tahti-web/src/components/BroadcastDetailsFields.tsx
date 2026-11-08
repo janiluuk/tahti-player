@@ -1,5 +1,6 @@
 import { MessageCircleIcon, MicIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   FilterChips,
   Input,
@@ -37,13 +38,14 @@ export function BroadcastDetailsFields({
   onChange,
   onShowChange,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <div className="flex flex-col gap-3">
       {onShowChange && shows.length > 0 ? (
         <div className="flex flex-col gap-1 text-sm">
           <Select
-            label="Prepared show"
-            placeholder="Create a new show"
+            label={t('broadcastDetails.preparedShow')}
+            placeholder={t('broadcastDetails.createANewShow')}
             options={shows.map((show) => ({
               id: show.id,
               label: show.title,
@@ -52,14 +54,13 @@ export function BroadcastDetailsFields({
             onValueChange={onShowChange}
           />
           <span className="text-foreground-secondary text-xs">
-            Existing show details fill in below and prepare the next episode
-            automatically.
+            {t('broadcastDetails.existingShowDetailsFillIn')}
           </span>
         </div>
       ) : null}
 
       <FilterChips
-        aria-label="Broadcast type"
+        aria-label={t('broadcastDetails.broadcastType')}
         items={[
           {
             id: 'LIVE_SET',
@@ -78,7 +79,7 @@ export function BroadcastDetailsFields({
 
       <div className="flex flex-wrap items-end gap-3">
         <FilterChips
-          aria-label="Duration"
+          aria-label={t('broadcastDetails.duration')}
           items={[
             { id: '1', label: '1h' },
             { id: '2', label: '2h' },
@@ -89,7 +90,7 @@ export function BroadcastDetailsFields({
           }
         />
         <SegmentedControl
-          aria-label="Show format"
+          aria-label={t('broadcastDetails.showFormat')}
           options={[
             { id: 'SERIES', label: 'Continuous show' },
             { id: 'SINGLE', label: 'Single show' },
@@ -105,13 +106,13 @@ export function BroadcastDetailsFields({
       </div>
 
       <Input
-        label="Show name"
+        label={t('broadcastDetails.showName')}
         value={values.title}
         onChange={(event) => onChange({ ...values, title: event.target.value })}
-        placeholder="New show name or episode title"
+        placeholder={t('broadcastDetails.newShowNameOrEpisode')}
       />
       <Textarea
-        label="Show description"
+        label={t('broadcastDetails.showDescription')}
         tone="secondary"
         submitOnModEnter
         value={values.description}
@@ -119,11 +120,11 @@ export function BroadcastDetailsFields({
           onChange({ ...values, description: event.target.value })
         }
         rows={2}
-        placeholder="What listeners can expect"
+        placeholder={t('broadcastDetails.whatListenersCanExpect')}
       />
       <ShowImagePicker
-        label="Show cover"
-        description="JPEG, PNG, WebP, or GIF"
+        label={t('broadcastDetails.showCover')}
+        description={t('broadcastDetails.jpegPngWebpOrGif')}
         value={values.coverUrl}
         onUrlChange={(coverUrl) => onChange({ ...values, coverUrl })}
       />

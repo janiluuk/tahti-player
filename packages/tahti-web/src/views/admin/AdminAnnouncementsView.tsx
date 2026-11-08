@@ -87,12 +87,16 @@ export function AdminAnnouncementsView() {
         <AdminPageLayout current="/admin/announcements">
           <div className="flex flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminAnnouncements.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="content" />
-              <BreadcrumbCurrent>Announcements</BreadcrumbCurrent>
+              <BreadcrumbCurrent>
+                {t('adminAnnouncements.announcements')}
+              </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Announcements"
+              title={t('adminAnnouncements.announcements')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {msg && (
@@ -102,10 +106,10 @@ export function AdminAnnouncementsView() {
               )}
 
               <StudioPanel
-                title="System announcements"
+                title={t('adminAnnouncements.systemAnnouncements')}
                 action={
                   <Toggle
-                    label="System announcements"
+                    label={t('adminAnnouncements.systemAnnouncements')}
                     checked={systemEnabled}
                     onChange={(checked) => {
                       void setAnnouncementsSystemEnabled(checked).then((r) => {
@@ -120,13 +124,11 @@ export function AdminAnnouncementsView() {
                 }
               >
                 <p className="text-foreground-secondary text-sm">
-                  Turning this off stops all system announcements everywhere,
-                  instantly — each clip below still keeps its own on/off and
-                  schedule.
+                  {t('adminAnnouncements.turningThisOffStopsAll')}
                 </p>
               </StudioPanel>
 
-              <StudioPanel title="Clips">
+              <StudioPanel title={t('adminAnnouncements.clips')}>
                 <FilePicker
                   accept="audio/*"
                   disabled={uploading}
@@ -178,11 +180,11 @@ export function AdminAnnouncementsView() {
                               {fmtDuration(clip.durationSec)}
                               {clip.renderStatus === 'PROCESSING' ? (
                                 <Badge variant="pill" color="cyan">
-                                  Rendering
+                                  {t('adminAnnouncements.rendering')}
                                 </Badge>
                               ) : clip.renderStatus === 'ERROR' ? (
                                 <Badge variant="pill" color="red">
-                                  Render failed
+                                  {t('adminAnnouncements.renderFailed')}
                                 </Badge>
                               ) : null}
                             </div>
@@ -190,7 +192,7 @@ export function AdminAnnouncementsView() {
                         </div>
                         <div className="flex min-w-48 flex-wrap items-center gap-2">
                           <Select
-                            label="Schedule"
+                            label={t('adminAnnouncements.schedule')}
                             value={clip.scheduleMode}
                             onValueChange={(value) => {
                               const scheduleMode =
@@ -255,7 +257,7 @@ export function AdminAnnouncementsView() {
                               aria-hidden
                               className="mr-1.5"
                             />
-                            Trim
+                            {t('adminAnnouncements.trim')}
                           </Button>
                           <Button
                             size="sm"
@@ -267,7 +269,7 @@ export function AdminAnnouncementsView() {
                               aria-hidden
                               className="text-accent-red mr-1.5"
                             />
-                            Delete
+                            {t('adminAnnouncements.delete')}
                           </Button>
                         </div>
                       </li>

@@ -1,7 +1,7 @@
 import { BarChart3Icon } from 'lucide-react';
 import { useState } from 'react';
 
-import { toBcp47 } from '@tahti-player/i18n';
+import { toBcp47, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   EditIconButton,
@@ -23,6 +23,7 @@ export function EpisodeEditorRow({
   episode: StudioEpisode;
   onSaved: (episode: StudioEpisode) => void;
 }) {
+  const { t } = useTranslation('web');
   const [title, setTitle] = useState(episode.title);
   const [description, setDescription] = useState(episode.description);
   const [saving, setSaving] = useState(false);
@@ -68,7 +69,7 @@ export function EpisodeEditorRow({
           aria-expanded={statsOpen}
         >
           <BarChart3Icon size={14} aria-hidden />
-          Statistics
+          {t('episodeEditor.statistics')}
         </Button>
         <EditIconButton
           label={`Edit ${episode.title}`}
@@ -94,13 +95,13 @@ export function EpisodeEditorRow({
           }}
         >
           <Input
-            label="Episode title"
+            label={t('episodeEditor.episodeTitle')}
             value={title}
             onChange={(event) => setTitle(event.target.value)}
           />
           <Textarea
             submitOnModEnter
-            label="Description"
+            label={t('episodeEditor.description')}
             tone="secondary"
             value={description}
             onChange={(event) => setDescription(event.target.value)}
@@ -114,7 +115,11 @@ export function EpisodeEditorRow({
             ) : (
               <span />
             )}
-            <SaveButton saving={saving} label="Save episode" type="submit" />
+            <SaveButton
+              saving={saving}
+              label={t('episodeEditor.saveEpisode')}
+              type="submit"
+            />
           </div>
         </form>
       ) : (
@@ -134,7 +139,7 @@ export function EpisodeEditorRow({
         <div className="border-border bg-background-secondary/40 mt-4 grid gap-3 rounded-lg border p-3 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <p className="text-foreground-secondary text-xs uppercase">
-              Status
+              {t('episodeEditor.status')}
             </p>
             <p className="mt-1 text-sm font-medium">
               {episodeStatusLabel(episode)}
@@ -142,7 +147,7 @@ export function EpisodeEditorRow({
           </div>
           <div>
             <p className="text-foreground-secondary text-xs uppercase">
-              Source
+              {t('episodeEditor.source')}
             </p>
             <p className="mt-1 text-sm font-medium">
               {episode.source === 'broadcast'
@@ -151,14 +156,16 @@ export function EpisodeEditorRow({
             </p>
           </div>
           <div>
-            <p className="text-foreground-secondary text-xs uppercase">Audio</p>
+            <p className="text-foreground-secondary text-xs uppercase">
+              {t('episodeEditor.audio')}
+            </p>
             <p className="mt-1 text-sm font-medium">
               {episode.soundId ? 'Attached' : 'Not attached'}
             </p>
           </div>
           <div>
             <p className="text-foreground-secondary text-xs uppercase">
-              Created
+              {t('episodeEditor.created')}
             </p>
             <p className="mt-1 text-sm font-medium">
               <ListingDate value={episode.createdAt} />
@@ -167,7 +174,7 @@ export function EpisodeEditorRow({
           {episode.slotStartAt ? (
             <div className="sm:col-span-2 lg:col-span-4">
               <p className="text-foreground-secondary text-xs uppercase">
-                Scheduled
+                {t('episodeEditor.scheduled')}
               </p>
               <p className="mt-1 text-sm font-medium">
                 {new Date(episode.slotStartAt).toLocaleString(
@@ -177,8 +184,7 @@ export function EpisodeEditorRow({
             </div>
           ) : null}
           <p className="text-foreground-secondary text-xs sm:col-span-2 lg:col-span-4">
-            Listener play and download totals will appear here when
-            episode-level analytics are available.
+            {t('episodeEditor.listenerPlayAndDownloadTotals')}
           </p>
         </div>
       ) : null}

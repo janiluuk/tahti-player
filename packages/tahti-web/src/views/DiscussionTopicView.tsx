@@ -40,6 +40,7 @@ function ReplyForm({
   topicId: string;
   onPosted: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [body, setBody] = useState('');
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -75,8 +76,8 @@ function ReplyForm({
       }}
     >
       <Textarea
-        label="Your reply"
-        description="Use @username to mention a member; they get a notification."
+        label={t('discussionTopic.yourReply')}
+        description={t('discussionTopic.useUsernameToMentionA')}
         submitOnModEnter
         value={body}
         maxLength={REPLY_MAX}
@@ -106,6 +107,7 @@ function EditReplyForm({
   post: DiscussionPost;
   onDone: (saved: DiscussionPost | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const [body, setBody] = useState(post.body);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -133,7 +135,7 @@ function EditReplyForm({
       }}
     >
       <Textarea
-        label="Edit your reply"
+        label={t('discussionTopic.editYourReply')}
         submitOnModEnter
         value={body}
         maxLength={REPLY_MAX}
@@ -155,7 +157,7 @@ function EditReplyForm({
           variant="text"
           onClick={() => onDone(null)}
         >
-          Cancel
+          {t('discussionTopic.cancel')}
         </Button>
       </div>
     </form>
@@ -306,7 +308,10 @@ export function DiscussionTopicView({ id }: { id: string }) {
       title={topic?.title ?? 'Discussion'}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl', content: 'gap-4' }}
     >
-      <PageBackLink to="/governance/discussions" label="Discussions" />
+      <PageBackLink
+        to="/governance/discussions"
+        label={t('discussionTopic.discussions')}
+      />
 
       {!user ? (
         <PageEmpty
@@ -315,7 +320,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
           description={t('empties.discussionsAreOpenToTahtiRy')}
           action={
             <Button onClick={() => useAuthModalStore.getState().open('login')}>
-              Sign in
+              {t('discussionTopic.signIn')}
             </Button>
           }
         />
@@ -335,7 +340,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
               <ListingDate value={topic.createdAt} />
               {topic.status === 'CLOSED' ? (
                 <Badge variant="pill" color="secondary">
-                  Closed
+                  {t('discussionTopic.closed')}
                 </Badge>
               ) : null}
             </p>
@@ -348,7 +353,10 @@ export function DiscussionTopicView({ id }: { id: string }) {
             />
           </section>
 
-          <section className="flex flex-col gap-3" aria-label="Replies">
+          <section
+            className="flex flex-col gap-3"
+            aria-label={t('discussionTopic.replies')}
+          >
             <h2 className="text-lg font-semibold">
               {Math.max(topic.postCount, topic.posts.length) === 1
                 ? '1 reply'
@@ -393,7 +401,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
                           topic.status === 'OPEN' &&
                           editingId !== post.id ? (
                             <EditIconButton
-                              label="Edit your reply"
+                              label={t('discussionTopic.editYourReply')}
                               variant="text"
                               onClick={() => setEditingId(post.id)}
                             />
@@ -405,7 +413,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
                               aria-label={`Remove the reply by ${post.author}`}
                               onClick={() => setRemoving(post)}
                             >
-                              Remove
+                              {t('discussionTopic.remove')}
                             </Button>
                           ) : null}
                         </span>
@@ -438,7 +446,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
 
           {topic.status === 'CLOSED' ? (
             <p className="text-foreground-secondary text-sm">
-              The board closed this topic; it takes no more replies.
+              {t('discussionTopic.theBoardClosedThisTopic')}
             </p>
           ) : (
             <ReplyForm topicId={topic.id} onPosted={reload} />
@@ -448,13 +456,13 @@ export function DiscussionTopicView({ id }: { id: string }) {
       <ConfirmDialog
         destructive
         isOpen={removing !== null}
-        title="Remove this reply?"
+        title={t('discussionTopic.removeThisReply')}
         description={
           removing && !removing.mine
             ? 'It is deleted for every member, and the removal is logged.'
             : 'It is deleted for every member.'
         }
-        confirmLabel="Remove"
+        confirmLabel={t('discussionTopic.remove')}
         onCancel={() => setRemoving(null)}
         onConfirm={confirmRemove}
       />

@@ -36,6 +36,7 @@ function channelStateColor(state: string): 'green' | 'cyan' | 'secondary' {
 }
 
 function PrepPanel({ state }: { state: ReturnType<typeof useGoLiveState> }) {
+  const { t } = useTranslation('web');
   const {
     isBroadcastLive,
     showInfoConfirmed,
@@ -48,17 +49,9 @@ function PrepPanel({ state }: { state: ReturnType<typeof useGoLiveState> }) {
 
   return (
     <div className="flex flex-col gap-5">
-      <HelpLayer title="How broadcasting works here">
-        <p>
-          Connect OBS, Streamlabs, Traktor, Mixxx, or another Icecast-compatible
-          app using the Server and Stream key (or Mount/Password) under
-          Credentials — pick your app there to see the matching fields.
-        </p>
-        <p>
-          Using OBS? The &quot;Ready-made OBS setup&quot; download under
-          Credentials bundles a scene preset with this channel&apos;s current
-          credentials already filled in.
-        </p>
+      <HelpLayer title={t('goLive.howBroadcastingWorksHere')}>
+        <p>{t('goLive.connectObsStreamlabsTraktorMixxx')}</p>
+        <p>{t('goLive.usingObsTheQuotReady')}</p>
         <p>
           Multistream mirrors your broadcast to other platforms — manage
           destinations under Destinations. Recording and green room prefs that
@@ -80,20 +73,19 @@ function PrepPanel({ state }: { state: ReturnType<typeof useGoLiveState> }) {
           className="border-border bg-accent-green/10 text-foreground rounded-lg border px-3 py-3 text-sm"
           role="status"
         >
-          You’re live. Encoder and show title stay as set for this session — end
-          the broadcast when you’re done.
+          {t('goLive.youReLiveEncoderAnd')}
         </p>
       ) : null}
       <ul
         className="border-border bg-background-secondary/40 flex flex-col gap-2 rounded-lg border px-3 py-3 text-sm"
-        aria-label="Prep checklist"
+        aria-label={t('goLive.prepChecklist')}
         hidden={isBroadcastLive || undefined}
       >
         <li className="flex flex-wrap items-center justify-between gap-2">
           <span>{showInfoReady ? '✓' : '○'} Show title ready</span>
           {!showInfoReady ? (
             <span className="text-foreground-secondary text-xs">
-              Fill it in below
+              {t('goLive.fillItInBelow')}
             </span>
           ) : null}
         </li>
@@ -106,7 +98,7 @@ function PrepPanel({ state }: { state: ReturnType<typeof useGoLiveState> }) {
               size="sm"
               variant="secondary"
             >
-              Open Credentials
+              {t('goLive.openCredentials')}
             </ButtonLink>
           ) : null}
         </li>
@@ -114,7 +106,7 @@ function PrepPanel({ state }: { state: ReturnType<typeof useGoLiveState> }) {
           <span>{signalOk ? '✓' : '○'} Encoder signal</span>
           {!signalOk ? (
             <span className="text-foreground-secondary text-xs">
-              Connect OBS or another app, then check Signal
+              {t('goLive.connectObsOrAnotherApp')}
             </span>
           ) : null}
         </li>
@@ -197,7 +189,7 @@ export function StudioGoLiveView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
-        <ViewShell title="Go live" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell title={t('goLive.goLive')} classes={{ root: 'px-0 pt-0' }}>
           <Tabs.Root
             selectedIndex={GO_LIVE_TABS.indexOf(activeTab)}
             onChange={(index) => {
@@ -212,7 +204,7 @@ export function StudioGoLiveView() {
             }}
           >
             <Tabs.List
-              aria-label="Go live session"
+              aria-label={t('goLive.goLiveSession')}
               className="mb-4 w-fit flex-wrap"
             >
               {GO_LIVE_TABS.map((tab) => (
@@ -230,7 +222,7 @@ export function StudioGoLiveView() {
             {isBroadcastLive ? (
               <OnAirBadge />
             ) : rotationPlaying ? (
-              <OnAirBadge label="ROTATION" />
+              <OnAirBadge label={t('goLive.rotation')} />
             ) : (
               <Badge variant="pill" color={channelStateColor(channelState)}>
                 {channelState}
@@ -258,7 +250,7 @@ export function StudioGoLiveView() {
             onClose={() => setShowInfoModalOpen(false)}
             className="max-w-lg"
           >
-            <Dialog.Title>Show info</Dialog.Title>
+            <Dialog.Title>{t('goLive.showInfo')}</Dialog.Title>
             <div className="mt-4">
               <BroadcastPreflightPanel
                 onSaved={() => {

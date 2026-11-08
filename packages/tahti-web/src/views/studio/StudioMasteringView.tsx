@@ -100,25 +100,31 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex w-full max-w-[1400px] flex-col gap-6 px-1 py-2">
         <div className="flex flex-wrap gap-3 text-xs">
-          <PageBackLink to="/library/sounds" label="Sounds" />
+          <PageBackLink
+            to="/library/sounds"
+            label={t('studioMastering.sounds')}
+          />
           <Link
             to="/studio/sounds/$id"
             params={{ id: soundId }}
             search={{ edit: true }}
             className="text-foreground-secondary hover:underline"
           >
-            Metadata
+            {t('studioMastering.metadata')}
           </Link>
           <Link
             to="/studio/sounds/$id/editor"
             params={{ id: soundId }}
             className="text-foreground-secondary hover:underline"
           >
-            Audio editor
+            {t('studioMastering.audioEditor')}
           </Link>
         </div>
 
-        <ViewShell title="Reference mastering" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell
+          title={t('studioMastering.referenceMastering')}
+          classes={{ root: 'px-0 pt-0' }}
+        >
           {loading ? (
             <PageLoading label={t('loading.loadingTrack')} />
           ) : loadError || !source ? (
@@ -129,7 +135,10 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
             />
           ) : (
             <>
-              <StudioPanel title="Track" description={source.title}>
+              <StudioPanel
+                title={t('studioMastering.track')}
+                description={source.title}
+              >
                 <p className="text-foreground-secondary text-sm">
                   {source.durationSec != null
                     ? `${Math.round(source.durationSec)}s — `
@@ -139,8 +148,8 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
               </StudioPanel>
 
               <StudioPanel
-                title="Reference track"
-                description="A commercially mastered track (or any reference) you want this track to sound like."
+                title={t('studioMastering.referenceTrack')}
+                description={t('studioMastering.aCommerciallyMasteredTrackOr')}
               >
                 <FilePicker
                   labels={{
@@ -160,7 +169,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
                 ) : null}
               </StudioPanel>
 
-              <StudioPanel title="Match">
+              <StudioPanel title={t('studioMastering.match')}>
                 <div className="flex flex-wrap items-center gap-3">
                   <Button
                     onClick={() => void startMatching()}
@@ -171,7 +180,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
                       aria-hidden
                       className="mr-1.5"
                     />
-                    Match to reference
+                    {t('studioMastering.matchToReference')}
                   </Button>
                   {busy ? (
                     <span className="text-foreground-secondary text-sm">
@@ -197,7 +206,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
                       className="w-fit"
                     >
                       <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-                      Download WAV
+                      {t('studioMastering.downloadWav')}
                     </ButtonAnchor>
                   </div>
                 ) : null}

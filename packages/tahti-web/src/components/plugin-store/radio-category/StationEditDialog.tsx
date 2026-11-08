@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, SaveButton } from '@tahti-player/ui';
 
 import {
@@ -23,6 +23,7 @@ export function StationEditDialog({
   onClose: () => void;
   onSave: (patch: Partial<RadioStation>) => void;
 }) {
+  const { t } = useTranslation('web');
   const [logoUrl, setLogoUrl] = useState(station.logoUrl ?? '');
   const [streamUrl, setStreamUrl] = useState(station.streamUrl ?? '');
   const [testBusy, setTestBusy] = useState(false);
@@ -71,25 +72,39 @@ export function StationEditDialog({
       >
         <Dialog.Title>Edit {station.name}</Dialog.Title>
         <Dialog.Description>
-          Update the station metadata, cover image, and programming source.
+          {t('stationEdit.updateTheStationMetadataCover')}
         </Dialog.Description>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <Input name="name" label="Station name" defaultValue={station.name} />
+          <Input
+            name="name"
+            label={t('stationEdit.stationName')}
+            defaultValue={station.name}
+          />
           <Input
             name="language"
-            label="Language"
+            label={t('stationEdit.language')}
             defaultValue={station.language}
           />
-          <Input name="genre" label="Genre" defaultValue={station.genre} />
+          <Input
+            name="genre"
+            label={t('stationEdit.genre')}
+            defaultValue={station.genre}
+          />
           <Input
             name="bitrateKbps"
-            label="Bitrate (kbps)"
+            label={t('stationEdit.bitrateKbps')}
             defaultValue={String(station.bitrateKbps)}
             inputMode="numeric"
           />
-          <Input name="codec" label="Codec" defaultValue={station.codec} />
+          <Input
+            name="codec"
+            label={t('stationEdit.codec')}
+            defaultValue={station.codec}
+          />
           <div className="flex flex-col gap-1.5 sm:col-span-2">
-            <span className="text-sm font-medium">Cover image</span>
+            <span className="text-sm font-medium">
+              {t('stationEdit.coverImage')}
+            </span>
             <RadioStationCover
               src={logoUrl}
               label={station.name}
@@ -105,7 +120,7 @@ export function StationEditDialog({
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              label="Programming source / stream URL"
+              label={t('stationEdit.programmingSourceStreamUrl')}
               value={streamUrl}
               onChange={(e) => {
                 setStreamUrl(e.target.value);
@@ -138,14 +153,14 @@ export function StationEditDialog({
             autoCorrect="off"
             spellCheck={false}
             name="detailUrl"
-            label="Station details URL"
+            label={t('stationEdit.stationDetailsUrl')}
             defaultValue={station.detailUrl}
             className="sm:col-span-2"
           />
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
-          <SaveButton type="submit" label="Save station" />
+          <Dialog.Close>{t('stationEdit.cancel')}</Dialog.Close>
+          <SaveButton type="submit" label={t('stationEdit.saveStation')} />
         </Dialog.Actions>
       </form>
     </Dialog.Root>

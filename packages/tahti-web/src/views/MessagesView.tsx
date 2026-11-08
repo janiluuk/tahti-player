@@ -191,18 +191,18 @@ export function MessagesView({
   if (!user) {
     return (
       <ViewShell
-        title="Messages"
+        title={t('messagesPage.messages')}
         data-testid="messages-view"
         classes={{ root: 'px-0 pt-0 mx-auto max-w-4xl' }}
       >
         <p className="text-foreground-secondary text-sm">
-          Sign in to read DMs.
+          {t('messagesPage.signInToReadDms')}
         </p>
         <Button
           size="sm"
           onClick={() => useAuthModalStore.getState().open('login')}
         >
-          Log in
+          {t('messagesPage.logIn')}
         </Button>
       </ViewShell>
     );
@@ -210,7 +210,7 @@ export function MessagesView({
 
   return (
     <ViewShell
-      title="Messages"
+      title={t('messagesPage.messages')}
       data-testid="messages-view"
       classes={{ root: 'px-0 pt-0 mx-auto max-w-4xl' }}
     >
@@ -243,7 +243,7 @@ export function MessagesView({
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              label="Find or message @"
+              label={t('messagesPage.findOrMessage')}
               value={composeUser}
               onChange={(e) => setComposeUser(e.target.value)}
               placeholder="username"
@@ -254,7 +254,7 @@ export function MessagesView({
             size="sm"
             disabled={starting || !composeUser.trim()}
           >
-            Message
+            {t('messagesPage.message')}
           </Button>
         </form>
 
@@ -288,7 +288,7 @@ export function MessagesView({
                       size="sm"
                       variant="secondary"
                     >
-                      Browse artists
+                      {t('messagesPage.browseArtists')}
                     </ButtonLink>
                   }
                 />
@@ -346,7 +346,7 @@ export function MessagesView({
                         size="sm"
                         variant="secondary"
                       >
-                        Browse artists
+                        {t('messagesPage.browseArtists')}
                       </ButtonLink>
                     ) : undefined
                   }
@@ -390,8 +390,7 @@ export function MessagesView({
                     role="status"
                     className="border-border text-foreground-secondary border-t p-3 text-sm"
                   >
-                    You blocked this account. Unblock it to message each other
-                    again.
+                    {t('messagesPage.youBlockedThisAccountUnblock')}
                   </p>
                 ) : other?.available === false ? (
                   <p
@@ -410,14 +409,14 @@ export function MessagesView({
                   >
                     <Input
                       enterKeyHint="send"
-                      aria-label="Message"
+                      aria-label={t('messagesPage.message')}
                       value={body}
                       onChange={(e) => setBody(e.target.value)}
-                      placeholder="Write a message…"
+                      placeholder={t('messagesPage.writeAMessage')}
                       size="sm"
                     />
                     <Button size="sm" disabled={!body.trim()} type="submit">
-                      Send
+                      {t('messagesPage.send')}
                     </Button>
                   </form>
                 )}

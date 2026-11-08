@@ -310,7 +310,7 @@ export function AdminStreamManagerPanel({
       {showHeading ? (
         <StudioPanel
           title={`Live streams (${streams.length})`}
-          description="Monitor active channels and control their live audio."
+          description={t('adminStreamManager.monitorActiveChannelsAndControl')}
           action={
             <div className="flex items-center gap-1">
               <Tooltip
@@ -341,7 +341,7 @@ export function AdminStreamManagerPanel({
                   type="button"
                   size="icon-sm"
                   variant="text"
-                  aria-label="Refresh live streams"
+                  aria-label={t('adminStreamManager.refreshLiveStreams')}
                   disabled={refreshing}
                   onClick={reload}
                 >
@@ -364,8 +364,7 @@ export function AdminStreamManagerPanel({
             streamList
           ) : (
             <p className="text-foreground-secondary text-sm">
-              Stream list collapsed. Expand to inspect and control active
-              streams.
+              {t('adminStreamManager.streamListCollapsedExpandTo')}
             </p>
           )}
         </StudioPanel>
@@ -380,8 +379,7 @@ export function AdminStreamManagerPanel({
             streamList
           ) : (
             <p className="text-foreground-secondary text-sm">
-              Stream list collapsed. Expand to inspect and control active
-              streams.
+              {t('adminStreamManager.streamListCollapsedExpandTo')}
             </p>
           )}
         </>
@@ -398,19 +396,27 @@ export function AdminStreamManagerPanel({
               Live channel details for /c/{detailsStream.slug}.
             </Dialog.Description>
             <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
-              <dt className="text-foreground-secondary">Username</dt>
+              <dt className="text-foreground-secondary">
+                {t('adminStreamManager.username')}
+              </dt>
               <dd>{detailsStream.username}</dd>
-              <dt className="text-foreground-secondary">Duration</dt>
+              <dt className="text-foreground-secondary">
+                {t('adminStreamManager.duration')}
+              </dt>
               <dd>{formatDuration(detailsStream.elapsedSec)}</dd>
               {streamStats[detailsStream.slug] ? (
                 <>
-                  <dt className="text-foreground-secondary">Listeners</dt>
+                  <dt className="text-foreground-secondary">
+                    {t('adminStreamManager.listeners')}
+                  </dt>
                   <dd>
                     {streamStats[
                       detailsStream.slug
                     ]!.listeners.toLocaleString()}
                   </dd>
-                  <dt className="text-foreground-secondary">Listener peak</dt>
+                  <dt className="text-foreground-secondary">
+                    {t('adminStreamManager.listenerPeak')}
+                  </dt>
                   <dd>
                     {streamStats[
                       detailsStream.slug
@@ -418,25 +424,31 @@ export function AdminStreamManagerPanel({
                   </dd>
                 </>
               ) : null}
-              <dt className="text-foreground-secondary">Mode</dt>
+              <dt className="text-foreground-secondary">
+                {t('adminStreamManager.mode')}
+              </dt>
               <dd>
                 {detailsStream.isRotation ? 'Rotation' : 'Live broadcast'}
               </dd>
               {detailsStream.goneLiveAt ? (
                 <>
-                  <dt className="text-foreground-secondary">Started</dt>
+                  <dt className="text-foreground-secondary">
+                    {t('adminStreamManager.started')}
+                  </dt>
                   <dd>{new Date(detailsStream.goneLiveAt).toLocaleString()}</dd>
                 </>
               ) : null}
               {detailsStream.hlsUrl ? (
                 <>
-                  <dt className="text-foreground-secondary">Stream</dt>
+                  <dt className="text-foreground-secondary">
+                    {t('adminStreamManager.stream')}
+                  </dt>
                   <dd className="min-w-0 break-all">{detailsStream.hlsUrl}</dd>
                 </>
               ) : null}
             </dl>
             <Dialog.Actions>
-              <Dialog.Close>Close</Dialog.Close>
+              <Dialog.Close>{t('adminStreamManager.close')}</Dialog.Close>
               <ButtonAnchor
                 href={`/c/${detailsStream.slug}`}
                 target="_blank"

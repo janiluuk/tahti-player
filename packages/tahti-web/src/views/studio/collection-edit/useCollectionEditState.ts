@@ -16,6 +16,7 @@ import {
 import type {
   CollectionTrackSortMode,
   StudioCollection,
+  StudioCollectionItem,
   StudioSound,
 } from '../../../api/studio-types';
 import { useImageSlotChrome } from '../../../components/imageSlot/useImageSlotChrome';
@@ -222,6 +223,14 @@ export function useCollectionEditState(slug: string) {
     });
   };
 
+  const applySoundOrder = (
+    next: StudioCollectionItem[],
+    nextMode: CollectionTrackSortMode,
+  ) => {
+    setTrackSortMode(nextMode);
+    setCol((c) => (c ? { ...c, items: next, trackSortMode: nextMode } : c));
+  };
+
   const saveMeta = async () => {
     setSaving(true);
     try {
@@ -277,6 +286,7 @@ export function useCollectionEditState(slug: string) {
   const backdropChrome = useImageSlotChrome({ onClear: removeBackdrop });
 
   return {
+    slug,
     col,
     loadError,
     reload,
@@ -335,6 +345,7 @@ export function useCollectionEditState(slug: string) {
     addSound,
     removeAddedSound,
     onReorder,
+    applySoundOrder,
     saveMeta,
     refreshItems,
     backdropChrome,

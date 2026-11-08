@@ -1,6 +1,7 @@
 import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Toggle } from '@tahti-player/ui';
 
 import { addMikseriTrack } from '../../../api/sources';
@@ -19,6 +20,7 @@ export function MikseriImportPanel({
     soundId: string,
   ) => Promise<{ ok: true } | { ok: false; error: string }>;
 }) {
+  const { t } = useTranslation('web');
   const [trackUrl, setTrackUrl] = useState('');
   const [title, setTitle] = useState('');
   const [artistName, setArtistName] = useState('');
@@ -69,8 +71,8 @@ export function MikseriImportPanel({
 
   return (
     <StudioPanel
-      title="Add your music from Mikseri.net"
-      description="Tahti stores the official embed reference and your metadata; it never copies the audio."
+      title={t('mikseriImport.addYourMusicFromMikseri')}
+      description={t('mikseriImport.tahtiStoresTheOfficialEmbed')}
     >
       <form
         className="grid gap-3 md:grid-cols-2"
@@ -80,36 +82,34 @@ export function MikseriImportPanel({
         }}
       >
         <Input
-          label="Mikseri track"
+          label={t('mikseriImport.mikseriTrack')}
           value={trackUrl}
           onChange={(event) => setTrackUrl(event.target.value)}
-          placeholder="Track page, embed URL, or track ID"
+          placeholder={t('mikseriImport.trackPageEmbedUrlOr')}
           required
         />
         <Input
-          label="Track title"
+          label={t('mikseriImport.trackTitle')}
           value={title}
           onChange={(event) => setTitle(event.target.value)}
           required
         />
         <Input
-          label="Artist name"
+          label={t('mikseriImport.artistName')}
           value={artistName}
           onChange={(event) => setArtistName(event.target.value)}
           required
         />
         <Input
-          label="Genre"
+          label={t('mikseriImport.genre')}
           value={genre}
           onChange={(event) => setGenre(event.target.value)}
-          description="Optional; used by collection filters."
+          description={t('mikseriImport.optionalUsedByCollectionFilters')}
         />
         <div className="flex items-center justify-between gap-3 md:col-span-2">
-          <span className="text-sm">
-            I own this track or have permission to embed it
-          </span>
+          <span className="text-sm">{t('mikseriImport.iOwnThisTrackOr')}</span>
           <Toggle
-            label="Rights confirmed"
+            label={t('mikseriImport.rightsConfirmed')}
             checked={rightsConfirmed}
             onChange={setRightsConfirmed}
           />

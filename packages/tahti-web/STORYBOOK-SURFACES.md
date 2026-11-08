@@ -331,6 +331,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Components/Small indicators` | `tahti-web/SmallIndicators.stories.tsx` |
 | `Tahti/Release/SmartLinkView` | `tahti-web/SmartLinkView.stories.tsx` |
 | `Tahti/Desktop/SmartRuleValueInput` | `tahti-web/SmartRuleValueInput.stories.tsx` |
+| `Tahti/Studio/Collections/SortSoundsDialog` | `tahti-web/SortSoundsDialog.stories.tsx` |
 | `Tahti/Misc/SourceServiceIcon` | `tahti-web/SourceServiceIcon.stories.tsx` |
 | `Tahti/Studio/StashFilesPanel` | `tahti-web/StashFilesPanel.stories.tsx` |
 | `Tahti/Radio/StationUnavailableNotice` | `tahti-web/StationUnavailableNotice.stories.tsx` |

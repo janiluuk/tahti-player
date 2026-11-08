@@ -158,27 +158,27 @@ export function StudioUpdatesView({
           classes={{ root: 'px-0 pt-0' }}
           actions={
             tab === 'posts' ? (
-              <Tooltip content="New post" side="top">
+              <Tooltip content={t('studioUpdates.newPost')} side="top">
                 <Button
                   size="icon-sm"
                   onClick={() => {
                     setMsg(null);
                     setPostEditor({});
                   }}
-                  aria-label="New post"
+                  aria-label={t('studioUpdates.newPost')}
                 >
                   <PlusIcon size={16} aria-hidden />
                 </Button>
               </Tooltip>
             ) : (
-              <Tooltip content="New draft" side="top">
+              <Tooltip content={t('studioUpdates.newDraft')} side="top">
                 <Button
                   size="icon-sm"
                   onClick={() => {
                     setMsg(null);
                     setDraftOpen(true);
                   }}
-                  aria-label="New draft"
+                  aria-label={t('studioUpdates.newDraft')}
                 >
                   <PlusIcon size={16} aria-hidden />
                 </Button>
@@ -209,15 +209,15 @@ export function StudioUpdatesView({
                         onClick={() => setPostEditor({})}
                       >
                         <PlusIcon size={16} aria-hidden className="mr-1.5" />
-                        Write a post
+                        {t('studioUpdates.writeAPost')}
                       </Button>
                     ) : (
-                      <Tooltip content="New post" side="top">
+                      <Tooltip content={t('studioUpdates.newPost')} side="top">
                         <Button
                           size="icon-sm"
                           variant="secondary"
                           onClick={() => setPostEditor({})}
-                          aria-label="New post"
+                          aria-label={t('studioUpdates.newPost')}
                         >
                           <PlusIcon size={16} aria-hidden />
                         </Button>
@@ -266,7 +266,7 @@ export function StudioUpdatesView({
                             onClick={() => setPreviewPost(p)}
                           >
                             <EyeIcon size={15} aria-hidden className="mr-1.5" />
-                            Preview
+                            {t('studioUpdates.preview')}
                           </Button>
                           <EditIconButton
                             variant="text"
@@ -312,15 +312,15 @@ export function StudioUpdatesView({
                     isEmpty ? (
                       <Button onClick={() => setDraftOpen(true)}>
                         <PlusIcon size={16} aria-hidden className="mr-1.5" />
-                        New draft
+                        {t('studioUpdates.newDraft')}
                       </Button>
                     ) : (
-                      <Tooltip content="New draft" side="top">
+                      <Tooltip content={t('studioUpdates.newDraft')} side="top">
                         <Button
                           size="icon-sm"
                           variant="secondary"
                           onClick={() => setDraftOpen(true)}
-                          aria-label="New draft"
+                          aria-label={t('studioUpdates.newDraft')}
                         >
                           <PlusIcon size={16} aria-hidden />
                         </Button>
@@ -368,7 +368,7 @@ export function StudioUpdatesView({
                               aria-hidden
                               className="mr-1.5"
                             />
-                            Send
+                            {t('studioUpdates.send')}
                           </Button>
                         )}
                         {d.state !== 'QUEUED' && (
@@ -411,7 +411,7 @@ export function StudioUpdatesView({
           isOpen={previewPost !== null}
           onClose={() => setPreviewPost(null)}
         >
-          <Dialog.Title>Post preview</Dialog.Title>
+          <Dialog.Title>{t('studioUpdates.postPreview')}</Dialog.Title>
           {previewPost && (
             <div className="mt-4">
               <PostPreview
@@ -428,7 +428,7 @@ export function StudioUpdatesView({
             </div>
           )}
           <Dialog.Actions>
-            <Dialog.Close>Close</Dialog.Close>
+            <Dialog.Close>{t('studioUpdates.close')}</Dialog.Close>
           </Dialog.Actions>
         </Dialog.Root>
 
@@ -436,7 +436,7 @@ export function StudioUpdatesView({
           <ImageLightbox
             images={lightbox.images.map((image) => ({ imageUrl: image }))}
             index={lightbox.index}
-            label="Post image viewer"
+            label={t('studioUpdates.postImageViewer')}
             onIndexChange={(index) => setLightbox({ ...lightbox, index })}
             onClose={() => setLightbox(null)}
           />
