@@ -68,7 +68,12 @@ export function ChannelPlaylistPicker({
   }, [initialSlug, attempt]);
 
   if (loading) {
-    return <InlineLoader label="Loading playlists…" textSize="xs" />;
+    return (
+      <InlineLoader
+        label={t('channelPlaylistPicker.loadingPlaylists')}
+        textSize="xs"
+      />
+    );
   }
 
   if (loadError && playlists.length === 0) {
@@ -98,7 +103,7 @@ export function ChannelPlaylistPicker({
   return (
     <div className="flex flex-col gap-2">
       <Select
-        label="Playlist"
+        label={t('channelPlaylistPicker.playlist')}
         value={selectedSlug}
         onValueChange={(slug) => {
           setSelectedSlug(slug);

@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { SectionTitle } from '@tahti-player/ui';
 
 type Props = {
@@ -15,10 +16,14 @@ const PLACEHOLDER_TRACK_TITLES = [
  * in the designer's page-preview column. Never real data — placeholder
  * copy only, matching the public channel page's structure. */
 export function PreviewTracksPlaceholder({ displayName, bio }: Props) {
+  const { t } = useTranslation('web');
   return (
     <div className="flex flex-col gap-5 p-4 sm:p-6">
       <section>
-        <SectionTitle title="Tracks" className="mb-3" />
+        <SectionTitle
+          title={t('previewTracksPlaceholder.tracks')}
+          className="mb-3"
+        />
         <div className="border-border divide-border divide-y overflow-hidden rounded-lg border">
           {PLACEHOLDER_TRACK_TITLES.map((title, index) => (
             <div key={title} className="flex items-center gap-3 px-3 py-3">
@@ -31,7 +36,9 @@ export function PreviewTracksPlaceholder({ displayName, bio }: Props) {
                   {displayName}
                 </div>
               </div>
-              <span className="text-foreground-secondary text-xs">Preview</span>
+              <span className="text-foreground-secondary text-xs">
+                {t('previewTracksPlaceholder.preview')}
+              </span>
             </div>
           ))}
         </div>

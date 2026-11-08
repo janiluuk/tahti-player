@@ -235,7 +235,7 @@ export function AdminActivityView({
       </p>
 
       <FilterChips
-        aria-label="Audit topics"
+        aria-label={t('adminActivityView.auditTopics')}
         className="border-border mb-3 border-b pb-3"
         items={[
           { id: 'ALL', label: 'All activity' },
@@ -322,7 +322,7 @@ export function AdminActivityView({
         <AdminPageLayout current="/admin/logs">
           <div className="flex max-w-6xl flex-col gap-6">
             <ViewShell
-              title="Activity"
+              title={t('adminActivityView.activity')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {content}

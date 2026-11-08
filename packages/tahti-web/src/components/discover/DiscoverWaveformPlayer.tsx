@@ -1,5 +1,6 @@
 import { PauseIcon, PlayIcon, XIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import type { DiscoverTrackItem, TahtiPlayable } from '../../api/types';
@@ -18,6 +19,7 @@ export function DiscoverWaveformPlayer({
   selection: DiscoverSelection;
   onClose: () => void;
 }) {
+  const { t } = useTranslation('web');
   const currentId = usePlayerStore((state) => state.currentId);
   const status = usePlayerStore((state) => state.status);
   const currentTime = usePlayerStore((state) => state.currentTime);
@@ -34,7 +36,7 @@ export function DiscoverWaveformPlayer({
   return (
     <section
       className="border-border bg-background-secondary rounded-md border p-4 shadow-sm"
-      aria-label="Waveform player"
+      aria-label={t('discoverWaveformPlayer.waveformPlayer')}
     >
       <div className="flex items-start gap-3">
         <Button
@@ -77,7 +79,7 @@ export function DiscoverWaveformPlayer({
           />
         </div>
         <Tooltip
-          content="Close waveform player"
+          content={t('discoverWaveformPlayer.closeWaveformPlayer')}
           side="top"
           wrapperClassName="shrink-0"
         >
@@ -87,7 +89,7 @@ export function DiscoverWaveformPlayer({
             size="icon-sm"
             className="text-foreground-secondary hover:text-foreground shrink-0"
             onClick={onClose}
-            aria-label="Close waveform player"
+            aria-label={t('discoverWaveformPlayer.closeWaveformPlayer')}
           >
             <XIcon size={16} />
           </Button>

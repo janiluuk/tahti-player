@@ -49,7 +49,7 @@ export function TrackDetailView({
           description={translate('trackDetail.unavailableDescription')}
           action={
             <ButtonLink className="w-fit" to="/" size="sm" variant="secondary">
-              Back to Listen
+              {translate('trackDetailView.backToListen')}
             </ButtonLink>
           }
         />

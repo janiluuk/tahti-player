@@ -50,7 +50,7 @@ export function CommunityStatsPanel() {
 
   if (!stats) {
     return (
-      <StudioPanel title="Chat and mail">
+      <StudioPanel title={t('communityStatsPanel.chatAndMail')}>
         <PageLoading label={t('loading.loadingChatAndMailStats')} />
       </StudioPanel>
     );
@@ -59,10 +59,10 @@ export function CommunityStatsPanel() {
   const { total, busiest } = summarizeChatSeries(stats.chatSeries);
 
   return (
-    <StudioPanel title="Chat and mail">
+    <StudioPanel title={t('communityStatsPanel.chatAndMail')}>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatTile
-          label="Chat messages, 24 h"
+          label={t('communityStatsPanel.chatMessages24H')}
           tone={COMMUNITY_TONES.chat}
           icon={<MessagesSquareIcon size={16} />}
           value={formatCount(stats.chatLast24h)}

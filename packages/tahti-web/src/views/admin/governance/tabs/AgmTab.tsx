@@ -66,6 +66,7 @@ const DEFAULT_AGENDA = [
 ];
 
 function AgendaBuilder() {
+  const { t } = useTranslation('web');
   const [items, setItems] = useState<string[]>(DEFAULT_AGENDA);
   const agendaText = items
     .filter(Boolean)
@@ -74,13 +75,13 @@ function AgendaBuilder() {
 
   return (
     <StudioPanel
-      title="Agenda builder"
+      title={t('agmTab.agendaBuilder')}
       action={
         <CopyButton
           text={agendaText}
           size="sm"
           variant="secondary"
-          aria-label="Copy agenda"
+          aria-label={t('agmTab.copyAgenda')}
         />
       }
     >
@@ -166,13 +167,13 @@ function AgendaBuilder() {
           })}
         </ol>
       </div>
-      <Tooltip content="Add agenda item" side="top">
+      <Tooltip content={t('agmTab.addAgendaItem')} side="top">
         <Button
           size="icon-sm"
           variant="secondary"
           className="mt-3"
           onClick={() => setItems((prev) => [...prev, ''])}
-          aria-label="Add agenda item"
+          aria-label={t('agmTab.addAgendaItem')}
         >
           <PlusIcon size={16} aria-hidden />
         </Button>
@@ -226,7 +227,7 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
       onToggle={() => setOpen((prev) => !prev)}
     >
       {loading ? (
-        <InlineLoader label="Loading…" textSize="xs" />
+        <InlineLoader label={t('agmTab.loading')} textSize="xs" />
       ) : records.length === 0 ? (
         <PageEmpty title={t('empties.noAttendanceRecordedYet')} />
       ) : (
@@ -268,12 +269,12 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
           autoComplete="off"
           value={name}
           onChange={(event) => setName(event.target.value)}
-          placeholder="Member name"
-          aria-label="Member name"
+          placeholder={t('agmTab.memberName')}
+          aria-label={t('agmTab.memberName')}
           className="min-w-[160px] flex-1"
         />
         <Select
-          label="Status"
+          label={t('agmTab.status')}
           value={status}
           onValueChange={(value) =>
             setStatus(value as GovernanceAttendanceStatus)
@@ -370,7 +371,7 @@ export function AgmTab() {
     <>
       <AgendaBuilder />
 
-      <StudioPanel title="Meeting records">
+      <StudioPanel title={t('agmTab.meetingRecords')}>
         <form
           className="border-border mb-4 grid gap-2 border-b pb-4 sm:grid-cols-[1fr_minmax(12rem,auto)_auto]"
           onSubmit={(event) => {
@@ -391,11 +392,11 @@ export function AgmTab() {
           <Input
             value={meetingTitle}
             onChange={(event) => setMeetingTitle(event.target.value)}
-            placeholder="Meeting title"
-            aria-label="Meeting title"
+            placeholder={t('agmTab.meetingTitle')}
+            aria-label={t('agmTab.meetingTitle')}
           />
           <Select
-            label="Meeting type"
+            label={t('agmTab.meetingType')}
             value={meetingType}
             onValueChange={(value) =>
               setMeetingType(value as GovernanceMeeting['type'])
@@ -459,7 +460,7 @@ export function AgmTab() {
                 {editingMeetingId === meeting.id ? (
                   <div className="mt-2 flex max-w-xs items-center gap-2">
                     <Select
-                      label="State"
+                      label={t('agmTab.state')}
                       value={meeting.state}
                       disabled={meetingStateSaving === meeting.id}
                       onValueChange={(value) => {
@@ -490,7 +491,7 @@ export function AgmTab() {
                     />
                     {meetingStateSaving === meeting.id && (
                       <span className="text-foreground-secondary text-xs">
-                        Saving…
+                        {t('agmTab.saving')}
                       </span>
                     )}
                   </div>
@@ -509,7 +510,7 @@ export function AgmTab() {
                       href={meeting.minutesUrl}
                       className="no-underline underline-offset-2 hover:underline"
                     >
-                      Download
+                      {t('agmTab.download')}
                     </ExternalLink>
                   )}
                   <MinutesUploadButton
@@ -564,7 +565,7 @@ export function AgmTab() {
                         });
                       }}
                     >
-                      Approve minutes
+                      {t('agmTab.approveMinutes')}
                     </Button>
                   )}
                 </div>
@@ -590,10 +591,10 @@ export function AgmTab() {
         )}
       </StudioPanel>
 
-      <StudioPanel title="Motions & proposals">
+      <StudioPanel title={t('agmTab.motionsProposals')}>
         {loading ? (
           <InlineLoader
-            label="Loading motions…"
+            label={t('agmTab.loadingMotions')}
             className="justify-center py-4"
           />
         ) : motions.length === 0 ? (
@@ -620,15 +621,13 @@ export function AgmTab() {
           </ul>
         )}
         <p className="text-foreground-secondary mt-3 text-xs">
-          All AGM decisions are advisory until bylaws authorise asynchronous
-          binding votes. Formal binding resolutions are recorded as board
-          resolutions.
+          {t('agmTab.allAgmDecisionsAreAdvisory')}
         </p>
       </StudioPanel>
 
       <details className="border-border bg-background-secondary/40 rounded-xl border p-5 shadow-sm sm:p-6">
         <summary className="cursor-pointer text-sm font-medium">
-          Member notification requirements
+          {t('agmTab.memberNotificationRequirements')}
         </summary>
         <div className="mt-3 flex flex-col gap-3 text-sm">
           <p className="text-foreground-secondary text-xs">
@@ -637,19 +636,18 @@ export function AgmTab() {
             state the date, venue, and agenda.
           </p>
           <ul className="text-foreground-secondary list-disc space-y-1 pl-5 text-xs">
-            <li>Date, time, and venue (physical or remote link)</li>
-            <li>Agenda (use the builder above)</li>
-            <li>Any proposed bylaw changes in full</li>
-            <li>Deadline for member motions</li>
-            <li>Instructions for remote participation</li>
+            <li>{t('agmTab.dateTimeAndVenuePhysical')}</li>
+            <li>{t('agmTab.agendaUseTheBuilderAbove')}</li>
+            <li>{t('agmTab.anyProposedBylawChangesIn')}</li>
+            <li>{t('agmTab.deadlineForMemberMotions')}</li>
+            <li>{t('agmTab.instructionsForRemoteParticipation')}</li>
           </ul>
         </div>
       </details>
 
-      <StudioPanel title="Minutes & records">
+      <StudioPanel title={t('agmTab.minutesRecords')}>
         <p className="text-foreground-secondary text-sm">
-          Keep the meeting record connected to the board&apos;s formal records
-          and member register.
+          {t('agmTab.keepTheMeetingRecordConnected')}
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           <ButtonAnchor
@@ -657,15 +655,17 @@ export function AgmTab() {
             size="sm"
             variant="secondary"
           >
-            Export member register
+            {t('agmTab.exportMemberRegister')}
           </ButtonAnchor>
           <ButtonAnchor href="/admin/logs" size="sm" variant="secondary">
-            Open audit log
+            {t('agmTab.openAuditLog')}
           </ButtonAnchor>
         </div>
         <MemberRegisterPanel />
         <div className="border-border mt-4 border-t pt-3">
-          <h3 className="text-sm font-semibold">Published documents</h3>
+          <h3 className="text-sm font-semibold">
+            {t('agmTab.publishedDocuments')}
+          </h3>
           <form
             className="mt-3 grid gap-2 sm:grid-cols-[1fr_minmax(12rem,auto)]"
             onSubmit={(event) => {
@@ -689,11 +689,11 @@ export function AgmTab() {
             <Input
               value={documentTitle}
               onChange={(event) => setDocumentTitle(event.target.value)}
-              placeholder="Document title"
-              aria-label="Document title"
+              placeholder={t('agmTab.documentTitle')}
+              aria-label={t('agmTab.documentTitle')}
             />
             <Select
-              label="Document type"
+              label={t('agmTab.documentType')}
               value={documentType}
               onValueChange={(value) =>
                 setDocumentType(value as GovernanceDocument['type'])
@@ -719,8 +719,8 @@ export function AgmTab() {
               spellCheck={false}
               value={documentUrl}
               onChange={(event) => setDocumentUrl(event.target.value)}
-              placeholder="Public document URL (optional)"
-              aria-label="Public document URL"
+              placeholder={t('agmTab.publicDocumentUrlOptional')}
+              aria-label={t('agmTab.publicDocumentUrl')}
             />
             <Button
               size="sm"
@@ -737,10 +737,10 @@ export function AgmTab() {
           </form>
           <div className="mt-2 flex items-center justify-between gap-3 text-sm">
             <span className="text-foreground-secondary text-xs">
-              Publish immediately to members
+              {t('agmTab.publishImmediatelyToMembers')}
             </span>
             <Toggle
-              label="Publish immediately to members"
+              label={t('agmTab.publishImmediatelyToMembers')}
               checked={documentPublish}
               onChange={setDocumentPublish}
             />

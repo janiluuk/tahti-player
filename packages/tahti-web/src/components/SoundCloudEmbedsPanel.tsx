@@ -77,7 +77,7 @@ export function SoundCloudEmbedsPanel() {
 
   return (
     <StudioPanel
-      title="SoundCloud tracks"
+      title={t('soundCloudEmbedsPanel.soundcloudTracks')}
       description={`Public SoundCloud tracks shown on your channel, up to ${MAX_EMBEDS}.`}
     >
       {failed ? (
@@ -97,7 +97,7 @@ export function SoundCloudEmbedsPanel() {
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                label="SoundCloud track URL"
+                label={t('soundCloudEmbedsPanel.soundcloudTrackUrl')}
                 value={url}
                 placeholder="https://soundcloud.com/artist/track"
                 disabled={full}

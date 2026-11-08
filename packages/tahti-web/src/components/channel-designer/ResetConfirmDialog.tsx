@@ -11,10 +11,9 @@ export function ResetConfirmDialog({ isOpen, onClose, onConfirm }: Props) {
   const { t } = useTranslation('web');
   return (
     <Dialog.Root isOpen={isOpen} onClose={onClose}>
-      <Dialog.Title>Reset unsaved changes?</Dialog.Title>
+      <Dialog.Title>{t('resetConfirmDialog.resetUnsavedChanges')}</Dialog.Title>
       <Dialog.Description>
-        This discards everything you&apos;ve changed since the last save and
-        restores your live look. This can&apos;t be undone.
+        {t('resetConfirmDialog.thisDiscardsEverythingYouApos')}
       </Dialog.Description>
       <Dialog.Actions>
         <Dialog.Close>{t('actions.cancel')}</Dialog.Close>

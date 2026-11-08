@@ -1,5 +1,6 @@
 import { HandCoins } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonAnchor } from '@tahti-player/ui';
 
 import type { PublicProfile } from '../../api/types';
@@ -17,6 +18,7 @@ export function ArtistSupportNote({
   tiers: FanTiers;
   tipJarUrl?: string | null;
 }) {
+  const { t } = useTranslation('web');
   const tipJarHref =
     tipJarUrl && isHttpUrl(tipJarUrl) ? tipJarUrl.trim() : null;
   if (tiers.length === 0 && !tipJarHref) {
@@ -35,7 +37,7 @@ export function ArtistSupportNote({
           data-testid="artist-tip-jar-link"
         >
           <HandCoins size={14} aria-hidden />
-          Tip jar
+          {t('artistSupportNote.tipJar')}
         </ButtonAnchor>
       ) : null}
     </div>
@@ -43,6 +45,7 @@ export function ArtistSupportNote({
 }
 
 function ArtistFanTiers({ tiers }: { tiers: FanTiers }) {
+  const { t } = useTranslation('web');
   const hasDetails = tiers.some(
     (t) => Boolean(t.description) || (t.perks?.length ?? 0) > 0,
   );
@@ -57,8 +60,11 @@ function ArtistFanTiers({ tiers }: { tiers: FanTiers }) {
     );
   }
   return (
-    <section className="flex w-full flex-col gap-3" aria-label="Fan tiers">
-      <Eyebrow>Fan tiers</Eyebrow>
+    <section
+      className="flex w-full flex-col gap-3"
+      aria-label={t('artistSupportNote.fanTiers')}
+    >
+      <Eyebrow>{t('artistSupportNote.fanTiers')}</Eyebrow>
       <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
         {tiers.map((tier) => (
           <li key={tier.id} className="flex flex-col gap-1 p-3 text-sm">

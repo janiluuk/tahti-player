@@ -28,13 +28,12 @@ export function DeletePresetDialog({
     >
       <Dialog.Title>Delete &ldquo;{target?.name}&rdquo;?</Dialog.Title>
       <Dialog.Description>
-        This preset will be gone for good. Your current, live look is not
-        affected.
+        {t('deletePresetDialog.thisPresetWillBeGone')}
       </Dialog.Description>
       <Dialog.Actions>
         <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
         <Button disabled={presetBusy} variant="secondary" onClick={onConfirm}>
-          Delete preset
+          {t('deletePresetDialog.deletePreset')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

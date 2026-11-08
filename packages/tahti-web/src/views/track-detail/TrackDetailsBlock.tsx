@@ -40,7 +40,7 @@ export function TrackDetailsBlock({
   return (
     <div className={className} data-testid="track-details">
       <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
-        Details
+        {t('trackDetailsBlock.details')}
       </h2>
       <dl className="grid grid-cols-[auto_minmax(0,1fr)] items-baseline gap-x-6 gap-y-2 text-sm">
         {genres.length > 0 ? (
@@ -126,7 +126,7 @@ export function TrackDetailsBlock({
       {commentary ? (
         <div className="mt-6">
           <h3 className="text-foreground-secondary mb-2 text-xs tracking-wide uppercase">
-            Artist commentary
+            {t('trackDetailsBlock.artistCommentary')}
           </h3>
           <p className="text-sm leading-relaxed whitespace-pre-wrap">
             {commentary}

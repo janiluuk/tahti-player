@@ -1,5 +1,6 @@
 import { LockIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink } from '@tahti-player/ui';
 
 import type { TrackAccessGate as Gate } from '../../api/types';
@@ -30,6 +31,7 @@ export function TrackAccessGate({
   onBuy?: () => void;
   onSignIn: () => void;
 }) {
+  const { t } = useTranslation('web');
   const purchase = gate.reason === 'PURCHASE';
   const price = purchase ? priceLabel(priceCents, priceOptional) : null;
   const canBuy = purchase && Boolean(gate.tierId) && Boolean(onBuy);
@@ -64,7 +66,7 @@ export function TrackAccessGate({
       <div className="flex flex-wrap gap-2">
         {signedIn ? null : (
           <Button size="sm" variant="default" onClick={onSignIn}>
-            Sign in to listen
+            {t('trackAccessGate.signInToListen')}
           </Button>
         )}
         {signedIn && canBuy ? (

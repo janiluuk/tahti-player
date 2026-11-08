@@ -93,14 +93,17 @@ export function RecentActivitySection() {
       ) : null}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {sounds.length > 0 ? (
-          <section aria-label="Recent uploads" className={cardClass}>
+          <section
+            aria-label={t('recentActivitySection.recentUploads')}
+            className={cardClass}
+          >
             <span className={labelClass}>
               <MusicIcon
                 size={15}
                 aria-hidden
                 className="text-primary-strong"
               />
-              Recent uploads
+              {t('recentActivitySection.recentUploads')}
             </span>
             <ul className="flex flex-col gap-1.5 text-sm">
               {sounds.map((sound) => (
@@ -139,7 +142,7 @@ export function RecentActivitySection() {
                 aria-hidden
                 className="text-primary-strong"
               />
-              Fan subscriptions
+              {t('recentActivitySection.fanSubscriptions')}
             </span>
             <span className="font-display text-2xl font-extrabold tabular-nums">
               {money.format(incomeCents / 100)}

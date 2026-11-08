@@ -66,7 +66,7 @@ export function ListenerLocations({
       data-testid="stats-locations"
     >
       <ShareList
-        title="Countries"
+        title={t('listenerLocations.countries')}
         items={locations.countries.map((location) => ({
           id: location.name,
           label: countryLabel(location),
@@ -78,7 +78,7 @@ export function ListenerLocations({
         emptyLabel="Countries show as people listen."
       />
       <ShareList
-        title="Cities"
+        title={t('listenerLocations.cities')}
         items={locations.cities.map((location) => ({
           id: `${location.countryCode ?? ''}-${location.name}`,
           label: location.name,

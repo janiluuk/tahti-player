@@ -15,8 +15,8 @@ export function EpisodesTab({ state }: { state: ShowDetailState }) {
 
   return (
     <StudioPanel
-      title="All episodes"
-      description="Edit every episode and review its publishing and listening metadata."
+      title={t('episodesTab.allEpisodes')}
+      description={t('episodesTab.editEveryEpisodeAndReview')}
     >
       {episodesLoadError ? (
         <PageError

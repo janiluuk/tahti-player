@@ -29,11 +29,14 @@ export function StudioShowDetailView({ id }: { id: string }) {
         data-testid="studio-page-layout"
       >
         <Tooltip
-          content="Back to Shows"
+          content={t('studioShowDetailView.backToShows')}
           side="right"
           wrapperClassName={backButtonCornerClassName}
         >
-          <BackButtonLink to="/studio/shows" aria-label="Back to Shows" />
+          <BackButtonLink
+            to="/studio/shows"
+            aria-label={t('studioShowDetailView.backToShows')}
+          />
         </Tooltip>
 
         {!show ? (

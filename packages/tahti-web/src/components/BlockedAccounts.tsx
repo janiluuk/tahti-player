@@ -58,7 +58,7 @@ export function BlockedAccounts() {
       className="flex flex-col gap-2"
     >
       <h2 id="blocked-accounts-title" className="font-semibold">
-        Blocked accounts
+        {t('blockedAccounts.blockedAccounts')}
       </h2>
       <p className="text-foreground-secondary text-sm">
         You and the people you block can&apos;t message each other, comment on,
@@ -106,7 +106,7 @@ export function BlockedAccounts() {
                 aria-label={`Unblock ${user.displayName}`}
                 onClick={() => unblock(user)}
               >
-                Unblock
+                {t('blockedAccounts.unblock')}
               </Button>
             </li>
           ))}

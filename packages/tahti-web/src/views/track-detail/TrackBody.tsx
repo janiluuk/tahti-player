@@ -106,7 +106,7 @@ export function TrackBody({ page }: { page: TrackPage }) {
 
           <div>
             <h2 className="mb-4 text-sm font-semibold tracking-wide uppercase">
-              Comments
+              {t('trackBody.comments')}
             </h2>
             {comments.length === 0 ? (
               <PageEmpty
@@ -163,7 +163,7 @@ export function TrackBody({ page }: { page: TrackPage }) {
           {relatedCollections.length > 0 ? (
             <div>
               <h2 className="mb-3 text-sm font-semibold tracking-wide uppercase">
-                Collections
+                {t('trackBody.collections')}
               </h2>
               <ul className="flex flex-col gap-3">
                 {relatedCollections.map((collection) => (

@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { CheckIcon, RadioIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { EditIconButton, Loader } from '@tahti-player/ui';
 
 import type { RecentBroadcast } from '../../../api/broadcast';
@@ -21,6 +22,7 @@ export function RecordingRow({
   index: number;
   onEdit: (soundId: string) => void;
 }) {
+  const { t } = useTranslation('web');
   const title =
     show.title || show.soundTitle || `Show ${relativeDate(show.startedAt)}`;
   const published = isPublished(show);
@@ -71,8 +73,7 @@ export function RecordingRow({
         </span>
         {processing ? (
           <p className="text-foreground-secondary mt-0.5 text-xs">
-            Still being saved to your library. It shows up in Sounds, ready to
-            edit and publish, when it's done.
+            {t('recordingRow.stillBeingSavedToYour')}
           </p>
         ) : null}
       </div>

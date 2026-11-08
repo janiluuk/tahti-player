@@ -63,11 +63,14 @@ export function ArtistLikes({ username }: { username: string }) {
   }
 
   return (
-    <section className="flex flex-col gap-3" aria-label="Liked tracks">
+    <section
+      className="flex flex-col gap-3"
+      aria-label={t('artistLikes.likedTracks')}
+    >
       <Eyebrow>
         <span className="inline-flex items-center gap-1.5">
           <HeartIcon size={13} aria-hidden />
-          Liked tracks
+          {t('artistLikes.likedTracks')}
         </span>
       </Eyebrow>
       <PlayableAmbientTrackList
@@ -75,7 +78,7 @@ export function ArtistLikes({ username }: { username: string }) {
         playAll={false}
         compactActions
         getTrackMeta={likedTrackMeta}
-        emptyMessage="No liked tracks."
+        emptyMessage={t('artistLikes.noLikedTracks')}
       />
     </section>
   );

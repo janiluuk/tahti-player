@@ -41,7 +41,7 @@ export function SavedLooksRow({
   return (
     <div className="border-border bg-background-secondary/30 flex flex-wrap items-center gap-2 rounded-lg border p-3">
       <span className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-        Saved looks
+        {t('savedLooksRow.savedLooks')}
       </span>
       {presets.map((preset) => (
         <div
@@ -58,7 +58,7 @@ export function SavedLooksRow({
           >
             {preset.name}
           </Button>
-          <Tooltip content="Delete preset">
+          <Tooltip content={t('savedLooksRow.deletePreset')}>
             <Button
               variant="plain"
               size="flexible"

@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { postChatReaction } from '../api/studio-extras';
@@ -35,6 +36,7 @@ export function ChatReactionBar({
   slug: string;
   onError: (message: string) => void;
 }) {
+  const { t } = useTranslation('web');
   const [sent, setSent] = useState<(typeof REACTION_EMOJIS)[number] | null>(
     null,
   );
@@ -54,7 +56,7 @@ export function ChatReactionBar({
 
   return (
     <div className="border-border flex flex-wrap items-center gap-1 border-b px-3 py-2">
-      <Eyebrow className="mr-1">React</Eyebrow>
+      <Eyebrow className="mr-1">{t('chatReactionBar.react')}</Eyebrow>
       {REACTION_EMOJIS.map((emoji) => (
         <Button
           key={emoji}
@@ -88,7 +90,7 @@ export function ChatReactionBar({
         <span
           className="ml-auto flex gap-0.5 text-sm"
           role="group"
-          aria-label="Listeners' reactions"
+          aria-label={t('chatReactionBar.listenersReactions')}
           data-testid="incoming-reactions"
         >
           {incoming.map((item) => (
