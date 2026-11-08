@@ -1,5 +1,5 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import { AudioLinesIcon, Trash2Icon } from 'lucide-react';
+import { AudioLinesIcon, FolderOpenIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -199,6 +199,16 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                     className="mt-4"
                     title={t('empties.noArchiveSeed')}
                     description={t('empties.createAProjectFromAnArchive')}
+                    action={
+                      <ButtonLink
+                        to="/studio/editor"
+                        size="sm"
+                        variant="secondary"
+                      >
+                        <FolderOpenIcon size={16} aria-hidden />
+                        {t('emptyActions.openLibrary')}
+                      </ButtonLink>
+                    }
                   />
                 )}
               </StudioPanel>

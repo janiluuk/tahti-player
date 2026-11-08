@@ -6,6 +6,7 @@ import {
   LayersIcon,
   LayoutDashboardIcon,
   Link2Icon,
+  ListPlusIcon,
   MusicIcon,
   PartyPopperIcon,
   PlayIcon,
@@ -560,6 +561,16 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                               description={t(
                                 'studioReleaseDetail.noTracksDescription',
                               )}
+                              action={
+                                <Button
+                                  size="sm"
+                                  variant="secondary"
+                                  onClick={() => setTab('links')}
+                                >
+                                  <ListPlusIcon size={16} aria-hidden />
+                                  {t('emptyActions.addTracks')}
+                                </Button>
+                              }
                             />
                           )}
                         </StudioPanel>

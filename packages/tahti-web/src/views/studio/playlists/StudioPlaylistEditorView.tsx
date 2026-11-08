@@ -1,4 +1,4 @@
-import { MusicIcon, PlayIcon, PlusIcon } from 'lucide-react';
+import { ListPlusIcon, MusicIcon, PlayIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -489,6 +489,18 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       editing
                         ? 'Add sound tracks or whole releases below.'
                         : 'Click Edit details to add tracks.'
+                    }
+                    action={
+                      editing ? undefined : (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setEditing(true)}
+                        >
+                          <ListPlusIcon size={16} aria-hidden />
+                          {t('emptyActions.addTracks')}
+                        </Button>
+                      )
                     }
                   />
                 ) : (

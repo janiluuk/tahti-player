@@ -3906,7 +3906,12 @@
       "addFeed": "Add feed",
       "newSupportRequest": "New request",
       "writeBio": "Write a bio",
-      "uploadTrack": "Upload track"
+      "uploadTrack": "Upload track",
+      "newEpisode": "New episode",
+      "addTracks": "Add tracks",
+      "newCollection": "New collection",
+      "openLibrary": "Open library",
+      "addFirstModerator": "Add your first moderator"
     }
   },
   "studioEditor": {
