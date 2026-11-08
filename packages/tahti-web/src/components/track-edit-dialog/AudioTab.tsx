@@ -7,6 +7,7 @@ import {
   Wand2Icon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../api/studio-types';
@@ -33,6 +34,7 @@ export function AudioTab({
   item: StudioSound;
   state: TrackEditDialogState;
 }) {
+  const { t } = useTranslation('web');
   const {
     masteringEnabled,
     form,
@@ -53,7 +55,7 @@ export function AudioTab({
   return (
     <div className="flex flex-col gap-4">
       <div className="border-border bg-background-secondary/40 rounded-xl border p-4">
-        <p className="font-medium">Properties</p>
+        <p className="font-medium">{t('trackEditAudio.properties')}</p>
         <p className="text-foreground-secondary mt-1 text-sm">
           {item.embedUri
             ? 'This track is embedded from its original source.'
@@ -67,14 +69,16 @@ export function AudioTab({
         {!item.embedUri && item.status === 'READY' && (
           <div className="border-border mt-3 grid grid-cols-2 gap-x-4 gap-y-2 border-t pt-3 text-xs sm:grid-cols-3">
             <div>
-              <span className="text-foreground-secondary block">Format</span>
+              <span className="text-foreground-secondary block">
+                {t('trackEditAudio.format')}
+              </span>
               <span className="font-medium">
                 {item.sourceFormat?.toUpperCase() ?? '—'}
               </span>
             </div>
             <div>
               <span className="text-foreground-secondary block">
-                Sample rate
+                {t('trackEditAudio.sampleRate')}
               </span>
               <span className="font-medium">
                 {item.sourceSampleRateHz
@@ -83,13 +87,17 @@ export function AudioTab({
               </span>
             </div>
             <div>
-              <span className="text-foreground-secondary block">Bit depth</span>
+              <span className="text-foreground-secondary block">
+                {t('trackEditAudio.bitDepth')}
+              </span>
               <span className="font-medium">
                 {item.sourceBitDepth ? `${item.sourceBitDepth}-bit` : '—'}
               </span>
             </div>
             <div>
-              <span className="text-foreground-secondary block">Channels</span>
+              <span className="text-foreground-secondary block">
+                {t('trackEditAudio.channels')}
+              </span>
               <span className="font-medium">
                 {item.sourceChannels === 1
                   ? 'Mono'
@@ -101,7 +109,9 @@ export function AudioTab({
               </span>
             </div>
             <div>
-              <span className="text-foreground-secondary block">Bitrate</span>
+              <span className="text-foreground-secondary block">
+                {t('trackEditAudio.bitrate')}
+              </span>
               <span className="font-medium">
                 {item.sourceBitrateKbps
                   ? `${item.sourceBitrateKbps} kbps`
@@ -146,7 +156,7 @@ export function AudioTab({
                 variant="secondary"
                 disabled={quickBusy !== null}
                 onClick={onNormalize}
-                aria-label="Normalize audio"
+                aria-label={t('trackEditAudio.normalizeAudio')}
               >
                 <GaugeIcon size={16} aria-hidden />
               </Button>
@@ -162,31 +172,37 @@ export function AudioTab({
                 variant="secondary"
                 disabled={quickBusy !== null}
                 onClick={onAutoTrim}
-                aria-label="Trim silence"
+                aria-label={t('trackEditAudio.trimSilence')}
               >
                 <ScissorsIcon size={16} aria-hidden />
               </Button>
             </Tooltip>
             <span className="bg-border mx-1 h-6 w-px" aria-hidden />
-            <Tooltip content="Open full audio editor" side="top">
+            <Tooltip
+              content={t('trackEditAudio.openFullAudioEditor')}
+              side="top"
+            >
               <ButtonLink
                 to="/studio/sounds/$id/editor"
                 params={{ id: item.id }}
                 size="icon-sm"
                 variant="text"
-                aria-label="Open full audio editor"
+                aria-label={t('trackEditAudio.openFullAudioEditor')}
               >
                 <AudioLinesIcon size={16} aria-hidden />
               </ButtonLink>
             </Tooltip>
             {masteringEnabled && (
-              <Tooltip content="Match to a reference track" side="top">
+              <Tooltip
+                content={t('trackEditAudio.matchToAReferenceTrack')}
+                side="top"
+              >
                 <ButtonLink
                   to="/studio/mastering/$id"
                   params={{ id: item.id }}
                   size="icon-sm"
                   variant="text"
-                  aria-label="Match to a reference track"
+                  aria-label={t('trackEditAudio.matchToAReferenceTrack')}
                 >
                   <Wand2Icon size={16} aria-hidden />
                 </ButtonLink>

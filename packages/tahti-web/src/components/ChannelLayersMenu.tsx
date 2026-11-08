@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -67,6 +68,7 @@ export function ChannelLayersMenu({
   onApplyPreset,
   lookSlot,
 }: Props) {
+  const { t } = useTranslation('web');
   const [dragId, setDragId] = useState<string | null>(null);
   const [panel, setPanel] = useState<'presets' | 'layers' | 'add' | 'look'>(
     'layers',
@@ -161,7 +163,7 @@ export function ChannelLayersMenu({
         {panel === 'presets' && (
           <div className="flex flex-col gap-2">
             <p className="text-foreground-secondary text-xs">
-              One-click layouts. Drag, hide, and add after applying.
+              {t('channelLayersMenu.oneClickLayoutsDragHide')}
             </p>
             {CHANNEL_LAYOUT_PRESETS.map((preset) => {
               const active = activePresetId === preset.id;
@@ -195,7 +197,7 @@ export function ChannelLayersMenu({
                   </p>
                   {active && (
                     <p className="text-primary-strong mt-1.5 text-[10px] font-medium tracking-wide uppercase">
-                      Applied
+                      {t('channelLayersMenu.applied')}
                     </p>
                   )}
                 </Button>
@@ -224,9 +226,11 @@ export function ChannelLayersMenu({
                   setPanel('look');
                 }}
               >
-                <div className="truncate text-xs font-medium">Background</div>
+                <div className="truncate text-xs font-medium">
+                  {t('channelLayersMenu.background')}
+                </div>
                 <div className="text-foreground-secondary truncate text-[10px]">
-                  Banner, page color, header style
+                  {t('channelLayersMenu.bannerPageColorHeaderStyle')}
                 </div>
               </Button>
             </li>
@@ -255,7 +259,10 @@ export function ChannelLayersMenu({
                     item.visible ? '' : 'opacity-60'
                   }`}
                 >
-                  <Tooltip content="Drag to reorder" side="top">
+                  <Tooltip
+                    content={t('channelLayersMenu.dragToReorder')}
+                    side="top"
+                  >
                     <Button
                       type="button"
                       size="icon-sm"
@@ -329,7 +336,10 @@ export function ChannelLayersMenu({
                       </Button>
                     ))}
                   </div>
-                  <Tooltip content="Remove from page" side="top">
+                  <Tooltip
+                    content={t('channelLayersMenu.removeFromPage')}
+                    side="top"
+                  >
                     <Button
                       type="button"
                       size="icon-sm"
@@ -350,10 +360,10 @@ export function ChannelLayersMenu({
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-2">
               <p className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-                Playlist
+                {t('channelLayersMenu.playlist')}
               </p>
               <p className="text-foreground-secondary text-xs">
-                Add a playlist from your library. You can add more than one.
+                {t('channelLayersMenu.addAPlaylistFromYour')}
               </p>
               {onAddPlaylist ? (
                 <ChannelPlaylistPicker
@@ -367,12 +377,11 @@ export function ChannelLayersMenu({
             </div>
             <div className="border-border border-t pt-3">
               <p className="text-foreground-secondary mb-2 text-xs">
-                Add an embed to the channel page. Turn sections on and off in
-                Settings on the channel header.
+                {t('channelLayersMenu.addAnEmbedToThe')}
               </p>
               {embedItems.length === 0 ? (
                 <p className="text-foreground-secondary text-xs">
-                  No embeds to add.
+                  {t('channelLayersMenu.noEmbedsToAdd')}
                 </p>
               ) : (
                 <ul className="flex flex-col gap-1">
@@ -417,7 +426,7 @@ export function ChannelLayersMenu({
               <div className="flex h-full min-h-0 flex-col">
                 {lookSlot ?? (
                   <p className="text-foreground-secondary text-xs">
-                    Look controls unavailable.
+                    {t('channelLayersMenu.lookControlsUnavailable')}
                   </p>
                 )}
               </div>

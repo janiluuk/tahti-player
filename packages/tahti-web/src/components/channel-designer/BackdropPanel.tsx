@@ -1,6 +1,7 @@
 import { Trash2Icon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import type { ColorScheme } from '../../api/channel-design';
@@ -60,6 +61,7 @@ export function BackdropPanel({
   videoSlot,
   slideshowSlot,
 }: Props) {
+  const { t } = useTranslation('web');
   const brandRow = (
     <BrandAccentSwatches
       selectedId={brandAccentPreset}
@@ -87,13 +89,13 @@ export function BackdropPanel({
           />
         ) : null}
         <div className="flex items-center justify-between gap-3">
-          <Eyebrow>Header style</Eyebrow>
+          <Eyebrow>{t('backdropPanel.headerStyle')}</Eyebrow>
           {hasBackdrop && onRemoveBackdrop ? (
-            <Tooltip content="Remove backdrop" side="top">
+            <Tooltip content={t('backdropPanel.removeBackdrop')} side="top">
               <Button
                 size="icon-sm"
                 variant="text"
-                aria-label="Remove backdrop"
+                aria-label={t('backdropPanel.removeBackdrop')}
                 onClick={onRemoveBackdrop}
               >
                 <Trash2Icon className="text-accent-red" size={15} aria-hidden />
@@ -116,9 +118,9 @@ export function BackdropPanel({
 
         {headerMode === 'GRADIENT' ? (
           <div className="flex flex-col gap-2">
-            <Eyebrow>Gradient colors</Eyebrow>
+            <Eyebrow>{t('backdropPanel.gradientColors')}</Eyebrow>
             <p className="text-foreground-secondary text-xs">
-              Presets and colors for the gradient header.
+              {t('backdropPanel.presetsAndColorsForThe')}
             </p>
             <section className="flex flex-col gap-3">
               {brandRow}
@@ -133,9 +135,9 @@ export function BackdropPanel({
 
         {headerMode === 'SOLID' ? (
           <div className="flex flex-col gap-2">
-            <Eyebrow>Solid colors</Eyebrow>
+            <Eyebrow>{t('backdropPanel.solidColors')}</Eyebrow>
             <p className="text-foreground-secondary text-xs">
-              Solid header uses the page background above. Tune accents here.
+              {t('backdropPanel.solidHeaderUsesThePage')}
             </p>
             {brandRow}
             {accents}
@@ -146,7 +148,7 @@ export function BackdropPanel({
           <div className="flex flex-col gap-3">
             {videoSlot}
             <div className="flex flex-col gap-2">
-              <Eyebrow>Accents</Eyebrow>
+              <Eyebrow>{t('backdropPanel.accents')}</Eyebrow>
               {brandRow}
               {accents}
             </div>
@@ -155,10 +157,10 @@ export function BackdropPanel({
 
         {headerMode === 'SLIDESHOW' ? (
           <div className="flex flex-col gap-3">
-            <Eyebrow>Slideshow</Eyebrow>
+            <Eyebrow>{t('backdropPanel.slideshow')}</Eyebrow>
             {slideshowSlot}
             <div className="flex flex-col gap-2">
-              <Eyebrow>Accents</Eyebrow>
+              <Eyebrow>{t('backdropPanel.accents')}</Eyebrow>
               {brandRow}
               {accents}
             </div>

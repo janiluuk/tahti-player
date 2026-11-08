@@ -1,6 +1,7 @@
 import { ListPlusIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Loader, Tooltip } from '@tahti-player/ui';
 
 import { roundBpm } from '../lib/bpm';
@@ -40,6 +41,7 @@ export function MixableTracksSection({
   onPlay,
   onQueue,
 }: Props) {
+  const { t } = useTranslation('web');
   const notation = useDjPrefsStore((state) => state.keyNotation);
   const tolerancePercent = useDjPrefsStore((state) => state.bpmTolerance);
   const halfDouble = useDjPrefsStore((state) => state.halfDouble);
@@ -64,7 +66,9 @@ export function MixableTracksSection({
 
   return (
     <section data-testid="mixable-tracks">
-      <h3 className="mb-1 text-sm font-semibold">Mixes well with</h3>
+      <h3 className="mb-1 text-sm font-semibold">
+        {t('mixableTracks.mixesWellWith')}
+      </h3>
       <p className="text-foreground-secondary mb-2 text-xs">
         Tracks in a neighbouring key on the Camelot wheel, within ±
         {tolerancePercent}% of{' '}
@@ -73,18 +77,14 @@ export function MixableTracksSection({
         under DJ settings above the track list.
       </p>
       {!searchable ? (
-        <p className="text-sm">
-          Analyze this track or set its BPM and key first. Matches need at least
-          one of them.
-        </p>
+        <p className="text-sm">{t('mixableTracks.analyzeThisTrackOrSet')}</p>
       ) : failed ? (
-        <p className="text-sm">Could not look for mixable tracks.</p>
+        <p className="text-sm">{t('mixableTracks.couldNotLookForMixable')}</p>
       ) : matches === null ? (
         <Loader size="inline" shape="circle" />
       ) : matches.length === 0 ? (
         <p className="text-sm">
-          Nothing in your library matches yet. Widen the tempo range or analyze
-          more tracks.
+          {t('mixableTracks.nothingInYourLibraryMatches')}
         </p>
       ) : (
         <ul className="flex flex-col gap-1">
@@ -111,7 +111,7 @@ export function MixableTracksSection({
                   .filter(Boolean)
                   .join(' · ')}
               </span>
-              <Tooltip content="Play" side="top">
+              <Tooltip content={t('mixableTracks.play')} side="top">
                 <Button
                   size="icon-sm"
                   variant="text"
@@ -121,17 +121,20 @@ export function MixableTracksSection({
                   <PlayIcon size={14} aria-hidden />
                 </Button>
               </Tooltip>
-              <Tooltip content="Add to queue" side="top">
+              <Tooltip content={t('mixableTracks.addToQueue')} side="top">
                 <Button
                   size="sm"
                   variant="text"
                   aria-label={`Queue ${match.track.title}`}
                   onClick={() => onQueue(match.track)}
                 >
-                  Queue
+                  {t('mixableTracks.queue')}
                 </Button>
               </Tooltip>
-              <Tooltip content="Add to the Prepare playlist" side="top">
+              <Tooltip
+                content={t('mixableTracks.addToThePreparePlaylist')}
+                side="top"
+              >
                 <Button
                   size="icon-sm"
                   variant="text"

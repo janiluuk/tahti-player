@@ -2,7 +2,7 @@ import { SendIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Dialog, Input, SaveButton, Textarea, Toggle } from '@tahti-player/ui';
 
 import { createNewsletterDraft } from '../../../api/studio-extras';
@@ -15,6 +15,7 @@ export function NewDraftDialog({
   onClose: () => void;
   onSaved: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
   const [fansOnly, setFansOnly] = useState(false);
@@ -56,19 +57,19 @@ export function NewDraftDialog({
         <Dialog.Title>
           <span className="inline-flex items-center gap-2">
             <SendIcon size={18} aria-hidden />
-            New draft
+            {t('newDraft.newDraft')}
           </span>
         </Dialog.Title>
         <div className="mt-4 flex flex-col gap-3">
           <Input
-            label="Subject"
+            label={t('newDraft.subject')}
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             autoFocus
           />
           <Textarea
             submitOnModEnter
-            label="Body (markdown)"
+            label={t('newDraft.bodyMarkdown')}
             tone="secondary"
             value={body}
             onChange={(e) => setBody(e.target.value)}
@@ -76,21 +77,21 @@ export function NewDraftDialog({
             required
           />
           <div className="flex items-center justify-between gap-3 text-sm">
-            <span>Fans / subscribers only</span>
+            <span>{t('newDraft.fansSubscribersOnly')}</span>
             <Toggle
-              label="Fans / subscribers only"
+              label={t('newDraft.fansSubscribersOnly')}
               checked={fansOnly}
               onChange={setFansOnly}
             />
           </div>
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('newDraft.cancel')}</Dialog.Close>
           <SaveButton
             type="submit"
             disabled={!subject.trim() || !body.trim()}
             saving={busy}
-            label="Save draft"
+            label={t('newDraft.saveDraft')}
           />
         </Dialog.Actions>
       </form>

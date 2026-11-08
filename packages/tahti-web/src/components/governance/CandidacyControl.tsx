@@ -1,5 +1,6 @@
 import { useId, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Textarea } from '@tahti-player/ui';
 
 import {
@@ -20,6 +21,7 @@ export function CandidacyControl({
   election: GovernanceElection;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const statementId = useId();
   const [writing, setWriting] = useState(false);
   const [statement, setStatement] = useState('');
@@ -57,7 +59,7 @@ export function CandidacyControl({
           disabled={busy}
           onClick={() => setConfirmWithdraw(true)}
         >
-          Withdraw my candidacy
+          {t('candidacy.withdrawMyCandidacy')}
         </Button>
       ) : writing ? (
         <form
@@ -70,7 +72,7 @@ export function CandidacyControl({
           <Textarea
             submitOnModEnter
             id={statementId}
-            label="Why you are standing (optional)"
+            label={t('candidacy.whyYouAreStandingOptional')}
             value={statement}
             maxLength={STATEMENT_MAX}
             rows={3}
@@ -87,22 +89,22 @@ export function CandidacyControl({
               disabled={busy}
               onClick={() => setWriting(false)}
             >
-              Cancel
+              {t('candidacy.cancel')}
             </Button>
           </div>
         </form>
       ) : (
         <Button size="sm" className="w-fit" onClick={() => setWriting(true)}>
-          Stand for election
+          {t('candidacy.standForElection')}
         </Button>
       )}
       {error && <InlineError textSize="xs">{error}</InlineError>}
       <ConfirmDialog
         destructive
         isOpen={confirmWithdraw}
-        title="Withdraw your candidacy?"
+        title={t('candidacy.withdrawYourCandidacy')}
         description={`You will no longer stand in "${election.title}". You can stand again while nominations are open.`}
-        confirmLabel="Withdraw"
+        confirmLabel={t('candidacy.withdraw')}
         onCancel={() => setConfirmWithdraw(false)}
         onConfirm={() => {
           setConfirmWithdraw(false);

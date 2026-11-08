@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   EditIconButton,
@@ -37,6 +38,7 @@ export function MotionProposerActions({
   description?: string;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const navigate = useNavigate();
   const [confirming, setConfirming] = useState(false);
@@ -97,7 +99,7 @@ export function MotionProposerActions({
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          aria-label="Draft title"
+          aria-label={t('motionProposer.draftTitle')}
           maxLength={200}
         />
         <Textarea
@@ -107,13 +109,12 @@ export function MotionProposerActions({
           onChange={(e) => setText(e.target.value)}
           rows={5}
           maxLength={10000}
-          aria-label="Draft text"
+          aria-label={t('motionProposer.draftText')}
           className="text-sm"
         />
         {(motion.secondCount ?? 0) > 0 && (
           <p className="text-foreground-secondary text-xs">
-            Changing the text clears the seconds it has, since they backed the
-            old wording.
+            {t('motionProposer.changingTheTextClearsThe')}
           </p>
         )}
         <div className="flex flex-wrap gap-2">
@@ -122,7 +123,7 @@ export function MotionProposerActions({
             disabled={busy || !title.trim() || !text.trim()}
             type="submit"
           >
-            Save draft
+            {t('motionProposer.saveDraft')}
           </Button>
           <Button
             size="sm"
@@ -130,7 +131,7 @@ export function MotionProposerActions({
             disabled={busy}
             onClick={() => setEditing(false)}
           >
-            Cancel
+            {t('motionProposer.cancel')}
           </Button>
         </div>
         {error && <InlineError textSize="xs">{error}</InlineError>}
@@ -142,11 +143,11 @@ export function MotionProposerActions({
     <div className="mt-3 flex flex-col gap-1">
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-foreground-secondary text-xs">
-          You proposed this draft.
+          {t('motionProposer.youProposedThisDraft')}
         </span>
         {description !== undefined && (
           <EditIconButton
-            label="Edit draft"
+            label={t('motionProposer.editDraft')}
             disabled={busy}
             onClick={() => {
               setTitle(motion.title);
@@ -162,7 +163,7 @@ export function MotionProposerActions({
           disabled={busy}
           onClick={() => setConfirming(true)}
         >
-          Withdraw draft
+          {t('motionProposer.withdrawDraft')}
         </Button>
       </div>
       {notice && (
@@ -174,9 +175,9 @@ export function MotionProposerActions({
       <ConfirmDialog
         destructive
         isOpen={confirming}
-        title="Withdraw this motion?"
-        description="The draft, its discussion and its seconds are deleted. This cannot be undone."
-        confirmLabel="Withdraw"
+        title={t('motionProposer.withdrawThisMotion')}
+        description={t('motionProposer.theDraftItsDiscussionAnd')}
+        confirmLabel={t('motionProposer.withdraw')}
         onCancel={() => setConfirming(false)}
         onConfirm={withdraw}
       />

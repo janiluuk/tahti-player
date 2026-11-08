@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { CircleDotIcon, FolderOpenIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Toggle } from '@tahti-player/ui';
 
 import { StudioPanel } from '../../../components/StudioPanel';
@@ -8,12 +9,13 @@ import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import type { GoLiveState } from './useGoLiveState';
 
 export function RecordingPanel({ state }: { state: GoLiveState }) {
+  const { t } = useTranslation('web');
   const { recordEnabled, recordBusy, toggleRecording } = state;
 
   return (
     <StudioPanel
-      title="Recording"
-      description="For this broadcast only. Default on/off for future shows is in Settings → Broadcast → Radio."
+      title={t('goLiveRecording.recording')}
+      description={t('goLiveRecording.forThisBroadcastOnlyDefault')}
       action={
         <Button
           variant="plain"
@@ -22,7 +24,7 @@ export function RecordingPanel({ state }: { state: GoLiveState }) {
           className="text-foreground-secondary inline-block rounded-none text-xs whitespace-normal underline-offset-2 hover:underline active:scale-100"
           onClick={() => useSettingsModalStore.getState().open('broadcast')}
         >
-          Prefs
+          {t('goLiveRecording.prefs')}
         </Button>
       }
     >
@@ -37,7 +39,9 @@ export function RecordingPanel({ state }: { state: GoLiveState }) {
           }
         />
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-semibold">Record broadcast</span>
+          <span className="block text-sm font-semibold">
+            {t('goLiveRecording.recordBroadcast')}
+          </span>
           <span className="text-foreground-secondary block text-xs">
             {recordEnabled
               ? 'On · saved when the broadcast ends'
@@ -45,7 +49,7 @@ export function RecordingPanel({ state }: { state: GoLiveState }) {
           </span>
         </span>
         <Toggle
-          label="Record broadcast"
+          label={t('goLiveRecording.recordBroadcast')}
           checked={recordEnabled}
           disabled={recordBusy}
           onChange={() => void toggleRecording()}
@@ -53,11 +57,11 @@ export function RecordingPanel({ state }: { state: GoLiveState }) {
       </div>
       <Link
         to="/library/recordings"
-        aria-label="Open recordings"
+        aria-label={t('goLiveRecording.openRecordings')}
         className="text-foreground-secondary mt-3 inline-flex items-center gap-1.5 text-xs underline-offset-2 hover:underline"
       >
         <FolderOpenIcon size={14} aria-hidden />
-        Edit and release saved recordings
+        {t('goLiveRecording.editAndReleaseSavedRecordings')}
       </Link>
     </StudioPanel>
   );

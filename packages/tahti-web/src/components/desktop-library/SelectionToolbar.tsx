@@ -9,6 +9,7 @@ import {
   TrashIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Loader } from '@tahti-player/ui';
 
 type Props = {
@@ -50,6 +51,7 @@ export function SelectionToolbar({
   onAddToPlaylist,
   onRemove,
 }: Props) {
+  const { t } = useTranslation('web');
   return selectedCount === 0 ? (
     <>
       <Button
@@ -74,7 +76,7 @@ export function SelectionToolbar({
         onClick={onAddAllToPlaylist}
       >
         <ListPlusIcon size={14} aria-hidden />
-        Add all to playlist
+        {t('desktopSelection.addAllToPlaylist')}
       </Button>
     </>
   ) : (
@@ -99,7 +101,7 @@ export function SelectionToolbar({
         disabled={selectionBusy}
         onClick={() => onPlayNext()}
       >
-        Play next
+        {t('desktopSelection.playNext')}
       </Button>
       <Button
         size="sm"
@@ -107,7 +109,7 @@ export function SelectionToolbar({
         disabled={selectionBusy}
         onClick={() => onQueue()}
       >
-        Add to queue
+        {t('desktopSelection.addToQueue')}
       </Button>
       <Button
         className="gap-1.5"
@@ -117,7 +119,7 @@ export function SelectionToolbar({
         onClick={() => onEditTags()}
       >
         <PencilIcon size={14} aria-hidden />
-        Edit tags
+        {t('desktopSelection.editTags')}
       </Button>
       <Button
         className="gap-1.5"
@@ -127,7 +129,7 @@ export function SelectionToolbar({
         onClick={() => onWriteTags()}
       >
         <SaveIcon size={14} aria-hidden />
-        Write tags to files
+        {t('desktopSelection.writeTagsToFiles')}
       </Button>
       <Button
         className="gap-1.5"
@@ -137,7 +139,7 @@ export function SelectionToolbar({
         onClick={() => onOrganizeFiles()}
       >
         <FolderTreeIcon size={14} aria-hidden />
-        Organize files
+        {t('desktopSelection.organizeFiles')}
       </Button>
       <Button
         className="gap-1.5"
@@ -161,7 +163,7 @@ export function SelectionToolbar({
         onClick={() => onRateAndLabel()}
       >
         <StarIcon size={14} aria-hidden />
-        Rate and label
+        {t('desktopSelection.rateAndLabel')}
       </Button>
       <Button
         className="gap-1.5"
@@ -171,7 +173,7 @@ export function SelectionToolbar({
         onClick={onAddToPlaylist}
       >
         <ListPlusIcon size={14} aria-hidden />
-        Add to playlist
+        {t('desktopSelection.addToPlaylist')}
       </Button>
       <Button
         className="gap-1.5"
@@ -182,7 +184,7 @@ export function SelectionToolbar({
         onClick={() => onRemove()}
       >
         <TrashIcon size={14} aria-hidden />
-        Remove
+        {t('desktopSelection.remove')}
       </Button>
     </>
   );

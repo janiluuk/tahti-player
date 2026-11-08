@@ -1,6 +1,7 @@
 import { ChevronDownIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { applyAdvancedTheme, type AdvancedTheme } from '@tahti-player/themes';
 import {
   Box,
@@ -220,6 +221,7 @@ function ColorTokenRow({
   onChange,
   onClear,
 }: ColorTokenRowProps) {
+  const { t } = useTranslation('web');
   const display = value || placeholder;
   const [hue, saturation, lightness] = expanded
     ? hexToHsl(display)
@@ -303,7 +305,7 @@ function ColorTokenRow({
             }
           />
           <Slider
-            label="Saturation"
+            label={t('themeEditor.saturation')}
             value={Math.round(saturation * 100)}
             min={0}
             max={100}
@@ -315,7 +317,7 @@ function ColorTokenRow({
             }
           />
           <Slider
-            label="Lightness"
+            label={t('themeEditor.lightness')}
             value={Math.round(lightness * 100)}
             min={0}
             max={100}
@@ -336,6 +338,7 @@ function ColorTokenRow({
  * reveal Storybook Slider HSL controls. Light/dark variant follows the
  * Settings → Themes appearance row (`ThemeController`), not a local toggle. */
 export function ThemeEditor() {
+  const { t } = useTranslation('web');
   const dark = useThemeStore((state) => state.dark);
   const importCustomTheme = useThemeStore((state) => state.importCustomTheme);
   const [initialDraft] = useState(themeDraftFromActive);
@@ -464,7 +467,7 @@ export function ThemeEditor() {
         <div className="min-w-0 flex-1">
           <Input
             autoComplete="off"
-            label="Name"
+            label={t('themeEditor.name')}
             value={name}
             error={nameError}
             onChange={(event) => {
@@ -477,11 +480,11 @@ export function ThemeEditor() {
         </div>
         {hasUnsavedChanges ? (
           <Button size="sm" variant="secondary" onClick={discard}>
-            Discard
+            {t('themeEditor.discard')}
           </Button>
         ) : null}
         <Button size="sm" type="submit">
-          Save
+          {t('themeEditor.save')}
         </Button>
       </form>
       <p className="text-foreground-secondary text-xs">
@@ -545,10 +548,9 @@ export function ThemeEditor() {
           importTheme();
         }}
       >
-        <h3 className="text-sm font-bold">Import a theme</h3>
+        <h3 className="text-sm font-bold">{t('themeEditor.importATheme')}</h3>
         <p className="text-foreground-secondary text-xs">
-          Paste a theme JSON (version, name, and light or dark colour overrides)
-          to load it into this editor.
+          {t('themeEditor.pasteAThemeJsonVersion')}
         </p>
         <Textarea
           autoCapitalize="none"
@@ -565,12 +567,12 @@ export function ThemeEditor() {
           placeholder={
             '{\n  "version": 1,\n  "name": "My theme",\n  "vars": { "primary": "oklch(0.7 0.15 250)" }\n}'
           }
-          aria-label="Theme JSON"
+          aria-label={t('themeEditor.themeJson')}
           submitOnModEnter
         />
         <div className="flex items-center gap-2">
           <Button type="submit" size="sm" disabled={!importJson.trim()}>
-            Import & apply
+            {t('themeEditor.importApply')}
           </Button>
           {importMsg ? (
             <span className="text-accent-red-strong text-xs">{importMsg}</span>

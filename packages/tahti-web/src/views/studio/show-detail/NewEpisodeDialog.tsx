@@ -1,5 +1,6 @@
 import { MicIcon, UploadIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, FilePicker, FilterChips } from '@tahti-player/ui';
 
 import type { StudioShowSeries } from '../../../api/shows';
@@ -12,6 +13,7 @@ export function NewEpisodeDialog({
   show: StudioShowSeries;
   state: ShowDetailState;
 }) {
+  const { t } = useTranslation('web');
   const {
     createOpen,
     setCreateOpen,
@@ -34,15 +36,15 @@ export function NewEpisodeDialog({
           void createNewEpisode();
         }}
       >
-        <Dialog.Title>New episode</Dialog.Title>
+        <Dialog.Title>{t('newEpisode.newEpisode')}</Dialog.Title>
         <Dialog.Description>
-          Prefills from the show — you only need audio.
+          {t('newEpisode.prefillsFromTheShowYou')}
         </Dialog.Description>
         <div className="mt-4 flex flex-col gap-3">
           <div className="border-border bg-background-secondary rounded-lg border px-3 py-2 text-sm">
             <p>
               <span className="text-foreground-secondary text-xs uppercase">
-                Episode number
+                {t('newEpisode.episodeNumber')}
               </span>
               <br />
               <strong className="font-display text-2xl">
@@ -63,7 +65,7 @@ export function NewEpisodeDialog({
               </p>
             ) : (
               <p className="text-foreground-secondary mt-1 text-xs">
-                Schedule: book a slot after create if needed
+                {t('newEpisode.scheduleBookASlotAfter')}
               </p>
             )}
           </div>
@@ -83,7 +85,7 @@ export function NewEpisodeDialog({
             ]}
             selected={source}
             onChange={(id) => setSource(id as 'upload' | 'broadcast')}
-            aria-label="Episode source"
+            aria-label={t('newEpisode.episodeSource')}
           />
 
           {source === 'upload' ? (
@@ -99,13 +101,12 @@ export function NewEpisodeDialog({
             />
           ) : (
             <p className="text-foreground-secondary text-sm">
-              Creates a pending episode. Go Live to capture, then review,
-              trim/normalize, and approve before it can air.
+              {t('newEpisode.createsAPendingEpisodeGo')}
             </p>
           )}
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('newEpisode.cancel')}</Dialog.Close>
           <Button
             type="submit"
             disabled={busy || (source === 'upload' && !file)}

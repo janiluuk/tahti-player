@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, EditIconButton, InlineError, Input } from '@tahti-player/ui';
 
 import type { BoardActionResult } from '../../../../api/admin/admin-governance-board';
@@ -19,6 +20,7 @@ export function ElectionActions({
   election: AdminElection;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [mode, setMode] = useState<Mode>('idle');
   const [title, setTitle] = useState(election.title);
   const [seats, setSeats] = useState(String(election.seats));
@@ -61,7 +63,7 @@ export function ElectionActions({
             aria-label={`Cancel election: ${election.title}`}
             onClick={() => setMode('cancel')}
           >
-            Cancel election
+            {t('electionActions.cancelElection')}
           </Button>
         </div>
       ) : null}
@@ -93,26 +95,26 @@ export function ElectionActions({
           }}
         >
           <Input
-            label="Title"
+            label={t('electionActions.title')}
             value={title}
             maxLength={200}
             onChange={(e) => setTitle(e.target.value)}
           />
           <Input
-            label="Seats"
+            label={t('electionActions.seats')}
             inputMode="numeric"
             value={seats}
             disabled={election.role === 'CHAIR'}
             onChange={(e) => setSeats(e.target.value)}
           />
           <Input
-            label="Nominations close"
+            label={t('electionActions.nominationsClose')}
             type="date"
             value={closeAt}
             onChange={(e) => setCloseAt(e.target.value)}
           />
           <Button type="submit" size="sm" disabled={busy}>
-            Save election
+            {t('electionActions.saveElection')}
           </Button>
           <Button
             type="button"
@@ -121,7 +123,7 @@ export function ElectionActions({
             disabled={busy}
             onClick={() => setMode('idle')}
           >
-            Back
+            {t('electionActions.back')}
           </Button>
         </form>
       ) : null}
@@ -138,13 +140,13 @@ export function ElectionActions({
           }}
         >
           <Input
-            label="Why is it cancelled?"
+            label={t('electionActions.whyIsItCancelled')}
             value={reason}
             maxLength={1000}
             onChange={(e) => setReason(e.target.value)}
           />
           <Button type="submit" size="sm" intent="danger" disabled={busy}>
-            Cancel the election
+            {t('electionActions.cancelTheElection')}
           </Button>
           <Button
             type="button"
@@ -153,7 +155,7 @@ export function ElectionActions({
             disabled={busy}
             onClick={() => setMode('idle')}
           >
-            Back
+            {t('electionActions.back')}
           </Button>
         </form>
       ) : null}

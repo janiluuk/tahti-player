@@ -2,7 +2,7 @@ import { PlusIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input } from '@tahti-player/ui';
 
 import {
@@ -36,6 +36,7 @@ export function AddStationUrlDialog({
   onClose: () => void;
   onAdd: (station: SavedBrowserStation) => void;
 }) {
+  const { t } = useTranslation('web');
   const [draft, setDraft] = useState('');
   const [description, setDescription] = useState('');
   const [programmingUrl, setProgrammingUrl] = useState('');
@@ -111,11 +112,9 @@ export function AddStationUrlDialog({
 
   return (
     <Dialog.Root isOpen onClose={onClose} className="max-w-lg">
-      <Dialog.Title>Add a station by URL</Dialog.Title>
+      <Dialog.Title>{t('addStationUrl.addAStationByUrl')}</Dialog.Title>
       <Dialog.Description>
-        Paste an M3U/M3U8 playlist or a direct stream URL. We'll validate it
-        plays and look up its details in the public Radio Browser directory when
-        it's listed there.
+        {t('addStationUrl.pasteAnM3uM3u8Playlist')}
       </Dialog.Description>
       <div className="mt-4 flex flex-col gap-3">
         <form
@@ -130,7 +129,7 @@ export function AddStationUrlDialog({
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            aria-label="Stream URL"
+            aria-label={t('addStationUrl.streamUrl')}
             className="min-w-0 flex-1 basis-48"
             size="sm"
             value={draft}
@@ -172,18 +171,17 @@ export function AddStationUrlDialog({
             </span>
             {!resolution.found && (
               <span className="text-foreground-secondary text-xs">
-                Not in the public station directory — saving with the name from
-                the playlist, if any.
+                {t('addStationUrl.notInThePublicStation')}
               </span>
             )}
           </div>
         )}
         <Input
           size="sm"
-          label="Description (optional)"
+          label={t('addStationUrl.descriptionOptional')}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          placeholder="What makes this station worth keeping"
+          placeholder={t('addStationUrl.whatMakesThisStationWorth')}
         />
         <Input
           inputMode="url"
@@ -191,17 +189,17 @@ export function AddStationUrlDialog({
           autoCorrect="off"
           spellCheck={false}
           size="sm"
-          label="Programme schedule link (optional)"
+          label={t('addStationUrl.programmeScheduleLinkOptional')}
           value={programmingUrl}
           onChange={(e) => setProgrammingUrl(e.target.value)}
           placeholder="https://station.example/schedule"
         />
       </div>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('addStationUrl.cancel')}</Dialog.Close>
         <Button type="button" disabled={!resolution} onClick={save}>
           <PlusIcon size={14} aria-hidden className="mr-1.5" />
-          Add to my stations
+          {t('addStationUrl.addToMyStations')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

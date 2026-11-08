@@ -1,5 +1,6 @@
 import type { RefObject } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { FilterChips, Toggle } from '@tahti-player/ui';
 
 import type { ChannelLink } from '../../api/channel-design';
@@ -87,6 +88,7 @@ export function ChannelLayersPanel({
   onLookBusyChange,
   onLookSaved,
 }: Props) {
+  const { t } = useTranslation('web');
   const selectedType =
     selectedId === 'header'
       ? 'header'
@@ -224,7 +226,7 @@ export function ChannelLayersPanel({
             <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-2">
                 <p className="text-foreground-secondary text-xs">
-                  Choose which playlist this block shows.
+                  {t('channelLayersPanel.chooseWhichPlaylistThisBlock')}
                 </p>
                 <ChannelPlaylistPicker
                   usedSlugs={layout
@@ -247,7 +249,7 @@ export function ChannelLayersPanel({
               </div>
               <div className="flex flex-col gap-2">
                 <p className="text-foreground-secondary text-xs">
-                  How tracks appear on the page.
+                  {t('channelLayersPanel.howTracksAppearOnThe')}
                 </p>
                 <FilterChips
                   items={[
@@ -263,19 +265,18 @@ export function ChannelLayersPanel({
                       setPlaylistDisplay(prev, selectedPlaylistItem.id, id),
                     );
                   }}
-                  aria-label="Playlist display"
+                  aria-label={t('channelLayersPanel.playlistDisplay')}
                 />
               </div>
             </div>
           ) : lookOpenSection === 'feed' && selectedFeedItem ? (
             <div className="flex flex-col gap-3">
               <p className="text-foreground-secondary text-xs">
-                Feed has no live update source wired in yet — these controls
-                shape it for when one exists.
+                {t('channelLayersPanel.feedHasNoLiveUpdate')}
               </p>
               <div className="flex flex-col gap-2">
                 <p className="text-foreground-secondary text-xs">
-                  Which update types to include.
+                  {t('channelLayersPanel.whichUpdateTypesToInclude')}
                 </p>
                 <div className="flex flex-col gap-2">
                   {FEED_FILTER_OPTIONS.map((option) => {
@@ -315,7 +316,7 @@ export function ChannelLayersPanel({
               </div>
               <div className="flex flex-col gap-2">
                 <p className="text-foreground-secondary text-xs">
-                  How updates appear on the page.
+                  {t('channelLayersPanel.howUpdatesAppearOnThe')}
                 </p>
                 <FilterChips
                   items={[
@@ -332,7 +333,7 @@ export function ChannelLayersPanel({
                       setFeedDisplay(prev, selectedFeedItem.id, id),
                     );
                   }}
-                  aria-label="Feed display"
+                  aria-label={t('channelLayersPanel.feedDisplay')}
                 />
               </div>
             </div>

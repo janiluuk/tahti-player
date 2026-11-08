@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -67,6 +68,7 @@ export function SlideshowControls({
   autoplay,
   onAutoplayChange,
 }: Props) {
+  const { t } = useTranslation('web');
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   return (
@@ -140,11 +142,11 @@ export function SlideshowControls({
               </Tooltip>
             </div>
           ))}
-          <Tooltip content="Add gallery images" side="top">
+          <Tooltip content={t('slideshowControls.addGalleryImages')} side="top">
             <Button
               variant="text"
               className="border-border text-foreground-secondary hover:border-primary hover:text-primary-strong h-16 w-full rounded-md border border-dashed"
-              aria-label="Add gallery images"
+              aria-label={t('slideshowControls.addGalleryImages')}
               disabled={busy}
               onClick={() => onPickerOpenChange(true)}
             >
@@ -154,12 +156,12 @@ export function SlideshowControls({
         </div>
         {images.length === 0 && (
           <p className="text-foreground-secondary text-xs">
-            Upload images to build the slideshow behind your channel.
+            {t('slideshowControls.uploadImagesToBuildThe')}
           </p>
         )}
         {busy ? (
           <p className="text-foreground-secondary text-xs" role="status">
-            Uploading images…
+            {t('slideshowControls.uploadingImages')}
           </p>
         ) : null}
       </div>
@@ -168,7 +170,7 @@ export function SlideshowControls({
         onClose={() => onPickerOpenChange(false)}
         className="max-w-md"
       >
-        <Dialog.Title>Add gallery images</Dialog.Title>
+        <Dialog.Title>{t('slideshowControls.addGalleryImages')}</Dialog.Title>
         <div className="mt-4">
           <FilePicker
             accept="image/jpeg,image/png,image/webp"
@@ -188,7 +190,7 @@ export function SlideshowControls({
         </div>
       </Dialog.Root>
       <Select
-        label="Gallery style"
+        label={t('slideshowControls.galleryStyle')}
         value={galleryMode}
         onValueChange={(value) =>
           onGalleryModeChange(value as ChannelGalleryMode)
@@ -201,7 +203,7 @@ export function SlideshowControls({
       {images.length > 1 ? (
         <>
           <Select
-            label="Transition"
+            label={t('slideshowControls.transition')}
             value={preset}
             onValueChange={onPresetChange}
             options={SLIDESHOW_PRESETS.map(([id, label]) => ({ id, label }))}
@@ -223,9 +225,9 @@ export function SlideshowControls({
             onValueChange={onTransitionChange}
           />
           <div className="flex items-center justify-between gap-3 text-sm">
-            <span>Automatically advance slides</span>
+            <span>{t('slideshowControls.automaticallyAdvanceSlides')}</span>
             <Toggle
-              label="Automatically advance slides"
+              label={t('slideshowControls.automaticallyAdvanceSlides')}
               checked={autoplay}
               onChange={onAutoplayChange}
             />

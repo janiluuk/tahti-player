@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, SaveButton } from '@tahti-player/ui';
 
 import {
@@ -13,6 +13,7 @@ import { SettingsToggle } from '../../views/settings/SettingsFields';
 
 /** Settings → Integrations row: toggle on opens the token dialog, off disconnects. */
 export function ListenBrainzIntegrationRow() {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [installed, setInstalled] = useState(false);
   const [token, setToken] = useState('');
@@ -74,8 +75,8 @@ export function ListenBrainzIntegrationRow() {
         data-testid="integration-listenbrainz"
       >
         <SettingsToggle
-          label="ListenBrainz scrobbling"
-          description="When a Tahti track counts as a listen, submit it to your ListenBrainz profile. Submit-listens only, no charts."
+          label={t('listenBrainzRow.listenbrainzScrobbling')}
+          description={t('listenBrainzRow.whenATahtiTrackCounts')}
           value={installed}
           onChange={(next) => {
             if (busy) {
@@ -95,7 +96,7 @@ export function ListenBrainzIntegrationRow() {
             className="self-start"
             onClick={() => setOpen(true)}
           >
-            Update token
+            {t('listenBrainzRow.updateToken')}
           </Button>
         ) : null}
       </div>
@@ -104,11 +105,11 @@ export function ListenBrainzIntegrationRow() {
         onClose={() => setOpen(false)}
         className="max-w-lg"
       >
-        <Dialog.Title>Configure ListenBrainz</Dialog.Title>
+        <Dialog.Title>
+          {t('listenBrainzRow.configureListenbrainz')}
+        </Dialog.Title>
         <Dialog.Description>
-          Paste the user token from listenbrainz.org settings. Tahti validates
-          it, stores it encrypted, and never shows it again. Eligible Tahti
-          listens are submitted as ListenBrainz listens — not charts.
+          {t('listenBrainzRow.pasteTheUserTokenFrom')}
         </Dialog.Description>
         <form
           onSubmit={(event) => {
@@ -121,21 +122,23 @@ export function ListenBrainzIntegrationRow() {
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              label="User token"
+              label={t('listenBrainzRow.userToken')}
               type="password"
               autoComplete="off"
-              description="From listenbrainz.org → Settings → Music / User token."
+              description={t(
+                'listenBrainzRow.fromListenbrainzOrgSettingsMusic',
+              )}
               value={token}
               onChange={(event) => setToken(event.target.value)}
             />
             {installed ? (
               <p className="text-foreground-secondary text-sm">
-                Already connected. Saving a new token replaces the stored one.
+                {t('listenBrainzRow.alreadyConnectedSavingANew')}
               </p>
             ) : null}
           </div>
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>{t('listenBrainzRow.cancel')}</Dialog.Close>
             <SaveButton
               size="sm"
               saving={busy}

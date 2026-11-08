@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Dialog,
   InlineError,
@@ -42,6 +43,7 @@ export function MulticastConfigureDialog({
   onClose: () => void;
   onSaved: () => void;
 }) {
+  const { t } = useTranslation('web');
   const { provider, existing } = configuring;
   const isCustom = provider === 'CUSTOM';
   const [label, setLabel] = useState(existing?.label ?? '');
@@ -126,7 +128,7 @@ export function MulticastConfigureDialog({
       >
         <div className="mt-4 flex flex-col gap-3">
           <Input
-            label="Label (optional)"
+            label={t('multicastConfigure.labelOptional')}
             value={label}
             onChange={(event) => setLabel(event.target.value)}
             placeholder={multicastProviderLabel(provider)}
@@ -145,13 +147,13 @@ export function MulticastConfigureDialog({
                     autoCapitalize="none"
                     autoCorrect="off"
                     spellCheck={false}
-                    label="RTMP address"
+                    label={t('multicastConfigure.rtmpAddress')}
                     value={address}
                     onChange={(event) => setAddress(event.target.value)}
                     placeholder="rtmp://stream.example.com/live"
                   />
                   <Input
-                    label="Port"
+                    label={t('multicastConfigure.port')}
                     value={port}
                     onChange={(event) => setPort(event.target.value)}
                     placeholder="1935"
@@ -179,9 +181,9 @@ export function MulticastConfigureDialog({
             </>
           )}
           <div className="flex items-center justify-between gap-3 text-sm">
-            <span>Enabled — mirror the live stream here</span>
+            <span>{t('multicastConfigure.enabledMirrorTheLiveStream')}</span>
             <Toggle
-              label="Enabled — mirror the live stream here"
+              label={t('multicastConfigure.enabledMirrorTheLiveStream')}
               checked={enabled}
               onChange={setEnabled}
             />
@@ -196,8 +198,12 @@ export function MulticastConfigureDialog({
           {error ? <InlineError>{error}</InlineError> : null}
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
-          <SaveButton saving={saving} label="Save destination" type="submit" />
+          <Dialog.Close>{t('multicastConfigure.cancel')}</Dialog.Close>
+          <SaveButton
+            saving={saving}
+            label={t('multicastConfigure.saveDestination')}
+            type="submit"
+          />
         </Dialog.Actions>
       </form>
     </Dialog.Root>

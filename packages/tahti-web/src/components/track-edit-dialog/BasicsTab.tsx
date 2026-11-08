@@ -1,5 +1,6 @@
 import { HelpCircleIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Input, Select, Tooltip } from '@tahti-player/ui';
 
 import { uploadSoundBanner } from '../../api/studio';
@@ -21,6 +22,7 @@ export function BasicsTab({
   soundId: string;
   state: TrackEditDialogState;
 }) {
+  const { t } = useTranslation('web');
   const { form, setForm, user, isAudioClip, updateArtwork } = state;
   const usedBefore = useUsedBeforeTags();
 
@@ -28,7 +30,7 @@ export function BasicsTab({
     <div className="flex flex-col gap-4">
       <div className="relative overflow-hidden rounded-xl">
         <BackdropUploadButton
-          label="Backdrop"
+          label={t('trackEditBasics.backdrop')}
           value={form.backgroundUrl}
           onChange={(backgroundUrl) => setForm({ ...form, backgroundUrl })}
           fill
@@ -36,7 +38,7 @@ export function BasicsTab({
         <div className="from-background via-background/85 pointer-events-none absolute inset-0 bg-gradient-to-t to-transparent" />
         <div className="relative flex items-end gap-4 p-4">
           <RoundImageUploadButton
-            label="Cover art"
+            label={t('trackEditBasics.coverArt')}
             gallery
             value={form.bannerUrl}
             sizeClassName="h-20 w-20 shrink-0 sm:h-24 sm:w-24"
@@ -50,7 +52,7 @@ export function BasicsTab({
           />
           <div className="grid flex-1 gap-3 pb-1 sm:grid-cols-3">
             <Input
-              label="Title"
+              label={t('trackEditBasics.title')}
               value={form.title ?? ''}
               onChange={(event) =>
                 setForm({ ...form, title: event.target.value })
@@ -59,10 +61,10 @@ export function BasicsTab({
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-1.5">
                 <span className="text-foreground text-sm font-semibold">
-                  Artist
+                  {t('trackEditBasics.artist')}
                 </span>
                 <Tooltip
-                  content="Defaults to your channel's artist name — override here for this track only."
+                  content={t('trackEditBasics.defaultsToYourChannelS')}
                   side="top"
                 >
                   <HelpCircleIcon
@@ -73,7 +75,7 @@ export function BasicsTab({
                 </Tooltip>
               </div>
               <Input
-                aria-label="Artist"
+                aria-label={t('trackEditBasics.artist')}
                 value={form.artistName ?? user?.displayName ?? ''}
                 onChange={(event) =>
                   setForm({ ...form, artistName: event.target.value })
@@ -81,7 +83,7 @@ export function BasicsTab({
               />
             </div>
             <Select
-              label="Content type"
+              label={t('trackEditBasics.contentType')}
               value={form.contentType ?? 'TRACK'}
               onValueChange={(value) =>
                 setForm({ ...form, contentType: value })
@@ -95,7 +97,7 @@ export function BasicsTab({
         </div>
       </div>
       <MentionTextarea
-        label="Description"
+        label={t('trackEditBasics.description')}
         rows={4}
         value={form.description ?? ''}
         onChange={(description) => setForm({ ...form, description })}
@@ -103,7 +105,7 @@ export function BasicsTab({
       {!isAudioClip ? (
         <Input
           type="date"
-          label="Release date"
+          label={t('trackEditBasics.releaseDate')}
           value={form.releaseDate ?? ''}
           onChange={(event) =>
             setForm({ ...form, releaseDate: event.target.value })

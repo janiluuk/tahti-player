@@ -1,6 +1,7 @@
 import { RotateCcwIcon } from 'lucide-react';
 import { useMemo, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   SelectableTiles,
@@ -38,6 +39,7 @@ type Props = {
  * exported at 3000x3000 (standard album art size) for release artwork.
  */
 export function CoverArtGenerator({ onGenerate, generating }: Props) {
+  const { t } = useTranslation('web');
   const [presetId, setPresetId] = useState(DEFAULT_PRESET_ID);
   const [paletteId, setPaletteId] = useState(COLOR_PALETTES[0]!.id);
   const [bgColor, setBgColor] = useState(DEFAULT_BG);
@@ -71,8 +73,7 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-foreground-secondary text-xs">
-        Draw on the canvas to create a symmetric generative cover, then use it
-        as this release&apos;s artwork.
+        {t('coverArtGenerator.drawOnTheCanvasTo')}
       </p>
 
       <div
@@ -92,10 +93,10 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
 
       <div className="flex flex-col gap-1.5">
         <span className="text-foreground-secondary text-xs uppercase">
-          Style
+          {t('coverArtGenerator.style')}
         </span>
         <SelectableTiles
-          aria-label="Style"
+          aria-label={t('coverArtGenerator.style')}
           items={STYLE_OPTIONS}
           selected={presetId}
           onChange={setPresetId}
@@ -105,7 +106,7 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
 
       <div className="flex flex-col gap-1.5">
         <span className="text-foreground-secondary text-xs uppercase">
-          Palette
+          {t('coverArtGenerator.palette')}
         </span>
         <div className="flex flex-wrap gap-2">
           {COLOR_PALETTES.map((palette) => (
@@ -139,7 +140,7 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
 
       <div className="flex flex-col gap-1.5">
         <span className="text-foreground-secondary text-xs uppercase">
-          Background
+          {t('coverArtGenerator.background')}
         </span>
         <div className="flex flex-wrap gap-2">
           {BACKGROUND_COLORS.map((bg) => (
@@ -169,7 +170,7 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <Slider
-          label="Brush size"
+          label={t('coverArtGenerator.brushSize')}
           value={brushSize}
           min={1}
           max={10}
@@ -178,7 +179,7 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
           onValueChange={setBrushSize}
         />
         <Slider
-          label="Glow"
+          label={t('coverArtGenerator.glow')}
           value={glowIntensity}
           min={0}
           max={10}
@@ -191,13 +192,13 @@ export function CoverArtGenerator({ onGenerate, generating }: Props) {
       <div className="flex items-center justify-between gap-2">
         <Button variant="text" size="flexible" onClick={handleClear}>
           <RotateCcwIcon size={14} aria-hidden className="mr-1.5" />
-          Clear
+          {t('coverArtGenerator.clear')}
         </Button>
         <Button
           onClick={() => void handleUse()}
           disabled={!hasDrawn || generating}
         >
-          Use this artwork
+          {t('coverArtGenerator.useThisArtwork')}
         </Button>
       </div>
     </div>

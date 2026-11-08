@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   InlineError,
@@ -55,6 +56,7 @@ export function SocialOAuthPlatform({
   status: OAuthStatus;
   onChanged: (settings: SocialAutoPostSettings | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const copy = OAUTH_PLATFORMS[platform];
   const [onRelease, setOnRelease] = useState(status.onReleasePublished);
   const [onLive, setOnLive] = useState(status.onChannelLive);
@@ -117,18 +119,18 @@ export function SocialOAuthPlatform({
           <>
             <div className="flex flex-wrap gap-4">
               <Toggle
-                label="Post new releases"
+                label={t('socialOAuth.postNewReleases')}
                 checked={onRelease}
                 onChange={setOnRelease}
               />
               <Toggle
-                label="Post when I go live"
+                label={t('socialOAuth.postWhenIGoLive')}
                 checked={onLive}
                 onChange={setOnLive}
               />
             </div>
             <Input
-              label="Post text"
+              label={t('socialOAuth.postText')}
               value={template}
               maxLength={copy.templateMax}
               onChange={(event) => setTemplate(event.target.value)}
@@ -154,10 +156,10 @@ export function SocialOAuthPlatform({
                 intent="danger"
                 onClick={() => setConfirmDisconnect(true)}
               >
-                Disconnect
+                {t('socialOAuth.disconnect')}
               </Button>
               <SaveButton
-                label="Save"
+                label={t('socialOAuth.save')}
                 saving={saving}
                 disabled={saving}
                 type="submit"
@@ -179,8 +181,8 @@ export function SocialOAuthPlatform({
         destructive
         isOpen={confirmDisconnect}
         title={`Disconnect ${copy.name}?`}
-        description="Tahti forgets the saved sign-in and stops posting there."
-        confirmLabel="Disconnect"
+        description={t('socialOAuth.tahtiForgetsTheSavedSign')}
+        confirmLabel={t('socialOAuth.disconnect')}
         onCancel={() => setConfirmDisconnect(false)}
         onConfirm={disconnect}
       />

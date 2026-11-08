@@ -2,6 +2,7 @@ import { MessageSquareIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -35,6 +36,7 @@ const SOURCE_LABEL: Record<GreenRoomInvite['source'], string> = {
 /** The green room of the broadcast in progress: open it, see who's been
  * invited and who has joined, and take guests off the list. */
 export function GreenRoomSessionPanel() {
+  const { t } = useTranslation('web');
   const username = useAuthStore((s) => s.user?.username);
   const [session, setSession] = useState<GreenRoomSession | null>(null);
   const [busy, setBusy] = useState(false);
@@ -95,8 +97,8 @@ export function GreenRoomSessionPanel() {
 
   return (
     <StudioPanel
-      title="Green room"
-      description="Let invited guests hear your stream before it goes public. Default invite rules live in Settings → Broadcast."
+      title={t('greenRoomSession.greenRoom')}
+      description={t('greenRoomSession.letInvitedGuestsHearYour')}
       action={
         <Button
           size="sm"
@@ -115,19 +117,21 @@ export function GreenRoomSessionPanel() {
           className="mb-3 self-start"
         >
           <MessageSquareIcon size={14} aria-hidden className="mr-1.5" />
-          Open Green Room chat
+          {t('greenRoomSession.openGreenRoomChat')}
         </ButtonAnchor>
       ) : null}
       {!live ? (
         <p className="text-foreground-secondary text-sm">
-          Start streaming to open a green room for this broadcast.
+          {t('greenRoomSession.startStreamingToOpenA')}
         </p>
       ) : (
         <div className="flex flex-col gap-3">
           <div className="border-border bg-background flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
-            <span className="font-semibold">Open the green room</span>
+            <span className="font-semibold">
+              {t('greenRoomSession.openTheGreenRoom')}
+            </span>
             <Toggle
-              label="Open the green room"
+              label={t('greenRoomSession.openTheGreenRoom')}
               checked={session.enabled}
               disabled={busy}
               onChange={(value) => void toggle(value)}
@@ -138,13 +142,16 @@ export function GreenRoomSessionPanel() {
               <span className="text-foreground-secondary min-w-0 flex-1 truncate">
                 Guests join at {guestUrl}
               </span>
-              <CopyButton text={guestUrl} label="Copy link" />
+              <CopyButton
+                text={guestUrl}
+                label={t('greenRoomSession.copyLink')}
+              />
             </div>
           ) : null}
           {session.enabled ? (
             session.invites.length === 0 ? (
               <p className="text-foreground-secondary text-sm">
-                Nobody is invited yet.
+                {t('greenRoomSession.nobodyIsInvitedYet')}
               </p>
             ) : (
               <ul

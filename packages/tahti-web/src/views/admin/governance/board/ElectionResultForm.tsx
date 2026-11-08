@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input, Toggle } from '@tahti-player/ui';
 
 import {
@@ -18,6 +19,7 @@ export function ElectionResultForm({
   candidates: AdminElectionCandidate[];
   onRecorded: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [elected, setElected] = useState<string[]>([]);
   const [termStart, setTermStart] = useState('');
@@ -36,7 +38,7 @@ export function ElectionResultForm({
   if (!open) {
     return (
       <Button size="sm" className="w-fit" onClick={() => setOpen(true)}>
-        Record the result
+        {t('electionResult.recordTheResult')}
       </Button>
     );
   }
@@ -73,7 +75,7 @@ export function ElectionResultForm({
         });
       }}
     >
-      <p className="text-xs font-semibold">Elected</p>
+      <p className="text-xs font-semibold">{t('electionResult.elected')}</p>
       <ul className="flex flex-col gap-1.5">
         {standing.map((candidate) => (
           <li key={candidate.id} className="flex items-center gap-2 text-sm">
@@ -94,26 +96,25 @@ export function ElectionResultForm({
       </ul>
       <div className="flex flex-wrap gap-2">
         <Input
-          label="Terms start"
+          label={t('electionResult.termsStart')}
           type="date"
           value={termStart}
           onChange={(e) => setTermStart(e.target.value)}
         />
         <Input
-          label="Terms end (optional)"
+          label={t('electionResult.termsEndOptional')}
           type="date"
           value={termEnd}
           onChange={(e) => setTermEnd(e.target.value)}
         />
       </div>
       <p className="text-foreground-secondary text-xs">
-        Each elected member gets a board term in this role and the election
-        closes. Board access is still granted separately.
+        {t('electionResult.eachElectedMemberGetsA')}
       </p>
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy}>
-          Record result
+          {t('electionResult.recordResult')}
         </Button>
         <Button
           type="button"
@@ -122,7 +123,7 @@ export function ElectionResultForm({
           disabled={busy}
           onClick={() => setOpen(false)}
         >
-          Cancel
+          {t('electionResult.cancel')}
         </Button>
       </div>
     </form>

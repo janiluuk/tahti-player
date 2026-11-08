@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -66,6 +67,7 @@ export function PlaylistImportDialog({
   onClose,
   onImported,
 }: Props) {
+  const { t } = useTranslation('web');
   const [preview, setPreview] = useState<NativeImportPreview | null>(initial);
   const [name, setName] = useState('');
   const [importFiles, setImportFiles] = useState(true);
@@ -151,7 +153,7 @@ export function PlaylistImportDialog({
       isOpen={initial !== null}
       onClose={() => (busy ? undefined : onClose())}
     >
-      <Dialog.Title>Import playlist</Dialog.Title>
+      <Dialog.Title>{t('playlistImport.importPlaylist')}</Dialog.Title>
       <Dialog.Description>
         {preview
           ? `${basename(preview.sourcePath)} — ${describePreview(preview)}.`
@@ -167,7 +169,7 @@ export function PlaylistImportDialog({
         {preview ? (
           <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto py-2">
             <Input
-              label="Playlist name"
+              label={t('playlistImport.playlistName')}
               value={name}
               error={error ?? undefined}
               onChange={(event) => setName(event.target.value)}
@@ -177,7 +179,7 @@ export function PlaylistImportDialog({
                 <Toggle
                   checked={importFiles}
                   onChange={setImportFiles}
-                  aria-label="Add files to the library"
+                  aria-label={t('playlistImport.addFilesToTheLibrary')}
                 />
                 <span className="text-sm">
                   Also add the {preview.needsImport}{' '}
@@ -211,15 +213,14 @@ export function PlaylistImportDialog({
             {unresolvedCount > 0 ? (
               <section>
                 <h3 className="mb-1 text-sm font-semibold">
-                  Not yet in your library
+                  {t('playlistImport.notYetInYourLibrary')}
                 </h3>
                 <p className="text-foreground-secondary mb-1 text-xs">
-                  These are kept in the playlist as unavailable entries, never
-                  dropped, and link up when the file is in your library.
+                  {t('playlistImport.theseAreKeptInThe')}
                 </p>
                 <ul
                   className="flex flex-col gap-1"
-                  aria-label="Unresolved entries"
+                  aria-label={t('playlistImport.unresolvedEntries')}
                 >
                   {preview.unresolved.map((entry) => (
                     <li
@@ -254,7 +255,7 @@ export function PlaylistImportDialog({
           </div>
         ) : null}
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('playlistImport.cancel')}</Dialog.Close>
           <Button
             className="gap-1.5"
             disabled={!preview || !name.trim() || busy !== null}

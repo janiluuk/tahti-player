@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, FilterChips, InlineError } from '@tahti-player/ui';
 
 import { type AdminAddon } from '../../../api/admin';
@@ -19,6 +20,7 @@ export function InstallPickerDialog({
   onCancel: () => void;
   onInstall: (widgetId: string) => void;
 }) {
+  const { t } = useTranslation('web');
   const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => {
@@ -29,19 +31,19 @@ export function InstallPickerDialog({
 
   return (
     <Dialog.Root isOpen={isOpen} onClose={onCancel} className="max-w-md">
-      <Dialog.Title>Install a widget onto this surface</Dialog.Title>
+      <Dialog.Title>
+        {t('addonInstallPicker.installAWidgetOntoThis')}
+      </Dialog.Title>
       <Dialog.Description>
-        Only approved Admin-surface add-ons not already installed here are
-        listed.
+        {t('addonInstallPicker.onlyApprovedAdminSurfaceAdd')}
       </Dialog.Description>
       {candidates.length === 0 ? (
         <p className="text-foreground-secondary text-sm">
-          Every approved Admin-surface add-on is already installed here. Approve
-          or register another one first.
+          {t('addonInstallPicker.everyApprovedAdminSurfaceAdd')}
         </p>
       ) : (
         <FilterChips
-          aria-label="Widget to install"
+          aria-label={t('addonInstallPicker.widgetToInstall')}
           items={candidates.map((addon) => ({
             id: addon.id,
             label: addon.name,
@@ -52,13 +54,13 @@ export function InstallPickerDialog({
       )}
       {error ? <InlineError>{error}</InlineError> : null}
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('addonInstallPicker.cancel')}</Dialog.Close>
         <Button
           type="button"
           disabled={pending || !selected || candidates.length === 0}
           onClick={() => selected && onInstall(selected)}
         >
-          Install
+          {t('addonInstallPicker.install')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

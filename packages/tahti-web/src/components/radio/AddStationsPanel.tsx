@@ -1,6 +1,7 @@
 import { CompassIcon, PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Box, Button, Dialog } from '@tahti-player/ui';
 
 import type { MyRadioStation } from '../../api/my-radio-stations';
@@ -14,6 +15,7 @@ export function AddStationsPanel({
 }: {
   onOwnStationsChange?: (stations: MyRadioStation[]) => void;
 }) {
+  const { t } = useTranslation('web');
   const signedIn = useAuthStore((s) => Boolean(s.user));
   const openSettings = useSettingsModalStore((s) => s.open);
   const openAuth = useAuthModalStore((s) => s.open);
@@ -28,17 +30,16 @@ export function AddStationsPanel({
     >
       <div className="flex flex-col gap-1">
         <h2 className="text-foreground text-lg font-bold tracking-tight">
-          Add stations
+          {t('addStations.addStations')}
         </h2>
         <p className="text-foreground-secondary text-sm">
-          Pick stations from the radio directory, or add any station by its
-          stream URL.
+          {t('addStations.pickStationsFromTheRadio')}
         </p>
       </div>
       <div className="flex flex-wrap gap-2">
         <Button size="sm" onClick={() => openSettings('plugin-store', 'radio')}>
           <CompassIcon size={14} aria-hidden />
-          <span className="ml-1.5">Browse stations</span>
+          <span className="ml-1.5">{t('addStations.browseStations')}</span>
         </Button>
         <Button
           size="sm"
@@ -46,7 +47,7 @@ export function AddStationsPanel({
           onClick={() => (signedIn ? setOwnOpen(true) : openAuth('login'))}
         >
           <PlusIcon size={14} aria-hidden />
-          <span className="ml-1.5">Add your own</span>
+          <span className="ml-1.5">{t('addStations.addYourOwn')}</span>
         </Button>
       </div>
       <Dialog.Root
@@ -54,9 +55,9 @@ export function AddStationsPanel({
         onClose={() => setOwnOpen(false)}
         className="max-w-lg"
       >
-        <Dialog.Title>Your stations</Dialog.Title>
+        <Dialog.Title>{t('addStations.yourStations')}</Dialog.Title>
         <Dialog.Description>
-          Add a station by its stream URL. It plays straight from the station.
+          {t('addStations.addAStationByIts')}
         </Dialog.Description>
         <div className="mt-4">
           <MyRadioStations onChange={onOwnStationsChange} />

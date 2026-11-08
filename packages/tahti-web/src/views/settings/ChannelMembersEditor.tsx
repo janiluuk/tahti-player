@@ -2,6 +2,7 @@ import { ArrowDownIcon, ArrowUpIcon, Trash2Icon } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, EditIconButton, Input } from '@tahti-player/ui';
 
 import type { ChannelMember } from '../../api/artist-settings';
@@ -30,6 +31,7 @@ function MemberForm({
   onSubmit: (value: { name: string; role: string }) => Promise<boolean>;
   onCancel?: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [name, setName] = useState(initial.name);
   const [role, setRole] = useState(initial.role);
   const [busy, setBusy] = useState(false);
@@ -56,7 +58,7 @@ function MemberForm({
       <div className="min-w-0 flex-1">
         <Input
           autoComplete="off"
-          label="Name"
+          label={t('channelMembers.name')}
           value={name}
           maxLength={100}
           onChange={(event) => setName(event.target.value)}
@@ -64,8 +66,8 @@ function MemberForm({
       </div>
       <div className="min-w-0 flex-1">
         <Input
-          label="Role"
-          placeholder="Vocals, production…"
+          label={t('channelMembers.role')}
+          placeholder={t('channelMembers.vocalsProduction')}
           value={role}
           maxLength={100}
           onChange={(event) => setRole(event.target.value)}
@@ -81,7 +83,7 @@ function MemberForm({
         </Button>
         {onCancel ? (
           <Button variant="text" size="sm" onClick={onCancel}>
-            Cancel
+            {t('channelMembers.cancel')}
           </Button>
         ) : null}
       </div>
@@ -98,6 +100,7 @@ export function ChannelMembersEditor({
   members: ChannelMember[];
   onChange: (members: ChannelMember[]) => void;
 }) {
+  const { t } = useTranslation('web');
   const [editingId, setEditingId] = useState<string | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [fetchingPictureId, setFetchingPictureId] = useState<string | null>(
@@ -198,7 +201,7 @@ export function ChannelMembersEditor({
   return (
     <div className="flex flex-col gap-3">
       {members.length === 0 ? (
-        <SettingsHint>No members listed.</SettingsHint>
+        <SettingsHint>{t('channelMembers.noMembersListed')}</SettingsHint>
       ) : (
         <ul className="flex flex-col gap-2" data-testid="channel-members">
           {members.map((member, index) => (
