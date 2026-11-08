@@ -1,5 +1,6 @@
 import { TrackTable } from '@tahti-player/ui';
 
+import { CollectionSortSounds } from '../../../components/CollectionSortSounds';
 import { CollectionTrackList } from '../../../components/CollectionTrackList';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { trackTableLabels } from '../../../lib/trackTableLabels';
@@ -28,6 +29,9 @@ export function TracklistPanel({
     togglePlayItem,
     onReorder,
     setPendingRemove,
+    applySoundOrder,
+    trackSortMode,
+    slug,
   } = state;
   const { rowHeight, getTrackAnnotation } = useStudioContributions(items);
 
@@ -35,6 +39,16 @@ export function TracklistPanel({
     <StudioPanel
       title={isAlbumLike ? 'Tracklist' : 'Items'}
       description={`${items.length} track${items.length === 1 ? '' : 's'}`}
+      action={
+        editing && items.length > 1 ? (
+          <CollectionSortSounds
+            slug={slug}
+            items={items}
+            trackSortMode={trackSortMode}
+            onSaved={applySoundOrder}
+          />
+        ) : undefined
+      }
     >
       <div className="mb-3 flex flex-col gap-3">
         {nowPlayingItem?.sound && (

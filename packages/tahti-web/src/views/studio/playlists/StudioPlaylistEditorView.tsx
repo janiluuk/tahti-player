@@ -40,6 +40,7 @@ import type {
   StudioSound,
 } from '../../../api/studio-types';
 import { CatalogTrackSearch } from '../../../components/CatalogTrackSearch';
+import { CollectionSortSounds } from '../../../components/CollectionSortSounds';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import {
   EntitySocialHeader,
@@ -485,6 +486,21 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
               <StudioPanel
                 title={t('playlistEditor.tracks')}
                 description={`${items.length} item${items.length === 1 ? '' : 's'}`}
+                action={
+                  editing && items.length > 1 ? (
+                    <CollectionSortSounds
+                      slug={slug}
+                      items={items}
+                      trackSortMode={trackSortMode}
+                      onSaved={(next, mode) => {
+                        setTrackSortMode(mode);
+                        setCol((c) =>
+                          c ? { ...c, items: next, trackSortMode: mode } : c,
+                        );
+                      }}
+                    />
+                  ) : undefined
+                }
               >
                 {tracks.length === 0 ? (
                   <PageEmpty
