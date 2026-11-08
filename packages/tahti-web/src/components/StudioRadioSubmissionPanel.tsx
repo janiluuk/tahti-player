@@ -126,7 +126,19 @@ export function StudioRadioSubmissionPanel() {
             }}
           />
         ) : submissions.length === 0 ? (
-          <PageEmpty title={t('empties.noRadioSubmissions')} />
+          <PageEmpty
+            title={t('empties.noRadioSubmissions')}
+            action={
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setOpen(true)}
+              >
+                <SendIcon size={16} aria-hidden />
+                {t('emptyActions.submitToRadio')}
+              </Button>
+            }
+          />
         ) : (
           <ul className="border-border divide-border divide-y rounded-lg border">
             {submissions.map((submission) => (

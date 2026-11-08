@@ -51,7 +51,11 @@ export function StudioScheduleView() {
           }
         >
           <RestrictionNotice type="LIVE_SHOW_BOOKING" />
-          <ScheduledTimes items={scheduledTimes} onEdit={openEditor} />
+          <ScheduledTimes
+            items={scheduledTimes}
+            onEdit={openEditor}
+            onAdd={() => setEditorOpen(true)}
+          />
 
           {scheduledShows.length > 0 ? (
             <StudioPanel

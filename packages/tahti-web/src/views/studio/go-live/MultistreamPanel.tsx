@@ -73,7 +73,19 @@ export function MultistreamPanel({
             onRetry={() => void reload()}
           />
         ) : targets.length === 0 ? (
-          <PageEmpty title={t('empties.noMultistreamDestinations')} />
+          <PageEmpty
+            title={t('empties.noMultistreamDestinations')}
+            action={
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setShowAddDestination(true)}
+              >
+                <PlusIcon size={16} aria-hidden />
+                {t('emptyActions.addDestination')}
+              </Button>
+            }
+          />
         ) : (
           <ul className="flex flex-col gap-2">
             {targets.map((target) => (
