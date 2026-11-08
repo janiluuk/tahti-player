@@ -33,6 +33,7 @@ function TrackEditDialog({
   onClose: () => void;
   onSaved: (sound: AdminChannelSound) => void;
 }) {
+  const { t } = useTranslation('web');
   const [title, setTitle] = useState(sound.title);
   const [artistName, setArtistName] = useState(sound.artistName ?? '');
   const [genre, setGenre] = useState(sound.genre ?? '');
@@ -62,10 +63,9 @@ function TrackEditDialog({
 
   return (
     <Dialog.Root isOpen onClose={onClose} className="max-w-lg">
-      <Dialog.Title>Edit track</Dialog.Title>
+      <Dialog.Title>{t('adminChannelTracks.editTrack')}</Dialog.Title>
       <Dialog.Description>
-        Changes are logged in the audit log and show on the artist's channel
-        right away. The artist is notified of which details you changed.
+        {t('adminChannelTracks.changesAreLoggedInThe')}
       </Dialog.Description>
       <form
         className="mt-4 flex flex-col gap-3"
@@ -75,41 +75,45 @@ function TrackEditDialog({
         }}
       >
         <Input
-          label="Title"
+          label={t('adminChannelTracks.title')}
           value={title}
           maxLength={200}
           onChange={(event) => setTitle(event.target.value)}
         />
         <Input
-          label="Artist credit"
+          label={t('adminChannelTracks.artistCredit')}
           value={artistName}
           maxLength={120}
-          placeholder="Channel name"
+          placeholder={t('adminChannelTracks.channelName')}
           onChange={(event) => setArtistName(event.target.value)}
         />
         <Input
-          label="Genre"
+          label={t('adminChannelTracks.genre')}
           value={genre}
           maxLength={80}
           onChange={(event) => setGenre(event.target.value)}
         />
         <Textarea
-          label="Description"
+          label={t('adminChannelTracks.description')}
           value={description}
           maxLength={2000}
           rows={4}
           submitOnModEnter
           onChange={(event) => setDescription(event.target.value)}
         />
-        <Toggle label="Public" checked={isPublic} onChange={setIsPublic} />
+        <Toggle
+          label={t('adminChannelTracks.public')}
+          checked={isPublic}
+          onChange={setIsPublic}
+        />
         {error ? <InlineError>{error}</InlineError> : null}
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('adminChannelTracks.cancel')}</Dialog.Close>
           <SaveButton
             type="submit"
             disabled={saving || !title.trim()}
             saving={saving}
-            label="Save track"
+            label={t('adminChannelTracks.saveTrack')}
           />
         </Dialog.Actions>
       </form>
@@ -145,8 +149,8 @@ export function ChannelTracksPanel() {
 
   return (
     <StudioPanel
-      title="Channel tracks"
-      description="Fix a track's title, credit, genre, description or visibility on any channel, newest 200 first."
+      title={t('adminChannelTracks.channelTracks')}
+      description={t('adminChannelTracks.fixATrackSTitle')}
     >
       <form
         className="flex flex-wrap items-end gap-2"
@@ -159,7 +163,7 @@ export function ChannelTracksPanel() {
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          label="Channel slug"
+          label={t('adminChannelTracks.channelSlug')}
           value={slugInput}
           onChange={(event) => setSlugInput(event.target.value)}
           className="max-w-xs"
@@ -199,7 +203,7 @@ export function ChannelTracksPanel() {
                   ) : null}
                   {!sound.isPublic ? (
                     <Badge variant="pill" color="secondary">
-                      Private
+                      {t('adminChannelTracks.private')}
                     </Badge>
                   ) : null}
                 </span>

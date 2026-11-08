@@ -2,7 +2,7 @@ import { PlusIcon, TrashIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -46,6 +46,7 @@ export function SmartPlaylistDialog({
   onClose,
   onSaved,
 }: Props) {
+  const { t } = useTranslation('web');
   const [draft, setDraft] = useState<NativeSmartDefinition>(EMPTY_SMART);
   const [saving, setSaving] = useState(false);
   const [matches, setMatches] = useState<number | null>(null);
@@ -125,8 +126,7 @@ export function SmartPlaylistDialog({
         {editing?.id ? 'Edit smart playlist' : 'New smart playlist'}
       </Dialog.Title>
       <Dialog.Description>
-        A smart playlist follows your rules: it updates by itself as ratings,
-        plays, tags and analysis change.
+        {t('smartPlaylist.aSmartPlaylistFollowsYour')}
       </Dialog.Description>
       <form
         onSubmit={(event) => {
@@ -137,7 +137,7 @@ export function SmartPlaylistDialog({
         <div className="flex max-h-[60vh] flex-col gap-3 overflow-y-auto py-2">
           <Input
             autoComplete="off"
-            label="Name"
+            label={t('smartPlaylist.name')}
             value={draft.name}
             onChange={(event) =>
               setDraft((current) => ({ ...current, name: event.target.value }))
@@ -145,10 +145,10 @@ export function SmartPlaylistDialog({
           />
           <div className="flex flex-col gap-1">
             <span className="text-sm font-medium" aria-hidden>
-              Include tracks that match
+              {t('smartPlaylist.includeTracksThatMatch')}
             </span>
             <FilterChips
-              aria-label="Include tracks that match"
+              aria-label={t('smartPlaylist.includeTracksThatMatch')}
               items={[
                 { id: 'all', label: 'All of the rules' },
                 { id: 'any', label: 'Any of the rules' },
@@ -159,14 +159,17 @@ export function SmartPlaylistDialog({
               }
             />
           </div>
-          <ul className="flex flex-col gap-2" aria-label="Rules">
+          <ul
+            className="flex flex-col gap-2"
+            aria-label={t('smartPlaylist.rules')}
+          >
             {draft.rules.map((rule, index) => (
               <li
                 key={index}
                 className="border-border flex flex-wrap items-end gap-2 rounded-md border p-2"
               >
                 <Select
-                  label="Field"
+                  label={t('smartPlaylist.field')}
                   value={rule.field}
                   onValueChange={(field) =>
                     setRule(index, withField(rule, field as typeof rule.field))
@@ -177,7 +180,7 @@ export function SmartPlaylistDialog({
                   }))}
                 />
                 <Select
-                  label="Condition"
+                  label={t('smartPlaylist.condition')}
                   value={rule.op}
                   onValueChange={(op) =>
                     setRule(index, { ...rule, op: op as typeof rule.op })
@@ -188,7 +191,7 @@ export function SmartPlaylistDialog({
                   <SmartRuleValueInput
                     rule={rule}
                     which="value"
-                    label="Value"
+                    label={t('smartPlaylist.value')}
                     onChange={(value) => setRule(index, { ...rule, value })}
                   />
                 ) : null}
@@ -232,12 +235,12 @@ export function SmartPlaylistDialog({
               }
             >
               <PlusIcon size={14} aria-hidden />
-              Add rule
+              {t('smartPlaylist.addRule')}
             </Button>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <Select
-              label="Sort by"
+              label={t('smartPlaylist.sortBy')}
               value={draft.sort}
               onValueChange={(sort) =>
                 setDraft((current) => ({
@@ -248,7 +251,7 @@ export function SmartPlaylistDialog({
               options={SMART_SORTS}
             />
             <Select
-              label="Order"
+              label={t('smartPlaylist.order')}
               value={draft.descending ? 'desc' : 'asc'}
               onValueChange={(value) =>
                 setDraft((current) => ({
@@ -265,7 +268,7 @@ export function SmartPlaylistDialog({
               type="number"
               inputMode="numeric"
               enterKeyHint="done"
-              label="Limit to first … tracks (optional)"
+              label={t('smartPlaylist.limitToFirstTracksOptional')}
               value={draft.limit === null ? '' : String(draft.limit)}
               onChange={(event) => {
                 const value = event.target.value.trim();
@@ -290,7 +293,7 @@ export function SmartPlaylistDialog({
           </p>
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('smartPlaylist.cancel')}</Dialog.Close>
           <Button
             className="gap-1.5"
             disabled={saving || problem !== null || draft.name.trim() === ''}
