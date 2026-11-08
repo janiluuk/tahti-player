@@ -4,6 +4,7 @@ import {
   redirect,
 } from '@tanstack/react-router';
 
+import { TAHTI_RADIO_SLUG } from '../api/client';
 import { diagnosticsEnabled } from '../lib/buildPolicy';
 import {
   fanCheckoutReturn,
@@ -309,12 +310,24 @@ export const newsRoute = createRoute({
 export const channelRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/channel/$slug',
-  validateSearch: (search: Record<string, unknown>): { edit?: boolean } => {
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { edit?: boolean; view?: 'channel' } => {
     const raw = search.edit;
+    const view = search.view === 'channel' ? { view: 'channel' as const } : {};
     if (raw === true || raw === 1 || raw === '1' || raw === 'true') {
-      return { edit: true };
+      return { edit: true, ...view };
     }
-    return {};
+    return view;
+  },
+  beforeLoad: ({ params, search }) => {
+    if (
+      params.slug === TAHTI_RADIO_SLUG &&
+      !search.edit &&
+      search.view !== 'channel'
+    ) {
+      throw redirect({ to: '/radio', replace: true });
+    }
   },
   component: function ChannelRoute() {
     const { slug } = channelRoute.useParams();
@@ -325,6 +338,11 @@ export const channelRoute = createRoute({
 export const artistRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/u/$username',
+  beforeLoad: ({ params }) => {
+    if (params.username === TAHTI_RADIO_SLUG) {
+      throw redirect({ to: '/radio', replace: true });
+    }
+  },
   component: function ArtistRoute() {
     const { username } = artistRoute.useParams();
     return <ArtistView username={username} />;
