@@ -1225,7 +1225,8 @@ export function mockVenues(): VenueDirectoryItem[] {
       city: 'Helsinki',
       countryCode: 'FI',
       capacity: 400,
-      description: 'Mock venue for the listen POC.',
+      description:
+        'Club and live venue in Kallio, with gigs and club nights most weeks.',
       externalLinks: { website: 'https://tahti.live' },
       photos: [],
     },

@@ -5,6 +5,7 @@ import { flexRender, Row } from '@tanstack/react-table';
 import { Track } from '@tahti-player/model';
 
 import { cn } from '../../utils';
+import { trackRowClass } from './utils/rowClass';
 
 type SortableRowProps<T extends Track = Track> = {
   row: Row<T>;
@@ -46,15 +47,10 @@ export function SortableRow<T extends Track = Track>({
       aria-current={isCurrent ? 'true' : undefined}
       ref={setNodeRef}
       style={style}
-      className={cn(
-        'border-border group border-b-(length:--border-width) select-none',
-        row.index % 2 === 0 ? 'bg-background-secondary' : 'bg-background',
-        {
-          'z-50': isDragging,
-          'cursor-grab': isReorderable,
-          'border-l-primary bg-primary/10 border-l-2': isCurrent,
-        },
-      )}
+      className={cn('group select-none', trackRowClass(row.index, isCurrent), {
+        'z-50': isDragging,
+        'cursor-grab': isReorderable,
+      })}
       {...(isReorderable ? { ...attributes, ...listeners } : {})}
     >
       {row.getVisibleCells().map((cell) => (

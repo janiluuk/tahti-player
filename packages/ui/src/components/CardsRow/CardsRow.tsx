@@ -17,6 +17,10 @@ import { EmptyState } from '../EmptyState';
 import { Input } from '../Input';
 import { MediaArtwork } from '../MediaArtwork';
 import { Tooltip } from '../Tooltip';
+import {
+  trackRowClass,
+  trackRowMinHeightClass,
+} from '../TrackTable/utils/rowClass';
 import { useCardsRow } from './useCardsRow';
 
 export type CardsRowItem = {
@@ -62,18 +66,19 @@ const MOBILE_QUERY = '(max-width: 767px)';
 function ListItemBody({ item }: { item: CardsRowItem }) {
   return (
     <>
-      <MediaArtwork
-        src={item.imageUrl}
-        alt=""
-        seed={item.id}
-        size="thumb"
-        imageReveal={false}
-        className="shrink-0"
-      />
-      <span className="min-w-0 flex-1">
+      <span className="flex w-16 shrink-0 justify-center">
+        <MediaArtwork
+          src={item.imageUrl}
+          alt=""
+          seed={item.id}
+          size="md"
+          imageReveal={false}
+        />
+      </span>
+      <span className="min-w-0 flex-1 px-2">
         <span
           data-testid="card-title"
-          className="text-foreground block truncate text-sm font-semibold"
+          className="text-foreground block truncate"
         >
           {item.title}
         </span>
@@ -314,37 +319,42 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
       ) : isList ? (
         <ul
           data-testid="cards-row-list"
-          className="border-border/40 divide-border/40 flex flex-col divide-y overflow-hidden rounded-md border"
+          className="border-border text-foreground border-(length:--border-width) [&>li:last-child]:border-b-0"
         >
-          {filteredItems.map((item) =>
-            renderItem ? (
-              <li key={item.id} className="list-none p-1 *:w-full">
+          {filteredItems.map((item, index) => (
+            <li
+              key={item.id}
+              className={cn('list-none', trackRowClass(index, false))}
+            >
+              {renderItem ? (
                 <CardLayoutContext.Provider value="row">
-                  {renderItem(item)}
+                  <div className="*:w-full">{renderItem(item)}</div>
                 </CardLayoutContext.Provider>
-              </li>
-            ) : (
-              <li key={item.id} className="list-none">
-                {item.onClick ? (
-                  <button
-                    type="button"
-                    data-testid="cards-row-list-item"
-                    className="hover:bg-background-secondary flex w-full cursor-pointer items-center gap-3 px-3 py-2 text-left"
-                    onClick={item.onClick}
-                  >
-                    <ListItemBody item={item} />
-                  </button>
-                ) : (
-                  <div
-                    data-testid="cards-row-list-item"
-                    className="flex w-full items-center gap-3 px-3 py-2 text-left"
-                  >
-                    <ListItemBody item={item} />
-                  </div>
-                )}
-              </li>
-            ),
-          )}
+              ) : item.onClick ? (
+                <button
+                  type="button"
+                  data-testid="cards-row-list-item"
+                  className={cn(
+                    'flex w-full cursor-pointer items-center gap-2 pr-2 text-left',
+                    trackRowMinHeightClass,
+                  )}
+                  onClick={item.onClick}
+                >
+                  <ListItemBody item={item} />
+                </button>
+              ) : (
+                <div
+                  data-testid="cards-row-list-item"
+                  className={cn(
+                    'flex w-full items-center gap-2 pr-2 text-left',
+                    trackRowMinHeightClass,
+                  )}
+                >
+                  <ListItemBody item={item} />
+                </div>
+              )}
+            </li>
+          ))}
         </ul>
       ) : isFull ? (
         <CardLayoutContext.Provider value="full">
