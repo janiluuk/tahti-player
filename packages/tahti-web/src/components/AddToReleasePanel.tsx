@@ -1,8 +1,9 @@
+import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, Dialog } from '@tahti-player/ui';
+import { Button, ButtonLink, Dialog } from '@tahti-player/ui';
 
 import {
   addStudioReleaseTrack,
@@ -144,6 +145,18 @@ export function AddToReleasePanel({
           <PageEmpty
             title={t('empties.noReleasesYet')}
             description={t('empties.createAReleaseThenAddThese')}
+            action={
+              <ButtonLink
+                to="/studio/releases"
+                search={{ create: true }}
+                size="sm"
+                variant="secondary"
+                onClick={onClose}
+              >
+                <PlusIcon size={16} aria-hidden />
+                {t('emptyActions.createRelease')}
+              </ButtonLink>
+            }
           />
         ) : (
           releases.map((release) => (

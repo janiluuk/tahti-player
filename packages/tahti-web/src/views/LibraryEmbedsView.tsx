@@ -1,7 +1,8 @@
+import { LinkIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { FilterChips } from '@tahti-player/ui';
+import { ButtonLink, FilterChips } from '@tahti-player/ui';
 
 import type { IntegrationId } from '../api/sources';
 import { fetchStudioSounds } from '../api/studio';
@@ -168,6 +169,18 @@ export function LibraryEmbedsView() {
           <PageEmpty
             title={t('library.embedsEmptyTitle')}
             description={t('library.embedsEmptyDescription')}
+            action={
+              <ButtonLink
+                to="/settings/$section"
+                params={{ section: 'plugin-store' }}
+                search={{ category: 'import' }}
+                size="sm"
+                variant="secondary"
+              >
+                <LinkIcon size={16} aria-hidden />
+                {t('emptyActions.importEmbeds')}
+              </ButtonLink>
+            }
           />
         )
       ) : null}

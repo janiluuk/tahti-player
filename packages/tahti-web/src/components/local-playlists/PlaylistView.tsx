@@ -2,6 +2,7 @@ import {
   ArrowLeftIcon,
   DownloadIcon,
   LinkIcon,
+  ListPlusIcon,
   PlayIcon,
   ShuffleIcon,
   TrashIcon,
@@ -49,10 +50,16 @@ type ViewProps = {
   library: TahtiNativeLibrary;
   id: string;
   onBack: () => void;
+  onBrowseTracks?: () => void;
 };
 
 /** One playlist: entries in order, reorder, multi-remove with undo, play/shuffle. */
-export function PlaylistView({ library, id, onBack }: ViewProps) {
+export function PlaylistView({
+  library,
+  id,
+  onBack,
+  onBrowseTracks,
+}: ViewProps) {
   const { t } = useTranslation('web');
   const table = usePersistedCatalogTable(
     'tahti-local-playlist-table',
@@ -385,6 +392,14 @@ export function PlaylistView({ library, id, onBack }: ViewProps) {
         <PageEmpty
           title={t('empties.thisPlaylistIsEmpty')}
           description={t('empties.selectTracksInTracksAndChoose')}
+          action={
+            onBrowseTracks ? (
+              <Button size="sm" variant="secondary" onClick={onBrowseTracks}>
+                <ListPlusIcon size={16} aria-hidden />
+                {t('emptyActions.browseTracks')}
+              </Button>
+            ) : undefined
+          }
           className="flex-1"
         />
       ) : (
