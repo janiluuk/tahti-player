@@ -45,6 +45,7 @@ function matchesFilter(topic: DiscussionTopic, filter: TopicFilter): boolean {
 }
 
 function TopicRow({ topic }: { topic: DiscussionTopic }) {
+  const { t } = useTranslation('web');
   return (
     <li className="border-border bg-background-secondary rounded-md border-(length:--border-width) p-3">
       <Link
@@ -54,7 +55,11 @@ function TopicRow({ topic }: { topic: DiscussionTopic }) {
       >
         <span className="flex flex-wrap items-center gap-2">
           {topic.pinned ? (
-            <PinIcon size={14} aria-label="Pinned" className="shrink-0" />
+            <PinIcon
+              size={14}
+              aria-label={t('discussionsPage.pinned')}
+              className="shrink-0"
+            />
           ) : null}
           <span className="font-semibold hover:underline">{topic.title}</span>
           {topic.unreadCount ? (
@@ -66,14 +71,15 @@ function TopicRow({ topic }: { topic: DiscussionTopic }) {
           ) : null}
           {topic.status === 'CLOSED' ? (
             <Badge variant="pill" color="secondary">
-              Closed
+              {t('discussionsPage.closed')}
             </Badge>
           ) : null}
           {topic.following ? (
             <Badge variant="pill" color="secondary">
               {topic.muted ? (
                 <>
-                  <BellOffIcon size={12} aria-hidden /> Muted
+                  <BellOffIcon size={12} aria-hidden />{' '}
+                  {t('discussionsPage.muted')}
                 </>
               ) : (
                 'Following'
@@ -128,13 +134,12 @@ export function DiscussionsView() {
 
   return (
     <ViewShell
-      title="Discussions"
+      title={t('discussionsPage.discussions')}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl', content: 'gap-4' }}
     >
-      <PageBackLink to="/governance" label="Governance" />
+      <PageBackLink to="/governance" label={t('discussionsPage.governance')} />
       <p className="text-foreground-secondary text-sm">
-        Topics the board opened for members to talk through. Nothing here is a
-        vote; replying follows a topic so you hear about new replies.
+        {t('discussionsPage.topicsTheBoardOpenedFor')}
       </p>
       {topics.some((topic) => topic.unreadCount) ? (
         <div>
@@ -153,7 +158,7 @@ export function DiscussionsView() {
               })
             }
           >
-            Mark all read
+            {t('discussionsPage.markAllRead')}
           </Button>
         </div>
       ) : null}
@@ -165,7 +170,7 @@ export function DiscussionsView() {
           description={t('empties.discussionsAreOpenToTahtiRy')}
           action={
             <Button onClick={() => useAuthModalStore.getState().open('login')}>
-              Sign in
+              {t('discussionsPage.signIn')}
             </Button>
           }
         />
@@ -198,7 +203,7 @@ export function DiscussionsView() {
                 items={FILTERS}
                 selected={filter}
                 onChange={(id) => setFilter(id as TopicFilter)}
-                aria-label="Filter discussions"
+                aria-label={t('discussionsPage.filterDiscussions')}
               />
               {shown.length === 0 ? (
                 <PageEmpty
@@ -211,14 +216,14 @@ export function DiscussionsView() {
                       variant="secondary"
                       onClick={() => setFilter('all')}
                     >
-                      Show all
+                      {t('discussionsPage.showAll')}
                     </Button>
                   }
                 />
               ) : (
                 <ul
                   className="flex flex-col gap-2"
-                  aria-label="Discussion topics"
+                  aria-label={t('discussionsPage.discussionTopics')}
                 >
                   {shown.map((topic) => (
                     <TopicRow key={topic.id} topic={topic} />

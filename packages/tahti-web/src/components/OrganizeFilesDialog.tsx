@@ -2,7 +2,7 @@ import { FolderOpenIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -44,6 +44,7 @@ export function OrganizeFilesDialog({
   ids,
   onChanged,
 }: Props) {
+  const { t } = useTranslation('web');
   const [destination, setDestination] = useState('');
   const [template, setTemplate] = useState(DEFAULT_TEMPLATE);
   const [move, setMove] = useState(false);
@@ -160,11 +161,9 @@ export function OrganizeFilesDialog({
         onClose={() => (busy ? undefined : onClose())}
         className="max-w-xl"
       >
-        <Dialog.Title>Organize files</Dialog.Title>
+        <Dialog.Title>{t('organizeFiles.organizeFiles')}</Dialog.Title>
         <Dialog.Description>
-          Puts the selected tracks into a folder layout built from their tags.
-          Nothing changes until you confirm, existing files are never
-          overwritten, and the library keeps each track’s playlists and edits.
+          {t('organizeFiles.putsTheSelectedTracksInto')}
         </Dialog.Description>
         <form
           onSubmit={(event) => {
@@ -180,10 +179,10 @@ export function OrganizeFilesDialog({
             <div className="flex items-end gap-2">
               <div className="min-w-0 flex-1">
                 <Input
-                  label="Destination folder"
+                  label={t('organizeFiles.destinationFolder')}
                   value={destination}
                   readOnly
-                  placeholder="Choose a folder…"
+                  placeholder={t('organizeFiles.chooseAFolder')}
                 />
               </div>
               <Button
@@ -192,11 +191,11 @@ export function OrganizeFilesDialog({
                 onClick={() => void pick()}
               >
                 <FolderOpenIcon size={14} aria-hidden />
-                Choose…
+                {t('organizeFiles.choose')}
               </Button>
             </div>
             <Input
-              label="Layout"
+              label={t('organizeFiles.layout')}
               value={template}
               onChange={(event) => setTemplate(event.target.value)}
               placeholder={DEFAULT_TEMPLATE}
@@ -207,12 +206,12 @@ export function OrganizeFilesDialog({
               folder. The file extension is kept.
             </p>
             <Toggle
-              label="Move files instead of copying (changes your originals)"
+              label={t('organizeFiles.moveFilesInsteadOfCopying')}
               checked={move}
               onChange={setMove}
             />
             <Toggle
-              label="If a file already exists, keep both (otherwise skip it)"
+              label={t('organizeFiles.ifAFileAlreadyExists')}
               checked={keepBoth}
               onChange={setKeepBoth}
             />
@@ -223,7 +222,7 @@ export function OrganizeFilesDialog({
             ) : checking ? (
               <p className="text-foreground-secondary flex items-center gap-2">
                 <Loader size="inline" shape="circle" />
-                Checking…
+                {t('organizeFiles.checking')}
               </p>
             ) : plan ? (
               <div className="flex flex-col gap-1">
@@ -263,7 +262,7 @@ export function OrganizeFilesDialog({
             ) : null}
           </div>
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>{t('organizeFiles.cancel')}</Dialog.Close>
             <Button className="gap-1.5" disabled={!canRun} type="submit">
               {busy ? <Loader size="inline" shape="circle" /> : null}
               {move ? 'Move files' : 'Copy files'}
@@ -273,9 +272,9 @@ export function OrganizeFilesDialog({
       </Dialog.Root>
       <ConfirmDialog
         isOpen={confirmingMove}
-        title="Move these files?"
+        title={t('organizeFiles.moveTheseFiles')}
         description={`This moves ${n(plan?.ready ?? 0)} ${files(plan?.ready ?? 0)} out of their current folders into ${destination}. Other programs that use the old locations will no longer find them.`}
-        confirmLabel="Move files"
+        confirmLabel={t('organizeFiles.moveFiles')}
         destructive
         onCancel={() => setConfirmingMove(false)}
         onConfirm={() => void run()}

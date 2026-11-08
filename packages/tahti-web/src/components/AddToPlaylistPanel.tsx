@@ -234,7 +234,7 @@ export function AddToPlaylistPanel({
       <Dialog.Title>
         <span className="inline-flex items-center gap-2">
           <ListMusicIcon size={18} aria-hidden />
-          Add to playlist
+          {t('addToPlaylistPanel.addToPlaylist')}
         </span>
       </Dialog.Title>
       <Dialog.Description>
@@ -249,7 +249,7 @@ export function AddToPlaylistPanel({
         {!user ? (
           <p className="text-foreground-secondary text-sm">
             <Link to="/login" className="underline" onClick={handleClose}>
-              Sign in
+              {t('addToPlaylistPanel.signIn')}
             </Link>{' '}
             to save tracks to a playlist.
           </p>
@@ -297,12 +297,14 @@ export function AddToPlaylistPanel({
               variant="text"
               className="border-border hover:border-primary flex flex-col items-center gap-1.5 rounded-lg border border-dashed px-2 py-3 text-center"
               onClick={() => setCreating(true)}
-              aria-label="Create new playlist"
+              aria-label={t('addToPlaylistPanel.createNewPlaylist')}
             >
               <span className="text-foreground-secondary flex h-10 w-10 items-center justify-center">
                 <PlusIcon size={22} aria-hidden />
               </span>
-              <span className="text-[11px] leading-tight">New playlist</span>
+              <span className="text-[11px] leading-tight">
+                {t('addToPlaylistPanel.newPlaylist')}
+              </span>
             </Button>
             {collections.length === 0 && (
               <PageEmpty
@@ -329,16 +331,16 @@ export function AddToPlaylistPanel({
           }}
         >
           <Input
-            label="Playlist name"
+            label={t('addToPlaylistPanel.playlistName')}
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             autoFocus
           />
           <div className="flex flex-col gap-3 text-sm">
             <div className="flex items-center justify-between gap-3">
-              <span>Public</span>
+              <span>{t('addToPlaylistPanel.public')}</span>
               <Toggle
-                label="Public"
+                label={t('addToPlaylistPanel.public')}
                 checked={newPublic}
                 onChange={(checked) => {
                   setNewPublic(checked);
@@ -349,9 +351,9 @@ export function AddToPlaylistPanel({
               />
             </div>
             <div className="flex items-center justify-between gap-3">
-              <span>Others can add tracks</span>
+              <span>{t('addToPlaylistPanel.othersCanAddTracks')}</span>
               <Toggle
-                label="Others can add tracks"
+                label={t('addToPlaylistPanel.othersCanAddTracks')}
                 checked={newCollab}
                 disabled={!newPublic}
                 onChange={setNewCollab}
@@ -368,7 +370,7 @@ export function AddToPlaylistPanel({
                 setNewName('');
               }}
             >
-              Cancel
+              {t('addToPlaylistPanel.cancel')}
             </Button>
             <Button
               size="sm"
