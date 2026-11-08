@@ -1399,7 +1399,10 @@
         "tahtiSelects": "Tahti Selects",
         "latestReleases": "Uusimmat julkaisut",
         "randomTrack": "Satunnainen kappale"
-      }
+      },
+      "moreGenres": "+{{count}} lisää",
+      "fewerGenres": "Vähemmän tyylilajeja",
+      "groupsSearchPlaceholder": "Ryhmän nimi, tyylilaji…"
     },
     "library": {
       "sections": "Kirjaston osiot",
@@ -3921,7 +3924,12 @@
       "addFeed": "Lisää syöte",
       "newSupportRequest": "Uusi pyyntö",
       "writeBio": "Kirjoita esittely",
-      "uploadTrack": "Lataa kappale"
+      "uploadTrack": "Lataa kappale",
+      "newEpisode": "Uusi jakso",
+      "addTracks": "Lisää kappaleita",
+      "newCollection": "Uusi kokoelma",
+      "openLibrary": "Avaa kirjasto",
+      "addFirstModerator": "Lisää ensimmäinen moderaattori"
     },
     "pageTour": {
       "steps": {
