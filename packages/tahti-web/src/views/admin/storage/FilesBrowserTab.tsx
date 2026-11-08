@@ -69,6 +69,7 @@ function FileRow({
   onEditUploader: (userId: string) => void;
   onDelete: (f: AdminFileRow) => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <li className="flex flex-wrap items-center justify-between gap-3 px-2 py-3 text-sm">
       <Tooltip content={`Select ${f.title}`} side="top">
@@ -113,7 +114,7 @@ function FileRow({
         <Badge variant="pill" color={f.isPublic ? 'green' : 'secondary'}>
           {f.isPublic ? 'Public' : 'Private'}
         </Badge>
-        <Tooltip content="Preview" side="top">
+        <Tooltip content={t('filesBrowser.preview')} side="top">
           <Button
             size="icon-sm"
             variant="text"
@@ -124,7 +125,7 @@ function FileRow({
             <PlayIcon size={16} aria-hidden />
           </Button>
         </Tooltip>
-        <Tooltip content="View details" side="top">
+        <Tooltip content={t('filesBrowser.viewDetails')} side="top">
           <Button
             size="icon-sm"
             variant="text"
@@ -134,7 +135,7 @@ function FileRow({
             <SearchIcon size={15} aria-hidden />
           </Button>
         </Tooltip>
-        <Tooltip content="View uploader's storage" side="top">
+        <Tooltip content={t('filesBrowser.viewUploaderSStorage')} side="top">
           <ButtonLink
             to="/admin/storage/$userId"
             params={{ userId: f.userId }}
@@ -145,7 +146,7 @@ function FileRow({
             <ExternalLinkIcon size={15} aria-hidden />
           </ButtonLink>
         </Tooltip>
-        <Tooltip content="Delete" side="top">
+        <Tooltip content={t('filesBrowser.delete')} side="top">
           <Button
             size="icon-sm"
             variant="text"
@@ -280,8 +281,8 @@ export function FilesBrowserTab() {
         <Input
           enterKeyHint="search"
           type="search"
-          aria-label="Search files"
-          placeholder="Search by title, artist, or username…"
+          aria-label={t('filesBrowser.searchFiles')}
+          placeholder={t('filesBrowser.searchByTitleArtistOr')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="max-w-sm flex-1"
@@ -290,7 +291,7 @@ export function FilesBrowserTab() {
           }
         />
         <Select
-          label="Uploader"
+          label={t('filesBrowser.uploader')}
           value={userId}
           onValueChange={setUserId}
           options={[
@@ -303,7 +304,7 @@ export function FilesBrowserTab() {
           className="min-w-44"
         />
         <Select
-          label="Genre"
+          label={t('filesBrowser.genre')}
           value={genre}
           onValueChange={setGenre}
           options={[
@@ -316,7 +317,7 @@ export function FilesBrowserTab() {
           className="min-w-36"
         />
         <Select
-          label="Type"
+          label={t('filesBrowser.type')}
           value={contentType}
           onValueChange={setContentType}
           options={[
@@ -330,7 +331,7 @@ export function FilesBrowserTab() {
         />
         {filtered ? (
           <Button size="sm" variant="text" onClick={clearFilters}>
-            Clear filters
+            {t('filesBrowser.clearFilters')}
           </Button>
         ) : null}
         <Button
@@ -356,11 +357,11 @@ export function FilesBrowserTab() {
           onClick={() => setGroupByUser((v) => !v)}
         >
           <UsersIcon size={14} aria-hidden className="mr-1.5" />
-          Group by user
+          {t('filesBrowser.groupByUser')}
         </Button>
         <div className="flex items-center gap-1.5 sm:ml-auto">
           <SortMenuButton
-            label="Sort files by"
+            label={t('filesBrowser.sortFilesBy')}
             value={sortBy}
             onChange={(value) => setSortBy(value as FileSortKey)}
             options={SORT_OPTIONS.map((option) => ({
@@ -419,8 +420,8 @@ export function FilesBrowserTab() {
 
       {groupByUser ? (
         <StudioPanel
-          title="Files by user"
-          description="Every matching file, grouped by uploader with a running total per user."
+          title={t('filesBrowser.filesByUser')}
+          description={t('filesBrowser.everyMatchingFileGroupedBy')}
         >
           {loading ? (
             <PageLoading label={t('loading.loadingStorageUsers')} />
@@ -430,7 +431,7 @@ export function FilesBrowserTab() {
               action={
                 filtered ? (
                   <Button size="sm" variant="secondary" onClick={clearFilters}>
-                    Clear filters
+                    {t('filesBrowser.clearFilters')}
                   </Button>
                 ) : undefined
               }
@@ -485,7 +486,7 @@ export function FilesBrowserTab() {
               action={
                 filtered ? (
                   <Button size="sm" variant="secondary" onClick={clearFilters}>
-                    Clear filters
+                    {t('filesBrowser.clearFilters')}
                   </Button>
                 ) : undefined
               }
@@ -523,10 +524,10 @@ export function FilesBrowserTab() {
           onClose={() => setUserEditId(null)}
           className="max-w-3xl"
         >
-          <Dialog.Title>Edit uploader</Dialog.Title>
+          <Dialog.Title>{t('filesBrowser.editUploader')}</Dialog.Title>
           <AdminUserEditPanel userId={userEditId} />
           <Dialog.Actions>
-            <Dialog.Close>Close</Dialog.Close>
+            <Dialog.Close>{t('filesBrowser.close')}</Dialog.Close>
           </Dialog.Actions>
         </Dialog.Root>
       ) : null}

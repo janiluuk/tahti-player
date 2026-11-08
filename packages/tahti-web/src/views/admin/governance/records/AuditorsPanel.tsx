@@ -45,6 +45,7 @@ function roleLabel(auditor: GovernanceAuditor): string {
 }
 
 function AddAuditorForm({ onAdded }: { onAdded: () => void }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [kind, setKind] = useState<GovernanceAuditor['kind']>(
     'OPERATIONS_INSPECTOR',
@@ -60,7 +61,7 @@ function AddAuditorForm({ onAdded }: { onAdded: () => void }) {
   if (!open) {
     return (
       <Button size="sm" className="w-fit" onClick={() => setOpen(true)}>
-        Add an auditor
+        {t('auditors.addAnAuditor')}
       </Button>
     );
   }
@@ -100,22 +101,27 @@ function AddAuditorForm({ onAdded }: { onAdded: () => void }) {
       }}
     >
       <Select
-        label="Role"
+        label={t('auditors.role')}
         value={kind}
         onValueChange={(value) => setKind(value as GovernanceAuditor['kind'])}
         options={KIND_OPTIONS}
       />
-      <Toggle label="Deputy" showLabel checked={deputy} onChange={setDeputy} />
+      <Toggle
+        label={t('auditors.deputy')}
+        showLabel
+        checked={deputy}
+        onChange={setDeputy}
+      />
       <div className="flex flex-wrap gap-2">
         <Input
           autoComplete="off"
-          label="Name"
+          label={t('auditors.name')}
           value={name}
           maxLength={200}
           onChange={(e) => setName(e.target.value)}
         />
         <Input
-          label="Firm (optional)"
+          label={t('auditors.firmOptional')}
           value={firm}
           maxLength={200}
           onChange={(e) => setFirm(e.target.value)}
@@ -123,13 +129,13 @@ function AddAuditorForm({ onAdded }: { onAdded: () => void }) {
       </div>
       <div className="flex flex-wrap gap-2">
         <Input
-          label="Term starts"
+          label={t('auditors.termStarts')}
           type="date"
           value={termStart}
           onChange={(e) => setTermStart(e.target.value)}
         />
         <Input
-          label="Term ends (optional)"
+          label={t('auditors.termEndsOptional')}
           type="date"
           value={termEnd}
           onChange={(e) => setTermEnd(e.target.value)}
@@ -138,7 +144,7 @@ function AddAuditorForm({ onAdded }: { onAdded: () => void }) {
       {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy}>
-          Save auditor
+          {t('auditors.saveAuditor')}
         </Button>
         <Button
           type="button"
@@ -147,7 +153,7 @@ function AddAuditorForm({ onAdded }: { onAdded: () => void }) {
           disabled={busy}
           onClick={() => setOpen(false)}
         >
-          Cancel
+          {t('auditors.cancel')}
         </Button>
       </div>
     </form>
@@ -161,6 +167,7 @@ function EndAuditorTerm({
   auditor: GovernanceAuditor;
   onEnded: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [termEnd, setTermEnd] = useState(new Date().toISOString().slice(0, 10));
   const [busy, setBusy] = useState(false);
@@ -175,7 +182,7 @@ function EndAuditorTerm({
         aria-label={`End term: ${auditor.name}`}
         onClick={() => setOpen(true)}
       >
-        End term
+        {t('auditors.endTerm')}
       </Button>
     );
   }
@@ -199,13 +206,13 @@ function EndAuditorTerm({
       }}
     >
       <Input
-        label="Term ends on"
+        label={t('auditors.termEndsOn')}
         type="date"
         value={termEnd}
         onChange={(e) => setTermEnd(e.target.value)}
       />
       <Button type="submit" size="sm" disabled={busy || !termEnd}>
-        Save end
+        {t('auditors.saveEnd')}
       </Button>
       <Button
         type="button"
@@ -214,7 +221,7 @@ function EndAuditorTerm({
         disabled={busy}
         onClick={() => setOpen(false)}
       >
-        Cancel
+        {t('auditors.cancel')}
       </Button>
       {error ? (
         <InlineError textSize="xs" className="w-full">
@@ -244,7 +251,7 @@ export function AuditorsPanel() {
   }, [load]);
 
   return (
-    <StudioPanel title="Auditors">
+    <StudioPanel title={t('auditors.auditors')}>
       <AddAuditorForm onAdded={() => void load()} />
       {auditors === null ? (
         <PageLoading label={t('loading.loadingAuditors')} />

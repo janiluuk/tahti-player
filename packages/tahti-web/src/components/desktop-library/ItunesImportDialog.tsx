@@ -1,5 +1,6 @@
 import { FolderOpenIcon, PlusIcon, XIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Alert,
   Button,
@@ -83,13 +84,14 @@ function UnresolvedList({
   tracks: NativeItunesUnresolved[];
   total: number;
 }) {
+  const { t } = useTranslation('web');
   if (!tracks.length) {
     return null;
   }
   return (
     <section
       className="flex flex-col gap-2"
-      aria-label="Tracks that were not resolved"
+      aria-label={t('itunesImport.tracksThatWereNotResolved')}
     >
       <div className="flex items-center justify-between gap-2">
         <p className="text-sm font-medium">
@@ -99,7 +101,7 @@ function UnresolvedList({
         <CopyButton
           size="sm"
           variant="text"
-          label="Copy list"
+          label={t('itunesImport.copyList')}
           text={unresolvedAsText(tracks)}
           toastMessage="List copied"
         />
@@ -310,6 +312,7 @@ export function ItunesImportDialog({
   pickFolder,
   onImported,
 }: Props) {
+  const { t } = useTranslation('web');
   const state = useItunesImport({
     isOpen,
     itunesImport,
@@ -330,7 +333,7 @@ export function ItunesImportDialog({
       onClose={() => (state.phase === 'committing' ? undefined : onClose())}
       className="max-w-xl"
     >
-      <Dialog.Title>Import iTunes library</Dialog.Title>
+      <Dialog.Title>{t('itunesImport.importItunesLibrary')}</Dialog.Title>
       <Dialog.Description>
         Brings in tracks, ratings, play counts and playlists from an iTunes or
         Music.app library export (File → Library → Export Library…). Your audio
@@ -343,7 +346,7 @@ export function ItunesImportDialog({
         <div className="py-2">
           <Button className="gap-1.5" onClick={() => void state.pickFile()}>
             <FolderOpenIcon size={14} aria-hidden />
-            Choose library file…
+            {t('itunesImport.chooseLibraryFile')}
           </Button>
         </div>
       ) : null}
@@ -359,15 +362,20 @@ export function ItunesImportDialog({
       {state.phase === 'previewing' && !state.preview ? (
         <p className="text-foreground-secondary flex items-center gap-2 py-2 text-sm">
           <Loader size="inline" shape="circle" />
-          Reading the library…
+          {t('itunesImport.readingTheLibrary')}
         </p>
       ) : null}
 
       {reviewing && state.preview ? (
         <div className="flex max-h-[55vh] flex-col gap-4 overflow-y-auto py-2">
           <PreviewSummary preview={state.preview} />
-          <section className="flex flex-col gap-2" aria-label="Folder remaps">
-            <p className="text-sm font-medium">Moved your music?</p>
+          <section
+            className="flex flex-col gap-2"
+            aria-label={t('itunesImport.folderRemaps')}
+          >
+            <p className="text-sm font-medium">
+              {t('itunesImport.movedYourMusic')}
+            </p>
             <p className="text-foreground-secondary text-xs">
               Replace the start of the paths in the export with where the files
               are now
@@ -381,7 +389,7 @@ export function ItunesImportDialog({
                 <div className="min-w-0 flex-1">
                   <Input
                     size="sm"
-                    label="Old folder"
+                    label={t('itunesImport.oldFolder')}
                     value={draft.from}
                     onChange={(event) =>
                       state.updateMapping(index, { from: event.target.value })
@@ -391,7 +399,7 @@ export function ItunesImportDialog({
                 <div className="min-w-0 flex-1">
                   <Input
                     size="sm"
-                    label="New folder"
+                    label={t('itunesImport.newFolder')}
                     value={draft.to}
                     onChange={(event) =>
                       state.updateMapping(index, { to: event.target.value })
@@ -424,7 +432,7 @@ export function ItunesImportDialog({
                 onClick={state.addMapping}
               >
                 <PlusIcon size={14} aria-hidden />
-                Add folder remap
+                {t('itunesImport.addFolderRemap')}
               </Button>
               <Button
                 className="gap-1.5"
@@ -441,7 +449,7 @@ export function ItunesImportDialog({
             </div>
             {state.dirty ? (
               <Alert tone="warning" className="px-3 py-2 text-xs">
-                Preview again to apply the folder changes before importing.
+                {t('itunesImport.previewAgainToApplyThe')}
               </Alert>
             ) : null}
           </section>
@@ -470,7 +478,7 @@ export function ItunesImportDialog({
             disabled={working}
             onClick={() => void state.pickFile()}
           >
-            Choose another file
+            {t('itunesImport.chooseAnotherFile')}
           </Button>
         ) : null}
         {reviewing || state.phase === 'committing' ? (

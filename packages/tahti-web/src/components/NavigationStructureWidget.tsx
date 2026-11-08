@@ -24,6 +24,7 @@ function countAll(items: NavigationStructureItem[]): number {
 }
 
 export function NavigationStructureWidget() {
+  const { t } = useTranslation('web');
   const items = useNavigationStructureStore((state) => state.items);
   const addItem = useNavigationStructureStore((state) => state.addItem);
   const removeItem = useNavigationStructureStore((state) => state.removeItem);
@@ -67,11 +68,10 @@ export function NavigationStructureWidget() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="font-display text-lg font-bold">
-            Navigation structure
+            {t('navStructure.navigationStructure')}
           </h3>
           <p className="text-foreground-secondary mt-0.5 text-sm">
-            Arrange a saved draft of the navigation, including submenus. This
-            does not change the app yet.
+            {t('navStructure.arrangeASavedDraftOf')}
           </p>
         </div>
         <span className="text-foreground-secondary text-xs tracking-wide uppercase">
@@ -81,7 +81,7 @@ export function NavigationStructureWidget() {
 
       <ul
         className="mt-4 flex flex-col gap-2"
-        aria-label="Navigation structure draft"
+        aria-label={t('navStructure.navigationStructureDraft')}
       >
         {items.map((item, index) => (
           <NavigationItem
@@ -111,13 +111,13 @@ export function NavigationStructureWidget() {
         }}
       >
         <Input
-          label="Label"
-          placeholder="Community"
+          label={t('navStructure.label')}
+          placeholder={t('navStructure.community')}
           value={label}
           onChange={(event) => setLabel(event.target.value)}
         />
         <Input
-          label="Path"
+          label={t('navStructure.path')}
           placeholder="/community"
           value={path}
           onChange={(event) => setPath(event.target.value)}
@@ -129,7 +129,7 @@ export function NavigationStructureWidget() {
           className="gap-1.5"
         >
           <PlusIcon size={15} aria-hidden />
-          Add top-level item
+          {t('navStructure.addTopLevelItem')}
         </Button>
       </form>
     </div>
@@ -143,6 +143,7 @@ function AddChildForm({
   onAdd: (label: string, path: string) => void;
   onCancel: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [label, setLabel] = useState('');
   const [path, setPath] = useState('');
 
@@ -165,13 +166,13 @@ function AddChildForm({
       }}
     >
       <Input
-        label="Label"
-        placeholder="Sub-item"
+        label={t('navStructure.label')}
+        placeholder={t('navStructure.subItem')}
         value={label}
         onChange={(event) => setLabel(event.target.value)}
       />
       <Input
-        label="Path"
+        label={t('navStructure.path')}
         placeholder="/parent/sub-item"
         value={path}
         onChange={(event) => setPath(event.target.value)}
@@ -180,7 +181,7 @@ function AddChildForm({
         Add
       </Button>
       <Button size="sm" variant="text" onClick={onCancel}>
-        Cancel
+        {t('navStructure.cancel')}
       </Button>
     </form>
   );
@@ -256,7 +257,7 @@ function NavigationItem({
         <GripVerticalIcon
           size={17}
           className="text-foreground-secondary shrink-0 cursor-grab"
-          aria-label="Drag to reorder"
+          aria-label={t('navStructure.dragToReorder')}
         />
         <div className="min-w-0 flex-1 basis-28">
           <p className="truncate text-sm font-semibold">{item.label}</p>

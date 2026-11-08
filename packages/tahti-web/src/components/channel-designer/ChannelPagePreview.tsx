@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Tooltip } from '@tahti-player/ui';
 
 import type {
@@ -69,31 +70,29 @@ export function ChannelPagePreview({
   onEditBackdrop,
   onEditPlayer,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <section
-      aria-label="Channel page preview"
+      aria-label={t('channelPagePreview.channelPagePreview')}
       className="border-border bg-background min-w-0 overflow-x-hidden overflow-y-auto rounded-xl border shadow-lg lg:max-h-[calc(100vh-7rem)]"
     >
       <div className="border-border bg-background-secondary/40 flex items-center gap-1.5 border-b px-4 py-2.5">
         <div className="flex items-center gap-1.5">
           <span className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-            Live page preview
+            {t('channelPagePreview.livePagePreview')}
           </span>
           <Tooltip
             side="bottom"
             content={
               <p className="max-w-64 text-xs leading-relaxed">
-                This mirrors the public channel structure. Visitors see your
-                profile header, channel navigation, live stage, tracks, and
-                artist information in this order. Layout blocks are edited from
-                the channel page editor.
+                {t('channelPagePreview.thisMirrorsThePublicChannel')}
               </p>
             }
           >
             <span
               tabIndex={0}
               role="img"
-              aria-label="About this preview"
+              aria-label={t('channelPagePreview.aboutThisPreview')}
               className="text-foreground-secondary hover:text-foreground inline-flex size-4 cursor-help items-center justify-center rounded-full border border-current"
             >
               <span className="text-[10px] leading-none font-bold">?</span>
@@ -148,16 +147,16 @@ export function ChannelPagePreview({
               color: '#0B1220',
             }}
           >
-            Artist channel
+            {t('channelPagePreview.artistChannel')}
           </span>
         }
       />
-      <Tooltip content="Edit player design" side="top">
+      <Tooltip content={t('channelPagePreview.editPlayerDesign')} side="top">
         <div
           role="button"
           tabIndex={0}
           data-testid="channel-designer-stage-player"
-          aria-label="Edit player design"
+          aria-label={t('channelPagePreview.editPlayerDesign')}
           onClick={onEditPlayer}
           onKeyDown={(event) => {
             if (event.key === 'Enter' || event.key === ' ') {
@@ -173,24 +172,30 @@ export function ChannelPagePreview({
         >
           <div className="bg-gradient-to-t from-black/85 via-black/45 to-black/10 p-4 pt-10">
             <div className="text-[10px] font-semibold tracking-wide text-white/70 uppercase">
-              Now playing
+              {t('channelPagePreview.nowPlaying')}
             </div>
             <div className="mt-1 text-2xl font-extrabold text-white">
-              Your live channel
+              {t('channelPagePreview.yourLiveChannel')}
             </div>
             <div className="text-sm text-white/80">
-              A live preview of the artist stage
+              {t('channelPagePreview.aLivePreviewOfThe')}
             </div>
           </div>
         </div>
       </Tooltip>
       <nav
-        aria-label="Channel navigation"
+        aria-label={t('channelPagePreview.channelNavigation')}
         className="border-border relative flex flex-wrap items-center gap-x-5 gap-y-2 border border-t-0 px-4 py-3 text-xs font-semibold uppercase"
       >
-        <span className="border-primary border-b-2 pb-2">Stage</span>
-        <span className="text-foreground-secondary pb-2">Tracks</span>
-        <span className="text-foreground-secondary pb-2">About</span>
+        <span className="border-primary border-b-2 pb-2">
+          {t('channelPagePreview.stage')}
+        </span>
+        <span className="text-foreground-secondary pb-2">
+          {t('channelPagePreview.tracks')}
+        </span>
+        <span className="text-foreground-secondary pb-2">
+          {t('channelPagePreview.about')}
+        </span>
       </nav>
 
       <PreviewTracksPlaceholder displayName={displayName} bio={bio} />
