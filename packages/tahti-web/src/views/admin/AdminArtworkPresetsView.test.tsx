@@ -42,4 +42,17 @@ describe('AdminArtworkPresetsView', () => {
       expect(presets.deleteAdminArtworkPreset).toHaveBeenCalledWith('p1'),
     );
   });
+
+  it('opens the upload dialog from the empty state', async () => {
+    presets.fetchAdminArtworkPresets.mockResolvedValueOnce({
+      data: [],
+      meta: { source: 'api' },
+    });
+    await renderWithRouter(<AdminArtworkPresetsView />);
+    await screen.findByText('No artwork presets yet');
+    const ctas = screen.getAllByRole('button', { name: 'Add artwork' });
+    expect(ctas).toHaveLength(2);
+    fireEvent.click(ctas[1]!);
+    expect(await screen.findByRole('dialog')).toBeTruthy();
+  });
 });

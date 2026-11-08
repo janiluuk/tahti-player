@@ -14,22 +14,19 @@ export const BOARD_ROLE_OPTIONS = (
 ).map((id) => ({ id, label: BOARD_ROLE_LABELS[id] }));
 
 /** Record a member's board term. */
-export function AddBoardTermForm({ onAdded }: { onAdded: () => void }) {
-  const [open, setOpen] = useState(false);
+export function AddBoardTermForm({
+  onClose,
+  onAdded,
+}: {
+  onClose: () => void;
+  onAdded: () => void;
+}) {
   const [member, setMember] = useState<PickedMember | null>(null);
   const [role, setRole] = useState<GovernanceBoardRole>('MEMBER');
   const [termStart, setTermStart] = useState('');
   const [termEnd, setTermEnd] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  if (!open) {
-    return (
-      <Button size="sm" className="w-fit" onClick={() => setOpen(true)}>
-        Add a board term
-      </Button>
-    );
-  }
 
   return (
     <form
@@ -54,7 +51,7 @@ export function AddBoardTermForm({ onAdded }: { onAdded: () => void }) {
             setError(result.error);
             return;
           }
-          setOpen(false);
+          onClose();
           setMember(null);
           setTermStart('');
           setTermEnd('');
@@ -93,7 +90,7 @@ export function AddBoardTermForm({ onAdded }: { onAdded: () => void }) {
           size="sm"
           variant="secondary"
           disabled={busy}
-          onClick={() => setOpen(false)}
+          onClick={() => onClose()}
         >
           Cancel
         </Button>

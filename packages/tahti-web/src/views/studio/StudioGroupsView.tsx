@@ -111,6 +111,18 @@ export function StudioGroupsView() {
         <PageEmpty
           title={t('studioGroups.emptyTitle')}
           description={t('studioGroups.emptyDescription')}
+          action={
+            creating ? undefined : (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setCreating(true)}
+              >
+                <PlusIcon size={16} aria-hidden />
+                {t('studioGroups.newGroup')}
+              </Button>
+            )
+          }
         />
       );
     }

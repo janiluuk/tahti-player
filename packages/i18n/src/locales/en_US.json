@@ -3041,7 +3041,8 @@
       "cancelDescription": "The party page tells visitors it was canceled. This cannot be undone.",
       "cancelConfirm": "Cancel party",
       "reminders_one": "{{count}} reminder",
-      "reminders_other": "{{count}} reminders"
+      "reminders_other": "{{count}} reminders",
+      "scheduleParty": "Schedule party"
     },
     "adminThemes": {
       "title": "Community themes",
@@ -3825,6 +3826,56 @@
       "moveUp": "Move up",
       "moveDown": "Move down",
       "remove": "Remove"
+    },
+    "tiers": {
+      "newTier": "New tier",
+      "newPurchaseTier": "New purchase tier",
+      "fanIntro": "Fan subscription tiers, perks, and pricing.",
+      "purchaseIntro": "A price is what a fan pays. Add one, then put tracks on it below."
+    },
+    "adminPresets": {
+      "addArtwork": "Add artwork",
+      "addStation": "Add station"
+    },
+    "adminGovernance": {
+      "openTopic": "Open a topic",
+      "callElection": "Call an election",
+      "addBoardTerm": "Add a board term"
+    },
+    "keyboardHelp": {
+      "pageTour": "Page tour",
+      "tourToggle": "Open or close the guided page tour",
+      "tourPrevious": "Previous tour step",
+      "tourNext": "Next tour step",
+      "tourClose": "Close the tour",
+      "tourNote": "The sidebar is explained everywhere; the top bar only on the homepage; Studio and Admin panel items while you’re inside those sections.",
+      "navigation": "Navigation",
+      "listen": "Listen",
+      "radio": "Radio",
+      "feed": "Feed",
+      "library": "My Library",
+      "studio": "Studio",
+      "player": "Player",
+      "playPause": "Play / pause (when a track is loaded)",
+      "fullScreen": "Toggle the full-screen player (when a track is loaded)",
+      "skipBack": "Skip backward (Settings → Playback sets the duration)",
+      "skipForward": "Skip forward",
+      "notes": "Notes",
+      "typingNote": "Shortcuts are disabled while typing in a text field, textarea, dropdown, or any editable content."
+    },
+    "channelModerators": {
+      "title": "Channel moderators",
+      "description": "People you trust to look after your channel's chat: they can remove messages and ban people from posting. They cannot change your channel or its settings. Tahti tells them when you add them.",
+      "remove": "Remove moderator",
+      "removeNamed": "Remove {{name}} as moderator",
+      "username": "Username",
+      "usernamePlaceholder": "listener-handle",
+      "add": "Add moderator",
+      "added": "Added {{name}} as moderator. They've been notified.",
+      "undone": "Removed {{name}}.",
+      "removeConfirmNamed": "Remove {{name}} as moderator?",
+      "removeConfirm": "Remove moderator?",
+      "removeConfirmDescription": "They lose chat moderation on this channel."
     }
   },
   "studioEditor": {
