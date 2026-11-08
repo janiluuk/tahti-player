@@ -4605,6 +4605,18 @@
       "leaveJam": "Leave Jam",
       "theyStopHearingTheJam": "They stop hearing the Jam and can't rejoin it with this link.",
       "remove": "Remove"
+    },
+    "trackContextMenu": {
+      "playNow": "Play now",
+      "playNext": "Play next",
+      "addToQueue": "Add to queue",
+      "addToPlaylist": "Add to playlist",
+      "couldNotLoadPlaylists": "Could not load playlists",
+      "newPlaylist": "New playlist…",
+      "audioTools": "Audio tools",
+      "openInProEditor": "Open in Pro Editor",
+      "referenceMastering": "Reference mastering",
+      "filterPlaylists": "Filter playlists"
     }
   },
   "studioEditor": {

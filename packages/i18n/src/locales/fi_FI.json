@@ -4605,6 +4605,18 @@
       "leaveJam": "Poistu Jamista",
       "theyStopHearingTheJam": "Hän ei enää kuule Jamia eikä voi liittyä takaisin tällä linkillä.",
       "remove": "Poista"
+    },
+    "trackContextMenu": {
+      "playNow": "Soita nyt",
+      "playNext": "Soita seuraavaksi",
+      "addToQueue": "Lisää jonoon",
+      "addToPlaylist": "Lisää soittolistaan",
+      "couldNotLoadPlaylists": "Soittolistoja ei voitu ladata",
+      "newPlaylist": "Uusi soittolista…",
+      "audioTools": "Äänityökalut",
+      "openInProEditor": "Avaa Pro-editorissa",
+      "referenceMastering": "Referenssimasterointi",
+      "filterPlaylists": "Suodata soittolistoja"
     }
   },
   "studioEditor": {
