@@ -17,12 +17,15 @@ export function RadioVisualizerHero({
   info,
   actions,
   embedded = false,
+  compact = false,
 }: {
   station: PublicChannel;
   logoUrl: string | null;
   info: ReactNode;
   actions: ReactNode;
   embedded?: boolean;
+  /** Short strip with a small logo, for the minimized player widget. */
+  compact?: boolean;
 }) {
   const body = (
     <>
@@ -39,18 +42,30 @@ export function RadioVisualizerHero({
         aria-hidden
         className="from-background/90 via-background/30 absolute inset-0 bg-linear-to-t to-transparent"
       />
-      <div className="relative z-10 flex flex-1 flex-col justify-between gap-6 p-4 sm:p-6">
-        <div data-testid="radio-station-logo" className="self-start">
+      <div
+        className={cn(
+          'relative z-10 flex flex-1 p-4',
+          compact
+            ? 'items-end gap-4 pr-14'
+            : 'flex-col justify-between gap-6 sm:p-6',
+        )}
+      >
+        <div data-testid="radio-station-logo" className="shrink-0 self-start">
           <MediaArtwork
             size="md"
             src={logoUrl}
             alt="Tahti Radio"
             fit="contain"
-            className="bg-surface-secondary size-20 min-w-20 rounded-xl text-2xl font-bold tracking-tight sm:size-28 sm:min-w-28"
+            className={cn(
+              'bg-surface-secondary rounded-xl font-bold tracking-tight',
+              compact
+                ? 'size-14 min-w-14 text-lg'
+                : 'size-20 min-w-20 text-2xl sm:size-28 sm:min-w-28',
+            )}
             placeholder="TR"
           />
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex min-w-0 flex-1 flex-col gap-4">
           {info}
           <div className="flex flex-wrap items-start gap-3">{actions}</div>
         </div>
@@ -58,12 +73,18 @@ export function RadioVisualizerHero({
     </>
   );
 
-  const shellClass =
-    'relative flex min-h-[340px] flex-col overflow-hidden p-0 sm:min-h-[440px]';
+  const shellClass = cn(
+    'relative flex flex-col overflow-hidden p-0',
+    compact ? 'min-h-[160px]' : 'min-h-[340px] sm:min-h-[440px]',
+  );
 
   if (embedded) {
     return (
-      <div className={shellClass} data-testid="radio-visualizer-hero">
+      <div
+        className={shellClass}
+        data-testid="radio-visualizer-hero"
+        data-compact={compact || undefined}
+      >
         {body}
       </div>
     );

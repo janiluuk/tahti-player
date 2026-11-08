@@ -349,7 +349,13 @@ export function ConnectedPlayerBar() {
 
   if (isMobile) {
     return (
-      <div className={barShellClass}>
+      <div
+        className={cn(
+          barShellClass,
+          'bg-background-secondary border-border border-t',
+        )}
+        data-testid="mobile-player-bar"
+      >
         {embedStrip}
         {seekBar ? <div className="px-4 pt-2">{seekBar}</div> : null}
         <div className="flex w-full items-center gap-3 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">

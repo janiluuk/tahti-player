@@ -227,6 +227,7 @@ export function RadioStationsRow({
         onRetry={onRetry}
       >
         <CardsRow
+          defaultLayout="cards"
           data-testid={testId}
           title={t('listen.radio')}
           badge={t('listen.internetRadioBadge')}

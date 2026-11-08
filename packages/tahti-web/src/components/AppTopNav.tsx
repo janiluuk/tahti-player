@@ -1,4 +1,4 @@
-import { LogInIcon, MenuIcon, SearchIcon, XIcon } from 'lucide-react';
+import { LogInIcon, SearchIcon, XIcon } from 'lucide-react';
 import { lazy, Suspense, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -33,17 +33,11 @@ const StreamManagerPanel = lazy(() =>
   })),
 );
 
-type AppTopNavProps = {
-  /** Show hamburger for mobile left drawer. */
-  showMenuButton?: boolean;
-  onOpenMenu?: () => void;
-};
-
 /**
  * Production-parity top bar (StudioTopNav / ChannelHeader chrome):
  * logo left, icon actions right, labels only inside the user dropdown.
  */
-export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
+export function AppTopNav() {
   const { t } = useTranslation('web');
   const nav = useTopNavState();
   // A browser has its own back and forward; only the desktop app needs them.
@@ -72,19 +66,6 @@ export function AppTopNav({ showMenuButton, onOpenMenu }: AppTopNavProps) {
       className="tahti-theme-chrome border-border bg-background-secondary sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between gap-2 border-b px-2 sm:px-3 md:px-6"
     >
       <div className="flex min-w-0 items-center gap-2">
-        {showMenuButton ? (
-          <Tooltip content={t('nav.openMenu')} side="top">
-            <Button
-              variant="text"
-              size="icon-sm"
-              className={iconBtnClass}
-              aria-label={t('nav.openMenu')}
-              onClick={onOpenMenu}
-            >
-              <MenuIcon size={18} />
-            </Button>
-          </Tooltip>
-        ) : null}
         <TahtiLogoLink markOnly />
         {user && processingItems.length > 0 ? (
           <ProcessingIndicator nav={nav} />

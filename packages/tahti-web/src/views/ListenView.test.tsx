@@ -130,6 +130,34 @@ describe('ListenView sections', () => {
     expect(within(onAir).queryByRole('button', { name: 'Retry' })).toBeNull();
   });
 
+  it('marks live cards on the artwork instead of repeating "Live now" as the subtitle', async () => {
+    const { data } = await listen.fetchOnAirChannels();
+    const channel = [...data.live, ...data.replaying][0]!;
+    vi.spyOn(listen, 'fetchOnAirChannels').mockResolvedValue({
+      data: {
+        live: [{ ...channel, state: 'LIVE' }],
+        replaying: [],
+        recent: [],
+      },
+      meta: { source: 'api' },
+    });
+    await renderListen();
+
+    const live = await screen.findByTestId('listen-on-air');
+    await waitFor(() =>
+      expect(live.textContent).toContain(channel.user.displayName),
+    );
+    expect(within(live).getByTestId('on-air-live-marker')).toHaveTextContent(
+      'Live',
+    );
+    expect(within(live).getByText(`@${channel.user.username}`)).toBeTruthy();
+    expect(
+      within(live).queryAllByText('Live now', {
+        selector: '[data-testid="card"] *',
+      }),
+    ).toHaveLength(0);
+  });
+
   it('lists a replaying channel under Replays, not Live now', async () => {
     const { data } = await listen.fetchOnAirChannels();
     const channel = [...data.live, ...data.replaying][0]!;

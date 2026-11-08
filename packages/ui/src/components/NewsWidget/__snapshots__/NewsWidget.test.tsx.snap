@@ -6,19 +6,20 @@ exports[`NewsWidget > (Snapshot) renders a row of articles 1`] = `
   data-testid="news-widget"
 >
   <div
-    class="flex items-center justify-between gap-4"
+    class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2"
+    data-testid="news-widget-header"
   >
     <div
-      class="flex items-center gap-2"
+      class="flex min-w-0 items-center gap-2"
     >
       <h2
-        class="text-foreground text-lg font-bold"
+        class="text-foreground text-lg font-bold whitespace-nowrap"
       >
         News
       </h2>
     </div>
     <div
-      class="flex items-center gap-2"
+      class="ml-auto flex shrink-0 items-center gap-2"
     >
       <div>
         <button
@@ -92,15 +93,50 @@ exports[`NewsWidget > (Snapshot) renders a row of articles 1`] = `
           class="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         >
           <div
-            class="relative overflow-hidden size-full"
+            class="group overflow-hidden absolute inset-0 size-full"
+            data-testid="media-artwork"
           >
             <div
-              class="pointer-events-none absolute inset-0 flex items-center justify-center"
+              class="absolute inset-0 flex items-center justify-center bg-background-secondary"
+              data-testid="media-artwork-fallback"
             >
-              <span
+              <svg
                 aria-hidden="true"
-                class="from-primary/40 to-accent-purple/40 flex size-full items-center justify-center bg-gradient-to-br text-4xl font-bold text-white/80"
-              />
+                class="lucide lucide-cassette-tape text-foreground opacity-20"
+                fill="none"
+                height="48"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1"
+                viewBox="0 0 24 24"
+                width="48"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  height="16"
+                  rx="2"
+                  width="20"
+                  x="2"
+                  y="4"
+                />
+                <circle
+                  cx="8"
+                  cy="10"
+                  r="2"
+                />
+                <path
+                  d="M8 12h8"
+                />
+                <circle
+                  cx="16"
+                  cy="10"
+                  r="2"
+                />
+                <path
+                  d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                />
+              </svg>
             </div>
           </div>
         </div>

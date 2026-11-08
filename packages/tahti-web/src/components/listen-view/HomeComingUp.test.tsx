@@ -31,11 +31,35 @@ describe('HomeComingUp', () => {
     });
 
     expect(await screen.findByText('Album release show')).toBeVisible();
-    expect(
-      screen.getByText('Night Owls · Kuudes Linja, Helsinki'),
-    ).toBeVisible();
+    expect(screen.getByText('Night Owls')).toBeVisible();
+    expect(screen.getByText('Kuudes Linja, Helsinki')).toBeVisible();
     fireEvent.click(screen.getByText('Album release show'));
     expect(router.state.location.pathname).toBe('/channel/night-owls');
+  });
+
+  it('wraps a long title and venue onto two lines instead of clipping them', async () => {
+    vi.spyOn(upcoming, 'fetchUpcomingEvents').mockResolvedValue({
+      data: [
+        {
+          ...event,
+          title: 'Late-night broadcast from the basement',
+          place: 'Ääniwalli',
+        },
+      ],
+      meta: { source: 'api' },
+    });
+
+    await renderWithRouter(<HomeComingUp />, { paths: ['/channel/$slug'] });
+
+    const title = await screen.findByTestId('event-card-title');
+    expect(title.className).toContain('line-clamp-2');
+    expect(title.className).toContain('whitespace-normal');
+    expect(title.getAttribute('title')).toBe(
+      'Late-night broadcast from the basement',
+    );
+    const venue = screen.getByTestId('event-card-venue');
+    expect(venue).toHaveTextContent('Ääniwalli, Helsinki');
+    expect(venue.className).toContain('whitespace-normal');
   });
 
   it('renders nothing when no events are coming up', async () => {

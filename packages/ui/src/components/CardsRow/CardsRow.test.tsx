@@ -184,4 +184,14 @@ describe('CardsRow with custom cards', () => {
     rerender(<CardsRow {...props} layout="cards" />);
     expect(screen.getByTestId('card')).toHaveAttribute('data-layout', 'card');
   });
+
+  it('draws list rows with the TrackTable stripes and dividers', async () => {
+    Wrapper.mount();
+    await userEvent.click(screen.getByTestId('cards-row-layout-toggle'));
+    await userEvent.click(screen.getByTestId('cards-row-layout-toggle'));
+    const rows = screen.getByTestId('cards-row-list').querySelectorAll('li');
+    expect(rows[0].className).toMatch(/bg-background-secondary/);
+    expect(rows[1].className).toMatch(/(^| )bg-background( |$)/);
+    expect(rows[0].className).toMatch(/border-b-/);
+  });
 });
