@@ -6,11 +6,12 @@ export type RouteMetadata = {
   image?: string;
 };
 
-const DEFAULT_METADATA: RouteMetadata = {
-  title: 'Tahti · Independent music, live',
-  description:
-    'Listen to independent artists, live channels, radio, and lossless releases on Tahti.',
-};
+function defaultMetadata(): RouteMetadata {
+  return {
+    title: i18n.t('web:seo.defaultTitle'),
+    description: i18n.t('web:seo.defaultDescription'),
+  };
+}
 
 function displaySlug(value: string): string {
   return decodeURIComponent(value)
@@ -148,8 +149,8 @@ export function metadataForPath(pathname: string): RouteMetadata {
   if (channel) {
     const name = displaySlug(channel);
     return {
-      title: `${name} live on Tahti`,
-      description: `Listen to ${name}'s live channel, archive, and programme on Tahti.`,
+      title: i18n.t('web:seo.channelTitle', { name }),
+      description: i18n.t('web:seo.channelDescription', { name }),
     };
   }
 
@@ -158,8 +159,11 @@ export function metadataForPath(pathname: string): RouteMetadata {
     const collection = displaySlug(artist[2] ?? '');
     const owner = displaySlug(artist[1] ?? '');
     return {
-      title: `${collection} by ${owner} on Tahti`,
-      description: `Listen to ${collection}, a collection by ${owner} on Tahti.`,
+      title: i18n.t('web:seo.collectionTitle', { collection, owner }),
+      description: i18n.t('web:seo.collectionDescription', {
+        collection,
+        owner,
+      }),
     };
   }
 
@@ -167,8 +171,8 @@ export function metadataForPath(pathname: string): RouteMetadata {
   if (profile) {
     const name = displaySlug(profile);
     return {
-      title: `${name} on Tahti`,
-      description: `Explore ${name}'s music, releases, collections, and live channel on Tahti.`,
+      title: i18n.t('web:seo.onTahti', { name }),
+      description: i18n.t('web:seo.profileDescription', { name }),
     };
   }
 
@@ -176,8 +180,8 @@ export function metadataForPath(pathname: string): RouteMetadata {
   if (venue) {
     const name = displaySlug(venue);
     return {
-      title: `${name} on Tahti`,
-      description: `${name} is a verified venue on Tahti.`,
+      title: i18n.t('web:seo.onTahti', { name }),
+      description: i18n.t('web:seo.venueDescription', { name }),
     };
   }
 
@@ -185,8 +189,8 @@ export function metadataForPath(pathname: string): RouteMetadata {
   if (release) {
     const name = displaySlug(release);
     return {
-      title: `${name} on Tahti`,
-      description: `Listen to ${name} and find its official links on Tahti.`,
+      title: i18n.t('web:seo.onTahti', { name }),
+      description: i18n.t('web:seo.releaseDescription', { name }),
     };
   }
 
@@ -194,16 +198,16 @@ export function metadataForPath(pathname: string): RouteMetadata {
   if (subscribe) {
     const name = displaySlug(subscribe);
     return {
-      title: `Subscribe to ${name} · Tahti`,
-      description: `Support ${name} with a fan subscription on Tahti.`,
+      title: i18n.t('web:seo.subscribeTitle', { name }),
+      description: i18n.t('web:seo.subscribeDescription', { name }),
     };
   }
 
   const moderated = /^\/moderate\/([^/]+)/.exec(pathname)?.[1];
   if (moderated) {
     return {
-      ...DEFAULT_METADATA,
-      title: `${displaySlug(moderated)}: chat moderation · Tahti`,
+      ...defaultMetadata(),
+      title: i18n.t('web:seo.moderateTitle', { name: displaySlug(moderated) }),
     };
   }
 
@@ -217,17 +221,16 @@ export function metadataForPath(pathname: string): RouteMetadata {
   const pageTitle = pageTitleForPath(pathname);
   if (pathname.startsWith('/studio')) {
     return {
-      title: pageTitle ?? 'Studio · Tahti',
-      description:
-        'Manage your music, channel, broadcasts, and audience on Tahti.',
+      title: pageTitle ?? i18n.t('web:seo.studioTitle'),
+      description: i18n.t('web:seo.studioDescription'),
     };
   }
 
   if (pageTitle) {
-    return { ...DEFAULT_METADATA, title: pageTitle };
+    return { ...defaultMetadata(), title: pageTitle };
   }
 
-  return DEFAULT_METADATA;
+  return defaultMetadata();
 }
 
 function setMeta(property: string, content: string): void {
