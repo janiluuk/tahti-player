@@ -870,7 +870,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Library / follows',
         viewName: 'Library',
         caption:
-          'Follows and owned tracks after login — Favorites/History live under Listen, not Library.',
+          'Follows and owned tracks after login. Favorites is a Library tab; History lives under Listen.',
         actions: [
           'Search every owned/followed track',
           'Filter by visibility or processing state',
@@ -884,7 +884,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
             label: 'Open the audio editor for a track',
             to: '/studio/sounds/$id/editor',
           },
-          { label: 'Open Favorites', to: '/favorites' },
+          { label: 'Open Favorites', to: '/library/favorites' },
           { label: 'Open History', to: '/listen/history' },
         ],
         old: {
@@ -1032,18 +1032,18 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
       },
       {
         id: 'listener-feed',
-        title: 'Listen · Feed',
+        title: 'Discover · Feed',
         viewName: 'Feed',
         caption:
-          'Activity from followed artists — Listen in-page tab, not a sidebar item.',
+          'Activity from followed artists. A Discover tab, not a sidebar item.',
         actions: [
           'Read followed-artist activity',
           'Open an artist from a feed item',
-          'Switch Listen / Feed / Favorites / History tabs',
+          'Switch Discover / Feed / Artists / Groups / Venues tabs',
         ],
         goesTo: [
           { label: 'Open an artist profile', to: '/u/$username' },
-          { label: 'Back to Listen directory', to: '/' },
+          { label: 'Back to Discover', to: '/discover' },
         ],
         old: {
           absent: true,
@@ -1052,15 +1052,16 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/feed.png',
-          route: '/listen/feed',
-          caption: 'Nuclear Listen Feed tab',
+          route: '/discover?tab=feed',
+          caption: 'Nuclear Discover Feed tab',
         },
       },
       {
         id: 'listener-favorites',
         title: 'Favorites',
         viewName: 'Favorites',
-        caption: 'Saved channels and tracks. Own sidebar entry at /favorites.',
+        caption:
+          'Saved channels and tracks. A Library tab at /library/favorites.',
         actions: [
           'Play a favorited track or channel',
           'Remove a favorite',
@@ -1078,8 +1079,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/favorites.png',
-          route: '/favorites',
-          caption: 'Nuclear Favorites (sidebar page)',
+          route: '/library/favorites',
+          caption: 'Nuclear Favorites (Library tab)',
         },
         storybookUrl: storybookStory(
           'Tahti/Library/FavoritesView',

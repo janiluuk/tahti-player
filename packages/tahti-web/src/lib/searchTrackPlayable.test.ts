@@ -24,6 +24,20 @@ describe('searchTrackPlayable', () => {
     });
   });
 
+  it('carries the server waveform peaks, null when the API has none', () => {
+    expect(
+      searchTrackPlayable({
+        ...base,
+        audioUrl: 'https://cdn.example/a.mp3',
+        peaks: [3, 200, 90],
+      })?.peaks,
+    ).toEqual([3, 200, 90]);
+    expect(
+      searchTrackPlayable({ ...base, audioUrl: 'https://cdn.example/a.mp3' })
+        ?.peaks,
+    ).toBeNull();
+  });
+
   it('keeps an id that already has the sound prefix', () => {
     expect(
       searchTrackPlayable({

@@ -13,6 +13,8 @@ export type SearchTrackResult = {
   gate?: { reason: 'SUBSCRIBERS_ONLY' | 'PURCHASE'; tierId?: string } | null;
   embedProvider?: string | null;
   embedUri?: string | null;
+  /** [0..255] amplitude buckets for the row waveform. */
+  peaks?: number[] | null;
 };
 
 export type SearchArtistResult = {

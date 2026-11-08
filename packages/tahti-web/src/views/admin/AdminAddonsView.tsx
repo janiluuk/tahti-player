@@ -14,6 +14,7 @@ import {
 
 import type { AdminAddonScope } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
@@ -92,6 +93,7 @@ export function AdminAddonsView() {
           <div className="flex max-w-5xl flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="platform" />
               <BreadcrumbCurrent>Add-ons</BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell

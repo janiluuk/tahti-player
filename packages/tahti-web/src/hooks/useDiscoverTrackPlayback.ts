@@ -55,6 +55,7 @@ export function useDiscoverTrackPlayback(item: DiscoverTrackItem) {
         : ('https' as const),
       channelSlug: detail.channelSlug,
       durationSec: detail.durationSec,
+      peaks: detail.peaks,
     };
   };
 
