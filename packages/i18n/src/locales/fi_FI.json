@@ -3431,7 +3431,17 @@
     },
     "adminAnnouncements": {
       "deleteTitleNamed": "Poistetaanko \"{{title}}\"?",
-      "deleteDescription": "Tämä ilmoitusclippi poistetaan aikataulusta kaikilta."
+      "deleteDescription": "Tämä ilmoitusclippi poistetaan aikataulusta kaikilta.",
+      "admin": "Ylläpito",
+      "announcements": "Kuulutukset",
+      "turningThisOffStopsAll": "Tämän poistaminen käytöstä pysäyttää kaikki järjestelmäkuulutukset kaikkialla heti — jokainen alla oleva klippi säilyttää silti oman päälle/pois-tilansa ja aikataulunsa.",
+      "rendering": "Renderöidään",
+      "renderFailed": "Renderöinti epäonnistui",
+      "trim": "Rajaa",
+      "delete": "Poista",
+      "systemAnnouncements": "Järjestelmäkuulutukset",
+      "clips": "Klipit",
+      "schedule": "Aikataulu"
     },
     "adminRadioPresets": {
       "removeTitleNamed": "Poistetaanko {{name}}?",
@@ -4384,6 +4394,94 @@
       "close": "Sulje",
       "monitorActiveChannelsAndControl": "Seuraa aktiivisia kanavia ja hallitse niiden liveääntä.",
       "refreshLiveStreams": "Päivitä livestriimit"
+    },
+    "statusPage": {
+      "version": "Versio",
+      "uptime": "Käynnissäoloaika",
+      "checked": "Tarkistettu",
+      "check": "Tarkistus",
+      "state": "Tila",
+      "latency": "Viive",
+      "detail": "Lisätiedot",
+      "clientVersion": "Sovelluksen versio",
+      "tagged": "Merkitty",
+      "deployed": "Julkaistu",
+      "status": "Tila",
+      "helpCenter": "Ohjekeskus"
+    },
+    "messagesPage": {
+      "signInToReadDms": "Kirjaudu lukeaksesi yksityisviestejä.",
+      "logIn": "Kirjaudu",
+      "message": "Viesti",
+      "browseArtists": "Selaa artisteja",
+      "youBlockedThisAccountUnblock": "Olet estänyt tämän tilin. Poista esto, jotta voitte taas viestiä keskenänne.",
+      "send": "Lähetä",
+      "messages": "Viestit",
+      "findOrMessage": "Etsi tai viestitä @",
+      "writeAMessage": "Kirjoita viesti…"
+    },
+    "supportTab": {
+      "clearSearch": "Tyhjennä haku",
+      "needsReply": "Odottaa vastausta",
+      "selectATicket": "Valitse tukipyyntö.",
+      "startProgress": "Aloita käsittely",
+      "resolve": "Ratkaise",
+      "reopen": "Avaa uudelleen",
+      "originalRequest": "Alkuperäinen pyyntö",
+      "reply": "Vastaa",
+      "searchSubjectMessageRequester": "Hae aiheella, viestillä, lähettäjällä…",
+      "searchSupportTickets": "Hae tukipyyntöjä",
+      "writeAReply": "Kirjoita vastaus…",
+      "replyToTicket": "Vastaa tukipyyntöön"
+    },
+    "adminDiscussions": {
+      "everyMemberGetsANotification": "Jokainen jäsen saa ilmoituksen, kun aihe avataan.",
+      "cancel": "Peruuta",
+      "pinned": "Kiinnitetty",
+      "title": "Otsikko",
+      "whatShouldMembersTalkAbout": "Mistä jäsenten pitäisi keskustella?",
+      "pinToTheTop": "Kiinnitä ylimmäksi",
+      "topicText": "Aiheen teksti",
+      "discussions": "Keskustelut",
+      "topicsMembersCanReplyTo": "Aiheita, joihin jäsenet voivat vastata. Mikään tässä ei ole äänestys; käytä päätöksiin aloitteita.",
+      "topics": "Aiheet"
+    },
+    "broadcastDetails": {
+      "existingShowDetailsFillIn": "Olemassa olevan ohjelman tiedot täyttyvät alle ja seuraava jakso valmistellaan automaattisesti.",
+      "preparedShow": "Valmisteltu ohjelma",
+      "createANewShow": "Luo uusi ohjelma",
+      "broadcastType": "Lähetyksen tyyppi",
+      "duration": "Kesto",
+      "showFormat": "Ohjelman muoto",
+      "showName": "Ohjelman nimi",
+      "newShowNameOrEpisode": "Uuden ohjelman nimi tai jakson otsikko",
+      "showDescription": "Ohjelman kuvaus",
+      "whatListenersCanExpect": "Mitä kuuntelijat voivat odottaa",
+      "showCover": "Ohjelman kansikuva",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP tai GIF"
+    },
+    "pluginControls": {
+      "filterType": "Suodattimen tyyppi",
+      "slope": "Jyrkkyys",
+      "threshold": "Kynnys",
+      "ratio": "Suhde",
+      "attack": "Attack",
+      "release": "Release",
+      "makeup": "Vahvistus",
+      "ceiling": "Katto",
+      "freq": "Taajuus"
+    },
+    "mikseriImport": {
+      "iOwnThisTrackOr": "Omistan tämän kappaleen tai minulla on lupa upottaa se",
+      "addYourMusicFromMikseri": "Lisää musiikkisi Mikseri.netistä",
+      "tahtiStoresTheOfficialEmbed": "Tahti tallentaa virallisen upotusviitteen ja metatietosi; ääntä se ei koskaan kopioi.",
+      "mikseriTrack": "Mikseri-kappale",
+      "trackPageEmbedUrlOr": "Kappalesivu, upotusosoite tai kappaleen tunnus",
+      "trackTitle": "Kappaleen nimi",
+      "artistName": "Artistin nimi",
+      "genre": "Tyylilaji",
+      "optionalUsedByCollectionFilters": "Valinnainen; käytetään kokoelmasuodattimissa.",
+      "rightsConfirmed": "Oikeudet vahvistettu"
     }
   },
   "studioEditor": {

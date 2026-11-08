@@ -3431,7 +3431,17 @@
     },
     "adminAnnouncements": {
       "deleteTitleNamed": "Delete \"{{title}}\"?",
-      "deleteDescription": "This announcement clip will be removed from the schedule for everyone."
+      "deleteDescription": "This announcement clip will be removed from the schedule for everyone.",
+      "admin": "Admin",
+      "announcements": "Announcements",
+      "turningThisOffStopsAll": "Turning this off stops all system announcements everywhere, instantly — each clip below still keeps its own on/off and schedule.",
+      "rendering": "Rendering",
+      "renderFailed": "Render failed",
+      "trim": "Trim",
+      "delete": "Delete",
+      "systemAnnouncements": "System announcements",
+      "clips": "Clips",
+      "schedule": "Schedule"
     },
     "adminRadioPresets": {
       "removeTitleNamed": "Remove {{name}}?",
@@ -4384,6 +4394,94 @@
       "close": "Close",
       "monitorActiveChannelsAndControl": "Monitor active channels and control their live audio.",
       "refreshLiveStreams": "Refresh live streams"
+    },
+    "statusPage": {
+      "version": "Version",
+      "uptime": "Uptime",
+      "checked": "Checked",
+      "check": "Check",
+      "state": "State",
+      "latency": "Latency",
+      "detail": "Detail",
+      "clientVersion": "Client version",
+      "tagged": "Tagged",
+      "deployed": "Deployed",
+      "status": "Status",
+      "helpCenter": "Help center"
+    },
+    "messagesPage": {
+      "signInToReadDms": "Sign in to read DMs.",
+      "logIn": "Log in",
+      "message": "Message",
+      "browseArtists": "Browse artists",
+      "youBlockedThisAccountUnblock": "You blocked this account. Unblock it to message each other again.",
+      "send": "Send",
+      "messages": "Messages",
+      "findOrMessage": "Find or message @",
+      "writeAMessage": "Write a message…"
+    },
+    "supportTab": {
+      "clearSearch": "Clear search",
+      "needsReply": "Needs reply",
+      "selectATicket": "Select a ticket.",
+      "startProgress": "Start progress",
+      "resolve": "Resolve",
+      "reopen": "Reopen",
+      "originalRequest": "Original request",
+      "reply": "Reply",
+      "searchSubjectMessageRequester": "Search subject, message, requester…",
+      "searchSupportTickets": "Search support tickets",
+      "writeAReply": "Write a reply…",
+      "replyToTicket": "Reply to ticket"
+    },
+    "adminDiscussions": {
+      "everyMemberGetsANotification": "Every member gets a notification when the topic opens.",
+      "cancel": "Cancel",
+      "pinned": "Pinned",
+      "title": "Title",
+      "whatShouldMembersTalkAbout": "What should members talk about?",
+      "pinToTheTop": "Pin to the top",
+      "topicText": "Topic text",
+      "discussions": "Discussions",
+      "topicsMembersCanReplyTo": "Topics members can reply to. Nothing here is a vote; use motions for decisions.",
+      "topics": "Topics"
+    },
+    "broadcastDetails": {
+      "existingShowDetailsFillIn": "Existing show details fill in below and prepare the next episode automatically.",
+      "preparedShow": "Prepared show",
+      "createANewShow": "Create a new show",
+      "broadcastType": "Broadcast type",
+      "duration": "Duration",
+      "showFormat": "Show format",
+      "showName": "Show name",
+      "newShowNameOrEpisode": "New show name or episode title",
+      "showDescription": "Show description",
+      "whatListenersCanExpect": "What listeners can expect",
+      "showCover": "Show cover",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP, or GIF"
+    },
+    "pluginControls": {
+      "filterType": "Filter type",
+      "slope": "Slope",
+      "threshold": "Threshold",
+      "ratio": "Ratio",
+      "attack": "Attack",
+      "release": "Release",
+      "makeup": "Makeup",
+      "ceiling": "Ceiling",
+      "freq": "Freq"
+    },
+    "mikseriImport": {
+      "iOwnThisTrackOr": "I own this track or have permission to embed it",
+      "addYourMusicFromMikseri": "Add your music from Mikseri.net",
+      "tahtiStoresTheOfficialEmbed": "Tahti stores the official embed reference and your metadata; it never copies the audio.",
+      "mikseriTrack": "Mikseri track",
+      "trackPageEmbedUrlOr": "Track page, embed URL, or track ID",
+      "trackTitle": "Track title",
+      "artistName": "Artist name",
+      "genre": "Genre",
+      "optionalUsedByCollectionFilters": "Optional; used by collection filters.",
+      "rightsConfirmed": "Rights confirmed"
     }
   },
   "studioEditor": {
