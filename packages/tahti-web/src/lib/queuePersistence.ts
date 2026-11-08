@@ -22,6 +22,8 @@ export type PersistedQueueItem = {
   streamUrl?: string;
   sourceProvider?: string;
   durationSec?: number;
+  /** Waveform peaks when the track had played (bounded by the peaks cache). */
+  peaks?: number[];
 };
 
 export type PersistedQueue = {
@@ -31,6 +33,10 @@ export type PersistedQueue = {
 };
 
 const isLocal = (id: string) => id.startsWith('local:');
+const isPeaks = (value: unknown): value is number[] =>
+  Array.isArray(value) &&
+  value.length > 0 &&
+  value.every((n) => typeof n === 'number' && Number.isFinite(n));
 const isSound = (id: string) => id.startsWith('sound:');
 
 /** What to save for a queue. Radio and live entries are skipped (they resume
@@ -38,6 +44,7 @@ const isSound = (id: string) => id.startsWith('sound:');
 export function serializeQueue(
   queue: readonly QueueItem[],
   currentId: string | null,
+  peaksById: Readonly<Record<string, number[]>> = {},
 ): PersistedQueue {
   const items: PersistedQueueItem[] = [];
   for (const qi of queue) {
@@ -61,6 +68,7 @@ export function serializeQueue(
       sourceProvider: qi.track.source.provider,
       durationSec:
         qi.track.durationMs != null ? qi.track.durationMs / 1000 : undefined,
+      peaks: peaksById[qi.id]?.length ? peaksById[qi.id] : undefined,
     });
   }
   return {
@@ -88,7 +96,12 @@ export function parsePersistedQueue(raw: string | null): PersistedQueue | null {
           typeof item.title === 'string' &&
           (isLocal(item.id) || isSound(item.id)),
       )
-      .slice(0, MAX_ITEMS);
+      .slice(0, MAX_ITEMS)
+      .map((item) =>
+        item.peaks === undefined || isPeaks(item.peaks)
+          ? item
+          : { ...item, peaks: undefined },
+      );
     return {
       v: 1,
       currentId:
@@ -114,6 +127,7 @@ function toPlayable(item: PersistedQueueItem): TahtiPlayable {
     protocol: 'https',
     sourceProvider: item.sourceProvider,
     durationSec: item.durationSec ?? null,
+    peaks: item.peaks ?? null,
   };
 }
 
@@ -225,14 +239,18 @@ export function startQueuePersistence(): () => void {
   let timer: number | undefined;
   let last = usePlayerStore.getState();
   const unsubscribe = usePlayerStore.subscribe((state) => {
-    if (state.queue === last.queue && state.currentId === last.currentId) {
+    if (
+      state.queue === last.queue &&
+      state.currentId === last.currentId &&
+      state.peaksById === last.peaksById
+    ) {
       return;
     }
     last = state;
     window.clearTimeout(timer);
     timer = window.setTimeout(() => {
-      const { queue, currentId } = usePlayerStore.getState();
-      writeStored(serializeQueue(queue, currentId));
+      const { queue, currentId, peaksById } = usePlayerStore.getState();
+      writeStored(serializeQueue(queue, currentId, peaksById));
     }, SAVE_DELAY_MS);
   });
   return () => {

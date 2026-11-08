@@ -1,4 +1,3 @@
-import { SearchIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -106,18 +105,13 @@ export function GroupsDirectory() {
 
   return (
     <div className="flex flex-col gap-4" data-testid="discover-groups">
-      <div className="relative max-w-md">
-        <SearchIcon
-          size={16}
-          className="text-foreground-secondary pointer-events-none absolute top-1/2 left-3 -translate-y-1/2"
-          aria-hidden
-        />
+      <div className="border-border bg-background-secondary/40 flex flex-col gap-3 rounded-xl border p-3 sm:p-4">
         <Input
-          aria-label={t('studioGroups.searchLabel')}
-          placeholder={t('studioGroups.searchLabel')}
+          enterKeyHint="search"
+          label={t('studioGroups.searchLabel')}
+          placeholder={t('discover.groupsSearchPlaceholder')}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          className="pl-9"
         />
       </div>
       {renderList()}

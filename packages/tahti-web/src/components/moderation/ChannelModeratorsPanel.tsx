@@ -1,5 +1,5 @@
 import { Trash2Icon, UserRoundPlusIcon } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
@@ -38,6 +38,7 @@ export function ChannelModeratorsPanel() {
 
   // People paste handles with the @ in front; the API wants the bare name.
   const handle = username.trim().replace(/^@+/, '');
+  const usernameRef = useRef<HTMLInputElement>(null);
 
   const add = () => {
     if (!handle) {
@@ -73,7 +74,19 @@ export function ChannelModeratorsPanel() {
         {loading ? (
           <PageLoading label={t('loading.loading')} />
         ) : mods.length === 0 ? (
-          <PageEmpty title={t('empties.noModerators')} />
+          <PageEmpty
+            title={t('empties.noModerators')}
+            action={
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => usernameRef.current?.focus()}
+              >
+                <UserRoundPlusIcon size={16} aria-hidden />
+                {t('emptyActions.addFirstModerator')}
+              </Button>
+            }
+          />
         ) : (
           <ul className="flex flex-col gap-2">
             {mods.map((moderator) => (
@@ -112,6 +125,7 @@ export function ChannelModeratorsPanel() {
           }}
         >
           <Input
+            ref={usernameRef}
             enterKeyHint="go"
             autoCapitalize="none"
             autoCorrect="off"
