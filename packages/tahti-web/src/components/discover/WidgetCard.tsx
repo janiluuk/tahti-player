@@ -83,11 +83,11 @@ export function WidgetCard({
     >
       <header className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <h2 className="truncate text-sm leading-tight font-semibold">
+          <h2 className="text-foreground line-clamp-2 text-lg leading-tight font-bold break-words">
             {title}
           </h2>
           {subtitle && (
-            <p className="text-foreground-secondary truncate text-xs">
+            <p className="text-foreground-secondary line-clamp-2 text-xs break-words">
               {subtitle}
             </p>
           )}

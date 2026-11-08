@@ -4,6 +4,7 @@ import { FC, ReactNode, useContext } from 'react';
 import { cn } from '../../utils';
 import { Box } from '../Box';
 import { MediaArtwork } from '../MediaArtwork';
+import { trackRowMinHeightClass } from '../TrackTable/utils/rowClass';
 import { CardLayoutContext } from './CardLayoutContext';
 
 type CardProps = {
@@ -55,6 +56,7 @@ export const Card: FC<CardProps> = ({
   onTitleClick,
 }) => {
   const layout = useContext(CardLayoutContext);
+  const isRow = layout === 'row';
   const hasOverlays = Boolean(onPlay || onQueue || onFavorite);
   const named = itemName || (typeof title === 'string' && title ? title : null);
   // A row sits on the page background, so it always uses the neutral text.
@@ -66,7 +68,7 @@ export const Card: FC<CardProps> = ({
 
   const artwork = image ?? (
     <MediaArtwork
-      size="fill"
+      size={isRow ? 'md' : 'fill'}
       src={src}
       alt={typeof title === 'string' ? title : ''}
       imageReveal={imageReveal}
@@ -74,6 +76,7 @@ export const Card: FC<CardProps> = ({
       playLabel={playLabel ?? (named ? `Play ${named}` : undefined)}
       pauseLabel={pauseLabel ?? (named ? `Pause ${named}` : undefined)}
       isPlaying={isPlaying}
+      hideActivePlay={isRow}
       playDisabled={playDisabled}
       onQueue={onQueue}
       queueLabel={queueLabel ?? (named ? `Queue ${named}` : undefined)}
@@ -93,6 +96,11 @@ export const Card: FC<CardProps> = ({
     />
   );
 
+  const rowTitleClass = cn(
+    'text-foreground',
+    isPlaying && 'text-primary-strong font-semibold',
+  );
+
   const titleBlock = (title || subtitle) && (
     <div className="min-w-0">
       {title &&
@@ -105,8 +113,8 @@ export const Card: FC<CardProps> = ({
               onTitleClick();
             }}
             className={cn(
-              'block w-full truncate text-left text-sm font-bold hover:underline',
-              titleClass,
+              'block w-full truncate text-left hover:underline',
+              isRow ? rowTitleClass : ['text-sm font-bold', titleClass],
             )}
           >
             {title}
@@ -114,7 +122,10 @@ export const Card: FC<CardProps> = ({
         ) : (
           <div
             data-testid="card-title"
-            className={cn('truncate text-sm font-bold', titleClass)}
+            className={cn(
+              'truncate',
+              isRow ? rowTitleClass : ['text-sm font-bold', titleClass],
+            )}
           >
             {title}
           </div>
@@ -125,7 +136,7 @@ export const Card: FC<CardProps> = ({
     </div>
   );
 
-  if (layout === 'row') {
+  if (isRow) {
     return (
       <div
         data-testid="card"
@@ -135,9 +146,10 @@ export const Card: FC<CardProps> = ({
         role={onClick && !hasOverlays ? 'button' : undefined}
         tabIndex={onClick && !hasOverlays ? 0 : undefined}
         className={cn(
-          'hover:bg-background-secondary flex w-full items-center gap-3 rounded-md px-2 py-1.5 text-left',
+          'flex w-full items-center gap-2 pr-2 text-left',
+          trackRowMinHeightClass,
           onClick && !hasOverlays && 'cursor-pointer',
-          isPlaying && 'bg-background-secondary',
+          isPlaying && 'border-l-primary bg-primary/10 border-l-2',
           className,
         )}
         onClick={hasOverlays ? undefined : onClick}
@@ -152,12 +164,10 @@ export const Card: FC<CardProps> = ({
             : undefined
         }
       >
-        <div className="relative size-12 shrink-0 overflow-hidden rounded">
+        <div className="relative flex w-16 shrink-0 justify-center">
           {artwork}
         </div>
-        <div className="min-w-0 flex-1 [&_[data-testid=card-title]]:font-semibold">
-          {titleBlock}
-        </div>
+        <div className="min-w-0 flex-1 px-2">{titleBlock}</div>
         {artworkOverlay ? (
           <div className="shrink-0">{artworkOverlay}</div>
         ) : null}

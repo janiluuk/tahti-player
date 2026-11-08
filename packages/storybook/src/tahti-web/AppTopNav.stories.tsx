@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AppTopNav } from '@tahti-web/components/AppTopNav';
 import { useNotificationInboxStore } from '@tahti-web/stores/notificationInboxStore';
-import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { CHROME_CONVERSATIONS, CHROME_NOTIFICATIONS } from './_fixtures/chrome';
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
@@ -58,33 +58,8 @@ export const SignedInArtist: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
 };
 
-export const SignedInArtistWithMenu: Story = {
-  decorators: [withMockAuth(MOCK_USERS.artist)],
-  args: {
-    showMenuButton: true,
-    onOpenMenu: fn(),
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    await userEvent.click(canvas.getByRole('button', { name: 'Open menu' }));
-    await expect(args.onOpenMenu).toHaveBeenCalledOnce();
-  },
-};
-
-export const SignedOutWithMenu: Story = {
-  decorators: [withMockAuth(null)],
-  args: {
-    showMenuButton: true,
-    onOpenMenu: fn(),
-  },
-};
-
 export const MobileStableChrome: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
-  args: {
-    showMenuButton: true,
-    onOpenMenu: fn(),
-  },
   parameters: { viewport: { defaultViewport: 'mobile1' } },
 };
 

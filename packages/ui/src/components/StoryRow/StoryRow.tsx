@@ -22,7 +22,8 @@ export type StoryRowProps = {
 };
 
 /** Horizontal strip of wide cards: most of one card on phones, two from
- * `md`, three from `xl`. Round previous / next buttons page by one view. */
+ * `md`, three from `xl`. Previous / next buttons, styled like `CardsRow`'s,
+ * page by one view. */
 export const StoryRow: FC<StoryRowProps> = ({
   title,
   children,
@@ -80,26 +81,24 @@ export const StoryRow: FC<StoryRowProps> = ({
           {actions}
           <Tooltip content="Previous" side="top">
             <Button
-              variant="ghost"
+              variant="noShadow"
               size="icon"
-              className="rounded-full"
               aria-label={rowName ? `Previous: ${rowName}` : 'Previous'}
               disabled={atStart}
               onClick={() => page(-1)}
             >
-              <ChevronLeft size={18} aria-hidden />
+              <ChevronLeft size={16} aria-hidden />
             </Button>
           </Tooltip>
           <Tooltip content="Next" side="top">
             <Button
-              variant="ghost"
+              variant="noShadow"
               size="icon"
-              className="rounded-full"
               aria-label={rowName ? `Next: ${rowName}` : 'Next'}
               disabled={atEnd}
               onClick={() => page(1)}
             >
-              <ChevronRight size={18} aria-hidden />
+              <ChevronRight size={16} aria-hidden />
             </Button>
           </Tooltip>
         </div>

@@ -46,6 +46,7 @@ export const ThumbnailCell = <T extends Track>({
           playLabel={`${labels.play} ${track.title}`}
           pauseLabel={`${labels.pause} ${track.title}`}
           isPlaying={isPlaying}
+          hideActivePlay
         />
       </div>
     </td>
