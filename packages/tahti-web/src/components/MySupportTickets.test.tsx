@@ -82,6 +82,20 @@ describe('MySupportTickets', () => {
       render(<MySupportTickets />);
     });
     expect(screen.getByText('No support requests yet')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /New request/ })).toBeNull();
+  });
+
+  it('offers New request on the empty state when the page has a form', async () => {
+    vi.spyOn(support, 'fetchMySupportTickets').mockResolvedValue({
+      ok: true,
+      tickets: [],
+    });
+    const onNewRequest = vi.fn();
+    await act(async () => {
+      render(<MySupportTickets onNewRequest={onNewRequest} />);
+    });
+    fireEvent.click(screen.getByRole('button', { name: /New request/ }));
+    expect(onNewRequest).toHaveBeenCalledOnce();
   });
 
   it('shows the error with a retry when loading fails', async () => {

@@ -3901,7 +3901,12 @@
       "addStation": "Add station",
       "registerAddon": "Register add-on",
       "addContent": "Add content",
-      "addToSelects": "Add to Tahti Selects"
+      "addToSelects": "Add to Tahti Selects",
+      "proposeIdea": "Propose an idea",
+      "addFeed": "Add feed",
+      "newSupportRequest": "New request",
+      "writeBio": "Write a bio",
+      "uploadTrack": "Upload track"
     }
   },
   "studioEditor": {

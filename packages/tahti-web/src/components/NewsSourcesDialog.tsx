@@ -1,5 +1,5 @@
-import { TrashIcon } from 'lucide-react';
-import { useState } from 'react';
+import { RssIcon, TrashIcon } from 'lucide-react';
+import { useRef, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
@@ -29,6 +29,7 @@ export function NewsSourcesDialog({
   onClose: () => void;
 }) {
   const { t } = useTranslation('web');
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const instances = useListenerWidgetsStore((state) => state.instances);
   const addInstance = useListenerWidgetsStore((state) => state.addInstance);
   const installType = useListenerWidgetsStore((state) => state.installType);
@@ -80,7 +81,19 @@ export function NewsSourcesDialog({
         <section className="flex flex-col gap-2">
           <h3 className="text-sm font-bold">Your sources</h3>
           {sources.length === 0 ? (
-            <PageEmpty title={t('empties.noNewsSources')} />
+            <PageEmpty
+              title={t('empties.noNewsSources')}
+              action={
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => nameInputRef.current?.focus()}
+                >
+                  <RssIcon size={16} aria-hidden />
+                  {t('emptyActions.addFeed')}
+                </Button>
+              }
+            />
           ) : (
             <ul
               aria-label="Your sources"
@@ -127,6 +140,7 @@ export function NewsSourcesDialog({
         >
           <h3 className="text-sm font-bold">Add a feed</h3>
           <Input
+            ref={nameInputRef}
             label="Name"
             value={title}
             onChange={(event) => setTitle(event.target.value)}

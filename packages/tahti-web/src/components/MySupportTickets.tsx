@@ -1,3 +1,4 @@
+import { LifeBuoyIcon } from 'lucide-react';
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
@@ -88,9 +89,13 @@ function TicketReplyForm({
 type MySupportTicketsProps = {
   /** Bump to refetch, e.g. after the contact form files a new request. */
   refreshKey?: number;
+  onNewRequest?: () => void;
 };
 
-export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
+export function MySupportTickets({
+  refreshKey = 0,
+  onNewRequest,
+}: MySupportTicketsProps) {
   const { t } = useTranslation('web');
   const [tickets, setTickets] = useState<MySupportTicket[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -176,6 +181,14 @@ export function MySupportTickets({ refreshKey = 0 }: MySupportTicketsProps) {
         <PageEmpty
           title={t('supportTickets.emptyTitle')}
           description={t('supportTickets.emptyDescription')}
+          action={
+            onNewRequest ? (
+              <Button size="sm" variant="secondary" onClick={onNewRequest}>
+                <LifeBuoyIcon size={16} aria-hidden />
+                {t('emptyActions.newSupportRequest')}
+              </Button>
+            ) : undefined
+          }
         />
       ) : (
         <ul className="divide-border divide-y">

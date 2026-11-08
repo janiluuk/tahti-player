@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import { LightbulbIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -240,6 +241,18 @@ export function FeatureRequestsView({
           <PageEmpty
             title={t('empties.noFeatureRequestsYet')}
             description={t('empties.beTheFirstToProposeAn')}
+            action={
+              composerOpen ? undefined : (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setComposerOpen(true)}
+                >
+                  <LightbulbIcon size={16} aria-hidden />
+                  {t('emptyActions.proposeIdea')}
+                </Button>
+              )
+            }
           />
         )}
 
