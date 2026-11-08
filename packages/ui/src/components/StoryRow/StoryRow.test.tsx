@@ -2,6 +2,7 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
+import { buttonVariants } from '../Button/Button';
 import { StoryRow } from './StoryRow';
 
 describe('StoryRow', () => {
@@ -33,5 +34,19 @@ describe('StoryRow', () => {
       (screen.getByRole('button', { name: /^Previous/ }) as HTMLButtonElement)
         .disabled,
     ).toBe(true);
+  });
+
+  it('uses the same square scroll buttons as CardsRow', () => {
+    render(
+      <StoryRow title="Stories">
+        <p>one</p>
+      </StoryRow>,
+    );
+    const expected = buttonVariants({ variant: 'noShadow', size: 'icon' });
+    for (const name of [/^Previous/, /^Next/]) {
+      const button = screen.getByRole('button', { name });
+      expect(button.className).toContain(expected);
+      expect(button.className).not.toContain('rounded-full');
+    }
   });
 });

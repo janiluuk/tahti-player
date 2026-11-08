@@ -230,11 +230,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
           size="fill"
           src={item.bannerUrl}
           alt=""
-          placeholder={
-            <span className="text-2xl font-bold">
-              {item.title.slice(0, 2).toUpperCase()}
-            </span>
-          }
+          seed={item.id}
           onArtworkClick={() =>
             setInfoTrack({
               title: item.title,
@@ -263,11 +259,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
         size="fill"
         src={item.artworkUrl}
         alt=""
-        placeholder={
-          <span className="text-2xl font-bold">
-            {item.title.slice(0, 2).toUpperCase()}
-          </span>
-        }
+        seed={item.smartLinkSlug ?? item.id}
         onPlay={first ? () => play(first, { enqueueRest: rest }) : undefined}
         playDisabled={!first}
         playLabel={`Play ${item.title}`}
@@ -333,6 +325,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
               imageSrc={
                 item.kind === 'post' ? (item.images?.[0] ?? null) : null
               }
+              artworkSeed={`${item.kind}-${item.id}`}
               media={feedMedia(item)}
               kind={feedActivity(item)}
               date={storyDate(item.date)}
