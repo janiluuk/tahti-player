@@ -153,7 +153,7 @@ export const LoadError: Story = {
 export const RandomArtistWithSettings: Story = {
   args: {
     id: 'random-artist',
-    title: 'Random artist pick',
+    title: 'Rotating artist pick',
     loading: false,
     items: [],
     artist: {
