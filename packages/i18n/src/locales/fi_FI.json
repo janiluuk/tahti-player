@@ -5373,6 +5373,494 @@
         "TITLE_ASC": "Nimi A–Ö",
         "TITLE_DESC": "Nimi Ö–A"
       }
+    },
+    "adminStorageShared": {
+      "fullFileRecordEverythingCurrently": "Koko tiedostotietue: kaikki, mitä tästä latauksesta nyt seurataan.",
+      "filename": "Tiedostonimi",
+      "type": "Tyyppi",
+      "uploader": "Lataaja",
+      "uploaded": "Ladattu",
+      "totalSize": "Koko yhteensä",
+      "length": "Kesto",
+      "revisions": "Versiot",
+      "storageLocation": "Tallennuspaikka",
+      "visibility": "Näkyvyys",
+      "genre": "Tyylilaji",
+      "close": "Sulje",
+      "used": "Käytetty",
+      "free": "Vapaana",
+      "total": "Yhteensä",
+      "saveQuota": "Tallenna kiintiö",
+      "cancel": "Peruuta",
+      "cancelEditingQuota": "Peruuta kiintiön muokkaus"
+    },
+    "addonRegister": {
+      "cancel": "Peruuta",
+      "saveChanges": "Tallenna muutokset",
+      "registerAddOn": "Rekisteröi lisäosa",
+      "slug": "Tunniste",
+      "lowercaseLettersNumbersAndHyphens": "Pieniä kirjaimia, numeroita ja yhdysmerkkejä.",
+      "addOnType": "Lisäosan tyyppi",
+      "name": "Nimi",
+      "liveStatus": "Julkaisutila",
+      "description": "Kuvaus",
+      "whatDoesThisAddOn": "Mitä tämä lisäosa näyttää tai tekee?",
+      "author": "Tekijä",
+      "addOnCover": "Lisäosan kansikuva",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP tai GIF",
+      "parametersCategories": "Parametrit / kategoriat",
+      "commaSeparatedCategoriesUsedTo": "Pilkuilla erotetut kategoriat, joilla lisäosaa suodatetaan ja kuvataan."
+    },
+    "discordBotCard": {
+      "statusUnavailable": "Tila ei saatavilla",
+      "retry": "Yritä uudelleen",
+      "configured": "Määritetty",
+      "notConfigured": "Ei määritetty",
+      "boardOnlyValuesAreStored": "Vain hallitukselle. Tahti tallentaa arvot ja lähettää ne Discord-botille. Tunnistetta ei näytetä enää tallennuksen jälkeen.",
+      "cancel": "Peruuta",
+      "restart": "Käynnistä uudelleen",
+      "restartTahtiRadioDiscordBot": "Käynnistä Tahti Radion Discord-botti uudelleen",
+      "configure": "Määritä",
+      "configureTahtiRadioDiscordBot": "Määritä Tahti Radion Discord-botti",
+      "applicationClientId": "Sovelluksen / asiakkaan tunnus",
+      "fromDiscordDeveloperPortalGeneral": "Discord Developer Portalista → General Information.",
+      "botToken": "Botin tunniste",
+      "restartTheDiscordBot": "Käynnistetäänkö Discord-botti uudelleen?",
+      "theBotDropsOutOf": "Botti katoaa Discordista muutamaksi sekunniksi ja yhdistää uudelleen. Tahti Radion kuuntelijoihin tämä ei vaikuta."
+    },
+    "channelLayersMenu": {
+      "oneClickLayoutsDragHide": "Asettelut yhdellä napsautuksella. Raahaa, piilota ja lisää käytön jälkeen.",
+      "applied": "Käytössä",
+      "background": "Tausta",
+      "bannerPageColorHeaderStyle": "Banneri, sivun väri, otsakkeen tyyli",
+      "playlist": "Soittolista",
+      "addAPlaylistFromYour": "Lisää soittolista kirjastostasi. Voit lisätä useamman.",
+      "addAnEmbedToThe": "Lisää upotus kanavasivulle. Osioita voi kytkeä päälle ja pois kanavan otsakkeen asetuksista.",
+      "noEmbedsToAdd": "Ei lisättäviä upotuksia.",
+      "lookControlsUnavailable": "Ulkoasun säätimet eivät ole käytettävissä.",
+      "dragToReorder": "Raahaa järjestääksesi",
+      "removeFromPage": "Poista sivulta"
+    },
+    "motionProposer": {
+      "changingTheTextClearsThe": "Tekstin muuttaminen poistaa sen saamat kannatukset, koska ne koskivat vanhaa muotoilua.",
+      "saveDraft": "Tallenna luonnos",
+      "cancel": "Peruuta",
+      "youProposedThisDraft": "Teit tämän luonnoksen.",
+      "withdrawDraft": "Peru luonnos",
+      "draftTitle": "Luonnoksen otsikko",
+      "draftText": "Luonnoksen teksti",
+      "editDraft": "Muokkaa luonnosta",
+      "withdrawThisMotion": "Perutaanko tämä aloite?",
+      "theDraftItsDiscussionAnd": "Luonnos, sen keskustelu ja kannatukset poistetaan. Tätä ei voi perua.",
+      "withdraw": "Peru"
+    },
+    "themeEditor": {
+      "discard": "Hylkää",
+      "save": "Tallenna",
+      "importATheme": "Tuo teema",
+      "pasteAThemeJsonVersion": "Liitä teeman JSON (versio, nimi ja vaalean tai tumman värin ohitukset) ladataksesi sen tähän editoriin.",
+      "importApply": "Tuo ja ota käyttöön",
+      "saturation": "Kylläisyys",
+      "lightness": "Vaaleus",
+      "name": "Nimi",
+      "themeJson": "Teeman JSON"
+    },
+    "trackEditAudio": {
+      "properties": "Ominaisuudet",
+      "format": "Muoto",
+      "sampleRate": "Näytteenottotaajuus",
+      "bitDepth": "Bittisyvyys",
+      "channels": "Kanavat",
+      "bitrate": "Bittinopeus",
+      "normalizeAudio": "Normalisoi ääni",
+      "trimSilence": "Leikkaa hiljaisuus",
+      "openFullAudioEditor": "Avaa täysi äänieditori",
+      "matchToAReferenceTrack": "Sovita referenssikappaleeseen"
+    },
+    "addStationUrl": {
+      "addAStationByUrl": "Lisää asema osoitteella",
+      "pasteAnM3uM3u8Playlist": "Liitä M3U/M3U8-soittolista tai suora striimin osoite. Tarkistamme, että se soi, ja haemme sen tiedot julkisesta Radio Browser -hakemistosta, jos se on siellä.",
+      "notInThePublicStation": "Ei julkisessa asemahakemistossa. Tallennetaan soittolistan nimellä, jos sellainen on.",
+      "cancel": "Peruuta",
+      "addToMyStations": "Lisää omiin asemiin",
+      "streamUrl": "Striimin osoite",
+      "descriptionOptional": "Kuvaus (valinnainen)",
+      "whatMakesThisStationWorth": "Miksi tämä asema kannattaa pitää",
+      "programmeScheduleLinkOptional": "Ohjelmakartan linkki (valinnainen)"
+    },
+    "desktopSelection": {
+      "addAllToPlaylist": "Lisää kaikki soittolistaan",
+      "playNext": "Soita seuraavaksi",
+      "addToQueue": "Lisää jonoon",
+      "editTags": "Muokkaa tunnisteita",
+      "writeTagsToFiles": "Kirjoita tunnisteet tiedostoihin",
+      "organizeFiles": "Järjestä tiedostot",
+      "rateAndLabel": "Arvioi ja merkitse",
+      "addToPlaylist": "Lisää soittolistaan",
+      "remove": "Poista"
+    },
+    "electionActions": {
+      "cancelElection": "Peru vaali",
+      "saveElection": "Tallenna vaali",
+      "back": "Takaisin",
+      "cancelTheElection": "Peru vaali",
+      "title": "Otsikko",
+      "seats": "Paikat",
+      "nominationsClose": "Ehdokasasettelu päättyy",
+      "whyIsItCancelled": "Miksi vaali perutaan?"
+    },
+    "listenBrainzRow": {
+      "updateToken": "Päivitä tunniste",
+      "configureListenbrainz": "Määritä ListenBrainz",
+      "pasteTheUserTokenFrom": "Liitä käyttäjätunniste listenbrainz.org-asetuksista. Tahti tarkistaa sen, tallentaa sen salattuna eikä näytä sitä enää. Kelvolliset Tahti-kuuntelut lähetetään ListenBrainz-kuunteluina, ei listoille.",
+      "alreadyConnectedSavingANew": "Jo yhdistetty. Uuden tunnisteen tallentaminen korvaa vanhan.",
+      "cancel": "Peruuta",
+      "listenbrainzScrobbling": "ListenBrainz-scrobblaus",
+      "whenATahtiTrackCounts": "Kun Tahti-kappale lasketaan kuunteluksi, lähetä se ListenBrainz-profiiliisi. Vain kuuntelut, ei listoja.",
+      "userToken": "Käyttäjätunniste",
+      "fromListenbrainzOrgSettingsMusic": "listenbrainz.org → Settings → Music / User token."
+    },
+    "soulseekCard": {
+      "configureSoulseek": "Määritä Soulseek",
+      "soulseekIsPeerToPeer": "Soulseek on vertaisverkko. Tahti ei välitä hakuja tai tiedostoja palvelimiensa kautta. Yhdistät omalla tililläsi työpöytäsovelluksesta. Vastaat itse tekijänoikeudella suojatun aineiston jakamisesta ja lataamisesta, jos sinulla ei ole siihen oikeutta.",
+      "connectionListenPortSharedFolders": "Yhteys, kuunteluportti, jaetut kansiot ja haku eivät ole käytettävissä tässä selainistunnossa. Avaa oikean reunan Kirjasto-välilehti tuodaksesi paikallisia tiedostoja sillä välin.",
+      "close": "Sulje",
+      "desktopOnly": "Vain työpöydällä",
+      "soulseekUsername": "Soulseek-käyttäjänimi",
+      "savedLocallyWhenTheNative": "Tallennetaan paikallisesti, kun natiivisilta julkaistaan. Ei lähetetä Tahdille.",
+      "soulseekConnectsFromTheDesktop": "Soulseek yhdistää vain työpöytäsoittimesta."
+    },
+    "trackAnalysis": {
+      "analysis": "Analyysi",
+      "status": "Tila",
+      "bpmAndKeyAreEstimates": "BPM ja sävellaji ovat arvioita ja voivat olla väärin (puoli- tai kaksinkertainen tempo, rinnakkaissävellaji). Korjaa ne alla; uusi analyysi ei koskaan korvaa korjauksia.",
+      "waveform": "Aaltomuoto",
+      "yourBpm": "Oma BPM",
+      "yourKey": "Oma sävellaji",
+      "tapAlongWithTheBeat": "Napauta tahdissa",
+      "tapTempo": "Napauta tempo"
+    },
+    "trackOrganize": {
+      "rateAndLabel": "Arvioi ja merkitse",
+      "loading": "Ladataan…",
+      "clear": "Tyhjennä",
+      "none": "Ei mitään",
+      "tags": "Tunnisteet",
+      "done": "Valmis",
+      "addATag": "Lisää tunniste"
+    },
+    "imagePurpose": {
+      "clickToChangeYourProfile": "Vaihda profiilikuva napsauttamalla",
+      "addProfileImages": "Lisää profiilikuvia",
+      "dropOneOrMoreImages": "Pudota tähän yksi tai useampi kuva. Valitset kunkin kuvan käyttötarkoituksen ennen kuin mitään ladataan.",
+      "chooseWhatEachImageIs": "Valitse kunkin kuvan käyttötarkoitus",
+      "setAPurposeForEvery": "Valitse jokaiselle kuvalle käyttötarkoitus. Vain yksi kuva voi olla profiilikuva; toisen valitseminen siirtää edellisen galleriaan.",
+      "cancel": "Peruuta",
+      "changeProfileImage": "Vaihda profiilikuva",
+      "removeImage": "Poista kuva"
+    },
+    "discoverWidgetCard": {
+      "listenToTheirMusic": "Kuuntele heidän musiikkiaan",
+      "adjustHowThisWidgetBehaves": "Säädä, miten tämä pienoisohjelma toimii Löydä-sivulla.",
+      "thisWidgetUsesTheDiscover": "Tämä pienoisohjelma käyttää yllä olevia Löydä-suodattimia. Lisäasetuksia ei vielä ole.",
+      "done": "Valmis",
+      "configureWidget": "Määritä pienoisohjelma",
+      "moveEarlier": "Siirrä aiemmaksi",
+      "moveLater": "Siirrä myöhemmäksi",
+      "removeWidget": "Poista pienoisohjelma"
+    },
+    "coverArtGenerator": {
+      "drawOnTheCanvasTo": "Piirrä kankaalle luodaksesi symmetrisen generatiivisen kannen ja käytä sitä tämän julkaisun kansikuvana.",
+      "style": "Tyyli",
+      "palette": "Paletti",
+      "background": "Tausta",
+      "clear": "Tyhjennä",
+      "useThisArtwork": "Käytä tätä kansikuvaa",
+      "brushSize": "Siveltimen koko",
+      "glow": "Hehku"
+    },
+    "electionCandidates": {
+      "elected": "Valittu",
+      "candidates": "Ehdokkaat",
+      "nobodyIsStandingYet": "Kukaan ei ole vielä ehdolla.",
+      "nominateAMember": "Aseta jäsen ehdolle",
+      "nominate": "Aseta ehdolle",
+      "cancel": "Peruuta",
+      "nominee": "Ehdokas",
+      "statementOptional": "Esittely (valinnainen)"
+    },
+    "backdropPanel": {
+      "headerStyle": "Otsakkeen tyyli",
+      "gradientColors": "Liukuvärit",
+      "presetsAndColorsForThe": "Valmiit tyylit ja värit liukuväriotsakkeelle.",
+      "solidColors": "Tasavärit",
+      "solidHeaderUsesThePage": "Tasavärinen otsake käyttää yllä olevaa sivun taustaa. Säädä korostevärejä tässä.",
+      "accents": "Korostevärit",
+      "slideshow": "Diaesitys",
+      "removeBackdrop": "Poista taustakuva"
+    },
+    "mixableTracks": {
+      "mixesWellWith": "Miksautuu hyvin näihin",
+      "analyzeThisTrackOrSet": "Analysoi tämä kappale tai aseta sen BPM ja sävellaji ensin. Osumat tarvitsevat ainakin toisen niistä.",
+      "couldNotLookForMixable": "Miksattavia kappaleita ei voitu hakea.",
+      "nothingInYourLibraryMatches": "Kirjastossasi ei vielä ole osumia. Laajenna tempoaluetta tai analysoi lisää kappaleita.",
+      "queue": "Jonoon",
+      "play": "Soita",
+      "addToQueue": "Lisää jonoon",
+      "addToThePreparePlaylist": "Lisää Valmistele-soittolistaan"
+    },
+    "suggestStation": {
+      "suggestAStation": "Ehdota asemaa",
+      "sendAPublicStreamFor": "Lähetä julkinen striimi Tahti-tiimin arvioitavaksi suomalaisten asemien valikoimaan.",
+      "stationName": "Aseman nimi",
+      "language": "Kieli",
+      "finnish": "suomi",
+      "bitrateKbps": "Bittinopeus (kbps)",
+      "logoUrl": "Logon osoite",
+      "streamUrl": "Striimin osoite"
+    },
+    "trackEditBasics": {
+      "artist": "Artisti",
+      "backdrop": "Taustakuva",
+      "coverArt": "Kansikuva",
+      "title": "Nimi",
+      "defaultsToYourChannelS": "Oletuksena kanavasi artistinimi. Voit vaihtaa sen tässä vain tälle kappaleelle.",
+      "contentType": "Sisältötyyppi",
+      "description": "Kuvaus",
+      "releaseDate": "Julkaisupäivä"
+    },
+    "brandingGallery": {
+      "uploadGalleryImages": "Lataa gallerian kuvia",
+      "addImagesWithDragAnd": "Lisää kuvia vetämällä ja pudottamalla tai selaa laitettasi.",
+      "includeUploadedImagesInPress": "Ota ladatut kuvat mukaan lehdistöpakettiin",
+      "done": "Valmis",
+      "gallery": "Galleria",
+      "publicGallery": "Julkinen galleria",
+      "uploadMoreGalleryImages": "Lataa lisää gallerian kuvia",
+      "galleryUploadMode": "Gallerian lataustila"
+    },
+    "streamStats": {
+      "liveStreamStatus": "Lähetyksen tila",
+      "mode": "Tila",
+      "signal": "Signaali",
+      "bitrate": "Bittinopeus",
+      "overlay": "Peitekuva",
+      "openStreamOverlaySettings": "Avaa lähetyksen peitekuvan asetukset",
+      "listeners": "Kuuntelijat",
+      "liveFor": "Livenä"
+    },
+    "distributionGuides": {
+      "postReleaseClaimLinks": "Julkaisun jälkeiset haltuunottolinkit",
+      "collectingSocieties": "Tekijänoikeusjärjestöt",
+      "distributionGuides": "Jakeluoppaat",
+      "automation": "Automaatio"
+    },
+    "newsletterStatus": {
+      "youAposReSubscribed": "Olet tilaaja",
+      "thanksForConfirmingYouApos": "Kiitos vahvistuksesta. Saat artistin päivitykset sähköpostiin, ja jokaisessa viestissä on linkki tilauksen lopettamiseen.",
+      "youAposReUnsubscribed": "Tilaus on lopetettu",
+      "youWonAposTGet": "Et saa enää tämän artistin uutiskirjettä. Voit tilata sen uudelleen artistin sivulta.",
+      "stopTheseEmails": "Lopetetaanko nämä viestit?",
+      "youAposLlNoLonger": "Et saa enää tämän artistin uutiskirjettä.",
+      "goToTahti": "Siirry Tahtiin"
+    },
+    "djSettings": {
+      "djSettings": "DJ-asetukset",
+      "keyNotation": "Sävellajimerkintä",
+      "howKeysShowInThe": "Miten sävellajit näkyvät listassa ja kappaleen tiedoissa.",
+      "tempoRangeForMixableTracks": "Miksattavien kappaleiden tempoalue",
+      "howFarATrackS": "Kuinka kaukana kappaleen BPM saa olla soivasta kappaleesta.",
+      "countHalfAndDoubleTempo": "Huomioi puoli- ja kaksinkertainen tempo",
+      "a70BpmTrackThen": "Silloin 70 BPM:n kappale sopii 140 BPM:n kappaleeseen."
+    },
+    "channelLayersPanel": {
+      "chooseWhichPlaylistThisBlock": "Valitse, minkä soittolistan tämä lohko näyttää.",
+      "howTracksAppearOnThe": "Miten kappaleet näkyvät sivulla.",
+      "feedHasNoLiveUpdate": "Syötteellä ei vielä ole päivitysten lähdettä. Nämä asetukset muokkaavat sitä, kun lähde on olemassa.",
+      "whichUpdateTypesToInclude": "Mitkä päivitystyypit otetaan mukaan.",
+      "howUpdatesAppearOnThe": "Miten päivitykset näkyvät sivulla.",
+      "playlistDisplay": "Soittolistan näyttö",
+      "feedDisplay": "Syötteen näyttö"
+    },
+    "playlistImport": {
+      "importPlaylist": "Tuo soittolista",
+      "notYetInYourLibrary": "Ei vielä kirjastossasi",
+      "theseAreKeptInThe": "Nämä pidetään soittolistassa ei-saatavilla-merkintöinä, niitä ei pudoteta, ja ne yhdistyvät, kun tiedosto on kirjastossasi.",
+      "cancel": "Peruuta",
+      "playlistName": "Soittolistan nimi",
+      "addFilesToTheLibrary": "Lisää tiedostoja kirjastoon",
+      "unresolvedEntries": "Tunnistamattomat merkinnät"
+    },
+    "slideshowControls": {
+      "uploadImagesToBuildThe": "Lataa kuvia rakentaaksesi kanavasi taustalla pyörivän diaesityksen.",
+      "uploadingImages": "Ladataan kuvia…",
+      "addGalleryImages": "Lisää gallerian kuvia",
+      "automaticallyAdvanceSlides": "Vaihda dioja automaattisesti",
+      "galleryStyle": "Gallerian tyyli",
+      "transition": "Siirtymä"
+    },
+    "trackInspector": {
+      "play": "Soita",
+      "addToQueue": "Lisää jonoon",
+      "addToPrepare": "Lisää Valmisteluun",
+      "revealInFolder": "Näytä kansiossa",
+      "locateFile": "Etsi tiedosto",
+      "remove": "Poista",
+      "close": "Sulje"
+    },
+    "greenRoomSession": {
+      "openGreenRoomChat": "Avaa green roomin keskustelu",
+      "startStreamingToOpenA": "Aloita lähetys avataksesi tälle lähetykselle green roomin.",
+      "openTheGreenRoom": "Avaa green room",
+      "nobodyIsInvitedYet": "Ketään ei ole vielä kutsuttu.",
+      "greenRoom": "Green room",
+      "letInvitedGuestsHearYour": "Anna kutsuttujen vieraiden kuulla lähetyksesi ennen kuin se on julkinen. Kutsujen oletussäännöt ovat kohdassa Asetukset → Lähetys.",
+      "copyLink": "Kopioi linkki"
+    },
+    "electionResult": {
+      "recordTheResult": "Kirjaa tulos",
+      "elected": "Valitut",
+      "eachElectedMemberGetsA": "Jokainen valittu jäsen saa tähän rooliin hallituskauden ja vaali päättyy. Hallituksen käyttöoikeudet myönnetään erikseen.",
+      "recordResult": "Kirjaa tulos",
+      "cancel": "Peruuta",
+      "termsStart": "Kaudet alkavat",
+      "termsEndOptional": "Kaudet päättyvät (valinnainen)"
+    },
+    "newEpisode": {
+      "newEpisode": "Uusi jakso",
+      "prefillsFromTheShowYou": "Esitäytetään ohjelmasta, tarvitset vain äänen.",
+      "episodeNumber": "Jakson numero",
+      "scheduleBookASlotAfter": "Aikataulu: varaa aika luomisen jälkeen tarvittaessa",
+      "createsAPendingEpisodeGo": "Luo odottavan jakson. Mene livenä tallentaaksesi, sitten tarkista, leikkaa/normalisoi ja hyväksy ennen kuin se voi tulla ulos.",
+      "cancel": "Peruuta",
+      "episodeSource": "Jakson lähde"
+    },
+    "candidacy": {
+      "withdrawMyCandidacy": "Peru ehdokkuuteni",
+      "cancel": "Peruuta",
+      "standForElection": "Asetu ehdolle",
+      "whyYouAreStandingOptional": "Miksi asetut ehdolle (valinnainen)",
+      "withdrawYourCandidacy": "Perutaanko ehdokkuutesi?",
+      "withdraw": "Peru"
+    },
+    "newDraft": {
+      "newDraft": "Uusi luonnos",
+      "fansSubscribersOnly": "Vain fanit / tilaajat",
+      "cancel": "Peruuta",
+      "subject": "Aihe",
+      "bodyMarkdown": "Teksti (markdown)",
+      "saveDraft": "Tallenna luonnos"
+    },
+    "answerCorrection": {
+      "answer": "Vastaa",
+      "accept": "Hyväksy",
+      "reject": "Hylkää",
+      "cancel": "Peruuta",
+      "whatWasDecidedTheMember": "Mitä päätettiin (jäsen lukee tämän)",
+      "answeringChangesNoRecordBy": "Vastaaminen ei itsessään muuta mitään tietuetta. Tee korjaus sille kuuluvaan paikkaan ja kerro tässä, mitä teit."
+    },
+    "randomGenres": {
+      "randomTrackGenres": "Satunnaisen kappaleen tyylilajit",
+      "pickTheGenresToDraw": "Valitse tyylilajit, joista arvotaan. Kaikki tyylilajit tyhjentää muut.",
+      "done": "Valmis",
+      "chooseGenres": "Valitse tyylilajit",
+      "anotherRandomTrack": "Uusi satunnainen kappale",
+      "genres": "Tyylilajit"
+    },
+    "nameplate": {
+      "nameplate": "Nimikyltti",
+      "aShortLabelShownAs": "Lyhyt merkintä, joka näkyy värillisenä tarrana nimesi vieressä artistisivullasi.",
+      "nameplateColor": "Nimikyltin väri",
+      "useThePageAccent": "Käytä sivun korosteväriä",
+      "showPageHero": "Näytä sivun yläkortti",
+      "theHeaderCardWithYour": "Otsakekortti, jossa on avatarisi, nimesi ja tilastosi kanavasivullasi."
+    },
+    "welcomeStrip": {
+      "independentMusicLive": "Itsenäistä musiikkia, livenä.",
+      "tahtiIsNonprofitBroadcastingFor": "Tahti on voittoa tavoittelematonta lähetystoimintaa itsenäisille artisteille, tehty tukemaan artisteja eikä algoritmeja. Kuuntele liveshow’ita, ympärivuorokautista Tahti Radiota ja yhteisön uusia julkaisuja ilmaiseksi.",
+      "joinFree": "Liity ilmaiseksi",
+      "tahtiForArtists": "Tahti artisteille",
+      "whatIsTahti": "Mikä on Tahti?",
+      "hideThisIntroduction": "Piilota tämä esittely"
+    },
+    "addStations": {
+      "addStations": "Lisää asemia",
+      "pickStationsFromTheRadio": "Valitse asemia radiohakemistosta tai lisää mikä tahansa asema sen striimin osoitteella.",
+      "browseStations": "Selaa asemia",
+      "addYourOwn": "Lisää oma",
+      "yourStations": "Omat asemasi",
+      "addAStationByIts": "Lisää asema sen striimin osoitteella. Se soi suoraan asemalta."
+    },
+    "addonInstallPicker": {
+      "installAWidgetOntoThis": "Asenna pienoisohjelma tälle pinnalle",
+      "onlyApprovedAdminSurfaceAdd": "Listassa ovat vain hyväksytyt Ylläpito-pinnan lisäosat, joita ei ole vielä asennettu tänne.",
+      "everyApprovedAdminSurfaceAdd": "Jokainen hyväksytty Ylläpito-pinnan lisäosa on jo asennettu tänne. Hyväksy tai rekisteröi ensin uusi.",
+      "cancel": "Peruuta",
+      "install": "Asenna",
+      "widgetToInstall": "Asennettava pienoisohjelma"
+    },
+    "goLiveRecording": {
+      "prefs": "Asetukset",
+      "recordBroadcast": "Tallenna lähetys",
+      "editAndReleaseSavedRecordings": "Muokkaa ja julkaise tallennuksia",
+      "recording": "Tallennus",
+      "forThisBroadcastOnlyDefault": "Vain tälle lähetykselle. Tulevien lähetysten oletus on kohdassa Asetukset → Lähetys → Radio.",
+      "openRecordings": "Avaa tallennukset"
+    },
+    "channelMembers": {
+      "cancel": "Peruuta",
+      "noMembersListed": "Jäseniä ei ole lueteltu.",
+      "name": "Nimi",
+      "role": "Rooli",
+      "vocalsProduction": "Laulu, tuotanto…"
+    },
+    "streamPanelHeader": {
+      "currentTrack": "Nykyinen kappale",
+      "noTrackPlaying": "Mikään kappale ei soi",
+      "rotationControls": "Rotaation säätimet",
+      "previousTrack": "Edellinen kappale",
+      "skipTrack": "Ohita kappale",
+      "editPlaylist": "Muokkaa soittolistaa"
+    },
+    "backupRestore": {
+      "restoreFromBackup": "Palauta varmuuskopiosta",
+      "restoresYourCatalogWatchedFolders": "Palauttaa luettelosi: seuratut kansiot, muokkaukset, arviot, merkinnät, tunnisteet, soittomäärät ja soittolistat. Musiikkitiedostot eivät kuulu varmuuskopioon, vaan niiden on oltava jo tällä tietokoneella.",
+      "readingTheBackup": "Luetaan varmuuskopiota…",
+      "watchedFolders": "Seuratut kansiot",
+      "chooseNewFolder": "Valitse uusi kansio…",
+      "cancel": "Peruuta"
+    },
+    "multicastConfigure": {
+      "enabledMirrorTheLiveStream": "Käytössä: peilaa lähetys tänne",
+      "cancel": "Peruuta",
+      "labelOptional": "Nimi (valinnainen)",
+      "rtmpAddress": "RTMP-osoite",
+      "port": "Portti",
+      "saveDestination": "Tallenna kohde"
+    },
+    "membershipStatus": {
+      "thankYouForSupportingThe": "Kiitos, että tuet osuuskuntaa. Jäsenyyteesi kuuluu häviötön suoratoisto kuuntelijoille ja rajaton livelähetys.",
+      "yourMembershipUsesTheLegacy": "Jäsenyytesi käyttää vanhaa kertamaksua. Tilaa Stripen kautta, niin saat automaattisen vuosiuusinnan ja kuitit.",
+      "renewalDueAround": "Uusinta erääntyy noin",
+      "nextRenewalAround": "Seuraava uusinta noin",
+      "yourMembershipLapsedRenewTo": "Jäsenyytesi on rauennut. Uusi se palauttaaksesi häviöttömän suoratoiston ja rajattoman liveajan.",
+      "verifyYourEmailBeforeCompleting": "Vahvista sähköpostiosoitteesi ennen jäsenyyden maksamista."
+    },
+    "lastFmRow": {
+      "cancel": "Peruuta",
+      "useYourOwnLastFm": "Käytä omaa Last.fm-API-avainta",
+      "lastFmScrobbling": "Last.fm-scrobblaus",
+      "whenATahtiTrackCounts": "Kun Tahti-kappale lasketaan kuunteluksi, lähetä se Last.fm-profiiliisi. Vain scrobblaus, ei listoja tai suosituksia.",
+      "lastFmApiKey": "Last.fm-API-avain",
+      "sharedSecret": "Jaettu salaisuus"
+    },
+    "socialOAuth": {
+      "disconnect": "Katkaise yhteys",
+      "postNewReleases": "Julkaise uudet julkaisut",
+      "postWhenIGoLive": "Julkaise, kun menen liveksi",
+      "postText": "Julkaisun teksti",
+      "save": "Tallenna",
+      "tahtiForgetsTheSavedSign": "Tahti unohtaa tallennetun kirjautumisen ja lopettaa julkaisemisen sinne."
     }
   },
   "studioEditor": {

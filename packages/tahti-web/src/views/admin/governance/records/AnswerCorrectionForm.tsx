@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Textarea } from '@tahti-player/ui';
 
 import {
@@ -15,6 +16,7 @@ export function AnswerCorrectionForm({
   id: string;
   onAnswered: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [note, setNote] = useState('');
   const [busy, setBusy] = useState(false);
@@ -28,7 +30,7 @@ export function AnswerCorrectionForm({
         className="w-fit"
         onClick={() => setOpen(true)}
       >
-        Answer
+        {t('answerCorrection.answer')}
       </Button>
     );
   }
@@ -58,8 +60,8 @@ export function AnswerCorrectionForm({
       }}
     >
       <Textarea
-        label="What was decided (the member reads this)"
-        description="Answering changes no record by itself. Make the correction where it belongs and say here what you did."
+        label={t('answerCorrection.whatWasDecidedTheMember')}
+        description={t('answerCorrection.answeringChangesNoRecordBy')}
         rows={2}
         value={note}
         maxLength={2000}
@@ -68,7 +70,7 @@ export function AnswerCorrectionForm({
       />
       <div className="flex flex-wrap gap-2">
         <Button size="sm" type="submit" disabled={busy}>
-          Accept
+          {t('answerCorrection.accept')}
         </Button>
         <Button
           type="button"
@@ -77,7 +79,7 @@ export function AnswerCorrectionForm({
           disabled={busy}
           onClick={() => answer('REJECTED')}
         >
-          Reject
+          {t('answerCorrection.reject')}
         </Button>
         <Button
           type="button"
@@ -86,7 +88,7 @@ export function AnswerCorrectionForm({
           disabled={busy}
           onClick={() => setOpen(false)}
         >
-          Cancel
+          {t('answerCorrection.cancel')}
         </Button>
       </div>
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}

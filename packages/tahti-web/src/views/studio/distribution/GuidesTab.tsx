@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ExternalLink, SelectableTiles } from '@tahti-player/ui';
 
 import {
@@ -14,11 +15,12 @@ import {
 import { GuideDetail } from './GuideDetail';
 
 export function GuidesTab() {
+  const { t } = useTranslation('web');
   const [selectedGuide, setSelectedGuide] = useState('musicbrainz');
   return (
     <div className="flex flex-col gap-4 text-xs">
       <SelectableTiles
-        aria-label="Distribution guides"
+        aria-label={t('distributionGuides.distributionGuides')}
         items={GUIDE_TILES}
         selected={selectedGuide}
         onChange={setSelectedGuide}
@@ -53,7 +55,7 @@ export function GuidesTab() {
       )}
       {selectedGuide === 'automation' && (
         <GuideDetail
-          title="Automation"
+          title={t('distributionGuides.automation')}
           steps={[
             'Export JSON creates a portable metadata package for MusicBrainz, Discogs, and future delivery tools.',
             'Copy prefill prepares the relevant form with the release title, barcode, credits, and tracklist.',
@@ -62,7 +64,9 @@ export function GuidesTab() {
         />
       )}
       <div>
-        <p className="mb-1 font-medium">Post-release claim links</p>
+        <p className="mb-1 font-medium">
+          {t('distributionGuides.postReleaseClaimLinks')}
+        </p>
         <ul className="list-inside list-disc">
           {POST_RELEASE_CLAIM_LINKS.map((link) => (
             <li key={link.id}>
@@ -72,7 +76,9 @@ export function GuidesTab() {
         </ul>
       </div>
       <div>
-        <p className="mb-1 font-medium">Collecting societies</p>
+        <p className="mb-1 font-medium">
+          {t('distributionGuides.collectingSocieties')}
+        </p>
         <ul className="list-inside list-disc">
           {COLLECTING_SOCIETY_POINTERS.map((society) => (
             <li key={society.id}>

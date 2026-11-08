@@ -1,5 +1,6 @@
 import { RotateCcwIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ColorField, Input, Tooltip } from '@tahti-player/ui';
 
 import type { ProfileFields } from '../../api/studio-extras';
@@ -25,12 +26,13 @@ export function NameplateFields({
   profile: ProfileFields;
   setProfile: (profile: ProfileFields) => void;
 }) {
+  const { t } = useTranslation('web');
   const color = profile.nameplateColor ?? '';
   return (
     <div className="flex flex-col gap-3">
       <Input
-        label="Nameplate"
-        description="A short label shown as a coloured pill next to your name on your artist page."
+        label={t('nameplate.nameplate')}
+        description={t('nameplate.aShortLabelShownAs')}
         placeholder="e.g. Resident DJ"
         maxLength={NAMEPLATE_MAX_LENGTH}
         value={profile.nameplateText ?? ''}
@@ -39,7 +41,7 @@ export function NameplateFields({
         }
       />
       <ColorField
-        label="Nameplate color"
+        label={t('nameplate.nameplateColor')}
         value={color || '#22d3ee'}
         detail={color || 'Default (your page accent)'}
         onChange={(next) => setProfile({ ...profile, nameplateColor: next })}
@@ -47,12 +49,12 @@ export function NameplateFields({
           <>
             <Nameplate text={profile.nameplateText} color={color || null} />
             {color ? (
-              <Tooltip content="Use the page accent" side="top">
+              <Tooltip content={t('nameplate.useThePageAccent')} side="top">
                 <Button
                   type="button"
                   size="icon-sm"
                   variant="secondary"
-                  aria-label="Use the page accent"
+                  aria-label={t('nameplate.useThePageAccent')}
                   onClick={() =>
                     setProfile({ ...profile, nameplateColor: null })
                   }
@@ -65,8 +67,8 @@ export function NameplateFields({
         }
       />
       <SettingsToggle
-        label="Show page hero"
-        description="The header card with your avatar, name and stats on your channel page."
+        label={t('nameplate.showPageHero')}
+        description={t('nameplate.theHeaderCardWithYour')}
         value={profile.showPageHero ?? true}
         onChange={(showPageHero) => setProfile({ ...profile, showPageHero })}
       />

@@ -9,6 +9,7 @@ import {
   WifiOffIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { StatChip } from '@tahti-player/ui';
 
 import {
@@ -17,6 +18,7 @@ import {
 } from './useStreamManagerState';
 
 export function StatsGrid({ state }: { state: StreamManagerState }) {
+  const { t } = useTranslation('web');
   const {
     rotationPlaying,
     signal,
@@ -36,7 +38,7 @@ export function StatsGrid({ state }: { state: StreamManagerState }) {
     <div
       className="grid grid-cols-2 gap-2 sm:grid-cols-3"
       role="group"
-      aria-label="Live stream status"
+      aria-label={t('streamStats.liveStreamStatus')}
     >
       <StatChip
         icon={
@@ -46,7 +48,7 @@ export function StatsGrid({ state }: { state: StreamManagerState }) {
             <RadioIcon size={14} aria-hidden />
           )
         }
-        label="Mode"
+        label={t('streamStats.mode')}
         value={outputLabel}
       />
       <StatChip
@@ -57,7 +59,7 @@ export function StatsGrid({ state }: { state: StreamManagerState }) {
             <WifiOffIcon size={14} aria-hidden />
           )
         }
-        label="Signal"
+        label={t('streamStats.signal')}
         value={
           signal == null && stats == null
             ? '—'
@@ -72,7 +74,7 @@ export function StatsGrid({ state }: { state: StreamManagerState }) {
       />
       <StatChip
         icon={<ActivityIcon size={14} aria-hidden />}
-        label="Bitrate"
+        label={t('streamStats.bitrate')}
         value={
           bitrate != null
             ? `${bitrate} kbps`
@@ -85,14 +87,14 @@ export function StatsGrid({ state }: { state: StreamManagerState }) {
       />
       <StatChip
         icon={<MonitorPlayIcon size={14} aria-hidden />}
-        label="Overlay"
+        label={t('streamStats.overlay')}
         value={overlayShowTitle == null ? '—' : overlayShowTitle ? 'On' : 'Off'}
-        aria-label="Open stream overlay settings"
+        aria-label={t('streamStats.openStreamOverlaySettings')}
         onClick={() => setOverlayModalOpen(true)}
       />
       <StatChip
         icon={<UsersIcon size={14} aria-hidden />}
-        label="Listeners"
+        label={t('streamStats.listeners')}
         value={
           listeners == null && stats?.listenerPeak == null
             ? '—'
@@ -101,7 +103,7 @@ export function StatsGrid({ state }: { state: StreamManagerState }) {
       />
       <StatChip
         icon={<TimerIcon size={14} aria-hidden />}
-        label="Live for"
+        label={t('streamStats.liveFor')}
         value={
           liveDurationSec != null
             ? formatRemaining(liveDurationSec)

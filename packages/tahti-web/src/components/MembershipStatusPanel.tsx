@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Alert, Badge, Box, Button, InlineError } from '@tahti-player/ui';
 
 import {
@@ -33,6 +34,7 @@ export function MembershipStatusPanel({
   userEmail: string;
   onChange: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -102,28 +104,26 @@ export function MembershipStatusPanel({
           Active member #{membership.memberNumber ?? '—'}
         </Badge>
         <p className="text-foreground-secondary text-sm">
-          Thank you for supporting the cooperative — your membership includes
-          lossless streaming for listeners and unlimited live broadcasting.
+          {t('membershipStatus.thankYouForSupportingThe')}
         </p>
         {membership.subscriptionMigrationRequired && (
           <Alert tone="warning" className="text-foreground">
-            Your membership uses the legacy one-time path. Subscribe via Stripe
-            for automatic annual renewal and billing receipts.
+            {t('membershipStatus.yourMembershipUsesTheLegacy')}
           </Alert>
         )}
         {renewalDueAt &&
           !membership.hasStripeSubscription &&
           !membership.subscriptionMigrationRequired && (
             <p className="text-foreground-secondary text-sm">
-              Renewal due around <ListingDate value={renewalDueAt} />. Pay again
-              from this panel when reminded, or subscribe via Stripe on your
-              next checkout.
+              {t('membershipStatus.renewalDueAround')}{' '}
+              <ListingDate value={renewalDueAt} />. Pay again from this panel
+              when reminded, or subscribe via Stripe on your next checkout.
             </p>
           )}
         {membership.hasStripeSubscription && renewalDueAt && (
           <p className="text-foreground-secondary text-sm">
-            Next renewal around <ListingDate value={renewalDueAt} /> (Stripe
-            subscription).
+            {t('membershipStatus.nextRenewalAround')}{' '}
+            <ListingDate value={renewalDueAt} /> (Stripe subscription).
           </p>
         )}
         {error && <InlineError>{error}</InlineError>}
@@ -168,14 +168,13 @@ export function MembershipStatusPanel({
       </p>
       {lapsed && (
         <InlineError announce={false}>
-          Your membership lapsed — renew to restore lossless streaming and
-          unlimited live time.
+          {t('membershipStatus.yourMembershipLapsedRenewTo')}
         </InlineError>
       )}
       {pendingEmail && (
         <div className="flex flex-col gap-2">
           <InlineError announce={false}>
-            Verify your email before completing membership checkout.
+            {t('membershipStatus.verifyYourEmailBeforeCompleting')}
           </InlineError>
           {resendMessage && <p className="text-sm">{resendMessage}</p>}
           <Button

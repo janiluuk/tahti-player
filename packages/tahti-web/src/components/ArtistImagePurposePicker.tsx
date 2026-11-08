@@ -1,6 +1,7 @@
 import { UploadCloudIcon, XIcon } from 'lucide-react';
 import { useState, type FC } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -67,6 +68,7 @@ export const ArtistImagePurposePicker: FC<Props> = ({
   onProfileUploaded,
   onGalleryUploaded,
 }) => {
+  const { t } = useTranslation('web');
   const [pending, setPending] = useState<PendingImage[]>([]);
   const [pickerOpen, setPickerOpen] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -172,7 +174,7 @@ export const ArtistImagePurposePicker: FC<Props> = ({
             )}
           </div>
           <Tooltip
-            content="Change profile image"
+            content={t('imagePurpose.changeProfileImage')}
             side="bottom"
             wrapperClassName="absolute inset-0"
           >
@@ -181,7 +183,7 @@ export const ArtistImagePurposePicker: FC<Props> = ({
               size="flexible"
               type="button"
               onClick={() => setPickerOpen(true)}
-              aria-label="Change profile image"
+              aria-label={t('imagePurpose.changeProfileImage')}
               className="bg-background/80 text-foreground flex size-full items-center justify-center rounded-full whitespace-normal opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100 active:scale-100"
             >
               <UploadCloudIcon size={28} aria-hidden />
@@ -189,7 +191,7 @@ export const ArtistImagePurposePicker: FC<Props> = ({
           </Tooltip>
         </div>
         <p className="text-foreground-secondary text-center text-xs sm:text-left">
-          Click to change your profile image
+          {t('imagePurpose.clickToChangeYourProfile')}
         </p>
       </div>
 
@@ -198,10 +200,9 @@ export const ArtistImagePurposePicker: FC<Props> = ({
         onClose={() => setPickerOpen(false)}
         className="max-w-lg"
       >
-        <Dialog.Title>Add profile images</Dialog.Title>
+        <Dialog.Title>{t('imagePurpose.addProfileImages')}</Dialog.Title>
         <Dialog.Description>
-          Drop one or more images here. You’ll choose what each image is for
-          before anything is uploaded.
+          {t('imagePurpose.dropOneOrMoreImages')}
         </Dialog.Description>
         <div className="mt-4">
           <FilePicker
@@ -230,10 +231,9 @@ export const ArtistImagePurposePicker: FC<Props> = ({
         }}
         className="max-w-3xl"
       >
-        <Dialog.Title>Choose what each image is for</Dialog.Title>
+        <Dialog.Title>{t('imagePurpose.chooseWhatEachImageIs')}</Dialog.Title>
         <Dialog.Description>
-          Set a purpose for every image. Only one image can be the profile
-          image; selecting another moves the previous one to Gallery.
+          {t('imagePurpose.setAPurposeForEvery')}
         </Dialog.Description>
         <div className="mt-5 flex flex-col gap-4">
           {pending.map((image) => (
@@ -283,7 +283,7 @@ export const ArtistImagePurposePicker: FC<Props> = ({
                   ))}
                 </div>
               </div>
-              <Tooltip content="Remove image" side="top">
+              <Tooltip content={t('imagePurpose.removeImage')} side="top">
                 <Button
                   size="icon-sm"
                   variant="text"
@@ -304,7 +304,7 @@ export const ArtistImagePurposePicker: FC<Props> = ({
             onClick={() => setPending([])}
             disabled={busy}
           >
-            Cancel
+            {t('imagePurpose.cancel')}
           </Button>
           <Button onClick={() => void upload()} disabled={busy}>
             {busy ? 'Uploading…' : 'Upload images'}

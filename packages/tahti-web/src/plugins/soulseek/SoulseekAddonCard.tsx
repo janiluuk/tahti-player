@@ -1,6 +1,7 @@
 import { SearchIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -18,6 +19,7 @@ const SOULSEEK_ADDON = {
 };
 
 export function SoulseekAddonCard() {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [username, setUsername] = useState('');
 
@@ -38,45 +40,42 @@ export function SoulseekAddonCard() {
         onClose={() => setOpen(false)}
         className="max-w-lg"
       >
-        <Dialog.Title>Configure Soulseek</Dialog.Title>
+        <Dialog.Title>{t('soulseekCard.configureSoulseek')}</Dialog.Title>
         <Dialog.Description>
-          Soulseek is peer-to-peer. Tahti does not relay searches or files
-          through its servers. You will connect with your own account from the
-          desktop app. Sharing and downloading copyrighted material you do not
-          have rights to is your responsibility.
+          {t('soulseekCard.soulseekIsPeerToPeer')}
         </Dialog.Description>
         <div className="mt-4 flex flex-col gap-3">
           <Input
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            label="Soulseek username"
-            description="Saved locally when the native bridge ships. Not sent to Tahti."
+            label={t('soulseekCard.soulseekUsername')}
+            description={t('soulseekCard.savedLocallyWhenTheNative')}
             value={username}
             onChange={(event) => setUsername(event.target.value)}
             autoComplete="off"
           />
           <p className="text-foreground-secondary text-sm">
-            Connection, listen port, shared folders, and search are not
-            available in this browser session. Open the Library tab on the right
-            rail to import local files in the meantime.
+            {t('soulseekCard.connectionListenPortSharedFolders')}
           </p>
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Close</Dialog.Close>
+          <Dialog.Close>{t('soulseekCard.close')}</Dialog.Close>
           <Tooltip
-            content="Soulseek connects from the desktop player only."
+            content={t('soulseekCard.soulseekConnectsFromTheDesktop')}
             side="top"
             wrapperClassName="inline-flex"
             multiline
           >
             <Button
-              aria-description="Soulseek connects from the desktop player only."
+              aria-description={t(
+                'soulseekCard.soulseekConnectsFromTheDesktop',
+              )}
               size="sm"
               variant="secondary"
               disabled
             >
-              Desktop only
+              {t('soulseekCard.desktopOnly')}
             </Button>
           </Tooltip>
         </Dialog.Actions>

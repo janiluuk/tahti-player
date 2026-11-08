@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, MediaArtwork } from '@tahti-player/ui';
 
 import { formatLibrarySize } from '../lib/libraryFormat';
@@ -103,6 +104,7 @@ export function TrackInspectorDialog({
   onRemove,
   onChanged,
 }: Props) {
+  const { t } = useTranslation('web');
   const rows = track ? inspectorRows(track) : [];
   const [provenance, setProvenance] = useState<NativeFieldProvenance[]>([]);
   const trackId = track?.id;
@@ -187,24 +189,24 @@ export function TrackInspectorDialog({
           {track.available ? (
             <>
               <Button variant="secondary" onClick={() => onPlay(track)}>
-                Play
+                {t('trackInspector.play')}
               </Button>
               <Button variant="text" onClick={() => onQueue(track)}>
-                Add to queue
+                {t('trackInspector.addToQueue')}
               </Button>
               <Button
                 variant="text"
                 onClick={() => void prepareTracks([track.id])}
               >
-                Add to Prepare
+                {t('trackInspector.addToPrepare')}
               </Button>
               <Button variant="text" onClick={() => onReveal(track)}>
-                Reveal in folder
+                {t('trackInspector.revealInFolder')}
               </Button>
             </>
           ) : (
             <Button variant="secondary" onClick={() => onLocate(track)}>
-              Locate file
+              {t('trackInspector.locateFile')}
             </Button>
           )}
           <Button
@@ -212,9 +214,9 @@ export function TrackInspectorDialog({
             intent="danger"
             onClick={() => onRemove(track)}
           >
-            Remove
+            {t('trackInspector.remove')}
           </Button>
-          <Dialog.Close>Close</Dialog.Close>
+          <Dialog.Close>{t('trackInspector.close')}</Dialog.Close>
         </Dialog.Actions>
       ) : null}
     </Dialog.Root>

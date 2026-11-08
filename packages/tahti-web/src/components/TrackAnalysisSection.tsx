@@ -2,7 +2,7 @@ import { ActivityIcon, HandIcon, Undo2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Loader, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -29,6 +29,7 @@ import { runAnalysis } from './LocalLibraryAnalysis';
 
 /** Waveform of the stored peaks; decorative, the numbers below carry the meaning. */
 export function Waveform({ peaks }: { peaks: number[] }) {
+  const { t } = useTranslation('web');
   if (peaks.length === 0) {
     return null;
   }
@@ -39,7 +40,7 @@ export function Waveform({ peaks }: { peaks: number[] }) {
       preserveAspectRatio="none"
       className="text-foreground-secondary h-10 w-full"
       role="img"
-      aria-label="Waveform"
+      aria-label={t('trackAnalysis.waveform')}
       data-testid="waveform"
     >
       {peaks.map((peak, index) => {
@@ -138,6 +139,7 @@ type Props = {
 
 /** Waveform, analysis results and BPM/key correction for one track. */
 export function TrackAnalysisSection({ library, track, onChanged }: Props) {
+  const { t } = useTranslation('web');
   const [detail, setDetail] = useState<NativeAnalysisDetail | null>(null);
   const [bpmText, setBpmText] = useState('');
   const [keyText, setKeyText] = useState('');
@@ -245,7 +247,9 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
       keyText.trim() !== (detail.userKey ?? ''));
   return (
     <section data-testid="track-analysis">
-      <h3 className="mb-1 text-sm font-semibold">Analysis</h3>
+      <h3 className="mb-1 text-sm font-semibold">
+        {t('trackAnalysis.analysis')}
+      </h3>
       {detail?.analyzed ? <Waveform peaks={detail.peaks} /> : null}
       {detail ? (
         <dl className="mt-1 grid grid-cols-[8rem_1fr] gap-x-3 gap-y-1 text-sm">
@@ -256,7 +260,9 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
             </div>
           ))}
           <div className="contents">
-            <dt className="text-foreground-secondary">Status</dt>
+            <dt className="text-foreground-secondary">
+              {t('trackAnalysis.status')}
+            </dt>
             <dd>
               {!detail.analyzed
                 ? 'Not analyzed yet'
@@ -268,9 +274,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
         </dl>
       ) : null}
       <p className="text-foreground-secondary mt-1 text-xs">
-        BPM and key are estimates and can be wrong (half or double tempo,
-        relative major/minor). Correct them below; corrections are never
-        overwritten by re-analysis.
+        {t('trackAnalysis.bpmAndKeyAreEstimates')}
       </p>
       <form
         onSubmit={(event) => {
@@ -283,7 +287,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
             type="number"
             inputMode="decimal"
             enterKeyHint="done"
-            label="Your BPM"
+            label={t('trackAnalysis.yourBpm')}
             placeholder={
               detail?.bpmEstimate ? String(rounded(detail.bpmEstimate)) : ''
             }
@@ -294,7 +298,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
           <Input
             autoCorrect="off"
             spellCheck={false}
-            label="Your key"
+            label={t('trackAnalysis.yourKey')}
             placeholder={detail?.keyEstimate ?? 'Am, F#, 8A'}
             value={keyText}
             error={keyError ?? undefined}
@@ -305,13 +309,13 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
           className="mt-2 flex flex-wrap items-center gap-1"
           data-testid="bpm-tools"
         >
-          <Tooltip content="Tap along with the beat" side="top">
+          <Tooltip content={t('trackAnalysis.tapAlongWithTheBeat')} side="top">
             <Button
               size="sm"
               variant="text"
               className="gap-1.5"
               onClick={tap}
-              aria-label="Tap tempo"
+              aria-label={t('trackAnalysis.tapTempo')}
             >
               <HandIcon size={14} aria-hidden />
               Tap

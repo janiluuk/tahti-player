@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -74,6 +75,7 @@ export function WidgetCard({
   /** Controls shown under the title for every listener, e.g. a filter. */
   toolbar?: ReactNode;
 }) {
+  const { t } = useTranslation('web');
   const [configureOpen, setConfigureOpen] = useState(false);
 
   return (
@@ -94,7 +96,10 @@ export function WidgetCard({
         </div>
         <div className="flex shrink-0 items-center gap-1">
           {isAdmin && (
-            <Tooltip content="Configure widget" side="top">
+            <Tooltip
+              content={t('discoverWidgetCard.configureWidget')}
+              side="top"
+            >
               <Button
                 size="icon-sm"
                 variant="text"
@@ -106,34 +111,34 @@ export function WidgetCard({
               </Button>
             </Tooltip>
           )}
-          <Tooltip content="Move earlier" side="top">
+          <Tooltip content={t('discoverWidgetCard.moveEarlier')} side="top">
             <Button
               size="icon-sm"
               variant="text"
               disabled={!canMoveUp}
               onClick={() => onMove(id, 'up')}
-              aria-label="Move earlier"
+              aria-label={t('discoverWidgetCard.moveEarlier')}
             >
               <ChevronUpIcon size={14} />
             </Button>
           </Tooltip>
-          <Tooltip content="Move later" side="top">
+          <Tooltip content={t('discoverWidgetCard.moveLater')} side="top">
             <Button
               size="icon-sm"
               variant="text"
               disabled={!canMoveDown}
               onClick={() => onMove(id, 'down')}
-              aria-label="Move later"
+              aria-label={t('discoverWidgetCard.moveLater')}
             >
               <ChevronDownIcon size={14} />
             </Button>
           </Tooltip>
-          <Tooltip content="Remove widget" side="top">
+          <Tooltip content={t('discoverWidgetCard.removeWidget')} side="top">
             <Button
               size="icon-sm"
               variant="text"
               onClick={() => onRemove(id)}
-              aria-label="Remove widget"
+              aria-label={t('discoverWidgetCard.removeWidget')}
               className="text-foreground-secondary hover:text-accent-red-strong"
             >
               <XIcon size={14} />
@@ -175,7 +180,7 @@ export function WidgetCard({
             size="sm"
             className="mt-4"
           >
-            Listen to their music
+            {t('discoverWidgetCard.listenToTheirMusic')}
           </ButtonLink>
         </div>
       ) : releases.length > 0 ? (
@@ -281,16 +286,15 @@ export function WidgetCard({
       >
         <Dialog.Title>Configure {title}</Dialog.Title>
         <Dialog.Description>
-          Adjust how this widget behaves on the Discover page.
+          {t('discoverWidgetCard.adjustHowThisWidgetBehaves')}
         </Dialog.Description>
         {settings ?? (
           <p className="text-foreground-secondary mt-4 text-sm">
-            This widget uses the Discover filters above. There are no additional
-            settings available yet.
+            {t('discoverWidgetCard.thisWidgetUsesTheDiscover')}
           </p>
         )}
         <Dialog.Actions>
-          <Dialog.Close>Done</Dialog.Close>
+          <Dialog.Close>{t('discoverWidgetCard.done')}</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
     </section>

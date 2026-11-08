@@ -1,5 +1,6 @@
 import { ImagePlusIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -16,6 +17,7 @@ import { ACCEPTED_IMAGES } from './constants';
 import type { PressKitState } from './usePressKit';
 
 export function GallerySection({ kit }: { kit: PressKitState }) {
+  const { t } = useTranslation('web');
   const {
     images,
     setImages,
@@ -35,22 +37,25 @@ export function GallerySection({ kit }: { kit: PressKitState }) {
   return (
     <>
       <StudioPanel
-        title="Gallery"
+        title={t('brandingGallery.gallery')}
         action={
           <div className="flex items-center gap-3">
             <Toggle
-              label="Public gallery"
+              label={t('brandingGallery.publicGallery')}
               showLabel
               labelPosition="start"
               labelClassName="text-foreground-secondary text-xs"
               checked={galleryPublic}
               onChange={(checked) => void setVisibility(checked)}
             />
-            <Tooltip content="Upload more gallery images" side="top">
+            <Tooltip
+              content={t('brandingGallery.uploadMoreGalleryImages')}
+              side="top"
+            >
               <Button
                 size="icon-sm"
                 variant="secondary"
-                aria-label="Upload more gallery images"
+                aria-label={t('brandingGallery.uploadMoreGalleryImages')}
                 onClick={() => setGalleryUploadOpen(true)}
               >
                 <ImagePlusIcon size={16} aria-hidden />
@@ -76,9 +81,9 @@ export function GallerySection({ kit }: { kit: PressKitState }) {
         }}
         className="max-w-lg"
       >
-        <Dialog.Title>Upload gallery images</Dialog.Title>
+        <Dialog.Title>{t('brandingGallery.uploadGalleryImages')}</Dialog.Title>
         <Dialog.Description>
-          Add images with drag and drop, or browse your device.
+          {t('brandingGallery.addImagesWithDragAnd')}
         </Dialog.Description>
         <div className="flex flex-col gap-4">
           <FilterChips
@@ -88,7 +93,7 @@ export function GallerySection({ kit }: { kit: PressKitState }) {
             ]}
             selected={uploadMode}
             onChange={(id) => setUploadMode(id as 'append' | 'replace')}
-            aria-label="Gallery upload mode"
+            aria-label={t('brandingGallery.galleryUploadMode')}
           />
           <FilePicker
             accept={ACCEPTED_IMAGES}
@@ -107,9 +112,9 @@ export function GallerySection({ kit }: { kit: PressKitState }) {
             }}
           />
           <div className="flex items-center justify-between gap-3 text-sm">
-            <span>Include uploaded images in press kit</span>
+            <span>{t('brandingGallery.includeUploadedImagesInPress')}</span>
             <Toggle
-              label="Include uploaded images in press kit"
+              label={t('brandingGallery.includeUploadedImagesInPress')}
               checked={includeUploads}
               onChange={setIncludeUploads}
             />
@@ -121,7 +126,7 @@ export function GallerySection({ kit }: { kit: PressKitState }) {
             variant="secondary"
             onClick={() => setGalleryUploadOpen(false)}
           >
-            Done
+            {t('brandingGallery.done')}
           </Button>
         </Dialog.Actions>
       </Dialog.Root>

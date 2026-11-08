@@ -1,5 +1,6 @@
 import { PlusIcon, SaveIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -37,6 +38,7 @@ export function RegisterDialog({
   onClose: () => void;
   onSave: () => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <Dialog.Root isOpen={isOpen} onClose={onClose} className="max-w-2xl">
       <Dialog.Title>
@@ -59,17 +61,17 @@ export function RegisterDialog({
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              label="Slug"
+              label={t('addonRegister.slug')}
               value={draft.slug}
               placeholder="live-status"
               disabled={editing !== null}
               onChange={(event) =>
                 onChange({ ...draft, slug: event.target.value })
               }
-              description="Lowercase letters, numbers, and hyphens."
+              description={t('addonRegister.lowercaseLettersNumbersAndHyphens')}
             />
             <Select
-              label="Add-on type"
+              label={t('addonRegister.addOnType')}
               value={draft.scope}
               disabled={editing !== null}
               onValueChange={(value) =>
@@ -83,26 +85,26 @@ export function RegisterDialog({
           </div>
           <Input
             autoComplete="off"
-            label="Name"
+            label={t('addonRegister.name')}
             value={draft.name}
-            placeholder="Live status"
+            placeholder={t('addonRegister.liveStatus')}
             onChange={(event) =>
               onChange({ ...draft, name: event.target.value })
             }
           />
           <Textarea
             submitOnModEnter
-            label="Description"
+            label={t('addonRegister.description')}
             value={draft.description}
             rows={3}
-            placeholder="What does this add-on show or do?"
+            placeholder={t('addonRegister.whatDoesThisAddOn')}
             onChange={(event) =>
               onChange({ ...draft, description: event.target.value })
             }
           />
           <div className="grid gap-4 sm:grid-cols-2">
             <Input
-              label="Author"
+              label={t('addonRegister.author')}
               value={draft.authorName}
               placeholder="Tahti"
               onChange={(event) =>
@@ -110,17 +112,17 @@ export function RegisterDialog({
               }
             />
             <ImageUploadField
-              label="Add-on cover"
-              description="JPEG, PNG, WebP, or GIF"
+              label={t('addonRegister.addOnCover')}
+              description={t('addonRegister.jpegPngWebpOrGif')}
               value={draft.iconUrl ?? ''}
               onChange={(iconUrl) => onChange({ ...draft, iconUrl })}
             />
           </div>
           <Input
-            label="Parameters / categories"
+            label={t('addonRegister.parametersCategories')}
             value={draft.categories.join(', ')}
             placeholder="stats, social, events"
-            description="Comma-separated categories used to filter and describe the add-on."
+            description={t('addonRegister.commaSeparatedCategoriesUsedTo')}
             onChange={(event) =>
               onChange({
                 ...draft,
@@ -134,7 +136,7 @@ export function RegisterDialog({
           {error ? <InlineError>{error}</InlineError> : null}
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('addonRegister.cancel')}</Dialog.Close>
           <Button
             disabled={
               pending ||
@@ -149,12 +151,12 @@ export function RegisterDialog({
             {editing ? (
               <>
                 <SaveIcon size={15} aria-hidden className="mr-1.5" />
-                Save changes
+                {t('addonRegister.saveChanges')}
               </>
             ) : (
               <>
                 <PlusIcon size={15} aria-hidden className="mr-1.5" />
-                Register add-on
+                {t('addonRegister.registerAddOn')}
               </>
             )}
           </Button>

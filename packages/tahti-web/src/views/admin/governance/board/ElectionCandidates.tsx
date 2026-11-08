@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -12,6 +13,7 @@ import { ElectionResultForm } from './ElectionResultForm';
 import { MemberPicker, type PickedMember } from './MemberPicker';
 
 function CandidateLine({ candidate }: { candidate: AdminElectionCandidate }) {
+  const { t } = useTranslation('web');
   return (
     <li className="text-xs">
       <span
@@ -29,7 +31,7 @@ function CandidateLine({ candidate }: { candidate: AdminElectionCandidate }) {
       </span>
       {candidate.elected ? (
         <Badge variant="pill" color="green" className="ml-1.5">
-          Elected
+          {t('electionCandidates.elected')}
         </Badge>
       ) : null}
       {candidate.statement ? (
@@ -49,6 +51,7 @@ export function ElectionCandidates({
   onCandidates?: (candidates: AdminElectionCandidate[]) => void;
   onDecided?: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [candidates, setCandidates] = useState<AdminElectionCandidate[] | null>(
     null,
   );
@@ -74,7 +77,7 @@ export function ElectionCandidates({
         aria-label={`Candidates: ${election.title}`}
         onClick={() => void load()}
       >
-        Candidates
+        {t('electionCandidates.candidates')}
       </Button>
     );
   }
@@ -83,7 +86,7 @@ export function ElectionCandidates({
     <div className="flex flex-col gap-2">
       {candidates.length === 0 ? (
         <p className="text-foreground-secondary text-xs">
-          Nobody is standing yet.
+          {t('electionCandidates.nobodyIsStandingYet')}
         </p>
       ) : (
         <ul
@@ -102,7 +105,7 @@ export function ElectionCandidates({
           className="w-fit"
           onClick={() => setNominating(true)}
         >
-          Nominate a member
+          {t('electionCandidates.nominateAMember')}
         </Button>
       ) : null}
       {open && nominating ? (
@@ -133,16 +136,20 @@ export function ElectionCandidates({
             });
           }}
         >
-          <MemberPicker label="Nominee" value={member} onChange={setMember} />
+          <MemberPicker
+            label={t('electionCandidates.nominee')}
+            value={member}
+            onChange={setMember}
+          />
           <Input
-            label="Statement (optional)"
+            label={t('electionCandidates.statementOptional')}
             value={statement}
             maxLength={2000}
             onChange={(e) => setStatement(e.target.value)}
           />
           <div className="flex gap-2">
             <Button type="submit" size="sm" disabled={busy}>
-              Nominate
+              {t('electionCandidates.nominate')}
             </Button>
             <Button
               type="button"
@@ -151,7 +158,7 @@ export function ElectionCandidates({
               disabled={busy}
               onClick={() => setNominating(false)}
             >
-              Cancel
+              {t('electionCandidates.cancel')}
             </Button>
           </div>
         </form>

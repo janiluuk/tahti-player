@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, ExternalLink, Input } from '@tahti-player/ui';
 
 import {
@@ -17,6 +17,7 @@ import { SettingsToggle } from '../../views/settings/SettingsFields';
 /** Settings → Integrations row: toggle on starts the Last.fm OAuth redirect,
  * off disconnects. The OAuth callback lands back here with `?lastfm=`. */
 export function LastFmIntegrationRow() {
+  const { t } = useTranslation('web');
   const [connected, setConnected] = useState(false);
   const [busy, setBusy] = useState(false);
   const [ownKeyOpen, setOwnKeyOpen] = useState(false);
@@ -113,8 +114,8 @@ export function LastFmIntegrationRow() {
   return (
     <div data-testid="integration-lastfm">
       <SettingsToggle
-        label="Last.fm scrobbling"
-        description="When a Tahti track counts as a listen, submit it to your Last.fm profile. Scrobbling only, no charts or recommendations."
+        label={t('lastFmRow.lastFmScrobbling')}
+        description={t('lastFmRow.whenATahtiTrackCounts')}
         value={connected}
         onChange={(next) => {
           if (busy) {
@@ -145,7 +146,7 @@ export function LastFmIntegrationRow() {
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              label="Last.fm API key"
+              label={t('lastFmRow.lastFmApiKey')}
               autoComplete="off"
               value={apiKey}
               onChange={(event) => setApiKey(event.target.value)}
@@ -154,7 +155,7 @@ export function LastFmIntegrationRow() {
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              label="Shared secret"
+              label={t('lastFmRow.sharedSecret')}
               type="password"
               variant="password"
               autoComplete="off"
@@ -174,7 +175,7 @@ export function LastFmIntegrationRow() {
                 size="sm"
                 onClick={() => setOwnKeyOpen(false)}
               >
-                Cancel
+                {t('lastFmRow.cancel')}
               </Button>
             </div>
           </form>
@@ -185,7 +186,7 @@ export function LastFmIntegrationRow() {
             className="mt-1"
             onClick={() => setOwnKeyOpen(true)}
           >
-            Use your own Last.fm API key
+            {t('lastFmRow.useYourOwnLastFm')}
           </Button>
         )
       ) : null}

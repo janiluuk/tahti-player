@@ -2,6 +2,7 @@ import { FolderOpenIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, InlineError, Loader, Tooltip } from '@tahti-player/ui';
 
 import type {
@@ -35,6 +36,7 @@ export function BackupRestoreDialog({
   sourcePath,
   onRestored,
 }: Props) {
+  const { t } = useTranslation('web');
   const [mappings, setMappings] = useState<NativeRootMapping[]>([]);
   const [preview, setPreview] = useState<NativeRestorePreview | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -135,18 +137,16 @@ export function BackupRestoreDialog({
       onClose={() => (busy ? undefined : onClose())}
       className="max-w-xl"
     >
-      <Dialog.Title>Restore from backup</Dialog.Title>
+      <Dialog.Title>{t('backupRestore.restoreFromBackup')}</Dialog.Title>
       <Dialog.Description>
-        Restores your catalog: watched folders, edits, ratings, labels, tags,
-        play counts and playlists. The music files themselves are not part of
-        the backup — they must already be on this computer.
+        {t('backupRestore.restoresYourCatalogWatchedFolders')}
       </Dialog.Description>
       {error ? (
         <InlineError>{error}</InlineError>
       ) : !preview ? (
         <p className="text-foreground-secondary flex items-center gap-2 text-sm">
           <Loader size="inline" shape="circle" />
-          Reading the backup…
+          {t('backupRestore.readingTheBackup')}
         </p>
       ) : (
         <div className="flex max-h-[50vh] flex-col gap-3 overflow-y-auto py-2">
@@ -164,7 +164,9 @@ export function BackupRestoreDialog({
           </p>
           {preview.roots.length > 0 ? (
             <div className="flex flex-col gap-2">
-              <p className="text-sm font-medium">Watched folders</p>
+              <p className="text-sm font-medium">
+                {t('backupRestore.watchedFolders')}
+              </p>
               {preview.roots.map((root) => (
                 <div key={root.from} className="flex items-center gap-2">
                   <div className="min-w-0 flex-1 text-xs">
@@ -190,7 +192,7 @@ export function BackupRestoreDialog({
                     className="gap-1.5"
                   >
                     <FolderOpenIcon size={14} aria-hidden />
-                    Choose new folder…
+                    {t('backupRestore.chooseNewFolder')}
                   </Button>
                 </div>
               ))}
@@ -209,7 +211,7 @@ export function BackupRestoreDialog({
         </div>
       )}
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('backupRestore.cancel')}</Dialog.Close>
         <Button
           disabled={busy || !preview || preview.filesFound === 0}
           onClick={() => void restore()}

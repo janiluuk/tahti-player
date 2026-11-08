@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Box, Button, InlineError } from '@tahti-player/ui';
 
 import { unsubscribeFromNewsletter } from '../api/newsletter-links';
@@ -14,6 +15,7 @@ type NewsletterStatus =
  * one-click unsubscribe links here, and the email footer links to
  * `/newsletter/unsubscribe/$token`. */
 export function NewsletterStatusView({ status }: { status: NewsletterStatus }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,30 +38,28 @@ export function NewsletterStatusView({ status }: { status: NewsletterStatus }) {
         {status.kind === 'confirmed' ? (
           <>
             <h1 className="font-display text-2xl font-bold">
-              You&apos;re subscribed
+              {t('newsletterStatus.youAposReSubscribed')}
             </h1>
             <p className="text-foreground-secondary text-sm">
-              Thanks for confirming. You&apos;ll get the artist&apos;s updates
-              by email, and every email has a link to stop them.
+              {t('newsletterStatus.thanksForConfirmingYouApos')}
             </p>
           </>
         ) : status.kind === 'unsubscribed' ? (
           <>
             <h1 className="font-display text-2xl font-bold">
-              You&apos;re unsubscribed
+              {t('newsletterStatus.youAposReUnsubscribed')}
             </h1>
             <p className="text-foreground-secondary text-sm">
-              You won&apos;t get this artist&apos;s newsletter any more. You can
-              subscribe again from their page.
+              {t('newsletterStatus.youWonAposTGet')}
             </p>
           </>
         ) : (
           <>
             <h1 className="font-display text-2xl font-bold">
-              Stop these emails?
+              {t('newsletterStatus.stopTheseEmails')}
             </h1>
             <p className="text-foreground-secondary text-sm">
-              You&apos;ll no longer get this artist&apos;s newsletter.
+              {t('newsletterStatus.youAposLlNoLonger')}
             </p>
             {error ? <InlineError>{error}</InlineError> : null}
             <Button
@@ -76,7 +76,7 @@ export function NewsletterStatusView({ status }: { status: NewsletterStatus }) {
         to="/"
         className="text-foreground-secondary text-sm hover:underline"
       >
-        Go to Tahti
+        {t('newsletterStatus.goToTahti')}
       </Link>
     </div>
   );

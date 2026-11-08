@@ -2,6 +2,7 @@ import { HardDriveIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -83,26 +84,29 @@ export function FileDetailDialog({
   file: AdminFileRow;
   onClose: () => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <Dialog.Root isOpen onClose={onClose} className="max-w-lg">
       <Dialog.Title>{file.title}</Dialog.Title>
       <Dialog.Description>
-        Full file record — everything currently tracked for this upload.
+        {t('adminStorageShared.fullFileRecordEverythingCurrently')}
       </Dialog.Description>
       <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
         <div>
           <dt className="text-foreground-secondary text-xs uppercase">
-            Filename
+            {t('adminStorageShared.filename')}
           </dt>
           <dd className="font-medium break-all">{file.title}</dd>
         </div>
         <div>
-          <dt className="text-foreground-secondary text-xs uppercase">Type</dt>
+          <dt className="text-foreground-secondary text-xs uppercase">
+            {t('adminStorageShared.type')}
+          </dt>
           <dd>{contentTypeLabel(file.contentType)}</dd>
         </div>
         <div>
           <dt className="text-foreground-secondary text-xs uppercase">
-            Uploader
+            {t('adminStorageShared.uploader')}
           </dt>
           <dd>
             {file.displayName} · @{file.username}
@@ -110,19 +114,19 @@ export function FileDetailDialog({
         </div>
         <div>
           <dt className="text-foreground-secondary text-xs uppercase">
-            Uploaded
+            {t('adminStorageShared.uploaded')}
           </dt>
           <dd>{formatFileDate(file.createdAt)}</dd>
         </div>
         <div>
           <dt className="text-foreground-secondary text-xs uppercase">
-            Total size
+            {t('adminStorageShared.totalSize')}
           </dt>
           <dd>{formatBytes(file.sizeBytes)}</dd>
         </div>
         <div>
           <dt className="text-foreground-secondary text-xs uppercase">
-            Length
+            {t('adminStorageShared.length')}
           </dt>
           <dd>
             {file.durationSec != null ? formatDuration(file.durationSec) : '—'}
@@ -130,13 +134,13 @@ export function FileDetailDialog({
         </div>
         <div>
           <dt className="text-foreground-secondary text-xs uppercase">
-            Revisions
+            {t('adminStorageShared.revisions')}
           </dt>
           <dd>{file.revisionCount}</dd>
         </div>
         <div>
           <dt className="text-foreground-secondary text-xs uppercase">
-            Storage location
+            {t('adminStorageShared.storageLocation')}
           </dt>
           <dd>
             {file.storageLocation
@@ -146,17 +150,19 @@ export function FileDetailDialog({
         </div>
         <div>
           <dt className="text-foreground-secondary text-xs uppercase">
-            Visibility
+            {t('adminStorageShared.visibility')}
           </dt>
           <dd>{file.isPublic ? 'Public' : 'Private'}</dd>
         </div>
         <div>
-          <dt className="text-foreground-secondary text-xs uppercase">Genre</dt>
+          <dt className="text-foreground-secondary text-xs uppercase">
+            {t('adminStorageShared.genre')}
+          </dt>
           <dd>{file.genre ?? '—'}</dd>
         </div>
       </dl>
       <Dialog.Actions>
-        <Dialog.Close>Close</Dialog.Close>
+        <Dialog.Close>{t('adminStorageShared.close')}</Dialog.Close>
       </Dialog.Actions>
     </Dialog.Root>
   );
@@ -173,6 +179,7 @@ export function QuotaEditor({
   displayName: string;
   onSaved: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [editing, setEditing] = useState(false);
   const [value, setValue] = useState(String(bytesToMb(quotaBytes)));
   const [saving, setSaving] = useState(false);
@@ -226,12 +233,17 @@ export function QuotaEditor({
         aria-label={`Quota in MB for ${displayName}`}
       />
       <span className="text-foreground-secondary text-xs">MB</span>
-      <SaveButton size="sm" saving={saving} title="Save quota" type="submit" />
-      <Tooltip content="Cancel" side="top">
+      <SaveButton
+        size="sm"
+        saving={saving}
+        title={t('adminStorageShared.saveQuota')}
+        type="submit"
+      />
+      <Tooltip content={t('adminStorageShared.cancel')} side="top">
         <Button
           size="icon-sm"
           variant="text"
-          aria-label="Cancel editing quota"
+          aria-label={t('adminStorageShared.cancelEditingQuota')}
           onClick={() => setEditing(false)}
         >
           <XIcon size={14} aria-hidden />
@@ -250,6 +262,7 @@ export function DiskSpaceCard({
   title: string;
   space: AdminStorageDiskSpace;
 }) {
+  const { t } = useTranslation('web');
   const pctUsed =
     space.totalBytes != null && space.totalBytes > 0 && space.usedBytes != null
       ? (space.usedBytes / space.totalBytes) * 100
@@ -263,15 +276,21 @@ export function DiskSpaceCard({
       </div>
       <dl className="grid grid-cols-3 gap-3 text-sm">
         <div>
-          <dt className="text-foreground-secondary text-xs uppercase">Used</dt>
+          <dt className="text-foreground-secondary text-xs uppercase">
+            {t('adminStorageShared.used')}
+          </dt>
           <dd className="font-semibold">{formatBytes(space.usedBytes)}</dd>
         </div>
         <div>
-          <dt className="text-foreground-secondary text-xs uppercase">Free</dt>
+          <dt className="text-foreground-secondary text-xs uppercase">
+            {t('adminStorageShared.free')}
+          </dt>
           <dd className="font-semibold">{formatBytes(space.freeBytes)}</dd>
         </div>
         <div>
-          <dt className="text-foreground-secondary text-xs uppercase">Total</dt>
+          <dt className="text-foreground-secondary text-xs uppercase">
+            {t('adminStorageShared.total')}
+          </dt>
           <dd className="font-semibold">{formatBytes(space.totalBytes)}</dd>
         </div>
       </dl>

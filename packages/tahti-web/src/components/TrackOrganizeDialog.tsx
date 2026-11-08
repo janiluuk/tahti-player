@@ -2,7 +2,7 @@ import { StarIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Loader, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -35,6 +35,7 @@ export function TrackOrganizeDialog({
   ids,
   onChanged,
 }: Props) {
+  const { t } = useTranslation('web');
   const [data, setData] = useState<NativeUserDataSnapshot[] | null>(null);
   const [known, setKnown] = useState<Array<{ name: string; tracks: number }>>(
     [],
@@ -138,7 +139,7 @@ export function TrackOrganizeDialog({
       onClose={() => (busy ? undefined : onClose())}
       className="max-w-md"
     >
-      <Dialog.Title>Rate and label</Dialog.Title>
+      <Dialog.Title>{t('trackOrganize.rateAndLabel')}</Dialog.Title>
       <Dialog.Description>
         {plural(ids.length, 'track')}. Ratings, labels and tags stay in your
         library; they never change the audio files.
@@ -146,7 +147,7 @@ export function TrackOrganizeDialog({
       {!data ? (
         <p className="text-foreground-secondary flex items-center gap-2 text-sm">
           <Loader size="inline" shape="circle" />
-          Loading…
+          {t('trackOrganize.loading')}
         </p>
       ) : (
         <div className="flex flex-col gap-4 py-2">
@@ -200,7 +201,7 @@ export function TrackOrganizeDialog({
                   )
                 }
               >
-                Clear
+                {t('trackOrganize.clear')}
               </Button>
             </div>
           </div>
@@ -243,12 +244,14 @@ export function TrackOrganizeDialog({
                   )
                 }
               >
-                None
+                {t('trackOrganize.none')}
               </Button>
             </div>
           </div>
           <div className="flex flex-col gap-2">
-            <span className="text-sm font-medium">Tags</span>
+            <span className="text-sm font-medium">
+              {t('trackOrganize.tags')}
+            </span>
             <div className="flex flex-wrap gap-1">
               {tagCounts.length === 0 ? (
                 <span className="text-foreground-secondary text-xs">
@@ -286,7 +289,7 @@ export function TrackOrganizeDialog({
               <div className="min-w-0 flex-1">
                 <Input
                   enterKeyHint="done"
-                  label="Add a tag"
+                  label={t('trackOrganize.addATag')}
                   value={tagInput}
                   disabled={busy}
                   onChange={(event) => setTagInput(event.target.value)}
@@ -322,7 +325,7 @@ export function TrackOrganizeDialog({
         </div>
       )}
       <Dialog.Actions>
-        <Dialog.Close>Done</Dialog.Close>
+        <Dialog.Close>{t('trackOrganize.done')}</Dialog.Close>
       </Dialog.Actions>
     </Dialog.Root>
   );

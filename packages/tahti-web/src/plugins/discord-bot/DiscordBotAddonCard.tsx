@@ -2,7 +2,7 @@ import { BotIcon, RotateCwIcon, SettingsIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -31,6 +31,7 @@ import {
 } from './index';
 
 export function DiscordBotAddonCard() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const isBoard = hasAccountRole(user, 'BOARD');
   const setInstalled = usePluginInstallStore((s) => s.setInstalled);
@@ -142,45 +143,45 @@ export function DiscordBotAddonCard() {
         {loadError ? (
           <>
             <Badge variant="pill" color="red">
-              Status unavailable
+              {t('discordBotCard.statusUnavailable')}
             </Badge>
             <Button
               size="sm"
               variant="secondary"
               onClick={() => setAttempt((n) => n + 1)}
             >
-              Retry
+              {t('discordBotCard.retry')}
             </Button>
           </>
         ) : settings?.tokenConfigured ? (
           <Badge variant="pill" color="green">
-            Configured
+            {t('discordBotCard.configured')}
           </Badge>
         ) : (
           <Badge variant="pill" color="secondary">
-            Not configured
+            {t('discordBotCard.notConfigured')}
           </Badge>
         )}
         {settings?.tokenConfigured ? (
-          <Tooltip content="Restart" side="top">
+          <Tooltip content={t('discordBotCard.restart')} side="top">
             <Button
               size="icon-sm"
               variant="secondary"
               disabled={restarting}
               onClick={() => setConfirmRestart(true)}
-              aria-label="Restart Tahti Radio Discord bot"
+              aria-label={t('discordBotCard.restartTahtiRadioDiscordBot')}
             >
               <RotateCwIcon size={15} aria-hidden />
             </Button>
           </Tooltip>
         ) : null}
-        <Tooltip content="Configure" side="top">
+        <Tooltip content={t('discordBotCard.configure')} side="top">
           <Button
             size="icon-sm"
             variant="secondary"
             disabled={loadError}
             onClick={() => setOpen(true)}
-            aria-label="Configure Tahti Radio Discord bot"
+            aria-label={t('discordBotCard.configureTahtiRadioDiscordBot')}
           >
             <SettingsIcon size={15} aria-hidden />
           </Button>
@@ -193,8 +194,7 @@ export function DiscordBotAddonCard() {
       >
         <Dialog.Title>Configure {DISCORD_BOT_ADDON.name}</Dialog.Title>
         <Dialog.Description>
-          Board-only. Values are stored by Tahti and pushed to the Discord bot.
-          The token is never shown again after save.
+          {t('discordBotCard.boardOnlyValuesAreStored')}
         </Dialog.Description>
         <form
           onSubmit={(event) => {
@@ -207,8 +207,10 @@ export function DiscordBotAddonCard() {
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              label="Application / Client ID"
-              description="From Discord Developer Portal → General Information."
+              label={t('discordBotCard.applicationClientId')}
+              description={t(
+                'discordBotCard.fromDiscordDeveloperPortalGeneral',
+              )}
               value={clientId}
               onChange={(e) => setClientId(e.target.value)}
               inputMode="numeric"
@@ -221,7 +223,7 @@ export function DiscordBotAddonCard() {
               spellCheck={false}
               type="password"
               variant="password"
-              label="Bot token"
+              label={t('discordBotCard.botToken')}
               description={
                 settings?.tokenConfigured
                   ? `Stored token ${settings.tokenHint ?? ''} — leave blank to keep it.`
@@ -245,7 +247,7 @@ export function DiscordBotAddonCard() {
             </p>
           </div>
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>{t('discordBotCard.cancel')}</Dialog.Close>
             <Button size="sm" disabled={!canSave} type="submit">
               {busy ? 'Saving…' : 'Save'}
             </Button>
@@ -254,9 +256,9 @@ export function DiscordBotAddonCard() {
       </Dialog.Root>
       <ConfirmDialog
         isOpen={confirmRestart}
-        title="Restart the Discord bot?"
-        description="The bot drops out of Discord for a few seconds and reconnects. Listeners on Tahti Radio aren't affected."
-        confirmLabel="Restart"
+        title={t('discordBotCard.restartTheDiscordBot')}
+        description={t('discordBotCard.theBotDropsOutOf')}
+        confirmLabel={t('discordBotCard.restart')}
         onCancel={() => setConfirmRestart(false)}
         onConfirm={onRestart}
       />

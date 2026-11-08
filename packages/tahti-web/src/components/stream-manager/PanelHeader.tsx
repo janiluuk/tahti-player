@@ -10,6 +10,7 @@ import {
   SquareIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -30,6 +31,7 @@ export function PanelHeader({
   state: StreamManagerState;
   onPlaybackToggle?: () => void;
 }) {
+  const { t } = useTranslation('web');
   const {
     rotationPlaying,
     playerState,
@@ -84,15 +86,15 @@ export function PanelHeader({
         <div
           className="order-3 flex w-full shrink-0 items-center justify-center gap-2 sm:order-2 sm:w-auto"
           role="group"
-          aria-label="Rotation controls"
+          aria-label={t('streamPanelHeader.rotationControls')}
         >
-          <Tooltip content="Previous track" side="top">
+          <Tooltip content={t('streamPanelHeader.previousTrack')} side="top">
             <Button
               size="icon-sm"
               variant="secondary"
               disabled={transportBusy !== null}
               onClick={() => void handleTransport('previous')}
-              aria-label="Previous track"
+              aria-label={t('streamPanelHeader.previousTrack')}
             >
               <SkipBackIcon size={14} aria-hidden />
             </Button>
@@ -118,13 +120,13 @@ export function PanelHeader({
               )}
             </Button>
           </Tooltip>
-          <Tooltip content="Skip track" side="top">
+          <Tooltip content={t('streamPanelHeader.skipTrack')} side="top">
             <Button
               size="icon-sm"
               variant="secondary"
               disabled={transportBusy !== null}
               onClick={() => void handleTransport('skip')}
-              aria-label="Skip track"
+              aria-label={t('streamPanelHeader.skipTrack')}
             >
               <SkipForwardIcon size={14} aria-hidden />
             </Button>
@@ -134,7 +136,7 @@ export function PanelHeader({
       <div className="order-2 flex min-w-0 flex-1 items-center justify-end gap-2 text-right sm:order-3">
         <div className="min-w-0">
           <p className="text-foreground-secondary text-[10px] font-semibold tracking-wide uppercase">
-            Current track
+            {t('streamPanelHeader.currentTrack')}
           </p>
           {rotation ? (
             <>
@@ -150,7 +152,7 @@ export function PanelHeader({
             </>
           ) : (
             <p className="text-foreground-secondary mt-0.5 text-sm">
-              No track playing
+              {t('streamPanelHeader.noTrackPlaying')}
             </p>
           )}
         </div>
@@ -173,7 +175,10 @@ export function PanelHeader({
       </div>
       <div className="order-4 flex shrink-0 items-center gap-2">
         {canControl && collections.length > 0 && (
-          <EditIconButton onClick={openPlaylistDialog} label="Edit playlist" />
+          <EditIconButton
+            onClick={openPlaylistDialog}
+            label={t('streamPanelHeader.editPlaylist')}
+          />
         )}
         {rotationPlaying && (
           <Tooltip

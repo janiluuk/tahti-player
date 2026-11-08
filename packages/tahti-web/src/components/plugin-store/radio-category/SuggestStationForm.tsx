@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Input } from '@tahti-player/ui';
 
 /** "Suggest a station" toggle + form; sends the suggestion to the Tahti team
  * for review. */
 export function SuggestStationForm() {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [logoUrl, setLogoUrl] = useState('');
@@ -55,11 +56,10 @@ export function SuggestStationForm() {
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <h3 className="font-display text-sm font-bold tracking-wide uppercase">
-            Suggest a station
+            {t('suggestStation.suggestAStation')}
           </h3>
           <p className="text-foreground-secondary mt-0.5 text-xs">
-            Send a public stream for the Tahti team to review for curated
-            Finnish stations.
+            {t('suggestStation.sendAPublicStreamFor')}
           </p>
         </div>
         <Button
@@ -81,19 +81,19 @@ export function SuggestStationForm() {
         >
           <div className="grid gap-3 sm:grid-cols-2">
             <Input
-              label="Station name"
+              label={t('suggestStation.stationName')}
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
             />
             <Input
-              label="Language"
+              label={t('suggestStation.language')}
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              placeholder="Finnish"
+              placeholder={t('suggestStation.finnish')}
             />
             <Input
-              label="Bitrate (kbps)"
+              label={t('suggestStation.bitrateKbps')}
               value={bitrate}
               onChange={(e) => setBitrate(e.target.value)}
               placeholder="128"
@@ -103,7 +103,7 @@ export function SuggestStationForm() {
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              label="Logo URL"
+              label={t('suggestStation.logoUrl')}
               value={logoUrl}
               onChange={(e) => setLogoUrl(e.target.value)}
               placeholder="https://…"
@@ -113,7 +113,7 @@ export function SuggestStationForm() {
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              label="Stream URL"
+              label={t('suggestStation.streamUrl')}
               value={streamUrl}
               onChange={(e) => setStreamUrl(e.target.value)}
               placeholder="https://stream.example.fi/station.mp3"
