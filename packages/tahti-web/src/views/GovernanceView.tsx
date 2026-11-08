@@ -5,6 +5,7 @@ import {
   HelpCircleIcon,
   HistoryIcon,
   LandmarkIcon,
+  LightbulbIcon,
   MessagesSquareIcon,
   ScrollTextIcon,
   UsersIcon,
@@ -378,7 +379,20 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                 onRetry={reload}
               />
             ) : requests.length === 0 ? (
-              <PageEmpty title={t('empties.noTopics')} />
+              <PageEmpty
+                title={t('empties.noTopics')}
+                action={
+                  <ButtonLink
+                    to="/governance/feature-requests"
+                    onClick={closeSettings}
+                    size="sm"
+                    variant="secondary"
+                  >
+                    <LightbulbIcon size={16} aria-hidden />
+                    {t('emptyActions.proposeIdea')}
+                  </ButtonLink>
+                }
+              />
             ) : (
               <ul className="divide-border divide-y">
                 {requests

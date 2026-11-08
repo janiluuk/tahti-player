@@ -1,4 +1,5 @@
 import { DownloadIcon, Trash2Icon } from 'lucide-react';
+import { useRef } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -25,6 +26,7 @@ import type { PressKitState } from './usePressKit';
 
 export function PressKitSection({ kit }: { kit: PressKitState }) {
   const { t } = useTranslation('web');
+  const bioRef = useRef<HTMLTextAreaElement>(null);
   const {
     user,
     profile,
@@ -66,6 +68,7 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
           }}
         >
           <Textarea
+            ref={bioRef}
             submitOnModEnter
             label="Short bio"
             fieldClassName={pressKitError ? 'hidden' : undefined}
@@ -216,6 +219,13 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
           displayName={profile?.displayName ?? user?.displayName ?? 'Artist'}
           bio={pressKit?.bioShort ?? null}
           images={pressImages}
+          onEditBio={() => {
+            bioRef.current?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+            bioRef.current?.focus({ preventScroll: true });
+          }}
         />
       </StudioPanel>
     </>

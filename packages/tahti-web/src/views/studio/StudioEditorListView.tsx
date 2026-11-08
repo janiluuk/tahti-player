@@ -1,4 +1,9 @@
-import { AudioLinesIcon, FolderOpenIcon, PlusIcon } from 'lucide-react';
+import {
+  AudioLinesIcon,
+  FolderOpenIcon,
+  PlusIcon,
+  UploadIcon,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -387,6 +392,18 @@ export function StudioEditorListView() {
                       sounds.length === 0
                         ? t('studioEditorList.libraryEmptyUpload')
                         : t('studioEditorList.libraryEmptyFilter')
+                    }
+                    action={
+                      sounds.length === 0 ? (
+                        <ButtonLink
+                          to="/library/upload"
+                          size="sm"
+                          variant="secondary"
+                        >
+                          <UploadIcon size={16} aria-hidden />
+                          {t('emptyActions.uploadTrack')}
+                        </ButtonLink>
+                      ) : undefined
                     }
                   />
                 ) : (

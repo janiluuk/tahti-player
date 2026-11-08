@@ -19,6 +19,8 @@ const CATEGORIES: Array<{ value: SupportTicketCategory; label: string }> = [
   { value: 'OTHER', label: 'Other' },
 ];
 
+export const SUPPORT_CONTACT_FORM_ID = 'support-contact-form';
+
 export function SupportContactForm({
   onSubmitted,
 }: {
@@ -48,6 +50,7 @@ export function SupportContactForm({
 
   return (
     <form
+      id={SUPPORT_CONTACT_FORM_ID}
       className="border-border flex flex-col gap-3 rounded-lg border p-4"
       onSubmit={(e) => {
         e.preventDefault();

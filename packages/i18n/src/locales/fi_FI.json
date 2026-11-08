@@ -3897,7 +3897,12 @@
       "addStation": "Lisää asema",
       "registerAddon": "Rekisteröi lisäosa",
       "addContent": "Lisää sisältöä",
-      "addToSelects": "Lisää Tahti Selectsiin"
+      "addToSelects": "Lisää Tahti Selectsiin",
+      "proposeIdea": "Ehdota ideaa",
+      "addFeed": "Lisää syöte",
+      "newSupportRequest": "Uusi pyyntö",
+      "writeBio": "Kirjoita esittely",
+      "uploadTrack": "Lataa kappale"
     }
   },
   "studioEditor": {

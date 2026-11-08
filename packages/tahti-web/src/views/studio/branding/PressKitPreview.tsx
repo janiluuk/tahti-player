@@ -1,5 +1,7 @@
+import { PencilIcon } from 'lucide-react';
+
 import { useTranslation } from '@tahti-player/i18n';
-import { ImageReveal } from '@tahti-player/ui';
+import { Button, ImageReveal } from '@tahti-player/ui';
 
 import { type PressKitImageItem } from '../../../api/artist-settings';
 import { PageEmpty } from '../../../components/PageStates';
@@ -8,10 +10,12 @@ export function PressKitPreview({
   displayName,
   bio,
   images,
+  onEditBio,
 }: {
   displayName: string;
   bio: string | null;
   images: PressKitImageItem[];
+  onEditBio?: () => void;
 }) {
   const { t } = useTranslation('web');
   return (
@@ -34,7 +38,17 @@ export function PressKitPreview({
         {bio ? (
           <p className="text-foreground text-sm leading-relaxed">{bio}</p>
         ) : (
-          <PageEmpty title={t('empties.noBio')} />
+          <PageEmpty
+            title={t('empties.noBio')}
+            action={
+              onEditBio ? (
+                <Button size="sm" variant="secondary" onClick={onEditBio}>
+                  <PencilIcon size={16} aria-hidden />
+                  {t('emptyActions.writeBio')}
+                </Button>
+              ) : undefined
+            }
+          />
         )}
         {images.length > 1 ? (
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
