@@ -118,6 +118,7 @@ export function HomeComingUp() {
   }));
   return (
     <CardsRow
+      defaultLayout="cards"
       data-testid="listen-coming-up"
       title={t('listen.comingUp')}
       badge={t('listen.eventsBadge')}

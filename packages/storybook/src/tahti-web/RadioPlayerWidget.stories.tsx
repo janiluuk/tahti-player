@@ -75,9 +75,11 @@ const RECENT = mockRadioRecentlyPlayed().slice(0, 3);
 function DemoWidget({
   online = true,
   playing = false,
+  expanded = true,
 }: {
   online?: boolean;
   playing?: boolean;
+  expanded?: boolean;
 }) {
   const [tab, setTab] = useState(0);
   const [isPlaying, setIsPlaying] = useState(playing);
@@ -136,6 +138,7 @@ function DemoWidget({
         }
         selectedTabIndex={tab}
         onTabChange={setTab}
+        defaultExpanded={expanded}
         tabs={[
           {
             id: 'up-next',
@@ -198,7 +201,7 @@ const meta: Meta<typeof RadioPlayerWidget> = {
     docs: {
       description: {
         component:
-          'Consolidated Tahti Radio surface: visualizer + now playing + play/favorite, with Up next / Shows / Just played / Featured tabs in the same card. Used on `/radio`.',
+          'Consolidated Tahti Radio surface: visualizer + now playing + play/favorite, with Up next / Shows / Just played / Featured tabs in the same card. Starts minimized on `/radio` (a short now-playing strip); the corner button expands it.',
       },
     },
   },
@@ -208,6 +211,20 @@ const meta: Meta<typeof RadioPlayerWidget> = {
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+export const Minimized: Story = {
+  render: () => <DemoWidget expanded={false} />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const toggle = canvas.getByTestId('radio-player-widget-toggle');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(canvas.getByTestId('radio-now-playing-overlay')).toBeVisible();
+    await expect(canvas.queryByRole('tab', { name: /Up next/ })).toBeNull();
+    await userEvent.click(toggle);
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(canvas.getByRole('tab', { name: /Up next/ })).toBeVisible();
+  },
+};
 
 export const OnAir: Story = {
   render: () => <DemoWidget />,

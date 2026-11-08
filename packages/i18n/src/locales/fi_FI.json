@@ -1851,6 +1851,8 @@
       "radioDescription": "Kuuntele osuuskunnan Tahti Radio -lähetystä ja katso ohjelma-aikataulu."
     },
     "radio": {
+      "expandPlayer": "Laajenna soitin",
+      "minimizePlayer": "Pienennä soitin",
       "tabUpNext": "Seuraavaksi",
       "tabShows": "Ohjelmat",
       "tabJustPlayed": "Juuri soitettu",

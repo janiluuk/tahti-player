@@ -116,6 +116,10 @@ vi.mock('../api/shows', async (importOriginal) => {
   };
 });
 
+async function expandPlayer() {
+  fireEvent.click(await screen.findByTestId('radio-player-widget-toggle'));
+}
+
 describe('RadioView featured history', () => {
   beforeEach(() => {
     vi.stubEnv('VITE_FORCE_MOCK', '1');
@@ -126,6 +130,22 @@ describe('RadioView featured history', () => {
     vi.unstubAllEnvs();
   });
 
+  it('starts the player minimized and expands it to the tabs', async () => {
+    const router = createRouter({
+      routeTree: createRootRoute({ component: RadioView }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    const toggle = await screen.findByTestId('radio-player-widget-toggle');
+    expect(toggle.getAttribute('aria-expanded')).toBe('false');
+    expect(screen.queryByRole('tab', { name: /Featured/ })).toBeNull();
+    await expandPlayer();
+    expect(toggle.getAttribute('aria-expanded')).toBe('true');
+    expect(screen.getByRole('tab', { name: /Featured/ })).toBeTruthy();
+  });
+
   it('lists the member channels Tahti Radio relayed, linked to their channel', async () => {
     const router = createRouter({
       routeTree: createRootRoute({ component: RadioView }),
@@ -134,6 +154,7 @@ describe('RadioView featured history', () => {
     await act(async () => {
       render(<RouterProvider router={router} />);
     });
+    await expandPlayer();
     await act(async () => {
       fireEvent.click(screen.getByRole('tab', { name: /Featured/ }));
     });
@@ -189,6 +210,7 @@ describe('RadioView failed sections', () => {
     await act(async () => {
       render(<RouterProvider router={router} />);
     });
+    await expandPlayer();
     await act(async () => {
       fireEvent.click(screen.getByRole('tab', { name: /Just played/ }));
     });
@@ -292,6 +314,9 @@ describe('RadioView up next', () => {
     await act(async () => {
       render(<RouterProvider router={router} />);
     });
+    if (!path.includes('tab=')) {
+      await expandPlayer();
+    }
     return router;
   };
 
