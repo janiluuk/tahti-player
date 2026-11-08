@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
 
 import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
@@ -25,6 +26,7 @@ type Props = {
 
 /** Saves the queue as a playlist on this device, offline and independent of cloud collections. */
 export function SaveQueueLocalDialog({ isOpen, onClose, library }: Props) {
+  const { t } = useTranslation('web');
   const queue = usePlayerStore((s) => s.queue);
   const [name, setName] = useState('');
   const [busy, setBusy] = useState(false);
@@ -77,7 +79,9 @@ export function SaveQueueLocalDialog({ isOpen, onClose, library }: Props) {
 
   return (
     <Dialog.Root isOpen={isOpen} onClose={close} className="max-w-md">
-      <Dialog.Title>Save queue as local playlist</Dialog.Title>
+      <Dialog.Title>
+        {t('saveQueueLocalDialog.saveQueueAsLocalPlaylist')}
+      </Dialog.Title>
       <Dialog.Description>
         Saves the {trackIds.length.toLocaleString('en-US')} local{' '}
         {trackIds.length === 1 ? 'track' : 'tracks'} in your queue, in queue
@@ -93,14 +97,14 @@ export function SaveQueueLocalDialog({ isOpen, onClose, library }: Props) {
         }}
       >
         <Input
-          label="Playlist name"
+          label={t('saveQueueLocalDialog.playlistName')}
           value={name}
           autoFocus
           error={error ?? undefined}
           onChange={(event) => setName(event.target.value)}
         />
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('saveQueueLocalDialog.cancel')}</Dialog.Close>
           <Button
             className="gap-1.5"
             disabled={busy || !name.trim() || trackIds.length === 0}

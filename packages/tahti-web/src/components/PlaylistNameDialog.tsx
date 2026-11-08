@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
 
 type Props = {
@@ -21,6 +22,7 @@ export function PlaylistNameDialog({
   onClose,
   onSubmit,
 }: Props) {
+  const { t } = useTranslation('web');
   const [name, setName] = useState(initialName);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -59,7 +61,7 @@ export function PlaylistNameDialog({
       >
         <Input
           autoComplete="off"
-          label="Name"
+          label={t('playlistNameDialog.name')}
           value={name}
           autoFocus
           error={error ?? undefined}
@@ -67,7 +69,7 @@ export function PlaylistNameDialog({
         />
       </form>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('playlistNameDialog.cancel')}</Dialog.Close>
         <Button
           className="gap-1.5"
           disabled={!name.trim() || busy}

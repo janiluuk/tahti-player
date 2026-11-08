@@ -2,6 +2,7 @@ import { useSearch } from '@tanstack/react-router';
 import { CloudIcon, HardDriveIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -17,6 +18,7 @@ import { FilesBrowserTab } from './storage/FilesBrowserTab';
 import { StorageOverviewTab } from './storage/StorageOverviewTab';
 
 export function AdminStorageView() {
+  const { t } = useTranslation('web');
   const search = useSearch({ strict: false }) as { tab?: string };
   const [tab, setTab] = useState<'storage' | 'files'>(
     search.tab === 'files' ? 'files' : 'storage',
@@ -28,15 +30,19 @@ export function AdminStorageView() {
         <AdminPageLayout current="/admin/storage">
           <div className="flex max-w-6xl flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminStorageView.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbLink to="/admin/storage">Storage</BreadcrumbLink>
+              <BreadcrumbLink to="/admin/storage">
+                {t('adminStorageView.storage')}
+              </BreadcrumbLink>
               <BreadcrumbCurrent>
                 {tab === 'files' ? 'Files' : 'Storage'}
               </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Storage"
+              title={t('adminStorageView.storage')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <Tabs

@@ -1,6 +1,7 @@
 import { SettingsIcon } from 'lucide-react';
 import { createContext, useContext, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -43,6 +44,7 @@ export function ConfigurableCard({
    * small popup can comfortably hold (e.g. HearthisCard's library browser). */
   dialogClassName?: string;
 }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(defaultOpen);
   const host = useContext(ConfigureDialogHost);
   const dialog = (
@@ -54,7 +56,7 @@ export function ConfigurableCard({
       <Dialog.Title>Configure {title}</Dialog.Title>
       <div className="mt-4 flex flex-col gap-4">{children}</div>
       <Dialog.Actions>
-        <Dialog.Close>Done</Dialog.Close>
+        <Dialog.Close>{t('pluginStoreShared.done')}</Dialog.Close>
       </Dialog.Actions>
     </Dialog.Root>
   );
@@ -139,6 +141,7 @@ export function InstalledAvailableTabs({
   emptyInstalled?: string;
   emptyAvailable?: string;
 }) {
+  const { t } = useTranslation('web');
   const installedMap = usePluginInstallStore((s) => s.installed);
   const [tab, setTab] = useState<'installed' | 'available'>('installed');
   const installedIds = ids.filter((id) => installedMap[id]);
@@ -153,10 +156,14 @@ export function InstalledAvailableTabs({
       >
         <Tabs.List>
           <Tabs.Tab>
-            <TabLabel count={installedIds.length}>Installed</TabLabel>
+            <TabLabel count={installedIds.length}>
+              {t('pluginStoreShared.installed')}
+            </TabLabel>
           </Tabs.Tab>
           <Tabs.Tab>
-            <TabLabel count={availableIds.length}>Available</TabLabel>
+            <TabLabel count={availableIds.length}>
+              {t('pluginStoreShared.available')}
+            </TabLabel>
           </Tabs.Tab>
         </Tabs.List>
       </Tabs.Root>

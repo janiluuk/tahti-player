@@ -1,5 +1,7 @@
 import { HashIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import { MaterialMetaPanel } from './MaterialMetaPanel';
 import { TagChipInput } from './TagChipInput';
 
@@ -13,14 +15,15 @@ type Props = {
 /** Tags card for material edit — chips, add field, and quick-adds from
  * tags the artist has used on other tracks. */
 export function MaterialTagsField({ value, onChange, usedBefore }: Props) {
+  const { t } = useTranslation('web');
   return (
     <MaterialMetaPanel
       icon={<HashIcon size={14} strokeWidth={2.5} />}
-      title="Tags"
-      description="Help listeners find it — genres, moods, instruments. Separate several tags with commas."
+      title={t('materialTagsField.tags')}
+      description={t('materialTagsField.helpListenersFindItGenres')}
     >
       <TagChipInput
-        label="Tags"
+        label={t('materialTagsField.tags')}
         hideLabel
         hideCount
         addLabel="Add a tag"

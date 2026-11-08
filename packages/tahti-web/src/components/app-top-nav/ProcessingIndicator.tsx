@@ -1,16 +1,18 @@
 import { Link } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, Tooltip } from '@tahti-player/ui';
 
 import { type TopNavState } from './useTopNavState';
 
 export function ProcessingIndicator({ nav }: { nav: TopNavState }) {
+  const { t } = useTranslation('web');
   const { processingOpen, setProcessingOpen, processingItems } = nav;
 
   return (
     <div className="relative">
       <Tooltip
-        content="Track processing status"
+        content={t('processingIndicator.trackProcessingStatus')}
         side="bottom"
         wrapperClassName="inline-flex"
       >
@@ -28,7 +30,7 @@ export function ProcessingIndicator({ nav }: { nav: TopNavState }) {
       {processingOpen ? (
         <div className="border-border bg-background absolute top-[calc(100%+8px)] left-0 z-40 w-72 rounded-lg border p-2 shadow-lg">
           <p className="text-foreground-secondary px-2 py-1 text-[11px] font-semibold tracking-wide uppercase">
-            Processing tracks
+            {t('processingIndicator.processingTracks')}
           </p>
           <ul className="flex flex-col gap-1">
             {processingItems.map((item) => (
@@ -48,8 +50,7 @@ export function ProcessingIndicator({ nav }: { nav: TopNavState }) {
             ))}
           </ul>
           <p className="text-foreground-secondary px-2 pt-2 text-[11px]">
-            This status updates automatically. You’ll get a notification when a
-            track is ready.
+            {t('processingIndicator.thisStatusUpdatesAutomaticallyYou')}
           </p>
         </div>
       ) : null}

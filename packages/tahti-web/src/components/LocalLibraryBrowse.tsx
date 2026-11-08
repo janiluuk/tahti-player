@@ -1,5 +1,6 @@
 import { ListPlusIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, TabLabel, Tabs, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -48,6 +49,7 @@ export function BrowseTabs({
   value: BrowseKind;
   onChange: (kind: BrowseKind) => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <Tabs.Root
       selectedIndex={Math.max(
@@ -61,7 +63,10 @@ export function BrowseTabs({
         }
       }}
     >
-      <Tabs.List aria-label="Browse local library" className="overflow-x-auto">
+      <Tabs.List
+        aria-label={t('localLibraryBrowse.browseLocalLibrary')}
+        className="overflow-x-auto"
+      >
         {BROWSE_TABS.map((item) => (
           <Tabs.Tab key={item.id}>
             <TabLabel>{item.label}</TabLabel>
@@ -131,6 +136,7 @@ export function FacetGroupList({
   /** Adds every track in the group to a local playlist. */
   onAddToPlaylist?: (group: NativeFacetGroup) => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <ul
       className="tahti-hide-scrollbar flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto"
@@ -163,7 +169,7 @@ export function FacetGroupList({
             </Button>
           </Tooltip>
           {onAddToPlaylist ? (
-            <Tooltip content="Add to playlist" side="top">
+            <Tooltip content={t('localLibraryBrowse.addToPlaylist')} side="top">
               <Button
                 size="icon-sm"
                 variant="text"

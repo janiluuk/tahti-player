@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { InlineError, Select } from '@tahti-player/ui';
 
 import { fetchVenues } from '../../api/client';
@@ -42,6 +43,7 @@ export function RecordedAtVenuePicker({
   current: StudioSound['venue'];
   onChange: (venueId: string | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const [options, setOptions] = useState<VenueOption[]>(() =>
     venueOptions([], current),
   );
@@ -69,8 +71,8 @@ export function RecordedAtVenuePicker({
   return (
     <div className="sm:max-w-xs">
       <Select
-        label="Recorded at (optional)"
-        description="Shown on the track page, linking to the venue."
+        label={t('recordedAtVenuePicker.recordedAtOptional')}
+        description={t('recordedAtVenuePicker.shownOnTheTrackPage')}
         value={value ?? NONE}
         onValueChange={(next) => onChange(next === NONE ? null : next)}
         options={[{ id: NONE, label: 'No venue' }, ...options]}

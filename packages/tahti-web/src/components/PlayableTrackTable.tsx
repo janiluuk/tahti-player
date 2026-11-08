@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import type { Track } from '@tahti-player/model';
 import { Button, Dialog, TrackTable } from '@tahti-player/ui';
 
@@ -86,6 +86,7 @@ export function PlayableTrackTable({
   getAnnotation,
   hideArtist = false,
 }: Props) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -329,17 +330,17 @@ export function PlayableTrackTable({
           Add {items.length} track{items.length === 1 ? '' : 's'} to queue?
         </Dialog.Title>
         <Dialog.Description>
-          This adds every track in this list to your play queue.
+          {t('playableTrackTable.thisAddsEveryTrackIn')}
         </Dialog.Description>
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('playableTrackTable.cancel')}</Dialog.Close>
           <Button
             onClick={() => {
               addAllToQueue();
               setConfirmAddAllOpen(false);
             }}
           >
-            Add to queue
+            {t('playableTrackTable.addToQueue')}
           </Button>
         </Dialog.Actions>
       </Dialog.Root>

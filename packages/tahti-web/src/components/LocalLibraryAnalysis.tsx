@@ -2,7 +2,7 @@ import { ActivityIcon, PauseIcon, PlayIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Loader } from '@tahti-player/ui';
 
 import type {
@@ -64,6 +64,7 @@ type Props = {
  * starved; results are saved per track, so stopping loses nothing.
  */
 export function LocalLibraryAnalysis({ library, onChanged }: Props) {
+  const { t } = useTranslation('web');
   const [summary, setSummary] = useState<NativeAnalysisSummary | null>(null);
   const [progress, setProgress] = useState<NativeAnalysisProgress | null>(null);
   const [starting, setStarting] = useState(false);
@@ -134,7 +135,9 @@ export function LocalLibraryAnalysis({ library, onChanged }: Props) {
       data-testid="library-analysis"
     >
       <div className="min-w-0 flex-1">
-        <p className="text-xs font-semibold">Audio analysis</p>
+        <p className="text-xs font-semibold">
+          {t('localLibraryAnalysis.audioAnalysis')}
+        </p>
         <p className="text-foreground-secondary truncate text-xs" role="status">
           {running && progress
             ? `${paused ? 'Paused' : 'Analyzing'} ${Math.min(progress.done + 1, progress.total)} of ${progress.total}${progress.currentTitle ? ` — ${progress.currentTitle}` : ''}`
@@ -165,7 +168,7 @@ export function LocalLibraryAnalysis({ library, onChanged }: Props) {
             onClick={() => void library.analysis.cancel()}
           >
             <XIcon size={14} aria-hidden />
-            Stop
+            {t('localLibraryAnalysis.stop')}
           </Button>
         </>
       ) : (
@@ -183,7 +186,11 @@ export function LocalLibraryAnalysis({ library, onChanged }: Props) {
         </Button>
       )}
       {starting && !progress ? (
-        <Loader size="inline" shape="circle" label="Starting" />
+        <Loader
+          size="inline"
+          shape="circle"
+          label={t('localLibraryAnalysis.starting')}
+        />
       ) : null}
     </div>
   );

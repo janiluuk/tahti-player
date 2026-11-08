@@ -1,10 +1,12 @@
 import { ScrollTextIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Alert, Button, ButtonAnchor } from '@tahti-player/ui';
 
 import { useNotificationInboxStore } from '../stores/notificationInboxStore';
 
 export function GuidelinesBanner() {
+  const { t } = useTranslation('web');
   const sticky = useNotificationInboxStore((s) =>
     s.items.find((item) => item.sticky && !item.readAt),
   );
@@ -30,7 +32,7 @@ export function GuidelinesBanner() {
         <div className="flex flex-wrap gap-2">
           {sticky.url ? (
             <ButtonAnchor href={sticky.url} size="sm" variant="secondary">
-              Read guidelines
+              {t('guidelinesBanner.readGuidelines')}
             </ButtonAnchor>
           ) : null}
           <Button
@@ -38,7 +40,7 @@ export function GuidelinesBanner() {
             variant="secondary"
             onClick={() => void acknowledge(sticky.id)}
           >
-            Acknowledge
+            {t('guidelinesBanner.acknowledge')}
           </Button>
         </div>
       </div>

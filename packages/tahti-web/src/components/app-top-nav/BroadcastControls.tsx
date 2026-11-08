@@ -5,6 +5,7 @@ import {
   UploadIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
@@ -12,6 +13,7 @@ import { iconBtnClass } from './shared';
 import { type TopNavState } from './useTopNavState';
 
 export function BroadcastControls({ nav }: { nav: TopNavState }) {
+  const { t } = useTranslation('web');
   const {
     pathname,
     broadcastOpen,
@@ -28,7 +30,7 @@ export function BroadcastControls({ nav }: { nav: TopNavState }) {
   return (
     <>
       <div className="relative hidden sm:block">
-        <Tooltip content="Broadcast status" side="top">
+        <Tooltip content={t('broadcastControls.broadcastStatus')} side="top">
           <Button
             variant="text"
             size="icon-sm"
@@ -83,7 +85,7 @@ export function BroadcastControls({ nav }: { nav: TopNavState }) {
               className="hover:bg-background-secondary flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-xs active:scale-100"
             >
               <CalendarIcon size={14} aria-hidden />
-              Booking calendar
+              {t('broadcastControls.bookingCalendar')}
             </Button>
             <Button
               variant="text"
@@ -102,7 +104,7 @@ export function BroadcastControls({ nav }: { nav: TopNavState }) {
         ) : null}
       </div>
       <Tooltip
-        content="Open upload"
+        content={t('broadcastControls.openUpload')}
         side="bottom"
         wrapperClassName="hidden sm:inline-flex"
       >
@@ -111,7 +113,7 @@ export function BroadcastControls({ nav }: { nav: TopNavState }) {
           variant="text"
           size="icon-sm"
           className={iconBtnClass}
-          aria-label="Open upload"
+          aria-label={t('broadcastControls.openUpload')}
           data-tour-id="topbar-upload"
         >
           <UploadIcon size={16} />

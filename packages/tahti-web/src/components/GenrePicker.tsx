@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { CreatableCombobox, FilterChips } from '@tahti-player/ui';
 
 import { capitalizeGenre, MAX_GENRES, PRESET_GENRES } from '../lib/genres';
@@ -14,6 +15,7 @@ type Props = {
  * combobox below is only for adding a genre that isn't a chip yet,
  * either an unpicked preset or a freshly-typed one. */
 export function GenrePicker({ value, onChange }: Props) {
+  const { t } = useTranslation('web');
   const atLimit = value.length >= MAX_GENRES;
   const canAddCustomGenre = value.includes('Other') && !atLimit;
   const extras = value.filter(
@@ -39,7 +41,7 @@ export function GenrePicker({ value, onChange }: Props) {
     <div className="flex flex-col gap-3">
       <FilterChips
         multiple
-        aria-label="Genres"
+        aria-label={t('genrePicker.genres')}
         items={allGenres.map((genre) => ({ id: genre, label: genre }))}
         selected={value}
         onChange={(ids) => {
@@ -51,8 +53,8 @@ export function GenrePicker({ value, onChange }: Props) {
       />
       {canAddCustomGenre && (
         <CreatableCombobox
-          label="Add a genre"
-          placeholder="Search or type to add a genre…"
+          label={t('genrePicker.addAGenre')}
+          placeholder={t('genrePicker.searchOrTypeToAdd')}
           options={addableOptions}
           value=""
           onValueChange={addCustom}

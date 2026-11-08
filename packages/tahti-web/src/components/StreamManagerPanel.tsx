@@ -1,5 +1,6 @@
 import { BarChart3Icon, ListMusicIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { InlineError, TabLabel, Tabs } from '@tahti-player/ui';
 
 import { ManagerDialogs } from './stream-manager/ManagerDialogs';
@@ -29,6 +30,7 @@ export function StreamManagerPanel({
   readOnly?: boolean;
   defaultExpanded?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const state = useStreamManagerState({
     slug,
     channelState,
@@ -69,12 +71,12 @@ export function StreamManagerPanel({
           <Tabs.List>
             <Tabs.Tab>
               <TabLabel icon={<ListMusicIcon size={14} />}>
-                Active rotation
+                {t('streamManagerPanel.activeRotation')}
               </TabLabel>
             </Tabs.Tab>
             <Tabs.Tab>
               <TabLabel icon={<BarChart3Icon size={14} />}>
-                Stream stats
+                {t('streamManagerPanel.streamStats')}
               </TabLabel>
             </Tabs.Tab>
           </Tabs.List>

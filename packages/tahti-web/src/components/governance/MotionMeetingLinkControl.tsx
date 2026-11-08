@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Select } from '@tahti-player/ui';
 
 import { fetchGovernanceMeetings } from '../../api/client';
@@ -20,6 +21,7 @@ export function MotionMeetingLinkControl({
   motion: GovernanceMotionDetail;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [meetings, setMeetings] = useState<GovernanceMeeting[]>([]);
   const [meetingId, setMeetingId] = useState(motion.meeting?.id ?? NO_MEETING);
@@ -48,7 +50,7 @@ export function MotionMeetingLinkControl({
   return (
     <div className="flex flex-wrap items-end gap-2">
       <Select
-        label="Meeting"
+        label={t('motionMeetingLinkControl.meeting')}
         value={meetingId}
         onValueChange={setMeetingId}
         options={[
@@ -80,7 +82,7 @@ export function MotionMeetingLinkControl({
           );
         }}
       >
-        Save meeting
+        {t('motionMeetingLinkControl.saveMeeting')}
       </Button>
       <Button
         size="sm"
@@ -88,7 +90,7 @@ export function MotionMeetingLinkControl({
         disabled={busy}
         onClick={() => setOpen(false)}
       >
-        Cancel
+        {t('motionMeetingLinkControl.cancel')}
       </Button>
       {error ? (
         <InlineError textSize="xs" className="w-full">

@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Link2Icon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input, PluginStoreItem } from '@tahti-player/ui';
 
 import { toolSourceAdapter } from '../../../plugins/import-sources';
@@ -14,6 +15,7 @@ import { ConfigurableCard } from '../shared';
  * "Open releases editor" action closes Add-ons first since it's a real
  * navigation to a different page. */
 export function DspUrlPasteCard() {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [urlPaste, setUrlPaste] = useState('');
   const urlTool = toolSourceAdapter('url');
@@ -36,14 +38,14 @@ export function DspUrlPasteCard() {
       )}
     >
       <p className="text-foreground-secondary text-sm">
-        Paste a DSP URL to open Studio releases (smart-link targets).
+        {t('dspUrlPasteCard.pasteADspUrlTo')}
       </p>
       <Input
         inputMode="url"
         autoCapitalize="none"
         autoCorrect="off"
         spellCheck={false}
-        aria-label="Streaming service URL"
+        aria-label={t('dspUrlPasteCard.streamingServiceUrl')}
         className="w-full"
         size="sm"
         value={urlPaste}
@@ -61,7 +63,7 @@ export function DspUrlPasteCard() {
         }}
       >
         <Link2Icon size={16} aria-hidden className="mr-1.5" />
-        Open releases editor
+        {t('dspUrlPasteCard.openReleasesEditor')}
       </Button>
     </ConfigurableCard>
   );

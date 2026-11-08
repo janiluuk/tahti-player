@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink } from '@tahti-player/ui';
 
 import {
@@ -20,6 +21,7 @@ export function GoogleDriveImport({
   adapter: GoogleDriveSourceAdapter;
   onConnectionLost: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [step, setStep] = useState<Step>('idle');
   const [message, setMessage] = useState<string | null>(null);
   const [unavailable, setUnavailable] = useState(false);
@@ -65,8 +67,7 @@ export function GoogleDriveImport({
       data-testid="google-drive-import"
     >
       <p className="text-foreground-secondary text-sm">
-        Pick audio files from your Google Drive. Tahti fetches them on the
-        server and adds them to your tracks.
+        {t('googleDriveImport.pickAudioFilesFromYour')}
       </p>
       <div className="flex flex-wrap items-center gap-2">
         <Button
@@ -88,7 +89,7 @@ export function GoogleDriveImport({
             variant="secondary"
             onClick={() => useSettingsModalStore.getState().close()}
           >
-            Upload files
+            {t('googleDriveImport.uploadFiles')}
           </ButtonLink>
         ) : null}
       </div>

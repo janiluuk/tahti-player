@@ -2,6 +2,7 @@ import { DiscIcon, PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import {
@@ -33,6 +34,7 @@ export function ReleaseTracksToRotation({
   disabled?: boolean;
   onAdded: (programme: ProgrammeView) => void;
 }) {
+  const { t } = useTranslation('web');
   const [addingId, setAddingId] = useState<string | null>(null);
   const [addedIds, setAddedIds] = useState<ReadonlySet<string>>(new Set());
 
@@ -90,14 +92,15 @@ export function ReleaseTracksToRotation({
 
   return (
     <section
-      aria-label="Add from your releases"
+      aria-label={t('releaseTracksToRotation.addFromYourReleases')}
       className="border-border flex flex-col gap-3 border-t px-4 py-4 sm:px-5"
     >
       <div>
-        <h3 className="text-sm font-semibold">Add from your releases</h3>
+        <h3 className="text-sm font-semibold">
+          {t('releaseTracksToRotation.addFromYourReleases')}
+        </h3>
         <p className="text-foreground-secondary text-xs">
-          Put a released track into the 24/7 rotation without uploading it
-          again.
+          {t('releaseTracksToRotation.putAReleasedTrackInto')}
         </p>
       </div>
       {groups.map(({ release, tracks }) => (

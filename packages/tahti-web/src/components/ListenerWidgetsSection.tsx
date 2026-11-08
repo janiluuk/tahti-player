@@ -1,6 +1,7 @@
 import { XIcon } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Card,
@@ -182,6 +183,7 @@ export function useListenerWidgetBlocks(): {
 /** The add-ons on their own, newest first, under a "Listen add-ons" heading.
  * Renders nothing when empty. ListenView places the blocks itself. */
 export function ListenerWidgetsSection() {
+  const { t } = useTranslation('web');
   const openSettings = useSettingsModalStore((s) => s.open);
   const { blocks, dialog } = useListenerWidgetBlocks();
 
@@ -195,7 +197,9 @@ export function ListenerWidgetsSection() {
       data-testid="listener-widgets-section"
     >
       <div className="flex w-full flex-wrap items-center justify-between gap-2">
-        <h2 className="text-2xl font-bold">Listen add-ons</h2>
+        <h2 className="text-2xl font-bold">
+          {t('listenerWidgetsSection.listenAddOns')}
+        </h2>
         <Button
           variant="text"
           size="flexible"
@@ -203,7 +207,7 @@ export function ListenerWidgetsSection() {
           onClick={() => openSettings('plugin-store', 'listen')}
           className="text-foreground-secondary text-xs underline-offset-2 hover:bg-transparent hover:underline"
         >
-          Manage widgets
+          {t('listenerWidgetsSection.manageWidgets')}
         </Button>
       </div>
       {blocks.map((block) => (

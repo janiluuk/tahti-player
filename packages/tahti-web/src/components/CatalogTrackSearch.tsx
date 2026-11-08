@@ -1,6 +1,7 @@
 import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input } from '@tahti-player/ui';
 
 import { searchCatalogTracks, type CatalogTrack } from '../api/catalog-search';
@@ -17,6 +18,7 @@ export function CatalogTrackSearch({
   excludeIds?: readonly string[];
   onAdd: (track: CatalogTrack) => Promise<boolean>;
 }) {
+  const { t } = useTranslation('web');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<CatalogTrack[]>([]);
   const [hasMore, setHasMore] = useState(false);
@@ -88,7 +90,7 @@ export function CatalogTrackSearch({
       <Input
         label={label}
         value={query}
-        placeholder="Track title"
+        placeholder={t('catalogTrackSearch.trackTitle')}
         onChange={(event) => setQuery(event.target.value)}
       />
       {error ? (
@@ -104,7 +106,7 @@ export function CatalogTrackSearch({
       ) : null}
       {visible.length > 0 ? (
         <ul
-          aria-label="Catalog results"
+          aria-label={t('catalogTrackSearch.catalogResults')}
           className="border-border divide-border divide-y rounded-md border"
         >
           {visible.map((track) => (

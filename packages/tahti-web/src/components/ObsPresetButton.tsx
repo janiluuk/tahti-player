@@ -2,6 +2,7 @@ import { DownloadIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -46,6 +47,7 @@ export function recommendedSettingsRows(
 }
 
 export function ObsPresetButton() {
+  const { t } = useTranslation('web');
   const [preset, setPreset] = useState<ObsPreset | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -81,7 +83,7 @@ export function ObsPresetButton() {
     <div className="flex min-w-0 flex-1 flex-wrap items-start justify-between gap-3">
       {preset ? (
         <dl
-          aria-label="Recommended OBS settings"
+          aria-label={t('obsPresetButton.recommendedObsSettings')}
           className="text-foreground-secondary grid grid-cols-[auto_1fr] gap-x-3 gap-y-0.5 text-xs"
         >
           {recommendedSettingsRows(preset.recommended).map((row) => (
@@ -93,20 +95,20 @@ export function ObsPresetButton() {
         </dl>
       ) : null}
       <Tooltip
-        content="Download an OBS scene collection (Scene Collection → Import in OBS)"
+        content={t('obsPresetButton.downloadAnObsSceneCollection')}
         side="bottom"
         wrapperClassName="inline-flex"
         multiline
       >
         <Button
-          aria-description="Download an OBS scene collection (Scene Collection → Import in OBS)"
+          aria-description={t('obsPresetButton.downloadAnObsSceneCollection')}
           size="sm"
           variant="secondary"
           disabled={loading}
           onClick={() => void downloadPreset()}
         >
           <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-          Download OBS preset
+          {t('obsPresetButton.downloadObsPreset')}
         </Button>
       </Tooltip>
     </div>

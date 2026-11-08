@@ -1,5 +1,6 @@
 import { UsersIcon, XIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, Toggle, Tooltip } from '@tahti-player/ui';
 
 import type { JamParticipant } from '../api/types';
@@ -24,6 +25,7 @@ export function JamParticipantList({
   onRemove,
   pendingUserIds,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <>
       <div className="mb-3 flex items-center gap-2">
@@ -47,12 +49,12 @@ export function JamParticipantList({
               <span className="text-xs font-semibold">{name}</span>
               {p.role === 'HOST' && (
                 <Badge variant="pill" color="blue">
-                  Host
+                  {t('jamParticipantList.host')}
                 </Badge>
               )}
               {isGuest && onSetControl ? (
                 <span className="text-foreground-secondary flex items-center gap-1.5 text-xs">
-                  Can control
+                  {t('jamParticipantList.canControl')}
                   <Toggle
                     checked={p.canControl === true}
                     disabled={pendingUserIds?.has(p.userId)}
@@ -62,7 +64,7 @@ export function JamParticipantList({
                 </span>
               ) : isGuest && p.canControl === true ? (
                 <Badge variant="pill" color="green">
-                  Can control
+                  {t('jamParticipantList.canControl')}
                 </Badge>
               ) : null}
               {isGuest && onRemove ? (

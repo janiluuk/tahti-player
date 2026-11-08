@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Select } from '@tahti-player/ui';
 
 import {
@@ -20,6 +21,7 @@ export function MotionAgendaItemControl({
   motion: GovernanceMotionDetail;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const meetingId = motion.meeting?.id;
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState<MemberAgendaItem[] | null>(null);
@@ -64,7 +66,7 @@ export function MotionAgendaItemControl({
   return (
     <div className="flex flex-wrap items-end gap-2">
       <Select
-        label="Agenda item"
+        label={t('motionAgendaItemControl.agendaItem')}
         value={itemId}
         onValueChange={setItemId}
         options={[
@@ -94,7 +96,7 @@ export function MotionAgendaItemControl({
           );
         }}
       >
-        Save agenda item
+        {t('motionAgendaItemControl.saveAgendaItem')}
       </Button>
       <Button
         size="sm"
@@ -102,7 +104,7 @@ export function MotionAgendaItemControl({
         disabled={busy}
         onClick={() => setOpen(false)}
       >
-        Cancel
+        {t('motionAgendaItemControl.cancel')}
       </Button>
       {error ? (
         <InlineError textSize="xs" className="w-full">

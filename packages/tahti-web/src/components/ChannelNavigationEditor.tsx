@@ -1,5 +1,6 @@
 import { PlusIcon, Trash2Icon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, FilterChips, Input, Tooltip } from '@tahti-player/ui';
 
 import type { ChannelNavigationTab } from '../lib/channelPageLayout';
@@ -18,6 +19,7 @@ export function ChannelNavigationEditor({
   candidateItems: Array<{ id: string; label: string }>;
   onChange: (tabs: ChannelNavigationTab[]) => void;
 }) {
+  const { t } = useTranslation('web');
   const updateLabel = (index: number, label: string) => {
     onChange(tabs.map((t, i) => (i === index ? { ...t, label } : t)));
   };
@@ -59,7 +61,10 @@ export function ChannelNavigationEditor({
               onChange={(e) => updateLabel(i, e.target.value)}
               className="min-w-0 flex-1"
             />
-            <Tooltip content="Remove tab" side="top">
+            <Tooltip
+              content={t('channelNavigationEditor.removeTab')}
+              side="top"
+            >
               <Button
                 type="button"
                 size="icon-sm"
@@ -81,7 +86,7 @@ export function ChannelNavigationEditor({
             />
           ) : (
             <p className="text-foreground-secondary text-xs">
-              Add another block to the page first, then assign it to a tab here.
+              {t('channelNavigationEditor.addAnotherBlockToThe')}
             </p>
           )}
         </div>
@@ -89,7 +94,7 @@ export function ChannelNavigationEditor({
       <Button type="button" size="sm" variant="secondary" onClick={addTab}>
         <span className="inline-flex items-center gap-1.5">
           <PlusIcon size={14} aria-hidden />
-          Add tab
+          {t('channelNavigationEditor.addTab')}
         </span>
       </Button>
     </div>
