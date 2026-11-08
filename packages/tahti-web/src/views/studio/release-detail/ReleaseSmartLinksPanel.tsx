@@ -272,6 +272,25 @@ export function ReleaseSmartLinksPanel({
     Object.entries(filled).forEach(([key, url]) => updateTarget(key, url));
   };
 
+  const addTrackButtons = (centered: boolean) => (
+    <div className={`flex flex-wrap gap-2 ${centered ? 'justify-center' : ''}`}>
+      <Button
+        className="gap-1.5"
+        variant="secondary"
+        onClick={() => setLibraryOpen(true)}
+      >
+        <PlusIcon size={16} aria-hidden /> Add tracks from library
+      </Button>
+      <Button
+        className="gap-1.5"
+        variant="secondary"
+        onClick={() => setNewUploadOpen(true)}
+      >
+        <UploadIcon size={16} aria-hidden /> Upload a new track
+      </Button>
+    </div>
+  );
+
   return (
     <div className="flex flex-col gap-6">
       <StudioPanel
@@ -392,6 +411,7 @@ export function ReleaseSmartLinksPanel({
           <PageEmpty
             title={t('empties.noTracksYet')}
             description={t('empties.addTracksFromYourLibraryOr')}
+            action={addTrackButtons(true)}
           />
         ) : (
           <ol className="flex flex-col gap-2">
@@ -487,22 +507,9 @@ export function ReleaseSmartLinksPanel({
             ))}
           </ol>
         )}
-        <div className="mt-4 flex flex-wrap gap-2">
-          <Button
-            className="gap-1.5"
-            variant="secondary"
-            onClick={() => setLibraryOpen(true)}
-          >
-            <PlusIcon size={16} aria-hidden /> Add tracks from library
-          </Button>
-          <Button
-            className="gap-1.5"
-            variant="secondary"
-            onClick={() => setNewUploadOpen(true)}
-          >
-            <UploadIcon size={16} aria-hidden /> Upload a new track
-          </Button>
-        </div>
+        {tracks.length > 0 && (
+          <div className="mt-4">{addTrackButtons(false)}</div>
+        )}
       </StudioPanel>
 
       <NewReleaseTrackUploadDialog

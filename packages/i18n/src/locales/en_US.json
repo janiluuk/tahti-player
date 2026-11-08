@@ -3876,6 +3876,11 @@
       "removeConfirmNamed": "Remove {{name}} as moderator?",
       "removeConfirm": "Remove moderator?",
       "removeConfirmDescription": "They lose chat moderation on this channel."
+    },
+    "emptyActions": {
+      "addPin": "Add pin",
+      "addCredit": "Add credit",
+      "addAudioAddon": "Add audio add-on"
     }
   },
   "studioEditor": {
