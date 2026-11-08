@@ -26,8 +26,9 @@ with drag handle, artwork, title, date; Cancel / Save order).
 
 ## Shipped (web, 2026-11-08)
 
-`components/SortSoundsDialog.tsx` behind a Sort sounds icon button on the
-Studio collection editor's Tracklist panel (edit mode, 2+ items): Sort by
+`components/SortSoundsDialog.tsx` behind a Sort sounds icon button
+(`CollectionSortSounds`) on the Studio collection editor's Tracklist panel
+and the Studio playlist editor's Tracks panel (edit mode, 2+ items): Sort by
 Own order / Newest first / Oldest first / Title A–Z / Title Z–A, numbered
 rows with drag handle, `MediaArtwork`, title and date; drag, or click the
 handle and use ArrowUp/ArrowDown/Home/End (focus stays on the handle, a live
@@ -41,8 +42,8 @@ are saved as own order. Helpers in `lib/sortSounds.ts` (tested), story
 
 - tahti-org: direction-aware sort modes so Newest first / Z–A stay sorted
   when new sounds are added (today they are saved as a fixed own order).
-- The same button on `StudioPlaylistEditorView` (/studio/playlists) and the
-  owner's public collection page.
+- The owner's public collection page (the Studio collection and playlist
+  editors both have the button).
 - Check the public read paths apply the stored mode (see below).
 
 ## What exists
