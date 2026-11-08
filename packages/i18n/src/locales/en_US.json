@@ -730,7 +730,8 @@
     },
     "language": {
       "label": "Language",
-      "description": "Menus, buttons and dates use this language. Titles and names stay as their creators wrote them."
+      "description": "Menus, buttons and dates use this language. Titles and names stay as their creators wrote them.",
+      "auto": "Browser language ({{language}})"
     },
     "actions": {
       "play": "Play",

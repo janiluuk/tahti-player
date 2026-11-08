@@ -17,6 +17,24 @@ export function isWebLocale(value: unknown): value is WebLocale {
   return WEB_LOCALES.some((locale) => locale.code === value);
 }
 
+/** The first browser language Tahti has a web catalog for, else English. */
+export function browserLocale(
+  languages: readonly string[] = typeof navigator === 'undefined'
+    ? []
+    : (navigator.languages ?? [navigator.language]),
+): WebLocale {
+  for (const language of languages) {
+    const prefix = language.trim().split(/[-_]/)[0]?.toLowerCase();
+    const match = WEB_LOCALES.find((locale) =>
+      locale.code.toLowerCase().startsWith(`${prefix}_`),
+    );
+    if (prefix && match) {
+      return match.code;
+    }
+  }
+  return DEFAULT_LOCALE;
+}
+
 export async function applyLocale(locale: WebLocale): Promise<void> {
   await i18n.changeLanguage(locale);
   if (typeof document !== 'undefined') {

@@ -730,7 +730,8 @@
     },
     "language": {
       "label": "Kieli",
-      "description": "Valikot, painikkeet ja päivämäärät näytetään tällä kielellä. Nimet ja otsikot pysyvät tekijöidensä kirjoittamina."
+      "description": "Valikot, painikkeet ja päivämäärät näytetään tällä kielellä. Nimet ja otsikot pysyvät tekijöidensä kirjoittamina.",
+      "auto": "Selaimen kieli ({{language}})"
     },
     "actions": {
       "play": "Toista",
