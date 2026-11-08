@@ -290,7 +290,7 @@ function AmbientTrackRowView({
       peaks?.length ||
       audioUrl ||
       !canLoadAudio ||
-      getDecodedPeaks(trackId)
+      getDecodedPeaks(trackId, { durationSec })
     ) {
       return;
     }
@@ -305,7 +305,15 @@ function AmbientTrackRowView({
     return () => {
       cancelled = true;
     };
-  }, [visible, trackId, peaks, audioUrl, canLoadAudio, processing]);
+  }, [
+    visible,
+    trackId,
+    peaks,
+    audioUrl,
+    canLoadAudio,
+    processing,
+    durationSec,
+  ]);
   const sampled = useDominantColor(ambientRgb === undefined ? coverUrl : null);
   const rgb = ambientRgb === undefined ? sampled : ambientRgb;
   const layout = DENSITY_LAYOUT[density];
