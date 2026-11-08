@@ -191,7 +191,7 @@ export function MyRadioStations({
       >
         <Input
           ref={nameInputRef}
-          label="Station name"
+          label={t('myRadioStations.stationName')}
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
@@ -200,13 +200,13 @@ export function MyRadioStations({
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          label="Stream URL"
+          label={t('myRadioStations.streamUrl')}
           value={streamUrl}
           placeholder="https://stream.example.com/live.mp3"
           onChange={(event) => setStreamUrl(event.target.value)}
         />
         <Input
-          label="Genre"
+          label={t('myRadioStations.genre')}
           value={genre}
           onChange={(event) => setGenre(event.target.value)}
         />

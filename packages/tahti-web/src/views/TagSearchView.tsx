@@ -75,10 +75,10 @@ export function TagSearchView({ tag }: { tag?: string }) {
           action={
             <div className="flex flex-wrap items-center justify-center gap-2">
               <ButtonLink to="/discover" size="sm" variant="secondary">
-                Discover
+                {t('tagSearchView.discover')}
               </ButtonLink>
               <ButtonLink to="/radio" size="sm" variant="secondary">
-                Radio
+                {t('tagSearchView.radio')}
               </ButtonLink>
             </div>
           }

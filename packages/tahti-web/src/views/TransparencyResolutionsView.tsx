@@ -53,16 +53,19 @@ export function TransparencyResolutionsView() {
 
   return (
     <ViewShell
-      title="Board resolutions"
+      title={t('transparencyResolutionsView.boardResolutions')}
       classes={{
         root: 'px-0 pt-0 mx-auto max-w-3xl',
         content: 'gap-6',
       }}
     >
-      <PageBackLink to="/transparency" label="Transparency" />
+      <PageBackLink
+        to="/transparency"
+        label={t('transparencyResolutionsView.transparency')}
+      />
 
       <FilterChips
-        aria-label="Year"
+        aria-label={t('transparencyResolutionsView.year')}
         items={YEAR_OPTIONS.map((y) => ({ id: String(y), label: String(y) }))}
         selected={String(year)}
         onChange={(id) => setYear(Number(id))}
@@ -94,7 +97,8 @@ export function TransparencyResolutionsView() {
                     </Badge>
                   </div>
                   <p className="text-foreground-secondary mt-1 flex items-center gap-1 text-xs">
-                    Voted <ListingDate value={resolution.votedAt} />
+                    {t('transparencyResolutionsView.voted')}{' '}
+                    <ListingDate value={resolution.votedAt} />
                   </p>
                   <p className="mt-2 text-sm leading-relaxed">
                     {resolution.body}

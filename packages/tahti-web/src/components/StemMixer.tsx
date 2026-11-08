@@ -136,22 +136,24 @@ export function StemMixer({
           )}
         </Button>
         <span className="text-foreground-secondary min-w-0 flex-1 text-xs">
-          Mute, solo or turn down a stem while it plays. Shift-click solo to
-          hear only that stem.
+          {t('stemMixer.muteSoloOrTurnDown')}
         </span>
         {touched ? (
           <Button
             size="xs"
             variant="text"
-            aria-label="Reset stem mix"
+            aria-label={t('stemMixer.resetStemMix')}
             onClick={() => setMix({})}
           >
             <RotateCcwIcon size={14} aria-hidden className="mr-1" />
-            Reset
+            {t('stemMixer.reset')}
           </Button>
         ) : null}
       </div>
-      <ul className="divide-border @container divide-y" aria-label="Stem mix">
+      <ul
+        className="divide-border @container divide-y"
+        aria-label={t('stemMixer.stemMix')}
+      >
         {files.map((f) => {
           const channel = channelFor(mix, f.label);
           const silent = (gains[f.label] ?? 1) === 0;

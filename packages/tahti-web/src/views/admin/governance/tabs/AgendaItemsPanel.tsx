@@ -72,7 +72,7 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
       onToggle={() => setOpen((value) => !value)}
     >
       {items === null ? (
-        <InlineLoader label="Loading…" textSize="xs" />
+        <InlineLoader label={t('agendaItemsPanel.loading')} textSize="xs" />
       ) : loadError && items.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadAgendaItems')}
@@ -133,13 +133,13 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
       >
         <Input
           ref={titleInputRef}
-          label="New item"
+          label={t('agendaItemsPanel.newItem')}
           value={title}
           maxLength={300}
           onChange={(e) => setTitle(e.target.value)}
         />
         <Input
-          label="Description (optional)"
+          label={t('agendaItemsPanel.descriptionOptional')}
           value={description}
           maxLength={5000}
           onChange={(e) => setDescription(e.target.value)}

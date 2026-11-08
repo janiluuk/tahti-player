@@ -18,8 +18,8 @@ export function RecordingsTab({ state }: { state: ShowDetailState }) {
 
   return (
     <StudioPanel
-      title="Recordings from this show"
-      description="Broadcast recordings linked to this show series."
+      title={t('recordingsTab.recordingsFromThisShow')}
+      description={t('recordingsTab.broadcastRecordingsLinkedToThis')}
     >
       {episodesLoadError ? (
         <PageError
@@ -71,7 +71,7 @@ export function RecordingsTab({ state }: { state: ShowDetailState }) {
                   variant="secondary"
                 >
                   <PlayIcon size={14} aria-hidden className="mr-1.5" />
-                  Play recording
+                  {t('recordingsTab.playRecording')}
                 </ButtonLink>
               ) : null}
             </li>

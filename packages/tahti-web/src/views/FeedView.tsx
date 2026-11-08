@@ -161,7 +161,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
     embedded ? (
       body
     ) : (
-      <ViewShell title="Feed" classes={{ root: 'px-0 pt-0' }}>
+      <ViewShell title={t('feedView.feed')} classes={{ root: 'px-0 pt-0' }}>
         {body}
       </ViewShell>
     );
@@ -179,7 +179,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
         action={
           <div className="flex flex-wrap items-center justify-center gap-2">
             <Button onClick={() => useAuthModalStore.getState().open('login')}>
-              Log in
+              {t('feedView.logIn')}
             </Button>
             <ButtonLink
               to="/discover"
@@ -187,7 +187,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
               size="sm"
               variant="secondary"
             >
-              Discover artists
+              {t('feedView.discoverArtists')}
             </ButtonLink>
           </div>
         }
@@ -312,12 +312,12 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
               size="sm"
               variant="secondary"
             >
-              Discover artists
+              {t('feedView.discoverArtists')}
             </ButtonLink>
           }
         />
       ) : (
-        <StoryRow title="Your feed" data-testid="feed-stories">
+        <StoryRow title={t('feedView.yourFeed')} data-testid="feed-stories">
           {items.map((item) => (
             <StoryCard
               key={`${item.kind}-${item.id}`}

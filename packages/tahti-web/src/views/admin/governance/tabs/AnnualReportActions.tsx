@@ -55,7 +55,7 @@ export function AnnualReportActions({
         approving ? (
           <div className="flex flex-wrap items-end gap-2">
             <Select
-              label="Approved at"
+              label={t('annualReportActions.approvedAt')}
               value={meetingId}
               onValueChange={setMeetingId}
               options={[
@@ -75,7 +75,7 @@ export function AnnualReportActions({
                 )
               }
             >
-              Record approval
+              {t('annualReportActions.recordApproval')}
             </Button>
             <Button
               size="sm"
@@ -83,7 +83,7 @@ export function AnnualReportActions({
               disabled={busy}
               onClick={() => setApproving(false)}
             >
-              Cancel
+              {t('annualReportActions.cancel')}
             </Button>
           </div>
         ) : (
@@ -104,7 +104,7 @@ export function AnnualReportActions({
           disabled={busy}
           onClick={() => setConfirmPublish(true)}
         >
-          Publish to members
+          {t('annualReportActions.publishToMembers')}
         </Button>
       ) : null}
       <AnnualReportFilingForm report={report} onChanged={onChanged} />

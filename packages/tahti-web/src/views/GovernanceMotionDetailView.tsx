@@ -70,19 +70,22 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
         content: 'gap-6',
       }}
     >
-      <PageBackLink to="/governance" label="Governance" />
+      <PageBackLink
+        to="/governance"
+        label={t('governanceMotionDetailView.governance')}
+      />
 
       {!user && (
         <Box variant="secondary" className="flex flex-col gap-3">
           <p className="text-sm">
-            Sign in with a cooperative membership account to view this motion.
+            {t('governanceMotionDetailView.signInWithACooperative')}
           </p>
           <Button
             size="sm"
             className="w-fit"
             onClick={() => useAuthModalStore.getState().open('login')}
           >
-            Log in
+            {t('governanceMotionDetailView.logIn')}
           </Button>
         </Box>
       )}
@@ -101,7 +104,7 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
             className="w-fit"
             onClick={() => useSettingsModalStore.getState().open('account')}
           >
-            Manage membership
+            {t('governanceMotionDetailView.manageMembership')}
           </Button>
         </Box>
       )}

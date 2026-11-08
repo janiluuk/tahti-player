@@ -188,7 +188,10 @@ export function ChannelAnnouncementsPanel() {
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <SectionTitle title="Clips between programs" wrap />
+          <SectionTitle
+            title={t('channelAnnouncementsPanel.clipsBetweenPrograms')}
+            wrap
+          />
           <p className="text-foreground-secondary mt-1 text-sm">
             Station IDs, voice links, and announcements for your 24/7 rotation.
             Turn on “Play clips between programs” in the settings above.
@@ -307,7 +310,9 @@ export function ChannelAnnouncementsPanel() {
                 <Trash2Icon className="text-accent-red" size={16} />
               </Button>
               <details className="basis-full text-xs">
-                <summary className="cursor-pointer">Page music</summary>
+                <summary className="cursor-pointer">
+                  {t('channelAnnouncementsPanel.pageMusic')}
+                </summary>
                 <Button
                   size="sm"
                   variant="secondary"
@@ -329,7 +334,9 @@ export function ChannelAnnouncementsPanel() {
                     className="w-full"
                   />
                 ) : (
-                  <p role="status">Loading preview…</p>
+                  <p role="status">
+                    {t('channelAnnouncementsPanel.loadingPreview')}
+                  </p>
                 ))}
             </li>
           ))}
@@ -375,7 +382,7 @@ export function ChannelAnnouncementsPanel() {
             disabled={busyId !== null}
             onClick={() => setPendingDelete(null)}
           >
-            Cancel
+            {t('channelAnnouncementsPanel.cancel')}
           </Button>
           <Button
             intent="danger"

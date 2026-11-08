@@ -81,11 +81,11 @@ export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
 
   return (
     <StudioPanel
-      title="Payout queue"
-      description="Fan subscription payouts waiting for the payout worker. Retrying a failed payout puts it back in the queue."
+      title={t('fanSubPayoutQueue.payoutQueue')}
+      description={t('fanSubPayoutQueue.fanSubscriptionPayoutsWaitingFor')}
       action={
         <Select
-          label="Show"
+          label={t('fanSubPayoutQueue.show')}
           value={state}
           onValueChange={(value) =>
             setState(value as '' | AdminFanSubPayoutState)

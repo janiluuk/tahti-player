@@ -75,7 +75,11 @@ export function ModerateChannelView({ slug }: { slug: string }) {
         icon={<Lock size={40} className="opacity-40" />}
         title={t('empties.chatModeration')}
         description={t('empties.signInToLookAfterThe')}
-        action={<Button onClick={() => openAuth('login')}>Log in</Button>}
+        action={
+          <Button onClick={() => openAuth('login')}>
+            {t('moderateChannelView.logIn')}
+          </Button>
+        }
       />
     );
   }
@@ -104,7 +108,7 @@ export function ModerateChannelView({ slug }: { slug: string }) {
             size="sm"
             variant="secondary"
           >
-            Back to the channel
+            {t('moderateChannelView.backToTheChannel')}
           </ButtonLink>
         }
       />
@@ -135,7 +139,7 @@ export function ModerateChannelView({ slug }: { slug: string }) {
               </ButtonLink>
               {channel.isOwner && (
                 <ButtonLink to="/studio/fans" size="sm" variant="text">
-                  Chat settings
+                  {t('moderateChannelView.chatSettings')}
                 </ButtonLink>
               )}
               {!channel.isOwner && (
@@ -144,7 +148,7 @@ export function ModerateChannelView({ slug }: { slug: string }) {
                   variant="text"
                   onClick={() => setConfirmLeave(true)}
                 >
-                  Stop moderating
+                  {t('moderateChannelView.stopModerating')}
                 </Button>
               )}
             </div>

@@ -107,7 +107,7 @@ function WorkerHistoryDialog({
         </ul>
       )}
       <Dialog.Actions>
-        <Dialog.Close>Close</Dialog.Close>
+        <Dialog.Close>{t('workersPanel.close')}</Dialog.Close>
       </Dialog.Actions>
     </Dialog.Root>
   );
@@ -137,7 +137,7 @@ export function WorkersPanel() {
 
   return (
     <StudioPanel
-      title="Workers"
+      title={t('workersPanel.workers')}
       description={
         offline && offline.length > 0
           ? `${offline.length} of ${workers?.length} offline (no heartbeat recently).`
@@ -203,7 +203,7 @@ export function WorkersPanel() {
                 onClick={() => setHistoryFor(worker)}
               >
                 <HistoryIcon size={14} aria-hidden className="mr-1.5" />
-                History
+                {t('workersPanel.history')}
               </Button>
             </li>
           ))}

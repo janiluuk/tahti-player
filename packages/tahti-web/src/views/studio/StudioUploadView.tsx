@@ -242,10 +242,7 @@ export function StudioUploadView() {
                 onFiles={(files) => setFile(files[0] ?? null)}
               />
               <p className="text-foreground-secondary mt-3 text-xs">
-                Upload first and we’ll read the embedded title and artist
-                metadata. If the file has none, its filename is used and you can
-                name it in the editor afterwards. You can leave this page while
-                it processes; if it can&apos;t be processed, we notify you.
+                {t('studioUploadView.uploadFirstAndWeLl')}
               </p>
               {message && <InlineError>{message}</InlineError>}
               <div className="flex flex-wrap gap-2">
@@ -263,7 +260,7 @@ export function StudioUploadView() {
             <div className="border-border bg-background-secondary/40 rounded-xl border p-5 sm:p-6">
               <div className="flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
                 <RadioIcon size={15} aria-hidden />
-                Last recorded broadcasts
+                {t('studioUploadView.lastRecordedBroadcasts')}
               </div>
               {recordingsLoading ? (
                 <InlineLoader
@@ -288,7 +285,7 @@ export function StudioUploadView() {
                       to="/studio/go-live"
                       className="text-accent-cyan-strong text-sm underline-offset-2 hover:underline"
                     >
-                      Go live to record one.
+                      {t('studioUploadView.goLiveToRecordOne')}
                     </Link>
                   }
                 />

@@ -40,7 +40,7 @@ export function GrantsTab() {
 
   return (
     <>
-      <StudioPanel title="Disbursement history">
+      <StudioPanel title={t('grantsTab.disbursementHistory')}>
         {loading ? (
           <PageLoading label={t('loading.loadingGrantCycles')} />
         ) : loadError && history.length === 0 ? (
@@ -91,10 +91,9 @@ export function GrantsTab() {
           </>
         )}
       </StudioPanel>
-      <StudioPanel title="Preview a grant cycle">
+      <StudioPanel title={t('grantsTab.previewAGrantCycle')}>
         <p className="text-foreground-secondary text-sm">
-          Review a dry-run allocation by year. Approval is only enabled when the
-          allocation balances to the cent.
+          {t('grantsTab.reviewADryRunAllocation')}
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           {[

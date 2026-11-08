@@ -39,7 +39,7 @@ export function ReportsTab() {
 
   return (
     <>
-      <StudioPanel title="Generate report">
+      <StudioPanel title={t('reportsTab.generateReport')}>
         <form
           className="flex flex-wrap items-end gap-2"
           onSubmit={(event) => {
@@ -58,7 +58,7 @@ export function ReportsTab() {
         >
           <div className="w-28">
             <Input
-              label="Year"
+              label={t('reportsTab.year')}
               value={year}
               onChange={(event) => setYear(event.target.value)}
               inputMode="numeric"
@@ -79,7 +79,7 @@ export function ReportsTab() {
         </form>
         {error ? <InlineError className="mt-2">{error}</InlineError> : null}
       </StudioPanel>
-      <StudioPanel title="Generated reports">
+      <StudioPanel title={t('reportsTab.generatedReports')}>
         {loading ? (
           <PageLoading label={t('loading.loadingReports')} />
         ) : reports.length === 0 ? (

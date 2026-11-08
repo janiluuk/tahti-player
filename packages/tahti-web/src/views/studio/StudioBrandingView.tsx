@@ -101,7 +101,7 @@ export const StudioBrandingPanel: FC<{
         <>
           {hideSectionNav ? null : (
             <SectionTitle
-              title="Artist branding"
+              title={t('studioBrandingView.artistBranding')}
               wrap
               className="font-display tracking-tight"
             />
@@ -141,9 +141,9 @@ export const StudioBrandingPanel: FC<{
             bio={profile.bio}
           />
         ) : (
-          <StudioPanel title="Channel Designer">
+          <StudioPanel title={t('studioBrandingView.channelDesigner')}>
             <p className="text-foreground-secondary text-sm">
-              Sign in to design your public channel.
+              {t('studioBrandingView.signInToDesignYour')}
             </p>
           </StudioPanel>
         )

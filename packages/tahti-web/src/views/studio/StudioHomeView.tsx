@@ -32,11 +32,14 @@ export function StudioHomeView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-8">
-        <ViewShell title="Studio" classes={{ root: 'px-0 pt-0' }}>
+        <ViewShell
+          title={t('studioHomeView.studio')}
+          classes={{ root: 'px-0 pt-0' }}
+        >
           {user ? (
             <div
               role="group"
-              aria-label="Account status"
+              aria-label={t('studioHomeView.accountStatus')}
               className="mb-4 flex flex-wrap items-center gap-2"
             >
               <Badge variant="pill" color="purple">
@@ -59,7 +62,7 @@ export function StudioHomeView() {
                 onClick={openChannelSetup}
                 className="h-auto p-0 underline underline-offset-2"
               >
-                Create your channel
+                {t('studioHomeView.createYourChannel')}
               </Button>{' '}
               to unlock Music and Broadcast.
             </p>

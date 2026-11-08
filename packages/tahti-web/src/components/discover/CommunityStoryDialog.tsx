@@ -92,12 +92,16 @@ export function CommunityStoryDialog({
         <div className="flex flex-col gap-4" data-testid="community-story">
           {load.state === 'loading' ? (
             <>
-              <Dialog.Title>Community story</Dialog.Title>
+              <Dialog.Title>
+                {t('communityStoryDialog.communityStory')}
+              </Dialog.Title>
               <PageLoading label={t('loading.loadingStory')} />
             </>
           ) : load.state === 'error' ? (
             <>
-              <Dialog.Title>Community story</Dialog.Title>
+              <Dialog.Title>
+                {t('communityStoryDialog.communityStory')}
+              </Dialog.Title>
               <PageError
                 title={t('loadErrors.couldNotLoadThisStory')}
                 description={load.reason}
@@ -110,11 +114,11 @@ export function CommunityStoryDialog({
 
           {others.length > 0 ? (
             <section
-              aria-label="More community updates"
+              aria-label={t('communityStoryDialog.moreCommunityUpdates')}
               className="border-border flex flex-col gap-2 border-t pt-3"
             >
               <h3 className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-                More community updates
+                {t('communityStoryDialog.moreCommunityUpdates')}
               </h3>
               <ul className="flex flex-col gap-1">
                 {others.map((story) => (
@@ -159,7 +163,7 @@ export function CommunityStoryDialog({
               onClick={() => previous && onOpen(previous.id)}
             >
               <ChevronLeftIcon size={14} aria-hidden className="mr-1" />
-              Newer
+              {t('communityStoryDialog.newer')}
             </Button>
             <Button
               variant="secondary"
@@ -167,10 +171,10 @@ export function CommunityStoryDialog({
               disabled={!next}
               onClick={() => next && onOpen(next.id)}
             >
-              Older
+              {t('communityStoryDialog.older')}
               <ChevronRightIcon size={14} aria-hidden className="ml-1" />
             </Button>
-            <Dialog.Close>Close</Dialog.Close>
+            <Dialog.Close>{t('communityStoryDialog.close')}</Dialog.Close>
           </Dialog.Actions>
         </div>
       ) : null}

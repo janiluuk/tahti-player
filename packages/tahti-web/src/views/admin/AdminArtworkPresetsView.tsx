@@ -130,13 +130,19 @@ export function AdminArtworkPresetsView() {
       <AdminPageLayout current="/admin/artwork-presets">
         <div className="flex flex-col gap-6">
           <Breadcrumbs>
-            <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+            <BreadcrumbLink to="/admin">
+              {t('adminArtworkPresetsView.admin')}
+            </BreadcrumbLink>
             <AdminHubBreadcrumb hub="content" />
-            <BreadcrumbCurrent>Artwork presets</BreadcrumbCurrent>
+            <BreadcrumbCurrent>
+              {t('adminArtworkPresetsView.artworkPresets')}
+            </BreadcrumbCurrent>
           </Breadcrumbs>
           <ViewShell
-            title="Artwork presets"
-            subtitle="Enabled artwork becomes the cover of tracks, playlists and channels that have none, and is offered in every cover picker."
+            title={t('adminArtworkPresetsView.artworkPresets')}
+            subtitle={t(
+              'adminArtworkPresetsView.enabledArtworkBecomesTheCover',
+            )}
             classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             actions={
               <Tooltip content={t('adminPresets.addArtwork')} side="top">

@@ -35,13 +35,13 @@ export function StudioSoundView({ id }: { id: string }) {
       <div className="studio-page-layout flex w-full flex-col gap-6">
         <div className="relative flex flex-col gap-6">
           <Tooltip
-            content="Back to Library sounds"
+            content={t('studioSoundView.backToLibrarySounds')}
             side="right"
             wrapperClassName={backButtonCornerClassName}
           >
             <BackButtonLink
               to="/library/sounds"
-              aria-label="Back to Library sounds"
+              aria-label={t('studioSoundView.backToLibrarySounds')}
             />
           </Tooltip>
           {!item ? (
@@ -59,9 +59,7 @@ export function StudioSoundView({ id }: { id: string }) {
 
               {notReady && (
                 <Alert tone="neutral" aria-live="polite">
-                  Still processing — this can take a minute for longer files.
-                  Playback, the waveform, and quick fixes will unlock once it's
-                  ready; metadata below is safe to edit and save now.
+                  {t('studioSoundView.stillProcessingThisCanTake')}
                 </Alert>
               )}
 

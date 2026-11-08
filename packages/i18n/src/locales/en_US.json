@@ -7694,6 +7694,278 @@
       "artists": "Artists",
       "tracks": "Tracks",
       "playlists": "Playlists"
+    },
+    "fanChatRoom": {
+      "fanRoom": "Fan room",
+      "send": "Send",
+      "backToThePublicChat": "Back to the public chat",
+      "fanRoomMessages": "Fan room messages",
+      "messageTheFanRoom": "Message the fan room"
+    },
+    "communityStoryDialog": {
+      "communityStory": "Community story",
+      "moreCommunityUpdates": "More community updates",
+      "newer": "Newer",
+      "older": "Older",
+      "close": "Close"
+    },
+    "channelStoreEditor": {
+      "yourTracksAreListedHere": "Your tracks are listed here once you have added a price above.",
+      "turnTheStoreOnIt": "Turn the Store on. It stays hidden on your channel page until you do.",
+      "addAPriceThatIs": "Add a price. That is what a fan pays for a track.",
+      "putTracksInTheStore": "Put tracks in the Store. Each track you price shows up in the section. Take a track out and it leaves the Store.",
+      "searchTracks": "Search tracks"
+    },
+    "adminGate": {
+      "logIn": "Log in",
+      "backToListen": "Back to Listen",
+      "boardAdmin": "Board admin",
+      "signInWithABoard": "Sign in with a board member account to continue.",
+      "boardAccessRequired": "Board access required"
+    },
+    "addToPlaylistDialog": {
+      "addToPlaylist": "Add to playlist",
+      "cancel": "Cancel",
+      "loading": "Loading…",
+      "newPlaylist": "New playlist",
+      "playlistName": "Playlist name"
+    },
+    "transparencyResolutionsView": {
+      "voted": "Voted",
+      "boardResolutions": "Board resolutions",
+      "transparency": "Transparency",
+      "year": "Year"
+    },
+    "governanceSection": {
+      "haveYourSay": "Have your say",
+      "reviewOpenVotesAndFollow": "Review open votes and follow discussions that are still unresolved.",
+      "needsYourOpinion": "Needs your opinion",
+      "ongoingDiscussions": "Ongoing discussions"
+    },
+    "spotifyImportPanel": {
+      "addFromSpotify": "Add from Spotify",
+      "tracksAreEmbeddedFromSpotify": "Tracks are embedded from Spotify; Tahti never copies the audio.",
+      "spotifySource": "Spotify source",
+      "spotifyTracks": "Spotify tracks"
+    },
+    "smartLinkView": {
+      "playAll": "Play all",
+      "listenOn": "Listen on",
+      "listen": "Listen",
+      "poweredByTahti": "Powered by Tahti"
+    },
+    "socialPostNow": {
+      "postNow": "Post now",
+      "recentPosts": "Recent posts",
+      "postTo": "Post to",
+      "message": "Message"
+    },
+    "moderateChannelView": {
+      "logIn": "Log in",
+      "backToTheChannel": "Back to the channel",
+      "chatSettings": "Chat settings",
+      "stopModerating": "Stop moderating"
+    },
+    "governanceMotionDetailView": {
+      "signInWithACooperative": "Sign in with a cooperative membership account to view this motion.",
+      "logIn": "Log in",
+      "manageMembership": "Manage membership",
+      "governance": "Governance"
+    },
+    "feedView": {
+      "logIn": "Log in",
+      "discoverArtists": "Discover artists",
+      "feed": "Feed",
+      "yourFeed": "Your feed"
+    },
+    "annualReportActions": {
+      "recordApproval": "Record approval",
+      "cancel": "Cancel",
+      "publishToMembers": "Publish to members",
+      "approvedAt": "Approved at"
+    },
+    "memberRegisterPanel": {
+      "clearFilters": "Clear filters",
+      "loading": "Loading…",
+      "findAMember": "Find a member",
+      "nameUsernameOrMemberNumber": "Name, username or member number"
+    },
+    "adminStatusView": {
+      "admin": "Admin",
+      "status": "Status",
+      "queueHealth": "Queue health",
+      "cronJobs": "Cron jobs"
+    },
+    "stemMixer": {
+      "muteSoloOrTurnDown": "Mute, solo or turn down a stem while it plays. Shift-click solo to hear only that stem.",
+      "reset": "Reset",
+      "resetStemMix": "Reset stem mix",
+      "stemMix": "Stem mix"
+    },
+    "imageLightbox": {
+      "closeImageViewer": "Close image viewer",
+      "removePhoto": "Remove photo",
+      "previousImage": "Previous image",
+      "nextImage": "Next image"
+    },
+    "browserLocalFiles": {
+      "tahtiPlayerDesktopRuntimeDetected": "Tahti Player desktop runtime detected. Native library is unavailable; browser imports remain available.",
+      "searchLocalFiles": "Search local files",
+      "titleArtistOrFileName": "Title, artist, or file name",
+      "remove": "Remove"
+    },
+    "channelAnnouncementsPanel": {
+      "pageMusic": "Page music",
+      "loadingPreview": "Loading preview…",
+      "cancel": "Cancel",
+      "clipsBetweenPrograms": "Clips between programs"
+    },
+    "studioUploadView": {
+      "uploadFirstAndWeLl": "Upload first and we’ll read the embedded title and artist metadata. If the file has none, its filename is used and you can name it in the editor afterwards. You can leave this page while it processes; if it can't be processed, we notify you.",
+      "lastRecordedBroadcasts": "Last recorded broadcasts",
+      "goLiveToRecordOne": "Go live to record one."
+    },
+    "studioHomeView": {
+      "createYourChannel": "Create your channel",
+      "studio": "Studio",
+      "accountStatus": "Account status"
+    },
+    "studioBrandingView": {
+      "signInToDesignYour": "Sign in to design your public channel.",
+      "artistBranding": "Artist branding",
+      "channelDesigner": "Channel Designer"
+    },
+    "topListsTab": {
+      "contentRankings": "Content rankings",
+      "topListGrouping": "Top list grouping",
+      "topListOrder": "Top list order"
+    },
+    "listenerLoyalty": {
+      "listenerLoyalty": "Listener loyalty",
+      "howFarIntoATrack": "How far into a track listeners got: the share still listening at each tenth of it.",
+      "shareStillListeningByOf": "Share still listening by % of track"
+    },
+    "audienceBreakdown": {
+      "theBreakdownFillsInAs": "The breakdown fills in as people listen.",
+      "audience": "Audience",
+      "ignoreBotTraffic": "Ignore bot traffic"
+    },
+    "soundsAmbientList": {
+      "embeds": "Embeds",
+      "downloadOriginal": "Download original",
+      "stats": "Stats"
+    },
+    "soundRow": {
+      "playShiftClickToQueue": "Play · Shift+click to queue",
+      "downloadOriginal": "Download original",
+      "stats": "Stats"
+    },
+    "recordingsTab": {
+      "playRecording": "Play recording",
+      "recordingsFromThisShow": "Recordings from this show",
+      "broadcastRecordingsLinkedToThis": "Broadcast recordings linked to this show series."
+    },
+    "myRadioStations": {
+      "stationName": "Station name",
+      "streamUrl": "Stream URL",
+      "genre": "Genre"
+    },
+    "searchResultsView": {
+      "artists": "Artists",
+      "tracks": "Tracks",
+      "playlistsAndReleases": "Playlists and releases"
+    },
+    "newsView": {
+      "seeWhatSNewIn": "See what's new in each release",
+      "retry": "Retry",
+      "platformNews": "Platform news"
+    },
+    "collectionView": {
+      "linkedReleases": "Linked releases",
+      "backToListen": "Back to Listen",
+      "signInToSubscribeTo": "Sign in to subscribe to this playlist"
+    },
+    "workersPanel": {
+      "close": "Close",
+      "history": "History",
+      "workers": "Workers"
+    },
+    "reportsTab": {
+      "generateReport": "Generate report",
+      "year": "Year",
+      "generatedReports": "Generated reports"
+    },
+    "grantsTab": {
+      "reviewADryRunAllocation": "Review a dry-run allocation by year. Approval is only enabled when the allocation balances to the cent.",
+      "disbursementHistory": "Disbursement history",
+      "previewAGrantCycle": "Preview a grant cycle"
+    },
+    "agendaItemsPanel": {
+      "loading": "Loading…",
+      "newItem": "New item",
+      "descriptionOptional": "Description (optional)"
+    },
+    "associationEditPanel": {
+      "savedMembersSeeTheseDetails": "Saved. Members see these details on Governance.",
+      "saveDetails": "Save details",
+      "theAssociation": "The association"
+    },
+    "legacyMembersPanel": {
+      "membersWithNoStripeSubscription": "Members with no Stripe subscription yet. They move over by paying their membership through checkout; until then their fee isn't collected automatically.",
+      "legacyMembershipMigration": "Legacy membership migration",
+      "copyEmails": "Copy emails"
+    },
+    "fanSubPayoutQueue": {
+      "payoutQueue": "Payout queue",
+      "fanSubscriptionPayoutsWaitingFor": "Fan subscription payouts waiting for the payout worker. Retrying a failed payout puts it back in the queue.",
+      "show": "Show"
+    },
+    "adminArtworkPresetsView": {
+      "admin": "Admin",
+      "artworkPresets": "Artwork presets",
+      "enabledArtworkBecomesTheCover": "Enabled artwork becomes the cover of tracks, playlists and channels that have none, and is offered in every cover picker."
+    },
+    "playHistoryDialog": {
+      "listeningHistory": "Listening history",
+      "localFilesYouHaveListened": "Local files you have listened to, newest first. Kept on this device only.",
+      "resume": "Resume"
+    },
+    "multistreamStatusPanel": {
+      "manage": "Manage",
+      "multistreamStatus": "Multistream status",
+      "whetherEachDestinationIsReceiving": "Whether each destination is receiving your stream right now. Refreshes every 15 seconds."
+    },
+    "chatBansPanel": {
+      "chatBans": "Chat bans",
+      "peopleWhoCanNoLonger": "People who can no longer post in this chat. To ban someone, use Ban on one of their messages under Recent messages.",
+      "liftBan": "Lift ban"
+    },
+    "annualReportsPanel": {
+      "approved": "Approved",
+      "annualReports": "Annual reports",
+      "loadingAnnualReports": "Loading annual reports…"
+    },
+    "fingerprintTrackPanel": {
+      "matchOnFile": "Match on file",
+      "noMatchOnFile": "No match on file",
+      "previewOnlyNotSaved": "Preview only — not saved"
+    },
+    "savePresetDialog": {
+      "savePreset": "Save preset",
+      "saveTheCurrentLookUnder": "Save the current look under a name so you can switch back to it later.",
+      "presetName": "Preset name"
+    },
+    "libraryEmbedsView": {
+      "filterEmbedsByProvider": "Filter embeds by provider",
+      "sortEmbeds": "Sort embeds"
+    },
+    "tagSearchView": {
+      "discover": "Discover",
+      "radio": "Radio"
+    },
+    "studioSoundView": {
+      "stillProcessingThisCanTake": "Still processing — this can take a minute for longer files. Playback, the waveform, and quick fixes will unlock once it's ready; metadata below is safe to edit and save now.",
+      "backToLibrarySounds": "Back to Library sounds"
     }
   },
   "studioEditor": {
