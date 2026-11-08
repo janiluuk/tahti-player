@@ -91,6 +91,43 @@ describe('serializeQueue', () => {
   });
 });
 
+describe('queue peaks', () => {
+  it('saves the peaks of tracks that played and brings them back', () => {
+    const peaks = [10, 200, 90];
+    store().play({ ...cloud('1'), peaks }, { enqueueRest: [cloud('2')] });
+    const saved = serializeQueue(
+      store().queue,
+      store().currentId,
+      store().peaksById,
+    );
+    expect(saved.items.map((item) => item.peaks)).toEqual([peaks, undefined]);
+
+    window.localStorage.setItem(KEY, JSON.stringify(saved));
+    store().clearQueue();
+    usePlayerStore.setState({ peaksById: {}, currentPeaks: null });
+    expect(restorePersistedQueue()).toBe(true);
+    expect(store().currentPeaks).toEqual(peaks);
+    expect(store().peaksById['sound:1']).toEqual(peaks);
+  });
+
+  it('drops malformed saved peaks', () => {
+    const parsed = parsePersistedQueue(
+      JSON.stringify({
+        v: 1,
+        currentId: null,
+        items: [
+          { id: 'sound:1', title: 'One', artist: 'A', peaks: ['x'] },
+          { id: 'sound:2', title: 'Two', artist: 'A', peaks: [1, 2] },
+        ],
+      }),
+    );
+    expect(parsed?.items.map((item) => item.peaks)).toEqual([
+      undefined,
+      [1, 2],
+    ]);
+  });
+});
+
 describe('parsePersistedQueue', () => {
   it('rejects garbage and other versions, and filters bad items', () => {
     expect(parsePersistedQueue(null)).toBeNull();

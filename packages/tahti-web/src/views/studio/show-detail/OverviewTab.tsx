@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { CalendarPlusIcon, MicIcon } from 'lucide-react';
+import { CalendarPlusIcon, MicIcon, PlusIcon } from 'lucide-react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -249,6 +249,16 @@ export function OverviewTab({
           {episodes.length === 0 ? (
             <PageEmpty
               title={`No episodes yet. Create one — episode #${nextEpisodeNumber} is ready.`}
+              action={
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => state.setCreateOpen(true)}
+                >
+                  <PlusIcon size={16} aria-hidden />
+                  {t('emptyActions.newEpisode')}
+                </Button>
+              }
             />
           ) : (
             <ul className="divide-border divide-y">

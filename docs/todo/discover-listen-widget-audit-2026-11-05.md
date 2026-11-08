@@ -13,12 +13,12 @@ findings below come from reading the screenshots.
 - Feed cards: fixed (`StoryCard` and Feed track/release media show seeded default artwork, no letter or avatar cover).
 
 ## Inconsistent
-- [ ] Two near-identical widgets, "Random artist of the week" and "Random artist pick": same layout, same button, confusing names.
+- Two artist widgets: renamed "Artist of the week" and "Rotating artist pick" (en + fi); same layout kept.
 - Widget headings: fixed (Discover `WidgetCard` uses the 18px bold section heading).
 - [ ] Listen sections each get a coloured pill that repeats the title (Internet radio green, Curated orange, Releases teal, Live olive, Top plays pink, Events green): six colours, no meaning.
 - Carousel arrows: fixed (`StoryRow` uses the square `noShadow` buttons from `CardsRow`).
 - [ ] Filters: desktop Listen has a filter field only on Tahti Selects, but on phone Radio and Coming up get "Filter stations…/Filter events…" too. Discover has global Genres/Types plus a separate "All genres" chip in Random track (lime green, matches no other chip).
-- [ ] Three search box styles: Artists (labelled panel), Groups (bare field with icon), top bar.
+- Groups search now uses the Artists panel style (labelled field in the bordered panel); the top bar search stays its own control.
 - [ ] Card styles differ between Discover tabs: Artists use thick neo-brutalist tiles, Groups thin rounded rows with small "Request to join" pills, Venues a plain bordered box.
 - [ ] "New tracks" on Listen has a left accent bar, no pill, and is wrapped in a panel with "9 tracks". No other section looks like that.
 - Ranking: fixed (Trending shows the rank as a pill on the artwork, not in the title).
@@ -31,7 +31,7 @@ findings below come from reading the screenshots.
 ## Crowded / clipped
 - Phone Discover: fixed (tab row scrolls on one line, `NewsWidget` keeps the title on one line and wraps its controls below).
 - Widget title truncation: fixed (titles and subtitles wrap to two lines).
-- [ ] Artists tab: 17 genre chips, each "(1)", fill two lines above the results.
+- Artists tab genre chips: top 8 plus "+N more" / "Fewer genres", no "(1)" counts.
 - Coming up clipping: fixed (title and venue wrap to two lines, venue on its own line).
 - [ ] Discover masonry leaves empty blocks: Latest releases (one item, 280px box), Public playlists, and a blank area above Random track in column 3. Listen's New releases, Live now and Coming up show one or two cards in a full-width row.
 

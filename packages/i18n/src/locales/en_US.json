@@ -1399,7 +1399,10 @@
         "tahtiSelects": "Tahti Selects",
         "latestReleases": "Latest releases",
         "randomTrack": "Random track"
-      }
+      },
+      "moreGenres": "+{{count}} more",
+      "fewerGenres": "Fewer genres",
+      "groupsSearchPlaceholder": "Group name, genre…"
     },
     "library": {
       "sections": "Library sections",
@@ -3923,7 +3926,12 @@
       "addFeed": "Add feed",
       "newSupportRequest": "New request",
       "writeBio": "Write a bio",
-      "uploadTrack": "Upload track"
+      "uploadTrack": "Upload track",
+      "newEpisode": "New episode",
+      "addTracks": "Add tracks",
+      "newCollection": "New collection",
+      "openLibrary": "Open library",
+      "addFirstModerator": "Add your first moderator"
     },
     "scheduleEditor": {
       "nextPlannedBroadcast": "Next planned broadcast",
