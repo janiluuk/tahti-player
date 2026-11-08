@@ -86,7 +86,7 @@ export function GreenRoomView({ username }: { username: string }) {
       variant="secondary"
       onClick={() => setAttempt((n) => n + 1)}
     >
-      Check again
+      {t('greenRoom.checkAgain')}
     </Button>
   );
 
@@ -104,7 +104,7 @@ export function GreenRoomView({ username }: { username: string }) {
   if (loading) {
     return (
       <ViewShell
-        title="Green room"
+        title={t('greenRoom.greenRoom')}
         subtitle={subtitle}
         classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl' }}
       >
@@ -117,7 +117,7 @@ export function GreenRoomView({ username }: { username: string }) {
   if (needsLogin) {
     return (
       <ViewShell
-        title="Green room"
+        title={t('greenRoom.greenRoom')}
         subtitle={subtitle}
         classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl' }}
       >
@@ -127,7 +127,7 @@ export function GreenRoomView({ username }: { username: string }) {
           description={t('empties.logInToJoinThisGreen')}
           action={
             <Button size="sm" onClick={() => openAuth('login')}>
-              Log in
+              {t('greenRoom.logIn')}
             </Button>
           }
         />
@@ -138,7 +138,7 @@ export function GreenRoomView({ username }: { username: string }) {
   if (error || !access) {
     return (
       <ViewShell
-        title="Green room"
+        title={t('greenRoom.greenRoom')}
         subtitle={subtitle}
         classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl' }}
       >
@@ -156,7 +156,7 @@ export function GreenRoomView({ username }: { username: string }) {
   if (!access.greenRoomEnabled) {
     return (
       <ViewShell
-        title="Green room"
+        title={t('greenRoom.greenRoom')}
         subtitle={subtitle}
         classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl' }}
       >
@@ -173,7 +173,7 @@ export function GreenRoomView({ username }: { username: string }) {
   if (!access.hasAccess) {
     return (
       <ViewShell
-        title="Green room"
+        title={t('greenRoom.greenRoom')}
         subtitle={subtitle}
         classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl' }}
       >
@@ -189,7 +189,7 @@ export function GreenRoomView({ username }: { username: string }) {
   if (access.channelState === 'LIVE') {
     return (
       <ViewShell
-        title="Green room"
+        title={t('greenRoom.greenRoom')}
         subtitle={subtitle}
         classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl' }}
       >
@@ -206,7 +206,7 @@ export function GreenRoomView({ username }: { username: string }) {
                 params={{ slug: channelSlug }}
                 size="sm"
               >
-                Tune in
+                {t('greenRoom.tuneIn')}
               </ButtonLink>
             ) : undefined
           }
@@ -218,7 +218,7 @@ export function GreenRoomView({ username }: { username: string }) {
   if (access.channelState !== 'PREVIEW' || !access.hlsUrl) {
     return (
       <ViewShell
-        title="Green room"
+        title={t('greenRoom.greenRoom')}
         subtitle={subtitle}
         classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl' }}
       >
@@ -234,15 +234,14 @@ export function GreenRoomView({ username }: { username: string }) {
 
   return (
     <ViewShell
-      title="Green room"
+      title={t('greenRoom.greenRoom')}
       subtitle={subtitle}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl' }}
     >
       {backLink}
       <div className="border-border bg-background-secondary/40 flex flex-col gap-4 rounded-xl border p-5">
         <p className="text-foreground-secondary text-sm">
-          You&apos;re in the green room — listen to the preview stream before
-          the show goes public.
+          {t('greenRoom.youAposReInThe')}
         </p>
         <Button
           onClick={() =>
@@ -257,7 +256,7 @@ export function GreenRoomView({ username }: { username: string }) {
             })
           }
         >
-          Play preview stream
+          {t('greenRoom.playPreviewStream')}
         </Button>
       </div>
     </ViewShell>
