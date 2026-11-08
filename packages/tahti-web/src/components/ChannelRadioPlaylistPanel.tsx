@@ -377,7 +377,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
               className="font-display tracking-tight"
             />
             <p className="text-foreground-secondary text-xs">
-              One place for everything that plays between live broadcasts.
+              {t('radioPlaylist.onePlaceForEverythingThat')}
             </p>
           </div>
         </div>
@@ -411,14 +411,16 @@ export const ChannelRadioPlaylistPanel: FC = () => {
           className="border-border flex-wrap border-b px-4 pt-3 sm:px-5"
         >
           <Tabs.Tab>
-            <TabLabel icon={<RadioIcon size={14} />}>Programme</TabLabel>
+            <TabLabel icon={<RadioIcon size={14} />}>
+              {t('radioPlaylist.programme')}
+            </TabLabel>
           </Tabs.Tab>
           <Tabs.Tab>
             <TabLabel
               icon={<ListMusicIcon size={14} />}
               count={rotation.length}
             >
-              Active rotation
+              {t('radioPlaylist.activeRotation')}
             </TabLabel>
           </Tabs.Tab>
         </Tabs.List>
@@ -428,14 +430,16 @@ export const ChannelRadioPlaylistPanel: FC = () => {
         <div className="grid gap-4 p-4 lg:grid-cols-2 lg:p-5">
           <div className="border-border bg-background flex flex-col gap-4 rounded-lg border p-4">
             <div>
-              <h3 className="text-sm font-bold">Playlist source</h3>
+              <h3 className="text-sm font-bold">
+                {t('radioPlaylist.playlistSource')}
+              </h3>
               <p className="text-foreground-secondary mt-0.5 text-xs">
-                Choose a playlist, then publish its archive tracks to rotation.
+                {t('radioPlaylist.chooseAPlaylistThenPublish')}
               </p>
             </div>
 
             <Select
-              label="Playlist"
+              label={t('radioPlaylist.playlist')}
               value={selectedSlug}
               onValueChange={setSelectedSlug}
               placeholder={
@@ -455,22 +459,22 @@ export const ChannelRadioPlaylistPanel: FC = () => {
                 disabled={busy || !selectedSlug}
                 onClick={() => void applySelected()}
               >
-                Use playlist
+                {t('radioPlaylist.usePlaylist')}
               </Button>
               {selectedPlaylist ? (
                 <EditIconLink
-                  label="Edit tracks"
+                  label={t('radioPlaylist.editTracks')}
                   search={{ edit: true }}
                   to="/studio/collections/$slug"
                   params={{ slug: selectedPlaylist.slug }}
                 />
               ) : null}
-              <Tooltip content="Create playlist" side="top">
+              <Tooltip content={t('radioPlaylist.createPlaylist')} side="top">
                 <Button
                   size="icon-sm"
                   variant="text"
                   onClick={() => setCreating((current) => !current)}
-                  aria-label="Create playlist"
+                  aria-label={t('radioPlaylist.createPlaylist')}
                   aria-pressed={creating}
                 >
                   <PlusIcon size={16} aria-hidden />
@@ -487,7 +491,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
                 }}
               >
                 <Input
-                  label="Playlist name"
+                  label={t('radioPlaylist.playlistName')}
                   value={newName}
                   onChange={(event) => setNewName(event.target.value)}
                   autoFocus
@@ -498,7 +502,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
                     disabled={busy || !newName.trim()}
                     type="submit"
                   >
-                    Create
+                    {t('radioPlaylist.create')}
                   </Button>
                 </div>
               </form>
@@ -507,9 +511,11 @@ export const ChannelRadioPlaylistPanel: FC = () => {
 
           <div className="border-border bg-background flex flex-col gap-4 rounded-lg border p-4">
             <div>
-              <h3 className="text-sm font-bold">Offline programme settings</h3>
+              <h3 className="text-sm font-bold">
+                {t('radioPlaylist.offlineProgrammeSettings')}
+              </h3>
               <p className="text-foreground-secondary mt-0.5 text-xs">
-                Keep the rotation predictable or let Tahti balance it.
+                {t('radioPlaylist.keepTheRotationPredictableOr')}
               </p>
             </div>
 
@@ -520,12 +526,12 @@ export const ChannelRadioPlaylistPanel: FC = () => {
               ]}
               selected={fallbackMode}
               onChange={(id) => setFallbackMode(id as 'shuffle' | 'ordered')}
-              aria-label="Rotation mode"
+              aria-label={t('radioPlaylist.rotationMode')}
             />
 
             <Toggle
-              label="Auto-add uploads"
-              description="Add new ready uploads to the rotation automatically"
+              label={t('radioPlaylist.autoAddUploads')}
+              description={t('radioPlaylist.addNewReadyUploadsTo')}
               showLabel
               labelPosition="start"
               checked={fallbackAutoEnroll}
@@ -534,8 +540,8 @@ export const ChannelRadioPlaylistPanel: FC = () => {
             />
 
             <Toggle
-              label="Play clips between programs"
-              description="Include active clips from the editor below"
+              label={t('radioPlaylist.playClipsBetweenPrograms')}
+              description={t('radioPlaylist.includeActiveClipsFromThe')}
               showLabel
               labelPosition="start"
               checked={announcementsEnabled}
@@ -547,7 +553,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
               <SaveButton
                 disabled={!programme || !settingsDirty}
                 saving={busy}
-                label="Save settings"
+                label={t('radioPlaylist.saveSettings')}
                 onClick={() => void saveSettings()}
               />
             </div>
@@ -590,27 +596,29 @@ export const ChannelRadioPlaylistPanel: FC = () => {
         onClose={() => setPendingAdd(null)}
         className="max-w-md"
       >
-        <Dialog.Title>Add tracks to active rotation</Dialog.Title>
+        <Dialog.Title>
+          {t('radioPlaylist.addTracksToActiveRotation')}
+        </Dialog.Title>
         <Dialog.Description>
           {pendingAdd
             ? `${pendingAdd.label} contains ${pendingAdd.items.length} track${pendingAdd.items.length === 1 ? '' : 's'}. Choose how to add it.`
             : ''}
         </Dialog.Description>
         <div className="border-border bg-background-secondary/40 rounded-lg border p-3 text-sm">
-          <p>Append keeps the current rotation and adds the selected tracks.</p>
+          <p>{t('radioPlaylist.appendKeepsTheCurrentRotation')}</p>
           <p className="mt-2">
-            Overwrite replaces the active rotation with this selection.
+            {t('radioPlaylist.overwriteReplacesTheActiveRotation')}
           </p>
         </div>
         <Dialog.Actions>
           <Button variant="secondary" onClick={() => setPendingAdd(null)}>
-            Cancel
+            {t('radioPlaylist.cancel')}
           </Button>
           <Button variant="secondary" onClick={() => void confirmAdd('append')}>
-            Append tracks
+            {t('radioPlaylist.appendTracks')}
           </Button>
           <Button intent="danger" onClick={() => void confirmAdd('overwrite')}>
-            Overwrite rotation
+            {t('radioPlaylist.overwriteRotation')}
           </Button>
         </Dialog.Actions>
       </Dialog.Root>

@@ -86,8 +86,8 @@ export function OverviewTab({
     <>
       {editing ? (
         <StudioPanel
-          title="Show defaults"
-          description="Manage the show identity and defaults inherited by new episodes."
+          title={t('showOverview.showDefaults')}
+          description={t('showOverview.manageTheShowIdentityAnd')}
         >
           <form
             className="flex flex-col gap-3"
@@ -97,35 +97,35 @@ export function OverviewTab({
             }}
           >
             <Input
-              label="Title"
+              label={t('showOverview.title')}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
             <Input
-              label="Tagline"
-              description="Short line under the show name. New broadcasts start with it."
+              label={t('showOverview.tagline')}
+              description={t('showOverview.shortLineUnderTheShow')}
               value={tagline}
               onChange={(e) => setTagline(e.target.value)}
               maxLength={200}
             />
             <Textarea
               submitOnModEnter
-              label="Description"
+              label={t('showOverview.description')}
               tone="secondary"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
             />
             <Input
-              label="When it airs"
-              description="Shown with your upcoming shows, e.g. Fridays 20:00."
+              label={t('showOverview.whenItAirs')}
+              description={t('showOverview.shownWithYourUpcomingShows')}
               value={scheduleNote}
               onChange={(e) => setScheduleNote(e.target.value)}
               maxLength={200}
             />
             <ShowImagePicker
-              label="Show thumbnail"
-              description="JPEG, PNG, WebP, or GIF"
+              label={t('showOverview.showThumbnail')}
+              description={t('showOverview.jpegPngWebpOrGif')}
               value={thumbnailUrl}
               file={thumbnailFile}
               onFile={(file) => {
@@ -136,8 +136,8 @@ export function OverviewTab({
               onUrlChange={setThumbnailUrl}
             />
             <ShowImagePicker
-              label="Show backdrop"
-              description="Wide JPEG, PNG, WebP, or GIF"
+              label={t('showOverview.showBackdrop')}
+              description={t('showOverview.wideJpegPngWebpOr')}
               value={backdropUrl}
               file={backdropFile}
               onFile={(file) => {
@@ -148,8 +148,8 @@ export function OverviewTab({
               onUrlChange={setBackdropUrl}
             />
             <Select
-              label="Visibility"
-              description="Who can see this show and its episodes."
+              label={t('showOverview.visibility')}
+              description={t('showOverview.whoCanSeeThisShow')}
               value={visibility}
               onValueChange={(value) =>
                 setVisibility(value as 'PUBLIC' | 'FAN_ONLY')
@@ -162,15 +162,14 @@ export function OverviewTab({
             <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-3 rounded-md border p-3 text-sm">
               <span>
                 <span className="block font-medium">
-                  Publish recordings automatically
+                  {t('showOverview.publishRecordingsAutomatically')}
                 </span>
                 <span className="text-foreground-secondary block text-xs">
-                  Recorded broadcasts of this show are published without a
-                  manual approval step.
+                  {t('showOverview.recordedBroadcastsOfThisShow')}
                 </span>
               </span>
               <Toggle
-                label="Publish recordings automatically"
+                label={t('showOverview.publishRecordingsAutomatically')}
                 checked={autoPublish}
                 onChange={setAutoPublish}
               />
@@ -180,14 +179,14 @@ export function OverviewTab({
                 <div className="flex items-center justify-between gap-3">
                   <span>
                     <span className="block font-medium">
-                      Number episodes automatically
+                      {t('showOverview.numberEpisodesAutomatically')}
                     </span>
                     <span className="text-foreground-secondary block text-xs">
-                      New episodes get the next number in their title.
+                      {t('showOverview.newEpisodesGetTheNext')}
                     </span>
                   </span>
                   <Toggle
-                    label="Number episodes automatically"
+                    label={t('showOverview.numberEpisodesAutomatically')}
                     checked={episodeNumberEnabled}
                     onChange={setEpisodeNumberEnabled}
                   />
@@ -197,7 +196,7 @@ export function OverviewTab({
                     type="number"
                     inputMode="numeric"
                     variant="number"
-                    label="Next episode number"
+                    label={t('showOverview.nextEpisodeNumber')}
                     min={1}
                     value={nextEpisodeNumberDraft}
                     onChange={(e) =>
@@ -213,7 +212,7 @@ export function OverviewTab({
             <div className="flex justify-end">
               <SaveButton
                 saving={savingMeta}
-                label="Save defaults"
+                label={t('showOverview.saveDefaults')}
                 type="submit"
               />
             </div>
@@ -222,7 +221,7 @@ export function OverviewTab({
       ) : null}
 
       <StudioPanel
-        title="Schedule"
+        title={t('showOverview.schedule')}
         action={nextSlotHint ? bookSlotButton : undefined}
       >
         {nextSlotHint ? (
@@ -240,13 +239,13 @@ export function OverviewTab({
         <div className="mt-3 flex flex-wrap gap-2">
           <ButtonLink to="/studio/go-live" size="sm" variant="text">
             <MicIcon size={14} aria-hidden className="mr-1" />
-            Stream live
+            {t('showOverview.streamLive')}
           </ButtonLink>
         </div>
       </StudioPanel>
 
       {show.mode !== 'SINGLE' ? (
-        <StudioPanel title="Episodes">
+        <StudioPanel title={t('showOverview.episodes')}>
           {episodes.length === 0 ? (
             <PageEmpty
               title={`No episodes yet. Create one — episode #${nextEpisodeNumber} is ready.`}
