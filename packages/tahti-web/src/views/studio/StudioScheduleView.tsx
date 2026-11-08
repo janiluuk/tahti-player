@@ -36,13 +36,16 @@ export function StudioScheduleView() {
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
         <ViewShell
-          title="Schedule"
+          title={t('studioScheduleView.schedule')}
           classes={{ root: 'px-0 pt-0' }}
           actions={
-            <Tooltip content="Add next broadcast" side="top">
+            <Tooltip
+              content={t('studioScheduleView.addNextBroadcast')}
+              side="top"
+            >
               <Button
                 size="icon-sm"
-                aria-label="Add next broadcast"
+                aria-label={t('studioScheduleView.addNextBroadcast')}
                 onClick={() => setEditorOpen(true)}
               >
                 <PlusIcon size={16} aria-hidden />
@@ -59,8 +62,8 @@ export function StudioScheduleView() {
 
           {scheduledShows.length > 0 ? (
             <StudioPanel
-              title="Scheduled show episodes"
-              description="One-off and recurring episodes generated from your shows."
+              title={t('studioScheduleView.scheduledShowEpisodes')}
+              description={t('studioScheduleView.oneOffAndRecurringEpisodes')}
             >
               <ul className="divide-border divide-y">
                 {scheduledShows.map((show) => {
@@ -102,7 +105,7 @@ export function StudioScheduleView() {
                         variant="text"
                         onClick={() => setPendingCancel(show)}
                       >
-                        Cancel
+                        {t('studioScheduleView.cancel')}
                       </Button>
                     </li>
                   );

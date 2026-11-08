@@ -25,6 +25,7 @@ function AdjustmentForm({
   userId: string;
   onSaved: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [units, setUnits] = useState('');
   const [reason, setReason] = useState('');
   const [busy, setBusy] = useState(false);
@@ -57,7 +58,7 @@ function AdjustmentForm({
   return (
     <form
       className="border-border flex flex-col gap-3 border-t pt-4"
-      aria-label="Add an adjustment"
+      aria-label={t('adminUserEngagementPanel.addAnAdjustment')}
       onSubmit={(event) => {
         event.preventDefault();
         if (valid && !busy) {
@@ -66,7 +67,7 @@ function AdjustmentForm({
       }}
     >
       <Input
-        label="Units"
+        label={t('adminUserEngagementPanel.units')}
         inputMode="numeric"
         value={units}
         onChange={(event) => setUnits(event.target.value)}
@@ -74,13 +75,13 @@ function AdjustmentForm({
       />
       <Textarea
         submitOnModEnter
-        label="Reason"
+        label={t('adminUserEngagementPanel.reason')}
         tone="secondary"
         value={reason}
         onChange={(event) => setReason(event.target.value)}
         rows={2}
         maxLength={500}
-        placeholder="Shown in the audit log"
+        placeholder={t('adminUserEngagementPanel.shownInTheAuditLog')}
       />
       {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex justify-end">
@@ -132,11 +133,11 @@ export function AdminUserEngagementPanel({
 
   return (
     <StudioPanel
-      title="Engagement"
-      description="Units count toward the yearly grant split. Board adjustments are included in the total and audited."
+      title={t('adminUserEngagementPanel.engagement')}
+      description={t('adminUserEngagementPanel.unitsCountTowardTheYearly')}
       action={
         <Select
-          label="Year"
+          label={t('adminUserEngagementPanel.year')}
           value={String(year)}
           onValueChange={(value) => setYear(Number(value))}
           options={years.map((value) => ({

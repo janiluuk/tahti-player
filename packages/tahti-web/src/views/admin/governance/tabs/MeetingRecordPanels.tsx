@@ -96,7 +96,7 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
       onToggle={() => setOpen((value) => !value)}
     >
       {records === null ? (
-        <InlineLoader label="Loading…" textSize="xs" />
+        <InlineLoader label={t('meetingRecordPanels.loading')} textSize="xs" />
       ) : records.length === 0 ? (
         <PageEmpty title={t('empties.noConflictsDeclaredForThisMeeting')} />
       ) : (
@@ -118,7 +118,7 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
                     aria-label={`Remove declaration: ${record.displayName}`}
                     onClick={() => setPendingRemove(record)}
                   >
-                    Remove
+                    {t('meetingRecordPanels.remove')}
                   </Button>
                 </div>
               </div>
@@ -154,20 +154,20 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
       >
         <Input
           autoComplete="off"
-          label="Member name"
+          label={t('meetingRecordPanels.memberName')}
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
         <Textarea
           submitOnModEnter
-          label="Matter"
+          label={t('meetingRecordPanels.matter')}
           value={matter}
           rows={2}
           maxLength={2000}
           onChange={(event) => setMatter(event.target.value)}
         />
         <Toggle
-          label="Stepped out of the decision"
+          label={t('meetingRecordPanels.steppedOutOfTheDecision')}
           checked={recused}
           onChange={setRecused}
         />
@@ -252,7 +252,7 @@ export function NoticeDeliveriesPanel({ meetingId }: { meetingId: string }) {
       {error ? (
         <InlineError textSize="xs">{error}</InlineError>
       ) : records === null ? (
-        <InlineLoader label="Loading…" textSize="xs" />
+        <InlineLoader label={t('meetingRecordPanels.loading')} textSize="xs" />
       ) : records.length === 0 ? (
         <PageEmpty title={t('empties.noMeetingNoticeHasBeenSent')} />
       ) : (
@@ -274,11 +274,11 @@ export function NoticeDeliveriesPanel({ meetingId }: { meetingId: string }) {
               </div>
               {record.bouncedAt ? (
                 <Badge variant="pill" color="red">
-                  Bounced
+                  {t('meetingRecordPanels.bounced')}
                 </Badge>
               ) : (
                 <Badge variant="pill" color="green">
-                  Sent
+                  {t('meetingRecordPanels.sent')}
                 </Badge>
               )}
             </li>

@@ -52,7 +52,7 @@ export function EmbedButton({
     <>
       {showTrigger ? (
         <Tooltip
-          content="Embed artist channel"
+          content={t('embedButton.embedArtistChannel')}
           side="bottom"
           disabled={!iconOnly}
           wrapperClassName="inline-flex"
@@ -73,14 +73,14 @@ export function EmbedButton({
         </Tooltip>
       ) : null}
       <Dialog.Root isOpen={open} onClose={() => setOpen(false)}>
-        <Dialog.Title>Embed</Dialog.Title>
+        <Dialog.Title>{t('embedButton.embed')}</Dialog.Title>
         <Dialog.Description>
-          Paste this into any site to embed a live player.
+          {t('embedButton.pasteThisIntoAnySite')}
         </Dialog.Description>
         <div className="mt-4 flex flex-col gap-3">
           <div className="flex flex-col gap-1">
             <span className="text-foreground-secondary text-xs uppercase">
-              Link
+              {t('embedButton.link')}
             </span>
             <div className="flex items-center gap-2">
               <code className="border-border bg-background-secondary flex-1 overflow-x-auto rounded-md border px-3 py-2 text-sm whitespace-nowrap">
@@ -88,14 +88,14 @@ export function EmbedButton({
               </code>
               <CopyButton
                 text={url}
-                aria-label="Copy embed link"
+                aria-label={t('embedButton.copyEmbedLink')}
                 toastMessage="Link copied."
               />
             </div>
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-foreground-secondary text-xs uppercase">
-              Iframe code
+              {t('embedButton.iframeCode')}
             </span>
             <div className="flex items-center gap-2">
               <code className="border-border bg-background-secondary flex-1 overflow-x-auto rounded-md border px-3 py-2 text-xs whitespace-nowrap">

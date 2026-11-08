@@ -33,7 +33,7 @@ export function NewsletterSubscriberStats() {
 
   if (error) {
     return (
-      <StudioPanel title="Subscribers">
+      <StudioPanel title={t('newsletterSubscriberStats.subscribers')}>
         <PageError
           title={t('loadErrors.couldnTLoadSubscriberStats')}
           description={error}
@@ -48,25 +48,28 @@ export function NewsletterSubscriberStats() {
   }
 
   return (
-    <StudioPanel title="Subscribers">
+    <StudioPanel title={t('newsletterSubscriberStats.subscribers')}>
       <div
         className="grid gap-3 sm:grid-cols-3"
         data-testid="newsletter-subscriber-stats"
       >
         <StatTile
           value={stats.confirmed}
-          label="Confirmed"
+          label={t('newsletterSubscriberStats.confirmed')}
           sublabel={
             stats.total > stats.confirmed
               ? `${stats.total - stats.confirmed} unconfirmed or unsubscribed`
               : undefined
           }
         />
-        <StatTile value={stats.newLast30Days} label="New in 30 days" />
+        <StatTile
+          value={stats.newLast30Days}
+          label={t('newsletterSubscriberStats.newIn30Days')}
+        />
         <StatTile
           value={stats.fanSubscriberCount}
-          label="Fans only"
-          sublabel="Get fan-only sends"
+          label={t('newsletterSubscriberStats.fansOnly')}
+          sublabel={t('newsletterSubscriberStats.getFanOnlySends')}
         />
       </div>
     </StudioPanel>

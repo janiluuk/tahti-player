@@ -319,7 +319,7 @@ export function GlobalSearch({
                     variant="secondary"
                     onClick={close}
                   >
-                    Discover
+                    {t('globalSearch.discover')}
                   </ButtonLink>
                   <ButtonLink
                     to="/radio"
@@ -327,7 +327,7 @@ export function GlobalSearch({
                     variant="secondary"
                     onClick={close}
                   >
-                    Radio
+                    {t('globalSearch.radio')}
                   </ButtonLink>
                 </div>
               }
@@ -337,7 +337,8 @@ export function GlobalSearch({
               {deferredResults.artists.length > 0 && (
                 <div>
                   <p className="text-foreground-secondary flex items-center gap-1.5 px-2 py-1 text-xs font-semibold uppercase">
-                    <UserIcon size={12} aria-hidden /> Artists
+                    <UserIcon size={12} aria-hidden />{' '}
+                    {t('globalSearch.artists')}
                   </p>
                   {deferredResults.artists.map((artist, i) => (
                     <ResultRow
@@ -360,7 +361,8 @@ export function GlobalSearch({
               {deferredResults.tracks.length > 0 && (
                 <div>
                   <p className="text-foreground-secondary flex items-center gap-1.5 px-2 py-1 text-xs font-semibold uppercase">
-                    <DiscIcon size={12} aria-hidden /> Tracks
+                    <DiscIcon size={12} aria-hidden />{' '}
+                    {t('globalSearch.tracks')}
                   </p>
                   {deferredResults.tracks.map((track, i) => (
                     <ResultRow
@@ -386,7 +388,8 @@ export function GlobalSearch({
               {deferredResults.collections.length > 0 && (
                 <div>
                   <p className="text-foreground-secondary flex items-center gap-1.5 px-2 py-1 text-xs font-semibold uppercase">
-                    <ListMusicIcon size={12} aria-hidden /> Playlists
+                    <ListMusicIcon size={12} aria-hidden />{' '}
+                    {t('globalSearch.playlists')}
                   </p>
                   {deferredResults.collections.map((collection, i) => (
                     <ResultRow

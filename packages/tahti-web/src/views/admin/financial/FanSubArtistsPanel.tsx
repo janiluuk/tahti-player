@@ -46,8 +46,8 @@ export function FanSubArtistsPanel() {
 
   return (
     <StudioPanel
-      title="Fan subscriptions by artist"
-      description="Active subscribers, monthly revenue and paid-out total per artist, highest monthly revenue first."
+      title={t('fanSubArtistsPanel.fanSubscriptionsByArtist')}
+      description={t('fanSubArtistsPanel.activeSubscribersMonthlyRevenueAnd')}
     >
       {loading && !rows ? (
         <PageLoading label={t('loading.loadingArtists')} />
@@ -59,19 +59,23 @@ export function FanSubArtistsPanel() {
       ) : rows.length === 0 ? (
         <PageEmpty title={t('empties.noActiveFanSubscriptions')} />
       ) : (
-        <HorizontalScroll label="Fan subscriptions by artist">
+        <HorizontalScroll
+          label={t('fanSubArtistsPanel.fanSubscriptionsByArtist')}
+        >
           <DataTable data-testid="fansub-artists">
             <DataTableHead>
               <DataTableRow>
-                <DataTableHeaderCell>Artist</DataTableHeaderCell>
+                <DataTableHeaderCell>
+                  {t('fanSubArtistsPanel.artist')}
+                </DataTableHeaderCell>
                 <DataTableHeaderCell className="text-right">
-                  Subscribers
+                  {t('fanSubArtistsPanel.subscribers')}
                 </DataTableHeaderCell>
                 <DataTableHeaderCell className="text-right">
                   MRR
                 </DataTableHeaderCell>
                 <DataTableHeaderCell className="text-right">
-                  Paid out
+                  {t('fanSubArtistsPanel.paidOut')}
                 </DataTableHeaderCell>
                 <DataTableHeaderCell>Stripe</DataTableHeaderCell>
               </DataTableRow>
@@ -100,7 +104,7 @@ export function FanSubArtistsPanel() {
                   <DataTableCell>
                     {row.stripeConnectChargesEnabled ? (
                       <Badge variant="pill" color="green">
-                        Ready
+                        {t('fanSubArtistsPanel.ready')}
                       </Badge>
                     ) : (
                       <Badge variant="pill" color="red">

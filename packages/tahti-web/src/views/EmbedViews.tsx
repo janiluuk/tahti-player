@@ -160,7 +160,7 @@ export function EmbedChannelView({ slug }: { slug: string }) {
           </div>
           {!playable && (
             <p className="text-foreground-secondary text-xs">
-              Not live right now — open the full channel for archive playback.
+              {t('embedViews.notLiveRightNowOpen')}
             </p>
           )}
         </div>
@@ -246,7 +246,7 @@ export function EmbedReleaseView({ id }: { id: string }) {
               href={`https://tahti.live/r/${data.smartLinkSlug}`}
               className="text-foreground-secondary text-xs"
             >
-              Open smart link
+              {t('embedViews.openSmartLink')}
             </ExternalLink>
           )}
         </div>
@@ -322,7 +322,7 @@ export function EmbedCollectionView({
                     }
                   }}
                 >
-                  Queue
+                  {t('embedViews.queue')}
                 </Button>
               )}
             </div>
@@ -358,7 +358,7 @@ export function EmbedCollectionView({
               href={`https://tahti.live/u/${artistUsername}/c/${data.slug}`}
               className="text-foreground-secondary text-xs"
             >
-              Open collection
+              {t('embedViews.openCollection')}
             </ExternalLink>
           )}
         </div>

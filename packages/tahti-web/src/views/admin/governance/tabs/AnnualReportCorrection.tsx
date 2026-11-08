@@ -48,12 +48,12 @@ export function AnnualReportCorrection({
             variant="secondary"
             onClick={() => setWriting(true)}
           >
-            Correct report
+            {t('annualReportCorrection.correctReport')}
           </Button>
         ) : null}
         {report.correctedAt && revisions === null ? (
           <Button size="sm" variant="secondary" onClick={showRevisions}>
-            Earlier versions
+            {t('annualReportCorrection.earlierVersions')}
           </Button>
         ) : null}
       </div>
@@ -83,8 +83,8 @@ export function AnnualReportCorrection({
         >
           <Textarea
             submitOnModEnter
-            label="What does the correction change?"
-            description="The report is regenerated from today's records. The replaced version is kept with this note."
+            label={t('annualReportCorrection.whatDoesTheCorrectionChange')}
+            description={t('annualReportCorrection.theReportIsRegeneratedFrom')}
             rows={2}
             value={note}
             maxLength={2000}
@@ -92,7 +92,7 @@ export function AnnualReportCorrection({
           />
           <div className="flex gap-2">
             <Button type="submit" size="sm" disabled={busy}>
-              Regenerate corrected report
+              {t('annualReportCorrection.regenerateCorrectedReport')}
             </Button>
             <Button
               type="button"
@@ -101,7 +101,7 @@ export function AnnualReportCorrection({
               disabled={busy}
               onClick={() => setWriting(false)}
             >
-              Cancel
+              {t('annualReportCorrection.cancel')}
             </Button>
           </div>
         </form>
@@ -111,7 +111,10 @@ export function AnnualReportCorrection({
         revisions.length === 0 ? (
           <PageEmpty title={t('empties.noEarlierVersionsAreKept')} />
         ) : (
-          <ul aria-label="Earlier versions" className="flex flex-col gap-1">
+          <ul
+            aria-label={t('annualReportCorrection.earlierVersions')}
+            className="flex flex-col gap-1"
+          >
             {revisions.map((revision) => (
               <li key={revision.id} className="text-xs">
                 <span className="font-medium">
@@ -122,7 +125,7 @@ export function AnnualReportCorrection({
                     href={revision.downloadUrl}
                     className="ml-2 no-underline underline-offset-2 hover:underline"
                   >
-                    Download
+                    {t('annualReportCorrection.download')}
                   </ExternalLink>
                 ) : null}
                 <p className="text-foreground-secondary">{revision.note}</p>

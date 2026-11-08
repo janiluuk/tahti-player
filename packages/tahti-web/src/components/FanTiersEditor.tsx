@@ -227,26 +227,26 @@ export function FanTiersEditor() {
           <Dialog.Title>
             <span className="inline-flex items-center gap-2">
               <CircleDollarSignIcon size={18} aria-hidden />
-              New tier
+              {t('fanTiersEditor.newTier')}
             </span>
           </Dialog.Title>
           <div className="mt-4 flex flex-col gap-3">
             <Input
               autoComplete="off"
-              label="Name"
+              label={t('fanTiersEditor.name')}
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoFocus
             />
             <Input
               inputMode="decimal"
-              label="Price (€ / month)"
+              label={t('fanTiersEditor.priceMonth')}
               value={eurosAmt}
               onChange={(e) => setEurosAmt(e.target.value)}
             />
             <Textarea
               submitOnModEnter
-              label="Description"
+              label={t('fanTiersEditor.description')}
               tone="secondary"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -261,11 +261,11 @@ export function FanTiersEditor() {
               }))}
               selected={perks}
               onChange={setPerks}
-              aria-label="Perks"
+              aria-label={t('fanTiersEditor.perks')}
             />
           </div>
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>{t('fanTiersEditor.cancel')}</Dialog.Close>
             <Button type="submit" disabled={busy || !name.trim()}>
               <PlusIcon size={16} aria-hidden className="mr-1.5" />
               {busy ? 'Creating…' : 'Create tier'}

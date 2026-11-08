@@ -59,19 +59,19 @@ export function AgendaItemRow({
           }}
         >
           <Input
-            label="Title"
+            label={t('agendaItemRow.title')}
             value={title}
             maxLength={300}
             onChange={(e) => setTitle(e.target.value)}
           />
           <Input
-            label="Description"
+            label={t('agendaItemRow.description')}
             value={description}
             maxLength={5000}
             onChange={(e) => setDescription(e.target.value)}
           />
           <Input
-            label="What the meeting decided"
+            label={t('agendaItemRow.whatTheMeetingDecided')}
             value={outcome}
             maxLength={5000}
             onChange={(e) => setOutcome(e.target.value)}
@@ -79,7 +79,7 @@ export function AgendaItemRow({
           {error ? <InlineError textSize="xs">{error}</InlineError> : null}
           <div className="flex gap-2">
             <Button type="submit" size="sm" disabled={busy}>
-              Save item
+              {t('agendaItemRow.saveItem')}
             </Button>
             <Button
               type="button"
@@ -88,7 +88,7 @@ export function AgendaItemRow({
               disabled={busy}
               onClick={() => setEditing(false)}
             >
-              Cancel
+              {t('agendaItemRow.cancel')}
             </Button>
           </div>
         </form>
@@ -143,7 +143,7 @@ export function AgendaItemRow({
           aria-label={`Remove item ${item.position}: ${item.title}`}
           onClick={() => setConfirmDelete(true)}
         >
-          Remove
+          {t('agendaItemRow.remove')}
         </Button>
       </div>
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}

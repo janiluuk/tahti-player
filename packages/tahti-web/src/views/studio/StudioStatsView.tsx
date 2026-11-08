@@ -50,11 +50,11 @@ export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-6xl flex-col gap-6 px-1 py-2">
         <ViewShell
-          title="Stats"
+          title={t('studioStatsView.stats')}
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
           <FilterChips
-            aria-label="Stats sections"
+            aria-label={t('studioStatsView.statsSections')}
             items={STATS_SECTIONS.map((item) => ({
               id: item.id,
               label: item.label,
@@ -84,7 +84,7 @@ export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
             <>
               <section
                 id="stats-overview"
-                aria-label="Overview"
+                aria-label={t('studioStatsView.overview')}
                 className="flex scroll-mt-4 flex-col gap-4"
               >
                 <KeyMetrics state={state} active />
@@ -100,18 +100,18 @@ export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
               </section>
               <section
                 id="stats-plays"
-                aria-label="Plays and listeners"
+                aria-label={t('studioStatsView.playsAndListeners')}
                 className="flex scroll-mt-4 flex-col gap-4"
               >
-                <SectionTitle title="Plays and listeners" />
+                <SectionTitle title={t('studioStatsView.playsAndListeners')} />
                 <PlaysTab state={state} active />
               </section>
               <section
                 id="stats-top-lists"
-                aria-label="Top lists"
+                aria-label={t('studioStatsView.topLists')}
                 className="flex scroll-mt-4 flex-col gap-4"
               >
-                <SectionTitle title="Top lists" />
+                <SectionTitle title={t('studioStatsView.topLists')} />
                 <TopListsTab state={state} active />
               </section>
             </>

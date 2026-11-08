@@ -75,7 +75,7 @@ function RecentAuditEntries() {
   const scopes = [...new Set(logs.map((l) => l.source.scope))].sort();
 
   return (
-    <StudioPanel title="Recent audit entries">
+    <StudioPanel title={t('adminLogsView.recentAuditEntries')}>
       {loading ? (
         <PageLoading label={t('loading.loadingRecentAuditEntries')} />
       ) : loadError && entries.length === 0 ? (
@@ -129,6 +129,7 @@ function parseLogsTab(
 }
 
 export function AdminLogsView() {
+  const { t } = useTranslation('web');
   const search = useSearch({ strict: false }) as {
     tab?: string;
     service?: string;
@@ -153,7 +154,7 @@ export function AdminLogsView() {
             size="sm"
             variant="secondary"
           >
-            Open in Grafana Explore
+            {t('adminLogsView.openInGrafanaExplore')}
             <ExternalLinkIcon size={12} aria-hidden className="ml-1" />
           </ButtonAnchor>
           <ButtonAnchor
@@ -163,7 +164,7 @@ export function AdminLogsView() {
             size="sm"
             variant="text"
           >
-            Docker metrics
+            {t('adminLogsView.dockerMetrics')}
             <ExternalLinkIcon size={12} aria-hidden className="ml-1" />
           </ButtonAnchor>
         </div>
@@ -187,15 +188,19 @@ export function AdminLogsView() {
         <AdminPageLayout current="/admin/logs">
           <div className="flex max-w-6xl flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminLogsView.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbLink to="/admin/logs">Logs</BreadcrumbLink>
+              <BreadcrumbLink to="/admin/logs">
+                {t('adminLogsView.logs')}
+              </BreadcrumbLink>
               <BreadcrumbCurrent>
                 {LOGS_TAB_LABELS[TAB_IDS[selectedIndex] ?? 'activity']}
               </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Logs"
+              title={t('adminLogsView.logs')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <Tabs

@@ -156,8 +156,8 @@ export function MotionCard({
           <Input
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
-            aria-label="Motion title"
-            placeholder="Motion title"
+            aria-label={t('motionCard.motionTitle')}
+            placeholder={t('motionCard.motionTitle')}
             maxLength={200}
           />
           <Textarea
@@ -167,11 +167,11 @@ export function MotionCard({
             onChange={(e) => setEditDescription(e.target.value)}
             rows={4}
             maxLength={10000}
-            aria-label="Motion description"
+            aria-label={t('motionCard.motionDescription')}
             className="text-sm"
           />
           <Input
-            label="Voting closes"
+            label={t('motionCard.votingCloses')}
             type="datetime-local"
             value={editCloseAt}
             onChange={(e) => setEditCloseAt(e.target.value)}
@@ -187,7 +187,7 @@ export function MotionCard({
               }
               type="submit"
             >
-              Save changes
+              {t('motionCard.saveChanges')}
             </Button>
             <Button
               size="sm"
@@ -195,7 +195,7 @@ export function MotionCard({
               disabled={savingEdit}
               onClick={() => setEditing(false)}
             >
-              Cancel
+              {t('motionCard.cancel')}
             </Button>
           </div>
         </form>

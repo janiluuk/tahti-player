@@ -59,12 +59,16 @@ export function AdminContentView() {
         <AdminPageLayout current="/admin/content">
           <div className="flex flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminContentView.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="content" />
-              <BreadcrumbCurrent>Catalog</BreadcrumbCurrent>
+              <BreadcrumbCurrent>
+                {t('adminContentView.catalog')}
+              </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Catalog"
+              title={t('adminContentView.catalog')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <div>
@@ -74,7 +78,8 @@ export function AdminContentView() {
                   size="sm"
                   variant="secondary"
                 >
-                  <ListMusicIcon size={15} aria-hidden /> Top lists
+                  <ListMusicIcon size={15} aria-hidden />{' '}
+                  {t('adminContentView.topLists')}
                 </ButtonLink>
               </div>
               {!data ? (
@@ -116,8 +121,10 @@ export function AdminContentView() {
                   </div>
                   <div className="grid gap-6 lg:grid-cols-2">
                     <StudioPanel
-                      title="Latest content"
-                      description="The newest tracks, shows, releases, and other catalog items."
+                      title={t('adminContentView.latestContent')}
+                      description={t(
+                        'adminContentView.theNewestTracksShowsReleases',
+                      )}
                     >
                       {data.latestContent.length === 0 ? (
                         <PageEmpty title={t('empties.noContentAdded')} />
@@ -156,8 +163,10 @@ export function AdminContentView() {
                       )}
                     </StudioPanel>
                     <StudioPanel
-                      title="Latest recorded broadcasts"
-                      description="Recent broadcasts captured by the platform recorder."
+                      title={t('adminContentView.latestRecordedBroadcasts')}
+                      description={t(
+                        'adminContentView.recentBroadcastsCapturedByThe',
+                      )}
                     >
                       {data.latestBroadcasts.length === 0 ? (
                         <PageEmpty title={t('empties.noRecordedBroadcasts')} />

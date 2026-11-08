@@ -42,8 +42,8 @@ export function MultistreamPanel({
   return (
     <>
       <StudioPanel
-        title="Multistream"
-        description="Destinations for this session. Add or edit targets here; Settings → Broadcast only mirrors the same list for convenience."
+        title={t('multistreamPanel.multistream')}
+        description={t('multistreamPanel.destinationsForThisSessionAdd')}
         action={
           <div className="flex items-center gap-2">
             <Button
@@ -53,12 +53,12 @@ export function MultistreamPanel({
             >
               Open Settings › Broadcast
             </Button>
-            <Tooltip content="Add destination" side="top">
+            <Tooltip content={t('multistreamPanel.addDestination')} side="top">
               <Button
                 size="icon-sm"
                 variant="secondary"
                 onClick={() => setShowAddDestination(true)}
-                aria-label="Add destination"
+                aria-label={t('multistreamPanel.addDestination')}
               >
                 <PlusIcon size={16} />
               </Button>
@@ -137,7 +137,10 @@ export function MultistreamPanel({
                       <PowerIcon size={14} aria-hidden className="mr-1.5" />
                       {target.enabled ? 'Disable' : 'Enable'}
                     </Button>
-                    <Tooltip content="Remove destination" side="top">
+                    <Tooltip
+                      content={t('multistreamPanel.removeDestination')}
+                      side="top"
+                    >
                       <Button
                         size="icon-sm"
                         variant="text"
@@ -166,10 +169,12 @@ export function MultistreamPanel({
         <Dialog.Title>
           <span className="inline-flex items-center gap-2">
             <ListMusicIcon size={18} aria-hidden />
-            Add multistream destination
+            {t('multistreamPanel.addMultistreamDestination')}
           </span>
         </Dialog.Title>
-        <Dialog.Description>Choose a platform to configure.</Dialog.Description>
+        <Dialog.Description>
+          {t('multistreamPanel.chooseAPlatformToConfigure')}
+        </Dialog.Description>
         <ul className="mt-4 flex flex-col gap-1.5">
           {multicastProviders
             .filter(

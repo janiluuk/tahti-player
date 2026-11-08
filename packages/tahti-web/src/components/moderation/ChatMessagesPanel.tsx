@@ -90,8 +90,8 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
 
   return (
     <StudioPanel
-      title="Recent messages"
-      description="The last 100 messages in this chat, fan room included. Remove one, or ban whoever sent it."
+      title={t('chatMessagesPanel.recentMessages')}
+      description={t('chatMessagesPanel.theLast100MessagesIn')}
     >
       {loading ? (
         <PageLoading label={t('loading.loading')} />
@@ -116,12 +116,12 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
                   )}
                   {message.fanOnly && (
                     <Badge variant="pill" color="secondary">
-                      Fan room
+                      {t('chatMessagesPanel.fanRoom')}
                     </Badge>
                   )}
                   {message.banned && (
                     <Badge variant="pill" color="secondary">
-                      Banned
+                      {t('chatMessagesPanel.banned')}
                     </Badge>
                   )}
                   <time
@@ -135,7 +135,10 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
               </div>
               <div className="flex shrink-0 items-center gap-1">
                 {message.canBan && !message.banned && (
-                  <Tooltip content="Ban sender" side="top">
+                  <Tooltip
+                    content={t('chatMessagesPanel.banSender')}
+                    side="top"
+                  >
                     <Button
                       size="icon-sm"
                       variant="text"
@@ -146,7 +149,10 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
                     </Button>
                   </Tooltip>
                 )}
-                <Tooltip content="Remove message" side="top">
+                <Tooltip
+                  content={t('chatMessagesPanel.removeMessage')}
+                  side="top"
+                >
                   <Button
                     size="icon-sm"
                     variant="text"

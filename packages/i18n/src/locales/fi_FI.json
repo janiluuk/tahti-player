@@ -7302,6 +7302,398 @@
       "postWhenIGoLive": "Julkaise, kun menen liveksi",
       "postText": "Julkaisun teksti",
       "tahtiForgetsTheSavedCredentials": "Tahti unohtaa tallennetut tunnukset ja lopettaa julkaisemisen sinne."
+    },
+    "transparencyGrantYearView": {
+      "publishedAs": "Julkaistu nimellä",
+      "amount": "Summa",
+      "state": "Tila",
+      "transparency": "Läpinäkyvyys",
+      "total": "Yhteensä",
+      "grants": "Apurahat",
+      "disbursed": "Maksettu"
+    },
+    "studioListeningPartyFormView": {
+      "release": "Julkaisu",
+      "cancel": "Peruuta",
+      "everyoneHearsTheReleaseOnce": "Kaikki kuulevat julkaisun kerran alusta loppuun samaan aikaan.",
+      "partyDetails": "Juhlan tiedot",
+      "starts": "Alkaa",
+      "noteToListenersOptional": "Viesti kuuntelijoille (valinnainen)",
+      "whatToExpectWhatTo": "Mitä odottaa, mitä kuunnella, milloin olet keskustelussa…"
+    },
+    "governanceMembersView": {
+      "signIn": "Kirjaudu sisään",
+      "clearSearch": "Tyhjennä haku",
+      "board": "Hallitus",
+      "memberDirectory": "Jäsenluettelo",
+      "governance": "Hallinto",
+      "members": "Jäsenet",
+      "searchByNameOrUsername": "Hae nimellä tai käyttäjänimellä"
+    },
+    "favoritesView": {
+      "browseArtists": "Selaa artisteja",
+      "findMusic": "Löydä musiikkia",
+      "channels": "Kanavat",
+      "tracks": "Kappaleet",
+      "likedOnTahti": "Tykätyt Tahdissa",
+      "noLikedTracksYet": "Ei vielä tykättyjä kappaleita.",
+      "favorites": "Suosikit"
+    },
+    "meetingRecordPanels": {
+      "remove": "Poista",
+      "bounced": "Palautui",
+      "sent": "Lähetetty",
+      "loading": "Ladataan…",
+      "memberName": "Jäsenen nimi",
+      "matter": "Asia",
+      "steppedOutOfTheDecision": "Jääväsi itsensä päätöksestä"
+    },
+    "annualReportCorrection": {
+      "correctReport": "Korjaa raportti",
+      "earlierVersions": "Aiemmat versiot",
+      "regenerateCorrectedReport": "Luo korjattu raportti",
+      "cancel": "Peruuta",
+      "download": "Lataa",
+      "whatDoesTheCorrectionChange": "Mitä korjaus muuttaa?",
+      "theReportIsRegeneratedFrom": "Raportti luodaan uudelleen tämän päivän tiedoista. Korvattu versio säilytetään tämän merkinnän kanssa."
+    },
+    "electionsAdminPanel": {
+      "callElection": "Järjestä vaali",
+      "cancel": "Peruuta",
+      "title": "Otsikko",
+      "role": "Rooli",
+      "seats": "Paikat",
+      "nominationsCloseOptional": "Ehdokasasettelu päättyy (valinnainen)",
+      "elections": "Vaalit"
+    },
+    "fanSubArtistsPanel": {
+      "artist": "Artisti",
+      "subscribers": "Tilaajat",
+      "paidOut": "Maksettu",
+      "ready": "Valmis",
+      "fanSubscriptionsByArtist": "Fanitilaukset artisteittain",
+      "activeSubscribersMonthlyRevenueAnd": "Aktiiviset tilaajat, kuukausitulot ja maksettu summa artisteittain, suurimmat kuukausitulot ensin."
+    },
+    "adminTopListsView": {
+      "clearSearch": "Tyhjennä haku",
+      "topLists": "Suosituimmat",
+      "searchTitleArtistOrChannel": "Hae nimellä, artistilla tai kanavalla…",
+      "searchTopLists": "Hae suosituimmista",
+      "topListPeriod": "Listan ajanjakso",
+      "topListGrouping": "Listan ryhmittely",
+      "topListOrder": "Listan järjestys"
+    },
+    "adminContentView": {
+      "admin": "Ylläpito",
+      "catalog": "Luettelo",
+      "topLists": "Suosituimmat",
+      "latestContent": "Uusin sisältö",
+      "theNewestTracksShowsReleases": "Uusimmat kappaleet, ohjelmat, julkaisut ja muut luettelon kohteet.",
+      "latestRecordedBroadcasts": "Uusimmat tallennetut lähetykset",
+      "recentBroadcastsCapturedByThe": "Alustan tallentimen viimeksi tallentamat lähetykset."
+    },
+    "motionDiscussion": {
+      "remove": "Poista",
+      "commentRemoved": "Kommentti poistettu.",
+      "post": "Julkaise",
+      "loading": "Ladataan…",
+      "addAComment": "Lisää kommentti",
+      "addAComment2": "Lisää kommentti…",
+      "removeThisComment": "Poistetaanko tämä kommentti?"
+    },
+    "directoryArtistsBrowser": {
+      "artistType": "Artistityyppi",
+      "clearFilters": "Tyhjennä suodattimet",
+      "browseArtists": "Selaa artisteja",
+      "search": "Hae",
+      "artistNameUsernameGenre": "Artistin nimi, käyttäjänimi, tyylilaji…",
+      "directoryControls": "Hakemiston säätimet",
+      "genre": "Tyylilaji"
+    },
+    "artistReferenceSections": {
+      "tracks": "Kappaleet",
+      "noPlayableTracksOnThis": "Tässä profiilissa ei ole soitettavia kappaleita.",
+      "embeds": "Upotukset",
+      "noEmbedsOnThisProfile": "Tässä profiilissa ei ole upotuksia.",
+      "relatedArtists": "Samankaltaiset artistit",
+      "releases": "Julkaisut",
+      "playlists": "Soittolistat"
+    },
+    "adminUserEngagementPanel": {
+      "addAnAdjustment": "Lisää oikaisu",
+      "units": "Yksiköt",
+      "reason": "Syy",
+      "shownInTheAuditLog": "Näkyy auditointilokissa",
+      "engagement": "Sitoutuminen",
+      "unitsCountTowardTheYearly": "Yksiköt lasketaan vuotuiseen apurahajakoon. Hallituksen oikaisut sisältyvät summaan ja ne auditoidaan.",
+      "year": "Vuosi"
+    },
+    "studioShowsView": {
+      "clearSearch": "Tyhjennä haku",
+      "manage": "Hallitse",
+      "showThumbnail": "Ohjelman pikkukuva",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP tai GIF",
+      "showBackdrop": "Ohjelman taustakuva",
+      "wideJpegPngWebpOr": "Leveä JPEG, PNG, WebP tai GIF"
+    },
+    "studioEventView": {
+      "start": "Alku",
+      "place": "Paikka",
+      "description": "Kuvaus",
+      "ticketsEventLink": "Liput / tapahtuman linkki",
+      "backToEvents": "Takaisin tapahtumiin",
+      "eventDetails": "Tapahtuman tiedot"
+    },
+    "studioChannelView": {
+      "createYourChannelFirstTo": "Luo ensin kanavasi hallitaksesi sen lähetystä.",
+      "openGreenRoomChat": "Avaa green roomin keskustelu",
+      "sessionOnBroadcast": "Istunto Lähetys-sivulla",
+      "overallStatistics": "Kokonaistilastot",
+      "channelSetup": "Kanavan asetukset",
+      "streamManager": "Lähetyksen hallinta"
+    },
+    "releaseStatsPanel": {
+      "anonymizedCountriesForThisRelease": "Anonymisoidut maat tämän julkaisun lasketuille soitoille ja latauksille.",
+      "period": "Ajanjakso",
+      "plays": "Soitot",
+      "downloads": "Lataukset",
+      "tracksByPlays": "Kappaleet soittojen mukaan",
+      "listenerMap": "Kuuntelijakartta"
+    },
+    "multistreamPanel": {
+      "addMultistreamDestination": "Lisää monilähetyksen kohde",
+      "chooseAPlatformToConfigure": "Valitse määritettävä alusta.",
+      "multistream": "Monilähetys",
+      "destinationsForThisSessionAdd": "Tämän istunnon kohteet. Lisää ja muokkaa kohteita täällä; Asetukset → Lähetys vain peilaa saman listan.",
+      "addDestination": "Lisää kohde",
+      "removeDestination": "Poista kohde"
+    },
+    "creditsEditor": {
+      "creditsRoles": "Tekijät ja roolit",
+      "creditRole": "Tekijän rooli",
+      "name": "Nimi",
+      "creditName": "Tekijän nimi",
+      "tahtiUsername": "Tahti-käyttäjänimi",
+      "removeCredit": "Poista tekijä"
+    },
+    "librarySmartLinksView": {
+      "newRelease": "Uusi julkaisu",
+      "createRelease": "Luo julkaisu",
+      "manage": "Hallitse",
+      "filterSmartlinksByPlatform": "Suodata älylinkit alustan mukaan",
+      "sortSmartlinks": "Järjestä älylinkit",
+      "openSmartlink": "Avaa älylinkki"
+    },
+    "chatView": {
+      "openChat": "Avaa keskustelu",
+      "activityInTheLast24": "Aktiivisuus viimeisen 24 tunnin aikana",
+      "chat": "Keskustelu",
+      "pickAChannelToJoin": "Valitse kanava liittyäksesi sen keskusteluun.",
+      "channel": "Kanava",
+      "chatPicker": "Keskustelun valitsin"
+    },
+    "bulkEditBar": {
+      "clearSelection": "Tyhjennä valinta",
+      "editSelectedFiles": "Muokkaa valittuja tiedostoja",
+      "genre": "Tyylilaji",
+      "type": "Tyyppi",
+      "visibility": "Näkyvyys",
+      "license": "Lisenssi"
+    },
+    "radioSubmissionsTab": {
+      "auditTracksSubmittedForTahti": "Tarkasta Tahti Radion rotaatioon lähetetyt kappaleet.",
+      "approveToRadio": "Hyväksy radioon",
+      "reject": "Hylkää",
+      "theArtistIsNotifiedWhen": "Artistille ilmoitetaan, kun hyväksyt (yksityinen kappale muuttuu julkiseksi) ja kun hylkäät viestin kanssa.",
+      "auditing": "Tarkastetaan",
+      "noteToTheArtistOptional": "Viesti artistille (valinnainen)"
+    },
+    "agendaItemRow": {
+      "saveItem": "Tallenna kohta",
+      "cancel": "Peruuta",
+      "remove": "Poista",
+      "title": "Otsikko",
+      "description": "Kuvaus",
+      "whatTheMeetingDecided": "Mitä kokous päätti"
+    },
+    "adminVenuesView": {
+      "admin": "Ylläpito",
+      "venues": "Tapahtumapaikat",
+      "verifyingAVenueOrTaking": "Tapahtumapaikan vahvistamisesta tai vahvistuksen perumisesta ilmoitetaan sen rekisteröijälle.",
+      "clearSearch": "Tyhjennä haku",
+      "searchVenues": "Hae tapahtumapaikkoja",
+      "nameCitySlugOrSubmitter": "Nimi, kaupunki, tunniste tai lähettäjä"
+    },
+    "adminFinancialView": {
+      "admin": "Ylläpito",
+      "financial": "Talous",
+      "activeSubscriptions": "Aktiiviset tilaukset",
+      "pendingPayouts": "Odottavat maksut",
+      "failedPayouts": "Epäonnistuneet maksut",
+      "fanSubscriptions": "Fanitilaukset"
+    },
+    "chatMessagesPanel": {
+      "fanRoom": "Fanihuone",
+      "banned": "Porttikiellossa",
+      "recentMessages": "Viimeisimmät viestit",
+      "theLast100MessagesIn": "Tämän keskustelun 100 viimeisintä viestiä fanihuone mukaan lukien. Poista viesti tai anna lähettäjälle porttikielto.",
+      "banSender": "Anna lähettäjälle porttikielto",
+      "removeMessage": "Poista viesti"
+    },
+    "fanTiersEditor": {
+      "newTier": "Uusi taso",
+      "cancel": "Peruuta",
+      "name": "Nimi",
+      "priceMonth": "Hinta (€ / kk)",
+      "description": "Kuvaus",
+      "perks": "Edut"
+    },
+    "embedButton": {
+      "embed": "Upota",
+      "pasteThisIntoAnySite": "Liitä tämä mille tahansa sivustolle upottaaksesi livesoittimen.",
+      "link": "Linkki",
+      "iframeCode": "Iframe-koodi",
+      "embedArtistChannel": "Upota artistin kanava",
+      "copyEmbedLink": "Kopioi upotuslinkki"
+    },
+    "channelRotationEditor": {
+      "reorderingSwitchesPlaybackToIn": "Järjestyksen muuttaminen vaihtaa toiston järjestykseen.",
+      "addFromLibrary": "Lisää kirjastosta",
+      "chooseAContentGroupTo": "Valitse sisältöryhmä lisättäväksi aktiiviseen rotaatioon tai sen tilalle.",
+      "quickAdd": "Pikalisäys",
+      "chooseTrack": "Valitse kappale…",
+      "remove": "Poista"
+    },
+    "newsletterSubscriberStats": {
+      "subscribers": "Tilaajat",
+      "confirmed": "Vahvistetut",
+      "newIn30Days": "Uudet 30 päivässä",
+      "fansOnly": "Vain fanit",
+      "getFanOnlySends": "Saa vain faneille lähetetyt"
+    },
+    "studioStatsView": {
+      "stats": "Tilastot",
+      "statsSections": "Tilastojen osiot",
+      "overview": "Yleiskatsaus",
+      "playsAndListeners": "Soitot ja kuuntelijat",
+      "topLists": "Suosituimmat"
+    },
+    "studioStatsDetailView": {
+      "stats": "Tilastot",
+      "insights": "Tilastotiedot",
+      "playsTimeRange": "Soittojen aikaväli",
+      "dailyActivity": "Päivittäinen aktiivisuus",
+      "downloadCountries": "Latausmaat"
+    },
+    "studioScheduleView": {
+      "cancel": "Peruuta",
+      "schedule": "Aikataulu",
+      "addNextBroadcast": "Lisää seuraava lähetys",
+      "scheduledShowEpisodes": "Ajastetut jaksot",
+      "oneOffAndRecurringEpisodes": "Ohjelmistasi luodut kertaluontoiset ja toistuvat jaksot."
+    },
+    "releaseSmartLinkStats": {
+      "smartLinkStats": "Älylinkin tilastot",
+      "visitsToThisReleaseS": "Käynnit tämän julkaisun älylinkissä ja napsautukset kuhunkin palveluun.",
+      "views": "Näytöt",
+      "clicks": "Napsautukset",
+      "clickThrough": "Napsautusosuus"
+    },
+    "collectionDialogs": {
+      "uploadBackdrop": "Lataa taustakuva",
+      "chooseOneImageForA": "Valitse yksi kuva pysyväksi taustaksi tai useampi diaesitykseksi.",
+      "cancel": "Peruuta",
+      "coverArt": "Kansikuva",
+      "backdrop": "Taustakuva"
+    },
+    "embedViews": {
+      "notLiveRightNowOpen": "Ei livenä juuri nyt. Avaa koko kanava kuunnellaksesi arkistoa.",
+      "openSmartLink": "Avaa älylinkki",
+      "queue": "Jonoon",
+      "openCollection": "Avaa kokoelma"
+    },
+    "contentReportsTab": {
+      "startReview": "Aloita käsittely",
+      "markActioned": "Merkitse käsitellyksi",
+      "dismiss": "Hylkää",
+      "theCommenterIsNotifiedThat": "Kommentoijalle ilmoitetaan, että hallitus poisti hänen kommenttinsa.",
+      "anonymousReportsOfChannelsReleases": "Nimettömät ilmoitukset kanavista, julkaisuista, kappaleista, kokoelmista ja kommenteista; ilmoittaminen ei vaadi tiliä."
+    },
+    "adminLogsView": {
+      "openInGrafanaExplore": "Avaa Grafana Explore -näkymässä",
+      "dockerMetrics": "Docker-mittarit",
+      "admin": "Ylläpito",
+      "logs": "Lokit",
+      "recentAuditEntries": "Viimeisimmät auditointimerkinnät"
+    },
+    "adminListeningPanel": {
+      "topChannels": "Suosituimmat kanavat",
+      "listening": "Kuuntelu",
+      "howMuchPeopleListenOn": "Kuinka paljon Tahdissa kuunnellaan, missä ja minkä kanavien parissa aikaa vietetään. Botit on jätetty pois.",
+      "listeningPeriod": "Kuuntelujakso",
+      "listenedOn": "Kuunneltu"
+    },
+    "adminAddonsView": {
+      "admin": "Ylläpito",
+      "addOns": "Lisäosat",
+      "registerANewAddOn": "Rekisteröi uusi lisäosa",
+      "addOnTypes": "Lisäosien tyypit",
+      "addOnReviewStatus": "Lisäosan tarkastuksen tila"
+    },
+    "manageDialog": {
+      "enabledByDefault": "Oletuksena käytössä",
+      "disableAddOn": "Poista lisäosa käytöstä",
+      "saveSettings": "Tallenna asetukset",
+      "defaultSettingsJson": "Oletusasetukset (JSON)",
+      "startingSettingsEveryNewInstall": "Aloitusasetukset, jotka jokainen uusi asennus saa. Jätä tyhjäksi tyhjentääksesi. Olemassa oleviin asennuksiin ei kosketa."
+    },
+    "trackEditDialog": {
+      "editTrack": "Muokkaa kappaletta",
+      "audio": "Ääni",
+      "export": "Vienti",
+      "close": "Sulje",
+      "saveChanges": "Tallenna muutokset"
+    },
+    "trackCreditsEditor": {
+      "writersPerformersProducersEtcBeyond": "Säveltäjät, esiintyjät, tuottajat ym. kanavasi tavallisen kokoonpanon lisäksi.",
+      "creditRole": "Tekijän rooli",
+      "name": "Nimi",
+      "creditName": "Tekijän nimi",
+      "tahtiUsername": "Tahti-käyttäjänimi"
+    },
+    "pinnedAnnouncementsPanel": {
+      "pinnedAnnouncements": "Kiinnitetyt tiedotteet",
+      "shortMessagesShownAboveChat": "Lyhyitä viestejä kanavasi keskustelun yläpuolella. Pidä enintään kolme ajankohtaista tiedotetta.",
+      "writeAnAnnouncement": "Kirjoita tiedote…",
+      "pinAnnouncement": "Kiinnitä tiedote",
+      "loadingAnnouncements": "Ladataan tiedotteita…"
+    },
+    "nowPlayingActionSheet": {
+      "goToChannel": "Siirry kanavalle",
+      "share": "Jaa",
+      "addToPlaylist": "Lisää soittolistaan",
+      "openInProEditor": "Avaa Pro Editorissa",
+      "nowPlayingOptions": "Nyt soi -valinnat"
+    },
+    "motionCard": {
+      "saveChanges": "Tallenna muutokset",
+      "cancel": "Peruuta",
+      "motionTitle": "Aloitteen otsikko",
+      "motionDescription": "Aloitteen kuvaus",
+      "votingCloses": "Äänestys päättyy"
+    },
+    "electionsPanel": {
+      "youAreStanding": "Olet ehdolla",
+      "elected": "Valittu",
+      "boardElections": "Hallitusvaalit",
+      "loadingElections": "Ladataan vaaleja…"
+    },
+    "globalSearch": {
+      "discover": "Löydä",
+      "radio": "Radio",
+      "artists": "Artistit",
+      "tracks": "Kappaleet",
+      "playlists": "Soittolistat"
     }
   },
   "studioEditor": {

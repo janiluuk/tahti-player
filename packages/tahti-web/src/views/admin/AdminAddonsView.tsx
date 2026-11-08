@@ -92,12 +92,16 @@ export function AdminAddonsView() {
         <AdminPageLayout current="/admin/addons">
           <div className="flex max-w-5xl flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminAddonsView.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbCurrent>Add-ons</BreadcrumbCurrent>
+              <BreadcrumbCurrent>
+                {t('adminAddonsView.addOns')}
+              </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Add-ons"
+              title={t('adminAddonsView.addOns')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               <p className="text-foreground-secondary text-sm">
@@ -106,11 +110,14 @@ export function AdminAddonsView() {
                 Channel (artist page). The other 11 are fixed code registries or
                 private per-user connections with nothing to moderate here.
               </p>
-              <Tooltip content="Register a new add-on" side="top">
+              <Tooltip
+                content={t('adminAddonsView.registerANewAddOn')}
+                side="top"
+              >
                 <Button
                   type="button"
                   size="icon-sm"
-                  aria-label="Register a new add-on"
+                  aria-label={t('adminAddonsView.registerANewAddOn')}
                   onClick={openRegister}
                 >
                   <PlusIcon size={18} aria-hidden />
@@ -118,7 +125,7 @@ export function AdminAddonsView() {
               </Tooltip>
 
               <FilterChips
-                aria-label="Add-on types"
+                aria-label={t('adminAddonsView.addOnTypes')}
                 className="border-border border-b pb-3"
                 items={[
                   { id: 'ALL', label: 'All add-ons' },
@@ -129,7 +136,7 @@ export function AdminAddonsView() {
               />
 
               <FilterChips
-                aria-label="Add-on review status"
+                aria-label={t('adminAddonsView.addOnReviewStatus')}
                 className="border-border border-b pb-3"
                 items={[
                   { id: 'ALL', label: 'All statuses' },

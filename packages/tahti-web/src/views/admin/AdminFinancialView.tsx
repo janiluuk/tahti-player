@@ -45,12 +45,16 @@ export function AdminFinancialView() {
         <AdminPageLayout current="/admin/financial">
           <div className="flex max-w-4xl flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminFinancialView.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="coop" />
-              <BreadcrumbCurrent>Financial</BreadcrumbCurrent>
+              <BreadcrumbCurrent>
+                {t('adminFinancialView.financial')}
+              </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Financial"
+              title={t('adminFinancialView.financial')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {loading ? (
@@ -66,11 +70,11 @@ export function AdminFinancialView() {
                 />
               ) : (
                 <>
-                  <StudioPanel title="Fan subscriptions">
+                  <StudioPanel title={t('adminFinancialView.fanSubscriptions')}>
                     <div className="flex flex-wrap gap-6">
                       <div>
                         <div className="text-foreground-secondary text-xs">
-                          Active subscriptions
+                          {t('adminFinancialView.activeSubscriptions')}
                         </div>
                         <div className="text-lg font-semibold">
                           {overview.activeFanSubCount}
@@ -86,7 +90,7 @@ export function AdminFinancialView() {
                       </div>
                       <div>
                         <div className="text-foreground-secondary text-xs">
-                          Pending payouts
+                          {t('adminFinancialView.pendingPayouts')}
                         </div>
                         <div className="text-lg font-semibold">
                           {overview.pendingPayouts.count} (
@@ -96,7 +100,7 @@ export function AdminFinancialView() {
                       {overview.failedPayouts.count > 0 && (
                         <div>
                           <div className="text-foreground-secondary text-xs">
-                            Failed payouts
+                            {t('adminFinancialView.failedPayouts')}
                           </div>
                           <div className="text-accent-red-strong text-lg font-semibold">
                             {overview.failedPayouts.count} (

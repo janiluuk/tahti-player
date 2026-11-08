@@ -178,8 +178,8 @@ export function StudioShowsView() {
                   placeholder={t('studioShows.descriptionPlaceholder')}
                 />
                 <ShowImagePicker
-                  label="Show thumbnail"
-                  description="JPEG, PNG, WebP, or GIF"
+                  label={t('studioShowsView.showThumbnail')}
+                  description={t('studioShowsView.jpegPngWebpOrGif')}
                   value={thumbnailUrl}
                   file={thumbnailFile}
                   onFile={(file) => {
@@ -189,8 +189,8 @@ export function StudioShowsView() {
                   onUrlChange={setThumbnailUrl}
                 />
                 <ShowImagePicker
-                  label="Show backdrop"
-                  description="Wide JPEG, PNG, WebP, or GIF"
+                  label={t('studioShowsView.showBackdrop')}
+                  description={t('studioShowsView.wideJpegPngWebpOr')}
                   value={backdropUrl}
                   file={backdropFile}
                   onFile={(file) => {
@@ -295,7 +295,7 @@ export function StudioShowsView() {
                         variant="secondary"
                         onClick={() => setQuery('')}
                       >
-                        Clear search
+                        {t('studioShowsView.clearSearch')}
                       </Button>
                     }
                   />
@@ -326,6 +326,7 @@ function ShowRow({
   show: StudioShowSeries;
   episodeCount: number;
 }) {
+  const { t } = useTranslation('web');
   return (
     <li className="flex flex-wrap items-center gap-3 px-4 py-3 text-sm">
       <MediaArtwork
@@ -360,7 +361,7 @@ function ShowRow({
         variant="secondary"
         aria-label={`Manage ${show.title}`}
       >
-        Manage
+        {t('studioShowsView.manage')}
       </ButtonLink>
     </li>
   );

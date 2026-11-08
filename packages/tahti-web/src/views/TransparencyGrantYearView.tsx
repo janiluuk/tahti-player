@@ -59,7 +59,10 @@ export function TransparencyGrantYearView({ year }: { year: number }) {
       title={`Grant report ${year}`}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
     >
-      <PageBackLink to="/transparency" label="Transparency" />
+      <PageBackLink
+        to="/transparency"
+        label={t('transparencyGrantYearView.transparency')}
+      />
       {loading ? (
         <PageLoading label={t('loading.loadingGrantReport')} />
       ) : failed ? (
@@ -72,10 +75,16 @@ export function TransparencyGrantYearView({ year }: { year: number }) {
       ) : (
         <section className="flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <Stat label="Total" value={centsLabel(report.totalCents)} />
-            <Stat label="Grants" value={String(report.grantCount)} />
             <Stat
-              label="Disbursed"
+              label={t('transparencyGrantYearView.total')}
+              value={centsLabel(report.totalCents)}
+            />
+            <Stat
+              label={t('transparencyGrantYearView.grants')}
+              value={String(report.grantCount)}
+            />
+            <Stat
+              label={t('transparencyGrantYearView.disbursed')}
               value={report.disbursedAt ? report.disbursedAt.slice(0, 10) : '—'}
             />
           </div>
@@ -85,9 +94,15 @@ export function TransparencyGrantYearView({ year }: { year: number }) {
             <DataTable>
               <DataTableHead>
                 <DataTableRow>
-                  <DataTableHeaderCell>Published as</DataTableHeaderCell>
-                  <DataTableHeaderCell>Amount</DataTableHeaderCell>
-                  <DataTableHeaderCell>State</DataTableHeaderCell>
+                  <DataTableHeaderCell>
+                    {t('transparencyGrantYearView.publishedAs')}
+                  </DataTableHeaderCell>
+                  <DataTableHeaderCell>
+                    {t('transparencyGrantYearView.amount')}
+                  </DataTableHeaderCell>
+                  <DataTableHeaderCell>
+                    {t('transparencyGrantYearView.state')}
+                  </DataTableHeaderCell>
                 </DataTableRow>
               </DataTableHead>
               <DataTableBody>

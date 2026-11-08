@@ -80,7 +80,7 @@ export function NowPlayingActionSheet({ isOpen, onClose, playable }: Props) {
       <ActionSheet
         isOpen={isOpen}
         onClose={onClose}
-        label="Now playing options"
+        label={t('nowPlayingActionSheet.nowPlayingOptions')}
       >
         <ActionSheet.Header
           title={playable.title}
@@ -98,7 +98,7 @@ export function NowPlayingActionSheet({ isOpen, onClose, playable }: Props) {
               });
             }}
           >
-            Go to channel
+            {t('nowPlayingActionSheet.goToChannel')}
           </ActionSheet.Action>
         ) : null}
         {shareUrl ? (
@@ -106,7 +106,7 @@ export function NowPlayingActionSheet({ isOpen, onClose, playable }: Props) {
             icon={<Share2Icon size={22} />}
             onClick={() => void share(shareUrl)}
           >
-            Share
+            {t('nowPlayingActionSheet.share')}
           </ActionSheet.Action>
         ) : null}
         <ActionSheet.Action
@@ -127,7 +127,7 @@ export function NowPlayingActionSheet({ isOpen, onClose, playable }: Props) {
             icon={<ListMusicIcon size={22} />}
             onClick={() => setPlaylistOpen(true)}
           >
-            Add to playlist
+            {t('nowPlayingActionSheet.addToPlaylist')}
           </ActionSheet.Action>
         ) : null}
         {soundId && user ? (
@@ -141,7 +141,7 @@ export function NowPlayingActionSheet({ isOpen, onClose, playable }: Props) {
               });
             }}
           >
-            Open in Pro Editor
+            {t('nowPlayingActionSheet.openInProEditor')}
           </ActionSheet.Action>
         ) : null}
       </ActionSheet>

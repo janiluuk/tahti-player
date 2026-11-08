@@ -109,7 +109,7 @@ export function RadioSubmissionsTab() {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-foreground-secondary text-sm">
-        Audit tracks submitted for Tahti Radio rotation.
+        {t('radioSubmissionsTab.auditTracksSubmittedForTahti')}
       </p>
 
       {msg && (
@@ -140,7 +140,7 @@ export function RadioSubmissionsTab() {
       ) : (
         <>
           {active && (
-            <StudioPanel title="Auditing">
+            <StudioPanel title={t('radioSubmissionsTab.auditing')}>
               <div className="flex items-start gap-4">
                 <div className="bg-surface-secondary flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-lg text-xs font-bold">
                   <ImageReveal
@@ -192,7 +192,7 @@ export function RadioSubmissionsTab() {
                 }}
               >
                 <Textarea
-                  label="Note to the artist (optional)"
+                  label={t('radioSubmissionsTab.noteToTheArtistOptional')}
                   tone="secondary"
                   value={notes[active.id] ?? ''}
                   onChange={(e) =>
@@ -214,7 +214,7 @@ export function RadioSubmissionsTab() {
                     }
                   >
                     <CheckCircle2Icon size={14} aria-hidden />
-                    Approve to radio
+                    {t('radioSubmissionsTab.approveToRadio')}
                   </Button>
                   <Button
                     type="button"
@@ -240,12 +240,11 @@ export function RadioSubmissionsTab() {
                     }}
                   >
                     <XCircleIcon size={14} aria-hidden />
-                    Reject
+                    {t('radioSubmissionsTab.reject')}
                   </Button>
                 </div>
                 <p className="text-foreground-secondary text-xs">
-                  The artist is notified when you approve (a private track is
-                  made public), and when you reject with a note.
+                  {t('radioSubmissionsTab.theArtistIsNotifiedWhen')}
                 </p>
               </form>
             </StudioPanel>

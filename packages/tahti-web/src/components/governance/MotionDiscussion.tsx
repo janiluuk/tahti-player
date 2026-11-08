@@ -123,7 +123,7 @@ export function MotionDiscussion({
               }}
             />
           ) : !commentsLoaded ? (
-            <InlineLoader label="Loading…" textSize="xs" />
+            <InlineLoader label={t('motionDiscussion.loading')} textSize="xs" />
           ) : comments.length === 0 ? (
             <PageEmpty title={t('empties.noComments')} />
           ) : (
@@ -147,13 +147,13 @@ export function MotionDiscussion({
                         aria-label={`Remove the comment by ${c.authorDisplayName ?? 'a member'}`}
                         onClick={() => setRemoving(c)}
                       >
-                        Remove
+                        {t('motionDiscussion.remove')}
                       </Button>
                     )}
                   </div>
                   {c.removed ? (
                     <p className="text-foreground-secondary mt-1 italic">
-                      Comment removed.
+                      {t('motionDiscussion.commentRemoved')}
                     </p>
                   ) : (
                     <p className="mt-1">{c.body}</p>
@@ -185,11 +185,11 @@ export function MotionDiscussion({
                 className="min-w-[200px] flex-1"
                 value={commentBody}
                 onChange={(e) => setCommentBody(e.target.value)}
-                aria-label="Add a comment"
-                placeholder="Add a comment…"
+                aria-label={t('motionDiscussion.addAComment')}
+                placeholder={t('motionDiscussion.addAComment2')}
               />
               <Button size="sm" disabled={!commentBody.trim()} type="submit">
-                Post
+                {t('motionDiscussion.post')}
               </Button>
             </form>
           )}
@@ -198,13 +198,13 @@ export function MotionDiscussion({
       <ConfirmDialog
         destructive
         isOpen={removing !== null}
-        title="Remove this comment?"
+        title={t('motionDiscussion.removeThisComment')}
         description={
           removing && removing.authorId !== user?.id
             ? 'It is replaced by "Comment removed." for every member, and the removal is logged.'
             : 'It is replaced by "Comment removed." for every member.'
         }
-        confirmLabel="Remove"
+        confirmLabel={t('motionDiscussion.remove')}
         onCancel={() => setRemoving(null)}
         onConfirm={confirmRemove}
       />

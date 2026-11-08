@@ -37,11 +37,14 @@ export function StudioEventView({ eventId }: { eventId: string }) {
     <StudioGate>
       <div className="studio-page-layout relative mx-auto flex max-w-3xl flex-col gap-6">
         <Tooltip
-          content="Back to Events"
+          content={t('studioEventView.backToEvents')}
           side="right"
           wrapperClassName={backButtonCornerClassName}
         >
-          <BackButtonLink to="/studio/events" aria-label="Back to Events" />
+          <BackButtonLink
+            to="/studio/events"
+            aria-label={t('studioEventView.backToEvents')}
+          />
         </Tooltip>
         {event === undefined ? (
           <PageLoading label={t('loading.loading')} />
@@ -59,10 +62,10 @@ export function StudioEventView({ eventId }: { eventId: string }) {
               />
             }
           >
-            <StudioPanel title="Event details">
+            <StudioPanel title={t('studioEventView.eventDetails')}>
               <dl className="flex flex-col gap-3 text-sm">
                 <div className="flex items-center gap-2">
-                  <dt className="sr-only">Start</dt>
+                  <dt className="sr-only">{t('studioEventView.start')}</dt>
                   <CalendarDaysIcon size={16} aria-hidden />
                   <dd>
                     <time dateTime={event.startAt}>
@@ -71,7 +74,7 @@ export function StudioEventView({ eventId }: { eventId: string }) {
                   </dd>
                 </div>
                 <div className="flex items-center gap-2">
-                  <dt className="sr-only">Place</dt>
+                  <dt className="sr-only">{t('studioEventView.place')}</dt>
                   <MapPinIcon size={16} aria-hidden />
                   <dd>
                     {[event.place, event.location].filter(Boolean).join(', ')}
@@ -79,7 +82,9 @@ export function StudioEventView({ eventId }: { eventId: string }) {
                 </div>
                 {event.description ? (
                   <div>
-                    <dt className="sr-only">Description</dt>
+                    <dt className="sr-only">
+                      {t('studioEventView.description')}
+                    </dt>
                     <dd className="text-foreground-secondary whitespace-pre-wrap">
                       {event.description}
                     </dd>
@@ -87,13 +92,15 @@ export function StudioEventView({ eventId }: { eventId: string }) {
                 ) : null}
                 {event.eventUrl ? (
                   <div>
-                    <dt className="sr-only">Tickets / event link</dt>
+                    <dt className="sr-only">
+                      {t('studioEventView.ticketsEventLink')}
+                    </dt>
                     <dd>
                       <ExternalLink
                         href={event.eventUrl}
                         className="text-primary-strong"
                       >
-                        Tickets / event link
+                        {t('studioEventView.ticketsEventLink')}
                       </ExternalLink>
                     </dd>
                   </div>

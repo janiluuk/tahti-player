@@ -24,7 +24,9 @@ export function CreditsEditor({
     setCredits([...credits, { role: 'writer', name: '' }]);
   return (
     <div>
-      <p className="mb-2 text-xs font-medium">Credits & roles</p>
+      <p className="mb-2 text-xs font-medium">
+        {t('creditsEditor.creditsRoles')}
+      </p>
       {credits.length === 0 && (
         <PageEmpty
           title={t('empties.noDistributionCredits')}
@@ -55,7 +57,7 @@ export function CreditsEditor({
               }))}
               value={credit.role}
               disabled={busy}
-              label="Credit role"
+              label={t('creditsEditor.creditRole')}
               onValueChange={(role) => {
                 const next = [...credits];
                 next[index] = {
@@ -67,9 +69,9 @@ export function CreditsEditor({
             />
             <Input
               value={credit.name}
-              placeholder="Name"
+              placeholder={t('creditsEditor.name')}
               disabled={busy}
-              aria-label="Credit name"
+              aria-label={t('creditsEditor.creditName')}
               onChange={(e) => {
                 const next = [...credits];
                 next[index] = { ...credit, name: e.target.value };
@@ -84,7 +86,7 @@ export function CreditsEditor({
               placeholder="@username"
               disabled={busy}
               maxLength={33}
-              aria-label="Tahti username"
+              aria-label={t('creditsEditor.tahtiUsername')}
               onChange={(e) => {
                 const raw = e.target.value
                   .trim()
@@ -98,7 +100,7 @@ export function CreditsEditor({
                 setCredits(next);
               }}
             />
-            <Tooltip content="Remove credit" side="top">
+            <Tooltip content={t('creditsEditor.removeCredit')} side="top">
               <Button
                 size="icon-sm"
                 variant="text"
