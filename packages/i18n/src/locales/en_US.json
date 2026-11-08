@@ -1393,8 +1393,8 @@
         "latestTracks": "Latest tracks",
         "mostPlayed": "Most played",
         "loved": "Loved by the community",
-        "artistOfTheWeek": "Artist of the week",
-        "randomArtist": "Rotating artist pick",
+        "artistOfTheWeek": "Random artist of the week",
+        "randomArtist": "Random artist pick",
         "publicPlaylists": "Public playlists",
         "tahtiSelects": "Tahti Selects",
         "latestReleases": "Latest releases",
@@ -1851,7 +1851,22 @@
       "studio": "Studio",
       "admin": "Admin",
       "radioTitle": "Tahti Radio",
-      "radioDescription": "Listen to the cooperative Tahti Radio stream and schedule."
+      "radioDescription": "Listen to the cooperative Tahti Radio stream and schedule.",
+      "defaultTitle": "Tahti · Independent music, live",
+      "defaultDescription": "Listen to independent artists, live channels, radio, and lossless releases on Tahti.",
+      "channelTitle": "{{name}} live on Tahti",
+      "channelDescription": "Listen to {{name}}'s live channel, archive, and programme on Tahti.",
+      "collectionTitle": "{{collection}} by {{owner}} on Tahti",
+      "collectionDescription": "Listen to {{collection}}, a collection by {{owner}} on Tahti.",
+      "onTahti": "{{name}} on Tahti",
+      "profileDescription": "Explore {{name}}'s music, releases, collections, and live channel on Tahti.",
+      "venueDescription": "{{name}} is a verified venue on Tahti.",
+      "releaseDescription": "Listen to {{name}} and find its official links on Tahti.",
+      "subscribeTitle": "Subscribe to {{name}} · Tahti",
+      "subscribeDescription": "Support {{name}} with a fan subscription on Tahti.",
+      "moderateTitle": "{{name}}: chat moderation · Tahti",
+      "studioTitle": "Studio · Tahti",
+      "studioDescription": "Manage your music, channel, broadcasts, and audience on Tahti."
     },
     "radio": {
       "expandPlayer": "Expand player",
@@ -3915,6 +3930,184 @@
       "newCollection": "New collection",
       "openLibrary": "Open library",
       "addFirstModerator": "Add your first moderator"
+    },
+    "pageTour": {
+      "steps": {
+        "navListen": {
+          "label": "Listen",
+          "description": "Browse the channel directory and see who’s live right now — the front page of Tahti."
+        },
+        "navRadio": {
+          "label": "Radio",
+          "description": "Tahti Radio — the shared 24/7 member relay, plus its schedule."
+        },
+        "navFeed": {
+          "label": "Feed",
+          "description": "Updates and posts from the artists and channels you follow."
+        },
+        "navDiscover": {
+          "label": "Discover",
+          "description": "Find new artists and channels beyond who you already follow."
+        },
+        "navLibrary": {
+          "label": "My Library",
+          "description": "Your tracks, collections, playlists, and listening history."
+        },
+        "navMessages": {
+          "label": "Messages",
+          "description": "Direct messages with artists and other listeners."
+        },
+        "navStudio": {
+          "label": "Studio",
+          "description": "Your artist workspace — broadcasting, uploads, releases, and channel tools."
+        },
+        "navCoop": {
+          "label": "Co-op",
+          "description": "For members: motions, discussions, documents and how the co-op is run."
+        },
+        "navAdmin": {
+          "label": "Admin",
+          "description": "Board tools for moderating and running the platform."
+        },
+        "navMore": {
+          "label": "More",
+          "description": "Feature map and screen atlas — what exists and where."
+        },
+        "navSettings": {
+          "label": "Settings",
+          "description": "Account, artist, notification, and appearance preferences."
+        },
+        "topbarSchedule": {
+          "label": "Radio schedule",
+          "description": "See what’s coming up next on Tahti Radio."
+        },
+        "topbarGolive": {
+          "label": "Broadcast",
+          "description": "Jump straight to starting a broadcast on your channel."
+        },
+        "topbarUpload": {
+          "label": "Upload",
+          "description": "Add a new track or release to your library."
+        },
+        "topbarAccount": {
+          "label": "Account menu",
+          "description": "Notifications, messages, your artist panel and channel, settings and log out. A dot on your avatar means something unread."
+        },
+        "topbarLogin": {
+          "label": "Log in",
+          "description": "Sign in to follow artists, chat, and use Studio tools."
+        },
+        "revenueStats": {
+          "label": "Order statistics",
+          "description": "Active subscribers, this month’s net, year-to-date payouts, and pending orders — the same numbers as production Studio → Revenue."
+        },
+        "revenueOrders": {
+          "label": "Payout history",
+          "description": "Recent fan-sub charges and distribution royalty rows in one dated list (newest first, up to twelve)."
+        },
+        "revenueFlow": {
+          "label": "Order flow",
+          "description": "A typical €5 order: provider processing, Tahti’s 2% operational fee, then the rest to you."
+        },
+        "revenueHelp": {
+          "label": "Earnings guide",
+          "description": "Open the Help center article for the full money flow, grants, and what happens when a fan cancels."
+        },
+        "revenueConnect": {
+          "label": "Stripe dashboard",
+          "description": "When Stripe is enabled, open the Studio Stripe dashboard for Connect status and the Express payout account."
+        },
+        "discoWidgets": {
+          "label": "Disco-widgets",
+          "description": "Small add-ons shown on the page: on Listen the ones you installed (Settings → Add-ons → Discovery), on an artist or channel page the ones the artist chose. Each runs in its own sandbox and cannot see your account."
+        },
+        "stripeStatus": {
+          "label": "Payout account",
+          "description": "Whether Stripe is on, your Connect account exists, and payments are ready."
+        },
+        "stripeActions": {
+          "label": "Express dashboard",
+          "description": "Finish onboarding or open Stripe’s Express dashboard for this payout account."
+        },
+        "stripeCharges": {
+          "label": "Stripe charges",
+          "description": "Fan-sub orders processed through this Stripe account — the same money as Audience, without grants."
+        }
+      },
+      "purpose": {
+        "studioFans": {
+          "label": "Fans",
+          "description": "One card per fan tool: posts, the newsletter, memberships, the store and your earnings."
+        },
+        "studioAudience": {
+          "label": "Earnings",
+          "description": "Fan-sub stats, recent orders, and earnings flow for your channel. Memberships and the store open from Studio → Fans."
+        },
+        "studioProfile": {
+          "label": "Profile",
+          "description": "How you look to listeners: each card opens one part of your artist profile or channel page settings."
+        },
+        "studioStripe": {
+          "label": "Stripe payouts",
+          "description": "Connect status and Express dashboard for receiving fan-sub payouts."
+        },
+        "studioShows": {
+          "label": "Shows & schedule",
+          "description": "Plan upcoming broadcasts, edit the next show, and manage your channel schedule."
+        },
+        "studioBroadcast": {
+          "label": "Broadcast",
+          "description": "On or off air, Go live, everything coming up (shows, events, listening parties) and cards for each broadcast tool."
+        },
+        "studioGoLive": {
+          "label": "Go live",
+          "description": "Start or prepare a live broadcast on your channel."
+        },
+        "studioUpload": {
+          "label": "Upload",
+          "description": "Add new tracks and releases to your library."
+        },
+        "studio": {
+          "label": "Studio",
+          "description": "Your artist workspace — broadcasting, library, channel tools, and audience."
+        },
+        "librarySounds": {
+          "label": "Tracks",
+          "description": "Your uploaded tracks and encoding status."
+        },
+        "library": {
+          "label": "Library",
+          "description": "Your tracks, releases, collections, recordings, and listening history."
+        },
+        "admin": {
+          "label": "Admin",
+          "description": "Board tools for moderating users, content, and platform ops."
+        },
+        "messages": {
+          "label": "Messages",
+          "description": "Direct messages with artists and other listeners."
+        },
+        "radio": {
+          "label": "Tahti Radio",
+          "description": "The shared 24/7 member relay and its schedule."
+        },
+        "discover": {
+          "label": "Discover",
+          "description": "Find new artists and channels beyond who you already follow."
+        },
+        "settings": {
+          "label": "Settings",
+          "description": "Account, artist, notification, and appearance preferences."
+        },
+        "feed": {
+          "label": "Feed",
+          "description": "Updates and posts from artists and channels you follow."
+        },
+        "home": {
+          "label": "Home",
+          "description": "The front page of Tahti — who’s live, the channel directory, and shortcuts into Listen, Radio, and Studio."
+        }
+      }
     }
   },
   "studioEditor": {
