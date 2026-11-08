@@ -6,6 +6,7 @@ import {
 } from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { AdminStreamManagerPanel } from '../../components/AdminStreamManagerPanel';
 import { ChannelRotationPanel } from './streams/ChannelRotationPanel';
@@ -19,6 +20,7 @@ export function AdminStreamsView() {
           <div className="flex flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="platform" />
               <BreadcrumbCurrent>Streams</BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell

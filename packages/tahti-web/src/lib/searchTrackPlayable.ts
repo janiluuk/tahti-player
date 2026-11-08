@@ -18,6 +18,7 @@ export function searchTrackPlayable(
       protocol: track.audioUrl.includes('.m3u8') ? 'hls' : 'https',
       channelSlug: track.channelSlug,
       durationSec: track.durationSec ?? undefined,
+      peaks: track.peaks ?? null,
     };
   }
   const embed = playableFromStudioEmbed({

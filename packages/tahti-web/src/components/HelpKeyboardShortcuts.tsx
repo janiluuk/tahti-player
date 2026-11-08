@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { KeyCombo } from '@tahti-player/ui';
 
 import {
@@ -6,40 +7,37 @@ import {
 } from '../content/keyboardNavigation';
 
 function ShortcutSection({ section }: { section: KeyboardShortcutSection }) {
-  const id = section.heading
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
+  const { t } = useTranslation('web');
   return (
     <div
-      id={id || 'section'}
+      id={section.id}
       className="flex scroll-mt-4 flex-col gap-3"
       data-testid="keyboard-shortcut-section"
     >
       <h2 className="text-foreground text-sm font-semibold tracking-tight">
-        {section.heading}
+        {t(section.headingKey)}
       </h2>
       {section.rows.length > 0 ? (
         <ul className="flex flex-col gap-2">
           {section.rows.map((row) => (
             <li
-              key={`${row.label}-${row.shortcut}`}
+              key={`${row.labelKey}-${row.shortcut}`}
               className="flex items-center justify-between gap-4"
             >
               <span className="text-foreground min-w-0 text-sm">
-                {row.label}
+                {t(row.labelKey)}
               </span>
               <KeyCombo shortcut={row.shortcut} />
             </li>
           ))}
         </ul>
       ) : null}
-      {section.notes?.map((note) => (
+      {section.noteKeys?.map((noteKey) => (
         <p
-          key={note}
+          key={noteKey}
           className="text-foreground-secondary text-sm leading-relaxed"
         >
-          {note}
+          {t(noteKey)}
         </p>
       ))}
     </div>
@@ -51,7 +49,7 @@ export function HelpKeyboardShortcuts() {
   return (
     <div className="flex flex-col gap-6" data-testid="help-keyboard-shortcuts">
       {KEYBOARD_NAVIGATION_SECTIONS.map((section) => (
-        <ShortcutSection key={section.heading} section={section} />
+        <ShortcutSection key={section.id} section={section} />
       ))}
     </div>
   );

@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Box,
@@ -171,9 +171,12 @@ function articleMatches(article: HelpArticle, query: string): boolean {
   const keyboardExtra =
     article.slug === 'keyboard-shortcuts'
       ? KEYBOARD_NAVIGATION_SECTIONS.flatMap((section) => [
-          section.heading,
-          ...(section.notes ?? []),
-          ...section.rows.flatMap((row) => [row.label, row.shortcut]),
+          i18n.t(`web:${section.headingKey}`),
+          ...(section.noteKeys ?? []).map((key) => i18n.t(`web:${key}`)),
+          ...section.rows.flatMap((row) => [
+            i18n.t(`web:${row.labelKey}`),
+            row.shortcut,
+          ]),
         ])
       : [];
   const haystack = [
@@ -458,21 +461,15 @@ export function HelpArticleView({ slug }: { slug: string }) {
             </div>
             <nav className="flex flex-col gap-2" aria-label="Article sections">
               {slug === 'keyboard-shortcuts'
-                ? KEYBOARD_NAVIGATION_SECTIONS.map((section, index) => {
-                    const id = section.heading
-                      .toLowerCase()
-                      .replace(/[^a-z0-9]+/g, '-')
-                      .replace(/^-|-$/g, '');
-                    return (
-                      <a
-                        key={section.heading}
-                        href={`#${id || 'section'}`}
-                        className="text-foreground-secondary hover:text-foreground text-xs leading-relaxed"
-                      >
-                        {index + 1}. {section.heading}
-                      </a>
-                    );
-                  })
+                ? KEYBOARD_NAVIGATION_SECTIONS.map((section, index) => (
+                    <a
+                      key={section.id}
+                      href={`#${section.id}`}
+                      className="text-foreground-secondary hover:text-foreground text-xs leading-relaxed"
+                    >
+                      {index + 1}. {t(section.headingKey)}
+                    </a>
+                  ))
                 : article.sections.map((section, index) => (
                     <a
                       key={`${section.heading}-${index}`}

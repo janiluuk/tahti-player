@@ -1,65 +1,59 @@
+import type { ParseKeys } from '@tahti-player/i18n';
+
+type KeyboardHelpKey = ParseKeys<'web'> & `keyboardHelp.${string}`;
+
 export type KeyboardShortcutRow = {
-  label: string;
+  labelKey: KeyboardHelpKey;
   /** Binding in KeyCombo form, e.g. `alt+1`, `h`, `left`. */
   shortcut: string;
 };
 
 export type KeyboardShortcutSection = {
-  heading: string;
+  /** Stable anchor id, the same in every language. */
+  id: string;
+  headingKey: KeyboardHelpKey;
   rows: KeyboardShortcutRow[];
-  notes?: string[];
+  noteKeys?: KeyboardHelpKey[];
 };
 
 /** Live AppShell bindings — keep in sync with `AppShell` keydown handler. */
 export const KEYBOARD_NAVIGATION_SECTIONS: KeyboardShortcutSection[] = [
   {
-    heading: 'Page tour',
+    id: 'page-tour',
+    headingKey: 'keyboardHelp.pageTour',
     rows: [
-      { label: 'Open or close the guided page tour', shortcut: 'h' },
-      { label: 'Previous tour step', shortcut: 'left' },
-      { label: 'Next tour step', shortcut: 'right' },
-      { label: 'Close the tour', shortcut: 'escape' },
+      { labelKey: 'keyboardHelp.tourToggle', shortcut: 'h' },
+      { labelKey: 'keyboardHelp.tourPrevious', shortcut: 'left' },
+      { labelKey: 'keyboardHelp.tourNext', shortcut: 'right' },
+      { labelKey: 'keyboardHelp.tourClose', shortcut: 'escape' },
     ],
-    notes: [
-      'The sidebar is explained everywhere; the top bar only on the homepage; Studio and Admin panel items while you’re inside those sections.',
+    noteKeys: ['keyboardHelp.tourNote'],
+  },
+  {
+    id: 'navigation',
+    headingKey: 'keyboardHelp.navigation',
+    rows: [
+      { labelKey: 'keyboardHelp.listen', shortcut: 'alt+1' },
+      { labelKey: 'keyboardHelp.radio', shortcut: 'alt+2' },
+      { labelKey: 'keyboardHelp.feed', shortcut: 'alt+3' },
+      { labelKey: 'keyboardHelp.library', shortcut: 'alt+4' },
+      { labelKey: 'keyboardHelp.studio', shortcut: 'alt+5' },
     ],
   },
   {
-    heading: 'Navigation',
+    id: 'player',
+    headingKey: 'keyboardHelp.player',
     rows: [
-      { label: 'Listen', shortcut: 'alt+1' },
-      { label: 'Radio', shortcut: 'alt+2' },
-      { label: 'Feed', shortcut: 'alt+3' },
-      { label: 'My Library', shortcut: 'alt+4' },
-      { label: 'Studio', shortcut: 'alt+5' },
+      { labelKey: 'keyboardHelp.playPause', shortcut: 'space' },
+      { labelKey: 'keyboardHelp.fullScreen', shortcut: 'v' },
+      { labelKey: 'keyboardHelp.skipBack', shortcut: 'shift+left' },
+      { labelKey: 'keyboardHelp.skipForward', shortcut: 'shift+right' },
     ],
   },
   {
-    heading: 'Player',
-    rows: [
-      {
-        label: 'Play / pause (when a track is loaded)',
-        shortcut: 'space',
-      },
-      {
-        label: 'Toggle the full-screen player (when a track is loaded)',
-        shortcut: 'v',
-      },
-      {
-        label: 'Skip backward (Settings → Playback sets the duration)',
-        shortcut: 'shift+left',
-      },
-      {
-        label: 'Skip forward',
-        shortcut: 'shift+right',
-      },
-    ],
-  },
-  {
-    heading: 'Notes',
+    id: 'notes',
+    headingKey: 'keyboardHelp.notes',
     rows: [],
-    notes: [
-      'Shortcuts are disabled while typing in a text field, textarea, dropdown, or any editable content.',
-    ],
+    noteKeys: ['keyboardHelp.typingNote'],
   },
 ];

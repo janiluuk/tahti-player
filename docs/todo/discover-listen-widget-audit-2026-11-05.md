@@ -36,8 +36,5 @@ findings below come from reading the screenshots.
 - [ ] Discover masonry leaves empty blocks: Latest releases (one item, 280px box), Public playlists, and a blank area above Random track in column 3. Listen's New releases, Live now and Coming up show one or two cards in a full-width row.
 
 ## Navigation
-- [ ] `/listen/feed` lands on Discover → Feed and `/listen/favorites` on Library → Favorites, so the highlighted nav item changes away from Listen.
-- [ ] Search results highlight Listen in the nav.
-- [ ] Item order differs: the sidebar is Listen, Radio, Discover; the phone tab bar is Listen, Discover, Radio, Studio, More (Library only under More).
-- [ ] Every Discover tab keeps the h1 "Discover" (Feed, Artists, Groups, Venues have no title of their own); Listen → History changes its h1.
+- Fixed in #1880: the Tahti map and flow diagrams name `/discover?tab=feed` and `/library/favorites` instead of the old `/listen/feed` and `/listen/favorites` redirects; search results light no nav item; the phone tab bar reads Listen, Radio, Discover like the sidebar; each Discover tab has its own h1.
 - "Live now" cards: fixed (live / replay pill on the artwork, `@username` subtitle).

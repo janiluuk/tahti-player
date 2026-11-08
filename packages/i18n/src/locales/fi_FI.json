@@ -3043,7 +3043,8 @@
       "cancelDescription": "Juhlan sivu kertoo vierailijoille, että se peruttiin. Tätä ei voi perua.",
       "cancelConfirm": "Peruuta juhla",
       "reminders_one": "{{count}} muistutus",
-      "reminders_other": "{{count}} muistutusta"
+      "reminders_other": "{{count}} muistutusta",
+      "scheduleParty": "Aikatauluta juhla"
     },
     "adminThemes": {
       "title": "Yhteisöteemat",
@@ -3827,6 +3828,56 @@
       "moveUp": "Siirrä ylös",
       "moveDown": "Siirrä alas",
       "remove": "Poista"
+    },
+    "tiers": {
+      "newTier": "Uusi taso",
+      "newPurchaseTier": "Uusi hintataso",
+      "fanIntro": "Fanitilausten tasot, edut ja hinnat.",
+      "purchaseIntro": "Hinta on se, minkä fani maksaa. Lisää hinta ja liitä sitten kappaleet siihen alla."
+    },
+    "adminPresets": {
+      "addArtwork": "Lisää kuva",
+      "addStation": "Lisää asema"
+    },
+    "adminGovernance": {
+      "openTopic": "Avaa keskustelu",
+      "callElection": "Järjestä vaali",
+      "addBoardTerm": "Lisää hallituskausi"
+    },
+    "keyboardHelp": {
+      "pageTour": "Sivun esittely",
+      "tourToggle": "Avaa tai sulje sivun opastettu esittely",
+      "tourPrevious": "Edellinen esittelyvaihe",
+      "tourNext": "Seuraava esittelyvaihe",
+      "tourClose": "Sulje esittely",
+      "tourNote": "Sivupalkki esitellään kaikkialla, yläpalkki vain etusivulla ja Studion ja Hallinnan kohdat, kun olet niissä osioissa.",
+      "navigation": "Navigointi",
+      "listen": "Kuuntele",
+      "radio": "Radio",
+      "feed": "Syöte",
+      "library": "Oma kirjasto",
+      "studio": "Studio",
+      "player": "Soitin",
+      "playPause": "Toista / tauko (kun kappale on ladattu)",
+      "fullScreen": "Koko näytön soitin päälle tai pois (kun kappale on ladattu)",
+      "skipBack": "Siirry taaksepäin (pituus asetetaan kohdassa Asetukset → Toisto)",
+      "skipForward": "Siirry eteenpäin",
+      "notes": "Huomioita",
+      "typingNote": "Pikanäppäimet eivät toimi, kun kirjoitat tekstikenttään, tekstialueeseen, pudotusvalikkoon tai muuhun muokattavaan sisältöön."
+    },
+    "channelModerators": {
+      "title": "Kanavan moderaattorit",
+      "description": "Ihmiset, joihin luotat kanavasi chatin hoidossa: he voivat poistaa viestejä ja estää ihmisiä kirjoittamasta. He eivät voi muuttaa kanavaasi tai sen asetuksia. Tahti kertoo heille, kun lisäät heidät.",
+      "remove": "Poista moderaattori",
+      "removeNamed": "Poista {{name}} moderaattoreista",
+      "username": "Käyttäjänimi",
+      "usernamePlaceholder": "kuuntelijan-nimi",
+      "add": "Lisää moderaattori",
+      "added": "{{name}} lisättiin moderaattoriksi. Hänelle on ilmoitettu.",
+      "undone": "{{name}} poistettiin.",
+      "removeConfirmNamed": "Poistetaanko {{name}} moderaattoreista?",
+      "removeConfirm": "Poistetaanko moderaattori?",
+      "removeConfirmDescription": "Hän menettää chatin moderointioikeudet tällä kanavalla."
     }
   },
   "studioEditor": {

@@ -1,3 +1,4 @@
+import { PlusIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -42,22 +43,19 @@ export function electionStage(election: AdminElection): {
   return { label: 'Nominations open', color: 'green' };
 }
 
-function NewElectionForm({ onCreated }: { onCreated: () => void }) {
-  const [open, setOpen] = useState(false);
+function NewElectionForm({
+  onClose,
+  onCreated,
+}: {
+  onClose: () => void;
+  onCreated: () => void;
+}) {
   const [title, setTitle] = useState('');
   const [role, setRole] = useState<GovernanceBoardRole>('MEMBER');
   const [seats, setSeats] = useState('1');
   const [closeAt, setCloseAt] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  if (!open) {
-    return (
-      <Button size="sm" className="w-fit" onClick={() => setOpen(true)}>
-        Call an election
-      </Button>
-    );
-  }
 
   return (
     <form
@@ -86,7 +84,7 @@ function NewElectionForm({ onCreated }: { onCreated: () => void }) {
             setError(result.error);
             return;
           }
-          setOpen(false);
+          onClose();
           setTitle('');
           setCloseAt('');
           onCreated();
@@ -135,7 +133,7 @@ function NewElectionForm({ onCreated }: { onCreated: () => void }) {
           size="sm"
           variant="secondary"
           disabled={busy}
-          onClick={() => setOpen(false)}
+          onClick={() => onClose()}
         >
           Cancel
         </Button>
@@ -149,6 +147,8 @@ export function ElectionsAdminPanel() {
   const { t } = useTranslation('web');
   const [elections, setElections] = useState<AdminElection[] | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [composing, setComposing] = useState(false);
+  const showEmpty = elections?.length === 0 && !loadError;
 
   const load = useCallback(async () => {
     const result = await fetchAdminElections();
@@ -164,7 +164,17 @@ export function ElectionsAdminPanel() {
 
   return (
     <StudioPanel title="Elections">
-      <NewElectionForm onCreated={() => void load()} />
+      {composing ? (
+        <NewElectionForm
+          onClose={() => setComposing(false)}
+          onCreated={() => void load()}
+        />
+      ) : elections === null || showEmpty ? null : (
+        <Button size="sm" className="w-fit" onClick={() => setComposing(true)}>
+          <PlusIcon size={16} aria-hidden />
+          {t('adminGovernance.callElection')}
+        </Button>
+      )}
       {elections === null ? (
         <PageLoading label={t('loading.loadingElections')} />
       ) : loadError && elections.length === 0 ? (
@@ -177,7 +187,21 @@ export function ElectionsAdminPanel() {
           }}
         />
       ) : elections.length === 0 ? (
-        <PageEmpty title={t('empties.noElectionsCalledYet')} />
+        <PageEmpty
+          title={t('empties.noElectionsCalledYet')}
+          action={
+            composing ? undefined : (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setComposing(true)}
+              >
+                <PlusIcon size={16} aria-hidden />
+                {t('adminGovernance.callElection')}
+              </Button>
+            )
+          }
+        />
       ) : (
         <ul className="divide-border divide-y">
           {elections.map((election) => {

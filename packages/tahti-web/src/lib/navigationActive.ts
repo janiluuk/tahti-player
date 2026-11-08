@@ -165,8 +165,6 @@ function isListenSidebarRoute(path: string): boolean {
     path.startsWith('/r/') ||
     path.startsWith('/c/') ||
     path.startsWith('/u/') ||
-    path === '/search' ||
-    path.startsWith('/search/') ||
     path.startsWith('/v/')
   );
 }
@@ -196,4 +194,5 @@ export const SIDEBAR_UNLIT_INTENTIONAL: readonly string[] = [
   '/venues',
   '/schedule',
   '/messages',
+  '/search',
 ];
