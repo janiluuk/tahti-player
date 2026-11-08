@@ -40,7 +40,9 @@ export function PlayerWaveform({
   const totalDuration = durationSec ?? (isCurrent ? duration : 0);
   // Tracks without stored peaks reuse what a list row already decoded for
   // the same track, instead of the flat placeholder.
-  const decoded = trackId ? getDecodedPeaks(trackId)?.peaks[0] : undefined;
+  const decoded = trackId
+    ? getDecodedPeaks(trackId, { durationSec: totalDuration })?.peaks[0]
+    : undefined;
   const resolvedPeaks =
     (peaks?.length ? peaks : null) ??
     (isCurrent && currentPeaks?.length ? currentPeaks : null) ??
