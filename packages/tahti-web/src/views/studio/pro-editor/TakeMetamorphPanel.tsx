@@ -1,6 +1,7 @@
 import { useState } from 'react';
 
 import { loadBlobOntoNewTrack } from '@tahti-player/audio-editor';
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { StudioPanel } from '../../../components/StudioPanel';
@@ -17,20 +18,20 @@ export function TakeMetamorphPanel({
   /** Called with the new clip's provenance name once it is on the arrange. */
   onAdded?: (name: string) => void;
 }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   return (
     <StudioPanel
-      title="Metamorph between takes"
-      description="Same song, new skin: keep one version's timing and bleed in the sound of another."
+      title={t('takeMetamorphPanel.metamorphBetweenTakes')}
+      description={t('takeMetamorphPanel.sameSongNewSkinKeep')}
       action={
         <Button size="sm" variant="secondary" onClick={() => setOpen(true)}>
-          Morph versions
+          {t('takeMetamorphPanel.morphVersions')}
         </Button>
       }
     >
       <p className="text-foreground-secondary text-sm">
-        The morph renders in this browser and lands on its own lane, named after
-        the two versions it came from. Bounce to publish it as a revision.
+        {t('takeMetamorphPanel.theMorphRendersInThis')}
       </p>
       <TakeMetamorphDialog
         isOpen={open}

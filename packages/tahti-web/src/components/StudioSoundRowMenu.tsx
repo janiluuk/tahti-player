@@ -9,6 +9,7 @@ import {
   WrenchIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip, TrackContextMenu } from '@tahti-player/ui';
 
 import type { StudioSound } from '../api/studio-types';
@@ -31,13 +32,14 @@ export function StudioSoundRowMenu({
   onTogglePin,
   onDelete,
 }: StudioSoundRowMenuProps) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const masteringEnabled = useMasteringFeatureStore((state) => state.enabled);
   const pinned = isPinned(item);
 
   return (
     <TrackContextMenu>
-      <Tooltip content="More" side="top">
+      <Tooltip content={t('studioSoundRowMenu.more')} side="top">
         <TrackContextMenu.Trigger>
           <Button
             size="icon-sm"
@@ -64,7 +66,7 @@ export function StudioSoundRowMenu({
         {!hasEmbed ? (
           <TrackContextMenu.Submenu>
             <TrackContextMenu.Submenu.Trigger icon={<WrenchIcon size={16} />}>
-              Audio tools
+              {t('studioSoundRowMenu.audioTools')}
             </TrackContextMenu.Submenu.Trigger>
             <TrackContextMenu.Submenu.Content>
               <TrackContextMenu.Action
@@ -76,7 +78,7 @@ export function StudioSoundRowMenu({
                   })
                 }
               >
-                Open in Pro Editor
+                {t('studioSoundRowMenu.openInProEditor')}
               </TrackContextMenu.Action>
               {masteringEnabled ? (
                 <TrackContextMenu.Action
@@ -88,7 +90,7 @@ export function StudioSoundRowMenu({
                     })
                   }
                 >
-                  Reference mastering
+                  {t('studioSoundRowMenu.referenceMastering')}
                 </TrackContextMenu.Action>
               ) : null}
             </TrackContextMenu.Submenu.Content>
@@ -98,7 +100,7 @@ export function StudioSoundRowMenu({
           icon={<Trash2Icon className="text-accent-red" size={16} />}
           onClick={onDelete}
         >
-          Delete
+          {t('studioSoundRowMenu.delete')}
         </TrackContextMenu.Action>
       </TrackContextMenu.Content>
     </TrackContextMenu>

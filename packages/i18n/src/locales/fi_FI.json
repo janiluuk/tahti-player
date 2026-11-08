@@ -6239,6 +6239,291 @@
       "listenToRecording": "Kuuntele tallenne",
       "greenRoom": "Green room",
       "openGreenRoom": "Avaa green room"
+    },
+    "studioSoundRowMenu": {
+      "audioTools": "Äänityökalut",
+      "openInProEditor": "Avaa Pro Editorissa",
+      "referenceMastering": "Referenssimasterointi",
+      "delete": "Poista",
+      "more": "Lisää"
+    },
+    "studioTrackInsightsView": {
+      "sounds": "Äänet",
+      "releaseStats": "Julkaisujen tilastot",
+      "releases": "Julkaisut",
+      "trackInsights": "Kappaleen tilastot"
+    },
+    "soundHeader": {
+      "quickEdits": "Pikamuokkaukset",
+      "openAudioEditor": "Avaa äänieditori",
+      "editDetails": "Muokkaa tietoja"
+    },
+    "takeMetamorphPanel": {
+      "morphVersions": "Muunna versiot",
+      "theMorphRendersInThis": "Muunnos renderöidään tässä selaimessa omalle raidalleen, joka nimetään niiden kahden version mukaan, joista se syntyi. Bouncaa se julkaistaksesi sen versiona.",
+      "metamorphBetweenTakes": "Metamorfoosi ottojen välillä",
+      "sameSongNewSkinKeep": "Sama kappale, uusi asu: pidä yhden version ajoitus ja sekoita mukaan toisen soundi."
+    },
+    "regionList": {
+      "clearMarkers": "Tyhjennä merkit",
+      "cuts": "Leikkaukset",
+      "fades": "Häivytykset",
+      "markers": "Merkit"
+    },
+    "greenRoomInviteForm": {
+      "invite": "Kutsu",
+      "inviteByHandle": "Kutsu käyttäjänimellä",
+      "theyGetANotificationWith": "Hän saa ilmoituksen ja linkin liittymiseen.",
+      "suggestedGuests": "Ehdotetut vieraat"
+    },
+    "collectionHeader": {
+      "play": "Soita",
+      "backdrop": "Taustakuva",
+      "editDetails": "Muokkaa tietoja",
+      "addAllToQueue": "Lisää kaikki jonoon"
+    },
+    "profileLogoSection": {
+      "removeLogo": "Poista logo",
+      "logo": "Logo",
+      "aTransparentLogoDrawnOver": "Läpinäkyvä logo avatarisi, kansikuvasi tai molempien päällä.",
+      "logoPlacement": "Logon sijainti"
+    },
+    "signupPaymentView": {
+      "membership": "Jäsenyys",
+      "supportTheTahtiCooperativeAnd": "Tue Tahti-osuuskuntaa ja saat FLAC-suoratoiston, stash-tallennustilan ja äänioikeuden vuosikokouksessa.",
+      "completeTheSecureCheckoutTo": "Viimeistele turvallinen maksu aktivoidaksesi jäsenyytesi.",
+      "account": "Tili"
+    },
+    "newsFeedUrlField": {
+      "newsFeed": "Uutissyöte",
+      "anRssOrAtomFeed": "RSS- tai Atom-syöte, esim. blogisi tai Bandcamp-uutisesi. Sen uusimmat julkaisut näkyvät artistisivullasi. Jätä tyhjäksi piilottaaksesi ne.",
+      "feedUrl": "Syötteen osoite",
+      "saveNewsFeed": "Tallenna uutissyöte"
+    },
+    "forgotPasswordView": {
+      "resetYourPassword": "Nollaa salasanasi",
+      "enterTheEmailOnYour": "Anna tilisi sähköpostiosoite, niin lähetämme linkin uuden salasanan valitsemiseen.",
+      "logIn": "Kirjaudu sisään",
+      "email": "Sähköposti"
+    },
+    "selectsGenerateDialog": {
+      "fillFromTheTopList": "Täytä suosituimmista",
+      "picksThe10MostPlayed": "Valitsee 10 soitetuinta julkista kappaletta, jotka eivät vielä ole rotaatiossa, ja täydentää uusimmilla latauksilla, jos niitä ei ole tarpeeksi.",
+      "cancel": "Peruuta",
+      "howToFillTheRotation": "Miten rotaatio täytetään"
+    },
+    "governanceDocumentRow": {
+      "archived": "Arkistoitu",
+      "saveTitle": "Tallenna otsikko",
+      "cancel": "Peruuta",
+      "title": "Otsikko"
+    },
+    "trackExportPanel": {
+      "perTrackExport": "Kappalekohtainen vienti",
+      "connectMixcloud": "Yhdistä Mixcloud",
+      "openOnMixcloud": "Avaa Mixcloudissa",
+      "exportAdded": "Vienti lisätty"
+    },
+    "trackExportConnections": {
+      "testTheConnectionThenEnable": "Testaa yhteys ja ota se käyttöön yhdistämällä tilisi.",
+      "thisProviderDoesnAposT": "Tähän palveluun ei voi vielä yhdistää.",
+      "done": "Valmis",
+      "connectedAccounts": "Yhdistetyt tilit"
+    },
+    "downloadGateSection": {
+      "requireAFollow": "Vaadi seuraaminen",
+      "listenersFollowYouBeforeThe": "Kuuntelijat seuraavat sinua ennen latauksen alkua.",
+      "requireARepost": "Vaadi uudelleenjako",
+      "listenersRepostTheTrackBefore": "Kuuntelijat jakavat kappaleen uudelleen ennen latauksen alkua."
+    },
+    "advancedTab": {
+      "addThisTrackToPlaylists": "Lisää tämä kappale soittolistoihin",
+      "chooseOneOrMoreExisting": "Valitse yksi tai useampi soittolista tai luo uusi.",
+      "choosePlaylists": "Valitse soittolistat",
+      "licenseOptional": "Lisenssi (valinnainen)"
+    },
+    "managerDialogs": {
+      "streamOverlay": "Lähetyksen peitekuva",
+      "stopYourLiveStream": "Lopetetaanko livelähetys?",
+      "listenersWillHearThe24": "Kuuntelijat kuulevat sen sijaan ympärivuorokautisen rotaation. Voit mennä livenä uudelleen milloin tahansa.",
+      "cancel": "Peruuta"
+    },
+    "signalCheckWidget": {
+      "testConnection": "Testaa yhteys",
+      "thisDashboardChecksYourSignal": "Tämä näkymä tarkistaa signaalisi neljän sekunnin välein.",
+      "inputLevelL": "Tulotaso · V",
+      "inputLevelR": "Tulotaso · O"
+    },
+    "rightRailPanel": {
+      "pageComments": "Sivun kommentit",
+      "queue": "Jono",
+      "openPageComments": "Avaa sivun kommentit",
+      "openQueue": "Avaa jono"
+    },
+    "serverSetupHelp": {
+      "untilThenYouCanUpload": "Siihen asti voit ladata tiedostot itse.",
+      "uploadFiles": "Lataa tiedostoja",
+      "copyRedirectUrl": "Kopioi uudelleenohjausosoite"
+    },
+    "multitrackTimeline": {
+      "addANativeArchiveSource": "Lisää arkistolähde aloittaaksesi istunnon.",
+      "zoomOut": "Loitonna",
+      "zoomIn": "Lähennä",
+      "playhead": "Toistokohta"
+    },
+    "mikseriSidebarWidget": {
+      "loadPlayer": "Lataa soitin",
+      "mikseriNetPlaylist": "Mikseri.net-soittolista",
+      "manageMikseriWidgets": "Hallitse Mikseri-pienoisohjelmia"
+    },
+    "materialGenreField": {
+      "genre": "Tyylilaji",
+      "mainGenre": "Päätyylilaji",
+      "selectAGenre": "Valitse tyylilaji",
+      "subGenres": "Alatyylilajit"
+    },
+    "localLibraryTools": {
+      "libraryTools": "Kirjaston työkalut",
+      "findDuplicates": "Etsi kaksoiskappaleet",
+      "history": "Historia",
+      "restore": "Palauta…"
+    },
+    "imageSlotPreviewDialog": {
+      "delete": "Poista",
+      "change": "Vaihda",
+      "removeImage": "Poista kuva",
+      "thisCanTBeUndone": "Tätä ei voi perua täältä. Sinun on ladattava uusi kuva tilalle."
+    },
+    "motionCirculateControl": {
+      "circulateForSeconds": "Lähetä kannatettavaksi",
+      "circulateThisDraft": "Lähetetäänkö luonnos kannatettavaksi?",
+      "everyMemberGetsANotice": "Jokainen jäsen saa ilmoituksen, jossa pyydetään lukemaan luonnos ja kannattamaan sitä. Luonnos lähetetään vain kerran.",
+      "circulate": "Lähetä"
+    },
+    "desktopUpdatesRow": {
+      "restartToFinish": "Käynnistä uudelleen viimeistelläksesi",
+      "checkNow": "Tarkista nyt",
+      "checkForUpdates": "Tarkista päivitykset",
+      "updateDownload": "Päivityksen lataus"
+    },
+    "desktopLibraryDialogs": {
+      "theyAreOnlyRemovedFrom": "Ne poistetaan vain Tahti-kirjastostasi. Levyllä oleviin äänitiedostoihin ei kosketa.",
+      "remove": "Poista",
+      "stopWatchingThisFolder": "Lopetetaanko tämän kansion seuraaminen?",
+      "stopWatching": "Lopeta seuranta"
+    },
+    "channelEditToolbar": {
+      "channelDesign": "Kanavan ulkoasu",
+      "revertChanges": "Peru muutokset",
+      "done": "Valmis",
+      "saveChanges": "Tallenna muutokset"
+    },
+    "channelLinksEditor": {
+      "useAnHttpSOr": "Käytä http(s)- tai mailto:-linkkiä",
+      "addLink": "Lisää linkki",
+      "labelEGBandcamp": "Nimi (esim. Bandcamp)",
+      "removeLink": "Poista linkki"
+    },
+    "channelElementEditor": {
+      "channelLookEditor": "Kanavan ulkoasueditori",
+      "section": "Osio",
+      "previousSection": "Edellinen osio",
+      "nextSection": "Seuraava osio"
+    },
+    "playerVisualizerControls": {
+      "audioReactive": "Reagoi ääneen",
+      "chooseVisualizer": "Valitse visualisointi",
+      "previousVisualizer": "Edellinen visualisointi",
+      "nextVisualizer": "Seuraava visualisointi"
+    },
+    "playerGradientControls": {
+      "useASeparateGradientFor": "Käytä soittimelle omaa liukuväriä",
+      "offByDefaultThePlayer": "Oletuksena pois: soitin käyttää yllä kanavan otsakkeelle asetettua liukuväriä.",
+      "gradientPresets": "Valmiit liukuvärit",
+      "thePlayerCurrentlyMatchesThe": "Soitin käyttää nyt kanavan otsakkeen liukuväriä, joka asetetaan kohdassa Otsake."
+    },
+    "voiceRecorder": {
+      "useRecording": "Käytä äänitystä",
+      "microphone": "Mikrofoni",
+      "microphoneLevel": "Mikrofonin taso",
+      "recordedVoicePreview": "Äänitetyn puheen esikuuntelu"
+    },
+    "artistMusicTab": {
+      "managePlaylist": "Hallitse soittolistaa",
+      "pinned": "Kiinnitetyt",
+      "managePinsInStudio": "Hallitse kiinnityksiä Studiossa",
+      "trackEngagement": "Kappaleiden suosio"
+    },
+    "albumPlayPromptDialog": {
+      "somethingAposSAlreadyQueued": "Jonossa on jo jotain. Lisätäänkö tämä albumi jonon loppuun vai soitetaanko se heti?",
+      "cancel": "Peruuta",
+      "queueAlbum": "Lisää albumi jonoon",
+      "playNow": "Soita nyt"
+    },
+    "appErrorFallback": {
+      "tryAgain": "Yritä uudelleen",
+      "backToListen": "Takaisin Kuuntele-sivulle",
+      "somethingWentWrong": "Jokin meni vikaan",
+      "thisPageHitAnUnexpected": "Sivulla tapahtui odottamaton virhe. Yritä uudelleen tai palaa Kuuntele-sivulle."
+    },
+    "overviewTab": {
+      "revenue": "Tulot",
+      "keyMetrics": "Tärkeimmät luvut",
+      "engagementUnits": "Sitoutumisyksiköt"
+    },
+    "hourlyDialog": {
+      "distributionOfPlaysAcrossThe": "Soittojen jakautuminen vuorokauden ajalle. Vertaa napsauttamalla toista päivää kaaviossa.",
+      "close": "Sulje",
+      "loadingHours": "Ladataan tunteja…"
+    },
+    "releaseTrackAudioUpload": {
+      "processing": "Käsitellään",
+      "close": "Sulje",
+      "processingFailed": "Käsittely epäonnistui"
+    },
+    "releaseCsvImportButton": {
+      "importReleasesFromCsv": "Tuo julkaisut CSV-tiedostosta",
+      "importFromCsv": "Tuo CSV:stä",
+      "csvRows": "CSV-rivit"
+    },
+    "waveformEditor": {
+      "showingTheBasicWaveformThe": "Näytetään perusaaltomuoto: tarkempi editori ei käynnistynyt tässä selaimessa. Muokkaus, zoomaus ja pikanäppäimet toimivat silti.",
+      "effectsArenTHeardIn": "Efektit eivät vielä kuulu tässä esikuuntelussa: tiedoston palvelin ei salli selaimen käsitellä sitä. Kuulet sen käsittelemättömänä, kunnes editorilla on oma kopio; renderöinnit käyttävät silti kaikkia efektejä."
+    },
+    "signalPanel": {
+      "showInfo": "Ohjelman tiedot",
+      "addYourShowNameAnd": "Lisää ohjelman nimi ja tiedot ennen kuin menet livenä.",
+      "confirmShowInfoAbove": "Vahvista ohjelman tiedot yllä"
+    },
+    "profileBackdropSection": {
+      "removeBackdrop": "Poista taustakuva",
+      "profileBackdrop": "Profiilin taustakuva",
+      "aWideImageBehindYour": "Leveä kuva artistisivusi otsakkeen takana. Kanavasi diaesitys näytetään sen sijaan, jos se on asetettu."
+    },
+    "avatarThemePicker": {
+      "avatarColour": "Avatarin väri",
+      "fillsYourAvatarWhileYou": "Täyttää avatarisi, kun sinulla ei ole profiilikuvaa.",
+      "default": "Oletus"
+    },
+    "memberPicker": {
+      "change": "Vaihda",
+      "searchMembersByNameOr": "Hae jäseniä nimellä tai käyttäjänimellä",
+      "matchingMembers": "Löydetyt jäsenet"
+    },
+    "announcementTrimDialog": {
+      "theTrimIsAlwaysCut": "Rajaus leikataan aina alkuperäisestä latauksesta, joten voit muuttaa sitä myöhemmin laadun kärsimättä.",
+      "cancel": "Peruuta",
+      "loadingTheOriginalUpload": "Ladataan alkuperäistä tiedostoa…"
+    },
+    "trackEditorDialog": {
+      "changesAreKeptInYour": "Muutokset säilyvät kirjastossasi ja uudelleenskannauksissa; äänitiedostoja ei muuteta. Jätä kenttä koskematta säilyttääksesi kunkin kappaleen oman arvon.",
+      "cancel": "Peruuta",
+      "loading": "Ladataan…"
+    },
+    "rotationEmptyWarning": {
+      "nothingWillPlayOnThis": "Tällä kanavalla ei soi mitään, kun se ei ole livenä. Lisää kappaleita rotaatioon, jotta kuuntelijat kuulevat aina jotain.",
+      "manage247Rotation": "Hallitse 24/7-rotaatiota",
+      "the247RotationIs": "24/7-rotaatio on tyhjä"
     }
   },
   "studioEditor": {

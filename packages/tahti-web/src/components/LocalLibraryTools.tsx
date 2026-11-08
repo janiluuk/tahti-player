@@ -8,7 +8,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Loader } from '@tahti-player/ui';
 
 import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
@@ -26,6 +26,7 @@ type Props = {
 
 /** Library upkeep: duplicate review, missing artwork and catalog backup/restore. */
 export function LocalLibraryTools({ library, onChanged }: Props) {
+  const { t } = useTranslation('web');
   const [duplicatesOpen, setDuplicatesOpen] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const [backingUp, setBackingUp] = useState(false);
@@ -70,7 +71,9 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
         className="border-border flex flex-wrap items-center gap-1 rounded-md border p-2"
         data-testid="library-tools"
       >
-        <p className="flex-1 text-xs font-semibold">Library tools</p>
+        <p className="flex-1 text-xs font-semibold">
+          {t('localLibraryTools.libraryTools')}
+        </p>
         <Button
           className="gap-1.5"
           size="sm"
@@ -78,7 +81,7 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
           onClick={() => setDuplicatesOpen(true)}
         >
           <CopyIcon size={14} aria-hidden />
-          Find duplicates
+          {t('localLibraryTools.findDuplicates')}
         </Button>
         <Button
           className="gap-1.5"
@@ -87,7 +90,7 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
           onClick={() => setHistoryOpen(true)}
         >
           <HistoryIcon size={14} aria-hidden />
-          History
+          {t('localLibraryTools.history')}
         </Button>
         {artwork.available ? (
           <Button
@@ -126,7 +129,7 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
           onClick={() => void chooseBackup()}
         >
           <ArchiveRestoreIcon size={14} aria-hidden />
-          Restore…
+          {t('localLibraryTools.restore')}
         </Button>
         <DuplicatesDialog
           isOpen={duplicatesOpen}

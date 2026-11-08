@@ -1,5 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import type {
   NativeFilterOptions,
   NativeLibraryRoot,
@@ -70,6 +72,7 @@ export function DesktopLibraryDialogs({
   onRemove,
   onRemoveRoot,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <>
       {library ? (
@@ -128,8 +131,8 @@ export function DesktopLibraryDialogs({
             ? `Remove ${pendingRemoval.ids.length.toLocaleString('en-US')} tracks from the library?`
             : 'Remove this track from the library?'
         }
-        description="They are only removed from your Tahti library. The audio files on disk are not touched."
-        confirmLabel="Remove"
+        description={t('desktopLibraryDialogs.theyAreOnlyRemovedFrom')}
+        confirmLabel={t('desktopLibraryDialogs.remove')}
         onCancel={() => setPendingRemoval(null)}
         onConfirm={() => {
           const pending = pendingRemoval;
@@ -142,9 +145,9 @@ export function DesktopLibraryDialogs({
       <ConfirmDialog
         isOpen={rootToRemove !== null}
         destructive
-        title="Stop watching this folder?"
+        title={t('desktopLibraryDialogs.stopWatchingThisFolder')}
         description={`“${rootToRemove ? basename(rootToRemove.path) : ''}” will no longer be scanned for new files. Its tracks stay in your library and no files on disk are touched.`}
-        confirmLabel="Stop watching"
+        confirmLabel={t('desktopLibraryDialogs.stopWatching')}
         onCancel={() => setRootToRemove(null)}
         onConfirm={() => {
           const root = rootToRemove;

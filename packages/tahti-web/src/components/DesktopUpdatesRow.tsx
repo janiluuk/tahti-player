@@ -1,5 +1,6 @@
 import { useShallow } from 'zustand/react/shallow';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Meter } from '@tahti-player/ui';
 
 import { useDesktopUpdateStore } from '../lib/updates/desktopUpdates';
@@ -7,6 +8,7 @@ import { SettingsToggle } from '../views/settings/SettingsFields';
 
 /** Settings → Integrations in the desktop app: the installed version, a manual check and installing a newer release. */
 export function DesktopUpdatesRow() {
+  const { t } = useTranslation('web');
   const {
     status,
     update,
@@ -34,7 +36,7 @@ export function DesktopUpdatesRow() {
   return (
     <div className="flex flex-col gap-3" data-testid="integration-updates">
       <SettingsToggle
-        label="Check for updates"
+        label={t('desktopUpdatesRow.checkForUpdates')}
         description={`You have Tahti Player ${version}. When a new release is out, the app offers to install it.`}
         value={checkOnStart}
         onChange={setCheckOnStart}
@@ -46,7 +48,7 @@ export function DesktopUpdatesRow() {
           </Button>
         ) : status === 'ready' ? (
           <Button size="sm" onClick={() => void relaunch()}>
-            Restart to finish
+            {t('desktopUpdatesRow.restartToFinish')}
           </Button>
         ) : (
           <Button
@@ -55,7 +57,7 @@ export function DesktopUpdatesRow() {
             disabled={status === 'checking' || status === 'installing'}
             onClick={() => void check()}
           >
-            Check now
+            {t('desktopUpdatesRow.checkNow')}
           </Button>
         )}
         <p className="text-foreground-secondary text-sm" role="status">
@@ -73,7 +75,10 @@ export function DesktopUpdatesRow() {
         </p>
       </div>
       {status === 'installing' ? (
-        <Meter value={progress} aria-label="Update download" />
+        <Meter
+          value={progress}
+          aria-label={t('desktopUpdatesRow.updateDownload')}
+        />
       ) : null}
       {status === 'available' && update?.notes ? (
         <p className="text-foreground-secondary text-sm whitespace-pre-wrap">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input } from '@tahti-player/ui';
 
 import { fetchAdminUsers, type AdminUserRow } from '../../../../api/admin';
@@ -23,6 +24,7 @@ export function MemberPicker({
   value: PickedMember | null;
   onChange: (member: PickedMember | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<AdminUserRow[]>([]);
 
@@ -60,7 +62,7 @@ export function MemberPicker({
           variant="secondary"
           onClick={() => onChange(null)}
         >
-          Change
+          {t('memberPicker.change')}
         </Button>
       </div>
     );
@@ -72,12 +74,15 @@ export function MemberPicker({
         enterKeyHint="search"
         type="search"
         label={label}
-        placeholder="Search members by name or username"
+        placeholder={t('memberPicker.searchMembersByNameOr')}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />
       {results.length > 0 ? (
-        <ul aria-label="Matching members" className="flex flex-col gap-1">
+        <ul
+          aria-label={t('memberPicker.matchingMembers')}
+          className="flex flex-col gap-1"
+        >
           {results.map((user) => (
             <li key={user.id}>
               <Button

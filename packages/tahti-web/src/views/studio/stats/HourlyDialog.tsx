@@ -1,9 +1,11 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Dialog, InlineLoader, ListeningClock } from '@tahti-player/ui';
 
 import { formatDate } from './helpers';
 import type { StatsData } from './useStatsData';
 
 export function HourlyDialog({ state }: { state: StatsData }) {
+  const { t } = useTranslation('web');
   const { selectedDay, setSelectedDay, hourlyLoading, hourly } = state;
 
   return (
@@ -18,12 +20,11 @@ export function HourlyDialog({ state }: { state: StatsData }) {
           : 'Hourly plays'}
       </Dialog.Title>
       <Dialog.Description>
-        Distribution of plays across the day. Click another day on the chart to
-        compare.
+        {t('hourlyDialog.distributionOfPlaysAcrossThe')}
       </Dialog.Description>
       <div className="mt-4 min-h-48">
         {hourlyLoading ? (
-          <InlineLoader label="Loading hours…" />
+          <InlineLoader label={t('hourlyDialog.loadingHours')} />
         ) : (
           <ListeningClock
             values={hourly}
@@ -37,7 +38,7 @@ export function HourlyDialog({ state }: { state: StatsData }) {
         )}
       </div>
       <Dialog.Actions>
-        <Dialog.Close>Close</Dialog.Close>
+        <Dialog.Close>{t('hourlyDialog.close')}</Dialog.Close>
       </Dialog.Actions>
     </Dialog.Root>
   );

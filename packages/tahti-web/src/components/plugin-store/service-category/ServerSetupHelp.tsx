@@ -1,6 +1,7 @@
 import { UploadIcon } from 'lucide-react';
 import { useContext } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, CopyButton, ExternalLink } from '@tahti-player/ui';
 
 import { apiBase } from '../../../api/http';
@@ -42,6 +43,7 @@ export function ServerSetupHelp({
   integrationId: IntegrationId;
   name: string;
 }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((state) => state.user);
   const setup = SERVER_SETUP[integrationId];
   const callbackUrl = `${apiBase() || window.location.origin}/api/me/${integrationId}/oauth/callback`;
@@ -70,7 +72,7 @@ export function ServerSetupHelp({
               text={callbackUrl}
               size="icon-sm"
               variant="text"
-              aria-label="Copy redirect URL"
+              aria-label={t('serverSetupHelp.copyRedirectUrl')}
               className="ml-1 align-middle"
             />
           </li>
@@ -86,7 +88,7 @@ export function ServerSetupHelp({
         </ol>
       ) : (
         <p className="text-foreground-secondary">
-          Until then you can upload the files yourself.
+          {t('serverSetupHelp.untilThenYouCanUpload')}
         </p>
       )}
       <ButtonLink
@@ -100,7 +102,7 @@ export function ServerSetupHelp({
         }}
       >
         <UploadIcon size={14} aria-hidden />
-        Upload files
+        {t('serverSetupHelp.uploadFiles')}
       </ButtonLink>
     </div>
   );

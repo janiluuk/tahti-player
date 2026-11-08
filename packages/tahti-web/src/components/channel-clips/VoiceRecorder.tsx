@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { encodeWav } from '@tahti-player/audio-editor';
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Select } from '@tahti-player/ui';
 
 export function VoiceRecorder({
@@ -10,6 +11,7 @@ export function VoiceRecorder({
   onUse: (file: File) => void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [deviceId, setDeviceId] = useState('default');
   const [state, setState] = useState<
@@ -206,7 +208,7 @@ export function VoiceRecorder({
       <div className="flex flex-wrap items-end gap-3">
         <div className="min-w-48 flex-1">
           <Select
-            label="Microphone"
+            label={t('voiceRecorder.microphone')}
             value={deviceId}
             disabled={state !== 'idle' || disabled}
             options={[
@@ -241,7 +243,12 @@ export function VoiceRecorder({
       {state === 'recording' && (
         <div role="status" className="flex items-center gap-3 text-sm">
           <span>{Math.floor(seconds)} s · recording WAV</span>
-          <meter aria-label="Microphone level" min={0} max={1} value={level} />
+          <meter
+            aria-label={t('voiceRecorder.microphoneLevel')}
+            min={0}
+            max={1}
+            value={level}
+          />
           <span>
             {level >= 0.98 ? 'Too loud — lower your microphone gain' : ''}
           </span>
@@ -253,7 +260,11 @@ export function VoiceRecorder({
       </p>
       {url && (
         <>
-          <audio aria-label="Recorded voice preview" src={url} controls />
+          <audio
+            aria-label={t('voiceRecorder.recordedVoicePreview')}
+            src={url}
+            controls
+          />
           <Button
             disabled={disabled || state !== 'idle'}
             onClick={() => {
@@ -262,7 +273,7 @@ export function VoiceRecorder({
               }
             }}
           >
-            Use recording
+            {t('voiceRecorder.useRecording')}
           </Button>
         </>
       )}

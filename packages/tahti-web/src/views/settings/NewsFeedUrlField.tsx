@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Input, SaveButton } from '@tahti-player/ui';
 
 import { fetchMeProfile, patchMeProfile } from '../../api/studio-extras';
 import { SettingsHint } from './SettingsFields';
 
 export function NewsFeedUrlField() {
+  const { t } = useTranslation('web');
   const [url, setUrl] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
 
@@ -43,11 +45,10 @@ export function NewsFeedUrlField() {
   return (
     <section className="flex flex-col gap-3">
       <div>
-        <p className="text-foreground text-sm font-semibold">News feed</p>
-        <SettingsHint>
-          An RSS or Atom feed, e.g. your blog or Bandcamp news. Its latest posts
-          show on your artist page. Leave it empty to hide them.
-        </SettingsHint>
+        <p className="text-foreground text-sm font-semibold">
+          {t('newsFeedUrlField.newsFeed')}
+        </p>
+        <SettingsHint>{t('newsFeedUrlField.anRssOrAtomFeed')}</SettingsHint>
       </div>
       <form
         className="flex flex-col gap-3"
@@ -61,13 +62,17 @@ export function NewsFeedUrlField() {
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          label="Feed URL"
+          label={t('newsFeedUrlField.feedUrl')}
           value={url}
           placeholder="https://example.com/feed.xml"
           onChange={(e) => setUrl(e.target.value)}
         />
         <div className="flex justify-end">
-          <SaveButton label="Save news feed" saving={saving} type="submit" />
+          <SaveButton
+            label={t('newsFeedUrlField.saveNewsFeed')}
+            saving={saving}
+            type="submit"
+          />
         </div>
       </form>
     </section>

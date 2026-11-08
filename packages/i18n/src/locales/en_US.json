@@ -6239,6 +6239,291 @@
       "listenToRecording": "Listen to recording",
       "greenRoom": "Green room",
       "openGreenRoom": "Open green room"
+    },
+    "studioSoundRowMenu": {
+      "audioTools": "Audio tools",
+      "openInProEditor": "Open in Pro Editor",
+      "referenceMastering": "Reference mastering",
+      "delete": "Delete",
+      "more": "More"
+    },
+    "studioTrackInsightsView": {
+      "sounds": "Sounds",
+      "releaseStats": "Release stats",
+      "releases": "Releases",
+      "trackInsights": "Track insights"
+    },
+    "soundHeader": {
+      "quickEdits": "Quick edits",
+      "openAudioEditor": "Open audio editor",
+      "editDetails": "Edit details"
+    },
+    "takeMetamorphPanel": {
+      "morphVersions": "Morph versions",
+      "theMorphRendersInThis": "The morph renders in this browser and lands on its own lane, named after the two versions it came from. Bounce to publish it as a revision.",
+      "metamorphBetweenTakes": "Metamorph between takes",
+      "sameSongNewSkinKeep": "Same song, new skin: keep one version's timing and bleed in the sound of another."
+    },
+    "regionList": {
+      "clearMarkers": "Clear markers",
+      "cuts": "Cuts",
+      "fades": "Fades",
+      "markers": "Markers"
+    },
+    "greenRoomInviteForm": {
+      "invite": "Invite",
+      "inviteByHandle": "Invite by handle",
+      "theyGetANotificationWith": "They get a notification with a link to join.",
+      "suggestedGuests": "Suggested guests"
+    },
+    "collectionHeader": {
+      "play": "Play",
+      "backdrop": "Backdrop",
+      "editDetails": "Edit details",
+      "addAllToQueue": "Add all to queue"
+    },
+    "profileLogoSection": {
+      "removeLogo": "Remove logo",
+      "logo": "Logo",
+      "aTransparentLogoDrawnOver": "A transparent logo drawn over your avatar, your cover, or both.",
+      "logoPlacement": "Logo placement"
+    },
+    "signupPaymentView": {
+      "membership": "Membership",
+      "supportTheTahtiCooperativeAnd": "Support the Tahti cooperative and unlock FLAC streaming, stash storage, and a vote at the AGM.",
+      "completeTheSecureCheckoutTo": "Complete the secure checkout to activate your membership.",
+      "account": "Account"
+    },
+    "newsFeedUrlField": {
+      "newsFeed": "News feed",
+      "anRssOrAtomFeed": "An RSS or Atom feed, e.g. your blog or Bandcamp news. Its latest posts show on your artist page. Leave it empty to hide them.",
+      "feedUrl": "Feed URL",
+      "saveNewsFeed": "Save news feed"
+    },
+    "forgotPasswordView": {
+      "resetYourPassword": "Reset your password",
+      "enterTheEmailOnYour": "Enter the email on your account and we'll send a link to choose a new password.",
+      "logIn": "Log in",
+      "email": "Email"
+    },
+    "selectsGenerateDialog": {
+      "fillFromTheTopList": "Fill from the top list",
+      "picksThe10MostPlayed": "Picks the 10 most-played public tracks that aren't in the rotation yet, topped up with the newest uploads if there aren't enough.",
+      "cancel": "Cancel",
+      "howToFillTheRotation": "How to fill the rotation"
+    },
+    "governanceDocumentRow": {
+      "archived": "Archived",
+      "saveTitle": "Save title",
+      "cancel": "Cancel",
+      "title": "Title"
+    },
+    "trackExportPanel": {
+      "perTrackExport": "Per-track export",
+      "connectMixcloud": "Connect Mixcloud",
+      "openOnMixcloud": "Open on Mixcloud",
+      "exportAdded": "Export added"
+    },
+    "trackExportConnections": {
+      "testTheConnectionThenEnable": "Test the connection, then enable it by connecting your account.",
+      "thisProviderDoesnAposT": "This provider doesn't support connecting yet.",
+      "done": "Done",
+      "connectedAccounts": "Connected accounts"
+    },
+    "downloadGateSection": {
+      "requireAFollow": "Require a follow",
+      "listenersFollowYouBeforeThe": "Listeners follow you before the download starts.",
+      "requireARepost": "Require a repost",
+      "listenersRepostTheTrackBefore": "Listeners repost the track before the download starts."
+    },
+    "advancedTab": {
+      "addThisTrackToPlaylists": "Add this track to playlists",
+      "chooseOneOrMoreExisting": "Choose one or more existing playlists, or create a new one.",
+      "choosePlaylists": "Choose playlists",
+      "licenseOptional": "License (optional)"
+    },
+    "managerDialogs": {
+      "streamOverlay": "Stream overlay",
+      "stopYourLiveStream": "Stop your live stream?",
+      "listenersWillHearThe24": "Listeners will hear the 24/7 rotation instead. You can go live again any time.",
+      "cancel": "Cancel"
+    },
+    "signalCheckWidget": {
+      "testConnection": "Test connection",
+      "thisDashboardChecksYourSignal": "This dashboard checks your signal every four seconds.",
+      "inputLevelL": "Input level · L",
+      "inputLevelR": "Input level · R"
+    },
+    "rightRailPanel": {
+      "pageComments": "Page comments",
+      "queue": "Queue",
+      "openPageComments": "Open page comments",
+      "openQueue": "Open queue"
+    },
+    "serverSetupHelp": {
+      "untilThenYouCanUpload": "Until then you can upload the files yourself.",
+      "uploadFiles": "Upload files",
+      "copyRedirectUrl": "Copy redirect URL"
+    },
+    "multitrackTimeline": {
+      "addANativeArchiveSource": "Add a native archive source to begin a session.",
+      "zoomOut": "Zoom out",
+      "zoomIn": "Zoom in",
+      "playhead": "Playhead"
+    },
+    "mikseriSidebarWidget": {
+      "loadPlayer": "Load player",
+      "mikseriNetPlaylist": "Mikseri.net playlist",
+      "manageMikseriWidgets": "Manage Mikseri widgets"
+    },
+    "materialGenreField": {
+      "genre": "Genre",
+      "mainGenre": "Main genre",
+      "selectAGenre": "Select a genre",
+      "subGenres": "Sub-Genres"
+    },
+    "localLibraryTools": {
+      "libraryTools": "Library tools",
+      "findDuplicates": "Find duplicates",
+      "history": "History",
+      "restore": "Restore…"
+    },
+    "imageSlotPreviewDialog": {
+      "delete": "Delete",
+      "change": "Change",
+      "removeImage": "Remove image",
+      "thisCanTBeUndone": "This can't be undone from here — you'll need to upload a new image to replace it."
+    },
+    "motionCirculateControl": {
+      "circulateForSeconds": "Circulate for seconds",
+      "circulateThisDraft": "Circulate this draft?",
+      "everyMemberGetsANotice": "Every member gets a notice asking them to read the draft and second it. A draft is circulated once.",
+      "circulate": "Circulate"
+    },
+    "desktopUpdatesRow": {
+      "restartToFinish": "Restart to finish",
+      "checkNow": "Check now",
+      "checkForUpdates": "Check for updates",
+      "updateDownload": "Update download"
+    },
+    "desktopLibraryDialogs": {
+      "theyAreOnlyRemovedFrom": "They are only removed from your Tahti library. The audio files on disk are not touched.",
+      "remove": "Remove",
+      "stopWatchingThisFolder": "Stop watching this folder?",
+      "stopWatching": "Stop watching"
+    },
+    "channelEditToolbar": {
+      "channelDesign": "Channel design",
+      "revertChanges": "Revert changes",
+      "done": "Done",
+      "saveChanges": "Save changes"
+    },
+    "channelLinksEditor": {
+      "useAnHttpSOr": "Use an http(s) or mailto: link",
+      "addLink": "Add link",
+      "labelEGBandcamp": "Label (e.g. Bandcamp)",
+      "removeLink": "Remove link"
+    },
+    "channelElementEditor": {
+      "channelLookEditor": "Channel look editor",
+      "section": "Section",
+      "previousSection": "Previous section",
+      "nextSection": "Next section"
+    },
+    "playerVisualizerControls": {
+      "audioReactive": "Audio reactive",
+      "chooseVisualizer": "Choose visualizer",
+      "previousVisualizer": "Previous visualizer",
+      "nextVisualizer": "Next visualizer"
+    },
+    "playerGradientControls": {
+      "useASeparateGradientFor": "Use a separate gradient for the player",
+      "offByDefaultThePlayer": "Off by default — the player reuses the gradient set above for the channel header.",
+      "gradientPresets": "Gradient presets",
+      "thePlayerCurrentlyMatchesThe": "The player currently matches the channel header's gradient, set in Header."
+    },
+    "voiceRecorder": {
+      "useRecording": "Use recording",
+      "microphone": "Microphone",
+      "microphoneLevel": "Microphone level",
+      "recordedVoicePreview": "Recorded voice preview"
+    },
+    "artistMusicTab": {
+      "managePlaylist": "Manage playlist",
+      "pinned": "Pinned",
+      "managePinsInStudio": "Manage pins in Studio",
+      "trackEngagement": "Track engagement"
+    },
+    "albumPlayPromptDialog": {
+      "somethingAposSAlreadyQueued": "Something's already queued — add this album to the end, or play it now instead?",
+      "cancel": "Cancel",
+      "queueAlbum": "Queue album",
+      "playNow": "Play now"
+    },
+    "appErrorFallback": {
+      "tryAgain": "Try again",
+      "backToListen": "Back to Listen",
+      "somethingWentWrong": "Something went wrong",
+      "thisPageHitAnUnexpected": "This page hit an unexpected error. Try again, or go back to Listen."
+    },
+    "overviewTab": {
+      "revenue": "Revenue",
+      "keyMetrics": "Key metrics",
+      "engagementUnits": "Engagement units"
+    },
+    "hourlyDialog": {
+      "distributionOfPlaysAcrossThe": "Distribution of plays across the day. Click another day on the chart to compare.",
+      "close": "Close",
+      "loadingHours": "Loading hours…"
+    },
+    "releaseTrackAudioUpload": {
+      "processing": "Processing",
+      "close": "Close",
+      "processingFailed": "Processing failed"
+    },
+    "releaseCsvImportButton": {
+      "importReleasesFromCsv": "Import releases from CSV",
+      "importFromCsv": "Import from CSV",
+      "csvRows": "CSV rows"
+    },
+    "waveformEditor": {
+      "showingTheBasicWaveformThe": "Showing the basic waveform: the detailed editor couldn’t start in this browser. Editing, zoom and shortcuts still work.",
+      "effectsArenTHeardIn": "Effects aren’t heard in this preview yet: the file’s host doesn’t allow the browser to process it. You’re hearing it unprocessed until the editor has its own copy; renders still apply every effect."
+    },
+    "signalPanel": {
+      "showInfo": "Show info",
+      "addYourShowNameAnd": "Add your show name and details before going live.",
+      "confirmShowInfoAbove": "Confirm show info above"
+    },
+    "profileBackdropSection": {
+      "removeBackdrop": "Remove backdrop",
+      "profileBackdrop": "Profile backdrop",
+      "aWideImageBehindYour": "A wide image behind your artist page header. Your channel's slideshow, when set, is shown instead."
+    },
+    "avatarThemePicker": {
+      "avatarColour": "Avatar colour",
+      "fillsYourAvatarWhileYou": "Fills your avatar while you have no profile picture.",
+      "default": "Default"
+    },
+    "memberPicker": {
+      "change": "Change",
+      "searchMembersByNameOr": "Search members by name or username",
+      "matchingMembers": "Matching members"
+    },
+    "announcementTrimDialog": {
+      "theTrimIsAlwaysCut": "The trim is always cut from the original upload, so you can change it again later without losing quality.",
+      "cancel": "Cancel",
+      "loadingTheOriginalUpload": "Loading the original upload…"
+    },
+    "trackEditorDialog": {
+      "changesAreKeptInYour": "Changes are kept in your library and survive rescans; the audio files are not modified. Leave a field alone to keep each track’s own value.",
+      "cancel": "Cancel",
+      "loading": "Loading…"
+    },
+    "rotationEmptyWarning": {
+      "nothingWillPlayOnThis": "Nothing will play on this channel while it's not live. Add tracks to the rotation so listeners always hear something.",
+      "manage247Rotation": "Manage 24/7 rotation",
+      "the247RotationIs": "The 24/7 rotation is empty"
     }
   },
   "studioEditor": {

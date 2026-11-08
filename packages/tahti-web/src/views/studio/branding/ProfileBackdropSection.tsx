@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, FilePicker, ImageReveal } from '@tahti-player/ui';
 
 import {
@@ -17,6 +17,7 @@ export function ProfileBackdropSection({
   backdropUrl: string | null;
   onChange: (url: string | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const [busy, setBusy] = useState(false);
 
   const upload = async (files: readonly File[]) => {
@@ -48,8 +49,8 @@ export function ProfileBackdropSection({
 
   return (
     <StudioPanel
-      title="Profile backdrop"
-      description="A wide image behind your artist page header. Your channel's slideshow, when set, is shown instead."
+      title={t('profileBackdropSection.profileBackdrop')}
+      description={t('profileBackdropSection.aWideImageBehindYour')}
     >
       <div className="flex flex-col gap-3">
         {backdropUrl ? (
@@ -66,7 +67,7 @@ export function ProfileBackdropSection({
               disabled={busy}
               onClick={() => void remove()}
             >
-              Remove backdrop
+              {t('profileBackdropSection.removeBackdrop')}
             </Button>
           </div>
         ) : null}

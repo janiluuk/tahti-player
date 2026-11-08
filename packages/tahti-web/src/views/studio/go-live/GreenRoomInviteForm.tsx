@@ -2,6 +2,7 @@ import { UserPlusIcon } from 'lucide-react';
 import { useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input } from '@tahti-player/ui';
 
 import {
@@ -24,6 +25,7 @@ export function GreenRoomInviteForm({
   onInvited: (invite: GreenRoomInvite) => void;
   onSynced: (session: GreenRoomSession) => void;
 }) {
+  const { t } = useTranslation('web');
   const [handle, setHandle] = useState('');
   const [busy, setBusy] = useState<string | null>(null);
 
@@ -74,9 +76,9 @@ export function GreenRoomInviteForm({
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            label="Invite by handle"
+            label={t('greenRoomInviteForm.inviteByHandle')}
             placeholder="@username"
-            description="They get a notification with a link to join."
+            description={t('greenRoomInviteForm.theyGetANotificationWith')}
             value={handle}
             onChange={(event) => setHandle(event.target.value)}
           />
@@ -86,11 +88,14 @@ export function GreenRoomInviteForm({
           size="sm"
           disabled={busy !== null || !handle.trim()}
         >
-          Invite
+          {t('greenRoomInviteForm.invite')}
         </Button>
       </form>
       {suggestions.length > 0 ? (
-        <ul className="flex flex-wrap gap-2" aria-label="Suggested guests">
+        <ul
+          className="flex flex-wrap gap-2"
+          aria-label={t('greenRoomInviteForm.suggestedGuests')}
+        >
           {suggestions.map((candidate) => (
             <li key={candidate.userId}>
               <Button

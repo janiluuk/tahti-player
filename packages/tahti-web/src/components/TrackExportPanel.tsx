@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonAnchor, InlineError, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -36,6 +37,7 @@ function describe(status: TrackExportStatus): string {
 }
 
 export function TrackExportPanel({ soundId }: { soundId: string }) {
+  const { t } = useTranslation('web');
   const [status, setStatus] = useState<TrackExportStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
@@ -101,7 +103,7 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
   return (
     <section>
       <h3 className="text-foreground-secondary mb-2 text-xs font-semibold tracking-wide uppercase">
-        Per-track export
+        {t('trackExportPanel.perTrackExport')}
       </h3>
       <div className="border-border flex items-center gap-3 rounded-lg border px-3 py-2">
         <span
@@ -128,14 +130,14 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
           </p>
         </div>
         {status?.url ? (
-          <Tooltip content="Open on Mixcloud" side="top">
+          <Tooltip content={t('trackExportPanel.openOnMixcloud')} side="top">
             <ButtonAnchor
               href={status.url}
               target="_blank"
               rel="noreferrer noopener"
               size="icon-sm"
               variant="secondary"
-              aria-label="Open on Mixcloud"
+              aria-label={t('trackExportPanel.openOnMixcloud')}
             >
               <ExternalLinkIcon size={15} aria-hidden />
             </ButtonAnchor>
@@ -160,7 +162,7 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
           <CheckCircle2Icon
             size={18}
             className="text-primary-strong"
-            aria-label="Export added"
+            aria-label={t('trackExportPanel.exportAdded')}
           />
         ) : (
           <Button
@@ -179,7 +181,7 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
           <InlineError textSize="xs">{error}</InlineError>
           {connectUrl ? (
             <ButtonAnchor href={connectUrl} size="sm" variant="secondary">
-              Connect Mixcloud
+              {t('trackExportPanel.connectMixcloud')}
             </ButtonAnchor>
           ) : null}
         </div>

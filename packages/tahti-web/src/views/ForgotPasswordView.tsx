@@ -1,11 +1,13 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Input } from '@tahti-player/ui';
 
 import { PageBackLink } from '../components/PageBackLink';
 import { useAuthStore } from '../stores/authStore';
 
 export function ForgotPasswordView() {
+  const { t } = useTranslation('web');
   const forgotPassword = useAuthStore((s) => s.forgotPassword);
   const loading = useAuthStore((s) => s.loading);
 
@@ -24,14 +26,13 @@ export function ForgotPasswordView() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col gap-6">
-      <PageBackLink to="/login" label="Log in" />
+      <PageBackLink to="/login" label={t('forgotPasswordView.logIn')} />
       <div>
         <h1 className="font-display text-3xl font-extrabold tracking-tight">
-          Reset your password
+          {t('forgotPasswordView.resetYourPassword')}
         </h1>
         <p className="text-foreground-secondary mt-1 text-sm">
-          Enter the email on your account and we&apos;ll send a link to choose a
-          new password.
+          {t('forgotPasswordView.enterTheEmailOnYour')}
         </p>
       </div>
 
@@ -47,7 +48,7 @@ export function ForgotPasswordView() {
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          label="Email"
+          label={t('forgotPasswordView.email')}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="email"

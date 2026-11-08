@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Alert } from '@tahti-player/ui';
 
 import type { EditList } from '../../../api/studio-types';
@@ -88,6 +88,7 @@ export function WaveformEditor({
   onUndo,
   onRedo,
 }: Props) {
+  const { t } = useTranslation('web');
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const waveRef = useRef<ProWaveformHandle>(null);
   const minimapRef = useRef<ProMinimapHandle>(null);
@@ -524,8 +525,7 @@ export function WaveformEditor({
                 className="mb-2"
                 data-testid="editor-basic-waveform"
               >
-                Showing the basic waveform: the detailed editor couldn’t start
-                in this browser. Editing, zoom and shortcuts still work.
+                {t('waveformEditor.showingTheBasicWaveformThe')}
               </Alert>
               <ProWaveform
                 ref={waveRef}
@@ -599,10 +599,7 @@ export function WaveformEditor({
               className="mt-2"
               data-testid="effects-preview-blocked"
             >
-              Effects aren’t heard in this preview yet: the file’s host doesn’t
-              allow the browser to process it. You’re hearing it unprocessed
-              until the editor has its own copy; renders still apply every
-              effect.
+              {t('waveformEditor.effectsArenTHeardIn')}
             </Alert>
           ) : null}
           <p className="text-foreground-secondary mt-1 text-xs">

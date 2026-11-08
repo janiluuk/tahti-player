@@ -1,5 +1,6 @@
 import { ListMusicIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Select } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../api/studio-types';
@@ -36,6 +37,7 @@ export function AdvancedTab({
   item: StudioSound;
   state: TrackEditDialogState;
 }) {
+  const { t } = useTranslation('web');
   const { form, setForm, analysis, setAnalysis, isAudioClip, setPlaylistOpen } =
     state;
 
@@ -43,7 +45,7 @@ export function AdvancedTab({
     <div className="flex flex-col gap-4">
       <div className="sm:max-w-xs">
         <Select
-          label="License (optional)"
+          label={t('advancedTab.licenseOptional')}
           value={form.license ?? ''}
           onValueChange={(value) => setForm({ ...form, license: value })}
           options={LICENSES.map(([value, label]) => ({ id: value, label }))}
@@ -70,9 +72,11 @@ export function AdvancedTab({
             aria-hidden
           />
           <div className="min-w-0 flex-1">
-            <p className="font-medium">Add this track to playlists</p>
+            <p className="font-medium">
+              {t('advancedTab.addThisTrackToPlaylists')}
+            </p>
             <p className="text-foreground-secondary text-sm">
-              Choose one or more existing playlists, or create a new one.
+              {t('advancedTab.chooseOneOrMoreExisting')}
             </p>
           </div>
           <Button
@@ -82,7 +86,7 @@ export function AdvancedTab({
             className="gap-1.5"
           >
             <ListMusicIcon size={15} aria-hidden />
-            Choose playlists
+            {t('advancedTab.choosePlaylists')}
           </Button>
         </div>
       ) : null}

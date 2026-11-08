@@ -2,7 +2,7 @@ import { Undo2Icon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -63,6 +63,7 @@ export function TrackEditorDialog({
   ids,
   onChanged,
 }: Props) {
+  const { t } = useTranslation('web');
   const [summary, setSummary] = useState<NativeFieldSummary[] | null>(null);
   // Only fields the user touched: a typed value, or `null` to revert to the file tag.
   const [draft, setDraft] = useState<
@@ -205,8 +206,7 @@ export function TrackEditorDialog({
         {ids.length === 1 ? 'Edit tags' : `Edit ${plural(ids.length, 'track')}`}
       </Dialog.Title>
       <Dialog.Description>
-        Changes are kept in your library and survive rescans; the audio files
-        are not modified. Leave a field alone to keep each track’s own value.
+        {t('trackEditorDialog.changesAreKeptInYour')}
       </Dialog.Description>
       <form
         className="contents"
@@ -218,7 +218,7 @@ export function TrackEditorDialog({
         {loadError ? (
           <InlineError>{loadError}</InlineError>
         ) : !summary ? (
-          <InlineLoader label="Loading…" />
+          <InlineLoader label={t('trackEditorDialog.loading')} />
         ) : (
           <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto py-2">
             {FIELDS.map(({ field, label }) => {
@@ -315,7 +315,7 @@ export function TrackEditorDialog({
           </div>
         ) : null}
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('trackEditorDialog.cancel')}</Dialog.Close>
           <Button className="gap-1.5" disabled={!canApply} type="submit">
             {busy ? <Loader size="inline" shape="circle" /> : null}
             Apply

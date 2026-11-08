@@ -1,5 +1,6 @@
 import { XIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -52,6 +53,7 @@ export function ImageSlotPreviewDialog({
   onCancelDelete,
   onConfirmDelete,
 }: Props) {
+  const { t } = useTranslation('web');
   const showDelete = !hideDelete && Boolean(onRequestDelete);
 
   return (
@@ -82,7 +84,7 @@ export function ImageSlotPreviewDialog({
                   <MediaArtwork src={frame.url} alt="" imageReveal={false} />
                   {frame.onDelete ? (
                     <Tooltip
-                      content="Remove image"
+                      content={t('imageSlotPreviewDialog.removeImage')}
                       side="top"
                       wrapperClassName="absolute top-0.5 right-0.5"
                     >
@@ -90,7 +92,7 @@ export function ImageSlotPreviewDialog({
                         variant="plain"
                         size="flexible"
                         type="button"
-                        aria-label="Remove image"
+                        aria-label={t('imageSlotPreviewDialog.removeImage')}
                         className="bg-background/90 text-foreground hover:bg-accent-red flex size-5 items-center justify-center rounded-full whitespace-normal opacity-0 shadow-sm transition-opacity group-hover:opacity-100 hover:text-white active:scale-100"
                         onClick={frame.onDelete}
                       >
@@ -106,11 +108,11 @@ export function ImageSlotPreviewDialog({
         <Dialog.Actions>
           {showDelete ? (
             <Button variant="secondary" onClick={onRequestDelete}>
-              Delete
+              {t('imageSlotPreviewDialog.delete')}
             </Button>
           ) : null}
           <Button onClick={onChangeClick} variant="secondary">
-            Change
+            {t('imageSlotPreviewDialog.change')}
           </Button>
         </Dialog.Actions>
       </Dialog.Root>
@@ -120,7 +122,7 @@ export function ImageSlotPreviewDialog({
           destructive
           isOpen={confirmOpen}
           title={`Remove ${label.toLowerCase()}?`}
-          description="This can't be undone from here — you'll need to upload a new image to replace it."
+          description={t('imageSlotPreviewDialog.thisCanTBeUndone')}
           confirmLabel={clearing ? 'Removing…' : 'Remove'}
           onCancel={() => onCancelDelete?.()}
           onConfirm={() => void onConfirmDelete?.()}

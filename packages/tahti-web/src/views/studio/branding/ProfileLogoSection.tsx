@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   FilePicker,
@@ -35,6 +35,7 @@ export function ProfileLogoSection({
     logoPlacement: LogoPlacement | null;
   }) => void;
 }) {
+  const { t } = useTranslation('web');
   const [busy, setBusy] = useState(false);
 
   const upload = async (files: readonly File[]) => {
@@ -80,8 +81,8 @@ export function ProfileLogoSection({
 
   return (
     <StudioPanel
-      title="Logo"
-      description="A transparent logo drawn over your avatar, your cover, or both."
+      title={t('profileLogoSection.logo')}
+      description={t('profileLogoSection.aTransparentLogoDrawnOver')}
     >
       <div className="flex flex-col gap-3">
         {logoUrl ? (
@@ -92,7 +93,7 @@ export function ProfileLogoSection({
               className="bg-background-secondary size-24 rounded-lg object-contain p-2"
             />
             <SegmentedControl
-              aria-label="Logo placement"
+              aria-label={t('profileLogoSection.logoPlacement')}
               options={PLACEMENTS}
               value={logoPlacement ?? 'AVATAR'}
               onChange={(next) => void place(next)}
@@ -105,7 +106,7 @@ export function ProfileLogoSection({
               disabled={busy}
               onClick={() => void remove()}
             >
-              Remove logo
+              {t('profileLogoSection.removeLogo')}
             </Button>
           </div>
         ) : null}

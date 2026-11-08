@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Select, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -60,6 +61,7 @@ export function ChannelElementEditor({
   onToggleDisabled,
   className = '',
 }: Props) {
+  const { t } = useTranslation('web');
   const selectedMeta =
     CHANNEL_LOOK_ELEMENTS.find((element) => element.id === selectedId) ??
     CHANNEL_LOOK_ELEMENTS[0];
@@ -85,14 +87,14 @@ export function ChannelElementEditor({
   return (
     <section
       data-testid="channel-element-editor"
-      aria-label="Channel look editor"
+      aria-label={t('channelElementEditor.channelLookEditor')}
       className={`flex min-h-0 flex-col overflow-hidden bg-transparent ${className}`}
     >
       <header className="border-border flex shrink-0 flex-col gap-2 border-b pb-3">
         <div className="flex items-end gap-2">
           <div className="min-w-0 flex-1">
             <Select
-              label="Section"
+              label={t('channelElementEditor.section')}
               value={selectedId}
               onValueChange={(value) => {
                 if (isChannelLookElementId(value)) {
@@ -106,21 +108,24 @@ export function ChannelElementEditor({
             />
           </div>
           <div className="flex shrink-0 items-center gap-1 pb-0.5">
-            <Tooltip content="Previous section" side="top">
+            <Tooltip
+              content={t('channelElementEditor.previousSection')}
+              side="top"
+            >
               <Button
                 size="icon-sm"
                 variant="secondary"
-                aria-label="Previous section"
+                aria-label={t('channelElementEditor.previousSection')}
                 onClick={() => selectAdjacent(-1)}
               >
                 <ChevronLeftIcon size={16} aria-hidden />
               </Button>
             </Tooltip>
-            <Tooltip content="Next section" side="top">
+            <Tooltip content={t('channelElementEditor.nextSection')} side="top">
               <Button
                 size="icon-sm"
                 variant="secondary"
-                aria-label="Next section"
+                aria-label={t('channelElementEditor.nextSection')}
                 onClick={() => selectAdjacent(1)}
               >
                 <ChevronRightIcon size={16} aria-hidden />

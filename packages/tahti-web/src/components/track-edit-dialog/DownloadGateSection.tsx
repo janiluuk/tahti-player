@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Toggle } from '@tahti-player/ui';
 
 import {
@@ -21,6 +22,7 @@ export function DownloadGateSection({
     repostToDownload?: boolean;
   }) => void;
 }) {
+  const { t } = useTranslation('web');
   const [stats, setStats] = useState<SoundDownloadGateStats | null>(null);
 
   useEffect(() => {
@@ -41,26 +43,30 @@ export function DownloadGateSection({
     <div className="border-border flex flex-col gap-3 rounded-lg border p-3 text-sm">
       <div className="flex items-start justify-between gap-3">
         <span>
-          <span className="block font-medium">Require a follow</span>
+          <span className="block font-medium">
+            {t('downloadGateSection.requireAFollow')}
+          </span>
           <span className="text-foreground-secondary block text-xs">
-            Listeners follow you before the download starts.
+            {t('downloadGateSection.listenersFollowYouBeforeThe')}
           </span>
         </span>
         <Toggle
-          label="Require a follow"
+          label={t('downloadGateSection.requireAFollow')}
           checked={followToDownload}
           onChange={(value) => onChange({ followToDownload: value })}
         />
       </div>
       <div className="flex items-start justify-between gap-3">
         <span>
-          <span className="block font-medium">Require a repost</span>
+          <span className="block font-medium">
+            {t('downloadGateSection.requireARepost')}
+          </span>
           <span className="text-foreground-secondary block text-xs">
-            Listeners repost the track before the download starts.
+            {t('downloadGateSection.listenersRepostTheTrackBefore')}
           </span>
         </span>
         <Toggle
-          label="Require a repost"
+          label={t('downloadGateSection.requireARepost')}
           checked={repostToDownload}
           onChange={(value) => onChange({ repostToDownload: value })}
         />

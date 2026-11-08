@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -22,6 +23,7 @@ export function GovernanceDocumentRow({
   document: GovernanceDocument;
   onChanged?: (document: GovernanceDocument) => void;
 }) {
+  const { t } = useTranslation('web');
   const href = document.downloadUrl ?? document.externalUrl ?? undefined;
   const [renaming, setRenaming] = useState(false);
   const [title, setTitle] = useState(document.title);
@@ -61,7 +63,7 @@ export function GovernanceDocumentRow({
         </span>
         {document.archivedAt ? (
           <Badge variant="pill" color="secondary">
-            Archived
+            {t('governanceDocumentRow.archived')}
           </Badge>
         ) : null}
         <EditIconButton
@@ -88,13 +90,13 @@ export function GovernanceDocumentRow({
           }}
         >
           <Input
-            label="Title"
+            label={t('governanceDocumentRow.title')}
             value={title}
             maxLength={200}
             onChange={(e) => setTitle(e.target.value)}
           />
           <Button type="submit" size="sm" disabled={busy}>
-            Save title
+            {t('governanceDocumentRow.saveTitle')}
           </Button>
           <Button
             type="button"
@@ -103,7 +105,7 @@ export function GovernanceDocumentRow({
             disabled={busy}
             onClick={() => setRenaming(false)}
           >
-            Cancel
+            {t('governanceDocumentRow.cancel')}
           </Button>
         </form>
       ) : null}

@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog } from '@tahti-player/ui';
 
 export function AlbumPlayPromptDialog({
@@ -11,21 +12,23 @@ export function AlbumPlayPromptDialog({
   onQueue: () => void;
   onPlayNow: () => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <Dialog.Root isOpen={title != null} onClose={onClose}>
       {title != null && (
         <>
           <Dialog.Title>Play {title}?</Dialog.Title>
           <Dialog.Description>
-            Something&apos;s already queued — add this album to the end, or play
-            it now instead?
+            {t('albumPlayPromptDialog.somethingAposSAlreadyQueued')}
           </Dialog.Description>
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>{t('albumPlayPromptDialog.cancel')}</Dialog.Close>
             <Button variant="secondary" onClick={onQueue}>
-              Queue album
+              {t('albumPlayPromptDialog.queueAlbum')}
             </Button>
-            <Button onClick={onPlayNow}>Play now</Button>
+            <Button onClick={onPlayNow}>
+              {t('albumPlayPromptDialog.playNow')}
+            </Button>
           </Dialog.Actions>
         </>
       )}

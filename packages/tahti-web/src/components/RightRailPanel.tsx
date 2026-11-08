@@ -1,6 +1,7 @@
 import { ListMusicIcon, MessageSquareIcon } from 'lucide-react';
 import { lazy, Suspense, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, cn, QueuePanel, Tooltip } from '@tahti-player/ui';
 
 import { useLayoutStore } from '../stores/layoutStore';
@@ -46,6 +47,7 @@ function RightRailPanelFade({
 }
 
 export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
+  const { t } = useTranslation('web');
   const railOverride = useRightRailOverrideStore((s) => s.override);
   const commentsOpen = usePageCommentsRailStore((s) => s.open);
   const toggleRight = useLayoutStore((s) => s.toggleRight);
@@ -68,12 +70,12 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
     }
     if (commentsOpen) {
       return (
-        <Tooltip content="Open page comments" side="left">
+        <Tooltip content={t('rightRailPanel.openPageComments')} side="left">
           <Button
             size="icon-sm"
             variant="text"
             className="mx-auto"
-            aria-label="Open page comments"
+            aria-label={t('rightRailPanel.openPageComments')}
             onClick={() => toggleRight()}
           >
             <MessageSquareIcon size={18} aria-hidden />
@@ -116,14 +118,14 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
         className="flex h-full min-h-0 flex-col"
       >
         <aside
-          aria-label="Page comments"
+          aria-label={t('rightRailPanel.pageComments')}
           className="flex h-full min-h-0 flex-col"
           data-testid="right-rail"
           data-right-rail-view="page-comments"
         >
           <div className="border-border shrink-0 border-b px-2 py-2">
             <p className="text-foreground-secondary text-xs font-bold tracking-wide uppercase">
-              Page comments
+              {t('rightRailPanel.pageComments')}
             </p>
           </div>
           <div className="tahti-hide-scrollbar min-h-0 flex-1 overflow-y-auto p-2">
@@ -142,14 +144,14 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
       className="flex h-full min-h-0 flex-col"
     >
       <aside
-        aria-label="Queue"
+        aria-label={t('rightRailPanel.queue')}
         className="flex h-full min-h-0 flex-col"
         data-testid="right-rail"
         data-right-rail-view="queue"
       >
         <div className="border-border shrink-0 border-b px-2 py-2">
           <p className="text-foreground-secondary text-xs font-bold tracking-wide uppercase">
-            Queue
+            {t('rightRailPanel.queue')}
           </p>
         </div>
         <div className="min-h-0 flex-1">
@@ -161,6 +163,7 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
 }
 
 function CollapsedQueueBar() {
+  const { t } = useTranslation('web');
   const queue = usePlayerStore((s) => s.queue);
   const currentId = usePlayerStore((s) => s.currentId);
   const playQueueIndex = usePlayerStore((s) => s.playQueueIndex);
@@ -183,12 +186,12 @@ function CollapsedQueueBar() {
             labels={COLLAPSED_LABELS}
           />
         ) : (
-          <Tooltip content="Open queue" side="left">
+          <Tooltip content={t('rightRailPanel.openQueue')} side="left">
             <Button
               size="icon-sm"
               variant="text"
               className="text-foreground-secondary mx-auto flex"
-              aria-label="Open queue"
+              aria-label={t('rightRailPanel.openQueue')}
               onClick={() => toggleRight()}
             >
               <ListMusicIcon size={18} aria-hidden />

@@ -2,7 +2,7 @@ import { UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, FilePicker } from '@tahti-player/ui';
 
 import type { StudioReleaseTrack } from '../../../api/studio-types';
@@ -44,6 +44,7 @@ export function ReleaseTrackAudioUpload({
     patch: Pick<StudioReleaseTrack, 'sourceKey' | 'status'>,
   ) => void;
 }) {
+  const { t } = useTranslation('web');
   const [picking, setPicking] = useState(false);
   const { uploading, progress, upload, cancel } = useReleaseTrackUpload();
 
@@ -79,7 +80,7 @@ export function ReleaseTrackAudioUpload({
   if (isReleaseTrackProcessing(track.status)) {
     return (
       <Badge variant="pill" color="secondary">
-        Processing
+        {t('releaseTrackAudioUpload.processing')}
       </Badge>
     );
   }
@@ -106,7 +107,7 @@ export function ReleaseTrackAudioUpload({
           className="self-start"
           onClick={() => setPicking(false)}
         >
-          Close
+          {t('releaseTrackAudioUpload.close')}
         </Button>
       </div>
     );
@@ -116,7 +117,7 @@ export function ReleaseTrackAudioUpload({
     <div className="flex items-center gap-2">
       {track.status === 'FAILED' ? (
         <Badge variant="pill" color="red">
-          Processing failed
+          {t('releaseTrackAudioUpload.processingFailed')}
         </Badge>
       ) : null}
       <Button size="sm" variant="secondary" onClick={() => setPicking(true)}>

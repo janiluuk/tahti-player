@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog } from '@tahti-player/ui';
 
 import { fetchStreamOverlay } from '../../api/broadcast';
@@ -7,6 +8,7 @@ import type { StreamManagerState } from './useStreamManagerState';
 /** The overlay-settings and end-stream-confirmation dialogs, shown only
  * when the viewer can control the stream. */
 export function ManagerDialogs({ state }: { state: StreamManagerState }) {
+  const { t } = useTranslation('web');
   const {
     overlayModalOpen,
     setOverlayModalOpen,
@@ -24,7 +26,7 @@ export function ManagerDialogs({ state }: { state: StreamManagerState }) {
         onClose={() => setOverlayModalOpen(false)}
         className="max-w-lg"
       >
-        <Dialog.Title>Stream overlay</Dialog.Title>
+        <Dialog.Title>{t('managerDialogs.streamOverlay')}</Dialog.Title>
         <div className="mt-4">
           <StreamOverlayEditor
             onSaved={() => {
@@ -40,13 +42,12 @@ export function ManagerDialogs({ state }: { state: StreamManagerState }) {
         isOpen={confirmEndOpen}
         onClose={() => setConfirmEndOpen(false)}
       >
-        <Dialog.Title>Stop your live stream?</Dialog.Title>
+        <Dialog.Title>{t('managerDialogs.stopYourLiveStream')}</Dialog.Title>
         <Dialog.Description>
-          Listeners will hear the 24/7 rotation instead. You can go live again
-          any time.
+          {t('managerDialogs.listenersWillHearThe24')}
         </Dialog.Description>
         <Dialog.Actions>
-          <Dialog.Close>Cancel</Dialog.Close>
+          <Dialog.Close>{t('managerDialogs.cancel')}</Dialog.Close>
           <Button
             intent="danger"
             disabled={ending}

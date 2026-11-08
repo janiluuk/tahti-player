@@ -1,6 +1,7 @@
 import { ExternalLinkIcon, PlayIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { listenerWidgetType } from '../content/listenerWidgets';
@@ -8,6 +9,7 @@ import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 
 export function MikseriSidebarWidget() {
+  const { t } = useTranslation('web');
   const instance = useListenerWidgetsStore((state) =>
     state.instances.find((item) => item.typeId === 'mikseri'),
   );
@@ -26,7 +28,7 @@ export function MikseriSidebarWidget() {
 
   return (
     <section
-      aria-label="Mikseri.net playlist"
+      aria-label={t('mikseriSidebarWidget.mikseriNetPlaylist')}
       className="border-border bg-background-secondary mx-1 flex flex-col gap-2 rounded-md border p-2"
     >
       <div className="flex items-start justify-between gap-2">
@@ -39,7 +41,7 @@ export function MikseriSidebarWidget() {
         <Button
           size="icon-sm"
           variant="text"
-          aria-label="Manage Mikseri widgets"
+          aria-label={t('mikseriSidebarWidget.manageMikseriWidgets')}
           onClick={() => openSettings('plugin-store', 'listen')}
         >
           <ExternalLinkIcon size={13} aria-hidden />
@@ -62,7 +64,7 @@ export function MikseriSidebarWidget() {
           onClick={() => setLoadedId(instance.id)}
         >
           <PlayIcon size={13} aria-hidden />
-          Load player
+          {t('mikseriSidebarWidget.loadPlayer')}
         </Button>
       )}
     </section>
