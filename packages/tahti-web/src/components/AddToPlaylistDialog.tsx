@@ -1,5 +1,5 @@
 import { ListPlusIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -33,6 +33,7 @@ export function AddToPlaylistDialog({
   onAdded,
 }: Props) {
   const { t } = useTranslation('web');
+  const nameInputRef = useRef<HTMLInputElement>(null);
   const [playlists, setPlaylists] = useState<NativePlaylistSummary[] | null>(
     null,
   );
@@ -118,7 +119,19 @@ export function AddToPlaylistDialog({
             onRetry={() => setAttempt((n) => n + 1)}
           />
         ) : playlists.length === 0 ? (
-          <PageEmpty title={t('empties.noPlaylistsCreate')} />
+          <PageEmpty
+            title={t('empties.noPlaylistsCreate')}
+            action={
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => nameInputRef.current?.focus()}
+              >
+                <ListPlusIcon size={16} aria-hidden />
+                {t('emptyActions.newPlaylist')}
+              </Button>
+            }
+          />
         ) : (
           playlists.map((playlist) => (
             <Button
@@ -156,6 +169,7 @@ export function AddToPlaylistDialog({
         }}
       >
         <Input
+          ref={nameInputRef}
           label="New playlist"
           placeholder="Playlist name"
           value={name}

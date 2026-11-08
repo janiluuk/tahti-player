@@ -1,4 +1,4 @@
-import { LibraryIcon, ListFilterIcon, XIcon } from 'lucide-react';
+import { LibraryIcon, ListFilterIcon, UploadIcon, XIcon } from 'lucide-react';
 import type { MutableRefObject } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -145,6 +145,12 @@ export function DesktopLibraryContent({
   if (!library) {
     return <BrowserLocalFiles />;
   }
+  const importFilesButton = (
+    <Button size="sm" variant="secondary" onClick={onImportFiles}>
+      <UploadIcon size={16} aria-hidden />
+      {t('emptyActions.importFiles')}
+    </Button>
+  );
 
   return (
     <>
@@ -228,6 +234,7 @@ export function DesktopLibraryContent({
           library={library}
           openId={openPlaylistId}
           onOpenChange={onOpenPlaylistChange}
+          onBrowseTracks={() => onBrowseKindChange('tracks')}
         />
       ) : browseKind !== 'tracks' && !facetFilter ? (
         facetGroups.length ? (
@@ -247,6 +254,7 @@ export function DesktopLibraryContent({
             description={
               facetLoading ? undefined : 'Import files to fill this view.'
             }
+            action={facetLoading ? undefined : importFilesButton}
             className="flex-1"
           />
         )
@@ -349,6 +357,7 @@ export function DesktopLibraryContent({
                   ? 'Loading library…'
                   : 'Import files to build your offline library.'
               }
+              action={loading || busy ? undefined : importFilesButton}
               className="flex-1"
             />
           )}

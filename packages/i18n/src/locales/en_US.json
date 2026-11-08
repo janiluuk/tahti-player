@@ -3887,7 +3887,12 @@
       "addEvent": "Add event",
       "scheduleParty": "Schedule party",
       "submitToRadio": "Select tracks",
-      "bookNextSlot": "Book next {{hours}}h slot"
+      "bookNextSlot": "Book next {{hours}}h slot",
+      "newPlaylist": "New playlist",
+      "browseTracks": "Browse tracks",
+      "importFiles": "Import files",
+      "importEmbeds": "Import tracks",
+      "createRelease": "Create release"
     }
   },
   "studioEditor": {
