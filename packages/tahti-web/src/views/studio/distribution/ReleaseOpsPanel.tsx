@@ -291,10 +291,10 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
 
       <div>
         <p className="mb-2 text-xs font-medium" aria-hidden>
-          Catalog methods
+          {t('releaseOps.catalogMethods')}
         </p>
         <SelectableTiles
-          aria-label="Catalog methods"
+          aria-label={t('releaseOps.catalogMethods')}
           multiple
           items={CATALOG_METHOD_TILES}
           selected={[...activeMethods]}
@@ -303,7 +303,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         />
         {activeMethods.size === 0 ? (
           <InlineError announce={false} textSize="xs" className="mt-2">
-            Select at least one catalog method to save catalog details.
+            {t('releaseOps.selectAtLeastOneCatalog')}
           </InlineError>
         ) : null}
       </div>
@@ -313,7 +313,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
           <Input
             inputMode="numeric"
             spellCheck={false}
-            label="UPC / EAN"
+            label={t('releaseOps.upcEan')}
             value={form?.upc ?? ''}
             disabled={busy}
             onChange={(e) =>
@@ -326,7 +326,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         {activeMethods.has('musicbrainz') && (
           <>
             <Input
-              label="MusicBrainz release MBID"
+              label={t('releaseOps.musicbrainzReleaseMbid')}
               value={form?.musicbrainzReleaseId ?? ''}
               disabled={busy}
               onChange={(e) =>
@@ -338,7 +338,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
               }
             />
             <Input
-              label="MusicBrainz artist MBID"
+              label={t('releaseOps.musicbrainzArtistMbid')}
               value={form?.musicbrainzArtistId ?? ''}
               disabled={busy}
               onChange={(e) =>
@@ -355,7 +355,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
           <Input
             inputMode="numeric"
             spellCheck={false}
-            label="Discogs release ID"
+            label={t('releaseOps.discogsReleaseId')}
             value={form?.discogsReleaseId ?? ''}
             disabled={busy}
             onChange={(e) =>
@@ -400,7 +400,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         <SaveButton
           saving={busy}
           disabled={activeMethods.size === 0}
-          label="Save catalog"
+          label={t('releaseOps.saveCatalog')}
           onClick={saveCatalog}
         />
         <Button
@@ -410,7 +410,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
           onClick={() => void runExport('download')}
         >
           <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-          Export JSON
+          {t('releaseOps.exportJson')}
         </Button>
         <Button
           size="sm"
@@ -419,14 +419,14 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
           onClick={() => void runExport('musicbrainz')}
         >
           <CopyIcon size={14} aria-hidden className="mr-1.5" />
-          Copy MusicBrainz prefill
+          {t('releaseOps.copyMusicbrainzPrefill')}
         </Button>
         <ExternalLink
           href={MUSICBRAINZ_SUBMIT_URL}
           showIcon
           className="text-foreground-secondary text-xs"
         >
-          Add on MusicBrainz
+          {t('releaseOps.addOnMusicbrainz')}
         </ExternalLink>
         <Button
           size="sm"
@@ -435,14 +435,14 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
           onClick={() => void runExport('discogs')}
         >
           <CopyIcon size={14} aria-hidden className="mr-1.5" />
-          Copy Discogs prefill
+          {t('releaseOps.copyDiscogsPrefill')}
         </Button>
         <ExternalLink
           href={DISCOGS_SUBMIT_URL}
           showIcon
           className="text-foreground-secondary text-xs"
         >
-          Search on Discogs
+          {t('releaseOps.searchOnDiscogs')}
         </ExternalLink>
       </div>
     </div>

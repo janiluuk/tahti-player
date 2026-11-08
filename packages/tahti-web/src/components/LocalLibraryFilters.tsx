@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, FilterChips, Input, Select } from '@tahti-player/ui';
 
 import { keyInputError } from '../lib/musicalKey';
@@ -62,6 +63,7 @@ export function LocalLibraryFilters({
   roots,
   tags = [],
 }: Props) {
+  const { t } = useTranslation('web');
   const [draft, setDraft] = useState(filters);
   useEffect(() => {
     if (isOpen) {
@@ -73,10 +75,9 @@ export function LocalLibraryFilters({
 
   return (
     <Dialog.Root isOpen={isOpen} onClose={onClose}>
-      <Dialog.Title>Filter tracks</Dialog.Title>
+      <Dialog.Title>{t('localLibraryFilters.filterTracks')}</Dialog.Title>
       <Dialog.Description>
-        Narrow the list by year, length, format and more. Filters combine with
-        search and the group you are browsing.
+        {t('localLibraryFilters.narrowTheListByYear')}
       </Dialog.Description>
       <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto py-2">
         <div className="grid grid-cols-2 gap-2">
@@ -84,7 +85,7 @@ export function LocalLibraryFilters({
             type="number"
             inputMode="numeric"
             enterKeyHint="done"
-            label="Year from"
+            label={t('localLibraryFilters.yearFrom')}
             placeholder={options?.yearMin ? String(options.yearMin) : ''}
             value={text(draft.yearMin)}
             onChange={(event) => set({ yearMin: toNumber(event.target.value) })}
@@ -93,7 +94,7 @@ export function LocalLibraryFilters({
             type="number"
             inputMode="numeric"
             enterKeyHint="done"
-            label="Year to"
+            label={t('localLibraryFilters.yearTo')}
             placeholder={options?.yearMax ? String(options.yearMax) : ''}
             value={text(draft.yearMax)}
             onChange={(event) => set({ yearMax: toNumber(event.target.value) })}
@@ -102,7 +103,7 @@ export function LocalLibraryFilters({
             type="number"
             inputMode="numeric"
             enterKeyHint="done"
-            label="Longer than (minutes)"
+            label={t('localLibraryFilters.longerThanMinutes')}
             value={minutes(draft.durationMin)}
             onChange={(event) => {
               const value = toNumber(event.target.value);
@@ -113,7 +114,7 @@ export function LocalLibraryFilters({
             type="number"
             inputMode="numeric"
             enterKeyHint="done"
-            label="Shorter than (minutes)"
+            label={t('localLibraryFilters.shorterThanMinutes')}
             value={minutes(draft.durationMax)}
             onChange={(event) => {
               const value = toNumber(event.target.value);
@@ -124,7 +125,7 @@ export function LocalLibraryFilters({
             type="number"
             inputMode="numeric"
             enterKeyHint="done"
-            label="Bitrate at least (kbps)"
+            label={t('localLibraryFilters.bitrateAtLeastKbps')}
             value={text(draft.bitrateMin)}
             onChange={(event) =>
               set({ bitrateMin: toNumber(event.target.value) })
@@ -132,7 +133,7 @@ export function LocalLibraryFilters({
           />
           <Input
             type="date"
-            label="Added since"
+            label={t('localLibraryFilters.addedSince')}
             value={draft.addedSince ?? ''}
             onChange={(event) =>
               set({ addedSince: event.target.value || null })
@@ -144,7 +145,7 @@ export function LocalLibraryFilters({
             type="number"
             inputMode="decimal"
             enterKeyHint="done"
-            label="BPM from"
+            label={t('localLibraryFilters.bpmFrom')}
             value={text(draft.bpmMin)}
             onChange={(event) => set({ bpmMin: toNumber(event.target.value) })}
           />
@@ -152,14 +153,14 @@ export function LocalLibraryFilters({
             type="number"
             inputMode="decimal"
             enterKeyHint="done"
-            label="BPM to"
+            label={t('localLibraryFilters.bpmTo')}
             value={text(draft.bpmMax)}
             onChange={(event) => set({ bpmMax: toNumber(event.target.value) })}
           />
           <Input
             autoCorrect="off"
             spellCheck={false}
-            label="Key (e.g. Am, F#, 8A)"
+            label={t('localLibraryFilters.keyEGAmF')}
             value={draft.key ?? ''}
             error={keyInputError(draft.key ?? '') ?? undefined}
             onChange={(event) =>
@@ -170,7 +171,7 @@ export function LocalLibraryFilters({
             type="number"
             inputMode="decimal"
             enterKeyHint="done"
-            label="Louder than (LUFS)"
+            label={t('localLibraryFilters.louderThanLufs')}
             value={text(draft.loudnessMin)}
             onChange={(event) =>
               set({ loudnessMin: toNumber(event.target.value) })
@@ -179,10 +180,10 @@ export function LocalLibraryFilters({
         </div>
         <div className="flex flex-col gap-1">
           <span className="text-sm font-medium" aria-hidden>
-            Analysis
+            {t('localLibraryFilters.analysis')}
           </span>
           <FilterChips
-            aria-label="Analysis"
+            aria-label={t('localLibraryFilters.analysis')}
             items={[
               { id: 'any', label: 'All' },
               { id: 'analyzed', label: 'Analyzed' },
@@ -200,10 +201,10 @@ export function LocalLibraryFilters({
         {options && options.formats.length > 0 ? (
           <div className="flex flex-col gap-1">
             <span className="text-sm font-medium" aria-hidden>
-              Format
+              {t('localLibraryFilters.format')}
             </span>
             <FilterChips
-              aria-label="Format"
+              aria-label={t('localLibraryFilters.format')}
               multiple
               items={options.formats.map((format) => ({
                 id: format,
@@ -216,10 +217,10 @@ export function LocalLibraryFilters({
         ) : null}
         <div className="flex flex-col gap-1">
           <span className="text-sm font-medium" aria-hidden>
-            Availability
+            {t('localLibraryFilters.availability')}
           </span>
           <FilterChips
-            aria-label="Availability"
+            aria-label={t('localLibraryFilters.availability')}
             items={[
               { id: 'any', label: 'All' },
               { id: 'available', label: 'Available' },
@@ -235,10 +236,10 @@ export function LocalLibraryFilters({
         </div>
         <div className="flex flex-col gap-1">
           <span className="text-sm font-medium" aria-hidden>
-            Rating
+            {t('localLibraryFilters.rating')}
           </span>
           <FilterChips
-            aria-label="Rating"
+            aria-label={t('localLibraryFilters.rating')}
             items={[
               { id: '0', label: 'Any' },
               { id: '1', label: '★ 1+' },
@@ -255,10 +256,10 @@ export function LocalLibraryFilters({
         </div>
         <div className="flex flex-col gap-1">
           <span className="text-sm font-medium" aria-hidden>
-            Color label
+            {t('localLibraryFilters.colorLabel')}
           </span>
           <FilterChips
-            aria-label="Color label"
+            aria-label={t('localLibraryFilters.colorLabel')}
             items={[
               { id: 'any', label: 'Any' },
               ...TRACK_COLORS.map((color) => ({ id: color, label: color })),
@@ -285,7 +286,7 @@ export function LocalLibraryFilters({
         ) : null}
         {roots.length > 0 ? (
           <Select
-            label="Watched folder"
+            label={t('localLibraryFilters.watchedFolder')}
             value={draft.rootId ?? ANY_FOLDER}
             onValueChange={(id) =>
               set({ rootId: id === ANY_FOLDER ? null : id })
@@ -306,9 +307,9 @@ export function LocalLibraryFilters({
           disabled={countActiveFilters(draft) === 0}
           onClick={() => setDraft(EMPTY_TRACK_FILTERS)}
         >
-          Clear all
+          {t('localLibraryFilters.clearAll')}
         </Button>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('localLibraryFilters.cancel')}</Dialog.Close>
         <Button
           disabled={keyInputError(draft.key ?? '') !== null}
           onClick={() => {
@@ -316,7 +317,7 @@ export function LocalLibraryFilters({
             onClose();
           }}
         >
-          Apply
+          {t('localLibraryFilters.apply')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

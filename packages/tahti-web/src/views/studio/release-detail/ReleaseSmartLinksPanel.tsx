@@ -279,14 +279,15 @@ export function ReleaseSmartLinksPanel({
         variant="secondary"
         onClick={() => setLibraryOpen(true)}
       >
-        <PlusIcon size={16} aria-hidden /> Add tracks from library
+        <PlusIcon size={16} aria-hidden />{' '}
+        {t('smartLinks.addTracksFromLibrary')}
       </Button>
       <Button
         className="gap-1.5"
         variant="secondary"
         onClick={() => setNewUploadOpen(true)}
       >
-        <UploadIcon size={16} aria-hidden /> Upload a new track
+        <UploadIcon size={16} aria-hidden /> {t('smartLinks.uploadANewTrack')}
       </Button>
     </div>
   );
@@ -294,8 +295,8 @@ export function ReleaseSmartLinksPanel({
   return (
     <div className="flex flex-col gap-6">
       <StudioPanel
-        title="Smart-link destinations"
-        description="Spotify and SoundCloud use the stream URLs from your embed, import, and export plugin settings. Fill all, then edit any link."
+        title={t('smartLinks.smartLinkDestinations')}
+        description={t('smartLinks.spotifyAndSoundcloudUseThe')}
       >
         <form
           className="flex flex-col gap-3 sm:flex-row sm:items-end"
@@ -305,11 +306,11 @@ export function ReleaseSmartLinksPanel({
           }}
         >
           <Input
-            label="Path for every service"
+            label={t('smartLinks.pathForEveryService')}
             placeholder="polar-nights"
             value={fillSlug}
             onChange={(event) => setFillSlug(event.target.value)}
-            description="Spotify and SoundCloud copy your add-on stream URLs. Other services append this path."
+            description={t('smartLinks.spotifyAndSoundcloudCopyYour')}
           />
           <Button
             variant="secondary"
@@ -317,7 +318,7 @@ export function ReleaseSmartLinksPanel({
             disabled={Object.keys(dspPrefixes).length === 0}
           >
             <Wand2Icon size={14} aria-hidden className="mr-1.5" />
-            Fill all
+            {t('smartLinks.fillAll')}
           </Button>
         </form>
         {missingPluginDsps.length > 0 ? (
@@ -330,7 +331,7 @@ export function ReleaseSmartLinksPanel({
               search={{ category: 'import' }}
               className="underline underline-offset-2"
             >
-              Add-ons
+              {t('smartLinks.addOns')}
             </Link>{' '}
             (import, embed, or export) to use those add-on stream URLs.
           </p>
@@ -384,7 +385,7 @@ export function ReleaseSmartLinksPanel({
         <div className="mt-4 flex flex-wrap items-center gap-2">
           <SaveButton
             onClick={() => void saveTargets()}
-            label="Save destinations"
+            label={t('smartLinks.saveDestinations')}
           />
           <Tooltip content={`Open ${release.title}`} side="top">
             <ButtonLink
@@ -404,8 +405,8 @@ export function ReleaseSmartLinksPanel({
       </StudioPanel>
 
       <StudioPanel
-        title="Smart-link playlist"
-        description="Arrange the release order, play a track, remove it, add audio from your library or upload it from your device."
+        title={t('smartLinks.smartLinkPlaylist')}
+        description={t('smartLinks.arrangeTheReleaseOrderPlay')}
       >
         {tracks.length === 0 ? (
           <PageEmpty
@@ -432,7 +433,7 @@ export function ReleaseSmartLinksPanel({
                 <GripVerticalIcon
                   size={16}
                   className="text-foreground-secondary shrink-0"
-                  aria-label="Drag to reorder"
+                  aria-label={t('smartLinks.dragToReorder')}
                 />
                 <span className="text-foreground-secondary w-5 text-xs">
                   {index + 1}
@@ -452,7 +453,7 @@ export function ReleaseSmartLinksPanel({
                     />
                   </li>
                 </ul>
-                <Tooltip content="Move up" side="top">
+                <Tooltip content={t('smartLinks.moveUp')} side="top">
                   <Button
                     size="icon-sm"
                     variant="text"
@@ -468,7 +469,7 @@ export function ReleaseSmartLinksPanel({
                     <ArrowUpIcon size={15} aria-hidden />
                   </Button>
                 </Tooltip>
-                <Tooltip content="Move down" side="top">
+                <Tooltip content={t('smartLinks.moveDown')} side="top">
                   <Button
                     size="icon-sm"
                     variant="text"
@@ -484,7 +485,7 @@ export function ReleaseSmartLinksPanel({
                     <ArrowDownIcon size={15} aria-hidden />
                   </Button>
                 </Tooltip>
-                <Tooltip content="Remove from release" side="top">
+                <Tooltip content={t('smartLinks.removeFromRelease')} side="top">
                   <Button
                     size="icon-sm"
                     variant="text"
@@ -523,20 +524,20 @@ export function ReleaseSmartLinksPanel({
       />
 
       <Dialog.Root isOpen={libraryOpen} onClose={() => setLibraryOpen(false)}>
-        <Dialog.Title>Add tracks from library</Dialog.Title>
+        <Dialog.Title>{t('smartLinks.addTracksFromLibrary')}</Dialog.Title>
         <Dialog.Description>
-          Search your sounds and add them to this release.
+          {t('smartLinks.searchYourSoundsAndAdd')}
         </Dialog.Description>
         <div className="flex flex-wrap gap-2 py-3">
           <Input
             enterKeyHint="search"
             type="search"
-            label="Search"
+            label={t('smartLinks.search')}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
           <Select
-            label="Type"
+            label={t('smartLinks.type')}
             value={contentType}
             onValueChange={setContentType}
             options={[
@@ -578,7 +579,7 @@ export function ReleaseSmartLinksPanel({
                   {item.contentType ?? 'Track'}
                 </span>
                 {alreadyAdded ? (
-                  <span className="text-xs">Added</span>
+                  <span className="text-xs">{t('smartLinks.added')}</span>
                 ) : (
                   <PlusIcon size={15} aria-hidden />
                 )}
@@ -602,7 +603,7 @@ export function ReleaseSmartLinksPanel({
                       setContentType('ALL');
                     }}
                   >
-                    Clear search
+                    {t('smartLinks.clearSearch')}
                   </Button>
                 ) : undefined
               }
@@ -610,7 +611,7 @@ export function ReleaseSmartLinksPanel({
           )}
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Done</Dialog.Close>
+          <Dialog.Close>{t('smartLinks.done')}</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
       <ConfirmDialog

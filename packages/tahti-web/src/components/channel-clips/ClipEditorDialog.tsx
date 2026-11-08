@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -47,6 +48,7 @@ export function ClipEditorDialog({
   onClose: () => void;
   onSaved: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [source, setSource] = useState<ClipEditorSource | null>(null);
   const [settings, setSettings] = useState<ClipVoiceSettings>({
     ...ORIGINAL_VOICE,
@@ -307,27 +309,28 @@ export function ClipEditorDialog({
         }}
         className="max-w-3xl"
       >
-        <Dialog.Title>Edit clip</Dialog.Title>
+        <Dialog.Title>{t('clipEditor.editClip')}</Dialog.Title>
         {isForceMock() && (
           <p role="status" className="text-sm">
-            Offline demo: processing is simulated. Preview plays the original
-            audio.
+            {t('clipEditor.offlineDemoProcessingIsSimulated')}
           </p>
         )}
         <Dialog.Description>
-          Trim, polish your voice, and choose where it plays in your 24/7
-          rotation.
+          {t('clipEditor.trimPolishYourVoiceAnd')}
         </Dialog.Description>
         {loading ? (
-          <p role="status">Loading audio…</p>
+          <p role="status">{t('clipEditor.loadingAudio')}</p>
         ) : !source ? (
-          <Button onClick={() => void load()}>Retry</Button>
+          <Button onClick={() => void load()}>{t('clipEditor.retry')}</Button>
         ) : (
           <div className="mt-4 flex flex-col gap-5">
-            <section className="flex flex-col gap-3" aria-label="Audio">
+            <section
+              className="flex flex-col gap-3"
+              aria-label={t('clipEditor.audio')}
+            >
               <h3 className="font-bold">1. Audio</h3>
               <Input
-                label="Clip title"
+                label={t('clipEditor.clipTitle')}
                 value={title}
                 maxLength={120}
                 onChange={(e) => {
@@ -340,7 +343,7 @@ export function ClipEditorDialog({
                 peaks={peaks}
                 progress={duration ? position / duration : 0}
                 durationSec={duration}
-                label="Clip waveform"
+                label={t('clipEditor.clipWaveform')}
                 markers={
                   duration
                     ? [
@@ -366,7 +369,7 @@ export function ClipEditorDialog({
                     switchMode('original');
                   }}
                 >
-                  Original
+                  {t('clipEditor.original')}
                 </Button>
                 <Button
                   size="sm"
@@ -376,10 +379,10 @@ export function ClipEditorDialog({
                     switchMode('processed');
                   }}
                 >
-                  Processed
+                  {t('clipEditor.processed')}
                 </Button>
                 <Toggle
-                  label="Loop selection"
+                  label={t('clipEditor.loopSelection')}
                   showLabel
                   checked={loop}
                   onChange={setLoop}
@@ -493,9 +496,7 @@ export function ClipEditorDialog({
                 </div>
               )}
               <p className="text-foreground-secondary text-xs">
-                Your original stays unchanged. Processed clips are saved as
-                lossless WAV. A lossy original does not gain quality from
-                editing.
+                {t('clipEditor.yourOriginalStaysUnchangedProcessed')}
               </p>
               <a
                 href={source.originalUrl}
@@ -503,10 +504,13 @@ export function ClipEditorDialog({
                 rel="noreferrer"
                 className="text-sm underline"
               >
-                Open original audio
+                {t('clipEditor.openOriginalAudio')}
               </a>
             </section>
-            <section className="flex flex-col gap-3" aria-label="Voice sound">
+            <section
+              className="flex flex-col gap-3"
+              aria-label={t('clipEditor.voiceSound')}
+            >
               <h3 className="font-bold">2. Voice sound</h3>
               <div className="flex flex-wrap gap-2">
                 {[
@@ -556,8 +560,7 @@ export function ClipEditorDialog({
               </p>
               {!valid && (
                 <InlineError>
-                  Choose a valid start and end within the original, with fades
-                  that fit the selection (up to 30 seconds each).
+                  {t('clipEditor.chooseAValidStartAnd')}
                 </InlineError>
               )}
               <Button
@@ -578,10 +581,13 @@ export function ClipEditorDialog({
                     : 'Generate a preview to hear and save these changes.'}
               </p>
             </section>
-            <section className="flex flex-col gap-3" aria-label="Placement">
+            <section
+              className="flex flex-col gap-3"
+              aria-label={t('clipEditor.placement')}
+            >
               <h3 className="font-bold">3. When it plays</h3>
               <Select
-                label="Placement"
+                label={t('clipEditor.placement')}
                 value={placement.placement}
                 options={[
                   { id: 'BETWEEN', label: 'Between programs' },
@@ -599,7 +605,7 @@ export function ClipEditorDialog({
               {placement.placement === 'BETWEEN' ? (
                 <>
                   <Select
-                    label="Frequency"
+                    label={t('clipEditor.frequency')}
                     value={placement.scheduleMode}
                     options={[
                       { id: 'AFTER_EVERY', label: 'After every program' },
@@ -626,9 +632,9 @@ export function ClipEditorDialog({
                 </>
               ) : (
                 <Select
-                  label="Program"
+                  label={t('clipEditor.program')}
                   value={placement.targetSoundId ?? ''}
-                  placeholder="Choose a program"
+                  placeholder={t('clipEditor.chooseAProgram')}
                   options={programs.map((p) => ({ id: p.id, label: p.title }))}
                   onValueChange={(value) => {
                     setPlacement((p) => ({ ...p, targetSoundId: value }));
@@ -638,7 +644,7 @@ export function ClipEditorDialog({
               )}
               {missingTarget && (
                 <InlineError>
-                  Choose a program currently in your rotation.
+                  {t('clipEditor.chooseAProgramCurrentlyIn')}
                 </InlineError>
               )}
               <p className="text-foreground-secondary text-xs">
@@ -657,28 +663,28 @@ export function ClipEditorDialog({
             disabled={busy}
             onClick={() => (dirty ? setDiscard(true) : onClose())}
           >
-            Close
+            {t('clipEditor.close')}
           </Button>
           <Button
             variant="secondary"
             disabled={busy || !previewReady || missingTarget || !title.trim()}
             onClick={() => void save(false)}
           >
-            Save inactive
+            {t('clipEditor.saveInactive')}
           </Button>
           <Button
             disabled={busy || !previewReady || missingTarget || !title.trim()}
             onClick={() => void save(true)}
           >
-            Save &amp; activate
+            {t('clipEditor.saveAmpActivate')}
           </Button>
         </Dialog.Actions>
       </Dialog.Root>
       <ConfirmDialog
         isOpen={discard}
-        title="Leave the clip editor?"
-        description="Unsaved title and placement changes will be lost. A generated preview is retained for your next visit; your on-air clip stays unchanged."
-        confirmLabel="Leave editor"
+        title={t('clipEditor.leaveTheClipEditor')}
+        description={t('clipEditor.unsavedTitleAndPlacementChanges')}
+        confirmLabel={t('clipEditor.leaveEditor')}
         destructive
         onCancel={() => setDiscard(false)}
         onConfirm={onClose}

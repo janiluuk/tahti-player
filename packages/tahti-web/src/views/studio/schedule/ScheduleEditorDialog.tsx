@@ -1,6 +1,7 @@
 import { XIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -35,6 +36,7 @@ const tomorrow = new Date(Date.now() + MILLISECONDS_PER_DAY);
 tomorrow.setHours(DEFAULT_BROADCAST_HOUR, 0, 0, 0);
 
 export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
+  const { t } = useTranslation('web');
   const {
     editorOpen,
     setEditorOpen,
@@ -94,9 +96,9 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
       onClose={() => setEditorOpen(false)}
       className="max-w-2xl"
     >
-      <Dialog.Title>Next planned broadcast</Dialog.Title>
+      <Dialog.Title>{t('scheduleEditor.nextPlannedBroadcast')}</Dialog.Title>
       <Dialog.Description>
-        This is shown on your public channel so listeners know when to return.
+        {t('scheduleEditor.thisIsShownOnYour')}
       </Dialog.Description>
       <form
         className="mt-4 flex flex-col gap-5"
@@ -108,14 +110,14 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
         <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_11rem]">
           <Input
             type="date"
-            label="Date"
+            label={t('scheduleEditor.date')}
             min={minimumDate}
             value={date}
             onChange={(event) => setDate(event.target.value)}
           />
           <Input
             type="time"
-            label="Local time"
+            label={t('scheduleEditor.localTime')}
             value={time}
             onChange={(event) => setTime(event.target.value)}
           />
@@ -123,7 +125,7 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
 
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-foreground-secondary text-xs uppercase">
-            Quick pick
+            {t('scheduleEditor.quickPick')}
           </span>
           <Button
             size="sm"
@@ -137,14 +139,14 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
             variant="secondary"
             onClick={() => setQuickDate(nextFriday())}
           >
-            Next Friday
+            {t('scheduleEditor.nextFriday')}
           </Button>
           {(date || time) && (
-            <Tooltip content="Clear planned time" side="top">
+            <Tooltip content={t('scheduleEditor.clearPlannedTime')} side="top">
               <Button
                 size="icon-sm"
                 variant="text"
-                aria-label="Clear planned time"
+                aria-label={t('scheduleEditor.clearPlannedTime')}
                 onClick={() => {
                   setDate('');
                   setTime('');
@@ -180,27 +182,25 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
         <div className="grid gap-3 sm:grid-cols-2">
           {selectedShowId ? (
             <p className="text-foreground-secondary text-xs sm:col-span-2">
-              Tagline, air time, visibility, recording and numbering are the
-              show&apos;s own settings — change them on its show page. They
-              apply here only when you create a new show.
+              {t('scheduleEditor.taglineAirTimeVisibilityRecording')}
             </p>
           ) : null}
           <Input
-            label="Show tagline"
+            label={t('scheduleEditor.showTagline')}
             disabled={Boolean(selectedShowId)}
             value={showTagline}
             onChange={(event) => setShowTagline(event.target.value)}
-            placeholder="Optional subtitle"
+            placeholder={t('scheduleEditor.optionalSubtitle')}
           />
           <Input
-            label="When it airs"
+            label={t('scheduleEditor.whenItAirs')}
             disabled={Boolean(selectedShowId)}
             value={showScheduleNote}
             onChange={(event) => setShowScheduleNote(event.target.value)}
             placeholder="e.g. Fridays 20:00"
           />
           <Select
-            label="Visibility"
+            label={t('scheduleEditor.visibility')}
             disabled={Boolean(selectedShowId)}
             value={showVisibility}
             onValueChange={(value) =>
@@ -213,10 +213,10 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
           />
           <div className="flex items-center justify-between gap-3 text-sm">
             <span className="text-foreground-secondary">
-              Publish recordings automatically
+              {t('scheduleEditor.publishRecordingsAutomatically')}
             </span>
             <Toggle
-              label="Publish recordings automatically"
+              label={t('scheduleEditor.publishRecordingsAutomatically')}
               disabled={Boolean(selectedShowId)}
               checked={autoPublish}
               onChange={setAutoPublish}
@@ -225,10 +225,10 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
           {showMode === 'SERIES' ? (
             <div className="flex items-center justify-between gap-3 text-sm">
               <span className="text-foreground-secondary">
-                Number episodes automatically
+                {t('scheduleEditor.numberEpisodesAutomatically')}
               </span>
               <Toggle
-                label="Number episodes automatically"
+                label={t('scheduleEditor.numberEpisodesAutomatically')}
                 disabled={Boolean(selectedShowId)}
                 checked={episodeNumberEnabled}
                 onChange={setEpisodeNumberEnabled}
@@ -240,7 +240,7 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
               type="number"
               inputMode="numeric"
               variant="number"
-              label="Start episode"
+              label={t('scheduleEditor.startEpisode')}
               disabled={Boolean(selectedShowId)}
               min={1}
               value={episodeDraft ?? String(nextEpisodeNumber)}
@@ -266,7 +266,7 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
 
         <div className="border-border flex flex-col gap-2 border-t pt-3">
           <span className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-            Weekly recurrence
+            {t('scheduleEditor.weeklyRecurrence')}
           </span>
           <FilterChips
             multiple
@@ -276,11 +276,10 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
             }))}
             selected={frequencyDays.map(String)}
             onChange={(ids) => setFrequencyDays(ids.map(Number))}
-            aria-label="Weekly recurrence"
+            aria-label={t('scheduleEditor.weeklyRecurrence')}
           />
           <p className="text-foreground-secondary text-xs">
-            Select days to generate episodes automatically; leave empty for a
-            one-off show.
+            {t('scheduleEditor.selectDaysToGenerateEpisodes')}
           </p>
           {shows.find((show) => show.id === selectedShowId)
             ?.recurrenceEnabled ? (
@@ -291,12 +290,12 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
               onClick={() => void stopRecurringSchedule()}
             >
               <XIcon size={14} aria-hidden className="mr-1.5" />
-              Stop recurring schedule
+              {t('scheduleEditor.stopRecurringSchedule')}
             </Button>
           ) : null}
           <Select
             id="episode-duration"
-            label="Duration: extra minutes"
+            label={t('scheduleEditor.durationExtraMinutes')}
             value={String(durationMinutes)}
             options={[0, 15, 30, 45].map((minutes) => ({
               id: String(minutes),
@@ -309,29 +308,29 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
               !selectedShowId || !date || !time || frequencyDays.length === 0
             }
             saving={busy}
-            label="Save weekly schedule"
+            label={t('scheduleEditor.saveWeeklySchedule')}
             onClick={() => void saveRecurringSchedule()}
           />
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
           <Input
-            label="Venue"
+            label={t('scheduleEditor.venue')}
             value={venue}
             onChange={(event) => setVenue(event.target.value)}
-            placeholder="Optional venue"
+            placeholder={t('scheduleEditor.optionalVenue')}
           />
           <Input
             autoComplete="off"
-            label="Location"
+            label={t('scheduleEditor.location')}
             value={location}
             onChange={(event) => setLocation(event.target.value)}
-            placeholder="City, country, or online"
+            placeholder={t('scheduleEditor.cityCountryOrOnline')}
           />
           <div className="sm:col-span-2">
             <ImageUploadField
-              label="Episode artwork"
-              description="JPEG, PNG, WebP, or GIF"
+              label={t('scheduleEditor.episodeArtwork')}
+              description={t('scheduleEditor.jpegPngWebpOrGif')}
               value={episodeArtworkUrl}
               onChange={setEpisodeArtworkUrl}
             />
@@ -351,19 +350,19 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
               disabled={busy || !selectedShowId || !date || !time}
               onClick={() => void scheduleEpisode()}
             >
-              Schedule episode
+              {t('scheduleEditor.scheduleEpisode')}
             </Button>
             <SaveButton
               type="submit"
               disabled={loading || !date || !time}
               saving={busy}
-              label="Save next broadcast"
+              label={t('scheduleEditor.saveNextBroadcast')}
             />
           </div>
         </div>
       </form>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('scheduleEditor.cancel')}</Dialog.Close>
       </Dialog.Actions>
     </Dialog.Root>
   );

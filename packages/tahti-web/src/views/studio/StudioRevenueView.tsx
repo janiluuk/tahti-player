@@ -146,7 +146,7 @@ export function StudioRevenueView() {
           {movedFrom ? (
             <Alert
               tone="info"
-              title="This page has moved"
+              title={t('studioRevenue2.thisPageHasMoved')}
               data-testid="settings-moved-notice"
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -160,7 +160,7 @@ export function StudioRevenueView() {
                   variant="secondary"
                   onClick={dismissMovedNotice}
                 >
-                  Dismiss
+                  {t('studioRevenue2.dismiss')}
                 </Button>
               </div>
             </Alert>
@@ -173,13 +173,13 @@ export function StudioRevenueView() {
                 size="sm"
                 variant="secondary"
               >
-                Earnings guide
+                {t('studioRevenue2.earningsGuide')}
               </ButtonLink>
-              <Tooltip content="Help" side="top">
+              <Tooltip content={t('studioRevenue2.help')} side="top">
                 <Button
                   size="icon-sm"
                   variant="secondary"
-                  aria-label="Help — take a guided tour of order management"
+                  aria-label={t('studioRevenue2.helpTakeAGuidedTour')}
                   onClick={() => openTour()}
                 >
                   <CircleHelpIcon size={16} aria-hidden />
@@ -191,8 +191,8 @@ export function StudioRevenueView() {
           {showTiers ? (
             <div className="flex flex-col gap-4">
               <StudioPanel
-                title="Fan subscription tiers"
-                description="Set the monthly support tiers fans can subscribe to."
+                title={t('studioRevenue2.fanSubscriptionTiers')}
+                description={t('studioRevenue2.setTheMonthlySupportTiers')}
               >
                 <FanTiersEditor />
               </StudioPanel>
@@ -200,20 +200,20 @@ export function StudioRevenueView() {
           ) : showStore ? (
             <div className="flex flex-col gap-4">
               <StudioPanel
-                title="Channel store"
-                description="Follow the steps. Nothing is for sale on your channel page until you put it in the Store."
+                title={t('studioRevenue2.channelStore')}
+                description={t('studioRevenue2.followTheStepsNothingIs')}
               >
                 <ChannelStoreEditor />
               </StudioPanel>
               <StudioPanel
-                title="Track sales"
-                description="Paid one-time purchases, newest first."
+                title={t('studioRevenue2.trackSales')}
+                description={t('studioRevenue2.paidOneTimePurchasesNewest')}
               >
                 <PurchaseOrdersList />
               </StudioPanel>
             </div>
           ) : connect && !connect.stripeConfigured ? (
-            <StudioPanel title="Payments">
+            <StudioPanel title={t('studioRevenue2.payments')}>
               <PageEmpty
                 data-testid="revenue-stripe-disconnected"
                 title={t('empties.stripeIsNotConnected')}
@@ -221,12 +221,14 @@ export function StudioRevenueView() {
                   'empties.connectStripeBeforeFanSubscriptionsTrack',
                 )}
                 action={
-                  <ButtonLink to="/studio/stripe">Open Stripe setup</ButtonLink>
+                  <ButtonLink to="/studio/stripe">
+                    {t('studioRevenue2.openStripeSetup')}
+                  </ButtonLink>
                 }
               />
             </StudioPanel>
           ) : tiersError && hasFanTiers === null ? (
-            <StudioPanel title="Fan subscriptions">
+            <StudioPanel title={t('studioRevenue2.fanSubscriptions')}>
               <PageError
                 title={t('loadErrors.couldNotLoadYourFanTiers')}
                 description={tiersError}
@@ -260,7 +262,7 @@ export function StudioRevenueView() {
                     to="/studio/stripe"
                     className="font-semibold underline-offset-2 hover:underline"
                   >
-                    Stripe dashboard
+                    {t('studioRevenue2.stripeDashboard')}
                   </Link>
                   .
                 </Alert>
@@ -269,8 +271,10 @@ export function StudioRevenueView() {
               {fanPayouts ? (
                 <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(16rem,1fr)]">
                   <StudioPanel
-                    title="Order management"
-                    description="Subscribers, net revenue, payout health, and recent fan-sub plus distribution payouts."
+                    title={t('studioRevenue2.orderManagement')}
+                    description={t(
+                      'studioRevenue2.subscribersNetRevenuePayoutHealth',
+                    )}
                   >
                     <FanSubscriptionStats
                       stats={fanPayouts}
@@ -279,8 +283,8 @@ export function StudioRevenueView() {
                     />
                   </StudioPanel>
                   <StudioPanel
-                    title="Order flow"
-                    description="What happens to a typical €5 monthly order."
+                    title={t('studioRevenue2.orderFlow')}
+                    description={t('studioRevenue2.whatHappensToATypical')}
                   >
                     <FanSubOrderBreakdown />
                   </StudioPanel>
@@ -289,8 +293,10 @@ export function StudioRevenueView() {
 
               {connect?.stripeConfigured ? (
                 <StudioPanel
-                  title="Stripe"
-                  description="Payout account and Express dashboard — only listed in Studio when Stripe is enabled."
+                  title={t('studioRevenue2.stripe')}
+                  description={t(
+                    'studioRevenue2.payoutAccountAndExpressDashboard',
+                  )}
                 >
                   <div data-tour-id="revenue-connect">
                     <ButtonLink
@@ -298,7 +304,7 @@ export function StudioRevenueView() {
                       size="sm"
                       variant="secondary"
                     >
-                      Open Stripe dashboard
+                      {t('studioRevenue2.openStripeDashboard')}
                     </ButtonLink>
                   </div>
                 </StudioPanel>
@@ -318,7 +324,7 @@ export function StudioRevenueView() {
                 </StudioPanel>
               )}
 
-              <StudioPanel title="Past grants">
+              <StudioPanel title={t('studioRevenue2.pastGrants')}>
                 {grants.length === 0 ? (
                   <PageEmpty title={t('studioRevenue.emptyDisbursements')} />
                 ) : (

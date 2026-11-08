@@ -288,7 +288,7 @@ export function RadioScheduleView() {
 
   return (
     <ViewShell
-      title="Schedule"
+      title={t('radioSchedule.schedule')}
       classes={{ root: 'px-0 pt-0 max-w-5xl', content: 'gap-4' }}
     >
       {greenRoomBookings.length > 0 ? (
@@ -304,7 +304,7 @@ export function RadioScheduleView() {
                   ? 'live now'
                   : 'starting soon'}
               </span>
-              <Tooltip content="Green room" side="top">
+              <Tooltip content={t('radioSchedule.greenRoom')} side="top">
                 <ButtonLink
                   to="/u/$username/green-room"
                   params={{ username: b.username }}
@@ -324,7 +324,7 @@ export function RadioScheduleView() {
         {ownChannelSlug ? (
           <aside className="border-border bg-background-secondary/30 shrink-0 rounded-xl border p-4 lg:w-64">
             <div className="text-foreground-secondary mb-3 font-mono text-xs tracking-wider uppercase">
-              Your next two weeks
+              {t('radioSchedule.yourNextTwoWeeks')}
             </div>
             {upcomingBookings.length === 0 ? (
               <PageEmpty title={t('empties.noUpcomingShows')} />
@@ -399,11 +399,11 @@ export function RadioScheduleView() {
             </Tabs.Root>
 
             <div className="flex items-center justify-between gap-2 sm:justify-end">
-              <Tooltip content="Previous week" side="top">
+              <Tooltip content={t('radioSchedule.previousWeek')} side="top">
                 <Button
                   size="icon-sm"
                   variant="secondary"
-                  aria-label="Previous week"
+                  aria-label={t('radioSchedule.previousWeek')}
                   disabled={busy}
                   onClick={() => setWeekStart((w) => addDays(w, -7))}
                 >
@@ -413,11 +413,11 @@ export function RadioScheduleView() {
               <span className="text-sm font-semibold tabular-nums">
                 {weekLabel(days)}
               </span>
-              <Tooltip content="Next week" side="top">
+              <Tooltip content={t('radioSchedule.nextWeek')} side="top">
                 <Button
                   size="icon-sm"
                   variant="secondary"
-                  aria-label="Next week"
+                  aria-label={t('radioSchedule.nextWeek')}
                   disabled={busy}
                   onClick={() => setWeekStart((w) => addDays(w, 7))}
                 >
@@ -431,7 +431,7 @@ export function RadioScheduleView() {
                   variant="text"
                   onClick={() => setWeekStart(startOfLocalDay(new Date()))}
                 >
-                  This week
+                  {t('radioSchedule.thisWeek')}
                 </Button>
               ) : null}
             </div>
@@ -445,7 +445,7 @@ export function RadioScheduleView() {
             />
           ) : (
             <HorizontalScroll
-              label="Weekly schedule"
+              label={t('radioSchedule.weeklySchedule')}
               className="border-border rounded-xl border"
             >
               <div className="grid min-w-[46.5rem] grid-cols-[4.5rem_repeat(7,minmax(6rem,1fr))]">
@@ -587,10 +587,10 @@ export function RadioScheduleView() {
             ]}
             selected={showType}
             onChange={(id) => setShowType(id as ShowType)}
-            aria-label="Show type"
+            aria-label={t('radioSchedule.showType')}
           />
           <Input
-            aria-label="Note"
+            aria-label={t('radioSchedule.note')}
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder={
@@ -609,7 +609,7 @@ export function RadioScheduleView() {
             disabled={busy}
             onClick={() => setSelection(null)}
           >
-            Cancel
+            {t('radioSchedule.cancel')}
           </Button>
         </form>
       ) : !user ? (
@@ -618,7 +618,7 @@ export function RadioScheduleView() {
             to="/login"
             className="text-foreground underline-offset-2 hover:underline"
           >
-            Sign in
+            {t('radioSchedule.signIn')}
           </Link>{' '}
           to book a slot on Tahti Radio.
         </p>
@@ -631,14 +631,13 @@ export function RadioScheduleView() {
             onClick={openChannelSetup}
             className="text-foreground p-0 underline-offset-2 hover:underline"
           >
-            Set up a channel
+            {t('radioSchedule.setUpAChannel')}
           </Button>{' '}
           to book a slot on Tahti Radio.
         </p>
       ) : (
         <p className="text-foreground-secondary text-sm">
-          Click an open hour above to start a booking — click one of your own
-          slots to view or cancel it.
+          {t('radioSchedule.clickAnOpenHourAbove')}
         </p>
       )}
 
@@ -652,11 +651,11 @@ export function RadioScheduleView() {
       <div className="text-foreground-secondary flex flex-wrap gap-x-4 gap-y-1 text-xs">
         <span className="inline-flex items-center gap-1.5">
           <i className="bg-primary/20 inline-block size-2.5 rounded-sm" />
-          Your bookings (click to view)
+          {t('radioSchedule.yourBookingsClickToView')}
         </span>
         <span className="inline-flex items-center gap-1.5">
           <i className="bg-background-secondary inline-block size-2.5 rounded-sm" />
-          Booked by others
+          {t('radioSchedule.bookedByOthers')}
         </span>
       </div>
 
@@ -672,7 +671,9 @@ export function RadioScheduleView() {
         {selectedBooking &&
           (cancelConfirming ? (
             <>
-              <Dialog.Title>Cancel this booking?</Dialog.Title>
+              <Dialog.Title>
+                {t('radioSchedule.cancelThisBooking')}
+              </Dialog.Title>
               <Dialog.Description>
                 This removes your{' '}
                 {formatHour(new Date(selectedBooking.startAt).getHours())} slot
@@ -689,7 +690,7 @@ export function RadioScheduleView() {
                   disabled={busy}
                   onClick={() => setCancelConfirming(false)}
                 >
-                  Keep booking
+                  {t('radioSchedule.keepBooking')}
                 </Button>
                 <Button
                   intent="danger"
@@ -736,10 +737,10 @@ export function RadioScheduleView() {
                     selected={editShowType}
                     onChange={(id) => setEditShowType(id as ShowType)}
                     disabled={busy}
-                    aria-label="Show type"
+                    aria-label={t('radioSchedule.showType')}
                   />
                   <Input
-                    aria-label="Note"
+                    aria-label={t('radioSchedule.note')}
                     value={editNote}
                     onChange={(e) => setEditNote(e.target.value)}
                     disabled={busy}
@@ -751,19 +752,19 @@ export function RadioScheduleView() {
                   />
                 </div>
                 <Dialog.Actions>
-                  <Dialog.Close>Close</Dialog.Close>
+                  <Dialog.Close>{t('radioSchedule.close')}</Dialog.Close>
                   <Button
                     intent="danger"
                     variant="secondary"
                     disabled={busy}
                     onClick={() => setCancelConfirming(true)}
                   >
-                    Cancel booking
+                    {t('radioSchedule.cancelBooking')}
                   </Button>
                   <SaveButton
                     disabled={busy}
                     saving={busy}
-                    label="Save changes"
+                    label={t('radioSchedule.saveChanges')}
                     type="submit"
                   />
                 </Dialog.Actions>

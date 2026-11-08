@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, SectionTitle, Slider, Toggle } from '@tahti-player/ui';
 
 import { useThemeStore } from '../plugins/themes';
@@ -23,6 +24,7 @@ export function ThemeVisualizationSettings({
 }: {
   themeId?: string;
 } = {}) {
+  const { t } = useTranslation('web');
   const activeThemeId = useThemeStore((state) => state.themeId);
   const themeId = themeIdProp ?? activeThemeId;
   const enabled = useAmbientStore((state) => state.enabled);
@@ -42,38 +44,41 @@ export function ThemeVisualizationSettings({
     <section className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-lg border p-4">
       <div>
         <SectionTitle
-          title="Background visualizations"
+          title={t('themeVisualization.backgroundVisualizations')}
           wrap
           className="font-display tracking-tight"
         />
         <p className="text-foreground-secondary mt-1 text-sm">
-          Some themes can show a quiet background that moves with the music.
+          {t('themeVisualization.someThemesCanShowA')}
         </p>
       </div>
       {!isThemeVisualizationEnabled(themeId) ? (
         <p className="text-foreground-secondary text-sm">
-          Background visualization settings are not available for this theme
-          yet.
+          {t('themeVisualization.backgroundVisualizationSettingsAreNot')}
         </p>
       ) : (
         <>
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-medium">Show animated background</p>
+              <p className="text-sm font-medium">
+                {t('themeVisualization.showAnimatedBackground')}
+              </p>
               <p className="text-foreground-secondary text-xs">
-                Turn it off to use a still background or reduce GPU use.
+                {t('themeVisualization.turnItOffToUse')}
               </p>
             </div>
             <Toggle
               checked={enabled}
               onChange={setEnabled}
-              label="Show animated background"
+              label={t('themeVisualization.showAnimatedBackground')}
             />
           </div>
           {enabled ? (
             <>
               <div>
-                <p className="mb-2 text-sm font-medium">Presets</p>
+                <p className="mb-2 text-sm font-medium">
+                  {t('themeVisualization.presets')}
+                </p>
                 <Button
                   size="sm"
                   variant={preset === 'AURORA' ? undefined : 'text'}
@@ -82,12 +87,12 @@ export function ThemeVisualizationSettings({
                   Tahti Aurora
                 </Button>
                 <p className="text-foreground-secondary mt-1 text-xs">
-                  Soft colour fields that drift with playback.
+                  {t('themeVisualization.softColourFieldsThatDrift')}
                 </p>
               </div>
               <div className="flex flex-col gap-3">
                 <Slider
-                  label="Opacity"
+                  label={t('themeVisualization.opacity')}
                   min={0.05}
                   max={0.45}
                   step={0.01}
@@ -96,10 +101,10 @@ export function ThemeVisualizationSettings({
                   onValueChange={setOpacity}
                 />
                 <p className="text-foreground-secondary -mt-2 text-xs">
-                  How visible the ambience is over the theme.
+                  {t('themeVisualization.howVisibleTheAmbienceIs')}
                 </p>
                 <Slider
-                  label="Motion speed"
+                  label={t('themeVisualization.motionSpeed')}
                   min={0.05}
                   max={0.5}
                   step={0.01}
@@ -108,10 +113,10 @@ export function ThemeVisualizationSettings({
                   onValueChange={setSpeed}
                 />
                 <p className="text-foreground-secondary -mt-2 text-xs">
-                  How quickly the color fields evolve.
+                  {t('themeVisualization.howQuicklyTheColorFields')}
                 </p>
                 <Slider
-                  label="Intensity"
+                  label={t('themeVisualization.intensity')}
                   min={0.1}
                   max={1.5}
                   step={0.05}
@@ -120,20 +125,22 @@ export function ThemeVisualizationSettings({
                   onValueChange={setIntensity}
                 />
                 <p className="text-foreground-secondary -mt-2 text-xs">
-                  How strongly playback levels influence the animation.
+                  {t('themeVisualization.howStronglyPlaybackLevelsInfluence')}
                 </p>
               </div>
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <p className="text-sm font-medium">Audio reactivity</p>
+                  <p className="text-sm font-medium">
+                    {t('themeVisualization.audioReactivity')}
+                  </p>
                   <p className="text-foreground-secondary text-xs">
-                    Let the background respond to the current player level.
+                    {t('themeVisualization.letTheBackgroundRespondTo')}
                   </p>
                 </div>
                 <Toggle
                   checked={audioReactive}
                   onChange={setAudioReactive}
-                  label="Audio reactivity"
+                  label={t('themeVisualization.audioReactivity')}
                 />
               </div>
             </>
