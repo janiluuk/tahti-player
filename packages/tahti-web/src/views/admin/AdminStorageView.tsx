@@ -11,6 +11,7 @@ import {
 } from '@tahti-player/ui';
 
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { FilesBrowserTab } from './storage/FilesBrowserTab';
 import { StorageOverviewTab } from './storage/StorageOverviewTab';
@@ -28,6 +29,7 @@ export function AdminStorageView() {
           <div className="flex max-w-6xl flex-col gap-6">
             <Breadcrumbs>
               <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <AdminHubBreadcrumb hub="platform" />
               <BreadcrumbLink to="/admin/storage">Storage</BreadcrumbLink>
               <BreadcrumbCurrent>
                 {tab === 'files' ? 'Files' : 'Storage'}

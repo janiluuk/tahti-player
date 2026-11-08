@@ -22,6 +22,7 @@ import {
   type ArtworkPreset,
 } from '../../api/artwork-presets';
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { ArtworkPresetUploadDialog } from '../../components/ArtworkPresetUploadDialog';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
@@ -130,6 +131,7 @@ export function AdminArtworkPresetsView() {
         <div className="flex flex-col gap-6">
           <Breadcrumbs>
             <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+            <AdminHubBreadcrumb hub="content" />
             <BreadcrumbCurrent>Artwork presets</BreadcrumbCurrent>
           </Breadcrumbs>
           <ViewShell

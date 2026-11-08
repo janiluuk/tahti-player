@@ -11,6 +11,7 @@ import {
 } from '@tahti-player/ui';
 
 import { AdminGate } from '../../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../../components/AdminNav';
 import {
   ADMIN_ORPHAN_PAGE_TABS,
@@ -45,6 +46,7 @@ export function AdminOrphanPagesView({ tab }: { tab?: AdminOrphanPageTabId }) {
         <AdminPageLayout current="/admin/orphan-pages">
           <Breadcrumbs className="mb-4">
             <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+            <AdminHubBreadcrumb hub="platform" />
             <BreadcrumbCurrent>Orphan pages</BreadcrumbCurrent>
           </Breadcrumbs>
           <Tabs.Root

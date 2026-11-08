@@ -33,8 +33,10 @@ type TrackStats = { track: StudioReleaseTrack; insights: TrackInsights | null };
 /** Release-wide totals built from each track's own insights; the API has
  * no release-level stats query, and a release has few tracks. */
 export function ReleaseStatsPanel({
+  releaseId,
   tracks,
 }: {
+  releaseId: string;
   tracks: StudioReleaseTrack[];
 }) {
   const { t } = useTranslation('web');
@@ -147,6 +149,7 @@ export function ReleaseStatsPanel({
                   void navigate({
                     to: '/studio/insights/$kind/$id',
                     params: { kind: 'release-tracks', id: track.id },
+                    search: { release: releaseId },
                   });
                 },
               }))}
