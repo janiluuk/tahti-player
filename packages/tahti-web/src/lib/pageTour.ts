@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 export type TourStep = {
   /** Matches a `data-tour-id` attribute on the element this step explains. */
   id: string;
@@ -10,136 +12,50 @@ export type TourStep = {
   annotationOnly?: boolean;
 };
 
-const SIDEBAR_STEPS: TourStep[] = [
-  {
-    id: 'nav-listen',
-    label: 'Listen',
-    description:
-      'Browse the channel directory and see who’s live right now — the front page of Tahti.',
-  },
-  {
-    id: 'nav-radio',
-    label: 'Radio',
-    description:
-      'Tahti Radio — the shared 24/7 member relay, plus its schedule.',
-  },
-  {
-    id: 'nav-feed',
-    label: 'Feed',
-    description: 'Updates and posts from the artists and channels you follow.',
-  },
-  {
-    id: 'nav-discover',
-    label: 'Discover',
-    description: 'Find new artists and channels beyond who you already follow.',
-  },
-  {
-    id: 'nav-library',
-    label: 'My Library',
-    description: 'Your tracks, collections, playlists, and listening history.',
-  },
-  {
-    id: 'nav-messages',
-    label: 'Messages',
-    description: 'Direct messages with artists and other listeners.',
-  },
-  {
-    id: 'nav-studio',
-    label: 'Studio',
-    description:
-      'Your artist workspace — broadcasting, uploads, releases, and channel tools.',
-  },
-  {
-    id: 'nav-coop',
-    label: 'Co-op',
-    description:
-      'For members: motions, discussions, documents and how the co-op is run.',
-  },
-  {
-    id: 'nav-admin',
-    label: 'Admin',
-    description: 'Board tools for moderating and running the platform.',
-  },
-  {
-    id: 'nav-more',
-    label: 'More',
-    description: 'Feature map and screen atlas — what exists and where.',
-  },
-  {
-    id: 'nav-settings',
-    label: 'Settings',
-    description: 'Account, artist, notification, and appearance preferences.',
-  },
+const camel = (id: string) =>
+  id.replace(/-([a-z])/g, (_match, letter: string) => letter.toUpperCase());
+
+/** A step's text, read in the current language each time the tour opens. */
+function tourStep(id: string): TourStep {
+  const key = camel(id);
+  return {
+    id,
+    label: i18n.t(`web:pageTour.steps.${key}.label` as never),
+    description: i18n.t(`web:pageTour.steps.${key}.description` as never),
+  };
+}
+
+const SIDEBAR_STEPS = [
+  'nav-listen',
+  'nav-radio',
+  'nav-feed',
+  'nav-discover',
+  'nav-library',
+  'nav-messages',
+  'nav-studio',
+  'nav-coop',
+  'nav-admin',
+  'nav-more',
+  'nav-settings',
 ];
 
-const TOPBAR_STEPS: TourStep[] = [
-  {
-    id: 'topbar-schedule',
-    label: 'Radio schedule',
-    description: 'See what’s coming up next on Tahti Radio.',
-  },
-  {
-    id: 'topbar-golive',
-    label: 'Broadcast',
-    description: 'Jump straight to starting a broadcast on your channel.',
-  },
-  {
-    id: 'topbar-upload',
-    label: 'Upload',
-    description: 'Add a new track or release to your library.',
-  },
-  {
-    id: 'topbar-account',
-    label: 'Account menu',
-    description:
-      'Notifications, messages, your artist panel and channel, settings and log out. A dot on your avatar means something unread.',
-  },
-  {
-    id: 'topbar-login',
-    label: 'Log in',
-    description: 'Sign in to follow artists, chat, and use Studio tools.',
-  },
+const TOPBAR_STEPS = [
+  'topbar-schedule',
+  'topbar-golive',
+  'topbar-upload',
+  'topbar-account',
+  'topbar-login',
 ];
 
-const REVENUE_PAGE_STEPS: TourStep[] = [
-  {
-    id: 'revenue-stats',
-    label: 'Order statistics',
-    description:
-      'Active subscribers, this month’s net, year-to-date payouts, and pending orders — the same numbers as production Studio → Revenue.',
-  },
-  {
-    id: 'revenue-orders',
-    label: 'Payout history',
-    description:
-      'Recent fan-sub charges and distribution royalty rows in one dated list (newest first, up to twelve).',
-  },
-  {
-    id: 'revenue-flow',
-    label: 'Order flow',
-    description:
-      'A typical €5 order: provider processing, Tahti’s 2% operational fee, then the rest to you.',
-  },
-  {
-    id: 'revenue-help',
-    label: 'Earnings guide',
-    description:
-      'Open the Help center article for the full money flow, grants, and what happens when a fan cancels.',
-  },
-  {
-    id: 'revenue-connect',
-    label: 'Stripe dashboard',
-    description:
-      'When Stripe is enabled, open the Studio Stripe dashboard for Connect status and the Express payout account.',
-  },
+const REVENUE_PAGE_STEPS = [
+  'revenue-stats',
+  'revenue-orders',
+  'revenue-flow',
+  'revenue-help',
+  'revenue-connect',
 ];
 
-const DISCO_WIDGETS_STEP: TourStep = {
-  id: 'disco-widgets',
-  label: 'Disco-widgets',
-  description:
-    'Small add-ons shown on the page: on Listen the ones you installed (Settings → Add-ons → Discovery), on an artist or channel page the ones the artist chose. Each runs in its own sandbox and cannot see your account.',
-};
+const DISCO_WIDGETS_STEP = 'disco-widgets';
 
 /** Pages that can show Disco-widgets; the step is skipped where none render. */
 function showsDiscoWidgets(pathname: string): boolean {
@@ -151,132 +67,28 @@ function showsDiscoWidgets(pathname: string): boolean {
   );
 }
 
-const STRIPE_PAGE_STEPS: TourStep[] = [
-  {
-    id: 'stripe-status',
-    label: 'Payout account',
-    description:
-      'Whether Stripe is on, your Connect account exists, and payments are ready.',
-  },
-  {
-    id: 'stripe-actions',
-    label: 'Express dashboard',
-    description:
-      'Finish onboarding or open Stripe’s Express dashboard for this payout account.',
-  },
-  {
-    id: 'stripe-charges',
-    label: 'Stripe charges',
-    description:
-      'Fan-sub orders processed through this Stripe account — the same money as Audience, without grants.',
-  },
-];
+const STRIPE_PAGE_STEPS = ['stripe-status', 'stripe-actions', 'stripe-charges'];
 
 /** Longest-prefix match for page-purpose annotations. */
-const PAGE_PURPOSE_BY_PREFIX: Array<{
-  prefix: string;
-  label: string;
-  description: string;
-}> = [
-  {
-    prefix: '/studio/fans',
-    label: 'Fans',
-    description:
-      'One card per fan tool: posts, the newsletter, memberships, the store and your earnings.',
-  },
-  {
-    prefix: '/studio/audience',
-    label: 'Earnings',
-    description:
-      'Fan-sub stats, recent orders, and earnings flow for your channel. Memberships and the store open from Studio → Fans.',
-  },
-  {
-    prefix: '/studio/profile',
-    label: 'Profile',
-    description:
-      'How you look to listeners: each card opens one part of your artist profile or channel page settings.',
-  },
-  {
-    prefix: '/studio/stripe',
-    label: 'Stripe payouts',
-    description:
-      'Connect status and Express dashboard for receiving fan-sub payouts.',
-  },
-  {
-    prefix: '/studio/shows',
-    label: 'Shows & schedule',
-    description:
-      'Plan upcoming broadcasts, edit the next show, and manage your channel schedule.',
-  },
-  {
-    prefix: '/studio/broadcast',
-    label: 'Broadcast',
-    description:
-      'On or off air, Go live, everything coming up (shows, events, listening parties) and cards for each broadcast tool.',
-  },
-  {
-    prefix: '/studio/go-live',
-    label: 'Go live',
-    description: 'Start or prepare a live broadcast on your channel.',
-  },
-  {
-    prefix: '/studio/upload',
-    label: 'Upload',
-    description: 'Add new tracks and releases to your library.',
-  },
-  {
-    prefix: '/studio',
-    label: 'Studio',
-    description:
-      'Your artist workspace — broadcasting, library, channel tools, and audience.',
-  },
-  {
-    prefix: '/library/sounds',
-    label: 'Tracks',
-    description: 'Your uploaded tracks and encoding status.',
-  },
-  {
-    prefix: '/library',
-    label: 'Library',
-    description:
-      'Your tracks, releases, collections, recordings, and listening history.',
-  },
-  {
-    prefix: '/admin',
-    label: 'Admin',
-    description: 'Board tools for moderating users, content, and platform ops.',
-  },
-  {
-    prefix: '/messages',
-    label: 'Messages',
-    description: 'Direct messages with artists and other listeners.',
-  },
-  {
-    prefix: '/radio',
-    label: 'Tahti Radio',
-    description: 'The shared 24/7 member relay and its schedule.',
-  },
-  {
-    prefix: '/discover',
-    label: 'Discover',
-    description: 'Find new artists and channels beyond who you already follow.',
-  },
-  {
-    prefix: '/settings',
-    label: 'Settings',
-    description: 'Account, artist, notification, and appearance preferences.',
-  },
-  {
-    prefix: '/feed',
-    label: 'Feed',
-    description: 'Updates and posts from artists and channels you follow.',
-  },
-  {
-    prefix: '/',
-    label: 'Home',
-    description:
-      'The front page of Tahti — who’s live, the channel directory, and shortcuts into Listen, Radio, and Studio.',
-  },
+const PAGE_PURPOSE_BY_PREFIX: Array<{ prefix: string; key: string }> = [
+  { prefix: '/studio/fans', key: 'studioFans' },
+  { prefix: '/studio/audience', key: 'studioAudience' },
+  { prefix: '/studio/profile', key: 'studioProfile' },
+  { prefix: '/studio/stripe', key: 'studioStripe' },
+  { prefix: '/studio/shows', key: 'studioShows' },
+  { prefix: '/studio/broadcast', key: 'studioBroadcast' },
+  { prefix: '/studio/go-live', key: 'studioGoLive' },
+  { prefix: '/studio/upload', key: 'studioUpload' },
+  { prefix: '/studio', key: 'studio' },
+  { prefix: '/library/sounds', key: 'librarySounds' },
+  { prefix: '/library', key: 'library' },
+  { prefix: '/admin', key: 'admin' },
+  { prefix: '/messages', key: 'messages' },
+  { prefix: '/radio', key: 'radio' },
+  { prefix: '/discover', key: 'discover' },
+  { prefix: '/settings', key: 'settings' },
+  { prefix: '/feed', key: 'feed' },
+  { prefix: '/', key: 'home' },
 ];
 
 function pagePurposeStep(pathname: string): TourStep {
@@ -289,8 +101,10 @@ function pagePurposeStep(pathname: string): TourStep {
 
   return {
     id: 'page-purpose',
-    label: match.label,
-    description: match.description,
+    label: i18n.t(`web:pageTour.purpose.${match.key}.label` as never),
+    description: i18n.t(
+      `web:pageTour.purpose.${match.key}.description` as never,
+    ),
     annotationOnly: true,
   };
 }
@@ -307,17 +121,17 @@ function dedupeById(steps: TourStep[]): TourStep[] {
 }
 
 function pageFunctionalitySteps(pathname: string): TourStep[] {
-  const steps: TourStep[] = [];
+  const ids: string[] = [];
   if (pathname === '/studio/audience' || pathname === '/studio/revenue') {
-    steps.push(...REVENUE_PAGE_STEPS);
+    ids.push(...REVENUE_PAGE_STEPS);
   }
   if (pathname === '/studio/stripe') {
-    steps.push(...STRIPE_PAGE_STEPS);
+    ids.push(...STRIPE_PAGE_STEPS);
   }
   if (showsDiscoWidgets(pathname)) {
-    steps.push(DISCO_WIDGETS_STEP);
+    ids.push(DISCO_WIDGETS_STEP);
   }
-  return steps;
+  return ids.map(tourStep);
 }
 
 /**
@@ -333,8 +147,8 @@ export function getPageTourSteps(pathname: string): TourStep[] {
   if (pathname === '/') {
     return dedupeById([
       purpose,
-      ...SIDEBAR_STEPS,
-      ...TOPBAR_STEPS,
+      ...SIDEBAR_STEPS.map(tourStep),
+      ...TOPBAR_STEPS.map(tourStep),
       ...pageFunctionalitySteps(pathname),
     ]);
   }
