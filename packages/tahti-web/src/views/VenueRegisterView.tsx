@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   InlineError,
@@ -15,6 +16,7 @@ import { PageBackLink } from '../components/PageBackLink';
 import { useAuthStore } from '../stores/authStore';
 
 export function VenueRegisterView() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const [slug, setSlug] = useState('');
   const [name, setName] = useState('');
@@ -33,7 +35,7 @@ export function VenueRegisterView() {
   if (!user) {
     return (
       <ViewShell
-        title="Register a venue"
+        title={t('venueRegister.registerAVenue')}
         classes={{ root: 'px-0 pt-0 mx-auto max-w-lg' }}
       >
         <Link
@@ -49,7 +51,7 @@ export function VenueRegisterView() {
   if (doneSlug) {
     return (
       <ViewShell
-        title="Submitted"
+        title={t('venueRegister.submitted')}
         classes={{ root: 'px-0 pt-0 mx-auto max-w-lg' }}
       >
         <p className="text-foreground-secondary text-sm">
@@ -61,12 +63,12 @@ export function VenueRegisterView() {
           to="/venues/mine"
           className="text-sm font-medium underline-offset-2 hover:underline"
         >
-          Go to My venues
+          {t('venueRegister.goToMyVenues')}
         </Link>
         <PageBackLink
           to="/discover"
           search={{ tab: 'venues' }}
-          label="All venues"
+          label={t('venueRegister.allVenues')}
         />
       </ViewShell>
     );
@@ -74,13 +76,13 @@ export function VenueRegisterView() {
 
   return (
     <ViewShell
-      title="Register a venue"
+      title={t('venueRegister.registerAVenue')}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-lg' }}
     >
       <PageBackLink
         to="/discover"
         search={{ tab: 'venues' }}
-        label="All venues"
+        label={t('venueRegister.allVenues')}
       />
 
       <form
@@ -114,7 +116,7 @@ export function VenueRegisterView() {
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          label="URL slug"
+          label={t('venueRegister.urlSlug')}
           value={slug}
           onChange={(e) => setSlug(e.target.value)}
           placeholder="kulttuuritalo"
@@ -123,7 +125,7 @@ export function VenueRegisterView() {
           maxLength={64}
         />
         <Input
-          label="Venue name"
+          label={t('venueRegister.venueName')}
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
@@ -131,7 +133,7 @@ export function VenueRegisterView() {
         />
         <Input
           autoComplete="off"
-          label="Street address"
+          label={t('venueRegister.streetAddress')}
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           required
@@ -139,20 +141,20 @@ export function VenueRegisterView() {
         />
         <Input
           autoComplete="off"
-          label="City"
+          label={t('venueRegister.city')}
           value={city}
           onChange={(e) => setCity(e.target.value)}
           required
           maxLength={80}
         />
         <Input
-          label="Country code"
+          label={t('venueRegister.countryCode')}
           value={countryCode}
           onChange={(e) => setCountryCode(e.target.value.toUpperCase())}
           maxLength={2}
         />
         <Input
-          label="Capacity (optional)"
+          label={t('venueRegister.capacityOptional')}
           variant="number"
           min={1}
           value={capacity}
@@ -160,7 +162,7 @@ export function VenueRegisterView() {
         />
         <Textarea
           submitOnModEnter
-          label="Description (optional)"
+          label={t('venueRegister.descriptionOptional')}
           tone="secondary"
           className="min-h-[6rem] text-sm"
           value={description}
@@ -169,14 +171,14 @@ export function VenueRegisterView() {
           rows={4}
         />
         <ImageUploadField
-          label="Venue image"
-          description="JPEG, PNG, WebP, or GIF"
+          label={t('venueRegister.venueImage')}
+          description={t('venueRegister.jpegPngWebpOrGif')}
           value={imageUrl}
           onChange={setImageUrl}
         />
         <ImageUploadField
-          label="Cover art"
-          description="JPEG, PNG, WebP, or GIF"
+          label={t('venueRegister.coverArt')}
+          description={t('venueRegister.jpegPngWebpOrGif')}
           value={coverUrl}
           onChange={setCoverUrl}
         />
@@ -185,7 +187,7 @@ export function VenueRegisterView() {
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          label="Venue website (optional)"
+          label={t('venueRegister.venueWebsiteOptional')}
           value={pageUrl}
           onChange={(e) => setPageUrl(e.target.value)}
           placeholder="https://…"

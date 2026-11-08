@@ -234,13 +234,8 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
 
   return (
     <div className="flex flex-col gap-4">
-      <HelpLayer title="How the stream overlay works">
-        <p>
-          RTMP has no built-in title metadata, so YouTube/Twitch/etc. mirrors
-          carry a static video frame with this cover baked in. Leave the cover
-          blank to use whatever's currently playing, or your avatar when
-          nothing's live.
-        </p>
+      <HelpLayer title={t('streamOverlay.howTheStreamOverlayWorks')}>
+        <p>{t('streamOverlay.rtmpHasNoBuiltIn')}</p>
       </HelpLayer>
       {error && <InlineError>{error}</InlineError>}
 
@@ -320,7 +315,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       <ImageSlotPreviewDialog
         isOpen={coverChrome.previewOpen}
         onClose={coverChrome.closePreview}
-        label="Overlay cover"
+        label={t('streamOverlay.overlayCover')}
         src={overlay.streamOverlayCoverUrl}
         onChangeClick={() => {
           coverChrome.closePreview();
@@ -342,9 +337,9 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
         }}
         className="max-w-md"
       >
-        <Dialog.Title>Overlay cover</Dialog.Title>
+        <Dialog.Title>{t('streamOverlay.overlayCover')}</Dialog.Title>
         <Dialog.Description>
-          Wide JPEG, PNG, or WebP. Uploads immediately once selected.
+          {t('streamOverlay.wideJpegPngOrWebp')}
         </Dialog.Description>
         <div className="mt-4">
           <FilePicker
@@ -362,9 +357,11 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       </Dialog.Root>
 
       <div className="flex flex-col gap-1.5">
-        <p className="text-sm font-medium">Overlay backdrop</p>
+        <p className="text-sm font-medium">
+          {t('streamOverlay.overlayBackdrop')}
+        </p>
         <BackdropUploadButton
-          label="Overlay backdrop"
+          label={t('streamOverlay.overlayBackdrop')}
           value={overlay.streamOverlayBackdropUrl}
           onChange={(url) =>
             setOverlay((current) => ({
@@ -377,7 +374,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       </div>
 
       <Select
-        label="Overlay visualizer"
+        label={t('streamOverlay.overlayVisualizer')}
         value={overlay.streamOverlayVisualPreset}
         onValueChange={(value) =>
           setOverlay((current) => ({
@@ -390,13 +387,15 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
 
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-sm font-medium">Show overlay title</p>
+          <p className="text-sm font-medium">
+            {t('streamOverlay.showOverlayTitle')}
+          </p>
           <p className="text-foreground-secondary text-xs">
-            Bake a title and subtitle onto the video frame.
+            {t('streamOverlay.bakeATitleAndSubtitle')}
           </p>
         </div>
         <Toggle
-          label="Show overlay title"
+          label={t('streamOverlay.showOverlayTitle')}
           checked={overlay.streamOverlayShowTitle}
           onChange={(checked) =>
             setOverlay((current) => ({
@@ -411,8 +410,8 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
         <>
           <Input
             autoComplete="off"
-            label="Overlay title"
-            placeholder="Your display name"
+            label={t('streamOverlay.overlayTitle')}
+            placeholder={t('streamOverlay.yourDisplayName')}
             maxLength={80}
             value={overlay.streamOverlayTitle}
             onChange={(event) =>
@@ -423,7 +422,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
             }
           />
           <Input
-            label="Overlay subtitle"
+            label={t('streamOverlay.overlaySubtitle')}
             placeholder="e.g. Every Friday, 8pm CET"
             maxLength={120}
             value={overlay.streamOverlaySubtitle}
@@ -435,7 +434,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
             }
           />
           <ColorField
-            label="Overlay text color"
+            label={t('streamOverlay.overlayTextColor')}
             value={overlay.streamOverlayTextColor || '#ffffff'}
             detail={
               overlay.streamOverlayTextColor || 'Default (white / light gray)'
@@ -448,12 +447,15 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
             }
             actions={
               overlay.streamOverlayTextColor ? (
-                <Tooltip content="Reset to default colors" side="top">
+                <Tooltip
+                  content={t('streamOverlay.resetToDefaultColors')}
+                  side="top"
+                >
                   <Button
                     type="button"
                     size="icon-sm"
                     variant="secondary"
-                    aria-label="Reset to default colors"
+                    aria-label={t('streamOverlay.resetToDefaultColors')}
                     onClick={() =>
                       setOverlay((current) => ({
                         ...current,
@@ -469,14 +471,15 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
           />
           <div className="border-border bg-background-secondary/40 flex items-center justify-between gap-3 rounded-lg border p-2.5 text-sm">
             <span className="min-w-0 flex-1">
-              <span className="block font-semibold">Darken behind text</span>
+              <span className="block font-semibold">
+                {t('streamOverlay.darkenBehindText')}
+              </span>
               <span className="text-foreground-secondary block text-xs">
-                Adds a semi-transparent scrim so title/subtitle stay legible
-                over busy cover art.
+                {t('streamOverlay.addsASemiTransparentScrim')}
               </span>
             </span>
             <Toggle
-              label="Darken behind text"
+              label={t('streamOverlay.darkenBehindText')}
               checked={overlay.streamOverlayScrimEnabled}
               onChange={(checked) =>
                 setOverlay((current) => ({
@@ -492,7 +495,7 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
       <SaveButton
         disabled={coverUploading}
         saving={saving}
-        label="Save overlay"
+        label={t('streamOverlay.saveOverlay')}
         onClick={save}
         className="self-start"
       />
