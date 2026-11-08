@@ -57,7 +57,7 @@ export function MulticastCategory() {
   return (
     <div className="flex flex-col gap-3">
       <h3 className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-        Stream destinations
+        {t('remainingCategories.streamDestinations')}
       </h3>
       {targets == null ? (
         <PageLoading label={t('loading.loadingMultistreamDestinations')} />
@@ -105,7 +105,10 @@ export function MulticastCategory() {
                 }}
                 accessory={
                   <div className="flex items-center gap-1">
-                    <Tooltip content="Configure" side="top">
+                    <Tooltip
+                      content={t('remainingCategories.configure')}
+                      side="top"
+                    >
                       <Button
                         size="icon-sm"
                         variant="secondary"
@@ -121,7 +124,10 @@ export function MulticastCategory() {
                       </Button>
                     </Tooltip>
                     {target ? (
-                      <Tooltip content="Remove" side="top">
+                      <Tooltip
+                        content={t('remainingCategories.remove')}
+                        side="top"
+                      >
                         <Button
                           size="icon-sm"
                           variant="text"
@@ -157,8 +163,10 @@ export function MulticastCategory() {
             ? `Remove ${pendingRemove.label ?? 'this destination'}?`
             : 'Remove destination?'
         }
-        description="This stream destination stops receiving the broadcast."
-        confirmLabel="Remove"
+        description={t(
+          'remainingCategories.thisStreamDestinationStopsReceiving',
+        )}
+        confirmLabel={t('remainingCategories.remove')}
         destructive
         onCancel={() => setPendingRemove(null)}
         onConfirm={() => {
@@ -181,6 +189,7 @@ export function MulticastCategory() {
 }
 
 export function AudioPluginsCategory() {
+  const { t } = useTranslation('web');
   const enabledPluginIds = useAudioFxStore((state) => state.enabledPluginIds);
   const togglePlugin = useAudioFxStore((state) => state.togglePlugin);
   const masteringEnabled = useMasteringFeatureStore((state) => state.enabled);
@@ -197,13 +206,12 @@ export function AudioPluginsCategory() {
       <AudioPluginToggleRow
         name="Reference Match"
         author="Pro Editor"
-        description="Match a track's loudness and tonal balance toward a reference track — the 'Master' / 'Match to a reference track' entry points on Tracks and the track editor."
+        description={t('remainingCategories.matchATrackSLoudness')}
         enabled={masteringEnabled}
         onToggle={() => setMasteringEnabled(!masteringEnabled)}
       />
       <p className="text-foreground-secondary text-xs">
-        Enabled by default. Turning this off hides the mastering entry points;
-        it doesn't touch any saved mastering output.
+        {t('remainingCategories.enabledByDefaultTurningThis')}
       </p>
       <div className="border-border my-1 border-t" />
       {ALL_PLUGIN_IDS.map((id) => {
@@ -221,7 +229,7 @@ export function AudioPluginsCategory() {
         );
       })}
       <p className="text-foreground-secondary text-xs">
-        Only activated audio plugins are available to add in the Pro Editor.
+        {t('remainingCategories.onlyActivatedAudioPluginsAre')}
       </p>
     </div>
   );

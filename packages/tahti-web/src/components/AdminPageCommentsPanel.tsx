@@ -22,6 +22,7 @@ import { MapCommentForm } from './MapCommentForm';
 import { PageEmpty } from './PageStates';
 
 function PageCommentRow({ comment }: { comment: MapComment }) {
+  const { t } = useTranslation('web');
   const updateComment = useMapNotesStore((s) => s.updateComment);
   const resolveComment = useMapNotesStore((s) => s.resolveComment);
   const unresolveComment = useMapNotesStore((s) => s.unresolveComment);
@@ -60,13 +61,13 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
             rows={3}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
-            aria-label="Edit page comment"
+            aria-label={t('adminPageCommentsPanel.editPageComment')}
             className="min-h-[4rem] text-sm"
             submitOnModEnter
           />
           <div className="flex flex-wrap gap-1">
             <Button size="sm" type="submit" disabled={!draft.trim()}>
-              Save
+              {t('adminPageCommentsPanel.save')}
             </Button>
             <Button
               size="sm"
@@ -76,7 +77,7 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
                 setEditing(false);
               }}
             >
-              Cancel
+              {t('adminPageCommentsPanel.cancel')}
             </Button>
           </div>
         </form>
@@ -86,7 +87,7 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
       {!editing ? (
         <div className="mt-2 flex flex-wrap gap-1">
           <EditIconButton
-            label="Edit comment"
+            label={t('adminPageCommentsPanel.editComment')}
             variant="text"
             onClick={() => {
               setDraft(comment.text);
@@ -99,7 +100,7 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
               variant="text"
               onClick={() => unresolveComment(comment.id)}
             >
-              Reopen
+              {t('adminPageCommentsPanel.reopen')}
             </Button>
           ) : (
             <Button
@@ -111,7 +112,7 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
               }}
             >
               <CheckIcon size={12} aria-hidden className="mr-1" />
-              Resolve
+              {t('adminPageCommentsPanel.resolve')}
             </Button>
           )}
         </div>
@@ -155,11 +156,14 @@ export function AdminPageCommentsPanel() {
             Same store as Tahti atlas · {forPage.length} here · {openCount} open
           </p>
         </div>
-        <Tooltip content="Close page comments" side="top">
+        <Tooltip
+          content={t('adminPageCommentsPanel.closePageComments')}
+          side="top"
+        >
           <Button
             size="icon-sm"
             variant="text"
-            aria-label="Close page comments"
+            aria-label={t('adminPageCommentsPanel.closePageComments')}
             onClick={() => {
               closePanel();
               setRightCollapsed(false);
@@ -174,8 +178,8 @@ export function AdminPageCommentsPanel() {
         kind={target.kind}
         targetId={target.targetId}
         title={target.title}
-        label="New comment"
-        placeholder="What needs fixing on this page…"
+        label={t('adminPageCommentsPanel.newComment')}
+        placeholder={t('adminPageCommentsPanel.whatNeedsFixingOnThis')}
         className="flex flex-col gap-2"
       />
 
@@ -186,7 +190,7 @@ export function AdminPageCommentsPanel() {
           disabled={comments.length === 0}
           onClick={() => downloadMapCommentsCsv(comments)}
         >
-          Export all CSV
+          {t('adminPageCommentsPanel.exportAllCsv')}
         </Button>
       </div>
 

@@ -105,14 +105,15 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
       {storeEnabled !== null && (
         <div className="border-border flex items-center justify-between gap-3 rounded-lg border px-3 py-2">
           <div>
-            <p className="text-sm font-medium">Show the Store</p>
+            <p className="text-sm font-medium">
+              {t('purchaseTiersEditor.showTheStore')}
+            </p>
             <p className="text-foreground-secondary text-xs">
-              Turn this on and the Store section appears on your channel page.
-              Leave it off and fans never see it.
+              {t('purchaseTiersEditor.turnThisOnAndThe')}
             </p>
           </div>
           <Toggle
-            label="Show the Store on your channel page"
+            label={t('purchaseTiersEditor.showTheStoreOnYour')}
             checked={storeEnabled}
             disabled={savingStore}
             onChange={(next) => void toggleStore(next)}
@@ -244,13 +245,13 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
           <Dialog.Title>
             <span className="inline-flex items-center gap-2">
               <CircleDollarSignIcon size={18} aria-hidden />
-              New purchase tier
+              {t('purchaseTiersEditor.newPurchaseTier')}
             </span>
           </Dialog.Title>
           <div className="mt-4 flex flex-col gap-3">
             <Input
               autoComplete="off"
-              label="Name"
+              label={t('purchaseTiersEditor.name')}
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoFocus
@@ -262,7 +263,7 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
             />
             <Textarea
               submitOnModEnter
-              label="Description"
+              label={t('purchaseTiersEditor.description')}
               tone="secondary"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -270,17 +271,17 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
             />
             <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
               <span className="font-medium">
-                Pay what you want (buyer can enter any amount, incl. free)
+                {t('purchaseTiersEditor.payWhatYouWantBuyer')}
               </span>
               <Toggle
-                label="Pay what you want"
+                label={t('purchaseTiersEditor.payWhatYouWant')}
                 checked={priceOptional}
                 onChange={setPriceOptional}
               />
             </div>
           </div>
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>{t('purchaseTiersEditor.cancel')}</Dialog.Close>
             <Button type="submit" disabled={busy || !name.trim()}>
               <PlusIcon size={16} aria-hidden className="mr-1.5" />
               {busy ? 'Creating…' : 'Create tier'}

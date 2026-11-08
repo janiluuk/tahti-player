@@ -70,16 +70,18 @@ export function NewsSourcesDialog({
     <Dialog
       isOpen={isOpen}
       onClose={onClose}
-      title="News sources"
-      description="Latest News merges these feeds, newest first."
-      actions={<Dialog.Close>Done</Dialog.Close>}
+      title={t('newsSourcesDialog.newsSources')}
+      description={t('newsSourcesDialog.latestNewsMergesTheseFeeds')}
+      actions={<Dialog.Close>{t('newsSourcesDialog.done')}</Dialog.Close>}
     >
       <div
         className="flex max-h-[65vh] flex-col gap-5 overflow-y-auto pr-1"
         data-testid="news-sources"
       >
         <section className="flex flex-col gap-2">
-          <h3 className="text-sm font-bold">Your sources</h3>
+          <h3 className="text-sm font-bold">
+            {t('newsSourcesDialog.yourSources')}
+          </h3>
           {sources.length === 0 ? (
             <PageEmpty
               title={t('empties.noNewsSources')}
@@ -96,7 +98,7 @@ export function NewsSourcesDialog({
             />
           ) : (
             <ul
-              aria-label="Your sources"
+              aria-label={t('newsSourcesDialog.yourSources')}
               className="divide-border flex flex-col divide-y"
             >
               {sources.map((source) => (
@@ -138,10 +140,12 @@ export function NewsSourcesDialog({
             addCustom();
           }}
         >
-          <h3 className="text-sm font-bold">Add a feed</h3>
+          <h3 className="text-sm font-bold">
+            {t('newsSourcesDialog.addAFeed')}
+          </h3>
           <Input
             ref={nameInputRef}
-            label="Name"
+            label={t('newsSourcesDialog.name')}
             value={title}
             onChange={(event) => setTitle(event.target.value)}
             placeholder="DJWORX"
@@ -151,7 +155,7 @@ export function NewsSourcesDialog({
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            label="RSS or Atom URL"
+            label={t('newsSourcesDialog.rssOrAtomUrl')}
             value={url}
             onChange={(event) => {
               setError(null);
@@ -166,11 +170,13 @@ export function NewsSourcesDialog({
             </p>
           ) : null}
           <Button size="sm" type="submit" className="self-start">
-            Add source
+            {t('newsSourcesDialog.addSource')}
           </Button>
         </form>
         <section className="flex flex-col gap-2">
-          <h3 className="text-sm font-bold">Suggested feeds</h3>
+          <h3 className="text-sm font-bold">
+            {t('newsSourcesDialog.suggestedFeeds')}
+          </h3>
           <NewsFeedSuggestions
             addedUrls={addedUrls}
             onAdd={(feed) => add(feed.url, feed.title)}

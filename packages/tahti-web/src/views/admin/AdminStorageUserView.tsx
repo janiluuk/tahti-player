@@ -61,11 +61,15 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
         <AdminPageLayout current="/admin/storage">
           <div className="mx-auto flex max-w-4xl flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminStorageUserView.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbLink to="/admin/storage">Storage</BreadcrumbLink>
+              <BreadcrumbLink to="/admin/storage">
+                {t('adminStorageUserView.storage')}
+              </BreadcrumbLink>
               <BreadcrumbLink to="/admin/storage" search={{ tab: 'files' }}>
-                Files
+                {t('adminStorageUserView.files')}
               </BreadcrumbLink>
               <BreadcrumbCurrent>
                 {detail?.displayName ?? 'User'}
@@ -78,7 +82,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
               variant="text"
             >
               <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
-              Back to Storage
+              {t('adminStorageUserView.backToStorage')}
             </ButtonLink>
 
             {loading ? (
@@ -101,7 +105,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                     <div className="flex flex-wrap gap-6">
                       <div>
                         <div className="text-foreground-secondary text-xs uppercase">
-                          Used
+                          {t('adminStorageUserView.used')}
                         </div>
                         <div className="text-lg font-semibold">
                           {formatBytes(detail.usedBytes)}
@@ -109,7 +113,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                       </div>
                       <div>
                         <div className="text-foreground-secondary text-xs uppercase">
-                          Quota
+                          {t('adminStorageUserView.quota')}
                         </div>
                         <div className="text-lg font-semibold">
                           {formatQuota(detail.quotaBytes, detail.unlimited)}
@@ -118,7 +122,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                       {pct != null ? (
                         <div>
                           <div className="text-foreground-secondary text-xs uppercase">
-                            Used of quota
+                            {t('adminStorageUserView.usedOfQuota')}
                           </div>
                           <div
                             className={`text-lg font-semibold ${pct > 100 ? 'text-accent-red-strong' : ''}`}
@@ -131,8 +135,10 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                   </StudioPanel>
 
                   <StudioPanel
-                    title="Files"
-                    description="Oldest first, with a running total of storage used over time."
+                    title={t('adminStorageUserView.files')}
+                    description={t(
+                      'adminStorageUserView.oldestFirstWithARunning',
+                    )}
                   >
                     {detail.files.length === 0 ? (
                       <PageEmpty title={t('empties.noFilesUploaded')} />
@@ -162,7 +168,10 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                                 </Badge>
                               ) : null}
                               {f.isAudio && f.previewUrl ? (
-                                <Tooltip content="Preview" side="top">
+                                <Tooltip
+                                  content={t('adminStorageUserView.preview')}
+                                  side="top"
+                                >
                                   <Button
                                     size="icon-sm"
                                     variant="text"

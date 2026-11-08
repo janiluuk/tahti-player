@@ -201,8 +201,8 @@ export function MaterialSetsField({ soundId }: Props) {
   return (
     <MaterialMetaPanel
       icon={<ListMusicIcon size={14} strokeWidth={2.5} />}
-      title="Sets"
-      description="Click a set to add this upload or to take it out again — it is saved right away."
+      title={t('materialSetsField.sets')}
+      description={t('materialSetsField.clickASetToAdd')}
     >
       {rows == null ? (
         <PageLoading label={t('loading.loadingSets')} />
@@ -227,13 +227,13 @@ export function MaterialSetsField({ soundId }: Props) {
             creating ? (
               <div className="border-border flex flex-col gap-2 rounded-lg border p-3">
                 <Input
-                  label="Name"
+                  label={t('materialSetsField.name')}
                   value={newName}
                   onChange={(event) => setNewName(event.target.value)}
-                  placeholder="New set name"
+                  placeholder={t('materialSetsField.newSetName')}
                 />
                 <Select
-                  label="Style"
+                  label={t('materialSetsField.style')}
                   value={newStyle}
                   onValueChange={setNewStyle}
                   options={[
@@ -242,7 +242,7 @@ export function MaterialSetsField({ soundId }: Props) {
                   ]}
                 />
                 <Toggle
-                  label="Public"
+                  label={t('materialSetsField.public')}
                   checked={newPublic}
                   onChange={setNewPublic}
                 />
@@ -252,14 +252,14 @@ export function MaterialSetsField({ soundId }: Props) {
                     disabled={createBusy || !newName.trim()}
                     onClick={() => void createSet()}
                   >
-                    Create and add
+                    {t('materialSetsField.createAndAdd')}
                   </Button>
                   <Button
                     size="sm"
                     variant="text"
                     onClick={() => setCreating(false)}
                   >
-                    Cancel
+                    {t('materialSetsField.cancel')}
                   </Button>
                 </div>
               </div>
@@ -268,7 +268,7 @@ export function MaterialSetsField({ soundId }: Props) {
           footer={
             creating ? null : (
               <MaterialMembershipCreateFooter
-                label="New set"
+                label={t('materialSetsField.newSet')}
                 onClick={() => setCreating(true)}
               />
             )

@@ -101,7 +101,10 @@ export function StudioEditorProjectView({ id }: { id: string }) {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex w-full max-w-[1400px] flex-col gap-6 px-1 py-2">
-        <PageBackLink to="/studio/editor" label="Editor" />
+        <PageBackLink
+          to="/studio/editor"
+          label={t('studioEditorProjectView.editor')}
+        />
         {!project ? (
           <StudioPanel>
             <PageLoading label={t('loading.loadingProject')} />
@@ -122,7 +125,7 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                     aria-hidden
                     className="text-accent-red mr-1.5"
                   />
-                  Delete
+                  {t('studioEditorProjectView.delete')}
                 </Button>
                 {project.soundId ? (
                   <ButtonLink
@@ -133,15 +136,17 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                     aria-label={`Open ${project.title}`}
                   >
                     <AudioLinesIcon size={16} aria-hidden className="mr-1.5" />
-                    Pro editor
+                    {t('studioEditorProjectView.proEditor')}
                   </ButtonLink>
                 ) : null}
               </div>
               {error && <InlineError>{error}</InlineError>}
               {timeline && (
                 <StudioPanel
-                  title="Timeline"
-                  description="Arrange native archive clips into a non-destructive multitrack session."
+                  title={t('studioEditorProjectView.timeline')}
+                  description={t(
+                    'studioEditorProjectView.arrangeNativeArchiveClipsInto',
+                  )}
                   action={
                     <span
                       className="text-foreground-secondary text-xs"
@@ -165,11 +170,11 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                   />
                 </StudioPanel>
               )}
-              <StudioPanel title="Session">
+              <StudioPanel title={t('studioEditorProjectView.session')}>
                 <dl className="grid gap-3 text-sm sm:grid-cols-2">
                   <div>
                     <dt className="text-foreground-secondary text-xs uppercase">
-                      Updated
+                      {t('studioEditorProjectView.updated')}
                     </dt>
                     <dd className="mt-0.5">
                       <ListingDate value={project.updatedAt} />
@@ -177,7 +182,7 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                   </div>
                   <div>
                     <dt className="text-foreground-secondary text-xs uppercase">
-                      Sound link
+                      {t('studioEditorProjectView.soundLink')}
                     </dt>
                     <dd className="mt-0.5">
                       {project.soundId ? (
@@ -186,7 +191,7 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                           params={{ id: project.soundId }}
                           className="underline-offset-2 hover:underline"
                         >
-                          Open in Library
+                          {t('studioEditorProjectView.openInLibrary')}
                         </Link>
                       ) : (
                         'None'

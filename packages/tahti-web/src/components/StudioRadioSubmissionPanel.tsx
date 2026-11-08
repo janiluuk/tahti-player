@@ -94,25 +94,25 @@ export function StudioRadioSubmissionPanel() {
   return (
     <>
       <StudioPanel
-        title="Tahti Radio"
-        description="Submit up to five single tracks for review. Approved tracks may be added to the shared Tahti Radio rotation."
+        title={t('studioRadioSubmissionPanel.tahtiRadio')}
+        description={t('studioRadioSubmissionPanel.submitUpToFiveSingle')}
       >
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Toggle
-            label="Include my channel in Tahti Radio"
+            label={t('studioRadioSubmissionPanel.includeMyChannelInTahti')}
             showLabel
             checked={!optedOut}
             onChange={() => void toggleOptOut()}
           />
           <Button className="gap-1.5" onClick={() => setOpen(true)}>
             <SendIcon size={16} aria-hidden />
-            Select tracks
+            {t('studioRadioSubmissionPanel.selectTracks')}
           </Button>
         </div>
       </StudioPanel>
       <StudioPanel
-        title="Submission status"
-        description="Track review decisions and any feedback from the Tahti Radio team."
+        title={t('studioRadioSubmissionPanel.submissionStatus')}
+        description={t('studioRadioSubmissionPanel.trackReviewDecisionsAndAny')}
       >
         {loading ? (
           <PageLoading label={t('loading.loadingSubmissions')} />
@@ -161,7 +161,9 @@ export function StudioRadioSubmissionPanel() {
         )}
       </StudioPanel>
       <Dialog.Root isOpen={open} onClose={() => setOpen(false)}>
-        <Dialog.Title>Submit tracks to Tahti Radio</Dialog.Title>
+        <Dialog.Title>
+          {t('studioRadioSubmissionPanel.submitTracksToTahtiRadio')}
+        </Dialog.Title>
         <Dialog.Description>
           Select up to {MAX_TRACKS} single audio files from your library.
         </Dialog.Description>
@@ -204,13 +206,17 @@ export function StudioRadioSubmissionPanel() {
             })}
           </div>
           <Input
-            label="Note (optional)"
+            label={t('studioRadioSubmissionPanel.noteOptional')}
             value={note}
             onChange={(event) => setNote(event.target.value)}
-            placeholder="Tell the reviewers about this submission"
+            placeholder={t(
+              'studioRadioSubmissionPanel.tellTheReviewersAboutThis',
+            )}
           />
           <Dialog.Actions>
-            <Dialog.Close>Cancel</Dialog.Close>
+            <Dialog.Close>
+              {t('studioRadioSubmissionPanel.cancel')}
+            </Dialog.Close>
             <Button disabled={busy || selected.length === 0} type="submit">
               Submit {selected.length || ''}
             </Button>

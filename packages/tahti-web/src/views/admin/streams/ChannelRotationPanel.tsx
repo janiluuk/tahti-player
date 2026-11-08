@@ -124,8 +124,8 @@ export function ChannelRotationPanel() {
 
   return (
     <StudioPanel
-      title="Channel 24/7 rotation"
-      description="What a channel plays while its artist is offline. Changes here act for the artist; they see the same rotation in Studio."
+      title={t('channelRotationPanel.channel247Rotation')}
+      description={t('channelRotationPanel.whatAChannelPlaysWhile')}
     >
       <form
         className="flex flex-wrap items-end gap-2"
@@ -138,7 +138,7 @@ export function ChannelRotationPanel() {
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          label="Channel slug"
+          label={t('channelRotationPanel.channelSlug')}
           value={slugInput}
           onChange={(event) => setSlugInput(event.target.value)}
           className="max-w-xs"
@@ -165,28 +165,28 @@ export function ChannelRotationPanel() {
         <div className="mt-4 flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-4">
             <Toggle
-              label="Rotation on"
+              label={t('channelRotationPanel.rotationOn')}
               checked={settings.fallbackEnabled}
               onChange={(checked) =>
                 setSettings({ ...settings, fallbackEnabled: checked })
               }
             />
             <Toggle
-              label="New uploads join"
+              label={t('channelRotationPanel.newUploadsJoin')}
               checked={settings.fallbackAutoEnroll}
               onChange={(checked) =>
                 setSettings({ ...settings, fallbackAutoEnroll: checked })
               }
             />
             <Toggle
-              label="Channel announcements"
+              label={t('channelRotationPanel.channelAnnouncements')}
               checked={settings.announcementsEnabled}
               onChange={(checked) =>
                 setSettings({ ...settings, announcementsEnabled: checked })
               }
             />
             <Select
-              label="Order"
+              label={t('channelRotationPanel.order')}
               value={settings.fallbackMode}
               onValueChange={(value) =>
                 setSettings({

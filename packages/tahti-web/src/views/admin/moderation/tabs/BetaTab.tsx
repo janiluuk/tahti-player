@@ -115,7 +115,7 @@ export function BetaTab() {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-foreground-secondary text-sm">
-        Approving creates an artist account and emails a password setup link.
+        {t('betaTab.approvingCreatesAnArtistAccount')}
       </p>
 
       <ModerationTabs
@@ -188,7 +188,7 @@ export function BetaTab() {
                           onClick={() => openApprove(app)}
                         >
                           <CheckCircle2Icon size={14} aria-hidden />
-                          Approve
+                          {t('betaTab.approve')}
                         </Button>
                         <Button
                           className="gap-1.5"
@@ -205,7 +205,7 @@ export function BetaTab() {
                           }}
                         >
                           <XCircleIcon size={14} aria-hidden />
-                          Reject
+                          {t('betaTab.reject')}
                         </Button>
                       </>
                     )}
@@ -227,7 +227,7 @@ export function BetaTab() {
                           }}
                         >
                           <SendIcon size={14} aria-hidden />
-                          Resend setup link
+                          {t('betaTab.resendSetupLink')}
                         </Button>
                       )}
                   </div>
@@ -252,7 +252,7 @@ export function BetaTab() {
               {setupUrl}
             </a>
             <Dialog.Actions>
-              <Dialog.Close>Close</Dialog.Close>
+              <Dialog.Close>{t('betaTab.close')}</Dialog.Close>
             </Dialog.Actions>
           </div>
         ) : (
@@ -282,20 +282,20 @@ export function BetaTab() {
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                label="Username"
+                label={t('betaTab.username')}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 autoFocus
               />
               <Input
                 autoComplete="off"
-                label="Artist name"
+                label={t('betaTab.artistName')}
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
               />
             </div>
             <Dialog.Actions>
-              <Dialog.Close>Cancel</Dialog.Close>
+              <Dialog.Close>{t('betaTab.cancel')}</Dialog.Close>
               <Button
                 className="gap-1.5"
                 type="submit"

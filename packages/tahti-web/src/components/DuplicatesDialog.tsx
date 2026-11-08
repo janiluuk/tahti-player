@@ -172,10 +172,9 @@ export function DuplicatesDialog({
         onClose={() => (hashing ? undefined : onClose())}
         className="max-w-2xl"
       >
-        <Dialog.Title>Find duplicates</Dialog.Title>
+        <Dialog.Title>{t('duplicatesDialog.findDuplicates')}</Dialog.Title>
         <Dialog.Description>
-          Review only: nothing is removed unless you choose it, and removing a
-          track never deletes its file.
+          {t('duplicatesDialog.reviewOnlyNothingIsRemoved')}
         </Dialog.Description>
         <div className="flex items-center gap-2">
           <Button
@@ -199,13 +198,12 @@ export function DuplicatesDialog({
                 variant="text"
                 onClick={() => void library.catalog.cancelHash()}
               >
-                Stop
+                {t('duplicatesDialog.stop')}
               </Button>
             </>
           ) : (
             <span className="text-foreground-secondary text-xs">
-              Reads every file once to find exact copies; unchanged files are
-              skipped next time.
+              {t('duplicatesDialog.readsEveryFileOnceTo')}
             </span>
           )}
         </div>
@@ -215,7 +213,7 @@ export function DuplicatesDialog({
           ) : groups === null ? (
             <p className="text-foreground-secondary flex items-center gap-2 text-sm">
               <Loader size="inline" shape="circle" />
-              Looking…
+              {t('duplicatesDialog.looking')}
             </p>
           ) : groups.length === 0 ? (
             <PageEmpty
@@ -266,7 +264,7 @@ export function DuplicatesDialog({
                           })
                         }
                       >
-                        Keep this
+                        {t('duplicatesDialog.keepThis')}
                       </Button>
                       <Tooltip
                         content={`Reveal ${track.title} in folder`}
@@ -313,15 +311,15 @@ export function DuplicatesDialog({
           )}
         </div>
         <Dialog.Actions>
-          <Dialog.Close>Done</Dialog.Close>
+          <Dialog.Close>{t('duplicatesDialog.done')}</Dialog.Close>
         </Dialog.Actions>
       </Dialog.Root>
       <ConfirmDialog
         isOpen={merging !== null}
         destructive
-        title="Keep this one and merge the others into it?"
+        title={t('duplicatesDialog.keepThisOneAndMerge')}
         description={`“${merging?.keep.title ?? ''}” keeps the best rating, the label, all tags, the combined play count and the playlist spots of ${merging?.others.length ?? 0} other ${merging?.others.length === 1 ? 'copy' : 'copies'}, which are then removed from the library. No audio file on disk is touched.`}
-        confirmLabel="Merge"
+        confirmLabel={t('duplicatesDialog.merge')}
         onCancel={() => setMerging(null)}
         onConfirm={() => {
           const pendingMerge = merging;
@@ -334,9 +332,9 @@ export function DuplicatesDialog({
       <ConfirmDialog
         isOpen={pending !== null}
         destructive
-        title="Remove this track from the library?"
+        title={t('duplicatesDialog.removeThisTrackFromThe')}
         description={`“${pending?.title ?? ''}” is only removed from your Tahti library. The audio file on disk is not touched.`}
-        confirmLabel="Remove"
+        confirmLabel={t('duplicatesDialog.remove')}
         onCancel={() => setPending(null)}
         onConfirm={() => {
           const track = pending;

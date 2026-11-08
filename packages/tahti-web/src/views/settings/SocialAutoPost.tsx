@@ -60,6 +60,7 @@ function PlatformForm({
   status: SocialPlatformStatus;
   onChanged: (settings: SocialAutoPostSettings | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const copy = PLATFORMS[platform];
   const [account, setAccount] = useState(status.accountLabel ?? '');
   const [secret, setSecret] = useState('');
@@ -161,18 +162,18 @@ function PlatformForm({
         </div>
         <div className="flex flex-wrap gap-4">
           <Toggle
-            label="Post new releases"
+            label={t('socialAutoPost.postNewReleases')}
             checked={onRelease}
             onChange={setOnRelease}
           />
           <Toggle
-            label="Post when I go live"
+            label={t('socialAutoPost.postWhenIGoLive')}
             checked={onLive}
             onChange={setOnLive}
           />
         </div>
         <Input
-          label="Post text"
+          label={t('socialAutoPost.postText')}
           value={template}
           maxLength={copy.templateMax}
           onChange={(event) => setTemplate(event.target.value)}
@@ -193,7 +194,7 @@ function PlatformForm({
               intent="danger"
               onClick={() => setConfirmDisconnect(true)}
             >
-              Disconnect
+              {t('socialAutoPost.disconnect')}
             </Button>
           ) : null}
           <SaveButton
@@ -208,8 +209,8 @@ function PlatformForm({
         destructive
         isOpen={confirmDisconnect}
         title={`Disconnect ${copy.name}?`}
-        description="Tahti forgets the saved credentials and stops posting there."
-        confirmLabel="Disconnect"
+        description={t('socialAutoPost.tahtiForgetsTheSavedCredentials')}
+        confirmLabel={t('socialAutoPost.disconnect')}
         onCancel={() => setConfirmDisconnect(false)}
         onConfirm={disconnect}
       />
@@ -260,10 +261,10 @@ export function SocialAutoPost() {
   return (
     <div className="flex flex-col gap-3" data-testid="social-autopost">
       <div>
-        <h3 className="text-sm font-semibold">Auto-post</h3>
-        <SettingsHint>
-          Post to your own accounts when you publish a release or go live.
-        </SettingsHint>
+        <h3 className="text-sm font-semibold">
+          {t('socialAutoPost.autoPost')}
+        </h3>
+        <SettingsHint>{t('socialAutoPost.postToYourOwnAccounts')}</SettingsHint>
       </div>
       {(['mastodon', 'bluesky'] as const).map((platform) => (
         <PlatformForm

@@ -41,7 +41,9 @@ export function InstallsPanel({
     <div className="border-border mt-2 flex flex-col gap-4 border-t pt-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h3 className="font-semibold">Admin surface installs</h3>
+          <h3 className="font-semibold">
+            {t('installsPanel.adminSurfaceInstalls')}
+          </h3>
           <p className="text-foreground-secondary text-sm">
             Explicit, ordered installs of Admin-scope add-ons onto a shared
             surface. Separate from "enabled by default" above — an install
@@ -52,15 +54,15 @@ export function InstallsPanel({
         </div>
         <Button type="button" size="sm" onClick={onOpenPicker}>
           <PlusIcon size={15} aria-hidden className="mr-1.5" />
-          Install widget
+          {t('installsPanel.installWidget')}
         </Button>
       </div>
       <Input
-        label="Surface"
+        label={t('installsPanel.surface')}
         value={surface}
         onChange={(event) => onSurfaceChange(event.target.value)}
         className="max-w-xs"
-        description="Freeform surface id, e.g. homepage."
+        description={t('installsPanel.freeformSurfaceIdEG')}
       />
       {error ? <InlineError>{error}</InlineError> : null}
       {loading ? (
@@ -94,7 +96,7 @@ export function InstallsPanel({
                 label={`Enable ${install.widget.name} on ${surface}`}
                 onChange={(checked) => onToggleEnabled(install, checked)}
               />
-              <Tooltip content="Move up" side="top">
+              <Tooltip content={t('installsPanel.moveUp')} side="top">
                 <Button
                   type="button"
                   size="icon-sm"
@@ -106,7 +108,7 @@ export function InstallsPanel({
                   <ArrowUpIcon size={16} aria-hidden />
                 </Button>
               </Tooltip>
-              <Tooltip content="Move down" side="top">
+              <Tooltip content={t('installsPanel.moveDown')} side="top">
                 <Button
                   type="button"
                   size="icon-sm"
@@ -118,7 +120,7 @@ export function InstallsPanel({
                   <ArrowDownIcon size={16} aria-hidden />
                 </Button>
               </Tooltip>
-              <Tooltip content="Remove" side="top">
+              <Tooltip content={t('installsPanel.remove')} side="top">
                 <Button
                   type="button"
                   size="icon-sm"

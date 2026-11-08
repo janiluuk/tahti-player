@@ -519,7 +519,9 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     >
       <div className="border-border flex items-center justify-between gap-2 border-b px-3 py-2">
         <div className="flex min-w-0 items-center gap-2">
-          <div className="font-display text-sm font-bold">Chat</div>
+          <div className="font-display text-sm font-bold">
+            {t('channelChatPanel.chat')}
+          </div>
           <ChatDailyListeners slug={slug} />
           {channelRole && (
             <ButtonLink
@@ -528,7 +530,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
               size="xs"
               variant="ghost"
             >
-              Moderate
+              {t('channelChatPanel.moderate')}
             </ButtonLink>
           )}
           {canJoinFanChat && (
@@ -537,7 +539,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
               variant="ghost"
               onClick={() => setInFanRoom(true)}
             >
-              Fan room
+              {t('channelChatPanel.fanRoom')}
             </Button>
           )}
         </div>
@@ -547,7 +549,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
               className="bg-accent-green size-1.5 rounded-full"
               aria-hidden
             />
-            Live
+            {t('channelChatPanel.live')}
             <ChatListeningNow slug={slug} />
           </div>
         )}
@@ -587,7 +589,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         role="log"
         aria-live="polite"
         aria-relevant="additions"
-        aria-label="Chat messages"
+        aria-label={t('channelChatPanel.chatMessages')}
         className={`space-y-2 overflow-y-auto px-3 py-2 text-sm ${rail ? 'min-h-0 flex-1' : 'flex-1'}`}
       >
         {messages.length === 0 && (
@@ -636,7 +638,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
             autoCapitalize="none"
             autoCorrect="off"
             spellCheck={false}
-            label="Handle"
+            label={t('channelChatPanel.handle')}
             value={pendingHandle}
             onChange={(e) => setPendingHandle(e.target.value)}
             placeholder="anonymous nick"
@@ -664,7 +666,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         >
           <Input
             enterKeyHint="send"
-            aria-label="Chat message"
+            aria-label={t('channelChatPanel.chatMessage')}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder={
@@ -685,7 +687,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
               )
             }
           >
-            Send
+            {t('channelChatPanel.send')}
           </Button>
         </form>
       )}

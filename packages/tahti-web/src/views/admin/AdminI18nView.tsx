@@ -105,20 +105,24 @@ export function AdminI18nView() {
         <AdminPageLayout current="/admin/i18n">
           <div className="flex max-w-4xl flex-col gap-6">
             <Breadcrumbs>
-              <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+              <BreadcrumbLink to="/admin">
+                {t('adminI18nView.admin')}
+              </BreadcrumbLink>
               <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbCurrent>Languages</BreadcrumbCurrent>
+              <BreadcrumbCurrent>
+                {t('adminI18nView.languages')}
+              </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell
-              title="Languages"
+              title={t('adminI18nView.languages')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
               actions={
                 unavailable ? undefined : (
-                  <Tooltip content="New language" side="top">
+                  <Tooltip content={t('adminI18nView.newLanguage')} side="top">
                     <Button
                       size="icon-sm"
                       onClick={() => setNewOpen(true)}
-                      aria-label="New language"
+                      aria-label={t('adminI18nView.newLanguage')}
                     >
                       <PlusIcon size={16} aria-hidden />
                     </Button>
@@ -137,9 +141,7 @@ export function AdminI18nView() {
                   <PageLoading label={t('loading.loadingLanguages')} />
                 ) : unavailable ? (
                   <p className="text-foreground-secondary text-sm">
-                    Not available yet. This server has no translation
-                    management, so languages cannot be added or imported here.
-                    The app&apos;s translations ship with each release.
+                    {t('adminI18nView.notAvailableYetThisServer')}
                   </p>
                 ) : loadError && languages.length === 0 ? (
                   <PageError
@@ -168,7 +170,7 @@ export function AdminI18nView() {
                               </span>
                               {lang.isDefault && (
                                 <Badge variant="pill" color="secondary">
-                                  Base
+                                  {t('adminI18nView.base')}
                                 </Badge>
                               )}
                             </div>
@@ -195,7 +197,7 @@ export function AdminI18nView() {
                                 aria-hidden
                                 className="mr-1.5"
                               />
-                              Import CSV
+                              {t('adminI18nView.importCsv')}
                             </Button>
                           )}
                         </li>
@@ -206,7 +208,7 @@ export function AdminI18nView() {
               </StudioPanel>
 
               <Dialog.Root isOpen={newOpen} onClose={closeNew}>
-                <Dialog.Title>New language</Dialog.Title>
+                <Dialog.Title>{t('adminI18nView.newLanguage')}</Dialog.Title>
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -233,20 +235,20 @@ export function AdminI18nView() {
                       autoCapitalize="none"
                       autoCorrect="off"
                       spellCheck={false}
-                      label="Code (e.g. sv)"
+                      label={t('adminI18nView.codeEGSv')}
                       value={code}
                       onChange={(e) => setCode(e.target.value)}
                       autoFocus
                     />
                     <Input
                       autoComplete="off"
-                      label="Name (e.g. Swedish)"
+                      label={t('adminI18nView.nameEGSwedish')}
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                     />
                   </div>
                   <Dialog.Actions>
-                    <Dialog.Close>Cancel</Dialog.Close>
+                    <Dialog.Close>{t('adminI18nView.cancel')}</Dialog.Close>
                     <Button
                       type="submit"
                       disabled={busy || !code.trim() || !name.trim()}
@@ -281,7 +283,7 @@ export function AdminI18nView() {
                   />
                 </div>
                 <Dialog.Actions>
-                  <Dialog.Close>Cancel</Dialog.Close>
+                  <Dialog.Close>{t('adminI18nView.cancel')}</Dialog.Close>
                 </Dialog.Actions>
               </Dialog.Root>
             </ViewShell>

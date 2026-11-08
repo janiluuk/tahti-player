@@ -269,8 +269,8 @@ export const TracklistEditor: FC<Props> = ({
                 >
                   <Input
                     ref={pinInputRef}
-                    label="Add track name"
-                    placeholder="Artist — title"
+                    label={t('tracklistEditor.addTrackName')}
+                    placeholder={t('tracklistEditor.artistTitle')}
                     value={newTitle}
                     onChange={(event) => setNewTitle(event.target.value)}
                   />
@@ -280,8 +280,8 @@ export const TracklistEditor: FC<Props> = ({
                     disabled={!newTitle.trim()}
                     type="submit"
                   >
-                    <PlusIcon size={16} aria-hidden className="mr-1.5" /> Add
-                    pin
+                    <PlusIcon size={16} aria-hidden className="mr-1.5" />{' '}
+                    {t('tracklistEditor.addPin')}
                   </Button>
                 </form>
 
@@ -328,7 +328,7 @@ export const TracklistEditor: FC<Props> = ({
                     <Input
                       autoComplete="off"
                       label={`Artist for “${selected.title}”`}
-                      placeholder="Artist name, or @username to tag a Tahti artist"
+                      placeholder={t('tracklistEditor.artistNameOrUsernameTo')}
                       value={selected.artist ?? ''}
                       onChange={(event) =>
                         updateSelectedArtist(event.target.value)
@@ -338,7 +338,9 @@ export const TracklistEditor: FC<Props> = ({
                       <ul
                         className="border-border bg-background absolute right-3 left-3 z-10 mt-1 overflow-hidden rounded-md border shadow-lg"
                         role="listbox"
-                        aria-label="Tracklist tag suggestions"
+                        aria-label={t(
+                          'tracklistEditor.tracklistTagSuggestions',
+                        )}
                       >
                         {mentionMatches.map((user) => (
                           <li key={user.username}>
@@ -422,7 +424,7 @@ export const TracklistEditor: FC<Props> = ({
                     label: (
                       <span className="inline-flex items-center gap-1.5">
                         <FileUpIcon size={15} aria-hidden />
-                        File
+                        {t('tracklistEditor.file')}
                       </span>
                     ),
                     content: (
@@ -489,7 +491,7 @@ export const TracklistEditor: FC<Props> = ({
                     label: (
                       <span className="inline-flex items-center gap-1.5">
                         <ListMusicIcon size={15} aria-hidden />
-                        Paste text
+                        {t('tracklistEditor.pasteText')}
                       </span>
                     ),
                     content: (
@@ -513,7 +515,7 @@ export const TracklistEditor: FC<Props> = ({
                           }}
                         >
                           <Textarea
-                            label="Paste one track per line"
+                            label={t('tracklistEditor.pasteOneTrackPerLine')}
                             rows={5}
                             placeholder="12:14 Artist – Track\nArtist – Next track – 18:02"
                             value={pastedList}
@@ -550,10 +552,9 @@ export const TracklistEditor: FC<Props> = ({
             content: (
               <ClientCapabilityNotice
                 kind="coming-soon"
-                title="Tracklist overlay"
+                title={t('tracklistEditor.tracklistOverlay')}
               >
-                Showing the current track&apos;s title and artist over the
-                player while this set plays isn&apos;t available yet.
+                {t('tracklistEditor.showingTheCurrentTrackApos')}
               </ClientCapabilityNotice>
             ),
           },

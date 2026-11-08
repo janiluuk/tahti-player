@@ -51,12 +51,13 @@ function NowPlayingSection({
   pollError: string | null;
   onRetry: () => void;
 }) {
+  const { t } = useTranslation('web');
   if (!track && upcoming.length === 0 && !pollError) {
     return null;
   }
 
   return (
-    <SectionShell title="Now playing">
+    <SectionShell title={t('radioShowView.nowPlaying')}>
       <div className="flex flex-col gap-3">
         {pollError ? (
           <PageErrorBanner
@@ -79,7 +80,7 @@ function NowPlayingSection({
               placeholder="♪"
             />
             <div className="min-w-0">
-              <Eyebrow tone="green">On air</Eyebrow>
+              <Eyebrow tone="green">{t('radioShowView.onAir')}</Eyebrow>
               <div className="text-foreground truncate text-lg font-bold tracking-tight">
                 {track.title}
               </div>
@@ -92,7 +93,7 @@ function NowPlayingSection({
         {upcoming.length > 0 ? (
           <div>
             <div className="text-foreground-secondary mb-2 text-xs font-semibold uppercase">
-              Up next
+              {t('radioShowView.upNext')}
             </div>
             <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
               {upcoming.map((item) => (
@@ -237,7 +238,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
 
   return (
     <PageFrame maxWidth="3xl">
-      <PageBackLink to="/radio" label="Radio" />
+      <PageBackLink to="/radio" label={t('radioShowView.radio')} />
 
       <EntitySocialHeader
         title={show.artist.displayName}
@@ -269,13 +270,13 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
         stats={headerStats}
         actions={
           greenRoomLive ? (
-            <Tooltip content="Green room" side="top">
+            <Tooltip content={t('radioShowView.greenRoom')} side="top">
               <ButtonLink
                 to="/u/$username/green-room"
                 params={{ username: show.artist.username }}
                 size="icon-sm"
                 variant="secondary"
-                aria-label="Open green room"
+                aria-label={t('radioShowView.openGreenRoom')}
                 className="bg-background border-border rounded-md border-(length:--border-width)"
               >
                 <MicIcon size={16} aria-hidden />
@@ -293,7 +294,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
         onRetry={reloadNowPlaying}
       />
 
-      <SectionShell title="Episodes">
+      <SectionShell title={t('radioShowView.episodes')}>
         <Tabs
           items={[
             {
@@ -302,7 +303,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
               content: (
                 <RadioShowEpisodeList
                   episodes={show.upcomingEpisodes}
-                  emptyMessage="No upcoming slots booked right now."
+                  emptyMessage={t('radioShowView.noUpcomingSlotsBookedRight')}
                 />
               ),
             },
@@ -312,7 +313,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
               content: (
                 <RadioShowEpisodeList
                   episodes={show.pastEpisodes}
-                  emptyMessage="Nothing has aired yet."
+                  emptyMessage={t('radioShowView.nothingHasAiredYet')}
                 />
               ),
             },

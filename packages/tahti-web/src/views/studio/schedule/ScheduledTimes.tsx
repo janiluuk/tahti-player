@@ -56,11 +56,13 @@ export function ScheduledTimes({
             className="text-primary-strong"
             aria-hidden
           />
-          <h2 className="font-display font-bold">Your next broadcasts</h2>
+          <h2 className="font-display font-bold">
+            {t('scheduledTimes.yourNextBroadcasts')}
+          </h2>
         </div>
         <div className="flex items-center gap-2">
           <SegmentedControl
-            aria-label="Schedule view"
+            aria-label={t('scheduledTimes.scheduleView')}
             iconOnly
             options={VIEW_OPTIONS}
             value={viewMode}
@@ -138,13 +140,13 @@ export function ScheduledTimes({
                     <div className="flex shrink-0 items-center gap-2">
                       {item.visibility === 'FAN_ONLY' ? (
                         <span className="text-foreground-secondary text-[10px] uppercase">
-                          Fans only
+                          {t('scheduledTimes.fansOnly')}
                         </span>
                       ) : null}
                       {index === 0 ? (
                         <EditIconButton
                           variant="text"
-                          label="Edit next broadcast"
+                          label={t('scheduledTimes.editNextBroadcast')}
                           onClick={onEdit}
                         />
                       ) : null}
@@ -208,7 +210,7 @@ export function ScheduledTimes({
               <div className="grid gap-2 text-sm sm:grid-cols-2">
                 <div>
                   <span className="text-foreground-secondary block text-xs uppercase">
-                    When
+                    {t('scheduledTimes.when')}
                   </span>
                   {formatDate(selectedShow.startAt)} at{' '}
                   {formatTimeRange(selectedShow.startAt, selectedShow.endAt)}
@@ -216,7 +218,7 @@ export function ScheduledTimes({
                 {selectedShow.location ? (
                   <div>
                     <span className="text-foreground-secondary block text-xs uppercase">
-                      Location
+                      {t('scheduledTimes.location')}
                     </span>
                     {selectedShow.location}
                   </div>
@@ -228,7 +230,7 @@ export function ScheduledTimes({
                 </p>
               ) : (
                 <p className="text-foreground-secondary text-sm">
-                  Show details will appear here once the show has a description.
+                  {t('scheduledTimes.showDetailsWillAppearHere')}
                 </p>
               )}
             </div>
@@ -240,10 +242,10 @@ export function ScheduledTimes({
                   onClick={() => setSelectedShow(null)}
                   variant="secondary"
                 >
-                  Open show
+                  {t('scheduledTimes.openShow')}
                 </ButtonLink>
               ) : null}
-              <Dialog.Close>Close</Dialog.Close>
+              <Dialog.Close>{t('scheduledTimes.close')}</Dialog.Close>
             </Dialog.Actions>
           </>
         ) : null}

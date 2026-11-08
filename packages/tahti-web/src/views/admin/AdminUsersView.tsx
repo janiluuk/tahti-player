@@ -70,7 +70,7 @@ export const AdminUsersView = () => {
       <div className="admin-page-layout px-1 py-2">
         <AdminPageLayout current="/admin/users">
           <ViewShell
-            title="Users"
+            title={t('adminUsersView.users')}
             classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
           >
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -85,7 +85,7 @@ export const AdminUsersView = () => {
                 data-testid="admin-users-export"
               >
                 <DownloadIcon size={14} aria-hidden className="mr-1.5" />
-                Export CSV
+                {t('adminUsersView.exportCsv')}
               </ButtonAnchor>
             </div>
 
@@ -94,8 +94,8 @@ export const AdminUsersView = () => {
                 <Input
                   enterKeyHint="search"
                   type="search"
-                  aria-label="Search users"
-                  placeholder="Name, email, or username"
+                  aria-label={t('adminUsersView.searchUsers')}
+                  placeholder={t('adminUsersView.nameEmailOrUsername')}
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   startAddon={
@@ -104,7 +104,7 @@ export const AdminUsersView = () => {
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <Select
-                    label="Filter by role"
+                    label={t('adminUsersView.filterByRole')}
                     value={role}
                     onValueChange={setRole}
                     options={ROLES.map((value) => ({
@@ -115,7 +115,7 @@ export const AdminUsersView = () => {
                     }))}
                   />
                   <Select
-                    label="Filter by membership"
+                    label={t('adminUsersView.filterByMembership')}
                     value={isMember}
                     onValueChange={setIsMember}
                     options={[
@@ -149,7 +149,7 @@ export const AdminUsersView = () => {
                               setIsMember('');
                             }}
                           >
-                            Clear filters
+                            {t('adminUsersView.clearFilters')}
                           </Button>
                         }
                       />
@@ -183,7 +183,7 @@ export const AdminUsersView = () => {
                         className="text-foreground-secondary mx-auto mb-2"
                       />
                       <p className="text-foreground-secondary text-sm">
-                        Select a user to view and edit their account.
+                        {t('adminUsersView.selectAUserToView')}
                       </p>
                     </div>
                   </StudioPanel>

@@ -306,9 +306,13 @@ export function OAuthServiceCard({
           )}
           {adapter.id === 'bandcamp' && (
             <div className="border-border flex flex-col gap-3 border-t pt-3">
-              <p className="text-sm font-medium">Your Bandcamp discography</p>
+              <p className="text-sm font-medium">
+                {t('oAuthServiceCard.yourBandcampDiscography')}
+              </p>
               {bandcampBusy ? (
-                <InlineLoader label="Loading your releases…" />
+                <InlineLoader
+                  label={t('oAuthServiceCard.loadingYourReleases')}
+                />
               ) : bandcampAlbums.length === 0 ? (
                 <PageEmpty
                   title={bandcampMessage ?? 'No Bandcamp releases were found.'}
@@ -349,7 +353,7 @@ export function OAuthServiceCard({
                         disabled={bandcampImporting !== null}
                         onClick={() => void importBandcampAlbum(album)}
                       >
-                        Import
+                        {t('oAuthServiceCard.import')}
                       </Button>
                     </li>
                   ))}
@@ -365,7 +369,9 @@ export function OAuthServiceCard({
           {adapter.id === 'soundcloud' && (
             <div className="border-border flex flex-col gap-3 border-t pt-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <p className="text-sm font-medium">Your SoundCloud tracks</p>
+                <p className="text-sm font-medium">
+                  {t('oAuthServiceCard.yourSoundcloudTracks')}
+                </p>
                 {scTracks.length > 0 && (
                   <Button
                     size="sm"
@@ -394,7 +400,7 @@ export function OAuthServiceCard({
                         disabled={scBusy}
                         onClick={() => void importSoundcloud([track], false)}
                       >
-                        Import
+                        {t('oAuthServiceCard.import')}
                       </Button>
                     </li>
                   ))}
@@ -417,7 +423,7 @@ export function OAuthServiceCard({
                   autoCapitalize="none"
                   autoCorrect="off"
                   spellCheck={false}
-                  label="SoundCloud profile URL"
+                  label={t('oAuthServiceCard.soundcloudProfileUrl')}
                   value={profileDraft}
                   onChange={(e) => setProfileDraft(e.target.value)}
                   placeholder="https://soundcloud.com/your-name"
@@ -428,7 +434,7 @@ export function OAuthServiceCard({
                     disabled={
                       !profileDraft.trim() || profileDraft === profileUrl
                     }
-                    label="Save profile URL"
+                    label={t('oAuthServiceCard.saveProfileUrl')}
                     type="submit"
                   />
                   {profileMsg && (
@@ -451,20 +457,20 @@ export function OAuthServiceCard({
           ) : status?.unavailable ? (
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-foreground-secondary text-sm">
-                Could not check this connection.
+                {t('oAuthServiceCard.couldNotCheckThisConnection')}
               </p>
               <Button
                 size="sm"
                 variant="secondary"
                 onClick={() => setStatusTick((n) => n + 1)}
               >
-                Try again
+                {t('oAuthServiceCard.tryAgain')}
               </Button>
             </div>
           ) : (
             <>
               <p className="text-foreground-secondary text-sm">
-                Not connected yet.
+                {t('oAuthServiceCard.notConnectedYet')}
               </p>
               <Button
                 size="sm"
@@ -488,8 +494,8 @@ export function OAuthServiceCard({
         destructive
         isOpen={confirmDisconnect}
         title={`Disconnect ${plugin.name}?`}
-        description="Tahti forgets the saved sign-in. Imported tracks stay in your library."
-        confirmLabel="Disconnect"
+        description={t('oAuthServiceCard.tahtiForgetsTheSavedSign')}
+        confirmLabel={t('oAuthServiceCard.disconnect')}
         onCancel={() => setConfirmDisconnect(false)}
         onConfirm={() => {
           setConfirmDisconnect(false);

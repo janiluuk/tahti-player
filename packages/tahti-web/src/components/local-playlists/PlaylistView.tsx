@@ -304,7 +304,7 @@ export function PlaylistView({
         description={error}
         action={
           <Button variant="secondary" onClick={onBack}>
-            Back to playlists
+            {t('playlistView.backToPlaylists')}
           </Button>
         }
         className="flex-1"
@@ -322,7 +322,7 @@ export function PlaylistView({
       <div className="flex flex-wrap items-center gap-1">
         <Button className="gap-1.5" size="sm" variant="text" onClick={onBack}>
           <ArrowLeftIcon size={14} aria-hidden />
-          Playlists
+          {t('playlistView.playlists')}
         </Button>
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">{summary?.name}</p>
@@ -338,7 +338,7 @@ export function PlaylistView({
           onClick={() => void play({})}
         >
           <PlayIcon size={14} aria-hidden />
-          Play
+          {t('playlistView.play')}
         </Button>
         <Button
           className="gap-1.5"
@@ -348,13 +348,13 @@ export function PlaylistView({
           onClick={() => void play({ shuffle: true })}
         >
           <ShuffleIcon size={14} aria-hidden />
-          Shuffle
+          {t('playlistView.shuffle')}
         </Button>
         <Tooltip content={t('tooltips.undoCtrlZ')} side="top">
           <Button
             size="icon-sm"
             variant="text"
-            aria-label="Undo"
+            aria-label={t('playlistView.undo')}
             disabled={busy || undoDepth === 0}
             onClick={() => void undo()}
           >
@@ -365,7 +365,7 @@ export function PlaylistView({
           <Button
             size="icon-sm"
             variant="text"
-            aria-label="Export playlist"
+            aria-label={t('playlistView.exportPlaylist')}
             onClick={() => setExporting(true)}
           >
             <DownloadIcon size={14} aria-hidden />
@@ -373,7 +373,7 @@ export function PlaylistView({
         </Tooltip>
         <EditIconButton
           variant="text"
-          label="Rename playlist"
+          label={t('playlistView.renamePlaylist')}
           onClick={() => setRenaming(true)}
         />
         <Tooltip content={t('tooltips.deletePlaylist')} side="top">
@@ -381,7 +381,7 @@ export function PlaylistView({
             size="icon-sm"
             variant="text"
             intent="danger"
-            aria-label="Delete playlist"
+            aria-label={t('playlistView.deletePlaylist')}
             onClick={() => setDeleting(true)}
           >
             <TrashIcon size={14} aria-hidden />
@@ -434,7 +434,7 @@ export function PlaylistView({
                   variant="text"
                   onClick={() => void queueSelected()}
                 >
-                  Add to queue
+                  {t('playlistView.addToQueue')}
                 </Button>
                 <Button
                   className="gap-1.5"
@@ -445,7 +445,7 @@ export function PlaylistView({
                   onClick={() => void removeRows([...selectedIds])}
                 >
                   <TrashIcon size={14} aria-hidden />
-                  Remove
+                  {t('playlistView.remove')}
                 </Button>
               </>
             ) : null
@@ -499,8 +499,8 @@ export function PlaylistView({
       />
       <PlaylistNameDialog
         isOpen={renaming}
-        title="Rename playlist"
-        confirmLabel="Rename"
+        title={t('playlistView.renamePlaylist')}
+        confirmLabel={t('playlistView.rename')}
         initialName={summary?.name}
         onClose={() => setRenaming(false)}
         onSubmit={async (name) => {
@@ -512,9 +512,9 @@ export function PlaylistView({
       <ConfirmDialog
         destructive
         isOpen={deleting}
-        title="Delete this playlist?"
+        title={t('playlistView.deleteThisPlaylist')}
         description={`“${summary?.name ?? ''}” and its ${summary?.trackCount ?? 0} entries will be deleted. The tracks stay in your library.`}
-        confirmLabel="Delete"
+        confirmLabel={t('playlistView.delete')}
         onCancel={() => setDeleting(false)}
         onConfirm={() => {
           setDeleting(false);

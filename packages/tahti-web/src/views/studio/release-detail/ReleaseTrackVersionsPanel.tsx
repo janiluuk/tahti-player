@@ -117,7 +117,7 @@ function TrackVersions({
               </span>
               {version.isActive ? (
                 <Badge variant="pill" color="green">
-                  Active
+                  {t('releaseTrackVersionsPanel.active')}
                 </Badge>
               ) : version.status === 'READY' ? (
                 <Button
@@ -126,7 +126,7 @@ function TrackVersions({
                   disabled={switchingId !== null}
                   onClick={() => void activate(version.id)}
                 >
-                  Make active
+                  {t('releaseTrackVersionsPanel.makeActive')}
                 </Button>
               ) : (
                 <Badge
@@ -143,7 +143,7 @@ function TrackVersions({
       {adding ? (
         <div className="flex flex-col gap-2">
           <Input
-            label="Version label"
+            label={t('releaseTrackVersionsPanel.versionLabel')}
             placeholder="Remaster 2026"
             value={label}
             onChange={(event) => setLabel(event.target.value)}
@@ -165,7 +165,7 @@ function TrackVersions({
             disabled={uploading}
             onClick={() => setAdding(false)}
           >
-            Cancel
+            {t('releaseTrackVersionsPanel.cancel')}
           </Button>
         </div>
       ) : (
@@ -175,7 +175,7 @@ function TrackVersions({
           className="self-start"
           onClick={() => setAdding(true)}
         >
-          Add a version
+          {t('releaseTrackVersionsPanel.addAVersion')}
         </Button>
       )}
     </li>
@@ -193,8 +193,10 @@ export function ReleaseTrackVersionsPanel({
   const { t } = useTranslation('web');
   return (
     <StudioPanel
-      title="Track versions"
-      description="Earlier and replacement masters of each track. The active one is what listeners hear and what gets distributed."
+      title={t('releaseTrackVersionsPanel.trackVersions')}
+      description={t(
+        'releaseTrackVersionsPanel.earlierAndReplacementMastersOf',
+      )}
     >
       {tracks.length === 0 ? (
         <PageEmpty

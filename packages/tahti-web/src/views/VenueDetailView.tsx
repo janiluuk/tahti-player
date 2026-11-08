@@ -76,7 +76,7 @@ export function VenueDetailView({ slug }: { slug: string }) {
     <PageBackLink
       to="/discover"
       search={{ tab: 'venues' }}
-      label="All venues"
+      label={t('venueDetailView.allVenues')}
     />
   );
 
@@ -117,7 +117,7 @@ export function VenueDetailView({ slug }: { slug: string }) {
               search={{ tab: 'venues' }}
               className="text-sm font-medium underline-offset-2 hover:underline"
             >
-              Browse venues
+              {t('venueDetailView.browseVenues')}
             </Link>
           }
         />
@@ -158,7 +158,7 @@ export function VenueDetailView({ slug }: { slug: string }) {
             </ClampedText>
           ) : (
             <p className="text-foreground-secondary">
-              This venue hasn&apos;t added a description yet.
+              {t('venueDetailView.thisVenueHasnAposT')}
             </p>
           )
         }
@@ -173,7 +173,7 @@ export function VenueDetailView({ slug }: { slug: string }) {
             href={venue.externalLinks.website}
             className="text-sm font-medium"
           >
-            Venue website
+            {t('venueDetailView.venueWebsite')}
           </ExternalLink>
         ) : null}
       </EntitySocialHeader>
@@ -212,16 +212,16 @@ function VenueUpcomingShows({
           id="venue-upcoming-title"
           className="font-display text-lg font-bold"
         >
-          Upcoming shows
+          {t('venueDetailView.upcomingShows')}
         </h2>
         <div className="flex items-center gap-1.5">
           <ButtonAnchor href={feedUrl} size="sm" variant="secondary" download>
             <CalendarPlusIcon size={14} aria-hidden className="mr-1.5" />
-            Add to calendar
+            {t('venueDetailView.addToCalendar')}
           </ButtonAnchor>
           <CopyButton
             text={feedUrl}
-            aria-label="Copy calendar feed link"
+            aria-label={t('venueDetailView.copyCalendarFeedLink')}
             toastMessage="Calendar feed link copied. Subscribe to it in your calendar app to keep it up to date."
           />
         </div>
@@ -238,7 +238,7 @@ function VenueUpcomingShows({
                 </time>
                 {show.state === 'LIVE' ? (
                   <Badge variant="pill" color="red">
-                    Live now
+                    {t('venueDetailView.liveNow')}
                   </Badge>
                 ) : null}
               </span>

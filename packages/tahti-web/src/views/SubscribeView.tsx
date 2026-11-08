@@ -161,7 +161,7 @@ export function SubscribeView({
               {data.artist.bio}
             </ClampedText>
           ) : (
-            <p>Support this artist on Tahti with a fan subscription.</p>
+            <p>{t('subscribeView.supportThisArtistOnTahti')}</p>
           )
         }
         visualizerPreset={resolveArtworkVisualizerPreset(data.artist.username)}
@@ -170,14 +170,14 @@ export function SubscribeView({
       />
 
       {checkoutReturn === 'subscribed' && (
-        <Alert tone="success" title="Thanks for subscribing!">
+        <Alert tone="success" title={t('subscribeView.thanksForSubscribing')}>
           Your support goes straight to {data.artist.displayName}. It can take a
           moment for the subscription to show up here.
         </Alert>
       )}
       {checkoutReturn === 'canceled' && (
-        <Alert tone="neutral" title="Checkout cancelled">
-          You haven't been charged. Pick a tier whenever you're ready.
+        <Alert tone="neutral" title={t('subscribeView.checkoutCancelled')}>
+          {t('subscribeView.youHavenTBeenCharged')}
         </Alert>
       )}
 
@@ -191,29 +191,28 @@ export function SubscribeView({
 
           {!data.paymentsReady && meta?.source !== 'mock' && (
             <p className="text-foreground-secondary text-sm">
-              This artist isn't set up to take payments yet, so subscribing
-              might not work right now.
+              {t('subscribeView.thisArtistIsnTSet')}
             </p>
           )}
 
           {!user && (
             <div className="border-border bg-background-secondary flex flex-wrap items-center gap-x-3 gap-y-2 rounded-lg border px-3 py-2 text-sm">
               <p className="min-w-0 flex-1 basis-48">
-                Log in or join Tahti to subscribe.
+                {t('subscribeView.logInOrJoinTahti')}
               </p>
               <div className="flex gap-2">
                 <Button
                   size="xs"
                   onClick={() => useAuthModalStore.getState().open('login')}
                 >
-                  Log in
+                  {t('subscribeView.logIn')}
                 </Button>
                 <Button
                   size="xs"
                   variant="secondary"
                   onClick={() => useAuthModalStore.getState().open('join')}
                 >
-                  Join
+                  {t('subscribeView.join')}
                 </Button>
               </div>
             </div>
