@@ -12,7 +12,11 @@ import type WaveSurfer from 'wavesurfer.js';
 import { cn } from '../../utils';
 import { observeThemeChange, readCssVar } from '../../utils/themeChange';
 import { formatTimeSeconds } from '../../utils/time';
-import { getDecodedPeaks, setDecodedPeaks } from './decodedPeaksCache';
+import {
+  audioVersionFromUrl,
+  getDecodedPeaks,
+  setDecodedPeaks,
+} from './decodedPeaksCache';
 import {
   hasPeaks,
   peaksKey,
@@ -96,9 +100,23 @@ export const Waveform: FC<WaveformProps> = ({
 
     let cancelled = false;
     const subscriptions: (() => void)[] = [];
-    setReady(false);
+    const current = peaksRef.current;
+    const needsPeaks = !media && !hasPeaks(current);
+    const decodeKey = needsPeaks
+      ? (cacheKeyRef.current ?? audioUrl)
+      : undefined;
+    const audioVersion = audioVersionFromUrl(audioUrl);
+    const cached = decodeKey
+      ? getDecodedPeaks(decodeKey, {
+          durationSec,
+          version: audioVersion,
+        })
+      : undefined;
+    const source = needsPeaks && !cached ? audioUrl : undefined;
+    // Known peaks draw at once, so only a real decode shows the loading pulse.
+    setReady(!source);
     setFailed(false);
-    setDecoded(false);
+    setDecoded(Boolean(cached));
 
     const interactive = Boolean(onSeekRef.current || media);
     void Promise.all([
@@ -110,7 +128,6 @@ export const Waveform: FC<WaveformProps> = ({
           return;
         }
         const root = containerRef.current;
-        const current = peaksRef.current;
 
         // Peaks + duration must always be present: without them wavesurfer
         // fetches and decodes the media `src`, and a later `load('')` would
@@ -150,12 +167,6 @@ export const Waveform: FC<WaveformProps> = ({
           options.media = media;
         }
 
-        const needsPeaks = !media && !hasPeaks(current);
-        const decodeKey = needsPeaks
-          ? (cacheKeyRef.current ?? audioUrl)
-          : undefined;
-        const cached = decodeKey ? getDecodedPeaks(decodeKey) : undefined;
-        const source = needsPeaks && !cached ? audioUrl : undefined;
         if (cached) {
           options.peaks = cached.peaks;
           options.duration = cached.duration;
@@ -173,9 +184,6 @@ export const Waveform: FC<WaveformProps> = ({
             setFailed(true);
           }),
         );
-        if (cached) {
-          setDecoded(true);
-        }
         if (source && !cached) {
           subscriptions.push(
             ws.on('decode', (duration) => {
@@ -183,6 +191,7 @@ export const Waveform: FC<WaveformProps> = ({
               setDecodedPeaks(decodeKey!, {
                 peaks: ws.exportPeaks({ maxLength: 4096 }),
                 duration,
+                version: audioVersion,
               });
             }),
           );
