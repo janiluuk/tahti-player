@@ -1,5 +1,6 @@
 import {
   CalendarDaysIcon,
+  CalendarPlusIcon,
   Clock3Icon,
   ListIcon,
   MapPinIcon,
@@ -35,9 +36,11 @@ const VIEW_OPTIONS = [
 export function ScheduledTimes({
   items,
   onEdit,
+  onAdd,
 }: {
   items: ScheduleCard[];
   onEdit: () => void;
+  onAdd?: () => void;
 }) {
   const { t } = useTranslation('web');
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -71,6 +74,14 @@ export function ScheduledTimes({
           <PageEmpty
             title={t('empties.nothingScheduledYet')}
             description={t('empties.pickALocalDateAndTime')}
+            action={
+              onAdd ? (
+                <Button size="sm" variant="secondary" onClick={onAdd}>
+                  <CalendarPlusIcon size={16} aria-hidden />
+                  {t('emptyActions.addBroadcast')}
+                </Button>
+              ) : undefined
+            }
           />
         </div>
       ) : (

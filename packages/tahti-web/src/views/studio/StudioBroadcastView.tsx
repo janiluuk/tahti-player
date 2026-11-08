@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import {
   CalendarDaysIcon,
   CalendarIcon,
+  CalendarPlusIcon,
   DiscIcon,
   MicIcon,
   PartyPopperIcon,
@@ -103,6 +104,15 @@ const KIND_LABELS: Record<AgendaKind, string> = {
   party: 'Party',
 };
 
+const EMPTY_CREATE = {
+  event: { to: '/studio/events/new', label: 'emptyActions.addEvent' },
+  party: {
+    to: '/studio/listening-parties/new',
+    label: 'emptyActions.scheduleParty',
+  },
+  all: { to: '/studio/schedule', label: 'emptyActions.addBroadcast' },
+} as const;
+
 const FILTERS = [
   { id: 'all', label: 'All' },
   { id: 'show', label: 'Shows' },
@@ -149,6 +159,10 @@ export function StudioBroadcastView() {
   const live = channel?.state === 'LIVE';
   const [agenda, setAgenda] = useState<AgendaItem[] | null>(null);
   const [filter, setFilter] = useState('all');
+  const emptyCreate =
+    filter === 'event' || filter === 'party'
+      ? EMPTY_CREATE[filter]
+      : EMPTY_CREATE.all;
 
   useEffect(() => {
     let cancelled = false;
@@ -252,6 +266,16 @@ export function StudioBroadcastView() {
                 <PageEmpty
                   title={t('empties.nothingComingUp')}
                   description={t('empties.scheduleAShowAddAnEvent')}
+                  action={
+                    <ButtonLink
+                      to={emptyCreate.to}
+                      size="sm"
+                      variant="secondary"
+                    >
+                      <CalendarPlusIcon size={16} aria-hidden />
+                      {t(emptyCreate.label)}
+                    </ButtonLink>
+                  }
                 />
               ) : (
                 <ul aria-label="Coming up" className="flex flex-col">

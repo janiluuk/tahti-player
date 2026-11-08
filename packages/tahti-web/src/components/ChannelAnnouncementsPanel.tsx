@@ -1,4 +1,4 @@
-import { PlayIcon, Trash2Icon } from 'lucide-react';
+import { MicIcon, PlayIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -235,6 +235,19 @@ export function ChannelAnnouncementsPanel() {
         <PageEmpty
           title={t('empties.noAnnouncementClipsYet')}
           description={t('empties.giveYourChannelAVoiceRecord')}
+          action={
+            recording ? undefined : (
+              <Button
+                size="sm"
+                variant="secondary"
+                disabled={uploading}
+                onClick={() => setRecording(true)}
+              >
+                <MicIcon size={16} aria-hidden />
+                {t('emptyActions.recordVoice')}
+              </Button>
+            )
+          }
         />
       ) : (
         <ul className="border-border divide-border divide-y rounded-lg border">

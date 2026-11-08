@@ -3880,7 +3880,14 @@
     "emptyActions": {
       "addPin": "Lisää merkki",
       "addCredit": "Lisää tekijä",
-      "addAudioAddon": "Lisää äänilisäosa"
+      "addAudioAddon": "Lisää äänilisäosa",
+      "addDestination": "Lisää kohde",
+      "recordVoice": "Äänitä puhe",
+      "addBroadcast": "Lisää lähetys",
+      "addEvent": "Lisää tapahtuma",
+      "scheduleParty": "Aikatauluta juhla",
+      "submitToRadio": "Valitse kappaleet",
+      "bookNextSlot": "Varaa seuraava {{hours}} h:n aika"
     }
   },
   "studioEditor": {

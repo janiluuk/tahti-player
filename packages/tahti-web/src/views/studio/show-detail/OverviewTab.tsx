@@ -70,6 +70,18 @@ export function OverviewTab({
     nextEpisodeNumber,
   } = state;
 
+  const bookSlotButton = (
+    <Button
+      size="sm"
+      variant="secondary"
+      disabled={busy}
+      onClick={() => void bookNextInterval()}
+    >
+      <CalendarPlusIcon size={14} aria-hidden className="mr-1.5" />
+      {t('emptyActions.bookNextSlot', { hours: show.intervalHours })}
+    </Button>
+  );
+
   return (
     <>
       {editing ? (
@@ -211,17 +223,7 @@ export function OverviewTab({
 
       <StudioPanel
         title="Schedule"
-        action={
-          <Button
-            size="sm"
-            variant="secondary"
-            disabled={busy}
-            onClick={() => void bookNextInterval()}
-          >
-            <CalendarPlusIcon size={14} aria-hidden className="mr-1.5" />
-            Book next {show.intervalHours}h slot
-          </Button>
-        }
+        action={nextSlotHint ? bookSlotButton : undefined}
       >
         {nextSlotHint ? (
           <p className="text-sm">
@@ -232,6 +234,7 @@ export function OverviewTab({
           <PageEmpty
             title={t('empties.noUpcomingSlots')}
             description={t('empties.bookAnIntervalForThisShow')}
+            action={bookSlotButton}
           />
         )}
         <div className="mt-3 flex flex-wrap gap-2">

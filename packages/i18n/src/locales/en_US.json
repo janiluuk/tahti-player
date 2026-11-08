@@ -3880,7 +3880,14 @@
     "emptyActions": {
       "addPin": "Add pin",
       "addCredit": "Add credit",
-      "addAudioAddon": "Add audio add-on"
+      "addAudioAddon": "Add audio add-on",
+      "addDestination": "Add destination",
+      "recordVoice": "Record voice",
+      "addBroadcast": "Add broadcast",
+      "addEvent": "Add event",
+      "scheduleParty": "Schedule party",
+      "submitToRadio": "Select tracks",
+      "bookNextSlot": "Book next {{hours}}h slot"
     }
   },
   "studioEditor": {
