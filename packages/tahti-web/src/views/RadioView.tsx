@@ -446,6 +446,7 @@ export function RadioView() {
                 <ButtonLink
                   to="/channel/$slug"
                   params={{ slug: TAHTI_RADIO_SLUG }}
+                  search={{ view: 'channel' }}
                   size="icon-sm"
                   variant="secondary"
                   aria-label={t('radio.openChannel')}
@@ -570,6 +571,7 @@ export function RadioView() {
                 <ButtonLink
                   to="/channel/$slug"
                   params={{ slug: TAHTI_RADIO_SLUG }}
+                  search={{ view: 'channel' }}
                   size="sm"
                   variant="secondary"
                 >

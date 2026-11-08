@@ -413,10 +413,7 @@ export function ConnectedPlayerBar() {
                 (playable?.kind === 'radio'
                   ? artistSlug === TAHTI_RADIO_SLUG
                     ? () => {
-                        void navigate({
-                          to: '/channel/$slug',
-                          params: { slug: artistSlug },
-                        });
+                        void navigate({ to: '/radio' });
                       }
                     : undefined
                   : artistSlug
