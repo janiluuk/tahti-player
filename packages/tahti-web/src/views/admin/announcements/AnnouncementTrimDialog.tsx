@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -39,6 +40,7 @@ export function AnnouncementTrimDialog({
   onClose: () => void;
   onRendered: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [source, setSource] = useState<AdminAnnouncementSource | null>(null);
   const [fields, setFields] = useState<Fields>({
     startSec: '0',
@@ -119,8 +121,7 @@ export function AnnouncementTrimDialog({
     <Dialog.Root isOpen={clip !== null} onClose={onClose} className="max-w-lg">
       <Dialog.Title>Trim {clip?.title}</Dialog.Title>
       <Dialog.Description>
-        The trim is always cut from the original upload, so you can change it
-        again later without losing quality.
+        {t('announcementTrimDialog.theTrimIsAlwaysCut')}
       </Dialog.Description>
       <div className="flex flex-col gap-4">
         {source ? (
@@ -132,7 +133,9 @@ export function AnnouncementTrimDialog({
             className="w-full"
           />
         ) : !error ? (
-          <InlineLoader label="Loading the original upload…" />
+          <InlineLoader
+            label={t('announcementTrimDialog.loadingTheOriginalUpload')}
+          />
         ) : null}
         <form
           className="flex flex-col gap-3"
@@ -171,7 +174,7 @@ export function AnnouncementTrimDialog({
           {error ? <InlineError>{error}</InlineError> : null}
           <div className="border-border flex justify-end gap-2 border-t pt-4">
             <Button type="button" variant="secondary" onClick={onClose}>
-              Cancel
+              {t('announcementTrimDialog.cancel')}
             </Button>
             <Button disabled={pending} type="submit">
               {pending ? 'Rendering…' : 'Render trim'}

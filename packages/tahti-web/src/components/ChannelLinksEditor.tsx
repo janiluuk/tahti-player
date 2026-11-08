@@ -1,5 +1,6 @@
 import { EyeIcon, EyeOffIcon, PlusIcon, Trash2Icon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input, Tooltip } from '@tahti-player/ui';
 
 import type { ChannelLink } from '../api/channel-design';
@@ -19,6 +20,7 @@ export function ChannelLinksEditor({
   links: ChannelLink[];
   onChange: (links: ChannelLink[]) => void;
 }) {
+  const { t } = useTranslation('web');
   const rows = links.length > 0 ? links : [{ label: '', url: '' }];
 
   const updateLink = (index: number, field: 'label' | 'url', value: string) => {
@@ -56,7 +58,7 @@ export function ChannelLinksEditor({
               <Input
                 aria-label={`Link ${i + 1} label`}
                 size="sm"
-                placeholder="Label (e.g. Bandcamp)"
+                placeholder={t('channelLinksEditor.labelEGBandcamp')}
                 value={link.label}
                 maxLength={40}
                 onChange={(e) => updateLink(i, 'label', e.target.value)}
@@ -98,12 +100,12 @@ export function ChannelLinksEditor({
                   )}
                 </Button>
               </Tooltip>
-              <Tooltip content="Remove link" side="top">
+              <Tooltip content={t('channelLinksEditor.removeLink')} side="top">
                 <Button
                   type="button"
                   size="icon-sm"
                   variant="text"
-                  aria-label="Remove link"
+                  aria-label={t('channelLinksEditor.removeLink')}
                   onClick={() => removeLink(i)}
                 >
                   <Trash2Icon className="text-accent-red" size={14} />
@@ -112,7 +114,7 @@ export function ChannelLinksEditor({
             </div>
             {urlInvalid ? (
               <InlineError textSize="xs" className="pl-8">
-                Use an http(s) or mailto: link
+                {t('channelLinksEditor.useAnHttpSOr')}
               </InlineError>
             ) : null}
           </div>
@@ -121,7 +123,7 @@ export function ChannelLinksEditor({
       <Button type="button" size="sm" variant="secondary" onClick={addLink}>
         <span className="inline-flex items-center gap-1.5">
           <PlusIcon size={14} />
-          Add link
+          {t('channelLinksEditor.addLink')}
         </span>
       </Button>
     </div>

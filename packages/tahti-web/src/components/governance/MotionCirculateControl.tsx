@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError } from '@tahti-player/ui';
 
 import { circulateMotion } from '../../api/governance-motion-circulate';
@@ -14,6 +15,7 @@ export function MotionCirculateControl({
   motionId: string;
   circulatedAt?: string | null;
 }) {
+  const { t } = useTranslation('web');
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -37,7 +39,7 @@ export function MotionCirculateControl({
         disabled={busy || message !== null}
         onClick={() => setConfirming(true)}
       >
-        Circulate for seconds
+        {t('motionCirculateControl.circulateForSeconds')}
       </Button>
       {message ? (
         <p role="status" className="text-xs">
@@ -47,9 +49,9 @@ export function MotionCirculateControl({
       {error ? <InlineError textSize="xs">{error}</InlineError> : null}
       <ConfirmDialog
         isOpen={confirming}
-        title="Circulate this draft?"
-        description="Every member gets a notice asking them to read the draft and second it. A draft is circulated once."
-        confirmLabel="Circulate"
+        title={t('motionCirculateControl.circulateThisDraft')}
+        description={t('motionCirculateControl.everyMemberGetsANotice')}
+        confirmLabel={t('motionCirculateControl.circulate')}
         onCancel={() => setConfirming(false)}
         onConfirm={() => {
           setConfirming(false);

@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError } from '@tahti-player/ui';
 
 import { fetchMembership, startMembershipCheckout } from '../api/client';
@@ -10,6 +11,7 @@ import { assignStripeRedirectUrl } from '../lib/stripeRedirect';
 import { useAuthStore } from '../stores/authStore';
 
 export function SignupPaymentView() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const [membership, setMembership] = useState<MembershipStatus | null>(null);
   const [busy, setBusy] = useState(false);
@@ -27,7 +29,7 @@ export function SignupPaymentView() {
     return (
       <div className="mx-auto flex max-w-lg flex-col gap-4">
         <h1 className="font-display text-3xl font-extrabold tracking-tight">
-          Membership
+          {t('signupPaymentView.membership')}
         </h1>
         <p className="text-foreground-secondary text-sm">
           Sign in to purchase Tahti ry membership (€40/year).
@@ -48,11 +50,10 @@ export function SignupPaymentView() {
     <div className="mx-auto flex max-w-lg flex-col gap-6">
       <div>
         <h1 className="font-display text-3xl font-extrabold tracking-tight">
-          Membership
+          {t('signupPaymentView.membership')}
         </h1>
         <p className="text-foreground-secondary mt-1 text-sm">
-          Support the Tahti cooperative and unlock FLAC streaming, stash
-          storage, and a vote at the AGM.
+          {t('signupPaymentView.supportTheTahtiCooperativeAnd')}
         </p>
       </div>
 
@@ -76,7 +77,7 @@ export function SignupPaymentView() {
       ) : (
         <div className="flex flex-col gap-3">
           <p className="text-foreground-secondary text-sm">
-            Complete the secure checkout to activate your membership.
+            {t('signupPaymentView.completeTheSecureCheckoutTo')}
           </p>
           <Button
             disabled={busy}
@@ -121,7 +122,7 @@ export function SignupPaymentView() {
       <PageBackLink
         to="/settings/$section"
         params={{ section: 'account' }}
-        label="Account"
+        label={t('signupPaymentView.account')}
       />
     </div>
   );

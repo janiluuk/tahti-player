@@ -1,5 +1,6 @@
 import { RotateCcwIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, SaveButton } from '@tahti-player/ui';
 
 export function ChannelEditToolbar({
@@ -21,11 +22,12 @@ export function ChannelEditToolbar({
   onRevert: () => void;
   onDone: () => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <div className="border-border flex flex-wrap items-center justify-between gap-2 border-b pb-3">
       <div>
         <div className="text-xs font-bold tracking-wide uppercase">
-          Channel design
+          {t('channelEditToolbar.channelDesign')}
         </div>
         <p className="text-foreground-secondary text-xs">
           Select a block on the page or in Layers, then edit its settings.
@@ -52,12 +54,12 @@ export function ChannelEditToolbar({
           onClick={onRevert}
         >
           <RotateCcwIcon size={14} aria-hidden />
-          Revert changes
+          {t('channelEditToolbar.revertChanges')}
         </Button>
         <SaveButton
           disabled={!dirty}
           saving={saving}
-          label="Save changes"
+          label={t('channelEditToolbar.saveChanges')}
           savingLabel="Saving…"
           onClick={onSave}
         />
@@ -67,7 +69,7 @@ export function ChannelEditToolbar({
           disabled={saving}
           onClick={onDone}
         >
-          Done
+          {t('channelEditToolbar.done')}
         </Button>
       </div>
     </div>

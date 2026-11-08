@@ -6,6 +6,7 @@ import {
   PlusIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -35,6 +36,7 @@ export function CollectionHeader({
   editing: boolean;
   onEditingChange: (next: boolean) => void;
 }) {
+  const { t } = useTranslation('web');
   const {
     name,
     coverUrl,
@@ -113,7 +115,7 @@ export function CollectionHeader({
               </Tooltip>
               {backdropUrl ? (
                 <ImageSlotDeleteBadge
-                  label="Backdrop"
+                  label={t('collectionHeader.backdrop')}
                   onClick={backdropChrome.requestDelete}
                 />
               ) : null}
@@ -129,7 +131,7 @@ export function CollectionHeader({
             <SaveButton saving={saving} onClick={() => void saveMeta()} />
           ) : null}
           <EditIconButton
-            label="Edit details"
+            label={t('collectionHeader.editDetails')}
             editing={editing}
             onClick={() => onEditingChange(!editing)}
           />
@@ -144,15 +146,15 @@ export function CollectionHeader({
           disabled={items.length === 0}
         >
           <PlayIcon size={16} aria-hidden className="mr-1.5" />
-          Play
+          {t('collectionHeader.play')}
         </Button>
-        <Tooltip content="Add all to queue" side="top">
+        <Tooltip content={t('collectionHeader.addAllToQueue')} side="top">
           <Button
             variant="secondary"
             size="icon"
             onClick={() => void queueAllTracks()}
             disabled={items.length === 0}
-            aria-label="Add all to queue"
+            aria-label={t('collectionHeader.addAllToQueue')}
           >
             <ListPlusIcon size={16} aria-hidden />
           </Button>

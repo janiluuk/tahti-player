@@ -1,5 +1,6 @@
 import { Music2Icon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Select } from '@tahti-player/ui';
 
 import { capitalizeGenre, PRESET_GENRES } from '../lib/genres';
@@ -31,6 +32,7 @@ export function MaterialGenreField({
   genreHint = 'Pick the closest match for this track.',
   subGenreSuggestions,
 }: Props) {
+  const { t } = useTranslation('web');
   const selected =
     PRESET_GENRES.find(
       (preset) => preset.toLowerCase() === genre.toLowerCase(),
@@ -45,19 +47,19 @@ export function MaterialGenreField({
   return (
     <MaterialMetaPanel
       icon={<Music2Icon size={14} strokeWidth={2.5} />}
-      title="Genre"
+      title={t('materialGenreField.genre')}
     >
       <div className="flex flex-col gap-4">
         <Select
-          label="Main genre"
+          label={t('materialGenreField.mainGenre')}
           value={selected}
           onValueChange={onGenreChange}
           options={options}
-          placeholder="Select a genre"
+          placeholder={t('materialGenreField.selectAGenre')}
           description={genreHint}
         />
         <TagChipInput
-          label="Sub-Genres"
+          label={t('materialGenreField.subGenres')}
           addLabel="Add a sub-genre"
           placeholder="# Add a sub-genre"
           maxCount={12}

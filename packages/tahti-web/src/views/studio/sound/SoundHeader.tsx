@@ -11,6 +11,7 @@ import {
   SparklesIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -37,6 +38,7 @@ export function SoundHeader({
   editing: boolean;
   onEditingChange: (next: boolean) => void;
 }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const {
     item,
@@ -99,21 +101,21 @@ export function SoundHeader({
             </Button>
           </Tooltip>
           <TrackContextMenu>
-            <Tooltip content="Quick edits" side="top">
+            <Tooltip content={t('soundHeader.quickEdits')} side="top">
               <TrackContextMenu.Trigger>
                 <Button
                   variant="text"
                   size="icon-sm"
                   className="bg-background border-border rounded-md border-(length:--border-width)"
                   disabled={notReady || hasError}
-                  aria-label="Quick edits"
+                  aria-label={t('soundHeader.quickEdits')}
                 >
                   <MoreHorizontalIcon size={16} aria-hidden />
                 </Button>
               </TrackContextMenu.Trigger>
             </Tooltip>
             <TrackContextMenu.Content>
-              <TrackContextMenu.Header title="Quick edits" />
+              <TrackContextMenu.Header title={t('soundHeader.quickEdits')} />
               <TrackContextMenu.Action
                 disabled={quickBusy !== null}
                 onClick={onNormalize}
@@ -143,14 +145,14 @@ export function SoundHeader({
               )}
             </TrackContextMenu.Content>
           </TrackContextMenu>
-          <Tooltip content="Open audio editor" side="top">
+          <Tooltip content={t('soundHeader.openAudioEditor')} side="top">
             <ButtonLink
               to="/studio/sounds/$id/editor"
               params={{ id }}
               variant="secondary"
               size="icon-sm"
               disabled={notReady || hasError}
-              aria-label="Open audio editor"
+              aria-label={t('soundHeader.openAudioEditor')}
               className="bg-background border-border rounded-md border-(length:--border-width)"
             >
               <AudioLinesIcon size={16} aria-hidden />
@@ -170,7 +172,7 @@ export function SoundHeader({
             />
           ) : null}
           <EditIconButton
-            label="Edit details"
+            label={t('soundHeader.editDetails')}
             editing={editing}
             onClick={() => onEditingChange(!editing)}
           />

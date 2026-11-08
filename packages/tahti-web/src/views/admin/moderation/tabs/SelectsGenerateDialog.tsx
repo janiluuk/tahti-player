@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -23,6 +24,7 @@ export function SelectsGenerateDialog({
   onClose: () => void;
   onGenerated: (message: string) => void;
 }) {
+  const { t } = useTranslation('web');
   const [mode, setMode] = useState<SelectsGenerateMode>('add');
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -36,13 +38,14 @@ export function SelectsGenerateDialog({
 
   return (
     <Dialog.Root isOpen={isOpen} onClose={onClose} className="max-w-md">
-      <Dialog.Title>Fill from the top list</Dialog.Title>
+      <Dialog.Title>
+        {t('selectsGenerateDialog.fillFromTheTopList')}
+      </Dialog.Title>
       <Dialog.Description>
-        Picks the 10 most-played public tracks that aren't in the rotation yet,
-        topped up with the newest uploads if there aren't enough.
+        {t('selectsGenerateDialog.picksThe10MostPlayed')}
       </Dialog.Description>
       <SegmentedControl<SelectsGenerateMode>
-        aria-label="How to fill the rotation"
+        aria-label={t('selectsGenerateDialog.howToFillTheRotation')}
         value={mode}
         onChange={setMode}
         options={[
@@ -58,7 +61,7 @@ export function SelectsGenerateDialog({
       {error ? <InlineError className="mt-3">{error}</InlineError> : null}
       <Dialog.Actions>
         <Button type="button" variant="secondary" onClick={onClose}>
-          Cancel
+          {t('selectsGenerateDialog.cancel')}
         </Button>
         <Button
           type="button"

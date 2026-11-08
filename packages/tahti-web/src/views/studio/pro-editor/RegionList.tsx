@@ -1,5 +1,6 @@
 import { XIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import type { EditList } from '../../../api/studio-types';
@@ -77,6 +78,7 @@ export function RegionList({
   onRemoveMarker,
   onClearMarkers,
 }: Props) {
+  const { t } = useTranslation('web');
   if (cuts.length === 0 && fades.length === 0 && markers.length === 0) {
     return null;
   }
@@ -85,7 +87,7 @@ export function RegionList({
   return (
     <div className="mt-3 flex flex-col gap-2">
       {cuts.length > 0 && (
-        <Row title="Cuts">
+        <Row title={t('regionList.cuts')}>
           {cuts.map((cut, index) => (
             <Chip
               key={`${cut.start}-${cut.end}`}
@@ -98,7 +100,7 @@ export function RegionList({
         </Row>
       )}
       {fades.length > 0 && (
-        <Row title="Fades">
+        <Row title={t('regionList.fades')}>
           {fades.map((fade, index) => (
             <Chip
               key={`${fade.type}-${fade.at}-${fade.duration}`}
@@ -113,7 +115,7 @@ export function RegionList({
         </Row>
       )}
       {markers.length > 0 && (
-        <Row title="Markers">
+        <Row title={t('regionList.markers')}>
           {markers.map((marker, index) => (
             <Chip
               key={marker}
@@ -124,7 +126,7 @@ export function RegionList({
             />
           ))}
           <Button size="xs" variant="text" onClick={onClearMarkers}>
-            Clear markers
+            {t('regionList.clearMarkers')}
           </Button>
         </Row>
       )}

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Slider } from '@tahti-player/ui';
 
 import type {
@@ -160,6 +161,7 @@ export const MultitrackTimeline = ({
   onChange,
   unavailableSourceIds = [],
 }: Props) => {
+  const { t } = useTranslation('web');
   const [zoom, setZoom] = useState(1);
   const [currentTime, setCurrentTime] = useState(0);
   const [selectedClipId, setSelectedClipId] = useState<string | null>(null);
@@ -254,7 +256,7 @@ export const MultitrackTimeline = ({
         data-testid="multitrack-empty"
         className="border-border text-foreground-secondary rounded-lg border border-dashed p-10 text-center"
       >
-        Add a native archive source to begin a session.
+        {t('multitrackTimeline.addANativeArchiveSource')}
       </div>
     );
   }
@@ -278,7 +280,7 @@ export const MultitrackTimeline = ({
           size="sm"
           variant="ghost"
           onClick={() => setZoom(Math.max(0.5, zoom - 0.25))}
-          aria-label="Zoom out"
+          aria-label={t('multitrackTimeline.zoomOut')}
         >
           <MinusIcon size={15} />
         </Button>
@@ -287,7 +289,7 @@ export const MultitrackTimeline = ({
           size="sm"
           variant="ghost"
           onClick={() => setZoom(Math.min(4, zoom + 0.25))}
-          aria-label="Zoom in"
+          aria-label={t('multitrackTimeline.zoomIn')}
         >
           <PlusIcon size={15} />
         </Button>
@@ -300,7 +302,7 @@ export const MultitrackTimeline = ({
             onValueChange={setTime}
           >
             <div className="sr-only">
-              <Slider.Header label="Playhead" />
+              <Slider.Header label={t('multitrackTimeline.playhead')} />
             </div>
             <Slider.Surface>
               <Slider.Track />

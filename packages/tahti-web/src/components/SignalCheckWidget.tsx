@@ -1,6 +1,7 @@
 import { ActivityIcon, CheckCircle2Icon, Mic2Icon } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import type { SignalStatus } from '../api/broadcast';
@@ -115,6 +116,7 @@ export const SignalCheckWidget = ({
   isMock,
   onTestConnection,
 }: SignalCheckWidgetProps) => {
+  const { t } = useTranslation('web');
   const connected = Boolean(signal?.connected);
   const state = isChecking ? 'checking' : connected ? 'ready' : 'waiting';
 
@@ -155,22 +157,30 @@ export const SignalCheckWidget = ({
         )}
         {isMock && !connected && (
           <Button size="sm" variant="secondary" onClick={onTestConnection}>
-            Test connection
+            {t('signalCheckWidget.testConnection')}
           </Button>
         )}
       </div>
 
       {isChecking && (
         <div className="border-border/70 mt-4 flex gap-4 border-t pt-3">
-          <SignalMeter analyser={analyser} label="Input level · L" active />
-          <SignalMeter analyser={analyser} label="Input level · R" active />
+          <SignalMeter
+            analyser={analyser}
+            label={t('signalCheckWidget.inputLevelL')}
+            active
+          />
+          <SignalMeter
+            analyser={analyser}
+            label={t('signalCheckWidget.inputLevelR')}
+            active
+          />
         </div>
       )}
 
       {!connected && !isMock && (
         <div className="text-foreground-secondary mt-3 flex items-center gap-2 text-xs">
           <ActivityIcon size={14} aria-hidden />
-          This dashboard checks your signal every four seconds.
+          {t('signalCheckWidget.thisDashboardChecksYourSignal')}
         </div>
       )}
       {connected && !isChecking && (

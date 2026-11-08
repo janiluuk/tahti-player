@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Toggle } from '@tahti-player/ui';
 
 import { BRAND_ACCENTS, type ColorScheme } from '../../api/channel-design';
@@ -21,6 +22,7 @@ export function PlayerGradientControls({
   onPlayerSchemeChange,
   onPlayerBrandAccent,
 }: Props) {
+  const { t } = useTranslation('web');
   const selectedBrand = BRAND_ACCENTS.find(
     (brand) =>
       brand.accent === playerScheme.accent &&
@@ -35,15 +37,14 @@ export function PlayerGradientControls({
       <div className="border-border bg-background-secondary/40 flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
         <span>
           <span className="block font-semibold">
-            Use a separate gradient for the player
+            {t('playerGradientControls.useASeparateGradientFor')}
           </span>
           <span className="text-foreground-secondary block text-xs">
-            Off by default — the player reuses the gradient set above for the
-            channel header.
+            {t('playerGradientControls.offByDefaultThePlayer')}
           </span>
         </span>
         <Toggle
-          label="Use a separate gradient for the player"
+          label={t('playerGradientControls.useASeparateGradientFor')}
           checked={usePlayerGradient}
           onChange={onUsePlayerGradient}
         />
@@ -51,7 +52,7 @@ export function PlayerGradientControls({
       {usePlayerGradient ? (
         <>
           <div className="flex flex-col gap-2">
-            <Eyebrow>Gradient presets</Eyebrow>
+            <Eyebrow>{t('playerGradientControls.gradientPresets')}</Eyebrow>
             <BrandAccentSwatches
               selectedId={selectedBrand?.id}
               onSelect={onPlayerBrandAccent}
@@ -64,8 +65,7 @@ export function PlayerGradientControls({
         </>
       ) : (
         <p className="text-foreground-secondary text-xs">
-          The player currently matches the channel header&apos;s gradient, set
-          in Header.
+          {t('playerGradientControls.thePlayerCurrentlyMatchesThe')}
         </p>
       )}
     </section>

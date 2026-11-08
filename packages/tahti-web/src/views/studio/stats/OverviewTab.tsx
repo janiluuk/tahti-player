@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { cn, Meter, statToneClasses } from '@tahti-player/ui';
 
 import { StudioPanel } from '../../../components/StudioPanel';
@@ -50,11 +51,12 @@ export function KeyMetrics({
   state: StatsData;
   active: boolean;
 }) {
+  const { t } = useTranslation('web');
   const { keyMetrics, loading } = state;
   return (
     <section
       className={`${active ? '' : 'hidden'} grid gap-3 sm:grid-cols-2 xl:grid-cols-3`}
-      aria-label="Key metrics"
+      aria-label={t('overviewTab.keyMetrics')}
     >
       {keyMetrics.map((metric) => {
         const Icon = metric.icon;
@@ -100,10 +102,11 @@ export function EngagementSection({
   state: StatsData;
   active: boolean;
 }) {
+  const { t } = useTranslation('web');
   const { engagementEntries, grant } = state;
   return (
     <div className={active ? '' : 'hidden'}>
-      <StudioPanel title="Engagement units">
+      <StudioPanel title={t('overviewTab.engagementUnits')}>
         <EngagementUnitList entries={engagementEntries} />
         <div className="border-border mt-4 flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-sm">
           <span className="text-foreground-secondary">
@@ -125,7 +128,7 @@ export function EngagementSection({
           to="/studio/audience"
           className="underline-offset-2 hover:underline"
         >
-          Revenue
+          {t('overviewTab.revenue')}
         </Link>
         . Listener geography is aggregated and does not identify individual
         listeners.

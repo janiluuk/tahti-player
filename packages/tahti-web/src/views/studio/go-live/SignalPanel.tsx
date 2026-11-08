@@ -1,5 +1,6 @@
 import { RadioIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button } from '@tahti-player/ui';
 
 import { fetchSignalStatus, mockSimulateSignal } from '../../../api/broadcast';
@@ -27,6 +28,7 @@ export function signalAnnouncement(
 }
 
 export function SignalPanel({ state }: { state: GoLiveState }) {
+  const { t } = useTranslation('web');
   const {
     signal,
     setSignal,
@@ -72,7 +74,7 @@ export function SignalPanel({ state }: { state: GoLiveState }) {
             className="gap-1.5 rounded-full"
           >
             <Badge variant="dot" color={showInfoReady ? 'green' : 'yellow'} />
-            Show info
+            {t('signalPanel.showInfo')}
             <span className="sr-only">
               {showInfoReady ? ' (confirmed)' : ' (not confirmed yet)'}
             </span>
@@ -100,10 +102,10 @@ export function SignalPanel({ state }: { state: GoLiveState }) {
       {rotationPlaying && !isBroadcastLive && !preflight?.title ? (
         <div className="border-border bg-background-secondary flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 text-sm">
           <span className="text-foreground-secondary">
-            Add your show name and details before going live.
+            {t('signalPanel.addYourShowNameAnd')}
           </span>
           <span className="text-foreground font-semibold">
-            Confirm show info above
+            {t('signalPanel.confirmShowInfoAbove')}
           </span>
         </div>
       ) : null}

@@ -1,6 +1,7 @@
 import { SettingsIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonAnchor, Dialog, PluginItem } from '@tahti-player/ui';
 
 import {
@@ -39,6 +40,7 @@ function ConnectionConfigureDialog({
   oauthStartPath: string | null;
   onClose: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [status, setStatus] = useState<ConnectionStatus | null>(null);
   const [testing, setTesting] = useState(false);
 
@@ -56,7 +58,7 @@ function ConnectionConfigureDialog({
     <Dialog.Root isOpen onClose={onClose} className="max-w-md">
       <Dialog.Title>Configure {name}</Dialog.Title>
       <Dialog.Description>
-        Test the connection, then enable it by connecting your account.
+        {t('trackExportConnections.testTheConnectionThenEnable')}
       </Dialog.Description>
       <div className="mt-4 flex flex-col gap-3">
         <div className="border-border flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
@@ -87,12 +89,12 @@ function ConnectionConfigureDialog({
           </ButtonAnchor>
         ) : (
           <p className="text-foreground-secondary text-xs">
-            This provider doesn&apos;t support connecting yet.
+            {t('trackExportConnections.thisProviderDoesnAposT')}
           </p>
         )}
       </div>
       <Dialog.Actions>
-        <Dialog.Close>Done</Dialog.Close>
+        <Dialog.Close>{t('trackExportConnections.done')}</Dialog.Close>
       </Dialog.Actions>
     </Dialog.Root>
   );
@@ -103,6 +105,7 @@ function ConnectionConfigureDialog({
  * EXPORT_TARGETS go through Revelator release submission instead and have
  * no per-account connection to test here. */
 export function TrackExportConnections() {
+  const { t } = useTranslation('web');
   const [statuses, setStatuses] = useState<
     Partial<Record<IntegrationId, ConnectionStatus>>
   >({});
@@ -133,7 +136,7 @@ export function TrackExportConnections() {
   return (
     <div className="flex flex-col gap-2">
       <h3 className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-        Connected accounts
+        {t('trackExportConnections.connectedAccounts')}
       </h3>
       <ul className="flex flex-col gap-2">
         {EXPORT_SOURCES.map((source) => {

@@ -2,6 +2,7 @@ import { FileUpIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -21,6 +22,7 @@ export function ReleaseCsvImportButton({
 }: {
   onImported: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [csv, setCsv] = useState('');
   const [busy, setBusy] = useState(false);
@@ -59,18 +61,20 @@ export function ReleaseCsvImportButton({
 
   return (
     <>
-      <Tooltip content="Import from CSV" side="top">
+      <Tooltip content={t('releaseCsvImportButton.importFromCsv')} side="top">
         <Button
           size="icon-sm"
           variant="secondary"
-          aria-label="Import releases from CSV"
+          aria-label={t('releaseCsvImportButton.importReleasesFromCsv')}
           onClick={() => setOpen(true)}
         >
           <FileUpIcon size={16} aria-hidden />
         </Button>
       </Tooltip>
       <Dialog.Root isOpen={open} onClose={close} className="max-w-xl">
-        <Dialog.Title>Import releases from CSV</Dialog.Title>
+        <Dialog.Title>
+          {t('releaseCsvImportButton.importReleasesFromCsv')}
+        </Dialog.Title>
         <Dialog.Description>
           One row per track. Rows with the same release title and date become
           one draft release. Columns: {RELEASE_CSV_COLUMNS.join(', ')}.
@@ -97,7 +101,7 @@ export function ReleaseCsvImportButton({
               autoCapitalize="none"
               autoCorrect="off"
               spellCheck={false}
-              aria-label="CSV rows"
+              aria-label={t('releaseCsvImportButton.csvRows')}
               rows={8}
               value={csv}
               onChange={(event) => {

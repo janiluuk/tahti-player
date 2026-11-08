@@ -2,6 +2,7 @@ import { CheckIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import { patchMeProfile } from '../../../api/studio-extras';
@@ -22,6 +23,7 @@ export function AvatarThemePicker({
   value: AvatarTheme | null;
   onChange: (next: AvatarTheme | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const [busy, setBusy] = useState(false);
 
   const save = async (next: AvatarTheme | null) => {
@@ -40,9 +42,11 @@ export function AvatarThemePicker({
 
   return (
     <fieldset className="flex flex-col gap-2" data-testid="avatar-theme-picker">
-      <legend className="text-sm font-semibold">Avatar colour</legend>
+      <legend className="text-sm font-semibold">
+        {t('avatarThemePicker.avatarColour')}
+      </legend>
       <p className="text-foreground-secondary text-xs">
-        Fills your avatar while you have no profile picture.
+        {t('avatarThemePicker.fillsYourAvatarWhileYou')}
       </p>
       <div className="flex flex-wrap items-center gap-2">
         {AVATAR_THEME_PRESETS.map((preset, index) => {
@@ -80,7 +84,7 @@ export function AvatarThemePicker({
           aria-pressed={value === null}
           onClick={() => void save(null)}
         >
-          Default
+          {t('avatarThemePicker.default')}
         </Button>
       </div>
     </fieldset>

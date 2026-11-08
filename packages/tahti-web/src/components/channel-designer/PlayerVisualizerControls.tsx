@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, PluginItem, Tooltip } from '@tahti-player/ui';
 
 import type { VisualPreset } from '../../api/channel-design';
@@ -44,6 +45,7 @@ export function PlayerVisualizerControls({
   vizPackId = null,
   onVizPackChange,
 }: Props) {
+  const { t } = useTranslation('web');
   const meta = visualizerMetadata(activeVisualizer);
   const label = activeVisualizer.replace(/_/g, ' ');
 
@@ -59,7 +61,7 @@ export function PlayerVisualizerControls({
             size="flexible"
             type="button"
             className="hover:bg-background-secondary flex size-full items-center justify-center rounded-lg whitespace-normal transition-colors active:scale-100"
-            aria-label="Choose visualizer"
+            aria-label={t('playerVisualizerControls.chooseVisualizer')}
             onClick={onOpenPicker}
           >
             <meta.Icon size={22} aria-hidden />
@@ -70,7 +72,7 @@ export function PlayerVisualizerControls({
             {label}
             {meta.audioReactive ? (
               <Badge variant="pill" color="blue">
-                Audio reactive
+                {t('playerVisualizerControls.audioReactive')}
               </Badge>
             ) : null}
           </span>
@@ -82,24 +84,30 @@ export function PlayerVisualizerControls({
         }`}
         rightAccessory={
           <div className="flex items-center gap-1">
-            <Tooltip content="Previous visualizer" side="top">
+            <Tooltip
+              content={t('playerVisualizerControls.previousVisualizer')}
+              side="top"
+            >
               <Button
                 size="icon-sm"
                 variant="text"
                 disabled={!visualizerEnabled}
                 onClick={onPrevious}
-                aria-label="Previous visualizer"
+                aria-label={t('playerVisualizerControls.previousVisualizer')}
               >
                 <ChevronLeftIcon size={16} aria-hidden />
               </Button>
             </Tooltip>
-            <Tooltip content="Next visualizer" side="top">
+            <Tooltip
+              content={t('playerVisualizerControls.nextVisualizer')}
+              side="top"
+            >
               <Button
                 size="icon-sm"
                 variant="text"
                 disabled={!visualizerEnabled}
                 onClick={onNext}
-                aria-label="Next visualizer"
+                aria-label={t('playerVisualizerControls.nextVisualizer')}
               >
                 <ChevronRightIcon size={16} aria-hidden />
               </Button>

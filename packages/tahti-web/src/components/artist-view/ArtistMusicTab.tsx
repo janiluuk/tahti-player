@@ -7,6 +7,7 @@ import {
   Repeat2Icon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, CardGrid, ImageReveal, Tooltip } from '@tahti-player/ui';
 
 import type {
@@ -103,6 +104,7 @@ export function ArtistMusicTab({
   favoriteTracks,
   onOpenManager,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <section className="flex flex-col gap-8">
       {visibility.player ? (
@@ -152,7 +154,7 @@ export function ArtistMusicTab({
 
           {channel && (isOwner || isAdministrator) ? (
             <Tooltip
-              content="Manage playlist"
+              content={t('artistMusicTab.managePlaylist')}
               side="bottom"
               wrapperClassName="inline-flex"
             >
@@ -162,10 +164,10 @@ export function ArtistMusicTab({
                 variant="secondary"
                 className="absolute top-3 right-3 z-[2] gap-1.5"
                 onClick={onOpenManager}
-                aria-label="Manage playlist"
+                aria-label={t('artistMusicTab.managePlaylist')}
               >
                 <ListMusicIcon size={16} aria-hidden />
-                <span>Manage playlist</span>
+                <span>{t('artistMusicTab.managePlaylist')}</span>
               </Button>
             </Tooltip>
           ) : null}
@@ -232,7 +234,7 @@ export function ArtistMusicTab({
         <div
           className="flex items-center justify-center gap-5"
           role="group"
-          aria-label="Track engagement"
+          aria-label={t('artistMusicTab.trackEngagement')}
         >
           <Button
             type="button"
@@ -275,13 +277,13 @@ export function ArtistMusicTab({
       {pinnedTiles.length > 0 && (
         <div className="flex flex-col gap-3">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
-            <Eyebrow>Pinned</Eyebrow>
+            <Eyebrow>{t('artistMusicTab.pinned')}</Eyebrow>
             {isOwner && (
               <Link
                 to="/studio/sounds"
                 className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
               >
-                Manage pins in Studio
+                {t('artistMusicTab.managePinsInStudio')}
               </Link>
             )}
           </div>
