@@ -163,7 +163,7 @@ export function MyRadioStations({
                   onClick={() => void remove(station.id)}
                 >
                   <Trash2Icon
-                    className="text-accent-red"
+                    className="text-accent-red-strong"
                     size={14}
                     aria-hidden
                   />

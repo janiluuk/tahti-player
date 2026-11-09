@@ -143,7 +143,7 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
                     }
                   >
                     <Trash2Icon
-                      className="text-accent-red"
+                      className="text-accent-red-strong"
                       size={14}
                       aria-hidden
                     />

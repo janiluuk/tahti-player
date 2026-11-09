@@ -140,7 +140,7 @@ export function SoundCloudEmbedsPanel() {
                     onClick={() => void remove(embed.id)}
                   >
                     <Trash2Icon
-                      className="text-accent-red"
+                      className="text-accent-red-strong"
                       size={14}
                       aria-hidden
                     />

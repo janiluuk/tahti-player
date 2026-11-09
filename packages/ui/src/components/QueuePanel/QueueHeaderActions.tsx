@@ -112,7 +112,7 @@ export const QueueHeaderActions: FC<QueueHeaderActionsProps> = ({
             disabled={clearDisabled}
             onClick={onClearQueue}
           >
-            <Trash2Icon className="text-accent-red" />
+            <Trash2Icon className="text-accent-red-strong" />
           </Button>
         </Tooltip>
       ) : null}

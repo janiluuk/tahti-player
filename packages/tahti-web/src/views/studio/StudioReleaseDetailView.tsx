@@ -246,7 +246,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                       onClick={() => setConfirmDelete(true)}
                     >
                       <Trash2Icon
-                        className="text-accent-red"
+                        className="text-accent-red-strong"
                         size={16}
                         aria-hidden
                       />

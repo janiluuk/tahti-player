@@ -134,7 +134,7 @@ export function SlideshowControls({
                   onClick={() => onRemove(index)}
                 >
                   <Trash2Icon
-                    className="text-accent-red"
+                    className="text-accent-red-strong"
                     size={14}
                     aria-hidden
                   />

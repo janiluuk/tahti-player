@@ -183,7 +183,11 @@ export function AddonCard({
             disabled={pending}
             onClick={() => onDelete(addon)}
           >
-            <Trash2Icon className="text-accent-red" size={16} aria-hidden />
+            <Trash2Icon
+              className="text-accent-red-strong"
+              size={16}
+              aria-hidden
+            />
           </Button>
         </Tooltip>
       </div>

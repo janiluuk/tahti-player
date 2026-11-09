@@ -165,7 +165,7 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
                     onClick={() => setPending({ action: 'remove', message })}
                   >
                     <Trash2Icon
-                      className="text-accent-red"
+                      className="text-accent-red-strong"
                       size={14}
                       aria-hidden
                     />

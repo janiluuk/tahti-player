@@ -135,7 +135,11 @@ export function SidebarQueuePanel({
               className="text-foreground-secondary hover:text-accent-red-strong"
               aria-label={t('sidebarQueuePanel.clearQueue')}
             >
-              <Trash2Icon className="text-accent-red" size={15} aria-hidden />
+              <Trash2Icon
+                className="text-accent-red-strong"
+                size={15}
+                aria-hidden
+              />
             </Button>
           </Tooltip>
           {menuItems.map((item) => (

@@ -125,7 +125,11 @@ function TrackCreditsRow({
                   setCredits((current) => current.filter((_, i) => i !== index))
                 }
               >
-                <Trash2Icon className="text-accent-red" size={14} aria-hidden />
+                <Trash2Icon
+                  className="text-accent-red-strong"
+                  size={14}
+                  aria-hidden
+                />
               </Button>
             </Tooltip>
           </li>

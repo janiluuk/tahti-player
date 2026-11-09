@@ -233,7 +233,7 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
                       )}
                     >
                       <Trash2Icon
-                        className="text-accent-red"
+                        className="text-accent-red-strong"
                         size={14}
                         aria-hidden
                       />

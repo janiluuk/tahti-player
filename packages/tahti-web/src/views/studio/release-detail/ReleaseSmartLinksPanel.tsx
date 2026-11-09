@@ -512,7 +512,7 @@ export function ReleaseSmartLinksPanel({
                     }
                   >
                     <Trash2Icon
-                      className="text-accent-red"
+                      className="text-accent-red-strong"
                       size={15}
                       aria-hidden
                     />

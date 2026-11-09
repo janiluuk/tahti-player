@@ -129,7 +129,7 @@ export function NewsSourcesDialog({
                       onClick={() => removeInstance(source.id)}
                     >
                       <TrashIcon
-                        className="text-accent-red"
+                        className="text-accent-red-strong"
                         size={14}
                         aria-hidden
                       />

@@ -148,7 +148,7 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
                     onClick={() => setPendingRemove(item)}
                   >
                     <Trash2Icon
-                      className="text-accent-red"
+                      className="text-accent-red-strong"
                       size={16}
                       aria-hidden
                     />

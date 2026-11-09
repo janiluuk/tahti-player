@@ -295,7 +295,7 @@ export function StudioUpdatesView({
                               onClick={() => setPendingDeletePost(p)}
                             >
                               <Trash2Icon
-                                className="text-accent-red"
+                                className="text-accent-red-strong"
                                 size={16}
                                 aria-hidden
                               />
@@ -403,7 +403,7 @@ export function StudioUpdatesView({
                               onClick={() => setPendingDeleteDraft(d)}
                             >
                               <Trash2Icon
-                                className="text-accent-red"
+                                className="text-accent-red-strong"
                                 size={16}
                                 aria-hidden
                               />

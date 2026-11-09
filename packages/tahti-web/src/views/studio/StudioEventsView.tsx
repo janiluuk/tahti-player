@@ -126,7 +126,7 @@ export function StudioEventsView() {
                 <Trash2Icon
                   size={14}
                   aria-hidden
-                  className="text-accent-red mr-1.5"
+                  className="text-accent-red-strong mr-1.5"
                 />
                 {t('studioEvents.remove')}
               </Button>
