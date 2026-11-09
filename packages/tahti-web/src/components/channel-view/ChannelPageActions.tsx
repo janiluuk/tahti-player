@@ -131,7 +131,12 @@ export function ChannelPageActions({
   );
 
   const desktopReport = !isOwner ? (
-    <ReportButton targetType="CHANNEL" targetId={slug} label={displayName} />
+    <ReportButton
+      targetType="CHANNEL"
+      targetId={slug}
+      label={displayName}
+      className="size-9"
+    />
   ) : null;
 
   return (

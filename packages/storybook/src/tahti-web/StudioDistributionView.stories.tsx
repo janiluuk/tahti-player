@@ -33,5 +33,16 @@ export const Default: Story = {
         name: /^Distribution$|^Jakelu$/,
       }),
     ).toBeInTheDocument();
+    const back = canvas.getByRole('link', { name: /Releases|Julkaisut/ });
+    const heading = canvas.getByRole('heading', {
+      name: /^Distribution$|^Jakelu$/,
+    });
+    await expect(
+      back.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    await expect(
+      (await canvas.findAllByText('Not submitted')).length,
+    ).toBeGreaterThan(0);
+    await expect(canvas.queryByText(/ALBUM|PUBLISHED/)).toBeNull();
   },
 };

@@ -347,15 +347,14 @@ describe('adminUsersExportCsvUrl', () => {
     expect(url.pathname).toBe('/tahti-api/api/admin/users/export.csv');
     expect(Object.fromEntries(url.searchParams)).toEqual({
       search: 'moon',
-      tier: 'ARTIST',
-      isBoard: 'false',
+      role: 'ARTIST',
       isMember: 'true',
     });
   });
 
   it('exports only board members for the Board role', () => {
     expect(adminUsersExportCsvUrl({ role: 'BOARD' })).toBe(
-      '/tahti-api/api/admin/users/export.csv?isBoard=true',
+      '/tahti-api/api/admin/users/export.csv?role=BOARD&isBoard=true',
     );
   });
 });

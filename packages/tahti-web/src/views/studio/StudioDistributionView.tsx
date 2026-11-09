@@ -45,15 +45,14 @@ export function StudioDistributionView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
+        <PageBackLink
+          to="/studio/releases"
+          label={t('studioDistribution.releases')}
+        />
         <ViewShell
           title={t('studioDistribution.title')}
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
-          <PageBackLink
-            to="/studio/releases"
-            label={t('studioDistribution.releases')}
-          />
-
           <section className="flex flex-col gap-3">
             <h2>
               <Eyebrow>{t('studioDistribution.releases')}</Eyebrow>

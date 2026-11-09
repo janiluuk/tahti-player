@@ -54,6 +54,31 @@ vi.mock('../api/client', async (importOriginal) => {
   };
 });
 
+let studioItemCount = 0;
+
+vi.mock('../api/studio', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../api/studio')>();
+  return {
+    ...actual,
+    fetchStudioCollection: async () => ({
+      data: {
+        id: 'c1',
+        slug: 'road-trip',
+        name: 'Road trip',
+        style: 'PLAYLIST',
+        isPublic: true,
+        trackSortMode: 'MANUAL',
+        items: Array.from({ length: studioItemCount }, (_, i) => ({
+          id: `ci-${i}`,
+          position: i,
+          sound: { id: `s${i}`, title: `Track ${i}` },
+        })),
+      },
+      meta: { source: 'api' },
+    }),
+  };
+});
+
 function item(
   n: number,
   contribution: CollectionItemContribution = {},
@@ -127,6 +152,35 @@ describe('CollectionView reporting', () => {
     await renderView();
     expect(
       screen.queryByRole('button', { name: 'Report Road trip' }),
+    ).not.toBeInTheDocument();
+  });
+});
+
+describe('CollectionView header actions', () => {
+  it('shows one Favorite control to a visitor', async () => {
+    collection = makeCollection([item(1)]);
+    await renderView();
+    expect(
+      screen.getAllByRole('button', { name: 'Favorite Road trip' }),
+    ).toHaveLength(1);
+  });
+
+  it('gives the owner Sort sounds when the collection has two or more sounds', async () => {
+    studioItemCount = 2;
+    useAuthStore.setState({ user: { username: 'owner' } as AuthUser });
+    collection = makeCollection([item(1), item(2)]);
+    await renderView();
+    expect(
+      await screen.findByRole('button', { name: 'Sort sounds' }),
+    ).toBeInTheDocument();
+  });
+
+  it('shows no Sort sounds to a visitor', async () => {
+    studioItemCount = 2;
+    collection = makeCollection([item(1), item(2)]);
+    await renderView();
+    expect(
+      screen.queryByRole('button', { name: 'Sort sounds' }),
     ).not.toBeInTheDocument();
   });
 });

@@ -38,12 +38,16 @@ sets `trackSortMode` TIME/NAME for Oldest first / A–Z; Newest first and Z–A
 are saved as own order. Helpers in `lib/sortSounds.ts` (tested), story
 `SortSoundsDialog.stories.tsx`.
 
+2026-11-09: the owner's public collection page (`CollectionView`) has a
+labelled Sort sounds button (`OwnerCollectionSortSounds` loads the Studio copy
+for item ids and the stored mode, then reloads the page). Dialog rows use
+`MediaArtwork size="sm"`; `size="fill"` in an unpositioned wrapper let a cover
+fill the whole dialog.
+
 ## Left
 
 - tahti-org: direction-aware sort modes so Newest first / Z–A stay sorted
   when new sounds are added (today they are saved as a fixed own order).
-- The owner's public collection page (the Studio collection and playlist
-  editors both have the button).
 - Check the public read paths apply the stored mode (see below).
 
 ## What exists
