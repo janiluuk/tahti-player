@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ArtistView } from '@tahti-web/views/ArtistView';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
+import { withMotionAllowed } from '../_lib/motion';
 import {
   ARTIST_NAME,
   ARTIST_USERNAME,
@@ -45,7 +46,7 @@ async function findHero(canvasElement: HTMLElement) {
 }
 
 export const Visitor: Story = {
-  decorators: [withMockAuth(MOCK_USERS.listener)],
+  decorators: [withMockAuth(MOCK_USERS.listener), withMotionAllowed],
   play: async ({ canvasElement, step }) => {
     const canvas = await findHero(canvasElement);
 

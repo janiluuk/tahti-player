@@ -11,6 +11,8 @@ import {
 
 import { MediaArtwork } from '@tahti-player/ui';
 
+import { withMotionAllowed } from './_lib/motion';
+
 const SAMPLE_IMAGE = 'https://i.imgur.com/4euOws2.jpg';
 
 const svgDataUri = (body: string) =>
@@ -132,6 +134,7 @@ export const ShiftClickQueues: Story = {
 };
 
 export const AnimatedWithPoster: Story = {
+  decorators: [withMotionAllowed],
   parameters: {
     docs: {
       description: {
