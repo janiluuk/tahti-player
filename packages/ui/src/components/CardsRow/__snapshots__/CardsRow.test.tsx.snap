@@ -10,20 +10,20 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
     class="flex min-h-10 flex-wrap items-center justify-between gap-x-4 gap-y-2"
   >
     <div
-      class="flex items-center gap-2"
+      class="flex min-w-0 items-center gap-2"
     >
       <h2
-        class="text-foreground text-lg font-bold whitespace-nowrap"
+        class="text-foreground min-w-0 truncate text-lg font-bold"
       >
         Top Albums
       </h2>
     </div>
     <div
-      class="flex flex-1 items-center justify-end gap-2 min-w-64"
+      class="flex flex-1 items-center justify-end gap-2 min-w-0 basis-full sm:min-w-64 sm:basis-auto"
       data-testid="cards-row-controls"
     >
       <div
-        class="flex w-full flex-col gap-2"
+        class="flex w-full flex-col gap-2 min-w-0 flex-1"
       >
         <div
           class="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2"
@@ -71,7 +71,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         </div>
       </div>
       <div
-        class="flex items-center gap-2"
+        class="hidden shrink-0 items-center gap-2 sm:flex"
       >
         <div>
           <button
@@ -131,7 +131,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         </div>
       </div>
       <div
-        class="border-border flex items-center rounded-md border"
+        class="border-border flex shrink-0 items-center rounded-md border"
         data-testid="cards-row-zoom"
       >
         <div>
