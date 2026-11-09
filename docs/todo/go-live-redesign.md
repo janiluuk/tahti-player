@@ -1,6 +1,6 @@
 # Go Live redesign (Studio → Broadcast → Go live)
 
-**Status:** open
+**Status:** partial
 
 Discovery plan approved with the decisions below (2026-11-10). Brief: "Tähti Go Live Redesign - Agent Instructions" (6 Nov 2026).
 
@@ -73,6 +73,6 @@ Vitest + Testing Library (jsdom), Storybook 10 play tests in Playwright, Playwri
 ## Work order
 
 1. tahti-org PR: pre-session show-info draft, `PRIVATE` visibility, settable `artworkUrl`, reconnecting state (+ OpenAPI / api-client).
-2. Tokens + `color-scheme` + contrast tests; `Stepper` and `Skeleton` primitives.
+2. ~~Tokens + `color-scheme` + contrast tests; `Stepper` and `Skeleton` primitives.~~ Shipped (`feat/go-live-tokens`): use `border-subtle`, `foreground-disabled`, `focus-ring`, `status-offline` and `Stepper` / `Skeleton` from `@tahti-player/ui` in steps 3-4.
 3. Navigation quiet styles + merges + redirects.
 4. Go live page: header, status chip, stepper, Show info card with autosave.

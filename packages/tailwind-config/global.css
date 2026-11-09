@@ -29,7 +29,12 @@
 
   --color-border: var(--border);
   --color-border-input: var(--border-input);
+  --color-border-subtle: var(--border-subtle);
   --color-ring: var(--ring);
+  --color-focus-ring: var(--focus-ring);
+
+  --color-foreground-disabled: var(--foreground-disabled);
+  --color-status-offline: var(--status-offline);
 
   --color-accent-green: var(--accent-green);
   --color-accent-yellow: var(--accent-yellow);
@@ -81,6 +86,8 @@
 }
 
 :root {
+  color-scheme: light;
+
   /* Core Backgrounds */
   --background: oklch(100% 0 0);
   --background-secondary: oklch(100% 0 0);
@@ -90,6 +97,8 @@
   --foreground: oklch(0.28 0.12 260);
   --foreground-secondary: oklch(0.48 0.08 5);
   --foreground-input: var(--foreground);
+  /* Disabled labels: legible (about 3:1) but clearly not actionable. */
+  --foreground-disabled: oklch(0.58 0.02 5);
 
   /* Interactive Elements */
   --primary: oklch(0.78 0.15 20);
@@ -110,7 +119,14 @@
   /* Borders & Outlines */
   --border: oklch(0% 0 0);
   --border-input: var(--border);
+  /* Dividers and header/sidebar edges; decorative, no contrast floor. */
+  --border-subtle: oklch(0.9 0.015 5);
   --ring: oklch(100% 0 0);
+  /* Keyboard focus outline: 3:1 or better against the page and raised
+     surfaces (WCAG 1.4.11), checked in packages/themes contrast tests. */
+  --focus-ring: var(--primary-strong);
+  /* Offline / idle status marks: neutral, 3:1 or better on the page. */
+  --status-offline: oklch(0.52 0.015 5);
 
   /* Accent Colors */
   --accent-green: oklch(0.88 0.13 145);
@@ -220,6 +236,8 @@
 }
 
 [data-theme='dark'] {
+  color-scheme: dark;
+
   --background: oklch(0.22 0.03 5);
   --background-secondary: oklch(0.27 0.035 5);
   --background-input: oklch(0.15 0.02 5);
@@ -227,6 +245,7 @@
   --foreground: oklch(0.9 0.008 5);
   --foreground-secondary: oklch(0.78 0.1 5);
   --foreground-input: var(--foreground);
+  --foreground-disabled: oklch(0.58 0.02 5);
 
   --primary: oklch(0.66 0.1 5);
   --primary-foreground: oklch(0.22 0.03 5);
@@ -235,7 +254,9 @@
   --secondary-foreground: oklch(0.95 0.01 5);
 
   --border: oklch(0.48 0.04 5);
-  --border-input: var(--border);
+  --border-input: oklch(0.5 0.04 5);
+  --border-subtle: oklch(0.32 0.03 5);
+  --status-offline: oklch(0.66 0.015 5);
 
   --accent-green: oklch(0.72 0.14 145);
   --accent-yellow: oklch(0.78 0.14 95);

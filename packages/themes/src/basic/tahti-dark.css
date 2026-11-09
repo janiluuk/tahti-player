@@ -5,6 +5,8 @@
  * regardless of the separate [data-theme] light/dark toggle, since the
  * pitch has no light variant. */
 :root[data-theme-id='nuclear:tahti-dark'] {
+  color-scheme: dark;
+
   /* Core Backgrounds — ink / ink-2 / panel */
   --background: oklch(0.1663 0.0402 274.37);
   --background-secondary: oklch(0.2264 0.0552 275.84);
@@ -14,6 +16,7 @@
   --foreground: oklch(0.976 0.007 268.55);
   --foreground-secondary: oklch(0.7359 0.055 275.54);
   --foreground-input: oklch(0.976 0.007 268.55);
+  --foreground-disabled: oklch(0.58 0.03 275);
 
   /* Interactive surfaces — amber marks action; teal marks secondary signal. */
   --primary: oklch(0.68 0.16 55);
@@ -23,8 +26,12 @@
 
   /* Borders & focus ring — line / amber */
   --border: oklch(0.3482 0.0705 275.74);
-  --border-input: oklch(0.3482 0.0705 275.74);
+  /* Lighter than --border so input outlines reach 3:1 on the input fill. */
+  --border-input: oklch(0.51 0.0705 275.74);
+  --border-subtle: var(--border);
   --ring: oklch(0.8131 0.165 75.04);
+  --focus-ring: var(--primary-strong);
+  --status-offline: oklch(0.66 0.03 275);
 
   /* Accents — teal secondary/signal, coral danger, violet data,
      amber-dark + amber cover yellow/orange so nothing outside this

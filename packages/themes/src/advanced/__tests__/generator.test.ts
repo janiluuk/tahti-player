@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import {
   colourLightness,
+  colourScheme,
   generateAdvancedThemeCSS,
   withDerivedTokens,
 } from '../../advanced/generator';
@@ -22,8 +23,8 @@ describe('generateAdvancedThemeCSS', () => {
     });
 
     expect(css).toMatchInlineSnapshot(`
-      "html:root{--background: oklch(98% 0 0); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background);}
-      html[data-theme='dark']{--background: oklch(40% 0.03 277); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background);}"
+      "html:root{--background: oklch(98% 0 0); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background); --focus-ring: oklch(0 0 0); color-scheme: light;}
+      html[data-theme='dark']{--background: oklch(40% 0.03 277); --primary: oklch(70% 0.1 250); --primary-strong: var(--primary); --background-input: var(--background); --focus-ring: var(--primary); color-scheme: dark;}"
     `);
   });
 
@@ -86,5 +87,60 @@ describe('generateAdvancedThemeCSS', () => {
     expect(colourLightness('#ffffff')).toBeCloseTo(1);
     expect(colourLightness('#000')).toBeCloseTo(0);
     expect(colourLightness('var(--x)')).toBeNull();
+  });
+
+  it('uses the primary as focus ring only where it stands out', () => {
+    const surfaces = {
+      background: '#ffffff',
+      'background-secondary': '#f4f4f4',
+      foreground: '#111111',
+    };
+    expect(
+      withDerivedTokens({ ...surfaces, primary: '#1d4ed8' })['focus-ring'],
+    ).toBe('var(--primary)');
+    expect(
+      withDerivedTokens({ ...surfaces, primary: '#fde68a' })['focus-ring'],
+    ).toBe('var(--foreground)');
+  });
+
+  it('derives disabled and offline colours that read at 3:1', () => {
+    const vars = withDerivedTokens({
+      background: '#1e1e1e',
+      'background-secondary': '#2a2a2a',
+      foreground: '#f0f0f0',
+      'foreground-secondary': '#555555',
+    });
+    expect(vars['status-offline']).toMatch(
+      /^color-mix\(in oklch, var\(--foreground\) \d+%, var\(--background\)\)$/,
+    );
+    expect(vars['foreground-disabled']).toBe(vars['status-offline']);
+    expect(
+      withDerivedTokens({ ...vars, 'status-offline': '#888888' })[
+        'status-offline'
+      ],
+    ).toBe('#888888');
+    expect(
+      withDerivedTokens({
+        background: '#1e1e1e',
+        foreground: '#f0f0f0',
+        'foreground-secondary': '#b0b0b0',
+      })['status-offline'],
+    ).toBe('var(--foreground-secondary)');
+  });
+
+  it('sets color-scheme from the block background', () => {
+    expect(colourScheme({ background: '#101010' })).toBe('dark');
+    expect(colourScheme({ background: 'oklch(0.97 0.01 90)' })).toBe('light');
+    expect(colourScheme({ primary: '#101010' })).toBeNull();
+    expect(
+      colourScheme({ background: 'var(--surface)' }, { surface: '#000000' }),
+    ).toBe('dark');
+    expect(
+      generateAdvancedThemeCSS({
+        version: 1,
+        name: 'Always dark',
+        vars: { background: '#101010' },
+      }),
+    ).toContain('color-scheme: dark;');
   });
 });

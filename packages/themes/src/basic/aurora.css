@@ -1,4 +1,8 @@
 :root[data-theme-id='nuclear:aurora'] {
+  --border-subtle: oklch(0.88 0.02 305);
+  --foreground-disabled: oklch(0.58 0.02 305);
+  --focus-ring: var(--primary-strong);
+  --status-offline: oklch(0.52 0.015 305);
   --background: oklch(0.98 0.01 340);
   --primary: oklch(0.74 0.15 305);
   --secondary: oklch(0.91 0.06 305);
@@ -12,6 +16,11 @@
 }
 
 :root[data-theme-id='nuclear:aurora'][data-theme='dark'] {
+  --border-input: oklch(0.5 0.04 305);
+  --border-subtle: oklch(0.32 0.03 305);
+  --foreground-disabled: oklch(0.58 0.02 305);
+  --focus-ring: var(--primary-strong);
+  --status-offline: oklch(0.66 0.015 305);
   --background: oklch(0.22 0.03 305);
   --background-secondary: oklch(0.27 0.035 305);
   --background-input: oklch(0.15 0.02 305);
