@@ -105,7 +105,7 @@ test('listener: adds and removes a Latest News source', async ({ page }) => {
   });
   await open(page, '/');
   const latest = page.getByTestId('latest-news');
-  await expect(latest.getByTestId('news-carousel-item').first()).toBeVisible();
+  await expect(latest.getByTestId('news-story').first()).toBeVisible();
   await latest.getByRole('button', { name: /Sources/ }).click();
   const sources = page.getByRole('dialog', { name: 'News sources' });
   await sources.getByRole('button', { name: 'Add CDM' }).click();
