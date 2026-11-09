@@ -136,9 +136,20 @@ export const AgmTab: Story = {
         canvas.getByRole('heading', { name: 'Agenda builder' }),
       ).toBeVisible(),
     );
+    await expect(canvas.getByText('Call to order')).toBeVisible();
+    await expect(
+      canvas.queryByRole('textbox', { name: 'Agenda item 1' }),
+    ).toBeNull();
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Edit item 1: Call to order' }),
+    );
     await expect(
       canvas.getByRole('textbox', { name: 'Agenda item 1' }),
-    ).toBeVisible();
+    ).toHaveFocus();
+    await userEvent.keyboard('{Escape}');
+    await expect(
+      canvas.queryByRole('textbox', { name: 'Agenda item 1' }),
+    ).toBeNull();
     await expect(
       canvas.getByRole('heading', { name: 'Motions & proposals' }),
     ).toBeVisible();

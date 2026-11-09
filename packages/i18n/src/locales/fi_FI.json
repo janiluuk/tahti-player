@@ -9042,7 +9042,10 @@
       "moveUpItemlabel": "Siirrä ylös: {{itemLabel}}",
       "moveDownItemlabel": "Siirrä alas: {{itemLabel}}",
       "attendanceAttendancecountRecorded": "Läsnäolo ({{attendanceCount}} kirjattu)",
-      "editStateOfTitle": "Muokkaa tilaa: {{title}}"
+      "editStateOfTitle": "Muokkaa tilaa: {{title}}",
+      "agendaItemField": "Esityslistan kohta {{position}}",
+      "editAgendaItem": "Muokkaa kohtaa {{position}}: {{itemLabel}}",
+      "removeAgendaItem": "Poista kohta {{position}}: {{itemLabel}}"
     },
     "playlistsBrowserLabels": {
       "playName": "Soita: {{name}}",

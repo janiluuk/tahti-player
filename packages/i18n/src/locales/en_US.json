@@ -9042,7 +9042,10 @@
       "moveUpItemlabel": "Move up: {{itemLabel}}",
       "moveDownItemlabel": "Move down: {{itemLabel}}",
       "attendanceAttendancecountRecorded": "Attendance ({{attendanceCount}} recorded)",
-      "editStateOfTitle": "Edit state of {{title}}"
+      "editStateOfTitle": "Edit state of {{title}}",
+      "agendaItemField": "Agenda item {{position}}",
+      "editAgendaItem": "Edit item {{position}}: {{itemLabel}}",
+      "removeAgendaItem": "Remove item {{position}}: {{itemLabel}}"
     },
     "playlistsBrowserLabels": {
       "playName": "Play {{name}}",
