@@ -10279,7 +10279,12 @@
       "status": "Tila",
       "shareOnPublish": "Ilmoita julkaistaessa",
       "shareConnectHint": "Yhdistä Mastodon tai Bluesky, niin voit ilmoittaa tapahtumista niissä.",
-      "shareConnectLink": "Asetukset → Artisti"
+      "shareConnectLink": "Asetukset → Artisti",
+      "shares": "Ilmoitukset",
+      "sharePENDING": "Lähetetään",
+      "shareSENT": "Julkaistu",
+      "shareFAILED": "Epäonnistui",
+      "retryShare": "Yritä uudelleen"
     }
   },
   "studioEditor": {

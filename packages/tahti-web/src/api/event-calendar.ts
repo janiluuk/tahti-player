@@ -329,3 +329,83 @@ export function googleCalendarUrl(event: {
   });
   return `https://calendar.google.com/calendar/render?${query.toString()}`;
 }
+
+export type EventShare = {
+  id: string;
+  platform: EventShareTarget;
+  state: 'PENDING' | 'SENT' | 'FAILED';
+  error: string | null;
+  createdAt: string;
+  sentAt: string | null;
+};
+
+const mockShares = new Map<string, EventShare[]>([
+  [
+    'evt-mock-2',
+    [
+      {
+        id: 'share-mock-1',
+        platform: 'MASTODON',
+        state: 'SENT',
+        error: null,
+        createdAt: '2026-08-01T10:00:00.000Z',
+        sentAt: '2026-08-01T10:01:00.000Z',
+      },
+      {
+        id: 'share-mock-2',
+        platform: 'BLUESKY',
+        state: 'FAILED',
+        error: 'Bluesky session expired',
+        createdAt: '2026-08-01T10:00:00.000Z',
+        sentAt: null,
+      },
+    ],
+  ],
+]);
+
+/** Where an event was announced and how it went
+ * (`GET /api/me/events/:id/shares`). */
+export async function fetchEventShares(id: string): Promise<{
+  data: EventShare[];
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: (mockShares.get(id) ?? []).map((share) => ({ ...share })),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<EventShare[]>(
+      `/api/me/events/${encodeURIComponent(id)}/shares`,
+    );
+    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+/** Send a failed announcement again. */
+export async function retryEventShare(
+  eventId: string,
+  shareId: string,
+): Promise<Result<EventShare>> {
+  if (isForceMock()) {
+    const share = mockShares.get(eventId)?.find((row) => row.id === shareId);
+    if (!share) {
+      return { ok: false, error: 'Share not found' };
+    }
+    share.state = 'PENDING';
+    share.error = null;
+    return { ok: true, data: { ...share } };
+  }
+  try {
+    const { data } = await requestJson<EventShare>(
+      `/api/me/events/${encodeURIComponent(eventId)}/shares/${encodeURIComponent(shareId)}/retry`,
+      { method: 'POST' },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not retry') };
+  }
+}

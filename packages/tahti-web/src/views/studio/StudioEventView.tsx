@@ -25,6 +25,7 @@ import { EventParticipantChips } from '../../components/events/EventParticipantC
 import { EventParticipantsEditor } from '../../components/events/EventParticipantsEditor';
 import { EventPreviewDialog } from '../../components/events/EventPreviewDialog';
 import { EventPublishDialog } from '../../components/events/EventPublishDialog';
+import { EventSharesPanel } from '../../components/events/EventSharesPanel';
 import { EventStatusBadge } from '../../components/events/EventStatusBadge';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
@@ -98,6 +99,9 @@ export function StudioEventView({ eventId }: { eventId: string }) {
                   ) : null
                 }
               />
+              <div className="mt-3">
+                <EventSharesPanel eventId={event.id} />
+              </div>
               <div className="mt-3 flex flex-wrap gap-2">
                 <Button
                   size="sm"
