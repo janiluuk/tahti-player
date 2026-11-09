@@ -54,6 +54,7 @@ export type SnapshotFetchState<T> = {
   refreshing: boolean;
   updatedAt: number | null;
   retry: () => void;
+  mutate: (update: (current: T | null) => T) => void;
 };
 
 /** Stale-while-revalidate for a slow page: renders the last successful
@@ -75,8 +76,16 @@ export function useSnapshotFetch<T>(
   const loadRef = useRef(load);
   loadRef.current = load;
 
+  const shownKey = useRef(key);
+
   useEffect(() => {
     let cancelled = false;
+    if (shownKey.current !== key) {
+      shownKey.current = key;
+      const saved = readSnapshot<T>(key);
+      setData(saved?.value ?? null);
+      setUpdatedAt(saved?.at ?? null);
+    }
     setPending(true);
     loadRef
       .current()
@@ -109,5 +118,12 @@ export function useSnapshotFetch<T>(
     refreshing: pending && data !== null,
     updatedAt,
     retry: () => setAttempt((n) => n + 1),
+    mutate: (update) => {
+      setData((current) => {
+        const next = update(current);
+        writeSnapshot(key, next);
+        return next;
+      });
+    },
   };
 }
