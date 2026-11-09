@@ -1,6 +1,7 @@
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, CopyButton, Tooltip } from '@tahti-player/ui';
 
 // System rule: any field displaying a value meant to be copied (URLs,
@@ -22,6 +23,7 @@ export function CopyField({
    * host, mount point). */
   maskable?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [revealed, setRevealed] = useState(!maskable);
   return (
     <div className="border-border bg-background-secondary flex flex-col gap-1 rounded-lg border p-3">
@@ -52,7 +54,7 @@ export function CopyField({
           text={value}
           variant="secondary"
           toastMessage={`${label} copied.`}
-          aria-label={`Copy ${label}`}
+          aria-label={t('copyFieldLabels.copyLabel', { label })}
         />
         {action}
       </div>

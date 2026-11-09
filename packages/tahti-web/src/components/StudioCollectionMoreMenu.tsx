@@ -9,6 +9,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Popover } from '@tahti-player/ui';
 
 import { deleteStudioCollection, patchStudioCollection } from '../api/studio';
@@ -33,6 +34,7 @@ export function StudioCollectionMoreMenu({
   /** Shows a public/private switch and receives the saved collection. */
   onChanged?: (col: StudioCollection) => void;
 }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -158,8 +160,13 @@ export function StudioCollectionMoreMenu({
       </Popover>
       <ConfirmDialog
         isOpen={confirmOpen}
-        title={`Delete "${col.name}"?`}
-        description={`This permanently deletes the ${kindLabel} and its track list. This cannot be undone.`}
+        title={t('studioCollectionMoreMenuLabels.deleteName', {
+          name: col.name,
+        })}
+        description={t(
+          'studioCollectionMoreMenuLabels.thisPermanentlyDeletesTheKindlabel',
+          { kindLabel },
+        )}
         confirmLabel={deleting ? 'Deleting…' : 'Delete'}
         destructive
         onCancel={() => setConfirmOpen(false)}

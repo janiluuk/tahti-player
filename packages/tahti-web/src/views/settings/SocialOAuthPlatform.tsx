@@ -180,7 +180,9 @@ export function SocialOAuthPlatform({
       <ConfirmDialog
         destructive
         isOpen={confirmDisconnect}
-        title={`Disconnect ${copy.name}?`}
+        title={t('socialOAuthPlatformLabels.disconnectName', {
+          name: copy.name,
+        })}
         description={t('socialOAuth.tahtiForgetsTheSavedSign')}
         confirmLabel={t('socialOAuth.disconnect')}
         onCancel={() => setConfirmDisconnect(false)}

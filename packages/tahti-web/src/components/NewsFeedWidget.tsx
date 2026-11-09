@@ -62,11 +62,18 @@ export function NewsFeedWidget({
   return (
     <div className="relative" data-testid="news-feed-widget">
       {onRemove ? (
-        <Tooltip content={`Remove ${instance.label}`} side="top">
+        <Tooltip
+          content={t('newsFeedWidgetLabels.removeLabel', {
+            label: instance.label,
+          })}
+          side="top"
+        >
           <Button
             size="icon-sm"
             variant="text"
-            aria-label={`Remove ${instance.label}`}
+            aria-label={t('newsFeedWidgetLabels.removeLabel', {
+              label: instance.label,
+            })}
             onClick={onRemove}
             className="absolute top-0 right-0 z-10"
           >

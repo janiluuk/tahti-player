@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Meter } from '@tahti-player/ui';
 
 export function ReleaseTrackUploadProgress({
@@ -9,13 +10,17 @@ export function ReleaseTrackUploadProgress({
   progress: number;
   onCancel: () => void;
 }) {
+  const { t } = useTranslation('web');
   const pct = Math.round(progress * 100);
   return (
     <div className="flex w-full items-center gap-2 text-xs">
       <Meter
         value={pct}
         className="flex-1"
-        aria-label={`Uploading ${title}, ${pct}%`}
+        aria-label={t('releaseTrackUploadProgressLabels.uploadingTitlePct', {
+          title,
+          pct,
+        })}
       />
       <span className="text-foreground-secondary w-9 text-right tabular-nums">
         {pct}%

@@ -83,11 +83,18 @@ export function useListenerWidgetBlocks(): {
         <CardGrid>
           {savedBrowserStations.map((station) => (
             <div key={station.id} className="group relative w-fit">
-              <Tooltip content={`Remove ${station.name}`} side="top">
+              <Tooltip
+                content={t('listenerWidgetsSectionLabels.removeName', {
+                  name: station.name,
+                })}
+                side="top"
+              >
                 <Button
                   size="icon-sm"
                   variant="text"
-                  aria-label={`Remove ${station.name}`}
+                  aria-label={t('listenerWidgetsSectionLabels.removeName', {
+                    name: station.name,
+                  })}
                   onClick={() =>
                     setPendingRemoval({
                       kind: 'browser',

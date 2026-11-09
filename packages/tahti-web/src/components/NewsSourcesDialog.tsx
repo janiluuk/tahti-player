@@ -114,11 +114,18 @@ export function NewsSourcesDialog({
                       {hostOf(source.input)}
                     </span>
                   </span>
-                  <Tooltip content={`Remove ${source.label}`} side="top">
+                  <Tooltip
+                    content={t('newsSourcesDialogLabels.removeLabel', {
+                      label: source.label,
+                    })}
+                    side="top"
+                  >
                     <Button
                       size="icon-sm"
                       variant="text"
-                      aria-label={`Remove ${source.label}`}
+                      aria-label={t('newsSourcesDialogLabels.removeLabel', {
+                        label: source.label,
+                      })}
                       onClick={() => removeInstance(source.id)}
                     >
                       <TrashIcon

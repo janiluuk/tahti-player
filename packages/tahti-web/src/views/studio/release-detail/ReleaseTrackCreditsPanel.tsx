@@ -146,7 +146,9 @@ function TrackCreditsRow({
         <SaveButton
           saving={saving}
           label={t('releaseTrackCreditsPanel.saveCredits')}
-          aria-label={`Save credits for ${track.title}`}
+          aria-label={t('releaseTrackCreditsPanelLabels.saveCreditsForTitle', {
+            title: track.title,
+          })}
           onClick={() => void save()}
         />
       </div>

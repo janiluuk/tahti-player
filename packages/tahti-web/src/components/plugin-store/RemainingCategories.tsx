@@ -112,7 +112,10 @@ export function MulticastCategory() {
                       <Button
                         size="icon-sm"
                         variant="secondary"
-                        aria-label={`Configure ${destination.label}`}
+                        aria-label={t(
+                          'remainingCategoriesLabels.configureLabel',
+                          { label: destination.label },
+                        )}
                         onClick={() =>
                           setConfiguring({
                             provider: destination.id,
@@ -132,7 +135,10 @@ export function MulticastCategory() {
                           size="icon-sm"
                           variant="text"
                           intent="danger"
-                          aria-label={`Remove ${destination.label}`}
+                          aria-label={t(
+                            'remainingCategoriesLabels.removeLabel',
+                            { label: destination.label },
+                          )}
                           onClick={() => setPendingRemove(target)}
                         >
                           <XIcon size={15} aria-hidden />

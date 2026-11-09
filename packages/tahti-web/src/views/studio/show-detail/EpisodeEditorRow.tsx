@@ -72,7 +72,9 @@ export function EpisodeEditorRow({
           {t('episodeEditor.statistics')}
         </Button>
         <EditIconButton
-          label={`Edit ${episode.title}`}
+          label={t('episodeEditorRowLabels.editTitle', {
+            title: episode.title,
+          })}
           editing={editing}
           variant={editing ? undefined : 'text'}
           onClick={() => {

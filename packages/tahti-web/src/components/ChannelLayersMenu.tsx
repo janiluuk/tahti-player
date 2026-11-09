@@ -272,7 +272,9 @@ export function ChannelLayersMenu({
                       size="icon-sm"
                       variant="text"
                       className="text-foreground-secondary hover:text-foreground w-auto cursor-grab px-0.5 active:cursor-grabbing"
-                      aria-label={`Drag ${meta.label}`}
+                      aria-label={t('channelLayersMenuLabels.dragLabel', {
+                        label: meta.label,
+                      })}
                     >
                       <GripVerticalIcon size={14} />
                     </Button>
@@ -348,7 +350,10 @@ export function ChannelLayersMenu({
                       type="button"
                       size="icon-sm"
                       variant="text"
-                      aria-label={`Remove ${meta.label} from page`}
+                      aria-label={t(
+                        'channelLayersMenuLabels.removeLabelFromPage',
+                        { label: meta.label },
+                      )}
                       onClick={() => onRemove(item.id)}
                     >
                       <Trash2Icon className="text-accent-red" size={14} />

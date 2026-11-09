@@ -35,6 +35,7 @@ function TicketReplyForm({
   ticket: MySupportTicket;
   onSent: (reply: MySupportTicketReply) => void;
 }) {
+  const { t } = useTranslation('web');
   const [body, setBody] = useState('');
   const [sending, setSending] = useState(false);
 
@@ -62,7 +63,9 @@ function TicketReplyForm({
     >
       <Textarea
         submitOnModEnter
-        aria-label={`Reply to ${ticket.subject}`}
+        aria-label={t('mySupportTicketsLabels.replyToSubject', {
+          subject: ticket.subject,
+        })}
         placeholder={
           ticket.status === 'RESOLVED'
             ? 'Still need help? Replying reopens this request.'
@@ -213,7 +216,9 @@ export function MySupportTickets({
                   <PageEmpty title={t('supportTickets.noReply')} />
                 ) : (
                   <ul
-                    aria-label={`Replies to ${ticket.subject}`}
+                    aria-label={t('mySupportTicketsLabels.repliesToSubject', {
+                      subject: ticket.subject,
+                    })}
                     className="flex flex-col gap-2"
                   >
                     {ticket.replies.map((reply) => (

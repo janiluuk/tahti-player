@@ -359,7 +359,9 @@ function ShowRow({
         params={{ id: show.id }}
         size="sm"
         variant="secondary"
-        aria-label={`Manage ${show.title}`}
+        aria-label={t('studioShowsViewLabels.manageTitle', {
+          title: show.title,
+        })}
       >
         {t('studioShowsView.manage')}
       </ButtonLink>

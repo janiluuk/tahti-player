@@ -74,7 +74,9 @@ export function ElectionCandidates({
         size="sm"
         variant="secondary"
         className="w-fit"
-        aria-label={`Candidates: ${election.title}`}
+        aria-label={t('electionCandidatesLabels.candidatesTitle', {
+          title: election.title,
+        })}
         onClick={() => void load()}
       >
         {t('electionCandidates.candidates')}
@@ -90,7 +92,9 @@ export function ElectionCandidates({
         </p>
       ) : (
         <ul
-          aria-label={`Candidates in ${election.title}`}
+          aria-label={t('electionCandidatesLabels.candidatesInTitle', {
+            title: election.title,
+          })}
           className="flex flex-col gap-1"
         >
           {candidates.map((candidate) => (

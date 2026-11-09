@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { BottomBar, cn, Loader, Tooltip } from '@tahti-player/ui';
 
 import { fetchConversations } from '../api/messages';
@@ -64,6 +65,7 @@ export function StatusBarContent({
   localTrackCount,
   className,
 }: StatusBarContentProps) {
+  const { t } = useTranslation('web');
   const soundsLabel = `${soundCount.toLocaleString()} track${soundCount === 1 ? '' : 's'}`;
   const notificationsLabel =
     unreadNotifications === 0
@@ -122,7 +124,10 @@ export function StatusBarContent({
         </Tooltip>
         {storageUsedLabel ? (
           <Tooltip
-            content={`Cloud storage used: ${storageUsedLabel}`}
+            content={t(
+              'connectedStatusBarLabels.cloudStorageUsedStorageusedlabel',
+              { storageUsedLabel },
+            )}
             side="top"
           >
             <Link
@@ -130,7 +135,10 @@ export function StatusBarContent({
               params={{ section: 'account' }}
               className="text-foreground-secondary hover:text-foreground hover:bg-background-secondary inline-flex items-center gap-1.5 rounded-md px-1.5 py-1"
               data-testid="status-bar-storage"
-              aria-label={`Cloud storage used: ${storageUsedLabel}`}
+              aria-label={t(
+                'connectedStatusBarLabels.cloudStorageUsedStorageusedlabel',
+                { storageUsedLabel },
+              )}
             >
               <HardDriveIcon size={16} aria-hidden />
               <span className="tabular-nums">{storageUsedLabel}</span>

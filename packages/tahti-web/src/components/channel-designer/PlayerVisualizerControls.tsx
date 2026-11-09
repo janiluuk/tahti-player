@@ -112,13 +112,20 @@ export function PlayerVisualizerControls({
                 <ChevronRightIcon size={16} aria-hidden />
               </Button>
             </Tooltip>
-            <Tooltip content={`Configure ${label}`} side="top">
+            <Tooltip
+              content={t('playerVisualizerControlsLabels.configureLabel', {
+                label,
+              })}
+              side="top"
+            >
               <Button
                 size="icon-sm"
                 variant={showSettings ? 'default' : 'text'}
                 disabled={!visualizerEnabled}
                 aria-pressed={showSettings}
-                aria-label={`Configure ${label}`}
+                aria-label={t('playerVisualizerControlsLabels.configureLabel', {
+                  label,
+                })}
                 onClick={onToggleSettings}
               >
                 <SettingsIcon size={15} aria-hidden />

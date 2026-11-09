@@ -58,7 +58,9 @@ export function StudioEventView({ eventId }: { eventId: string }) {
               <EditIconLink
                 to="/studio/events/$eventId/edit"
                 params={{ eventId: event.id }}
-                label={`Edit ${event.title}`}
+                label={t('studioEventViewLabels.editTitle', {
+                  title: event.title,
+                })}
               />
             }
           >

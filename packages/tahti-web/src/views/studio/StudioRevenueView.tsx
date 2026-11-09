@@ -311,7 +311,11 @@ export function StudioRevenueView() {
               ) : null}
 
               {estimate && (
-                <StudioPanel title={`Grant estimate (${estimate.year})`}>
+                <StudioPanel
+                  title={t('studioRevenueViewLabels.grantEstimateYear', {
+                    year: estimate.year,
+                  })}
+                >
                   <StatNumber className="block">
                     {euros(estimate.estimateCents)}
                   </StatNumber>
