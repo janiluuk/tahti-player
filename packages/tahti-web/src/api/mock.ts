@@ -17,6 +17,7 @@ import {
   getMockVisualPreset,
   getMockVisualSettingsJson,
 } from './channel-design';
+import { mockVisual } from './channel-design/mock';
 import { mockChatStoreMessages } from './mock-chat-store';
 import { isMockChannelLive } from './mock-live-session';
 import { mockFixture } from './mock-overrides';
@@ -492,6 +493,14 @@ function buildMockChannel(slug: string): PublicChannel {
   const ownColorScheme = getMockChannelColorScheme();
   return {
     slug,
+    ...(usesOwnDesign
+      ? {
+          topBarText: mockVisual.topBarText,
+          showSiteSidebar: mockVisual.showSiteSidebar,
+          showSiteBottomBar: mockVisual.showSiteBottomBar,
+          showSiteHeader: mockVisual.showSiteHeader,
+        }
+      : {}),
     state: live ? 'LIVE' : 'OFFLINE',
     channelKind: isRadio ? 'RADIO' : 'ARTIST',
     nextBroadcastNote: isRadio ? 'Weekly shows, all week long' : null,

@@ -65,6 +65,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Artist/ArtistLikes` | `tahti-web/ArtistLikes.stories.tsx` |
 | `Tahti/Artist/ArtistNews` | `tahti-web/ArtistNews.stories.tsx` |
 | `Tahti/Artist/ArtistReposts` | `tahti-web/ArtistReposts.stories.tsx` |
+| `Tahti/Channel/ArtistSiteHeader` | `tahti-web/ArtistSiteHeader.stories.tsx` |
 | `Tahti/Artist/ArtistSupportNote` | `tahti-web/ArtistSupportNote.stories.tsx` |
 | `Tahti/Artist/ArtistUpcomingEvents` | `tahti-web/ArtistUpcomingEvents.stories.tsx` |
 | `Tahti/Artist/ArtistView` | `tahti-web/ArtistView.stories.tsx` |

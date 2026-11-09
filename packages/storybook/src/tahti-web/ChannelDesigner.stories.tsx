@@ -140,9 +140,9 @@ export const Full: Story = {
   render: (args) => <DesignerWithRail {...args} />,
   play: async ({ canvasElement, args }) => {
     const preview = await findPreview(canvasElement);
-    await expect(
-      preview.getByTestId('channel-backdrop-top-bar'),
-    ).toHaveTextContent('New album "Polar Drift" out Friday');
+    await expect(preview.getByTestId('artist-site-header')).toHaveTextContent(
+      'New album "Polar Drift" out Friday',
+    );
     await expect(
       within(canvasElement).getByRole('link', { name: 'Open my channel →' }),
     ).toBeVisible();
@@ -281,9 +281,9 @@ export const FullEditLook: Story = {
     const topBar = canvas.getByLabelText('Top bar text');
     await userEvent.clear(topBar);
     await userEvent.type(topBar, 'Live tonight 21:00');
-    await expect(
-      preview.getByTestId('channel-backdrop-top-bar'),
-    ).toHaveTextContent('Live tonight 21:00');
+    await expect(preview.getByTestId('artist-site-header')).toHaveTextContent(
+      'Live tonight 21:00',
+    );
 
     await userEvent.click(save);
     await waitFor(() => expect(args.onSaved).toHaveBeenCalledOnce());
@@ -363,7 +363,7 @@ export const FullSavedLooks: Story = {
     await userEvent.click(resetDialog.getByRole('button', { name: 'Reset' }));
     await expectNoDialog(canvasElement);
     await waitFor(() =>
-      expect(preview.getByTestId('channel-backdrop-top-bar')).toHaveTextContent(
+      expect(preview.getByTestId('artist-site-header')).toHaveTextContent(
         'New album "Polar Drift" out Friday',
       ),
     );

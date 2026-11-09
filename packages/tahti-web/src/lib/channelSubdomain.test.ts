@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { subdomainEntry } from './channelSubdomain';
+import { isArtistSubdomainPage, subdomainEntry } from './channelSubdomain';
 
 const at = (href: string) => {
   const url = new URL(href);
@@ -62,5 +62,27 @@ describe('subdomainEntry', () => {
     ]) {
       expect(subdomainEntry(at(href)), href).toBeNull();
     }
+  });
+});
+
+describe('isArtistSubdomainPage', () => {
+  it('only applies to the matching artist page', () => {
+    expect(isArtistSubdomainPage('aino.tahti.live', '/channel/aino')).toBe(
+      true,
+    );
+    expect(isArtistSubdomainPage('aino.tahti.live', '/channel/aino/')).toBe(
+      true,
+    );
+    expect(isArtistSubdomainPage('aino.tahti.live', '/studio')).toBe(false);
+    expect(isArtistSubdomainPage('aino.tahti.live', '/channel/other')).toBe(
+      false,
+    );
+    expect(isArtistSubdomainPage('tahti.live', '/channel/aino')).toBe(false);
+    expect(isArtistSubdomainPage('beta.tahti.live', '/channel/beta')).toBe(
+      false,
+    );
+    expect(isArtistSubdomainPage('radio.tahti.live', '/channel/radio')).toBe(
+      false,
+    );
   });
 });

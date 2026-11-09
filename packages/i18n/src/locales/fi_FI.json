@@ -8137,7 +8137,12 @@
     },
     "topBarTextField": {
       "topBar": "Yläpalkki",
-      "topBarText": "Yläpalkin teksti"
+      "topBarText": "Yläpalkin teksti",
+      "artistWebsite": "Artistisivusto",
+      "artistWebsiteHint": "Valitse, mitkä sivuston palkit kävijät näkevät artist.tahti.live-sivullasi. Yläpalkki käyttää taustasi värejä. Linkki tahti.liveen pysyy aina saatavilla.",
+      "showSiteSidebar": "Näytä vasen navigaatio",
+      "showSiteBottomBar": "Näytä alapalkit",
+      "showSiteHeader": "Näytä yläpalkki"
     },
     "savedLooksRow": {
       "savedLooks": "Tallennetut ulkoasut",

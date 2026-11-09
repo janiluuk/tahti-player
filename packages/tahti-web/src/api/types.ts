@@ -86,6 +86,9 @@ export type PublicChannel = {
   topBarText?: string | null;
   /** Channel Designer page layout (JSON array); null = player default. */
   pageLayoutJson?: string | null;
+  showSiteSidebar?: boolean;
+  showSiteBottomBar?: boolean;
+  showSiteHeader?: boolean;
   /** Now-playing title/artist overlay layout — see
    * content/nowPlayingOverlayPresets.ts. Defaults to 'classic' when unset. */
   nowPlayingOverlayStyle?: string | null;

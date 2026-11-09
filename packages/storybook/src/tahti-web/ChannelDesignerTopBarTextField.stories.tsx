@@ -9,12 +9,22 @@ const meta: Meta<typeof TopBarTextField> = {
   component: TopBarTextField,
   parameters: { layout: 'padded' },
   tags: ['autodocs'],
-  args: { value: 'New album "Polar Drift" out Friday', onChange: fn() },
+  args: {
+    value: 'New album "Polar Drift" out Friday',
+    onChange: fn(),
+    onVisibilityChange: fn(),
+  },
   render: function Render(args) {
     const [value, setValue] = useState(args.value);
+    const [visibility, setVisibility] = useState(args.visibility ?? {});
     return (
       <div className="max-w-sm">
         <TopBarTextField
+          visibility={visibility}
+          onVisibilityChange={(next) => {
+            setVisibility((prev) => ({ ...prev, ...next }));
+            args.onVisibilityChange?.(next);
+          }}
           value={value}
           onChange={(next) => {
             setValue(next);
@@ -47,5 +57,22 @@ export const Empty: Story = {
     await expect(
       within(canvasElement).getByPlaceholderText('e.g. New album out Friday'),
     ).toHaveValue('');
+  },
+};
+
+export const Visibility: Story = {
+  play: async ({ canvasElement, args }) => {
+    const view = within(canvasElement);
+    const header = view.getByRole('switch', { name: 'Show top bar' });
+    await expect(header).toBeChecked();
+    await userEvent.click(header);
+    await expect(header).not.toBeChecked();
+    await expect(args.onVisibilityChange).toHaveBeenLastCalledWith({
+      showSiteHeader: false,
+    });
+    const sidebar = view.getByRole('switch', { name: 'Show left navigation' });
+    await expect(sidebar).not.toBeChecked();
+    await userEvent.click(sidebar);
+    await expect(sidebar).toBeChecked();
   },
 };

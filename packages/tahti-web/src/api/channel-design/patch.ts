@@ -10,6 +10,16 @@ export async function patchChannelVisual(
   if (isForceMock()) {
     setMockVisual({
       ...mockVisual,
+      ...(patch.showSiteSidebar !== undefined
+        ? { showSiteSidebar: patch.showSiteSidebar }
+        : {}),
+      ...(patch.showSiteBottomBar !== undefined
+        ? { showSiteBottomBar: patch.showSiteBottomBar }
+        : {}),
+      ...(patch.showSiteHeader !== undefined
+        ? { showSiteHeader: patch.showSiteHeader }
+        : {}),
+
       ...(patch.visualPreset !== undefined
         ? { visualPreset: patch.visualPreset }
         : {}),

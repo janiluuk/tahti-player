@@ -62,7 +62,7 @@ export const Gradient: Story = {
       name: 'Channel page preview',
     });
     await expect(
-      within(preview).getByTestId('channel-backdrop-top-bar'),
+      within(preview).getByTestId('artist-site-header'),
     ).toHaveTextContent('New album "Polar Drift" out Friday');
     await expect(
       within(preview).getByText('About Northern Lights'),

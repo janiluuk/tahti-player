@@ -397,6 +397,8 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       <>
         <TopBarTextField
           value={visual.topBarText ?? ''}
+          visibility={visual}
+          onVisibilityChange={applyLocal}
           onChange={(topBarText) => applyLocal({ topBarText })}
         />
         <BackdropPanel

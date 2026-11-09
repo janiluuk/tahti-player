@@ -5,6 +5,7 @@ import { Button } from '@tahti-player/ui';
 import type { PublicChannel } from '../../api/types';
 import { avatarPoster } from '../../lib/avatarPoster';
 import type { ChannelNavigationTab } from '../../lib/channelPageLayout';
+import { isArtistSubdomainPage } from '../../lib/channelSubdomain';
 import type { NormalizedColorScheme } from '../../lib/colorScheme';
 import { ChannelBackdropCard } from '../ChannelBackdropCard';
 
@@ -124,7 +125,14 @@ export function ChannelHeroBlock({
         subscribeVisible={subscribeVisible}
         showOffFeatures={showOffFeatures}
         headerStyle={channel.headerStyle ?? 'GRADIENT'}
-        topBarText={channel.topBarText}
+        topBarText={
+          isArtistSubdomainPage(
+            window.location.hostname,
+            window.location.pathname,
+          )
+            ? null
+            : channel.topBarText
+        }
         videoBackgroundUrl={channel.videoBackgroundUrl}
         muted={channelVideoMuted}
         accent={headerAccent}

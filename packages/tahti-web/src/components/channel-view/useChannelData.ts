@@ -22,6 +22,7 @@ import {
   type ChannelStorefront,
 } from '../../lib/channelStore';
 import { syncDocumentMetadata } from '../../lib/seo';
+import { usePublishChannelChrome } from '../../stores/channelChromeStore';
 
 export type ChannelSectionStatus = 'loading' | 'ready' | 'error';
 
@@ -93,6 +94,7 @@ const NO_BLOCKS: PublicChannelBlock[] = [];
  * behind a full-page spinner. */
 export function useChannelData(slug: string, refreshKey: number) {
   const [channel, setChannel] = useState<PublicChannel | null>(null);
+  usePublishChannelChrome(channel);
   const [artistSocialLinks, setArtistSocialLinks] = useState<
     Record<string, string>
   >({});

@@ -95,3 +95,22 @@ export function applySubdomainEntry(win: Window) {
     win.history.replaceState(win.history.state, '', entry.path);
   }
 }
+
+export function isArtistSubdomainPage(
+  hostname: string,
+  pathname: string,
+): boolean {
+  const host = hostname.toLowerCase();
+  const suffix = `.${ROOT_DOMAIN}`;
+  if (!host.endsWith(suffix)) {
+    return false;
+  }
+  const slug = host.slice(0, -suffix.length);
+  return (
+    /^[a-z0-9-]+$/.test(slug) &&
+    !NOT_CHANNELS.has(slug) &&
+    slug !== 'radio' &&
+    slug !== 'tahti-radio' &&
+    pathname.replace(/\/$/, '') === `/channel/${slug}`
+  );
+}

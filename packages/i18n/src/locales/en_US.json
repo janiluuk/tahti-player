@@ -8137,7 +8137,12 @@
     },
     "topBarTextField": {
       "topBar": "Top bar",
-      "topBarText": "Top bar text"
+      "topBarText": "Top bar text",
+      "artistWebsite": "Artist website",
+      "artistWebsiteHint": "On your artist.tahti.live page, choose which site bars visitors see. The top bar uses your backdrop colors. A tahti.live link stays available.",
+      "showSiteSidebar": "Show left navigation",
+      "showSiteBottomBar": "Show bottom bars",
+      "showSiteHeader": "Show top bar"
     },
     "savedLooksRow": {
       "savedLooks": "Saved looks",
