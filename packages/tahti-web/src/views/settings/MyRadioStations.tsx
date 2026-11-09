@@ -156,7 +156,9 @@ export function MyRadioStations({
                 <Button
                   size="sm"
                   variant="secondary"
-                  aria-label={`Remove ${station.name}`}
+                  aria-label={t('myRadioStationsLabels.removeName', {
+                    name: station.name,
+                  })}
                   disabled={removingId === station.id}
                   onClick={() => void remove(station.id)}
                 >

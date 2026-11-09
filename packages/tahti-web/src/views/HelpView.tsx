@@ -422,7 +422,7 @@ export function HelpArticleView({ slug }: { slug: string }) {
           headingLevel={1}
           icon="alert"
           title={t('empties.articleNotFound')}
-          description={`No help page for ${slug}.`}
+          description={t('helpViewLabels.noHelpPageForSlug', { slug })}
           action={
             <ButtonLink
               className="w-fit"

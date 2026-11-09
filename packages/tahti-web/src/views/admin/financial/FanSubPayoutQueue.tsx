@@ -145,7 +145,10 @@ export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
                       size="sm"
                       variant="secondary"
                       disabled={retrying !== null}
-                      aria-label={`Retry payout to ${payout.artistDisplayName}`}
+                      aria-label={t(
+                        'fanSubPayoutQueueLabels.retryPayoutToArtistdisplayname',
+                        { artistDisplayName: payout.artistDisplayName },
+                      )}
                       onClick={() => void retry(payout)}
                     >
                       <RotateCcwIcon size={14} aria-hidden className="mr-1.5" />

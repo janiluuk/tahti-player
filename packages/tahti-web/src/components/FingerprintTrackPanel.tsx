@@ -62,7 +62,9 @@ export function FingerprintTrackPanel({
   return (
     <div
       role="group"
-      aria-label={`Fingerprinting ${track.title}`}
+      aria-label={t('fingerprintTrackPanelLabels.fingerprintingTitle', {
+        title: track.title,
+      })}
       className="border-border flex flex-col gap-3 rounded-md border-(length:--border-width) p-4"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">

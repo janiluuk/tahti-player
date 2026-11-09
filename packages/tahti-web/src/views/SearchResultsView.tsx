@@ -81,7 +81,7 @@ export function SearchResultsView({ q }: { q: string }) {
           state.data.collections.length ===
         0 ? (
         <PageEmpty
-          title={`No results for “${query}”`}
+          title={t('searchResultsViewLabels.noResultsForQuery', { query })}
           description={t('empties.tryAnotherSpellingOrBrowseDiscover')}
         />
       ) : (

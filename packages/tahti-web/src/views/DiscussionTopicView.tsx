@@ -410,7 +410,10 @@ export function DiscussionTopicView({ id }: { id: string }) {
                             <Button
                               size="sm"
                               variant="text"
-                              aria-label={`Remove the reply by ${post.author}`}
+                              aria-label={t(
+                                'discussionTopicViewLabels.removeTheReplyByAuthor',
+                                { author: post.author },
+                              )}
                               onClick={() => setRemoving(post)}
                             >
                               {t('discussionTopic.remove')}

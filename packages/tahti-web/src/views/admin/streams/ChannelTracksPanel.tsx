@@ -209,7 +209,9 @@ export function ChannelTracksPanel() {
                 </span>
                 <EditIconButton
                   variant="text"
-                  label={`Edit ${sound.title}`}
+                  label={t('channelTracksPanelLabels.editTitle', {
+                    title: sound.title,
+                  })}
                   onClick={() => setEditing(sound)}
                 />
               </li>

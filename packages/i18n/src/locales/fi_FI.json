@@ -9379,6 +9379,156 @@
     },
     "socialOAuthPlatformLabels": {
       "disconnectName": "Katkaistaanko yhteys: {{name}}?"
+    },
+    "socialAutoPostLabels": {
+      "disconnectName": "Katkaistaanko yhteys: {{name}}?"
+    },
+    "myRadioStationsLabels": {
+      "removeName": "Poista: {{name}}"
+    },
+    "searchResultsViewLabels": {
+      "noResultsForQuery": "Ei tuloksia haulle ”{{query}}”"
+    },
+    "radioScheduleViewLabels": {
+      "openDisplaynameSGreenRoom": "Avaa green room: {{displayName}}"
+    },
+    "myVenuesViewLabels": {
+      "editName": "Muokkaa: {{name}}"
+    },
+    "featureCompareCardLabels": {
+      "commentOnFeature": "Kommentoi: ”{{feature}}”…"
+    },
+    "librarySmartLinksViewLabels": {
+      "openSmartlinkForTitle": "Avaa smartlink: {{title}}"
+    },
+    "helpViewLabels": {
+      "noHelpPageForSlug": "Ohjesivua ei löydy: {{slug}}."
+    },
+    "discussionTopicViewLabels": {
+      "removeTheReplyByAuthor": "Poista vastaus käyttäjältä: {{author}}"
+    },
+    "collectionViewLabels": {
+      "rssFeedOfName": "RSS-syöte: {{name}}"
+    },
+    "rotationReleaseLibraryLabels": {
+      "addTracktitleToTheRotation": "Lisää kiertoon: {{trackTitle}}"
+    },
+    "channelTracksPanelLabels": {
+      "editTitle": "Muokkaa: {{title}}"
+    },
+    "stationHealthCellLabels": {
+      "testNameStream": "Testaa striimi: {{name}}"
+    },
+    "meetingRecordPanelsLabels": {
+      "removeDeclarationDisplayname": "Poista ilmoitus: {{displayName}}"
+    },
+    "governanceDocumentRowLabels": {
+      "renameLabel": "Nimeä uudelleen: {{label}}"
+    },
+    "auditorsPanelLabels": {
+      "endTermName": "Päätä kausi: {{name}}"
+    },
+    "discussionsAdminPanelLabels": {
+      "editTitle": "Muokkaa: {{title}}"
+    },
+    "endBoardTermFormLabels": {
+      "endTermEarlyDisplayname": "Päätä kausi ennenaikaisesti: {{displayName}}"
+    },
+    "electionResultFormLabels": {
+      "electedDisplayname": "Valittu: {{displayName}}"
+    },
+    "ledgerPanelLabels": {
+      "noLedgerEntriesForYear": "Ei kirjanpitomerkintöjä vuodelle {{year}}"
+    },
+    "fanSubPayoutQueueLabels": {
+      "retryPayoutToArtistdisplayname": "Yritä maksua uudelleen: {{artistDisplayName}}"
+    },
+    "communityStatsPanelLabels": {
+      "chatMessagesDaysDays": "Chat-viestit, {{DAYS}} päivää"
+    },
+    "announcementTrimDialogLabels": {
+      "originalUploadOfTitle": "Alkuperäinen lataus: {{title}}"
+    },
+    "adminVendorsViewLabels": {
+      "theBlockerListAboveUses": "Yllä oleva estelista käyttää vain kirjattua tilaa. {{statusError}}"
+    },
+    "adminStorageUserViewLabels": {
+      "previewTitle": "Esikatsele: {{title}}"
+    },
+    "adminStationSectionsLabels": {
+      "builtInCatalogLength": "Sisäänrakennettu luettelo ({{length}})"
+    },
+    "adminDashboardViewLabels": {
+      "liveNowLength": "Livenä nyt ({{length}})"
+    },
+    "versionRenderProgressLabels": {
+      "renderingPct": "Renderöidään, {{pct}} %"
+    },
+    "studioSoundRowMenuLabels": {
+      "moreActionsForTitle": "Lisää toimintoja: {{title}}"
+    },
+    "studioRadioSubmissionPanelLabels": {
+      "selectTitle": "Valitse: {{title}}"
+    },
+    "studioNavLabels": {
+      "backToLabel": "Takaisin: {{label}}"
+    },
+    "studioGateLabels": {
+      "signedInAsUsernameBut": "Kirjautuneena käyttäjänä @{{username}}, mutta tällä tilillä ei ole vielä kanavaa."
+    },
+    "panelHeaderLabels": {
+      "playerStatePlayerstate": "Soittimen tila: {{playerState}}"
+    },
+    "soundCloudEmbedsPanelLabels": {
+      "publicSoundcloudTracksShownOn": "Kanavallasi näytettävät julkiset SoundCloud-kappaleet, enintään {{MAX_EMBEDS}}."
+    },
+    "rssFeedButtonLabels": {
+      "copyTheLabel": "Kopioi: {{label}}"
+    },
+    "reportButtonLabels": {
+      "reportLabel": "Ilmoita: {{label}}"
+    },
+    "releaseTracksToRotationLabels": {
+      "addTitleFromTitle2To": "Lisää kiertoon: {{title}} ({{title2}})"
+    },
+    "oAuthServiceCardLabels": {
+      "disconnectName": "Katkaistaanko yhteys: {{name}}?"
+    },
+    "playerWaveformLabels": {
+      "jumpToCommentLabel": "Siirry kommenttiin: {{label}}"
+    },
+    "newsletterSubscribeToggleLabels": {
+      "emailUpdatesFromArtistdisplayname": "Sähköpostipäivitykset: {{artistDisplayName}}"
+    },
+    "messageContactsLabels": {
+      "messageDisplayname": "Lähetä viesti: {{displayName}}"
+    },
+    "listeningPartyLinerNotesLabels": {
+      "creditsForTitle": "Tekijätiedot: {{title}}"
+    },
+    "meetingAgendaItemsLabels": {
+      "recordsUnderTitle": "Asiakirjat: {{title}}"
+    },
+    "electionsPanelLabels": {
+      "candidatesInTitle": "Ehdokkaat: {{title}}"
+    },
+    "candidacyControlLabels": {
+      "youWillNoLongerStand": "Et ole enää ehdolla vaalissa ”{{title}}”. Voit asettua uudelleen ehdolle, kun ehdokasasettelu on auki."
+    },
+    "fingerprintTrackPanelLabels": {
+      "fingerprintingTitle": "Tunnistetaan sormenjälki: {{title}}"
+    },
+    "embedTrackRowLabels": {
+      "listenOnLabel": "Kuuntele palvelussa: {{label}}"
+    },
+    "widgetCardLabels": {
+      "configureTitle": "Määritä: {{title}}"
+    },
+    "directoryArtistsBrowserLabels": {
+      "allLength": "Kaikki ({{length}})"
+    },
+    "desktopUpdatesRowLabels": {
+      "youHaveTahtiPlayerVersion": "Sinulla on Tahti Player {{version}}. Kun uusi versio julkaistaan, sovellus tarjoaa sen asentamista."
     }
   },
   "studioEditor": {

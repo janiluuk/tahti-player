@@ -68,7 +68,7 @@ export function GovernanceDocumentRow({
         ) : null}
         <EditIconButton
           disabled={busy}
-          label={`Rename: ${label}`}
+          label={t('governanceDocumentRowLabels.renameLabel', { label })}
           onClick={() => setRenaming(true)}
         />
         <Button

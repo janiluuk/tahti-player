@@ -9379,6 +9379,156 @@
     },
     "socialOAuthPlatformLabels": {
       "disconnectName": "Disconnect {{name}}?"
+    },
+    "socialAutoPostLabels": {
+      "disconnectName": "Disconnect {{name}}?"
+    },
+    "myRadioStationsLabels": {
+      "removeName": "Remove {{name}}"
+    },
+    "searchResultsViewLabels": {
+      "noResultsForQuery": "No results for “{{query}}”"
+    },
+    "radioScheduleViewLabels": {
+      "openDisplaynameSGreenRoom": "Open {{displayName}}'s green room"
+    },
+    "myVenuesViewLabels": {
+      "editName": "Edit {{name}}"
+    },
+    "featureCompareCardLabels": {
+      "commentOnFeature": "Comment on “{{feature}}”…"
+    },
+    "librarySmartLinksViewLabels": {
+      "openSmartlinkForTitle": "Open smartlink for {{title}}"
+    },
+    "helpViewLabels": {
+      "noHelpPageForSlug": "No help page for {{slug}}."
+    },
+    "discussionTopicViewLabels": {
+      "removeTheReplyByAuthor": "Remove the reply by {{author}}"
+    },
+    "collectionViewLabels": {
+      "rssFeedOfName": "RSS feed of {{name}}"
+    },
+    "rotationReleaseLibraryLabels": {
+      "addTracktitleToTheRotation": "Add {{trackTitle}} to the rotation"
+    },
+    "channelTracksPanelLabels": {
+      "editTitle": "Edit {{title}}"
+    },
+    "stationHealthCellLabels": {
+      "testNameStream": "Test {{name}} stream"
+    },
+    "meetingRecordPanelsLabels": {
+      "removeDeclarationDisplayname": "Remove declaration: {{displayName}}"
+    },
+    "governanceDocumentRowLabels": {
+      "renameLabel": "Rename: {{label}}"
+    },
+    "auditorsPanelLabels": {
+      "endTermName": "End term: {{name}}"
+    },
+    "discussionsAdminPanelLabels": {
+      "editTitle": "Edit {{title}}"
+    },
+    "endBoardTermFormLabels": {
+      "endTermEarlyDisplayname": "End term early: {{displayName}}"
+    },
+    "electionResultFormLabels": {
+      "electedDisplayname": "Elected: {{displayName}}"
+    },
+    "ledgerPanelLabels": {
+      "noLedgerEntriesForYear": "No ledger entries for {{year}}"
+    },
+    "fanSubPayoutQueueLabels": {
+      "retryPayoutToArtistdisplayname": "Retry payout to {{artistDisplayName}}"
+    },
+    "communityStatsPanelLabels": {
+      "chatMessagesDaysDays": "Chat messages, {{DAYS}} days"
+    },
+    "announcementTrimDialogLabels": {
+      "originalUploadOfTitle": "Original upload of {{title}}"
+    },
+    "adminVendorsViewLabels": {
+      "theBlockerListAboveUses": "The blocker list above uses the recorded status only. {{statusError}}"
+    },
+    "adminStorageUserViewLabels": {
+      "previewTitle": "Preview {{title}}"
+    },
+    "adminStationSectionsLabels": {
+      "builtInCatalogLength": "Built-in catalog ({{length}})"
+    },
+    "adminDashboardViewLabels": {
+      "liveNowLength": "Live now ({{length}})"
+    },
+    "versionRenderProgressLabels": {
+      "renderingPct": "Rendering, {{pct}}%"
+    },
+    "studioSoundRowMenuLabels": {
+      "moreActionsForTitle": "More actions for {{title}}"
+    },
+    "studioRadioSubmissionPanelLabels": {
+      "selectTitle": "Select {{title}}"
+    },
+    "studioNavLabels": {
+      "backToLabel": "Back to {{label}}"
+    },
+    "studioGateLabels": {
+      "signedInAsUsernameBut": "Signed in as @{{username}}, but this account has no channel yet."
+    },
+    "panelHeaderLabels": {
+      "playerStatePlayerstate": "Player state: {{playerState}}"
+    },
+    "soundCloudEmbedsPanelLabels": {
+      "publicSoundcloudTracksShownOn": "Public SoundCloud tracks shown on your channel, up to {{MAX_EMBEDS}}."
+    },
+    "rssFeedButtonLabels": {
+      "copyTheLabel": "Copy the {{label}}"
+    },
+    "reportButtonLabels": {
+      "reportLabel": "Report {{label}}"
+    },
+    "releaseTracksToRotationLabels": {
+      "addTitleFromTitle2To": "Add {{title}} from {{title2}} to the rotation"
+    },
+    "oAuthServiceCardLabels": {
+      "disconnectName": "Disconnect {{name}}?"
+    },
+    "playerWaveformLabels": {
+      "jumpToCommentLabel": "Jump to comment: {{label}}"
+    },
+    "newsletterSubscribeToggleLabels": {
+      "emailUpdatesFromArtistdisplayname": "Email updates from {{artistDisplayName}}"
+    },
+    "messageContactsLabels": {
+      "messageDisplayname": "Message {{displayName}}"
+    },
+    "listeningPartyLinerNotesLabels": {
+      "creditsForTitle": "Credits for {{title}}"
+    },
+    "meetingAgendaItemsLabels": {
+      "recordsUnderTitle": "Records under {{title}}"
+    },
+    "electionsPanelLabels": {
+      "candidatesInTitle": "Candidates in {{title}}"
+    },
+    "candidacyControlLabels": {
+      "youWillNoLongerStand": "You will no longer stand in \"{{title}}\". You can stand again while nominations are open."
+    },
+    "fingerprintTrackPanelLabels": {
+      "fingerprintingTitle": "Fingerprinting {{title}}"
+    },
+    "embedTrackRowLabels": {
+      "listenOnLabel": "Listen on {{label}}"
+    },
+    "widgetCardLabels": {
+      "configureTitle": "Configure {{title}}"
+    },
+    "directoryArtistsBrowserLabels": {
+      "allLength": "All ({{length}})"
+    },
+    "desktopUpdatesRowLabels": {
+      "youHaveTahtiPlayerVersion": "You have Tahti Player {{version}}. When a new release is out, the app offers to install it."
     }
   },
   "studioEditor": {

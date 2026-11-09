@@ -133,7 +133,10 @@ export function AnnouncementTrimDialog({
             src={source.originalUrl}
             controls
             preload="metadata"
-            aria-label={`Original upload of ${source.title}`}
+            aria-label={t(
+              'announcementTrimDialogLabels.originalUploadOfTitle',
+              { title: source.title },
+            )}
             className="w-full"
           />
         ) : !error ? (

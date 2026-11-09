@@ -397,7 +397,9 @@ export function AdminDashboardView() {
 
                       {data.liveStreams.length > 0 ? (
                         <StudioPanel
-                          title={`Live now (${data.liveStreams.length})`}
+                          title={t('adminDashboardViewLabels.liveNowLength', {
+                            length: data.liveStreams.length,
+                          })}
                         >
                           <ul className="divide-border divide-y">
                             {data.liveStreams.map((stream) => (

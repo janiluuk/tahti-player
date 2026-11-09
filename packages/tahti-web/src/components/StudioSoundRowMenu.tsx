@@ -44,7 +44,9 @@ export function StudioSoundRowMenu({
           <Button
             size="icon-sm"
             variant="text"
-            aria-label={`More actions for ${item.title}`}
+            aria-label={t('studioSoundRowMenuLabels.moreActionsForTitle', {
+              title: item.title,
+            })}
           >
             <MoreHorizontalIcon size={16} aria-hidden />
           </Button>

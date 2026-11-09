@@ -66,7 +66,7 @@ function VenueCard({
         />
       ) : (
         <EditIconButton
-          label={`Edit ${venue.name}`}
+          label={t('myVenuesViewLabels.editName', { name: venue.name })}
           className="w-fit"
           onClick={() => setEditing(true)}
         />

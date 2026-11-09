@@ -122,7 +122,10 @@ export function ReleaseTracksToRotation({
                     size="sm"
                     variant="secondary"
                     disabled={disabled || added || addingId !== null}
-                    aria-label={`Add ${track.title} from ${release.title} to the rotation`}
+                    aria-label={t(
+                      'releaseTracksToRotationLabels.addTitleFromTitle2To',
+                      { title: track.title, title2: release.title },
+                    )}
                     onClick={() => void add(release, track)}
                   >
                     <PlusIcon size={14} aria-hidden className="mr-1.5" />

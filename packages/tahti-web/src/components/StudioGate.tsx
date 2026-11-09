@@ -85,7 +85,9 @@ export function StudioGate({
         page={embedded ? null : 'Studio'}
         icon={<LayoutDashboard size={40} className="opacity-40" />}
         title={t('studioGate.artistChannelRequired')}
-        description={`Signed in as @${user.username}, but this account has no channel yet.`}
+        description={t('studioGateLabels.signedInAsUsernameBut', {
+          username: user.username,
+        })}
         action={
           <div className="flex flex-wrap justify-center gap-2">
             <Button size="sm" onClick={openChannelSetup}>

@@ -37,7 +37,9 @@ export function DesktopUpdatesRow() {
     <div className="flex flex-col gap-3" data-testid="integration-updates">
       <SettingsToggle
         label={t('desktopUpdatesRow.checkForUpdates')}
-        description={`You have Tahti Player ${version}. When a new release is out, the app offers to install it.`}
+        description={t('desktopUpdatesRowLabels.youHaveTahtiPlayerVersion', {
+          version,
+        })}
         value={checkOnStart}
         onChange={setCheckOnStart}
       />

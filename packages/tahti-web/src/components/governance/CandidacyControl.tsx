@@ -103,7 +103,9 @@ export function CandidacyControl({
         destructive
         isOpen={confirmWithdraw}
         title={t('candidacy.withdrawYourCandidacy')}
-        description={`You will no longer stand in "${election.title}". You can stand again while nominations are open.`}
+        description={t('candidacyControlLabels.youWillNoLongerStand', {
+          title: election.title,
+        })}
         confirmLabel={t('candidacy.withdraw')}
         onCancel={() => setConfirmWithdraw(false)}
         onConfirm={() => {

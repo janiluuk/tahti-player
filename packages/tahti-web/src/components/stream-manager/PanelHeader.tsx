@@ -71,7 +71,9 @@ export function PanelHeader({
           <span
             className="inline-flex items-center gap-1.5"
             role="status"
-            aria-label={`Player state: ${playerState}`}
+            aria-label={t('panelHeaderLabels.playerStatePlayerstate', {
+              playerState,
+            })}
           >
             {playerState === 'Live' ? (
               <Badge variant="dot" color="green" animated />

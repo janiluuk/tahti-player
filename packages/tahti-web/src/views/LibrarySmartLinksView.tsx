@@ -239,7 +239,10 @@ export function LibrarySmartLinksView() {
                                   params={{ slug: release.smartLinkSlug }}
                                   size="sm"
                                   variant="text"
-                                  aria-label={`Open smartlink for ${release.title}`}
+                                  aria-label={t(
+                                    'librarySmartLinksViewLabels.openSmartlinkForTitle',
+                                    { title: release.title },
+                                  )}
                                 >
                                   <ExternalLinkIcon size={15} aria-hidden />
                                 </ButtonLink>

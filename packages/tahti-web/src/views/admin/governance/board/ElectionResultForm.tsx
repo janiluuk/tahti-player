@@ -80,7 +80,9 @@ export function ElectionResultForm({
         {standing.map((candidate) => (
           <li key={candidate.id} className="flex items-center gap-2 text-sm">
             <Toggle
-              label={`Elected: ${candidate.displayName}`}
+              label={t('electionResultFormLabels.electedDisplayname', {
+                displayName: candidate.displayName,
+              })}
               checked={elected.includes(candidate.userId)}
               onChange={(checked) =>
                 setElected((current) =>

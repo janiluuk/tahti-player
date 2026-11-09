@@ -187,7 +187,9 @@ export function StudioRadioSubmissionPanel() {
                     {existing ? statusLabel(existing.status) : 'Ready'}
                   </span>
                   <Toggle
-                    label={`Select ${item.title}`}
+                    label={t('studioRadioSubmissionPanelLabels.selectTitle', {
+                      title: item.title,
+                    })}
                     checked={checked}
                     disabled={
                       Boolean(existing) ||

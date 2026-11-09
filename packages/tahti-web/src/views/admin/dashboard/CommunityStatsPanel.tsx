@@ -68,7 +68,7 @@ export function CommunityStatsPanel() {
           value={formatCount(stats.chatLast24h)}
         />
         <StatTile
-          label={`Chat messages, ${DAYS} days`}
+          label={t('communityStatsPanelLabels.chatMessagesDaysDays', { DAYS })}
           tone={COMMUNITY_TONES.chat}
           icon={<MessagesSquareIcon size={16} />}
           value={stats.chatSeries.length > 0 ? formatCount(total) : '—'}

@@ -119,7 +119,10 @@ function AnonymousForm({
           size="sm"
           variant="secondary"
           onClick={() => setOpen(true)}
-          aria-label={`Email updates from ${artistDisplayName}`}
+          aria-label={t(
+            'newsletterSubscribeToggleLabels.emailUpdatesFromArtistdisplayname',
+            { artistDisplayName },
+          )}
         >
           <MailIcon
             size={14}

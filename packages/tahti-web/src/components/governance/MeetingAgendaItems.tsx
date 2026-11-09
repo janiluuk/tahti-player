@@ -16,6 +16,7 @@ const RESOLUTION_OUTCOME: Record<
 > = { PASSED: 'passed', FAILED: 'failed', DEFERRED: 'deferred' };
 
 function AgendaRecords({ item }: { item: MemberAgendaItem }) {
+  const { t } = useTranslation('web');
   if (
     item.motions.length === 0 &&
     item.resolutions.length === 0 &&
@@ -25,7 +26,9 @@ function AgendaRecords({ item }: { item: MemberAgendaItem }) {
   }
   return (
     <ul
-      aria-label={`Records under ${item.title}`}
+      aria-label={t('meetingAgendaItemsLabels.recordsUnderTitle', {
+        title: item.title,
+      })}
       className="mt-1 flex flex-col gap-0.5 text-xs"
     >
       {item.motions.map((motion) => (

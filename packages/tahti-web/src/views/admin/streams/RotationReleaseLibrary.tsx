@@ -1,5 +1,6 @@
 import { PlusIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import type { ProgrammeLibraryTrack } from '../../../api/studio-extras/schedule';
@@ -14,6 +15,7 @@ export function RotationReleaseLibrary({
   busyId: string | null;
   onAdd: (releaseTrackId: string) => void;
 }) {
+  const { t } = useTranslation('web');
   const available = tracks.filter((track) => !track.soundId);
   if (available.length === 0) {
     return null;
@@ -41,7 +43,10 @@ export function RotationReleaseLibrary({
               size="xs"
               variant="secondary"
               disabled={busyId !== null}
-              aria-label={`Add ${track.trackTitle} to the rotation`}
+              aria-label={t(
+                'rotationReleaseLibraryLabels.addTracktitleToTheRotation',
+                { trackTitle: track.trackTitle },
+              )}
               onClick={() => onAdd(track.releaseTrackId)}
             >
               <PlusIcon size={14} aria-hidden className="mr-1" />

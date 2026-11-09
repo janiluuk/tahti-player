@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -25,6 +26,7 @@ export function MessageContacts({
   onPick: (username: string) => void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [contacts, setContacts] = useState<MessageContact[]>([]);
   const [showAll, setShowAll] = useState(false);
 
@@ -63,7 +65,9 @@ export function MessageContacts({
                 variant="secondary"
                 size="sm"
                 disabled={disabled}
-                aria-label={`Message ${contact.displayName}`}
+                aria-label={t('messageContactsLabels.messageDisplayname', {
+                  displayName: contact.displayName,
+                })}
                 aria-description={relation(contact)}
                 onClick={() => onPick(contact.username)}
                 className="gap-2"
