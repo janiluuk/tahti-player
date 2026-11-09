@@ -75,7 +75,10 @@ export function RecordedAtVenuePicker({
         description={t('recordedAtVenuePicker.shownOnTheTrackPage')}
         value={value ?? NONE}
         onValueChange={(next) => onChange(next === NONE ? null : next)}
-        options={[{ id: NONE, label: 'No venue' }, ...options]}
+        options={[
+          { id: NONE, label: t('recordedAtVenuePickerFields.noVenue') },
+          ...options,
+        ]}
       />
       {loadError ? (
         <InlineError textSize="xs" className="mt-1">

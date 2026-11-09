@@ -115,7 +115,7 @@ export function ProfileLogoSection({
         <FilePicker
           labels={{
             title: logoUrl ? 'Replace logo' : 'Add a logo',
-            description: 'PNG or WebP with a transparent background',
+            description: t('profileLogoSectionFields.pngOrWebpWithA'),
             browse: busy ? 'Uploading…' : 'Choose image',
           }}
           accept="image/png,image/webp"

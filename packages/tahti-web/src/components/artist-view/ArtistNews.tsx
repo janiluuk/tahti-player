@@ -56,7 +56,7 @@ export function ArtistNews({
 
   return (
     <section className="flex flex-col gap-3">
-      <Eyebrow>News</Eyebrow>
+      <Eyebrow>{t('artistNewsText.news')}</Eyebrow>
       <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
         {news.map((item) => (
           <li key={item.id} className="p-3 text-sm">

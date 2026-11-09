@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { TrackTable } from '@tahti-player/ui';
 
 import { CollectionSortSounds } from '../../../components/CollectionSortSounds';
@@ -17,6 +18,7 @@ export function TracklistPanel({
   isAlbumLike: boolean;
   editing?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const {
     items,
     tracks,
@@ -60,7 +62,7 @@ export function TracklistPanel({
         <CollectionTrackList
           items={[]}
           empty={{
-            title: 'No tracks yet',
+            title: t('tracklistPanelFields.noTracksYet'),
             description: editing
               ? 'Add sound items below.'
               : 'Click Edit to add tracks.',

@@ -113,7 +113,7 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
           multiple
           disabled={busy}
           labels={{
-            title: 'Drop press-kit photos here',
+            title: t('pressKitSectionFields.dropPressKitPhotosHere'),
             description: t('pressKitSectionLabels.jpegPngOrWebpUp', {
               MAX_PRESS_KIT_IMAGES,
             }),

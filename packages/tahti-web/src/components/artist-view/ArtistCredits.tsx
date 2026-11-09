@@ -1,6 +1,7 @@
 import { UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { MediaArtwork } from '@tahti-player/ui';
 
 import type { ChannelMember } from '../../api/artist-settings/moderation';
@@ -9,6 +10,7 @@ import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 export function ArtistCredits({ channelSlug }: { channelSlug: string }) {
+  const { t } = useTranslation('web');
   const [members, setMembers] = useState<ChannelMember[]>([]);
 
   useEffect(() => {
@@ -28,11 +30,14 @@ export function ArtistCredits({ channelSlug }: { channelSlug: string }) {
   }
 
   return (
-    <section className="flex flex-col gap-3" aria-label="Credits">
+    <section
+      className="flex flex-col gap-3"
+      aria-label={t('artistCreditsText.credits')}
+    >
       <Eyebrow>
         <span className="inline-flex items-center gap-1.5">
           <UsersIcon size={13} aria-hidden />
-          Credits
+          {t('artistCreditsText.credits')}
         </span>
       </Eyebrow>
       <ul className="grid grid-cols-[repeat(auto-fill,minmax(12rem,1fr))] gap-3">

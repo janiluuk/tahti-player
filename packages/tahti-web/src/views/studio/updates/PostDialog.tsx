@@ -262,7 +262,7 @@ export function PostDialog({
               accept="image/jpeg,image/png,image/webp"
               labels={{
                 title: editing ? 'Add an image' : 'Post image',
-                description: 'JPEG, PNG, or WebP. One image at a time.',
+                description: t('postDialogFields.jpegPngOrWebpOne'),
                 browse: image ? 'Choose another image' : 'Choose image',
               }}
               selectedFiles={image ? [image] : []}

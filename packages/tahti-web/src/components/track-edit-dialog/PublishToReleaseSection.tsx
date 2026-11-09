@@ -116,7 +116,10 @@ export function PublishToReleaseSection({
               value={versionId}
               onValueChange={setVersionId}
               options={[
-                { id: CURRENT_AUDIO, label: 'Current audio' },
+                {
+                  id: CURRENT_AUDIO,
+                  label: t('publishToReleaseSectionFields.currentAudio'),
+                },
                 ...versions.map((version) => ({
                   id: version.id,
                   label: `v${version.versionNumber} · ${version.versionLabel}`,

@@ -1,5 +1,6 @@
 import { MessageSquareIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { QueueHeaderActions } from '@tahti-player/ui';
 
 import { hasAccountRole } from '../lib/accountRoles';
@@ -16,6 +17,7 @@ import { useQueueBarActions } from './useQueueBarActions';
  * (docs/DECISIONS.md).
  */
 export function RightRailHeaderActions() {
+  const { t } = useTranslation('web');
   const railOverride = useRightRailOverrideStore((s) => s.override);
   const { queueLength, requestClear, menuItems, dialogs } =
     useQueueBarActions();
@@ -37,7 +39,7 @@ export function RightRailHeaderActions() {
     ? [
         {
           id: 'comments',
-          label: 'Page comments',
+          label: t('rightRailHeaderActionsFields.pageComments'),
           icon: <MessageSquareIcon size={16} aria-hidden />,
           count: openCommentCount > 0 ? openCommentCount : undefined,
           isActive: commentsOpen,

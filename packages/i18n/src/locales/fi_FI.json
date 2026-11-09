@@ -9868,6 +9868,96 @@
     },
     "emailChangeViewText": {
       "confirmingYourNewAddress": "Vahvistetaan uutta osoitettasi…"
+    },
+    "artistRepostsText": {
+      "reposts": "Uudelleenjaot"
+    },
+    "artistNewsText": {
+      "news": "Uutiset"
+    },
+    "artistCreditsText": {
+      "credits": "Tekijät"
+    },
+    "appTopNavText": {
+      "streamManager": "Striimin hallinta"
+    },
+    "appShellText": {
+      "loadingPageContent": "Ladataan sivun sisältöä"
+    },
+    "addToReleasePanelText": {
+      "addToARelease": "Lisää julkaisuun"
+    },
+    "venueDetailViewFields": {
+      "capacity": "Kapasiteetti"
+    },
+    "trackBodyFields": {
+      "info": "Tiedot"
+    },
+    "postDialogFields": {
+      "jpegPngOrWebpOne": "JPEG, PNG tai WebP. Yksi kuva kerrallaan."
+    },
+    "releaseTrackAudioUploadFields": {
+      "wavFlacMp3AacOr": "WAV, FLAC, MP3, AAC tai AIFF"
+    },
+    "releaseSmartLinksPanelFields": {
+      "allContent": "Kaikki sisältö"
+    },
+    "tracklistPanelFields": {
+      "noTracksYet": "Ei vielä kappaleita"
+    },
+    "collectionHeaderFields": {
+      "tracks": "Kappaleet"
+    },
+    "profileLogoSectionFields": {
+      "pngOrWebpWithA": "PNG tai WebP läpinäkyvällä taustalla"
+    },
+    "profileBackdropSectionFields": {
+      "jpegPngOrWebpWide": "JPEG, PNG tai WebP, leveä (noin 4:1) toimii parhaiten"
+    },
+    "pressKitSectionFields": {
+      "dropPressKitPhotosHere": "Pudota pressikitin kuvat tähän"
+    },
+    "correctionsQueuePanelFields": {
+      "waiting": "Odottaa"
+    },
+    "adminActivityViewFields": {
+      "allActivity": "Kaikki toiminta"
+    },
+    "publishDialogFields": {
+      "widgetBundle": "Widget-paketti"
+    },
+    "trackEditorDialogFields": {
+      "undo": "Kumoa"
+    },
+    "recordedAtVenuePickerFields": {
+      "noVenue": "Ei tapahtumapaikkaa"
+    },
+    "publishToReleaseSectionFields": {
+      "currentAudio": "Nykyinen ääni"
+    },
+    "trackAnalysisSectionFields": {
+      "undo": "Kumoa"
+    },
+    "rightRailHeaderActionsFields": {
+      "pageComments": "Sivun kommentit"
+    },
+    "themesCategoryFields": {
+      "builtInTheme": "Sisäänrakennettu teema"
+    },
+    "playHistoryDialogFields": {
+      "playCountsOnTracksAre": "Kappaleiden soittomäärät eivät muutu."
+    },
+    "motionMeetingLinkControlFields": {
+      "noMeeting": "Ei kokousta"
+    },
+    "motionCardFields": {
+      "expired": "Vanhentunut"
+    },
+    "motionAgendaItemControlFields": {
+      "noAgendaItem": "Ei esityslistan kohtaa"
+    },
+    "duplicatesDialogFields": {
+      "theAudioFileOnDisk": "Levyllä olevaan äänitiedostoon ei koskettu."
     }
   },
   "studioEditor": {

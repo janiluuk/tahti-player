@@ -136,7 +136,7 @@ export function VenueDetailView({ slug }: { slug: string }) {
       ? [
           {
             key: 'capacity',
-            label: 'Capacity',
+            label: t('venueDetailViewFields.capacity'),
             value: venue.capacity,
             icon: UsersIcon,
           },

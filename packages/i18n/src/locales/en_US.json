@@ -9868,6 +9868,96 @@
     },
     "emailChangeViewText": {
       "confirmingYourNewAddress": "Confirming your new address…"
+    },
+    "artistRepostsText": {
+      "reposts": "Reposts"
+    },
+    "artistNewsText": {
+      "news": "News"
+    },
+    "artistCreditsText": {
+      "credits": "Credits"
+    },
+    "appTopNavText": {
+      "streamManager": "Stream Manager"
+    },
+    "appShellText": {
+      "loadingPageContent": "Loading page content"
+    },
+    "addToReleasePanelText": {
+      "addToARelease": "Add to a release"
+    },
+    "venueDetailViewFields": {
+      "capacity": "Capacity"
+    },
+    "trackBodyFields": {
+      "info": "Info"
+    },
+    "postDialogFields": {
+      "jpegPngOrWebpOne": "JPEG, PNG, or WebP. One image at a time."
+    },
+    "releaseTrackAudioUploadFields": {
+      "wavFlacMp3AacOr": "WAV, FLAC, MP3, AAC or AIFF"
+    },
+    "releaseSmartLinksPanelFields": {
+      "allContent": "All content"
+    },
+    "tracklistPanelFields": {
+      "noTracksYet": "No tracks yet"
+    },
+    "collectionHeaderFields": {
+      "tracks": "Tracks"
+    },
+    "profileLogoSectionFields": {
+      "pngOrWebpWithA": "PNG or WebP with a transparent background"
+    },
+    "profileBackdropSectionFields": {
+      "jpegPngOrWebpWide": "JPEG, PNG or WebP, wide (about 4:1) works best"
+    },
+    "pressKitSectionFields": {
+      "dropPressKitPhotosHere": "Drop press-kit photos here"
+    },
+    "correctionsQueuePanelFields": {
+      "waiting": "Waiting"
+    },
+    "adminActivityViewFields": {
+      "allActivity": "All activity"
+    },
+    "publishDialogFields": {
+      "widgetBundle": "Widget bundle"
+    },
+    "trackEditorDialogFields": {
+      "undo": "Undo"
+    },
+    "recordedAtVenuePickerFields": {
+      "noVenue": "No venue"
+    },
+    "publishToReleaseSectionFields": {
+      "currentAudio": "Current audio"
+    },
+    "trackAnalysisSectionFields": {
+      "undo": "Undo"
+    },
+    "rightRailHeaderActionsFields": {
+      "pageComments": "Page comments"
+    },
+    "themesCategoryFields": {
+      "builtInTheme": "Built-in theme"
+    },
+    "playHistoryDialogFields": {
+      "playCountsOnTracksAre": "Play counts on tracks are unchanged."
+    },
+    "motionMeetingLinkControlFields": {
+      "noMeeting": "No meeting"
+    },
+    "motionCardFields": {
+      "expired": "Expired"
+    },
+    "motionAgendaItemControlFields": {
+      "noAgendaItem": "No agenda item"
+    },
+    "duplicatesDialogFields": {
+      "theAudioFileOnDisk": "The audio file on disk was not touched."
     }
   },
   "studioEditor": {
