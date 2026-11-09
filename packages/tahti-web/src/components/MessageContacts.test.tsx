@@ -10,6 +10,7 @@ import {
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as api from '../api/message-contacts';
+import { applyLocale } from '../lib/locale';
 import { MessageContacts } from './MessageContacts';
 
 const contact = (n: number): api.MessageContact => ({
@@ -59,5 +60,22 @@ describe('MessageContacts', () => {
   it('renders nothing without contacts', async () => {
     const { container } = await renderContacts([]);
     expect(container.textContent).toBe('');
+  });
+
+  it('renders in Finnish', async () => {
+    await act(async () => {
+      await applyLocale('fi_FI');
+    });
+    try {
+      await renderContacts([contact(1)]);
+      expect(screen.getByRole('button', { name: /User 1/ })).toHaveAttribute(
+        'aria-description',
+        'Seuraat',
+      );
+    } finally {
+      await act(async () => {
+        await applyLocale('en_US');
+      });
+    }
   });
 });

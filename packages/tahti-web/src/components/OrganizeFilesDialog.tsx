@@ -131,15 +131,21 @@ export function OrganizeFilesDialog({
           ? `${n(result.errors.length)} failed (${result.errors[0]})`
           : '',
       ].filter(Boolean);
-      const verb = move ? 'Moved' : 'Copied';
       if (result.errors.length && result.done === 0) {
         toast.error(i18n.t('web:toasts.noFilesOrganized'), {
           description: notes.join('; '),
         });
       } else {
-        toast.success(`${verb} ${n(result.done)} ${files(result.done)}.`, {
-          description: notes.join('; ') || undefined,
-        });
+        toast.success(
+          move
+            ? t('organizeFilesDialogStates.movedFiles', { count: result.done })
+            : t('organizeFilesDialogStates.copiedFiles', {
+                count: result.done,
+              }),
+          {
+            description: notes.join('; ') || undefined,
+          },
+        );
       }
     } catch (failure) {
       toast.error(
@@ -265,7 +271,9 @@ export function OrganizeFilesDialog({
             <Dialog.Close>{t('organizeFiles.cancel')}</Dialog.Close>
             <Button className="gap-1.5" disabled={!canRun} type="submit">
               {busy ? <Loader size="inline" shape="circle" /> : null}
-              {move ? 'Move files' : 'Copy files'}
+              {move
+                ? t('organizeFilesDialogStates.moveFiles')
+                : t('organizeFilesDialogStates.copyFiles')}
             </Button>
           </Dialog.Actions>
         </form>

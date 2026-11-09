@@ -1,8 +1,15 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as documents from '../../../../api/admin/admin-governance-documents';
 import type { GovernanceDocument } from '../../../../api/types';
+import { applyLocale } from '../../../../lib/locale';
 import { GovernanceDocumentRow } from './GovernanceDocumentRow';
 
 const document: GovernanceDocument = {
@@ -104,5 +111,26 @@ describe('GovernanceDocumentRow', () => {
     expect(
       screen.getByRole('button', { name: 'Restore: Rules v2' }),
     ).toBeInTheDocument();
+  });
+
+  it('renders in Finnish', async () => {
+    await act(async () => {
+      await applyLocale('fi_FI');
+    });
+    try {
+      render(
+        <ul>
+          <GovernanceDocumentRow document={document} />
+        </ul>,
+      );
+      expect(screen.getByText(/v2 · Julkaistu/)).toBeInTheDocument();
+      expect(
+        screen.getByRole('button', { name: 'Arkistoi: Rules v2' }),
+      ).toBeInTheDocument();
+    } finally {
+      await act(async () => {
+        await applyLocale('en_US');
+      });
+    }
   });
 });

@@ -42,7 +42,9 @@ export function MotionMeetingLinkControl({
         className="w-fit"
         onClick={() => setOpen(true)}
       >
-        {motion.meeting ? 'Change meeting' : 'Put on a meeting'}
+        {motion.meeting
+          ? t('motionMeetingLinkControlStates.changeMeeting')
+          : t('motionMeetingLinkControlStates.putOnAMeeting')}
       </Button>
     );
   }

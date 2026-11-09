@@ -196,8 +196,8 @@ export function SelectsTab() {
           {streamBusy
             ? 'Starting…'
             : stream.state === 'LIVE'
-              ? 'Stop stream'
-              : 'Bring stream online'}
+              ? t('selectsTabStates.stopStream')
+              : t('selectsTabStates.bringStreamOnline')}
         </Button>
       </div>
 
@@ -212,15 +212,15 @@ export function SelectsTab() {
           stream.state === 'LIVE'
             ? 'Stream live'
             : stream.state === 'STARTING'
-              ? 'Stream starting'
-              : 'Stream offline'
+              ? t('selectsTabStates.streamStarting')
+              : t('selectsTabStates.streamOffline')
         }
         description={
           stream.state === 'LIVE'
             ? 'Tahti Selects is broadcasting the curated rotation.'
             : stream.state === 'STARTING'
-              ? 'The rotation service is being brought online.'
-              : 'The stream is unavailable. Recovery will be attempted automatically.'
+              ? t('selectsTabStates.theRotationServiceIsBeing')
+              : t('selectsTabStates.theStreamIsUnavailableRecovery')
         }
         action={
           stream.state === 'LIVE' && stream.hlsUrl ? (
@@ -228,8 +228,8 @@ export function SelectsTab() {
               size="sm"
               aria-label={
                 isStreamPlaying
-                  ? 'Pause Tahti Selects stream'
-                  : 'Play Tahti Selects stream'
+                  ? t('selectsTabStates.pauseTahtiSelectsStream')
+                  : t('selectsTabStates.playTahtiSelectsStream')
               }
               onClick={toggleStreamPlayback}
             >
@@ -238,7 +238,9 @@ export function SelectsTab() {
               ) : (
                 <PlayIcon size={16} aria-hidden className="mr-1.5" />
               )}
-              {isStreamPlaying ? 'Pause' : 'Listen'}
+              {isStreamPlaying
+                ? t('selectsTabStates.pause')
+                : t('selectsTabStates.listen')}
             </Button>
           ) : undefined
         }
@@ -257,13 +259,15 @@ export function SelectsTab() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-              {stream.state === 'LIVE' ? 'Now playing' : 'Playback state'}
+              {stream.state === 'LIVE'
+                ? t('selectsTabStates.nowPlaying')
+                : t('selectsTabStates.playbackState')}
             </p>
             <p className="truncate font-semibold">
               {stream.nowPlaying?.title ??
                 (stream.state === 'STARTING'
-                  ? 'Connecting rotation…'
-                  : 'No active track')}
+                  ? t('selectsTabStates.connectingRotation')
+                  : t('selectsTabStates.noActiveTrack'))}
             </p>
             {stream.nowPlaying ? (
               <p className="text-foreground-secondary truncate text-sm">
@@ -457,7 +461,15 @@ export function SelectsTab() {
                           size="flexible"
                           type="button"
                           disabled={already}
-                          aria-label={`${selected ? 'Deselect' : 'Select'} ${item.title}`}
+                          aria-label={
+                            selected
+                              ? t('selectsTabStates.deselectItem', {
+                                  title: item.title,
+                                })
+                              : t('selectsTabStates.selectItem', {
+                                  title: item.title,
+                                })
+                          }
                           aria-pressed={selected}
                           onClick={() => {
                             setSelectedIds((current) => {

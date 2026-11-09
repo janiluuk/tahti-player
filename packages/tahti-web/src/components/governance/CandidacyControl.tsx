@@ -80,7 +80,9 @@ export function CandidacyControl({
           />
           <div className="flex gap-2">
             <Button type="submit" size="sm" disabled={busy}>
-              {busy ? 'Sending…' : 'Stand in this election'}
+              {busy
+                ? t('candidacyControlStates.sending')
+                : t('candidacyControlStates.standInThisElection')}
             </Button>
             <Button
               type="button"

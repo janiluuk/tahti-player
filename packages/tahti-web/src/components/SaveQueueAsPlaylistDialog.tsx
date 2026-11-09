@@ -102,7 +102,9 @@ export function SaveQueueAsPlaylistDialog({ isOpen, onClose }: Props) {
             disabled={busy || !name.trim() || soundIds.length === 0}
             type="submit"
           >
-            {busy ? 'Saving…' : 'Save playlist'}
+            {busy
+              ? t('saveQueueAsPlaylistDialogStates.saving')
+              : t('saveQueueAsPlaylistDialogStates.savePlaylist')}
           </Button>
         </Dialog.Actions>
       </form>

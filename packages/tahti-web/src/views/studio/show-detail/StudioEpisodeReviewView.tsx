@@ -321,7 +321,9 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                     disabled={busy}
                     onClick={() => void applyTrim()}
                   >
-                    {busy ? 'Rendering…' : 'Apply trim / normalize'}
+                    {busy
+                      ? t('studioEpisodeReviewViewStates.rendering')
+                      : t('studioEpisodeReviewViewStates.applyTrimNormalize')}
                   </Button>
                 </div>
               ) : (
@@ -345,7 +347,9 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                 onClick={() => void approve()}
               >
                 <CheckIcon size={16} aria-hidden className="mr-1.5" />
-                {episode.status === 'APPROVED' ? 'Approved' : 'Approve episode'}
+                {episode.status === 'APPROVED'
+                  ? t('studioEpisodeReviewViewStates.approved')
+                  : t('studioEpisodeReviewViewStates.approveEpisode')}
               </Button>
             </StudioPanel>
           )}

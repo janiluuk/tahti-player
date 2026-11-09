@@ -253,13 +253,13 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
           disabled={coverUploading}
           aria-label={
             overlay.streamOverlayCoverUrl
-              ? 'Preview overlay cover'
-              : 'Change overlay cover'
+              ? t('streamOverlayEditorStates.previewOverlayCover')
+              : t('streamOverlayEditorStates.changeOverlayCover')
           }
           title={
             overlay.streamOverlayCoverUrl
-              ? 'Preview overlay cover'
-              : 'Change overlay cover'
+              ? t('streamOverlayEditorStates.previewOverlayCover')
+              : t('streamOverlayEditorStates.changeOverlayCover')
           }
           className="border-border bg-background-secondary relative flex size-full items-center justify-center overflow-hidden rounded-xl border whitespace-normal active:scale-100"
         >
@@ -346,7 +346,9 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
             labels={{
               title: t('streamOverlayEditor.overlayCoverImage'),
               description: t('streamOverlayEditor.jpegPngOrWebp'),
-              browse: coverUploading ? 'Uploading…' : 'Choose image',
+              browse: coverUploading
+                ? t('streamOverlayEditorStates.uploading')
+                : t('streamOverlayEditorStates.chooseImage'),
             }}
             accept="image/jpeg,image/png,image/webp"
             selectedFiles={[]}

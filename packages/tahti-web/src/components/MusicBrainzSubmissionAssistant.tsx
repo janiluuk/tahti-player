@@ -52,8 +52,8 @@ export function MusicBrainzSubmissionAssistant({
     <>
       <Button size="sm" variant="secondary" onClick={() => setIsOpen(true)}>
         {isRelease
-          ? 'Prepare MusicBrainz release'
-          : 'Prepare MusicBrainz track'}
+          ? t('musicBrainzSubmissionAssistantStates.prepareMusicbrainzRelease')
+          : t('musicBrainzSubmissionAssistantStates.prepareMusicbrainzTrack')}
       </Button>
       <Dialog.Root
         isOpen={isOpen}

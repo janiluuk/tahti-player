@@ -5,6 +5,7 @@ import { Button, ImageReveal, Tooltip, ViewShell } from '@tahti-player/ui';
 
 import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { ProgrammeToggles } from '../../components/ProgrammeToggles';
 import { RestrictionNotice } from '../../components/RestrictionNotice';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -137,6 +138,13 @@ export function StudioScheduleView() {
           />
 
           <ScheduleAnalytics />
+
+          <StudioPanel
+            title={t('studioScheduleView.channelProgramme')}
+            description={t('studioScheduleView.channelProgrammeDescription')}
+          >
+            <ProgrammeToggles />
+          </StudioPanel>
 
           <ChannelRadioPlaylistPanel />
 

@@ -79,8 +79,8 @@ export function GoogleDriveImport({
           {step === 'opening'
             ? 'Opening Google Drive…'
             : step === 'importing'
-              ? 'Queueing import…'
-              : 'Choose files from Drive'}
+              ? t('googleDriveImportStates.queueingImport')
+              : t('googleDriveImportStates.chooseFilesFromDrive')}
         </Button>
         {unavailable ? (
           <ButtonLink

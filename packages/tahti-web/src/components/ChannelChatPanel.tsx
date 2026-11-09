@@ -653,7 +653,9 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
             </p>
           )}
           <Button size="sm" disabled={joining} type="submit">
-            {joining ? 'Joining…' : 'Join chat'}
+            {joining
+              ? t('channelChatPanelStates.joining')
+              : t('channelChatPanelStates.joinChat')}
           </Button>
         </form>
       ) : (

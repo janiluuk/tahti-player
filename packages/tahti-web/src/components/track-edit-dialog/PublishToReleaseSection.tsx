@@ -147,7 +147,9 @@ export function PublishToReleaseSection({
               disabled={busy || !releaseId}
               type="submit"
             >
-              {busy ? 'Adding…' : 'Add to release'}
+              {busy
+                ? t('publishToReleaseSectionStates.adding')
+                : t('publishToReleaseSectionStates.addToRelease')}
             </Button>
           </form>
           {added ? (

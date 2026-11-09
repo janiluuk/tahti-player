@@ -148,8 +148,8 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
                     title: t('studioMasteringView.referenceTrack'),
                     description: t('studioMasteringView.dropAnAudioFileOr'),
                     browse: referenceFile
-                      ? 'Choose another file'
-                      : 'Choose file',
+                      ? t('studioMasteringViewStates.chooseAnotherFile')
+                      : t('studioMasteringViewStates.chooseFile'),
                   }}
                   accept="audio/*"
                   selectedFiles={referenceFile ? [referenceFile] : []}

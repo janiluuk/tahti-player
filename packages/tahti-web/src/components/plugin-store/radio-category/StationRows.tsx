@@ -90,7 +90,9 @@ export function RadioBrowserStationRow({
       )}
       <SaveButton
         size="sm"
-        label={isSaved ? 'Saved' : 'Save'}
+        label={
+          isSaved ? t('stationRowsStates.saved') : t('stationRowsStates.save')
+        }
         onClick={onToggleSave}
         aria-label={
           isSaved
@@ -136,7 +138,14 @@ export function CuratedFinnishStationRow({
         </span>
       </div>
       {onPlay ? (
-        <Tooltip content={isPlaying ? 'Pause' : 'Preview'} side="top">
+        <Tooltip
+          content={
+            isPlaying
+              ? t('stationRowsStates.pause')
+              : t('stationRowsStates.preview')
+          }
+          side="top"
+        >
           <Button
             type="button"
             size="icon-sm"

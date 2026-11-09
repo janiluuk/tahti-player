@@ -179,7 +179,9 @@ export function CorrectionsPanel() {
           onChange={(e) => setDetails(e.target.value)}
         />
         <Button type="submit" size="sm" className="w-fit" disabled={busy}>
-          {busy ? 'Sending…' : 'Send to the board'}
+          {busy
+            ? t('correctionsPanelStates.sending')
+            : t('correctionsPanelStates.sendToTheBoard')}
         </Button>
         {error ? <InlineError textSize="xs">{error}</InlineError> : null}
         {sent ? (

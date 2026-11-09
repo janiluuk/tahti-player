@@ -175,7 +175,9 @@ export function ChannelTracksPanel() {
           disabled={loading || !slugInput.trim()}
         >
           <SearchIcon size={14} aria-hidden className="mr-1.5" />
-          {loading ? 'Loading…' : 'Open tracks'}
+          {loading
+            ? t('channelTracksPanelStates.loading')
+            : t('channelTracksPanelStates.openTracks')}
         </Button>
       </form>
 

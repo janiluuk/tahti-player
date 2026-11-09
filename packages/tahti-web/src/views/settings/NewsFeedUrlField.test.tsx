@@ -1,7 +1,9 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
+import { toast } from 'sonner';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { fetchMeProfile, patchMeProfile } from '../../api/studio-extras';
+import { applyLocale } from '../../lib/locale';
 import { NewsFeedUrlField } from './NewsFeedUrlField';
 
 vi.mock('../../api/studio-extras', () => ({
@@ -67,5 +69,32 @@ describe('NewsFeedUrlField', () => {
     });
     expect(patchMeProfile).toHaveBeenCalledWith({ newsFeedUrl: '' });
     expect(screen.getByLabelText('Feed URL')).toHaveProperty('value', '');
+  });
+
+  it('renders in Finnish', async () => {
+    try {
+      vi.mocked(patchMeProfile).mockResolvedValue({
+        ok: true,
+        data: profile(null),
+      });
+      await renderField('https://blog.example/rss');
+      fireEvent.change(screen.getByLabelText('Feed URL'), {
+        target: { value: '' },
+      });
+      const save = screen.getByRole('button', { name: /Save news feed/ });
+      await act(async () => {
+        await applyLocale('fi_FI');
+      });
+      await act(async () => {
+        fireEvent.click(save);
+      });
+      expect(toast.success).toHaveBeenCalledWith(
+        'Uutissyöte poistettu sivultasi.',
+      );
+    } finally {
+      await act(async () => {
+        await applyLocale('en_US');
+      });
+    }
   });
 });

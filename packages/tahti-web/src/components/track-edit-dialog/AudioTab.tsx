@@ -58,8 +58,8 @@ export function AudioTab({
         <p className="font-medium">{t('trackEditAudio.properties')}</p>
         <p className="text-foreground-secondary mt-1 text-sm">
           {item.embedUri
-            ? 'This track is embedded from its original source.'
-            : 'This track is stored as Tahti audio.'}
+            ? t('audioTabStates.thisTrackIsEmbeddedFrom')
+            : t('audioTabStates.thisTrackIsStoredAs')}
         </p>
         <p className="text-foreground-secondary mt-3 text-xs">
           {item.durationSec != null
@@ -127,7 +127,12 @@ export function AudioTab({
       {!item.embedUri && (
         <>
           <div className="flex flex-wrap items-center gap-1.5">
-            <Tooltip content={isPlaying ? 'Pause' : 'Play'} side="top">
+            <Tooltip
+              content={
+                isPlaying ? t('audioTabStates.pause') : t('audioTabStates.play')
+              }
+              side="top"
+            >
               <Button
                 size="icon-sm"
                 variant="secondary"
@@ -135,7 +140,11 @@ export function AudioTab({
                 onClick={() =>
                   void (isPlaying ? setPlayerStatus('paused') : startPlayback())
                 }
-                aria-label={isPlaying ? 'Pause' : 'Play'}
+                aria-label={
+                  isPlaying
+                    ? t('audioTabStates.pause')
+                    : t('audioTabStates.play')
+                }
               >
                 {isPlaying ? (
                   <PauseIcon size={16} aria-hidden />
@@ -147,7 +156,9 @@ export function AudioTab({
             <span className="bg-border mx-1 h-6 w-px" aria-hidden />
             <Tooltip
               content={
-                quickBusy === 'normalize' ? 'Normalizing…' : 'Normalize audio'
+                quickBusy === 'normalize'
+                  ? t('audioTabStates.normalizing')
+                  : t('audioTabStates.normalizeAudio')
               }
               side="top"
             >
@@ -163,7 +174,9 @@ export function AudioTab({
             </Tooltip>
             <Tooltip
               content={
-                quickBusy === 'trim' ? 'Trimming silence…' : 'Trim silence'
+                quickBusy === 'trim'
+                  ? t('audioTabStates.trimmingSilence')
+                  : t('audioTabStates.trimSilence')
               }
               side="top"
             >

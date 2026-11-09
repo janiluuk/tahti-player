@@ -53,8 +53,8 @@ export function LastFmIntegrationRow() {
         status === 'unconfigured'
           ? 'This server has no Last.fm API key. Use your own below.'
           : status === 'login'
-            ? 'Sign in again, then reconnect Last.fm.'
-            : 'Could not connect Last.fm. Try again.',
+            ? t('lastFmIntegrationRowStates.signInAgainThenReconnect')
+            : t('lastFmIntegrationRowStates.couldNotConnectLastFm'),
       );
     }
     params.delete('lastfm');
@@ -168,7 +168,9 @@ export function LastFmIntegrationRow() {
                 size="sm"
                 disabled={busy || !apiKey.trim() || !apiSecret.trim()}
               >
-                {busy ? 'Opening Last.fm…' : 'Connect with my key'}
+                {busy
+                  ? t('lastFmIntegrationRowStates.openingLastFm')
+                  : t('lastFmIntegrationRowStates.connectWithMyKey')}
               </Button>
               <Button
                 variant="text"

@@ -134,7 +134,9 @@ export function MembershipStatusPanel({
             disabled={busy}
             onClick={openPortal}
           >
-            {busy ? 'Opening…' : 'Manage billing →'}
+            {busy
+              ? t('membershipStatusPanelStates.opening')
+              : t('membershipStatusPanelStates.manageBilling')}
           </Button>
         ) : membership.subscriptionMigrationRequired ? (
           <Button size="sm" disabled={busy} onClick={pay}>
@@ -154,7 +156,9 @@ export function MembershipStatusPanel({
     <Box variant="warning" className="flex-col items-start gap-3">
       <div>
         <h3 className="font-display font-bold">
-          {lapsed ? 'Renew your membership' : 'Complete your membership'}
+          {lapsed
+            ? t('membershipStatusPanelStates.renewYourMembership')
+            : t('membershipStatusPanelStates.completeYourMembership')}
         </h3>
         <p className="text-foreground-secondary mt-1 text-sm">
           Tahti ry is a member-governed nonprofit. Annual membership is{' '}
@@ -183,7 +187,9 @@ export function MembershipStatusPanel({
             disabled={resendBusy}
             onClick={resend}
           >
-            {resendBusy ? 'Sending…' : 'Resend verification email'}
+            {resendBusy
+              ? t('membershipStatusPanelStates.sending')
+              : t('membershipStatusPanelStates.resendVerificationEmail')}
           </Button>
         </div>
       )}

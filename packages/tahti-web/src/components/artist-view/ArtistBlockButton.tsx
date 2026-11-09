@@ -76,13 +76,21 @@ export function ArtistBlockButton({
   username: string;
   displayName: string;
 }) {
+  const { t } = useTranslation('web');
   const block = useArtistBlock(username, displayName);
   if (!block.available) {
     return null;
   }
   return (
     <>
-      <Tooltip content={block.blocked ? 'Unblock' : 'Block'} side="top">
+      <Tooltip
+        content={
+          block.blocked
+            ? t('artistBlockButtonStates.unblock')
+            : t('artistBlockButtonStates.block')
+        }
+        side="top"
+      >
         <Button
           size="icon-sm"
           variant="secondary"

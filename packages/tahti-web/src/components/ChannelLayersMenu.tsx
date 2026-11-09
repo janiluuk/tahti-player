@@ -153,8 +153,8 @@ export function ChannelLayersMenu({
             : panel === 'look'
               ? 'Settings apply to the selected section. Save changes when ready.'
               : panel === 'add'
-                ? 'Add a playlist or another section to your page.'
-                : 'Start with a layout, then make it your own.'}
+                ? t('channelLayersMenuStates.addAPlaylistOrAnother')
+                : t('channelLayersMenuStates.startWithALayoutThen')}
         </p>
       </div>
       <div

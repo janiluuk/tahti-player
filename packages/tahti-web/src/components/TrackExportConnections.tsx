@@ -75,7 +75,9 @@ function ConnectionConfigureDialog({
             onClick={test}
             disabled={testing}
           >
-            {testing ? 'Testing…' : 'Test connection'}
+            {testing
+              ? t('trackExportConnectionsStates.testing')
+              : t('trackExportConnectionsStates.testConnection')}
           </Button>
         </div>
         {status?.connected ? (

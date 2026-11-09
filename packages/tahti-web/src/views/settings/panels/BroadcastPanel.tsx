@@ -17,11 +17,6 @@ import {
   type GreenRoomPrefs,
   type WireGreenRoomInvitePool,
 } from '../../../api/artist-settings';
-import {
-  fetchProgramme,
-  patchProgramme,
-  type ProgrammeView,
-} from '../../../api/studio-extras';
 import { MulticastSection } from '../../../components/MulticastSection';
 import { PageError } from '../../../components/PageStates';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
@@ -55,56 +50,26 @@ export function BroadcastPanel({
       label: t('settingsBody.broadcast.invitePoolManualOnly'),
     },
   ];
-  const [programme, setProgramme] = useState<ProgrammeView | null>(null);
   const [green, setGreen] = useState<GreenRoomPrefs | null>(null);
-  const [programmeError, setProgrammeError] = useState<string | null>(null);
   const [greenError, setGreenError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    void Promise.all([fetchProgramme(), fetchGreenRoomPrefs()]).then(
-      ([p, g]) => {
-        const programmeReason =
-          p.meta.source === 'api' ? (p.meta.reason ?? null) : null;
-        const greenReason =
-          g.meta.source === 'api' ? (g.meta.reason ?? null) : null;
-        setProgrammeError(programmeReason);
-        setGreenError(greenReason);
-        setProgramme(programmeReason ? null : p.data);
-        setGreen(greenReason ? null : g.data);
-      },
-    );
+    void fetchGreenRoomPrefs().then((g) => {
+      const greenReason =
+        g.meta.source === 'api' ? (g.meta.reason ?? null) : null;
+      setGreenError(greenReason);
+      setGreen(greenReason ? null : g.data);
+    });
   }, [attempt]);
 
   const retry = () => {
-    setProgrammeError(null);
     setGreenError(null);
     setAttempt((n) => n + 1);
   };
 
-  // Both saves show the new value at once and put the old one back, with the
-  // API's reason, when the save fails.
-  const saveProgramme = (
-    patch: Partial<
-      Pick<
-        ProgrammeView,
-        'announcementsEnabled' | 'fallbackEnabled' | 'fallbackAutoEnroll'
-      >
-    >,
-  ) => {
-    if (!programme) {
-      return;
-    }
-    const previous = programme;
-    setProgramme({ ...previous, ...patch });
-    void patchProgramme(patch).then((result) => {
-      if (!result.ok) {
-        setProgramme(previous);
-        toast.error(result.error);
-      }
-    });
-  };
-
+  // The save shows the new value at once and puts the old one back, with
+  // the API's reason, when it fails.
   const saveGreenRoom = (patch: Partial<GreenRoomPrefs>) => {
     if (!green) {
       return;
@@ -124,34 +89,11 @@ export function BroadcastPanel({
       id: 'radio',
       label: t('settingsBody.broadcast.radioTab'),
       icon: <RadioIcon size={14} />,
-      content: !programme ? (
-        programmeError ? (
-          <PageError
-            title={t('settingsBody.broadcast.radioLoadError')}
-            description={programmeError}
-            onRetry={retry}
-          />
-        ) : (
-          <InlineLoader label={t('settingsBody.loading')} />
-        )
-      ) : (
+      content: (
         <div className="flex flex-col gap-6">
-          <SettingsToggle
-            label={t('settingsBody.broadcast.announcementsLabel')}
-            description={t('settingsBody.broadcast.announcementsDescription')}
-            value={programme.announcementsEnabled}
-            onChange={(v) => saveProgramme({ announcementsEnabled: v })}
-          />
-          <SettingsToggle
-            label={t('settingsBody.broadcast.fallbackLabel')}
-            value={programme.fallbackEnabled}
-            onChange={(v) => saveProgramme({ fallbackEnabled: v })}
-          />
-          <SettingsToggle
-            label={t('settingsBody.broadcast.autoEnrollLabel')}
-            value={programme.fallbackAutoEnroll}
-            onChange={(v) => saveProgramme({ fallbackAutoEnroll: v })}
-          />
+          <SettingsHint>
+            {t('settingsBody.broadcast.programmeMoved')}
+          </SettingsHint>
           <BroadcastRecordingToggles />
           <ButtonLink
             className="w-fit"
@@ -243,18 +185,15 @@ export function BroadcastPanel({
 
   const studioBroadcastLink = (
     <div className="flex flex-col gap-2">
-      <SettingsHint>
-        Defaults for radio, green room, and multistream live here. Run the live
-        session from Studio › Broadcast.
-      </SettingsHint>
+      <SettingsHint>{t('broadcastPanel.defaultsHint')}</SettingsHint>
       <ButtonLink
-        className="w-fit"
+        className="h-auto min-h-9 w-fit max-w-full py-1.5 whitespace-normal"
         to="/studio/go-live"
         onClick={closeSettings}
         size="sm"
         variant="secondary"
       >
-        Open Studio › Broadcast for the live session
+        {t('broadcastPanel.openStudioBroadcast')}
       </ButtonLink>
     </div>
   );

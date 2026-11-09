@@ -2596,7 +2596,8 @@
         "invitePoolModeratorsSubs": "Moderators and fan subscribers",
         "invitePoolSubsOnly": "Fan subscribers only",
         "invitePoolEveryone": "Everyone signed in",
-        "invitePoolManualOnly": "Only people I invite"
+        "invitePoolManualOnly": "Only people I invite",
+        "programmeMoved": "Announcements, the offline fallback and the 24/7 rotation are managed in Studio → Broadcast → Schedule."
       },
       "artist": {
         "loadError": "Could not load your artist profile",
@@ -2934,7 +2935,8 @@
       "lockedTracksAria": "Locked tracks",
       "creditsAria": "Credits",
       "docTitle": "{{title}} by {{artist}} on Tahti",
-      "docDescription": "Listen to {{title}} and find its official links on Tahti."
+      "docDescription": "Listen to {{title}} and find its official links on Tahti.",
+      "loadErrorFallback": "Could not load this release."
     },
     "groupDetail": {
       "loading": "Loading group…",
@@ -3319,7 +3321,8 @@
       "emptyTitle": "No releases yet",
       "emptyDescription": "Create one under Releases first.",
       "royaltiesError": "Could not load your royalty reports.",
-      "royaltiesTitle": "All royalty reports"
+      "royaltiesTitle": "All royalty reports",
+      "toastLoadFailed": "Could not load your releases."
     },
     "studioEditorList": {
       "title": "Editor",
@@ -7649,7 +7652,9 @@
       "schedule": "Schedule",
       "addNextBroadcast": "Add next broadcast",
       "scheduledShowEpisodes": "Scheduled show episodes",
-      "oneOffAndRecurringEpisodes": "One-off and recurring episodes generated from your shows."
+      "oneOffAndRecurringEpisodes": "One-off and recurring episodes generated from your shows.",
+      "channelProgramme": "Channel programme",
+      "channelProgrammeDescription": "What your channel plays around live shows: the 24/7 rotation, the offline fallback and announcements."
     },
     "releaseSmartLinkStats": {
       "smartLinkStats": "Smart link stats",
@@ -10401,6 +10406,1328 @@
       "embedsBody": "Enable downloads for your tracks on hearthis.at, then use “Host the audio on Tahti” in a track's edit dialog, or replace every hearthis.at embed in your library at once with the Tahti CLI:",
       "copied": "Command copied",
       "files": "Have the files on your computer? Use Upload instead, or tahti import <folder> on the command line for a whole folder."
+    },
+    "adminStreamManagerPanelStates": {
+      "collapseStreams": "Collapse streams",
+      "expandStreams": "Expand streams",
+      "collapseLiveStreams": "Collapse live streams",
+      "expandLiveStreams": "Expand live streams",
+      "rotation": "Rotation",
+      "liveBroadcast": "Live broadcast"
+    },
+    "channelAnnouncementsPanelStates": {
+      "closeRecorder": "Close recorder",
+      "recordVoice": "Record voice",
+      "uploadingClip": "Uploading clip…",
+      "uploadAudio": "Upload audio",
+      "uploading": "Uploading…",
+      "chooseAudio": "Choose audio",
+      "enabledInRotation": "Enabled in rotation",
+      "inactive": "Inactive",
+      "removePageMusic": "Remove page music",
+      "useAsPageMusic": "Use as page music",
+      "deleting": "Deleting…",
+      "delete": "Delete"
+    },
+    "channelRadioPlaylistPanelStates": {
+      "on": "On",
+      "off": "Off",
+      "noPlaylistsYet": "No playlists yet",
+      "chooseAPlaylist": "Choose a playlist"
+    },
+    "channelRotationEditorStates": {
+      "pause": "Pause",
+      "play": "Play"
+    },
+    "multicastConfigureDialogStates": {
+      "rtmpAddressAndStreamKey": "RTMP address and stream key are required.",
+      "streamKeyIsRequired": "Stream key is required.",
+      "updateTheDestinationLabelAnd": "Update the destination label and whether it mirrors your live stream.",
+      "enterTheCredentialThisPlatform": "Enter the credential this platform uses for live streaming. Custom RTMP also needs its server address and port.",
+      "streamKey": "Stream key",
+      "streamKeyApiKey": "Stream key / API key",
+      "pasteStreamKey": "Paste stream key",
+      "pastePlatformCredential": "Paste platform credential"
+    },
+    "multicastSectionStates": {
+      "newStreamKey": "New stream key",
+      "streamKey": "Stream key",
+      "testing": "Testing…",
+      "testConnection": "Test connection",
+      "disable": "Disable",
+      "enable": "Enable",
+      "removing": "Removing…",
+      "remove": "Remove",
+      "saving": "Saving…",
+      "addDestination": "Add destination"
+    },
+    "signalCheckWidgetStates": {
+      "listeningThatsReallyYou": "Listening — that’s really you!",
+      "youreConnected": "You’re connected!",
+      "talkOrPlaySomethingWatch": "Talk or play something — watch the bars move below.",
+      "checkYourOwnAudioAnd": "Check your own audio and levels before you go live.",
+      "stopListening": "Stop listening",
+      "checkMyAudio": "Check my audio"
+    },
+    "streamManagerManagerDialogsStates": {
+      "ending": "Ending…",
+      "stopStream": "Stop stream"
+    },
+    "streamManagerPanelHeaderStates": {
+      "stopRotation": "Stop rotation",
+      "startRotation": "Start rotation",
+      "showLess": "Show less",
+      "showMore": "Show more",
+      "pauseStream": "Pause stream",
+      "playStream": "Play stream",
+      "ending": "Ending…",
+      "endStream": "End stream"
+    },
+    "streamManagerPlaylistDialogStates": {
+      "replaceTheCurrentRotation": "Replace the current rotation?",
+      "addThisPlaylistToThe": "Add this playlist to the rotation?",
+      "replacing": "Replacing…",
+      "adding": "Adding…",
+      "replaceRotation": "Replace rotation",
+      "addToRotation": "Add to rotation"
+    },
+    "streamManagerRotationBodyStates": {
+      "ending": "Ending…",
+      "stopStream": "Stop stream"
+    },
+    "streamManagerStatsGridStates": {
+      "offline": "Offline",
+      "noEncoder": "No encoder",
+      "on": "On",
+      "off": "Off"
+    },
+    "adminAnnouncementsViewStates": {
+      "uploadingAnnouncement": "Uploading announcement…",
+      "announcementClip": "Announcement clip",
+      "uploading": "Uploading…",
+      "chooseAudio": "Choose audio"
+    },
+    "adminRadioViewStates": {
+      "streamLive": "Stream live",
+      "streamOffline": "Stream offline",
+      "tahtiRadioIsBroadcastingThe": "Tahti Radio is broadcasting the member rotation or a live guest channel.",
+      "theTahtiRadioStreamIs": "The Tahti Radio stream is currently unavailable.",
+      "pauseTahtiRadioStream": "Pause Tahti Radio stream",
+      "playTahtiRadioStream": "Play Tahti Radio stream",
+      "pause": "Pause",
+      "listen": "Listen",
+      "liveGuestOnAir": "Live guest on air",
+      "rotationOnAir": "Rotation on air"
+    },
+    "announcementTrimDialogStates": {
+      "rendering": "Rendering…",
+      "renderTrim": "Render trim"
+    },
+    "selectsGenerateDialogStates": {
+      "replaceRotation": "Replace rotation",
+      "addTracks": "Add tracks",
+      "noNewTracks": "No new tracks to add: every playable top track is already in the rotation.",
+      "replacedRotation_one": "Replaced the rotation with {{count}} track from the top list.",
+      "replacedRotation_other": "Replaced the rotation with {{count}} tracks from the top list.",
+      "addedTracks_one": "Added {{count}} track from the top list.",
+      "addedTracks_other": "Added {{count}} tracks from the top list."
+    },
+    "selectsTabStates": {
+      "stopStream": "Stop stream",
+      "bringStreamOnline": "Bring stream online",
+      "streamStarting": "Stream starting",
+      "streamOffline": "Stream offline",
+      "theRotationServiceIsBeing": "The rotation service is being brought online.",
+      "theStreamIsUnavailableRecovery": "The stream is unavailable. Recovery will be attempted automatically.",
+      "pauseTahtiSelectsStream": "Pause Tahti Selects stream",
+      "playTahtiSelectsStream": "Play Tahti Selects stream",
+      "pause": "Pause",
+      "listen": "Listen",
+      "nowPlaying": "Now playing",
+      "playbackState": "Playback state",
+      "connectingRotation": "Connecting rotation…",
+      "noActiveTrack": "No active track",
+      "deselectItem": "Deselect {{title}}",
+      "selectItem": "Select {{title}}"
+    },
+    "channelRotationPanelStates": {
+      "loading": "Loading…",
+      "openRotation": "Open rotation"
+    },
+    "channelTracksPanelStates": {
+      "loading": "Loading…",
+      "openTracks": "Open tracks"
+    },
+    "rotationReleaseLibraryStates": {
+      "adding": "Adding…",
+      "add": "Add"
+    },
+    "studioBroadcastViewStates": {
+      "onAir": "On air",
+      "offAir": "Off air",
+      "youAreLiveOnYour": "You are live on your channel.",
+      "your247RadioPlays": "Your 24/7 radio plays while you are off air.",
+      "openTheGreenRoom": "Open the green room",
+      "goLive": "Go live"
+    },
+    "studioGoLiveViewStates": {
+      "onAir": "On air",
+      "beforeYouStart": "Before you start"
+    },
+    "broadcastCredentialsPanelStates": {
+      "hideBroadcastingOptions": "Hide broadcasting options",
+      "showBroadcastingOptions": "Show broadcasting options"
+    },
+    "greenRoomInviteFormStates": {
+      "updating": "Updating…",
+      "inviteAnyoneNewFromMy": "Invite anyone new from my invite pool"
+    },
+    "greenRoomSessionPanelStates": {
+      "joined": "Joined",
+      "notJoined": "Not joined"
+    },
+    "multistreamPanelStates": {
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "disable": "Disable",
+      "enable": "Enable"
+    },
+    "recordingPanelStates": {
+      "onSavedWhenTheBroadcast": "On · saved when the broadcast ends",
+      "offThisBroadcastWillNot": "Off · this broadcast will not be saved"
+    },
+    "signalPanelStates": {
+      "signalReceivedButYourBroadcast": "Signal received, but your broadcast time for this week is used up.",
+      "signalReceivedYouCanGo": "Signal received. You can go live.",
+      "signalReady": "Signal ready",
+      "startYourEncoder": "Start your encoder",
+      "takeOverRotation": "Take over rotation",
+      "goLive": "Go Live",
+      "yourBroadcastIsOnAir": "Your broadcast is on air.",
+      "noSignalFromYourEncoder": "No signal from your encoder."
+    },
+    "audioRevisionListStates": {
+      "chooseAnotherFile": "Choose another file",
+      "chooseAudioFile": "Choose audio file",
+      "savingRevision": "Saving revision…",
+      "saveAsNewRevision": "Save as new revision",
+      "pause": "Pause",
+      "preview": "Preview",
+      "switching": "Switching…",
+      "useThisVersion": "Use this version"
+    },
+    "fingerprintTrackPanelStates": {
+      "fingerprinting": "Fingerprinting…",
+      "reFingerprint": "Re-fingerprint",
+      "checking": "Checking…",
+      "checkForAMatch": "Check for a match"
+    },
+    "multitrackTimelineStates": {
+      "pausePreview": "Pause preview",
+      "playPreview": "Play preview",
+      "unmuteItem": "Unmute {{name}}",
+      "muteItem": "Mute {{name}}",
+      "unsoloItem": "Unsolo {{name}}",
+      "soloItem": "Solo {{name}}"
+    },
+    "stemMixerStates": {
+      "pauseAllStems": "Pause all stems",
+      "playAllStems": "Play all stems"
+    },
+    "studioSoundRowMenuStates": {
+      "unpinFromPage": "Unpin from page",
+      "pinToPage": "Pin to page"
+    },
+    "trackAnalysisSectionStates": {
+      "reAnalyze": "Re-analyze",
+      "analyze": "Analyze"
+    },
+    "trackExportConnectionsStates": {
+      "testing": "Testing…",
+      "testConnection": "Test connection"
+    },
+    "trackExportPanelStates": {
+      "sending": "Sending…",
+      "tryAgain": "Try again",
+      "adding": "Adding…",
+      "export": "Export"
+    },
+    "audioTabStates": {
+      "thisTrackIsEmbeddedFrom": "This track is embedded from its original source.",
+      "thisTrackIsStoredAs": "This track is stored as Tahti audio.",
+      "pause": "Pause",
+      "play": "Play",
+      "normalizing": "Normalizing…",
+      "normalizeAudio": "Normalize audio",
+      "trimmingSilence": "Trimming silence…",
+      "trimSilence": "Trim silence"
+    },
+    "hearthisEmbedImportStates": {
+      "importingTheTrackSwitchesTo": "Importing — the track switches to Tahti-hosted audio when it finishes.",
+      "copyThisTracksAudioFrom": "Copy this track’s audio from hearthis.at so it plays without the embed. Only works when downloads are on for it at hearthis.at.",
+      "starting": "Starting…",
+      "importAudio": "Import audio"
+    },
+    "hearthisExportSectionStates": {
+      "tryAgain": "Try again",
+      "push": "Push"
+    },
+    "publishToReleaseSectionStates": {
+      "adding": "Adding…",
+      "addToRelease": "Add to release"
+    },
+    "sharingTabStates": {
+      "preparingDownload": "Preparing download…",
+      "downloadFromHearthis": "Download from HearThis",
+      "resubmit": "Resubmit",
+      "submit": "Submit"
+    },
+    "stationIdClipFormStates": {
+      "makingClip": "Making clip…",
+      "makeClip": "Make clip"
+    },
+    "studioEditorProjectViewStates": {
+      "saveFailed": "Save failed",
+      "saved": "Saved"
+    },
+    "studioMasteringViewStates": {
+      "chooseAnotherFile": "Choose another file",
+      "chooseFile": "Choose file"
+    },
+    "masteringPanelStates": {
+      "expandMastering": "Expand mastering",
+      "minimizeMastering": "Minimize mastering",
+      "disableItem": "Disable {{name}}",
+      "enableItem": "Enable {{name}}"
+    },
+    "stemsPanelStates": {
+      "splitting": "Splitting…",
+      "splitIntoStems": "Split into stems",
+      "loadingLanes": "Loading lanes…",
+      "sendToMultitrack": "Send to Multitrack"
+    },
+    "takeMetamorphDialogStates": {
+      "adding": "Adding…",
+      "addToMultitrack": "Add to Multitrack"
+    },
+    "waveformToolbarStates": {
+      "pause": "Pause",
+      "play": "Play"
+    },
+    "playlistsTabContentStates": {
+      "removeFromRotation": "Remove from rotation",
+      "addToRotation": "Add to rotation"
+    },
+    "processingFailedAlertStates": {
+      "tryProcessingItAgainIf": "Try processing it again. If it keeps failing, upload the file again or contact support.",
+      "tryUploadingItAgainOr": "Try uploading it again, or contact support if it keeps happening."
+    },
+    "soundHeaderStates": {
+      "unpinFromPage": "Unpin from page",
+      "pinToPage": "Pin to page",
+      "normalizing": "Normalizing…",
+      "normalizeAudio": "Normalize audio",
+      "trimmingSilence": "Trimming silence…",
+      "trimSilence": "Trim silence",
+      "pauseTrack": "Pause track",
+      "playTrack": "Play track"
+    },
+    "useSoundEditorStates": {
+      "pinnedToYourPublicPage": "Pinned to your public page.",
+      "unpinned": "Unpinned.",
+      "addedToYour247": "Added to your 24/7 rotation.",
+      "removedFromRotation": "Removed from rotation."
+    },
+    "soundsAmbientListStates": {
+      "noHostedSoundsMatchThese": "No hosted sounds match these filters.",
+      "noSoundsMatchTheseFilters": "No sounds match these filters."
+    },
+    "regionListStates": {
+      "fadeIn": "In {{range}}",
+      "fadeOut": "Out {{range}}"
+    },
+    "addToReleasePanelStates": {
+      "removedFromTheRelease": "Removed from the release.",
+      "removedThoseTracksFromThe": "Removed those tracks from the release."
+    },
+    "releaseTracksToRotationStates": {
+      "adding": "Adding…",
+      "add": "Add"
+    },
+    "studioCollectionMoreMenuStates": {
+      "makePublic": "Make public",
+      "makePrivate": "Make private",
+      "deleting": "Deleting…",
+      "delete": "Delete"
+    },
+    "releaseCsvImportButtonStates": {
+      "done": "Done",
+      "cancel": "Cancel",
+      "importing": "Importing…",
+      "import": "Import"
+    },
+    "studioChannelViewStates": {
+      "radio": "Radio",
+      "channel": "Channel"
+    },
+    "studioEventCreateViewStates": {
+      "editEvent": "Edit event",
+      "addEvent": "Add event",
+      "couldNotSaveTheEvent": "Could not save the event.",
+      "couldNotCreateTheEvent": "Could not create the event.",
+      "saving": "Saving…",
+      "saveChanges": "Save changes",
+      "adding": "Adding…"
+    },
+    "studioHomeViewStates": {
+      "member": "Member",
+      "communityAccount": "Community account"
+    },
+    "studioListeningPartyFormViewStates": {
+      "rescheduleListeningParty": "Reschedule listening party",
+      "scheduleListeningParty": "Schedule listening party",
+      "addTracksToARelease": "Add tracks to a release first",
+      "chooseARelease": "Choose a release",
+      "saveChanges": "Save changes",
+      "scheduleParty": "Schedule party"
+    },
+    "studioRevenueViewStates": {
+      "store": "Store",
+      "earnings": "Earnings"
+    },
+    "studioUpdatesViewStates": {
+      "newsletter": "Newsletter",
+      "posts": "Posts",
+      "fansOnly": "Fans only",
+      "allSubscribers": "All subscribers"
+    },
+    "profileBackdropSectionStates": {
+      "replaceBackdrop": "Replace backdrop",
+      "addABackdrop": "Add a backdrop",
+      "uploading": "Uploading…",
+      "chooseImage": "Choose image"
+    },
+    "profileLogoSectionStates": {
+      "replaceLogo": "Replace logo",
+      "addALogo": "Add a logo",
+      "uploading": "Uploading…",
+      "chooseImage": "Choose image"
+    },
+    "addTracksDialogStates": {
+      "noAvailableTracksMatchYour": "No available tracks match your search",
+      "allLibraryTracksAreAlready": "All library tracks are already in this collection",
+      "adding": "Adding…",
+      "add": "Add",
+      "previewItem": "Preview {{title}}"
+    },
+    "collectionDialogsStates": {
+      "uploading": "Uploading…",
+      "chooseImageS": "Choose image(s)"
+    },
+    "collectionHeaderStates": {
+      "previewBackdrop": "Preview backdrop",
+      "changeBackdrop": "Change backdrop"
+    },
+    "mikseriImportPanelStates": {
+      "adding": "Adding…",
+      "addEmbed": "Add embed"
+    },
+    "mixcloudImportPanelStates": {
+      "mixcloudProfileUrl": "Mixcloud profile URL",
+      "searchMixcloud": "Search Mixcloud",
+      "looking": "Looking…",
+      "find": "Find",
+      "noMixesFoundAddYour": "No mixes found. Add your Mixcloud handle to your social links first.",
+      "noCloudcastsFound": "No cloudcasts found.",
+      "adding": "Adding…",
+      "add": "Add"
+    },
+    "spotifyImportPanelStates": {
+      "spotifyArtistLink": "Spotify artist link",
+      "searchSpotify": "Search Spotify",
+      "looking": "Looking…",
+      "find": "Find",
+      "adding": "Adding…",
+      "add": "Add"
+    },
+    "textLayerPanelStates": {
+      "saving": "Saving…",
+      "saveTextLayer": "Save text layer"
+    },
+    "tracklistPanelStates": {
+      "tracklist": "Tracklist",
+      "items": "Items",
+      "addSoundItemsBelow": "Add sound items below.",
+      "clickEditToAddTracks": "Click Edit to add tracks."
+    },
+    "releaseOpsPanelStates": {
+      "musicbrainzPrefillCopied": "MusicBrainz prefill copied.",
+      "discogsPrefillCopied": "Discogs prefill copied.",
+      "cLine": "C-line",
+      "labelImprint": "Label imprint",
+      "hide": "Hide",
+      "releaseOps": "Release ops"
+    },
+    "recordingRowStates": {
+      "processing": "Processing",
+      "draft": "Draft",
+      "published": "Published"
+    },
+    "releasePoweredByFooterToggleStates": {
+      "footerShownOnTheSmart": "Footer shown on the smart link.",
+      "footerHidden": "Footer hidden."
+    },
+    "releaseTrackAudioUploadStates": {
+      "uploadAgain": "Upload again",
+      "uploadAudio": "Upload audio"
+    },
+    "releaseTrackVersionsPanelStates": {
+      "failed": "Failed",
+      "processing": "Processing",
+      "uploading": "Uploading…",
+      "chooseAudioFile": "Choose audio file"
+    },
+    "episodeEditorRowStates": {
+      "recorded": "Recorded",
+      "uploaded": "Uploaded",
+      "broadcastRecording": "Broadcast recording",
+      "uploadedAudio": "Uploaded audio",
+      "attached": "Attached",
+      "notAttached": "Not attached"
+    },
+    "newEpisodeDialogStates": {
+      "chooseAnotherFile": "Choose another file",
+      "chooseAudio": "Choose audio",
+      "createGoRecord": "Create & go record",
+      "createEpisode": "Create episode"
+    },
+    "overviewTabStates": {
+      "review": "Review",
+      "open": "Open",
+      "reviewItem": "Review {{title}}",
+      "openItem": "Open {{title}}"
+    },
+    "studioEpisodeReviewViewStates": {
+      "rendering": "Rendering…",
+      "applyTrimNormalize": "Apply trim / normalize",
+      "approved": "Approved",
+      "approveEpisode": "Approve episode"
+    },
+    "postDialogStates": {
+      "postSaved": "Post saved.",
+      "postPublished": "Post published.",
+      "schedule": "Schedule",
+      "publish": "Publish",
+      "editPost": "Edit post",
+      "newPost": "New post",
+      "yourLocalTimeClearIt": "Your local time. Clear it to publish now.",
+      "yourLocalTimeLeaveEmpty": "Your local time. Leave empty to publish now.",
+      "addAnImage": "Add an image",
+      "postImage": "Post image",
+      "chooseAnotherImage": "Choose another image",
+      "chooseImage": "Choose image"
+    },
+    "showHeaderStates": {
+      "liveSet": "Live set",
+      "talkShow": "Talk show",
+      "singleShow": "Single show",
+      "series": "Series"
+    },
+    "adminPageCommentsPanelStates": {
+      "resolved": "Resolved",
+      "open": "Open"
+    },
+    "adminUserEditPanelStates": {
+      "accountSuspendedTheyWereEmailed": "Account suspended. They were emailed your reason.",
+      "accountRestoredTheyWereEmailed": "Account restored. They were emailed a sign-in link.",
+      "artist": "Artist",
+      "listener": "Listener",
+      "chargesEnabled": "Charges enabled",
+      "notReady": "Not ready",
+      "yes": "Yes",
+      "no": "No",
+      "restoreAccount": "Restore account",
+      "suspendAccount": "Suspend account"
+    },
+    "adminUserDeletePanelStates": {
+      "deleting": "Deleting…",
+      "deleteAccount": "Delete account"
+    },
+    "adminUserEngagementPanelStates": {
+      "adding": "Adding…",
+      "addAdjustment": "Add adjustment"
+    },
+    "adminAddonsViewStates": {
+      "noAddOnsNeedReview": "No add-ons need review right now.",
+      "noAddOnsRegisteredFor": "No add-ons registered for this type yet."
+    },
+    "adminDashboardViewStates": {
+      "hideMore": "Hide more",
+      "financeStreamsQueuesAudit": "Finance, streams, queues & audit"
+    },
+    "adminI18nViewStates": {
+      "adding": "Adding…",
+      "addLanguage": "Add language",
+      "importing": "Importing…",
+      "translationCsv": "Translation CSV",
+      "chooseCsv": "Choose CSV"
+    },
+    "adminMonitoringViewStates": {
+      "clearFilter": "Clear filter",
+      "filterBelow": "Filter below"
+    },
+    "adminNewsViewStates": {
+      "unpublish": "Unpublish",
+      "publish": "Publish",
+      "publishing": "Publishing…"
+    },
+    "adminStorageUserViewStates": {
+      "stash": "Stash",
+      "tracks": "Tracks",
+      "public": "Public",
+      "private": "Private"
+    },
+    "adminStorageViewStates": {
+      "files": "Files",
+      "storage": "Storage"
+    },
+    "adminTestNotificationPanelStates": {
+      "sending": "Sending…",
+      "sendTest": "Send test"
+    },
+    "adminTopListsViewStates": {
+      "noMatchingTopListEntries": "No matching top-list entries",
+      "noListensYet": "No listens yet",
+      "tryAnotherSearchPeriodOr": "Try another search, period, or grouping.",
+      "noListensRecordedForThis": "No listens recorded for this period yet."
+    },
+    "adminVendorsViewStates": {
+      "live": "Live",
+      "blockingLaunch": "Blocking launch"
+    },
+    "adminVenuesViewStates": {
+      "unverify": "Unverify",
+      "verify": "Verify"
+    },
+    "internetRadioPresetsPanelStates": {
+      "enabledForEveryone": "Enabled for everyone",
+      "off": "Off",
+      "disable": "Disable",
+      "enableForEveryone": "Enable for everyone",
+      "editStation": "Edit station",
+      "addInternetRadioStation": "Add internet radio station"
+    },
+    "stationHealthCellStates": {
+      "testing": "Testing…",
+      "test": "Test"
+    },
+    "installsPanelStates": {
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "publishDialogStates": {
+      "chooseAnotherFile": "Choose another file",
+      "chooseBundle": "Choose bundle",
+      "publishing": "Publishing…",
+      "publishForReview": "Publish for review"
+    },
+    "registerDialogStates": {
+      "changesTheNameDescriptionAuthor": "Changes the name, description, author, cover and categories. The slug and type stay as registered.",
+      "createsADraftAddOn": "Creates a draft add-on. It stays invisible everywhere until a bundle version is published (the upload button on its card) and approved."
+    },
+    "fanSubArtistsPanelStates": {
+      "onboarding": "Onboarding",
+      "notConnected": "Not connected"
+    },
+    "fanSubPayoutQueueStates": {
+      "failed": "Failed",
+      "pending": "Pending",
+      "retrying": "Retrying…",
+      "retry": "Retry"
+    },
+    "ledgerPanelStates": {
+      "recordedAsACost": "Recorded as a cost.",
+      "recordedAsIncome": "Recorded as income.",
+      "cancelEntry": "Cancel entry",
+      "addEntry": "Add entry"
+    },
+    "betaTabStates": {
+      "approving": "Approving…",
+      "approve": "Approve"
+    },
+    "radioSubmissionsTabStates": {
+      "loading": "Loading…",
+      "play": "Play"
+    },
+    "workersPanelStates": {
+      "online": "Online",
+      "offline": "Offline"
+    },
+    "filesBrowserTabStates": {
+      "public": "Public",
+      "private": "Private",
+      "selectNone": "Select none",
+      "selectAllShown": "Select all shown",
+      "noFilesMatchTheseFilters": "No files match these filters",
+      "noFilesYet": "No files yet"
+    },
+    "storageSharedStates": {
+      "public": "Public",
+      "private": "Private"
+    },
+    "membershipInvoicesStates": {
+      "pay": "Pay",
+      "view": "View"
+    },
+    "membershipStatusPanelStates": {
+      "opening": "Opening…",
+      "manageBilling": "Manage billing →",
+      "renewYourMembership": "Renew your membership",
+      "completeYourMembership": "Complete your membership",
+      "sending": "Sending…",
+      "resendVerificationEmail": "Resend verification email"
+    },
+    "associationPanelStates": {
+      "auditor": "Auditor",
+      "operationsInspector": "Operations inspector"
+    },
+    "candidacyControlStates": {
+      "sending": "Sending…",
+      "standInThisElection": "Stand in this election"
+    },
+    "correctionsPanelStates": {
+      "sending": "Sending…",
+      "sendToTheBoard": "Send to the board"
+    },
+    "meetingConflictsStates": {
+      "steppedOutOfTheDecision": "Stepped out of the decision",
+      "tookPart": "Took part"
+    },
+    "motionAgendaItemControlStates": {
+      "changeAgendaItem": "Change agenda item",
+      "chooseAgendaItem": "Choose agenda item"
+    },
+    "motionCardStates": {
+      "votingOpened": "Voting opened.",
+      "motionClosedAndResultPublished": "Motion closed and result published.",
+      "openVoting": "Open voting",
+      "closePublishResult": "Close & publish result"
+    },
+    "motionCertificatePanelStates": {
+      "matchesTheRecord": "Matches the record",
+      "doesNotMatchTheRecord": "Does not match the record"
+    },
+    "motionDiscussionStates": {
+      "hideDiscussion": "Hide discussion",
+      "discussion": "Discussion",
+      "itIsReplacedByComment": "It is replaced by \"Comment removed.\" for every member, and the removal is logged.",
+      "itIsReplacedByComment2": "It is replaced by \"Comment removed.\" for every member."
+    },
+    "motionMeetingLinkControlStates": {
+      "changeMeeting": "Change meeting",
+      "putOnAMeeting": "Put on a meeting"
+    },
+    "discussionTopicViewStates": {
+      "posting": "Posting…",
+      "postReply": "Post reply",
+      "saving": "Saving…",
+      "save": "Save",
+      "youNoLongerFollowThis": "You no longer follow this topic.",
+      "youFollowThisTopicNew": "You follow this topic; new replies notify you.",
+      "unfollow": "Unfollow",
+      "follow": "Follow",
+      "repliesNotifyYouAgain": "Replies notify you again.",
+      "mutedYouStillFollowIt": "Muted: you still follow it, without notifications.",
+      "unmute": "Unmute",
+      "muteNotifications": "Mute notifications",
+      "loading": "Loading…",
+      "showEarlierReplies": "Show earlier replies",
+      "itIsDeletedForEvery": "It is deleted for every member, and the removal is logged.",
+      "itIsDeletedForEvery2": "It is deleted for every member."
+    },
+    "featureRequestsViewStates": {
+      "cancel": "Cancel",
+      "proposeAnIdea": "Propose an idea",
+      "posting": "Posting…",
+      "postIdea": "Post idea",
+      "hideDiscussion": "Hide discussion",
+      "discussion": "Discussion"
+    },
+    "governanceMeetingDetailViewStates": {
+      "met": "Met",
+      "notMet": "Not met"
+    },
+    "governanceMembersViewStates": {
+      "noMemberDirectoryIsPublished": "No member directory is published yet.",
+      "noMembersMatchThisSearch": "No members match this search."
+    },
+    "governanceViewStates": {
+      "submitting": "Submitting…",
+      "submitDraft": "Submit draft",
+      "loading": "Loading…",
+      "loadMoreMotions": "Load more motions"
+    },
+    "discussionsAdminPanelStates": {
+      "opening": "Opening…",
+      "openTopic": "Open topic",
+      "saving": "Saving…",
+      "save": "Save",
+      "open": "Open",
+      "closed": "Closed",
+      "topicUnpinned": "Topic unpinned.",
+      "topicPinned": "Topic pinned.",
+      "unpin": "Unpin",
+      "pin": "Pin",
+      "topicClosedToRepliesIts": "Topic closed to replies. Its followers are told.",
+      "topicReopened": "Topic reopened.",
+      "close": "Close",
+      "reopen": "Reopen"
+    },
+    "auditorsPanelStates": {
+      "auditor": "Auditor",
+      "operationsInspector": "Operations inspector",
+      "serving": "Serving",
+      "notServing": "Not serving"
+    },
+    "correctionsQueuePanelStates": {
+      "noRequestsAreWaiting": "No requests are waiting",
+      "noCorrectionRequestsYet": "No correction requests yet"
+    },
+    "governanceDocumentRowStates": {
+      "published": "Published",
+      "draft": "Draft",
+      "restore": "Restore",
+      "archive": "Archive",
+      "restoreItem": "Restore: {{label}}",
+      "archiveItem": "Archive: {{label}}"
+    },
+    "agendaItemsPanelStates": {
+      "adding": "Adding…",
+      "addToTheAgenda": "Add to the agenda"
+    },
+    "agmTabStates": {
+      "recording": "Recording…",
+      "record": "Record",
+      "creating": "Creating…",
+      "createMeeting": "Create meeting",
+      "uploadedPendingApproval": "Uploaded, pending approval",
+      "notUploaded": "Not uploaded",
+      "replaceFile": "Replace file",
+      "uploadFile": "Upload file",
+      "advisory": "Advisory",
+      "binding": "Binding",
+      "publishing": "Publishing…",
+      "addDocument": "Add document"
+    },
+    "annualReportFilingFormStates": {
+      "changeFiling": "Change filing",
+      "recordFiling": "Record filing"
+    },
+    "meetingRecordPanelsStates": {
+      "recused": "Recused",
+      "tookPart": "Took part",
+      "recording": "Recording…",
+      "recordDeclaration": "Record declaration"
+    },
+    "reportsTabStates": {
+      "generating": "Generating…",
+      "generateReport": "Generate report"
+    },
+    "localLibraryAnalysisStates": {
+      "resume": "Resume",
+      "pause": "Pause",
+      "pausedProgress": "Paused {{done}} of {{total}}",
+      "analyzingProgress": "Analyzing {{done}} of {{total}}"
+    },
+    "organizeFilesDialogStates": {
+      "moveFiles": "Move files",
+      "copyFiles": "Copy files",
+      "movedFiles_one": "Moved {{count}} file.",
+      "movedFiles_other": "Moved {{count}} files.",
+      "copiedFiles_one": "Copied {{count}} file.",
+      "copiedFiles_other": "Copied {{count}} files."
+    },
+    "soundCloudEmbedsPanelStates": {
+      "adding": "Adding…",
+      "addTrack": "Add track"
+    },
+    "stashFilesPanelStates": {
+      "uploading": "Uploading…",
+      "uploadAPrivateFile": "Upload a private file",
+      "working": "Working…",
+      "chooseFile": "Choose file"
+    },
+    "desktopLibraryContentStates": {
+      "working": "Working…",
+      "importFiles": "Import files",
+      "loadingLibrary": "Loading library…",
+      "importFilesToBuildYour": "Import files to build your offline library."
+    },
+    "itunesImportDialogStates": {
+      "done": "Done",
+      "cancel": "Cancel"
+    },
+    "providerSetImportDialogStates": {
+      "done": "Done",
+      "cancel": "Cancel"
+    },
+    "remainingCategoriesStates": {
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "addStationUrlDialogStates": {
+      "testing": "Testing…",
+      "resolveTest": "Resolve & test"
+    },
+    "radioBrowserDirectoryCardStates": {
+      "hideGenres": "Hide genres",
+      "allGenres": "All genres",
+      "results": "Results",
+      "popularStations": "Popular stations"
+    },
+    "stationEditDialogStates": {
+      "testing": "Testing…",
+      "testStream": "Test stream"
+    },
+    "stationRowsStates": {
+      "saved": "Saved",
+      "save": "Save",
+      "pause": "Pause",
+      "preview": "Preview"
+    },
+    "suggestStationFormStates": {
+      "cancel": "Cancel",
+      "suggestAStation": "Suggest a station",
+      "sending": "Sending…",
+      "sendForReview": "Send for review"
+    },
+    "googleDriveImportStates": {
+      "queueingImport": "Queueing import…",
+      "chooseFilesFromDrive": "Choose files from Drive"
+    },
+    "oAuthServiceCardStates": {
+      "disconnecting": "Disconnecting…",
+      "disconnect": "Disconnect"
+    },
+    "spotifyCardStates": {
+      "linking": "Linking…",
+      "linkProfile": "Link profile"
+    },
+    "pluginStoreSharedStates": {
+      "nothingInstalled": "Nothing installed",
+      "allInstalled": "All installed"
+    },
+    "discordBotAddonCardStates": {
+      "saving": "Saving…",
+      "save": "Save"
+    },
+    "lastFmIntegrationRowStates": {
+      "signInAgainThenReconnect": "Sign in again, then reconnect Last.fm.",
+      "couldNotConnectLastFm": "Could not connect Last.fm. Try again.",
+      "openingLastFm": "Opening Last.fm…",
+      "connectWithMyKey": "Connect with my key"
+    },
+    "listenBrainzIntegrationRowStates": {
+      "updateToken": "Update token",
+      "saveAndEnable": "Save and enable"
+    },
+    "myRadioStationsStates": {
+      "adding": "Adding…",
+      "addStation": "Add station"
+    },
+    "newsFeedUrlFieldStates": {
+      "newsFeedSaved": "News feed saved.",
+      "newsFeedRemovedFromYour": "News feed removed from your page."
+    },
+    "artistGalleryPanelStates": {
+      "photoRemoved": "Photo removed.",
+      "photosRemoved": "Photos removed.",
+      "uploadingGalleryImages": "Uploading gallery images",
+      "uploadMoreGalleryImages": "Upload more gallery images",
+      "deselect": "Deselect",
+      "select": "Select",
+      "deselectPhoto": "Deselect photo",
+      "selectPhoto": "Select photo",
+      "uploading": "Uploading…",
+      "addGalleryImages": "Add gallery images"
+    },
+    "artistImagePurposePickerStates": {
+      "uploading": "Uploading…",
+      "uploadImages": "Upload images"
+    },
+    "artworkPresetUploadDialogStates": {
+      "chooseAnotherImage": "Choose another image",
+      "chooseImage": "Choose image",
+      "uploading": "Uploading…",
+      "upload": "Upload"
+    },
+    "backdropUploadButtonStates": {
+      "uploading": "Uploading…",
+      "chooseImage": "Choose image"
+    },
+    "channelChatPanelStates": {
+      "joining": "Joining…",
+      "joinChat": "Join chat"
+    },
+    "channelDesignerStates": {
+      "saveLook": "Save look",
+      "saveLayout": "Save layout",
+      "savingLook": "Saving look…",
+      "savingLayout": "Saving layout…"
+    },
+    "channelElementEditorStates": {
+      "hiddenFromYourPage": "Hidden from your page",
+      "visibleOnYourPage": "Visible on your page"
+    },
+    "channelLayersMenuStates": {
+      "addAPlaylistOrAnother": "Add a playlist or another section to your page.",
+      "startWithALayoutThen": "Start with a layout, then make it your own."
+    },
+    "channelLinksEditorStates": {
+      "showOnChannel": "Show on channel",
+      "hideFromChannel": "Hide from channel",
+      "showLinkOnChannel": "Show link on channel",
+      "hideLinkFromChannel": "Hide link from channel"
+    },
+    "channelPlaylistBlockStates": {
+      "thisPlaylistCouldNotBe": "This playlist could not be loaded. Pick another in widget settings.",
+      "thisPlaylistIsPrivateOr": "This playlist is private or was removed."
+    },
+    "fanChatRoomStates": {
+      "subscribersOnly": "Subscribers only",
+      "connecting": "Connecting…"
+    },
+    "fanTiersEditorStates": {
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "creating": "Creating…",
+      "createTier": "Create tier"
+    },
+    "imageUploadFieldStates": {
+      "chooseAnotherImage": "Choose another image",
+      "chooseImage": "Choose image"
+    },
+    "imageUrlFormStates": {
+      "fetching": "Fetching…",
+      "useThisImage": "Use this image"
+    },
+    "purchaseTiersEditorStates": {
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "suggestedPrice": "Suggested price (€)",
+      "price": "Price (€)",
+      "creating": "Creating…",
+      "createTier": "Create tier"
+    },
+    "soundShareLinksSectionStates": {
+      "playDownload": "Play & download",
+      "playOnly": "Play only"
+    },
+    "streamOverlayEditorStates": {
+      "previewOverlayCover": "Preview overlay cover",
+      "changeOverlayCover": "Change overlay cover",
+      "uploading": "Uploading…",
+      "chooseImage": "Choose image"
+    },
+    "studioRadioSubmissionPanelStates": {
+      "rejected": "Rejected",
+      "pendingReview": "Pending review",
+      "inRotation": "In rotation"
+    },
+    "tracklistEditorStates": {
+      "dropTraktorOrRekordboxPlaylist": "Drop Traktor or Rekordbox playlist here",
+      "dropNmlOrTxtTracklist": "Drop .nml or .txt tracklist here"
+    },
+    "artistBlockButtonStates": {
+      "unblock": "Unblock",
+      "block": "Block"
+    },
+    "artistMusicTabStates": {
+      "pauseFeaturedTrack": "Pause featured track",
+      "playFeaturedTrack": "Play featured track"
+    },
+    "artistProfileSectionsStates": {
+      "unblock": "Unblock",
+      "block": "Block"
+    },
+    "clipEditorDialogStates": {
+      "trimStart": "Trim start",
+      "trimEnd": "Trim end",
+      "working": "Working…",
+      "generatePreview": "Generate preview",
+      "previewReadyListenToProcessed": "Preview ready. Listen to Processed, then save.",
+      "generateAPreviewToHear": "Generate a preview to hear and save these changes.",
+      "originalPreview": "Original clip preview",
+      "processedPreview": "Processed clip preview"
+    },
+    "voiceRecorderStates": {
+      "recordAnotherTake": "Record another take",
+      "recordVoice": "Record voice"
+    },
+    "playerVisualizerControlsStates": {
+      "disableVisualizer": "Disable visualizer",
+      "enableVisualizer": "Enable visualizer"
+    },
+    "channelEditToolbarStates": {
+      "hideMenu": "Hide menu",
+      "layersMenu": "Layers menu"
+    },
+    "channelListeningPartyBannerStates": {
+      "listeningPartyLiveNow": "Listening party · live now",
+      "listeningParty": "Listening party",
+      "joinNow": "Join now",
+      "openParty": "Open party"
+    },
+    "radioProgrammingGridStates": {
+      "talkShow": "Talk show",
+      "liveSet": "Live set"
+    },
+    "imageSlotPreviewDialogStates": {
+      "removing": "Removing…",
+      "remove": "Remove"
+    },
+    "listeningPartyJoinButtonStates": {
+      "listeningAlong": "Listening along",
+      "youAreInPlaybackStarts": "You are in; playback starts at showtime",
+      "joinTheParty": "Join the party",
+      "joinAtTheStart": "Join at the start"
+    },
+    "radioBookingCalendarStates": {
+      "myChannelSchedule": "My channel schedule",
+      "tahtiRadioSchedule": "Tahti Radio schedule",
+      "yourBookedSlotsAndShows": "Your booked slots and shows on Tahti Radio.",
+      "communitySlotCalendarBookTime": "Community slot calendar — book time to broadcast on Tahti Radio."
+    },
+    "venueDetailsFormStates": {
+      "saving": "Saving…",
+      "saveDetails": "Save details"
+    },
+    "venueShowsSectionStates": {
+      "booking": "Booking…",
+      "bookTheShow": "Book the show"
+    },
+    "collectionViewStates": {
+      "subscribed": "Subscribed",
+      "subscribe": "Subscribe"
+    },
+    "emailChangeViewStates": {
+      "emailChanged": "Email changed",
+      "confirmNewEmail": "Confirm new email",
+      "backToSettings": "Back to Settings",
+      "signIn": "Sign in"
+    },
+    "embedViewsStates": {
+      "playing": "Playing",
+      "play": "Play"
+    },
+    "feedViewStates": {
+      "discoverArtistsUnderDiscoverArtists": "Discover artists under Discover → Artists, then follow them to fill this feed.",
+      "newPostsTracksAndReleases": "New posts, tracks, and releases from artists you follow will show up here."
+    },
+    "forgotPasswordViewStates": {
+      "sending": "Sending…",
+      "sendResetLink": "Send reset link"
+    },
+    "jamViewStates": {
+      "reconnecting": "Reconnecting…",
+      "connecting": "Connecting…"
+    },
+    "messagesViewStates": {
+      "searchForSomeoneAboveOr": "Search for someone above, or find artists on Discover.",
+      "pickAThreadFromThe": "Pick a thread from the list to read and reply."
+    },
+    "myVenuesViewStates": {
+      "verified": "Verified",
+      "waitingForBoardVerification": "Waiting for board verification"
+    },
+    "newsletterStatusViewStates": {
+      "unsubscribing": "Unsubscribing…",
+      "unsubscribe": "Unsubscribe"
+    },
+    "notificationsViewStates": {
+      "loading": "Loading…",
+      "showOlder": "Show older"
+    },
+    "onboardingViewStates": {
+      "saving": "Saving…",
+      "finishSetup": "Finish setup"
+    },
+    "radioScheduleViewStates": {
+      "talkShow": "Talk show",
+      "liveSet": "Live set",
+      "tahtiRadio": "Tahti Radio",
+      "myChannel": "My channel",
+      "booking": "Booking…",
+      "confirmBooking": "Confirm booking",
+      "cancelling": "Cancelling…",
+      "cancelBooking": "Cancel booking"
+    },
+    "radioShowViewStates": {
+      "couldNotRefreshNowPlaying": "Could not refresh now playing",
+      "couldNotLoadNowPlaying": "Could not load now playing"
+    },
+    "signupPaymentViewStates": {
+      "starting": "Starting…",
+      "pay40Year": "Pay €40 / year"
+    },
+    "studioProEditorViewStates": {
+      "localOnlyServerSyncUnavailable": "Local only — server sync unavailable. OPFS autosave still applies.",
+      "openMultitrackToLinkAn": "Open Multitrack to link an editor project for this sound."
+    },
+    "subscribeViewStates": {
+      "starting": "Starting…",
+      "subscribe": "Subscribe"
+    },
+    "trackAccessGateStates": {
+      "subscribeInstead": "Subscribe instead",
+      "subscribeToListen": "Subscribe to listen",
+      "buyToListen": "Buy to listen",
+      "fanSubscribersOnly": "Fan subscribers only",
+      "buying": "Buying…",
+      "buyThisTrack": "Buy this track"
+    },
+    "trackHeroStates": {
+      "writeAComment": "Write a comment",
+      "writeATimedComment": "Write a timed comment",
+      "buying": "Buying…",
+      "buyThisTrack": "Buy this track"
+    },
+    "venueRegisterViewStates": {
+      "submitting": "Submitting…",
+      "submitForReview": "Submit for review"
+    },
+    "verifyViewStates": {
+      "emailVerified": "Email verified",
+      "verifyEmail": "Verify email",
+      "verifying": "Verifying…"
+    },
+    "addToPlaylistPanelStates": {
+      "creating": "Creating…",
+      "createAdd": "Create & add"
+    },
+    "processingIndicatorStates": {
+      "queued": "Queued",
+      "processing": "Processing"
+    },
+    "catalogTrackSearchStates": {
+      "adding": "Adding…",
+      "add": "Add",
+      "loading": "Loading…",
+      "moreResults": "More results"
+    },
+    "discoWidgetManagerPanelStates": {
+      "noWidgetsAvailable": "No widgets available",
+      "noMatchingWidgets": "No matching widgets",
+      "nothingInThisStoreYet": "Nothing in this store yet.",
+      "tryADifferentSearch": "Try a different search."
+    },
+    "discoverWaveformPlayerStates": {
+      "pauseSelectedTrack": "Pause selected track",
+      "playSelectedTrack": "Play selected track"
+    },
+    "dmThreadMessagesStates": {
+      "tryAgain": "Try again",
+      "loadOlderMessages": "Load older messages"
+    },
+    "duplicatesDialogStates": {
+      "comparedAndDifferentTheseAre": "Compared and different: these are separate recordings or versions, not duplicates.",
+      "sameTitleArtistAndLength": "Same title, artist and length. Compare file contents to find out whether they are really the same."
+    },
+    "materialGroupsFieldStates": {
+      "noGroupsMatchThatSearch": "No groups match that search.",
+      "youAreNotInAny": "You are not in any groups yet."
+    },
+    "materialSetsFieldStates": {
+      "noSetsMatchThatSearch": "No sets match that search.",
+      "noSetsYet": "No sets yet."
+    },
+    "messageContactsStates": {
+      "followsYou": "Follows you",
+      "youFollow": "You follow"
+    },
+    "chatMessagesPanelStates": {
+      "owner": "Owner",
+      "moderator": "Moderator",
+      "theyCanNoLongerPost": "They can no longer post here. Their earlier messages stay until you remove them, and you can lift the ban under Chat bans.",
+      "itDisappearsForEveryoneWho": "It disappears for everyone who opens the chat from now on. People who have the chat open keep it until they reload.",
+      "ban": "Ban",
+      "remove": "Remove"
+    },
+    "musicBrainzRegisterPromptStates": {
+      "musicbrainzRegistrationWillBeOffered": "MusicBrainz registration will be offered for every release.",
+      "musicbrainzRegistrationWontBeOffered": "MusicBrainz registration won’t be offered again. It stays in the Export tab."
+    },
+    "musicBrainzSubmissionAssistantStates": {
+      "prepareMusicbrainzRelease": "Prepare MusicBrainz release",
+      "prepareMusicbrainzTrack": "Prepare MusicBrainz track"
+    },
+    "mySupportTicketsStates": {
+      "stillNeedHelpReplyingReopens": "Still need help? Replying reopens this request.",
+      "addAReply": "Add a reply…",
+      "sending": "Sending…",
+      "sendReply": "Send reply"
+    },
+    "newsletterSubscribeToggleStates": {
+      "subscribedYoullGetNotificationsFor": "Subscribed — you’ll get notifications for newsletters, events, and other activity.",
+      "unsubscribed": "Unsubscribed.",
+      "subscribedYoullSeeThisArtist": "Subscribed — you’ll see this artist in your feed and notifications. Click to unsubscribe.",
+      "subscribeToSeeThisArtist": "Subscribe to see this artist in your feed and notifications",
+      "subscribed": "Subscribed",
+      "subscribe": "Subscribe",
+      "sending": "Sending…"
+    },
+    "platformNewsDialogStates": {
+      "saving": "Saving…",
+      "saveArticle": "Save article"
+    },
+    "playlistExportDialogStates": {
+      "bestForSharingOrMoving": "Best for sharing or moving: the list keeps working if the file and the music move together. Files outside the folder you save to are written with ../ and only resolve if that layout is the same on the other side; files on another drive fall back to full paths.",
+      "worksOnThisComputerAs": "Works on this computer as it is, but not on another with a different folder layout."
+    },
+    "reportButtonStates": {
+      "sending": "Sending…",
+      "sendReport": "Send report"
+    },
+    "saveQueueAsPlaylistDialogStates": {
+      "saving": "Saving…",
+      "savePlaylist": "Save playlist"
+    },
+    "searchTrackResultsStates": {
+      "buy": "Buy",
+      "members": "Members"
+    },
+    "smartPlaylistDialogStates": {
+      "editSmartPlaylist": "Edit smart playlist",
+      "newSmartPlaylist": "New smart playlist"
+    },
+    "supportContactFormStates": {
+      "sending": "Sending…",
+      "sendMessage": "Send message"
+    },
+    "trackAudienceStates": {
+      "loading": "Loading…",
+      "showMore": "Show more"
+    },
+    "embedTrackRowStates": {
+      "pauseOn": "Pause {{title}} on {{label}}",
+      "playOn": "Play {{title}} on {{label}}"
+    },
+    "uiLabels": {
+      "close": "Close",
+      "copy": "Copy",
+      "copied": "Copied",
+      "copiedToClipboard": "Copied to clipboard",
+      "copyFailed": "Could not copy to clipboard",
+      "edit": "Edit",
+      "doneEditing": "Done editing",
+      "copyFeedFailed": "Could not copy the feed link."
+    },
+    "broadcastPanel": {
+      "defaultsHint": "Defaults for radio, green room, and multistream live here. Run the live session from Studio › Broadcast.",
+      "openStudioBroadcast": "Open Studio › Broadcast"
+    },
+    "messagesView": {
+      "noMessagesYet": "No messages yet"
     },
     "ledgerCategory": {
       "REVENUE_SUBSCRIPTION": "Membership and fan subscriptions",

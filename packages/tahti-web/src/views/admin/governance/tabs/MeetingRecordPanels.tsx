@@ -110,7 +110,9 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
                     variant="pill"
                     color={record.recused ? 'yellow' : 'secondary'}
                   >
-                    {record.recused ? 'Recused' : 'Took part'}
+                    {record.recused
+                      ? t('meetingRecordPanelsStates.recused')
+                      : t('meetingRecordPanelsStates.tookPart')}
                   </Badge>
                   <Button
                     size="xs"
@@ -181,7 +183,9 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
             disabled={saving || !name.trim() || !matter.trim()}
             type="submit"
           >
-            {saving ? 'Recording…' : 'Record declaration'}
+            {saving
+              ? t('meetingRecordPanelsStates.recording')
+              : t('meetingRecordPanelsStates.recordDeclaration')}
           </Button>
         </div>
       </form>

@@ -6,6 +6,7 @@ import { Badge, Button } from '@tahti-player/ui';
 import { fetchSignalStatus, mockSimulateSignal } from '../../../api/broadcast';
 import { SignalCheckWidget } from '../../../components/SignalCheckWidget';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { webT } from '../../../lib/webT';
 import { BroadcastUsageMeter } from './BroadcastUsageMeter';
 import type { GoLiveState } from './useGoLiveState';
 
@@ -16,15 +17,16 @@ export function signalAnnouncement(
   signalOk: boolean,
   blocked: boolean | undefined,
 ): string {
+  const t = webT();
   if (isBroadcastLive) {
-    return 'Your broadcast is on air.';
+    return t('signalPanelStates.yourBroadcastIsOnAir');
   }
   if (!signalOk) {
-    return 'No signal from your encoder.';
+    return t('signalPanelStates.noSignalFromYourEncoder');
   }
   return blocked
-    ? 'Signal received, but your broadcast time for this week is used up.'
-    : 'Signal received. You can go live.';
+    ? t('signalPanelStates.signalReceivedButYourBroadcast')
+    : t('signalPanelStates.signalReceivedYouCanGo');
 }
 
 export function SignalPanel({ state }: { state: GoLiveState }) {
@@ -56,8 +58,8 @@ export function SignalPanel({ state }: { state: GoLiveState }) {
           : rotationPlaying
             ? 'Ready to take over the rotation'
             : signalOk
-              ? 'Signal ready'
-              : 'Start your encoder'
+              ? t('signalPanelStates.signalReady')
+              : t('signalPanelStates.startYourEncoder')
       }
       description={
         signalOk
@@ -88,8 +90,8 @@ export function SignalPanel({ state }: { state: GoLiveState }) {
               {busy
                 ? 'Going live…'
                 : rotationPlaying
-                  ? 'Take over rotation'
-                  : 'Go Live'}
+                  ? t('signalPanelStates.takeOverRotation')
+                  : t('signalPanelStates.goLive')}
             </Button>
           ) : null}
         </div>

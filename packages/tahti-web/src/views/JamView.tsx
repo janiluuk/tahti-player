@@ -279,8 +279,8 @@ export function JamView({ code }: { code: string }) {
               {connectionStatus === 'connected'
                 ? 'Live'
                 : connectionStatus === 'reconnecting'
-                  ? 'Reconnecting…'
-                  : 'Connecting…'}
+                  ? t('jamViewStates.reconnecting')
+                  : t('jamViewStates.connecting')}
             </Badge>
           </div>
           <div className="flex items-center gap-2">

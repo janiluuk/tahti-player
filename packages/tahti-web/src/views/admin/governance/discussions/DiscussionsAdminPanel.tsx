@@ -99,7 +99,9 @@ function NewTopicForm({
       </p>
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy || !canSubmit}>
-          {busy ? 'Opening…' : 'Open topic'}
+          {busy
+            ? t('discussionsAdminPanelStates.opening')
+            : t('discussionsAdminPanelStates.openTopic')}
         </Button>
         <Button
           type="button"
@@ -171,7 +173,9 @@ function EditTopicForm({
       {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy || !changed || !valid}>
-          {busy ? 'Saving…' : 'Save'}
+          {busy
+            ? t('discussionsAdminPanelStates.saving')
+            : t('discussionsAdminPanelStates.save')}
         </Button>
         <Button
           type="button"
@@ -246,7 +250,9 @@ function TopicRow({
             variant="pill"
             color={topic.status === 'OPEN' ? 'green' : 'secondary'}
           >
-            {topic.status === 'OPEN' ? 'Open' : 'Closed'}
+            {topic.status === 'OPEN'
+              ? t('discussionsAdminPanelStates.open')
+              : t('discussionsAdminPanelStates.closed')}
           </Badge>
         </span>
       </div>
@@ -266,11 +272,15 @@ function TopicRow({
           onClick={() =>
             void update(
               { pinned: !topic.pinned },
-              topic.pinned ? 'Topic unpinned.' : 'Topic pinned.',
+              topic.pinned
+                ? t('discussionsAdminPanelStates.topicUnpinned')
+                : t('discussionsAdminPanelStates.topicPinned'),
             )
           }
         >
-          {topic.pinned ? 'Unpin' : 'Pin'}
+          {topic.pinned
+            ? t('discussionsAdminPanelStates.unpin')
+            : t('discussionsAdminPanelStates.pin')}
         </Button>
         <Button
           size="sm"
@@ -280,12 +290,14 @@ function TopicRow({
             void update(
               { status: topic.status === 'OPEN' ? 'CLOSED' : 'OPEN' },
               topic.status === 'OPEN'
-                ? 'Topic closed to replies. Its followers are told.'
-                : 'Topic reopened.',
+                ? t('discussionsAdminPanelStates.topicClosedToRepliesIts')
+                : t('discussionsAdminPanelStates.topicReopened'),
             )
           }
         >
-          {topic.status === 'OPEN' ? 'Close' : 'Reopen'}
+          {topic.status === 'OPEN'
+            ? t('discussionsAdminPanelStates.close')
+            : t('discussionsAdminPanelStates.reopen')}
         </Button>
       </div>
     </li>

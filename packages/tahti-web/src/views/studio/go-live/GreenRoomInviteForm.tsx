@@ -121,8 +121,8 @@ export function GreenRoomInviteForm({
           onClick={() => void sync()}
         >
           {busy === 'sync'
-            ? 'Updating…'
-            : 'Invite anyone new from my invite pool'}
+            ? t('greenRoomInviteFormStates.updating')
+            : t('greenRoomInviteFormStates.inviteAnyoneNewFromMy')}
         </Button>
       ) : null}
     </div>

@@ -168,8 +168,8 @@ export function AdminUserEditPanel({
     setSuspendReason('');
     setStatus(
       result.data.suspendedAt
-        ? 'Account suspended. They were emailed your reason.'
-        : 'Account restored. They were emailed a sign-in link.',
+        ? t('adminUserEditPanelStates.accountSuspendedTheyWereEmailed')
+        : t('adminUserEditPanelStates.accountRestoredTheyWereEmailed'),
     );
   };
 
@@ -339,7 +339,9 @@ export function AdminUserEditPanel({
             </dt>
             <dd>
               {publicProfile?.channel?.artistKind ??
-                (detail.channel ? 'Artist' : 'Listener')}
+                (detail.channel
+                  ? t('adminUserEditPanelStates.artist')
+                  : t('adminUserEditPanelStates.listener'))}
             </dd>
           </div>
           <div>
@@ -401,8 +403,8 @@ export function AdminUserEditPanel({
             </dt>
             <dd className="mt-1 text-sm font-medium">
               {detail.stripeConnectChargesEnabled
-                ? 'Charges enabled'
-                : 'Not ready'}
+                ? t('adminUserEditPanelStates.chargesEnabled')
+                : t('adminUserEditPanelStates.notReady')}
             </dd>
           </div>
         </dl>
@@ -480,7 +482,11 @@ export function AdminUserEditPanel({
               <dt className="text-foreground-secondary">
                 {t('adminUserEdit.associationMember')}
               </dt>
-              <dd>{detail.isMember ? 'Yes' : 'No'}</dd>
+              <dd>
+                {detail.isMember
+                  ? t('adminUserEditPanelStates.yes')
+                  : t('adminUserEditPanelStates.no')}
+              </dd>
             </dl>
           )}
         </StudioPanel>
@@ -531,7 +537,9 @@ export function AdminUserEditPanel({
               }
             >
               <ShieldAlertIcon size={14} aria-hidden className="mr-1.5" />
-              {detail.suspendedAt ? 'Restore account' : 'Suspend account'}
+              {detail.suspendedAt
+                ? t('adminUserEditPanelStates.restoreAccount')
+                : t('adminUserEditPanelStates.suspendAccount')}
             </Button>
           </form>
         </StudioPanel>

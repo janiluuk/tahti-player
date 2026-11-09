@@ -249,7 +249,9 @@ export function DiscordBotAddonCard() {
           <Dialog.Actions>
             <Dialog.Close>{t('discordBotCard.cancel')}</Dialog.Close>
             <Button size="sm" disabled={!canSave} type="submit">
-              {busy ? 'Saving…' : 'Save'}
+              {busy
+                ? t('discordBotAddonCardStates.saving')
+                : t('discordBotAddonCardStates.save')}
             </Button>
           </Dialog.Actions>
         </form>

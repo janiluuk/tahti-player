@@ -343,7 +343,9 @@ export function AdminVendorsContent() {
               {integrations.map((row) => (
                 <li key={row.name} className="flex items-center gap-3 text-sm">
                   <Badge variant="pill" color={row.live ? 'green' : 'red'}>
-                    {row.live ? 'Live' : 'Blocking launch'}
+                    {row.live
+                      ? t('adminVendorsViewStates.live')
+                      : t('adminVendorsViewStates.blockingLaunch')}
                   </Badge>
                   <div className="min-w-0">
                     <div className="font-medium">{row.name}</div>

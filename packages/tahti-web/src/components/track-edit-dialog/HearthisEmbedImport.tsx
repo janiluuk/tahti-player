@@ -34,8 +34,8 @@ export function HearthisEmbedImport({ soundId }: { soundId: string }) {
           data-testid="hearthis-import-status"
         >
           {state === 'started'
-            ? 'Importing — the track switches to Tahti-hosted audio when it finishes.'
-            : 'Copy this track’s audio from hearthis.at so it plays without the embed. Only works when downloads are on for it at hearthis.at.'}
+            ? t('hearthisEmbedImportStates.importingTheTrackSwitchesTo')
+            : t('hearthisEmbedImportStates.copyThisTracksAudioFrom')}
         </span>
         {error ? (
           <span className="text-accent-red-strong mt-1 block text-xs">
@@ -50,7 +50,9 @@ export function HearthisEmbedImport({ soundId }: { soundId: string }) {
         onClick={() => void run()}
       >
         <HardDriveDownloadIcon size={15} aria-hidden className="mr-1.5" />
-        {state === 'busy' ? 'Starting…' : 'Import audio'}
+        {state === 'busy'
+          ? t('hearthisEmbedImportStates.starting')
+          : t('hearthisEmbedImportStates.importAudio')}
       </Button>
     </div>
   );

@@ -452,7 +452,9 @@ export function CollectionView({ slug }: { slug: string }) {
                   }
                 >
                   <BookmarkIcon size={15} aria-hidden className="mr-1.5" />
-                  {subscription.subscribed ? 'Subscribed' : 'Subscribe'}
+                  {subscription.subscribed
+                    ? t('collectionViewStates.subscribed')
+                    : t('collectionViewStates.subscribe')}
                   {subscription.subscriberCount > 0
                     ? ` (${subscription.subscriberCount})`
                     : ''}

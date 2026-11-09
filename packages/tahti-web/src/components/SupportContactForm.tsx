@@ -137,7 +137,9 @@ export function SupportContactForm({
           (!email && !contactEmail.trim())
         }
       >
-        {pending ? 'Sending…' : 'Send message'}
+        {pending
+          ? t('supportContactFormStates.sending')
+          : t('supportContactFormStates.sendMessage')}
       </Button>
       {error && <InlineError>{error}</InlineError>}
     </form>

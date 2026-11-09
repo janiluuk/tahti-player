@@ -139,20 +139,22 @@ export const SignalCheckWidget = ({
             {state === 'waiting'
               ? 'Waiting for your signal…'
               : state === 'checking'
-                ? 'Listening — that’s really you!'
-                : 'You’re connected!'}
+                ? t('signalCheckWidgetStates.listeningThatsReallyYou')
+                : t('signalCheckWidgetStates.youreConnected')}
           </p>
           <p className="text-foreground-secondary mt-1 text-xs">
             {state === 'waiting'
               ? 'Start streaming in OBS, Mixxx, or Traktor — we’ll pick it up automatically.'
               : state === 'checking'
-                ? 'Talk or play something — watch the bars move below.'
-                : 'Check your own audio and levels before you go live.'}
+                ? t('signalCheckWidgetStates.talkOrPlaySomethingWatch')
+                : t('signalCheckWidgetStates.checkYourOwnAudioAnd')}
           </p>
         </div>
         {connected && (
           <Button size="sm" variant="secondary" onClick={onCheckAudio}>
-            {isChecking ? 'Stop listening' : 'Check my audio'}
+            {isChecking
+              ? t('signalCheckWidgetStates.stopListening')
+              : t('signalCheckWidgetStates.checkMyAudio')}
           </Button>
         )}
         {isMock && !connected && (

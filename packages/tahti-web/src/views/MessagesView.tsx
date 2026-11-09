@@ -2,7 +2,13 @@ import { useNavigate, useParams } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, ButtonLink, Input, ViewShell } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  Input,
+  MediaArtwork,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchBlockedUsers } from '../api/blocks';
 import {
@@ -301,21 +307,30 @@ export function MessagesView({
                     size="flexible"
                     onClick={() => openThread(c.id)}
                     aria-current={activeId === c.id ? 'page' : undefined}
-                    className={`w-full flex-col items-stretch rounded-none border-l-2 px-3 py-2 text-left text-sm whitespace-normal active:scale-100 ${
+                    className={`w-full flex-row items-center gap-2.5 rounded-none border-l-2 px-3 py-2 text-left text-sm whitespace-normal active:scale-100 ${
                       activeId === c.id
                         ? 'border-accent-purple bg-accent-purple/20 text-foreground'
                         : 'hover:bg-background-secondary border-transparent'
                     }`}
                   >
-                    <div className="flex items-center gap-1.5 font-medium">
-                      <span className="truncate">
-                        {c.otherUser.displayName}
+                    <MediaArtwork
+                      src={c.otherUser.avatarUrl}
+                      alt=""
+                      seed={c.otherUser.username}
+                      size="sm"
+                      className="size-9 shrink-0 rounded-full"
+                    />
+                    <span className="flex min-w-0 flex-1 flex-col">
+                      <span className="flex items-center gap-1.5 font-medium">
+                        <span className="truncate">
+                          {c.otherUser.displayName}
+                        </span>
+                        <DmRoleBadge role={c.otherUser.channelRole} />
                       </span>
-                      <DmRoleBadge role={c.otherUser.channelRole} />
-                    </div>
-                    <div className="text-foreground-secondary truncate text-xs">
-                      {c.lastMessage?.body ?? 'No messages yet'}
-                    </div>
+                      <span className="text-foreground-secondary truncate text-xs">
+                        {c.lastMessage?.body ?? t('messagesView.noMessagesYet')}
+                      </span>
+                    </span>
                   </Button>
                 </li>
               ))
@@ -335,8 +350,8 @@ export function MessagesView({
                   title={t('empties.selectAConversation')}
                   description={
                     inbox.length === 0
-                      ? 'Search for someone above, or find artists on Discover.'
-                      : 'Pick a thread from the list to read and reply.'
+                      ? t('messagesViewStates.searchForSomeoneAboveOr')
+                      : t('messagesViewStates.pickAThreadFromThe')
                   }
                   action={
                     inbox.length === 0 ? (

@@ -154,7 +154,11 @@ export function StudioUpdatesView({
           />
         ) : null}
         <ViewShell
-          title={tab === 'newsletter' ? 'Newsletter' : 'Posts'}
+          title={
+            tab === 'newsletter'
+              ? t('studioUpdatesViewStates.newsletter')
+              : t('studioUpdatesViewStates.posts')
+          }
           classes={{ root: 'px-0 pt-0' }}
           actions={
             tab === 'posts' ? (
@@ -357,7 +361,9 @@ export function StudioUpdatesView({
                           </p>
                         )}
                         <p className="text-foreground-secondary mt-1 text-xs">
-                          {d.subscribersOnly ? 'Fans only' : 'All subscribers'}
+                          {d.subscribersOnly
+                            ? t('studioUpdatesViewStates.fansOnly')
+                            : t('studioUpdatesViewStates.allSubscribers')}
                           {d.state ? `, ${d.state}` : ''}
                           {d.sentAt
                             ? `, sent ${new Date(d.sentAt).toLocaleString()}`

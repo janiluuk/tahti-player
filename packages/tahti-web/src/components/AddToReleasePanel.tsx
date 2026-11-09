@@ -116,8 +116,8 @@ export function AddToReleasePanel({
           },
           undoneMessage:
             added.length === 1
-              ? 'Removed from the release.'
-              : 'Removed those tracks from the release.',
+              ? t('addToReleasePanelStates.removedFromTheRelease')
+              : t('addToReleasePanelStates.removedThoseTracksFromThe'),
         },
       );
       onClose();

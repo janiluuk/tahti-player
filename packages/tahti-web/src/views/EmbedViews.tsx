@@ -148,7 +148,9 @@ export function EmbedChannelView({ slug }: { slug: string }) {
             </div>
             {playable ? (
               <Button size="sm" onClick={() => play(playable)}>
-                {isPlaying ? 'Playing' : 'Play'}
+                {isPlaying
+                  ? t('embedViewsStates.playing')
+                  : t('embedViewsStates.play')}
               </Button>
             ) : (
               <ExternalLink

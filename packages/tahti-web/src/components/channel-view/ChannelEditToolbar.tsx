@@ -45,7 +45,9 @@ export function ChannelEditToolbar({
           className="sm:hidden"
           onClick={onToggleMobileMenu}
         >
-          {mobileMenuOpen ? 'Hide menu' : 'Layers menu'}
+          {mobileMenuOpen
+            ? t('channelEditToolbarStates.hideMenu')
+            : t('channelEditToolbarStates.layersMenu')}
         </Button>
         <Button
           size="sm"

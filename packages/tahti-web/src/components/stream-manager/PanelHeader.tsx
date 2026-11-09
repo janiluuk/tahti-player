@@ -108,7 +108,11 @@ export function PanelHeader({
             </Button>
           </Tooltip>
           <Tooltip
-            content={rotationPlaying ? 'Stop rotation' : 'Start rotation'}
+            content={
+              rotationPlaying
+                ? t('streamManagerPanelHeaderStates.stopRotation')
+                : t('streamManagerPanelHeaderStates.startRotation')
+            }
             side="top"
           >
             <Button
@@ -119,7 +123,11 @@ export function PanelHeader({
               onClick={() =>
                 void handleTransport(rotationPlaying ? 'pause' : 'resume')
               }
-              aria-label={rotationPlaying ? 'Stop rotation' : 'Start rotation'}
+              aria-label={
+                rotationPlaying
+                  ? t('streamManagerPanelHeaderStates.stopRotation')
+                  : t('streamManagerPanelHeaderStates.startRotation')
+              }
             >
               {rotationPlaying ? (
                 <SquareIcon size={14} aria-hidden className="fill-current" />
@@ -193,14 +201,22 @@ export function PanelHeader({
         )}
         {rotationPlaying && (
           <Tooltip
-            content={rotationExpanded ? 'Show less' : 'Show more'}
+            content={
+              rotationExpanded
+                ? t('streamManagerPanelHeaderStates.showLess')
+                : t('streamManagerPanelHeaderStates.showMore')
+            }
             side="top"
           >
             <Button
               size="icon-sm"
               variant="secondary"
               onClick={() => setRotationExpanded((v) => !v)}
-              aria-label={rotationExpanded ? 'Show less' : 'Show more'}
+              aria-label={
+                rotationExpanded
+                  ? t('streamManagerPanelHeaderStates.showLess')
+                  : t('streamManagerPanelHeaderStates.showMore')
+              }
               aria-expanded={rotationExpanded}
             >
               {rotationExpanded ? (
@@ -213,14 +229,22 @@ export function PanelHeader({
         )}
         {canControl && onPlaybackToggle && (
           <Tooltip
-            content={isPlaying ? 'Pause stream' : 'Play stream'}
+            content={
+              isPlaying
+                ? t('streamManagerPanelHeaderStates.pauseStream')
+                : t('streamManagerPanelHeaderStates.playStream')
+            }
             side="top"
           >
             <Button
               size="icon-sm"
               variant="secondary"
               onClick={onPlaybackToggle}
-              aria-label={isPlaying ? 'Pause stream' : 'Play stream'}
+              aria-label={
+                isPlaying
+                  ? t('streamManagerPanelHeaderStates.pauseStream')
+                  : t('streamManagerPanelHeaderStates.playStream')
+              }
             >
               {isPlaying ? <PauseIcon size={15} /> : <PlayIcon size={15} />}
             </Button>
@@ -234,7 +258,9 @@ export function PanelHeader({
             onClick={() => setConfirmEndOpen(true)}
           >
             <SquareIcon size={14} className="mr-1.5 fill-current" aria-hidden />
-            {ending ? 'Ending…' : 'End stream'}
+            {ending
+              ? t('streamManagerPanelHeaderStates.ending')
+              : t('streamManagerPanelHeaderStates.endStream')}
           </Button>
         )}
       </div>

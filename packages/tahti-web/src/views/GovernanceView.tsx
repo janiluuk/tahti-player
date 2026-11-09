@@ -713,7 +713,9 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               }
               type="submit"
             >
-              {submittingDraft ? 'Submitting…' : 'Submit draft'}
+              {submittingDraft
+                ? t('governanceViewStates.submitting')
+                : t('governanceViewStates.submitDraft')}
             </Button>
           </form>
         </GovernancePanel>
@@ -764,7 +766,9 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               disabled={loadingMoreMotions}
               onClick={loadMoreMotions}
             >
-              {loadingMoreMotions ? 'Loading…' : 'Load more motions'}
+              {loadingMoreMotions
+                ? t('governanceViewStates.loading')
+                : t('governanceViewStates.loadMoreMotions')}
             </Button>
           ) : null}
         </div>

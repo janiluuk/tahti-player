@@ -27,6 +27,7 @@ function SignedInToggle({
   artistDisplayName: string;
   iconOnly?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const [subscribed, setSubscribed] = useState<boolean | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -57,8 +58,10 @@ function SignedInToggle({
       setSubscribed(r.subscribed);
       toast.success(
         r.subscribed
-          ? 'Subscribed — you’ll get notifications for newsletters, events, and other activity.'
-          : 'Unsubscribed.',
+          ? t(
+              'newsletterSubscribeToggleStates.subscribedYoullGetNotificationsFor',
+            )
+          : t('newsletterSubscribeToggleStates.unsubscribed'),
       );
     });
   };
@@ -67,8 +70,8 @@ function SignedInToggle({
     <Tooltip
       content={
         subscribed
-          ? 'Subscribed — you’ll see this artist in your feed and notifications. Click to unsubscribe.'
-          : 'Subscribe to see this artist in your feed and notifications'
+          ? t('newsletterSubscribeToggleStates.subscribedYoullSeeThisArtist')
+          : t('newsletterSubscribeToggleStates.subscribeToSeeThisArtist')
       }
       side="bottom"
       wrapperClassName="inline-flex"
@@ -89,8 +92,8 @@ function SignedInToggle({
           (subscribed === null
             ? 'Subscribe'
             : subscribed
-              ? 'Subscribed'
-              : 'Subscribe')}
+              ? t('newsletterSubscribeToggleStates.subscribed')
+              : t('newsletterSubscribeToggleStates.subscribe'))}
       </Button>
     </Tooltip>
   );
@@ -184,7 +187,9 @@ function AnonymousForm({
         className="shrink-0"
         disabled={busy || !email.trim()}
       >
-        {busy ? 'Sending…' : 'Subscribe'}
+        {busy
+          ? t('newsletterSubscribeToggleStates.sending')
+          : t('newsletterSubscribeToggleStates.subscribe')}
       </Button>
     </form>
   );

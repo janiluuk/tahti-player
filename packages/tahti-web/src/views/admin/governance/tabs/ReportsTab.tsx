@@ -73,7 +73,9 @@ export function ReportsTab() {
             ) : (
               <FileTextIcon size={14} aria-hidden className="mr-1.5" />
             )}
-            {busy ? 'Generating…' : 'Generate report'}
+            {busy
+              ? t('reportsTabStates.generating')
+              : t('reportsTabStates.generateReport')}
           </Button>
         </form>
         {error ? <InlineError className="mt-2">{error}</InlineError> : null}

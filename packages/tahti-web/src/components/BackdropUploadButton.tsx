@@ -143,7 +143,9 @@ export function BackdropUploadButton({
             labels={{
               title: label,
               description: t('backdropUploadButtonFields.wideJpegPngOrWebp'),
-              browse: busy ? 'Uploading…' : 'Choose image',
+              browse: busy
+                ? t('backdropUploadButtonStates.uploading')
+                : t('backdropUploadButtonStates.chooseImage'),
             }}
             accept="image/jpeg,image/png,image/webp"
             selectedFiles={[]}

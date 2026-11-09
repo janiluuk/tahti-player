@@ -52,7 +52,9 @@ export function EmailChangeView() {
   return (
     <div className="mx-auto flex max-w-md flex-col gap-4">
       <h1 className="font-display text-3xl font-extrabold tracking-tight">
-        {state.kind === 'done' ? 'Email changed' : 'Confirm new email'}
+        {state.kind === 'done'
+          ? t('emailChangeViewStates.emailChanged')
+          : t('emailChangeViewStates.confirmNewEmail')}
       </h1>
       {state.kind === 'working' ? (
         <InlineLoader
@@ -69,7 +71,9 @@ export function EmailChangeView() {
             to={user ? '/settings/$section' : '/login'}
             params={user ? { section: 'account' } : undefined}
           >
-            {user ? 'Back to Settings' : 'Sign in'}
+            {user
+              ? t('emailChangeViewStates.backToSettings')
+              : t('emailChangeViewStates.signIn')}
           </ButtonLink>
         </>
       ) : null}

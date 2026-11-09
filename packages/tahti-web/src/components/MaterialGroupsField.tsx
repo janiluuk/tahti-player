@@ -213,8 +213,8 @@ export function MaterialGroupsField({ soundId }: Props) {
           searchPlaceholder="Search your groups"
           emptyLabel={
             search.trim()
-              ? 'No groups match that search.'
-              : 'You are not in any groups yet.'
+              ? t('materialGroupsFieldStates.noGroupsMatchThatSearch')
+              : t('materialGroupsFieldStates.youAreNotInAny')
           }
           busyId={busyId}
           onToggle={toggle}

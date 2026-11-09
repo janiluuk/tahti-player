@@ -137,7 +137,9 @@ export function MembershipInvoices() {
                         aria-hidden
                         className="mr-1.5"
                       />
-                      {invoice.status === 'open' ? 'Pay' : 'View'}
+                      {invoice.status === 'open'
+                        ? t('membershipInvoicesStates.pay')
+                        : t('membershipInvoicesStates.view')}
                     </ButtonAnchor>
                   ) : null}
                 </div>

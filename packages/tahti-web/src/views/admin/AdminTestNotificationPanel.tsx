@@ -92,7 +92,9 @@ export function AdminTestNotificationPanel() {
         <div>
           <Button type="submit" size="sm" disabled={!canSend || sending}>
             <SendIcon size={14} aria-hidden className="mr-1.5" />
-            {sending ? 'Sending…' : 'Send test'}
+            {sending
+              ? t('adminTestNotificationPanelStates.sending')
+              : t('adminTestNotificationPanelStates.sendTest')}
           </Button>
         </div>
       </form>

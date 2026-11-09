@@ -140,7 +140,7 @@ export function LocalLibraryAnalysis({ library, onChanged }: Props) {
         </p>
         <p className="text-foreground-secondary truncate text-xs" role="status">
           {running && progress
-            ? `${paused ? 'Paused' : 'Analyzing'} ${Math.min(progress.done + 1, progress.total)} of ${progress.total}${progress.currentTitle ? ` — ${progress.currentTitle}` : ''}`
+            ? `${t(paused ? 'localLibraryAnalysisStates.pausedProgress' : 'localLibraryAnalysisStates.analyzingProgress', { done: Math.min(progress.done + 1, progress.total), total: progress.total })}${progress.currentTitle ? ` - ${progress.currentTitle}` : ''}`
             : summary
               ? `${summary.analyzed.toLocaleString('en-US')} of ${summary.total.toLocaleString('en-US')} tracks analyzed (waveform, loudness, BPM, key)`
               : 'Waveform, loudness, BPM and key'}
@@ -159,7 +159,9 @@ export function LocalLibraryAnalysis({ library, onChanged }: Props) {
             ) : (
               <PauseIcon size={14} aria-hidden />
             )}
-            {paused ? 'Resume' : 'Pause'}
+            {paused
+              ? t('localLibraryAnalysisStates.resume')
+              : t('localLibraryAnalysisStates.pause')}
           </Button>
           <Button
             className="gap-1.5"

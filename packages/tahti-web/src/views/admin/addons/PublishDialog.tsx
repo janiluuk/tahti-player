@@ -85,7 +85,9 @@ export function PublishDialog({
             description: file
               ? `${file.name} · ${formatSize(file.size)}`
               : 'A single .js or .mjs file.',
-            browse: file ? 'Choose another file' : 'Choose bundle',
+            browse: file
+              ? t('publishDialogStates.chooseAnotherFile')
+              : t('publishDialogStates.chooseBundle'),
           }}
           onFiles={(files) => setFile(files[0] ?? null)}
         />
@@ -110,7 +112,9 @@ export function PublishDialog({
             type="submit"
             disabled={pending || !file || !versionValid || tooBig}
           >
-            {pending ? 'Publishing…' : 'Publish for review'}
+            {pending
+              ? t('publishDialogStates.publishing')
+              : t('publishDialogStates.publishForReview')}
           </Button>
         </Dialog.Actions>
       </form>

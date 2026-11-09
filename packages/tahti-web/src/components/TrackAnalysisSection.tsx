@@ -379,7 +379,9 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
             ) : (
               <ActivityIcon size={14} aria-hidden />
             )}
-            {detail?.analyzed ? 'Re-analyze' : 'Analyze'}
+            {detail?.analyzed
+              ? t('trackAnalysisSectionStates.reAnalyze')
+              : t('trackAnalysisSectionStates.analyze')}
           </Button>
         </div>
       </form>

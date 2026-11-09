@@ -217,7 +217,9 @@ export function MyRadioStations({
           className="self-start"
           disabled={adding || !name.trim() || !streamUrl.trim()}
         >
-          {adding ? 'Adding…' : 'Add station'}
+          {adding
+            ? t('myRadioStationsStates.adding')
+            : t('myRadioStationsStates.addStation')}
         </Button>
       </form>
     </div>

@@ -94,7 +94,9 @@ export function FingerprintTrackPanel({
           onClick={() => void handleRefingerprint()}
         >
           <FingerprintIcon size={14} aria-hidden className="mr-1.5" />
-          {busy === 'refingerprint' ? 'Fingerprinting…' : 'Re-fingerprint'}
+          {busy === 'refingerprint'
+            ? t('fingerprintTrackPanelStates.fingerprinting')
+            : t('fingerprintTrackPanelStates.reFingerprint')}
         </Button>
         <Button
           size="sm"
@@ -103,7 +105,9 @@ export function FingerprintTrackPanel({
           onClick={() => void handleCheck()}
         >
           <SearchIcon size={14} aria-hidden className="mr-1.5" />
-          {busy === 'check' ? 'Checking…' : 'Check for a match'}
+          {busy === 'check'
+            ? t('fingerprintTrackPanelStates.checking')
+            : t('fingerprintTrackPanelStates.checkForAMatch')}
         </Button>
       </div>
 

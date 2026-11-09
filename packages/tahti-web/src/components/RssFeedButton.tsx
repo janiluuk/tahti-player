@@ -20,7 +20,7 @@ export function RssFeedButton({
       variant="secondary"
       aria-label={t('rssFeedButtonLabels.copyTheLabel', { label })}
       toastMessage="Feed link copied. Paste it into your podcast app."
-      errorMessage="Could not copy the feed link."
+      errorMessage={t('uiLabels.copyFeedFailed')}
       className={className}
     />
   );

@@ -67,7 +67,9 @@ export function NewsletterStatusView({ status }: { status: NewsletterStatus }) {
               disabled={busy}
               onClick={() => void unsubscribe(status.token)}
             >
-              {busy ? 'Unsubscribing…' : 'Unsubscribe'}
+              {busy
+                ? t('newsletterStatusViewStates.unsubscribing')
+                : t('newsletterStatusViewStates.unsubscribe')}
             </Button>
           </>
         )}

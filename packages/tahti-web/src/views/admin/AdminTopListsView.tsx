@@ -150,13 +150,13 @@ export function AdminTopListsView() {
                 <PageEmpty
                   title={
                     normalizedQuery
-                      ? 'No matching top-list entries'
-                      : 'No listens yet'
+                      ? t('adminTopListsViewStates.noMatchingTopListEntries')
+                      : t('adminTopListsViewStates.noListensYet')
                   }
                   description={
                     normalizedQuery
-                      ? 'Try another search, period, or grouping.'
-                      : 'No listens recorded for this period yet.'
+                      ? t('adminTopListsViewStates.tryAnotherSearchPeriodOr')
+                      : t('adminTopListsViewStates.noListensRecordedForThis')
                   }
                   action={
                     normalizedQuery ? (

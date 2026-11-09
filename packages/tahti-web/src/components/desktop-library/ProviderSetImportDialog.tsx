@@ -340,7 +340,9 @@ export function ProviderSetImportDialog({
           </Button>
         ) : (
           <Dialog.Close>
-            {state.phase === 'done' ? 'Done' : 'Cancel'}
+            {state.phase === 'done'
+              ? t('providerSetImportDialogStates.done')
+              : t('providerSetImportDialogStates.cancel')}
           </Dialog.Close>
         )}
         {state.phase === 'review' ? (

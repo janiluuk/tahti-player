@@ -68,8 +68,8 @@ export function StatsGrid({ state }: { state: StreamManagerState }) {
               : signalError
                 ? 'Unavailable'
                 : rotationPlaying
-                  ? 'Offline'
-                  : 'No encoder'
+                  ? t('streamManagerStatsGridStates.offline')
+                  : t('streamManagerStatsGridStates.noEncoder')
         }
       />
       <StatChip
@@ -88,7 +88,13 @@ export function StatsGrid({ state }: { state: StreamManagerState }) {
       <StatChip
         icon={<MonitorPlayIcon size={14} aria-hidden />}
         label={t('streamStats.overlay')}
-        value={overlayShowTitle == null ? '—' : overlayShowTitle ? 'On' : 'Off'}
+        value={
+          overlayShowTitle == null
+            ? '—'
+            : overlayShowTitle
+              ? t('streamManagerStatsGridStates.on')
+              : t('streamManagerStatsGridStates.off')
+        }
         aria-label={t('streamStats.openStreamOverlaySettings')}
         onClick={() => setOverlayModalOpen(true)}
       />

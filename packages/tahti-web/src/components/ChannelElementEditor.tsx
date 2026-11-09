@@ -174,8 +174,8 @@ export function ChannelElementEditor({
                 <EyeIcon size={14} aria-hidden />
               )}
               {selectedItem?.disabled
-                ? 'Hidden from your page'
-                : 'Visible on your page'}
+                ? t('channelElementEditorStates.hiddenFromYourPage')
+                : t('channelElementEditorStates.visibleOnYourPage')}
             </p>
           )}
         </div>
