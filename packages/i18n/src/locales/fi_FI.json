@@ -3511,7 +3511,11 @@
       "delete": "Poista",
       "systemAnnouncements": "Järjestelmäkuulutukset",
       "clips": "Klipit",
-      "schedule": "Aikataulu"
+      "schedule": "Aikataulu",
+      "editScheduleOf": "Muokkaa klipin {{title}} aikataulua",
+      "scheduleTitle": "Klipin {{title}} aikataulu",
+      "everyNthSummary": "Kerran {{count}} klipin välein",
+      "everyNthRange": "Anna kokonaisluku väliltä {{min}}-{{max}}."
     },
     "adminRadioPresets": {
       "removeTitleNamed": "Poistetaanko {{name}}?",

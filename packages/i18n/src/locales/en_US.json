@@ -3511,7 +3511,11 @@
       "delete": "Delete",
       "systemAnnouncements": "System announcements",
       "clips": "Clips",
-      "schedule": "Schedule"
+      "schedule": "Schedule",
+      "editScheduleOf": "Edit the schedule of {{title}}",
+      "scheduleTitle": "Schedule for {{title}}",
+      "everyNthSummary": "Once every {{count}} clips",
+      "everyNthRange": "Enter a whole number from {{min}} to {{max}}."
     },
     "adminRadioPresets": {
       "removeTitleNamed": "Remove {{name}}?",

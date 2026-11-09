@@ -36,6 +36,36 @@ export const Default: Story = {
     await expect(canvas.getAllByRole('button', { name: 'Trim' })).toHaveLength(
       2,
     );
+    await expect(canvas.getByText('Once every 6 clips')).toBeVisible();
+    await expect(canvas.queryByRole('combobox')).toBeNull();
+  },
+};
+
+export const EditSchedule: Story = {
+  render: () => (
+    <div className="p-6">
+      <AdminAnnouncementsView />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await waitFor(() =>
+      expect(canvas.getByText('Welcome to Tahti')).toBeVisible(),
+    );
+    await userEvent.click(
+      canvas.getByRole('button', {
+        name: 'Edit the schedule of AGM reminder — October',
+      }),
+    );
+    const dialog = await findDialog(canvasElement, /^Schedule for /);
+    const everyNth = dialog.getByLabelText('Every Nth');
+    await userEvent.clear(everyNth);
+    await userEvent.type(everyNth, '8');
+    await userEvent.click(dialog.getByRole('button', { name: 'Save' }));
+    await expectNoDialog(canvasElement);
+    await waitFor(() =>
+      expect(canvas.getByText('Once every 8 clips')).toBeVisible(),
+    );
   },
 };
 
