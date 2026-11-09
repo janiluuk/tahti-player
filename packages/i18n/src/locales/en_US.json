@@ -10285,6 +10285,78 @@
       "shareSENT": "Posted",
       "shareFAILED": "Failed",
       "retryShare": "Retry"
+    },
+    "routes-helpText": {
+      "backToListen": "Back to Listen"
+    },
+    "releaseTrackUploadProgressText": {
+      "cancel": "Cancel"
+    },
+    "embedViewsText": {
+      "play": "Play"
+    },
+    "timelineReactionBarText": {
+      "logInToReact": "Log in to react"
+    },
+    "containerLogsPanelText": {
+      "couldNotReachTheLogging": "Could not reach the logging backend. It may be down, or this environment can&apos;t reach it on the LAN."
+    },
+    "annualReportActionsFields": {
+      "noMeetingNamed": "No meeting named"
+    },
+    "nowPlayingOverlayText": {
+      "nowPlaying": "Now playing"
+    },
+    "chatNoticeText": {
+      "subscribe": "Subscribe"
+    },
+    "addonCardText": {
+      "defaultOn": "Default on"
+    },
+    "radioProgrammingGridLabels": {
+      "noLiveShowsBookedIn": "No live shows booked in the next {{PROGRAMMING_DAYS}} days."
+    },
+    "skipToContentText": {
+      "skipToContent": "Skip to content"
+    },
+    "motionSecondersText": {
+      "secondedBy": "Seconded by"
+    },
+    "currentFanSubscriptionCardText": {
+      "manageSubscription": "Manage subscription"
+    },
+    "mermaidDiagramText": {
+      "renderingDiagram": "Rendering diagram…",
+      "diagramZoomControls": "Diagram zoom controls",
+      "zoomOutDiagram": "Zoom out diagram",
+      "resetDiagramZoom": "Reset diagram zoom",
+      "zoomInDiagram": "Zoom in diagram"
+    },
+    "accountPanelText": {
+      "listen": "Listen"
+    },
+    "legalViewText": {
+      "whatIsTahti": "What is Tahti"
+    },
+    "boardTermsPanelText": {
+      "boardTerms": "Board terms"
+    },
+    "pressKitPreviewText": {
+      "addAtLeastOneIncluded": "Add at least one included image to complete the preview."
+    },
+    "featureCompareCardText": {
+      "legacy": "Legacy",
+      "legacyOnly": "Legacy only",
+      "parityComment": "Parity comment"
+    },
+    "channelBlockFrameText": {
+      "editing": "Editing"
+    },
+    "playerPanelText": {
+      "useALoopingVideoOr": "Use a looping video or still image behind the channel header."
+    },
+    "listenAddonsTabEmptyText": {
+      "everythingHereIsInstalled": "Everything here is installed."
     }
   },
   "studioEditor": {

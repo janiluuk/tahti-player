@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink } from '@tahti-player/ui';
 
 import type { ChatErrorAction } from '../lib/chatErrors';
@@ -11,6 +12,7 @@ export function ChatNotice({
   action: ChatErrorAction;
   artistUsername: string | null;
 }) {
+  const { t } = useTranslation('web');
   return (
     <div
       role="status"
@@ -24,7 +26,7 @@ export function ChatNotice({
           size="xs"
           variant="secondary"
         >
-          Subscribe
+          {t('chatNoticeText.subscribe')}
         </ButtonLink>
       )}
     </div>

@@ -1,23 +1,22 @@
-import { CalendarIcon } from 'lucide-react';
+import { CalendarIcon, RssIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { ExternalLink } from '@tahti-player/ui';
 
+import { eventsIcsUrl } from '../../api/event-calendar';
 import { fetchChannelEvents, type ArtistEvent } from '../../api/events';
+import { EventCard } from '../events/EventCard';
 import { PageError } from '../PageStates';
 import { Eyebrow } from '../tahti/Eyebrow';
 
-const dateFormat: Intl.DateTimeFormatOptions = {
-  weekday: 'short',
-  day: 'numeric',
-  month: 'short',
-  year: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-};
-
-export function ArtistUpcomingEvents({ channelSlug }: { channelSlug: string }) {
+export function ArtistUpcomingEvents({
+  channelSlug,
+  username,
+}: {
+  channelSlug: string;
+  username?: string;
+}) {
   const { t } = useTranslation('web');
   const [events, setEvents] = useState<ArtistEvent[]>([]);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -66,29 +65,20 @@ export function ArtistUpcomingEvents({ channelSlug }: { channelSlug: string }) {
       </Eyebrow>
       <ul className="flex flex-col gap-3">
         {events.map((event) => (
-          <li
-            key={event.id}
-            className="border-border flex flex-col gap-1 rounded-lg border px-3 py-2 text-sm"
-          >
-            <time
-              dateTime={event.startAt}
-              className="text-foreground-secondary text-xs"
-            >
-              {new Date(event.startAt).toLocaleString(undefined, dateFormat)}
-            </time>
-            {event.eventUrl ? (
-              <ExternalLink href={event.eventUrl} className="font-medium">
-                {event.title}
-              </ExternalLink>
-            ) : (
-              <span className="font-medium">{event.title}</span>
-            )}
-            <span className="text-foreground-secondary text-xs">
-              {event.place}, {event.location}
-            </span>
+          <li key={event.id}>
+            <EventCard event={event} linkToPage showDescription={false} />
           </li>
         ))}
       </ul>
+      {username ? (
+        <ExternalLink
+          href={eventsIcsUrl(username)}
+          className="text-primary-strong inline-flex items-center gap-1.5 self-start text-xs"
+        >
+          <RssIcon size={13} aria-hidden />
+          {t('events.subscribeArtist')}
+        </ExternalLink>
+      ) : null}
     </section>
   );
 }

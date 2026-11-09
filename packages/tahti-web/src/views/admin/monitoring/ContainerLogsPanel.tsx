@@ -70,8 +70,7 @@ export function ContainerLogsPanel({
     <StudioPanel title={title}>
       {!lokiReachable && (
         <Alert tone="error" className="mb-3">
-          Could not reach the logging backend. It may be down, or this
-          environment can&apos;t reach it on the LAN.
+          {t('containerLogsPanelText.couldNotReachTheLogging')}
         </Alert>
       )}
       {loading ? (

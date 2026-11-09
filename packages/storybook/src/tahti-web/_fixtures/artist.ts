@@ -1,4 +1,4 @@
-import type { ArtistEvent } from '@tahti-web/api/events';
+import { normalizeEvent, type ArtistEvent } from '@tahti-web/api/events';
 import type { LikedTrack } from '@tahti-web/api/likes';
 import type { PublicProfile } from '@tahti-web/api/types';
 
@@ -52,26 +52,28 @@ const LIKED_TRACKS: LikedTrack[] = [
 ];
 
 /** Dated far ahead so `fetchChannelEvents`'s "upcoming only" filter keeps them. */
-export const ARTIST_EVENTS: ArtistEvent[] = [
-  {
-    id: 'evt-story-1',
-    title: 'Polar Static live at Kuudes Linja',
-    description: 'The full record, start to finish, on the modular rig.',
-    place: 'Kuudes Linja',
-    location: 'Helsinki, Finland',
-    eventUrl: 'https://kuudeslinja.fi/events/polar-static',
-    startAt: '2099-02-14T19:30:00.000Z',
-  },
-  {
-    id: 'evt-story-2',
-    title: 'Boathouse Sessions Vol. 3',
-    description: 'Audience recording on the dock.',
-    place: 'Saimaa Boathouse Studio',
-    location: 'Lappeenranta, Finland',
-    eventUrl: null,
-    startAt: '2099-06-21T17:00:00.000Z',
-  },
-];
+export const ARTIST_EVENTS: ArtistEvent[] = (
+  [
+    {
+      id: 'evt-story-1',
+      title: 'Polar Static live at Kuudes Linja',
+      description: 'The full record, start to finish, on the modular rig.',
+      place: 'Kuudes Linja',
+      location: 'Helsinki, Finland',
+      eventUrl: 'https://kuudeslinja.fi/events/polar-static',
+      startAt: '2099-02-14T19:30:00.000Z',
+    },
+    {
+      id: 'evt-story-2',
+      title: 'Boathouse Sessions Vol. 3',
+      description: 'Audience recording on the dock.',
+      place: 'Saimaa Boathouse Studio',
+      location: 'Lappeenranta, Finland',
+      eventUrl: null,
+      startAt: '2099-06-21T17:00:00.000Z',
+    },
+  ] as Parameters<typeof normalizeEvent>[0][]
+).map(normalizeEvent);
 
 function richProfile(base: PublicProfile): PublicProfile {
   const [firstRelease, secondRelease, ...rest] = base.releases;

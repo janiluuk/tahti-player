@@ -167,7 +167,7 @@ export async function fetchMyEvents(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: mockFixture('myEvents', [...mockEvents]),
+      data: mockFixture('myEvents', [...mockEvents]).map(normalizeEvent),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
@@ -309,7 +309,7 @@ export async function fetchChannelEvents(slug: string): Promise<{
         'channelEvents',
         mockEvents.filter((e) => e.startAt >= now && e.status !== 'DRAFT'),
         slug,
-      ),
+      ).map(normalizeEvent),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }

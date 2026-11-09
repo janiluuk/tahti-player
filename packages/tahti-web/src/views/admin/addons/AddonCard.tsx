@@ -61,7 +61,7 @@ export function AddonCard({
           </Badge>
           {addon.status === 'APPROVED' && addon.enabledByDefault && (
             <Badge variant="pill" color="cyan">
-              Default on
+              {t('addonCardText.defaultOn')}
             </Badge>
           )}
         </div>

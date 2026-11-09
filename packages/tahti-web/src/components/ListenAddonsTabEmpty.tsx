@@ -36,7 +36,7 @@ export function ListenAddonsTabEmpty({
   if (tab === 'available' && availableCount === 0) {
     return (
       <p className="text-foreground-secondary text-sm">
-        Everything here is installed.
+        {t('listenAddonsTabEmptyText.everythingHereIsInstalled')}
       </p>
     );
   }

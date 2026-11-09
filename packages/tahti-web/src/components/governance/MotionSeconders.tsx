@@ -56,7 +56,7 @@ export function MotionSeconders({
         id="motion-seconders"
         className="font-display text-sm font-bold tracking-wide uppercase"
       >
-        Seconded by
+        {t('motionSecondersText.secondedBy')}
       </h2>
       <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border text-sm">
         {seconders.map((s) => (
