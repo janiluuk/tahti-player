@@ -28,8 +28,8 @@ export const TabsList: FC<TabsListProps> = ({
         // `flex-nowrap overflow-x-auto` (see PHONE_SCROLL_TAB_LIST).
         'flex w-full flex-wrap items-center gap-2',
         variant === 'segmented' &&
-          'bg-background-secondary w-fit max-w-full gap-0.5 rounded-lg p-0.5',
-        variant === 'underline' && 'border-border gap-4 border-b',
+          'bg-background-secondary w-fit max-w-full gap-1 rounded-lg p-1',
+        variant === 'underline' && 'border-border gap-6 border-b',
         listClassName,
         className,
       )}

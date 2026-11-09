@@ -480,7 +480,7 @@ test('artist branding keeps the picture, gallery and press kit in Settings → A
   await publicGallery.click();
   await expect(publicGallery).toBeChecked({ checked: !wasPublic });
 
-  await settings.getByRole('tab', { name: 'Links & press' }).click();
+  await settings.getByRole('tab', { name: 'Social links, press kit' }).click();
   await settings.getByRole('tab', { name: 'Press kit' }).click();
   await settings.getByRole('button', { name: 'Save bio' }).click();
   await expect(page.getByText('Press kit bio saved.')).toBeVisible();

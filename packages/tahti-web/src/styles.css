@@ -155,11 +155,4 @@ body,
     align-items: stretch;
   }
 
-  [role='tablist'] > button[role='tab'],
-  [role='tablist'] > button:not([role]) {
-    height: 2rem;
-    padding-inline: 0.625rem;
-    font-size: 0.75rem;
-    line-height: 1rem;
-  }
 }
