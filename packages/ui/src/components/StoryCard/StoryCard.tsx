@@ -5,6 +5,7 @@ import { type FC, type ReactNode } from 'react';
 import { cn } from '../../utils';
 import { Badge, badgeVariants } from '../Badge';
 import { Button } from '../Button';
+import { LinkifiedText } from '../ExternalLink';
 import { ImageReveal } from '../ImageReveal';
 import { MediaArtwork } from '../MediaArtwork';
 
@@ -162,7 +163,14 @@ export const StoryCard: FC<StoryCardProps> = ({
               data-testid="story-card-excerpt"
               className="line-clamp-2 text-sm leading-relaxed text-white/80"
             >
-              {excerpt}
+              {typeof excerpt === 'string' ? (
+                <LinkifiedText
+                  text={excerpt}
+                  linkClassName="inline break-all text-white underline hover:text-white"
+                />
+              ) : (
+                excerpt
+              )}
             </p>
           ) : null}
         </div>

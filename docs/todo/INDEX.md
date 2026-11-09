@@ -43,9 +43,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
 | open    | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard loads slowly on every open: cache with background refresh; sweep other slow pages |
-| open    | [scroller-arrows.md](scroller-arrows.md) | Row scroller arrows: own colour instead of primary orange, more visible, only when there is more to scroll |
 | open    | [governance-page-polish.md](governance-page-polish.md) | Co-op page: wrong back arrow to What is Tahti, full-width layout like admin, more colour and visual cues |
-| open    | [channel-page-ui-requests-2026-11-09.md](channel-page-ui-requests-2026-11-09.md) | Channel page back arrow cut off, Tracks header restyle, artwork zoom +/- control, clickable links in the news widget |
 | partial | [navigation-performance.md](navigation-performance.md) | Back/forward speed: GET cache, atlas out of the shell and gzip level 6 done; left: render cached data without a loader frame, drop mock fixtures from prod, split table/dnd out of the shell |
 | open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` on events/updates/editor/playlist/collection/release, radio presets, theme submissions; plugin-store disconnect; left: none known) |
 | open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | One Storybook play session drops its sockets ~90s in (local every run, CI long shards); reduced motion + CI retry mitigate; cause not found |

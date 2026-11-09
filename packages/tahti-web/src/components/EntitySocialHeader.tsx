@@ -108,6 +108,9 @@ export type EntitySocialHeaderProps = {
   onImageClick?: () => void;
   /** When set alongside `imageUrl`, a hover-reveal X badge clears the image. */
   onImageDelete?: () => void;
+  /** A control in the header's top-left corner (the page's back
+   * button); the header content moves right to make room for it. */
+  leading?: ReactNode;
   className?: string;
   children?: ReactNode;
   'data-testid'?: string;
@@ -145,6 +148,7 @@ export function EntitySocialHeader({
   colorScheme,
   onImageClick,
   onImageDelete,
+  leading,
   className,
   children,
   'data-testid': dataTestId = 'entity-social-header',
@@ -202,6 +206,7 @@ export function EntitySocialHeader({
     <div
       className={cn(
         'border-border shadow-shadow relative isolate flex flex-col gap-5 overflow-hidden rounded-md border-(length:--border-width) p-6',
+        leading ? 'pl-[4.5rem]' : undefined,
         !scheme && !hasDesignedBackdrop && 'bg-primary text-primary-foreground',
         className,
       )}
@@ -278,6 +283,9 @@ export function EntitySocialHeader({
         style={scrimStyle}
       />
 
+      {leading ? (
+        <div className="absolute top-3 left-3 z-10">{leading}</div>
+      ) : null}
       {logo && logo.placement !== 'AVATAR' ? (
         <img
           src={logo.url}

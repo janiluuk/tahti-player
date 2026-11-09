@@ -120,7 +120,7 @@ export const MobileView: Story = {
       'list',
     );
     await expect(canvas.getByTestId('cards-row-list')).toBeVisible();
-    await userEvent.click(canvas.getByTestId('cards-row-layout-toggle'));
+    await userEvent.click(canvas.getByTestId('cards-row-zoom-in'));
     await expect(canvas.getByTestId('cards-row')).toHaveAttribute(
       'data-layout',
       'cards',
@@ -235,8 +235,11 @@ export const FullArtwork: Story = {
       'full',
     );
     await expect(canvas.getByTestId('cards-row-full')).toBeInTheDocument();
+    await expect(canvas.getByTestId('cards-row-zoom-in')).toBeDisabled();
+    await userEvent.click(canvas.getByTestId('cards-row-zoom-out'));
     await userEvent.click(canvas.getByRole('button', { name: 'Show as list' }));
     await expect(canvas.getByTestId('cards-row-list')).toBeInTheDocument();
+    await expect(canvas.getByTestId('cards-row-zoom-out')).toBeDisabled();
   },
 };
 

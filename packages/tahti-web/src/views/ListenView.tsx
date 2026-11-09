@@ -189,6 +189,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const replayItems = onAirItems.filter(
     (item) => item.channel.state !== 'LIVE',
   );
+  const onAirRowItems = [...liveItems, ...replayItems];
 
   const recentItems = useMemo<RecentRowItem[]>(
     () =>
@@ -337,30 +338,26 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     },
     {
       id: 'on-air',
-      label: t('listen.liveNow'),
+      label: t('listen.liveAndReplays'),
       content: (
         <ListenSection
           data-testid="listen-on-air"
-          title={t('listen.liveNow')}
+          title={t('listen.liveAndReplays')}
           badge={t('listen.liveBadge')}
           badgeColor="green"
           status={sections.onAir.status}
-          empty={liveItems.length === 0}
+          empty={onAirRowItems.length === 0}
           emptyTitle={t('listen.nobodyLive')}
-          emptyDescription={
-            replayItems.length > 0
-              ? t('listen.replayingBelow')
-              : t('listen.liveChannelsAppear')
-          }
+          emptyDescription={t('listen.liveChannelsAppear')}
           onRetry={() => sections.retry('onAir')}
         >
           <CardsRow
             defaultLayout="cards"
             data-testid="listen-on-air"
-            title={t('listen.liveNow')}
-            badge={t('listen.liveBadge')}
+            title={t('listen.liveAndReplays')}
+            badge={liveItems.length > 0 ? t('listen.liveBadge') : undefined}
             badgeColor="green"
-            items={liveItems}
+            items={onAirRowItems}
             labels={{
               ...rowLabels,
               filterPlaceholder: t('listen.filterChannels'),
@@ -370,29 +367,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
         </ListenSection>
       ),
     },
-    ...(replayItems.length > 0
-      ? [
-          {
-            id: 'replays',
-            label: t('listen.replays'),
-            content: (
-              <CardsRow
-                defaultLayout="cards"
-                data-testid="listen-replays"
-                title={t('listen.replays')}
-                badge={t('listen.replayBadge')}
-                badgeColor="secondary"
-                items={replayItems}
-                labels={{
-                  ...rowLabels,
-                  filterPlaceholder: t('listen.filterChannels'),
-                }}
-                renderItem={renderOnAirItem}
-              />
-            ),
-          },
-        ]
-      : []),
     {
       id: 'trending',
       label: t('listen.trending'),
@@ -426,6 +400,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
             <div className="shadow-float rounded-[var(--radius-card)]">
               <PlayableAmbientTrackList
                 items={sections.latestTracks.data}
+                initialView="list"
                 playAll
                 getTrackMeta={latestTrackMeta}
               />

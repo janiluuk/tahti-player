@@ -1360,7 +1360,8 @@
       "internetRadioBadge": "Verkkoradio",
       "noRadioStations": "Ei vielä radioasemia",
       "addStationsFromStore": "Lisää asemia widgetkaupasta.",
-      "curatedStationsError": "Valikoituja asemia ei voitu ladata"
+      "curatedStationsError": "Valikoituja asemia ei voitu ladata",
+      "liveAndReplays": "Livenä ja uusinnat"
     },
     "discover": {
       "tabDiscover": "Tutki",

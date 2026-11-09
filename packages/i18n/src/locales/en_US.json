@@ -1360,7 +1360,8 @@
       "internetRadioBadge": "Internet radio",
       "noRadioStations": "No radio stations yet",
       "addStationsFromStore": "Add stations from the widget store.",
-      "curatedStationsError": "Curated stations couldn't load"
+      "curatedStationsError": "Curated stations couldn't load",
+      "liveAndReplays": "Live & replays"
     },
     "discover": {
       "tabDiscover": "Discover",

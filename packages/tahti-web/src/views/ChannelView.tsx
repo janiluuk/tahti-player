@@ -471,6 +471,7 @@ export function ChannelView({ slug }: { slug: string }) {
         return (
           <ChannelHeroBlock
             itemId={item.id}
+            leading={editing ? undefined : backButton}
             channel={channel}
             slug={slug}
             editing={editing}
@@ -570,6 +571,12 @@ export function ChannelView({ slug }: { slug: string }) {
       ? channelHeaderStats(channel, follow.followerCount)
       : [];
 
+  const headerShown = !heroVisible && channel.user.showPageHero !== false;
+  const backButton = (
+    <Tooltip content="Back to Listen" side="right">
+      <BackButtonLink to="/" aria-label="Back to Listen" />
+    </Tooltip>
+  );
   const pageBody = (
     <div
       className={cn(
@@ -601,14 +608,8 @@ export function ChannelView({ slug }: { slug: string }) {
       )}
 
       <div className="relative z-10 flex w-full flex-col gap-1.5 px-4 py-3 sm:px-6 sm:py-4">
-        {!editing ? (
-          <Tooltip
-            content="Back to Listen"
-            side="right"
-            wrapperClassName={backButtonCornerClassName}
-          >
-            <BackButtonLink to="/" aria-label="Back to Listen" />
-          </Tooltip>
+        {!editing && !heroVisible && !headerShown ? (
+          <div className={backButtonCornerClassName}>{backButton}</div>
         ) : null}
         {!heroVisible && <ChannelTopBar text={channel.topBarText} />}
         {!heroVisible && (pageActions ?? featureSettings) ? (
@@ -627,6 +628,7 @@ export function ChannelView({ slug }: { slug: string }) {
             className={editing ? 'cursor-pointer rounded-lg' : undefined}
           >
             <EntitySocialHeader
+              leading={editing ? undefined : backButton}
               title={channel.user.displayName}
               isMember={channel.user.isMember}
               imageUrl={

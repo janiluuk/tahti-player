@@ -8,6 +8,7 @@ import {
   Button,
   ButtonAnchor,
   Dialog,
+  LinkifiedText,
   MediaArtwork,
 } from '@tahti-player/ui';
 
@@ -160,14 +161,14 @@ export function FeedStoryArticle({
           {lead ? (
             <>
               <p className="text-lg leading-relaxed font-medium whitespace-pre-line">
-                {lead}
+                <LinkifiedText text={lead} />
               </p>
               {rest.map((paragraph, index) => (
                 <p
                   key={index}
                   className="text-foreground-secondary text-base leading-7 whitespace-pre-line"
                 >
-                  {paragraph}
+                  <LinkifiedText text={paragraph} />
                 </p>
               ))}
             </>
