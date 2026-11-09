@@ -6,7 +6,6 @@ import {
   Badge,
   Button,
   ButtonAnchor,
-  CopyButton,
   EditIconButton,
   ExternalLink,
   HiddenFileInput,
@@ -16,7 +15,6 @@ import {
   Loader,
   Select,
   Toggle,
-  Tooltip,
 } from '@tahti-player/ui';
 
 import {
@@ -45,152 +43,13 @@ import { formatScheduleWindow } from '../../../../lib/scheduleTime';
 import { GovernanceDocumentRow } from '../records/GovernanceDocumentRow';
 import { LegalHoldControl } from '../records/LegalHoldControl';
 import { MemberRegisterPanel } from '../records/MemberRegisterPanel';
+import { AgendaBuilder } from './AgendaBuilder';
 import { AgendaItemsPanel } from './AgendaItemsPanel';
 import {
   CollapsibleRecord,
   ConflictsPanel,
   NoticeDeliveriesPanel,
 } from './MeetingRecordPanels';
-
-const DEFAULT_AGENDA = [
-  'Call to order',
-  'Quorum check',
-  'Adoption of agenda',
-  'Review of previous minutes',
-  'Board report',
-  'Financial report',
-  'Motions',
-  'Election of board (if applicable)',
-  'Any other business',
-  'Close',
-];
-
-function AgendaBuilder() {
-  const { t } = useTranslation('web');
-  const [items, setItems] = useState<string[]>(DEFAULT_AGENDA);
-  const agendaText = items
-    .filter(Boolean)
-    .map((item, i) => `${i + 1}. ${item}`)
-    .join('\n');
-
-  return (
-    <StudioPanel
-      title={t('agmTab.agendaBuilder')}
-      action={
-        <CopyButton
-          text={agendaText}
-          size="sm"
-          variant="secondary"
-          aria-label={t('agmTab.copyAgenda')}
-        />
-      }
-    >
-      <div className="@container">
-        <ol className="grid gap-2 @2xl:grid-cols-2">
-          {items.map((item, i) => {
-            const itemLabel = item.trim() || `Agenda item ${i + 1}`;
-            return (
-              <li
-                key={i}
-                className="flex flex-wrap items-center gap-x-2 gap-y-1"
-              >
-                <span className="text-foreground-secondary w-5 shrink-0 text-right text-xs">
-                  {i + 1}.
-                </span>
-                <div className="min-w-0 flex-1 basis-60">
-                  <Input
-                    value={item}
-                    aria-label={`Agenda item ${i + 1}`}
-                    onChange={(e) =>
-                      setItems((prev) =>
-                        prev.map((it, idx) =>
-                          idx === i ? e.target.value : it,
-                        ),
-                      )
-                    }
-                    className="h-8 text-sm"
-                  />
-                </div>
-                <div className="ml-auto flex shrink-0 gap-0.5">
-                  <Tooltip
-                    content={t('agmTabLabels.moveUpItemlabel', { itemLabel })}
-                    side="top"
-                  >
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={t('agmTabLabels.moveUpItemlabel', {
-                        itemLabel,
-                      })}
-                      disabled={i === 0}
-                      onClick={() =>
-                        setItems((prev) => {
-                          const next = [...prev];
-                          [next[i - 1], next[i]] = [next[i]!, next[i - 1]!];
-                          return next;
-                        })
-                      }
-                    >
-                      ↑
-                    </Button>
-                  </Tooltip>
-                  <Tooltip
-                    content={t('agmTabLabels.moveDownItemlabel', { itemLabel })}
-                    side="top"
-                  >
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={t('agmTabLabels.moveDownItemlabel', {
-                        itemLabel,
-                      })}
-                      disabled={i === items.length - 1}
-                      onClick={() =>
-                        setItems((prev) => {
-                          const next = [...prev];
-                          [next[i], next[i + 1]] = [next[i + 1]!, next[i]!];
-                          return next;
-                        })
-                      }
-                    >
-                      ↓
-                    </Button>
-                  </Tooltip>
-                  <Tooltip
-                    content={`Remove item ${i + 1}: ${itemLabel}`}
-                    side="top"
-                  >
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={`Remove item ${i + 1}: ${itemLabel}`}
-                      onClick={() =>
-                        setItems((prev) => prev.filter((_, idx) => idx !== i))
-                      }
-                    >
-                      ×
-                    </Button>
-                  </Tooltip>
-                </div>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
-      <Tooltip content={t('agmTab.addAgendaItem')} side="top">
-        <Button
-          size="icon-sm"
-          variant="secondary"
-          className="mt-3"
-          onClick={() => setItems((prev) => [...prev, ''])}
-          aria-label={t('agmTab.addAgendaItem')}
-        >
-          <PlusIcon size={16} aria-hidden />
-        </Button>
-      </Tooltip>
-    </StudioPanel>
-  );
-}
 
 function motionStateLabel(state: AdminMotion['state']): string {
   return state.charAt(0) + state.slice(1).toLowerCase();

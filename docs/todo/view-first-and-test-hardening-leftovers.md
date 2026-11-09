@@ -12,19 +12,10 @@ changed, because it needs a product call or more than a mechanical fix.
   straight into the Catalog & credits form (catalog tiles, UPC/ISRC inputs,
   CreditsEditor). It is an ops workspace opened by an explicit button, so
   decide whether it needs a read-only summary first.
-- [ ] `views/admin/AdminAnnouncementsView.tsx`: each clip row keeps an inline
-  Schedule select that saves on change (Every Nth now commits on blur).
-- [ ] `views/admin/governance/tabs/AgmTab.tsx` `AgendaBuilder`: every agenda
-  line is an input (local scratch builder, not persisted items).
 
 ## Bugs found, not fixed
 
-- [ ] `api/admin/admin-users.ts`: the BOARD/ARTIST role filter now sends
-  `isBoard` (and `tier` for ARTIST) on the list call like the CSV export, and
-  keeps the server `total` only when the client filter agrees with the page
-  (otherwise the page count, as before). Left: confirm `../tahti-org`
-  `GET /api/admin/users` honours `isBoard` (sibling not in this checkout), then
-  drop the client-side filter.
+- [ ] `api/admin/admin-users.ts`: the list and CSV export now send `role=` (tahti-org #1085 filters by the web's account-role split, so studio-tier and free-with-channel artists are found). Left: once #1085 is released, drop the client-side role filter and its page-count fallback.
 
 ## Dead code to decide on (not deleted)
 

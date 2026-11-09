@@ -1,4 +1,4 @@
-import { Link, useNavigate, useSearch } from '@tanstack/react-router';
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import {
   CalendarDaysIcon,
   HistoryIcon,
@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
-  Box,
   Button,
   ButtonLink,
   Tooltip,
@@ -418,7 +417,7 @@ export function RadioView() {
         />
       ) : (
         <div className="flex flex-col gap-6">
-          <header className="flex flex-wrap items-start justify-between gap-4">
+          <header className="flex items-start justify-between gap-4">
             <div className="flex min-w-0 items-start gap-4">
               <div className="min-w-0 flex-1">
                 <div className="text-foreground text-2xl font-bold tracking-tight">
@@ -459,23 +458,7 @@ export function RadioView() {
             </div>
           </header>
 
-          {memberLive ? (
-            <Box variant="secondary" className="items-start gap-2 text-sm">
-              <span aria-hidden>🔴</span>
-              <span>
-                {t('radio.liveNowOnRelay')} <strong>{memberLive.name}</strong>
-                {memberLive.title ? ` — ${memberLive.title}` : null}
-                {' · '}
-                <Link
-                  to="/channel/$slug"
-                  params={{ slug: memberLive.slug }}
-                  className="underline-offset-2 hover:underline"
-                >
-                  {t('radio.openLiveChannel', { name: memberLive.name })}
-                </Link>
-              </span>
-            </Box>
-          ) : sectionErrors.relay ? (
+          {!memberLive && sectionErrors.relay ? (
             <PageErrorBanner
               title={t('radio.memberRelayError')}
               description={sectionErrors.relay}
