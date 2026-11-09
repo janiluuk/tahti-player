@@ -10401,6 +10401,20 @@
       "embedsBody": "Salli kappaleidesi lataus hearthis.atissa ja käytä sitten kappaleen muokkausikkunan toimintoa ”Isännöi ääni Tahdissa”, tai korvaa kaikki kirjastosi hearthis.at-upotukset kerralla Tahti-komentorivityökalulla:",
       "copied": "Komento kopioitu",
       "files": "Onko tiedostot tietokoneellasi? Käytä Lataa-toimintoa, tai komentoa tahti import <kansio> koko kansiolle."
+    },
+    "ledgerCategory": {
+      "REVENUE_SUBSCRIPTION": "Jäsen- ja fanitilaukset",
+      "REVENUE_DISTRIBUTION": "Jakelutulot",
+      "REVENUE_GRANT_INBOUND": "Saadut avustukset",
+      "REVENUE_DONATION": "Lahjoitukset",
+      "COST_INFRASTRUCTURE": "Infrastruktuurikulut",
+      "COST_DISTRIBUTION_PASSTHROUGH": "Jakelun läpikulkuerät",
+      "COST_OPERATIONS": "Toimintakulut",
+      "COST_SALARY": "Palkat",
+      "COST_AUDIT": "Tilintarkastus",
+      "COST_PROFESSIONAL_SERVICES": "Asiantuntijapalvelut",
+      "GRANT_DISBURSEMENT": "Artisteille maksetut avustukset",
+      "RESERVE_TRANSFER": "Siirrot rahastoon"
     }
   },
   "studioEditor": {

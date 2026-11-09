@@ -76,7 +76,7 @@ export const ViewShell: FC<ViewShellProps> = ({
               className={cn(
                 'flex w-full flex-0 flex-row text-3xl font-bold',
                 subtitle ? 'mb-1' : 'mb-6',
-                corner ? 'pl-14' : 'text-center',
+                corner ? 'pl-14' : 'text-left',
               )}
               data-testid="title"
             >
@@ -87,7 +87,7 @@ export const ViewShell: FC<ViewShellProps> = ({
             <p
               className={cn(
                 'text-foreground-secondary mb-6 w-full flex-0 text-sm',
-                corner ? 'pl-14' : 'text-center',
+                corner ? 'pl-14' : 'text-left',
               )}
               data-testid="subtitle"
             >

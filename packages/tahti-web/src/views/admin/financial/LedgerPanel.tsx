@@ -22,13 +22,10 @@ import {
 } from '../../../api/admin';
 import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { ledgerCategoryLabel } from '../../../lib/ledgerCategory';
 
 export function formatEur(cents: number): string {
   return `€${(cents / 100).toLocaleString('fi-FI', { minimumFractionDigits: 2 })}`;
-}
-
-function categoryLabel(category: string): string {
-  return category.replace(/_/g, ' ').toLowerCase();
 }
 
 function isoDate(date: Date): string {
@@ -88,7 +85,7 @@ function LedgerEntryForm({ onSaved }: { onSaved: () => void }) {
           onValueChange={setCategory}
           options={LEDGER_CATEGORIES.map((ledgerCategory) => ({
             id: ledgerCategory,
-            label: categoryLabel(ledgerCategory),
+            label: ledgerCategoryLabel(ledgerCategory),
           }))}
         />
         <Input
@@ -219,7 +216,7 @@ export function LedgerPanel({
                 <div className="min-w-0 flex-1">
                   <div className="font-medium">{entry.description}</div>
                   <div className="text-foreground-secondary text-xs">
-                    {categoryLabel(entry.category)} ·{' '}
+                    {ledgerCategoryLabel(entry.category)} ·{' '}
                     {new Date(entry.createdAt).toLocaleDateString()}
                     {entry.externalRef ? ` · ${entry.externalRef}` : ''}
                   </div>

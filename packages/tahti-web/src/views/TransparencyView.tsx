@@ -27,6 +27,7 @@ import type {
 } from '../api/types';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { formatEuroCents, ledgerCategoryLabel } from '../lib/ledgerCategory';
 
 function rejectedReason(result: PromiseRejectedResult): string {
   return result.reason instanceof Error
@@ -39,7 +40,7 @@ function centsLabel(raw: string) {
   if (!Number.isFinite(n)) {
     return raw;
   }
-  return `€${(n / 100).toFixed(2)}`;
+  return formatEuroCents(n);
 }
 
 export function TransparencyView() {
@@ -176,8 +177,8 @@ export function TransparencyView() {
                   <DataTableBody>
                     {Object.entries(ytd.byCategory).map(([cat, amt]) => (
                       <DataTableRow key={cat}>
-                        <DataTableCell className="font-mono text-xs">
-                          {cat}
+                        <DataTableCell>
+                          {ledgerCategoryLabel(cat)}
                         </DataTableCell>
                         <DataTableCell>{centsLabel(amt)}</DataTableCell>
                       </DataTableRow>
@@ -308,7 +309,7 @@ export function TransparencyView() {
                           {e.createdAt.slice(0, 10)}
                         </DataTableCell>
                         <DataTableCell className="font-mono text-xs">
-                          {e.category}
+                          {ledgerCategoryLabel(e.category)}
                         </DataTableCell>
                         <DataTableCell>{e.description}</DataTableCell>
                         <DataTableCell className="whitespace-nowrap">
