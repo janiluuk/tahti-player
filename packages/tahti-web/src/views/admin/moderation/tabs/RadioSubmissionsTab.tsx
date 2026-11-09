@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Badge, Button, ImageReveal, Textarea } from '@tahti-player/ui';
+import { Badge, Button, MediaArtwork, Textarea } from '@tahti-player/ui';
 
 import {
   approveRadioSubmission,
@@ -134,18 +134,13 @@ export function RadioSubmissionsTab() {
           {active && (
             <StudioPanel title={t('radioSubmissionsTab.auditing')}>
               <div className="flex items-start gap-4">
-                <div className="bg-surface-secondary flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-lg text-xs font-bold">
-                  <ImageReveal
-                    src={active.sound.bannerUrl ?? undefined}
-                    alt=""
-                    className="size-full"
-                    placeholder={
-                      <span>
-                        {active.sound.title.slice(0, 2).toUpperCase()}
-                      </span>
-                    }
-                  />
-                </div>
+                <MediaArtwork
+                  size="md"
+                  src={active.sound.bannerUrl}
+                  alt=""
+                  seed={active.sound.id}
+                  className="rounded-lg"
+                />
                 <div className="min-w-0 flex-1">
                   <h3 className="text-base font-bold">{active.sound.title}</h3>
                   <p className="text-foreground-secondary text-sm">

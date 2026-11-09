@@ -3511,7 +3511,11 @@
       "delete": "Poista",
       "systemAnnouncements": "Järjestelmäkuulutukset",
       "clips": "Klipit",
-      "schedule": "Aikataulu"
+      "schedule": "Aikataulu",
+      "editScheduleOf": "Muokkaa klipin {{title}} aikataulua",
+      "scheduleTitle": "Klipin {{title}} aikataulu",
+      "everyNthSummary": "Kerran {{count}} klipin välein",
+      "everyNthRange": "Anna kokonaisluku väliltä {{min}}-{{max}}."
     },
     "adminRadioPresets": {
       "removeTitleNamed": "Poistetaanko {{name}}?",
@@ -8435,7 +8439,15 @@
     "releaseOpsPanel": {
       "catalogCredits": "Katalogi ja tekijät",
       "deliveryRoyalties": "Toimitus ja rojaltit",
-      "guides": "Oppaat"
+      "guides": "Oppaat",
+      "releaseOps": "Julkaisun hallinta",
+      "releaseOpsProgress": "Julkaisun hallinta ({{done}}/{{total}})",
+      "statusNotSubmitted": "Ei lähetetty",
+      "statusPending": "Odottaa",
+      "statusSubmitted": "Lähetetty",
+      "statusDelivered": "Toimitettu",
+      "statusLive": "Julkaistu",
+      "statusFailed": "Epäonnistui"
     },
     "artistProfilePage": {
       "stage": "Lava",
@@ -9038,7 +9050,10 @@
       "moveUpItemlabel": "Siirrä ylös: {{itemLabel}}",
       "moveDownItemlabel": "Siirrä alas: {{itemLabel}}",
       "attendanceAttendancecountRecorded": "Läsnäolo ({{attendanceCount}} kirjattu)",
-      "editStateOfTitle": "Muokkaa tilaa: {{title}}"
+      "editStateOfTitle": "Muokkaa tilaa: {{title}}",
+      "agendaItemField": "Esityslistan kohta {{position}}",
+      "editAgendaItem": "Muokkaa kohtaa {{position}}: {{itemLabel}}",
+      "removeAgendaItem": "Poista kohta {{position}}: {{itemLabel}}"
     },
     "playlistsBrowserLabels": {
       "playName": "Soita: {{name}}",

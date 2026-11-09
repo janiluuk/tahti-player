@@ -197,14 +197,13 @@ export function SortSoundsDialog({
               <span className="text-foreground-secondary w-6 text-right text-xs tabular-nums">
                 {index + 1}
               </span>
-              <div className="size-10 shrink-0 overflow-hidden rounded">
-                <MediaArtwork
-                  src={sound.artworkUrl ?? undefined}
-                  seed={sound.id}
-                  alt=""
-                  size="fill"
-                />
-              </div>
+              <MediaArtwork
+                src={sound.artworkUrl ?? undefined}
+                seed={sound.id}
+                alt=""
+                size="sm"
+                className="shrink-0 rounded"
+              />
               <span className="flex min-w-0 flex-1 flex-col">
                 <span className="truncate text-sm font-medium">
                   {sound.title}

@@ -1,5 +1,12 @@
 import { Link } from '@tanstack/react-router';
-import { BookOpenIcon, CopyIcon, DownloadIcon, LinkIcon } from 'lucide-react';
+import {
+  BookOpenIcon,
+  ChevronDownIcon,
+  ChevronUpIcon,
+  CopyIcon,
+  DownloadIcon,
+  LinkIcon,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -34,6 +41,10 @@ import type {
 } from '../../../api/studio-types';
 import { PageError, PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import {
+  releaseStateLabel,
+  releaseTypeLabel,
+} from '../../../lib/releaseLabels';
 import { assignStripeRedirectUrl } from '../../../lib/stripeRedirect';
 import { CreditsEditor } from './CreditsEditor';
 import { DeliveryTab } from './DeliveryTab';
@@ -44,6 +55,7 @@ import {
 } from './distribution-content';
 import {
   catalogToForm,
+  revelatorStatusLabel,
   statusColor,
   type CatalogForm,
 } from './distribution-helpers';
@@ -483,8 +495,11 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         <div>
           <p className="font-medium">{release.title}</p>
           <p className="text-foreground-secondary text-xs">
-            {release.type} · {release.state} ·{' '}
-            {release._count?.tracks ?? release.tracks?.length ?? 0} tracks
+            {releaseTypeLabel(release.type, t)} ·{' '}
+            {releaseStateLabel(release.state, t)} ·{' '}
+            {t('studioReleases.tracksCount', {
+              count: release._count?.tracks ?? release.tracks?.length ?? 0,
+            })}
             {release.upc ? ` · UPC ${release.upc}` : ''}
             {' · '}
             <Link
@@ -498,11 +513,25 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="pill" color={statusColor(revelatorStatus)}>
-            {revelatorStatus ?? 'not submitted'}
+            {revelatorStatusLabel(revelatorStatus, t)}
           </Badge>
-          <Button size="sm" variant="secondary" onClick={() => setOpen(!open)}>
-            {open ? 'Hide' : 'Release ops'} ({doneCount || '—'}/
-            {checklist.length || 5})
+          <Button
+            size="sm"
+            variant="secondary"
+            aria-expanded={open}
+            onClick={() => setOpen(!open)}
+          >
+            {checklist.length > 0
+              ? t('releaseOpsPanel.releaseOpsProgress', {
+                  done: doneCount,
+                  total: checklist.length,
+                })
+              : t('releaseOpsPanel.releaseOps')}
+            {open ? (
+              <ChevronUpIcon size={14} aria-hidden className="ml-1" />
+            ) : (
+              <ChevronDownIcon size={14} aria-hidden className="ml-1" />
+            )}
           </Button>
         </div>
       </div>

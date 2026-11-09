@@ -1,12 +1,12 @@
 import { Link } from '@tanstack/react-router';
-import { ExternalLinkIcon, Link2Icon } from 'lucide-react';
+import { ExternalLinkIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
   ButtonLink,
   FilterChips,
-  ImageReveal,
+  MediaArtwork,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -163,17 +163,12 @@ export function LibrarySmartLinksView() {
                       <li key={release.id}>
                         <LibraryItemRow
                           artwork={
-                            <ImageReveal
-                              src={release.artworkUrl ?? undefined}
+                            <MediaArtwork
+                              size="thumb"
+                              src={release.artworkUrl}
                               alt=""
-                              className="border-border bg-background-secondary size-12 shrink-0 rounded-md border"
-                              placeholder={
-                                <Link2Icon
-                                  size={18}
-                                  className="text-foreground-secondary"
-                                  aria-hidden
-                                />
-                              }
+                              seed={release.id}
+                              className="border-border rounded-md border"
                             />
                           }
                           title={
