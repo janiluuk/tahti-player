@@ -340,8 +340,8 @@ function ShowRow({
         size="md"
         src={show.coverUrl}
         alt=""
+        seed={show.id}
         className="border-border bg-background-secondary size-20 rounded-lg border"
-        placeholder={<RadioIcon size={28} className="opacity-40" aria-hidden />}
       />
       <div className="min-w-40 flex-1">
         <Link

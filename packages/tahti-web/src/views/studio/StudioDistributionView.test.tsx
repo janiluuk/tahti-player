@@ -82,4 +82,48 @@ describe('StudioDistributionView', () => {
       screen.queryByText('Could not load your royalty reports.'),
     ).toBeNull();
   });
+
+  it('shows the last loaded royalty reports at once and keeps them when a refresh fails', async () => {
+    const row = {
+      id: 'roy-1',
+      releaseId: 'rel-1',
+      releaseTitle: 'Night Drive',
+      periodStart: '2026-01-01',
+      periodEnd: '2026-03-31',
+      amountCents: 1234,
+      currency: 'EUR',
+      streams: 40,
+      syncedAt: '2026-04-01T00:00:00.000Z',
+    };
+    vi.spyOn(studio, 'fetchStudioReleases').mockResolvedValue({
+      data: { releases: [] },
+      meta: { source: 'api' },
+    } as never);
+    const royalties = vi
+      .spyOn(distribution, 'fetchAllRoyalties')
+      .mockResolvedValue({ data: [row], meta: { source: 'api' } } as never);
+    const first = await renderWithRouter(<StudioDistributionView />);
+    expect(await screen.findByText('Night Drive')).toBeTruthy();
+    first.unmount();
+
+    let fail: () => void = () => undefined;
+    royalties.mockReturnValue(
+      new Promise((resolve) => {
+        fail = () =>
+          resolve({
+            data: [],
+            meta: { source: 'api', reason: 'Revelator is unavailable' },
+          } as never);
+      }),
+    );
+    await renderWithRouter(<StudioDistributionView />);
+    expect(screen.getByText('Night Drive')).toBeTruthy();
+    expect(screen.queryByText('Loading…')).toBeNull();
+
+    fail();
+    expect(
+      await screen.findByText('Could not load your royalty reports.'),
+    ).toBeTruthy();
+    expect(screen.getByText('Night Drive')).toBeTruthy();
+  });
 });

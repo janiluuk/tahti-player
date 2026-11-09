@@ -21,6 +21,8 @@ import { useAuthStore, type AuthUser } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { SubscribeView } from './SubscribeView';
 
+type TiersResult = Awaited<ReturnType<typeof client.fetchFanTiers>>;
+
 const activeSub: FanSubscriptionRow = {
   id: 'sub-1',
   tierName: 'Supporter',
@@ -35,25 +37,32 @@ async function renderSubscribe({
   subscriptions = [],
   checkoutReturn = null,
   paymentsReady = true,
+  tiers,
 }: {
   subscriptions?: FanSubscriptionRow[];
   checkoutReturn?: FanCheckoutReturn;
   paymentsReady?: boolean;
+  tiers?: Promise<TiersResult>;
 } = {}) {
-  vi.spyOn(client, 'fetchFanTiers').mockResolvedValue({
-    data: {
-      artist: {
-        id: 'a1',
-        username: 'aurora',
-        displayName: 'Aurora',
-        bio: null,
-        avatarUrl: null,
-      },
-      tiers: [{ id: 't1', name: 'Supporter', amountCents: 500 }],
-      paymentsReady,
-    } as never,
-    meta: { source: 'api' },
-  });
+  const fetchTiers = vi.spyOn(client, 'fetchFanTiers');
+  if (tiers) {
+    fetchTiers.mockReturnValue(tiers);
+  } else {
+    fetchTiers.mockResolvedValue({
+      data: {
+        artist: {
+          id: 'a1',
+          username: 'aurora',
+          displayName: 'Aurora',
+          bio: null,
+          avatarUrl: null,
+        },
+        tiers: [{ id: 't1', name: 'Supporter', amountCents: 500 }],
+        paymentsReady,
+      } as never,
+      meta: { source: 'api' },
+    });
+  }
   const mine = vi
     .spyOn(client, 'fetchMySubscriptions')
     .mockResolvedValue({ data: subscriptions, meta: { source: 'api' } });
@@ -143,5 +152,54 @@ describe('SubscribeView', () => {
     await renderSubscribe({ paymentsReady: false });
     expect(screen.queryByText(/503|Connect/)).toBeNull();
     expect(screen.getByText(/isn't set up to take payments yet/)).toBeTruthy();
+  });
+
+  it('shows the saved tiers at once but waits for the refresh before checkout', async () => {
+    signIn();
+    await renderSubscribe();
+    expect(screen.getByText('Supporter')).toBeTruthy();
+    cleanup();
+
+    let resolve: (value: TiersResult) => void = () => undefined;
+    await renderSubscribe({ tiers: new Promise((r) => (resolve = r)) });
+    expect(screen.getByText('Supporter')).toBeTruthy();
+    expect(screen.queryByText('Loading tiers…')).toBeNull();
+    expect(screen.getByRole('button', { name: 'Subscribe' })).toBeDisabled();
+
+    await act(async () =>
+      resolve({
+        data: {
+          artist: {
+            id: 'a1',
+            username: 'aurora',
+            displayName: 'Aurora',
+            bio: null,
+            avatarUrl: null,
+          },
+          tiers: [{ id: 't2', name: 'Patron', amountCents: 1000 }],
+          paymentsReady: true,
+        } as never,
+        meta: { source: 'api' },
+      }),
+    );
+    expect(screen.getByText('Patron')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Subscribe' })).toBeEnabled();
+  });
+
+  it('shows the error instead of saved tiers when the refresh fails', async () => {
+    await renderSubscribe();
+    expect(screen.getByText('Supporter')).toBeTruthy();
+    cleanup();
+
+    await renderSubscribe({
+      tiers: Promise.resolve({
+        data: null,
+        meta: { source: 'api', reason: 'HTTP 503' },
+      } as never),
+    });
+    expect(
+      await screen.findByText('Could not load subscription tiers'),
+    ).toBeTruthy();
+    expect(screen.queryByText('Supporter')).toBeNull();
   });
 });

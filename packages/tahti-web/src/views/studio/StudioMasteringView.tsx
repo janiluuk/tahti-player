@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { DownloadIcon, SlidersHorizontalIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -17,6 +17,7 @@ import { PageBackLink } from '../../components/PageBackLink';
 import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { decodeSourceAndReference } from '../../plugins/mastering/decodeAudio';
 import type { MasteringStage } from '../../plugins/mastering/match';
 import { useMasteringWorker } from '../../plugins/mastering/useMasteringWorker';
@@ -30,32 +31,23 @@ const STAGE_LABELS: Record<MasteringStage, string> = {
 
 export function StudioMasteringView({ soundId }: { soundId: string }) {
   const { t } = useTranslation('web');
-  const [source, setSource] = useState<EditorSource | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
+  // The saved source only fills the page while it refreshes: its audio URL
+  // may have expired, so matching waits for the fresh one and a failed
+  // refresh shows the error.
+  const {
+    data: source,
+    loading,
+    refreshing,
+    error: loadError,
+    retry,
+  } = useSnapshotFetch<EditorSource>(`mastering-source:${soundId}`, async () =>
+    apiResult(await fetchEditorSource(soundId)),
+  );
   const [referenceFile, setReferenceFile] = useState<File | null>(null);
   const [decodeError, setDecodeError] = useState<string | null>(null);
   const [decoding, setDecoding] = useState(false);
 
   const { status, error, result, run, reset } = useMasteringWorker();
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setLoadError(null);
-    void fetchEditorSource(soundId).then(({ data, meta }) => {
-      if (cancelled) {
-        return;
-      }
-      setSource(data);
-      setLoadError(meta.source === 'api' && meta.reason ? meta.reason : null);
-      setLoading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [soundId, attempt]);
 
   const handleReferenceFiles = (files: readonly File[]) => {
     setDecodeError(null);
@@ -64,7 +56,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
   };
 
   const startMatching = async () => {
-    if (!source || !referenceFile) {
+    if (!source || !referenceFile || refreshing) {
       return;
     }
     setDecodeError(null);
@@ -131,7 +123,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
             <PageError
               title={t('loadErrors.couldNotLoadThisTrack')}
               description={loadError ?? 'Source audio is unavailable.'}
-              onRetry={() => setAttempt((n) => n + 1)}
+              onRetry={retry}
             />
           ) : (
             <>
@@ -173,7 +165,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
                 <div className="flex flex-wrap items-center gap-3">
                   <Button
                     onClick={() => void startMatching()}
-                    disabled={!referenceFile || busy}
+                    disabled={!referenceFile || busy || refreshing}
                   >
                     <SlidersHorizontalIcon
                       size={16}

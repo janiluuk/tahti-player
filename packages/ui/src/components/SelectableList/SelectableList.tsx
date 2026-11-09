@@ -10,6 +10,8 @@ export type SelectableListItem = {
   subtitle?: ReactNode;
   /** Right-aligned badge/text on the title row, e.g. a role or status. */
   meta?: ReactNode;
+  /** Leading avatar or thumbnail, e.g. a `MediaArtwork`. */
+  media?: ReactNode;
 };
 
 export type SelectableListProps = Omit<
@@ -59,19 +61,30 @@ export const SelectableList: FC<SelectableListProps> = ({
               disabled && 'cursor-not-allowed opacity-60',
             )}
           >
-            <span className="flex items-center justify-between gap-2">
-              <span className="truncate text-sm font-medium">{item.title}</span>
-              {item.meta ? (
-                <span className="text-foreground-secondary shrink-0 text-[10px] font-semibold tracking-wide uppercase">
-                  {item.meta}
+            <span className="flex items-center gap-3">
+              {item.media ? (
+                <span className="shrink-0" aria-hidden>
+                  {item.media}
                 </span>
               ) : null}
-            </span>
-            {item.subtitle ? (
-              <span className="text-foreground-secondary block truncate text-xs">
-                {item.subtitle}
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center justify-between gap-2">
+                  <span className="truncate text-sm font-medium">
+                    {item.title}
+                  </span>
+                  {item.meta ? (
+                    <span className="text-foreground-secondary shrink-0 text-[10px] font-semibold tracking-wide uppercase">
+                      {item.meta}
+                    </span>
+                  ) : null}
+                </span>
+                {item.subtitle ? (
+                  <span className="text-foreground-secondary block truncate text-xs">
+                    {item.subtitle}
+                  </span>
+                ) : null}
               </span>
-            ) : null}
+            </span>
           </button>
         </li>
       );

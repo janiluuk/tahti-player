@@ -547,7 +547,7 @@ export function StudioCollectionsView() {
                     >
                       <Button
                         size="icon-sm"
-                        variant="secondary"
+                        variant="text"
                         aria-label={t('library.playNamed', { name: c.name })}
                         disabled={playingSlug === c.slug}
                         onClick={() => {
@@ -592,6 +592,7 @@ export function StudioCollectionsView() {
                       to={editorRouteFor(c)}
                       params={{ slug: c.slug }}
                       search={{ edit: true }}
+                      variant="text"
                       label={t('library.editNamed', { name: c.name })}
                     />
                     <StudioCollectionMoreMenu

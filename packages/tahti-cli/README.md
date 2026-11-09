@@ -10,7 +10,7 @@ development; see [`docs/todo/tahti-cli-tool.md`](../../docs/todo/tahti-cli-tool.
 
 ## Scope
 
-Read-only commands, plus `import` (folder upload), `sounds upload`, `hearthis release` (hearthis.at Set or track → draft release) and `shell` (interactive
+Read-only commands, plus `import` (folder upload), `sounds upload`, `hearthis release` (hearthis.at Set or track → draft release), `hearthis import-embeds` (hearthis.at embeds → real uploads) and `shell` (interactive
 TUI with mpv playback). Capability catalogs used by Tahti Player
 (`GET /api/me/import-plugins`, `GET /api/me/export-plugins`) are **not** CLI
 commands yet — call them with `curl`/`fetch` against the same API if you need
@@ -55,6 +55,24 @@ pnpm --filter @tahti-player/tahti-cli exec tahti hearthis download-set --from-us
 ```
 
 Layout: `Artist/Album (year)/01 - Track.ext`
+
+#### hearthis.at embeds → real uploads
+
+Sounds imported from hearthis.at as embeds play hearthis.at's stream.
+`tahti hearthis import-embeds` asks Tahti to download each embed's audio from
+hearthis.at and attach it, so the sound becomes a real upload (same sound:
+plays, likes and collections stay).
+
+```bash
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis import-embeds --dry-run
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis import-embeds
+```
+
+- Only tracks with downloads enabled on hearthis.at import; the rest are listed
+  as "not downloadable". Turn downloads on for them on hearthis.at and run it
+  again; already-imported sounds are skipped.
+- The download runs in the background; each sound switches over in Library →
+  Sounds when its file is in. Needs a token with the `write` scope.
 
 #### hearthis.at → Tahti release
 

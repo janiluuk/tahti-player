@@ -306,4 +306,69 @@ describe('SmartLinkView', () => {
     expect(screen.queryByRole('region', { name: 'Credits' })).toBeNull();
     expect(screen.queryByRole('region', { name: 'Locked tracks' })).toBeNull();
   });
+
+  it('shows the saved release at once and swaps in the refresh', async () => {
+    await renderSmartLink({});
+    expect(
+      screen.getByRole('button', { name: 'Report Night Drive' }),
+    ).toBeTruthy();
+    cleanup();
+
+    let resolve: (value: unknown) => void = () => undefined;
+    vi.spyOn(client, 'fetchSmartLink').mockReturnValue(
+      new Promise((r) => (resolve = r)) as never,
+    );
+    const router = createRouter({
+      routeTree: createRootRoute({
+        component: () => <SmartLinkView slug="night-drive" />,
+      }),
+      history: createMemoryHistory({ initialEntries: ['/r/night-drive'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    expect(
+      screen.getByRole('button', { name: 'Report Night Drive' }),
+    ).toBeTruthy();
+    expect(screen.queryByText('Loading release…')).toBeNull();
+
+    await act(async () =>
+      resolve({
+        data: {
+          release: {
+            id: 'r1',
+            title: 'Night Drive (Remaster)',
+            smartLinkSlug: 'night-drive',
+            artworkUrl: null,
+          },
+          artist: { username: 'tahti', displayName: 'Tahti', avatarUrl: null },
+          targets: {},
+          featuredCollections: [],
+          releaseUrl: '/r/night-drive',
+        },
+        meta: { source: 'api' },
+      }),
+    );
+    expect(
+      screen.getByRole('button', { name: 'Report Night Drive (Remaster)' }),
+    ).toBeTruthy();
+  });
+
+  it('shows the error rather than the saved release when the refresh fails', async () => {
+    await renderSmartLink({});
+    cleanup();
+
+    vi.spyOn(client, 'fetchSmartLink').mockRejectedValue(new Error('HTTP 503'));
+    const router = createRouter({
+      routeTree: createRootRoute({
+        component: () => <SmartLinkView slug="night-drive" />,
+      }),
+      history: createMemoryHistory({ initialEntries: ['/r/night-drive'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    expect(await screen.findByText('Could not load this release')).toBeTruthy();
+    expect(screen.getByText('HTTP 503')).toBeTruthy();
+  });
 });

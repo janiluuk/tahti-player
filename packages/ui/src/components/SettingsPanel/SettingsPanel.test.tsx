@@ -180,7 +180,7 @@ describe('SettingsPanel', () => {
       'truncate',
     );
     expect(screen.getByTestId('settings-panel-nav').className).toContain(
-      'sm:w-60!',
+      'sm:w-64!',
     );
   });
 });

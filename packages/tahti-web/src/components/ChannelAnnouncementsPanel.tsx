@@ -298,6 +298,7 @@ export function ChannelAnnouncementsPanel() {
                 <PlayIcon size={16} />
               </Button>
               <EditIconButton
+                variant="text"
                 label={t('channelAnnouncementsPanelLabels.editTitle', {
                   title: clip.title,
                 })}
