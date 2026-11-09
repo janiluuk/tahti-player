@@ -21,6 +21,7 @@ import {
   Breadcrumbs,
   Button,
   ButtonLink,
+  MediaArtwork,
   Tabs,
   ViewShell,
 } from '@tahti-player/ui';
@@ -242,27 +243,36 @@ export function AdminRadioView() {
                                       className="mr-1.5"
                                     />
                                   )}
-                                  {stationPlaying ? 'Pause' : 'Listen'}
+                                  {stationPlaying
+                                    ? t('adminRadio.pause')
+                                    : t('adminRadio.listen')}
                                 </Button>
                               ) : undefined
                             }
                           >
                             <div className="border-border bg-background flex items-center gap-3 rounded-lg border p-3">
-                              <div className="bg-background-secondary text-foreground-secondary flex size-10 shrink-0 items-center justify-center rounded-full">
-                                <RadioTowerIcon size={20} aria-hidden />
-                              </div>
+                              <MediaArtwork
+                                src={station?.data.nowPlaying?.artworkUrl}
+                                alt=""
+                                seed={
+                                  station?.data.nowPlaying?.title ??
+                                  'tahti-radio'
+                                }
+                                size="thumb"
+                                className="size-10 shrink-0 rounded-md"
+                              />
                               <div className="min-w-0 flex-1">
                                 <p className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
                                   {station?.data.hlsUrl &&
                                   station.data.nowPlaying
                                     ? data.nowPlaying.live
-                                      ? 'Live guest on air'
-                                      : 'Rotation on air'
-                                    : 'Playback state'}
+                                      ? t('adminRadio.liveGuestOnAir')
+                                      : t('adminRadio.rotationOnAir')
+                                    : t('adminRadio.playbackState')}
                                 </p>
                                 <p className="truncate font-semibold">
                                   {station?.data.nowPlaying?.title ??
-                                    'No active track'}
+                                    t('adminRadio.noActiveTrack')}
                                 </p>
                                 {station?.data.nowPlaying ? (
                                   <p className="text-foreground-secondary truncate text-sm">

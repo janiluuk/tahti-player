@@ -3127,7 +3127,13 @@
     "adminRadio": {
       "memberRelay": "Jäsenvälitys:",
       "memberRelayLive": "{{name}} · /c/{{slug}}",
-      "memberRelayIdle": "ei live-jäsenkanavaa · rotaation pitäisi jatkua"
+      "memberRelayIdle": "ei live-jäsenkanavaa · rotaation pitäisi jatkua",
+      "liveGuestOnAir": "Livevieras lähetyksessä",
+      "rotationOnAir": "Rotaatio soi",
+      "playbackState": "Toiston tila",
+      "noActiveTrack": "Ei soivaa kappaletta",
+      "pause": "Tauko",
+      "listen": "Kuuntele"
     },
     "soundShare": {
       "empty": "Ei jakolinkkejä vielä.",
@@ -7241,7 +7247,11 @@
       "searchUsers": "Hae käyttäjiä",
       "nameEmailOrUsername": "Nimi, sähköposti tai käyttäjänimi",
       "filterByRole": "Suodata roolin mukaan",
-      "filterByMembership": "Suodata jäsenyyden mukaan"
+      "filterByMembership": "Suodata jäsenyyden mukaan",
+      "usernameSuspended": "@{{username}} · jäädytetty",
+      "roleBOARD": "Hallitus",
+      "roleARTIST": "Artisti",
+      "roleLISTENER": "Kuuntelija"
     },
     "releaseTrackVersionsPanel": {
       "active": "Aktiivinen",

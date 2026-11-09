@@ -3127,7 +3127,13 @@
     "adminRadio": {
       "memberRelay": "Member relay:",
       "memberRelayLive": "{{name}} · /c/{{slug}}",
-      "memberRelayIdle": "no live member channel · rotation should continue"
+      "memberRelayIdle": "no live member channel · rotation should continue",
+      "liveGuestOnAir": "Live guest on air",
+      "rotationOnAir": "Rotation on air",
+      "playbackState": "Playback state",
+      "noActiveTrack": "No active track",
+      "pause": "Pause",
+      "listen": "Listen"
     },
     "soundShare": {
       "empty": "No share links yet.",
@@ -7241,7 +7247,11 @@
       "searchUsers": "Search users",
       "nameEmailOrUsername": "Name, email, or username",
       "filterByRole": "Filter by role",
-      "filterByMembership": "Filter by membership"
+      "filterByMembership": "Filter by membership",
+      "usernameSuspended": "@{{username}} · suspended",
+      "roleBOARD": "Board",
+      "roleARTIST": "Artist",
+      "roleLISTENER": "Listener"
     },
     "releaseTrackVersionsPanel": {
       "active": "Active",
