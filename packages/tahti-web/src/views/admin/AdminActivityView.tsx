@@ -238,7 +238,7 @@ export function AdminActivityView({
         aria-label={t('adminActivityView.auditTopics')}
         className="border-border mb-3 border-b pb-3"
         items={[
-          { id: 'ALL', label: 'All activity' },
+          { id: 'ALL', label: t('adminActivityViewFields.allActivity') },
           ...ADMIN_AUDIT_TOPICS.map((item) => ({
             id: item.id,
             label: item.label,

@@ -81,7 +81,7 @@ export function PublishDialog({
           accept=".js,.mjs,application/javascript,text/javascript"
           disabled={pending}
           labels={{
-            title: 'Widget bundle',
+            title: t('publishDialogFields.widgetBundle'),
             description: file
               ? `${file.name} · ${formatSize(file.size)}`
               : 'A single .js or .mjs file.',

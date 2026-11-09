@@ -68,7 +68,7 @@ export function CorrectionsQueuePanel() {
         value={filter}
         onChange={setFilter}
         options={[
-          { id: 'waiting', label: 'Waiting' },
+          { id: 'waiting', label: t('correctionsQueuePanelFields.waiting') },
           { id: 'all', label: 'All' },
         ]}
       />

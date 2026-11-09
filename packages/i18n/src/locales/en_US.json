@@ -9958,6 +9958,96 @@
     },
     "artistUpcomingEventsText": {
       "upcomingEvents": "Upcoming events"
+    },
+    "trackBodyFields": {
+      "info": "Info"
+    },
+    "appTopNavText": {
+      "streamManager": "Stream Manager"
+    },
+    "trackEditorDialogFields": {
+      "undo": "Undo"
+    },
+    "adminActivityViewFields": {
+      "allActivity": "All activity"
+    },
+    "rightRailHeaderActionsFields": {
+      "pageComments": "Page comments"
+    },
+    "addToReleasePanelText": {
+      "addToARelease": "Add to a release"
+    },
+    "motionCardFields": {
+      "expired": "Expired"
+    },
+    "publishDialogFields": {
+      "widgetBundle": "Widget bundle"
+    },
+    "venueDetailViewFields": {
+      "capacity": "Capacity"
+    },
+    "artistRepostsText": {
+      "reposts": "Reposts"
+    },
+    "pressKitSectionFields": {
+      "dropPressKitPhotosHere": "Drop press-kit photos here"
+    },
+    "motionMeetingLinkControlFields": {
+      "noMeeting": "No meeting"
+    },
+    "profileLogoSectionFields": {
+      "pngOrWebpWithA": "PNG or WebP with a transparent background"
+    },
+    "recordedAtVenuePickerFields": {
+      "noVenue": "No venue"
+    },
+    "themesCategoryFields": {
+      "builtInTheme": "Built-in theme"
+    },
+    "playHistoryDialogFields": {
+      "playCountsOnTracksAre": "Play counts on tracks are unchanged."
+    },
+    "artistNewsText": {
+      "news": "News"
+    },
+    "duplicatesDialogFields": {
+      "theAudioFileOnDisk": "The audio file on disk was not touched."
+    },
+    "motionAgendaItemControlFields": {
+      "noAgendaItem": "No agenda item"
+    },
+    "releaseTrackAudioUploadFields": {
+      "wavFlacMp3AacOr": "WAV, FLAC, MP3, AAC or AIFF"
+    },
+    "tracklistPanelFields": {
+      "noTracksYet": "No tracks yet"
+    },
+    "artistCreditsText": {
+      "credits": "Credits"
+    },
+    "postDialogFields": {
+      "jpegPngOrWebpOne": "JPEG, PNG, or WebP. One image at a time."
+    },
+    "profileBackdropSectionFields": {
+      "jpegPngOrWebpWide": "JPEG, PNG or WebP, wide (about 4:1) works best"
+    },
+    "correctionsQueuePanelFields": {
+      "waiting": "Waiting"
+    },
+    "publishToReleaseSectionFields": {
+      "currentAudio": "Current audio"
+    },
+    "appShellText": {
+      "loadingPageContent": "Loading page content"
+    },
+    "trackAnalysisSectionFields": {
+      "undo": "Undo"
+    },
+    "collectionHeaderFields": {
+      "tracks": "Tracks"
+    },
+    "releaseSmartLinksPanelFields": {
+      "allContent": "All content"
     }
   },
   "studioEditor": {

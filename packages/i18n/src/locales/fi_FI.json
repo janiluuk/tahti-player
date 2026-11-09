@@ -9958,6 +9958,96 @@
     },
     "artistUpcomingEventsText": {
       "upcomingEvents": "Tulevat tapahtumat"
+    },
+    "trackBodyFields": {
+      "info": "Tiedot"
+    },
+    "appTopNavText": {
+      "streamManager": "Striimin hallinta"
+    },
+    "trackEditorDialogFields": {
+      "undo": "Kumoa"
+    },
+    "adminActivityViewFields": {
+      "allActivity": "Kaikki toiminta"
+    },
+    "rightRailHeaderActionsFields": {
+      "pageComments": "Sivun kommentit"
+    },
+    "addToReleasePanelText": {
+      "addToARelease": "Lisää julkaisuun"
+    },
+    "motionCardFields": {
+      "expired": "Vanhentunut"
+    },
+    "publishDialogFields": {
+      "widgetBundle": "Widget-paketti"
+    },
+    "venueDetailViewFields": {
+      "capacity": "Kapasiteetti"
+    },
+    "artistRepostsText": {
+      "reposts": "Uudelleenjaot"
+    },
+    "pressKitSectionFields": {
+      "dropPressKitPhotosHere": "Pudota pressikitin kuvat tähän"
+    },
+    "motionMeetingLinkControlFields": {
+      "noMeeting": "Ei kokousta"
+    },
+    "profileLogoSectionFields": {
+      "pngOrWebpWithA": "PNG tai WebP läpinäkyvällä taustalla"
+    },
+    "recordedAtVenuePickerFields": {
+      "noVenue": "Ei tapahtumapaikkaa"
+    },
+    "themesCategoryFields": {
+      "builtInTheme": "Sisäänrakennettu teema"
+    },
+    "playHistoryDialogFields": {
+      "playCountsOnTracksAre": "Kappaleiden soittomäärät eivät muutu."
+    },
+    "artistNewsText": {
+      "news": "Uutiset"
+    },
+    "duplicatesDialogFields": {
+      "theAudioFileOnDisk": "Levyllä olevaan äänitiedostoon ei koskettu."
+    },
+    "motionAgendaItemControlFields": {
+      "noAgendaItem": "Ei esityslistan kohtaa"
+    },
+    "releaseTrackAudioUploadFields": {
+      "wavFlacMp3AacOr": "WAV, FLAC, MP3, AAC tai AIFF"
+    },
+    "tracklistPanelFields": {
+      "noTracksYet": "Ei vielä kappaleita"
+    },
+    "artistCreditsText": {
+      "credits": "Tekijät"
+    },
+    "postDialogFields": {
+      "jpegPngOrWebpOne": "JPEG, PNG tai WebP. Yksi kuva kerrallaan."
+    },
+    "profileBackdropSectionFields": {
+      "jpegPngOrWebpWide": "JPEG, PNG tai WebP, leveä (noin 4:1) toimii parhaiten"
+    },
+    "correctionsQueuePanelFields": {
+      "waiting": "Odottaa"
+    },
+    "publishToReleaseSectionFields": {
+      "currentAudio": "Nykyinen ääni"
+    },
+    "appShellText": {
+      "loadingPageContent": "Ladataan sivun sisältöä"
+    },
+    "trackAnalysisSectionFields": {
+      "undo": "Kumoa"
+    },
+    "collectionHeaderFields": {
+      "tracks": "Kappaleet"
+    },
+    "releaseSmartLinksPanelFields": {
+      "allContent": "Kaikki sisältö"
     }
   },
   "studioEditor": {

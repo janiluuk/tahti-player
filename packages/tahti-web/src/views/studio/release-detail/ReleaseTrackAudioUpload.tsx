@@ -97,7 +97,7 @@ export function ReleaseTrackAudioUpload({
             title: t('releaseTrackAudioUploadLabels.audioForTitle', {
               title: track.title,
             }),
-            description: 'WAV, FLAC, MP3, AAC or AIFF',
+            description: t('releaseTrackAudioUploadFields.wavFlacMp3AacOr'),
             browse: 'Choose audio file',
           }}
           accept={RELEASE_TRACK_AUDIO_TYPES.join(',')}

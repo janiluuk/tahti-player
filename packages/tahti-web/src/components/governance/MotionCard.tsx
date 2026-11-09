@@ -100,7 +100,7 @@ export function MotionCard({
 
   const expired = isExpiredMotion(motion);
   const badge = expired
-    ? { color: 'secondary' as const, label: 'Expired' }
+    ? { color: 'secondary' as const, label: t('motionCardFields.expired') }
     : stateBadge(motion.state);
   const resultLabel = advisoryResultLabel(motion);
   const eligibleVoters = motion.eligibleMemberCount ?? memberCount;

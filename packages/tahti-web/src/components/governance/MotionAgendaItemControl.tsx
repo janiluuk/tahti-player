@@ -70,7 +70,10 @@ export function MotionAgendaItemControl({
         value={itemId}
         onValueChange={setItemId}
         options={[
-          { id: NO_ITEM, label: 'No agenda item' },
+          {
+            id: NO_ITEM,
+            label: t('motionAgendaItemControlFields.noAgendaItem'),
+          },
           ...(items ?? []).map((item) => ({
             id: item.id,
             label: `${item.position}. ${item.title}`,

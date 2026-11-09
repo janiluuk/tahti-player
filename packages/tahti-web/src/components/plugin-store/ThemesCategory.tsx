@@ -71,7 +71,7 @@ export function ThemesCategory() {
       id: theme.id,
       name: theme.name,
       author: 'Tahti',
-      description: 'Built-in theme',
+      description: t('themesCategoryFields.builtInTheme'),
       palette: theme.palette,
       tags: undefined as string[] | undefined,
       removable: false,

@@ -47,11 +47,14 @@ export function ArtistReposts({ username }: { username: string }) {
   }
 
   return (
-    <section className="flex flex-col gap-3" aria-label="Reposts">
+    <section
+      className="flex flex-col gap-3"
+      aria-label={t('artistRepostsText.reposts')}
+    >
       <Eyebrow>
         <span className="inline-flex items-center gap-1.5">
           <Repeat2Icon size={13} aria-hidden />
-          Reposts
+          {t('artistRepostsText.reposts')}
         </span>
       </Eyebrow>
       <ul className="flex flex-col gap-2">

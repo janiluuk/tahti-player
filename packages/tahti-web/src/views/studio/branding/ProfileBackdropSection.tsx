@@ -74,7 +74,7 @@ export function ProfileBackdropSection({
         <FilePicker
           labels={{
             title: backdropUrl ? 'Replace backdrop' : 'Add a backdrop',
-            description: 'JPEG, PNG or WebP, wide (about 4:1) works best',
+            description: t('profileBackdropSectionFields.jpegPngOrWebpWide'),
             browse: busy ? 'Uploading…' : 'Choose image',
           }}
           accept="image/jpeg,image/png,image/webp"

@@ -170,7 +170,7 @@ export function TrackEditorDialog({
           ? undefined
           : {
               action: {
-                label: 'Undo',
+                label: t('trackEditorDialogFields.undo'),
                 onClick: () => {
                   void library.catalog
                     .restoreEdits(outcome.undo)

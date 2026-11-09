@@ -151,7 +151,7 @@ export function DuplicatesDialog({
           title: track.title,
         }),
         {
-          description: 'The audio file on disk was not touched.',
+          description: t('duplicatesDialogFields.theAudioFileOnDisk'),
         },
       );
       onChanged();

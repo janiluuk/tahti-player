@@ -54,7 +54,10 @@ export function MotionMeetingLinkControl({
         value={meetingId}
         onValueChange={setMeetingId}
         options={[
-          { id: NO_MEETING, label: 'No meeting' },
+          {
+            id: NO_MEETING,
+            label: t('motionMeetingLinkControlFields.noMeeting'),
+          },
           ...meetings.map((meeting) => ({
             id: meeting.id,
             label: meeting.scheduledAt

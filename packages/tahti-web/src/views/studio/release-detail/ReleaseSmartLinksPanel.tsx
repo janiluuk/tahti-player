@@ -555,7 +555,10 @@ export function ReleaseSmartLinksPanel({
             value={contentType}
             onValueChange={setContentType}
             options={[
-              { id: 'ALL', label: 'All content' },
+              {
+                id: 'ALL',
+                label: t('releaseSmartLinksPanelFields.allContent'),
+              },
               ...[
                 ...new Set(
                   sounds.map((item) => item.contentType).filter(Boolean),

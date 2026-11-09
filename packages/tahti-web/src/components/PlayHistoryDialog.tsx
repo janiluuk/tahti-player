@@ -102,7 +102,7 @@ export function PlayHistoryDialog({
     try {
       await library.catalog.clearPlayHistory();
       toast.success(i18n.t('web:toasts.historyCleared'), {
-        description: 'Play counts on tracks are unchanged.',
+        description: t('playHistoryDialogFields.playCountsOnTracksAre'),
       });
       onChanged();
       await load(0);
