@@ -6793,7 +6793,7 @@
     },
     "homeNews": {
       "showAllNews": "Näytä kaikki uutiset",
-      "fromTahti": "Tahdilta",
+      "fromTahti": "Mitä tapahtuu?",
       "badge": "Uutiset",
       "empty": "Ei vielä uutisia"
     },
@@ -9687,7 +9687,7 @@
       "moreNews": "lisää uutisia",
       "latestNews": "Uusimmat uutiset",
       "allNews": "Kaikki uutiset",
-      "fromTahti": "Tahdilta",
+      "fromTahti": "Mitä tapahtuu?",
       "loadingNews": "Ladataan uutisia…",
       "noArticles": "Lähteissäsi ei ole juuri nyt artikkeleita.",
       "couldNotLoadSources": "Ei voitu ladata: {{names}}.",
