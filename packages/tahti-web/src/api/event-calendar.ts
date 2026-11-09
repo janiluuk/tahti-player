@@ -137,9 +137,12 @@ export async function fetchPublicEvent(id: string): Promise<{
   }
 }
 
+export type EventShareTarget = 'MASTODON' | 'BLUESKY';
+
 async function transition(
   id: string,
   action: 'publish' | 'cancel',
+  shareTo: EventShareTarget[] = [],
 ): Promise<Result<ArtistEvent>> {
   if (isForceMock()) {
     const row = mockEvents.find((event) => event.id === id);
@@ -157,7 +160,9 @@ async function transition(
   try {
     const { data } = await requestJson<ArtistEvent>(
       `/api/me/events/${encodeURIComponent(id)}/${action}`,
-      { method: 'POST' },
+      action === 'publish'
+        ? { method: 'POST', body: JSON.stringify({ shareTo }) }
+        : { method: 'POST' },
     );
     return { ok: true, data: normalizeEvent(data) };
   } catch (err) {
@@ -175,8 +180,8 @@ async function transition(
 
 /** Publish a draft (followers and accepted tags are told) or re-publish a
  * cancelled event. */
-export function publishEvent(id: string) {
-  return transition(id, 'publish');
+export function publishEvent(id: string, shareTo: EventShareTarget[] = []) {
+  return transition(id, 'publish', shareTo);
 }
 
 /** Cancel a published event; it stays listed with a Cancelled badge. */

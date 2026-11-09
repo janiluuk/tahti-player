@@ -10276,7 +10276,10 @@
       "agenda": "Lista",
       "calendarLayout": "Kalenterin asettelu",
       "loading": "Ladataan tapahtumia…",
-      "status": "Tila"
+      "status": "Tila",
+      "shareOnPublish": "Ilmoita julkaistaessa",
+      "shareConnectHint": "Yhdistä Mastodon tai Bluesky, niin voit ilmoittaa tapahtumista niissä.",
+      "shareConnectLink": "Asetukset → Artisti"
     }
   },
   "studioEditor": {

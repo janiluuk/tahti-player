@@ -193,6 +193,7 @@ export type CreateArtistEventInput = {
   startAt: string;
   endAt?: string | null;
   status?: 'DRAFT' | 'PUBLISHED';
+  shareTo?: Array<'MASTODON' | 'BLUESKY'>;
 };
 
 export async function createEvent(

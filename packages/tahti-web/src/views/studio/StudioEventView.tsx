@@ -24,6 +24,7 @@ import { EventCard } from '../../components/events/EventCard';
 import { EventParticipantChips } from '../../components/events/EventParticipantChips';
 import { EventParticipantsEditor } from '../../components/events/EventParticipantsEditor';
 import { EventPreviewDialog } from '../../components/events/EventPreviewDialog';
+import { EventPublishDialog } from '../../components/events/EventPublishDialog';
 import { EventStatusBadge } from '../../components/events/EventStatusBadge';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
@@ -167,46 +168,40 @@ export function StudioEventView({ eventId }: { eventId: string }) {
               isOpen={previewOpen}
               onClose={() => setPreviewOpen(false)}
             />
-            <ConfirmDialog
-              isOpen={confirm !== null}
-              title={
-                confirm === 'cancel'
-                  ? t('events.cancelConfirmTitle', { title: event.title })
-                  : t('events.publishConfirmTitle', { title: event.title })
-              }
-              description={
-                confirm === 'cancel'
-                  ? t('events.cancelConfirmDescription')
-                  : t('events.publishConfirmDescription')
-              }
-              confirmLabel={
-                confirm === 'cancel'
-                  ? t('events.cancelEvent')
-                  : t('events.publish')
-              }
-              cancelLabel={
-                confirm === 'cancel' ? t('events.keepEvent') : undefined
-              }
-              destructive={confirm === 'cancel'}
+            <EventPublishDialog
+              title={event.title}
+              isOpen={confirm === 'publish'}
+              firstPublish={!event.publishedAt}
               onCancel={() => setConfirm(null)}
-              onConfirm={() => {
-                const action = confirm;
+              onConfirm={(shareTo) => {
                 setConfirm(null);
-                void (
-                  action === 'cancel'
-                    ? cancelEvent(event.id)
-                    : publishEvent(event.id)
-                ).then((result) => {
+                void publishEvent(event.id, shareTo).then((result) => {
                   if (!result.ok) {
                     toast.error(result.error);
                     return;
                   }
                   setEvent(result.data);
-                  toast.success(
-                    action === 'cancel'
-                      ? t('events.cancelled', { title: event.title })
-                      : t('events.published', { title: event.title }),
-                  );
+                  toast.success(t('events.published', { title: event.title }));
+                });
+              }}
+            />
+            <ConfirmDialog
+              isOpen={confirm === 'cancel'}
+              title={t('events.cancelConfirmTitle', { title: event.title })}
+              description={t('events.cancelConfirmDescription')}
+              confirmLabel={t('events.cancelEvent')}
+              cancelLabel={t('events.keepEvent')}
+              destructive
+              onCancel={() => setConfirm(null)}
+              onConfirm={() => {
+                setConfirm(null);
+                void cancelEvent(event.id).then((result) => {
+                  if (!result.ok) {
+                    toast.error(result.error);
+                    return;
+                  }
+                  setEvent(result.data);
+                  toast.success(t('events.cancelled', { title: event.title }));
                 });
               }}
             />

@@ -10276,7 +10276,10 @@
       "agenda": "List",
       "calendarLayout": "Calendar layout",
       "loading": "Loading events…",
-      "status": "Status"
+      "status": "Status",
+      "shareOnPublish": "Announce when published",
+      "shareConnectHint": "Connect Mastodon or Bluesky to announce events there.",
+      "shareConnectLink": "Settings → Artist"
     }
   },
   "studioEditor": {
