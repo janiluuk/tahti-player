@@ -17,6 +17,7 @@ import {
 } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { humanizePastDate } from '../../../lib/humanizeDate';
+import { dateLocaleTag } from '../../../lib/locale';
 
 const EVENT_COLORS: Record<
   AdminWorkerJobEvent['status'],
@@ -95,7 +96,7 @@ function WorkerHistoryDialog({
                 dateTime={event.at}
                 className="text-foreground-secondary text-xs"
               >
-                {new Date(event.at).toLocaleString()}
+                {new Date(event.at).toLocaleString(dateLocaleTag())}
               </time>
               {event.errorMessage ? (
                 <code className="text-accent-red-strong text-xs break-words">

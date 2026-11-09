@@ -19,6 +19,7 @@ import {
 } from '@tahti-player/ui';
 
 import { Eyebrow } from '../../../components/tahti/Eyebrow';
+import { dateLocaleTag } from '../../../lib/locale';
 
 const STUDIO_HOME_TILES_STAGGER_KEY = 'tahti-studio-home-tiles-staggered';
 
@@ -212,7 +213,7 @@ export const SummaryStat: FC<SummaryStatProps> = ({
   <HomeTileStaggerWrap>
     <Link
       to="/studio/stats"
-      aria-label={`${value.toLocaleString()} ${label.toLowerCase()}`}
+      aria-label={`${value.toLocaleString(dateLocaleTag())} ${label.toLowerCase()}`}
       data-tone={tone}
       className={cn(
         'border-border bg-background-secondary/35 hover:bg-background-secondary group flex min-w-0 flex-col gap-2 rounded-xl border border-l-4 p-4 shadow-sm transition-transform hover:-translate-y-0.5',
@@ -232,7 +233,7 @@ export const SummaryStat: FC<SummaryStatProps> = ({
         {label}
       </span>
       <span className="font-display text-2xl font-extrabold tabular-nums">
-        {value.toLocaleString()}
+        {value.toLocaleString(dateLocaleTag())}
       </span>
       <span className="text-foreground-secondary text-xs">{note}</span>
     </Link>

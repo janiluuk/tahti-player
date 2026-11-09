@@ -13,6 +13,7 @@ import {
   type SocialPostPlatform,
 } from '../../api/social-autopost';
 import { PageEmpty, PageError } from '../../components/PageStates';
+import { dateLocaleTag } from '../../lib/locale';
 
 const PLATFORM_NAMES: Record<SocialPostPlatform, string> = {
   MASTODON: 'Mastodon',
@@ -168,7 +169,9 @@ export function SocialPostNow({
                   <span className="text-foreground-secondary text-xs">
                     {PLATFORM_NAMES[post.platform]} ·{' '}
                     {TRIGGER_LABEL[post.trigger] ?? post.trigger} ·{' '}
-                    {new Date(post.sentAt ?? post.createdAt).toLocaleString()}
+                    {new Date(post.sentAt ?? post.createdAt).toLocaleString(
+                      dateLocaleTag(),
+                    )}
                   </span>
                 </span>
                 <span className="break-words whitespace-pre-wrap">

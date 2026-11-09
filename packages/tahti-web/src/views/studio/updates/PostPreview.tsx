@@ -1,6 +1,7 @@
 import { Button, ImageReveal } from '@tahti-player/ui';
 
 import { PostLink } from '../../../components/PostLink';
+import { dateLocaleTag } from '../../../lib/locale';
 
 export function PostPreview({
   title,
@@ -25,7 +26,7 @@ export function PostPreview({
         <h3 className="text-lg font-semibold">{title || 'Untitled'}</h3>
         {publishAt && (
           <p className="text-foreground-secondary mt-1 text-xs">
-            {new Date(publishAt).toLocaleString()}
+            {new Date(publishAt).toLocaleString(dateLocaleTag())}
           </p>
         )}
       </div>

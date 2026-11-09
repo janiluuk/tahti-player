@@ -7,6 +7,7 @@ import {
   fetchSoundDownloadGateStats,
   type SoundDownloadGateStats,
 } from '../../api/studio-extras/sound-download-gate';
+import { dateLocaleTag } from '../../lib/locale';
 
 export function DownloadGateSection({
   soundId,
@@ -76,9 +77,12 @@ export function DownloadGateSection({
           className="text-foreground-secondary border-border/60 border-t pt-3 text-xs"
           data-testid="download-gate-stats"
         >
-          Last 14 days: {stats.countedDownloadCount.toLocaleString()} downloads,{' '}
-          {stats.blockedDownloadAttempts.toLocaleString()} stopped at the gate,{' '}
-          {stats.repostAckCount.toLocaleString()} reposts.
+          Last 14 days:{' '}
+          {stats.countedDownloadCount.toLocaleString(dateLocaleTag())}{' '}
+          downloads,{' '}
+          {stats.blockedDownloadAttempts.toLocaleString(dateLocaleTag())}{' '}
+          stopped at the gate,{' '}
+          {stats.repostAckCount.toLocaleString(dateLocaleTag())} reposts.
         </p>
       ) : null}
     </div>

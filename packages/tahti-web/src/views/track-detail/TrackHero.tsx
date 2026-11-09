@@ -36,6 +36,7 @@ import { TimelineReactionBar } from '../../components/TimelineReactionBar';
 import { useSoundEngagement } from '../../hooks/useSoundEngagement';
 import { resolveArtworkVisualizerPreset } from '../../lib/artworkVisualizer';
 import { EMBED_PROVIDER_HEIGHT } from '../../lib/embedSrc';
+import { dateLocaleTag } from '../../lib/locale';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
 import { useAuthModalStore } from '../../stores/authModalStore';
@@ -363,7 +364,9 @@ export function TrackHero({ page }: { page: TrackPage }) {
             {detail?.playCount != null ? (
               <span className="inline-flex items-center gap-1">
                 <CirclePlayIcon size={13} aria-hidden />
-                <span aria-hidden>{detail.playCount.toLocaleString()}</span>
+                <span aria-hidden>
+                  {detail.playCount.toLocaleString(dateLocaleTag())}
+                </span>
                 <span className="sr-only">{`${detail.playCount} plays`}</span>
               </span>
             ) : null}

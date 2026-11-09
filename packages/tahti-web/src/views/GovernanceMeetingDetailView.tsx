@@ -13,6 +13,7 @@ import { MeetingConflicts } from '../components/governance/MeetingConflicts';
 import { ListingDate } from '../components/ListingDate';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { dateLocaleTag } from '../lib/locale';
 import { isSafeHref } from '../lib/safeHref';
 import { useAuthStore } from '../stores/authStore';
 
@@ -121,7 +122,9 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
               </dt>
               <dd>
                 {meeting.scheduledAt
-                  ? new Date(meeting.scheduledAt).toLocaleString()
+                  ? new Date(meeting.scheduledAt).toLocaleString(
+                      dateLocaleTag(),
+                    )
                   : 'Not listed'}
               </dd>
               <dt className="text-foreground-secondary">

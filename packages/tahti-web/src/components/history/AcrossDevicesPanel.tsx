@@ -16,6 +16,7 @@ import {
   type MyListeningRange,
 } from '../../api/me-listening';
 import { formatListeningDuration } from '../../lib/historyStats';
+import { dateLocaleTag } from '../../lib/locale';
 import { useAuthStore } from '../../stores/authStore';
 import { PageError, PageLoading } from '../PageStates';
 
@@ -108,7 +109,7 @@ export function AcrossDevicesPanel({
             />
             <StatTile
               label={t('library.listens')}
-              value={listening.listens.toLocaleString()}
+              value={listening.listens.toLocaleString(dateLocaleTag())}
             />
           </div>
           {listening.topArtists.length > 0 || listening.topTracks.length > 0 ? (

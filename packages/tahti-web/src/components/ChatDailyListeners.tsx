@@ -2,6 +2,7 @@ import { UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { fetchChatDailyListeners } from '../api/chat-daily-listeners';
+import { dateLocaleTag } from '../lib/locale';
 
 const REFRESH_MS = 60_000;
 
@@ -39,7 +40,8 @@ export function ChatDailyListeners({ slug }: { slug: string }) {
       data-testid="chat-daily-listeners"
     >
       <UsersIcon size={12} aria-hidden />
-      {count.toLocaleString()} {count === 1 ? 'listener' : 'listeners'} today
+      {count.toLocaleString(dateLocaleTag())}{' '}
+      {count === 1 ? 'listener' : 'listeners'} today
     </div>
   );
 }

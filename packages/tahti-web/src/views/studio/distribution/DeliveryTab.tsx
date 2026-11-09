@@ -19,6 +19,7 @@ import {
   PageError,
   PageLoading,
 } from '../../../components/PageStates';
+import { dateLocaleTag } from '../../../lib/locale';
 import { euros } from './distribution-helpers';
 
 export function DeliveryTab({
@@ -194,7 +195,7 @@ export function DeliveryTab({
                   <span>{row.periodStart.slice(0, 7)}</span>
                   <span className="text-foreground-secondary">
                     {row.streams != null
-                      ? `${row.streams.toLocaleString()} streams · `
+                      ? `${row.streams.toLocaleString(dateLocaleTag())} streams · `
                       : ''}
                     {euros(row.amountCents)} {row.currency}
                   </span>
