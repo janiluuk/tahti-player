@@ -1,5 +1,5 @@
 import { ExternalLinkIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -13,6 +13,7 @@ import {
   ButtonLink,
   Dialog,
   InlineError,
+  InlineLoader,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -29,6 +30,7 @@ import {
   grafanaExploreLogsUrl,
   MONITORING_SERVICES,
 } from '../../lib/grafanaMonitoring';
+import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { CommunityStatsPanel } from './dashboard/CommunityStatsPanel';
 
 function euros(cents: number): string {
@@ -49,41 +51,19 @@ function healthChip(ok: boolean): { label: string; color: 'green' | 'orange' } {
 
 export function AdminDashboardView() {
   const { t } = useTranslation('web');
-  const [data, setData] = useState<AdminDashboard | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
+  const { data, error, loading, refreshing, retry } =
+    useSnapshotFetch<AdminDashboard>('admin-dashboard', async () => {
+      const res = await fetchAdminDashboard();
+      const reason = res.meta.source === 'api' ? res.meta.reason : undefined;
+      if (reason) {
+        throw new Error(reason);
+      }
+      return res.data;
+    });
   const [moreOpen, setMoreOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState<
     AdminDashboard['actionRows'][number] | null
   >(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    void fetchAdminDashboard()
-      .then((res) => {
-        if (cancelled) {
-          return;
-        }
-        const reason = res.meta.source === 'api' ? res.meta.reason : undefined;
-        // The failure payload is zeroed KPIs and "down" health; never show it.
-        setData(reason ? null : res.data);
-        setError(reason ?? null);
-        setLoading(false);
-      })
-      .catch((err: unknown) => {
-        if (cancelled) {
-          return;
-        }
-        setData(null);
-        setError(err instanceof Error ? err.message : String(err));
-        setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [attempt]);
 
   return (
     <AdminGate>
@@ -100,6 +80,20 @@ export function AdminDashboardView() {
             </Breadcrumbs>
             <ViewShell
               title={t('adminDashboard.dashboard')}
+              actions={
+                refreshing ? (
+                  <span data-testid="admin-dashboard-refreshing">
+                    <InlineLoader
+                      textSize="xs"
+                      label={t('adminDashboard.updating')}
+                    />
+                  </span>
+                ) : error && data ? (
+                  <span className="text-accent-red-strong text-xs">
+                    {t('adminDashboard.showingSaved')}
+                  </span>
+                ) : null
+              }
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
               {loading ? (
@@ -111,7 +105,7 @@ export function AdminDashboardView() {
                   <PageError
                     title={t('loadErrors.couldnTLoadTheDashboard')}
                     description={error ?? undefined}
-                    onRetry={() => setAttempt((n) => n + 1)}
+                    onRetry={retry}
                   />
                 </StudioPanel>
               ) : (

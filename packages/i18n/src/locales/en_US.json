@@ -5103,7 +5103,9 @@
       "financeYtd": "Finance YTD",
       "queueHealth": "Queue health",
       "cronJobs": "Cron jobs",
-      "recentAuditEvents": "Recent audit events"
+      "recentAuditEvents": "Recent audit events",
+      "updating": "Updating…",
+      "showingSaved": "Showing the last loaded data; refresh failed."
     },
     "proEditor": {
       "metadata": "Metadata",

@@ -16,6 +16,7 @@ import {
 } from '../api/client';
 import { setMockSessionUser } from '../api/mock-session';
 import type { AuthUser } from '../api/types';
+import { clearSnapshots } from '../lib/useSnapshotFetch';
 import { rehydrateLibraryForUser, useLibraryStore } from './libraryStore';
 
 type AuthState = {
@@ -107,6 +108,7 @@ function stopProfileRetry() {
 }
 
 async function afterUserChange(user: AuthUser | null) {
+  clearSnapshots();
   await rehydrateLibraryForUser(user?.id ?? null);
   if (user?.username) {
     await useLibraryStore.getState().mergeServerFollowing(user.username);
