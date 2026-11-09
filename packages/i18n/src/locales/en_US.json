@@ -6118,7 +6118,8 @@
       "pickDatesAndApplyTo": "Pick dates and apply to load plays for that window.",
       "statsTimeRange": "Stats time range",
       "customPeriod": "Custom period",
-      "from": "From"
+      "from": "From",
+      "to": "To"
     },
     "endBoardTerm": {
       "endTermEarly": "End term early",

@@ -6118,7 +6118,8 @@
       "pickDatesAndApplyTo": "Valitse päivät ja käytä niitä ladataksesi jakson soitot.",
       "statsTimeRange": "Tilastojen aikaväli",
       "customPeriod": "Oma ajanjakso",
-      "from": "Alkaen"
+      "from": "Alkaen",
+      "to": "Asti"
     },
     "endBoardTerm": {
       "endTermEarly": "Päätä kausi ennenaikaisesti",
