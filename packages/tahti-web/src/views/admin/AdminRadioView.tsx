@@ -211,13 +211,17 @@ export function AdminRadioView() {
                           <StudioPanel
                             title={
                               station?.data.hlsUrl && station.data.nowPlaying
-                                ? 'Stream live'
-                                : 'Stream offline'
+                                ? t('adminRadioViewStates.streamLive')
+                                : t('adminRadioViewStates.streamOffline')
                             }
                             description={
                               station?.data.hlsUrl && station.data.nowPlaying
-                                ? 'Tahti Radio is broadcasting the member rotation or a live guest channel.'
-                                : 'The Tahti Radio stream is currently unavailable.'
+                                ? t(
+                                    'adminRadioViewStates.tahtiRadioIsBroadcastingThe',
+                                  )
+                                : t(
+                                    'adminRadioViewStates.theTahtiRadioStreamIs',
+                                  )
                             }
                             action={
                               station?.playable ? (
@@ -225,8 +229,12 @@ export function AdminRadioView() {
                                   size="sm"
                                   aria-label={
                                     stationPlaying
-                                      ? 'Pause Tahti Radio stream'
-                                      : 'Play Tahti Radio stream'
+                                      ? t(
+                                          'adminRadioViewStates.pauseTahtiRadioStream',
+                                        )
+                                      : t(
+                                          'adminRadioViewStates.playTahtiRadioStream',
+                                        )
                                   }
                                   onClick={togglePlayback}
                                 >

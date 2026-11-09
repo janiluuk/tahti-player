@@ -303,7 +303,9 @@ export function AdminNewsView() {
                                   className="mr-1.5"
                                 />
                               )}
-                              {post.publishedAt ? 'Unpublish' : 'Publish'}
+                              {post.publishedAt
+                                ? t('adminNewsViewStates.unpublish')
+                                : t('adminNewsViewStates.publish')}
                             </Button>
                             <Button
                               size="sm"
@@ -424,7 +426,9 @@ export function AdminNewsView() {
                     type="submit"
                     disabled={busy || !headline.trim() || !summary.trim()}
                   >
-                    {busy ? 'Publishing…' : 'Publish'}
+                    {busy
+                      ? t('adminNewsViewStates.publishing')
+                      : t('adminNewsViewStates.publish')}
                   </Button>
                 </Dialog.Actions>
               </form>

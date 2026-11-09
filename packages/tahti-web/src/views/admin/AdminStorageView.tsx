@@ -38,7 +38,9 @@ export function AdminStorageView() {
                 {t('adminStorageView.storage')}
               </BreadcrumbLink>
               <BreadcrumbCurrent>
-                {tab === 'files' ? 'Files' : 'Storage'}
+                {tab === 'files'
+                  ? t('adminStorageViewStates.files')
+                  : t('adminStorageViewStates.storage')}
               </BreadcrumbCurrent>
             </Breadcrumbs>
             <ViewShell

@@ -183,7 +183,9 @@ export function useSoundEditor(id: string) {
     try {
       await patchAndReport(
         { pinned: next },
-        next ? 'Pinned to your public page.' : 'Unpinned.',
+        next
+          ? t('useSoundEditorStates.pinnedToYourPublicPage')
+          : t('useSoundEditorStates.unpinned'),
       );
     } finally {
       setPinBusy(false);
@@ -199,7 +201,9 @@ export function useSoundEditor(id: string) {
     try {
       await patchAndReport(
         { isFallback: next },
-        next ? 'Added to your 24/7 rotation.' : 'Removed from rotation.',
+        next
+          ? t('useSoundEditorStates.addedToYour247')
+          : t('useSoundEditorStates.removedFromRotation'),
       );
     } finally {
       setRotationBusy(false);

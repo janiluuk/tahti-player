@@ -315,8 +315,8 @@ export function MotionCard({
                   setActionMsg(
                     r.ok
                       ? nextState === 'OPEN'
-                        ? 'Voting opened.'
-                        : 'Motion closed and result published.'
+                        ? t('motionCardStates.votingOpened')
+                        : t('motionCardStates.motionClosedAndResultPublished')
                       : r.error,
                   );
                   if (r.ok) {
@@ -326,7 +326,9 @@ export function MotionCard({
               );
             }}
           >
-            {m.state === 'DRAFT' ? 'Open voting' : 'Close & publish result'}
+            {m.state === 'DRAFT'
+              ? t('motionCardStates.openVoting')
+              : t('motionCardStates.closePublishResult')}
           </Button>
         </div>
       )}

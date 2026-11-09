@@ -58,7 +58,9 @@ export function EpisodeEditorRow({
           <p className="font-medium">{episode.title}</p>
           <p className="text-foreground-secondary mt-1 text-xs">
             {episodeStatusLabel(episode)} ·{' '}
-            {episode.source === 'broadcast' ? 'Recorded' : 'Uploaded'}
+            {episode.source === 'broadcast'
+              ? t('episodeEditorRowStates.recorded')
+              : t('episodeEditorRowStates.uploaded')}
           </p>
         </div>
         <Button
@@ -153,8 +155,8 @@ export function EpisodeEditorRow({
             </p>
             <p className="mt-1 text-sm font-medium">
               {episode.source === 'broadcast'
-                ? 'Broadcast recording'
-                : 'Uploaded audio'}
+                ? t('episodeEditorRowStates.broadcastRecording')
+                : t('episodeEditorRowStates.uploadedAudio')}
             </p>
           </div>
           <div>
@@ -162,7 +164,9 @@ export function EpisodeEditorRow({
               {t('episodeEditor.audio')}
             </p>
             <p className="mt-1 text-sm font-medium">
-              {episode.soundId ? 'Attached' : 'Not attached'}
+              {episode.soundId
+                ? t('episodeEditorRowStates.attached')
+                : t('episodeEditorRowStates.notAttached')}
             </p>
           </div>
           <div>

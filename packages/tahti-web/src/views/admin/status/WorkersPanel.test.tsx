@@ -9,6 +9,7 @@ import {
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../../api/admin';
+import { applyLocale } from '../../../lib/locale';
 import { WorkersPanel } from './WorkersPanel';
 
 const WORKER: admin.AdminWorker = {
@@ -77,5 +78,25 @@ describe('WorkersPanel', () => {
       render(<WorkersPanel />);
     });
     expect(screen.getByText("Couldn't load workers")).toBeTruthy();
+  });
+
+  it('renders in Finnish', async () => {
+    await act(async () => {
+      await applyLocale('fi_FI');
+    });
+    try {
+      vi.spyOn(admin, 'fetchAdminWorkers').mockResolvedValue({
+        ok: true,
+        workers: [{ ...WORKER, name: 'mail-1', status: 'online' }],
+      });
+      await act(async () => {
+        render(<WorkersPanel />);
+      });
+      expect(screen.getByText('Verkossa')).toBeTruthy();
+    } finally {
+      await act(async () => {
+        await applyLocale('en_US');
+      });
+    }
   });
 });

@@ -192,8 +192,8 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                 {meeting.quorumMet === null
                   ? 'Not yet determined'
                   : meeting.quorumMet
-                    ? 'Met'
-                    : 'Not met'}
+                    ? t('governanceMeetingDetailViewStates.met')
+                    : t('governanceMeetingDetailViewStates.notMet')}
                 {meeting.quorumRequired !== null &&
                   ` (${meeting.quorumRequired} required)`}
               </dd>

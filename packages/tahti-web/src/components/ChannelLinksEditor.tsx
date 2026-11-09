@@ -80,7 +80,11 @@ export function ChannelLinksEditor({
                 className={`min-w-0 flex-1 ${urlInvalid ? 'border-accent-red-strong' : ''}`}
               />
               <Tooltip
-                content={hidden ? 'Show on channel' : 'Hide from channel'}
+                content={
+                  hidden
+                    ? t('channelLinksEditorStates.showOnChannel')
+                    : t('channelLinksEditorStates.hideFromChannel')
+                }
                 side="top"
               >
                 <Button
@@ -88,7 +92,9 @@ export function ChannelLinksEditor({
                   size="icon-sm"
                   variant="text"
                   aria-label={
-                    hidden ? 'Show link on channel' : 'Hide link from channel'
+                    hidden
+                      ? t('channelLinksEditorStates.showLinkOnChannel')
+                      : t('channelLinksEditorStates.hideLinkFromChannel')
                   }
                   aria-pressed={hidden}
                   onClick={() => toggleHidden(i)}

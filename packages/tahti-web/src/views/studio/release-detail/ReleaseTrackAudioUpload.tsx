@@ -124,7 +124,9 @@ export function ReleaseTrackAudioUpload({
       ) : null}
       <Button size="sm" variant="secondary" onClick={() => setPicking(true)}>
         <UploadIcon size={14} aria-hidden className="mr-1.5" />
-        {track.status === 'FAILED' ? 'Upload again' : 'Upload audio'}
+        {track.status === 'FAILED'
+          ? t('releaseTrackAudioUploadStates.uploadAgain')
+          : t('releaseTrackAudioUploadStates.uploadAudio')}
       </Button>
     </div>
   );

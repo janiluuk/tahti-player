@@ -129,9 +129,15 @@ export function ReleaseCsvImportButton({
             ) : null}
           </div>
           <Dialog.Actions>
-            <Dialog.Close>{result ? 'Done' : 'Cancel'}</Dialog.Close>
+            <Dialog.Close>
+              {result
+                ? t('releaseCsvImportButtonStates.done')
+                : t('releaseCsvImportButtonStates.cancel')}
+            </Dialog.Close>
             <Button type="submit" disabled={busy || !csv.trim()}>
-              {busy ? 'Importing…' : 'Import'}
+              {busy
+                ? t('releaseCsvImportButtonStates.importing')
+                : t('releaseCsvImportButtonStates.import')}
             </Button>
           </Dialog.Actions>
         </form>

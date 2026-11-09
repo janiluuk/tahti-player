@@ -239,8 +239,8 @@ export function VoiceRecorder({
               : state === 'stopping'
                 ? 'Finishing…'
                 : take
-                  ? 'Record another take'
-                  : 'Record voice'}
+                  ? t('voiceRecorderStates.recordAnotherTake')
+                  : t('voiceRecorderStates.recordVoice')}
         </Button>
       </div>
       {state === 'recording' && (

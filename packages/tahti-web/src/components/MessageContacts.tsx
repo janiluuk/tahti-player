@@ -8,6 +8,7 @@ import {
   type MessageContact,
 } from '../api/message-contacts';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
+import { webT } from '../lib/webT';
 
 const VISIBLE_CONTACTS = 12;
 
@@ -15,8 +16,8 @@ const relation = (contact: MessageContact) =>
   contact.followsYou && contact.followedByYou
     ? 'You follow each other'
     : contact.followsYou
-      ? 'Follows you'
-      : 'You follow';
+      ? webT()('messageContactsStates.followsYou')
+      : webT()('messageContactsStates.youFollow');
 
 /** People you follow or who follow you, one click from a new DM. */
 export function MessageContacts({

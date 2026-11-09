@@ -35,7 +35,11 @@ function VenueCard({
       <SectionTitle
         wrap
         title={venue.name}
-        badge={verified ? 'Verified' : 'Waiting for board verification'}
+        badge={
+          verified
+            ? t('myVenuesViewStates.verified')
+            : t('myVenuesViewStates.waitingForBoardVerification')
+        }
         badgeColor={verified ? 'green' : 'yellow'}
       />
       <p className="text-foreground-secondary flex items-center gap-1.5 text-sm">

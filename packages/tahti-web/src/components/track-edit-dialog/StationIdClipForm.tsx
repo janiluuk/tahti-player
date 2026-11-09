@@ -146,7 +146,9 @@ export function StationIdClipForm({
         disabled={busy || error !== null}
         type="submit"
       >
-        {busy ? 'Making clip…' : 'Make clip'}
+        {busy
+          ? t('stationIdClipFormStates.makingClip')
+          : t('stationIdClipFormStates.makeClip')}
       </Button>
     </form>
   );

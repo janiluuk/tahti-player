@@ -68,7 +68,9 @@ export function MeetingConflicts({ meetingId }: { meetingId: string }) {
                 variant="pill"
                 color={record.recused ? 'yellow' : 'secondary'}
               >
-                {record.recused ? 'Stepped out of the decision' : 'Took part'}
+                {record.recused
+                  ? t('meetingConflictsStates.steppedOutOfTheDecision')
+                  : t('meetingConflictsStates.tookPart')}
               </Badge>
             </div>
             <p className="text-foreground-secondary mt-0.5 text-xs">

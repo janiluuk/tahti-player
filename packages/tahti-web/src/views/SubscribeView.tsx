@@ -259,7 +259,9 @@ export function SubscribeView({
                       });
                     }}
                   >
-                    {busyTier === tier.id ? 'Starting…' : 'Subscribe'}
+                    {busyTier === tier.id
+                      ? t('subscribeViewStates.starting')
+                      : t('subscribeViewStates.subscribe')}
                   </Button>
                 </div>
               ))}

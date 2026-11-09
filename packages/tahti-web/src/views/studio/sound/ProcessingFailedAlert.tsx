@@ -28,8 +28,8 @@ export function ProcessingFailedAlert({
       </p>
       <p>
         {retryable
-          ? 'Try processing it again. If it keeps failing, upload the file again or contact support.'
-          : 'Try uploading it again, or contact support if it keeps happening.'}
+          ? t('processingFailedAlertStates.tryProcessingItAgainIf')
+          : t('processingFailedAlertStates.tryUploadingItAgainOr')}
       </p>
       {retryable ? (
         <Button

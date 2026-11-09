@@ -212,7 +212,9 @@ export function MaterialSetsField({ soundId }: Props) {
           onSearchChange={setSearch}
           searchPlaceholder="Search your sets"
           emptyLabel={
-            search.trim() ? 'No sets match that search.' : 'No sets yet.'
+            search.trim()
+              ? t('materialSetsFieldStates.noSetsMatchThatSearch')
+              : t('materialSetsFieldStates.noSetsYet')
           }
           busyId={busyId}
           onToggle={toggle}

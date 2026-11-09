@@ -135,7 +135,9 @@ export function StationEditDialog({
                 disabled={!streamUrl.trim() || testBusy}
                 onClick={() => void runTest()}
               >
-                {testBusy ? 'Testing…' : 'Test stream'}
+                {testBusy
+                  ? t('stationEditDialogStates.testing')
+                  : t('stationEditDialogStates.testStream')}
               </Button>
               {testResult && (
                 <p

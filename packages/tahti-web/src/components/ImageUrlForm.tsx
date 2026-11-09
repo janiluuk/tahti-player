@@ -53,7 +53,9 @@ export function ImageUrlForm({
         onChange={(event) => setUrl(event.target.value)}
       />
       <Button type="submit" className="self-start" disabled={busy || !valid}>
-        {busy ? 'Fetching…' : 'Use this image'}
+        {busy
+          ? t('imageUrlFormStates.fetching')
+          : t('imageUrlFormStates.useThisImage')}
       </Button>
     </form>
   );

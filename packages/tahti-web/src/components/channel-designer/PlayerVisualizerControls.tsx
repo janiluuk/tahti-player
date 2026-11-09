@@ -133,7 +133,9 @@ export function PlayerVisualizerControls({
             </Tooltip>
             <Tooltip
               content={
-                visualizerEnabled ? 'Disable visualizer' : 'Enable visualizer'
+                visualizerEnabled
+                  ? t('playerVisualizerControlsStates.disableVisualizer')
+                  : t('playerVisualizerControlsStates.enableVisualizer')
               }
               side="top"
             >
@@ -142,7 +144,9 @@ export function PlayerVisualizerControls({
                 variant={visualizerEnabled ? 'default' : 'secondary'}
                 aria-pressed={visualizerEnabled}
                 aria-label={
-                  visualizerEnabled ? 'Disable visualizer' : 'Enable visualizer'
+                  visualizerEnabled
+                    ? t('playerVisualizerControlsStates.disableVisualizer')
+                    : t('playerVisualizerControlsStates.enableVisualizer')
                 }
                 onClick={onToggleEnabled}
               >

@@ -128,8 +128,8 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
         destructive={pendingApply?.replace ?? false}
         title={
           pendingApply?.replace
-            ? 'Replace the current rotation?'
-            : 'Add this playlist to the rotation?'
+            ? t('streamManagerPlaylistDialogStates.replaceTheCurrentRotation')
+            : t('streamManagerPlaylistDialogStates.addThisPlaylistToThe')
         }
         description={
           pendingApply?.replace
@@ -139,11 +139,11 @@ export function PlaylistDialog({ state }: { state: StreamManagerState }) {
         confirmLabel={
           rotationBusy
             ? pendingApply?.replace
-              ? 'Replacing…'
-              : 'Adding…'
+              ? t('streamManagerPlaylistDialogStates.replacing')
+              : t('streamManagerPlaylistDialogStates.adding')
             : pendingApply?.replace
-              ? 'Replace rotation'
-              : 'Add to rotation'
+              ? t('streamManagerPlaylistDialogStates.replaceRotation')
+              : t('streamManagerPlaylistDialogStates.addToRotation')
         }
         onCancel={() => setPendingApply(null)}
         onConfirm={() => {

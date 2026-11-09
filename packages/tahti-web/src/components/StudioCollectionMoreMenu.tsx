@@ -136,7 +136,9 @@ export function StudioCollectionMoreMenu({
               }
               onClick={toggleVisibility}
             >
-              {isPrivate ? 'Make public' : 'Make private'}
+              {isPrivate
+                ? t('studioCollectionMoreMenuStates.makePublic')
+                : t('studioCollectionMoreMenuStates.makePrivate')}
             </Popover.Item>
           ) : null}
           {col.items ? (
@@ -167,7 +169,11 @@ export function StudioCollectionMoreMenu({
           'studioCollectionMoreMenuLabels.thisPermanentlyDeletesTheKindlabel',
           { kindLabel },
         )}
-        confirmLabel={deleting ? 'Deleting…' : 'Delete'}
+        confirmLabel={
+          deleting
+            ? t('studioCollectionMoreMenuStates.deleting')
+            : t('studioCollectionMoreMenuStates.delete')
+        }
         destructive
         onCancel={() => setConfirmOpen(false)}
         onConfirm={confirmDelete}

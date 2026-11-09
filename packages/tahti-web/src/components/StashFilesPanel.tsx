@@ -208,9 +208,13 @@ export const StashFilesPanel = ({
       <FilePicker
         disabled={busy}
         labels={{
-          title: busy ? 'Uploading…' : 'Upload a private file',
+          title: busy
+            ? t('stashFilesPanelStates.uploading')
+            : t('stashFilesPanelStates.uploadAPrivateFile'),
           description: t('stashFilesPanelMore.filesStayPrivateUntilYou'),
-          browse: busy ? 'Working…' : 'Choose file',
+          browse: busy
+            ? t('stashFilesPanelStates.working')
+            : t('stashFilesPanelStates.chooseFile'),
         }}
         onFiles={(picked) => {
           const file = picked[0];

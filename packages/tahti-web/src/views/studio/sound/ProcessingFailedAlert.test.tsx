@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import {
+  act,
   cleanup,
   fireEvent,
   render,
@@ -8,6 +9,7 @@ import {
 } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { applyLocale } from '../../../lib/locale';
 import { ProcessingFailedAlert } from './ProcessingFailedAlert';
 
 const { retrySoundProcessing, toast } = vi.hoisted(() => ({
@@ -68,5 +70,29 @@ describe('ProcessingFailedAlert', () => {
       ),
     );
     expect(onRetried).not.toHaveBeenCalled();
+  });
+
+  it('renders in Finnish', async () => {
+    await act(async () => {
+      await applyLocale('fi_FI');
+    });
+    try {
+      render(
+        <ProcessingFailedAlert
+          item={{
+            id: 's1',
+            title: 'Night Drive',
+            status: 'ERROR',
+            processingError: null,
+          }}
+          onRetried={vi.fn()}
+        />,
+      );
+      expect(screen.getByText(/ota yhteyttä tukeen/)).toBeTruthy();
+    } finally {
+      await act(async () => {
+        await applyLocale('en_US');
+      });
+    }
   });
 });

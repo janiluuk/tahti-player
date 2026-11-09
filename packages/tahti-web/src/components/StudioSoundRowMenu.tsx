@@ -63,7 +63,9 @@ export function StudioSoundRowMenu({
             onTogglePin();
           }}
         >
-          {pinned ? 'Unpin from page' : 'Pin to page'}
+          {pinned
+            ? t('studioSoundRowMenuStates.unpinFromPage')
+            : t('studioSoundRowMenuStates.pinToPage')}
         </TrackContextMenu.Action>
         {!hasEmbed ? (
           <TrackContextMenu.Submenu>

@@ -123,7 +123,11 @@ export function ImageSlotPreviewDialog({
           isOpen={confirmOpen}
           title={`Remove ${label.toLowerCase()}?`}
           description={t('imageSlotPreviewDialog.thisCanTBeUndone')}
-          confirmLabel={clearing ? 'Removing…' : 'Remove'}
+          confirmLabel={
+            clearing
+              ? t('imageSlotPreviewDialogStates.removing')
+              : t('imageSlotPreviewDialogStates.remove')
+          }
           onCancel={() => onCancelDelete?.()}
           onConfirm={() => void onConfirmDelete?.()}
         />

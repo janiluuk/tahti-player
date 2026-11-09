@@ -162,7 +162,11 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
         <ViewShell
-          title={editing ? 'Edit event' : 'Add event'}
+          title={
+            editing
+              ? t('studioEventCreateViewStates.editEvent')
+              : t('studioEventCreateViewStates.addEvent')
+          }
           classes={{ root: 'px-0 pt-0' }}
         >
           <StudioPanel title={t('eventCreate.eventDetails')}>
@@ -201,8 +205,12 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                       setBusy(false);
                       toast.error(
                         editing
-                          ? 'Could not save the event.'
-                          : 'Could not create the event.',
+                          ? t(
+                              'studioEventCreateViewStates.couldNotSaveTheEvent',
+                            )
+                          : t(
+                              'studioEventCreateViewStates.couldNotCreateTheEvent',
+                            ),
                       );
                     });
                 }}
@@ -373,10 +381,10 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                     )}
                     {editing
                       ? busy
-                        ? 'Saving…'
-                        : 'Save changes'
+                        ? t('studioEventCreateViewStates.saving')
+                        : t('studioEventCreateViewStates.saveChanges')
                       : busy
-                        ? 'Adding…'
+                        ? t('studioEventCreateViewStates.adding')
                         : t('events.publish')}
                   </Button>
                 </div>

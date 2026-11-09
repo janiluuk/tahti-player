@@ -234,7 +234,9 @@ export function FanChatRoom({
           {t('fanChatRoom.fanRoom')}
         </div>
         <span className="text-foreground-secondary text-xs">
-          {connected ? 'Subscribers only' : 'Connecting…'}
+          {connected
+            ? t('fanChatRoomStates.subscribersOnly')
+            : t('fanChatRoomStates.connecting')}
         </span>
       </div>
       {error && (

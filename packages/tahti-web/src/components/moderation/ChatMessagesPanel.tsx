@@ -111,7 +111,9 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
                   <span className="font-semibold">{message.handle}</span>
                   {message.channelRole && (
                     <Badge variant="pill" color="secondary">
-                      {message.channelRole === 'owner' ? 'Owner' : 'Moderator'}
+                      {message.channelRole === 'owner'
+                        ? t('chatMessagesPanelStates.owner')
+                        : t('chatMessagesPanelStates.moderator')}
                     </Badge>
                   )}
                   {message.fanOnly && (
@@ -186,10 +188,14 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
         }
         description={
           pending?.action === 'ban'
-            ? 'They can no longer post here. Their earlier messages stay until you remove them, and you can lift the ban under Chat bans.'
-            : 'It disappears for everyone who opens the chat from now on. People who have the chat open keep it until they reload.'
+            ? t('chatMessagesPanelStates.theyCanNoLongerPost')
+            : t('chatMessagesPanelStates.itDisappearsForEveryoneWho')
         }
-        confirmLabel={pending?.action === 'ban' ? 'Ban' : 'Remove'}
+        confirmLabel={
+          pending?.action === 'ban'
+            ? t('chatMessagesPanelStates.ban')
+            : t('chatMessagesPanelStates.remove')
+        }
         onCancel={() => setPending(null)}
         onConfirm={confirm}
       />

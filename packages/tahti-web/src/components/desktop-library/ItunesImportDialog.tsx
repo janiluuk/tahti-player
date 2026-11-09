@@ -469,7 +469,9 @@ export function ItunesImportDialog({
       <Dialog.Actions>
         {state.phase === 'committing' ? null : (
           <Dialog.Close>
-            {state.phase === 'done' ? 'Done' : 'Cancel'}
+            {state.phase === 'done'
+              ? t('itunesImportDialogStates.done')
+              : t('itunesImportDialogStates.cancel')}
           </Dialog.Close>
         )}
         {reviewing ? (

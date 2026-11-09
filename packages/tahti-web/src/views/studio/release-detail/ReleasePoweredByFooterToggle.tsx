@@ -36,7 +36,9 @@ export function ReleasePoweredByFooterToggle({
       }
       onChange(next);
       toast.success(
-        next ? 'Footer shown on the smart link.' : 'Footer hidden.',
+        next
+          ? t('releasePoweredByFooterToggleStates.footerShownOnTheSmart')
+          : t('releasePoweredByFooterToggleStates.footerHidden'),
       );
     } finally {
       setSaving(false);

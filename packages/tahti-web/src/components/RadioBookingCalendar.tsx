@@ -284,7 +284,9 @@ export function RadioBookingCalendar({
       <Dialog.Root isOpen={isOpen} onClose={onClose} className="max-w-2xl">
         <div className="flex items-center gap-2 pr-8">
           <Dialog.Title>
-            {scope === 'mine' ? 'My channel schedule' : 'Tahti Radio schedule'}
+            {scope === 'mine'
+              ? t('radioBookingCalendarStates.myChannelSchedule')
+              : t('radioBookingCalendarStates.tahtiRadioSchedule')}
           </Dialog.Title>
           <Tooltip content={t('bookingCalendar.openFullCalendar')} side="top">
             <ButtonLink
@@ -300,8 +302,8 @@ export function RadioBookingCalendar({
         </div>
         <Dialog.Description>
           {scope === 'mine'
-            ? 'Your booked slots and shows on Tahti Radio.'
-            : 'Community slot calendar — book time to broadcast on Tahti Radio.'}
+            ? t('radioBookingCalendarStates.yourBookedSlotsAndShows')
+            : t('radioBookingCalendarStates.communitySlotCalendarBookTime')}
         </Dialog.Description>
 
         <div className="mt-4 flex items-center justify-between">

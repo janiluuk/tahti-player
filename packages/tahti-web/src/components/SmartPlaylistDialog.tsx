@@ -123,7 +123,9 @@ export function SmartPlaylistDialog({
   return (
     <Dialog.Root isOpen={editing !== null} onClose={onClose}>
       <Dialog.Title>
-        {editing?.id ? 'Edit smart playlist' : 'New smart playlist'}
+        {editing?.id
+          ? t('smartPlaylistDialogStates.editSmartPlaylist')
+          : t('smartPlaylistDialogStates.newSmartPlaylist')}
       </Dialog.Title>
       <Dialog.Description>
         {t('smartPlaylist.aSmartPlaylistFollowsYour')}

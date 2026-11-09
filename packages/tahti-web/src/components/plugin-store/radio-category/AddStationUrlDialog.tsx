@@ -147,7 +147,9 @@ export function AddStationUrlDialog({
             disabled={!draft.trim() || busy}
             type="submit"
           >
-            {busy ? 'Testing…' : 'Resolve & test'}
+            {busy
+              ? t('addStationUrlDialogStates.testing')
+              : t('addStationUrlDialogStates.resolveTest')}
           </Button>
         </form>
         {resolution && (

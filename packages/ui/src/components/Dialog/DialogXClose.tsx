@@ -3,6 +3,7 @@ import { FC, type MouseEvent } from 'react';
 
 import { cn } from '../../utils';
 import { Button } from '../Button';
+import { useUiLabels } from '../UiLabels';
 import { useDialogContext } from './context';
 
 type DialogXCloseProps = {
@@ -11,6 +12,7 @@ type DialogXCloseProps = {
 
 export const DialogXClose: FC<DialogXCloseProps> = ({ className }) => {
   const { onClose } = useDialogContext();
+  const labels = useUiLabels();
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     event.preventDefault();
@@ -28,7 +30,7 @@ export const DialogXClose: FC<DialogXCloseProps> = ({ className }) => {
         'pointer-events-auto absolute top-3 right-3 z-[100]',
         className,
       )}
-      aria-label="Close"
+      aria-label={labels.close}
       data-testid="dialog-x-close"
     >
       <XIcon size={16} />

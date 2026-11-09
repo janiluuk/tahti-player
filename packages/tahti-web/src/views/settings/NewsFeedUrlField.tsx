@@ -38,7 +38,9 @@ export function NewsFeedUrlField() {
     }
     setUrl(result.data.newsFeedUrl ?? '');
     toast.success(
-      url.trim() ? 'News feed saved.' : 'News feed removed from your page.',
+      url.trim()
+        ? t('newsFeedUrlFieldStates.newsFeedSaved')
+        : t('newsFeedUrlFieldStates.newsFeedRemovedFromYour'),
     );
   };
 

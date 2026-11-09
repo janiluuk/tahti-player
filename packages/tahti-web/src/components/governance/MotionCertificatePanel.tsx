@@ -66,8 +66,8 @@ export function MotionCertificatePanel({
           color={certificate.matchesRecord ? 'green' : 'red'}
         >
           {certificate.matchesRecord
-            ? 'Matches the record'
-            : 'Does not match the record'}
+            ? t('motionCertificatePanelStates.matchesTheRecord')
+            : t('motionCertificatePanelStates.doesNotMatchTheRecord')}
         </Badge>
         <code className="text-foreground-secondary break-all">
           {certificate.algorithm} {certificate.digest}

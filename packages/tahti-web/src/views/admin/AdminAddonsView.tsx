@@ -166,8 +166,8 @@ export function AdminAddonsView() {
                 <PageEmpty
                   title={
                     needsReviewOnly
-                      ? 'No add-ons need review right now.'
-                      : 'No add-ons registered for this type yet.'
+                      ? t('adminAddonsViewStates.noAddOnsNeedReview')
+                      : t('adminAddonsViewStates.noAddOnsRegisteredFor')
                   }
                   action={
                     needsReviewOnly ? undefined : (

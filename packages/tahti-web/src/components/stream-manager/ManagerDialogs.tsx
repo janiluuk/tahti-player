@@ -56,7 +56,9 @@ export function ManagerDialogs({ state }: { state: StreamManagerState }) {
               void handleEnd();
             }}
           >
-            {ending ? 'Ending…' : 'Stop stream'}
+            {ending
+              ? t('streamManagerManagerDialogsStates.ending')
+              : t('streamManagerManagerDialogsStates.stopStream')}
           </Button>
         </Dialog.Actions>
       </Dialog.Root>

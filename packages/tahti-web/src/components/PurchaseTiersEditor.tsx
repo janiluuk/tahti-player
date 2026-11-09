@@ -161,29 +161,29 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
         />
       ) : (
         <ul className="flex flex-col gap-2">
-          {tiers.map((t) => (
+          {tiers.map((tier) => (
             <li
-              key={t.id}
+              key={tier.id}
               className="border-border flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"
             >
               <div className="min-w-0">
                 <div className="font-medium">
-                  {t.name}{' '}
+                  {tier.name}{' '}
                   <span className="text-foreground-secondary">
-                    {t.priceOptional
-                      ? `pay what you want (suggested ${euros(t.priceCents)})`
-                      : euros(t.priceCents)}
+                    {tier.priceOptional
+                      ? `pay what you want (suggested ${euros(tier.priceCents)})`
+                      : euros(tier.priceCents)}
                   </span>
-                  {t.active === false ? (
+                  {tier.active === false ? (
                     <span className="text-foreground-secondary">
                       {' '}
                       · inactive
                     </span>
                   ) : null}
                 </div>
-                {t.description && (
+                {tier.description && (
                   <p className="text-foreground-secondary text-xs">
-                    {t.description}
+                    {tier.description}
                   </p>
                 )}
               </div>
@@ -191,18 +191,21 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
                 size="sm"
                 variant="secondary"
                 onClick={() => {
-                  void setPurchaseTierActive(t.id, t.active === false).then(
-                    (r) => {
-                      if (!r.ok) {
-                        setMsg(r.error);
-                        return;
-                      }
-                      reload();
-                    },
-                  );
+                  void setPurchaseTierActive(
+                    tier.id,
+                    tier.active === false,
+                  ).then((r) => {
+                    if (!r.ok) {
+                      setMsg(r.error);
+                      return;
+                    }
+                    reload();
+                  });
                 }}
               >
-                {t.active === false ? 'Activate' : 'Deactivate'}
+                {tier.active === false
+                  ? t('purchaseTiersEditorStates.activate')
+                  : t('purchaseTiersEditorStates.deactivate')}
               </Button>
             </li>
           ))}
@@ -257,7 +260,11 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
               autoFocus
             />
             <Input
-              label={priceOptional ? 'Suggested price (€)' : 'Price (€)'}
+              label={
+                priceOptional
+                  ? t('purchaseTiersEditorStates.suggestedPrice')
+                  : t('purchaseTiersEditorStates.price')
+              }
               value={eurosAmt}
               onChange={(e) => setEurosAmt(e.target.value)}
             />
@@ -284,7 +291,9 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
             <Dialog.Close>{t('purchaseTiersEditor.cancel')}</Dialog.Close>
             <Button type="submit" disabled={busy || !name.trim()}>
               <PlusIcon size={16} aria-hidden className="mr-1.5" />
-              {busy ? 'Creating…' : 'Create tier'}
+              {busy
+                ? t('purchaseTiersEditorStates.creating')
+                : t('purchaseTiersEditorStates.createTier')}
             </Button>
           </Dialog.Actions>
         </form>

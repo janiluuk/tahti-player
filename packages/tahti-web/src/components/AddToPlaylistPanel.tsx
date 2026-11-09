@@ -378,7 +378,9 @@ export function AddToPlaylistPanel({
               disabled={creatingBusy || !newName.trim()}
             >
               <PlusIcon size={16} aria-hidden className="mr-1.5" />
-              {creatingBusy ? 'Creating…' : 'Create & add'}
+              {creatingBusy
+                ? t('addToPlaylistPanelStates.creating')
+                : t('addToPlaylistPanelStates.createAdd')}
             </Button>
           </Dialog.Actions>
         </form>

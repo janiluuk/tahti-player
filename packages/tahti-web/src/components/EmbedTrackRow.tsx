@@ -116,7 +116,11 @@ export function EmbedTrackRow({
             type="button"
             className="hover:bg-background-secondary min-w-0 flex-1 rounded-none px-3 py-2 text-left"
             onClick={() => void start()}
-            aria-label={`${isPlaying ? 'Pause' : 'Play'} ${title} on ${label}`}
+            aria-label={
+              isPlaying
+                ? t('embedTrackRowStates.pauseOn', { title, label })
+                : t('embedTrackRowStates.playOn', { title, label })
+            }
           >
             <LibraryItemRow
               className="w-full py-0"

@@ -469,8 +469,12 @@ export const TracklistEditor: FC<Props> = ({
                               <FileUpIcon size={18} aria-hidden />
                               <span>
                                 {dragActive
-                                  ? 'Drop Traktor or Rekordbox playlist here'
-                                  : 'Drop .nml or .txt tracklist here'}
+                                  ? t(
+                                      'tracklistEditorStates.dropTraktorOrRekordboxPlaylist',
+                                    )
+                                  : t(
+                                      'tracklistEditorStates.dropNmlOrTxtTracklist',
+                                    )}
                               </span>
                             </div>
                             <Button

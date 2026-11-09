@@ -168,7 +168,9 @@ export function WorkersPanel() {
                     variant="pill"
                     color={worker.status === 'online' ? 'green' : 'red'}
                   >
-                    {worker.status === 'online' ? 'Online' : 'Offline'}
+                    {worker.status === 'online'
+                      ? t('workersPanelStates.online')
+                      : t('workersPanelStates.offline')}
                   </Badge>
                   {worker.lanes.map((lane) => (
                     <Badge key={lane} variant="pill" color="secondary">

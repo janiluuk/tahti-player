@@ -156,7 +156,11 @@ export function FileDetailDialog({
           <dt className="text-foreground-secondary text-xs uppercase">
             {t('adminStorageShared.visibility')}
           </dt>
-          <dd>{file.isPublic ? 'Public' : 'Private'}</dd>
+          <dd>
+            {file.isPublic
+              ? t('storageSharedStates.public')
+              : t('storageSharedStates.private')}
+          </dd>
         </div>
         <div>
           <dt className="text-foreground-secondary text-xs uppercase">

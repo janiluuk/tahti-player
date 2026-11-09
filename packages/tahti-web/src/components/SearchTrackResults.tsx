@@ -63,7 +63,9 @@ export function SearchTrackResults({
                 {track.gate ? (
                   <span className="text-foreground-secondary flex shrink-0 items-center gap-1 text-xs">
                     <LockIcon size={12} aria-hidden />
-                    {track.gate.reason === 'PURCHASE' ? 'Buy' : 'Members'}
+                    {track.gate.reason === 'PURCHASE'
+                      ? t('searchTrackResultsStates.buy')
+                      : t('searchTrackResultsStates.members')}
                   </span>
                 ) : null}
                 {track.durationSec != null ? (

@@ -323,7 +323,11 @@ function DestinationDialog({
                     placeholder={selectedProvider?.label}
                   />
                   <Input
-                    label={savedTarget ? 'New stream key' : 'Stream key'}
+                    label={
+                      savedTarget
+                        ? t('multicastSectionStates.newStreamKey')
+                        : t('multicastSectionStates.streamKey')
+                    }
                     type="password"
                     autoComplete="off"
                     value={streamKey}
@@ -364,7 +368,9 @@ function DestinationDialog({
                     disabled={testing}
                     onClick={runTest}
                   >
-                    {testing ? 'Testing…' : 'Test connection'}
+                    {testing
+                      ? t('multicastSectionStates.testing')
+                      : t('multicastSectionStates.testConnection')}
                   </Button>
                   <Button
                     size="sm"
@@ -388,7 +394,9 @@ function DestinationDialog({
                       });
                     }}
                   >
-                    {savedTarget.enabled ? 'Disable' : 'Enable'}
+                    {savedTarget.enabled
+                      ? t('multicastSectionStates.disable')
+                      : t('multicastSectionStates.enable')}
                   </Button>
                   {testResult && (
                     <p
@@ -421,7 +429,9 @@ function DestinationDialog({
               disabled={deleting}
               onClick={() => setConfirmDelete(true)}
             >
-              {deleting ? 'Removing…' : 'Remove'}
+              {deleting
+                ? t('multicastSectionStates.removing')
+                : t('multicastSectionStates.remove')}
             </Button>
           )}
           {providerId &&
@@ -439,7 +449,9 @@ function DestinationDialog({
                 disabled={saving || !label.trim() || !streamKey.trim()}
                 type="submit"
               >
-                {saving ? 'Saving…' : 'Add destination'}
+                {saving
+                  ? t('multicastSectionStates.saving')
+                  : t('multicastSectionStates.addDestination')}
               </Button>
             ))}
         </Dialog.Actions>

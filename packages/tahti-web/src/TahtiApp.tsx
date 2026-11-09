@@ -5,6 +5,7 @@ import { createRoot } from 'react-dom/client';
 import { MediaArtworkDefaultProvider } from '@tahti-player/ui';
 
 import { AppErrorBoundary } from './components/AppErrorBoundary';
+import { WebUiLabelsProvider } from './components/WebUiLabelsProvider';
 import { startClientLogEvents } from './lib/clientLogEvents';
 import { installClientLogCapture, logClientEvent } from './lib/clientLogs';
 import { defaultArtworkUrl } from './lib/placeholderArt';
@@ -23,7 +24,9 @@ export function TahtiApp() {
   return (
     <AppErrorBoundary>
       <MediaArtworkDefaultProvider value={defaultArtworkUrl}>
-        <RouterProvider router={router} />
+        <WebUiLabelsProvider>
+          <RouterProvider router={router} />
+        </WebUiLabelsProvider>
       </MediaArtworkDefaultProvider>
     </AppErrorBoundary>
   );

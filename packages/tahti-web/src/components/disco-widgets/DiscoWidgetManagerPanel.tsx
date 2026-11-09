@@ -462,13 +462,13 @@ export function DiscoWidgetManagerPanel({
               <PageEmpty
                 title={
                   widgets.length === 0
-                    ? 'No widgets available'
-                    : 'No matching widgets'
+                    ? t('discoWidgetManagerPanelStates.noWidgetsAvailable')
+                    : t('discoWidgetManagerPanelStates.noMatchingWidgets')
                 }
                 description={
                   widgets.length === 0
-                    ? 'Nothing in this store yet.'
-                    : 'Try a different search.'
+                    ? t('discoWidgetManagerPanelStates.nothingInThisStoreYet')
+                    : t('discoWidgetManagerPanelStates.tryADifferentSearch')
                 }
                 action={
                   widgets.length > 0 ? (

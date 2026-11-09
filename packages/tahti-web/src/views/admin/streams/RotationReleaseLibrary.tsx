@@ -55,7 +55,9 @@ export function RotationReleaseLibrary({
               onClick={() => onAdd(track.releaseTrackId)}
             >
               <PlusIcon size={14} aria-hidden className="mr-1" />
-              {busyId === track.releaseTrackId ? 'Adding…' : 'Add'}
+              {busyId === track.releaseTrackId
+                ? t('rotationReleaseLibraryStates.adding')
+                : t('rotationReleaseLibraryStates.add')}
             </Button>
           </li>
         ))}

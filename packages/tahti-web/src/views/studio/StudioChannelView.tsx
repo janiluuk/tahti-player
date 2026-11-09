@@ -310,7 +310,11 @@ export function StudioChannelView() {
           </Tabs.Root>
         )}
         <ViewShell
-          title={tab === 'radio' ? 'Radio' : 'Channel'}
+          title={
+            tab === 'radio'
+              ? t('studioChannelViewStates.radio')
+              : t('studioChannelViewStates.channel')
+          }
           classes={{ root: 'px-0 pt-0' }}
         >
           {tab === 'setup' && !channel && (

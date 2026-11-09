@@ -12,6 +12,7 @@ import type {
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
 import { formatDuration } from '../lib/playableToTrack';
+import { webT } from '../lib/webT';
 import { ConfirmDialog } from './ConfirmDialog';
 import { PageEmpty } from './PageStates';
 
@@ -37,8 +38,8 @@ function groupHint(group: NativeDuplicateGroup) {
     return 'Byte-for-byte copies. Keep one and remove the rest from the library if you like.';
   }
   return group.confirmedDifferent
-    ? 'Compared and different: these are separate recordings or versions, not duplicates.'
-    : 'Same title, artist and length. Compare file contents to find out whether they are really the same.';
+    ? webT()('duplicatesDialogStates.comparedAndDifferentTheseAre')
+    : webT()('duplicatesDialogStates.sameTitleArtistAndLength');
 }
 
 /**

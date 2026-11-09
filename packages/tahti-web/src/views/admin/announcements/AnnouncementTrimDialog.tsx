@@ -184,7 +184,9 @@ export function AnnouncementTrimDialog({
               {t('announcementTrimDialog.cancel')}
             </Button>
             <Button disabled={pending} type="submit">
-              {pending ? 'Rendering…' : 'Render trim'}
+              {pending
+                ? t('announcementTrimDialogStates.rendering')
+                : t('announcementTrimDialogStates.renderTrim')}
             </Button>
           </div>
         </form>

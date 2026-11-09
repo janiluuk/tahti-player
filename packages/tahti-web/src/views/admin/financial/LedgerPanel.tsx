@@ -98,8 +98,8 @@ function LedgerEntryForm({ onSaved }: { onSaved: () => void }) {
           onChange={(event) => setAmount(event.target.value)}
           description={
             isLedgerOutflow(category)
-              ? 'Recorded as a cost.'
-              : 'Recorded as income.'
+              ? t('ledgerPanelStates.recordedAsACost')
+              : t('ledgerPanelStates.recordedAsIncome')
           }
         />
         <Input
@@ -178,11 +178,22 @@ export function LedgerPanel({
             <DownloadIcon size={14} aria-hidden className="mr-1.5" />
             {t('ledger.exportCsv')}
           </ButtonAnchor>
-          <Tooltip content={showForm ? 'Cancel entry' : 'Add entry'} side="top">
+          <Tooltip
+            content={
+              showForm
+                ? t('ledgerPanelStates.cancelEntry')
+                : t('ledgerPanelStates.addEntry')
+            }
+            side="top"
+          >
             <Button
               size="icon-sm"
               onClick={() => setShowForm((v) => !v)}
-              aria-label={showForm ? 'Cancel entry' : 'Add entry'}
+              aria-label={
+                showForm
+                  ? t('ledgerPanelStates.cancelEntry')
+                  : t('ledgerPanelStates.addEntry')
+              }
             >
               {showForm ? (
                 <XIcon size={16} aria-hidden />

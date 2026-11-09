@@ -324,7 +324,9 @@ export function TrackHero({ page }: { page: TrackPage }) {
                     maxLength={2000}
                     disabled={commentBusy}
                     aria-label={
-                      embedSrc ? 'Write a comment' : 'Write a timed comment'
+                      embedSrc
+                        ? t('trackHeroStates.writeAComment')
+                        : t('trackHeroStates.writeATimedComment')
                     }
                     className="h-auto min-w-0 rounded-none border-0 bg-transparent px-0 text-sm text-white outline-none placeholder:text-white/45 focus-visible:ring-0 focus-visible:ring-offset-0"
                   />
@@ -502,7 +504,9 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 onClick={startBuy}
               >
                 <ShoppingBagIcon size={14} aria-hidden className="mr-1.5" />
-                {buyBusy ? 'Buying…' : 'Buy this track'}
+                {buyBusy
+                  ? t('trackHeroStates.buying')
+                  : t('trackHeroStates.buyThisTrack')}
               </Button>
             ) : showDownload ? (
               <Tooltip

@@ -58,7 +58,9 @@ export function AnnualReportFilingForm({
         className="w-fit"
         onClick={() => setOpen(true)}
       >
-        {report.filedAt ? 'Change filing' : 'Record filing'}
+        {report.filedAt
+          ? t('annualReportFilingFormStates.changeFiling')
+          : t('annualReportFilingFormStates.recordFiling')}
       </Button>
     );
   }

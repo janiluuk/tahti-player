@@ -1,10 +1,11 @@
-import { cleanup, screen } from '@testing-library/react';
+import { act, cleanup, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
   fetchChannelListeningParties,
   type ListeningPartySummaryDto,
 } from '../../api/listening-parties';
+import { applyLocale } from '../../lib/locale';
 import { renderWithRouter } from '../../test/renderWithRouter';
 import { ChannelListeningPartyBanner } from './ChannelListeningPartyBanner';
 
@@ -67,5 +68,19 @@ describe('ChannelListeningPartyBanner', () => {
     expect(
       screen.queryByRole('region', { name: 'Listening party' }),
     ).toBeNull();
+  });
+
+  it('renders in Finnish', async () => {
+    await act(async () => {
+      await applyLocale('fi_FI');
+    });
+    try {
+      await renderBanner([row('now', 'LIVE')]);
+      expect(await screen.findByText('Liity nyt')).toBeTruthy();
+    } finally {
+      await act(async () => {
+        await applyLocale('en_US');
+      });
+    }
   });
 });

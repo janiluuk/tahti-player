@@ -202,13 +202,24 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
                 </div>
                 <div className="flex shrink-0 gap-1">
                   {onPlay ? (
-                    <Tooltip content={showPause ? 'Pause' : 'Play'} side="top">
+                    <Tooltip
+                      content={
+                        showPause
+                          ? t('channelRotationEditorStates.pause')
+                          : t('channelRotationEditorStates.play')
+                      }
+                      side="top"
+                    >
                       <Button
                         size="icon-sm"
                         variant="text"
                         disabled={busy}
                         onClick={() => onPlay(item)}
-                        aria-label={`${showPause ? 'Pause' : 'Play'} ${item.title}`}
+                        aria-label={
+                          showPause
+                            ? t('actions.pauseItem', { title: item.title })
+                            : t('actions.playItem', { title: item.title })
+                        }
                       >
                         {showPause ? (
                           <PauseIcon size={14} aria-hidden />

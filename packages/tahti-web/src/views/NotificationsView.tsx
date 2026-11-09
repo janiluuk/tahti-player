@@ -365,7 +365,9 @@ export function NotificationsView() {
             disabled={loadingOlder}
             onClick={() => void loadOlder()}
           >
-            {loadingOlder ? 'Loading…' : 'Show older'}
+            {loadingOlder
+              ? t('notificationsViewStates.loading')
+              : t('notificationsViewStates.showOlder')}
           </Button>
         ) : null}
       </div>

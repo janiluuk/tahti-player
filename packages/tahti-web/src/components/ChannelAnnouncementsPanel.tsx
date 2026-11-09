@@ -202,7 +202,9 @@ export function ChannelAnnouncementsPanel() {
           disabled={uploading}
           onClick={() => setRecording((v) => !v)}
         >
-          {recording ? 'Close recorder' : 'Record voice'}
+          {recording
+            ? t('channelAnnouncementsPanelStates.closeRecorder')
+            : t('channelAnnouncementsPanelStates.recordVoice')}
         </Button>
       </div>
       {recording && (
@@ -215,10 +217,14 @@ export function ChannelAnnouncementsPanel() {
         accept="audio/*,.wav,.flac,.aiff,.aif"
         disabled={uploading}
         labels={{
-          title: uploading ? 'Uploading clip…' : 'Upload audio',
+          title: uploading
+            ? t('channelAnnouncementsPanelStates.uploadingClip')
+            : t('channelAnnouncementsPanelStates.uploadAudio'),
           description:
             'WAV, FLAC, AIFF, or other audio · up to 10 minutes / 50 MB. Originals stay unchanged.',
-          browse: uploading ? 'Uploading…' : 'Choose audio',
+          browse: uploading
+            ? t('channelAnnouncementsPanelStates.uploading')
+            : t('channelAnnouncementsPanelStates.chooseAudio'),
         }}
         onFiles={(files) => {
           if (files[0]) {
@@ -262,7 +268,10 @@ export function ChannelAnnouncementsPanel() {
                   {clip.durationSec == null
                     ? 'Duration pending'
                     : `${clip.durationSec} s`}{' '}
-                  · {clip.isEnabled ? 'Enabled in rotation' : 'Inactive'}
+                  ·{' '}
+                  {clip.isEnabled
+                    ? t('channelAnnouncementsPanelStates.enabledInRotation')
+                    : t('channelAnnouncementsPanelStates.inactive')}
                   {clip.draftStatus
                     ? ` · Preview ${clip.draftStatus.toLowerCase()}`
                     : ''}
@@ -329,8 +338,8 @@ export function ChannelAnnouncementsPanel() {
                   onClick={() => void pageMusic(clip)}
                 >
                   {clip.isProfileBackground
-                    ? 'Remove page music'
-                    : 'Use as page music'}
+                    ? t('channelAnnouncementsPanelStates.removePageMusic')
+                    : t('channelAnnouncementsPanelStates.useAsPageMusic')}
                 </Button>
               </details>
               {previewId === clip.id &&
@@ -401,7 +410,9 @@ export function ChannelAnnouncementsPanel() {
             disabled={busyId !== null}
             onClick={() => void remove()}
           >
-            {busyId ? 'Deleting…' : 'Delete'}
+            {busyId
+              ? t('channelAnnouncementsPanelStates.deleting')
+              : t('channelAnnouncementsPanelStates.delete')}
           </Button>
         </Dialog.Actions>
       </Dialog.Root>

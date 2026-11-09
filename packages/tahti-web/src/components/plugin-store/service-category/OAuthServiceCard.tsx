@@ -290,7 +290,9 @@ export function OAuthServiceCard({
             disabled={busy}
             onClick={() => setConfirmDisconnect(true)}
           >
-            {busy ? 'Disconnecting…' : 'Disconnect'}
+            {busy
+              ? t('oAuthServiceCardStates.disconnecting')
+              : t('oAuthServiceCardStates.disconnect')}
           </Button>
           {adapter.id === 'mixcloud' && (
             <p className="text-foreground-secondary border-border border-t pt-3 text-sm">

@@ -138,7 +138,9 @@ export function MixcloudImportPanel({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               aria-label={
-                mode === 'profile' ? 'Mixcloud profile URL' : 'Search Mixcloud'
+                mode === 'profile'
+                  ? t('mixcloudImportPanelStates.mixcloudProfileUrl')
+                  : t('mixcloudImportPanelStates.searchMixcloud')
               }
               placeholder={
                 mode === 'profile'
@@ -147,7 +149,9 @@ export function MixcloudImportPanel({
               }
             />
             <Button type="submit" disabled={busy || !query.trim()}>
-              {busy ? 'Looking…' : 'Find'}
+              {busy
+                ? t('mixcloudImportPanelStates.looking')
+                : t('mixcloudImportPanelStates.find')}
             </Button>
           </form>
         ) : null}
@@ -155,8 +159,8 @@ export function MixcloudImportPanel({
           <PageEmpty
             title={
               mode === 'mine'
-                ? 'No mixes found. Add your Mixcloud handle to your social links first.'
-                : 'No cloudcasts found.'
+                ? t('mixcloudImportPanelStates.noMixesFoundAddYour')
+                : t('mixcloudImportPanelStates.noCloudcastsFound')
             }
           />
         ) : (
@@ -197,8 +201,8 @@ export function MixcloudImportPanel({
                   {added.has(cloudcast.url)
                     ? 'Added'
                     : addingUrl === cloudcast.url
-                      ? 'Adding…'
-                      : 'Add'}
+                      ? t('mixcloudImportPanelStates.adding')
+                      : t('mixcloudImportPanelStates.add')}
                 </Button>
               </li>
             ))}

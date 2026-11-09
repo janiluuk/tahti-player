@@ -104,8 +104,8 @@ export function PlaylistExportDialog({ playlist, library, onClose }: Props) {
         />
         <p className="text-foreground-secondary text-xs">
           {style === 'relative'
-            ? 'Best for sharing or moving: the list keeps working if the file and the music move together. Files outside the folder you save to are written with ../ and only resolve if that layout is the same on the other side; files on another drive fall back to full paths.'
-            : 'Works on this computer as it is, but not on another with a different folder layout.'}
+            ? t('playlistExportDialogStates.bestForSharingOrMoving')
+            : t('playlistExportDialogStates.worksOnThisComputerAs')}
         </p>
       </div>
       <Dialog.Actions>

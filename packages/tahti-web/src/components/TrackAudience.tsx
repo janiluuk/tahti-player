@@ -149,7 +149,9 @@ export function TrackAudience({
           disabled={loadingMore === tab}
           onClick={() => showMore(tab)}
         >
-          {loadingMore === tab ? 'Loading…' : 'Show more'}
+          {loadingMore === tab
+            ? t('trackAudienceStates.loading')
+            : t('trackAudienceStates.showMore')}
         </Button>
       )}
       renderLink={(href, children) => (

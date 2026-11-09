@@ -105,13 +105,21 @@ export function MasteringPanel({ editList, onChange }: Props) {
         }
         action={
           <Tooltip
-            content={collapsed ? 'Expand mastering' : 'Minimize mastering'}
+            content={
+              collapsed
+                ? t('masteringPanelStates.expandMastering')
+                : t('masteringPanelStates.minimizeMastering')
+            }
             side="top"
           >
             <Button
               size="icon-sm"
               variant="text"
-              aria-label={collapsed ? 'Expand mastering' : 'Minimize mastering'}
+              aria-label={
+                collapsed
+                  ? t('masteringPanelStates.expandMastering')
+                  : t('masteringPanelStates.minimizeMastering')
+              }
               onClick={() => setCollapsed((v) => !v)}
             >
               {collapsed ? (
@@ -272,7 +280,15 @@ export function MasteringPanel({ editList, onChange }: Props) {
                         <Toggle
                           checked={meta.isEnabled(editList)}
                           onChange={() => togglePluginEnabled(id)}
-                          aria-label={`${meta.isEnabled(editList) ? 'Disable' : 'Enable'} ${meta.label}`}
+                          aria-label={
+                            meta.isEnabled(editList)
+                              ? t('masteringPanelStates.disableItem', {
+                                  name: meta.label,
+                                })
+                              : t('masteringPanelStates.enableItem', {
+                                  name: meta.label,
+                                })
+                          }
                         />
                         <Tooltip
                           content={t('masteringPanelLabels.removeLabel', {

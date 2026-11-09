@@ -68,8 +68,8 @@ function TicketReplyForm({
         })}
         placeholder={
           ticket.status === 'RESOLVED'
-            ? 'Still need help? Replying reopens this request.'
-            : 'Add a reply…'
+            ? t('mySupportTicketsStates.stillNeedHelpReplyingReopens')
+            : t('mySupportTicketsStates.addAReply')
         }
         rows={2}
         maxLength={MAX_REPLY_LENGTH}
@@ -83,7 +83,9 @@ function TicketReplyForm({
         className="self-end"
         disabled={sending || !body.trim()}
       >
-        {sending ? 'Sending…' : 'Send reply'}
+        {sending
+          ? t('mySupportTicketsStates.sending')
+          : t('mySupportTicketsStates.sendReply')}
       </Button>
     </form>
   );

@@ -90,7 +90,9 @@ export function StationHealthCell({
         }}
       >
         <ActivityIcon size={14} aria-hidden />
-        {checking ? 'Testing…' : 'Test'}
+        {checking
+          ? t('stationHealthCellStates.testing')
+          : t('stationHealthCellStates.test')}
       </Button>
     </div>
   );

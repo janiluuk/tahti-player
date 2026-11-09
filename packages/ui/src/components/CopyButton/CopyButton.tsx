@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 
 import { Button } from '../Button';
 import { Tooltip } from '../Tooltip';
+import { useUiLabels } from '../UiLabels';
 
 const COPY_FEEDBACK_DURATION_MS = 10_000;
 
@@ -38,12 +39,13 @@ const CopyButtonImpl: FC<CopyButtonProps> = ({
   size,
   feedbackDurationMs = COPY_FEEDBACK_DURATION_MS,
   toastMessage,
-  errorMessage = 'Could not copy to clipboard',
+  errorMessage,
   icon,
   'aria-label': ariaLabel,
   title,
   ...props
 }) => {
+  const labels = useUiLabels();
   const [copied, setCopied] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
 
@@ -55,19 +57,21 @@ const CopyButtonImpl: FC<CopyButtonProps> = ({
     };
   }, []);
 
-  const accessibleLabel = ariaLabel ?? title ?? label ?? 'Copy';
+  const accessibleLabel = ariaLabel ?? title ?? label ?? labels.copy;
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(text);
     } catch {
-      toast.error(errorMessage);
+      toast.error(errorMessage ?? labels.copyFailed);
       return;
     }
     setCopied(true);
     if (toastMessage) {
       toast.success(
-        typeof toastMessage === 'string' ? toastMessage : 'Copied to clipboard',
+        typeof toastMessage === 'string'
+          ? toastMessage
+          : labels.copiedToClipboard,
       );
     }
     if (timerRef.current) {
@@ -91,7 +95,9 @@ const CopyButtonImpl: FC<CopyButtonProps> = ({
         ) : (
           (icon ?? <Copy className="size-3.5" />)
         )}
-        {label && <span className="ml-1.5">{copied ? 'Copied' : label}</span>}
+        {label && (
+          <span className="ml-1.5">{copied ? labels.copied : label}</span>
+        )}
       </Button>
     </Tooltip>
   );

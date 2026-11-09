@@ -114,9 +114,13 @@ export function ProfileLogoSection({
         ) : null}
         <FilePicker
           labels={{
-            title: logoUrl ? 'Replace logo' : 'Add a logo',
+            title: logoUrl
+              ? t('profileLogoSectionStates.replaceLogo')
+              : t('profileLogoSectionStates.addALogo'),
             description: t('profileLogoSectionFields.pngOrWebpWithA'),
-            browse: busy ? 'Uploading…' : 'Choose image',
+            browse: busy
+              ? t('profileLogoSectionStates.uploading')
+              : t('profileLogoSectionStates.chooseImage'),
           }}
           accept="image/png,image/webp"
           disabled={busy}
