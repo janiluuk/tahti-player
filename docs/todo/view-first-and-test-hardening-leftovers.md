@@ -12,10 +12,6 @@ changed, because it needs a product call or more than a mechanical fix.
   straight into the Catalog & credits form (catalog tiles, UPC/ISRC inputs,
   CreditsEditor). It is an ops workspace opened by an explicit button, so
   decide whether it needs a read-only summary first.
-- [ ] `views/admin/AdminAnnouncementsView.tsx`: each clip row keeps an inline
-  Schedule select that saves on change (Every Nth now commits on blur).
-- [ ] `views/admin/governance/tabs/AgmTab.tsx` `AgendaBuilder`: every agenda
-  line is an input (local scratch builder, not persisted items).
 
 ## Bugs found, not fixed
 
