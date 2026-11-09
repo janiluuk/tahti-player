@@ -10357,6 +10357,10 @@
     },
     "listenAddonsTabEmptyText": {
       "everythingHereIsInstalled": "Kaikki täällä on jo asennettu."
+    },
+    "searchResults": {
+      "resultsFor": "Tulokset haulle ”{{query}}”",
+      "title": "Haku"
     }
   },
   "studioEditor": {
