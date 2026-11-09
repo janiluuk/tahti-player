@@ -14,7 +14,7 @@ exports[`Tabs > (Snapshot) renders correctly 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:r7:"
         aria-selected="true"
-        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none hover:text-foreground h-8 rounded-md px-3 text-sm font-medium active:scale-100 bg-background text-foreground ring-border shadow-sm ring-1 [&_svg]:text-primary"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none hover:text-foreground h-8 rounded-md px-3 text-sm font-medium active:scale-100 bg-background text-foreground ring-border [&_svg]:text-primary shadow-sm ring-1"
         data-headlessui-state=""
         data-selected=""
         id="headlessui-tabs-tab-:r1:"
@@ -523,7 +523,7 @@ exports[`Tabs > (Snapshot) renders icons and count pills 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:ri:"
         aria-selected="true"
-        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none hover:text-foreground h-8 rounded-md px-3 text-sm font-medium active:scale-100 bg-background text-foreground ring-border shadow-sm ring-1 [&_svg]:text-primary"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none hover:text-foreground h-8 rounded-md px-3 text-sm font-medium active:scale-100 bg-background text-foreground ring-border [&_svg]:text-primary shadow-sm ring-1"
         data-headlessui-state=""
         data-selected=""
         id="headlessui-tabs-tab-:re:"
@@ -633,7 +633,7 @@ exports[`Tabs > (Snapshot) renders in composition mode 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:r18:"
         aria-selected="true"
-        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none hover:text-foreground h-8 rounded-md px-3 text-sm font-medium active:scale-100 bg-background text-foreground ring-border shadow-sm ring-1 [&_svg]:text-primary"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none hover:text-foreground h-8 rounded-md px-3 text-sm font-medium active:scale-100 bg-background text-foreground ring-border [&_svg]:text-primary shadow-sm ring-1"
         data-headlessui-state=""
         data-selected=""
         id="headlessui-tabs-tab-:r14:"
@@ -747,7 +747,7 @@ exports[`Tabs > (Snapshot) switches tabs 1`] = `
       <button
         aria-controls="headlessui-tabs-panel-:r11:"
         aria-selected="true"
-        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none hover:text-foreground h-8 rounded-md px-3 text-sm font-medium active:scale-100 bg-background text-foreground ring-border shadow-sm ring-1 [&_svg]:text-primary"
+        class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none hover:text-foreground h-8 rounded-md px-3 text-sm font-medium active:scale-100 bg-background text-foreground ring-border [&_svg]:text-primary shadow-sm ring-1"
         data-headlessui-state="hover"
         data-hover=""
         data-selected=""
