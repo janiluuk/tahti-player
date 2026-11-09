@@ -67,7 +67,9 @@ function ElectionItem({
         <PageEmpty title={t('empties.noCandidates')} />
       ) : (
         <ul
-          aria-label={`Candidates in ${election.title}`}
+          aria-label={t('electionsPanelLabels.candidatesInTitle', {
+            title: election.title,
+          })}
           className="flex flex-col gap-1"
         >
           {election.candidates.map((candidate) => (

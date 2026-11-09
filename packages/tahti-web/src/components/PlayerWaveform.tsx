@@ -1,5 +1,6 @@
 import { MessageCircleIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, getDecodedPeaks, Tooltip, Waveform } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
@@ -29,6 +30,7 @@ export function PlayerWaveform({
   onSeek,
   label,
 }: PlayerWaveformProps) {
+  const { t } = useTranslation('web');
   const currentId = usePlayerStore((s) => s.currentId);
   const audioElement = usePlayerStore((s) => s.audioElement);
   const currentTime = usePlayerStore((s) => s.currentTime);
@@ -110,7 +112,9 @@ export function PlayerWaveform({
               <Button
                 variant="plain"
                 size="flexible"
-                aria-label={`Jump to comment: ${marker.label}`}
+                aria-label={t('playerWaveformLabels.jumpToCommentLabel', {
+                  label: marker.label,
+                })}
                 data-testid="waveform-comment-marker"
                 className="text-accent-yellow-strong relative size-6 justify-center rounded-full p-0 drop-shadow"
                 onClick={() => handleSeek(marker.fraction)}

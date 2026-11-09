@@ -204,7 +204,9 @@ export function LedgerPanel({
       )}
 
       {entries.length === 0 ? (
-        <PageEmpty title={`No ledger entries for ${year}`} />
+        <PageEmpty
+          title={t('ledgerPanelLabels.noLedgerEntriesForYear', { year })}
+        />
       ) : (
         <ul className="divide-border divide-y">
           {entries.map((entry) => {

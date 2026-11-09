@@ -114,7 +114,12 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
         );
     const hidden = genres.length - shown.length;
     return [
-      { id: 'all', label: `All (${artists.length})` },
+      {
+        id: 'all',
+        label: t('directoryArtistsBrowserLabels.allLength', {
+          length: artists.length,
+        }),
+      },
       ...shown.map((genreEntry) => ({
         id: genreEntry.name,
         label:

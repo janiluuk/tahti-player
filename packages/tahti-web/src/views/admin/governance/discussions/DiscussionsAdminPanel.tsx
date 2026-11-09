@@ -252,7 +252,9 @@ function TopicRow({
       </div>
       <div className="flex gap-2">
         <EditIconButton
-          label={`Edit ${topic.title}`}
+          label={t('discussionsAdminPanelLabels.editTitle', {
+            title: topic.title,
+          })}
           variant="text"
           disabled={busy}
           onClick={() => setEditing(true)}

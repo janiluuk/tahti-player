@@ -179,7 +179,9 @@ function EndAuditorTerm({
         size="sm"
         variant="secondary"
         className="w-fit"
-        aria-label={`End term: ${auditor.name}`}
+        aria-label={t('auditorsPanelLabels.endTermName', {
+          name: auditor.name,
+        })}
         onClick={() => setOpen(true)}
       >
         {t('auditors.endTerm')}

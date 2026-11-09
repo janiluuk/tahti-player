@@ -84,7 +84,7 @@ export function ReportButton({
           <Button
             size="icon-sm"
             variant={variant}
-            aria-label={`Report ${label}`}
+            aria-label={t('reportButtonLabels.reportLabel', { label })}
             onClick={() => setOpen(true)}
           >
             <FlagIcon size={14} aria-hidden />

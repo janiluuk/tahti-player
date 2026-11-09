@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge } from '@tahti-player/ui';
 
 import { MapCommentForm } from '../../components/MapCommentForm';
@@ -11,6 +12,7 @@ import {
 } from './features';
 
 export function FeatureCompareCard({ row }: { row: FeatureRow }) {
+  const { t } = useTranslation('web');
   const parity = featureParity(row);
   const tahtiAbsent = isAbsentSurface(row.tahti);
   const nuclearAbsent = isAbsentSurface(row.nuclear);
@@ -98,7 +100,9 @@ export function FeatureCompareCard({ row }: { row: FeatureRow }) {
         title={row.feature}
         feature={row.feature}
         label="Parity comment"
-        placeholder={`Comment on “${row.feature}”…`}
+        placeholder={t('featureCompareCardLabels.commentOnFeature', {
+          feature: row.feature,
+        })}
         className="border-border flex flex-col gap-2 border-t px-3 py-3"
       />
     </article>

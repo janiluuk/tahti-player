@@ -115,7 +115,10 @@ export function ConflictsPanel({ meetingId }: { meetingId: string }) {
                   <Button
                     size="xs"
                     variant="secondary"
-                    aria-label={`Remove declaration: ${record.displayName}`}
+                    aria-label={t(
+                      'meetingRecordPanelsLabels.removeDeclarationDisplayname',
+                      { displayName: record.displayName },
+                    )}
                     onClick={() => setPendingRemove(record)}
                   >
                     {t('meetingRecordPanels.remove')}

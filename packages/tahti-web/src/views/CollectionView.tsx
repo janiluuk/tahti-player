@@ -423,7 +423,9 @@ export function CollectionView({ slug }: { slug: string }) {
             {collection.isPublic && collection.links?.rss ? (
               <RssFeedButton
                 href={collection.links.rss}
-                label={`RSS feed of ${collection.name}`}
+                label={t('collectionViewLabels.rssFeedOfName', {
+                  name: collection.name,
+                })}
               />
             ) : null}
             <Button variant="secondary" onClick={() => void startJam()}>

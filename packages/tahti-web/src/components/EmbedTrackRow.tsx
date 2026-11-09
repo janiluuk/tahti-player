@@ -1,6 +1,7 @@
 import { PlayIcon } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { playableFromHearthis } from '../api/sources';
@@ -43,6 +44,7 @@ export function EmbedTrackRow({
   as: Container = 'li',
   actions,
 }: Props) {
+  const { t } = useTranslation('web');
   const [embedOpen, setEmbedOpen] = useState(false);
   const src = embedSrcFor(provider, embedUri);
   const label = EMBED_PROVIDER_LABEL[provider];
@@ -124,7 +126,7 @@ export function EmbedTrackRow({
                 </span>
               }
               title={<span className="block truncate">{title}</span>}
-              subtitle={`Listen on ${label}`}
+              subtitle={t('embedTrackRowLabels.listenOnLabel', { label })}
               actions={
                 <span className="text-foreground-secondary font-mono text-[10px] tracking-wide uppercase">
                   Embed

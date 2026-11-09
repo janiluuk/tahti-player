@@ -104,7 +104,7 @@ export function WidgetCard({
                 size="icon-sm"
                 variant="text"
                 onClick={() => setConfigureOpen(true)}
-                aria-label={`Configure ${title}`}
+                aria-label={t('widgetCardLabels.configureTitle', { title })}
                 className="opacity-0 transition-opacity group-hover/widget:opacity-100 focus-visible:opacity-100"
               >
                 <SettingsIcon size={14} />

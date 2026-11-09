@@ -493,7 +493,9 @@ export function OAuthServiceCard({
       <ConfirmDialog
         destructive
         isOpen={confirmDisconnect}
-        title={`Disconnect ${plugin.name}?`}
+        title={t('oAuthServiceCardLabels.disconnectName', {
+          name: plugin.name,
+        })}
         description={t('oAuthServiceCard.tahtiForgetsTheSavedSign')}
         confirmLabel={t('oAuthServiceCard.disconnect')}
         onCancel={() => setConfirmDisconnect(false)}

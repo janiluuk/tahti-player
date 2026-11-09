@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Meter } from '@tahti-player/ui';
 
 import {
@@ -18,6 +19,7 @@ export function VersionRenderProgress({
   versionId: string;
   onDone: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [progress, setProgress] = useState<VersionProgress | null>(null);
 
   useEffect(
@@ -43,7 +45,11 @@ export function VersionRenderProgress({
 
   return (
     <div className="mt-1.5 flex max-w-xs items-center gap-2 text-xs">
-      <Meter value={pct} className="flex-1" aria-label={`Rendering, ${pct}%`} />
+      <Meter
+        value={pct}
+        className="flex-1"
+        aria-label={t('versionRenderProgressLabels.renderingPct', { pct })}
+      />
       <span className="text-foreground-secondary tabular-nums">
         {pct}%{detail ? ` · ${detail}` : ''}
       </span>

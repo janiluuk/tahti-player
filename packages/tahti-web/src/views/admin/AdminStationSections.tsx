@@ -90,7 +90,9 @@ export function CatalogStationsPanel({
   }
   return (
     <StudioPanel
-      title={`Built-in catalog (${stations.length})`}
+      title={t('adminStationSectionsLabels.builtInCatalogLength', {
+        length: stations.length,
+      })}
       description={t('adminStationSections.stationsListenersCanAddFrom')}
     >
       <ul className="divide-border divide-y">

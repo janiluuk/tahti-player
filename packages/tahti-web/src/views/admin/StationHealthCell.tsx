@@ -81,7 +81,7 @@ export function StationHealthCell({
         className="gap-1.5"
         size="xs"
         variant="text"
-        aria-label={`Test ${name} stream`}
+        aria-label={t('stationHealthCellLabels.testNameStream', { name })}
         disabled={!streamUrl || checking}
         onClick={() => {
           if (streamUrl) {

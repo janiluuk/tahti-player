@@ -175,7 +175,10 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                                   <Button
                                     size="icon-sm"
                                     variant="text"
-                                    aria-label={`Preview ${f.title}`}
+                                    aria-label={t(
+                                      'adminStorageUserViewLabels.previewTitle',
+                                      { title: f.title },
+                                    )}
                                     onClick={() =>
                                       play({
                                         id: `admin-storage-file:${f.id}`,

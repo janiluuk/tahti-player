@@ -329,7 +329,9 @@ export function AdminVendorsContent() {
           <StudioPanel title={t('adminVendors.distributionStatus')}>
             <PageError
               title={t('loadErrors.couldNotCheckLiveIntegrationStatus')}
-              description={`The blocker list above uses the recorded status only. ${statusError}`}
+              description={t('adminVendorsViewLabels.theBlockerListAboveUses', {
+                statusError,
+              })}
               onRetry={() => setAttempt((n) => n + 1)}
             />
           </StudioPanel>

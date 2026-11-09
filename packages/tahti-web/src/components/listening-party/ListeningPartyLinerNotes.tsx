@@ -92,7 +92,9 @@ export function ListeningPartyLinerNotes({
               </h4>
               <CreditList
                 credits={track.credits}
-                label={`Credits for ${track.title}`}
+                label={t('listeningPartyLinerNotesLabels.creditsForTitle', {
+                  title: track.title,
+                })}
               />
             </div>
           ))}

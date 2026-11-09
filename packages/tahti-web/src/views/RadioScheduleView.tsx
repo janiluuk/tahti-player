@@ -310,7 +310,10 @@ export function RadioScheduleView() {
                   params={{ username: b.username }}
                   size="icon-sm"
                   variant="secondary"
-                  aria-label={`Open ${b.displayName}'s green room`}
+                  aria-label={t(
+                    'radioScheduleViewLabels.openDisplaynameSGreenRoom',
+                    { displayName: b.displayName },
+                  )}
                 >
                   <MicIcon size={16} aria-hidden />
                 </ButtonLink>

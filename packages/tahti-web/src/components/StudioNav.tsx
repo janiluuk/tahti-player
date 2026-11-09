@@ -338,6 +338,7 @@ function HubBackLink({
   label: string;
   testId: string;
 }) {
+  const { t } = useTranslation('web');
   return (
     <ButtonLink
       to={to}
@@ -345,7 +346,7 @@ function HubBackLink({
       variant="text"
       className="gap-1.5"
       data-testid={testId}
-      aria-label={`Back to ${label}`}
+      aria-label={t('studioNavLabels.backToLabel', { label })}
     >
       <ArrowLeftIcon size={16} aria-hidden />
       {label}

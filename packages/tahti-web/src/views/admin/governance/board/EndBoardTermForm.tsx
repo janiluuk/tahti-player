@@ -29,7 +29,9 @@ export function EndBoardTermForm({
         size="sm"
         variant="secondary"
         className="w-fit"
-        aria-label={`End term early: ${term.displayName}`}
+        aria-label={t('endBoardTermFormLabels.endTermEarlyDisplayname', {
+          displayName: term.displayName,
+        })}
         onClick={() => setOpen(true)}
       >
         {t('endBoardTerm.endTermEarly')}

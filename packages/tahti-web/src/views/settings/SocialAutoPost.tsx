@@ -208,7 +208,7 @@ function PlatformForm({
       <ConfirmDialog
         destructive
         isOpen={confirmDisconnect}
-        title={`Disconnect ${copy.name}?`}
+        title={t('socialAutoPostLabels.disconnectName', { name: copy.name })}
         description={t('socialAutoPost.tahtiForgetsTheSavedCredentials')}
         confirmLabel={t('socialAutoPost.disconnect')}
         onCancel={() => setConfirmDisconnect(false)}
