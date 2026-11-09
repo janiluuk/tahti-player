@@ -70,8 +70,9 @@ Use cases already covered are in `HISTORY.md`; the matrix above shows what
 each role exercises.
 
 - [ ] Listener: plays a collection with the collection player; the row highlights. (Blocked: `CollectionPlayerWidget` is not placed anywhere yet; placement is a product decision.)
-- [ ] Listener: Radio and Discover use cases (tag filter, schedule); the Listen and Discover views are being reworked (`discover-listen-widget-audit-2026-11-05.md`, `ux-batch-50-slices-2026-11-09.md`), so wait for that to land.
-- [ ] Remaining ❌ / ◐ cells not blocked by that rework: Artist Latest News, favorites, playlists, History, settings and listening stats; Anonymous Queue; Admin Co-op beyond opening tabs.
+- [x] Listener: Radio station filter and the public schedule's week paging (`use-cases-coverage-gap.spec.ts`).
+- [x] Anonymous queue, artist History listening stats and Library playlists (`use-cases-coverage-gap.spec.ts`).
+- [ ] Remaining: Artist Latest News, favorites (blocked by `likes-vs-favorites.md`), settings; Admin Co-op beyond opening tabs.
 
 ## Run and review (next)
 

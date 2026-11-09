@@ -19,9 +19,14 @@ describe('EntitySocialHeader avatar fallback', () => {
     expect(fallback.textContent).toBe('S');
   });
 
-  it('shows the initial when there is no image and no theme', () => {
-    render(<EntitySocialHeader title="kuudes Linja" />);
+  it('shows the initial on a round avatar with no image and no theme', () => {
+    render(<EntitySocialHeader title="kuudes Linja" roundImage />);
     expect(screen.getByTestId('media-artwork-fallback').textContent).toBe('K');
+  });
+
+  it('gives a square cover with no image the default artwork, not a letter', () => {
+    render(<EntitySocialHeader title="kuudes Linja" />);
+    expect(screen.queryByText('K')).toBeNull();
   });
 
   it('shows the image instead when there is one', () => {

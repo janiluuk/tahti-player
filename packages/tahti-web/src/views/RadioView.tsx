@@ -394,7 +394,7 @@ export function RadioView() {
     <ViewShell
       title={t('radio.title')}
       data-testid="radio-view"
-      classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
+      classes={{ root: 'px-0 pt-0' }}
     >
       {loading ? (
         <PageLoading label={t('radio.tuning')} />
