@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -16,6 +16,7 @@ import { AdminGate } from '../../components/AdminGate';
 import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageError, PageLoading } from '../../components/PageStates';
+import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { StudioPanel } from '../../components/StudioPanel';
 import { FanSubArtistsPanel } from './financial/FanSubArtistsPanel';
 import { FanSubPayoutQueue } from './financial/FanSubPayoutQueue';
@@ -24,20 +25,22 @@ import { LegacyMembersPanel } from './financial/LegacyMembersPanel';
 
 export function AdminFinancialView() {
   const { t } = useTranslation('web');
-  const [overview, setOverview] = useState<AdminFinancialOverview | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [year, setYear] = useState(() => new Date().getUTCFullYear());
-
-  const reload = () => {
-    void fetchAdminFinancial(year).then((res) => {
-      setOverview(res.data);
-      setLoadError(res.meta.reason ?? null);
-      setLoading(false);
-    });
-  };
-
-  useEffect(reload, [year]);
+  const {
+    data: overview,
+    error: loadError,
+    loading,
+    retry: reload,
+  } = useSnapshotFetch<AdminFinancialOverview>(
+    `admin-financial:${year}`,
+    async () => {
+      const res = await fetchAdminFinancial(year);
+      if (!res.data) {
+        throw new Error(res.meta.reason ?? 'No financial data');
+      }
+      return res.data;
+    },
+  );
 
   return (
     <AdminGate>
@@ -63,10 +66,7 @@ export function AdminFinancialView() {
                 <PageError
                   title={t('loadErrors.couldNotLoadFinancialData')}
                   description={loadError ?? undefined}
-                  onRetry={() => {
-                    setLoading(true);
-                    reload();
-                  }}
+                  onRetry={reload}
                 />
               ) : (
                 <>
