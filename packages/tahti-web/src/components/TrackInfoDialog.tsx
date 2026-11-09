@@ -6,7 +6,7 @@ import {
   Button,
   ButtonLink,
   Dialog,
-  ImageReveal,
+  MediaArtwork,
   Tooltip,
 } from '@tahti-player/ui';
 
@@ -67,16 +67,13 @@ export function TrackInfoDialog({
           <>
             <Dialog.Title>{t('trackInfo.title')}</Dialog.Title>
             <div className="mt-4 flex items-start gap-4">
-              <div className="bg-surface-secondary flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-lg text-lg font-bold tracking-tight">
-                <ImageReveal
-                  src={track.artworkUrl ?? undefined}
-                  alt=""
-                  className="size-full"
-                  placeholder={
-                    <span>{track.title.slice(0, 2).toUpperCase()}</span>
-                  }
-                />
-              </div>
+              <MediaArtwork
+                size="md"
+                src={track.artworkUrl}
+                alt=""
+                seed={playable?.id ?? track.title}
+                className="size-20 min-w-20 rounded-lg"
+              />
               <div className="min-w-0 flex-1">
                 <div className="text-lg font-bold tracking-tight">
                   {track.title}
