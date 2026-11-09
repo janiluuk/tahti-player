@@ -1,5 +1,3 @@
 {
-  "/api/admin/i18n/languages": "The API has no translation routes. Admin → Languages shows \"Not available yet\" on a 404 instead of offering Add/Import.",
-  "/api/me/media/unused": "Media purge: tahti-org #1086, waiting for the next tahti-org release. Remove once released.",
-  "/api/me/media/purge-unused": "Media purge: tahti-org #1086, waiting for the next tahti-org release. Remove once released."
+  "/api/admin/i18n/languages": "The API has no translation routes. Admin → Languages shows \"Not available yet\" on a 404 instead of offering Add/Import."
 }
