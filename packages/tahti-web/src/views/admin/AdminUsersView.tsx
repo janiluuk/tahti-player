@@ -119,9 +119,12 @@ export const AdminUsersView = () => {
                     value={isMember}
                     onValueChange={setIsMember}
                     options={[
-                      { id: '', label: 'All accounts' },
-                      { id: 'true', label: 'Members' },
-                      { id: 'false', label: 'Non-members' },
+                      { id: '', label: t('adminUsersViewMore.allAccounts') },
+                      { id: 'true', label: t('adminUsersViewMore.members') },
+                      {
+                        id: 'false',
+                        label: t('adminUsersViewMore.nonMembers'),
+                      },
                     ]}
                   />
                 </div>

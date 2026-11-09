@@ -113,14 +113,14 @@ export function OverviewTab() {
   }[] = [
     {
       icon: VoteIcon,
-      title: 'Member motions & voting',
+      title: t('overviewTabMore.memberMotionsVoting'),
       desc: 'Open member motions and the public governance portal.',
       badge: overview ? `${overview.openMotions} open` : undefined,
       to: '/governance',
     },
     {
       icon: BuildingIcon,
-      title: 'Venue verification queue',
+      title: t('overviewTabMore.venueVerificationQueue'),
       desc: 'Review and verify venue submissions for the events calendar.',
       badge: overview
         ? `${overview.pendingVenueVerifications} pending`
@@ -129,7 +129,7 @@ export function OverviewTab() {
     },
     {
       icon: ScrollTextIcon,
-      title: 'Annual report generator',
+      title: t('overviewTabMore.annualReportGenerator'),
       desc: 'Generate and store the yearly nonprofit activity report.',
       badge: overview?.lastAnnualReportYear
         ? `Last: ${overview.lastAnnualReportYear}`
@@ -138,7 +138,7 @@ export function OverviewTab() {
     },
     {
       icon: GavelIcon,
-      title: 'Board resolutions',
+      title: t('overviewTabMore.boardResolutions'),
       desc: 'Record and publish formal board decisions and vote outcomes — form below.',
       badge: overview
         ? `${overview.boardResolutionsThisYear} this year`
@@ -146,25 +146,25 @@ export function OverviewTab() {
     },
     {
       icon: VoteIcon,
-      title: 'Annual General Meeting',
+      title: t('overviewTabMore.annualGeneralMeeting'),
       desc: 'Agenda builder, open motions, member notice checklist, and minutes links.',
       tab: 'agm',
     },
     {
       icon: BanknoteIcon,
-      title: 'Grants',
+      title: t('overviewTabMore.grants'),
       desc: 'Yearly grant cycles, applications, and payout tracking.',
       tab: 'grants',
     },
     {
       icon: ShieldCheckIcon,
-      title: 'Audit log',
+      title: t('overviewTabMore.auditLog'),
       desc: 'Searchable log of privileged actions across the platform.',
       to: '/admin/logs',
     },
     {
       icon: FileTextIcon,
-      title: 'Member register',
+      title: t('overviewTabMore.memberRegister'),
       desc: 'Full member list, exportable for the AGM notice mailing.',
       to: '/admin/users',
     },
@@ -292,9 +292,9 @@ export function OverviewTab() {
                 setResolutionOutcome(value as ResolutionOutcome)
               }
               options={[
-                { id: 'PASSED', label: 'Passed' },
-                { id: 'FAILED', label: 'Failed' },
-                { id: 'DEFERRED', label: 'Deferred' },
+                { id: 'PASSED', label: t('overviewTabMore.passed') },
+                { id: 'FAILED', label: t('overviewTabMore.failed') },
+                { id: 'DEFERRED', label: t('overviewTabMore.deferred') },
               ]}
             />
             <Textarea

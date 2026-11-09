@@ -209,7 +209,7 @@ export const StashFilesPanel = ({
         disabled={busy}
         labels={{
           title: busy ? 'Uploading…' : 'Upload a private file',
-          description: 'Files stay private until you grant access.',
+          description: t('stashFilesPanelMore.filesStayPrivateUntilYou'),
           browse: busy ? 'Working…' : 'Choose file',
         }}
         onFiles={(picked) => {
@@ -408,7 +408,10 @@ export const StashFilesPanel = ({
                         setPermission(value as 'READ' | 'DOWNLOAD')
                       }
                       options={[
-                        { id: 'READ', label: 'Read-only' },
+                        {
+                          id: 'READ',
+                          label: t('stashFilesPanelMore.readOnly'),
+                        },
                         { id: 'DOWNLOAD', label: t('actions.download') },
                       ]}
                     />

@@ -53,13 +53,13 @@ export function AdminStorageView() {
                 items={[
                   {
                     id: 'storage',
-                    label: 'Storage',
+                    label: t('adminStorageViewMore.storage'),
                     icon: <HardDriveIcon size={14} />,
                     content: <StorageOverviewTab />,
                   },
                   {
                     id: 'files',
-                    label: 'Files',
+                    label: t('adminStorageViewMore.files'),
                     icon: <CloudIcon size={14} />,
                     content: <FilesBrowserTab />,
                   },

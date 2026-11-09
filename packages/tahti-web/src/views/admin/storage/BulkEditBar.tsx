@@ -92,8 +92,8 @@ export function BulkEditBar({
           value={genre}
           onValueChange={setGenre}
           options={[
-            { id: UNCHANGED, label: 'Leave as is' },
-            { id: CLEAR_GENRE, label: 'Remove genre' },
+            { id: UNCHANGED, label: t('bulkEditBarMore.leaveAsIs') },
+            { id: CLEAR_GENRE, label: t('bulkEditBarMore.removeGenre') },
             ...(facets?.genres ?? []).map((name) => ({
               id: name,
               label: name,
@@ -106,7 +106,7 @@ export function BulkEditBar({
           value={contentType}
           onValueChange={setContentType}
           options={[
-            { id: UNCHANGED, label: 'Leave as is' },
+            { id: UNCHANGED, label: t('bulkEditBarMore.leaveAsIs') },
             ...(facets?.contentTypes ?? []).map((type) => ({
               id: type,
               label: contentTypeLabel(type),
@@ -119,9 +119,9 @@ export function BulkEditBar({
           value={visibility}
           onValueChange={setVisibility}
           options={[
-            { id: UNCHANGED, label: 'Leave as is' },
-            { id: 'public', label: 'Public' },
-            { id: 'private', label: 'Private' },
+            { id: UNCHANGED, label: t('bulkEditBarMore.leaveAsIs') },
+            { id: 'public', label: t('bulkEditBarMore.public') },
+            { id: 'private', label: t('bulkEditBarMore.private') },
           ]}
           className="min-w-32"
         />
@@ -130,7 +130,7 @@ export function BulkEditBar({
           value={license}
           onValueChange={setLicense}
           options={[
-            { id: UNCHANGED, label: 'Leave as is' },
+            { id: UNCHANGED, label: t('bulkEditBarMore.leaveAsIs') },
             ...FILE_LICENSES.map((option) => ({
               id: option.id,
               label: option.label,

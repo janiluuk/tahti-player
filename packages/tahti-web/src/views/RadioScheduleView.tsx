@@ -582,8 +582,8 @@ export function RadioScheduleView() {
           ) : null}
           <FilterChips
             items={[
-              { id: 'LIVE_SET', label: 'Live set' },
-              { id: 'TALK', label: 'Talk' },
+              { id: 'LIVE_SET', label: t('radioScheduleView.liveSet') },
+              { id: 'TALK', label: t('radioScheduleView.talk') },
             ]}
             selected={showType}
             onChange={(id) => setShowType(id as ShowType)}
@@ -731,8 +731,8 @@ export function RadioScheduleView() {
                   )}
                   <FilterChips
                     items={[
-                      { id: 'LIVE_SET', label: 'Live set' },
-                      { id: 'TALK', label: 'Talk' },
+                      { id: 'LIVE_SET', label: t('radioScheduleView.liveSet') },
+                      { id: 'TALK', label: t('radioScheduleView.talk') },
                     ]}
                     selected={editShowType}
                     onChange={(id) => setEditShowType(id as ShowType)}

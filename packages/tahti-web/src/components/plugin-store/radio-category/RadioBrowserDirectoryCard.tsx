@@ -206,7 +206,7 @@ export function RadioBrowserDirectoryCard() {
             items={[
               {
                 id: 'stations',
-                label: 'Stations',
+                label: t('radioBrowserDirectoryCardMore.stations'),
                 content: (
                   <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
@@ -312,7 +312,7 @@ export function RadioBrowserDirectoryCard() {
               },
               {
                 id: 'browser',
-                label: 'Browser',
+                label: t('radioBrowserDirectoryCardMore.browser'),
                 content: (
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-2">
@@ -389,7 +389,12 @@ export function RadioBrowserDirectoryCard() {
                         aria-label={t('radioBrowserDirectoryCard.country')}
                         className="w-full"
                         options={[
-                          { id: '', label: 'All countries' },
+                          {
+                            id: '',
+                            label: t(
+                              'radioBrowserDirectoryCardMore.allCountries',
+                            ),
+                          },
                           ...countries.map((entry) => ({
                             id: entry.code,
                             label: `${flagEmoji(entry.code)} ${entry.name} (${entry.stationCount})`,

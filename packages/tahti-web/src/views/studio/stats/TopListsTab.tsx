@@ -46,8 +46,8 @@ export function TopListsTab({
         <div className="mb-4 flex flex-wrap gap-2">
           <FilterChips
             items={[
-              { id: 'type', label: 'By type' },
-              { id: 'genre', label: 'By genre' },
+              { id: 'type', label: t('topListsTabMore.byType') },
+              { id: 'genre', label: t('topListsTabMore.byGenre') },
             ]}
             selected={topListDimension}
             onChange={(id) => setTopListDimension(id as StatsTopListDimension)}
@@ -55,8 +55,8 @@ export function TopListsTab({
           />
           <FilterChips
             items={[
-              { id: 'desc', label: 'Most listened' },
-              { id: 'asc', label: 'Least listened' },
+              { id: 'desc', label: t('topListsTabMore.mostListened') },
+              { id: 'asc', label: t('topListsTabMore.leastListened') },
             ]}
             selected={topListSort}
             onChange={(id) => setTopListSort(id as StatsTopListSort)}

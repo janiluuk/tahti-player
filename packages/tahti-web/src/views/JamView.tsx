@@ -245,8 +245,8 @@ export function JamView({ code }: { code: string }) {
       <TahtiJam data-testid="jam-view">
         <TahtiJam.Connecting
           labels={{
-            title: 'Joining the Jam…',
-            subtitle: 'Syncing with the host',
+            title: t('jamView.joiningTheJam'),
+            subtitle: t('jamView.syncingWithTheHost'),
           }}
         />
       </TahtiJam>

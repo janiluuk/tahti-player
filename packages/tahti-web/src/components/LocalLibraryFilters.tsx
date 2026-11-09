@@ -186,8 +186,11 @@ export function LocalLibraryFilters({
             aria-label={t('localLibraryFilters.analysis')}
             items={[
               { id: 'any', label: 'All' },
-              { id: 'analyzed', label: 'Analyzed' },
-              { id: 'unanalyzed', label: 'Not analyzed' },
+              { id: 'analyzed', label: t('localLibraryFiltersMore.analyzed') },
+              {
+                id: 'unanalyzed',
+                label: t('localLibraryFiltersMore.notAnalyzed'),
+              },
             ]}
             selected={draft.analysis ?? 'any'}
             onChange={(id) =>
@@ -223,8 +226,11 @@ export function LocalLibraryFilters({
             aria-label={t('localLibraryFilters.availability')}
             items={[
               { id: 'any', label: 'All' },
-              { id: 'available', label: 'Available' },
-              { id: 'missing', label: 'Missing' },
+              {
+                id: 'available',
+                label: t('localLibraryFiltersMore.available'),
+              },
+              { id: 'missing', label: t('localLibraryFiltersMore.missing') },
             ]}
             selected={draft.availability ?? 'any'}
             onChange={(id) =>
@@ -276,7 +282,7 @@ export function LocalLibraryFilters({
               set({ tag: name === ANY_TAG ? null : name })
             }
             options={[
-              { id: ANY_TAG, label: 'Any tag' },
+              { id: ANY_TAG, label: t('localLibraryFiltersMore.anyTag') },
               ...tags.map((tag) => ({
                 id: tag.name,
                 label: `${tag.name} (${tag.tracks})`,
@@ -292,7 +298,7 @@ export function LocalLibraryFilters({
               set({ rootId: id === ANY_FOLDER ? null : id })
             }
             options={[
-              { id: ANY_FOLDER, label: 'Any folder' },
+              { id: ANY_FOLDER, label: t('localLibraryFiltersMore.anyFolder') },
               ...roots.map((root) => ({
                 id: root.id,
                 label: folderName(root.path),

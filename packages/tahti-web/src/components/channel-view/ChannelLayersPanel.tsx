@@ -253,8 +253,11 @@ export function ChannelLayersPanel({
                 </p>
                 <FilterChips
                   items={[
-                    { id: 'tracklist', label: 'Tracklist' },
-                    { id: 'cards', label: 'Cards' },
+                    {
+                      id: 'tracklist',
+                      label: t('channelLayersPanelMore.tracklist'),
+                    },
+                    { id: 'cards', label: t('channelLayersPanelMore.cards') },
                   ]}
                   selected={selectedPlaylistItem.playlistDisplay ?? 'tracklist'}
                   onChange={(id) => {
@@ -320,9 +323,12 @@ export function ChannelLayersPanel({
                 </p>
                 <FilterChips
                   items={[
-                    { id: 'tracklist', label: 'Tracklist' },
-                    { id: 'cards', label: 'Cards' },
-                    { id: 'both', label: 'Both' },
+                    {
+                      id: 'tracklist',
+                      label: t('channelLayersPanelMore.tracklist'),
+                    },
+                    { id: 'cards', label: t('channelLayersPanelMore.cards') },
+                    { id: 'both', label: t('channelLayersPanelMore.both') },
                   ]}
                   selected={selectedFeedItem.feedDisplay ?? 'tracklist'}
                   onChange={(id) => {

@@ -74,12 +74,12 @@ export function NewEpisodeDialog({
             items={[
               {
                 id: 'upload',
-                label: 'Upload audio',
+                label: t('newEpisodeDialog.uploadAudio'),
                 icon: <UploadIcon size={14} aria-hidden />,
               },
               {
                 id: 'broadcast',
-                label: 'Record from broadcast',
+                label: t('newEpisodeDialog.recordFromBroadcast'),
                 icon: <MicIcon size={14} aria-hidden />,
               },
             ]}
@@ -91,8 +91,8 @@ export function NewEpisodeDialog({
           {source === 'upload' ? (
             <FilePicker
               labels={{
-                title: 'Episode audio',
-                description: 'MP3, WAV, FLAC, or AIFF',
+                title: t('newEpisodeDialog.episodeAudio'),
+                description: t('newEpisodeDialog.mp3WavFlacOrAiff'),
                 browse: file ? 'Choose another file' : 'Choose audio',
               }}
               accept="audio/*,.flac,.wav,.mp3,.aiff"

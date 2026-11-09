@@ -218,7 +218,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
       ? [
           {
             key: 'upcoming',
-            label: 'Upcoming',
+            label: t('radioShowViewMore.upcoming'),
             value: show.upcomingEpisodes.length,
             icon: CalendarIcon,
           },
@@ -228,7 +228,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
       ? [
           {
             key: 'past',
-            label: 'Past episodes',
+            label: t('radioShowViewMore.pastEpisodes'),
             value: show.pastEpisodes.length,
             icon: RadioIcon,
           },
@@ -299,7 +299,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
           items={[
             {
               id: 'upcoming',
-              label: 'Upcoming',
+              label: t('radioShowViewMore.upcoming'),
               content: (
                 <RadioShowEpisodeList
                   episodes={show.upcomingEpisodes}
@@ -309,7 +309,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
             },
             {
               id: 'past',
-              label: 'Past episodes',
+              label: t('radioShowViewMore.pastEpisodes'),
               content: (
                 <RadioShowEpisodeList
                   episodes={show.pastEpisodes}

@@ -453,14 +453,14 @@ export function AppShell() {
     }
     deferOnboardingPrompt(userId);
     toast('Finish setting up your profile?', {
-      description: 'A few quick steps to personalize your channel.',
+      description: t('appShell.aFewQuickStepsTo'),
       duration: 8_000,
       action: {
-        label: 'Set up profile',
+        label: t('appShell.setUpProfile'),
         onClick: () => void navigate({ to: '/onboarding' }),
       },
       cancel: {
-        label: 'Not now',
+        label: t('appShell.notNow'),
         onClick: () => markOnboardingSeen(userId),
       },
     });

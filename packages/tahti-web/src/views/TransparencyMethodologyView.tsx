@@ -58,19 +58,25 @@ export function TransparencyMethodologyView() {
           entries={[
             {
               term: 'REVENUE_SUBSCRIPTION',
-              body: 'Monthly membership fees from artist members (Artist and Studio tiers). Recorded at successful Stripe charge.',
+              body: t(
+                'transparencyMethodologyView.monthlyMembershipFeesFromArtist',
+              ),
             },
             {
               term: 'REVENUE_DISTRIBUTION',
-              body: 'Distribution handling fees charged to artists for Revelator/DSP delivery (€8 per release; Studio-tier accounts get a number of releases included per year). Pass-through cost is recorded separately.',
+              body: t(
+                'transparencyMethodologyView.distributionHandlingFeesChargedTo',
+              ),
             },
             {
               term: 'REVENUE_GRANT_INBOUND',
-              body: 'Grants received from public or private bodies (e.g. Taiteen edistämiskeskus).',
+              body: t('transparencyMethodologyView.grantsReceivedFromPublicOr'),
             },
             {
               term: 'REVENUE_DONATION',
-              body: 'Voluntary donations from supporters.',
+              body: t(
+                'transparencyMethodologyView.voluntaryDonationsFromSupporters',
+              ),
             },
           ]}
         />
@@ -81,27 +87,39 @@ export function TransparencyMethodologyView() {
           entries={[
             {
               term: 'COST_INFRASTRUCTURE',
-              body: 'Servers, bandwidth, colocation, domain registrations, TLS certificates, cloud services. Primarily owned hardware in Helsinki.',
+              body: t(
+                'transparencyMethodologyView.serversBandwidthColocationDomainRegistrations',
+              ),
             },
             {
               term: 'COST_DISTRIBUTION_PASSTHROUGH',
-              body: 'Revelator API cost passed directly through to artists. Net zero for Tahti ry.',
+              body: t(
+                'transparencyMethodologyView.revelatorApiCostPassedDirectly',
+              ),
             },
             {
               term: 'COST_OPERATIONS',
-              body: 'Payment processing fees (Stripe), subscriptions, software licenses, office materials.',
+              body: t(
+                'transparencyMethodologyView.paymentProcessingFeesStripeSubscriptions',
+              ),
             },
             {
               term: 'COST_SALARY',
-              body: 'Board compensation and any paid professional roles. Published in aggregate, never per-person.',
+              body: t(
+                'transparencyMethodologyView.boardCompensationAndAnyPaid',
+              ),
             },
             {
               term: 'COST_AUDIT',
-              body: 'Annual statutory audit and accounting fees. Finnish associations law requires annual audit above certain thresholds.',
+              body: t(
+                'transparencyMethodologyView.annualStatutoryAuditAndAccounting',
+              ),
             },
             {
               term: 'COST_PROFESSIONAL_SERVICES',
-              body: 'Legal advice, translation, ad-hoc consulting.',
+              body: t(
+                'transparencyMethodologyView.legalAdviceTranslationAdHoc',
+              ),
             },
           ]}
         />
@@ -112,11 +130,11 @@ export function TransparencyMethodologyView() {
           entries={[
             {
               term: 'GRANT_DISBURSEMENT',
-              body: 'Annual artist grants paid to member channels. Calculated March 1 for the prior calendar year. Formula: (channel engagement units / total eligible units) × grant pool. A 10% operating reserve is retained before the pool is calculated.',
+              body: t('transparencyMethodologyView.annualArtistGrantsPaidTo'),
             },
             {
               term: 'RESERVE_TRANSFER',
-              body: 'Movements to or from the operating reserve fund. The reserve is capped at 6 months of average operating costs; surplus above the cap goes back to the annual grant pool instead of being retained.',
+              body: t('transparencyMethodologyView.movementsToOrFromThe'),
             },
           ]}
         />

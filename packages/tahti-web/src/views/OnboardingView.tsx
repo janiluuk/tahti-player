@@ -255,7 +255,7 @@ export function OnboardingView() {
             items={[
               {
                 id: 'profile',
-                label: 'Profile',
+                label: t('onboardingView.profile'),
                 icon: <UserIcon size={14} />,
                 content: (
                   <div className="flex flex-col gap-6">
@@ -329,7 +329,7 @@ export function OnboardingView() {
               },
               {
                 id: 'location',
-                label: 'Location & domain',
+                label: t('onboardingView.locationDomain'),
                 icon: <MapPinIcon size={14} />,
                 content: (
                   <div className="flex flex-col gap-4">
@@ -338,7 +338,7 @@ export function OnboardingView() {
                       value={countryCode}
                       onValueChange={setCountryCode}
                       options={[
-                        { id: '', label: 'Prefer not to say' },
+                        { id: '', label: t('onboardingView.preferNotToSay') },
                         ...COUNTRIES.map((c) => ({
                           id: c.code,
                           label: `${flagEmoji(c.code)} ${c.name}`,
@@ -403,7 +403,7 @@ export function OnboardingView() {
               },
               {
                 id: 'genres',
-                label: 'Genres',
+                label: t('onboardingView.genres'),
                 icon: <MusicIcon size={14} />,
                 content: (
                   <div className="flex flex-col gap-2">
@@ -417,7 +417,7 @@ export function OnboardingView() {
               },
               {
                 id: 'appearance',
-                label: 'Appearance',
+                label: t('onboardingView.appearance'),
                 icon: <PaletteIcon size={14} />,
                 content: (
                   <div className="flex flex-col gap-3">
@@ -436,7 +436,7 @@ export function OnboardingView() {
               },
               {
                 id: 'defaults',
-                label: 'Defaults',
+                label: t('onboardingView.defaults'),
                 icon: <Settings2Icon size={14} />,
                 content: (
                   <div className="flex flex-col gap-4">

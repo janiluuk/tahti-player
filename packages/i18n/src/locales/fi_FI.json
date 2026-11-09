@@ -8189,6 +8189,308 @@
     },
     "recordingRow": {
       "stillBeingSavedToYour": "Tallennetaan vielä kirjastoosi. Se näkyy Äänissä valmiina muokattavaksi ja julkaistavaksi, kun se on valmis."
+    },
+    "agmTabMore": {
+      "present": "Läsnä",
+      "absent": "Poissa",
+      "excused": "Estynyt",
+      "generalMeeting": "Yhdistyksen kokous",
+      "extraordinaryGeneral": "Ylimääräinen yhdistyksen kokous",
+      "boardMeeting": "Hallituksen kokous",
+      "draft": "Luonnos",
+      "scheduled": "Ajastettu",
+      "held": "Pidetty",
+      "minutesDraft": "Pöytäkirjaluonnos",
+      "approved": "Hyväksytty",
+      "cancelled": "Peruttu",
+      "minutes": "Pöytäkirja",
+      "meetingNotice": "Kokouskutsu",
+      "annualReport": "Vuosikertomus",
+      "bylaws": "Säännöt",
+      "policy": "Toimintaperiaate",
+      "financialStatement": "Tilinpäätös",
+      "auditReport": "Tilintarkastuskertomus",
+      "other": "Muu"
+    },
+    "waveformEditorMore": {
+      "clearAllCuts": "Poistetaanko kaikki leikkaukset?",
+      "clearCuts": "Poista leikkaukset",
+      "removeThisCut": "Poistetaanko tämä leikkaus?",
+      "removeCut": "Poista leikkaus",
+      "removeThisFade": "Poistetaanko tämä häivytys?",
+      "youCanUndoThis": "Voit perua tämän.",
+      "removeFade": "Poista häivytys",
+      "removeThisMarker": "Poistetaanko tämä merkki?",
+      "removeMarker": "Poista merkki",
+      "clearAllMarkers": "Poistetaanko kaikki merkit?",
+      "clearMarkers": "Poista merkit"
+    },
+    "transparencyMethodologyView": {
+      "monthlyMembershipFeesFromArtist": "Artistijäsenten kuukausittaiset jäsenmaksut (Artist- ja Studio-tasot). Kirjataan onnistuneen Stripe-veloituksen yhteydessä.",
+      "distributionHandlingFeesChargedTo": "Artisteilta perittävät jakelun käsittelymaksut Revelator/DSP-toimituksista (8 € julkaisulta; Studio-tason tileihin sisältyy tietty määrä julkaisuja vuodessa). Läpikulkukustannus kirjataan erikseen.",
+      "grantsReceivedFromPublicOr": "Julkisilta tai yksityisiltä tahoilta saadut avustukset (esim. Taiteen edistämiskeskus).",
+      "voluntaryDonationsFromSupporters": "Tukijoiden vapaaehtoiset lahjoitukset.",
+      "serversBandwidthColocationDomainRegistrations": "Palvelimet, kaistanleveys, konesalitila, verkkotunnukset, TLS-varmenteet ja pilvipalvelut. Pääosin omaa laitteistoa Helsingissä.",
+      "revelatorApiCostPassedDirectly": "Revelatorin API-kustannus siirretään suoraan artisteille. Tahti ry:lle nollasummainen.",
+      "paymentProcessingFeesStripeSubscriptions": "Maksujen käsittelymaksut (Stripe), tilaukset, ohjelmistolisenssit ja toimistotarvikkeet.",
+      "boardCompensationAndAnyPaid": "Hallituksen palkkiot ja mahdolliset palkatut asiantuntijaroolit. Julkaistaan yhteissummana, ei koskaan henkilökohtaisesti.",
+      "annualStatutoryAuditAndAccounting": "Lakisääteinen vuotuinen tilintarkastus ja kirjanpitopalkkiot. Yhdistyslaki edellyttää vuosittaista tilintarkastusta tiettyjen rajojen ylittyessä.",
+      "legalAdviceTranslationAdHoc": "Oikeudellinen neuvonta, käännökset ja tilapäinen konsultointi.",
+      "annualArtistGrantsPaidTo": "Jäsenkanaville maksettavat vuotuiset artistiavustukset. Lasketaan 1. maaliskuuta edelliseltä kalenterivuodelta. Kaava: (kanavan sitoutumisyksiköt / kaikki kelpoiset yksiköt) × avustuspotti. 10 %:n toimintavaraus pidätetään ennen potin laskemista.",
+      "movementsToOrFromThe": "Siirrot toimintavararahastoon tai sieltä pois. Varauksen yläraja on kuuden kuukauden keskimääräiset toimintakulut; ylärajan ylittävä osa palautetaan vuotuiseen avustuspottiin sen sijaan, että se pidätettäisiin."
+    },
+    "overviewTabMore": {
+      "memberMotionsVoting": "Jäsenaloitteet ja äänestykset",
+      "venueVerificationQueue": "Tapahtumapaikkojen vahvistusjono",
+      "annualReportGenerator": "Vuosikertomuksen laatija",
+      "boardResolutions": "Hallituksen päätökset",
+      "annualGeneralMeeting": "Vuosikokous",
+      "grants": "Avustukset",
+      "auditLog": "Tarkastusloki",
+      "memberRegister": "Jäsenluettelo",
+      "passed": "Hyväksytty",
+      "failed": "Hylätty",
+      "deferred": "Siirretty"
+    },
+    "bulkEditBarMore": {
+      "leaveAsIs": "Jätä ennalleen",
+      "removeGenre": "Poista tyylilaji",
+      "public": "Julkinen",
+      "private": "Yksityinen"
+    },
+    "onboardingView": {
+      "profile": "Profiili",
+      "locationDomain": "Sijainti ja verkkotunnus",
+      "preferNotToSay": "En halua kertoa",
+      "genres": "Tyylilajit",
+      "appearance": "Ulkoasu",
+      "defaults": "Oletukset"
+    },
+    "localLibraryFiltersMore": {
+      "analyzed": "Analysoitu",
+      "notAnalyzed": "Analysoimaton",
+      "available": "Saatavilla",
+      "missing": "Puuttuu",
+      "anyTag": "Mikä tahansa tunniste",
+      "anyFolder": "Mikä tahansa kansio"
+    },
+    "clipEditorDialog": {
+      "betweenPrograms": "Ohjelmien välissä",
+      "beforeAProgram": "Ennen ohjelmaa",
+      "afterAProgram": "Ohjelman jälkeen",
+      "afterEveryProgram": "Jokaisen ohjelman jälkeen",
+      "everyNPrograms": "Joka N:nnen ohjelman jälkeen",
+      "occasionallyRandom": "Satunnaisesti"
+    },
+    "studioPlaylistEditorView": {
+      "tracks": "Kappaleet",
+      "selectTrack": "Valitse kappale…",
+      "selectRelease": "Valitse julkaisu…",
+      "coverImage": "Kansikuva",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP tai GIF"
+    },
+    "channelLayersPanelMore": {
+      "tracklist": "Kappalelista",
+      "cards": "Kortit",
+      "both": "Molemmat"
+    },
+    "channelRadioPlaylistPanel": {
+      "tracks": "Kappaleet",
+      "djSets": "DJ-setit",
+      "clips": "Klipit",
+      "shuffle": "Satunnainen",
+      "inOrder": "Järjestyksessä"
+    },
+    "topListsTabMore": {
+      "byType": "Tyypin mukaan",
+      "byGenre": "Tyylilajin mukaan",
+      "mostListened": "Kuunnelluimmat",
+      "leastListened": "Vähiten kuunnellut"
+    },
+    "newEpisodeDialog": {
+      "uploadAudio": "Lataa ääni",
+      "recordFromBroadcast": "Tallenna lähetyksestä",
+      "episodeAudio": "Jakson ääni",
+      "mp3WavFlacOrAiff": "MP3, WAV, FLAC tai AIFF"
+    },
+    "gallerySection": {
+      "append": "Lisää perään",
+      "replace": "Korvaa",
+      "dropGalleryImagesHere": "Pudota galleriakuvat tähän",
+      "jpegPngOrWebp": "JPEG, PNG tai WebP"
+    },
+    "radioShowViewMore": {
+      "upcoming": "Tulossa",
+      "pastEpisodes": "Aiemmat jaksot"
+    },
+    "radioScheduleView": {
+      "liveSet": "Livesetti",
+      "talk": "Puhe"
+    },
+    "adminRadioViewMore": {
+      "feature": "Nosto",
+      "stations": "Asemat",
+      "optOuts": "Kieltäytymiset",
+      "history": "Historia"
+    },
+    "adminAnnouncementsView": {
+      "chooseAShortMp3Wav": "Valitse lyhyt MP3-, WAV-, FLAC- tai AIFF-klippi.",
+      "afterEveryClip": "Jokaisen klipin jälkeen",
+      "everyNthClip": "Joka N:nnen klipin jälkeen",
+      "randomly": "Satunnaisesti"
+    },
+    "trackEditDialogMore": {
+      "basics": "Perustiedot",
+      "tracklist": "Kappalelista",
+      "sharing": "Jakaminen",
+      "advanced": "Lisäasetukset"
+    },
+    "smartPlaylistDialog": {
+      "allOfTheRules": "Kaikki säännöt",
+      "anyOfTheRules": "Mikä tahansa sääntö",
+      "ascending": "Nouseva",
+      "descending": "Laskeva"
+    },
+    "materialGroupsFieldMore": {
+      "anyoneCanJoin": "Kuka tahansa voi liittyä",
+      "requestToJoin": "Liittymispyyntö",
+      "membersAddRightAway": "Jäsenet lisäävät heti",
+      "adminsApproveFirst": "Ylläpitäjät hyväksyvät ensin"
+    },
+    "playerPanel": {
+      "gradient": "Liukuväri",
+      "videoImage": "Video / kuva",
+      "visualizer": "Visualisointi",
+      "overlay": "Peittokuva"
+    },
+    "broadcastDetailsFields": {
+      "liveSet": "Livesetti",
+      "talk": "Puhe",
+      "continuousShow": "Jatkuva ohjelma",
+      "singleShow": "Yksittäinen ohjelma"
+    },
+    "detailsPanel": {
+      "public": "Julkinen",
+      "unlistedDirectLinkOnly": "Listaamaton — vain suoralla linkillä",
+      "privateOnlyYou": "Yksityinen — vain sinä"
+    },
+    "studioSoundViewMore": {
+      "details": "Tiedot",
+      "playlists": "Soittolistat",
+      "insights": "Tilastot"
+    },
+    "releaseOpsPanel": {
+      "catalogCredits": "Katalogi ja tekijät",
+      "deliveryRoyalties": "Toimitus ja rojaltit",
+      "guides": "Oppaat"
+    },
+    "artistProfilePage": {
+      "stage": "Lava",
+      "gallery": "Galleria",
+      "design": "Ulkoasu"
+    },
+    "filesBrowserTab": {
+      "everyone": "Kaikki",
+      "anyGenre": "Mikä tahansa tyylilaji",
+      "anyType": "Mikä tahansa tyyppi"
+    },
+    "adminUsersViewMore": {
+      "allAccounts": "Kaikki tilit",
+      "members": "Jäsenet",
+      "nonMembers": "Ei-jäsenet"
+    },
+    "adminLogsViewMore": {
+      "auditEvents": "Tarkastustapahtumat",
+      "containerLogs": "Konttilokit",
+      "recentAudit": "Viimeisimmät tarkastukset"
+    },
+    "tracklistEditorMore": {
+      "pins": "Kiinnitykset",
+      "import": "Tuo",
+      "overlay": "Peittokuva"
+    },
+    "hearthisCard": {
+      "openCollection": "Avaa kokoelma",
+      "destination": "Valitse kohdesoittolista",
+      "new": "Uusi soittolista…"
+    },
+    "radioBrowserDirectoryCardMore": {
+      "stations": "Asemat",
+      "browser": "Selain",
+      "allCountries": "Kaikki maat"
+    },
+    "listenerWidgetsSectionMore": {
+      "savedStations": "Tallennetut asemat",
+      "latestNews": "Uusimmat uutiset",
+      "favorites": "Suosikit"
+    },
+    "channelLayersMenuMore": {
+      "presets": "Esiasetukset",
+      "layers": "Tasot",
+      "settings": "Asetukset"
+    },
+    "appShell": {
+      "aFewQuickStepsTo": "Muutama nopea vaihe kanavasi mukauttamiseen.",
+      "setUpProfile": "Määritä profiili",
+      "notNow": "Ei nyt"
+    },
+    "artistImagePurposePicker": {
+      "artistImages": "Artistikuvat",
+      "jpegPngOrWebp": "JPEG, PNG tai WebP"
+    },
+    "studioMasteringView": {
+      "referenceTrack": "Vertailukappale",
+      "dropAnAudioFileOr": "Pudota äänitiedosto tai selaa sellainen."
+    },
+    "showOverviewTab": {
+      "public": "Julkinen",
+      "fansOnly": "Vain faneille"
+    },
+    "scheduleEditorDialog": {
+      "public": "Julkinen",
+      "fansOnly": "Vain faneille"
+    },
+    "releaseCsvImportButtonMore": {
+      "chooseACsvFile": "Valitse CSV-tiedosto",
+      "orPasteTheRowsBelow": "Tai liitä rivit alle."
+    },
+    "collectionDialogsMore": {
+      "backdropImages": "Taustakuvat",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP tai GIF"
+    },
+    "jamView": {
+      "joiningTheJam": "Liitytään Jamiin…",
+      "syncingWithTheHost": "Synkronoidaan isännän kanssa"
+    },
+    "channelRotationPanelMore": {
+      "shuffle": "Satunnainen",
+      "inThisOrder": "Tässä järjestyksessä"
+    },
+    "selectsGenerateDialogMore": {
+      "addToTheEnd": "Lisää loppuun",
+      "replaceTheRotation": "Korvaa kierto"
+    },
+    "adminStorageViewMore": {
+      "storage": "Tallennustila",
+      "files": "Tiedostot"
+    },
+    "adminAddonsViewMore": {
+      "allAddOns": "Kaikki lisäosat",
+      "allStatuses": "Kaikki tilat"
+    },
+    "useQueueBarActions": {
+      "saveQueueAsLocalPlaylist": "Tallenna jono paikalliseksi soittolistaksi",
+      "randomizeQueueOrder": "Sekoita jonon järjestys",
+      "saveQueueToCloudPlaylist": "Tallenna jono pilvisoittolistaksi",
+      "saveQueueAsPlaylist": "Tallenna jono soittolistaksi"
+    },
+    "streamOverlayEditor": {
+      "overlayCoverImage": "Peittokuvan kansikuva",
+      "jpegPngOrWebp": "JPEG, PNG tai WebP"
+    },
+    "stashFilesPanelMore": {
+      "filesStayPrivateUntilYou": "Tiedostot pysyvät yksityisinä, kunnes myönnät pääsyn.",
+      "readOnly": "Vain luku"
     }
   },
   "studioEditor": {

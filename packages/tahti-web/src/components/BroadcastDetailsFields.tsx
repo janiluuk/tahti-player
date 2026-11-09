@@ -64,12 +64,12 @@ export function BroadcastDetailsFields({
         items={[
           {
             id: 'LIVE_SET',
-            label: 'Live set',
+            label: t('broadcastDetailsFields.liveSet'),
             icon: <MicIcon size={13} aria-hidden />,
           },
           {
             id: 'TALK',
-            label: 'Talk',
+            label: t('broadcastDetailsFields.talk'),
             icon: <MessageCircleIcon size={13} aria-hidden />,
           },
         ]}
@@ -92,8 +92,8 @@ export function BroadcastDetailsFields({
         <SegmentedControl
           aria-label={t('broadcastDetails.showFormat')}
           options={[
-            { id: 'SERIES', label: 'Continuous show' },
-            { id: 'SINGLE', label: 'Single show' },
+            { id: 'SERIES', label: t('broadcastDetailsFields.continuousShow') },
+            { id: 'SINGLE', label: t('broadcastDetailsFields.singleShow') },
           ]}
           value={values.mode}
           onChange={(mode) => onChange({ ...values, mode })}

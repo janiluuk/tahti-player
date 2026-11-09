@@ -344,8 +344,8 @@ export function StreamOverlayEditor({ onSaved }: { onSaved?: () => void }) {
         <div className="mt-4">
           <FilePicker
             labels={{
-              title: 'Overlay cover image',
-              description: 'JPEG, PNG, or WebP',
+              title: t('streamOverlayEditor.overlayCoverImage'),
+              description: t('streamOverlayEditor.jpegPngOrWebp'),
               browse: coverUploading ? 'Uploading…' : 'Choose image',
             }}
             accept="image/jpeg,image/png,image/webp"

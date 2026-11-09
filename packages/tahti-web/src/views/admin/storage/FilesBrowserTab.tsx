@@ -295,7 +295,7 @@ export function FilesBrowserTab() {
           value={userId}
           onValueChange={setUserId}
           options={[
-            { id: '', label: 'Everyone' },
+            { id: '', label: t('filesBrowserTab.everyone') },
             ...(facets?.users ?? []).map((user) => ({
               id: user.id,
               label: `${user.displayName && !user.displayName.includes('@') ? user.displayName : user.username} (@${user.username})`,
@@ -308,7 +308,7 @@ export function FilesBrowserTab() {
           value={genre}
           onValueChange={setGenre}
           options={[
-            { id: '', label: 'Any genre' },
+            { id: '', label: t('filesBrowserTab.anyGenre') },
             ...(facets?.genres ?? []).map((name) => ({
               id: name,
               label: name,
@@ -321,7 +321,7 @@ export function FilesBrowserTab() {
           value={contentType}
           onValueChange={setContentType}
           options={[
-            { id: '', label: 'Any type' },
+            { id: '', label: t('filesBrowserTab.anyType') },
             ...(facets?.contentTypes ?? []).map((type) => ({
               id: type,
               label: contentTypeLabel(type),
