@@ -151,3 +151,62 @@ export async function deleteUserMedia(
     };
   }
 }
+
+export type UnusedMedia = { count: number; totalBytes: number; ids: string[] };
+
+/** Uploads nothing you own still points at (`GET /api/me/media/unused`). */
+export async function fetchUnusedMedia(): Promise<
+  { ok: true; data: UnusedMedia } | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    const unused = mockMedia.slice(1);
+    return {
+      ok: true,
+      data: {
+        count: unused.length,
+        totalBytes: unused.reduce((sum, file) => sum + file.sizeBytes, 0),
+        ids: unused.map((file) => file.id),
+      },
+    };
+  }
+  try {
+    const data = await requestJson<UnusedMedia>('/api/me/media/unused');
+    return { ok: true, data };
+  } catch (error) {
+    return {
+      ok: false,
+      error:
+        error instanceof Error ? error.message : 'Could not check media use',
+    };
+  }
+}
+
+/** Delete every unused upload (`POST /api/me/media/purge-unused`). */
+export async function purgeUnusedMedia(): Promise<
+  | { ok: true; data: { deleted: number; freedBytes: number } }
+  | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    const unused = mockMedia.slice(1);
+    mockMedia = mockMedia.slice(0, 1);
+    return {
+      ok: true,
+      data: {
+        deleted: unused.length,
+        freedBytes: unused.reduce((sum, file) => sum + file.sizeBytes, 0),
+      },
+    };
+  }
+  try {
+    const data = await requestJson<{ deleted: number; freedBytes: number }>(
+      '/api/me/media/purge-unused',
+      { method: 'POST' },
+    );
+    return { ok: true, data };
+  } catch (error) {
+    return {
+      ok: false,
+      error: error instanceof Error ? error.message : 'Could not purge media',
+    };
+  }
+}
