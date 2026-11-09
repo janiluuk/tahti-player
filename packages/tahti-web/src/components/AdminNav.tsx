@@ -435,11 +435,9 @@ function useAdminNavParts(
     (item) => item.id === section?.id,
   );
   const tabs = (
-    <div
-      className="border-border w-fit max-w-full overflow-x-auto rounded-lg border p-1"
-      data-admin-section-tabs
-    >
+    <div className="w-fit max-w-full overflow-x-auto" data-admin-section-tabs>
       <Tabs.Root
+        variant="segmented"
         className="w-fit max-w-full gap-0"
         selectedIndex={Math.max(0, selectedSectionIndex)}
         onChange={(index) => {
@@ -451,7 +449,7 @@ function useAdminNavParts(
         }}
         tabClassName={
           selectedSectionIndex < 0
-            ? 'data-[selected]:bg-transparent data-[selected]:text-foreground-secondary'
+            ? 'data-[selected]:bg-transparent data-[selected]:text-foreground-secondary data-[selected]:shadow-none data-[selected]:ring-0'
             : undefined
         }
       >

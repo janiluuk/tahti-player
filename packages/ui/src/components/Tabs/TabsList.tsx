@@ -17,6 +17,7 @@ export const TabsList: FC<TabsListProps> = ({
   const {
     ids: { listId },
     listClassName,
+    variant,
   } = useTabsContext();
   return (
     <TabList
@@ -26,6 +27,9 @@ export const TabsList: FC<TabsListProps> = ({
         // Default wraps; callers that need a single scrollable row pass
         // `flex-nowrap overflow-x-auto` (see PHONE_SCROLL_TAB_LIST).
         'flex w-full flex-wrap items-center gap-2',
+        variant === 'segmented' &&
+          'bg-background-secondary w-fit max-w-full gap-0.5 rounded-lg p-0.5',
+        variant === 'underline' && 'border-border gap-4 border-b',
         listClassName,
         className,
       )}
