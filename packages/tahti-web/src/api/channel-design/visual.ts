@@ -18,6 +18,9 @@ export type ChannelVisual = {
   topBarText?: string | null;
   /** Saved channel page layout (JSON array), see `parseChannelPageLayout`. */
   pageLayoutJson?: string | null;
+  showSiteSidebar?: boolean;
+  showSiteBottomBar?: boolean;
+  showSiteHeader?: boolean;
   slideshowPreset?: string | null;
   slideshowIntervalSeconds?: number;
   slideshowTransitionMs?: number;

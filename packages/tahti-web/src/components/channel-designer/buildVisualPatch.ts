@@ -33,6 +33,10 @@ export function buildVisualPatch(
   }
   return {
     visualPreset: visual.visualPreset,
+    showSiteSidebar: visual.showSiteSidebar ?? false,
+    showSiteBottomBar: visual.showSiteBottomBar ?? false,
+    showSiteHeader: visual.showSiteHeader ?? true,
+
     headerStyle: visual.headerStyle,
     videoBackgroundUrl: videoUrl,
     brandAccentPreset: visual.brandAccentPreset,

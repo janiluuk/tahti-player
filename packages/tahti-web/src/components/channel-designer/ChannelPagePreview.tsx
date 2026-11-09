@@ -8,6 +8,7 @@ import type {
 } from '../../api/channel-design';
 import type { ChannelGalleryMode } from '../../api/channel-gallery';
 import type { ChannelPageItem } from '../../lib/channelPageLayout';
+import { ArtistSiteHeader } from '../ArtistSiteHeader';
 import { ChannelBackdropCard } from '../ChannelBackdropCard';
 import { PreviewTracksPlaceholder } from './PreviewTracksPlaceholder';
 
@@ -100,6 +101,12 @@ export function ChannelPagePreview({
           </Tooltip>
         </div>
       </div>
+      <ArtistSiteHeader
+        title={visual.topBarText}
+        artistName={displayName}
+        colorScheme={scheme}
+        hidden={visual.showSiteHeader === false}
+      />
       <ChannelBackdropCard
         minHeightClassName="min-h-[14rem]"
         displayName={displayName}
@@ -115,7 +122,7 @@ export function ChannelPagePreview({
           layout?.find((i) => i.type === 'subscribe')?.visible ?? false
         }
         headerStyle={visual.headerStyle}
-        topBarText={visual.topBarText}
+        topBarText={null}
         videoBackgroundUrl={previewVideoUrl}
         showVideoOverride={showHeaderVideo}
         isImageOverride={headerBackdropIsImage}

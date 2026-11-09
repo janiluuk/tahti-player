@@ -353,3 +353,7 @@ To update this catalog:
 4. Regenerate route links from router config (`packages/tahti-web/src/router.tsx`)
 
 Shared `Card` and `AmbientCard` have `Playing` stories showing the subtle inset highlight used by playable card rows.
+
+### Artist subdomain header
+
+`src/components/ArtistSiteHeader.tsx` renders the designer-configured title, themed navigation and tahti.live link (footer when hidden) on the matching `<slug>.tahti.live/channel/<slug>` page. Storybook: `ArtistSiteHeader.stories.tsx` (Themed, ArtistName, Hidden). No unification candidate.

@@ -1,9 +1,14 @@
+import { isArtistSubdomainPage } from '../../lib/channelSubdomain';
+
 /** The artist's Channel Designer top bar line, for pages without the hero
  * block (the hero draws the same text inside its backdrop, see
- * ChannelBackdropCard). */
+ * ChannelBackdropCard). On the artist subdomain ArtistSiteHeader shows it. */
 export function ChannelTopBar({ text }: { text: string | null | undefined }) {
   const trimmed = text?.trim();
-  if (!trimmed) {
+  if (
+    !trimmed ||
+    isArtistSubdomainPage(window.location.hostname, window.location.pathname)
+  ) {
     return null;
   }
   return (

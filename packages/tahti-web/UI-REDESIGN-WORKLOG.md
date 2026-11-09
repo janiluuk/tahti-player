@@ -6630,3 +6630,7 @@ Studio schedule/branding leftovers, stems/updates/release audio upload toasts; f
 ## 2026-11-05 — Batch 49 UX slices (0.0.339)
 
 Studio/Admin ConfirmDialog Finnish: schedule, updates, branding, editor, go-live credentials, distribution submit, smart-links, collection dialogs, mastering, news/announcements/radio presets/storage/addons/artwork, governance.
+
+## 2026-11-09 — Artist subdomain header (0.0.355)
+
+Matching artist subdomain pages use a themed title bar with a tahti.live link. Designer controls persist sidebar, bottom-bar and header visibility through the sibling API; defaults hide distracting navigation, with a footer link when the header is removed. Ordinary routes retain chrome and the owner edit rail stays available. Unit, Storybook and desktop/mobile browser checks pass. The API side shipped in tahti-org #1074 (migration fixed in #1076/#1077).

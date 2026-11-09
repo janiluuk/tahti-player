@@ -66,6 +66,7 @@ import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { useTourStore } from '../stores/tourStore';
 import { AmbientBackground } from './AmbientBackground';
 import { AppTopNav } from './AppTopNav';
+import { ArtistSiteHeader } from './ArtistSiteHeader';
 import { AudioEngine } from './AudioEngine';
 import { AuthDialog } from './AuthDialog';
 import { ConnectedPlayerBar } from './ConnectedPlayerBar';
@@ -86,6 +87,7 @@ import {
   StudioMainNavItems,
   StudioNav,
 } from './StudioNav';
+import { useArtistSiteChrome } from './useArtistSiteChrome';
 
 /** Show the top progress strip sooner than a full second so slow lazy chunks
  * feel acknowledged; still delayed so fast navigations stay clean. */
@@ -345,6 +347,14 @@ export function AppShell() {
   const openAuth = useAuthModalStore((s) => s.open);
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const {
+    artistSite,
+    channel: artistChannel,
+    theme: siteTheme,
+    hideSidebar: hideSiteSidebar,
+    hideBottomBar: hideSiteBottomBar,
+    showRightRail,
+  } = useArtistSiteChrome(pathname);
   const navigationLocation = useRouterState({
     select: (state) => state.location.pathname + state.location.searchStr,
   });
@@ -615,10 +625,25 @@ export function AppShell() {
     <HearthisEmbedHostProvider>
       <PlayerShell
         data-testid="listen-shell"
+        style={siteTheme}
         className={isMobile ? 'tahti-mobile-shell' : undefined}
       >
         <SkipToContent />
-        {!fullScreenPlayerOpen && <AppTopNav />}
+        {!fullScreenPlayerOpen && artistSite && (
+          <ArtistSiteHeader
+            onOpenMenu={
+              isMobile && !hideSiteSidebar
+                ? () => setMobileNavOpen(true)
+                : undefined
+            }
+            menuLabel={t('nav.openMenu')}
+            hidden={artistChannel?.showSiteHeader === false}
+            title={artistChannel?.topBarText}
+            artistName={artistChannel?.user.displayName}
+            colorScheme={artistChannel?.colorScheme}
+          />
+        )}
+        {!fullScreenPlayerOpen && !artistSite && <AppTopNav />}
         <AmbientBackground />
         <NotificationToasts />
 
@@ -648,22 +673,28 @@ export function AppShell() {
                 </Suspense>
               </RouteContent>
             </main>
-            {!fullScreenPlayerOpen && <ConnectedPlayerBar />}
-            <MobileBottomNav
-              onOpenMore={() => setMobileNavOpen(true)}
-              moreOpen={mobileNavOpen}
-            />
+            {!fullScreenPlayerOpen && !hideSiteBottomBar && (
+              <ConnectedPlayerBar />
+            )}
+            {!hideSiteBottomBar && (
+              <MobileBottomNav
+                onOpenMore={() => setMobileNavOpen(true)}
+                moreOpen={mobileNavOpen}
+              />
+            )}
           </div>
         ) : (
           <PlayerWorkspace className="tahti-ambient-surface">
-            <PlayerWorkspace.LeftSidebar
-              width={leftWidth}
-              isCollapsed={leftCollapsed}
-              onWidthChange={setLeftWidth}
-              onToggle={toggleLeft}
-            >
-              <SidebarNavItems compact={leftCollapsed} />
-            </PlayerWorkspace.LeftSidebar>
+            {!hideSiteSidebar && (
+              <PlayerWorkspace.LeftSidebar
+                width={leftWidth}
+                isCollapsed={leftCollapsed}
+                onWidthChange={setLeftWidth}
+                onToggle={toggleLeft}
+              >
+                <SidebarNavItems compact={leftCollapsed} />
+              </PlayerWorkspace.LeftSidebar>
+            )}
 
             {/*
             Padding lives on Main (outside the scrollport) so titles keep
@@ -700,7 +731,7 @@ export function AppShell() {
               </div>
             </PlayerWorkspace.Main>
 
-            {userId && (
+            {userId && showRightRail && (
               <PlayerWorkspace.RightSidebar
                 width={rightWidth}
                 isCollapsed={rightCollapsed}
@@ -714,8 +745,10 @@ export function AppShell() {
           </PlayerWorkspace>
         )}
 
-        {!isMobile && !fullScreenPlayerOpen && <ConnectedPlayerBar />}
-        {!isMobile && <ConnectedStatusBar />}
+        {!isMobile && !fullScreenPlayerOpen && !hideSiteBottomBar && (
+          <ConnectedPlayerBar />
+        )}
+        {!isMobile && !hideSiteBottomBar && <ConnectedStatusBar />}
         <DeferredFullScreenPlayer open={fullScreenPlayerOpen} />
         <AuthDialog />
         <DeferredDialogs />

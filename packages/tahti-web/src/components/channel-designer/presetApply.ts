@@ -12,6 +12,11 @@ export function applyPresetToVisual(
 ): ChannelVisual {
   return {
     ...v,
+    topBarText: s.topBarText ?? v.topBarText,
+    showSiteSidebar: s.showSiteSidebar ?? v.showSiteSidebar,
+    showSiteBottomBar: s.showSiteBottomBar ?? v.showSiteBottomBar,
+    showSiteHeader: s.showSiteHeader ?? v.showSiteHeader,
+
     ...(s.visualPreset !== undefined ? { visualPreset: s.visualPreset } : {}),
     ...(s.headerStyle !== undefined ? { headerStyle: s.headerStyle } : {}),
     videoBackgroundUrl: s.videoBackgroundUrl ?? null,

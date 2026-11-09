@@ -81,6 +81,10 @@ export type ChannelVisualPatch = {
   slideshowTransitionMs?: number;
   slideshowAutoplay?: boolean;
   topBarText?: string | null;
+  showSiteSidebar?: boolean;
+  showSiteBottomBar?: boolean;
+  showSiteHeader?: boolean;
+
   nowPlayingOverlayStyle?: string;
   nowPlayingOverlaySettingsJson?: string | null;
   usePlayerGradient?: boolean;
@@ -111,6 +115,10 @@ export const CHANNEL_VISUAL_API_PATCH_KEYS = [
   'slideshowTransitionMs',
   'slideshowAutoplay',
   'topBarText',
+  'showSiteSidebar',
+  'showSiteBottomBar',
+  'showSiteHeader',
+
   'usePlayerGradient',
   'playerColorSchemeJson',
   'useBackgroundGradient',
