@@ -6,11 +6,9 @@ export type RadioOverlayItem = {
   artworkUrl?: string | null;
 };
 
-/** What is on Tahti Radio right now, on a see-through card over the
- * visualizer: blurred glass tinted with the cover's darkened colour
- * (`--radio-ambient`, set by RadioPlayerWidget) and white text with a soft
- * shadow, so it stays readable on any preset. The cover itself is the hero's
- * thumbnail, so the card has none. Adds a "Next" line when the next track or
+/** What is on Tahti Radio right now, as text laid straight over the
+ * visualizer with no card behind it: white type with a soft shadow, readable
+ * against the hero's ambient scrim. Adds a "Next" line when the next track or
  * show is known. */
 export function RadioNowPlayingOverlay({
   label,
@@ -25,7 +23,7 @@ export function RadioNowPlayingOverlay({
 }) {
   return (
     <div
-      className="flex max-w-xl min-w-0 flex-col gap-2 rounded-lg border border-white/15 bg-linear-to-br from-[rgb(var(--radio-ambient,12_12_16)/0.55)] to-[rgb(var(--radio-ambient,12_12_16)/0.25)] p-3 text-white shadow-lg backdrop-blur-md [text-shadow:0_1px_2px_rgb(0_0_0/0.55)]"
+      className="flex max-w-xl min-w-0 flex-col gap-1.5 text-white [text-shadow:0_1px_3px_rgb(0_0_0/0.7)]"
       data-testid="radio-now-playing-overlay"
     >
       <div className="flex min-w-0 items-center gap-3">
@@ -43,12 +41,12 @@ export function RadioNowPlayingOverlay({
               variant="text"
               size="flexible"
               onClick={onCurrentInfo}
-              className="block max-w-full truncate p-0 text-lg font-bold tracking-tight text-white underline-offset-4 hover:underline"
+              className="font-display block max-w-full truncate p-0 text-xl font-semibold tracking-tight text-white underline-offset-4 hover:underline sm:text-2xl"
             >
               {current.title}
             </Button>
           ) : (
-            <div className="truncate text-lg font-bold tracking-tight text-white">
+            <div className="font-display truncate text-xl font-semibold tracking-tight text-white sm:text-2xl">
               {current?.title ?? '24/7 rotation'}
             </div>
           )}
@@ -59,7 +57,7 @@ export function RadioNowPlayingOverlay({
       </div>
       {next ? (
         <p
-          className="truncate border-t border-white/15 pt-2 text-xs text-white/80"
+          className="truncate text-xs text-white/80"
           data-testid="radio-now-playing-next"
         >
           <span className="font-semibold text-white">Next:</span> {next.title} -{' '}

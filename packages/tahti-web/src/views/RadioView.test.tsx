@@ -130,6 +130,32 @@ describe('RadioView featured history', () => {
     vi.unstubAllEnvs();
   });
 
+  it('favorites Tahti Radio and takes the favorite back off', async () => {
+    useLibraryStore.setState({ favoriteChannels: [] });
+    const router = createRouter({
+      routeTree: createRootRoute({ component: RadioView }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
+    });
+    await act(async () => {
+      render(<RouterProvider router={router} />);
+    });
+    const heart = await screen.findByTestId('radio-favorite-button');
+    await act(async () => {
+      fireEvent.click(heart);
+    });
+    expect(useLibraryStore.getState().isFavoriteChannel('tahti-radio')).toBe(
+      true,
+    );
+    expect(heart).toHaveProperty('disabled', false);
+    expect(heart.getAttribute('aria-label')).toBe('Remove from favorites');
+    await act(async () => {
+      fireEvent.click(heart);
+    });
+    expect(useLibraryStore.getState().isFavoriteChannel('tahti-radio')).toBe(
+      false,
+    );
+  });
+
   it('starts the player minimized and expands it to the tabs', async () => {
     const router = createRouter({
       routeTree: createRootRoute({ component: RadioView }),

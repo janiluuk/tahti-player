@@ -1,12 +1,9 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
   CalendarDaysIcon,
-  HeartIcon,
   HistoryIcon,
   ListOrderedIcon,
   MicIcon,
-  PauseIcon,
-  PlayIcon,
   RadioTowerIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -47,7 +44,6 @@ import type {
 import { useRotationNowPlaying } from '../components/channel-view/useRotationNowPlaying';
 import { RadioStationsRow } from '../components/listen-view/RadioStationsRow';
 import { useRadioPresets } from '../components/listen-view/useListenSections';
-import { MediaIconActions } from '../components/MediaIconActions';
 import {
   PageEmpty,
   PageError,
@@ -58,6 +54,10 @@ import { AddStationsPanel } from '../components/radio/AddStationsPanel';
 import { FavoriteStationsRow } from '../components/radio/FavoriteStationsRow';
 import { RadioBookedShowsPanel } from '../components/radio/RadioBookedShowsPanel';
 import { RadioFeaturedPanel } from '../components/radio/RadioFeaturedPanel';
+import {
+  RadioPlayButton,
+  RadioStationActions,
+} from '../components/radio/RadioHeroControls';
 import {
   formatRadioAgo,
   RadioJustPlayedPanel,
@@ -524,60 +524,30 @@ export function RadioView() {
                 }
               />
             }
+            playControl={
+              <RadioPlayButton
+                playing={isRadioPlaying}
+                playLabel={t('radio.playRadio')}
+                pauseLabel={t('radio.pauseRadio')}
+                onToggle={playStation}
+              />
+            }
             actions={
-              <>
-                <MediaIconActions
-                  actions={[
-                    {
-                      id: 'play',
-                      label: isRadioPlaying
-                        ? t('radio.pauseRadio')
-                        : t('radio.playRadio'),
-                      icon: isRadioPlaying ? (
-                        <PauseIcon size={16} className="fill-current" />
-                      ) : (
-                        <PlayIcon size={16} className="fill-current" />
-                      ),
-                      onClick: playStation,
-                      active: isRadioPlaying,
-                      disableWhenActive: false,
-                    },
-                    {
-                      id: 'favorite',
-                      label: favorited
-                        ? t('actions.favorited')
-                        : t('actions.favorite'),
-                      icon: (
-                        <HeartIcon
-                          size={16}
-                          className={
-                            favorited
-                              ? 'text-accent-red-strong fill-current'
-                              : undefined
-                          }
-                        />
-                      ),
-                      onClick: () =>
-                        toggleFavoriteChannel({
-                          slug: TAHTI_RADIO_SLUG,
-                          displayName: station.user.displayName,
-                          avatarUrl: station.user.avatarUrl,
-                        }),
-                      active: favorited,
-                      variant: 'text',
-                    },
-                  ]}
-                />
-                <ButtonLink
-                  to="/channel/$slug"
-                  params={{ slug: TAHTI_RADIO_SLUG }}
-                  search={{ view: 'channel' }}
-                  size="sm"
-                  variant="secondary"
-                >
-                  {t('actions.openChannel')}
-                </ButtonLink>
-              </>
+              <RadioStationActions
+                favorited={favorited}
+                favoriteLabel={t('actions.addToFavorites')}
+                unfavoriteLabel={t('actions.removeFromFavorites')}
+                onToggleFavorite={() =>
+                  void toggleFavoriteChannel({
+                    slug: TAHTI_RADIO_SLUG,
+                    username: station.user.username,
+                    displayName: station.user.displayName,
+                    avatarUrl: station.user.avatarUrl,
+                  })
+                }
+                channelSlug={TAHTI_RADIO_SLUG}
+                openChannelLabel={t('actions.openChannel')}
+              />
             }
             notice={
               <StationUnavailableNotice
