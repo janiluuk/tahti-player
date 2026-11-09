@@ -10357,6 +10357,10 @@
     },
     "listenAddonsTabEmptyText": {
       "everythingHereIsInstalled": "Everything here is installed."
+    },
+    "searchResults": {
+      "resultsFor": "Results for “{{query}}”",
+      "title": "Search"
     }
   },
   "studioEditor": {
