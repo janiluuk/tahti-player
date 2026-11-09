@@ -73,14 +73,21 @@ export function GrantsTab() {
                   <div className="text-sm font-medium">
                     {formatEur(row.totalCents)}
                   </div>
-                  <Tooltip content={`View ${row.year} grants`} side="top">
+                  <Tooltip
+                    content={t('grantsTabLabels.viewYearGrants', {
+                      year: row.year,
+                    })}
+                    side="top"
+                  >
                     <ButtonLink
                       to="/admin/grants/$year"
                       params={{ year: String(row.year) }}
 
                       size="icon-sm"
                       variant="text"
-                      aria-label={`View ${row.year} grants`}
+                      aria-label={t('grantsTabLabels.viewYearGrants', {
+                        year: row.year,
+                      })}
                     >
                       →
                     </ButtonLink>

@@ -142,7 +142,9 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
                     <Button
                       size="icon-sm"
                       variant="text"
-                      aria-label={`Ban ${message.handle}`}
+                      aria-label={t('chatMessagesPanelLabels.banHandle', {
+                        handle: message.handle,
+                      })}
                       onClick={() => setPending({ action: 'ban', message })}
                     >
                       <BanIcon size={14} aria-hidden />
@@ -156,7 +158,10 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
                   <Button
                     size="icon-sm"
                     variant="text"
-                    aria-label={`Remove message from ${message.handle}`}
+                    aria-label={t(
+                      'chatMessagesPanelLabels.removeMessageFromHandle',
+                      { handle: message.handle },
+                    )}
                     onClick={() => setPending({ action: 'remove', message })}
                   >
                     <Trash2Icon

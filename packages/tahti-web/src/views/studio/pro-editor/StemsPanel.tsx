@@ -162,7 +162,9 @@ export function StemsPanel({
             <div
               className="bg-background-secondary relative h-1.5 w-48 overflow-hidden rounded-full"
               role="progressbar"
-              aria-label={`Splitting into ${setLabel}`}
+              aria-label={t('stemsPanelLabels.splittingIntoSetlabel', {
+                setLabel,
+              })}
             >
               <div className="bg-primary absolute inset-0 w-1/3 animate-pulse rounded-full" />
             </div>

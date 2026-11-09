@@ -100,13 +100,18 @@ export function ThemeSubmissions({
               ) : null}
               {theme.visibility !== 'PENDING_REVIEW' ? (
                 <Tooltip
-                  content={`Delete the ${theme.name} submission`}
+                  content={t('themeSubmissionsLabels.deleteTheNameSubmission', {
+                    name: theme.name,
+                  })}
                   side="top"
                 >
                   <Button
                     size="icon-sm"
                     variant="text"
-                    aria-label={`Delete the ${theme.name} submission`}
+                    aria-label={t(
+                      'themeSubmissionsLabels.deleteTheNameSubmission',
+                      { name: theme.name },
+                    )}
                     onClick={() => setPendingDelete(theme)}
                   >
                     <Trash2Icon

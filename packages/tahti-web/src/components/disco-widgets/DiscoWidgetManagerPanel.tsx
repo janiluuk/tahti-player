@@ -371,7 +371,10 @@ export function DiscoWidgetManagerPanel({
                               variant="secondary"
                               disabled={isPending}
                               onClick={() => setConfiguringId(install.id)}
-                              aria-label={`Configure ${install.widget.name}`}
+                              aria-label={t(
+                                'discoWidgetManagerPanelLabels.configureName',
+                                { name: install.widget.name },
+                              )}
                             >
                               <Settings2 size={15} aria-hidden />
                             </Button>
@@ -379,7 +382,10 @@ export function DiscoWidgetManagerPanel({
                         )}
                         {scope === 'ARTIST' ? (
                           <SegmentedControl
-                            aria-label={`Width of ${install.widget.name} on your channel`}
+                            aria-label={t(
+                              'discoWidgetManagerPanelLabels.widthOfNameOnYour',
+                              { name: install.widget.name },
+                            )}
                             options={WIDTH_OPTIONS}
                             value={layout.widthOf(install.id)}
                             onChange={(width) =>

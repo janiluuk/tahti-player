@@ -60,7 +60,10 @@ export function BroadcastUsageMeter({ usage }: { usage: BroadcastUsage }) {
       <Meter
         value={usage.secondsUsed}
         max={usage.weeklyCapSeconds}
-        aria-label={`Weekly live time: ${used} of ${cap} used`}
+        aria-label={t('broadcastUsageMeterLabels.weeklyLiveTimeUsedOf', {
+          used,
+          cap,
+        })}
         barClassName={
           exhausted ? 'bg-accent-red' : warning ? 'bg-accent-yellow' : undefined
         }

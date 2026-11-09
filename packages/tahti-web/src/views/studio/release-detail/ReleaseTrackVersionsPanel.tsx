@@ -150,7 +150,9 @@ function TrackVersions({
           />
           <FilePicker
             labels={{
-              title: `New version of ${track.title}`,
+              title: t('releaseTrackVersionsPanelLabels.newVersionOfTitle', {
+                title: track.title,
+              }),
               description: 'WAV, FLAC, MP3, AAC or AIFF',
               browse: uploading ? 'Uploading…' : 'Choose audio file',
             }}

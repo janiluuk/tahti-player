@@ -167,14 +167,18 @@ export const ChannelRadioPlaylistPanel: FC = () => {
     );
     const releaseGroups = releases.map((release) => ({
       id: `release-${release.id}`,
-      label: `Release · ${release.title}`,
+      label: t('channelRadioPlaylistPanelLabels.releaseTitle', {
+        title: release.title,
+      }),
       items: (release.tracks ?? [])
         .map((track) => libraryItems.find((item) => item.id === track.soundId))
         .filter((item): item is ProgrammeItem => Boolean(item)),
     }));
     const playlistGroups = playlists.map((playlist) => ({
       id: `playlist-${playlist.slug}`,
-      label: `Playlist · ${playlist.name}`,
+      label: t('channelRadioPlaylistPanelLabels.playlistName', {
+        name: playlist.name,
+      }),
       items: (playlist.items ?? [])
         .map((item) =>
           libraryItems.find((libraryItem) => libraryItem.id === item.soundId),

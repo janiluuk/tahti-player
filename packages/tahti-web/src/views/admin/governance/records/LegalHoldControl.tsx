@@ -61,7 +61,7 @@ export function LegalHoldControl({
             size="xs"
             variant="secondary"
             disabled={busy}
-            aria-label={`Release hold: ${title}`}
+            aria-label={t('legalHoldControlLabels.releaseHoldTitle', { title })}
             onClick={() => apply(null)}
           >
             {t('legalHold.releaseHold')}
@@ -99,7 +99,7 @@ export function LegalHoldControl({
           size="xs"
           variant="secondary"
           className="w-fit"
-          aria-label={`Legal hold: ${title}`}
+          aria-label={t('legalHoldControlLabels.legalHoldTitle', { title })}
           onClick={() => setWriting(true)}
         >
           {t('legalHold.legalHold')}

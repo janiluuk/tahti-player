@@ -179,7 +179,9 @@ function SoundRowActions({
           size="icon-sm"
           variant="text"
           onClick={() => setStatsItem(item)}
-          aria-label={`Show stats for ${item.title}`}
+          aria-label={t('soundsAmbientListLabels.showStatsForTitle', {
+            title: item.title,
+          })}
         >
           <BarChart3Icon size={14} aria-hidden />
         </Button>

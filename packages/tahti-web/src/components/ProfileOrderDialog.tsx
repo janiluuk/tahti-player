@@ -111,7 +111,9 @@ export function ProfileOrderDialog({
                 <Button
                   variant="text"
                   size="sm"
-                  aria-label={`Move ${item.title} up`}
+                  aria-label={t('profileOrderDialogLabels.moveTitleUp', {
+                    title: item.title,
+                  })}
                   disabled={index === 0}
                   onClick={() => move(index, -1)}
                 >
@@ -120,7 +122,9 @@ export function ProfileOrderDialog({
                 <Button
                   variant="text"
                   size="sm"
-                  aria-label={`Move ${item.title} down`}
+                  aria-label={t('profileOrderDialogLabels.moveTitleDown', {
+                    title: item.title,
+                  })}
                   disabled={index === items.length - 1}
                   onClick={() => move(index, 1)}
                 >

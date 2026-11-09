@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { XIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Card, InlineError, Tooltip } from '@tahti-player/ui';
 
 import type { EnabledInternetRadioPreset } from '../../api/client';
@@ -46,6 +47,7 @@ export function RadioRowCard({
   favorited?: boolean;
   onFavorite?: () => void;
 }) {
+  const { t } = useTranslation('web');
   const warmRadioRoute = () => prefetchListenCardIntent('radio');
   const catalogStation =
     item.kind === 'preset'
@@ -152,11 +154,16 @@ export function RadioRowCard({
       onFocus={warmRadioRoute}
     >
       {onRemove ? (
-        <Tooltip content={`Remove ${station.name}`} side="top">
+        <Tooltip
+          content={t('radioRowCardLabels.removeName', { name: station.name })}
+          side="top"
+        >
           <Button
             size="icon-sm"
             variant="text"
-            aria-label={`Remove ${station.name}`}
+            aria-label={t('radioRowCardLabels.removeName', {
+              name: station.name,
+            })}
             onClick={() => onRemove(station)}
             className="bg-background/80 hover:bg-background absolute top-1 right-1 z-10 rounded-full opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
           >

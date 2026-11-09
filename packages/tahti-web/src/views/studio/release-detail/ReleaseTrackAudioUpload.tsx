@@ -94,7 +94,9 @@ export function ReleaseTrackAudioUpload({
       <div className="flex w-full flex-col gap-2">
         <FilePicker
           labels={{
-            title: `Audio for ${track.title}`,
+            title: t('releaseTrackAudioUploadLabels.audioForTitle', {
+              title: track.title,
+            }),
             description: 'WAV, FLAC, MP3, AAC or AIFF',
             browse: 'Choose audio file',
           }}

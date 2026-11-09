@@ -371,7 +371,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
           {!col && loadError ? (
             <StudioPanel>
               <PageError
-                title={`Could not load this ${kindLabel}`}
+                title={t('playlistEditorLabels.loadError', { kindLabel })}
                 description={loadError}
                 onRetry={reload}
               />

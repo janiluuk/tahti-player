@@ -477,7 +477,9 @@ export function WaveformEditor({
           onClearCuts={() =>
             ask({
               title: t('waveformEditorMore.clearAllCuts'),
-              description: `Removes all ${editList.cuts.length} cut(s) from this draft. You can undo this.`,
+              description: t('waveformEditorLabels.removesAllLengthCutS', {
+                length: editList.cuts.length,
+              }),
               confirmLabel: t('waveformEditorMore.clearCuts'),
               run: () => {
                 onChange({ ...editList, cuts: [] });

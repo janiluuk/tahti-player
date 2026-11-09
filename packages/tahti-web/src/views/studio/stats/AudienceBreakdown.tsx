@@ -101,7 +101,9 @@ export function AudienceBreakdown({
   return (
     <StudioPanel
       title={t('audienceBreakdown.audience')}
-      description={`Shares of listens in this period. Names with fewer than ${minBucket} listens are grouped as Other.`}
+      description={t('audienceBreakdownLabels.sharesOfListensInThis', {
+        minBucket,
+      })}
       action={
         <Toggle
           label={t('audienceBreakdown.ignoreBotTraffic')}

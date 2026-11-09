@@ -66,7 +66,9 @@ export function ReferrerSources({
   return (
     <StudioPanel
       title={t('referrerSources.whereListenersCameFrom')}
-      description={`The site a listener was on before they opened Tahti, by listens in this period. Direct means no referring site: a typed address, a bookmark, an app or a shared link opened from a chat. Sites with fewer than ${minBucket} listens are grouped as Other sites.`}
+      description={t('referrerSourcesLabels.theSiteAListenerWas', {
+        minBucket,
+      })}
     >
       {status === 'loading' ? (
         <PageLoading label={t('loading.loadingSources')} />

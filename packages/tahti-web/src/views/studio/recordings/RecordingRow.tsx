@@ -80,7 +80,7 @@ export function RecordingRow({
       {show.soundId ? (
         <EditIconButton
           variant="text"
-          label={`Edit ${title}`}
+          label={t('recordingRowLabels.editTitle', { title })}
           onClick={() => onEdit(show.soundId!)}
         />
       ) : null}

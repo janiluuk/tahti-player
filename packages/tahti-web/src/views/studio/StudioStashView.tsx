@@ -182,7 +182,9 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
                 </div>
                 <EditIconButton
                   variant="text"
-                  label={`Edit ${item.title}`}
+                  label={t('studioStashViewLabels.editTitle', {
+                    title: item.title,
+                  })}
                   onClick={() => setEditingId(item.id)}
                 />
               </li>

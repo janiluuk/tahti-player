@@ -216,7 +216,9 @@ export function TrackOrganizeDialog({
                   size="sm"
                   variant={currentColor === color ? 'secondary' : 'text'}
                   disabled={busy}
-                  aria-label={`Label ${color}`}
+                  aria-label={t('trackOrganizeDialogLabels.labelColor', {
+                    color,
+                  })}
                   aria-pressed={currentColor === color}
                   onClick={() =>
                     void run(
@@ -265,7 +267,9 @@ export function TrackOrganizeDialog({
                   size="sm"
                   variant="secondary"
                   disabled={busy}
-                  aria-label={`Remove tag ${name}`}
+                  aria-label={t('trackOrganizeDialogLabels.removeTagName', {
+                    name,
+                  })}
                   onClick={() =>
                     void run(
                       `Removed “${name}” from ${plural(ids.length, 'track')}.`,

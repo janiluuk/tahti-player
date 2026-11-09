@@ -1,6 +1,7 @@
 import { GripVerticalIcon, XIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import type { MoveDragState } from '../../hooks/useChannelLayoutEditing';
@@ -57,6 +58,7 @@ export function ChannelBlockFrame({
   onRemove,
   children,
 }: Props) {
+  const { t } = useTranslation('web');
   const metaItem = CHANNEL_PAGE_ITEM_META[item.type];
   return (
     <div
@@ -172,13 +174,20 @@ export function ChannelBlockFrame({
               · drag to place
             </span>
           </div>
-          <Tooltip content={`Remove ${metaItem.label}`} side="top">
+          <Tooltip
+            content={t('channelBlockFrameLabels.removeLabel', {
+              label: metaItem.label,
+            })}
+            side="top"
+          >
             <Button
               type="button"
               size="icon-sm"
               variant="text"
               className="text-foreground-secondary hover:text-foreground absolute top-2 right-2 z-10 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-              aria-label={`Remove ${metaItem.label}`}
+              aria-label={t('channelBlockFrameLabels.removeLabel', {
+                label: metaItem.label,
+              })}
               onClick={(event) => {
                 event.stopPropagation();
                 onRemove(item.id);

@@ -55,12 +55,19 @@ export function RightRailPanel({ isCollapsed }: { isCollapsed: boolean }) {
   if (isCollapsed) {
     if (railOverride) {
       return (
-        <Tooltip content={`Open ${railOverride.title}`} side="left">
+        <Tooltip
+          content={t('rightRailPanelLabels.openTitle', {
+            title: railOverride.title,
+          })}
+          side="left"
+        >
           <Button
             size="icon-sm"
             variant="text"
             className="mx-auto"
-            aria-label={`Open ${railOverride.title}`}
+            aria-label={t('rightRailPanelLabels.openTitle', {
+              title: railOverride.title,
+            })}
             onClick={() => toggleRight()}
           >
             <ListMusicIcon size={18} aria-hidden />

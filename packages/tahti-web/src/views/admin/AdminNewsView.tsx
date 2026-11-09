@@ -280,7 +280,9 @@ export function AdminNewsView() {
                           </div>
                           <div className="flex flex-wrap gap-2">
                             <EditIconButton
-                              label={`Edit ${post.headline}`}
+                              label={t('adminNewsViewLabels.editHeadline', {
+                                headline: post.headline,
+                              })}
                               variant="text"
                               onClick={() => startEdit(post)}
                             />
@@ -317,7 +319,10 @@ export function AdminNewsView() {
                             <Button
                               size="sm"
                               variant="text"
-                              aria-label={`Delete ${post.headline}`}
+                              aria-label={t(
+                                'adminNewsViewLabels.deleteHeadline',
+                                { headline: post.headline },
+                              )}
                               onClick={() => setPendingDeletePost(post)}
                             >
                               <Trash2Icon

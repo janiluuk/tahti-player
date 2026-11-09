@@ -248,7 +248,9 @@ export function OverviewTab({
         <StudioPanel title={t('showOverview.episodes')}>
           {episodes.length === 0 ? (
             <PageEmpty
-              title={`No episodes yet. Create one — episode #${nextEpisodeNumber} is ready.`}
+              title={t('show-detailOverviewTabLabels.noEpisodesYetCreateOne', {
+                nextEpisodeNumber,
+              })}
               action={
                 <Button
                   size="sm"

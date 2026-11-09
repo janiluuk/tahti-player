@@ -2,6 +2,7 @@ import { PencilIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type FC, type RefObject } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   HiddenFileInput,
@@ -174,6 +175,7 @@ export const RadioStationCover: FC<RadioStationCoverProps> = ({
   persist = true,
   onCoverChange,
 }) => {
+  const { t } = useTranslation('web');
   const user = useAuthStore((state) => state.user);
   const canEdit = canEditRadioStationCover(user);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -197,7 +199,7 @@ export const RadioStationCover: FC<RadioStationCoverProps> = ({
     >
       {canEdit ? (
         <Tooltip
-          content={`Preview ${label} cover`}
+          content={t('radioStationCoverLabels.previewLabelCover', { label })}
           side="bottom"
           wrapperClassName="block size-full"
         >
@@ -205,7 +207,9 @@ export const RadioStationCover: FC<RadioStationCoverProps> = ({
             variant="text"
             size="flexible"
             type="button"
-            aria-label={`Preview ${label} cover`}
+            aria-label={t('radioStationCoverLabels.previewLabelCover', {
+              label,
+            })}
             className="block size-full rounded-none p-0 text-left hover:bg-transparent active:scale-100"
             onClick={() => setPreviewOpen(true)}
           >

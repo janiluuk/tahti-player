@@ -345,7 +345,9 @@ export const StashFilesPanel = ({
                       <Button
                         size="icon-sm"
                         variant="text"
-                        aria-label={`Play ${file.filename}`}
+                        aria-label={t('stashFilesPanelLabels.playFilename', {
+                          filename: file.filename,
+                        })}
                         onClick={() => {
                           void fetchStashDownload(file.id).then((result) => {
                             if (!result.data?.url) {
@@ -371,7 +373,9 @@ export const StashFilesPanel = ({
                       <Button
                         size="icon-sm"
                         variant="text"
-                        aria-label={`Delete ${file.filename}`}
+                        aria-label={t('stashFilesPanelLabels.deleteFilename', {
+                          filename: file.filename,
+                        })}
                         onClick={() => setPendingDelete(file)}
                       >
                         <Trash2Icon className="text-accent-red" size={16} />

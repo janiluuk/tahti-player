@@ -110,7 +110,9 @@ export function VenueDetailView({ slug }: { slug: string }) {
           headingLevel={1}
           icon="alert"
           title={t('empties.venueNotFound')}
-          description={`No verified venue matches "${slug}".`}
+          description={t('venueDetailViewLabels.noVerifiedVenueMatchesSlug', {
+            slug,
+          })}
           action={
             <Link
               to="/discover"

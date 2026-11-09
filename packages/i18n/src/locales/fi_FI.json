@@ -9209,6 +9209,173 @@
     "adminStorageSharedLabels": {
       "editQuotaForDisplayname": "Muokkaa kiintiötä: {{displayName}}",
       "quotaInMbForDisplayname": "Kiintiö megatavuina: {{displayName}}"
+    },
+    "internetRadioPresetsPanelLabels": {
+      "internetRadioListenPageDefaults": "Nettiradio — Kuuntele-sivun oletukset ({{length}})",
+      "editName": "Muokkaa: {{name}}"
+    },
+    "grantsTabLabels": {
+      "viewYearGrants": "Näytä vuoden {{year}} avustukset"
+    },
+    "legalHoldControlLabels": {
+      "releaseHoldTitle": "Vapauta pito: {{title}}",
+      "legalHoldTitle": "Oikeudellinen pito: {{title}}"
+    },
+    "electionCandidatesLabels": {
+      "candidatesTitle": "Ehdokkaat: {{title}}",
+      "candidatesInTitle": "Ehdokkaat: {{title}}"
+    },
+    "electionActionsLabels": {
+      "editElectionTitle": "Muokkaa vaalia: {{title}}",
+      "cancelElectionTitle": "Peru vaali: {{title}}"
+    },
+    "adminNewsViewLabels": {
+      "editHeadline": "Muokkaa: {{headline}}",
+      "deleteHeadline": "Poista: {{headline}}"
+    },
+    "trackOrganizeDialogLabels": {
+      "labelColor": "Merkintä: {{color}}",
+      "removeTagName": "Poista tunniste: {{name}}"
+    },
+    "themeSubmissionsLabels": {
+      "deleteTheNameSubmission": "Poista ehdotus: {{name}}"
+    },
+    "studioCollectionMoreMenuLabels": {
+      "deleteName": "Poistetaanko ”{{name}}”?",
+      "thisPermanentlyDeletesTheKindlabel": "Tämä poistaa pysyvästi kohteen ({{kindLabel}}) ja sen kappalelistan. Toimintoa ei voi perua."
+    },
+    "stashFilesPanelLabels": {
+      "playFilename": "Soita: {{filename}}",
+      "deleteFilename": "Poista: {{filename}}"
+    },
+    "rightRailPanelLabels": {
+      "openTitle": "Avaa: {{title}}"
+    },
+    "radioStationCoverLabels": {
+      "previewLabelCover": "Esikatsele kansikuvaa: {{label}}"
+    },
+    "profileOrderDialogLabels": {
+      "moveTitleUp": "Siirrä ylös: {{title}}",
+      "moveTitleDown": "Siirrä alas: {{title}}"
+    },
+    "remainingCategoriesLabels": {
+      "configureLabel": "Määritä: {{label}}",
+      "removeLabel": "Poista: {{label}}"
+    },
+    "pinnedAnnouncementsPanelLabels": {
+      "deleteBody": "Poista: {{body}}"
+    },
+    "newsSourcesDialogLabels": {
+      "removeLabel": "Poista: {{label}}"
+    },
+    "newsFeedWidgetLabels": {
+      "removeLabel": "Poista: {{label}}"
+    },
+    "mySupportTicketsLabels": {
+      "replyToSubject": "Vastaa: {{subject}}",
+      "repliesToSubject": "Vastaukset: {{subject}}"
+    },
+    "chatMessagesPanelLabels": {
+      "banHandle": "Estä: {{handle}}",
+      "removeMessageFromHandle": "Poista viesti käyttäjältä: {{handle}}"
+    },
+    "radioRowCardLabels": {
+      "removeName": "Poista: {{name}}"
+    },
+    "listenerWidgetsSectionLabels": {
+      "removeName": "Poista: {{name}}"
+    },
+    "discoWidgetManagerPanelLabels": {
+      "configureName": "Määritä: {{name}}",
+      "widthOfNameOnYour": "Leveys kanavallasi: {{name}}"
+    },
+    "connectedStatusBarLabels": {
+      "cloudStorageUsedStorageusedlabel": "Pilvitallennustilaa käytetty: {{storageUsedLabel}}"
+    },
+    "channelBlockFrameLabels": {
+      "removeLabel": "Poista: {{label}}"
+    },
+    "channelRadioPlaylistPanelLabels": {
+      "releaseTitle": "Julkaisu · {{title}}",
+      "playlistName": "Soittolista · {{name}}"
+    },
+    "channelLayersMenuLabels": {
+      "dragLabel": "Vedä: {{label}}",
+      "removeLabelFromPage": "Poista sivulta: {{label}}"
+    },
+    "slideshowControlsLabels": {
+      "intervalIntervals": "Väli: {{interval}} s",
+      "transitionSpeedTransitionms": "Siirtymän nopeus: {{transition}} ms"
+    },
+    "playerVisualizerControlsLabels": {
+      "configureLabel": "Määritä: {{label}}"
+    },
+    "overlayConfigDialogLabels": {
+      "horizontalPositionOffsetxpx": "Vaakasijainti: {{offsetX}} px",
+      "verticalPositionOffsetypx": "Pystysijainti: {{offsetY}} px"
+    },
+    "venueDetailViewLabels": {
+      "noVerifiedVenueMatchesSlug": "Mikään vahvistettu tapahtumapaikka ei vastaa hakua ”{{slug}}”."
+    },
+    "studioStashViewLabels": {
+      "editTitle": "Muokkaa: {{title}}"
+    },
+    "studioShowsViewLabels": {
+      "manageTitle": "Hallinnoi: {{title}}"
+    },
+    "studioRevenueViewLabels": {
+      "grantEstimateYear": "Avustusarvio ({{year}})"
+    },
+    "studioEventViewLabels": {
+      "editTitle": "Muokkaa: {{title}}"
+    },
+    "referrerSourcesLabels": {
+      "theSiteAListenerWas": "Sivusto, jolla kuuntelija oli ennen Tahden avaamista, kuunteluiden mukaan tällä jaksolla. Suora tarkoittaa, ettei viittaavaa sivustoa ole: kirjoitettu osoite, kirjanmerkki, sovellus tai chatista avattu jaettu linkki. Sivustot, joilla on alle {{minBucket}} kuuntelua, ryhmitellään kohtaan Muut sivustot."
+    },
+    "audienceBreakdownLabels": {
+      "sharesOfListensInThis": "Kuunteluiden osuudet tällä jaksolla. Nimet, joilla on alle {{minBucket}} kuuntelua, ryhmitellään kohtaan Muut."
+    },
+    "soundsAmbientListLabels": {
+      "showStatsForTitle": "Näytä tilastot: {{title}}"
+    },
+    "show-detailOverviewTabLabels": {
+      "noEpisodesYetCreateOne": "Ei vielä jaksoja. Luo yksi — jakso #{{nextEpisodeNumber}} on valmiina."
+    },
+    "episodeEditorRowLabels": {
+      "editTitle": "Muokkaa: {{title}}"
+    },
+    "releaseTrackVersionsPanelLabels": {
+      "newVersionOfTitle": "Uusi versio: {{title}}"
+    },
+    "releaseTrackUploadProgressLabels": {
+      "uploadingTitlePct": "Ladataan: {{title}}, {{pct}} %"
+    },
+    "releaseTrackCreditsPanelLabels": {
+      "saveCreditsForTitle": "Tallenna tekijätiedot: {{title}}"
+    },
+    "releaseTrackAudioUploadLabels": {
+      "audioForTitle": "Ääni: {{title}}"
+    },
+    "recordingRowLabels": {
+      "editTitle": "Muokkaa: {{title}}"
+    },
+    "waveformEditorLabels": {
+      "removesAllLengthCutS": "Poistaa luonnoksesta kaikki leikkaukset ({{length}}). Voit perua tämän."
+    },
+    "stemsPanelLabels": {
+      "splittingIntoSetlabel": "Jaetaan: {{setLabel}}"
+    },
+    "copyFieldLabels": {
+      "copyLabel": "Kopioi: {{label}}"
+    },
+    "broadcastUsageMeterLabels": {
+      "weeklyLiveTimeUsedOf": "Viikoittainen liveaika: {{used}} / {{cap}} käytetty"
+    },
+    "playlistEditorLabels": {
+      "loadError": "Kohdetta ei voitu ladata ({{kindLabel}})"
+    },
+    "socialOAuthPlatformLabels": {
+      "disconnectName": "Katkaistaanko yhteys: {{name}}?"
     }
   },
   "studioEditor": {

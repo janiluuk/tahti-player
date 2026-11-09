@@ -209,7 +209,7 @@ export function SlideshowControls({
             options={SLIDESHOW_PRESETS.map(([id, label]) => ({ id, label }))}
           />
           <Slider
-            label={`Interval: ${interval}s`}
+            label={t('slideshowControlsLabels.intervalIntervals', { interval })}
             min={5}
             max={30}
             step={1}
@@ -217,7 +217,9 @@ export function SlideshowControls({
             onValueChange={onIntervalChange}
           />
           <Slider
-            label={`Transition speed: ${transition}ms`}
+            label={t('slideshowControlsLabels.transitionSpeedTransitionms', {
+              transition,
+            })}
             min={300}
             max={1500}
             step={100}

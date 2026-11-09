@@ -190,7 +190,10 @@ export function InternetRadioPresetsPanel() {
     <div className="flex flex-col gap-6">
       <TahtiRadioStationPanel />
       <StudioPanel
-        title={`Internet radio — Listen page defaults (${presets.length})`}
+        title={t(
+          'internetRadioPresetsPanelLabels.internetRadioListenPageDefaults',
+          { length: presets.length },
+        )}
         description={t('radioPresetsAdmin.stationsToggledOnHereAppear')}
         action={
           <div className="flex flex-wrap gap-2">
@@ -284,7 +287,9 @@ export function InternetRadioPresetsPanel() {
                     {preset.enabled ? 'Disable' : 'Enable for everyone'}
                   </Button>
                   <EditIconButton
-                    label={`Edit ${preset.name}`}
+                    label={t('internetRadioPresetsPanelLabels.editName', {
+                      name: preset.name,
+                    })}
                     variant="text"
                     onClick={() => openEdit(preset)}
                   />

@@ -41,7 +41,9 @@ export function OverlayConfigDialog({
           onValueChange={(value) => onSettingChange('textScale', value)}
         />
         <Slider
-          label={`Horizontal position: ${overlaySettings.offsetX}px`}
+          label={t('overlayConfigDialogLabels.horizontalPositionOffsetxpx', {
+            offsetX: overlaySettings.offsetX,
+          })}
           min={-120}
           max={120}
           step={4}
@@ -49,7 +51,9 @@ export function OverlayConfigDialog({
           onValueChange={(value) => onSettingChange('offsetX', value)}
         />
         <Slider
-          label={`Vertical position: ${overlaySettings.offsetY}px`}
+          label={t('overlayConfigDialogLabels.verticalPositionOffsetypx', {
+            offsetY: overlaySettings.offsetY,
+          })}
           min={-120}
           max={120}
           step={4}

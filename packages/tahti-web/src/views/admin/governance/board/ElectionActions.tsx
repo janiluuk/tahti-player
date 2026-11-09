@@ -54,13 +54,17 @@ export function ElectionActions({
       {mode === 'idle' ? (
         <div className="flex flex-wrap gap-2">
           <EditIconButton
-            label={`Edit election: ${election.title}`}
+            label={t('electionActionsLabels.editElectionTitle', {
+              title: election.title,
+            })}
             onClick={() => setMode('edit')}
           />
           <Button
             size="sm"
             variant="secondary"
-            aria-label={`Cancel election: ${election.title}`}
+            aria-label={t('electionActionsLabels.cancelElectionTitle', {
+              title: election.title,
+            })}
             onClick={() => setMode('cancel')}
           >
             {t('electionActions.cancelElection')}
