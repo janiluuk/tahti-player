@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { renderWithRouter } from '../test/renderWithRouter';
@@ -85,11 +85,14 @@ describe('StudioNav nested sub-tab row', () => {
     }
   });
 
-  it('shows Music pages as chips, not a second tab strip', async () => {
+  it('shows Music pages as the underline tab row below the Studio row', async () => {
     await renderWithRouter(<StudioNav current="/studio/releases" />);
+    const music = screen.getByRole('tablist', { name: 'Music pages' });
     expect(
-      screen.getByRole('radiogroup', { name: 'Music pages' }),
+      within(music).getByRole('tab', { name: /Releases/, selected: true }),
     ).toBeTruthy();
-    expect(screen.queryByRole('tablist', { name: 'Music pages' })).toBeNull();
+    expect(
+      screen.queryByRole('radiogroup', { name: 'Music pages' }),
+    ).toBeNull();
   });
 });

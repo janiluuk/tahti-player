@@ -274,18 +274,25 @@ export function StudioShowsView() {
               />
             ) : (
               <>
-                <Input
-                  enterKeyHint="search"
-                  type="search"
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  placeholder={t('studioShows.searchPlaceholder')}
-                  aria-label={t('studioShows.searchPlaceholder')}
-                  className="mb-4"
-                  startAddon={
-                    <SearchIcon size={14} aria-hidden className="opacity-70" />
-                  }
-                />
+                <div className="mb-4 max-w-sm">
+                  <Input
+                    enterKeyHint="search"
+                    size="sm"
+                    tone="secondary"
+                    type="search"
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder={t('studioShows.searchPlaceholder')}
+                    aria-label={t('studioShows.searchPlaceholder')}
+                    startAddon={
+                      <SearchIcon
+                        size={14}
+                        aria-hidden
+                        className="opacity-70"
+                      />
+                    }
+                  />
+                </div>
                 {filteredShows.length === 0 ? (
                   <PageEmpty
                     title={t('empties.noShowsMatchThisSearch')}
