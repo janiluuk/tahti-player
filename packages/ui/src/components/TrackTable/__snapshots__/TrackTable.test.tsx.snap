@@ -19,7 +19,7 @@ exports[`TrackTable > (Snapshot) Basic 1`] = `
           >
             <input
               aria-label="Filter tracks"
-              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm min-w-0 flex-1 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               data-headlessui-state=""
               id="input-:r0:"
               placeholder="Filter tracks"
@@ -459,7 +459,7 @@ exports[`TrackTable > (Snapshot) DragAndDrop 1`] = `
           >
             <input
               aria-label="Filter tracks"
-              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm min-w-0 flex-1 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               data-headlessui-state=""
               id="input-:r2:"
               placeholder="Filter tracks"
@@ -1091,7 +1091,7 @@ exports[`TrackTable > (Snapshot) Filtering 1`] = `
           >
             <input
               aria-label="Filter tracks"
-              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm min-w-0 flex-1 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               data-headlessui-state=""
               id="input-:r4:"
               placeholder="Filter tracks"
@@ -1684,7 +1684,7 @@ exports[`TrackTable > (Snapshot) LargeDataset 1`] = `
             >
               <input
                 aria-label="Filter tracks"
-                class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+                class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm min-w-0 flex-1 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                 data-headlessui-state=""
                 id="input-:r6:"
                 placeholder="Filter tracks"
@@ -3465,7 +3465,7 @@ exports[`TrackTable > (Snapshot) Toolbar 1`] = `
           >
             <input
               aria-label="Filter tracks"
-              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-9 text-sm min-w-0 flex-1 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               data-headlessui-state=""
               id="input-:r8:"
               placeholder="Filter tracks"

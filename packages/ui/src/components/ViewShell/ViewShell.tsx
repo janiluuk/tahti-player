@@ -57,7 +57,12 @@ export const ViewShell: FC<ViewShellProps> = ({
               </h1>
             )}
             {subtitle && (
-              <h2 className="mt-1 text-xl font-semibold">{subtitle}</h2>
+              <p
+                className="text-foreground-secondary mt-1 text-sm"
+                data-testid="subtitle"
+              >
+                {subtitle}
+              </p>
             )}
           </div>
           <div className="flex flex-shrink-0 flex-row items-center gap-2 pt-1">
@@ -69,7 +74,8 @@ export const ViewShell: FC<ViewShellProps> = ({
           {title && (
             <h1
               className={cn(
-                'mb-6 flex w-full flex-0 flex-row text-3xl font-bold',
+                'flex w-full flex-0 flex-row text-3xl font-bold',
+                subtitle ? 'mb-1' : 'mb-6',
                 corner ? 'pl-14' : 'text-center',
               )}
               data-testid="title"
@@ -78,14 +84,15 @@ export const ViewShell: FC<ViewShellProps> = ({
             </h1>
           )}
           {subtitle && (
-            <h2
+            <p
               className={cn(
-                'mb-4 flex w-full flex-0 flex-row text-xl font-semibold',
+                'text-foreground-secondary mb-6 w-full flex-0 text-sm',
                 corner ? 'pl-14' : 'text-center',
               )}
+              data-testid="subtitle"
             >
               {subtitle}
-            </h2>
+            </p>
           )}
         </>
       )}

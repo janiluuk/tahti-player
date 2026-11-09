@@ -62,7 +62,13 @@ function StatsTopList({
   );
 }
 
-export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
+export function HistoryStatsSection({
+  history,
+  hideEmpty = false,
+}: {
+  history: HistoryEntry[];
+  hideEmpty?: boolean;
+}) {
   const { t } = useTranslation('web');
   const isDark = useThemeStore((s) => s.dark);
   const [presetId, setPresetId] = useState<RangePresetId>('last30Days');
@@ -91,6 +97,9 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
     : null;
 
   if (history.length === 0) {
+    if (hideEmpty) {
+      return null;
+    }
     return (
       <PageEmpty
         data-testid="history-stats-empty"

@@ -88,10 +88,11 @@ export function ScheduledTimes({
         </div>
       ) : (
         <ol
+          data-testid="scheduled-times-list"
           className={
             viewMode === 'list'
               ? 'divide-border divide-y'
-              : 'bg-border grid gap-px sm:grid-cols-2 lg:grid-cols-3'
+              : 'grid gap-3 p-3 sm:grid-cols-2 lg:grid-cols-3'
           }
         >
           {items
@@ -102,7 +103,7 @@ export function ScheduledTimes({
                 className={
                   viewMode === 'list'
                     ? 'bg-background overflow-hidden'
-                    : 'bg-background overflow-hidden'
+                    : 'bg-background border-border overflow-hidden rounded-lg border'
                 }
               >
                 <div

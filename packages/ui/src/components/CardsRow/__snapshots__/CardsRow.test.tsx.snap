@@ -30,7 +30,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         >
           <input
             aria-label="Filter cards"
-            class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background h-9 text-sm rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background h-9 text-sm min-w-0 flex-1 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
             data-headlessui-state=""
             data-testid="cards-row-filter"
             id="input-:r0:"

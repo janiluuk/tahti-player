@@ -52,6 +52,35 @@ describe('Input', () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
+  it('sizes the addon frame, not the inner field, from layout classes', () => {
+    const { container } = render(
+      <Input
+        id="input-sized-addon"
+        placeholder="Search"
+        className="mb-4 max-w-md grow pr-9 sm:w-64"
+        startAddon={<span>Q</span>}
+      />,
+    );
+    const root = container.firstChild as HTMLElement;
+    const field = container.querySelector('input') as HTMLInputElement;
+    for (const cls of ['mb-4', 'max-w-md', 'grow', 'sm:w-64']) {
+      expect(root.classList).toContain(cls);
+      expect(field.classList).not.toContain(cls);
+    }
+    expect(field.classList).toContain('pr-9');
+  });
+
+  it('keeps every class on the field when there is no addon', () => {
+    const { container } = render(
+      <Input id="input-sized" placeholder="Search" className="mb-4 max-w-md" />,
+    );
+    const root = container.firstChild as HTMLElement;
+    const field = container.querySelector('input') as HTMLInputElement;
+    expect(field.classList).toContain('max-w-md');
+    expect(field.classList).toContain('mb-4');
+    expect(root.classList).not.toContain('max-w-md');
+  });
+
   it('(Snapshot) renders a color swatch input', () => {
     const { container } = render(
       <Input

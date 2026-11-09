@@ -34,4 +34,13 @@ describe('DirectoryArtistsBrowser genre chips', () => {
     fireEvent.click(screen.getByText('Fewer genres'));
     expect(screen.queryByText('Genre j')).toBeNull();
   });
+
+  it('sizes the search field from its wrapper so it cannot be squashed', async () => {
+    await renderWithRouter(<DirectoryArtistsBrowser artists={artists} />);
+    const wrapper = screen.getByTestId('directory-artists-search');
+    expect(wrapper.className).toContain('min-w-48');
+    expect(wrapper.className).toContain('flex-1');
+    const field = screen.getByRole('searchbox', { name: 'Search' });
+    expect(field.className).not.toContain('min-w-48');
+  });
 });

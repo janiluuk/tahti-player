@@ -1,5 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useState, type FC } from 'react';
+import { useEffect, useRef, useState, type FC } from 'react';
 
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { FilterChips, SectionTitle, ViewShell } from '@tahti-player/ui';
@@ -26,6 +26,10 @@ function statsSections(t: TFunction<'web'>) {
   ] as const;
 }
 
+function scrollToSection(id: string) {
+  document.getElementById(`stats-${id}`)?.scrollIntoView({ block: 'start' });
+}
+
 export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
   tab: activeTab = 'overview',
 }) => {
@@ -34,18 +38,20 @@ export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
   const state = useStatsData();
   const ready = !state.loading && !state.loadError;
   const [section, setSection] = useState<string>(activeTab);
+  // Overview sits right under the title and tabs, so landing there must not
+  // scroll them away; only a deep link to a later section or a pick scrolls.
+  const scrollPending = useRef(activeTab !== 'overview');
 
   useEffect(() => {
     setSection(activeTab);
   }, [activeTab]);
 
   useEffect(() => {
-    if (section === 'insights' || !ready) {
+    if (section === 'insights' || !ready || !scrollPending.current) {
       return;
     }
-    document
-      .getElementById(`stats-${section}`)
-      ?.scrollIntoView({ block: 'start' });
+    scrollPending.current = false;
+    scrollToSection(section);
   }, [section, ready]);
 
   return (
@@ -68,6 +74,11 @@ export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
                 return;
               }
               setSection(id);
+              if (ready) {
+                scrollToSection(id);
+              } else {
+                scrollPending.current = true;
+              }
               const tab = id === 'plays' || id === 'top-lists' ? id : undefined;
               void navigate({
                 to: '/studio/stats',
