@@ -87,7 +87,7 @@ export function PlayerPanel({
             content: (
               <div className="flex flex-col gap-3">
                 <p className="text-foreground-secondary text-xs">
-                  Use a looping video or still image behind the channel header.
+                  {t('playerPanelText.useALoopingVideoOr')}
                 </p>
                 {videoSlot}
               </div>

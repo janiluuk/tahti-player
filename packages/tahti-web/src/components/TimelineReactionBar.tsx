@@ -50,7 +50,7 @@ export function TimelineReactionBar({
           disabled={!commentsEnabled}
         >
           <SmilePlusIcon size={16} aria-hidden />
-          Log in to react
+          {t('timelineReactionBarText.logInToReact')}
         </Button>
       ) : (
         <Button

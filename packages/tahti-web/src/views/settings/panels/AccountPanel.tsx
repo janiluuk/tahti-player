@@ -435,7 +435,7 @@ export function AccountPanel() {
                     variant="ghost"
                     size="sm"
                   >
-                    Listen
+                    {t('accountPanelText.listen')}
                   </ButtonLink>
                 ) : null}
               </li>

@@ -166,7 +166,7 @@ export function ChannelBlockFrame({
             {metaItem.label}
             {selected && (
               <span className="bg-primary text-primary-foreground rounded px-1.5 py-0.5 font-bold">
-                Editing
+                {t('channelBlockFrameText.editing')}
               </span>
             )}
             {!item.visible && <span>(hidden)</span>}

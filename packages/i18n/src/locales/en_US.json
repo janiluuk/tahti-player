@@ -10199,6 +10199,78 @@
     },
     "adminGateLabels": {
       "signedInAsUsernameBut": "Signed in as @{{username}}, but this account doesn't have the Board role."
+    },
+    "chatNoticeText": {
+      "subscribe": "Subscribe"
+    },
+    "currentFanSubscriptionCardText": {
+      "manageSubscription": "Manage subscription"
+    },
+    "listenAddonsTabEmptyText": {
+      "everythingHereIsInstalled": "Everything here is installed."
+    },
+    "mermaidDiagramText": {
+      "renderingDiagram": "Rendering diagram…",
+      "diagramZoomControls": "Diagram zoom controls",
+      "zoomOutDiagram": "Zoom out diagram",
+      "resetDiagramZoom": "Reset diagram zoom",
+      "zoomInDiagram": "Zoom in diagram"
+    },
+    "nowPlayingOverlayText": {
+      "nowPlaying": "Now playing"
+    },
+    "skipToContentText": {
+      "skipToContent": "Skip to content"
+    },
+    "timelineReactionBarText": {
+      "logInToReact": "Log in to react"
+    },
+    "playerPanelText": {
+      "useALoopingVideoOr": "Use a looping video or still image behind the channel header."
+    },
+    "channelBlockFrameText": {
+      "editing": "Editing"
+    },
+    "radioProgrammingGridLabels": {
+      "noLiveShowsBookedIn": "No live shows booked in the next {{PROGRAMMING_DAYS}} days."
+    },
+    "motionSecondersText": {
+      "secondedBy": "Seconded by"
+    },
+    "routes-helpText": {
+      "backToListen": "Back to Listen"
+    },
+    "embedViewsText": {
+      "play": "Play"
+    },
+    "legalViewText": {
+      "whatIsTahti": "What is Tahti"
+    },
+    "addonCardText": {
+      "defaultOn": "Default on"
+    },
+    "boardTermsPanelText": {
+      "boardTerms": "Board terms"
+    },
+    "annualReportActionsFields": {
+      "noMeetingNamed": "No meeting named"
+    },
+    "containerLogsPanelText": {
+      "couldNotReachTheLogging": "Could not reach the logging backend. It may be down, or this environment can&apos;t reach it on the LAN."
+    },
+    "accountPanelText": {
+      "listen": "Listen"
+    },
+    "pressKitPreviewText": {
+      "addAtLeastOneIncluded": "Add at least one included image to complete the preview."
+    },
+    "releaseTrackUploadProgressText": {
+      "cancel": "Cancel"
+    },
+    "featureCompareCardText": {
+      "legacy": "Legacy",
+      "legacyOnly": "Legacy only",
+      "parityComment": "Parity comment"
     }
   },
   "studioEditor": {

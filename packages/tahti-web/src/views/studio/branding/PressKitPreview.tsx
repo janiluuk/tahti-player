@@ -65,7 +65,7 @@ export function PressKitPreview({
         ) : null}
         {images.length === 0 ? (
           <p className="text-foreground-secondary text-xs">
-            Add at least one included image to complete the preview.
+            {t('pressKitPreviewText.addAtLeastOneIncluded')}
           </p>
         ) : null}
       </div>

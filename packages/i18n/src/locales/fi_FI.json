@@ -10199,6 +10199,78 @@
     },
     "adminGateLabels": {
       "signedInAsUsernameBut": "Kirjautuneena käyttäjänä @{{username}}, mutta tällä tilillä ei ole hallituksen roolia."
+    },
+    "chatNoticeText": {
+      "subscribe": "Tilaa"
+    },
+    "currentFanSubscriptionCardText": {
+      "manageSubscription": "Hallitse tilausta"
+    },
+    "listenAddonsTabEmptyText": {
+      "everythingHereIsInstalled": "Kaikki täällä on jo asennettu."
+    },
+    "mermaidDiagramText": {
+      "renderingDiagram": "Piirretään kaaviota…",
+      "diagramZoomControls": "Kaavion zoomaus",
+      "zoomOutDiagram": "Loitonna kaaviota",
+      "resetDiagramZoom": "Palauta kaavion zoomaus",
+      "zoomInDiagram": "Lähennä kaaviota"
+    },
+    "nowPlayingOverlayText": {
+      "nowPlaying": "Nyt soi"
+    },
+    "skipToContentText": {
+      "skipToContent": "Siirry sisältöön"
+    },
+    "timelineReactionBarText": {
+      "logInToReact": "Kirjaudu sisään reagoidaksesi"
+    },
+    "playerPanelText": {
+      "useALoopingVideoOr": "Käytä kanavan ylätunnisteen taustalla silmukkavideota tai still-kuvaa."
+    },
+    "channelBlockFrameText": {
+      "editing": "Muokataan"
+    },
+    "radioProgrammingGridLabels": {
+      "noLiveShowsBookedIn": "Ei varattuja livelähetyksiä seuraavan {{PROGRAMMING_DAYS}} päivän aikana."
+    },
+    "motionSecondersText": {
+      "secondedBy": "Kannattajat"
+    },
+    "routes-helpText": {
+      "backToListen": "Takaisin Kuuntele-sivulle"
+    },
+    "embedViewsText": {
+      "play": "Toista"
+    },
+    "legalViewText": {
+      "whatIsTahti": "Mikä Tahti on"
+    },
+    "addonCardText": {
+      "defaultOn": "Oletuksena päällä"
+    },
+    "boardTermsPanelText": {
+      "boardTerms": "Hallituksen toimikaudet"
+    },
+    "annualReportActionsFields": {
+      "noMeetingNamed": "Ei kokousta nimellä"
+    },
+    "containerLogsPanelText": {
+      "couldNotReachTheLogging": "Lokipalvelimeen ei saatu yhteyttä. Se voi olla alhaalla, tai tämä ympäristö ei tavoita sitä lähiverkossa."
+    },
+    "accountPanelText": {
+      "listen": "Kuuntele"
+    },
+    "pressKitPreviewText": {
+      "addAtLeastOneIncluded": "Lisää vähintään yksi mukaan otettava kuva, jotta esikatselu on valmis."
+    },
+    "releaseTrackUploadProgressText": {
+      "cancel": "Peruuta"
+    },
+    "featureCompareCardText": {
+      "legacy": "Vanha",
+      "legacyOnly": "Vain vanhassa",
+      "parityComment": "Vastaavuuden kommentti"
     }
   },
   "studioEditor": {
