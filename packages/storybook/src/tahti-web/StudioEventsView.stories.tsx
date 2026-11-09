@@ -43,13 +43,8 @@ export const Upcoming: Story = {
       canvas.queryByText('Boathouse Sessions — audience recording'),
     ).toBeNull();
     await expect(
-      canvas.getByRole('link', {
-        name: 'Tickets / event link (opens in a new tab)',
-      }),
-    ).toHaveAttribute(
-      'href',
-      'https://kuudeslinja.fi/events/midnight-cartography',
-    );
+      canvas.getByRole('link', { name: 'Tickets (opens in a new tab)' }),
+    ).toHaveAttribute('href', 'https://tickets.example/kuudes-linja');
     const edits = canvas.getAllByRole('link', { name: /^Edit / });
     await expect(edits).toHaveLength(2);
     await expect(edits[0]).toHaveAttribute(

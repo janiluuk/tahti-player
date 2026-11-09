@@ -30,15 +30,16 @@ const expandPlayer = async (canvas: ReturnType<typeof within>) => {
   );
 };
 
-// Signed out: on air with the 24/7 rotation, the member relay banner, and
+// Signed out: on air with the 24/7 rotation, the live member channel in the
+// player card (its artwork links to the channel), and
 // the Up next / Shows / Just played / Featured tabs.
 export const Visitor: Story = {
   decorators: [withMockAuth(null)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitFor(() =>
-      expect(canvas.getByText(/Live now on the member relay/)).toBeVisible(),
-    );
+    await expect(
+      await canvas.findByRole('link', { name: /^Open Northern Lights/ }),
+    ).toBeVisible();
   },
 };
 
