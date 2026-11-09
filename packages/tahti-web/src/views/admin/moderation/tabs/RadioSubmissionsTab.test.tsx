@@ -1,6 +1,8 @@
 import { act, cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { MediaArtworkDefaultProvider } from '@tahti-player/ui';
+
 import * as radio from '../../../../api/admin/admin-radio';
 import { RadioSubmissionsTab } from './RadioSubmissionsTab';
 
@@ -37,5 +39,39 @@ describe('RadioSubmissionsTab', () => {
     expect(
       screen.getByText(/The artist is notified when you approve/),
     ).toBeTruthy();
+  });
+
+  it('shows the default artwork, not initials, when the sound has no cover', async () => {
+    vi.spyOn(radio, 'fetchAdminRadioSubmissions').mockResolvedValue({
+      data: [
+        {
+          id: 's1',
+          status: 'PENDING',
+          createdAt: '2026-10-20T09:30:00.000Z',
+          submitter: { username: 'kaiku', displayName: 'Kaiku' },
+          sound: {
+            id: 'snd1',
+            title: 'Night drive',
+            artistName: 'Kaiku',
+            durationSec: 200,
+            bannerUrl: null,
+            audioUrl: null,
+          },
+        },
+      ] as radio.AdminRadioSubmission[],
+      meta: { source: 'api' },
+    });
+    let container!: HTMLElement;
+    await act(async () => {
+      container = render(
+        <MediaArtworkDefaultProvider value={(seed) => `/artwork/${seed}.webp`}>
+          <RadioSubmissionsTab />
+        </MediaArtworkDefaultProvider>,
+      ).container;
+    });
+    expect(
+      container.querySelector('img[src="/artwork/snd1.webp"]'),
+    ).toBeTruthy();
+    expect(screen.queryByText('NI')).toBeNull();
   });
 });
