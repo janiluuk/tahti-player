@@ -90,8 +90,14 @@ export function PlaylistExportDialog({ playlist, library, onClose }: Props) {
         <FilterChips
           aria-label={t('playlistExportDialog.filePaths')}
           items={[
-            { id: 'relative', label: 'Relative to the saved file' },
-            { id: 'absolute', label: 'Full paths' },
+            {
+              id: 'relative',
+              label: t('playlistExportDialogFields.relativeToTheSavedFile'),
+            },
+            {
+              id: 'absolute',
+              label: t('playlistExportDialogFields.fullPaths'),
+            },
           ]}
           selected={style}
           onChange={(id) => setStyle(id as NativeExportStyle)}

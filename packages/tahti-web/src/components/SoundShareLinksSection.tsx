@@ -216,8 +216,11 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
           value={permission}
           onValueChange={(value) => setPermission(value as 'READ' | 'DOWNLOAD')}
           options={[
-            { id: 'READ', label: 'Play only' },
-            { id: 'DOWNLOAD', label: 'Play & download' },
+            { id: 'READ', label: t('soundShareLinksSectionFields.playOnly') },
+            {
+              id: 'DOWNLOAD',
+              label: t('soundShareLinksSectionFields.playDownload'),
+            },
           ]}
         />
         <Select

@@ -174,11 +174,21 @@ function StoreTrackAssigner({ revision }: { revision: number }) {
                   <p className="min-w-0 text-sm font-medium">{sound.title}</p>
                   <div className="w-full sm:w-72">
                     <Select
-                      label={`Store price for ${sound.title}`}
+                      label={t('channelStoreEditorLabels.storePriceForTitle', {
+                        title: sound.title,
+                      })}
                       options={[
-                        { id: '', label: 'Not in the store' },
+                        {
+                          id: '',
+                          label: t('channelStoreEditorFields.notInTheStore'),
+                        },
                         ...(sound.accessMode === 'SUBSCRIBERS_ONLY'
-                          ? [{ id: FANS_ONLY, label: 'Fans only' }]
+                          ? [
+                              {
+                                id: FANS_ONLY,
+                                label: t('channelStoreEditorFields.fansOnly'),
+                              },
+                            ]
                           : []),
                         ...activeTiers.map((tier) => ({
                           id: tier.id,

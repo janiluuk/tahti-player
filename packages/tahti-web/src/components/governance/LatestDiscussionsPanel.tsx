@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, ButtonLink, SectionShell } from '@tahti-player/ui';
 
 import {
@@ -14,6 +15,7 @@ const SHOWN = 3;
  * and replies without opening the list. Hidden when there are none or the
  * list can't load (Discussions has its own error state). */
 export function LatestDiscussionsPanel() {
+  const { t } = useTranslation('web');
   const [topics, setTopics] = useState<DiscussionTopic[]>([]);
 
   useEffect(() => {
@@ -37,8 +39,11 @@ export function LatestDiscussionsPanel() {
   }
 
   return (
-    <SectionShell title="Latest discussions">
-      <ul className="flex flex-col gap-2" aria-label="Latest discussions">
+    <SectionShell title={t('latestDiscussionsPanelText.latestDiscussions')}>
+      <ul
+        className="flex flex-col gap-2"
+        aria-label={t('latestDiscussionsPanelText.latestDiscussions')}
+      >
         {topics.map((topic) => (
           <li key={topic.id} className="flex flex-wrap items-center gap-2">
             <Link
@@ -61,7 +66,7 @@ export function LatestDiscussionsPanel() {
       </ul>
       <div className="mt-3">
         <ButtonLink to="/governance/discussions" size="sm" variant="secondary">
-          All discussions
+          {t('latestDiscussionsPanelText.allDiscussions')}
         </ButtonLink>
       </div>
     </SectionShell>

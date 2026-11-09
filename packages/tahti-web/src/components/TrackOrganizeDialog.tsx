@@ -91,7 +91,7 @@ export function TrackOrganizeDialog({
       await load();
       toast.success(label, {
         action: {
-          label: 'Undo',
+          label: t('trackOrganizeDialogFields.undo'),
           onClick: () => {
             void library.catalog
               .restoreUserData(before)

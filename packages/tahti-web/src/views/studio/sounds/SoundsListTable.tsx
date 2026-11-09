@@ -14,6 +14,7 @@ import { StudioSoundRowMenu } from '../../../components/StudioSoundRowMenu';
 import { usePersistedCatalogTable } from '../../../hooks/usePersistedCatalogTable';
 import { EMBED_PROVIDER_LABEL, embedSrcFor } from '../../../lib/embedSrc';
 import { formatDuration } from '../../../lib/playableToTrack';
+import { webT } from '../../../lib/webT';
 import { usePlayerStore } from '../../../stores/playerStore';
 import { formatUploadDate, SoundTitle } from './SoundsAmbientList';
 import type { StudioSoundsState } from './useStudioSoundsState';
@@ -48,11 +49,15 @@ function statusCell(sound: StudioSound) {
   if (sound.status === 'ERROR') {
     return (
       <Badge variant="pill" color="red">
-        Failed
+        {webT()('soundsListTableText.failed')}
       </Badge>
     );
   }
-  return <span className="text-foreground-secondary text-xs">Ready</span>;
+  return (
+    <span className="text-foreground-secondary text-xs">
+      {webT()('soundsListTableText.ready')}
+    </span>
+  );
 }
 
 const SORT_VALUE: Record<string, (sound: StudioSound) => string | number> = {

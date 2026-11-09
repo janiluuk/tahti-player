@@ -246,8 +246,8 @@ export function AudioRevisionList({
       >
         <FilePicker
           labels={{
-            title: 'Save a new audio revision',
-            description: 'WAV · FLAC · AIFF · MP3 · M4A · OGG',
+            title: t('audioRevisionListFields.saveANewAudioRevision'),
+            description: t('audioRevisionListFields.wavFlacAiffMp3M4a'),
             browse: file ? 'Choose another file' : 'Choose audio file',
           }}
           accept="audio/*,.flac,.wav,.mp3,.aiff"

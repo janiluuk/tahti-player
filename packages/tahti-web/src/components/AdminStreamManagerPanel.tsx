@@ -248,7 +248,9 @@ export function AdminStreamManagerPanel({
                             ),
                             description:
                               'The channel stays live; listeners may briefly reconnect.',
-                            confirmLabel: 'Restart',
+                            confirmLabel: t(
+                              'adminStreamManagerPanelFields.restart',
+                            ),
                           })
                         }
                       >
@@ -314,7 +316,9 @@ export function AdminStreamManagerPanel({
                             ),
                             description:
                               'This ends the broadcast immediately. The artist is notified that the board took it off the air.',
-                            confirmLabel: 'Take offline',
+                            confirmLabel: t(
+                              'adminStreamManagerPanelFields.takeOffline',
+                            ),
                             destructive: true,
                           })
                         }

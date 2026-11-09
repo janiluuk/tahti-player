@@ -153,7 +153,7 @@ function TrackVersions({
               title: t('releaseTrackVersionsPanelLabels.newVersionOfTitle', {
                 title: track.title,
               }),
-              description: 'WAV, FLAC, MP3, AAC or AIFF',
+              description: t('releaseTrackVersionsPanelFields.wavFlacMp3AacOr'),
               browse: uploading ? 'Uploading…' : 'Choose audio file',
             }}
             accept={RELEASE_TRACK_VERSION_TYPES.join(',')}
