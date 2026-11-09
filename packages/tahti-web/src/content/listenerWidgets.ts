@@ -1,3 +1,5 @@
+import type { TFunction } from '@tahti-player/i18n';
+
 /** Listener widgets — pluggable, app-store-style embeds that play content
  * from an external platform inline on the Listen page, using that
  * platform's own official embedded player (SoundCloud's Widget API,
@@ -78,18 +80,20 @@ const MIKSERI_EMBED_TYPES = new Set([
   '15',
 ]);
 
-export const MIKSERI_MAJOR_GENRES = [
-  { id: '0', label: 'All genres' },
-  { id: '2', label: 'Blues / Jazz' },
-  { id: '3', label: 'Funk' },
-  { id: '4', label: 'Hip Hop / Rap' },
-  { id: '5', label: 'Metal' },
-  { id: '6', label: 'Pop / Rock' },
-  { id: '9', label: 'Soul / R&B' },
-  { id: '8', label: 'Electronic' },
-  { id: '10', label: 'Alternative' },
-  { id: '11', label: 'Other' },
-] as const;
+export function mikseriMajorGenres(t: TFunction<'web'>) {
+  return [
+    { id: '0', label: t('listenerWidgets.allGenres') },
+    { id: '2', label: t('listenerWidgets.bluesJazz') },
+    { id: '3', label: t('listenerWidgets.funk') },
+    { id: '4', label: t('listenerWidgets.hipHopRap') },
+    { id: '5', label: t('listenerWidgets.metal') },
+    { id: '6', label: t('listenerWidgets.popRock') },
+    { id: '9', label: t('listenerWidgets.soulRB') },
+    { id: '8', label: t('listenerWidgets.electronic') },
+    { id: '10', label: t('listenerWidgets.alternative') },
+    { id: '11', label: t('listenerWidgets.other') },
+  ] as const;
+}
 
 // Song pages are /artists/<artist>/<song>/<id>/. Artist pages also carry a
 // numeric id (/artists/<name>.<id>.php, /artists/?id=<id>), so a looser

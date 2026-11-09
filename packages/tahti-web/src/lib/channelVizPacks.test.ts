@@ -3,24 +3,25 @@ import { describe, expect, it } from 'vitest';
 import { ALL_VISUALIZER_MODES } from '@tahti-player/visualizer';
 
 import {
-  CHANNEL_VIZ_PACKS,
   channelHeaderShowsVisualizer,
   channelVizPack,
   channelVizPackFromJson,
   channelVizPackId,
+  channelVizPacks,
   hasPresetTuning,
   vizPackModeAt,
   withChannelVizPack,
 } from './channelVizPacks';
+import { webT } from './webT';
 
 describe('CHANNEL_VIZ_PACKS', () => {
   it('has unique ids', () => {
-    const ids = CHANNEL_VIZ_PACKS.map((pack) => pack.id);
+    const ids = channelVizPacks(webT()).map((pack) => pack.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
   it('only uses Advanced/Cymatics modes the visualizer package ships', () => {
-    for (const pack of CHANNEL_VIZ_PACKS) {
+    for (const pack of channelVizPacks(webT())) {
       expect(pack.modes.length).toBeGreaterThan(0);
       expect(pack.rotateSeconds).toBeGreaterThan(0);
       for (const mode of pack.modes) {

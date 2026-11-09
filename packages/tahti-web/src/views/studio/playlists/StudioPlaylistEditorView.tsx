@@ -2,7 +2,7 @@ import { ListPlusIcon, MusicIcon, PlayIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import type { Track } from '@tahti-player/model';
 import {
   backButtonCornerClassName,
@@ -63,11 +63,16 @@ import { useEditMode } from '../../../lib/useEditMode';
 import { usePlayerStore } from '../../../stores/playerStore';
 import { useStudioContributions } from '../useStudioContributions';
 
-const TRACK_ORDER_OPTIONS: SelectOption[] = [
-  { id: 'MANUAL', label: 'Manual (tracklist order)' },
-  { id: 'TIME', label: 'Oldest first' },
-  { id: 'NAME', label: 'Title (A-Z)' },
-];
+function trackOrderOptions(t: TFunction<'web'>): SelectOption[] {
+  return [
+    {
+      id: 'MANUAL',
+      label: t('studioPlaylistEditorViewMore.manualTracklistOrder'),
+    },
+    { id: 'TIME', label: t('studioPlaylistEditorViewMore.oldestFirst') },
+    { id: 'NAME', label: t('studioPlaylistEditorViewMore.titleAZ') },
+  ];
+}
 
 export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const { t } = useTranslation('web');
@@ -477,7 +482,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       onValueChange={(value) =>
                         setTrackSortMode(value as CollectionTrackSortMode)
                       }
-                      options={TRACK_ORDER_OPTIONS}
+                      options={trackOrderOptions(t)}
                     />
                   </div>
                 </StudioPanel>

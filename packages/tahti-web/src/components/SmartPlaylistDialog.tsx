@@ -25,7 +25,7 @@ import {
   newRule,
   opsFor,
   RULE_FIELDS,
-  SMART_SORTS,
+  smartSorts,
   withField,
 } from './smartPlaylistRules';
 import { SmartRuleValueInput } from './SmartRuleValueInput';
@@ -248,7 +248,7 @@ export function SmartPlaylistDialog({
                   sort: sort as typeof current.sort,
                 }))
               }
-              options={SMART_SORTS}
+              options={smartSorts(t)}
             />
             <Select
               label={t('smartPlaylist.order')}

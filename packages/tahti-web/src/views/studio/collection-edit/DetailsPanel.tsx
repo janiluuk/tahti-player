@@ -1,4 +1,4 @@
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   FilterChips,
   Input,
@@ -9,14 +9,19 @@ import {
 
 import type { CollectionTrackSortMode } from '../../../api/studio-types';
 import { StudioPanel } from '../../../components/StudioPanel';
-import { COLLECTION_STYLES } from '../../../content/collectionStyles';
+import { collectionStyles } from '../../../content/collectionStyles';
 import type { CollectionEditState } from './useCollectionEditState';
 
-const TRACK_ORDER_OPTIONS: SelectOption[] = [
-  { id: 'MANUAL', label: 'Manual (tracklist order)' },
-  { id: 'TIME', label: 'Oldest first' },
-  { id: 'NAME', label: 'Title (A-Z)' },
-];
+function trackOrderOptions(t: TFunction<'web'>): SelectOption[] {
+  return [
+    {
+      id: 'MANUAL',
+      label: t('collectionEditDetailsPanel.manualTracklistOrder'),
+    },
+    { id: 'TIME', label: t('collectionEditDetailsPanel.oldestFirst') },
+    { id: 'NAME', label: t('collectionEditDetailsPanel.titleAZ') },
+  ];
+}
 
 export function DetailsPanel({ state }: { state: CollectionEditState }) {
   const { t } = useTranslation('web');
@@ -66,7 +71,7 @@ export function DetailsPanel({ state }: { state: CollectionEditState }) {
           </span>
           <FilterChips
             aria-label={t('collectionDetails.style')}
-            items={COLLECTION_STYLES}
+            items={collectionStyles(t)}
             selected={style}
             onChange={setStyle}
           />
@@ -78,7 +83,7 @@ export function DetailsPanel({ state }: { state: CollectionEditState }) {
           onValueChange={(value) =>
             setTrackSortMode(value as CollectionTrackSortMode)
           }
-          options={TRACK_ORDER_OPTIONS}
+          options={trackOrderOptions(t)}
         />
         <Textarea
           label={t('collectionDetails.description')}

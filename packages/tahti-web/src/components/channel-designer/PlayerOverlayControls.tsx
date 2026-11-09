@@ -8,7 +8,7 @@ import type {
   TextOverlayMode,
 } from '../../api/channel-design';
 import {
-  NOW_PLAYING_OVERLAY_PRESETS,
+  nowPlayingOverlayPresets,
   resolveNowPlayingOverlayPreset,
   type NowPlayingOverlayPresetId,
   type NowPlayingOverlaySettings,
@@ -102,7 +102,7 @@ export function PlayerOverlayControls({
           {t('playerOverlayControls.howTheTitleAndArtist')}
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
-          {NOW_PLAYING_OVERLAY_PRESETS.map((preset) => {
+          {nowPlayingOverlayPresets(t).map((preset) => {
             const active = activePresetId === preset.id;
             return (
               <Button

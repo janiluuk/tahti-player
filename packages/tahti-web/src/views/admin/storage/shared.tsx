@@ -2,7 +2,7 @@ import { HardDriveIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -34,12 +34,16 @@ export const STORAGE_LOCATION_LABELS: Record<'local' | 'r2', string> = {
 
 export type FileSortKey = 'name' | 'type' | 'size' | 'length';
 
-export const SORT_OPTIONS: Array<{ id: FileSortKey; label: string }> = [
-  { id: 'name', label: 'Name' },
-  { id: 'type', label: 'Type' },
-  { id: 'size', label: 'Size' },
-  { id: 'length', label: 'Length' },
-];
+export function sortOptions(
+  t: TFunction<'web'>,
+): Array<{ id: FileSortKey; label: string }> {
+  return [
+    { id: 'name', label: t('storageShared.name') },
+    { id: 'type', label: t('storageShared.type') },
+    { id: 'size', label: t('storageShared.size') },
+    { id: 'length', label: t('storageShared.length') },
+  ];
+}
 
 export const STORAGE_TYPE_COLORS = [
   'var(--accent-orange)',

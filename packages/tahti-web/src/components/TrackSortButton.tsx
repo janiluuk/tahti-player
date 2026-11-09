@@ -1,6 +1,7 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { SortMenuButton } from '@tahti-player/ui';
 
-import { TRACK_SORT_OPTIONS, type TrackSort } from '../lib/trackSort';
+import { trackSortOptions, type TrackSort } from '../lib/trackSort';
 
 /** The track lists' sort control (see `SortMenuButton`). */
 export function TrackSortButton({
@@ -10,9 +11,10 @@ export function TrackSortButton({
   value: TrackSort;
   onChange: (sort: TrackSort) => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <SortMenuButton
-      options={TRACK_SORT_OPTIONS}
+      options={trackSortOptions(t)}
       value={value}
       onChange={onChange}
       label="Sort tracks"

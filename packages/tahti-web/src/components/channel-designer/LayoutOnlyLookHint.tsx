@@ -1,5 +1,7 @@
+import { useTranslation } from '@tahti-player/i18n';
+
 import {
-  CHANNEL_LOOK_ELEMENTS,
+  channelLookElements,
   type ChannelLookElementId,
 } from '../../lib/channelLookElements';
 
@@ -9,10 +11,11 @@ type Props = {
 
 /**
  * Look rows that only toggle visibility on the public page (no style
- * controls). Copy comes from CHANNEL_LOOK_ELEMENTS.hint.
+ * controls). Copy comes from channelLookElements(t).hint.
  */
 export function LayoutOnlyLookHint({ elementId }: Props) {
-  const meta = CHANNEL_LOOK_ELEMENTS.find(
+  const { t } = useTranslation('web');
+  const meta = channelLookElements(t).find(
     (element) => element.id === elementId,
   );
   return (

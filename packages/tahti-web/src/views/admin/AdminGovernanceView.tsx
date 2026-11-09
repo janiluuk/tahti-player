@@ -9,7 +9,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -22,7 +22,7 @@ import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { DiscussionsAdminPanel } from './governance/discussions/DiscussionsAdminPanel';
 import {
-  ADMIN_GOVERNANCE_TABS,
+  adminGovernanceTabs,
   DEFAULT_ADMIN_GOVERNANCE_TAB,
   isAdminGovernanceTabId,
   type AdminGovernanceTabId,
@@ -67,12 +67,12 @@ const GOVERNANCE_TAB_ICONS: Record<AdminGovernanceTabId, typeof FlagIcon> = {
   records: FolderOpenIcon,
 };
 
-const GOVERNANCE_TAB_ITEMS: ModerationTabItem[] = ADMIN_GOVERNANCE_TABS.map(
-  (item) => ({
+function governanceTabItems(t: TFunction<'web'>): ModerationTabItem[] {
+  return adminGovernanceTabs(t).map((item) => ({
     ...item,
     icon: GOVERNANCE_TAB_ICONS[item.id],
-  }),
-);
+  }));
+}
 
 /** One page, one tab per governance area: Overview, Annual reports, Grants,
  * AGM — these used to be four standalone `/admin/*` routes; they now
@@ -85,7 +85,7 @@ export function AdminGovernanceView({ tab }: { tab?: AdminGovernanceTabId }) {
     ? tab
     : DEFAULT_ADMIN_GOVERNANCE_TAB;
   const activeLabel =
-    ADMIN_GOVERNANCE_TABS.find((item) => item.id === active)?.label ??
+    adminGovernanceTabs(t).find((item) => item.id === active)?.label ??
     'Overview';
 
   return (
@@ -105,7 +105,7 @@ export function AdminGovernanceView({ tab }: { tab?: AdminGovernanceTabId }) {
             </Breadcrumbs>
             <ModerationTabs
               activeId={active}
-              items={GOVERNANCE_TAB_ITEMS}
+              items={governanceTabItems(t)}
               ariaLabel="Governance sections"
               onChange={(nextId) => {
                 void navigate({

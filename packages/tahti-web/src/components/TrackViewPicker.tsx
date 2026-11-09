@@ -7,9 +7,11 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import type { TFunction } from '@tahti-player/i18n';
 import { Button, Popover, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
+import { webT } from '../lib/webT';
 import type { TrackListView } from '../stores/trackListViewStore';
 
 export type TrackViewOption = {
@@ -18,31 +20,41 @@ export type TrackViewOption = {
   icon: ReactNode;
 };
 
-const SIZE_OPTIONS: TrackViewOption[] = [
-  {
-    id: 'comfortable',
-    label: 'Large',
-    icon: <Rows3Icon size={16} aria-hidden />,
-  },
-  { id: 'compact', label: 'Medium', icon: <Rows2Icon size={16} aria-hidden /> },
-  {
-    id: 'dense',
-    label: 'Small',
-    icon: <AlignJustifyIcon size={16} aria-hidden />,
-  },
-];
+function sizeOptions(t: TFunction<'web'>): TrackViewOption[] {
+  return [
+    {
+      id: 'comfortable',
+      label: t('trackViewPicker.large'),
+      icon: <Rows3Icon size={16} aria-hidden />,
+    },
+    {
+      id: 'compact',
+      label: t('trackViewPicker.medium'),
+      icon: <Rows2Icon size={16} aria-hidden />,
+    },
+    {
+      id: 'dense',
+      label: t('trackViewPicker.small'),
+      icon: <AlignJustifyIcon size={16} aria-hidden />,
+    },
+  ];
+}
 
-const GRID_OPTION: TrackViewOption = {
-  id: 'grid',
-  label: 'Grid',
-  icon: <LayoutGridIcon size={16} aria-hidden />,
-};
+function gridOption(t: TFunction<'web'>): TrackViewOption {
+  return {
+    id: 'grid',
+    label: t('trackViewPicker.grid'),
+    icon: <LayoutGridIcon size={16} aria-hidden />,
+  };
+}
 
-const LIST_OPTION: TrackViewOption = {
-  id: 'list',
-  label: 'List',
-  icon: <ListIcon size={16} aria-hidden />,
-};
+function listOption(t: TFunction<'web'>): TrackViewOption {
+  return {
+    id: 'list',
+    label: t('trackViewPicker.list'),
+    icon: <ListIcon size={16} aria-hidden />,
+  };
+}
 
 /** The views a track listing offers: three row sizes, then Grid and List
  * when the listing supports them. */
@@ -54,9 +66,9 @@ export function trackViewOptions({
   allowList?: boolean;
 }): TrackViewOption[] {
   return [
-    ...SIZE_OPTIONS,
-    ...(allowGrid ? [GRID_OPTION] : []),
-    ...(allowList ? [LIST_OPTION] : []),
+    ...sizeOptions(webT()),
+    ...(allowGrid ? [gridOption(webT())] : []),
+    ...(allowList ? [listOption(webT())] : []),
   ];
 }
 

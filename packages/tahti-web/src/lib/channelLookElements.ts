@@ -1,7 +1,10 @@
+import type { TFunction } from '@tahti-player/i18n';
+
 import {
   CHANNEL_PAGE_ITEM_META,
   type ChannelPageItemType,
 } from './channelPageLayout';
+import { webT } from './webT';
 
 export type ChannelLookElementId =
   | 'releases'
@@ -25,78 +28,82 @@ export type ChannelLookElement = {
   canDisable: boolean;
 };
 
-export const CHANNEL_LOOK_ELEMENTS: readonly ChannelLookElement[] = [
-  {
-    id: 'releases',
-    label: 'Releases',
-    hint: 'Full discography on the artist page.',
-    layoutType: null,
-    canDisable: true,
-  },
-  {
-    id: 'tracks',
-    label: 'Tracks',
-    hint: CHANNEL_PAGE_ITEM_META.sound.hint,
-    layoutType: 'sound',
-    canDisable: true,
-  },
-  {
-    id: 'latest',
-    label: 'Latest',
-    hint: 'Newest releases highlighted on the music tab.',
-    layoutType: null,
-    canDisable: true,
-  },
-  {
-    id: 'feed',
-    label: 'Feed',
-    hint: 'Artist updates and credits on the public page.',
-    layoutType: null,
-    canDisable: true,
-  },
-  {
-    id: 'news',
-    label: 'News',
-    hint: 'Pinned channel announcements.',
-    layoutType: null,
-    canDisable: true,
-  },
-  {
-    id: 'player',
-    label: 'Player',
-    hint: 'Live stage, visualizer, gradient, and now-playing overlay.',
-    layoutType: 'hero',
-    canDisable: true,
-  },
-  {
-    id: 'bio',
-    label: 'Bio & widgets',
-    hint: 'Full bio, disco widgets, and studio links on the artist page.',
-    layoutType: null,
-    canDisable: true,
-  },
-  {
-    id: 'shows',
-    label: 'Live shows',
-    hint: 'Upcoming and past Tahti Radio broadcasts.',
-    layoutType: 'events',
-    canDisable: true,
-  },
-  {
-    id: 'gallery',
-    label: 'Gallery',
-    hint: 'Press-kit image gallery tab on the artist page.',
-    layoutType: null,
-    canDisable: true,
-  },
-  {
-    id: 'backdrop',
-    label: 'Background',
-    hint: 'Page banner, header style, and colors behind the channel.',
-    layoutType: null,
-    canDisable: false,
-  },
-];
+export function channelLookElements(
+  t: TFunction<'web'>,
+): readonly ChannelLookElement[] {
+  return [
+    {
+      id: 'releases',
+      label: t('channelLookElements.releases'),
+      hint: t('channelLookElements.fullDiscographyOnTheArtist'),
+      layoutType: null,
+      canDisable: true,
+    },
+    {
+      id: 'tracks',
+      label: t('channelLookElements.tracks'),
+      hint: CHANNEL_PAGE_ITEM_META.sound.hint,
+      layoutType: 'sound',
+      canDisable: true,
+    },
+    {
+      id: 'latest',
+      label: t('channelLookElements.latest'),
+      hint: t('channelLookElements.newestReleasesHighlightedOnThe'),
+      layoutType: null,
+      canDisable: true,
+    },
+    {
+      id: 'feed',
+      label: t('channelLookElements.feed'),
+      hint: t('channelLookElements.artistUpdatesAndCreditsOn'),
+      layoutType: null,
+      canDisable: true,
+    },
+    {
+      id: 'news',
+      label: t('channelLookElements.news'),
+      hint: t('channelLookElements.pinnedChannelAnnouncements'),
+      layoutType: null,
+      canDisable: true,
+    },
+    {
+      id: 'player',
+      label: t('channelLookElements.player'),
+      hint: t('channelLookElements.liveStageVisualizerGradientAnd'),
+      layoutType: 'hero',
+      canDisable: true,
+    },
+    {
+      id: 'bio',
+      label: t('channelLookElements.bioWidgets'),
+      hint: t('channelLookElements.fullBioDiscoWidgetsAnd'),
+      layoutType: null,
+      canDisable: true,
+    },
+    {
+      id: 'shows',
+      label: t('channelLookElements.liveShows'),
+      hint: t('channelLookElements.upcomingAndPastTahtiRadio'),
+      layoutType: 'events',
+      canDisable: true,
+    },
+    {
+      id: 'gallery',
+      label: t('channelLookElements.gallery'),
+      hint: t('channelLookElements.pressKitImageGalleryTab'),
+      layoutType: null,
+      canDisable: true,
+    },
+    {
+      id: 'backdrop',
+      label: t('channelLookElements.background'),
+      hint: t('channelLookElements.pageBannerHeaderStyleAnd'),
+      layoutType: null,
+      canDisable: false,
+    },
+  ];
+}
 
 const DEFAULT_ARTIST_LOOK_VISIBILITY: Record<ArtistLookBlockId, boolean> = {
   releases: true,
@@ -113,7 +120,7 @@ const DEFAULT_ARTIST_LOOK_VISIBILITY: Record<ArtistLookBlockId, boolean> = {
 export function isChannelLookElementId(
   value: string | null | undefined,
 ): value is ChannelLookElementId {
-  return CHANNEL_LOOK_ELEMENTS.some((element) => element.id === value);
+  return channelLookElements(webT()).some((element) => element.id === value);
 }
 
 export function isArtistLookBlockId(
@@ -121,7 +128,7 @@ export function isArtistLookBlockId(
 ): value is ArtistLookBlockId {
   return (
     isChannelLookElementId(value) &&
-    CHANNEL_LOOK_ELEMENTS.find((element) => element.id === value)
+    channelLookElements(webT()).find((element) => element.id === value)
       ?.canDisable === true
   );
 }
@@ -130,7 +137,7 @@ export function adjacentLookElementId(
   currentId: string,
   direction: -1 | 1,
 ): ChannelLookElementId {
-  const ids = CHANNEL_LOOK_ELEMENTS.map((element) => element.id);
+  const ids = channelLookElements(webT()).map((element) => element.id);
   const index = ids.indexOf(currentId as ChannelLookElementId);
   const from = index < 0 ? 0 : index;
   const next = (from + direction + ids.length) % ids.length;

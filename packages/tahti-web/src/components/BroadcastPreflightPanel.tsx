@@ -2,7 +2,7 @@ import { CheckCircle2Icon, ImageIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Input, SaveButton, Select } from '@tahti-player/ui';
 
 import { uploadProfileAvatar } from '../api/artist-settings';
@@ -21,16 +21,20 @@ type Props = {
   onDirty?: () => void;
 };
 
-const SHOW_TYPE_OPTIONS = [
-  { id: 'LIVE_SET', label: 'Live set' },
-  { id: 'TALK', label: 'Talk' },
-];
+function showTypeOptions(t: TFunction<'web'>) {
+  return [
+    { id: 'LIVE_SET', label: t('broadcastPreflightPanel.liveSet') },
+    { id: 'TALK', label: t('broadcastPreflightPanel.talk') },
+  ];
+}
 
-const VISIBILITY_OPTIONS = [
-  { id: 'PUBLIC', label: 'Public' },
-  { id: 'PRIVATE', label: 'Private' },
-  { id: 'FAN_ONLY', label: 'Fans' },
-];
+function visibilityOptions(t: TFunction<'web'>) {
+  return [
+    { id: 'PUBLIC', label: t('broadcastPreflightPanel.public') },
+    { id: 'PRIVATE', label: t('broadcastPreflightPanel.private') },
+    { id: 'FAN_ONLY', label: t('broadcastPreflightPanel.fans') },
+  ];
+}
 
 export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
   const { t } = useTranslation('web');
@@ -208,7 +212,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
               setShowType(value as BroadcastPreflight['showType']);
               markDirty();
             }}
-            options={SHOW_TYPE_OPTIONS}
+            options={showTypeOptions(t)}
           />
           <Select
             label={t('broadcastPreflight.visibility')}
@@ -217,7 +221,7 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
               setVisibility(value as BroadcastPreflight['visibility']);
               markDirty();
             }}
-            options={VISIBILITY_OPTIONS}
+            options={visibilityOptions(t)}
           />
         </div>
 

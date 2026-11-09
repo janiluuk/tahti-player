@@ -16,8 +16,9 @@ import {
 } from '../../api/channel-design';
 import {
   DEFAULT_NOW_PLAYING_OVERLAY_SETTINGS,
-  NOW_PLAYING_OVERLAY_PRESETS,
+  nowPlayingOverlayPresets,
 } from '../../content/nowPlayingOverlayPresets';
+import { webT } from '../../lib/webT';
 import { visualizerPresets } from '../../plugins/visualizers';
 import { visualizerMetadata } from '../../plugins/visualizers/meta';
 import { ChannelTextOverlayView } from '../ChannelTextOverlayView';
@@ -105,7 +106,7 @@ describe('text overlay effects', () => {
 describe('now-playing overlay styles', () => {
   it('each style renders title and artist with a distinct layout', () => {
     const layouts = new Set<string>();
-    for (const preset of NOW_PLAYING_OVERLAY_PRESETS) {
+    for (const preset of nowPlayingOverlayPresets(webT())) {
       const html = renderToStaticMarkup(
         <NowPlayingOverlay
           presetId={preset.id}
@@ -118,7 +119,7 @@ describe('now-playing overlay styles', () => {
       expect(html, preset.id).toContain('The Artist');
       layouts.add(html);
     }
-    expect(layouts.size).toBe(NOW_PLAYING_OVERLAY_PRESETS.length);
+    expect(layouts.size).toBe(nowPlayingOverlayPresets(webT()).length);
   });
 
   it('applies scale, offset and opacity settings', () => {

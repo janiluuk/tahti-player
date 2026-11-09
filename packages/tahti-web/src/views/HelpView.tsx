@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Badge,
   Box,
@@ -41,7 +41,7 @@ import { HelpLinkCard } from '../components/HelpLinkCard';
 import { PageFrame, PageHeader } from '../components/PageHeader';
 import { PageEmpty } from '../components/PageStates';
 import { SupportCenter } from '../components/SupportCenter';
-import { SERVICE_DOCUMENTS } from '../content/documentLinks';
+import { serviceDocuments } from '../content/documentLinks';
 import {
   getHelpArticle,
   HELP_ARTICLES,
@@ -139,33 +139,35 @@ const GUIDE_GROUPS: Array<{
   },
 ];
 
-const QUICK_STARTS = [
-  {
-    title: 'I want to listen',
-    description: 'Browse channels, play Tahti Radio, and join the community.',
-    slug: 'for-listeners',
-    icon: HeadphonesIcon,
-  },
-  {
-    title: 'I want to broadcast',
-    description: 'Create a channel and connect your broadcast software.',
-    slug: 'for-artists',
-    icon: RadioTowerIcon,
-  },
-  {
-    title: 'Keyboard navigation',
-    description:
-      'Global shortcuts for Listen, Radio, Library, Studio, and the tour.',
-    slug: 'keyboard-shortcuts',
-    icon: KeyboardIcon,
-  },
-  {
-    title: 'I need support',
-    description: 'Send the team a question about your account or a problem.',
-    slug: 'support',
-    icon: LifeBuoyIcon,
-  },
-] as const;
+function quickStarts(t: TFunction<'web'>) {
+  return [
+    {
+      title: t('helpViewMore.iWantToListen'),
+      description: t('helpViewMore.browseChannelsPlayTahtiRadio'),
+      slug: 'for-listeners',
+      icon: HeadphonesIcon,
+    },
+    {
+      title: t('helpViewMore.iWantToBroadcast'),
+      description: t('helpViewMore.createAChannelAndConnect'),
+      slug: 'for-artists',
+      icon: RadioTowerIcon,
+    },
+    {
+      title: t('helpViewMore.keyboardNavigation'),
+      description:
+        'Global shortcuts for Listen, Radio, Library, Studio, and the tour.',
+      slug: 'keyboard-shortcuts',
+      icon: KeyboardIcon,
+    },
+    {
+      title: t('helpViewMore.iNeedSupport'),
+      description: t('helpViewMore.sendTheTeamAQuestion'),
+      slug: 'support',
+      icon: LifeBuoyIcon,
+    },
+  ] as const;
+}
 
 function articleMatches(article: HelpArticle, query: string): boolean {
   const keyboardExtra =
@@ -274,7 +276,7 @@ export function HelpHubView() {
           </Badge>
         </div>
         <div className="grid gap-3 md:grid-cols-3">
-          {QUICK_STARTS.map((item) => {
+          {quickStarts(t).map((item) => {
             const Icon = item.icon;
             return (
               <Link
@@ -377,7 +379,7 @@ export function HelpHubView() {
         data-testid="help-policies"
       >
         <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {SERVICE_DOCUMENTS.map((item) => (
+          {serviceDocuments(t).map((item) => (
             <Link key={item.title} to={item.to as never} className="min-w-0">
               <HelpLinkCard title={item.title} description={item.description} />
             </Link>

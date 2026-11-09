@@ -5,8 +5,8 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Box, Button, Tabs } from '@tahti-player/ui';
 
 import {
-  PLUGIN_CATEGORIES,
   pluginAudienceForTarget,
+  pluginCategories,
   pluginCategoriesForRole,
   type PluginCategoryId,
   type PluginCategoryTarget,
@@ -123,7 +123,7 @@ function AudienceBody({
   target: PluginCategoryTarget | null;
 }) {
   const { t } = useTranslation('web');
-  const category = PLUGIN_CATEGORIES.find(
+  const category = pluginCategories(t).find(
     (candidate) => candidate.id === categoryId,
   )!;
 

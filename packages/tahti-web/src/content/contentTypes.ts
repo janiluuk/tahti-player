@@ -1,3 +1,7 @@
+import type { TFunction } from '@tahti-player/i18n';
+
+import { webT } from '../lib/webT';
+
 /** Archive item content types — mirrors the backend's ChannelSoundItem.contentType
  * enum. Single source of truth for the label shown wherever content type is
  * picked, filtered, or displayed (Discover, admin Files, track/archive
@@ -6,7 +10,7 @@
  *
  * LIVE and EMBED are backend/system-assigned — nothing in this app ever
  * sets an item's contentType to either, so they're excluded from the
- * editor's picker (`SELECTABLE_CONTENT_TYPES`) and only ever shown as a
+ * editor's picker (`selectableContentTypes`) and only ever shown as a
  * read-only label or filter chip. */
 export type ContentTypeId =
   | 'TRACK'
@@ -25,22 +29,27 @@ export type ContentTypeOption = {
   selectable: boolean;
 };
 
-export const CONTENT_TYPES: ContentTypeOption[] = [
-  { id: 'LIVE', label: 'Live broadcast', selectable: false },
-  { id: 'TRACK', label: 'Track', selectable: true },
-  { id: 'DJ_SET', label: 'DJ Set', selectable: true },
-  { id: 'PODCAST', label: 'Podcast', selectable: true },
-  { id: 'REMIX', label: 'Remix', selectable: true },
-  { id: 'SHOW', label: 'Radio show', selectable: true },
-  { id: 'EPISODE', label: 'Episode', selectable: true },
-  { id: 'CLIP', label: 'Clip', selectable: true },
-  { id: 'EMBED', label: 'Embed', selectable: false },
-];
+export function contentTypes(t: TFunction<'web'>): ContentTypeOption[] {
+  return [
+    { id: 'LIVE', label: t('contentTypes.liveBroadcast'), selectable: false },
+    { id: 'TRACK', label: t('contentTypes.track'), selectable: true },
+    { id: 'DJ_SET', label: t('contentTypes.djSet'), selectable: true },
+    { id: 'PODCAST', label: t('contentTypes.podcast'), selectable: true },
+    { id: 'REMIX', label: t('contentTypes.remix'), selectable: true },
+    { id: 'SHOW', label: t('contentTypes.radioShow'), selectable: true },
+    { id: 'EPISODE', label: t('contentTypes.episode'), selectable: true },
+    { id: 'CLIP', label: t('contentTypes.clip'), selectable: true },
+    { id: 'EMBED', label: t('contentTypes.embed'), selectable: false },
+  ];
+}
 
 /** Options for a content-type editor picker (upload/edit forms) — excludes
  * the backend/system-only values. */
-export const SELECTABLE_CONTENT_TYPES: ContentTypeOption[] =
-  CONTENT_TYPES.filter((t) => t.selectable);
+export function selectableContentTypes(
+  t: TFunction<'web'>,
+): ContentTypeOption[] {
+  return contentTypes(t).filter((type) => type.selectable);
+}
 
 /** Backend values retired by the content-taxonomy migration, mapped to the
  * current id so older content (created before the rename) keeps a
@@ -58,7 +67,7 @@ export function resolveContentTypeId(
   }
   const upper = contentType.toUpperCase();
   const resolved = LEGACY_CONTENT_TYPE_ALIASES[upper] ?? upper;
-  return CONTENT_TYPES.some((type) => type.id === resolved)
+  return contentTypes(webT()).some((type) => type.id === resolved)
     ? (resolved as ContentTypeId)
     : null;
 }
@@ -74,6 +83,7 @@ export function contentTypeLabel(
     return contentType;
   }
   return (
-    CONTENT_TYPES.find((type) => type.id === resolved)?.label ?? contentType
+    contentTypes(webT()).find((type) => type.id === resolved)?.label ??
+    contentType
   );
 }

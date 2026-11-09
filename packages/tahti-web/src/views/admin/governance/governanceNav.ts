@@ -1,3 +1,7 @@
+import type { TFunction } from '@tahti-player/i18n';
+
+import { webT } from '../../../lib/webT';
+
 export type AdminGovernanceTabId =
   | 'overview'
   | 'reports'
@@ -17,20 +21,26 @@ export type AdminGovernanceTabItem = {
  * `/admin/reports`, `/admin/grants`, `/admin/agm`); they now redirect into
  * `/admin/governance/$tab`, the canonical addressable URL for each tab —
  * same convention as `/admin/moderation/$tab`. */
-export const ADMIN_GOVERNANCE_TABS: AdminGovernanceTabItem[] = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'reports', label: 'Annual reports' },
-  { id: 'grants', label: 'Grants' },
-  { id: 'agm', label: 'AGM' },
-  { id: 'board', label: 'Board' },
-  { id: 'discussions', label: 'Discussions' },
-  { id: 'records', label: 'Records' },
-];
+export function adminGovernanceTabs(
+  t: TFunction<'web'>,
+): AdminGovernanceTabItem[] {
+  return [
+    { id: 'overview', label: t('governanceNav.overview') },
+    { id: 'reports', label: t('governanceNav.annualReports') },
+    { id: 'grants', label: t('governanceNav.grants') },
+    { id: 'agm', label: 'AGM' },
+    { id: 'board', label: t('governanceNav.board') },
+    { id: 'discussions', label: t('governanceNav.discussions') },
+    { id: 'records', label: t('governanceNav.records') },
+  ];
+}
 
 export const DEFAULT_ADMIN_GOVERNANCE_TAB: AdminGovernanceTabId = 'overview';
 
 export function isAdminGovernanceTabId(
   value: string | undefined,
 ): value is AdminGovernanceTabId {
-  return Boolean(value && ADMIN_GOVERNANCE_TABS.some((t) => t.id === value));
+  return Boolean(
+    value && adminGovernanceTabs(webT()).some((tab) => tab.id === value),
+  );
 }

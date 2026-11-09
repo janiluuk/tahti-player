@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   FilePicker,
@@ -17,11 +17,13 @@ import {
 import type { LogoPlacement } from '../../../api/studio-extras/profile';
 import { StudioPanel } from '../../../components/StudioPanel';
 
-const PLACEMENTS = [
-  { id: 'AVATAR', label: 'On avatar' },
-  { id: 'COVER', label: 'On cover' },
-  { id: 'BOTH', label: 'Both' },
-] as const;
+function placements(t: TFunction<'web'>) {
+  return [
+    { id: 'AVATAR', label: t('profileLogoSectionMore.onAvatar') },
+    { id: 'COVER', label: t('profileLogoSectionMore.onCover') },
+    { id: 'BOTH', label: t('profileLogoSectionMore.both') },
+  ] as const;
+}
 
 export function ProfileLogoSection({
   logoUrl,
@@ -94,7 +96,7 @@ export function ProfileLogoSection({
             />
             <SegmentedControl
               aria-label={t('profileLogoSection.logoPlacement')}
-              options={PLACEMENTS}
+              options={placements(t)}
               value={logoPlacement ?? 'AVATAR'}
               onChange={(next) => void place(next)}
               className="w-fit"

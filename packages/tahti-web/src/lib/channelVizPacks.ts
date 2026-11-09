@@ -1,9 +1,11 @@
+import type { TFunction } from '@tahti-player/i18n';
 import type { VisualizerMode } from '@tahti-player/visualizer';
 
 import {
   isValidHeaderBackdropUrl,
   type VisualSettingsMap,
 } from '../api/channel-design';
+import { webT } from './webT';
 
 export type ChannelVizPack = {
   id: string;
@@ -14,55 +16,59 @@ export type ChannelVizPack = {
   rotateSeconds: number;
 };
 
-export const CHANNEL_VIZ_PACKS: readonly ChannelVizPack[] = [
-  {
-    id: 'club-night',
-    label: 'Club night',
-    description: 'Spectrum, radial and lattice scenes for beat-led sets.',
-    modes: ['spectrum', 'radial', 'quantum'],
-    rotateSeconds: 45,
-  },
-  {
-    id: 'deep-listening',
-    label: 'Deep listening',
-    description: 'Slow cymatics and a glowing orb for ambient shows.',
-    modes: ['cymatics', 'orb'],
-    rotateSeconds: 90,
-  },
-  {
-    id: 'chrome-drive',
-    label: 'Chrome drive',
-    description: 'A chrome landscape with an oscilloscope break.',
-    modes: ['landscape-chrome', 'oscilloscope'],
-    rotateSeconds: 60,
-  },
-  {
-    id: 'liquid-metal',
-    label: 'Liquid metal',
-    description: 'Ferrofluid terrain and cymatics for heavy low end.',
-    modes: ['landscape-ferrofluid', 'cymatics'],
-    rotateSeconds: 60,
-  },
-  {
-    id: 'signal-lab',
-    label: 'Signal lab',
-    description: 'Oscilloscope and spectrum only, no rotation surprises.',
-    modes: ['oscilloscope', 'spectrum'],
-    rotateSeconds: 120,
-  },
-];
+export function channelVizPacks(
+  t: TFunction<'web'>,
+): readonly ChannelVizPack[] {
+  return [
+    {
+      id: 'club-night',
+      label: t('channelVizPacks.clubNight'),
+      description: t('channelVizPacks.spectrumRadialAndLatticeScenes'),
+      modes: ['spectrum', 'radial', 'quantum'],
+      rotateSeconds: 45,
+    },
+    {
+      id: 'deep-listening',
+      label: t('channelVizPacks.deepListening'),
+      description: t('channelVizPacks.slowCymaticsAndAGlowing'),
+      modes: ['cymatics', 'orb'],
+      rotateSeconds: 90,
+    },
+    {
+      id: 'chrome-drive',
+      label: t('channelVizPacks.chromeDrive'),
+      description: t('channelVizPacks.aChromeLandscapeWithAn'),
+      modes: ['landscape-chrome', 'oscilloscope'],
+      rotateSeconds: 60,
+    },
+    {
+      id: 'liquid-metal',
+      label: t('channelVizPacks.liquidMetal'),
+      description: t('channelVizPacks.ferrofluidTerrainAndCymaticsFor'),
+      modes: ['landscape-ferrofluid', 'cymatics'],
+      rotateSeconds: 60,
+    },
+    {
+      id: 'signal-lab',
+      label: t('channelVizPacks.signalLab'),
+      description: t('channelVizPacks.oscilloscopeAndSpectrumOnlyNo'),
+      modes: ['oscilloscope', 'spectrum'],
+      rotateSeconds: 120,
+    },
+  ];
+}
 
 /** The API has no field for a pack, so the choice rides in the channel's
  * `visualSettings` map (free string keys, partial settings values) under
  * this prefix with an empty settings object. */
 const VIZ_PACK_KEY_PREFIX = 'pack:';
 
-const packById = new Map(CHANNEL_VIZ_PACKS.map((pack) => [pack.id, pack]));
-
 export function channelVizPack(
   id: string | null | undefined,
 ): ChannelVizPack | null {
-  return id ? (packById.get(id) ?? null) : null;
+  return id
+    ? (channelVizPacks(webT()).find((pack) => pack.id === id) ?? null)
+    : null;
 }
 
 function isVizPackKey(key: string): boolean {
@@ -77,7 +83,7 @@ export function channelVizPackId(map: VisualSettingsMap): string | null {
       continue;
     }
     const id = key.slice(VIZ_PACK_KEY_PREFIX.length);
-    if (packById.has(id)) {
+    if (channelVizPacks(webT()).some((pack) => pack.id === id)) {
       return id;
     }
   }

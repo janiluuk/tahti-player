@@ -22,7 +22,7 @@ import {
 } from '../../../components/EntitySocialHeader';
 import { ImageSlotDeleteBadge } from '../../../components/imageSlot/ImageSlotDeleteBadge';
 import { StudioCollectionMoreMenu } from '../../../components/StudioCollectionMoreMenu';
-import { COLLECTION_STYLES } from '../../../content/collectionStyles';
+import { collectionStyles } from '../../../content/collectionStyles';
 import type { CollectionEditState } from './useCollectionEditState';
 
 export function CollectionHeader({
@@ -81,7 +81,7 @@ export function CollectionHeader({
       backdropUrl={backdropUrl}
       subtitle={
         <>
-          {COLLECTION_STYLES.find((s) => s.id === style)?.label ?? style}
+          {collectionStyles(t).find((s) => s.id === style)?.label ?? style}
           {slideshowImages.length > 1
             ? ` · ${slideshowImages.length}-image backdrop slideshow`
             : ''}

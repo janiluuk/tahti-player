@@ -5,7 +5,7 @@ import { Button, Dialog, Input, Select } from '@tahti-player/ui';
 
 import type { StudioSoundBulkPatch } from '../../../api/studio';
 import {
-  SELECTABLE_CONTENT_TYPES,
+  selectableContentTypes,
   type ContentTypeId,
 } from '../../../content/contentTypes';
 import type { StudioSoundsState } from './useStudioSoundsState';
@@ -121,7 +121,7 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
             }
             options={[
               { id: '', label: leaveUnchanged },
-              ...SELECTABLE_CONTENT_TYPES.map((type) => ({
+              ...selectableContentTypes(t).map((type) => ({
                 id: type.id,
                 label: type.label,
               })),

@@ -2,7 +2,7 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, type TFunction } from '@tahti-player/i18n';
 
 import {
   bulkDeleteStudioSounds,
@@ -23,7 +23,7 @@ import {
 import type { StudioSound } from '../../../api/studio-types';
 import {
   resolveContentTypeId,
-  SELECTABLE_CONTENT_TYPES,
+  selectableContentTypes,
   type ContentTypeId,
 } from '../../../content/contentTypes';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
@@ -33,38 +33,49 @@ import {
   isPinned,
   sortPinnedFirst,
 } from '../../../lib/pinnedTracks';
+import { webT } from '../../../lib/webT';
 import { usePlayerStore } from '../../../stores/playerStore';
 
 export type EmbedFilter = 'ALL' | 'NATIVE' | EmbedProvider;
 export type SortField = 'title' | 'uploaded' | 'duration';
 export type ContentTypeFilter = 'ALL' | ContentTypeId;
 
-export const EMBED_FILTERS: Array<{ id: EmbedFilter; label: string }> = [
-  { id: 'ALL', label: 'All sources' },
-  { id: 'NATIVE', label: 'Tahti audio' },
-  { id: 'HEARTHIS', label: 'hearthis.at' },
-  { id: 'MIXCLOUD', label: 'Mixcloud' },
-  { id: 'SPOTIFY', label: 'Spotify' },
-  { id: 'BANDCAMP', label: 'Bandcamp' },
-  { id: 'MIKSERI', label: 'Mikseri.net' },
-];
+export function embedFilters(
+  t: TFunction<'web'>,
+): Array<{ id: EmbedFilter; label: string }> {
+  return [
+    { id: 'ALL', label: t('useStudioSoundsState.allSources') },
+    { id: 'NATIVE', label: 'Tahti audio' },
+    { id: 'HEARTHIS', label: 'hearthis.at' },
+    { id: 'MIXCLOUD', label: 'Mixcloud' },
+    { id: 'SPOTIFY', label: 'Spotify' },
+    { id: 'BANDCAMP', label: 'Bandcamp' },
+    { id: 'MIKSERI', label: 'Mikseri.net' },
+  ];
+}
 
-export const SORT_FIELDS: Array<{ id: SortField; label: string }> = [
-  { id: 'title', label: 'Title' },
-  { id: 'uploaded', label: 'Upload date' },
-  { id: 'duration', label: 'Duration' },
-];
+export function sortFields(
+  t: TFunction<'web'>,
+): Array<{ id: SortField; label: string }> {
+  return [
+    { id: 'title', label: t('useStudioSoundsState.title') },
+    { id: 'uploaded', label: t('useStudioSoundsState.uploadDate') },
+    { id: 'duration', label: t('useStudioSoundsState.duration') },
+  ];
+}
 
-export const CONTENT_TYPE_FILTERS: Array<{
+export function contentTypeFilters(t: TFunction<'web'>): Array<{
   id: ContentTypeFilter;
   label: string;
-}> = [
-  { id: 'ALL', label: 'All types' },
-  ...SELECTABLE_CONTENT_TYPES.map((type) => ({
-    id: type.id,
-    label: type.label,
-  })),
-];
+}> {
+  return [
+    { id: 'ALL', label: 'All types' },
+    ...selectableContentTypes(t).map((type) => ({
+      id: type.id,
+      label: type.label,
+    })),
+  ];
+}
 
 const PAGE_SIZE = 50;
 const SEARCH_DEBOUNCE_MS = 200;
@@ -74,7 +85,7 @@ function parseContentTypeFilter(value: string | undefined): ContentTypeFilter {
   if (!resolved) {
     return 'ALL';
   }
-  if (SELECTABLE_CONTENT_TYPES.some((type) => type.id === resolved)) {
+  if (selectableContentTypes(webT()).some((type) => type.id === resolved)) {
     return resolved;
   }
   return 'ALL';

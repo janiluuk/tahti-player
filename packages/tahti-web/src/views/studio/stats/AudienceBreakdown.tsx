@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { ShareList, Toggle } from '@tahti-player/ui';
 
 import {
@@ -19,13 +19,17 @@ import {
 import { PageError, PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 
-const DIMENSIONS: { id: StatsAudienceDimension; title: string }[] = [
-  { id: 'browser', title: 'Browser' },
-  { id: 'os', title: 'OS versions' },
-  { id: 'deviceType', title: 'Device type' },
-  { id: 'deviceVendor', title: 'Device company' },
-  { id: 'surface', title: 'Listened on' },
-];
+function dimensions(
+  t: TFunction<'web'>,
+): { id: StatsAudienceDimension; title: string }[] {
+  return [
+    { id: 'browser', title: t('audienceBreakdownMore.browser') },
+    { id: 'os', title: t('audienceBreakdownMore.osVersions') },
+    { id: 'deviceType', title: t('audienceBreakdownMore.deviceType') },
+    { id: 'deviceVendor', title: t('audienceBreakdownMore.deviceCompany') },
+    { id: 'surface', title: t('audienceBreakdownMore.listenedOn') },
+  ];
+}
 
 const SURFACE_LABELS: Record<string, string> = {
   CHANNEL_PAGE: 'Channel page',
@@ -66,7 +70,7 @@ export function AudienceBreakdown({
     setStatus('loading');
     const query = { range, from, to, soundId, includeBots: !ignoreBots };
     void Promise.all(
-      DIMENSIONS.map(({ id }) => fetchStatsAudience(id, query)),
+      dimensions(t).map(({ id }) => fetchStatsAudience(id, query)),
     ).then((results) => {
       if (cancelled) {
         return;
@@ -123,7 +127,7 @@ export function AudienceBreakdown({
           className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
           data-testid="stats-audience"
         >
-          {DIMENSIONS.map(({ id, title }) => (
+          {dimensions(t).map(({ id, title }) => (
             <ShareList
               key={id}
               title={title}

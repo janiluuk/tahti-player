@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Badge, Button, Input } from '@tahti-player/ui';
 
 import {
@@ -45,13 +45,15 @@ function statusBadge(status: AdminSupportStatus): {
 
 type SupportFilter = AdminSupportStatus | 'all' | 'awaiting';
 
-const FILTERS: { id: SupportFilter; label: string }[] = [
-  { id: 'all', label: 'All' },
-  { id: 'awaiting', label: 'Needs reply' },
-  { id: 'OPEN', label: 'Open' },
-  { id: 'IN_PROGRESS', label: 'In progress' },
-  { id: 'RESOLVED', label: 'Resolved' },
-];
+function filters(t: TFunction<'web'>): { id: SupportFilter; label: string }[] {
+  return [
+    { id: 'all', label: 'All' },
+    { id: 'awaiting', label: t('supportTabMore.needsReply') },
+    { id: 'OPEN', label: t('supportTabMore.open') },
+    { id: 'IN_PROGRESS', label: t('supportTabMore.inProgress') },
+    { id: 'RESOLVED', label: t('supportTabMore.resolved') },
+  ];
+}
 
 const FILTER_TAB_ICONS = {
   all: ListFilterIcon,
@@ -199,7 +201,7 @@ export function SupportTab() {
       <div className="border-border bg-background-secondary/30 flex flex-col gap-3 rounded-lg border p-3 sm:p-4 xl:flex-row xl:items-end xl:justify-between">
         <ModerationTabs
           activeId={filter}
-          items={FILTERS.map((item) => ({
+          items={filters(t).map((item) => ({
             ...item,
             icon: FILTER_TAB_ICONS[item.id],
           }))}

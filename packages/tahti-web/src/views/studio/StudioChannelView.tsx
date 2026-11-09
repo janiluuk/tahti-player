@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -54,19 +54,47 @@ type RadioTab =
 
 const RADIO_STATS_RANGES: StatsPlaysRange[] = ['1', '7', '30'];
 
-const CHANNEL_SECTION_TABS = [
-  { id: 'setup' as const, label: 'Setup', icon: Settings2Icon },
-  { id: 'green-room' as const, label: 'Green room', icon: DoorOpenIcon },
-  { id: 'selects' as const, label: 'Selects', icon: SparklesIcon },
-];
+function channelSectionTabItems(t: TFunction<'web'>) {
+  return [
+    {
+      id: 'setup' as const,
+      label: t('studioChannelViewMore.setup'),
+      icon: Settings2Icon,
+    },
+    {
+      id: 'green-room' as const,
+      label: t('studioChannelViewMore.greenRoom'),
+      icon: DoorOpenIcon,
+    },
+    {
+      id: 'selects' as const,
+      label: t('studioChannelViewMore.selects'),
+      icon: SparklesIcon,
+    },
+  ];
+}
 
-const RADIO_SETTING_TABS = [
-  { id: 'stream' as const, label: 'Stream', icon: RadioTowerIcon },
-  { id: 'rotation' as const, label: '24/7', icon: ListMusicIcon },
-  { id: 'pinned' as const, label: 'Pinned', icon: PinIcon },
-  { id: 'tahti-radio' as const, label: 'Tahti Radio', icon: RadioIcon },
-  { id: 'multicast' as const, label: 'Multicast', icon: WifiIcon },
-] as const;
+function radioSettingTabs(t: TFunction<'web'>) {
+  return [
+    {
+      id: 'stream' as const,
+      label: t('studioChannelViewMore.stream'),
+      icon: RadioTowerIcon,
+    },
+    { id: 'rotation' as const, label: '24/7', icon: ListMusicIcon },
+    {
+      id: 'pinned' as const,
+      label: t('studioChannelViewMore.pinned'),
+      icon: PinIcon,
+    },
+    { id: 'tahti-radio' as const, label: 'Tahti Radio', icon: RadioIcon },
+    {
+      id: 'multicast' as const,
+      label: t('studioChannelViewMore.multicast'),
+      icon: WifiIcon,
+    },
+  ] as const;
+}
 
 const isTab = (value: string | undefined): value is Tab =>
   ['setup', 'radio', 'green-room', 'selects'].includes(value ?? '');
@@ -213,7 +241,7 @@ export function StudioChannelView() {
     );
   }
 
-  const channelSectionTabs = CHANNEL_SECTION_TABS.filter(
+  const channelSectionTabs = channelSectionTabItems(t).filter(
     (item) =>
       (item.id !== 'setup' || !channel) &&
       (item.id !== 'selects' || hasAccountRole(user, 'BOARD')),
@@ -254,10 +282,10 @@ export function StudioChannelView() {
           <Tabs.Root
             selectedIndex={Math.max(
               0,
-              RADIO_SETTING_TABS.findIndex((item) => item.id === radioTab),
+              radioSettingTabs(t).findIndex((item) => item.id === radioTab),
             )}
             onChange={(index) => {
-              const next = RADIO_SETTING_TABS[index];
+              const next = radioSettingTabs(t)[index];
               if (!next) {
                 return;
               }
@@ -271,7 +299,7 @@ export function StudioChannelView() {
             }}
           >
             <Tabs.List className="w-fit flex-wrap">
-              {RADIO_SETTING_TABS.map((item) => (
+              {radioSettingTabs(t).map((item) => (
                 <Tabs.Tab key={item.id}>
                   <TabLabel icon={<item.icon size={14} />}>
                     {item.label}

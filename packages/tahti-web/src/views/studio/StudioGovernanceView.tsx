@@ -7,7 +7,7 @@ import { SectionShell, ViewShell } from '@tahti-player/ui';
 import { HelpLinkCard } from '../../components/HelpLinkCard';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
-import { GOVERNANCE_DOCUMENTS } from '../../content/documentLinks';
+import { governanceDocuments } from '../../content/documentLinks';
 
 const LazyGovernanceView = lazy(() =>
   import('../GovernanceView').then((module) => ({
@@ -32,7 +32,7 @@ function GovernanceDocumentsTab() {
       data-testid="governance-documents"
     >
       <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {GOVERNANCE_DOCUMENTS.map((item) => (
+        {governanceDocuments(t).map((item) => (
           <Link key={item.title} to={item.to as never} className="min-w-0">
             <HelpLinkCard title={item.title} description={item.description} />
           </Link>

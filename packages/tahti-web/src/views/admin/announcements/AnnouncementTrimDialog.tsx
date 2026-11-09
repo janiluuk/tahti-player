@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -24,12 +24,16 @@ type Fields = {
   fadeOutSec: string;
 };
 
-const FIELDS: { key: keyof Fields; label: string }[] = [
-  { key: 'startSec', label: 'Start (s)' },
-  { key: 'endSec', label: 'End (s)' },
-  { key: 'fadeInSec', label: 'Fade in (s)' },
-  { key: 'fadeOutSec', label: 'Fade out (s)' },
-];
+function trimFields(
+  t: TFunction<'web'>,
+): { key: keyof Fields; label: string }[] {
+  return [
+    { key: 'startSec', label: t('announcementTrimDialogMore.startS') },
+    { key: 'endSec', label: t('announcementTrimDialogMore.endS') },
+    { key: 'fadeInSec', label: t('announcementTrimDialogMore.fadeInS') },
+    { key: 'fadeOutSec', label: t('announcementTrimDialogMore.fadeOutS') },
+  ];
+}
 
 export function AnnouncementTrimDialog({
   clip,
@@ -145,7 +149,7 @@ export function AnnouncementTrimDialog({
           }}
         >
           <div className="grid grid-cols-2 gap-3">
-            {FIELDS.map((field) => (
+            {trimFields(t).map((field) => (
               <Input
                 key={field.key}
                 type="number"

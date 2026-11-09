@@ -13,7 +13,9 @@ import {
   UserCircle2,
 } from 'lucide-react';
 
-import type { ParseKeys } from '@tahti-player/i18n';
+import type { ParseKeys, TFunction } from '@tahti-player/i18n';
+
+import { webT } from '../../lib/webT';
 
 type WebKey = ParseKeys<'web'>;
 
@@ -50,100 +52,102 @@ export type SettingsNavItem = {
   group: SettingsNavGroup;
 };
 
-export const SETTINGS_NAV: SettingsNavItem[] = [
-  {
-    id: 'account',
-    label: 'Account',
-    labelKey: 'settings.account',
-    Icon: User,
-    group: 'Settings',
-  },
-  {
-    id: 'artist',
-    label: 'Artist',
-    labelKey: 'settings.artist',
-    Icon: UserCircle2,
-    group: 'Settings',
-  },
-  {
-    id: 'channel',
-    label: 'Channel & chat',
-    labelKey: 'settings.channelChat',
-    Icon: Paintbrush,
-    group: 'Settings',
-  },
-  {
-    id: 'broadcast',
-    label: 'Broadcast',
-    labelKey: 'settings.broadcast',
-    Icon: Radio,
-    group: 'Settings',
-  },
-  {
-    id: 'playback',
-    label: 'Playback',
-    labelKey: 'settings.playback',
-    description: 'Volume, shuffle, repeat and skip duration',
-    descriptionKey: 'settings.playbackDescription',
-    Icon: PlayCircle,
-    group: 'Settings',
-  },
-  {
-    id: 'integrations',
-    label: 'Integrations',
-    labelKey: 'settings.integrations',
-    description: 'Scrobbling and desktop-app integrations',
-    descriptionKey: 'settings.integrationsDescription',
-    Icon: Plug,
-    group: 'Settings',
-  },
-  {
-    id: 'language',
-    label: 'Language',
-    labelKey: 'settings.language',
-    description: 'The language of menus, buttons and dates',
-    descriptionKey: 'settings.languageDescription',
-    Icon: Languages,
-    group: 'App',
-  },
-  {
-    id: 'themes',
-    label: 'Themes',
-    labelKey: 'settings.themes',
-    description: 'App appearance',
-    descriptionKey: 'settings.themesDescription',
-    Icon: Palette,
-    group: 'App',
-  },
-  {
-    id: 'plugin-store',
-    label: 'Add-ons',
-    labelKey: 'settings.pluginStore',
-    description: 'Listener, artist and admin tools in role-based lists',
-    descriptionKey: 'settings.addOnsDescription',
-    Icon: BlocksIcon,
-    group: 'App',
-  },
-  {
-    id: 'logs',
-    label: 'Logs',
-    labelKey: 'settings.logs',
-    description:
-      'Client warnings and errors from this tab, plus links to server container logs',
-    descriptionKey: 'settings.logsDescription',
-    Icon: ScrollText,
-    group: 'App',
-  },
-  {
-    id: 'whats-new',
-    label: "What's new",
-    labelKey: 'settings.whatsNew',
-    description: 'What changed in each release',
-    descriptionKey: 'settings.whatsNewDescription',
-    Icon: Sparkles,
-    group: 'App',
-  },
-];
+export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
+  return [
+    {
+      id: 'account',
+      label: t('settingsNav.account'),
+      labelKey: 'settings.account',
+      Icon: User,
+      group: 'Settings',
+    },
+    {
+      id: 'artist',
+      label: t('settingsNav.artist'),
+      labelKey: 'settings.artist',
+      Icon: UserCircle2,
+      group: 'Settings',
+    },
+    {
+      id: 'channel',
+      label: t('settingsNav.channelChat'),
+      labelKey: 'settings.channelChat',
+      Icon: Paintbrush,
+      group: 'Settings',
+    },
+    {
+      id: 'broadcast',
+      label: t('settingsNav.broadcast'),
+      labelKey: 'settings.broadcast',
+      Icon: Radio,
+      group: 'Settings',
+    },
+    {
+      id: 'playback',
+      label: t('settingsNav.playback'),
+      labelKey: 'settings.playback',
+      description: t('settingsNav.volumeShuffleRepeatAndSkip'),
+      descriptionKey: 'settings.playbackDescription',
+      Icon: PlayCircle,
+      group: 'Settings',
+    },
+    {
+      id: 'integrations',
+      label: t('settingsNav.integrations'),
+      labelKey: 'settings.integrations',
+      description: t('settingsNav.scrobblingAndDesktopAppIntegrations'),
+      descriptionKey: 'settings.integrationsDescription',
+      Icon: Plug,
+      group: 'Settings',
+    },
+    {
+      id: 'language',
+      label: t('settingsNav.language'),
+      labelKey: 'settings.language',
+      description: t('settingsNav.theLanguageOfMenusButtons'),
+      descriptionKey: 'settings.languageDescription',
+      Icon: Languages,
+      group: 'App',
+    },
+    {
+      id: 'themes',
+      label: t('settingsNav.themes'),
+      labelKey: 'settings.themes',
+      description: t('settingsNav.appAppearance'),
+      descriptionKey: 'settings.themesDescription',
+      Icon: Palette,
+      group: 'App',
+    },
+    {
+      id: 'plugin-store',
+      label: t('settingsNav.addOns'),
+      labelKey: 'settings.pluginStore',
+      description: t('settingsNav.listenerArtistAndAdminTools'),
+      descriptionKey: 'settings.addOnsDescription',
+      Icon: BlocksIcon,
+      group: 'App',
+    },
+    {
+      id: 'logs',
+      label: t('settingsNav.logs'),
+      labelKey: 'settings.logs',
+      description:
+        'Client warnings and errors from this tab, plus links to server container logs',
+      descriptionKey: 'settings.logsDescription',
+      Icon: ScrollText,
+      group: 'App',
+    },
+    {
+      id: 'whats-new',
+      label: "What's new",
+      labelKey: 'settings.whatsNew',
+      description: t('settingsNav.whatChangedInEachRelease'),
+      descriptionKey: 'settings.whatsNewDescription',
+      Icon: Sparkles,
+      group: 'App',
+    },
+  ];
+}
 
 /** Sections visible without signing in (prefs + announcements + browsing
  * add-ons). Individual add-on actions that deep-link into Studio/Sources/
@@ -174,10 +178,12 @@ export const CHANNEL_SETTINGS_SECTION_IDS: readonly SettingsSectionId[] = [
   'broadcast',
 ];
 
-const PROFILE_NAV_OVERRIDE = {
-  label: 'Profile',
-  labelKey: 'settings.profile',
-} as const;
+function profileNavOverride(t: TFunction<'web'>) {
+  return {
+    label: t('settingsNav.profile'),
+    labelKey: 'settings.profile',
+  } as const;
+}
 
 export type SettingsNavAudience = {
   signedIn: boolean;
@@ -203,13 +209,13 @@ export function isSettingsSectionAvailable(
 export function settingsNavFor(
   audience: SettingsNavAudience,
 ): SettingsNavItem[] {
-  return SETTINGS_NAV.filter((item) =>
-    isSettingsSectionAvailable(item.id, audience),
-  ).map((item) =>
-    item.id === 'artist' && audience.signedIn && !audience.hasChannel
-      ? { ...item, ...PROFILE_NAV_OVERRIDE }
-      : item,
-  );
+  return settingsNav(webT())
+    .filter((item) => isSettingsSectionAvailable(item.id, audience))
+    .map((item) =>
+      item.id === 'artist' && audience.signedIn && !audience.hasChannel
+        ? { ...item, ...profileNavOverride(webT()) }
+        : item,
+    );
 }
 
 export function fallbackSettingsSection(
@@ -221,5 +227,5 @@ export function fallbackSettingsSection(
 export function isSettingsSectionId(
   value: string | undefined,
 ): value is SettingsSectionId {
-  return Boolean(value && SETTINGS_NAV.some((n) => n.id === value));
+  return Boolean(value && settingsNav(webT()).some((n) => n.id === value));
 }

@@ -21,9 +21,9 @@ import {
 } from '../../../components/TrackViewPicker';
 import { useTrackListViewStore } from '../../../stores/trackListViewStore';
 import {
-  CONTENT_TYPE_FILTERS,
-  EMBED_FILTERS,
-  SORT_FIELDS,
+  contentTypeFilters,
+  embedFilters,
+  sortFields,
   type ContentTypeFilter,
   type EmbedFilter,
   type SortField,
@@ -85,7 +85,7 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
           onValueChange={(value) =>
             setContentTypeFilter(value as ContentTypeFilter)
           }
-          options={CONTENT_TYPE_FILTERS.map((filterOption) => ({
+          options={contentTypeFilters(t).map((filterOption) => ({
             id: filterOption.id,
             label: filterOption.label,
           }))}
@@ -127,7 +127,7 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
             label={t('library.sortBy')}
             value={sortField}
             onChange={(value) => setSortField(value as SortField)}
-            options={SORT_FIELDS.map((sortOption) => ({
+            options={sortFields(t).map((sortOption) => ({
               id: sortOption.id,
               label: t('library.sortByField', {
                 field: sortOption.label.toLowerCase(),
@@ -165,7 +165,7 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
             label={t('library.source')}
             value={embedFilter}
             onValueChange={(value) => setEmbedFilter(value as EmbedFilter)}
-            options={EMBED_FILTERS.map((filterOption) => ({
+            options={embedFilters(t).map((filterOption) => ({
               id: filterOption.id,
               label: filterOption.label,
             }))}

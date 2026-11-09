@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Box,
   Button,
@@ -84,34 +84,36 @@ function LoadErrorCaption({
   );
 }
 
-const QUICK_LINKS = [
-  {
-    to: '/governance/discussions' as const,
-    label: 'Discussions',
-    icon: MessagesSquareIcon,
-  },
-  {
-    to: '/governance/feature-requests' as const,
-    label: 'Feature requests',
-    icon: VoteIcon,
-  },
-  {
-    to: '/governance/history' as const,
-    label: 'Closed decisions',
-    icon: HistoryIcon,
-  },
-  {
-    to: '/transparency' as const,
-    label: 'Transparency ledger',
-    icon: ScrollTextIcon,
-  },
-  {
-    to: '/studio/governance' as const,
-    search: { tab: 'guide' } as const,
-    label: 'Governance help',
-    icon: HelpCircleIcon,
-  },
-];
+function quickLinks(t: TFunction<'web'>) {
+  return [
+    {
+      to: '/governance/discussions' as const,
+      label: t('governanceView.discussions'),
+      icon: MessagesSquareIcon,
+    },
+    {
+      to: '/governance/feature-requests' as const,
+      label: t('governanceView.featureRequests'),
+      icon: VoteIcon,
+    },
+    {
+      to: '/governance/history' as const,
+      label: t('governanceView.closedDecisions'),
+      icon: HistoryIcon,
+    },
+    {
+      to: '/transparency' as const,
+      label: t('governanceView.transparencyLedger'),
+      icon: ScrollTextIcon,
+    },
+    {
+      to: '/studio/governance' as const,
+      search: { tab: 'guide' } as const,
+      label: t('governanceView.governanceHelp'),
+      icon: HelpCircleIcon,
+    },
+  ];
+}
 
 export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation('web');
@@ -260,7 +262,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
     <>
       {!embedded && (
         <div className="flex flex-wrap gap-2">
-          {QUICK_LINKS.map((link) => (
+          {quickLinks(t).map((link) => (
             <ButtonLink
               key={link.label}
               to={link.to}

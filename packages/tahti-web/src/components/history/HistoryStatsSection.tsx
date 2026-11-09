@@ -20,8 +20,8 @@ import {
   formatListeningDuration,
   hourlyListeningMs,
   monthLabelsShort,
-  RANGE_PRESETS,
   rangeDisplayBounds,
+  rangePresets,
   topArtists,
   topChannels,
   topTracks,
@@ -118,7 +118,7 @@ export function HistoryStatsSection({ history }: { history: HistoryEntry[] }) {
         <div data-testid="history-stats-range" className="w-44">
           <Select
             aria-label={t('library.dateRange')}
-            options={RANGE_PRESETS.map((p) => ({ id: p.id, label: p.label }))}
+            options={rangePresets(t).map((p) => ({ id: p.id, label: p.label }))}
             value={presetId}
             onValueChange={(value) => setPresetId(value as RangePresetId)}
           />

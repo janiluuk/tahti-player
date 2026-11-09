@@ -8491,6 +8491,460 @@
     "stashFilesPanelMore": {
       "filesStayPrivateUntilYou": "Files stay private until you grant access.",
       "readOnly": "Read-only"
+    },
+    "studioProfileView": {
+      "identity": "Identity",
+      "artistNamePictureGenresAnd": "Artist name, picture, genres and where you are based.",
+      "story": "Story",
+      "yourBioAndTheLonger": "Your bio and the longer story on your profile.",
+      "people": "People",
+      "bandMembersAndCollaboratorsShown": "Band members and collaborators shown on your page.",
+      "links": "Links",
+      "yourWebsiteSocialsAndStreaming": "Your website, socials and streaming profiles.",
+      "branding": "Branding",
+      "logoColoursAndHeaderImage": "Logo, colours and header image.",
+      "gallery": "Gallery",
+      "photosFansSeeOnYour": "Photos fans see on your profile.",
+      "pressKit": "Press kit",
+      "downloadablePhotosBioAndTechnical": "Downloadable photos, bio and technical rider.",
+      "releaseVisuals": "Release visuals",
+      "defaultArtworkStyleForNew": "Default artwork style for new releases.",
+      "channelDesign": "Channel design",
+      "howYourChannelPageLooks": "How your channel page looks: layout, blocks and colours.",
+      "howFansFindYou": "How fans find you",
+      "directoryListingTagsAndSearch": "Directory listing, tags and search.",
+      "addressAndDomain": "Address and domain",
+      "yourChannelAddressAndA": "Your channel address and a custom domain.",
+      "chat": "Chat",
+      "whoCanChatOnYour": "Who can chat on your channel, and slow mode.",
+      "moderators": "Moderators",
+      "peopleWhoCanModerateYour": "People who can moderate your chat."
+    },
+    "documentLinks": {
+      "aboutTahti": "About Tahti",
+      "missionCooperativeStructureAndCommitments": "Mission, cooperative structure, and commitments.",
+      "governanceHistory": "Governance history",
+      "pastMotionsMeetingsAndTheir": "Past motions, meetings, and their outcomes.",
+      "transparencyDashboard": "Transparency dashboard",
+      "currentLedgerGrantsAndPublic": "Current ledger, grants, and public financial totals.",
+      "grantReports": "Grant reports",
+      "browseAnnualGrantDistributionReports": "Browse annual grant distribution reports by year.",
+      "transparencyMethodology": "Transparency methodology",
+      "howFiguresAreRecordedReviewed": "How figures are recorded, reviewed, and published.",
+      "termsOfService": "Terms of service",
+      "theRulesForUsingTahti": "The rules for using Tahti services.",
+      "privacyPolicy": "Privacy policy",
+      "whatDataIsCollectedAnd": "What data is collected and how it is handled.",
+      "agplSourceLicence": "AGPL source licence",
+      "theLicenceAndSourceCode": "The licence and source-code obligations for Tahti.",
+      "platformStatus": "Platform status",
+      "currentServiceHealthAndIncident": "Current service health and incident information.",
+      "platformNews": "Platform news",
+      "newsServiceUpdatesAndPosts": "News, service updates, and posts from the Tahti team.",
+      "adminGuide": "Admin guide",
+      "operationalGuidanceForBoardAnd": "Operational guidance for board and platform admins."
+    },
+    "distributionDistributionContent": {
+      "identifyTheReleaseWithIts": "Identify the release with its barcode.",
+      "linkTheOpenCatalogRelease": "Link the open catalog release and artist records.",
+      "linkTheCommunityCatalogRelease": "Link the community catalog release entry.",
+      "rightsLabel": "Rights & label",
+      "storePLineCLine": "Store P-line, C-line, and label imprint details.",
+      "automation": "Automation",
+      "worksAndPerformersForPublic": "Works and performers for public performance royalties.",
+      "neighbouringRightsForRecordings": "Neighbouring rights for recordings.",
+      "ukCompositionPerformanceRights": "UK composition performance rights.",
+      "usProForSongwritersAnd": "US PRO for songwriters and publishers."
+    },
+    "channelLookElements": {
+      "releases": "Releases",
+      "fullDiscographyOnTheArtist": "Full discography on the artist page.",
+      "tracks": "Tracks",
+      "latest": "Latest",
+      "newestReleasesHighlightedOnThe": "Newest releases highlighted on the music tab.",
+      "feed": "Feed",
+      "artistUpdatesAndCreditsOn": "Artist updates and credits on the public page.",
+      "news": "News",
+      "pinnedChannelAnnouncements": "Pinned channel announcements.",
+      "player": "Player",
+      "liveStageVisualizerGradientAnd": "Live stage, visualizer, gradient, and now-playing overlay.",
+      "bioWidgets": "Bio & widgets",
+      "fullBioDiscoWidgetsAnd": "Full bio, disco widgets, and studio links on the artist page.",
+      "liveShows": "Live shows",
+      "upcomingAndPastTahtiRadio": "Upcoming and past Tahti Radio broadcasts.",
+      "gallery": "Gallery",
+      "pressKitImageGalleryTab": "Press-kit image gallery tab on the artist page.",
+      "background": "Background",
+      "pageBannerHeaderStyleAnd": "Page banner, header style, and colors behind the channel."
+    },
+    "settingsNav": {
+      "account": "Account",
+      "artist": "Artist",
+      "channelChat": "Channel & chat",
+      "broadcast": "Broadcast",
+      "playback": "Playback",
+      "volumeShuffleRepeatAndSkip": "Volume, shuffle, repeat and skip duration",
+      "integrations": "Integrations",
+      "scrobblingAndDesktopAppIntegrations": "Scrobbling and desktop-app integrations",
+      "language": "Language",
+      "theLanguageOfMenusButtons": "The language of menus, buttons and dates",
+      "themes": "Themes",
+      "appAppearance": "App appearance",
+      "addOns": "Add-ons",
+      "listenerArtistAndAdminTools": "Listener, artist and admin tools in role-based lists",
+      "logs": "Logs",
+      "whatChangedInEachRelease": "What changed in each release",
+      "profile": "Profile"
+    },
+    "themeEditorMore": {
+      "surfaces": "Surfaces",
+      "background": "Background",
+      "secondary": "Secondary",
+      "border": "Border",
+      "text": "Text",
+      "primary": "Primary",
+      "brand": "Brand",
+      "onPrimary": "On primary",
+      "onSecondary": "On secondary",
+      "accents": "Accents",
+      "green": "Green",
+      "yellow": "Yellow",
+      "purple": "Purple",
+      "blue": "Blue",
+      "orange": "Orange",
+      "cyan": "Cyan"
+    },
+    "studioBroadcastViewMore": {
+      "schedule": "Schedule",
+      "yourChannelSWeekShows": "Your channel’s week: shows, slots and what plays when.",
+      "shows": "Shows",
+      "recurringShowsTheirEpisodesAnd": "Recurring shows, their episodes and artwork.",
+      "events": "Events",
+      "gigsAndHappeningsOnYour": "Gigs and happenings on your channel page.",
+      "listeningParties": "Listening parties",
+      "premiereAReleaseWithYour": "Premiere a release with your fans in chat.",
+      "whatYourChannelPlaysWhen": "What your channel plays when you are not live.",
+      "recordings": "Recordings",
+      "pastBroadcastsReadyToPublish": "Past broadcasts, ready to publish or trim.",
+      "bookASlotOnThe": "Book a slot on the shared member relay.",
+      "channel": "Channel",
+      "greenRoomRadioTabsAnd": "Green room, radio tabs and channel settings.",
+      "parties": "Parties"
+    },
+    "smartPlaylistRules": {
+      "title": "Title",
+      "artist": "Artist",
+      "album": "Album",
+      "composer": "Composer",
+      "rating": "Rating",
+      "playCount": "Play count",
+      "lastPlayed": "Last played",
+      "dateAdded": "Date added",
+      "year": "Year",
+      "length": "Length",
+      "loudness": "Loudness"
+    },
+    "channelVizPacks": {
+      "clubNight": "Club night",
+      "spectrumRadialAndLatticeScenes": "Spectrum, radial and lattice scenes for beat-led sets.",
+      "deepListening": "Deep listening",
+      "slowCymaticsAndAGlowing": "Slow cymatics and a glowing orb for ambient shows.",
+      "chromeDrive": "Chrome drive",
+      "aChromeLandscapeWithAn": "A chrome landscape with an oscilloscope break.",
+      "liquidMetal": "Liquid metal",
+      "ferrofluidTerrainAndCymaticsFor": "Ferrofluid terrain and cymatics for heavy low end.",
+      "signalLab": "Signal lab",
+      "oscilloscopeAndSpectrumOnlyNo": "Oscilloscope and spectrum only, no rotation surprises."
+    },
+    "listenerWidgets": {
+      "allGenres": "All genres",
+      "bluesJazz": "Blues / Jazz",
+      "funk": "Funk",
+      "hipHopRap": "Hip Hop / Rap",
+      "metal": "Metal",
+      "popRock": "Pop / Rock",
+      "soulRB": "Soul / R&B",
+      "electronic": "Electronic",
+      "alternative": "Alternative",
+      "other": "Other"
+    },
+    "trackEditorDialogMore": {
+      "title": "Title",
+      "artist": "Artist",
+      "albumArtist": "Album artist",
+      "album": "Album",
+      "genre": "Genre",
+      "composer": "Composer",
+      "year": "Year",
+      "track": "Track #",
+      "disc": "Disc #",
+      "comment": "Comment"
+    },
+    "contentTypes": {
+      "liveBroadcast": "Live broadcast",
+      "track": "Track",
+      "djSet": "DJ Set",
+      "podcast": "Podcast",
+      "remix": "Remix",
+      "radioShow": "Radio show",
+      "episode": "Episode",
+      "clip": "Clip",
+      "embed": "Embed"
+    },
+    "useStudioSoundsState": {
+      "allSources": "All sources",
+      "title": "Title",
+      "uploadDate": "Upload date",
+      "duration": "Duration"
+    },
+    "onboardingViewMore": {
+      "light": "Light",
+      "brightBackgroundAlwaysOn": "Bright background, always on.",
+      "dark": "Dark",
+      "dimBackgroundAlwaysOn": "Dim background, always on.",
+      "dynamic": "Dynamic",
+      "lightByDayDarkBy": "Light by day, dark by night — switches with the clock.",
+      "soloArtist": "Solo artist",
+      "bandCollective": "Band / collective"
+    },
+    "chatErrors": {
+      "onlyFanSubscribersCanPost": "Only fan subscribers can post in this chat.",
+      "theFanRoomIsFor": "The fan room is for fan subscribers.",
+      "pleaseConfirmYouAreNot": "Please confirm you are not a bot again to keep chatting.",
+      "theCaptchaCheckDidNot": "The captcha check did not go through. Please try it again.",
+      "youCanNoLongerPost": "You can no longer post in this chat.",
+      "tooManyTriesWaitA": "Too many tries. Wait a minute and try again.",
+      "slowDownAFewReactions": "Slow down: a few reactions at a time.",
+      "thisChannelDoesNotExist": "This channel does not exist any more."
+    },
+    "helpViewMore": {
+      "iWantToListen": "I want to listen",
+      "browseChannelsPlayTahtiRadio": "Browse channels, play Tahti Radio, and join the community.",
+      "iWantToBroadcast": "I want to broadcast",
+      "createAChannelAndConnect": "Create a channel and connect your broadcast software.",
+      "keyboardNavigation": "Keyboard navigation",
+      "iNeedSupport": "I need support",
+      "sendTheTeamAQuestion": "Send the team a question about your account or a problem."
+    },
+    "adminTopListsViewMore": {
+      "month": "Month",
+      "halfYear": "Half year",
+      "allTime": "All time",
+      "byType": "By type",
+      "byGenre": "By genre",
+      "mostListened": "Most listened",
+      "leastListened": "Least listened"
+    },
+    "channelPageLayout": {
+      "releases": "Releases",
+      "shows": "Shows",
+      "announcements": "Announcements",
+      "minimalSolidPage": "Minimal solid page.",
+      "liveStageForward": "Live stage forward.",
+      "catalogUpFront": "Catalog up front.",
+      "onAirTahtiLook": "On-air Tahti look."
+    },
+    "localLibraryBrowseMore": {
+      "tracks": "Tracks",
+      "artists": "Artists",
+      "albums": "Albums",
+      "genres": "Genres",
+      "composers": "Composers",
+      "folders": "Folders",
+      "playlists": "Playlists"
+    },
+    "slideshowOptions": {
+      "none": "None",
+      "staticSlideshow": "Static slideshow",
+      "twistedWaveWebgl": "Twisted wave (WebGL)",
+      "cinematicZoomBlurWebgl": "Cinematic zoom blur (WebGL)",
+      "rgbShiftStripWebgl": "RGB shift strip (WebGL)",
+      "posterScrollWallWebgl": "Poster scroll wall (WebGL)",
+      "shatterCarouselWebgl": "Shatter carousel (WebGL)"
+    },
+    "studioChannelViewMore": {
+      "setup": "Setup",
+      "greenRoom": "Green room",
+      "selects": "Selects",
+      "stream": "Stream",
+      "pinned": "Pinned",
+      "multicast": "Multicast"
+    },
+    "governanceNav": {
+      "overview": "Overview",
+      "annualReports": "Annual reports",
+      "grants": "Grants",
+      "board": "Board",
+      "discussions": "Discussions",
+      "records": "Records"
+    },
+    "trackSort": {
+      "defaultOrder": "Default order",
+      "titleAZ": "Title A–Z",
+      "artistAZ": "Artist A–Z",
+      "newestRelease": "Newest release",
+      "shortestFirst": "Shortest first",
+      "longestFirst": "Longest first"
+    },
+    "collectionStyles": {
+      "album": "Album",
+      "single": "Single",
+      "playlist": "Playlist",
+      "podcast": "Podcast",
+      "djSet": "DJ set",
+      "showSeries": "Show series"
+    },
+    "audienceBreakdownMore": {
+      "browser": "Browser",
+      "osVersions": "OS versions",
+      "deviceType": "Device type",
+      "deviceCompany": "Device company",
+      "listenedOn": "Listened on"
+    },
+    "pluginUi": {
+      "lowPass": "Low-pass",
+      "highPass": "High-pass",
+      "lowShelf": "Low shelf",
+      "highShelf": "High shelf",
+      "brickwall": "Brickwall"
+    },
+    "governanceView": {
+      "discussions": "Discussions",
+      "featureRequests": "Feature requests",
+      "closedDecisions": "Closed decisions",
+      "transparencyLedger": "Transparency ledger",
+      "governanceHelp": "Governance help"
+    },
+    "featureRequestsTabMore": {
+      "open": "Open",
+      "planned": "Planned",
+      "inProgress": "In progress",
+      "done": "Done",
+      "declined": "Declined"
+    },
+    "historyStats": {
+      "last7Days": "Last 7 days",
+      "last30Days": "Last 30 days",
+      "last90Days": "Last 90 days",
+      "last12Months": "Last 12 months",
+      "allTime": "All time"
+    },
+    "pluginStoreCategories": {
+      "listener": "Listener",
+      "radioListeningServicesPersonalWidgets": "Radio, listening services, personal widgets and scrobbling.",
+      "artist": "Artist",
+      "admin": "Admin",
+      "boardOnlyPlatformOperationsAnd": "Board-only platform operations and administrative add-ons."
+    },
+    "trackViewPicker": {
+      "large": "Large",
+      "medium": "Medium",
+      "small": "Small",
+      "grid": "Grid",
+      "list": "List"
+    },
+    "reportButtonMore": {
+      "copyrightInfringement": "Copyright infringement",
+      "harassmentOrAbuse": "Harassment or abuse",
+      "spam": "Spam",
+      "illegalContent": "Illegal content",
+      "other": "Other"
+    },
+    "broadcastPreflightPanel": {
+      "liveSet": "Live set",
+      "talk": "Talk",
+      "public": "Public",
+      "private": "Private",
+      "fans": "Fans"
+    },
+    "studioStatsViewMore": {
+      "overview": "Overview",
+      "playsAndListeners": "Plays and listeners",
+      "topLists": "Top lists",
+      "insights": "Insights"
+    },
+    "storageShared": {
+      "name": "Name",
+      "type": "Type",
+      "size": "Size",
+      "length": "Length"
+    },
+    "supportTabMore": {
+      "needsReply": "Needs reply",
+      "open": "Open",
+      "inProgress": "In progress",
+      "resolved": "Resolved"
+    },
+    "correctionsQueuePanelMore": {
+      "waiting": "Waiting",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn"
+    },
+    "announcementTrimDialogMore": {
+      "startS": "Start (s)",
+      "endS": "End (s)",
+      "fadeInS": "Fade in (s)",
+      "fadeOutS": "Fade out (s)"
+    },
+    "adminVendorsView": {
+      "confirmNonprofitCooperativeRegistrationStatus": "Confirm nonprofit/cooperative registration status",
+      "reviewCollectingSocietyAgreements": "Review collecting-society agreements",
+      "confirmAnnualNonprofitActivityReport": "Confirm annual nonprofit activity report obligations",
+      "decideCooperationTermsWithLocal": "Decide cooperation terms with local culture organisations"
+    },
+    "nowPlayingOverlayPresets": {
+      "coverThumbnailWithStackedTitle": "Cover thumbnail with stacked title and artist, bottom-left.",
+      "titleAndArtistCenteredTogether": "Title and artist centered together over the artwork.",
+      "oneCompactLineLetsThe": "One compact line — lets the artwork or visualizer breathe.",
+      "titleBottomLeftArtistBottom": "Title bottom-left, artist bottom-right, cover top-right."
+    },
+    "supportContactForm": {
+      "engagementUnits": "Engagement units",
+      "technical": "Technical",
+      "billingPayouts": "Billing / payouts",
+      "other": "Other"
+    },
+    "listeningPartyHeroMore": {
+      "listeningParty": "Listening party",
+      "liveNow": "Live now",
+      "ended": "Ended",
+      "canceled": "Canceled"
+    },
+    "rangeControls": {
+      "today": "Today",
+      "allTime": "All time",
+      "custom": "Custom"
+    },
+    "studioPlaylistEditorViewMore": {
+      "manualTracklistOrder": "Manual (tracklist order)",
+      "oldestFirst": "Oldest first",
+      "titleAZ": "Title (A-Z)"
+    },
+    "spotifyImportPanelMore": {
+      "searchSpotify": "Search Spotify",
+      "yourTracks": "Your tracks",
+      "byArtistLink": "By artist link"
+    },
+    "mixcloudImportPanel": {
+      "searchMixcloud": "Search Mixcloud",
+      "yourMixes": "Your mixes",
+      "byProfileUrl": "By profile URL"
+    },
+    "collectionEditDetailsPanel": {
+      "manualTracklistOrder": "Manual (tracklist order)",
+      "oldestFirst": "Oldest first",
+      "titleAZ": "Title (A-Z)"
+    },
+    "profileLogoSectionMore": {
+      "onAvatar": "On avatar",
+      "onCover": "On cover",
+      "both": "Both"
+    },
+    "artistTabGroups": {
+      "profile": "Profile",
+      "linksPress": "Links & press",
+      "artistBranding": "Artist branding"
     }
   },
   "studioEditor": {

@@ -1,3 +1,7 @@
+import type { TFunction } from '@tahti-player/i18n';
+
+import { webT } from '../lib/webT';
+
 /** Collection "style" — mirrors the backend's Collection.style enum (a
  * playlist/album/podcast/etc. classifier, distinct from `type`). Single
  * source of truth for the label and the raw-value → known-style
@@ -18,21 +22,25 @@ export type CollectionStyleOption = {
   label: string;
 };
 
-export const COLLECTION_STYLES: CollectionStyleOption[] = [
-  { id: 'ALBUM', label: 'Album' },
-  { id: 'EP', label: 'EP' },
-  { id: 'SINGLE', label: 'Single' },
-  { id: 'PLAYLIST', label: 'Playlist' },
-  { id: 'PODCAST', label: 'Podcast' },
-  { id: 'DJ_SET_SERIES', label: 'DJ set' },
-  { id: 'SERIES', label: 'Show series' },
-];
+export function collectionStyles(t: TFunction<'web'>): CollectionStyleOption[] {
+  return [
+    { id: 'ALBUM', label: t('collectionStyles.album') },
+    { id: 'EP', label: 'EP' },
+    { id: 'SINGLE', label: t('collectionStyles.single') },
+    { id: 'PLAYLIST', label: t('collectionStyles.playlist') },
+    { id: 'PODCAST', label: t('collectionStyles.podcast') },
+    { id: 'DJ_SET_SERIES', label: t('collectionStyles.djSet') },
+    { id: 'SERIES', label: t('collectionStyles.showSeries') },
+  ];
+}
 
 export function collectionStyleLabel(style: string | null | undefined): string {
   if (!style) {
     return 'Unknown';
   }
-  const match = COLLECTION_STYLES.find((s) => s.id === style.toUpperCase());
+  const match = collectionStyles(webT()).find(
+    (s) => s.id === style.toUpperCase(),
+  );
   return match?.label ?? style;
 }
 
@@ -52,6 +60,6 @@ export function normalizeCollectionStyle(
   if (!upper || upper === 'CUSTOM' || upper === 'LIST') {
     return 'PLAYLIST';
   }
-  const match = COLLECTION_STYLES.find((s) => s.id === upper);
+  const match = collectionStyles(webT()).find((s) => s.id === upper);
   return match?.id ?? 'ALBUM';
 }

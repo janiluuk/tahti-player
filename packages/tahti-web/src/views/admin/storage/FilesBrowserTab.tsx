@@ -45,8 +45,8 @@ import { usePlayerStore } from '../../../stores/playerStore';
 import { BulkEditBar } from './BulkEditBar';
 import {
   FileDetailDialog,
-  SORT_OPTIONS,
   sortFiles,
+  sortOptions,
   type FileSortKey,
 } from './shared';
 
@@ -364,7 +364,7 @@ export function FilesBrowserTab() {
             label={t('filesBrowser.sortFilesBy')}
             value={sortBy}
             onChange={(value) => setSortBy(value as FileSortKey)}
-            options={SORT_OPTIONS.map((option) => ({
+            options={sortOptions(t).map((option) => ({
               id: option.id,
               label: option.label,
             }))}

@@ -2,7 +2,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   Input,
@@ -24,11 +24,13 @@ import { toastWithUndo } from '../../../lib/undoToast';
 
 type Mode = 'search' | 'mine' | 'artist';
 
-const MODES = [
-  { id: 'search', label: 'Search Spotify' },
-  { id: 'mine', label: 'Your tracks' },
-  { id: 'artist', label: 'By artist link' },
-] as const;
+function modes(t: TFunction<'web'>) {
+  return [
+    { id: 'search', label: t('spotifyImportPanelMore.searchSpotify') },
+    { id: 'mine', label: t('spotifyImportPanelMore.yourTracks') },
+    { id: 'artist', label: t('spotifyImportPanelMore.byArtistLink') },
+  ] as const;
+}
 
 function formatDuration(sec: number): string {
   const total = Math.max(0, Math.floor(sec));
@@ -113,7 +115,7 @@ export function SpotifyImportPanel({
       <div className="flex flex-col gap-3">
         <SegmentedControl
           aria-label={t('spotifyImportPanel.spotifySource')}
-          options={MODES}
+          options={modes(t)}
           value={mode}
           onChange={switchMode}
           className="w-fit flex-wrap"
