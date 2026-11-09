@@ -17,6 +17,13 @@ export const settingsSectionRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/settings/$section',
   beforeLoad: ({ params }) => {
+    if (params.section === 'logs') {
+      throw redirect({
+        to: '/admin/logs',
+        search: { tab: 'client' },
+        replace: true,
+      });
+    }
     const moved = movedSettingsSection(params.section);
     if (moved) {
       throw redirect(movedSettingsTarget(moved));

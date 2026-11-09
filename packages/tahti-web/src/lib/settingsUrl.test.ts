@@ -42,4 +42,13 @@ describe('buildSettingsPath', () => {
       }),
     ).toBe('/settings/themes');
   });
+
+  it('keeps the Language tab of Playback & language in the URL', () => {
+    expect(
+      buildSettingsPath({ section: 'playback', playbackSection: 'language' }),
+    ).toBe('/settings/playback?tab=language');
+    expect(
+      buildSettingsPath({ section: 'playback', playbackSection: 'playback' }),
+    ).toBe('/settings/playback');
+  });
 });

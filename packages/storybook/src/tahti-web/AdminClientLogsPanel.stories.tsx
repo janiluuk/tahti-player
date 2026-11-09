@@ -1,22 +1,22 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { clearClientLogs, logClientEvent } from '@tahti-web/lib/clientLogs';
-import { LogsPanel } from '@tahti-web/views/settings/panels/LogsPanel';
+import { ClientLogsPanel } from '@tahti-web/views/admin/monitoring/ClientLogsPanel';
 
 import { withPageSurface, withTahtiRouter } from './_lib/decorators';
 
-const meta: Meta<typeof LogsPanel> = {
-  title: 'Tahti/Settings/LogsPanel',
-  component: LogsPanel,
+const meta: Meta<typeof ClientLogsPanel> = {
+  title: 'Tahti/Admin/ClientLogsPanel',
+  component: ClientLogsPanel,
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
         component:
-          'Settings → Logs (board): client log buffer plus links to Admin container logs and the monitoring hub. Missing states: none beyond empty (the buffer is local).',
+          'Admin → Overview → Logs → Client logs: the log buffer of this browser tab. Missing states: none beyond empty (the buffer is local).',
       },
     },
   },
-  decorators: [withTahtiRouter('/settings/logs'), withPageSurface()],
+  decorators: [withTahtiRouter('/admin/logs?tab=client'), withPageSurface()],
 };
 
 export default meta;

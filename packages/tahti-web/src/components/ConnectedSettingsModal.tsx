@@ -5,7 +5,6 @@ import { useEffect, useRef } from 'react';
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, ExternalLink, SettingsPanel, Tooltip } from '@tahti-player/ui';
 
-import { hasAccountRole } from '../lib/accountRoles';
 import { buildSettingsPath } from '../lib/settingsUrl';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -63,17 +62,17 @@ export function ConnectedSettingsModal() {
   const artistSection = useSettingsModalStore((s) => s.artistSection);
   const accountSection = useSettingsModalStore((s) => s.accountSection);
   const channelSection = useSettingsModalStore((s) => s.channelSection);
+  const playbackSection = useSettingsModalStore((s) => s.playbackSection);
   const pluginCategory = useSettingsModalStore((s) => s.pluginCategory);
   const user = useAuthStore((s) => s.user);
   const openAuth = useAuthModalStore((s) => s.open);
   const signedIn = Boolean(user);
-  const isBoard = hasAccountRole(user, 'BOARD');
   const returnPathRef = useRef<string | null>(null);
 
   const profileLoaded = useAuthStore((s) => s.profileLoaded);
   const hasChannel = Boolean(user?.channel) || !profileLoaded;
 
-  const audience = { signedIn, hasChannel, isBoard };
+  const audience = { signedIn, hasChannel };
   const nav = settingsNavFor(audience);
   const available = isSettingsSectionAvailable(activeTab, audience);
   const fallbackTab = fallbackSettingsSection(audience);
@@ -106,6 +105,7 @@ export function ConnectedSettingsModal() {
       artistSection,
       accountSection,
       channelSection,
+      playbackSection,
       pluginCategory,
     });
     if (!locationHref.startsWith('/settings')) {
@@ -121,6 +121,7 @@ export function ConnectedSettingsModal() {
     isOpen,
     locationHref,
     navigate,
+    playbackSection,
     pluginCategory,
     resolvedTab,
   ]);

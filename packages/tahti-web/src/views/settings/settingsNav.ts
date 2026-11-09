@@ -1,13 +1,11 @@
 import type { LucideIcon } from 'lucide-react';
 import {
   BlocksIcon,
-  Languages,
   Paintbrush,
   Palette,
   PlayCircle,
   Plug,
   Radio,
-  ScrollText,
   Sparkles,
   User,
   UserCircle2,
@@ -26,10 +24,8 @@ export type SettingsSectionId =
   | 'broadcast'
   | 'playback'
   | 'integrations'
-  | 'language'
   | 'themes'
   | 'plugin-store'
-  | 'logs'
   | 'whats-new';
 
 export type SettingsNavGroup = 'Settings' | 'App';
@@ -84,10 +80,10 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
     },
     {
       id: 'playback',
-      label: t('settingsNav.playback'),
-      labelKey: 'settings.playback',
-      description: t('settingsNav.volumeShuffleRepeatAndSkip'),
-      descriptionKey: 'settings.playbackDescription',
+      label: t('settings.playbackLanguage'),
+      labelKey: 'settings.playbackLanguage',
+      description: t('settings.playbackLanguageDescription'),
+      descriptionKey: 'settings.playbackLanguageDescription',
       Icon: PlayCircle,
       group: 'Settings',
     },
@@ -99,15 +95,6 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
       descriptionKey: 'settings.integrationsDescription',
       Icon: Plug,
       group: 'Settings',
-    },
-    {
-      id: 'language',
-      label: t('settingsNav.language'),
-      labelKey: 'settings.language',
-      description: t('settingsNav.theLanguageOfMenusButtons'),
-      descriptionKey: 'settings.languageDescription',
-      Icon: Languages,
-      group: 'App',
     },
     {
       id: 'themes',
@@ -128,16 +115,6 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
       group: 'App',
     },
     {
-      id: 'logs',
-      label: t('settingsNav.logs'),
-      labelKey: 'settings.logs',
-      description:
-        'Client warnings and errors from this tab, plus links to server container logs',
-      descriptionKey: 'settings.logsDescription',
-      Icon: ScrollText,
-      group: 'App',
-    },
-    {
       id: 'whats-new',
       label: "What's new",
       labelKey: 'settings.whatsNew',
@@ -154,15 +131,9 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
  * Settings flows still prompt for sign-in themselves when clicked. */
 export const PUBLIC_SETTINGS_SECTION_IDS: readonly SettingsSectionId[] = [
   'playback',
-  'language',
   'themes',
   'plugin-store',
   'whats-new',
-];
-
-/** Board-only diagnostics (client log buffer). Not shown to listeners/artists. */
-export const BOARD_SETTINGS_SECTION_IDS: readonly SettingsSectionId[] = [
-  'logs',
 ];
 
 export const DEFAULT_PUBLIC_SETTINGS_SECTION: SettingsSectionId = 'themes';
@@ -189,17 +160,12 @@ export type SettingsNavAudience = {
   signedIn: boolean;
   /** False for a listener account that has not created a channel. */
   hasChannel: boolean;
-  /** Board members see diagnostics sections (client Logs). */
-  isBoard?: boolean;
 };
 
 export function isSettingsSectionAvailable(
   id: SettingsSectionId,
   audience: SettingsNavAudience,
 ): boolean {
-  if (BOARD_SETTINGS_SECTION_IDS.includes(id)) {
-    return Boolean(audience.signedIn && audience.isBoard);
-  }
   if (!audience.signedIn) {
     return isPublicSettingsSection(id);
   }

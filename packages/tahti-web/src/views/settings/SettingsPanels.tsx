@@ -3,7 +3,6 @@ import { lazy, Suspense, type ReactNode } from 'react';
 import { useTranslation } from '@tahti-player/i18n';
 import { Loader } from '@tahti-player/ui';
 
-import { hasAccountRole } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { WhatsNewPanel } from '../WhatsNewView';
 import { AccountPanel } from './panels/AccountPanel';
@@ -11,9 +10,7 @@ import { ArtistPanel, ReleaseVisualDefaultsPanel } from './panels/ArtistPanel';
 import { BroadcastPanel, type BroadcastSection } from './panels/BroadcastPanel';
 import { ChannelPanel } from './panels/ChannelPanel';
 import { IntegrationsPanel } from './panels/IntegrationsPanel';
-import { LanguagePanel } from './panels/LanguagePanel';
-import { LogsPanel } from './panels/LogsPanel';
-import { PlaybackPanel } from './panels/PlaybackPanel';
+import { PlaybackLanguagePanel } from './panels/PlaybackLanguagePanel';
 import { ThemesPanel } from './panels/ThemesPanel';
 import { settingsNavFor, type SettingsSectionId } from './settingsNav';
 
@@ -34,7 +31,6 @@ export function SettingsSectionBody({
   const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const signedIn = Boolean(user);
-  const isBoard = hasAccountRole(user, 'BOARD');
   const hasChannel = useAuthStore(
     (s) => Boolean(s.user?.channel) || !s.profileLoaded,
   );
@@ -53,19 +49,13 @@ export function SettingsSectionBody({
       content = <BroadcastPanel />;
       break;
     case 'playback':
-      content = <PlaybackPanel />;
+      content = <PlaybackLanguagePanel />;
       break;
     case 'integrations':
       content = <IntegrationsPanel />;
       break;
-    case 'language':
-      content = <LanguagePanel />;
-      break;
     case 'themes':
       content = <ThemesPanel />;
-      break;
-    case 'logs':
-      content = <LogsPanel />;
       break;
     case 'plugin-store':
       content = (
@@ -87,7 +77,7 @@ export function SettingsSectionBody({
       return null;
   }
 
-  const navItem = settingsNavFor({ signedIn, hasChannel, isBoard }).find(
+  const navItem = settingsNavFor({ signedIn, hasChannel }).find(
     (item) => item.id === section,
   );
 

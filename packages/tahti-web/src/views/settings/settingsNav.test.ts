@@ -13,36 +13,25 @@ describe('settingsNavFor', () => {
   it('shows a visitor only the sections that need no account', () => {
     expect(ids({ signedIn: false, hasChannel: false })).toEqual([
       'playback',
-      'language',
       'themes',
       'plugin-store',
       'whats-new',
     ]);
   });
 
-  it('shows an artist every section except board Logs', () => {
+  it('shows an artist every section', () => {
     const nav = settingsNavFor({ signedIn: true, hasChannel: true });
     expect(nav.map((item) => item.id)).toContain('channel');
     expect(nav.map((item) => item.id)).toContain('broadcast');
-    expect(nav.map((item) => item.id)).not.toContain('logs');
     expect(nav.find((item) => item.id === 'artist')?.label).toBe('Artist');
   });
 
-  it('shows Logs only for board members', () => {
+  it('has no Logs section; client logs live in Admin → Logs', () => {
     expect(
-      settingsNavFor({
-        signedIn: true,
-        hasChannel: true,
-        isBoard: true,
-      }).map((item) => item.id),
-    ).toContain('logs');
-    expect(
-      isSettingsSectionAvailable('logs', {
-        signedIn: true,
-        hasChannel: true,
-        isBoard: false,
-      }),
-    ).toBe(false);
+      settingsNavFor({ signedIn: true, hasChannel: true }).map(
+        (item) => item.id,
+      ),
+    ).not.toContain('logs');
   });
 
   it('hides the channel sections from a listener with no channel', () => {
@@ -52,7 +41,6 @@ describe('settingsNavFor', () => {
       'artist',
       'playback',
       'integrations',
-      'language',
       'themes',
       'plugin-store',
       'whats-new',

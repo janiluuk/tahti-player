@@ -61,7 +61,8 @@ export function SettingsView() {
     select: (state) => state.location.pathname,
   });
   const toastedCallbackRef = useRef<string | null>(null);
-  const sectionId = pathname.match(/^\/settings\/([^/]+)/)?.[1];
+  const rawSectionId = pathname.match(/^\/settings\/([^/]+)/)?.[1];
+  const sectionId = rawSectionId === 'language' ? 'playback' : rawSectionId;
   const section: SettingsSectionId = isSettingsSectionId(sectionId)
     ? sectionId
     : 'account';
@@ -93,6 +94,11 @@ export function SettingsView() {
       section === 'artist' && isArtistSettingsSection(tab) ? tab : undefined,
       section === 'account' && isAccountSettingsSection(tab) ? tab : undefined,
       section === 'channel' && isChannelSettingsSection(tab) ? tab : undefined,
+      section === 'playback'
+        ? rawSectionId === 'language' || tab === 'language'
+          ? 'language'
+          : 'playback'
+        : undefined,
     );
     if (!isSettingsSectionId(sectionId)) {
       useSettingsModalStore.setState({ openedToSection: false });

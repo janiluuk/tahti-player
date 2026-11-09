@@ -726,7 +726,9 @@
       "accountTabGroupSignInSecurity": "Sign-in & security",
       "accountTabGroupMembershipBilling": "Membership & billing",
       "accountTabGroupNotifications": "Notifications",
-      "accountTabGroupPrivacyData": "Privacy & data"
+      "accountTabGroupPrivacyData": "Privacy & data",
+      "playbackLanguage": "Playback & language",
+      "playbackLanguageDescription": "Volume, shuffle, repeat, skip duration and the app language"
     },
     "language": {
       "label": "Language",
@@ -8402,7 +8404,8 @@
     "adminLogsViewMore": {
       "auditEvents": "Audit events",
       "containerLogs": "Container logs",
-      "recentAudit": "Recent audit"
+      "recentAudit": "Recent audit",
+      "clientLogs": "Client logs"
     },
     "tracklistEditorMore": {
       "pins": "Pins",

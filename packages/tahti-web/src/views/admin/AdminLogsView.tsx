@@ -4,6 +4,7 @@ import {
   ContainerIcon,
   ExternalLinkIcon,
   HistoryIcon,
+  MonitorIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -22,7 +23,6 @@ import {
 
 import { fetchAdminDashboard, type AdminAuditRow } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
-import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -32,14 +32,16 @@ import {
   grafanaExploreLogsUrl,
 } from '../../lib/grafanaMonitoring';
 import { AdminActivityView } from './AdminActivityView';
+import { ClientLogsPanel } from './monitoring/ClientLogsPanel';
 import { ContainerLogsPanel } from './monitoring/ContainerLogsPanel';
 
-const TAB_IDS = ['activity', 'containers', 'recent-audit'] as const;
+const TAB_IDS = ['activity', 'containers', 'client', 'recent-audit'] as const;
 type LogsTabId = (typeof TAB_IDS)[number];
 
 const LOGS_TAB_LABELS: Record<LogsTabId, string> = {
   activity: 'Audit events',
   containers: 'Container logs',
+  client: 'Client logs',
   'recent-audit': 'Recent audit',
 };
 
@@ -119,7 +121,12 @@ function parseLogsTab(
   tab: string | undefined,
   service: string | undefined,
 ): LogsTabId {
-  if (tab === 'containers' || tab === 'recent-audit' || tab === 'activity') {
+  if (
+    tab === 'containers' ||
+    tab === 'client' ||
+    tab === 'recent-audit' ||
+    tab === 'activity'
+  ) {
     return tab;
   }
   if (service) {
@@ -191,7 +198,6 @@ export function AdminLogsView() {
               <BreadcrumbLink to="/admin">
                 {t('adminLogsView.admin')}
               </BreadcrumbLink>
-              <AdminHubBreadcrumb hub="platform" />
               <BreadcrumbLink to="/admin/logs">
                 {t('adminLogsView.logs')}
               </BreadcrumbLink>
@@ -218,6 +224,12 @@ export function AdminLogsView() {
                     label: t('adminLogsViewMore.containerLogs'),
                     icon: <ContainerIcon size={14} />,
                     content: containerLogs,
+                  },
+                  {
+                    id: 'client',
+                    label: t('adminLogsViewMore.clientLogs'),
+                    icon: <MonitorIcon size={14} />,
+                    content: <ClientLogsPanel />,
                   },
                   {
                     id: 'recent-audit',

@@ -21,6 +21,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Admin/AdminAnnouncementTrimDialog` | `tahti-web/AdminAnnouncementTrimDialog.stories.tsx` |
 | `Tahti/Admin/AdminAnnouncementsView` | `tahti-web/AdminAnnouncementsView.stories.tsx` |
 | `Tahti/Admin/AdminArtworkPresetsView` | `tahti-web/AdminArtworkPresetsView.stories.tsx` |
+| `Tahti/Admin/ClientLogsPanel` | `tahti-web/AdminClientLogsPanel.stories.tsx` |
 | `Tahti/Admin/AdminContentView` | `tahti-web/AdminContentView.stories.tsx` |
 | `Tahti/Admin/AdminCronHistoryDialog` | `tahti-web/AdminCronHistoryDialog.stories.tsx` |
 | `Tahti/Admin/AdminDashboardView` | `tahti-web/AdminDashboardView.stories.tsx` |
@@ -319,7 +320,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Settings/ChannelPanel` | `tahti-web/SettingsChannelPanel.stories.tsx` |
 | `Tahti/Settings/IntegrationsPanel` | `tahti-web/SettingsIntegrationsPanel.stories.tsx` |
 | `Tahti/Settings/LanguagePanel` | `tahti-web/SettingsLanguagePanel.stories.tsx` |
-| `Tahti/Settings/LogsPanel` | `tahti-web/SettingsLogsPanel.stories.tsx` |
 | `Tahti/Settings/PlaybackPanel` | `tahti-web/SettingsPlaybackPanel.stories.tsx` |
 | `Tahti/Settings/ThemesPanel` | `tahti-web/SettingsThemesPanel.stories.tsx` |
 | `Tahti/Settings/SettingsView` | `tahti-web/SettingsView.stories.tsx` |

@@ -726,7 +726,9 @@
       "accountTabGroupSignInSecurity": "Kirjautuminen ja tietoturva",
       "accountTabGroupMembershipBilling": "Jäsenyys ja laskutus",
       "accountTabGroupNotifications": "Ilmoitukset",
-      "accountTabGroupPrivacyData": "Yksityisyys ja data"
+      "accountTabGroupPrivacyData": "Yksityisyys ja data",
+      "playbackLanguage": "Toisto ja kieli",
+      "playbackLanguageDescription": "Äänenvoimakkuus, sekoitus, toisto, ohituksen kesto ja sovelluksen kieli"
     },
     "language": {
       "label": "Kieli",
@@ -8402,7 +8404,8 @@
     "adminLogsViewMore": {
       "auditEvents": "Tarkastustapahtumat",
       "containerLogs": "Konttilokit",
-      "recentAudit": "Viimeisimmät tarkastukset"
+      "recentAudit": "Viimeisimmät tarkastukset",
+      "clientLogs": "Asiakaslokit"
     },
     "tracklistEditorMore": {
       "pins": "Kiinnitykset",
