@@ -111,7 +111,9 @@ export function SignupPaymentView() {
               });
             }}
           >
-            {busy ? 'Starting…' : 'Pay €40 / year'}
+            {busy
+              ? t('signupPaymentViewStates.starting')
+              : t('signupPaymentViewStates.pay40Year')}
           </Button>
         </div>
       )}

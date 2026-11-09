@@ -42,20 +42,28 @@ export function TrackAccessGate({
       size="sm"
       variant={signedIn && !canBuy ? 'default' : 'secondary'}
     >
-      {purchase ? 'Subscribe instead' : 'Subscribe to listen'}
+      {purchase
+        ? t('trackAccessGateStates.subscribeInstead')
+        : t('trackAccessGateStates.subscribeToListen')}
     </ButtonLink>
   );
 
   return (
     <div
       role="region"
-      aria-label={purchase ? 'Buy to listen' : 'Fan subscribers only'}
+      aria-label={
+        purchase
+          ? t('trackAccessGateStates.buyToListen')
+          : t('trackAccessGateStates.fanSubscribersOnly')
+      }
       data-testid="track-access-gate"
       className="flex flex-col gap-3 rounded-lg bg-black/45 p-5 backdrop-blur-md"
     >
       <div className="flex items-center gap-2 text-base font-semibold">
         <LockIcon size={16} aria-hidden />
-        {purchase ? 'Buy to listen' : 'Fan subscribers only'}
+        {purchase
+          ? t('trackAccessGateStates.buyToListen')
+          : t('trackAccessGateStates.fanSubscribersOnly')}
       </div>
       <p className="text-sm text-white/75">
         {purchase
@@ -76,7 +84,9 @@ export function TrackAccessGate({
             disabled={buyBusy}
             onClick={onBuy}
           >
-            {buyBusy ? 'Buying…' : 'Buy this track'}
+            {buyBusy
+              ? t('trackAccessGateStates.buying')
+              : t('trackAccessGateStates.buyThisTrack')}
           </Button>
         ) : null}
         {subscribeLink}

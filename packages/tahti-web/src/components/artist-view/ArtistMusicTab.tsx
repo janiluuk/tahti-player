@@ -177,8 +177,8 @@ export function ArtistMusicTab({
               <Tooltip
                 content={
                   featured.isPlaying
-                    ? 'Pause featured track'
-                    : 'Play featured track'
+                    ? t('artistMusicTabStates.pauseFeaturedTrack')
+                    : t('artistMusicTabStates.playFeaturedTrack')
                 }
                 side="top"
               >
@@ -189,8 +189,8 @@ export function ArtistMusicTab({
                   onClick={featured.onPlay}
                   aria-label={
                     featured.isPlaying
-                      ? 'Pause featured track'
-                      : 'Play featured track'
+                      ? t('artistMusicTabStates.pauseFeaturedTrack')
+                      : t('artistMusicTabStates.playFeaturedTrack')
                   }
                   aria-pressed={featured.isPlaying}
                 >

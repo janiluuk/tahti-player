@@ -19,6 +19,7 @@ import {
   type RadioSubmission,
 } from '../api/studio';
 import type { StudioSound } from '../api/studio-types';
+import { webT } from '../lib/webT';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
@@ -231,10 +232,11 @@ export function StudioRadioSubmissionPanel() {
 
 const statusLabel = (status: RadioSubmission['status']) =>
   status === 'APPROVED'
-    ? 'In rotation'
+    ? webT()('studioRadioSubmissionPanelStates.inRotation')
     : status === 'REJECTED'
-      ? 'Rejected'
-      : 'Pending review';
+      ? webT()('studioRadioSubmissionPanelStates.rejected')
+      : webT()('studioRadioSubmissionPanelStates.pendingReview');
+
 const StatusIcon = ({ status }: { status: RadioSubmission['status'] }) =>
   status === 'APPROVED' ? (
     <CheckCircle2Icon

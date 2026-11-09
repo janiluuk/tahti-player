@@ -79,7 +79,9 @@ export function SharingTab({
           onClick={() => void downloadHearthisEmbed()}
         >
           <DownloadIcon size={15} aria-hidden className="mr-1.5" />
-          {downloadingEmbed ? 'Preparing download…' : 'Download from HearThis'}
+          {downloadingEmbed
+            ? t('sharingTabStates.preparingDownload')
+            : t('sharingTabStates.downloadFromHearthis')}
         </Button>
       ) : null}
       {item.embedProvider === 'HEARTHIS' ? (
@@ -144,8 +146,8 @@ export function SharingTab({
                   : radioSubmission?.status === 'APPROVED'
                     ? 'In rotation'
                     : radioSubmission?.status === 'REJECTED'
-                      ? 'Resubmit'
-                      : 'Submit'}
+                      ? t('sharingTabStates.resubmit')
+                      : t('sharingTabStates.submit')}
             </Button>
           </div>
         </div>

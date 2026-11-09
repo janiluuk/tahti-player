@@ -84,7 +84,9 @@ export function ArtistGalleryPanel({
             return { ok: true };
           },
           undoneMessage:
-            added.length === 1 ? 'Photo removed.' : 'Photos removed.',
+            added.length === 1
+              ? t('artistGalleryPanelStates.photoRemoved')
+              : t('artistGalleryPanelStates.photosRemoved'),
           onUndone: () => onChange(images),
         },
       );
@@ -232,8 +234,8 @@ export function ArtistGalleryPanel({
                   disabled={busy}
                   aria-label={
                     busy
-                      ? 'Uploading gallery images'
-                      : 'Upload more gallery images'
+                      ? t('artistGalleryPanelStates.uploadingGalleryImages')
+                      : t('artistGalleryPanelStates.uploadMoreGalleryImages')
                   }
                   onClick={() => inputRef.current?.click()}
                 >
@@ -297,7 +299,11 @@ export function ArtistGalleryPanel({
                 {isOwner ? (
                   <>
                     <Tooltip
-                      content={selected.has(img.id) ? 'Deselect' : 'Select'}
+                      content={
+                        selected.has(img.id)
+                          ? t('artistGalleryPanelStates.deselect')
+                          : t('artistGalleryPanelStates.select')
+                      }
                       side="top"
                     >
                       <Button
@@ -311,8 +317,8 @@ export function ArtistGalleryPanel({
                         }`}
                         aria-label={
                           selected.has(img.id)
-                            ? 'Deselect photo'
-                            : 'Select photo'
+                            ? t('artistGalleryPanelStates.deselectPhoto')
+                            : t('artistGalleryPanelStates.selectPhoto')
                         }
                         aria-pressed={selected.has(img.id)}
                         onClick={() => toggleSelected(img.id)}
@@ -429,6 +435,7 @@ export function ArtistGalleryAddIcon({
 }: {
   onCreated: (images: PublicPressKitImage[]) => void;
 }) {
+  const { t } = useTranslation('web');
   const inputRef = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -460,13 +467,24 @@ export function ArtistGalleryAddIcon({
 
   return (
     <div className="flex flex-col items-start gap-1">
-      <Tooltip content={busy ? 'Uploading…' : 'Add gallery images'} side="top">
+      <Tooltip
+        content={
+          busy
+            ? t('artistGalleryPanelStates.uploading')
+            : t('artistGalleryPanelStates.addGalleryImages')
+        }
+        side="top"
+      >
         <Button
           type="button"
           size="icon-sm"
           variant="secondary"
           disabled={busy}
-          aria-label={busy ? 'Uploading gallery images' : 'Add gallery images'}
+          aria-label={
+            busy
+              ? t('artistGalleryPanelStates.uploadingGalleryImages')
+              : t('artistGalleryPanelStates.addGalleryImages')
+          }
           onClick={() => inputRef.current?.click()}
         >
           <ImagePlusIcon size={16} />

@@ -52,7 +52,9 @@ export function DiscoverWaveformPlayer({
             }
           }}
           aria-label={
-            isPlaying ? 'Pause selected track' : 'Play selected track'
+            isPlaying
+              ? t('discoverWaveformPlayerStates.pauseSelectedTrack')
+              : t('discoverWaveformPlayerStates.playSelectedTrack')
           }
         >
           {isPlaying ? <PauseIcon size={17} /> : <PlayIcon size={17} />}

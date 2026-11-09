@@ -155,7 +155,9 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
               disabled={exporting}
               onClick={startExport}
             >
-              {exporting ? 'Sending…' : 'Try again'}
+              {exporting
+                ? t('trackExportPanelStates.sending')
+                : t('trackExportPanelStates.tryAgain')}
             </Button>
           </>
         ) : status ? (
@@ -172,7 +174,9 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
             onClick={startExport}
           >
             <UploadIcon size={14} className="mr-1.5" aria-hidden />
-            {exporting ? 'Adding…' : 'Export'}
+            {exporting
+              ? t('trackExportPanelStates.adding')
+              : t('trackExportPanelStates.export')}
           </Button>
         )}
       </div>

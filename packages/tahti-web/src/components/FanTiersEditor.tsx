@@ -142,32 +142,32 @@ export function FanTiersEditor() {
         />
       ) : (
         <ul className="flex flex-col gap-2">
-          {tiers.map((t) => (
+          {tiers.map((tier) => (
             <li
-              key={t.id}
+              key={tier.id}
               className="border-border flex flex-wrap items-center justify-between gap-2 rounded-lg border px-3 py-2 text-sm"
             >
               <div className="min-w-0">
                 <div className="font-medium">
-                  {t.name}{' '}
+                  {tier.name}{' '}
                   <span className="text-foreground-secondary">
-                    {euros(t.amountCents)}/mo
+                    {euros(tier.amountCents)}/mo
                   </span>
-                  {t.active === false ? (
+                  {tier.active === false ? (
                     <span className="text-foreground-secondary">
                       {' '}
                       · inactive
                     </span>
                   ) : null}
                 </div>
-                {t.description && (
+                {tier.description && (
                   <p className="text-foreground-secondary text-xs">
-                    {t.description}
+                    {tier.description}
                   </p>
                 )}
-                {t.perks && t.perks.length > 0 && (
+                {tier.perks && tier.perks.length > 0 && (
                   <p className="text-foreground-secondary text-[10px]">
-                    {t.perks.map(humanizeFanTierPerk).join(', ')}
+                    {tier.perks.map(humanizeFanTierPerk).join(', ')}
                   </p>
                 )}
               </div>
@@ -175,16 +175,20 @@ export function FanTiersEditor() {
                 size="sm"
                 variant="secondary"
                 onClick={() => {
-                  void setFanTierActive(t.id, t.active === false).then((r) => {
-                    if (!r.ok) {
-                      setMsg(r.error);
-                      return;
-                    }
-                    reload();
-                  });
+                  void setFanTierActive(tier.id, tier.active === false).then(
+                    (r) => {
+                      if (!r.ok) {
+                        setMsg(r.error);
+                        return;
+                      }
+                      reload();
+                    },
+                  );
                 }}
               >
-                {t.active === false ? 'Activate' : 'Deactivate'}
+                {tier.active === false
+                  ? t('fanTiersEditorStates.activate')
+                  : t('fanTiersEditorStates.deactivate')}
               </Button>
             </li>
           ))}
@@ -268,7 +272,9 @@ export function FanTiersEditor() {
             <Dialog.Close>{t('fanTiersEditor.cancel')}</Dialog.Close>
             <Button type="submit" disabled={busy || !name.trim()}>
               <PlusIcon size={16} aria-hidden className="mr-1.5" />
-              {busy ? 'Creating…' : 'Create tier'}
+              {busy
+                ? t('fanTiersEditorStates.creating')
+                : t('fanTiersEditorStates.createTier')}
             </Button>
           </Dialog.Actions>
         </form>

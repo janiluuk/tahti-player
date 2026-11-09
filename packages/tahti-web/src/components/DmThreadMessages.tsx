@@ -66,8 +66,8 @@ export function DmThreadMessages({
             {loadingOlder
               ? 'Loading…'
               : olderError
-                ? 'Try again'
-                : 'Load older messages'}
+                ? t('dmThreadMessagesStates.tryAgain')
+                : t('dmThreadMessagesStates.loadOlderMessages')}
           </Button>
         </div>
       )}

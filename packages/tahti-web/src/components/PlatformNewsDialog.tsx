@@ -111,7 +111,9 @@ export function PlatformNewsDialog({
                   type="submit"
                   disabled={busy || !headline.trim() || !summary.trim()}
                 >
-                  {busy ? 'Saving…' : 'Save article'}
+                  {busy
+                    ? t('platformNewsDialogStates.saving')
+                    : t('platformNewsDialogStates.saveArticle')}
                 </Button>
                 <Button
                   type="button"

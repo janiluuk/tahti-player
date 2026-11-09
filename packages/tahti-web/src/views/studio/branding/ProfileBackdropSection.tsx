@@ -73,9 +73,13 @@ export function ProfileBackdropSection({
         ) : null}
         <FilePicker
           labels={{
-            title: backdropUrl ? 'Replace backdrop' : 'Add a backdrop',
+            title: backdropUrl
+              ? t('profileBackdropSectionStates.replaceBackdrop')
+              : t('profileBackdropSectionStates.addABackdrop'),
             description: t('profileBackdropSectionFields.jpegPngOrWebpWide'),
-            browse: busy ? 'Uploading…' : 'Choose image',
+            browse: busy
+              ? t('profileBackdropSectionStates.uploading')
+              : t('profileBackdropSectionStates.chooseImage'),
           }}
           accept="image/jpeg,image/png,image/webp"
           disabled={busy}

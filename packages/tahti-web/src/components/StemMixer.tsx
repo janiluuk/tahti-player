@@ -125,7 +125,11 @@ export function StemMixer({
         <Button
           size="sm"
           variant="secondary"
-          aria-label={playing ? 'Pause all stems' : 'Play all stems'}
+          aria-label={
+            playing
+              ? t('stemMixerStates.pauseAllStems')
+              : t('stemMixerStates.playAllStems')
+          }
           aria-pressed={playing}
           onClick={togglePlay}
         >

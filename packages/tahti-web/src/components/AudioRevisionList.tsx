@@ -248,7 +248,9 @@ export function AudioRevisionList({
           labels={{
             title: t('audioRevisionListFields.saveANewAudioRevision'),
             description: t('audioRevisionListFields.wavFlacAiffMp3M4a'),
-            browse: file ? 'Choose another file' : 'Choose audio file',
+            browse: file
+              ? t('audioRevisionListStates.chooseAnotherFile')
+              : t('audioRevisionListStates.chooseAudioFile'),
           }}
           accept="audio/*,.flac,.wav,.mp3,.aiff"
           selectedFiles={file ? [file] : []}
@@ -267,7 +269,9 @@ export function AudioRevisionList({
           onChange={(event) => setLabel(event.target.value)}
         />
         <Button size="sm" disabled={!file || uploading} type="submit">
-          {uploading ? 'Saving revision…' : 'Save as new revision'}
+          {uploading
+            ? t('audioRevisionListStates.savingRevision')
+            : t('audioRevisionListStates.saveAsNewRevision')}
         </Button>
       </form>
 
@@ -422,7 +426,9 @@ export function AudioRevisionList({
                       ) : (
                         <PlayIcon size={14} aria-hidden className="mr-1.5" />
                       )}
-                      {isPlaying ? 'Pause' : 'Preview'}
+                      {isPlaying
+                        ? t('audioRevisionListStates.pause')
+                        : t('audioRevisionListStates.preview')}
                     </Button>
                   ) : null}
                   {version.status === 'READY' ? (
@@ -442,8 +448,8 @@ export function AudioRevisionList({
                       onClick={() => onActivate(version.id)}
                     >
                       {versionBusy === version.id
-                        ? 'Switching…'
-                        : 'Use this version'}
+                        ? t('audioRevisionListStates.switching')
+                        : t('audioRevisionListStates.useThisVersion')}
                     </Button>
                   ) : null}
                 </div>

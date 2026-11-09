@@ -49,7 +49,9 @@ export function StudioHomeView() {
                 variant="pill"
                 color={user.isMember ? 'green' : 'secondary'}
               >
-                {user.isMember ? 'Member' : 'Community account'}
+                {user.isMember
+                  ? t('studioHomeViewStates.member')
+                  : t('studioHomeViewStates.communityAccount')}
               </Badge>
             </div>
           ) : null}

@@ -128,7 +128,9 @@ export function MikseriImportPanel({
           }
         >
           <PlusIcon size={15} aria-hidden />
-          {busy ? 'Adding…' : 'Add embed'}
+          {busy
+            ? t('mikseriImportPanelStates.adding')
+            : t('mikseriImportPanelStates.addEmbed')}
         </Button>
       </form>
     </StudioPanel>

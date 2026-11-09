@@ -548,8 +548,12 @@ function ProEditor({ soundId }: { soundId: string }) {
                           : sessionSync === 'syncing'
                             ? 'Syncing session…'
                             : sessionSync === 'local'
-                              ? 'Local only — server sync unavailable. OPFS autosave still applies.'
-                              : 'Open Multitrack to link an editor project for this sound.'}
+                              ? t(
+                                  'studioProEditorViewStates.localOnlyServerSyncUnavailable',
+                                )
+                              : t(
+                                  'studioProEditorViewStates.openMultitrackToLinkAn',
+                                )}
                       </p>
                       <Input
                         label={t('proEditor.versionLabel')}

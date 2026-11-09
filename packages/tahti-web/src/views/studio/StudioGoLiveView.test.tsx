@@ -12,6 +12,7 @@ import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { BroadcastPreflight } from '../../api/broadcast';
+import { applyLocale } from '../../lib/locale';
 import { useAuthStore } from '../../stores/authStore';
 import { signalAnnouncement } from './go-live/SignalPanel';
 import { StudioGoLiveView } from './StudioGoLiveView';
@@ -309,5 +310,21 @@ describe('StudioGoLiveView signal announcement', () => {
       'No signal from your encoder.',
     );
     expect(signalAnnouncement(false, true, true)).toMatch(/used up/);
+  });
+
+  it('words each signal state in Finnish', async () => {
+    await act(async () => {
+      await applyLocale('fi_FI');
+    });
+    try {
+      expect(signalAnnouncement(true, true, false)).toBe(
+        'Lähetyksesi on käynnissä.',
+      );
+      expect(signalAnnouncement(false, true, true)).toMatch(/käytetty/);
+    } finally {
+      await act(async () => {
+        await applyLocale('en_US');
+      });
+    }
   });
 });

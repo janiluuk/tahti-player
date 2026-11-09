@@ -38,7 +38,9 @@ function PageCommentRow({ comment }: { comment: MapComment }) {
     >
       <div className="mb-1 flex flex-wrap items-center gap-1.5">
         <Badge variant="pill" color={resolved ? 'green' : 'orange'}>
-          {resolved ? 'Resolved' : 'Open'}
+          {resolved
+            ? t('adminPageCommentsPanelStates.resolved')
+            : t('adminPageCommentsPanelStates.open')}
         </Badge>
         <ListingDate
           value={comment.submittedAt}

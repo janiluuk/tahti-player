@@ -82,7 +82,11 @@ export function SoundHeader({
       actions={
         <>
           <Tooltip
-            content={pinned ? 'Unpin from page' : 'Pin to page'}
+            content={
+              pinned
+                ? t('soundHeaderStates.unpinFromPage')
+                : t('soundHeaderStates.pinToPage')
+            }
             side="top"
           >
             <Button
@@ -91,7 +95,11 @@ export function SoundHeader({
               className="bg-background border-border rounded-md border-(length:--border-width)"
               disabled={pinBusy}
               onClick={() => void togglePin()}
-              aria-label={pinned ? 'Unpin from page' : 'Pin to page'}
+              aria-label={
+                pinned
+                  ? t('soundHeaderStates.unpinFromPage')
+                  : t('soundHeaderStates.pinToPage')
+              }
             >
               {pinned ? (
                 <PinOffIcon size={16} aria-hidden />
@@ -121,14 +129,18 @@ export function SoundHeader({
                 onClick={onNormalize}
                 icon={<GaugeIcon size={16} aria-hidden />}
               >
-                {quickBusy === 'normalize' ? 'Normalizing…' : 'Normalize audio'}
+                {quickBusy === 'normalize'
+                  ? t('soundHeaderStates.normalizing')
+                  : t('soundHeaderStates.normalizeAudio')}
               </TrackContextMenu.Action>
               <TrackContextMenu.Action
                 disabled={quickBusy !== null}
                 onClick={onAutoTrim}
                 icon={<ScissorsIcon size={16} aria-hidden />}
               >
-                {quickBusy === 'trim' ? 'Trimming silence…' : 'Trim silence'}
+                {quickBusy === 'trim'
+                  ? t('soundHeaderStates.trimmingSilence')
+                  : t('soundHeaderStates.trimSilence')}
               </TrackContextMenu.Action>
               {masteringEnabled && (
                 <TrackContextMenu.Action
@@ -181,12 +193,23 @@ export function SoundHeader({
       data-testid="studio-sound-social-header"
     >
       <div className="flex items-center gap-4">
-        <Tooltip content={isPlaying ? 'Pause track' : 'Play track'} side="top">
+        <Tooltip
+          content={
+            isPlaying
+              ? t('soundHeaderStates.pauseTrack')
+              : t('soundHeaderStates.playTrack')
+          }
+          side="top"
+        >
           <Button
             size="icon"
             className="size-14 shrink-0 rounded-full shadow-xl"
             disabled={playBusy || notReady || hasError}
-            aria-label={isPlaying ? 'Pause track' : 'Play track'}
+            aria-label={
+              isPlaying
+                ? t('soundHeaderStates.pauseTrack')
+                : t('soundHeaderStates.playTrack')
+            }
             onClick={() => {
               if (isPlaying) {
                 setPlayerStatus('paused');

@@ -9,11 +9,15 @@ import {
   type AssociationProfile,
   type GovernanceAuditor,
 } from '../../api/governance-association';
+import { webT } from '../../lib/webT';
 import { PageEmpty, PageError } from '../PageStates';
 import { GovernancePanel } from './GovernancePanel';
 
 function auditorRole(auditor: GovernanceAuditor): string {
-  const role = auditor.kind === 'AUDITOR' ? 'Auditor' : 'Operations inspector';
+  const role =
+    auditor.kind === 'AUDITOR'
+      ? webT()('associationPanelStates.auditor')
+      : webT()('associationPanelStates.operationsInspector');
   return auditor.deputy ? `Deputy ${role.toLowerCase()}` : role;
 }
 

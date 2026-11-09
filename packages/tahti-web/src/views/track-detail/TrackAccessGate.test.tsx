@@ -15,6 +15,7 @@ import {
 import type { ComponentProps } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { applyLocale } from '../../lib/locale';
 import { TrackAccessGate } from './TrackAccessGate';
 
 type Props = ComponentProps<typeof TrackAccessGate>;
@@ -94,5 +95,22 @@ describe('TrackAccessGate', () => {
     expect(
       screen.getByRole('button', { name: 'Sign in to listen' }),
     ).toBeTruthy();
+  });
+
+  it('renders in Finnish', async () => {
+    await act(async () => {
+      await applyLocale('fi_FI');
+    });
+    try {
+      await renderGate();
+      expect(screen.getAllByText('Vain fanitilaajat').length).toBeGreaterThan(
+        0,
+      );
+      expect(screen.getByText('Tilaa kuunnellaksesi')).toBeTruthy();
+    } finally {
+      await act(async () => {
+        await applyLocale('en_US');
+      });
+    }
   });
 });

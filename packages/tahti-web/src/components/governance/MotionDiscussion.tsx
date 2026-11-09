@@ -107,7 +107,9 @@ export function MotionDiscussion({
             setExpanded((open) => !open);
           }}
         >
-          {expanded ? 'Hide discussion' : 'Discussion'}
+          {expanded
+            ? t('motionDiscussionStates.hideDiscussion')
+            : t('motionDiscussionStates.discussion')}
         </Button>
       </div>
 
@@ -201,8 +203,8 @@ export function MotionDiscussion({
         title={t('motionDiscussion.removeThisComment')}
         description={
           removing && removing.authorId !== user?.id
-            ? 'It is replaced by "Comment removed." for every member, and the removal is logged.'
-            : 'It is replaced by "Comment removed." for every member.'
+            ? t('motionDiscussionStates.itIsReplacedByComment')
+            : t('motionDiscussionStates.itIsReplacedByComment2')
         }
         confirmLabel={t('motionDiscussion.remove')}
         onCancel={() => setRemoving(null)}

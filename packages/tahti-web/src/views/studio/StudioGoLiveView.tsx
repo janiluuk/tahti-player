@@ -63,7 +63,9 @@ function PrepPanel({ state }: { state: ReturnType<typeof useGoLiveState> }) {
       <div className="flex items-center justify-between gap-3">
         <div>
           <p className="text-foreground-secondary text-xs font-semibold tracking-[0.16em] uppercase">
-            {isBroadcastLive ? 'On air' : 'Before you start'}
+            {isBroadcastLive
+              ? t('studioGoLiveViewStates.onAir')
+              : t('studioGoLiveViewStates.beforeYouStart')}
           </p>
           {showInfoConfirmed && <ShowInfoConfirmed />}
         </div>

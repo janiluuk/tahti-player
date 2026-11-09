@@ -183,7 +183,9 @@ function ArtistMoreMenu({
           ) : null}
           {canBlock ? (
             <Popover.Item icon={<BanIcon size={16} />} onClick={block.toggle}>
-              {block.blocked ? 'Unblock' : 'Block'}
+              {block.blocked
+                ? t('artistProfileSectionsStates.unblock')
+                : t('artistProfileSectionsStates.block')}
             </Popover.Item>
           ) : null}
         </Popover.Menu>

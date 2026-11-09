@@ -70,7 +70,9 @@ export function TextLayerPanel({ slug }: { slug: string }) {
       description={t('textLayerPanel.aStyledHeadlineShownOn')}
       action={
         <Button size="sm" onClick={() => void save()} disabled={saving}>
-          {saving ? 'Saving…' : 'Save text layer'}
+          {saving
+            ? t('textLayerPanelStates.saving')
+            : t('textLayerPanelStates.saveTextLayer')}
         </Button>
       }
     >

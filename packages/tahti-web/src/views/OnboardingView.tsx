@@ -493,7 +493,9 @@ export function OnboardingView() {
               disabled={saving || (slugChanged && slugStatus === 'taken')}
               onClick={() => void finish(false)}
             >
-              {saving ? 'Saving…' : 'Finish setup'}
+              {saving
+                ? t('onboardingViewStates.saving')
+                : t('onboardingViewStates.finishSetup')}
             </Button>
           </div>
         </>

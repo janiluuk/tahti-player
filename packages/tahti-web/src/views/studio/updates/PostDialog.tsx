@@ -148,8 +148,8 @@ export function PostDialog({
       const savedMessage = isScheduledPost(result.data)
         ? `Post scheduled for ${new Date(result.data.publishAt).toLocaleString()}.`
         : editing
-          ? 'Post saved.'
-          : 'Post published.';
+          ? t('postDialogStates.postSaved')
+          : t('postDialogStates.postPublished');
       if (editing) {
         toast.success(savedMessage);
       } else {
@@ -174,8 +174,8 @@ export function PostDialog({
     : editing
       ? 'Save'
       : scheduling
-        ? 'Schedule'
-        : 'Publish';
+        ? t('postDialogStates.schedule')
+        : t('postDialogStates.publish');
   const SubmitIcon = editing
     ? SaveIcon
     : scheduling
@@ -194,7 +194,9 @@ export function PostDialog({
           <Dialog.Title>
             <span className="inline-flex items-center gap-2">
               <NewspaperIcon size={18} aria-hidden />
-              {editing ? 'Edit post' : 'New post'}
+              {editing
+                ? t('postDialogStates.editPost')
+                : t('postDialogStates.newPost')}
             </span>
           </Dialog.Title>
           <div className="mt-4 flex flex-col gap-3">
@@ -250,8 +252,8 @@ export function PostDialog({
                 type="datetime-local"
                 description={
                   editing
-                    ? 'Your local time. Clear it to publish now.'
-                    : 'Your local time. Leave empty to publish now.'
+                    ? t('postDialogStates.yourLocalTimeClearIt')
+                    : t('postDialogStates.yourLocalTimeLeaveEmpty')
                 }
                 value={publishAt}
                 onChange={(e) => setPublishAt(e.target.value)}
@@ -261,9 +263,13 @@ export function PostDialog({
             <FilePicker
               accept="image/jpeg,image/png,image/webp"
               labels={{
-                title: editing ? 'Add an image' : 'Post image',
+                title: editing
+                  ? t('postDialogStates.addAnImage')
+                  : t('postDialogStates.postImage'),
                 description: t('postDialogFields.jpegPngOrWebpOne'),
-                browse: image ? 'Choose another image' : 'Choose image',
+                browse: image
+                  ? t('postDialogStates.chooseAnotherImage')
+                  : t('postDialogStates.chooseImage'),
               }}
               selectedFiles={image ? [image] : []}
               onFiles={(files) => {

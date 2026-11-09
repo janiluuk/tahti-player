@@ -61,8 +61,8 @@ export function StudioRevenueView() {
   const pageTitle = showTiers
     ? 'Memberships'
     : showStore
-      ? 'Store'
-      : 'Earnings';
+      ? t('studioRevenueViewStates.store')
+      : t('studioRevenueViewStates.earnings');
   const movedFrom = movedSettingsSection(search.movedFrom);
   const [connect, setConnect] = useState<FanConnectStatus | null>(null);
   const [fanPayouts, setFanPayouts] = useState<FanPayoutStats | null>(null);

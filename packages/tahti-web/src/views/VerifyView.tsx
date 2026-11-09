@@ -56,7 +56,9 @@ export function VerifyView() {
     <div className="mx-auto flex max-w-md flex-col gap-6">
       <div>
         <h1 className="font-display text-3xl font-extrabold tracking-tight">
-          {ok ? 'Email verified' : 'Verify email'}
+          {ok
+            ? t('verifyViewStates.emailVerified')
+            : t('verifyViewStates.verifyEmail')}
         </h1>
         <p className="text-foreground-secondary mt-1 text-sm">
           Open the link from your signup email, or paste the token below. Calls{' '}
@@ -94,7 +96,9 @@ export function VerifyView() {
             <p className="text-foreground-secondary text-sm">{message}</p>
           )}
           <Button disabled={loading || !token.trim()} type="submit">
-            {loading ? 'Verifying…' : 'Verify email'}
+            {loading
+              ? t('verifyViewStates.verifying')
+              : t('verifyViewStates.verifyEmail')}
           </Button>
         </form>
       )}

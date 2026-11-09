@@ -393,7 +393,11 @@ export function ClipEditorDialog({
                 ref={audio}
                 src={audioUrl ?? undefined}
                 controls
-                aria-label={`${mode === 'original' ? 'Original' : 'Processed'} clip preview`}
+                aria-label={
+                  mode === 'original'
+                    ? t('clipEditorDialogStates.originalPreview')
+                    : t('clipEditorDialogStates.processedPreview')
+                }
                 className="w-full"
                 onLoadedMetadata={(e) => {
                   const mediaDuration = e.currentTarget.duration;
@@ -483,7 +487,11 @@ export function ClipEditorDialog({
                   {(['startSec', 'endSec'] as const).map((key) => (
                     <Slider
                       key={key}
-                      label={key === 'startSec' ? 'Trim start' : 'Trim end'}
+                      label={
+                        key === 'startSec'
+                          ? t('clipEditorDialogStates.trimStart')
+                          : t('clipEditorDialogStates.trimEnd')
+                      }
                       min={0}
                       max={duration}
                       step={0.01}
@@ -570,15 +578,15 @@ export function ClipEditorDialog({
                 {pending
                   ? 'Rendering preview…'
                   : busy
-                    ? 'Working…'
-                    : 'Generate preview'}
+                    ? t('clipEditorDialogStates.working')
+                    : t('clipEditorDialogStates.generatePreview')}
               </Button>
               <p role="status" className="text-sm">
                 {pending
                   ? 'Your current on-air clip is unchanged while this preview renders.'
                   : previewReady
-                    ? 'Preview ready. Listen to Processed, then save.'
-                    : 'Generate a preview to hear and save these changes.'}
+                    ? t('clipEditorDialogStates.previewReadyListenToProcessed')
+                    : t('clipEditorDialogStates.generateAPreviewToHear')}
               </p>
             </section>
             <section

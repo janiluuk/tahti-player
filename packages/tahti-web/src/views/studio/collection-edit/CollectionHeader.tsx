@@ -94,7 +94,11 @@ export function CollectionHeader({
           {editing ? (
             <div className="group relative">
               <Tooltip
-                content={backdropUrl ? 'Preview backdrop' : 'Change backdrop'}
+                content={
+                  backdropUrl
+                    ? t('collectionHeaderStates.previewBackdrop')
+                    : t('collectionHeaderStates.changeBackdrop')
+                }
                 side="top"
               >
                 <Button
@@ -102,7 +106,9 @@ export function CollectionHeader({
                   size="icon-sm"
                   className="bg-background border-border rounded-md border-(length:--border-width)"
                   aria-label={
-                    backdropUrl ? 'Preview backdrop' : 'Change backdrop'
+                    backdropUrl
+                      ? t('collectionHeaderStates.previewBackdrop')
+                      : t('collectionHeaderStates.changeBackdrop')
                   }
                   onClick={() =>
                     backdropUrl

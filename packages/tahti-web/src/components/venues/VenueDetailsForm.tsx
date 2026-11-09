@@ -112,7 +112,9 @@ export function VenueDetailsForm({
       {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={busy}>
-          {busy ? 'Saving…' : 'Save details'}
+          {busy
+            ? t('venueDetailsFormStates.saving')
+            : t('venueDetailsFormStates.saveDetails')}
         </Button>
         <Button
           type="button"

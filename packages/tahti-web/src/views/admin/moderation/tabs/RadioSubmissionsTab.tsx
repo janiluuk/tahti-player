@@ -157,7 +157,9 @@ export function RadioSubmissionsTab() {
                     onClick={() => void playActive(active)}
                   >
                     <PlayIcon size={16} aria-hidden className="mr-1.5" />
-                    {busyId === active.id ? 'Loading…' : 'Play'}
+                    {busyId === active.id
+                      ? t('radioSubmissionsTabStates.loading')
+                      : t('radioSubmissionsTabStates.play')}
                   </Button>
                 </div>
               </div>

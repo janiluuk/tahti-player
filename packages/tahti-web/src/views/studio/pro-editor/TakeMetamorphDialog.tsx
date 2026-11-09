@@ -329,7 +329,9 @@ export function TakeMetamorphDialog({
           onClick={() => void addToMultitrack()}
         >
           <PlusIcon size={16} aria-hidden />
-          {busy === 'add' ? 'Adding…' : 'Add to Multitrack'}
+          {busy === 'add'
+            ? t('takeMetamorphDialogStates.adding')
+            : t('takeMetamorphDialogStates.addToMultitrack')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

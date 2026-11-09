@@ -46,8 +46,8 @@ export function RegisterDialog({
       </Dialog.Title>
       <Dialog.Description>
         {editing
-          ? 'Changes the name, description, author, cover and categories. The slug and type stay as registered.'
-          : 'Creates a draft add-on. It stays invisible everywhere until a bundle version is published (the upload button on its card) and approved.'}
+          ? t('registerDialogStates.changesTheNameDescriptionAuthor')
+          : t('registerDialogStates.createsADraftAddOn')}
       </Dialog.Description>
       <form
         onSubmit={(event) => {

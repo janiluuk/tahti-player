@@ -62,7 +62,9 @@ export function ImageUploadField({
         labels={{
           title: label,
           description,
-          browse: file ? 'Choose another image' : 'Choose image',
+          browse: file
+            ? t('imageUploadFieldStates.chooseAnotherImage')
+            : t('imageUploadFieldStates.chooseImage'),
         }}
         accept={IMAGE_UPLOAD_ACCEPT_ATTR}
         selectedFiles={file ? [file] : []}

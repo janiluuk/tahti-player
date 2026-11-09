@@ -150,7 +150,9 @@ export function ChannelRotationPanel() {
           disabled={loading || !slugInput.trim()}
         >
           <SearchIcon size={14} aria-hidden className="mr-1.5" />
-          {loading ? 'Loading…' : 'Open rotation'}
+          {loading
+            ? t('channelRotationPanelStates.loading')
+            : t('channelRotationPanelStates.openRotation')}
         </Button>
       </form>
 

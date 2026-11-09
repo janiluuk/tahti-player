@@ -147,7 +147,9 @@ export function SpotifyCard({ plugin }: { plugin: ServicePlugin }) {
             placeholder="https://open.spotify.com/artist/…"
           />
           <Button size="sm" type="submit" disabled={busy || !artistUrl.trim()}>
-            {busy ? 'Linking…' : 'Link profile'}
+            {busy
+              ? t('spotifyCardStates.linking')
+              : t('spotifyCardStates.linkProfile')}
           </Button>
         </form>
       )}

@@ -28,8 +28,8 @@ export function ListeningPartyJoinButton({
         <span className="text-accent-green-strong inline-flex items-center gap-1.5 text-sm font-medium">
           <HeadphonesIcon size={16} aria-hidden />
           {state === 'LIVE'
-            ? 'Listening along'
-            : 'You are in; playback starts at showtime'}
+            ? t('listeningPartyJoinButtonStates.listeningAlong')
+            : t('listeningPartyJoinButtonStates.youAreInPlaybackStarts')}
         </span>
         <Button size="sm" variant="secondary" onClick={onLeave}>
           <LogOutIcon size={14} aria-hidden className="mr-1.5" />
@@ -41,7 +41,9 @@ export function ListeningPartyJoinButton({
   return (
     <Button onClick={onJoin}>
       <PlayIcon size={16} aria-hidden className="mr-1.5" />
-      {state === 'LIVE' ? 'Join the party' : 'Join at the start'}
+      {state === 'LIVE'
+        ? t('listeningPartyJoinButtonStates.joinTheParty')
+        : t('listeningPartyJoinButtonStates.joinAtTheStart')}
     </Button>
   );
 }

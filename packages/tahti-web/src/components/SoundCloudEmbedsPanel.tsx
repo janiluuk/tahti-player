@@ -108,7 +108,9 @@ export function SoundCloudEmbedsPanel() {
               />
             </div>
             <Button type="submit" disabled={adding || full || !url.trim()}>
-              {adding ? 'Adding…' : 'Add track'}
+              {adding
+                ? t('soundCloudEmbedsPanelStates.adding')
+                : t('soundCloudEmbedsPanelStates.addTrack')}
             </Button>
           </form>
           {embeds && embeds.length > 0 ? (

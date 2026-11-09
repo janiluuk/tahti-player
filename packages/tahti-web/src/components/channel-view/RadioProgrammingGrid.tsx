@@ -194,7 +194,9 @@ function ProgrammingWeek({
                   )}
                   <span className="text-foreground-secondary text-xs">
                     {slot.note ||
-                      (slot.showType === 'TALK' ? 'Talk show' : 'Live set')}
+                      (slot.showType === 'TALK'
+                        ? t('radioProgrammingGridStates.talkShow')
+                        : t('radioProgrammingGridStates.liveSet'))}
                   </span>
                   {onAir ? (
                     <Badge variant="pill" color="red">

@@ -372,7 +372,9 @@ export function RadioBrowserDirectoryCard() {
                               setGenresExpanded((current) => !current)
                             }
                           >
-                            {genresExpanded ? 'Hide genres' : 'All genres'}
+                            {genresExpanded
+                              ? t('radioBrowserDirectoryCardStates.hideGenres')
+                              : t('radioBrowserDirectoryCardStates.allGenres')}
                           </Button>
                           {genresExpanded || genres.length > 0 ? (
                             <FilterChips
@@ -406,7 +408,11 @@ export function RadioBrowserDirectoryCard() {
                     </div>
                     <div className="flex flex-col gap-2">
                       <h3 className="font-display text-sm font-bold tracking-wide uppercase">
-                        {isFiltered ? 'Results' : 'Popular stations'}
+                        {isFiltered
+                          ? t('radioBrowserDirectoryCardStates.results')
+                          : t(
+                              'radioBrowserDirectoryCardStates.popularStations',
+                            )}
                         {stationCount
                           ? ` · ${stationCount.toLocaleString()} total`
                           : ''}

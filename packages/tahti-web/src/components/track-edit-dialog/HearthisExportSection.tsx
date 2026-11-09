@@ -118,8 +118,8 @@ export function HearthisExportSection({
             : status === 'delivered'
               ? 'Push again'
               : status === 'failed'
-                ? 'Try again'
-                : 'Push'}
+                ? t('hearthisExportSectionStates.tryAgain')
+                : t('hearthisExportSectionStates.push')}
         </Button>
       ) : null}
     </div>

@@ -180,7 +180,9 @@ export function VenueShowsSection({
           {error ? <InlineError>{error}</InlineError> : null}
           <div className="flex gap-2">
             <Button type="submit" size="sm" disabled={busy}>
-              {busy ? 'Booking…' : 'Book the show'}
+              {busy
+                ? t('venueShowsSectionStates.booking')
+                : t('venueShowsSectionStates.bookTheShow')}
             </Button>
             <Button
               type="button"

@@ -146,7 +146,9 @@ export function AgendaItemsPanel({ meetingId }: { meetingId: string }) {
         />
         <div>
           <Button type="submit" size="sm" disabled={saving || !title.trim()}>
-            {saving ? 'Adding…' : 'Add to the agenda'}
+            {saving
+              ? t('agendaItemsPanelStates.adding')
+              : t('agendaItemsPanelStates.addToTheAgenda')}
           </Button>
         </div>
       </form>

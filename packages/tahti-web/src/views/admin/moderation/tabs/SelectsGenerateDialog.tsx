@@ -81,8 +81,14 @@ export function SelectsGenerateDialog({
               }
               onGenerated(
                 result.added === 0
-                  ? 'No new tracks to add: every playable top track is already in the rotation.'
-                  : `${mode === 'replace' ? 'Replaced the rotation with' : 'Added'} ${result.added} ${result.added === 1 ? 'track' : 'tracks'} from the top list.`,
+                  ? t('selectsGenerateDialogStates.noNewTracks')
+                  : mode === 'replace'
+                    ? t('selectsGenerateDialogStates.replacedRotation', {
+                        count: result.added,
+                      })
+                    : t('selectsGenerateDialogStates.addedTracks', {
+                        count: result.added,
+                      }),
               );
             });
           }}
@@ -90,8 +96,8 @@ export function SelectsGenerateDialog({
           {pending
             ? 'Filling…'
             : mode === 'replace'
-              ? 'Replace rotation'
-              : 'Add tracks'}
+              ? t('selectsGenerateDialogStates.replaceRotation')
+              : t('selectsGenerateDialogStates.addTracks')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

@@ -82,8 +82,8 @@ export function MulticastConfigureDialog({
     if (!streamKey.trim() || (isCustom && !address.trim())) {
       setError(
         isCustom
-          ? 'RTMP address and stream key are required.'
-          : 'Stream key is required.',
+          ? t('multicastConfigureDialogStates.rtmpAddressAndStreamKey')
+          : t('multicastConfigureDialogStates.streamKeyIsRequired'),
       );
       return;
     }
@@ -117,8 +117,8 @@ export function MulticastConfigureDialog({
       <Dialog.Title>Configure {multicastProviderLabel(provider)}</Dialog.Title>
       <Dialog.Description>
         {existing
-          ? 'Update the destination label and whether it mirrors your live stream.'
-          : 'Enter the credential this platform uses for live streaming. Custom RTMP also needs its server address and port.'}
+          ? t('multicastConfigureDialogStates.updateTheDestinationLabelAnd')
+          : t('multicastConfigureDialogStates.enterTheCredentialThisPlatform')}
       </Dialog.Description>
       <form
         onSubmit={(event) => {
@@ -171,11 +171,19 @@ export function MulticastConfigureDialog({
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                label={isCustom ? 'Stream key' : 'Stream key / API key'}
+                label={
+                  isCustom
+                    ? t('multicastConfigureDialogStates.streamKey')
+                    : t('multicastConfigureDialogStates.streamKeyApiKey')
+                }
                 value={streamKey}
                 onChange={(event) => setStreamKey(event.target.value)}
                 placeholder={
-                  isCustom ? 'Paste stream key' : 'Paste platform credential'
+                  isCustom
+                    ? t('multicastConfigureDialogStates.pasteStreamKey')
+                    : t(
+                        'multicastConfigureDialogStates.pastePlatformCredential',
+                      )
                 }
               />
             </>

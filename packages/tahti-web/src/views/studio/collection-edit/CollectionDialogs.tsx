@@ -91,7 +91,9 @@ export function CollectionDialogs({
             labels={{
               title: t('collectionDialogsMore.backdropImages'),
               description: t('collectionDialogsMore.jpegPngWebpOrGif'),
-              browse: uploadingImage ? 'Uploading…' : 'Choose image(s)',
+              browse: uploadingImage
+                ? t('collectionDialogsStates.uploading')
+                : t('collectionDialogsStates.chooseImageS'),
             }}
             accept="image/jpeg,image/png,image/webp,image/gif"
             multiple

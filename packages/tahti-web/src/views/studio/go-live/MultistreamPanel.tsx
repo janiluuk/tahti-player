@@ -99,8 +99,10 @@ export function MultistreamPanel({
                       {target.label || multicastProviderLabel(target.provider)}
                     </p>
                     <p className="text-foreground-secondary text-xs">
-                      {target.enabled ? 'Enabled' : 'Disabled'} · …
-                      {target.keyLast4 ?? '????'}
+                      {target.enabled
+                        ? t('multistreamPanelStates.enabled')
+                        : t('multistreamPanelStates.disabled')}{' '}
+                      · …{target.keyLast4 ?? '????'}
                     </p>
                   </div>
                   <div className="flex gap-1">
@@ -135,7 +137,9 @@ export function MultistreamPanel({
                       }}
                     >
                       <PowerIcon size={14} aria-hidden className="mr-1.5" />
-                      {target.enabled ? 'Disable' : 'Enable'}
+                      {target.enabled
+                        ? t('multistreamPanelStates.disable')
+                        : t('multistreamPanelStates.enable')}
                     </Button>
                     <Tooltip
                       content={t('multistreamPanel.removeDestination')}

@@ -154,8 +154,8 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
                   : 'Anyone with the link'}
                 {' · '}
                 {share.permission === 'DOWNLOAD'
-                  ? 'Play & download'
-                  : 'Play only'}
+                  ? t('soundShareLinksSectionStates.playDownload')
+                  : t('soundShareLinksSectionStates.playOnly')}
                 {' · '}
                 {formatExpiry(share.expiresAt)}
               </span>

@@ -69,7 +69,11 @@ export function RecordingRow({
         >
           {published && <CheckIcon size={11} aria-hidden />}
           {processing && <Loader size="xs" shape="circle" />}
-          {published ? 'Published' : processing ? 'Processing' : 'Draft'}
+          {published
+            ? t('recordingRowStates.published')
+            : processing
+              ? t('recordingRowStates.processing')
+              : t('recordingRowStates.draft')}
         </span>
         {processing ? (
           <p className="text-foreground-secondary mt-0.5 text-xs">

@@ -111,8 +111,10 @@ export function GovernanceMembersView() {
             <PageEmpty
               title={
                 members.length === 0
-                  ? 'No member directory is published yet.'
-                  : 'No members match this search.'
+                  ? t(
+                      'governanceMembersViewStates.noMemberDirectoryIsPublished',
+                    )
+                  : t('governanceMembersViewStates.noMembersMatchThisSearch')
               }
               action={
                 members.length > 0 ? (

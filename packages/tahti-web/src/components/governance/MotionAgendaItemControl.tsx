@@ -49,7 +49,9 @@ export function MotionAgendaItemControl({
         className="w-fit"
         onClick={() => setOpen(true)}
       >
-        {motion.agendaItem ? 'Change agenda item' : 'Choose agenda item'}
+        {motion.agendaItem
+          ? t('motionAgendaItemControlStates.changeAgendaItem')
+          : t('motionAgendaItemControlStates.chooseAgendaItem')}
       </Button>
     );
   }

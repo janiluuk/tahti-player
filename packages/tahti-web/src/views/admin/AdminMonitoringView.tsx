@@ -162,7 +162,9 @@ export function AdminMonitoringView() {
                               );
                             }}
                           >
-                            {active ? 'Clear filter' : 'Filter below'}
+                            {active
+                              ? t('adminMonitoringViewStates.clearFilter')
+                              : t('adminMonitoringViewStates.filterBelow')}
                           </Button>
                         </div>
                       </li>

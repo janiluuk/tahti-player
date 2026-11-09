@@ -335,8 +335,8 @@ export function MessagesView({
                   title={t('empties.selectAConversation')}
                   description={
                     inbox.length === 0
-                      ? 'Search for someone above, or find artists on Discover.'
-                      : 'Pick a thread from the list to read and reply.'
+                      ? t('messagesViewStates.searchForSomeoneAboveOr')
+                      : t('messagesViewStates.pickAThreadFromThe')
                   }
                   action={
                     inbox.length === 0 ? (

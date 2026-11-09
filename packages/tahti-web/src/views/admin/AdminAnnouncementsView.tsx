@@ -146,10 +146,12 @@ export function AdminAnnouncementsView() {
                   disabled={uploading}
                   labels={{
                     title: uploading
-                      ? 'Uploading announcement…'
-                      : 'Announcement clip',
+                      ? t('adminAnnouncementsViewStates.uploadingAnnouncement')
+                      : t('adminAnnouncementsViewStates.announcementClip'),
                     description: t('adminAnnouncementsView.chooseAShortMp3Wav'),
-                    browse: uploading ? 'Uploading…' : 'Choose audio',
+                    browse: uploading
+                      ? t('adminAnnouncementsViewStates.uploading')
+                      : t('adminAnnouncementsViewStates.chooseAudio'),
                   }}
                   onFiles={(files) => {
                     const file = files[0];

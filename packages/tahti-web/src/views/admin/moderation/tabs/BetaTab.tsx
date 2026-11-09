@@ -295,7 +295,9 @@ export function BetaTab() {
                 disabled={busy || !username.trim() || !displayName.trim()}
               >
                 <CheckCircle2Icon size={14} aria-hidden />
-                {busy ? 'Approving…' : 'Approve'}
+                {busy
+                  ? t('betaTabStates.approving')
+                  : t('betaTabStates.approve')}
               </Button>
             </Dialog.Actions>
           </form>
