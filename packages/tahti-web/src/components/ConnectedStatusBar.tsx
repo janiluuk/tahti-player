@@ -16,6 +16,7 @@ import { fetchStudioSounds } from '../api/studio';
 import { fetchStorageUsage } from '../api/studio-extras';
 import type { StudioSound } from '../api/studio-types';
 import { usePolling } from '../hooks/usePolling';
+import { dateLocaleTag } from '../lib/locale';
 import { hasNativePlayer } from '../lib/nativeCapabilities';
 import { getNativeLibrary } from '../lib/nativeLibrary';
 import {
@@ -66,15 +67,15 @@ export function StatusBarContent({
   className,
 }: StatusBarContentProps) {
   const { t } = useTranslation('web');
-  const soundsLabel = `${soundCount.toLocaleString()} track${soundCount === 1 ? '' : 's'}`;
+  const soundsLabel = `${soundCount.toLocaleString(dateLocaleTag())} track${soundCount === 1 ? '' : 's'}`;
   const notificationsLabel =
     unreadNotifications === 0
       ? 'No new notifications'
-      : `${unreadNotifications.toLocaleString()} new notification${unreadNotifications === 1 ? '' : 's'}`;
+      : `${unreadNotifications.toLocaleString(dateLocaleTag())} new notification${unreadNotifications === 1 ? '' : 's'}`;
   const messagesLabel =
     unreadMessages === 0
       ? 'No unread messages'
-      : `${unreadMessages.toLocaleString()} unread message${unreadMessages === 1 ? '' : 's'}`;
+      : `${unreadMessages.toLocaleString(dateLocaleTag())} unread message${unreadMessages === 1 ? '' : 's'}`;
 
   return (
     <div
@@ -93,7 +94,9 @@ export function StatusBarContent({
             aria-label={soundsLabel}
           >
             <MusicIcon size={16} aria-hidden />
-            <span className="tabular-nums">{soundCount.toLocaleString()}</span>
+            <span className="tabular-nums">
+              {soundCount.toLocaleString(dateLocaleTag())}
+            </span>
           </Link>
         </Tooltip>
         <Tooltip content={notificationsLabel} side="top">
@@ -105,7 +108,7 @@ export function StatusBarContent({
           >
             <BellIcon size={16} aria-hidden />
             <span className="tabular-nums">
-              {unreadNotifications.toLocaleString()}
+              {unreadNotifications.toLocaleString(dateLocaleTag())}
             </span>
           </span>
         </Tooltip>
@@ -118,7 +121,7 @@ export function StatusBarContent({
           >
             <MessageSquareIcon size={16} aria-hidden />
             <span className="tabular-nums">
-              {unreadMessages.toLocaleString()}
+              {unreadMessages.toLocaleString(dateLocaleTag())}
             </span>
           </Link>
         </Tooltip>
@@ -147,18 +150,18 @@ export function StatusBarContent({
         ) : null}
         {localTrackCount != null ? (
           <Tooltip
-            content={`Local library: ${localTrackCount.toLocaleString()} track${localTrackCount === 1 ? '' : 's'} on this device`}
+            content={`Local library: ${localTrackCount.toLocaleString(dateLocaleTag())} track${localTrackCount === 1 ? '' : 's'} on this device`}
             side="top"
           >
             <span
               className="text-foreground-secondary inline-flex items-center gap-1.5 px-1.5 py-1"
               data-testid="status-bar-local-library"
               role="img"
-              aria-label={`Local library: ${localTrackCount.toLocaleString()} tracks on this device`}
+              aria-label={`Local library: ${localTrackCount.toLocaleString(dateLocaleTag())} tracks on this device`}
             >
               <FolderIcon size={16} aria-hidden />
               <span className="tabular-nums">
-                {localTrackCount.toLocaleString()}
+                {localTrackCount.toLocaleString(dateLocaleTag())}
               </span>
             </span>
           </Tooltip>

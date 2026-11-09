@@ -13,6 +13,7 @@ import {
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StatNumber } from '../../components/tahti/StatNumber';
+import { dateLocaleTag } from '../../lib/locale';
 
 const RANGES = [
   { id: '7', label: '7 days' },
@@ -83,7 +84,7 @@ export function AdminListeningPanel() {
                   </dt>
                   <dd>
                     <StatNumber className="mt-1 block text-2xl">
-                      {value.toLocaleString()}
+                      {value.toLocaleString(dateLocaleTag())}
                     </StatNumber>
                   </dd>
                 </div>
@@ -117,8 +118,9 @@ export function AdminListeningPanel() {
                         {channel.name}
                       </Link>
                       <span className="text-foreground-secondary shrink-0 text-xs">
-                        {channel.minutes.toLocaleString()} min ·{' '}
-                        {channel.listens.toLocaleString()} listens
+                        {channel.minutes.toLocaleString(dateLocaleTag())} min ·{' '}
+                        {channel.listens.toLocaleString(dateLocaleTag())}{' '}
+                        listens
                       </span>
                     </li>
                   ))}

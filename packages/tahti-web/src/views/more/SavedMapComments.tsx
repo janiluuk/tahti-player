@@ -13,6 +13,7 @@ import {
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ListingDate } from '../../components/ListingDate';
 import { MAP_CASE_GROUPS } from '../../content/mapScreens';
+import { dateLocaleTag } from '../../lib/locale';
 import { downloadMapCommentsCsv } from '../../lib/mapCommentsCsv';
 import { useMapNotesStore, type MapComment } from '../../stores/mapNotesStore';
 
@@ -65,12 +66,18 @@ function commentsToPlainText(comments: MapComment[]): string {
         lines.push(`Pack: ${c.pack}`);
       }
       lines.push(`Comment: ${c.text}`);
-      lines.push(`Submitted: ${new Date(c.submittedAt).toLocaleString()}`);
+      lines.push(
+        `Submitted: ${new Date(c.submittedAt).toLocaleString(dateLocaleTag())}`,
+      );
       if (c.updatedAt) {
-        lines.push(`Updated: ${new Date(c.updatedAt).toLocaleString()}`);
+        lines.push(
+          `Updated: ${new Date(c.updatedAt).toLocaleString(dateLocaleTag())}`,
+        );
       }
       if (c.resolvedAt) {
-        lines.push(`Resolved: ${new Date(c.resolvedAt).toLocaleString()}`);
+        lines.push(
+          `Resolved: ${new Date(c.resolvedAt).toLocaleString(dateLocaleTag())}`,
+        );
       }
       return lines.join('\n');
     })

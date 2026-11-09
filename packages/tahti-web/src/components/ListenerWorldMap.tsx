@@ -3,6 +3,7 @@ import { useMemo, type FC } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 
+import { dateLocaleTag } from '../lib/locale';
 import { PageEmpty } from './PageStates';
 import worldCountryPaths from './worldCountryPaths.json';
 
@@ -108,8 +109,8 @@ export const ListenerWorldMap: FC<ListenerWorldMapProps> = ({
                 >
                   {point ? (
                     <title>
-                      {point.displayName}: {point.count.toLocaleString()}{' '}
-                      {countLabel}
+                      {point.displayName}:{' '}
+                      {point.count.toLocaleString(dateLocaleTag())} {countLabel}
                     </title>
                   ) : null}
                 </path>
@@ -134,8 +135,8 @@ export const ListenerWorldMap: FC<ListenerWorldMapProps> = ({
                   strokeWidth="2"
                 >
                   <title>
-                    {point.displayName}: {point.count.toLocaleString()}{' '}
-                    {countLabel}
+                    {point.displayName}:{' '}
+                    {point.count.toLocaleString(dateLocaleTag())} {countLabel}
                   </title>
                 </circle>
               </g>
@@ -176,7 +177,7 @@ export const ListenerWorldMap: FC<ListenerWorldMapProps> = ({
                   {point.displayName}
                 </span>
                 <strong className="tabular-nums">
-                  {point.count.toLocaleString()}
+                  {point.count.toLocaleString(dateLocaleTag())}
                 </strong>
               </li>
             ))}

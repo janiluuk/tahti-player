@@ -9,6 +9,7 @@ import {
   requestEmailChange,
   type PendingEmailChange,
 } from '../api/account-credentials';
+import { dateLocaleTag } from '../lib/locale';
 
 export function ChangeEmailForm({
   currentEmail,
@@ -69,7 +70,7 @@ export function ChangeEmailForm({
   };
 
   const pendingUntil = pending
-    ? new Date(pending.expiresAt).toLocaleString(undefined, {
+    ? new Date(pending.expiresAt).toLocaleString(dateLocaleTag(), {
         day: 'numeric',
         month: 'short',
         hour: '2-digit',

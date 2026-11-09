@@ -6,6 +6,7 @@ import { ImageReveal, MediaArtwork } from '@tahti-player/ui';
 import type { DiscoverTrackItem } from '../../api/types';
 import { useDiscoverTrackPlayback } from '../../hooks/useDiscoverTrackPlayback';
 import { cn } from '../../lib/cn';
+import { dateLocaleTag } from '../../lib/locale';
 import { STRIPED_ROW } from './listStripes';
 
 export function WidgetTrackRow({
@@ -78,13 +79,13 @@ export function WidgetTrackRow({
       </span>
       {item.listens !== undefined && (
         <span className="text-foreground-secondary shrink-0 text-xs tabular-nums">
-          {item.listens.toLocaleString()} plays
+          {item.listens.toLocaleString(dateLocaleTag())} plays
         </span>
       )}
       {item.loves !== undefined && (
         <span className="text-foreground-secondary flex shrink-0 items-center gap-1 text-xs tabular-nums">
           <HeartIcon size={12} aria-hidden />
-          {item.loves.toLocaleString()}
+          {item.loves.toLocaleString(dateLocaleTag())}
         </span>
       )}
     </Link>

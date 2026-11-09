@@ -17,6 +17,7 @@ import {
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
+import { dateLocaleTag } from '../../lib/locale';
 import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { euros } from './distribution/distribution-helpers';
 import { ReleaseOpsPanel } from './distribution/ReleaseOpsPanel';
@@ -117,7 +118,7 @@ export function StudioDistributionView() {
                     </div>
                     <div className="text-foreground-secondary text-xs">
                       {row.streams != null
-                        ? `${row.streams.toLocaleString()} streams · `
+                        ? `${row.streams.toLocaleString(dateLocaleTag())} streams · `
                         : ''}
                       {euros(row.amountCents)} {row.currency}
                     </div>
