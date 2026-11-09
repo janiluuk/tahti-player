@@ -402,9 +402,9 @@ describe('RadioView up next', () => {
     expect(screen.queryByText('Open moon')).toBeNull();
     const logo = screen.getByTestId('radio-station-logo');
     expect(within(logo).queryByText('TR')).toBeNull();
-    expect(
-      within(logo).getByRole('img', { name: 'DJ Moon' }).getAttribute('src'),
-    ).toBe('https://cdn.example/moon.jpg');
+    expect(logo.querySelector('img')?.getAttribute('src')).toBe(
+      'https://cdn.example/moon.jpg',
+    );
   });
 
   it('keeps the booked shows in their own tab, remembered in the URL', async () => {

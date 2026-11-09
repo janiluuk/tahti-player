@@ -23,6 +23,7 @@ import {
   ExternalLink,
   FilterChips,
   Input,
+  MediaArtwork,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -313,6 +314,13 @@ export function StudioReleasesView() {
                         key={r.id}
                         className="flex flex-wrap items-center gap-2 py-3 text-sm first:pt-0 last:pb-0"
                       >
+                        <MediaArtwork
+                          src={r.artworkUrl}
+                          alt=""
+                          seed={r.id}
+                          size="thumb"
+                          className="size-10 shrink-0 rounded"
+                        />
                         <div className="min-w-0 flex-1">
                           <Link
                             to="/studio/releases/$id"
@@ -340,6 +348,7 @@ export function StudioReleasesView() {
                           to="/studio/releases/$id"
                           params={{ id: r.id }}
                           search={{ edit: true }}
+                          variant="text"
                           label={t('studioReleases.editItem', {
                             title: r.title,
                           })}

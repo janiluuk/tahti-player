@@ -21,6 +21,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
+  StatTile,
   TabLabel,
   Tabs,
   TopList,
@@ -358,58 +359,54 @@ function LibraryStats() {
   return (
     <StudioPanel>
       <div
-        className="grid gap-3 sm:grid-cols-3"
+        className="grid grid-cols-2 gap-3 sm:grid-cols-3"
         data-testid="library-overview-stats"
       >
-        <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
-          <Music2Icon size={18} className="text-primary-strong" aria-hidden />
-          <p className="text-foreground-secondary mt-2 text-xs uppercase">
-            {t('library.totalSounds')}
-          </p>
-          <p className="mt-1 text-2xl font-bold tabular-nums">
-            {soundCount === null || soundsError ? '—' : soundCount}
-          </p>
-        </div>
-        <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
-          <HardDriveIcon
-            size={18}
-            className="text-primary-strong"
-            aria-hidden
-          />
-          <p className="text-foreground-secondary mt-2 text-xs uppercase">
-            {t('library.storageUsed')}
-          </p>
-          <p className="mt-1 text-2xl font-bold tabular-nums">
-            {storage ? formatBytes(storage.usedBytes) : '—'}
-          </p>
-          <p className="text-foreground-secondary text-xs">
-            {storage?.unlimited
+        <StatTile
+          tone="primary"
+          icon={<Music2Icon size={16} />}
+          label={t('library.totalSounds')}
+          value={
+            <span className="tabular-nums">
+              {soundCount === null || soundsError ? '—' : soundCount}
+            </span>
+          }
+        />
+        <StatTile
+          tone="blue"
+          icon={<HardDriveIcon size={16} />}
+          label={t('library.storageUsed')}
+          value={
+            <span className="tabular-nums">
+              {storage ? formatBytes(storage.usedBytes) : '—'}
+            </span>
+          }
+          sublabel={
+            storage?.unlimited
               ? t('library.unlimitedPlan')
               : storage?.quotaBytes
                 ? t('library.storageOf', {
                     size: formatBytes(storage.quotaBytes),
                   })
-                : t('library.storageDefault')}
-          </p>
-        </div>
-        <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
-          <HeadphonesIcon
-            size={18}
-            className="text-primary-strong"
-            aria-hidden
-          />
-          <p className="text-foreground-secondary mt-2 text-xs uppercase">
-            {t('library.topSound')}
-          </p>
-          <p className="mt-1 truncate text-sm font-bold">
-            {topTracks[0]?.title ?? '—'}
-          </p>
-          <p className="text-foreground-secondary text-xs">
-            {topTracks[0]
+                : t('library.storageDefault')
+          }
+        />
+        <StatTile
+          tone="green"
+          className="col-span-2 sm:col-span-1"
+          icon={<HeadphonesIcon size={16} />}
+          label={t('library.topSound')}
+          value={
+            <span className="block truncate text-sm">
+              {topTracks[0]?.title ?? '—'}
+            </span>
+          }
+          sublabel={
+            topTracks[0]
               ? formatPlayCount(topTracks[0].plays)
-              : t('library.noPlaysYet')}
-          </p>
-        </div>
+              : t('library.noPlaysYet')
+          }
+        />
       </div>
       {topTracks.length > 0 ? (
         <div className="mt-4">
