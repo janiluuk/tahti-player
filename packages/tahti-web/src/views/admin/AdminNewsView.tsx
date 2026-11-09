@@ -328,7 +328,7 @@ export function AdminNewsView() {
                               <Trash2Icon
                                 size={14}
                                 aria-hidden
-                                className="text-accent-red mr-1.5"
+                                className="text-accent-red-strong mr-1.5"
                               />
                               {t('adminNews.delete')}
                             </Button>

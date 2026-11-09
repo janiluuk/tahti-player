@@ -125,7 +125,7 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                   <Trash2Icon
                     size={16}
                     aria-hidden
-                    className="text-accent-red mr-1.5"
+                    className="text-accent-red-strong mr-1.5"
                   />
                   {t('studioEditorProjectView.delete')}
                 </Button>

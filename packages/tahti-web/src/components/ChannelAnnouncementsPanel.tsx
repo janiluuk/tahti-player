@@ -315,7 +315,7 @@ export function ChannelAnnouncementsPanel() {
                   setPendingDelete(clip);
                 }}
               >
-                <Trash2Icon className="text-accent-red" size={16} />
+                <Trash2Icon className="text-accent-red-strong" size={16} />
               </Button>
               <details className="basis-full text-xs">
                 <summary className="cursor-pointer">

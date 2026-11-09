@@ -115,7 +115,7 @@ export function ThemeSubmissions({
                     onClick={() => setPendingDelete(theme)}
                   >
                     <Trash2Icon
-                      className="text-accent-red"
+                      className="text-accent-red-strong"
                       size={14}
                       aria-hidden
                     />

@@ -148,7 +148,7 @@ export function MultistreamPanel({
                         aria-label={`Remove ${target.label || target.provider}`}
                       >
                         <Trash2Icon
-                          className="text-accent-red"
+                          className="text-accent-red-strong"
                           size={14}
                           aria-hidden
                         />

@@ -356,7 +356,10 @@ export function ChannelLayersMenu({
                       )}
                       onClick={() => onRemove(item.id)}
                     >
-                      <Trash2Icon className="text-accent-red" size={14} />
+                      <Trash2Icon
+                        className="text-accent-red-strong"
+                        size={14}
+                      />
                     </Button>
                   </Tooltip>
                 </li>

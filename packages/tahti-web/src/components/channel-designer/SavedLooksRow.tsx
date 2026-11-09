@@ -68,7 +68,7 @@ export function SavedLooksRow({
               disabled={presetBusy}
               onClick={() => onRequestDelete(preset)}
             >
-              <Trash2Icon className="text-accent-red" size={14} />
+              <Trash2Icon className="text-accent-red-strong" size={14} />
             </Button>
           </Tooltip>
         </div>

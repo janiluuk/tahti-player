@@ -55,7 +55,7 @@ function ToolButton({
         <Icon
           size={16}
           aria-hidden
-          className={danger ? 'text-accent-red' : undefined}
+          className={danger ? 'text-accent-red-strong' : undefined}
         />
       </Button>
     </Tooltip>

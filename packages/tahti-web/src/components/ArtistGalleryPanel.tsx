@@ -205,7 +205,7 @@ export function ArtistGalleryPanel({
               <Trash2Icon
                 size={14}
                 aria-hidden
-                className="text-accent-red mr-1.5"
+                className="text-accent-red-strong mr-1.5"
               />
               Remove selected ({selected.size})
             </Button>
@@ -329,7 +329,10 @@ export function ArtistGalleryPanel({
                         aria-label={t('artistGalleryPanel.removePhoto')}
                         onClick={() => requestDelete(img.id)}
                       >
-                        <Trash2Icon className="text-accent-red" size={14} />
+                        <Trash2Icon
+                          className="text-accent-red-strong"
+                          size={14}
+                        />
                       </Button>
                     </Tooltip>
                     <div className="absolute inset-x-1.5 bottom-1.5 flex justify-between opacity-0 transition-opacity group-hover:opacity-100">

@@ -252,7 +252,7 @@ export function AddListenWidgetDialog() {
                 onChange={(event) => setLabel(event.target.value)}
               />
               {error ? (
-                <p role="alert" className="text-accent-red text-sm">
+                <p role="alert" className="text-accent-red-strong text-sm">
                   {error}
                 </p>
               ) : null}

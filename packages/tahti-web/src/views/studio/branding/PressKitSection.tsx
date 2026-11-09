@@ -211,7 +211,7 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
                             onClick={() => setPendingImageDeleteId(image.id)}
                           >
                             <Trash2Icon
-                              className="text-accent-red"
+                              className="text-accent-red-strong"
                               size={14}
                               aria-hidden
                             />

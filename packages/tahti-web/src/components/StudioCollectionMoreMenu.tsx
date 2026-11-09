@@ -151,7 +151,7 @@ export function StudioCollectionMoreMenu({
           <Popover.Item
             closeOnClick
             intent="danger"
-            icon={<Trash2Icon className="text-accent-red" size={16} />}
+            icon={<Trash2Icon className="text-accent-red-strong" size={16} />}
             onClick={() => setConfirmOpen(true)}
           >
             Delete {kindLabel}

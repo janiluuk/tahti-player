@@ -378,7 +378,10 @@ export const StashFilesPanel = ({
                         })}
                         onClick={() => setPendingDelete(file)}
                       >
-                        <Trash2Icon className="text-accent-red" size={16} />
+                        <Trash2Icon
+                          className="text-accent-red-strong"
+                          size={16}
+                        />
                       </Button>
                     </Tooltip>
                   </div>
