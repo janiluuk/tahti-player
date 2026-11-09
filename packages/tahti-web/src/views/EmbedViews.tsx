@@ -20,6 +20,7 @@ import { ConnectedPlayerBar } from '../components/ConnectedPlayerBar';
 import { HearthisEmbedHostProvider } from '../components/HearthisEmbedHost';
 import { ListenHeartbeat } from '../components/ListenHeartbeat';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { webT } from '../lib/webT';
 import { useThemeStore } from '../plugins/themes';
 import { usePlayerStore } from '../stores/playerStore';
 
@@ -211,7 +212,7 @@ export function EmbedReleaseView({ id }: { id: string }) {
                   play(playables[0]!, { enqueueRest: playables.slice(1) })
                 }
               >
-                Play
+                {webT()('embedViewsText.play')}
               </Button>
             )}
           </div>
@@ -235,7 +236,7 @@ export function EmbedReleaseView({ id }: { id: string }) {
                       }
                     }}
                   >
-                    Play
+                    {webT()('embedViewsText.play')}
                   </Button>
                 )}
               </li>
@@ -309,7 +310,7 @@ export function EmbedCollectionView({
                     play(playables[0]!, { enqueueRest: playables.slice(1) })
                   }
                 >
-                  Play
+                  {webT()('embedViewsText.play')}
                 </Button>
               )}
               {playables.length > 1 && (
@@ -347,7 +348,7 @@ export function EmbedCollectionView({
                       }
                     }}
                   >
-                    Play
+                    {webT()('embedViewsText.play')}
                   </Button>
                 )}
               </li>

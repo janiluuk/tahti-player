@@ -59,7 +59,10 @@ export function AnnualReportActions({
               value={meetingId}
               onValueChange={setMeetingId}
               options={[
-                { id: NO_MEETING, label: 'No meeting named' },
+                {
+                  id: NO_MEETING,
+                  label: t('annualReportActionsFields.noMeetingNamed'),
+                },
                 ...meetings.map((meeting) => ({
                   id: meeting.id,
                   label: meeting.title,

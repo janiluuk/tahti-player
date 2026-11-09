@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import type { FanSubscriptionRow } from '../api/types';
@@ -20,6 +21,7 @@ export function CurrentFanSubscriptionCard({
 }: {
   subscription: FanSubscriptionRow;
 }) {
+  const { t } = useTranslation('web');
   const periodEnd = subscription.currentPeriodEnd;
   return (
     <div
@@ -52,7 +54,7 @@ export function CurrentFanSubscriptionCard({
             .open('account', undefined, undefined, 'subscriptions')
         }
       >
-        Manage subscription
+        {t('currentFanSubscriptionCardText.manageSubscription')}
       </Button>
     </div>
   );

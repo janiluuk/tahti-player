@@ -42,7 +42,7 @@ function NotFoundPage() {
       description={t('empties.thereIsNothingAtThisAddress')}
       action={
         <ButtonLink to="/" size="sm" variant="secondary">
-          Back to Listen
+          {t('routes-helpText.backToListen')}
         </ButtonLink>
       }
     />

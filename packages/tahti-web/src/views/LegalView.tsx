@@ -23,7 +23,12 @@ export function LegalView({ slug }: { slug: string }) {
   return (
     <article className="mx-auto flex max-w-3xl flex-col gap-6">
       <PageHeader
-        back={<PageBackLink to="/what-is-it" label="What is Tahti" />}
+        back={
+          <PageBackLink
+            to="/what-is-it"
+            label={t('legalViewText.whatIsTahti')}
+          />
+        }
         title={page.title}
         subtitle={page.description}
         meta={

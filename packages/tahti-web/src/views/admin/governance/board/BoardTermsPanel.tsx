@@ -68,7 +68,7 @@ export function BoardTermsPanel() {
   const showEmpty = sorted?.length === 0 && !loadError;
 
   return (
-    <StudioPanel title="Board terms">
+    <StudioPanel title={t('boardTermsPanelText.boardTerms')}>
       {composing ? (
         <AddBoardTermForm
           onClose={() => setComposing(false)}

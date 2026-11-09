@@ -12,6 +12,7 @@ describe('isAnonymousRouteAllowed', () => {
     '/radio/station/radio-helsinki',
     '/settings/themes',
     '/governance',
+    '/events/evt-1',
   ])('keeps %s open as before', (path) => {
     expect(isAnonymousRouteAllowed(path)).toBe(true);
   });

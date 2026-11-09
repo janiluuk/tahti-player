@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { MediaArtwork } from '@tahti-player/ui';
 
 import type {
@@ -39,6 +40,7 @@ export function NowPlayingOverlay({
   compact = false,
   settings,
 }: Props) {
+  const { t } = useTranslation('web');
   const overlayStyle = settings
     ? {
         transform: `translate(${settings.offsetX}px, ${settings.offsetY}px) scale(${settings.textScale})`,
@@ -66,7 +68,7 @@ export function NowPlayingOverlay({
         style={overlayStyle}
       >
         <div className="w-fit rounded-md bg-black/45 px-3 py-1 text-[10px] tracking-wide text-white/75 uppercase backdrop-blur-sm">
-          Now playing
+          {t('nowPlayingOverlayText.nowPlaying')}
         </div>
         <div
           className={`mt-1 max-w-full ${titleFit} rounded-md bg-black/45 px-3 py-1.5 font-extrabold tracking-tight text-white backdrop-blur-sm ${
@@ -170,7 +172,7 @@ export function NowPlayingOverlay({
         </div>
         <div className="min-w-0 flex-1">
           <div className="w-fit rounded-md bg-black/45 px-2.5 py-1 text-[10px] tracking-wide text-white/75 uppercase backdrop-blur-sm">
-            Now playing
+            {t('nowPlayingOverlayText.nowPlaying')}
           </div>
           <div
             className={`mt-2 ${titleFit} rounded-md bg-black/45 px-2.5 py-1 font-extrabold tracking-tight text-white backdrop-blur-sm ${

@@ -26,7 +26,7 @@ export function ReleaseTrackUploadProgress({
         {pct}%
       </span>
       <Button size="sm" variant="text" onClick={onCancel}>
-        Cancel
+        {t('releaseTrackUploadProgressText.cancel')}
       </Button>
     </div>
   );

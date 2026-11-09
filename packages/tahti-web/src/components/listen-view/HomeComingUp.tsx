@@ -27,14 +27,7 @@ type EventRowItem = { id: string; title: string; event: UpcomingEvent };
 function EventCard({ event }: { event: UpcomingEvent }) {
   const navigate = useNavigate();
   const open = () => {
-    if (event.channelSlug) {
-      void navigate({
-        to: '/channel/$slug',
-        params: { slug: event.channelSlug },
-      });
-    } else if (event.eventUrl) {
-      window.open(event.eventUrl, '_blank', 'noopener,noreferrer');
-    }
+    void navigate({ to: '/events/$eventId', params: { eventId: event.id } });
   };
   const venue = event.location
     ? `${event.place}, ${event.location}`
@@ -43,6 +36,7 @@ function EventCard({ event }: { event: UpcomingEvent }) {
     <Card
       surface="neutral"
       src={
+        event.imageUrl ??
         event.avatarUrl ??
         placeholderArtworkUrl(event.channelSlug ?? event.artistUsername)
       }

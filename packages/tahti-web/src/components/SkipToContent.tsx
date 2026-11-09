@@ -1,8 +1,10 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonAnchor } from '@tahti-player/ui';
 
 export const MAIN_CONTENT_ID = 'main-content';
 
 export function SkipToContent() {
+  const { t } = useTranslation('web');
   return (
     <ButtonAnchor
       href={`#${MAIN_CONTENT_ID}`}
@@ -16,7 +18,7 @@ export function SkipToContent() {
         }
       }}
     >
-      Skip to content
+      {t('skipToContentText.skipToContent')}
     </ButtonAnchor>
   );
 }
