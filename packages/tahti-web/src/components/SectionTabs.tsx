@@ -12,11 +12,61 @@ export type SectionTabsItem = {
   active?: boolean;
 };
 
-export const PHONE_SCROLL_TAB_LIST =
-  'tahti-hide-scrollbar w-full min-w-0 flex-nowrap overflow-x-auto pb-1';
+export const PHONE_SCROLL_TAB_LIST = [
+  'tahti-hide-scrollbar w-full min-w-0 flex-nowrap overflow-x-auto pb-1',
+  'data-[fade=end]:[mask-image:linear-gradient(to_right,#000_calc(100%-2rem),transparent)]',
+  'data-[fade=start]:[mask-image:linear-gradient(to_left,#000_calc(100%-2rem),transparent)]',
+  'data-[fade=both]:[mask-image:linear-gradient(to_right,transparent,#000_2rem,#000_calc(100%-2rem),transparent)]',
+].join(' ');
 
+const TAB_EDGE_PADDING_PX = 32;
+
+/** Which edges of a sideways-scrolling tab strip hide more tabs. */
+export function tabStripFade(list: {
+  scrollLeft: number;
+  scrollWidth: number;
+  clientWidth: number;
+}): 'start' | 'end' | 'both' | undefined {
+  const hiddenStart = list.scrollLeft > 1;
+  const hiddenEnd = list.scrollLeft + list.clientWidth < list.scrollWidth - 1;
+  if (hiddenStart && hiddenEnd) {
+    return 'both';
+  }
+  return hiddenStart ? 'start' : hiddenEnd ? 'end' : undefined;
+}
+
+function syncFade(list: HTMLElement) {
+  const fade = tabStripFade(list);
+  if (fade) {
+    list.dataset.fade = fade;
+  } else {
+    delete list.dataset.fade;
+  }
+}
+
+/** Keeps the selected tab of a sideways-scrolling strip in view and clear
+ * of the edge fade, and sets the strip's `data-fade` so cut-off tabs read
+ * as scrollable. */
 export function useSelectedTabInView(selectedKey: string | number) {
   const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const list = ref.current?.querySelector<HTMLElement>('[role="tablist"]');
+    if (!list) {
+      return;
+    }
+    const update = () => syncFade(list);
+    update();
+    list.addEventListener('scroll', update, { passive: true });
+    const observer =
+      typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(update);
+    observer?.observe(list);
+    return () => {
+      list.removeEventListener('scroll', update);
+      observer?.disconnect();
+    };
+  }, []);
+
   useEffect(() => {
     const frame = requestAnimationFrame(() => {
       const tab = ref.current?.querySelector<HTMLElement>(
@@ -26,8 +76,16 @@ export function useSelectedTabInView(selectedKey: string | number) {
       if (!tab || !list || list.scrollWidth <= list.clientWidth) {
         return;
       }
-      list.scrollLeft =
-        tab.offsetLeft - (list.clientWidth - tab.offsetWidth) / 2;
+      const listRect = list.getBoundingClientRect();
+      const tabRect = tab.getBoundingClientRect();
+      const cutOff =
+        tabRect.left < listRect.left + TAB_EDGE_PADDING_PX ||
+        tabRect.right > listRect.right - TAB_EDGE_PADDING_PX;
+      if (cutOff) {
+        list.scrollLeft +=
+          tabRect.left - listRect.left - (listRect.width - tabRect.width) / 2;
+      }
+      syncFade(list);
     });
     return () => cancelAnimationFrame(frame);
   }, [selectedKey]);

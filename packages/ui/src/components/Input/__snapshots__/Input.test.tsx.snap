@@ -50,7 +50,7 @@ exports[`Input > (Snapshot) renders with endAddon 1`] = `
     class="border-border has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-background inline-flex w-full items-stretch overflow-hidden rounded-md border-(length:--border-width) has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2"
   >
     <input
-      class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-10 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+      class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-10 min-w-0 flex-1 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
       data-headlessui-state=""
       id="input-with-addon"
       placeholder="Filter..."
@@ -114,7 +114,7 @@ exports[`Input > (Snapshot) renders with startAddon 1`] = `
       </span>
     </div>
     <input
-      class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-10 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+      class="border-border text-foreground placeholder:text-foreground-secondary focus-visible:ring-primary focus-visible:ring-offset-background w-full px-3 transition-colors focus-visible:outline-none bg-background-input h-10 min-w-0 flex-1 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
       data-headlessui-state=""
       id="input-with-prefix"
       placeholder="polar-nights"

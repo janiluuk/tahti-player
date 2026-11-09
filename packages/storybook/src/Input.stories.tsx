@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { FilterIcon } from 'lucide-react';
+import { FilterIcon, SearchIcon } from 'lucide-react';
 import { useState } from 'react';
+import { expect, within } from 'storybook/test';
 
 import { Input } from '@tahti-player/ui';
 
@@ -90,6 +91,29 @@ export const WithStartAddon: Story = {
         soundcloud.com/you/
       </span>
     ),
+  },
+};
+
+export const AddonWithWidth: Story = {
+  args: {
+    'aria-label': 'Search help',
+    placeholder: 'Search help',
+    className: 'max-w-md',
+    startAddon: <SearchIcon size={14} aria-hidden className="opacity-70" />,
+  },
+  play: async ({ canvasElement }) => {
+    const field = within(canvasElement).getByRole('textbox', {
+      name: 'Search help',
+    });
+    const frame = field.parentElement as HTMLElement;
+    const root = frame.parentElement as HTMLElement;
+    await expect(root.getBoundingClientRect().width).toBeLessThanOrEqual(448);
+    await expect(frame.getBoundingClientRect().width).toBe(
+      root.getBoundingClientRect().width,
+    );
+    await expect(
+      frame.getBoundingClientRect().right - field.getBoundingClientRect().right,
+    ).toBeLessThanOrEqual(4);
   },
 };
 

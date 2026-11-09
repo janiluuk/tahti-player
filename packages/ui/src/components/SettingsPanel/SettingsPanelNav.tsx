@@ -27,10 +27,10 @@ export const SettingsPanelNav: FC<SettingsPanelNavProps> = ({
   // Desktop still needs `sm:flex!` so the same `hidden` class is overridden
   // above the sm breakpoint (Tailwind cascade quirk in this monorepo —
   // unprefixed display rules can beat `sm:flex` without `!`).
-  // `sm:w-56!` is forced for the same cascade reason.
+  // `sm:w-60!` is forced for the same cascade reason.
   <nav
     className={cn(
-      'border-border flex h-full min-h-0 w-full shrink-0 flex-col border-b-(length:--border-width) p-2 sm:flex! sm:w-56! sm:border-r-(length:--border-width) sm:border-b-0 sm:p-4',
+      'border-border flex h-full min-h-0 w-full shrink-0 flex-col border-b-(length:--border-width) p-2 sm:flex! sm:w-60! sm:border-r-(length:--border-width) sm:border-b-0 sm:p-4',
       className,
     )}
     data-testid="settings-panel-nav"

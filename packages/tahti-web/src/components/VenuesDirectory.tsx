@@ -90,7 +90,7 @@ export function VenuesDirectory() {
                 params={{ slug: venue.slug }}
                 tabIndex={-1}
                 aria-hidden
-                className="h-16 w-24 shrink-0 overflow-hidden rounded-md"
+                className="relative h-16 w-24 shrink-0 overflow-hidden rounded-md"
               >
                 <MediaArtwork
                   size="fill"

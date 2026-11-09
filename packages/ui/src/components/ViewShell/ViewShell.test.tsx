@@ -25,4 +25,29 @@ describe('ViewShell', () => {
     expect(column).not.toHaveClass('px-4');
     expect(column?.parentElement).toHaveClass('px-4');
   });
+
+  it('shows the subtitle as a small secondary line, not a heading', () => {
+    render(
+      <ViewShell title="Fans" subtitle="People who follow your channel">
+        <section>Body</section>
+      </ViewShell>,
+    );
+
+    const subtitle = screen.getByTestId('subtitle');
+    expect(subtitle.tagName).toBe('P');
+    expect(subtitle).toHaveClass('text-sm', 'text-foreground-secondary');
+    expect(
+      screen.queryByRole('heading', { name: 'People who follow your channel' }),
+    ).toBeNull();
+  });
+
+  it('keeps the subtitle secondary next to header actions too', () => {
+    render(
+      <ViewShell title="Profile" subtitle="How fans see you" actions={<span />}>
+        <section>Body</section>
+      </ViewShell>,
+    );
+
+    expect(screen.getByTestId('subtitle').tagName).toBe('P');
+  });
 });

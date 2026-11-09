@@ -1,4 +1,5 @@
 import { BarChart3Icon, HistoryIcon } from 'lucide-react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Tabs, ViewShell } from '@tahti-player/ui';
@@ -22,6 +23,7 @@ import { useLibraryStore } from '../stores/libraryStore';
 export function HistoryView({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation('web');
   const history = useLibraryStore((s) => s.history);
+  const [hasAccountListening, setHasAccountListening] = useState(false);
 
   const tabs = (
     <Tabs
@@ -35,8 +37,11 @@ export function HistoryView({ embedded = false }: { embedded?: boolean }) {
           icon: <BarChart3Icon size={14} />,
           content: (
             <div className="flex flex-col gap-6">
-              <AcrossDevicesPanel />
-              <HistoryStatsSection history={history} />
+              <AcrossDevicesPanel onHasListening={setHasAccountListening} />
+              <HistoryStatsSection
+                history={history}
+                hideEmpty={hasAccountListening}
+              />
             </div>
           ),
         },

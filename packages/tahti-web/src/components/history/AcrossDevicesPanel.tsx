@@ -22,7 +22,11 @@ import { PageError, PageLoading } from '../PageStates';
 const minutesLabel = (minutes: number) =>
   formatListeningDuration(minutes * 60_000);
 
-export function AcrossDevicesPanel() {
+export function AcrossDevicesPanel({
+  onHasListening,
+}: {
+  onHasListening?: (hasListening: boolean) => void;
+} = {}) {
   const { t } = useTranslation('web');
   const signedIn = useAuthStore((s) => Boolean(s.user));
   const navigate = useNavigate();
@@ -55,6 +59,12 @@ export function AcrossDevicesPanel() {
       cancelled = true;
     };
   }, [signedIn, range, attempt]);
+
+  const hasListening =
+    signedIn && status === 'ready' && (listening?.listens ?? 0) > 0;
+  useEffect(() => {
+    onHasListening?.(hasListening);
+  }, [hasListening, onHasListening]);
 
   if (!signedIn) {
     return null;

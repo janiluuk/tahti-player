@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   BlocksIcon,
@@ -161,5 +161,26 @@ describe('SettingsPanel', () => {
     );
     const headings = screen.getAllByRole('heading', { level: 2 });
     expect(headings.map((h) => h.textContent)).toEqual(['Settings', 'App']);
+  });
+
+  it('truncates a long nav label inside the nav instead of touching its border', () => {
+    render(
+      <SettingsPanel
+        isOpen
+        onClose={() => {}}
+        tabs={[{ ...TABS[0], label: 'Playback & language' }, ...TABS.slice(1)]}
+        activeTab="general"
+        onTabChange={() => {}}
+      />,
+    );
+    const item = screen.getByTestId(`settings-tab-${TABS[0].id}`);
+    expect(item.getAttribute('title')).toBe('Playback & language');
+    expect(item.className).toContain('min-w-0');
+    expect(within(item).getByText('Playback & language').className).toContain(
+      'truncate',
+    );
+    expect(screen.getByTestId('settings-panel-nav').className).toContain(
+      'sm:w-60!',
+    );
   });
 });

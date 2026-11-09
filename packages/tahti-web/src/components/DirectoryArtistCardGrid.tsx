@@ -94,7 +94,7 @@ export function DirectoryArtistCardGrid({
       <div className="relative" data-testid="directory-artist-ambient">
         <GridAmbientWash artists={artists} />
         <CardGrid
-          className="gap-6 sm:gap-8"
+          className="grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-4 sm:gap-8"
           data-testid="directory-artist-card-grid"
         >
           {artists.map((artist) => {

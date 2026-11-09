@@ -37,7 +37,7 @@ const inputVariants = cva(
       },
       withAddon: {
         false: 'rounded-md border-(length:--border-width)',
-        true: 'rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0',
+        true: 'min-w-0 flex-1 rounded-l border-0 focus-visible:ring-0 focus-visible:ring-offset-0',
       },
     },
     defaultVariants: {
@@ -49,6 +49,26 @@ const inputVariants = cva(
     },
   },
 );
+
+const LAYOUT_CLASS =
+  /^-?(?:w|min-w|max-w|flex|grow|shrink|basis|self|order|col-span|row-span|m[trblxy]?)(?:-|$)/;
+
+/** With an addon the visible frame is a wrapper, not the `<input>`, so
+ * sizing and spacing classes must move to the root or the frame and the
+ * field end up different widths. */
+function splitLayoutClasses(className: string | undefined) {
+  const layout: string[] = [];
+  const field: string[] = [];
+  for (const token of (className ?? '').split(/\s+/).filter(Boolean)) {
+    const utility = token.slice(token.lastIndexOf(':') + 1).replace(/^!/, '');
+    if (LAYOUT_CLASS.test(utility)) {
+      layout.push(token);
+    } else {
+      field.push(token);
+    }
+  }
+  return { layout: layout.join(' '), field: field.join(' ') };
+}
 
 type InputProps = Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'size'> &
   VariantProps<typeof inputVariants> & {
@@ -102,6 +122,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   const resolvedVariant = variant ?? (type === 'color' ? 'color' : 'text');
   const inputType = type ?? resolvedVariant;
   const hasAddon = Boolean(startAddon || endAddon);
+  const { layout: rootClassName, field: fieldClassName } = hasAddon
+    ? splitLayoutClasses(className)
+    : { layout: '', field: className };
 
   const field = (
     <HeadlessInput
@@ -122,7 +145,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           tone,
           state,
           withAddon: hasAddon,
-          className,
+          className: fieldClassName,
         }),
       )}
       {...rest}
@@ -131,11 +154,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 
   return (
     <div
-      className={
+      className={cn(
         resolvedVariant === 'color'
           ? 'flex shrink-0 flex-col gap-2'
-          : 'flex w-full flex-col gap-2'
-      }
+          : 'flex w-full flex-col gap-2',
+        rootClassName,
+      )}
     >
       {label && (
         <label

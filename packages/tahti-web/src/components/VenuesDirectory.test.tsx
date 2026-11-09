@@ -62,6 +62,19 @@ describe('VenuesDirectory', () => {
     ).toBeTruthy();
   });
 
+  it('keeps the filled thumbnail inside its own box', async () => {
+    vi.spyOn(client, 'fetchVenues').mockResolvedValue({
+      data: [{ ...venue, photos: ['https://cdn.example.com/kaiku.jpg'] }],
+      meta: { source: 'api' },
+    } as Awaited<ReturnType<typeof client.fetchVenues>>);
+    const { container } = await renderDirectory();
+    await screen.findByRole('link', { name: 'View venue' });
+    const img = container.querySelector(
+      'img[src="https://cdn.example.com/kaiku.jpg"]',
+    );
+    expect(img?.closest('a')?.className).toContain('relative');
+  });
+
   it('says the venues failed to load instead of "No verified venues"', async () => {
     const fetch = vi.spyOn(client, 'fetchVenues').mockResolvedValue({
       data: [],
