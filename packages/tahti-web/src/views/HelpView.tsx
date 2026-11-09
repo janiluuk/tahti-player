@@ -1,26 +1,33 @@
 import { Link } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
+  ArrowRightIcon,
   BookOpenIcon,
+  CheckCircle2Icon,
   CompassIcon,
   HeadphonesIcon,
   KeyboardIcon,
   LifeBuoyIcon,
-  ListIcon,
+  LightbulbIcon,
   PlugIcon,
   RadioTowerIcon,
   SearchIcon,
+  Share2Icon,
   ShieldCheckIcon,
   SparklesIcon,
+  UserCogIcon,
+  WrenchIcon,
+  type LucideIcon,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Box,
   Button,
   ButtonLink,
+  cn,
   DataTable,
   DataTableBody,
   DataTableCell,
@@ -31,142 +38,78 @@ import {
   HorizontalScroll,
   Input,
   SectionShell,
-  Tabs,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
+import { ContentLanguageToggle } from '../components/ContentLanguageToggle';
 import { HelpKeyboardShortcuts } from '../components/HelpKeyboardShortcuts';
 import { HelpLinkCard } from '../components/HelpLinkCard';
 import { PageFrame, PageHeader } from '../components/PageHeader';
 import { PageEmpty } from '../components/PageStates';
 import { SupportCenter } from '../components/SupportCenter';
 import { serviceDocuments } from '../content/documentLinks';
+import { getLocalizedHelpArticle, type HelpArticle } from '../content/help';
 import {
-  getHelpArticle,
-  HELP_ARTICLES,
-  type HelpArticle,
-} from '../content/help';
+  HELP_GROUPS,
+  helpGroupOf,
+  QUICK_STARTS,
+  TONE_CLASSES,
+  type HelpGroupId,
+  type HelpTone,
+  type QuickStartId,
+} from '../content/helpUi';
 import { KEYBOARD_NAVIGATION_SECTIONS } from '../content/keyboardNavigation';
+import { useContentLocale, type ContentLocale } from '../lib/contentLocale';
 import { useTourStore } from '../stores/tourStore';
 
 const PRODUCTION = 'https://tahti.live';
 
-const GUIDE_GROUPS: Array<{
-  id: string;
-  title: string;
-  description: string;
-  icon: typeof HeadphonesIcon;
-  slugs: string[];
-}> = [
-  {
-    id: 'start-here',
-    title: 'Start here',
-    description: 'Find something to listen to or set up your artist profile.',
-    icon: HeadphonesIcon,
-    slugs: ['getting-around', 'for-listeners', 'player', 'for-artists'],
-  },
-  {
-    id: 'listen-and-share',
-    title: 'Listen and share',
-    description: 'Save music, talk about moments, and share public pages.',
-    icon: HeadphonesIcon,
-    slugs: [
-      'favorites-playlists',
-      'comments-and-timeline',
-      'shared-jam',
-      'notifications',
-      'embed-and-share',
-    ],
-  },
-  {
-    id: 'artist-tools',
-    title: 'Artist tools',
-    description: 'Publish music, design your channel, and follow earnings.',
-    icon: SparklesIcon,
-    slugs: ['channel-design', 'uploads-and-processing', 'earnings'],
-  },
-  {
-    id: 'broadcasting',
-    title: 'Broadcasting',
-    description: 'Get on air and mirror your show to other platforms.',
-    icon: RadioTowerIcon,
-    slugs: ['broadcast', 'multistream'],
-  },
-  {
-    id: 'releasing',
-    title: 'Releasing',
-    description:
-      'Understand release identifiers, catalogs, smart links, and delivery.',
-    icon: BookOpenIcon,
-    slugs: ['releasing'],
-  },
-  {
-    id: 'account-support',
-    title: 'Account and support',
-    description: 'Understand limits, shortcuts, and where to get help.',
-    icon: ShieldCheckIcon,
-    slugs: [
-      'tier-limits',
-      'governance',
-      'account-security',
-      'studio-notices',
-      'keyboard-shortcuts',
-      'support',
-    ],
-  },
-  {
-    id: 'admin',
-    title: 'Admin',
-    description: 'Understand platform operations.',
-    icon: ShieldCheckIcon,
-    slugs: ['admin-guide'],
-  },
-  {
-    id: 'add-ons',
-    title: 'Add-ons',
-    description:
-      'Themes, imports, live mirrors, audio tools, and page widgets.',
-    icon: PlugIcon,
-    slugs: ['add-ons', 'desktop-mcp', 'desktop-library'],
-  },
-  {
-    id: 'build-with-tahti',
-    title: 'Build with Tahti',
-    description: 'Learn how to make a Disco-widget for the platform.',
-    icon: SparklesIcon,
-    slugs: ['disco-widgets'],
-  },
-];
+const GROUP_ICONS: Record<HelpGroupId, LucideIcon> = {
+  'start-here': CompassIcon,
+  'listen-and-share': Share2Icon,
+  'artist-tools': SparklesIcon,
+  broadcasting: RadioTowerIcon,
+  releasing: BookOpenIcon,
+  'account-support': UserCogIcon,
+  admin: ShieldCheckIcon,
+  'add-ons': PlugIcon,
+  'build-with-tahti': WrenchIcon,
+};
 
-function quickStarts(t: TFunction<'web'>) {
-  return [
-    {
-      title: t('helpViewMore.iWantToListen'),
-      description: t('helpViewMore.browseChannelsPlayTahtiRadio'),
-      slug: 'for-listeners',
-      icon: HeadphonesIcon,
-    },
-    {
-      title: t('helpViewMore.iWantToBroadcast'),
-      description: t('helpViewMore.createAChannelAndConnect'),
-      slug: 'for-artists',
-      icon: RadioTowerIcon,
-    },
-    {
-      title: t('helpViewMore.keyboardNavigation'),
-      description:
-        'Global shortcuts for Listen, Radio, Library, Studio, and the tour.',
-      slug: 'keyboard-shortcuts',
-      icon: KeyboardIcon,
-    },
-    {
-      title: t('helpViewMore.iNeedSupport'),
-      description: t('helpViewMore.sendTheTeamAQuestion'),
-      slug: 'support',
-      icon: LifeBuoyIcon,
-    },
-  ] as const;
+const QUICK_START_ICONS: Record<QuickStartId, LucideIcon> = {
+  listen: HeadphonesIcon,
+  broadcast: RadioTowerIcon,
+  keyboard: KeyboardIcon,
+  support: LifeBuoyIcon,
+};
+
+function quickStartText(
+  t: ReturnType<typeof useTranslation<'web'>>['t'],
+  id: QuickStartId,
+): { title: string; description: string } {
+  switch (id) {
+    case 'listen':
+      return {
+        title: t('helpViewMore.iWantToListen'),
+        description: t('helpViewMore.browseChannelsPlayTahtiRadio'),
+      };
+    case 'broadcast':
+      return {
+        title: t('helpViewMore.iWantToBroadcast'),
+        description: t('helpViewMore.createAChannelAndConnect'),
+      };
+    case 'keyboard':
+      return {
+        title: t('helpViewMore.keyboardNavigation'),
+        description: t('helpHub.keyboardDescription'),
+      };
+    default:
+      return {
+        title: t('helpViewMore.iNeedSupport'),
+        description: t('helpViewMore.sendTheTeamAQuestion'),
+      };
+  }
 }
 
 function articleMatches(article: HelpArticle, query: string): boolean {
@@ -198,47 +141,97 @@ function articleMatches(article: HelpArticle, query: string): boolean {
   return haystack.includes(query.trim().toLowerCase());
 }
 
-function sectionId(heading: string, index: number): string {
-  const slug = heading
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-  return `${slug || 'section'}-${index}`;
+function sectionId(index: number): string {
+  return `section-${index + 1}`;
 }
 
-function HelpGuideCard({ article }: { article: HelpArticle }) {
+function ToneIcon({
+  icon: Icon,
+  tone,
+  size = 'md',
+}: {
+  icon: LucideIcon;
+  tone: HelpTone;
+  size?: 'md' | 'lg';
+}) {
   return (
-    <Link to="/help/$slug" params={{ slug: article.slug }} className="min-w-0">
-      <HelpLinkCard
-        title={article.title}
-        description={article.description}
-        meta={
-          <Badge variant="pill" color="secondary">
-            {article.sections.length}{' '}
-            {article.sections.length === 1 ? 'section' : 'sections'}
-          </Badge>
-        }
-      />
-    </Link>
+    <span
+      className={cn(
+        'inline-flex shrink-0 items-center justify-center rounded-xl',
+        TONE_CLASSES[tone].solid,
+        size === 'lg' ? 'size-12' : 'size-9',
+      )}
+    >
+      <Icon size={size === 'lg' ? 24 : 18} aria-hidden />
+    </span>
+  );
+}
+
+function localizedArticles(slugs: string[], locale: ContentLocale) {
+  return slugs
+    .map((slug) => getLocalizedHelpArticle(slug, locale))
+    .filter((article): article is HelpArticle => article !== undefined);
+}
+
+function ArticleLinkRow({
+  article,
+  tone,
+}: {
+  article: HelpArticle;
+  tone: HelpTone;
+}) {
+  return (
+    <li>
+      <Link
+        to="/help/$slug"
+        params={{ slug: article.slug }}
+        className="group hover:bg-background-secondary flex min-w-0 items-start gap-3 rounded-lg px-2 py-2 transition-colors"
+      >
+        <span
+          className={cn(
+            'mt-1.5 size-2 shrink-0 rounded-full',
+            TONE_CLASSES[tone].solid,
+          )}
+          aria-hidden
+        />
+        <span className="min-w-0 flex-1">
+          <span className="block text-sm font-semibold">{article.title}</span>
+          <span className="text-foreground-secondary line-clamp-2 block text-xs leading-relaxed">
+            {article.description}
+          </span>
+        </span>
+        <ArrowRightIcon
+          size={15}
+          aria-hidden
+          className="text-foreground-secondary mt-1 shrink-0 transition-transform group-hover:translate-x-0.5"
+        />
+      </Link>
+    </li>
   );
 }
 
 export function HelpHubView() {
   const { t } = useTranslation('web');
+  const locale = useContentLocale();
   const [query, setQuery] = useState('');
   const startTour = useTourStore((state) => state.start);
+
+  const totalGuides = useMemo(
+    () => new Set(HELP_GROUPS.flatMap((group) => group.slugs)).size,
+    [],
+  );
+
   const visibleGroups = useMemo(
     () =>
-      GUIDE_GROUPS.map((group) => ({
+      HELP_GROUPS.map((group) => ({
         ...group,
-        articles: group.slugs
-          .map((slug) => getHelpArticle(slug))
-          .filter(
-            (article): article is HelpArticle =>
-              article !== undefined && articleMatches(article, query),
-          ),
+        title: t(`helpHub.groups.${group.id}.title`),
+        description: t(`helpHub.groups.${group.id}.description`),
+        articles: localizedArticles(group.slugs, locale).filter((article) =>
+          articleMatches(article, query),
+        ),
       })).filter((group) => group.articles.length > 0),
-    [query],
+    [t, locale, query],
   );
 
   return (
@@ -247,66 +240,31 @@ export function HelpHubView() {
       data-testid="help-view"
       classes={{ root: 'px-0 pt-0 mx-auto max-w-full min-w-0 pb-8' }}
     >
-      <div className="mb-4 flex flex-wrap items-center gap-2">
-        <Tooltip content={t('helpView.takeAGuidedTourOf')} side="bottom">
-          <Button
-            size="icon-sm"
-            aria-label={t('helpView.takeTour')}
-            className="bg-accent-purple hover:bg-accent-purple/90 text-white"
-            onClick={() => startTour()}
-          >
-            <CompassIcon size={16} aria-hidden />
-          </Button>
-        </Tooltip>
-      </div>
-
-      <SectionShell
-        title={t('helpView.pickAPath')}
-        data-testid="help-quick-start"
-      >
-        <div
-          data-help-hub-panel
-          className="mb-3 flex items-end justify-between gap-3"
-        >
-          <p className="text-foreground-secondary text-xs font-bold tracking-[0.16em] uppercase">
-            {t('helpView.quickStart')}
-          </p>
-          <Badge variant="pill" color="secondary">
-            {HELP_ARTICLES.length} guides
-          </Badge>
-        </div>
-        <div className="grid gap-3 md:grid-cols-3">
-          {quickStarts(t).map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.title}
-                to="/help/$slug"
-                params={{ slug: item.slug }}
-                className="min-w-0"
+      <section className="border-border from-accent-blue/15 via-accent-purple/10 to-accent-green/10 mb-6 rounded-2xl border bg-gradient-to-br p-5 sm:p-8">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="min-w-0">
+            <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-4xl">
+              {t('helpHub.hubHeading')}
+            </h2>
+            <p className="text-foreground-secondary mt-2 max-w-xl text-sm leading-relaxed sm:text-base">
+              {t('helpHub.hubIntro')}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <ContentLanguageToggle />
+            <Tooltip content={t('helpView.takeAGuidedTourOf')} side="bottom">
+              <Button
+                size="icon-sm"
+                aria-label={t('helpView.takeTour')}
+                className="bg-accent-purple hover:bg-accent-purple/90 text-white"
+                onClick={() => startTour()}
               >
-                <HelpLinkCard
-                  title={item.title}
-                  description={item.description}
-                  icon={<Icon size={18} aria-hidden />}
-                />
-              </Link>
-            );
-          })}
+                <CompassIcon size={16} aria-hidden />
+              </Button>
+            </Tooltip>
+          </div>
         </div>
-      </SectionShell>
-
-      <SectionShell
-        title={t('helpView.browseAllHelp')}
-        data-testid="help-guide-index"
-      >
-        <div
-          data-help-hub-panel
-          className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between"
-        >
-          <p className="text-foreground-secondary text-xs font-bold tracking-[0.16em] uppercase">
-            {t('helpView.guideIndex')}
-          </p>
+        <div data-help-hub-panel className="mt-5 flex items-center gap-3">
           <Input
             enterKeyHint="search"
             type="search"
@@ -314,17 +272,74 @@ export function HelpHubView() {
             onChange={(event) => setQuery(event.target.value)}
             placeholder={t('helpView.searchGuides')}
             aria-label={t('helpView.searchHelpGuides')}
-            className="w-full sm:max-w-sm"
+            className="w-full sm:max-w-md"
             startAddon={
               <SearchIcon size={16} aria-hidden className="opacity-70" />
             }
           />
+          <Badge
+            variant="pill"
+            color="secondary"
+            className="hidden sm:inline-flex"
+          >
+            {t('helpHub.guidesCount', { count: totalGuides })}
+          </Badge>
         </div>
+      </section>
 
+      {query.trim() ? null : (
+        <SectionShell
+          title={t('helpView.pickAPath')}
+          data-testid="help-quick-start"
+        >
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {QUICK_STARTS.map((item) => {
+              const text = quickStartText(t, item.id);
+              const tone = TONE_CLASSES[item.tone];
+              return (
+                <Link
+                  key={item.id}
+                  to="/help/$slug"
+                  params={{ slug: item.slug }}
+                  className={cn(
+                    'group flex min-w-0 flex-col gap-3 rounded-xl border-2 p-4 transition-transform hover:-translate-y-0.5',
+                    tone.border,
+                    tone.soft,
+                  )}
+                >
+                  <ToneIcon
+                    icon={QUICK_START_ICONS[item.id]}
+                    tone={item.tone}
+                    size="lg"
+                  />
+                  <div>
+                    <h3 className="font-display flex items-center gap-1.5 text-base font-bold tracking-tight">
+                      {text.title}
+                      <ArrowRightIcon
+                        size={16}
+                        aria-hidden
+                        className="transition-transform group-hover:translate-x-0.5"
+                      />
+                    </h3>
+                    <p className="text-foreground-secondary mt-1 text-sm leading-relaxed">
+                      {text.description}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </SectionShell>
+      )}
+
+      <SectionShell
+        title={t('helpView.browseAllHelp')}
+        data-testid="help-guide-index"
+      >
         {visibleGroups.length === 0 ? (
           <PageEmpty
             title={t('empties.noGuidesMatch')}
-            description={`Try another search${query ? ` instead of “${query}”` : ''}.`}
+            description={t('helpHub.noMatchDescription', { query })}
             action={
               <Button
                 size="sm"
@@ -335,42 +350,43 @@ export function HelpHubView() {
               </Button>
             }
           />
-        ) : query.trim() ? (
-          <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {visibleGroups.flatMap((group) =>
-              group.articles.map((article) => (
-                <HelpGuideCard key={article.slug} article={article} />
-              )),
-            )}
-          </div>
         ) : (
-          <Tabs
-            items={visibleGroups.map((group) => {
-              const GroupIcon = group.icon;
-              return {
-                id: group.id,
-                label: (
-                  <span className="inline-flex items-center gap-1.5">
-                    <GroupIcon size={14} aria-hidden />
-                    {group.title}
-                  </span>
-                ),
-                content: (
-                  <div className="flex min-w-0 flex-col gap-3">
-                    <p className="text-foreground-secondary text-sm">
+          <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {visibleGroups.map((group) => (
+              <section
+                key={group.id}
+                aria-labelledby={`help-group-${group.id}`}
+                className={cn(
+                  'border-border bg-background-secondary/40 flex min-w-0 flex-col gap-3 rounded-xl border border-t-4 p-4',
+                  TONE_CLASSES[group.tone].border,
+                )}
+              >
+                <div className="flex items-start gap-3">
+                  <ToneIcon icon={GROUP_ICONS[group.id]} tone={group.tone} />
+                  <div className="min-w-0">
+                    <h3
+                      id={`help-group-${group.id}`}
+                      className="font-display text-base font-bold tracking-tight"
+                    >
+                      {group.title}
+                    </h3>
+                    <p className="text-foreground-secondary text-xs leading-relaxed">
                       {group.description}
                     </p>
-                    <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                      {group.articles.map((article) => (
-                        <HelpGuideCard key={article.slug} article={article} />
-                      ))}
-                    </div>
                   </div>
-                ),
-              };
-            })}
-            listClassName="overflow-x-auto"
-          />
+                </div>
+                <ul className="-mx-2 flex flex-col">
+                  {group.articles.map((article) => (
+                    <ArticleLinkRow
+                      key={article.slug}
+                      article={article}
+                      tone={group.tone}
+                    />
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
         )}
       </SectionShell>
 
@@ -401,20 +417,11 @@ export function HelpHubView() {
   );
 }
 
-function getRelatedArticles(slug: string): HelpArticle[] {
-  const group = GUIDE_GROUPS.find((item) => item.slugs.includes(slug));
-  if (!group) {
-    return [];
-  }
-  return group.slugs
-    .filter((related) => related !== slug)
-    .map((related) => getHelpArticle(related))
-    .filter((related): related is HelpArticle => related !== undefined);
-}
-
 export function HelpArticleView({ slug }: { slug: string }) {
   const { t } = useTranslation('web');
-  const article = getHelpArticle(slug);
+  const locale = useContentLocale();
+  const article = getLocalizedHelpArticle(slug, locale);
+
   if (!article) {
     return (
       <PageFrame maxWidth="3xl">
@@ -438,13 +445,31 @@ export function HelpArticleView({ slug }: { slug: string }) {
     );
   }
 
-  const related = getRelatedArticles(slug);
+  const group = helpGroupOf(slug);
+  const tone: HelpTone = group?.tone ?? 'blue';
+  const toneClasses = TONE_CLASSES[tone];
+  const GroupIcon = group ? GROUP_ICONS[group.id] : BookOpenIcon;
+  const related = group
+    ? localizedArticles(
+        group.slugs.filter((other) => other !== slug),
+        locale,
+      )
+    : [];
+  const isKeyboard = slug === 'keyboard-shortcuts';
+  const toc = isKeyboard
+    ? KEYBOARD_NAVIGATION_SECTIONS.map((section) => ({
+        heading: t(section.headingKey),
+        href: `#${section.id}`,
+      }))
+    : article.sections.map((section, index) => ({
+        heading: section.heading,
+        href: `#${sectionId(index)}`,
+      }));
 
   return (
     <PageFrame maxWidth="full" className="max-w-5xl min-w-0 pb-8">
       <PageHeader
         title={article.title}
-        subtitle={article.description}
         back={
           <ButtonLink className="w-fit" to="/help" size="xs" variant="text">
             <ArrowLeftIcon size={14} aria-hidden className="mr-1" />
@@ -452,54 +477,91 @@ export function HelpArticleView({ slug }: { slug: string }) {
           </ButtonLink>
         }
         meta={
-          article.productionPath ? (
-            <ExternalLink
-              href={`${PRODUCTION}${article.productionPath}`}
-              className="text-foreground-secondary text-xs no-underline underline-offset-2 hover:underline"
-            >
-              Open on tahti.live{article.productionPath}
-            </ExternalLink>
-          ) : null
+          <div className="flex flex-wrap items-center gap-3">
+            {group ? (
+              <span
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold',
+                  toneClasses.soft,
+                  toneClasses.text,
+                )}
+              >
+                <GroupIcon size={13} aria-hidden />
+                {t(`helpHub.groups.${group.id}.title`)}
+              </span>
+            ) : null}
+            {article.productionPath ? (
+              <ExternalLink
+                href={`${PRODUCTION}${article.productionPath}`}
+                className="text-foreground-secondary text-xs no-underline underline-offset-2 hover:underline"
+              >
+                {t('helpHub.openOnTahti', { path: article.productionPath })}
+              </ExternalLink>
+            ) : null}
+            <ContentLanguageToggle />
+          </div>
         }
       />
+
+      <div
+        className={cn(
+          'flex items-start gap-3 rounded-xl border-l-4 p-4',
+          toneClasses.border,
+          toneClasses.soft,
+        )}
+      >
+        <LightbulbIcon
+          size={20}
+          aria-hidden
+          className={cn('mt-0.5 shrink-0', toneClasses.text)}
+        />
+        <div>
+          <p
+            className={cn(
+              'text-xs font-bold tracking-[0.14em] uppercase',
+              toneClasses.text,
+            )}
+          >
+            {t('helpHub.inShort')}
+          </p>
+          <p className="mt-1 text-sm leading-relaxed sm:text-base">
+            {article.description}
+          </p>
+        </div>
+      </div>
 
       <div className="grid min-w-0 gap-8 lg:grid-cols-[13rem_minmax(0,1fr)]">
         <aside className="h-fit lg:sticky lg:top-4">
           <Box variant="tertiary" shadow="default" className="flex-col gap-3">
-            <div className="flex items-center gap-2 text-sm font-bold">
-              <ListIcon size={16} aria-hidden />
-              {t('helpView.inThisGuide')}
-            </div>
+            <div className="text-sm font-bold">{t('helpView.inThisGuide')}</div>
             <nav
-              className="flex flex-col gap-2"
+              className="flex flex-col gap-1.5"
               aria-label={t('helpView.articleSections')}
             >
-              {slug === 'keyboard-shortcuts'
-                ? KEYBOARD_NAVIGATION_SECTIONS.map((section, index) => (
-                    <a
-                      key={section.id}
-                      href={`#${section.id}`}
-                      className="text-foreground-secondary hover:text-foreground text-xs leading-relaxed"
-                    >
-                      {index + 1}. {t(section.headingKey)}
-                    </a>
-                  ))
-                : article.sections.map((section, index) => (
-                    <a
-                      key={`${section.heading}-${index}`}
-                      href={`#${sectionId(section.heading, index)}`}
-                      className="text-foreground-secondary hover:text-foreground text-xs leading-relaxed"
-                    >
-                      {index + 1}. {section.heading}
-                    </a>
-                  ))}
+              {toc.map((item, index) => (
+                <a
+                  key={`${item.heading}-${index}`}
+                  href={item.href}
+                  className="text-foreground-secondary hover:text-foreground flex items-start gap-2 text-xs leading-relaxed"
+                >
+                  <span
+                    className={cn(
+                      'inline-flex size-5 shrink-0 items-center justify-center rounded-full text-[0.65rem] font-bold',
+                      toneClasses.solid,
+                    )}
+                  >
+                    {index + 1}
+                  </span>
+                  <span className="pt-0.5">{item.heading}</span>
+                </a>
+              ))}
             </nav>
           </Box>
         </aside>
 
         <article className="min-w-0">
           <div className="flex flex-col gap-4">
-            {slug === 'keyboard-shortcuts' ? (
+            {isKeyboard ? (
               <Box
                 variant="tertiary"
                 shadow="default"
@@ -511,66 +573,76 @@ export function HelpArticleView({ slug }: { slug: string }) {
               article.sections.map((section, index) => (
                 <Box
                   key={`${section.heading}-${index}`}
-                  id={sectionId(section.heading, index)}
+                  id={sectionId(index)}
                   variant="tertiary"
                   shadow="default"
-                  className="scroll-mt-4 flex-col gap-3 sm:p-6"
+                  className={cn(
+                    'scroll-mt-4 flex-col gap-3 border-l-4 sm:p-6',
+                    toneClasses.border,
+                  )}
                 >
-                  <div className="flex items-start gap-3">
-                    <Badge variant="pill" color="inverted">
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={cn(
+                        'font-display inline-flex size-8 shrink-0 items-center justify-center rounded-full text-sm font-extrabold',
+                        toneClasses.solid,
+                      )}
+                    >
                       {index + 1}
-                    </Badge>
-                    <div className="min-w-0 flex-1">
-                      <h2 className="font-display text-xl font-bold tracking-tight">
-                        {section.heading}
-                      </h2>
-                      {section.body.length > 0 ? (
-                        <ul className="text-foreground-secondary mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed">
-                          {section.body.map((line) => (
-                            <li key={line}>{line}</li>
-                          ))}
-                        </ul>
-                      ) : null}
-                      {section.table ? (
-                        <HorizontalScroll
-                          label={section.heading}
-                          className="mt-4"
-                        >
-                          <DataTable className="min-w-[40rem]">
-                            <caption className="sr-only">
-                              {section.heading}
-                            </caption>
-                            <DataTableHead>
-                              <DataTableRow>
-                                {section.table.columns.map((column) => (
-                                  <DataTableHeaderCell
-                                    key={column}
-                                    className="text-foreground"
-                                  >
-                                    {column}
-                                  </DataTableHeaderCell>
-                                ))}
-                              </DataTableRow>
-                            </DataTableHead>
-                            <DataTableBody>
-                              {section.table.rows.map((row) => (
-                                <DataTableRow key={row.join('|')}>
-                                  {row.map((cell, cellIndex) => (
-                                    <DataTableCell
-                                      key={`${row[0]}-${cellIndex}`}
-                                      className="text-foreground-secondary leading-relaxed"
-                                    >
-                                      {cell}
-                                    </DataTableCell>
-                                  ))}
-                                </DataTableRow>
-                              ))}
-                            </DataTableBody>
-                          </DataTable>
-                        </HorizontalScroll>
-                      ) : null}
-                    </div>
+                    </span>
+                    <h2 className="font-display min-w-0 text-xl font-bold tracking-tight">
+                      {section.heading}
+                    </h2>
                   </div>
+                  {section.body.length > 0 ? (
+                    <ul className="flex flex-col gap-2.5 text-sm leading-relaxed">
+                      {section.body.map((line) => (
+                        <li key={line} className="flex gap-2.5">
+                          <CheckCircle2Icon
+                            size={17}
+                            aria-hidden
+                            className={cn('mt-0.5 shrink-0', toneClasses.text)}
+                          />
+                          <span className="text-foreground-secondary min-w-0">
+                            {line}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : null}
+                  {section.table ? (
+                    <HorizontalScroll label={section.heading} className="mt-1">
+                      <DataTable className="min-w-[40rem]">
+                        <caption className="sr-only">{section.heading}</caption>
+                        <DataTableHead>
+                          <DataTableRow>
+                            {section.table.columns.map((column) => (
+                              <DataTableHeaderCell
+                                key={column}
+                                className="text-foreground"
+                              >
+                                {column}
+                              </DataTableHeaderCell>
+                            ))}
+                          </DataTableRow>
+                        </DataTableHead>
+                        <DataTableBody>
+                          {section.table.rows.map((row) => (
+                            <DataTableRow key={row.join('|')}>
+                              {row.map((cell, cellIndex) => (
+                                <DataTableCell
+                                  key={`${row[0]}-${cellIndex}`}
+                                  className="text-foreground-secondary leading-relaxed"
+                                >
+                                  {cell}
+                                </DataTableCell>
+                              ))}
+                            </DataTableRow>
+                          ))}
+                        </DataTableBody>
+                      </DataTable>
+                    </HorizontalScroll>
+                  ) : null}
                 </Box>
               ))
             )}
@@ -588,21 +660,15 @@ export function HelpArticleView({ slug }: { slug: string }) {
               className="border-border mt-8 border-t pt-5"
             >
               <SectionShell title={t('helpView.relatedGuides')}>
-                <div className="grid gap-3 sm:grid-cols-2">
+                <ul className="-mx-2 grid gap-1 sm:grid-cols-2">
                   {related.map((item) => (
-                    <Link
+                    <ArticleLinkRow
                       key={item.slug}
-                      to="/help/$slug"
-                      params={{ slug: item.slug }}
-                      className="min-w-0"
-                    >
-                      <HelpLinkCard
-                        title={item.title}
-                        description={item.description}
-                      />
-                    </Link>
+                      article={item}
+                      tone={tone}
+                    />
                   ))}
-                </div>
+                </ul>
               </SectionShell>
             </nav>
           )}

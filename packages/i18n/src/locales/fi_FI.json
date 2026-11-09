@@ -9529,6 +9529,54 @@
     },
     "desktopUpdatesRowLabels": {
       "youHaveTahtiPlayerVersion": "Sinulla on Tahti Player {{version}}. Kun uusi versio julkaistaan, sovellus tarjoaa sen asentamista."
+    },
+    "helpHub": {
+      "hubHeading": "Miten voimme auttaa?",
+      "hubIntro": "Lyhyet oppaat kuunteluun, lähettämiseen, lisäosiin, tiliisi ja yhteydenottoon.",
+      "guidesCount_one": "{{count}} opas",
+      "guidesCount_other": "{{count}} opasta",
+      "noMatchDescription": "Kokeile toista hakua hakusanan ”{{query}}” sijaan.",
+      "keyboardDescription": "Pikanäppäimet Kuuntelelle, Radiolle, Kirjastolle, Studiolle ja esittelylle.",
+      "inShort": "Lyhyesti",
+      "openOnTahti": "Avaa tahti.live{{path}}",
+      "groups": {
+        "start-here": {
+          "title": "Aloita tästä",
+          "description": "Löydä kuunneltavaa tai perusta artistiprofiilisi."
+        },
+        "listen-and-share": {
+          "title": "Kuuntele ja jaa",
+          "description": "Tallenna musiikkia, kommentoi hetkiä ja jaa julkisia sivuja."
+        },
+        "artist-tools": {
+          "title": "Artistin työkalut",
+          "description": "Julkaise musiikkia, suunnittele kanavasi ja seuraa ansioita."
+        },
+        "broadcasting": {
+          "title": "Lähettäminen",
+          "description": "Mene lähetykseen ja peilaa se muille alustoille."
+        },
+        "releasing": {
+          "title": "Julkaiseminen",
+          "description": "Julkaisutunnisteet, tietokannat, älylinkit ja toimitus."
+        },
+        "account-support": {
+          "title": "Tili ja tuki",
+          "description": "Rajat, turvallisuus, pikanäppäimet ja mistä saat apua."
+        },
+        "admin": {
+          "title": "Ylläpito",
+          "description": "Alustan ylläpidon työkalut."
+        },
+        "add-ons": {
+          "title": "Lisäosat",
+          "description": "Teemat, tuonnit, livepeilaukset, äänityökalut ja sivuwidgetit."
+        },
+        "build-with-tahti": {
+          "title": "Rakenna Tahtiin",
+          "description": "Tee alustalle oma Disco-widget."
+        }
+      }
     }
   },
   "studioEditor": {

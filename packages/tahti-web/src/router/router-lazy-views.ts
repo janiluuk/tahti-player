@@ -76,6 +76,11 @@ export const LegalView = lazyRouteComponent(
   () => import('../views/LegalView'),
   'LegalView',
 );
+export const ForArtistsView = lazyRouteComponent(
+  () => import('../views/ForArtistsView'),
+  'ForArtistsView',
+);
+
 export const WhatIsItView = lazyRouteComponent(
   () => import('../views/WhatIsItView'),
   'WhatIsItView',
