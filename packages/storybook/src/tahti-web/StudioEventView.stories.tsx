@@ -33,7 +33,10 @@ export const ReadOnly: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      await canvas.findByRole('heading', { name: 'Album release show' }),
+      await canvas.findByRole('heading', {
+        level: 1,
+        name: 'Album release show',
+      }),
     ).toBeInTheDocument();
     await expect(canvas.queryByRole('textbox')).not.toBeInTheDocument();
     await expect(
