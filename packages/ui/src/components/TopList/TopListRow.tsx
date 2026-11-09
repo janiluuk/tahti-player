@@ -1,7 +1,7 @@
-import { CassetteTape } from 'lucide-react';
 import { FC, KeyboardEvent } from 'react';
 
 import { cn } from '../../utils';
+import { MediaArtwork } from '../MediaArtwork';
 import type { TopListEntry } from './types';
 
 type TopListRowProps = {
@@ -45,21 +45,12 @@ export const TopListRow: FC<TopListRowProps> = ({
       <span className="text-foreground-secondary w-5 text-right text-sm tabular-nums">
         {rank}
       </span>
-      <div className="flex h-10 w-10 items-center justify-center overflow-hidden">
-        {entry.imageUrl ? (
-          <img
-            src={entry.imageUrl}
-            alt={entry.label}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <CassetteTape
-            size={32}
-            absoluteStrokeWidth
-            className="text-foreground opacity-20"
-          />
-        )}
-      </div>
+      <MediaArtwork
+        size="sm"
+        src={entry.imageUrl}
+        alt={entry.label}
+        seed={entry.id}
+      />
       <div className="min-w-0">
         <div data-testid="top-list-label" className="truncate font-medium">
           {entry.label}

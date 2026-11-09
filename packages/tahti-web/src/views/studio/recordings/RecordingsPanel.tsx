@@ -43,8 +43,9 @@ export function RecordingsPanel({
   return (
     <>
       <StudioPanel
-        title={t('studioRecordings.panelTitle', { count: recordings.length })}
-        description={t('studioRecordings.panelDescription')}
+        description={t('studioRecordings.panelSummary', {
+          count: recordings.length,
+        })}
         action={action}
       >
         <div className="mb-4 flex flex-col gap-2 sm:flex-row">

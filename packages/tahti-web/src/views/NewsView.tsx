@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
+  Badge,
   Button,
   ButtonAnchor,
-  cn,
   ImageReveal,
   ViewShell,
 } from '@tahti-player/ui';
@@ -18,31 +18,16 @@ import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { PlatformNewsDialog } from '../components/PlatformNewsDialog';
 import { humanizePastDate } from '../lib/humanizeDate';
 
-function TimelineNode({ isLatest }: { isLatest?: boolean }) {
-  return isLatest ? (
-    <div className="bg-accent-yellow border-foreground flex size-7 shrink-0 items-center justify-center rounded-full border-(length:--border-width)">
-      <SparklesIcon className="text-foreground size-4" strokeWidth={2.5} />
-    </div>
-  ) : (
-    <div className="bg-foreground border-foreground size-5 shrink-0 rounded-full border-(length:--border-width)">
-      <div className="bg-background-secondary border-background-secondary size-full rounded-full border-(length:--border-width)">
-        <div className="bg-foreground size-full rounded-full" />
-      </div>
-    </div>
-  );
-}
-
-function TimelineEntry({
+function NewsEntry({
   entry,
-  isFirst,
-  isLast,
+  isLatest,
   onOpen,
 }: {
   entry: Announcement;
-  isFirst: boolean;
-  isLast: boolean;
+  isLatest: boolean;
   onOpen: () => void;
 }) {
+  const { t } = useTranslation('web');
   const safeUrl = (value: string | null | undefined, relative = false) => {
     if (!value) {
       return null;
@@ -63,75 +48,69 @@ function TimelineEntry({
   const linkUrl = safeUrl(entry.linkUrl, true);
 
   return (
-    <div data-testid="announcement-entry" className="flex gap-3 sm:gap-4">
-      <div className="flex w-7 shrink-0 flex-col items-center gap-1">
-        <div
-          className={cn(
-            'w-1 flex-1 rounded-b-full',
-            isFirst ? 'bg-transparent' : 'bg-border',
-          )}
-        />
-        <TimelineNode isLatest={isFirst} />
-        <div
-          className={cn(
-            'w-1 flex-1 rounded-t-full',
-            isLast ? 'bg-transparent' : 'bg-border',
-          )}
-        />
-      </div>
-      <div className="my-4 flex min-w-0 flex-1 flex-col gap-1">
-        <div className="flex items-center justify-between px-1">
-          <span className="text-foreground-secondary text-xs font-medium">
-            {entry.authorName}
-          </span>
-          <span className="text-foreground-secondary flex items-center gap-1.5 text-xs">
-            <CalendarDaysIcon size={14} aria-hidden />
-            <time
-              dateTime={entry.publishedAt}
-              title={new Date(entry.publishedAt).toLocaleString()}
+    <article data-testid="announcement-entry" className="flex flex-col gap-1.5">
+      <div className="text-foreground-secondary flex items-center justify-between gap-2 text-xs">
+        <span className="flex min-w-0 items-center gap-2">
+          {isLatest ? (
+            <Badge
+              variant="pill"
+              color="yellow"
+              className="gap-1"
+              data-testid="news-latest"
             >
-              {humanizePastDate(entry.publishedAt)}
-            </time>
-          </span>
-        </div>
-        <div className="border-border bg-background-secondary shadow-shadow flex-1 overflow-hidden rounded-md border-(length:--border-width)">
-          {imageUrl ? (
-            <ImageReveal
-              src={imageUrl}
-              alt={`${entry.headline} thumbnail`}
-              className="aspect-[16/7] w-full"
-            />
+              <SparklesIcon size={12} aria-hidden />
+              {t('newsView.latest')}
+            </Badge>
           ) : null}
-          <div className="p-3 sm:p-4">
-            <Button
-              type="button"
+          <span className="truncate font-medium">{entry.authorName}</span>
+        </span>
+        <span className="flex shrink-0 items-center gap-1.5">
+          <CalendarDaysIcon size={14} aria-hidden />
+          <time
+            dateTime={entry.publishedAt}
+            title={new Date(entry.publishedAt).toLocaleString()}
+          >
+            {humanizePastDate(entry.publishedAt)}
+          </time>
+        </span>
+      </div>
+      <div className="border-border bg-background-secondary shadow-shadow overflow-hidden rounded-md border-(length:--border-width)">
+        {imageUrl ? (
+          <ImageReveal
+            src={imageUrl}
+            alt={`${entry.headline} thumbnail`}
+            className="aspect-[16/7] w-full"
+          />
+        ) : null}
+        <div className="p-3 sm:p-4">
+          <Button
+            type="button"
+            variant="text"
+            size="flexible"
+            className="h-auto justify-start px-0 text-left text-lg font-semibold whitespace-normal hover:underline"
+            onClick={onOpen}
+          >
+            {entry.headline}
+          </Button>
+          <p className="text-foreground-secondary mt-1 text-sm whitespace-pre-wrap">
+            {entry.summary}
+          </p>
+          {linkUrl ? (
+            <ButtonAnchor
+              href={linkUrl}
               variant="text"
               size="flexible"
-              className="h-auto justify-start px-0 text-left text-lg font-semibold whitespace-normal hover:underline"
-              onClick={onOpen}
+              target={linkUrl.startsWith('/') ? undefined : '_blank'}
+              rel={linkUrl.startsWith('/') ? undefined : 'noreferrer'}
+              className="text-primary-strong mt-3 h-auto justify-start gap-1.5 px-0 text-sm font-semibold underline-offset-2 hover:underline"
             >
-              {entry.headline}
-            </Button>
-            <p className="text-foreground-secondary mt-1 text-sm whitespace-pre-wrap">
-              {entry.summary}
-            </p>
-            {linkUrl ? (
-              <ButtonAnchor
-                href={linkUrl}
-                variant="text"
-                size="flexible"
-                target={linkUrl.startsWith('/') ? undefined : '_blank'}
-                rel={linkUrl.startsWith('/') ? undefined : 'noreferrer'}
-                className="text-primary-strong mt-3 h-auto justify-start gap-1.5 px-0 text-sm font-semibold underline-offset-2 hover:underline"
-              >
-                {entry.linkLabel?.trim() || 'Read more'}
-                <ExternalLinkIcon size={14} aria-hidden />
-              </ButtonAnchor>
-            ) : null}
-          </div>
+              {entry.linkLabel?.trim() || t('newsView.readMore')}
+              <ExternalLinkIcon size={14} aria-hidden />
+            </ButtonAnchor>
+          ) : null}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
 
@@ -185,9 +164,12 @@ export function NewsView() {
           }}
         />
       ) : null}
-      <div className="mx-auto flex w-full max-w-2xl flex-col">
-        <p className="text-foreground-secondary mb-4 text-sm">
-          News, service updates, and posts from the Tahti team.{' '}
+      <div
+        className="flex w-full max-w-2xl flex-col gap-6"
+        data-testid="news-column"
+      >
+        <p className="text-foreground-secondary text-sm">
+          {t('newsView.intro')}{' '}
           <Link
             to="/whats-new"
             className="text-primary-strong font-medium underline-offset-2 hover:underline"
@@ -209,10 +191,10 @@ export function NewsView() {
 
         {!loading && loadError && entries.length > 0 && (
           <p
-            className="border-border bg-background-secondary mb-4 rounded-md border px-3 py-2 text-xs"
+            className="border-border bg-background-secondary rounded-md border px-3 py-2 text-xs"
             role="status"
           >
-            Could not refresh the news: {loadError}{' '}
+            {t('newsView.couldNotRefresh', { reason: loadError })}{' '}
             <Button
               variant="plain"
               size="flexible"
@@ -229,12 +211,11 @@ export function NewsView() {
         )}
 
         {visibleEntries.map((entry, index) => (
-          <TimelineEntry
+          <NewsEntry
             key={entry.id}
             entry={entry}
             onOpen={() => setSelected(entry)}
-            isFirst={index === 0}
-            isLast={index === visibleEntries.length - 1}
+            isLatest={index === 0}
           />
         ))}
 
@@ -246,7 +227,7 @@ export function NewsView() {
             className="self-start"
             onClick={() => setShowAll(true)}
           >
-            Show {hiddenCount} more
+            {t('newsView.showMore', { count: hiddenCount })}
           </Button>
         )}
       </div>

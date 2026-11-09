@@ -2,6 +2,8 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { MediaArtworkDefaultProvider } from '@tahti-player/ui';
+
 import * as studio from '../api/studio';
 import * as extras from '../api/studio-extras';
 import { useAuthStore } from '../stores/authStore';
@@ -51,5 +53,40 @@ describe('LibraryView overview', () => {
     fetch.mockResolvedValue({ data: [], meta: { source: 'api' } });
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText('Your catalog is empty')).toBeTruthy();
+  });
+
+  it('heads the overview once, without a second "Library overview" card title', async () => {
+    vi.spyOn(studio, 'fetchStudioSounds').mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    });
+    await renderWithRouter(<LibraryView />);
+    await screen.findByTestId('library-overview-stats');
+    expect(screen.getAllByRole('heading', { name: 'Overview' })).toHaveLength(
+      1,
+    );
+    expect(
+      screen.queryByRole('heading', { name: /Library overview/ }),
+    ).toBeNull();
+  });
+
+  it('shows artwork rather than a cassette placeholder for top sounds', async () => {
+    vi.spyOn(studio, 'fetchStudioSounds').mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    });
+    vi.mocked(extras.fetchStatsTopTracks).mockResolvedValue({
+      data: [{ soundId: 'sound-1', title: 'Polar Night', plays: 12 }],
+      meta: { source: 'api' },
+    } as never);
+    await renderWithRouter(
+      <MediaArtworkDefaultProvider value={(seed) => `/covers/${seed}.png`}>
+        <LibraryView />
+      </MediaArtworkDefaultProvider>,
+    );
+    expect(await screen.findByAltText('Polar Night')).toHaveAttribute(
+      'src',
+      '/covers/sound-1.png',
+    );
   });
 });

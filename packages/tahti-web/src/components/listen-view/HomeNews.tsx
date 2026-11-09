@@ -69,6 +69,7 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
       <StoryRow
         title={t('homeNews.fromTahti')}
         data-testid="home-news"
+        className="pr-1"
         actions={
           <ButtonLink
             to="/news"

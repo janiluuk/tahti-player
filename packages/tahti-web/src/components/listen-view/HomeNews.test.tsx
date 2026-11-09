@@ -34,6 +34,18 @@ describe('HomeNews', () => {
     expect(router.state.location.pathname).toBe('/news');
   });
 
+  it('keeps room for the header buttons’ offset shadow at the row edge', async () => {
+    vi.spyOn(client, 'fetchAnnouncements').mockResolvedValue({
+      data: [post('b', 'Beta is open', '2026-10-01T00:00:00.000Z')],
+      meta: { source: 'api' },
+    });
+
+    await renderWithRouter(<HomeNews />);
+
+    const link = await screen.findByRole('link', { name: 'Show all news' });
+    expect(link.closest('section')).toHaveClass('pr-1');
+  });
+
   it('offers Retry when news fails to load', async () => {
     vi.spyOn(client, 'fetchAnnouncements').mockResolvedValue({
       data: [],

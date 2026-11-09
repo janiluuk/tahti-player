@@ -71,6 +71,19 @@ describe('FavoritesView', () => {
     );
   });
 
+  it('subtitles favorite channels with the @username, not the bare slug', async () => {
+    useLibraryStore.setState({
+      favoriteChannels: [
+        { slug: 'aurora', displayName: 'Aurora Drift' },
+        { slug: 'tahti-radio', username: 'tahti', displayName: 'Tahti Radio' },
+      ],
+    });
+    renderFavorites();
+    expect(await screen.findByText('@aurora')).toBeInTheDocument();
+    expect(screen.getByText('@tahti')).toBeInTheDocument();
+    expect(screen.queryByText('tahti-radio')).toBeNull();
+  });
+
   it('shows the empty favorites to a signed-out visitor', async () => {
     useAuthStore.setState({ user: null, hydrated: true, loading: false });
     renderFavorites();
