@@ -229,7 +229,7 @@ export function AgendaBuilder({
         disabled={editingId !== null}
         onClick={add}
       >
-        <PlusIcon size={16} aria-hidden />
+        <PlusIcon size={16} aria-hidden className="mr-1.5" />
         {t('agmTab.addAgendaItem')}
       </Button>
     </StudioPanel>
