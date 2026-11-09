@@ -45,7 +45,7 @@ export const PLAYLIST_COLUMNS: CatalogColumn<NativePlaylistEntry>[] = [
               className="text-accent-red-strong text-xs"
               aria-description={unavailableReason(entry)}
             >
-              Unavailable
+              {i18n.t('web:localPlaylistsSharedText.unavailable')}
             </span>
           </Tooltip>
         ) : null}

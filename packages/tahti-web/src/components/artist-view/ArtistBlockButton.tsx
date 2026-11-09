@@ -59,7 +59,7 @@ export function useArtistBlock(username: string, displayName: string) {
       <ConfirmDialog
         destructive
         isOpen={confirming}
-        title={`Block ${displayName}?`}
+        title={t('artistBlockButtonLabels.blockDisplayname', { displayName })}
         description={t('artistBlockButton.youWonTBeAble')}
         confirmLabel={t('artistBlockButton.block')}
         onCancel={() => setConfirming(false)}

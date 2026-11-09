@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Slider, Toggle } from '@tahti-player/ui';
 
 import {
@@ -21,6 +22,7 @@ export function TuningSliders({
   visualSettings,
   onSettingChange,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <>
       {(['speed', 'intensity'] as const).map((key) => {
@@ -40,9 +42,9 @@ export function TuningSliders({
       })}
       {visualizerSupportsAudioReactive(preset) ? (
         <div className="flex items-center justify-between gap-3 text-sm">
-          <span>Audio reactive</span>
+          <span>{t('tuningSlidersText.audioReactive')}</span>
           <Toggle
-            label="Audio reactive"
+            label={t('tuningSlidersText.audioReactive')}
             checked={
               resolveVisualPresetSettings(visualSettings, preset).audioReactive
             }

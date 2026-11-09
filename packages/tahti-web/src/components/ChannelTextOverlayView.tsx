@@ -1,5 +1,7 @@
 import type { CSSProperties } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import {
   isActiveTextOverlay,
   type TextOverlayMode,
@@ -45,6 +47,7 @@ export function ChannelTextOverlayView({
   size?: 'sm' | 'lg';
   className?: string;
 }) {
+  const { t } = useTranslation('web');
   if (!isActiveTextOverlay({ mode, text })) {
     return null;
   }
@@ -55,7 +58,7 @@ export function ChannelTextOverlayView({
   return (
     <h2
       data-overlay-text={text ?? ''}
-      aria-label="Channel text overlay"
+      aria-label={t('channelTextOverlayViewText.channelTextOverlay')}
       className={`channel-text-overlay ${effectClass} ${alignClass(align)} ${
         size === 'sm' ? 'text-lg' : 'text-2xl sm:text-4xl'
       } ${className ?? ''}`}

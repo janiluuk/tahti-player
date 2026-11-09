@@ -1,6 +1,7 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Card, CardGrid } from '@tahti-player/ui';
 
 import { fetchArtistPlayables } from '../api/client';
@@ -59,6 +60,7 @@ export function DirectoryArtistCardGrid({
   artists,
   liveIndicator = 'text',
 }: DirectoryArtistCardGridProps) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -126,7 +128,7 @@ export function DirectoryArtistCardGrid({
                           color="cyan"
                           className="px-1.5 py-0 text-[10px] font-bold tracking-wide uppercase"
                         >
-                          Live
+                          {t('directoryArtistCardGridText.live')}
                         </Badge>
                       ) : null}
                       <span>{genreLine}</span>

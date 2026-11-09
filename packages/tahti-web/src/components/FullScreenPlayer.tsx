@@ -459,7 +459,7 @@ export function FullScreenPlayer() {
           />
           {isLive && status === 'error' ? (
             <div className="text-foreground-secondary text-xs tracking-wide uppercase">
-              Error
+              {t('fullScreenPlayerText.error')}
             </div>
           ) : isRealLive ? (
             <PlayerLiveIndicator />

@@ -60,7 +60,7 @@ export function ChannelSetupDialog() {
             sections={[
               {
                 id: 'channel-design',
-                title: 'Channel appearance',
+                title: t('channelSetupDialogFields.channelAppearance'),
                 children: (
                   <ChannelDesigner
                     displayName={user.displayName}

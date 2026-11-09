@@ -163,7 +163,11 @@ export function AdminUserEngagementPanel({
             </p>
           </div>
           {data.adjustments.length === 0 ? (
-            <PageEmpty title={`No adjustments in ${data.year}`} />
+            <PageEmpty
+              title={t('adminUserEngagementPanelLabels.noAdjustmentsInYear', {
+                year: data.year,
+              })}
+            />
           ) : (
             <ul className="divide-border divide-y text-sm">
               {data.adjustments.map((entry) => (

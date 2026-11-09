@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import { fetchProfile } from '../../api/client';
 import type {
   PublicProfile,
@@ -33,6 +35,7 @@ export function ChannelCatalogSections({
   displayName: string;
   channelSlug: string;
 }) {
+  const { t } = useTranslation('web');
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [status, setStatus] = useState<'loading' | 'error' | 'ready'>(
     'loading',
@@ -94,7 +97,7 @@ export function ChannelCatalogSections({
   if (status === 'loading') {
     return (
       <ProfileSection
-        title="Releases"
+        title={t('channelCatalogSectionsText.releases')}
         status="loading"
         loadingLabel="Loading releases…"
       />
@@ -104,7 +107,7 @@ export function ChannelCatalogSections({
   if (status === 'error') {
     return (
       <ProfileSection
-        title="Releases"
+        title={t('channelCatalogSectionsText.releases')}
         status="error"
         errorTitle="Releases couldn't load"
         errorDescription="Tracks above are unaffected."

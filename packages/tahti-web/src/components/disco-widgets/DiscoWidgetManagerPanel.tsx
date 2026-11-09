@@ -297,7 +297,7 @@ export function DiscoWidgetManagerPanel({
               <FilePicker
                 accept="image/png,image/webp,image/jpeg"
                 labels={{
-                  title: 'Add a logo block',
+                  title: t('discoWidgetManagerPanelFields.addALogoBlock'),
                   description:
                     'A logo in the channel page layout, separate from your profile logo.',
                   browse: 'Choose image',

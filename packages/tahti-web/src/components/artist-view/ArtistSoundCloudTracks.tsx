@@ -1,5 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ExternalLink, MediaArtwork, SectionTitle } from '@tahti-player/ui';
 
 import {
@@ -21,6 +22,7 @@ export function ArtistSoundCloudTracks({
   channelSlug: string;
   surfaceStyle: CSSProperties;
 }) {
+  const { t } = useTranslation('web');
   const [embeds, setEmbeds] = useState<ChannelSoundCloudEmbed[]>([]);
   const [openId, setOpenId] = useState<string | null>(null);
 
@@ -50,7 +52,7 @@ export function ArtistSoundCloudTracks({
           <SourceServiceIcon id="soundcloud" />
         </div>
         <SectionTitle
-          title="On SoundCloud"
+          title={t('artistSoundCloudTracksText.onSoundcloud')}
           wrap
           className="font-display tracking-tight"
         />

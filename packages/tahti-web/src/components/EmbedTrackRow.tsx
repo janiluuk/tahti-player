@@ -129,7 +129,7 @@ export function EmbedTrackRow({
               subtitle={t('embedTrackRowLabels.listenOnLabel', { label })}
               actions={
                 <span className="text-foreground-secondary font-mono text-[10px] tracking-wide uppercase">
-                  Embed
+                  {t('embedTrackRowText.embed')}
                 </span>
               }
             />

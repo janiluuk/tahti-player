@@ -212,7 +212,10 @@ export function VoiceRecorder({
             value={deviceId}
             disabled={state !== 'idle' || disabled}
             options={[
-              { id: 'default', label: 'Default microphone' },
+              {
+                id: 'default',
+                label: t('voiceRecorderFields.defaultMicrophone'),
+              },
               ...devices
                 .filter((d) => d.deviceId && d.deviceId !== 'default')
                 .map((d, i) => ({

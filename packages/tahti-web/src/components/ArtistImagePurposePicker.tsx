@@ -287,7 +287,9 @@ export const ArtistImagePurposePicker: FC<Props> = ({
                 <Button
                   size="icon-sm"
                   variant="text"
-                  aria-label={`Remove ${image.file.name}`}
+                  aria-label={t('artistImagePurposePickerLabels.removeName', {
+                    name: image.file.name,
+                  })}
                   onClick={() => remove(image.id)}
                   disabled={busy}
                 >

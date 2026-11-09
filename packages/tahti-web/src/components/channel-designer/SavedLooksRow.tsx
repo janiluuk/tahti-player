@@ -63,7 +63,9 @@ export function SavedLooksRow({
               variant="plain"
               size="flexible"
               type="button"
-              aria-label={`Delete "${preset.name}"`}
+              aria-label={t('savedLooksRowLabels.deleteName', {
+                name: preset.name,
+              })}
               className="text-foreground-secondary hover:text-accent-red-strong inline-block rounded-full p-1.5 whitespace-normal active:scale-100"
               disabled={presetBusy}
               onClick={() => onRequestDelete(preset)}

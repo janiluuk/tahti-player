@@ -40,7 +40,9 @@ export function BroadcastControls({ nav }: { nav: TopNavState }) {
                 'border-primary bg-primary/15 text-primary-strong',
               broadcastToneClass,
             )}
-            aria-label={`Open live panel — ${broadcast.label}`}
+            aria-label={t('broadcastControlsLabels.openLivePanelLabel', {
+              label: broadcast.label,
+            })}
             aria-haspopup="menu"
             aria-expanded={broadcastOpen}
             data-tour-id="topbar-golive"

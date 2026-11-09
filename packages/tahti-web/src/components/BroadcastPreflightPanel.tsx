@@ -245,7 +245,10 @@ export function BroadcastPreflightPanel({ onSaved, onDirty }: Props) {
                 }
               }}
               options={[
-                { id: '', label: 'One-off broadcast' },
+                {
+                  id: '',
+                  label: t('broadcastPreflightPanelFields.oneOffBroadcast'),
+                },
                 ...series.map((show) => ({
                   id: show.id,
                   label: `${show.title} — next #${show.nextEpisodeNumber}`,

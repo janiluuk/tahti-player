@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { SegmentedControl } from '@tahti-player/ui';
 
 import { setAdminChannelKind, type ChannelKind } from '../../api/admin';
@@ -17,6 +18,7 @@ export function AdminChannelKindControl({
   slug: string;
   initialKind: ChannelKind;
 }) {
+  const { t } = useTranslation('web');
   const [kind, setKind] = useState<ChannelKind>(initialKind);
   const [saving, setSaving] = useState(false);
 
@@ -44,7 +46,9 @@ export function AdminChannelKindControl({
 
   return (
     <SegmentedControl
-      aria-label={`Channel type for ${slug}`}
+      aria-label={t('adminChannelKindControlLabels.channelTypeForSlug', {
+        slug,
+      })}
       options={OPTIONS}
       value={kind}
       onChange={(next) => void change(next)}

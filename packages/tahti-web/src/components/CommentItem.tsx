@@ -1,6 +1,7 @@
 import { Trash2Icon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import type { TrackComment } from '../api/types';
@@ -27,6 +28,7 @@ export function CommentItem({
   onDelete?: () => void;
   deleting?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const viewerUsername = useAuthStore((s) => s.user?.username);
   const isOwn = viewerUsername === comment.authorUsername;
   return (
@@ -66,7 +68,9 @@ export function CommentItem({
         <Button
           variant="text"
           size="sm"
-          aria-label={`Delete comment by ${comment.authorDisplayName}`}
+          aria-label={t('commentItemLabels.deleteCommentByAuthordisplayname', {
+            authorDisplayName: comment.authorDisplayName,
+          })}
           disabled={deleting}
           onClick={onDelete}
         >

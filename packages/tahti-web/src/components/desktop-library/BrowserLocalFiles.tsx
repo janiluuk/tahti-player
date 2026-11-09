@@ -151,7 +151,9 @@ export function BrowserLocalFiles() {
                       size="icon-sm"
                       variant="text"
                       intent="danger"
-                      aria-label={`Remove ${track.title}`}
+                      aria-label={t('browserLocalFilesLabels.removeTitle', {
+                        title: track.title,
+                      })}
                       onClick={() => {
                         remove(track.id);
                         toast.success(

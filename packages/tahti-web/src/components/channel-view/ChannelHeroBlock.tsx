@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import type { PublicChannel } from '../../api/types';
@@ -85,6 +86,7 @@ export function ChannelHeroBlock({
   identityActions,
   leading,
 }: ChannelHeroBlockProps) {
+  const { t } = useTranslation('web');
   // Opt-in: no bar at all until the artist adds a Navigation block with 2+
   // tabs (see showNavTabs/navTabs above) -- what shows here while editing is
   // exactly what listeners see, not a preview-only placeholder.
@@ -177,7 +179,7 @@ export function ChannelHeroBlock({
       </div>
       {stageNavItems.length > 0 ? (
         <nav
-          aria-label="Channel navigation"
+          aria-label={t('channelHeroBlockText.channelNavigation')}
           className={
             editing
               ? 'relative flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3 text-xs font-semibold uppercase'

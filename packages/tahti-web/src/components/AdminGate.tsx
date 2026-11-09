@@ -41,7 +41,9 @@ export function AdminGate({ children }: { children: ReactNode }) {
         page="Board admin"
         icon={<ShieldAlertIcon size={40} className="opacity-40" />}
         title={t('adminGate.boardAccessRequired')}
-        description={`Signed in as @${user.username}, but this account doesn't have the Board role.`}
+        description={t('adminGateLabels.signedInAsUsernameBut', {
+          username: user.username,
+        })}
         action={
           <ButtonLink to="/" size="sm" variant="secondary">
             {t('adminGate.backToListen')}
