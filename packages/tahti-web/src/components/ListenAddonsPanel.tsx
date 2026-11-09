@@ -1,15 +1,7 @@
-import {
-  Heart,
-  ListMusic,
-  Newspaper,
-  SettingsIcon,
-  Youtube,
-} from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
-  Box,
   Button,
   Input,
   MediaArtwork,
@@ -18,7 +10,6 @@ import {
   TabLabel,
   Tabs,
   Toggle,
-  Tooltip,
 } from '@tahti-player/ui';
 
 import { fetchMeProfile, patchMeProfile } from '../api/studio-extras';
@@ -32,7 +23,6 @@ import {
   soundcloudProfileUrl,
   type HearthisSet,
 } from '../content/listenerWidgets';
-import { cn } from '../lib/cn';
 import { isHttpUrl } from '../lib/parseRss';
 import {
   NEWS_WIDGET_TYPE_ID,
@@ -40,101 +30,14 @@ import {
   type ListenerWidgetSurface,
 } from '../stores/listenerWidgetsStore';
 import { ImageUploadField } from './ImageUploadField';
+import {
+  ConfigurableCard,
+  listenAddonIcon,
+} from './listen-addons/ListenAddonCards';
 import { ListenAddonsTabEmpty } from './ListenAddonsTabEmpty';
 import { ListenerWidgetEmbed } from './ListenerWidgetEmbed';
 import { NewsFeedSuggestions } from './NewsFeedSuggestions';
 import { NewsFeedWidget } from './NewsFeedWidget';
-import { SourceServiceIcon } from './SourceServiceIcon';
-
-function ConfigureGear({
-  title,
-  open,
-  onToggle,
-}: {
-  title: string;
-  open: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <Tooltip
-      content={open ? `Hide ${title} configuration` : `Configure ${title}`}
-      side="top"
-    >
-      <Button
-        size="icon-sm"
-        variant="secondary"
-        onClick={onToggle}
-        aria-label={open ? `Hide ${title} configuration` : `Configure ${title}`}
-      >
-        <SettingsIcon size={15} aria-hidden />
-      </Button>
-    </Tooltip>
-  );
-}
-
-function ConfigurableCard({
-  header,
-  children,
-  title,
-  open,
-  onOpenChange,
-  className,
-}: {
-  /** Render the store row; pass configure gear into PluginStoreItem `accessory`
-   * so compact dialogs don't overflow a side-by-side gear outside the card. */
-  header: (gear: ReactNode) => ReactNode;
-  children: ReactNode;
-  title: string;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  className?: string;
-}) {
-  return (
-    <div className={cn('flex min-w-0 flex-col gap-2', className)}>
-      {header(
-        <ConfigureGear
-          title={title}
-          open={open}
-          onToggle={() => onOpenChange(!open)}
-        />,
-      )}
-      {open ? (
-        <Box
-          variant="tertiary"
-          shadow="none"
-          className="h-auto w-auto gap-4 p-3"
-          data-testid={`listen-addon-config-${title}`}
-        >
-          {children}
-        </Box>
-      ) : null}
-    </div>
-  );
-}
-
-function listenAddonIcon(typeId: string): ReactNode {
-  if (typeId === 'favorites') {
-    return <Heart className="size-6" aria-hidden />;
-  }
-  if (typeId === NEWS_WIDGET_TYPE_ID) {
-    return <Newspaper className="size-6" aria-hidden />;
-  }
-  if (typeId === 'youtube') {
-    return <Youtube className="size-6" aria-hidden />;
-  }
-  if (typeId === 'mikseri') {
-    return <ListMusic className="size-6" aria-hidden />;
-  }
-  if (
-    typeId === 'soundcloud' ||
-    typeId === 'spotify' ||
-    typeId === 'hearthis' ||
-    typeId === 'bandcamp'
-  ) {
-    return <SourceServiceIcon id={typeId} />;
-  }
-  return undefined;
-}
 
 export function ListenAddonsPanel({
   initialTab = 'installed',
