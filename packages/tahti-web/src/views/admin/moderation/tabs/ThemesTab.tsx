@@ -1,4 +1,4 @@
-import { CheckIcon, ExternalLinkIcon, XIcon } from 'lucide-react';
+import { CheckIcon, ExternalLinkIcon, PaletteIcon, XIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -28,6 +28,7 @@ import {
   PageLoading,
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { useSettingsModalStore } from '../../../../stores/settingsModalStore';
 
 function visibilityBadge(
   theme: AdminTheme,
@@ -127,6 +128,7 @@ function RejectDialog({
 
 export function ThemesTab() {
   const { t } = useTranslation('web');
+  const openSettings = useSettingsModalStore((state) => state.open);
   const [filter, setFilter] = useState<AdminThemeVisibility | ''>(
     'PENDING_REVIEW',
   );
@@ -210,6 +212,18 @@ export function ThemesTab() {
             filter === 'PENDING_REVIEW'
               ? t('adminThemes.emptyPending')
               : t('adminThemes.empty')
+          }
+          action={
+            filter === '' ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => openSettings('themes')}
+              >
+                <PaletteIcon size={16} aria-hidden />
+                {t('emptyActions.submitTheme')}
+              </Button>
+            ) : undefined
           }
         />
       ) : (

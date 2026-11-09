@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
-import { ArrowDown, ArrowUp, Settings2 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { ArrowDown, ArrowUp, Puzzle, Settings2 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -59,6 +59,7 @@ export function DiscoWidgetManagerPanel({
   const [error, setError] = useState<string | null>(null);
   const [pendingRemoveId, setPendingRemoveId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const storeSearchRef = useRef<HTMLInputElement>(null);
   const [configuringId, setConfiguringId] = useState<string | null>(null);
   const layout = useChannelAddonBlocks(scope === 'ARTIST');
 
@@ -309,6 +310,22 @@ export function DiscoWidgetManagerPanel({
             <PageEmpty
               title={t('empties.nothingInstalledYet')}
               description={t('empties.addOneFromTheStoreBelow')}
+              action={
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => {
+                    storeSearchRef.current?.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'center',
+                    });
+                    storeSearchRef.current?.focus({ preventScroll: true });
+                  }}
+                >
+                  <Puzzle size={16} aria-hidden />
+                  {t('emptyActions.browseAddons')}
+                </Button>
+              }
             />
           ) : (
             <div
@@ -422,6 +439,7 @@ export function DiscoWidgetManagerPanel({
               {t('discoWidgetManager.browseTheStore')}
             </h3>
             <Input
+              ref={storeSearchRef}
               enterKeyHint="search"
               type="search"
               placeholder={t('discoWidgetManager.searchWidgets')}

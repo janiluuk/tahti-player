@@ -34,3 +34,8 @@ export function releaseDetailTabFromSearch(
   }
   return (tab && LEGACY_TABS[tab]) || 'overview';
 }
+
+/** DOM id of a track row on the Links tab, so other tabs can scroll to it. */
+export function releaseTrackRowId(trackId: string): string {
+  return `release-track-${trackId}`;
+}

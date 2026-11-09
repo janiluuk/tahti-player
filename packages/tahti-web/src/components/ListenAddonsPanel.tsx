@@ -40,10 +40,10 @@ import {
   type ListenerWidgetSurface,
 } from '../stores/listenerWidgetsStore';
 import { ImageUploadField } from './ImageUploadField';
+import { ListenAddonsTabEmpty } from './ListenAddonsTabEmpty';
 import { ListenerWidgetEmbed } from './ListenerWidgetEmbed';
 import { NewsFeedSuggestions } from './NewsFeedSuggestions';
 import { NewsFeedWidget } from './NewsFeedWidget';
-import { PageEmpty } from './PageStates';
 import { SourceServiceIcon } from './SourceServiceIcon';
 
 function ConfigureGear({
@@ -783,14 +783,12 @@ export function ListenAddonsPanel({
           );
         })}
       </div>
-      {installTab === 'installed' && installedCount === 0 ? (
-        <PageEmpty title={t('empties.nothingInstalled')} />
-      ) : null}
-      {installTab === 'available' && availableCount === 0 ? (
-        <p className="text-foreground-secondary text-sm">
-          Everything here is installed.
-        </p>
-      ) : null}
+      <ListenAddonsTabEmpty
+        tab={installTab}
+        installedCount={installedCount}
+        availableCount={availableCount}
+        onBrowse={() => setInstallTab('available')}
+      />
     </div>
   );
 }

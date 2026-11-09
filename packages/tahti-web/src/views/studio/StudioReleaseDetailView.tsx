@@ -11,8 +11,9 @@ import {
   PartyPopperIcon,
   PlayIcon,
   Trash2Icon,
+  UploadIcon,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
@@ -48,6 +49,7 @@ import { trackTableLabels } from '../../lib/trackTableLabels';
 import {
   RELEASE_DETAIL_TABS,
   releaseDetailTabFromSearch,
+  releaseTrackRowId,
   type ReleaseDetailTabId,
 } from './release-detail/releaseDetailTabs';
 import { ReleasePoweredByFooterToggle } from './release-detail/ReleasePoweredByFooterToggle';
@@ -142,6 +144,28 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
       },
       replace: true,
     });
+  };
+
+  const pendingAudioTrackRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    const trackId = pendingAudioTrackRef.current;
+    if (activeTab !== 'links' || !trackId) {
+      return;
+    }
+    pendingAudioTrackRef.current = null;
+    document
+      .getElementById(releaseTrackRowId(trackId))
+      ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [activeTab]);
+
+  // Library-linked tracks take their audio from the sound, so only tracks
+  // without a sound get an upload control on the Links tab.
+  const openTrackNeedingAudio = () => {
+    pendingAudioTrackRef.current =
+      release?.tracks?.find((track) => !track.sourceKey && !track.soundId)
+        ?.id ?? null;
+    setTab('links');
   };
 
   const headerStats: EntitySocialStat[] =
@@ -674,6 +698,16 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                                   description={t(
                                     'studioReleaseDetail.fingerprintNoAudioDescription',
                                   )}
+                                  action={
+                                    <Button
+                                      size="sm"
+                                      variant="secondary"
+                                      onClick={openTrackNeedingAudio}
+                                    >
+                                      <UploadIcon size={16} aria-hidden />
+                                      {t('emptyActions.uploadAudio')}
+                                    </Button>
+                                  }
                                 />
                               );
                             }

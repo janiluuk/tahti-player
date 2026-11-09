@@ -9,6 +9,7 @@ import {
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../../../api/admin';
+import { useSettingsModalStore } from '../../../../stores/settingsModalStore';
 import { ThemesTab } from './ThemesTab';
 
 const THEME: admin.AdminTheme = {
@@ -111,5 +112,33 @@ describe('ThemesTab', () => {
       ok: false,
     });
     expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it('an empty catalog opens Settings → Themes to submit one', async () => {
+    useSettingsModalStore.setState({ isOpen: false, activeTab: 'account' });
+    vi.spyOn(admin, 'fetchAdminThemes').mockResolvedValue({
+      ok: true,
+      themes: [],
+    });
+    await act(async () => {
+      render(<ThemesTab />);
+    });
+    expect(
+      screen.queryByRole('button', { name: 'Submit a theme' }),
+    ).not.toBeInTheDocument();
+
+    await act(async () => {
+      fireEvent.click(screen.getByText('Waiting for review'));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('option', { name: 'All themes' }));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Submit a theme' }));
+    });
+    expect(useSettingsModalStore.getState()).toMatchObject({
+      isOpen: true,
+      activeTab: 'themes',
+    });
   });
 });

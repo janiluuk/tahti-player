@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as shows from '../../api/shows';
 import type { PublicRadioSlot } from '../../api/shows';
+import { useAuthStore } from '../../stores/authStore';
 import { groupSlotsByDay, RadioProgrammingGrid } from './RadioProgrammingGrid';
 
 vi.mock('@tanstack/react-router', async (importOriginal) => ({
@@ -15,6 +16,23 @@ vi.mock('@tanstack/react-router', async (importOriginal) => ({
     children: React.ReactNode;
     params: { channelSlug: string };
   }) => <a href={`/radio/show/${params.channelSlug}`}>{children}</a>,
+}));
+
+vi.mock('../RadioBookingCalendar', () => ({
+  RadioBookingCalendar: ({
+    isOpen,
+    onBooked,
+  }: {
+    isOpen: boolean;
+    onBooked?: () => void;
+  }) =>
+    isOpen ? (
+      <div role="dialog" aria-label="Tahti Radio schedule">
+        <button type="button" onClick={onBooked}>
+          Confirm booking
+        </button>
+      </div>
+    ) : null,
 }));
 
 const slot = (
@@ -63,6 +81,54 @@ describe('RadioProgrammingGrid', () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    useAuthStore.setState({ user: null, hydrated: true, loading: false });
+  });
+
+  it('a signed-in listener books a show from the empty week', async () => {
+    useAuthStore.setState({
+      user: {
+        id: 'u1',
+        email: 'dj@tahti.live',
+        username: 'dj',
+        displayName: 'DJ',
+        role: 'ARTIST',
+        isBoard: false,
+        isMember: true,
+      },
+      hydrated: true,
+      loading: false,
+    });
+    const spy = vi
+      .spyOn(shows, 'fetchPublicRadioSlots')
+      .mockResolvedValueOnce({ data: [], meta: { source: 'api' } })
+      .mockResolvedValueOnce({
+        data: [slot('booked', at(1, 20), 1)],
+        meta: { source: 'api' },
+      });
+    render(<RadioProgrammingGrid nowMs={now.getTime()} />);
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Book a show' }));
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Confirm booking' }),
+    );
+
+    expect(await screen.findByText('Artist booked')).toBeTruthy();
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(
+      screen.getByRole('dialog', { name: 'Tahti Radio schedule' }),
+    ).toBeTruthy();
+  });
+
+  it('offers no booking to a signed-out visitor', async () => {
+    vi.spyOn(shows, 'fetchPublicRadioSlots').mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    });
+    render(<RadioProgrammingGrid nowMs={now.getTime()} />);
+    expect(
+      await screen.findByText('No live shows booked in the next 7 days.'),
+    ).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Book a show' })).toBeNull();
   });
 
   it('asks for the next seven days and lists each show with its artist', async () => {

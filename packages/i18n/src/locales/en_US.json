@@ -3996,7 +3996,13 @@
       "addTracks": "Add tracks",
       "newCollection": "New collection",
       "openLibrary": "Open library",
-      "addFirstModerator": "Add your first moderator"
+      "addFirstModerator": "Add your first moderator",
+      "uploadAudio": "Upload audio",
+      "bookShow": "Book a show",
+      "browseAddons": "Browse add-ons",
+      "beFirstToReply": "Be the first to reply",
+      "beFirstToComment": "Be the first to comment",
+      "submitTheme": "Submit a theme"
     },
     "eventCreate": {
       "couldNotLoadTheVenue": "Could not load the venue directory. Type the place above, or",

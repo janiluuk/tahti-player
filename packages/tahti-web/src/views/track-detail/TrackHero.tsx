@@ -41,6 +41,7 @@ import { formatDuration } from '../../lib/playableToTrack';
 import { useAuthModalStore } from '../../stores/authModalStore';
 import { AiGeneratedBadge } from './AiGeneratedBadge';
 import { type TrackPage } from './buildTrackPage';
+import { TRACK_COMMENT_INPUT_ID } from './helpers';
 import { TrackAccessGate } from './TrackAccessGate';
 import { mixVersionLabel } from './trackDetails';
 
@@ -312,6 +313,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 />
                 {commentsEnabled && user ? (
                   <Input
+                    id={TRACK_COMMENT_INPUT_ID}
                     value={commentBody}
                     onChange={(event) => setCommentBody(event.target.value)}
                     placeholder={

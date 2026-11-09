@@ -139,9 +139,16 @@ export const NoCommentsYet: Story = {
     }),
   },
   play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
     await waitFor(() =>
-      expect(within(canvasElement).getByText('No comments yet')).toBeVisible(),
+      expect(canvas.getByText('No comments yet')).toBeVisible(),
     );
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Be the first to comment' }),
+    );
+    await expect(
+      canvas.getByRole('textbox', { name: 'Write a comment' }),
+    ).toHaveFocus();
   },
 };
 
