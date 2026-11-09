@@ -171,7 +171,9 @@ export function DesktopLibraryPanel() {
       (movedTo) => {
         if (movedTo) {
           toast.warning(i18n.t('web:toasts.libraryFileDamagedReset'), {
-            description: `The damaged file was kept at ${movedTo}. Restore a catalog backup to get your ratings, tags and playlists back, then rescan your folders.`,
+            description: t('desktopLibraryPanelLabels.theDamagedFileWasKept', {
+              movedTo,
+            }),
             duration: Infinity,
           });
         }

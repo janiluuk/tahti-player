@@ -173,7 +173,10 @@ export function PlaylistView({
 
   const withUndoToast = (label: string) =>
     toast.success(label, {
-      action: { label: 'Undo', onClick: () => void undo() },
+      action: {
+        label: t('playlistViewFields.undo'),
+        onClick: () => void undo(),
+      },
     });
 
   const moveRows = async (rowIds: string[], toIndex: number) => {

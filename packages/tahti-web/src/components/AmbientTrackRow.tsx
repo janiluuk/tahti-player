@@ -264,6 +264,7 @@ function AmbientTrackRowView({
   className,
   ambientRgb,
 }: AmbientTrackRowProps) {
+  const { t } = useTranslation('web');
   const rowRef = useRef<HTMLElement>(null);
   const TitleHeading = headingLevel === 2 ? 'h2' : 'h3';
   const [visible, setVisible] = useState(false);
@@ -407,7 +408,10 @@ function AmbientTrackRowView({
           ) : null}
         </div>
         {processing ? (
-          <TrackProcessing variant="waveform" label="Processing audio…" />
+          <TrackProcessing
+            variant="waveform"
+            label={t('ambientTrackRowText.processingAudio')}
+          />
         ) : media ? (
           <div
             className="border-border w-full min-w-0 overflow-hidden rounded-lg border contain-paint"
@@ -425,7 +429,7 @@ function AmbientTrackRowView({
                 audioUrl={audioUrl ?? loadedAudioUrl}
                 durationSec={durationSec ?? 1}
                 onSeek={onSeek}
-                aria-label={`Seek ${title}`}
+                aria-label={t('ambientTrackRowLabels.seekTitle', { title })}
                 aria-valuetext={
                   durationSec
                     ? `${formatDuration(progress * durationSec)} of ${formatDuration(durationSec)}`

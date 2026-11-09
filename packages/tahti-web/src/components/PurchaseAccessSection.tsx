@@ -83,8 +83,11 @@ export function PurchaseAccessSection({
         <Select
           label={t('purchaseAccess.access')}
           options={[
-            { id: '', label: 'Everyone' },
-            { id: SUBSCRIBERS_OPTION, label: 'Fan subscribers only' },
+            { id: '', label: t('purchaseAccessSectionFields.everyone') },
+            {
+              id: SUBSCRIBERS_OPTION,
+              label: t('purchaseAccessSectionFields.fanSubscribersOnly'),
+            },
             ...activeTiers.map((t) => ({
               id: t.id,
               label: `${t.name} — ${t.priceOptional ? `pay what you want, suggested ${euros(t.priceCents)}` : euros(t.priceCents)}`,

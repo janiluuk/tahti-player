@@ -9633,6 +9633,151 @@
       "downloads_other": "{{count}} downloads",
       "comments_one": "{{count}} comment",
       "comments_other": "{{count}} comments"
+    },
+    "governanceViewText": {
+      "retry": "Retry",
+      "signInWithACooperative": "Sign in with a cooperative membership account to vote.",
+      "logIn": "Log in",
+      "manageMembership": "Manage membership",
+      "viewAllMotions": "View all motions",
+      "advisoryProposalsForBoardReview": "Advisory proposals for board review",
+      "membersCanSubmitAdvisoryProposals": "Members can submit advisory proposals for board review. Drafts are not voting ballots until the board opens them.",
+      "needsYourAttention": "Needs your attention",
+      "topTopics": "Top topics",
+      "publishedMeetings": "Published meetings",
+      "publishedDocuments": "Published documents",
+      "quarterlyReviews": "Quarterly reviews",
+      "memberDirectory": "Member directory",
+      "submitAMotionDraft": "Submit a motion draft",
+      "aboutMotionDrafts": "About motion drafts",
+      "motionTitle": "Motion title",
+      "explainTheProposal": "Explain the proposal",
+      "governance": "Governance"
+    },
+    "governanceStatChipsText": {
+      "openMotions": "Open motions",
+      "topics": "Topics",
+      "meetings": "Meetings",
+      "documents": "Documents"
+    },
+    "adminOrphanPagesViewText": {
+      "admin": "Admin",
+      "orphanPages": "Orphan pages",
+      "pagesWithNoMenuEntry": "Pages with no menu entry."
+    },
+    "backdropUploadButtonText": {
+      "wideJpegPngOrWebp": "Wide JPEG, PNG, or WebP. Uploads immediately once selected."
+    },
+    "backdropUploadButtonFields": {
+      "wideJpegPngOrWebp": "Wide JPEG, PNG, or WebP"
+    },
+    "ambientTrackRowText": {
+      "processingAudio": "Processing audio…"
+    },
+    "ambientTrackRowLabels": {
+      "seekTitle": "Seek {{title}}"
+    },
+    "smartLinkReleaseDetailsText": {
+      "credits": "Credits"
+    },
+    "slideshowControlsFields": {
+      "dropSlideshowImagesHere": "Drop slideshow images here",
+      "jpegPngOrWebpUp": "JPEG, PNG, or WebP · up to 10 images"
+    },
+    "audienceVisibilitySectionText": {
+      "audience": "Audience"
+    },
+    "audienceVisibilitySectionFields": {
+      "public": "Public",
+      "privateOnlyYouAndShare": "Private - only you and share links"
+    },
+    "adminStreamManagerPanelFields": {
+      "restart": "Restart",
+      "takeOffline": "Take offline"
+    },
+    "channelStoreEditorFields": {
+      "notInTheStore": "Not in the store",
+      "fansOnly": "Fans only"
+    },
+    "channelStoreEditorLabels": {
+      "storePriceForTitle": "Store price for {{title}}"
+    },
+    "soundsListTableText": {
+      "failed": "Failed",
+      "ready": "Ready"
+    },
+    "radioStationSuggestionsTabText": {
+      "listenerSuggestedInternetRadioStations": "Listener-suggested internet radio stations for the Widgets store — approve to add them to the shared catalog.",
+      "noteToTheListenerOptional": "Note to the listener (optional)"
+    },
+    "nativeTrackColumnsText": {
+      "missing": "Missing",
+      "originalFileIsMissing": "Original file is missing"
+    },
+    "latestDiscussionsPanelText": {
+      "allDiscussions": "All discussions",
+      "latestDiscussions": "Latest discussions"
+    },
+    "channelStagePlayerText": {
+      "openChat": "Open chat"
+    },
+    "channelDesignerText": {
+      "channelAppearanceControls": "Channel appearance controls"
+    },
+    "releaseTrackVersionsPanelFields": {
+      "wavFlacMp3AacOr": "WAV, FLAC, MP3, AAC or AIFF"
+    },
+    "discoverViewText": {
+      "keepTheSamePickFor": "Keep the same pick for"
+    },
+    "discoverViewFields": {
+      "pickedForTheTahtiSelects": "Picked for the Tahti Selects rotation"
+    },
+    "trackOrganizeDialogFields": {
+      "undo": "Undo"
+    },
+    "releaseTrackDownloadsText": {
+      "downloads": "Downloads"
+    },
+    "releaseTrackDownloadsFields": {
+      "unlockOnTheTrackPage": "Unlock on the track page"
+    },
+    "playlistViewFields": {
+      "undo": "Undo"
+    },
+    "desktopLibraryPanelLabels": {
+      "theDamagedFileWasKept": "The damaged file was kept at {{movedTo}}. Restore a catalog backup to get your ratings, tags and playlists back, then rescan your folders."
+    },
+    "catalogTrackSearchLabels": {
+      "addTitleByArtistname": "Add {{title}} by {{artistName}}"
+    },
+    "soundShareLinksSectionFields": {
+      "playOnly": "Play only",
+      "playDownload": "Play & download"
+    },
+    "purchaseAccessSectionFields": {
+      "everyone": "Everyone",
+      "fanSubscribersOnly": "Fan subscribers only"
+    },
+    "playlistExportDialogFields": {
+      "relativeToTheSavedFile": "Relative to the saved file",
+      "fullPaths": "Full paths"
+    },
+    "materialSetsFieldFields": {
+      "playlist": "Playlist",
+      "djSet": "DJ set"
+    },
+    "videoOrImageFieldFields": {
+      "chooseAVideoOrImage": "Choose a video or image",
+      "mp4WebmJpegPngWebp": "MP4, WebM, JPEG, PNG, WebP, or GIF · maximum 10 MB"
+    },
+    "audioRevisionListFields": {
+      "saveANewAudioRevision": "Save a new audio revision",
+      "wavFlacAiffMp3M4a": "WAV · FLAC · AIFF · MP3 · M4A · OGG"
+    },
+    "artworkPresetUploadDialogFields": {
+      "image": "Image",
+      "jpgPngWebpOrGif": "JPG, PNG, WebP, or GIF"
     }
   },
   "studioEditor": {

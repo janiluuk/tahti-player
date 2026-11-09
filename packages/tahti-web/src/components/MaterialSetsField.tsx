@@ -237,8 +237,14 @@ export function MaterialSetsField({ soundId }: Props) {
                   value={newStyle}
                   onValueChange={setNewStyle}
                   options={[
-                    { id: 'PLAYLIST', label: 'Playlist' },
-                    { id: 'DJ_SET_SERIES', label: 'DJ set' },
+                    {
+                      id: 'PLAYLIST',
+                      label: t('materialSetsFieldFields.playlist'),
+                    },
+                    {
+                      id: 'DJ_SET_SERIES',
+                      label: t('materialSetsFieldFields.djSet'),
+                    },
                   ]}
                 />
                 <Toggle

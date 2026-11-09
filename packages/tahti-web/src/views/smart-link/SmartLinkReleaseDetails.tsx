@@ -121,7 +121,7 @@ export const SmartLinkReleaseCredits: FC<{ data: SmartLinkView }> = ({
     >
       {trackCredits.length > 0 ? (
         <>
-          <Eyebrow>Credits</Eyebrow>
+          <Eyebrow>{t('smartLinkReleaseDetailsText.credits')}</Eyebrow>
           <ul className="flex flex-col gap-3">
             {trackCredits.map((track) => (
               <li key={track.key}>

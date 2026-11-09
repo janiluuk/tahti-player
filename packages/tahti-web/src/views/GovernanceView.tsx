@@ -68,6 +68,7 @@ function LoadErrorCaption({
   message: string;
   onRetry: () => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <p className="text-foreground-secondary mb-2 text-xs" role="status">
       Could not refresh this list: {message}{' '}
@@ -77,7 +78,7 @@ function LoadErrorCaption({
         className="inline p-0 text-xs underline underline-offset-2"
         onClick={onRetry}
       >
-        Retry
+        {t('governanceViewText.retry')}
       </Button>
     </p>
   );
@@ -291,14 +292,14 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       {!user && (
         <Box variant="secondary" className="flex flex-col gap-3">
           <p className="text-sm">
-            Sign in with a cooperative membership account to vote.
+            {t('governanceViewText.signInWithACooperative')}
           </p>
           <Button
             size="sm"
             className="w-fit"
             onClick={() => useAuthModalStore.getState().open('login')}
           >
-            Log in
+            {t('governanceViewText.logIn')}
           </Button>
         </Box>
       )}
@@ -317,7 +318,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             className="w-fit"
             onClick={() => useSettingsModalStore.getState().open('account')}
           >
-            Manage membership
+            {t('governanceViewText.manageMembership')}
           </Button>
         </Box>
       )}
@@ -325,7 +326,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       {user && !loading && !forbidden && (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <GovernancePanel
-            title="Needs your attention"
+            title={t('governanceViewText.needsYourAttention')}
             accent="red"
             icon={VoteIcon}
             variant="secondary"
@@ -347,12 +348,12 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               variant="noShadow"
               className="mt-1 w-fit"
             >
-              View all motions
+              {t('governanceViewText.viewAllMotions')}
               <ArrowRightIcon size={14} aria-hidden className="ml-1.5" />
             </ButtonLink>
           </GovernancePanel>
           <GovernancePanel
-            title="Top topics"
+            title={t('governanceViewText.topTopics')}
             accent="purple"
             icon={LandmarkIcon}
           >
@@ -421,7 +422,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       {user && !loading && !forbidden && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <GovernancePanel
-            title="Published meetings"
+            title={t('governanceViewText.publishedMeetings')}
             accent="blue"
             icon={UsersIcon}
           >
@@ -490,7 +491,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             )}
           </GovernancePanel>
           <GovernancePanel
-            title="Published documents"
+            title={t('governanceViewText.publishedDocuments')}
             accent="cyan"
             icon={FileTextIcon}
           >
@@ -538,7 +539,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             )}
           </GovernancePanel>
           <GovernancePanel
-            title="Quarterly reviews"
+            title={t('governanceViewText.quarterlyReviews')}
             accent="yellow"
             icon={ScrollTextIcon}
           >
@@ -581,7 +582,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             )}
           </GovernancePanel>
           <GovernancePanel
-            title="Member directory"
+            title={t('governanceViewText.memberDirectory')}
             accent="green"
             icon={UsersIcon}
           >
@@ -630,27 +631,26 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
 
       {user && !loading && !forbidden && (
         <GovernancePanel
-          title="Submit a motion draft"
+          title={t('governanceViewText.submitAMotionDraft')}
           accent="orange"
           icon={VoteIcon}
         >
           <div className="flex items-center gap-1.5">
             <span className="text-foreground-secondary text-xs">
-              Advisory proposals for board review
+              {t('governanceViewText.advisoryProposalsForBoardReview')}
             </span>
             <Tooltip
               side="bottom"
               content={
                 <p className="max-w-64 text-xs leading-relaxed">
-                  Members can submit advisory proposals for board review. Drafts
-                  are not voting ballots until the board opens them.
+                  {t('governanceViewText.membersCanSubmitAdvisoryProposals')}
                 </p>
               }
             >
               <span
                 tabIndex={0}
                 role="img"
-                aria-label="About motion drafts"
+                aria-label={t('governanceViewText.aboutMotionDrafts')}
                 className="text-foreground-secondary hover:text-foreground inline-flex size-4 cursor-help items-center justify-center rounded-full border border-current"
               >
                 <span className="text-[10px] leading-none font-bold">?</span>
@@ -688,8 +688,8 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
             <Input
               value={draftTitle}
               onChange={(event) => setDraftTitle(event.target.value)}
-              aria-label="Motion title"
-              placeholder="Motion title"
+              aria-label={t('governanceViewText.motionTitle')}
+              placeholder={t('governanceViewText.motionTitle')}
               maxLength={200}
             />
             <Textarea
@@ -697,8 +697,8 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               tone="secondary"
               value={draftDescription}
               onChange={(event) => setDraftDescription(event.target.value)}
-              aria-label="Explain the proposal"
-              placeholder="Explain the proposal"
+              aria-label={t('governanceViewText.explainTheProposal')}
+              placeholder={t('governanceViewText.explainTheProposal')}
               maxLength={10000}
               rows={4}
               className="text-sm"
@@ -778,7 +778,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
 
   return (
     <ViewShell
-      title="Governance"
+      title={t('governanceViewText.governance')}
       classes={{
         root: 'px-0 pt-0',
         content: 'gap-6',

@@ -59,8 +59,8 @@ export function ArtworkPresetUploadDialog({
       <div className="mt-4">
         <FilePicker
           labels={{
-            title: 'Image',
-            description: 'JPG, PNG, WebP, or GIF',
+            title: t('artworkPresetUploadDialogFields.image'),
+            description: t('artworkPresetUploadDialogFields.jpgPngWebpOrGif'),
             browse: file ? 'Choose another image' : 'Choose image',
           }}
           accept="image/jpeg,image/png,image/webp,image/gif"

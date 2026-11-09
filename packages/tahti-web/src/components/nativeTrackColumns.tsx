@@ -15,6 +15,7 @@ import {
 } from '../lib/nativeLibrary';
 import { formatDuration } from '../lib/playableToTrack';
 import { TRACK_COLOR_CSS } from '../lib/trackColors';
+import { webT } from '../lib/webT';
 import { KeyCell } from './desktop-library/KeyCell';
 
 const dash = (value: string | number | null | undefined) =>
@@ -65,15 +66,17 @@ export const NATIVE_TRACK_COLUMNS: CatalogColumn<NativeLibraryTrack>[] = [
           {track.title}
           {!track.available ? (
             <Tooltip
-              content="Original file is missing"
+              content={webT()('nativeTrackColumnsText.originalFileIsMissing')}
               side="top"
               wrapperClassName="ml-2 inline-flex"
             >
               <span
                 className="text-accent-red-strong text-xs"
-                aria-description="Original file is missing"
+                aria-description={webT()(
+                  'nativeTrackColumnsText.originalFileIsMissing',
+                )}
               >
-                Missing
+                {webT()('nativeTrackColumnsText.missing')}
               </span>
             </Tooltip>
           ) : null}

@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { forwardRef, useEffect, useImperativeHandle, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { SaveButton } from '@tahti-player/ui';
 
 import {
@@ -137,6 +138,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
     }: Props,
     ref,
   ) {
+    const { t } = useTranslation('web');
     const { dockControlsInRail, controlsForRailRef } = useDockedControlsRail(
       lookOnly || !livePreview,
     );
@@ -723,7 +725,7 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
 
             {!dockControlsInRail ? (
               <section
-                aria-label="Channel appearance controls"
+                aria-label={t('channelDesignerText.channelAppearanceControls')}
                 className="min-w-0 lg:sticky lg:top-4"
               >
                 {controls}

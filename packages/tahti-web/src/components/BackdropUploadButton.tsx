@@ -2,6 +2,7 @@ import { ImageIcon, UploadCloudIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, FilePicker, MediaArtwork } from '@tahti-player/ui';
 
 import { uploadUserMediaFile } from '../api/user-media';
@@ -38,6 +39,7 @@ export function BackdropUploadButton({
   upload = uploadUserMediaFile,
   fill = false,
 }: Props) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
   const chrome = useImageSlotChrome({ onClear: () => onChange('') });
@@ -134,13 +136,13 @@ export function BackdropUploadButton({
       >
         <Dialog.Title>{label}</Dialog.Title>
         <Dialog.Description>
-          Wide JPEG, PNG, or WebP. Uploads immediately once selected.
+          {t('backdropUploadButtonText.wideJpegPngOrWebp')}
         </Dialog.Description>
         <div className="mt-4">
           <FilePicker
             labels={{
               title: label,
-              description: 'Wide JPEG, PNG, or WebP',
+              description: t('backdropUploadButtonFields.wideJpegPngOrWebp'),
               browse: busy ? 'Uploading…' : 'Choose image',
             }}
             accept="image/jpeg,image/png,image/webp"

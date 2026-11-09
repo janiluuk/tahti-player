@@ -321,7 +321,7 @@ export function DiscoverView() {
               loading: false,
               error: apiReason(meta),
               items,
-              subtitle: 'Picked for the Tahti Selects rotation',
+              subtitle: t('discoverViewFields.pickedForTheTahtiSelects'),
             };
           }
         }
@@ -613,7 +613,7 @@ export function DiscoverView() {
                     settings={
                       id === 'random-artist' ? (
                         <Select
-                          label="Keep the same pick for"
+                          label={t('discoverViewText.keepTheSamePickFor')}
                           value={String(randomArtistRotationDays)}
                           onValueChange={(value) =>
                             setRandomArtistRotationDays(Number(value))
