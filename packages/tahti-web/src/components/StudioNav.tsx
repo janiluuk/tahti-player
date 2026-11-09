@@ -1,4 +1,4 @@
-import { useNavigate, useRouterState } from '@tanstack/react-router';
+import { useRouterState } from '@tanstack/react-router';
 import {
   ArrowLeftIcon,
   HeartIcon,
@@ -14,11 +14,7 @@ import {
 import type { ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import {
-  ButtonLink,
-  FilterChips,
-  SidebarNavigationItem,
-} from '@tahti-player/ui';
+import { ButtonLink, SidebarNavigationItem } from '@tahti-player/ui';
 
 import { matchesSectionRoute } from '../lib/sectionNavigation';
 import { SectionTabs } from './SectionTabs';
@@ -299,21 +295,19 @@ export const isCatalogSubnavActive = (
 
 export function CatalogSubNav({ current }: { current?: string }) {
   const { t } = useTranslation('web');
-  const navigate = useNavigate();
   const selected =
     CATALOG_SUBNAV_ITEMS.find((item) => isCatalogSubnavActive(current, item.to))
       ?.to ?? CATALOG_SUBNAV_ITEMS[0].to;
   return (
-    <FilterChips
+    <SectionTabs
       aria-label="Music pages"
       items={CATALOG_SUBNAV_ITEMS.map((item) => ({
         id: item.to,
+        to: item.to,
         label: t(item.labelKey),
+        icon: item.icon,
+        active: item.to === selected,
       }))}
-      selected={selected}
-      onChange={(id) => {
-        void navigate({ to: id });
-      }}
     />
   );
 }
@@ -415,8 +409,7 @@ export function StudioMainNavItems() {
 }
 
 const STUDIO_SECTION_MENU_SLOT = 'min-h-7 min-w-0';
-const STUDIO_NESTED_NAV_SLOT =
-  'border-border flex min-h-10 w-full min-w-0 flex-nowrap items-end gap-y-1 overflow-x-auto border-b pb-2';
+const STUDIO_NESTED_NAV_SLOT = 'flex w-full min-w-0 flex-col';
 
 export function isStudioDetailRoute(current: string | undefined): boolean {
   const pathname = current?.split('?')[0] ?? '';
@@ -451,12 +444,13 @@ function StudioNavigation({ current }: { current?: string }) {
 
   return (
     <div
-      className="flex min-w-0 flex-col"
+      className="flex min-w-0 flex-col gap-3"
       data-studio-navigation
       data-testid="studio-navigation"
     >
       <div className={STUDIO_SECTION_MENU_SLOT} data-studio-section-menu>
         <SectionTabs
+          variant="segmented"
           aria-label={`${t(sectionLabel)} pages`}
           items={submenu.map((item) => ({
             id: item.to,

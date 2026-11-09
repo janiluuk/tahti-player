@@ -42,9 +42,11 @@ export function useSelectedTabInView(selectedKey: string | number) {
  * tab → sub-tab. */
 export function SectionTabs({
   items,
+  variant = 'underline',
   'aria-label': ariaLabel,
 }: {
   items: SectionTabsItem[];
+  variant?: 'underline' | 'segmented';
   'aria-label': string;
 }) {
   const navigate = useNavigate();
@@ -54,7 +56,7 @@ export function SectionTabs({
   return (
     <div ref={ref} className="min-w-0">
       <Tabs.Root
-        variant="underline"
+        variant={variant}
         selectedIndex={Math.max(0, selectedIndex)}
         onChange={(index) => {
           const next = items[index];
@@ -70,13 +72,17 @@ export function SectionTabs({
         }}
         tabClassName={
           selectedIndex < 0
-            ? 'data-[selected]:text-foreground-secondary data-[selected]:border-transparent'
+            ? 'data-[selected]:text-foreground-secondary data-[selected]:border-transparent data-[selected]:bg-transparent data-[selected]:shadow-none data-[selected]:ring-0'
             : undefined
         }
       >
         <Tabs.List
           aria-label={ariaLabel}
-          className={`${PHONE_SCROLL_TAB_LIST} pb-0`}
+          className={
+            variant === 'segmented'
+              ? 'tahti-hide-scrollbar w-fit max-w-full flex-nowrap overflow-x-auto'
+              : `${PHONE_SCROLL_TAB_LIST} pb-0`
+          }
         >
           {items.map((item) => (
             <Tabs.Tab key={item.id}>
