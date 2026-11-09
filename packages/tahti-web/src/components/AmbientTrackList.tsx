@@ -52,6 +52,9 @@ export type AmbientTrackListProps = {
   allowGrid?: boolean;
   /** Starting view for this list only (not shared with other lists). */
   initialView?: AmbientTrackListView;
+  /** Section title in place of the track count, with no panel around the
+   * list, so it lines up with the `CardsRow` sections beside it. */
+  heading?: ReactNode;
   className?: string;
 };
 
@@ -69,6 +72,7 @@ export function AmbientTrackList({
   renderList,
   allowGrid = false,
   initialView,
+  heading,
   className,
 }: AmbientTrackListProps) {
   const { t } = useTranslation('web');
@@ -130,7 +134,10 @@ export function AmbientTrackList({
   return (
     <section
       className={cn(
-        'border-border/40 bg-background-secondary/40 flex w-full min-w-0 flex-col gap-2 rounded-[var(--radius-card)] border p-2 sm:p-3',
+        'flex w-full min-w-0 flex-col',
+        heading
+          ? 'gap-3'
+          : 'border-border/40 bg-background-secondary/40 gap-2 rounded-[var(--radius-card)] border p-2 sm:p-3',
         className,
       )}
       data-testid="ambient-track-list"
@@ -138,7 +145,8 @@ export function AmbientTrackList({
     >
       <div
         className={cn(
-          'flex items-center gap-2 px-1',
+          'flex items-center gap-2',
+          heading ? 'min-h-10' : 'px-1',
           toolbarStart ? 'flex-nowrap' : 'flex-wrap',
         )}
         data-testid="ambient-track-list-toolbar"
@@ -147,7 +155,11 @@ export function AmbientTrackList({
           <div className="min-w-0 flex-1">{toolbarStart}</div>
         ) : null}
         {/* The list view is a table that prints its own count. */}
-        {showList ? null : (
+        {heading ? (
+          <h2 className="text-foreground me-auto text-lg font-bold">
+            {heading}
+          </h2>
+        ) : showList ? null : (
           <span
             className={cn(
               'text-foreground-secondary shrink-0 text-xs font-semibold tabular-nums',

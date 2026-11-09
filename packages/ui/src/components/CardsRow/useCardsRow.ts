@@ -14,7 +14,6 @@ type UseCardsRowResult<T extends CardsRowItem> = {
   scrollContainerRef: RefObject<HTMLDivElement>;
   scrollLeft: () => void;
   scrollRight: () => void;
-  showControls: boolean;
   overflowing: boolean;
   canScrollLeft: boolean;
   canScrollRight: boolean;
@@ -65,7 +64,6 @@ export function useCardsRow<T extends CardsRowItem>(
     scrollContainerRef,
     scrollLeft,
     scrollRight,
-    showControls: overflowing || !isEmpty(filterText.trim()),
     overflowing,
     canScrollLeft,
     canScrollRight,

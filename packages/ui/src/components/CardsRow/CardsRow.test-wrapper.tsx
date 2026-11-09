@@ -34,6 +34,24 @@ const defaultItems: CardsRowItem[] = [
     subtitle: 'The Wanderers',
     imageUrl: 'https://picsum.photos/300?random=3',
   },
+  {
+    id: '4',
+    title: 'Harbour Lights',
+    subtitle: 'Saaristo',
+    imageUrl: 'https://picsum.photos/300?random=4',
+  },
+  {
+    id: '5',
+    title: 'Frost Patterns',
+    subtitle: 'Kaamos',
+    imageUrl: 'https://picsum.photos/300?random=5',
+  },
+  {
+    id: '6',
+    title: 'Slow Rivers',
+    subtitle: 'Virta',
+    imageUrl: 'https://picsum.photos/300?random=6',
+  },
 ];
 
 type MountOptions = {

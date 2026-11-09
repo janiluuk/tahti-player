@@ -93,4 +93,15 @@ describe('WidgetCard latest releases', () => {
     }) as HTMLImageElement;
     expect(art.getAttribute('src')).toBe('/artwork/night-drive.webp');
   });
+
+  it('keeps a lone release at its content height with the cover in its own box', async () => {
+    await renderReleases(RELEASE);
+    const cover = screen
+      .getByTestId('latest-releases')
+      .querySelector('img[src="/artwork/night-drive.webp"]');
+    const box = cover?.closest('.size-12');
+    expect(box?.className).toContain('relative');
+    const section = screen.getByTestId('latest-releases').closest('section');
+    expect(section?.className).not.toMatch(/min-h-/);
+  });
 });

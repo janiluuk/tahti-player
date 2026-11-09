@@ -159,8 +159,12 @@ export function AddListenWidgetDialog() {
           onClick={() => setIsOpen(true)}
           aria-label={t('addListenWidget.open')}
           data-testid="add-listen-widget"
+          className="md:w-auto md:gap-2 md:px-4"
         >
           <PlusIcon size={17} aria-hidden />
+          <span aria-hidden className="hidden md:inline">
+            {t('listen.addWidget')}
+          </span>
         </Button>
       </Tooltip>
       <Dialog.Root isOpen={isOpen} onClose={close} className="max-w-xl">

@@ -81,7 +81,7 @@ export function WidgetCard({
   return (
     <section
       id={id}
-      className="group/widget border-border bg-background-secondary shadow-float flex min-h-[240px] scroll-mt-20 flex-col gap-2 rounded-md border-(length:--border-width) p-3 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] sm:min-h-[280px] sm:gap-3 sm:p-4"
+      className="group/widget border-border bg-background-secondary shadow-float flex scroll-mt-20 flex-col gap-2 rounded-md border-(length:--border-width) p-3 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] sm:gap-3 sm:p-4"
     >
       <header className="flex items-start justify-between gap-2">
         <div className="min-w-0">
@@ -150,7 +150,7 @@ export function WidgetCard({
       {toolbar}
 
       {loading ? (
-        <div className="flex flex-1 items-center justify-center">
+        <div className="flex min-h-40 flex-1 items-center justify-center">
           <Loader size="sm" />
         </div>
       ) : error ? (
@@ -161,7 +161,7 @@ export function WidgetCard({
         />
       ) : artist ? (
         <div className="flex flex-1 flex-col items-center text-center">
-          <div className="size-40 overflow-hidden rounded-full">
+          <div className="relative size-40 overflow-hidden rounded-full">
             <MediaArtwork
               src={artist.avatarUrl ?? undefined}
               alt={`${artist.displayName} profile`}
@@ -197,7 +197,7 @@ export function WidgetCard({
                 aria-hidden
                 className="shrink-0"
               >
-                <div className="size-12 overflow-hidden rounded">
+                <div className="relative size-12 overflow-hidden rounded">
                   <MediaArtwork
                     src={release.artworkUrl ?? undefined}
                     alt=""
@@ -245,7 +245,7 @@ export function WidgetCard({
               }}
               className={cn('flex items-center gap-3 p-2', STRIPED_ROW)}
             >
-              <div className="size-12 shrink-0 overflow-hidden rounded">
+              <div className="relative size-12 shrink-0 overflow-hidden rounded">
                 <MediaArtwork
                   src={collection.coverUrl ?? undefined}
                   alt=""

@@ -157,6 +157,30 @@ export const WithBadge: Story = {
   },
 };
 
+/** A row with fewer than six items has no filter box, in cards and list
+ * layout and on a phone alike. */
+export const ShortRowNoFilter: Story = {
+  args: {
+    title: 'Coming up',
+    items: items.slice(0, 2),
+    labels,
+    defaultLayout: 'list',
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-[390px] max-w-full">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.queryByTestId('cards-row-filter')).toBeNull();
+    await userEvent.click(canvas.getByTestId('cards-row-zoom-in'));
+    await expect(canvas.queryByTestId('cards-row-filter')).toBeNull();
+  },
+};
+
 export const Empty: Story = {
   args: {
     title: 'Top Albums',

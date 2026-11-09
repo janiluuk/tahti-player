@@ -360,6 +360,16 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
     );
   };
 
+  const storyPager = (item: FeedItem) => {
+    const index = items.indexOf(item);
+    const newer = index > 0 ? items[index - 1] : undefined;
+    const older = index >= 0 ? items[index + 1] : undefined;
+    return {
+      newer: newer ? () => setOpenItem(newer) : undefined,
+      older: older ? () => setOpenItem(older) : undefined,
+    };
+  };
+
   const content = (
     <div className="flex min-w-0 flex-col gap-10">
       {loadError && items.length > 0 ? (
@@ -445,6 +455,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
         story={openItem ? feedStory(openItem, t) : null}
         onClose={() => setOpenItem(null)}
         actions={openItem ? storyActions(openItem) : null}
+        pager={openItem ? storyPager(openItem) : undefined}
       />
     </div>
   );

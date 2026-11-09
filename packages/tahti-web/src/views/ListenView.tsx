@@ -14,7 +14,6 @@ import {
   Button,
   Card,
   CardsRow,
-  SectionTitle,
   SortableBlocks,
   TabLabel,
   Tabs,
@@ -343,8 +342,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
         <ListenSection
           data-testid="listen-on-air"
           title={t('listen.liveAndReplays')}
-          badge={t('listen.liveBadge')}
-          badgeColor="green"
           status={sections.onAir.status}
           empty={onAirRowItems.length === 0}
           emptyTitle={t('listen.nobodyLive')}
@@ -389,23 +386,15 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           emptyTitle={t('listen.noNewTracks')}
           onRetry={() => sections.retry('latestTracks')}
         >
-          <section
-            className="flex flex-col gap-3"
-            data-testid="listen-new-tracks"
-          >
-            <SectionTitle
-              title={t('listen.newTracks')}
-              className="border-accent-purple/40 border-l-4 pl-3"
+          <div data-testid="listen-new-tracks">
+            <PlayableAmbientTrackList
+              items={sections.latestTracks.data}
+              heading={t('listen.newTracks')}
+              initialView="list"
+              playAll
+              getTrackMeta={latestTrackMeta}
             />
-            <div className="shadow-float rounded-[var(--radius-card)]">
-              <PlayableAmbientTrackList
-                items={sections.latestTracks.data}
-                initialView="list"
-                playAll
-                getTrackMeta={latestTrackMeta}
-              />
-            </div>
-          </section>
+          </div>
         </ListenSection>
       ),
     },
@@ -489,12 +478,18 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                   aria-label={t('listen.orderSections')}
                   onClick={() => setReordering((on) => !on)}
                   data-testid="listen-order-toggle"
+                  className="md:w-auto md:gap-2 md:px-4"
                 >
                   {reordering ? (
                     <CheckIcon size={17} aria-hidden />
                   ) : (
                     <ArrowUpDownIcon size={17} aria-hidden />
                   )}
+                  <span aria-hidden className="hidden md:inline">
+                    {reordering
+                      ? t('listen.doneOrdering')
+                      : t('listen.orderSections')}
+                  </span>
                 </Button>
               </Tooltip>
               <AddListenWidgetDialog />

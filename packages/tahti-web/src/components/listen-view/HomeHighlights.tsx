@@ -141,8 +141,6 @@ export function TahtiSelectsRow() {
     <ListenSection
       data-testid="listen-tahti-selects"
       title={t('listen.tahtiSelects')}
-      badge={t('listen.curated')}
-      badgeColor="orange"
       status={selects.status}
       empty={items.length === 0}
       emptyTitle={t('listen.noSelectsPicks')}
@@ -152,8 +150,6 @@ export function TahtiSelectsRow() {
         defaultLayout="cards"
         data-testid="listen-tahti-selects"
         title={t('listen.tahtiSelects')}
-        badge={t('listen.curated')}
-        badgeColor="orange"
         items={items}
         labels={rowLabels}
         renderItem={renderTrack}
@@ -179,8 +175,6 @@ export function TrendingRow() {
     <ListenSection
       data-testid="listen-trending"
       title={t('listen.trendingThisWeek')}
-      badge={t('listen.topPlays')}
-      badgeColor="purple"
       status={trending.status}
       empty={items.length === 0}
       emptyTitle={t('listen.nothingPlayedWeek')}
@@ -191,8 +185,6 @@ export function TrendingRow() {
         data-testid="listen-trending"
         title={t('listen.trendingThisWeek')}
         filterable={false}
-        badge={t('listen.topPlays')}
-        badgeColor="purple"
         items={items}
         labels={rowLabels}
         renderItem={renderTrack}
@@ -309,7 +301,7 @@ export function NewReleasesRow() {
       data-testid="listen-new-releases"
       title={t('listen.newReleases')}
       badge={t('listen.releasesBadge')}
-      badgeColor="blue"
+      badgeColor="purple"
       status={releases.status}
       empty={items.length === 0}
       emptyTitle={t('listen.noReleasesYet')}
@@ -321,7 +313,7 @@ export function NewReleasesRow() {
         title={t('listen.newReleases')}
         filterable={false}
         badge={t('listen.releasesBadge')}
-        badgeColor="blue"
+        badgeColor="purple"
         items={items}
         labels={rowLabels}
         renderItem={({ release }: ReleaseRowItem) => (

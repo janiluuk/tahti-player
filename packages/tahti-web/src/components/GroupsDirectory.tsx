@@ -1,14 +1,17 @@
+import { Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Badge, ButtonLink, Input, MediaArtwork } from '@tahti-player/ui';
+import { Badge, Card, CardGrid, Input, MediaArtwork } from '@tahti-player/ui';
 
 import { fetchPublicGroups, type ArtistGroupSummary } from '../api/groups';
+import { DIRECTORY_CARD_GRID } from '../lib/directoryCardGrid';
 import { groupMembersLabel, groupSoundsLabel } from '../lib/groupPeople';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 export function GroupsDirectory() {
   const { t } = useTranslation('web');
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [groups, setGroups] = useState<ArtistGroupSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,44 +65,45 @@ export function GroupsDirectory() {
       );
     }
     return (
-      <ul
-        className="grid gap-3 sm:grid-cols-2"
-        aria-label={t('studioGroups.title')}
-      >
+      <CardGrid className={DIRECTORY_CARD_GRID} data-testid="groups-directory">
         {groups.map((group) => (
-          <li
+          <Card
             key={group.id}
-            className="border-border bg-background-secondary/40 flex items-center gap-3 rounded-xl border p-3"
-          >
-            <MediaArtwork
-              src={group.coverUrl ?? undefined}
-              alt=""
-              size="md"
-              className="rounded-md"
-            />
-            <div className="min-w-0 flex-1">
-              <ButtonLink
-                to="/groups/$slug"
-                params={{ slug: group.slug }}
-                variant="text"
-                size="flexible"
-                className="h-auto justify-start px-0 text-left font-semibold whitespace-normal hover:underline"
-              >
-                {group.name}
-              </ButtonLink>
-              <p className="text-foreground-secondary text-xs">
-                {groupMembersLabel(group.memberCount, t)} ·{' '}
-                {groupSoundsLabel(group.itemCount, t)}
-              </p>
-              {group.joinPolicy === 'REQUEST' ? (
-                <Badge variant="pill" color="secondary" className="mt-1">
+            surface="neutral"
+            image={
+              <MediaArtwork
+                src={group.coverUrl ?? undefined}
+                alt=""
+                seed={group.slug}
+                size="fill"
+                onArtworkClick={() =>
+                  void navigate({
+                    to: '/groups/$slug',
+                    params: { slug: group.slug },
+                  })
+                }
+              />
+            }
+            artworkOverlay={
+              group.joinPolicy === 'REQUEST' ? (
+                <Badge variant="pill" color="secondary">
                   {t('studioGroups.joinRequest')}
                 </Badge>
-              ) : null}
-            </div>
-          </li>
+              ) : undefined
+            }
+            title={
+              <Link
+                to="/groups/$slug"
+                params={{ slug: group.slug }}
+                className="hover:underline"
+              >
+                {group.name}
+              </Link>
+            }
+            subtitle={`${groupMembersLabel(group.memberCount, t)} · ${groupSoundsLabel(group.itemCount, t)}`}
+          />
         ))}
-      </ul>
+      </CardGrid>
     );
   };
 

@@ -126,5 +126,12 @@ describe('CommunityStoriesWidget', () => {
     );
     expect(fetchStory).toHaveBeenLastCalledWith('s2');
     expect(await within(dialog).findByText('Thanks!')).toBeTruthy();
+    fireEvent.keyDown(document.body, { key: 'ArrowLeft' });
+    expect(fetchStory).toHaveBeenLastCalledWith('s1');
+    expect(
+      await within(dialog).findByText('First bold paragraph.'),
+    ).toBeTruthy();
+    fireEvent.keyDown(document.body, { key: 'ArrowRight' });
+    expect(fetchStory).toHaveBeenLastCalledWith('s2');
   });
 });

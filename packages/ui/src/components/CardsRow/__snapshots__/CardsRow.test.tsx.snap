@@ -478,6 +478,255 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         </div>
       </div>
     </div>
+    <div
+      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+      data-layout="card"
+      data-surface="brand"
+      data-testid="card"
+    >
+      <div
+        class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
+      >
+        <div
+          class="group overflow-hidden absolute inset-0 size-full"
+          data-testid="media-artwork"
+        >
+          <div
+            class="overflow-hidden absolute inset-0"
+          >
+            <img
+              alt="Harbour Lights"
+              class="h-full w-full object-cover"
+              decoding="async"
+              loading="lazy"
+              src="https://picsum.photos/300?random=4"
+            />
+            <div
+              class="pointer-events-none absolute inset-0 flex items-center justify-center"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-cassette-tape opacity-20"
+                fill="none"
+                height="96"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="0.5"
+                viewBox="0 0 24 24"
+                width="96"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  height="16"
+                  rx="2"
+                  width="20"
+                  x="2"
+                  y="4"
+                />
+                <circle
+                  cx="8"
+                  cy="10"
+                  r="2"
+                />
+                <path
+                  d="M8 12h8"
+                />
+                <circle
+                  cx="16"
+                  cy="10"
+                  r="2"
+                />
+                <path
+                  d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="min-w-0"
+      >
+        <div
+          class="truncate text-sm font-bold text-primary-foreground"
+          data-testid="card-title"
+        >
+          Harbour Lights
+        </div>
+        <div
+          class="truncate text-xs text-primary-foreground"
+        >
+          Saaristo
+        </div>
+      </div>
+    </div>
+    <div
+      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+      data-layout="card"
+      data-surface="brand"
+      data-testid="card"
+    >
+      <div
+        class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
+      >
+        <div
+          class="group overflow-hidden absolute inset-0 size-full"
+          data-testid="media-artwork"
+        >
+          <div
+            class="overflow-hidden absolute inset-0"
+          >
+            <img
+              alt="Frost Patterns"
+              class="h-full w-full object-cover"
+              decoding="async"
+              loading="lazy"
+              src="https://picsum.photos/300?random=5"
+            />
+            <div
+              class="pointer-events-none absolute inset-0 flex items-center justify-center"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-cassette-tape opacity-20"
+                fill="none"
+                height="96"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="0.5"
+                viewBox="0 0 24 24"
+                width="96"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  height="16"
+                  rx="2"
+                  width="20"
+                  x="2"
+                  y="4"
+                />
+                <circle
+                  cx="8"
+                  cy="10"
+                  r="2"
+                />
+                <path
+                  d="M8 12h8"
+                />
+                <circle
+                  cx="16"
+                  cy="10"
+                  r="2"
+                />
+                <path
+                  d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="min-w-0"
+      >
+        <div
+          class="truncate text-sm font-bold text-primary-foreground"
+          data-testid="card-title"
+        >
+          Frost Patterns
+        </div>
+        <div
+          class="truncate text-xs text-primary-foreground"
+        >
+          Kaamos
+        </div>
+      </div>
+    </div>
+    <div
+      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+      data-layout="card"
+      data-surface="brand"
+      data-testid="card"
+    >
+      <div
+        class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
+      >
+        <div
+          class="group overflow-hidden absolute inset-0 size-full"
+          data-testid="media-artwork"
+        >
+          <div
+            class="overflow-hidden absolute inset-0"
+          >
+            <img
+              alt="Slow Rivers"
+              class="h-full w-full object-cover"
+              decoding="async"
+              loading="lazy"
+              src="https://picsum.photos/300?random=6"
+            />
+            <div
+              class="pointer-events-none absolute inset-0 flex items-center justify-center"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-cassette-tape opacity-20"
+                fill="none"
+                height="96"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="0.5"
+                viewBox="0 0 24 24"
+                width="96"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <rect
+                  height="16"
+                  rx="2"
+                  width="20"
+                  x="2"
+                  y="4"
+                />
+                <circle
+                  cx="8"
+                  cy="10"
+                  r="2"
+                />
+                <path
+                  d="M8 12h8"
+                />
+                <circle
+                  cx="16"
+                  cy="10"
+                  r="2"
+                />
+                <path
+                  d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="min-w-0"
+      >
+        <div
+          class="truncate text-sm font-bold text-primary-foreground"
+          data-testid="card-title"
+        >
+          Slow Rivers
+        </div>
+        <div
+          class="truncate text-xs text-primary-foreground"
+        >
+          Virta
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 `;

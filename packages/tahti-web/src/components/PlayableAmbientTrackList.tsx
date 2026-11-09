@@ -45,6 +45,7 @@ export function PlayableAmbientTrackList({
   filterable = false,
   allowGrid = true,
   initialView,
+  heading,
   className,
 }: {
   items: TahtiPlayable[];
@@ -79,6 +80,8 @@ export function PlayableAmbientTrackList({
   allowGrid?: boolean;
   /** Starting view for this list only, e.g. `list` for collections. */
   initialView?: AmbientTrackListView;
+  /** Section title shown in the toolbar instead of the track count. */
+  heading?: ReactNode;
   className?: string;
 }) {
   const play = usePlayerStore((s) => s.play);
@@ -350,6 +353,7 @@ export function PlayableAmbientTrackList({
         items={listItems}
         allowGrid={allowGrid}
         initialView={initialView}
+        heading={heading}
         defaultDensity={defaultDensity}
         emptyMessage={shownEmptyMessage}
         toolbarStart={toolbarStart ?? filterBox}

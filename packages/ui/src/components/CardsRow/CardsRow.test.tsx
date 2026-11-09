@@ -57,7 +57,7 @@ describe('CardsRow', () => {
     expect(Wrapper.nothingFound).toBeInTheDocument();
 
     await userEvent.click(screen.getByTestId('cards-row-nothing-found-clear'));
-    expect(Wrapper.cards).toHaveLength(3);
+    expect(Wrapper.cards).toHaveLength(6);
     expect(Wrapper.filter.input).toHaveValue('');
   });
 
@@ -68,7 +68,7 @@ describe('CardsRow', () => {
     expect(Wrapper.cards).toHaveLength(1);
 
     await Wrapper.filter.clear();
-    expect(Wrapper.cards).toHaveLength(3);
+    expect(Wrapper.cards).toHaveLength(6);
     expect(Wrapper.filter.input).toHaveValue('');
   });
 
@@ -102,13 +102,24 @@ describe('CardsRow', () => {
     expect(handleClick).toHaveBeenCalledOnce();
   });
 
-  it('hides the filter and scroll buttons when every card fits, keeps the zoom control', () => {
+  it('hides the scroll buttons when every card fits, keeps the filter and zoom control', () => {
     Wrapper.overflow(600, 800);
     Wrapper.mount({ defaultLayout: 'cards' });
 
-    expect(screen.queryByTestId('cards-row-filter')).toBeNull();
+    expect(screen.getByTestId('cards-row-filter')).toBeInTheDocument();
     expect(screen.queryByTestId('cards-row-scroll-left')).toBeNull();
     expect(screen.getByTestId('cards-row-zoom')).toBeInTheDocument();
+  });
+
+  it('drops the filter from a short row in every layout, even when it overflows', async () => {
+    const items = Wrapper.fixtures.defaultItems.slice(0, 3);
+    Wrapper.mount({ defaultLayout: 'cards', items });
+
+    expect(screen.queryByTestId('cards-row-filter')).toBeNull();
+    expect(screen.getByTestId('cards-row-scroll-left')).toBeInTheDocument();
+    await userEvent.click(screen.getByTestId('cards-row-zoom-out'));
+    expect(Wrapper.container).toHaveAttribute('data-layout', 'list');
+    expect(screen.queryByTestId('cards-row-filter')).toBeNull();
   });
 
   it('disables the left arrow at the start of the row and keeps the arrows neutral', () => {
@@ -121,7 +132,7 @@ describe('CardsRow', () => {
     expect(right.className).not.toContain('bg-primary');
   });
 
-  it('shows the filter and scroll buttons when cards overflow the row', () => {
+  it('shows the filter and scroll buttons on a long row that overflows', () => {
     Wrapper.mount({ defaultLayout: 'cards' });
 
     expect(screen.getByTestId('cards-row-filter')).toBeInTheDocument();
