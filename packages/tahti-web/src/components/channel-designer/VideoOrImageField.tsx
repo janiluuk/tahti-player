@@ -80,8 +80,8 @@ export function VideoOrImageField({
         disabled={disabled}
         selectedFiles={pendingFile ? [pendingFile] : []}
         labels={{
-          title: 'Choose a video or image',
-          description: 'MP4, WebM, JPEG, PNG, WebP, or GIF · maximum 10 MB',
+          title: t('videoOrImageFieldFields.chooseAVideoOrImage'),
+          description: t('videoOrImageFieldFields.mp4WebmJpegPngWebp'),
           browse: 'Browse files',
         }}
         onFiles={onFiles}

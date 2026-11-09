@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Select } from '@tahti-player/ui';
 
 /** A Sound only stores `isPublic`, so these are the only two states that
@@ -17,12 +18,16 @@ export function AudienceVisibilitySection({
   visibility: TrackVisibility;
   onVisibilityChange: (visibility: TrackVisibility) => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <Select
-      label="Audience"
+      label={t('audienceVisibilitySectionText.audience')}
       options={[
-        { id: 'PUBLIC', label: 'Public' },
-        { id: 'PRIVATE', label: 'Private - only you and share links' },
+        { id: 'PUBLIC', label: t('audienceVisibilitySectionFields.public') },
+        {
+          id: 'PRIVATE',
+          label: t('audienceVisibilitySectionFields.privateOnlyYouAndShare'),
+        },
       ]}
       value={visibility}
       onValueChange={(value) => onVisibilityChange(value as TrackVisibility)}

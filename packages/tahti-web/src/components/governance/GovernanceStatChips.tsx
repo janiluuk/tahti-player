@@ -1,6 +1,7 @@
 import type { LucideIcon } from 'lucide-react';
 import { FileTextIcon, LandmarkIcon, UsersIcon, VoteIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { StatChip } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
@@ -47,29 +48,30 @@ export function GovernanceStatChips({
   meetings: number;
   documents: number;
 }) {
+  const { t } = useTranslation('web');
   return (
     <div className="grid grid-cols-1 gap-3 min-[22.5rem]:grid-cols-2 sm:grid-cols-4">
       <AccentStat
         value={openMotions}
-        label="Open motions"
+        label={t('governanceStatChipsText.openMotions')}
         icon={VoteIcon}
         accent="red"
       />
       <AccentStat
         value={topics}
-        label="Topics"
+        label={t('governanceStatChipsText.topics')}
         icon={LandmarkIcon}
         accent="purple"
       />
       <AccentStat
         value={meetings}
-        label="Meetings"
+        label={t('governanceStatChipsText.meetings')}
         icon={UsersIcon}
         accent="blue"
       />
       <AccentStat
         value={documents}
-        label="Documents"
+        label={t('governanceStatChipsText.documents')}
         icon={FileTextIcon}
         accent="cyan"
       />

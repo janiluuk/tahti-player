@@ -9628,6 +9628,151 @@
       "downloads_other": "{{count}} latausta",
       "comments_one": "{{count}} kommentti",
       "comments_other": "{{count}} kommenttia"
+    },
+    "governanceViewText": {
+      "retry": "Yritä uudelleen",
+      "signInWithACooperative": "Kirjaudu osuuskunnan jäsentilillä äänestääksesi.",
+      "logIn": "Kirjaudu sisään",
+      "manageMembership": "Hallinnoi jäsenyyttä",
+      "viewAllMotions": "Näytä kaikki aloitteet",
+      "advisoryProposalsForBoardReview": "Neuvoa-antavat ehdotukset hallituksen käsiteltäviksi",
+      "membersCanSubmitAdvisoryProposals": "Jäsenet voivat jättää neuvoa-antavia ehdotuksia hallituksen käsiteltäviksi. Luonnokset eivät ole äänestyksiä ennen kuin hallitus avaa ne.",
+      "needsYourAttention": "Vaatii huomiotasi",
+      "topTopics": "Suosituimmat aiheet",
+      "publishedMeetings": "Julkaistut kokoukset",
+      "publishedDocuments": "Julkaistut asiakirjat",
+      "quarterlyReviews": "Neljännesvuosikatsaukset",
+      "memberDirectory": "Jäsenluettelo",
+      "submitAMotionDraft": "Lähetä aloiteluonnos",
+      "aboutMotionDrafts": "Tietoa aloiteluonnoksista",
+      "motionTitle": "Aloitteen otsikko",
+      "explainTheProposal": "Perustele ehdotus",
+      "governance": "Hallinto"
+    },
+    "governanceStatChipsText": {
+      "openMotions": "Avoimet aloitteet",
+      "topics": "Aiheet",
+      "meetings": "Kokoukset",
+      "documents": "Asiakirjat"
+    },
+    "adminOrphanPagesViewText": {
+      "admin": "Ylläpito",
+      "orphanPages": "Orpot sivut",
+      "pagesWithNoMenuEntry": "Sivut, joilla ei ole valikkokohtaa."
+    },
+    "backdropUploadButtonText": {
+      "wideJpegPngOrWebp": "Leveä JPEG, PNG tai WebP. Latautuu heti valinnan jälkeen."
+    },
+    "backdropUploadButtonFields": {
+      "wideJpegPngOrWebp": "Leveä JPEG, PNG tai WebP"
+    },
+    "ambientTrackRowText": {
+      "processingAudio": "Käsitellään ääntä…"
+    },
+    "ambientTrackRowLabels": {
+      "seekTitle": "Siirry kohtaan: {{title}}"
+    },
+    "smartLinkReleaseDetailsText": {
+      "credits": "Tekijät"
+    },
+    "slideshowControlsFields": {
+      "dropSlideshowImagesHere": "Pudota diaesityksen kuvat tähän",
+      "jpegPngOrWebpUp": "JPEG, PNG tai WebP · enintään 10 kuvaa"
+    },
+    "audienceVisibilitySectionText": {
+      "audience": "Yleisö"
+    },
+    "audienceVisibilitySectionFields": {
+      "public": "Julkinen",
+      "privateOnlyYouAndShare": "Yksityinen – vain sinä ja jakolinkit"
+    },
+    "adminStreamManagerPanelFields": {
+      "restart": "Käynnistä uudelleen",
+      "takeOffline": "Ota pois lähetyksestä"
+    },
+    "channelStoreEditorFields": {
+      "notInTheStore": "Ei kaupassa",
+      "fansOnly": "Vain faneille"
+    },
+    "channelStoreEditorLabels": {
+      "storePriceForTitle": "Kauppahinta: {{title}}"
+    },
+    "soundsListTableText": {
+      "failed": "Epäonnistui",
+      "ready": "Valmis"
+    },
+    "radioStationSuggestionsTabText": {
+      "listenerSuggestedInternetRadioStations": "Kuuntelijoiden ehdottamat nettiradioasemat Widgetit-kauppaan — hyväksy lisätäksesi ne yhteiseen luetteloon.",
+      "noteToTheListenerOptional": "Viesti kuuntelijalle (valinnainen)"
+    },
+    "nativeTrackColumnsText": {
+      "missing": "Puuttuu",
+      "originalFileIsMissing": "Alkuperäinen tiedosto puuttuu"
+    },
+    "latestDiscussionsPanelText": {
+      "allDiscussions": "Kaikki keskustelut",
+      "latestDiscussions": "Uusimmat keskustelut"
+    },
+    "channelStagePlayerText": {
+      "openChat": "Avaa chat"
+    },
+    "channelDesignerText": {
+      "channelAppearanceControls": "Kanavan ulkoasun säätimet"
+    },
+    "releaseTrackVersionsPanelFields": {
+      "wavFlacMp3AacOr": "WAV, FLAC, MP3, AAC tai AIFF"
+    },
+    "discoverViewText": {
+      "keepTheSamePickFor": "Pidä sama valinta ajalle"
+    },
+    "discoverViewFields": {
+      "pickedForTheTahtiSelects": "Valittu Tahti Selects -kiertoon"
+    },
+    "trackOrganizeDialogFields": {
+      "undo": "Kumoa"
+    },
+    "releaseTrackDownloadsText": {
+      "downloads": "Lataukset"
+    },
+    "releaseTrackDownloadsFields": {
+      "unlockOnTheTrackPage": "Avaa kappaleen sivulla"
+    },
+    "playlistViewFields": {
+      "undo": "Kumoa"
+    },
+    "desktopLibraryPanelLabels": {
+      "theDamagedFileWasKept": "Vaurioitunut tiedosto säilytettiin sijainnissa {{movedTo}}. Palauta luettelon varmuuskopio saadaksesi arviot, tunnisteet ja soittolistat takaisin, ja skannaa sitten kansiot uudelleen."
+    },
+    "catalogTrackSearchLabels": {
+      "addTitleByArtistname": "Lisää: {{title}} ({{artistName}})"
+    },
+    "soundShareLinksSectionFields": {
+      "playOnly": "Vain toisto",
+      "playDownload": "Toisto ja lataus"
+    },
+    "purchaseAccessSectionFields": {
+      "everyone": "Kaikki",
+      "fanSubscribersOnly": "Vain fanitilaajat"
+    },
+    "playlistExportDialogFields": {
+      "relativeToTheSavedFile": "Suhteessa tallennettuun tiedostoon",
+      "fullPaths": "Täydet polut"
+    },
+    "materialSetsFieldFields": {
+      "playlist": "Soittolista",
+      "djSet": "DJ-setti"
+    },
+    "videoOrImageFieldFields": {
+      "chooseAVideoOrImage": "Valitse video tai kuva",
+      "mp4WebmJpegPngWebp": "MP4, WebM, JPEG, PNG, WebP tai GIF · enintään 10 Mt"
+    },
+    "audioRevisionListFields": {
+      "saveANewAudioRevision": "Tallenna uusi ääniversio",
+      "wavFlacAiffMp3M4a": "WAV · FLAC · AIFF · MP3 · M4A · OGG"
+    },
+    "artworkPresetUploadDialogFields": {
+      "image": "Kuva",
+      "jpgPngWebpOrGif": "JPG, PNG, WebP tai GIF"
     }
   },
   "studioEditor": {

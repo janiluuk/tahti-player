@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { RadioIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -29,6 +30,7 @@ function tabContent(id: AdminOrphanPageTabId) {
 }
 
 export function AdminOrphanPagesView({ tab }: { tab?: AdminOrphanPageTabId }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const active = isAdminOrphanPageTabId(tab)
     ? tab
@@ -45,9 +47,13 @@ export function AdminOrphanPagesView({ tab }: { tab?: AdminOrphanPageTabId }) {
       >
         <AdminPageLayout current="/admin/orphan-pages">
           <Breadcrumbs className="mb-4">
-            <BreadcrumbLink to="/admin">Admin</BreadcrumbLink>
+            <BreadcrumbLink to="/admin">
+              {t('adminOrphanPagesViewText.admin')}
+            </BreadcrumbLink>
             <AdminHubBreadcrumb hub="platform" />
-            <BreadcrumbCurrent>Orphan pages</BreadcrumbCurrent>
+            <BreadcrumbCurrent>
+              {t('adminOrphanPagesViewText.orphanPages')}
+            </BreadcrumbCurrent>
           </Breadcrumbs>
           <Tabs.Root
             selectedIndex={selectedIndex < 0 ? 0 : selectedIndex}
@@ -61,7 +67,7 @@ export function AdminOrphanPagesView({ tab }: { tab?: AdminOrphanPageTabId }) {
             listClassName="flex flex-wrap gap-3"
             tabClassName="h-8 rounded-md border border-border px-2.5 text-xs font-semibold tracking-wide uppercase"
           >
-            <Tabs.List aria-label="Orphan pages">
+            <Tabs.List aria-label={t('adminOrphanPagesViewText.orphanPages')}>
               {ADMIN_ORPHAN_PAGE_TABS.map((item) => (
                 <Tabs.Tab key={item.id}>
                   <TabLabel icon={<RadioIcon size={14} />}>
@@ -72,8 +78,8 @@ export function AdminOrphanPagesView({ tab }: { tab?: AdminOrphanPageTabId }) {
             </Tabs.List>
           </Tabs.Root>
           <ViewShell
-            title="Orphan pages"
-            subtitle="Pages with no menu entry."
+            title={t('adminOrphanPagesViewText.orphanPages')}
+            subtitle={t('adminOrphanPagesViewText.pagesWithNoMenuEntry')}
             classes={{ root: 'px-0 pt-0 max-w-5xl', content: 'gap-4' }}
           >
             {tabContent(active)}

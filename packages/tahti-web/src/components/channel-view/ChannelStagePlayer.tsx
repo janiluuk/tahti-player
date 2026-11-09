@@ -310,13 +310,13 @@ export function ChannelStagePlayer({
       {hasControls && (chatOn || follow) ? (
         <div className="absolute right-4 bottom-4 z-[2] flex items-center gap-3">
           {chatOn && (
-            <Tooltip content="Open chat" side="top">
+            <Tooltip content={t('channelStagePlayerText.openChat')} side="top">
               <Button
                 size="icon"
                 variant="text"
                 className="size-11 bg-black/45 text-white backdrop-blur-sm hover:bg-black/65"
                 onClick={handleToggleChat}
-                aria-label="Open chat"
+                aria-label={t('channelStagePlayerText.openChat')}
               >
                 <MessageCircle size={20} aria-hidden />
               </Button>

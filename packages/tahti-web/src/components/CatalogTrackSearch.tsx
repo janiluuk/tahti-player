@@ -125,7 +125,10 @@ export function CatalogTrackSearch({
                 size="sm"
                 variant="secondary"
                 disabled={addingId !== null}
-                aria-label={`Add ${track.title} by ${track.artistName}`}
+                aria-label={t('catalogTrackSearchLabels.addTitleByArtistname', {
+                  title: track.title,
+                  artistName: track.artistName,
+                })}
                 onClick={() => void add(track)}
               >
                 <PlusIcon size={14} aria-hidden className="mr-1.5" />

@@ -38,7 +38,7 @@ export function ReleaseTrackDownloads({
       if (unlockSoundId) {
         toast.error(result.error, {
           action: {
-            label: 'Unlock on the track page',
+            label: t('releaseTrackDownloadsFields.unlockOnTheTrackPage'),
             onClick: () => window.location.assign(`/t/${unlockSoundId}`),
           },
         });
@@ -51,7 +51,10 @@ export function ReleaseTrackDownloads({
   };
 
   return (
-    <section className="flex flex-col gap-3" aria-label="Downloads">
+    <section
+      className="flex flex-col gap-3"
+      aria-label={t('releaseTrackDownloadsText.downloads')}
+    >
       <Eyebrow>{t('actions.download')}</Eyebrow>
       <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">
         {downloadable.map((track) => (

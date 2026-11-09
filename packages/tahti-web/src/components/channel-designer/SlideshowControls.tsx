@@ -179,8 +179,8 @@ export function SlideshowControls({
             selectedFiles={pickedFiles}
             icon={<ImageIcon size={20} aria-hidden />}
             labels={{
-              title: 'Drop slideshow images here',
-              description: 'JPEG, PNG, or WebP · up to 10 images',
+              title: t('slideshowControlsFields.dropSlideshowImagesHere'),
+              description: t('slideshowControlsFields.jpegPngOrWebpUp'),
               browse: 'Browse images',
             }}
             onFiles={(files) => {

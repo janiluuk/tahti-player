@@ -45,8 +45,9 @@ export function RadioStationSuggestionsTab() {
   return (
     <div className="flex max-w-3xl flex-col gap-4">
       <p className="text-foreground-secondary text-sm">
-        Listener-suggested internet radio stations for the Widgets store —
-        approve to add them to the shared catalog.
+        {t(
+          'radioStationSuggestionsTabText.listenerSuggestedInternetRadioStations',
+        )}
       </p>
 
       {msg && (
@@ -129,7 +130,9 @@ export function RadioStationSuggestionsTab() {
                     }}
                   >
                     <Textarea
-                      label="Note to the listener (optional)"
+                      label={t(
+                        'radioStationSuggestionsTabText.noteToTheListenerOptional',
+                      )}
                       tone="secondary"
                       value={notes[row.id] ?? ''}
                       onChange={(e) =>
