@@ -192,6 +192,16 @@ export const QueueExpanded: Story = {
       await canvas.findByRole('button', { name: 'Show queue, 3 in queue' }),
     );
     await expect(useLayoutStore.getState().bottomQueueOpen).toBe(true);
+    const icon = canvas
+      .getByRole('button', { name: 'Hide queue' })
+      .querySelector('svg')!
+      .getBoundingClientRect();
+    const badge = canvas
+      .getByTestId('queue-count-badge')
+      .getBoundingClientRect();
+    await expect(badge.left >= icon.right || badge.bottom <= icon.top).toBe(
+      true,
+    );
   },
 };
 

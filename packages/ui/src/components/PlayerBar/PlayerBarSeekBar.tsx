@@ -13,6 +13,9 @@ export type PlayerSeekBarProps = {
   isLoading?: boolean;
   onSeek?: (percent: number) => void;
   className?: string;
+  /** Extra classes for the elapsed / remaining labels, e.g. a chip
+   * background when the bar sits over artwork or a visualizer. */
+  labelClassName?: string;
 };
 
 export const PlayerBarSeekBar: FC<PlayerSeekBarProps> = ({
@@ -22,6 +25,7 @@ export const PlayerBarSeekBar: FC<PlayerSeekBarProps> = ({
   isLoading = false,
   onSeek,
   className = '',
+  labelClassName,
 }) => {
   const {
     clamped,
@@ -49,7 +53,10 @@ export const PlayerBarSeekBar: FC<PlayerSeekBarProps> = ({
         className,
       )}
     >
-      <span className="min-w-10 text-right" data-testid="player-seek-elapsed">
+      <span
+        className={cn('min-w-10 text-right', labelClassName)}
+        data-testid="player-seek-elapsed"
+      >
         {formatTimeSeconds(elapsedSeconds)}
       </span>
       <div
@@ -100,7 +107,10 @@ export const PlayerBarSeekBar: FC<PlayerSeekBarProps> = ({
           />
         ) : null}
       </div>
-      <span className="min-w-10" data-testid="player-seek-remaining">
+      <span
+        className={cn('min-w-10', labelClassName)}
+        data-testid="player-seek-remaining"
+      >
         {formatTimeSeconds(-Math.abs(remainingSeconds))}
       </span>
     </div>

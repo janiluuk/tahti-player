@@ -7,6 +7,8 @@ import { cn } from '../../lib/cn';
 import { radioVisualizerPreset } from '../../lib/radioVisualizer';
 import { ChannelVisualizer } from '../ChannelVisualizer';
 
+export type RadioHeroLiveChannel = { slug: string; name: string };
+
 /** Radio's on-air hero: the station visualizer as a large backdrop with one
  * thumbnail (the playing track's cover, else the station logo), what is
  * playing and the station actions laid over it. The scrim takes
@@ -16,6 +18,7 @@ export function RadioVisualizerHero({
   station,
   logoUrl,
   artworkUrl = null,
+  liveChannel = null,
   info,
   actions,
   embedded = false,
@@ -24,12 +27,18 @@ export function RadioVisualizerHero({
   station: PublicChannel;
   logoUrl: string | null;
   artworkUrl?: string | null;
+  liveChannel?: RadioHeroLiveChannel | null;
   info: ReactNode;
   actions: ReactNode;
   embedded?: boolean;
   /** Short strip with a small logo, for the minimized player widget. */
   compact?: boolean;
 }) {
+  const thumbClass =
+    'bg-surface-secondary rounded-xl shadow-lg ring-1 ring-white/15';
+  const sizeClass = compact
+    ? 'size-14 min-w-14 text-lg'
+    : 'size-20 min-w-20 text-2xl sm:size-28 sm:min-w-28';
   const body = (
     <>
       <div className="absolute inset-0">
@@ -57,19 +66,25 @@ export function RadioVisualizerHero({
           data-testid="radio-station-logo"
           className={cn('shrink-0', compact ? 'self-end' : 'self-start')}
         >
-          <MediaArtwork
-            size="md"
-            src={artworkUrl || logoUrl}
-            alt={artworkUrl ? '' : 'Tahti Radio'}
-            fit={artworkUrl ? 'cover' : 'contain'}
-            className={cn(
-              'bg-surface-secondary rounded-xl font-bold tracking-tight shadow-lg ring-1 ring-white/15',
-              compact
-                ? 'size-14 min-w-14 text-lg'
-                : 'size-20 min-w-20 text-2xl sm:size-28 sm:min-w-28',
-            )}
-            placeholder="TR"
-          />
+          {liveChannel ? (
+            <MediaArtwork
+              size="md"
+              src={artworkUrl}
+              alt={liveChannel.name}
+              seed={liveChannel.slug}
+              fit="cover"
+              className={cn(thumbClass, sizeClass)}
+            />
+          ) : (
+            <MediaArtwork
+              size="md"
+              src={artworkUrl || logoUrl}
+              alt={artworkUrl ? '' : 'Tahti Radio'}
+              fit={artworkUrl ? 'cover' : 'contain'}
+              className={cn(thumbClass, 'font-bold tracking-tight', sizeClass)}
+              placeholder="TR"
+            />
+          )}
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-4">
           {info}

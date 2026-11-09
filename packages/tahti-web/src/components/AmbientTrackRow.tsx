@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { memo, useEffect, useRef, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -95,6 +96,7 @@ function TrackStats({
   stats: AmbientTrackStats;
   className: string;
 }) {
+  const { t } = useTranslation('web');
   const parts: ReactNode[] = [];
   if (stats.releaseDate) {
     parts.push(
@@ -109,29 +111,27 @@ function TrackStats({
       </span>,
     );
   }
-  const counts: Array<[string, number | undefined, ReactNode, string]> = [
-    ['likes', stats.likes, <HeartIcon size={14} aria-hidden />, 'likes'],
-    ['plays', stats.plays, <CirclePlayIcon size={14} aria-hidden />, 'plays'],
+  const counts: Array<
     [
-      'downloads',
-      stats.downloads,
-      <DownloadIcon size={14} aria-hidden />,
-      'downloads',
-    ],
-    [
-      'comments',
-      stats.comments,
-      <MessageCircleIcon size={14} aria-hidden />,
-      'comments',
-    ],
+      'likes' | 'plays' | 'downloads' | 'comments',
+      number | undefined,
+      ReactNode,
+    ]
+  > = [
+    ['likes', stats.likes, <HeartIcon size={14} aria-hidden />],
+    ['plays', stats.plays, <CirclePlayIcon size={14} aria-hidden />],
+    ['downloads', stats.downloads, <DownloadIcon size={14} aria-hidden />],
+    ['comments', stats.comments, <MessageCircleIcon size={14} aria-hidden />],
   ];
-  for (const [key, value, icon, noun] of counts) {
+  for (const [key, value, icon] of counts) {
     if (value != null) {
       parts.push(
         <span key={key} className="inline-flex items-center gap-1">
           {icon}
           <span aria-hidden>{value.toLocaleString()}</span>
-          <span className="sr-only">{`${value} ${noun}`}</span>
+          <span className="sr-only">
+            {t(`ambientTrackRow.${key}`, { count: value })}
+          </span>
         </span>,
       );
     }
@@ -166,6 +166,7 @@ function LikeToggle({
   like: AmbientTrackLike;
   title: string;
 }) {
+  const { t } = useTranslation('web');
   return (
     <Button
       size="sm"
@@ -173,7 +174,12 @@ function LikeToggle({
       onClick={like.onToggle}
       disabled={like.disabled}
       aria-pressed={like.liked}
-      aria-label={`${like.liked ? 'Unlike' : 'Like'} ${title} (${like.count} likes)`}
+      aria-label={t(
+        like.liked
+          ? 'ambientTrackRow.unlikeTrack'
+          : 'ambientTrackRow.likeTrack',
+        { title, count: like.count },
+      )}
       className="h-8 gap-1.5 px-2 tabular-nums"
     >
       <HeartIcon

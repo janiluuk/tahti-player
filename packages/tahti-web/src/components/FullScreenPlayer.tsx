@@ -47,6 +47,11 @@ const ANIMATION_MS = 280;
 const TOP_BUTTON_CLASS =
   'rounded-full border-0 bg-background/55 text-foreground shadow-none backdrop-blur-md hover:bg-background/80';
 
+/** Same frosted chip for the elapsed / remaining times, at the player bar's
+ * text size, so they stay readable over a bright visualizer frame. */
+const SEEK_LABEL_CHIP =
+  'bg-background/55 text-foreground rounded-full px-2 py-1 text-center text-xs backdrop-blur-md';
+
 /** Full-viewport now-playing overlay — expand button in the player bar
  * opens it, X or Escape closes it back to the compact bar. Backdrop tint
  * follows the current track's cover art (sampled via useDominantColor)
@@ -460,11 +465,11 @@ export function FullScreenPlayer() {
             <PlayerLiveIndicator />
           ) : isLive ? null : driving ? (
             <div className="text-foreground-secondary w-full text-center text-sm tabular-nums">
-              <ConnectedSeekBar />
+              <ConnectedSeekBar labelClassName={SEEK_LABEL_CHIP} />
             </div>
           ) : (
             <div className="w-full">
-              <ConnectedSeekBar />
+              <ConnectedSeekBar labelClassName={SEEK_LABEL_CHIP} />
             </div>
           )}
           {!isMobile && !driving && (

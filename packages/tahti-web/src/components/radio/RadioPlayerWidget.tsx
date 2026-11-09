@@ -6,7 +6,10 @@ import { Box, Button, Tabs, Tooltip, type TabsItem } from '@tahti-player/ui';
 
 import type { PublicChannel } from '../../api/types';
 import { useDominantColor } from '../../lib/useDominantColor';
-import { RadioVisualizerHero } from './RadioVisualizerHero';
+import {
+  RadioVisualizerHero,
+  type RadioHeroLiveChannel,
+} from './RadioVisualizerHero';
 
 const AMBIENT_FALLBACK = '12 12 16';
 const AMBIENT_DARKEN = 0.55;
@@ -27,6 +30,7 @@ export function RadioPlayerWidget({
   station,
   logoUrl,
   artworkUrl = null,
+  liveChannel = null,
   online,
   offlineContent,
   info,
@@ -41,6 +45,8 @@ export function RadioPlayerWidget({
   station: PublicChannel;
   logoUrl: string | null;
   artworkUrl?: string | null;
+  /** A member channel relayed on air; its artwork replaces the station logo. */
+  liveChannel?: RadioHeroLiveChannel | null;
   online: boolean;
   offlineContent?: ReactNode;
   info: ReactNode;
@@ -88,6 +94,7 @@ export function RadioPlayerWidget({
           station={station}
           logoUrl={logoUrl}
           artworkUrl={artworkUrl}
+          liveChannel={liveChannel}
           info={info}
           actions={actions}
           embedded

@@ -289,7 +289,8 @@ export function ChannelStagePlayer({
                 )}
                 title={nowPlaying.title}
                 artist={nowPlaying.artistName}
-                artworkUrl={nowPlaying.artworkUrl}
+                artworkUrl={nowPlaying.artworkUrl ?? channel.user.avatarUrl}
+                artworkSeed={slug}
                 settings={parseNowPlayingOverlaySettings(
                   channel.nowPlayingOverlaySettingsJson,
                 )}

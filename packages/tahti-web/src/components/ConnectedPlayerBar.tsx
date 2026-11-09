@@ -308,7 +308,8 @@ export function ConnectedPlayerBar() {
         <Badge
           variant="pill"
           color="blue"
-          className="bg-primary text-primary-foreground pointer-events-none absolute -top-0.5 -right-0.5 min-w-4 px-1 text-center text-[9px] font-bold tabular-nums"
+          data-testid="queue-count-badge"
+          className="bg-primary text-primary-foreground ring-background pointer-events-none absolute -top-2 -right-2.5 h-4 min-w-4 px-1 py-0 text-center text-[9px] leading-4 font-bold tabular-nums ring-2"
         >
           {queue.length}
         </Badge>

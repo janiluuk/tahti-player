@@ -7,7 +7,13 @@ import { usePlayerStore } from '../stores/playerStore';
  * volume, queue controls, visualizer, etc. -- none of which depend on
  * playback position). Shared by the compact player bar and the full-screen
  * overlay. */
-export function ConnectedSeekBar({ className }: { className?: string }) {
+export function ConnectedSeekBar({
+  className,
+  labelClassName,
+}: {
+  className?: string;
+  labelClassName?: string;
+}) {
   const currentTime = usePlayerStore((s) => s.currentTime);
   const duration = usePlayerStore((s) => s.duration);
   const status = usePlayerStore((s) => s.status);
@@ -17,6 +23,7 @@ export function ConnectedSeekBar({ className }: { className?: string }) {
   return (
     <PlayerBar.SeekBar
       className={className}
+      labelClassName={labelClassName}
       progress={seekProgress}
       elapsedSeconds={currentTime}
       remainingSeconds={Math.max(0, duration - currentTime)}

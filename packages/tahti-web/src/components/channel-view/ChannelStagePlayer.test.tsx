@@ -150,6 +150,28 @@ describe('ChannelStagePlayer', () => {
       ).toBeTruthy();
     });
 
+    it('falls back to the channel avatar for a track with no cover and wraps the title', async () => {
+      await renderStage({
+        channel: {
+          ...rotation,
+          user: {
+            ...rotation.user,
+            avatarUrl: 'https://cdn.example/night-drive.jpg',
+          },
+        } as PublicChannel,
+        live: true,
+      });
+      const covers = Array.from(document.querySelectorAll('img')).map((img) =>
+        img.getAttribute('src'),
+      );
+      expect(covers).toContain('https://cdn.example/night-drive.jpg');
+      const title = screen
+        .getAllByText('Night mix')
+        .find((el) => el.className.includes('font-extrabold'))!;
+      expect(title.className).toContain('line-clamp-2');
+      expect(title.className).not.toContain('truncate');
+    });
+
     it('draws the real waveform when the track has peaks', async () => {
       await renderStage({
         channel: rotation,

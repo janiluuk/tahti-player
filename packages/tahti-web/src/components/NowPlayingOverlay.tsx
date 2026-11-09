@@ -12,6 +12,9 @@ type Props = {
   title: string;
   artist: string;
   artworkUrl?: string | null;
+  /** Picks the default cover when `artworkUrl` is missing; defaults to the
+   * title. */
+  artworkSeed?: string;
   /** The channel's real WaveformSeekbar, pre-built by the caller (it needs a
    * trackId/onSeek closure this component has no business owning) — laid
    * out differently per preset. Omitted entirely in designer previews. */
@@ -31,6 +34,7 @@ export function NowPlayingOverlay({
   title,
   artist,
   artworkUrl,
+  artworkSeed,
   seekbar,
   compact = false,
   settings,
@@ -42,9 +46,18 @@ export function NowPlayingOverlay({
         opacity: settings.opacity,
       }
     : undefined;
-  const cover = artworkUrl ? (
-    <MediaArtwork src={artworkUrl} alt="" size="fill" imageReveal={false} />
-  ) : null;
+  const cover = (
+    <MediaArtwork
+      src={artworkUrl}
+      alt=""
+      seed={artworkSeed || title}
+      size="fill"
+      imageReveal={false}
+    />
+  );
+  // Long titles wrap to a second line on narrow stages instead of cutting
+  // to one word; designer preview cards stay on one line.
+  const titleFit = compact ? 'truncate' : 'line-clamp-2 break-words';
 
   if (presetId === 'centered') {
     return (
@@ -56,7 +69,7 @@ export function NowPlayingOverlay({
           Now playing
         </div>
         <div
-          className={`mt-1 max-w-full truncate rounded-md bg-black/45 px-3 py-1.5 font-extrabold tracking-tight text-white backdrop-blur-sm ${
+          className={`mt-1 max-w-full ${titleFit} rounded-md bg-black/45 px-3 py-1.5 font-extrabold tracking-tight text-white backdrop-blur-sm ${
             compact ? 'text-base' : 'text-2xl sm:text-4xl'
           }`}
         >
@@ -109,7 +122,7 @@ export function NowPlayingOverlay({
       <div className="flex flex-col gap-1" style={overlayStyle}>
         <div className="flex items-end justify-between gap-4">
           <div
-            className={`min-w-0 truncate font-extrabold tracking-tight text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.8)] ${
+            className={`min-w-0 ${titleFit} font-extrabold tracking-tight text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.8)] ${
               compact ? 'text-base' : 'text-3xl sm:text-5xl'
             }`}
           >
@@ -160,7 +173,7 @@ export function NowPlayingOverlay({
             Now playing
           </div>
           <div
-            className={`mt-2 truncate rounded-md bg-black/45 px-2.5 py-1 font-extrabold tracking-tight text-white backdrop-blur-sm ${
+            className={`mt-2 ${titleFit} rounded-md bg-black/45 px-2.5 py-1 font-extrabold tracking-tight text-white backdrop-blur-sm ${
               compact ? 'text-base' : 'text-3xl sm:text-5xl'
             }`}
           >

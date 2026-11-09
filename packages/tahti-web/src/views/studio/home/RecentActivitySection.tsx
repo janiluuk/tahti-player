@@ -11,6 +11,7 @@ import {
 } from '../../../api/studio/studio-recent';
 import { PageError, PageErrorBanner } from '../../../components/PageStates';
 import { dateLocaleTag } from '../../../lib/locale';
+import { formatDuration } from '../../../lib/playableToTrack';
 import { Group } from './HomeTiles';
 
 const money = new Intl.NumberFormat(undefined, {
@@ -23,14 +24,6 @@ function formatActivityDate(value: string): string {
     day: 'numeric',
     month: 'short',
   }).format(new Date(value));
-}
-
-function duration(sec: number | null): string | null {
-  if (sec == null) {
-    return null;
-  }
-  const s = Math.max(0, Math.round(sec));
-  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 }
 
 const cardClass =
@@ -120,7 +113,7 @@ export function RecentActivitySection() {
                   </Link>
                   <span className="text-foreground-secondary shrink-0 text-xs tabular-nums">
                     {[
-                      duration(sound.durationSec),
+                      formatDuration(sound.durationSec),
                       formatActivityDate(sound.createdAt),
                     ]
                       .filter(Boolean)

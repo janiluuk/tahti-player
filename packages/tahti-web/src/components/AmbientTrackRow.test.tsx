@@ -73,6 +73,23 @@ describe('AmbientTrackRow', () => {
     expect(screen.getByText('9 plays')).toBeTruthy();
   });
 
+  it('uses the singular for one like and one play', () => {
+    render(
+      <AmbientTrackRow
+        trackId="t-one"
+        title="Solo"
+        artist="Yaniho"
+        ambientRgb={null}
+        stats={{ plays: 1 }}
+        like={{ liked: true, count: 1, onToggle: vi.fn() }}
+      />,
+    );
+    expect(
+      screen.getByRole('button', { name: 'Unlike Solo (1 like)' }),
+    ).toBeTruthy();
+    expect(screen.getByText('1 play')).toBeTruthy();
+  });
+
   it('shows the comment count when the source has one', () => {
     render(
       <AmbientTrackRow

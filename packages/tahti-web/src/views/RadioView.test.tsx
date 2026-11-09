@@ -64,6 +64,7 @@ vi.mock('../api/client', async (importOriginal) => {
               slug: 'moon',
               displayName: 'DJ Moon',
               title: 'Moon set',
+              artworkUrl: 'https://cdn.example/moon.jpg',
             },
           }
         : { live: false, channel: null },
@@ -391,6 +392,19 @@ describe('RadioView up next', () => {
     await renderRadio();
     await screen.findByText('A member set is on air');
     expect(screen.queryByTestId('radio-up-next-rotation')).toBeNull();
+  });
+
+  it('names the live member channel in the banner and shows its artwork, not the station tile', async () => {
+    relayLive = true;
+    await renderRadio();
+    const link = await screen.findByRole('link', { name: 'Open DJ Moon' });
+    expect(link.getAttribute('href')).toBe('/channel/moon');
+    expect(screen.queryByText('Open moon')).toBeNull();
+    const logo = screen.getByTestId('radio-station-logo');
+    expect(within(logo).queryByText('TR')).toBeNull();
+    expect(
+      within(logo).getByRole('img', { name: 'DJ Moon' }).getAttribute('src'),
+    ).toBe('https://cdn.example/moon.jpg');
   });
 
   it('keeps the booked shows in their own tab, remembered in the URL', async () => {
