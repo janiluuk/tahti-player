@@ -209,8 +209,8 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
       className={cn('flex flex-col gap-3', className)}
     >
       <div className="flex min-h-10 flex-wrap items-center justify-between gap-x-4 gap-y-2">
-        <div className="flex items-center gap-2">
-          <h2 className="text-foreground text-lg font-bold whitespace-nowrap">
+        <div className="flex min-w-0 items-center gap-2">
+          <h2 className="text-foreground min-w-0 truncate text-lg font-bold">
             {title}
           </h2>
           {badge && (
@@ -226,13 +226,16 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
         <div
           data-testid="cards-row-controls"
           className={cn(
-            'flex min-w-0 flex-1 items-center justify-end gap-2',
-            showFilter ? 'min-w-64' : undefined,
+            'flex flex-1 items-center justify-end gap-2',
+            showFilter
+              ? 'min-w-0 basis-full sm:min-w-64 sm:basis-auto'
+              : 'min-w-fit',
           )}
         >
           {showFilter ? (
             <Input
               data-testid="cards-row-filter"
+              className="min-w-0 flex-1"
               size="sm"
               tone="secondary"
               placeholder={labels.filterPlaceholder}
@@ -255,7 +258,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
             />
           ) : null}
           {showScroll ? (
-            <div className="flex items-center gap-2">
+            <div className="hidden shrink-0 items-center gap-2 sm:flex">
               <Tooltip content="Scroll left" side="top">
                 <Button
                   data-testid="cards-row-scroll-left"
@@ -284,7 +287,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
           ) : null}
           {allowListToggle ? (
             <div
-              className="border-border flex items-center rounded-md border"
+              className="border-border flex shrink-0 items-center rounded-md border"
               data-testid="cards-row-zoom"
             >
               <Tooltip
