@@ -21,6 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
+| open    | [go-live-redesign.md](go-live-redesign.md) | Studio Go live rebuild: semantic tokens, quiet nav, setup stepper, Show info card; decisions recorded 2026-11-10; tahti-org API PR first |
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; add-on table rows, native review and dropped pricing claims left |
 | partial | [ambient-track-list-mobile.md](ambient-track-list-mobile.md) | Phone list default shipped; left: AmbientTrackRow phone layout (alignment across densities, larger thumb) — needs a visual pass at 390 px |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
