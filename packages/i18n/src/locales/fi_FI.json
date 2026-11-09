@@ -10390,6 +10390,17 @@
     "searchResults": {
       "resultsFor": "Tulokset haulle ”{{query}}”",
       "title": "Haku"
+    },
+    "importTutorial": {
+      "title": "Näin tuot kappaleesi toisesta palvelusta",
+      "step1": "Etsi palvelusi alta (hearthis.at, SoundCloud, Mixcloud, Spotify, YouTube, Google Drive …) ja asenna sen lisäosa.",
+      "step2": "Yhdistä se: kirjaudu sisään tai anna käyttäjänimesi siinä palvelussa.",
+      "step3": "Valitse haluamasi kappaleet, setit tai soittolistat ja paina Tuo. Ne tulevat kohtaan Kirjasto → Äänet, ja seteistä voi tehdä kokoelmia.",
+      "step4": "Tarkista Kirjasto → Äänet: kappaleet, jotka palvelu antaa ladata, tulevat oikeina tiedostoina; muut soivat upotuksina alkuperäisestä palvelusta.",
+      "embedsTitle": "Muuta hearthis.at-upotukset oikeiksi latauksiksi",
+      "embedsBody": "Salli kappaleidesi lataus hearthis.atissa ja käytä sitten kappaleen muokkausikkunan toimintoa ”Isännöi ääni Tahdissa”, tai korvaa kaikki kirjastosi hearthis.at-upotukset kerralla Tahti-komentorivityökalulla:",
+      "copied": "Komento kopioitu",
+      "files": "Onko tiedostot tietokoneellasi? Käytä Lataa-toimintoa, tai komentoa tahti import <kansio> koko kansiolle."
     }
   },
   "studioEditor": {
