@@ -1708,7 +1708,16 @@
       "collectionItems_one": "{{count}} kohde",
       "collectionItems_other": "{{count}} kohdetta",
       "uploadedOnLead": "Ladattu {{date}}",
-      "soundDurationHours": ", {{hours}} h {{minutes}} min"
+      "soundDurationHours": ", {{hours}} h {{minutes}} min",
+      "mediaPurgeUnused": "Poista käyttämättömät",
+      "mediaPurgeNothing": "Kaikki tiedostot ovat käytössä, poistettavaa ei ole.",
+      "mediaPurgeTitle_one": "Poistetaanko {{count}} käyttämätön tiedosto?",
+      "mediaPurgeTitle_other": "Poistetaanko {{count}} käyttämätöntä tiedostoa?",
+      "mediaPurgeDescription_one": "{{count}} tiedosto ({{size}}) ei ole profiilisi, kanavasi, julkaisujesi tai minkään muun sinulle kuuluvan käytössä. Se poistetaan pysyvästi.",
+      "mediaPurgeDescription_other": "{{count}} tiedostoa ({{size}}) ei ole profiilisi, kanavasi, julkaisujesi tai minkään muun sinulle kuuluvan käytössä. Ne poistetaan pysyvästi.",
+      "mediaPurgeConfirm": "Poista käyttämättömät",
+      "mediaPurged_one": "Poistettiin {{count}} käyttämätön tiedosto, vapautui {{size}}.",
+      "mediaPurged_other": "Poistettiin {{count}} käyttämätöntä tiedostoa, vapautui {{size}}."
     },
     "date": {
       "today": "Tänään",
