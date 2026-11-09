@@ -40,6 +40,7 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
+import { OwnerCollectionSortSounds } from '../components/OwnerCollectionSortSounds';
 import { PageFrame } from '../components/PageHeader';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { ReportButton } from '../components/ReportButton';
@@ -276,6 +277,13 @@ export function CollectionView({ slug }: { slug: string }) {
     }
   };
 
+  const reloadCollection = () =>
+    void fetchCollection(slug).then((res) => {
+      if (res.data) {
+        setCollection(res.data);
+      }
+    });
+
   const queueAll = () => {
     for (const item of playables) {
       enqueue(item);
@@ -360,42 +368,7 @@ export function CollectionView({ slug }: { slug: string }) {
                 search={{ edit: true }}
                 className="bg-background border-border rounded-md border-(length:--border-width)"
               />
-            ) : (
-              <Tooltip
-                content={
-                  isFavorite
-                    ? t('actions.removeFromFavoritesItem', {
-                        title: collection.name,
-                      })
-                    : t('actions.favoriteItem', { title: collection.name })
-                }
-                side="top"
-              >
-                <Button
-                  variant={isFavorite ? 'default' : 'secondary'}
-                  size="icon-sm"
-                  className="bg-background border-border rounded-md border-(length:--border-width)"
-                  aria-pressed={isFavorite}
-                  aria-label={
-                    isFavorite
-                      ? t('actions.removeFromFavoritesItem', {
-                          title: collection.name,
-                        })
-                      : t('actions.favoriteItem', { title: collection.name })
-                  }
-                  onClick={() =>
-                    toggleFavoritePlaylist({
-                      slug,
-                      name: collection.name,
-                      ownerUsername: collection.user.username,
-                      coverUrl: collection.coverUrl,
-                    })
-                  }
-                >
-                  <BookmarkIcon size={15} aria-hidden />
-                </Button>
-              </Tooltip>
-            )
+            ) : undefined
           }
           data-testid="collection-social-header"
         >
@@ -432,6 +405,12 @@ export function CollectionView({ slug }: { slug: string }) {
               <RadioIcon size={15} aria-hidden className="mr-1.5" />
               {t('actions.startJam')}
             </Button>
+            {isOwner ? (
+              <OwnerCollectionSortSounds
+                slug={slug}
+                onSaved={reloadCollection}
+              />
+            ) : null}
             {!isOwner ? (
               <Button
                 variant={isFavorite ? 'default' : 'secondary'}
@@ -548,13 +527,7 @@ export function CollectionView({ slug }: { slug: string }) {
             existingSoundIds={collection.items.flatMap((item) =>
               item.sound ? [item.sound.id] : [],
             )}
-            onAdded={() =>
-              void fetchCollection(slug).then((res) => {
-                if (res.data) {
-                  setCollection(res.data);
-                }
-              })
-            }
+            onAdded={reloadCollection}
           />
         ) : null}
       </PageFrame>

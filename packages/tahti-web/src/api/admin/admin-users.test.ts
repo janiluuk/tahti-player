@@ -43,7 +43,7 @@ describe('fetchAdminUsers role filter', () => {
     expect(result.total).toBe(7);
   });
 
-  it('asks the server for non-board artists', async () => {
+  it('asks the server for artists by account role, studio tier included', async () => {
     const getJson = vi.spyOn(http, 'getJson').mockResolvedValue({
       total: 12,
       users: [user('a1', { isBoard: false })],
@@ -52,8 +52,8 @@ describe('fetchAdminUsers role filter', () => {
     const result = await fetchAdminUsers({ role: 'ARTIST' });
 
     const url = getJson.mock.calls[0]![0] as string;
-    expect(url).toContain('tier=ARTIST');
-    expect(url).toContain('isBoard=false');
+    expect(url).toContain('role=ARTIST');
+    expect(url).not.toContain('tier=');
     expect(result.total).toBe(12);
   });
 

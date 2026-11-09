@@ -35,6 +35,7 @@ export function ReportButton({
   open: openProp,
   onOpenChange,
   showTrigger = true,
+  className,
 }: {
   targetType: ContentReportTarget;
   targetId: string;
@@ -45,6 +46,7 @@ export function ReportButton({
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   showTrigger?: boolean;
+  className?: string;
 }) {
   const { t } = useTranslation('web');
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -84,6 +86,7 @@ export function ReportButton({
           <Button
             size="icon-sm"
             variant={variant}
+            className={className}
             aria-label={t('reportButtonLabels.reportLabel', { label })}
             onClick={() => setOpen(true)}
           >

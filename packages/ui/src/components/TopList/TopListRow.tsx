@@ -37,7 +37,7 @@ export const TopListRow: FC<TopListRowProps> = ({
       onClick={entry.onClick}
       onKeyDown={interactive ? onKeyDown : undefined}
       className={cn(
-        'border-border grid grid-cols-[auto_auto_1fr_1fr] items-center gap-3 border-b-(length:--border-width) py-1.5 last:border-b-0',
+        'border-border grid grid-cols-[auto_auto_minmax(0,2fr)_minmax(0,1fr)] items-center gap-3 border-b-(length:--border-width) py-1.5 last:border-b-0',
         interactive &&
           'hover:bg-background-secondary/60 focus-visible:ring-primary cursor-pointer rounded-sm focus-visible:ring-2 focus-visible:outline-none',
       )}
@@ -66,7 +66,7 @@ export const TopListRow: FC<TopListRowProps> = ({
       </div>
       <div
         data-testid="top-list-value"
-        className="bg-primary/50 text-foreground min-w-fit px-2 py-1 whitespace-nowrap tabular-nums"
+        className="bg-primary/50 text-foreground min-w-fit px-2 py-1 text-sm whitespace-nowrap tabular-nums"
         style={{ width: `${fillRatio * 100}%` }}
       >
         {formatValue(entry.value)}

@@ -1,4 +1,9 @@
-import { PlayIcon, ScissorsIcon, Trash2Icon } from 'lucide-react';
+import {
+  CalendarClockIcon,
+  PlayIcon,
+  ScissorsIcon,
+  Trash2Icon,
+} from 'lucide-react';
 import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -9,7 +14,6 @@ import {
   Breadcrumbs,
   Button,
   FilePicker,
-  Select,
   Toggle,
   Tooltip,
   ViewShell,
@@ -22,7 +26,6 @@ import {
   setAnnouncementsSystemEnabled,
   uploadAnnouncementClip,
   type AdminAnnouncementClip,
-  type AdminAnnouncementScheduleMode,
 } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
@@ -32,8 +35,11 @@ import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { usePlayerStore } from '../../stores/playerStore';
+import {
+  AnnouncementScheduleDialog,
+  announcementScheduleLabel,
+} from './announcements/AnnouncementScheduleDialog';
 import { AnnouncementTrimDialog } from './announcements/AnnouncementTrimDialog';
-import { EveryNthInput } from './announcements/EveryNthInput';
 
 function fmtDuration(sec: number | null): string {
   if (sec == null) {
@@ -53,6 +59,9 @@ export function AdminAnnouncementsView() {
   const [pendingDelete, setPendingDelete] =
     useState<AdminAnnouncementClip | null>(null);
   const [trimming, setTrimming] = useState<AdminAnnouncementClip | null>(null);
+  const [scheduling, setScheduling] = useState<AdminAnnouncementClip | null>(
+    null,
+  );
 
   const snapshot = useSnapshotFetch<{
     clips: AdminAnnouncementClip[];
@@ -186,6 +195,8 @@ export function AdminAnnouncementsView() {
                             <div className="font-medium">{clip.title}</div>
                             <div className="text-foreground-secondary flex items-center gap-2 text-xs">
                               {fmtDuration(clip.durationSec)}
+                              <span aria-hidden>·</span>
+                              <span>{announcementScheduleLabel(clip, t)}</span>
                               {clip.renderStatus === 'PROCESSING' ? (
                                 <Badge variant="pill" color="cyan">
                                   {t('adminAnnouncements.rendering')}
@@ -198,46 +209,25 @@ export function AdminAnnouncementsView() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex min-w-48 flex-wrap items-center gap-2">
-                          <Select
-                            label={t('adminAnnouncements.schedule')}
-                            value={clip.scheduleMode}
-                            onValueChange={(value) => {
-                              const scheduleMode =
-                                value as AdminAnnouncementScheduleMode;
-                              patch(clip.id, {
-                                scheduleMode,
-                                everyNth:
-                                  scheduleMode === 'EVERY_NTH'
-                                    ? (clip.everyNth ?? 4)
-                                    : null,
-                              });
-                            }}
-                            options={[
-                              {
-                                id: 'AFTER_EVERY',
-                                label: t(
-                                  'adminAnnouncementsView.afterEveryClip',
-                                ),
-                              },
-                              {
-                                id: 'EVERY_NTH',
-                                label: t('adminAnnouncementsView.everyNthClip'),
-                              },
-                              {
-                                id: 'RANDOM',
-                                label: t('adminAnnouncementsView.randomly'),
-                              },
-                            ]}
-                          />
-                          {clip.scheduleMode === 'EVERY_NTH' && (
-                            <EveryNthInput
-                              value={clip.everyNth ?? 4}
-                              onCommit={(everyNth) =>
-                                patch(clip.id, { everyNth })
-                              }
-                            />
-                          )}
+                        <div className="flex flex-wrap items-center gap-1">
+                          <Tooltip
+                            content={t('adminAnnouncements.editScheduleOf', {
+                              title: clip.title,
+                            })}
+                            side="top"
+                          >
+                            <Button
+                              size="icon-sm"
+                              variant="text"
+                              aria-label={t(
+                                'adminAnnouncements.editScheduleOf',
+                                { title: clip.title },
+                              )}
+                              onClick={() => setScheduling(clip)}
+                            >
+                              <CalendarClockIcon size={16} aria-hidden />
+                            </Button>
+                          </Tooltip>
                           {clip.audioUrl && (
                             <Tooltip
                               content={t(
@@ -300,6 +290,14 @@ export function AdminAnnouncementsView() {
                 )}
               </StudioPanel>
             </ViewShell>
+            <AnnouncementScheduleDialog
+              clip={scheduling}
+              onClose={() => setScheduling(null)}
+              onSave={(clip, schedule) => {
+                setScheduling(null);
+                patch(clip.id, schedule);
+              }}
+            />
             <AnnouncementTrimDialog
               clip={trimming}
               onClose={() => setTrimming(null)}

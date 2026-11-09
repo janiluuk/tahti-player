@@ -89,7 +89,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
             }
           />
         ) : (
-          <CardGrid className="grid-cols-[repeat(auto-fill,11.5rem)]">
+          <CardGrid className="grid-cols-2 sm:grid-cols-[repeat(auto-fill,11.5rem)]">
             {favoriteChannels.map((ch) => {
               const channelPlaying =
                 currentId === `live:${ch.slug}` &&

@@ -1,5 +1,7 @@
+import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Box, MediaArtwork } from '@tahti-player/ui';
 
 import type { PublicChannel } from '../../api/types';
@@ -34,6 +36,7 @@ export function RadioVisualizerHero({
   /** Short strip with a small logo, for the minimized player widget. */
   compact?: boolean;
 }) {
+  const { t } = useTranslation('web');
   const thumbClass =
     'bg-surface-secondary rounded-xl shadow-lg ring-1 ring-white/15';
   const sizeClass = compact
@@ -67,14 +70,23 @@ export function RadioVisualizerHero({
           className={cn('shrink-0', compact ? 'self-end' : 'self-start')}
         >
           {liveChannel ? (
-            <MediaArtwork
-              size="md"
-              src={artworkUrl}
-              alt={liveChannel.name}
-              seed={liveChannel.slug}
-              fit="cover"
-              className={cn(thumbClass, sizeClass)}
-            />
+            <Link
+              to="/channel/$slug"
+              params={{ slug: liveChannel.slug }}
+              aria-label={t('radio.openLiveChannel', {
+                name: liveChannel.name,
+              })}
+              className="block"
+            >
+              <MediaArtwork
+                size="md"
+                src={artworkUrl}
+                alt=""
+                seed={liveChannel.slug}
+                fit="cover"
+                className={cn(thumbClass, sizeClass)}
+              />
+            </Link>
           ) : (
             <MediaArtwork
               size="md"

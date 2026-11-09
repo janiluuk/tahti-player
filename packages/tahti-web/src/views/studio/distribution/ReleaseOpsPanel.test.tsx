@@ -76,3 +76,35 @@ describe('ReleaseOpsPanel load errors', () => {
     expect(screen.getByText('HTTP 500')).toBeInTheDocument();
   });
 });
+
+describe('ReleaseOpsPanel row', () => {
+  it('reads type, state, track count and status as words', async () => {
+    await renderPanel();
+    expect(await screen.findByText(/Single · Draft · 0 tracks/)).toBeTruthy();
+    expect(screen.getByText('Not submitted')).toBeInTheDocument();
+    const toggle = screen.getByRole('button', { name: 'Release ops' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('shows checklist progress once the catalog has loaded', async () => {
+    fetchReleaseCatalog.mockResolvedValue({
+      data: {
+        checklist: [
+          { id: 'a', label: 'A', done: true },
+          { id: 'b', label: 'B', done: false },
+        ],
+      },
+      meta: { source: 'api' },
+    });
+    fetchRevelatorBilling.mockResolvedValue({
+      data: null,
+      meta: { source: 'api' },
+    });
+    await renderPanel();
+    fireEvent.click(await screen.findByRole('button', { name: 'Release ops' }));
+    const toggle = await screen.findByRole('button', {
+      name: 'Release ops (1/2)',
+    });
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+  });
+});

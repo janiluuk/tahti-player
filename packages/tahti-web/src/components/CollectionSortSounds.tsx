@@ -21,8 +21,11 @@ export function CollectionSortSounds({
   items,
   trackSortMode,
   onSaved,
+  labelled = false,
 }: {
   slug: string;
+  /** Show "Sort sounds" next to the icon, for a row of labelled buttons. */
+  labelled?: boolean;
   items: StudioCollectionItem[];
   trackSortMode: CollectionTrackSortMode;
   onSaved: (
@@ -36,16 +39,23 @@ export function CollectionSortSounds({
 
   return (
     <>
-      <Tooltip content={t('sortSounds.open')} side="top">
-        <Button
-          size="icon-sm"
-          variant="secondary"
-          aria-label={t('sortSounds.open')}
-          onClick={() => setOpen(true)}
-        >
-          <ArrowUpDownIcon size={16} aria-hidden />
+      {labelled ? (
+        <Button variant="secondary" onClick={() => setOpen(true)}>
+          <ArrowUpDownIcon size={16} aria-hidden className="mr-1.5" />
+          {t('sortSounds.open')}
         </Button>
-      </Tooltip>
+      ) : (
+        <Tooltip content={t('sortSounds.open')} side="top">
+          <Button
+            size="icon-sm"
+            variant="secondary"
+            aria-label={t('sortSounds.open')}
+            onClick={() => setOpen(true)}
+          >
+            <ArrowUpDownIcon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
+      )}
       <SortSoundsDialog
         isOpen={open}
         sounds={sounds}
