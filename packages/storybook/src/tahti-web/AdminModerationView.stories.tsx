@@ -31,14 +31,12 @@ async function expectQueue(canvasElement: HTMLElement, label: string) {
       canvas.getByRole('heading', { level: 1, name: 'Inbox' }),
     ).toBeVisible(),
   );
-  const queues = within(
-    canvas.getByRole('radiogroup', { name: 'Inbox queues' }),
-  );
-  await expect(queues.getAllByRole('radio')).toHaveLength(7);
+  const queues = within(canvas.getByRole('tablist', { name: 'Inbox queues' }));
+  await expect(queues.getAllByRole('tab')).toHaveLength(7);
   await waitFor(() =>
     expect(
-      queues.getByRole('radio', { name: new RegExp(`^${label}`) }),
-    ).toHaveAttribute('aria-checked', 'true'),
+      queues.getByRole('tab', { name: new RegExp(`^${label}`) }),
+    ).toHaveAttribute('aria-selected', 'true'),
   );
   return canvas;
 }
