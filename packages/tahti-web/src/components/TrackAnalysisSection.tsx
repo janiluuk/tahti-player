@@ -212,7 +212,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
       onChanged?.();
       toast.success(i18n.t('web:toasts.correctionSaved'), {
         action: {
-          label: 'Undo',
+          label: t('trackAnalysisSectionFields.undo'),
           onClick: () => {
             void library.analysis
               .restoreCorrections(undo)

@@ -101,7 +101,7 @@ export function TrackBody({ page }: { page: TrackPage }) {
   );
   const infoTab = {
     id: 'info',
-    label: 'Info',
+    label: t('trackBodyFields.info'),
     icon: <InfoIcon />,
     content: infoContent,
   };

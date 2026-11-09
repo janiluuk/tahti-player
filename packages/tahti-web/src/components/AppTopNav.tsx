@@ -181,7 +181,7 @@ export function AppTopNav() {
           onClose={() => setStreamManagerOpen(false)}
           className="max-w-xl"
         >
-          <Dialog.Title>Stream Manager</Dialog.Title>
+          <Dialog.Title>{t('appTopNavText.streamManager')}</Dialog.Title>
           <div className="mt-4">
             <Suspense fallback={<CenteredLoader />}>
               <StreamManagerPanel

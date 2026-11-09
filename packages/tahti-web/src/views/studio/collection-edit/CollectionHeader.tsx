@@ -62,7 +62,7 @@ export function CollectionHeader({
       ? [
           {
             key: 'tracks',
-            label: 'Tracks',
+            label: t('collectionHeaderFields.tracks'),
             value: items.length,
             icon: MusicIcon,
           },

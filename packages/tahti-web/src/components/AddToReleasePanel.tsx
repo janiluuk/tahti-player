@@ -126,7 +126,7 @@ export function AddToReleasePanel({
 
   return (
     <Dialog.Root isOpen={isOpen} onClose={onClose}>
-      <Dialog.Title>Add to a release</Dialog.Title>
+      <Dialog.Title>{t('addToReleasePanelText.addToARelease')}</Dialog.Title>
       <Dialog.Description>
         {tracks.length === 1
           ? tracks[0]?.title

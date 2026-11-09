@@ -64,7 +64,7 @@ export function TracklistPanel({
 
       {items.length === 0 ? (
         <PageEmpty
-          title="No tracks yet"
+          title={t('tracklistPanelFields.noTracksYet')}
           description={
             editing ? 'Add sound items below.' : 'Click Edit to add tracks.'
           }

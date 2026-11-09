@@ -284,6 +284,7 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
 }
 
 function RouteContent({ children }: { children: React.ReactNode }) {
+  const { t } = useTranslation('web');
   const isPending = useRouterState({
     select: (state) => state.status === 'pending',
   });
@@ -309,7 +310,7 @@ function RouteContent({ children }: { children: React.ReactNode }) {
         <div
           className="tahti-route-loading-bar pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5"
           role="progressbar"
-          aria-label="Loading page content"
+          aria-label={t('appShellText.loadingPageContent')}
         />
       ) : null}
     </div>
