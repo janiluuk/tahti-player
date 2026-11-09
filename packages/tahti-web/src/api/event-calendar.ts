@@ -137,9 +137,12 @@ export async function fetchPublicEvent(id: string): Promise<{
   }
 }
 
+export type EventShareTarget = 'MASTODON' | 'BLUESKY';
+
 async function transition(
   id: string,
   action: 'publish' | 'cancel',
+  shareTo: EventShareTarget[] = [],
 ): Promise<Result<ArtistEvent>> {
   if (isForceMock()) {
     const row = mockEvents.find((event) => event.id === id);
@@ -157,7 +160,9 @@ async function transition(
   try {
     const { data } = await requestJson<ArtistEvent>(
       `/api/me/events/${encodeURIComponent(id)}/${action}`,
-      { method: 'POST' },
+      action === 'publish'
+        ? { method: 'POST', body: JSON.stringify({ shareTo }) }
+        : { method: 'POST' },
     );
     return { ok: true, data: normalizeEvent(data) };
   } catch (err) {
@@ -175,8 +180,8 @@ async function transition(
 
 /** Publish a draft (followers and accepted tags are told) or re-publish a
  * cancelled event. */
-export function publishEvent(id: string) {
-  return transition(id, 'publish');
+export function publishEvent(id: string, shareTo: EventShareTarget[] = []) {
+  return transition(id, 'publish', shareTo);
 }
 
 /** Cancel a published event; it stays listed with a Cancelled badge. */
@@ -323,4 +328,84 @@ export function googleCalendarUrl(event: {
     details: event.description,
   });
   return `https://calendar.google.com/calendar/render?${query.toString()}`;
+}
+
+export type EventShare = {
+  id: string;
+  platform: EventShareTarget;
+  state: 'PENDING' | 'SENT' | 'FAILED';
+  error: string | null;
+  createdAt: string;
+  sentAt: string | null;
+};
+
+const mockShares = new Map<string, EventShare[]>([
+  [
+    'evt-mock-2',
+    [
+      {
+        id: 'share-mock-1',
+        platform: 'MASTODON',
+        state: 'SENT',
+        error: null,
+        createdAt: '2026-08-01T10:00:00.000Z',
+        sentAt: '2026-08-01T10:01:00.000Z',
+      },
+      {
+        id: 'share-mock-2',
+        platform: 'BLUESKY',
+        state: 'FAILED',
+        error: 'Bluesky session expired',
+        createdAt: '2026-08-01T10:00:00.000Z',
+        sentAt: null,
+      },
+    ],
+  ],
+]);
+
+/** Where an event was announced and how it went
+ * (`GET /api/me/events/:id/shares`). */
+export async function fetchEventShares(id: string): Promise<{
+  data: EventShare[];
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: (mockShares.get(id) ?? []).map((share) => ({ ...share })),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const { data } = await requestJson<EventShare[]>(
+      `/api/me/events/${encodeURIComponent(id)}/shares`,
+    );
+    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+/** Send a failed announcement again. */
+export async function retryEventShare(
+  eventId: string,
+  shareId: string,
+): Promise<Result<EventShare>> {
+  if (isForceMock()) {
+    const share = mockShares.get(eventId)?.find((row) => row.id === shareId);
+    if (!share) {
+      return { ok: false, error: 'Share not found' };
+    }
+    share.state = 'PENDING';
+    share.error = null;
+    return { ok: true, data: { ...share } };
+  }
+  try {
+    const { data } = await requestJson<EventShare>(
+      `/api/me/events/${encodeURIComponent(eventId)}/shares/${encodeURIComponent(shareId)}/retry`,
+      { method: 'POST' },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return { ok: false, error: errorText(err, 'Could not retry') };
+  }
 }

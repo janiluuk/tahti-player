@@ -21,6 +21,7 @@ import {
 } from '@tahti-player/ui';
 
 import { fetchVenues } from '../../api/client';
+import type { EventShareTarget } from '../../api/event-calendar';
 import {
   createEvent,
   deleteEvent,
@@ -30,6 +31,7 @@ import {
 } from '../../api/events';
 import type { VenueDirectoryItem } from '../../api/types';
 import { EventPreviewDialog } from '../../components/events/EventPreviewDialog';
+import { EventShareTargets } from '../../components/events/EventShareTargets';
 import { PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -52,6 +54,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
   const [startAt, setStartAt] = useState('');
   const [endAt, setEndAt] = useState('');
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [shareTo, setShareTo] = useState<EventShareTarget[]>([]);
   const [busy, setBusy] = useState(false);
   const [venues, setVenues] = useState<VenueDirectoryItem[]>([]);
   const [venuesFailed, setVenuesFailed] = useState(false);
@@ -117,6 +120,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
           ticketUrl: ticketUrl.trim() || undefined,
           imageUrl: imageUrl.trim() || undefined,
           status: asDraft ? 'DRAFT' : 'PUBLISHED',
+          shareTo: asDraft ? [] : shareTo,
         })
       : updateEvent(eventId, {
           ...fields,
@@ -322,6 +326,9 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                     }
                   />
                 </div>
+                {!editing ? (
+                  <EventShareTargets value={shareTo} onChange={setShareTo} />
+                ) : null}
                 <div className="flex flex-wrap gap-2">
                   <ButtonLink to="/studio/events" size="sm" variant="secondary">
                     <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />

@@ -10276,7 +10276,15 @@
       "agenda": "List",
       "calendarLayout": "Calendar layout",
       "loading": "Loading events…",
-      "status": "Status"
+      "status": "Status",
+      "shareOnPublish": "Announce when published",
+      "shareConnectHint": "Connect Mastodon or Bluesky to announce events there.",
+      "shareConnectLink": "Settings → Artist",
+      "shares": "Announcements",
+      "sharePENDING": "Sending",
+      "shareSENT": "Posted",
+      "shareFAILED": "Failed",
+      "retryShare": "Retry"
     },
     "routes-helpText": {
       "backToListen": "Back to Listen"
