@@ -10100,6 +10100,105 @@
     },
     "releaseSmartLinksPanelFields": {
       "allContent": "All content"
+    },
+    "mapCommentFormText": {
+      "saveComment": "Save comment"
+    },
+    "localPlaylistsSharedText": {
+      "unavailable": "Unavailable"
+    },
+    "legalDocShellText": {
+      "helpCenter": "Help center"
+    },
+    "fullScreenPlayerText": {
+      "error": "Error"
+    },
+    "embedTrackRowText": {
+      "embed": "Embed"
+    },
+    "directoryArtistCardGridText": {
+      "live": "Live"
+    },
+    "channelPageBackdropText": {
+      "channelVideoBackdrop": "Channel video backdrop"
+    },
+    "channelHeroBlockText": {
+      "channelNavigation": "Channel navigation"
+    },
+    "channelCatalogSectionsText": {
+      "releases": "Releases"
+    },
+    "channelTextOverlayViewText": {
+      "channelTextOverlay": "Channel text overlay"
+    },
+    "tuningSlidersText": {
+      "audioReactive": "Audio reactive"
+    },
+    "pageBackgroundFieldText": {
+      "pageBackground": "Page background"
+    },
+    "headerStyleTabsText": {
+      "headerStyle": "Header style"
+    },
+    "channelBackdropCardText": {
+      "channelNavigation": "Channel navigation"
+    },
+    "artistStoreSectionText": {
+      "store": "Store"
+    },
+    "artistSoundCloudTracksText": {
+      "onSoundcloud": "On SoundCloud"
+    },
+    "promptScoreBridgePanelFields": {
+      "midiPhrase": "MIDI phrase"
+    },
+    "discoWidgetManagerPanelFields": {
+      "addALogoBlock": "Add a logo block"
+    },
+    "directoryArtistsBrowserFields": {
+      "allTypes": "All types"
+    },
+    "channelSetupDialogFields": {
+      "channelAppearance": "Channel appearance"
+    },
+    "voiceRecorderFields": {
+      "defaultMicrophone": "Default microphone"
+    },
+    "broadcastPreflightPanelFields": {
+      "oneOffBroadcast": "One-off broadcast"
+    },
+    "browserLocalFilesLabels": {
+      "removeTitle": "Remove {{title}}"
+    },
+    "commentItemLabels": {
+      "deleteCommentByAuthordisplayname": "Delete comment by {{authorDisplayName}}"
+    },
+    "channelStageTrackMetaLabels": {
+      "trackProgressRemainingLeft": "Track progress, {{remaining}} left"
+    },
+    "savedLooksRowLabels": {
+      "deleteName": "Delete \"{{name}}\""
+    },
+    "blockedAccountsLabels": {
+      "unblockDisplayname": "Unblock {{displayName}}"
+    },
+    "artistBlockButtonLabels": {
+      "blockDisplayname": "Block {{displayName}}?"
+    },
+    "artistImagePurposePickerLabels": {
+      "removeName": "Remove {{name}}"
+    },
+    "broadcastControlsLabels": {
+      "openLivePanelLabel": "Open live panel — {{label}}"
+    },
+    "adminUserEngagementPanelLabels": {
+      "noAdjustmentsInYear": "No adjustments in {{year}}"
+    },
+    "adminChannelKindControlLabels": {
+      "channelTypeForSlug": "Channel type for {{slug}}"
+    },
+    "adminGateLabels": {
+      "signedInAsUsernameBut": "Signed in as @{{username}}, but this account doesn't have the Board role."
     }
   },
   "studioEditor": {

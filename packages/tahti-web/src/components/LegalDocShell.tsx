@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ViewShell } from '@tahti-player/ui';
 
 import { LegalHubLinks } from './LegalHubLinks';
@@ -29,6 +30,7 @@ export function LegalDocShell({
   meta: string;
   children: ReactNode;
 }) {
+  const { t } = useTranslation('web');
   return (
     <ViewShell
       title={title}
@@ -36,7 +38,7 @@ export function LegalDocShell({
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
     >
       <div className="flex flex-col gap-6">
-        <PageBackLink to="/help" label="Help center" />
+        <PageBackLink to="/help" label={t('legalDocShellText.helpCenter')} />
         {children}
         <LegalHubLinks />
       </div>

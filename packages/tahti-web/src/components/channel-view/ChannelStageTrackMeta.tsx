@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Meter } from '@tahti-player/ui';
 
 import type {
@@ -74,6 +75,7 @@ type Props = {
 /** Time left in the current rotation track and, on curated rotations, the
  * track that plays after it. Renders nothing when neither is known. */
 export function ChannelStageTrackMeta({ nowPlaying, next }: Props) {
+  const { t } = useTranslation('web');
   const timed = Boolean(nowPlaying.startedAt && nowPlaying.durationSec);
   const nowMs = useNowMs(timed);
   const progress = computeTrackProgress(
@@ -98,7 +100,10 @@ export function ChannelStageTrackMeta({ nowPlaying, next }: Props) {
             className="flex-1"
             trackClassName="bg-white/20"
             barClassName="bg-white/80"
-            aria-label={`Track progress, ${remaining} left`}
+            aria-label={t(
+              'channelStageTrackMetaLabels.trackProgressRemainingLeft',
+              { remaining },
+            )}
           />
           <span className="shrink-0 tabular-nums">{remaining} left</span>
         </div>

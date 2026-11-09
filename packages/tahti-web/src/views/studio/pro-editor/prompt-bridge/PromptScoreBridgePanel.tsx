@@ -66,7 +66,7 @@ export function PromptScoreBridgePanel({
         <FilePicker
           accept=".mid,.midi,audio/midi,audio/x-midi"
           labels={{
-            title: 'MIDI phrase',
+            title: t('promptScoreBridgePanelFields.midiPhrase'),
             description: '.mid or .midi, a few bars works best',
             browse: 'Choose file',
             selected: 'Analysed',

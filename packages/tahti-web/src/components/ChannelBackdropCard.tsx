@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -176,6 +177,7 @@ export function ChannelBackdropCard({
   leading,
   className,
 }: ChannelBackdropCardProps) {
+  const { t } = useTranslation('web');
   const NameTag = nameAsHeading ? 'h1' : 'div';
   const showVideo =
     showVideoOverride ??
@@ -396,7 +398,7 @@ export function ChannelBackdropCard({
         </div>
         {navItems.length > 0 ? (
           <nav
-            aria-label="Channel navigation"
+            aria-label={t('channelBackdropCardText.channelNavigation')}
             className="relative mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/20 pt-3 text-xs font-semibold uppercase opacity-90"
           >
             {navItems.map((navItem) =>

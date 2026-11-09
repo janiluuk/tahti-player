@@ -103,7 +103,9 @@ export function BlockedAccounts() {
                 size="sm"
                 variant="secondary"
                 disabled={busy === user.username}
-                aria-label={`Unblock ${user.displayName}`}
+                aria-label={t('blockedAccountsLabels.unblockDisplayname', {
+                  displayName: user.displayName,
+                })}
                 onClick={() => unblock(user)}
               >
                 {t('blockedAccounts.unblock')}

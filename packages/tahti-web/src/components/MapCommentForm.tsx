@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Textarea } from '@tahti-player/ui';
 
 import {
@@ -30,6 +31,7 @@ export function MapCommentForm({
   className,
   label = 'Your notes',
 }: Props) {
+  const { t } = useTranslation('web');
   const key = mapDraftKey(kind, targetId);
   const draft = useMapNotesStore(
     (s) =>
@@ -88,7 +90,7 @@ export function MapCommentForm({
       />
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" size="sm" disabled={!draft.trim()}>
-          Save comment
+          {t('mapCommentFormText.saveComment')}
         </Button>
         <p className="text-foreground-secondary text-[11px]">
           {savedFlash

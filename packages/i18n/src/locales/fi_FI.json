@@ -10100,6 +10100,105 @@
     },
     "releaseSmartLinksPanelFields": {
       "allContent": "Kaikki sisältö"
+    },
+    "mapCommentFormText": {
+      "saveComment": "Tallenna kommentti"
+    },
+    "localPlaylistsSharedText": {
+      "unavailable": "Ei saatavilla"
+    },
+    "legalDocShellText": {
+      "helpCenter": "Ohjekeskus"
+    },
+    "fullScreenPlayerText": {
+      "error": "Virhe"
+    },
+    "embedTrackRowText": {
+      "embed": "Upotus"
+    },
+    "directoryArtistCardGridText": {
+      "live": "Live"
+    },
+    "channelPageBackdropText": {
+      "channelVideoBackdrop": "Kanavan videotausta"
+    },
+    "channelHeroBlockText": {
+      "channelNavigation": "Kanavan navigointi"
+    },
+    "channelCatalogSectionsText": {
+      "releases": "Julkaisut"
+    },
+    "channelTextOverlayViewText": {
+      "channelTextOverlay": "Kanavan tekstipeite"
+    },
+    "tuningSlidersText": {
+      "audioReactive": "Ääneen reagoiva"
+    },
+    "pageBackgroundFieldText": {
+      "pageBackground": "Sivun tausta"
+    },
+    "headerStyleTabsText": {
+      "headerStyle": "Ylätunnisteen tyyli"
+    },
+    "channelBackdropCardText": {
+      "channelNavigation": "Kanavan navigointi"
+    },
+    "artistStoreSectionText": {
+      "store": "Kauppa"
+    },
+    "artistSoundCloudTracksText": {
+      "onSoundcloud": "SoundCloudissa"
+    },
+    "promptScoreBridgePanelFields": {
+      "midiPhrase": "MIDI-fraasi"
+    },
+    "discoWidgetManagerPanelFields": {
+      "addALogoBlock": "Lisää logolohko"
+    },
+    "directoryArtistsBrowserFields": {
+      "allTypes": "Kaikki tyypit"
+    },
+    "channelSetupDialogFields": {
+      "channelAppearance": "Kanavan ulkoasu"
+    },
+    "voiceRecorderFields": {
+      "defaultMicrophone": "Oletusmikrofoni"
+    },
+    "broadcastPreflightPanelFields": {
+      "oneOffBroadcast": "Kertaluonteinen lähetys"
+    },
+    "browserLocalFilesLabels": {
+      "removeTitle": "Poista: {{title}}"
+    },
+    "commentItemLabels": {
+      "deleteCommentByAuthordisplayname": "Poista kommentti: {{authorDisplayName}}"
+    },
+    "channelStageTrackMetaLabels": {
+      "trackProgressRemainingLeft": "Kappaleen edistyminen, {{remaining}} jäljellä"
+    },
+    "savedLooksRowLabels": {
+      "deleteName": "Poista ”{{name}}”"
+    },
+    "blockedAccountsLabels": {
+      "unblockDisplayname": "Poista esto: {{displayName}}"
+    },
+    "artistBlockButtonLabels": {
+      "blockDisplayname": "Estetäänkö {{displayName}}?"
+    },
+    "artistImagePurposePickerLabels": {
+      "removeName": "Poista: {{name}}"
+    },
+    "broadcastControlsLabels": {
+      "openLivePanelLabel": "Avaa livepaneeli — {{label}}"
+    },
+    "adminUserEngagementPanelLabels": {
+      "noAdjustmentsInYear": "Ei oikaisuja vuonna {{year}}"
+    },
+    "adminChannelKindControlLabels": {
+      "channelTypeForSlug": "Kanavan tyyppi: {{slug}}"
+    },
+    "adminGateLabels": {
+      "signedInAsUsernameBut": "Kirjautuneena käyttäjänä @{{username}}, mutta tällä tilillä ei ole hallituksen roolia."
     }
   },
   "studioEditor": {

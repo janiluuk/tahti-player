@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Tabs } from '@tahti-player/ui';
 
 import { HEADER_STYLES, type HeaderStyle } from '../../api/channel-design';
@@ -28,6 +29,7 @@ function labelFor(mode: HeaderDesignMode): string {
 }
 
 export function HeaderStyleTabs({ value, onChange }: Props) {
+  const { t } = useTranslation('web');
   const selectedIndex = Math.max(0, HEADER_DESIGN_OPTIONS.indexOf(value));
 
   return (
@@ -43,7 +45,7 @@ export function HeaderStyleTabs({ value, onChange }: Props) {
       listClassName="border-border flex w-auto flex-wrap gap-1 rounded-lg border p-1"
       tabClassName="rounded-md px-2.5 py-1.5 text-[10px] font-semibold tracking-wide whitespace-normal uppercase active:scale-100"
     >
-      <Tabs.List aria-label="Header style">
+      <Tabs.List aria-label={t('headerStyleTabsText.headerStyle')}>
         {HEADER_DESIGN_OPTIONS.map((mode) => (
           <Tabs.Tab key={mode}>{labelFor(mode)}</Tabs.Tab>
         ))}

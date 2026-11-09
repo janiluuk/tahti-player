@@ -142,7 +142,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
 
   const artistTypeChipItems = useMemo(
     () => [
-      { id: 'all', label: 'All types' },
+      { id: 'all', label: t('directoryArtistsBrowserFields.allTypes') },
       ...ARTIST_TYPE_OPTIONS.map((option) => ({
         id: option.id,
         label: `${option.label} (${

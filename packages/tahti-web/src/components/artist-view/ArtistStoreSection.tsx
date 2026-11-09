@@ -2,7 +2,7 @@ import { ShoppingBagIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Input } from '@tahti-player/ui';
 
 import {
@@ -123,6 +123,7 @@ export function ArtistStoreSection({
   isOwner: boolean;
   items?: StoreListing[];
 }) {
+  const { t } = useTranslation('web');
   const rows =
     items.length > 0
       ? items.flatMap((listing) => {
@@ -134,8 +135,11 @@ export function ArtistStoreSection({
     return null;
   }
   return (
-    <section className="flex flex-col gap-3" aria-label="Store">
-      <Eyebrow>Store</Eyebrow>
+    <section
+      className="flex flex-col gap-3"
+      aria-label={t('artistStoreSectionText.store')}
+    >
+      <Eyebrow>{t('artistStoreSectionText.store')}</Eyebrow>
       {!paymentsReady ? (
         <p className="text-foreground-secondary text-xs">
           {isOwner

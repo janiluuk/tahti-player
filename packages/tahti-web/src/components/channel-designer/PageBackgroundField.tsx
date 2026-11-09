@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { ColorField } from '@tahti-player/ui';
 
 import {
@@ -19,11 +20,16 @@ export function PageBackgroundField({
   useBackgroundGradient,
   onChange,
 }: Props) {
+  const { t } = useTranslation('web');
   const value = useBackgroundGradient
     ? (backgroundScheme.bg ?? scheme.bg ?? DEFAULT_COLOR_SCHEME.bg)
     : (scheme.bg ?? DEFAULT_COLOR_SCHEME.bg);
 
   return (
-    <ColorField label="Page background" value={value} onChange={onChange} />
+    <ColorField
+      label={t('pageBackgroundFieldText.pageBackground')}
+      value={value}
+      onChange={onChange}
+    />
   );
 }

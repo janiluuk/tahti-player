@@ -1,3 +1,5 @@
+import { useTranslation } from '@tahti-player/i18n';
+
 import {
   isHeaderImageUrl,
   isValidHeaderBackdropUrl,
@@ -43,6 +45,7 @@ export function ChannelPageBackdrop({
   live,
   channelVideoMuted,
 }: Props) {
+  const { t } = useTranslation('web');
   const showHeaderVideo =
     channel.headerStyle === 'VIDEO_LOOP' &&
     isValidHeaderBackdropUrl(channel.videoBackgroundUrl);
@@ -69,7 +72,7 @@ export function ChannelPageBackdrop({
         (showHeaderVideo ? (
           youtubeEmbedUrl(channel.videoBackgroundUrl, channelVideoMuted) ? (
             <iframe
-              title="Channel video backdrop"
+              title={t('channelPageBackdropText.channelVideoBackdrop')}
               src={
                 youtubeEmbedUrl(
                   channel.videoBackgroundUrl,
