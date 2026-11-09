@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
   CalendarClockIcon,
   CalendarDaysIcon,
@@ -32,9 +32,14 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
 import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
+const EVENT_TABS = ['upcoming', 'past', 'invites'];
+
 export function StudioEventsView() {
   const { t } = useTranslation('web');
   const [pendingRemove, setPendingRemove] = useState<ArtistEvent | null>(null);
+  const navigate = useNavigate();
+  const search = useSearch({ strict: false }) as { tab?: string };
+  const tabIndex = Math.max(0, EVENT_TABS.indexOf(search.tab ?? 'upcoming'));
 
   const snapshot = useSnapshotFetch<ArtistEvent[]>('studio-events', async () =>
     apiResult(await fetchMyEvents()),
@@ -159,6 +164,14 @@ export function StudioEventsView() {
           }
         >
           <Tabs
+            selectedIndex={tabIndex}
+            onChange={(index) =>
+              void navigate({
+                to: '/studio/events',
+                search: index === 0 ? {} : { tab: EVENT_TABS[index] },
+                replace: true,
+              })
+            }
             listClassName="border-border border-b pb-3"
             panelClassName="pt-2"
             items={[
