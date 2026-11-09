@@ -28,6 +28,7 @@ function ListeningPartyPage({
   party: ListeningPartyDto;
   receivedAt: number;
 }) {
+  const { t } = useTranslation('web');
   const clock = useListeningPartyTimeline(party, receivedAt);
   const [joined, setJoined] = useState(false);
   useListeningPartyPlayback(party, clock, joined, () => setJoined(false));
@@ -46,7 +47,7 @@ function ListeningPartyPage({
   };
   return (
     <ViewShell
-      title="Listening party"
+      title={t('listeningPartyViewText.listeningParty')}
       subtitle={`${party.release.title} · ${hostName}`}
       classes={SHELL_CLASSES}
     >
@@ -104,7 +105,10 @@ export function ListeningPartyView({ id }: { id: string }) {
     );
   }
   return (
-    <ViewShell title="Listening party" classes={SHELL_CLASSES}>
+    <ViewShell
+      title={t('listeningPartyViewText.listeningParty')}
+      classes={SHELL_CLASSES}
+    >
       {load.status === 'loading' ? (
         <PageLoading label={t('loading.loadingTheListeningParty')} />
       ) : load.status === 'not-found' ? (

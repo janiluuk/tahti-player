@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 
 import { patchMeProfile, type ProfileFields } from '../../../api/studio-extras';
 import { SettingsToggle } from '../SettingsFields';
@@ -16,6 +16,7 @@ export function GrantReportAttributionToggle({
   profile: ProfileFields;
   onSaved: (profile: ProfileFields) => void;
 }) {
+  const { t } = useTranslation('web');
   const [value, setValue] = useState(profile.publicAttribution);
 
   if (typeof value !== 'boolean') {
@@ -25,7 +26,9 @@ export function GrantReportAttributionToggle({
   return (
     <SettingsToggle
       label={GRANT_REPORT_ATTRIBUTION_LABEL}
-      description="Tahti publishes who received artist grants each year. Turn this off to be listed by your member number instead of your name."
+      description={t(
+        'grantReportAttributionToggleText.tahtiPublishesWhoReceivedArtist',
+      )}
       value={value}
       onChange={(next) => {
         const previous = value;

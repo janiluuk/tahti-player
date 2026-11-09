@@ -6,6 +6,8 @@ import {
   useState,
 } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import type { EditList } from '../../../../api/studio-types';
 import { readPalette, type TimeView } from './draw';
 import { peakInRange, type WaveformData } from './peaks';
@@ -30,6 +32,7 @@ export const ProMinimap = forwardRef<ProMinimapHandle, Props>(
     { data, durationSec, view, minSpan, cuts, playhead, onViewChange },
     ref,
   ) {
+    const { t } = useTranslation('web');
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const playheadRef = useRef<HTMLDivElement>(null);
     const draggingRef = useRef(false);
@@ -148,7 +151,7 @@ export const ProMinimap = forwardRef<ProMinimapHandle, Props>(
         <canvas
           ref={canvasRef}
           role="img"
-          aria-label="Track overview. Click or drag to move the zoomed view; from the keyboard, use the waveform's zoom and arrow keys"
+          aria-label={t('proMinimapText.trackOverviewClickOrDrag')}
           className="border-border bg-background h-full w-full cursor-pointer touch-none rounded-md border"
           onPointerDown={(event) => {
             draggingRef.current = true;

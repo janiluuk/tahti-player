@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import type { TFunction } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, Popover, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
@@ -85,6 +85,7 @@ export function TrackViewPicker({
   value,
   onChange,
 }: TrackViewPickerProps) {
+  const { t } = useTranslation('web');
   const current = options.find((option) => option.id === value) ?? options[0];
   return (
     <Popover
@@ -102,7 +103,11 @@ export function TrackViewPicker({
         </Button>
       }
     >
-      <Popover.Menu role="menu" aria-label="Track size" className="min-w-0">
+      <Popover.Menu
+        role="menu"
+        aria-label={t('trackViewPickerText.trackSize')}
+        className="min-w-0"
+      >
         {options.map((option) => {
           const selected = option.id === value;
           return (

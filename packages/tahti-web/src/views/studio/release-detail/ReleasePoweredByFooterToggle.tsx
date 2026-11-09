@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Toggle } from '@tahti-player/ui';
 
 import { patchStudioRelease } from '../../../api/studio';
@@ -14,6 +15,7 @@ export function ReleasePoweredByFooterToggle({
   release: StudioRelease;
   onChange: (showPoweredByFooter: boolean) => void;
 }) {
+  const { t } = useTranslation('web');
   const [saving, setSaving] = useState(false);
 
   // An API that does not return the field would also drop it on PATCH, so a
@@ -47,8 +49,7 @@ export function ReleasePoweredByFooterToggle({
         <div className="min-w-0">
           <p className="text-sm font-semibold">Show "Powered by Tahti"</p>
           <p className="text-foreground-secondary mt-1 text-sm">
-            Adds a small footer linking to Tahti at the bottom of the public
-            smart-link page.
+            {t('releasePoweredByFooterToggleText.addsASmallFooterLinking')}
           </p>
         </div>
         <Toggle

@@ -276,7 +276,10 @@ export function NotificationsView() {
             />
           )
         ) : (
-          <ul className="flex flex-col gap-2" aria-label="Notifications">
+          <ul
+            className="flex flex-col gap-2"
+            aria-label={t('notificationsViewText.notifications')}
+          >
             {items.map((notification) => {
               const unread = !notification.readAt;
               const needsAck = notification.sticky && unread;

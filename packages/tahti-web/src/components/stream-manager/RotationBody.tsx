@@ -1,5 +1,6 @@
 import { SquareIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { multicastProviderLabel } from '../../plugins/multicast';
@@ -7,6 +8,7 @@ import { ChannelRotationEditor } from '../ChannelRotationEditor';
 import type { StreamManagerState } from './useStreamManagerState';
 
 export function RotationBody({ state }: { state: StreamManagerState }) {
+  const { t } = useTranslation('web');
   const {
     canControl,
     signalConnected,
@@ -71,7 +73,7 @@ export function RotationBody({ state }: { state: StreamManagerState }) {
                 {target.label || multicastProviderLabel(target.provider)}
               </span>
               <span className="text-foreground-secondary text-xs uppercase">
-                Mirroring
+                {t('rotationBodyText.mirroring')}
               </span>
             </li>
           ))}

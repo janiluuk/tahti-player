@@ -1,5 +1,6 @@
 import { FC, useMemo } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import type { Track } from '@tahti-player/model';
 import { TrackTable } from '@tahti-player/ui';
 
@@ -37,6 +38,7 @@ type TahtiRotationPlaylistEditorProps = {
 export const TahtiRotationPlaylistEditor: FC<
   TahtiRotationPlaylistEditorProps
 > = ({ items, onReorder, onRemove, onPreview, readOnly = false }) => {
+  const { t } = useTranslation('web');
   const tracks = useMemo(() => items.map(toTrack), [items]);
   const totalSeconds = items.reduce(
     (total, item) => total + (item.durationSec ?? 0),
@@ -54,7 +56,9 @@ export const TahtiRotationPlaylistEditor: FC<
         </span>
       </div>
       <TrackTable
-        aria-label="Tahti Radio rotation playlist"
+        aria-label={t(
+          'tahtiRotationPlaylistEditorText.tahtiRadioRotationPlaylist',
+        )}
         tracks={tracks}
         labels={trackTableLabels}
         getItemId={(_track, index) => items[index]?.id ?? String(index)}

@@ -1,11 +1,13 @@
 import { HardDriveDownloadIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { importHearthisEmbedAudio } from '../../api/embed-import';
 
 export function HearthisEmbedImport({ soundId }: { soundId: string }) {
+  const { t } = useTranslation('web');
   const [state, setState] = useState<'idle' | 'busy' | 'started'>('idle');
   const [error, setError] = useState<string | null>(null);
 
@@ -24,7 +26,9 @@ export function HearthisEmbedImport({ soundId }: { soundId: string }) {
   return (
     <div className="border-border flex items-start gap-3 rounded-lg border p-3 text-sm">
       <div className="min-w-0 flex-1">
-        <span className="block font-medium">Host the audio on Tahti</span>
+        <span className="block font-medium">
+          {t('hearthisEmbedImportText.hostTheAudioOnTahti')}
+        </span>
         <span
           className="text-foreground-secondary block text-xs"
           data-testid="hearthis-import-status"

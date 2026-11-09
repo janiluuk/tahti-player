@@ -9773,6 +9773,96 @@
     "artworkPresetUploadDialogFields": {
       "image": "Kuva",
       "jpgPngWebpOrGif": "JPG, PNG, WebP tai GIF"
+    },
+    "hearthisEmbedImportText": {
+      "hostTheAudioOnTahti": "Isännöi ääni Tahdissa"
+    },
+    "studioCollectionsViewText": {
+      "play": "Soita"
+    },
+    "trackInfoDialogText": {
+      "tracklist": "Kappalelista"
+    },
+    "trackSortButtonText": {
+      "sortTracks": "Lajittele kappaleet"
+    },
+    "hearthisExportSectionText": {
+      "pushToHearthisAt": "Lähetä hearthis.atiin"
+    },
+    "studioNavText": {
+      "musicPages": "Musiikkisivut"
+    },
+    "releaseTrackRowText": {
+      "openOnBandcamp": "Avaa Bandcampissa"
+    },
+    "rotationBodyText": {
+      "mirroring": "Peilaus"
+    },
+    "everyNthInputText": {
+      "everyNth": "Joka N:s"
+    },
+    "rotationReleaseLibraryText": {
+      "fromTheirReleases": "Heidän julkaisuistaan"
+    },
+    "publicGovernanceHistoryViewText": {
+      "governanceHistory": "Hallintohistoria"
+    },
+    "studioCollectionMoreMenuText": {
+      "exportAsJson": "Vie JSON-muodossa"
+    },
+    "grantReportAttributionToggleText": {
+      "tahtiPublishesWhoReceivedArtist": "Tahti julkaisee vuosittain artistiavustusten saajat. Poista tämä käytöstä, niin sinut listataan jäsennumerolla nimen sijaan."
+    },
+    "tahtiLogoText": {
+      "tahtiHome": "Tahdin etusivu"
+    },
+    "visualizerModeMenuText": {
+      "visualizer": "Visualisointi"
+    },
+    "proMinimapText": {
+      "trackOverviewClickOrDrag": "Kappaleen yleiskuva. Napsauta tai vedä siirtääksesi zoomattua näkymää; näppäimistöllä käytä aaltomuodon zoomaus- ja nuolinäppäimiä"
+    },
+    "listeningPartyViewText": {
+      "listeningParty": "Kuuntelujuhlat"
+    },
+    "artistPanelText": {
+      "particleFieldIsSelectedBy": "Partikkelikenttä on oletuksena valittu: pehmeä, ääneen reagoiva pilvi, joka pitää kansikuvan luettavana."
+    },
+    "channelViewText": {
+      "backToListen": "Takaisin Kuuntele-sivulle"
+    },
+    "notificationsViewText": {
+      "notifications": "Ilmoitukset"
+    },
+    "venueRecordingsText": {
+      "recordedHere": "Tallennettu täällä"
+    },
+    "adminMapViewText": {
+      "admin": "Ylläpito"
+    },
+    "soundHeaderText": {
+      "master": "Master"
+    },
+    "trackViewPickerText": {
+      "trackSize": "Kappaleen koko"
+    },
+    "subgenreTagInputText": {
+      "subGenres": "Alalajit"
+    },
+    "releasePoweredByFooterToggleText": {
+      "addsASmallFooterLinking": "Lisää julkisen smart-link-sivun alareunaan pienen Tahti-linkin."
+    },
+    "tahtiRotationPlaylistEditorText": {
+      "tahtiRadioRotationPlaylist": "Tahti Radion kiertosoittolista"
+    },
+    "stemsPanelText": {
+      "stems": "Raidat"
+    },
+    "cronHistoryDialogText": {
+      "close": "Sulje"
+    },
+    "emailChangeViewText": {
+      "confirmingYourNewAddress": "Vahvistetaan uutta osoitettasi…"
     }
   },
   "studioEditor": {

@@ -668,8 +668,7 @@ export function ReleaseVisualDefaultsPanel() {
         />
       )}
       <p className="text-foreground-secondary text-xs">
-        Particle field is selected by default: a soft, audio-reactive cloud that
-        keeps cover art readable.
+        {t('artistPanelText.particleFieldIsSelectedBy')}
       </p>
     </div>
   );

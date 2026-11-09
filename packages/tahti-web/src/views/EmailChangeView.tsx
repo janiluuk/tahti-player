@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, InlineError, InlineLoader } from '@tahti-player/ui';
 
 import { confirmEmailChange } from '../api/account-credentials';
@@ -15,6 +16,7 @@ function tokenFromSearch(): string {
 /** Opened from the link sent to a new account address: confirms the change
  * straight away, signed in or not. */
 export function EmailChangeView() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const [state, setState] = useState<
     | { kind: 'working' }
@@ -53,7 +55,9 @@ export function EmailChangeView() {
         {state.kind === 'done' ? 'Email changed' : 'Confirm new email'}
       </h1>
       {state.kind === 'working' ? (
-        <InlineLoader label="Confirming your new address…" />
+        <InlineLoader
+          label={t('emailChangeViewText.confirmingYourNewAddress')}
+        />
       ) : null}
       {state.kind === 'done' ? (
         <>

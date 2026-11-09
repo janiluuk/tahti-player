@@ -145,7 +145,7 @@ export function StudioCollectionMoreMenu({
               icon={<Share2Icon size={16} />}
               onClick={exportAsJson}
             >
-              Export as JSON
+              {t('studioCollectionMoreMenuText.exportAsJson')}
             </Popover.Item>
           ) : null}
           <Popover.Item

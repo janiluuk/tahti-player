@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Input } from '@tahti-player/ui';
 
 const MIN = 2;
@@ -12,6 +13,7 @@ export function EveryNthInput({
   value: number;
   onCommit: (everyNth: number) => void;
 }) {
+  const { t } = useTranslation('web');
   const [draft, setDraft] = useState<string | null>(null);
 
   const commit = () => {
@@ -39,7 +41,7 @@ export function EveryNthInput({
       size="sm"
       min={MIN}
       max={MAX}
-      label="Every Nth"
+      label={t('everyNthInputText.everyNth')}
       value={draft ?? String(value)}
       onChange={(event) => setDraft(event.target.value)}
       onBlur={commit}

@@ -39,7 +39,7 @@ export function PublicGovernanceHistoryView() {
 
   return (
     <ViewShell
-      title="Governance history"
+      title={t('publicGovernanceHistoryViewText.governanceHistory')}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl', content: 'gap-6' }}
     >
       <ButtonLink

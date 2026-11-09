@@ -9773,6 +9773,96 @@
     "artworkPresetUploadDialogFields": {
       "image": "Image",
       "jpgPngWebpOrGif": "JPG, PNG, WebP, or GIF"
+    },
+    "hearthisEmbedImportText": {
+      "hostTheAudioOnTahti": "Host the audio on Tahti"
+    },
+    "studioCollectionsViewText": {
+      "play": "Play"
+    },
+    "trackInfoDialogText": {
+      "tracklist": "Tracklist"
+    },
+    "trackSortButtonText": {
+      "sortTracks": "Sort tracks"
+    },
+    "hearthisExportSectionText": {
+      "pushToHearthisAt": "Push to hearthis.at"
+    },
+    "studioNavText": {
+      "musicPages": "Music pages"
+    },
+    "releaseTrackRowText": {
+      "openOnBandcamp": "Open on Bandcamp"
+    },
+    "rotationBodyText": {
+      "mirroring": "Mirroring"
+    },
+    "everyNthInputText": {
+      "everyNth": "Every Nth"
+    },
+    "rotationReleaseLibraryText": {
+      "fromTheirReleases": "From their releases"
+    },
+    "publicGovernanceHistoryViewText": {
+      "governanceHistory": "Governance history"
+    },
+    "studioCollectionMoreMenuText": {
+      "exportAsJson": "Export as JSON"
+    },
+    "grantReportAttributionToggleText": {
+      "tahtiPublishesWhoReceivedArtist": "Tahti publishes who received artist grants each year. Turn this off to be listed by your member number instead of your name."
+    },
+    "tahtiLogoText": {
+      "tahtiHome": "Tahti home"
+    },
+    "visualizerModeMenuText": {
+      "visualizer": "Visualizer"
+    },
+    "proMinimapText": {
+      "trackOverviewClickOrDrag": "Track overview. Click or drag to move the zoomed view; from the keyboard, use the waveform's zoom and arrow keys"
+    },
+    "listeningPartyViewText": {
+      "listeningParty": "Listening party"
+    },
+    "artistPanelText": {
+      "particleFieldIsSelectedBy": "Particle field is selected by default: a soft, audio-reactive cloud that keeps cover art readable."
+    },
+    "channelViewText": {
+      "backToListen": "Back to Listen"
+    },
+    "notificationsViewText": {
+      "notifications": "Notifications"
+    },
+    "venueRecordingsText": {
+      "recordedHere": "Recorded here"
+    },
+    "adminMapViewText": {
+      "admin": "Admin"
+    },
+    "soundHeaderText": {
+      "master": "Master"
+    },
+    "trackViewPickerText": {
+      "trackSize": "Track size"
+    },
+    "subgenreTagInputText": {
+      "subGenres": "Sub-Genres"
+    },
+    "releasePoweredByFooterToggleText": {
+      "addsASmallFooterLinking": "Adds a small footer linking to Tahti at the bottom of the public smart-link page."
+    },
+    "tahtiRotationPlaylistEditorText": {
+      "tahtiRadioRotationPlaylist": "Tahti Radio rotation playlist"
+    },
+    "stemsPanelText": {
+      "stems": "Stems"
+    },
+    "cronHistoryDialogText": {
+      "close": "Close"
+    },
+    "emailChangeViewText": {
+      "confirmingYourNewAddress": "Confirming your new address…"
     }
   },
   "studioEditor": {

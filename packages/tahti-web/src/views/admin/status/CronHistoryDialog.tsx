@@ -104,7 +104,7 @@ export function CronHistoryDialog({
         </ul>
       )}
       <Dialog.Actions>
-        <Dialog.Close>Close</Dialog.Close>
+        <Dialog.Close>{t('cronHistoryDialogText.close')}</Dialog.Close>
       </Dialog.Actions>
     </Dialog.Root>
   );
