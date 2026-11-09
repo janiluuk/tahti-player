@@ -6,22 +6,22 @@ import {
 } from '@tahti-web/api/mock';
 import type { RadioFeatureHistoryItem } from '@tahti-web/api/radio-public';
 import type { RadioShowUpcomingTrack } from '@tahti-web/api/shows';
-import { MediaIconActions } from '@tahti-web/components/MediaIconActions';
 import { PageEmpty } from '@tahti-web/components/PageStates';
 import { RadioBookedShowsPanel } from '@tahti-web/components/radio/RadioBookedShowsPanel';
 import { RadioFeaturedPanel } from '@tahti-web/components/radio/RadioFeaturedPanel';
+import {
+  RadioPlayButton,
+  RadioStationActions,
+} from '@tahti-web/components/radio/RadioHeroControls';
 import { RadioJustPlayedPanel } from '@tahti-web/components/radio/RadioJustPlayedPanel';
 import { RadioNowPlayingOverlay } from '@tahti-web/components/radio/RadioNowPlayingOverlay';
 import { RadioPlayerWidget } from '@tahti-web/components/radio/RadioPlayerWidget';
 import { RadioUpNextPanel } from '@tahti-web/components/RadioUpNextPanel';
 import {
   CalendarDaysIcon,
-  HeartIcon,
   HistoryIcon,
   ListOrderedIcon,
   MicIcon,
-  PauseIcon,
-  PlayIcon,
 } from 'lucide-react';
 import { useState } from 'react';
 import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
@@ -83,6 +83,7 @@ function DemoWidget({
 }) {
   const [tab, setTab] = useState(0);
   const [isPlaying, setIsPlaying] = useState(playing);
+  const [favorited, setFavorited] = useState(false);
 
   return (
     <div className="mx-auto max-w-3xl p-4">
@@ -112,29 +113,22 @@ function DemoWidget({
             }}
           />
         }
+        playControl={
+          <RadioPlayButton
+            playing={isPlaying}
+            playLabel="Play Radio"
+            pauseLabel="Pause Radio"
+            onToggle={() => setIsPlaying((v) => !v)}
+          />
+        }
         actions={
-          <MediaIconActions
-            actions={[
-              {
-                id: 'play',
-                label: isPlaying ? 'Pause Radio' : 'Play Radio',
-                icon: isPlaying ? (
-                  <PauseIcon size={16} className="fill-current" />
-                ) : (
-                  <PlayIcon size={16} className="fill-current" />
-                ),
-                onClick: () => setIsPlaying((v) => !v),
-                active: isPlaying,
-                disableWhenActive: false,
-              },
-              {
-                id: 'favorite',
-                label: 'Favorite',
-                icon: <HeartIcon size={16} />,
-                onClick: fn(),
-                variant: 'text',
-              },
-            ]}
+          <RadioStationActions
+            favorited={favorited}
+            favoriteLabel="Add to favorites"
+            unfavoriteLabel="Remove from favorites"
+            onToggleFavorite={() => setFavorited((v) => !v)}
+            channelSlug={TAHTI_RADIO_SLUG}
+            openChannelLabel="Open channel"
           />
         }
         selectedTabIndex={tab}
@@ -274,9 +268,32 @@ export const PlayToggle: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole('button', { name: 'Play Radio' }));
+    const pause = canvas.getByRole('button', { name: 'Pause Radio' });
+    await expect(pause).toBeVisible();
+    await expect(pause).toHaveAttribute('aria-pressed', 'true');
+    await expect(pause.querySelector('svg')).not.toBeNull();
+  },
+};
+
+export const FavoriteToggle: Story = {
+  name: 'Favorite on and off',
+  render: () => <DemoWidget />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      canvas.getByRole('button', { name: 'Add to favorites' }),
+    );
+    const remove = canvas.getByRole('button', {
+      name: 'Remove from favorites',
+    });
+    await expect(remove).toBeEnabled();
+    await userEvent.click(remove);
     await expect(
-      canvas.getByRole('button', { name: 'Pause Radio' }),
+      canvas.getByRole('button', { name: 'Add to favorites' }),
     ).toBeVisible();
+    await expect(
+      canvas.getByRole('link', { name: 'Open channel' }),
+    ).toHaveAttribute('href', expect.stringContaining('view=channel'));
   },
 };
 

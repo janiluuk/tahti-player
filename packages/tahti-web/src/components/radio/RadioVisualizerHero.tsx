@@ -49,11 +49,14 @@ export function RadioVisualizerHero({
         className={cn(
           'relative z-10 flex flex-1 p-4',
           compact
-            ? 'items-end gap-4 pr-14'
+            ? 'items-end gap-4 pr-32'
             : 'flex-col justify-between gap-6 sm:p-6',
         )}
       >
-        <div data-testid="radio-station-logo" className="shrink-0 self-start">
+        <div
+          data-testid="radio-station-logo"
+          className={cn('shrink-0', compact ? 'self-end' : 'self-start')}
+        >
           <MediaArtwork
             size="md"
             src={artworkUrl || logoUrl}
@@ -70,7 +73,7 @@ export function RadioVisualizerHero({
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-4">
           {info}
-          <div className="flex flex-wrap items-start gap-3">{actions}</div>
+          <div className="flex flex-wrap items-center gap-3">{actions}</div>
         </div>
       </div>
     </>

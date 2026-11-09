@@ -21,7 +21,8 @@ export function radioAmbient(rgb: [number, number, number] | null): string {
 /** On-air player + Up next / Shows / Just played / Featured in one surface.
  * Starts minimized (a short now-playing strip); the corner button expands it
  * to the full visualizer and tabs. The playing track's cover sets
- * `--radio-ambient`, which tints the scrim and the now-playing card. */
+ * `--radio-ambient`, which tints the scrim. Play sits in the top-right
+ * corner next to the expand toggle, as on the track page. */
 export function RadioPlayerWidget({
   station,
   logoUrl,
@@ -30,6 +31,7 @@ export function RadioPlayerWidget({
   offlineContent,
   info,
   actions,
+  playControl,
   notice,
   tabs,
   selectedTabIndex,
@@ -43,6 +45,7 @@ export function RadioPlayerWidget({
   offlineContent?: ReactNode;
   info: ReactNode;
   actions: ReactNode;
+  playControl?: ReactNode;
   notice?: ReactNode;
   tabs: TabsItem[];
   selectedTabIndex: number;
@@ -65,7 +68,8 @@ export function RadioPlayerWidget({
       data-expanded={expanded}
       style={{ '--radio-ambient': ambient } as CSSProperties}
     >
-      <div className="absolute top-3 right-3 z-20">
+      <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
+        {online ? playControl : null}
         <Tooltip content={toggleLabel} side="left">
           <Button
             size="icon"
