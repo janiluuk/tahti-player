@@ -11718,6 +11718,13 @@
       "edit": "Muokkaa",
       "doneEditing": "Valmis",
       "copyFeedFailed": "Syötteen linkin kopiointi epäonnistui."
+    },
+    "broadcastPanel": {
+      "defaultsHint": "Radion, vihreän huoneen ja monilähetyksen oletukset ovat täällä. Livelähetys hoidetaan kohdassa Studio › Lähetys.",
+      "openStudioBroadcast": "Avaa Studio › Lähetys"
+    },
+    "messagesView": {
+      "noMessagesYet": "Ei vielä viestejä"
     }
   },
   "studioEditor": {

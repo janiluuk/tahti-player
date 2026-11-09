@@ -11718,6 +11718,13 @@
       "edit": "Edit",
       "doneEditing": "Done editing",
       "copyFeedFailed": "Could not copy the feed link."
+    },
+    "broadcastPanel": {
+      "defaultsHint": "Defaults for radio, green room, and multistream live here. Run the live session from Studio › Broadcast.",
+      "openStudioBroadcast": "Open Studio › Broadcast"
+    },
+    "messagesView": {
+      "noMessagesYet": "No messages yet"
     }
   },
   "studioEditor": {
