@@ -131,13 +131,13 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         </div>
       </div>
       <div
-        class="border-border flex shrink-0 items-center rounded-md border"
+        class="flex shrink-0 items-center gap-2"
         data-testid="cards-row-zoom"
       >
         <div>
           <button
             aria-label="Show as list"
-            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center rounded-r-none"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-8 justify-center"
             data-headlessui-state=""
             data-testid="cards-row-zoom-out"
             type="button"
@@ -146,13 +146,13 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
               aria-hidden="true"
               class="lucide lucide-zoom-out"
               fill="none"
-              height="15"
+              height="16"
               stroke="currentColor"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
               viewBox="0 0 24 24"
-              width="15"
+              width="16"
               xmlns="http://www.w3.org/2000/svg"
             >
               <circle
@@ -178,7 +178,7 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
         <div>
           <button
             aria-label="Show full artwork"
-            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none text-foreground bg-transparent hover:bg-black/5 active:bg-black/10 size-8 justify-center border-border rounded-l-none border-l"
+            class="focus-visible:ring-primary inline-flex cursor-pointer touch-manipulation items-center rounded-md whitespace-nowrap transition-all duration-100 ease-out outline-none focus-visible:ring-2 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 motion-reduce:transition-none border-border shadow-shadow hover:translate-x-shadow-x hover:translate-y-shadow-y bg-secondary text-secondary-foreground border-(length:--border-width) hover:shadow-none size-8 justify-center"
             data-headlessui-state=""
             data-testid="cards-row-zoom-in"
             type="button"
@@ -187,13 +187,13 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
               aria-hidden="true"
               class="lucide lucide-zoom-in"
               fill="none"
-              height="15"
+              height="16"
               stroke="currentColor"
               stroke-linecap="round"
               stroke-linejoin="round"
               stroke-width="2"
               viewBox="0 0 24 24"
-              width="15"
+              width="16"
               xmlns="http://www.w3.org/2000/svg"
             >
               <circle
