@@ -41,8 +41,11 @@ import type {
 } from '../../../api/studio-types';
 import { PageError, PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import {
+  releaseStateLabel,
+  releaseTypeLabel,
+} from '../../../lib/releaseLabels';
 import { assignStripeRedirectUrl } from '../../../lib/stripeRedirect';
-import { releaseStateLabel, releaseTypeLabel } from '../StudioReleasesView';
 import { CreditsEditor } from './CreditsEditor';
 import { DeliveryTab } from './DeliveryTab';
 import {
