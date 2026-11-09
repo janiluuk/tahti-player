@@ -10376,6 +10376,13 @@
     "searchResults": {
       "resultsFor": "Tulokset haulle ”{{query}}”",
       "title": "Haku"
+    },
+    "broadcastPanel": {
+      "defaultsHint": "Radion, vihreän huoneen ja monilähetyksen oletukset ovat täällä. Livelähetys hoidetaan kohdassa Studio › Lähetys.",
+      "openStudioBroadcast": "Avaa Studio › Lähetys"
+    },
+    "messagesView": {
+      "noMessagesYet": "Ei vielä viestejä"
     }
   },
   "studioEditor": {

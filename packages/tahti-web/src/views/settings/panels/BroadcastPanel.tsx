@@ -243,18 +243,15 @@ export function BroadcastPanel({
 
   const studioBroadcastLink = (
     <div className="flex flex-col gap-2">
-      <SettingsHint>
-        Defaults for radio, green room, and multistream live here. Run the live
-        session from Studio › Broadcast.
-      </SettingsHint>
+      <SettingsHint>{t('broadcastPanel.defaultsHint')}</SettingsHint>
       <ButtonLink
-        className="w-fit"
+        className="h-auto min-h-9 w-fit max-w-full py-1.5 whitespace-normal"
         to="/studio/go-live"
         onClick={closeSettings}
         size="sm"
         variant="secondary"
       >
-        Open Studio › Broadcast for the live session
+        {t('broadcastPanel.openStudioBroadcast')}
       </ButtonLink>
     </div>
   );

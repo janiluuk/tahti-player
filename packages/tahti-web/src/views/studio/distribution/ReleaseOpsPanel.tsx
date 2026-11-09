@@ -17,6 +17,7 @@ import {
   ExternalLink,
   InlineError,
   Input,
+  MediaArtwork,
   SaveButton,
   SelectableTiles,
   Tabs,
@@ -492,24 +493,33 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
   return (
     <StudioPanel className="text-sm">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <p className="font-medium">{release.title}</p>
-          <p className="text-foreground-secondary text-xs">
-            {releaseTypeLabel(release.type, t)} ·{' '}
-            {releaseStateLabel(release.state, t)} ·{' '}
-            {t('studioReleases.tracksCount', {
-              count: release._count?.tracks ?? release.tracks?.length ?? 0,
-            })}
-            {release.upc ? ` · UPC ${release.upc}` : ''}
-            {' · '}
-            <Link
-              to="/r/$slug"
-              params={{ slug: release.smartLinkSlug }}
-              className="underline"
-            >
-              /r/{release.smartLinkSlug}
-            </Link>
-          </p>
+        <div className="flex min-w-0 items-center gap-3">
+          <MediaArtwork
+            src={release.artworkUrl}
+            alt=""
+            seed={release.id}
+            size="thumb"
+            className="size-12 shrink-0 rounded"
+          />
+          <div className="min-w-0">
+            <p className="font-medium">{release.title}</p>
+            <p className="text-foreground-secondary text-xs">
+              {releaseTypeLabel(release.type, t)} ·{' '}
+              {releaseStateLabel(release.state, t)} ·{' '}
+              {t('studioReleases.tracksCount', {
+                count: release._count?.tracks ?? release.tracks?.length ?? 0,
+              })}
+              {release.upc ? ` · UPC ${release.upc}` : ''}
+              {' · '}
+              <Link
+                to="/r/$slug"
+                params={{ slug: release.smartLinkSlug }}
+                className="underline"
+              >
+                /r/{release.smartLinkSlug}
+              </Link>
+            </p>
+          </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="pill" color={statusColor(revelatorStatus)}>
