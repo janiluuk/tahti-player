@@ -116,8 +116,8 @@ export function RadioJustPlayedPanel({
                   size="sm"
                   src={item.artworkUrl}
                   alt=""
-                  className="bg-surface-secondary rounded-md text-[10px] font-bold"
-                  placeholder={item.title.slice(0, 2).toUpperCase()}
+                  seed={item.soundId ?? item.id}
+                  className="rounded-md"
                 />
               </Button>
               <div className="min-w-0 flex-1">

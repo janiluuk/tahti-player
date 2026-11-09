@@ -1,7 +1,6 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
   CalendarClockIcon,
-  CalendarDaysIcon,
   CalendarPlusIcon,
   HistoryIcon,
   MailIcon,
@@ -17,6 +16,7 @@ import {
   ButtonLink,
   EditIconLink,
   ExternalLink,
+  MediaArtwork,
   Tabs,
   Tooltip,
   ViewShell,
@@ -82,12 +82,13 @@ export function StudioEventsView() {
             className="border-border bg-background flex flex-wrap items-center justify-between gap-3 rounded-lg border px-3 py-3 text-sm"
           >
             <div className="flex min-w-0 items-center gap-3">
-              <div
-                className="bg-primary/15 text-primary-strong flex size-14 shrink-0 items-center justify-center rounded-md"
-                aria-hidden
-              >
-                <CalendarDaysIcon size={24} aria-hidden />
-              </div>
+              <MediaArtwork
+                src={event.imageUrl}
+                alt=""
+                seed={event.id}
+                size="thumb"
+                className="size-14 shrink-0 rounded-md"
+              />
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <Link
@@ -110,14 +111,16 @@ export function StudioEventsView() {
                     {event.description}
                   </p>
                 )}
-                {event.eventUrl && (
+                {event.ticketUrl || event.eventUrl ? (
                   <ExternalLink
-                    href={event.eventUrl}
+                    href={event.ticketUrl ?? event.eventUrl ?? ''}
                     className="text-primary-strong text-xs"
                   >
-                    {t('studioEvents.ticketsLink')}
+                    {event.ticketUrl
+                      ? t('events.tickets')
+                      : t('events.eventLink')}
                   </ExternalLink>
-                )}
+                ) : null}
               </div>
             </div>
             <div className="flex flex-wrap gap-1">

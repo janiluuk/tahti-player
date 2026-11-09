@@ -3517,7 +3517,11 @@
       "delete": "Delete",
       "systemAnnouncements": "System announcements",
       "clips": "Clips",
-      "schedule": "Schedule"
+      "schedule": "Schedule",
+      "editScheduleOf": "Edit the schedule of {{title}}",
+      "scheduleTitle": "Schedule for {{title}}",
+      "everyNthSummary": "Once every {{count}} clips",
+      "everyNthRange": "Enter a whole number from {{min}} to {{max}}."
     },
     "adminRadioPresets": {
       "removeTitleNamed": "Remove {{name}}?",
@@ -8445,7 +8449,15 @@
     "releaseOpsPanel": {
       "catalogCredits": "Catalog & credits",
       "deliveryRoyalties": "Delivery & royalties",
-      "guides": "Guides"
+      "guides": "Guides",
+      "releaseOps": "Release ops",
+      "releaseOpsProgress": "Release ops ({{done}}/{{total}})",
+      "statusNotSubmitted": "Not submitted",
+      "statusPending": "Pending",
+      "statusSubmitted": "Submitted",
+      "statusDelivered": "Delivered",
+      "statusLive": "Live",
+      "statusFailed": "Failed"
     },
     "artistProfilePage": {
       "stage": "Stage",
@@ -9048,7 +9060,10 @@
       "moveUpItemlabel": "Move up: {{itemLabel}}",
       "moveDownItemlabel": "Move down: {{itemLabel}}",
       "attendanceAttendancecountRecorded": "Attendance ({{attendanceCount}} recorded)",
-      "editStateOfTitle": "Edit state of {{title}}"
+      "editStateOfTitle": "Edit state of {{title}}",
+      "agendaItemField": "Agenda item {{position}}",
+      "editAgendaItem": "Edit item {{position}}: {{itemLabel}}",
+      "removeAgendaItem": "Remove item {{position}}: {{itemLabel}}"
     },
     "playlistsBrowserLabels": {
       "playName": "Play {{name}}",
@@ -10367,6 +10382,10 @@
     },
     "listenAddonsTabEmptyText": {
       "everythingHereIsInstalled": "Everything here is installed."
+    },
+    "searchResults": {
+      "resultsFor": "Results for “{{query}}”",
+      "title": "Search"
     }
   },
   "studioEditor": {

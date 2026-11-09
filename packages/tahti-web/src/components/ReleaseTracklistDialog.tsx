@@ -1,5 +1,5 @@
 import { useTranslation } from '@tahti-player/i18n';
-import { Dialog, ImageReveal } from '@tahti-player/ui';
+import { Dialog, MediaArtwork } from '@tahti-player/ui';
 
 import type { PublicProfileRelease, TahtiPlayable } from '../api/types';
 import { formatDuration } from '../lib/playableToTrack';
@@ -75,16 +75,13 @@ export function ReleaseTracklistDialog({
       {release && (
         <>
           <div className="flex items-start gap-4">
-            <div className="bg-surface-secondary flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-lg text-lg font-bold tracking-tight">
-              <ImageReveal
-                src={release.artworkUrl ?? undefined}
-                alt=""
-                className="size-full"
-                placeholder={
-                  <span>{release.title.slice(0, 2).toUpperCase()}</span>
-                }
-              />
-            </div>
+            <MediaArtwork
+              size="md"
+              src={release.artworkUrl}
+              alt=""
+              seed={release.id}
+              className="rounded-lg"
+            />
             <div className="min-w-0 flex-1">
               <Dialog.Title>{release.title}</Dialog.Title>
               <p className="text-foreground-secondary mt-0.5 text-xs uppercase">

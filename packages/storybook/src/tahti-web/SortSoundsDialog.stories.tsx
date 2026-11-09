@@ -39,6 +39,25 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
+export const ArtworkStaysInTheRow: Story = {
+  args: {
+    sounds: SOUNDS.map((sound) => ({
+      ...sound,
+      artworkUrl: `https://picsum.photos/seed/${sound.id}/80/80`,
+    })),
+  },
+  play: async ({ canvasElement }) => {
+    const dialog = await findDialog(canvasElement, 'Sort sounds');
+    for (const row of dialog.getAllByTestId('sort-sounds-row')) {
+      const artwork = row.querySelector('img')?.parentElement;
+      await expect(artwork).toBeTruthy();
+      await expect(artwork!.getBoundingClientRect().width).toBeLessThanOrEqual(
+        row.getBoundingClientRect().height,
+      );
+    }
+  },
+};
+
 export const MoveToTopAndArrowKeys: Story = {
   name: 'Move to top, arrow keys, save',
   play: async ({ canvasElement, args }) => {

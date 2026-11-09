@@ -61,7 +61,11 @@ export function SearchResultsView({ q }: { q: string }) {
 
   return (
     <ViewShell
-      title={query ? `Results for “${query}”` : 'Search'}
+      title={
+        query
+          ? t('searchResults.resultsFor', { query })
+          : t('searchResults.title')
+      }
       data-testid="search-results-view"
     >
       {!query ? (
