@@ -481,6 +481,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
               </Button>
               {selectedPlaylist ? (
                 <EditIconLink
+                  variant="text"
                   label={t('radioPlaylist.editTracks')}
                   search={{ edit: true }}
                   to="/studio/collections/$slug"
