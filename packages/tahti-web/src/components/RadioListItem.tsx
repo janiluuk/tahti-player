@@ -43,7 +43,7 @@ export function RadioListItem({
   return (
     <Box
       variant="secondary"
-      className="relative flex flex-wrap items-center justify-between gap-3 overflow-hidden"
+      className="relative items-stretch justify-between gap-3 overflow-hidden p-0"
     >
       {isPlaying ? (
         <div className="pointer-events-none absolute inset-0 opacity-45">
@@ -63,32 +63,33 @@ export function RadioListItem({
         </div>
       ) : null}
       <div
-        className="relative z-10 flex min-w-0 items-center gap-3"
+        className="relative z-10 flex min-w-0 flex-1 items-stretch gap-3"
         onPointerEnter={disabled ? undefined : prefetchHls}
         onFocus={disabled ? undefined : prefetchHls}
       >
-        <MediaArtwork
-          src={coverUrl}
-          alt=""
-          size="thumb"
-          className="rounded-lg"
-          placeholder={
-            <RadioTowerIcon size={20} className="text-foreground-secondary" />
-          }
-          onPlay={onTogglePlay}
-          isPlaying={isPlaying}
-          playDisabled={disabled}
-          playLabel="Play Radio"
-          pauseLabel="Pause Radio"
-        />
-        <div className="min-w-0">
+        <div className="relative min-h-24 w-24 shrink-0 self-stretch">
+          <MediaArtwork
+            src={coverUrl}
+            alt=""
+            size="fill"
+            placeholder={
+              <RadioTowerIcon size={24} className="text-foreground-secondary" />
+            }
+            onPlay={onTogglePlay}
+            isPlaying={isPlaying}
+            playDisabled={disabled}
+            playLabel="Play Radio"
+            pauseLabel="Pause Radio"
+          />
+        </div>
+        <div className="flex min-w-0 flex-col justify-center py-3">
           <div className="text-sm font-bold tracking-tight">{name}</div>
           <p className="text-foreground-secondary truncate text-xs">
             {subtitle}
           </p>
         </div>
       </div>
-      <div className="relative z-10 flex flex-wrap items-center gap-2">
+      <div className="relative z-10 flex shrink-0 items-center gap-2 pr-3">
         <Tooltip content="Open radio" side="top">
           <ButtonLink
             to={openHref}

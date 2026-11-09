@@ -45,7 +45,7 @@ export function VisualizerModeMenu({
           data-testid="visualizer-mode-trigger"
           className={triggerClassName}
         >
-          <AudioWaveformIcon size={24} aria-hidden />
+          <AudioWaveformIcon size={22} aria-hidden />
         </Button>
       }
     >
