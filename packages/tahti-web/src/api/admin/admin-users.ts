@@ -15,6 +15,7 @@ export type AdminUserRow = {
   role: AccountRole;
   tier: string;
   isMember: boolean;
+  avatarUrl?: string | null;
   isBoard: boolean;
   suspendedAt: string | null;
   channelState: string | null;

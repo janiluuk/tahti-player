@@ -113,6 +113,18 @@ const space = (
   ...overrides,
 });
 
+/** The size check waits out a typing debounce; skip it instead of sleeping. */
+function fakeSpaceClock() {
+  vi.useFakeTimers({
+    shouldAdvanceTime: true,
+    toFake: ['setTimeout', 'clearTimeout'],
+  });
+}
+
+async function settleSpaceCheck() {
+  await act(() => vi.advanceTimersByTimeAsync(400));
+}
+
 async function openReview(api: NativeProviderImport, onImported = vi.fn()) {
   render(
     <ProviderSetImportDialog
@@ -146,6 +158,7 @@ describe('ProviderSetImportDialog', () => {
   afterEach(() => {
     cleanup();
     vi.clearAllMocks();
+    vi.useRealTimers();
   });
 
   it('reviews the set, marks stream-only tracks and downloads the rest in set order', async () => {
@@ -232,7 +245,9 @@ describe('ProviderSetImportDialog', () => {
   it('shows how much space the set needs, leaving unknown sizes unknown', async () => {
     const { api } = fakeImport([]);
     api.space = vi.fn(async () => space({ verdict: 'fits' }));
+    fakeSpaceClock();
     await openReview(api);
+    await settleSpaceCheck();
 
     expect(
       await screen.findByText(
@@ -260,7 +275,9 @@ describe('ProviderSetImportDialog', () => {
     api.space = vi.fn(async () =>
       space({ freeBytes: 200 * MB, verdict: 'tight' }),
     );
+    fakeSpaceClock();
     await openReview(api);
+    await settleSpaceCheck();
     expect(
       await screen.findByText(/leaves little room on the disk/),
     ).toBeTruthy();
@@ -277,7 +294,9 @@ describe('ProviderSetImportDialog', () => {
         space({ freeBytes: 50 * MB, verdict: 'notEnough' }),
       )
       .mockResolvedValueOnce(space({ verdict: 'fits' }));
+    fakeSpaceClock();
     await openReview(api);
+    await settleSpaceCheck();
 
     const alert = await screen.findByRole('alert');
     expect(alert.textContent).toContain(
@@ -288,6 +307,7 @@ describe('ProviderSetImportDialog', () => {
     ).toHaveProperty('disabled', true);
 
     fireEvent.click(screen.getByRole('button', { name: 'Check again' }));
+    await settleSpaceCheck();
     await waitFor(() => expect(api.space).toHaveBeenCalledTimes(2));
     await screen.findByText(/40\.0 GB free on that disk/);
     expect(screen.queryByRole('alert')).toBeNull();
@@ -307,7 +327,9 @@ describe('ProviderSetImportDialog', () => {
         verdict: 'unknown',
       }),
     );
+    fakeSpaceClock();
     await openReview(api);
+    await settleSpaceCheck();
     expect(
       await screen.findByText('File sizes are not listed, free space unknown.'),
     ).toBeTruthy();

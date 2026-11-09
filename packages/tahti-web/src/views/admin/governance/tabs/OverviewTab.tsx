@@ -9,7 +9,7 @@ import {
   ShieldCheckIcon,
   VoteIcon,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -31,22 +31,59 @@ import {
   type AdminGovernanceOverview,
 } from '../../../../api/admin';
 import type { BoardResolution } from '../../../../api/types';
-import { PageEmpty } from '../../../../components/PageStates';
+import { PageEmpty, PageErrorBanner } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../../../lib/useSnapshotFetch';
 import type { AdminGovernanceTabId } from '../governanceNav';
 import { LegalHoldControl } from '../records/LegalHoldControl';
 
 type ResolutionOutcome = 'PASSED' | 'FAILED' | 'DEFERRED';
 
+type GovernanceOverviewSnapshot = {
+  overview: AdminGovernanceOverview | null;
+  activity: AdminActivityEntry[];
+  totalVotes: number;
+  totalComments: number;
+  resolutions: BoardResolution[];
+};
+
+const EMPTY_OVERVIEW: GovernanceOverviewSnapshot = {
+  overview: null,
+  activity: [],
+  totalVotes: 0,
+  totalComments: 0,
+  resolutions: [],
+};
+
 export function OverviewTab() {
   const { t } = useTranslation('web');
-  const [overview, setOverview] = useState<AdminGovernanceOverview | null>(
-    null,
+  const snapshot = useSnapshotFetch<GovernanceOverviewSnapshot>(
+    'admin-governance-overview',
+    async () => {
+      const [overviewResult, activityResult, resolutionsResult] =
+        await Promise.all([
+          fetchAdminGovernanceOverview(),
+          fetchAdminGovernanceActivity(),
+          fetchAdminResolutions(),
+        ]);
+      return {
+        overview: apiResult(overviewResult),
+        activity: apiResult(activityResult),
+        totalVotes: activityResult.totalVotes,
+        totalComments: activityResult.totalComments,
+        resolutions: apiResult(resolutionsResult),
+      };
+    },
   );
-  const [activity, setActivity] = useState<AdminActivityEntry[]>([]);
-  const [totalVotes, setTotalVotes] = useState(0);
-  const [totalComments, setTotalComments] = useState(0);
-  const [resolutions, setResolutions] = useState<BoardResolution[]>([]);
+  const { overview, activity, totalVotes, totalComments, resolutions } =
+    snapshot.data ?? EMPTY_OVERVIEW;
+  const setResolutions = (
+    update: (current: BoardResolution[]) => BoardResolution[],
+  ) =>
+    snapshot.mutate((current) => {
+      const base = current ?? EMPTY_OVERVIEW;
+      return { ...base, resolutions: update(base.resolutions) };
+    });
   const [resolutionTitle, setResolutionTitle] = useState('');
   const [resolutionBody, setResolutionBody] = useState('');
   const [resolutionOutcome, setResolutionOutcome] =
@@ -55,20 +92,6 @@ export function OverviewTab() {
   const [resolutionAgainst, setResolutionAgainst] = useState('0');
   const [resolutionAbstain, setResolutionAbstain] = useState('0');
   const [resolutionBusy, setResolutionBusy] = useState(false);
-
-  useEffect(() => {
-    void Promise.all([
-      fetchAdminGovernanceOverview(),
-      fetchAdminGovernanceActivity(),
-      fetchAdminResolutions(),
-    ]).then(([overviewResult, activityResult, resolutionsResult]) => {
-      setOverview(overviewResult.data);
-      setActivity(activityResult.data);
-      setTotalVotes(activityResult.totalVotes);
-      setTotalComments(activityResult.totalComments);
-      setResolutions(resolutionsResult.data);
-    });
-  }, []);
 
   const votingActivity = activity.filter((entry) =>
     ['VOTE_CAST', 'FEATURE_REQUEST_VOTE', 'FEATURE_REQUEST_UNVOTE'].includes(
@@ -172,6 +195,17 @@ export function OverviewTab() {
 
   return (
     <>
+      {snapshot.error ? (
+        <PageErrorBanner
+          title={
+            snapshot.data
+              ? t('adminGovernanceOverview.refreshError')
+              : t('adminGovernanceOverview.loadError')
+          }
+          description={snapshot.error}
+          onRetry={snapshot.retry}
+        />
+      ) : null}
       <StudioPanel
         title={t('adminGovernanceOverview.memberActivity')}
         description={t(

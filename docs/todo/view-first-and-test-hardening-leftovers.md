@@ -58,6 +58,3 @@ changed, because it needs a product call or more than a mechanical fix.
   dialogs still in the DOM (`relative z-50` expected null), although
   `useSkipEnterMotion` and `MotionGlobalConfig.skipAnimations` are on. All
   pass when run alone; find why the Tabs enter fade is not skipped there.
-- [ ] Still slow: `StudioProEditorView` "asks before leaving" (~2 s),
-  `ProviderSetImportDialog`, `LocalPlaylists` export/create tests (~0.8 s
-  each, render cost rather than waits).

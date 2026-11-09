@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { HeartIcon, MusicIcon } from 'lucide-react';
+import { HeartIcon } from 'lucide-react';
 
 import { ImageReveal, MediaArtwork } from '@tahti-player/ui';
 
@@ -47,6 +47,7 @@ export function WidgetTrackRow({
         size="thumb"
         src={item.coverUrl}
         alt=""
+        seed={item.id}
         className={cn('shrink-0 rounded', isCurrent && 'ring-primary ring-2')}
         imageReveal={Boolean(item.coverUrl)}
         isPlaying={isPlaying}
@@ -60,13 +61,6 @@ export function WidgetTrackRow({
         queueLabel={`Add ${item.title} to queue`}
         playLabel={`Play ${item.title}`}
         pauseLabel={`Pause ${item.title}`}
-        placeholder={
-          <MusicIcon
-            size={16}
-            className="text-foreground-secondary"
-            aria-hidden
-          />
-        }
       />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-medium">{item.title}</span>
