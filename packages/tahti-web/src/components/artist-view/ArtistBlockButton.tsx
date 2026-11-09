@@ -2,6 +2,7 @@ import { BanIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import { blockUser, fetchBlockedUsers, unblockUser } from '../../api/blocks';
@@ -11,6 +12,7 @@ import { ConfirmDialog } from '../ConfirmDialog';
 /** Block or unblock an artist from their page. Signed-in visitors only;
  * blocking asks first and the artist is not told. */
 export function useArtistBlock(username: string, displayName: string) {
+  const { t } = useTranslation('web');
   const signedIn = useAuthStore((s) => Boolean(s.user));
   const [blocked, setBlocked] = useState<boolean | null>(null);
   const [confirming, setConfirming] = useState(false);
@@ -58,8 +60,8 @@ export function useArtistBlock(username: string, displayName: string) {
         destructive
         isOpen={confirming}
         title={`Block ${displayName}?`}
-        description="You won't be able to message each other, they can't comment on your tracks or follow you, and you stop following each other. They aren't told you blocked them."
-        confirmLabel="Block"
+        description={t('artistBlockButton.youWonTBeAble')}
+        confirmLabel={t('artistBlockButton.block')}
         onCancel={() => setConfirming(false)}
         onConfirm={() => change(true)}
       />

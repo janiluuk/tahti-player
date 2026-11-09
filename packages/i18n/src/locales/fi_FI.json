@@ -7966,6 +7966,229 @@
     "studioSoundView": {
       "stillProcessingThisCanTake": "Käsitellään vielä. Pidemmissä tiedostoissa tämä voi kestää minuutin. Toisto, aaltomuoto ja pikakorjaukset avautuvat, kun se on valmis; alla olevia tietoja voi muokata ja tallentaa jo nyt.",
       "backToLibrarySounds": "Takaisin kirjaston ääniin"
+    },
+    "agmTab": {
+      "saving": "Tallennetaan…",
+      "download": "Lataa",
+      "approveMinutes": "Hyväksy pöytäkirja",
+      "allAgmDecisionsAreAdvisory": "Kaikki vuosikokouksen päätökset ovat neuvoa-antavia, kunnes säännöt sallivat sitovat etä-äänestykset. Viralliset sitovat päätökset kirjataan hallituksen päätöksinä.",
+      "memberNotificationRequirements": "Jäsenille ilmoitettavat asiat",
+      "dateTimeAndVenuePhysical": "Päivä, aika ja paikka (fyysinen tai etälinkki)",
+      "agendaUseTheBuilderAbove": "Esityslista (käytä yllä olevaa työkalua)",
+      "anyProposedBylawChangesIn": "Mahdolliset sääntömuutosehdotukset kokonaisuudessaan",
+      "deadlineForMemberMotions": "Jäsenaloitteiden määräaika",
+      "instructionsForRemoteParticipation": "Ohjeet etäosallistumiseen",
+      "keepTheMeetingRecordConnected": "Pidä kokouksen tiedot yhteydessä hallituksen virallisiin asiakirjoihin ja jäsenrekisteriin.",
+      "exportMemberRegister": "Vie jäsenrekisteri",
+      "openAuditLog": "Avaa auditointiloki",
+      "publishedDocuments": "Julkaistut asiakirjat",
+      "publishImmediatelyToMembers": "Julkaise heti jäsenille",
+      "agendaBuilder": "Esityslistan laatija",
+      "copyAgenda": "Kopioi esityslista",
+      "addAgendaItem": "Lisää asiakohta",
+      "loading": "Ladataan…",
+      "memberName": "Jäsenen nimi",
+      "status": "Tila",
+      "meetingRecords": "Kokousten tiedot",
+      "meetingTitle": "Kokouksen otsikko",
+      "meetingType": "Kokouksen tyyppi",
+      "state": "Tila",
+      "motionsProposals": "Aloitteet ja ehdotukset",
+      "loadingMotions": "Ladataan aloitteita…",
+      "minutesRecords": "Pöytäkirjat ja asiakirjat",
+      "documentTitle": "Asiakirjan otsikko",
+      "documentType": "Asiakirjan tyyppi",
+      "publicDocumentUrlOptional": "Julkisen asiakirjan osoite (valinnainen)",
+      "publicDocumentUrl": "Julkisen asiakirjan osoite"
+    },
+    "trackHero": {
+      "privateViewingViaShareLink": "Yksityinen, katselu jakolinkin kautta",
+      "commentsAreOffForThis": "Tämän kappaleen kommentit ovat pois päältä"
+    },
+    "trackDetailsBlock": {
+      "details": "Tiedot",
+      "artistCommentary": "Artistin kommentit"
+    },
+    "trackBody": {
+      "comments": "Kommentit",
+      "collections": "Kokoelmat"
+    },
+    "referrerSources": {
+      "whereListenersCameFrom": "Mistä kuuntelijat tulivat",
+      "referringSites": "Viittaavat sivustot"
+    },
+    "listenerLocations": {
+      "countries": "Maat",
+      "cities": "Kaupungit"
+    },
+    "episodesTab": {
+      "allEpisodes": "Kaikki jaksot",
+      "editEveryEpisodeAndReview": "Muokkaa jokaista jaksoa ja tarkista sen julkaisu- ja kuuntelutiedot."
+    },
+    "releaseTrackCreditsPanel": {
+      "name": "Nimi",
+      "saveCredits": "Tallenna tekijät"
+    },
+    "upcomingShowsSection": {
+      "viewAmpEdit": "Näytä ja muokkaa",
+      "upcomingShows": "Tulevat ohjelmat"
+    },
+    "recentActivitySection": {
+      "recentUploads": "Viimeisimmät lataukset",
+      "fanSubscriptions": "Fanitilaukset"
+    },
+    "deliveryTab": {
+      "submitsCatalogMetadataToRevelator": "Lähettää luettelon tiedot Revelatoriin (Spotify, Apple ym.). Jokaisella kappaleella on oltava UPC tai ISRC.",
+      "royaltyReports": "Rojaltiraportit"
+    },
+    "legalHoldsPanel": {
+      "heldSince": "Pidossa alkaen",
+      "legalHolds": "Oikeudelliset pidot"
+    },
+    "correctionsQueuePanel": {
+      "correctionRequests": "Korjauspyynnöt",
+      "whichRequests": "Mitkä pyynnöt"
+    },
+    "communityStatsPanel": {
+      "chatAndMail": "Keskustelu ja posti",
+      "chatMessages24H": "Keskusteluviestit, 24 h"
+    },
+    "adminActivityView": {
+      "auditTopics": "Auditoinnin aiheet",
+      "activity": "Toiminta"
+    },
+    "soundCloudEmbedsPanel": {
+      "soundcloudTracks": "SoundCloud-kappaleet",
+      "soundcloudTrackUrl": "SoundCloud-kappaleen osoite"
+    },
+    "profileOrderDialog": {
+      "cancel": "Peruuta",
+      "saveOrder": "Tallenna järjestys"
+    },
+    "newsletterSubscribeToggle": {
+      "subscribeByEmailYouRe": "Tilaa sähköpostiin, et ole kirjautunut",
+      "emailAddress": "Sähköpostiosoite"
+    },
+    "membershipInvoices": {
+      "invoices": "Laskut",
+      "loading": "Ladataan…"
+    },
+    "listenerWorldMap": {
+      "updatingMap": "Päivitetään karttaa…",
+      "listenerWorldMap": "Kuuntelijoiden maailmankartta"
+    },
+    "currentBoardPanel": {
+      "board": "Hallitus",
+      "loadingTheBoard": "Ladataan hallitusta…"
+    },
+    "fanSubOrderBreakdown": {
+      "everyFanSubOrderSplits": "Jokainen fanitilaus jakautuu samalla tavalla: Stripen käsittely, 2 %:n toimintamaksu ja loput sinulle.",
+      "moreAboutEarningsInThe": "Lisää tuloista ohjekeskuksessa"
+    },
+    "downloadsSwitch": {
+      "allowDownloads": "Salli lataukset",
+      "listenersCanDownloadTheAudio": "Kuuntelijat voivat ladata äänitiedoston. Jos tämä on pois, kappaletta voi silti soittaa."
+    },
+    "discoverWaveformPlayer": {
+      "waveformPlayer": "Aaltomuotosoitin",
+      "closeWaveformPlayer": "Sulje aaltomuotosoitin"
+    },
+    "discordIntegrationRow": {
+      "discordRichPresence": "Discord Rich Presence",
+      "showsWhatYouReListening": "Näyttää Discord-profiilissasi, mitä kuuntelet. Discordin on oltava käynnissä tällä tietokoneella."
+    },
+    "trackRowActions": {
+      "locate": "Etsi",
+      "queue": "Jonoon"
+    },
+    "libraryShortcutsHelp": {
+      "keyboardShortcuts": "Pikanäppäimet",
+      "clickTheTrackListOr": "Napsauta ensin kappalelistaa tai siirry siihen sarkaimella. Q, E, P ja Delete koskevat koko valintaa, kun kohdistettu kappale on valittuna."
+    },
+    "chatReactionBar": {
+      "react": "Reagoi",
+      "listenersReactions": "Kuuntelijoiden reaktiot"
+    },
+    "radioProgrammingGrid": {
+      "loadingThisWeekAposS": "Ladataan tämän viikon ohjelmia…",
+      "onAir": "Lähetyksessä"
+    },
+    "channelPlaylistPicker": {
+      "loadingPlaylists": "Ladataan soittolistoja…",
+      "playlist": "Soittolista"
+    },
+    "topBarTextField": {
+      "topBar": "Yläpalkki",
+      "topBarText": "Yläpalkin teksti"
+    },
+    "savedLooksRow": {
+      "savedLooks": "Tallennetut ulkoasut",
+      "deletePreset": "Poista esiasetus"
+    },
+    "resetConfirmDialog": {
+      "resetUnsavedChanges": "Palautetaanko tallentamattomat muutokset?",
+      "thisDiscardsEverythingYouApos": "Tämä hylkää kaikki muutokset viimeisen tallennuksen jälkeen ja palauttaa julkaistun ulkoasusi. Tätä ei voi perua."
+    },
+    "previewTracksPlaceholder": {
+      "preview": "Esikatselu",
+      "tracks": "Kappaleet"
+    },
+    "overlayConfigDialog": {
+      "configureTextOverlay": "Määritä tekstin peitekuva",
+      "fineTuneTheNowPlaying": "Hienosäädä kanavallasi käytettävää Nyt soi -nimen ja artistin peitekuvaa."
+    },
+    "deletePresetDialog": {
+      "thisPresetWillBeGone": "Tämä esiasetus poistuu pysyvästi. Nykyinen, julkaistu ulkoasusi ei muutu.",
+      "deletePreset": "Poista esiasetus"
+    },
+    "blockedAccounts": {
+      "blockedAccounts": "Estetyt tilit",
+      "unblock": "Poista esto"
+    },
+    "autoplayUnmuteNotice": {
+      "thisChannelIsPlayingMuted": "Tämä kanava soi mykistettynä.",
+      "unmute": "Poista mykistys"
+    },
+    "artworkPresetUploadDialog": {
+      "addArtwork": "Lisää kansikuva",
+      "uploadASquareJpgPng": "Lataa neliönmuotoinen JPG, PNG, WebP tai GIF."
+    },
+    "artistSupportNote": {
+      "tipJar": "Tippipurkki",
+      "fanTiers": "Fanitasot"
+    },
+    "artistLikes": {
+      "likedTracks": "Tykätyt kappaleet",
+      "noLikedTracks": "Ei tykättyjä kappaleita."
+    },
+    "artistBlockButton": {
+      "youWonTBeAble": "Ette voi lähettää toisillenne viestejä, hän ei voi kommentoida kappaleitasi tai seurata sinua, ja lopetatte toistenne seuraamisen. Hänelle ei kerrota, että estit hänet.",
+      "block": "Estä"
+    },
+    "addToMusicActions": {
+      "upload": "Lataa",
+      "import": "Tuo"
+    },
+    "trackDetailView": {
+      "backToListen": "Takaisin Kuuntele-sivulle"
+    },
+    "trackAccessGate": {
+      "signInToListen": "Kirjaudu sisään kuunnellaksesi"
+    },
+    "studioShowDetailView": {
+      "backToShows": "Takaisin ohjelmiin"
+    },
+    "studioCollectionEditView": {
+      "backToCollections": "Takaisin kokoelmiin"
+    },
+    "processingFailedAlert": {
+      "retryProcessing": "Yritä käsittelyä uudelleen"
+    },
+    "playlistsTabContent": {
+      "moveToPrivateStash": "Siirrä yksityiseen stashiin"
+    },
+    "recordingRow": {
+      "stillBeingSavedToYour": "Tallennetaan vielä kirjastoosi. Se näkyy Äänissä valmiina muokattavaksi ja julkaistavaksi, kun se on valmis."
     }
   },
   "studioEditor": {

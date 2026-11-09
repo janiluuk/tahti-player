@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Dialog, Slider } from '@tahti-player/ui';
 
 import type { NowPlayingOverlaySettings } from '../../content/nowPlayingOverlayPresets';
@@ -18,14 +19,17 @@ export function OverlayConfigDialog({
   onClose,
   onSettingChange,
 }: Props) {
+  const { t } = useTranslation('web');
   if (!isOpen) {
     return null;
   }
   return (
     <Dialog.Root isOpen onClose={onClose} className="max-w-lg">
-      <Dialog.Title>Configure text overlay</Dialog.Title>
+      <Dialog.Title>
+        {t('overlayConfigDialog.configureTextOverlay')}
+      </Dialog.Title>
       <Dialog.Description>
-        Fine-tune the now-playing title and artist overlay used on your channel.
+        {t('overlayConfigDialog.fineTuneTheNowPlaying')}
       </Dialog.Description>
       <div className="flex flex-col gap-4">
         <Slider

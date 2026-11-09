@@ -1,6 +1,7 @@
 import { BlocksIcon, UploadIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import { useSettingsModalStore } from '../stores/settingsModalStore';
@@ -26,6 +27,7 @@ export function AddToMusicActions({
   onUploaded,
   uploadTo,
 }: Props) {
+  const { t } = useTranslation('web');
   const [uploadOpen, setUploadOpen] = useState(false);
 
   return (
@@ -34,19 +36,23 @@ export function AddToMusicActions({
         className={`flex flex-wrap gap-2 ${align === 'center' ? 'justify-center' : ''}`}
       >
         {uploadTo ? (
-          <ButtonLink to={uploadTo} size={size} aria-label="Upload">
+          <ButtonLink
+            to={uploadTo}
+            size={size}
+            aria-label={t('addToMusicActions.upload')}
+          >
             <UploadIcon size={16} aria-hidden className="mr-1.5" />
-            Upload
+            {t('addToMusicActions.upload')}
           </ButtonLink>
         ) : (
           <Tooltip content={UPLOAD_HINT} side="top">
             <Button
               size={size}
               onClick={() => setUploadOpen(true)}
-              aria-label="Upload"
+              aria-label={t('addToMusicActions.upload')}
             >
               <UploadIcon size={16} aria-hidden className="mr-1.5" />
-              Upload
+              {t('addToMusicActions.upload')}
             </Button>
           </Tooltip>
         )}
@@ -58,7 +64,7 @@ export function AddToMusicActions({
           }
         >
           <BlocksIcon size={16} aria-hidden className="mr-1.5" />
-          Import
+          {t('addToMusicActions.import')}
         </Button>
       </div>
       {uploadTo ? null : (

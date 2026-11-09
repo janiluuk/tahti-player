@@ -40,7 +40,7 @@ export function TrackRowActions({
             onClick={() => onRelink(track)}
             disabled={loading}
           >
-            Locate
+            {t('trackRowActions.locate')}
           </Button>
         ) : (
           <>
@@ -61,7 +61,7 @@ export function TrackRowActions({
                 aria-label={`Queue ${track.title}`}
                 onClick={() => onQueue(track)}
               >
-                Queue
+                {t('trackRowActions.queue')}
               </Button>
             </Tooltip>
             <Tooltip content={t('tooltips.revealInFolder')} side="top">

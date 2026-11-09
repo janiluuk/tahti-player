@@ -95,8 +95,7 @@ export function DeliveryTab({
         </div>
       ) : null}
       <p className="text-foreground-secondary text-xs">
-        Submits catalog metadata to Revelator (Spotify, Apple, etc.). Requires
-        UPC or ISRC on every track.
+        {t('deliveryTab.submitsCatalogMetadataToRevelator')}
       </p>
       {revelatorStatus && (
         <p className="text-xs">
@@ -169,7 +168,9 @@ export function DeliveryTab({
 
       {showRoyalties && (
         <div className="border-border border-t pt-3">
-          <p className="mb-1 text-xs font-medium">Royalty reports</p>
+          <p className="mb-1 text-xs font-medium">
+            {t('deliveryTab.royaltyReports')}
+          </p>
           {!royaltiesLoaded ? (
             <PageLoading label={t('loading.loading')} />
           ) : royaltiesError && royalties.length === 0 ? (

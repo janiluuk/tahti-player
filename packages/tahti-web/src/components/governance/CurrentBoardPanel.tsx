@@ -37,9 +37,12 @@ export function CurrentBoardPanel() {
   }, [attempt]);
 
   return (
-    <GovernancePanel title="Board" icon={ShieldCheckIcon}>
+    <GovernancePanel
+      title={t('currentBoardPanel.board')}
+      icon={ShieldCheckIcon}
+    >
       {seats === null ? (
-        <InlineLoader label="Loading the board…" />
+        <InlineLoader label={t('currentBoardPanel.loadingTheBoard')} />
       ) : loadError ? (
         <PageError
           title={t('loadErrors.couldNotLoadTheBoard')}

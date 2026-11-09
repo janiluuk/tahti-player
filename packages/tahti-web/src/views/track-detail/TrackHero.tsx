@@ -171,7 +171,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
             role="status"
             className="w-fit bg-white/15 px-2.5 py-1 tracking-wide text-white/80"
           >
-            Private — viewing via share link
+            {t('trackHero.privateViewingViaShareLink')}
           </Badge>
         ) : null}
         <div className="flex items-start gap-6 pl-14">
@@ -337,7 +337,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                   </Link>
                 ) : (
                   <span className="min-w-0 flex-1 text-sm text-white/55">
-                    Comments are off for this track
+                    {t('trackHero.commentsAreOffForThis')}
                   </span>
                 )}
               </form>

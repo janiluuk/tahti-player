@@ -43,7 +43,7 @@ export function LegalHoldsPanel() {
   }, [load]);
 
   return (
-    <StudioPanel title="Legal holds">
+    <StudioPanel title={t('legalHoldsPanel.legalHolds')}>
       {holds === null ? (
         <PageLoading label={t('loading.loadingLegalHolds')} />
       ) : loadError && holds.length === 0 ? (
@@ -71,7 +71,8 @@ export function LegalHoldsPanel() {
                 <span className="font-medium">{hold.title}</span>
               </div>
               <p className="text-foreground-secondary text-xs">
-                Held since <ListingDate value={hold.legalHoldAt} />
+                {t('legalHoldsPanel.heldSince')}{' '}
+                <ListingDate value={hold.legalHoldAt} />
                 {hold.legalHoldReason ? ` · ${hold.legalHoldReason}` : ''}
               </p>
             </li>

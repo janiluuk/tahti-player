@@ -7966,6 +7966,229 @@
     "studioSoundView": {
       "stillProcessingThisCanTake": "Still processing — this can take a minute for longer files. Playback, the waveform, and quick fixes will unlock once it's ready; metadata below is safe to edit and save now.",
       "backToLibrarySounds": "Back to Library sounds"
+    },
+    "agmTab": {
+      "saving": "Saving…",
+      "download": "Download",
+      "approveMinutes": "Approve minutes",
+      "allAgmDecisionsAreAdvisory": "All AGM decisions are advisory until bylaws authorise asynchronous binding votes. Formal binding resolutions are recorded as board resolutions.",
+      "memberNotificationRequirements": "Member notification requirements",
+      "dateTimeAndVenuePhysical": "Date, time, and venue (physical or remote link)",
+      "agendaUseTheBuilderAbove": "Agenda (use the builder above)",
+      "anyProposedBylawChangesIn": "Any proposed bylaw changes in full",
+      "deadlineForMemberMotions": "Deadline for member motions",
+      "instructionsForRemoteParticipation": "Instructions for remote participation",
+      "keepTheMeetingRecordConnected": "Keep the meeting record connected to the board's formal records and member register.",
+      "exportMemberRegister": "Export member register",
+      "openAuditLog": "Open audit log",
+      "publishedDocuments": "Published documents",
+      "publishImmediatelyToMembers": "Publish immediately to members",
+      "agendaBuilder": "Agenda builder",
+      "copyAgenda": "Copy agenda",
+      "addAgendaItem": "Add agenda item",
+      "loading": "Loading…",
+      "memberName": "Member name",
+      "status": "Status",
+      "meetingRecords": "Meeting records",
+      "meetingTitle": "Meeting title",
+      "meetingType": "Meeting type",
+      "state": "State",
+      "motionsProposals": "Motions & proposals",
+      "loadingMotions": "Loading motions…",
+      "minutesRecords": "Minutes & records",
+      "documentTitle": "Document title",
+      "documentType": "Document type",
+      "publicDocumentUrlOptional": "Public document URL (optional)",
+      "publicDocumentUrl": "Public document URL"
+    },
+    "trackHero": {
+      "privateViewingViaShareLink": "Private — viewing via share link",
+      "commentsAreOffForThis": "Comments are off for this track"
+    },
+    "trackDetailsBlock": {
+      "details": "Details",
+      "artistCommentary": "Artist commentary"
+    },
+    "trackBody": {
+      "comments": "Comments",
+      "collections": "Collections"
+    },
+    "referrerSources": {
+      "whereListenersCameFrom": "Where listeners came from",
+      "referringSites": "Referring sites"
+    },
+    "listenerLocations": {
+      "countries": "Countries",
+      "cities": "Cities"
+    },
+    "episodesTab": {
+      "allEpisodes": "All episodes",
+      "editEveryEpisodeAndReview": "Edit every episode and review its publishing and listening metadata."
+    },
+    "releaseTrackCreditsPanel": {
+      "name": "Name",
+      "saveCredits": "Save credits"
+    },
+    "upcomingShowsSection": {
+      "viewAmpEdit": "View & edit",
+      "upcomingShows": "Upcoming shows"
+    },
+    "recentActivitySection": {
+      "recentUploads": "Recent uploads",
+      "fanSubscriptions": "Fan subscriptions"
+    },
+    "deliveryTab": {
+      "submitsCatalogMetadataToRevelator": "Submits catalog metadata to Revelator (Spotify, Apple, etc.). Requires UPC or ISRC on every track.",
+      "royaltyReports": "Royalty reports"
+    },
+    "legalHoldsPanel": {
+      "heldSince": "Held since",
+      "legalHolds": "Legal holds"
+    },
+    "correctionsQueuePanel": {
+      "correctionRequests": "Correction requests",
+      "whichRequests": "Which requests"
+    },
+    "communityStatsPanel": {
+      "chatAndMail": "Chat and mail",
+      "chatMessages24H": "Chat messages, 24 h"
+    },
+    "adminActivityView": {
+      "auditTopics": "Audit topics",
+      "activity": "Activity"
+    },
+    "soundCloudEmbedsPanel": {
+      "soundcloudTracks": "SoundCloud tracks",
+      "soundcloudTrackUrl": "SoundCloud track URL"
+    },
+    "profileOrderDialog": {
+      "cancel": "Cancel",
+      "saveOrder": "Save order"
+    },
+    "newsletterSubscribeToggle": {
+      "subscribeByEmailYouRe": "Subscribe by email — you're not signed in",
+      "emailAddress": "Email address"
+    },
+    "membershipInvoices": {
+      "invoices": "Invoices",
+      "loading": "Loading…"
+    },
+    "listenerWorldMap": {
+      "updatingMap": "Updating map…",
+      "listenerWorldMap": "Listener world map"
+    },
+    "currentBoardPanel": {
+      "board": "Board",
+      "loadingTheBoard": "Loading the board…"
+    },
+    "fanSubOrderBreakdown": {
+      "everyFanSubOrderSplits": "Every fan-sub order splits the same way — Stripe processing, a 2% operational fee, then the rest to you.",
+      "moreAboutEarningsInThe": "More about earnings in the Help center"
+    },
+    "downloadsSwitch": {
+      "allowDownloads": "Allow downloads",
+      "listenersCanDownloadTheAudio": "Listeners can download the audio file. Turning this off keeps the track playable."
+    },
+    "discoverWaveformPlayer": {
+      "waveformPlayer": "Waveform player",
+      "closeWaveformPlayer": "Close waveform player"
+    },
+    "discordIntegrationRow": {
+      "discordRichPresence": "Discord Rich Presence",
+      "showsWhatYouReListening": "Shows what you're listening to on your Discord profile. Discord has to be running on this computer."
+    },
+    "trackRowActions": {
+      "locate": "Locate",
+      "queue": "Queue"
+    },
+    "libraryShortcutsHelp": {
+      "keyboardShortcuts": "Keyboard shortcuts",
+      "clickTheTrackListOr": "Click the track list or Tab to it first. Q, E, P and Delete act on the whole selection when the focused track is part of it."
+    },
+    "chatReactionBar": {
+      "react": "React",
+      "listenersReactions": "Listeners' reactions"
+    },
+    "radioProgrammingGrid": {
+      "loadingThisWeekAposS": "Loading this week's shows…",
+      "onAir": "On air"
+    },
+    "channelPlaylistPicker": {
+      "loadingPlaylists": "Loading playlists…",
+      "playlist": "Playlist"
+    },
+    "topBarTextField": {
+      "topBar": "Top bar",
+      "topBarText": "Top bar text"
+    },
+    "savedLooksRow": {
+      "savedLooks": "Saved looks",
+      "deletePreset": "Delete preset"
+    },
+    "resetConfirmDialog": {
+      "resetUnsavedChanges": "Reset unsaved changes?",
+      "thisDiscardsEverythingYouApos": "This discards everything you've changed since the last save and restores your live look. This can't be undone."
+    },
+    "previewTracksPlaceholder": {
+      "preview": "Preview",
+      "tracks": "Tracks"
+    },
+    "overlayConfigDialog": {
+      "configureTextOverlay": "Configure text overlay",
+      "fineTuneTheNowPlaying": "Fine-tune the now-playing title and artist overlay used on your channel."
+    },
+    "deletePresetDialog": {
+      "thisPresetWillBeGone": "This preset will be gone for good. Your current, live look is not affected.",
+      "deletePreset": "Delete preset"
+    },
+    "blockedAccounts": {
+      "blockedAccounts": "Blocked accounts",
+      "unblock": "Unblock"
+    },
+    "autoplayUnmuteNotice": {
+      "thisChannelIsPlayingMuted": "This channel is playing muted.",
+      "unmute": "Unmute"
+    },
+    "artworkPresetUploadDialog": {
+      "addArtwork": "Add artwork",
+      "uploadASquareJpgPng": "Upload a square JPG, PNG, WebP, or GIF."
+    },
+    "artistSupportNote": {
+      "tipJar": "Tip jar",
+      "fanTiers": "Fan tiers"
+    },
+    "artistLikes": {
+      "likedTracks": "Liked tracks",
+      "noLikedTracks": "No liked tracks."
+    },
+    "artistBlockButton": {
+      "youWonTBeAble": "You won't be able to message each other, they can't comment on your tracks or follow you, and you stop following each other. They aren't told you blocked them.",
+      "block": "Block"
+    },
+    "addToMusicActions": {
+      "upload": "Upload",
+      "import": "Import"
+    },
+    "trackDetailView": {
+      "backToListen": "Back to Listen"
+    },
+    "trackAccessGate": {
+      "signInToListen": "Sign in to listen"
+    },
+    "studioShowDetailView": {
+      "backToShows": "Back to Shows"
+    },
+    "studioCollectionEditView": {
+      "backToCollections": "Back to Collections"
+    },
+    "processingFailedAlert": {
+      "retryProcessing": "Retry processing"
+    },
+    "playlistsTabContent": {
+      "moveToPrivateStash": "Move to private stash"
+    },
+    "recordingRow": {
+      "stillBeingSavedToYour": "Still being saved to your library. It shows up in Sounds, ready to edit and publish, when it's done."
     }
   },
   "studioEditor": {

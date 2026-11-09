@@ -13,7 +13,7 @@ export function UpcomingShowsSection({ state }: { state: StudioHomeState }) {
 
   if (scheduleError && upcomingShows.length === 0) {
     return (
-      <Group title="Upcoming shows">
+      <Group title={t('upcomingShowsSection.upcomingShows')}>
         <PageError
           title={t('loadErrors.couldNotLoadUpcomingShows')}
           description={scheduleError}
@@ -28,7 +28,7 @@ export function UpcomingShowsSection({ state }: { state: StudioHomeState }) {
   }
 
   return (
-    <Group title="Upcoming shows">
+    <Group title={t('upcomingShowsSection.upcomingShows')}>
       <ul className="border-border divide-border divide-y rounded-xl border">
         {upcomingShows.map((show) => (
           <li
@@ -59,7 +59,7 @@ export function UpcomingShowsSection({ state }: { state: StudioHomeState }) {
               size="sm"
               variant="secondary"
             >
-              View &amp; edit
+              {t('upcomingShowsSection.viewAmpEdit')}
             </ButtonLink>
           </li>
         ))}

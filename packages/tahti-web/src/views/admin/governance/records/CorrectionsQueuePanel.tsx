@@ -54,9 +54,9 @@ export function CorrectionsQueuePanel() {
   }, [load]);
 
   return (
-    <StudioPanel title="Correction requests">
+    <StudioPanel title={t('correctionsQueuePanel.correctionRequests')}>
       <SegmentedControl
-        aria-label="Which requests"
+        aria-label={t('correctionsQueuePanel.whichRequests')}
         value={filter}
         onChange={setFilter}
         options={[

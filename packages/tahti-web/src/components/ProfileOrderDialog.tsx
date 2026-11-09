@@ -132,9 +132,9 @@ export function ProfileOrderDialog({
         )}
       </div>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('profileOrderDialog.cancel')}</Dialog.Close>
         <SaveButton
-          label="Save order"
+          label={t('profileOrderDialog.saveOrder')}
           saving={saving}
           disabled={!items || items.length === 0}
           onClick={() => void submit()}

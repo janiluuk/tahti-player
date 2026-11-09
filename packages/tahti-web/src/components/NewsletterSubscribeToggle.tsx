@@ -110,7 +110,7 @@ function AnonymousForm({
   if (!open) {
     return (
       <Tooltip
-        content="Subscribe by email — you're not signed in"
+        content={t('newsletterSubscribeToggle.subscribeByEmailYouRe')}
         side="bottom"
         wrapperClassName="inline-flex"
         multiline
@@ -171,7 +171,7 @@ function AnonymousForm({
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         placeholder="you@example.com"
-        aria-label="Email address"
+        aria-label={t('newsletterSubscribeToggle.emailAddress')}
         className="min-w-0 sm:w-48"
         autoFocus
       />

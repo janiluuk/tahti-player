@@ -56,12 +56,15 @@ export function MembershipInvoices() {
         id="membership-invoices-title"
         className="font-display text-base font-bold"
       >
-        Invoices
+        {t('membershipInvoices.invoices')}
       </h3>
       {error ? (
         <InlineError className="mt-2">{error}</InlineError>
       ) : invoices === null ? (
-        <InlineLoader label="Loading…" className="mt-2" />
+        <InlineLoader
+          label={t('membershipInvoices.loading')}
+          className="mt-2"
+        />
       ) : invoices.length === 0 ? (
         <PageEmpty title={t('empties.noMembershipInvoices')} />
       ) : (

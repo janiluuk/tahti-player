@@ -1,5 +1,6 @@
 import { RotateCcwIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Alert, Button } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
@@ -15,6 +16,7 @@ export function ProcessingFailedAlert({
   item: StudioSound;
   onRetried: () => void;
 }) {
+  const { t } = useTranslation('web');
   const { retry, retryingId } = useRetrySoundProcessing(onRetried);
   const retryable = canRetrySoundProcessing(item);
 
@@ -38,7 +40,7 @@ export function ProcessingFailedAlert({
           onClick={() => void retry(item)}
         >
           <RotateCcwIcon size={14} aria-hidden className="mr-1" />
-          Retry processing
+          {t('processingFailedAlert.retryProcessing')}
         </Button>
       ) : null}
     </Alert>

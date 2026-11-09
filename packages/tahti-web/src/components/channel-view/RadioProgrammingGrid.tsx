@@ -91,7 +91,7 @@ export function RadioProgrammingGrid({ nowMs }: { nowMs?: number }) {
   if (state.status === 'loading') {
     return (
       <p className="text-foreground-secondary text-sm" role="status">
-        Loading this week&apos;s shows…
+        {t('radioProgrammingGrid.loadingThisWeekAposS')}
       </p>
     );
   }
@@ -144,7 +144,7 @@ export function RadioProgrammingGrid({ nowMs }: { nowMs?: number }) {
                   </span>
                   {onAir ? (
                     <Badge variant="pill" color="red">
-                      On air
+                      {t('radioProgrammingGrid.onAir')}
                     </Badge>
                   ) : null}
                 </li>

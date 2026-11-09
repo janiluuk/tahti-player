@@ -65,7 +65,7 @@ export function ReferrerSources({
 
   return (
     <StudioPanel
-      title="Where listeners came from"
+      title={t('referrerSources.whereListenersCameFrom')}
       description={`The site a listener was on before they opened Tahti, by listens in this period. Direct means no referring site: a typed address, a bookmark, an app or a shared link opened from a chat. Sites with fewer than ${minBucket} listens are grouped as Other sites.`}
     >
       {status === 'loading' ? (
@@ -78,7 +78,7 @@ export function ReferrerSources({
       ) : (
         <ShareList
           data-testid="stats-referrers"
-          aria-label="Referring sites"
+          aria-label={t('referrerSources.referringSites')}
           emptyLabel="Sources fill in as people listen."
           items={items.map((item) => ({
             id: item.name,

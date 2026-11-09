@@ -77,7 +77,7 @@ export const ListenerWorldMap: FC<ListenerWorldMapProps> = ({
       <div
         className={`border-border bg-background relative overflow-hidden rounded-xl border ${compact ? 'max-h-44' : ''}`}
         role="img"
-        aria-label="Listener world map"
+        aria-label={t('listenerWorldMap.listenerWorldMap')}
       >
         <svg
           viewBox={`0 0 ${MAP_WIDTH} ${MAP_HEIGHT}`}
@@ -144,7 +144,7 @@ export const ListenerWorldMap: FC<ListenerWorldMapProps> = ({
         </svg>
         {loading ? (
           <div className="bg-background/70 absolute inset-0 flex items-center justify-center text-sm font-medium">
-            Updating map…
+            {t('listenerWorldMap.updatingMap')}
           </div>
         ) : null}
       </div>

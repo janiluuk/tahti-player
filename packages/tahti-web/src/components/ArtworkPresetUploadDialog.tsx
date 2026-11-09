@@ -50,11 +50,11 @@ export function ArtworkPresetUploadDialog({
       <Dialog.Title>
         <span className="inline-flex items-center gap-2">
           <UploadIcon size={18} aria-hidden />
-          Add artwork
+          {t('artworkPresetUploadDialog.addArtwork')}
         </span>
       </Dialog.Title>
       <Dialog.Description>
-        Upload a square JPG, PNG, WebP, or GIF.
+        {t('artworkPresetUploadDialog.uploadASquareJpgPng')}
       </Dialog.Description>
       <div className="mt-4">
         <FilePicker

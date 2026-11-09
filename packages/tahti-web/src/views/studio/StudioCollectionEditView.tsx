@@ -38,7 +38,7 @@ export function StudioCollectionEditView({
       <div className="studio-page-layout flex w-full flex-col gap-6 px-1 py-2">
         <div className="relative flex flex-col gap-6">
           <Tooltip
-            content="Back to Collections"
+            content={t('studioCollectionEditView.backToCollections')}
             side="right"
             wrapperClassName={backButtonCornerClassName}
           >
@@ -48,7 +48,7 @@ export function StudioCollectionEditView({
                   ? '/library/collections'
                   : '/studio/collections'
               }
-              aria-label="Back to Collections"
+              aria-label={t('studioCollectionEditView.backToCollections')}
             />
           </Tooltip>
           {!col && loadError ? (

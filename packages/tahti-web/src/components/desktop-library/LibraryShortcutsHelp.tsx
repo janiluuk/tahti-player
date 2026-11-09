@@ -1,5 +1,6 @@
 import { KeyboardIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, KeyCombo, Popover } from '@tahti-player/ui';
 
 /** What the track table does from the keyboard once it has focus. */
@@ -19,21 +20,27 @@ export const LIBRARY_SHORTCUTS: ReadonlyArray<[string, string]> = [
 ];
 
 export function LibraryShortcutsHelp() {
+  const { t } = useTranslation('web');
   return (
     <Popover
       anchor="bottom end"
       panelClassName="w-80"
       tooltip={{ content: 'Keyboard shortcuts', side: 'top' }}
       trigger={
-        <Button size="icon-sm" variant="text" aria-label="Keyboard shortcuts">
+        <Button
+          size="icon-sm"
+          variant="text"
+          aria-label={t('libraryShortcutsHelp.keyboardShortcuts')}
+        >
           <KeyboardIcon size={14} aria-hidden />
         </Button>
       }
     >
-      <p className="pb-2 text-sm font-semibold">Keyboard shortcuts</p>
+      <p className="pb-2 text-sm font-semibold">
+        {t('libraryShortcutsHelp.keyboardShortcuts')}
+      </p>
       <p className="pb-2 text-xs opacity-80">
-        Click the track list or Tab to it first. Q, E, P and Delete act on the
-        whole selection when the focused track is part of it.
+        {t('libraryShortcutsHelp.clickTheTrackListOr')}
       </p>
       <dl className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-1.5 text-xs">
         {LIBRARY_SHORTCUTS.map(([shortcut, action]) => (

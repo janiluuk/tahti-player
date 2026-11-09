@@ -91,7 +91,7 @@ function TrackCreditsRow({
             <Input
               autoComplete="off"
               value={credit.name}
-              placeholder="Name"
+              placeholder={t('releaseTrackCreditsPanel.name')}
               disabled={saving}
               aria-label={`Name for credit ${index + 1} on ${track.title}`}
               onChange={(event) => update(index, { name: event.target.value })}
@@ -145,7 +145,7 @@ function TrackCreditsRow({
         )}
         <SaveButton
           saving={saving}
-          label="Save credits"
+          label={t('releaseTrackCreditsPanel.saveCredits')}
           aria-label={`Save credits for ${track.title}`}
           onClick={() => void save()}
         />

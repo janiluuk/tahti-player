@@ -1,5 +1,6 @@
 import { ArchiveIcon, RadioTowerIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { MaterialGroupsField } from '../../../components/MaterialGroupsField';
@@ -13,6 +14,7 @@ export function PlaylistsTabContent({
   state: SoundEditorState;
   isAudioClip: boolean;
 }) {
+  const { t } = useTranslation('web');
   const {
     item,
     rotationBusy,
@@ -50,7 +52,7 @@ export function PlaylistsTabContent({
           onClick={() => void moveToStash()}
         >
           <ArchiveIcon size={16} aria-hidden className="mr-1.5" />
-          Move to private stash
+          {t('playlistsTabContent.moveToPrivateStash')}
         </Button>
       </div>
     </div>

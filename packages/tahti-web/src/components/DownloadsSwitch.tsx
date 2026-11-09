@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Toggle } from '@tahti-player/ui';
 
 /** Renders nothing while `enabled` is undefined: APIs older than
@@ -9,19 +10,25 @@ export function DownloadsSwitch({
   enabled: boolean | undefined;
   onChange: (enabled: boolean) => void;
 }) {
+  const { t } = useTranslation('web');
   if (enabled === undefined) {
     return null;
   }
   return (
     <div className="border-border flex items-center justify-between gap-3 rounded-lg border p-3 text-sm">
       <span>
-        <span className="block font-medium">Allow downloads</span>
+        <span className="block font-medium">
+          {t('downloadsSwitch.allowDownloads')}
+        </span>
         <span className="text-foreground-secondary block text-xs">
-          Listeners can download the audio file. Turning this off keeps the
-          track playable.
+          {t('downloadsSwitch.listenersCanDownloadTheAudio')}
         </span>
       </span>
-      <Toggle label="Allow downloads" checked={enabled} onChange={onChange} />
+      <Toggle
+        label={t('downloadsSwitch.allowDownloads')}
+        checked={enabled}
+        onChange={onChange}
+      />
     </div>
   );
 }

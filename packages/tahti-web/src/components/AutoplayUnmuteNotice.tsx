@@ -1,5 +1,6 @@
 import { VolumeXIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { usePlayerStore } from '../stores/playerStore';
@@ -7,6 +8,7 @@ import { usePlayerStore } from '../stores/playerStore';
 /** Shown while a channel that started on its own is playing muted: one
  * press to hear it. Nothing is drawn when the mute is the listener's own. */
 export function AutoplayUnmuteNotice() {
+  const { t } = useTranslation('web');
   const waiting = usePlayerStore(
     (s) => s.autoplayRestoreMuted !== null && s.muted,
   );
@@ -22,10 +24,10 @@ export function AutoplayUnmuteNotice() {
     >
       <span className="flex items-center gap-2">
         <VolumeXIcon size={16} aria-hidden />
-        This channel is playing muted.
+        {t('autoplayUnmuteNotice.thisChannelIsPlayingMuted')}
       </span>
       <Button size="sm" variant="secondary" onClick={unmute}>
-        Unmute
+        {t('autoplayUnmuteNotice.unmute')}
       </Button>
     </div>
   );
