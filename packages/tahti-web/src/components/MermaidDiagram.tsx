@@ -1,6 +1,7 @@
 import { Maximize2, Minimize2 } from 'lucide-react';
 import { useEffect, useId, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 type Props = {
@@ -14,6 +15,7 @@ type Props = {
  * Renders a Mermaid chart client-side (lazy-loads the mermaid package).
  */
 export function MermaidDiagram({ chart, className, label = 'Diagram' }: Props) {
+  const { t } = useTranslation('web');
   const reactId = useId().replace(/:/g, '');
   const hostRef = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -109,7 +111,7 @@ export function MermaidDiagram({ chart, className, label = 'Diagram' }: Props) {
       <div
         className="mb-2 flex items-center justify-end gap-1"
         role="group"
-        aria-label="Diagram zoom controls"
+        aria-label={t('mermaidDiagramText.diagramZoomControls')}
       >
         <Button
           variant="plain"
@@ -117,7 +119,7 @@ export function MermaidDiagram({ chart, className, label = 'Diagram' }: Props) {
           type="button"
           className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 text-xs whitespace-normal active:scale-100"
           onClick={() => setZoom((current) => Math.max(0.6, current - 0.2))}
-          aria-label="Zoom out diagram"
+          aria-label={t('mermaidDiagramText.zoomOutDiagram')}
         >
           −
         </Button>
@@ -127,7 +129,7 @@ export function MermaidDiagram({ chart, className, label = 'Diagram' }: Props) {
           type="button"
           className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 text-xs whitespace-normal tabular-nums active:scale-100"
           onClick={() => setZoom(1)}
-          aria-label="Reset diagram zoom"
+          aria-label={t('mermaidDiagramText.resetDiagramZoom')}
         >
           {Math.round(zoom * 100)}%
         </Button>
@@ -156,13 +158,15 @@ export function MermaidDiagram({ chart, className, label = 'Diagram' }: Props) {
           type="button"
           className="border-border text-foreground-secondary hover:text-foreground inline-block rounded border px-2 py-1 text-xs whitespace-normal active:scale-100"
           onClick={() => setZoom((current) => Math.min(2, current + 0.2))}
-          aria-label="Zoom in diagram"
+          aria-label={t('mermaidDiagramText.zoomInDiagram')}
         >
           +
         </Button>
       </div>
       {!ready && !error && (
-        <p className="text-foreground-secondary text-sm">Rendering diagram…</p>
+        <p className="text-foreground-secondary text-sm">
+          {t('mermaidDiagramText.renderingDiagram')}
+        </p>
       )}
       {error && (
         <pre className="text-foreground-secondary border-border overflow-auto rounded border p-3 text-xs whitespace-pre-wrap">

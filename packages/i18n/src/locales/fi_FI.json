@@ -10277,6 +10277,78 @@
       "calendarLayout": "Kalenterin asettelu",
       "loading": "Ladataan tapahtumia…",
       "status": "Tila"
+    },
+    "routes-helpText": {
+      "backToListen": "Takaisin Kuuntele-sivulle"
+    },
+    "releaseTrackUploadProgressText": {
+      "cancel": "Peruuta"
+    },
+    "embedViewsText": {
+      "play": "Toista"
+    },
+    "timelineReactionBarText": {
+      "logInToReact": "Kirjaudu sisään reagoidaksesi"
+    },
+    "containerLogsPanelText": {
+      "couldNotReachTheLogging": "Lokipalvelimeen ei saatu yhteyttä. Se voi olla alhaalla, tai tämä ympäristö ei tavoita sitä lähiverkossa."
+    },
+    "annualReportActionsFields": {
+      "noMeetingNamed": "Ei kokousta nimellä"
+    },
+    "nowPlayingOverlayText": {
+      "nowPlaying": "Nyt soi"
+    },
+    "chatNoticeText": {
+      "subscribe": "Tilaa"
+    },
+    "addonCardText": {
+      "defaultOn": "Oletuksena päällä"
+    },
+    "radioProgrammingGridLabels": {
+      "noLiveShowsBookedIn": "Ei varattuja livelähetyksiä seuraavan {{PROGRAMMING_DAYS}} päivän aikana."
+    },
+    "skipToContentText": {
+      "skipToContent": "Siirry sisältöön"
+    },
+    "motionSecondersText": {
+      "secondedBy": "Kannattajat"
+    },
+    "currentFanSubscriptionCardText": {
+      "manageSubscription": "Hallitse tilausta"
+    },
+    "mermaidDiagramText": {
+      "renderingDiagram": "Piirretään kaaviota…",
+      "diagramZoomControls": "Kaavion zoomaus",
+      "zoomOutDiagram": "Loitonna kaaviota",
+      "resetDiagramZoom": "Palauta kaavion zoomaus",
+      "zoomInDiagram": "Lähennä kaaviota"
+    },
+    "accountPanelText": {
+      "listen": "Kuuntele"
+    },
+    "legalViewText": {
+      "whatIsTahti": "Mikä Tahti on"
+    },
+    "boardTermsPanelText": {
+      "boardTerms": "Hallituksen toimikaudet"
+    },
+    "pressKitPreviewText": {
+      "addAtLeastOneIncluded": "Lisää vähintään yksi mukaan otettava kuva, jotta esikatselu on valmis."
+    },
+    "featureCompareCardText": {
+      "legacy": "Vanha",
+      "legacyOnly": "Vain vanhassa",
+      "parityComment": "Vastaavuuden kommentti"
+    },
+    "channelBlockFrameText": {
+      "editing": "Muokataan"
+    },
+    "playerPanelText": {
+      "useALoopingVideoOr": "Käytä kanavan ylätunnisteen taustalla silmukkavideota tai still-kuvaa."
+    },
+    "listenAddonsTabEmptyText": {
+      "everythingHereIsInstalled": "Kaikki täällä on jo asennettu."
     }
   },
   "studioEditor": {

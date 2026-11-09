@@ -42,7 +42,7 @@ export function FeatureCompareCard({ row }: { row: FeatureRow }) {
         >
           <div className="flex items-center justify-between gap-2">
             <span className="text-[10px] font-semibold tracking-wide uppercase">
-              Legacy
+              {t('featureCompareCardText.legacy')}
               <span className="text-foreground-secondary ml-1 font-normal normal-case">
                 retired Next.js app
               </span>
@@ -74,7 +74,7 @@ export function FeatureCompareCard({ row }: { row: FeatureRow }) {
             </span>
             {nuclearAbsent ? (
               <Badge variant="pill" color="orange">
-                Legacy only
+                {t('featureCompareCardText.legacyOnly')}
               </Badge>
             ) : null}
           </div>
@@ -99,7 +99,7 @@ export function FeatureCompareCard({ row }: { row: FeatureRow }) {
         targetId={row.feature}
         title={row.feature}
         feature={row.feature}
-        label="Parity comment"
+        label={t('featureCompareCardText.parityComment')}
         placeholder={t('featureCompareCardLabels.commentOnFeature', {
           feature: row.feature,
         })}

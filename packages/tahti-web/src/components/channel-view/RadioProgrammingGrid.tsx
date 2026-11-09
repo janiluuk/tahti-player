@@ -145,7 +145,9 @@ function ProgrammingWeek({
   if (state.days.length === 0) {
     return (
       <PageEmpty
-        title={`No live shows booked in the next ${PROGRAMMING_DAYS} days.`}
+        title={t('radioProgrammingGridLabels.noLiveShowsBookedIn', {
+          PROGRAMMING_DAYS,
+        })}
         action={
           onBook ? (
             <Button size="sm" variant="secondary" onClick={onBook}>
