@@ -1,5 +1,6 @@
 import { ArrowLeftIcon, PlayIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+
+import 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -28,28 +29,22 @@ import {
   formatQuota,
   usagePercent,
 } from '../../lib/storageFormat';
+import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { usePlayerStore } from '../../stores/playerStore';
 
 export function AdminStorageUserView({ userId }: { userId: string }) {
   const { t } = useTranslation('web');
   const play = usePlayerStore((s) => s.play);
-  const [detail, setDetail] = useState<AdminStorageUserDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setDetail(null);
-    void fetchAdminStorageUserFiles(userId).then((res) => {
-      if (!cancelled) {
-        setDetail(res.data);
-        setLoading(false);
+  const { data: detail, loading } = useSnapshotFetch<AdminStorageUserDetail>(
+    `admin-storage-user:${userId}`,
+    async () => {
+      const res = await fetchAdminStorageUserFiles(userId);
+      if (!res.data) {
+        throw new Error('Storage details unavailable');
       }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [userId]);
+      return res.data;
+    },
+  );
 
   const pct = detail
     ? usagePercent(detail.usedBytes, detail.quotaBytes, detail.unlimited)

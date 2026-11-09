@@ -1,5 +1,5 @@
 import { CheckCircle2Icon, RadioIcon, XCircleIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, ImageReveal, Loader, Textarea } from '@tahti-player/ui';
@@ -13,6 +13,7 @@ import {
 } from '../../../../api/admin';
 import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../../../lib/useSnapshotFetch';
 
 function statusBadge(status: AdminRadioStationSuggestionStatus): {
   label: string;
@@ -31,20 +32,15 @@ function statusBadge(status: AdminRadioStationSuggestionStatus): {
  * `/admin/radio-station-suggestions` route (see AdminOrphanPagesView). */
 export function RadioStationSuggestionsTab() {
   const { t } = useTranslation('web');
-  const [items, setItems] = useState<AdminRadioStationSuggestion[]>([]);
-  const [loading, setLoading] = useState(true);
+  const snapshot = useSnapshotFetch<AdminRadioStationSuggestion[]>(
+    'admin-radio-station-suggestions',
+    async () => apiResult(await fetchAdminRadioStationSuggestions()),
+  );
+  const items = snapshot.data ?? [];
+  const { loading, retry: reload } = snapshot;
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
-
-  const reload = () => {
-    void fetchAdminRadioStationSuggestions().then((res) => {
-      setItems(res.data);
-      setLoading(false);
-    });
-  };
-
-  useEffect(reload, []);
 
   return (
     <div className="flex max-w-3xl flex-col gap-4">

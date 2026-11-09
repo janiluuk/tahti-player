@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -15,6 +15,7 @@ import { fetchPlatformStatus } from '../api/client';
 import type { PlatformStatus } from '../api/types';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageError, PageLoading } from '../components/PageStates';
+import { useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 function stateClass(state: string): string {
   if (state === 'ok' || state === 'healthy') {
@@ -28,30 +29,19 @@ function stateClass(state: string): string {
 
 export function StatusView() {
   const { t } = useTranslation('web');
-  const [data, setData] = useState<PlatformStatus | null>(null);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [attempt, setAttempt] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    void fetchPlatformStatus().then((res) => {
-      if (cancelled) {
-        return;
-      }
-      const reason =
-        res.meta.source === 'api' ? (res.meta.reason ?? null) : null;
-      const unusable =
-        reason !== null && Object.keys(res.data.checks).length === 0;
-      setLoadError(unusable ? reason : null);
-      setData(unusable ? null : res.data);
-      setLoading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [attempt]);
+  const {
+    data,
+    error: loadError,
+    loading,
+    retry,
+  } = useSnapshotFetch<PlatformStatus>('platform-status', async () => {
+    const res = await fetchPlatformStatus();
+    const reason = res.meta.source === 'api' ? (res.meta.reason ?? null) : null;
+    if (reason !== null && Object.keys(res.data.checks).length === 0) {
+      throw new Error(reason);
+    }
+    return res.data;
+  });
 
   return (
     <ViewShell
@@ -64,7 +54,7 @@ export function StatusView() {
         <PageError
           title={t('loadErrors.couldNotLoadPlatformStatus')}
           description={loadError ?? undefined}
-          onRetry={() => setAttempt((n) => n + 1)}
+          onRetry={retry}
         />
       )}
       {!loading && data && (
@@ -102,7 +92,7 @@ export function StatusView() {
             <PageError
               title={t('loadErrors.noHealthChecksReported')}
               description={t('loadErrors.theApiDidNotAnswer')}
-              onRetry={() => setAttempt((n) => n + 1)}
+              onRetry={retry}
             />
           ) : (
             <>

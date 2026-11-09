@@ -1,5 +1,6 @@
 import { ScrollTextIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+
+import 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -21,28 +22,20 @@ import {
   PageLoading,
 } from '../components/PageStates';
 import { isPlausiblePublicName } from '../lib/publicDisplayName';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 export function PublicGovernanceHistoryView() {
   const { t } = useTranslation('web');
-  const [motions, setMotions] = useState<PublicGovernanceMotion[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
-
-  useEffect(() => {
-    void fetchPublicGovernanceMotions().then((result) => {
-      setLoadError(
-        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
-      );
-      setMotions(
-        result.data.filter((motion) => {
-          const title = motion.title?.trim();
-          return !title || isPlausiblePublicName(title);
-        }),
-      );
-      setLoading(false);
-    });
-  }, [attempt]);
+  const snapshot = useSnapshotFetch<PublicGovernanceMotion[]>(
+    'public-governance-history',
+    async () =>
+      apiResult(await fetchPublicGovernanceMotions()).filter((motion) => {
+        const title = motion.title?.trim();
+        return !title || isPlausiblePublicName(title);
+      }),
+  );
+  const motions = snapshot.data ?? [];
+  const { loading, error: loadError, retry } = snapshot;
 
   return (
     <ViewShell
@@ -72,8 +65,7 @@ export function PublicGovernanceHistoryView() {
           title={t('governancePublic.historyLoadError')}
           description={loadError}
           onRetry={() => {
-            setLoading(true);
-            setAttempt((n) => n + 1);
+            retry();
           }}
         />
       ) : motions.length === 0 ? (
@@ -85,8 +77,7 @@ export function PublicGovernanceHistoryView() {
               title={t('governancePublic.historyRefreshError')}
               description={loadError}
               onRetry={() => {
-                setLoading(true);
-                setAttempt((n) => n + 1);
+                retry();
               }}
             />
           ) : null}

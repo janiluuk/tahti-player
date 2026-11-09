@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { CalendarDaysIcon, ExternalLinkIcon, SparklesIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -17,6 +17,7 @@ import { HistoryBackButton } from '../components/HistoryBackButton';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { PlatformNewsDialog } from '../components/PlatformNewsDialog';
 import { humanizePastDate } from '../lib/humanizeDate';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 function NewsEntry({
   entry,
@@ -119,29 +120,14 @@ const INITIAL_COUNT = 5;
 export function NewsView() {
   const { t } = useTranslation('web');
   const [selected, setSelected] = useState<Announcement | null>(null);
-  const [entries, setEntries] = useState<Announcement[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
   const [showAll, setShowAll] = useState(false);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    void fetchAnnouncements().then((res) => {
-      if (cancelled) {
-        return;
-      }
-      setEntries(res.data);
-      setLoadError(
-        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
-      );
-      setLoading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [attempt]);
+  const snapshot = useSnapshotFetch<Announcement[]>('platform-news', async () =>
+    apiResult(await fetchAnnouncements()),
+  );
+  const entries = snapshot.data ?? [];
+  const { loading, error: loadError, retry } = snapshot;
+  const setEntries = (update: (current: Announcement[]) => Announcement[]) =>
+    snapshot.mutate((current) => update(current ?? []));
 
   const visibleEntries = showAll ? entries : entries.slice(0, INITIAL_COUNT);
   const hiddenCount = entries.length - INITIAL_COUNT;
@@ -185,7 +171,7 @@ export function NewsView() {
           <PageError
             title={t('loadErrors.couldNotLoadTheNews')}
             description={loadError}
-            onRetry={() => setAttempt((n) => n + 1)}
+            onRetry={retry}
           />
         )}
 
@@ -199,7 +185,7 @@ export function NewsView() {
               variant="plain"
               size="flexible"
               className="inline p-0 text-xs underline underline-offset-2"
-              onClick={() => setAttempt((n) => n + 1)}
+              onClick={retry}
             >
               {t('newsView.retry')}
             </Button>

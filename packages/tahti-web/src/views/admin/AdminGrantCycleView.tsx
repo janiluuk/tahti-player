@@ -1,6 +1,6 @@
 import { Link, useParams } from '@tanstack/react-router';
 import { CheckIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -34,6 +34,7 @@ import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
 const MIN_UNITS = 5;
 
@@ -47,27 +48,22 @@ export function AdminGrantCycleView() {
   const { t } = useTranslation('web');
   const { year: rawYear } = useParams({ strict: false }) as { year: string };
   const year = Number.parseInt(rawYear, 10);
-  const [preview, setPreview] = useState<AdminGrantPreview | null>(null);
-  const [history, setHistory] = useState<AdminGrantHistoryDetail | null>(null);
-  const [loading, setLoading] = useState(true);
   const [running, setRunning] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const load = () => {
-    setLoading(true);
-    void Promise.all([
+  const snapshot = useSnapshotFetch<{
+    preview: AdminGrantPreview | null;
+    history: AdminGrantHistoryDetail | null;
+  }>(`admin-grant-cycle:${year}`, async () => {
+    const [previewResult, historyResult] = await Promise.all([
       fetchAdminGrantPreview(year),
       fetchAdminGrantHistory(year),
-    ]).then(([previewResult, historyResult]) => {
-      setPreview(previewResult.data);
-      setHistory(historyResult.data);
-      setLoading(false);
-    });
-  };
-
-  useEffect(() => {
-    load();
-  }, [year]);
+    ]);
+    return { preview: previewResult.data, history: historyResult.data };
+  });
+  const preview = snapshot.data?.preview ?? null;
+  const history = snapshot.data?.history ?? null;
+  const { loading, retry: load } = snapshot;
 
   const eligible = useMemo(
     () => preview?.artists.filter((artist) => artist.units >= MIN_UNITS) ?? [],

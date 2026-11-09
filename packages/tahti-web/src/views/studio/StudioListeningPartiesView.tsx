@@ -34,12 +34,10 @@ import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
 export function StudioListeningPartiesView() {
   const { t } = useTranslation('web');
-  const [parties, setParties] = useState<ListeningPartySummaryDto[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [pendingCancel, setPendingCancel] =
     useState<ListeningPartySummaryDto | null>(null);
 
@@ -62,15 +60,12 @@ export function StudioListeningPartiesView() {
     },
   };
 
-  const reload = () => {
-    void fetchMyListeningParties().then(({ data, meta }) => {
-      setParties(data);
-      setError(meta.source === 'api' ? (meta.reason ?? null) : null);
-      setLoading(false);
-    });
-  };
-
-  useEffect(reload, []);
+  const snapshot = useSnapshotFetch<ListeningPartySummaryDto[]>(
+    'studio-listening-parties',
+    async () => apiResult(await fetchMyListeningParties()),
+  );
+  const parties = snapshot.data ?? [];
+  const { loading, error, retry: reload } = snapshot;
 
   const [reminderCounts, setReminderCounts] = useState<Record<string, number>>(
     {},

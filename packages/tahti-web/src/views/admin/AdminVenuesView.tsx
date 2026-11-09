@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { CheckIcon, MapPinIcon, XIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -24,28 +24,20 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { ListingDate } from '../../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
 export function AdminVenuesView() {
   const { t } = useTranslation('web');
-  const [venues, setVenues] = useState<AdminVenue[]>([]);
   const [query, setQuery] = useState('');
-  const [loading, setLoading] = useState(true);
   const [busySlug, setBusySlug] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [loadError, setLoadError] = useState<string | null>(null);
-
-  const reload = () => {
-    setLoading(true);
-    void fetchAdminVenues().then((result) => {
-      setVenues(result.data);
-      setLoadError(
-        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
-      );
-      setLoading(false);
-    });
-  };
-
-  useEffect(reload, []);
+  const snapshot = useSnapshotFetch('admin-venues', async () =>
+    apiResult(await fetchAdminVenues()),
+  );
+  const venues = snapshot.data ?? [];
+  const { loading, error: loadError, retry: reload } = snapshot;
+  const setVenues = (update: (current: AdminVenue[]) => AdminVenue[]) =>
+    snapshot.mutate((current) => update(current ?? []));
 
   const filteredVenues = useMemo(() => {
     const normalized = query.trim().toLowerCase();

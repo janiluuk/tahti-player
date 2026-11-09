@@ -5,7 +5,7 @@ import {
   ListFilterIcon,
   XIcon,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
@@ -19,6 +19,7 @@ import {
 import { ListingDate } from '../../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { ModerationTabs } from './moderation/ModerationTabs';
 
 const FILTER_IDS = [
@@ -48,25 +49,20 @@ const FILTER_TAB_ICONS = {
 export function AdminMissedShowsPanel() {
   const { t } = useTranslation('web');
   const [filter, setFilter] = useState<(typeof FILTER_IDS)[number]>('ALL');
-  const [flags, setFlags] = useState<AdminMissedShow[]>([]);
-  const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-
-  const load = (nextFilter: (typeof FILTER_IDS)[number]) => {
-    setLoading(true);
-    setError(null);
-    void fetchAdminMissedShows(
-      nextFilter === 'ALL' ? undefined : nextFilter,
-    ).then((result) => {
-      setFlags(result.data);
-      setLoading(false);
-    });
-  };
-
-  useEffect(() => {
-    load('ALL');
-  }, []);
+  const snapshot = useSnapshotFetch<AdminMissedShow[]>(
+    `admin-missed-shows:${filter}`,
+    async () =>
+      apiResult(
+        await fetchAdminMissedShows(filter === 'ALL' ? undefined : filter),
+      ),
+  );
+  const flags = snapshot.data ?? [];
+  const { loading } = snapshot;
+  const setFlags = (
+    update: (current: AdminMissedShow[]) => AdminMissedShow[],
+  ) => snapshot.mutate((current) => update(current ?? []));
 
   const setStatus = async (
     flag: AdminMissedShow,
@@ -96,9 +92,7 @@ export function AdminMissedShowsPanel() {
           }))}
           ariaLabel={t('adminMissedShows.statusAria')}
           onChange={(id) => {
-            const nextFilter = id as (typeof FILTER_IDS)[number];
-            setFilter(nextFilter);
-            load(nextFilter);
+            setFilter(id as (typeof FILTER_IDS)[number]);
           }}
         />
       </StudioPanel>

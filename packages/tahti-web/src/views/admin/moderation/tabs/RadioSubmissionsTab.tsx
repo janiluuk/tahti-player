@@ -1,5 +1,5 @@
 import { CheckCircle2Icon, PlayIcon, XCircleIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -20,6 +20,7 @@ import {
   PageLoading,
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../../../lib/useSnapshotFetch';
 import { usePlayerStore } from '../../../../stores/playerStore';
 
 function statusBadge(status: AdminRadioSubmissionStatus): {
@@ -49,26 +50,20 @@ function fmtDuration(sec: number | null): string {
 export function RadioSubmissionsTab() {
   const { t } = useTranslation('web');
   const play = usePlayerStore((s) => s.play);
-  const [items, setItems] = useState<AdminRadioSubmission[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [notes, setNotes] = useState<Record<string, string>>({});
   const [busyId, setBusyId] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const reload = () => {
-    void fetchAdminRadioSubmissions().then((res) => {
-      setItems(res.data);
-      setLoadError(
-        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
-      );
-      setLoading(false);
-      setActiveId((prev) => prev ?? res.data[0]?.id ?? null);
-    });
-  };
-
-  useEffect(reload, []);
+  const snapshot = useSnapshotFetch<AdminRadioSubmission[]>(
+    'admin-radio-submissions',
+    async () => apiResult(await fetchAdminRadioSubmissions()),
+  );
+  const items = snapshot.data ?? [];
+  const { loading, error: loadError, retry: reload } = snapshot;
+  const setItems = (
+    update: (current: AdminRadioSubmission[]) => AdminRadioSubmission[],
+  ) => snapshot.mutate((current) => update(current ?? []));
 
   const active = items.find((i) => i.id === activeId) ?? items[0] ?? null;
 
@@ -127,10 +122,7 @@ export function RadioSubmissionsTab() {
           <PageError
             title={t('loadErrors.couldNotLoadRadioSubmissions')}
             description={loadError}
-            onRetry={() => {
-              setLoading(true);
-              reload();
-            }}
+            onRetry={reload}
           />
         </StudioPanel>
       ) : items.length === 0 ? (

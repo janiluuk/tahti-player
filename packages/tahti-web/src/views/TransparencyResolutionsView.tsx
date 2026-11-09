@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Badge, FilterChips, SectionShell, ViewShell } from '@tahti-player/ui';
@@ -8,6 +8,7 @@ import type { BoardResolution } from '../api/types';
 import { ListingDate } from '../components/ListingDate';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 const CURRENT_YEAR = new Date().getFullYear();
 const YEAR_OPTIONS = Array.from({ length: 5 }, (_, i) => CURRENT_YEAR - i);
@@ -28,28 +29,12 @@ function outcomeBadge(outcome: string): {
 export function TransparencyResolutionsView() {
   const { t } = useTranslation('web');
   const [year, setYear] = useState(CURRENT_YEAR);
-  const [resolutions, setResolutions] = useState<BoardResolution[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    void fetchTransparencyResolutions(year).then((result) => {
-      if (cancelled) {
-        return;
-      }
-      setResolutions(result.data);
-      setLoadError(
-        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
-      );
-      setLoading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [year, attempt]);
+  const snapshot = useSnapshotFetch<BoardResolution[]>(
+    `transparency-resolutions:${year}`,
+    async () => apiResult(await fetchTransparencyResolutions(year)),
+  );
+  const resolutions = snapshot.data ?? [];
+  const { loading, error: loadError, retry } = snapshot;
 
   return (
     <ViewShell
@@ -77,7 +62,7 @@ export function TransparencyResolutionsView() {
         <PageError
           title={t('loadErrors.couldNotLoadTheResolutions')}
           description={loadError}
-          onRetry={() => setAttempt((n) => n + 1)}
+          onRetry={retry}
         />
       ) : resolutions.length === 0 ? (
         <PageEmpty

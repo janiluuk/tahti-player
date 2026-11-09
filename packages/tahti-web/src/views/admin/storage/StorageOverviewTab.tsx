@@ -1,5 +1,5 @@
 import { CloudIcon, ExternalLinkIcon, HardDriveIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, DonutChart, Meter, Tooltip } from '@tahti-player/ui';
@@ -23,6 +23,7 @@ import {
   formatQuota,
   usagePercent,
 } from '../../../lib/storageFormat';
+import { useSnapshotFetch } from '../../../lib/useSnapshotFetch';
 import { DiskSpaceCard, QuotaEditor, STORAGE_TYPE_COLORS } from './shared';
 
 function TopUsersChart({ users }: { users: AdminStorageUserRow[] }) {
@@ -137,21 +138,19 @@ function StorageTypeBreakdown({ files }: { files: AdminFileRow[] }) {
 
 export function StorageOverviewTab() {
   const { t } = useTranslation('web');
-  const [overview, setOverview] = useState<AdminStorageOverview | null>(null);
-  const [files, setFiles] = useState<AdminFileRow[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const reload = () => {
-    void Promise.all([fetchAdminStorage(), fetchAdminFiles()]).then(
-      ([storageResult, filesResult]) => {
-        setOverview(storageResult.data);
-        setFiles(filesResult.data);
-        setLoading(false);
-      },
-    );
-  };
-
-  useEffect(reload, []);
+  const snapshot = useSnapshotFetch<{
+    overview: AdminStorageOverview | null;
+    files: AdminFileRow[];
+  }>('admin-storage-overview', async () => {
+    const [storageResult, filesResult] = await Promise.all([
+      fetchAdminStorage(),
+      fetchAdminFiles(),
+    ]);
+    return { overview: storageResult.data, files: filesResult.data };
+  });
+  const overview = snapshot.data?.overview ?? null;
+  const files = snapshot.data?.files ?? [];
+  const { loading, retry: reload } = snapshot;
 
   if (loading) {
     return (

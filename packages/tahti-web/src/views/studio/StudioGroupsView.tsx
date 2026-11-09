@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { PlusIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { toast } from 'sonner';
 
@@ -33,13 +33,11 @@ import {
   joinPolicyOptions,
   submitPolicyOptions,
 } from '../../lib/groupPeople';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
 export function StudioGroupsView() {
   const { t } = useTranslation('web');
   const navigate = useNavigate();
-  const [groups, setGroups] = useState<MyArtistGroup[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -54,15 +52,12 @@ export function StudioGroupsView() {
     MEMBER: t('groupDetail.roleMember'),
   } as const;
 
-  const reload = () => {
-    void fetchMyGroups().then(({ data, meta }) => {
-      setGroups(data);
-      setError(meta.source === 'api' ? (meta.reason ?? null) : null);
-      setLoading(false);
-    });
-  };
-
-  useEffect(reload, []);
+  const snapshot = useSnapshotFetch<MyArtistGroup[]>(
+    'studio-groups',
+    async () => apiResult(await fetchMyGroups()),
+  );
+  const groups = snapshot.data ?? [];
+  const { loading, error, retry: reload } = snapshot;
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();

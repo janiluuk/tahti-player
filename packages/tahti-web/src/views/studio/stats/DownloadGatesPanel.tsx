@@ -1,5 +1,4 @@
 import { BanIcon, DownloadIcon, Repeat2Icon, UsersIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -24,31 +23,23 @@ import {
   PageLoading,
 } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../../lib/useSnapshotFetch';
 import { STUDIO_METRIC_TONES } from './metricTones';
 
 export function DownloadGatesPanel({ active }: { active: boolean }) {
   const { t } = useTranslation('web');
-  const [stats, setStats] = useState<DownloadGateStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [reloadKey, setReloadKey] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    void fetchDownloadGateStats().then((result) => {
-      if (!cancelled) {
-        setStats(result.data);
-        setError(
-          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
-        );
-        setLoading(false);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [reloadKey]);
+  const {
+    data: stats,
+    loading,
+    error,
+    retry,
+  } = useSnapshotFetch<DownloadGateStats>('download-gate-stats', async () => {
+    const stats = apiResult(await fetchDownloadGateStats());
+    if (!stats) {
+      throw new Error('No download gate stats');
+    }
+    return stats;
+  });
 
   if (loading) {
     return active ? (
@@ -64,7 +55,7 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
         <PageError
           title={t('loadErrors.couldNotLoadDownloadGates')}
           description={error}
-          onRetry={() => setReloadKey((key) => key + 1)}
+          onRetry={retry}
         />
       </StudioPanel>
     ) : null;

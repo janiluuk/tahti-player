@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon, Link2Icon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -20,6 +20,7 @@ import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { StudioGate } from '../components/StudioGate';
 import { StudioPanel } from '../components/StudioPanel';
 import { sortLibraryItems, type LibrarySort } from '../lib/librarySort';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 const DSP_LABELS: Record<string, string> = {
   apple: 'Apple Music',
@@ -46,30 +47,15 @@ function releaseTargets(release: StudioRelease): Array<[string, string]> {
 
 export function LibrarySmartLinksView() {
   const { t } = useTranslation('web');
-  const [releases, setReleases] = useState<StudioRelease[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
+  const snapshot = useSnapshotFetch<StudioRelease[]>(
+    'library-smart-links',
+    async () => apiResult(await fetchStudioReleases()).releases,
+  );
+  const releases = snapshot.data ?? [];
+  const { loading, error: loadError, retry } = snapshot;
   const [query, setQuery] = useState('');
   const [dspFilter, setDspFilter] = useState<string>('ALL');
   const [sort, setSort] = useState<LibrarySort>('newest');
-
-  useEffect(() => {
-    let cancelled = false;
-    void fetchStudioReleases().then((result) => {
-      if (cancelled) {
-        return;
-      }
-      setReleases(result.data.releases);
-      setLoadError(
-        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
-      );
-      setLoading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [attempt]);
 
   const dspChips = useMemo(() => {
     const ids = new Set<string>();
@@ -119,8 +105,7 @@ export function LibrarySmartLinksView() {
               title={t('loadErrors.couldNotLoadYourSmartlinks')}
               description={loadError}
               onRetry={() => {
-                setLoading(true);
-                setAttempt((n) => n + 1);
+                retry();
               }}
             />
           ) : releases.length === 0 ? (
