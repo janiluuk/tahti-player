@@ -1,5 +1,5 @@
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
-import { Button, FilterChips, Input } from '@tahti-player/ui';
+import { Button, Input, SegmentedControl } from '@tahti-player/ui';
 
 import type { StatsPlaysRange } from '../../../api/studio-extras';
 import { StudioPanel } from '../../../components/StudioPanel';
@@ -11,8 +11,8 @@ function rangeChips(
 ): Array<{ id: StatsPlaysRange; label: string }> {
   return [
     { id: '1', label: t('rangeControls.today') },
-    { id: '7', label: '7 days' },
-    { id: '30', label: '30 days' },
+    { id: '7', label: t('library.days7') },
+    { id: '30', label: t('library.days30') },
     { id: 'all', label: t('rangeControls.allTime') },
     { id: 'custom', label: t('rangeControls.custom') },
   ];
@@ -33,11 +33,11 @@ export function RangeControls({ state }: { state: StatsData }) {
 
   return (
     <div className="flex flex-col gap-3">
-      <FilterChips
-        items={rangeChips(t)}
-        selected={range}
-        onChange={(id) => {
-          const next = id as StatsPlaysRange;
+      <SegmentedControl
+        className="self-start"
+        options={rangeChips(t)}
+        value={range}
+        onChange={(next) => {
           setRange(next);
           if (next === 'custom' && !customFrom && !customTo) {
             const end = todayUtc();
@@ -68,7 +68,7 @@ export function RangeControls({ state }: { state: StatsData }) {
             />
             <Input
               type="date"
-              label="To"
+              label={t('statsRange.to')}
               value={customTo}
               min={customFrom || undefined}
               max={todayUtc()}
