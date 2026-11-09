@@ -617,7 +617,7 @@
     "nav": {
       "listen": "Kuuntele",
       "radio": "Radio",
-      "discover": "Tutki",
+      "discover": "Löydä",
       "favorites": "Suosikit",
       "studio": "Studio",
       "library": "Kirjasto",
@@ -959,16 +959,16 @@
       "noFeatureRequestsYet": "Ei vielä ominaisuustoiveita",
       "beTheFirstToProposeAn": "Ehdota ensimmäisenä ideaa Tahdille.",
       "beTheFirstToComment": "Kommentoi ensimmäisenä.",
-      "signInToInstallDiscoverAdd": "Kirjaudu sisään asentaaksesi Tutki-lisäosia",
-      "addOnsOnYourListenAnd": "Kuuntele- ja Tutki-sivujen lisäosat vaativat tilin.",
+      "signInToInstallDiscoverAdd": "Kirjaudu sisään asentaaksesi Löydä-lisäosia",
+      "addOnsOnYourListenAnd": "Kuuntele- ja Löydä-sivujen lisäosat vaativat tilin.",
       "setUpAChannelFirst": "Luo ensin kanava",
       "goLiveOrFinishChannelSetup": "Mene liveen tai viimeistele kanavasi asennus asentaaksesi lisäosia julkiselle sivullesi.",
       "noFavoriteChannels": "Ei suosikkikanavia",
-      "heartOneFromDiscoverArtistsOr": "Lisää sydän kohdassa Tutki → Artistit tai kanavan sivulla.",
+      "heartOneFromDiscoverArtistsOr": "Lisää sydän kohdassa Löydä → Artistit tai kanavan sivulla.",
       "noFavoriteTracks": "Ei suosikkikappaleita",
       "heartATrackOnItsPage": "Lisää kappaleelle sydän sen sivulla tai missä tahansa kappalelistassa.",
       "noConversationsYet": "Ei vielä keskusteluja",
-      "searchForSomeoneAboveOrFind": "Hae jotakuta yltä tai löydä artisteja Tutki-sivulta.",
+      "searchForSomeoneAboveOrFind": "Hae jotakuta yltä tai etsi artisteja Löydä-sivulta.",
       "selectAConversation": "Valitse keskustelu",
       "desktopLibraryUnavailable": "Työpöytäkirjasto ei ole saatavilla",
       "nothingInYourLibraryFitsThe": "Mikään kirjastossasi ei vastaa nykyistä hakua, ryhmää ja suodattimia.",
@@ -986,7 +986,7 @@
       "registerAVenueToListIt": "Rekisteröi tapahtumapaikka listataksesi sen hakemistoon ja varataksesi sinne keikkoja.",
       "noTagChosen": "Tunnistetta ei ole valittu",
       "openATagOnATrack": "Avaa tunniste kappaleen sivulla nähdäksesi muut kappaleet, joilla se on.",
-      "tryATagFromATrack": "Kokeile tunnistetta kappaleen sivulta tai selaa Tutki- ja Radio-sivuja.",
+      "tryATagFromATrack": "Kokeile tunnistetta kappaleen sivulta tai selaa Löydä- ja Radio-sivuja.",
       "noAttendanceRecordedYet": "Läsnäoloa ei ole vielä kirjattu.",
       "noPersistedMeetingRecordsYetCreate": "Kokoustietoja ei ole vielä tallennettu. Luo kokoustieto ennen kokouskutsun tai pöytäkirjan julkaisemista.",
       "noOpenOrDraftMotions": "Ei avoimia tai luonnosvaiheen esityksiä.",
@@ -1039,7 +1039,7 @@
       "thereIsNothingAtThisAddress": "Tässä osoitteessa ei ole mitään. Se on ehkä siirretty tai poistettu.",
       "noGuidesMatch": "Ei vastaavia ohjeita",
       "articleNotFound": "Artikkelia ei löytynyt",
-      "tryAnotherSpellingOrBrowseDiscover": "Kokeile toista kirjoitusasua tai selaa Tutki- ja Radio-sivuja.",
+      "tryAnotherSpellingOrBrowseDiscover": "Kokeile toista kirjoitusasua tai selaa Löydä- ja Radio-sivuja.",
       "venueNotFound": "Tapahtumapaikkaa ei löytynyt",
       "downloadsAndFanSubscriptionsCountToward": "Lataukset ja fanitilaukset kerryttävät apurahaa; tänä vuonna niitä ei kirjattu.",
       "noNewsPostsYet": "Ei vielä uutisia",
@@ -1102,7 +1102,7 @@
       "results": "Hakutulokset",
       "searching": "Haetaan…",
       "noResultsTitle": "Ei tuloksia haulle ”{{query}}”.",
-      "noResultsDescription": "Kokeile toista kirjoitusasua tai selaa Tutki- ja Radio-sivuja."
+      "noResultsDescription": "Kokeile toista kirjoitusasua tai selaa Löydä- ja Radio-sivuja."
     },
     "settingsIntegrations": {
       "scrobbling": "Scrobblaus",
@@ -1129,7 +1129,7 @@
       "radioDescription": "Omat streamit, asemien löytäminen ja tallennetut asemat.",
       "listenWidgets": "Kuuntele-widgetit",
       "listenWidgetsDescription": "Palveluntarjoajien upotukset ja widgetit omalle Kuuntele-sivullesi.",
-      "discoverWidgets": "Tutki-widgetit",
+      "discoverWidgets": "Löydä-widgetit",
       "discoverWidgetsDescription": "Valitse käyttämäsi löytöpaneelit ja kuuntelijan lisäosat.",
       "history": "Kuunteluhistoria",
       "historyDescription": "Lähetä kelpaavat kuuntelut omalle ulkoiselle profiilillesi.",
@@ -1362,12 +1362,12 @@
       "liveAndReplays": "Livenä ja uusinnat"
     },
     "discover": {
-      "tabDiscover": "Tutki",
+      "tabDiscover": "Löydä",
       "tabFeed": "Syöte",
       "tabArtists": "Artistit",
       "tabGroups": "Ryhmät",
       "tabVenues": "Esiintymispaikat",
-      "sections": "Tutki-osiot",
+      "sections": "Löydä-osiot",
       "genres": "Tyylilajit",
       "contentTypes": "Sisältötyypit",
       "all": "Kaikki",
@@ -1458,11 +1458,11 @@
       "tabLocal": "Paikalliset tiedostot",
       "loadError": "Katalogin lataus epäonnistui",
       "emptyCatalogTitle": "Katalogisi on tyhjä",
-      "emptyCatalogDescription": "Lähetä kappale aloittaaksesi kirjaston täyttämisen, tai hae inspiraatiota Tutki-sivulta.",
+      "emptyCatalogDescription": "Lähetä kappale aloittaaksesi kirjaston täyttämisen, tai hae inspiraatiota Löydä-sivulta.",
       "nothingSavedTitle": "Ei vielä tallennettua",
-      "nothingSavedDescription": "Seuraa artisteja ja tallenna suosikkeja Tutki-sivulta - ne näkyvät täällä.",
+      "nothingSavedDescription": "Seuraa artisteja ja tallenna suosikkeja Löydä-sivulta - ne näkyvät täällä.",
       "emptyLibraryTitle": "Kirjastosi on tyhjä",
-      "emptyLibraryDescription": "Kirjaudu sisään tallentaaksesi musiikkia, josta pidät, tai selaa Tutki-sivua.",
+      "emptyLibraryDescription": "Kirjaudu sisään tallentaaksesi musiikkia, josta pidät, tai selaa Löydä-sivua.",
       "embedsLoadError": "Tuotuja upotuksia ei voitu ladata",
       "embedsEmptyTitle": "Ei tuotuja upotuksia vielä",
       "embedsEmptyDescription": "Hearthis.at-, Mixcloud-, Spotify- ja Bandcamp-tuonnit näkyvät täällä palveluntarjoajan mukaan, kun olet tuonut niitä Asetukset → Lisäosat → Tuonti.",
@@ -11530,7 +11530,7 @@
       "play": "Toista"
     },
     "feedViewStates": {
-      "discoverArtistsUnderDiscoverArtists": "Löydä artisteja kohdasta Tutki → Artistit ja seuraa heitä täyttääksesi tämän syötteen.",
+      "discoverArtistsUnderDiscoverArtists": "Etsi artisteja kohdasta Löydä → Artistit ja seuraa heitä täyttääksesi tämän syötteen.",
       "newPostsTracksAndReleases": "Seuraamiesi artistien uudet julkaisut, kappaleet ja levyt näkyvät täällä."
     },
     "forgotPasswordViewStates": {
@@ -11542,7 +11542,7 @@
       "connecting": "Yhdistetään…"
     },
     "messagesViewStates": {
-      "searchForSomeoneAboveOr": "Hae jotakuta yltä tai löydä artisteja Tutki-sivulta.",
+      "searchForSomeoneAboveOr": "Hae jotakuta yltä tai etsi artisteja Löydä-sivulta.",
       "pickAThreadFromThe": "Valitse keskustelu listalta lukeaksesi ja vastataksesi."
     },
     "myVenuesViewStates": {

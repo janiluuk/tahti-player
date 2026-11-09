@@ -34,7 +34,7 @@ describe('LanguagePanel', () => {
     await waitFor(() =>
       expect(screen.getByRole('link', { name: 'Kuuntele' })).toBeTruthy(),
     );
-    expect(screen.getByRole('link', { name: 'Tutki' })).toBeTruthy();
+    expect(screen.getByRole('link', { name: 'Löydä' })).toBeTruthy();
     expect(document.documentElement.lang).toBe('fi-FI');
     expect(screen.getByRole('button', { name: /Kieli/ })).toBeTruthy();
     expect(localStorage.getItem(LANGUAGE_STORAGE_KEY)).toContain('fi_FI');
