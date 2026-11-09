@@ -106,6 +106,7 @@ export const Week: Story = {
 
 // Signed out: the empty week has no booking action.
 export const NothingBooked: Story = {
+  decorators: [withMockAuth(null)],
   parameters: { mockData: mockData({ radioSlots: () => [] }) },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
