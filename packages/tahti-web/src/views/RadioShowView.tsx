@@ -63,8 +63,8 @@ function NowPlayingSection({
           <PageErrorBanner
             title={
               track || upcoming.length > 0
-                ? 'Could not refresh now playing'
-                : 'Could not load now playing'
+                ? t('radioShowViewStates.couldNotRefreshNowPlaying')
+                : t('radioShowViewStates.couldNotLoadNowPlaying')
             }
             description={pollError}
             onRetry={onRetry}

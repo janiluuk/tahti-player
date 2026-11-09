@@ -143,7 +143,9 @@ export function WaveformToolbar(props: ToolbarProps) {
           ) : (
             <PlayIcon size={16} aria-hidden className="mr-1.5" />
           )}
-          {props.playing ? 'Pause' : 'Play'}
+          {props.playing
+            ? t('waveformToolbarStates.pause')
+            : t('waveformToolbarStates.play')}
         </Button>
         <ToolButton
           label={t('waveformToolbar.previewSelection')}

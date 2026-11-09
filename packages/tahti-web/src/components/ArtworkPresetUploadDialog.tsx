@@ -61,7 +61,9 @@ export function ArtworkPresetUploadDialog({
           labels={{
             title: t('artworkPresetUploadDialogFields.image'),
             description: t('artworkPresetUploadDialogFields.jpgPngWebpOrGif'),
-            browse: file ? 'Choose another image' : 'Choose image',
+            browse: file
+              ? t('artworkPresetUploadDialogStates.chooseAnotherImage')
+              : t('artworkPresetUploadDialogStates.chooseImage'),
           }}
           accept="image/jpeg,image/png,image/webp,image/gif"
           selectedFiles={file ? [file] : []}
@@ -74,7 +76,9 @@ export function ArtworkPresetUploadDialog({
         <Dialog.Close>{t('actions.cancel')}</Dialog.Close>
         <Button onClick={() => void submit()} disabled={busy || !file}>
           <UploadIcon size={16} aria-hidden className="mr-1.5" />
-          {busy ? 'Uploading…' : 'Upload'}
+          {busy
+            ? t('artworkPresetUploadDialogStates.uploading')
+            : t('artworkPresetUploadDialogStates.upload')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

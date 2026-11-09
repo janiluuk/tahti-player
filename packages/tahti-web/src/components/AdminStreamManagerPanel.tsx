@@ -347,7 +347,11 @@ export function AdminStreamManagerPanel({
           action={
             <div className="flex items-center gap-1">
               <Tooltip
-                content={streamsOpen ? 'Collapse streams' : 'Expand streams'}
+                content={
+                  streamsOpen
+                    ? t('adminStreamManagerPanelStates.collapseStreams')
+                    : t('adminStreamManagerPanelStates.expandStreams')
+                }
                 side="top"
               >
                 <Button
@@ -356,8 +360,8 @@ export function AdminStreamManagerPanel({
                   variant="text"
                   aria-label={
                     streamsOpen
-                      ? 'Collapse live streams'
-                      : 'Expand live streams'
+                      ? t('adminStreamManagerPanelStates.collapseLiveStreams')
+                      : t('adminStreamManagerPanelStates.expandLiveStreams')
                   }
                   aria-expanded={streamsOpen}
                   onClick={() => setStreamsOpen((open) => !open)}
@@ -461,7 +465,9 @@ export function AdminStreamManagerPanel({
                 {t('adminStreamManager.mode')}
               </dt>
               <dd>
-                {detailsStream.isRotation ? 'Rotation' : 'Live broadcast'}
+                {detailsStream.isRotation
+                  ? t('adminStreamManagerPanelStates.rotation')
+                  : t('adminStreamManagerPanelStates.liveBroadcast')}
               </dd>
               {detailsStream.goneLiveAt ? (
                 <>

@@ -269,7 +269,11 @@ export const MultitrackTimeline = ({
         <Button
           size="sm"
           onClick={togglePlay}
-          aria-label={playing ? 'Pause preview' : 'Play preview'}
+          aria-label={
+            playing
+              ? t('multitrackTimelineStates.pausePreview')
+              : t('multitrackTimelineStates.playPreview')
+          }
         >
           {playing ? <PauseIcon size={15} /> : <PlayIcon size={15} />}
         </Button>
@@ -375,7 +379,15 @@ export const MultitrackTimeline = ({
                   variant="plain"
                   size="flexible"
                   className="inline-block rounded-none whitespace-normal active:scale-100"
-                  aria-label={`${track.muted ? 'Unmute' : 'Mute'} ${track.name}`}
+                  aria-label={
+                    track.muted
+                      ? t('multitrackTimelineStates.unmuteItem', {
+                          name: track.name,
+                        })
+                      : t('multitrackTimelineStates.muteItem', {
+                          name: track.name,
+                        })
+                  }
                   onClick={() =>
                     onChange(toggleTimelineTrack(value, track.id, 'mute'))
                   }
@@ -389,7 +401,15 @@ export const MultitrackTimeline = ({
                 <Button
                   variant="plain"
                   size="flexible"
-                  aria-label={`${track.solo ? 'Unsolo' : 'Solo'} ${track.name}`}
+                  aria-label={
+                    track.solo
+                      ? t('multitrackTimelineStates.unsoloItem', {
+                          name: track.name,
+                        })
+                      : t('multitrackTimelineStates.soloItem', {
+                          name: track.name,
+                        })
+                  }
                   className={
                     track.solo
                       ? 'text-accent-yellow-strong inline-block rounded-none font-bold whitespace-normal active:scale-100'

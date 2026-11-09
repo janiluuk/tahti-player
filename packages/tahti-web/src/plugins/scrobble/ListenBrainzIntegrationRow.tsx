@@ -144,7 +144,11 @@ export function ListenBrainzIntegrationRow() {
               saving={busy}
               disabled={busy || !token.trim()}
               type="submit"
-              label={installed ? 'Update token' : 'Save and enable'}
+              label={
+                installed
+                  ? t('listenBrainzIntegrationRowStates.updateToken')
+                  : t('listenBrainzIntegrationRowStates.saveAndEnable')
+              }
               savingLabel="Saving…"
             />
           </Dialog.Actions>

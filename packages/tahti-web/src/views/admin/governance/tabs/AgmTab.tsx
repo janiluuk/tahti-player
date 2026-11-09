@@ -298,7 +298,7 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
           ]}
         />
         <Button size="sm" disabled={saving || !name.trim()} type="submit">
-          {saving ? 'Recording…' : 'Record'}
+          {saving ? t('agmTabStates.recording') : t('agmTabStates.record')}
         </Button>
       </form>
     </CollapsibleRecord>
@@ -432,7 +432,9 @@ export function AgmTab() {
             ) : (
               <PlusIcon size={14} aria-hidden className="mr-1.5" />
             )}
-            {meetingSaving ? 'Creating…' : 'Create meeting'}
+            {meetingSaving
+              ? t('agmTabStates.creating')
+              : t('agmTabStates.createMeeting')}
           </Button>
         </form>
         {meetings.length === 0 ? (
@@ -519,8 +521,8 @@ export function AgmTab() {
                     {meeting.minutesApprovedAt
                       ? 'Approved'
                       : meeting.minutesKey
-                        ? 'Uploaded, pending approval'
-                        : 'Not uploaded'}
+                        ? t('agmTabStates.uploadedPendingApproval')
+                        : t('agmTabStates.notUploaded')}
                   </span>
                   {meeting.minutesUrl && isSafeHref(meeting.minutesUrl) && (
                     <ExternalLink
@@ -535,8 +537,8 @@ export function AgmTab() {
                       minutesUploading === meeting.id
                         ? 'Uploading…'
                         : meeting.minutesKey
-                          ? 'Replace file'
-                          : 'Upload file'
+                          ? t('agmTabStates.replaceFile')
+                          : t('agmTabStates.uploadFile')
                     }
                     disabled={minutesUploading === meeting.id}
                     onFile={(file) => {
@@ -626,8 +628,10 @@ export function AgmTab() {
                 <div className="min-w-0 flex-1 basis-56">
                   <div className="font-medium">{m.title}</div>
                   <div className="text-foreground-secondary text-xs">
-                    {m.advisory ? 'Advisory' : 'Binding'} ·{' '}
-                    {motionStateLabel(m.state)} · {m.totalVotes} votes
+                    {m.advisory
+                      ? t('agmTabStates.advisory')
+                      : t('agmTabStates.binding')}{' '}
+                    · {motionStateLabel(m.state)} · {m.totalVotes} votes
                   </div>
                 </div>
                 <div className="text-foreground-secondary text-xs">
@@ -749,7 +753,9 @@ export function AgmTab() {
               ) : (
                 <PlusIcon size={14} aria-hidden className="mr-1.5" />
               )}
-              {documentSaving ? 'Publishing…' : 'Add document'}
+              {documentSaving
+                ? t('agmTabStates.publishing')
+                : t('agmTabStates.addDocument')}
             </Button>
           </form>
           <div className="mt-2 flex items-center justify-between gap-3 text-sm">

@@ -395,8 +395,8 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
           }
           description={
             followingCount === 0
-              ? 'Discover artists under Discover → Artists, then follow them to fill this feed.'
-              : 'New posts, tracks, and releases from artists you follow will show up here.'
+              ? t('feedViewStates.discoverArtistsUnderDiscoverArtists')
+              : t('feedViewStates.newPostsTracksAndReleases')
           }
           action={
             <ButtonLink

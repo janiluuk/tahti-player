@@ -51,8 +51,12 @@ export function MusicBrainzRegisterPrompt(props: AssistantProps) {
     setPref(value);
     toast.success(
       value
-        ? 'MusicBrainz registration will be offered for every release.'
-        : 'MusicBrainz registration won’t be offered again. It stays in the Export tab.',
+        ? t(
+            'musicBrainzRegisterPromptStates.musicbrainzRegistrationWillBeOffered',
+          )
+        : t(
+            'musicBrainzRegisterPromptStates.musicbrainzRegistrationWontBeOffered',
+          ),
     );
   };
 

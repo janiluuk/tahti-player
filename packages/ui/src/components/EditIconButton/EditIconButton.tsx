@@ -10,6 +10,7 @@ import {
 import { cn } from '../../utils';
 import { Button, buttonVariants } from '../Button/Button';
 import { Tooltip } from '../Tooltip';
+import { useUiLabels } from '../UiLabels';
 
 export type EditIconButtonProps = Omit<
   ComponentProps<typeof Button>,
@@ -27,15 +28,18 @@ export type EditIconButtonProps = Omit<
 
 /** The app-wide "edit this" action: a pencil icon button with a tooltip. */
 export const EditIconButton: FC<EditIconButtonProps> = ({
-  label = 'Edit',
+  label,
   editing,
-  doneLabel = 'Done editing',
+  doneLabel,
   tooltipSide = 'top',
   variant,
   ...props
 }) => {
+  const labels = useUiLabels();
   const isToggle = editing !== undefined;
-  const name = editing ? doneLabel : label;
+  const name = editing
+    ? (doneLabel ?? labels.doneEditing)
+    : (label ?? labels.edit);
   const button = (
     <Button
       size="icon-sm"
@@ -67,14 +71,16 @@ type EditIconAnchorProps = ComponentPropsWithoutRef<'a'> & {
 
 const EditIconAnchor = forwardRef<HTMLAnchorElement, EditIconAnchorProps>(
   function EditIconAnchor(
-    { label = 'Edit', variant = 'secondary', className, ...rest },
+    { label, variant = 'secondary', className, ...rest },
     ref,
   ) {
+    const labels = useUiLabels();
+    const name = label ?? labels.edit;
     return (
-      <Tooltip content={label} side="top">
+      <Tooltip content={name} side="top">
         <a
           ref={ref}
-          aria-label={label}
+          aria-label={name}
           className={cn(
             buttonVariants({ variant, size: 'icon-sm' }),
             className,

@@ -86,7 +86,9 @@ function AdjustmentForm({
       {error ? <InlineError>{error}</InlineError> : null}
       <div className="flex justify-end">
         <Button type="submit" size="sm" disabled={!valid || busy}>
-          {busy ? 'Adding…' : 'Add adjustment'}
+          {busy
+            ? t('adminUserEngagementPanelStates.adding')
+            : t('adminUserEngagementPanelStates.addAdjustment')}
         </Button>
       </div>
     </form>

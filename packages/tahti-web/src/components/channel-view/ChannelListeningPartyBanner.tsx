@@ -51,7 +51,9 @@ export function ChannelListeningPartyBanner({ slug }: { slug: string }) {
       />
       <div className="min-w-0 flex-1">
         <Eyebrow tone={live ? 'green' : 'primary'}>
-          {live ? 'Listening party · live now' : 'Listening party'}
+          {live
+            ? t('channelListeningPartyBannerStates.listeningPartyLiveNow')
+            : t('channelListeningPartyBannerStates.listeningParty')}
         </Eyebrow>
         <p className="truncate font-medium">{party.release.title}</p>
         {live ? null : (
@@ -73,7 +75,9 @@ export function ChannelListeningPartyBanner({ slug }: { slug: string }) {
         variant={live ? 'default' : 'secondary'}
       >
         <PartyPopperIcon size={14} aria-hidden className="mr-1.5" />
-        {live ? 'Join now' : 'Open party'}
+        {live
+          ? t('channelListeningPartyBannerStates.joinNow')
+          : t('channelListeningPartyBannerStates.openParty')}
       </ButtonLink>
     </section>
   );

@@ -128,7 +128,9 @@ export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
                       variant="pill"
                       color={payout.state === 'FAILED' ? 'red' : 'orange'}
                     >
-                      {payout.state === 'FAILED' ? 'Failed' : 'Pending'}
+                      {payout.state === 'FAILED'
+                        ? t('fanSubPayoutQueueStates.failed')
+                        : t('fanSubPayoutQueueStates.pending')}
                     </Badge>
                   </span>
                   <span className="text-foreground-secondary block text-xs">
@@ -152,7 +154,9 @@ export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
                       onClick={() => void retry(payout)}
                     >
                       <RotateCcwIcon size={14} aria-hidden className="mr-1.5" />
-                      {retrying === payout.id ? 'Retrying…' : 'Retry'}
+                      {retrying === payout.id
+                        ? t('fanSubPayoutQueueStates.retrying')
+                        : t('fanSubPayoutQueueStates.retry')}
                     </Button>
                   ) : null}
                 </span>

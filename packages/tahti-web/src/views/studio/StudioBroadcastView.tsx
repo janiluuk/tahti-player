@@ -216,18 +216,22 @@ export function StudioBroadcastView() {
               />
               <span className="flex flex-col">
                 <span className="text-base font-bold">
-                  {live ? 'On air' : 'Off air'}
+                  {live
+                    ? t('studioBroadcastViewStates.onAir')
+                    : t('studioBroadcastViewStates.offAir')}
                 </span>
                 <span className="text-foreground-secondary text-xs">
                   {live
-                    ? 'You are live on your channel.'
-                    : 'Your 24/7 radio plays while you are off air.'}
+                    ? t('studioBroadcastViewStates.youAreLiveOnYour')
+                    : t('studioBroadcastViewStates.your247RadioPlays')}
                 </span>
               </span>
             </span>
             <ButtonLink to="/studio/go-live" className="gap-1.5">
               <RadioTowerIcon size={16} aria-hidden />
-              {live ? 'Open the green room' : 'Go live'}
+              {live
+                ? t('studioBroadcastViewStates.openTheGreenRoom')
+                : t('studioBroadcastViewStates.goLive')}
             </ButtonLink>
           </div>
           {channel?.slug ? (

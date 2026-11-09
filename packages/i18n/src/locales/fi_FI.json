@@ -10357,6 +10357,1321 @@
     },
     "listenAddonsTabEmptyText": {
       "everythingHereIsInstalled": "Kaikki täällä on jo asennettu."
+    },
+    "adminStreamManagerPanelStates": {
+      "collapseStreams": "Pienennä virrat",
+      "expandStreams": "Laajenna virrat",
+      "collapseLiveStreams": "Pienennä livevirrat",
+      "expandLiveStreams": "Laajenna livevirrat",
+      "rotation": "Rotaatio",
+      "liveBroadcast": "Livelähetys"
+    },
+    "channelAnnouncementsPanelStates": {
+      "closeRecorder": "Sulje tallennin",
+      "recordVoice": "Äänitä puhe",
+      "uploadingClip": "Ladataan klippiä…",
+      "uploadAudio": "Lataa ääni",
+      "uploading": "Ladataan…",
+      "chooseAudio": "Valitse ääni",
+      "enabledInRotation": "Käytössä rotaatiossa",
+      "inactive": "Ei käytössä",
+      "removePageMusic": "Poista sivun musiikki",
+      "useAsPageMusic": "Käytä sivun musiikkina",
+      "deleting": "Poistetaan…",
+      "delete": "Poista"
+    },
+    "channelRadioPlaylistPanelStates": {
+      "on": "Päällä",
+      "off": "Pois",
+      "noPlaylistsYet": "Ei vielä soittolistoja",
+      "chooseAPlaylist": "Valitse soittolista"
+    },
+    "channelRotationEditorStates": {
+      "pause": "Tauko",
+      "play": "Toista"
+    },
+    "multicastConfigureDialogStates": {
+      "rtmpAddressAndStreamKey": "RTMP-osoite ja striimiavain vaaditaan.",
+      "streamKeyIsRequired": "Striimiavain vaaditaan.",
+      "updateTheDestinationLabelAnd": "Päivitä kohteen nimi ja se, peilaako se livelähetyksesi.",
+      "enterTheCredentialThisPlatform": "Anna tunnus, jota tämä palvelu käyttää livestriimaukseen. Oma RTMP tarvitsee lisäksi palvelimen osoitteen ja portin.",
+      "streamKey": "Striimiavain",
+      "streamKeyApiKey": "Striimiavain / API-avain",
+      "pasteStreamKey": "Liitä striimiavain",
+      "pastePlatformCredential": "Liitä palvelun tunnus"
+    },
+    "multicastSectionStates": {
+      "newStreamKey": "Uusi striimiavain",
+      "streamKey": "Striimiavain",
+      "testing": "Testataan…",
+      "testConnection": "Testaa yhteys",
+      "disable": "Poista käytöstä",
+      "enable": "Ota käyttöön",
+      "removing": "Poistetaan…",
+      "remove": "Poista",
+      "saving": "Tallennetaan…",
+      "addDestination": "Lisää kohde"
+    },
+    "signalCheckWidgetStates": {
+      "listeningThatsReallyYou": "Kuunnellaan - se olet tosiaan sinä!",
+      "youreConnected": "Yhteys on muodostettu!",
+      "talkOrPlaySomethingWatch": "Puhu tai soita jotain - palkit liikkuvat alla.",
+      "checkYourOwnAudioAnd": "Tarkista oma äänesi ja tasot ennen kuin menet liveen.",
+      "stopListening": "Lopeta kuuntelu",
+      "checkMyAudio": "Tarkista ääneni"
+    },
+    "streamManagerManagerDialogsStates": {
+      "ending": "Lopetetaan…",
+      "stopStream": "Pysäytä virta"
+    },
+    "streamManagerPanelHeaderStates": {
+      "stopRotation": "Pysäytä rotaatio",
+      "startRotation": "Käynnistä rotaatio",
+      "showLess": "Näytä vähemmän",
+      "showMore": "Näytä lisää",
+      "pauseStream": "Keskeytä virta",
+      "playStream": "Toista virta",
+      "ending": "Lopetetaan…",
+      "endStream": "Lopeta lähetys"
+    },
+    "streamManagerPlaylistDialogStates": {
+      "replaceTheCurrentRotation": "Korvataanko nykyinen rotaatio?",
+      "addThisPlaylistToThe": "Lisätäänkö tämä soittolista rotaatioon?",
+      "replacing": "Korvataan…",
+      "adding": "Lisätään…",
+      "replaceRotation": "Korvaa rotaatio",
+      "addToRotation": "Lisää rotaatioon"
+    },
+    "streamManagerRotationBodyStates": {
+      "ending": "Lopetetaan…",
+      "stopStream": "Pysäytä virta"
+    },
+    "streamManagerStatsGridStates": {
+      "offline": "Offline",
+      "noEncoder": "Ei enkooderia",
+      "on": "Päällä",
+      "off": "Pois"
+    },
+    "adminAnnouncementsViewStates": {
+      "uploadingAnnouncement": "Ladataan kuulutusta…",
+      "announcementClip": "Kuulutusklippi",
+      "uploading": "Ladataan…",
+      "chooseAudio": "Valitse ääni"
+    },
+    "adminRadioViewStates": {
+      "streamLive": "Virta livenä",
+      "streamOffline": "Virta pois päältä",
+      "tahtiRadioIsBroadcastingThe": "Tahti Radio lähettää jäsenrotaatiota tai vierailevaa livekanavaa.",
+      "theTahtiRadioStreamIs": "Tahti Radion virta ei ole juuri nyt käytettävissä.",
+      "pauseTahtiRadioStream": "Keskeytä Tahti Radion virta",
+      "playTahtiRadioStream": "Toista Tahti Radion virta",
+      "pause": "Tauko",
+      "listen": "Kuuntele",
+      "liveGuestOnAir": "Liveviera lähetyksessä",
+      "rotationOnAir": "Rotaatio lähetyksessä"
+    },
+    "announcementTrimDialogStates": {
+      "rendering": "Renderöidään…",
+      "renderTrim": "Renderöi leikkaus"
+    },
+    "selectsGenerateDialogStates": {
+      "replaceRotation": "Korvaa rotaatio",
+      "addTracks": "Lisää kappaleita",
+      "noNewTracks": "Ei uusia lisättäviä kappaleita: jokainen soitettava kärkikappale on jo rotaatiossa.",
+      "replacedRotation_one": "Rotaatio korvattiin {{count}} kappaleella kärkilistalta.",
+      "replacedRotation_other": "Rotaatio korvattiin {{count}} kappaleella kärkilistalta.",
+      "addedTracks_one": "Lisättiin {{count}} kappale kärkilistalta.",
+      "addedTracks_other": "Lisättiin {{count}} kappaletta kärkilistalta."
+    },
+    "selectsTabStates": {
+      "stopStream": "Pysäytä virta",
+      "bringStreamOnline": "Käynnistä virta",
+      "streamStarting": "Virta käynnistyy",
+      "streamOffline": "Virta pois päältä",
+      "theRotationServiceIsBeing": "Rotaatiopalvelua käynnistetään.",
+      "theStreamIsUnavailableRecovery": "Virta ei ole käytettävissä. Palautusta yritetään automaattisesti.",
+      "pauseTahtiSelectsStream": "Keskeytä Tahti Selects -virta",
+      "playTahtiSelectsStream": "Toista Tahti Selects -virta",
+      "pause": "Tauko",
+      "listen": "Kuuntele",
+      "nowPlaying": "Nyt soi",
+      "playbackState": "Toiston tila",
+      "connectingRotation": "Yhdistetään rotaatiota…",
+      "noActiveTrack": "Ei aktiivista kappaletta",
+      "deselectItem": "Poista valinta: {{title}}",
+      "selectItem": "Valitse: {{title}}"
+    },
+    "channelRotationPanelStates": {
+      "loading": "Ladataan…",
+      "openRotation": "Avaa rotaatio"
+    },
+    "channelTracksPanelStates": {
+      "loading": "Ladataan…",
+      "openTracks": "Avaa kappaleet"
+    },
+    "rotationReleaseLibraryStates": {
+      "adding": "Lisätään…",
+      "add": "Lisää"
+    },
+    "studioBroadcastViewStates": {
+      "onAir": "Lähetyksessä",
+      "offAir": "Ei lähetyksessä",
+      "youAreLiveOnYour": "Olet livenä kanavallasi.",
+      "your247RadioPlays": "24/7-radiosi soi, kun et ole lähetyksessä.",
+      "openTheGreenRoom": "Avaa green room",
+      "goLive": "Mene liveen"
+    },
+    "studioGoLiveViewStates": {
+      "onAir": "Lähetyksessä",
+      "beforeYouStart": "Ennen kuin aloitat"
+    },
+    "broadcastCredentialsPanelStates": {
+      "hideBroadcastingOptions": "Piilota lähetysasetukset",
+      "showBroadcastingOptions": "Näytä lähetysasetukset"
+    },
+    "greenRoomInviteFormStates": {
+      "updating": "Päivitetään…",
+      "inviteAnyoneNewFromMy": "Kutsu uudet kutsujoukostani"
+    },
+    "greenRoomSessionPanelStates": {
+      "joined": "Liittynyt",
+      "notJoined": "Ei liittynyt"
+    },
+    "multistreamPanelStates": {
+      "enabled": "Käytössä",
+      "disabled": "Ei käytössä",
+      "disable": "Poista käytöstä",
+      "enable": "Ota käyttöön"
+    },
+    "recordingPanelStates": {
+      "onSavedWhenTheBroadcast": "Päällä · tallennetaan, kun lähetys päättyy",
+      "offThisBroadcastWillNot": "Pois · tätä lähetystä ei tallenneta"
+    },
+    "signalPanelStates": {
+      "signalReceivedButYourBroadcast": "Signaali vastaanotettu, mutta tämän viikon lähetysaikasi on käytetty.",
+      "signalReceivedYouCanGo": "Signaali vastaanotettu. Voit mennä liveen.",
+      "signalReady": "Signaali valmis",
+      "startYourEncoder": "Käynnistä enkooderi",
+      "takeOverRotation": "Ota rotaation paikka",
+      "goLive": "Mene liveen",
+      "yourBroadcastIsOnAir": "Lähetyksesi on käynnissä.",
+      "noSignalFromYourEncoder": "Enkooderista ei tule signaalia."
+    },
+    "audioRevisionListStates": {
+      "chooseAnotherFile": "Valitse toinen tiedosto",
+      "chooseAudioFile": "Valitse äänitiedosto",
+      "savingRevision": "Tallennetaan versiota…",
+      "saveAsNewRevision": "Tallenna uutena versiona",
+      "pause": "Tauko",
+      "preview": "Esikuuntele",
+      "switching": "Vaihdetaan…",
+      "useThisVersion": "Käytä tätä versiota"
+    },
+    "fingerprintTrackPanelStates": {
+      "fingerprinting": "Tunnistetaan…",
+      "reFingerprint": "Tunnista uudelleen",
+      "checking": "Tarkistetaan…",
+      "checkForAMatch": "Etsi vastaavuutta"
+    },
+    "multitrackTimelineStates": {
+      "pausePreview": "Keskeytä esikuuntelu",
+      "playPreview": "Toista esikuuntelu",
+      "unmuteItem": "Poista mykistys: {{name}}",
+      "muteItem": "Mykistä: {{name}}",
+      "unsoloItem": "Poista soolo: {{name}}",
+      "soloItem": "Soolo: {{name}}"
+    },
+    "stemMixerStates": {
+      "pauseAllStems": "Keskeytä kaikki raidat",
+      "playAllStems": "Toista kaikki raidat"
+    },
+    "studioSoundRowMenuStates": {
+      "unpinFromPage": "Irrota sivulta",
+      "pinToPage": "Kiinnitä sivulle"
+    },
+    "trackAnalysisSectionStates": {
+      "reAnalyze": "Analysoi uudelleen",
+      "analyze": "Analysoi"
+    },
+    "trackExportConnectionsStates": {
+      "testing": "Testataan…",
+      "testConnection": "Testaa yhteys"
+    },
+    "trackExportPanelStates": {
+      "sending": "Lähetetään…",
+      "tryAgain": "Yritä uudelleen",
+      "adding": "Lisätään…",
+      "export": "Vie"
+    },
+    "audioTabStates": {
+      "thisTrackIsEmbeddedFrom": "Tämä kappale on upotettu alkuperäisestä lähteestään.",
+      "thisTrackIsStoredAs": "Tämä kappale on tallennettu Tahdin äänenä.",
+      "pause": "Tauko",
+      "play": "Toista",
+      "normalizing": "Normalisoidaan…",
+      "normalizeAudio": "Normalisoi ääni",
+      "trimmingSilence": "Leikataan hiljaisuutta…",
+      "trimSilence": "Leikkaa hiljaisuus"
+    },
+    "hearthisEmbedImportStates": {
+      "importingTheTrackSwitchesTo": "Tuodaan - kappale siirtyy Tahdin ylläpitämään ääneen, kun tuonti valmistuu.",
+      "copyThisTracksAudioFrom": "Kopioi tämän kappaleen ääni hearthis.at-palvelusta, jotta se soi ilman upotusta. Toimii vain, jos lataukset on sallittu hearthis.at-palvelussa.",
+      "starting": "Aloitetaan…",
+      "importAudio": "Tuo ääni"
+    },
+    "hearthisExportSectionStates": {
+      "tryAgain": "Yritä uudelleen",
+      "push": "Lähetä"
+    },
+    "publishToReleaseSectionStates": {
+      "adding": "Lisätään…",
+      "addToRelease": "Lisää julkaisuun"
+    },
+    "sharingTabStates": {
+      "preparingDownload": "Valmistellaan latausta…",
+      "downloadFromHearthis": "Lataa HearThisistä",
+      "resubmit": "Lähetä uudelleen",
+      "submit": "Lähetä"
+    },
+    "stationIdClipFormStates": {
+      "makingClip": "Tehdään klippiä…",
+      "makeClip": "Tee klippi"
+    },
+    "studioEditorProjectViewStates": {
+      "saveFailed": "Tallennus epäonnistui",
+      "saved": "Tallennettu"
+    },
+    "studioMasteringViewStates": {
+      "chooseAnotherFile": "Valitse toinen tiedosto",
+      "chooseFile": "Valitse tiedosto"
+    },
+    "masteringPanelStates": {
+      "expandMastering": "Laajenna masterointi",
+      "minimizeMastering": "Pienennä masterointi",
+      "disableItem": "Poista käytöstä: {{name}}",
+      "enableItem": "Ota käyttöön: {{name}}"
+    },
+    "stemsPanelStates": {
+      "splitting": "Erotellaan…",
+      "splitIntoStems": "Erottele raidoiksi",
+      "loadingLanes": "Ladataan raitoja…",
+      "sendToMultitrack": "Lähetä moniraitaan"
+    },
+    "takeMetamorphDialogStates": {
+      "adding": "Lisätään…",
+      "addToMultitrack": "Lisää moniraitaan"
+    },
+    "waveformToolbarStates": {
+      "pause": "Tauko",
+      "play": "Toista"
+    },
+    "playlistsTabContentStates": {
+      "removeFromRotation": "Poista rotaatiosta",
+      "addToRotation": "Lisää rotaatioon"
+    },
+    "processingFailedAlertStates": {
+      "tryProcessingItAgainIf": "Yritä käsittelyä uudelleen. Jos se epäonnistuu edelleen, lataa tiedosto uudelleen tai ota yhteyttä tukeen.",
+      "tryUploadingItAgainOr": "Yritä ladata se uudelleen tai ota yhteyttä tukeen, jos ongelma toistuu."
+    },
+    "soundHeaderStates": {
+      "unpinFromPage": "Irrota sivulta",
+      "pinToPage": "Kiinnitä sivulle",
+      "normalizing": "Normalisoidaan…",
+      "normalizeAudio": "Normalisoi ääni",
+      "trimmingSilence": "Leikataan hiljaisuutta…",
+      "trimSilence": "Leikkaa hiljaisuus",
+      "pauseTrack": "Keskeytä kappale",
+      "playTrack": "Toista kappale"
+    },
+    "useSoundEditorStates": {
+      "pinnedToYourPublicPage": "Kiinnitetty julkiselle sivullesi.",
+      "unpinned": "Kiinnitys poistettu.",
+      "addedToYour247": "Lisätty 24/7-rotaatioosi.",
+      "removedFromRotation": "Poistettu rotaatiosta."
+    },
+    "soundsAmbientListStates": {
+      "noHostedSoundsMatchThese": "Yksikään ylläpidetty ääni ei vastaa näitä suodattimia.",
+      "noSoundsMatchTheseFilters": "Yksikään ääni ei vastaa näitä suodattimia."
+    },
+    "regionListStates": {
+      "fadeIn": "Sisään {{range}}",
+      "fadeOut": "Ulos {{range}}"
+    },
+    "addToReleasePanelStates": {
+      "removedFromTheRelease": "Poistettu julkaisusta.",
+      "removedThoseTracksFromThe": "Kappaleet poistettu julkaisusta."
+    },
+    "releaseTracksToRotationStates": {
+      "adding": "Lisätään…",
+      "add": "Lisää"
+    },
+    "studioCollectionMoreMenuStates": {
+      "makePublic": "Tee julkiseksi",
+      "makePrivate": "Tee yksityiseksi",
+      "deleting": "Poistetaan…",
+      "delete": "Poista"
+    },
+    "releaseCsvImportButtonStates": {
+      "done": "Valmis",
+      "cancel": "Peruuta",
+      "importing": "Tuodaan…",
+      "import": "Tuo"
+    },
+    "studioChannelViewStates": {
+      "radio": "Radio",
+      "channel": "Kanava"
+    },
+    "studioEventCreateViewStates": {
+      "editEvent": "Muokkaa tapahtumaa",
+      "addEvent": "Lisää tapahtuma",
+      "couldNotSaveTheEvent": "Tapahtuman tallennus epäonnistui.",
+      "couldNotCreateTheEvent": "Tapahtuman luonti epäonnistui.",
+      "saving": "Tallennetaan…",
+      "saveChanges": "Tallenna muutokset",
+      "adding": "Lisätään…"
+    },
+    "studioHomeViewStates": {
+      "member": "Jäsen",
+      "communityAccount": "Yhteisötili"
+    },
+    "studioListeningPartyFormViewStates": {
+      "rescheduleListeningParty": "Siirrä kuuntelujuhlaa",
+      "scheduleListeningParty": "Aikatauluta kuuntelobileet",
+      "addTracksToARelease": "Lisää ensin kappaleita julkaisuun",
+      "chooseARelease": "Valitse julkaisu",
+      "saveChanges": "Tallenna muutokset",
+      "scheduleParty": "Aikatauluta juhla"
+    },
+    "studioRevenueViewStates": {
+      "store": "Kauppa",
+      "earnings": "Tulot"
+    },
+    "studioUpdatesViewStates": {
+      "newsletter": "Uutiskirje",
+      "posts": "Julkaisut",
+      "fansOnly": "Vain faneille",
+      "allSubscribers": "Kaikki tilaajat"
+    },
+    "profileBackdropSectionStates": {
+      "replaceBackdrop": "Vaihda taustakuva",
+      "addABackdrop": "Lisää taustakuva",
+      "uploading": "Ladataan…",
+      "chooseImage": "Valitse kuva"
+    },
+    "profileLogoSectionStates": {
+      "replaceLogo": "Vaihda logo",
+      "addALogo": "Lisää logo",
+      "uploading": "Ladataan…",
+      "chooseImage": "Valitse kuva"
+    },
+    "addTracksDialogStates": {
+      "noAvailableTracksMatchYour": "Haullasi ei löydy saatavilla olevia kappaleita",
+      "allLibraryTracksAreAlready": "Kaikki kirjaston kappaleet ovat jo tässä kokoelmassa",
+      "adding": "Lisätään…",
+      "add": "Lisää",
+      "previewItem": "Esikuuntele: {{title}}"
+    },
+    "collectionDialogsStates": {
+      "uploading": "Ladataan…",
+      "chooseImageS": "Valitse kuva(t)"
+    },
+    "collectionHeaderStates": {
+      "previewBackdrop": "Esikatsele taustakuvaa",
+      "changeBackdrop": "Vaihda taustakuva"
+    },
+    "mikseriImportPanelStates": {
+      "adding": "Lisätään…",
+      "addEmbed": "Lisää upotus"
+    },
+    "mixcloudImportPanelStates": {
+      "mixcloudProfileUrl": "Mixcloud-profiilin osoite",
+      "searchMixcloud": "Hae Mixcloudista",
+      "looking": "Etsitään…",
+      "find": "Etsi",
+      "noMixesFoundAddYour": "Miksauksia ei löytynyt. Lisää ensin Mixcloud-käyttäjänimesi somelinkkeihisi.",
+      "noCloudcastsFound": "Cloudcasteja ei löytynyt.",
+      "adding": "Lisätään…",
+      "add": "Lisää"
+    },
+    "spotifyImportPanelStates": {
+      "spotifyArtistLink": "Spotify-artistilinkki",
+      "searchSpotify": "Hae Spotifysta",
+      "looking": "Etsitään…",
+      "find": "Etsi",
+      "adding": "Lisätään…",
+      "add": "Lisää"
+    },
+    "textLayerPanelStates": {
+      "saving": "Tallennetaan…",
+      "saveTextLayer": "Tallenna tekstitaso"
+    },
+    "tracklistPanelStates": {
+      "tracklist": "Kappalelista",
+      "items": "Kohteet",
+      "addSoundItemsBelow": "Lisää äänikohteita alla.",
+      "clickEditToAddTracks": "Lisää kappaleita valitsemalla Muokkaa."
+    },
+    "releaseOpsPanelStates": {
+      "musicbrainzPrefillCopied": "MusicBrainz-esitäyttö kopioitu.",
+      "discogsPrefillCopied": "Discogs-esitäyttö kopioitu.",
+      "cLine": "C-rivi",
+      "labelImprint": "Levymerkki",
+      "hide": "Piilota",
+      "releaseOps": "Julkaisutehtävät"
+    },
+    "recordingRowStates": {
+      "processing": "Käsitellään",
+      "draft": "Luonnos",
+      "published": "Julkaistu"
+    },
+    "releasePoweredByFooterToggleStates": {
+      "footerShownOnTheSmart": "Alatunniste näkyy älylinkissä.",
+      "footerHidden": "Alatunniste piilotettu."
+    },
+    "releaseTrackAudioUploadStates": {
+      "uploadAgain": "Lataa uudelleen",
+      "uploadAudio": "Lataa ääni"
+    },
+    "releaseTrackVersionsPanelStates": {
+      "failed": "Epäonnistui",
+      "processing": "Käsitellään",
+      "uploading": "Ladataan…",
+      "chooseAudioFile": "Valitse äänitiedosto"
+    },
+    "episodeEditorRowStates": {
+      "recorded": "Tallennettu lähetyksestä",
+      "uploaded": "Ladattu",
+      "broadcastRecording": "Lähetyksen tallenne",
+      "uploadedAudio": "Ladattu ääni",
+      "attached": "Liitetty",
+      "notAttached": "Ei liitetty"
+    },
+    "newEpisodeDialogStates": {
+      "chooseAnotherFile": "Valitse toinen tiedosto",
+      "chooseAudio": "Valitse ääni",
+      "createGoRecord": "Luo ja siirry äänittämään",
+      "createEpisode": "Luo jakso"
+    },
+    "overviewTabStates": {
+      "review": "Tarkista",
+      "open": "Avaa",
+      "reviewItem": "Tarkista: {{title}}",
+      "openItem": "Avaa {{title}}"
+    },
+    "studioEpisodeReviewViewStates": {
+      "rendering": "Renderöidään…",
+      "applyTrimNormalize": "Käytä leikkausta / normalisointia",
+      "approved": "Hyväksytty",
+      "approveEpisode": "Hyväksy jakso"
+    },
+    "postDialogStates": {
+      "postSaved": "Julkaisu tallennettu.",
+      "postPublished": "Julkaisu julkaistu.",
+      "schedule": "Ajasta",
+      "publish": "Julkaise",
+      "editPost": "Muokkaa julkaisua",
+      "newPost": "Uusi julkaisu",
+      "yourLocalTimeClearIt": "Paikallinen aikasi. Tyhjennä, niin julkaisu tapahtuu heti.",
+      "yourLocalTimeLeaveEmpty": "Paikallinen aikasi. Jätä tyhjäksi, niin julkaisu tapahtuu heti.",
+      "addAnImage": "Lisää kuva",
+      "postImage": "Julkaisun kuva",
+      "chooseAnotherImage": "Valitse toinen kuva",
+      "chooseImage": "Valitse kuva"
+    },
+    "showHeaderStates": {
+      "liveSet": "Live-setti",
+      "talkShow": "Puheohjelma",
+      "singleShow": "Yksittäinen ohjelma",
+      "series": "Sarja"
+    },
+    "adminPageCommentsPanelStates": {
+      "resolved": "Ratkaistu",
+      "open": "Avoin"
+    },
+    "adminUserEditPanelStates": {
+      "accountSuspendedTheyWereEmailed": "Tili jäädytetty. Käyttäjälle lähetettiin perustelusi sähköpostilla.",
+      "accountRestoredTheyWereEmailed": "Tili palautettu. Käyttäjälle lähetettiin kirjautumislinkki sähköpostilla.",
+      "artist": "Artisti",
+      "listener": "Kuuntelija",
+      "chargesEnabled": "Veloitukset käytössä",
+      "notReady": "Ei valmis",
+      "yes": "Kyllä",
+      "no": "Ei",
+      "restoreAccount": "Palauta tili",
+      "suspendAccount": "Jäädytä tili"
+    },
+    "adminUserDeletePanelStates": {
+      "deleting": "Poistetaan…",
+      "deleteAccount": "Poista tili"
+    },
+    "adminUserEngagementPanelStates": {
+      "adding": "Lisätään…",
+      "addAdjustment": "Lisää korjaus"
+    },
+    "adminAddonsViewStates": {
+      "noAddOnsNeedReview": "Yksikään lisäosa ei odota tarkistusta juuri nyt.",
+      "noAddOnsRegisteredFor": "Tälle tyypille ei ole vielä rekisteröity lisäosia."
+    },
+    "adminDashboardViewStates": {
+      "hideMore": "Piilota lisää",
+      "financeStreamsQueuesAudit": "Talous, virrat, jonot ja tarkastus"
+    },
+    "adminI18nViewStates": {
+      "adding": "Lisätään…",
+      "addLanguage": "Lisää kieli",
+      "importing": "Tuodaan…",
+      "translationCsv": "Käännös-CSV",
+      "chooseCsv": "Valitse CSV"
+    },
+    "adminMonitoringViewStates": {
+      "clearFilter": "Tyhjennä suodatin",
+      "filterBelow": "Suodata alla"
+    },
+    "adminNewsViewStates": {
+      "unpublish": "Peru julkaisu",
+      "publish": "Julkaise",
+      "publishing": "Julkaistaan…"
+    },
+    "adminStorageUserViewStates": {
+      "stash": "Varasto",
+      "tracks": "Kappaleet",
+      "public": "Julkinen",
+      "private": "Yksityinen"
+    },
+    "adminStorageViewStates": {
+      "files": "Tiedostot",
+      "storage": "Tallennustila"
+    },
+    "adminTestNotificationPanelStates": {
+      "sending": "Lähetetään…",
+      "sendTest": "Lähetä testi"
+    },
+    "adminTopListsViewStates": {
+      "noMatchingTopListEntries": "Ei vastaavia kärkilistan merkintöjä",
+      "noListensYet": "Ei vielä kuunteluja",
+      "tryAnotherSearchPeriodOr": "Kokeile toista hakua, jaksoa tai ryhmittelyä.",
+      "noListensRecordedForThis": "Tältä jaksolta ei ole vielä kuunteluja."
+    },
+    "adminVendorsViewStates": {
+      "live": "Live",
+      "blockingLaunch": "Estää julkaisun"
+    },
+    "adminVenuesViewStates": {
+      "unverify": "Peru vahvistus",
+      "verify": "Vahvista"
+    },
+    "internetRadioPresetsPanelStates": {
+      "enabledForEveryone": "Käytössä kaikille",
+      "off": "Pois",
+      "disable": "Poista käytöstä",
+      "enableForEveryone": "Ota käyttöön kaikille",
+      "editStation": "Muokkaa asemaa",
+      "addInternetRadioStation": "Lisää nettiradioasema"
+    },
+    "stationHealthCellStates": {
+      "testing": "Testataan…",
+      "test": "Testaa"
+    },
+    "installsPanelStates": {
+      "enabled": "Käytössä",
+      "disabled": "Ei käytössä"
+    },
+    "publishDialogStates": {
+      "chooseAnotherFile": "Valitse toinen tiedosto",
+      "chooseBundle": "Valitse paketti",
+      "publishing": "Julkaistaan…",
+      "publishForReview": "Lähetä tarkistettavaksi"
+    },
+    "registerDialogStates": {
+      "changesTheNameDescriptionAuthor": "Muuttaa nimen, kuvauksen, tekijän, kannen ja kategoriat. Tunniste ja tyyppi pysyvät rekisteröidyn mukaisina.",
+      "createsADraftAddOn": "Luo lisäosan luonnoksen. Se pysyy piilossa kaikkialla, kunnes pakettiversio on julkaistu (kortin latauspainike) ja hyväksytty."
+    },
+    "fanSubArtistsPanelStates": {
+      "onboarding": "Käyttöönotossa",
+      "notConnected": "Ei yhdistetty"
+    },
+    "fanSubPayoutQueueStates": {
+      "failed": "Epäonnistui",
+      "pending": "Odottaa",
+      "retrying": "Yritetään uudelleen…",
+      "retry": "Yritä uudelleen"
+    },
+    "ledgerPanelStates": {
+      "recordedAsACost": "Kirjattu kuluksi.",
+      "recordedAsIncome": "Kirjattu tuloksi.",
+      "cancelEntry": "Peru merkintä",
+      "addEntry": "Lisää merkintä"
+    },
+    "betaTabStates": {
+      "approving": "Hyväksytään…",
+      "approve": "Hyväksy"
+    },
+    "radioSubmissionsTabStates": {
+      "loading": "Ladataan…",
+      "play": "Toista"
+    },
+    "workersPanelStates": {
+      "online": "Verkossa",
+      "offline": "Offline"
+    },
+    "filesBrowserTabStates": {
+      "public": "Julkinen",
+      "private": "Yksityinen",
+      "selectNone": "Poista valinnat",
+      "selectAllShown": "Valitse kaikki näkyvät",
+      "noFilesMatchTheseFilters": "Yksikään tiedosto ei vastaa näitä suodattimia",
+      "noFilesYet": "Ei vielä tiedostoja"
+    },
+    "storageSharedStates": {
+      "public": "Julkinen",
+      "private": "Yksityinen"
+    },
+    "membershipInvoicesStates": {
+      "pay": "Maksa",
+      "view": "Näytä"
+    },
+    "membershipStatusPanelStates": {
+      "opening": "Avataan…",
+      "manageBilling": "Hallitse laskutusta →",
+      "renewYourMembership": "Uusi jäsenyytesi",
+      "completeYourMembership": "Viimeistele jäsenyytesi",
+      "sending": "Lähetetään…",
+      "resendVerificationEmail": "Lähetä vahvistusviesti uudelleen"
+    },
+    "associationPanelStates": {
+      "auditor": "Tilintarkastaja",
+      "operationsInspector": "Toiminnantarkastaja"
+    },
+    "candidacyControlStates": {
+      "sending": "Lähetetään…",
+      "standInThisElection": "Asetu ehdolle tässä vaalissa"
+    },
+    "correctionsPanelStates": {
+      "sending": "Lähetetään…",
+      "sendToTheBoard": "Lähetä hallitukselle"
+    },
+    "meetingConflictsStates": {
+      "steppedOutOfTheDecision": "Jääväsi itsensä päätöksestä",
+      "tookPart": "Osallistui"
+    },
+    "motionAgendaItemControlStates": {
+      "changeAgendaItem": "Vaihda asialistan kohta",
+      "chooseAgendaItem": "Valitse asialistan kohta"
+    },
+    "motionCardStates": {
+      "votingOpened": "Äänestys avattu.",
+      "motionClosedAndResultPublished": "Esitys suljettu ja tulos julkaistu.",
+      "openVoting": "Avaa äänestys",
+      "closePublishResult": "Sulje ja julkaise tulos"
+    },
+    "motionCertificatePanelStates": {
+      "matchesTheRecord": "Vastaa pöytäkirjaa",
+      "doesNotMatchTheRecord": "Ei vastaa pöytäkirjaa"
+    },
+    "motionDiscussionStates": {
+      "hideDiscussion": "Piilota keskustelu",
+      "discussion": "Keskustelu",
+      "itIsReplacedByComment": "Sen tilalla näkyy kaikille jäsenille \"Kommentti poistettu.\", ja poisto kirjataan lokiin.",
+      "itIsReplacedByComment2": "Sen tilalla näkyy kaikille jäsenille \"Kommentti poistettu.\"."
+    },
+    "motionMeetingLinkControlStates": {
+      "changeMeeting": "Vaihda kokous",
+      "putOnAMeeting": "Lisää kokoukseen"
+    },
+    "discussionTopicViewStates": {
+      "posting": "Lähetetään…",
+      "postReply": "Lähetä vastaus",
+      "saving": "Tallennetaan…",
+      "save": "Tallenna",
+      "youNoLongerFollowThis": "Et enää seuraa tätä aihetta.",
+      "youFollowThisTopicNew": "Seuraat tätä aihetta; saat ilmoituksen uusista vastauksista.",
+      "unfollow": "Lopeta seuraaminen",
+      "follow": "Seuraa",
+      "repliesNotifyYouAgain": "Saat taas ilmoituksen vastauksista.",
+      "mutedYouStillFollowIt": "Mykistetty: seuraat aihetta edelleen, mutta ilman ilmoituksia.",
+      "unmute": "Poista mykistys",
+      "muteNotifications": "Mykistä ilmoitukset",
+      "loading": "Ladataan…",
+      "showEarlierReplies": "Näytä aiemmat vastaukset",
+      "itIsDeletedForEvery": "Se poistetaan kaikilta jäseniltä, ja poisto kirjataan lokiin.",
+      "itIsDeletedForEvery2": "Se poistetaan kaikilta jäseniltä."
+    },
+    "featureRequestsViewStates": {
+      "cancel": "Peruuta",
+      "proposeAnIdea": "Ehdota ideaa",
+      "posting": "Lähetetään…",
+      "postIdea": "Lähetä idea",
+      "hideDiscussion": "Piilota keskustelu",
+      "discussion": "Keskustelu"
+    },
+    "governanceMeetingDetailViewStates": {
+      "met": "Täyttyi",
+      "notMet": "Ei täyttynyt"
+    },
+    "governanceMembersViewStates": {
+      "noMemberDirectoryIsPublished": "Jäsenluetteloa ei ole vielä julkaistu.",
+      "noMembersMatchThisSearch": "Haulla ei löydy jäseniä."
+    },
+    "governanceViewStates": {
+      "submitting": "Lähetetään…",
+      "submitDraft": "Lähetä luonnos",
+      "loading": "Ladataan…",
+      "loadMoreMotions": "Lataa lisää esityksiä"
+    },
+    "discussionsAdminPanelStates": {
+      "opening": "Avataan…",
+      "openTopic": "Avaa aihe",
+      "saving": "Tallennetaan…",
+      "save": "Tallenna",
+      "open": "Avoin",
+      "closed": "Suljettu",
+      "topicUnpinned": "Aiheen kiinnitys poistettu.",
+      "topicPinned": "Aihe kiinnitetty.",
+      "unpin": "Irrota",
+      "pin": "Kiinnitä",
+      "topicClosedToRepliesIts": "Aihe suljettu vastauksilta. Sen seuraajille kerrotaan.",
+      "topicReopened": "Aihe avattu uudelleen.",
+      "close": "Sulje",
+      "reopen": "Avaa uudelleen"
+    },
+    "auditorsPanelStates": {
+      "auditor": "Tilintarkastaja",
+      "operationsInspector": "Toiminnantarkastaja",
+      "serving": "Tehtävässä",
+      "notServing": "Ei tehtävässä"
+    },
+    "correctionsQueuePanelStates": {
+      "noRequestsAreWaiting": "Pyyntöjä ei odota",
+      "noCorrectionRequestsYet": "Ei vielä korjauspyyntöjä"
+    },
+    "governanceDocumentRowStates": {
+      "published": "Julkaistu",
+      "draft": "Luonnos",
+      "restore": "Palauta",
+      "archive": "Arkistoi",
+      "restoreItem": "Palauta: {{label}}",
+      "archiveItem": "Arkistoi: {{label}}"
+    },
+    "agendaItemsPanelStates": {
+      "adding": "Lisätään…",
+      "addToTheAgenda": "Lisää asialistalle"
+    },
+    "agmTabStates": {
+      "recording": "Kirjataan…",
+      "record": "Kirjaa",
+      "creating": "Luodaan…",
+      "createMeeting": "Luo kokous",
+      "uploadedPendingApproval": "Ladattu, odottaa hyväksyntää",
+      "notUploaded": "Ei ladattu",
+      "replaceFile": "Vaihda tiedosto",
+      "uploadFile": "Lataa tiedosto",
+      "advisory": "Neuvoa-antava",
+      "binding": "Sitova",
+      "publishing": "Julkaistaan…",
+      "addDocument": "Lisää asiakirja"
+    },
+    "annualReportFilingFormStates": {
+      "changeFiling": "Muuta ilmoitusta",
+      "recordFiling": "Kirjaa ilmoitus"
+    },
+    "meetingRecordPanelsStates": {
+      "recused": "Jäävätty",
+      "tookPart": "Osallistui",
+      "recording": "Kirjataan…",
+      "recordDeclaration": "Kirjaa ilmoitus"
+    },
+    "reportsTabStates": {
+      "generating": "Luodaan…",
+      "generateReport": "Luo raportti"
+    },
+    "localLibraryAnalysisStates": {
+      "resume": "Jatka",
+      "pause": "Tauko",
+      "pausedProgress": "Keskeytetty {{done}}/{{total}}",
+      "analyzingProgress": "Analysoidaan {{done}}/{{total}}"
+    },
+    "organizeFilesDialogStates": {
+      "moveFiles": "Siirrä tiedostot",
+      "copyFiles": "Kopioi tiedostot",
+      "movedFiles_one": "Siirrettiin {{count}} tiedosto.",
+      "movedFiles_other": "Siirrettiin {{count}} tiedostoa.",
+      "copiedFiles_one": "Kopioitiin {{count}} tiedosto.",
+      "copiedFiles_other": "Kopioitiin {{count}} tiedostoa."
+    },
+    "soundCloudEmbedsPanelStates": {
+      "adding": "Lisätään…",
+      "addTrack": "Lisää kappale"
+    },
+    "stashFilesPanelStates": {
+      "uploading": "Ladataan…",
+      "uploadAPrivateFile": "Lataa yksityinen tiedosto",
+      "working": "Käsitellään…",
+      "chooseFile": "Valitse tiedosto"
+    },
+    "desktopLibraryContentStates": {
+      "working": "Käsitellään…",
+      "importFiles": "Tuo tiedostoja",
+      "loadingLibrary": "Ladataan kirjastoa…",
+      "importFilesToBuildYour": "Tuo tiedostoja rakentaaksesi offline-kirjastosi."
+    },
+    "itunesImportDialogStates": {
+      "done": "Valmis",
+      "cancel": "Peruuta"
+    },
+    "providerSetImportDialogStates": {
+      "done": "Valmis",
+      "cancel": "Peruuta"
+    },
+    "remainingCategoriesStates": {
+      "enabled": "Käytössä",
+      "disabled": "Ei käytössä"
+    },
+    "addStationUrlDialogStates": {
+      "testing": "Testataan…",
+      "resolveTest": "Selvitä ja testaa"
+    },
+    "radioBrowserDirectoryCardStates": {
+      "hideGenres": "Piilota tyylilajit",
+      "allGenres": "Kaikki tyylilajit",
+      "results": "Tulokset",
+      "popularStations": "Suositut asemat"
+    },
+    "stationEditDialogStates": {
+      "testing": "Testataan…",
+      "testStream": "Testaa virta"
+    },
+    "stationRowsStates": {
+      "saved": "Tallennettu",
+      "save": "Tallenna",
+      "pause": "Tauko",
+      "preview": "Esikuuntele"
+    },
+    "suggestStationFormStates": {
+      "cancel": "Peruuta",
+      "suggestAStation": "Ehdota asemaa",
+      "sending": "Lähetetään…",
+      "sendForReview": "Lähetä tarkistettavaksi"
+    },
+    "googleDriveImportStates": {
+      "queueingImport": "Lisätään tuontia jonoon…",
+      "chooseFilesFromDrive": "Valitse tiedostot Drivesta"
+    },
+    "oAuthServiceCardStates": {
+      "disconnecting": "Katkaistaan yhteyttä…",
+      "disconnect": "Katkaise yhteys"
+    },
+    "spotifyCardStates": {
+      "linking": "Linkitetään…",
+      "linkProfile": "Linkitä profiili"
+    },
+    "pluginStoreSharedStates": {
+      "nothingInstalled": "Mitään ei ole asennettu",
+      "allInstalled": "Kaikki asennettu"
+    },
+    "discordBotAddonCardStates": {
+      "saving": "Tallennetaan…",
+      "save": "Tallenna"
+    },
+    "lastFmIntegrationRowStates": {
+      "signInAgainThenReconnect": "Kirjaudu uudelleen ja yhdistä sitten Last.fm uudelleen.",
+      "couldNotConnectLastFm": "Last.fm-yhteys epäonnistui. Yritä uudelleen.",
+      "openingLastFm": "Avataan Last.fm…",
+      "connectWithMyKey": "Yhdistä omalla avaimellani"
+    },
+    "listenBrainzIntegrationRowStates": {
+      "updateToken": "Päivitä tunniste",
+      "saveAndEnable": "Tallenna ja ota käyttöön"
+    },
+    "myRadioStationsStates": {
+      "adding": "Lisätään…",
+      "addStation": "Lisää asema"
+    },
+    "newsFeedUrlFieldStates": {
+      "newsFeedSaved": "Uutissyöte tallennettu.",
+      "newsFeedRemovedFromYour": "Uutissyöte poistettu sivultasi."
+    },
+    "artistGalleryPanelStates": {
+      "photoRemoved": "Kuva poistettu.",
+      "photosRemoved": "Kuvat poistettu.",
+      "uploadingGalleryImages": "Ladataan gallerian kuvia",
+      "uploadMoreGalleryImages": "Lataa lisää gallerian kuvia",
+      "deselect": "Poista valinta",
+      "select": "Valitse",
+      "deselectPhoto": "Poista kuvan valinta",
+      "selectPhoto": "Valitse kuva",
+      "uploading": "Ladataan…",
+      "addGalleryImages": "Lisää gallerian kuvia"
+    },
+    "artistImagePurposePickerStates": {
+      "uploading": "Ladataan…",
+      "uploadImages": "Lataa kuvia"
+    },
+    "artworkPresetUploadDialogStates": {
+      "chooseAnotherImage": "Valitse toinen kuva",
+      "chooseImage": "Valitse kuva",
+      "uploading": "Ladataan…",
+      "upload": "Lataa"
+    },
+    "backdropUploadButtonStates": {
+      "uploading": "Ladataan…",
+      "chooseImage": "Valitse kuva"
+    },
+    "channelChatPanelStates": {
+      "joining": "Liitytään…",
+      "joinChat": "Liity chattiin"
+    },
+    "channelDesignerStates": {
+      "saveLook": "Tallenna ulkoasu",
+      "saveLayout": "Tallenna asettelu",
+      "savingLook": "Tallennetaan ulkoasua…",
+      "savingLayout": "Tallennetaan asettelua…"
+    },
+    "channelElementEditorStates": {
+      "hiddenFromYourPage": "Piilotettu sivultasi",
+      "visibleOnYourPage": "Näkyy sivullasi"
+    },
+    "channelLayersMenuStates": {
+      "addAPlaylistOrAnother": "Lisää sivullesi soittolista tai muu osio.",
+      "startWithALayoutThen": "Aloita asettelusta ja tee siitä omasi."
+    },
+    "channelLinksEditorStates": {
+      "showOnChannel": "Näytä kanavalla",
+      "hideFromChannel": "Piilota kanavalta",
+      "showLinkOnChannel": "Näytä linkki kanavalla",
+      "hideLinkFromChannel": "Piilota linkki kanavalta"
+    },
+    "channelPlaylistBlockStates": {
+      "thisPlaylistCouldNotBe": "Soittolistaa ei voitu ladata. Valitse toinen widgetin asetuksista.",
+      "thisPlaylistIsPrivateOr": "Tämä soittolista on yksityinen tai se on poistettu."
+    },
+    "fanChatRoomStates": {
+      "subscribersOnly": "Vain tilaajille",
+      "connecting": "Yhdistetään…"
+    },
+    "fanTiersEditorStates": {
+      "activate": "Aktivoi",
+      "deactivate": "Poista käytöstä",
+      "creating": "Luodaan…",
+      "createTier": "Luo taso"
+    },
+    "imageUploadFieldStates": {
+      "chooseAnotherImage": "Valitse toinen kuva",
+      "chooseImage": "Valitse kuva"
+    },
+    "imageUrlFormStates": {
+      "fetching": "Haetaan…",
+      "useThisImage": "Käytä tätä kuvaa"
+    },
+    "purchaseTiersEditorStates": {
+      "activate": "Aktivoi",
+      "deactivate": "Poista käytöstä",
+      "suggestedPrice": "Ehdotettu hinta (€)",
+      "price": "Hinta (€)",
+      "creating": "Luodaan…",
+      "createTier": "Luo taso"
+    },
+    "soundShareLinksSectionStates": {
+      "playDownload": "Toisto ja lataus",
+      "playOnly": "Vain toisto"
+    },
+    "streamOverlayEditorStates": {
+      "previewOverlayCover": "Esikatsele peittokuvaa",
+      "changeOverlayCover": "Vaihda peittokuva",
+      "uploading": "Ladataan…",
+      "chooseImage": "Valitse kuva"
+    },
+    "studioRadioSubmissionPanelStates": {
+      "rejected": "Hylätty",
+      "pendingReview": "Odottaa tarkistusta",
+      "inRotation": "Rotaatiossa"
+    },
+    "tracklistEditorStates": {
+      "dropTraktorOrRekordboxPlaylist": "Pudota Traktor- tai Rekordbox-soittolista tähän",
+      "dropNmlOrTxtTracklist": "Pudota .nml- tai .txt-kappalelista tähän"
+    },
+    "artistBlockButtonStates": {
+      "unblock": "Poista esto",
+      "block": "Estä"
+    },
+    "artistMusicTabStates": {
+      "pauseFeaturedTrack": "Keskeytä nostettu kappale",
+      "playFeaturedTrack": "Toista nostettu kappale"
+    },
+    "artistProfileSectionsStates": {
+      "unblock": "Poista esto",
+      "block": "Estä"
+    },
+    "clipEditorDialogStates": {
+      "trimStart": "Leikkaa alku",
+      "trimEnd": "Leikkaa loppu",
+      "working": "Käsitellään…",
+      "generatePreview": "Luo esikuuntelu",
+      "previewReadyListenToProcessed": "Esikuuntelu valmis. Kuuntele käsitelty versio ja tallenna.",
+      "generateAPreviewToHear": "Luo esikuuntelu kuullaksesi ja tallentaaksesi nämä muutokset.",
+      "originalPreview": "Alkuperäisen klipin esikuuntelu",
+      "processedPreview": "Käsitellyn klipin esikuuntelu"
+    },
+    "voiceRecorderStates": {
+      "recordAnotherTake": "Äänitä uusi otto",
+      "recordVoice": "Äänitä puhe"
+    },
+    "playerVisualizerControlsStates": {
+      "disableVisualizer": "Poista visualisoija käytöstä",
+      "enableVisualizer": "Ota visualisoija käyttöön"
+    },
+    "channelEditToolbarStates": {
+      "hideMenu": "Piilota valikko",
+      "layersMenu": "Tasovalikko"
+    },
+    "channelListeningPartyBannerStates": {
+      "listeningPartyLiveNow": "Kuuntelujuhla · nyt livenä",
+      "listeningParty": "Kuuntelujuhla",
+      "joinNow": "Liity nyt",
+      "openParty": "Avaa juhla"
+    },
+    "radioProgrammingGridStates": {
+      "talkShow": "Puheohjelma",
+      "liveSet": "Live-setti"
+    },
+    "imageSlotPreviewDialogStates": {
+      "removing": "Poistetaan…",
+      "remove": "Poista"
+    },
+    "listeningPartyJoinButtonStates": {
+      "listeningAlong": "Kuuntelet mukana",
+      "youAreInPlaybackStarts": "Olet mukana; toisto alkaa alkamisajankohtana",
+      "joinTheParty": "Liity juhlaan",
+      "joinAtTheStart": "Liity alussa"
+    },
+    "radioBookingCalendarStates": {
+      "myChannelSchedule": "Kanavani aikataulu",
+      "tahtiRadioSchedule": "Tahti Radion aikataulu",
+      "yourBookedSlotsAndShows": "Varaamasi vuorot ja ohjelmasi Tahti Radiossa.",
+      "communitySlotCalendarBookTime": "Yhteisön vuorokalenteri - varaa aikaa lähettääksesi Tahti Radiossa."
+    },
+    "venueDetailsFormStates": {
+      "saving": "Tallennetaan…",
+      "saveDetails": "Tallenna tiedot"
+    },
+    "venueShowsSectionStates": {
+      "booking": "Varataan…",
+      "bookTheShow": "Varaa keikka"
+    },
+    "collectionViewStates": {
+      "subscribed": "Tilattu",
+      "subscribe": "Tilaa"
+    },
+    "emailChangeViewStates": {
+      "emailChanged": "Sähköposti vaihdettu",
+      "confirmNewEmail": "Vahvista uusi sähköposti",
+      "backToSettings": "Takaisin asetuksiin",
+      "signIn": "Kirjaudu sisään"
+    },
+    "embedViewsStates": {
+      "playing": "Soi",
+      "play": "Toista"
+    },
+    "feedViewStates": {
+      "discoverArtistsUnderDiscoverArtists": "Löydä artisteja kohdasta Tutki → Artistit ja seuraa heitä täyttääksesi tämän syötteen.",
+      "newPostsTracksAndReleases": "Seuraamiesi artistien uudet julkaisut, kappaleet ja levyt näkyvät täällä."
+    },
+    "forgotPasswordViewStates": {
+      "sending": "Lähetetään…",
+      "sendResetLink": "Lähetä palautuslinkki"
+    },
+    "jamViewStates": {
+      "reconnecting": "Yhdistetään uudelleen…",
+      "connecting": "Yhdistetään…"
+    },
+    "messagesViewStates": {
+      "searchForSomeoneAboveOr": "Hae jotakuta yltä tai löydä artisteja Tutki-sivulta.",
+      "pickAThreadFromThe": "Valitse keskustelu listalta lukeaksesi ja vastataksesi."
+    },
+    "myVenuesViewStates": {
+      "verified": "Vahvistettu",
+      "waitingForBoardVerification": "Odottaa hallituksen vahvistusta"
+    },
+    "newsletterStatusViewStates": {
+      "unsubscribing": "Perutaan tilausta…",
+      "unsubscribe": "Peru tilaus"
+    },
+    "notificationsViewStates": {
+      "loading": "Ladataan…",
+      "showOlder": "Näytä vanhemmat"
+    },
+    "onboardingViewStates": {
+      "saving": "Tallennetaan…",
+      "finishSetup": "Viimeistele käyttöönotto"
+    },
+    "radioScheduleViewStates": {
+      "talkShow": "Puheohjelma",
+      "liveSet": "Live-setti",
+      "tahtiRadio": "Tahti Radio",
+      "myChannel": "Oma kanavani",
+      "booking": "Varataan…",
+      "confirmBooking": "Vahvista varaus",
+      "cancelling": "Perutaan…",
+      "cancelBooking": "Peru varaus"
+    },
+    "radioShowViewStates": {
+      "couldNotRefreshNowPlaying": "Nyt soi -tietojen päivitys epäonnistui",
+      "couldNotLoadNowPlaying": "Nyt soi -tietojen lataus epäonnistui"
+    },
+    "signupPaymentViewStates": {
+      "starting": "Aloitetaan…",
+      "pay40Year": "Maksa 40 € / vuosi"
+    },
+    "studioProEditorViewStates": {
+      "localOnlyServerSyncUnavailable": "Vain paikallisesti - palvelinsynkronointi ei ole käytettävissä. OPFS-automaattitallennus toimii silti.",
+      "openMultitrackToLinkAn": "Avaa moniraita linkittääksesi editoriprojektin tähän ääneen."
+    },
+    "subscribeViewStates": {
+      "starting": "Aloitetaan…",
+      "subscribe": "Tilaa"
+    },
+    "trackAccessGateStates": {
+      "subscribeInstead": "Tilaa sen sijaan",
+      "subscribeToListen": "Tilaa kuunnellaksesi",
+      "buyToListen": "Osta kuunnellaksesi",
+      "fanSubscribersOnly": "Vain fanitilaajat",
+      "buying": "Ostetaan…",
+      "buyThisTrack": "Osta tämä kappale"
+    },
+    "trackHeroStates": {
+      "writeAComment": "Kirjoita kommentti",
+      "writeATimedComment": "Kirjoita ajastettu kommentti",
+      "buying": "Ostetaan…",
+      "buyThisTrack": "Osta tämä kappale"
+    },
+    "venueRegisterViewStates": {
+      "submitting": "Lähetetään…",
+      "submitForReview": "Lähetä tarkistettavaksi"
+    },
+    "verifyViewStates": {
+      "emailVerified": "Sähköposti vahvistettu",
+      "verifyEmail": "Vahvista sähköposti",
+      "verifying": "Vahvistetaan…"
+    },
+    "addToPlaylistPanelStates": {
+      "creating": "Luodaan…",
+      "createAdd": "Luo ja lisää"
+    },
+    "processingIndicatorStates": {
+      "queued": "Jonossa",
+      "processing": "Käsitellään"
+    },
+    "catalogTrackSearchStates": {
+      "adding": "Lisätään…",
+      "add": "Lisää",
+      "loading": "Ladataan…",
+      "moreResults": "Lisää tuloksia"
+    },
+    "discoWidgetManagerPanelStates": {
+      "noWidgetsAvailable": "Widgettejä ei ole saatavilla",
+      "noMatchingWidgets": "Ei vastaavia widgettejä",
+      "nothingInThisStoreYet": "Tässä kaupassa ei ole vielä mitään.",
+      "tryADifferentSearch": "Kokeile toista hakua."
+    },
+    "discoverWaveformPlayerStates": {
+      "pauseSelectedTrack": "Keskeytä valittu kappale",
+      "playSelectedTrack": "Toista valittu kappale"
+    },
+    "dmThreadMessagesStates": {
+      "tryAgain": "Yritä uudelleen",
+      "loadOlderMessages": "Lataa vanhempia viestejä"
+    },
+    "duplicatesDialogStates": {
+      "comparedAndDifferentTheseAre": "Verrattu ja erilaiset: nämä ovat eri äänitteitä tai versioita, eivät kaksoiskappaleita.",
+      "sameTitleArtistAndLength": "Sama nimi, artisti ja kesto. Vertaa tiedostojen sisältöä selvittääksesi, ovatko ne todella samat."
+    },
+    "materialGroupsFieldStates": {
+      "noGroupsMatchThatSearch": "Haulla ei löydy ryhmiä.",
+      "youAreNotInAny": "Et ole vielä missään ryhmässä."
+    },
+    "materialSetsFieldStates": {
+      "noSetsMatchThatSearch": "Haulla ei löydy settejä.",
+      "noSetsYet": "Ei vielä settejä."
+    },
+    "messageContactsStates": {
+      "followsYou": "Seuraa sinua",
+      "youFollow": "Seuraat"
+    },
+    "chatMessagesPanelStates": {
+      "owner": "Omistaja",
+      "moderator": "Moderaattori",
+      "theyCanNoLongerPost": "Hän ei voi enää kirjoittaa tänne. Aiemmat viestit pysyvät, kunnes poistat ne, ja voit purkaa porttikiellon kohdassa Chatin porttikiellot.",
+      "itDisappearsForEveryoneWho": "Se katoaa kaikilta, jotka avaavat chatin tästä eteenpäin. Chatin jo auki pitävät näkevät sen, kunnes lataavat sivun uudelleen.",
+      "ban": "Anna porttikielto",
+      "remove": "Poista"
+    },
+    "musicBrainzRegisterPromptStates": {
+      "musicbrainzRegistrationWillBeOffered": "MusicBrainz-rekisteröintiä tarjotaan jokaiselle julkaisulle.",
+      "musicbrainzRegistrationWontBeOffered": "MusicBrainz-rekisteröintiä ei tarjota uudelleen. Se löytyy edelleen Vienti-välilehdeltä."
+    },
+    "musicBrainzSubmissionAssistantStates": {
+      "prepareMusicbrainzRelease": "Valmistele MusicBrainz-julkaisu",
+      "prepareMusicbrainzTrack": "Valmistele MusicBrainz-kappale"
+    },
+    "mySupportTicketsStates": {
+      "stillNeedHelpReplyingReopens": "Tarvitsetko vielä apua? Vastaaminen avaa tämän pyynnön uudelleen.",
+      "addAReply": "Kirjoita vastaus…",
+      "sending": "Lähetetään…",
+      "sendReply": "Lähetä vastaus"
+    },
+    "newsletterSubscribeToggleStates": {
+      "subscribedYoullGetNotificationsFor": "Tilattu - saat ilmoituksia uutiskirjeistä, tapahtumista ja muusta toiminnasta.",
+      "unsubscribed": "Tilaus peruttu.",
+      "subscribedYoullSeeThisArtist": "Tilattu - näet tämän artistin syötteessäsi ja ilmoituksissasi. Peru tilaus napsauttamalla.",
+      "subscribeToSeeThisArtist": "Tilaa nähdäksesi tämän artistin syötteessäsi ja ilmoituksissasi",
+      "subscribed": "Tilattu",
+      "subscribe": "Tilaa",
+      "sending": "Lähetetään…"
+    },
+    "platformNewsDialogStates": {
+      "saving": "Tallennetaan…",
+      "saveArticle": "Tallenna artikkeli"
+    },
+    "playlistExportDialogStates": {
+      "bestForSharingOrMoving": "Paras jakamiseen tai siirtämiseen: lista toimii, jos tiedosto ja musiikki siirtyvät yhdessä. Tallennuskansion ulkopuoliset tiedostot kirjoitetaan muodossa ../ ja löytyvät vain, jos kansiorakenne on toisessa päässä sama; toisella asemalla olevat tiedostot tallennetaan täysinä polkuina.",
+      "worksOnThisComputerAs": "Toimii tällä tietokoneella sellaisenaan, mutta ei toisella, jonka kansiorakenne on erilainen."
+    },
+    "reportButtonStates": {
+      "sending": "Lähetetään…",
+      "sendReport": "Lähetä ilmoitus"
+    },
+    "saveQueueAsPlaylistDialogStates": {
+      "saving": "Tallennetaan…",
+      "savePlaylist": "Tallenna soittolista"
+    },
+    "searchTrackResultsStates": {
+      "buy": "Osta",
+      "members": "Jäsenet"
+    },
+    "smartPlaylistDialogStates": {
+      "editSmartPlaylist": "Muokkaa älykästä soittolistaa",
+      "newSmartPlaylist": "Uusi älykäs soittolista"
+    },
+    "supportContactFormStates": {
+      "sending": "Lähetetään…",
+      "sendMessage": "Lähetä viesti"
+    },
+    "trackAudienceStates": {
+      "loading": "Ladataan…",
+      "showMore": "Näytä lisää"
+    },
+    "embedTrackRowStates": {
+      "pauseOn": "Keskeytä {{title}} ({{label}})",
+      "playOn": "Toista {{title}} ({{label}})"
+    },
+    "uiLabels": {
+      "close": "Sulje",
+      "copy": "Kopioi",
+      "copied": "Kopioitu",
+      "copiedToClipboard": "Kopioitu leikepöydälle",
+      "copyFailed": "Kopiointi leikepöydälle epäonnistui",
+      "edit": "Muokkaa",
+      "doneEditing": "Valmis",
+      "copyFeedFailed": "Syötteen linkin kopiointi epäonnistui."
     }
   },
   "studioEditor": {

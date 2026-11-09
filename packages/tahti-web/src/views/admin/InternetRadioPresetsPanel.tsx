@@ -260,7 +260,11 @@ export function InternetRadioPresetsPanel() {
                       variant="pill"
                       color={preset.enabled ? 'green' : undefined}
                     >
-                      {preset.enabled ? 'Enabled for everyone' : 'Off'}
+                      {preset.enabled
+                        ? t(
+                            'internetRadioPresetsPanelStates.enabledForEveryone',
+                          )
+                        : t('internetRadioPresetsPanelStates.off')}
                     </Badge>
                   </div>
                   <div className="text-foreground-secondary truncate text-xs">
@@ -284,7 +288,9 @@ export function InternetRadioPresetsPanel() {
                     ) : (
                       <CheckCircle2Icon size={14} aria-hidden />
                     )}
-                    {preset.enabled ? 'Disable' : 'Enable for everyone'}
+                    {preset.enabled
+                      ? t('internetRadioPresetsPanelStates.disable')
+                      : t('internetRadioPresetsPanelStates.enableForEveryone')}
                   </Button>
                   <EditIconButton
                     label={t('internetRadioPresetsPanelLabels.editName', {
@@ -322,7 +328,9 @@ export function InternetRadioPresetsPanel() {
           className="max-w-lg"
         >
           <Dialog.Title>
-            {editingId ? 'Edit station' : 'Add internet radio station'}
+            {editingId
+              ? t('internetRadioPresetsPanelStates.editStation')
+              : t('internetRadioPresetsPanelStates.addInternetRadioStation')}
           </Dialog.Title>
           <Dialog.Description>
             {t('radioPresetsAdmin.shownAsADefaultIn')}

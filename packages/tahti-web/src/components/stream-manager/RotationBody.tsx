@@ -40,7 +40,9 @@ export function RotationBody({ state }: { state: StreamManagerState }) {
             className="self-start"
           >
             <SquareIcon size={14} className="mr-1.5 fill-current" aria-hidden />
-            {ending ? 'Ending…' : 'Stop stream'}
+            {ending
+              ? t('streamManagerRotationBodyStates.ending')
+              : t('streamManagerRotationBodyStates.stopStream')}
           </Button>
         </div>
       )}

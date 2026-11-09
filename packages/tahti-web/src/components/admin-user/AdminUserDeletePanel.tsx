@@ -108,7 +108,9 @@ export function AdminUserDeletePanel({
             disabled={busy || typed.trim() !== user.username}
             onClick={() => void confirm()}
           >
-            {busy ? 'Deleting…' : 'Delete account'}
+            {busy
+              ? t('adminUserDeletePanelStates.deleting')
+              : t('adminUserDeletePanelStates.deleteAccount')}
           </Button>
         </Dialog.Actions>
       </Dialog.Root>

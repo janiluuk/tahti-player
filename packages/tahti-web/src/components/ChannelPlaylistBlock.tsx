@@ -124,8 +124,8 @@ export function ChannelPlaylistBlock({
         title={t('empties.playlistUnavailable')}
         description={
           editing
-            ? 'This playlist could not be loaded. Pick another in widget settings.'
-            : 'This playlist is private or was removed.'
+            ? t('channelPlaylistBlockStates.thisPlaylistCouldNotBe')
+            : t('channelPlaylistBlockStates.thisPlaylistIsPrivateOr')
         }
       />
     );

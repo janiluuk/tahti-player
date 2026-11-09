@@ -101,8 +101,8 @@ export function FanSubArtistsPanel() {
                     ) : (
                       <Badge variant="pill" color="red">
                         {row.stripeConnectAccountId
-                          ? 'Onboarding'
-                          : 'Not connected'}
+                          ? t('fanSubArtistsPanelStates.onboarding')
+                          : t('fanSubArtistsPanelStates.notConnected')}
                       </Badge>
                     )}
                   </DataTableCell>

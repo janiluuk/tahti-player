@@ -44,8 +44,8 @@ export function RecordingPanel({ state }: { state: GoLiveState }) {
           </span>
           <span className="text-foreground-secondary block text-xs">
             {recordEnabled
-              ? 'On · saved when the broadcast ends'
-              : 'Off · this broadcast will not be saved'}
+              ? t('recordingPanelStates.onSavedWhenTheBroadcast')
+              : t('recordingPanelStates.offThisBroadcastWillNot')}
           </span>
         </span>
         <Toggle

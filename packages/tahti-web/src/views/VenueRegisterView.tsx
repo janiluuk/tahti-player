@@ -202,7 +202,9 @@ export function VenueRegisterView() {
             !city.trim()
           }
         >
-          {pending ? 'Submitting…' : 'Submit for review'}
+          {pending
+            ? t('venueRegisterViewStates.submitting')
+            : t('venueRegisterViewStates.submitForReview')}
         </Button>
         {error && <InlineError>{error}</InlineError>}
       </form>

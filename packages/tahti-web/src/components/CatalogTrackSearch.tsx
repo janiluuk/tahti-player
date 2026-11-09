@@ -132,7 +132,9 @@ export function CatalogTrackSearch({
                 onClick={() => void add(track)}
               >
                 <PlusIcon size={14} aria-hidden className="mr-1.5" />
-                {addingId === track.id ? 'Adding…' : 'Add'}
+                {addingId === track.id
+                  ? t('catalogTrackSearchStates.adding')
+                  : t('catalogTrackSearchStates.add')}
               </Button>
             </li>
           ))}
@@ -145,7 +147,9 @@ export function CatalogTrackSearch({
           disabled={loading}
           onClick={() => void loadMore()}
         >
-          {loading ? 'Loading…' : 'More results'}
+          {loading
+            ? t('catalogTrackSearchStates.loading')
+            : t('catalogTrackSearchStates.moreResults')}
         </Button>
       ) : null}
     </div>

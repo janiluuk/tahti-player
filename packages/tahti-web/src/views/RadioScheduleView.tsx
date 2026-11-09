@@ -53,6 +53,7 @@ import {
   type ScheduleSelection,
   type StationFilter,
 } from '../lib/radioSchedule';
+import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
 import { useChannelSetupModalStore } from '../stores/channelSetupModalStore';
 
@@ -62,7 +63,10 @@ function formatHour(hour: number): string {
 
 function bookingTitle(booking: StudioShowBooking): string {
   return (
-    booking.note || (booking.showType === 'TALK' ? 'Talk show' : 'Live set')
+    booking.note ||
+    (booking.showType === 'TALK'
+      ? webT()('radioScheduleViewStates.talkShow')
+      : webT()('radioScheduleViewStates.liveSet'))
   );
 }
 
@@ -394,7 +398,9 @@ export function RadioScheduleView() {
                         )
                       }
                     >
-                      {item === 'radio' ? 'Tahti Radio' : 'My channel'}
+                      {item === 'radio'
+                        ? t('radioScheduleViewStates.tahtiRadio')
+                        : t('radioScheduleViewStates.myChannel')}
                     </TabLabel>
                   </Tabs.Tab>
                 ))}
@@ -604,7 +610,9 @@ export function RadioScheduleView() {
             className="min-w-0 flex-1 sm:min-w-48"
           />
           <Button size="sm" disabled={busy} type="submit">
-            {busy ? 'Booking…' : 'Confirm booking'}
+            {busy
+              ? t('radioScheduleViewStates.booking')
+              : t('radioScheduleViewStates.confirmBooking')}
           </Button>
           <Button
             size="sm"
@@ -700,7 +708,9 @@ export function RadioScheduleView() {
                   disabled={busy}
                   onClick={() => cancelBooking(selectedBooking.id)}
                 >
-                  {busy ? 'Cancelling…' : 'Cancel booking'}
+                  {busy
+                    ? t('radioScheduleViewStates.cancelling')
+                    : t('radioScheduleViewStates.cancelBooking')}
                 </Button>
               </Dialog.Actions>
             </>

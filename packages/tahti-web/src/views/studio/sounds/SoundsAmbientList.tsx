@@ -363,8 +363,8 @@ export function SoundsAmbientList({
           hideViewPicker
           emptyMessage={
             embeds.length > 0
-              ? 'No hosted sounds match these filters.'
-              : 'No sounds match these filters.'
+              ? t('soundsAmbientListStates.noHostedSoundsMatchThese')
+              : t('soundsAmbientListStates.noSoundsMatchTheseFilters')
           }
           renderList={() => <SoundsListTable items={hosted} state={state} />}
         />

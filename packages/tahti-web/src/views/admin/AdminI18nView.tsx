@@ -248,7 +248,9 @@ export function AdminI18nView() {
                       type="submit"
                       disabled={busy || !code.trim() || !name.trim()}
                     >
-                      {busy ? 'Adding…' : 'Add language'}
+                      {busy
+                        ? t('adminI18nViewStates.adding')
+                        : t('adminI18nViewStates.addLanguage')}
                     </Button>
                   </Dialog.Actions>
                 </form>
@@ -264,10 +266,14 @@ export function AdminI18nView() {
                     accept=".csv,text/csv"
                     disabled={busy}
                     labels={{
-                      title: busy ? 'Importing…' : 'Translation CSV',
+                      title: busy
+                        ? t('adminI18nViewStates.importing')
+                        : t('adminI18nViewStates.translationCsv'),
                       description:
                         'Choose a CSV translated from the English base.',
-                      browse: busy ? 'Importing…' : 'Choose CSV',
+                      browse: busy
+                        ? t('adminI18nViewStates.importing')
+                        : t('adminI18nViewStates.chooseCsv'),
                     }}
                     onFiles={(files) => {
                       const file = files[0];

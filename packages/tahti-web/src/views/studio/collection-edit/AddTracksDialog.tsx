@@ -86,8 +86,8 @@ export function AddTracksDialog({
             <PageEmpty
               title={
                 query.trim()
-                  ? 'No available tracks match your search'
-                  : 'All library tracks are already in this collection'
+                  ? t('addTracksDialogStates.noAvailableTracksMatchYour')
+                  : t('addTracksDialogStates.allLibraryTracksAreAlready')
               }
               action={
                 query.trim() ? (
@@ -112,13 +112,25 @@ export function AddTracksDialog({
                     className={`flex items-center gap-3 px-3 py-2.5 text-sm ${index % 2 === 1 ? 'bg-background-secondary/40' : 'bg-background'}`}
                   >
                     <Tooltip
-                      content={`${previewing ? 'Pause' : 'Preview'} ${sound.title}`}
+                      content={
+                        previewing
+                          ? t('actions.pauseItem', { title: sound.title })
+                          : t('addTracksDialogStates.previewItem', {
+                              title: sound.title,
+                            })
+                      }
                       side="top"
                     >
                       <Button
                         size="icon-sm"
                         variant={previewing ? 'secondary' : 'text'}
-                        aria-label={`${previewing ? 'Pause' : 'Preview'} ${sound.title}`}
+                        aria-label={
+                          previewing
+                            ? t('actions.pauseItem', { title: sound.title })
+                            : t('addTracksDialogStates.previewItem', {
+                                title: sound.title,
+                              })
+                        }
                         onClick={() =>
                           previewing ? onPause() : onPreview(sound)
                         }
@@ -156,7 +168,9 @@ export function AddTracksDialog({
                       onClick={() => onAdd(sound)}
                     >
                       <PlusIcon size={15} aria-hidden className="mr-1" />
-                      {addBusyId === sound.id ? 'Adding…' : 'Add'}
+                      {addBusyId === sound.id
+                        ? t('addTracksDialogStates.adding')
+                        : t('addTracksDialogStates.add')}
                     </Button>
                   </li>
                 );

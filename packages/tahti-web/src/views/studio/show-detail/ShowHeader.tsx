@@ -43,7 +43,7 @@ export function ShowHeader({
         imageUrl={thumbnailUrl}
         imageAlt=""
         backdropUrl={backdropUrl}
-        subtitle={`${show.showType === 'LIVE_SET' ? 'Live set' : 'Talk show'} · ${show.mode === 'SINGLE' ? 'Single show' : 'Series'}`}
+        subtitle={`${show.showType === 'LIVE_SET' ? t('showHeaderStates.liveSet') : t('showHeaderStates.talkShow')} · ${show.mode === 'SINGLE' ? t('showHeaderStates.singleShow') : t('showHeaderStates.series')}`}
         description={description.trim() || undefined}
         actions={
           <>

@@ -104,7 +104,15 @@ export function RegionList({
           {fades.map((fade, index) => (
             <Chip
               key={`${fade.type}-${fade.at}-${fade.duration}`}
-              label={`${fade.type === 'in' ? 'In' : 'Out'} ${range(fade.at, fade.at + fade.duration)}`}
+              label={
+                fade.type === 'in'
+                  ? t('regionListStates.fadeIn', {
+                      range: range(fade.at, fade.at + fade.duration),
+                    })
+                  : t('regionListStates.fadeOut', {
+                      range: range(fade.at, fade.at + fade.duration),
+                    })
+              }
               onOpen={() =>
                 onShowRange({ start: fade.at, end: fade.at + fade.duration })
               }

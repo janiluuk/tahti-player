@@ -59,7 +59,10 @@ export function GovernanceDocumentRow({
           ) : (
             document.title
           )}{' '}
-          · v{document.version} · {document.publishedAt ? 'Published' : 'Draft'}
+          · v{document.version} ·{' '}
+          {document.publishedAt
+            ? t('governanceDocumentRowStates.published')
+            : t('governanceDocumentRowStates.draft')}
         </span>
         {document.archivedAt ? (
           <Badge variant="pill" color="secondary">
@@ -75,10 +78,16 @@ export function GovernanceDocumentRow({
           size="xs"
           variant="secondary"
           disabled={busy}
-          aria-label={`${document.archivedAt ? 'Restore' : 'Archive'}: ${label}`}
+          aria-label={
+            document.archivedAt
+              ? t('governanceDocumentRowStates.restoreItem', { label })
+              : t('governanceDocumentRowStates.archiveItem', { label })
+          }
           onClick={() => save({ archived: !document.archivedAt })}
         >
-          {document.archivedAt ? 'Restore' : 'Archive'}
+          {document.archivedAt
+            ? t('governanceDocumentRowStates.restore')
+            : t('governanceDocumentRowStates.archive')}
         </Button>
       </div>
       {renaming ? (

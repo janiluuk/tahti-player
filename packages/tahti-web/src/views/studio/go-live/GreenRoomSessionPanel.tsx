@@ -173,7 +173,9 @@ export function GreenRoomSessionPanel() {
                       variant="pill"
                       color={invite.joinedAt ? 'green' : 'secondary'}
                     >
-                      {invite.joinedAt ? 'Joined' : 'Not joined'}
+                      {invite.joinedAt
+                        ? t('greenRoomSessionPanelStates.joined')
+                        : t('greenRoomSessionPanelStates.notJoined')}
                     </Badge>
                     <Button
                       variant="text"

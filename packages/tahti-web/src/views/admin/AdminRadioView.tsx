@@ -210,13 +210,17 @@ export function AdminRadioView() {
                           <StudioPanel
                             title={
                               station?.data.hlsUrl && station.data.nowPlaying
-                                ? 'Stream live'
-                                : 'Stream offline'
+                                ? t('adminRadioViewStates.streamLive')
+                                : t('adminRadioViewStates.streamOffline')
                             }
                             description={
                               station?.data.hlsUrl && station.data.nowPlaying
-                                ? 'Tahti Radio is broadcasting the member rotation or a live guest channel.'
-                                : 'The Tahti Radio stream is currently unavailable.'
+                                ? t(
+                                    'adminRadioViewStates.tahtiRadioIsBroadcastingThe',
+                                  )
+                                : t(
+                                    'adminRadioViewStates.theTahtiRadioStreamIs',
+                                  )
                             }
                             action={
                               station?.playable ? (
@@ -224,8 +228,12 @@ export function AdminRadioView() {
                                   size="sm"
                                   aria-label={
                                     stationPlaying
-                                      ? 'Pause Tahti Radio stream'
-                                      : 'Play Tahti Radio stream'
+                                      ? t(
+                                          'adminRadioViewStates.pauseTahtiRadioStream',
+                                        )
+                                      : t(
+                                          'adminRadioViewStates.playTahtiRadioStream',
+                                        )
                                   }
                                   onClick={togglePlayback}
                                 >
@@ -242,7 +250,9 @@ export function AdminRadioView() {
                                       className="mr-1.5"
                                     />
                                   )}
-                                  {stationPlaying ? 'Pause' : 'Listen'}
+                                  {stationPlaying
+                                    ? t('adminRadioViewStates.pause')
+                                    : t('adminRadioViewStates.listen')}
                                 </Button>
                               ) : undefined
                             }
@@ -256,8 +266,8 @@ export function AdminRadioView() {
                                   {station?.data.hlsUrl &&
                                   station.data.nowPlaying
                                     ? data.nowPlaying.live
-                                      ? 'Live guest on air'
-                                      : 'Rotation on air'
+                                      ? t('adminRadioViewStates.liveGuestOnAir')
+                                      : t('adminRadioViewStates.rotationOnAir')
                                     : 'Playback state'}
                                 </p>
                                 <p className="truncate font-semibold">

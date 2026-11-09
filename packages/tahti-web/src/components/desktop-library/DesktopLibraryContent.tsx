@@ -162,7 +162,9 @@ export function DesktopLibraryContent({
           disabled={busy}
         >
           <LibraryIcon size={15} aria-hidden />
-          {busy ? 'Working…' : 'Import files'}
+          {busy
+            ? t('desktopLibraryContentStates.working')
+            : t('desktopLibraryContentStates.importFiles')}
         </Button>
         <Button variant="text" onClick={onImportFolder} disabled={busy}>
           {t('desktopLibraryContent.importFolder')}
@@ -354,8 +356,8 @@ export function DesktopLibraryContent({
               title={t('empties.desktopLibrary')}
               description={
                 loading || busy
-                  ? 'Loading library…'
-                  : 'Import files to build your offline library.'
+                  ? t('desktopLibraryContentStates.loadingLibrary')
+                  : t('desktopLibraryContentStates.importFilesToBuildYour')
               }
               action={loading || busy ? undefined : importFilesButton}
               className="flex-1"

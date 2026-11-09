@@ -43,7 +43,9 @@ export function ProcessingIndicator({ nav }: { nav: TopNavState }) {
                 >
                   <span className="min-w-0 truncate">{item.title}</span>
                   <Badge variant="pill" color="blue" className="shrink-0">
-                    {item.status === 'PENDING' ? 'Queued' : 'Processing'}
+                    {item.status === 'PENDING'
+                      ? t('processingIndicatorStates.queued')
+                      : t('processingIndicatorStates.processing')}
                   </Badge>
                 </Link>
               </li>

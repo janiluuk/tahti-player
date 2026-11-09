@@ -138,7 +138,9 @@ export function SpotifyImportPanel({
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               aria-label={
-                mode === 'artist' ? 'Spotify artist link' : 'Search Spotify'
+                mode === 'artist'
+                  ? t('spotifyImportPanelStates.spotifyArtistLink')
+                  : t('spotifyImportPanelStates.searchSpotify')
               }
               placeholder={
                 mode === 'artist'
@@ -147,7 +149,9 @@ export function SpotifyImportPanel({
               }
             />
             <Button type="submit" disabled={busy || !query.trim()}>
-              {busy ? 'Looking…' : 'Find'}
+              {busy
+                ? t('spotifyImportPanelStates.looking')
+                : t('spotifyImportPanelStates.find')}
             </Button>
           </form>
         ) : null}
@@ -189,8 +193,8 @@ export function SpotifyImportPanel({
                   {added.has(track.uri)
                     ? 'Added'
                     : addingUri === track.uri
-                      ? 'Adding…'
-                      : 'Add'}
+                      ? t('spotifyImportPanelStates.adding')
+                      : t('spotifyImportPanelStates.add')}
                 </Button>
               </li>
             ))}

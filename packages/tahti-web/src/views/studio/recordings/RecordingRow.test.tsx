@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import type { RecentBroadcast } from '../../../api/broadcast';
+import { applyLocale } from '../../../lib/locale';
 import { renderWithRouter } from '../../../test/renderWithRouter';
 import { RecordingRow } from './RecordingRow';
 
@@ -55,5 +56,27 @@ describe('RecordingRow', () => {
     expect(
       screen.getByRole('button', { name: 'Edit Late night session' }),
     ).toBeInTheDocument();
+  });
+
+  it('renders in Finnish', async () => {
+    await act(async () => {
+      await applyLocale('fi_FI');
+    });
+    try {
+      await renderWithRouter(
+        <ul>
+          <RecordingRow
+            show={{ ...draft, soundId: 'snd-1', soundStatus: 'READY' }}
+            index={0}
+            onEdit={() => {}}
+          />
+        </ul>,
+      );
+      expect(screen.getByText('Julkaistu')).toBeInTheDocument();
+    } finally {
+      await act(async () => {
+        await applyLocale('en_US');
+      });
+    }
   });
 });

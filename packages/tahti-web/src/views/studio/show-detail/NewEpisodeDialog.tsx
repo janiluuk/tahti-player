@@ -93,7 +93,9 @@ export function NewEpisodeDialog({
               labels={{
                 title: t('newEpisodeDialog.episodeAudio'),
                 description: t('newEpisodeDialog.mp3WavFlacOrAiff'),
-                browse: file ? 'Choose another file' : 'Choose audio',
+                browse: file
+                  ? t('newEpisodeDialogStates.chooseAnotherFile')
+                  : t('newEpisodeDialogStates.chooseAudio'),
               }}
               accept="audio/*,.flac,.wav,.mp3,.aiff"
               selectedFiles={file ? [file] : []}
@@ -114,8 +116,8 @@ export function NewEpisodeDialog({
             {busy
               ? 'Creating…'
               : source === 'broadcast'
-                ? 'Create & go record'
-                : 'Create episode'}
+                ? t('newEpisodeDialogStates.createGoRecord')
+                : t('newEpisodeDialogStates.createEpisode')}
           </Button>
         </Dialog.Actions>
       </form>

@@ -575,8 +575,16 @@ export const ChannelDesigner = forwardRef<ChannelDesignerHandle, Props>(
       <SaveButton
         disabled={!dirty || videoLoopNeedsUrl}
         saving={busy}
-        label={lookOnly ? 'Save look' : 'Save layout'}
-        savingLabel={lookOnly ? 'Saving look…' : 'Saving layout…'}
+        label={
+          lookOnly
+            ? t('channelDesignerStates.saveLook')
+            : t('channelDesignerStates.saveLayout')
+        }
+        savingLabel={
+          lookOnly
+            ? t('channelDesignerStates.savingLook')
+            : t('channelDesignerStates.savingLayout')
+        }
         onClick={() => void save()}
       />
     );

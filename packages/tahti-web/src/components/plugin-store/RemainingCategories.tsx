@@ -88,8 +88,8 @@ export function MulticastCategory() {
                 categories={[
                   target
                     ? target.enabled
-                      ? 'Enabled'
-                      : 'Disabled'
+                      ? t('remainingCategoriesStates.enabled')
+                      : t('remainingCategoriesStates.disabled')
                     : 'Not configured',
                 ]}
                 isInstalled={configured}

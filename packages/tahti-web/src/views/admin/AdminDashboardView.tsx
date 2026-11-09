@@ -372,8 +372,10 @@ export function AdminDashboardView() {
                       onClick={() => setMoreOpen((v) => !v)}
                     >
                       {moreOpen
-                        ? 'Hide more'
-                        : 'Finance, streams, queues & audit'}
+                        ? t('adminDashboardViewStates.hideMore')
+                        : t(
+                            'adminDashboardViewStates.financeStreamsQueuesAudit',
+                          )}
                     </Button>
                   </div>
 

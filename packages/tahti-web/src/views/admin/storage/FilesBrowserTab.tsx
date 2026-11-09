@@ -117,7 +117,9 @@ function FileRow({
           {f.format ?? '—'}
         </Badge>
         <Badge variant="pill" color={f.isPublic ? 'green' : 'secondary'}>
-          {f.isPublic ? 'Public' : 'Private'}
+          {f.isPublic
+            ? t('filesBrowserTabStates.public')
+            : t('filesBrowserTabStates.private')}
         </Badge>
         <Tooltip content={t('filesBrowser.preview')} side="top">
           <Button
@@ -364,8 +366,8 @@ export function FilesBrowserTab() {
           }
         >
           {selectedIds.size === files.length && files.length > 0
-            ? 'Select none'
-            : 'Select all shown'}
+            ? t('filesBrowserTabStates.selectNone')
+            : t('filesBrowserTabStates.selectAllShown')}
         </Button>
         <Button
           size="sm"
@@ -444,7 +446,11 @@ export function FilesBrowserTab() {
             <PageLoading label={t('loading.loadingStorageUsers')} />
           ) : groupedRows.length === 0 ? (
             <PageEmpty
-              title={filtered ? 'No files match these filters' : 'No files yet'}
+              title={
+                filtered
+                  ? t('filesBrowserTabStates.noFilesMatchTheseFilters')
+                  : t('filesBrowserTabStates.noFilesYet')
+              }
               action={
                 filtered ? (
                   <Button size="sm" variant="secondary" onClick={clearFilters}>
@@ -499,7 +505,11 @@ export function FilesBrowserTab() {
             <PageLoading label={t('loading.loadingFiles')} />
           ) : files.length === 0 ? (
             <PageEmpty
-              title={filtered ? 'No files match these filters' : 'No files yet'}
+              title={
+                filtered
+                  ? t('filesBrowserTabStates.noFilesMatchTheseFilters')
+                  : t('filesBrowserTabStates.noFilesYet')
+              }
               action={
                 filtered ? (
                   <Button size="sm" variant="secondary" onClick={clearFilters}>

@@ -405,7 +405,9 @@ export const ChannelRadioPlaylistPanel: FC = () => {
                 : 'text-foreground-secondary'
             }`}
           >
-            {fallbackEnabled ? 'On' : 'Off'}
+            {fallbackEnabled
+              ? t('channelRadioPlaylistPanelStates.on')
+              : t('channelRadioPlaylistPanelStates.off')}
           </span>
           <Toggle
             checked={fallbackEnabled}
@@ -460,8 +462,8 @@ export const ChannelRadioPlaylistPanel: FC = () => {
               onValueChange={setSelectedSlug}
               placeholder={
                 playlists.length === 0
-                  ? 'No playlists yet'
-                  : 'Choose a playlist'
+                  ? t('channelRadioPlaylistPanelStates.noPlaylistsYet')
+                  : t('channelRadioPlaylistPanelStates.chooseAPlaylist')
               }
               options={playlists.map((playlist) => ({
                 id: playlist.slug,

@@ -43,7 +43,11 @@ export function TracklistPanel({
 
   return (
     <StudioPanel
-      title={isAlbumLike ? 'Tracklist' : 'Items'}
+      title={
+        isAlbumLike
+          ? t('tracklistPanelStates.tracklist')
+          : t('tracklistPanelStates.items')
+      }
       description={`${items.length} track${items.length === 1 ? '' : 's'}`}
       action={
         editing && items.length > 1 ? (
@@ -66,7 +70,9 @@ export function TracklistPanel({
         <PageEmpty
           title={t('tracklistPanelFields.noTracksYet')}
           description={
-            editing ? 'Add sound items below.' : 'Click Edit to add tracks.'
+            editing
+              ? t('tracklistPanelStates.addSoundItemsBelow')
+              : t('tracklistPanelStates.clickEditToAddTracks')
           }
           action={
             onAddTracks ? (

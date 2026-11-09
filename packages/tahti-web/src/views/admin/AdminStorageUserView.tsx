@@ -147,8 +147,10 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                             <div className="min-w-0 flex-1">
                               <div className="font-medium">{f.title}</div>
                               <div className="text-foreground-secondary text-xs">
-                                {f.kind === 'stash' ? 'Stash' : 'Tracks'} ·{' '}
-                                {formatBytes(f.sizeBytes)} ·{' '}
+                                {f.kind === 'stash'
+                                  ? t('adminStorageUserViewStates.stash')
+                                  : t('adminStorageUserViewStates.tracks')}{' '}
+                                · {formatBytes(f.sizeBytes)} ·{' '}
                                 {formatFileDate(f.createdAt)} · running total{' '}
                                 {formatBytes(f.runningTotalBytes)}
                               </div>
@@ -159,7 +161,9 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
                                   variant="pill"
                                   color={f.isPublic ? 'green' : 'secondary'}
                                 >
-                                  {f.isPublic ? 'Public' : 'Private'}
+                                  {f.isPublic
+                                    ? t('adminStorageUserViewStates.public')
+                                    : t('adminStorageUserViewStates.private')}
                                 </Badge>
                               ) : null}
                               {f.isAudio && f.previewUrl ? (

@@ -128,7 +128,9 @@ export function FeatureRequestsView({
             variant={composerOpen ? 'secondary' : 'default'}
             onClick={() => setComposerOpen((v) => !v)}
           >
-            {composerOpen ? 'Cancel' : 'Propose an idea'}
+            {composerOpen
+              ? t('featureRequestsViewStates.cancel')
+              : t('featureRequestsViewStates.proposeAnIdea')}
           </Button>
         ) : null}
       </div>
@@ -211,7 +213,9 @@ export function FeatureRequestsView({
             disabled={submitting || !newTitle.trim() || !newDescription.trim()}
             className="self-start"
           >
-            {submitting ? 'Posting…' : 'Post idea'}
+            {submitting
+              ? t('featureRequestsViewStates.posting')
+              : t('featureRequestsViewStates.postIdea')}
           </Button>
         </form>
       )}
@@ -326,7 +330,9 @@ export function FeatureRequestsView({
                       }
                     }}
                   >
-                    {expandedId === r.id ? 'Hide discussion' : 'Discussion'}
+                    {expandedId === r.id
+                      ? t('featureRequestsViewStates.hideDiscussion')
+                      : t('featureRequestsViewStates.discussion')}
                   </Button>
                 </div>
 

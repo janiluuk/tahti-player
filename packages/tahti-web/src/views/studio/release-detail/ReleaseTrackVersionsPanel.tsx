@@ -133,7 +133,9 @@ function TrackVersions({
                   variant="pill"
                   color={version.status === 'ERROR' ? 'red' : 'secondary'}
                 >
-                  {version.status === 'ERROR' ? 'Failed' : 'Processing'}
+                  {version.status === 'ERROR'
+                    ? t('releaseTrackVersionsPanelStates.failed')
+                    : t('releaseTrackVersionsPanelStates.processing')}
                 </Badge>
               )}
             </li>
@@ -154,7 +156,9 @@ function TrackVersions({
                 title: track.title,
               }),
               description: t('releaseTrackVersionsPanelFields.wavFlacMp3AacOr'),
-              browse: uploading ? 'Uploading…' : 'Choose audio file',
+              browse: uploading
+                ? t('releaseTrackVersionsPanelStates.uploading')
+                : t('releaseTrackVersionsPanelStates.chooseAudioFile'),
             }}
             accept={RELEASE_TRACK_VERSION_TYPES.join(',')}
             disabled={uploading}

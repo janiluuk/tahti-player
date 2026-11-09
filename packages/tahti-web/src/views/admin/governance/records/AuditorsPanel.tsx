@@ -23,6 +23,7 @@ import {
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { numericDay } from '../../../../lib/relativeDate';
+import { webT } from '../../../../lib/webT';
 
 const KIND_OPTIONS: Array<{ id: GovernanceAuditor['kind']; label: string }> = [
   { id: 'OPERATIONS_INSPECTOR', label: 'Operations inspector' },
@@ -40,7 +41,10 @@ export function auditorServing(
 }
 
 function roleLabel(auditor: GovernanceAuditor): string {
-  const role = auditor.kind === 'AUDITOR' ? 'Auditor' : 'Operations inspector';
+  const role =
+    auditor.kind === 'AUDITOR'
+      ? webT()('auditorsPanelStates.auditor')
+      : webT()('auditorsPanelStates.operationsInspector');
   return auditor.deputy ? `Deputy ${role.toLowerCase()}` : role;
 }
 
@@ -287,7 +291,9 @@ export function AuditorsPanel() {
                   variant="pill"
                   color={auditorServing(auditor) ? 'green' : 'secondary'}
                 >
-                  {auditorServing(auditor) ? 'Serving' : 'Not serving'}
+                  {auditorServing(auditor)
+                    ? t('auditorsPanelStates.serving')
+                    : t('auditorsPanelStates.notServing')}
                 </Badge>
               </div>
               <p className="text-foreground-secondary text-xs">

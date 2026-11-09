@@ -43,7 +43,9 @@ export function PlaylistsTabContent({
             aria-pressed={item.isFallback}
           >
             <RadioTowerIcon size={16} aria-hidden className="mr-1.5" />
-            {item.isFallback ? 'Remove from rotation' : 'Add to rotation'}
+            {item.isFallback
+              ? t('playlistsTabContentStates.removeFromRotation')
+              : t('playlistsTabContentStates.addToRotation')}
           </Button>
         ) : null}
         <Button

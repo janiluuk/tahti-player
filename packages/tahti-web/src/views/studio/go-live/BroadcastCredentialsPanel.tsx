@@ -153,8 +153,8 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
         <Tooltip
           content={
             credentialsExpanded
-              ? 'Hide broadcasting options'
-              : 'Show broadcasting options'
+              ? t('broadcastCredentialsPanelStates.hideBroadcastingOptions')
+              : t('broadcastCredentialsPanelStates.showBroadcastingOptions')
           }
         >
           <Button
@@ -163,8 +163,8 @@ export function BroadcastCredentialsPanel({ state }: { state: GoLiveState }) {
             onClick={() => setCredentialsExpanded((current) => !current)}
             aria-label={
               credentialsExpanded
-                ? 'Hide broadcasting options'
-                : 'Show broadcasting options'
+                ? t('broadcastCredentialsPanelStates.hideBroadcastingOptions')
+                : t('broadcastCredentialsPanelStates.showBroadcastingOptions')
             }
             aria-expanded={credentialsExpanded}
           >

@@ -260,8 +260,8 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
       await navigator.clipboard.writeText(text);
       toast.success(
         mode === 'musicbrainz'
-          ? 'MusicBrainz prefill copied.'
-          : 'Discogs prefill copied.',
+          ? t('releaseOpsPanelStates.musicbrainzPrefillCopied')
+          : t('releaseOpsPanelStates.discogsPrefillCopied'),
       );
     } catch {
       toast.error(i18n.t('web:toasts.couldNotReadExportPack'));
@@ -376,8 +376,8 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
                   key === 'pLine'
                     ? 'P-line'
                     : key === 'cLine'
-                      ? 'C-line'
-                      : 'Label imprint'
+                      ? t('releaseOpsPanelStates.cLine')
+                      : t('releaseOpsPanelStates.labelImprint')
                 }
                 value={form?.[key] ?? ''}
                 disabled={busy}
@@ -501,8 +501,10 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
             {revelatorStatus ?? 'not submitted'}
           </Badge>
           <Button size="sm" variant="secondary" onClick={() => setOpen(!open)}>
-            {open ? 'Hide' : 'Release ops'} ({doneCount || '—'}/
-            {checklist.length || 5})
+            {open
+              ? t('releaseOpsPanelStates.hide')
+              : t('releaseOpsPanelStates.releaseOps')}{' '}
+            ({doneCount || '—'}/{checklist.length || 5})
           </Button>
         </div>
       </div>

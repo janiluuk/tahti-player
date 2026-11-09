@@ -186,7 +186,9 @@ export function AdminVenuesView() {
                             ) : (
                               <CheckIcon size={14} aria-hidden />
                             )}
-                            {venue.verifiedAt ? 'Unverify' : 'Verify'}
+                            {venue.verifiedAt
+                              ? t('adminVenuesViewStates.unverify')
+                              : t('adminVenuesViewStates.verify')}
                           </Button>
                         </li>
                       ))}

@@ -87,8 +87,8 @@ export function CorrectionsQueuePanel() {
         <PageEmpty
           title={
             filter === 'waiting'
-              ? 'No requests are waiting'
-              : 'No correction requests yet'
+              ? t('correctionsQueuePanelStates.noRequestsAreWaiting')
+              : t('correctionsQueuePanelStates.noCorrectionRequestsYet')
           }
         />
       ) : (

@@ -309,7 +309,9 @@ export const ArtistImagePurposePicker: FC<Props> = ({
             {t('imagePurpose.cancel')}
           </Button>
           <Button onClick={() => void upload()} disabled={busy}>
-            {busy ? 'Uploading…' : 'Upload images'}
+            {busy
+              ? t('artistImagePurposePickerStates.uploading')
+              : t('artistImagePurposePickerStates.uploadImages')}
           </Button>
         </Dialog.Actions>
       </Dialog.Root>

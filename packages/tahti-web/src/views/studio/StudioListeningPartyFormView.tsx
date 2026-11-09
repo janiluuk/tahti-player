@@ -152,7 +152,9 @@ export function StudioListeningPartyFormView({
       <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
         <ViewShell
           title={
-            editing ? 'Reschedule listening party' : 'Schedule listening party'
+            editing
+              ? t('studioListeningPartyFormViewStates.rescheduleListeningParty')
+              : t('studioListeningPartyFormViewStates.scheduleListeningParty')
           }
           subtitle={t(
             'studioListeningPartyFormView.everyoneHearsTheReleaseOnce',
@@ -191,8 +193,10 @@ export function StudioListeningPartyFormView({
                     label={t('studioListeningPartyFormView.release')}
                     placeholder={
                       releases.length === 0
-                        ? 'Add tracks to a release first'
-                        : 'Choose a release'
+                        ? t(
+                            'studioListeningPartyFormViewStates.addTracksToARelease',
+                          )
+                        : t('studioListeningPartyFormViewStates.chooseARelease')
                     }
                     value={releaseId || undefined}
                     options={releases.map((release) => ({
@@ -245,7 +249,9 @@ export function StudioListeningPartyFormView({
                         className="mr-1.5"
                       />
                     )}
-                    {editing ? 'Save changes' : 'Schedule party'}
+                    {editing
+                      ? t('studioListeningPartyFormViewStates.saveChanges')
+                      : t('studioListeningPartyFormViewStates.scheduleParty')}
                   </Button>
                 </div>
               </form>

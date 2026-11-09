@@ -87,7 +87,9 @@ export function InstallsPanel({
                     variant="pill"
                     color={install.enabled ? 'green' : 'orange'}
                   >
-                    {install.enabled ? 'Enabled' : 'Disabled'}
+                    {install.enabled
+                      ? t('installsPanelStates.enabled')
+                      : t('installsPanelStates.disabled')}
                   </Badge>
                 </div>
                 <p className="text-foreground-secondary text-xs">

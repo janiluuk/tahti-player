@@ -169,7 +169,11 @@ export function InstalledAvailableTabs({
       </Tabs.Root>
       {visibleIds.length === 0 ? (
         <PageEmpty
-          title={tab === 'installed' ? 'Nothing installed' : 'All installed'}
+          title={
+            tab === 'installed'
+              ? t('pluginStoreSharedStates.nothingInstalled')
+              : t('pluginStoreSharedStates.allInstalled')
+          }
           description={tab === 'installed' ? emptyInstalled : emptyAvailable}
         />
       ) : (

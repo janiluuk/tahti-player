@@ -159,8 +159,8 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                       {saveState === 'saving'
                         ? 'Saving…'
                         : saveState === 'error'
-                          ? 'Save failed'
-                          : 'Saved'}
+                          ? t('studioEditorProjectViewStates.saveFailed')
+                          : t('studioEditorProjectViewStates.saved')}
                     </span>
                   }
                 >

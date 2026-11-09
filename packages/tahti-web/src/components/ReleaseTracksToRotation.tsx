@@ -132,8 +132,8 @@ export function ReleaseTracksToRotation({
                     {added
                       ? 'Added'
                       : addingId === track.id
-                        ? 'Adding…'
-                        : 'Add'}
+                        ? t('releaseTracksToRotationStates.adding')
+                        : t('releaseTracksToRotationStates.add')}
                   </Button>
                 </li>
               );

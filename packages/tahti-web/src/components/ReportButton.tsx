@@ -122,7 +122,9 @@ export function ReportButton({
           <Dialog.Actions>
             <Dialog.Close>{t('reportButton.cancel')}</Dialog.Close>
             <Button size="sm" disabled={sending} type="submit">
-              {sending ? 'Sending…' : 'Send report'}
+              {sending
+                ? t('reportButtonStates.sending')
+                : t('reportButtonStates.sendReport')}
             </Button>
           </Dialog.Actions>
         </form>

@@ -95,7 +95,9 @@ function ReplyForm({
       ) : null}
       <div>
         <Button type="submit" disabled={sending || !body.trim()}>
-          {sending ? 'Posting…' : 'Post reply'}
+          {sending
+            ? t('discussionTopicViewStates.posting')
+            : t('discussionTopicViewStates.postReply')}
         </Button>
       </div>
     </form>
@@ -153,7 +155,9 @@ function EditReplyForm({
       ) : null}
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={saving || !changed}>
-          {saving ? 'Saving…' : 'Save'}
+          {saving
+            ? t('discussionTopicViewStates.saving')
+            : t('discussionTopicViewStates.save')}
         </Button>
         <Button
           type="button"
@@ -175,6 +179,7 @@ function FollowControls({
   topic: DiscussionTopicDetail;
   onChange: (following: boolean, muted: boolean) => void;
 }) {
+  const { t } = useTranslation('web');
   const [busy, setBusy] = useState(false);
 
   const run = async (
@@ -202,12 +207,14 @@ function FollowControls({
           void run(
             () => setDiscussionFollow(topic.id, !topic.following),
             topic.following
-              ? 'You no longer follow this topic.'
-              : 'You follow this topic; new replies notify you.',
+              ? t('discussionTopicViewStates.youNoLongerFollowThis')
+              : t('discussionTopicViewStates.youFollowThisTopicNew'),
           )
         }
       >
-        {topic.following ? 'Unfollow' : 'Follow'}
+        {topic.following
+          ? t('discussionTopicViewStates.unfollow')
+          : t('discussionTopicViewStates.follow')}
       </Button>
       {topic.following ? (
         <Button
@@ -218,12 +225,14 @@ function FollowControls({
             void run(
               () => setDiscussionMute(topic.id, !topic.muted),
               topic.muted
-                ? 'Replies notify you again.'
-                : 'Muted: you still follow it, without notifications.',
+                ? t('discussionTopicViewStates.repliesNotifyYouAgain')
+                : t('discussionTopicViewStates.mutedYouStillFollowIt'),
             )
           }
         >
-          {topic.muted ? 'Unmute' : 'Mute notifications'}
+          {topic.muted
+            ? t('discussionTopicViewStates.unmute')
+            : t('discussionTopicViewStates.muteNotifications')}
         </Button>
       ) : null}
     </div>
@@ -393,7 +402,9 @@ export function DiscussionTopicView({ id }: { id: string }) {
                       disabled={loadingEarlier}
                       onClick={() => void showEarlier()}
                     >
-                      {loadingEarlier ? 'Loading…' : 'Show earlier replies'}
+                      {loadingEarlier
+                        ? t('discussionTopicViewStates.loading')
+                        : t('discussionTopicViewStates.showEarlierReplies')}
                     </Button>
                   </div>
                 ) : null}
@@ -485,8 +496,8 @@ export function DiscussionTopicView({ id }: { id: string }) {
         title={t('discussionTopic.removeThisReply')}
         description={
           removing && !removing.mine
-            ? 'It is deleted for every member, and the removal is logged.'
-            : 'It is deleted for every member.'
+            ? t('discussionTopicViewStates.itIsDeletedForEvery')
+            : t('discussionTopicViewStates.itIsDeletedForEvery2')
         }
         confirmLabel={t('discussionTopic.remove')}
         onCancel={() => setRemoving(null)}

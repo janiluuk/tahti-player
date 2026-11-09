@@ -67,7 +67,9 @@ export function SuggestStationForm() {
           variant="secondary"
           onClick={() => setOpen((v) => !v)}
         >
-          {open ? 'Cancel' : 'Suggest a station'}
+          {open
+            ? t('suggestStationFormStates.cancel')
+            : t('suggestStationFormStates.suggestAStation')}
         </Button>
       </div>
 
@@ -127,7 +129,9 @@ export function SuggestStationForm() {
               type="submit"
               disabled={busy || !name.trim() || !streamUrl.trim()}
             >
-              {busy ? 'Sending…' : 'Send for review'}
+              {busy
+                ? t('suggestStationFormStates.sending')
+                : t('suggestStationFormStates.sendForReview')}
             </Button>
             {msg ? (
               <p className="text-foreground-secondary text-xs">{msg}</p>

@@ -156,7 +156,9 @@ export function StemsPanel({
             ) : (
               <SplitIcon size={14} aria-hidden className="mr-1.5" />
             )}
-            {busyStem ? 'Splitting…' : 'Split into stems'}
+            {busyStem
+              ? t('stemsPanelStates.splitting')
+              : t('stemsPanelStates.splitIntoStems')}
           </Button>
           {busyStem && (
             <div
@@ -224,8 +226,8 @@ export function StemsPanel({
                         <LayersIcon size={14} aria-hidden className="mr-1.5" />
                       )}
                       {sendingSet === job.stemSet
-                        ? 'Loading lanes…'
-                        : 'Send to Multitrack'}
+                        ? t('stemsPanelStates.loadingLanes')
+                        : t('stemsPanelStates.sendToMultitrack')}
                     </Button>
                   ) : null}
                 </div>

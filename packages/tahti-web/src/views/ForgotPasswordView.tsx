@@ -58,7 +58,9 @@ export function ForgotPasswordView() {
           <p className="text-accent-green-strong text-sm">{message}</p>
         ) : null}
         <Button disabled={!canSubmit} type="submit">
-          {loading ? 'Sending…' : 'Send reset link'}
+          {loading
+            ? t('forgotPasswordViewStates.sending')
+            : t('forgotPasswordViewStates.sendResetLink')}
         </Button>
       </form>
     </div>
