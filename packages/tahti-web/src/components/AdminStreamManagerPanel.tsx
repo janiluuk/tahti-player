@@ -35,6 +35,7 @@ import {
   fetchChannelManageStats,
   type ChannelManageStats,
 } from '../api/broadcast';
+import { dateLocaleTag } from '../lib/locale';
 import { ConfirmDialog } from './ConfirmDialog';
 import { PageEmpty, PageLoading } from './PageStates';
 import { StudioPanel } from './StudioPanel';
@@ -189,9 +190,13 @@ export function AdminStreamManagerPanel({
                     {stats ? (
                       <div className="text-foreground-secondary mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs">
                         <span>
-                          {stats.listeners.toLocaleString()} listeners
+                          {stats.listeners.toLocaleString(dateLocaleTag())}{' '}
+                          listeners
                         </span>
-                        <span>{stats.listenerPeak.toLocaleString()} peak</span>
+                        <span>
+                          {stats.listenerPeak.toLocaleString(dateLocaleTag())}{' '}
+                          peak
+                        </span>
                         {stats.rotationTrackCount === 0 ? (
                           <span className="text-accent-yellow-strong">
                             24/7 rotation empty
@@ -447,9 +452,9 @@ export function AdminStreamManagerPanel({
                     {t('adminStreamManager.listeners')}
                   </dt>
                   <dd>
-                    {streamStats[
-                      detailsStream.slug
-                    ]!.listeners.toLocaleString()}
+                    {streamStats[detailsStream.slug]!.listeners.toLocaleString(
+                      dateLocaleTag(),
+                    )}
                   </dd>
                   <dt className="text-foreground-secondary">
                     {t('adminStreamManager.listenerPeak')}
@@ -457,7 +462,7 @@ export function AdminStreamManagerPanel({
                   <dd>
                     {streamStats[
                       detailsStream.slug
-                    ]!.listenerPeak.toLocaleString()}
+                    ]!.listenerPeak.toLocaleString(dateLocaleTag())}
                   </dd>
                 </>
               ) : null}
@@ -474,7 +479,11 @@ export function AdminStreamManagerPanel({
                   <dt className="text-foreground-secondary">
                     {t('adminStreamManager.started')}
                   </dt>
-                  <dd>{new Date(detailsStream.goneLiveAt).toLocaleString()}</dd>
+                  <dd>
+                    {new Date(detailsStream.goneLiveAt).toLocaleString(
+                      dateLocaleTag(),
+                    )}
+                  </dd>
                 </>
               ) : null}
               {detailsStream.hlsUrl ? (

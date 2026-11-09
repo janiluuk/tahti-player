@@ -11,12 +11,13 @@ import {
 } from '../../../api/studio-extras';
 import { PageError, PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { dateLocaleTag } from '../../../lib/locale';
 
 const DIRECT = 'Direct';
 const OTHER = 'Other';
 
 function sourceLabel(name: string, count: number): string {
-  const listens = `${count.toLocaleString()} ${count === 1 ? 'listen' : 'listens'}`;
+  const listens = `${count.toLocaleString(dateLocaleTag())} ${count === 1 ? 'listen' : 'listens'}`;
   if (name === DIRECT) {
     return `Direct or unknown · ${listens}`;
   }

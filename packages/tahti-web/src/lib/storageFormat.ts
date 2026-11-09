@@ -1,3 +1,5 @@
+import { dateLocaleTag } from './locale';
+
 /** Shared formatting/grouping helpers for the admin Storage/Files views
  * (`AdminStorageView`, `AdminStorageUserView`). Kept framework-free so they're
  * cheap to unit test independently of the views that render them. */
@@ -58,7 +60,7 @@ export function formatFileDate(iso: string): string {
   if (Number.isNaN(date.getTime())) {
     return '—';
   }
-  return date.toLocaleDateString(undefined, {
+  return date.toLocaleDateString(dateLocaleTag(), {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

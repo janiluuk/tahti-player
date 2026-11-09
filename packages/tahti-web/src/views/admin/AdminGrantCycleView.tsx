@@ -34,6 +34,7 @@ import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { dateLocaleTag } from '../../lib/locale';
 import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
 const MIN_UNITS = 5;
@@ -152,7 +153,7 @@ export function AdminGrantCycleView() {
                       </StudioPanel>
                       <StudioPanel title={t('grantCycle.engagementUnits')}>
                         <div className="text-xl font-bold">
-                          {preview.totalUnits.toLocaleString()}
+                          {preview.totalUnits.toLocaleString(dateLocaleTag())}
                         </div>
                       </StudioPanel>
                       <StudioPanel
@@ -235,7 +236,9 @@ export function AdminGrantCycleView() {
                                     €{artist.fanSubEuros}
                                   </DataTableCell>
                                   <DataTableCell>
-                                    {artist.units.toLocaleString()}
+                                    {artist.units.toLocaleString(
+                                      dateLocaleTag(),
+                                    )}
                                   </DataTableCell>
                                   <DataTableCell className="text-right font-medium">
                                     {formatEur(artist.amountCents)}

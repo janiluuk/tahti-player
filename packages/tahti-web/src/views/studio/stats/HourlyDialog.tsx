@@ -1,6 +1,7 @@
 import { useTranslation } from '@tahti-player/i18n';
 import { Dialog, InlineLoader, ListeningClock } from '@tahti-player/ui';
 
+import { dateLocaleTag } from '../../../lib/locale';
 import { formatDate } from './helpers';
 import type { StatsData } from './useStatsData';
 
@@ -32,7 +33,9 @@ export function HourlyDialog({ state }: { state: StatsData }) {
               busiestHour: 'Busiest hour',
               busiestHourValue: 'Plays in busiest hour',
             }}
-            formatValue={(value) => `${value.toLocaleString()} plays`}
+            formatValue={(value) =>
+              `${value.toLocaleString(dateLocaleTag())} plays`
+            }
             formatHour={(hour) => `${String(hour).padStart(2, '0')}:00`}
           />
         )}

@@ -17,6 +17,7 @@ import { HistoryBackButton } from '../components/HistoryBackButton';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { PlatformNewsDialog } from '../components/PlatformNewsDialog';
 import { humanizePastDate } from '../lib/humanizeDate';
+import { dateLocaleTag } from '../lib/locale';
 import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 function NewsEntry({
@@ -69,7 +70,7 @@ function NewsEntry({
           <CalendarDaysIcon size={14} aria-hidden />
           <time
             dateTime={entry.publishedAt}
-            title={new Date(entry.publishedAt).toLocaleString()}
+            title={new Date(entry.publishedAt).toLocaleString(dateLocaleTag())}
           >
             {humanizePastDate(entry.publishedAt)}
           </time>

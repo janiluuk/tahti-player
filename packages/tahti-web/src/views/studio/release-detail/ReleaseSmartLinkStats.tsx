@@ -11,6 +11,7 @@ import {
 import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { dspServiceLabel } from '../../../lib/dspServices';
+import { dateLocaleTag } from '../../../lib/locale';
 import { STUDIO_METRIC_TONES } from '../stats/metricTones';
 
 export function ReleaseSmartLinkStats({ releaseId }: { releaseId: string }) {
@@ -66,13 +67,13 @@ export function ReleaseSmartLinkStats({ releaseId }: { releaseId: string }) {
       <div className="grid gap-3 sm:grid-cols-3">
         <StatTile
           label={t('releaseSmartLinkStats.views')}
-          value={stats.smartLinkViewCount.toLocaleString()}
+          value={stats.smartLinkViewCount.toLocaleString(dateLocaleTag())}
           tone={STUDIO_METRIC_TONES.smartLinkViews}
           icon={<EyeIcon size={16} />}
         />
         <StatTile
           label={t('releaseSmartLinkStats.clicks')}
-          value={stats.totalClicks.toLocaleString()}
+          value={stats.totalClicks.toLocaleString(dateLocaleTag())}
           tone={STUDIO_METRIC_TONES.smartLinkClicks}
           icon={<ExternalLinkIcon size={16} />}
         />
@@ -94,7 +95,9 @@ export function ReleaseSmartLinkStats({ releaseId }: { releaseId: string }) {
               className="flex items-center justify-between gap-3"
             >
               <span>{dspServiceLabel(platform)}</span>
-              <span className="tabular-nums">{count.toLocaleString()}</span>
+              <span className="tabular-nums">
+                {count.toLocaleString(dateLocaleTag())}
+              </span>
             </li>
           ))}
         </ul>

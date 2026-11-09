@@ -1,4 +1,5 @@
 import type { StudioShowBooking } from '../api/shows';
+import { dateLocaleTag } from './locale';
 
 /** Days shown per page of the weekly schedule grid (prod's tahti-radio-slots
  * calendar shows the same span, one week at a time). */
@@ -66,7 +67,7 @@ export function weekLabel(days: Date[]): string {
     return '';
   }
   const fmt = (d: Date) =>
-    d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+    d.toLocaleDateString(dateLocaleTag(), { month: 'short', day: 'numeric' });
   return `${fmt(first)} – ${fmt(last)}`;
 }
 

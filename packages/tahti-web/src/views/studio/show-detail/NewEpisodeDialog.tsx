@@ -4,6 +4,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, FilePicker, FilterChips } from '@tahti-player/ui';
 
 import type { StudioShowSeries } from '../../../api/shows';
+import { dateLocaleTag } from '../../../lib/locale';
 import type { ShowDetailState } from './useShowDetail';
 
 export function NewEpisodeDialog({
@@ -61,7 +62,8 @@ export function NewEpisodeDialog({
             ) : null}
             {nextSlotHint ? (
               <p className="text-foreground-secondary mt-1 text-xs">
-                Schedule: {new Date(nextSlotHint.startAt).toLocaleString()}
+                Schedule:{' '}
+                {new Date(nextSlotHint.startAt).toLocaleString(dateLocaleTag())}
               </p>
             ) : (
               <p className="text-foreground-secondary mt-1 text-xs">
