@@ -501,7 +501,9 @@ export function ListenAddonsPanel({
                     }}
                   >
                     <Input
-                      label={`Add a ${type.name} link`}
+                      label={t('listenAddonsPanelLabels.addALink', {
+                        name: type.name,
+                      })}
                       value={
                         inputByType[type.id] ??
                         (type.id === 'soundcloud' ? soundcloudProfile : '')

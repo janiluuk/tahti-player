@@ -11757,6 +11757,9 @@
       "success": "Success",
       "failed": "Failed",
       "runHistory": "{{job}} run history"
+    },
+    "listenAddonsPanelLabels": {
+      "addALink": "Add a {{name}} link"
     }
   },
   "studioEditor": {

@@ -11757,6 +11757,9 @@
       "success": "Onnistui",
       "failed": "Epäonnistui",
       "runHistory": "Ajohistoria: {{job}}"
+    },
+    "listenAddonsPanelLabels": {
+      "addALink": "Lisää {{name}}-linkki"
     }
   },
   "studioEditor": {
