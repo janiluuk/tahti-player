@@ -13,6 +13,7 @@ import {
   type MySupportTicketReply,
   type SupportTicketStatus,
 } from '../api/support';
+import { dateLocaleTag } from '../lib/locale';
 import { ListingDate } from './ListingDate';
 import { PageEmpty, PageError } from './PageStates';
 
@@ -235,7 +236,9 @@ export function MySupportTickets({
                         <div className="text-foreground-secondary text-xs">
                           {reply.authorName} ·{' '}
                           <time dateTime={reply.createdAt}>
-                            {new Date(reply.createdAt).toLocaleString()}
+                            {new Date(reply.createdAt).toLocaleString(
+                              dateLocaleTag(),
+                            )}
                           </time>
                         </div>
                         <p className="whitespace-pre-wrap">{reply.body}</p>

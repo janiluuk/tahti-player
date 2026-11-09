@@ -1708,7 +1708,16 @@
       "collectionItems_one": "{{count}} kohde",
       "collectionItems_other": "{{count}} kohdetta",
       "uploadedOnLead": "Ladattu {{date}}",
-      "soundDurationHours": ", {{hours}} h {{minutes}} min"
+      "soundDurationHours": ", {{hours}} h {{minutes}} min",
+      "mediaPurgeUnused": "Poista käyttämättömät",
+      "mediaPurgeNothing": "Kaikki tiedostot ovat käytössä, poistettavaa ei ole.",
+      "mediaPurgeTitle_one": "Poistetaanko {{count}} käyttämätön tiedosto?",
+      "mediaPurgeTitle_other": "Poistetaanko {{count}} käyttämätöntä tiedostoa?",
+      "mediaPurgeDescription_one": "{{count}} tiedosto ({{size}}) ei ole profiilisi, kanavasi, julkaisujesi tai minkään muun sinulle kuuluvan käytössä. Se poistetaan pysyvästi.",
+      "mediaPurgeDescription_other": "{{count}} tiedostoa ({{size}}) ei ole profiilisi, kanavasi, julkaisujesi tai minkään muun sinulle kuuluvan käytössä. Ne poistetaan pysyvästi.",
+      "mediaPurgeConfirm": "Poista käyttämättömät",
+      "mediaPurged_one": "Poistettiin {{count}} käyttämätön tiedosto, vapautui {{size}}.",
+      "mediaPurged_other": "Poistettiin {{count}} käyttämätöntä tiedostoa, vapautui {{size}}."
     },
     "date": {
       "today": "Tänään",
@@ -2596,7 +2605,8 @@
         "invitePoolModeratorsSubs": "Moderaattorit ja fanitilaajat",
         "invitePoolSubsOnly": "Vain fanitilaajat",
         "invitePoolEveryone": "Kaikki kirjautuneet",
-        "invitePoolManualOnly": "Vain kutsumani henkilöt"
+        "invitePoolManualOnly": "Vain kutsumani henkilöt",
+        "programmeMoved": "Ilmoituksia, offline-varaohjelmaa ja 24/7-rotaatiota hallitaan kohdassa Studio → Lähetys → Aikataulu."
       },
       "artist": {
         "loadError": "Artistiprofiilia ei voitu ladata",
@@ -7651,7 +7661,9 @@
       "schedule": "Aikataulu",
       "addNextBroadcast": "Lisää seuraava lähetys",
       "scheduledShowEpisodes": "Ajastetut jaksot",
-      "oneOffAndRecurringEpisodes": "Ohjelmistasi luodut kertaluontoiset ja toistuvat jaksot."
+      "oneOffAndRecurringEpisodes": "Ohjelmistasi luodut kertaluontoiset ja toistuvat jaksot.",
+      "channelProgramme": "Kanavan ohjelma",
+      "channelProgrammeDescription": "Mitä kanavasi soittaa livelähetysten välissä: 24/7-rotaatio, offline-varaohjelma ja ilmoitukset."
     },
     "releaseSmartLinkStats": {
       "smartLinkStats": "Älylinkin tilastot",

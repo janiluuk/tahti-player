@@ -24,6 +24,7 @@ import {
   monthLabelsShort,
   weekdayLabelsShort,
 } from '../lib/historyStats';
+import { dateLocaleTag } from '../lib/locale';
 import { useThemeStore } from '../plugins/themes';
 import { AudienceBreakdown } from '../views/studio/stats/AudienceBreakdown';
 import { ListenerLocations } from '../views/studio/stats/ListenerLocations';
@@ -47,7 +48,7 @@ function formatListeners(count: number): string {
   if (count === 1) {
     return '1 listener';
   }
-  return `${count.toLocaleString()} listeners`;
+  return `${count.toLocaleString(dateLocaleTag())} listeners`;
 }
 
 function hasAnyListeners(insights: TrackInsights): boolean {
@@ -148,7 +149,7 @@ export function TrackInsightsPanel({
               label={t('trackInsightsPanel.plays')}
               value={
                 <StatNumber className="text-2xl">
-                  {insights.totalPlays.toLocaleString()}
+                  {insights.totalPlays.toLocaleString(dateLocaleTag())}
                 </StatNumber>
               }
             />
@@ -156,7 +157,7 @@ export function TrackInsightsPanel({
               label={t('trackInsightsPanel.downloads')}
               value={
                 <StatNumber className="text-2xl">
-                  {insights.totalDownloads.toLocaleString()}
+                  {insights.totalDownloads.toLocaleString(dateLocaleTag())}
                 </StatNumber>
               }
             />

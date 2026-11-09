@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { BroadcastPanel } from '@tahti-web/views/settings/panels/BroadcastPanel';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, within } from 'storybook/test';
 
 import { resetSettingsModal } from './_fixtures/settings';
 import { withToaster } from './_fixtures/track-release';
@@ -43,29 +43,15 @@ export const Radio: Story = {
       'aria-selected',
       'true',
     );
-    const announcements = await canvas.findByRole('switch', {
-      name: 'Announcements enabled',
-    });
     await expectVisible(
-      canvas.getByRole('switch', { name: 'Fallback / autoplay when offline' }),
+      await canvas.findByText(/managed in Studio → Broadcast → Schedule/),
     );
-    await expectVisible(
-      canvas.getByRole('switch', {
-        name: 'Auto-enroll new archive into fallback',
-      }),
-    );
-
-    const before = announcements.getAttribute('aria-checked') ?? 'false';
-    const after = before === 'true' ? 'false' : 'true';
-    await userEvent.click(announcements);
-    await waitFor(() =>
-      expect(announcements).toHaveAttribute('aria-checked', after),
-    );
-    // The offline mock keeps saves; switch it back for the next run.
-    await userEvent.click(announcements);
-    await waitFor(() =>
-      expect(announcements).toHaveAttribute('aria-checked', before),
-    );
+    await expect(
+      canvas.queryByRole('switch', { name: 'Announcements enabled' }),
+    ).toBeNull();
+    await expect(
+      canvas.getByRole('link', { name: /Open schedule/ }),
+    ).toHaveAttribute('href', '/studio/schedule');
   },
 };
 

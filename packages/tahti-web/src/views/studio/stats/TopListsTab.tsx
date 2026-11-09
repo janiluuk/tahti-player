@@ -10,6 +10,7 @@ import type {
 import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { countryFlagAndName } from '../../../lib/countries';
+import { dateLocaleTag } from '../../../lib/locale';
 import {
   formatListenCount,
   formatPlayCount,
@@ -123,7 +124,7 @@ export function TopListsTab({
             title={t('topListsTabLabels.topCountriesToprangelabel', {
               topRangeLabel,
             })}
-            formatValue={(value) => value.toLocaleString()}
+            formatValue={(value) => value.toLocaleString(dateLocaleTag())}
             entries={countries.map((country) => ({
               id: country.country,
               label: countryFlagAndName(country.country),

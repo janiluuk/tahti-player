@@ -1,4 +1,4 @@
-import { PlayIcon, Trash2Icon } from 'lucide-react';
+import { EraserIcon, PlayIcon, Trash2Icon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -14,7 +14,10 @@ import {
 
 import {
   deleteUserMedia,
+  fetchUnusedMedia,
   fetchUserMedia,
+  purgeUnusedMedia,
+  type UnusedMedia,
   type UserMediaFile,
 } from '../api/user-media';
 import { ConfirmDialog } from '../components/ConfirmDialog';
@@ -54,6 +57,41 @@ export function LibraryMediaView() {
   const [kindFilter, setKindFilter] = useState<string>('ALL');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<LibrarySort>('newest');
+  const [unused, setUnused] = useState<UnusedMedia | null>(null);
+  const [purging, setPurging] = useState(false);
+
+  const checkUnused = async () => {
+    setPurging(true);
+    const result = await fetchUnusedMedia();
+    setPurging(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    if (result.data.count === 0) {
+      toast.success(t('library.mediaPurgeNothing'));
+      return;
+    }
+    setUnused(result.data);
+  };
+
+  const purge = async () => {
+    setUnused(null);
+    setPurging(true);
+    const result = await purgeUnusedMedia();
+    setPurging(false);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    toast.success(
+      t('library.mediaPurged', {
+        count: result.data.deleted,
+        size: formatBytes(result.data.freedBytes),
+      }),
+    );
+    reload();
+  };
 
   const kindChips = useMemo(() => {
     const hasImages = files.some((f) => !f.contentType.startsWith('video/'));
@@ -104,6 +142,19 @@ export function LibraryMediaView() {
     <StudioPanel
       title={t('library.mediaTitle')}
       description={t('library.mediaDescription')}
+      action={
+        files.length > 0 ? (
+          <Button
+            size="sm"
+            variant="secondary"
+            disabled={purging}
+            onClick={() => void checkUnused()}
+          >
+            <EraserIcon size={15} aria-hidden className="mr-1.5" />
+            {t('library.mediaPurgeUnused')}
+          </Button>
+        ) : undefined
+      }
     >
       {loading ? (
         <PageLoading label={t('library.mediaLoading')} />
@@ -228,6 +279,18 @@ export function LibraryMediaView() {
           )}
         </div>
       )}
+      <ConfirmDialog
+        isOpen={unused !== null}
+        destructive
+        title={t('library.mediaPurgeTitle', { count: unused?.count ?? 0 })}
+        description={t('library.mediaPurgeDescription', {
+          count: unused?.count ?? 0,
+          size: formatBytes(unused?.totalBytes ?? 0),
+        })}
+        confirmLabel={t('library.mediaPurgeConfirm')}
+        onCancel={() => setUnused(null)}
+        onConfirm={() => void purge()}
+      />
       <ConfirmDialog
         isOpen={pendingRemove !== null}
         destructive

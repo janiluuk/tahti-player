@@ -35,6 +35,7 @@ import {
   fromDatetimeLocalValue,
   toDatetimeLocalValue,
 } from '../../../lib/datetimeLocal';
+import { dateLocaleTag } from '../../../lib/locale';
 import { isHttpUrl } from '../../../lib/parseRss';
 import { toastWithUndo } from '../../../lib/undoToast';
 import { PostPreview } from './PostPreview';
@@ -146,7 +147,7 @@ export function PostDialog({
         }
       }
       const savedMessage = isScheduledPost(result.data)
-        ? `Post scheduled for ${new Date(result.data.publishAt).toLocaleString()}.`
+        ? `Post scheduled for ${new Date(result.data.publishAt).toLocaleString(dateLocaleTag())}.`
         : editing
           ? t('postDialogStates.postSaved')
           : t('postDialogStates.postPublished');

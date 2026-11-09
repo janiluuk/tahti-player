@@ -3,6 +3,7 @@ import { ActivityIcon } from 'lucide-react';
 import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button } from '@tahti-player/ui';
 
+import { dateLocaleTag } from '../../lib/locale';
 import { streamFailureLabel } from '../../lib/streamFailure';
 import {
   useStationHealth,
@@ -11,7 +12,7 @@ import {
 } from '../../stores/stationHealthStore';
 
 function checkedTime(checkedAt: number): string {
-  return new Date(checkedAt).toLocaleTimeString(undefined, {
+  return new Date(checkedAt).toLocaleTimeString(dateLocaleTag(), {
     hour: '2-digit',
     minute: '2-digit',
   });

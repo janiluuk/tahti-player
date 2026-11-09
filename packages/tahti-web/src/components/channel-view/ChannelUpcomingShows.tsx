@@ -7,6 +7,7 @@ import {
   fetchChannelSchedule,
   type PublicChannelSchedule,
 } from '../../api/channel-schedule';
+import { dateLocaleTag } from '../../lib/locale';
 import { PageEmpty, PageError } from '../PageStates';
 import { Eyebrow } from '../tahti/Eyebrow';
 
@@ -92,7 +93,10 @@ export function ChannelUpcomingShows({ slug }: { slug: string }) {
               dateTime={show.startAt}
               className="text-foreground-secondary text-xs tabular-nums"
             >
-              {new Date(show.startAt).toLocaleString(undefined, startFormat)}
+              {new Date(show.startAt).toLocaleString(
+                dateLocaleTag(),
+                startFormat,
+              )}
             </time>
             <span className="min-w-0 font-medium">{show.title}</span>
             {show.durationMin ? (

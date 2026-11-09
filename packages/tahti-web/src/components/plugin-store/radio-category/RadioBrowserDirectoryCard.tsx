@@ -28,6 +28,7 @@ import {
   type RadioStation,
 } from '../../../content/radioStations';
 import { flagEmoji } from '../../../lib/countries';
+import { dateLocaleTag } from '../../../lib/locale';
 import {
   useListenerWidgetsStore,
   type SavedBrowserStation,
@@ -414,7 +415,7 @@ export function RadioBrowserDirectoryCard() {
                               'radioBrowserDirectoryCardStates.popularStations',
                             )}
                         {stationCount
-                          ? ` · ${stationCount.toLocaleString()} total`
+                          ? ` · ${stationCount.toLocaleString(dateLocaleTag())} total`
                           : ''}
                       </h3>
                       {results.length === 0 ? (

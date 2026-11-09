@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { fetchChannelPresence } from '../api/channel-presence';
+import { dateLocaleTag } from '../lib/locale';
 
 const REFRESH_MS = 30_000;
 
@@ -30,7 +31,7 @@ export function ChatListeningNow({ slug }: { slug: string }) {
 
   return (
     <span data-testid="chat-listening-now">
-      · {count.toLocaleString()} listening
+      · {count.toLocaleString(dateLocaleTag())} listening
     </span>
   );
 }

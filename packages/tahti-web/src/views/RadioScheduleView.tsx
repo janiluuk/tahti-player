@@ -37,6 +37,7 @@ import {
 } from '../api/shows';
 import { PageEmpty, PageError } from '../components/PageStates';
 import { cn } from '../lib/cn';
+import { dateLocaleTag } from '../lib/locale';
 import {
   addDays,
   atHour,
@@ -465,10 +466,12 @@ export function RadioScheduleView() {
                     className="border-border bg-background-secondary/40 flex flex-col items-center border-b px-2 py-2 text-xs"
                   >
                     <span className="font-semibold">
-                      {day.toLocaleDateString(undefined, { weekday: 'short' })}
+                      {day.toLocaleDateString(dateLocaleTag(), {
+                        weekday: 'short',
+                      })}
                     </span>
                     <span className="text-foreground-secondary">
-                      {day.toLocaleDateString(undefined, {
+                      {day.toLocaleDateString(dateLocaleTag(), {
                         month: 'short',
                         day: 'numeric',
                       })}
@@ -504,7 +507,7 @@ export function RadioScheduleView() {
                               ? `${bookingTitle(booking)} by ${booking.displayName}${
                                   booking.isMine ? ' — click to view' : ''
                                 }`
-                              : `${day.toLocaleDateString(undefined, {
+                              : `${day.toLocaleDateString(dateLocaleTag(), {
                                   weekday: 'long',
                                   month: 'long',
                                   day: 'numeric',
@@ -565,7 +568,7 @@ export function RadioScheduleView() {
         >
           <div className="text-sm">
             <strong>
-              {selection.day.toLocaleDateString(undefined, {
+              {selection.day.toLocaleDateString(dateLocaleTag(), {
                 weekday: 'short',
                 month: 'short',
                 day: 'numeric',

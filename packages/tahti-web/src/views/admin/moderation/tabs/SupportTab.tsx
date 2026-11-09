@@ -28,6 +28,7 @@ import {
   PageLoading,
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { dateLocaleTag } from '../../../../lib/locale';
 import { ModerationTabs } from '../ModerationTabs';
 
 function statusBadge(status: AdminSupportStatus): {
@@ -370,7 +371,8 @@ export function SupportTab() {
                       key={n.id}
                       className="text-foreground-secondary py-1 text-center text-xs"
                     >
-                      {n.body} · {new Date(n.createdAt).toLocaleString()}
+                      {n.body} ·{' '}
+                      {new Date(n.createdAt).toLocaleString(dateLocaleTag())}
                     </p>
                   ) : (
                     <div
@@ -379,7 +381,7 @@ export function SupportTab() {
                     >
                       <div className="text-foreground-secondary text-[10px]">
                         {n.authorDisplayName ?? 'Board'} ·{' '}
-                        {new Date(n.createdAt).toLocaleString()}
+                        {new Date(n.createdAt).toLocaleString(dateLocaleTag())}
                       </div>
                       {n.body}
                     </div>

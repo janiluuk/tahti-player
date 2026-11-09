@@ -24,6 +24,7 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { humanizePastDate } from '../../lib/humanizeDate';
+import { dateLocaleTag } from '../../lib/locale';
 import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { CronHistoryDialog } from './status/CronHistoryDialog';
 import { WorkersPanel } from './status/WorkersPanel';
@@ -118,7 +119,7 @@ export function AdminStatusView() {
                         <Tooltip
                           content={new Date(
                             platform?.ts ?? data.ts,
-                          ).toLocaleString()}
+                          ).toLocaleString(dateLocaleTag())}
                           side="top"
                           wrapperClassName="inline"
                         >
@@ -126,7 +127,7 @@ export function AdminStatusView() {
                             dateTime={platform?.ts ?? data.ts}
                             aria-description={new Date(
                               platform?.ts ?? data.ts,
-                            ).toLocaleString()}
+                            ).toLocaleString(dateLocaleTag())}
                           >
                             {humanizePastDate(platform?.ts ?? data.ts)}
                           </time>
@@ -216,7 +217,7 @@ export function AdminStatusView() {
                                 <Tooltip
                                   content={new Date(
                                     job.lastRun.startedAt,
-                                  ).toLocaleString()}
+                                  ).toLocaleString(dateLocaleTag())}
                                   side="top"
                                   wrapperClassName="inline"
                                 >
@@ -224,7 +225,7 @@ export function AdminStatusView() {
                                     dateTime={job.lastRun.startedAt}
                                     aria-description={new Date(
                                       job.lastRun.startedAt,
-                                    ).toLocaleString()}
+                                    ).toLocaleString(dateLocaleTag())}
                                   >
                                     {humanizePastDate(job.lastRun.startedAt)}
                                   </time>

@@ -12,6 +12,7 @@ import {
   type GroupMembershipEntry,
 } from '../api/groups';
 import { removeStudioCollectionItem } from '../api/studio';
+import { dateLocaleTag } from '../lib/locale';
 import { toastWithUndo } from '../lib/undoToast';
 import {
   MaterialMembershipCreateFooter,
@@ -21,7 +22,9 @@ import { MaterialMetaPanel } from './MaterialMetaPanel';
 import { PageLoading } from './PageStates';
 
 function soundsLabel(count: number): string {
-  return count === 1 ? '1 sound' : `${count.toLocaleString()} sounds`;
+  return count === 1
+    ? '1 sound'
+    : `${count.toLocaleString(dateLocaleTag())} sounds`;
 }
 
 type Props = {

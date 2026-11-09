@@ -15,6 +15,7 @@ import { fetchPlatformStatus } from '../api/client';
 import type { PlatformStatus } from '../api/types';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageError, PageLoading } from '../components/PageStates';
+import { dateLocaleTag } from '../lib/locale';
 import { useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 function stateClass(state: string): string {
@@ -83,7 +84,7 @@ export function StatusView() {
               <div>
                 <dt className="text-xs uppercase">{t('statusPage.checked')}</dt>
                 <dd className="text-foreground">
-                  {new Date(data.ts).toLocaleString()}
+                  {new Date(data.ts).toLocaleString(dateLocaleTag())}
                 </dd>
               </div>
             )}
@@ -153,13 +154,13 @@ export function StatusView() {
         <div>
           <dt className="text-xs uppercase">{t('statusPage.tagged')}</dt>
           <dd className="text-foreground">
-            {new Date(__RELEASE_TAG_DATE__).toLocaleString()}
+            {new Date(__RELEASE_TAG_DATE__).toLocaleString(dateLocaleTag())}
           </dd>
         </div>
         <div>
           <dt className="text-xs uppercase">{t('statusPage.deployed')}</dt>
           <dd className="text-foreground">
-            {new Date(__BUILD_TIME__).toLocaleString()}
+            {new Date(__BUILD_TIME__).toLocaleString(dateLocaleTag())}
           </dd>
         </div>
       </dl>

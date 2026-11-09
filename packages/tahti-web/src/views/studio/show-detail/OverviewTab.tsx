@@ -16,6 +16,7 @@ import type { StudioShowSeries } from '../../../api/shows';
 import { PageEmpty } from '../../../components/PageStates';
 import { ShowImagePicker } from '../../../components/ShowImagePicker';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { dateLocaleTag } from '../../../lib/locale';
 import { EpisodeSourceIcon, episodeStatusLabel } from '../StudioShowsView';
 import type { ShowDetailState } from './useShowDetail';
 
@@ -227,7 +228,9 @@ export function OverviewTab({
         {nextSlotHint ? (
           <p className="text-sm">
             Next slot:{' '}
-            <strong>{new Date(nextSlotHint.startAt).toLocaleString()}</strong>
+            <strong>
+              {new Date(nextSlotHint.startAt).toLocaleString(dateLocaleTag())}
+            </strong>
           </p>
         ) : (
           <PageEmpty
