@@ -2,9 +2,13 @@ import { act, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { fetchChannelEvents } from '../../api/events';
+import { renderWithRouter } from '../../test/renderWithRouter';
 import { ArtistUpcomingEvents } from './ArtistUpcomingEvents';
 
-vi.mock('../../api/events', () => ({ fetchChannelEvents: vi.fn() }));
+vi.mock('../../api/events', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../api/events')>()),
+  fetchChannelEvents: vi.fn(),
+}));
 
 async function renderEvents(
   events: Awaited<ReturnType<typeof fetchChannelEvents>>['data'],
@@ -13,12 +17,19 @@ async function renderEvents(
     data: events,
     meta: { source: 'api' },
   });
-  let result: ReturnType<typeof render> | undefined;
-  await act(async () => {
-    result = render(<ArtistUpcomingEvents channelSlug="night-drive" />);
-  });
-  return result!;
+  return renderWithRouter(
+    <ArtistUpcomingEvents channelSlug="night-drive" username="night" />,
+  );
 }
+
+const extra = {
+  ticketUrl: null,
+  imageUrl: null,
+  endAt: null,
+  status: 'PUBLISHED' as const,
+  publishedAt: null,
+  participants: [],
+};
 
 describe('ArtistUpcomingEvents', () => {
   afterEach(() => {
@@ -35,6 +46,18 @@ describe('ArtistUpcomingEvents', () => {
         location: 'Helsinki',
         eventUrl: 'https://example.com/show',
         startAt: '2026-11-01T18:00:00.000Z',
+        ...extra,
+        status: 'CANCELLED',
+        participants: [
+          {
+            username: 'aurora',
+            displayName: 'Aurora Drift',
+            avatarUrl: null,
+            channelSlug: null,
+            role: 'PERFORMER',
+            status: 'ACCEPTED',
+          },
+        ],
       },
       {
         id: 'e2',
@@ -44,16 +67,20 @@ describe('ArtistUpcomingEvents', () => {
         location: 'Rovaniemi',
         eventUrl: null,
         startAt: '2026-12-01T18:00:00.000Z',
+        ...extra,
       },
     ]);
 
     expect(fetchChannelEvents).toHaveBeenCalledWith('night-drive');
-    expect(screen.getByRole('link', { name: /Release show/ })).toHaveAttribute(
-      'href',
-      'https://example.com/show',
-    );
-    expect(screen.getByText('Listening session')).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'Listening session' }),
+    ).toHaveAttribute('href', '/events/e2');
     expect(screen.getByText('Korundi, Rovaniemi')).toBeInTheDocument();
+    expect(screen.getByText('Cancelled')).toBeInTheDocument();
+    expect(screen.getByText('Aurora Drift')).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /Subscribe/ }).getAttribute('href'),
+    ).toContain('/api/v1/u/night/events.ics');
   });
 
   it('renders nothing when there are no upcoming events', async () => {

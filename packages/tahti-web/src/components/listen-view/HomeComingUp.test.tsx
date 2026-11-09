@@ -20,21 +20,21 @@ const event = {
 };
 
 describe('HomeComingUp', () => {
-  it('lists upcoming shows and opens the artist channel', async () => {
+  it('lists upcoming shows and opens the event page', async () => {
     vi.spyOn(upcoming, 'fetchUpcomingEvents').mockResolvedValue({
       data: [event],
       meta: { source: 'api' },
     });
 
     const { router } = await renderWithRouter(<HomeComingUp />, {
-      paths: ['/channel/$slug'],
+      paths: ['/events/$eventId'],
     });
 
     expect(await screen.findByText('Album release show')).toBeVisible();
     expect(screen.getByText('Night Owls')).toBeVisible();
     expect(screen.getByText('Kuudes Linja, Helsinki')).toBeVisible();
     fireEvent.click(screen.getByText('Album release show'));
-    expect(router.state.location.pathname).toBe('/channel/night-owls');
+    expect(router.state.location.pathname).toBe('/events/e1');
   });
 
   it('wraps a long title and venue onto two lines instead of clipping them', async () => {
@@ -49,7 +49,7 @@ describe('HomeComingUp', () => {
       meta: { source: 'api' },
     });
 
-    await renderWithRouter(<HomeComingUp />, { paths: ['/channel/$slug'] });
+    await renderWithRouter(<HomeComingUp />, { paths: ['/events/$eventId'] });
 
     const title = await screen.findByTestId('event-card-title');
     expect(title.className).toContain('line-clamp-2');

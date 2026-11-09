@@ -12,6 +12,7 @@ export type UpcomingEvent = {
   location: string;
   eventUrl: string | null;
   startAt: string;
+  imageUrl?: string | null;
   artistDisplayName: string;
   artistUsername: string;
   channelSlug: string | null;

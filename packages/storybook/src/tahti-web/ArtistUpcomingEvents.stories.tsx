@@ -3,6 +3,7 @@ import { ArtistUpcomingEvents } from '@tahti-web/components/artist-view/ArtistUp
 import { expect, within } from 'storybook/test';
 
 import { ARTIST_EVENTS } from './_fixtures/artist';
+import { withTahtiRouter } from './_lib/decorators';
 import { mockData } from './_lib/mock-data';
 
 const meta: Meta<typeof ArtistUpcomingEvents> = {
@@ -14,11 +15,12 @@ const meta: Meta<typeof ArtistUpcomingEvents> = {
     docs: {
       description: {
         component:
-          "The artist's upcoming gigs on the Stage tab, from `GET /api/channels/:slug/events`. Titles link out when the event has a URL.",
+          "The artist's upcoming gigs on the Stage tab, from `GET /api/channels/:slug/events` (own events plus accepted tags). Titles open the public event page; cancelled events keep a badge; Subscribe is the artist's .ics feed.",
       },
     },
   },
-  args: { channelSlug: 'northern-lights' },
+  args: { channelSlug: 'northern-lights', username: 'northern-lights' },
+  decorators: [withTahtiRouter('/channel/northern-lights')],
 };
 
 export default meta;
@@ -34,7 +36,10 @@ export const WithEvents: Story = {
       within(section).getByRole('link', {
         name: /Polar Static live at Kuudes Linja/,
       }),
-    ).toHaveAttribute('href', ARTIST_EVENTS[0]!.eventUrl);
+    ).toHaveAttribute('href', `/events/${ARTIST_EVENTS[0]!.id}`);
+    await expect(
+      within(section).getByRole('link', { name: /Subscribe/ }),
+    ).toBeVisible();
     await expect(
       within(section).getByText('Boathouse Sessions Vol. 3'),
     ).toBeVisible();
