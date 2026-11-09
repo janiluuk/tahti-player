@@ -113,6 +113,15 @@ describe('SmartLinkView', () => {
     expect(screen.getByText('2026 · EP')).toBeTruthy();
   });
 
+  it('shows the release type as a label, not the raw enum', async () => {
+    await renderSmartLink({
+      releaseDate: '2026-03-01T00:00:00.000Z',
+      genre: 'Deep House',
+      type: 'ALBUM',
+    });
+    expect(screen.getByText('2026 · Deep House · Album')).toBeTruthy();
+  });
+
   it('hides the footer when it is off or missing', async () => {
     await renderSmartLink({ showPoweredByFooter: false });
     expect(screen.queryByText('Powered by Tahti')).toBeNull();

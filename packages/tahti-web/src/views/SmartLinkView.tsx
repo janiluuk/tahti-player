@@ -27,6 +27,7 @@ import { ReportButton } from '../components/ReportButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import { dspServiceLabel } from '../lib/dspServices';
+import { releaseTypeLabel } from '../lib/releaseLabels';
 import { syncDocumentMetadata } from '../lib/seo';
 import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -131,7 +132,11 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
   const releaseYear = data.release.releaseDate
     ? new Date(data.release.releaseDate).getFullYear()
     : null;
-  const metadata = [releaseYear, data.release.genre, data.release.type]
+  const metadata = [
+    releaseYear,
+    data.release.genre,
+    data.release.type ? releaseTypeLabel(data.release.type, t) : null,
+  ]
     .filter(Boolean)
     .join(' · ');
   const backdropUrl =

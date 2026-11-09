@@ -46,11 +46,11 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
     <ListenSection
       data-testid="home-news"
       title={t('homeNews.fromTahti')}
-      badge="News"
+      badge={t('homeNews.badge')}
       badgeColor="yellow"
       status={status}
       empty={items.length === 0}
-      emptyTitle="No news yet"
+      emptyTitle={t('homeNews.empty')}
       onRetry={retry}
     >
       {selected ? (

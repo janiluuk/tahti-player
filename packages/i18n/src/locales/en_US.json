@@ -6768,7 +6768,9 @@
     },
     "homeNews": {
       "showAllNews": "Show all news",
-      "fromTahti": "From Tahti"
+      "fromTahti": "From Tahti",
+      "badge": "News",
+      "empty": "No news yet"
     },
     "listeningPartyTracklist": {
       "tracklist": "Tracklist",
