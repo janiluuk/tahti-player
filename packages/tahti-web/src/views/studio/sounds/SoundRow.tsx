@@ -225,6 +225,7 @@ export function SoundRow({
           </Tooltip>
         ) : null}
         <EditIconButton
+          variant="text"
           label={t('actions.editNamed', { name: item.title })}
           onClick={() => setEditingId(item.id)}
         />
