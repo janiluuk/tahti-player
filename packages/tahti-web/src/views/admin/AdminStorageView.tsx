@@ -34,14 +34,20 @@ export function AdminStorageView() {
                 {t('adminStorageView.admin')}
               </BreadcrumbLink>
               <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbLink to="/admin/storage">
-                {t('adminStorageView.storage')}
-              </BreadcrumbLink>
-              <BreadcrumbCurrent>
-                {tab === 'files'
-                  ? t('adminStorageViewStates.files')
-                  : t('adminStorageViewStates.storage')}
-              </BreadcrumbCurrent>
+              {tab === 'files' ? (
+                <>
+                  <BreadcrumbLink to="/admin/storage">
+                    {t('adminStorageView.storage')}
+                  </BreadcrumbLink>
+                  <BreadcrumbCurrent>
+                    {t('adminStorageViewStates.files')}
+                  </BreadcrumbCurrent>
+                </>
+              ) : (
+                <BreadcrumbCurrent>
+                  {t('adminStorageView.storage')}
+                </BreadcrumbCurrent>
+              )}
             </Breadcrumbs>
             <ViewShell
               title={t('adminStorageView.storage')}
