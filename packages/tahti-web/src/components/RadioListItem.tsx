@@ -1,5 +1,6 @@
 import { RadioTowerIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Box, ButtonLink, MediaArtwork, Tooltip } from '@tahti-player/ui';
 
 import { prefetchHls } from '../lib/hlsLoader';
@@ -40,6 +41,7 @@ export function RadioListItem({
   colorSchemeJson,
   visualSettingsJson,
 }: RadioListItemProps) {
+  const { t } = useTranslation('web');
   return (
     <Box
       variant="secondary"
@@ -90,12 +92,12 @@ export function RadioListItem({
         </div>
       </div>
       <div className="relative z-10 flex shrink-0 items-center gap-2 pr-3">
-        <Tooltip content="Open radio" side="top">
+        <Tooltip content={t('radioListItemText.openRadio')} side="top">
           <ButtonLink
             to={openHref}
             size="icon-sm"
             variant="secondary"
-            aria-label="Open radio"
+            aria-label={t('radioListItemText.openRadio')}
           >
             <RadioTowerIcon size={16} aria-hidden />
           </ButtonLink>

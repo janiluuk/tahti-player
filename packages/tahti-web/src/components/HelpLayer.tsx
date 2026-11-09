@@ -1,6 +1,7 @@
 import { CircleHelpIcon } from 'lucide-react';
 import { useId, useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
@@ -22,6 +23,7 @@ export function HelpLayer({
   defaultOpen?: boolean;
   className?: string;
 }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(defaultOpen);
   const panelId = useId();
 
@@ -43,7 +45,7 @@ export function HelpLayer({
         <div
           id={panelId}
           role="region"
-          aria-label="Section help"
+          aria-label={t('helpLayerText.sectionHelp')}
           className="border-border bg-background-secondary/40 text-foreground-secondary flex w-full flex-col gap-2 rounded-lg border p-3 text-sm leading-relaxed"
         >
           {children}

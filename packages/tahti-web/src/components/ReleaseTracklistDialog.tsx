@@ -168,7 +168,7 @@ export function ReleaseTracklistDialog({
           )}
 
           <Dialog.Actions>
-            <Dialog.Close>Close</Dialog.Close>
+            <Dialog.Close>{t('releaseTracklistDialogText.close')}</Dialog.Close>
           </Dialog.Actions>
         </>
       )}

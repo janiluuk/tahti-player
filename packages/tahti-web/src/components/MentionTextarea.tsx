@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, MediaArtwork, Textarea } from '@tahti-player/ui';
 
 import { searchMentionUsers, type MentionUser } from '../api/mentions';
@@ -22,6 +23,7 @@ export function MentionTextarea({
   submitOnModEnter = false,
   onChange,
 }: Props) {
+  const { t } = useTranslation('web');
   const [matches, setMatches] = useState<MentionUser[]>([]);
   const [mentionStart, setMentionStart] = useState<number | null>(null);
 
@@ -68,7 +70,7 @@ export function MentionTextarea({
         <ul
           className="border-border bg-background absolute top-full right-0 left-0 z-10 mt-1 overflow-hidden rounded-md border shadow-lg"
           role="listbox"
-          aria-label="Mention suggestions"
+          aria-label={t('mentionTextareaText.mentionSuggestions')}
         >
           {matches.map((user) => (
             <li key={user.username}>

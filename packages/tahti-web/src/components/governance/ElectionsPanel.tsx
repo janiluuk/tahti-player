@@ -9,6 +9,7 @@ import {
   fetchGovernanceElections,
   type GovernanceElection,
 } from '../../api/governance-elections';
+import { webT } from '../../lib/webT';
 import { ListingDate } from '../ListingDate';
 import { PageEmpty, PageError } from '../PageStates';
 import { CandidacyControl } from './CandidacyControl';
@@ -23,7 +24,8 @@ function electionStatus(election: GovernanceElection): ReactNode {
   if (election.decidedAt) {
     return (
       <>
-        Decided <ListingDate value={election.decidedAt} />
+        {webT()('electionsPanelText.decided')}{' '}
+        <ListingDate value={election.decidedAt} />
       </>
     );
   }

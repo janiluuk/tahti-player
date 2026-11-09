@@ -1,5 +1,6 @@
 import { RadioTowerIcon, RotateCcwIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Alert, Button } from '@tahti-player/ui';
 
 import {
@@ -39,6 +40,7 @@ export function StationUnavailableNotice({
   onPlay: () => void;
   className?: string;
 }) {
+  const { t } = useTranslation('web');
   const failure = useStationFailure(playableId, streamUrl);
   const isCurrent = usePlayerStore((s) => s.currentId === playableId);
   const retry = usePlayerStore((s) => s.retry);
@@ -64,7 +66,7 @@ export function StationUnavailableNotice({
           onClick={isCurrent ? retry : onPlay}
         >
           <RotateCcwIcon size={14} aria-hidden />
-          Try again
+          {t('stationUnavailableNoticeText.tryAgain')}
         </Button>
       </div>
     </Alert>

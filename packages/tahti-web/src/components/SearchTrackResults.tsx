@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { LockIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { MediaArtwork } from '@tahti-player/ui';
 
 import type { SearchTrackResult } from '../api/search-types';
@@ -17,6 +18,7 @@ export function SearchTrackResults({
 }: {
   tracks: SearchTrackResult[];
 }) {
+  const { t } = useTranslation('web');
   const playable = tracks.flatMap((track) => {
     const item = searchTrackPlayable(track);
     return item ? [item] : [];
@@ -33,7 +35,10 @@ export function SearchTrackResults({
         <PlayableAmbientTrackList items={playable} compactActions />
       ) : null}
       {others.length > 0 ? (
-        <ul className="flex flex-col gap-1" aria-label="Tracks to open">
+        <ul
+          className="flex flex-col gap-1"
+          aria-label={t('searchTrackResultsText.tracksToOpen')}
+        >
           {others.map((track) => (
             <li key={track.id}>
               <Link

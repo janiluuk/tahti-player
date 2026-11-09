@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Badge, cn, PlayerBar } from '@tahti-player/ui';
 
 import { usePlayerStore } from '../stores/playerStore';
@@ -47,6 +48,7 @@ export function ConnectedSeekBar({
  * PlayerLiveBadge instead, inline, so live playback doesn't reserve a
  * whole extra row it doesn't need. */
 export function PlayerLiveIndicator({ className }: { className?: string }) {
+  const { t } = useTranslation('web');
   return (
     <div className={cn('relative h-6 w-full', className)}>
       <Badge
@@ -58,7 +60,7 @@ export function PlayerLiveIndicator({ className }: { className?: string }) {
           className="bg-accent-red size-1.5 rounded-full motion-safe:animate-pulse"
           aria-hidden
         />
-        Live
+        {t('playerSeekBarText.live')}
       </Badge>
     </div>
   );
@@ -69,6 +71,7 @@ export function PlayerLiveIndicator({ className }: { className?: string }) {
  * title/artist instead of claiming a full-width row above the bar (see
  * PlayerLiveIndicator, used where that room already exists). */
 export function PlayerLiveBadge({ className }: { className?: string }) {
+  const { t } = useTranslation('web');
   return (
     <Badge
       variant="pill"
@@ -82,7 +85,7 @@ export function PlayerLiveBadge({ className }: { className?: string }) {
         className="bg-accent-red size-1.5 rounded-full motion-safe:animate-pulse"
         aria-hidden
       />
-      Live
+      {t('playerSeekBarText.live')}
     </Badge>
   );
 }

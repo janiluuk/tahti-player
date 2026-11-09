@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog } from '@tahti-player/ui';
 
 type Props = {
@@ -19,6 +20,7 @@ export function QueueConfirmDialog({
   onCancel,
   onConfirm,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <Dialog.Root isOpen={isOpen} onClose={onCancel}>
       <Dialog.Title>Queue {count} tracks?</Dialog.Title>
@@ -26,7 +28,7 @@ export function QueueConfirmDialog({
         This adds all {count} tracks from {sourceLabel} to your play queue.
       </Dialog.Description>
       <Dialog.Actions>
-        <Dialog.Close>Cancel</Dialog.Close>
+        <Dialog.Close>{t('queueConfirmDialogText.cancel')}</Dialog.Close>
         <Button onClick={onConfirm}>Queue {count} tracks</Button>
       </Dialog.Actions>
     </Dialog.Root>

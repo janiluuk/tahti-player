@@ -49,9 +49,12 @@ export function MessageContacts({
   const visible = showAll ? contacts : contacts.slice(0, VISIBLE_CONTACTS);
 
   return (
-    <section className="flex flex-col gap-2" aria-label="Your contacts">
+    <section
+      className="flex flex-col gap-2"
+      aria-label={t('messageContactsText.yourContacts')}
+    >
       <h2 className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-        Your contacts
+        {t('messageContactsText.yourContacts')}
       </h2>
       <ul className="flex flex-wrap gap-2" data-testid="message-contacts">
         {visible.map((contact) => (

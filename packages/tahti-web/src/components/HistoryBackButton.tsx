@@ -1,5 +1,6 @@
 import { useCanGoBack, useRouter } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   BackButton,
   backButtonCornerClassName,
@@ -11,16 +12,17 @@ import {
  * visitor came from; a deep link with no in-app history goes to `fallback`.
  */
 export function HistoryBackButton({ fallback = '/' }: { fallback?: string }) {
+  const { t } = useTranslation('web');
   const router = useRouter();
   const canGoBack = useCanGoBack();
   return (
     <Tooltip
-      content="Back"
+      content={t('historyBackButtonText.back')}
       side="right"
       wrapperClassName={backButtonCornerClassName}
     >
       <BackButton
-        aria-label="Back"
+        aria-label={t('historyBackButtonText.back')}
         onClick={() =>
           canGoBack
             ? router.history.back()

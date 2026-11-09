@@ -1,3 +1,5 @@
+import { useTranslation } from '@tahti-player/i18n';
+
 import { ChannelChatPanel } from '../ChannelChatPanel';
 import { Eyebrow } from '../tahti/Eyebrow';
 
@@ -11,8 +13,12 @@ export function ListeningPartyChat({
   channelSlug: string;
   channelName: string;
 }) {
+  const { t } = useTranslation('web');
   return (
-    <section aria-label="Party chat" className="flex flex-col gap-3">
+    <section
+      aria-label={t('listeningPartyChatText.partyChat')}
+      className="flex flex-col gap-3"
+    >
       <Eyebrow tone="green">Chat · {channelName}</Eyebrow>
       <ChannelChatPanel key={channelSlug} slug={channelSlug} compact />
     </section>

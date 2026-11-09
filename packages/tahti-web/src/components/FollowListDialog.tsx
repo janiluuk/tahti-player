@@ -93,7 +93,7 @@ export function FollowListDialog({
         {!loading && !error && hasMore ? (
           <div className="flex justify-center pt-3">
             <Button variant="secondary" size="sm" onClick={onLoadMore}>
-              Show more
+              {t('followListDialogText.showMore')}
             </Button>
           </div>
         ) : null}

@@ -155,7 +155,7 @@ export function CuratedFinnishStationRow({
           </Button>
         </Tooltip>
       ) : null}
-      <Tooltip content="Configure station" side="top">
+      <Tooltip content={t('stationRowsText.configureStation')} side="top">
         <Button
           type="button"
           size="icon-sm"

@@ -9868,6 +9868,96 @@
     },
     "emailChangeViewText": {
       "confirmingYourNewAddress": "Vahvistetaan uutta osoitettasi…"
+    },
+    "stationUnavailableNoticeText": {
+      "tryAgain": "Yritä uudelleen"
+    },
+    "searchTrackResultsText": {
+      "tracksToOpen": "Avattavat kappaleet"
+    },
+    "releaseTracklistDialogText": {
+      "close": "Sulje"
+    },
+    "radioShowEpisodeListText": {
+      "listenToTheRecording": "Kuuntele tallenne"
+    },
+    "radioBookedShowsPanelText": {
+      "bookedShows": "Varatut ohjelmat"
+    },
+    "radioListItemText": {
+      "openRadio": "Avaa radio"
+    },
+    "favoriteStationsRowText": {
+      "favoriteStations": "Suosikkiasemat"
+    },
+    "queueConfirmDialogText": {
+      "cancel": "Peruuta"
+    },
+    "stationRowsText": {
+      "configureStation": "Määritä asema"
+    },
+    "playerSeekBarText": {
+      "live": "Live"
+    },
+    "messageContactsText": {
+      "yourContacts": "Yhteystietosi"
+    },
+    "mentionTextareaText": {
+      "mentionSuggestions": "Mainintaehdotukset"
+    },
+    "listeningPartyJoinButtonText": {
+      "leave": "Poistu"
+    },
+    "listeningPartyChatText": {
+      "partyChat": "Juhlien chat"
+    },
+    "subscribedCollectionsText": {
+      "subscribed": "Tilatut"
+    },
+    "historyBackButtonText": {
+      "back": "Takaisin"
+    },
+    "helpLayerText": {
+      "sectionHelp": "Osion ohje"
+    },
+    "meetingConflictsText": {
+      "conflictsOfInterest": "Eturistiriidat"
+    },
+    "meetingAgendaItemsText": {
+      "loadingTheAgenda": "Ladataan esityslistaa…"
+    },
+    "electionsPanelText": {
+      "decided": "Ratkaistu"
+    },
+    "followListDialogText": {
+      "showMore": "Näytä lisää"
+    },
+    "entitySocialHeaderText": {
+      "removeArtwork": "Poista kansikuva"
+    },
+    "dmThreadMessagesText": {
+      "couldNotLoadOlderMessages": "Vanhempia viestejä ei voitu ladata."
+    },
+    "channelBlocksSectionText": {
+      "channelBlocks": "Kanavan lohkot"
+    },
+    "streamManagerDialogText": {
+      "streamManager": "Striimin hallinta"
+    },
+    "channelUpcomingShowsText": {
+      "upcomingShows": "Tulevat ohjelmat"
+    },
+    "channelPageTabsText": {
+      "channelSections": "Kanavan osiot"
+    },
+    "channelLiveTracklistText": {
+      "playedInThisBroadcast": "Soitettu tässä lähetyksessä"
+    },
+    "channelListeningPartyBannerText": {
+      "listeningParty": "Kuuntelujuhlat"
+    },
+    "artistUpcomingEventsText": {
+      "upcomingEvents": "Tulevat tapahtumat"
     }
   },
   "studioEditor": {

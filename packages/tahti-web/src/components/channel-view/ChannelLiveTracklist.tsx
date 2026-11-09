@@ -2,6 +2,8 @@ import { Link } from '@tanstack/react-router';
 import { ListMusicIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import {
   fetchLiveTracklist,
   type LiveTracklistEntry,
@@ -12,6 +14,7 @@ import { Eyebrow } from '../tahti/Eyebrow';
 const REFRESH_MS = 60_000;
 
 export function ChannelLiveTracklist({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const [entries, setEntries] = useState<LiveTracklistEntry[]>([]);
 
   useEffect(() => {
@@ -37,12 +40,12 @@ export function ChannelLiveTracklist({ slug }: { slug: string }) {
   return (
     <section
       className="border-border flex flex-col gap-2 rounded-lg border px-4 py-3"
-      aria-label="Played in this broadcast"
+      aria-label={t('channelLiveTracklistText.playedInThisBroadcast')}
     >
       <Eyebrow tone="muted">
         <span className="inline-flex items-center gap-1.5">
           <ListMusicIcon size={13} aria-hidden />
-          Played in this broadcast
+          {t('channelLiveTracklistText.playedInThisBroadcast')}
         </span>
       </Eyebrow>
       <ol className="flex flex-col gap-1 text-sm">

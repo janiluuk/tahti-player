@@ -1,5 +1,6 @@
 import { HeadphonesIcon, LogOutIcon, PlayIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import type { ListeningPartyState } from '../../api/listening-parties';
@@ -17,6 +18,7 @@ export function ListeningPartyJoinButton({
   onJoin: () => void;
   onLeave: () => void;
 }) {
+  const { t } = useTranslation('web');
   if (state !== 'LIVE' && state !== 'SCHEDULED') {
     return null;
   }
@@ -31,7 +33,7 @@ export function ListeningPartyJoinButton({
         </span>
         <Button size="sm" variant="secondary" onClick={onLeave}>
           <LogOutIcon size={14} aria-hidden className="mr-1.5" />
-          Leave
+          {t('listeningPartyJoinButtonText.leave')}
         </Button>
       </>
     );

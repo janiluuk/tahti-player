@@ -71,7 +71,7 @@ export function ChannelPageTabs({
         }}
       >
         <Tabs.List
-          aria-label="Channel sections"
+          aria-label={t('channelPageTabsText.channelSections')}
           className="w-fit overflow-x-auto"
         >
           {tabs.map((tab) => (
