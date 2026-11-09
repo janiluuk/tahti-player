@@ -5101,7 +5101,9 @@
       "financeYtd": "Talous vuoden alusta",
       "queueHealth": "Jonojen tila",
       "cronJobs": "Ajastetut työt",
-      "recentAuditEvents": "Viimeisimmät tarkastustapahtumat"
+      "recentAuditEvents": "Viimeisimmät tarkastustapahtumat",
+      "updating": "Päivitetään…",
+      "showingSaved": "Näytetään viimeksi ladatut tiedot; päivitys epäonnistui."
     },
     "proEditor": {
       "metadata": "Metatiedot",
