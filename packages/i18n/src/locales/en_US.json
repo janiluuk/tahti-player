@@ -2596,7 +2596,8 @@
         "invitePoolModeratorsSubs": "Moderators and fan subscribers",
         "invitePoolSubsOnly": "Fan subscribers only",
         "invitePoolEveryone": "Everyone signed in",
-        "invitePoolManualOnly": "Only people I invite"
+        "invitePoolManualOnly": "Only people I invite",
+        "programmeMoved": "Announcements, the offline fallback and the 24/7 rotation are managed in Studio → Broadcast → Schedule."
       },
       "artist": {
         "loadError": "Could not load your artist profile",
@@ -7651,7 +7652,9 @@
       "schedule": "Schedule",
       "addNextBroadcast": "Add next broadcast",
       "scheduledShowEpisodes": "Scheduled show episodes",
-      "oneOffAndRecurringEpisodes": "One-off and recurring episodes generated from your shows."
+      "oneOffAndRecurringEpisodes": "One-off and recurring episodes generated from your shows.",
+      "channelProgramme": "Channel programme",
+      "channelProgrammeDescription": "What your channel plays around live shows: the 24/7 rotation, the offline fallback and announcements."
     },
     "releaseSmartLinkStats": {
       "smartLinkStats": "Smart link stats",
