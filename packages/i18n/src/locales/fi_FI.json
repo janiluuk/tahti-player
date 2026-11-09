@@ -11751,6 +11751,12 @@
       "COST_PROFESSIONAL_SERVICES": "Asiantuntijapalvelut",
       "GRANT_DISBURSEMENT": "Artisteille maksetut avustukset",
       "RESERVE_TRANSFER": "Siirrot rahastoon"
+    },
+    "cronOutcome": {
+      "running": "Käynnissä",
+      "success": "Onnistui",
+      "failed": "Epäonnistui",
+      "runHistory": "Ajohistoria: {{job}}"
     }
   },
   "studioEditor": {

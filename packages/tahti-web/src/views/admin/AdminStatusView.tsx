@@ -27,6 +27,7 @@ import { humanizePastDate } from '../../lib/humanizeDate';
 import { dateLocaleTag } from '../../lib/locale';
 import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { CronHistoryDialog } from './status/CronHistoryDialog';
+import { cronOutcomeColor, cronOutcomeLabel } from './status/cronOutcome';
 import { WorkersPanel } from './status/WorkersPanel';
 
 export function AdminStatusView() {
@@ -203,7 +204,9 @@ export function AdminStatusView() {
                               size="flexible"
                               variant="text"
                               className="p-0 text-sm underline-offset-2 hover:underline"
-                              aria-label={`${job.jobName} run history`}
+                              aria-label={t('cronOutcome.runHistory', {
+                                job: job.jobName,
+                              })}
                               onClick={() => setCronJob(job.jobName)}
                             >
                               {job.jobName}
@@ -212,8 +215,13 @@ export function AdminStatusView() {
                           <span className="text-foreground-secondary text-xs">
                             {job.lastRun ? (
                               <>
-                                {job.lastRun.outcome ?? '—'}
-                                {' · '}
+                                <Badge
+                                  variant="pill"
+                                  color={cronOutcomeColor(job.lastRun.outcome)}
+                                  className="mr-1.5 align-middle"
+                                >
+                                  {cronOutcomeLabel(job.lastRun.outcome)}
+                                </Badge>
                                 <Tooltip
                                   content={new Date(
                                     job.lastRun.startedAt,

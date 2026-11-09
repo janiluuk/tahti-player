@@ -28,8 +28,8 @@ export const Default: Story = {
       expect(dialog.getByText('3 runs, 1 failed.')).toBeVisible(),
     );
     await expect(dialog.getAllByRole('listitem')).toHaveLength(3);
-    await expect(dialog.getAllByText('SUCCESS')).toHaveLength(2);
-    await expect(dialog.getByText('ERROR')).toBeVisible();
+    await expect(dialog.getAllByText('Success')).toHaveLength(2);
+    await expect(dialog.getByText('Failed')).toBeVisible();
     await expect(dialog.getByText('Timed out after 30 s')).toBeVisible();
     await expect(dialog.getAllByText('1.2 s')).toHaveLength(3);
 

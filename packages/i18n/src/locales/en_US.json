@@ -11751,6 +11751,12 @@
       "COST_PROFESSIONAL_SERVICES": "Professional services",
       "GRANT_DISBURSEMENT": "Grants paid to artists",
       "RESERVE_TRANSFER": "Reserve transfers"
+    },
+    "cronOutcome": {
+      "running": "Running",
+      "success": "Success",
+      "failed": "Failed",
+      "runHistory": "{{job}} run history"
     }
   },
   "studioEditor": {
