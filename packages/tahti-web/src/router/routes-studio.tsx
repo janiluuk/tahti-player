@@ -480,6 +480,8 @@ export const studioVenuesRoute = createRoute({
 export const studioEventsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/events',
+  validateSearch: (search: Record<string, unknown>): { tab?: string } =>
+    typeof search.tab === 'string' ? { tab: search.tab } : {},
   component: StudioEventsView,
 });
 
