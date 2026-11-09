@@ -53,8 +53,7 @@ test('listener: the avatar dot clears after marking notifications read', async (
   await open(page, '/');
   const pill = page.getByTestId('account-unread-pill');
   await expect(pill).toBeVisible();
-  const dots = pill.locator(':scope > *');
-  const before = await dots.count();
+  await expect(pill).toHaveAttribute('data-unread', /notifications/);
   await open(page, '/notifications');
   await page
     .getByRole('main')
@@ -62,6 +61,10 @@ test('listener: the avatar dot clears after marking notifications read', async (
     .click();
   await open(page, '/');
   await expect
-    .poll(async () => ((await pill.isVisible()) ? await dots.count() : 0))
-    .toBeLessThan(before);
+    .poll(async () =>
+      (await pill.isVisible())
+        ? ((await pill.getAttribute('data-unread')) ?? '')
+        : '',
+    )
+    .not.toContain('notifications');
 });
