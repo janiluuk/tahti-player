@@ -1690,7 +1690,27 @@
       "mixOrderUnplaced_one": "{{count}} track has no key and goes at the end:",
       "mixOrderUnplaced_other": "{{count}} tracks have no key and go at the end:",
       "mixOrderBpm": "{{bpm}} BPM",
-      "mixOrderUse": "Add to a playlist in this order"
+      "mixOrderUse": "Add to a playlist in this order",
+      "collectionTabs": {
+        "all": "All",
+        "albums": "Albums",
+        "eps": "EPs",
+        "playlists": "Playlists",
+        "djSets": "DJ sets",
+        "podcasts": "Podcasts",
+        "showSeries": "Show series"
+      },
+      "collectionVisibility": {
+        "public": "public",
+        "unlisted": "unlisted",
+        "private": "private",
+        "stash": "in your stash"
+      },
+      "collectionReleases": "releases {{date}}",
+      "collectionItems_one": "{{count}} item",
+      "collectionItems_other": "{{count}} items",
+      "uploadedOnLead": "Uploaded {{date}}",
+      "soundDurationHours": ", {{hours}} h {{minutes}} min"
     },
     "date": {
       "today": "Today",
@@ -2809,11 +2829,15 @@
       "more": "More",
       "less": "Less",
       "moreFor": "{{action}} for {{title}}",
-      "tracksCount": "{{count}} tracks",
       "pinnedToProfile": "pinned to profile",
       "createdToast": "Created {{title}}.",
       "removedToast": "Removed {{title}}.",
-      "publicLink": "Public link"
+      "publicLink": "Public link",
+      "tracksCount_one": "{{count}} track",
+      "tracksCount_other": "{{count}} tracks",
+      "stateDraft": "Draft",
+      "stateScheduled": "Scheduled",
+      "statePublished": "Published"
     },
     "adminMissedShows": {
       "filterAll": "All",
@@ -3972,7 +3996,13 @@
       "addTracks": "Add tracks",
       "newCollection": "New collection",
       "openLibrary": "Open library",
-      "addFirstModerator": "Add your first moderator"
+      "addFirstModerator": "Add your first moderator",
+      "uploadAudio": "Upload audio",
+      "bookShow": "Book a show",
+      "browseAddons": "Browse add-ons",
+      "beFirstToReply": "Be the first to reply",
+      "beFirstToComment": "Be the first to comment",
+      "submitTheme": "Submit a theme"
     },
     "eventCreate": {
       "couldNotLoadTheVenue": "Could not load the venue directory. Type the place above, or",
@@ -9958,6 +9988,28 @@
     },
     "artistUpcomingEventsText": {
       "upcomingEvents": "Upcoming events"
+    },
+    "entityStats": {
+      "followers_one": "Follower",
+      "followers_other": "Followers",
+      "following_one": "Following",
+      "following_other": "Following",
+      "tracks_one": "Track",
+      "tracks_other": "Tracks",
+      "plays_one": "Play",
+      "plays_other": "Plays",
+      "likes_one": "Like",
+      "likes_other": "Likes",
+      "downloads_one": "Download",
+      "downloads_other": "Downloads",
+      "playlists_one": "Playlist",
+      "playlists_other": "Playlists"
+    },
+    "ambientTrackList": {
+      "trackCount_one": "{{count}} track",
+      "trackCount_other": "{{count}} tracks",
+      "soundCount_one": "{{count}} sound",
+      "soundCount_other": "{{count}} sounds"
     },
     "trackBodyFields": {
       "info": "Info"

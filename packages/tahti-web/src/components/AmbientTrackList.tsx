@@ -1,5 +1,6 @@
 import { useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Card, CardGrid, cn } from '@tahti-player/ui';
 
 import { usePhoneViewport } from '../hooks/usePhoneViewport';
@@ -37,7 +38,7 @@ export type AmbientTrackListProps = {
   persistDensity?: boolean;
   emptyMessage?: string;
   /** What the header counts, e.g. `sound` reads "3 sounds". */
-  itemNoun?: string;
+  itemNoun?: 'track' | 'sound';
   /** Leads the toolbar row, e.g. a filter box. With it the toolbar stays
    * up when `items` is empty, so the filter can be cleared. */
   toolbarStart?: ReactNode;
@@ -70,6 +71,7 @@ export function AmbientTrackList({
   initialView,
   className,
 }: AmbientTrackListProps) {
+  const { t } = useTranslation('web');
   const controlled = densityProp !== undefined;
   // A list with its own starting view keeps its own choice instead of the
   // view shared by every other list.
@@ -144,17 +146,26 @@ export function AmbientTrackList({
         {toolbarStart ? (
           <div className="min-w-0 flex-1">{toolbarStart}</div>
         ) : null}
-        <span
-          className={cn(
-            'text-foreground-secondary shrink-0 text-xs font-semibold tabular-nums',
-            toolbarStart ? 'hidden sm:inline' : 'me-auto',
-          )}
-        >
-          {items.length} {items.length === 1 ? itemNoun : `${itemNoun}s`}
-        </span>
+        {/* The list view is a table that prints its own count. */}
+        {showList ? null : (
+          <span
+            className={cn(
+              'text-foreground-secondary shrink-0 text-xs font-semibold tabular-nums',
+              toolbarStart ? 'hidden sm:inline' : 'me-auto',
+            )}
+            data-testid="ambient-track-list-count"
+          >
+            {t(
+              itemNoun === 'sound'
+                ? 'ambientTrackList.soundCount'
+                : 'ambientTrackList.trackCount',
+              { count: items.length },
+            )}
+          </span>
+        )}
         {toolbarEnd || !hideViewPicker ? (
           <div
-            className="flex shrink-0 items-center gap-2"
+            className="ms-auto flex shrink-0 items-center gap-2"
             data-testid="ambient-track-list-sort-size"
           >
             {toolbarEnd}

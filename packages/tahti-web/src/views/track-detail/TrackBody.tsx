@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { InfoIcon } from 'lucide-react';
+import { InfoIcon, MessageSquarePlus } from 'lucide-react';
 import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -14,8 +14,9 @@ import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../../lib/soundId';
 import { parseTimedComment } from '../../lib/timedComment';
+import { useAuthModalStore } from '../../stores/authModalStore';
 import { type TrackPage } from './buildTrackPage';
-import { cueLabel } from './helpers';
+import { cueLabel, TRACK_COMMENT_INPUT_ID } from './helpers';
 import { TrackDetailsBlock } from './TrackDetailsBlock';
 
 export function TrackBody({ page }: { page: TrackPage }) {
@@ -32,7 +33,18 @@ export function TrackBody({ page }: { page: TrackPage }) {
     canDeleteComment,
     removeComment,
     deletingCommentId,
+    user,
+    commentsEnabled,
+    setCommentComposerOpen,
   } = page;
+  const openAuth = useAuthModalStore((s) => s.open);
+
+  const startComment = () => {
+    setCommentComposerOpen(true);
+    requestAnimationFrame(() =>
+      document.getElementById(TRACK_COMMENT_INPUT_ID)?.focus(),
+    );
+  };
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const pendingComment =
     comments.find((comment) => comment.id === pendingDeleteId) ?? null;
@@ -112,6 +124,26 @@ export function TrackBody({ page }: { page: TrackPage }) {
               <PageEmpty
                 title={t('trackDetail.commentsEmptyTitle')}
                 description={t('trackDetail.commentsEmptyDescription')}
+                action={
+                  !commentsEnabled ? undefined : user ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={startComment}
+                    >
+                      <MessageSquarePlus size={16} aria-hidden />
+                      {t('emptyActions.beFirstToComment')}
+                    </Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => openAuth('login')}
+                    >
+                      {t('channelComments.logInToComment')}
+                    </Button>
+                  )
+                }
               />
             ) : (
               <ul className="flex flex-col gap-4">

@@ -260,3 +260,38 @@ describe('StudioCollectionEditView read-only view', () => {
     ).toBe(true);
   });
 });
+
+describe('StudioCollectionEditView empty tracklist', () => {
+  beforeEach(() => {
+    collectionId = 'col-1';
+  });
+  afterEach(() => {
+    collectionId = undefined;
+  });
+
+  it('Add tracks switches a read-only collection to editing', async () => {
+    await renderView('/studio/collections/my-album');
+    expect(screen.getByText('No tracks yet')).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Add tracks' }));
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+    expect(
+      container.querySelector('button[aria-label="Done editing"]'),
+    ).not.toBeNull();
+    expect(screen.getByTestId('collection-import-panels')).toBeTruthy();
+  });
+
+  it('Add tracks scrolls to the import panels while editing', async () => {
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView;
+    await renderView();
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Add tracks' })),
+    );
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(scrollIntoView.mock.contexts[0]).toBe(
+      screen.getByTestId('collection-import-panels'),
+    );
+  });
+});

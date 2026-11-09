@@ -1,8 +1,10 @@
+import { ListPlusIcon } from 'lucide-react';
+
 import { useTranslation } from '@tahti-player/i18n';
-import { TrackTable } from '@tahti-player/ui';
+import { Button, TrackTable } from '@tahti-player/ui';
 
 import { CollectionSortSounds } from '../../../components/CollectionSortSounds';
-import { CollectionTrackList } from '../../../components/CollectionTrackList';
+import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { trackTableLabels } from '../../../lib/trackTableLabels';
 import { useStudioContributions } from '../useStudioContributions';
@@ -13,10 +15,12 @@ export function TracklistPanel({
   state,
   isAlbumLike,
   editing = true,
+  onAddTracks,
 }: {
   state: CollectionEditState;
   isAlbumLike: boolean;
   editing?: boolean;
+  onAddTracks?: () => void;
 }) {
   const { t } = useTranslation('web');
   const {
@@ -59,14 +63,19 @@ export function TracklistPanel({
       </div>
 
       {items.length === 0 ? (
-        <CollectionTrackList
-          items={[]}
-          empty={{
-            title: t('tracklistPanelFields.noTracksYet'),
-            description: editing
-              ? 'Add sound items below.'
-              : 'Click Edit to add tracks.',
-          }}
+        <PageEmpty
+          title={t('tracklistPanelFields.noTracksYet')}
+          description={
+            editing ? 'Add sound items below.' : 'Click Edit to add tracks.'
+          }
+          action={
+            onAddTracks ? (
+              <Button size="sm" variant="secondary" onClick={onAddTracks}>
+                <ListPlusIcon size={16} aria-hidden />
+                {t('emptyActions.addTracks')}
+              </Button>
+            ) : undefined
+          }
         />
       ) : (
         <div className="min-h-[200px]">

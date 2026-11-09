@@ -97,7 +97,7 @@ function buildMockNotifications(
   const extras: TahtiNotification[] = [
     {
       id: 'notification-mock-1',
-      type: 'FAN',
+      type: 'NEW_FOLLOWER',
       actor: {
         username: 'midnight-cartography',
         displayName: 'Midnight Cartography',
@@ -112,7 +112,7 @@ function buildMockNotifications(
     },
     {
       id: 'notification-mock-2',
-      type: 'EVENT',
+      type: 'NEW_EVENT',
       actor: null,
       title: 'Your event is coming up',
       body: 'Album release show starts tomorrow at 18:00.',
@@ -277,11 +277,6 @@ export function notificationKindOf(type: string): NotificationKind {
   return 'other';
 }
 
-export function notificationKindLabel(type: string): string {
-  const kind = notificationKindOf(type);
-  return NOTIFICATION_KINDS.find((item) => item.id === kind)?.label ?? 'Other';
-}
-
 /** One page of the inbox, newest first. `before` is the id of the oldest
  * notification already shown, to read the page after it. */
 export async function fetchNotifications(
@@ -390,16 +385,11 @@ export type NotificationUnreadCounts = {
 export async function fetchNotificationUnreadCounts(): Promise<NotificationUnreadCounts | null> {
   if (isForceMock()) {
     const unread = mockNotifications(true).filter((item) => !item.readAt);
-    return {
-      total: unread.length,
-      byKind: {
-        social: 0,
-        music: 0,
-        money: 0,
-        governance: 0,
-        other: unread.length,
-      },
-    };
+    const byKind = { social: 0, music: 0, money: 0, governance: 0, other: 0 };
+    for (const item of unread) {
+      byKind[notificationKindOf(item.type)] += 1;
+    }
+    return { total: unread.length, byKind };
   }
   try {
     const { data } = await requestJson<NotificationUnreadCounts>(

@@ -1,11 +1,20 @@
 import { Link } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { CalendarPlusIcon } from 'lucide-react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Badge } from '@tahti-player/ui';
+import { Badge, Button } from '@tahti-player/ui';
 
 import { fetchPublicRadioSlots, type PublicRadioSlot } from '../../api/shows';
+import { useOpenedOnce } from '../../hooks/useOpenedOnce';
+import { useAuthStore } from '../../stores/authStore';
 import { PageEmpty, PageError } from '../PageStates';
+
+const RadioBookingCalendar = lazy(() =>
+  import('../RadioBookingCalendar').then((m) => ({
+    default: m.RadioBookingCalendar,
+  })),
+);
 
 export const PROGRAMMING_DAYS = 7;
 
@@ -54,8 +63,43 @@ export function groupSlotsByDay(
 }
 
 /** The week ahead of booked live shows on Tahti Radio, for its channel
- * page's Programming block. */
+ * page's Programming block. Signed-in listeners can book a show from the
+ * empty week in the same calendar Radio uses. */
 export function RadioProgrammingGrid({ nowMs }: { nowMs?: number }) {
+  const user = useAuthStore((s) => s.user);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const calendarOpened = useOpenedOnce(calendarOpen);
+  const [reloadKey, setReloadKey] = useState(0);
+
+  return (
+    <>
+      <ProgrammingWeek
+        nowMs={nowMs}
+        reloadKey={reloadKey}
+        onBook={user ? () => setCalendarOpen(true) : undefined}
+      />
+      {calendarOpened ? (
+        <Suspense fallback={null}>
+          <RadioBookingCalendar
+            isOpen={calendarOpen}
+            onClose={() => setCalendarOpen(false)}
+            onBooked={() => setReloadKey((key) => key + 1)}
+          />
+        </Suspense>
+      ) : null}
+    </>
+  );
+}
+
+function ProgrammingWeek({
+  nowMs,
+  reloadKey,
+  onBook,
+}: {
+  nowMs?: number;
+  reloadKey: number;
+  onBook?: () => void;
+}) {
   const { t } = useTranslation('web');
   const [state, setState] = useState<
     | { status: 'loading' }
@@ -86,7 +130,7 @@ export function RadioProgrammingGrid({ nowMs }: { nowMs?: number }) {
     return () => {
       cancelled = true;
     };
-  }, [nowMs]);
+  }, [nowMs, reloadKey]);
 
   if (state.status === 'loading') {
     return (
@@ -102,6 +146,14 @@ export function RadioProgrammingGrid({ nowMs }: { nowMs?: number }) {
     return (
       <PageEmpty
         title={`No live shows booked in the next ${PROGRAMMING_DAYS} days.`}
+        action={
+          onBook ? (
+            <Button size="sm" variant="secondary" onClick={onBook}>
+              <CalendarPlusIcon size={16} aria-hidden />
+              {t('emptyActions.bookShow')}
+            </Button>
+          ) : undefined
+        }
       />
     );
   }

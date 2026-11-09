@@ -21,8 +21,8 @@ import {
   Dialog,
   EditIconLink,
   FilterChips,
-  ImageReveal,
   Input,
+  MediaArtwork,
   Select,
   TabLabel,
   Tabs,
@@ -59,6 +59,7 @@ import { useAuthStore } from '../../stores/authStore';
 import { usePlayerStore } from '../../stores/playerStore';
 import { LibrarySectionTabs } from '../LibraryView';
 import { CollectionOrderButton } from './CollectionOrderButton';
+import { COLLECTION_TAB_KEYS, collectionRowMeta } from './collectionRowMeta';
 
 /** Styles this quick-create dialog and the filter tabs offer — a subset of
  * CollectionStyleId (no SINGLE; those come from linking a release, not from
@@ -440,15 +441,13 @@ export function StudioCollectionsView() {
                       icon={<LibraryIcon size={16} />}
                       count={rows.length}
                     >
-                      All
+                      {t('library.collectionTabs.all')}
                     </TabLabel>
                   </Tabs.Tab>
                   {CREATE_STYLES.map((option) => (
                     <Tabs.Tab key={option.id}>
                       <TabLabel icon={option.icon} count={counts[option.id]}>
-                        {option.label.endsWith('s')
-                          ? option.label
-                          : `${option.label}s`}
+                        {t(COLLECTION_TAB_KEYS[option.id])}
                       </TabLabel>
                     </Tabs.Tab>
                   ))}
@@ -519,13 +518,12 @@ export function StudioCollectionsView() {
                     key={c.slug}
                     className="flex items-center gap-3 py-3 text-sm first:pt-0 last:pb-0"
                   >
-                    <ImageReveal
-                      src={c.coverUrl ?? undefined}
+                    <MediaArtwork
+                      src={c.coverUrl}
                       alt=""
-                      className="border-border bg-background h-12 w-12 rounded-lg border shadow-sm"
-                      placeholder={
-                        <Disc3Icon size={18} className="opacity-40" />
-                      }
+                      seed={c.slug}
+                      size="thumb"
+                      className="border-border rounded-lg border shadow-sm"
                     />
                     <div className="min-w-0 flex-1">
                       <Link
@@ -536,16 +534,11 @@ export function StudioCollectionsView() {
                         {c.name}
                       </Link>
                       <p className="text-foreground-secondary text-xs">
-                        /{c.slug}
-                        {`, ${collectionStyleLabel(collectionStyle(c))}`}
-                        {c.releaseDate ? `, releases ${c.releaseDate}` : ''}
-                        {c.genres?.length ? `, ${c.genres.join(', ')}` : ''}
-                        {typeof c.itemCount === 'number'
-                          ? `, ${c.itemCount} items`
-                          : c.items
-                            ? `, ${c.items.length} items`
-                            : ''}
-                        {`, ${(c.visibility ?? (c.isPublic === false ? 'PRIVATE' : 'PUBLIC')).toLowerCase()}`}
+                        {collectionRowMeta(
+                          c,
+                          collectionStyleLabel(collectionStyle(c)),
+                          t,
+                        )}
                       </p>
                     </div>
                     <Tooltip

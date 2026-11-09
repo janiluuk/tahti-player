@@ -1690,7 +1690,27 @@
       "mixOrderUnplaced_one": "{{count}} kappaleella ei ole sävellajia, ja se tulee loppuun:",
       "mixOrderUnplaced_other": "{{count}} kappaleella ei ole sävellajia, ja ne tulevat loppuun:",
       "mixOrderBpm": "{{bpm}} BPM",
-      "mixOrderUse": "Lisää soittolistalle tässä järjestyksessä"
+      "mixOrderUse": "Lisää soittolistalle tässä järjestyksessä",
+      "collectionTabs": {
+        "all": "Kaikki",
+        "albums": "Albumit",
+        "eps": "EP:t",
+        "playlists": "Soittolistat",
+        "djSets": "DJ-setit",
+        "podcasts": "Podcastit",
+        "showSeries": "Ohjelmasarjat"
+      },
+      "collectionVisibility": {
+        "public": "julkinen",
+        "unlisted": "listaamaton",
+        "private": "yksityinen",
+        "stash": "varastossa"
+      },
+      "collectionReleases": "julkaistaan {{date}}",
+      "collectionItems_one": "{{count}} kohde",
+      "collectionItems_other": "{{count}} kohdetta",
+      "uploadedOnLead": "Ladattu {{date}}",
+      "soundDurationHours": ", {{hours}} h {{minutes}} min"
     },
     "date": {
       "today": "Tänään",
@@ -2809,11 +2829,15 @@
       "more": "Lisää",
       "less": "Vähemmän",
       "moreFor": "{{action}}: {{title}}",
-      "tracksCount": "{{count}} kappaletta",
       "pinnedToProfile": "kiinnitetty profiiliin",
       "createdToast": "Luotu {{title}}.",
       "removedToast": "Poistettu {{title}}.",
-      "publicLink": "Julkinen linkki"
+      "publicLink": "Julkinen linkki",
+      "tracksCount_one": "{{count}} kappale",
+      "tracksCount_other": "{{count}} kappaletta",
+      "stateDraft": "Luonnos",
+      "stateScheduled": "Ajastettu",
+      "statePublished": "Julkaistu"
     },
     "adminMissedShows": {
       "filterAll": "Kaikki",
@@ -3972,7 +3996,13 @@
       "addTracks": "Lisää kappaleita",
       "newCollection": "Uusi kokoelma",
       "openLibrary": "Avaa kirjasto",
-      "addFirstModerator": "Lisää ensimmäinen moderaattori"
+      "addFirstModerator": "Lisää ensimmäinen moderaattori",
+      "uploadAudio": "Lataa ääni",
+      "bookShow": "Varaa lähetys",
+      "browseAddons": "Selaa lisäosia",
+      "beFirstToReply": "Vastaa ensimmäisenä",
+      "beFirstToComment": "Kommentoi ensimmäisenä",
+      "submitTheme": "Lähetä teema"
     },
     "eventCreate": {
       "couldNotLoadTheVenue": "Tapahtumapaikkahakemistoa ei voitu ladata. Kirjoita paikka yllä tai",
@@ -9958,6 +9988,28 @@
     },
     "artistUpcomingEventsText": {
       "upcomingEvents": "Tulevat tapahtumat"
+    },
+    "entityStats": {
+      "followers_one": "Seuraaja",
+      "followers_other": "Seuraajaa",
+      "following_one": "Seurataan",
+      "following_other": "Seurataan",
+      "tracks_one": "Kappale",
+      "tracks_other": "Kappaletta",
+      "plays_one": "Kuuntelu",
+      "plays_other": "Kuuntelua",
+      "likes_one": "Tykkäys",
+      "likes_other": "Tykkäystä",
+      "downloads_one": "Lataus",
+      "downloads_other": "Latausta",
+      "playlists_one": "Soittolista",
+      "playlists_other": "Soittolistaa"
+    },
+    "ambientTrackList": {
+      "trackCount_one": "{{count}} kappale",
+      "trackCount_other": "{{count}} kappaletta",
+      "soundCount_one": "{{count}} ääni",
+      "soundCount_other": "{{count}} ääntä"
     },
     "trackBodyFields": {
       "info": "Tiedot"
