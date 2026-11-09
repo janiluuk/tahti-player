@@ -20,7 +20,6 @@ import {
   ButtonLink,
   ExternalLink,
   Input,
-  StatChip,
   Textarea,
   Tooltip,
   ViewShell,
@@ -52,10 +51,10 @@ import { CorrectionsPanel } from '../components/governance/CorrectionsPanel';
 import { CurrentBoardPanel } from '../components/governance/CurrentBoardPanel';
 import { ElectionsPanel } from '../components/governance/ElectionsPanel';
 import { GovernancePanel } from '../components/governance/GovernancePanel';
+import { GovernanceStatChips } from '../components/governance/GovernanceStatChips';
 import { LatestDiscussionsPanel } from '../components/governance/LatestDiscussionsPanel';
 import { MotionCard } from '../components/governance/MotionCard';
 import { ListingDate } from '../components/ListingDate';
-import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { hasAccountRole } from '../lib/accountRoles';
 import { useAuthModalStore } from '../stores/authModalStore';
@@ -279,28 +278,12 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       )}
 
       {user && !loading && !forbidden && (
-        <div className="grid grid-cols-1 gap-3 min-[22.5rem]:grid-cols-2 sm:grid-cols-4">
-          <StatChip
-            value={openMotionsTotal}
-            label="Open motions"
-            icon={<VoteIcon size={16} aria-hidden />}
-          />
-          <StatChip
-            value={requests.length}
-            label="Topics"
-            icon={<LandmarkIcon size={16} aria-hidden />}
-          />
-          <StatChip
-            value={meetings.length}
-            label="Meetings"
-            icon={<UsersIcon size={16} aria-hidden />}
-          />
-          <StatChip
-            value={documents.length}
-            label="Documents"
-            icon={<FileTextIcon size={16} aria-hidden />}
-          />
-        </div>
+        <GovernanceStatChips
+          openMotions={openMotionsTotal}
+          topics={requests.length}
+          meetings={meetings.length}
+          documents={documents.length}
+        />
       )}
 
       {user && !loading && !forbidden && <LatestDiscussionsPanel />}
@@ -343,6 +326,7 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <GovernancePanel
             title="Needs your attention"
+            accent="red"
             icon={VoteIcon}
             variant="secondary"
           >
@@ -367,7 +351,11 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               <ArrowRightIcon size={14} aria-hidden className="ml-1.5" />
             </ButtonLink>
           </GovernancePanel>
-          <GovernancePanel title="Top topics" icon={LandmarkIcon}>
+          <GovernancePanel
+            title="Top topics"
+            accent="purple"
+            icon={LandmarkIcon}
+          >
             {loadErrors.requests && requests.length > 0 ? (
               <LoadErrorCaption
                 message={loadErrors.requests}
@@ -432,7 +420,11 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
 
       {user && !loading && !forbidden && (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <GovernancePanel title="Published meetings" icon={UsersIcon}>
+          <GovernancePanel
+            title="Published meetings"
+            accent="blue"
+            icon={UsersIcon}
+          >
             {loadErrors.meetings && meetings.length > 0 ? (
               <LoadErrorCaption
                 message={loadErrors.meetings}
@@ -497,7 +489,11 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               </ul>
             )}
           </GovernancePanel>
-          <GovernancePanel title="Published documents" icon={FileTextIcon}>
+          <GovernancePanel
+            title="Published documents"
+            accent="cyan"
+            icon={FileTextIcon}
+          >
             {loadErrors.documents && documents.length > 0 ? (
               <LoadErrorCaption
                 message={loadErrors.documents}
@@ -541,7 +537,11 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               </ul>
             )}
           </GovernancePanel>
-          <GovernancePanel title="Quarterly reviews" icon={ScrollTextIcon}>
+          <GovernancePanel
+            title="Quarterly reviews"
+            accent="yellow"
+            icon={ScrollTextIcon}
+          >
             {loadErrors.reports && reports.length > 0 ? (
               <LoadErrorCaption message={loadErrors.reports} onRetry={reload} />
             ) : null}
@@ -580,7 +580,11 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
               </ul>
             )}
           </GovernancePanel>
-          <GovernancePanel title="Member directory" icon={UsersIcon}>
+          <GovernancePanel
+            title="Member directory"
+            accent="green"
+            icon={UsersIcon}
+          >
             {loadErrors.members && members.length > 0 ? (
               <LoadErrorCaption message={loadErrors.members} onRetry={reload} />
             ) : null}
@@ -625,7 +629,11 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       )}
 
       {user && !loading && !forbidden && (
-        <GovernancePanel title="Submit a motion draft" icon={VoteIcon}>
+        <GovernancePanel
+          title="Submit a motion draft"
+          accent="orange"
+          icon={VoteIcon}
+        >
           <div className="flex items-center gap-1.5">
             <span className="text-foreground-secondary text-xs">
               Advisory proposals for board review
@@ -772,11 +780,10 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
     <ViewShell
       title="Governance"
       classes={{
-        root: 'px-0 pt-0 mx-auto max-w-5xl',
+        root: 'px-0 pt-0',
         content: 'gap-6',
       }}
     >
-      <PageBackLink to="/what-is-it" label="What is Tahti" />
       {body}
     </ViewShell>
   );
