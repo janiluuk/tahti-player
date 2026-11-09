@@ -1708,7 +1708,16 @@
       "collectionItems_one": "{{count}} item",
       "collectionItems_other": "{{count}} items",
       "uploadedOnLead": "Uploaded {{date}}",
-      "soundDurationHours": ", {{hours}} h {{minutes}} min"
+      "soundDurationHours": ", {{hours}} h {{minutes}} min",
+      "mediaPurgeUnused": "Purge unused",
+      "mediaPurgeNothing": "Every file here is in use; nothing to purge.",
+      "mediaPurgeTitle_one": "Delete {{count}} unused file?",
+      "mediaPurgeTitle_other": "Delete {{count}} unused files?",
+      "mediaPurgeDescription_one": "{{count}} file ({{size}}) isn't used by your profile, channel, posts, releases or anything else you own. It will be deleted for good.",
+      "mediaPurgeDescription_other": "{{count}} files ({{size}}) aren't used by your profile, channel, posts, releases or anything else you own. They will be deleted for good.",
+      "mediaPurgeConfirm": "Delete unused",
+      "mediaPurged_one": "Deleted {{count}} unused file, freed {{size}}.",
+      "mediaPurged_other": "Deleted {{count}} unused files, freed {{size}}."
     },
     "date": {
       "today": "Today",

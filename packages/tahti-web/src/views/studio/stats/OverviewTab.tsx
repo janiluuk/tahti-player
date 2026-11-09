@@ -5,6 +5,7 @@ import { cn, Meter, statToneClasses } from '@tahti-player/ui';
 
 import { StudioPanel } from '../../../components/StudioPanel';
 import { Eyebrow } from '../../../components/tahti/Eyebrow';
+import { dateLocaleTag } from '../../../lib/locale';
 import { ENGAGEMENT_UNIT_TONES } from './metricTones';
 import type { StatsData } from './useStatsData';
 
@@ -26,7 +27,7 @@ function EngagementUnitList({
               </span>
             </span>
             <strong className="tabular-nums">
-              {entry.value.toLocaleString()}
+              {entry.value.toLocaleString(dateLocaleTag())}
             </strong>
           </div>
           <Meter
@@ -83,7 +84,7 @@ export function KeyMetrics({
               </span>
             </div>
             <span className="font-heading text-foreground mt-1 block text-3xl font-bold tabular-nums">
-              {loading ? '—' : metric.value.toLocaleString()}
+              {loading ? '—' : metric.value.toLocaleString(dateLocaleTag())}
             </span>
             <p className="text-foreground-secondary mt-1 text-xs">
               {metric.note}

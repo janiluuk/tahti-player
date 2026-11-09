@@ -20,6 +20,7 @@ import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { StudioGate } from '../components/StudioGate';
 import { StudioPanel } from '../components/StudioPanel';
 import { sortLibraryItems, type LibrarySort } from '../lib/librarySort';
+import { dateLocaleTag } from '../lib/locale';
 import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 const DSP_LABELS: Record<string, string> = {
@@ -194,7 +195,7 @@ export function LibrarySmartLinksView() {
                                 ? `${targets.length} DSP link${targets.length === 1 ? '' : 's'}: ${targets.map(([provider]) => targetLabel(provider)).join(', ')}`
                                 : 'No DSP links added yet'}
                               {typeof release.smartLinkViewCount === 'number'
-                                ? ` · ${release.smartLinkViewCount.toLocaleString()} views`
+                                ? ` · ${release.smartLinkViewCount.toLocaleString(dateLocaleTag())} views`
                                 : ''}
                             </>
                           }

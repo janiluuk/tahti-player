@@ -23,6 +23,7 @@ import {
   PageLoading,
 } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { dateLocaleTag } from '../../../lib/locale';
 import { apiResult, useSnapshotFetch } from '../../../lib/useSnapshotFetch';
 import { STUDIO_METRIC_TONES } from './metricTones';
 
@@ -72,28 +73,30 @@ export function DownloadGatesPanel({ active }: { active: boolean }) {
             label={t('downloadGates.downloads')}
             tone={STUDIO_METRIC_TONES.downloads}
             icon={<DownloadIcon size={16} />}
-            value={stats.totals.countedDownloads.toLocaleString()}
+            value={stats.totals.countedDownloads.toLocaleString(
+              dateLocaleTag(),
+            )}
             sublabel={t('downloadGates.passedTheGate')}
           />
           <StatTile
             label={t('downloadGates.blocked')}
             tone={STUDIO_METRIC_TONES.gateBlocked}
             icon={<BanIcon size={16} />}
-            value={stats.totals.blockedAttempts.toLocaleString()}
+            value={stats.totals.blockedAttempts.toLocaleString(dateLocaleTag())}
             sublabel={t('downloadGates.stoppedAtAGate')}
           />
           <StatTile
             label={t('downloadGates.reposts')}
             tone={STUDIO_METRIC_TONES.reposts}
             icon={<Repeat2Icon size={16} />}
-            value={stats.totals.repostAcks.toLocaleString()}
+            value={stats.totals.repostAcks.toLocaleString(dateLocaleTag())}
             sublabel={t('downloadGates.toUnlockADownload')}
           />
           <StatTile
             label={t('downloadGates.followers')}
             tone={STUDIO_METRIC_TONES.followers}
             icon={<UsersIcon size={16} />}
-            value={stats.artistFollowerCount.toLocaleString()}
+            value={stats.artistFollowerCount.toLocaleString(dateLocaleTag())}
             sublabel={t('downloadGates.currentAudience')}
           />
         </div>

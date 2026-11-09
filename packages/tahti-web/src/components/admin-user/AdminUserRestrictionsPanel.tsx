@@ -11,6 +11,7 @@ import {
   type AccountRestriction,
   type AccountRestrictionType,
 } from '../../api/admin';
+import { dateLocaleTag } from '../../lib/locale';
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import { StudioPanel } from '../StudioPanel';
 
@@ -40,15 +41,17 @@ const DURATIONS = [
 
 function describeRestriction(restriction: AccountRestriction): string {
   const parts = [
-    `Since ${new Date(restriction.bannedAt).toLocaleDateString()}`,
+    `Since ${new Date(restriction.bannedAt).toLocaleDateString(dateLocaleTag())}`,
   ];
   if (restriction.liftedAt) {
-    parts.push(`lifted ${new Date(restriction.liftedAt).toLocaleDateString()}`);
+    parts.push(
+      `lifted ${new Date(restriction.liftedAt).toLocaleDateString(dateLocaleTag())}`,
+    );
   } else if (restriction.expiresAt) {
     parts.push(
       `${isRestrictionActive(restriction) ? 'until' : 'expired'} ${new Date(
         restriction.expiresAt,
-      ).toLocaleDateString()}`,
+      ).toLocaleDateString(dateLocaleTag())}`,
     );
   } else {
     parts.push('until lifted');

@@ -30,6 +30,7 @@ import {
   grafanaExploreLogsUrl,
   MONITORING_SERVICES,
 } from '../../lib/grafanaMonitoring';
+import { dateLocaleTag } from '../../lib/locale';
 import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { CommunityStatsPanel } from './dashboard/CommunityStatsPanel';
 
@@ -171,7 +172,7 @@ export function AdminDashboardView() {
                           'Open tickets',
                           data.kpis.openTickets,
                           data.kpis.ticketsAwaitingReply
-                            ? `${data.kpis.ticketsAwaitingReply.toLocaleString()} need a reply`
+                            ? `${data.kpis.ticketsAwaitingReply.toLocaleString(dateLocaleTag())} need a reply`
                             : null,
                         ],
                       ] as const
@@ -181,7 +182,7 @@ export function AdminDashboardView() {
                           {label}
                         </div>
                         <StatNumber className="mt-2 block text-3xl">
-                          {value.toLocaleString()}
+                          {value.toLocaleString(dateLocaleTag())}
                         </StatNumber>
                         {note ? (
                           <InlineError
@@ -468,7 +469,9 @@ export function AdminDashboardView() {
                             >
                               <span>{row.action}</span>
                               <span className="text-foreground-secondary text-xs">
-                                {new Date(row.createdAt).toLocaleString()}
+                                {new Date(row.createdAt).toLocaleString(
+                                  dateLocaleTag(),
+                                )}
                               </span>
                             </li>
                           ))}

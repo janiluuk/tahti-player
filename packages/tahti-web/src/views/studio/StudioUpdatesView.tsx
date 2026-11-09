@@ -33,6 +33,7 @@ import {
 } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { dateLocaleTag } from '../../lib/locale';
 import { newsletterDeliverySummary } from '../../lib/newsletterDelivery';
 import { storyDate } from '../../lib/storyDate';
 import { useAuthStore } from '../../stores/authStore';
@@ -366,7 +367,7 @@ export function StudioUpdatesView({
                             : t('studioUpdatesViewStates.allSubscribers')}
                           {d.state ? `, ${d.state}` : ''}
                           {d.sentAt
-                            ? `, sent ${new Date(d.sentAt).toLocaleString()}`
+                            ? `, sent ${new Date(d.sentAt).toLocaleString(dateLocaleTag())}`
                             : ', draft'}
                         </p>
                         {newsletterDeliverySummary(d.delivery) ? (

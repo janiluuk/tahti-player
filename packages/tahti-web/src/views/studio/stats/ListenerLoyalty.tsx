@@ -10,6 +10,7 @@ import {
 } from '../../../api/studio-extras';
 import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { dateLocaleTag } from '../../../lib/locale';
 
 const percent = (share: number) => `${Math.round(share * 100)} %`;
 
@@ -68,7 +69,7 @@ export function ListenerLoyalty({
             {end ? `${percent(end.share)} listened to the end` : null}
             <span className="text-foreground-secondary">
               {' '}
-              ({loyalty.total.toLocaleString()} listens)
+              ({loyalty.total.toLocaleString(dateLocaleTag())} listens)
             </span>
           </p>
           <div

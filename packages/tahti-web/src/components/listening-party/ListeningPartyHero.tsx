@@ -8,6 +8,7 @@ import type { ListeningPartyDto } from '../../api/listening-parties';
 import type { ListeningPartyClock } from '../../hooks/useListeningPartyTimeline';
 import { safeCreditName } from '../../lib/displayName';
 import { listeningPartyDurationSec } from '../../lib/listeningPartyTimeline';
+import { dateLocaleTag } from '../../lib/locale';
 import { Eyebrow } from '../tahti/Eyebrow';
 import {
   formatCountdown,
@@ -63,7 +64,7 @@ function StateLine({
           <span className="text-foreground-secondary">
             {' '}
             · ends{' '}
-            {clock.endAt.toLocaleTimeString(undefined, {
+            {clock.endAt.toLocaleTimeString(dateLocaleTag(), {
               hour: '2-digit',
               minute: '2-digit',
             })}

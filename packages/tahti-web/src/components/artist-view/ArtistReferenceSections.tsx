@@ -116,20 +116,23 @@ export function ArtistRelatedArtists({
       title={t('artistReferenceSections.relatedArtists')}
       data-testid="artist-related"
     >
-      <ul className="divide-border bg-primary text-primary-foreground border-border divide-y-(length:--border-width) border-(length:--border-width)">
+      <ul className="border-border bg-background-secondary/60 divide-border flex flex-col divide-y overflow-hidden rounded-lg border">
         {artists.map((related) => (
           <li key={related.username}>
             <Link
               to="/u/$username"
               params={{ username: related.username }}
-              className="hover:bg-background-secondary/20 flex items-center gap-3 pr-3"
+              className="hover:bg-primary/10 focus-visible:bg-primary/10 flex items-center gap-3 px-3 py-2 outline-none"
             >
               <MediaArtwork
                 size="sm"
                 src={placeholderArtworkUrl(related.username)}
                 alt=""
+                className="size-8 shrink-0 rounded-full"
               />
-              <span className="truncate text-sm">{related.displayName}</span>
+              <span className="min-w-0 truncate text-sm font-medium">
+                {related.displayName}
+              </span>
             </Link>
           </li>
         ))}

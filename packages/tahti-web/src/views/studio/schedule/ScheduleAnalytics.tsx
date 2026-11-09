@@ -4,6 +4,7 @@ import { useTranslation } from '@tahti-player/i18n';
 
 import { fetchStatsPlays, type StatsPlays } from '../../../api/studio-extras';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { dateLocaleTag } from '../../../lib/locale';
 
 export function ScheduleAnalytics() {
   const { t } = useTranslation('web');
@@ -40,7 +41,7 @@ export function ScheduleAnalytics() {
               Last {range} day{range === '1' ? '' : 's'}
             </p>
             <p className="mt-2 text-2xl font-bold tabular-nums">
-              {stats[range]?.totalPlays.toLocaleString() ?? '—'}
+              {stats[range]?.totalPlays.toLocaleString(dateLocaleTag()) ?? '—'}
             </p>
             <p className="text-foreground-secondary text-xs">plays</p>
           </div>

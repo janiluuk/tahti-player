@@ -9,6 +9,7 @@ import {
   type AdminCronRun,
 } from '../../../api/admin';
 import { PageEmpty, PageLoading } from '../../../components/PageStates';
+import { dateLocaleTag } from '../../../lib/locale';
 import { cronOutcomeColor, cronOutcomeLabel } from './cronOutcome';
 
 export function CronHistoryDialog({
@@ -77,7 +78,7 @@ export function CronHistoryDialog({
             <li key={run.id} className="flex flex-col gap-1 py-2 text-sm">
               <div className="flex items-center justify-between gap-2">
                 <time dateTime={run.startedAt}>
-                  {new Date(run.startedAt).toLocaleString()}
+                  {new Date(run.startedAt).toLocaleString(dateLocaleTag())}
                 </time>
                 <div className="flex items-center gap-2">
                   <span className="text-foreground-secondary text-xs">

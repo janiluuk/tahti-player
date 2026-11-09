@@ -19,6 +19,7 @@ import {
 import { ListenerWorldMap } from '../../../components/ListenerWorldMap';
 import { PageEmpty, PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { dateLocaleTag } from '../../../lib/locale';
 import { formatPlayCount } from '../../../lib/topListEntries';
 import { STUDIO_METRIC_TONES } from '../stats/metricTones';
 
@@ -122,13 +123,13 @@ export function ReleaseStatsPanel({
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <StatTile
               label={t('releaseStatsPanel.plays')}
-              value={totals.plays.toLocaleString()}
+              value={totals.plays.toLocaleString(dateLocaleTag())}
               tone={STUDIO_METRIC_TONES.plays}
               icon={<AudioLinesIcon size={16} />}
             />
             <StatTile
               label={t('releaseStatsPanel.downloads')}
-              value={totals.downloads.toLocaleString()}
+              value={totals.downloads.toLocaleString(dateLocaleTag())}
               tone={STUDIO_METRIC_TONES.downloads}
               icon={<DownloadIcon size={16} />}
             />
@@ -142,7 +143,7 @@ export function ReleaseStatsPanel({
                 id: track.id,
                 label: track.title,
                 sublabel: insights
-                  ? `${insights.totalDownloads.toLocaleString()} downloads`
+                  ? `${insights.totalDownloads.toLocaleString(dateLocaleTag())} downloads`
                   : 'No stats yet',
                 value: insights?.totalPlays ?? 0,
                 onClick: () => {

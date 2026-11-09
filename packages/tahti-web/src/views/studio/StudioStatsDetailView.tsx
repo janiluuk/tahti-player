@@ -112,12 +112,13 @@ export function StudioStatsDetailView() {
               <StudioPanel>
                 <Eyebrow>Plays — {label}</Eyebrow>
                 <StatNumber className="mt-1 block text-3xl">
-                  {data.totalPlays.toLocaleString()}
+                  {data.totalPlays.toLocaleString(dateLocaleTag())}
                 </StatNumber>
                 <p className="text-foreground-secondary mt-1 text-xs">
-                  {data.totalDownloads.toLocaleString()} downloads
+                  {data.totalDownloads.toLocaleString(dateLocaleTag())}{' '}
+                  downloads
                   {data.totalSmartLinkClicks != null
-                    ? `, ${data.totalSmartLinkClicks.toLocaleString()} smart-link clicks`
+                    ? `, ${data.totalSmartLinkClicks.toLocaleString(dateLocaleTag())} smart-link clicks`
                     : ''}
                 </p>
 
@@ -140,7 +141,9 @@ export function StudioStatsDetailView() {
                         legendLess: 'Less',
                         legendMore: 'More',
                       }}
-                      formatValue={(value) => `${value.toLocaleString()} plays`}
+                      formatValue={(value) =>
+                        `${value.toLocaleString(dateLocaleTag())} plays`
+                      }
                       formatDate={formatAxisDate}
                     />
                   </HorizontalScroll>
@@ -149,7 +152,9 @@ export function StudioStatsDetailView() {
                     <DayOfWeekChart
                       values={data.daily.map((day) => day.plays)}
                       labels={{ weekdays: chartLabels }}
-                      formatValue={(value) => `${value.toLocaleString()} plays`}
+                      formatValue={(value) =>
+                        `${value.toLocaleString(dateLocaleTag())} plays`
+                      }
                     />
                   </div>
                 )}
@@ -169,7 +174,7 @@ export function StudioStatsDetailView() {
                           {flagEmoji(country.countryCode)} {country.displayName}
                         </span>
                         <strong className="tabular-nums">
-                          {country.count.toLocaleString()}
+                          {country.count.toLocaleString(dateLocaleTag())}
                         </strong>
                       </li>
                     ))}

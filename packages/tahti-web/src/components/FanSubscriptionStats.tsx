@@ -20,6 +20,7 @@ import {
 } from '@tahti-player/ui';
 
 import type { FanPayoutStats } from '../api/revenue';
+import { dateLocaleTag } from '../lib/locale';
 import type { RevenueOrderRow } from '../lib/revenueOrders';
 import { ListingDate } from './ListingDate';
 import { PageEmpty } from './PageStates';
@@ -87,7 +88,7 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
       >
         <FanStat
           label={t('fanSubStats.activeSubscribers')}
-          value={stats.activeSubscribers.toLocaleString()}
+          value={stats.activeSubscribers.toLocaleString(dateLocaleTag())}
           icon={UsersIcon}
         />
         <FanStat
@@ -102,18 +103,19 @@ export const FanSubscriptionStats: FC<FanSubscriptionStatsProps> = ({
         />
         <FanStat
           label={t('fanSubStats.pendingPayouts')}
-          value={stats.pending.toLocaleString()}
+          value={stats.pending.toLocaleString(dateLocaleTag())}
           icon={Clock3Icon}
         />
       </div>
 
       <div className="text-foreground-secondary flex flex-wrap items-center justify-between gap-2 text-xs">
         <p>
-          Paid in the last 30 days: {stats.paidLast30Days.toLocaleString()}
+          Paid in the last 30 days:{' '}
+          {stats.paidLast30Days.toLocaleString(dateLocaleTag())}
           {stats.failed > 0 ? (
             <span className="text-accent-red-strong">
               {' '}
-              · Failed payouts: {stats.failed.toLocaleString()}
+              · Failed payouts: {stats.failed.toLocaleString(dateLocaleTag())}
             </span>
           ) : (
             ' · No failed payouts'

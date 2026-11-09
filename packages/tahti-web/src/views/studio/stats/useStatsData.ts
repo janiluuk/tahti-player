@@ -321,14 +321,14 @@ export function useStatsData() {
     {
       label: 'Plays',
       value: plays.totalPlays,
-      note: `${summary.playsToday.toLocaleString()} today`,
+      note: `${summary.playsToday.toLocaleString(dateLocaleTag())} today`,
       icon: AudioLinesIcon,
       tone: STUDIO_METRIC_TONES.plays,
     },
     {
       label: 'Downloads',
       value: plays.totalDownloads,
-      note: `${summary.downloadsToday.toLocaleString()} today`,
+      note: `${summary.downloadsToday.toLocaleString(dateLocaleTag())} today`,
       icon: DownloadIcon,
       tone: STUDIO_METRIC_TONES.downloads,
     },
@@ -350,7 +350,7 @@ export function useStatsData() {
       ? {
           label: 'Minutes listened',
           value: listening.minutes,
-          note: `${listening.listens.toLocaleString()} listens · ${listening.averageMinutes.toLocaleString()} min on average`,
+          note: `${listening.listens.toLocaleString(dateLocaleTag())} listens · ${listening.averageMinutes.toLocaleString(dateLocaleTag())} min on average`,
           icon: UsersIcon,
           tone: STUDIO_METRIC_TONES.minutesListened,
         }

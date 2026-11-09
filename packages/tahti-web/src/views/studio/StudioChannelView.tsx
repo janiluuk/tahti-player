@@ -38,6 +38,7 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StudioRadioSubmissionPanel } from '../../components/StudioRadioSubmissionPanel';
 import { hasAccountRole } from '../../lib/accountRoles';
+import { dateLocaleTag } from '../../lib/locale';
 import { useAuthStore } from '../../stores/authStore';
 import { useChannelSetupModalStore } from '../../stores/channelSetupModalStore';
 import { SelectsTab } from '../admin/moderation/tabs/SelectsTab';
@@ -159,10 +160,14 @@ function ChannelOverallStats() {
                   Last {range} day{range === '1' ? '' : 's'}
                 </p>
                 <p className="mt-2 text-2xl font-bold tabular-nums">
-                  {periodStats?.totalPlays.toLocaleString() ?? '—'}
+                  {periodStats?.totalPlays.toLocaleString(dateLocaleTag()) ??
+                    '—'}
                 </p>
                 <p className="text-foreground-secondary text-xs">
-                  plays · {periodStats?.totalDownloads.toLocaleString() ?? '—'}{' '}
+                  plays ·{' '}
+                  {periodStats?.totalDownloads.toLocaleString(
+                    dateLocaleTag(),
+                  ) ?? '—'}{' '}
                   downloads
                 </p>
               </div>

@@ -18,6 +18,7 @@ import {
 } from '@tahti-player/ui';
 
 import { cn } from '../lib/cn';
+import { dateLocaleTag } from '../lib/locale';
 import { formatDuration } from '../lib/playableToTrack';
 import { relativeDate } from '../lib/relativeDate';
 import { useDominantColor } from '../lib/useDominantColor';
@@ -104,7 +105,7 @@ function TrackStats({
         <ClockIcon size={14} aria-hidden />
         <time
           dateTime={stats.releaseDate}
-          title={new Date(stats.releaseDate).toLocaleString()}
+          title={new Date(stats.releaseDate).toLocaleString(dateLocaleTag())}
         >
           {relativeDate(stats.releaseDate)}
         </time>
@@ -128,7 +129,7 @@ function TrackStats({
       parts.push(
         <span key={key} className="inline-flex items-center gap-1">
           {icon}
-          <span aria-hidden>{value.toLocaleString()}</span>
+          <span aria-hidden>{value.toLocaleString(dateLocaleTag())}</span>
           <span className="sr-only">
             {t(`ambientTrackRow.${key}`, { count: value })}
           </span>
@@ -189,7 +190,7 @@ function LikeToggle({
           like.liked && 'fill-accent-red-strong text-accent-red-strong',
         )}
       />
-      <span aria-hidden>{like.count.toLocaleString()}</span>
+      <span aria-hidden>{like.count.toLocaleString(dateLocaleTag())}</span>
     </Button>
   );
 }

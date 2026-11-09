@@ -182,4 +182,67 @@ describe('LibraryMediaView', () => {
     fireEvent.click(confirm);
     await waitFor(() => expect(remove).toHaveBeenCalledWith('1'));
   });
+
+  it('purges unused uploads after confirming how many and how big', async () => {
+    const file = {
+      id: 'media/demo/bg.png',
+      filename: 'bg.png',
+      url: 'https://x/bg.png',
+      contentType: 'image/png',
+      sizeBytes: 1024,
+      createdAt: '2026-11-01T00:00:00.000Z',
+    };
+    vi.spyOn(userMedia, 'fetchUserMedia').mockResolvedValue({
+      data: [file],
+      meta: { source: 'api' },
+    });
+    vi.spyOn(userMedia, 'fetchUnusedMedia').mockResolvedValue({
+      ok: true,
+      data: { count: 3, totalBytes: 3 * 1024 * 1024, ids: ['a', 'b', 'c'] },
+    });
+    const purge = vi.spyOn(userMedia, 'purgeUnusedMedia').mockResolvedValue({
+      ok: true,
+      data: { deleted: 3, freedBytes: 3 * 1024 * 1024 },
+    });
+    await renderWithRouter(<LibraryMediaView />, {
+      paths: ['/studio/branding'],
+    });
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Purge unused' }),
+    );
+    expect(await screen.findByText('Delete 3 unused files?')).toBeTruthy();
+    expect(screen.getByText(/3 files \(3\.0 MB\)/)).toBeTruthy();
+    expect(purge).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Delete unused' }));
+    await waitFor(() => expect(purge).toHaveBeenCalledTimes(1));
+  });
+
+  it('says so when every file is in use', async () => {
+    vi.spyOn(userMedia, 'fetchUserMedia').mockResolvedValue({
+      data: [
+        {
+          id: 'media/demo/bg.png',
+          filename: 'bg.png',
+          url: 'https://x/bg.png',
+          contentType: 'image/png',
+          sizeBytes: 1024,
+          createdAt: '2026-11-01T00:00:00.000Z',
+        },
+      ],
+      meta: { source: 'api' },
+    });
+    vi.spyOn(userMedia, 'fetchUnusedMedia').mockResolvedValue({
+      ok: true,
+      data: { count: 0, totalBytes: 0, ids: [] },
+    });
+    const purge = vi.spyOn(userMedia, 'purgeUnusedMedia');
+    await renderWithRouter(<LibraryMediaView />, {
+      paths: ['/studio/branding'],
+    });
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Purge unused' }),
+    );
+    await waitFor(() => expect(screen.queryByText(/unused file/)).toBeNull());
+    expect(purge).not.toHaveBeenCalled();
+  });
 });
