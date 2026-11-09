@@ -3,6 +3,7 @@ import type {
   AccountSettingsSection,
   ArtistSettingsSection,
   ChannelSettingsSection,
+  PlaybackSettingsSection,
 } from '../stores/settingsModalStore';
 import type { SettingsSectionId } from '../views/settings/settingsNav';
 
@@ -11,6 +12,7 @@ export type BuildSettingsPathInput = {
   artistSection?: ArtistSettingsSection | null;
   accountSection?: AccountSettingsSection | null;
   channelSection?: ChannelSettingsSection | null;
+  playbackSection?: PlaybackSettingsSection | null;
   pluginCategory?: PluginCategoryTarget | null;
 };
 
@@ -20,6 +22,7 @@ export function buildSettingsPath({
   artistSection,
   accountSection,
   channelSection,
+  playbackSection,
   pluginCategory,
 }: BuildSettingsPathInput): string {
   const params = new URLSearchParams();
@@ -29,6 +32,8 @@ export function buildSettingsPath({
     params.set('tab', accountSection);
   } else if (section === 'channel' && channelSection) {
     params.set('tab', channelSection);
+  } else if (section === 'playback' && playbackSection === 'language') {
+    params.set('tab', 'language');
   } else if (section === 'plugin-store' && pluginCategory) {
     params.set('category', pluginCategory);
   }

@@ -329,7 +329,12 @@ export const ADMIN_SECTIONS: readonly AdminSection[] = [
   {
     id: 'overview',
     label: 'Overview',
-    items: pages(['/admin', '/admin/status', '/admin/monitoring']),
+    items: pages([
+      '/admin',
+      '/admin/status',
+      '/admin/monitoring',
+      '/admin/logs',
+    ]),
   },
   {
     id: 'inbox',
@@ -374,7 +379,6 @@ export const ADMIN_SECTIONS: readonly AdminSection[] = [
       '/admin/vendors',
       '/admin/storage',
       '/admin/streams',
-      '/admin/logs',
       '/admin/orphan-pages',
       '/admin/map',
     ]),

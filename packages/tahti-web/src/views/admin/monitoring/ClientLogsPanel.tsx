@@ -2,7 +2,7 @@ import { Trash2, Upload } from 'lucide-react';
 import { useMemo } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Alert, Button, ButtonLink, LogViewer } from '@tahti-player/ui';
+import { Alert, Button, LogViewer } from '@tahti-player/ui';
 
 import {
   clearClientLogs,
@@ -10,7 +10,6 @@ import {
   serializeClientLogs,
   useClientLogs,
 } from '../../../lib/clientLogs';
-import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 
 function exportLogs(text: string) {
   const blob = new Blob([text], { type: 'text/plain' });
@@ -22,35 +21,14 @@ function exportLogs(text: string) {
   URL.revokeObjectURL(url);
 }
 
-/** Board-only: client-side log buffer for this tab, plus links to server logs. */
-export function LogsPanel() {
+export function ClientLogsPanel() {
   const { t } = useTranslation('web');
   const logs = useClientLogs();
   const scopes = useMemo(() => clientLogScopes(logs), [logs]);
-  const closeSettings = useSettingsModalStore((s) => s.close);
 
   return (
-    <div className="flex h-[calc(100dvh-20rem)] min-h-96 flex-col gap-4">
+    <div className="flex h-[70vh] min-h-96 flex-col gap-4">
       <Alert tone="neutral">{t('settingsLogs.alert')}</Alert>
-      <div className="flex flex-wrap gap-2">
-        <ButtonLink
-          to="/admin/logs"
-          search={{ tab: 'containers' }}
-          size="sm"
-          variant="secondary"
-          onClick={() => closeSettings()}
-        >
-          {t('settingsLogs.containerLogs')}
-        </ButtonLink>
-        <ButtonLink
-          to="/admin/monitoring"
-          size="sm"
-          variant="secondary"
-          onClick={() => closeSettings()}
-        >
-          {t('settingsLogs.monitoringHub')}
-        </ButtonLink>
-      </div>
       <div className="min-h-0 flex-1">
         <LogViewer.Root
           logs={logs}

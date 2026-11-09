@@ -25,6 +25,8 @@ export const CHANNEL_SETTINGS_SECTIONS = [
 
 export type ChannelSettingsSection = (typeof CHANNEL_SETTINGS_SECTIONS)[number];
 
+export type PlaybackSettingsSection = 'playback' | 'language';
+
 type SettingsModalState = {
   isOpen: boolean;
   activeTab: SettingsSectionId;
@@ -40,6 +42,7 @@ type SettingsModalState = {
   accountSection: AccountSettingsSection | null;
   /** Sub-tab when activeTab === 'channel'. */
   channelSection: ChannelSettingsSection | null;
+  playbackSection: PlaybackSettingsSection | null;
   openedToSection: boolean;
   /**
    * After Close while the URL is still `/settings…`, SettingsView must not
@@ -54,6 +57,7 @@ type SettingsModalState = {
     artistSection?: ArtistSettingsSection,
     accountSection?: AccountSettingsSection,
     channelSection?: ChannelSettingsSection,
+    playbackSection?: PlaybackSettingsSection,
   ) => void;
   close: () => void;
   setActiveTab: (tab: SettingsSectionId) => void;
@@ -67,9 +71,17 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
   artistSection: null,
   accountSection: null,
   channelSection: null,
+  playbackSection: null,
   openedToSection: false,
   dismissRouteOpen: false,
-  open: (tab, pluginCategory, artistSection, accountSection, channelSection) =>
+  open: (
+    tab,
+    pluginCategory,
+    artistSection,
+    accountSection,
+    channelSection,
+    playbackSection,
+  ) =>
     set((state) => ({
       isOpen: true,
       dismissRouteOpen: false,
@@ -81,6 +93,7 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
       artistSection: artistSection ?? null,
       accountSection: accountSection ?? null,
       channelSection: channelSection ?? null,
+      playbackSection: playbackSection ?? null,
     })),
   close: () => set({ isOpen: false, dismissRouteOpen: true }),
   setActiveTab: (tab) =>
@@ -89,6 +102,7 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
       artistSection: null,
       accountSection: null,
       channelSection: null,
+      playbackSection: null,
     }),
   clearDismissRouteOpen: () => set({ dismissRouteOpen: false }),
 }));
