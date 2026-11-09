@@ -1,4 +1,3 @@
-import { useNavigate } from '@tanstack/react-router';
 import {
   FileWarningIcon,
   FlagIcon,
@@ -15,13 +14,13 @@ import {
   BreadcrumbCurrent,
   BreadcrumbLink,
   Breadcrumbs,
-  FilterChips,
   ViewShell,
 } from '@tahti-player/ui';
 
 import { fetchAdminDashboard } from '../../../api/admin';
 import { AdminGate } from '../../../components/AdminGate';
 import { AdminPageLayout } from '../../../components/AdminNav';
+import { SectionTabs } from '../../../components/SectionTabs';
 import { AdminMissedShowsPanel } from '../AdminMissedShowsView';
 import {
   ADMIN_MODERATION_TABS,
@@ -75,7 +74,6 @@ const MODERATION_TAB_ICONS: Record<AdminModerationTabId, typeof UsersIcon> = {
  * here re-fetches that queue rather than loading all six up front. */
 export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
   const { t } = useTranslation('web');
-  const navigate = useNavigate();
   const [pendingCount, setPendingCount] = useState<number>();
   const [queueCounts, setQueueCounts] = useState<
     Partial<Record<AdminModerationTabId, number>>
@@ -112,27 +110,20 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
                 {t('adminModeration.inbox')}
               </BreadcrumbCurrent>
             </Breadcrumbs>
-            <FilterChips
+            <SectionTabs
               aria-label={t('adminModeration.queuesAria')}
-              data-testid="inbox-queues"
               items={ADMIN_MODERATION_TABS.map((item) => {
                 const Icon = MODERATION_TAB_ICONS[item.id];
                 const count = queueCounts[item.id];
-                const label = t(item.labelKey);
                 return {
                   id: item.id,
-                  label: count ? `${label} (${count})` : label,
+                  label: t(item.labelKey),
+                  count: count || undefined,
                   icon: <Icon size={14} aria-hidden />,
+                  to: `/admin/moderation/${item.id}`,
+                  active: item.id === active,
                 };
               })}
-              selected={active}
-              onChange={(nextId) => {
-                void navigate({
-                  to: '/admin/moderation/$tab',
-                  params: { tab: nextId as AdminModerationTabId },
-                  replace: true,
-                });
-              }}
             />
             <ViewShell
               title={t('adminModeration.inbox')}

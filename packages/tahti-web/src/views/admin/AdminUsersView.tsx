@@ -6,6 +6,7 @@ import {
   Button,
   ButtonAnchor,
   Input,
+  MediaArtwork,
   Select,
   SelectableList,
   SelectableListItem,
@@ -164,10 +165,21 @@ export const AdminUsersView = () => {
                       items={users.map((user): SelectableListItem => ({
                         id: user.id,
                         title: user.displayName,
-                        subtitle: `@${user.username}${user.suspendedAt ? ' · suspended' : ''}`,
-                        meta:
-                          user.role.charAt(0) +
-                          user.role.slice(1).toLowerCase(),
+                        subtitle: user.suspendedAt
+                          ? t('adminUsersView.usernameSuspended', {
+                              username: user.username,
+                            })
+                          : `@${user.username}`,
+                        meta: t(`adminUsersView.role${user.role}`),
+                        media: (
+                          <MediaArtwork
+                            src={user.avatarUrl}
+                            alt=""
+                            seed={user.username}
+                            size="sm"
+                            className="size-8 rounded-full"
+                          />
+                        ),
                       }))}
                       selected={selectedId}
                       onChange={setSelectedId}
