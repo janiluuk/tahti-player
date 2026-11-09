@@ -13,6 +13,8 @@ import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button } from '@tahti-player/ui';
 
+import { withMotionAllowed } from '../_lib/motion';
+
 const meta: Meta<typeof EntitySocialHeader> = {
   title: 'Tahti/Page/EntitySocialHeader',
   component: EntitySocialHeader,
@@ -273,6 +275,7 @@ const AVATAR_POSTER = 'https://picsum.photos/seed/tahti-avatar-poster/256';
 /** Animated avatar: the still poster shows at rest, the animation on hover. */
 export const AnimatedAvatarPoster: Story = {
   name: 'Artist + animated avatar (poster until hover)',
+  decorators: [withMotionAllowed],
   args: {
     ...Artist.args,
     imageUrl: ANIMATED_AVATAR,

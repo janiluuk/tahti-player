@@ -27,6 +27,7 @@ export default defineConfig({
             headless: true,
             provider: playwright({
               launchOptions: { args: ['--disable-dev-shm-usage'] },
+              contextOptions: { reducedMotion: 'reduce' },
             }),
             instances: [{ browser: 'chromium' }],
           },
