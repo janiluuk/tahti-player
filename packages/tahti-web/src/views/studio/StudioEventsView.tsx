@@ -4,6 +4,7 @@ import {
   CalendarDaysIcon,
   CalendarPlusIcon,
   HistoryIcon,
+  MailIcon,
   PlusIcon,
   Trash2Icon,
 } from 'lucide-react';
@@ -23,6 +24,8 @@ import {
 
 import { deleteEvent, fetchMyEvents, type ArtistEvent } from '../../api/events';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { EventInvitesPanel } from '../../components/events/EventInvitesPanel';
+import { EventStatusBadge } from '../../components/events/EventStatusBadge';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -81,16 +84,21 @@ export function StudioEventsView() {
                 <CalendarDaysIcon size={24} aria-hidden />
               </div>
               <div className="min-w-0">
-                <Link
-                  to="/studio/events/$eventId"
-                  params={{ eventId: event.id }}
-                  className="font-medium hover:underline"
-                >
-                  {event.title}
-                </Link>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Link
+                    to="/studio/events/$eventId"
+                    params={{ eventId: event.id }}
+                    className="font-medium hover:underline"
+                  >
+                    {event.title}
+                  </Link>
+                  {event.status ? (
+                    <EventStatusBadge status={event.status} />
+                  ) : null}
+                </div>
                 <div className="text-foreground-secondary text-xs">
-                  {formatScheduleWindow(event.startAt)} · {event.place},{' '}
-                  {event.location}
+                  {formatScheduleWindow(event.startAt, event.endAt)} ·{' '}
+                  {event.place}, {event.location}
                 </div>
                 {event.description && (
                   <p className="text-foreground-secondary mt-1 max-w-md text-xs">
@@ -185,6 +193,19 @@ export function StudioEventsView() {
                     ) : (
                       renderEvents(pastEvents)
                     )}
+                  </StudioPanel>
+                ),
+              },
+              {
+                id: 'invites',
+                label: t('events.invites'),
+                icon: <MailIcon size={14} />,
+                content: (
+                  <StudioPanel
+                    title={t('events.invitesTitle')}
+                    description={t('events.invitesDescription')}
+                  >
+                    <EventInvitesPanel />
                   </StudioPanel>
                 ),
               },
