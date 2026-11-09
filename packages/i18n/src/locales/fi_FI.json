@@ -8491,6 +8491,460 @@
     "stashFilesPanelMore": {
       "filesStayPrivateUntilYou": "Tiedostot pysyvät yksityisinä, kunnes myönnät pääsyn.",
       "readOnly": "Vain luku"
+    },
+    "studioProfileView": {
+      "identity": "Identiteetti",
+      "artistNamePictureGenresAnd": "Artistinimi, kuva, tyylilajit ja kotipaikka.",
+      "story": "Tarina",
+      "yourBioAndTheLonger": "Esittelysi ja pidempi tarina profiilissasi.",
+      "people": "Ihmiset",
+      "bandMembersAndCollaboratorsShown": "Sivullasi näkyvät bändin jäsenet ja yhteistyökumppanit.",
+      "links": "Linkit",
+      "yourWebsiteSocialsAndStreaming": "Verkkosivusi, somekanavat ja suoratoistoprofiilit.",
+      "branding": "Brändi",
+      "logoColoursAndHeaderImage": "Logo, värit ja yläkuva.",
+      "gallery": "Galleria",
+      "photosFansSeeOnYour": "Kuvat, jotka fanit näkevät profiilissasi.",
+      "pressKit": "Pressikitti",
+      "downloadablePhotosBioAndTechnical": "Ladattavat kuvat, esittely ja tekninen raideri.",
+      "releaseVisuals": "Julkaisujen visuaalit",
+      "defaultArtworkStyleForNew": "Uusien julkaisujen oletuskansityyli.",
+      "channelDesign": "Kanavan ulkoasu",
+      "howYourChannelPageLooks": "Miltä kanavasivusi näyttää: asettelu, lohkot ja värit.",
+      "howFansFindYou": "Miten fanit löytävät sinut",
+      "directoryListingTagsAndSearch": "Hakemistonäkyvyys, tunnisteet ja haku.",
+      "addressAndDomain": "Osoite ja verkkotunnus",
+      "yourChannelAddressAndA": "Kanavasi osoite ja oma verkkotunnus.",
+      "chat": "Chat",
+      "whoCanChatOnYour": "Kuka voi keskustella kanavallasi, ja hidas tila.",
+      "moderators": "Moderaattorit",
+      "peopleWhoCanModerateYour": "Ihmiset, jotka voivat moderoida chattiasi."
+    },
+    "documentLinks": {
+      "aboutTahti": "Tietoa Tahdista",
+      "missionCooperativeStructureAndCommitments": "Tehtävä, osuuskuntamainen rakenne ja sitoumukset.",
+      "governanceHistory": "Hallintohistoria",
+      "pastMotionsMeetingsAndTheir": "Aiemmat aloitteet, kokoukset ja niiden tulokset.",
+      "transparencyDashboard": "Läpinäkyvyysnäkymä",
+      "currentLedgerGrantsAndPublic": "Nykyinen kirjanpito, avustukset ja julkiset talousluvut.",
+      "grantReports": "Avustusraportit",
+      "browseAnnualGrantDistributionReports": "Selaa vuosittaisia avustusten jakoraportteja vuosittain.",
+      "transparencyMethodology": "Läpinäkyvyyden menetelmät",
+      "howFiguresAreRecordedReviewed": "Miten luvut kirjataan, tarkistetaan ja julkaistaan.",
+      "termsOfService": "Käyttöehdot",
+      "theRulesForUsingTahti": "Tahdin palvelujen käyttösäännöt.",
+      "privacyPolicy": "Tietosuojakäytäntö",
+      "whatDataIsCollectedAnd": "Mitä tietoja kerätään ja miten niitä käsitellään.",
+      "agplSourceLicence": "AGPL-lähdekoodilisenssi",
+      "theLicenceAndSourceCode": "Tahdin lisenssi ja lähdekoodia koskevat velvoitteet.",
+      "platformStatus": "Palvelun tila",
+      "currentServiceHealthAndIncident": "Palvelun nykyinen tila ja häiriötiedot.",
+      "platformNews": "Palvelun uutiset",
+      "newsServiceUpdatesAndPosts": "Uutiset, palvelupäivitykset ja Tahti-tiimin julkaisut.",
+      "adminGuide": "Ylläpitäjän opas",
+      "operationalGuidanceForBoardAnd": "Toimintaohjeet hallitukselle ja palvelun ylläpitäjille."
+    },
+    "distributionDistributionContent": {
+      "identifyTheReleaseWithIts": "Tunnista julkaisu sen viivakoodilla.",
+      "linkTheOpenCatalogRelease": "Linkitä avoimen katalogin julkaisu- ja artistitietueet.",
+      "linkTheCommunityCatalogRelease": "Linkitä yhteisökatalogin julkaisumerkintä.",
+      "rightsLabel": "Oikeudet ja levy-yhtiö",
+      "storePLineCLine": "Tallenna P-rivi, C-rivi ja levymerkin tiedot.",
+      "automation": "Automaatio",
+      "worksAndPerformersForPublic": "Teokset ja esittäjät julkisen esityksen korvauksia varten.",
+      "neighbouringRightsForRecordings": "Äänitteiden lähioikeudet.",
+      "ukCompositionPerformanceRights": "Iso-Britannian sävellysten esitysoikeudet.",
+      "usProForSongwritersAnd": "Yhdysvaltain tekijänoikeusjärjestö lauluntekijöille ja kustantajille."
+    },
+    "channelLookElements": {
+      "releases": "Julkaisut",
+      "fullDiscographyOnTheArtist": "Koko diskografia artistisivulla.",
+      "tracks": "Kappaleet",
+      "latest": "Uusimmat",
+      "newestReleasesHighlightedOnThe": "Uusimmat julkaisut nostettuina musiikkivälilehdellä.",
+      "feed": "Syöte",
+      "artistUpdatesAndCreditsOn": "Artistin päivitykset ja tekijätiedot julkisella sivulla.",
+      "news": "Uutiset",
+      "pinnedChannelAnnouncements": "Kiinnitetyt kanavan tiedotteet.",
+      "player": "Soitin",
+      "liveStageVisualizerGradientAnd": "Livelava, visualisointi, liukuväri ja nyt soi -peittokuva.",
+      "bioWidgets": "Esittely ja widgetit",
+      "fullBioDiscoWidgetsAnd": "Koko esittely, disko-widgetit ja studiolinkit artistisivulla.",
+      "liveShows": "Live-ohjelmat",
+      "upcomingAndPastTahtiRadio": "Tulevat ja menneet Tahti Radion lähetykset.",
+      "gallery": "Galleria",
+      "pressKitImageGalleryTab": "Pressikitin kuvagalleria -välilehti artistisivulla.",
+      "background": "Tausta",
+      "pageBannerHeaderStyleAnd": "Sivun banneri, ylätunnisteen tyyli ja kanavan taustavärit."
+    },
+    "settingsNav": {
+      "account": "Tili",
+      "artist": "Artisti",
+      "channelChat": "Kanava ja chat",
+      "broadcast": "Lähetys",
+      "playback": "Toisto",
+      "volumeShuffleRepeatAndSkip": "Äänenvoimakkuus, sekoitus, toisto ja ohituksen kesto",
+      "integrations": "Integraatiot",
+      "scrobblingAndDesktopAppIntegrations": "Scrobblaus ja työpöytäsovelluksen integraatiot",
+      "language": "Kieli",
+      "theLanguageOfMenusButtons": "Valikoiden, painikkeiden ja päivämäärien kieli",
+      "themes": "Teemat",
+      "appAppearance": "Sovelluksen ulkoasu",
+      "addOns": "Lisäosat",
+      "listenerArtistAndAdminTools": "Kuuntelijan, artistin ja ylläpitäjän työkalut roolin mukaan",
+      "logs": "Lokit",
+      "whatChangedInEachRelease": "Mitä kussakin versiossa muuttui",
+      "profile": "Profiili"
+    },
+    "themeEditorMore": {
+      "surfaces": "Pinnat",
+      "background": "Tausta",
+      "secondary": "Toissijainen",
+      "border": "Reunus",
+      "text": "Teksti",
+      "primary": "Ensisijainen",
+      "brand": "Brändi",
+      "onPrimary": "Ensisijaisen päällä",
+      "onSecondary": "Toissijaisen päällä",
+      "accents": "Korostevärit",
+      "green": "Vihreä",
+      "yellow": "Keltainen",
+      "purple": "Violetti",
+      "blue": "Sininen",
+      "orange": "Oranssi",
+      "cyan": "Syaani"
+    },
+    "studioBroadcastViewMore": {
+      "schedule": "Ohjelmakartta",
+      "yourChannelSWeekShows": "Kanavasi viikko: ohjelmat, aikavälit ja mitä soi milloinkin.",
+      "shows": "Ohjelmat",
+      "recurringShowsTheirEpisodesAnd": "Toistuvat ohjelmat, niiden jaksot ja kansikuvat.",
+      "events": "Tapahtumat",
+      "gigsAndHappeningsOnYour": "Keikat ja tapahtumat kanavasivullasi.",
+      "listeningParties": "Kuuntelujuhlat",
+      "premiereAReleaseWithYour": "Julkaise ensi-ilta fanien kanssa chatissa.",
+      "whatYourChannelPlaysWhen": "Mitä kanavasi soittaa, kun et ole livenä.",
+      "recordings": "Tallenteet",
+      "pastBroadcastsReadyToPublish": "Menneet lähetykset, valmiina julkaistaviksi tai trimmattaviksi.",
+      "bookASlotOnThe": "Varaa aikaväli jäsenten yhteiseltä välityslähetykseltä.",
+      "channel": "Kanava",
+      "greenRoomRadioTabsAnd": "Green room, radiovälilehdet ja kanavan asetukset.",
+      "parties": "Juhlat"
+    },
+    "smartPlaylistRules": {
+      "title": "Nimi",
+      "artist": "Artisti",
+      "album": "Albumi",
+      "composer": "Säveltäjä",
+      "rating": "Arvio",
+      "playCount": "Soittokerrat",
+      "lastPlayed": "Viimeksi soitettu",
+      "dateAdded": "Lisäyspäivä",
+      "year": "Vuosi",
+      "length": "Kesto",
+      "loudness": "Äänekkyys"
+    },
+    "channelVizPacks": {
+      "clubNight": "Klubi-ilta",
+      "spectrumRadialAndLatticeScenes": "Spektri-, säde- ja hilakohtauksia biittivetoisiin setteihin.",
+      "deepListening": "Syväkuuntelu",
+      "slowCymaticsAndAGlowing": "Hidasta kymatiikkaa ja hehkuva pallo ambient-ohjelmiin.",
+      "chromeDrive": "Kromiajelu",
+      "aChromeLandscapeWithAn": "Kromimaisema ja oskilloskooppitauko.",
+      "liquidMetal": "Nestemetalli",
+      "ferrofluidTerrainAndCymaticsFor": "Ferrofluidimaasto ja kymatiikka raskaaseen bassoon.",
+      "signalLab": "Signaalilaboratorio",
+      "oscilloscopeAndSpectrumOnlyNo": "Vain oskilloskooppi ja spektri, ei kiertoyllätyksiä."
+    },
+    "listenerWidgets": {
+      "allGenres": "Kaikki tyylilajit",
+      "bluesJazz": "Blues / jazz",
+      "funk": "Funk",
+      "hipHopRap": "Hip hop / rap",
+      "metal": "Metalli",
+      "popRock": "Pop / rock",
+      "soulRB": "Soul / R&B",
+      "electronic": "Elektroninen",
+      "alternative": "Vaihtoehtoinen",
+      "other": "Muu"
+    },
+    "trackEditorDialogMore": {
+      "title": "Nimi",
+      "artist": "Artisti",
+      "albumArtist": "Albumin artisti",
+      "album": "Albumi",
+      "genre": "Tyylilaji",
+      "composer": "Säveltäjä",
+      "year": "Vuosi",
+      "track": "Kappale #",
+      "disc": "Levy #",
+      "comment": "Kommentti"
+    },
+    "contentTypes": {
+      "liveBroadcast": "Livelähetys",
+      "track": "Kappale",
+      "djSet": "DJ-setti",
+      "podcast": "Podcast",
+      "remix": "Remix",
+      "radioShow": "Radio-ohjelma",
+      "episode": "Jakso",
+      "clip": "Klippi",
+      "embed": "Upotus"
+    },
+    "useStudioSoundsState": {
+      "allSources": "Kaikki lähteet",
+      "title": "Nimi",
+      "uploadDate": "Latauspäivä",
+      "duration": "Kesto"
+    },
+    "onboardingViewMore": {
+      "light": "Vaalea",
+      "brightBackgroundAlwaysOn": "Vaalea tausta, aina päällä.",
+      "dark": "Tumma",
+      "dimBackgroundAlwaysOn": "Himmeä tausta, aina päällä.",
+      "dynamic": "Dynaaminen",
+      "lightByDayDarkBy": "Vaalea päivällä, tumma yöllä — vaihtuu kellon mukaan.",
+      "soloArtist": "Sooloartisti",
+      "bandCollective": "Bändi / kollektiivi"
+    },
+    "chatErrors": {
+      "onlyFanSubscribersCanPost": "Vain fanitilaajat voivat kirjoittaa tähän chattiin.",
+      "theFanRoomIsFor": "Fanihuone on fanitilaajille.",
+      "pleaseConfirmYouAreNot": "Vahvista uudelleen, ettet ole botti, jotta voit jatkaa keskustelua.",
+      "theCaptchaCheckDidNot": "Captcha-tarkistus ei mennyt läpi. Yritä uudelleen.",
+      "youCanNoLongerPost": "Et voi enää kirjoittaa tähän chattiin.",
+      "tooManyTriesWaitA": "Liian monta yritystä. Odota hetki ja yritä uudelleen.",
+      "slowDownAFewReactions": "Hidasta: muutama reaktio kerrallaan.",
+      "thisChannelDoesNotExist": "Tätä kanavaa ei ole enää olemassa."
+    },
+    "helpViewMore": {
+      "iWantToListen": "Haluan kuunnella",
+      "browseChannelsPlayTahtiRadio": "Selaa kanavia, kuuntele Tahti Radiota ja liity yhteisöön.",
+      "iWantToBroadcast": "Haluan lähettää",
+      "createAChannelAndConnect": "Luo kanava ja yhdistä lähetysohjelmistosi.",
+      "keyboardNavigation": "Näppäimistöllä liikkuminen",
+      "iNeedSupport": "Tarvitsen tukea",
+      "sendTheTeamAQuestion": "Lähetä tiimille kysymys tilistäsi tai ongelmasta."
+    },
+    "adminTopListsViewMore": {
+      "month": "Kuukausi",
+      "halfYear": "Puoli vuotta",
+      "allTime": "Kaikki ajat",
+      "byType": "Tyypin mukaan",
+      "byGenre": "Tyylilajin mukaan",
+      "mostListened": "Kuunnelluimmat",
+      "leastListened": "Vähiten kuunnellut"
+    },
+    "channelPageLayout": {
+      "releases": "Julkaisut",
+      "shows": "Ohjelmat",
+      "announcements": "Tiedotteet",
+      "minimalSolidPage": "Pelkistetty yksivärinen sivu.",
+      "liveStageForward": "Livelava edellä.",
+      "catalogUpFront": "Katalogi edellä.",
+      "onAirTahtiLook": "Tahdin lähetysilme."
+    },
+    "localLibraryBrowseMore": {
+      "tracks": "Kappaleet",
+      "artists": "Artistit",
+      "albums": "Albumit",
+      "genres": "Tyylilajit",
+      "composers": "Säveltäjät",
+      "folders": "Kansiot",
+      "playlists": "Soittolistat"
+    },
+    "slideshowOptions": {
+      "none": "Ei mitään",
+      "staticSlideshow": "Staattinen diaesitys",
+      "twistedWaveWebgl": "Kiertyvä aalto (WebGL)",
+      "cinematicZoomBlurWebgl": "Elokuvamainen zoomaussumennus (WebGL)",
+      "rgbShiftStripWebgl": "RGB-siirtonauha (WebGL)",
+      "posterScrollWallWebgl": "Vierivä julisteseinä (WebGL)",
+      "shatterCarouselWebgl": "Särkyvä karuselli (WebGL)"
+    },
+    "studioChannelViewMore": {
+      "setup": "Asetukset",
+      "greenRoom": "Green room",
+      "selects": "Selects",
+      "stream": "Striimi",
+      "pinned": "Kiinnitetyt",
+      "multicast": "Monilähetys"
+    },
+    "governanceNav": {
+      "overview": "Yleiskatsaus",
+      "annualReports": "Vuosikertomukset",
+      "grants": "Avustukset",
+      "board": "Hallitus",
+      "discussions": "Keskustelut",
+      "records": "Asiakirjat"
+    },
+    "trackSort": {
+      "defaultOrder": "Oletusjärjestys",
+      "titleAZ": "Nimi A–Ö",
+      "artistAZ": "Artisti A–Ö",
+      "newestRelease": "Uusin julkaisu",
+      "shortestFirst": "Lyhyin ensin",
+      "longestFirst": "Pisin ensin"
+    },
+    "collectionStyles": {
+      "album": "Albumi",
+      "single": "Single",
+      "playlist": "Soittolista",
+      "podcast": "Podcast",
+      "djSet": "DJ-setti",
+      "showSeries": "Ohjelmasarja"
+    },
+    "audienceBreakdownMore": {
+      "browser": "Selain",
+      "osVersions": "Käyttöjärjestelmäversiot",
+      "deviceType": "Laitetyyppi",
+      "deviceCompany": "Laitevalmistaja",
+      "listenedOn": "Kuunneltu palvelussa"
+    },
+    "pluginUi": {
+      "lowPass": "Alipäästö",
+      "highPass": "Ylipäästö",
+      "lowShelf": "Matalahylly",
+      "highShelf": "Korkeahylly",
+      "brickwall": "Tiiliseinä"
+    },
+    "governanceView": {
+      "discussions": "Keskustelut",
+      "featureRequests": "Ominaisuustoiveet",
+      "closedDecisions": "Tehdyt päätökset",
+      "transparencyLedger": "Läpinäkyvyyskirjanpito",
+      "governanceHelp": "Hallinnon ohjeet"
+    },
+    "featureRequestsTabMore": {
+      "open": "Avoin",
+      "planned": "Suunniteltu",
+      "inProgress": "Työn alla",
+      "done": "Valmis",
+      "declined": "Hylätty"
+    },
+    "historyStats": {
+      "last7Days": "Viimeiset 7 päivää",
+      "last30Days": "Viimeiset 30 päivää",
+      "last90Days": "Viimeiset 90 päivää",
+      "last12Months": "Viimeiset 12 kuukautta",
+      "allTime": "Kaikki ajat"
+    },
+    "pluginStoreCategories": {
+      "listener": "Kuuntelija",
+      "radioListeningServicesPersonalWidgets": "Radio, kuuntelupalvelut, omat widgetit ja scrobblaus.",
+      "artist": "Artisti",
+      "admin": "Ylläpito",
+      "boardOnlyPlatformOperationsAnd": "Vain hallitukselle: palvelun ylläpito ja hallinnolliset lisäosat."
+    },
+    "trackViewPicker": {
+      "large": "Suuri",
+      "medium": "Keskikokoinen",
+      "small": "Pieni",
+      "grid": "Ruudukko",
+      "list": "Lista"
+    },
+    "reportButtonMore": {
+      "copyrightInfringement": "Tekijänoikeusloukkaus",
+      "harassmentOrAbuse": "Häirintä tai väärinkäyttö",
+      "spam": "Roskaposti",
+      "illegalContent": "Laiton sisältö",
+      "other": "Muu"
+    },
+    "broadcastPreflightPanel": {
+      "liveSet": "Livesetti",
+      "talk": "Puhe",
+      "public": "Julkinen",
+      "private": "Yksityinen",
+      "fans": "Fanit"
+    },
+    "studioStatsViewMore": {
+      "overview": "Yleiskatsaus",
+      "playsAndListeners": "Soitot ja kuuntelijat",
+      "topLists": "Listat",
+      "insights": "Näkemykset"
+    },
+    "storageShared": {
+      "name": "Nimi",
+      "type": "Tyyppi",
+      "size": "Koko",
+      "length": "Kesto"
+    },
+    "supportTabMore": {
+      "needsReply": "Odottaa vastausta",
+      "open": "Avoin",
+      "inProgress": "Työn alla",
+      "resolved": "Ratkaistu"
+    },
+    "correctionsQueuePanelMore": {
+      "waiting": "Odottaa",
+      "accepted": "Hyväksytty",
+      "rejected": "Hylätty",
+      "withdrawn": "Peruttu"
+    },
+    "announcementTrimDialogMore": {
+      "startS": "Alku (s)",
+      "endS": "Loppu (s)",
+      "fadeInS": "Häivytys sisään (s)",
+      "fadeOutS": "Häivytys ulos (s)"
+    },
+    "adminVendorsView": {
+      "confirmNonprofitCooperativeRegistrationStatus": "Vahvista yleishyödyllisen yhdistyksen tai osuuskunnan rekisteröinnin tila",
+      "reviewCollectingSocietyAgreements": "Käy läpi tekijänoikeusjärjestöjen sopimukset",
+      "confirmAnnualNonprofitActivityReport": "Vahvista vuotuisen toimintakertomuksen velvoitteet",
+      "decideCooperationTermsWithLocal": "Päätä yhteistyöehdoista paikallisten kulttuurijärjestöjen kanssa"
+    },
+    "nowPlayingOverlayPresets": {
+      "coverThumbnailWithStackedTitle": "Kansikuva ja päällekkäin nimi ja artisti, vasemmalla alhaalla.",
+      "titleAndArtistCenteredTogether": "Nimi ja artisti keskitettyinä yhdessä kansikuvan päällä.",
+      "oneCompactLineLetsThe": "Yksi tiivis rivi — jättää tilaa kansikuvalle tai visualisoinnille.",
+      "titleBottomLeftArtistBottom": "Nimi vasemmalla alhaalla, artisti oikealla alhaalla, kansi oikealla ylhäällä."
+    },
+    "supportContactForm": {
+      "engagementUnits": "Sitoutumisyksiköt",
+      "technical": "Tekninen",
+      "billingPayouts": "Laskutus / maksut",
+      "other": "Muu"
+    },
+    "listeningPartyHeroMore": {
+      "listeningParty": "Kuuntelujuhlat",
+      "liveNow": "Livenä nyt",
+      "ended": "Päättynyt",
+      "canceled": "Peruttu"
+    },
+    "rangeControls": {
+      "today": "Tänään",
+      "allTime": "Kaikki ajat",
+      "custom": "Mukautettu"
+    },
+    "studioPlaylistEditorViewMore": {
+      "manualTracklistOrder": "Manuaalinen (kappalelistan järjestys)",
+      "oldestFirst": "Vanhin ensin",
+      "titleAZ": "Nimi (A–Ö)"
+    },
+    "spotifyImportPanelMore": {
+      "searchSpotify": "Hae Spotifysta",
+      "yourTracks": "Omat kappaleesi",
+      "byArtistLink": "Artistilinkin perusteella"
+    },
+    "mixcloudImportPanel": {
+      "searchMixcloud": "Hae Mixcloudista",
+      "yourMixes": "Omat miksauksesi",
+      "byProfileUrl": "Profiilin URL-osoitteen perusteella"
+    },
+    "collectionEditDetailsPanel": {
+      "manualTracklistOrder": "Manuaalinen (kappalelistan järjestys)",
+      "oldestFirst": "Vanhin ensin",
+      "titleAZ": "Nimi (A–Ö)"
+    },
+    "profileLogoSectionMore": {
+      "onAvatar": "Avatarissa",
+      "onCover": "Kannessa",
+      "both": "Molemmissa"
+    },
+    "artistTabGroups": {
+      "profile": "Profiili",
+      "linksPress": "Linkit ja lehdistö",
+      "artistBranding": "Artistin brändi"
     }
   },
   "studioEditor": {

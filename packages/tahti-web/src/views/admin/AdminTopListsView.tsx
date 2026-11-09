@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { ListFilterIcon, SearchIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   FilterChips,
@@ -28,21 +28,31 @@ import {
 } from '../../lib/topListEntries';
 import { usePlayerStore } from '../../stores/playerStore';
 
-const PERIODS: { id: AdminTopListPeriod; label: string }[] = [
-  { id: 'month', label: 'Month' },
-  { id: 'half_year', label: 'Half year' },
-  { id: 'all_time', label: 'All time' },
-];
+function periods(
+  t: TFunction<'web'>,
+): { id: AdminTopListPeriod; label: string }[] {
+  return [
+    { id: 'month', label: t('adminTopListsViewMore.month') },
+    { id: 'half_year', label: t('adminTopListsViewMore.halfYear') },
+    { id: 'all_time', label: t('adminTopListsViewMore.allTime') },
+  ];
+}
 
-const DIMENSIONS: { id: AdminTopListDimension; label: string }[] = [
-  { id: 'type', label: 'By type' },
-  { id: 'genre', label: 'By genre' },
-];
+function dimensions(
+  t: TFunction<'web'>,
+): { id: AdminTopListDimension; label: string }[] {
+  return [
+    { id: 'type', label: t('adminTopListsViewMore.byType') },
+    { id: 'genre', label: t('adminTopListsViewMore.byGenre') },
+  ];
+}
 
-const SORTS: { id: AdminTopListSort; label: string }[] = [
-  { id: 'desc', label: 'Most listened' },
-  { id: 'asc', label: 'Least listened' },
-];
+function sorts(t: TFunction<'web'>): { id: AdminTopListSort; label: string }[] {
+  return [
+    { id: 'desc', label: t('adminTopListsViewMore.mostListened') },
+    { id: 'asc', label: t('adminTopListsViewMore.leastListened') },
+  ];
+}
 
 export function AdminTopListsView() {
   const { t } = useTranslation('web');
@@ -118,19 +128,19 @@ export function AdminTopListsView() {
                   className="text-foreground-secondary"
                 />
                 <FilterChips
-                  items={PERIODS}
+                  items={periods(t)}
                   selected={period}
                   onChange={(id) => setPeriod(id as AdminTopListPeriod)}
                   aria-label={t('adminTopListsView.topListPeriod')}
                 />
                 <FilterChips
-                  items={DIMENSIONS}
+                  items={dimensions(t)}
                   selected={dimension}
                   onChange={(id) => setDimension(id as AdminTopListDimension)}
                   aria-label={t('adminTopListsView.topListGrouping')}
                 />
                 <FilterChips
-                  items={SORTS}
+                  items={sorts(t)}
                   selected={sort}
                   onChange={(id) => setSort(id as AdminTopListSort)}
                   aria-label={t('adminTopListsView.topListOrder')}

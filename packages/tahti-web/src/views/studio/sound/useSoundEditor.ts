@@ -2,7 +2,7 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 
 import {
   fetchEditorDraft,
@@ -20,7 +20,7 @@ import {
   visibilityFromIsPublic,
   type TrackVisibility,
 } from '../../../components/AudienceVisibilitySection';
-import { SELECTABLE_CONTENT_TYPES } from '../../../content/contentTypes';
+import { selectableContentTypes } from '../../../content/contentTypes';
 import { usePolling } from '../../../hooks/usePolling';
 import { autoTrimCuts } from '../../../lib/autoTrimCuts';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
@@ -36,6 +36,7 @@ import { usePlayerStore } from '../../../stores/playerStore';
 
 /** Loading, editing, playback and quick-render actions for one sound. */
 export function useSoundEditor(id: string) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const search = useSearch({ strict: false }) as {
     tab?: 'details' | 'playlists' | 'insights';
@@ -318,7 +319,7 @@ export function useSoundEditor(id: string) {
   const isPlaying =
     isCurrent && (playerStatus === 'playing' || playerStatus === 'loading');
   const contentTypeLabel =
-    SELECTABLE_CONTENT_TYPES.find((option) => option.id === contentType)
+    selectableContentTypes(t).find((option) => option.id === contentType)
       ?.label ?? contentType;
 
   return {

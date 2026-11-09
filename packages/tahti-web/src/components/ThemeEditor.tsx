@@ -1,7 +1,7 @@
 import { ChevronDownIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { applyAdvancedTheme, type AdvancedTheme } from '@tahti-player/themes';
 import {
   Box,
@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
+import { webT } from '../lib/webT';
 import { activeThemeRecord, useThemeStore } from '../plugins/themes';
 
 type VarField = { key: string; label: string };
@@ -22,48 +23,53 @@ type VarGroup = {
   fields: VarField[];
 };
 
-const VAR_GROUPS: VarGroup[] = [
-  {
-    id: 'surfaces',
-    title: 'Surfaces',
-    fields: [
-      { key: 'background', label: 'Background' },
-      { key: 'background-secondary', label: 'Secondary' },
-      { key: 'border', label: 'Border' },
-    ],
-  },
-  {
-    id: 'text',
-    title: 'Text',
-    fields: [
-      { key: 'foreground', label: 'Primary' },
-      { key: 'foreground-secondary', label: 'Secondary' },
-    ],
-  },
-  {
-    id: 'brand',
-    title: 'Brand',
-    fields: [
-      { key: 'primary', label: 'Primary' },
-      { key: 'primary-foreground', label: 'On primary' },
-      { key: 'secondary', label: 'Secondary' },
-      { key: 'secondary-foreground', label: 'On secondary' },
-    ],
-  },
-  {
-    id: 'accents',
-    title: 'Accents',
-    fields: [
-      { key: 'accent-green', label: 'Green' },
-      { key: 'accent-yellow', label: 'Yellow' },
-      { key: 'accent-purple', label: 'Purple' },
-      { key: 'accent-blue', label: 'Blue' },
-      { key: 'accent-orange', label: 'Orange' },
-      { key: 'accent-cyan', label: 'Cyan' },
-      { key: 'accent-red', label: 'Red' },
-    ],
-  },
-];
+function varGroups(t: TFunction<'web'>): VarGroup[] {
+  return [
+    {
+      id: 'surfaces',
+      title: t('themeEditorMore.surfaces'),
+      fields: [
+        { key: 'background', label: t('themeEditorMore.background') },
+        { key: 'background-secondary', label: t('themeEditorMore.secondary') },
+        { key: 'border', label: t('themeEditorMore.border') },
+      ],
+    },
+    {
+      id: 'text',
+      title: t('themeEditorMore.text'),
+      fields: [
+        { key: 'foreground', label: t('themeEditorMore.primary') },
+        { key: 'foreground-secondary', label: t('themeEditorMore.secondary') },
+      ],
+    },
+    {
+      id: 'brand',
+      title: t('themeEditorMore.brand'),
+      fields: [
+        { key: 'primary', label: t('themeEditorMore.primary') },
+        { key: 'primary-foreground', label: t('themeEditorMore.onPrimary') },
+        { key: 'secondary', label: t('themeEditorMore.secondary') },
+        {
+          key: 'secondary-foreground',
+          label: t('themeEditorMore.onSecondary'),
+        },
+      ],
+    },
+    {
+      id: 'accents',
+      title: t('themeEditorMore.accents'),
+      fields: [
+        { key: 'accent-green', label: t('themeEditorMore.green') },
+        { key: 'accent-yellow', label: t('themeEditorMore.yellow') },
+        { key: 'accent-purple', label: t('themeEditorMore.purple') },
+        { key: 'accent-blue', label: t('themeEditorMore.blue') },
+        { key: 'accent-orange', label: t('themeEditorMore.orange') },
+        { key: 'accent-cyan', label: t('themeEditorMore.cyan') },
+        { key: 'accent-red', label: 'Red' },
+      ],
+    },
+  ];
+}
 
 function currentValue(key: string): string {
   if (typeof window === 'undefined') {
@@ -98,10 +104,12 @@ function themeDraftFromActive(): ThemeDraftSnapshot {
   const { themeId, themes, dark } = useThemeStore.getState();
   const basic = themes.find((theme) => theme.id === themeId);
   const tokens = Object.fromEntries(
-    VAR_GROUPS.flatMap((group) => group.fields).flatMap((field) => {
-      const value = currentValue(field.key);
-      return value ? [[field.key, value] as const] : [];
-    }),
+    varGroups(webT())
+      .flatMap((group) => group.fields)
+      .flatMap((field) => {
+        const value = currentValue(field.key);
+        return value ? [[field.key, value] as const] : [];
+      }),
   );
   return {
     name: basic?.name ?? 'My theme',
@@ -494,7 +502,7 @@ export function ThemeEditor() {
       </p>
 
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
-        {VAR_GROUPS.map((group) => (
+        {varGroups(t).map((group) => (
           <Box
             key={group.id}
             variant="tertiary"

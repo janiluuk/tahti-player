@@ -4,7 +4,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Input, Select, Tooltip } from '@tahti-player/ui';
 
 import { uploadSoundBanner } from '../../api/studio';
-import { SELECTABLE_CONTENT_TYPES } from '../../content/contentTypes';
+import { selectableContentTypes } from '../../content/contentTypes';
 import { useUsedBeforeTags } from '../../hooks/useUsedBeforeTags';
 import { BackdropUploadButton } from '../BackdropUploadButton';
 import { MaterialGenreField } from '../MaterialGenreField';
@@ -88,7 +88,7 @@ export function BasicsTab({
               onValueChange={(value) =>
                 setForm({ ...form, contentType: value })
               }
-              options={SELECTABLE_CONTENT_TYPES.map(({ id, label }) => ({
+              options={selectableContentTypes(t).map(({ id, label }) => ({
                 id,
                 label,
               }))}

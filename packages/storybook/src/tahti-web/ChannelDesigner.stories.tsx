@@ -2,10 +2,11 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChannelDesigner } from '@tahti-web/components/ChannelDesigner';
 import { RightRailPanel } from '@tahti-web/components/RightRailPanel';
 import {
-  CHANNEL_LOOK_ELEMENTS,
+  channelLookElements,
   type ChannelLookElementId,
 } from '@tahti-web/lib/channelLookElements';
 import type { ChannelPageItem } from '@tahti-web/lib/channelPageLayout';
+import { webT } from '@tahti-web/lib/webT';
 import { useRightRailOverrideStore } from '@tahti-web/stores/rightRailOverrideStore';
 import { useState, type ComponentProps } from 'react';
 import {
@@ -160,12 +161,14 @@ export const FullEverySection: Story = {
     const section = canvas.getByRole('button', { name: 'Section' });
     await expect(section).toHaveTextContent('Background');
 
-    for (let step = 0; step < CHANNEL_LOOK_ELEMENTS.length; step += 1) {
-      const current = CHANNEL_LOOK_ELEMENTS.findIndex(
+    for (let step = 0; step < channelLookElements(webT()).length; step += 1) {
+      const current = channelLookElements(webT()).findIndex(
         (element) => section.textContent?.includes(element.label) ?? false,
       );
       const next =
-        CHANNEL_LOOK_ELEMENTS[(current + 1) % CHANNEL_LOOK_ELEMENTS.length];
+        channelLookElements(webT())[
+          (current + 1) % channelLookElements(webT()).length
+        ];
       await userEvent.click(
         canvas.getByRole('button', { name: 'Next section' }),
       );
@@ -459,9 +462,11 @@ export const LookOnlyShell: Story = {
   },
 };
 
-/** One story per CHANNEL_LOOK_ELEMENTS id: select that panel in look-only mode. */
+/** One story per channelLookElements(webT()) id: select that panel in look-only mode. */
 function lookElementStory(id: ChannelLookElementId): Story {
-  const metaRow = CHANNEL_LOOK_ELEMENTS.find((element) => element.id === id);
+  const metaRow = channelLookElements(webT()).find(
+    (element) => element.id === id,
+  );
   return {
     name: metaRow ? `${metaRow.label} (${id})` : id,
     args: { lookOnly: true, lookOpenSection: id },

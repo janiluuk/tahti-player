@@ -2,7 +2,7 @@ import { Undo2Icon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -20,22 +20,28 @@ import type {
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
 
-const FIELDS: Array<{ field: NativeEditField; label: string }> = [
-  { field: 'title', label: 'Title' },
-  { field: 'artist', label: 'Artist' },
-  { field: 'albumArtist', label: 'Album artist' },
-  { field: 'album', label: 'Album' },
-  { field: 'genre', label: 'Genre' },
-  { field: 'composer', label: 'Composer' },
-  { field: 'year', label: 'Year' },
-  { field: 'trackNo', label: 'Track #' },
-  { field: 'discNo', label: 'Disc #' },
-  { field: 'comment', label: 'Comment' },
-];
+function fields(
+  t: TFunction<'web'>,
+): Array<{ field: NativeEditField; label: string }> {
+  return [
+    { field: 'title', label: t('trackEditorDialogMore.title') },
+    { field: 'artist', label: t('trackEditorDialogMore.artist') },
+    { field: 'albumArtist', label: t('trackEditorDialogMore.albumArtist') },
+    { field: 'album', label: t('trackEditorDialogMore.album') },
+    { field: 'genre', label: t('trackEditorDialogMore.genre') },
+    { field: 'composer', label: t('trackEditorDialogMore.composer') },
+    { field: 'year', label: t('trackEditorDialogMore.year') },
+    { field: 'trackNo', label: t('trackEditorDialogMore.track') },
+    { field: 'discNo', label: t('trackEditorDialogMore.disc') },
+    { field: 'comment', label: t('trackEditorDialogMore.comment') },
+  ];
+}
 
-const FIELD_LABEL = Object.fromEntries(
-  FIELDS.map(({ field, label }) => [field, label]),
-) as Record<NativeEditField, string>;
+function fieldLabels(t: TFunction<'web'>): Record<NativeEditField, string> {
+  return Object.fromEntries(
+    fields(t).map(({ field, label }) => [field, label]),
+  ) as Record<NativeEditField, string>;
+}
 
 const plural = (count: number, noun: string) =>
   `${count.toLocaleString('en-US')} ${noun}${count === 1 ? '' : 's'}`;
@@ -221,7 +227,7 @@ export function TrackEditorDialog({
           <InlineLoader label={t('trackEditorDialog.loading')} />
         ) : (
           <div className="flex max-h-[55vh] flex-col gap-3 overflow-y-auto py-2">
-            {FIELDS.map(({ field, label }) => {
+            {fields(t).map(({ field, label }) => {
               const info = summaryFor(field);
               const mixed = (info?.distinct ?? 1) > 1;
               const reverting = draft[field] === null;
@@ -308,7 +314,7 @@ export function TrackEditorDialog({
                 key={`${example.trackId}:${example.field}`}
                 className="truncate"
               >
-                {example.title} — {FIELD_LABEL[example.field]}:{' '}
+                {example.title} — {fieldLabels(t)[example.field]}:{' '}
                 {example.before || '(empty)'} → {example.after || '(empty)'}
               </p>
             ))}

@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Badge,
   ButtonLink,
@@ -39,64 +39,66 @@ import {
 import { formatScheduleWindow } from '../../lib/scheduleTime';
 import { useAuthStore } from '../../stores/authStore';
 
-export const STUDIO_BROADCAST_ITEMS: HubCardItem[] = [
-  {
-    id: 'schedule',
-    href: '/studio/schedule',
-    icon: CalendarDaysIcon,
-    title: 'Schedule',
-    description: 'Your channel’s week: shows, slots and what plays when.',
-  },
-  {
-    id: 'shows',
-    href: '/studio/shows',
-    icon: MicIcon,
-    title: 'Shows',
-    description: 'Recurring shows, their episodes and artwork.',
-  },
-  {
-    id: 'events',
-    href: '/studio/events',
-    icon: CalendarIcon,
-    title: 'Events',
-    description: 'Gigs and happenings on your channel page.',
-  },
-  {
-    id: 'parties',
-    href: '/studio/listening-parties',
-    icon: PartyPopperIcon,
-    title: 'Listening parties',
-    description: 'Premiere a release with your fans in chat.',
-  },
-  {
-    id: 'radio',
-    href: '/studio/channel?tab=radio',
-    icon: RepeatIcon,
-    title: '24/7 radio',
-    description: 'What your channel plays when you are not live.',
-  },
-  {
-    id: 'recordings',
-    href: '/library/recordings',
-    icon: DiscIcon,
-    title: 'Recordings',
-    description: 'Past broadcasts, ready to publish or trim.',
-  },
-  {
-    id: 'tahti-radio',
-    href: '/studio/channel?tab=tahti-radio',
-    icon: RadioIcon,
-    title: 'Tahti Radio',
-    description: 'Book a slot on the shared member relay.',
-  },
-  {
-    id: 'channel',
-    href: '/studio/channel',
-    icon: Settings2Icon,
-    title: 'Channel',
-    description: 'Green room, radio tabs and channel settings.',
-  },
-];
+export function studioBroadcastItems(t: TFunction<'web'>): HubCardItem[] {
+  return [
+    {
+      id: 'schedule',
+      href: '/studio/schedule',
+      icon: CalendarDaysIcon,
+      title: t('studioBroadcastViewMore.schedule'),
+      description: t('studioBroadcastViewMore.yourChannelSWeekShows'),
+    },
+    {
+      id: 'shows',
+      href: '/studio/shows',
+      icon: MicIcon,
+      title: t('studioBroadcastViewMore.shows'),
+      description: t('studioBroadcastViewMore.recurringShowsTheirEpisodesAnd'),
+    },
+    {
+      id: 'events',
+      href: '/studio/events',
+      icon: CalendarIcon,
+      title: t('studioBroadcastViewMore.events'),
+      description: t('studioBroadcastViewMore.gigsAndHappeningsOnYour'),
+    },
+    {
+      id: 'parties',
+      href: '/studio/listening-parties',
+      icon: PartyPopperIcon,
+      title: t('studioBroadcastViewMore.listeningParties'),
+      description: t('studioBroadcastViewMore.premiereAReleaseWithYour'),
+    },
+    {
+      id: 'radio',
+      href: '/studio/channel?tab=radio',
+      icon: RepeatIcon,
+      title: '24/7 radio',
+      description: t('studioBroadcastViewMore.whatYourChannelPlaysWhen'),
+    },
+    {
+      id: 'recordings',
+      href: '/library/recordings',
+      icon: DiscIcon,
+      title: t('studioBroadcastViewMore.recordings'),
+      description: t('studioBroadcastViewMore.pastBroadcastsReadyToPublish'),
+    },
+    {
+      id: 'tahti-radio',
+      href: '/studio/channel?tab=tahti-radio',
+      icon: RadioIcon,
+      title: 'Tahti Radio',
+      description: t('studioBroadcastViewMore.bookASlotOnThe'),
+    },
+    {
+      id: 'channel',
+      href: '/studio/channel',
+      icon: Settings2Icon,
+      title: t('studioBroadcastViewMore.channel'),
+      description: t('studioBroadcastViewMore.greenRoomRadioTabsAnd'),
+    },
+  ];
+}
 
 const KIND_LABELS: Record<AgendaKind, string> = {
   show: 'Show',
@@ -113,12 +115,14 @@ const EMPTY_CREATE = {
   all: { to: '/studio/schedule', label: 'emptyActions.addBroadcast' },
 } as const;
 
-const FILTERS = [
-  { id: 'all', label: 'All' },
-  { id: 'show', label: 'Shows' },
-  { id: 'event', label: 'Events' },
-  { id: 'party', label: 'Parties' },
-];
+function filters(t: TFunction<'web'>) {
+  return [
+    { id: 'all', label: 'All' },
+    { id: 'show', label: t('studioBroadcastViewMore.shows') },
+    { id: 'event', label: t('studioBroadcastViewMore.events') },
+    { id: 'party', label: t('studioBroadcastViewMore.parties') },
+  ];
+}
 
 const formatStart = (iso: string) => formatScheduleWindow(iso);
 
@@ -258,7 +262,7 @@ export function StudioBroadcastView() {
             <div className="flex flex-col gap-3">
               <FilterChips
                 aria-label={t('studioBroadcastView.agendaFilter')}
-                items={FILTERS}
+                items={filters(t)}
                 selected={filter}
                 onChange={setFilter}
               />
@@ -293,7 +297,7 @@ export function StudioBroadcastView() {
           </StudioPanel>
           <HubCards
             aria-label={t('studioBroadcastView.broadcastTools')}
-            items={STUDIO_BROADCAST_ITEMS}
+            items={studioBroadcastItems(t)}
             renderLink={renderHubLink}
           />
         </ViewShell>

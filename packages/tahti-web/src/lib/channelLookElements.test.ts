@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import {
   adjacentLookElementId,
-  CHANNEL_LOOK_ELEMENTS,
+  channelLookElements,
   isArtistLookBlockId,
   isChannelLookElementId,
   loadArtistLookVisibility,
@@ -10,10 +10,11 @@ import {
   toggleArtistLookVisibility,
 } from './channelLookElements';
 import { CHANNEL_PAGE_ITEM_TYPES } from './channelPageLayout';
+import { webT } from './webT';
 
 describe('CHANNEL_LOOK_ELEMENTS', () => {
   it('lists the usable artist-page blocks', () => {
-    const ids = CHANNEL_LOOK_ELEMENTS.map((element) => element.id);
+    const ids = channelLookElements(webT()).map((element) => element.id);
     expect(ids).toEqual([
       'releases',
       'tracks',
@@ -33,9 +34,9 @@ describe('CHANNEL_LOOK_ELEMENTS', () => {
   });
 
   it('maps disable-able rows with a layout type onto real layout types', () => {
-    const layoutTypes = CHANNEL_LOOK_ELEMENTS.filter(
-      (element) => element.canDisable && element.layoutType,
-    ).map((element) => element.layoutType);
+    const layoutTypes = channelLookElements(webT())
+      .filter((element) => element.canDisable && element.layoutType)
+      .map((element) => element.layoutType);
     for (const type of layoutTypes) {
       expect(type).not.toBeNull();
       expect(CHANNEL_PAGE_ITEM_TYPES).toContain(type);

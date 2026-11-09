@@ -13,8 +13,8 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
-  CHANNEL_LAYOUT_PRESETS,
   CHANNEL_PAGE_ITEM_META,
+  channelLayoutPresets,
   type ChannelLayoutPresetId,
   type ChannelPageItem,
 } from '../lib/channelPageLayout';
@@ -169,7 +169,7 @@ export function ChannelLayersMenu({
             <p className="text-foreground-secondary text-xs">
               {t('channelLayersMenu.oneClickLayoutsDragHide')}
             </p>
-            {CHANNEL_LAYOUT_PRESETS.map((preset) => {
+            {channelLayoutPresets(t).map((preset) => {
               const active = activePresetId === preset.id;
               return (
                 <Button

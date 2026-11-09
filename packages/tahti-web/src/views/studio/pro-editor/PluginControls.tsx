@@ -3,9 +3,9 @@ import { Button, FilterChips, Slider } from '@tahti-player/ui';
 
 import type { EditList, ProEditorPluginId } from '../../../api/studio-types';
 import {
-  FILTER_MODES,
-  FILTER_SLOPES,
   FilterCurve,
+  filterModes,
+  filterSlopes,
   formatHz,
   fromLogPosition,
   LOG_STEPS,
@@ -184,7 +184,7 @@ export function PluginControls({ id, editList, onChange }: Props) {
   }
 
   if (id === 'filter') {
-    const selectedMode = FILTER_MODES.find(
+    const selectedMode = filterModes(t).find(
       (option) => option.id === editList.filter.mode,
     );
     return (
@@ -195,13 +195,13 @@ export function PluginControls({ id, editList, onChange }: Props) {
           </p>
           <FilterChips
             aria-label={t('pluginControls.filterType')}
-            items={FILTER_MODES.map((option) => ({
+            items={filterModes(t).map((option) => ({
               id: option.id,
               label: option.label,
             }))}
             selected={editList.filter.mode}
             onChange={(mode) => {
-              const next = FILTER_MODES.find((option) => option.id === mode);
+              const next = filterModes(t).find((option) => option.id === mode);
               if (next) {
                 onChange({
                   ...editList,
@@ -228,7 +228,7 @@ export function PluginControls({ id, editList, onChange }: Props) {
             {t('pluginControls.slope')}
           </p>
           <div className="flex flex-wrap gap-2">
-            {FILTER_SLOPES.map((option) => {
+            {filterSlopes(t).map((option) => {
               const active = editList.filter.slope === option.id;
               return (
                 <Button

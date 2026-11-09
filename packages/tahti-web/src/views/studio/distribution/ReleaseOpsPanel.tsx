@@ -38,7 +38,7 @@ import { assignStripeRedirectUrl } from '../../../lib/stripeRedirect';
 import { CreditsEditor } from './CreditsEditor';
 import { DeliveryTab } from './DeliveryTab';
 import {
-  CATALOG_METHOD_TILES,
+  catalogMethodTiles,
   DISCOGS_SUBMIT_URL,
   MUSICBRAINZ_SUBMIT_URL,
 } from './distribution-content';
@@ -296,7 +296,7 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         <SelectableTiles
           aria-label={t('releaseOps.catalogMethods')}
           multiple
-          items={CATALOG_METHOD_TILES}
+          items={catalogMethodTiles(t)}
           selected={[...activeMethods]}
           onChange={(ids) => setActiveMethods(new Set(ids))}
           className="text-xs sm:grid-cols-2 lg:grid-cols-4"

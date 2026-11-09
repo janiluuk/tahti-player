@@ -2,7 +2,7 @@ import { FlagIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, Dialog, Select, Textarea, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -11,13 +11,17 @@ import {
   type ContentReportTarget,
 } from '../api/content-reports';
 
-const REASONS: Array<{ id: ContentReportReason; label: string }> = [
-  { id: 'COPYRIGHT', label: 'Copyright infringement' },
-  { id: 'HARASSMENT', label: 'Harassment or abuse' },
-  { id: 'SPAM', label: 'Spam' },
-  { id: 'ILLEGAL_CONTENT', label: 'Illegal content' },
-  { id: 'OTHER', label: 'Other' },
-];
+function reasons(
+  t: TFunction<'web'>,
+): Array<{ id: ContentReportReason; label: string }> {
+  return [
+    { id: 'COPYRIGHT', label: t('reportButtonMore.copyrightInfringement') },
+    { id: 'HARASSMENT', label: t('reportButtonMore.harassmentOrAbuse') },
+    { id: 'SPAM', label: t('reportButtonMore.spam') },
+    { id: 'ILLEGAL_CONTENT', label: t('reportButtonMore.illegalContent') },
+    { id: 'OTHER', label: t('reportButtonMore.other') },
+  ];
+}
 
 const MAX_DETAILS = 2000;
 
@@ -104,7 +108,7 @@ export function ReportButton({
               label={t('reportButton.reason')}
               value={reason}
               onValueChange={(value) => setReason(value as ContentReportReason)}
-              options={REASONS}
+              options={reasons(t)}
             />
             <Textarea
               submitOnModEnter

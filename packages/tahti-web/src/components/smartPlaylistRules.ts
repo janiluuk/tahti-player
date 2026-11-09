@@ -1,3 +1,5 @@
+import type { TFunction } from '@tahti-player/i18n';
+
 import type {
   NativeRuleField,
   NativeRuleOp,
@@ -153,21 +155,25 @@ export function withField(
   };
 }
 
-export const SMART_SORTS: Array<{ id: NativeSortColumn; label: string }> = [
-  { id: 'title', label: 'Title' },
-  { id: 'artist', label: 'Artist' },
-  { id: 'album', label: 'Album' },
-  { id: 'composer', label: 'Composer' },
-  { id: 'bpm', label: 'BPM' },
-  { id: 'key', label: 'Key' },
-  { id: 'rating', label: 'Rating' },
-  { id: 'plays', label: 'Play count' },
-  { id: 'lastPlayed', label: 'Last played' },
-  { id: 'added', label: 'Date added' },
-  { id: 'year', label: 'Year' },
-  { id: 'duration', label: 'Length' },
-  { id: 'loudness', label: 'Loudness' },
-];
+export function smartSorts(
+  t: TFunction<'web'>,
+): Array<{ id: NativeSortColumn; label: string }> {
+  return [
+    { id: 'title', label: t('smartPlaylistRules.title') },
+    { id: 'artist', label: t('smartPlaylistRules.artist') },
+    { id: 'album', label: t('smartPlaylistRules.album') },
+    { id: 'composer', label: t('smartPlaylistRules.composer') },
+    { id: 'bpm', label: 'BPM' },
+    { id: 'key', label: 'Key' },
+    { id: 'rating', label: t('smartPlaylistRules.rating') },
+    { id: 'plays', label: t('smartPlaylistRules.playCount') },
+    { id: 'lastPlayed', label: t('smartPlaylistRules.lastPlayed') },
+    { id: 'added', label: t('smartPlaylistRules.dateAdded') },
+    { id: 'year', label: t('smartPlaylistRules.year') },
+    { id: 'duration', label: t('smartPlaylistRules.length') },
+    { id: 'loudness', label: t('smartPlaylistRules.loudness') },
+  ];
+}
 
 export const EMPTY_SMART: NativeSmartDefinition = {
   name: '',

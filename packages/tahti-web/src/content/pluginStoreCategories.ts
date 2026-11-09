@@ -5,7 +5,10 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 
+import type { TFunction } from '@tahti-player/i18n';
+
 import type { AccountRole } from '../api/types';
+import { webT } from '../lib/webT';
 
 export type PluginCategoryId = 'listener' | 'artist' | 'admin';
 
@@ -34,30 +37,34 @@ export type PluginCategory = {
   minimumRole: AccountRole;
 };
 
-export const PLUGIN_CATEGORIES: PluginCategory[] = [
-  {
-    id: 'listener',
-    label: 'Listener',
-    description: 'Radio, listening services, personal widgets and scrobbling.',
-    icon: HeadphonesIcon,
-    minimumRole: 'LISTENER',
-  },
-  {
-    id: 'artist',
-    label: 'Artist',
-    description:
-      'Import, releases, distribution, broadcast, channel and production tools.',
-    icon: SlidersHorizontalIcon,
-    minimumRole: 'ARTIST',
-  },
-  {
-    id: 'admin',
-    label: 'Admin',
-    description: 'Board-only platform operations and administrative add-ons.',
-    icon: WrenchIcon,
-    minimumRole: 'BOARD',
-  },
-];
+export function pluginCategories(t: TFunction<'web'>): PluginCategory[] {
+  return [
+    {
+      id: 'listener',
+      label: t('pluginStoreCategories.listener'),
+      description: t(
+        'pluginStoreCategories.radioListeningServicesPersonalWidgets',
+      ),
+      icon: HeadphonesIcon,
+      minimumRole: 'LISTENER',
+    },
+    {
+      id: 'artist',
+      label: t('pluginStoreCategories.artist'),
+      description:
+        'Import, releases, distribution, broadcast, channel and production tools.',
+      icon: SlidersHorizontalIcon,
+      minimumRole: 'ARTIST',
+    },
+    {
+      id: 'admin',
+      label: t('pluginStoreCategories.admin'),
+      description: t('pluginStoreCategories.boardOnlyPlatformOperationsAnd'),
+      icon: WrenchIcon,
+      minimumRole: 'BOARD',
+    },
+  ];
+}
 
 const LISTENER_TARGETS = new Set<PluginCategoryTarget>([
   'listener',
@@ -108,15 +115,19 @@ export function pluginAudienceForTarget(
 
 export function pluginCategoriesForRole(role: AccountRole): PluginCategory[] {
   if (role === 'BOARD') {
-    return PLUGIN_CATEGORIES;
+    return pluginCategories(webT());
   }
   if (role === 'ARTIST') {
-    return PLUGIN_CATEGORIES.filter((category) => category.id !== 'admin');
+    return pluginCategories(webT()).filter(
+      (category) => category.id !== 'admin',
+    );
   }
-  return PLUGIN_CATEGORIES.filter((category) => category.id === 'listener');
+  return pluginCategories(webT()).filter(
+    (category) => category.id === 'listener',
+  );
 }
 
 export function pluginCategory(id: string): PluginCategory | undefined {
   const audience = pluginAudienceForTarget(id);
-  return PLUGIN_CATEGORIES.find((category) => category.id === audience);
+  return pluginCategories(webT()).find((category) => category.id === audience);
 }

@@ -2,7 +2,7 @@ import { PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   Input,
@@ -24,11 +24,13 @@ import { toastWithUndo } from '../../../lib/undoToast';
 
 type Mode = 'search' | 'mine' | 'profile';
 
-const MODES = [
-  { id: 'search', label: 'Search Mixcloud' },
-  { id: 'mine', label: 'Your mixes' },
-  { id: 'profile', label: 'By profile URL' },
-] as const;
+function modes(t: TFunction<'web'>) {
+  return [
+    { id: 'search', label: t('mixcloudImportPanel.searchMixcloud') },
+    { id: 'mine', label: t('mixcloudImportPanel.yourMixes') },
+    { id: 'profile', label: t('mixcloudImportPanel.byProfileUrl') },
+  ] as const;
+}
 
 function formatDuration(sec: number): string {
   const minutes = Math.floor(Math.max(0, sec) / 60);
@@ -115,7 +117,7 @@ export function MixcloudImportPanel({
       <div className="flex flex-col gap-3">
         <SegmentedControl
           aria-label={t('mixcloudImport.mixcloudSource')}
-          options={MODES}
+          options={modes(t)}
           value={mode}
           onChange={switchMode}
           className="w-fit flex-wrap"

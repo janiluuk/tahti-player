@@ -6,14 +6,14 @@ import { FilterChips, Toggle } from '@tahti-player/ui';
 import type { ChannelLink } from '../../api/channel-design';
 import type { PublicChannel } from '../../api/types';
 import {
-  CHANNEL_LOOK_ELEMENTS,
+  channelLookElements,
   type ChannelLookElementId,
 } from '../../lib/channelLookElements';
 import {
   addPlaylistItem,
   BACKDROP_FOLDED_ITEM_TYPES,
   CHANNEL_PAGE_ITEM_META,
-  FEED_FILTER_OPTIONS,
+  feedFilterOptions,
   moveItem,
   setFeedDisplay,
   setFeedFilters,
@@ -187,11 +187,13 @@ export function ChannelLayersPanel({
             <ChannelDesigner
               ref={designerRef}
               lookOnly
-              lookElementIds={CHANNEL_LOOK_ELEMENTS.filter(
-                (element) =>
-                  element.id === 'backdrop' ||
-                  layout.some((item) => item.type === element.layoutType),
-              ).map((element) => element.id)}
+              lookElementIds={channelLookElements(t)
+                .filter(
+                  (element) =>
+                    element.id === 'backdrop' ||
+                    layout.some((item) => item.type === element.layoutType),
+                )
+                .map((element) => element.id)}
               onLookSelect={(id) =>
                 onSelect(
                   id === 'backdrop'
@@ -199,7 +201,7 @@ export function ChannelLayersPanel({
                     : (layout.find(
                         (item) =>
                           item.type ===
-                          CHANNEL_LOOK_ELEMENTS.find(
+                          channelLookElements(t).find(
                             (element) => element.id === id,
                           )?.layoutType,
                       )?.id ?? null),
@@ -282,7 +284,7 @@ export function ChannelLayersPanel({
                   {t('channelLayersPanel.whichUpdateTypesToInclude')}
                 </p>
                 <div className="flex flex-col gap-2">
-                  {FEED_FILTER_OPTIONS.map((option) => {
+                  {feedFilterOptions(t).map((option) => {
                     const filters = selectedFeedItem.feedFilters ?? [];
                     const checked =
                       filters.length === 0 || filters.includes(option.id);
@@ -298,7 +300,7 @@ export function ChannelLayersPanel({
                           onChange={(next) => {
                             const current =
                               filters.length === 0
-                                ? FEED_FILTER_OPTIONS.map((o) => o.id)
+                                ? feedFilterOptions(t).map((o) => o.id)
                                 : filters;
                             const nextFilters = next
                               ? [...new Set([...current, option.id])]

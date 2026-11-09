@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   InlineError,
@@ -13,12 +13,19 @@ import {
 import { submitSupportTicket, type SupportTicketCategory } from '../api/client';
 import { useAuthStore } from '../stores/authStore';
 
-const CATEGORIES: Array<{ value: SupportTicketCategory; label: string }> = [
-  { value: 'ENGAGEMENT_DISPUTE', label: 'Engagement units' },
-  { value: 'TECHNICAL', label: 'Technical' },
-  { value: 'FINANCIAL', label: 'Billing / payouts' },
-  { value: 'OTHER', label: 'Other' },
-];
+function categories(
+  t: TFunction<'web'>,
+): Array<{ value: SupportTicketCategory; label: string }> {
+  return [
+    {
+      value: 'ENGAGEMENT_DISPUTE',
+      label: t('supportContactForm.engagementUnits'),
+    },
+    { value: 'TECHNICAL', label: t('supportContactForm.technical') },
+    { value: 'FINANCIAL', label: t('supportContactForm.billingPayouts') },
+    { value: 'OTHER', label: t('supportContactForm.other') },
+  ];
+}
 
 export const SUPPORT_CONTACT_FORM_ID = 'support-contact-form';
 
@@ -96,7 +103,7 @@ export function SupportContactForm({
       )}
       <Select
         label={t('supportContact.category')}
-        options={CATEGORIES.map((option) => ({
+        options={categories(t).map((option) => ({
           id: option.value,
           label: option.label,
         }))}

@@ -3,11 +3,12 @@ import {
   LAYOUT_ONLY_LOOK_IDS,
   LayoutOnlyLookHint,
 } from '@tahti-web/components/channel-designer/LayoutOnlyLookHint';
-import { CHANNEL_LOOK_ELEMENTS } from '@tahti-web/lib/channelLookElements';
+import { channelLookElements } from '@tahti-web/lib/channelLookElements';
+import { webT } from '@tahti-web/lib/webT';
 
 /**
  * Look rows that only explain visibility (eye toggle). Correct copy here
- * so Releases…Gallery stay consistent with CHANNEL_LOOK_ELEMENTS.hint.
+ * so Releases…Gallery stay consistent with channelLookElements(webT()).hint.
  */
 const meta: Meta<typeof LayoutOnlyLookHint> = {
   title: 'Tahti/Channel/Designer/LayoutOnlyLookHint',
@@ -24,7 +25,7 @@ export const AllRows: Story = {
   render: () => (
     <div className="flex max-w-md flex-col gap-4">
       {LAYOUT_ONLY_LOOK_IDS.map((id) => {
-        const metaRow = CHANNEL_LOOK_ELEMENTS.find(
+        const metaRow = channelLookElements(webT()).find(
           (element) => element.id === id,
         );
         return (

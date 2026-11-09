@@ -1,15 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChannelElementEditor } from '@tahti-web/components/ChannelElementEditor';
 import {
-  CHANNEL_LOOK_ELEMENTS,
+  channelLookElements,
   type ChannelLookElementId,
 } from '@tahti-web/lib/channelLookElements';
+import { webT } from '@tahti-web/lib/webT';
 import { useState } from 'react';
 import { expect, userEvent, within } from 'storybook/test';
 
 /**
  * Look element list used by Channel Designer. Ids must stay in sync with
- * `CHANNEL_LOOK_ELEMENTS` — stale header/actions ids were removed.
+ * `channelLookElements(webT())` — stale header/actions ids were removed.
  */
 const meta: Meta<typeof ChannelElementEditor> = {
   title: 'Tahti/Channel/Designer/ElementEditor',
@@ -39,7 +40,7 @@ function EditorDemo({
         onToggleDisabled={(id) =>
           setHidden((current) => ({ ...current, [id]: !current[id] }))
         }
-        items={CHANNEL_LOOK_ELEMENTS.map((element) => ({
+        items={channelLookElements(webT()).map((element) => ({
           id: element.id,
           disabled: element.canDisable
             ? hidden[element.id] === true

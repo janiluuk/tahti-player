@@ -1,3 +1,5 @@
+import type { TFunction } from '@tahti-player/i18n';
+
 import type { ProEditorPluginId } from '../../../api/studio-types';
 import { AUDIO_FX_PLUGINS } from '../../../plugins/audio-fx';
 
@@ -27,34 +29,50 @@ export function PluginIcon({
   );
 }
 
-export const FILTER_MODES = [
-  { id: 'lowpass', label: 'Low-pass', path: 'M2 4 C8 4 10 20 22 20 H30' },
-  { id: 'highpass', label: 'High-pass', path: 'M2 20 H12 C20 20 22 4 30 4' },
-  {
-    id: 'lowshelf',
-    label: 'Low shelf',
-    path: 'M2 18 C10 18 14 17 20 10 S26 6 30 6',
-  },
-  {
-    id: 'highshelf',
-    label: 'High shelf',
-    path: 'M2 6 C10 6 14 7 20 14 S26 18 30 18',
-  },
-] as const;
+export function filterModes(t: TFunction<'web'>) {
+  return [
+    {
+      id: 'lowpass',
+      label: t('pluginUi.lowPass'),
+      path: 'M2 4 C8 4 10 20 22 20 H30',
+    },
+    {
+      id: 'highpass',
+      label: t('pluginUi.highPass'),
+      path: 'M2 20 H12 C20 20 22 4 30 4',
+    },
+    {
+      id: 'lowshelf',
+      label: t('pluginUi.lowShelf'),
+      path: 'M2 18 C10 18 14 17 20 10 S26 6 30 6',
+    },
+    {
+      id: 'highshelf',
+      label: t('pluginUi.highShelf'),
+      path: 'M2 6 C10 6 14 7 20 14 S26 18 30 18',
+    },
+  ] as const;
+}
 
-export const FILTER_SLOPES = [
-  {
-    id: '12db',
-    label: '12 dB/oct',
-    path: 'M2 5 C12 5 17 8 22 13 S27 19 30 20',
-  },
-  {
-    id: '24db',
-    label: '24 dB/oct',
-    path: 'M2 5 C14 5 19 8 24 17 S28 20 30 20',
-  },
-  { id: 'brickwall', label: 'Brickwall', path: 'M2 5 H22 V20 H30' },
-] as const;
+export function filterSlopes(t: TFunction<'web'>) {
+  return [
+    {
+      id: '12db',
+      label: '12 dB/oct',
+      path: 'M2 5 C12 5 17 8 22 13 S27 19 30 20',
+    },
+    {
+      id: '24db',
+      label: '24 dB/oct',
+      path: 'M2 5 C14 5 19 8 24 17 S28 20 30 20',
+    },
+    {
+      id: 'brickwall',
+      label: t('pluginUi.brickwall'),
+      path: 'M2 5 H22 V20 H30',
+    },
+  ] as const;
+}
 
 export function FilterCurve({ path }: { path: string }) {
   return (

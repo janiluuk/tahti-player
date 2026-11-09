@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import type { ReactNode } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Badge, MediaArtwork } from '@tahti-player/ui';
 
 import type { ListeningPartyDto } from '../../api/listening-parties';
@@ -15,12 +15,17 @@ import {
   PARTY_START_FORMAT,
 } from './format';
 
-const STATE_LABEL = {
-  SCHEDULED: { text: 'Listening party', tone: 'primary' },
-  LIVE: { text: 'Live now', tone: 'green' },
-  ENDED: { text: 'Ended', tone: 'muted' },
-  CANCELED: { text: 'Canceled', tone: 'red' },
-} as const;
+function stateLabel(t: TFunction<'web'>) {
+  return {
+    SCHEDULED: {
+      text: t('listeningPartyHeroMore.listeningParty'),
+      tone: 'primary',
+    },
+    LIVE: { text: t('listeningPartyHeroMore.liveNow'), tone: 'green' },
+    ENDED: { text: t('listeningPartyHeroMore.ended'), tone: 'muted' },
+    CANCELED: { text: t('listeningPartyHeroMore.canceled'), tone: 'red' },
+  } as const;
+}
 
 function StateLine({
   party,
@@ -107,7 +112,7 @@ export function ListeningPartyHero({
 }) {
   const { t } = useTranslation('web');
   const { release, host, channel } = party;
-  const label = STATE_LABEL[clock.state];
+  const label = stateLabel(t)[clock.state];
   const runningTime = formatRunningTime(
     listeningPartyDurationSec(party.tracks),
   );

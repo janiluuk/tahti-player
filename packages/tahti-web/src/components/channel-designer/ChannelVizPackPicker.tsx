@@ -1,26 +1,28 @@
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { SelectableTiles, type SelectableTile } from '@tahti-player/ui';
 import { VISUALIZER_MODE_LABELS } from '@tahti-player/visualizer';
 
-import { CHANNEL_VIZ_PACKS, channelVizPack } from '../../lib/channelVizPacks';
+import { channelVizPack, channelVizPacks } from '../../lib/channelVizPacks';
 import { Eyebrow } from '../tahti/Eyebrow';
 
 const NO_PACK = 'none';
 
-const PACK_TILES: SelectableTile[] = [
-  {
-    id: NO_PACK,
-    label: 'No pack',
-    description: 'Use the visualizer preset above.',
-  },
-  ...CHANNEL_VIZ_PACKS.map((pack) => ({
-    id: pack.id,
-    label: pack.label,
-    description: `${pack.description} ${pack.modes
-      .map((mode) => VISUALIZER_MODE_LABELS[mode])
-      .join(' · ')}`,
-  })),
-];
+function packTiles(t: TFunction<'web'>): SelectableTile[] {
+  return [
+    {
+      id: NO_PACK,
+      label: 'No pack',
+      description: 'Use the visualizer preset above.',
+    },
+    ...channelVizPacks(t).map((pack) => ({
+      id: pack.id,
+      label: pack.label,
+      description: `${pack.description} ${pack.modes
+        .map((mode) => VISUALIZER_MODE_LABELS[mode])
+        .join(' · ')}`,
+    })),
+  ];
+}
 
 type Props = {
   value: string | null;
@@ -46,7 +48,7 @@ export function ChannelVizPackPicker({ value, onChange, disabled }: Props) {
       <SelectableTiles
         aria-label={t('channelVizPackPicker.visualizerPack')}
         className="sm:grid-cols-2"
-        items={PACK_TILES}
+        items={packTiles(t)}
         selected={selected}
         disabled={disabled}
         onChange={(id) => onChange(id === NO_PACK ? null : id)}

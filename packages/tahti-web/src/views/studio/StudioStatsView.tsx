@@ -1,7 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState, type FC } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { FilterChips, SectionTitle, ViewShell } from '@tahti-player/ui';
 
 import { PageError } from '../../components/PageStates';
@@ -17,12 +17,14 @@ import { useStatsData } from './stats/useStatsData';
 
 export type StatsTab = 'overview' | 'plays' | 'top-lists';
 
-const STATS_SECTIONS = [
-  { id: 'overview', label: 'Overview' },
-  { id: 'plays', label: 'Plays and listeners' },
-  { id: 'top-lists', label: 'Top lists' },
-  { id: 'insights', label: 'Insights' },
-] as const;
+function statsSections(t: TFunction<'web'>) {
+  return [
+    { id: 'overview', label: t('studioStatsViewMore.overview') },
+    { id: 'plays', label: t('studioStatsViewMore.playsAndListeners') },
+    { id: 'top-lists', label: t('studioStatsViewMore.topLists') },
+    { id: 'insights', label: t('studioStatsViewMore.insights') },
+  ] as const;
+}
 
 export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
   tab: activeTab = 'overview',
@@ -55,7 +57,7 @@ export const StudioStatsView: FC<{ tab?: StatsTab }> = ({
         >
           <FilterChips
             aria-label={t('studioStatsView.statsSections')}
-            items={STATS_SECTIONS.map((item) => ({
+            items={statsSections(t).map((item) => ({
               id: item.id,
               label: item.label,
             }))}

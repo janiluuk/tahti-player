@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Badge, SegmentedControl } from '@tahti-player/ui';
 
 import {
@@ -22,12 +22,20 @@ const SUBJECT_FOR_BOARD = {
   GOVERNANCE_RECORD: CORRECTION_SUBJECT_LABELS.GOVERNANCE_RECORD,
 } as const;
 
-const STATE_LABELS = {
-  OPEN: { label: 'Waiting', color: 'yellow' },
-  ACCEPTED: { label: 'Accepted', color: 'green' },
-  REJECTED: { label: 'Rejected', color: 'red' },
-  WITHDRAWN: { label: 'Withdrawn', color: 'secondary' },
-} as const;
+function stateLabels(t: TFunction<'web'>) {
+  return {
+    OPEN: { label: t('correctionsQueuePanelMore.waiting'), color: 'yellow' },
+    ACCEPTED: {
+      label: t('correctionsQueuePanelMore.accepted'),
+      color: 'green',
+    },
+    REJECTED: { label: t('correctionsQueuePanelMore.rejected'), color: 'red' },
+    WITHDRAWN: {
+      label: t('correctionsQueuePanelMore.withdrawn'),
+      color: 'secondary',
+    },
+  } as const;
+}
 
 type Filter = 'waiting' | 'all';
 
@@ -86,7 +94,7 @@ export function CorrectionsQueuePanel() {
       ) : (
         <ul className="divide-border divide-y">
           {rows.map((row) => {
-            const state = STATE_LABELS[row.state];
+            const state = stateLabels(t)[row.state];
             return (
               <li
                 key={row.id}

@@ -74,7 +74,7 @@ import {
   useSelectedTabInView,
 } from '../components/SectionTabs';
 import { VenuesDirectory } from '../components/VenuesDirectory';
-import { CONTENT_TYPES } from '../content/contentTypes';
+import { contentTypes } from '../content/contentTypes';
 import { hasAccountRole } from '../lib/accountRoles';
 import { ALL_FILTER_ID, allOrSpecific } from '../lib/allOrSpecific';
 import { discoverTabFromSearch, type DiscoverTab } from '../lib/discoverTabs';
@@ -542,7 +542,7 @@ export function DiscoverView() {
                 multiple
                 items={[
                   { id: ALL_FILTER_ID, label: t('discover.all') },
-                  ...CONTENT_TYPES,
+                  ...contentTypes(t),
                 ]}
                 selected={
                   contentTypeFilter.length > 0

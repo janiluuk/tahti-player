@@ -1,4 +1,4 @@
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, FilterChips, Input } from '@tahti-player/ui';
 
 import type { StatsPlaysRange } from '../../../api/studio-extras';
@@ -6,13 +6,17 @@ import { StudioPanel } from '../../../components/StudioPanel';
 import { formatDate, todayUtc } from './helpers';
 import type { StatsData } from './useStatsData';
 
-const RANGE_CHIPS: Array<{ id: StatsPlaysRange; label: string }> = [
-  { id: '1', label: 'Today' },
-  { id: '7', label: '7 days' },
-  { id: '30', label: '30 days' },
-  { id: 'all', label: 'All time' },
-  { id: 'custom', label: 'Custom' },
-];
+function rangeChips(
+  t: TFunction<'web'>,
+): Array<{ id: StatsPlaysRange; label: string }> {
+  return [
+    { id: '1', label: t('rangeControls.today') },
+    { id: '7', label: '7 days' },
+    { id: '30', label: '30 days' },
+    { id: 'all', label: t('rangeControls.allTime') },
+    { id: 'custom', label: t('rangeControls.custom') },
+  ];
+}
 
 export function RangeControls({ state }: { state: StatsData }) {
   const { t } = useTranslation('web');
@@ -30,7 +34,7 @@ export function RangeControls({ state }: { state: StatsData }) {
   return (
     <div className="flex flex-col gap-3">
       <FilterChips
-        items={RANGE_CHIPS}
+        items={rangeChips(t)}
         selected={range}
         onChange={(id) => {
           const next = id as StatsPlaysRange;

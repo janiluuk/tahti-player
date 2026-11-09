@@ -20,7 +20,7 @@ import {
 
 import type { ChannelGalleryMode } from '../../api/channel-gallery';
 import { Eyebrow } from '../tahti/Eyebrow';
-import { GALLERY_MODES, SLIDESHOW_PRESETS } from './slideshowOptions';
+import { galleryModes, SLIDESHOW_PRESETS } from './slideshowOptions';
 
 type Props = {
   images: string[];
@@ -195,7 +195,7 @@ export function SlideshowControls({
         onValueChange={(value) =>
           onGalleryModeChange(value as ChannelGalleryMode)
         }
-        options={GALLERY_MODES.map((mode) => ({
+        options={galleryModes(t).map((mode) => ({
           id: mode.id,
           label: mode.label,
         }))}

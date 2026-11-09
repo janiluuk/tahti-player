@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import {
-  CHANNEL_LOOK_ELEMENTS,
+  channelLookElements,
   isArtistLookBlockId,
   loadArtistLookVisibility,
   saveArtistLookVisibility,
@@ -15,6 +15,7 @@ import {
   type ChannelPageItemType,
 } from '../../lib/channelPageLayout';
 import { persistChannelPageLayout } from '../../lib/persistChannelPageLayout';
+import { webT } from '../../lib/webT';
 
 type Options = {
   layoutSlug: string;
@@ -72,7 +73,9 @@ export function useLookVisibility({
   };
 
   const lookBlockVisible = (id: ChannelLookElementId) => {
-    const meta = CHANNEL_LOOK_ELEMENTS.find((element) => element.id === id);
+    const meta = channelLookElements(webT()).find(
+      (element) => element.id === id,
+    );
     if (layout && meta?.layoutType) {
       return (
         layout.find((item) => item.type === meta.layoutType)?.visible ?? false
@@ -85,7 +88,9 @@ export function useLookVisibility({
   };
 
   const toggleSelectedLook = (id: ChannelLookElementId) => {
-    const meta = CHANNEL_LOOK_ELEMENTS.find((element) => element.id === id);
+    const meta = channelLookElements(webT()).find(
+      (element) => element.id === id,
+    );
     if (meta?.layoutType) {
       toggleLayoutType(meta.layoutType);
       if (layout && onLayoutChange) {

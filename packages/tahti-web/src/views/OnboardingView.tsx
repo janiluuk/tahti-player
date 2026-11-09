@@ -13,7 +13,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   Input,
@@ -49,39 +49,43 @@ import { takePendingArtistKind } from '../lib/pendingArtistKind';
 import { useThemeStore, type ColorMode } from '../plugins/themes';
 import { useAuthStore } from '../stores/authStore';
 
-const APPEARANCE_OPTIONS: SelectableTile[] = [
-  {
-    id: 'light',
-    label: 'Light',
-    description: 'Bright background, always on.',
-    icon: <SunIcon size={18} aria-hidden />,
-  },
-  {
-    id: 'dark',
-    label: 'Dark',
-    description: 'Dim background, always on.',
-    icon: <MoonIcon size={18} aria-hidden />,
-  },
-  {
-    id: 'dynamic',
-    label: 'Dynamic',
-    description: 'Light by day, dark by night — switches with the clock.',
-    icon: <SunMoonIcon size={18} aria-hidden />,
-  },
-];
+function appearanceOptions(t: TFunction<'web'>): SelectableTile[] {
+  return [
+    {
+      id: 'light',
+      label: t('onboardingViewMore.light'),
+      description: t('onboardingViewMore.brightBackgroundAlwaysOn'),
+      icon: <SunIcon size={18} aria-hidden />,
+    },
+    {
+      id: 'dark',
+      label: t('onboardingViewMore.dark'),
+      description: t('onboardingViewMore.dimBackgroundAlwaysOn'),
+      icon: <MoonIcon size={18} aria-hidden />,
+    },
+    {
+      id: 'dynamic',
+      label: t('onboardingViewMore.dynamic'),
+      description: t('onboardingViewMore.lightByDayDarkBy'),
+      icon: <SunMoonIcon size={18} aria-hidden />,
+    },
+  ];
+}
 
-const ARTIST_KIND_OPTIONS: SelectableTile[] = [
-  {
-    id: 'SINGLE',
-    label: 'Solo artist',
-    icon: <UserIcon size={18} aria-hidden />,
-  },
-  {
-    id: 'COLLECTIVE',
-    label: 'Band / collective',
-    icon: <UsersIcon size={18} aria-hidden />,
-  },
-];
+function artistKindOptions(t: TFunction<'web'>): SelectableTile[] {
+  return [
+    {
+      id: 'SINGLE',
+      label: t('onboardingViewMore.soloArtist'),
+      icon: <UserIcon size={18} aria-hidden />,
+    },
+    {
+      id: 'COLLECTIVE',
+      label: t('onboardingViewMore.bandCollective'),
+      icon: <UsersIcon size={18} aria-hidden />,
+    },
+  ];
+}
 
 type SlugStatus = 'idle' | 'checking' | 'available' | 'taken' | 'invalid';
 
@@ -293,7 +297,7 @@ export function OnboardingView() {
                       </span>
                       <SelectableTiles
                         aria-label={t('onboarding.iAmA')}
-                        items={ARTIST_KIND_OPTIONS}
+                        items={artistKindOptions(t)}
                         selected={artistKind}
                         onChange={(id) =>
                           setArtistKind(id as 'SINGLE' | 'COLLECTIVE')
@@ -426,7 +430,7 @@ export function OnboardingView() {
                     </p>
                     <SelectableTiles
                       aria-label={t('onboarding.appearance')}
-                      items={APPEARANCE_OPTIONS}
+                      items={appearanceOptions(t)}
                       selected={colorMode}
                       onChange={(id) => setColorMode(id as ColorMode)}
                       className="sm:grid-cols-3"

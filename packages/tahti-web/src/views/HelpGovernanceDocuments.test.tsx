@@ -2,9 +2,10 @@ import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
-  GOVERNANCE_DOCUMENTS,
-  SERVICE_DOCUMENTS,
+  governanceDocuments,
+  serviceDocuments,
 } from '../content/documentLinks';
+import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
 import { HelpHubView } from './HelpView';
 import { StudioGovernanceView } from './studio/StudioGovernanceView';
@@ -26,12 +27,12 @@ describe('governance documents live in Studio → Governance, not Help', () => {
 
   it('Help lists no governance documents, only policies at the bottom', () => {
     render(<HelpHubView />);
-    for (const doc of GOVERNANCE_DOCUMENTS) {
+    for (const doc of governanceDocuments(webT())) {
       expect(screen.queryByText(doc.title)).toBeNull();
     }
     expect(screen.queryByText('Documents and public records')).toBeNull();
     const policies = screen.getByTestId('help-policies');
-    for (const doc of SERVICE_DOCUMENTS) {
+    for (const doc of serviceDocuments(webT())) {
       expect(within(policies).getByText(doc.title)).toBeTruthy();
     }
   });
@@ -50,7 +51,7 @@ describe('governance documents live in Studio → Governance, not Help', () => {
     });
     render(<StudioGovernanceView tab="documents" />);
     const documents = screen.getByTestId('governance-documents');
-    for (const doc of GOVERNANCE_DOCUMENTS) {
+    for (const doc of governanceDocuments(webT())) {
       expect(within(documents).getByText(doc.title)).toBeTruthy();
     }
   });

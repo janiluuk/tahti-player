@@ -13,7 +13,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   HubCards,
   SectionTitle,
@@ -24,102 +24,106 @@ import {
 import { renderHubLink } from '../../components/HubLink';
 import { StudioGate } from '../../components/StudioGate';
 
-export const STUDIO_PROFILE_ARTIST_ITEMS: HubCardItem[] = [
-  {
-    id: 'identity',
-    href: '/settings/artist?tab=identity',
-    icon: UserIcon,
-    title: 'Identity',
-    description: 'Artist name, picture, genres and where you are based.',
-  },
-  {
-    id: 'story',
-    href: '/settings/artist?tab=story',
-    icon: BookOpenIcon,
-    title: 'Story',
-    description: 'Your bio and the longer story on your profile.',
-  },
-  {
-    id: 'people',
-    href: '/settings/artist?tab=people',
-    icon: UsersIcon,
-    title: 'People',
-    description: 'Band members and collaborators shown on your page.',
-  },
-  {
-    id: 'connections',
-    href: '/settings/artist?tab=connections',
-    icon: LinkIcon,
-    title: 'Links',
-    description: 'Your website, socials and streaming profiles.',
-  },
-  {
-    id: 'branding',
-    href: '/settings/artist?tab=branding',
-    icon: PaletteIcon,
-    title: 'Branding',
-    description: 'Logo, colours and header image.',
-  },
-  {
-    id: 'gallery',
-    href: '/settings/artist?tab=gallery',
-    icon: ImagesIcon,
-    title: 'Gallery',
-    description: 'Photos fans see on your profile.',
-  },
-  {
-    id: 'press-kit',
-    href: '/settings/artist?tab=press-kit',
-    icon: FileTextIcon,
-    title: 'Press kit',
-    description: 'Downloadable photos, bio and technical rider.',
-  },
-  {
-    id: 'release-visuals',
-    href: '/settings/artist?tab=release-visuals',
-    icon: ImageIcon,
-    title: 'Release visuals',
-    description: 'Default artwork style for new releases.',
-  },
-];
+export function studioProfileArtistItems(t: TFunction<'web'>): HubCardItem[] {
+  return [
+    {
+      id: 'identity',
+      href: '/settings/artist?tab=identity',
+      icon: UserIcon,
+      title: t('studioProfileView.identity'),
+      description: t('studioProfileView.artistNamePictureGenresAnd'),
+    },
+    {
+      id: 'story',
+      href: '/settings/artist?tab=story',
+      icon: BookOpenIcon,
+      title: t('studioProfileView.story'),
+      description: t('studioProfileView.yourBioAndTheLonger'),
+    },
+    {
+      id: 'people',
+      href: '/settings/artist?tab=people',
+      icon: UsersIcon,
+      title: t('studioProfileView.people'),
+      description: t('studioProfileView.bandMembersAndCollaboratorsShown'),
+    },
+    {
+      id: 'connections',
+      href: '/settings/artist?tab=connections',
+      icon: LinkIcon,
+      title: t('studioProfileView.links'),
+      description: t('studioProfileView.yourWebsiteSocialsAndStreaming'),
+    },
+    {
+      id: 'branding',
+      href: '/settings/artist?tab=branding',
+      icon: PaletteIcon,
+      title: t('studioProfileView.branding'),
+      description: t('studioProfileView.logoColoursAndHeaderImage'),
+    },
+    {
+      id: 'gallery',
+      href: '/settings/artist?tab=gallery',
+      icon: ImagesIcon,
+      title: t('studioProfileView.gallery'),
+      description: t('studioProfileView.photosFansSeeOnYour'),
+    },
+    {
+      id: 'press-kit',
+      href: '/settings/artist?tab=press-kit',
+      icon: FileTextIcon,
+      title: t('studioProfileView.pressKit'),
+      description: t('studioProfileView.downloadablePhotosBioAndTechnical'),
+    },
+    {
+      id: 'release-visuals',
+      href: '/settings/artist?tab=release-visuals',
+      icon: ImageIcon,
+      title: t('studioProfileView.releaseVisuals'),
+      description: t('studioProfileView.defaultArtworkStyleForNew'),
+    },
+  ];
+}
 
-export const STUDIO_PROFILE_CHANNEL_ITEMS: HubCardItem[] = [
-  {
-    id: 'appearance',
-    href: '/settings/channel?tab=appearance',
-    icon: PaletteIcon,
-    title: 'Channel design',
-    description: 'How your channel page looks: layout, blocks and colours.',
-  },
-  {
-    id: 'discovery',
-    href: '/settings/channel?tab=discovery',
-    icon: CompassIcon,
-    title: 'How fans find you',
-    description: 'Directory listing, tags and search.',
-  },
-  {
-    id: 'domain',
-    href: '/settings/channel?tab=domain',
-    icon: GlobeIcon,
-    title: 'Address and domain',
-    description: 'Your channel address and a custom domain.',
-  },
-  {
-    id: 'chat',
-    href: '/studio/fans',
-    icon: MessageSquareIcon,
-    title: 'Chat',
-    description: 'Who can chat on your channel, and slow mode.',
-  },
-  {
-    id: 'moderators',
-    href: '/studio/fans',
-    icon: ShieldIcon,
-    title: 'Moderators',
-    description: 'People who can moderate your chat.',
-  },
-];
+export function studioProfileChannelItems(t: TFunction<'web'>): HubCardItem[] {
+  return [
+    {
+      id: 'appearance',
+      href: '/settings/channel?tab=appearance',
+      icon: PaletteIcon,
+      title: t('studioProfileView.channelDesign'),
+      description: t('studioProfileView.howYourChannelPageLooks'),
+    },
+    {
+      id: 'discovery',
+      href: '/settings/channel?tab=discovery',
+      icon: CompassIcon,
+      title: t('studioProfileView.howFansFindYou'),
+      description: t('studioProfileView.directoryListingTagsAndSearch'),
+    },
+    {
+      id: 'domain',
+      href: '/settings/channel?tab=domain',
+      icon: GlobeIcon,
+      title: t('studioProfileView.addressAndDomain'),
+      description: t('studioProfileView.yourChannelAddressAndA'),
+    },
+    {
+      id: 'chat',
+      href: '/studio/fans',
+      icon: MessageSquareIcon,
+      title: t('studioProfileView.chat'),
+      description: t('studioProfileView.whoCanChatOnYour'),
+    },
+    {
+      id: 'moderators',
+      href: '/studio/fans',
+      icon: ShieldIcon,
+      title: t('studioProfileView.moderators'),
+      description: t('studioProfileView.peopleWhoCanModerateYour'),
+    },
+  ];
+}
 
 export function StudioProfileView() {
   const { t } = useTranslation('web');
@@ -141,7 +145,7 @@ export function StudioProfileView() {
             />
             <HubCards
               aria-label={t('studioProfile.artistProfileSettings')}
-              items={STUDIO_PROFILE_ARTIST_ITEMS}
+              items={studioProfileArtistItems(t)}
               renderLink={renderHubLink}
             />
           </section>
@@ -155,7 +159,7 @@ export function StudioProfileView() {
             />
             <HubCards
               aria-label={t('studioProfile.channelPageSettings')}
-              items={STUDIO_PROFILE_CHANNEL_ITEMS}
+              items={studioProfileChannelItems(t)}
               renderLink={renderHubLink}
             />
           </section>

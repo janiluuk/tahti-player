@@ -1,6 +1,6 @@
 import { ListPlusIcon } from 'lucide-react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, TabLabel, Tabs, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -16,15 +16,19 @@ import type {
 
 export type BrowseKind = 'tracks' | 'playlists' | NativeFacetKind;
 
-const BROWSE_TABS: Array<{ id: BrowseKind; label: string }> = [
-  { id: 'tracks', label: 'Tracks' },
-  { id: 'artists', label: 'Artists' },
-  { id: 'albums', label: 'Albums' },
-  { id: 'genres', label: 'Genres' },
-  { id: 'composers', label: 'Composers' },
-  { id: 'folders', label: 'Folders' },
-  { id: 'playlists', label: 'Playlists' },
-];
+function browseTabs(
+  t: TFunction<'web'>,
+): Array<{ id: BrowseKind; label: string }> {
+  return [
+    { id: 'tracks', label: t('localLibraryBrowseMore.tracks') },
+    { id: 'artists', label: t('localLibraryBrowseMore.artists') },
+    { id: 'albums', label: t('localLibraryBrowseMore.albums') },
+    { id: 'genres', label: t('localLibraryBrowseMore.genres') },
+    { id: 'composers', label: t('localLibraryBrowseMore.composers') },
+    { id: 'folders', label: t('localLibraryBrowseMore.folders') },
+    { id: 'playlists', label: t('localLibraryBrowseMore.playlists') },
+  ];
+}
 
 export const FACET_KIND_LABEL: Record<NativeFacetKind, string> = {
   artists: 'Artist',
@@ -54,10 +58,10 @@ export function BrowseTabs({
     <Tabs.Root
       selectedIndex={Math.max(
         0,
-        BROWSE_TABS.findIndex((item) => item.id === value),
+        browseTabs(t).findIndex((item) => item.id === value),
       )}
       onChange={(index) => {
-        const next = BROWSE_TABS[index];
+        const next = browseTabs(t)[index];
         if (next) {
           onChange(next.id);
         }
@@ -67,7 +71,7 @@ export function BrowseTabs({
         aria-label={t('localLibraryBrowse.browseLocalLibrary')}
         className="overflow-x-auto"
       >
-        {BROWSE_TABS.map((item) => (
+        {browseTabs(t).map((item) => (
           <Tabs.Tab key={item.id}>
             <TabLabel>{item.label}</TabLabel>
           </Tabs.Tab>

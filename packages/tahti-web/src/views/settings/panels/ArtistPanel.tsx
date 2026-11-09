@@ -57,7 +57,7 @@ import { NewsFeedUrlField } from '../NewsFeedUrlField';
 import { SettingsHint } from '../SettingsFields';
 import { SocialAutoPost } from '../SocialAutoPost';
 import { buildArtistInfoPatch } from './artist-info-patch';
-import { ARTIST_TAB_GROUPS } from './artistTabGroups';
+import { artistTabGroups } from './artistTabGroups';
 import { MusicBrainzOfferToggle } from './MusicBrainzOfferToggle';
 import { groupTabs, tabLanding } from './tabGroups';
 
@@ -591,7 +591,7 @@ export function ArtistPanel() {
   ].filter(
     (item) => item.id !== 'people' || profile?.artistKind === 'COLLECTIVE',
   );
-  const grouped = groupTabs(ARTIST_TAB_GROUPS, tabItems);
+  const grouped = groupTabs(artistTabGroups(t), tabItems);
   const landing = tabLanding(grouped, artistSection);
 
   return (

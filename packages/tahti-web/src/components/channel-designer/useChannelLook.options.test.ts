@@ -10,7 +10,8 @@ import {
   VISUAL_PRESETS,
   type ChannelVisual,
 } from '../../api/channel-design';
-import { NOW_PLAYING_OVERLAY_PRESETS } from '../../content/nowPlayingOverlayPresets';
+import { nowPlayingOverlayPresets } from '../../content/nowPlayingOverlayPresets';
+import { webT } from '../../lib/webT';
 import { SLIDESHOW_PRESETS } from './slideshowOptions';
 import { useChannelLook } from './useChannelLook';
 
@@ -75,7 +76,7 @@ describe('channel designer options survive apply → save → reload', () => {
     ).toBe(id);
   });
 
-  it.each(NOW_PLAYING_OVERLAY_PRESETS.map((p) => p.id))(
+  it.each(nowPlayingOverlayPresets(webT()).map((p) => p.id))(
     'now-playing overlay style %s',
     async (id) => {
       expect(

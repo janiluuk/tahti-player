@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Badge,
   BreadcrumbCurrent,
@@ -184,32 +184,36 @@ const COOPERATIVE_ACTION_STATUS_LABEL: Record<CooperativeActionStatus, string> =
  * for this page. None of this is legal advice or a confirmed procedure —
  * every row is a question for the board/legal counsel to resolve, not an
  * instruction this tool can verify or complete on its own. */
-const COOPERATIVE_ACTIONS = [
-  {
-    title: 'Confirm nonprofit/cooperative registration status',
-    detail:
-      'Verify current registration (e.g. yhdistysrekisteri/osuuskuntarekisteri with the Finnish Patent and Registration Office, PRH) is active, bylaws are up to date, and officers on file match the current board.',
-    status: 'needs-legal-review',
-  },
-  {
-    title: 'Review collecting-society agreements',
-    detail:
-      'Confirm membership/reporting status with Teosto and Gramex (see Studio → Distribution → Guides for the pointers already in-app) covers the association’s current activity, not just individual artists.',
-    status: 'needs-legal-review',
-  },
-  {
-    title: 'Confirm annual nonprofit activity report obligations',
-    detail:
-      'Check with the board’s accountant/auditor (tilintarkastaja or toiminnantarkastaja) what the annual report generator (Governance → Annual report generator) needs to satisfy statutory filing requirements.',
-    status: 'needs-legal-review',
-  },
-  {
-    title: 'Decide cooperation terms with local culture organisations',
-    detail:
-      'For co-produced events or shared venues with other local culture organisations, agree who holds insurance/liability, and record the agreement — this tool cannot draft or verify that agreement.',
-    status: 'needs-board-decision',
-  },
-] as const;
+function cooperativeActions(t: TFunction<'web'>) {
+  return [
+    {
+      title: t(
+        'adminVendorsView.confirmNonprofitCooperativeRegistrationStatus',
+      ),
+      detail:
+        'Verify current registration (e.g. yhdistysrekisteri/osuuskuntarekisteri with the Finnish Patent and Registration Office, PRH) is active, bylaws are up to date, and officers on file match the current board.',
+      status: 'needs-legal-review',
+    },
+    {
+      title: t('adminVendorsView.reviewCollectingSocietyAgreements'),
+      detail:
+        'Confirm membership/reporting status with Teosto and Gramex (see Studio → Distribution → Guides for the pointers already in-app) covers the association’s current activity, not just individual artists.',
+      status: 'needs-legal-review',
+    },
+    {
+      title: t('adminVendorsView.confirmAnnualNonprofitActivityReport'),
+      detail:
+        'Check with the board’s accountant/auditor (tilintarkastaja or toiminnantarkastaja) what the annual report generator (Governance → Annual report generator) needs to satisfy statutory filing requirements.',
+      status: 'needs-legal-review',
+    },
+    {
+      title: t('adminVendorsView.decideCooperationTermsWithLocal'),
+      detail:
+        'For co-produced events or shared venues with other local culture organisations, agree who holds insurance/liability, and record the agreement — this tool cannot draft or verify that agreement.',
+      status: 'needs-board-decision',
+    },
+  ] as const;
+}
 
 type VendorStatus = 'live' | 'pending' | 'blocked';
 
@@ -387,7 +391,7 @@ export function AdminVendorsContent() {
           description={t('adminVendors.openQuestionsForTheBoard')}
         >
           <ul className="divide-border divide-y break-words">
-            {COOPERATIVE_ACTIONS.map((row) => (
+            {cooperativeActions(t).map((row) => (
               <li
                 key={row.title}
                 className="flex flex-wrap items-start justify-between gap-2 py-2.5 text-sm first:pt-0 last:pb-0"

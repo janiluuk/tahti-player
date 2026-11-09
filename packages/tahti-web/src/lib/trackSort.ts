@@ -1,23 +1,30 @@
 import { useEffect, useState } from 'react';
 
+import type { TFunction } from '@tahti-player/i18n';
+
 import type { TahtiPlayable } from '../api/types';
+import { webT } from './webT';
 
 export type TrackSort =
   'default' | 'title' | 'artist' | 'shortest' | 'longest' | 'newest';
 
-export const TRACK_SORT_OPTIONS: { id: TrackSort; label: string }[] = [
-  { id: 'default', label: 'Default order' },
-  { id: 'title', label: 'Title A–Z' },
-  { id: 'artist', label: 'Artist A–Z' },
-  { id: 'newest', label: 'Newest release' },
-  { id: 'shortest', label: 'Shortest first' },
-  { id: 'longest', label: 'Longest first' },
-];
+export function trackSortOptions(
+  t: TFunction<'web'>,
+): { id: TrackSort; label: string }[] {
+  return [
+    { id: 'default', label: t('trackSort.defaultOrder') },
+    { id: 'title', label: t('trackSort.titleAZ') },
+    { id: 'artist', label: t('trackSort.artistAZ') },
+    { id: 'newest', label: t('trackSort.newestRelease') },
+    { id: 'shortest', label: t('trackSort.shortestFirst') },
+    { id: 'longest', label: t('trackSort.longestFirst') },
+  ];
+}
 
 const STORAGE_KEY = 'tahti.ambientTrackList.sort';
 
 const isTrackSort = (value: unknown): value is TrackSort =>
-  TRACK_SORT_OPTIONS.some((option) => option.id === value);
+  trackSortOptions(webT()).some((option) => option.id === value);
 
 const byText = (a: string, b: string) =>
   a.localeCompare(b, undefined, { sensitivity: 'base', numeric: true });

@@ -25,8 +25,8 @@ import { fetchMeProfile, patchMeProfile } from '../api/studio-extras';
 import {
   fetchHearthisUserSets,
   LISTENER_WIDGET_TYPES,
-  MIKSERI_MAJOR_GENRES,
   mikseriChartEmbedUrl,
+  mikseriMajorGenres,
   resolveHearthisPageEmbedUrl,
   resolveListenerWidgetInput,
   soundcloudProfileUrl,
@@ -310,7 +310,7 @@ export function ListenAddonsPanel({
   const addMikseriChart = (
     chart: 'top40' | 'weekly' | 'promoted' | 'listataivas',
   ) => {
-    const genre = MIKSERI_MAJOR_GENRES.find(
+    const genre = mikseriMajorGenres(t).find(
       (item) => item.id === mikseriGenreId,
     );
     const label =
@@ -736,7 +736,7 @@ export function ListenAddonsPanel({
                         label="Top 40 genre"
                         value={mikseriGenreId}
                         onValueChange={setMikseriGenreId}
-                        options={[...MIKSERI_MAJOR_GENRES]}
+                        options={[...mikseriMajorGenres(t)]}
                       />
                       <div className="flex flex-wrap gap-2">
                         <Button

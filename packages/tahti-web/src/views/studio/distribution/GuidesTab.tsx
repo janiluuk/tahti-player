@@ -4,10 +4,10 @@ import { useTranslation } from '@tahti-player/i18n';
 import { ExternalLink, SelectableTiles } from '@tahti-player/ui';
 
 import {
-  COLLECTING_SOCIETY_POINTERS,
+  collectingSocietyPointers,
   DISCOGS_GUIDE_STEPS,
   DISCOGS_SUBMIT_URL,
-  GUIDE_TILES,
+  guideTiles,
   MUSICBRAINZ_GUIDE_STEPS,
   MUSICBRAINZ_SUBMIT_URL,
   POST_RELEASE_CLAIM_LINKS,
@@ -21,7 +21,7 @@ export function GuidesTab() {
     <div className="flex flex-col gap-4 text-xs">
       <SelectableTiles
         aria-label={t('distributionGuides.distributionGuides')}
-        items={GUIDE_TILES}
+        items={guideTiles(t)}
         selected={selectedGuide}
         onChange={setSelectedGuide}
         layout="centered"
@@ -80,7 +80,7 @@ export function GuidesTab() {
           {t('distributionGuides.collectingSocieties')}
         </p>
         <ul className="list-inside list-disc">
-          {COLLECTING_SOCIETY_POINTERS.map((society) => (
+          {collectingSocietyPointers(t).map((society) => (
             <li key={society.id}>
               <ExternalLink href={society.url}>{society.label}</ExternalLink>
               <span className="text-foreground-secondary">

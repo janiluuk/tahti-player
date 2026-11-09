@@ -1,5 +1,8 @@
+import type { TFunction } from '@tahti-player/i18n';
+
 import type { HistoryEntry } from '../stores/libraryStore';
 import { dateLocaleTag } from './locale';
+import { webT } from './webT';
 
 /** Nuclear desktop tracks real listening duration per play (native
  * player, local SQLite). Tahti-web only logs a play event with a
@@ -17,18 +20,20 @@ function entryMs(entry: HistoryEntry): number {
 
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-export const RANGE_PRESETS = [
-  { id: 'last7Days', label: 'Last 7 days', days: 7 },
-  { id: 'last30Days', label: 'Last 30 days', days: 30 },
-  { id: 'last90Days', label: 'Last 90 days', days: 90 },
-  { id: 'last12Months', label: 'Last 12 months', days: 365 },
-  { id: 'allTime', label: 'All time', days: null },
-] as const;
+export function rangePresets(t: TFunction<'web'>) {
+  return [
+    { id: 'last7Days', label: t('historyStats.last7Days'), days: 7 },
+    { id: 'last30Days', label: t('historyStats.last30Days'), days: 30 },
+    { id: 'last90Days', label: t('historyStats.last90Days'), days: 90 },
+    { id: 'last12Months', label: t('historyStats.last12Months'), days: 365 },
+    { id: 'allTime', label: t('historyStats.allTime'), days: null },
+  ] as const;
+}
 
-export type RangePresetId = (typeof RANGE_PRESETS)[number]['id'];
+export type RangePresetId = ReturnType<typeof rangePresets>[number]['id'];
 
 function rangeCutoffMs(presetId: RangePresetId): number | null {
-  const preset = RANGE_PRESETS.find((p) => p.id === presetId);
+  const preset = rangePresets(webT()).find((p) => p.id === presetId);
   return preset && preset.days != null
     ? Date.now() - preset.days * MS_PER_DAY
     : null;

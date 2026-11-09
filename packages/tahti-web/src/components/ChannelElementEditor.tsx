@@ -10,7 +10,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Button, Select, Tooltip } from '@tahti-player/ui';
 
 import {
-  CHANNEL_LOOK_ELEMENTS,
+  channelLookElements,
   isChannelLookElementId,
   type ChannelLookElementId,
 } from '../lib/channelLookElements';
@@ -63,10 +63,10 @@ export function ChannelElementEditor({
 }: Props) {
   const { t } = useTranslation('web');
   const selectedMeta =
-    CHANNEL_LOOK_ELEMENTS.find((element) => element.id === selectedId) ??
-    CHANNEL_LOOK_ELEMENTS[0];
+    channelLookElements(t).find((element) => element.id === selectedId) ??
+    channelLookElements(t)[0];
   const selectedItem = items.find((item) => item.id === selectedId) ?? items[0];
-  const availableElements = CHANNEL_LOOK_ELEMENTS.filter((element) =>
+  const availableElements = channelLookElements(t).filter((element) =>
     items.some((item) => item.id === element.id),
   );
   const selectAdjacent = (direction: -1 | 1) => {

@@ -1,3 +1,7 @@
+import type { TFunction } from '@tahti-player/i18n';
+
+import { webT } from './webT';
+
 /** Composable blocks on the public channel page (owner design mode). */
 
 export const CHANNEL_PAGE_ITEM_TYPES = [
@@ -141,11 +145,15 @@ export const CHANNEL_PAGE_ITEM_META: Record<
  * artist-profile 'feed' look-element — neither is this) — these are the
  * placeholder categories the config UI offers until a real backend feed
  * exists to filter. */
-export const FEED_FILTER_OPTIONS: { id: string; label: string }[] = [
-  { id: 'release', label: 'Releases' },
-  { id: 'show', label: 'Shows' },
-  { id: 'announcement', label: 'Announcements' },
-];
+export function feedFilterOptions(
+  t: TFunction<'web'>,
+): { id: string; label: string }[] {
+  return [
+    { id: 'release', label: t('channelPageLayout.releases') },
+    { id: 'show', label: t('channelPageLayout.shows') },
+    { id: 'announcement', label: t('channelPageLayout.announcements') },
+  ];
+}
 
 export type ChannelLookBundle = {
   visualPreset: string;
@@ -182,121 +190,125 @@ function item(
 }
 
 /** Named one-click page layouts (order + visibility + matching look). */
-export const CHANNEL_LAYOUT_PRESETS: ChannelLayoutPreset[] = [
-  {
-    id: 'subtle',
-    name: 'Subtle / Solid',
-    description: 'Minimal solid page.',
-    items: [
-      item('hero', true),
-      item('about', true),
-      item('sound', true),
-      item('subscribe', false),
-      item('chat', false),
-      item('links', false),
-      item('stats', false),
-      item('headerStats', true),
-    ],
-    look: {
-      visualPreset: 'MINIMAL',
-      headerStyle: 'SOLID',
-      brandAccentPreset: 'noir',
-      colorScheme: {
-        accent: '#94A3B8',
-        highlight: '#CBD5E1',
-        bg: '#0B0F14',
-        text: '#E8EEF5',
-        muted: '#64748B',
+export function channelLayoutPresets(
+  t: TFunction<'web'>,
+): ChannelLayoutPreset[] {
+  return [
+    {
+      id: 'subtle',
+      name: 'Subtle / Solid',
+      description: t('channelPageLayout.minimalSolidPage'),
+      items: [
+        item('hero', true),
+        item('about', true),
+        item('sound', true),
+        item('subscribe', false),
+        item('chat', false),
+        item('links', false),
+        item('stats', false),
+        item('headerStats', true),
+      ],
+      look: {
+        visualPreset: 'MINIMAL',
+        headerStyle: 'SOLID',
+        brandAccentPreset: 'noir',
+        colorScheme: {
+          accent: '#94A3B8',
+          highlight: '#CBD5E1',
+          bg: '#0B0F14',
+          text: '#E8EEF5',
+          muted: '#64748B',
+        },
       },
     },
-  },
-  {
-    id: 'stage',
-    name: 'Stage / Live',
-    description: 'Live stage forward.',
-    items: [
-      item('hero', true),
-      item('subscribe', true),
-      item('sound', true),
-      item('about', true),
-      item('chat', false),
-      item('links', false),
-      item('stats', false),
-      item('headerStats', true),
-    ],
-    look: {
-      visualPreset: 'AURORA',
-      headerStyle: 'GRADIENT',
-      brandAccentPreset: 'aurora',
-      colorScheme: {
-        accent: '#22D3EE',
-        highlight: '#A78BFA',
-        bg: '#0B1220',
-        text: '#F8FAFC',
-        muted: '#64748B',
+    {
+      id: 'stage',
+      name: 'Stage / Live',
+      description: t('channelPageLayout.liveStageForward'),
+      items: [
+        item('hero', true),
+        item('subscribe', true),
+        item('sound', true),
+        item('about', true),
+        item('chat', false),
+        item('links', false),
+        item('stats', false),
+        item('headerStats', true),
+      ],
+      look: {
+        visualPreset: 'AURORA',
+        headerStyle: 'GRADIENT',
+        brandAccentPreset: 'aurora',
+        colorScheme: {
+          accent: '#22D3EE',
+          highlight: '#A78BFA',
+          bg: '#0B1220',
+          text: '#F8FAFC',
+          muted: '#64748B',
+        },
       },
     },
-  },
-  {
-    id: 'full',
-    name: 'Archive-first',
-    description: 'Catalog up front.',
-    items: [
-      item('sound', true),
-      item('hero', true),
-      item('about', true),
-      item('subscribe', true),
-      item('links', true),
-      item('chat', false),
-      item('stats', true),
-      item('headerStats', true),
-    ],
-    look: {
-      visualPreset: 'WAVEFORM_BARS',
-      headerStyle: 'GRADIENT',
-      brandAccentPreset: 'ember',
-      colorScheme: {
-        accent: '#F97316',
-        highlight: '#FBBF24',
-        bg: '#120B08',
-        text: '#FFF7ED',
-        muted: '#9A3412',
+    {
+      id: 'full',
+      name: 'Archive-first',
+      description: t('channelPageLayout.catalogUpFront'),
+      items: [
+        item('sound', true),
+        item('hero', true),
+        item('about', true),
+        item('subscribe', true),
+        item('links', true),
+        item('chat', false),
+        item('stats', true),
+        item('headerStats', true),
+      ],
+      look: {
+        visualPreset: 'WAVEFORM_BARS',
+        headerStyle: 'GRADIENT',
+        brandAccentPreset: 'ember',
+        colorScheme: {
+          accent: '#F97316',
+          highlight: '#FBBF24',
+          bg: '#120B08',
+          text: '#FFF7ED',
+          muted: '#9A3412',
+        },
       },
     },
-  },
-  {
-    id: 'tahti',
-    name: 'Tahti / On Air',
-    description: 'On-air Tahti look.',
-    items: [
-      item('hero', true),
-      item('subscribe', true),
-      item('sound', true),
-      item('about', true),
-      item('links', false),
-      item('chat', false),
-      item('stats', false),
-      item('headerStats', true),
-    ],
-    look: {
-      visualPreset: 'WAVEFORM_BARS',
-      headerStyle: 'SOLID',
-      brandAccentPreset: 'tahti',
-      colorScheme: {
-        accent: '#FFB020',
-        highlight: '#35D6C4',
-        bg: '#0A0E1A',
-        text: '#F5F7FC',
-        muted: '#64748B',
+    {
+      id: 'tahti',
+      name: 'Tahti / On Air',
+      description: t('channelPageLayout.onAirTahtiLook'),
+      items: [
+        item('hero', true),
+        item('subscribe', true),
+        item('sound', true),
+        item('about', true),
+        item('links', false),
+        item('chat', false),
+        item('stats', false),
+        item('headerStats', true),
+      ],
+      look: {
+        visualPreset: 'WAVEFORM_BARS',
+        headerStyle: 'SOLID',
+        brandAccentPreset: 'tahti',
+        colorScheme: {
+          accent: '#FFB020',
+          highlight: '#35D6C4',
+          bg: '#0A0E1A',
+          text: '#F5F7FC',
+          muted: '#64748B',
+        },
       },
     },
-  },
-];
+  ];
+}
 
 export function getLayoutPreset(
   id: string | null | undefined,
 ): ChannelLayoutPreset | undefined {
-  return CHANNEL_LAYOUT_PRESETS.find((p) => p.id === id);
+  return channelLayoutPresets(webT()).find((p) => p.id === id);
 }
 
 export function defaultChannelPageLayout(): Array<{

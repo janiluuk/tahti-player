@@ -10,7 +10,7 @@ import {
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Badge, Button, InlineError } from '@tahti-player/ui';
 
 import {
@@ -118,14 +118,18 @@ function QuarterlyReportsPanel() {
   );
 }
 
-const FILTERS: { id: AdminFeatureRequestStatus | 'all'; label: string }[] = [
-  { id: 'all', label: 'All' },
-  { id: 'OPEN', label: 'Open' },
-  { id: 'PLANNED', label: 'Planned' },
-  { id: 'IN_PROGRESS', label: 'In progress' },
-  { id: 'DONE', label: 'Done' },
-  { id: 'DECLINED', label: 'Declined' },
-];
+function filters(
+  t: TFunction<'web'>,
+): { id: AdminFeatureRequestStatus | 'all'; label: string }[] {
+  return [
+    { id: 'all', label: 'All' },
+    { id: 'OPEN', label: t('featureRequestsTabMore.open') },
+    { id: 'PLANNED', label: t('featureRequestsTabMore.planned') },
+    { id: 'IN_PROGRESS', label: t('featureRequestsTabMore.inProgress') },
+    { id: 'DONE', label: t('featureRequestsTabMore.done') },
+    { id: 'DECLINED', label: t('featureRequestsTabMore.declined') },
+  ];
+}
 
 const FILTER_TAB_ICONS = {
   all: ListFilterIcon,
@@ -270,7 +274,7 @@ export function FeatureRequestsTab() {
 
       <ModerationTabs
         activeId={filter}
-        items={FILTERS.map((item) => ({
+        items={filters(t).map((item) => ({
           ...item,
           icon: FILTER_TAB_ICONS[item.id],
         }))}

@@ -6,7 +6,7 @@ import { AudioRevisionList } from '../../../components/AudioRevisionList';
 import { DownloadsSwitch } from '../../../components/DownloadsSwitch';
 import { MaterialGenreField } from '../../../components/MaterialGenreField';
 import { MaterialTagsField } from '../../../components/MaterialTagsField';
-import { SELECTABLE_CONTENT_TYPES } from '../../../content/contentTypes';
+import { selectableContentTypes } from '../../../content/contentTypes';
 import { useUsedBeforeTags } from '../../../hooks/useUsedBeforeTags';
 import type { SoundEditorState } from './useSoundEditor';
 
@@ -63,7 +63,7 @@ export function DetailsTabContent({
           label={t('soundDetailsTab.contentType')}
           value={contentType}
           onValueChange={setContentType}
-          options={SELECTABLE_CONTENT_TYPES.map(({ id, label }) => ({
+          options={selectableContentTypes(t).map(({ id, label }) => ({
             id,
             label,
           }))}
