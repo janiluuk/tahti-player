@@ -333,7 +333,10 @@ export function ArtistMusicTab({
       )}
       {channel?.slug ? (
         <>
-          <ArtistUpcomingEvents channelSlug={channel.slug} />
+          <ArtistUpcomingEvents
+            channelSlug={channel.slug}
+            username={artist.username}
+          />
           <ArtistCredits channelSlug={channel.slug} />
         </>
       ) : null}

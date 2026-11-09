@@ -183,6 +183,11 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Media/EmbedTrackRow` | `tahti-web/EmbedTrackRow.stories.tsx` |
 | `Tahti/Page/EntitySocialHeader` | `tahti-web/EntitySocialHeader.stories.tsx` |
 | `Tahti/Studio/ShowDetail/EpisodeEditorRow` | `tahti-web/EpisodeEditorRow.stories.tsx` |
+| `Tahti/Events/EventCalendar` | `tahti-web/EventCalendar.stories.tsx` |
+| `Tahti/Events/EventCard` | `tahti-web/EventCard.stories.tsx` |
+| `Tahti/Events/EventInvitesPanel` | `tahti-web/EventInvitesPanel.stories.tsx` |
+| `Tahti/Events/EventParticipantsEditor` | `tahti-web/EventParticipantsEditor.stories.tsx` |
+| `Tahti/Events/EventView` | `tahti-web/EventView.stories.tsx` |
 | `Tahti/Channel/FanChatRoom` | `tahti-web/FanChatRoom.stories.tsx` |
 | `Tahti/Studio/FanSubscriptionStats` | `tahti-web/FanSubscriptionStats.stories.tsx` |
 | `Tahti/Studio/FanTiersEditor` | `tahti-web/FanTiersEditor.stories.tsx` |

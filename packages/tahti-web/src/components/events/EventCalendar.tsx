@@ -31,7 +31,7 @@ function dayKey(date: Date) {
 }
 
 /** Month grid of every public event (agenda list on phones). */
-export function EventCalendar({ initialMonth }: { initialMonth?: Date } = {}) {
+export function EventCalendar({ initialMonth }: { initialMonth?: Date }) {
   const { t } = useTranslation('web');
   const locale = toBcp47(currentLocale());
   const [month, setMonth] = useState(() =>
