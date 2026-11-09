@@ -95,9 +95,12 @@ export function DetailsPanel({ state }: { state: CollectionEditState }) {
             value={visibility}
             onValueChange={(value) => setVisibility(value as typeof visibility)}
             options={[
-              { id: 'PUBLIC', label: 'Public' },
-              { id: 'UNLISTED', label: 'Unlisted — direct link only' },
-              { id: 'PRIVATE', label: 'Private — only you' },
+              { id: 'PUBLIC', label: t('detailsPanel.public') },
+              {
+                id: 'UNLISTED',
+                label: t('detailsPanel.unlistedDirectLinkOnly'),
+              },
+              { id: 'PRIVATE', label: t('detailsPanel.privateOnlyYou') },
             ]}
           />
         </section>

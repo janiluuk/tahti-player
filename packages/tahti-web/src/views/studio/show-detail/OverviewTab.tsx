@@ -155,8 +155,8 @@ export function OverviewTab({
                 setVisibility(value as 'PUBLIC' | 'FAN_ONLY')
               }
               options={[
-                { id: 'PUBLIC', label: 'Public' },
-                { id: 'FAN_ONLY', label: 'Fans only' },
+                { id: 'PUBLIC', label: t('showOverviewTab.public') },
+                { id: 'FAN_ONLY', label: t('showOverviewTab.fansOnly') },
               ]}
             />
             <div className="border-border bg-background-secondary/30 flex items-center justify-between gap-3 rounded-md border p-3 text-sm">

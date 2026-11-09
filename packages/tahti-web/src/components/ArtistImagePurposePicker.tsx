@@ -207,8 +207,8 @@ export const ArtistImagePurposePicker: FC<Props> = ({
         <div className="mt-4">
           <FilePicker
             labels={{
-              title: 'Artist images',
-              description: 'JPEG, PNG, or WebP',
+              title: t('artistImagePurposePicker.artistImages'),
+              description: t('artistImagePurposePicker.jpegPngOrWebp'),
               browse: 'Choose images',
             }}
             accept={ACCEPTED_IMAGES}

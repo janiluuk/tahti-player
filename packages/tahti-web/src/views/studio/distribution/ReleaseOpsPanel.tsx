@@ -528,19 +528,19 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
             items={[
               {
                 id: 'catalog',
-                label: 'Catalog & credits',
+                label: t('releaseOpsPanel.catalogCredits'),
                 icon: <BookOpenIcon size={14} />,
                 content: catalogTab,
               },
               {
                 id: 'delivery',
-                label: 'Delivery & royalties',
+                label: t('releaseOpsPanel.deliveryRoyalties'),
                 icon: <LinkIcon size={14} />,
                 content: deliveryTab,
               },
               {
                 id: 'guides',
-                label: 'Guides',
+                label: t('releaseOpsPanel.guides'),
                 icon: <BookOpenIcon size={14} />,
                 content: guidesTab,
               },

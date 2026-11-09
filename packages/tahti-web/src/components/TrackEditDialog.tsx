@@ -65,7 +65,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
             items={[
               {
                 id: 'basics',
-                label: 'Basics',
+                label: t('trackEditDialogMore.basics'),
                 icon: <TagsIcon size={15} />,
                 content: <BasicsTab soundId={soundId!} state={state} />,
               },
@@ -73,7 +73,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                 ? [
                     {
                       id: 'tracklist' as const,
-                      label: 'Tracklist',
+                      label: t('trackEditDialogMore.tracklist'),
                       icon: <ListMusicIcon size={15} />,
                       content: (
                         <TracklistEditor
@@ -93,7 +93,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
                 : []),
               {
                 id: 'sharing',
-                label: 'Sharing',
+                label: t('trackEditDialogMore.sharing'),
                 icon: <Share2Icon size={15} />,
                 content: (
                   <SharingTab soundId={soundId!} item={item} state={state} />
@@ -101,7 +101,7 @@ export function TrackEditDialog({ soundId, onClose, onSaved }: Props) {
               },
               {
                 id: 'advanced',
-                label: 'Advanced',
+                label: t('trackEditDialogMore.advanced'),
                 icon: <Settings2Icon size={15} />,
                 content: (
                   <div className="flex flex-col gap-8">

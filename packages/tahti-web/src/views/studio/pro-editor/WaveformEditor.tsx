@@ -476,9 +476,9 @@ export function WaveformEditor({
           onFadeOut={() => addFade('out')}
           onClearCuts={() =>
             ask({
-              title: 'Clear all cuts?',
+              title: t('waveformEditorMore.clearAllCuts'),
               description: `Removes all ${editList.cuts.length} cut(s) from this draft. You can undo this.`,
-              confirmLabel: 'Clear cuts',
+              confirmLabel: t('waveformEditorMore.clearCuts'),
               run: () => {
                 onChange({ ...editList, cuts: [] });
                 toast.success(i18n.t('web:toasts.cutsCleared'));
@@ -615,10 +615,10 @@ export function WaveformEditor({
             onSeek={seek}
             onRemoveCut={(index) =>
               ask({
-                title: 'Remove this cut?',
+                title: t('waveformEditorMore.removeThisCut'),
                 description:
                   'The audio in it will be kept on render. You can undo this.',
-                confirmLabel: 'Remove cut',
+                confirmLabel: t('waveformEditorMore.removeCut'),
                 run: () =>
                   onChange({
                     ...editList,
@@ -628,9 +628,9 @@ export function WaveformEditor({
             }
             onRemoveFade={(index) =>
               ask({
-                title: 'Remove this fade?',
-                description: 'You can undo this.',
-                confirmLabel: 'Remove fade',
+                title: t('waveformEditorMore.removeThisFade'),
+                description: t('waveformEditorMore.youCanUndoThis'),
+                confirmLabel: t('waveformEditorMore.removeFade'),
                 run: () =>
                   onChange({
                     ...editList,
@@ -640,9 +640,9 @@ export function WaveformEditor({
             }
             onRemoveMarker={(index) =>
               ask({
-                title: 'Remove this marker?',
-                description: 'You can undo this.',
-                confirmLabel: 'Remove marker',
+                title: t('waveformEditorMore.removeThisMarker'),
+                description: t('waveformEditorMore.youCanUndoThis'),
+                confirmLabel: t('waveformEditorMore.removeMarker'),
                 run: () =>
                   onChange({
                     ...editList,
@@ -654,9 +654,9 @@ export function WaveformEditor({
             }
             onClearMarkers={() =>
               ask({
-                title: 'Clear all markers?',
-                description: 'You can undo this.',
-                confirmLabel: 'Clear markers',
+                title: t('waveformEditorMore.clearAllMarkers'),
+                description: t('waveformEditorMore.youCanUndoThis'),
+                confirmLabel: t('waveformEditorMore.clearMarkers'),
                 run: () => onChange({ ...editList, markers: [] }),
               })
             }

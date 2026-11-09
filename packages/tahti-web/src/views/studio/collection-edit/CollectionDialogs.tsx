@@ -89,8 +89,8 @@ export function CollectionDialogs({
         <div className="mt-4">
           <FilePicker
             labels={{
-              title: 'Backdrop images',
-              description: 'JPEG, PNG, WebP, or GIF',
+              title: t('collectionDialogsMore.backdropImages'),
+              description: t('collectionDialogsMore.jpegPngWebpOrGif'),
               browse: uploadingImage ? 'Uploading…' : 'Choose image(s)',
             }}
             accept="image/jpeg,image/png,image/webp,image/gif"

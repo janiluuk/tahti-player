@@ -209,19 +209,19 @@ export function AdminLogsView() {
                 items={[
                   {
                     id: 'activity',
-                    label: 'Audit events',
+                    label: t('adminLogsViewMore.auditEvents'),
                     icon: <ActivityIcon size={14} />,
                     content: <AdminActivityView embedded />,
                   },
                   {
                     id: 'containers',
-                    label: 'Container logs',
+                    label: t('adminLogsViewMore.containerLogs'),
                     icon: <ContainerIcon size={14} />,
                     content: containerLogs,
                   },
                   {
                     id: 'recent-audit',
-                    label: 'Recent audit',
+                    label: t('adminLogsViewMore.recentAudit'),
                     icon: <HistoryIcon size={14} />,
                     content: <RecentAuditEntries />,
                   },

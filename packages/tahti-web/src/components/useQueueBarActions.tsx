@@ -1,6 +1,7 @@
 import { HardDriveIcon, ListMusicIcon, ShuffleIcon } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import type { QueueHeaderMenuItem } from '@tahti-player/ui';
 
 import { getNativeLibrary } from '../lib/nativeLibrary';
@@ -18,6 +19,7 @@ export type QueueBarActions = {
 };
 
 export function useQueueBarActions(): QueueBarActions {
+  const { t } = useTranslation('web');
   const queueLength = usePlayerStore((s) => s.queue.length);
   const clearQueue = usePlayerStore((s) => s.clearQueue);
   const shuffleQueueOrder = usePlayerStore((s) => s.shuffleQueueOrder);
@@ -30,8 +32,8 @@ export function useQueueBarActions(): QueueBarActions {
     {
       id: 'save-as-playlist',
       label: nativeLibrary
-        ? 'Save queue to cloud playlist'
-        : 'Save queue as playlist',
+        ? t('useQueueBarActions.saveQueueToCloudPlaylist')
+        : t('useQueueBarActions.saveQueueAsPlaylist'),
       icon: <ListMusicIcon size={15} aria-hidden />,
       disabled: queueLength === 0,
       onClick: () => setSavingAsPlaylist(true),
@@ -40,7 +42,7 @@ export function useQueueBarActions(): QueueBarActions {
       ? [
           {
             id: 'save-local',
-            label: 'Save queue as local playlist',
+            label: t('useQueueBarActions.saveQueueAsLocalPlaylist'),
             icon: <HardDriveIcon size={15} aria-hidden />,
             disabled: queueLength === 0,
             onClick: () => setSavingLocal(true),
@@ -49,7 +51,7 @@ export function useQueueBarActions(): QueueBarActions {
       : []),
     {
       id: 'shuffle-order',
-      label: 'Randomize queue order',
+      label: t('useQueueBarActions.randomizeQueueOrder'),
       icon: <ShuffleIcon size={15} aria-hidden />,
       disabled: queueLength < 2,
       onClick: shuffleQueueOrder,

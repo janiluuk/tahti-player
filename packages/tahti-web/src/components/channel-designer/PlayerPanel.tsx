@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Tabs } from '@tahti-player/ui';
 
 import { BRAND_ACCENTS, type ColorScheme } from '../../api/channel-design';
@@ -50,6 +51,7 @@ export function PlayerPanel({
   overlaySlot,
   footerSlot,
 }: Props) {
+  const { t } = useTranslation('web');
   const selectedIndex = Math.max(0, TAB_ORDER.indexOf(tab));
 
   return (
@@ -68,7 +70,7 @@ export function PlayerPanel({
         items={[
           {
             id: 'gradient',
-            label: 'Gradient',
+            label: t('playerPanel.gradient'),
             content: (
               <PlayerGradientControls
                 usePlayerGradient={usePlayerGradient}
@@ -81,7 +83,7 @@ export function PlayerPanel({
           },
           {
             id: 'video-image',
-            label: 'Video / image',
+            label: t('playerPanel.videoImage'),
             content: (
               <div className="flex flex-col gap-3">
                 <p className="text-foreground-secondary text-xs">
@@ -93,12 +95,12 @@ export function PlayerPanel({
           },
           {
             id: 'visualizer',
-            label: 'Visualizer',
+            label: t('playerPanel.visualizer'),
             content: visualizerSlot,
           },
           {
             id: 'overlay',
-            label: 'Overlay',
+            label: t('playerPanel.overlay'),
             content: overlaySlot,
           },
         ]}

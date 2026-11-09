@@ -128,7 +128,7 @@ export function AdminAddonsView() {
                 aria-label={t('adminAddonsView.addOnTypes')}
                 className="border-border border-b pb-3"
                 items={[
-                  { id: 'ALL', label: 'All add-ons' },
+                  { id: 'ALL', label: t('adminAddonsViewMore.allAddOns') },
                   ...SCOPES.map((item) => ({ id: item.id, label: item.label })),
                 ]}
                 selected={scope}
@@ -139,7 +139,7 @@ export function AdminAddonsView() {
                 aria-label={t('adminAddonsView.addOnReviewStatus')}
                 className="border-border border-b pb-3"
                 items={[
-                  { id: 'ALL', label: 'All statuses' },
+                  { id: 'ALL', label: t('adminAddonsViewMore.allStatuses') },
                   {
                     id: 'PENDING',
                     label:

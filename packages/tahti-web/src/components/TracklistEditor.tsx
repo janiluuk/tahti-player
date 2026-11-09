@@ -248,7 +248,7 @@ export const TracklistEditor: FC<Props> = ({
         items={[
           {
             id: 'pins',
-            label: 'Pins',
+            label: t('tracklistEditorMore.pins'),
             icon: <MapPinPlusIcon size={15} />,
             content: (
               <div className="flex flex-col gap-4">
@@ -412,7 +412,7 @@ export const TracklistEditor: FC<Props> = ({
           },
           {
             id: 'import',
-            label: 'Import',
+            label: t('tracklistEditorMore.import'),
             icon: <FileUpIcon size={15} />,
             content: (
               <Tabs
@@ -547,7 +547,7 @@ export const TracklistEditor: FC<Props> = ({
           },
           {
             id: 'overlay',
-            label: 'Overlay',
+            label: t('tracklistEditorMore.overlay'),
             icon: <ListMusicIcon size={15} />,
             content: (
               <ClientCapabilityNotice

@@ -195,8 +195,11 @@ export function ChannelRotationPanel() {
                 })
               }
               options={[
-                { id: 'shuffle', label: 'Shuffle' },
-                { id: 'ordered', label: 'In this order' },
+                { id: 'shuffle', label: t('channelRotationPanelMore.shuffle') },
+                {
+                  id: 'ordered',
+                  label: t('channelRotationPanelMore.inThisOrder'),
+                },
               ]}
               className="min-w-36"
             />

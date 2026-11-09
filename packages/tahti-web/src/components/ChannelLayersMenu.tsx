@@ -99,14 +99,18 @@ export function ChannelLayersMenu({
           [
             {
               id: 'presets' as const,
-              label: 'Presets',
+              label: t('channelLayersMenuMore.presets'),
               icon: LayoutTemplateIcon,
             },
-            { id: 'layers' as const, label: 'Layers', icon: LayersIcon },
+            {
+              id: 'layers' as const,
+              label: t('channelLayersMenuMore.layers'),
+              icon: LayersIcon,
+            },
             { id: 'add' as const, label: 'Add', icon: PlusIcon },
             {
               id: 'look' as const,
-              label: 'Settings',
+              label: t('channelLayersMenuMore.settings'),
               icon: SlidersHorizontalIcon,
             },
           ] as const

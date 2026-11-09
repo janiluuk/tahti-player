@@ -38,6 +38,7 @@ export function useListenerWidgetBlocks(): {
   blocks: SortableBlock[];
   dialog: ReactNode;
 } {
+  const { t } = useTranslation('web');
   const instances = useListenerWidgetsStore((s) => s.instances);
   const installedTypeIds = useListenerWidgetsStore((s) => s.installedTypeIds);
   const savedBrowserStations = useListenerWidgetsStore(
@@ -77,7 +78,7 @@ export function useListenerWidgetBlocks(): {
   if (savedBrowserStations.length > 0) {
     blocks.push({
       id: BROWSER_STATIONS_BLOCK_ID,
-      label: 'Saved stations',
+      label: t('listenerWidgetsSectionMore.savedStations'),
       content: (
         <CardGrid>
           {savedBrowserStations.map((station) => (
@@ -144,7 +145,7 @@ export function useListenerWidgetBlocks(): {
       if (!blocks.some((block) => block.id === LATEST_NEWS_BLOCK_ID)) {
         blocks.push({
           id: LATEST_NEWS_BLOCK_ID,
-          label: 'Latest News',
+          label: t('listenerWidgetsSectionMore.latestNews'),
           content: <LatestNewsWidget surface="listen" />,
         });
       }
@@ -162,7 +163,7 @@ export function useListenerWidgetBlocks(): {
   if (favoritesEnabled) {
     blocks.push({
       id: FAVORITES_BLOCK_ID,
-      label: 'Favorites',
+      label: t('listenerWidgetsSectionMore.favorites'),
       content: <FavoritesView embedded />,
     });
   }

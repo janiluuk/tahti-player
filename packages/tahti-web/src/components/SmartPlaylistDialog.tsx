@@ -150,8 +150,8 @@ export function SmartPlaylistDialog({
             <FilterChips
               aria-label={t('smartPlaylist.includeTracksThatMatch')}
               items={[
-                { id: 'all', label: 'All of the rules' },
-                { id: 'any', label: 'Any of the rules' },
+                { id: 'all', label: t('smartPlaylistDialog.allOfTheRules') },
+                { id: 'any', label: t('smartPlaylistDialog.anyOfTheRules') },
               ]}
               selected={draft.matchAll ? 'all' : 'any'}
               onChange={(id) =>
@@ -260,8 +260,8 @@ export function SmartPlaylistDialog({
                 }))
               }
               options={[
-                { id: 'asc', label: 'Ascending' },
-                { id: 'desc', label: 'Descending' },
+                { id: 'asc', label: t('smartPlaylistDialog.ascending') },
+                { id: 'desc', label: t('smartPlaylistDialog.descending') },
               ]}
             />
             <Input

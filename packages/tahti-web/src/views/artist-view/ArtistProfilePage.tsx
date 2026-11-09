@@ -198,13 +198,25 @@ export function ArtistProfilePage({ username }: { username: string }) {
       profile.tracks.length > 0 &&
       (lookVisibility.player || profile.tracks.some((t) => isPinned(t)))
     ) {
-      list.push({ id: 'stage', label: 'Stage', icon: MonitorPlayIcon });
+      list.push({
+        id: 'stage',
+        label: t('artistProfilePage.stage'),
+        icon: MonitorPlayIcon,
+      });
     }
     if (hasGallery) {
-      list.push({ id: 'gallery', label: 'Gallery', icon: ImagesIcon });
+      list.push({
+        id: 'gallery',
+        label: t('artistProfilePage.gallery'),
+        icon: ImagesIcon,
+      });
     }
     if (isOwner) {
-      list.push({ id: 'design', label: 'Design', icon: PaintbrushIcon });
+      list.push({
+        id: 'design',
+        label: t('artistProfilePage.design'),
+        icon: PaintbrushIcon,
+      });
     }
     return list;
   }, [hasGallery, isOwner, lookVisibility, profile]);

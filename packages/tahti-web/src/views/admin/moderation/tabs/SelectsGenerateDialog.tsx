@@ -49,8 +49,11 @@ export function SelectsGenerateDialog({
         value={mode}
         onChange={setMode}
         options={[
-          { id: 'add', label: 'Add to the end' },
-          { id: 'replace', label: 'Replace the rotation' },
+          { id: 'add', label: t('selectsGenerateDialogMore.addToTheEnd') },
+          {
+            id: 'replace',
+            label: t('selectsGenerateDialogMore.replaceTheRotation'),
+          },
         ]}
       />
       {mode === 'replace' && rotationSize > 0 ? (

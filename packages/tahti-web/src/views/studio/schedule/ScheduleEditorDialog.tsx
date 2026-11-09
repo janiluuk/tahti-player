@@ -207,8 +207,8 @@ export function ScheduleEditorDialog({ form }: { form: ScheduleForm }) {
               setShowVisibility(value as 'PUBLIC' | 'FAN_ONLY')
             }
             options={[
-              { id: 'PUBLIC', label: 'Public' },
-              { id: 'FAN_ONLY', label: 'Fans only' },
+              { id: 'PUBLIC', label: t('scheduleEditorDialog.public') },
+              { id: 'FAN_ONLY', label: t('scheduleEditorDialog.fansOnly') },
             ]}
           />
           <div className="flex items-center justify-between gap-3 text-sm">

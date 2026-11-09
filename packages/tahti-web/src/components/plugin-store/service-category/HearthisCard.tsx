@@ -374,7 +374,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       toast.success(completionMessage, {
         id: notificationId,
         action: {
-          label: 'Open collection',
+          label: t('hearthisCard.openCollection'),
           onClick: () =>
             void navigate({
               to: '/studio/collections/$slug',
@@ -584,8 +584,11 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                 aria-label="Destination playlist"
                 className="min-w-0 flex-1 basis-40"
                 options={[
-                  { id: '', label: 'Choose destination playlist' },
-                  { id: NEW_PLAYLIST_DESTINATION, label: 'New playlist…' },
+                  { id: '', label: t('hearthisCard.destination') },
+                  {
+                    id: NEW_PLAYLIST_DESTINATION,
+                    label: t('hearthisCard.new'),
+                  },
                   ...playlistDestinations.map((c) => ({
                     id: c.id ?? c.slug,
                     label: c.name,

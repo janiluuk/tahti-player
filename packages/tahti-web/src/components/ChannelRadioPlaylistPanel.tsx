@@ -182,9 +182,21 @@ export const ChannelRadioPlaylistPanel: FC = () => {
         .filter((item): item is ProgrammeItem => Boolean(item)),
     }));
     return [
-      { id: 'tracks', label: 'Tracks', items: tracks },
-      { id: 'dj-sets', label: 'DJ Sets', items: djSets },
-      { id: 'clips', label: 'Clips', items: clips },
+      {
+        id: 'tracks',
+        label: t('channelRadioPlaylistPanel.tracks'),
+        items: tracks,
+      },
+      {
+        id: 'dj-sets',
+        label: t('channelRadioPlaylistPanel.djSets'),
+        items: djSets,
+      },
+      {
+        id: 'clips',
+        label: t('channelRadioPlaylistPanel.clips'),
+        items: clips,
+      },
       ...releaseGroups,
       ...playlistGroups,
     ].filter((group) => group.items.length > 0);
@@ -521,8 +533,14 @@ export const ChannelRadioPlaylistPanel: FC = () => {
 
             <FilterChips
               items={[
-                { id: 'shuffle', label: 'Shuffle' },
-                { id: 'ordered', label: 'In order' },
+                {
+                  id: 'shuffle',
+                  label: t('channelRadioPlaylistPanel.shuffle'),
+                },
+                {
+                  id: 'ordered',
+                  label: t('channelRadioPlaylistPanel.inOrder'),
+                },
               ]}
               selected={fallbackMode}
               onChange={(id) => setFallbackMode(id as 'shuffle' | 'ordered')}

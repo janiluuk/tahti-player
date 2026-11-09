@@ -590,9 +590,12 @@ export function ClipEditorDialog({
                 label={t('clipEditor.placement')}
                 value={placement.placement}
                 options={[
-                  { id: 'BETWEEN', label: 'Between programs' },
-                  { id: 'BEFORE', label: 'Before a program' },
-                  { id: 'AFTER', label: 'After a program' },
+                  {
+                    id: 'BETWEEN',
+                    label: t('clipEditorDialog.betweenPrograms'),
+                  },
+                  { id: 'BEFORE', label: t('clipEditorDialog.beforeAProgram') },
+                  { id: 'AFTER', label: t('clipEditorDialog.afterAProgram') },
                 ]}
                 onValueChange={(value) => {
                   setPlacement((p) => ({
@@ -608,9 +611,18 @@ export function ClipEditorDialog({
                     label={t('clipEditor.frequency')}
                     value={placement.scheduleMode}
                     options={[
-                      { id: 'AFTER_EVERY', label: 'After every program' },
-                      { id: 'EVERY_NTH', label: 'Every N programs' },
-                      { id: 'RANDOM', label: 'Occasionally (random)' },
+                      {
+                        id: 'AFTER_EVERY',
+                        label: t('clipEditorDialog.afterEveryProgram'),
+                      },
+                      {
+                        id: 'EVERY_NTH',
+                        label: t('clipEditorDialog.everyNPrograms'),
+                      },
+                      {
+                        id: 'RANDOM',
+                        label: t('clipEditorDialog.occasionallyRandom'),
+                      },
                     ]}
                     onValueChange={(value) => {
                       setPlacement((p) => ({

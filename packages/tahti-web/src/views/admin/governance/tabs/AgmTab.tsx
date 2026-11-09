@@ -280,9 +280,9 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
             setStatus(value as GovernanceAttendanceStatus)
           }
           options={[
-            { id: 'PRESENT', label: 'Present' },
-            { id: 'ABSENT', label: 'Absent' },
-            { id: 'EXCUSED', label: 'Excused' },
+            { id: 'PRESENT', label: t('agmTabMore.present') },
+            { id: 'ABSENT', label: t('agmTabMore.absent') },
+            { id: 'EXCUSED', label: t('agmTabMore.excused') },
           ]}
         />
         <Button size="sm" disabled={saving || !name.trim()} type="submit">
@@ -402,12 +402,12 @@ export function AgmTab() {
               setMeetingType(value as GovernanceMeeting['type'])
             }
             options={[
-              { id: 'GENERAL', label: 'General meeting' },
+              { id: 'GENERAL', label: t('agmTabMore.generalMeeting') },
               {
                 id: 'EXTRAORDINARY_GENERAL',
-                label: 'Extraordinary general',
+                label: t('agmTabMore.extraordinaryGeneral'),
               },
-              { id: 'BOARD', label: 'Board meeting' },
+              { id: 'BOARD', label: t('agmTabMore.boardMeeting') },
             ]}
           />
           <Button
@@ -481,12 +481,15 @@ export function AgmTab() {
                         });
                       }}
                       options={[
-                        { id: 'DRAFT', label: 'Draft' },
-                        { id: 'SCHEDULED', label: 'Scheduled' },
-                        { id: 'HELD', label: 'Held' },
-                        { id: 'MINUTES_DRAFT', label: 'Minutes draft' },
-                        { id: 'APPROVED', label: 'Approved' },
-                        { id: 'CANCELLED', label: 'Cancelled' },
+                        { id: 'DRAFT', label: t('agmTabMore.draft') },
+                        { id: 'SCHEDULED', label: t('agmTabMore.scheduled') },
+                        { id: 'HELD', label: t('agmTabMore.held') },
+                        {
+                          id: 'MINUTES_DRAFT',
+                          label: t('agmTabMore.minutesDraft'),
+                        },
+                        { id: 'APPROVED', label: t('agmTabMore.approved') },
+                        { id: 'CANCELLED', label: t('agmTabMore.cancelled') },
                       ]}
                     />
                     {meetingStateSaving === meeting.id && (
@@ -699,17 +702,17 @@ export function AgmTab() {
                 setDocumentType(value as GovernanceDocument['type'])
               }
               options={[
-                { id: 'MINUTES', label: 'Minutes' },
-                { id: 'MEETING_NOTICE', label: 'Meeting notice' },
-                { id: 'ANNUAL_REPORT', label: 'Annual report' },
-                { id: 'BYLAWS', label: 'Bylaws' },
-                { id: 'POLICY', label: 'Policy' },
+                { id: 'MINUTES', label: t('agmTabMore.minutes') },
+                { id: 'MEETING_NOTICE', label: t('agmTabMore.meetingNotice') },
+                { id: 'ANNUAL_REPORT', label: t('agmTabMore.annualReport') },
+                { id: 'BYLAWS', label: t('agmTabMore.bylaws') },
+                { id: 'POLICY', label: t('agmTabMore.policy') },
                 {
                   id: 'FINANCIAL_STATEMENT',
-                  label: 'Financial statement',
+                  label: t('agmTabMore.financialStatement'),
                 },
-                { id: 'AUDIT_REPORT', label: 'Audit report' },
-                { id: 'OTHER', label: 'Other' },
+                { id: 'AUDIT_REPORT', label: t('agmTabMore.auditReport') },
+                { id: 'OTHER', label: t('agmTabMore.other') },
               ]}
             />
             <Input

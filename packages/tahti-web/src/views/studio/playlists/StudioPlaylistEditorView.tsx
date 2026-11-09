@@ -168,7 +168,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
       ? [
           {
             key: 'tracks',
-            label: 'Tracks',
+            label: t('studioPlaylistEditorView.tracks'),
             value: items.length,
             icon: MusicIcon,
           },
@@ -630,7 +630,10 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                         value={addSoundId}
                         onValueChange={setAddSoundId}
                         options={[
-                          { id: '', label: 'Select track…' },
+                          {
+                            id: '',
+                            label: t('studioPlaylistEditorView.selectTrack'),
+                          },
                           ...sounds
                             .filter(
                               (a) =>
@@ -661,7 +664,10 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                         value={addReleaseId}
                         onValueChange={setAddReleaseId}
                         options={[
-                          { id: '', label: 'Select release…' },
+                          {
+                            id: '',
+                            label: t('studioPlaylistEditorView.selectRelease'),
+                          },
                           ...releases.map((r) => ({
                             id: r.id,
                             label: r.title,
@@ -719,8 +725,8 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
             <div className="mt-4">
               <FilePicker
                 labels={{
-                  title: 'Cover image',
-                  description: 'JPEG, PNG, WebP, or GIF',
+                  title: t('studioPlaylistEditorView.coverImage'),
+                  description: t('studioPlaylistEditorView.jpegPngWebpOrGif'),
                   browse: uploadingImage ? 'Uploading…' : 'Choose image',
                 }}
                 accept="image/jpeg,image/png,image/webp,image/gif"

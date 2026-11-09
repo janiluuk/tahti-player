@@ -153,8 +153,8 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
               >
                 <FilePicker
                   labels={{
-                    title: 'Reference track',
-                    description: 'Drop an audio file, or browse for one.',
+                    title: t('studioMasteringView.referenceTrack'),
+                    description: t('studioMasteringView.dropAnAudioFileOr'),
                     browse: referenceFile
                       ? 'Choose another file'
                       : 'Choose file',

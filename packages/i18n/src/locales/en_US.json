@@ -8189,6 +8189,308 @@
     },
     "recordingRow": {
       "stillBeingSavedToYour": "Still being saved to your library. It shows up in Sounds, ready to edit and publish, when it's done."
+    },
+    "agmTabMore": {
+      "present": "Present",
+      "absent": "Absent",
+      "excused": "Excused",
+      "generalMeeting": "General meeting",
+      "extraordinaryGeneral": "Extraordinary general",
+      "boardMeeting": "Board meeting",
+      "draft": "Draft",
+      "scheduled": "Scheduled",
+      "held": "Held",
+      "minutesDraft": "Minutes draft",
+      "approved": "Approved",
+      "cancelled": "Cancelled",
+      "minutes": "Minutes",
+      "meetingNotice": "Meeting notice",
+      "annualReport": "Annual report",
+      "bylaws": "Bylaws",
+      "policy": "Policy",
+      "financialStatement": "Financial statement",
+      "auditReport": "Audit report",
+      "other": "Other"
+    },
+    "waveformEditorMore": {
+      "clearAllCuts": "Clear all cuts?",
+      "clearCuts": "Clear cuts",
+      "removeThisCut": "Remove this cut?",
+      "removeCut": "Remove cut",
+      "removeThisFade": "Remove this fade?",
+      "youCanUndoThis": "You can undo this.",
+      "removeFade": "Remove fade",
+      "removeThisMarker": "Remove this marker?",
+      "removeMarker": "Remove marker",
+      "clearAllMarkers": "Clear all markers?",
+      "clearMarkers": "Clear markers"
+    },
+    "transparencyMethodologyView": {
+      "monthlyMembershipFeesFromArtist": "Monthly membership fees from artist members (Artist and Studio tiers). Recorded at successful Stripe charge.",
+      "distributionHandlingFeesChargedTo": "Distribution handling fees charged to artists for Revelator/DSP delivery (€8 per release; Studio-tier accounts get a number of releases included per year). Pass-through cost is recorded separately.",
+      "grantsReceivedFromPublicOr": "Grants received from public or private bodies (e.g. Taiteen edistämiskeskus).",
+      "voluntaryDonationsFromSupporters": "Voluntary donations from supporters.",
+      "serversBandwidthColocationDomainRegistrations": "Servers, bandwidth, colocation, domain registrations, TLS certificates, cloud services. Primarily owned hardware in Helsinki.",
+      "revelatorApiCostPassedDirectly": "Revelator API cost passed directly through to artists. Net zero for Tahti ry.",
+      "paymentProcessingFeesStripeSubscriptions": "Payment processing fees (Stripe), subscriptions, software licenses, office materials.",
+      "boardCompensationAndAnyPaid": "Board compensation and any paid professional roles. Published in aggregate, never per-person.",
+      "annualStatutoryAuditAndAccounting": "Annual statutory audit and accounting fees. Finnish associations law requires annual audit above certain thresholds.",
+      "legalAdviceTranslationAdHoc": "Legal advice, translation, ad-hoc consulting.",
+      "annualArtistGrantsPaidTo": "Annual artist grants paid to member channels. Calculated March 1 for the prior calendar year. Formula: (channel engagement units / total eligible units) × grant pool. A 10% operating reserve is retained before the pool is calculated.",
+      "movementsToOrFromThe": "Movements to or from the operating reserve fund. The reserve is capped at 6 months of average operating costs; surplus above the cap goes back to the annual grant pool instead of being retained."
+    },
+    "overviewTabMore": {
+      "memberMotionsVoting": "Member motions & voting",
+      "venueVerificationQueue": "Venue verification queue",
+      "annualReportGenerator": "Annual report generator",
+      "boardResolutions": "Board resolutions",
+      "annualGeneralMeeting": "Annual General Meeting",
+      "grants": "Grants",
+      "auditLog": "Audit log",
+      "memberRegister": "Member register",
+      "passed": "Passed",
+      "failed": "Failed",
+      "deferred": "Deferred"
+    },
+    "bulkEditBarMore": {
+      "leaveAsIs": "Leave as is",
+      "removeGenre": "Remove genre",
+      "public": "Public",
+      "private": "Private"
+    },
+    "onboardingView": {
+      "profile": "Profile",
+      "locationDomain": "Location & domain",
+      "preferNotToSay": "Prefer not to say",
+      "genres": "Genres",
+      "appearance": "Appearance",
+      "defaults": "Defaults"
+    },
+    "localLibraryFiltersMore": {
+      "analyzed": "Analyzed",
+      "notAnalyzed": "Not analyzed",
+      "available": "Available",
+      "missing": "Missing",
+      "anyTag": "Any tag",
+      "anyFolder": "Any folder"
+    },
+    "clipEditorDialog": {
+      "betweenPrograms": "Between programs",
+      "beforeAProgram": "Before a program",
+      "afterAProgram": "After a program",
+      "afterEveryProgram": "After every program",
+      "everyNPrograms": "Every N programs",
+      "occasionallyRandom": "Occasionally (random)"
+    },
+    "studioPlaylistEditorView": {
+      "tracks": "Tracks",
+      "selectTrack": "Select track…",
+      "selectRelease": "Select release…",
+      "coverImage": "Cover image",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP, or GIF"
+    },
+    "channelLayersPanelMore": {
+      "tracklist": "Tracklist",
+      "cards": "Cards",
+      "both": "Both"
+    },
+    "channelRadioPlaylistPanel": {
+      "tracks": "Tracks",
+      "djSets": "DJ Sets",
+      "clips": "Clips",
+      "shuffle": "Shuffle",
+      "inOrder": "In order"
+    },
+    "topListsTabMore": {
+      "byType": "By type",
+      "byGenre": "By genre",
+      "mostListened": "Most listened",
+      "leastListened": "Least listened"
+    },
+    "newEpisodeDialog": {
+      "uploadAudio": "Upload audio",
+      "recordFromBroadcast": "Record from broadcast",
+      "episodeAudio": "Episode audio",
+      "mp3WavFlacOrAiff": "MP3, WAV, FLAC, or AIFF"
+    },
+    "gallerySection": {
+      "append": "Append",
+      "replace": "Replace",
+      "dropGalleryImagesHere": "Drop gallery images here",
+      "jpegPngOrWebp": "JPEG, PNG, or WebP"
+    },
+    "radioShowViewMore": {
+      "upcoming": "Upcoming",
+      "pastEpisodes": "Past episodes"
+    },
+    "radioScheduleView": {
+      "liveSet": "Live set",
+      "talk": "Talk"
+    },
+    "adminRadioViewMore": {
+      "feature": "Feature",
+      "stations": "Stations",
+      "optOuts": "Opt-outs",
+      "history": "History"
+    },
+    "adminAnnouncementsView": {
+      "chooseAShortMp3Wav": "Choose a short MP3, WAV, FLAC, or AIFF clip.",
+      "afterEveryClip": "After every clip",
+      "everyNthClip": "Every Nth clip",
+      "randomly": "Randomly"
+    },
+    "trackEditDialogMore": {
+      "basics": "Basics",
+      "tracklist": "Tracklist",
+      "sharing": "Sharing",
+      "advanced": "Advanced"
+    },
+    "smartPlaylistDialog": {
+      "allOfTheRules": "All of the rules",
+      "anyOfTheRules": "Any of the rules",
+      "ascending": "Ascending",
+      "descending": "Descending"
+    },
+    "materialGroupsFieldMore": {
+      "anyoneCanJoin": "Anyone can join",
+      "requestToJoin": "Request to join",
+      "membersAddRightAway": "Members add right away",
+      "adminsApproveFirst": "Admins approve first"
+    },
+    "playerPanel": {
+      "gradient": "Gradient",
+      "videoImage": "Video / image",
+      "visualizer": "Visualizer",
+      "overlay": "Overlay"
+    },
+    "broadcastDetailsFields": {
+      "liveSet": "Live set",
+      "talk": "Talk",
+      "continuousShow": "Continuous show",
+      "singleShow": "Single show"
+    },
+    "detailsPanel": {
+      "public": "Public",
+      "unlistedDirectLinkOnly": "Unlisted — direct link only",
+      "privateOnlyYou": "Private — only you"
+    },
+    "studioSoundViewMore": {
+      "details": "Details",
+      "playlists": "Playlists",
+      "insights": "Insights"
+    },
+    "releaseOpsPanel": {
+      "catalogCredits": "Catalog & credits",
+      "deliveryRoyalties": "Delivery & royalties",
+      "guides": "Guides"
+    },
+    "artistProfilePage": {
+      "stage": "Stage",
+      "gallery": "Gallery",
+      "design": "Design"
+    },
+    "filesBrowserTab": {
+      "everyone": "Everyone",
+      "anyGenre": "Any genre",
+      "anyType": "Any type"
+    },
+    "adminUsersViewMore": {
+      "allAccounts": "All accounts",
+      "members": "Members",
+      "nonMembers": "Non-members"
+    },
+    "adminLogsViewMore": {
+      "auditEvents": "Audit events",
+      "containerLogs": "Container logs",
+      "recentAudit": "Recent audit"
+    },
+    "tracklistEditorMore": {
+      "pins": "Pins",
+      "import": "Import",
+      "overlay": "Overlay"
+    },
+    "hearthisCard": {
+      "openCollection": "Open collection",
+      "destination": "Choose destination playlist",
+      "new": "New playlist…"
+    },
+    "radioBrowserDirectoryCardMore": {
+      "stations": "Stations",
+      "browser": "Browser",
+      "allCountries": "All countries"
+    },
+    "listenerWidgetsSectionMore": {
+      "savedStations": "Saved stations",
+      "latestNews": "Latest News",
+      "favorites": "Favorites"
+    },
+    "channelLayersMenuMore": {
+      "presets": "Presets",
+      "layers": "Layers",
+      "settings": "Settings"
+    },
+    "appShell": {
+      "aFewQuickStepsTo": "A few quick steps to personalize your channel.",
+      "setUpProfile": "Set up profile",
+      "notNow": "Not now"
+    },
+    "artistImagePurposePicker": {
+      "artistImages": "Artist images",
+      "jpegPngOrWebp": "JPEG, PNG, or WebP"
+    },
+    "studioMasteringView": {
+      "referenceTrack": "Reference track",
+      "dropAnAudioFileOr": "Drop an audio file, or browse for one."
+    },
+    "showOverviewTab": {
+      "public": "Public",
+      "fansOnly": "Fans only"
+    },
+    "scheduleEditorDialog": {
+      "public": "Public",
+      "fansOnly": "Fans only"
+    },
+    "releaseCsvImportButtonMore": {
+      "chooseACsvFile": "Choose a CSV file",
+      "orPasteTheRowsBelow": "Or paste the rows below."
+    },
+    "collectionDialogsMore": {
+      "backdropImages": "Backdrop images",
+      "jpegPngWebpOrGif": "JPEG, PNG, WebP, or GIF"
+    },
+    "jamView": {
+      "joiningTheJam": "Joining the Jam…",
+      "syncingWithTheHost": "Syncing with the host"
+    },
+    "channelRotationPanelMore": {
+      "shuffle": "Shuffle",
+      "inThisOrder": "In this order"
+    },
+    "selectsGenerateDialogMore": {
+      "addToTheEnd": "Add to the end",
+      "replaceTheRotation": "Replace the rotation"
+    },
+    "adminStorageViewMore": {
+      "storage": "Storage",
+      "files": "Files"
+    },
+    "adminAddonsViewMore": {
+      "allAddOns": "All add-ons",
+      "allStatuses": "All statuses"
+    },
+    "useQueueBarActions": {
+      "saveQueueAsLocalPlaylist": "Save queue as local playlist",
+      "randomizeQueueOrder": "Randomize queue order",
+      "saveQueueToCloudPlaylist": "Save queue to cloud playlist",
+      "saveQueueAsPlaylist": "Save queue as playlist"
+    },
+    "streamOverlayEditor": {
+      "overlayCoverImage": "Overlay cover image",
+      "jpegPngOrWebp": "JPEG, PNG, or WebP"
+    },
+    "stashFilesPanelMore": {
+      "filesStayPrivateUntilYou": "Files stay private until you grant access.",
+      "readOnly": "Read-only"
     }
   },
   "studioEditor": {

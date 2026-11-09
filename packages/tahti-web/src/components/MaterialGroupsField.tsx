@@ -243,8 +243,14 @@ export function MaterialGroupsField({ soundId }: Props) {
                     setJoinPolicy(value as 'OPEN' | 'REQUEST')
                   }
                   options={[
-                    { id: 'OPEN', label: 'Anyone can join' },
-                    { id: 'REQUEST', label: 'Request to join' },
+                    {
+                      id: 'OPEN',
+                      label: t('materialGroupsFieldMore.anyoneCanJoin'),
+                    },
+                    {
+                      id: 'REQUEST',
+                      label: t('materialGroupsFieldMore.requestToJoin'),
+                    },
                   ]}
                 />
                 <Select
@@ -254,8 +260,14 @@ export function MaterialGroupsField({ soundId }: Props) {
                     setSubmitPolicy(value as 'OPEN' | 'APPROVE')
                   }
                   options={[
-                    { id: 'OPEN', label: 'Members add right away' },
-                    { id: 'APPROVE', label: 'Admins approve first' },
+                    {
+                      id: 'OPEN',
+                      label: t('materialGroupsFieldMore.membersAddRightAway'),
+                    },
+                    {
+                      id: 'APPROVE',
+                      label: t('materialGroupsFieldMore.adminsApproveFirst'),
+                    },
                   ]}
                 />
                 <Toggle

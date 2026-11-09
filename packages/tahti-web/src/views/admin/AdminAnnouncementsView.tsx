@@ -136,7 +136,7 @@ export function AdminAnnouncementsView() {
                     title: uploading
                       ? 'Uploading announcement…'
                       : 'Announcement clip',
-                    description: 'Choose a short MP3, WAV, FLAC, or AIFF clip.',
+                    description: t('adminAnnouncementsView.chooseAShortMp3Wav'),
                     browse: uploading ? 'Uploading…' : 'Choose audio',
                   }}
                   onFiles={(files) => {
@@ -208,10 +208,18 @@ export function AdminAnnouncementsView() {
                             options={[
                               {
                                 id: 'AFTER_EVERY',
-                                label: 'After every clip',
+                                label: t(
+                                  'adminAnnouncementsView.afterEveryClip',
+                                ),
                               },
-                              { id: 'EVERY_NTH', label: 'Every Nth clip' },
-                              { id: 'RANDOM', label: 'Randomly' },
+                              {
+                                id: 'EVERY_NTH',
+                                label: t('adminAnnouncementsView.everyNthClip'),
+                              },
+                              {
+                                id: 'RANDOM',
+                                label: t('adminAnnouncementsView.randomly'),
+                              },
                             ]}
                           />
                           {clip.scheduleMode === 'EVERY_NTH' && (

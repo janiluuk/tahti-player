@@ -90,8 +90,10 @@ export function ReleaseCsvImportButton({
             <FilePicker
               accept=".csv,text/csv"
               labels={{
-                title: 'Choose a CSV file',
-                description: 'Or paste the rows below.',
+                title: t('releaseCsvImportButtonMore.chooseACsvFile'),
+                description: t(
+                  'releaseCsvImportButtonMore.orPasteTheRowsBelow',
+                ),
                 browse: 'Browse',
               }}
               onFiles={(files) => void readFile(files[0])}

@@ -88,8 +88,8 @@ export function GallerySection({ kit }: { kit: PressKitState }) {
         <div className="flex flex-col gap-4">
           <FilterChips
             items={[
-              { id: 'append', label: 'Append' },
-              { id: 'replace', label: 'Replace' },
+              { id: 'append', label: t('gallerySection.append') },
+              { id: 'replace', label: t('gallerySection.replace') },
             ]}
             selected={uploadMode}
             onChange={(id) => setUploadMode(id as 'append' | 'replace')}
@@ -101,8 +101,8 @@ export function GallerySection({ kit }: { kit: PressKitState }) {
             disabled={busy}
             selectedFiles={selectedGalleryFiles}
             labels={{
-              title: 'Drop gallery images here',
-              description: 'JPEG, PNG, or WebP',
+              title: t('gallerySection.dropGalleryImagesHere'),
+              description: t('gallerySection.jpegPngOrWebp'),
               browse: 'Choose images',
               selected: 'Ready to upload',
             }}

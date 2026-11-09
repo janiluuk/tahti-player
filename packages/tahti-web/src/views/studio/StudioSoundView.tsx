@@ -87,7 +87,7 @@ export function StudioSoundView({ id }: { id: string }) {
                     ? [
                         {
                           id: 'details' as const,
-                          label: 'Details',
+                          label: t('studioSoundViewMore.details'),
                           icon: <TagsIcon size={15} />,
                           content: <DetailsTabContent id={id} state={state} />,
                         },
@@ -97,7 +97,7 @@ export function StudioSoundView({ id }: { id: string }) {
                     ? [
                         {
                           id: 'playlists' as const,
-                          label: 'Playlists',
+                          label: t('studioSoundViewMore.playlists'),
                           icon: <ListMusicIcon size={15} />,
                           content: (
                             <PlaylistsTabContent
@@ -110,7 +110,7 @@ export function StudioSoundView({ id }: { id: string }) {
                     : []),
                   {
                     id: 'insights',
-                    label: 'Insights',
+                    label: t('studioSoundViewMore.insights'),
                     icon: <BarChart3Icon size={15} />,
                     content: <TrackInsightsPanel kind="sound" id={id} />,
                   },

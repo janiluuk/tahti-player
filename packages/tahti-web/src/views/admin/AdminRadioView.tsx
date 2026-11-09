@@ -203,7 +203,7 @@ export function AdminRadioView() {
                   items={[
                     {
                       id: 'feature',
-                      label: 'Feature',
+                      label: t('adminRadioViewMore.feature'),
                       icon: <RadioTowerIcon size={14} aria-hidden />,
                       content: (
                         <div className="flex flex-col gap-6">
@@ -416,13 +416,13 @@ export function AdminRadioView() {
                     },
                     {
                       id: 'presets',
-                      label: 'Stations',
+                      label: t('adminRadioViewMore.stations'),
                       icon: <Settings2Icon size={14} aria-hidden />,
                       content: <InternetRadioPresetsPanel />,
                     },
                     {
                       id: 'opt-outs',
-                      label: 'Opt-outs',
+                      label: t('adminRadioViewMore.optOuts'),
                       icon: <BanIcon size={14} aria-hidden />,
                       content:
                         data.optedOut.length === 0 ? (
@@ -479,7 +479,7 @@ export function AdminRadioView() {
                     },
                     {
                       id: 'history',
-                      label: 'History',
+                      label: t('adminRadioViewMore.history'),
                       icon: <HistoryIcon size={14} aria-hidden />,
                       content: (
                         <StudioPanel title={t('adminRadioView.featureHistory')}>
