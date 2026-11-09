@@ -3,7 +3,7 @@ const regenerateSurfaces = () =>
 
 export default {
   '*.{ts,tsx,js,jsx}': 'eslint --fix',
-  'packages/storybook/src/**/*.stories.{ts,tsx,js,jsx,mjs}': regenerateSurfaces,
-  'packages/tahti-web/STORYBOOK-SURFACES.md': regenerateSurfaces,
+  '{packages/storybook/src/**/*.stories.{ts,tsx,js,jsx,mjs},packages/tahti-web/STORYBOOK-SURFACES.md}':
+    regenerateSurfaces,
   '*.{ts,tsx,mjs}': () => 'node packages/tahti-ops/src/cli.mjs check size',
 };
