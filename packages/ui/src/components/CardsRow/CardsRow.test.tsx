@@ -102,13 +102,23 @@ describe('CardsRow', () => {
     expect(handleClick).toHaveBeenCalledOnce();
   });
 
-  it('hides the filter and scroll buttons when every card fits, keeps layout toggle', () => {
+  it('hides the filter and scroll buttons when every card fits, keeps the zoom control', () => {
     Wrapper.overflow(600, 800);
     Wrapper.mount({ defaultLayout: 'cards' });
 
     expect(screen.queryByTestId('cards-row-filter')).toBeNull();
     expect(screen.queryByTestId('cards-row-scroll-left')).toBeNull();
-    expect(screen.getByTestId('cards-row-layout-toggle')).toBeInTheDocument();
+    expect(screen.getByTestId('cards-row-zoom')).toBeInTheDocument();
+  });
+
+  it('disables the left arrow at the start of the row and keeps the arrows neutral', () => {
+    Wrapper.mount({ defaultLayout: 'cards' });
+
+    const left = screen.getByTestId('cards-row-scroll-left');
+    const right = screen.getByTestId('cards-row-scroll-right');
+    expect(left).toBeDisabled();
+    expect(right).toBeEnabled();
+    expect(right.className).not.toContain('bg-primary');
   });
 
   it('shows the filter and scroll buttons when cards overflow the row', () => {
@@ -127,21 +137,24 @@ describe('CardsRow', () => {
     expect(screen.getByTestId('cards-row-filter')).toBeInTheDocument();
   });
 
-  it('cycles cards → full artwork → list → cards from the toolbar icon', async () => {
+  it('zooms between list, cards and full artwork, greying out the ends', async () => {
     Wrapper.mount({ defaultLayout: 'cards' });
-    const toggle = () => screen.getByTestId('cards-row-layout-toggle');
+    const zoomIn = () => screen.getByTestId('cards-row-zoom-in');
+    const zoomOut = () => screen.getByTestId('cards-row-zoom-out');
 
     expect(Wrapper.container).toHaveAttribute('data-layout', 'cards');
-    expect(toggle()).toHaveAccessibleName('Show full artwork');
-    await userEvent.click(toggle());
+    expect(zoomIn()).toHaveAccessibleName('Show full artwork');
+    expect(zoomOut()).toHaveAccessibleName('Show as list');
+    await userEvent.click(zoomIn());
     expect(Wrapper.container).toHaveAttribute('data-layout', 'full');
     expect(screen.getByTestId('cards-row-full')).toBeInTheDocument();
-    expect(toggle()).toHaveAccessibleName('Show as list');
-    await userEvent.click(toggle());
+    expect(zoomIn()).toBeDisabled();
+    await userEvent.click(zoomOut());
+    await userEvent.click(zoomOut());
     expect(Wrapper.container).toHaveAttribute('data-layout', 'list');
     expect(screen.getByTestId('cards-row-list')).toBeInTheDocument();
-    await userEvent.click(toggle());
-    expect(Wrapper.container).toHaveAttribute('data-layout', 'cards');
+    expect(zoomOut()).toBeDisabled();
+    expect(zoomIn()).toBeEnabled();
   });
 });
 
@@ -159,7 +172,7 @@ describe('CardsRow without a filter', () => {
       />,
     );
     expect(screen.queryByTestId('cards-row-filter')).toBeNull();
-    expect(screen.getByTestId('cards-row-layout-toggle')).toBeTruthy();
+    expect(screen.getByTestId('cards-row-zoom')).toBeTruthy();
   });
 });
 
@@ -187,8 +200,7 @@ describe('CardsRow with custom cards', () => {
 
   it('draws list rows with the TrackTable stripes and dividers', async () => {
     Wrapper.mount();
-    await userEvent.click(screen.getByTestId('cards-row-layout-toggle'));
-    await userEvent.click(screen.getByTestId('cards-row-layout-toggle'));
+    await userEvent.click(screen.getByTestId('cards-row-zoom-out'));
     const rows = screen.getByTestId('cards-row-list').querySelectorAll('li');
     expect(rows[0].className).toMatch(/bg-background-secondary/);
     expect(rows[1].className).toMatch(/(^| )bg-background( |$)/);

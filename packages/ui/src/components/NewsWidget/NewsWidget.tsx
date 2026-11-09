@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight, Newspaper } from 'lucide-react';
 import { FC, useRef, type ReactNode } from 'react';
 
+import { useHorizontalScrollState } from '../../hooks/useHorizontalScrollState';
 import { cn } from '../../utils';
 import { Badge } from '../Badge';
 import { Button } from '../Button';
@@ -42,6 +43,8 @@ export const NewsWidget: FC<NewsWidgetProps> = ({
   'data-testid': testId = 'news-widget',
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const { overflowing, canScrollLeft, canScrollRight } =
+    useHorizontalScrollState(scrollContainerRef, items);
 
   const scrollBy = (delta: number) => {
     scrollContainerRef.current?.scrollBy({ left: delta, behavior: 'smooth' });
@@ -79,28 +82,34 @@ export const NewsWidget: FC<NewsWidgetProps> = ({
         </div>
         <div className="ml-auto flex shrink-0 items-center gap-2">
           {more}
-          <Tooltip content="Scroll left" side="top">
-            <Button
-              data-testid="news-widget-scroll-left"
-              size="icon"
-              onClick={() => scrollBy(-SCROLL_INCREMENT)}
-              variant="noShadow"
-              aria-label="Scroll left"
-            >
-              <ChevronLeft size={16} />
-            </Button>
-          </Tooltip>
-          <Tooltip content="Scroll right" side="top">
-            <Button
-              data-testid="news-widget-scroll-right"
-              size="icon"
-              onClick={() => scrollBy(SCROLL_INCREMENT)}
-              variant="noShadow"
-              aria-label="Scroll right"
-            >
-              <ChevronRight size={16} />
-            </Button>
-          </Tooltip>
+          {overflowing ? (
+            <>
+              <Tooltip content="Scroll left" side="top">
+                <Button
+                  data-testid="news-widget-scroll-left"
+                  size="icon-sm"
+                  onClick={() => scrollBy(-SCROLL_INCREMENT)}
+                  disabled={!canScrollLeft}
+                  variant="secondary"
+                  aria-label="Scroll left"
+                >
+                  <ChevronLeft size={16} />
+                </Button>
+              </Tooltip>
+              <Tooltip content="Scroll right" side="top">
+                <Button
+                  data-testid="news-widget-scroll-right"
+                  size="icon-sm"
+                  onClick={() => scrollBy(SCROLL_INCREMENT)}
+                  disabled={!canScrollRight}
+                  variant="secondary"
+                  aria-label="Scroll right"
+                >
+                  <ChevronRight size={16} />
+                </Button>
+              </Tooltip>
+            </>
+          ) : null}
         </div>
       </div>
 

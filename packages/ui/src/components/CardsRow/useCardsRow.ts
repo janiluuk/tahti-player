@@ -1,6 +1,7 @@
 import isEmpty from 'lodash-es/isEmpty';
-import { RefObject, useEffect, useMemo, useRef, useState } from 'react';
+import { RefObject, useMemo, useRef, useState } from 'react';
 
+import { useHorizontalScrollState } from '../../hooks/useHorizontalScrollState';
 import { CardsRowItem } from './CardsRow';
 
 const SCROLL_INCREMENT = 176;
@@ -14,6 +15,9 @@ type UseCardsRowResult<T extends CardsRowItem> = {
   scrollLeft: () => void;
   scrollRight: () => void;
   showControls: boolean;
+  overflowing: boolean;
+  canScrollLeft: boolean;
+  canScrollRight: boolean;
 };
 
 export function useCardsRow<T extends CardsRowItem>(
@@ -32,26 +36,8 @@ export function useCardsRow<T extends CardsRowItem>(
     );
   }, [items, filterText]);
 
-  const [overflowing, setOverflowing] = useState(false);
-
-  useEffect(() => {
-    const element = scrollContainerRef.current;
-    if (!element) {
-      return;
-    }
-    const measure = () =>
-      setOverflowing(element.scrollWidth > element.clientWidth + 1);
-    measure();
-    if (typeof ResizeObserver === 'undefined') {
-      return;
-    }
-    const observer = new ResizeObserver(measure);
-    observer.observe(element);
-    for (const child of Array.from(element.children)) {
-      observer.observe(child);
-    }
-    return () => observer.disconnect();
-  }, [filteredItems]);
+  const { overflowing, canScrollLeft, canScrollRight } =
+    useHorizontalScrollState(scrollContainerRef, filteredItems);
 
   const scrollLeft = () => {
     scrollContainerRef.current?.scrollBy({
@@ -80,5 +66,8 @@ export function useCardsRow<T extends CardsRowItem>(
     scrollLeft,
     scrollRight,
     showControls: overflowing || !isEmpty(filterText.trim()),
+    overflowing,
+    canScrollLeft,
+    canScrollRight,
   };
 }

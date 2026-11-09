@@ -3,9 +3,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Filter,
-  GalleryHorizontal,
-  List,
-  Square,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react';
 import { ReactNode, useEffect, useState } from 'react';
 
@@ -55,11 +54,7 @@ export type CardsRowBadgeColor =
  * `full`: tiles as wide as the column, to browse the artwork. */
 export type CardsRowLayout = 'list' | 'cards' | 'full';
 
-const NEXT_LAYOUT: Record<CardsRowLayout, CardsRowLayout> = {
-  list: 'cards',
-  cards: 'full',
-  full: 'list',
-};
+const LAYOUT_ORDER: readonly CardsRowLayout[] = ['list', 'cards', 'full'];
 
 const MOBILE_QUERY = '(max-width: 767px)';
 
@@ -182,6 +177,9 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
     scrollLeft,
     scrollRight,
     showControls,
+    overflowing,
+    canScrollLeft,
+    canScrollRight,
   } = useCardsRow(items);
 
   const layoutLabels: Record<CardsRowLayout, string> = {
@@ -189,16 +187,12 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
     cards: labels.showAsCards ?? 'Show as cards',
     full: labels.showAsFull ?? 'Show full artwork',
   };
-  const nextLayout = NEXT_LAYOUT[layout];
-  const NextLayoutIcon =
-    nextLayout === 'list'
-      ? List
-      : nextLayout === 'cards'
-        ? GalleryHorizontal
-        : Square;
+  const layoutIndex = LAYOUT_ORDER.indexOf(layout);
+  const smallerLayout = LAYOUT_ORDER[layoutIndex - 1];
+  const largerLayout = LAYOUT_ORDER[layoutIndex + 1];
   const isList = layout === 'list';
   const isFull = layout === 'full';
-  const showScroll = showControls && layout === 'cards';
+  const showScroll = overflowing && layout === 'cards';
   const showFilter =
     filterable &&
     (showControls || layout !== 'cards' || !isEmpty(filterText.trim()));
@@ -260,9 +254,10 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
               <Tooltip content="Scroll left" side="top">
                 <Button
                   data-testid="cards-row-scroll-left"
-                  size="icon"
+                  size="icon-sm"
                   onClick={scrollLeft}
-                  variant="noShadow"
+                  disabled={!canScrollLeft}
+                  variant="secondary"
                   aria-label="Scroll left"
                 >
                   <ChevronLeft size={16} />
@@ -271,9 +266,10 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
               <Tooltip content="Scroll right" side="top">
                 <Button
                   data-testid="cards-row-scroll-right"
-                  size="icon"
+                  size="icon-sm"
                   onClick={scrollRight}
-                  variant="noShadow"
+                  disabled={!canScrollRight}
+                  variant="secondary"
                   aria-label="Scroll right"
                 >
                   <ChevronRight size={16} />
@@ -282,17 +278,43 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
             </div>
           ) : null}
           {allowListToggle ? (
-            <Tooltip content={layoutLabels[nextLayout]} side="top">
-              <Button
-                data-testid="cards-row-layout-toggle"
-                size="icon"
-                variant="noShadow"
-                aria-label={layoutLabels[nextLayout]}
-                onClick={() => setLayout(nextLayout)}
+            <div
+              className="border-border flex items-center rounded-md border"
+              data-testid="cards-row-zoom"
+            >
+              <Tooltip
+                content={layoutLabels[smallerLayout ?? layout]}
+                side="top"
               >
-                <NextLayoutIcon size={16} aria-hidden />
-              </Button>
-            </Tooltip>
+                <Button
+                  data-testid="cards-row-zoom-out"
+                  size="icon-sm"
+                  variant="text"
+                  className="rounded-r-none"
+                  disabled={!smallerLayout}
+                  aria-label={layoutLabels[smallerLayout ?? layout]}
+                  onClick={() => smallerLayout && setLayout(smallerLayout)}
+                >
+                  <ZoomOut size={15} aria-hidden />
+                </Button>
+              </Tooltip>
+              <Tooltip
+                content={layoutLabels[largerLayout ?? layout]}
+                side="top"
+              >
+                <Button
+                  data-testid="cards-row-zoom-in"
+                  size="icon-sm"
+                  variant="text"
+                  className="border-border rounded-l-none border-l"
+                  disabled={!largerLayout}
+                  aria-label={layoutLabels[largerLayout ?? layout]}
+                  onClick={() => largerLayout && setLayout(largerLayout)}
+                >
+                  <ZoomIn size={15} aria-hidden />
+                </Button>
+              </Tooltip>
+            </div>
           ) : null}
         </div>
       </div>

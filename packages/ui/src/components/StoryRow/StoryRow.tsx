@@ -79,28 +79,32 @@ export const StoryRow: FC<StoryRowProps> = ({
         <h2 className="text-foreground text-xl font-bold">{title}</h2>
         <div className="flex items-center gap-2">
           {actions}
-          <Tooltip content="Previous" side="top">
-            <Button
-              variant="noShadow"
-              size="icon"
-              aria-label={rowName ? `Previous: ${rowName}` : 'Previous'}
-              disabled={atStart}
-              onClick={() => page(-1)}
-            >
-              <ChevronLeft size={16} aria-hidden />
-            </Button>
-          </Tooltip>
-          <Tooltip content="Next" side="top">
-            <Button
-              variant="noShadow"
-              size="icon"
-              aria-label={rowName ? `Next: ${rowName}` : 'Next'}
-              disabled={atEnd}
-              onClick={() => page(1)}
-            >
-              <ChevronRight size={16} aria-hidden />
-            </Button>
-          </Tooltip>
+          {atStart && atEnd ? null : (
+            <>
+              <Tooltip content="Previous" side="top">
+                <Button
+                  variant="secondary"
+                  size="icon-sm"
+                  aria-label={rowName ? `Previous: ${rowName}` : 'Previous'}
+                  disabled={atStart}
+                  onClick={() => page(-1)}
+                >
+                  <ChevronLeft size={16} aria-hidden />
+                </Button>
+              </Tooltip>
+              <Tooltip content="Next" side="top">
+                <Button
+                  variant="secondary"
+                  size="icon-sm"
+                  aria-label={rowName ? `Next: ${rowName}` : 'Next'}
+                  disabled={atEnd}
+                  onClick={() => page(1)}
+                >
+                  <ChevronRight size={16} aria-hidden />
+                </Button>
+              </Tooltip>
+            </>
+          )}
         </div>
       </header>
       <div
