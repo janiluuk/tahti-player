@@ -91,11 +91,16 @@ export function ReleaseTrackRow({
     >
       <span className="min-w-0 flex-1 truncate">{track.title}</span>
       {sourceUrl ? (
-        <Tooltip content={`Play ${track.title}`} side="top">
+        <Tooltip
+          content={t('releaseTrackRowLabels.playTitle', { title: track.title })}
+          side="top"
+        >
           <Button
             size="icon-sm"
             variant="secondary"
-            aria-label={`Play ${track.title}`}
+            aria-label={t('releaseTrackRowLabels.playTitle', {
+              title: track.title,
+            })}
             onClick={() =>
               play({
                 id: `sound:${track.soundId}`,
@@ -153,7 +158,9 @@ export function ReleaseTrackRow({
           <ExternalLink
             href={shopUrl}
             className="border-border size-7 justify-center overflow-hidden rounded border no-underline"
-            aria-label={`Open ${track.title} on Bandcamp`}
+            aria-label={t('releaseTrackRowLabels.openTitleOnBandcamp', {
+              title: track.title,
+            })}
           >
             <SourceServiceIcon id="bandcamp" size="detail" />
           </ExternalLink>

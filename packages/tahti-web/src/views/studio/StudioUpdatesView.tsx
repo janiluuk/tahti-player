@@ -262,7 +262,10 @@ export function StudioUpdatesView({
                           <Button
                             size="sm"
                             variant="text"
-                            aria-label={`Preview ${postTitle}`}
+                            aria-label={t(
+                              'studioUpdatesViewLabels.previewPosttitle',
+                              { postTitle },
+                            )}
                             onClick={() => setPreviewPost(p)}
                           >
                             <EyeIcon size={15} aria-hidden className="mr-1.5" />
@@ -270,14 +273,25 @@ export function StudioUpdatesView({
                           </Button>
                           <EditIconButton
                             variant="text"
-                            label={`Edit ${postTitle}`}
+                            label={t('studioUpdatesViewLabels.editPosttitle', {
+                              postTitle,
+                            })}
                             onClick={() => setPostEditor({ post: p })}
                           />
-                          <Tooltip content={`Delete ${postTitle}`} side="top">
+                          <Tooltip
+                            content={t(
+                              'studioUpdatesViewLabels.deletePosttitle',
+                              { postTitle },
+                            )}
+                            side="top"
+                          >
                             <Button
                               size="icon-sm"
                               variant="text"
-                              aria-label={`Delete ${postTitle}`}
+                              aria-label={t(
+                                'studioUpdatesViewLabels.deletePosttitle',
+                                { postTitle },
+                              )}
                               onClick={() => setPendingDeletePost(p)}
                             >
                               <Trash2Icon
@@ -372,11 +386,20 @@ export function StudioUpdatesView({
                           </Button>
                         )}
                         {d.state !== 'QUEUED' && (
-                          <Tooltip content={`Remove ${d.subject}`} side="top">
+                          <Tooltip
+                            content={t(
+                              'studioUpdatesViewLabels.removeSubject',
+                              { subject: d.subject },
+                            )}
+                            side="top"
+                          >
                             <Button
                               size="icon-sm"
                               variant="text"
-                              aria-label={`Remove ${d.subject}`}
+                              aria-label={t(
+                                'studioUpdatesViewLabels.removeSubject',
+                                { subject: d.subject },
+                              )}
                               onClick={() => setPendingDeleteDraft(d)}
                             >
                               <Trash2Icon

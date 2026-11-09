@@ -225,7 +225,9 @@ export function ChannelMembersEditor({
               ) : (
                 <div className="flex items-center gap-3">
                   <RoundImageUploadButton
-                    label={`Picture of ${member.name}`}
+                    label={t('channelMembersEditorLabels.pictureOfName', {
+                      name: member.name,
+                    })}
                     value={member.pictureUrl}
                     sizeClassName="size-10"
                     upload={(file) =>
@@ -242,7 +244,9 @@ export function ChannelMembersEditor({
                   <Button
                     variant="text"
                     size="sm"
-                    aria-label={`Move ${member.name} up`}
+                    aria-label={t('channelMembersEditorLabels.moveNameUp', {
+                      name: member.name,
+                    })}
                     disabled={index === 0}
                     onClick={() => void move(index, -1)}
                   >
@@ -251,7 +255,9 @@ export function ChannelMembersEditor({
                   <Button
                     variant="text"
                     size="sm"
-                    aria-label={`Move ${member.name} down`}
+                    aria-label={t('channelMembersEditorLabels.moveNameDown', {
+                      name: member.name,
+                    })}
                     disabled={index === members.length - 1}
                     onClick={() => void move(index, 1)}
                   >
@@ -259,13 +265,17 @@ export function ChannelMembersEditor({
                   </Button>
                   <EditIconButton
                     variant="text"
-                    label={`Edit ${member.name}`}
+                    label={t('channelMembersEditorLabels.editName', {
+                      name: member.name,
+                    })}
                     onClick={() => setEditingId(member.id)}
                   />
                   <Button
                     variant="text"
                     size="sm"
-                    aria-label={`Remove ${member.name}`}
+                    aria-label={t('channelMembersEditorLabels.removeName', {
+                      name: member.name,
+                    })}
                     disabled={removingId === member.id}
                     onClick={() => void remove(member.id)}
                   >

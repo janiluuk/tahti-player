@@ -278,7 +278,9 @@ function ColorTokenRow({
               value={colorToHex(display)}
               onChange={(event) => onChange(event.target.value)}
               className="border-border size-8 rounded-md border p-0.5"
-              aria-label={`Pick ${field.label}`}
+              aria-label={t('themeEditorLabels.pickLabel', {
+                label: field.label,
+              })}
             />
             <Input
               value={value}
@@ -288,11 +290,18 @@ function ColorTokenRow({
               className="font-mono text-xs"
             />
             {overridden ? (
-              <Tooltip content={`Clear ${field.label} override`} side="top">
+              <Tooltip
+                content={t('themeEditorLabels.clearLabelOverride', {
+                  label: field.label,
+                })}
+                side="top"
+              >
                 <Button
                   size="icon-sm"
                   variant="text"
-                  aria-label={`Clear ${field.label} override`}
+                  aria-label={t('themeEditorLabels.clearLabelOverride', {
+                    label: field.label,
+                  })}
                   onClick={onClear}
                 >
                   <XIcon size={14} aria-hidden />

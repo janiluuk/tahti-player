@@ -239,7 +239,10 @@ export function MasteringPanel({ editList, onChange }: Props) {
                           <Button
                             size="icon-sm"
                             variant="text"
-                            aria-label={`Move ${meta.label} earlier in the chain`}
+                            aria-label={t(
+                              'masteringPanelLabels.moveLabelEarlierInThe',
+                              { label: meta.label },
+                            )}
                             disabled={visiblePluginChain.indexOf(id) === 0}
                             onClick={() => moveBy(id, -1)}
                           >
@@ -253,7 +256,10 @@ export function MasteringPanel({ editList, onChange }: Props) {
                           <Button
                             size="icon-sm"
                             variant="text"
-                            aria-label={`Move ${meta.label} later in the chain`}
+                            aria-label={t(
+                              'masteringPanelLabels.moveLabelLaterInThe',
+                              { label: meta.label },
+                            )}
                             disabled={
                               visiblePluginChain.indexOf(id) ===
                               visiblePluginChain.length - 1
@@ -268,11 +274,18 @@ export function MasteringPanel({ editList, onChange }: Props) {
                           onChange={() => togglePluginEnabled(id)}
                           aria-label={`${meta.isEnabled(editList) ? 'Disable' : 'Enable'} ${meta.label}`}
                         />
-                        <Tooltip content={`Remove ${meta.label}`} side="top">
+                        <Tooltip
+                          content={t('masteringPanelLabels.removeLabel', {
+                            label: meta.label,
+                          })}
+                          side="top"
+                        >
                           <Button
                             size="icon-sm"
                             variant="text"
-                            aria-label={`Remove ${meta.label}`}
+                            aria-label={t('masteringPanelLabels.removeLabel', {
+                              label: meta.label,
+                            })}
                             onClick={() => setRemoveTarget(id)}
                           >
                             <XIcon size={14} aria-hidden />

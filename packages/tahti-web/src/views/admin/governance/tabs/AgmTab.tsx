@@ -112,11 +112,16 @@ function AgendaBuilder() {
                   />
                 </div>
                 <div className="ml-auto flex shrink-0 gap-0.5">
-                  <Tooltip content={`Move up: ${itemLabel}`} side="top">
+                  <Tooltip
+                    content={t('agmTabLabels.moveUpItemlabel', { itemLabel })}
+                    side="top"
+                  >
                     <Button
                       size="icon-sm"
                       variant="text"
-                      aria-label={`Move up: ${itemLabel}`}
+                      aria-label={t('agmTabLabels.moveUpItemlabel', {
+                        itemLabel,
+                      })}
                       disabled={i === 0}
                       onClick={() =>
                         setItems((prev) => {
@@ -129,11 +134,16 @@ function AgendaBuilder() {
                       ↑
                     </Button>
                   </Tooltip>
-                  <Tooltip content={`Move down: ${itemLabel}`} side="top">
+                  <Tooltip
+                    content={t('agmTabLabels.moveDownItemlabel', { itemLabel })}
+                    side="top"
+                  >
                     <Button
                       size="icon-sm"
                       variant="text"
-                      aria-label={`Move down: ${itemLabel}`}
+                      aria-label={t('agmTabLabels.moveDownItemlabel', {
+                        itemLabel,
+                      })}
                       disabled={i === items.length - 1}
                       onClick={() =>
                         setItems((prev) => {
@@ -222,7 +232,9 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
 
   return (
     <CollapsibleRecord
-      label={`Attendance (${meeting.attendanceCount} recorded)`}
+      label={t('agmTabLabels.attendanceAttendancecountRecorded', {
+        attendanceCount: meeting.attendanceCount,
+      })}
       open={open}
       onToggle={() => setOpen((prev) => !prev)}
     >
@@ -437,7 +449,9 @@ export function AgmTab() {
                   <span className="text-foreground-secondary flex items-center gap-1 text-xs">
                     {meeting.state}
                     <EditIconButton
-                      label={`Edit state of ${meeting.title}`}
+                      label={t('agmTabLabels.editStateOfTitle', {
+                        title: meeting.title,
+                      })}
                       editing={editingMeetingId === meeting.id}
                       variant={
                         editingMeetingId === meeting.id ? undefined : 'text'

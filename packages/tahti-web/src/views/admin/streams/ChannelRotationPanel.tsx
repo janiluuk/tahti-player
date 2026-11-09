@@ -239,11 +239,19 @@ export function ChannelRotationPanel() {
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Tooltip content={`Move ${item.title} up`} side="top">
+                    <Tooltip
+                      content={t('channelRotationPanelLabels.moveTitleUp', {
+                        title: item.title,
+                      })}
+                      side="top"
+                    >
                       <Button
                         size="icon-sm"
                         variant="text"
-                        aria-label={`Move ${item.title} up`}
+                        aria-label={t(
+                          'channelRotationPanelLabels.moveTitleUp',
+                          { title: item.title },
+                        )}
                         disabled={index === 0}
                         onClick={() =>
                           setItems(moveRotationItem(items, index, -1))
@@ -252,11 +260,19 @@ export function ChannelRotationPanel() {
                         <ArrowUpIcon size={14} aria-hidden />
                       </Button>
                     </Tooltip>
-                    <Tooltip content={`Move ${item.title} down`} side="top">
+                    <Tooltip
+                      content={t('channelRotationPanelLabels.moveTitleDown', {
+                        title: item.title,
+                      })}
+                      side="top"
+                    >
                       <Button
                         size="icon-sm"
                         variant="text"
-                        aria-label={`Move ${item.title} down`}
+                        aria-label={t(
+                          'channelRotationPanelLabels.moveTitleDown',
+                          { title: item.title },
+                        )}
                         disabled={index === items.length - 1}
                         onClick={() =>
                           setItems(moveRotationItem(items, index, 1))
@@ -281,7 +297,9 @@ export function ChannelRotationPanel() {
             <SaveButton
               size="sm"
               saving={saving}
-              label={`Save ${slug}'s rotation`}
+              label={t('channelRotationPanelLabels.saveSlugSRotation', {
+                slug,
+              })}
               onClick={() => {
                 setSaving(true);
                 setError(null);

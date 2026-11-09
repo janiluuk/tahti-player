@@ -118,7 +118,9 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                   variant="ghost"
                   onClick={() => setConfirmDelete(true)}
                   disabled={deleting}
-                  aria-label={`Delete ${project.title}`}
+                  aria-label={t('studioEditorProjectViewLabels.deleteTitle', {
+                    title: project.title,
+                  })}
                 >
                   <Trash2Icon
                     size={16}
@@ -133,7 +135,9 @@ export function StudioEditorProjectView({ id }: { id: string }) {
                     params={{ id: project.soundId }}
                     size="sm"
                     variant="secondary"
-                    aria-label={`Open ${project.title}`}
+                    aria-label={t('studioEditorProjectViewLabels.openTitle', {
+                      title: project.title,
+                    })}
                   >
                     <AudioLinesIcon size={16} aria-hidden className="mr-1.5" />
                     {t('studioEditorProjectView.proEditor')}

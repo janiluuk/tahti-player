@@ -199,7 +199,9 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                     <Button
                       size="icon-sm"
                       variant="text"
-                      aria-label={`Play ${playlist.name}`}
+                      aria-label={t('playlistsBrowserLabels.playName', {
+                        name: playlist.name,
+                      })}
                       disabled={playlist.trackCount === 0}
                       onClick={() =>
                         void run(
@@ -216,7 +218,9 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                     <Button
                       size="icon-sm"
                       variant="text"
-                      aria-label={`Shuffle ${playlist.name}`}
+                      aria-label={t('playlistsBrowserLabels.shuffleName', {
+                        name: playlist.name,
+                      })}
                       disabled={playlist.trackCount === 0}
                       onClick={() =>
                         void run(
@@ -236,7 +240,9 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                     <Button
                       size="icon-sm"
                       variant="text"
-                      aria-label={`Duplicate ${playlist.name}`}
+                      aria-label={t('playlistsBrowserLabels.duplicateName', {
+                        name: playlist.name,
+                      })}
                       onClick={() =>
                         void run(
                           playlist.id,
@@ -266,7 +272,9 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                     <Button
                       size="icon-sm"
                       variant="text"
-                      aria-label={`Export ${playlist.name}`}
+                      aria-label={t('playlistsBrowserLabels.exportName', {
+                        name: playlist.name,
+                      })}
                       onClick={() => setExporting(playlist)}
                     >
                       <DownloadIcon size={14} aria-hidden />
@@ -274,7 +282,9 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                   </Tooltip>
                   <EditIconButton
                     variant="text"
-                    label={`Rename ${playlist.name}`}
+                    label={t('playlistsBrowserLabels.renameName', {
+                      name: playlist.name,
+                    })}
                     onClick={() => setRenaming(playlist)}
                   />
                   <Tooltip content={t('tooltips.delete')} side="top">
@@ -282,7 +292,9 @@ export function PlaylistsBrowser({ library, onOpen }: BrowserProps) {
                       size="icon-sm"
                       variant="text"
                       intent="danger"
-                      aria-label={`Delete ${playlist.name}`}
+                      aria-label={t('playlistsBrowserLabels.deleteName', {
+                        name: playlist.name,
+                      })}
                       onClick={() => setDeleting(playlist)}
                     >
                       <TrashIcon size={14} aria-hidden />

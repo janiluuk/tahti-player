@@ -6,6 +6,7 @@ import {
   SettingsIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, MediaArtwork, SaveButton, Tooltip } from '@tahti-player/ui';
 
 import type { RadioStation as PublicRadioStation } from '../../../api/radio-sources';
@@ -27,6 +28,7 @@ export function RadioBrowserStationRow({
   onToggleSave: () => void;
   onInfo?: () => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <li className="border-border hover:bg-background-secondary flex items-center gap-2 rounded-md border p-1.5 pr-1">
       <MediaArtwork
@@ -68,11 +70,18 @@ export function RadioBrowserStationRow({
         </Button>
       </Tooltip>
       {onInfo && (
-        <Tooltip content={`View ${station.name} details`} side="top">
+        <Tooltip
+          content={t('stationRowsLabels.viewNameDetails', {
+            name: station.name,
+          })}
+          side="top"
+        >
           <Button
             size="icon-sm"
             variant="secondary"
-            aria-label={`View ${station.name} details`}
+            aria-label={t('stationRowsLabels.viewNameDetails', {
+              name: station.name,
+            })}
             onClick={onInfo}
           >
             <InfoIcon size={14} aria-hidden />
@@ -108,6 +117,7 @@ export function CuratedFinnishStationRow({
   onPlay: (() => void) | null;
   isPlaying: boolean;
 }) {
+  const { t } = useTranslation('web');
   const sourceConfigured = Boolean(station.streamUrl);
   return (
     <li className="border-border hover:bg-background-secondary flex items-center gap-2 rounded-md border p-1.5 pr-1">
@@ -150,7 +160,9 @@ export function CuratedFinnishStationRow({
           type="button"
           size="icon-sm"
           variant="secondary"
-          aria-label={`Configure ${station.name}`}
+          aria-label={t('stationRowsLabels.configureName', {
+            name: station.name,
+          })}
           onClick={onConfigure}
         >
           <SettingsIcon size={14} aria-hidden />

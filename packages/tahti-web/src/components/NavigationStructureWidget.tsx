@@ -270,7 +270,10 @@ function NavigationItem({
             <Button
               size="icon-sm"
               variant="text"
-              aria-label={`Add sub-item under ${item.label}`}
+              aria-label={t(
+                'navigationStructureWidgetLabels.addSubItemUnderLabel',
+                { label: item.label },
+              )}
               onClick={() => {
                 setAddingChild((value) => !value);
                 setExpanded(true);
@@ -284,7 +287,9 @@ function NavigationItem({
               size="icon-sm"
               variant="text"
               disabled={index === 0}
-              aria-label={`Move ${item.label} up`}
+              aria-label={t('navigationStructureWidgetLabels.moveLabelUp', {
+                label: item.label,
+              })}
               onClick={() => onMove(item.id, -1)}
             >
               <ChevronUpIcon size={15} aria-hidden />
@@ -295,7 +300,9 @@ function NavigationItem({
               size="icon-sm"
               variant="text"
               disabled={index === total - 1}
-              aria-label={`Move ${item.label} down`}
+              aria-label={t('navigationStructureWidgetLabels.moveLabelDown', {
+                label: item.label,
+              })}
               onClick={() => onMove(item.id, 1)}
             >
               <ChevronDownIcon size={15} aria-hidden />
@@ -306,7 +313,9 @@ function NavigationItem({
               size="icon-sm"
               variant="text"
               intent="danger"
-              aria-label={`Remove ${item.label}`}
+              aria-label={t('navigationStructureWidgetLabels.removeLabel', {
+                label: item.label,
+              })}
               onClick={() => onRemove(item.id)}
             >
               <Trash2Icon size={15} aria-hidden />

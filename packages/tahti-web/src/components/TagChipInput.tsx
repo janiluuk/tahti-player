@@ -1,6 +1,7 @@
 import { PlusIcon, XIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, CreatableCombobox, Tooltip } from '@tahti-player/ui';
 
 type Props = {
@@ -57,6 +58,7 @@ export function TagChipInput({
   hideLabel = false,
   hideCount = false,
 }: Props) {
+  const { t } = useTranslation('web');
   const [draftKey, setDraftKey] = useState(0);
   const atLimit = value.length >= maxCount;
 
@@ -101,13 +103,16 @@ export function TagChipInput({
               className="border-border bg-background-secondary text-foreground inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-xs"
             >
               {tag}
-              <Tooltip content={`Remove ${tag}`} side="top">
+              <Tooltip
+                content={t('tagChipInputLabels.removeTag', { tag })}
+                side="top"
+              >
                 <Button
                   type="button"
                   size="icon-sm"
                   variant="text"
                   onClick={() => remove(tag)}
-                  aria-label={`Remove ${tag}`}
+                  aria-label={t('tagChipInputLabels.removeTag', { tag })}
                 >
                   <XIcon size={12} aria-hidden />
                 </Button>
@@ -147,7 +152,7 @@ export function TagChipInput({
               variant="text"
               className="border-border text-foreground hover:border-primary h-auto gap-1 rounded-full border px-2.5 py-1 text-xs font-normal"
               onClick={() => add(tag)}
-              aria-label={`Add ${tag}`}
+              aria-label={t('tagChipInputLabels.addTag', { tag })}
             >
               <PlusIcon size={12} aria-hidden />
               {tag}

@@ -387,13 +387,20 @@ export function ReleaseSmartLinksPanel({
             onClick={() => void saveTargets()}
             label={t('smartLinks.saveDestinations')}
           />
-          <Tooltip content={`Open ${release.title}`} side="top">
+          <Tooltip
+            content={t('releaseSmartLinksPanelLabels.openTitle', {
+              title: release.title,
+            })}
+            side="top"
+          >
             <ButtonLink
               to="/r/$slug"
               params={{ slug: release.smartLinkSlug }}
               size="icon-sm"
               variant="text"
-              aria-label={`Open ${release.title}`}
+              aria-label={t('releaseSmartLinksPanelLabels.openTitle', {
+                title: release.title,
+              })}
             >
               <ExternalLinkIcon size={16} aria-hidden />
             </ButtonLink>
@@ -457,7 +464,9 @@ export function ReleaseSmartLinksPanel({
                   <Button
                     size="icon-sm"
                     variant="text"
-                    aria-label={`Move ${track.title} up`}
+                    aria-label={t('releaseSmartLinksPanelLabels.moveTitleUp', {
+                      title: track.title,
+                    })}
                     disabled={index === 0 || reordering}
                     onClick={() => {
                       const above = tracks[index - 1];
@@ -473,7 +482,10 @@ export function ReleaseSmartLinksPanel({
                   <Button
                     size="icon-sm"
                     variant="text"
-                    aria-label={`Move ${track.title} down`}
+                    aria-label={t(
+                      'releaseSmartLinksPanelLabels.moveTitleDown',
+                      { title: track.title },
+                    )}
                     disabled={index === tracks.length - 1 || reordering}
                     onClick={() => {
                       const below = tracks[index + 1];
@@ -489,7 +501,9 @@ export function ReleaseSmartLinksPanel({
                   <Button
                     size="icon-sm"
                     variant="text"
-                    aria-label={`Remove ${track.title}`}
+                    aria-label={t('releaseSmartLinksPanelLabels.removeTitle', {
+                      title: track.title,
+                    })}
                     onClick={() =>
                       setPendingRemoveTrack({
                         id: track.id,

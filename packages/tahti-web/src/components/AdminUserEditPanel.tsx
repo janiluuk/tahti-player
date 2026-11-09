@@ -238,7 +238,10 @@ export function AdminUserEditPanel({
                 variant="text"
                 size="flexible"
                 className="border-border relative size-20 shrink-0 overflow-hidden rounded-xl border p-0 shadow-md"
-                aria-label={`View ${detail.displayName} profile picture`}
+                aria-label={t(
+                  'adminUserEditPanelLabels.viewDisplaynameProfilePicture',
+                  { displayName: detail.displayName },
+                )}
                 onClick={() => setAvatarOpen(true)}
               >
                 <MediaArtwork src={publicProfile.artist.avatarUrl} alt="" />
@@ -277,7 +280,9 @@ export function AdminUserEditPanel({
               <Button
                 size="icon-sm"
                 variant="secondary"
-                aria-label={`Message ${detail.displayName}`}
+                aria-label={t('adminUserEditPanelLabels.messageDisplayname', {
+                  displayName: detail.displayName,
+                })}
                 disabled={busy}
                 onClick={() => void openConversation()}
               >
@@ -290,7 +295,10 @@ export function AdminUserEditPanel({
                 params={{ username: detail.username }}
                 size="icon-sm"
                 variant="secondary"
-                aria-label={`View ${detail.displayName}'s profile`}
+                aria-label={t(
+                  'adminUserEditPanelLabels.viewDisplaynameSProfile',
+                  { displayName: detail.displayName },
+                )}
               >
                 <ExternalLinkIcon size={15} aria-hidden />
               </ButtonLink>
@@ -542,7 +550,9 @@ export function AdminUserEditPanel({
 
       {messageOpen ? (
         <StudioPanel
-          title={`Message ${detail.displayName}`}
+          title={t('adminUserEditPanelLabels.messageDisplayname', {
+            displayName: detail.displayName,
+          })}
           description={t('adminUserEdit.thisUsesTheSameDirect')}
         >
           <div className="border-border bg-background flex max-h-64 min-h-36 flex-col gap-2 overflow-y-auto rounded-lg border p-3">
@@ -575,7 +585,9 @@ export function AdminUserEditPanel({
           >
             <Input
               enterKeyHint="send"
-              aria-label={`Message ${detail.displayName}`}
+              aria-label={t('adminUserEditPanelLabels.messageDisplayname', {
+                displayName: detail.displayName,
+              })}
               value={messageBody}
               onChange={(event) => setMessageBody(event.target.value)}
               placeholder={t('adminUserEdit.writeAMessage')}

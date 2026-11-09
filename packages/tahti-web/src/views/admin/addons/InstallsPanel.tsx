@@ -68,7 +68,11 @@ export function InstallsPanel({
       {loading ? (
         <PageLoading label={t('loading.loadingInstalls')} />
       ) : installs.length === 0 ? (
-        <PageEmpty title={`Nothing installed on "${surface}" yet.`} />
+        <PageEmpty
+          title={t('installsPanelLabels.nothingInstalledOnSurfaceYet', {
+            surface,
+          })}
+        />
       ) : (
         <ul className="flex flex-col gap-2">
           {installs.map((install, index) => (
@@ -93,7 +97,10 @@ export function InstallsPanel({
               <Toggle
                 checked={install.enabled}
                 disabled={pending}
-                label={`Enable ${install.widget.name} on ${surface}`}
+                label={t('installsPanelLabels.enableNameOnSurface', {
+                  name: install.widget.name,
+                  surface,
+                })}
                 onChange={(checked) => onToggleEnabled(install, checked)}
               />
               <Tooltip content={t('installsPanel.moveUp')} side="top">
@@ -101,7 +108,9 @@ export function InstallsPanel({
                   type="button"
                   size="icon-sm"
                   variant="text"
-                  aria-label={`Move ${install.widget.name} up`}
+                  aria-label={t('installsPanelLabels.moveNameUp', {
+                    name: install.widget.name,
+                  })}
                   disabled={pending || index === 0}
                   onClick={() => onMove(install, 'up')}
                 >
@@ -113,7 +122,9 @@ export function InstallsPanel({
                   type="button"
                   size="icon-sm"
                   variant="text"
-                  aria-label={`Move ${install.widget.name} down`}
+                  aria-label={t('installsPanelLabels.moveNameDown', {
+                    name: install.widget.name,
+                  })}
                   disabled={pending || index === installs.length - 1}
                   onClick={() => onMove(install, 'down')}
                 >
@@ -125,7 +136,10 @@ export function InstallsPanel({
                   type="button"
                   size="icon-sm"
                   variant="text"
-                  aria-label={`Remove ${install.widget.name} from ${surface}`}
+                  aria-label={t('installsPanelLabels.removeNameFromSurface', {
+                    name: install.widget.name,
+                    surface,
+                  })}
                   disabled={pending}
                   onClick={() => onRemove(install)}
                 >

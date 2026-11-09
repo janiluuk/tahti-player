@@ -58,7 +58,10 @@ export function JamParticipantList({
                   <Toggle
                     checked={p.canControl === true}
                     disabled={pendingUserIds?.has(p.userId)}
-                    label={`Let ${name} control playback`}
+                    label={t(
+                      'jamParticipantListLabels.letNameControlPlayback',
+                      { name },
+                    )}
                     onChange={(checked) => onSetControl(p.userId, checked)}
                   />
                 </span>
@@ -68,11 +71,19 @@ export function JamParticipantList({
                 </Badge>
               ) : null}
               {isGuest && onRemove ? (
-                <Tooltip content={`Remove ${name} from the Jam`} side="top">
+                <Tooltip
+                  content={t('jamParticipantListLabels.removeNameFromTheJam', {
+                    name,
+                  })}
+                  side="top"
+                >
                   <Button
                     size="icon-sm"
                     variant="ghost"
-                    aria-label={`Remove ${name} from the Jam`}
+                    aria-label={t(
+                      'jamParticipantListLabels.removeNameFromTheJam',
+                      { name },
+                    )}
                     disabled={pendingUserIds?.has(p.userId)}
                     onClick={() => onRemove(p)}
                   >

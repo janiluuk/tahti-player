@@ -192,7 +192,9 @@ export function QuotaEditor({
     return (
       <EditIconButton
         variant="text"
-        label={`Edit quota for ${displayName}`}
+        label={t('adminStorageSharedLabels.editQuotaForDisplayname', {
+          displayName,
+        })}
         onClick={() => {
           setValue(String(bytesToMb(quotaBytes)));
           setEditing(true);
@@ -234,7 +236,9 @@ export function QuotaEditor({
         onChange={(e) => setValue(e.target.value)}
         className="w-20"
         disabled={saving}
-        aria-label={`Quota in MB for ${displayName}`}
+        aria-label={t('adminStorageSharedLabels.quotaInMbForDisplayname', {
+          displayName,
+        })}
       />
       <span className="text-foreground-secondary text-xs">MB</span>
       <SaveButton

@@ -254,7 +254,10 @@ export function DuplicatesDialog({
                       <Button
                         size="sm"
                         variant="text"
-                        aria-label={`Keep ${track.title} at ${track.path} and merge the others into it`}
+                        aria-label={t(
+                          'duplicatesDialogLabels.keepTitleAtPathAnd',
+                          { title: track.title, path: track.path },
+                        )}
                         onClick={() =>
                           setMerging({
                             keep: track,
@@ -267,13 +270,19 @@ export function DuplicatesDialog({
                         {t('duplicatesDialog.keepThis')}
                       </Button>
                       <Tooltip
-                        content={`Reveal ${track.title} in folder`}
+                        content={t(
+                          'duplicatesDialogLabels.revealTitleInFolder',
+                          { title: track.title },
+                        )}
                         side="top"
                       >
                         <Button
                           size="icon-sm"
                           variant="text"
-                          aria-label={`Reveal ${track.title} in folder`}
+                          aria-label={t(
+                            'duplicatesDialogLabels.revealTitleInFolder',
+                            { title: track.title },
+                          )}
                           onClick={() =>
                             void library
                               .reveal(track.id)
@@ -290,14 +299,20 @@ export function DuplicatesDialog({
                         </Button>
                       </Tooltip>
                       <Tooltip
-                        content={`Remove ${track.title} from library`}
+                        content={t(
+                          'duplicatesDialogLabels.removeTitleFromLibrary',
+                          { title: track.title },
+                        )}
                         side="top"
                       >
                         <Button
                           size="icon-sm"
                           variant="text"
                           intent="danger"
-                          aria-label={`Remove ${track.title} from library`}
+                          aria-label={t(
+                            'duplicatesDialogLabels.removeTitleFromLibrary',
+                            { title: track.title },
+                          )}
                           onClick={() => setPending(track)}
                         >
                           <TrashIcon size={14} aria-hidden />

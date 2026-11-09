@@ -95,7 +95,9 @@ export function TopListsTab({
           <PageEmpty title={t('studioStatsTop.noTrackStats')} />
         ) : (
           <TopList
-            title={`Top tracks · ${topRangeLabel}`}
+            title={t('topListsTabLabels.topTracksToprangelabel', {
+              topRangeLabel,
+            })}
             formatValue={formatPlayCount}
             entries={tracks.map((track) => ({
               id: track.soundId,
@@ -118,7 +120,9 @@ export function TopListsTab({
           <PageEmpty title={t('studioStatsTop.noCountryData')} />
         ) : (
           <TopList
-            title={`Top countries · ${topRangeLabel}`}
+            title={t('topListsTabLabels.topCountriesToprangelabel', {
+              topRangeLabel,
+            })}
             formatValue={(value) => value.toLocaleString()}
             entries={countries.map((country) => ({
               id: country.country,

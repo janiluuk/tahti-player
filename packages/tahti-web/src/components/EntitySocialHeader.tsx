@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useState, type CSSProperties, type ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, MediaArtwork, StatChip } from '@tahti-player/ui';
 
 import {
@@ -148,6 +149,7 @@ export function EntitySocialHeader({
   children,
   'data-testid': dataTestId = 'entity-social-header',
 }: EntitySocialHeaderProps) {
+  const { t } = useTranslation('web');
   const [imageFocused, setImageFocused] = useState(false);
   const scheme = colorScheme ? normalizeColorScheme(colorScheme) : null;
   const mediaUrl = videoBackgroundUrl ?? backdropUrl;
@@ -298,7 +300,9 @@ export function EntitySocialHeader({
                     'border-border shadow-shadow relative inline-block size-24 overflow-hidden border-(length:--border-width) p-0 whitespace-normal active:scale-100',
                     roundImage ? 'rounded-full' : 'rounded-md',
                   )}
-                  aria-label={`Change ${title} artwork`}
+                  aria-label={t('entitySocialHeaderLabels.changeTitleArtwork', {
+                    title,
+                  })}
                   onFocus={() => setImageFocused(true)}
                   onBlur={() => setImageFocused(false)}
                 >
@@ -319,7 +323,10 @@ export function EntitySocialHeader({
                       event.stopPropagation();
                       onImageDelete();
                     }}
-                    aria-label={`Remove ${title} artwork`}
+                    aria-label={t(
+                      'entitySocialHeaderLabels.removeTitleArtwork',
+                      { title },
+                    )}
                     title="Remove artwork"
                     className="border-border bg-background text-accent-red-strong shadow-shadow hover:bg-background-secondary absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border-(length:--border-width) whitespace-normal opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 active:scale-100"
                   >
@@ -350,7 +357,9 @@ export function EntitySocialHeader({
                 'border-border bg-background-secondary/40 text-foreground-secondary shadow-shadow flex size-24 shrink-0 items-center justify-center border-(length:--border-width) whitespace-normal active:scale-100',
                 roundImage ? 'rounded-full' : 'rounded-md',
               )}
-              aria-label={`Upload ${title} artwork`}
+              aria-label={t('entitySocialHeaderLabels.uploadTitleArtwork', {
+                title,
+              })}
             >
               <UploadCloudIcon size={22} aria-hidden />
             </Button>

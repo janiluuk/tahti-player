@@ -168,7 +168,10 @@ export function AdminAnnouncementsView() {
                       >
                         <div className="flex items-center gap-3">
                           <Toggle
-                            label={`Enable ${clip.title}`}
+                            label={t(
+                              'adminAnnouncementsViewLabels.enableTitle',
+                              { title: clip.title },
+                            )}
                             checked={clip.isEnabled}
                             onChange={(checked) =>
                               patch(clip.id, { isEnabled: checked })
@@ -232,13 +235,19 @@ export function AdminAnnouncementsView() {
                           )}
                           {clip.audioUrl && (
                             <Tooltip
-                              content={`Preview ${clip.title}`}
+                              content={t(
+                                'adminAnnouncementsViewLabels.previewTitle',
+                                { title: clip.title },
+                              )}
                               side="top"
                             >
                               <Button
                                 size="icon-sm"
                                 variant="text"
-                                aria-label={`Preview ${clip.title}`}
+                                aria-label={t(
+                                  'adminAnnouncementsViewLabels.previewTitle',
+                                  { title: clip.title },
+                                )}
                                 onClick={() => {
                                   play({
                                     id: `announcement:${clip.id}`,

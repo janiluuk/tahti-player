@@ -146,7 +146,10 @@ export function AdminMissedShowsPanel() {
                       <Button
                         size="icon-sm"
                         variant="secondary"
-                        aria-label={`Mark ${flag.scheduledLiveShow.title} as reviewing`}
+                        aria-label={t(
+                          'adminMissedShowsViewLabels.markTitleAsReviewing',
+                          { title: flag.scheduledLiveShow.title },
+                        )}
                         disabled={busyId === flag.id}
                         onClick={() => void setStatus(flag, 'REVIEWING')}
                       >
@@ -162,7 +165,10 @@ export function AdminMissedShowsPanel() {
                       <Button
                         size="icon-sm"
                         variant="secondary"
-                        aria-label={`Mark ${flag.scheduledLiveShow.title} as actioned`}
+                        aria-label={t(
+                          'adminMissedShowsViewLabels.markTitleAsActioned',
+                          { title: flag.scheduledLiveShow.title },
+                        )}
                         disabled={busyId === flag.id}
                         onClick={() => void setStatus(flag, 'ACTIONED')}
                       >
@@ -175,7 +181,10 @@ export function AdminMissedShowsPanel() {
                       <Button
                         size="icon-sm"
                         variant="secondary"
-                        aria-label={`Dismiss ${flag.scheduledLiveShow.title}`}
+                        aria-label={t(
+                          'adminMissedShowsViewLabels.dismissTitle',
+                          { title: flag.scheduledLiveShow.title },
+                        )}
                         disabled={busyId === flag.id}
                         onClick={() => void setStatus(flag, 'DISMISSED')}
                       >

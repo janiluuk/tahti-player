@@ -8945,6 +8945,270 @@
       "profile": "Profile",
       "linksPress": "Links & press",
       "artistBranding": "Artist branding"
+    },
+    "addonCardLabels": {
+      "editName": "Edit {{name}}",
+      "publishAVersionOfName": "Publish a version of {{name}}",
+      "approveNameTheAuthorIs": "Approve {{name}} (the author is notified)",
+      "approveName": "Approve {{name}}",
+      "rejectName": "Reject {{name}}",
+      "manageName": "Manage {{name}}",
+      "deleteName": "Delete {{name}}"
+    },
+    "adminStreamManagerPanelLabels": {
+      "listenToArtistname": "Listen to {{artistName}}",
+      "showDetailsForArtistname": "Show details for {{artistName}}",
+      "restartArtistname": "Restart {{artistName}}",
+      "restartAudioForSlug": "Restart audio for {{slug}}?",
+      "skipArtistname": "Skip {{artistName}}",
+      "pauseArtistname": "Pause {{artistName}}",
+      "resumeArtistname": "Resume {{artistName}}",
+      "takeArtistnameOffline": "Take {{artistName}} offline",
+      "forceSlugOffline": "Force {{slug}} offline?",
+      "liveStreamsLength": "Live streams ({{length}})"
+    },
+    "studioUpdatesViewLabels": {
+      "previewPosttitle": "Preview {{postTitle}}",
+      "editPosttitle": "Edit {{postTitle}}",
+      "deletePosttitle": "Delete {{postTitle}}",
+      "removeSubject": "Remove {{subject}}"
+    },
+    "filesBrowserTabLabels": {
+      "selectTitle": "Select {{title}}",
+      "previewTitle": "Preview {{title}}",
+      "viewDetailsForTitle": "View details for {{title}}",
+      "viewDisplaynameSStorage": "View {{displayName}}'s storage",
+      "deleteTitle": "Delete {{title}}"
+    },
+    "agmTabLabels": {
+      "moveUpItemlabel": "Move up: {{itemLabel}}",
+      "moveDownItemlabel": "Move down: {{itemLabel}}",
+      "attendanceAttendancecountRecorded": "Attendance ({{attendanceCount}} recorded)",
+      "editStateOfTitle": "Edit state of {{title}}"
+    },
+    "playlistsBrowserLabels": {
+      "playName": "Play {{name}}",
+      "shuffleName": "Shuffle {{name}}",
+      "duplicateName": "Duplicate {{name}}",
+      "exportName": "Export {{name}}",
+      "renameName": "Rename {{name}}",
+      "deleteName": "Delete {{name}}"
+    },
+    "trackRowActionsLabels": {
+      "playTitle": "Play {{title}}",
+      "queueTitle": "Queue {{title}}",
+      "revealTitleInFolder": "Reveal {{title}} in folder",
+      "editTagsForTitle": "Edit tags for {{title}}",
+      "detailsForTitle": "Details for {{title}}",
+      "removeTitle": "Remove {{title}}"
+    },
+    "releaseSmartLinksPanelLabels": {
+      "openTitle": "Open {{title}}",
+      "moveTitleUp": "Move {{title}} up",
+      "moveTitleDown": "Move {{title}} down",
+      "removeTitle": "Remove {{title}}"
+    },
+    "channelMembersEditorLabels": {
+      "pictureOfName": "Picture of {{name}}",
+      "moveNameUp": "Move {{name}} up",
+      "moveNameDown": "Move {{name}} down",
+      "editName": "Edit {{name}}",
+      "removeName": "Remove {{name}}"
+    },
+    "channelRotationPanelLabels": {
+      "moveTitleUp": "Move {{title}} up",
+      "moveTitleDown": "Move {{title}} down",
+      "saveSlugSRotation": "Save {{slug}}'s rotation"
+    },
+    "installsPanelLabels": {
+      "nothingInstalledOnSurfaceYet": "Nothing installed on \"{{surface}}\" yet.",
+      "enableNameOnSurface": "Enable {{name}} on {{surface}}",
+      "moveNameUp": "Move {{name}} up",
+      "moveNameDown": "Move {{name}} down",
+      "removeNameFromSurface": "Remove {{name}} from {{surface}}"
+    },
+    "smartPlaylistsLabels": {
+      "playName": "Play {{name}}",
+      "shuffleName": "Shuffle {{name}}",
+      "saveAFixedCopyOf": "Save a fixed copy of {{name}}",
+      "editName": "Edit {{name}}",
+      "deleteName": "Delete {{name}}"
+    },
+    "multitrackTimelineLabels": {
+      "removeName": "Remove {{name}}",
+      "moveNameUp": "Move {{name}} up",
+      "moveNameDown": "Move {{name}} down",
+      "lowerGainForName": "Lower gain for {{name}}",
+      "raiseGainForName": "Raise gain for {{name}}"
+    },
+    "duplicatesDialogLabels": {
+      "keepTitleAtPathAnd": "Keep {{title}} at {{path}} and merge the others into it",
+      "revealTitleInFolder": "Reveal {{title}} in folder",
+      "removeTitleFromLibrary": "Remove {{title}} from library"
+    },
+    "channelAnnouncementsPanelLabels": {
+      "enableTitle": "Enable {{title}}",
+      "previewTitle": "Preview {{title}}",
+      "editTitle": "Edit {{title}}",
+      "deleteTitle": "Delete {{title}}"
+    },
+    "adminUserEditPanelLabels": {
+      "viewDisplaynameProfilePicture": "View {{displayName}} profile picture",
+      "messageDisplayname": "Message {{displayName}}",
+      "viewDisplaynameSProfile": "View {{displayName}}'s profile"
+    },
+    "transparencyViewLabels": {
+      "ytdYear": "YTD {{year}}",
+      "spendingYearByCategory": "Spending {{year}} by category",
+      "grantsYear": "Grants {{year}}"
+    },
+    "masteringPanelLabels": {
+      "moveLabelEarlierInThe": "Move {{label}} earlier in the chain",
+      "moveLabelLaterInThe": "Move {{label}} later in the chain",
+      "removeLabel": "Remove {{label}}"
+    },
+    "agendaItemRowLabels": {
+      "moveUpTitle": "Move up: {{title}}",
+      "moveDownTitle": "Move down: {{title}}",
+      "editItemPositionTitle": "Edit item {{position}}: {{title}}",
+      "removeItemPositionTitle": "Remove item {{position}}: {{title}}"
+    },
+    "timelineReactionBarLabels": {
+      "reactAtClock": "React at {{clock}}",
+      "addEmoticonAtClock": "Add {{emoticon}} at {{clock}}",
+      "commentAtClock": "Comment at {{clock}}"
+    },
+    "stemMixerLabels": {
+      "muteLabel": "Mute {{label}}",
+      "soloLabel": "Solo {{label}}"
+    },
+    "radioStationDialLabels": {
+      "previousName": "Previous: {{name}}",
+      "previousStationName": "Previous station: {{name}}",
+      "nextName": "Next: {{name}}",
+      "nextStationName": "Next station: {{name}}"
+    },
+    "navigationStructureWidgetLabels": {
+      "addSubItemUnderLabel": "Add sub-item under {{label}}",
+      "moveLabelUp": "Move {{label}} up",
+      "moveLabelDown": "Move {{label}} down",
+      "removeLabel": "Remove {{label}}"
+    },
+    "listenerWidgetEmbedLabels": {
+      "removeLabel": "Remove {{label}}"
+    },
+    "transparencyGrantYearViewLabels": {
+      "grantReportYear": "Grant report {{year}}",
+      "couldNotLoadTheYear": "Could not load the {{year}} grant report",
+      "noGrantReportIsAvailable": "No grant report is available for {{year}}."
+    },
+    "soundRowLabels": {
+      "selectTitle": "Select {{title}}",
+      "playTitle": "Play {{title}}",
+      "showStatsForTitle": "Show stats for {{title}}"
+    },
+    "releaseTrackRowLabels": {
+      "playTitle": "Play {{title}}",
+      "openTitleOnBandcamp": "Open {{title}} on Bandcamp"
+    },
+    "pressKitSectionLabels": {
+      "jpegPngOrWebpUp": "JPEG, PNG, or WebP · up to {{MAX_PRESS_KIT_IMAGES}} photos",
+      "removeImagelabel": "Remove {{imageLabel}}"
+    },
+    "selectsTabLabels": {
+      "currentRotationLength": "Current rotation ({{length}})",
+      "previewTitle": "Preview {{title}}"
+    },
+    "adminRadioViewLabels": {
+      "currentRotationLength": "Current rotation ({{length}})",
+      "eligibleChannelsLength": "Eligible channels ({{length}})",
+      "optedOutLength": "Opted out ({{length}})"
+    },
+    "adminMissedShowsViewLabels": {
+      "markTitleAsReviewing": "Mark {{title}} as reviewing",
+      "markTitleAsActioned": "Mark {{title}} as actioned",
+      "dismissTitle": "Dismiss {{title}}"
+    },
+    "adminGrantCycleViewLabels": {
+      "eligibleMinUnits": "Eligible ≥{{MIN_UNITS}}",
+      "noArtistActivityInYear": "No artist activity in {{year}}",
+      "disbursedGrantcountRecipients": "Disbursed · {{grantCount}} recipients"
+    },
+    "adminAnnouncementsViewLabels": {
+      "enableTitle": "Enable {{title}}",
+      "previewTitle": "Preview {{title}}"
+    },
+    "tracklistEditorLabels": {
+      "removeTitle": "Remove {{title}}",
+      "artistForTitle": "Artist for “{{title}}”"
+    },
+    "themeEditorLabels": {
+      "pickLabel": "Pick {{label}}",
+      "clearLabelOverride": "Clear {{label}} override"
+    },
+    "tagChipInputLabels": {
+      "removeTag": "Remove {{tag}}",
+      "addTag": "Add {{tag}}"
+    },
+    "stationRowsLabels": {
+      "viewNameDetails": "View {{name}} details",
+      "configureName": "Configure {{name}}"
+    },
+    "mixableTracksSectionLabels": {
+      "playTitle": "Play {{title}}",
+      "queueTitle": "Queue {{title}}",
+      "addTitleToPrepare": "Add {{title}} to Prepare"
+    },
+    "playlistViewLabels": {
+      "locateTitle": "Locate {{title}}",
+      "playTitleFromHere": "Play {{title}} from here",
+      "removeTitleFromPlaylist": "Remove {{title}} from playlist"
+    },
+    "jamParticipantListLabels": {
+      "letNameControlPlayback": "Let {{name}} control playback",
+      "removeNameFromTheJam": "Remove {{name}} from the Jam"
+    },
+    "entitySocialHeaderLabels": {
+      "changeTitleArtwork": "Change {{title}} artwork",
+      "removeTitleArtwork": "Remove {{title}} artwork",
+      "uploadTitleArtwork": "Upload {{title}} artwork"
+    },
+    "channelRotationEditorLabels": {
+      "addLabel": "Add {{label}}",
+      "removeTitleFromRotation": "Remove {{title}} from rotation"
+    },
+    "artistMusicTabLabels": {
+      "likeTitle": "Like {{title}}",
+      "commentsOnTitle": "Comments on {{title}}",
+      "repostTitle": "Repost {{title}}"
+    },
+    "transparencyResolutionsViewLabels": {
+      "noPublishedResolutionsForYear": "No published resolutions for {{year}}.",
+      "resolutionsYear": "Resolutions {{year}}"
+    },
+    "subscribeViewLabels": {
+      "subscribeToNameTahti": "Subscribe to {{name}} · Tahti",
+      "subscribeToDisplayname": "Subscribe to {{displayName}}"
+    },
+    "studioEditorProjectViewLabels": {
+      "deleteTitle": "Delete {{title}}",
+      "openTitle": "Open {{title}}"
+    },
+    "topListsTabLabels": {
+      "topTracksToprangelabel": "Top tracks · {{topRangeLabel}}",
+      "topCountriesToprangelabel": "Top countries · {{topRangeLabel}}"
+    },
+    "greenRoomViewLabels": {
+      "youAreNotOnThe": "You are not on the guest list for {{artistDisplayName}}'s green room.",
+      "theGreenRoomOpensWhen": "The green room opens when {{artistDisplayName}} starts their preview stream."
+    },
+    "storageOverviewTabLabels": {
+      "storageUsedByDisplayname": "Storage used by {{displayName}}",
+      "viewDisplaynameSFiles": "View {{displayName}}'s files"
+    },
+    "adminStorageSharedLabels": {
+      "editQuotaForDisplayname": "Edit quota for {{displayName}}",
+      "quotaInMbForDisplayname": "Quota in MB for {{displayName}}"
     }
   },
   "studioEditor": {

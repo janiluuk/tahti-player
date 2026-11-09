@@ -48,7 +48,9 @@ export function TrackRowActions({
               <Button
                 size="icon-sm"
                 variant="text"
-                aria-label={`Play ${track.title}`}
+                aria-label={t('trackRowActionsLabels.playTitle', {
+                  title: track.title,
+                })}
                 onClick={() => onPlay(track)}
               >
                 <PlayIcon size={14} aria-hidden />
@@ -58,7 +60,9 @@ export function TrackRowActions({
               <Button
                 size="sm"
                 variant="text"
-                aria-label={`Queue ${track.title}`}
+                aria-label={t('trackRowActionsLabels.queueTitle', {
+                  title: track.title,
+                })}
                 onClick={() => onQueue(track)}
               >
                 {t('trackRowActions.queue')}
@@ -68,7 +72,9 @@ export function TrackRowActions({
               <Button
                 size="icon-sm"
                 variant="text"
-                aria-label={`Reveal ${track.title} in folder`}
+                aria-label={t('trackRowActionsLabels.revealTitleInFolder', {
+                  title: track.title,
+                })}
                 onClick={() => onReveal(track)}
               >
                 <FolderOpenIcon size={14} aria-hidden />
@@ -78,14 +84,18 @@ export function TrackRowActions({
         )}
         <EditIconButton
           variant="text"
-          label={`Edit tags for ${track.title}`}
+          label={t('trackRowActionsLabels.editTagsForTitle', {
+            title: track.title,
+          })}
           onClick={() => onEdit(track)}
         />
         <Tooltip content={t('tooltips.detailsI')} side="top">
           <Button
             size="icon-sm"
             variant="text"
-            aria-label={`Details for ${track.title}`}
+            aria-label={t('trackRowActionsLabels.detailsForTitle', {
+              title: track.title,
+            })}
             onClick={() => onInspect(track)}
           >
             <InfoIcon size={14} aria-hidden />
@@ -96,7 +106,9 @@ export function TrackRowActions({
             size="icon-sm"
             variant="text"
             intent="danger"
-            aria-label={`Remove ${track.title}`}
+            aria-label={t('trackRowActionsLabels.removeTitle', {
+              title: track.title,
+            })}
             onClick={() => onRemove(track)}
           >
             <TrashIcon size={14} aria-hidden />
