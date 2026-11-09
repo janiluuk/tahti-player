@@ -36,6 +36,7 @@ import { StudioGate } from '../../../components/StudioGate';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { Eyebrow } from '../../../components/tahti/Eyebrow';
 import { useEditMode } from '../../../lib/useEditMode';
+import { webT } from '../../../lib/webT';
 import { trimToCuts } from '../episodeTrim';
 import { episodeStatusLabel } from '../StudioShowsView';
 
@@ -215,14 +216,18 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
           }
           corner={
             <Tooltip
-              content={`Back to ${show?.title ?? 'Show'}`}
+              content={webT()('templateText.backTo', {
+                name: show?.title ?? 'Show',
+              })}
               side="right"
               wrapperClassName={backButtonCornerClassName}
             >
               <BackButtonLink
                 to="/studio/shows/$id"
                 params={{ id: episode.showId }}
-                aria-label={`Back to ${show?.title ?? 'Show'}`}
+                aria-label={webT()('templateText.backTo', {
+                  name: show?.title ?? 'Show',
+                })}
               />
             </Tooltip>
           }

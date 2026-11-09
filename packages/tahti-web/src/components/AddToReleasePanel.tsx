@@ -12,6 +12,7 @@ import {
 } from '../api/studio';
 import type { StudioRelease } from '../api/studio-types';
 import { toastWithUndo } from '../lib/undoToast';
+import { webT } from '../lib/webT';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 
 type Track = { id: string; title: string };
@@ -99,7 +100,7 @@ export function AddToReleasePanel({
       );
       toastWithUndo(
         added.length === 1
-          ? `Added to ${release.title}.`
+          ? webT()('templateText.addedToDot', { name: release.title })
           : `Added ${added.length} tracks to ${release.title}.`,
         {
           undo: async () => {

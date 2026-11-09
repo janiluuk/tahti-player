@@ -39,6 +39,7 @@ import { EMBED_PROVIDER_HEIGHT } from '../../lib/embedSrc';
 import { dateLocaleTag } from '../../lib/locale';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
+import { webT } from '../../lib/webT';
 import { useAuthModalStore } from '../../stores/authModalStore';
 import { AiGeneratedBadge } from './AiGeneratedBadge';
 import { type TrackPage } from './buildTrackPage';
@@ -320,7 +321,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                     placeholder={
                       embedSrc
                         ? 'Write a comment'
-                        : `Write a comment at ${clock}`
+                        : webT()('templateText.writeCommentAt', { name: clock })
                     }
                     maxLength={2000}
                     disabled={commentBusy}

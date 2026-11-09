@@ -34,6 +34,7 @@ import {
   type ArtistProfileEmbed,
 } from '../../lib/artistProfile';
 import { safeCreditName } from '../../lib/displayName';
+import { webT } from '../../lib/webT';
 import { DiscoWidgetsSection } from '../disco-widgets/DiscoWidgetsSection';
 import { EmbedButton } from '../EmbedButton';
 import { ListingDate } from '../ListingDate';
@@ -144,7 +145,9 @@ function ArtistMoreMenu({
                 });
               }}
             >
-              {`Subscribe to ${artist.displayName}'s fan tiers`}
+              {webT()('templateText.subscribeFanTiers', {
+                name: artist.displayName,
+              })}
             </Popover.Item>
           ) : null}
           {pressKit ? (

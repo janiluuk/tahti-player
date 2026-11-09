@@ -11799,6 +11799,24 @@
     },
     "listenAddonsPanelLabels": {
       "addALink": "Add a {{name}} link"
+    },
+    "templateText": {
+      "removedFrom": "Removed from {{name}}.",
+      "addedTo": "Added to {{name}}",
+      "addedToDot": "Added to {{name}}.",
+      "listenOnTahti": "Listen to {{name}} on Tahti",
+      "subscribeUpdates": "Subscribe to {{name}}'s updates",
+      "stationUnavailable": "Station unavailable · {{name}}",
+      "moreOptionsFor": "More options for {{name}}",
+      "uploadFailed": "Upload failed: {{name}}",
+      "subscribeFanTiers": "Subscribe to {{name}}'s fan tiers",
+      "stopWatching": "Stop watching {{name}}",
+      "connectedAs": "Connected as {{name}}",
+      "avatarColour": "Avatar colour {{name}}",
+      "titleForImage": "Title for image {{name}}",
+      "backTo": "Back to {{name}}",
+      "viewImageFull": "View image {{name}} full size",
+      "writeCommentAt": "Write a comment at {{name}}"
     }
   },
   "studioEditor": {

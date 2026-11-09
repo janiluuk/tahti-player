@@ -21,6 +21,7 @@ import {
 } from '../../api/social-autopost';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageError } from '../../components/PageStates';
+import { webT } from '../../lib/webT';
 import { SettingsHint } from './SettingsFields';
 import { showOAuthPlatform, SocialOAuthPlatform } from './SocialOAuthPlatform';
 import { SocialPostNow } from './SocialPostNow';
@@ -131,7 +132,9 @@ function PlatformForm({
         <h3 className="text-sm font-semibold">{copy.name}</h3>
         <span className="text-foreground-secondary text-xs">
           {status.connected
-            ? `Connected as ${status.accountLabel ?? copy.name}`
+            ? webT()('templateText.connectedAs', {
+                name: status.accountLabel ?? copy.name,
+              })
             : 'Not connected'}
         </span>
       </div>

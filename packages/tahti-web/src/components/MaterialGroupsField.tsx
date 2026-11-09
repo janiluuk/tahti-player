@@ -14,6 +14,7 @@ import {
 import { removeStudioCollectionItem } from '../api/studio';
 import { dateLocaleTag } from '../lib/locale';
 import { toastWithUndo } from '../lib/undoToast';
+import { webT } from '../lib/webT';
 import {
   MaterialMembershipCreateFooter,
   MaterialMembershipList,
@@ -132,10 +133,12 @@ export function MaterialGroupsField({ soundId }: Props) {
           ) ?? null,
       );
       if (submitted.itemId) {
-        toastWithUndo(`Added to ${entry.name}.`, {
+        toastWithUndo(webT()('templateText.addedToDot', { name: entry.name }), {
           undo: () =>
             removeStudioCollectionItem(collectionSlug, submitted.itemId!),
-          undoneMessage: `Removed from ${entry.name}.`,
+          undoneMessage: webT()('templateText.removedFrom', {
+            name: entry.name,
+          }),
           onUndone: () => {
             setRows(
               (prev) =>

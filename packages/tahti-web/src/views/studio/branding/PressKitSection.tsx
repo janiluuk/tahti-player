@@ -20,6 +20,7 @@ import {
 } from '../../../api/artist-settings';
 import { PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { webT } from '../../../lib/webT';
 import { ACCEPTED_IMAGES } from './constants';
 import { PressKitPreview } from './PressKitPreview';
 import type { PressKitState } from './usePressKit';
@@ -166,7 +167,9 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
                   />
                   <div className="flex flex-col gap-2 p-3">
                     <Input
-                      aria-label={`Title for image ${image.position + 1}`}
+                      aria-label={webT()('templateText.titleForImage', {
+                        name: image.position + 1,
+                      })}
                       value={image.title ?? ''}
                       placeholder={t('pressKit.photoTitleOrCredit')}
                       onChange={(event) => {

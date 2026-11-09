@@ -149,7 +149,7 @@ export function AddToPlaylistPanel({
       }
       setAddedSlugs((prev) => new Set(prev).add(slug));
       const message = !bulk
-        ? `Added to ${name}`
+        ? webT()('templateText.addedTo', { name: name })
         : error
           ? `Added ${added} of ${trackCount(ids.length)} to ${name}: ${error}`
           : `Added ${trackCount(added)} to ${name}`;
@@ -157,7 +157,7 @@ export function AddToPlaylistPanel({
       if (itemIds.length > 0) {
         toastWithUndo(`${message}.`, {
           undo: () => removeAll(slug, itemIds),
-          undoneMessage: `Removed from ${name}.`,
+          undoneMessage: webT()('templateText.removedFrom', { name: name }),
           onUndone: () => {
             setAddedSlugs((prev) => {
               const next = new Set(prev);
@@ -275,7 +275,7 @@ export function AddToPlaylistPanel({
                   onClick={() => void addTo(c.slug, c.name)}
                   aria-label={
                     added
-                      ? `Added to ${c.name}`
+                      ? webT()('templateText.addedTo', { name: c.name })
                       : webT()('a11yNamed.addTo', { name: c.name })
                   }
                   title={c.name}

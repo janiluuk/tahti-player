@@ -8,6 +8,7 @@ import {
   streamFailureLabel,
   type StreamFailure,
 } from '../lib/streamFailure';
+import { webT } from '../lib/webT';
 import { usePlayerStore } from '../stores/playerStore';
 import { useStationHealth } from '../stores/stationHealthStore';
 
@@ -52,7 +53,9 @@ export function StationUnavailableNotice({
       tone="error"
       className={className}
       icon={<RadioTowerIcon size={16} aria-hidden />}
-      title={`Station unavailable · ${streamFailureLabel(failure)}`}
+      title={webT()('templateText.stationUnavailable', {
+        name: streamFailureLabel(failure),
+      })}
       data-testid="station-unavailable"
     >
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">

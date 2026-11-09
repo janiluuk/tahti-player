@@ -19,6 +19,7 @@ import {
   type SocialPlatformStatus,
 } from '../../api/social-autopost';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { webT } from '../../lib/webT';
 import { SettingsHint } from './SettingsFields';
 
 export const OAUTH_PLATFORMS: Record<
@@ -104,7 +105,9 @@ export function SocialOAuthPlatform({
         <h3 className="text-sm font-semibold">{copy.name}</h3>
         <span className="text-foreground-secondary text-xs">
           {status.connected
-            ? `Connected as ${status.accountLabel ?? copy.name}`
+            ? webT()('templateText.connectedAs', {
+                name: status.accountLabel ?? copy.name,
+              })
             : 'Not connected'}
         </span>
       </div>

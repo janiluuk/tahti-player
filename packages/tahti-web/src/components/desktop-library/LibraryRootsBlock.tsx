@@ -9,6 +9,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Button, Loader, Toggle, Tooltip } from '@tahti-player/ui';
 
 import type { NativeLibraryRoot } from '../../lib/nativeLibrary';
+import { webT } from '../../lib/webT';
 import { basename } from './pathLabels';
 
 type Props = {
@@ -144,7 +145,9 @@ export function LibraryRootsBlock({
                   size="icon-sm"
                   variant="text"
                   intent="danger"
-                  aria-label={`Stop watching ${basename(root.path)}`}
+                  aria-label={webT()('templateText.stopWatching', {
+                    name: basename(root.path),
+                  })}
                   onClick={() => onStopWatching(root)}
                   disabled={rootBusy !== null}
                 >
