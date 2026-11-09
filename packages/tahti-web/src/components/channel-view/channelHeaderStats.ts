@@ -1,6 +1,7 @@
 import { CirclePlayIcon, UsersIcon } from 'lucide-react';
 
 import type { PublicChannel } from '../../api/types';
+import { entityStatLabel } from '../../lib/entityStatLabel';
 import type { EntitySocialStat } from '../EntitySocialHeader';
 
 /** The channel header's stat row: followers (live count after a follow,
@@ -12,17 +13,18 @@ export function channelHeaderStats(
 ): EntitySocialStat[] {
   const stats: EntitySocialStat[] = [];
   if (channel.followerCount != null && channel.followerCount > 0) {
+    const value = liveFollowerCount ?? channel.followerCount;
     stats.push({
       key: 'followers',
-      label: 'Followers',
-      value: liveFollowerCount ?? channel.followerCount,
+      label: entityStatLabel('followers', value),
+      value,
       icon: UsersIcon,
     });
   }
   if (channel.publicPlays != null && channel.publicPlays > 0) {
     stats.push({
       key: 'plays',
-      label: 'Plays',
+      label: entityStatLabel('plays', channel.publicPlays),
       value: channel.publicPlays,
       icon: CirclePlayIcon,
     });

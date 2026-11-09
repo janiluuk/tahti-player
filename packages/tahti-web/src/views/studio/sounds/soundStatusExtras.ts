@@ -13,10 +13,14 @@ export function soundStatusExtras(
     parts.push(t('library.soundPinned'));
   }
   if (item.durationSec != null) {
+    const totalMinutes = Math.round(item.durationSec / 60);
     parts.push(
-      t('library.soundDurationMin', {
-        minutes: Math.round(item.durationSec / 60),
-      }),
+      totalMinutes >= 60
+        ? t('library.soundDurationHours', {
+            hours: Math.floor(totalMinutes / 60),
+            minutes: totalMinutes % 60,
+          })
+        : t('library.soundDurationMin', { minutes: totalMinutes }),
     );
   }
   if (item.genre) {

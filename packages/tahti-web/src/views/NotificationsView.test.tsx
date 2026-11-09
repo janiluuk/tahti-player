@@ -98,6 +98,20 @@ describe('NotificationsView', () => {
     expect(await screen.findByText('All caught up')).toBeTruthy();
   });
 
+  it('labels each row with its translated kind', async () => {
+    vi.spyOn(api, 'fetchNotifications').mockResolvedValue({
+      data: [note('fan'), note('motion', { type: 'MOTION_OPENED' })],
+      unreadCount: 2,
+      hasMore: false,
+      meta: { source: 'api' },
+    });
+    renderView();
+
+    expect(await screen.findByText('Title fan')).toBeTruthy();
+    expect(screen.getByText('Social ·')).toBeTruthy();
+    expect(screen.getByText('Governance ·')).toBeTruthy();
+  });
+
   it('keeps sticky notices unread on Mark all read', async () => {
     vi.spyOn(api, 'fetchNotifications').mockResolvedValue({
       data: [note('policy', { sticky: true }), note('plain')],

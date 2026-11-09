@@ -56,6 +56,29 @@ describe('StudioReleasesView', () => {
     expect(await screen.findByText('After Hours')).toBeTruthy();
   });
 
+  it('describes each release in words, with a plural-aware track count', async () => {
+    vi.spyOn(studio, 'fetchStudioReleases').mockResolvedValue({
+      data: list([
+        release,
+        {
+          ...release,
+          id: 'rel-2',
+          title: 'Neon Tide',
+          type: 'SINGLE',
+          state: 'DRAFT',
+          smartLinkSlug: 'neon-tide',
+          _count: { tracks: 1 },
+        } as unknown as StudioRelease,
+      ]),
+      meta: { source: 'api' },
+    });
+    await renderWithRouter(<StudioReleasesView />);
+    await screen.findByText('After Hours');
+    expect(screen.getByText(/Album, Published, 3 tracks/)).toBeTruthy();
+    expect(screen.getByText(/Single, Draft, 1 track\b/)).toBeTruthy();
+    expect(screen.queryByText(/PUBLISHED|ALBUM/)).toBeNull();
+  });
+
   it('reports a failed create as a toast and keeps the dialog open', async () => {
     vi.spyOn(studio, 'fetchStudioReleases').mockResolvedValue({
       data: list([release]),

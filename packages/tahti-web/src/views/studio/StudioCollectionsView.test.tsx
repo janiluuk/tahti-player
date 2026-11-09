@@ -289,3 +289,28 @@ describe('StudioCollectionsView load failure', () => {
     expect(await screen.findByText('Night Mix')).toBeTruthy();
   });
 });
+
+describe('StudioCollectionsView rows', () => {
+  it('shows artwork, a worded summary and plural tab labels', async () => {
+    fetchStudioCollections.mockResolvedValueOnce({
+      data: [
+        {
+          slug: 'short-signals',
+          name: 'Short Signals',
+          style: 'EP',
+          itemCount: 1,
+        } as never,
+      ],
+      meta: { source: 'mock' as const },
+    });
+    await renderCollections();
+
+    expect(await screen.findByText('Short Signals')).toBeInTheDocument();
+    expect(screen.getByTestId('media-artwork')).toBeInTheDocument();
+    expect(
+      screen.getByText('/short-signals, EP, 1 item, public'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Albums/ })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /DJ sets/ })).toBeInTheDocument();
+  });
+});

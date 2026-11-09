@@ -37,6 +37,18 @@ describe('AmbientTrackList list view', () => {
     expect(screen.getByText('raw table')).toBeVisible();
   });
 
+  it('counts once: the list table prints its own count', () => {
+    render(
+      <AmbientTrackList items={items} renderList={() => <p>raw table</p>} />,
+    );
+    expect(screen.getByTestId('ambient-track-list-count').textContent).toBe(
+      '1 track',
+    );
+
+    pickTrackView('List');
+    expect(screen.queryByTestId('ambient-track-list-count')).toBeNull();
+  });
+
   it('has no List option without a renderer', () => {
     render(<AmbientTrackList items={items} />);
 
