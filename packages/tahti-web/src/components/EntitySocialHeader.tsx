@@ -393,7 +393,7 @@ export function EntitySocialHeader({
                 roundImage ? 'rounded-full' : 'rounded-md',
               )}
             />
-          ) : (
+          ) : roundImage ? (
             <MediaArtwork
               src={null}
               size="lg"
@@ -402,10 +402,15 @@ export function EntitySocialHeader({
                   {title.trim().charAt(0).toUpperCase()}
                 </span>
               }
-              className={cn(
-                'border-border shadow-shadow size-24 min-w-24 border-(length:--border-width)',
-                roundImage ? 'rounded-full' : 'rounded-md',
-              )}
+              className="border-border shadow-shadow size-24 min-w-24 rounded-full border-(length:--border-width)"
+            />
+          ) : (
+            <MediaArtwork
+              src={null}
+              alt=""
+              seed={title}
+              size="lg"
+              className="border-border shadow-shadow size-24 min-w-24 rounded-md border-(length:--border-width)"
             />
           )}
           {logo && logo.placement !== 'COVER' ? (

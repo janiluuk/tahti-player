@@ -11737,6 +11737,20 @@
     },
     "messagesView": {
       "noMessagesYet": "Ei vielä viestejä"
+    },
+    "ledgerCategory": {
+      "REVENUE_SUBSCRIPTION": "Jäsen- ja fanitilaukset",
+      "REVENUE_DISTRIBUTION": "Jakelutulot",
+      "REVENUE_GRANT_INBOUND": "Saadut avustukset",
+      "REVENUE_DONATION": "Lahjoitukset",
+      "COST_INFRASTRUCTURE": "Infrastruktuurikulut",
+      "COST_DISTRIBUTION_PASSTHROUGH": "Jakelun läpikulkuerät",
+      "COST_OPERATIONS": "Toimintakulut",
+      "COST_SALARY": "Palkat",
+      "COST_AUDIT": "Tilintarkastus",
+      "COST_PROFESSIONAL_SERVICES": "Asiantuntijapalvelut",
+      "GRANT_DISBURSEMENT": "Artisteille maksetut avustukset",
+      "RESERVE_TRANSFER": "Siirrot rahastoon"
     }
   },
   "studioEditor": {
