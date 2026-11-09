@@ -1458,8 +1458,6 @@
       "tabEmbeds": "Upotukset",
       "tabSmartLinks": "Älylinkit",
       "tabLocal": "Paikalliset tiedostot",
-      "overviewTitle": "Kirjaston yleiskatsaus",
-      "overviewDescription": "Katalogisi yhdellä silmäyksellä.",
       "loadError": "Katalogin lataus epäonnistui",
       "emptyCatalogTitle": "Katalogisi on tyhjä",
       "emptyCatalogDescription": "Lähetä kappale aloittaaksesi kirjaston täyttämisen, tai hae inspiraatiota Tutki-sivulta.",
@@ -1593,7 +1591,7 @@
       "pauseRecordingNamed": "Tauota {{title}}",
       "playRecordingNamed": "Toista {{title}}",
       "mediaTitle": "Mediatiedostot",
-      "mediaDescription": "Taustakuvat ja -videot Cloudflare R2 -mediakirjastossasi.",
+      "mediaDescription": "Taustakuvat ja -videot Tahti-mediakirjastossasi.",
       "mediaLoading": "Ladataan mediaa…",
       "mediaLoadError": "Mediatiedostoja ei voitu ladata",
       "mediaEmptyTitle": "Ei mediatiedostoja vielä",
@@ -3267,8 +3265,6 @@
     "studioRecordings": {
       "title": "Nauhoitukset",
       "browseShows": "Selaa ohjelmia",
-      "panelTitle": "Nauhoitukset ({{count}})",
-      "panelDescription": "Kaikki valmiit ohjelmanauhoitukset, ryhmiteltyinä ohjelmittain — julkaisemattomat luonnokset ovat ylhäällä.",
       "searchPlaceholder": "Hae nauhoituksia…",
       "searchAria": "Hae nauhoituksia",
       "sortLabel": "Järjestä nauhoitukset",
@@ -3281,7 +3277,9 @@
       "emptySearch": "Mikään nauhoitus ei vastaa hakua",
       "emptyDescription": "Ota nauhoitus käyttöön mennessäsi liveen, niin valmiit ohjelmat näkyvät täällä.",
       "openBroadcast": "Avaa lähetysstudio",
-      "draftsHeading": "Luonnokset · ei vielä julkaistu ({{count}})"
+      "draftsHeading": "Luonnokset · ei vielä julkaistu ({{count}})",
+      "panelSummary_one": "{{count}} nauhoitus ohjelmittain ryhmiteltynä. Julkaisemattomat luonnokset ovat ylhäällä.",
+      "panelSummary_other": "{{count}} nauhoitusta ohjelmittain ryhmiteltyinä. Julkaisemattomat luonnokset ovat ylhäällä."
     },
     "studioDistribution": {
       "title": "Jakelu",
@@ -6581,7 +6579,9 @@
     "chatAccessPanel": {
       "onlyFanSubscribersCanPost": "Vain fanitilaajat voivat kirjoittaa",
       "chatAccess": "Keskustelun käyttöoikeus",
-      "turnThisOnToLet": "Kytke tämä päälle, jos haluat, että vain aktiiviset fanitilaajasi voivat kirjoittaa kanavasi keskusteluun."
+      "turnThisOnToLet": "Kytke tämä päälle, jos haluat, että vain aktiiviset fanitilaajasi voivat kirjoittaa kanavasi keskusteluun.",
+      "subscribersOnlySaved": "Nyt vain fanitilaajat voivat kirjoittaa keskusteluun.",
+      "everyoneCanPostSaved": "Nyt kaikki kirjautuneet voivat kirjoittaa keskusteluun."
     },
     "localLibraryAnalysis": {
       "audioAnalysis": "Äänianalyysi",
@@ -7566,7 +7566,7 @@
       "copyEmbedLink": "Kopioi upotuslinkki"
     },
     "channelRotationEditor": {
-      "reorderingSwitchesPlaybackToIn": "Järjestyksen muuttaminen vaihtaa toiston järjestykseen.",
+      "reorderingSwitchesPlaybackToIn": "Vedä muuttaaksesi järjestystä. Järjestyksen muuttamisen jälkeen rotaatio soi näytetyssä järjestyksessä, ei satunnaisesti.",
       "addFromLibrary": "Lisää kirjastosta",
       "chooseAContentGroupTo": "Valitse sisältöryhmä lisättäväksi aktiiviseen rotaatioon tai sen tilalle.",
       "quickAdd": "Pikalisäys",
@@ -7832,7 +7832,8 @@
     "studioUploadView": {
       "uploadFirstAndWeLl": "Lataa ensin, niin luemme tiedostoon upotetun nimen ja artistin. Jos niitä ei ole, käytetään tiedostonimeä, ja voit nimetä sen editorissa myöhemmin. Voit poistua sivulta käsittelyn aikana; jos käsittely ei onnistu, ilmoitamme sinulle.",
       "lastRecordedBroadcasts": "Viimeksi tallennetut lähetykset",
-      "goLiveToRecordOne": "Mene livenä tallentaaksesi lähetyksen."
+      "goLiveToRecordOne": "Mene livenä tallentaaksesi lähetyksen.",
+      "organiseIntoCollections": "Järjestä kokoelmiin →"
     },
     "studioHomeView": {
       "createYourChannel": "Luo kanavasi",
@@ -7887,7 +7888,13 @@
     "newsView": {
       "seeWhatSNewIn": "Katso, mitä uutta kussakin julkaisussa on",
       "retry": "Yritä uudelleen",
-      "platformNews": "Alustan uutiset"
+      "platformNews": "Alustan uutiset",
+      "intro": "Uutiset, palvelupäivitykset ja Tahti-tiimin julkaisut.",
+      "latest": "Uusin",
+      "readMore": "Lue lisää",
+      "couldNotRefresh": "Uutisia ei voitu päivittää: {{reason}}",
+      "showMore_one": "Näytä {{count}} lisää",
+      "showMore_other": "Näytä {{count}} lisää"
     },
     "collectionView": {
       "linkedReleases": "Linkitetyt julkaisut",

@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 
+import { MediaArtworkDefaultProvider } from '../MediaArtwork';
 import { TopList } from './TopList';
 import type { TopListEntry } from './types';
 
@@ -76,5 +77,20 @@ describe('TopList', () => {
       />,
     );
     expect(container).toMatchSnapshot();
+  });
+
+  it('shows the default cover picked by the entry id when there is no image', () => {
+    const { getByAltText } = render(
+      <MediaArtworkDefaultProvider value={(seed) => `/covers/${seed}.png`}>
+        <TopList
+          entries={[{ id: 'sound-7', label: 'Polar Night', value: 3 }]}
+          formatValue={String}
+        />
+      </MediaArtworkDefaultProvider>,
+    );
+    expect(getByAltText('Polar Night')).toHaveAttribute(
+      'src',
+      '/covers/sound-7.png',
+    );
   });
 });

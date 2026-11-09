@@ -143,4 +143,15 @@ describe('StudioUploadView', () => {
     );
     expect(router.state.location.pathname).toBe('/studio/upload');
   });
+
+  it('spaces the import sources away from the upload panels', async () => {
+    await renderUpload();
+    const sources = screen.getByRole('region', { name: 'Import sources' });
+    const stack = screen.getByTestId('studio-upload-sections');
+    expect(stack).toHaveClass('gap-6');
+    expect(sources.parentElement).toBe(stack);
+    expect(
+      screen.getByRole('link', { name: 'Organise into collections →' }),
+    ).toHaveAttribute('href', '/studio/collections');
+  });
 });

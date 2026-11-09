@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Toggle } from '@tahti-player/ui';
 
 import {
   fetchChatSettings,
   setChatSubscribersOnly,
 } from '../../api/artist-settings';
+import { SettingsToggle } from '../../views/settings/SettingsFields';
 import { StudioPanel } from '../StudioPanel';
 
 /** Who may post in the channel chat. Renders nothing until the setting has
@@ -40,8 +40,8 @@ export function ChatAccessPanel() {
       setSubscribersOnly(result.subscribersOnly);
       toast.success(
         result.subscribersOnly
-          ? 'Only fan subscribers can post in chat now.'
-          : 'Everyone signed in can post in chat now.',
+          ? t('chatAccessPanel.subscribersOnlySaved')
+          : t('chatAccessPanel.everyoneCanPostSaved'),
       );
     });
   };
@@ -55,17 +55,12 @@ export function ChatAccessPanel() {
       title={t('chatAccessPanel.chatAccess')}
       description={t('chatAccessPanel.turnThisOnToLet')}
     >
-      <div className="flex items-center justify-between gap-3 text-sm">
-        <span className="font-semibold" aria-hidden>
-          {t('chatAccessPanel.onlyFanSubscribersCanPost')}
-        </span>
-        <Toggle
-          label={t('chatAccessPanel.onlyFanSubscribersCanPost')}
-          checked={subscribersOnly}
-          disabled={saving}
-          onChange={change}
-        />
-      </div>
+      <SettingsToggle
+        label={t('chatAccessPanel.onlyFanSubscribersCanPost')}
+        value={subscribersOnly}
+        disabled={saving}
+        onChange={change}
+      />
     </StudioPanel>
   );
 }

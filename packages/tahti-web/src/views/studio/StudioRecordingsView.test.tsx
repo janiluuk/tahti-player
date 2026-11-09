@@ -58,4 +58,19 @@ describe('StudioRecordingsView', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Clear search' }));
     expect(screen.queryByText('No recordings match your search')).toBeNull();
   });
+
+  it('counts the recordings in the summary instead of repeating the Recordings heading', async () => {
+    vi.spyOn(broadcast, 'fetchRecentBroadcasts').mockResolvedValue({
+      data: [RECORDING],
+      meta: { source: 'api' },
+    });
+    await renderWithRouter(<StudioRecordingsView embedded />);
+    expect(
+      await screen.findByText(/^1 recording, grouped by show\./),
+    ).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: /^Recordings/ })).toBeNull();
+    expect(
+      screen.getByRole('link', { name: 'Browse shows' }),
+    ).toBeInTheDocument();
+  });
 });

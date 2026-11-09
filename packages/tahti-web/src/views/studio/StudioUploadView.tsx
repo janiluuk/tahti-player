@@ -226,103 +226,108 @@ export function StudioUploadView() {
           title={t('library.uploadTitle')}
           classes={{ root: 'px-0 pt-0' }}
         >
-          <RestrictionNotice type="UPLOAD" />
-          <div className="grid grid-cols-1 gap-4 min-[391px]:grid-cols-2">
-            <div className="border-accent-cyan flex min-h-48 flex-col justify-center rounded-xl border border-dashed p-5 sm:p-6">
-              <FilePicker
-                labels={{
-                  title: t('library.chooseAudioFileTitle'),
-                  description: UPLOAD_AUDIO_FORMATS_LABEL,
-                  browse: file
-                    ? t('library.chooseAnotherFile')
-                    : t('library.chooseAudio'),
-                }}
-                accept={UPLOAD_AUDIO_ACCEPT}
-                selectedFiles={file ? [file] : []}
-                onFiles={(files) => setFile(files[0] ?? null)}
-              />
-              <p className="text-foreground-secondary mt-3 text-xs">
-                {t('studioUploadView.uploadFirstAndWeLl')}
-              </p>
-              {message && <InlineError>{message}</InlineError>}
-              <div className="flex flex-wrap gap-2">
-                <Button
-                  disabled={busy || !file}
-                  aria-label={t('library.uploadFile')}
-                  onClick={() => void submit()}
-                >
-                  <UploadIcon size={16} aria-hidden className="mr-1.5" />
-                  {busy ? t('library.uploading') : t('actions.upload')}
-                </Button>
-              </div>
-            </div>
-
-            <div className="border-border bg-background-secondary/40 rounded-xl border p-5 sm:p-6">
-              <div className="flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
-                <RadioIcon size={15} aria-hidden />
-                {t('studioUploadView.lastRecordedBroadcasts')}
-              </div>
-              {recordingsLoading ? (
-                <InlineLoader
-                  label={t('library.loadingRecordings')}
-                  className="mt-4"
-                />
-              ) : recordingsError && recordings.length === 0 ? (
-                <PageError
-                  title={t('library.recordingsLoadError')}
-                  description={recordingsError}
-                  onRetry={() => {
-                    setRecordingsLoading(true);
-                    setRecordingsAttempt((n) => n + 1);
-                  }}
-                />
-              ) : recordings.length === 0 ? (
-                <PageEmpty
-                  className="mt-4"
-                  title={t('library.recordingsEmptyTitle')}
-                  action={
-                    <Link
-                      to="/studio/go-live"
-                      className="text-accent-cyan-strong text-sm underline-offset-2 hover:underline"
-                    >
-                      {t('studioUploadView.goLiveToRecordOne')}
-                    </Link>
-                  }
-                />
-              ) : (
-                <ul className="mt-4 flex flex-col gap-2">
-                  {recordings.map((recording) => (
-                    <RecordedBroadcastCard
-                      key={recording.id}
-                      broadcast={recording}
-                      currentId={currentId}
-                      currentTime={currentTime}
-                      duration={duration}
-                      status={playbackStatus}
-                      loading={recordingLoadingId === recording.id}
-                      onPlay={() => void playRecording(recording)}
-                      onSeek={(fraction) =>
-                        seekTo(
-                          fraction * (duration || recording.durationSec || 0),
-                        )
-                      }
-                    />
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-
-          <ImportJobsPanel />
-
-          <UploadSourceWidgets />
-
-          <Link
-            to="/studio/collections"
-            className="text-accent-cyan-strong text-sm underline-offset-2 hover:underline"
+          <div
+            className="flex flex-col gap-6"
+            data-testid="studio-upload-sections"
           >
-            Organise into collections →
-          </Link>
+            <RestrictionNotice type="UPLOAD" />
+            <div className="grid grid-cols-1 gap-4 min-[391px]:grid-cols-2">
+              <div className="border-accent-cyan flex min-h-48 flex-col justify-center rounded-xl border border-dashed p-5 sm:p-6">
+                <FilePicker
+                  labels={{
+                    title: t('library.chooseAudioFileTitle'),
+                    description: UPLOAD_AUDIO_FORMATS_LABEL,
+                    browse: file
+                      ? t('library.chooseAnotherFile')
+                      : t('library.chooseAudio'),
+                  }}
+                  accept={UPLOAD_AUDIO_ACCEPT}
+                  selectedFiles={file ? [file] : []}
+                  onFiles={(files) => setFile(files[0] ?? null)}
+                />
+                <p className="text-foreground-secondary mt-3 text-xs">
+                  {t('studioUploadView.uploadFirstAndWeLl')}
+                </p>
+                {message && <InlineError>{message}</InlineError>}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <Button
+                    disabled={busy || !file}
+                    aria-label={t('library.uploadFile')}
+                    onClick={() => void submit()}
+                  >
+                    <UploadIcon size={16} aria-hidden className="mr-1.5" />
+                    {busy ? t('library.uploading') : t('actions.upload')}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="border-border bg-background-secondary/40 rounded-xl border p-5 sm:p-6">
+                <div className="flex items-center gap-2 text-xs font-semibold tracking-wide uppercase">
+                  <RadioIcon size={15} aria-hidden />
+                  {t('studioUploadView.lastRecordedBroadcasts')}
+                </div>
+                {recordingsLoading ? (
+                  <InlineLoader
+                    label={t('library.loadingRecordings')}
+                    className="mt-4"
+                  />
+                ) : recordingsError && recordings.length === 0 ? (
+                  <PageError
+                    title={t('library.recordingsLoadError')}
+                    description={recordingsError}
+                    onRetry={() => {
+                      setRecordingsLoading(true);
+                      setRecordingsAttempt((n) => n + 1);
+                    }}
+                  />
+                ) : recordings.length === 0 ? (
+                  <PageEmpty
+                    className="mt-4"
+                    title={t('library.recordingsEmptyTitle')}
+                    action={
+                      <Link
+                        to="/studio/go-live"
+                        className="text-accent-cyan-strong text-sm underline-offset-2 hover:underline"
+                      >
+                        {t('studioUploadView.goLiveToRecordOne')}
+                      </Link>
+                    }
+                  />
+                ) : (
+                  <ul className="mt-4 flex flex-col gap-2">
+                    {recordings.map((recording) => (
+                      <RecordedBroadcastCard
+                        key={recording.id}
+                        broadcast={recording}
+                        currentId={currentId}
+                        currentTime={currentTime}
+                        duration={duration}
+                        status={playbackStatus}
+                        loading={recordingLoadingId === recording.id}
+                        onPlay={() => void playRecording(recording)}
+                        onSeek={(fraction) =>
+                          seekTo(
+                            fraction * (duration || recording.durationSec || 0),
+                          )
+                        }
+                      />
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+
+            <ImportJobsPanel />
+
+            <UploadSourceWidgets />
+
+            <Link
+              to="/studio/collections"
+              className="text-accent-cyan-strong text-sm underline-offset-2 hover:underline"
+            >
+              {t('studioUploadView.organiseIntoCollections')}
+            </Link>
+          </div>
         </ViewShell>
       </div>
     </StudioGate>

@@ -22,7 +22,11 @@ export function StudioRecordingsView({
 
   const content = (
     <div
-      className={`${embedded ? 'flex' : 'studio-page-layout'} mx-auto w-full max-w-3xl flex-col gap-6 px-1 py-2`}
+      className={
+        embedded
+          ? 'flex w-full flex-col gap-6'
+          : 'studio-page-layout mx-auto flex w-full max-w-3xl flex-col gap-6 px-1 py-2'
+      }
     >
       {!embedded ? (
         <>
@@ -31,8 +35,7 @@ export function StudioRecordingsView({
             title={t('studioRecordings.title')}
             classes={{ root: 'px-0 pt-0' }}
           >
-            <div className="mb-4">{browseShowsAction}</div>
-            <RecordingsPanel state={state} />
+            <RecordingsPanel state={state} action={browseShowsAction} />
           </ViewShell>
         </>
       ) : (

@@ -14,6 +14,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
+  cn,
   EditIconButton,
   MediaArtwork,
   Tooltip,
@@ -51,6 +52,12 @@ export function PanelHeader({
     ending,
     setConfirmEndOpen,
   } = state;
+  const stateDot =
+    playerState === 'Live' ? (
+      <Badge variant="dot" color="green" animated />
+    ) : playerState === 'Playing' ? (
+      <Badge variant="dot" color="yellow" />
+    ) : null;
 
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-3">
@@ -67,19 +74,18 @@ export function PanelHeader({
           )}
           Stream Manager
         </div>
-        <div className="mt-1 flex flex-wrap items-center gap-2 text-xs">
+        <div
+          className="mt-1 flex flex-wrap items-center text-xs"
+          data-testid="stream-manager-output"
+        >
           <span
-            className="inline-flex items-center gap-1.5"
+            className={cn('inline-flex items-center', stateDot && 'mr-2')}
             role="status"
             aria-label={t('panelHeaderLabels.playerStatePlayerstate', {
               playerState,
             })}
           >
-            {playerState === 'Live' ? (
-              <Badge variant="dot" color="green" animated />
-            ) : playerState === 'Playing' ? (
-              <Badge variant="dot" color="yellow" />
-            ) : null}
+            {stateDot}
           </span>
           <span className="text-foreground-secondary">{outputLabel}</span>
         </div>
@@ -135,7 +141,7 @@ export function PanelHeader({
           </Tooltip>
         </div>
       )}
-      <div className="order-2 flex min-w-0 flex-1 items-center justify-end gap-2 text-right sm:order-3">
+      <div className="order-2 flex w-full min-w-0 items-center justify-between gap-2 text-left sm:order-3 sm:w-auto sm:flex-1 sm:justify-end sm:text-right">
         <div className="min-w-0">
           <p className="text-foreground-secondary text-[10px] font-semibold tracking-wide uppercase">
             {t('streamPanelHeader.currentTrack')}
@@ -175,7 +181,10 @@ export function PanelHeader({
           />
         )}
       </div>
-      <div className="order-4 flex shrink-0 items-center gap-2">
+      <div
+        className="order-1 flex shrink-0 items-center gap-2 sm:order-4"
+        data-testid="stream-manager-actions"
+      >
         {canControl && collections.length > 0 && (
           <EditIconButton
             onClick={openPlaylistDialog}

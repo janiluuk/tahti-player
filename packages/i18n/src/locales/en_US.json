@@ -1458,8 +1458,6 @@
       "tabEmbeds": "Embeds",
       "tabSmartLinks": "Smart links",
       "tabLocal": "Local files",
-      "overviewTitle": "Library overview",
-      "overviewDescription": "Your catalog at a glance.",
       "loadError": "Could not load your catalog",
       "emptyCatalogTitle": "Your catalog is empty",
       "emptyCatalogDescription": "Upload a track to start filling Library, or browse Discover for inspiration.",
@@ -1593,7 +1591,7 @@
       "pauseRecordingNamed": "Pause {{title}}",
       "playRecordingNamed": "Play {{title}}",
       "mediaTitle": "Media files",
-      "mediaDescription": "Background images and videos stored in your Cloudflare R2 media library.",
+      "mediaDescription": "Background images and videos in your Tahti media library.",
       "mediaLoading": "Loading media…",
       "mediaLoadError": "Could not load your media files",
       "mediaEmptyTitle": "No media files yet",
@@ -3267,8 +3265,6 @@
     "studioRecordings": {
       "title": "Recordings",
       "browseShows": "Browse shows",
-      "panelTitle": "Recordings ({{count}})",
-      "panelDescription": "Every completed show recording, grouped by show — drafts that haven't been published yet are pinned at the top.",
       "searchPlaceholder": "Search recordings…",
       "searchAria": "Search recordings",
       "sortLabel": "Sort recordings",
@@ -3281,7 +3277,9 @@
       "emptySearch": "No recordings match your search",
       "emptyDescription": "Enable recording when you go live and completed shows will appear here.",
       "openBroadcast": "Open broadcast studio",
-      "draftsHeading": "Drafts · not yet published ({{count}})"
+      "draftsHeading": "Drafts · not yet published ({{count}})",
+      "panelSummary_one": "{{count}} recording, grouped by show. Drafts that haven't been published yet are pinned at the top.",
+      "panelSummary_other": "{{count}} recordings, grouped by show. Drafts that haven't been published yet are pinned at the top."
     },
     "studioDistribution": {
       "title": "Distribution",
@@ -6581,7 +6579,9 @@
     "chatAccessPanel": {
       "onlyFanSubscribersCanPost": "Only fan subscribers can post",
       "chatAccess": "Chat access",
-      "turnThisOnToLet": "Turn this on to let only your active fan subscribers post in your channel chat."
+      "turnThisOnToLet": "Turn this on to let only your active fan subscribers post in your channel chat.",
+      "subscribersOnlySaved": "Only fan subscribers can post in chat now.",
+      "everyoneCanPostSaved": "Everyone signed in can post in chat now."
     },
     "localLibraryAnalysis": {
       "audioAnalysis": "Audio analysis",
@@ -7566,7 +7566,7 @@
       "copyEmbedLink": "Copy embed link"
     },
     "channelRotationEditor": {
-      "reorderingSwitchesPlaybackToIn": "Reordering switches playback to In order.",
+      "reorderingSwitchesPlaybackToIn": "Drag to reorder. Reordering plays the rotation in the order shown, not shuffled.",
       "addFromLibrary": "Add from library",
       "chooseAContentGroupTo": "Choose a content group to append or replace the active rotation.",
       "quickAdd": "Quick add",
@@ -7832,7 +7832,8 @@
     "studioUploadView": {
       "uploadFirstAndWeLl": "Upload first and we’ll read the embedded title and artist metadata. If the file has none, its filename is used and you can name it in the editor afterwards. You can leave this page while it processes; if it can't be processed, we notify you.",
       "lastRecordedBroadcasts": "Last recorded broadcasts",
-      "goLiveToRecordOne": "Go live to record one."
+      "goLiveToRecordOne": "Go live to record one.",
+      "organiseIntoCollections": "Organise into collections →"
     },
     "studioHomeView": {
       "createYourChannel": "Create your channel",
@@ -7887,7 +7888,13 @@
     "newsView": {
       "seeWhatSNewIn": "See what's new in each release",
       "retry": "Retry",
-      "platformNews": "Platform news"
+      "platformNews": "Platform news",
+      "intro": "News, service updates, and posts from the Tahti team.",
+      "latest": "Latest",
+      "readMore": "Read more",
+      "couldNotRefresh": "Could not refresh the news: {{reason}}",
+      "showMore_one": "Show {{count}} more",
+      "showMore_other": "Show {{count}} more"
     },
     "collectionView": {
       "linkedReleases": "Linked releases",

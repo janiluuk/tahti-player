@@ -356,11 +356,11 @@ function LibraryStats() {
   }, [canUpload, soundsAttempt]);
 
   return (
-    <StudioPanel
-      title={t('library.overviewTitle')}
-      description={t('library.overviewDescription')}
-    >
-      <div className="grid gap-3 sm:grid-cols-3">
+    <StudioPanel>
+      <div
+        className="grid gap-3 sm:grid-cols-3"
+        data-testid="library-overview-stats"
+      >
         <div className="border-border bg-background-secondary/40 rounded-lg border p-3">
           <Music2Icon size={18} className="text-primary-strong" aria-hidden />
           <p className="text-foreground-secondary mt-2 text-xs uppercase">

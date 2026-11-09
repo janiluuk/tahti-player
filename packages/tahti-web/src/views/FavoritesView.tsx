@@ -108,7 +108,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
                       {ch.displayName}
                     </Link>
                   }
-                  subtitle={ch.slug}
+                  subtitle={`@${ch.username ?? ch.slug}`}
                   isPlaying={channelPlaying}
                   playLabel={`Play ${ch.displayName}`}
                   pauseLabel={`Pause ${ch.displayName}`}
