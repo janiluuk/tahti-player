@@ -13,7 +13,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -38,6 +38,11 @@ import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { SourceServiceIcon } from '../../components/SourceServiceIcon';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import {
+  RELEASE_TYPE_LABEL_KEYS,
+  releaseStateLabel,
+  releaseTypeLabel,
+} from '../../lib/releaseLabels';
 import { resolveNewReleaseVisualizer } from '../../lib/releaseVisualizer';
 import { toastWithUndo } from '../../lib/undoToast';
 import { ReleaseCsvImportButton } from './ReleaseCsvImportButton';
@@ -46,48 +51,25 @@ import { ReleasePinButton } from './ReleasePinButton';
 const RELEASE_TYPE_DEFS = [
   {
     id: 'SINGLE',
-    labelKey: 'studioReleases.typeSingle',
+    labelKey: RELEASE_TYPE_LABEL_KEYS.SINGLE,
     icon: <DiscAlbumIcon size={18} aria-hidden />,
   },
   {
     id: 'EP',
-    labelKey: 'studioReleases.typeEp',
+    labelKey: RELEASE_TYPE_LABEL_KEYS.EP,
     icon: <DiscAlbumIcon size={18} aria-hidden />,
   },
   {
     id: 'ALBUM',
-    labelKey: 'studioReleases.typeAlbum',
+    labelKey: RELEASE_TYPE_LABEL_KEYS.ALBUM,
     icon: <Disc3Icon size={18} aria-hidden />,
   },
   {
     id: 'COMPILATION',
-    labelKey: 'studioReleases.typeCompilation',
+    labelKey: RELEASE_TYPE_LABEL_KEYS.COMPILATION,
     icon: <LibraryIcon size={18} aria-hidden />,
   },
 ] as const;
-
-const RELEASE_STATE_KEYS = {
-  DRAFT: 'studioReleases.stateDraft',
-  SCHEDULED: 'studioReleases.stateScheduled',
-  PUBLISHED: 'studioReleases.statePublished',
-} as const;
-
-/** "Album", "EP" in the current language; an unknown type reads as sentence
- * case rather than a raw enum. */
-export function releaseTypeLabel(type: string, t: TFunction<'web'>): string {
-  const def = RELEASE_TYPE_DEFS.find((item) => item.id === type);
-  return def ? t(def.labelKey) : sentenceCase(type);
-}
-
-export function releaseStateLabel(state: string, t: TFunction<'web'>): string {
-  const key = RELEASE_STATE_KEYS[state as keyof typeof RELEASE_STATE_KEYS];
-  return key ? t(key) : sentenceCase(state);
-}
-
-function sentenceCase(value: string): string {
-  const words = value.replace(/_/g, ' ').toLowerCase();
-  return words.charAt(0).toUpperCase() + words.slice(1);
-}
 
 export function StudioReleasesView() {
   const { t } = useTranslation('web');

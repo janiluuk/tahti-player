@@ -6770,7 +6770,9 @@
     },
     "homeNews": {
       "showAllNews": "Näytä kaikki uutiset",
-      "fromTahti": "Tahdilta"
+      "fromTahti": "Tahdilta",
+      "badge": "Uutiset",
+      "empty": "Ei vielä uutisia"
     },
     "listeningPartyTracklist": {
       "tracklist": "Kappalelista",

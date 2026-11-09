@@ -56,6 +56,18 @@ describe('HomeNews', () => {
 
     expect(await screen.findByRole('button', { name: /Retry/ })).toBeVisible();
   });
+
+  it('shows the News pill and an empty message when there are no posts', async () => {
+    vi.spyOn(client, 'fetchAnnouncements').mockResolvedValue({
+      data: [],
+      meta: { source: 'api' },
+    });
+
+    await renderWithRouter(<HomeNews />);
+
+    expect(await screen.findByText('No news yet')).toBeVisible();
+    expect(screen.getByText('News')).toBeVisible();
+  });
 });
 
 it('opens the selected article in a modal with artwork and publication date', async () => {
