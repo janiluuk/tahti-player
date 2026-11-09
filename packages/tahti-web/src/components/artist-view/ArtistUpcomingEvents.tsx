@@ -54,11 +54,14 @@ export function ArtistUpcomingEvents({ channelSlug }: { channelSlug: string }) {
   }
 
   return (
-    <section className="flex flex-col gap-3" aria-label="Upcoming events">
+    <section
+      className="flex flex-col gap-3"
+      aria-label={t('artistUpcomingEventsText.upcomingEvents')}
+    >
       <Eyebrow>
         <span className="inline-flex items-center gap-1.5">
           <CalendarIcon size={13} aria-hidden />
-          Upcoming events
+          {t('artistUpcomingEventsText.upcomingEvents')}
         </span>
       </Eyebrow>
       <ul className="flex flex-col gap-3">

@@ -1,6 +1,7 @@
 import { PartyPopperIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, MediaArtwork } from '@tahti-player/ui';
 
 import {
@@ -13,6 +14,7 @@ import { Eyebrow } from '../tahti/Eyebrow';
 /** The channel's live listening party, or its next upcoming one, linking to
  * the party page. Renders nothing when there is none or the list fails. */
 export function ChannelListeningPartyBanner({ slug }: { slug: string }) {
+  const { t } = useTranslation('web');
   const [party, setParty] = useState<ListeningPartySummaryDto | null>(null);
 
   useEffect(() => {
@@ -38,7 +40,7 @@ export function ChannelListeningPartyBanner({ slug }: { slug: string }) {
   const live = party.state === 'LIVE';
   return (
     <section
-      aria-label="Listening party"
+      aria-label={t('channelListeningPartyBannerText.listeningParty')}
       className="border-border bg-background-secondary flex flex-wrap items-center gap-3 rounded-xl border px-4 py-3"
     >
       <MediaArtwork

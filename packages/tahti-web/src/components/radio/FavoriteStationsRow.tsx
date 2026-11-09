@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useMemo } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Card, CardsRow } from '@tahti-player/ui';
 
 import { radioStationIdForPlayable } from '../../content/radioStations';
@@ -14,6 +15,7 @@ const ROW_LABELS = {
 };
 
 export function FavoriteStationsRow() {
+  const { t } = useTranslation('web');
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
   const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const play = usePlayerStore((s) => s.play);
@@ -42,7 +44,7 @@ export function FavoriteStationsRow() {
   return (
     <CardsRow
       data-testid="radio-favorites"
-      title="Favorite stations"
+      title={t('favoriteStationsRowText.favoriteStations')}
       badge="Favorites"
       badgeColor="red"
       items={items}

@@ -105,7 +105,9 @@ export function MeetingAgendaItems({
     );
   }
   if (items === null) {
-    return <InlineLoader label="Loading the agenda…" />;
+    return (
+      <InlineLoader label={t('meetingAgendaItemsText.loadingTheAgenda')} />
+    );
   }
   if (items.length === 0) {
     return <>{fallback}</>;

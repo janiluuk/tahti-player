@@ -95,7 +95,7 @@ export function RadioBookedShowsPanel({
     <section
       className="flex flex-col gap-4"
       data-testid="radio-booked-shows"
-      aria-label="Booked shows"
+      aria-label={t('radioBookedShowsPanelText.bookedShows')}
     >
       <div className="flex flex-wrap items-center gap-2">
         {onBook && days.length > 0 ? (

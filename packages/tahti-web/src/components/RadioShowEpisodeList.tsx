@@ -1,6 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { MessageCircleIcon, MicIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { MediaArtwork } from '@tahti-player/ui';
 
 import type { PublicRadioShowEpisode } from '../api/shows';
@@ -19,6 +20,7 @@ function EpisodeIcon({ showType }: Pick<PublicRadioShowEpisode, 'showType'>) {
 }
 
 function EpisodeRow({ episode }: { episode: PublicRadioShowEpisode }) {
+  const { t } = useTranslation('web');
   const title =
     episode.title ??
     episode.recording?.title ??
@@ -59,7 +61,7 @@ function EpisodeRow({ episode }: { episode: PublicRadioShowEpisode }) {
             params={{ id: episode.recording.soundId }}
             className="text-primary-strong mt-2 inline-block text-sm font-medium hover:underline"
           >
-            Listen to the recording
+            {t('radioShowEpisodeListText.listenToTheRecording')}
           </Link>
         ) : null}
       </div>

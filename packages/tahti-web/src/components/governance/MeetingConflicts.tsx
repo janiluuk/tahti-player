@@ -37,7 +37,10 @@ export function MeetingConflicts({ meetingId }: { meetingId: string }) {
 
   if (error) {
     return (
-      <GovernancePanel title="Conflicts of interest" icon={ScaleIcon}>
+      <GovernancePanel
+        title={t('meetingConflictsText.conflictsOfInterest')}
+        icon={ScaleIcon}
+      >
         <PageErrorBanner
           title={t('loadErrors.couldnTLoadDeclaredConflicts')}
           description={error}
@@ -52,7 +55,10 @@ export function MeetingConflicts({ meetingId }: { meetingId: string }) {
   }
 
   return (
-    <GovernancePanel title="Conflicts of interest" icon={ScaleIcon}>
+    <GovernancePanel
+      title={t('meetingConflictsText.conflictsOfInterest')}
+      icon={ScaleIcon}
+    >
       <ul className="divide-border divide-y">
         {records.map((record) => (
           <li key={record.id} className="py-2 text-sm first:pt-0 last:pb-0">

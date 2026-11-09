@@ -9868,6 +9868,96 @@
     },
     "emailChangeViewText": {
       "confirmingYourNewAddress": "Confirming your new address…"
+    },
+    "stationUnavailableNoticeText": {
+      "tryAgain": "Try again"
+    },
+    "searchTrackResultsText": {
+      "tracksToOpen": "Tracks to open"
+    },
+    "releaseTracklistDialogText": {
+      "close": "Close"
+    },
+    "radioShowEpisodeListText": {
+      "listenToTheRecording": "Listen to the recording"
+    },
+    "radioBookedShowsPanelText": {
+      "bookedShows": "Booked shows"
+    },
+    "radioListItemText": {
+      "openRadio": "Open radio"
+    },
+    "favoriteStationsRowText": {
+      "favoriteStations": "Favorite stations"
+    },
+    "queueConfirmDialogText": {
+      "cancel": "Cancel"
+    },
+    "stationRowsText": {
+      "configureStation": "Configure station"
+    },
+    "playerSeekBarText": {
+      "live": "Live"
+    },
+    "messageContactsText": {
+      "yourContacts": "Your contacts"
+    },
+    "mentionTextareaText": {
+      "mentionSuggestions": "Mention suggestions"
+    },
+    "listeningPartyJoinButtonText": {
+      "leave": "Leave"
+    },
+    "listeningPartyChatText": {
+      "partyChat": "Party chat"
+    },
+    "subscribedCollectionsText": {
+      "subscribed": "Subscribed"
+    },
+    "historyBackButtonText": {
+      "back": "Back"
+    },
+    "helpLayerText": {
+      "sectionHelp": "Section help"
+    },
+    "meetingConflictsText": {
+      "conflictsOfInterest": "Conflicts of interest"
+    },
+    "meetingAgendaItemsText": {
+      "loadingTheAgenda": "Loading the agenda…"
+    },
+    "electionsPanelText": {
+      "decided": "Decided"
+    },
+    "followListDialogText": {
+      "showMore": "Show more"
+    },
+    "entitySocialHeaderText": {
+      "removeArtwork": "Remove artwork"
+    },
+    "dmThreadMessagesText": {
+      "couldNotLoadOlderMessages": "Could not load older messages."
+    },
+    "channelBlocksSectionText": {
+      "channelBlocks": "Channel blocks"
+    },
+    "streamManagerDialogText": {
+      "streamManager": "Stream Manager"
+    },
+    "channelUpcomingShowsText": {
+      "upcomingShows": "Upcoming shows"
+    },
+    "channelPageTabsText": {
+      "channelSections": "Channel sections"
+    },
+    "channelLiveTracklistText": {
+      "playedInThisBroadcast": "Played in this broadcast"
+    },
+    "channelListeningPartyBannerText": {
+      "listeningParty": "Listening party"
+    },
+    "artistUpcomingEventsText": {
+      "upcomingEvents": "Upcoming events"
     }
   },
   "studioEditor": {

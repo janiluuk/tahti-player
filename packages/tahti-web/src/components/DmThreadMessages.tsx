@@ -54,7 +54,7 @@ export function DmThreadMessages({
         <div className="flex flex-col items-center gap-1">
           {olderError && !loadingOlder ? (
             <InlineError textSize="xs">
-              Could not load older messages.
+              {t('dmThreadMessagesText.couldNotLoadOlderMessages')}
             </InlineError>
           ) : null}
           <Button

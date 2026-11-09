@@ -342,7 +342,7 @@ export function EntitySocialHeader({
                       'entitySocialHeaderLabels.removeTitleArtwork',
                       { title },
                     )}
-                    title="Remove artwork"
+                    title={t('entitySocialHeaderText.removeArtwork')}
                     className="border-border bg-background text-accent-red-strong shadow-shadow hover:bg-background-secondary absolute -top-1.5 -right-1.5 flex size-6 items-center justify-center rounded-full border-(length:--border-width) whitespace-normal opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 active:scale-100"
                   >
                     <XIcon size={12} aria-hidden />

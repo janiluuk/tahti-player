@@ -35,7 +35,7 @@ export function SubscribedCollections() {
 
   if (loadError) {
     return (
-      <SectionShell title="Subscribed">
+      <SectionShell title={t('subscribedCollectionsText.subscribed')}>
         <PageError
           title={t('loadErrors.couldNotLoadSubscribedCollections')}
           description={loadError}
@@ -50,7 +50,7 @@ export function SubscribedCollections() {
   }
 
   return (
-    <SectionShell title="Subscribed">
+    <SectionShell title={t('subscribedCollectionsText.subscribed')}>
       <CardGrid>
         {items.map((collection) => (
           <Link

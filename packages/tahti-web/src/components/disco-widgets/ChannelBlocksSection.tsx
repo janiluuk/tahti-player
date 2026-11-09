@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { MediaArtwork } from '@tahti-player/ui';
 
 import type {
@@ -21,13 +22,14 @@ export function ChannelBlocksSection({
 }: {
   blocks: PublicChannelBlock[];
 }) {
+  const { t } = useTranslation('web');
   const rows = packChannelBlocks(blocks);
   if (rows.length === 0) {
     return null;
   }
   return (
     <section
-      aria-label="Channel blocks"
+      aria-label={t('channelBlocksSectionText.channelBlocks')}
       className="@container flex w-full flex-col gap-3"
       data-testid="channel-blocks"
     >
