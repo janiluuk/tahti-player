@@ -56,4 +56,23 @@ describe('useSnapshotFetch', () => {
     expect(next.result.current.data).toBeNull();
     expect(next.result.current.loading).toBe(true);
   });
+
+  it('switches to the saved snapshot of a new key and keeps local edits', async () => {
+    const { result, rerender } = renderHook(
+      ({ k }: { k: string }) =>
+        useSnapshotFetch(k, () => Promise.resolve(`loaded ${k}`)),
+      { initialProps: { k: 'a' } },
+    );
+    await waitFor(() => expect(result.current.data).toBe('loaded a'));
+    act(() => result.current.mutate((current) => `${current} edited`));
+    expect(result.current.data).toBe('loaded a edited');
+
+    rerender({ k: 'b' });
+    await waitFor(() => expect(result.current.data).toBe('loaded b'));
+
+    const again = renderHook(() =>
+      useSnapshotFetch('a', () => new Promise<string>(() => undefined)),
+    );
+    expect(again.result.current.data).toBe('loaded a edited');
+  });
 });
