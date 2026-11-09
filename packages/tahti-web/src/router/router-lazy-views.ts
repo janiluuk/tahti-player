@@ -514,3 +514,8 @@ export const EmbedReleaseView = lazyRouteComponent(
   () => import('../views/EmbedViews'),
   'EmbedReleaseView',
 );
+
+export const EventView = lazyRouteComponent(
+  () => import('../views/EventView'),
+  'EventView',
+);

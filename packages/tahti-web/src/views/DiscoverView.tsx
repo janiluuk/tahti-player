@@ -10,7 +10,7 @@ import {
   UsersRoundIcon,
 } from 'lucide-react';
 import { motion } from 'motion/react';
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
 import {
@@ -51,8 +51,8 @@ import type {
   TahtiPlayable,
 } from '../api/types';
 import { DirectoryArtistsBrowser } from '../components/DirectoryArtistsBrowser';
-import { CommunityStoriesWidget } from '../components/discover/CommunityStoriesWidget';
 import { DiscoverAddWidgetButton } from '../components/discover/DiscoverAddWidgetButton';
+import { DiscoverFeedPanel } from '../components/discover/DiscoverFeedPanel';
 import {
   DiscoverWaveformPlayer,
   type DiscoverSelection,
@@ -67,7 +67,7 @@ import {
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { GroupsDirectory } from '../components/GroupsDirectory';
 import { HomeNews } from '../components/listen-view/HomeNews';
-import { PageError, PageLoading } from '../components/PageStates';
+import { PageError } from '../components/PageStates';
 import {
   PHONE_SCROLL_TAB_LIST,
   useSelectedTabInView,
@@ -99,10 +99,6 @@ type WidgetData = {
   subtitle?: string;
   artist?: DiscoverArtistOfWeek;
 };
-
-const FeedView = lazy(() =>
-  import('./FeedView').then((m) => ({ default: m.FeedView })),
-);
 
 const DISCOVER_TABS: Array<{
   id: DiscoverTab;
@@ -169,7 +165,10 @@ export function DiscoverView() {
   const [artistsLoading, setArtistsLoading] = useState(true);
   const [artistsError, setArtistsError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
-  const search = useSearch({ strict: false }) as { tab?: string };
+  const search = useSearch({ strict: false }) as {
+    tab?: string;
+    view?: string;
+  };
   const activeTab = discoverTabFromSearch(search.tab);
   const activeTabIndex = DISCOVER_TABS.findIndex(
     (item) => item.id === activeTab,
@@ -453,14 +452,17 @@ export function DiscoverView() {
         ) : null}
 
         {activeTab === 'feed' ? (
-          <div className="flex flex-col gap-6" data-testid="discover-feed">
-            <CommunityStoriesWidget />
-            <Suspense
-              fallback={<PageLoading label={t('discover.loadingFeed')} />}
-            >
-              <FeedView embedded />
-            </Suspense>
-          </div>
+          <DiscoverFeedPanel
+            calendar={search.view === 'calendar'}
+            onCalendarChange={(calendar) =>
+              void navigate({
+                to: '/discover',
+                search: calendar
+                  ? { tab: 'feed', view: 'calendar' }
+                  : { tab: 'feed' },
+              })
+            }
+          />
         ) : null}
 
         {activeTab === 'groups' ? <GroupsDirectory /> : null}

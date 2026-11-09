@@ -6,6 +6,7 @@ import { ListenView } from '../views/ListenView';
 import { appLayoutRoute } from './router-core';
 import {
   DiscoverView,
+  EventView,
   RadioScheduleView,
   RadioShowView,
   RadioStationView,
@@ -120,5 +121,14 @@ export const themesRoute = createRoute({
   path: '/themes',
   beforeLoad: () => {
     throw redirect({ to: '/settings/$section', params: { section: 'themes' } });
+  },
+});
+
+export const eventRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/events/$eventId',
+  component: () => {
+    const { eventId } = eventRoute.useParams();
+    return <EventView eventId={eventId} />;
   },
 });

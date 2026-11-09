@@ -1,6 +1,6 @@
 # Event calendar under Feed
 
-**Status:** open
+**Status:** partial
 
 Artists create events, tag the other people involved, preview, publish, and push them out to other services. Listeners find them in a calendar under Discover → Feed.
 
@@ -30,18 +30,22 @@ Missing: end time, draft/published state, tagged people, a cross-artist calendar
 
 ## Slices (tahti-web)
 
-1. [ ] API client + mock fixtures for the extended event, participants and syndication (mock-first, `VITE_FORCE_MOCK`).
-2. [ ] Studio event editor: end time, timezone, venue picker (verified venues + free text), cover image (default artwork), ticket link, visibility.
-3. [ ] Tag people: user search picker (`@tahti-player/ui` combobox), role per person, pending/accepted chips.
-4. [ ] Draft → preview: the event's public card and detail page rendered from the draft in a preview dialog (same components as the public page, "Preview" badge).
-5. [ ] Publish / unpublish / cancel with ConfirmDialog; cancelled events stay visible with a "Cancelled" badge.
-6. [ ] Invites inbox: accept/decline tags (notifications popover + Studio Events "Invites" tab).
-7. [ ] Public event page `/events/$eventId`: cover, time in viewer's timezone (`ListingDate`), venue, participants, ticket link, add-to-calendar (.ics / Google), share.
-8. [ ] Calendar under Discover → Feed: a "Calendar" sub-view next to the story feed — month grid on desktop, agenda list on phones; filters (following only, near me, genre); saved events.
+1. [x] API client + mock fixtures for the extended event, participants and syndication (mock-first, `VITE_FORCE_MOCK`).
+2. [x] Studio event editor: end time, timezone, venue picker (verified venues + free text), cover image (default artwork), ticket link, visibility.
+3. [x] Tag people: user search picker (`@tahti-player/ui` combobox), role per person, pending/accepted chips.
+4. [x] Draft → preview: the event's public card and detail page rendered from the draft in a preview dialog (same components as the public page, "Preview" badge).
+5. [x] Publish / unpublish / cancel with ConfirmDialog; cancelled events stay visible with a "Cancelled" badge.
+6. [x] Invites inbox: accept/decline tags (notifications popover + Studio Events "Invites" tab).
+7. [x] Public event page `/events/$eventId`: cover, time in viewer's timezone (`ListingDate`), venue, participants, ticket link, add-to-calendar (.ics / Google), share.
+8. [x] Calendar under Discover → Feed: a "Calendar" sub-view next to the story feed — month grid on desktop, agenda list on phones; filters (following only, near me, genre); saved events.
 9. [ ] Channel page events block uses the same card; tagged (accepted) events appear on every participant's channel.
 10. [ ] Aggregation on publish: per-event toggles for Mastodon/Bluesky (reuse social auto-post connections), status per target with retry; `.ics` subscribe links on artist page and calendar.
 11. [ ] Listen "Coming up" row reads from the new public calendar endpoint.
 12. [ ] Finnish strings for all of the above; Storybook stories + plays for editor, preview, invite, calendar; e2e journey: create → tag → preview → publish → appears in calendar and on both channels.
+
+## Shipped 2026-11-09 (tahti-web, PR after tahti-org #1079–#1081)
+
+Slices 1–8: `api/event-calendar.ts` (calendar, public event, publish/cancel, tags, invites, .ics + Google links), editor end time / ticket / cover links / save as draft / preview, Studio event detail status + publish/cancel + tag editor, Studio Events "Invites" tab, `/events/$eventId`, Discover → Feed → Calendar (`?tab=feed&view=calendar`, month grid / list). Left: timezone + venueId + visibility fields (no API yet), notifications popover invites, channel block participants (9), aggregation toggles (10), Coming up from the calendar endpoint (11), stories + e2e (12). `GET /api/v1/events/:id` is needed in tahti-org for the public page outside mock mode.
 
 ## Open questions
 
