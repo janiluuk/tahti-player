@@ -1,6 +1,7 @@
 import { FC, ReactNode } from 'react';
 
 import { Badge } from '../Badge';
+import type { TabsVariant } from './context';
 import { TabsList } from './TabsList';
 import { TabsPanel } from './TabsPanel';
 import { TabsPanels } from './TabsPanels';
@@ -25,6 +26,7 @@ export type TabsProps = {
   onChange?: (index: number) => void;
   vertical?: boolean;
   manual?: boolean;
+  variant?: TabsVariant;
   className?: string;
   listClassName?: string;
   tabClassName?: string;
@@ -34,6 +36,8 @@ export type TabsProps = {
    * and hover title. Items need an `icon` and a string `label`. */
   iconOnly?: boolean;
 };
+
+export type { TabsVariant };
 
 type TabsComponent = FC<TabsProps> & {
   Root: typeof TabsRoot;
@@ -75,6 +79,7 @@ const TabsImpl: FC<TabsProps> = ({
   onChange,
   vertical,
   manual,
+  variant,
   className,
   listClassName,
   tabClassName,
@@ -91,6 +96,7 @@ const TabsImpl: FC<TabsProps> = ({
         onChange={onChange}
         vertical={vertical}
         manual={manual}
+        variant={variant}
         className={className}
         listClassName={listClassName}
         tabClassName={tabClassName}
@@ -107,6 +113,7 @@ const TabsImpl: FC<TabsProps> = ({
       onChange={onChange}
       vertical={vertical}
       manual={manual}
+      variant={variant}
       className={className}
       listClassName={listClassName}
       tabClassName={tabClassName}

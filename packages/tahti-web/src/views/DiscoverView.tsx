@@ -400,6 +400,7 @@ export function DiscoverView() {
       <DiscoverGatewayBackground />
       <div ref={tabRowRef} className="min-w-0">
         <Tabs.Root
+          variant="underline"
           selectedIndex={Math.max(0, activeTabIndex)}
           onChange={(index) => {
             const next = DISCOVER_TABS[index];
@@ -414,7 +415,7 @@ export function DiscoverView() {
         >
           <Tabs.List
             aria-label={t('discover.sections')}
-            className={PHONE_SCROLL_TAB_LIST}
+            className={`${PHONE_SCROLL_TAB_LIST} pb-0`}
           >
             {DISCOVER_TABS.map((item) => (
               <Tabs.Tab key={item.id}>

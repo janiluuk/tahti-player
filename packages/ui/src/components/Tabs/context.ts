@@ -1,5 +1,7 @@
 import { createContext, useContext } from 'react';
 
+export type TabsVariant = 'pill' | 'segmented' | 'underline';
+
 type TabsContextValue = {
   ids: {
     groupId: string;
@@ -9,6 +11,7 @@ type TabsContextValue = {
   selectedIndex: number;
   vertical?: boolean;
   manual?: boolean;
+  variant: TabsVariant;
   listClassName?: string;
   tabClassName?: string;
   panelsClassName?: string;

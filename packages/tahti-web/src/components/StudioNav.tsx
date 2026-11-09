@@ -413,7 +413,7 @@ export function StudioMainNavItems() {
   );
 }
 
-const STUDIO_SECTION_MENU_SLOT = 'border-border min-h-7 min-w-0 border-b pb-2';
+const STUDIO_SECTION_MENU_SLOT = 'min-h-7 min-w-0';
 const STUDIO_NESTED_NAV_SLOT =
   'border-border flex min-h-10 w-full min-w-0 flex-nowrap items-end gap-y-1 overflow-x-auto border-b pb-2';
 

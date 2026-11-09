@@ -205,6 +205,7 @@ export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
   return (
     <div ref={ref} className="min-w-0">
       <Tabs.Root
+        variant="underline"
         selectedIndex={Math.max(
           0,
           tabs.findIndex((item) => item.id === active),
@@ -218,7 +219,7 @@ export function LibrarySectionTabs({ active }: { active: LibrarySectionId }) {
       >
         <Tabs.List
           aria-label={t('library.sections')}
-          className={`${PHONE_SCROLL_TAB_LIST} max-w-full`}
+          className={`${PHONE_SCROLL_TAB_LIST} max-w-full pb-0`}
         >
           {tabs.map((item) => (
             <Tabs.Tab

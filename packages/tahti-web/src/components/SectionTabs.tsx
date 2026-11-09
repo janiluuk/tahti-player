@@ -54,6 +54,7 @@ export function SectionTabs({
   return (
     <div ref={ref} className="min-w-0">
       <Tabs.Root
+        variant="underline"
         selectedIndex={Math.max(0, selectedIndex)}
         onChange={(index) => {
           const next = items[index];
@@ -69,11 +70,14 @@ export function SectionTabs({
         }}
         tabClassName={
           selectedIndex < 0
-            ? 'data-[selected]:bg-transparent data-[selected]:text-foreground-secondary'
+            ? 'data-[selected]:text-foreground-secondary data-[selected]:border-transparent'
             : undefined
         }
       >
-        <Tabs.List aria-label={ariaLabel} className={PHONE_SCROLL_TAB_LIST}>
+        <Tabs.List
+          aria-label={ariaLabel}
+          className={`${PHONE_SCROLL_TAB_LIST} pb-0`}
+        >
           {items.map((item) => (
             <Tabs.Tab key={item.id}>
               <TabLabel icon={item.icon} count={item.count}>
