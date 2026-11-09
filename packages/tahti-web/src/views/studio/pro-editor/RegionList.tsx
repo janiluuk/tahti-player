@@ -4,6 +4,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import type { EditList } from '../../../api/studio-types';
+import { webT } from '../../../lib/webT';
 import { formatClock } from './waveform/draw';
 
 type Range = { start: number; end: number };
@@ -94,7 +95,9 @@ export function RegionList({
               label={range(cut.start, cut.end)}
               onOpen={() => onShowRange(cut)}
               onRemove={() => onRemoveCut(index)}
-              removeLabel={`Remove cut ${range(cut.start, cut.end)}`}
+              removeLabel={webT()('a11yNamed.removeCut', {
+                range: range(cut.start, cut.end),
+              })}
             />
           ))}
         </Row>
@@ -130,7 +133,9 @@ export function RegionList({
               label={formatClock(marker, PRECISION)}
               onOpen={() => onSeek(marker)}
               onRemove={() => onRemoveMarker(index)}
-              removeLabel={`Remove marker at ${formatClock(marker, PRECISION)}`}
+              removeLabel={webT()('a11yNamed.removeMarkerAt', {
+                at: formatClock(marker, PRECISION),
+              })}
             />
           ))}
           <Button size="xs" variant="text" onClick={onClearMarkers}>

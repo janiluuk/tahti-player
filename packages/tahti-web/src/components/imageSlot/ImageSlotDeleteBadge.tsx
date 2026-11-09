@@ -3,6 +3,7 @@ import { XIcon } from 'lucide-react';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
+import { webT } from '../../lib/webT';
 
 type Props = {
   label: string;
@@ -13,7 +14,7 @@ type Props = {
 /** Corner "X" shown on hover/focus over a set image slot. Stops the click
  * from bubbling to the slot's own onClick (which opens the preview). */
 export function ImageSlotDeleteBadge({ label, onClick, className }: Props) {
-  const name = `Remove ${label.toLowerCase()}`;
+  const name = webT()('a11yNamed.remove', { name: label.toLowerCase() });
   return (
     <Tooltip
       content={name}

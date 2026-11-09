@@ -5,6 +5,7 @@ import { Card, CardGrid, cn } from '@tahti-player/ui';
 
 import { usePhoneViewport } from '../hooks/usePhoneViewport';
 import { resolveTrackListView } from '../lib/trackListViewResolve';
+import { webT } from '../lib/webT';
 import {
   useTrackListViewStore,
   type TrackListView,
@@ -209,8 +210,8 @@ export function AmbientTrackList({
               surface="neutral"
               onPlay={item.onPlay}
               isPlaying={item.isPlaying}
-              playLabel={`Play ${item.title}`}
-              pauseLabel={`Pause ${item.title}`}
+              playLabel={webT()('a11yNamed.play', { name: item.title })}
+              pauseLabel={webT()('a11yNamed.pause', { name: item.title })}
             />
           ))}
         </CardGrid>

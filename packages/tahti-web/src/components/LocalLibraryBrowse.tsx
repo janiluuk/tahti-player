@@ -13,6 +13,7 @@ import type {
   NativeFacetKind,
   NativeLibraryTotals,
 } from '../lib/nativeLibrary';
+import { webT } from '../lib/webT';
 
 export type BrowseKind = 'tracks' | 'playlists' | NativeFacetKind;
 
@@ -177,7 +178,9 @@ export function FacetGroupList({
               <Button
                 size="icon-sm"
                 variant="text"
-                aria-label={`Add ${facetTitle(kind, group)} to playlist`}
+                aria-label={webT()('a11yNamed.addToPlaylist', {
+                  name: facetTitle(kind, group),
+                })}
                 onClick={() => onAddToPlaylist(group)}
               >
                 <ListPlusIcon size={14} aria-hidden />

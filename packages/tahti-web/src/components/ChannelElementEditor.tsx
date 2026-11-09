@@ -14,6 +14,7 @@ import {
   isChannelLookElementId,
   type ChannelLookElementId,
 } from '../lib/channelLookElements';
+import { webT } from '../lib/webT';
 
 export type ChannelElementEditorItem = {
   id: ChannelLookElementId;
@@ -135,8 +136,8 @@ export function ChannelElementEditor({
               <Tooltip
                 content={
                   selectedItem?.disabled
-                    ? `Show ${selectedMeta.label}`
-                    : `Hide ${selectedMeta.label}`
+                    ? webT()('a11yNamed.show', { name: selectedMeta.label })
+                    : webT()('a11yNamed.hide', { name: selectedMeta.label })
                 }
                 side="top"
               >
@@ -146,8 +147,8 @@ export function ChannelElementEditor({
                   aria-pressed={!selectedItem?.disabled}
                   aria-label={
                     selectedItem?.disabled
-                      ? `Show ${selectedMeta.label}`
-                      : `Hide ${selectedMeta.label}`
+                      ? webT()('a11yNamed.show', { name: selectedMeta.label })
+                      : webT()('a11yNamed.hide', { name: selectedMeta.label })
                   }
                   onClick={() => onToggleDisabled?.(selectedId)}
                 >

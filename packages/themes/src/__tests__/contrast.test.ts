@@ -1,7 +1,11 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { parse, wcagContrast } from 'culori';
+import { interpolate, parse, wcagContrast, type Color } from 'culori';
 import { describe, expect, it } from 'vitest';
+
+import * as presetModule from '../../../tahti-web/src/plugins/themes/presets';
+import { deriveThemeBlocks } from '../advanced/generator';
+import type { AdvancedTheme } from '../advanced/schema';
 
 const GLOBAL_CSS = resolve(__dirname, '../../../tailwind-config/global.css');
 const THEMES = ['aurora', 'ember', 'lagoon', 'arctic-moss', 'tahti-dark'];
@@ -30,15 +34,36 @@ function pick(css: string, selector: string): Tokens {
   );
 }
 
-function colour(tokens: Tokens, name: string): string {
-  let value = tokens[name];
-  for (let depth = 0; value?.startsWith('var(') && depth < 5; depth++) {
-    value = tokens[value.slice(4, -1).trim()];
+function colourValue(tokens: Tokens, value: string, depth = 0): Color {
+  const trimmed = value.trim();
+  if (depth > 6) {
+    throw new Error(`${value} does not resolve`);
   }
+  if (trimmed.startsWith('var(')) {
+    return colour(tokens, trimmed.slice(4, -1).trim(), depth + 1);
+  }
+  const mix = trimmed.match(
+    /^color-mix\(in oklch,\s*(var\([^)]+\)|[^,]+?)\s+([\d.]+)%,\s*(.+)\)$/,
+  );
+  if (mix) {
+    const weight = Number(mix[2]) / 100;
+    const from = colourValue(tokens, mix[3]!, depth + 1);
+    const to = colourValue(tokens, mix[1]!, depth + 1);
+    return interpolate([from, to], 'oklch')(weight);
+  }
+  const parsed = parse(trimmed);
+  if (!parsed) {
+    throw new Error(`${value} is not a colour`);
+  }
+  return parsed;
+}
+
+function colour(tokens: Tokens, name: string, depth = 0): Color {
+  const value = tokens[name];
   if (!value) {
     throw new Error(`${name} is not defined`);
   }
-  return value;
+  return colourValue(tokens, value, depth);
 }
 
 const globalCss = readFileSync(GLOBAL_CSS, 'utf8');
@@ -98,10 +123,7 @@ function contrastReport() {
       variant,
       text,
       surface,
-      ratio: wcagContrast(
-        parse(colour(tokens, text))!,
-        parse(colour(tokens, surface))!,
-      ),
+      ratio: wcagContrast(colour(tokens, text), colour(tokens, surface)),
     })),
   );
 }
@@ -111,6 +133,63 @@ describe('theme text contrast (WCAG AA, 4.5:1)', () => {
     it(`${row.variant}: ${row.text} on ${row.surface}`, () => {
       expect(row.ratio).toBeGreaterThanOrEqual(4.5);
     });
+  }
+});
+
+/** Non-text UI (WCAG 1.4.11) and disabled labels: 3:1 against what they
+ * sit on. Disabled text is exempt from 1.4.3 but stays legible. */
+const NON_TEXT_PAIRS: Array<[string, string]> = [
+  ['--focus-ring', '--background'],
+  ['--focus-ring', '--background-secondary'],
+  ['--status-offline', '--background'],
+  ['--status-offline', '--background-secondary'],
+  ['--border-input', '--background-input'],
+  ['--foreground-disabled', '--background'],
+  ['--foreground-disabled', '--background-secondary'],
+];
+
+function prefixed(vars: Record<string, string>): Tokens {
+  return Object.fromEntries(
+    Object.entries(vars).map(([key, value]) => [`--${key}`, value]),
+  );
+}
+
+const presets = Object.entries(presetModule).filter(
+  (entry): entry is [string, AdvancedTheme] =>
+    typeof entry[1] === 'object' &&
+    entry[1] !== null &&
+    (entry[1] as AdvancedTheme).version === 1,
+);
+
+/** Preset custom themes as the generator emits them, layered over the stock
+ * theme the way the cascade applies them. */
+function presetVariants(): Array<[string, Tokens]> {
+  return presets.flatMap(([, theme]): Array<[string, Tokens]> => {
+    const blocks = deriveThemeBlocks(theme);
+    const light = prefixed(blocks.light);
+    return [
+      [`${theme.name} light`, { ...base, ...light }],
+      [
+        `${theme.name} dark`,
+        { ...base, ...baseDark, ...light, ...prefixed(blocks.dark) },
+      ],
+    ];
+  });
+}
+
+describe('theme non-text contrast (WCAG 1.4.11, 3:1)', () => {
+  it('covers every preset custom theme', () => {
+    expect(presets.length).toBeGreaterThanOrEqual(22);
+  });
+
+  for (const [variant, tokens] of [...variants(), ...presetVariants()]) {
+    for (const [token, surface] of NON_TEXT_PAIRS) {
+      it(`${variant}: ${token} on ${surface}`, () => {
+        expect(
+          wcagContrast(colour(tokens, token), colour(tokens, surface)),
+        ).toBeGreaterThanOrEqual(3);
+      });
+    }
   }
 });
 

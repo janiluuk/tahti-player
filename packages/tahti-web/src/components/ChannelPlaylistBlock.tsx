@@ -9,6 +9,7 @@ import type { PublicCollection, TahtiPlayable } from '../api/types';
 import { collectionTrackMeta } from '../lib/collectionTrackMeta';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { soundIdFromPlayableId } from '../lib/soundId';
+import { webT } from '../lib/webT';
 import { usePlayerStore } from '../stores/playerStore';
 import { PageEmpty, PageError, PageLoading } from './PageStates';
 import { PlayableAmbientTrackList } from './PlayableAmbientTrackList';
@@ -183,8 +184,8 @@ export function ChannelPlaylistBlock({
                 title={item.title}
                 subtitle={item.artist}
                 isPlaying={isPlaying}
-                playLabel={`Play ${item.title}`}
-                pauseLabel={`Pause ${item.title}`}
+                playLabel={webT()('a11yNamed.play', { name: item.title })}
+                pauseLabel={webT()('a11yNamed.pause', { name: item.title })}
                 onPlay={() => {
                   if (isCurrent) {
                     setStatus(isPlaying ? 'paused' : 'playing');
@@ -193,7 +194,7 @@ export function ChannelPlaylistBlock({
                   play(item);
                 }}
                 onQueue={() => enqueue(item)}
-                queueLabel={`Queue ${item.title}`}
+                queueLabel={webT()('a11yNamed.queue', { name: item.title })}
                 onTitleClick={
                   soundId
                     ? () => {

@@ -19,6 +19,7 @@ import {
 } from '@tahti-player/ui';
 
 import type { ChannelGalleryMode } from '../../api/channel-gallery';
+import { webT } from '../../lib/webT';
 import { Eyebrow } from '../tahti/Eyebrow';
 import { galleryModes, SLIDESHOW_PRESETS } from './slideshowOptions';
 
@@ -123,14 +124,16 @@ export function SlideshowControls({
                 <GripVerticalIcon size={12} />
               </div>
               <Tooltip
-                content={`Remove slideshow image ${index + 1}`}
+                content={webT()('a11yNamed.removeSlideN', { n: index + 1 })}
                 side="top"
               >
                 <Button
                   size="icon-sm"
                   variant="secondary"
                   className="absolute top-1 right-1 opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
-                  aria-label={`Remove slideshow image ${index + 1}`}
+                  aria-label={webT()('a11yNamed.removeSlideN', {
+                    n: index + 1,
+                  })}
                   onClick={() => onRemove(index)}
                 >
                   <Trash2Icon

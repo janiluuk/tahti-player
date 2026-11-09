@@ -72,7 +72,8 @@ each role exercises.
 - [ ] Listener: plays a collection with the collection player; the row highlights. (Blocked: `CollectionPlayerWidget` is not placed anywhere yet; placement is a product decision.)
 - [x] Listener: Radio station filter and the public schedule's week paging (`use-cases-coverage-gap.spec.ts`).
 - [x] Anonymous queue, artist History listening stats and Library playlists (`use-cases-coverage-gap.spec.ts`).
-- [ ] Remaining: Artist Latest News, favorites (blocked by `likes-vs-favorites.md`), settings; Admin Co-op beyond opening tabs.
+- [x] Artist Latest News sources and Admin Co-op beyond opening tabs (grant cycle preview, governance tabs) (`use-cases-coverage-gap-2.spec.ts`).
+- [ ] Remaining: Artist favorites (blocked by `likes-vs-favorites.md`) and settings.
 
 ## Run and review (next)
 

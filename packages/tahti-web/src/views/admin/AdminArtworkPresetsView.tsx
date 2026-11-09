@@ -29,6 +29,7 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { cn } from '../../lib/cn';
 import { toastWithUndo } from '../../lib/undoToast';
+import { webT } from '../../lib/webT';
 
 type LoadState =
   | { status: 'loading' }
@@ -212,7 +213,9 @@ export function AdminArtworkPresetsView() {
                         type="button"
                         variant="text"
                         size="icon-sm"
-                        aria-label={`Remove artwork ${index + 1}`}
+                        aria-label={webT()('a11yNamed.removeArtworkN', {
+                          n: index + 1,
+                        })}
                         onClick={() => setPendingDelete(preset)}
                       >
                         <Trash2Icon

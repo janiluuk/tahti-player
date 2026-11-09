@@ -15,6 +15,7 @@ import { isForceMock } from '../../api/mode';
 import type { DiscoverTrackItem, TahtiPlayable } from '../../api/types';
 import { useDiscoverTrackPlayback } from '../../hooks/useDiscoverTrackPlayback';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
+import { webT } from '../../lib/webT';
 import { usePlayerStore } from '../../stores/playerStore';
 import { smartLinkPlayables } from '../../views/smart-link/smartLinkTracks';
 import { ListenSection } from './ListenSection';
@@ -108,11 +109,11 @@ function TrackCard({
       }
       isPlaying={isPlaying}
       playDisabled={loading}
-      playLabel={`Play ${track.title}`}
-      pauseLabel={`Pause ${track.title}`}
+      playLabel={webT()('a11yNamed.play', { name: track.title })}
+      pauseLabel={webT()('a11yNamed.pause', { name: track.title })}
       onPlay={() => void togglePlay()}
       onQueue={() => void queue()}
-      queueLabel={`Add ${track.title} to queue`}
+      queueLabel={webT()('a11yNamed.addToQueue', { name: track.title })}
       onClick={() => void navigate({ to: '/t/$id', params: { id: soundId } })}
     />
   );
@@ -252,8 +253,8 @@ function ReleaseCard({ release }: { release: LatestRelease }) {
         </Badge>
       }
       onPlay={() => void togglePlay()}
-      playLabel={`Play ${release.title}`}
-      pauseLabel={`Pause ${release.title}`}
+      playLabel={webT()('a11yNamed.play', { name: release.title })}
+      pauseLabel={webT()('a11yNamed.pause', { name: release.title })}
       playDisabled={loading}
       isPlaying={isPlaying}
       title={

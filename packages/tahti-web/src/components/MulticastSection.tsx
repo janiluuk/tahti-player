@@ -32,6 +32,7 @@ import {
   type RtmpTargetScope,
 } from '../api/broadcast';
 import { toastWithUndo } from '../lib/undoToast';
+import { webT } from '../lib/webT';
 import {
   multicastProviders,
   type MulticastProviderId,
@@ -229,7 +230,7 @@ function DestinationDialog({
         {savedTarget
           ? `Configure ${provider?.label}`
           : providerId
-            ? `Add ${selectedProvider?.label}`
+            ? webT()('a11yNamed.add', { name: selectedProvider?.label })
             : 'Add destination'}
       </Dialog.Title>
       <Dialog.Description>
@@ -461,7 +462,9 @@ function DestinationDialog({
         destructive
         title={
           savedTarget
-            ? `Remove ${savedTarget.label ?? 'this destination'}?`
+            ? webT()('a11yNamed.removeQuestion', {
+                name: savedTarget.label ?? 'this destination',
+              })
             : 'Remove destination?'
         }
         description={t('multicastSection.thisStreamDestinationStopsReceiving')}

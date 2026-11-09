@@ -12,6 +12,7 @@ import {
   type TrackCredit,
 } from '../../../api/studio-types';
 import { PageEmpty } from '../../../components/PageStates';
+import { webT } from '../../../lib/webT';
 
 function TrackCreditsRow({
   releaseId,
@@ -115,12 +116,18 @@ function TrackCreditsRow({
                 });
               }}
             />
-            <Tooltip content={`Remove credit ${index + 1}`} side="top">
+            <Tooltip
+              content={webT()('a11yNamed.removeCredit', { name: index + 1 })}
+              side="top"
+            >
               <Button
                 size="icon-sm"
                 variant="text"
                 disabled={saving}
-                aria-label={`Remove credit ${index + 1} on ${track.title}`}
+                aria-label={webT()('a11yNamed.removeCreditOn', {
+                  n: index + 1,
+                  name: track.title,
+                })}
                 onClick={() =>
                   setCredits((current) => current.filter((_, i) => i !== index))
                 }

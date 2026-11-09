@@ -11,6 +11,7 @@ import { Button, MediaArtwork, SaveButton, Tooltip } from '@tahti-player/ui';
 
 import type { RadioStation as PublicRadioStation } from '../../../api/radio-sources';
 import type { RadioStation } from '../../../content/radioStations';
+import { webT } from '../../../lib/webT';
 import { RadioStationCover } from '../../RadioStationCover';
 
 export function RadioBrowserStationRow({
@@ -50,14 +51,18 @@ export function RadioBrowserStationRow({
         </span>
       </Button>
       <Tooltip
-        content={isPlaying ? 'Pause' : `Play ${station.name}`}
+        content={
+          isPlaying ? 'Pause' : webT()('a11yNamed.play', { name: station.name })
+        }
         side="top"
       >
         <Button
           size="icon-sm"
           variant={isPlaying ? undefined : 'secondary'}
           aria-label={
-            isPlaying ? `Pause ${station.name}` : `Play ${station.name}`
+            isPlaying
+              ? webT()('a11yNamed.pause', { name: station.name })
+              : webT()('a11yNamed.play', { name: station.name })
           }
           aria-pressed={isPlaying}
           onClick={onPlay}
@@ -96,7 +101,7 @@ export function RadioBrowserStationRow({
         onClick={onToggleSave}
         aria-label={
           isSaved
-            ? `Remove ${station.name} from Listen`
+            ? webT()('a11yNamed.removeFromListen', { name: station.name })
             : `Save ${station.name} to Listen`
         }
       />
@@ -151,7 +156,9 @@ export function CuratedFinnishStationRow({
             size="icon-sm"
             variant={isPlaying ? undefined : 'secondary'}
             aria-label={
-              isPlaying ? `Pause ${station.name}` : `Preview ${station.name}`
+              isPlaying
+                ? webT()('a11yNamed.pause', { name: station.name })
+                : `Preview ${station.name}`
             }
             aria-pressed={isPlaying}
             onClick={onPlay}

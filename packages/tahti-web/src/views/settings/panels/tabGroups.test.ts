@@ -22,7 +22,7 @@ describe('artist tab groups', () => {
     const grouped = groupTabs(artistTabGroups(webT()), ALL_ARTIST_TABS);
     expect(grouped.map((entry) => entry.group.label)).toEqual([
       'Profile',
-      'Links & press',
+      'Social links, press kit',
       'Artist branding',
     ]);
     const placed = grouped.flatMap((entry) => entry.tabs.map((tab) => tab.id));

@@ -19,6 +19,7 @@ import type {
   NativeFieldSummary,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
+import { webT } from '../lib/webT';
 
 function fields(
   t: TFunction<'web'>,
@@ -209,7 +210,9 @@ export function TrackEditorDialog({
   return (
     <Dialog.Root isOpen={isOpen} onClose={close} className="max-w-xl">
       <Dialog.Title>
-        {ids.length === 1 ? 'Edit tags' : `Edit ${plural(ids.length, 'track')}`}
+        {ids.length === 1
+          ? 'Edit tags'
+          : webT()('a11yNamed.edit', { name: plural(ids.length, 'track') })}
       </Dialog.Title>
       <Dialog.Description>
         {t('trackEditorDialog.changesAreKeptInYour')}

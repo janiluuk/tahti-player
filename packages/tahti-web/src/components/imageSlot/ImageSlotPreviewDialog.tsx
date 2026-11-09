@@ -9,6 +9,7 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
+import { webT } from '../../lib/webT';
 import { ConfirmDialog } from '../ConfirmDialog';
 
 export type ImageSlotFrame = {
@@ -121,7 +122,9 @@ export function ImageSlotPreviewDialog({
         <ConfirmDialog
           destructive
           isOpen={confirmOpen}
-          title={`Remove ${label.toLowerCase()}?`}
+          title={webT()('a11yNamed.removeQuestion', {
+            name: label.toLowerCase(),
+          })}
           description={t('imageSlotPreviewDialog.thisCanTBeUndone')}
           confirmLabel={
             clearing

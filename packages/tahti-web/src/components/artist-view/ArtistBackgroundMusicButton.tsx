@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Button, Tooltip } from '@tahti-player/ui';
 
+import { webT } from '../../lib/webT';
 import { usePlayerStore } from '../../stores/playerStore';
 
 export const BACKGROUND_MUSIC_VOLUME = 0.25;
@@ -74,7 +75,7 @@ export function ArtistBackgroundMusicButton({
 
   const label = playing
     ? `Mute ${artistName}'s background music`
-    : `Play ${artistName}'s background music`;
+    : webT()('a11yNamed.playBackgroundMusic', { name: artistName });
 
   return (
     <Tooltip content={label} side="top">

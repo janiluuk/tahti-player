@@ -15,6 +15,7 @@ import {
   type AdminAddonScope,
 } from '../../../api/admin';
 import { ImageUploadField } from '../../../components/ImageUploadField';
+import { webT } from '../../../lib/webT';
 import { SCOPES } from './shared';
 
 /** Registers a new add-on, or with `editing` edits one's metadata (slug and
@@ -42,7 +43,9 @@ export function RegisterDialog({
   return (
     <Dialog.Root isOpen={isOpen} onClose={onClose} className="max-w-2xl">
       <Dialog.Title>
-        {editing ? `Edit ${editing}` : 'Register a new add-on'}
+        {editing
+          ? webT()('a11yNamed.edit', { name: editing })
+          : 'Register a new add-on'}
       </Dialog.Title>
       <Dialog.Description>
         {editing

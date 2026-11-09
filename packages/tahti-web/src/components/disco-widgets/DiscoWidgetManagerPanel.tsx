@@ -29,6 +29,7 @@ import {
 } from '../../api/disco-widgets';
 import { uploadUserMediaFile } from '../../api/user-media';
 import { toastWithUndo } from '../../lib/undoToast';
+import { webT } from '../../lib/webT';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { PageEmpty, PageLoading } from '../PageStates';
 import { useChannelAddonBlocks } from './useChannelAddonBlocks';
@@ -585,10 +586,11 @@ export function DiscoWidgetManagerPanel({
         destructive
         title={
           pendingRemoveId
-            ? `Remove ${
-                installs.find((install) => install.id === pendingRemoveId)
-                  ?.widget.name ?? 'this widget'
-              }?`
+            ? webT()('a11yNamed.removeQuestion', {
+                name:
+                  installs.find((install) => install.id === pendingRemoveId)
+                    ?.widget.name ?? 'this widget',
+              })
             : 'Remove widget?'
         }
         description={t('discoWidgetManager.itLeavesThisPageYou')}

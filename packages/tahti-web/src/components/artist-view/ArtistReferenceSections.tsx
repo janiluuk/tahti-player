@@ -15,6 +15,7 @@ import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../../lib/soundId';
 import { splitEmbedPlayables } from '../../lib/splitEmbedPlayables';
+import { webT } from '../../lib/webT';
 import { PageEmpty } from '../PageStates';
 import { PlayableAmbientTrackList } from '../PlayableAmbientTrackList';
 import { ProfileSection } from '../ProfileSection';
@@ -213,13 +214,13 @@ export function ArtistReleasesGrid({
                 }
                 onTitleClick={() => onTitleClick(release)}
                 onPlay={playable ? () => onPlayRelease(release) : undefined}
-                playLabel={`Play ${release.title}`}
+                playLabel={webT()('a11yNamed.play', { name: release.title })}
                 onQueue={
                   playables.length > 0
                     ? () => onQueueRelease(release, playables)
                     : undefined
                 }
-                queueLabel={`Queue ${release.title}`}
+                queueLabel={webT()('a11yNamed.queue', { name: release.title })}
                 onFavorite={
                   playable ? () => onToggleFavorite(playable) : undefined
                 }
