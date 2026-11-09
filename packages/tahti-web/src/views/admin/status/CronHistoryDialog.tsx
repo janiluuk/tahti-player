@@ -9,13 +9,7 @@ import {
   type AdminCronRun,
 } from '../../../api/admin';
 import { PageEmpty, PageLoading } from '../../../components/PageStates';
-
-function outcomeColor(outcome: string | null): 'green' | 'red' | 'cyan' {
-  if (outcome === 'SUCCESS') {
-    return 'green';
-  }
-  return outcome ? 'red' : 'cyan';
-}
+import { cronOutcomeColor, cronOutcomeLabel } from './cronOutcome';
 
 export function CronHistoryDialog({
   jobName,
@@ -89,8 +83,8 @@ export function CronHistoryDialog({
                   <span className="text-foreground-secondary text-xs">
                     {formatRunDuration(run.durationMs)}
                   </span>
-                  <Badge variant="pill" color={outcomeColor(run.outcome)}>
-                    {run.outcome ?? 'Running'}
+                  <Badge variant="pill" color={cronOutcomeColor(run.outcome)}>
+                    {cronOutcomeLabel(run.outcome)}
                   </Badge>
                 </div>
               </div>

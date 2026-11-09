@@ -11728,6 +11728,12 @@
     },
     "messagesView": {
       "noMessagesYet": "Ei vielä viestejä"
+    },
+    "cronOutcome": {
+      "running": "Käynnissä",
+      "success": "Onnistui",
+      "failed": "Epäonnistui",
+      "runHistory": "Ajohistoria: {{job}}"
     }
   },
   "studioEditor": {

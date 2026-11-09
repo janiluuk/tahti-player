@@ -11728,6 +11728,12 @@
     },
     "messagesView": {
       "noMessagesYet": "No messages yet"
+    },
+    "cronOutcome": {
+      "running": "Running",
+      "success": "Success",
+      "failed": "Failed",
+      "runHistory": "{{job}} run history"
     }
   },
   "studioEditor": {
