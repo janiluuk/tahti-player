@@ -478,11 +478,13 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/SettingsPanel` | `SettingsPanel.stories.tsx` |
 | `Components/ShareList` | `ShareList.stories.tsx` |
 | `Navigation/SidebarNavigation` | `SidebarNavigation.stories.tsx` |
+| `Components/Skeleton` | `Skeleton.stories.tsx` |
 | `Components/Slider` | `Slider.stories.tsx` |
 | `Components/SortableBlocks` | `SortableBlocks.stories.tsx` |
 | `Media/SoundAudience` | `SoundAudience.stories.tsx` |
 | `Components/StatChip` | `StatChip.stories.tsx` |
 | `Components/StatTile` | `StatTile.stories.tsx` |
+| `Navigation/Stepper` | `Stepper.stories.tsx` |
 | `Layout/StoryCard` | `StoryCard.stories.tsx` |
 | `Layout/StoryRow` | `StoryRow.stories.tsx` |
 | `Layout/Tabs` | `Tabs.stories.tsx` |
