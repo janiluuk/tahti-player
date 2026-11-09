@@ -22,6 +22,7 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { AdminUserEditPanel } from '../../components/AdminUserEditPanel';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
 const ROLES = ['', 'BOARD', 'ARTIST', 'LISTENER'] as const;
 
@@ -30,40 +31,39 @@ export const AdminUsersView = () => {
   const [query, setQuery] = useState('');
   const [role, setRole] = useState('');
   const [isMember, setIsMember] = useState('');
-  const [users, setUsers] = useState<AdminUserRow[]>([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
+  const [filters, setFilters] = useState({ q: '', role: '', isMember: '' });
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    const handle = setTimeout(() => {
-      void fetchAdminUsers({ q: query, role, isMember }).then((result) => {
-        if (cancelled) {
-          return;
-        }
-        setUsers(result.data);
-        setTotal(result.total);
-        const reason =
-          result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
-        setLoadError(reason);
-        setSelectedId((current) => {
-          if (current && result.data.some((user) => user.id === current)) {
-            return current;
-          }
-          return result.data[0]?.id ?? null;
-        });
-        setLoading(false);
-      });
-    }, 200);
-    return () => {
-      cancelled = true;
-      clearTimeout(handle);
-    };
-  }, [query, role, isMember, attempt]);
+    const handle = setTimeout(
+      () => setFilters({ q: query.trim(), role, isMember }),
+      200,
+    );
+    return () => clearTimeout(handle);
+  }, [query, role, isMember]);
+
+  const snapshot = useSnapshotFetch(
+    `admin-users:${JSON.stringify(filters)}`,
+    async () => {
+      const result = await fetchAdminUsers(filters);
+      return { users: apiResult(result), total: result.total };
+    },
+  );
+  const users = snapshot.data?.users ?? [];
+  const total = snapshot.data?.total ?? 0;
+  const { loading, error: loadError, retry } = snapshot;
+  const updateUsers = (
+    update: (current: AdminUserRow[]) => AdminUserRow[],
+    removed = 0,
+  ) =>
+    snapshot.mutate((current) => ({
+      users: update(current?.users ?? []),
+      total: Math.max(0, (current?.total ?? 0) - removed),
+    }));
+  const shownId =
+    selectedId && users.some((user) => user.id === selectedId)
+      ? selectedId
+      : (users[0]?.id ?? null);
 
   return (
     <AdminGate>
@@ -136,7 +136,7 @@ export const AdminUsersView = () => {
                     <PageError
                       title={t('loadErrors.couldNotLoadUsers')}
                       description={loadError}
-                      onRetry={() => setAttempt((n) => n + 1)}
+                      onRetry={retry}
                     />
                   ) : users.length === 0 ? (
                     query.trim() || role || isMember ? (
@@ -169,7 +169,7 @@ export const AdminUsersView = () => {
                           user.role.charAt(0) +
                           user.role.slice(1).toLowerCase(),
                       }))}
-                      selected={selectedId}
+                      selected={shownId}
                       onChange={setSelectedId}
                     />
                   )}
@@ -177,7 +177,7 @@ export const AdminUsersView = () => {
               </StudioPanel>
 
               <div className="min-w-0">
-                {!selectedId ? (
+                {!shownId ? (
                   <StudioPanel className="flex min-h-72 items-center justify-center">
                     <div className="text-center">
                       <UserRoundIcon
@@ -192,16 +192,16 @@ export const AdminUsersView = () => {
                   </StudioPanel>
                 ) : (
                   <AdminUserEditPanel
-                    key={selectedId}
-                    userId={selectedId}
-                    onUserDeleted={(id) => {
-                      setUsers((current) =>
-                        current.filter((row) => row.id !== id),
-                      );
-                      setTotal((current) => Math.max(0, current - 1));
-                    }}
+                    key={shownId}
+                    userId={shownId}
+                    onUserDeleted={(id) =>
+                      updateUsers(
+                        (current) => current.filter((row) => row.id !== id),
+                        1,
+                      )
+                    }
                     onUserUpdated={(user) =>
-                      setUsers((current) =>
+                      updateUsers((current) =>
                         current.map((row) =>
                           row.id === user.id
                             ? {

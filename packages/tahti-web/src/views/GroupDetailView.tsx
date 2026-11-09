@@ -6,7 +6,7 @@ import {
   SettingsIcon,
   UserPlusIcon,
 } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -25,13 +25,18 @@ import {
   type PublicGroupDetail,
 } from '../api/groups';
 import { createJam } from '../api/jam';
-import { PageError, PageLoading } from '../components/PageStates';
+import {
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../components/PageStates';
 import { StudioPanel } from '../components/StudioPanel';
 import {
   groupMembersLabel,
   groupPersonName,
   groupSoundsLabel,
 } from '../lib/groupPeople';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -40,9 +45,15 @@ export function GroupDetailView({ slug }: { slug: string }) {
   const navigate = useNavigate();
   const me = useAuthStore((s) => s.user);
   const openAuth = useAuthModalStore((s) => s.open);
-  const [group, setGroup] = useState<PublicGroupDetail | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data: group,
+    loading,
+    error,
+    retry: reload,
+  } = useSnapshotFetch<PublicGroupDetail | null>(
+    `group:${slug}:${me?.id ?? ''}`,
+    async () => apiResult(await fetchPublicGroup(slug)),
+  );
   const [busy, setBusy] = useState(false);
 
   const roleLabel = {
@@ -51,26 +62,7 @@ export function GroupDetailView({ slug }: { slug: string }) {
     MEMBER: t('groupDetail.roleMember'),
   } as const;
 
-  const reload = useCallback(() => {
-    void fetchPublicGroup(slug).then(({ data, meta }) => {
-      setGroup(data);
-      setError(
-        data
-          ? null
-          : meta.source === 'api' && meta.reason
-            ? meta.reason
-            : t('groupDetail.privateOrMissing'),
-      );
-      setLoading(false);
-    });
-  }, [slug, t]);
-
-  useEffect(() => {
-    setLoading(true);
-    reload();
-  }, [reload, me?.id]);
-
-  if (loading && !group) {
+  if (loading) {
     return <PageLoading label={t('groupDetail.loading')} />;
   }
 
@@ -78,7 +70,7 @@ export function GroupDetailView({ slug }: { slug: string }) {
     return (
       <PageError
         title={t('groupDetail.notFound')}
-        description={error ?? undefined}
+        description={error ?? t('groupDetail.privateOrMissing')}
         onRetry={reload}
       />
     );
@@ -181,6 +173,13 @@ export function GroupDetailView({ slug }: { slug: string }) {
         subtitle={`${groupMembersLabel(group.memberCount, t)} · ${groupSoundsLabel(group.itemCount, t)}`}
         classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
       >
+        {error ? (
+          <PageErrorBanner
+            title={t('groupDetail.refreshError')}
+            description={error}
+            onRetry={reload}
+          />
+        ) : null}
         <div className="flex flex-wrap items-start gap-4">
           <MediaArtwork
             src={group.coverUrl ?? undefined}

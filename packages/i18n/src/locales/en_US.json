@@ -2925,7 +2925,6 @@
     "smartLink": {
       "loading": "Loading release…",
       "loadError": "Could not load this release",
-      "loadErrorFallback": "Could not load this release.",
       "notFoundTitle": "Release not found",
       "notFoundDescription": "This release may have been removed or is not available.",
       "tracks": "Tracks",
@@ -2961,7 +2960,8 @@
       "members": "Members",
       "roleOwner": "Owner",
       "roleAdmin": "Admin",
-      "roleMember": "Member"
+      "roleMember": "Member",
+      "refreshError": "Could not refresh this group; showing the last loaded version."
     },
     "studioEvents": {
       "title": "Events",
@@ -3065,7 +3065,8 @@
       "handOverNamed": "Hand the group over to {{name}}",
       "handOverTitle": "Hand the group over to {{name}}?",
       "handOverDescription": "They become the owner, along with the collective playlist. You stay in the group as an admin. Only they can hand it back.",
-      "handedOver": "{{name}} now owns the group"
+      "handedOver": "{{name}} now owns the group",
+      "refreshError": "Could not refresh this group; showing the last loaded version."
     },
     "studioListeningParties": {
       "title": "Listening parties",
@@ -3312,8 +3313,7 @@
       "emptyTitle": "No releases yet",
       "emptyDescription": "Create one under Releases first.",
       "royaltiesError": "Could not load your royalty reports.",
-      "royaltiesTitle": "All royalty reports",
-      "toastLoadFailed": "Could not load your releases."
+      "royaltiesTitle": "All royalty reports"
     },
     "studioEditorList": {
       "title": "Editor",
@@ -4146,7 +4146,9 @@
       "votesFor": "Votes for",
       "votesAgainst": "Votes against",
       "abstentions": "Abstentions",
-      "recordResolution": "Record resolution"
+      "recordResolution": "Record resolution",
+      "loadError": "Could not load governance activity.",
+      "refreshError": "Could not refresh governance activity; showing the last loaded data."
     },
     "themesCategory": {
       "dynamic": "Dynamic",
@@ -7039,7 +7041,8 @@
       "openGreenRoom": "Open green room",
       "episodes": "Episodes",
       "noUpcomingSlotsBookedRight": "No upcoming slots booked right now.",
-      "nothingHasAiredYet": "Nothing has aired yet."
+      "nothingHasAiredYet": "Nothing has aired yet.",
+      "refreshError": "Could not refresh this show; showing the last loaded schedule."
     },
     "adminI18nView": {
       "admin": "Admin",

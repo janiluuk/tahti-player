@@ -1,6 +1,3 @@
-import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
-
 import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, ViewShell } from '@tahti-player/ui';
 
@@ -20,36 +17,30 @@ import {
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { Eyebrow } from '../../components/tahti/Eyebrow';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { euros } from './distribution/distribution-helpers';
 import { ReleaseOpsPanel } from './distribution/ReleaseOpsPanel';
 
 export function StudioDistributionView() {
   const { t } = useTranslation('web');
-  const [releases, setReleases] = useState<StudioRelease[]>([]);
-  const [allRoyalties, setAllRoyalties] = useState<RevelatorRoyaltyReportRow[]>(
-    [],
+  const releasesSnapshot = useSnapshotFetch(
+    'studio-distribution-releases',
+    async () => apiResult(await fetchStudioReleases()).releases ?? [],
   );
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [royaltiesError, setRoyaltiesError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
-
-  useEffect(() => {
-    setLoading(true);
-    Promise.all([fetchStudioReleases(), fetchAllRoyalties()])
-      .then(([rel, roy]) => {
-        setReleases(rel.data.releases ?? []);
-        setAllRoyalties(roy.data ?? []);
-        setLoadError(
-          rel.meta.source === 'api' ? (rel.meta.reason ?? null) : null,
-        );
-        setRoyaltiesError(
-          roy.meta.source === 'api' ? (roy.meta.reason ?? null) : null,
-        );
-      })
-      .catch(() => toast.error(t('studioDistribution.toastLoadFailed')))
-      .finally(() => setLoading(false));
-  }, [attempt, t]);
+  const royaltiesSnapshot = useSnapshotFetch(
+    'studio-distribution-royalties',
+    async () => apiResult(await fetchAllRoyalties()) ?? [],
+  );
+  const releases: StudioRelease[] = releasesSnapshot.data ?? [];
+  const allRoyalties: RevelatorRoyaltyReportRow[] =
+    royaltiesSnapshot.data ?? [];
+  const loading = releasesSnapshot.loading;
+  const loadError = releasesSnapshot.error;
+  const royaltiesError = royaltiesSnapshot.error;
+  const retry = () => {
+    releasesSnapshot.retry();
+    royaltiesSnapshot.retry();
+  };
 
   return (
     <StudioGate requireChannel={false}>
@@ -71,7 +62,7 @@ export function StudioDistributionView() {
               <PageErrorBanner
                 title={t('studioDistribution.refreshError')}
                 description={loadError}
-                onRetry={() => setAttempt((n) => n + 1)}
+                onRetry={retry}
               />
             ) : null}
             {loading ? (
@@ -80,7 +71,7 @@ export function StudioDistributionView() {
               <PageError
                 title={t('studioDistribution.loadError')}
                 description={loadError}
-                onRetry={() => setAttempt((n) => n + 1)}
+                onRetry={retry}
               />
             ) : releases.length === 0 ? (
               <PageEmpty
@@ -103,11 +94,11 @@ export function StudioDistributionView() {
             )}
           </section>
 
-          {!loading && royaltiesError ? (
+          {royaltiesError ? (
             <PageErrorBanner
               title={t('studioDistribution.royaltiesError')}
               description={royaltiesError}
-              onRetry={() => setAttempt((n) => n + 1)}
+              onRetry={retry}
             />
           ) : null}
 
