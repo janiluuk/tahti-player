@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { ExternalLinkIcon, MusicIcon, PlayIcon } from 'lucide-react';
-import { useEffect, useMemo, useState, type FC } from 'react';
+import { useEffect, useMemo, type FC } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -29,6 +29,7 @@ import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import { dspServiceLabel } from '../lib/dspServices';
 import { releaseTypeLabel } from '../lib/releaseLabels';
 import { syncDocumentMetadata } from '../lib/seo';
+import { useSnapshotFetch } from '../lib/useSnapshotFetch';
 import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
 import {
@@ -45,54 +46,34 @@ type SmartLinkViewProps = { slug: string };
 
 export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
   const { t } = useTranslation('web');
-  const [data, setData] = useState<SmartLinkData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
+  const {
+    data,
+    loading,
+    error: loadError,
+    retry,
+  } = useSnapshotFetch<SmartLinkData>(`smart-link:${slug}`, async () => {
+    const result = await fetchSmartLink(slug);
+    return result.data;
+  });
   const play = usePlayerStore((state) => state.play);
   const me = useAuthStore((state) => state.user);
 
   useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setLoadError(null);
-    fetchSmartLink(slug)
-      .then((result) => {
-        if (cancelled) {
-          return;
-        }
-        setData(result.data);
-        const { release, artist } = result.data;
-        syncDocumentMetadata(window.location.pathname, {
-          title: t('smartLink.docTitle', {
-            title: release.title,
-            artist: artist.displayName,
-          }),
-          description:
-            release.description ??
-            t('smartLink.docDescription', { title: release.title }),
-          image: release.artworkUrl ?? artist.avatarUrl ?? undefined,
-        });
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          setData(null);
-          setLoadError(
-            err instanceof Error
-              ? err.message
-              : t('smartLink.loadErrorFallback'),
-          );
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [slug, attempt]);
+    if (!data) {
+      return;
+    }
+    const { release, artist } = data;
+    syncDocumentMetadata(window.location.pathname, {
+      title: t('smartLink.docTitle', {
+        title: release.title,
+        artist: artist.displayName,
+      }),
+      description:
+        release.description ??
+        t('smartLink.docDescription', { title: release.title }),
+      image: release.artworkUrl ?? artist.avatarUrl ?? undefined,
+    });
+  }, [data, t]);
 
   const playables = useMemo(
     () => (data ? smartLinkPlayables(data) : []),
@@ -112,7 +93,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
       <PageError
         title={t('smartLink.loadError')}
         description={loadError}
-        onRetry={() => setAttempt((n) => n + 1)}
+        onRetry={retry}
       />
     );
   }

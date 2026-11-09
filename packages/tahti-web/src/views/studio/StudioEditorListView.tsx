@@ -4,7 +4,7 @@ import {
   PlusIcon,
   UploadIcon,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -36,19 +36,27 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { contentTypeLabel } from '../../content/contentTypes';
 import { toastWithUndo } from '../../lib/undoToast';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
 export function StudioEditorListView() {
   const { t } = useTranslation('web');
-  const [projects, setProjects] = useState<EditorProjectRow[]>([]);
-  const [sounds, setSounds] = useState<StudioSound[]>([]);
+  const projectsSnapshot = useSnapshotFetch(
+    'studio-editor-projects',
+    async () => apiResult(await fetchEditorProjects()),
+  );
+  const soundsSnapshot = useSnapshotFetch('studio-editor-sounds', async () =>
+    apiResult(await fetchStudioSounds()).filter((item) => !item.embedProvider),
+  );
+  const projects: EditorProjectRow[] = projectsSnapshot.data ?? [];
+  const sounds: StudioSound[] = soundsSnapshot.data ?? [];
+  const loading = projectsSnapshot.loading;
+  const loadError = projectsSnapshot.error;
+  const soundsError = soundsSnapshot.error;
   const [createOpen, setCreateOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [soundId, setSoundItemId] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [soundsError, setSoundsError] = useState<string | null>(null);
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [libraryType, setLibraryType] = useState('ALL');
   const [libraryQuery, setLibraryQuery] = useState('');
@@ -81,22 +89,9 @@ export function StudioEditorListView() {
     type === 'ALL' ? t('studioEditorList.allTypes') : contentTypeLabel(type);
 
   const reload = () => {
-    void Promise.all([fetchEditorProjects(), fetchStudioSounds()]).then(
-      ([p, a]) => {
-        setProjects(p.data);
-        setSounds(a.data.filter((item) => !item.embedProvider));
-        setLoadError(p.meta.source === 'api' ? (p.meta.reason ?? null) : null);
-        setSoundsError(
-          a.meta.source === 'api' ? (a.meta.reason ?? null) : null,
-        );
-        setLoading(false);
-      },
-    );
+    projectsSnapshot.retry();
+    soundsSnapshot.retry();
   };
-
-  useEffect(() => {
-    reload();
-  }, []);
 
   const closeCreate = () => {
     setCreateOpen(false);
@@ -135,8 +130,8 @@ export function StudioEditorListView() {
             }),
             onUndone: () => {
               setMessage(null);
-              setProjects((current) =>
-                current.filter((project) => project.id !== created.id),
+              projectsSnapshot.mutate((current) =>
+                (current ?? []).filter((project) => project.id !== created.id),
               );
             },
           },
@@ -235,10 +230,7 @@ export function StudioEditorListView() {
               <PageError
                 title={t('studioEditorList.loadError')}
                 description={loadError}
-                onRetry={() => {
-                  setLoading(true);
-                  reload();
-                }}
+                onRetry={reload}
               />
             ) : projects.length === 0 ? (
               <PageEmpty

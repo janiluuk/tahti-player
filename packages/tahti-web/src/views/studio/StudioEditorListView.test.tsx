@@ -101,4 +101,46 @@ describe('StudioEditorListView', () => {
     await waitFor(() => expect(remove).toHaveBeenCalledWith('proj-1'));
     expect(toast.success).toHaveBeenLastCalledWith('Removed Late set.');
   });
+
+  it('shows the last loaded projects at once and keeps them when a refresh fails', async () => {
+    const project = (id: string, title: string) => ({
+      id,
+      title,
+      soundId: null,
+      updatedAt: '2026-10-27T00:00:00.000Z',
+    });
+    const fetch = vi.spyOn(studio, 'fetchEditorProjects').mockResolvedValue({
+      data: [project('p1', 'Late set')],
+      meta: { source: 'api' },
+    });
+    const first = await renderWithRouter(<StudioEditorListView />);
+    expect(await screen.findByText('Late set')).toBeTruthy();
+    first.unmount();
+
+    let resolve: (
+      value: Awaited<ReturnType<typeof studio.fetchEditorProjects>>,
+    ) => void = () => undefined;
+    fetch.mockReturnValue(new Promise((r) => (resolve = r)));
+    const second = await renderWithRouter(<StudioEditorListView />);
+    expect(screen.getByText('Late set')).toBeTruthy();
+    expect(screen.queryByText('Loading…')).toBeNull();
+    await act(async () =>
+      resolve({
+        data: [project('p1', 'Late set'), project('p2', 'Morning take')],
+        meta: { source: 'api' },
+      }),
+    );
+    expect(screen.getByText('Morning take')).toBeTruthy();
+    second.unmount();
+
+    fetch.mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await renderWithRouter(<StudioEditorListView />);
+    expect(
+      await screen.findByText('Could not refresh your editor projects'),
+    ).toBeTruthy();
+    expect(screen.getByText('Morning take')).toBeTruthy();
+  });
 });
