@@ -573,8 +573,8 @@ export function ChannelView({ slug }: { slug: string }) {
 
   const headerShown = !heroVisible && channel.user.showPageHero !== false;
   const backButton = (
-    <Tooltip content="Back to Listen" side="right">
-      <BackButtonLink to="/" aria-label="Back to Listen" />
+    <Tooltip content={t('channelViewText.backToListen')} side="right">
+      <BackButtonLink to="/" aria-label={t('channelViewText.backToListen')} />
     </Tooltip>
   );
   const pageBody = (

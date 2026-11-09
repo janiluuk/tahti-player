@@ -17,7 +17,7 @@ export function TrackSortButton({
       options={trackSortOptions(t)}
       value={value}
       onChange={onChange}
-      label="Sort tracks"
+      label={t('trackSortButtonText.sortTracks')}
       defaultValue="default"
       data-testid="track-sort-button"
     />

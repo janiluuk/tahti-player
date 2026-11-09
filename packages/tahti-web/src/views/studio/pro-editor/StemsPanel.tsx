@@ -118,7 +118,7 @@ export function StemsPanel({
   };
 
   return (
-    <StudioPanel title="Stems">
+    <StudioPanel title={t('stemsPanelText.stems')}>
       <div className="mb-4 flex flex-col gap-2">
         <Tabs.Root
           selectedIndex={activeStemSet === 'FOUR_STEM' ? 1 : 0}

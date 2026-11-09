@@ -154,7 +154,7 @@ export function ReleaseTrackRow({
         </Link>
       ) : null}
       {shopUrl ? (
-        <Tooltip content="Open on Bandcamp" side="top">
+        <Tooltip content={t('releaseTrackRowText.openOnBandcamp')} side="top">
           <ExternalLink
             href={shopUrl}
             className="border-border size-7 justify-center overflow-hidden rounded border no-underline"

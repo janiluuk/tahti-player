@@ -1,5 +1,6 @@
 import { AudioWaveformIcon, CheckIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Popover } from '@tahti-player/ui';
 import {
   ADVANCED_MODES,
@@ -31,6 +32,7 @@ export function VisualizerModeMenu({
   triggerClassName,
   panelClassName,
 }: Props) {
+  const { t } = useTranslation('web');
   return (
     <Popover
       anchor="bottom end"
@@ -51,7 +53,7 @@ export function VisualizerModeMenu({
     >
       <Popover.Menu
         role="menu"
-        aria-label="Visualizer"
+        aria-label={t('visualizerModeMenuText.visualizer')}
         data-testid="visualizer-mode-menu"
         className="max-h-[min(32rem,70dvh)] w-80 max-w-[calc(100vw-3rem)] gap-3 overflow-y-auto"
       >

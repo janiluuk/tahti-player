@@ -1,3 +1,5 @@
+import { useTranslation } from '@tahti-player/i18n';
+
 import { TagChipInput } from './TagChipInput';
 
 type Props = {
@@ -10,9 +12,10 @@ type Props = {
  * limits SoundMetadataFieldsSchema enforces. Prefer `MaterialGenreField`
  * when editing main genre + subgenres together. */
 export function SubgenreTagInput({ value, onChange, suggestions }: Props) {
+  const { t } = useTranslation('web');
   return (
     <TagChipInput
-      label="Sub-Genres"
+      label={t('subgenreTagInputText.subGenres')}
       addLabel="Add a sub-genre"
       placeholder="# Add a sub-genre"
       maxCount={12}

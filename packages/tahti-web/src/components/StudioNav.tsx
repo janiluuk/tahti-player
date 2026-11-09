@@ -300,7 +300,7 @@ export function CatalogSubNav({ current }: { current?: string }) {
       ?.to ?? CATALOG_SUBNAV_ITEMS[0].to;
   return (
     <SectionTabs
-      aria-label="Music pages"
+      aria-label={t('studioNavText.musicPages')}
       items={CATALOG_SUBNAV_ITEMS.map((item) => ({
         id: item.to,
         to: item.to,

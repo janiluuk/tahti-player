@@ -1,5 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { MediaArtwork } from '@tahti-player/ui';
 
 import type { VenueRecording } from '../api/types';
@@ -12,6 +13,7 @@ export function VenueRecordings({
 }: {
   recordings: VenueRecording[] | undefined;
 }) {
+  const { t } = useTranslation('web');
   if (!recordings || recordings.length === 0) {
     return null;
   }
@@ -24,7 +26,7 @@ export function VenueRecordings({
         id="venue-recordings-title"
         className="font-display text-lg font-bold"
       >
-        Recorded here
+        {t('venueRecordingsText.recordedHere')}
       </h2>
       <ul className="mt-2 flex flex-col gap-1">
         {recordings.map((track) => (

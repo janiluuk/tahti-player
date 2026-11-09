@@ -140,7 +140,7 @@ export function SoundHeader({
                   }
                   icon={<SparklesIcon size={16} aria-hidden />}
                 >
-                  Master
+                  {t('soundHeaderText.master')}
                 </TrackContextMenu.Action>
               )}
             </TrackContextMenu.Content>

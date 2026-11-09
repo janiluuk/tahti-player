@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { UploadCloudIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError } from '@tahti-player/ui';
 
 import {
@@ -24,6 +25,7 @@ export function HearthisExportSection({
   soundId: string;
   initialStatus: HearthisExportStatus | null;
 }) {
+  const { t } = useTranslation('web');
   const [installed, setInstalled] = useState<boolean | null>(null);
   const [status, setStatus] = useState(initialStatus);
   const [busy, setBusy] = useState(false);
@@ -76,7 +78,9 @@ export function HearthisExportSection({
         aria-hidden
       />
       <div className="min-w-0 flex-1">
-        <p className="font-medium">Push to hearthis.at</p>
+        <p className="font-medium">
+          {t('hearthisExportSectionText.pushToHearthisAt')}
+        </p>
         <p
           className="text-foreground-secondary text-sm"
           data-testid="hearthis-export-status"

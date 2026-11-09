@@ -548,7 +548,10 @@ export function StudioCollectionsView() {
                         {`, ${(c.visibility ?? (c.isPublic === false ? 'PRIVATE' : 'PUBLIC')).toLowerCase()}`}
                       </p>
                     </div>
-                    <Tooltip content="Play" side="top">
+                    <Tooltip
+                      content={t('studioCollectionsViewText.play')}
+                      side="top"
+                    >
                       <Button
                         size="icon-sm"
                         variant="secondary"

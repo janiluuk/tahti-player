@@ -21,8 +21,13 @@ export function RotationReleaseLibrary({
     return null;
   }
   return (
-    <section className="flex flex-col gap-2" aria-label="From their releases">
-      <h3 className="text-sm font-bold">From their releases</h3>
+    <section
+      className="flex flex-col gap-2"
+      aria-label={t('rotationReleaseLibraryText.fromTheirReleases')}
+    >
+      <h3 className="text-sm font-bold">
+        {t('rotationReleaseLibraryText.fromTheirReleases')}
+      </h3>
       <ul className="border-border divide-border divide-y rounded-lg border">
         {available.map((track) => (
           <li

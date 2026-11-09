@@ -137,7 +137,7 @@ export function TrackInfoDialog({
               <div className="border-border mt-4 flex flex-col gap-1 border-t pt-3">
                 <div className="text-foreground-secondary mb-1 flex items-center gap-1.5 text-xs tracking-wide uppercase">
                   <ListMusicIcon size={13} aria-hidden />
-                  Tracklist
+                  {t('trackInfoDialogText.tracklist')}
                 </div>
                 <ul className="flex max-h-48 flex-col overflow-y-auto">
                   {track.tracklist.map((entry, i) => (
