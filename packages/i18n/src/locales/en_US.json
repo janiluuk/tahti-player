@@ -11737,6 +11737,20 @@
     },
     "messagesView": {
       "noMessagesYet": "No messages yet"
+    },
+    "ledgerCategory": {
+      "REVENUE_SUBSCRIPTION": "Membership and fan subscriptions",
+      "REVENUE_DISTRIBUTION": "Distribution income",
+      "REVENUE_GRANT_INBOUND": "Grants received",
+      "REVENUE_DONATION": "Donations",
+      "COST_INFRASTRUCTURE": "Infrastructure costs",
+      "COST_DISTRIBUTION_PASSTHROUGH": "Distribution pass-through",
+      "COST_OPERATIONS": "Operating costs",
+      "COST_SALARY": "Salaries",
+      "COST_AUDIT": "Audit",
+      "COST_PROFESSIONAL_SERVICES": "Professional services",
+      "GRANT_DISBURSEMENT": "Grants paid to artists",
+      "RESERVE_TRANSFER": "Reserve transfers"
     }
   },
   "studioEditor": {
