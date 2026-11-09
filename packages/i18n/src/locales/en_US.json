@@ -10200,14 +10200,122 @@
     "adminGateLabels": {
       "signedInAsUsernameBut": "Signed in as @{{username}}, but this account doesn't have the Board role."
     },
+    "events": {
+      "statusDraft": "Draft",
+      "statusCancelled": "Cancelled",
+      "statusPublished": "Published",
+      "withParticipants": "With",
+      "rolePERFORMER": "Performer",
+      "roleHOST": "Host",
+      "roleGUEST": "Guest",
+      "tagPENDING": "Pending",
+      "tagACCEPTED": "Accepted",
+      "tagDECLINED": "Declined",
+      "tickets": "Tickets",
+      "eventLink": "Event page",
+      "previewTitle": "Preview",
+      "previewDescription": "This is how listeners will see the event in the calendar and on your channel.",
+      "previewBadge": "Preview",
+      "close": "Close",
+      "preview": "Preview",
+      "noTags": "Nobody tagged yet. Tag the other artists, DJs or hosts playing this event.",
+      "roleFor": "Role for {{name}}",
+      "removeTag": "Remove {{name}}",
+      "tagSomeone": "Tag someone",
+      "searchPeople": "Search by name or username",
+      "matches": "Matching people",
+      "tagsSaved": "Tags saved. New tags get an invite to accept.",
+      "saving": "Saving…",
+      "saveTags": "Save tags",
+      "untitled": "Untitled event",
+      "eventPageLinkOptional": "Event page link (optional)",
+      "ticketLinkOptional": "Ticket link (optional)",
+      "coverImageLinkOptional": "Cover image link (optional)",
+      "endOptional": "End (optional)",
+      "endAfterStart": "End must be after the start.",
+      "saveDraft": "Save as draft",
+      "publish": "Publish",
+      "publishConfirmTitle": "Publish {{title}}?",
+      "publishConfirmDescription": "Followers and everyone tagged who accepted are told about it, and it appears in the calendar.",
+      "cancelEvent": "Cancel event",
+      "cancelConfirmTitle": "Cancel {{title}}?",
+      "cancelConfirmDescription": "The event stays listed with a Cancelled badge so people who planned to come see it. You can publish it again later.",
+      "keepEvent": "Keep event",
+      "published": "Published {{title}}.",
+      "cancelled": "Cancelled {{title}}.",
+      "taggedPeople": "Tagged people",
+      "taggedPeopleDescription": "Tags show publicly once the person accepts. Accepted events also list on their channel.",
+      "addToCalendar": "Add to Google Calendar",
+      "downloadIcs": "Subscribe (.ics)",
+      "share": "Share",
+      "invites": "Invites",
+      "invitesTitle": "Event invites",
+      "invitesDescription": "Events other artists tagged you on. Accept to show the event on your channel too.",
+      "noInvites": "No invites right now.",
+      "accept": "Accept",
+      "decline": "Decline",
+      "invitedBy": "Invited by {{name}} as {{role}}",
+      "inviteAccepted": "Accepted. The event now shows on your channel.",
+      "inviteDeclined": "Declined.",
+      "openPublicPage": "Open public page",
+      "notFound": "Event not found",
+      "notFoundDescription": "It may be a draft, or the link is wrong.",
+      "backToCalendar": "Back to the calendar",
+      "calendar": "Calendar",
+      "stories": "Stories",
+      "feedView": "Feed view",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "today": "Today",
+      "noEventsThisMonth": "No events this month.",
+      "subscribe": "Subscribe to the calendar (.ics)",
+      "subscribeArtist": "Subscribe (.ics)",
+      "moreOnDay": "+{{count}} more",
+      "eventsOnDay": "Events on {{day}}",
+      "monthGrid": "Month",
+      "agenda": "List",
+      "calendarLayout": "Calendar layout",
+      "loading": "Loading events…",
+      "status": "Status"
+    },
+    "routes-helpText": {
+      "backToListen": "Back to Listen"
+    },
+    "releaseTrackUploadProgressText": {
+      "cancel": "Cancel"
+    },
+    "embedViewsText": {
+      "play": "Play"
+    },
+    "timelineReactionBarText": {
+      "logInToReact": "Log in to react"
+    },
+    "containerLogsPanelText": {
+      "couldNotReachTheLogging": "Could not reach the logging backend. It may be down, or this environment can&apos;t reach it on the LAN."
+    },
+    "annualReportActionsFields": {
+      "noMeetingNamed": "No meeting named"
+    },
+    "nowPlayingOverlayText": {
+      "nowPlaying": "Now playing"
+    },
     "chatNoticeText": {
       "subscribe": "Subscribe"
     },
+    "addonCardText": {
+      "defaultOn": "Default on"
+    },
+    "radioProgrammingGridLabels": {
+      "noLiveShowsBookedIn": "No live shows booked in the next {{PROGRAMMING_DAYS}} days."
+    },
+    "skipToContentText": {
+      "skipToContent": "Skip to content"
+    },
+    "motionSecondersText": {
+      "secondedBy": "Seconded by"
+    },
     "currentFanSubscriptionCardText": {
       "manageSubscription": "Manage subscription"
-    },
-    "listenAddonsTabEmptyText": {
-      "everythingHereIsInstalled": "Everything here is installed."
     },
     "mermaidDiagramText": {
       "renderingDiagram": "Rendering diagram…",
@@ -10216,61 +10324,31 @@
       "resetDiagramZoom": "Reset diagram zoom",
       "zoomInDiagram": "Zoom in diagram"
     },
-    "nowPlayingOverlayText": {
-      "nowPlaying": "Now playing"
-    },
-    "skipToContentText": {
-      "skipToContent": "Skip to content"
-    },
-    "timelineReactionBarText": {
-      "logInToReact": "Log in to react"
-    },
-    "playerPanelText": {
-      "useALoopingVideoOr": "Use a looping video or still image behind the channel header."
-    },
-    "channelBlockFrameText": {
-      "editing": "Editing"
-    },
-    "radioProgrammingGridLabels": {
-      "noLiveShowsBookedIn": "No live shows booked in the next {{PROGRAMMING_DAYS}} days."
-    },
-    "motionSecondersText": {
-      "secondedBy": "Seconded by"
-    },
-    "routes-helpText": {
-      "backToListen": "Back to Listen"
-    },
-    "embedViewsText": {
-      "play": "Play"
+    "accountPanelText": {
+      "listen": "Listen"
     },
     "legalViewText": {
       "whatIsTahti": "What is Tahti"
     },
-    "addonCardText": {
-      "defaultOn": "Default on"
-    },
     "boardTermsPanelText": {
       "boardTerms": "Board terms"
     },
-    "annualReportActionsFields": {
-      "noMeetingNamed": "No meeting named"
-    },
-    "containerLogsPanelText": {
-      "couldNotReachTheLogging": "Could not reach the logging backend. It may be down, or this environment can&apos;t reach it on the LAN."
-    },
-    "accountPanelText": {
-      "listen": "Listen"
-    },
     "pressKitPreviewText": {
       "addAtLeastOneIncluded": "Add at least one included image to complete the preview."
-    },
-    "releaseTrackUploadProgressText": {
-      "cancel": "Cancel"
     },
     "featureCompareCardText": {
       "legacy": "Legacy",
       "legacyOnly": "Legacy only",
       "parityComment": "Parity comment"
+    },
+    "channelBlockFrameText": {
+      "editing": "Editing"
+    },
+    "playerPanelText": {
+      "useALoopingVideoOr": "Use a looping video or still image behind the channel header."
+    },
+    "listenAddonsTabEmptyText": {
+      "everythingHereIsInstalled": "Everything here is installed."
     }
   },
   "studioEditor": {

@@ -3,6 +3,19 @@ import { mockFixture } from './mock-overrides';
 import { failMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
 
+export type ArtistEventStatus = 'DRAFT' | 'PUBLISHED' | 'CANCELLED';
+export type ArtistEventRole = 'PERFORMER' | 'HOST' | 'GUEST';
+export type ArtistEventParticipantStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED';
+
+export type ArtistEventParticipant = {
+  username: string;
+  displayName: string;
+  avatarUrl: string | null;
+  channelSlug: string | null;
+  role: ArtistEventRole;
+  status: ArtistEventParticipantStatus;
+};
+
 export type ArtistEvent = {
   id: string;
   title: string;
@@ -10,11 +23,44 @@ export type ArtistEvent = {
   place: string;
   location: string;
   eventUrl: string | null;
+  ticketUrl: string | null;
+  imageUrl: string | null;
   startAt: string;
+  endAt: string | null;
+  status: ArtistEventStatus;
+  publishedAt: string | null;
+  participants: ArtistEventParticipant[];
 };
 
-const mockEvents: ArtistEvent[] = [
+export function normalizeEvent(
+  raw: Partial<ArtistEvent> &
+    Pick<ArtistEvent, 'id' | 'title' | 'place' | 'location' | 'startAt'>,
+): ArtistEvent {
+  return {
+    ...raw,
+    description: raw.description ?? '',
+    eventUrl: raw.eventUrl ?? null,
+    ticketUrl: raw.ticketUrl ?? null,
+    imageUrl: raw.imageUrl ?? null,
+    endAt: raw.endAt ?? null,
+    status: raw.status ?? 'PUBLISHED',
+    publishedAt: raw.publishedAt ?? null,
+    participants: Array.isArray(raw.participants) ? raw.participants : [],
+  };
+}
+
+const mockBase = {
+  ticketUrl: null,
+  imageUrl: null,
+  endAt: null,
+  status: 'PUBLISHED' as const,
+  publishedAt: '2026-08-01T10:00:00.000Z',
+  participants: [] as ArtistEventParticipant[],
+};
+
+export const mockEvents: ArtistEvent[] = [
   {
+    ...mockBase,
     id: 'evt-mock-1',
     title: 'Album release show',
     description:
@@ -25,6 +71,7 @@ const mockEvents: ArtistEvent[] = [
     startAt: '2026-09-05T18:00:00.000Z',
   },
   {
+    ...mockBase,
     id: 'evt-mock-2',
     title: 'Late-night broadcast + open studio',
     description:
@@ -32,9 +79,30 @@ const mockEvents: ArtistEvent[] = [
     place: 'Kuudes Linja',
     location: 'Helsinki, Finland',
     eventUrl: 'https://kuudeslinja.fi/events/midnight-cartography',
+    ticketUrl: 'https://tickets.example/kuudes-linja',
     startAt: '2026-09-19T21:00:00.000Z',
+    endAt: '2026-09-20T02:00:00.000Z',
+    participants: [
+      {
+        username: 'northern-signals',
+        displayName: 'Northern Signals',
+        avatarUrl: null,
+        channelSlug: 'northern-signals',
+        role: 'PERFORMER',
+        status: 'ACCEPTED',
+      },
+      {
+        username: 'yaniho',
+        displayName: 'Yaniho',
+        avatarUrl: null,
+        channelSlug: null,
+        role: 'GUEST',
+        status: 'PENDING',
+      },
+    ],
   },
   {
+    ...mockBase,
     id: 'evt-mock-3',
     title: 'Boathouse Sessions — audience recording',
     description:
@@ -45,6 +113,7 @@ const mockEvents: ArtistEvent[] = [
     startAt: '2026-08-22T17:00:00.000Z',
   },
   {
+    ...mockBase,
     id: 'evt-mock-4',
     title: 'Loop Diary release cypher',
     description:
@@ -55,6 +124,7 @@ const mockEvents: ArtistEvent[] = [
     startAt: '2026-10-03T19:00:00.000Z',
   },
   {
+    ...mockBase,
     id: 'evt-mock-5',
     title: 'All-night analog stream',
     description:
@@ -63,8 +133,10 @@ const mockEvents: ArtistEvent[] = [
     location: 'Tampere, Finland',
     eventUrl: null,
     startAt: '2026-08-29T20:00:00.000Z',
+    status: 'CANCELLED',
   },
   {
+    ...mockBase,
     id: 'evt-mock-6',
     title: 'Forest Cover — outdoor listening session',
     description:
@@ -75,6 +147,7 @@ const mockEvents: ArtistEvent[] = [
     startAt: '2026-09-12T16:30:00.000Z',
   },
   {
+    ...mockBase,
     id: 'evt-mock-7',
     title: 'Winter residency showcase',
     description:
@@ -83,6 +156,8 @@ const mockEvents: ArtistEvent[] = [
     location: 'Rovaniemi, Finland',
     eventUrl: 'https://korundi.fi/tahti-residency-2026',
     startAt: '2026-11-14T19:00:00.000Z',
+    status: 'DRAFT',
+    publishedAt: null,
   },
 ];
 
@@ -98,7 +173,10 @@ export async function fetchMyEvents(): Promise<{
   }
   try {
     const { data } = await requestJson<ArtistEvent[]>('/api/me/events');
-    return { data, meta: { source: 'api' } };
+    return {
+      data: Array.isArray(data) ? data.map(normalizeEvent) : [],
+      meta: { source: 'api' },
+    };
   } catch (err) {
     return { data: [], meta: failMeta(err) };
   }
@@ -110,13 +188,18 @@ export type CreateArtistEventInput = {
   place: string;
   location: string;
   eventUrl?: string;
+  ticketUrl?: string;
+  imageUrl?: string;
   startAt: string;
+  endAt?: string | null;
+  status?: 'DRAFT' | 'PUBLISHED';
 };
 
 export async function createEvent(
   input: CreateArtistEventInput,
 ): Promise<{ ok: true; data: ArtistEvent } | { ok: false; error: string }> {
   if (isForceMock()) {
+    const status = input.status ?? 'PUBLISHED';
     const row: ArtistEvent = {
       id: `evt-mock-${Date.now()}`,
       title: input.title,
@@ -124,7 +207,13 @@ export async function createEvent(
       place: input.place,
       location: input.location,
       eventUrl: input.eventUrl ?? null,
+      ticketUrl: input.ticketUrl ?? null,
+      imageUrl: input.imageUrl ?? null,
       startAt: input.startAt,
+      endAt: input.endAt ?? null,
+      status,
+      publishedAt: status === 'PUBLISHED' ? new Date().toISOString() : null,
+      participants: [],
     };
     mockEvents.push(row);
     mockEvents.sort((a, b) => a.startAt.localeCompare(b.startAt));
@@ -135,7 +224,7 @@ export async function createEvent(
       method: 'POST',
       body: JSON.stringify(input),
     });
-    return { ok: true, data };
+    return { ok: true, data: normalizeEvent(data) };
   } catch (err) {
     return {
       ok: false,
@@ -160,6 +249,12 @@ export async function updateEvent(
       ...(input.eventUrl !== undefined
         ? { eventUrl: input.eventUrl || null }
         : {}),
+      ...(input.ticketUrl !== undefined
+        ? { ticketUrl: input.ticketUrl || null }
+        : {}),
+      ...(input.imageUrl !== undefined
+        ? { imageUrl: input.imageUrl || null }
+        : {}),
     });
     mockEvents.sort((a, b) => a.startAt.localeCompare(b.startAt));
     return { ok: true, data: { ...row } };
@@ -169,7 +264,7 @@ export async function updateEvent(
       `/api/me/events/${encodeURIComponent(id)}`,
       { method: 'PATCH', body: JSON.stringify(input) },
     );
-    return { ok: true, data };
+    return { ok: true, data: normalizeEvent(data) };
   } catch (err) {
     return {
       ok: false,
@@ -211,7 +306,7 @@ export async function fetchChannelEvents(slug: string): Promise<{
     return {
       data: mockFixture(
         'channelEvents',
-        mockEvents.filter((e) => e.startAt >= now),
+        mockEvents.filter((e) => e.startAt >= now && e.status !== 'DRAFT'),
         slug,
       ),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -221,7 +316,10 @@ export async function fetchChannelEvents(slug: string): Promise<{
     const { data } = await requestJson<ArtistEvent[]>(
       `/api/channels/${encodeURIComponent(slug)}/events`,
     );
-    return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
+    return {
+      data: Array.isArray(data) ? data.map(normalizeEvent) : [],
+      meta: { source: 'api' },
+    };
   } catch (err) {
     return { data: [], meta: failMeta(err) };
   }

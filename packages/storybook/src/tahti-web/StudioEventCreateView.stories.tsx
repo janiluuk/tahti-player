@@ -32,7 +32,7 @@ export const AddEvent: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expectVisible(canvas.getByRole('heading', { name: 'Add event' }));
-    const submit = canvas.getByRole('button', { name: 'Add event' });
+    const submit = canvas.getByRole('button', { name: 'Publish' });
     await expect(submit).toBeDisabled();
     await expect(
       canvas.getByRole('link', { name: 'Register a new venue' }),
@@ -77,7 +77,7 @@ export const EditEvent: Story = {
       'Kuudes Linja',
     );
     await expect(
-      canvas.getByRole('textbox', { name: 'Tickets / event link (optional)' }),
+      canvas.getByRole('textbox', { name: 'Event page link (optional)' }),
     ).toHaveValue('https://kuudeslinja.fi/events/midnight-cartography');
     await expect(canvas.getByLabelText('Start')).not.toHaveValue('');
     await expect(

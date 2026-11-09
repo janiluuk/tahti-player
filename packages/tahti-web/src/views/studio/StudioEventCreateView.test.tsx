@@ -118,7 +118,7 @@ describe('StudioEventCreateView editing', () => {
     );
 
     const link = screen.getByLabelText(
-      'Tickets / event link (optional)',
+      'Event page link (optional)',
     ) as HTMLInputElement;
     expect(link.value).toBe('https://tickets.example.com/old');
     await act(async () => fireEvent.change(link, { target: { value: '' } }));
@@ -133,7 +133,10 @@ describe('StudioEventCreateView editing', () => {
       place: 'Kaiku',
       location: 'Helsinki',
       startAt: existing.startAt,
+      endAt: null,
       eventUrl: '',
+      ticketUrl: '',
+      imageUrl: '',
     });
     expect(await screen.findByText('Events list')).toBeInTheDocument();
   });

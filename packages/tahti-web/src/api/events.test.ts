@@ -27,7 +27,7 @@ describe('updateEvent', () => {
         startAt: saved.startAt,
         eventUrl: '',
       }),
-    ).toEqual({ ok: true, data: saved });
+    ).toMatchObject({ ok: true, data: saved });
     expect(fetchMock.mock.calls[0]?.[0]).toBe(
       '/tahti-api/api/me/events/evt%201',
     );

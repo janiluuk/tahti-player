@@ -1,31 +1,47 @@
-import { CalendarDaysIcon, MapPinIcon } from 'lucide-react';
+import { Link } from '@tanstack/react-router';
+import { BanIcon, EyeIcon, SendIcon, UserPlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
   BackButtonLink,
+  Button,
   EditIconLink,
-  ExternalLink,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
-import { fetchMyEvents, type ArtistEvent } from '../../api/events';
+import { cancelEvent, publishEvent } from '../../api/event-calendar';
+import {
+  fetchMyEvents,
+  normalizeEvent,
+  type ArtistEvent,
+} from '../../api/events';
+import { ConfirmDialog } from '../../components/ConfirmDialog';
+import { EventCard } from '../../components/events/EventCard';
+import { EventParticipantChips } from '../../components/events/EventParticipantChips';
+import { EventParticipantsEditor } from '../../components/events/EventParticipantsEditor';
+import { EventPreviewDialog } from '../../components/events/EventPreviewDialog';
+import { EventStatusBadge } from '../../components/events/EventStatusBadge';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
-import { formatScheduleWindow } from '../../lib/scheduleTime';
 
 export function StudioEventView({ eventId }: { eventId: string }) {
   const { t } = useTranslation('web');
   const [event, setEvent] = useState<ArtistEvent | null | undefined>(undefined);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [tagging, setTagging] = useState(false);
+  const [confirm, setConfirm] = useState<'publish' | 'cancel' | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     void fetchMyEvents().then((result) => {
       if (!cancelled) {
-        setEvent(result.data.find((item) => item.id === eventId) ?? null);
+        const found = result.data.find((item) => item.id === eventId);
+        setEvent(found ? normalizeEvent(found) : null);
       }
     });
     return () => {
@@ -65,50 +81,135 @@ export function StudioEventView({ eventId }: { eventId: string }) {
             }
           >
             <StudioPanel title={t('studioEventView.eventDetails')}>
-              <dl className="flex flex-col gap-3 text-sm">
-                <div className="flex items-center gap-2">
-                  <dt className="sr-only">{t('studioEventView.start')}</dt>
-                  <CalendarDaysIcon size={16} aria-hidden />
-                  <dd>
-                    <time dateTime={event.startAt}>
-                      {formatScheduleWindow(event.startAt)}
-                    </time>
-                  </dd>
-                </div>
-                <div className="flex items-center gap-2">
-                  <dt className="sr-only">{t('studioEventView.place')}</dt>
-                  <MapPinIcon size={16} aria-hidden />
-                  <dd>
-                    {[event.place, event.location].filter(Boolean).join(', ')}
-                  </dd>
-                </div>
-                {event.description ? (
-                  <div>
-                    <dt className="sr-only">
-                      {t('studioEventView.description')}
-                    </dt>
-                    <dd className="text-foreground-secondary whitespace-pre-wrap">
-                      {event.description}
-                    </dd>
-                  </div>
-                ) : null}
-                {event.eventUrl ? (
-                  <div>
-                    <dt className="sr-only">
-                      {t('studioEventView.ticketsEventLink')}
-                    </dt>
-                    <dd>
-                      <ExternalLink
-                        href={event.eventUrl}
-                        className="text-primary-strong"
-                      >
-                        {t('studioEventView.ticketsEventLink')}
-                      </ExternalLink>
-                    </dd>
-                  </div>
-                ) : null}
-              </dl>
+              <EventCard
+                event={event}
+                showPendingTags
+                badge={<EventStatusBadge status={event.status} showPublished />}
+                actions={
+                  event.status !== 'DRAFT' ? (
+                    <Link
+                      to="/events/$eventId"
+                      params={{ eventId: event.id }}
+                      className="text-primary-strong text-xs hover:underline"
+                    >
+                      {t('events.openPublicPage')}
+                    </Link>
+                  ) : null
+                }
+              />
+              <div className="mt-3 flex flex-wrap gap-2">
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setPreviewOpen(true)}
+                >
+                  <EyeIcon size={15} aria-hidden className="mr-1.5" />
+                  {t('events.preview')}
+                </Button>
+                {event.status !== 'PUBLISHED' ? (
+                  <Button size="sm" onClick={() => setConfirm('publish')}>
+                    <SendIcon size={15} aria-hidden className="mr-1.5" />
+                    {t('events.publish')}
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setConfirm('cancel')}
+                  >
+                    <BanIcon
+                      size={15}
+                      aria-hidden
+                      className="text-accent-red-strong mr-1.5"
+                    />
+                    {t('events.cancelEvent')}
+                  </Button>
+                )}
+              </div>
             </StudioPanel>
+            <StudioPanel
+              title={t('events.taggedPeople')}
+              description={t('events.taggedPeopleDescription')}
+              action={
+                tagging ? undefined : (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setTagging(true)}
+                  >
+                    <UserPlusIcon size={15} aria-hidden className="mr-1.5" />
+                    {t('events.tagSomeone')}
+                  </Button>
+                )
+              }
+            >
+              {tagging ? (
+                <EventParticipantsEditor
+                  event={event}
+                  onSaved={(saved) => {
+                    setEvent(saved);
+                    setTagging(false);
+                  }}
+                />
+              ) : event.participants.length > 0 ? (
+                <EventParticipantChips
+                  participants={event.participants}
+                  showStatus
+                />
+              ) : (
+                <p className="text-foreground-secondary text-sm">
+                  {t('events.noTags')}
+                </p>
+              )}
+            </StudioPanel>
+            <EventPreviewDialog
+              event={event}
+              isOpen={previewOpen}
+              onClose={() => setPreviewOpen(false)}
+            />
+            <ConfirmDialog
+              isOpen={confirm !== null}
+              title={
+                confirm === 'cancel'
+                  ? t('events.cancelConfirmTitle', { title: event.title })
+                  : t('events.publishConfirmTitle', { title: event.title })
+              }
+              description={
+                confirm === 'cancel'
+                  ? t('events.cancelConfirmDescription')
+                  : t('events.publishConfirmDescription')
+              }
+              confirmLabel={
+                confirm === 'cancel'
+                  ? t('events.cancelEvent')
+                  : t('events.publish')
+              }
+              cancelLabel={
+                confirm === 'cancel' ? t('events.keepEvent') : undefined
+              }
+              destructive={confirm === 'cancel'}
+              onCancel={() => setConfirm(null)}
+              onConfirm={() => {
+                const action = confirm;
+                setConfirm(null);
+                void (
+                  action === 'cancel'
+                    ? cancelEvent(event.id)
+                    : publishEvent(event.id)
+                ).then((result) => {
+                  if (!result.ok) {
+                    toast.error(result.error);
+                    return;
+                  }
+                  setEvent(result.data);
+                  toast.success(
+                    action === 'cancel'
+                      ? t('events.cancelled', { title: event.title })
+                      : t('events.published', { title: event.title }),
+                  );
+                });
+              }}
+            />
           </ViewShell>
         )}
       </div>

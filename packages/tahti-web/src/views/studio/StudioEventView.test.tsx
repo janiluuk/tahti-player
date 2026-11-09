@@ -25,7 +25,8 @@ const existing: ArtistEvent = {
   startAt: '2026-11-01T18:00:00.000Z',
 };
 
-vi.mock('../../api/events', () => ({
+vi.mock('../../api/events', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../../api/events')>()),
   fetchMyEvents: async () => ({
     data: [existing],
     meta: { source: 'api' as const },
@@ -87,7 +88,7 @@ describe('StudioEventView', () => {
     const router = await renderView('evt-1');
 
     expect(
-      await screen.findByRole('heading', { name: 'Release show' }),
+      await screen.findByRole('heading', { level: 1, name: 'Release show' }),
     ).toBeInTheDocument();
     expect(screen.getByText('Kaiku, Helsinki')).toBeInTheDocument();
     expect(screen.getByText('Doors 18:00')).toBeInTheDocument();

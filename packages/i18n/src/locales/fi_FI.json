@@ -10200,14 +10200,122 @@
     "adminGateLabels": {
       "signedInAsUsernameBut": "Kirjautuneena käyttäjänä @{{username}}, mutta tällä tilillä ei ole hallituksen roolia."
     },
+    "events": {
+      "statusDraft": "Luonnos",
+      "statusCancelled": "Peruttu",
+      "statusPublished": "Julkaistu",
+      "withParticipants": "Mukana",
+      "rolePERFORMER": "Esiintyjä",
+      "roleHOST": "Isäntä",
+      "roleGUEST": "Vieras",
+      "tagPENDING": "Odottaa",
+      "tagACCEPTED": "Hyväksytty",
+      "tagDECLINED": "Hylätty",
+      "tickets": "Liput",
+      "eventLink": "Tapahtumasivu",
+      "previewTitle": "Esikatselu",
+      "previewDescription": "Näin kuulijat näkevät tapahtuman kalenterissa ja kanavallasi.",
+      "previewBadge": "Esikatselu",
+      "close": "Sulje",
+      "preview": "Esikatsele",
+      "noTags": "Ketään ei ole vielä merkitty. Merkitse muut tapahtumassa soittavat artistit, DJ:t tai isännät.",
+      "roleFor": "Rooli: {{name}}",
+      "removeTag": "Poista: {{name}}",
+      "tagSomeone": "Merkitse joku",
+      "searchPeople": "Hae nimellä tai käyttäjänimellä",
+      "matches": "Hakutulokset",
+      "tagsSaved": "Merkinnät tallennettu. Uudet merkityt saavat kutsun hyväksyttäväksi.",
+      "saving": "Tallennetaan…",
+      "saveTags": "Tallenna merkinnät",
+      "untitled": "Nimetön tapahtuma",
+      "eventPageLinkOptional": "Tapahtumasivun linkki (valinnainen)",
+      "ticketLinkOptional": "Lippulinkki (valinnainen)",
+      "coverImageLinkOptional": "Kansikuvan linkki (valinnainen)",
+      "endOptional": "Päättyy (valinnainen)",
+      "endAfterStart": "Päättymisen on oltava alun jälkeen.",
+      "saveDraft": "Tallenna luonnoksena",
+      "publish": "Julkaise",
+      "publishConfirmTitle": "Julkaistaanko {{title}}?",
+      "publishConfirmDescription": "Seuraajille ja kutsun hyväksyneille merkityille kerrotaan siitä, ja se näkyy kalenterissa.",
+      "cancelEvent": "Peru tapahtuma",
+      "cancelConfirmTitle": "Perutaanko {{title}}?",
+      "cancelConfirmDescription": "Tapahtuma pysyy listalla Peruttu-merkinnällä, jotta tulijat näkevät sen. Voit julkaista sen myöhemmin uudelleen.",
+      "keepEvent": "Säilytä tapahtuma",
+      "published": "Julkaistu: {{title}}.",
+      "cancelled": "Peruttu: {{title}}.",
+      "taggedPeople": "Merkityt henkilöt",
+      "taggedPeopleDescription": "Merkintä näkyy julkisesti, kun henkilö hyväksyy sen. Hyväksytyt tapahtumat näkyvät myös hänen kanavallaan.",
+      "addToCalendar": "Lisää Google-kalenteriin",
+      "downloadIcs": "Tilaa (.ics)",
+      "share": "Jaa",
+      "invites": "Kutsut",
+      "invitesTitle": "Tapahtumakutsut",
+      "invitesDescription": "Tapahtumat, joihin muut artistit ovat merkinneet sinut. Hyväksy, niin tapahtuma näkyy myös kanavallasi.",
+      "noInvites": "Ei kutsuja juuri nyt.",
+      "accept": "Hyväksy",
+      "decline": "Hylkää",
+      "invitedBy": "Kutsuja: {{name}}, rooli: {{role}}",
+      "inviteAccepted": "Hyväksytty. Tapahtuma näkyy nyt kanavallasi.",
+      "inviteDeclined": "Hylätty.",
+      "openPublicPage": "Avaa julkinen sivu",
+      "notFound": "Tapahtumaa ei löytynyt",
+      "notFoundDescription": "Se voi olla luonnos, tai linkki on väärä.",
+      "backToCalendar": "Takaisin kalenteriin",
+      "calendar": "Kalenteri",
+      "stories": "Tarinat",
+      "feedView": "Syötteen näkymä",
+      "previousMonth": "Edellinen kuukausi",
+      "nextMonth": "Seuraava kuukausi",
+      "today": "Tänään",
+      "noEventsThisMonth": "Ei tapahtumia tässä kuussa.",
+      "subscribe": "Tilaa kalenteri (.ics)",
+      "subscribeArtist": "Tilaa (.ics)",
+      "moreOnDay": "+{{count}} lisää",
+      "eventsOnDay": "Tapahtumat: {{day}}",
+      "monthGrid": "Kuukausi",
+      "agenda": "Lista",
+      "calendarLayout": "Kalenterin asettelu",
+      "loading": "Ladataan tapahtumia…",
+      "status": "Tila"
+    },
+    "routes-helpText": {
+      "backToListen": "Takaisin Kuuntele-sivulle"
+    },
+    "releaseTrackUploadProgressText": {
+      "cancel": "Peruuta"
+    },
+    "embedViewsText": {
+      "play": "Toista"
+    },
+    "timelineReactionBarText": {
+      "logInToReact": "Kirjaudu sisään reagoidaksesi"
+    },
+    "containerLogsPanelText": {
+      "couldNotReachTheLogging": "Lokipalvelimeen ei saatu yhteyttä. Se voi olla alhaalla, tai tämä ympäristö ei tavoita sitä lähiverkossa."
+    },
+    "annualReportActionsFields": {
+      "noMeetingNamed": "Ei kokousta nimellä"
+    },
+    "nowPlayingOverlayText": {
+      "nowPlaying": "Nyt soi"
+    },
     "chatNoticeText": {
       "subscribe": "Tilaa"
     },
+    "addonCardText": {
+      "defaultOn": "Oletuksena päällä"
+    },
+    "radioProgrammingGridLabels": {
+      "noLiveShowsBookedIn": "Ei varattuja livelähetyksiä seuraavan {{PROGRAMMING_DAYS}} päivän aikana."
+    },
+    "skipToContentText": {
+      "skipToContent": "Siirry sisältöön"
+    },
+    "motionSecondersText": {
+      "secondedBy": "Kannattajat"
+    },
     "currentFanSubscriptionCardText": {
       "manageSubscription": "Hallitse tilausta"
-    },
-    "listenAddonsTabEmptyText": {
-      "everythingHereIsInstalled": "Kaikki täällä on jo asennettu."
     },
     "mermaidDiagramText": {
       "renderingDiagram": "Piirretään kaaviota…",
@@ -10216,61 +10324,31 @@
       "resetDiagramZoom": "Palauta kaavion zoomaus",
       "zoomInDiagram": "Lähennä kaaviota"
     },
-    "nowPlayingOverlayText": {
-      "nowPlaying": "Nyt soi"
-    },
-    "skipToContentText": {
-      "skipToContent": "Siirry sisältöön"
-    },
-    "timelineReactionBarText": {
-      "logInToReact": "Kirjaudu sisään reagoidaksesi"
-    },
-    "playerPanelText": {
-      "useALoopingVideoOr": "Käytä kanavan ylätunnisteen taustalla silmukkavideota tai still-kuvaa."
-    },
-    "channelBlockFrameText": {
-      "editing": "Muokataan"
-    },
-    "radioProgrammingGridLabels": {
-      "noLiveShowsBookedIn": "Ei varattuja livelähetyksiä seuraavan {{PROGRAMMING_DAYS}} päivän aikana."
-    },
-    "motionSecondersText": {
-      "secondedBy": "Kannattajat"
-    },
-    "routes-helpText": {
-      "backToListen": "Takaisin Kuuntele-sivulle"
-    },
-    "embedViewsText": {
-      "play": "Toista"
+    "accountPanelText": {
+      "listen": "Kuuntele"
     },
     "legalViewText": {
       "whatIsTahti": "Mikä Tahti on"
     },
-    "addonCardText": {
-      "defaultOn": "Oletuksena päällä"
-    },
     "boardTermsPanelText": {
       "boardTerms": "Hallituksen toimikaudet"
     },
-    "annualReportActionsFields": {
-      "noMeetingNamed": "Ei kokousta nimellä"
-    },
-    "containerLogsPanelText": {
-      "couldNotReachTheLogging": "Lokipalvelimeen ei saatu yhteyttä. Se voi olla alhaalla, tai tämä ympäristö ei tavoita sitä lähiverkossa."
-    },
-    "accountPanelText": {
-      "listen": "Kuuntele"
-    },
     "pressKitPreviewText": {
       "addAtLeastOneIncluded": "Lisää vähintään yksi mukaan otettava kuva, jotta esikatselu on valmis."
-    },
-    "releaseTrackUploadProgressText": {
-      "cancel": "Peruuta"
     },
     "featureCompareCardText": {
       "legacy": "Vanha",
       "legacyOnly": "Vain vanhassa",
       "parityComment": "Vastaavuuden kommentti"
+    },
+    "channelBlockFrameText": {
+      "editing": "Muokataan"
+    },
+    "playerPanelText": {
+      "useALoopingVideoOr": "Käytä kanavan ylätunnisteen taustalla silmukkavideota tai still-kuvaa."
+    },
+    "listenAddonsTabEmptyText": {
+      "everythingHereIsInstalled": "Kaikki täällä on jo asennettu."
     }
   },
   "studioEditor": {

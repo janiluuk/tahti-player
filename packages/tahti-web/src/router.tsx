@@ -145,6 +145,7 @@ import {
 } from './router/routes-library';
 import {
   discoverRoute,
+  eventRoute,
   listenFavoritesRoute,
   listenFeedRoute,
   listenHistoryRoute,
@@ -234,6 +235,7 @@ const routeTree = rootRoute.addChildren([
     radioRoute,
     radioShowRoute,
     radioStationRoute,
+    eventRoute,
     scheduleRoute,
     tagSearchRoute,
     discoverRoute,
