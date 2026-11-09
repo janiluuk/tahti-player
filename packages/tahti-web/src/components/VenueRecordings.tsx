@@ -40,11 +40,7 @@ export function VenueRecordings({
                 size="thumb"
                 src={track.coverUrl}
                 alt=""
-                placeholder={
-                  <span className="text-xs font-bold">
-                    {track.title.slice(0, 2).toUpperCase()}
-                  </span>
-                }
+                seed={track.id}
               />
               <span className="min-w-0 flex-1">
                 <span className="block truncate text-sm font-medium">

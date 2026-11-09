@@ -2925,7 +2925,6 @@
     "smartLink": {
       "loading": "Ladataan julkaisua…",
       "loadError": "Julkaisua ei voitu ladata",
-      "loadErrorFallback": "Julkaisua ei voitu ladata.",
       "notFoundTitle": "Julkaisua ei löydy",
       "notFoundDescription": "Tämä julkaisu on ehkä poistettu tai ei ole saatavilla.",
       "tracks": "Kappaleet",
@@ -2961,7 +2960,8 @@
       "members": "Jäsenet",
       "roleOwner": "Omistaja",
       "roleAdmin": "Ylläpitäjä",
-      "roleMember": "Jäsen"
+      "roleMember": "Jäsen",
+      "refreshError": "Ryhmää ei voitu päivittää. Näytetään viimeksi ladattu versio."
     },
     "studioEvents": {
       "title": "Tapahtumat",
@@ -3065,7 +3065,8 @@
       "handOverNamed": "Luovuta ryhmä käyttäjälle {{name}}",
       "handOverTitle": "Luovutetaanko ryhmä käyttäjälle {{name}}?",
       "handOverDescription": "Hänestä tulee omistaja, ja yhteinen soittolista siirtyy hänelle. Sinä jäät ryhmään ylläpitäjäksi. Vain hän voi luovuttaa sen takaisin.",
-      "handedOver": "{{name}} omistaa nyt ryhmän"
+      "handedOver": "{{name}} omistaa nyt ryhmän",
+      "refreshError": "Ryhmää ei voitu päivittää. Näytetään viimeksi ladattu versio."
     },
     "studioListeningParties": {
       "title": "Kuuntelujuhlat",
@@ -3127,7 +3128,13 @@
     "adminRadio": {
       "memberRelay": "Jäsenvälitys:",
       "memberRelayLive": "{{name}} · /c/{{slug}}",
-      "memberRelayIdle": "ei live-jäsenkanavaa · rotaation pitäisi jatkua"
+      "memberRelayIdle": "ei live-jäsenkanavaa · rotaation pitäisi jatkua",
+      "liveGuestOnAir": "Livevieras lähetyksessä",
+      "rotationOnAir": "Rotaatio soi",
+      "playbackState": "Toiston tila",
+      "noActiveTrack": "Ei soivaa kappaletta",
+      "pause": "Tauko",
+      "listen": "Kuuntele"
     },
     "soundShare": {
       "empty": "Ei jakolinkkejä vielä.",
@@ -3312,8 +3319,7 @@
       "emptyTitle": "Ei julkaisuja vielä",
       "emptyDescription": "Luo ensin yksi Julkaisut-osiossa.",
       "royaltiesError": "Tekijänoikeusraportteja ei voitu ladata.",
-      "royaltiesTitle": "Kaikki tekijänoikeusraportit",
-      "toastLoadFailed": "Julkaisuja ei voitu ladata."
+      "royaltiesTitle": "Kaikki tekijänoikeusraportit"
     },
     "studioEditorList": {
       "title": "Editori",
@@ -3511,7 +3517,11 @@
       "delete": "Poista",
       "systemAnnouncements": "Järjestelmäkuulutukset",
       "clips": "Klipit",
-      "schedule": "Aikataulu"
+      "schedule": "Aikataulu",
+      "editScheduleOf": "Muokkaa klipin {{title}} aikataulua",
+      "scheduleTitle": "Klipin {{title}} aikataulu",
+      "everyNthSummary": "Kerran {{count}} klipin välein",
+      "everyNthRange": "Anna kokonaisluku väliltä {{min}}-{{max}}."
     },
     "adminRadioPresets": {
       "removeTitleNamed": "Poistetaanko {{name}}?",
@@ -4146,7 +4156,9 @@
       "votesFor": "Äänet puolesta",
       "votesAgainst": "Äänet vastaan",
       "abstentions": "Tyhjät",
-      "recordResolution": "Kirjaa päätös"
+      "recordResolution": "Kirjaa päätös",
+      "loadError": "Hallinnon tapahtumia ei voitu ladata.",
+      "refreshError": "Hallinnon tapahtumia ei voitu päivittää. Näytetään viimeksi ladatut tiedot."
     },
     "themesCategory": {
       "dynamic": "Dynaaminen",
@@ -6118,7 +6130,8 @@
       "pickDatesAndApplyTo": "Valitse päivät ja käytä niitä ladataksesi jakson soitot.",
       "statsTimeRange": "Tilastojen aikaväli",
       "customPeriod": "Oma ajanjakso",
-      "from": "Alkaen"
+      "from": "Alkaen",
+      "to": "Asti"
     },
     "endBoardTerm": {
       "endTermEarly": "Päätä kausi ennenaikaisesti",
@@ -7039,7 +7052,8 @@
       "openGreenRoom": "Avaa green room",
       "episodes": "Jaksot",
       "noUpcomingSlotsBookedRight": "Tulevia aikoja ei ole nyt varattu.",
-      "nothingHasAiredYet": "Mitään ei ole vielä lähetetty."
+      "nothingHasAiredYet": "Mitään ei ole vielä lähetetty.",
+      "refreshError": "Ohjelmaa ei voitu päivittää. Näytetään viimeksi ladattu aikataulu."
     },
     "adminI18nView": {
       "admin": "Ylläpito",
@@ -7241,7 +7255,11 @@
       "searchUsers": "Hae käyttäjiä",
       "nameEmailOrUsername": "Nimi, sähköposti tai käyttäjänimi",
       "filterByRole": "Suodata roolin mukaan",
-      "filterByMembership": "Suodata jäsenyyden mukaan"
+      "filterByMembership": "Suodata jäsenyyden mukaan",
+      "usernameSuspended": "@{{username}} · jäädytetty",
+      "roleBOARD": "Hallitus",
+      "roleARTIST": "Artisti",
+      "roleLISTENER": "Kuuntelija"
     },
     "releaseTrackVersionsPanel": {
       "active": "Aktiivinen",
@@ -8435,7 +8453,15 @@
     "releaseOpsPanel": {
       "catalogCredits": "Katalogi ja tekijät",
       "deliveryRoyalties": "Toimitus ja rojaltit",
-      "guides": "Oppaat"
+      "guides": "Oppaat",
+      "releaseOps": "Julkaisun hallinta",
+      "releaseOpsProgress": "Julkaisun hallinta ({{done}}/{{total}})",
+      "statusNotSubmitted": "Ei lähetetty",
+      "statusPending": "Odottaa",
+      "statusSubmitted": "Lähetetty",
+      "statusDelivered": "Toimitettu",
+      "statusLive": "Julkaistu",
+      "statusFailed": "Epäonnistui"
     },
     "artistProfilePage": {
       "stage": "Lava",
@@ -9038,7 +9064,10 @@
       "moveUpItemlabel": "Siirrä ylös: {{itemLabel}}",
       "moveDownItemlabel": "Siirrä alas: {{itemLabel}}",
       "attendanceAttendancecountRecorded": "Läsnäolo ({{attendanceCount}} kirjattu)",
-      "editStateOfTitle": "Muokkaa tilaa: {{title}}"
+      "editStateOfTitle": "Muokkaa tilaa: {{title}}",
+      "agendaItemField": "Esityslistan kohta {{position}}",
+      "editAgendaItem": "Muokkaa kohtaa {{position}}: {{itemLabel}}",
+      "removeAgendaItem": "Poista kohta {{position}}: {{itemLabel}}"
     },
     "playlistsBrowserLabels": {
       "playName": "Soita: {{name}}",
@@ -10357,6 +10386,10 @@
     },
     "listenAddonsTabEmptyText": {
       "everythingHereIsInstalled": "Kaikki täällä on jo asennettu."
+    },
+    "searchResults": {
+      "resultsFor": "Tulokset haulle ”{{query}}”",
+      "title": "Haku"
     }
   },
   "studioEditor": {

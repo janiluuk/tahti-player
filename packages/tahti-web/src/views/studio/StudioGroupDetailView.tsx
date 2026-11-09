@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { ArrowLeftIcon, ExternalLinkIcon, ListMusicIcon } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import type { FormEvent } from 'react';
 import { toast } from 'sonner';
 
@@ -33,7 +33,12 @@ import {
   type GroupSubmitPolicy,
   type MyArtistGroup,
 } from '../../api/groups';
-import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import {
@@ -43,19 +48,63 @@ import {
   joinPolicyOptions,
   submitPolicyOptions,
 } from '../../lib/groupPeople';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { GroupMembersPanel } from './groups/GroupMembersPanel';
 
 type Props = { slug: string };
 
+type GroupSnapshot = {
+  group: MyArtistGroup | null;
+  founder: string | null;
+  requests: GroupJoinRequest[];
+  submissions: GroupSoundSubmission[];
+};
+
+const EMPTY_GROUP: GroupSnapshot = {
+  group: null,
+  founder: null,
+  requests: [],
+  submissions: [],
+};
+
 function GroupDetail({ slug }: Props) {
   const { t } = useTranslation('web');
   const navigate = useNavigate();
-  const [group, setGroup] = useState<MyArtistGroup | null>(null);
-  const [founder, setFounder] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [requests, setRequests] = useState<GroupJoinRequest[]>([]);
-  const [submissions, setSubmissions] = useState<GroupSoundSubmission[]>([]);
+  const snapshot = useSnapshotFetch<GroupSnapshot>(
+    `studio-group:${slug}`,
+    async () => {
+      const found =
+        apiResult(await fetchMyGroups()).find((row) => row.slug === slug) ??
+        null;
+      if (!found) {
+        return { group: null, founder: null, requests: [], submissions: [] };
+      }
+      const reviewer = found.role !== 'MEMBER';
+      const [reqs, subs, pub] = await Promise.all([
+        reviewer ? fetchGroupJoinRequests(slug) : null,
+        reviewer ? fetchGroupSubmissions(slug) : null,
+        fetchPublicGroup(slug),
+      ]);
+      return {
+        group: found,
+        founder: pub.data?.createdBy.username ?? null,
+        requests: reqs?.data ?? [],
+        submissions: subs?.data ?? [],
+      };
+    },
+  );
+  const { group, founder, requests, submissions } =
+    snapshot.data ?? EMPTY_GROUP;
+  const { loading, error, retry: reload } = snapshot;
+  const update = (patch: (current: GroupSnapshot) => Partial<GroupSnapshot>) =>
+    snapshot.mutate((current) => {
+      const base = current ?? EMPTY_GROUP;
+      return { ...base, ...patch(base) };
+    });
+  const setGroup = (next: (current: MyArtistGroup) => MyArtistGroup) =>
+    update((current) => ({
+      group: current.group ? next(current.group) : null,
+    }));
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [coverUrl, setCoverUrl] = useState('');
@@ -66,56 +115,29 @@ function GroupDetail({ slug }: Props) {
   const [busyId, setBusyId] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  const applyGroup = useCallback((next: MyArtistGroup) => {
-    setGroup(next);
+  const [seeded, setSeeded] = useState<MyArtistGroup | null>(null);
+  const formDirty =
+    seeded !== null &&
+    (name !== seeded.name ||
+      description !== (seeded.description ?? '') ||
+      coverUrl !== (seeded.coverUrl ?? '') ||
+      isPublic !== seeded.isPublic ||
+      joinPolicy !== seeded.joinPolicy ||
+      submitPolicy !== seeded.submitPolicy);
+
+  const seedForm = (next: MyArtistGroup) => {
+    setSeeded(next);
     setName(next.name);
     setDescription(next.description ?? '');
     setCoverUrl(next.coverUrl ?? '');
     setIsPublic(next.isPublic);
     setJoinPolicy(next.joinPolicy);
     setSubmitPolicy(next.submitPolicy);
-  }, []);
+  };
 
-  const loadReview = useCallback(
-    async (role: MyArtistGroup['role']) => {
-      if (role === 'MEMBER') {
-        setRequests([]);
-        setSubmissions([]);
-        return;
-      }
-      const [reqs, subs] = await Promise.all([
-        fetchGroupJoinRequests(slug),
-        fetchGroupSubmissions(slug),
-      ]);
-      setRequests(reqs.data);
-      setSubmissions(subs.data);
-    },
-    [slug],
-  );
-
-  const reload = useCallback(() => {
-    setLoading(true);
-    void fetchMyGroups().then(async ({ data, meta }) => {
-      const found = data.find((row) => row.slug === slug) ?? null;
-      if (found) {
-        applyGroup(found);
-        setError(null);
-        await loadReview(found.role);
-        const pub = await fetchPublicGroup(slug);
-        setFounder(pub.data?.createdBy.username ?? null);
-      } else {
-        setGroup(null);
-        setError(
-          meta.source === 'api' && meta.reason
-            ? meta.reason
-            : t('studioGroups.notMember'),
-        );
-      }
-      setLoading(false);
-    });
-  }, [slug, loadReview, applyGroup]);
-
-  useEffect(reload, [reload]);
+  if (group && group !== seeded && !formDirty) {
+    seedForm(group);
+  }
 
   const canManage = group?.role === 'OWNER' || group?.role === 'ADMIN';
 
@@ -139,7 +161,9 @@ function GroupDetail({ slug }: Props) {
         toast.error(result.error);
         return;
       }
-      applyGroup({ ...group, ...result.data });
+      const saved = { ...group, ...result.data };
+      setGroup(() => saved);
+      seedForm(saved);
       toast.success(t('studioGroups.saved'));
     } finally {
       setSaving(false);
@@ -157,7 +181,9 @@ function GroupDetail({ slug }: Props) {
         toast.error(result.error);
         return;
       }
-      setRequests((prev) => prev.filter((row) => row.id !== request.id));
+      update((current) => ({
+        requests: current.requests.filter((row) => row.id !== request.id),
+      }));
       toast.success(
         action === 'APPROVE'
           ? t('studioGroups.memberJoined', {
@@ -184,7 +210,11 @@ function GroupDetail({ slug }: Props) {
         toast.error(result.error);
         return;
       }
-      setSubmissions((prev) => prev.filter((row) => row.id !== submission.id));
+      update((current) => ({
+        submissions: current.submissions.filter(
+          (row) => row.id !== submission.id,
+        ),
+      }));
       toast.success(
         action === 'approve'
           ? t('studioGroups.submissionAdded')
@@ -206,7 +236,7 @@ function GroupDetail({ slug }: Props) {
     void navigate({ to: '/studio/groups' });
   };
 
-  if (loading && !group) {
+  if (loading) {
     return <PageLoading label={t('studioGroups.loadingGroup')} />;
   }
 
@@ -214,7 +244,7 @@ function GroupDetail({ slug }: Props) {
     return (
       <PageError
         title={t('studioGroups.notFound')}
-        description={error ?? undefined}
+        description={error ?? t('studioGroups.notMember')}
         onRetry={reload}
       />
     );
@@ -260,6 +290,13 @@ function GroupDetail({ slug }: Props) {
           </div>
         }
       >
+        {error ? (
+          <PageErrorBanner
+            title={t('studioGroups.refreshError')}
+            description={error}
+            onRetry={reload}
+          />
+        ) : null}
         {canManage ? (
           <StudioPanel
             title={t('studioGroups.settingsTitle')}
@@ -338,19 +375,13 @@ function GroupDetail({ slug }: Props) {
           slug={group.slug}
           viewerRole={group.role}
           onTransferred={() =>
-            setGroup((current) =>
-              current ? { ...current, role: 'ADMIN' } : current,
-            )
+            setGroup((current) => ({ ...current, role: 'ADMIN' }))
           }
           onMembersChanged={() =>
-            setGroup((current) =>
-              current
-                ? {
-                    ...current,
-                    memberCount: Math.max(0, current.memberCount - 1),
-                  }
-                : current,
-            )
+            setGroup((current) => ({
+              ...current,
+              memberCount: Math.max(0, current.memberCount - 1),
+            }))
           }
         />
 

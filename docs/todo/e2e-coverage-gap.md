@@ -23,43 +23,45 @@ renders (route health) · ❌ nothing.
 
 ## Matrix
 
+Re-checked 2026-11-09 against the specs (several cells had gone stale).
+
 | Feature | Anonymous | Listener | Artist | Admin |
 | --- | --- | --- | --- | --- |
-| Front page (Listen), sections, order | ◐ | ❌ | ◐ | — |
-| Latest News carousel, Sources | ❌ | ❌ | ❌ | — |
+| Front page (Listen), sections, order | ✅ (plays a release card) | ❌ | ◐ | — |
+| Latest News carousel, Sources | ✅ (news post dialog) | ✅ (add / remove a source) | ❌ | — |
 | Radio, schedule, radio show | ◐ | ❌ | ◐ | — |
-| Discover, search, tags | ◐ | ❌ | ◐ | — |
-| Channel and artist pages, follow | ◐ | ❌ | ◐ (designer parity) | — |
-| Player: play, pause, seek, fullscreen | ✅ (play, pause) | ❌ | ✅ (minimize, queue) | — |
+| Discover, search, tags | ✅ (search opens a track) | ◐ (Feed pages on) | ◐ | — |
+| Channel and artist pages, follow | ◐ | ✅ (follow, channel comment) | ◐ (designer parity) | — |
+| Player: play, pause, seek, fullscreen | ✅ (play, pause) | ✅ (seek, full screen skip / pause / minimize) | ✅ (minimize, queue) | — |
 | Queue | ❌ | ✅ | ✅ | — |
-| Favorites | — | ❌ | ◐ | — |
-| Playlists (own, collaborative add / undo) | — | ❌ | ◐ (editor opens) | — |
-| Library History / Following | — | ❌ | ◐ | — |
-| Listening stats | — | ❌ | ❌ | — |
+| Favorites | — | ✅ | ◐ | — |
+| Playlists (own, collaborative add / undo) | — | ✅ (create from a track, collaborative add / undo) | ◐ (editor opens) | — |
+| Library History / Following | — | ✅ | ◐ | — |
+| Listening stats | — | ◐ (Stats / History tabs) | ❌ | — |
 | Comments, chat, messages | ✅ (comment asks to log in) | ✅ | ✅ (moderation) | — |
-| Jam (listen together) | ✅ (invite asks to log in) | ✅ | ❌ | — |
-| Listening parties (attend / schedule) | ❌ | ❌ | ◐ | — |
+| Jam (listen together) | ✅ (invite asks to log in) | ✅ | ✅ (own playlist, host, end) | — |
+| Listening parties (attend / schedule) | ✅ (link asks to log in, stays on the party) | ✅ (join live, scheduled) | ✅ (schedule, cancel) | — |
 | Support an artist: fan sub, track purchase | ✅ (guest email sub) | ✅ (buy, subscribe, cancel; stale) | ✅ (sees orders) | ✅ (audit log) |
 | Public reader: release, track, embeds, legal | ✅ | — | — | — |
 | Sign up, log in, verify, reset password | ✅ (register, Enter submits) | ✅ (listener sign-up) | ✅ | — |
 | Notifications, account menu dots | — | ✅ | ✅ (filter, mark read) | ✅ (mark read) |
-| Settings (account, playback, appearance) | — | ❌ | ◐ (redirects) | — |
-| Add-ons (Listen widgets, themes, visualizers) | — | ❌ | ✅ (stale) | — |
-| Membership and Co-op governance | ✅ (prompted to log in, history) | ❌ | ✅ (vote, discuss, draft motion) | ◐ |
-| Studio Home, stream manager | — | gate ❌ | ✅ | — |
-| Uploads, tracks, track editor, mastering | — | gate ❌ | ✅ | — |
-| Releases, distribution, smart links | — | — | ◐ | — |
-| Broadcast: go live, green room, schedule, shows, events | — | — | ✅ (new show, event, party, stream stop); green room ◐ | — |
+| Settings (account, playback, appearance) | — | ✅ (playback switch, theme) | ◐ (redirects) | — |
+| Add-ons (Listen widgets, themes, visualizers) | — | ✅ (Radio Browser on / off) | ✅ (stale) | — |
+| Membership and Co-op governance | ✅ (prompted to log in, history) | ✅ (correction request to the board) | ✅ (vote, discuss, draft motion) | ◐ |
+| Studio Home, stream manager | — | gate ✅ | ✅ | — |
+| Uploads, tracks, track editor, mastering | — | gate ✅ | ✅ | — |
+| Releases, distribution, smart links | — | — | ✅ (create, publish draft, smart link) | — |
+| Broadcast: go live, green room, schedule, shows, events | — | — | ✅ (new show, event, party, stream stop, green room open / invite / page) | — |
 | Channel designer, branding, gallery, press kit | — | — | ✅ (stale) | — |
-| Fans: posts, newsletter, memberships, store, earnings | — | — | ◐ | — |
+| Fans: posts, newsletter, memberships, store, earnings | — | — | ✅ (post, newsletter, tier, store price) | — |
 | Stats and insights | — | — | ✅ | — |
-| Profile hub | — | — | ◐ | — |
-| Admin Overview (dashboard, status, monitoring) | — | denied ❌ | denied ❌ | ◐ |
-| Admin Inbox queues (support, beta, radio, reports, themes) | — | — | — | ◐ |
-| Admin People (users, roles, suspension) | — | — | — | ◐ (profile) |
+| Profile hub | — | — | ✅ (profile story) | — |
+| Admin Overview (dashboard, status, monitoring) | — | denied ✅ | denied ✅ | ✅ |
+| Admin Inbox queues (support, beta, radio, reports, themes) | — | — | — | ✅ (support, beta, radio, reports) |
+| Admin People (users, roles, suspension) | — | — | — | ✅ (suspend, role filter) |
 | Admin Content (news, announcements, Selects, top lists, radio, venues, presets) | — | — | — | ✅ (news, announcements, presets, top lists, venues, radio cover) |
 | Admin Co-op (board, AGM, grants, finances) | — | — | — | ◐ |
-| Admin Platform (add-ons, languages, vendors, storage, logs, map) | — | — | — | ◐ |
+| Admin Platform (add-ons, languages, vendors, storage, logs, map) | — | — | — | ✅ (add-on review, translation CSV, storage, logs) |
 | Layout: desktop / phone chrome | ✅ (phone More → Library) | ✅ (no Studio on phone) | ✅ | ✅ |
 
 ## Missing use cases (todo)
@@ -68,9 +70,8 @@ Use cases already covered are in `HISTORY.md`; the matrix above shows what
 each role exercises.
 
 - [ ] Listener: plays a collection with the collection player; the row highlights. (Blocked: `CollectionPlayerWidget` is not placed anywhere yet; placement is a product decision.)
-- [ ] Artist: the Go live flow reaches the green room (a new show, an event and a listening party are covered by `use-cases-artist-5/6.spec.ts`).
-- [ ] Listener: Radio and Discover use cases (tag filter, schedule); the Listen and Discover views are being reworked, so wait for that to land.
-- [ ] Artist: Jam from Studio, Listener: Player seek and fullscreen.
+- [ ] Listener: Radio and Discover use cases (tag filter, schedule); the Listen and Discover views are being reworked (`discover-listen-widget-audit-2026-11-05.md`, `ux-batch-50-slices-2026-11-09.md`), so wait for that to land.
+- [ ] Remaining ❌ / ◐ cells not blocked by that rework: Artist Latest News, favorites, playlists, History, settings and listening stats; Anonymous Queue; Admin Co-op beyond opening tabs.
 
 ## Run and review (next)
 
@@ -101,3 +102,14 @@ is wrong and a suggested fix, then turn the agreed ones into slices.
 All CI mock specs pass on the mock app (2026-11-03). Specs that need a fresh
 browser context per role (`stash-and-subscriber-access`) sign out in the same
 context instead, since the mock keeps uploads in the first browser's storage.
+
+Player specs (`use-cases-listener-6`) stream the mock tracks' SoundHelix MP3s,
+so they need network access; the seek bar is inert while a track loads
+(`tabindex="-1"`), so wait for `tabindex="0"` and for playback to start
+before each seek.
+
+### Findings from the 2026-11-09 specs
+
+| Screen | Issue | Kind | Suggestion |
+| --- | --- | --- | --- |
+| Player bar seek | A seek right after Play, before the stream starts, is lost: playback restarts at 0:00 when the audio loads | bug | Keep the pending `seekTarget` in `playerStore` until the audio has loaded, then apply it |

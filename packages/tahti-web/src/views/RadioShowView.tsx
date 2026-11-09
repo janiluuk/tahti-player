@@ -37,6 +37,7 @@ import { Eyebrow } from '../components/tahti/Eyebrow';
 import { usePolling } from '../hooks/usePolling';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { isGreenRoomWindow } from '../lib/radioSchedule';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 const NOW_PLAYING_POLL_MS = 30_000;
 
@@ -125,32 +126,24 @@ function NowPlayingSection({
 
 export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
   const { t } = useTranslation('web');
-  const [show, setShow] = useState<PublicRadioShow | null>(null);
-  const [loading, setLoading] = useState(true);
+  const {
+    data: show,
+    loading,
+    error: loadError,
+    retry,
+  } = useSnapshotFetch<PublicRadioShow | null>(
+    `radio-show:${channelSlug}`,
+    async () => apiResult(await fetchPublicRadioShow(channelSlug)),
+  );
   const [nowPlayingTrack, setNowPlayingTrack] =
     useState<RadioShowNowPlayingTrack | null>(null);
   const [upcomingTracks, setUpcomingTracks] = useState<
     RadioShowUpcomingTrack[]
   >([]);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [pollErrors, setPollErrors] = useState<{
     track: string | null;
     upcoming: string | null;
   }>({ track: null, upcoming: null });
-  const [reloadKey, setReloadKey] = useState(0);
-
-  useEffect(() => {
-    setLoading(true);
-    void fetchPublicRadioShow(channelSlug).then((result) => {
-      setShow(result.data);
-      setLoadError(
-        result.data === null && result.meta.source === 'api'
-          ? (result.meta.reason ?? null)
-          : null,
-      );
-      setLoading(false);
-    });
-  }, [channelSlug, reloadKey]);
 
   const reloadNowPlaying = () => {
     void fetchRadioShowNowPlaying(channelSlug).then((result) => {
@@ -192,7 +185,7 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
       <PageError
         title={t('loadErrors.couldNotLoadShow')}
         description={loadError}
-        onRetry={() => setReloadKey((key) => key + 1)}
+        onRetry={retry}
       />
     );
   }
@@ -239,6 +232,13 @@ export const RadioShowView = ({ channelSlug }: { channelSlug: string }) => {
   return (
     <PageFrame maxWidth="3xl">
       <PageBackLink to="/radio" label={t('radioShowView.radio')} />
+      {loadError ? (
+        <PageErrorBanner
+          title={t('radioShowView.refreshError')}
+          description={loadError}
+          onRetry={retry}
+        />
+      ) : null}
 
       <EntitySocialHeader
         title={show.artist.displayName}

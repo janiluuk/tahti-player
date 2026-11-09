@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
 
 import { Blob as NodeBlob } from 'node:buffer';
+import { MotionGlobalConfig } from 'motion/react';
 import { afterEach } from 'vitest';
 
 import { setupDomMocks } from '@tahti-player/ui/test';
@@ -48,6 +49,11 @@ if (typeof globalThis.sessionStorage === 'undefined') {
 }
 
 setupDomMocks();
+
+// Dialog exits are springs: without this every close waits out the real
+// animation before the dialog leaves the DOM.
+MotionGlobalConfig.skipAnimations = true;
+MotionGlobalConfig.instantAnimations = true;
 
 afterEach(() => {
   clearSnapshots();

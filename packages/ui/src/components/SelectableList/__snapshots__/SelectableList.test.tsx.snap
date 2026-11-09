@@ -16,23 +16,31 @@ exports[`SelectableList > (Snapshot) renders a list of rows 1`] = `
       type="button"
     >
       <span
-        class="flex items-center justify-between gap-2"
+        class="flex items-center gap-3"
       >
         <span
-          class="truncate text-sm font-medium"
+          class="min-w-0 flex-1"
         >
-          Ada Lovelace
+          <span
+            class="flex items-center justify-between gap-2"
+          >
+            <span
+              class="truncate text-sm font-medium"
+            >
+              Ada Lovelace
+            </span>
+            <span
+              class="text-foreground-secondary shrink-0 text-[10px] font-semibold tracking-wide uppercase"
+            >
+              ADMIN
+            </span>
+          </span>
+          <span
+            class="text-foreground-secondary block truncate text-xs"
+          >
+            @ada
+          </span>
         </span>
-        <span
-          class="text-foreground-secondary shrink-0 text-[10px] font-semibold tracking-wide uppercase"
-        >
-          ADMIN
-        </span>
-      </span>
-      <span
-        class="text-foreground-secondary block truncate text-xs"
-      >
-        @ada
       </span>
     </button>
   </li>
@@ -46,18 +54,26 @@ exports[`SelectableList > (Snapshot) renders a list of rows 1`] = `
       type="button"
     >
       <span
-        class="flex items-center justify-between gap-2"
+        class="flex items-center gap-3"
       >
         <span
-          class="truncate text-sm font-medium"
+          class="min-w-0 flex-1"
         >
-          Grace Hopper
+          <span
+            class="flex items-center justify-between gap-2"
+          >
+            <span
+              class="truncate text-sm font-medium"
+            >
+              Grace Hopper
+            </span>
+          </span>
+          <span
+            class="text-foreground-secondary block truncate text-xs"
+          >
+            @grace
+          </span>
         </span>
-      </span>
-      <span
-        class="text-foreground-secondary block truncate text-xs"
-      >
-        @grace
       </span>
     </button>
   </li>

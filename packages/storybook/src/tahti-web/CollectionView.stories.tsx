@@ -73,10 +73,12 @@ export const CollaborativeVisitor: Story = {
 
     await step('favorite toggles pressed state', async () => {
       const header = within(canvas.getByTestId('collection-social-header'));
-      const [favorite] = header.getAllByRole('button', {
+      const favorites = header.getAllByRole('button', {
         name: /^Favorite /,
         pressed: false,
       });
+      await expect(favorites).toHaveLength(1);
+      const [favorite] = favorites;
       await userEvent.click(favorite!);
       await waitFor(() =>
         expect(
@@ -143,6 +145,9 @@ export const Owner: Story = {
     await expect(
       header.queryByRole('button', { name: /^Favorite / }),
     ).toBeNull();
+    await expect(
+      await header.findByRole('button', { name: 'Sort sounds' }),
+    ).toBeVisible();
   },
 };
 

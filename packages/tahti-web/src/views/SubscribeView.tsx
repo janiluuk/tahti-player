@@ -7,7 +7,6 @@ import {
   fetchFanTiers,
   fetchMySubscriptions,
   startFanSubscribe,
-  type FetchMeta,
 } from '../api/client';
 import type { FanSubscriptionRow, FanTiersResponse } from '../api/types';
 import { CurrentFanSubscriptionCard } from '../components/CurrentFanSubscriptionCard';
@@ -19,6 +18,7 @@ import type { FanCheckoutReturn } from '../lib/fanCheckoutReturn';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
 import { assignStripeRedirectUrl } from '../lib/stripeRedirect';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -47,54 +47,33 @@ export function SubscribeView({
   checkoutReturn?: FanCheckoutReturn;
 }) {
   const { t } = useTranslation('web');
-  const [data, setData] = useState<FanTiersResponse | null>(null);
-  const [meta, setMeta] = useState<FetchMeta | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
+  // Prices must be current before checkout: the saved tiers only fill the
+  // page while they refresh, Subscribe waits for the fresh ones, and a failed
+  // refresh shows the error.
+  const tiers = useSnapshotFetch<{
+    tiers: FanTiersResponse | null;
+    mock: boolean;
+  }>(`fan-tiers:${username}`, async () => {
+    const res = await fetchFanTiers(username);
+    return { tiers: apiResult(res), mock: res.meta.source === 'mock' };
+  });
+  const data = tiers.data?.tiers ?? null;
+  const { loading, refreshing, error: loadError, retry } = tiers;
   const [busyTier, setBusyTier] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
   const [current, setCurrent] = useState<FanSubscriptionRow | null>(null);
   const user = useAuthStore((s) => s.user);
 
+  const artistName = data?.artist.displayName;
   useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setLoadError(null);
-    void fetchFanTiers(username)
-      .then((res) => {
-        if (cancelled) {
-          return;
-        }
-        setData(res.data);
-        setMeta(res.meta);
-        setLoadError(
-          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
-        );
-        const name = res.data?.artist.displayName;
-        if (name) {
-          syncDocumentMetadata(window.location.pathname, {
-            title: t('subscribeViewLabels.subscribeToNameTahti', { name }),
-          });
-        }
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          setData(null);
-          setLoadError(
-            err instanceof Error ? err.message : 'Could not load tiers.',
-          );
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoading(false);
-        }
+    if (artistName) {
+      syncDocumentMetadata(window.location.pathname, {
+        title: t('subscribeViewLabels.subscribeToNameTahti', {
+          name: artistName,
+        }),
       });
-    return () => {
-      cancelled = true;
-    };
-  }, [username, attempt]);
+    }
+  }, [artistName, t]);
 
   const reloadCurrent = () =>
     fetchMySubscriptions().then((res) =>
@@ -126,7 +105,7 @@ export function SubscribeView({
       <PageError
         title={t('loadErrors.couldNotLoadSubscriptionTiers')}
         description={loadError}
-        onRetry={() => setAttempt((n) => n + 1)}
+        onRetry={retry}
       />
     );
   }
@@ -191,7 +170,7 @@ export function SubscribeView({
             Subscribe to {data.artist.displayName}
           </h2>
 
-          {!data.paymentsReady && meta?.source !== 'mock' && (
+          {!data.paymentsReady && !tiers.data?.mock && (
             <p className="text-foreground-secondary text-sm">
               {t('subscribeView.thisArtistIsnTSet')}
             </p>
@@ -253,7 +232,7 @@ export function SubscribeView({
                   )}
                   <Button
                     size="sm"
-                    disabled={busyTier === tier.id}
+                    disabled={busyTier === tier.id || refreshing}
                     onClick={() => {
                       if (!user) {
                         useAuthModalStore.getState().open('login');
