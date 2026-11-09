@@ -72,6 +72,14 @@ export function resolveContentTypeId(
     : null;
 }
 
+function humanizeCode(code: string): string {
+  if (!/^[A-Z0-9_]+$/.test(code)) {
+    return code;
+  }
+  const words = code.replace(/_/g, ' ').toLowerCase();
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
+
 export function contentTypeLabel(
   contentType: string | null | undefined,
 ): string {
@@ -80,7 +88,7 @@ export function contentTypeLabel(
   }
   const resolved = resolveContentTypeId(contentType);
   if (!resolved) {
-    return contentType;
+    return humanizeCode(contentType);
   }
   return (
     contentTypes(webT()).find((type) => type.id === resolved)?.label ??
