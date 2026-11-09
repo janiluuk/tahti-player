@@ -17,6 +17,8 @@ const t = ((key: string, options?: Record<string, unknown>) => {
       return `, via ${String(options?.provider ?? '')}`;
     case 'library.soundDurationMin':
       return `, ${String(options?.minutes ?? '')} min`;
+    case 'library.soundDurationHours':
+      return `, ${String(options?.hours ?? '')} h ${String(options?.minutes ?? '')} min`;
     default:
       return key;
   }
@@ -50,6 +52,12 @@ describe('soundStatusExtras', () => {
         t,
       ),
     ).toBe(', pinned, 3 min, Ambient, private, downloads off, via Spotify');
+  });
+
+  it('writes an hour-long track in hours and minutes, not "62 min"', () => {
+    expect(soundStatusExtras(sound({ durationSec: 3720 }), t)).toBe(
+      ', 1 h 2 min',
+    );
   });
 
   it('returns empty when there are no extras', () => {

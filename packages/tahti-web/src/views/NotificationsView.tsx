@@ -17,7 +17,7 @@ import {
   fetchNotificationUnreadCounts,
   markAllNotificationsRead,
   NOTIFICATION_KINDS,
-  notificationKindLabel,
+  notificationKindOf,
   removeNotification,
   type NotificationKind,
   type NotificationUnreadCounts,
@@ -54,6 +54,13 @@ function NotificationText({
 
 export function NotificationsView() {
   const { t } = useTranslation('web');
+  const kindLabels: Record<NotificationKind, string> = {
+    social: t('notificationsPage.kindSocial'),
+    music: t('notificationsPage.kindMusic'),
+    money: t('notificationsPage.kindMoney'),
+    governance: t('notificationsPage.kindGovernance'),
+    other: t('notificationsPage.kindOther'),
+  };
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
   const [items, setItems] = useState<TahtiNotification[]>([]);
@@ -228,13 +235,6 @@ export function NotificationsView() {
             { id: 'all', label: t('notificationsPage.filterAll') },
             ...NOTIFICATION_KINDS.map((item) => {
               const unread = counts?.byKind[item.id] ?? 0;
-              const kindLabels = {
-                social: t('notificationsPage.kindSocial'),
-                music: t('notificationsPage.kindMusic'),
-                money: t('notificationsPage.kindMoney'),
-                governance: t('notificationsPage.kindGovernance'),
-                other: t('notificationsPage.kindOther'),
-              } as const;
               const label = kindLabels[item.id];
               return {
                 id: item.id,
@@ -315,7 +315,7 @@ export function NotificationsView() {
                     <p className="text-foreground-secondary mt-1 flex flex-wrap items-center gap-x-1 text-xs">
                       {kind === 'all' ? (
                         <span>
-                          {notificationKindLabel(notification.type)} ·
+                          {kindLabels[notificationKindOf(notification.type)]} ·
                         </span>
                       ) : null}
                       <ListingDate value={notification.createdAt} />

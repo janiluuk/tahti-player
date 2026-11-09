@@ -58,6 +58,13 @@ describe('SmartLinkView', () => {
     useAuthStore.setState({ user: null });
   });
 
+  it('leads back to the artist by name, not by username', async () => {
+    await renderSmartLink({});
+    const back = screen.getByTestId('page-back-link');
+    expect(back.textContent).toBe('Tahti');
+    expect(back.getAttribute('href')).toBe('/u/tahti');
+  });
+
   it('lets a visitor report the release', async () => {
     await renderSmartLink({});
     expect(

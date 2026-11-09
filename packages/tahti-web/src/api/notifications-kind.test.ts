@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { notificationKindLabel, notificationKindOf } from './notifications';
+import { notificationKindOf } from './notifications';
 
 describe('notificationKindOf', () => {
   it('files types under the same kinds as the API', () => {
@@ -58,10 +58,5 @@ describe('notificationKindOf', () => {
     ]) {
       expect(notificationKindOf(type)).toBe('music');
     }
-  });
-
-  it('labels a type by its kind', () => {
-    expect(notificationKindLabel('MOTION_OPENED')).toBe('Governance');
-    expect(notificationKindLabel('POLICY')).toBe('Other');
   });
 });

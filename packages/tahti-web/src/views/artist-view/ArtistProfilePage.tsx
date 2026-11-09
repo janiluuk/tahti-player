@@ -81,6 +81,7 @@ import { artistHeroImage } from '../../lib/avatarTheme';
 import { resolveStorefront } from '../../lib/channelStore';
 import { colorSchemeCssVars } from '../../lib/colorScheme';
 import { countryName } from '../../lib/countries';
+import { entityStatLabel, type EntityStatKey } from '../../lib/entityStatLabel';
 import { isPinned } from '../../lib/pinnedTracks';
 import { useArtistFollow } from '../../lib/useArtistFollow';
 import { useFollowList } from '../../lib/useFollowList';
@@ -330,31 +331,31 @@ export function ArtistProfilePage({ username }: { username: string }) {
   };
 
   const stat = (
-    key: string,
-    label: string,
+    key: EntityStatKey,
     value: number | null | undefined,
     icon: EntitySocialStat['icon'],
     onClick?: () => void,
   ): EntitySocialStat[] =>
-    value != null && value > 0 ? [{ key, label, value, icon, onClick }] : [];
+    value != null && value > 0
+      ? [{ key, label: entityStatLabel(key, value), value, icon, onClick }]
+      : [];
   const headerStats: EntitySocialStat[] = [
     ...stat(
       'followers',
-      'Followers',
       artist.followerCount != null
         ? (follow.followerCount ?? artist.followerCount)
         : null,
       UsersIcon,
       () => setFollowList('followers'),
     ),
-    ...stat('following', 'Following', artist.followingCount, UserPlusIcon, () =>
+    ...stat('following', artist.followingCount, UserPlusIcon, () =>
       setFollowList('following'),
     ),
-    ...stat('tracks', 'Tracks', profile.tracks.length, MusicIcon),
-    ...stat('plays', 'Plays', profile.totals?.plays, CirclePlayIcon),
-    ...stat('likes', 'Likes', profile.totals?.likes, HeartIcon),
-    ...stat('downloads', 'Downloads', profile.totals?.downloads, DownloadIcon),
-    ...stat('collections', 'Playlists', collections.length, ListMusicIcon),
+    ...stat('tracks', profile.tracks.length, MusicIcon),
+    ...stat('plays', profile.totals?.plays, CirclePlayIcon),
+    ...stat('likes', profile.totals?.likes, HeartIcon),
+    ...stat('downloads', profile.totals?.downloads, DownloadIcon),
+    ...stat('playlists', collections.length, ListMusicIcon),
   ];
 
   const {
@@ -371,8 +372,8 @@ export function ArtistProfilePage({ username }: { username: string }) {
     overlay,
   } = artistLookSchemes(channelVisual, lookExtras, artist);
   const backToListen = (
-    <Tooltip content="Back to Listen" side="right">
-      <BackButtonLink to="/" aria-label="Back to Listen" />
+    <Tooltip content={t('collectionView.backToListen')} side="right">
+      <BackButtonLink to="/" aria-label={t('collectionView.backToListen')} />
     </Tooltip>
   );
 

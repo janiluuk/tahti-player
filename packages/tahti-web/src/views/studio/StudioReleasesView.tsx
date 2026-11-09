@@ -13,7 +13,7 @@ import {
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -65,6 +65,29 @@ const RELEASE_TYPE_DEFS = [
     icon: <LibraryIcon size={18} aria-hidden />,
   },
 ] as const;
+
+const RELEASE_STATE_KEYS = {
+  DRAFT: 'studioReleases.stateDraft',
+  SCHEDULED: 'studioReleases.stateScheduled',
+  PUBLISHED: 'studioReleases.statePublished',
+} as const;
+
+/** "Album", "EP" in the current language; an unknown type reads as sentence
+ * case rather than a raw enum. */
+export function releaseTypeLabel(type: string, t: TFunction<'web'>): string {
+  const def = RELEASE_TYPE_DEFS.find((item) => item.id === type);
+  return def ? t(def.labelKey) : sentenceCase(type);
+}
+
+export function releaseStateLabel(state: string, t: TFunction<'web'>): string {
+  const key = RELEASE_STATE_KEYS[state as keyof typeof RELEASE_STATE_KEYS];
+  return key ? t(key) : sentenceCase(state);
+}
+
+function sentenceCase(value: string): string {
+  const words = value.replace(/_/g, ' ').toLowerCase();
+  return words.charAt(0).toUpperCase() + words.slice(1);
+}
 
 export function StudioReleasesView() {
   const { t } = useTranslation('web');
@@ -317,7 +340,8 @@ export function StudioReleasesView() {
                             {r.title}
                           </Link>
                           <p className="text-foreground-secondary truncate text-xs">
-                            {r.type}, {r.state}
+                            {releaseTypeLabel(r.type, t)},{' '}
+                            {releaseStateLabel(r.state, t)}
                             {typeof r._count?.tracks === 'number'
                               ? `, ${t('studioReleases.tracksCount', { count: r._count.tracks })}`
                               : ''}

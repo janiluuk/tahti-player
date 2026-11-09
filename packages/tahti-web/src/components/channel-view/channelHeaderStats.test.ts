@@ -18,6 +18,14 @@ describe('channelHeaderStats', () => {
     ]);
   });
 
+  it('labels each stat in the right plural form', () => {
+    const stats = channelHeaderStats(
+      channel({ followerCount: 1, publicPlays: 214 }),
+      null,
+    );
+    expect(stats.map((s) => s.label)).toEqual(['Follower', 'Plays']);
+  });
+
   it('leaves out zero or missing values', () => {
     expect(
       channelHeaderStats(channel({ followerCount: 0, publicPlays: 0 }), null),

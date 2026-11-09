@@ -20,6 +20,7 @@ import {
   EntitySocialHeader,
   type EntitySocialStat,
 } from '../components/EntitySocialHeader';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { ReleaseTrackDownloads } from '../components/ReleaseTrackDownloads';
 import { ReportButton } from '../components/ReportButton';
@@ -155,13 +156,11 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
 
   return (
     <div className="relative isolate mx-auto flex w-full max-w-xl flex-col gap-6 pb-10">
-      <Link
+      <PageBackLink
         to="/u/$username"
         params={{ username: data.artist.username }}
-        className="text-foreground-secondary text-xs hover:underline"
-      >
-        ← {data.artist.username}
-      </Link>
+        label={data.artist.displayName || data.artist.username}
+      />
 
       <EntitySocialHeader
         title={data.release.title}

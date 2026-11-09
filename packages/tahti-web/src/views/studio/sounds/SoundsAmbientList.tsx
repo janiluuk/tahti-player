@@ -78,19 +78,25 @@ function isProcessingSound(item: StudioSound): boolean {
   );
 }
 
-function SoundStatusLine({ item }: { item: StudioSound }) {
+export function SoundStatusLine({ item }: { item: StudioSound }) {
   const { t } = useTranslation('web');
   const failed = item.status === 'ERROR';
   const uploaded = formatUploadDate(item.createdAt);
+  // A ready track needs no status word; only the exceptions are spelled out.
+  const status = isProcessingSound(item)
+    ? t('library.processing')
+    : failed
+      ? t('library.processingFailed')
+      : '';
   return (
     <>
       <p className="text-foreground-secondary text-xs">
-        {isProcessingSound(item)
-          ? t('library.processing')
-          : failed
-            ? t('library.processingFailed')
-            : item.status}
-        {uploaded ? t('library.uploadedOn', { date: uploaded }) : ''}
+        {status}
+        {uploaded
+          ? status
+            ? t('library.uploadedOn', { date: uploaded })
+            : t('library.uploadedOnLead', { date: uploaded })
+          : ''}
         {soundStatusExtras(item, t)}
       </p>
       {failed && item.processingError ? (

@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   dismissNotification,
   fetchNotifications,
+  fetchNotificationUnreadCounts,
   fetchStickyNotifications,
 } from './notifications';
 
@@ -30,5 +31,12 @@ describe('mock notifications', () => {
 
     const inbox = await fetchNotifications();
     expect(inbox.data.some((item) => item.id === sticky!.id)).toBe(false);
+  });
+
+  it('counts unread mock notifications under their own kinds', async () => {
+    const counts = await fetchNotificationUnreadCounts();
+    expect(counts?.byKind.social).toBeGreaterThan(0);
+    expect(counts?.byKind.music).toBeGreaterThan(0);
+    expect(counts?.byKind.other).toBeLessThan(counts?.total ?? 0);
   });
 });
