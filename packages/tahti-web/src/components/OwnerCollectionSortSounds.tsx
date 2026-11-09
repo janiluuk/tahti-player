@@ -50,6 +50,7 @@ export function OwnerCollectionSortSounds({
 
   return (
     <CollectionSortSounds
+      labelled
       slug={slug}
       items={state.items}
       trackSortMode={state.trackSortMode}
