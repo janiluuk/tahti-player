@@ -17,6 +17,7 @@ import {
 } from '../../../components/MulticastConfigureDialog';
 import { PageEmpty, PageError } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { webT } from '../../../lib/webT';
 import {
   multicastProviderLabel,
   multicastProviders,
@@ -149,7 +150,9 @@ export function MultistreamPanel({
                         size="icon-sm"
                         variant="text"
                         onClick={() => setPendingDeleteTarget(target)}
-                        aria-label={`Remove ${target.label || target.provider}`}
+                        aria-label={webT()('a11yNamed.remove', {
+                          name: target.label || target.provider,
+                        })}
                       >
                         <Trash2Icon
                           className="text-accent-red-strong"

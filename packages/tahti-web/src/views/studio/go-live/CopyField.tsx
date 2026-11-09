@@ -4,6 +4,8 @@ import { useState, type ReactNode } from 'react';
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, CopyButton, Tooltip } from '@tahti-player/ui';
 
+import { webT } from '../../../lib/webT';
+
 // System rule: any field displaying a value meant to be copied (URLs,
 // stream keys, credentials) pairs a visible <code> with the shared
 // CopyButton (@tahti-player/ui) — this used to hand-roll the same
@@ -35,12 +37,22 @@ export function CopyField({
           {revealed ? value : '•'.repeat(Math.min(value.length, 24))}
         </code>
         {maskable && (
-          <Tooltip content={revealed ? `Hide ${label}` : `Show ${label}`}>
+          <Tooltip
+            content={
+              revealed
+                ? webT()('a11yNamed.hide', { name: label })
+                : webT()('a11yNamed.show', { name: label })
+            }
+          >
             <Button
               size="icon-sm"
               variant="secondary"
               onClick={() => setRevealed((current) => !current)}
-              aria-label={revealed ? `Hide ${label}` : `Show ${label}`}
+              aria-label={
+                revealed
+                  ? webT()('a11yNamed.hide', { name: label })
+                  : webT()('a11yNamed.show', { name: label })
+              }
             >
               {revealed ? (
                 <EyeOffIcon size={14} aria-hidden />

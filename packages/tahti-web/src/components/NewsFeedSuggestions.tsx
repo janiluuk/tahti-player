@@ -6,6 +6,7 @@ import {
   NEWS_FEED_PRESET_GROUPS,
   type NewsFeedPreset,
 } from '../content/newsFeedPresets';
+import { webT } from '../lib/webT';
 
 /** One-click DJ and production feeds for the News add-on. */
 export function NewsFeedSuggestions({
@@ -42,7 +43,9 @@ export function NewsFeedSuggestions({
                     disabled={added}
                     onClick={() => onAdd(feed)}
                     aria-label={
-                      added ? `${feed.title} added` : `Add ${feed.title}`
+                      added
+                        ? `${feed.title} added`
+                        : webT()('a11yNamed.add', { name: feed.title })
                     }
                   >
                     {added ? (

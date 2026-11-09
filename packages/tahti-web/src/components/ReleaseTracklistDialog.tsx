@@ -3,6 +3,7 @@ import { Dialog, MediaArtwork } from '@tahti-player/ui';
 
 import type { PublicProfileRelease, TahtiPlayable } from '../api/types';
 import { formatDuration } from '../lib/playableToTrack';
+import { webT } from '../lib/webT';
 import { usePlayerStore } from '../stores/playerStore';
 import { MediaIconActions, playQueueFavoriteActions } from './MediaIconActions';
 import { PageEmpty } from './PageStates';
@@ -148,8 +149,12 @@ export function ReleaseTracklistDialog({
                         onQueue: () => playable && enqueue(playable),
                         playDisabled: !playable,
                         queueDisabled: !playable,
-                        playLabel: `Play ${track.title}`,
-                        queueLabel: `Queue ${track.title}`,
+                        playLabel: webT()('a11yNamed.play', {
+                          name: track.title,
+                        }),
+                        queueLabel: webT()('a11yNamed.queue', {
+                          name: track.title,
+                        }),
                         queued: Boolean(
                           playable &&
                           queue.some(

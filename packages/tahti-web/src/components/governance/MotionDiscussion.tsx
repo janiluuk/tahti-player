@@ -11,6 +11,7 @@ import {
 import { removeMotionComment } from '../../api/governance-comments';
 import type { GovernanceMotion } from '../../api/types';
 import { hasAccountRole } from '../../lib/accountRoles';
+import { webT } from '../../lib/webT';
 import { useAuthStore } from '../../stores/authStore';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { ListingDate } from '../ListingDate';
@@ -146,7 +147,10 @@ export function MotionDiscussion({
                       <Button
                         size="sm"
                         variant="text"
-                        aria-label={`Remove the comment by ${c.authorDisplayName ?? 'a member'}`}
+                        aria-label={webT()('a11yNamed.removeCommentBy', {
+                          name:
+                            c.authorDisplayName ?? webT()('a11yNamed.aMember'),
+                        })}
                         onClick={() => setRemoving(c)}
                       >
                         {t('motionDiscussion.remove')}

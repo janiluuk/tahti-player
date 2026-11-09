@@ -7,6 +7,7 @@ import { removeStudioCollectionItem } from '../../../api/studio';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { CoverArtPickerDialog } from '../../../components/CoverArtPickerDialog';
 import { ImageSlotPreviewDialog } from '../../../components/imageSlot/ImageSlotPreviewDialog';
+import { webT } from '../../../lib/webT';
 import { AddTracksDialog } from './AddTracksDialog';
 import type { CollectionEditState } from './useCollectionEditState';
 
@@ -57,7 +58,9 @@ export function CollectionDialogs({
       <AddTracksDialog
         isOpen={addPickerOpen}
         onClose={() => setAddPickerOpen(false)}
-        title={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
+        title={webT()('a11yNamed.addContentTo', {
+          name: isAlbumLike ? 'album' : 'collection',
+        })}
         sounds={sounds}
         existingSoundIds={existingSoundIds}
         addBusyId={addBusyId}

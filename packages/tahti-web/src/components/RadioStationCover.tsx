@@ -18,6 +18,7 @@ import {
   persistRadioStationCover,
   uploadRadioCoverFile,
 } from '../lib/radioStationCover';
+import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
 import { ImageSlotPreviewDialog } from './imageSlot/ImageSlotPreviewDialog';
 
@@ -113,7 +114,7 @@ export const RadioStationCoverEditButton: FC<
   return (
     <>
       <Tooltip
-        content={`Edit ${label} cover`}
+        content={webT()('a11yNamed.editCover', { name: label })}
         side="bottom"
         wrapperClassName="inline-flex"
       >
@@ -122,7 +123,7 @@ export const RadioStationCoverEditButton: FC<
           size={presentation === 'button' ? 'sm' : 'icon-sm'}
           type="button"
           disabled={busy}
-          aria-label={`Edit ${label} cover`}
+          aria-label={webT()('a11yNamed.editCover', { name: label })}
           data-testid="radio-station-cover-edit"
           className={cn(
             'disabled:cursor-wait',

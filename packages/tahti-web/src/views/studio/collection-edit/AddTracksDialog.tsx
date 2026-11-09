@@ -6,6 +6,7 @@ import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
 import { PageEmpty } from '../../../components/PageStates';
+import { webT } from '../../../lib/webT';
 
 function notReadyLabel(status: string): string | null {
   const s = status.toUpperCase();
@@ -162,7 +163,9 @@ export function AddTracksDialog({
                       disabled={Boolean(notReady) || addBusyId === sound.id}
                       aria-label={
                         notReady
-                          ? `Add ${sound.title} (available once processing finishes)`
+                          ? webT()('a11yNamed.addWhenProcessed', {
+                              name: sound.title,
+                            })
                           : undefined
                       }
                       onClick={() => onAdd(sound)}

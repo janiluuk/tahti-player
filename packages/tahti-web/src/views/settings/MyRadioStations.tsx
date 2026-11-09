@@ -13,6 +13,7 @@ import {
 } from '../../api/my-radio-stations';
 import { PageEmpty, PageError } from '../../components/PageStates';
 import { toastWithUndo } from '../../lib/undoToast';
+import { webT } from '../../lib/webT';
 import { usePlayerStore } from '../../stores/playerStore';
 
 const playableId = (station: MyRadioStation) => `radio:my-${station.id}`;
@@ -124,7 +125,7 @@ export function MyRadioStations({
                   src={station.iconUrl}
                   alt=""
                   size="thumb"
-                  playLabel={`Play ${station.name}`}
+                  playLabel={webT()('a11yNamed.play', { name: station.name })}
                   isPlaying={
                     currentId === playableId(station) && status === 'playing'
                   }

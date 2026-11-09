@@ -21,6 +21,7 @@ import type {
   NativeItunesUnresolved,
   NativeItunesUnresolvedReason,
 } from '../../lib/nativeLibrary';
+import { webT } from '../../lib/webT';
 import { useItunesImport } from './useItunesImport';
 
 type Props = {
@@ -417,7 +418,9 @@ export function ItunesImportDialog({
                 <Button
                   size="sm"
                   variant="text"
-                  aria-label={`Remove remap ${index + 1}`}
+                  aria-label={webT()('a11yNamed.removeRemapN', {
+                    n: index + 1,
+                  })}
                   onClick={() => state.removeMapping(index)}
                 >
                   <XIcon size={14} aria-hidden />

@@ -9,6 +9,7 @@ import type {
 } from '../../../api/studio-types';
 import { RELEASE_CREDIT_ROLES } from '../../../api/studio-types';
 import { PageEmpty } from '../../../components/PageStates';
+import { webT } from '../../../lib/webT';
 
 export function CreditsEditor({
   credits,
@@ -105,7 +106,9 @@ export function CreditsEditor({
                 size="icon-sm"
                 variant="text"
                 disabled={busy}
-                aria-label={`Remove credit ${credit.name || index + 1}`}
+                aria-label={webT()('a11yNamed.removeCredit', {
+                  name: credit.name || index + 1,
+                })}
                 onClick={() =>
                   setCredits(credits.filter((_, i) => i !== index))
                 }

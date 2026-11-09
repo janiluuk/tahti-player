@@ -19,6 +19,7 @@ import {
   type SoundVersion,
 } from '../api/sound-versions';
 import { usePolling } from '../hooks/usePolling';
+import { webT } from '../lib/webT';
 import { usePlayerStore } from '../stores/playerStore';
 import { ListingDate } from './ListingDate';
 import { PageEmpty, PageError } from './PageStates';
@@ -414,7 +415,9 @@ export function AudioRevisionList({
                       disabled={previewBusy === version.id}
                       aria-label={
                         isPlaying
-                          ? `Pause v${version.versionNumber}`
+                          ? webT()('a11yNamed.pauseVersion', {
+                              n: version.versionNumber,
+                            })
                           : `Preview v${version.versionNumber}`
                       }
                       onClick={() => void previewVersion(version, false)}

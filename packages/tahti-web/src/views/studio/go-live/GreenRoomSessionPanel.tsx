@@ -20,6 +20,7 @@ import {
 } from '../../../api/green-room-session';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { usePolling } from '../../../hooks/usePolling';
+import { webT } from '../../../lib/webT';
 import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { GreenRoomInviteForm } from './GreenRoomInviteForm';
@@ -180,7 +181,9 @@ export function GreenRoomSessionPanel() {
                     <Button
                       variant="text"
                       size="sm"
-                      aria-label={`Remove ${invite.displayName || invite.username}`}
+                      aria-label={webT()('a11yNamed.remove', {
+                        name: invite.displayName || invite.username,
+                      })}
                       disabled={removingId === invite.userId}
                       onClick={() => void remove(invite.userId)}
                     >

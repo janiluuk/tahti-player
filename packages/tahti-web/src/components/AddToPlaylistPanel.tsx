@@ -21,6 +21,7 @@ import {
 } from '../api/studio';
 import type { StudioCollection } from '../api/studio-types';
 import { toastWithUndo } from '../lib/undoToast';
+import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
 import { PageEmpty, PageLoading } from './PageStates';
 
@@ -272,7 +273,11 @@ export function AddToPlaylistPanel({
                   }`}
                   disabled={added || busy}
                   onClick={() => void addTo(c.slug, c.name)}
-                  aria-label={added ? `Added to ${c.name}` : `Add to ${c.name}`}
+                  aria-label={
+                    added
+                      ? `Added to ${c.name}`
+                      : webT()('a11yNamed.addTo', { name: c.name })
+                  }
                   title={c.name}
                 >
                   <span className="text-foreground-secondary flex h-10 w-10 items-center justify-center">

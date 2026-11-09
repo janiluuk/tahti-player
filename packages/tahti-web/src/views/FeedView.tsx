@@ -33,6 +33,7 @@ import {
 import { releasePlayables } from '../components/ReleaseTracklistDialog';
 import { StoryTitleButton } from '../components/StoryTitleButton';
 import { storyDate } from '../lib/storyDate';
+import { webT } from '../lib/webT';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -292,10 +293,10 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
           onArtworkClick={() => setOpenItem(item)}
           onPlay={playable ? () => play(playable) : undefined}
           playDisabled={!playable}
-          playLabel={`Play ${item.title}`}
+          playLabel={webT()('a11yNamed.play', { name: item.title })}
           onQueue={playable ? () => enqueue(playable) : undefined}
           queueDisabled={!playable}
-          queueLabel={`Queue ${item.title}`}
+          queueLabel={webT()('a11yNamed.queue', { name: item.title })}
           queueActive={Boolean(
             playable && queue.some((queueItem) => queueItem.id === playable.id),
           )}
@@ -312,7 +313,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
         onArtworkClick={() => setOpenItem(item)}
         onPlay={first ? () => play(first, { enqueueRest: rest }) : undefined}
         playDisabled={!first}
-        playLabel={`Play ${item.title}`}
+        playLabel={webT()('a11yNamed.play', { name: item.title })}
         onQueue={
           first
             ? () => {
@@ -322,7 +323,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
             : undefined
         }
         queueDisabled={!first}
-        queueLabel={`Queue ${item.title}`}
+        queueLabel={webT()('a11yNamed.queue', { name: item.title })}
       />
     );
   };
