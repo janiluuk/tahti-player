@@ -8439,7 +8439,15 @@
     "releaseOpsPanel": {
       "catalogCredits": "Catalog & credits",
       "deliveryRoyalties": "Delivery & royalties",
-      "guides": "Guides"
+      "guides": "Guides",
+      "releaseOps": "Release ops",
+      "releaseOpsProgress": "Release ops ({{done}}/{{total}})",
+      "statusNotSubmitted": "Not submitted",
+      "statusPending": "Pending",
+      "statusSubmitted": "Submitted",
+      "statusDelivered": "Delivered",
+      "statusLive": "Live",
+      "statusFailed": "Failed"
     },
     "artistProfilePage": {
       "stage": "Stage",
