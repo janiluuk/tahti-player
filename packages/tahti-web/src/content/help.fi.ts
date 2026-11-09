@@ -1,9 +1,11 @@
 import type { HelpArticleTranslation } from './help';
+import { PLUGIN_HELP_TABLE_FI } from './pluginHelpCatalog.fi';
 
 /**
  * Finnish help copy, keyed by article slug. Each `sections` array lines up
- * index-for-index with the English article in `help.ts`; tables and the
- * keyboard shortcut lists are not translated here.
+ * index-for-index with the English article in `help.ts`. A section without
+ * its own `table` keeps the English one; the keyboard shortcut lists are not
+ * translated here.
  */
 export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
   'getting-around': {
@@ -491,9 +493,10 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Valmiit lisäosat',
         body: [
-          'Tila Valmis tarkoittaa, että polku toimii alusta loppuun, myös sovelluksen sisäinen toisto, jos rivi niin kertoo. Tuonti valmis tai Haku valmis tarkoittaa, että yhdistäminen tai haku toimii, mutta loppuosa, yleensä palvelinpuolen tuonti, on vielä kesken; katso tarkka rajoitus sarakkeesta "How to use it".',
+          'Tila Valmis tarkoittaa, että polku toimii alusta loppuun, myös sovelluksen sisäinen toisto, jos rivi niin kertoo. Tuonti valmis tai Haku valmis tarkoittaa, että yhdistäminen tai haku toimii, mutta loppuosa, yleensä palvelinpuolen tuonti, on vielä kesken; katso tarkka rajoitus sarakkeesta "Näin käytät sitä".',
           'hearthis.at-, Mixcloud-, Spotify- ja Bandcamp-kappaleisiin viitataan, niitä ei isännöidä: Tahti tallentaa vain linkin, ja palvelun oma soitin toistaa äänen, kun painat niiden kappaleissa Toista, myös kappaleen omalla sivulla.',
         ],
+        table: PLUGIN_HELP_TABLE_FI,
       },
       {
         heading: 'Jos jotain puuttuu',

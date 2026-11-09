@@ -127,4 +127,65 @@ describe('FeedView', () => {
     expect(article.textContent).toContain('Apply before December.');
     expect(article.textContent).toContain('3 days ago');
   });
+
+  it('steps to older and newer stories with the arrow keys', async () => {
+    const post = (id: string, title: string, hoursAgo: number) => ({
+      kind: 'post' as const,
+      id,
+      date: new Date(Date.now() - hoursAgo * 3_600_000).toISOString(),
+      artist: {
+        username: 'moon',
+        displayName: 'DJ Moonlight',
+        avatarUrl: null,
+      },
+      title,
+      body: `${title} body`,
+      images: [],
+    });
+    vi.spyOn(client, 'fetchFeed').mockResolvedValue({
+      data: {
+        followingCount: 1,
+        items: [post('p1', 'Newest post', 1), post('p2', 'Older post', 5)],
+      },
+      meta: { source: 'api' },
+    });
+    await renderFeed();
+    fireEvent.click(await screen.findByRole('button', { name: 'Newest post' }));
+    expect(screen.getByTestId('story-newer')).toBeDisabled();
+    fireEvent.keyDown(document.body, { key: 'ArrowRight' });
+    expect((await screen.findByTestId('news-article')).textContent).toContain(
+      'Older post body',
+    );
+    expect(screen.getByTestId('story-older')).toBeDisabled();
+    fireEvent.keyDown(document.body, { key: 'ArrowLeft' });
+    expect((await screen.findByTestId('news-article')).textContent).toContain(
+      'Newest post body',
+    );
+  });
+
+  it('shows Latest News under the empty state when news sources exist', async () => {
+    vi.spyOn(client, 'fetchFeed').mockResolvedValue({
+      data: { followingCount: 0, items: [] },
+      meta: { source: 'api' },
+    });
+    useListenerWidgetsStore.setState({
+      instances: [
+        {
+          id: 'n1',
+          typeId: 'news',
+          input: 'https://example.com/rss.xml',
+          label: 'Tahti News',
+          addedAt: '2026-11-01T00:00:00.000Z',
+          surfaces: ['feed'],
+        },
+      ],
+    });
+    await renderFeed();
+    expect(
+      screen.getByText("You're not following any artists yet"),
+    ).toBeTruthy();
+    expect(
+      await screen.findByRole('heading', { name: 'Latest News' }),
+    ).toBeTruthy();
+  });
 });

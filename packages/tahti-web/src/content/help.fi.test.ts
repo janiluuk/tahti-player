@@ -24,11 +24,14 @@ describe('Finnish help', () => {
     }
   });
 
-  it('keeps tables and slugs when localizing', () => {
+  it('keeps slugs and uses the Finnish add-ons table when localizing', () => {
     const fi = getLocalizedHelpArticle('add-ons', 'fi');
     const en = getLocalizedHelpArticle('add-ons', 'en');
     expect(fi?.title).toBe('Lisäosat');
     expect(fi?.slug).toBe('add-ons');
-    expect(fi?.sections[1]?.table).toBe(en?.sections[1]?.table);
+    expect(fi?.sections[1]?.table?.rows).toHaveLength(
+      en?.sections[1]?.table?.rows.length ?? -1,
+    );
+    expect(fi?.sections[1]?.table?.columns[0]).toBe('Nimi');
   });
 });

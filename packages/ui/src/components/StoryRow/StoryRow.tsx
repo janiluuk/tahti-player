@@ -75,9 +75,14 @@ export const StoryRow: FC<StoryRowProps> = ({
       data-testid={testId}
       className={cn('flex flex-col gap-4', className)}
     >
-      <header className="flex items-center justify-between gap-3">
-        <h2 className="text-foreground text-xl font-bold">{title}</h2>
-        <div className="flex items-center gap-2">
+      <header className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        <h2 className="text-foreground min-w-0 text-xl font-bold break-words">
+          {title}
+        </h2>
+        <div
+          data-testid="story-row-controls"
+          className="ml-auto flex flex-wrap items-center justify-end gap-2"
+        >
           {actions}
           {atStart && atEnd ? null : (
             <>

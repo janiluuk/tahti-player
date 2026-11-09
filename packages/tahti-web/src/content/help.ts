@@ -19,7 +19,7 @@ export type HelpArticle = {
 export type HelpArticleTranslation = {
   title: string;
   description: string;
-  sections: Array<{ heading: string; body: string[] }>;
+  sections: Array<{ heading: string; body: string[]; table?: HelpTable }>;
 };
 
 export const HELP_ARTICLES: HelpArticle[] = [
@@ -811,7 +811,12 @@ function localize(article: HelpArticle, locale: ContentLocale): HelpArticle {
     sections: article.sections.map((section, index) => {
       const translated = translation.sections[index];
       return translated
-        ? { ...section, heading: translated.heading, body: translated.body }
+        ? {
+            ...section,
+            heading: translated.heading,
+            body: translated.body,
+            table: translated.table ?? section.table,
+          }
         : section;
     }),
   };

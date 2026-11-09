@@ -9,6 +9,7 @@ import {
   type ChannelDirectoryItem,
   type TahtiPlayable,
 } from '../api/types';
+import { DIRECTORY_CARD_GRID } from '../lib/directoryCardGrid';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
@@ -94,7 +95,7 @@ export function DirectoryArtistCardGrid({
       <div className="relative" data-testid="directory-artist-ambient">
         <GridAmbientWash artists={artists} />
         <CardGrid
-          className="grid-cols-[repeat(auto-fill,minmax(9rem,1fr))] gap-4 sm:gap-8"
+          className={DIRECTORY_CARD_GRID}
           data-testid="directory-artist-card-grid"
         >
           {artists.map((artist) => {

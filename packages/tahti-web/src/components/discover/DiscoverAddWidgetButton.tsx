@@ -28,9 +28,13 @@ export function DiscoverAddWidgetButton({
           variant="secondary"
           aria-label={t('discover.addWidget')}
           data-testid="discover-add-widget"
+          className="md:w-auto md:gap-2 md:px-4"
         >
           <Plus size={17} aria-hidden />
-          <Blocks size={15} aria-hidden />
+          <Blocks size={15} aria-hidden className="md:hidden" />
+          <span aria-hidden className="hidden md:inline">
+            {t('listen.addWidget')}
+          </span>
         </Button>
       }
       panelClassName="w-72 px-1"

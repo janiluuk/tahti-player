@@ -36,7 +36,7 @@ describe('VenuesDirectory', () => {
       meta: { source: 'api' },
     } as Awaited<ReturnType<typeof client.fetchVenues>>);
     const { container } = await renderDirectory();
-    await screen.findByRole('link', { name: 'View venue' });
+    await screen.findByRole('link', { name: 'Kaiku' });
     expect(
       container.querySelector('img[src="https://cdn.example.com/kaiku.jpg"]'),
     ).toBeTruthy();
@@ -56,7 +56,7 @@ describe('VenuesDirectory', () => {
       meta: { source: 'api' },
     } as Awaited<ReturnType<typeof client.fetchVenues>>);
     const { container } = await renderDirectory();
-    await screen.findByRole('link', { name: 'View venue' });
+    await screen.findByRole('link', { name: 'Kaiku' });
     expect(
       container.querySelector('img[src="https://cdn.example.com/wide.jpg"]'),
     ).toBeTruthy();
@@ -68,11 +68,12 @@ describe('VenuesDirectory', () => {
       meta: { source: 'api' },
     } as Awaited<ReturnType<typeof client.fetchVenues>>);
     const { container } = await renderDirectory();
-    await screen.findByRole('link', { name: 'View venue' });
+    await screen.findByRole('link', { name: 'Kaiku' });
     const img = container.querySelector(
       'img[src="https://cdn.example.com/kaiku.jpg"]',
     );
-    expect(img?.closest('a')?.className).toContain('relative');
+    const frame = img?.closest('.relative.aspect-square');
+    expect(frame?.closest('[data-testid="card"]')).toBeTruthy();
   });
 
   it('says the venues failed to load instead of "No verified venues"', async () => {
@@ -92,17 +93,18 @@ describe('VenuesDirectory', () => {
     expect(await screen.findByText('Kaiku')).toBeTruthy();
   });
 
-  it('shows the default artwork and a View venue button when a venue has no photo', async () => {
+  it('shows the default artwork and links the card title when a venue has no photo', async () => {
     vi.spyOn(client, 'fetchVenues').mockResolvedValue({
       data: [{ ...venue, photos: [] }],
       meta: { source: 'api' },
     } as Awaited<ReturnType<typeof client.fetchVenues>>);
     const { container } = await renderDirectory();
-    const view = await screen.findByRole('link', { name: 'View venue' });
+    const view = await screen.findByRole('link', { name: 'Kaiku' });
     expect(view.getAttribute('href')).toBe('/v/kaiku');
     expect(
       container.querySelector('img[src="/artwork/kaiku.webp"]'),
     ).toBeTruthy();
+    expect(screen.getByText('Helsinki, 🇫🇮 Finland · cap. 300')).toBeTruthy();
   });
 
   it('offers Register a venue as a button link when there are none', async () => {

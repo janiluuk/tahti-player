@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
-import { StoryCard, StoryRow } from '@tahti-player/ui';
+import { Button, StoryCard, StoryRow } from '@tahti-player/ui';
 
 const STORIES = [
   [
@@ -88,4 +88,32 @@ export const Phone: Story = {
       </div>
     ),
   ],
+};
+
+/** On a phone, header controls that don't fit beside the title wrap onto
+ * their own line instead of squeezing it. */
+export const PhoneWithActions: Story = {
+  args: {
+    actions: (
+      <Button variant="secondary" size="sm">
+        Remove
+      </Button>
+    ),
+  },
+  decorators: [
+    (Story) => (
+      <div className="w-[320px] max-w-full">
+        <Story />
+      </div>
+    ),
+  ],
+  play: async ({ canvasElement }) => {
+    const heading = within(canvasElement).getByRole('heading', {
+      name: 'Community stories',
+    });
+    const controls = within(canvasElement).getByTestId('story-row-controls');
+    await expect(controls.getBoundingClientRect().top).toBeGreaterThanOrEqual(
+      heading.getBoundingClientRect().bottom - 1,
+    );
+  },
 };

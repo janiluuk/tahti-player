@@ -1,4 +1,3 @@
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -11,7 +10,11 @@ import {
   type CommunityStoryDetail,
 } from '../../api/community-stories';
 import { storyDate } from '../../lib/storyDate';
-import { FeedStoryArticle, type FeedStory } from '../FeedStoryDialog';
+import {
+  FeedStoryArticle,
+  StoryPagerButtons,
+  type FeedStory,
+} from '../FeedStoryDialog';
 import { PageError, PageLoading } from '../PageStates';
 
 type Load =
@@ -121,26 +124,12 @@ export function CommunityStoryDialog({
     ) : null;
 
   const pager = (
-    <>
-      <Button
-        variant="secondary"
-        size="sm"
-        disabled={!previous}
-        onClick={() => previous && onOpen(previous.id)}
-      >
-        <ChevronLeftIcon size={14} aria-hidden className="mr-1" />
-        {t('communityStoryDialog.newer')}
-      </Button>
-      <Button
-        variant="secondary"
-        size="sm"
-        disabled={!next}
-        onClick={() => next && onOpen(next.id)}
-      >
-        {t('communityStoryDialog.older')}
-        <ChevronRightIcon size={14} aria-hidden className="ml-1" />
-      </Button>
-    </>
+    <StoryPagerButtons
+      pager={{
+        newer: previous ? () => onOpen(previous.id) : undefined,
+        older: next ? () => onOpen(next.id) : undefined,
+      }}
+    />
   );
 
   return (

@@ -22,6 +22,11 @@ import {
 } from '../TrackTable/utils/rowClass';
 import { useCardsRow } from './useCardsRow';
 
+/** Rows with at least this many items get a filter box. The same count
+ * applies in every layout and at every width, so a row never gains or loses
+ * its filter just because the viewport changed. */
+export const CARDS_ROW_FILTER_MIN_ITEMS = 6;
+
 export type CardsRowItem = {
   id: string;
   title: string;
@@ -119,7 +124,8 @@ export type CardsRowProps<T extends CardsRowItem = CardsRowItem> = {
   'data-testid'?: string;
   renderItem?: (item: T) => ReactNode;
   cardSurface?: 'brand' | 'neutral';
-  /** Shows the filter box beside the scroll buttons. */
+  /** Shows the filter box beside the scroll buttons once the row has
+   * `CARDS_ROW_FILTER_MIN_ITEMS` items. */
   filterable?: boolean;
   /** Controlled cards/list layout. */
   layout?: CardsRowLayout;
@@ -176,7 +182,6 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
     scrollContainerRef,
     scrollLeft,
     scrollRight,
-    showControls,
     overflowing,
     canScrollLeft,
     canScrollRight,
@@ -195,7 +200,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
   const showScroll = overflowing && layout === 'cards';
   const showFilter =
     filterable &&
-    (showControls || layout !== 'cards' || !isEmpty(filterText.trim()));
+    (items.length >= CARDS_ROW_FILTER_MIN_ITEMS || !isEmpty(filterText.trim()));
 
   return (
     <div

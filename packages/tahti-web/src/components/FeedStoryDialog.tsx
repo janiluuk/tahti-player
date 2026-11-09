@@ -1,5 +1,10 @@
 import { Link } from '@tanstack/react-router';
-import { ExternalLinkIcon, XIcon } from 'lucide-react';
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ExternalLinkIcon,
+  XIcon,
+} from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -12,6 +17,7 @@ import {
   MediaArtwork,
 } from '@tahti-player/ui';
 
+import { useArrowKeyPager } from '../hooks/useArrowKeyPager';
 import { storyDate, storyDateTitle } from '../lib/storyDate';
 
 export type FeedStory = {
@@ -206,12 +212,63 @@ export function FeedStoryArticle({
   );
 }
 
+export type StoryPager = {
+  /** Opens the newer story; leave out at the newest one. */
+  newer?: () => void;
+  /** Opens the older story; leave out at the oldest one. */
+  older?: () => void;
+};
+
+/** Newer / Older buttons for a story reader, also bound to ← / → while
+ * `enabled` (stories run newest first, like the row behind the dialog). */
+export function StoryPagerButtons({
+  pager,
+  enabled = true,
+}: {
+  pager: StoryPager;
+  enabled?: boolean;
+}) {
+  const { t } = useTranslation('web');
+  useArrowKeyPager({
+    enabled,
+    onPrevious: pager.newer,
+    onNext: pager.older,
+  });
+  return (
+    <>
+      <Button
+        variant="secondary"
+        size="sm"
+        disabled={!pager.newer}
+        onClick={pager.newer}
+        aria-keyshortcuts="ArrowLeft"
+        data-testid="story-newer"
+      >
+        <ChevronLeftIcon size={14} aria-hidden className="mr-1" />
+        {t('communityStoryDialog.newer')}
+      </Button>
+      <Button
+        variant="secondary"
+        size="sm"
+        disabled={!pager.older}
+        onClick={pager.older}
+        aria-keyshortcuts="ArrowRight"
+        data-testid="story-older"
+      >
+        {t('communityStoryDialog.older')}
+        <ChevronRightIcon size={14} aria-hidden className="ml-1" />
+      </Button>
+    </>
+  );
+}
+
 /** The one reader dialog for feed items. */
 export function FeedStoryDialog({
   story,
   onClose,
   actions,
   footer,
+  pager,
 }: {
   story: FeedStory | null;
   onClose: () => void;
@@ -219,6 +276,8 @@ export function FeedStoryDialog({
   actions?: ReactNode;
   /** Content between the text and the actions, e.g. an editor. */
   footer?: ReactNode;
+  /** Steps through the stories around this one. */
+  pager?: StoryPager;
 }) {
   return (
     <Dialog.Root
@@ -232,7 +291,16 @@ export function FeedStoryDialog({
         <FeedStoryArticle
           story={story}
           onClose={onClose}
-          actions={actions}
+          actions={
+            pager ? (
+              <>
+                <StoryPagerButtons pager={pager} />
+                {actions}
+              </>
+            ) : (
+              actions
+            )
+          }
           footer={footer}
         />
       ) : null}

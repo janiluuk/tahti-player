@@ -121,8 +121,6 @@ export function HomeComingUp() {
       defaultLayout="cards"
       data-testid="listen-coming-up"
       title={t('listen.comingUp')}
-      badge={t('listen.eventsBadge')}
-      badgeColor="cyan"
       items={items}
       labels={{
         filterPlaceholder: t('listen.filterEvents'),

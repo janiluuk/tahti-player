@@ -29,6 +29,6 @@ export const Default: Story = {
       expect(canvas.getByText('Album release show')).toBeVisible(),
     );
     await expect(canvas.getByText('Coming up')).toBeVisible();
-    await expect(canvas.getByText('Events')).toBeVisible();
+    await expect(canvas.queryByText('Events')).toBeNull();
   },
 };
