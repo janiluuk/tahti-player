@@ -198,7 +198,9 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                     <Button
                       size="icon-sm"
                       variant="text"
-                      aria-label={`Play ${list.name}`}
+                      aria-label={t('smartPlaylistsLabels.playName', {
+                        name: list.name,
+                      })}
                       onClick={() =>
                         void run(
                           list.id,
@@ -214,7 +216,9 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                     <Button
                       size="icon-sm"
                       variant="text"
-                      aria-label={`Shuffle ${list.name}`}
+                      aria-label={t('smartPlaylistsLabels.shuffleName', {
+                        name: list.name,
+                      })}
                       onClick={() =>
                         void run(
                           list.id,
@@ -233,7 +237,9 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                     <Button
                       size="icon-sm"
                       variant="text"
-                      aria-label={`Save a fixed copy of ${list.name}`}
+                      aria-label={t('smartPlaylistsLabels.saveAFixedCopyOf', {
+                        name: list.name,
+                      })}
                       onClick={() => setSnapshotOf(list)}
                     >
                       <CopyIcon size={14} aria-hidden />
@@ -241,7 +247,9 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                   </Tooltip>
                   <EditIconButton
                     variant="text"
-                    label={`Edit ${list.name}`}
+                    label={t('smartPlaylistsLabels.editName', {
+                      name: list.name,
+                    })}
                     onClick={() =>
                       setEditing({
                         id: list.id,
@@ -254,7 +262,9 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                       size="icon-sm"
                       variant="text"
                       intent="danger"
-                      aria-label={`Delete ${list.name}`}
+                      aria-label={t('smartPlaylistsLabels.deleteName', {
+                        name: list.name,
+                      })}
                       onClick={() => setDeleting(list)}
                     >
                       <TrashIcon size={14} aria-hidden />

@@ -62,7 +62,9 @@ function TopUsersChart({ users }: { users: AdminStorageUserRow[] }) {
           <Meter
             value={u.usedBytes}
             max={max}
-            aria-label={`Storage used by ${u.displayName}`}
+            aria-label={t('storageOverviewTabLabels.storageUsedByDisplayname', {
+              displayName: u.displayName,
+            })}
             aria-valuetext={formatBytes(u.usedBytes)}
             className="mt-1"
           />
@@ -276,7 +278,10 @@ export function StorageOverviewTab() {
 
                         size="icon-sm"
                         variant="secondary"
-                        aria-label={`View ${row.displayName}'s files`}
+                        aria-label={t(
+                          'storageOverviewTabLabels.viewDisplaynameSFiles',
+                          { displayName: row.displayName },
+                        )}
                       >
                         <ExternalLinkIcon size={14} aria-hidden />
                       </ButtonLink>

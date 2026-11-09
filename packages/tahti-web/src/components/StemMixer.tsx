@@ -194,11 +194,16 @@ export function StemMixer({
                 </Slider>
               </div>
               <div className="flex shrink-0 items-center gap-1">
-                <Tooltip content={`Mute ${f.label}`} side="top">
+                <Tooltip
+                  content={t('stemMixerLabels.muteLabel', { label: f.label })}
+                  side="top"
+                >
                   <Button
                     size="icon-sm"
                     variant={channel.muted ? 'tertiary' : 'text'}
-                    aria-label={`Mute ${f.label}`}
+                    aria-label={t('stemMixerLabels.muteLabel', {
+                      label: f.label,
+                    })}
                     aria-pressed={channel.muted}
                     onClick={() =>
                       setMix((prev) => toggleStemMute(prev, f.label))
@@ -211,11 +216,16 @@ export function StemMixer({
                     )}
                   </Button>
                 </Tooltip>
-                <Tooltip content={`Solo ${f.label}`} side="top">
+                <Tooltip
+                  content={t('stemMixerLabels.soloLabel', { label: f.label })}
+                  side="top"
+                >
                   <Button
                     size="icon-sm"
                     variant={channel.solo ? 'tertiary' : 'text'}
-                    aria-label={`Solo ${f.label}`}
+                    aria-label={t('stemMixerLabels.soloLabel', {
+                      label: f.label,
+                    })}
                     aria-pressed={channel.solo}
                     onClick={(e) =>
                       setMix((prev) =>

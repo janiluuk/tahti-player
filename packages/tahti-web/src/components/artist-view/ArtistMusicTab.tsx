@@ -241,7 +241,9 @@ export function ArtistMusicTab({
             variant="text"
             size="xs"
             className="text-foreground-secondary hover:text-foreground gap-1.5 px-1.5 text-sm"
-            aria-label={`Like ${featured.playable.title}`}
+            aria-label={t('artistMusicTabLabels.likeTitle', {
+              title: featured.playable.title,
+            })}
           >
             <HeartIcon size={18} aria-hidden />
             <span className="tabular-nums">
@@ -252,7 +254,9 @@ export function ArtistMusicTab({
             to="/t/$id"
             params={{ id: featured.playable.id.replace(/^sound:/, '') }}
             className="text-foreground-secondary hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
-            aria-label={`Comments on ${featured.playable.title}`}
+            aria-label={t('artistMusicTabLabels.commentsOnTitle', {
+              title: featured.playable.title,
+            })}
           >
             <MessageCircle size={18} aria-hidden />
             <span className="tabular-nums">
@@ -264,7 +268,9 @@ export function ArtistMusicTab({
             variant="text"
             size="xs"
             className="text-foreground-secondary hover:text-foreground gap-1.5 px-1.5 text-sm"
-            aria-label={`Repost ${featured.playable.title}`}
+            aria-label={t('artistMusicTabLabels.repostTitle', {
+              title: featured.playable.title,
+            })}
           >
             <Repeat2Icon size={18} aria-hidden />
             <span className="tabular-nums">

@@ -6,6 +6,7 @@ import {
   XIcon,
 } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -37,6 +38,7 @@ export function AddonCard({
   onEdit: (addon: AdminAddon) => void;
   onDelete: (addon: AdminAddon) => void;
 }) {
+  const { t } = useTranslation('web');
   return (
     <article className="border-border bg-background-secondary/40 flex min-w-0 flex-wrap gap-4 rounded-xl border p-4">
       <div className="border-border bg-background flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-lg border">
@@ -90,16 +92,23 @@ export function AddonCard({
         <EditIconButton
           type="button"
           variant="text"
-          label={`Edit ${addon.name}`}
+          label={t('addonCardLabels.editName', { name: addon.name })}
           disabled={pending}
           onClick={() => onEdit(addon)}
         />
-        <Tooltip content={`Publish a version of ${addon.name}`} side="top">
+        <Tooltip
+          content={t('addonCardLabels.publishAVersionOfName', {
+            name: addon.name,
+          })}
+          side="top"
+        >
           <Button
             type="button"
             size="icon-sm"
             variant="text"
-            aria-label={`Publish a version of ${addon.name}`}
+            aria-label={t('addonCardLabels.publishAVersionOfName', {
+              name: addon.name,
+            })}
             disabled={pending}
             onClick={() => onPublish(addon)}
           >
@@ -109,26 +118,35 @@ export function AddonCard({
         {addon.status === 'PENDING' && (
           <>
             <Tooltip
-              content={`Approve ${addon.name} (the author is notified)`}
+              content={t('addonCardLabels.approveNameTheAuthorIs', {
+                name: addon.name,
+              })}
               side="top"
             >
               <Button
                 type="button"
                 size="icon-sm"
                 variant="text"
-                aria-label={`Approve ${addon.name}`}
+                aria-label={t('addonCardLabels.approveName', {
+                  name: addon.name,
+                })}
                 disabled={pending}
                 onClick={() => onApprove(addon)}
               >
                 <CheckIcon size={16} aria-hidden />
               </Button>
             </Tooltip>
-            <Tooltip content={`Reject ${addon.name}`} side="top">
+            <Tooltip
+              content={t('addonCardLabels.rejectName', { name: addon.name })}
+              side="top"
+            >
               <Button
                 type="button"
                 size="icon-sm"
                 variant="text"
-                aria-label={`Reject ${addon.name}`}
+                aria-label={t('addonCardLabels.rejectName', {
+                  name: addon.name,
+                })}
                 disabled={pending}
                 onClick={() => onReject(addon)}
               >
@@ -138,24 +156,30 @@ export function AddonCard({
           </>
         )}
         {addon.status === 'APPROVED' && (
-          <Tooltip content={`Manage ${addon.name}`} side="top">
+          <Tooltip
+            content={t('addonCardLabels.manageName', { name: addon.name })}
+            side="top"
+          >
             <Button
               type="button"
               size="icon-sm"
               variant="text"
-              aria-label={`Manage ${addon.name}`}
+              aria-label={t('addonCardLabels.manageName', { name: addon.name })}
               onClick={() => onManage(addon)}
             >
               <SettingsIcon size={16} aria-hidden />
             </Button>
           </Tooltip>
         )}
-        <Tooltip content={`Delete ${addon.name}`} side="top">
+        <Tooltip
+          content={t('addonCardLabels.deleteName', { name: addon.name })}
+          side="top"
+        >
           <Button
             type="button"
             size="icon-sm"
             variant="text"
-            aria-label={`Delete ${addon.name}`}
+            aria-label={t('addonCardLabels.deleteName', { name: addon.name })}
             disabled={pending}
             onClick={() => onDelete(addon)}
           >

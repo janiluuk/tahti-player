@@ -111,7 +111,7 @@ export function SoundRow({
       <Checkbox
         checked={selectedIds.has(item.id)}
         onChange={() => toggleSelected(item.id)}
-        aria-label={`Select ${item.title}`}
+        aria-label={t('soundRowLabels.selectTitle', { title: item.title })}
       />
       <div className="relative shrink-0 overflow-hidden rounded-md">
         <MediaArtwork src={item.bannerUrl ?? undefined} size="sm" />
@@ -175,7 +175,7 @@ export function SoundRow({
                   queue: event.shiftKey,
                 });
               }}
-              aria-label={`Play ${item.title}`}
+              aria-label={t('soundRowLabels.playTitle', { title: item.title })}
             >
               <PlayIcon size={16} aria-hidden />
             </Button>
@@ -233,7 +233,9 @@ export function SoundRow({
             size="icon-sm"
             variant="text"
             onClick={() => setStatsItem(item)}
-            aria-label={`Show stats for ${item.title}`}
+            aria-label={t('soundRowLabels.showStatsForTitle', {
+              title: item.title,
+            })}
           >
             <BarChart3Icon size={16} aria-hidden />
           </Button>

@@ -2,6 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, cn, Tooltip } from '@tahti-player/ui';
 
 import { useHorizontalSwipe } from '../../hooks/useHorizontalSwipe';
@@ -28,6 +29,7 @@ export function RadioStationDial({
   buttonsClassName?: string;
   children: ReactNode;
 }) {
+  const { t } = useTranslation('web');
   const navigate = useNavigate();
   const neighbors = radioRingNeighbors(current);
   const go = (stop: RadioRingStop) => {
@@ -69,22 +71,36 @@ export function RadioStationDial({
           buttonsClassName,
         )}
       >
-        <Tooltip content={`Previous: ${neighbors.prev.name}`} side="bottom">
+        <Tooltip
+          content={t('radioStationDialLabels.previousName', {
+            name: neighbors.prev.name,
+          })}
+          side="bottom"
+        >
           <Button
             size="icon-sm"
             variant="secondary"
             onClick={() => go(neighbors.prev)}
-            aria-label={`Previous station: ${neighbors.prev.name}`}
+            aria-label={t('radioStationDialLabels.previousStationName', {
+              name: neighbors.prev.name,
+            })}
           >
             <ChevronLeftIcon size={16} aria-hidden />
           </Button>
         </Tooltip>
-        <Tooltip content={`Next: ${neighbors.next.name}`} side="bottom">
+        <Tooltip
+          content={t('radioStationDialLabels.nextName', {
+            name: neighbors.next.name,
+          })}
+          side="bottom"
+        >
           <Button
             size="icon-sm"
             variant="secondary"
             onClick={() => go(neighbors.next)}
-            aria-label={`Next station: ${neighbors.next.name}`}
+            aria-label={t('radioStationDialLabels.nextStationName', {
+              name: neighbors.next.name,
+            })}
           >
             <ChevronRightIcon size={16} aria-hidden />
           </Button>

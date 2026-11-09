@@ -80,9 +80,18 @@ export function TransparencyResolutionsView() {
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : resolutions.length === 0 ? (
-        <PageEmpty title={`No published resolutions for ${year}.`} />
+        <PageEmpty
+          title={t(
+            'transparencyResolutionsViewLabels.noPublishedResolutionsForYear',
+            { year },
+          )}
+        />
       ) : (
-        <SectionShell title={`Resolutions ${year}`}>
+        <SectionShell
+          title={t('transparencyResolutionsViewLabels.resolutionsYear', {
+            year,
+          })}
+        >
           <ul className="border-border divide-border divide-y overflow-hidden rounded-lg border">
             {resolutions.map((resolution) => {
               const badge = outcomeBadge(resolution.outcome);

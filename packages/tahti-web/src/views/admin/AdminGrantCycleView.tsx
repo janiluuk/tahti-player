@@ -159,7 +159,11 @@ export function AdminGrantCycleView() {
                           {preview.totalUnits.toLocaleString()}
                         </div>
                       </StudioPanel>
-                      <StudioPanel title={`Eligible ≥${MIN_UNITS}`}>
+                      <StudioPanel
+                        title={t('adminGrantCycleViewLabels.eligibleMinUnits', {
+                          MIN_UNITS,
+                        })}
+                      >
                         <div className="text-xl font-bold">
                           {eligible.length}
                         </div>
@@ -177,7 +181,10 @@ export function AdminGrantCycleView() {
                   >
                     {preview.artists.length === 0 ? (
                       <PageEmpty
-                        title={`No artist activity in ${year}`}
+                        title={t(
+                          'adminGrantCycleViewLabels.noArtistActivityInYear',
+                          { year },
+                        )}
                         description={t(
                           'empties.downloadsAndFanSubscriptionsCountToward',
                         )}
@@ -282,7 +289,10 @@ export function AdminGrantCycleView() {
 
                   {alreadyRun && history?.grants.length ? (
                     <StudioPanel
-                      title={`Disbursed · ${history.grantCount} recipients`}
+                      title={t(
+                        'adminGrantCycleViewLabels.disbursedGrantcountRecipients',
+                        { grantCount: history.grantCount },
+                      )}
                     >
                       <ul className="divide-border divide-y">
                         {history.grants.map((grant, index) => (

@@ -114,7 +114,9 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
           disabled={busy}
           labels={{
             title: 'Drop press-kit photos here',
-            description: `JPEG, PNG, or WebP · up to ${MAX_PRESS_KIT_IMAGES} photos`,
+            description: t('pressKitSectionLabels.jpegPngOrWebpUp', {
+              MAX_PRESS_KIT_IMAGES,
+            }),
             browse: 'Choose photos',
             selected: 'Ready to upload',
           }}
@@ -193,11 +195,19 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
                           checked={image.includeInZip}
                           onChange={() => void togglePressKitImage(image)}
                         />
-                        <Tooltip content={`Remove ${imageLabel}`} side="top">
+                        <Tooltip
+                          content={t('pressKitSectionLabels.removeImagelabel', {
+                            imageLabel,
+                          })}
+                          side="top"
+                        >
                           <Button
                             size="icon-sm"
                             variant="text"
-                            aria-label={`Remove ${imageLabel}`}
+                            aria-label={t(
+                              'pressKitSectionLabels.removeImagelabel',
+                              { imageLabel },
+                            )}
                             onClick={() => setPendingImageDeleteId(image.id)}
                           >
                             <Trash2Icon

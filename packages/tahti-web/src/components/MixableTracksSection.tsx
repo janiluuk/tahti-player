@@ -115,7 +115,9 @@ export function MixableTracksSection({
                 <Button
                   size="icon-sm"
                   variant="text"
-                  aria-label={`Play ${match.track.title}`}
+                  aria-label={t('mixableTracksSectionLabels.playTitle', {
+                    title: match.track.title,
+                  })}
                   onClick={() => onPlay(match.track)}
                 >
                   <PlayIcon size={14} aria-hidden />
@@ -125,7 +127,9 @@ export function MixableTracksSection({
                 <Button
                   size="sm"
                   variant="text"
-                  aria-label={`Queue ${match.track.title}`}
+                  aria-label={t('mixableTracksSectionLabels.queueTitle', {
+                    title: match.track.title,
+                  })}
                   onClick={() => onQueue(match.track)}
                 >
                   {t('mixableTracks.queue')}
@@ -138,7 +142,10 @@ export function MixableTracksSection({
                 <Button
                   size="icon-sm"
                   variant="text"
-                  aria-label={`Add ${match.track.title} to Prepare`}
+                  aria-label={t(
+                    'mixableTracksSectionLabels.addTitleToPrepare',
+                    { title: match.track.title },
+                  )}
                   onClick={() => void prepareTracks([match.track.id])}
                 >
                   <ListPlusIcon size={14} aria-hidden />

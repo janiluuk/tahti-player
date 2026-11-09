@@ -280,7 +280,9 @@ export function ChannelAnnouncementsPanel() {
                 </p>
               </div>
               <Toggle
-                aria-label={`Enable ${clip.title}`}
+                aria-label={t('channelAnnouncementsPanelLabels.enableTitle', {
+                  title: clip.title,
+                })}
                 checked={clip.isEnabled}
                 disabled={busyId !== null || clip.renderStatus !== 'READY'}
                 onChange={() => void toggle(clip)}
@@ -288,20 +290,26 @@ export function ChannelAnnouncementsPanel() {
               <Button
                 size="icon-sm"
                 variant="text"
-                aria-label={`Preview ${clip.title}`}
+                aria-label={t('channelAnnouncementsPanelLabels.previewTitle', {
+                  title: clip.title,
+                })}
                 onClick={() => void preview(clip)}
               >
                 <PlayIcon size={16} />
               </Button>
               <EditIconButton
-                label={`Edit ${clip.title}`}
+                label={t('channelAnnouncementsPanelLabels.editTitle', {
+                  title: clip.title,
+                })}
                 disabled={clip.renderStatus === 'PROCESSING'}
                 onClick={() => void openEditor(clip)}
               />
               <Button
                 size="icon-sm"
                 variant="text"
-                aria-label={`Delete ${clip.title}`}
+                aria-label={t('channelAnnouncementsPanelLabels.deleteTitle', {
+                  title: clip.title,
+                })}
                 onClick={() => {
                   setDeleteError('');
                   setPendingDelete(clip);
@@ -328,7 +336,10 @@ export function ChannelAnnouncementsPanel() {
                 (previewUrl ? (
                   <audio
                     src={previewUrl}
-                    aria-label={`Preview ${clip.title}`}
+                    aria-label={t(
+                      'channelAnnouncementsPanelLabels.previewTitle',
+                      { title: clip.title },
+                    )}
                     controls
                     autoPlay
                     className="w-full"

@@ -113,13 +113,20 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
                     {group.items.length === 1 ? '' : 's'}
                   </span>
                 </span>
-                <Tooltip content={`Add ${group.label}`} side="top">
+                <Tooltip
+                  content={t('channelRotationEditorLabels.addLabel', {
+                    label: group.label,
+                  })}
+                  side="top"
+                >
                   <Button
                     size="icon-sm"
                     variant="secondary"
                     disabled={busy || group.items.length === 0}
                     onClick={() => onAddGroup(group)}
-                    aria-label={`Add ${group.label}`}
+                    aria-label={t('channelRotationEditorLabels.addLabel', {
+                      label: group.label,
+                    })}
                   >
                     <ListMusicIcon size={14} aria-hidden />
                   </Button>
@@ -230,7 +237,10 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
                       variant="text"
                       disabled={busy}
                       onClick={() => onRemove(item)}
-                      aria-label={`Remove ${item.title} from rotation`}
+                      aria-label={t(
+                        'channelRotationEditorLabels.removeTitleFromRotation',
+                        { title: item.title },
+                      )}
                     >
                       <Trash2Icon
                         className="text-accent-red"

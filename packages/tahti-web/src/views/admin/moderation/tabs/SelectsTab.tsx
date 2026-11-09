@@ -275,7 +275,9 @@ export function SelectsTab() {
       </StudioPanel>
 
       <StudioPanel
-        title={`Current rotation (${items.length})`}
+        title={t('selectsTabLabels.currentRotationLength', {
+          length: items.length,
+        })}
         action={
           <div className="flex items-center gap-2">
             <Button
@@ -482,11 +484,18 @@ export function SelectsTab() {
                           </div>
                         </div>
                         {item.audioUrl ? (
-                          <Tooltip content={`Preview ${item.title}`} side="top">
+                          <Tooltip
+                            content={t('selectsTabLabels.previewTitle', {
+                              title: item.title,
+                            })}
+                            side="top"
+                          >
                             <Button
                               size="icon-sm"
                               variant="text"
-                              aria-label={`Preview ${item.title}`}
+                              aria-label={t('selectsTabLabels.previewTitle', {
+                                title: item.title,
+                              })}
                               onClick={() =>
                                 play({
                                   id: `sound:${item.id}`,

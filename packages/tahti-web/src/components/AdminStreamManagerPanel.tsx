@@ -209,7 +209,10 @@ export function AdminStreamManagerPanel({
                           rel="noreferrer"
                           size="icon-sm"
                           variant="text"
-                          aria-label={`Listen to ${stream.artistName}`}
+                          aria-label={t(
+                            'adminStreamManagerPanelLabels.listenToArtistname',
+                            { artistName: stream.artistName },
+                          )}
                         >
                           <ExternalLinkIcon size={14} aria-hidden />
                         </ButtonAnchor>
@@ -219,7 +222,10 @@ export function AdminStreamManagerPanel({
                       <Button
                         size="icon-sm"
                         variant="text"
-                        aria-label={`Show details for ${stream.artistName}`}
+                        aria-label={t(
+                          'adminStreamManagerPanelLabels.showDetailsForArtistname',
+                          { artistName: stream.artistName },
+                        )}
                         onClick={() => setDetailsStream(stream)}
                       >
                         <EyeIcon size={14} aria-hidden />
@@ -229,11 +235,17 @@ export function AdminStreamManagerPanel({
                       <Button
                         size="icon-sm"
                         variant="secondary"
-                        aria-label={`Restart ${stream.artistName}`}
+                        aria-label={t(
+                          'adminStreamManagerPanelLabels.restartArtistname',
+                          { artistName: stream.artistName },
+                        )}
                         disabled={busySlug === stream.slug}
                         onClick={() =>
                           run(stream.slug, restartStream, {
-                            title: `Restart audio for ${stream.slug}?`,
+                            title: t(
+                              'adminStreamManagerPanelLabels.restartAudioForSlug',
+                              { slug: stream.slug },
+                            ),
                             description:
                               'The channel stays live; listeners may briefly reconnect.',
                             confirmLabel: 'Restart',
@@ -247,7 +259,10 @@ export function AdminStreamManagerPanel({
                       <Button
                         size="icon-sm"
                         variant="secondary"
-                        aria-label={`Skip ${stream.artistName}`}
+                        aria-label={t(
+                          'adminStreamManagerPanelLabels.skipArtistname',
+                          { artistName: stream.artistName },
+                        )}
                         disabled={busySlug === stream.slug}
                         onClick={() => run(stream.slug, skipStreamTrack)}
                       >
@@ -258,7 +273,10 @@ export function AdminStreamManagerPanel({
                       <Button
                         size="icon-sm"
                         variant="secondary"
-                        aria-label={`Pause ${stream.artistName}`}
+                        aria-label={t(
+                          'adminStreamManagerPanelLabels.pauseArtistname',
+                          { artistName: stream.artistName },
+                        )}
                         disabled={busySlug === stream.slug}
                         onClick={() => run(stream.slug, pauseStream)}
                       >
@@ -269,7 +287,10 @@ export function AdminStreamManagerPanel({
                       <Button
                         size="icon-sm"
                         variant="secondary"
-                        aria-label={`Resume ${stream.artistName}`}
+                        aria-label={t(
+                          'adminStreamManagerPanelLabels.resumeArtistname',
+                          { artistName: stream.artistName },
+                        )}
                         disabled={busySlug === stream.slug}
                         onClick={() => run(stream.slug, resumeStream)}
                       >
@@ -280,11 +301,17 @@ export function AdminStreamManagerPanel({
                       <Button
                         size="icon-sm"
                         variant="text"
-                        aria-label={`Take ${stream.artistName} offline`}
+                        aria-label={t(
+                          'adminStreamManagerPanelLabels.takeArtistnameOffline',
+                          { artistName: stream.artistName },
+                        )}
                         disabled={busySlug === stream.slug}
                         onClick={() =>
                           run(stream.slug, forceStreamOffline, {
-                            title: `Force ${stream.slug} offline?`,
+                            title: t(
+                              'adminStreamManagerPanelLabels.forceSlugOffline',
+                              { slug: stream.slug },
+                            ),
                             description:
                               'This ends the broadcast immediately. The artist is notified that the board took it off the air.',
                             confirmLabel: 'Take offline',
@@ -309,7 +336,9 @@ export function AdminStreamManagerPanel({
     <>
       {showHeading ? (
         <StudioPanel
-          title={`Live streams (${streams.length})`}
+          title={t('adminStreamManagerPanelLabels.liveStreamsLength', {
+            length: streams.length,
+          })}
           description={t('adminStreamManager.monitorActiveChannelsAndControl')}
           action={
             <div className="flex items-center gap-1">

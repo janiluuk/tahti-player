@@ -284,7 +284,10 @@ export function AdminRadioView() {
                           </StudioPanel>
 
                           <StudioPanel
-                            title={`Current rotation (${rotation.length})`}
+                            title={t(
+                              'adminRadioViewLabels.currentRotationLength',
+                              { length: rotation.length },
+                            )}
                             description={t(
                               'adminRadioView.dragTracksIntoTheExact',
                             )}
@@ -315,7 +318,10 @@ export function AdminRadioView() {
                           </StudioPanel>
 
                           <StudioPanel
-                            title={`Eligible channels (${data.eligible.length})`}
+                            title={t(
+                              'adminRadioViewLabels.eligibleChannelsLength',
+                              { length: data.eligible.length },
+                            )}
                             description={t(
                               'adminRadioView.optingAChannelOutOr',
                             )}
@@ -433,7 +439,9 @@ export function AdminRadioView() {
                           </StudioPanel>
                         ) : (
                           <StudioPanel
-                            title={`Opted out (${data.optedOut.length})`}
+                            title={t('adminRadioViewLabels.optedOutLength', {
+                              length: data.optedOut.length,
+                            })}
                           >
                             <ul className="divide-border divide-y">
                               {data.optedOut.map((ch) => (

@@ -1,6 +1,7 @@
 import { MessageCircleIcon, SmilePlusIcon } from 'lucide-react';
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 export const TIMELINE_EMOTICONS = ['❤️', '🔥', '😍', '👏', '😭', '😮'];
@@ -25,6 +26,7 @@ export function TimelineReactionBar({
   /** Called instead of `onReact` for a visitor with no account. */
   onSignIn: () => void;
 }) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = useState(false);
   const chip =
     'rounded-full bg-black/35 px-2 py-1 text-base transition-transform hover:scale-110 disabled:opacity-50';
@@ -33,7 +35,7 @@ export function TimelineReactionBar({
     <div
       className="mt-3 flex flex-wrap items-center gap-2"
       role="group"
-      aria-label={`React at ${clock}`}
+      aria-label={t('timelineReactionBarLabels.reactAtClock', { clock })}
     >
       <span className="text-xs font-semibold text-white/70 tabular-nums">
         At {clock}
@@ -59,7 +61,7 @@ export function TimelineReactionBar({
           onClick={() => setOpen((value) => !value)}
           disabled={busy || !commentsEnabled}
           aria-expanded={open}
-          aria-label={`React at ${clock}`}
+          aria-label={t('timelineReactionBarLabels.reactAtClock', { clock })}
         >
           <SmilePlusIcon size={16} aria-hidden />
         </Button>
@@ -77,7 +79,10 @@ export function TimelineReactionBar({
                 setOpen(false);
               }}
               disabled={busy || !commentsEnabled}
-              aria-label={`Add ${emoticon} at ${clock}`}
+              aria-label={t('timelineReactionBarLabels.addEmoticonAtClock', {
+                emoticon,
+                clock,
+              })}
             >
               {emoticon}
             </Button>
@@ -91,7 +96,7 @@ export function TimelineReactionBar({
           className="rounded-full bg-black/35 p-1.5 text-white/85 transition-transform hover:scale-110"
           onClick={onComment}
           aria-expanded={commentOpen}
-          aria-label={`Comment at ${clock}`}
+          aria-label={t('timelineReactionBarLabels.commentAtClock', { clock })}
         >
           <MessageCircleIcon size={16} aria-hidden />
         </Button>

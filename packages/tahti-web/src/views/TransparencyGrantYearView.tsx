@@ -56,7 +56,7 @@ export function TransparencyGrantYearView({ year }: { year: number }) {
 
   return (
     <ViewShell
-      title={`Grant report ${year}`}
+      title={t('transparencyGrantYearViewLabels.grantReportYear', { year })}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-3xl' }}
     >
       <PageBackLink
@@ -67,11 +67,17 @@ export function TransparencyGrantYearView({ year }: { year: number }) {
         <PageLoading label={t('loading.loadingGrantReport')} />
       ) : failed ? (
         <PageError
-          title={`Could not load the ${year} grant report`}
+          title={t('transparencyGrantYearViewLabels.couldNotLoadTheYear', {
+            year,
+          })}
           onRetry={() => setAttempt((n) => n + 1)}
         />
       ) : !report ? (
-        <PageEmpty title={`No grant report is available for ${year}.`} />
+        <PageEmpty
+          title={t('transparencyGrantYearViewLabels.noGrantReportIsAvailable', {
+            year,
+          })}
+        />
       ) : (
         <section className="flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">

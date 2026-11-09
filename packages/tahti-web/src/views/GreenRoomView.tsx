@@ -180,7 +180,9 @@ export function GreenRoomView({ username }: { username: string }) {
         {backLink}
         <PageEmpty
           title={t('empties.inviteRequired')}
-          description={`You are not on the guest list for ${access.artistDisplayName}'s green room.`}
+          description={t('greenRoomViewLabels.youAreNotOnThe', {
+            artistDisplayName: access.artistDisplayName,
+          })}
         />
       </ViewShell>
     );
@@ -226,7 +228,9 @@ export function GreenRoomView({ username }: { username: string }) {
         <PageEmpty
           icon="radio"
           title={t('empties.waitingForPreview')}
-          description={`The green room opens when ${access.artistDisplayName} starts their preview stream.`}
+          description={t('greenRoomViewLabels.theGreenRoomOpensWhen', {
+            artistDisplayName: access.artistDisplayName,
+          })}
         />
       </ViewShell>
     );

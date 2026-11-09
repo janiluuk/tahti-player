@@ -90,11 +90,18 @@ function SpotifyPlaylistTracks({
           {instance.label}
         </span>
         {onRemove ? (
-          <Tooltip content={`Remove ${instance.label}`} side="top">
+          <Tooltip
+            content={t('listenerWidgetEmbedLabels.removeLabel', {
+              label: instance.label,
+            })}
+            side="top"
+          >
             <Button
               size="icon-sm"
               variant="text"
-              aria-label={`Remove ${instance.label}`}
+              aria-label={t('listenerWidgetEmbedLabels.removeLabel', {
+                label: instance.label,
+              })}
               onClick={onRemove}
               className="opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
             >
@@ -156,6 +163,7 @@ export function ListenerWidgetEmbed({
    * this component doesn't remove anything itself. */
   onRemove?: () => void;
 }) {
+  const { t } = useTranslation('web');
   if (instance.typeId === 'spotify') {
     return <SpotifyPlaylistTracks instance={instance} onRemove={onRemove} />;
   }
@@ -175,11 +183,18 @@ export function ListenerWidgetEmbed({
           {instance.label}
         </span>
         {onRemove ? (
-          <Tooltip content={`Remove ${instance.label}`} side="top">
+          <Tooltip
+            content={t('listenerWidgetEmbedLabels.removeLabel', {
+              label: instance.label,
+            })}
+            side="top"
+          >
             <Button
               size="icon-sm"
               variant="text"
-              aria-label={`Remove ${instance.label}`}
+              aria-label={t('listenerWidgetEmbedLabels.removeLabel', {
+                label: instance.label,
+              })}
               onClick={onRemove}
               className="opacity-0 transition-opacity group-hover:opacity-100 focus-visible:opacity-100"
             >

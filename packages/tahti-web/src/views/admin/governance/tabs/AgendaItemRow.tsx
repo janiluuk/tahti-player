@@ -116,7 +116,9 @@ export function AgendaItemRow({
           <Button
             size="sm"
             variant="secondary"
-            aria-label={`Move up: ${item.title}`}
+            aria-label={t('agendaItemRowLabels.moveUpTitle', {
+              title: item.title,
+            })}
             onClick={onMoveUp}
           >
             <ArrowUpIcon size={14} aria-hidden />
@@ -126,21 +128,29 @@ export function AgendaItemRow({
           <Button
             size="sm"
             variant="secondary"
-            aria-label={`Move down: ${item.title}`}
+            aria-label={t('agendaItemRowLabels.moveDownTitle', {
+              title: item.title,
+            })}
             onClick={onMoveDown}
           >
             <ArrowDownIcon size={14} aria-hidden />
           </Button>
         ) : null}
         <EditIconButton
-          label={`Edit item ${item.position}: ${item.title}`}
+          label={t('agendaItemRowLabels.editItemPositionTitle', {
+            position: item.position,
+            title: item.title,
+          })}
           onClick={() => setEditing(true)}
         />
         <Button
           size="sm"
           variant="secondary"
           disabled={busy}
-          aria-label={`Remove item ${item.position}: ${item.title}`}
+          aria-label={t('agendaItemRowLabels.removeItemPositionTitle', {
+            position: item.position,
+            title: item.title,
+          })}
           onClick={() => setConfirmDelete(true)}
         >
           {t('agendaItemRow.remove')}

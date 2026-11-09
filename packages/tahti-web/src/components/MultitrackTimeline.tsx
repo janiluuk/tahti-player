@@ -327,7 +327,9 @@ export const MultitrackTimeline = ({
                   variant="plain"
                   size="flexible"
                   className="inline-block rounded-none whitespace-normal active:scale-100"
-                  aria-label={`Remove ${track.name}`}
+                  aria-label={t('multitrackTimelineLabels.removeName', {
+                    name: track.name,
+                  })}
                   onClick={() =>
                     onChange({
                       ...value,
@@ -345,7 +347,9 @@ export const MultitrackTimeline = ({
                   variant="plain"
                   size="flexible"
                   className="inline-block rounded-none whitespace-normal active:scale-100"
-                  aria-label={`Move ${track.name} up`}
+                  aria-label={t('multitrackTimelineLabels.moveNameUp', {
+                    name: track.name,
+                  })}
                   disabled={!index}
                   onClick={() =>
                     onChange(reorderTimelineTracks(value, track.id, 'up'))
@@ -357,7 +361,9 @@ export const MultitrackTimeline = ({
                   variant="plain"
                   size="flexible"
                   className="inline-block rounded-none whitespace-normal active:scale-100"
-                  aria-label={`Move ${track.name} down`}
+                  aria-label={t('multitrackTimelineLabels.moveNameDown', {
+                    name: track.name,
+                  })}
                   disabled={index === value.tracks.length - 1}
                   onClick={() =>
                     onChange(reorderTimelineTracks(value, track.id, 'down'))
@@ -399,7 +405,9 @@ export const MultitrackTimeline = ({
                   variant="plain"
                   size="flexible"
                   className="inline-block rounded-none whitespace-normal active:scale-100"
-                  aria-label={`Lower gain for ${track.name}`}
+                  aria-label={t('multitrackTimelineLabels.lowerGainForName', {
+                    name: track.name,
+                  })}
                   onClick={() =>
                     onChange({
                       ...value,
@@ -417,7 +425,9 @@ export const MultitrackTimeline = ({
                   variant="plain"
                   size="flexible"
                   className="inline-block rounded-none whitespace-normal active:scale-100"
-                  aria-label={`Raise gain for ${track.name}`}
+                  aria-label={t('multitrackTimelineLabels.raiseGainForName', {
+                    name: track.name,
+                  })}
                   onClick={() =>
                     onChange({
                       ...value,

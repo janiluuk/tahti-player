@@ -457,7 +457,9 @@ export function PlaylistView({
                   <Button
                     size="icon-sm"
                     variant="text"
-                    aria-label={`Locate ${entry.title}`}
+                    aria-label={t('playlistViewLabels.locateTitle', {
+                      title: entry.title,
+                    })}
                     onClick={() => void locateEntry(entry)}
                   >
                     <LinkIcon size={14} aria-hidden />
@@ -468,7 +470,9 @@ export function PlaylistView({
                 <Button
                   size="icon-sm"
                   variant="text"
-                  aria-label={`Play ${entry.title} from here`}
+                  aria-label={t('playlistViewLabels.playTitleFromHere', {
+                    title: entry.title,
+                  })}
                   disabled={entry.unavailable}
                   onClick={() =>
                     void play({ fromEntryIndex: entries.indexOf(entry) })
@@ -482,7 +486,9 @@ export function PlaylistView({
                   size="icon-sm"
                   variant="text"
                   intent="danger"
-                  aria-label={`Remove ${entry.title} from playlist`}
+                  aria-label={t('playlistViewLabels.removeTitleFromPlaylist', {
+                    title: entry.title,
+                  })}
                   onClick={() => void removeRows([entry.entryId])}
                 >
                   <TrashIcon size={14} aria-hidden />

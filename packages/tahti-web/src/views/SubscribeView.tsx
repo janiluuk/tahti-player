@@ -74,7 +74,7 @@ export function SubscribeView({
         const name = res.data?.artist.displayName;
         if (name) {
           syncDocumentMetadata(window.location.pathname, {
-            title: `Subscribe to ${name} · Tahti`,
+            title: t('subscribeViewLabels.subscribeToNameTahti', { name }),
           });
         }
       })
@@ -149,7 +149,9 @@ export function SubscribeView({
       />
 
       <EntitySocialHeader
-        title={`Subscribe to ${data.artist.displayName}`}
+        title={t('subscribeViewLabels.subscribeToDisplayname', {
+          displayName: data.artist.displayName,
+        })}
         imageUrl={
           data.artist.avatarUrl ?? placeholderArtworkUrl(data.artist.username)
         }

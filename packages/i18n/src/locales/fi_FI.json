@@ -8945,6 +8945,270 @@
       "profile": "Profiili",
       "linksPress": "Linkit ja lehdistö",
       "artistBranding": "Artistin brändi"
+    },
+    "addonCardLabels": {
+      "editName": "Muokkaa: {{name}}",
+      "publishAVersionOfName": "Julkaise versio: {{name}}",
+      "approveNameTheAuthorIs": "Hyväksy: {{name}} (tekijälle ilmoitetaan)",
+      "approveName": "Hyväksy: {{name}}",
+      "rejectName": "Hylkää: {{name}}",
+      "manageName": "Hallinnoi: {{name}}",
+      "deleteName": "Poista: {{name}}"
+    },
+    "adminStreamManagerPanelLabels": {
+      "listenToArtistname": "Kuuntele: {{artistName}}",
+      "showDetailsForArtistname": "Näytä tiedot: {{artistName}}",
+      "restartArtistname": "Käynnistä uudelleen: {{artistName}}",
+      "restartAudioForSlug": "Käynnistetäänkö äänet uudelleen: {{slug}}?",
+      "skipArtistname": "Ohita: {{artistName}}",
+      "pauseArtistname": "Keskeytä: {{artistName}}",
+      "resumeArtistname": "Jatka: {{artistName}}",
+      "takeArtistnameOffline": "Ota pois lähetyksestä: {{artistName}}",
+      "forceSlugOffline": "Pakotetaanko pois lähetyksestä: {{slug}}?",
+      "liveStreamsLength": "Livestriimit ({{length}})"
+    },
+    "studioUpdatesViewLabels": {
+      "previewPosttitle": "Esikatsele: {{postTitle}}",
+      "editPosttitle": "Muokkaa: {{postTitle}}",
+      "deletePosttitle": "Poista: {{postTitle}}",
+      "removeSubject": "Poista: {{subject}}"
+    },
+    "filesBrowserTabLabels": {
+      "selectTitle": "Valitse: {{title}}",
+      "previewTitle": "Esikatsele: {{title}}",
+      "viewDetailsForTitle": "Näytä tiedot: {{title}}",
+      "viewDisplaynameSStorage": "Näytä tallennustila: {{displayName}}",
+      "deleteTitle": "Poista: {{title}}"
+    },
+    "agmTabLabels": {
+      "moveUpItemlabel": "Siirrä ylös: {{itemLabel}}",
+      "moveDownItemlabel": "Siirrä alas: {{itemLabel}}",
+      "attendanceAttendancecountRecorded": "Läsnäolo ({{attendanceCount}} kirjattu)",
+      "editStateOfTitle": "Muokkaa tilaa: {{title}}"
+    },
+    "playlistsBrowserLabels": {
+      "playName": "Soita: {{name}}",
+      "shuffleName": "Sekoita: {{name}}",
+      "duplicateName": "Monista: {{name}}",
+      "exportName": "Vie: {{name}}",
+      "renameName": "Nimeä uudelleen: {{name}}",
+      "deleteName": "Poista: {{name}}"
+    },
+    "trackRowActionsLabels": {
+      "playTitle": "Soita: {{title}}",
+      "queueTitle": "Lisää jonoon: {{title}}",
+      "revealTitleInFolder": "Näytä kansiossa: {{title}}",
+      "editTagsForTitle": "Muokkaa tunnisteita: {{title}}",
+      "detailsForTitle": "Tiedot: {{title}}",
+      "removeTitle": "Poista: {{title}}"
+    },
+    "releaseSmartLinksPanelLabels": {
+      "openTitle": "Avaa: {{title}}",
+      "moveTitleUp": "Siirrä ylös: {{title}}",
+      "moveTitleDown": "Siirrä alas: {{title}}",
+      "removeTitle": "Poista: {{title}}"
+    },
+    "channelMembersEditorLabels": {
+      "pictureOfName": "Kuva: {{name}}",
+      "moveNameUp": "Siirrä ylös: {{name}}",
+      "moveNameDown": "Siirrä alas: {{name}}",
+      "editName": "Muokkaa: {{name}}",
+      "removeName": "Poista: {{name}}"
+    },
+    "channelRotationPanelLabels": {
+      "moveTitleUp": "Siirrä ylös: {{title}}",
+      "moveTitleDown": "Siirrä alas: {{title}}",
+      "saveSlugSRotation": "Tallenna kierto: {{slug}}"
+    },
+    "installsPanelLabels": {
+      "nothingInstalledOnSurfaceYet": "Pinnalle ”{{surface}}” ei ole vielä asennettu mitään.",
+      "enableNameOnSurface": "Ota käyttöön: {{name}} ({{surface}})",
+      "moveNameUp": "Siirrä ylös: {{name}}",
+      "moveNameDown": "Siirrä alas: {{name}}",
+      "removeNameFromSurface": "Poista: {{name}} ({{surface}})"
+    },
+    "smartPlaylistsLabels": {
+      "playName": "Soita: {{name}}",
+      "shuffleName": "Sekoita: {{name}}",
+      "saveAFixedCopyOf": "Tallenna kiinteä kopio: {{name}}",
+      "editName": "Muokkaa: {{name}}",
+      "deleteName": "Poista: {{name}}"
+    },
+    "multitrackTimelineLabels": {
+      "removeName": "Poista: {{name}}",
+      "moveNameUp": "Siirrä ylös: {{name}}",
+      "moveNameDown": "Siirrä alas: {{name}}",
+      "lowerGainForName": "Laske vahvistusta: {{name}}",
+      "raiseGainForName": "Nosta vahvistusta: {{name}}"
+    },
+    "duplicatesDialogLabels": {
+      "keepTitleAtPathAnd": "Säilytä {{title}} sijainnissa {{path}} ja yhdistä muut siihen",
+      "revealTitleInFolder": "Näytä kansiossa: {{title}}",
+      "removeTitleFromLibrary": "Poista kirjastosta: {{title}}"
+    },
+    "channelAnnouncementsPanelLabels": {
+      "enableTitle": "Ota käyttöön: {{title}}",
+      "previewTitle": "Esikatsele: {{title}}",
+      "editTitle": "Muokkaa: {{title}}",
+      "deleteTitle": "Poista: {{title}}"
+    },
+    "adminUserEditPanelLabels": {
+      "viewDisplaynameProfilePicture": "Näytä profiilikuva: {{displayName}}",
+      "messageDisplayname": "Lähetä viesti: {{displayName}}",
+      "viewDisplaynameSProfile": "Näytä profiili: {{displayName}}"
+    },
+    "transparencyViewLabels": {
+      "ytdYear": "Vuoden alusta {{year}}",
+      "spendingYearByCategory": "Menot {{year}} luokittain",
+      "grantsYear": "Avustukset {{year}}"
+    },
+    "masteringPanelLabels": {
+      "moveLabelEarlierInThe": "Siirrä aiemmaksi ketjussa: {{label}}",
+      "moveLabelLaterInThe": "Siirrä myöhemmäksi ketjussa: {{label}}",
+      "removeLabel": "Poista: {{label}}"
+    },
+    "agendaItemRowLabels": {
+      "moveUpTitle": "Siirrä ylös: {{title}}",
+      "moveDownTitle": "Siirrä alas: {{title}}",
+      "editItemPositionTitle": "Muokkaa kohtaa {{position}}: {{title}}",
+      "removeItemPositionTitle": "Poista kohta {{position}}: {{title}}"
+    },
+    "timelineReactionBarLabels": {
+      "reactAtClock": "Reagoi kohdassa {{clock}}",
+      "addEmoticonAtClock": "Lisää {{emoticon}} kohtaan {{clock}}",
+      "commentAtClock": "Kommentoi kohdassa {{clock}}"
+    },
+    "stemMixerLabels": {
+      "muteLabel": "Mykistä: {{label}}",
+      "soloLabel": "Soolo: {{label}}"
+    },
+    "radioStationDialLabels": {
+      "previousName": "Edellinen: {{name}}",
+      "previousStationName": "Edellinen asema: {{name}}",
+      "nextName": "Seuraava: {{name}}",
+      "nextStationName": "Seuraava asema: {{name}}"
+    },
+    "navigationStructureWidgetLabels": {
+      "addSubItemUnderLabel": "Lisää alakohta: {{label}}",
+      "moveLabelUp": "Siirrä ylös: {{label}}",
+      "moveLabelDown": "Siirrä alas: {{label}}",
+      "removeLabel": "Poista: {{label}}"
+    },
+    "listenerWidgetEmbedLabels": {
+      "removeLabel": "Poista: {{label}}"
+    },
+    "transparencyGrantYearViewLabels": {
+      "grantReportYear": "Avustusraportti {{year}}",
+      "couldNotLoadTheYear": "Vuoden {{year}} avustusraporttia ei voitu ladata",
+      "noGrantReportIsAvailable": "Vuodelle {{year}} ei ole avustusraporttia."
+    },
+    "soundRowLabels": {
+      "selectTitle": "Valitse: {{title}}",
+      "playTitle": "Soita: {{title}}",
+      "showStatsForTitle": "Näytä tilastot: {{title}}"
+    },
+    "releaseTrackRowLabels": {
+      "playTitle": "Soita: {{title}}",
+      "openTitleOnBandcamp": "Avaa Bandcampissa: {{title}}"
+    },
+    "pressKitSectionLabels": {
+      "jpegPngOrWebpUp": "JPEG, PNG tai WebP · enintään {{MAX_PRESS_KIT_IMAGES}} kuvaa",
+      "removeImagelabel": "Poista: {{imageLabel}}"
+    },
+    "selectsTabLabels": {
+      "currentRotationLength": "Nykyinen kierto ({{length}})",
+      "previewTitle": "Esikatsele: {{title}}"
+    },
+    "adminRadioViewLabels": {
+      "currentRotationLength": "Nykyinen kierto ({{length}})",
+      "eligibleChannelsLength": "Kelpoiset kanavat ({{length}})",
+      "optedOutLength": "Kieltäytyneet ({{length}})"
+    },
+    "adminMissedShowsViewLabels": {
+      "markTitleAsReviewing": "Merkitse tarkistettavaksi: {{title}}",
+      "markTitleAsActioned": "Merkitse käsitellyksi: {{title}}",
+      "dismissTitle": "Ohita: {{title}}"
+    },
+    "adminGrantCycleViewLabels": {
+      "eligibleMinUnits": "Kelpoiset ≥{{MIN_UNITS}}",
+      "noArtistActivityInYear": "Ei artistitoimintaa vuonna {{year}}",
+      "disbursedGrantcountRecipients": "Maksettu · {{grantCount}} saajaa"
+    },
+    "adminAnnouncementsViewLabels": {
+      "enableTitle": "Ota käyttöön: {{title}}",
+      "previewTitle": "Esikatsele: {{title}}"
+    },
+    "tracklistEditorLabels": {
+      "removeTitle": "Poista: {{title}}",
+      "artistForTitle": "Artisti: ”{{title}}”"
+    },
+    "themeEditorLabels": {
+      "pickLabel": "Valitse: {{label}}",
+      "clearLabelOverride": "Tyhjennä ohitus: {{label}}"
+    },
+    "tagChipInputLabels": {
+      "removeTag": "Poista: {{tag}}",
+      "addTag": "Lisää: {{tag}}"
+    },
+    "stationRowsLabels": {
+      "viewNameDetails": "Näytä tiedot: {{name}}",
+      "configureName": "Määritä: {{name}}"
+    },
+    "mixableTracksSectionLabels": {
+      "playTitle": "Soita: {{title}}",
+      "queueTitle": "Lisää jonoon: {{title}}",
+      "addTitleToPrepare": "Lisää valmisteluun: {{title}}"
+    },
+    "playlistViewLabels": {
+      "locateTitle": "Paikanna: {{title}}",
+      "playTitleFromHere": "Soita tästä alkaen: {{title}}",
+      "removeTitleFromPlaylist": "Poista soittolistalta: {{title}}"
+    },
+    "jamParticipantListLabels": {
+      "letNameControlPlayback": "Anna toiston hallinta: {{name}}",
+      "removeNameFromTheJam": "Poista Jamista: {{name}}"
+    },
+    "entitySocialHeaderLabels": {
+      "changeTitleArtwork": "Vaihda kansikuva: {{title}}",
+      "removeTitleArtwork": "Poista kansikuva: {{title}}",
+      "uploadTitleArtwork": "Lataa kansikuva: {{title}}"
+    },
+    "channelRotationEditorLabels": {
+      "addLabel": "Lisää: {{label}}",
+      "removeTitleFromRotation": "Poista kierrosta: {{title}}"
+    },
+    "artistMusicTabLabels": {
+      "likeTitle": "Tykkää: {{title}}",
+      "commentsOnTitle": "Kommentit: {{title}}",
+      "repostTitle": "Jaa uudelleen: {{title}}"
+    },
+    "transparencyResolutionsViewLabels": {
+      "noPublishedResolutionsForYear": "Vuodelta {{year}} ei ole julkaistuja päätöksiä.",
+      "resolutionsYear": "Päätökset {{year}}"
+    },
+    "subscribeViewLabels": {
+      "subscribeToNameTahti": "Tilaa: {{name}} · Tahti",
+      "subscribeToDisplayname": "Tilaa: {{displayName}}"
+    },
+    "studioEditorProjectViewLabels": {
+      "deleteTitle": "Poista: {{title}}",
+      "openTitle": "Avaa: {{title}}"
+    },
+    "topListsTabLabels": {
+      "topTracksToprangelabel": "Suosituimmat kappaleet · {{topRangeLabel}}",
+      "topCountriesToprangelabel": "Suosituimmat maat · {{topRangeLabel}}"
+    },
+    "greenRoomViewLabels": {
+      "youAreNotOnThe": "Et ole artistin {{artistDisplayName}} green roomin vieraslistalla.",
+      "theGreenRoomOpensWhen": "Green room aukeaa, kun {{artistDisplayName}} aloittaa esikatselustriiminsä."
+    },
+    "storageOverviewTabLabels": {
+      "storageUsedByDisplayname": "Tallennustilan käyttö: {{displayName}}",
+      "viewDisplaynameSFiles": "Näytä tiedostot: {{displayName}}"
+    },
+    "adminStorageSharedLabels": {
+      "editQuotaForDisplayname": "Muokkaa kiintiötä: {{displayName}}",
+      "quotaInMbForDisplayname": "Kiintiö megatavuina: {{displayName}}"
     }
   },
   "studioEditor": {

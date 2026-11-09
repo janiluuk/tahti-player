@@ -139,7 +139,9 @@ export function TransparencyView() {
           )}
 
           {ytd && (
-            <SectionShell title={`YTD ${ytd.year}`}>
+            <SectionShell
+              title={t('transparencyViewLabels.ytdYear', { year: ytd.year })}
+            >
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 <Stat
                   label={t('transparencyPage.runningSurplus')}
@@ -155,7 +157,9 @@ export function TransparencyView() {
                 />
               </div>
               <HorizontalScroll
-                label={`Spending ${ytd.year} by category`}
+                label={t('transparencyViewLabels.spendingYearByCategory', {
+                  year: ytd.year,
+                })}
                 className="mt-3"
               >
                 <DataTable>
@@ -195,7 +199,11 @@ export function TransparencyView() {
           )}
 
           {grants && (
-            <SectionShell title={`Grants ${grants.year}`}>
+            <SectionShell
+              title={t('transparencyViewLabels.grantsYear', {
+                year: grants.year,
+              })}
+            >
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 <Stat
                   label={t('transparencyPage.total')}
@@ -213,7 +221,9 @@ export function TransparencyView() {
                 />
               </div>
               <HorizontalScroll
-                label={`Grants ${grants.year}`}
+                label={t('transparencyViewLabels.grantsYear', {
+                  year: grants.year,
+                })}
                 className="mt-3"
               >
                 <DataTable>

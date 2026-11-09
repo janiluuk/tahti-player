@@ -72,12 +72,17 @@ function FileRow({
   const { t } = useTranslation('web');
   return (
     <li className="flex flex-wrap items-center justify-between gap-3 px-2 py-3 text-sm">
-      <Tooltip content={`Select ${f.title}`} side="top">
+      <Tooltip
+        content={t('filesBrowserTabLabels.selectTitle', { title: f.title })}
+        side="top"
+      >
         <Button
           size="icon-sm"
           variant="text"
           aria-pressed={selected}
-          aria-label={`Select ${f.title}`}
+          aria-label={t('filesBrowserTabLabels.selectTitle', {
+            title: f.title,
+          })}
           onClick={() => onToggleSelect(f.id)}
         >
           {selected ? (
@@ -118,7 +123,9 @@ function FileRow({
           <Button
             size="icon-sm"
             variant="text"
-            aria-label={`Preview ${f.title}`}
+            aria-label={t('filesBrowserTabLabels.previewTitle', {
+              title: f.title,
+            })}
             disabled={pendingPlayId === f.id}
             onClick={() => onPlay(f)}
           >
@@ -129,7 +136,9 @@ function FileRow({
           <Button
             size="icon-sm"
             variant="text"
-            aria-label={`View details for ${f.title}`}
+            aria-label={t('filesBrowserTabLabels.viewDetailsForTitle', {
+              title: f.title,
+            })}
             onClick={() => onViewDetail(f)}
           >
             <SearchIcon size={15} aria-hidden />
@@ -141,7 +150,9 @@ function FileRow({
             params={{ userId: f.userId }}
             size="icon-sm"
             variant="text"
-            aria-label={`View ${f.displayName}'s storage`}
+            aria-label={t('filesBrowserTabLabels.viewDisplaynameSStorage', {
+              displayName: f.displayName,
+            })}
           >
             <ExternalLinkIcon size={15} aria-hidden />
           </ButtonLink>
@@ -151,7 +162,9 @@ function FileRow({
             size="icon-sm"
             variant="text"
             className="text-accent-red-strong hover:text-accent-red-strong"
-            aria-label={`Delete ${f.title}`}
+            aria-label={t('filesBrowserTabLabels.deleteTitle', {
+              title: f.title,
+            })}
             onClick={() => onDelete(f)}
           >
             <Trash2Icon className="text-accent-red" size={15} aria-hidden />

@@ -219,11 +219,18 @@ export const TracklistEditor: FC<Props> = ({
             <span className="text-foreground-secondary w-12 text-right text-xs tabular-nums">
               {formatTime(entry.startSec)}
             </span>
-            <Tooltip content={`Remove ${entry.title}`} side="top">
+            <Tooltip
+              content={t('tracklistEditorLabels.removeTitle', {
+                title: entry.title,
+              })}
+              side="top"
+            >
               <Button
                 size="icon-sm"
                 variant="text"
-                aria-label={`Remove ${entry.title}`}
+                aria-label={t('tracklistEditorLabels.removeTitle', {
+                  title: entry.title,
+                })}
                 onClick={() =>
                   onChange(
                     value.filter((candidate) => candidate.id !== entry.id),
@@ -327,7 +334,9 @@ export const TracklistEditor: FC<Props> = ({
                   <div className="border-border bg-background-secondary/30 relative rounded-xl border p-3">
                     <Input
                       autoComplete="off"
-                      label={`Artist for “${selected.title}”`}
+                      label={t('tracklistEditorLabels.artistForTitle', {
+                        title: selected.title,
+                      })}
                       placeholder={t('tracklistEditor.artistNameOrUsernameTo')}
                       value={selected.artist ?? ''}
                       onChange={(event) =>
