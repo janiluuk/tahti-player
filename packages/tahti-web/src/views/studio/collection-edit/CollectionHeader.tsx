@@ -23,6 +23,7 @@ import {
 import { ImageSlotDeleteBadge } from '../../../components/imageSlot/ImageSlotDeleteBadge';
 import { StudioCollectionMoreMenu } from '../../../components/StudioCollectionMoreMenu';
 import { collectionStyles } from '../../../content/collectionStyles';
+import { webT } from '../../../lib/webT';
 import type { CollectionEditState } from './useCollectionEditState';
 
 export function CollectionHeader({
@@ -167,13 +168,17 @@ export function CollectionHeader({
         </Tooltip>
         {editing ? (
           <Tooltip
-            content={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
+            content={webT()('a11yNamed.addContentTo', {
+              name: isAlbumLike ? 'album' : 'collection',
+            })}
             side="top"
           >
             <Button
               variant="secondary"
               size="icon"
-              aria-label={`Add content to ${isAlbumLike ? 'album' : 'collection'}`}
+              aria-label={webT()('a11yNamed.addContentTo', {
+                name: isAlbumLike ? 'album' : 'collection',
+              })}
               onClick={() => setAddPickerOpen(true)}
             >
               <PlusIcon size={16} aria-hidden />

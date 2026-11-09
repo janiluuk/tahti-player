@@ -10,6 +10,7 @@ import {
   type ReleaseCreditRole,
 } from '../api/studio-types';
 import { cn } from '../lib/cn';
+import { webT } from '../lib/webT';
 import { PageEmpty } from './PageStates';
 
 type Props = {
@@ -130,14 +131,18 @@ export function TrackCreditsEditor({ value, onChange, disabled }: Props) {
                   }}
                 />
                 <Tooltip
-                  content={`Remove credit ${credit.name || index + 1}`}
+                  content={webT()('a11yNamed.removeCredit', {
+                    name: credit.name || index + 1,
+                  })}
                   side="top"
                 >
                   <Button
                     size="icon-sm"
                     variant="text"
                     disabled={disabled}
-                    aria-label={`Remove credit ${credit.name || index + 1}`}
+                    aria-label={webT()('a11yNamed.removeCredit', {
+                      name: credit.name || index + 1,
+                    })}
                     onClick={() =>
                       onChange(value.filter((_, i) => i !== index))
                     }

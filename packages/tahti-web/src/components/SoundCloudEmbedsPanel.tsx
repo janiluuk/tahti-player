@@ -12,6 +12,7 @@ import {
   type ArtistEmbed,
 } from '../api/artist-embeds';
 import { toastWithUndo } from '../lib/undoToast';
+import { webT } from '../lib/webT';
 import { PageEmpty, PageError } from './PageStates';
 import { StudioPanel } from './StudioPanel';
 
@@ -137,7 +138,9 @@ export function SoundCloudEmbedsPanel() {
                   <Button
                     size="sm"
                     variant="secondary"
-                    aria-label={`Remove ${embed.title ?? embed.url}`}
+                    aria-label={webT()('a11yNamed.remove', {
+                      name: embed.title ?? embed.url,
+                    })}
                     disabled={removingId === embed.id}
                     onClick={() => void remove(embed.id)}
                   >

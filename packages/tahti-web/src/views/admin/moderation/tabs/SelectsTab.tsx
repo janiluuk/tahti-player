@@ -33,6 +33,7 @@ import {
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { TahtiRotationPlaylistEditor } from '../../../../components/TahtiRotationPlaylistEditor';
 import { usePolling } from '../../../../hooks/usePolling';
+import { webT } from '../../../../lib/webT';
 import { usePlayerStore } from '../../../../stores/playerStore';
 import { SelectsGenerateDialog } from './SelectsGenerateDialog';
 
@@ -565,7 +566,11 @@ export function SelectsTab() {
               });
             }}
           >
-            {adding ? 'Adding…' : `Add ${selectedIds.size || ''} to rotation`}
+            {adding
+              ? 'Adding…'
+              : webT()('a11yNamed.addNToRotation', {
+                  n: selectedIds.size || '',
+                })}
           </Button>
         </Dialog.Actions>
       </Dialog.Root>

@@ -20,6 +20,7 @@ import type { TahtiPlayable } from '../api/types';
 import { PageEmpty, PageError } from '../components/PageStates';
 import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
+import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -110,8 +111,10 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
                   }
                   subtitle={`@${ch.username ?? ch.slug}`}
                   isPlaying={channelPlaying}
-                  playLabel={`Play ${ch.displayName}`}
-                  pauseLabel={`Pause ${ch.displayName}`}
+                  playLabel={webT()('a11yNamed.play', { name: ch.displayName })}
+                  pauseLabel={webT()('a11yNamed.pause', {
+                    name: ch.displayName,
+                  })}
                   onPlay={() => {
                     if (channelPlaying) {
                       setPlayerStatus('paused');
@@ -134,7 +137,9 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
                       }
                     });
                   }}
-                  queueLabel={`Queue ${ch.displayName}`}
+                  queueLabel={webT()('a11yNamed.queue', {
+                    name: ch.displayName,
+                  })}
                   onFavorite={() => toggleFavoriteChannel(ch)}
                   favorited
                 />
@@ -156,8 +161,8 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
                     </Link>
                   }
                   isPlaying={radioPlaying}
-                  playLabel={`Play ${name}`}
-                  pauseLabel={`Pause ${name}`}
+                  playLabel={webT()('a11yNamed.play', { name: name })}
+                  pauseLabel={webT()('a11yNamed.pause', { name: name })}
                   onPlay={() => {
                     if (radioPlaying) {
                       setPlayerStatus('paused');
@@ -168,7 +173,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
                     }
                   }}
                   onQueue={() => enqueue(radio)}
-                  queueLabel={`Queue ${name}`}
+                  queueLabel={webT()('a11yNamed.queue', { name: name })}
                   onFavorite={() =>
                     useLibraryStore.getState().toggleFavoriteTrack(radio)
                   }

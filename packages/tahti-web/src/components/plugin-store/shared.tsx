@@ -12,6 +12,7 @@ import {
   Tooltip,
 } from '@tahti-player/ui';
 
+import { webT } from '../../lib/webT';
 import { usePluginInstallStore } from '../../stores/pluginInstallStore';
 import { PageEmpty } from '../PageStates';
 
@@ -70,7 +71,11 @@ export function ConfigurableCard({
           {typeof header === 'function' ? header(() => setOpen(true)) : header}
         </div>
         <Tooltip
-          content={open ? `Hide ${title} configuration` : `Configure ${title}`}
+          content={
+            open
+              ? webT()('a11yNamed.hideConfiguration', { name: title })
+              : `Configure ${title}`
+          }
           side="top"
         >
           <Button
@@ -78,7 +83,9 @@ export function ConfigurableCard({
             variant="secondary"
             onClick={() => setOpen((v) => !v)}
             aria-label={
-              open ? `Hide ${title} configuration` : `Configure ${title}`
+              open
+                ? webT()('a11yNamed.hideConfiguration', { name: title })
+                : `Configure ${title}`
             }
           >
             <SettingsIcon size={15} aria-hidden />

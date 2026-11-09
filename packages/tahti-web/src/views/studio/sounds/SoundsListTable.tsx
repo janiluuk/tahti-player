@@ -137,7 +137,7 @@ function SoundsListTableView({
                 isLoading={isCurrent && status === 'loading'}
                 playDisabled={isProcessingSound(sound)}
                 playLabel={`Preview ${sound.title}`}
-                pauseLabel={`Pause ${sound.title}`}
+                pauseLabel={webT()('a11yNamed.pause', { name: sound.title })}
                 onPlay={() =>
                   embedSrc
                     ? playEmbedItem(sound)

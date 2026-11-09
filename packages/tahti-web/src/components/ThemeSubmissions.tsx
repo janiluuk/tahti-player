@@ -10,6 +10,7 @@ import {
   themeSubmissionStatus,
   type MyTheme,
 } from '../api/me-themes';
+import { webT } from '../lib/webT';
 import { ConfirmDialog } from './ConfirmDialog';
 
 function statusColor(theme: MyTheme): 'green' | 'yellow' | 'red' | 'secondary' {
@@ -130,7 +131,7 @@ export function ThemeSubmissions({
         isOpen={pendingDelete !== null}
         title={
           pendingDelete
-            ? `Delete the ${pendingDelete.name} submission?`
+            ? webT()('a11yNamed.deleteSubmission', { name: pendingDelete.name })
             : 'Delete submission?'
         }
         description={t('themeSubmissions.theThemeLeavesYourSubmissions')}

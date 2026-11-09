@@ -7,6 +7,7 @@ import type { DiscoverTrackItem } from '../../api/types';
 import { useDiscoverTrackPlayback } from '../../hooks/useDiscoverTrackPlayback';
 import { cn } from '../../lib/cn';
 import { dateLocaleTag } from '../../lib/locale';
+import { webT } from '../../lib/webT';
 import { STRIPED_ROW } from './listStripes';
 
 export function WidgetTrackRow({
@@ -59,9 +60,9 @@ export function WidgetTrackRow({
         onQueue={() => {
           void queue();
         }}
-        queueLabel={`Add ${item.title} to queue`}
-        playLabel={`Play ${item.title}`}
-        pauseLabel={`Pause ${item.title}`}
+        queueLabel={webT()('a11yNamed.addToQueue', { name: item.title })}
+        playLabel={webT()('a11yNamed.play', { name: item.title })}
+        pauseLabel={webT()('a11yNamed.pause', { name: item.title })}
       />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-medium">{item.title}</span>

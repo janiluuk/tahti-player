@@ -7,6 +7,7 @@ import { EditIconButton, Loader } from '@tahti-player/ui';
 import type { RecentBroadcast } from '../../../api/broadcast';
 import { ListingDate } from '../../../components/ListingDate';
 import { relativeDate } from '../../../lib/relativeDate';
+import { webT } from '../../../lib/webT';
 import { formatDuration, isPublished } from './helpers';
 
 /** Library row treatment — thumbnail
@@ -24,7 +25,9 @@ export function RecordingRow({
 }) {
   const { t } = useTranslation('web');
   const title =
-    show.title || show.soundTitle || `Show ${relativeDate(show.startedAt)}`;
+    show.title ||
+    show.soundTitle ||
+    webT()('a11yNamed.show', { name: relativeDate(show.startedAt) });
   const published = isPublished(show);
   const processing = !show.soundId;
 

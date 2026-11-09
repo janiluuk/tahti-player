@@ -22,6 +22,7 @@ import { dateLocaleTag } from '../lib/locale';
 import { formatDuration } from '../lib/playableToTrack';
 import { relativeDate } from '../lib/relativeDate';
 import { useDominantColor } from '../lib/useDominantColor';
+import { webT } from '../lib/webT';
 
 function ambientStyle(
   rgb: [number, number, number] | null,
@@ -355,8 +356,8 @@ function AmbientTrackRowView({
           isPlaying={isPlaying}
           hideActivePlay={density === 'dense'}
           onPlay={playable ? onPlay : undefined}
-          playLabel={`Play ${title}`}
-          pauseLabel={`Pause ${title}`}
+          playLabel={webT()('a11yNamed.play', { name: title })}
+          pauseLabel={webT()('a11yNamed.pause', { name: title })}
         />
         {durationLabel && density !== 'dense' ? (
           <span className="pointer-events-none absolute right-1.5 bottom-1.5 rounded bg-black/65 px-1.5 py-0.5 text-xs text-white tabular-nums">

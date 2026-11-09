@@ -23,6 +23,7 @@ import { useJamGuestPlayback, useJamState } from '../hooks/useJam';
 import { useJamCoControl, useJamHostSync } from '../hooks/useJamControl';
 import { canControlJam, toggledJamState } from '../lib/jamPlayback';
 import { syncDocumentMetadata } from '../lib/seo';
+import { webT } from '../lib/webT';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -375,7 +376,12 @@ export function JamView({ code }: { code: string }) {
       <ConfirmDialog
         isOpen={removing !== null}
         destructive
-        title={`Remove ${removing?.displayName?.trim() || removing?.username || 'this guest'} from the Jam?`}
+        title={webT()('a11yNamed.removeFromJam', {
+          name:
+            removing?.displayName?.trim() ||
+            removing?.username ||
+            webT()('a11yNamed.thisGuest'),
+        })}
         description={t('jamPage.theyStopHearingTheJam')}
         confirmLabel={t('jamPage.remove')}
         onCancel={() => setRemoving(null)}

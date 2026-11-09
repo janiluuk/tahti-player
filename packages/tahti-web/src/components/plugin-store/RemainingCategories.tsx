@@ -9,6 +9,7 @@ import {
   fetchRtmpTargets,
   type RtmpTarget,
 } from '../../api/broadcast';
+import { webT } from '../../lib/webT';
 import {
   ALL_PLUGIN_IDS,
   AUDIO_FX_PLUGINS,
@@ -166,7 +167,9 @@ export function MulticastCategory() {
         isOpen={pendingRemove !== null}
         title={
           pendingRemove
-            ? `Remove ${pendingRemove.label ?? 'this destination'}?`
+            ? webT()('a11yNamed.removeQuestion', {
+                name: pendingRemove.label ?? 'this destination',
+              })
             : 'Remove destination?'
         }
         description={t(

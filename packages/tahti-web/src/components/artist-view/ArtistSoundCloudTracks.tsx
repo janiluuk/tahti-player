@@ -8,6 +8,7 @@ import {
   soundCloudWidgetSrc,
   type ChannelSoundCloudEmbed,
 } from '../../api/channel-embeds';
+import { webT } from '../../lib/webT';
 import { SourceServiceIcon } from '../SourceServiceIcon';
 
 /**
@@ -67,7 +68,9 @@ export function ArtistSoundCloudTracks({
                   src={embed.thumbnailUrl}
                   alt=""
                   size="thumb"
-                  playLabel={`Play ${title} on SoundCloud`}
+                  playLabel={webT()('a11yNamed.playOnSoundCloud', {
+                    name: title,
+                  })}
                   isPlaying={openId === embed.id}
                   onPlay={() => setOpenId(embed.id)}
                 />

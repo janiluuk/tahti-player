@@ -18,6 +18,7 @@ import type {
   NativeSmartRule,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
+import { webT } from '../lib/webT';
 import {
   EMPTY_SMART,
   needsSecondValue,
@@ -205,12 +206,17 @@ export function SmartPlaylistDialog({
                     onChange={(value2) => setRule(index, { ...rule, value2 })}
                   />
                 ) : null}
-                <Tooltip content={`Remove rule ${index + 1}`} side="top">
+                <Tooltip
+                  content={webT()('a11yNamed.removeRuleN', { n: index + 1 })}
+                  side="top"
+                >
                   <Button
                     size="icon-sm"
                     variant="text"
                     intent="danger"
-                    aria-label={`Remove rule ${index + 1}`}
+                    aria-label={webT()('a11yNamed.removeRuleN', {
+                      n: index + 1,
+                    })}
                     onClick={() =>
                       setDraft((current) => ({
                         ...current,
