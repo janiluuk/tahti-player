@@ -1,8 +1,15 @@
 import { DialogTitle as HeadlessDialogTitle } from '@headlessui/react';
 import { FC, PropsWithChildren } from 'react';
 
-export const DialogTitle: FC<PropsWithChildren> = ({ children }) => (
-  <HeadlessDialogTitle className="text-foreground text-lg font-bold">
+import { cn } from '../../utils';
+
+export const DialogTitle: FC<PropsWithChildren<{ className?: string }>> = ({
+  children,
+  className,
+}) => (
+  <HeadlessDialogTitle
+    className={cn('text-foreground text-lg font-bold', className)}
+  >
     {children}
   </HeadlessDialogTitle>
 );

@@ -1,7 +1,8 @@
 import { Link } from '@tanstack/react-router';
+import { PlayIcon } from 'lucide-react';
 import { useEffect, useState, type ReactNode } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -12,12 +13,17 @@ import {
 } from '@tahti-player/ui';
 
 import { fetchArtistPlayables, fetchFeed, fetchProfile } from '../api/client';
-import { POST_ACTIVITY_LABELS } from '../api/community-stories';
+import {
+  POST_ACTIVITY_LABELS,
+  POST_CATEGORY_LABELS,
+} from '../api/community-stories';
 import type {
   FeedItem,
   PublicProfileRelease,
   TahtiPlayable,
 } from '../api/types';
+import { FeedStoryDialog, type FeedStory } from '../components/FeedStoryDialog';
+import { LatestNewsWidget } from '../components/LatestNewsWidget';
 import {
   PageEmpty,
   PageError,
@@ -25,7 +31,7 @@ import {
   PageLoading,
 } from '../components/PageStates';
 import { releasePlayables } from '../components/ReleaseTracklistDialog';
-import { TrackInfoDialog, type TrackInfo } from '../components/TrackInfoDialog';
+import { StoryTitleButton } from '../components/StoryTitleButton';
 import { storyDate } from '../lib/storyDate';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -51,6 +57,53 @@ function feedActivity(item: FeedItem): string {
   return RELEASE_ACTIVITY[item.releaseType] ?? 'released new music';
 }
 
+const RELEASE_KINDS: Record<string, string> = {
+  SINGLE: 'Single',
+  EP: 'EP',
+  ALBUM: 'Album',
+  COMPILATION: 'Compilation',
+  REMIX: 'Remix',
+};
+
+function feedStory(item: FeedItem, t: TFunction<'web'>): FeedStory {
+  const name = item.artist.displayName || item.artist.username;
+  const author = {
+    name,
+    avatarUrl: item.artist.avatarUrl,
+    username: item.artist.username,
+  };
+  if (item.kind === 'post') {
+    return {
+      id: item.id,
+      kind: item.category ? POST_CATEGORY_LABELS[item.category] : 'Story',
+      title: item.title || t('feedStory.postedUpdate', { name }),
+      publishedAt: item.date,
+      author,
+      imageUrl: item.images?.[0] ?? null,
+      paragraphs: item.body.split(/\n\s*\n/),
+      link: item.linkUrl ?? undefined,
+      linkLabel: item.linkLabel ?? undefined,
+    };
+  }
+  return {
+    id: item.id,
+    kind:
+      item.kind === 'track'
+        ? 'Track'
+        : (RELEASE_KINDS[item.releaseType] ?? 'Release'),
+    title: item.title,
+    publishedAt: item.date,
+    author,
+    imageUrl: item.kind === 'track' ? item.bannerUrl : item.artworkUrl,
+    paragraphs: [
+      item.kind === 'track'
+        ? t('feedStory.sharedTrack', { name, title: item.title })
+        : t('feedStory.releasedSomething', { name, title: item.title }),
+      t('feedStory.playOrOpen'),
+    ],
+  };
+}
+
 export function FeedView({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
@@ -60,7 +113,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
-  const [infoTrack, setInfoTrack] = useState<TrackInfo | null>(null);
+  const [openItem, setOpenItem] = useState<FeedItem | null>(null);
   const [feedPlayables, setFeedPlayables] = useState<
     Record<string, TahtiPlayable>
   >({});
@@ -208,39 +261,35 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
             params: { username: item.artist.username },
           };
 
+  const trackPlayable = (
+    item: Extract<FeedItem, { kind: 'track' }>,
+  ): TahtiPlayable | null =>
+    item.audioUrl
+      ? {
+          id: `sound:${item.id}`,
+          kind: 'sound',
+          title: item.title,
+          artist: item.artist.displayName,
+          coverUrl: item.bannerUrl ?? undefined,
+          streamUrl: item.audioUrl,
+          protocol: 'https',
+          channelSlug: item.channelSlug,
+        }
+      : (feedPlayables[item.id] ?? null);
+
   const feedMedia = (item: FeedItem): ReactNode => {
     if (item.kind === 'post') {
       return undefined;
     }
     if (item.kind === 'track') {
-      const playable: TahtiPlayable | null = item.audioUrl
-        ? {
-            id: `sound:${item.id}`,
-            kind: 'sound',
-            title: item.title,
-            artist: item.artist.displayName,
-            coverUrl: item.bannerUrl ?? undefined,
-            streamUrl: item.audioUrl,
-            protocol: 'https',
-            channelSlug: item.channelSlug,
-          }
-        : (feedPlayables[item.id] ?? null);
+      const playable = trackPlayable(item);
       return (
         <MediaArtwork
           size="fill"
           src={item.bannerUrl}
           alt=""
           seed={item.id}
-          onArtworkClick={() =>
-            setInfoTrack({
-              title: item.title,
-              artistName: item.artist.displayName,
-              artistUsername: item.artist.username,
-              artworkUrl: item.bannerUrl,
-              meta: storyDate(item.date),
-              playable,
-            })
-          }
+          onArtworkClick={() => setOpenItem(item)}
           onPlay={playable ? () => play(playable) : undefined}
           playDisabled={!playable}
           playLabel={`Play ${item.title}`}
@@ -260,6 +309,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
         src={item.artworkUrl}
         alt=""
         seed={item.smartLinkSlug ?? item.id}
+        onArtworkClick={() => setOpenItem(item)}
         onPlay={first ? () => play(first, { enqueueRest: rest }) : undefined}
         playDisabled={!first}
         playLabel={`Play ${item.title}`}
@@ -277,8 +327,41 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
     );
   };
 
+  const storyActions = (item: FeedItem): ReactNode => {
+    let play_: ReactNode = null;
+    if (item.kind === 'track') {
+      const playable = trackPlayable(item);
+      play_ = playable ? (
+        <Button onClick={() => play(playable)}>
+          <PlayIcon size={15} aria-hidden className="mr-1.5" />
+          {t('actions.play')}
+        </Button>
+      ) : null;
+    } else if (item.kind === 'release') {
+      const [first, ...rest] = releaseFeedPlayables[item.id] ?? [];
+      play_ = first ? (
+        <Button onClick={() => play(first, { enqueueRest: rest })}>
+          <PlayIcon size={15} aria-hidden className="mr-1.5" />
+          {t('actions.play')}
+        </Button>
+      ) : null;
+    }
+    return (
+      <>
+        {play_}
+        <ButtonLink {...feedTarget(item)} variant="secondary">
+          {item.kind === 'post'
+            ? t('trackInfo.artistPage')
+            : item.kind === 'track'
+              ? t('actions.openChannel')
+              : t('feedStory.openRelease')}
+        </ButtonLink>
+      </>
+    );
+  };
+
   const content = (
-    <>
+    <div className="flex min-w-0 flex-col gap-10">
       {loadError && items.length > 0 ? (
         <PageErrorBanner
           title={t('loadErrors.couldNotRefreshYourFeed')}
@@ -331,10 +414,14 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
               date={storyDate(item.date)}
               dateTime={item.date}
               title={
-                <Link {...feedTarget(item)} className="hover:underline">
-                  {item.title || item.artist.displayName}
-                </Link>
+                <StoryTitleButton onOpen={() => setOpenItem(item)}>
+                  {feedStory(item, t).title}
+                </StoryTitleButton>
               }
+              onOpen={() => setOpenItem(item)}
+              openLabel={t('feedStory.readTitle', {
+                title: feedStory(item, t).title,
+              })}
               excerpt={item.kind === 'post' ? item.body : undefined}
               authorName={item.artist.displayName || item.artist.username}
               authorAvatarSrc={item.artist.avatarUrl}
@@ -352,12 +439,14 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
         </StoryRow>
       )}
 
-      <TrackInfoDialog
-        isOpen={Boolean(infoTrack)}
-        onClose={() => setInfoTrack(null)}
-        track={infoTrack}
+      <LatestNewsWidget surface="feed" />
+
+      <FeedStoryDialog
+        story={openItem ? feedStory(openItem, t) : null}
+        onClose={() => setOpenItem(null)}
+        actions={openItem ? storyActions(openItem) : null}
       />
-    </>
+    </div>
   );
 
   return wrapFeed(content);

@@ -1703,7 +1703,13 @@
       "hoursAgo_one": "{{count}} hour ago",
       "hoursAgo_other": "{{count}} hours ago",
       "daysAgo_one": "{{count}} day ago",
-      "daysAgo_other": "{{count}} days ago"
+      "daysAgo_other": "{{count}} days ago",
+      "weeksAgo_one": "{{count}} week ago",
+      "weeksAgo_other": "{{count}} weeks ago",
+      "monthsAgo_one": "{{count}} month ago",
+      "monthsAgo_other": "{{count}} months ago",
+      "yearsAgo_one": "{{count}} year ago",
+      "yearsAgo_other": "{{count}} years ago"
     },
     "auth": {
       "logIn": "Log in",
@@ -9530,6 +9536,75 @@
     },
     "desktopUpdatesRowLabels": {
       "youHaveTahtiPlayerVersion": "You have Tahti Player {{version}}. When a new release is out, the app offers to install it."
+    },
+    "helpHub": {
+      "hubHeading": "How can we help?",
+      "hubIntro": "Short guides for listening, broadcasting, add-ons, your account and getting in touch.",
+      "guidesCount_one": "{{count}} guide",
+      "guidesCount_other": "{{count}} guides",
+      "noMatchDescription": "Try another search instead of “{{query}}”.",
+      "keyboardDescription": "Global shortcuts for Listen, Radio, Library, Studio, and the tour.",
+      "inShort": "In short",
+      "openOnTahti": "Open on tahti.live{{path}}",
+      "groups": {
+        "start-here": {
+          "title": "Start here",
+          "description": "Find something to listen to or set up your artist profile."
+        },
+        "listen-and-share": {
+          "title": "Listen and share",
+          "description": "Save music, talk about moments, and share public pages."
+        },
+        "artist-tools": {
+          "title": "Artist tools",
+          "description": "Publish music, design your channel, and follow earnings."
+        },
+        "broadcasting": {
+          "title": "Broadcasting",
+          "description": "Get on air and mirror your show to other platforms."
+        },
+        "releasing": {
+          "title": "Releasing",
+          "description": "Release identifiers, catalogs, smart links, and delivery."
+        },
+        "account-support": {
+          "title": "Account and support",
+          "description": "Limits, security, shortcuts, and where to get help."
+        },
+        "admin": {
+          "title": "Admin",
+          "description": "Understand platform operations."
+        },
+        "add-ons": {
+          "title": "Add-ons",
+          "description": "Themes, imports, live mirrors, audio tools, and page widgets."
+        },
+        "build-with-tahti": {
+          "title": "Build with Tahti",
+          "description": "Make a Disco-widget for the platform."
+        }
+      }
+    },
+    "feedStory": {
+      "readOn": "Read on {{host}}",
+      "headlineOnlyHost": "This feed only shares the headline, or the article text could not be read. Read the full story on {{host}}.",
+      "headlineOnly": "This feed only shares the headline, and the article text could not be read.",
+      "openRelease": "Open release",
+      "openLink": "Open link",
+      "postedUpdate": "{{name}} posted an update",
+      "sharedTrack": "{{name}} shared a new track, “{{title}}”.",
+      "releasedSomething": "{{name}} released “{{title}}”.",
+      "playOrOpen": "Play it here, add it to your queue, or open it for everything that goes with it.",
+      "news": "News",
+      "sources": "Sources",
+      "moreNews": "more News",
+      "latestNews": "Latest News",
+      "allNews": "All news",
+      "fromTahti": "From Tahti",
+      "loadingNews": "Loading news…",
+      "noArticles": "No articles in your sources right now.",
+      "couldNotLoadSources": "Couldn’t load {{names}}.",
+      "readTitle": "Read {{title}}"
     }
   },
   "studioEditor": {

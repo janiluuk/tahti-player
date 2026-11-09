@@ -5,6 +5,7 @@ import { type FC, type ReactNode } from 'react';
 import { cn } from '../../utils';
 import { Badge, badgeVariants } from '../Badge';
 import { Button } from '../Button';
+import { LinkifiedText } from '../ExternalLink';
 import { ImageReveal } from '../ImageReveal';
 import { MediaArtwork } from '../MediaArtwork';
 
@@ -131,22 +132,24 @@ export const StoryCard: FC<StoryCardProps> = ({
             onClick={onOpen}
           />
         ) : null}
-        {kind ? (
-          <div className="pointer-events-none absolute top-0 left-0 z-10 p-3 sm:p-4">
-            <Badge
-              variant="pill"
-              color={kindColor}
-              data-testid="story-card-kind"
-            >
-              {kind}
-            </Badge>
-          </div>
-        ) : null}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-col gap-1.5 p-3 sm:gap-2 sm:p-4 [&_a]:pointer-events-auto [&_button]:pointer-events-auto">
-          {date ? (
-            <span className="inline-flex items-center gap-1 text-xs font-medium text-white/85">
-              <ClockIcon size={12} aria-hidden />
-              <time dateTime={dateTime}>{date}</time>
+          {kind || date ? (
+            <span className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+              {kind ? (
+                <Badge
+                  variant="pill"
+                  color={kindColor}
+                  data-testid="story-card-kind"
+                >
+                  {kind}
+                </Badge>
+              ) : null}
+              {date ? (
+                <span className="inline-flex items-center gap-1 text-xs font-medium text-white/85">
+                  <ClockIcon size={12} aria-hidden />
+                  <time dateTime={dateTime}>{date}</time>
+                </span>
+              ) : null}
             </span>
           ) : null}
           {!kind && !date && meta ? (
@@ -160,7 +163,14 @@ export const StoryCard: FC<StoryCardProps> = ({
               data-testid="story-card-excerpt"
               className="line-clamp-2 text-sm leading-relaxed text-white/80"
             >
-              {excerpt}
+              {typeof excerpt === 'string' ? (
+                <LinkifiedText
+                  text={excerpt}
+                  linkClassName="inline break-all text-white underline hover:text-white"
+                />
+              ) : (
+                excerpt
+              )}
             </p>
           ) : null}
         </div>

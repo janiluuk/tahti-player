@@ -42,6 +42,11 @@ import { VisualizerModeMenu } from './VisualizerModeMenu';
 
 const ANIMATION_MS = 280;
 
+/** Matches the back button: a light frosted circle that reads on any
+ * artwork or visualizer behind it. */
+const TOP_BUTTON_CLASS =
+  'rounded-full border-0 bg-background/55 text-foreground shadow-none backdrop-blur-md hover:bg-background/80';
+
 /** Full-viewport now-playing overlay — expand button in the player bar
  * opens it, X or Escape closes it back to the compact bar. Backdrop tint
  * follows the current track's cover art (sampled via useDominantColor)
@@ -219,7 +224,7 @@ export function FullScreenPlayer() {
         />
       </div>
 
-      <div className="absolute inset-x-0 top-0 z-20 flex items-start justify-between p-4">
+      <div className="absolute inset-x-0 top-0 z-20 flex items-start justify-between px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-4">
         <Tooltip content={t('player.backToPlayer')} side="right">
           <BackButton
             onClick={close}
@@ -232,7 +237,7 @@ export function FullScreenPlayer() {
             <VisualizerModeMenu
               mode={engineMode}
               onModeChange={onEngineModeChange}
-              triggerClassName="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
+              triggerClassName={cn(TOP_BUTTON_CLASS, 'size-12')}
               panelClassName="z-[70]"
             />
           ) : null}
@@ -256,14 +261,14 @@ export function FullScreenPlayer() {
                 }
                 aria-pressed={screenFilled}
                 className={cn(
-                  'rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50',
+                  TOP_BUTTON_CLASS,
                   driving ? 'size-14' : 'size-12',
                 )}
               >
                 {screenFilled ? (
-                  <MinimizeIcon size={driving ? 32 : 28} aria-hidden />
+                  <MinimizeIcon size={driving ? 28 : 22} aria-hidden />
                 ) : (
-                  <MaximizeIcon size={28} aria-hidden />
+                  <MaximizeIcon size={22} aria-hidden />
                 )}
               </Button>
             </Tooltip>
@@ -279,9 +284,9 @@ export function FullScreenPlayer() {
                 onClick={() => setMenuOpen(true)}
                 aria-label={t('player.moreOptionsFor', { title })}
                 aria-haspopup="dialog"
-                className="size-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
+                className={cn(TOP_BUTTON_CLASS, 'size-12')}
               >
-                <MoreHorizontalIcon size={28} aria-hidden />
+                <MoreHorizontalIcon size={22} aria-hidden />
               </Button>
             </Tooltip>
           ) : null}
@@ -293,7 +298,7 @@ export function FullScreenPlayer() {
         aria-label={t('player.swipeTracks')}
         aria-keyshortcuts="ArrowLeft ArrowRight"
         tabIndex={0}
-        className="tahti-hide-scrollbar relative z-10 flex min-h-0 flex-1 touch-pan-y flex-col items-center justify-center gap-4 overflow-y-auto px-6 pt-14 pb-4 outline-none"
+        className="tahti-hide-scrollbar relative z-10 flex min-h-0 flex-1 touch-pan-y flex-col items-center justify-center-safe gap-4 overflow-y-auto px-6 pt-[calc(4.5rem+env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))] outline-none"
         data-testid="full-screen-player-stage"
         {...swipe}
       >

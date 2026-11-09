@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { expect, within } from 'storybook/test';
 
-import { ArticleCard, StoryCard } from '@tahti-player/ui';
+import { StoryCard } from '@tahti-player/ui';
 
 const meta = {
   title: 'Layout/StoryCard',
@@ -11,7 +11,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'The one card for platform news, artist posts, community stories, feed items and RSS articles: a 16:9 image with the title overlaid on a gradient, then the kind and date (clock icon), a short excerpt and the author below. `ArticleCard` (NewsWidget) renders through it, so every news and story row looks the same.',
+          'The one card for platform news, artist posts, community stories, feed items and RSS articles: a 16:9 image with the title overlaid on a gradient, then the kind and date (clock icon), a short excerpt and the author below. Every feed row (My feed, Latest News, From Tahti, RSS feeds, Community stories) uses it inside `StoryRow`, and every item opens `FeedStoryDialog`.',
       },
     },
   },
@@ -87,18 +87,15 @@ export const UnifiedSources: Story = {
   ],
   render: () => (
     <div className="grid max-w-5xl gap-4 sm:grid-cols-2">
-      <ArticleCard
-        className="w-auto sm:w-auto"
-        item={{
-          id: 'news',
-          kind: 'News',
-          title: 'We are now open!',
-          teaser: 'tahti.live final release candidate is up.',
-          imageUrl: '/news-opening.svg',
-          publishedAt: '2026-11-01T10:00:00.000Z',
-          publishedLabel: '2 days ago',
-          onClick: () => undefined,
-        }}
+      <StoryCard
+        imageSrc="/news-opening.svg"
+        kind="News"
+        date="2 days ago"
+        dateTime="2026-11-01T10:00:00.000Z"
+        title="We are now open!"
+        excerpt="tahti.live final release candidate is up."
+        onOpen={() => undefined}
+        openLabel="Read We are now open!"
       />
       <StoryCard
         imageSrc="https://picsum.photos/seed/tahti-set/960/540"
@@ -111,29 +108,24 @@ export const UnifiedSources: Story = {
       <StoryCard
         imageSrc={null}
         kind="Announcement"
-        date="5.10.2026"
+        date="1 month ago"
         title="Thank you - 15000+ listens"
         authorName="DJ Moonlight"
       />
-      <ArticleCard
-        className="w-auto sm:w-auto"
-        item={{
-          id: 'rss',
-          kind: 'Resident Advisor',
-          title: 'The clubs shaping Helsinki nights this winter',
-          imageUrl: 'https://picsum.photos/seed/tahti-rss/960/540',
-          publishedAt: '2026-10-28T08:00:00.000Z',
-          publishedLabel: '6 days ago',
-          onClick: () => undefined,
-        }}
+      <StoryCard
+        imageSrc="https://picsum.photos/seed/tahti-rss/960/540"
+        kind="Resident Advisor"
+        date="1 week ago"
+        dateTime="2026-10-28T08:00:00.000Z"
+        title="The clubs shaping Helsinki nights this winter"
+        onOpen={() => undefined}
+        openLabel="Read The clubs shaping Helsinki nights this winter"
       />
     </div>
   ),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getAllByTestId(/^(story|article)-card$/)).toHaveLength(
-      4,
-    );
+    await expect(canvas.getAllByTestId('story-card')).toHaveLength(4);
     await expect(canvas.getAllByRole('heading', { level: 3 })).toHaveLength(4);
     await expect(canvasElement.querySelectorAll('time')).toHaveLength(4);
   },

@@ -2,17 +2,16 @@ import { ArrowRightIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { ButtonLink, NewsWidget } from '@tahti-player/ui';
+import { ButtonLink, StoryCard, StoryRow } from '@tahti-player/ui';
 
 import { fetchAnnouncements } from '../../api/client';
 import { isForceMock } from '../../api/mode';
 import type { Announcement } from '../../api/types';
-import { humanizePastDate } from '../../lib/humanizeDate';
+import { storyDate } from '../../lib/storyDate';
 import { PlatformNewsDialog } from '../PlatformNewsDialog';
+import { StoryTitleButton } from '../StoryTitleButton';
 import { ListenSection } from './ListenSection';
 import type { ListenSectionStatus } from './useListenSections';
-
-const LABELS = { nothingFound: 'No news yet.' };
 
 /** The latest Tahti news posts on Discover, linking to /news. */
 export function HomeNews({ limit = 3 }: { limit?: number }) {
@@ -41,18 +40,7 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
 
   const items = [...posts]
     .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
-    .slice(0, limit)
-    .map((post) => ({
-      id: post.id,
-      title: post.headline,
-      teaser: post.summary,
-      imageUrl: post.imageUrl || '/news-opening.svg',
-      kind: 'News',
-      kindColor: 'yellow' as const,
-      publishedAt: post.publishedAt,
-      publishedLabel: humanizePastDate(post.publishedAt),
-      onClick: () => setSelected(post),
-    }));
+    .slice(0, limit);
 
   return (
     <ListenSection
@@ -78,25 +66,42 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
           }}
         />
       ) : null}
-      <div className="flex flex-col gap-2" data-testid="home-news">
-        <NewsWidget
-          title={t('homeNews.fromTahti')}
-          badge="News"
-          items={items}
-          labels={LABELS}
-          more={
-            <ButtonLink
-              to="/news"
-              size="sm"
-              variant="secondary"
-              className="gap-1.5"
-            >
-              {t('homeNews.showAllNews')}
-              <ArrowRightIcon size={14} aria-hidden />
-            </ButtonLink>
-          }
-        />
-      </div>
+      <StoryRow
+        title={t('homeNews.fromTahti')}
+        data-testid="home-news"
+        actions={
+          <ButtonLink
+            to="/news"
+            size="sm"
+            variant="secondary"
+            className="gap-1.5"
+          >
+            {t('homeNews.showAllNews')}
+            <ArrowRightIcon size={14} aria-hidden />
+          </ButtonLink>
+        }
+      >
+        {items.map((post, index) => (
+          <StoryCard
+            key={post.id}
+            index={index}
+            data-testid="news-story"
+            imageSrc={post.imageUrl || '/news-opening.svg'}
+            artworkSeed={post.id}
+            kind={t('feedStory.news')}
+            date={storyDate(post.publishedAt)}
+            dateTime={post.publishedAt}
+            title={
+              <StoryTitleButton onOpen={() => setSelected(post)}>
+                {post.headline}
+              </StoryTitleButton>
+            }
+            excerpt={post.summary}
+            onOpen={() => setSelected(post)}
+            openLabel={t('feedStory.readTitle', { title: post.headline })}
+          />
+        ))}
+      </StoryRow>
     </ListenSection>
   );
 }

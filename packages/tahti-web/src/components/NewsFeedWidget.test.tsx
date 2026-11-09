@@ -6,7 +6,6 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as rss from '../api/rss-feed';
@@ -47,7 +46,7 @@ describe('NewsFeedWidget', () => {
     const open = vi.spyOn(window, 'open').mockReturnValue(null);
     render(<NewsFeedWidget instance={instance} />);
     fireEvent.click(
-      await screen.findByRole('button', { name: /Warehouse season opens/ }),
+      await screen.findByRole('button', { name: 'Warehouse season opens' }),
     );
 
     const article = await screen.findByTestId('news-article');
@@ -66,13 +65,15 @@ describe('NewsFeedWidget', () => {
     );
   });
 
-  it('opens the reader from the keyboard', async () => {
+  it('opens the reader from a native, keyboard-reachable button', async () => {
     render(<NewsFeedWidget instance={instance} />);
-    const card = await screen.findByRole('button', {
-      name: /Warehouse season opens/,
+    const title = await screen.findByRole('button', {
+      name: 'Warehouse season opens',
     });
-    card.focus();
-    await userEvent.keyboard('{Enter}');
+    expect(title.tagName).toBe('BUTTON');
+    title.focus();
+    expect(document.activeElement).toBe(title);
+    fireEvent.click(title);
     expect(await screen.findByTestId('news-article')).toBeTruthy();
   });
 
@@ -100,7 +101,7 @@ describe('NewsFeedWidget', () => {
     expect(await screen.findByText('Couldn’t load this feed')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(
-      await screen.findByRole('button', { name: /Warehouse season opens/ }),
+      await screen.findByRole('button', { name: 'Warehouse season opens' }),
     ).toBeTruthy();
     expect(fetch).toHaveBeenCalledTimes(2);
   });
@@ -121,7 +122,7 @@ describe('NewsFeedWidget', () => {
     });
     render(<NewsFeedWidget instance={instance} />);
     fireEvent.click(
-      await screen.findByRole('button', { name: /Headline only/ }),
+      await screen.findByRole('button', { name: 'Headline only' }),
     );
 
     const fallback = await screen.findByTestId('news-article-fallback');

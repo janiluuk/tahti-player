@@ -1,5 +1,5 @@
 export type LegalPage = {
-  slug: 'about' | 'what-is-it' | 'how-it-works' | 'for-artists';
+  slug: 'about' | 'what-is-it' | 'how-it-works';
   title: string;
   description: string;
   productionPath: string;
@@ -250,36 +250,6 @@ export const LEGAL_PAGES: LegalPage[] = [
           'Annual surplus: 90% distributed to artists as grants, 10% held in an operating reserve capped at 6 months of costs — anything above that cap goes back to artists too.',
           'No venture capital, no equity, no exit. Tahti ry is a Finnish nonprofit association (yhdistys) — it legally cannot become a for-profit company without dissolving the membership.',
           'Every euro in and out is published, monthly, in an append-only ledger — not a once-a-year PDF.',
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'for-artists',
-    title: 'Tahti for artists',
-    description:
-      'Broadcast independently. Get paid fairly. A nonprofit broadcasting platform where you keep your audience, earn through fan-subs and annual grants, and own your archive — AGPL-licensed and governed by its artist members.',
-    productionPath: '/for-artists',
-    sections: [
-      {
-        heading: 'Everything you need',
-        paragraphs: [
-          'Broadcast live. OBS, Mixxx, Traktor, or browser ingest. FLAC lossless for members, MP3 192 kbps on the free tier — both better than most commercial streaming services.',
-          'Your archive, always on. 24/7 channel with seamless live-to-archive transitions. Listeners tune in and keep listening even when you are offline.',
-          'Earn through fan-subs. Listeners can support you directly at €1–€100/month — you set the price. 98% goes to you; 2% rolls into the grant pool for the whole community.',
-          'Annual artist grants. 90% of platform surplus is distributed to artists every year based on engagement units — a fair formula, not an algorithm favouring the loudest.',
-          'Smart links & distribution. One release smart link with DSP buttons for Spotify, Apple Music, Bandcamp, and more. Distribute via Revelator with a single form.',
-          'Newsletter built in. Send updates directly to listeners who opt in — no third-party email tool required, no per-send fees.',
-          'Real analytics. Plays, downloads, completion rates, top countries, and your running grant estimate. No listener counts as headline metrics — the constitution forbids vanity numbers.',
-          'Member-governed nonprofit. You get a vote. The board is elected by artist members. The roadmap is public. Every euro in and out is published. No shareholders, no exit.',
-        ],
-      },
-      {
-        heading: 'What it costs',
-        paragraphs: [
-          'Free tier — MP3 192 kbps live and archive, unlimited broadcasts, archive hosting, smart links, newsletter, analytics, fan-subs, grant eligibility. Everything. Free.',
-          'Tahti ry membership (€40/year) — financial support for the cooperative, plus FLAC lossless streaming for you and your listeners, Stash file storage, and a vote at the AGM.',
-          'There is no "freemium" catch. The free tier is a complete product. Membership funds the grant pool and unlocks lossless audio — you are supporting the org, not buying a subscription product.',
         ],
       },
     ],

@@ -223,7 +223,7 @@ describe('listener widgets store', () => {
     store.installType('news');
     store.addInstance('news', 'https://example.com/rss.xml', 'Desk news', {
       thumbnailUrl: 'https://cdn.example/mark.png',
-      surfaces: ['discover'],
+      surfaces: ['feed'],
     });
 
     const instance = useListenerWidgetsStore.getState().instances[0];
@@ -232,7 +232,36 @@ describe('listener widgets store', () => {
       input: 'https://example.com/rss.xml',
       label: 'Desk news',
       thumbnailUrl: 'https://cdn.example/mark.png',
-      surfaces: ['discover'],
+      surfaces: ['feed'],
     });
+  });
+
+  it('moves saved Discover news feeds to Feed when upgrading', () => {
+    const migrate = useListenerWidgetsStore.persist.getOptions().migrate;
+    const upgraded = migrate?.(
+      {
+        enabledStationIds: ['x'],
+        instances: [
+          {
+            id: 'n1',
+            typeId: 'news',
+            input: 'https://example.com/rss.xml',
+            label: 'Tahti News',
+            addedAt: '2026-11-01T00:00:00.000Z',
+            surfaces: ['listen', 'discover'],
+          },
+          {
+            id: 'n2',
+            typeId: 'news',
+            input: 'https://example.com/b.xml',
+            label: 'Other',
+            addedAt: '2026-11-01T00:00:00.000Z',
+          },
+        ],
+      },
+      2,
+    ) as { instances: Array<{ surfaces?: string[] }> };
+    expect(upgraded.instances[0].surfaces).toEqual(['listen', 'feed']);
+    expect(upgraded.instances[1].surfaces).toBeUndefined();
   });
 });

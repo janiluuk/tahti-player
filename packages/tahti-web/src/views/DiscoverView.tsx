@@ -66,7 +66,6 @@ import {
 } from '../components/discover/widgetMeta';
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { GroupsDirectory } from '../components/GroupsDirectory';
-import { LatestNewsWidget } from '../components/LatestNewsWidget';
 import { HomeNews } from '../components/listen-view/HomeNews';
 import { PageError, PageLoading } from '../components/PageStates';
 import {
@@ -85,10 +84,6 @@ import {
   useDiscoverStore,
   type DiscoverWidgetId,
 } from '../stores/discoverStore';
-import {
-  newsWidgetsOn,
-  useListenerWidgetsStore,
-} from '../stores/listenerWidgetsStore';
 import { usePlayerStore } from '../stores/playerStore';
 
 function apiReason(meta: FetchMeta): string | null {
@@ -161,8 +156,6 @@ export function DiscoverView() {
   const randomTrackGenres = useDiscoverStore((s) => s.randomTrackGenres);
   const setRandomTrackGenres = useDiscoverStore((s) => s.setRandomTrackGenres);
   const randomTrackPool = useRef<DiscoverTrackItem[]>([]);
-  const newsInstances = useListenerWidgetsStore((s) => s.instances);
-  const newsFeeds = newsWidgetsOn(newsInstances, 'discover');
   const play = usePlayerStore((state) => state.play);
   const user = useAuthStore((state) => state.user);
   const isAdmin = hasAccountRole(user, 'BOARD');
@@ -557,12 +550,6 @@ export function DiscoverView() {
                 }
               />
             ) : null}
-          </div>
-        ) : null}
-
-        {activeTab === 'discover' && newsFeeds.length > 0 ? (
-          <div className="mb-4">
-            <LatestNewsWidget surface="discover" />
           </div>
         ) : null}
 

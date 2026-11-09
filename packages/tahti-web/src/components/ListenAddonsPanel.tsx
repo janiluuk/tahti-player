@@ -164,7 +164,7 @@ export function ListenAddonsPanel({
   const [newsFeedUrl, setNewsFeedUrl] = useState('');
   const [newsThumbnailUrl, setNewsThumbnailUrl] = useState('');
   const [newsShowListen, setNewsShowListen] = useState(true);
-  const [newsShowDiscover, setNewsShowDiscover] = useState(true);
+  const [newsShowFeed, setNewsShowFeed] = useState(true);
   const [newsError, setNewsError] = useState<string | null>(null);
   const [resolvingHearthisUrl, setResolvingHearthisUrl] = useState(false);
   const [hearthisUsername, setHearthisUsername] = useState('');
@@ -330,13 +330,13 @@ export function ListenAddonsPanel({
       setNewsError('Paste an http(s) RSS or Atom feed URL.');
       return;
     }
-    if (!newsShowListen && !newsShowDiscover) {
-      setNewsError('Show this feed on Listen, Discover, or both.');
+    if (!newsShowListen && !newsShowFeed) {
+      setNewsError('Show this feed on Listen, Feed, or both.');
       return;
     }
     const surfaces: ListenerWidgetSurface[] = [
       ...(newsShowListen ? (['listen'] as const) : []),
-      ...(newsShowDiscover ? (['discover'] as const) : []),
+      ...(newsShowFeed ? (['feed'] as const) : []),
     ];
     addInstance(NEWS_WIDGET_TYPE_ID, url, newsTitle.trim() || 'News', {
       thumbnailUrl: newsThumbnailUrl.trim() || undefined,
@@ -429,7 +429,7 @@ export function ListenAddonsPanel({
                 icon={listenAddonIcon(NEWS_WIDGET_TYPE_ID)}
                 name="News"
                 author="Tahti"
-                description="Show an RSS or Atom article slider on Listen and Discover. Configure a thumbnail and feed URL."
+                description="Show an RSS or Atom article slider on Listen and in your Feed. Configure a thumbnail and feed URL."
                 category="Listen"
                 isInstalled={newsInstalled}
                 onInstall={() => handleInstall(NEWS_WIDGET_TYPE_ID)}
@@ -512,11 +512,11 @@ export function ListenAddonsPanel({
                       />
                     </div>
                     <div className="flex items-center justify-between gap-3 text-sm">
-                      <span>Show on Discover</span>
+                      <span>Show in Feed</span>
                       <Toggle
-                        label="Show on Discover"
-                        checked={newsShowDiscover}
-                        onChange={setNewsShowDiscover}
+                        label="Show in Feed"
+                        checked={newsShowFeed}
+                        onChange={setNewsShowFeed}
                       />
                     </div>
                   </div>
@@ -530,13 +530,13 @@ export function ListenAddonsPanel({
                   </p>
                 ) : null}
                 <p className="text-foreground-secondary text-xs">
-                  Paste a public RSS 2.0 or Atom URL. Articles open in a new
-                  tab.
+                  Paste a public RSS 2.0 or Atom URL. Articles open in a reader,
+                  with the original one click away.
                 </p>
               </div>
             ) : (
               <p className="text-foreground-secondary text-sm">
-                Install this add-on to add RSS feeds to Listen and Discover.
+                Install this add-on to add RSS feeds to Listen and your Feed.
               </p>
             )}
           </ConfigurableCard>

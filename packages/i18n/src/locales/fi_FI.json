@@ -1703,7 +1703,13 @@
       "hoursAgo_one": "{{count}} tunti sitten",
       "hoursAgo_other": "{{count}} tuntia sitten",
       "daysAgo_one": "{{count}} päivä sitten",
-      "daysAgo_other": "{{count}} päivää sitten"
+      "daysAgo_other": "{{count}} päivää sitten",
+      "weeksAgo_one": "{{count}} viikko sitten",
+      "weeksAgo_other": "{{count}} viikkoa sitten",
+      "monthsAgo_one": "{{count}} kuukausi sitten",
+      "monthsAgo_other": "{{count}} kuukautta sitten",
+      "yearsAgo_one": "{{count}} vuosi sitten",
+      "yearsAgo_other": "{{count}} vuotta sitten"
     },
     "auth": {
       "logIn": "Kirjaudu",
@@ -9530,6 +9536,75 @@
     },
     "desktopUpdatesRowLabels": {
       "youHaveTahtiPlayerVersion": "Sinulla on Tahti Player {{version}}. Kun uusi versio julkaistaan, sovellus tarjoaa sen asentamista."
+    },
+    "helpHub": {
+      "hubHeading": "Miten voimme auttaa?",
+      "hubIntro": "Lyhyet oppaat kuunteluun, lähettämiseen, lisäosiin, tiliisi ja yhteydenottoon.",
+      "guidesCount_one": "{{count}} opas",
+      "guidesCount_other": "{{count}} opasta",
+      "noMatchDescription": "Kokeile toista hakua hakusanan ”{{query}}” sijaan.",
+      "keyboardDescription": "Pikanäppäimet Kuuntelelle, Radiolle, Kirjastolle, Studiolle ja esittelylle.",
+      "inShort": "Lyhyesti",
+      "openOnTahti": "Avaa tahti.live{{path}}",
+      "groups": {
+        "start-here": {
+          "title": "Aloita tästä",
+          "description": "Löydä kuunneltavaa tai perusta artistiprofiilisi."
+        },
+        "listen-and-share": {
+          "title": "Kuuntele ja jaa",
+          "description": "Tallenna musiikkia, kommentoi hetkiä ja jaa julkisia sivuja."
+        },
+        "artist-tools": {
+          "title": "Artistin työkalut",
+          "description": "Julkaise musiikkia, suunnittele kanavasi ja seuraa ansioita."
+        },
+        "broadcasting": {
+          "title": "Lähettäminen",
+          "description": "Mene lähetykseen ja peilaa se muille alustoille."
+        },
+        "releasing": {
+          "title": "Julkaiseminen",
+          "description": "Julkaisutunnisteet, tietokannat, älylinkit ja toimitus."
+        },
+        "account-support": {
+          "title": "Tili ja tuki",
+          "description": "Rajat, turvallisuus, pikanäppäimet ja mistä saat apua."
+        },
+        "admin": {
+          "title": "Ylläpito",
+          "description": "Alustan ylläpidon työkalut."
+        },
+        "add-ons": {
+          "title": "Lisäosat",
+          "description": "Teemat, tuonnit, livepeilaukset, äänityökalut ja sivuwidgetit."
+        },
+        "build-with-tahti": {
+          "title": "Rakenna Tahtiin",
+          "description": "Tee alustalle oma Disco-widget."
+        }
+      }
+    },
+    "feedStory": {
+      "readOn": "Lue sivustolla {{host}}",
+      "headlineOnlyHost": "Tämä syöte jakaa vain otsikon, tai artikkelin tekstiä ei voitu lukea. Lue koko juttu sivustolla {{host}}.",
+      "headlineOnly": "Tämä syöte jakaa vain otsikon, eikä artikkelin tekstiä voitu lukea.",
+      "openRelease": "Avaa julkaisu",
+      "openLink": "Avaa linkki",
+      "postedUpdate": "{{name}} julkaisi päivityksen",
+      "sharedTrack": "{{name}} jakoi uuden kappaleen ”{{title}}”.",
+      "releasedSomething": "{{name}} julkaisi teoksen ”{{title}}”.",
+      "playOrOpen": "Soita se tässä, lisää jonoon tai avaa nähdäksesi kaiken siihen liittyvän.",
+      "news": "Uutiset",
+      "sources": "Lähteet",
+      "moreNews": "lisää uutisia",
+      "latestNews": "Uusimmat uutiset",
+      "allNews": "Kaikki uutiset",
+      "fromTahti": "Tahdilta",
+      "loadingNews": "Ladataan uutisia…",
+      "noArticles": "Lähteissäsi ei ole juuri nyt artikkeleita.",
+      "couldNotLoadSources": "Ei voitu ladata: {{names}}.",
+      "readTitle": "Lue {{title}}"
     }
   },
   "studioEditor": {

@@ -1,3 +1,5 @@
+import type { ContentLocale } from '../lib/contentLocale';
+import { HELP_ARTICLES_FI } from './help.fi';
 import { PLUGIN_HELP_TABLE } from './pluginHelpCatalog';
 
 export type HelpTable = {
@@ -12,6 +14,12 @@ export type HelpArticle = {
   /** Production deep-link on tahti.live — omit for POC-only articles with no prod equivalent. */
   productionPath?: string;
   sections: Array<{ heading: string; body: string[]; table?: HelpTable }>;
+};
+
+export type HelpArticleTranslation = {
+  title: string;
+  description: string;
+  sections: Array<{ heading: string; body: string[] }>;
 };
 
 export const HELP_ARTICLES: HelpArticle[] = [
@@ -779,4 +787,40 @@ export const HELP_ARTICLES: HelpArticle[] = [
 
 export function getHelpArticle(slug: string): HelpArticle | undefined {
   return HELP_ARTICLES.find((a) => a.slug === slug);
+}
+
+const TRANSLATIONS: Record<
+  Exclude<ContentLocale, 'en'>,
+  Record<string, HelpArticleTranslation>
+> = {
+  fi: HELP_ARTICLES_FI,
+};
+
+function localize(article: HelpArticle, locale: ContentLocale): HelpArticle {
+  if (locale === 'en') {
+    return article;
+  }
+  const translation = TRANSLATIONS[locale][article.slug];
+  if (!translation) {
+    return article;
+  }
+  return {
+    ...article,
+    title: translation.title,
+    description: translation.description,
+    sections: article.sections.map((section, index) => {
+      const translated = translation.sections[index];
+      return translated
+        ? { ...section, heading: translated.heading, body: translated.body }
+        : section;
+    }),
+  };
+}
+
+export function getLocalizedHelpArticle(
+  slug: string,
+  locale: ContentLocale,
+): HelpArticle | undefined {
+  const article = getHelpArticle(slug);
+  return article ? localize(article, locale) : undefined;
 }

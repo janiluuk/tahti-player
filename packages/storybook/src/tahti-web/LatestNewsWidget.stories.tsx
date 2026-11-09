@@ -35,7 +35,7 @@ const meta: Meta<typeof LatestNewsWidget> = {
     docs: {
       description: {
         component:
-          'Every News add-on feed on the page merged into one **Latest News** carousel, newest first. **Sources** adds and removes feeds (suggested DJ and production feeds, or any RSS / Atom URL); **more News** lists every merged headline; a card opens the article inside Tahti.',
+          'Every News add-on feed on the page merged into one **Latest News** row of `StoryCard`s, newest first (shown on Listen and in Feed). **Sources** adds and removes feeds (suggested DJ and production feeds, or any RSS / Atom URL); **more News** lists every merged headline; a card opens the article in `FeedStoryDialog`.',
       },
     },
   },
@@ -55,7 +55,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const cards = await canvas.findAllByTestId('news-carousel-item');
+    const cards = await canvas.findAllByTestId('news-story');
     await expect(cards.length).toBeGreaterThan(0);
     await userEvent.click(canvas.getByRole('button', { name: /Sources/ }));
     const body = within(document.body);

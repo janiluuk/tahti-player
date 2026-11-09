@@ -3,6 +3,7 @@ import { createRoute } from '@tanstack/react-router';
 import { appLayoutRoute } from './router-core';
 import {
   AgplView,
+  ForArtistsView,
   LegalView,
   PrivacyView,
   TermsView,
@@ -30,7 +31,7 @@ export const howItWorksRoute = createRoute({
 export const forArtistsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/for-artists',
-  component: () => <LegalView slug="for-artists" />,
+  component: ForArtistsView,
 });
 
 export const termsRoute = createRoute({
