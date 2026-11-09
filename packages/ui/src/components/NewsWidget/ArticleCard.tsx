@@ -1,6 +1,7 @@
 import { FC } from 'react';
 
 import { cn } from '../../utils';
+import { LinkifiedText } from '../ExternalLink';
 import { StoryCard, type StoryCardKindColor } from '../StoryCard';
 
 export type ArticleCardItem = {
@@ -35,7 +36,12 @@ export const ArticleCard: FC<ArticleCardProps> = ({ item, className }) => (
     title={<span data-testid="article-card-title">{item.title}</span>}
     excerpt={
       item.teaser ? (
-        <span data-testid="article-card-teaser">{item.teaser}</span>
+        <span data-testid="article-card-teaser">
+          <LinkifiedText
+            text={item.teaser}
+            linkClassName="inline break-all text-white hover:text-white"
+          />
+        </span>
       ) : undefined
     }
     onOpen={item.onClick}

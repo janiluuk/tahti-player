@@ -38,11 +38,16 @@ export function ProfileSection({
   return (
     <section
       aria-labelledby={title ? headingId : undefined}
-      className={cn('flex min-w-0 flex-col', className)}
+      className={cn('flex min-w-0 flex-col gap-3', className)}
       {...props}
     >
       {title ? (
-        <SectionTitle id={headingId} title={title} tone="inherit" />
+        <SectionTitle
+          id={headingId}
+          title={title}
+          tone="inherit"
+          className="border-l-4 border-current/40 pl-3"
+        />
       ) : null}
       {status === 'loading' ? (
         <PageLoading label={loadingLabel} />

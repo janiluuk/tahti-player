@@ -104,6 +104,9 @@ export type ChannelBackdropCardProps = {
    * overlay + seekbar, play/favorite buttons. Caller-supplied since it's
    * wired to page-specific playback state. */
   bottomSlot?: ReactNode;
+  /** A control in the card's top-left corner (the page's back button);
+   * the identity row moves right to make room for it. */
+  leading?: ReactNode;
   className?: string;
 };
 
@@ -170,6 +173,7 @@ export function ChannelBackdropCard({
   editable = false,
   minHeightClassName = 'min-h-[26rem] sm:min-h-[34rem]',
   bottomSlot,
+  leading,
   className,
 }: ChannelBackdropCardProps) {
   const NameTag = nameAsHeading ? 'h1' : 'div';
@@ -275,10 +279,13 @@ export function ChannelBackdropCard({
         </div>
       ) : null}
 
+      {leading ? (
+        <div className="absolute top-3 left-3 z-[2]">{leading}</div>
+      ) : null}
       <div
         className={`relative z-[1] p-4 outline-none sm:p-6 sm:pr-40 ${
           editable ? 'pr-12' : ''
-        } ${
+        } ${leading ? 'pl-[4.5rem] sm:pl-[4.5rem]' : ''} ${
           editable
             ? `rounded-lg transition-shadow hover:ring-2 hover:ring-white/40 ${
                 identitySelected ? 'ring-primary ring-2' : ''

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { cleanup, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { buttonVariants } from '../Button/Button';
 import { StoryRow } from './StoryRow';
@@ -24,29 +24,34 @@ describe('StoryRow', () => {
     expect(slots[0]?.className).toContain('snap-start');
   });
 
-  it('disables Previous at the start', () => {
+  it('hides the arrows when every story fits', () => {
     render(
       <StoryRow title="Stories">
         <p>one</p>
       </StoryRow>,
     );
-    expect(
-      (screen.getByRole('button', { name: /^Previous/ }) as HTMLButtonElement)
-        .disabled,
-    ).toBe(true);
+    expect(screen.queryByRole('button', { name: /^Previous/ })).toBeNull();
+    expect(screen.queryByRole('button', { name: /^Next/ })).toBeNull();
   });
 
-  it('uses the same square scroll buttons as CardsRow', () => {
+  it('shows neutral arrows when stories overflow, Previous disabled at the start', () => {
+    vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockReturnValue(2000);
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(800);
     render(
       <StoryRow title="Stories">
         <p>one</p>
       </StoryRow>,
     );
-    const expected = buttonVariants({ variant: 'noShadow', size: 'icon' });
-    for (const name of [/^Previous/, /^Next/]) {
-      const button = screen.getByRole('button', { name });
-      expect(button.className).toContain(expected);
-      expect(button.className).not.toContain('rounded-full');
-    }
+    const previous = screen.getByRole('button', {
+      name: /^Previous/,
+    }) as HTMLButtonElement;
+    const next = screen.getByRole('button', {
+      name: /^Next/,
+    }) as HTMLButtonElement;
+    expect(previous.disabled).toBe(true);
+    expect(next.disabled).toBe(false);
+    const expected = buttonVariants({ variant: 'secondary', size: 'icon-sm' });
+    expect(next.className).toContain(expected);
+    vi.restoreAllMocks();
   });
 });

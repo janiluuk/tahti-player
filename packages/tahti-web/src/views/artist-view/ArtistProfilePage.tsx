@@ -370,6 +370,11 @@ export function ArtistProfilePage({ username }: { username: string }) {
     brandGradient,
     overlay,
   } = artistLookSchemes(channelVisual, lookExtras, artist);
+  const backToListen = (
+    <Tooltip content="Back to Listen" side="right">
+      <BackButtonLink to="/" aria-label="Back to Listen" />
+    </Tooltip>
+  );
 
   return (
     <div
@@ -395,16 +400,13 @@ export function ArtistProfilePage({ username }: { username: string }) {
           preset={resolvePublicVisualizerPreset(backgroundVisualPreset)}
         />
       ) : null}
-      <Tooltip
-        content="Back to Listen"
-        side="right"
-        wrapperClassName={backButtonCornerClassName}
-      >
-        <BackButtonLink to="/" aria-label="Back to Listen" />
-      </Tooltip>
+      {artist.showPageHero === false ? (
+        <div className={backButtonCornerClassName}>{backToListen}</div>
+      ) : null}
 
       <ArtistPageHero
         hidden={artist.showPageHero === false}
+        leading={backToListen}
         title={artist.displayName}
         nameplate={artist}
         isMember={artist.isMember}

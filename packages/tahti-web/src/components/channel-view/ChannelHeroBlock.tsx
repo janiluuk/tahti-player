@@ -51,6 +51,7 @@ export type ChannelHeroBlockProps = {
    * and in that file's hidden-hero fallback. */
   stagePlayer: ReactNode;
   identityActions?: ReactNode;
+  leading?: ReactNode;
 };
 
 export function ChannelHeroBlock({
@@ -81,6 +82,7 @@ export function ChannelHeroBlock({
   showOffFeatures = false,
   stagePlayer,
   identityActions,
+  leading,
 }: ChannelHeroBlockProps) {
   // Opt-in: no bar at all until the artist adds a Navigation block with 2+
   // tabs (see showNavTabs/navTabs above) -- what shows here while editing is
@@ -101,6 +103,7 @@ export function ChannelHeroBlock({
     <div className="flex flex-col gap-0">
       <ChannelBackdropCard
         nameAsHeading
+        leading={leading}
         className={
           editing
             ? ''
