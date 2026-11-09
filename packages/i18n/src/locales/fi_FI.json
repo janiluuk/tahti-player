@@ -3972,7 +3972,13 @@
       "addTracks": "Lisää kappaleita",
       "newCollection": "Uusi kokoelma",
       "openLibrary": "Avaa kirjasto",
-      "addFirstModerator": "Lisää ensimmäinen moderaattori"
+      "addFirstModerator": "Lisää ensimmäinen moderaattori",
+      "uploadAudio": "Lataa ääni",
+      "bookShow": "Varaa lähetys",
+      "browseAddons": "Selaa lisäosia",
+      "beFirstToReply": "Vastaa ensimmäisenä",
+      "beFirstToComment": "Kommentoi ensimmäisenä",
+      "submitTheme": "Lähetä teema"
     },
     "eventCreate": {
       "couldNotLoadTheVenue": "Tapahtumapaikkahakemistoa ei voitu ladata. Kirjoita paikka yllä tai",

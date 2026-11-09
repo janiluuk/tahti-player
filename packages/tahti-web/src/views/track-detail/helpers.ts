@@ -5,6 +5,9 @@ import { toEmbedPlaybackProvider } from '../../lib/embedSrc';
  * render at their native resolution instead of being downsampled to this. */
 export const WAVEFORM_BARS = 180;
 
+/** DOM id of the hero's comment input, so the comments list can focus it. */
+export const TRACK_COMMENT_INPUT_ID = 'track-comment-input';
+
 export function playableFromDetail(
   id: string,
   detail: PublicTrackDetail,

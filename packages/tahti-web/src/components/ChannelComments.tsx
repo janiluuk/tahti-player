@@ -1,4 +1,5 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { MessageSquarePlus } from 'lucide-react';
+import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -35,6 +36,7 @@ export function ChannelComments({
   const [posting, setPosting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
+  const composerRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -116,7 +118,16 @@ export function ChannelComments({
           title={t('channelComments.emptyTitle')}
           description={emptyDescription}
           action={
-            !user && enabled ? (
+            !enabled ? undefined : user ? (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={() => composerRef.current?.focus()}
+              >
+                <MessageSquarePlus size={16} aria-hidden />
+                {t('emptyActions.beFirstToComment')}
+              </Button>
+            ) : (
               <Button
                 variant="secondary"
                 size="sm"
@@ -124,7 +135,7 @@ export function ChannelComments({
               >
                 {t('channelComments.logInToComment')}
               </Button>
-            ) : undefined
+            )
           }
         />
       ) : (
@@ -156,6 +167,7 @@ export function ChannelComments({
           data-testid="channel-comments-composer"
         >
           <Textarea
+            ref={composerRef}
             submitOnModEnter
             aria-label={t('channelComments.writeAria')}
             placeholder={t('channelComments.placeholder')}

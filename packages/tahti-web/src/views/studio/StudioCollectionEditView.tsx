@@ -1,3 +1,5 @@
+import { useRef } from 'react';
+
 import { useTranslation } from '@tahti-player/i18n';
 import {
   backButtonCornerClassName,
@@ -32,6 +34,18 @@ export function StudioCollectionEditView({
   const state = useCollectionEditState(slug);
   const { col, isAlbumLike, loadError, reload } = state;
   const [editing, setEditing] = useEditMode();
+  const importPanelsRef = useRef<HTMLDivElement>(null);
+
+  const addTracks = () => {
+    if (!editing) {
+      setEditing(true);
+      return;
+    }
+    importPanelsRef.current?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
+  };
 
   return (
     <StudioGate requireChannel={false}>
@@ -77,28 +91,31 @@ export function StudioCollectionEditView({
                 state={state}
                 isAlbumLike={isAlbumLike}
                 editing={editing}
+                onAddTracks={col.id ? addTracks : undefined}
               />
-              {editing && col.id ? <RestrictionNotice type="UPLOAD" /> : null}
               {editing && col.id ? (
-                <MixcloudImportPanel
-                  collectionId={col.id}
-                  onAdded={() => void state.refreshItems()}
-                  onUndoAdd={state.removeAddedSound}
-                />
-              ) : null}
-              {editing && col.id ? (
-                <MikseriImportPanel
-                  collectionId={col.id}
-                  onAdded={() => void state.refreshItems()}
-                  onUndoAdd={state.removeAddedSound}
-                />
-              ) : null}
-              {editing && col.id ? (
-                <SpotifyImportPanel
-                  collectionId={col.id}
-                  onAdded={() => void state.refreshItems()}
-                  onUndoAdd={state.removeAddedSound}
-                />
+                <div
+                  ref={importPanelsRef}
+                  className="flex scroll-mt-4 flex-col gap-6"
+                  data-testid="collection-import-panels"
+                >
+                  <RestrictionNotice type="UPLOAD" />
+                  <MixcloudImportPanel
+                    collectionId={col.id}
+                    onAdded={() => void state.refreshItems()}
+                    onUndoAdd={state.removeAddedSound}
+                  />
+                  <MikseriImportPanel
+                    collectionId={col.id}
+                    onAdded={() => void state.refreshItems()}
+                    onUndoAdd={state.removeAddedSound}
+                  />
+                  <SpotifyImportPanel
+                    collectionId={col.id}
+                    onAdded={() => void state.refreshItems()}
+                    onUndoAdd={state.removeAddedSound}
+                  />
+                </div>
               ) : null}
             </>
           )}

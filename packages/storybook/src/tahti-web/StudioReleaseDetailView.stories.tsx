@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { StudioReleaseList } from '@tahti-web/api/studio-types';
 import { StudioReleaseDetailView } from '@tahti-web/views/studio/StudioReleaseDetailView';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
@@ -6,6 +7,7 @@ import {
   audioFile,
   RELEASE_ID,
   releasesWithUploadStates,
+  UPLOAD_STATE_TRACKS,
   withToaster,
 } from './_fixtures/track-release';
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
@@ -199,6 +201,52 @@ export const DeleteAsksFirst: Story = {
     await userEvent.click(dialog.getByRole('button', { name: 'Cancel' }));
     await expect(
       canvas.getByRole('heading', { name: 'After Hours' }),
+    ).toBeVisible();
+  },
+};
+
+// No track has audio yet, so Fingerprinting is empty; its Upload audio
+// action opens Links at the track that needs a file.
+export const FingerprintUploadAudio: Story = {
+  parameters: {
+    mockData: mockData({
+      studioReleases: (base: StudioReleaseList) => ({
+        ...base,
+        releases: base.releases.map((release) =>
+          release.id === RELEASE_ID
+            ? {
+                ...release,
+                tracks: [UPLOAD_STATE_TRACKS[0]!],
+                _count: { tracks: 1 },
+              }
+            : release,
+        ),
+      }),
+    }),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByRole('heading', { name: 'After Hours' });
+    await selectTab(canvas, 'Advanced');
+    await expectVisible(
+      await canvas.findByText('No tracks have audio uploaded yet'),
+    );
+    await userEvent.click(canvas.getByRole('button', { name: 'Upload audio' }));
+    await waitFor(() =>
+      expect(canvas.getByRole('tab', { name: 'Links' })).toHaveAttribute(
+        'aria-selected',
+        'true',
+      ),
+    );
+    const row = await waitFor(() => {
+      const element = canvasElement.ownerDocument.getElementById(
+        'release-track-story-rt-no-audio',
+      );
+      expect(element).not.toBeNull();
+      return element!;
+    });
+    await expect(
+      within(row).getByRole('button', { name: 'Upload audio' }),
     ).toBeVisible();
   },
 };

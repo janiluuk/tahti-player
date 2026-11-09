@@ -280,4 +280,28 @@ describe('DiscussionTopicView', () => {
     renderView();
     expect(await screen.findByText('Topic not found')).toBeInTheDocument();
   });
+
+  it('Be the first to reply focuses the reply box', async () => {
+    vi.spyOn(discussions, 'fetchDiscussionTopic').mockResolvedValue({
+      data: { ...TOPIC, posts: [], postCount: 0 },
+      meta: { source: 'api' },
+    });
+    renderView();
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Be the first to reply' }),
+    );
+    expect(screen.getByLabelText('Your reply')).toHaveFocus();
+  });
+
+  it('a closed topic with no replies offers no reply action', async () => {
+    vi.spyOn(discussions, 'fetchDiscussionTopic').mockResolvedValue({
+      data: { ...TOPIC, status: 'CLOSED', posts: [], postCount: 0 },
+      meta: { source: 'api' },
+    });
+    renderView();
+    expect(await screen.findByText('No replies yet.')).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Be the first to reply' }),
+    ).not.toBeInTheDocument();
+  });
 });

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { MessageSquarePlus } from 'lucide-react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
@@ -36,9 +37,11 @@ const REPLY_MAX = 5000;
 function ReplyForm({
   topicId,
   onPosted,
+  textareaRef,
 }: {
   topicId: string;
   onPosted: () => void;
+  textareaRef?: RefObject<HTMLTextAreaElement>;
 }) {
   const { t } = useTranslation('web');
   const [body, setBody] = useState('');
@@ -76,6 +79,7 @@ function ReplyForm({
       }}
     >
       <Textarea
+        ref={textareaRef}
         label={t('discussionTopic.yourReply')}
         description={t('discussionTopic.useUsernameToMentionA')}
         submitOnModEnter
@@ -235,6 +239,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
   const [attempt, setAttempt] = useState(0);
   const [removing, setRemoving] = useState<DiscussionPost | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const replyRef = useRef<HTMLTextAreaElement>(null);
   const [loadingEarlier, setLoadingEarlier] = useState(false);
 
   const showEarlier = async () => {
@@ -363,7 +368,21 @@ export function DiscussionTopicView({ id }: { id: string }) {
                 : `${Math.max(topic.postCount, topic.posts.length)} replies`}
             </h2>
             {topic.posts.length === 0 ? (
-              <PageEmpty title={t('empties.noReplies')} />
+              <PageEmpty
+                title={t('empties.noReplies')}
+                action={
+                  topic.status === 'OPEN' ? (
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={() => replyRef.current?.focus()}
+                    >
+                      <MessageSquarePlus size={16} aria-hidden />
+                      {t('emptyActions.beFirstToReply')}
+                    </Button>
+                  ) : undefined
+                }
+              />
             ) : (
               <>
                 {topic.hasEarlierPosts ? (
@@ -452,7 +471,11 @@ export function DiscussionTopicView({ id }: { id: string }) {
               {t('discussionTopic.theBoardClosedThisTopic')}
             </p>
           ) : (
-            <ReplyForm topicId={topic.id} onPosted={reload} />
+            <ReplyForm
+              topicId={topic.id}
+              onPosted={reload}
+              textareaRef={replyRef}
+            />
           )}
         </>
       )}

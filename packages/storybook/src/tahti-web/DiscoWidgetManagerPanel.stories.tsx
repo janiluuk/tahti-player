@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DiscoWidgetManagerPanel } from '@tahti-web/components/disco-widgets/DiscoWidgetManagerPanel';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
 
@@ -29,10 +30,22 @@ export const ArtistScope: Story = {
   },
 };
 
+// Nothing installed: Browse add-ons jumps to the store search.
 export const ListenerScope: Story = {
   args: {
     scope: 'LISTENER',
     description: 'Add-ons shown on your Listen page.',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      await canvas.findByRole('button', { name: 'Browse add-ons' }),
+    );
+    await waitFor(() =>
+      expect(
+        canvas.getByRole('searchbox', { name: 'Search Disco-widgets' }),
+      ).toHaveFocus(),
+    );
   },
 };
 

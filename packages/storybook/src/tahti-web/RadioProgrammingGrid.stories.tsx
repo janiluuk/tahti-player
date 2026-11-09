@@ -1,10 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { PublicRadioSlot } from '@tahti-web/api/shows';
 import { RadioProgrammingGrid } from '@tahti-web/components/channel-view/RadioProgrammingGrid';
-import { expect, waitFor, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
-import { withTahtiRouter } from './_lib/decorators';
+import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { mockData } from './_lib/mock-data';
+import { findDialog } from './_lib/play';
 
 const HOUR = 3_600_000;
 
@@ -103,15 +104,31 @@ export const Week: Story = {
   },
 };
 
+// Signed out: the empty week has no booking action.
 export const NothingBooked: Story = {
   parameters: { mockData: mockData({ radioSlots: () => [] }) },
   play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
     await waitFor(() =>
       expect(
-        within(canvasElement).getByText(
-          'No live shows booked in the next 7 days.',
-        ),
+        canvas.getByText('No live shows booked in the next 7 days.'),
       ).toBeVisible(),
     );
+    await expect(
+      canvas.queryByRole('button', { name: 'Book a show' }),
+    ).toBeNull();
+  },
+};
+
+// Signed in: Book a show opens the same booking calendar as Radio.
+export const NothingBookedBookAShow: Story = {
+  decorators: [withMockAuth(MOCK_USERS.artist)],
+  parameters: { mockData: mockData({ radioSlots: () => [] }) },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(
+      await canvas.findByRole('button', { name: 'Book a show' }),
+    );
+    await findDialog(canvasElement, 'Tahti Radio schedule');
   },
 };

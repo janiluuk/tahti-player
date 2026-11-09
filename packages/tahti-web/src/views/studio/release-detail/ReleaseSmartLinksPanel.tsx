@@ -51,6 +51,7 @@ import {
 } from '../../../lib/dspPluginDefaults';
 import { toastWithUndo } from '../../../lib/undoToast';
 import { NewReleaseTrackUploadDialog } from './NewReleaseTrackUploadDialog';
+import { releaseTrackRowId } from './releaseDetailTabs';
 import { ReleaseTrackAudioUpload } from './ReleaseTrackAudioUpload';
 import { ReleaseTrackRow } from './ReleaseTrackRow';
 import { useReleaseTrackProcessingPoll } from './useReleaseTrackProcessingPoll';
@@ -426,6 +427,7 @@ export function ReleaseSmartLinksPanel({
             {tracks.map((track, index) => (
               <li
                 key={track.id}
+                id={releaseTrackRowId(track.id)}
                 draggable
                 onDragStart={() => setDraggedId(track.id)}
                 onDragOver={(event) => event.preventDefault()}
