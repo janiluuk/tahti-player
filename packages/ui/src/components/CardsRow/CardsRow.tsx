@@ -287,7 +287,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
           ) : null}
           {allowListToggle ? (
             <div
-              className="border-border flex shrink-0 items-center rounded-md border"
+              className="flex shrink-0 items-center gap-2"
               data-testid="cards-row-zoom"
             >
               <Tooltip
@@ -297,13 +297,12 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
                 <Button
                   data-testid="cards-row-zoom-out"
                   size="icon-sm"
-                  variant="text"
-                  className="rounded-r-none"
+                  variant="secondary"
                   disabled={!smallerLayout}
                   aria-label={layoutLabels[smallerLayout ?? layout]}
                   onClick={() => smallerLayout && setLayout(smallerLayout)}
                 >
-                  <ZoomOut size={15} aria-hidden />
+                  <ZoomOut size={16} aria-hidden />
                 </Button>
               </Tooltip>
               <Tooltip
@@ -313,13 +312,12 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
                 <Button
                   data-testid="cards-row-zoom-in"
                   size="icon-sm"
-                  variant="text"
-                  className="border-border rounded-l-none border-l"
+                  variant="secondary"
                   disabled={!largerLayout}
                   aria-label={layoutLabels[largerLayout ?? layout]}
                   onClick={() => largerLayout && setLayout(largerLayout)}
                 >
-                  <ZoomIn size={15} aria-hidden />
+                  <ZoomIn size={16} aria-hidden />
                 </Button>
               </Tooltip>
             </div>
