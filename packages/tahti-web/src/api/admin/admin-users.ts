@@ -144,13 +144,11 @@ export function adminUsersExportCsvUrl(filters: {
   if (filters.q?.trim()) {
     qs.set('search', filters.q.trim());
   }
+  if (filters.role) {
+    qs.set('role', filters.role);
+  }
   if (filters.role === 'BOARD') {
     qs.set('isBoard', 'true');
-  } else if (filters.role === 'ARTIST') {
-    qs.set('tier', 'ARTIST');
-    qs.set('isBoard', 'false');
-  } else if (filters.role === 'LISTENER') {
-    qs.set('tier', 'FREE');
   }
   if (filters.isMember === 'true' || filters.isMember === 'false') {
     qs.set('isMember', filters.isMember);
@@ -192,13 +190,11 @@ export async function fetchAdminUsers(filters: {
     if (filters.q) {
       qs.set('search', filters.q);
     }
+    if (filters.role) {
+      qs.set('role', filters.role);
+    }
     if (filters.role === 'BOARD') {
       qs.set('isBoard', 'true');
-    } else if (filters.role === 'ARTIST') {
-      qs.set('tier', 'ARTIST');
-      qs.set('isBoard', 'false');
-    } else if (filters.role === 'LISTENER') {
-      qs.set('tier', 'FREE');
     }
     if (filters.isMember) {
       qs.set('isMember', filters.isMember);
