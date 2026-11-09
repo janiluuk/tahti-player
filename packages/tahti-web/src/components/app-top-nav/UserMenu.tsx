@@ -17,6 +17,8 @@ import { type TopNavState } from './useTopNavState';
 
 const NOTIFICATIONS_DOT = 'bg-accent-red';
 const MESSAGES_DOT = 'bg-accent-cyan';
+const BOTH_DOT =
+  'bg-[linear-gradient(135deg,var(--color-accent-red)_50%,var(--color-accent-cyan)_50%)]';
 
 function UnreadDot({ className }: { className: string }) {
   return (
@@ -112,15 +114,21 @@ export function UserMenu({ nav }: { nav: TopNavState }) {
           {hasUnreadNotifications || hasUnreadMessages ? (
             <span
               data-testid="account-unread-pill"
-              className="bg-background ring-border motion-safe:animate-in motion-safe:zoom-in-50 absolute -top-1 -right-2 flex items-center gap-0.5 rounded-full p-0.5 ring-1 motion-safe:duration-300"
-            >
-              {hasUnreadNotifications ? (
-                <UnreadDot className={NOTIFICATIONS_DOT} />
-              ) : null}
-              {hasUnreadMessages ? (
-                <UnreadDot className={MESSAGES_DOT} />
-              ) : null}
-            </span>
+              data-unread={[
+                hasUnreadNotifications && 'notifications',
+                hasUnreadMessages && 'messages',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              className={cn(
+                'ring-background motion-safe:animate-in motion-safe:zoom-in-50 absolute -top-0.5 -right-0.5 size-2.5 rounded-full ring-2 motion-safe:duration-300',
+                hasUnreadNotifications && hasUnreadMessages
+                  ? BOTH_DOT
+                  : hasUnreadNotifications
+                    ? NOTIFICATIONS_DOT
+                    : MESSAGES_DOT,
+              )}
+            />
           ) : null}
         </span>
         <span className="text-foreground-secondary text-[10px]" aria-hidden>

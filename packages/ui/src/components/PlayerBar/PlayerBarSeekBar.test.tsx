@@ -121,4 +121,21 @@ describe('PlayerBarSeekBar', () => {
     fireEvent.click(container, { clientX: 100 });
     expect(onSeek).not.toHaveBeenCalled();
   });
+
+  it('puts labelClassName on both time labels', () => {
+    const { getByTestId } = render(
+      <PlayerBarSeekBar
+        progress={10}
+        elapsedSeconds={5}
+        remainingSeconds={45}
+        labelClassName="bg-background/55"
+      />,
+    );
+    expect(getByTestId('player-seek-elapsed').className).toContain(
+      'bg-background/55',
+    );
+    expect(getByTestId('player-seek-remaining').className).toContain(
+      'bg-background/55',
+    );
+  });
 });

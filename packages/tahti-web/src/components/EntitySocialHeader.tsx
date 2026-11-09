@@ -206,7 +206,7 @@ export function EntitySocialHeader({
     <div
       className={cn(
         'border-border shadow-shadow relative isolate flex flex-col gap-5 overflow-hidden rounded-md border-(length:--border-width) p-6',
-        leading ? 'pl-[4.5rem]' : undefined,
+        leading ? 'sm:pl-[4.5rem]' : undefined,
         !scheme && !hasDesignedBackdrop && 'bg-primary text-primary-foreground',
         className,
       )}
@@ -294,7 +294,14 @@ export function EntitySocialHeader({
           className="pointer-events-none absolute top-4 right-4 max-h-16 max-w-40 object-contain drop-shadow"
         />
       ) : null}
-      <div className="flex flex-wrap items-center gap-5">
+      {/* On phones only this row clears the back button, so the stat pills
+          below get the full width and fit side by side. */}
+      <div
+        className={cn(
+          'flex flex-wrap items-center gap-5',
+          leading ? 'max-sm:pl-12' : undefined,
+        )}
+      >
         <div className="relative shrink-0">
           {imageUrl ? (
             onImageClick ? (
@@ -479,8 +486,8 @@ export function EntitySocialHeader({
           data-testid="entity-social-stats"
           className={
             statsDimmed
-              ? 'flex flex-wrap gap-3 opacity-40'
-              : 'flex flex-wrap gap-3'
+              ? 'flex flex-wrap gap-2 opacity-40 sm:gap-3'
+              : 'flex flex-wrap gap-2 sm:gap-3'
           }
         >
           {activeStats.map((stat) => {

@@ -82,7 +82,7 @@ describe('UserMenu on desktop', () => {
     expect(nav.setMessagesOpen).toHaveBeenCalledWith(true);
   });
 
-  it('shows one pill colour per unread kind, never a count', async () => {
+  it('shows one corner dot coloured for both unread kinds, never a count', async () => {
     renderMenu(
       navState({
         isMobile: false,
@@ -95,8 +95,9 @@ describe('UserMenu on desktop', () => {
       name: 'Signed in as Demo, unread notifications and messages',
     });
     const pill = screen.getByTestId('account-unread-pill');
-    expect(pill.querySelector('.bg-accent-red')).toBeTruthy();
-    expect(pill.querySelector('.bg-accent-cyan')).toBeTruthy();
+    expect(pill.dataset.unread).toBe('notifications messages');
+    expect(pill.children).toHaveLength(0);
+    expect(pill.className).toContain('-right-0.5');
     expect(trigger.textContent).not.toMatch(/[0-9]/);
   });
 
@@ -113,8 +114,9 @@ describe('UserMenu on desktop', () => {
       name: 'Signed in as Demo, unread messages',
     });
     const pill = screen.getByTestId('account-unread-pill');
-    expect(pill.querySelector('.bg-accent-red')).toBeNull();
-    expect(pill.querySelector('.bg-accent-cyan')).toBeTruthy();
+    expect(pill.dataset.unread).toBe('messages');
+    expect(pill.className).toContain('bg-accent-cyan');
+    expect(pill.className).not.toContain('bg-accent-red');
   });
 
   it('shows no pill when nothing is unread', async () => {

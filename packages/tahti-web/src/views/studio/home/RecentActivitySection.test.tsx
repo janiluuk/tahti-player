@@ -15,6 +15,12 @@ describe('RecentActivitySection', () => {
           durationSec: 125,
           createdAt: '2026-10-18T10:00:00.000Z',
         },
+        {
+          id: 's2',
+          title: 'Long Set',
+          durationSec: 3720,
+          createdAt: '2026-10-17T10:00:00.000Z',
+        },
       ],
       meta: { source: 'api' },
     });
@@ -29,6 +35,7 @@ describe('RecentActivitySection', () => {
       await screen.findByRole('link', { name: 'Night Drive' }),
     ).toHaveAttribute('href', '/studio/sounds/s1');
     expect(screen.getByText(/2:05/)).toBeVisible();
+    expect(screen.getByText(/1:02:00/)).toBeVisible();
     const income = screen.getByRole('link', { name: /Fan subscriptions/ });
     expect(income).toHaveAttribute('href', '/studio/revenue');
     expect(income.textContent).toMatch(/12[.,]40/);

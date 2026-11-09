@@ -6,18 +6,8 @@ import { Box, Button, Select, Tooltip } from '@tahti-player/ui';
 
 import type { ProgrammeItem } from '../api/studio-extras';
 import { cn } from '../lib/cn';
+import { formatDuration } from '../lib/playableToTrack';
 import { PageEmpty } from './PageStates';
-
-const SECONDS_PER_MINUTE = 60;
-
-function formatDuration(durationSec: number | null): string | null {
-  if (durationSec == null) {
-    return null;
-  }
-  const minutes = Math.floor(durationSec / SECONDS_PER_MINUTE);
-  const seconds = durationSec % SECONDS_PER_MINUTE;
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-}
 
 type ChannelRotationEditorProps = {
   items: ProgrammeItem[];
@@ -145,7 +135,7 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
       ) : (
         <ol className="border-border divide-border divide-y overflow-hidden rounded-lg border">
           {items.map((item, index) => {
-            const duration = formatDuration(item.durationSec);
+            const duration = formatDuration(item.durationSec) || null;
             const isCurrent = currentItemId === item.id;
             const showPause = isCurrent && isPlaying;
             return (

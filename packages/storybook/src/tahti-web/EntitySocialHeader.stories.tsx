@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { EntitySocialHeader } from '@tahti-web/components/EntitySocialHeader';
 import {
+  ArrowLeftIcon,
   CalendarIcon,
   HeartIcon,
   ListMusicIcon,
@@ -63,6 +64,39 @@ export const Artist: Story = {
       </Button>
     ),
     'data-testid': 'artist-social-header',
+  },
+};
+
+/** Phone width with a back button: only the identity row clears the
+ * button, so the stat pills start at the header's own padding and use the
+ * full width. */
+export const ArtistOnPhoneWithBack: Story = {
+  name: 'Artist on phone with back button',
+  parameters: { viewport: { defaultViewport: 'mobile1' } },
+  args: {
+    ...Artist.args,
+    leading: (
+      <Button size="icon" variant="secondary" aria-label="Back">
+        <ArrowLeftIcon size={18} aria-hidden />
+      </Button>
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const header = canvas.getByTestId('artist-social-header');
+    const statsLeft = canvas
+      .getByTestId('entity-social-stats')
+      .getBoundingClientRect().left;
+    const backRight = canvas
+      .getByRole('button', { name: 'Back' })
+      .getBoundingClientRect().right;
+    if (window.innerWidth < 640) {
+      await expect(statsLeft).toBeLessThan(backRight);
+    } else {
+      await expect(statsLeft).toBeGreaterThan(
+        header.getBoundingClientRect().left + 60,
+      );
+    }
   },
 };
 

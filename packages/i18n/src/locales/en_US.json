@@ -1909,7 +1909,6 @@
       "browseListen": "Browse listen",
       "liveNow": "Live now",
       "liveNowOnRelay": "Live now on the member relay:",
-      "openSlug": "Open {{slug}}",
       "liveSet": "Live set",
       "stationFetchFailed": "Station fetch failed",
       "trackInfoFor": "Track info for {{title}}",
@@ -1928,7 +1927,8 @@
       "scheduleRefreshError": "Could not refresh the schedule",
       "scheduleLoadError": "Could not load the schedule",
       "bookASlot": "Book a slot",
-      "fullSchedule": "Full schedule"
+      "fullSchedule": "Full schedule",
+      "openLiveChannel": "Open {{name}}"
     },
     "messagesPopover": {
       "title": "Messages",
@@ -9605,6 +9605,20 @@
       "noArticles": "No articles in your sources right now.",
       "couldNotLoadSources": "Couldn’t load {{names}}.",
       "readTitle": "Read {{title}}"
+    },
+    "ambientTrackRow": {
+      "likeTrack_one": "Like {{title}} ({{count}} like)",
+      "likeTrack_other": "Like {{title}} ({{count}} likes)",
+      "unlikeTrack_one": "Unlike {{title}} ({{count}} like)",
+      "unlikeTrack_other": "Unlike {{title}} ({{count}} likes)",
+      "likes_one": "{{count}} like",
+      "likes_other": "{{count}} likes",
+      "plays_one": "{{count}} play",
+      "plays_other": "{{count}} plays",
+      "downloads_one": "{{count}} download",
+      "downloads_other": "{{count}} downloads",
+      "comments_one": "{{count}} comment",
+      "comments_other": "{{count}} comments"
     }
   },
   "studioEditor": {

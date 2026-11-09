@@ -77,7 +77,8 @@ async function openFromAccountMenu(
 }
 
 /** Notifications and messages live in the account menu; the avatar carries
- * one coloured dot per kind with something unread, never a count. */
+ * one small corner dot, coloured by the kinds with something unread, never a
+ * count. */
 export const AccountUnreadPill: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
@@ -91,7 +92,7 @@ export const AccountUnreadPill: Story = {
     });
     const pill = within(trigger).getByTestId('account-unread-pill');
     await expect(pill).toBeVisible();
-    await expect(pill.children).toHaveLength(2);
+    await expect(pill.dataset.unread).toBe('notifications messages');
     await expect(trigger.textContent).not.toMatch(/[0-9]/);
   },
 };

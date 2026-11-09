@@ -258,6 +258,7 @@ export function RadioView() {
           slug: relay.channel.slug,
           name: relay.channel.displayName ?? relay.channel.slug,
           title: relay.channel.title,
+          artworkUrl: relay.channel.artworkUrl ?? null,
         }
       : null;
   const nextRotationTrack = nextTrack ?? rotation[0] ?? null;
@@ -266,6 +267,7 @@ export function RadioView() {
     ? {
         title: memberLive.title ?? t('radio.liveSet'),
         subtitle: memberLive.name,
+        artworkUrl: memberLive.artworkUrl,
       }
     : nowPlaying
       ? {
@@ -469,7 +471,7 @@ export function RadioView() {
                   params={{ slug: memberLive.slug }}
                   className="underline-offset-2 hover:underline"
                 >
-                  {t('radio.openSlug', { slug: memberLive.slug })}
+                  {t('radio.openLiveChannel', { name: memberLive.name })}
                 </Link>
               </span>
             </Box>
@@ -485,6 +487,7 @@ export function RadioView() {
             station={station}
             logoUrl={stationLogo}
             artworkUrl={overlayCurrent?.artworkUrl ?? null}
+            liveChannel={memberLive}
             online={online}
             offlineContent={
               <PageEmpty
