@@ -1,5 +1,4 @@
 import { Link } from '@tanstack/react-router';
-import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -20,29 +19,25 @@ import {
   PageLoading,
 } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { useSnapshotFetch } from '../../../lib/useSnapshotFetch';
 import { formatEur } from './LedgerPanel';
 
 export function FanSubArtistsPanel() {
   const { t } = useTranslation('web');
-  const [rows, setRows] = useState<AdminFanSubArtist[] | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const load = useCallback(() => {
-    let cancelled = false;
-    setLoading(true);
-    void fetchFanSubArtists().then((result) => {
-      if (cancelled) {
-        return;
+  const {
+    data: rows,
+    loading,
+    retry: load,
+  } = useSnapshotFetch<AdminFanSubArtist[]>(
+    'admin-fan-sub-artists',
+    async () => {
+      const result = await fetchFanSubArtists();
+      if (!result.data) {
+        throw new Error('Fan subscription artists unavailable');
       }
-      setRows(result.data);
-      setLoading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => load(), [load]);
+      return result.data;
+    },
+  );
 
   return (
     <StudioPanel
@@ -52,10 +47,7 @@ export function FanSubArtistsPanel() {
       {loading && !rows ? (
         <PageLoading label={t('loading.loadingArtists')} />
       ) : !rows ? (
-        <PageError
-          title={t('loadErrors.couldnTLoadArtists')}
-          onRetry={() => void load()}
-        />
+        <PageError title={t('loadErrors.couldnTLoadArtists')} onRetry={load} />
       ) : rows.length === 0 ? (
         <PageEmpty title={t('empties.noActiveFanSubscriptions')} />
       ) : (

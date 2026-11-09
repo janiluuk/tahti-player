@@ -127,3 +127,15 @@ export function useSnapshotFetch<T>(
     },
   };
 }
+
+/** Unwraps a `{ data, meta }` API result for `useSnapshotFetch`: a live
+ * API failure throws, so the saved snapshot stays on screen. */
+export function apiResult<T>(result: {
+  data: T;
+  meta: { source: string; reason?: string };
+}): T {
+  if (result.meta.source === 'api' && result.meta.reason) {
+    throw new Error(result.meta.reason);
+  }
+  return result.data;
+}

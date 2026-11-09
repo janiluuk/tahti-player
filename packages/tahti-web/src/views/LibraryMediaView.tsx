@@ -1,5 +1,5 @@
 import { PlayIcon, Trash2Icon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -25,6 +25,7 @@ import { LibrarySortSelect } from '../components/library/LibrarySortSelect';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { StudioPanel } from '../components/StudioPanel';
 import { sortLibraryItems, type LibrarySort } from '../lib/librarySort';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024 * 1024) {
@@ -35,29 +36,24 @@ function formatBytes(bytes: number): string {
 
 export function LibraryMediaView() {
   const { t } = useTranslation('web');
-  const [files, setFiles] = useState<UserMediaFile[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const snapshot = useSnapshotFetch<UserMediaFile[]>(
+    'library-media',
+    async () => apiResult(await fetchUserMedia()),
+  );
+  const files = snapshot.data ?? [];
+  const { loading, error: loadError, retry: reload } = snapshot;
+  const setFiles = (
+    next: UserMediaFile[] | ((current: UserMediaFile[]) => UserMediaFile[]),
+  ) =>
+    snapshot.mutate((current) =>
+      typeof next === 'function' ? next(current ?? []) : next,
+    );
   const [pendingRemove, setPendingRemove] = useState<UserMediaFile | null>(
     null,
   );
   const [kindFilter, setKindFilter] = useState<string>('ALL');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<LibrarySort>('newest');
-
-  const reload = async () => {
-    setLoading(true);
-    const result = await fetchUserMedia();
-    setFiles(result.data);
-    setLoadError(
-      result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
-    );
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    void reload();
-  }, []);
 
   const kindChips = useMemo(() => {
     const hasImages = files.some((f) => !f.contentType.startsWith('video/'));
@@ -115,7 +111,7 @@ export function LibraryMediaView() {
         <PageError
           title={t('library.mediaLoadError')}
           description={loadError}
-          onRetry={() => void reload()}
+          onRetry={() => reload()}
         />
       ) : files.length === 0 ? (
         <PageEmpty

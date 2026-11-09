@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -15,6 +15,7 @@ import { fetchTransparencyGrants } from '../api/client';
 import type { TransparencyGrantReport } from '../api/types';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 function centsLabel(raw: string | number) {
   const n = Number(raw);
@@ -23,36 +24,12 @@ function centsLabel(raw: string | number) {
 
 export function TransparencyGrantYearView({ year }: { year: number }) {
   const { t } = useTranslation('web');
-  const [report, setReport] = useState<TransparencyGrantReport | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [failed, setFailed] = useState(false);
-  const [attempt, setAttempt] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setFailed(false);
-    fetchTransparencyGrants(year)
-      .then((result) => {
-        if (!cancelled) {
-          setReport(result.data);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setReport(null);
-          setFailed(true);
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [year, attempt]);
+  const snapshot = useSnapshotFetch<TransparencyGrantReport>(
+    `transparency-grants:${year}`,
+    async () => (await fetchTransparencyGrants(year)).data,
+  );
+  const { data: report, loading, retry } = snapshot;
+  const failed = snapshot.error !== null && report === null;
 
   return (
     <ViewShell
@@ -70,7 +47,7 @@ export function TransparencyGrantYearView({ year }: { year: number }) {
           title={t('transparencyGrantYearViewLabels.couldNotLoadTheYear', {
             year,
           })}
-          onRetry={() => setAttempt((n) => n + 1)}
+          onRetry={retry}
         />
       ) : !report ? (
         <PageEmpty

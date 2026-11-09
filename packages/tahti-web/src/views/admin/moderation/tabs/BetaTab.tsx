@@ -5,7 +5,7 @@ import {
   SendIcon,
   XCircleIcon,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, Dialog, Input } from '@tahti-player/ui';
@@ -25,6 +25,7 @@ import {
   PageLoading,
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../../../lib/useSnapshotFetch';
 import { ModerationTabs } from '../ModerationTabs';
 
 const COMBINING_DIACRITICS = new RegExp('[̀-ͯ]', 'g');
@@ -73,9 +74,6 @@ const FILTER_TAB_ICONS = {
 export function BetaTab() {
   const { t } = useTranslation('web');
   const [filter, setFilter] = useState<AdminBetaStatus | 'all'>('PENDING');
-  const [apps, setApps] = useState<AdminBetaApplication[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [approveTarget, setApproveTarget] =
     useState<AdminBetaApplication | null>(null);
   const [username, setUsername] = useState('');
@@ -84,20 +82,15 @@ export function BetaTab() {
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const reload = () => {
-    setLoading(true);
-    void fetchAdminBetaApplications(filter === 'all' ? undefined : filter).then(
-      (res) => {
-        setApps(res.data);
-        setLoadError(
-          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
-        );
-        setLoading(false);
-      },
-    );
-  };
-
-  useEffect(reload, [filter]);
+  const snapshot = useSnapshotFetch<AdminBetaApplication[]>(
+    `admin-beta:${filter}`,
+    async () =>
+      apiResult(
+        await fetchAdminBetaApplications(filter === 'all' ? undefined : filter),
+      ),
+  );
+  const apps = snapshot.data ?? [];
+  const { loading, error: loadError, retry: reload } = snapshot;
 
   const openApprove = (app: AdminBetaApplication) => {
     setApproveTarget(app);

@@ -1,5 +1,5 @@
 import { PlayIcon, ScissorsIcon, Trash2Icon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -30,6 +30,7 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { usePlayerStore } from '../../stores/playerStore';
 import { AnnouncementTrimDialog } from './announcements/AnnouncementTrimDialog';
 import { EveryNthInput } from './announcements/EveryNthInput';
@@ -47,24 +48,26 @@ export function AdminAnnouncementsView() {
   const { t } = useTranslation('web');
 
   const play = usePlayerStore((s) => s.play);
-  const [clips, setClips] = useState<AdminAnnouncementClip[]>([]);
-  const [systemEnabled, setSystemEnabled] = useState(true);
-  const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [pendingDelete, setPendingDelete] =
     useState<AdminAnnouncementClip | null>(null);
   const [trimming, setTrimming] = useState<AdminAnnouncementClip | null>(null);
 
-  const reload = () => {
-    void fetchAdminAnnouncements().then((res) => {
-      setClips(res.data.clips);
-      setSystemEnabled(res.data.systemEnabled);
-      setLoading(false);
-    });
-  };
-
-  useEffect(reload, []);
+  const snapshot = useSnapshotFetch<{
+    clips: AdminAnnouncementClip[];
+    systemEnabled: boolean;
+  }>('admin-announcements', async () =>
+    apiResult(await fetchAdminAnnouncements()),
+  );
+  const clips = snapshot.data?.clips ?? [];
+  const systemEnabled = snapshot.data?.systemEnabled ?? true;
+  const { loading, retry: reload } = snapshot;
+  const setSystemEnabled = (enabled: boolean) =>
+    snapshot.mutate((current) => ({
+      clips: current?.clips ?? [],
+      systemEnabled: enabled,
+    }));
 
   const patch = (
     id: string,

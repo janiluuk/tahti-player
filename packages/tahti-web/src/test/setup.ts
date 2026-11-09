@@ -1,8 +1,11 @@
 import '@testing-library/jest-dom';
 
 import { Blob as NodeBlob } from 'node:buffer';
+import { afterEach } from 'vitest';
 
 import { setupDomMocks } from '@tahti-player/ui/test';
+
+import { clearSnapshots } from '../lib/useSnapshotFetch';
 
 // jsdom's Blob polyfill has no arrayBuffer()/text()/stream() — use Node's.
 globalThis.Blob = NodeBlob as unknown as typeof Blob;
@@ -45,3 +48,7 @@ if (typeof globalThis.sessionStorage === 'undefined') {
 }
 
 setupDomMocks();
+
+afterEach(() => {
+  clearSnapshots();
+});

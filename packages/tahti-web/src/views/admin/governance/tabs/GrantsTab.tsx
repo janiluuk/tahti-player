@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, Tooltip } from '@tahti-player/ui';
 
@@ -14,6 +12,7 @@ import {
   PageLoading,
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { useSnapshotFetch } from '../../../../lib/useSnapshotFetch';
 
 function formatEur(cents: number): string {
   return `€${(cents / 100).toLocaleString('fi-FI', { minimumFractionDigits: 2 })}`;
@@ -21,22 +20,20 @@ function formatEur(cents: number): string {
 
 export function GrantsTab() {
   const { t } = useTranslation('web');
-  const [history, setHistory] = useState<AdminGrantYearSummary[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-
-  const reload = () => {
-    setLoading(true);
-    void fetchAdminGrants().then((res) => {
-      setHistory(res.data);
-      setLoadError(
-        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
-      );
-      setLoading(false);
-    });
-  };
-
-  useEffect(reload, []);
+  const snapshot = useSnapshotFetch<{
+    history: AdminGrantYearSummary[];
+    reason: string | null;
+  }>('admin-grants', async () => {
+    const res = await fetchAdminGrants();
+    const reason = res.meta.source === 'api' ? (res.meta.reason ?? null) : null;
+    if (reason && res.data.length === 0) {
+      throw new Error(reason);
+    }
+    return { history: res.data, reason };
+  });
+  const history = snapshot.data?.history ?? [];
+  const loadError = snapshot.error ?? snapshot.data?.reason ?? null;
+  const { loading, retry: reload } = snapshot;
 
   return (
     <>

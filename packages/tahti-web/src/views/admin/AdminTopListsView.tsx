@@ -1,6 +1,6 @@
 import { useNavigate } from '@tanstack/react-router';
 import { ListFilterIcon, SearchIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
@@ -26,6 +26,7 @@ import {
   formatListenCount,
   rankingBucketTitle,
 } from '../../lib/topListEntries';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { usePlayerStore } from '../../stores/playerStore';
 
 function periods(
@@ -62,28 +63,12 @@ export function AdminTopListsView() {
   const [dimension, setDimension] = useState<AdminTopListDimension>('type');
   const [sort, setSort] = useState<AdminTopListSort>('desc');
   const [query, setQuery] = useState('');
-  const [buckets, setBuckets] = useState<AdminTopListBucket[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    void fetchAdminTopLists(period, dimension, sort).then((result) => {
-      if (cancelled) {
-        return;
-      }
-      setBuckets(result.data);
-      const reason =
-        result.meta.source === 'api' ? (result.meta.reason ?? null) : null;
-      setLoadError(reason);
-      setLoading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [period, dimension, sort, attempt]);
+  const snapshot = useSnapshotFetch<AdminTopListBucket[]>(
+    `admin-top-lists:${period}:${dimension}:${sort}`,
+    async () => apiResult(await fetchAdminTopLists(period, dimension, sort)),
+  );
+  const buckets = snapshot.data ?? [];
+  const { loading, error: loadError, retry } = snapshot;
 
   const normalizedQuery = query.trim().toLowerCase();
   const visibleBuckets = buckets
@@ -157,7 +142,7 @@ export function AdminTopListsView() {
                 <PageError
                   title={t('loadErrors.couldNotLoadTopLists')}
                   description={loadError}
-                  onRetry={() => setAttempt((n) => n + 1)}
+                  onRetry={retry}
                 />
               </StudioPanel>
             ) : visibleBuckets.length === 0 ? (

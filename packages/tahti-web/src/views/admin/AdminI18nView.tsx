@@ -1,5 +1,5 @@
 import { PlusIcon, UploadIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -27,13 +27,10 @@ import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
 export function AdminI18nView() {
   const { t } = useTranslation('web');
-  const [languages, setLanguages] = useState<AdminLanguage[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [unavailable, setUnavailable] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [newOpen, setNewOpen] = useState(false);
   const [code, setCode] = useState('');
   const [name, setName] = useState('');
@@ -42,21 +39,19 @@ export function AdminI18nView() {
   const [importTarget, setImportTarget] = useState<string | null>(null);
   const [importOpen, setImportOpen] = useState(false);
 
-  const reload = () => {
-    setLoading(true);
-    void fetchAdminLanguages().then((res) => {
-      setLanguages(res.data);
-      setUnavailable(res.unavailable === true);
-      setLoadError(
-        res.unavailable !== true && res.meta.source === 'api'
-          ? (res.meta.reason ?? null)
-          : null,
-      );
-      setLoading(false);
-    });
-  };
-
-  useEffect(reload, []);
+  const snapshot = useSnapshotFetch<{
+    languages: AdminLanguage[];
+    unavailable: boolean;
+  }>('admin-languages', async () => {
+    const res = await fetchAdminLanguages();
+    if (res.unavailable === true) {
+      return { languages: res.data, unavailable: true };
+    }
+    return { languages: apiResult(res), unavailable: false };
+  });
+  const languages = snapshot.data?.languages ?? [];
+  const unavailable = snapshot.data?.unavailable ?? false;
+  const { loading, error: loadError, retry: reload } = snapshot;
 
   const closeNew = () => {
     setNewOpen(false);

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -23,6 +23,7 @@ import { StatNumber } from '../../components/tahti/StatNumber';
 import { flagEmoji } from '../../lib/countries';
 import { monthLabelsShort, weekdayLabelsShort } from '../../lib/historyStats';
 import { dateLocaleTag } from '../../lib/locale';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { useThemeStore } from '../../plugins/themes';
 
 const RANGES: Array<{ id: StatsPlaysRange; label: string }> = [
@@ -46,27 +47,10 @@ export function StudioStatsDetailView() {
   const { t } = useTranslation('web');
   const isDark = useThemeStore((state) => state.dark);
   const [range, setRange] = useState<StatsPlaysRange>('30');
-  const [data, setData] = useState<StatsPlays | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    void fetchStatsPlays(range).then((r) => {
-      if (cancelled) {
-        return;
-      }
-      const reason = r.meta.source === 'api' ? r.meta.reason : undefined;
-      setData(reason ? null : r.data);
-      setError(reason ?? null);
-      setLoading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [range, attempt]);
+  const { data, loading, error, retry } = useSnapshotFetch<StatsPlays>(
+    `studio-stats-plays:${range}`,
+    async () => apiResult(await fetchStatsPlays(range)),
+  );
 
   const label =
     range === '1'
@@ -120,7 +104,7 @@ export function StudioStatsDetailView() {
               <PageError
                 title={t('loadErrors.couldnTLoadPlays')}
                 description={error ?? undefined}
-                onRetry={() => setAttempt((n) => n + 1)}
+                onRetry={retry}
               />
             </StudioPanel>
           ) : (

@@ -6,7 +6,7 @@ import {
   PlusIcon,
   Trash2Icon,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -38,14 +38,12 @@ import { ImageUploadField } from '../../components/ImageUploadField';
 import { ListingDate } from '../../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { AdminTestNotificationPanel } from './AdminTestNotificationPanel';
 
 export function AdminNewsView() {
   const { t } = useTranslation('web');
 
-  const [posts, setPosts] = useState<AdminNewsPost[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [composeOpen, setComposeOpen] = useState(false);
   const [headline, setHeadline] = useState('');
   const [summary, setSummary] = useState('');
@@ -63,17 +61,11 @@ export function AdminNewsView() {
   const [pendingDeletePost, setPendingDeletePost] =
     useState<AdminNewsPost | null>(null);
 
-  const reload = () => {
-    void fetchAdminNews().then((res) => {
-      setPosts(res.data);
-      setLoadError(
-        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
-      );
-      setLoading(false);
-    });
-  };
-
-  useEffect(reload, []);
+  const snapshot = useSnapshotFetch<AdminNewsPost[]>('admin-news', async () =>
+    apiResult(await fetchAdminNews()),
+  );
+  const posts = snapshot.data ?? [];
+  const { loading, error: loadError, retry: reload } = snapshot;
 
   const closeCompose = () => {
     setComposeOpen(false);
@@ -134,10 +126,7 @@ export function AdminNewsView() {
                   <PageError
                     title={t('loadErrors.couldNotLoadNewsPosts')}
                     description={loadError}
-                    onRetry={() => {
-                      setLoading(true);
-                      reload();
-                    }}
+                    onRetry={reload}
                   />
                 ) : posts.length === 0 ? (
                   <PageEmpty

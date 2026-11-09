@@ -1,5 +1,5 @@
 import { FileTextIcon } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Input, Loader } from '@tahti-player/ui';
@@ -13,29 +13,28 @@ import {
 import type { GovernanceMeeting } from '../../../../api/types';
 import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../../../lib/useSnapshotFetch';
 import { AnnualReportRow } from './AnnualReportRow';
 
 export function ReportsTab() {
   const { t } = useTranslation('web');
-  const [reports, setReports] = useState<AdminAnnualReport[]>([]);
   const [year, setYear] = useState(String(new Date().getUTCFullYear() - 1));
-  const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [meetings, setMeetings] = useState<GovernanceMeeting[]>([]);
 
-  const load = useCallback(async () => {
-    const result = await fetchAdminAnnualReports();
-    setReports(result.data);
-    setLoading(false);
-  }, []);
+  const snapshot = useSnapshotFetch<AdminAnnualReport[]>(
+    'admin-annual-reports',
+    async () => apiResult(await fetchAdminAnnualReports()),
+  );
+  const reports = snapshot.data ?? [];
+  const { loading, retry: load } = snapshot;
 
   useEffect(() => {
-    void load();
     void fetchAdminGovernanceMeetings().then((result) =>
       setMeetings(result.data),
     );
-  }, [load]);
+  }, []);
 
   return (
     <>
@@ -52,7 +51,7 @@ export function ReportsTab() {
                 setError(result.error);
                 return;
               }
-              void load();
+              load();
             });
           }}
         >
@@ -91,7 +90,7 @@ export function ReportsTab() {
                 key={report.id}
                 report={report}
                 meetings={meetings}
-                onChanged={() => void load()}
+                onChanged={load}
               />
             ))}
           </ul>

@@ -6,7 +6,7 @@ import {
   Trash2Icon,
   XCircleIcon,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -27,6 +27,7 @@ import { deleteComment } from '../../../../api/comments';
 import { ListingDate } from '../../../../components/ListingDate';
 import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../../../lib/useSnapshotFetch';
 import { ModerationTabs } from '../ModerationTabs';
 
 const FILTER_DEFS: {
@@ -277,21 +278,18 @@ export function ContentReportsTab() {
     'OPEN',
   );
   const [target, setTarget] = useState<TargetFilter>('all');
-  const [reports, setReports] = useState<AdminContentReportRow[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const reload = () => {
-    setLoading(true);
-    void fetchAdminContentReports(
-      filter === 'all' ? undefined : filter,
-      target === 'all' ? undefined : target,
-    ).then((res) => {
-      setReports(res.data);
-      setLoading(false);
-    });
-  };
-
-  useEffect(reload, [filter, target]);
+  const snapshot = useSnapshotFetch<AdminContentReportRow[]>(
+    `admin-content-reports:${filter}:${target}`,
+    async () =>
+      apiResult(
+        await fetchAdminContentReports(
+          filter === 'all' ? undefined : filter,
+          target === 'all' ? undefined : target,
+        ),
+      ),
+  );
+  const reports = snapshot.data ?? [];
+  const { loading, retry: reload } = snapshot;
 
   return (
     <div className="flex flex-col gap-4">

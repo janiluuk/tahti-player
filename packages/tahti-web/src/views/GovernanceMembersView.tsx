@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 import { LandmarkIcon, UsersIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Badge, Button, Input, StatChip, ViewShell } from '@tahti-player/ui';
@@ -14,32 +14,20 @@ import {
   PageErrorBanner,
   PageLoading,
 } from '../components/PageStates';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
 export function GovernanceMembersView() {
   const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
-  const [members, setMembers] = useState<GovernanceMember[]>([]);
-  const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
-
-  useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    void fetchGovernanceMembers().then((result) => {
-      setMembers(result.data);
-      setLoadError(
-        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
-      );
-      setLoading(false);
-    });
-  }, [user, attempt]);
+  const snapshot = useSnapshotFetch<GovernanceMember[]>(
+    `governance-members:${user?.id ?? 'signed-out'}`,
+    async () => (user ? apiResult(await fetchGovernanceMembers()) : []),
+  );
+  const members = snapshot.data ?? [];
+  const { loading, error: loadError, retry } = snapshot;
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -110,14 +98,14 @@ export function GovernanceMembersView() {
             <PageErrorBanner
               title={t('loadErrors.couldNotRefreshTheMemberDirectory')}
               description={loadError}
-              onRetry={() => setAttempt((n) => n + 1)}
+              onRetry={retry}
             />
           ) : null}
           {loadError && members.length === 0 ? (
             <PageError
               title={t('loadErrors.couldNotLoadTheMemberDirectory')}
               description={loadError}
-              onRetry={() => setAttempt((n) => n + 1)}
+              onRetry={retry}
             />
           ) : filtered.length === 0 ? (
             <PageEmpty

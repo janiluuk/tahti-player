@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -24,29 +24,33 @@ import { AdminPageLayout } from '../../components/AdminNav';
 import { PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
 import { humanizePastDate } from '../../lib/humanizeDate';
+import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { CronHistoryDialog } from './status/CronHistoryDialog';
 import { WorkersPanel } from './status/WorkersPanel';
 
 export function AdminStatusView() {
   const { t } = useTranslation('web');
-  const [data, setData] = useState<AdminStatusData | null>(null);
-  const [dashboard, setDashboard] = useState<AdminDashboard | null>(null);
-  const [platform, setPlatform] = useState<PlatformStatus | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [cronJob, setCronJob] = useState<string | null>(null);
-
-  useEffect(() => {
-    void Promise.all([
+  const snapshot = useSnapshotFetch<{
+    data: AdminStatusData | null;
+    dashboard: AdminDashboard | null;
+    platform: PlatformStatus | null;
+  }>('admin-status', async () => {
+    const [status, adminDashboard, platformStatus] = await Promise.all([
       fetchAdminStatus(),
       fetchAdminDashboard(),
       fetchPlatformStatus(),
-    ]).then(([status, adminDashboard, platformStatus]) => {
-      setData(status.data);
-      setDashboard(adminDashboard.data);
-      setPlatform(platformStatus.data);
-      setLoading(false);
-    });
-  }, []);
+    ]);
+    return {
+      data: status.data,
+      dashboard: adminDashboard.data,
+      platform: platformStatus.data,
+    };
+  });
+  const data = snapshot.data?.data ?? null;
+  const dashboard = snapshot.data?.dashboard ?? null;
+  const platform = snapshot.data?.platform ?? null;
+  const { loading } = snapshot;
+  const [cronJob, setCronJob] = useState<string | null>(null);
 
   const mergedChecks = data
     ? Object.entries(platform?.checks ?? {}).reduce(

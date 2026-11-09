@@ -27,21 +27,17 @@ import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
 export function StudioEventsView() {
   const { t } = useTranslation('web');
-  const [events, setEvents] = useState<ArtistEvent[]>([]);
-  const [loading, setLoading] = useState(true);
   const [pendingRemove, setPendingRemove] = useState<ArtistEvent | null>(null);
 
-  const reload = () => {
-    void fetchMyEvents().then((r) => {
-      setEvents(r.data);
-      setLoading(false);
-    });
-  };
-
-  useEffect(reload, []);
+  const snapshot = useSnapshotFetch<ArtistEvent[]>('studio-events', async () =>
+    apiResult(await fetchMyEvents()),
+  );
+  const events = snapshot.data ?? [];
+  const { loading, retry: reload } = snapshot;
 
   useEffect(() => {
     const refresh = () => reload();
