@@ -17,6 +17,7 @@ import { SoulseekAddonCard } from '../plugins/soulseek/SoulseekAddonCard';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { ListenAddonsPanel } from './ListenAddonsPanel';
+import { ImportTutorial } from './plugin-store/ImportTutorial';
 import { RadioCategory } from './plugin-store/RadioCategory';
 import {
   AudioPluginsCategory,
@@ -253,6 +254,7 @@ function ArtistAddons({ target }: { target: PluginCategoryTarget | null }) {
         description={t('settingsAddOns.importDescription')}
         defaultOpen={initial === 'import'}
       >
+        <ImportTutorial />
         <ServiceCategory categoryId="import" />
         {hasNativePlayer() ? <SoulseekAddonCard /> : null}
       </AddonGroup>

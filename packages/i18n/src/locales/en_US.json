@@ -10390,6 +10390,17 @@
     "searchResults": {
       "resultsFor": "Results for “{{query}}”",
       "title": "Search"
+    },
+    "importTutorial": {
+      "title": "How to import your tracks from another service",
+      "step1": "Find your service below (hearthis.at, SoundCloud, Mixcloud, Spotify, YouTube, Google Drive …) and install its add-on.",
+      "step2": "Connect it: sign in, or enter your username on that service.",
+      "step3": "Pick the tracks, sets or playlists you want and press Import. They land in Library → Sounds, and sets can become collections.",
+      "step4": "Check Library → Sounds: tracks the service lets you download arrive as real files; the rest play as embeds from the original service.",
+      "embedsTitle": "Turn hearthis.at embeds into real uploads",
+      "embedsBody": "Enable downloads for your tracks on hearthis.at, then use “Host the audio on Tahti” in a track's edit dialog, or replace every hearthis.at embed in your library at once with the Tahti CLI:",
+      "copied": "Command copied",
+      "files": "Have the files on your computer? Use Upload instead, or tahti import <folder> on the command line for a whole folder."
     }
   },
   "studioEditor": {
