@@ -51,6 +51,13 @@ export function eventsAroundToday(base: ArtistEvent[]): ArtistEvent[] {
           {
             ...event,
             startAt: new Date(Date.now() + days * DAY).toISOString(),
+            endAt: event.endAt
+              ? new Date(
+                  Date.now() +
+                    days * DAY +
+                    (Date.parse(event.endAt) - Date.parse(event.startAt)),
+                ).toISOString()
+              : null,
           },
         ];
   });
