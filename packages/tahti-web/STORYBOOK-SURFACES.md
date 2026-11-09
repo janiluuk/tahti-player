@@ -186,6 +186,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/FanSubscriptionStats` | `tahti-web/FanSubscriptionStats.stories.tsx` |
 | `Tahti/Studio/FanTiersEditor` | `tahti-web/FanTiersEditor.stories.tsx` |
 | `Tahti/Library/FavoritesView` | `tahti-web/FavoritesView.stories.tsx` |
+| `Tahti/Feed/FeedStoryDialog` | `tahti-web/FeedStoryDialog.stories.tsx` |
 | `Tahti/Social/FeedView` | `tahti-web/FeedView.stories.tsx` |
 | `Tahti/Studio/FingerprintTrackPanel` | `tahti-web/FingerprintTrackPanel.stories.tsx` |
 | `Tahti/Studio/FlowGallery` | `tahti-web/FlowGallery.stories.tsx` |
@@ -446,8 +447,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/Meter` | `Meter.stories.tsx` |
 | `Components/Mosaic` | `Mosaic.stories.tsx` |
 | `Audio/MultitrackEditor` | `MultitrackEditor.stories.tsx` |
-| `Media/NewsCarousel` | `NewsCarousel.stories.tsx` |
-| `Components/NewsWidget` | `NewsWidget.stories.tsx` |
 | `Components/OverflowMenu` | `OverflowMenu.stories.tsx` |
 | `Components/Pagination` | `Pagination.stories.tsx` |
 | `Audio/PianoRoll` | `PianoRoll.stories.tsx` |

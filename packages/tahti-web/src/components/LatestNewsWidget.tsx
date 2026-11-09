@@ -1,20 +1,19 @@
 import { ArrowRightIcon, SlidersHorizontalIcon } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { toBcp47 } from '@tahti-player/i18n';
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
   Loader,
   MediaArtwork,
-  NewsCarousel,
-  type NewsCarouselItem,
+  StoryCard,
+  StoryRow,
 } from '@tahti-player/ui';
 
 import { fetchRssArticles } from '../api/rss-feed';
-import { humanizePastDate } from '../lib/humanizeDate';
-import { currentLocale } from '../lib/locale';
 import { aggregateNews, type AggregatedArticle } from '../lib/newsAggregate';
+import { storyDate } from '../lib/storyDate';
 import {
   newsWidgetsOn,
   useListenerWidgetsStore,
@@ -22,6 +21,7 @@ import {
 } from '../stores/listenerWidgetsStore';
 import { NewsArticleDialog } from './NewsArticleDialog';
 import { NewsSourcesDialog } from './NewsSourcesDialog';
+import { StoryTitleButton } from './StoryTitleButton';
 
 const CAROUSEL_LIMIT = 12;
 
@@ -37,6 +37,7 @@ export function LatestNewsWidget({
 }: {
   surface: ListenerWidgetSurface;
 }) {
+  const { t } = useTranslation('web');
   const instances = useListenerWidgetsStore((state) => state.instances);
   const sources = useMemo(
     () =>
@@ -93,78 +94,95 @@ export function LatestNewsWidget({
     return null;
   }
 
-  const toItem = (article: AggregatedArticle): NewsCarouselItem => ({
-    id: article.key,
-    title: article.title,
-    imageUrl: article.imageUrl,
-    source: article.source.label,
-    sourceColor: article.sourceColor,
-    publishedAt: article.publishedAt,
-    publishedLabel: article.publishedAt
-      ? humanizePastDate(article.publishedAt)
-      : undefined,
-    publishedTitle: article.publishedAt
-      ? new Date(article.publishedAt).toLocaleString(toBcp47(currentLocale()))
-      : undefined,
-    onClick: () => setOpen(article),
-  });
-
   return (
     <div className="flex min-w-0 flex-col gap-2" data-testid="latest-news">
       {state.loading && state.articles.length === 0 ? (
         <div className="flex items-center gap-2 py-6">
           <Loader size="sm" />
           <span className="text-foreground-secondary text-sm">
-            Loading news…
+            {t('feedStory.loadingNews')}
           </span>
         </div>
       ) : (
-        <NewsCarousel
-          items={state.articles.slice(0, CAROUSEL_LIMIT).map(toItem)}
-          labels={{ empty: 'No articles in your sources right now.' }}
+        <StoryRow
+          title={t('feedStory.latestNews')}
           actions={
-            <Button
-              size="sm"
-              variant="text"
-              className="gap-1.5"
-              onClick={() => setEditing(true)}
-            >
-              <SlidersHorizontalIcon size={14} aria-hidden />
-              Sources
-            </Button>
-          }
-          more={
-            state.articles.length > 0 ? (
+            <>
               <Button
                 size="sm"
-                variant="secondary"
-                className="gap-1.5 rounded-full"
-                onClick={() => setShowAll(true)}
+                variant="text"
+                className="gap-1.5"
+                onClick={() => setEditing(true)}
               >
-                more News
-                <ArrowRightIcon size={14} aria-hidden />
+                <SlidersHorizontalIcon size={14} aria-hidden />
+                {t('feedStory.sources')}
               </Button>
-            ) : null
+              {state.articles.length > CAROUSEL_LIMIT ? (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  className="gap-1.5 rounded-full"
+                  onClick={() => setShowAll(true)}
+                >
+                  {t('feedStory.moreNews')}
+                  <ArrowRightIcon size={14} aria-hidden />
+                </Button>
+              ) : null}
+            </>
           }
-        />
+        >
+          {state.articles.length === 0 ? (
+            <p className="text-foreground-secondary py-8 text-sm">
+              {t('feedStory.noArticles')}
+            </p>
+          ) : (
+            state.articles
+              .slice(0, CAROUSEL_LIMIT)
+              .map((article, index) => (
+                <StoryCard
+                  key={article.key}
+                  index={index}
+                  data-testid="news-story"
+                  imageSrc={article.imageUrl ?? article.source.thumbnailUrl}
+                  artworkSeed={article.key}
+                  kind={article.source.label}
+                  date={
+                    article.publishedAt
+                      ? storyDate(article.publishedAt)
+                      : undefined
+                  }
+                  dateTime={article.publishedAt}
+                  title={
+                    <StoryTitleButton onOpen={() => setOpen(article)}>
+                      {article.title}
+                    </StoryTitleButton>
+                  }
+                  excerpt={article.teaser}
+                  onOpen={() => setOpen(article)}
+                  openLabel={t('feedStory.readTitle', { title: article.title })}
+                />
+              ))
+          )}
+        </StoryRow>
       )}
       {state.failed.length > 0 ? (
         <p className="text-foreground-secondary text-xs" role="status">
-          Couldn’t load {state.failed.join(', ')}.
+          {t('feedStory.couldNotLoadSources', {
+            names: state.failed.join(', '),
+          })}
         </p>
       ) : null}
       <Dialog
         isOpen={showAll}
         onClose={() => setShowAll(false)}
-        title="Latest News"
-        actions={<Dialog.Close>Close</Dialog.Close>}
+        title={t('feedStory.latestNews')}
+        actions={<Dialog.Close>{t('actions.close')}</Dialog.Close>}
       >
         <ul
-          aria-label="All news"
+          aria-label={t('feedStory.allNews')}
           className="divide-border flex max-h-[65vh] flex-col divide-y overflow-y-auto"
         >
           {state.articles.map((article) => {
-            const item = toItem(article);
             return (
               <li key={article.key}>
                 <Button
@@ -187,8 +205,10 @@ export function LatestNewsWidget({
                         className="size-2 shrink-0 rounded-full"
                         style={{ background: article.sourceColor }}
                       />
-                      {item.source}
-                      {item.publishedLabel ? ` · ${item.publishedLabel}` : ''}
+                      {article.source.label}
+                      {article.publishedAt
+                        ? ` · ${storyDate(article.publishedAt)}`
+                        : ''}
                     </span>
                   </span>
                 </Button>

@@ -8,7 +8,7 @@ import {
 
 export const NEWS_WIDGET_TYPE_ID = 'news';
 
-export type ListenerWidgetSurface = 'listen' | 'discover';
+export type ListenerWidgetSurface = 'listen' | 'feed';
 
 /** Listen page block ids for user-added widgets; built-in sections use
  * their own ids (see ListenView). */
@@ -69,7 +69,7 @@ export type ListenerWidgetInstance = {
 export function widgetSurfaces(
   instance: ListenerWidgetInstance,
 ): ListenerWidgetSurface[] {
-  return instance.surfaces ?? ['listen', 'discover'];
+  return instance.surfaces ?? ['listen', 'feed'];
 }
 
 export function newsWidgetsOn(
@@ -245,9 +245,25 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
     }),
     {
       name: 'tahti-web-listener-widgets',
-      version: 2,
+      version: 3,
       migrate: (persisted, version) => {
         const state = (persisted ?? {}) as Partial<ListenerWidgetsState>;
+        if (version < 3 && Array.isArray(state.instances)) {
+          state.instances = state.instances.map((instance) =>
+            instance.surfaces
+              ? {
+                  ...instance,
+                  surfaces: [
+                    ...new Set(
+                      (instance.surfaces as string[]).map((surface) =>
+                        surface === 'discover' ? 'feed' : surface,
+                      ),
+                    ),
+                  ] as ListenerWidgetSurface[],
+                }
+              : instance,
+          );
+        }
         if (
           version < 2 &&
           (!Array.isArray(state.enabledStationIds) ||

@@ -1702,7 +1702,13 @@
       "hoursAgo_one": "{{count}} hour ago",
       "hoursAgo_other": "{{count}} hours ago",
       "daysAgo_one": "{{count}} day ago",
-      "daysAgo_other": "{{count}} days ago"
+      "daysAgo_other": "{{count}} days ago",
+      "weeksAgo_one": "{{count}} week ago",
+      "weeksAgo_other": "{{count}} weeks ago",
+      "monthsAgo_one": "{{count}} month ago",
+      "monthsAgo_other": "{{count}} months ago",
+      "yearsAgo_one": "{{count}} year ago",
+      "yearsAgo_other": "{{count}} years ago"
     },
     "auth": {
       "logIn": "Log in",
@@ -9577,6 +9583,27 @@
           "description": "Make a Disco-widget for the platform."
         }
       }
+    },
+    "feedStory": {
+      "readOn": "Read on {{host}}",
+      "headlineOnlyHost": "This feed only shares the headline, or the article text could not be read. Read the full story on {{host}}.",
+      "headlineOnly": "This feed only shares the headline, and the article text could not be read.",
+      "openRelease": "Open release",
+      "openLink": "Open link",
+      "postedUpdate": "{{name}} posted an update",
+      "sharedTrack": "{{name}} shared a new track, “{{title}}”.",
+      "releasedSomething": "{{name}} released “{{title}}”.",
+      "playOrOpen": "Play it here, add it to your queue, or open it for everything that goes with it.",
+      "news": "News",
+      "sources": "Sources",
+      "moreNews": "more News",
+      "latestNews": "Latest News",
+      "allNews": "All news",
+      "fromTahti": "From Tahti",
+      "loadingNews": "Loading news…",
+      "noArticles": "No articles in your sources right now.",
+      "couldNotLoadSources": "Couldn’t load {{names}}.",
+      "readTitle": "Read {{title}}"
     }
   },
   "studioEditor": {

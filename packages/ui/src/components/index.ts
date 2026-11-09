@@ -11,8 +11,6 @@ export * from './AmbientCard';
 export * from './CardsRow';
 export * from './Checkbox';
 export * from './HorizontalScroll';
-export * from './NewsCarousel';
-export * from './NewsWidget';
 export * from './OverflowMenu';
 export * from './CollectionPlayer';
 export * from './ColorField';

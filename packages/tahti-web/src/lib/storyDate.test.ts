@@ -13,8 +13,14 @@ describe('storyDate', () => {
     expect(storyDate('2026-10-25T12:00:00.000Z', now)).toBe('5 days ago');
   });
 
-  it('shows the date after a week', () => {
-    expect(storyDate('2026-10-02T12:00:00.000Z', now)).toMatch(/^2\.10\.2026$/);
+  it('stays humanized after a week', () => {
+    expect(storyDate('2026-10-16T12:00:00.000Z', now)).toBe('2 weeks ago');
+    expect(storyDate('2026-08-14T12:00:00.000Z', now)).toBe('2 months ago');
+    expect(storyDate('2025-09-01T12:00:00.000Z', now)).toBe('1 year ago');
+  });
+
+  it('treats a future date as just now', () => {
+    expect(storyDate('2026-10-30T12:05:00.000Z', now)).toBe('just now');
   });
 
   it('returns nothing for a bad date', () => {

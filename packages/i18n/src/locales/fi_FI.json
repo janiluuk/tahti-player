@@ -1702,7 +1702,13 @@
       "hoursAgo_one": "{{count}} tunti sitten",
       "hoursAgo_other": "{{count}} tuntia sitten",
       "daysAgo_one": "{{count}} päivä sitten",
-      "daysAgo_other": "{{count}} päivää sitten"
+      "daysAgo_other": "{{count}} päivää sitten",
+      "weeksAgo_one": "{{count}} viikko sitten",
+      "weeksAgo_other": "{{count}} viikkoa sitten",
+      "monthsAgo_one": "{{count}} kuukausi sitten",
+      "monthsAgo_other": "{{count}} kuukautta sitten",
+      "yearsAgo_one": "{{count}} vuosi sitten",
+      "yearsAgo_other": "{{count}} vuotta sitten"
     },
     "auth": {
       "logIn": "Kirjaudu",
@@ -9577,6 +9583,27 @@
           "description": "Tee alustalle oma Disco-widget."
         }
       }
+    },
+    "feedStory": {
+      "readOn": "Lue sivustolla {{host}}",
+      "headlineOnlyHost": "Tämä syöte jakaa vain otsikon, tai artikkelin tekstiä ei voitu lukea. Lue koko juttu sivustolla {{host}}.",
+      "headlineOnly": "Tämä syöte jakaa vain otsikon, eikä artikkelin tekstiä voitu lukea.",
+      "openRelease": "Avaa julkaisu",
+      "openLink": "Avaa linkki",
+      "postedUpdate": "{{name}} julkaisi päivityksen",
+      "sharedTrack": "{{name}} jakoi uuden kappaleen ”{{title}}”.",
+      "releasedSomething": "{{name}} julkaisi teoksen ”{{title}}”.",
+      "playOrOpen": "Soita se tässä, lisää jonoon tai avaa nähdäksesi kaiken siihen liittyvän.",
+      "news": "Uutiset",
+      "sources": "Lähteet",
+      "moreNews": "lisää uutisia",
+      "latestNews": "Uusimmat uutiset",
+      "allNews": "Kaikki uutiset",
+      "fromTahti": "Tahdilta",
+      "loadingNews": "Ladataan uutisia…",
+      "noArticles": "Lähteissäsi ei ole juuri nyt artikkeleita.",
+      "couldNotLoadSources": "Ei voitu ladata: {{names}}.",
+      "readTitle": "Lue {{title}}"
     }
   },
   "studioEditor": {
