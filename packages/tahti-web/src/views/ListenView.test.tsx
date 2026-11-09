@@ -90,7 +90,7 @@ describe('ListenView sections', () => {
     await renderListen();
 
     const onAir = await screen.findByTestId('listen-on-air');
-    await within(onAir).findByText("Live now couldn't load");
+    await within(onAir).findByText("Live & replays couldn't load");
     const tracks = await screen.findByTestId('listen-new-tracks');
     expect(tracks.getAttribute('data-status')).toBeNull();
 
@@ -101,7 +101,7 @@ describe('ListenView sections', () => {
       ),
     );
     expect(onAirSpy).toHaveBeenCalledTimes(2);
-    expect(screen.queryByText("Live now couldn't load")).toBeNull();
+    expect(screen.queryByText("Live & replays couldn't load")).toBeNull();
   });
 
   it('lists new tracks in the ambient list with its sort menu', async () => {
@@ -158,22 +158,35 @@ describe('ListenView sections', () => {
     ).toHaveLength(0);
   });
 
-  it('lists a replaying channel under Replays, not Live now', async () => {
+  it('lists live and replaying channels in one row, live first, with the live pill only on live ones', async () => {
     const { data } = await listen.fetchOnAirChannels();
-    const channel = [...data.live, ...data.replaying][0]!;
+    const live = [...data.live, ...data.replaying][0]!;
+    const replaying = {
+      ...live,
+      slug: 'replay-channel',
+      state: 'REPLAY' as typeof live.state,
+      user: {
+        ...live.user,
+        displayName: 'Replay Channel',
+        username: 'replay-channel',
+      },
+    };
     vi.spyOn(listen, 'fetchOnAirChannels').mockResolvedValue({
-      data: { live: [], replaying: [channel], recent: [] },
+      data: { live: [live], replaying: [replaying], recent: [] },
       meta: { source: 'api' },
     });
     await renderListen();
 
-    const replays = await screen.findByTestId('listen-replays');
-    expect(replays.textContent).toContain(channel.user.displayName);
-    const live = screen.getByTestId('listen-on-air');
-    expect(within(live).getByText('Nobody is live right now')).toBeTruthy();
-    expect(
-      within(live).getByText('Recent broadcasts are replaying below.'),
-    ).toBeTruthy();
+    const row = await screen.findByTestId('listen-on-air');
+    await waitFor(() =>
+      expect(row.textContent).toContain(replaying.user.displayName),
+    );
+    expect(screen.queryByTestId('listen-replays')).toBeNull();
+    expect(within(row).getAllByTestId('on-air-live-marker')).toHaveLength(1);
+    const text = row.textContent ?? '';
+    expect(text.indexOf(live.user.displayName)).toBeLessThan(
+      text.indexOf(replaying.user.displayName),
+    );
   });
 
   it('links a recently played radio station to its station page', async () => {
