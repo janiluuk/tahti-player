@@ -29,6 +29,7 @@ import {
   findSetManifests,
   runHearthisDownloadSet,
 } from './commands/hearthis-download-set.mjs';
+import { runHearthisImportEmbeds } from './commands/hearthis-import-embeds.mjs';
 import { runHearthisRelease } from './commands/hearthis-release.mjs';
 import { runHearthisSet } from './commands/hearthis-set.mjs';
 import { runHearthisSets } from './commands/hearthis-sets.mjs';
@@ -429,6 +430,31 @@ scope. Exits with 1 when any file fails.
     positionals: Infinity,
     run: (config, { values, positionals }) =>
       runSoundsUpload(config, positionals, values),
+  },
+  {
+    path: ['hearthis', 'import-embeds'],
+    usage: 'tahti hearthis import-embeds [--dry-run] [--limit <n>] [--json]',
+    summary: 'Replace the hearthis.at embeds in your library with real uploads',
+    details: `Lists every sound in your library that is still a hearthis.at embed and asks
+Tahti to download its audio from hearthis.at and attach it, so the sound becomes
+a real upload (same sound: plays, likes and collections stay). Downloads run in
+the background; each sound switches over when its file is in.
+A track only imports when downloads are enabled for it on hearthis.at; the rest
+are listed as "not downloadable" (turn downloads on there, then run again).
+Needs a token with the write scope.
+  --dry-run       List the embeds without importing anything
+  --limit <n>     Only the first n embeds`,
+    options: {
+      ...JSON_OPTION,
+      'dry-run': { type: 'boolean', default: false },
+      limit: { type: 'string' },
+    },
+    run: (config, { values }) =>
+      runHearthisImportEmbeds(config, {
+        dryRun: values['dry-run'],
+        json: values.json,
+        limit: values.limit ? Number.parseInt(values.limit, 10) : null,
+      }),
   },
   {
     path: ['hearthis', 'sets'],
