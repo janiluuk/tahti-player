@@ -125,6 +125,20 @@ describe('RadioStationView', () => {
     expect(useListenerWidgetsStore.getState().enabledStationIds).toContain(
       'radio-helsinki',
     );
+
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Remove from Listen' }),
+    );
+    expect(
+      screen.getByRole('heading', { name: 'Remove Radio Helsinki?' }),
+    ).toBeTruthy();
+    expect(useListenerWidgetsStore.getState().enabledStationIds).toContain(
+      'radio-helsinki',
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Remove' }));
+    expect(useListenerWidgetsStore.getState().enabledStationIds).not.toContain(
+      'radio-helsinki',
+    );
   });
 
   it('plays and pauses another station from its thumbnail without leaving the page', async () => {

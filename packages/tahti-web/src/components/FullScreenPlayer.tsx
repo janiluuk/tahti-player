@@ -52,6 +52,32 @@ const TOP_BUTTON_CLASS =
 const SEEK_LABEL_CHIP =
   'bg-background/55 text-foreground rounded-full px-2 py-1 text-center text-xs backdrop-blur-md';
 
+/** Title block over the visualizer: theme background vs theme foreground so
+ * the pair always contrasts, opaque enough that busy viz frames cannot wash
+ * the type out. */
+const TITLE_OVERLAY =
+  'relative z-20 max-w-lg rounded-2xl bg-background/92 px-6 py-4 text-center shadow-[0_12px_48px_rgba(0,0,0,0.55)] ring-2 ring-foreground/25 backdrop-blur-xl';
+
+/** Pull a show / programme name apart from a track title when the station
+ * string uses the usual "Show — Track" or "Show · Host — Track" separators. */
+export function splitShowAndTrack(raw: string): {
+  show: string | null;
+  track: string;
+} {
+  const trimmed = raw.trim();
+  if (!trimmed) {
+    return { show: null, track: trimmed };
+  }
+  const emDash = trimmed.split(/\s+[—–]\s+/);
+  if (emDash.length >= 2) {
+    return {
+      show: emDash[0]!.trim() || null,
+      track: emDash.slice(1).join(' — ').trim(),
+    };
+  }
+  return { show: null, track: trimmed };
+}
+
 /** Full-viewport now-playing overlay — expand button in the player bar
  * opens it, X or Escape closes it back to the compact bar. Backdrop tint
  * follows the current track's cover art (sampled via useDominantColor)
@@ -160,6 +186,30 @@ export function FullScreenPlayer() {
     stationNowPlaying?.artist ??
     playable?.artist ??
     (current ? formatArtistNames(current.track.artists) : '');
+  const { show: parsedShow, track: parsedTrack } = splitShowAndTrack(title);
+  /** Station / channel label — kept on its own line above the track so the
+   * two never compete in one heading. */
+  const showName = stationNowPlaying
+    ? stationNowPlaying.artist || parsedShow
+    : isLive
+      ? artist || parsedShow
+      : parsedShow;
+  const trackName = parsedTrack || title;
+  /** Under the track: programme name (when split from a station title) or
+   * the artist, skipping anything already shown as the show line. */
+  const artistLine = (() => {
+    if (
+      stationNowPlaying &&
+      parsedShow &&
+      parsedShow.trim() !== trackName.trim()
+    ) {
+      return parsedShow;
+    }
+    if (showName && artist && artist.trim() === showName.trim()) {
+      return '';
+    }
+    return artist;
+  })();
   const soundId = soundIdFromPlayableId(playable?.id ?? currentId);
   const channelKey =
     playable?.channelSlug?.trim() || soundId || currentId || 'default';
@@ -362,30 +412,44 @@ export function FullScreenPlayer() {
 
         <div
           className={cn(
-            'bg-background/35 max-w-md shrink-0 rounded-xl px-5 py-2 text-center backdrop-blur-md',
-            driving && 'max-w-lg px-6 py-4',
+            TITLE_OVERLAY,
+            'shrink-0',
+            driving ? 'px-7 py-5' : 'max-w-md',
           )}
+          data-testid="full-screen-player-title"
         >
-          <h1
-            className={cn(
-              'line-clamp-2 font-bold tracking-tight',
-              driving ? 'text-3xl sm:text-4xl' : 'text-xl sm:text-2xl',
-            )}
-          >
-            {title}
-          </h1>
-          {artist && (
+          {showName ? (
             <p
               className={cn(
-                'text-foreground-secondary mt-0.5 truncate',
-                driving ? 'text-lg sm:text-xl' : 'text-base',
+                'font-heading text-foreground mb-1.5 truncate font-bold tracking-[0.14em] uppercase',
+                driving ? 'text-sm sm:text-base' : 'text-xs sm:text-sm',
               )}
             >
-              {artist}
+              {showName}
             </p>
-          )}
+          ) : null}
+          <h1
+            className={cn(
+              'font-heading text-foreground line-clamp-3 font-extrabold tracking-tight text-balance',
+              driving
+                ? 'text-4xl sm:text-5xl'
+                : 'text-2xl sm:text-3xl md:text-4xl',
+            )}
+          >
+            {trackName}
+          </h1>
+          {artistLine ? (
+            <p
+              className={cn(
+                'font-heading text-foreground mt-2 truncate font-bold',
+                driving ? 'text-xl sm:text-2xl' : 'text-base sm:text-lg',
+              )}
+            >
+              {artistLine}
+            </p>
+          ) : null}
           {soundId && playable && !driving ? (
-            <div className="mt-2 flex justify-center">
+            <div className="mt-3 flex justify-center">
               <AddToPlaylistButton
                 soundId={soundId}
                 trackTitle={playable.title}

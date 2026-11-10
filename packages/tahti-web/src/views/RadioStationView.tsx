@@ -1,5 +1,11 @@
 import { Link } from '@tanstack/react-router';
-import { CalendarDaysIcon, GlobeIcon } from 'lucide-react';
+import {
+  CalendarDaysIcon,
+  GlobeIcon,
+  PlusIcon,
+  Trash2Icon,
+} from 'lucide-react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -18,6 +24,7 @@ import { RadioRowCard } from '../components/listen-view/RadioRowCard';
 import { PageEmpty } from '../components/PageStates';
 import { RadioStationDial } from '../components/radio/RadioStationDial';
 import { RadioStationCoverEditButton } from '../components/RadioStationCover';
+import { RemoveWidgetDialog } from '../components/RemoveWidgetDialog';
 import { StationUnavailableNotice } from '../components/StationUnavailableNotice';
 import {
   RADIO_STATIONS,
@@ -45,6 +52,7 @@ export function RadioStationView({ stationId }: { stationId: string }) {
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
   const setStatus = usePlayerStore((s) => s.setStatus);
+  const [confirmRemove, setConfirmRemove] = useState(false);
   const station = base ? { ...base, ...override } : undefined;
   const streamUrl = station?.streamUrl ?? null;
   const nowPlayingSource = station ? stationNowPlayingSource(station) : null;
@@ -87,6 +95,9 @@ export function RadioStationView({ stationId }: { stationId: string }) {
   const others = RADIO_STATIONS.filter((item) => item.id !== station.id).map(
     (item) => ({ ...item, ...stationOverrides[item.id] }),
   );
+  const listenLabel = onListen
+    ? t('radioStation.removeFromListen')
+    : t('radioStation.addToListen');
 
   return (
     <ViewShell
@@ -159,22 +170,6 @@ export function RadioStationView({ stationId }: { stationId: string }) {
                 </p>
               )}
             </div>
-            <div
-              role="group"
-              aria-label={t('radioStation.controlsAria')}
-              className="flex flex-wrap gap-2"
-            >
-              <Button
-                type="button"
-                variant="secondary"
-                aria-pressed={onListen}
-                onClick={() => toggleStation(station.id)}
-              >
-                {onListen
-                  ? t('radioStation.removeFromListen')
-                  : t('radioStation.addToListen')}
-              </Button>
-            </div>
             {playable ? (
               <StationUnavailableNotice
                 playableId={playable.id}
@@ -182,46 +177,69 @@ export function RadioStationView({ stationId }: { stationId: string }) {
                 onPlay={() => play(playable)}
               />
             ) : null}
-            {station.detailUrl || station.programmingUrl ? (
-              <div className="flex items-center gap-2">
-                {station.detailUrl ? (
-                  <Tooltip
-                    content={t('radioStation.stationWebsite')}
-                    side="top"
+            <div
+              role="group"
+              aria-label={t('radioStation.controlsAria')}
+              className="flex flex-wrap items-center gap-2"
+            >
+              <Tooltip content={listenLabel} side="top">
+                <Button
+                  type="button"
+                  size="icon-sm"
+                  variant="secondary"
+                  aria-label={listenLabel}
+                  aria-pressed={onListen}
+                  data-testid="station-listen-toggle"
+                  onClick={() => {
+                    if (onListen) {
+                      setConfirmRemove(true);
+                      return;
+                    }
+                    toggleStation(station.id);
+                  }}
+                >
+                  {onListen ? (
+                    <Trash2Icon
+                      size={16}
+                      aria-hidden
+                      className="text-accent-red-strong"
+                    />
+                  ) : (
+                    <PlusIcon size={16} aria-hidden />
+                  )}
+                </Button>
+              </Tooltip>
+              {station.detailUrl ? (
+                <Tooltip content={t('radioStation.stationWebsite')} side="top">
+                  <ButtonAnchor
+                    href={station.detailUrl}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    size="icon-sm"
+                    variant="secondary"
+                    aria-label={`${station.name} website`}
+                    data-testid="station-website"
                   >
-                    <ButtonAnchor
-                      href={station.detailUrl}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      size="icon-sm"
-                      variant="secondary"
-                      aria-label={`${station.name} website`}
-                      data-testid="station-website"
-                    >
-                      <GlobeIcon size={16} aria-hidden />
-                    </ButtonAnchor>
-                  </Tooltip>
-                ) : null}
-                {station.programmingUrl &&
-                station.programmingUrl !== station.detailUrl ? (
-                  <Tooltip
-                    content={t('radioStation.programmeGuide')}
-                    side="top"
+                    <GlobeIcon size={16} aria-hidden />
+                  </ButtonAnchor>
+                </Tooltip>
+              ) : null}
+              {station.programmingUrl &&
+              station.programmingUrl !== station.detailUrl ? (
+                <Tooltip content={t('radioStation.programmeGuide')} side="top">
+                  <ButtonAnchor
+                    href={station.programmingUrl}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    size="icon-sm"
+                    variant="secondary"
+                    aria-label={`${station.name} programme guide`}
                   >
-                    <ButtonAnchor
-                      href={station.programmingUrl}
-                      target="_blank"
-                      rel="noreferrer noopener"
-                      size="icon-sm"
-                      variant="secondary"
-                      aria-label={`${station.name} programme guide`}
-                    >
-                      <CalendarDaysIcon size={16} aria-hidden />
-                    </ButtonAnchor>
-                  </Tooltip>
-                ) : null}
-              </div>
-            ) : null}
+                    <CalendarDaysIcon size={16} aria-hidden />
+                  </ButtonAnchor>
+                </Tooltip>
+              ) : null}
+            </div>
           </div>
         </div>
       </RadioStationDial>
@@ -260,6 +278,15 @@ export function RadioStationView({ stationId }: { stationId: string }) {
               }}
             />
           );
+        }}
+      />
+      <RemoveWidgetDialog
+        isOpen={confirmRemove}
+        label={station.name}
+        onCancel={() => setConfirmRemove(false)}
+        onConfirm={() => {
+          toggleStation(station.id);
+          setConfirmRemove(false);
         }}
       />
     </ViewShell>
