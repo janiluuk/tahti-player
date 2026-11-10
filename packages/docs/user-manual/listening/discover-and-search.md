@@ -20,6 +20,10 @@ description: Finding new music, artists and venues
 
 Listen also shows Disco-widgets you installed from Settings → Add-ons → Discovery.
 
+## Event calendar
+
+**Discover → Feed → Calendar** shows every public event in a month: a month grid on larger screens, a list on phones. Cancelled events stay listed, struck through. Open an event for its page with the time, place, who plays, tickets, **Add to Google Calendar** and a subscribe link; **Subscribe to the calendar (.ics)** adds the whole calendar to your calendar app.
+
 ## Search
 
 The search box in the top bar finds artists, tracks and playlists as you type:

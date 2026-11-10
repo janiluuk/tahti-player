@@ -50,6 +50,10 @@ The track's edit dialog has three tabs: **Basics** (title, artist, the **Genre**
 
 Tracks from hearthis.at, Mixcloud, Spotify and Bandcamp can also be linked rather than copied: Tahti keeps the link and the provider's player plays them.
 
+The **Import** group starts with a short guide, **How to import your tracks from another service**: install the service's add-on, connect it, pick tracks, sets or playlists and press **Import**.
+
+To turn hearthis.at embeds into real uploads, enable downloads for those tracks on hearthis.at, then use **Host the audio on Tahti** in a track's edit dialog, or replace every hearthis.at embed in your library at once with the command line: `tahti hearthis import-embeds` (see [Command line](../reference/command-line.md)).
+
 ### Mikseri.net
 
 Music you have on [Mikseri.net](https://www.mikseri.net) can be added to a collection as an embed. Open the collection in **Studio** and find **Add your music from Mikseri.net**:
@@ -94,7 +98,7 @@ Open a row for the track page, or use the row menu to edit details, pin to your 
 ## Other Library tabs
 
 - **Recordings:** your past broadcasts, ready to publish as tracks.
-- **Media:** images and video you've uploaded for covers and backdrops.
+- **Media:** images and video you've uploaded for covers and backdrops. **Purge unused** deletes every file nothing of yours uses any more (profile, channel design, posts, releases, overlays); it shows how many files and how much space first, and never touches files in use.
 - **Stash:** private file storage you can share with collaborators.
 - **Embeds:** SoundCloud and other embeds you've added.
 - **Smart links:** the share pages for your releases.
