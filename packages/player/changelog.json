@@ -1,5 +1,12 @@
 [
   {
+    "date": "2026-11-10T02:00",
+    "description": "Expand and collapse the Radio player using the small tab below the card, with the play button kept in the top-right corner.",
+    "type": "improvement",
+    "contributors": ["jani"],
+    "tags": [{ "label": "Web", "color": "blue" }]
+  },
+  {
     "date": "2026-10-31T18:00",
     "description": "Play other radio stations directly from their thumbnails on a station page. Playing cards have a subtle highlight, and board members can edit station covers using a visible button on the station page.",
     "type": "improvement",
