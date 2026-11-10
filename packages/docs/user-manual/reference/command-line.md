@@ -59,6 +59,8 @@ Every command has `--help`. Most have `--json`, which prints the API's answer un
 | Blocked accounts | `tahti blocks list`, `tahti blocks add <user>`, `tahti blocks remove <user>` |
 | Search public tracks | `tahti search <words>` (no token needed) |
 | Download a hearthis.at set | `tahti hearthis sets`, `tahti hearthis download-set <set>` |
+| Re-make a hearthis.at set or track as a draft release | `tahti hearthis release <url> --out ~/Music --dry-run` |
+| Replace the hearthis.at embeds in your library with real uploads | `tahti hearthis import-embeds --dry-run`, then without `--dry-run` |
 | Play music in the terminal | `tahti shell` |
 
 ## Uploading a folder
