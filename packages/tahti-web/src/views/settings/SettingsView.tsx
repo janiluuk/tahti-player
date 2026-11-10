@@ -22,6 +22,7 @@ const ARTIST_SECTIONS: readonly ArtistSettingsSection[] = [
   'identity',
   'story',
   'people',
+  'following',
   'connections',
   'branding',
   'gallery',

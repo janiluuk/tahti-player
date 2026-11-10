@@ -5,23 +5,36 @@ import { ComponentProps, FC, ReactNode } from 'react';
 import { cn } from '../../utils';
 
 const popoverItemVariants = cva(
-  'flex w-full cursor-pointer items-center gap-3 border-t border-transparent px-3 py-2 text-left text-sm outline-none not-last:border-b first:border-t-0 last:border-b-0',
+  'flex w-full cursor-pointer items-center gap-2.5 border-t border-transparent px-3 py-1.5 text-left text-xs leading-snug transition-colors duration-100 ease-out outline-none not-last:border-b first:border-t-0 last:border-b-0 motion-reduce:transition-none',
   {
     variants: {
       intent: {
-        default: '',
-        danger: 'text-accent-red-strong',
+        default: 'text-foreground-secondary',
+        danger: 'text-accent-red-strong/80',
       },
       align: {
         left: '',
         center: 'justify-center text-center',
       },
       highlight: {
-        hover:
-          'hover:bg-background-secondary hover:text-foreground hover:border-border focus-visible:bg-background-secondary focus-visible:text-foreground',
+        hover: 'hover:bg-black/5 focus-visible:bg-black/5 active:bg-black/10',
         controlled: '',
       },
     },
+    compoundVariants: [
+      {
+        intent: 'default',
+        highlight: 'hover',
+        class:
+          'hover:text-foreground focus-visible:text-foreground active:text-foreground',
+      },
+      {
+        intent: 'danger',
+        highlight: 'hover',
+        class:
+          'hover:text-accent-red-strong focus-visible:text-accent-red-strong active:text-accent-red-strong',
+      },
+    ],
     defaultVariants: {
       intent: 'default',
       align: 'left',

@@ -82,6 +82,57 @@ export function NewsSourcesDialog({
           <h3 className="text-sm font-bold">
             {t('newsSourcesDialog.yourSources')}
           </h3>
+          <ul
+            aria-label={t('newsSourcesDialog.yourSources')}
+            className="divide-border flex flex-col divide-y"
+          >
+            <li className="flex items-center justify-between gap-3 py-2">
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold">
+                  {t('feedStory.fromTahti')}
+                </span>
+                <span className="text-foreground-secondary block truncate text-xs">
+                  {t('newsSourcesDialog.alwaysIncluded')}
+                </span>
+              </span>
+            </li>
+            {sources.map((source) => (
+              <li
+                key={source.id}
+                className="flex items-center justify-between gap-3 py-2"
+              >
+                <span className="min-w-0">
+                  <span className="block truncate text-sm font-semibold">
+                    {source.label}
+                  </span>
+                  <span className="text-foreground-secondary block truncate text-xs">
+                    {hostOf(source.input)}
+                  </span>
+                </span>
+                <Tooltip
+                  content={t('newsSourcesDialogLabels.removeLabel', {
+                    label: source.label,
+                  })}
+                  side="top"
+                >
+                  <Button
+                    size="icon-sm"
+                    variant="text"
+                    aria-label={t('newsSourcesDialogLabels.removeLabel', {
+                      label: source.label,
+                    })}
+                    onClick={() => removeInstance(source.id)}
+                  >
+                    <TrashIcon
+                      className="text-accent-red-strong"
+                      size={14}
+                      aria-hidden
+                    />
+                  </Button>
+                </Tooltip>
+              </li>
+            ))}
+          </ul>
           {sources.length === 0 ? (
             <PageEmpty
               title={t('empties.noNewsSources')}
@@ -96,49 +147,7 @@ export function NewsSourcesDialog({
                 </Button>
               }
             />
-          ) : (
-            <ul
-              aria-label={t('newsSourcesDialog.yourSources')}
-              className="divide-border flex flex-col divide-y"
-            >
-              {sources.map((source) => (
-                <li
-                  key={source.id}
-                  className="flex items-center justify-between gap-3 py-2"
-                >
-                  <span className="min-w-0">
-                    <span className="block truncate text-sm font-semibold">
-                      {source.label}
-                    </span>
-                    <span className="text-foreground-secondary block truncate text-xs">
-                      {hostOf(source.input)}
-                    </span>
-                  </span>
-                  <Tooltip
-                    content={t('newsSourcesDialogLabels.removeLabel', {
-                      label: source.label,
-                    })}
-                    side="top"
-                  >
-                    <Button
-                      size="icon-sm"
-                      variant="text"
-                      aria-label={t('newsSourcesDialogLabels.removeLabel', {
-                        label: source.label,
-                      })}
-                      onClick={() => removeInstance(source.id)}
-                    >
-                      <TrashIcon
-                        className="text-accent-red-strong"
-                        size={14}
-                        aria-hidden
-                      />
-                    </Button>
-                  </Tooltip>
-                </li>
-              ))}
-            </ul>
-          )}
+          ) : null}
         </section>
         <form
           className="flex flex-col gap-3"

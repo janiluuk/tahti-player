@@ -10,6 +10,7 @@ const ALL_ARTIST_TABS = tabs(
   'identity',
   'story',
   'people',
+  'following',
   'connections',
   'branding',
   'gallery',
@@ -35,12 +36,17 @@ describe('artist tab groups', () => {
     const grouped = groupTabs(artistTabGroups(webT()), ALL_ARTIST_TABS);
     expect(tabLanding(grouped, 'press-kit')).toEqual({ group: 1, tab: 1 });
     expect(tabLanding(grouped, 'gallery')).toEqual({ group: 2, tab: 1 });
+    expect(tabLanding(grouped, 'following')).toEqual({ group: 0, tab: 3 });
   });
 
   it('counts only the tabs that are shown', () => {
     const solo = ALL_ARTIST_TABS.filter((tab) => tab.id !== 'people');
     const grouped = groupTabs(artistTabGroups(webT()), solo);
-    expect(grouped[0].tabs.map((tab) => tab.id)).toEqual(['identity', 'story']);
+    expect(grouped[0].tabs.map((tab) => tab.id)).toEqual([
+      'identity',
+      'story',
+      'following',
+    ]);
     expect(tabLanding(grouped, 'people')).toEqual({ group: 0, tab: 0 });
   });
 

@@ -11,8 +11,15 @@ import {
   StoryRow,
 } from '@tahti-player/ui';
 
+import { fetchAnnouncements } from '../api/client';
+import { isForceMock } from '../api/mode';
 import { fetchRssArticles } from '../api/rss-feed';
+import type { Announcement } from '../api/types';
 import { aggregateNews, type AggregatedArticle } from '../lib/newsAggregate';
+import {
+  announcementsAsNewsFeed,
+  isTahtiPlatformNewsSource,
+} from '../lib/platformNewsFeed';
 import { storyDate } from '../lib/storyDate';
 import {
   newsWidgetsOn,
@@ -21,17 +28,19 @@ import {
 } from '../stores/listenerWidgetsStore';
 import { NewsArticleDialog } from './NewsArticleDialog';
 import { NewsSourcesDialog } from './NewsSourcesDialog';
+import { PlatformNewsDialog } from './PlatformNewsDialog';
 import { StoryTitleButton } from './StoryTitleButton';
 
 const CAROUSEL_LIMIT = 12;
 
 type LoadState = {
   articles: AggregatedArticle[];
+  platformPosts: Announcement[];
   failed: string[];
   loading: boolean;
 };
 
-/** Every RSS source on this page merged into one Latest News carousel. */
+/** Tahti platform news plus every optional RSS source on this page. */
 export function LatestNewsWidget({
   surface,
 }: {
@@ -52,8 +61,10 @@ export function LatestNewsWidget({
   const sourceKey = sources.map((source) => source.url).join('|');
   const sourcesRef = useRef(sources);
   sourcesRef.current = sources;
+  const tahtiLabel = t('feedStory.fromTahti');
   const [state, setState] = useState<LoadState>({
     articles: [],
+    platformPosts: [],
     failed: [],
     loading: true,
   });
@@ -64,8 +75,9 @@ export function LatestNewsWidget({
   useEffect(() => {
     let cancelled = false;
     setState((previous) => ({ ...previous, loading: true }));
-    void Promise.all(
-      sourcesRef.current.map(async (source) => {
+    void Promise.all([
+      fetchAnnouncements(),
+      ...sourcesRef.current.map(async (source) => {
         const result = await fetchRssArticles(source.url);
         return {
           source,
@@ -73,26 +85,47 @@ export function LatestNewsWidget({
           failed: result.data.length === 0 && Boolean(result.meta.reason),
         };
       }),
-    ).then((feeds) => {
+    ]).then(([platform, ...feeds]) => {
       if (cancelled) {
         return;
       }
+      const platformFailed =
+        Boolean(platform.meta.reason) &&
+        !isForceMock() &&
+        platform.data.length === 0;
+      const platformPosts = platformFailed ? [] : platform.data;
+      const rssFeeds = feeds as Array<{
+        source: (typeof sources)[number];
+        articles: Awaited<ReturnType<typeof fetchRssArticles>>['data'];
+        failed: boolean;
+      }>;
       setState({
-        articles: aggregateNews(feeds, 40),
-        failed: feeds
-          .filter((feed) => feed.failed)
-          .map((feed) => feed.source.label),
+        platformPosts,
+        articles: aggregateNews(
+          [
+            announcementsAsNewsFeed(platformPosts, tahtiLabel),
+            ...rssFeeds.map(({ source, articles }) => ({ source, articles })),
+          ],
+          40,
+        ),
+        failed: [
+          ...(platformFailed ? [tahtiLabel] : []),
+          ...rssFeeds
+            .filter((feed) => feed.failed)
+            .map((feed) => feed.source.label),
+        ],
         loading: false,
       });
     });
     return () => {
       cancelled = true;
     };
-  }, [sourceKey]);
+  }, [sourceKey, tahtiLabel]);
 
-  if (sources.length === 0) {
-    return null;
-  }
+  const openPlatform =
+    open && isTahtiPlatformNewsSource(open.source.id)
+      ? (state.platformPosts.find((post) => post.id === open.id) ?? null)
+      : null;
 
   return (
     <div className="flex min-w-0 flex-col gap-2" data-testid="latest-news">
@@ -217,12 +250,43 @@ export function LatestNewsWidget({
           })}
         </ul>
       </Dialog>
-      <NewsArticleDialog
-        article={open}
-        feedLabel={open?.source.label ?? 'News'}
-        fallbackImageUrl={open?.source.thumbnailUrl}
-        onClose={() => setOpen(null)}
-      />
+      {openPlatform ? (
+        <PlatformNewsDialog
+          key={openPlatform.id}
+          post={openPlatform}
+          onClose={() => setOpen(null)}
+          onUpdated={(updated) => {
+            setState((previous) => ({
+              ...previous,
+              platformPosts: previous.platformPosts.map((post) =>
+                post.id === updated.id ? updated : post,
+              ),
+              articles: previous.articles.map((article) =>
+                article.id === updated.id &&
+                isTahtiPlatformNewsSource(article.source.id)
+                  ? {
+                      ...article,
+                      title: updated.headline,
+                      teaser: updated.summary,
+                      imageUrl: updated.imageUrl || '/news-opening.svg',
+                      paragraphs: updated.summary
+                        .split(/\n\s*\n/)
+                        .filter(Boolean),
+                    }
+                  : article,
+              ),
+            }));
+            setOpen(null);
+          }}
+        />
+      ) : (
+        <NewsArticleDialog
+          article={open}
+          feedLabel={open?.source.label ?? 'News'}
+          fallbackImageUrl={open?.source.thumbnailUrl}
+          onClose={() => setOpen(null)}
+        />
+      )}
       <NewsSourcesDialog isOpen={editing} onClose={() => setEditing(false)} />
     </div>
   );

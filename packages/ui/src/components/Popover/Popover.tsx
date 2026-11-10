@@ -70,7 +70,9 @@ const PopoverImpl: FC<PopoverProps> = ({
                   className={cn(
                     // Portaled panels stack above sticky toolbars and the
                     // full-screen player (z-60) so every option is clickable.
-                    'text-primary-foreground bg-primary border-border z-[80] rounded-md border-(length:--border-width) px-4 py-2 leading-5 select-none',
+                    // Menus use the page surface — primary fill made every item
+                    // look selected.
+                    'text-foreground bg-background border-border shadow-shadow z-[80] rounded-md border-(length:--border-width) px-4 py-2 leading-5 select-none',
                     panelClassName,
                     {
                       ['translate-y-0']: anchor === 'bottom',

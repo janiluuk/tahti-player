@@ -22,7 +22,7 @@ const meta: Meta<typeof ArtistPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Artist, in three groups: Profile (identity, story, and people for a band or collective), Social links, press kit (social connections, news feed, auto-post; press kit) and Artist branding (branding, gallery, release visual defaults). Signed out it only links to sign-in.',
+          'Settings → Artist, in three groups: Profile (identity, story, people for a band or collective, and Following), Social links, press kit (social connections, news feed, auto-post; press kit) and Artist branding (branding, gallery, release visual defaults). Signed out it only links to sign-in.',
       },
     },
   },
@@ -97,6 +97,15 @@ export const StoryTab: Story = {
       await canvas.findByRole('textbox', { name: 'Short bio' }),
     ).toHaveValue('Mock bio for Nuclear studio channel settings.');
     await expectVisible(canvas.getByRole('button', { name: 'Save story' }));
+  },
+};
+
+export const Following: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await openGroup(canvas, 'Profile', 'Following');
+    const list = await canvas.findByTestId('library-following');
+    await expect(list).toBeVisible();
   },
 };
 

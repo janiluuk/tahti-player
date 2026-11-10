@@ -119,7 +119,12 @@ export function SoundRow({
         aria-label={t('soundRowLabels.selectTitle', { title: item.title })}
       />
       <div className="relative shrink-0 overflow-hidden rounded-md">
-        <MediaArtwork src={item.bannerUrl ?? undefined} size="sm" />
+        <MediaArtwork
+          src={item.bannerUrl ?? undefined}
+          size="sm"
+          seed={item.id}
+          alt=""
+        />
         {processing ? (
           <TrackProcessing variant="overlay" label="" decorative />
         ) : null}

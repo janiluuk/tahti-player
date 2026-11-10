@@ -19,7 +19,8 @@ let mockEmbeds: ArtistEmbed[] = [
     url: 'https://soundcloud.com/tahti/night-drive',
     title: 'Night Drive',
     authorName: 'Tahti',
-    thumbnailUrl: null,
+    thumbnailUrl:
+      'https://i1.sndcdn.com/artworks-mock-night-drive-t500x500.jpg',
     createdAt: '2026-09-01T12:00:00.000Z',
   },
 ];

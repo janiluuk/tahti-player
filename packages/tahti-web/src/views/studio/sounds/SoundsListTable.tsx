@@ -131,6 +131,7 @@ function SoundsListTableView({
               <MediaArtwork
                 src={sound.bannerUrl ?? undefined}
                 alt=""
+                seed={sound.id}
                 size="sm"
                 className="size-8 min-w-8 rounded-sm"
                 isPlaying={isPlaying && status !== 'loading'}

@@ -290,6 +290,7 @@ function EmbedSoundCard({
         title={item.title}
         provider={provider}
         embedUri={embedUri}
+        artworkUrl={item.bannerUrl}
         as="div"
         actions={<SoundRowActions item={item} state={state} />}
       />

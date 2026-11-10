@@ -64,11 +64,11 @@ export function SoundActiveFilterChips({
       onRemove: () => setContentTypeFilter('ALL'),
     });
   }
-  if (embedFilter !== 'ALL') {
+  if (embedFilter !== 'NATIVE') {
     chips.push({
       id: 'source',
       label: t('library.filterChipSource', { value: embedFilter }),
-      onRemove: () => setEmbedFilter('ALL'),
+      onRemove: () => setEmbedFilter('NATIVE'),
     });
   }
   if (genreFilter) {

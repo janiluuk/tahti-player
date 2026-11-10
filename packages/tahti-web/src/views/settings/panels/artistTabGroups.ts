@@ -10,7 +10,7 @@ export function artistTabGroups(t: TFunction<'web'>): readonly TabGroup[] {
       id: 'profile',
       label: t('artistTabGroups.profile'),
       Icon: UserCircle2,
-      tabIds: ['identity', 'story', 'people'],
+      tabIds: ['identity', 'story', 'people', 'following'],
     },
     {
       id: 'links-press',

@@ -13,7 +13,7 @@ async function open(page: Page, path: string) {
   await acknowledgeGuidelines(page);
 }
 
-test('listener: follows an artist and finds them under Library → Following', async ({
+test('listener: follows an artist and finds them under Settings → Profile → Following', async ({
   page,
 }) => {
   const errors = collectPageErrors(page);
@@ -22,7 +22,8 @@ test('listener: follows an artist and finds them under Library → Following', a
   await expect(
     page.getByRole('button', { name: /Unfollow demo|Following/ }),
   ).toBeVisible();
-  await open(page, '/library/following');
+  await open(page, '/settings/artist?tab=following');
+  await expect(page).toHaveURL(/\/settings\/artist\?tab=following/);
   await expect(
     page.getByTestId('library-following').getByRole('link', { name: /demo/ }),
   ).toBeVisible();

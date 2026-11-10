@@ -121,7 +121,12 @@ export function SoundCloudEmbedsPanel() {
             >
               {embeds.map((embed) => (
                 <li key={embed.id} className="flex items-center gap-3 py-2">
-                  <MediaArtwork src={embed.thumbnailUrl} alt="" size="thumb" />
+                  <MediaArtwork
+                    src={embed.thumbnailUrl ?? undefined}
+                    alt=""
+                    seed={embed.id}
+                    size="thumb"
+                  />
                   <div className="min-w-0 flex-1 text-sm">
                     <ExternalLink
                       href={embed.url}

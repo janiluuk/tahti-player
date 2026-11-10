@@ -2,7 +2,7 @@ import { PlayIcon } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button } from '@tahti-player/ui';
+import { Button, MediaArtwork } from '@tahti-player/ui';
 
 import { playableFromHearthis } from '../api/sources';
 import {
@@ -20,6 +20,8 @@ type Props = {
   title: string;
   provider: EmbedProvider;
   embedUri: string;
+  /** Provider or stored cover; falls back to default artwork when missing. */
+  artworkUrl?: string | null;
   className?: string;
   /** Render as a plain block when the caller already owns the list item. */
   as?: 'li' | 'div';
@@ -40,6 +42,7 @@ export function EmbedTrackRow({
   title,
   provider,
   embedUri,
+  artworkUrl,
   className,
   as: Container = 'li',
   actions,
@@ -125,8 +128,17 @@ export function EmbedTrackRow({
             <LibraryItemRow
               className="w-full py-0"
               artwork={
-                <span className="bg-primary/15 text-primary-strong flex size-10 items-center justify-center rounded-md">
-                  <PlayIcon size={16} className="fill-current" aria-hidden />
+                <span className="relative size-10 shrink-0">
+                  <MediaArtwork
+                    size="sm"
+                    src={artworkUrl ?? undefined}
+                    alt=""
+                    seed={embedUri}
+                    className="size-10 rounded-md"
+                  />
+                  <span className="bg-background/80 text-primary-strong absolute inset-0 flex items-center justify-center rounded-md">
+                    <PlayIcon size={16} className="fill-current" aria-hidden />
+                  </span>
                 </span>
               }
               title={<span className="block truncate">{title}</span>}

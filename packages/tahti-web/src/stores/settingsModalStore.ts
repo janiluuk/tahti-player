@@ -7,6 +7,7 @@ export type ArtistSettingsSection =
   | 'identity'
   | 'story'
   | 'people'
+  | 'following'
   | 'connections'
   | 'branding'
   | 'gallery'

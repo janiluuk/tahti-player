@@ -125,7 +125,9 @@ export function NewsView() {
   const snapshot = useSnapshotFetch<Announcement[]>('platform-news', async () =>
     apiResult(await fetchAnnouncements()),
   );
-  const entries = snapshot.data ?? [];
+  const entries = [...(snapshot.data ?? [])].sort((a, b) =>
+    b.publishedAt.localeCompare(a.publishedAt),
+  );
   const { loading, error: loadError, retry } = snapshot;
   const setEntries = (update: (current: Announcement[]) => Announcement[]) =>
     snapshot.mutate((current) => update(current ?? []));

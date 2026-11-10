@@ -49,7 +49,7 @@ export const SortMenuButton = <T extends string = string>({
           <ArrowUpDownIcon size={16} aria-hidden />
         </Button>
       }
-      panelClassName="min-w-44"
+      panelClassName="min-w-44 px-0 py-1"
     >
       <Popover.Menu aria-label={label}>
         {options.map((option) => (

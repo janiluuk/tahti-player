@@ -1,6 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
-  Code2Icon,
   FolderIcon,
   HardDriveIcon,
   HeadphonesIcon,
@@ -13,7 +12,6 @@ import {
   Music2Icon,
   PackageIcon,
   UploadIcon,
-  UsersIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
@@ -49,8 +47,6 @@ import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { FavoritesView } from './FavoritesView';
 import { HistoryView } from './HistoryView';
-import { LibraryEmbedsView } from './LibraryEmbedsView';
-import { LibraryFollowingView } from './LibraryFollowingView';
 import { LibraryMediaView } from './LibraryMediaView';
 import { LibrarySmartLinksView } from './LibrarySmartLinksView';
 import { StudioRecordingsView } from './studio/StudioRecordingsView';
@@ -60,13 +56,11 @@ export type Tab =
   | 'library'
   | 'favorites'
   | 'history'
-  | 'following'
   | 'sounds'
   | 'collections'
   | 'recordings'
   | 'media'
   | 'stash'
-  | 'embeds'
   | 'smartlinks'
   | 'local'
   | 'upload';
@@ -89,12 +83,6 @@ export const LIBRARY_SECTION_TABS = [
     labelKey: 'library.tabHistory' as const,
     icon: HistoryIcon,
     to: '/library/history',
-  },
-  {
-    id: 'following' as const,
-    labelKey: 'library.tabFollowing' as const,
-    icon: UsersIcon,
-    to: '/library/following',
   },
   {
     id: 'sounds' as const,
@@ -133,12 +121,6 @@ export const LIBRARY_SECTION_TABS = [
     to: '/library/stash',
   },
   {
-    id: 'embeds' as const,
-    labelKey: 'library.tabEmbeds' as const,
-    icon: Code2Icon,
-    to: '/library/embeds',
-  },
-  {
     id: 'smartlinks' as const,
     labelKey: 'library.tabSmartLinks' as const,
     icon: Link2Icon,
@@ -159,7 +141,6 @@ const ARTIST_ONLY_TABS: ReadonlySet<LibrarySectionId> = new Set([
   'sounds',
   'upload',
   'recordings',
-  'embeds',
   'smartlinks',
 ]);
 
@@ -281,11 +262,6 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
             <HistoryView embedded />
           </div>
         ) : null}
-        {tab === 'following' ? (
-          <div className="mt-2">
-            <LibraryFollowingView />
-          </div>
-        ) : null}
         {tab === 'recordings' ? (
           <div className="mt-2">
             <StudioRecordingsView embedded />
@@ -299,11 +275,6 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
         {tab === 'stash' ? (
           <div className="mt-2">
             <StudioStashView embedded />
-          </div>
-        ) : null}
-        {tab === 'embeds' ? (
-          <div className="mt-2">
-            <LibraryEmbedsView />
           </div>
         ) : null}
         {tab === 'smartlinks' ? <LibrarySmartLinksView /> : null}
