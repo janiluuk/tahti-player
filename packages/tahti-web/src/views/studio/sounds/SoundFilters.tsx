@@ -59,14 +59,17 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
     setUploadedTo,
     genreFilter,
     setGenreFilter,
-    tagFilter,
-    setTagFilter,
+    tagFilters,
+    addTagFilter,
     bpmMin,
     setBpmMin,
     bpmMax,
     setBpmMax,
     keyFilter,
     setKeyFilter,
+    yearFilter,
+    setUploadedYearFilter,
+    clearYearLabel,
     statusFilter,
     setStatusFilter,
     visibilityFilter,
@@ -88,9 +91,10 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
   const filtersModified =
     embedFilter !== 'ALL' ||
     Boolean(genreFilter) ||
-    Boolean(tagFilter) ||
+    tagFilters.length > 0 ||
     Boolean(uploadedFrom) ||
     Boolean(uploadedTo) ||
+    Boolean(yearFilter) ||
     Boolean(bpmMin.trim()) ||
     Boolean(bpmMax.trim()) ||
     Boolean(keyFilter.trim()) ||
@@ -99,6 +103,13 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
     pinnedFilter !== 'ALL' ||
     fallbackFilter !== 'ALL';
   const queryActive = Boolean(query.trim());
+  const facetCount = (
+    field: keyof typeof facets,
+    value: string,
+  ): number | undefined =>
+    facets[field].find((facet) => facet.value === value)?.count;
+  const withCount = (label: string, count: number | undefined) =>
+    count == null ? label : t('library.facetOption', { value: label, count });
 
   return (
     <>
@@ -149,7 +160,13 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
           }
           options={contentTypeFilters(t).map((filterOption) => ({
             id: filterOption.id,
-            label: filterOption.label,
+            label:
+              filterOption.id === 'ALL'
+                ? filterOption.label
+                : withCount(
+                    filterOption.label,
+                    facetCount('contentType', filterOption.id),
+                  ),
           }))}
           className="min-w-36"
         />
@@ -228,10 +245,24 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
             label={t('library.source')}
             value={embedFilter}
             onValueChange={(value) => setEmbedFilter(value as EmbedFilter)}
-            options={embedFilters(t).map((filterOption) => ({
-              id: filterOption.id,
-              label: filterOption.label,
-            }))}
+            options={embedFilters(t).map((filterOption) => {
+              const sourceKey =
+                filterOption.id === 'NATIVE'
+                  ? 'native'
+                  : filterOption.id === 'ALL'
+                    ? null
+                    : filterOption.id;
+              return {
+                id: filterOption.id,
+                label:
+                  sourceKey == null
+                    ? filterOption.label
+                    : withCount(
+                        filterOption.label,
+                        facetCount('source', sourceKey),
+                      ),
+              };
+            })}
             className="min-w-40"
           />
           <Select
@@ -254,13 +285,41 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
           />
           <Select
             label={t('library.tagFilter')}
-            value={tagFilter || 'ALL'}
+            value="ALL"
+            onValueChange={(value) => {
+              if (value !== 'ALL') {
+                addTagFilter(value);
+              }
+            }}
+            options={[
+              {
+                id: 'ALL',
+                label:
+                  tagFilters.length > 0
+                    ? t('library.addTagFilter')
+                    : t('library.allTags'),
+              },
+              ...facets.tag
+                .filter((facet) => !tagFilters.includes(facet.value))
+                .map((facet) => ({
+                  id: facet.value,
+                  label: t('library.facetOption', {
+                    value: facet.value,
+                    count: facet.count,
+                  }),
+                })),
+            ]}
+            className="min-w-40"
+          />
+          <Select
+            label={t('library.yearFilter')}
+            value={yearFilter || 'ALL'}
             onValueChange={(value) =>
-              setTagFilter(value === 'ALL' ? '' : value)
+              setUploadedYearFilter(value === 'ALL' ? '' : value)
             }
             options={[
-              { id: 'ALL', label: t('library.allTags') },
-              ...facets.tag.map((facet) => ({
+              { id: 'ALL', label: t('library.allYears') },
+              ...facets.uploadedYear.map((facet) => ({
                 id: facet.value,
                 label: t('library.facetOption', {
                   value: facet.value,
@@ -268,7 +327,7 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
                 }),
               })),
             ]}
-            className="min-w-40"
+            className="min-w-36"
           />
           <Select
             label={t('library.statusFilter')}
@@ -276,10 +335,34 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
             onValueChange={(value) => setStatusFilter(value as StatusFilter)}
             options={[
               { id: 'ALL', label: leaveAll },
-              { id: 'READY', label: t('library.statusReady') },
-              { id: 'PROCESSING', label: t('library.statusProcessing') },
-              { id: 'PENDING', label: t('library.statusPending') },
-              { id: 'ERROR', label: t('library.statusError') },
+              {
+                id: 'READY',
+                label: withCount(
+                  t('library.statusReady'),
+                  facetCount('status', 'READY'),
+                ),
+              },
+              {
+                id: 'PROCESSING',
+                label: withCount(
+                  t('library.statusProcessing'),
+                  facetCount('status', 'PROCESSING'),
+                ),
+              },
+              {
+                id: 'PENDING',
+                label: withCount(
+                  t('library.statusPending'),
+                  facetCount('status', 'PENDING'),
+                ),
+              },
+              {
+                id: 'ERROR',
+                label: withCount(
+                  t('library.statusError'),
+                  facetCount('status', 'ERROR'),
+                ),
+              },
             ]}
             className="min-w-36"
           />
@@ -340,26 +423,53 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
             onChange={(event) => setBpmMax(event.target.value)}
             className="min-w-24"
           />
-          <Input
-            type="text"
-            label={t('library.keyFilter')}
-            value={keyFilter}
-            onChange={(event) => setKeyFilter(event.target.value)}
-            placeholder={t('library.keyFilterPlaceholder')}
-            className="min-w-28"
-          />
+          {facets.musicalKey.length > 0 ? (
+            <Select
+              label={t('library.keyFilter')}
+              value={keyFilter || 'ALL'}
+              onValueChange={(value) =>
+                setKeyFilter(value === 'ALL' ? '' : value)
+              }
+              options={[
+                { id: 'ALL', label: leaveAll },
+                ...facets.musicalKey.map((facet) => ({
+                  id: facet.value,
+                  label: t('library.facetOption', {
+                    value: facet.value,
+                    count: facet.count,
+                  }),
+                })),
+              ]}
+              className="min-w-28"
+            />
+          ) : (
+            <Input
+              type="text"
+              label={t('library.keyFilter')}
+              value={keyFilter}
+              onChange={(event) => setKeyFilter(event.target.value)}
+              placeholder={t('library.keyFilterPlaceholder')}
+              className="min-w-28"
+            />
+          )}
           <Input
             type="date"
             label={t('library.uploadedFrom')}
             value={uploadedFrom}
-            onChange={(event) => setUploadedFrom(event.target.value)}
+            onChange={(event) => {
+              setUploadedFrom(event.target.value);
+              clearYearLabel();
+            }}
             className="min-w-36"
           />
           <Input
             type="date"
             label={t('library.uploadedTo')}
             value={uploadedTo}
-            onChange={(event) => setUploadedTo(event.target.value)}
+            onChange={(event) => {
+              setUploadedTo(event.target.value);
+              clearYearLabel();
+            }}
             className="min-w-36"
           />
         </div>

@@ -81,6 +81,7 @@ export type StudioSoundListFilter = {
   uploadedTo?: string;
   genre?: string;
   tag?: string;
+  tags?: string[];
   bpmMin?: number;
   bpmMax?: number;
   key?: string;
@@ -139,6 +140,7 @@ export type StudioSoundBulkPatch = {
   contentType?: string;
   isPublic?: boolean;
   isFallback?: boolean;
+  pinned?: boolean;
   downloadsEnabled?: boolean;
   commentsEnabled?: boolean;
   license?: string;
@@ -151,6 +153,13 @@ function soundListQueryString(
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
     if (value === undefined || value === null || value === '') {
+      continue;
+    }
+    if (Array.isArray(value)) {
+      if (value.length === 0) {
+        continue;
+      }
+      params.set(key, value.join(','));
       continue;
     }
     params.set(key, String(value));
@@ -196,6 +205,12 @@ function filterMockSounds(
     }
     if (filter.tag && !(item.tags ?? []).includes(filter.tag)) {
       return false;
+    }
+    if (filter.tags?.length) {
+      const have = new Set(item.tags ?? []);
+      if (!filter.tags.every((tag) => have.has(tag))) {
+        return false;
+      }
     }
     if (filter.isPublic != null && Boolean(item.isPublic) !== filter.isPublic) {
       return false;
@@ -396,6 +411,71 @@ export async function fetchStudioSoundFacets(
         }
       }
       facets.tag = [...counts.entries()].map(([value, count]) => ({
+        value,
+        count,
+      }));
+    }
+    if (fields.includes('contentType')) {
+      const counts = new Map<string, number>();
+      for (const item of filtered) {
+        if (!item.contentType) {
+          continue;
+        }
+        counts.set(item.contentType, (counts.get(item.contentType) ?? 0) + 1);
+      }
+      facets.contentType = [...counts.entries()].map(([value, count]) => ({
+        value,
+        count,
+      }));
+    }
+    if (fields.includes('source')) {
+      const counts = new Map<string, number>();
+      for (const item of filtered) {
+        const value = item.embedProvider ?? 'native';
+        counts.set(value, (counts.get(value) ?? 0) + 1);
+      }
+      facets.source = [...counts.entries()].map(([value, count]) => ({
+        value,
+        count,
+      }));
+    }
+    if (fields.includes('status')) {
+      const counts = new Map<string, number>();
+      for (const item of filtered) {
+        if (!item.status) {
+          continue;
+        }
+        counts.set(item.status, (counts.get(item.status) ?? 0) + 1);
+      }
+      facets.status = [...counts.entries()].map(([value, count]) => ({
+        value,
+        count,
+      }));
+    }
+    if (fields.includes('uploadedYear')) {
+      const counts = new Map<string, number>();
+      for (const item of filtered) {
+        if (!item.createdAt) {
+          continue;
+        }
+        const year = String(new Date(item.createdAt).getUTCFullYear());
+        counts.set(year, (counts.get(year) ?? 0) + 1);
+      }
+      facets.uploadedYear = [...counts.entries()].map(([value, count]) => ({
+        value,
+        count,
+      }));
+    }
+    if (fields.includes('musicalKey')) {
+      const counts = new Map<string, number>();
+      for (const item of filtered) {
+        const key = item.musicalKey ?? item.keyDetected;
+        if (!key) {
+          continue;
+        }
+        counts.set(key, (counts.get(key) ?? 0) + 1);
+      }
+      facets.musicalKey = [...counts.entries()].map(([value, count]) => ({
         value,
         count,
       }));

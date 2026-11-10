@@ -10,23 +10,6 @@ import {
 } from '../../../content/contentTypes';
 import type { StudioSoundsState } from './useStudioSoundsState';
 
-const GENRE_OPTIONS = [
-  'Electronic',
-  'House',
-  'Techno',
-  'Trance',
-  'Drum & Bass',
-  'Dubstep',
-  'Ambient',
-  'Hip-Hop',
-  'Pop',
-  'Rock',
-  'Jazz',
-  'Classical',
-  'Podcast',
-  'Other',
-] as const;
-
 const LICENSES = [
   ['', ''],
   ['ALL_RIGHTS_RESERVED', 'All rights reserved'],
@@ -48,12 +31,17 @@ type VisibilityChoice = '' | 'public' | 'private';
 type TriChoice = '' | 'on' | 'off';
 type FallbackChoice = '' | 'on' | 'off';
 type ReleasedChoice = '' | 'set' | 'clear';
+type TagsChoice = '' | 'set' | 'clear';
+type PinnedChoice = '' | 'on' | 'off';
 
 export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
   const { t } = useTranslation('web');
-  const { bulkEditOpen, setBulkEditOpen, selectedIds, applyBulkEdit } = state;
+  const { bulkEditOpen, setBulkEditOpen, selectedIds, applyBulkEdit, facets } =
+    state;
   const [genre, setGenre] = useState('');
   const [genreCustom, setGenreCustom] = useState('');
+  const [subGenres, setSubGenres] = useState('');
+  const [tagsChoice, setTagsChoice] = useState<TagsChoice>('');
   const [tags, setTags] = useState('');
   const [contentType, setContentType] = useState<ContentTypeId | ''>('');
   const [visibility, setVisibility] = useState<VisibilityChoice>('');
@@ -63,13 +51,20 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
   const [releasedChoice, setReleasedChoice] = useState<ReleasedChoice>('');
   const [releasedAt, setReleasedAt] = useState('');
   const [fallback, setFallback] = useState<FallbackChoice>('');
+  const [pinned, setPinned] = useState<PinnedChoice>('');
   const count = selectedIds.size;
   const leaveUnchanged = t('library.soundsBulkLeaveUnchanged');
+  const genreOptions = [
+    ...facets.genre.map((facet) => facet.value),
+    'Other',
+  ].filter((value, index, all) => all.indexOf(value) === index);
 
   const close = () => {
     setBulkEditOpen(false);
     setGenre('');
     setGenreCustom('');
+    setSubGenres('');
+    setTagsChoice('');
     setTags('');
     setContentType('');
     setVisibility('');
@@ -79,6 +74,7 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
     setReleasedChoice('');
     setReleasedAt('');
     setFallback('');
+    setPinned('');
   };
 
   const apply = () => {
@@ -91,7 +87,16 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
         patch.genreCustom = null;
       }
     }
-    if (tags.trim()) {
+    if (subGenres.trim()) {
+      patch.subGenres = subGenres
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+        .slice(0, 12);
+    }
+    if (tagsChoice === 'clear') {
+      patch.tags = [];
+    } else if (tagsChoice === 'set' && tags.trim()) {
       patch.tags = tags
         .split(',')
         .map((tag) => tag.trim())
@@ -133,6 +138,12 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
     if (fallback === 'off') {
       patch.isFallback = false;
     }
+    if (pinned === 'on') {
+      patch.pinned = true;
+    }
+    if (pinned === 'off') {
+      patch.pinned = false;
+    }
     if (Object.keys(patch).length === 0) {
       return;
     }
@@ -156,7 +167,7 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
             onValueChange={setGenre}
             options={[
               { id: '', label: leaveUnchanged },
-              ...GENRE_OPTIONS.map((value) => ({ id: value, label: value })),
+              ...genreOptions.map((value) => ({ id: value, label: value })),
             ]}
           />
         </div>
@@ -175,19 +186,51 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
             />
           </label>
         ) : null}
-        <label className="flex flex-col gap-1.5 text-sm" htmlFor="bulk-tags">
-          {t('library.soundsBulkTags')}
+        <label
+          className="flex flex-col gap-1.5 text-sm"
+          htmlFor="bulk-sub-genres"
+        >
+          {t('library.soundsBulkSubGenres')}
           <Input
-            id="bulk-tags"
-            name="bulk-tags"
-            value={tags}
-            onChange={(event) => setTags(event.target.value)}
-            placeholder={t('library.soundsBulkTagsPlaceholder')}
+            id="bulk-sub-genres"
+            name="bulk-sub-genres"
+            value={subGenres}
+            onChange={(event) => setSubGenres(event.target.value)}
+            placeholder={t('library.soundsBulkSubGenresPlaceholder')}
           />
           <span className="text-foreground-secondary text-xs">
-            {t('library.soundsBulkTagsHint')}
+            {t('library.soundsBulkSubGenresHint')}
           </span>
         </label>
+        <div className="flex flex-col gap-1.5 text-sm">
+          <span id="bulk-tags-choice-label">{t('library.soundsBulkTags')}</span>
+          <Select
+            id="bulk-tags-choice"
+            aria-labelledby="bulk-tags-choice-label"
+            value={tagsChoice}
+            onValueChange={(value) => setTagsChoice(value as TagsChoice)}
+            options={[
+              { id: '', label: leaveUnchanged },
+              { id: 'set', label: t('library.soundsBulkTagsReplace') },
+              { id: 'clear', label: t('library.soundsBulkTagsClear') },
+            ]}
+          />
+        </div>
+        {tagsChoice === 'set' ? (
+          <label className="flex flex-col gap-1.5 text-sm" htmlFor="bulk-tags">
+            {t('library.soundsBulkTagsValues')}
+            <Input
+              id="bulk-tags"
+              name="bulk-tags"
+              value={tags}
+              onChange={(event) => setTags(event.target.value)}
+              placeholder={t('library.soundsBulkTagsPlaceholder')}
+            />
+            <span className="text-foreground-secondary text-xs">
+              {t('library.soundsBulkTagsHint')}
+            </span>
+          </label>
+        ) : null}
         <div className="flex flex-col gap-1.5 text-sm">
           <span id="bulk-content-type-label">
             {t('library.soundsBulkType')}
@@ -221,6 +264,20 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
               { id: '', label: leaveUnchanged },
               { id: 'public', label: t('library.soundsBulkPublic') },
               { id: 'private', label: t('library.soundsBulkPrivate') },
+            ]}
+          />
+        </div>
+        <div className="flex flex-col gap-1.5 text-sm">
+          <span id="bulk-pinned-label">{t('library.soundsBulkPinned')}</span>
+          <Select
+            id="bulk-pinned"
+            aria-labelledby="bulk-pinned-label"
+            value={pinned}
+            onValueChange={(value) => setPinned(value as PinnedChoice)}
+            options={[
+              { id: '', label: leaveUnchanged },
+              { id: 'on', label: t('library.soundsBulkPinnedOn') },
+              { id: 'off', label: t('library.soundsBulkPinnedOff') },
             ]}
           />
         </div>

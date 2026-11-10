@@ -15,6 +15,7 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { hasStudioAccess } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { LibrarySectionTabs } from '../LibraryView';
+import { SoundActiveFilterChips } from './sounds/SoundActiveFilterChips';
 import { SoundFilters } from './sounds/SoundFilters';
 import { SoundsAmbientList } from './sounds/SoundsAmbientList';
 import { SoundsDialogs } from './sounds/SoundsDialogs';
@@ -76,6 +77,7 @@ export function StudioSoundsView() {
 
           <StudioPanel>
             <SoundFilters state={state} />
+            <SoundActiveFilterChips state={state} />
             {loadError && items.length > 0 ? (
               <PageErrorBanner
                 title={t('library.soundsRefreshError')}

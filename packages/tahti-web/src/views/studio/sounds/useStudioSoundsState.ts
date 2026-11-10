@@ -5,20 +5,12 @@ import { toast } from 'sonner';
 import { i18n } from '@tahti-player/i18n';
 
 import {
-  backfillStudioSoundCovers,
-  bulkDeleteStudioSounds,
-  bulkPatchStudioSounds,
-  deleteStudioSound,
   fetchEditorSource,
   fetchStudioSoundDownload,
   fetchStudioSoundFacets,
-  fetchStudioSoundIds,
   fetchStudioSoundsPage,
   fetchStudioSoundStats,
   patchStudioSound,
-  STUDIO_SOUND_BULK_MAX_IDS,
-  type StudioSoundBulkPatch,
-  type StudioSoundListFilter,
   type StudioSoundStats,
 } from '../../../api/studio';
 import type { StudioSound } from '../../../api/studio-types';
@@ -31,9 +23,14 @@ import {
 import { usePlayerStore } from '../../../stores/playerStore';
 import { useTrackListViewStore } from '../../../stores/trackListViewStore';
 import {
+  createStudioSoundsBulkActions,
+  type BulkConfirmMismatch,
+} from './studioSoundsBulkActions';
+import {
   apiSort,
   parseContentTypeFilter,
   toServerFilter,
+  yearBounds,
   type ContentTypeFilter,
   type EmbedFilter,
   type FallbackFilter,
@@ -86,10 +83,11 @@ export function useStudioSoundsState() {
   const [uploadedFrom, setUploadedFrom] = useState('');
   const [uploadedTo, setUploadedTo] = useState('');
   const [genreFilter, setGenreFilter] = useState('');
-  const [tagFilter, setTagFilter] = useState('');
+  const [tagFilters, setTagFilters] = useState<string[]>([]);
   const [bpmMin, setBpmMin] = useState('');
   const [bpmMax, setBpmMax] = useState('');
   const [keyFilter, setKeyFilter] = useState('');
+  const [yearFilter, setYearFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
   const [visibilityFilter, setVisibilityFilter] =
     useState<VisibilityFilter>('ALL');
@@ -98,7 +96,20 @@ export function useStudioSoundsState() {
   const [facets, setFacets] = useState<{
     genre: Array<{ value: string; count: number }>;
     tag: Array<{ value: string; count: number }>;
-  }>({ genre: [], tag: [] });
+    contentType: Array<{ value: string; count: number }>;
+    source: Array<{ value: string; count: number }>;
+    status: Array<{ value: string; count: number }>;
+    uploadedYear: Array<{ value: string; count: number }>;
+    musicalKey: Array<{ value: string; count: number }>;
+  }>({
+    genre: [],
+    tag: [],
+    contentType: [],
+    source: [],
+    status: [],
+    uploadedYear: [],
+    musicalKey: [],
+  });
   const [busyId, setBusyId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [embedOpenId, setEmbedOpenId] = useState<string | null>(null);
@@ -106,15 +117,17 @@ export function useStudioSoundsState() {
   const [pendingDeleteItem, setPendingDeleteItem] =
     useState<StudioSound | null>(null);
   const [pendingBulkDelete, setPendingBulkDelete] = useState(false);
+  const [bulkConfirmMismatch, setBulkConfirmMismatch] =
+    useState<BulkConfirmMismatch | null>(null);
   const [bulkEditOpen, setBulkEditOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  /** True after “Select all matching”; bulk ops use filter + confirmTotal. */
   const [allMatchingSelected, setAllMatchingSelected] = useState(false);
   const [selectingAll, setSelectingAll] = useState(false);
   const [selectionNotice, setSelectionNotice] = useState<string | null>(null);
   const [bulkBusy, setBulkBusy] = useState(false);
   const [coversBusy, setCoversBusy] = useState(false);
   const requestSeq = useRef(0);
+  const selectionAnchorId = useRef<string | null>(null);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
   const listView = useTrackListViewStore((store) => store.view);
@@ -148,7 +161,7 @@ export function useStudioSoundsState() {
         uploadedFrom,
         uploadedTo,
         genre: genreFilter,
-        tag: tagFilter,
+        tags: tagFilters,
         bpmMin,
         bpmMax,
         key: keyFilter,
@@ -164,7 +177,7 @@ export function useStudioSoundsState() {
       uploadedFrom,
       uploadedTo,
       genreFilter,
-      tagFilter,
+      tagFilters,
       bpmMin,
       bpmMax,
       keyFilter,
@@ -176,29 +189,40 @@ export function useStudioSoundsState() {
   );
 
   useEffect(() => {
-    if (!filtersOpen) {
-      return;
-    }
     let active = true;
-    void fetchStudioSoundFacets(['genre', 'tag'], serverFilter).then(
-      ({ data }) => {
-        if (!active) {
-          return;
-        }
-        const sorted = (values: Array<{ value: string; count: number }> = []) =>
-          [...values].sort(
-            (a, b) => b.count - a.count || a.value.localeCompare(b.value),
-          );
-        setFacets({
-          genre: sorted(data.facets.genre),
-          tag: sorted(data.facets.tag),
-        });
-      },
-    );
+    void fetchStudioSoundFacets(
+      [
+        'genre',
+        'tag',
+        'contentType',
+        'source',
+        'status',
+        'uploadedYear',
+        'musicalKey',
+      ],
+      serverFilter,
+    ).then(({ data }) => {
+      if (!active) {
+        return;
+      }
+      const sorted = (values: Array<{ value: string; count: number }> = []) =>
+        [...values].sort(
+          (a, b) => b.count - a.count || a.value.localeCompare(b.value),
+        );
+      setFacets({
+        genre: sorted(data.facets.genre),
+        tag: sorted(data.facets.tag),
+        contentType: sorted(data.facets.contentType),
+        source: sorted(data.facets.source),
+        status: sorted(data.facets.status),
+        uploadedYear: sorted(data.facets.uploadedYear),
+        musicalKey: sorted(data.facets.musicalKey),
+      });
+    });
     return () => {
       active = false;
     };
-  }, [filtersOpen, serverFilter]);
+  }, [serverFilter]);
 
   const listSort = apiSort(sortField, sortDescending);
 
@@ -310,8 +334,9 @@ export function useStudioSoundsState() {
     }
     setUploadedFrom('');
     setUploadedTo('');
+    setYearFilter('');
     setGenreFilter('');
-    setTagFilter('');
+    setTagFilters([]);
     setBpmMin('');
     setBpmMax('');
     setKeyFilter('');
@@ -322,14 +347,46 @@ export function useStudioSoundsState() {
     setSelectionNotice(null);
   };
 
+  const setUploadedYearFilter = (year: string) => {
+    if (!year) {
+      setYearFilter('');
+      setUploadedFrom('');
+      setUploadedTo('');
+      return;
+    }
+    setYearFilter(year);
+    const bounds = yearBounds(year);
+    setUploadedFrom(bounds.uploadedFrom);
+    setUploadedTo(bounds.uploadedTo);
+  };
+
+  const clearYearLabel = () => {
+    setYearFilter('');
+  };
+
+  const addTagFilter = (tag: string) => {
+    const next = tag.trim();
+    if (!next) {
+      return;
+    }
+    setTagFilters((current) =>
+      current.includes(next) ? current : [...current, next],
+    );
+  };
+
+  const removeTagFilter = (tag: string) => {
+    setTagFilters((current) => current.filter((value) => value !== tag));
+  };
+
   const filtersActive =
     Boolean(debouncedQuery.trim()) ||
     embedFilter !== 'ALL' ||
     contentTypeFilter !== 'ALL' ||
     Boolean(uploadedFrom) ||
     Boolean(uploadedTo) ||
+    Boolean(yearFilter) ||
     Boolean(genreFilter) ||
-    Boolean(tagFilter) ||
+    tagFilters.length > 0 ||
     Boolean(bpmMin.trim()) ||
     Boolean(bpmMax.trim()) ||
     Boolean(keyFilter.trim()) ||
@@ -446,8 +503,31 @@ export function useStudioSoundsState() {
     }
   }, [listView]);
 
-  const toggleSelected = (id: string) => {
+  const orderedSelectableIds = () =>
+    (filtered.length > 0 ? filtered : items).map((item) => item.id);
+
+  const toggleSelected = (id: string, opts?: { shift?: boolean }) => {
     setAllMatchingSelected(false);
+    const ordered = orderedSelectableIds();
+    if (opts?.shift && selectionAnchorId.current) {
+      const start = ordered.indexOf(selectionAnchorId.current);
+      const end = ordered.indexOf(id);
+      if (start >= 0 && end >= 0) {
+        const [from, to] = start < end ? [start, end] : [end, start];
+        setSelectedIds((prev) => {
+          const next = new Set(prev);
+          for (let index = from; index <= to; index += 1) {
+            const rowId = ordered[index];
+            if (rowId) {
+              next.add(rowId);
+            }
+          }
+          return next;
+        });
+        return;
+      }
+    }
+    selectionAnchorId.current = id;
     setSelectedIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
@@ -459,243 +539,39 @@ export function useStudioSoundsState() {
     });
   };
 
-  const filterNarrows = Object.keys(serverFilter).length > 0;
-
-  const buildBulkTarget = ():
-    | { ids: string[] }
-    | { filter: StudioSoundListFilter; confirmTotal: number; all?: boolean }
-    | { error: string } => {
-    if (allMatchingSelected) {
-      return {
-        filter: serverFilter,
-        confirmTotal: total,
-        ...(filterNarrows ? {} : { all: true as const }),
-      };
-    }
-    const ids = [...selectedIds];
-    if (ids.length === 0) {
-      return { error: 'No sounds selected.' };
-    }
-    if (ids.length > STUDIO_SOUND_BULK_MAX_IDS) {
-      return {
-        error: `Select at most ${STUDIO_SOUND_BULK_MAX_IDS} sounds, or use “Select all matching” with a filter.`,
-      };
-    }
-    return { ids };
-  };
-
-  const selectAllMatching = async () => {
-    const seq = requestSeq.current;
-    const filterSnapshot = serverFilter;
-    setSelectingAll(true);
-    setSelectionNotice(null);
-    try {
-      const result = await fetchStudioSoundIds(filterSnapshot);
-      if (seq !== requestSeq.current) {
-        return;
-      }
-      if (result.tooLarge) {
-        setSelectionNotice(
-          i18n.t('web:library.soundsSelectCap', {
-            total: result.tooLarge.totalMatched,
-          }),
-        );
-        toast.error(result.tooLarge.error);
-        return;
-      }
-      if (result.meta.source === 'api' && result.meta.reason) {
-        toast.error(result.meta.reason);
-        return;
-      }
-      setSelectedIds(new Set(result.data.ids));
-      setAllMatchingSelected(true);
-      toast.success(
-        i18n.t('web:toasts.soundsSelected', { count: result.data.total }),
-      );
-    } finally {
-      if (seq === requestSeq.current) {
-        setSelectingAll(false);
-      }
-    }
-  };
-
-  const confirmDelete = () => {
-    const item = pendingDeleteItem;
-    setPendingDeleteItem(null);
-    if (!item) {
-      return;
-    }
-    void (async () => {
-      try {
-        const result = await deleteStudioSound(item.id);
-        if (result && 'ok' in result && !result.ok) {
-          toast.error(result.error);
-          return;
-        }
-        toast.success(i18n.t('web:toasts.deletedSound', { title: item.title }));
-        setSelectedIds((prev) => {
-          if (!prev.has(item.id)) {
-            return prev;
-          }
-          const next = new Set(prev);
-          next.delete(item.id);
-          return next;
-        });
-        setAllMatchingSelected(false);
-        reload();
-      } catch {
-        toast.error(i18n.t('web:toasts.couldNotDeleteTrack'));
-      }
-    })();
-  };
-
-  const confirmBulkDelete = () => {
-    setPendingBulkDelete(false);
-    const target = buildBulkTarget();
-    if ('error' in target) {
-      toast.error(target.error);
-      return;
-    }
-    if (bulkBusy) {
-      return;
-    }
-    setBulkBusy(true);
-    void (async () => {
-      try {
-        const result = await bulkDeleteStudioSounds(target);
-        if (!result.ok) {
-          toast.error(
-            result.totalMatched !== undefined
-              ? `${result.error} Refresh and try again.`
-              : result.error,
-          );
-          return;
-        }
-        const failedCount = result.data.failed.length;
-        if (failedCount > 0) {
-          toast.warning(
-            i18n.t('web:toasts.deletedSoundsPartial', {
-              deleted: result.data.deleted,
-              failed: failedCount,
-            }),
-          );
-        } else {
-          toast.success(
-            i18n.t('web:toasts.deletedSounds', { count: result.data.deleted }),
-          );
-        }
-        clearSelection();
-        reload();
-      } finally {
-        setBulkBusy(false);
-      }
-    })();
-  };
-
-  /** Titles for Add to release — covers select-all-matching beyond the loaded page. */
-  const tracksForRelease = async (): Promise<
-    Array<{ id: string; title: string }>
-  > => {
-    const titles = new Map(items.map((item) => [item.id, item.title] as const));
-    const missing = [...selectedIds].filter((id) => !titles.has(id));
-    if (missing.length > 0) {
-      const pageSize = 50;
-      let offset = 0;
-      while (missing.some((id) => !titles.has(id)) && offset < total) {
-        const page = await fetchStudioSoundsPage({
-          ...serverFilter,
-          sort: listSort,
-          limit: pageSize,
-          offset,
-        });
-        for (const item of page.data.items) {
-          titles.set(item.id, item.title);
-        }
-        if (page.data.items.length === 0) {
-          break;
-        }
-        offset += page.data.items.length;
-      }
-    }
-    return [...selectedIds].map((id) => ({
-      id,
-      title: titles.get(id) ?? id,
-    }));
-  };
-
-  const backfillCovers = () => {
-    if (coversBusy || bulkBusy) {
-      return;
-    }
-    setCoversBusy(true);
-    void (async () => {
-      try {
-        const result = await backfillStudioSoundCovers();
-        if (!result.ok) {
-          toast.error(
-            result.error || i18n.t('web:library.coversBackfillError'),
-          );
-          return;
-        }
-        if (result.data.assigned === 0) {
-          toast.message(i18n.t('web:library.coversBackfillNone'));
-        } else {
-          toast.success(
-            i18n.t('web:library.coversBackfillDone', {
-              count: result.data.assigned,
-            }),
-          );
-        }
-        reload();
-      } finally {
-        setCoversBusy(false);
-      }
-    })();
-  };
-
-  const applyBulkEdit = (patch: StudioSoundBulkPatch) => {
-    const target = buildBulkTarget();
-    if ('error' in target) {
-      toast.error(target.error);
-      return;
-    }
-    if (bulkBusy) {
-      return;
-    }
-    setBulkBusy(true);
-    void (async () => {
-      try {
-        const result = await bulkPatchStudioSounds(
-          'ids' in target ? { ids: target.ids, patch } : { ...target, patch },
-        );
-        if (!result.ok) {
-          toast.error(
-            result.totalMatched !== undefined
-              ? `${result.error} Refresh and try again.`
-              : result.error,
-          );
-          return;
-        }
-        const failedCount = result.data.failed.length;
-        if (failedCount > 0) {
-          toast.warning(
-            i18n.t('web:toasts.updatedSoundsPartial', {
-              updated: result.data.updated,
-              failed: failedCount,
-            }),
-          );
-        } else {
-          toast.success(
-            i18n.t('web:toasts.updatedSounds', { count: result.data.updated }),
-          );
-        }
-        setBulkEditOpen(false);
-        reload();
-      } finally {
-        setBulkBusy(false);
-      }
-    })();
-  };
+  const {
+    selectAllMatching,
+    confirmDelete,
+    confirmBulkDelete,
+    confirmBulkMismatch,
+    applyBulkEdit,
+    tracksForRelease,
+    backfillCovers,
+  } = createStudioSoundsBulkActions({
+    bulkBusy,
+    setBulkBusy,
+    coversBusy,
+    setCoversBusy,
+    serverFilter,
+    total,
+    items,
+    selectedIds,
+    allMatchingSelected,
+    setSelectedIds,
+    setAllMatchingSelected,
+    setSelectingAll,
+    setSelectionNotice,
+    setPendingBulkDelete,
+    setBulkConfirmMismatch,
+    setBulkEditOpen,
+    bulkConfirmMismatch,
+    pendingDeleteItem,
+    setPendingDeleteItem,
+    requestSeq,
+    listSort,
+    clearSelection,
+    reload: () => reload(),
+  });
 
   return {
     items,
@@ -725,10 +601,14 @@ export function useStudioSoundsState() {
     setUploadedFrom,
     uploadedTo,
     setUploadedTo,
+    yearFilter,
+    setUploadedYearFilter,
+    clearYearLabel,
     genreFilter,
     setGenreFilter,
-    tagFilter,
-    setTagFilter,
+    tagFilters,
+    addTagFilter,
+    removeTagFilter,
     bpmMin,
     setBpmMin,
     bpmMax,
@@ -755,6 +635,9 @@ export function useStudioSoundsState() {
     setPendingDeleteItem,
     pendingBulkDelete,
     setPendingBulkDelete,
+    bulkConfirmMismatch,
+    setBulkConfirmMismatch,
+    confirmBulkMismatch,
     bulkEditOpen,
     setBulkEditOpen,
     reload: () => reload(),

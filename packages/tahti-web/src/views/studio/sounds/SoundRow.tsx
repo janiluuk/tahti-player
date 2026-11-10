@@ -5,6 +5,7 @@ import {
   PlayIcon,
   RotateCcwIcon,
 } from 'lucide-react';
+import { useRef } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -71,6 +72,7 @@ export function SoundRow({
     selectedIds,
     toggleSelected,
   } = state;
+  const shiftHeld = useRef(false);
   const { retry, retryingId } = useRetrySoundProcessing((id) =>
     setItems((prev) =>
       prev.map((sound) =>
@@ -110,7 +112,10 @@ export function SoundRow({
     >
       <Checkbox
         checked={selectedIds.has(item.id)}
-        onChange={() => toggleSelected(item.id)}
+        onClick={(event) => {
+          shiftHeld.current = event.shiftKey;
+        }}
+        onChange={() => toggleSelected(item.id, { shift: shiftHeld.current })}
         aria-label={t('soundRowLabels.selectTitle', { title: item.title })}
       />
       <div className="relative shrink-0 overflow-hidden rounded-md">

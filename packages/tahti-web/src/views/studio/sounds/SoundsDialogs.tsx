@@ -21,6 +21,9 @@ export function SoundsDialogs({ state }: { state: StudioSoundsState }) {
     pendingBulkDelete,
     setPendingBulkDelete,
     confirmBulkDelete,
+    bulkConfirmMismatch,
+    setBulkConfirmMismatch,
+    confirmBulkMismatch,
     selectedIds,
   } = state;
 
@@ -80,6 +83,16 @@ export function SoundsDialogs({ state }: { state: StudioSoundsState }) {
         confirmLabel={t('actions.delete')}
         onCancel={() => setPendingBulkDelete(false)}
         onConfirm={confirmBulkDelete}
+      />
+      <ConfirmDialog
+        isOpen={bulkConfirmMismatch !== null}
+        title={t('library.soundsConfirmTotalTitle')}
+        description={t('library.soundsConfirmTotalDescription', {
+          count: bulkConfirmMismatch?.totalMatched ?? 0,
+        })}
+        confirmLabel={t('library.soundsConfirmTotalContinue')}
+        onCancel={() => setBulkConfirmMismatch(null)}
+        onConfirm={confirmBulkMismatch}
       />
       <SoundsBulkEditDialog state={state} />
     </>

@@ -1,4 +1,5 @@
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
+import { Button } from '@tahti-player/ui';
 
 import type { StudioSoundsState } from './useStudioSoundsState';
 
@@ -18,7 +19,14 @@ function formatDuration(totalSec: number, t: TFunction<'web'>): string {
 
 export function SoundsStatsStrip({ state }: { state: StudioSoundsState }) {
   const { t } = useTranslation('web');
-  const { stats, total, items } = state;
+  const {
+    stats,
+    total,
+    items,
+    setVisibilityFilter,
+    setStatusFilter,
+    setFiltersOpen,
+  } = state;
   if (!stats && total === 0 && items.length === 0) {
     return null;
   }
@@ -32,26 +40,93 @@ export function SoundsStatsStrip({ state }: { state: StudioSoundsState }) {
     readyCount: 0,
   };
 
-  const parts = [t('library.soundsCount', { count: row.total })];
-  if (row.durationSec > 0) {
-    parts.push(formatDuration(row.durationSec, t));
-  }
-  if (row.publicCount > 0 || row.privateCount > 0) {
-    parts.push(t('library.soundsStripPublic', { count: row.publicCount }));
-    parts.push(t('library.soundsStripPrivate', { count: row.privateCount }));
-  }
-  if (row.processingCount > 0) {
-    parts.push(
-      t('library.soundsStripProcessing', { count: row.processingCount }),
-    );
-  }
-  if (row.errorCount > 0) {
-    parts.push(t('library.soundsStripFailed', { count: row.errorCount }));
-  }
+  const applyVisibility = (value: 'public' | 'private') => {
+    setFiltersOpen(true);
+    setVisibilityFilter(value);
+  };
+  const applyStatus = (value: 'PROCESSING' | 'ERROR' | 'READY') => {
+    setFiltersOpen(true);
+    setStatusFilter(value);
+  };
 
   return (
-    <p className="text-foreground-secondary mb-3 text-sm" aria-live="polite">
-      {parts.join(' · ')}
+    <p
+      className="text-foreground-secondary mb-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm"
+      aria-live="polite"
+    >
+      <span>{t('library.soundsCount', { count: row.total })}</span>
+      {row.durationSec > 0 ? (
+        <>
+          <span aria-hidden>·</span>
+          <span>{formatDuration(row.durationSec, t)}</span>
+        </>
+      ) : null}
+      {row.publicCount > 0 || row.privateCount > 0 ? (
+        <>
+          <span aria-hidden>·</span>
+          <Button
+            type="button"
+            size="sm"
+            variant="text"
+            className="h-auto min-h-0 px-0 py-0 text-sm"
+            onClick={() => applyVisibility('public')}
+          >
+            {t('library.soundsStripPublic', { count: row.publicCount })}
+          </Button>
+          <span aria-hidden>·</span>
+          <Button
+            type="button"
+            size="sm"
+            variant="text"
+            className="h-auto min-h-0 px-0 py-0 text-sm"
+            onClick={() => applyVisibility('private')}
+          >
+            {t('library.soundsStripPrivate', { count: row.privateCount })}
+          </Button>
+        </>
+      ) : null}
+      {row.readyCount > 0 ? (
+        <>
+          <span aria-hidden>·</span>
+          <Button
+            type="button"
+            size="sm"
+            variant="text"
+            className="h-auto min-h-0 px-0 py-0 text-sm"
+            onClick={() => applyStatus('READY')}
+          >
+            {t('library.soundsStripReady', { count: row.readyCount })}
+          </Button>
+        </>
+      ) : null}
+      {row.processingCount > 0 ? (
+        <>
+          <span aria-hidden>·</span>
+          <Button
+            type="button"
+            size="sm"
+            variant="text"
+            className="h-auto min-h-0 px-0 py-0 text-sm"
+            onClick={() => applyStatus('PROCESSING')}
+          >
+            {t('library.soundsStripProcessing', { count: row.processingCount })}
+          </Button>
+        </>
+      ) : null}
+      {row.errorCount > 0 ? (
+        <>
+          <span aria-hidden>·</span>
+          <Button
+            type="button"
+            size="sm"
+            variant="text"
+            className="h-auto min-h-0 px-0 py-0 text-sm"
+            onClick={() => applyStatus('ERROR')}
+          >
+            {t('library.soundsStripFailed', { count: row.errorCount })}
+          </Button>
+        </>
+      ) : null}
     </p>
   );
 }

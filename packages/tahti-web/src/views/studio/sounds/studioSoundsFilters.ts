@@ -88,6 +88,7 @@ export function toServerFilter(input: {
   uploadedTo: string;
   genre?: string;
   tag?: string;
+  tags?: string[];
   bpmMin?: string;
   bpmMax?: string;
   key?: string;
@@ -98,6 +99,7 @@ export function toServerFilter(input: {
 }): StudioSoundListFilter {
   const bpmMin = input.bpmMin?.trim() ? Number(input.bpmMin) : undefined;
   const bpmMax = input.bpmMax?.trim() ? Number(input.bpmMax) : undefined;
+  const tags = (input.tags ?? []).map((tag) => tag.trim()).filter(Boolean);
   return {
     ...(input.query.trim() ? { q: input.query.trim() } : {}),
     ...(input.contentTypeFilter !== 'ALL'
@@ -111,7 +113,13 @@ export function toServerFilter(input: {
     ...(input.uploadedFrom ? { uploadedFrom: input.uploadedFrom } : {}),
     ...(input.uploadedTo ? { uploadedTo: input.uploadedTo } : {}),
     ...(input.genre ? { genre: input.genre } : {}),
-    ...(input.tag ? { tag: input.tag } : {}),
+    ...(tags.length > 1
+      ? { tags }
+      : tags.length === 1
+        ? { tag: tags[0] }
+        : input.tag
+          ? { tag: input.tag }
+          : {}),
     ...(bpmMin != null && Number.isFinite(bpmMin) ? { bpmMin } : {}),
     ...(bpmMax != null && Number.isFinite(bpmMax) ? { bpmMax } : {}),
     ...(input.key?.trim() ? { key: input.key.trim() } : {}),
@@ -133,5 +141,15 @@ export function toServerFilter(input: {
       : input.fallbackFilter === 'not-fallback'
         ? { isFallback: false }
         : {}),
+  };
+}
+
+export function yearBounds(year: string): {
+  uploadedFrom: string;
+  uploadedTo: string;
+} {
+  return {
+    uploadedFrom: `${year}-01-01`,
+    uploadedTo: `${year}-12-31`,
   };
 }
