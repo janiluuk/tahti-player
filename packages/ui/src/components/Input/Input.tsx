@@ -4,6 +4,8 @@ import {
   ComponentPropsWithoutRef,
   forwardRef,
   useId,
+  useState,
+  type ChangeEvent,
   type ReactNode,
 } from 'react';
 
@@ -86,7 +88,20 @@ type InputProps = Omit<ComponentPropsWithoutRef<'input'>, 'type' | 'size'> &
     error?: string;
     startAddon?: ReactNode;
     endAddon?: ReactNode;
+    /**
+     * Force the end-addon chrome active (primary) or idle. When omitted, the
+     * addon is active only while the field has a non-empty value — search /
+     * filter bars stay quiet until the user types.
+     */
+    endAddonActive?: boolean;
   };
+
+function fieldHasValue(value: unknown): boolean {
+  if (value == null) {
+    return false;
+  }
+  return String(value).trim().length > 0;
+}
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   {
@@ -101,6 +116,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     className,
     startAddon,
     endAddon,
+    endAddonActive,
+    onChange,
+    value,
+    defaultValue,
     ...rest
   },
   ref,
@@ -110,6 +129,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   const labelId = `${inputId}-label`;
   const descriptionId = `${inputId}-description`;
   const errorId = `${inputId}-error`;
+  const controlled = value !== undefined;
+  const [uncontrolledValue, setUncontrolledValue] = useState(() =>
+    String(defaultValue ?? ''),
+  );
+  const currentValue = controlled ? value : uncontrolledValue;
+  const addonActive =
+    endAddonActive ?? (endAddon ? fieldHasValue(currentValue) : false);
 
   const describedBy = [
     description ? descriptionId : null,
@@ -125,6 +151,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   const { layout: rootClassName, field: fieldClassName } = hasAddon
     ? splitLayoutClasses(className)
     : { layout: '', field: className };
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!controlled) {
+      setUncontrolledValue(event.target.value);
+    }
+    onChange?.(event);
+  };
 
   const field = (
     <HeadlessInput
@@ -148,6 +181,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           className: fieldClassName,
         }),
       )}
+      {...(controlled ? { value } : { defaultValue })}
+      onChange={handleChange}
       {...rest}
     />
   );
@@ -179,7 +214,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           ) : null}
           {field}
           {endAddon ? (
-            <div className="bg-primary text-primary-foreground border-border flex items-center gap-2 border-l-(length:--border-width) px-3 text-sm">
+            <div
+              data-testid="input-end-addon"
+              data-active={addonActive || undefined}
+              className={cn(
+                'border-border flex items-center gap-2 border-l-(length:--border-width) px-3 text-sm',
+                addonActive
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-background-secondary text-foreground-secondary',
+              )}
+            >
               {endAddon}
             </div>
           ) : null}

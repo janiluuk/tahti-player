@@ -34,6 +34,10 @@ Ordinary chrome pages use **`ViewShell`** (short title + optional one-line subti
 
 Prefer catalog components (`Badge`, `Button`, `Tabs`, `Dialog`, `Input`, `Select`, `EmptyState`, …). Semantic tokens only (`bg-background`, …) — see `packages/tailwind-config/global.css`.
 
+**Search / filter end-addon:** keep the addon idle until the field (or sibling
+filters) is modified; primary/active chrome only after the user typed or chose
+something. Storybook: `Input` → End addon idle + active.
+
 ## Add-ons & plugins
 
 Page widgets configure from **Settings → Add-ons** only (not a second Widgets section). Marketplace zips: `../tahti-registry`. Plugin extraction notes: [`PLUGIN-STORE-PLAN.md`](PLUGIN-STORE-PLAN.md), [`docs/PLUGINS.md`](docs/PLUGINS.md), [`docs/PLUGIN-INTEGRATIONS.md`](docs/PLUGIN-INTEGRATIONS.md).

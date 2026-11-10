@@ -58,7 +58,20 @@ export function StudioSoundsView() {
         >
           <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
             <AddToMusicActions onUploaded={reload} />
-            <TrackOrderButton />
+            <div className="flex flex-wrap items-center gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={state.coversBusy || state.bulkBusy}
+                onClick={() => state.backfillCovers()}
+              >
+                {state.coversBusy
+                  ? t('library.coversBackfillBusy')
+                  : t('library.coversBackfill')}
+              </Button>
+              <TrackOrderButton />
+            </div>
           </div>
 
           <StudioPanel>

@@ -124,4 +124,25 @@ describe('PlayableAmbientTrackList row actions', () => {
       screen.queryByRole('button', { name: 'Add Track 0 to a playlist' }),
     ).toBeNull();
   });
+
+  it('drops a leading artist name from the title when the artist is listed', async () => {
+    await renderWithRouter(
+      <PlayableAmbientTrackList
+        items={[
+          {
+            id: 'sound:dup',
+            kind: 'sound',
+            title: 'Minh Nguyen — Acoustic Set',
+            artist: 'Minh Nguyen',
+            streamUrl: 'https://cdn.example/dup.mp3',
+            protocol: 'https',
+            durationSec: 120,
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByText('Acoustic Set')).toBeTruthy();
+    expect(screen.getByText('Minh Nguyen')).toBeTruthy();
+    expect(screen.queryByText('Minh Nguyen — Acoustic Set')).toBeNull();
+  });
 });

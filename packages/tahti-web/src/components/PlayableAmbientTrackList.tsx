@@ -9,6 +9,7 @@ import { Input } from '@tahti-player/ui';
 import type { TahtiPlayable } from '../api/types';
 import { formatDuration } from '../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../lib/soundId';
+import { titleWithoutArtist } from '../lib/titleWithoutArtist';
 import { downloadTrackFromRow } from '../lib/trackDownload';
 import { sortTracks, useTrackSort } from '../lib/trackSort';
 import { useAuthStore } from '../stores/authStore';
@@ -167,17 +168,19 @@ export function PlayableAmbientTrackList({
                 },
               }
             : undefined;
+        // Artist already has its own row field — drop a leading "Artist — " from the title.
+        const displayTitle = titleWithoutArtist(item.title, item.artist);
         return {
           id: item.id,
           trackId: item.id,
-          title: item.title,
+          title: displayTitle,
           titleNode: soundId ? (
             <Link
               to="/t/$id"
               params={{ id: soundId }}
               className="hover:underline"
             >
-              {item.title}
+              {displayTitle}
             </Link>
           ) : undefined,
           belowTitle: annotation ? (

@@ -8,3 +8,12 @@ alwaysApply: true
 Look up Storybook (`packages/storybook/src/`, including `tahti-web/`) before hand-rolling UI. Keep live data/behavior. Add missing components + stories; flag `Missing states:` / `Orphan:`.
 
 Cheat sheet: `packages/tahti-web/STORYBOOK-SURFACES.md`. Full text: root `AGENTS.md` → Storybook-first UI; `packages/tahti-web/AGENTS.md`.
+
+## Search / filter bar end-addon
+
+`Input` end-addons on search and filter bars stay **idle** (secondary chrome)
+until the field has a non-empty value, then turn **active** (primary). Do not
+hard-code primary styling on an empty filter. Cover both states in Storybook
+(`WithEndAddon` idle + `WithEndAddonActive`). Toggle/filter icon buttons beside
+a bar follow the same rule: `variant="text"` when unmodified, `secondary` (and
+`aria-pressed`) only after the user has changed a filter.

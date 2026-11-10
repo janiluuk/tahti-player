@@ -26,9 +26,12 @@ import {
   sortFields,
   type ContentTypeFilter,
   type EmbedFilter,
+  type PinnedFilter,
   type SortField,
-  type StudioSoundsState,
-} from './useStudioSoundsState';
+  type StatusFilter,
+  type VisibilityFilter,
+} from './studioSoundsFilters';
+import type { StudioSoundsState } from './useStudioSoundsState';
 
 export function SoundFilters({ state }: { state: StudioSoundsState }) {
   const { t } = useTranslation('web');
@@ -54,6 +57,18 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
     setGenreFilter,
     tagFilter,
     setTagFilter,
+    bpmMin,
+    setBpmMin,
+    bpmMax,
+    setBpmMax,
+    keyFilter,
+    setKeyFilter,
+    statusFilter,
+    setStatusFilter,
+    visibilityFilter,
+    setVisibilityFilter,
+    pinnedFilter,
+    setPinnedFilter,
     facets,
   } = state;
   const storedView = useTrackListViewStore((store) => store.view);
@@ -63,6 +78,19 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
   const sortLabel = sortDescending
     ? t('library.sortDescending')
     : t('library.sortAscending');
+  const leaveAll = t('library.allFilter');
+  const filtersModified =
+    embedFilter !== 'ALL' ||
+    Boolean(genreFilter) ||
+    Boolean(tagFilter) ||
+    Boolean(uploadedFrom) ||
+    Boolean(uploadedTo) ||
+    Boolean(bpmMin.trim()) ||
+    Boolean(bpmMax.trim()) ||
+    Boolean(keyFilter.trim()) ||
+    statusFilter !== 'ALL' ||
+    visibilityFilter !== 'ALL' ||
+    pinnedFilter !== 'ALL';
 
   return (
     <>
@@ -102,8 +130,9 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
           <Button
             type="button"
             size="icon-sm"
-            variant="secondary"
+            variant={filtersModified ? 'secondary' : 'text'}
             aria-expanded={filtersOpen}
+            aria-pressed={filtersModified || undefined}
             aria-label={
               filtersOpen
                 ? t('library.collapseFilters')
@@ -206,6 +235,71 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
               })),
             ]}
             className="min-w-40"
+          />
+          <Select
+            label={t('library.statusFilter')}
+            value={statusFilter}
+            onValueChange={(value) => setStatusFilter(value as StatusFilter)}
+            options={[
+              { id: 'ALL', label: leaveAll },
+              { id: 'READY', label: t('library.statusReady') },
+              { id: 'PROCESSING', label: t('library.statusProcessing') },
+              { id: 'PENDING', label: t('library.statusPending') },
+              { id: 'ERROR', label: t('library.statusError') },
+            ]}
+            className="min-w-36"
+          />
+          <Select
+            label={t('library.visibilityFilter')}
+            value={visibilityFilter}
+            onValueChange={(value) =>
+              setVisibilityFilter(value as VisibilityFilter)
+            }
+            options={[
+              { id: 'ALL', label: leaveAll },
+              { id: 'public', label: t('library.soundsBulkPublic') },
+              { id: 'private', label: t('library.soundsBulkPrivate') },
+            ]}
+            className="min-w-36"
+          />
+          <Select
+            label={t('library.pinnedFilter')}
+            value={pinnedFilter}
+            onValueChange={(value) => setPinnedFilter(value as PinnedFilter)}
+            options={[
+              { id: 'ALL', label: leaveAll },
+              { id: 'pinned', label: t('library.pinnedOnly') },
+              { id: 'unpinned', label: t('library.unpinnedOnly') },
+            ]}
+            className="min-w-36"
+          />
+          <Input
+            type="number"
+            inputMode="numeric"
+            min={40}
+            max={300}
+            label={t('library.bpmMin')}
+            value={bpmMin}
+            onChange={(event) => setBpmMin(event.target.value)}
+            className="min-w-24"
+          />
+          <Input
+            type="number"
+            inputMode="numeric"
+            min={40}
+            max={300}
+            label={t('library.bpmMax')}
+            value={bpmMax}
+            onChange={(event) => setBpmMax(event.target.value)}
+            className="min-w-24"
+          />
+          <Input
+            type="text"
+            label={t('library.keyFilter')}
+            value={keyFilter}
+            onChange={(event) => setKeyFilter(event.target.value)}
+            placeholder={t('library.keyFilterPlaceholder')}
+            className="min-w-28"
           />
           <Input
             type="date"

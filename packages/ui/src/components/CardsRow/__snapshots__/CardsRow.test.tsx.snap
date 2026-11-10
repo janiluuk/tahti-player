@@ -39,34 +39,32 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
             value=""
           />
           <div
-            class="bg-primary text-primary-foreground border-border flex items-center gap-2 border-l-(length:--border-width) px-3 text-sm"
+            class="border-border flex items-center gap-2 border-l-(length:--border-width) px-3 text-sm bg-background-secondary text-foreground-secondary"
+            data-testid="input-end-addon"
           >
-            <div>
-              <button
-                aria-label="Clear filter"
-                class="text-foreground cursor-pointer"
-                data-testid="cards-row-clear-filter"
-                type="button"
+            <span
+              aria-hidden="true"
+              class="pointer-events-none"
+              data-testid="cards-row-filter-idle"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-funnel"
+                fill="none"
+                height="14"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="14"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <svg
-                  aria-hidden="true"
-                  class="lucide lucide-funnel"
-                  fill="none"
-                  height="14"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  viewBox="0 0 24 24"
-                  width="14"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"
-                  />
-                </svg>
-              </button>
-            </div>
+                <path
+                  d="M10 20a1 1 0 0 0 .553.895l2 1A1 1 0 0 0 14 21v-7a2 2 0 0 1 .517-1.341L21.74 4.67A1 1 0 0 0 21 3H3a1 1 0 0 0-.742 1.67l7.225 7.989A2 2 0 0 1 10 14z"
+                />
+              </svg>
+            </span>
           </div>
         </div>
       </div>
@@ -230,500 +228,554 @@ exports[`CardsRow > (Snapshot) renders correctly with items 1`] = `
     style="scrollbar-width: none;"
   >
     <div
-      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
-      data-layout="card"
-      data-surface="brand"
-      data-testid="card"
+      animate="[object Object]"
+      class="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] origin-center"
+      data-cards-row-item="1"
+      data-testid="cards-row-item-motion"
+      exit="[object Object]"
+      transition="[object Object]"
     >
       <div
-        class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
+        class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+        data-layout="card"
+        data-surface="brand"
+        data-testid="card"
       >
         <div
-          class="group overflow-hidden absolute inset-0 size-full"
-          data-testid="media-artwork"
+          class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
         >
           <div
-            class="overflow-hidden absolute inset-0"
+            class="group overflow-hidden absolute inset-0 size-full"
+            data-testid="media-artwork"
           >
-            <img
-              alt="Midnight Drive"
-              class="h-full w-full object-cover"
-              decoding="async"
-              loading="lazy"
-              src="https://picsum.photos/300?random=1"
-            />
             <div
-              class="pointer-events-none absolute inset-0 flex items-center justify-center"
+              class="overflow-hidden absolute inset-0"
             >
-              <svg
-                aria-hidden="true"
-                class="lucide lucide-cassette-tape opacity-20"
-                fill="none"
-                height="96"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="0.5"
-                viewBox="0 0 24 24"
-                width="96"
-                xmlns="http://www.w3.org/2000/svg"
+              <img
+                alt="Midnight Drive"
+                class="h-full w-full object-cover"
+                decoding="async"
+                loading="lazy"
+                src="https://picsum.photos/300?random=1"
+              />
+              <div
+                class="pointer-events-none absolute inset-0 flex items-center justify-center"
               >
-                <rect
-                  height="16"
-                  rx="2"
-                  width="20"
-                  x="2"
-                  y="4"
-                />
-                <circle
-                  cx="8"
-                  cy="10"
-                  r="2"
-                />
-                <path
-                  d="M8 12h8"
-                />
-                <circle
-                  cx="16"
-                  cy="10"
-                  r="2"
-                />
-                <path
-                  d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
-                />
-              </svg>
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-cassette-tape opacity-20"
+                  fill="none"
+                  height="96"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="0.5"
+                  viewBox="0 0 24 24"
+                  width="96"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    height="16"
+                    rx="2"
+                    width="20"
+                    x="2"
+                    y="4"
+                  />
+                  <circle
+                    cx="8"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="M8 12h8"
+                  />
+                  <circle
+                    cx="16"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        class="min-w-0"
-      >
         <div
-          class="truncate text-sm font-bold text-primary-foreground"
-          data-testid="card-title"
+          class="min-w-0"
         >
-          Midnight Drive
-        </div>
-        <div
-          class="truncate text-xs text-primary-foreground"
-        >
-          Neon City
+          <div
+            class="truncate text-sm font-bold text-primary-foreground"
+            data-testid="card-title"
+          >
+            Midnight Drive
+          </div>
+          <div
+            class="truncate text-xs text-primary-foreground"
+          >
+            Neon City
+          </div>
         </div>
       </div>
     </div>
     <div
-      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
-      data-layout="card"
-      data-surface="brand"
-      data-testid="card"
+      animate="[object Object]"
+      class="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] origin-center"
+      data-cards-row-item="2"
+      data-testid="cards-row-item-motion"
+      exit="[object Object]"
+      transition="[object Object]"
     >
       <div
-        class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
+        class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+        data-layout="card"
+        data-surface="brand"
+        data-testid="card"
       >
         <div
-          class="group overflow-hidden absolute inset-0 size-full"
-          data-testid="media-artwork"
+          class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
         >
           <div
-            class="overflow-hidden absolute inset-0"
+            class="group overflow-hidden absolute inset-0 size-full"
+            data-testid="media-artwork"
           >
-            <img
-              alt="Northern Lights"
-              class="h-full w-full object-cover"
-              decoding="async"
-              loading="lazy"
-              src="https://picsum.photos/300?random=2"
-            />
             <div
-              class="pointer-events-none absolute inset-0 flex items-center justify-center"
+              class="overflow-hidden absolute inset-0"
             >
-              <svg
-                aria-hidden="true"
-                class="lucide lucide-cassette-tape opacity-20"
-                fill="none"
-                height="96"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="0.5"
-                viewBox="0 0 24 24"
-                width="96"
-                xmlns="http://www.w3.org/2000/svg"
+              <img
+                alt="Northern Lights"
+                class="h-full w-full object-cover"
+                decoding="async"
+                loading="lazy"
+                src="https://picsum.photos/300?random=2"
+              />
+              <div
+                class="pointer-events-none absolute inset-0 flex items-center justify-center"
               >
-                <rect
-                  height="16"
-                  rx="2"
-                  width="20"
-                  x="2"
-                  y="4"
-                />
-                <circle
-                  cx="8"
-                  cy="10"
-                  r="2"
-                />
-                <path
-                  d="M8 12h8"
-                />
-                <circle
-                  cx="16"
-                  cy="10"
-                  r="2"
-                />
-                <path
-                  d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
-                />
-              </svg>
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-cassette-tape opacity-20"
+                  fill="none"
+                  height="96"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="0.5"
+                  viewBox="0 0 24 24"
+                  width="96"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    height="16"
+                    rx="2"
+                    width="20"
+                    x="2"
+                    y="4"
+                  />
+                  <circle
+                    cx="8"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="M8 12h8"
+                  />
+                  <circle
+                    cx="16"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        class="min-w-0"
-      >
         <div
-          class="truncate text-sm font-bold text-primary-foreground"
-          data-testid="card-title"
+          class="min-w-0"
         >
-          Northern Lights
-        </div>
-        <div
-          class="truncate text-xs text-primary-foreground"
-        >
-          Aurora
+          <div
+            class="truncate text-sm font-bold text-primary-foreground"
+            data-testid="card-title"
+          >
+            Northern Lights
+          </div>
+          <div
+            class="truncate text-xs text-primary-foreground"
+          >
+            Aurora
+          </div>
         </div>
       </div>
     </div>
     <div
-      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
-      data-layout="card"
-      data-surface="brand"
-      data-testid="card"
+      animate="[object Object]"
+      class="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] origin-center"
+      data-cards-row-item="3"
+      data-testid="cards-row-item-motion"
+      exit="[object Object]"
+      transition="[object Object]"
     >
       <div
-        class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
+        class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+        data-layout="card"
+        data-surface="brand"
+        data-testid="card"
       >
         <div
-          class="group overflow-hidden absolute inset-0 size-full"
-          data-testid="media-artwork"
+          class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
         >
           <div
-            class="overflow-hidden absolute inset-0"
+            class="group overflow-hidden absolute inset-0 size-full"
+            data-testid="media-artwork"
           >
-            <img
-              alt="Echoes of Silence"
-              class="h-full w-full object-cover"
-              decoding="async"
-              loading="lazy"
-              src="https://picsum.photos/300?random=3"
-            />
             <div
-              class="pointer-events-none absolute inset-0 flex items-center justify-center"
+              class="overflow-hidden absolute inset-0"
             >
-              <svg
-                aria-hidden="true"
-                class="lucide lucide-cassette-tape opacity-20"
-                fill="none"
-                height="96"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="0.5"
-                viewBox="0 0 24 24"
-                width="96"
-                xmlns="http://www.w3.org/2000/svg"
+              <img
+                alt="Echoes of Silence"
+                class="h-full w-full object-cover"
+                decoding="async"
+                loading="lazy"
+                src="https://picsum.photos/300?random=3"
+              />
+              <div
+                class="pointer-events-none absolute inset-0 flex items-center justify-center"
               >
-                <rect
-                  height="16"
-                  rx="2"
-                  width="20"
-                  x="2"
-                  y="4"
-                />
-                <circle
-                  cx="8"
-                  cy="10"
-                  r="2"
-                />
-                <path
-                  d="M8 12h8"
-                />
-                <circle
-                  cx="16"
-                  cy="10"
-                  r="2"
-                />
-                <path
-                  d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
-                />
-              </svg>
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-cassette-tape opacity-20"
+                  fill="none"
+                  height="96"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="0.5"
+                  viewBox="0 0 24 24"
+                  width="96"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    height="16"
+                    rx="2"
+                    width="20"
+                    x="2"
+                    y="4"
+                  />
+                  <circle
+                    cx="8"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="M8 12h8"
+                  />
+                  <circle
+                    cx="16"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        class="min-w-0"
-      >
         <div
-          class="truncate text-sm font-bold text-primary-foreground"
-          data-testid="card-title"
+          class="min-w-0"
         >
-          Echoes of Silence
-        </div>
-        <div
-          class="truncate text-xs text-primary-foreground"
-        >
-          The Wanderers
+          <div
+            class="truncate text-sm font-bold text-primary-foreground"
+            data-testid="card-title"
+          >
+            Echoes of Silence
+          </div>
+          <div
+            class="truncate text-xs text-primary-foreground"
+          >
+            The Wanderers
+          </div>
         </div>
       </div>
     </div>
     <div
-      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
-      data-layout="card"
-      data-surface="brand"
-      data-testid="card"
+      animate="[object Object]"
+      class="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] origin-center"
+      data-cards-row-item="4"
+      data-testid="cards-row-item-motion"
+      exit="[object Object]"
+      transition="[object Object]"
     >
       <div
-        class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
+        class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+        data-layout="card"
+        data-surface="brand"
+        data-testid="card"
       >
         <div
-          class="group overflow-hidden absolute inset-0 size-full"
-          data-testid="media-artwork"
+          class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
         >
           <div
-            class="overflow-hidden absolute inset-0"
+            class="group overflow-hidden absolute inset-0 size-full"
+            data-testid="media-artwork"
           >
-            <img
-              alt="Harbour Lights"
-              class="h-full w-full object-cover"
-              decoding="async"
-              loading="lazy"
-              src="https://picsum.photos/300?random=4"
-            />
             <div
-              class="pointer-events-none absolute inset-0 flex items-center justify-center"
+              class="overflow-hidden absolute inset-0"
             >
-              <svg
-                aria-hidden="true"
-                class="lucide lucide-cassette-tape opacity-20"
-                fill="none"
-                height="96"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="0.5"
-                viewBox="0 0 24 24"
-                width="96"
-                xmlns="http://www.w3.org/2000/svg"
+              <img
+                alt="Harbour Lights"
+                class="h-full w-full object-cover"
+                decoding="async"
+                loading="lazy"
+                src="https://picsum.photos/300?random=4"
+              />
+              <div
+                class="pointer-events-none absolute inset-0 flex items-center justify-center"
               >
-                <rect
-                  height="16"
-                  rx="2"
-                  width="20"
-                  x="2"
-                  y="4"
-                />
-                <circle
-                  cx="8"
-                  cy="10"
-                  r="2"
-                />
-                <path
-                  d="M8 12h8"
-                />
-                <circle
-                  cx="16"
-                  cy="10"
-                  r="2"
-                />
-                <path
-                  d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
-                />
-              </svg>
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-cassette-tape opacity-20"
+                  fill="none"
+                  height="96"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="0.5"
+                  viewBox="0 0 24 24"
+                  width="96"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    height="16"
+                    rx="2"
+                    width="20"
+                    x="2"
+                    y="4"
+                  />
+                  <circle
+                    cx="8"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="M8 12h8"
+                  />
+                  <circle
+                    cx="16"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        class="min-w-0"
-      >
         <div
-          class="truncate text-sm font-bold text-primary-foreground"
-          data-testid="card-title"
+          class="min-w-0"
         >
-          Harbour Lights
-        </div>
-        <div
-          class="truncate text-xs text-primary-foreground"
-        >
-          Saaristo
+          <div
+            class="truncate text-sm font-bold text-primary-foreground"
+            data-testid="card-title"
+          >
+            Harbour Lights
+          </div>
+          <div
+            class="truncate text-xs text-primary-foreground"
+          >
+            Saaristo
+          </div>
         </div>
       </div>
     </div>
     <div
-      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
-      data-layout="card"
-      data-surface="brand"
-      data-testid="card"
+      animate="[object Object]"
+      class="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] origin-center"
+      data-cards-row-item="5"
+      data-testid="cards-row-item-motion"
+      exit="[object Object]"
+      transition="[object Object]"
     >
       <div
-        class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
+        class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+        data-layout="card"
+        data-surface="brand"
+        data-testid="card"
       >
         <div
-          class="group overflow-hidden absolute inset-0 size-full"
-          data-testid="media-artwork"
+          class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
         >
           <div
-            class="overflow-hidden absolute inset-0"
+            class="group overflow-hidden absolute inset-0 size-full"
+            data-testid="media-artwork"
           >
-            <img
-              alt="Frost Patterns"
-              class="h-full w-full object-cover"
-              decoding="async"
-              loading="lazy"
-              src="https://picsum.photos/300?random=5"
-            />
             <div
-              class="pointer-events-none absolute inset-0 flex items-center justify-center"
+              class="overflow-hidden absolute inset-0"
             >
-              <svg
-                aria-hidden="true"
-                class="lucide lucide-cassette-tape opacity-20"
-                fill="none"
-                height="96"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="0.5"
-                viewBox="0 0 24 24"
-                width="96"
-                xmlns="http://www.w3.org/2000/svg"
+              <img
+                alt="Frost Patterns"
+                class="h-full w-full object-cover"
+                decoding="async"
+                loading="lazy"
+                src="https://picsum.photos/300?random=5"
+              />
+              <div
+                class="pointer-events-none absolute inset-0 flex items-center justify-center"
               >
-                <rect
-                  height="16"
-                  rx="2"
-                  width="20"
-                  x="2"
-                  y="4"
-                />
-                <circle
-                  cx="8"
-                  cy="10"
-                  r="2"
-                />
-                <path
-                  d="M8 12h8"
-                />
-                <circle
-                  cx="16"
-                  cy="10"
-                  r="2"
-                />
-                <path
-                  d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
-                />
-              </svg>
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-cassette-tape opacity-20"
+                  fill="none"
+                  height="96"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="0.5"
+                  viewBox="0 0 24 24"
+                  width="96"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    height="16"
+                    rx="2"
+                    width="20"
+                    x="2"
+                    y="4"
+                  />
+                  <circle
+                    cx="8"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="M8 12h8"
+                  />
+                  <circle
+                    cx="16"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        class="min-w-0"
-      >
         <div
-          class="truncate text-sm font-bold text-primary-foreground"
-          data-testid="card-title"
+          class="min-w-0"
         >
-          Frost Patterns
-        </div>
-        <div
-          class="truncate text-xs text-primary-foreground"
-        >
-          Kaamos
+          <div
+            class="truncate text-sm font-bold text-primary-foreground"
+            data-testid="card-title"
+          >
+            Frost Patterns
+          </div>
+          <div
+            class="truncate text-xs text-primary-foreground"
+          >
+            Kaamos
+          </div>
         </div>
       </div>
     </div>
     <div
-      class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
-      data-layout="card"
-      data-surface="brand"
-      data-testid="card"
+      animate="[object Object]"
+      class="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto] origin-center"
+      data-cards-row-item="6"
+      data-testid="cards-row-item-motion"
+      exit="[object Object]"
+      transition="[object Object]"
     >
       <div
-        class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
+        class="border-border shadow-shadow flex flex-col items-stretch gap-2 rounded-md border-(length:--border-width) p-2 text-left transition-all w-46 text-primary-foreground bg-primary"
+        data-layout="card"
+        data-surface="brand"
+        data-testid="card"
       >
         <div
-          class="group overflow-hidden absolute inset-0 size-full"
-          data-testid="media-artwork"
+          class="border-border flex h-full rounded-md border-(length:--border-width) bg-primary text-primary-foreground shadow-none relative aspect-square w-full items-center justify-center overflow-hidden p-0"
         >
           <div
-            class="overflow-hidden absolute inset-0"
+            class="group overflow-hidden absolute inset-0 size-full"
+            data-testid="media-artwork"
           >
-            <img
-              alt="Slow Rivers"
-              class="h-full w-full object-cover"
-              decoding="async"
-              loading="lazy"
-              src="https://picsum.photos/300?random=6"
-            />
             <div
-              class="pointer-events-none absolute inset-0 flex items-center justify-center"
+              class="overflow-hidden absolute inset-0"
             >
-              <svg
-                aria-hidden="true"
-                class="lucide lucide-cassette-tape opacity-20"
-                fill="none"
-                height="96"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="0.5"
-                viewBox="0 0 24 24"
-                width="96"
-                xmlns="http://www.w3.org/2000/svg"
+              <img
+                alt="Slow Rivers"
+                class="h-full w-full object-cover"
+                decoding="async"
+                loading="lazy"
+                src="https://picsum.photos/300?random=6"
+              />
+              <div
+                class="pointer-events-none absolute inset-0 flex items-center justify-center"
               >
-                <rect
-                  height="16"
-                  rx="2"
-                  width="20"
-                  x="2"
-                  y="4"
-                />
-                <circle
-                  cx="8"
-                  cy="10"
-                  r="2"
-                />
-                <path
-                  d="M8 12h8"
-                />
-                <circle
-                  cx="16"
-                  cy="10"
-                  r="2"
-                />
-                <path
-                  d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
-                />
-              </svg>
+                <svg
+                  aria-hidden="true"
+                  class="lucide lucide-cassette-tape opacity-20"
+                  fill="none"
+                  height="96"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="0.5"
+                  viewBox="0 0 24 24"
+                  width="96"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect
+                    height="16"
+                    rx="2"
+                    width="20"
+                    x="2"
+                    y="4"
+                  />
+                  <circle
+                    cx="8"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="M8 12h8"
+                  />
+                  <circle
+                    cx="16"
+                    cy="10"
+                    r="2"
+                  />
+                  <path
+                    d="m6 20 .7-2.9A1.4 1.4 0 0 1 8.1 16h7.8a1.4 1.4 0 0 1 1.4 1l.7 3"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div
-        class="min-w-0"
-      >
         <div
-          class="truncate text-sm font-bold text-primary-foreground"
-          data-testid="card-title"
+          class="min-w-0"
         >
-          Slow Rivers
-        </div>
-        <div
-          class="truncate text-xs text-primary-foreground"
-        >
-          Virta
+          <div
+            class="truncate text-sm font-bold text-primary-foreground"
+            data-testid="card-title"
+          >
+            Slow Rivers
+          </div>
+          <div
+            class="truncate text-xs text-primary-foreground"
+          >
+            Virta
+          </div>
         </div>
       </div>
     </div>

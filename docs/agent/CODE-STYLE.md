@@ -61,6 +61,12 @@ When changing anything a user sees (layout, controls, status, empty/loading, ove
 2. If the Storybook component shows different **data** or **behavior** than the live screen, keep the live data and features. Swap only the visual primitive. Do not drop overlays, counts, routes, or actions to make the page look more like the demo.
 3. If no Storybook component exists at all, add it there with the states that exist today (default, empty, loading, error, disabled, selected — whichever apply). Flag states the component should have but does not yet (`Missing states:` in the story docs). Then use it.
 4. If a Storybook story is an **orphan** (nothing in the player or tahti-web renders that component), flag it on the story (`Orphan:` in the docs description, and why). Do not delete it in the same pass as a UI sweep unless the user asked to remove it.
+
+**Search / filter end-addon:** `Input` end-addons stay idle (secondary) until the
+field has a value, then go active (primary). Do not hard-code primary chrome on
+an empty filter. Storybook covers both (`WithEndAddon`, `WithEndAddonActive`).
+Sibling filter toggles use `variant="text"` until modified, then `secondary` +
+`aria-pressed`.
 5. New `@tahti-player/ui` components still follow the directory/test/export checklist below.
 
 **Cross-check [`docs/VIEW-CATALOG.md`](../VIEW-CATALOG.md) after any of these changes:** adding/removing a view, adding/removing a Storybook story, or changing navigation items. Update the route, file path, Storybook status, and candidate flags in the catalog.

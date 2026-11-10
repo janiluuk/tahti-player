@@ -231,8 +231,54 @@ function filterMockSounds(
         }
       }
     }
+    const bpm = item.bpm ?? null;
+    if (filter.bpmMin != null && (bpm == null || bpm < filter.bpmMin)) {
+      return false;
+    }
+    if (filter.bpmMax != null && (bpm == null || bpm > filter.bpmMax)) {
+      return false;
+    }
+    if (
+      filter.key &&
+      !(item.musicalKey ?? '').toLowerCase().includes(filter.key.toLowerCase())
+    ) {
+      return false;
+    }
     return true;
   });
+}
+
+export type StudioSoundCoversBackfillResult = {
+  assigned: number;
+  totalMatched: number;
+};
+
+export async function backfillStudioSoundCovers(): Promise<
+  | { ok: true; data: StudioSoundCoversBackfillResult }
+  | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    let assigned = 0;
+    for (const sound of mockSoundStore) {
+      if (!sound.bannerUrl) {
+        sound.bannerUrl = '/presets/cover-mock.png';
+        assigned += 1;
+      }
+    }
+    return { ok: true, data: { assigned, totalMatched: assigned } };
+  }
+  try {
+    const { data } = await requestJson<StudioSoundCoversBackfillResult>(
+      '/api/me/sound/covers/backfill',
+      { method: 'POST', body: '{}' },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not backfill covers',
+    };
+  }
 }
 
 /** Paged Sounds list (`limit` required so the API returns `{ items, total }`). */

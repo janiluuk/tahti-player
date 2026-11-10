@@ -83,6 +83,11 @@ export type CatalogTableProps<T> = {
   itemNoun?: string;
   /** Extra toolbar content, shown next to the settings button. */
   toolbar?: ReactNode;
+  /**
+   * When true, skip the inline “N selected / Clear” chrome — the host already
+   * shows a selection toolbar (e.g. Library → Sounds).
+   */
+  hideSelectionChrome?: boolean;
   settingsLabels?: Partial<CatalogTableSettingsLabels>;
   className?: string;
 };
@@ -121,6 +126,7 @@ export function CatalogTable<T>({
   rowHeight = 48,
   itemNoun = 'items',
   toolbar,
+  hideSelectionChrome = false,
   settingsLabels,
   className,
 }: CatalogTableProps<T>) {
@@ -379,7 +385,7 @@ export function CatalogTable<T>({
     >
       <div className="flex items-center gap-2">
         <div className="text-foreground-secondary min-w-0 flex-1 truncate text-xs">
-          {selectable && selected.size > 0 ? (
+          {selectable && selected.size > 0 && !hideSelectionChrome ? (
             <span>
               {selected.size >= total
                 ? `All ${total.toLocaleString('en-US')} selected`

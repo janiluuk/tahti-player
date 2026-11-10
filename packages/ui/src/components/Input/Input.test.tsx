@@ -30,15 +30,42 @@ describe('Input', () => {
     expect(container.firstChild).toMatchSnapshot();
   });
 
-  it('(Snapshot) renders with endAddon', () => {
-    const { container } = render(
+  it('(Snapshot) renders with endAddon idle when empty', () => {
+    const { container, getByTestId } = render(
       <Input
         id="input-with-addon"
         placeholder="Filter..."
         endAddon={<button type="button">X</button>}
       />,
     );
+    expect(getByTestId('input-end-addon')).not.toHaveAttribute('data-active');
     expect(container.firstChild).toMatchSnapshot();
+  });
+
+  it('marks endAddon active when the field has a value', () => {
+    const { getByTestId, rerender } = render(
+      <Input
+        id="input-with-addon-active"
+        placeholder="Filter..."
+        value=""
+        onChange={() => {}}
+        endAddon={<button type="button">X</button>}
+      />,
+    );
+    expect(getByTestId('input-end-addon')).not.toHaveAttribute('data-active');
+    rerender(
+      <Input
+        id="input-with-addon-active"
+        placeholder="Filter..."
+        value="midnight"
+        onChange={() => {}}
+        endAddon={<button type="button">X</button>}
+      />,
+    );
+    expect(getByTestId('input-end-addon')).toHaveAttribute(
+      'data-active',
+      'true',
+    );
   });
 
   it('(Snapshot) renders with startAddon', () => {

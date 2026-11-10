@@ -2,9 +2,10 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n, type TFunction } from '@tahti-player/i18n';
+import { i18n } from '@tahti-player/i18n';
 
 import {
+  backfillStudioSoundCovers,
   bulkDeleteStudioSounds,
   bulkPatchStudioSounds,
   deleteStudioSound,
@@ -17,118 +18,45 @@ import {
   patchStudioSound,
   STUDIO_SOUND_BULK_MAX_IDS,
   type StudioSoundBulkPatch,
-  type StudioSoundListFilter,
   type StudioSoundStats,
 } from '../../../api/studio';
 import type { StudioSound } from '../../../api/studio-types';
-import {
-  resolveContentTypeId,
-  selectableContentTypes,
-  type ContentTypeId,
-} from '../../../content/contentTypes';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
-import type { EmbedProvider } from '../../../lib/embedSrc';
 import {
   countPinnedTracks,
   isPinned,
   sortPinnedFirst,
 } from '../../../lib/pinnedTracks';
-import { webT } from '../../../lib/webT';
 import { usePlayerStore } from '../../../stores/playerStore';
+import { useTrackListViewStore } from '../../../stores/trackListViewStore';
+import {
+  apiSort,
+  parseContentTypeFilter,
+  toServerFilter,
+  type ContentTypeFilter,
+  type EmbedFilter,
+  type PinnedFilter,
+  type SortField,
+  type StatusFilter,
+  type VisibilityFilter,
+} from './studioSoundsFilters';
 
-export type EmbedFilter = 'ALL' | 'NATIVE' | EmbedProvider;
-export type SortField = 'title' | 'uploaded' | 'duration';
-export type ContentTypeFilter = 'ALL' | ContentTypeId;
-
-export function embedFilters(
-  t: TFunction<'web'>,
-): Array<{ id: EmbedFilter; label: string }> {
-  return [
-    { id: 'ALL', label: t('useStudioSoundsState.allSources') },
-    { id: 'NATIVE', label: 'Tahti audio' },
-    { id: 'HEARTHIS', label: 'hearthis.at' },
-    { id: 'MIXCLOUD', label: 'Mixcloud' },
-    { id: 'SPOTIFY', label: 'Spotify' },
-    { id: 'BANDCAMP', label: 'Bandcamp' },
-    { id: 'MIKSERI', label: 'Mikseri.net' },
-  ];
-}
-
-export function sortFields(
-  t: TFunction<'web'>,
-): Array<{ id: SortField; label: string }> {
-  return [
-    { id: 'title', label: t('useStudioSoundsState.title') },
-    { id: 'uploaded', label: t('useStudioSoundsState.uploadDate') },
-    { id: 'duration', label: t('useStudioSoundsState.duration') },
-  ];
-}
-
-export function contentTypeFilters(t: TFunction<'web'>): Array<{
-  id: ContentTypeFilter;
-  label: string;
-}> {
-  return [
-    { id: 'ALL', label: 'All types' },
-    ...selectableContentTypes(t).map((type) => ({
-      id: type.id,
-      label: type.label,
-    })),
-  ];
-}
+export type {
+  ContentTypeFilter,
+  EmbedFilter,
+  PinnedFilter,
+  SortField,
+  StatusFilter,
+  VisibilityFilter,
+} from './studioSoundsFilters';
+export {
+  contentTypeFilters,
+  embedFilters,
+  sortFields,
+} from './studioSoundsFilters';
 
 const PAGE_SIZE = 50;
 const SEARCH_DEBOUNCE_MS = 200;
-
-function parseContentTypeFilter(value: string | undefined): ContentTypeFilter {
-  const resolved = resolveContentTypeId(value);
-  if (!resolved) {
-    return 'ALL';
-  }
-  if (selectableContentTypes(webT()).some((type) => type.id === resolved)) {
-    return resolved;
-  }
-  return 'ALL';
-}
-
-function apiSort(
-  field: SortField,
-  descending: boolean,
-): 'newest' | 'oldest' | 'title' | 'duration' {
-  if (field === 'title') {
-    return 'title';
-  }
-  if (field === 'duration') {
-    return 'duration';
-  }
-  return descending ? 'newest' : 'oldest';
-}
-
-function toServerFilter(input: {
-  query: string;
-  contentTypeFilter: ContentTypeFilter;
-  embedFilter: EmbedFilter;
-  uploadedFrom: string;
-  uploadedTo: string;
-  genre?: string;
-  tag?: string;
-}): StudioSoundListFilter {
-  return {
-    ...(input.query.trim() ? { q: input.query.trim() } : {}),
-    ...(input.contentTypeFilter !== 'ALL'
-      ? { contentType: input.contentTypeFilter }
-      : {}),
-    ...(input.embedFilter === 'NATIVE'
-      ? { source: 'native' }
-      : input.embedFilter !== 'ALL'
-        ? { source: input.embedFilter }
-        : {}),
-    ...(input.uploadedFrom ? { uploadedFrom: input.uploadedFrom } : {}),
-    ...(input.uploadedTo ? { uploadedTo: input.uploadedTo } : {}),
-    ...(input.genre ? { genre: input.genre } : {}),
-    ...(input.tag ? { tag: input.tag } : {}),
-  };
-}
 
 /** Loading, filtering, sorting and row actions for the Sounds list. */
 export function useStudioSoundsState() {
@@ -156,6 +84,13 @@ export function useStudioSoundsState() {
   const [uploadedTo, setUploadedTo] = useState('');
   const [genreFilter, setGenreFilter] = useState('');
   const [tagFilter, setTagFilter] = useState('');
+  const [bpmMin, setBpmMin] = useState('');
+  const [bpmMax, setBpmMax] = useState('');
+  const [keyFilter, setKeyFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
+  const [visibilityFilter, setVisibilityFilter] =
+    useState<VisibilityFilter>('ALL');
+  const [pinnedFilter, setPinnedFilter] = useState<PinnedFilter>('ALL');
   const [facets, setFacets] = useState<{
     genre: Array<{ value: string; count: number }>;
     tag: Array<{ value: string; count: number }>;
@@ -173,9 +108,11 @@ export function useStudioSoundsState() {
   const [allMatchingSelected, setAllMatchingSelected] = useState(false);
   const [selectingAll, setSelectingAll] = useState(false);
   const [bulkBusy, setBulkBusy] = useState(false);
+  const [coversBusy, setCoversBusy] = useState(false);
   const requestSeq = useRef(0);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
+  const listView = useTrackListViewStore((store) => store.view);
 
   useEffect(() => {
     setContentTypeFilter(parseContentTypeFilter(search.contentType));
@@ -207,6 +144,12 @@ export function useStudioSoundsState() {
         uploadedTo,
         genre: genreFilter,
         tag: tagFilter,
+        bpmMin,
+        bpmMax,
+        key: keyFilter,
+        statusFilter,
+        visibilityFilter,
+        pinnedFilter,
       }),
     [
       contentTypeFilter,
@@ -216,6 +159,12 @@ export function useStudioSoundsState() {
       uploadedTo,
       genreFilter,
       tagFilter,
+      bpmMin,
+      bpmMax,
+      keyFilter,
+      statusFilter,
+      visibilityFilter,
+      pinnedFilter,
     ],
   );
 
@@ -354,6 +303,12 @@ export function useStudioSoundsState() {
     setUploadedTo('');
     setGenreFilter('');
     setTagFilter('');
+    setBpmMin('');
+    setBpmMax('');
+    setKeyFilter('');
+    setStatusFilter('ALL');
+    setVisibilityFilter('ALL');
+    setPinnedFilter('ALL');
   };
 
   const filtersActive =
@@ -363,7 +318,13 @@ export function useStudioSoundsState() {
     Boolean(uploadedFrom) ||
     Boolean(uploadedTo) ||
     Boolean(genreFilter) ||
-    Boolean(tagFilter);
+    Boolean(tagFilter) ||
+    Boolean(bpmMin.trim()) ||
+    Boolean(bpmMax.trim()) ||
+    Boolean(keyFilter.trim()) ||
+    statusFilter !== 'ALL' ||
+    visibilityFilter !== 'ALL' ||
+    pinnedFilter !== 'ALL';
 
   const filtered = useMemo(() => {
     const ordered = sortPinnedFirst(items);
@@ -463,6 +424,14 @@ export function useStudioSoundsState() {
     setSelectedIds(new Set());
     setAllMatchingSelected(false);
   };
+
+  // Selection checkboxes only exist in list view — drop the set when leaving it.
+  useEffect(() => {
+    if (listView !== null && listView !== 'list') {
+      setSelectedIds(new Set());
+      setAllMatchingSelected(false);
+    }
+  }, [listView]);
 
   const toggleSelected = (id: string) => {
     setAllMatchingSelected(false);
@@ -621,6 +590,36 @@ export function useStudioSoundsState() {
     }));
   };
 
+  const backfillCovers = () => {
+    if (coversBusy || bulkBusy) {
+      return;
+    }
+    setCoversBusy(true);
+    void (async () => {
+      try {
+        const result = await backfillStudioSoundCovers();
+        if (!result.ok) {
+          toast.error(
+            result.error || i18n.t('web:library.coversBackfillError'),
+          );
+          return;
+        }
+        if (result.data.assigned === 0) {
+          toast.message(i18n.t('web:library.coversBackfillNone'));
+        } else {
+          toast.success(
+            i18n.t('web:library.coversBackfillDone', {
+              count: result.data.assigned,
+            }),
+          );
+        }
+        reload();
+      } finally {
+        setCoversBusy(false);
+      }
+    })();
+  };
+
   const applyBulkEdit = (patch: StudioSoundBulkPatch) => {
     const target = buildBulkTarget();
     if ('error' in target) {
@@ -687,6 +686,18 @@ export function useStudioSoundsState() {
     setGenreFilter,
     tagFilter,
     setTagFilter,
+    bpmMin,
+    setBpmMin,
+    bpmMax,
+    setBpmMax,
+    keyFilter,
+    setKeyFilter,
+    statusFilter,
+    setStatusFilter,
+    visibilityFilter,
+    setVisibilityFilter,
+    pinnedFilter,
+    setPinnedFilter,
     facets,
     busyId,
     editingId,
@@ -713,6 +724,8 @@ export function useStudioSoundsState() {
     selectAllMatching,
     selectingAll,
     bulkBusy,
+    coversBusy,
+    backfillCovers,
     allMatchingSelected,
     clearSelection,
     tracksForRelease,
