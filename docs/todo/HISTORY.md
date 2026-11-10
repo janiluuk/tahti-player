@@ -1,3 +1,11 @@
+## 2026-11-10 — library-sounds-embeds + embed-thumbnails
+
+Library → Embeds lives under Sounds (`?tab=embeds`, redirect from
+`/library/embeds`). Native-only Sounds list; embed thumbs via `bannerUrl`,
+MediaArtwork seed, SoundCloud `thumbnailUrl`, client noembed soft-fill
+(#1995), and org covers backfill with hearthis artwork (#1092). Admin channel
+tracks show covers; e2e covers Sounds → Embeds play. Folded
+`embed-thumbnails.md`.
 ## 2026-11-05 - Batch 61 UX slices
 
 Finnish for the last 23 loading labels (no English `PageLoading` label left)
