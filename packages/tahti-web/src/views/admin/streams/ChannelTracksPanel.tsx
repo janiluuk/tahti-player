@@ -9,6 +9,7 @@ import {
   EditIconButton,
   InlineError,
   Input,
+  MediaArtwork,
   SaveButton,
   Select,
   Textarea,
@@ -286,6 +287,13 @@ export function ChannelTracksPanel() {
                   className="flex items-center justify-between gap-3 py-2 text-sm"
                 >
                   <span className="flex min-w-0 flex-1 items-center gap-2">
+                    <MediaArtwork
+                      src={sound.bannerUrl ?? undefined}
+                      alt=""
+                      seed={sound.id}
+                      size="thumb"
+                      className="size-8 min-w-8 rounded-sm"
+                    />
                     <span className="truncate font-medium">{sound.title}</span>
                     {sound.genre ? (
                       <span className="text-foreground-secondary text-xs">

@@ -28,16 +28,16 @@ panel (`StudioPanel`), and fix missing embed provider thumbnails.
 | 15 | org | Backfill missing embed `bannerUrl` from provider oEmbed/OG | Worker or one-shot job |
 | 16 | player | Client: if embed has no banner, fetch oEmbed thumbnail once | Soft fill without reload |
 | 17 | player | Default artwork seed when no provider thumb | ✅ MediaArtwork seed on rows |
-| 18 | player | Channel public Embeds tab uses same cover field | Channel page thumbs |
+| 18 | player | Channel public Embeds tab uses same cover field | ✅ playables coverUrl ← bannerUrl |
 | 19 | player | Unit: EmbedTrackRow with bannerUrl | ✅ EmbedTrackRow.test |
-| 20 | player | Unit: LibraryEmbedsView groups still work after move | Smoke test |
+| 20 | player | Unit: LibraryEmbedsView groups still work after move | ✅ LibraryEmbedsView.test |
 | 21 | player | Hide embed filter Select on Sounds tab (embeds live on Embeds tab) | ✅ Source Select removed |
 | 22 | player | Sounds list default filter excludes pure embeds (optional) | ✅ default NATIVE |
-| 23 | player | Empty Embeds tab CTA still opens import add-ons | Empty state intact |
-| 24 | player | seo / documentLinks drop standalone Embeds title if unused | No dead title keys |
+| 23 | player | Empty Embeds tab CTA still opens import add-ons | ✅ plugin-store import CTA |
+| 24 | player | seo / documentLinks drop standalone Embeds title if unused | ✅ no /library/embeds seo row |
 | 25 | player | Finnish batch for new Sounds/Embeds chrome | ✅ soundsPanel* fi_FI |
-| 26 | player | Admin ChannelTracksPanel: show embed thumbs if present | Same cover field |
-| 27 | player | e2e journey: open Sounds → Embeds → play one embed | Mock app |
+| 26 | player | Admin ChannelTracksPanel: show embed thumbs if present | ✅ MediaArtwork + bannerUrl |
+| 27 | player | e2e journey: open Sounds → Embeds → play one embed | ✅ library-sounds-embeds.spec |
 | 28 | player | Fold `embed-thumbnails.md` into this todo when thumbs fixed | Delete sibling todo |
 | 29 | player | Strip finished checkboxes from WORKPLAN if listed | Hygiene |
 | 30 | player | Harden: no blank thumbs in Storybook Missing states | Orphan/missing noted |
