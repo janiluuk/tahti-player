@@ -293,6 +293,7 @@ export type AdminChannelSound = {
   contentType?: string | null;
   isPublic: boolean;
   releasedAt: string | null;
+  bannerUrl?: string | null;
 };
 
 export type AdminChannelSoundPatch = {
@@ -325,6 +326,7 @@ function mockSoundsFor(key: string): AdminChannelSound[] {
         genre: 'Ambient',
         isPublic: true,
         releasedAt: '2026-09-01T00:00:00.000Z',
+        bannerUrl: '/mock/northern-lights/cover-first-light.svg',
       },
       {
         id: `${key}-sound-2`,
@@ -334,6 +336,7 @@ function mockSoundsFor(key: string): AdminChannelSound[] {
         genre: null,
         isPublic: false,
         releasedAt: '2026-09-10T00:00:00.000Z',
+        bannerUrl: null,
       },
     ];
     mockChannelSounds.set(key, rows);
