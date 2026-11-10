@@ -321,7 +321,12 @@ export async function fetchStudioSoundsPage(
 
 export async function fetchStudioSoundIds(
   filter: StudioSoundListFilter = {},
-): Promise<{ data: { ids: string[]; total: number }; meta: FetchMeta }> {
+): Promise<{
+  data: { ids: string[]; total: number };
+  meta: FetchMeta;
+  /** Present when the API refused the select-all (ids cap). */
+  tooLarge?: { totalMatched: number; error: string };
+}> {
   if (isForceMock()) {
     const filtered = filterMockSounds([...mockSoundStore], filter);
     return {
@@ -335,6 +340,23 @@ export async function fetchStudioSoundIds(
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
+    if (err instanceof RequestJsonError && err.status === 413) {
+      const body = err.body as
+        { error?: string; totalMatched?: number } | undefined;
+      const totalMatched =
+        typeof body?.totalMatched === 'number' ? body.totalMatched : 0;
+      return {
+        data: { ids: [], total: 0 },
+        meta: apiErrorMeta(err),
+        tooLarge: {
+          totalMatched,
+          error:
+            typeof body?.error === 'string'
+              ? body.error
+              : err.message || 'Too many matches; refine the filter.',
+        },
+      };
+    }
     if (allowMockFallback()) {
       const filtered = filterMockSounds([...mockSoundStore], filter);
       return {

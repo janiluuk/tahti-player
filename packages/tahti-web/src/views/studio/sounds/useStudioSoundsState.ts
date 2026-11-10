@@ -18,6 +18,7 @@ import {
   patchStudioSound,
   STUDIO_SOUND_BULK_MAX_IDS,
   type StudioSoundBulkPatch,
+  type StudioSoundListFilter,
   type StudioSoundStats,
 } from '../../../api/studio';
 import type { StudioSound } from '../../../api/studio-types';
@@ -35,6 +36,7 @@ import {
   toServerFilter,
   type ContentTypeFilter,
   type EmbedFilter,
+  type FallbackFilter,
   type PinnedFilter,
   type SortField,
   type StatusFilter,
@@ -44,6 +46,7 @@ import {
 export type {
   ContentTypeFilter,
   EmbedFilter,
+  FallbackFilter,
   PinnedFilter,
   SortField,
   StatusFilter,
@@ -91,6 +94,7 @@ export function useStudioSoundsState() {
   const [visibilityFilter, setVisibilityFilter] =
     useState<VisibilityFilter>('ALL');
   const [pinnedFilter, setPinnedFilter] = useState<PinnedFilter>('ALL');
+  const [fallbackFilter, setFallbackFilter] = useState<FallbackFilter>('ALL');
   const [facets, setFacets] = useState<{
     genre: Array<{ value: string; count: number }>;
     tag: Array<{ value: string; count: number }>;
@@ -107,6 +111,7 @@ export function useStudioSoundsState() {
   /** True after “Select all matching”; bulk ops use filter + confirmTotal. */
   const [allMatchingSelected, setAllMatchingSelected] = useState(false);
   const [selectingAll, setSelectingAll] = useState(false);
+  const [selectionNotice, setSelectionNotice] = useState<string | null>(null);
   const [bulkBusy, setBulkBusy] = useState(false);
   const [coversBusy, setCoversBusy] = useState(false);
   const requestSeq = useRef(0);
@@ -150,6 +155,7 @@ export function useStudioSoundsState() {
         statusFilter,
         visibilityFilter,
         pinnedFilter,
+        fallbackFilter,
       }),
     [
       contentTypeFilter,
@@ -165,6 +171,7 @@ export function useStudioSoundsState() {
       statusFilter,
       visibilityFilter,
       pinnedFilter,
+      fallbackFilter,
     ],
   );
 
@@ -173,23 +180,25 @@ export function useStudioSoundsState() {
       return;
     }
     let active = true;
-    void fetchStudioSoundFacets(['genre', 'tag']).then(({ data }) => {
-      if (!active) {
-        return;
-      }
-      const sorted = (values: Array<{ value: string; count: number }> = []) =>
-        [...values].sort(
-          (a, b) => b.count - a.count || a.value.localeCompare(b.value),
-        );
-      setFacets({
-        genre: sorted(data.facets.genre),
-        tag: sorted(data.facets.tag),
-      });
-    });
+    void fetchStudioSoundFacets(['genre', 'tag'], serverFilter).then(
+      ({ data }) => {
+        if (!active) {
+          return;
+        }
+        const sorted = (values: Array<{ value: string; count: number }> = []) =>
+          [...values].sort(
+            (a, b) => b.count - a.count || a.value.localeCompare(b.value),
+          );
+        setFacets({
+          genre: sorted(data.facets.genre),
+          tag: sorted(data.facets.tag),
+        });
+      },
+    );
     return () => {
       active = false;
     };
-  }, [filtersOpen]);
+  }, [filtersOpen, serverFilter]);
 
   const listSort = apiSort(sortField, sortDescending);
 
@@ -309,6 +318,8 @@ export function useStudioSoundsState() {
     setStatusFilter('ALL');
     setVisibilityFilter('ALL');
     setPinnedFilter('ALL');
+    setFallbackFilter('ALL');
+    setSelectionNotice(null);
   };
 
   const filtersActive =
@@ -324,7 +335,8 @@ export function useStudioSoundsState() {
     Boolean(keyFilter.trim()) ||
     statusFilter !== 'ALL' ||
     visibilityFilter !== 'ALL' ||
-    pinnedFilter !== 'ALL';
+    pinnedFilter !== 'ALL' ||
+    fallbackFilter !== 'ALL';
 
   const filtered = useMemo(() => {
     const ordered = sortPinnedFirst(items);
@@ -423,6 +435,7 @@ export function useStudioSoundsState() {
   const clearSelection = () => {
     setSelectedIds(new Set());
     setAllMatchingSelected(false);
+    setSelectionNotice(null);
   };
 
   // Selection checkboxes only exist in list view — drop the set when leaving it.
@@ -475,9 +488,19 @@ export function useStudioSoundsState() {
     const seq = requestSeq.current;
     const filterSnapshot = serverFilter;
     setSelectingAll(true);
+    setSelectionNotice(null);
     try {
       const result = await fetchStudioSoundIds(filterSnapshot);
       if (seq !== requestSeq.current) {
+        return;
+      }
+      if (result.tooLarge) {
+        setSelectionNotice(
+          i18n.t('web:library.soundsSelectCap', {
+            total: result.tooLarge.totalMatched,
+          }),
+        );
+        toast.error(result.tooLarge.error);
         return;
       }
       if (result.meta.source === 'api' && result.meta.reason) {
@@ -548,9 +571,19 @@ export function useStudioSoundsState() {
           );
           return;
         }
-        toast.success(
-          i18n.t('web:toasts.deletedSounds', { count: result.data.deleted }),
-        );
+        const failedCount = result.data.failed.length;
+        if (failedCount > 0) {
+          toast.warning(
+            i18n.t('web:toasts.deletedSoundsPartial', {
+              deleted: result.data.deleted,
+              failed: failedCount,
+            }),
+          );
+        } else {
+          toast.success(
+            i18n.t('web:toasts.deletedSounds', { count: result.data.deleted }),
+          );
+        }
         clearSelection();
         reload();
       } finally {
@@ -643,9 +676,19 @@ export function useStudioSoundsState() {
           );
           return;
         }
-        toast.success(
-          i18n.t('web:toasts.updatedSounds', { count: result.data.updated }),
-        );
+        const failedCount = result.data.failed.length;
+        if (failedCount > 0) {
+          toast.warning(
+            i18n.t('web:toasts.updatedSoundsPartial', {
+              updated: result.data.updated,
+              failed: failedCount,
+            }),
+          );
+        } else {
+          toast.success(
+            i18n.t('web:toasts.updatedSounds', { count: result.data.updated }),
+          );
+        }
         setBulkEditOpen(false);
         reload();
       } finally {
@@ -698,6 +741,9 @@ export function useStudioSoundsState() {
     setVisibilityFilter,
     pinnedFilter,
     setPinnedFilter,
+    fallbackFilter,
+    setFallbackFilter,
+    selectionNotice,
     facets,
     busyId,
     editingId,

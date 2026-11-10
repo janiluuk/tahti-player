@@ -4,6 +4,7 @@ import {
   ChevronDownIcon,
   FilterIcon,
   SearchIcon,
+  XIcon,
 } from 'lucide-react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -26,6 +27,7 @@ import {
   sortFields,
   type ContentTypeFilter,
   type EmbedFilter,
+  type FallbackFilter,
   type PinnedFilter,
   type SortField,
   type StatusFilter,
@@ -40,6 +42,8 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
     setQuery,
     filtersOpen,
     setFiltersOpen,
+    clearFilters,
+    filtersActive,
     pinnedCount,
     embedFilter,
     setEmbedFilter,
@@ -69,6 +73,8 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
     setVisibilityFilter,
     pinnedFilter,
     setPinnedFilter,
+    fallbackFilter,
+    setFallbackFilter,
     facets,
   } = state;
   const storedView = useTrackListViewStore((store) => store.view);
@@ -90,7 +96,9 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
     Boolean(keyFilter.trim()) ||
     statusFilter !== 'ALL' ||
     visibilityFilter !== 'ALL' ||
-    pinnedFilter !== 'ALL';
+    pinnedFilter !== 'ALL' ||
+    fallbackFilter !== 'ALL';
+  const queryActive = Boolean(query.trim());
 
   return (
     <>
@@ -106,7 +114,33 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
           startAddon={
             <SearchIcon size={14} aria-hidden className="opacity-70" />
           }
+          endAddon={
+            queryActive ? (
+              <button
+                type="button"
+                className="inline-flex items-center justify-center"
+                aria-label={t('library.clearSearch')}
+                onClick={() => setQuery('')}
+              >
+                <XIcon size={14} aria-hidden />
+              </button>
+            ) : (
+              <SearchIcon size={14} aria-hidden className="opacity-0" />
+            )
+          }
+          endAddonActive={queryActive}
         />
+        {filtersActive ? (
+          <Button
+            type="button"
+            size="sm"
+            variant="text"
+            aria-label={t('library.clearFilters')}
+            onClick={clearFilters}
+          >
+            {t('library.clearFilters')}
+          </Button>
+        ) : null}
         <Select
           aria-label={t('library.typeFilter')}
           value={contentTypeFilter}
@@ -272,6 +306,19 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
               { id: 'unpinned', label: t('library.unpinnedOnly') },
             ]}
             className="min-w-36"
+          />
+          <Select
+            label={t('library.fallbackFilter')}
+            value={fallbackFilter}
+            onValueChange={(value) =>
+              setFallbackFilter(value as FallbackFilter)
+            }
+            options={[
+              { id: 'ALL', label: leaveAll },
+              { id: 'fallback', label: t('library.fallbackOnly') },
+              { id: 'not-fallback', label: t('library.notFallbackOnly') },
+            ]}
+            className="min-w-40"
           />
           <Input
             type="number"

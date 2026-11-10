@@ -15,6 +15,7 @@ export type ContentTypeFilter = 'ALL' | ContentTypeId;
 export type StatusFilter = 'ALL' | 'PENDING' | 'PROCESSING' | 'READY' | 'ERROR';
 export type VisibilityFilter = 'ALL' | 'public' | 'private';
 export type PinnedFilter = 'ALL' | 'pinned' | 'unpinned';
+export type FallbackFilter = 'ALL' | 'fallback' | 'not-fallback';
 
 export function embedFilters(
   t: TFunction<'web'>,
@@ -93,6 +94,7 @@ export function toServerFilter(input: {
   statusFilter?: StatusFilter;
   visibilityFilter?: VisibilityFilter;
   pinnedFilter?: PinnedFilter;
+  fallbackFilter?: FallbackFilter;
 }): StudioSoundListFilter {
   const bpmMin = input.bpmMin?.trim() ? Number(input.bpmMin) : undefined;
   const bpmMax = input.bpmMax?.trim() ? Number(input.bpmMax) : undefined;
@@ -125,6 +127,11 @@ export function toServerFilter(input: {
       ? { pinned: true }
       : input.pinnedFilter === 'unpinned'
         ? { pinned: false }
+        : {}),
+    ...(input.fallbackFilter === 'fallback'
+      ? { isFallback: true }
+      : input.fallbackFilter === 'not-fallback'
+        ? { isFallback: false }
         : {}),
   };
 }
