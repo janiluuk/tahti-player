@@ -102,7 +102,10 @@ describe('StudioSoundsView', () => {
       ),
     ).toBeTruthy();
     expect(screen.queryByText('No sounds yet')).toBeNull();
-    fireEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
+    // Toolbar + empty-state both offer Clear filters; either clears.
+    fireEvent.click(
+      screen.getAllByRole('button', { name: 'Clear filters' })[0]!,
+    );
     expect(await screen.findByText(/Moonlight Drive/)).toBeTruthy();
   });
 
