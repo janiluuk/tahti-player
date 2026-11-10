@@ -1481,6 +1481,8 @@
       "followingEmptyTitle": "Et seuraa vielä ketään",
       "followingEmptyDescription": "Seuraa artisteja ja kanavia heidän sivuiltaan. He näkyvät täällä ja syötteessäsi.",
       "soundsTitle": "Äänet",
+      "soundsPanelSounds": "Äänet",
+      "soundsPanelEmbeds": "Upotukset",
       "soundsLoadError": "Ääniä ei voitu ladata",
       "soundsRefreshError": "Ääniä ei voitu päivittää",
       "soundsEmptyTitle": "Ei vielä ääniä",

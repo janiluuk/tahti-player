@@ -12,7 +12,11 @@ const libraryRoutes: RouteVisit[] = [
   { path: '/library/collections', heading: /^Collections$/ },
   { path: '/library/recordings', heading: /^Recordings$/ },
   { path: '/library/stash', heading: /^Stash$/ },
-  { path: '/library/embeds', heading: /^Embeds$/ },
+  {
+    path: '/library/embeds',
+    heading: /^Sounds$/,
+    url: /\/library\/sounds\?tab=embeds/,
+  },
   { path: '/library/smartlinks', heading: /^Smart links$/ },
   { path: '/library/media', heading: /^Media$/ },
   {

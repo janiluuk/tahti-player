@@ -236,9 +236,11 @@ test('collections combine albums, EPs, DJ sets, and playlists', async ({
   await expect(page.getByRole('link', { name: 'Playlists' })).toHaveCount(0);
 
   await page.goto('/library/embeds');
+  await expect(page).toHaveURL(/\/library\/sounds\?tab=embeds/);
   await expect(
     page.getByRole('tab', { name: 'Embeds', selected: true }),
   ).toBeVisible();
+  await expect(page.getByTestId('sounds-panel-embeds')).toBeVisible();
 
   await page.goto('/messages');
   await expect(page.getByRole('heading', { name: 'Messages' })).toBeVisible();

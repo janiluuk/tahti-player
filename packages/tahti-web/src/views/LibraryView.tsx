@@ -1,6 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
-  Code2Icon,
   FolderIcon,
   HardDriveIcon,
   HeadphonesIcon,
@@ -48,7 +47,6 @@ import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { FavoritesView } from './FavoritesView';
 import { HistoryView } from './HistoryView';
-import { LibraryEmbedsView } from './LibraryEmbedsView';
 import { LibraryMediaView } from './LibraryMediaView';
 import { LibrarySmartLinksView } from './LibrarySmartLinksView';
 import { StudioRecordingsView } from './studio/StudioRecordingsView';
@@ -63,7 +61,6 @@ export type Tab =
   | 'recordings'
   | 'media'
   | 'stash'
-  | 'embeds'
   | 'smartlinks'
   | 'local'
   | 'upload';
@@ -124,12 +121,6 @@ export const LIBRARY_SECTION_TABS = [
     to: '/library/stash',
   },
   {
-    id: 'embeds' as const,
-    labelKey: 'library.tabEmbeds' as const,
-    icon: Code2Icon,
-    to: '/library/embeds',
-  },
-  {
     id: 'smartlinks' as const,
     labelKey: 'library.tabSmartLinks' as const,
     icon: Link2Icon,
@@ -150,7 +141,6 @@ const ARTIST_ONLY_TABS: ReadonlySet<LibrarySectionId> = new Set([
   'sounds',
   'upload',
   'recordings',
-  'embeds',
   'smartlinks',
 ]);
 
@@ -285,11 +275,6 @@ export function LibraryView({ tab = 'library' }: { tab?: Tab }) {
         {tab === 'stash' ? (
           <div className="mt-2">
             <StudioStashView embedded />
-          </div>
-        ) : null}
-        {tab === 'embeds' ? (
-          <div className="mt-2">
-            <LibraryEmbedsView />
           </div>
         ) : null}
         {tab === 'smartlinks' ? <LibrarySmartLinksView /> : null}

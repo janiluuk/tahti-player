@@ -57,10 +57,11 @@ export const librarySoundsRoute = createRoute({
   path: '/library/sounds',
   validateSearch: (
     search: Record<string, unknown>,
-  ): { contentType?: string; folder?: string } => ({
+  ): { contentType?: string; folder?: string; tab?: 'embeds' } => ({
     contentType:
       typeof search.contentType === 'string' ? search.contentType : undefined,
     folder: typeof search.folder === 'string' ? search.folder : undefined,
+    tab: search.tab === 'embeds' ? 'embeds' : undefined,
   }),
   beforeLoad: ({ search }) => {
     if (search.folder === 'files') {
@@ -138,7 +139,12 @@ export const libraryStashRoute = createRoute({
 export const libraryEmbedsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/embeds',
-  component: () => <LibraryView tab="embeds" />,
+  beforeLoad: () => {
+    throw redirect({
+      to: '/library/sounds',
+      search: { tab: 'embeds' },
+    });
+  },
 });
 
 export const libraryFavoritesRoute = createRoute({
