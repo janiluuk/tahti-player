@@ -21,11 +21,6 @@ export function radioAmbient(rgb: [number, number, number] | null): string {
   return rgb.map((c) => Math.round(c * AMBIENT_DARKEN)).join(' ');
 }
 
-/** On-air player + Up next / Shows / Just played / Featured in one surface.
- * Starts minimized (a short now-playing strip); the corner button expands it
- * to the full visualizer and tabs. The playing track's cover sets
- * `--radio-ambient`, which tints the scrim. Play sits in the top-right
- * corner next to the expand toggle, as on the track page. */
 export function RadioPlayerWidget({
   station,
   logoUrl,
@@ -45,7 +40,6 @@ export function RadioPlayerWidget({
   station: PublicChannel;
   logoUrl: string | null;
   artworkUrl?: string | null;
-  /** A member channel relayed on air; its artwork replaces the station logo. */
   liveChannel?: RadioHeroLiveChannel | null;
   online: boolean;
   offlineContent?: ReactNode;

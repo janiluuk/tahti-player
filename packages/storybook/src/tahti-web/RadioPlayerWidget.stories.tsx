@@ -196,7 +196,7 @@ const meta: Meta<typeof RadioPlayerWidget> = {
     docs: {
       description: {
         component:
-          'Consolidated Tahti Radio surface: visualizer + now playing + play/favorite, with Up next / Shows / Just played / Featured tabs in the same card. Starts minimized on `/radio` (a short now-playing strip); the corner button expands it.',
+          'Consolidated Tahti Radio surface: visualizer + now playing + play/favorite, with Up next / Shows / Just played / Featured tabs in the same card. Starts minimized on `/radio` (a short now-playing strip); the bottom-centre tab expands it.',
       },
     },
   },

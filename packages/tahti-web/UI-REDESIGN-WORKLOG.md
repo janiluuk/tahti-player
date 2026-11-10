@@ -6634,3 +6634,7 @@ Studio/Admin ConfirmDialog Finnish: schedule, updates, branding, editor, go-live
 ## 2026-11-09 — Artist subdomain header (0.0.355)
 
 Matching artist subdomain pages use a themed title bar with a tahti.live link. Designer controls persist sidebar, bottom-bar and header visibility through the sibling API; defaults hide distracting navigation, with a footer link when the header is removed. Ordinary routes retain chrome and the owner edit rail stays available. Unit, Storybook and desktop/mobile browser checks pass. The API side shipped in tahti-org #1074 (migration fixed in #1076/#1077).
+
+## 2026-11-10 — Radio player expand tab (0.0.356)
+
+The Radio player expands and collapses from a small chevron tab centred below the card. Play remains in the top-right corner; the offline card uses the full width. Existing translated labels and aria-expanded remain on the toggle. Radio view tests (18) and RadioPlayerWidget/RadioView Storybook plays (15) pass.
