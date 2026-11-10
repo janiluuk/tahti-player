@@ -23,10 +23,8 @@ import {
 import { useTrackListViewStore } from '../../../stores/trackListViewStore';
 import {
   contentTypeFilters,
-  embedFilters,
   sortFields,
   type ContentTypeFilter,
-  type EmbedFilter,
   type FallbackFilter,
   type PinnedFilter,
   type SortField,
@@ -45,8 +43,6 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
     clearFilters,
     filtersActive,
     pinnedCount,
-    embedFilter,
-    setEmbedFilter,
     contentTypeFilter,
     setContentTypeFilter,
     sortField,
@@ -89,7 +85,6 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
     : t('library.sortAscending');
   const leaveAll = t('library.allFilter');
   const filtersModified =
-    embedFilter !== 'ALL' ||
     Boolean(genreFilter) ||
     tagFilters.length > 0 ||
     Boolean(uploadedFrom) ||
@@ -241,30 +236,6 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
       </div>
       {filtersOpen && (
         <div className="border-border mb-4 flex flex-wrap items-end gap-3 border-b pb-4">
-          <Select
-            label={t('library.source')}
-            value={embedFilter}
-            onValueChange={(value) => setEmbedFilter(value as EmbedFilter)}
-            options={embedFilters(t).map((filterOption) => {
-              const sourceKey =
-                filterOption.id === 'NATIVE'
-                  ? 'native'
-                  : filterOption.id === 'ALL'
-                    ? null
-                    : filterOption.id;
-              return {
-                id: filterOption.id,
-                label:
-                  sourceKey == null
-                    ? filterOption.label
-                    : withCount(
-                        filterOption.label,
-                        facetCount('source', sourceKey),
-                      ),
-              };
-            })}
-            className="min-w-40"
-          />
           <Select
             label={t('library.genreFilter')}
             value={genreFilter || 'ALL'}

@@ -73,7 +73,8 @@ export function useStudioSoundsState() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [embedFilter, setEmbedFilter] = useState<EmbedFilter>('ALL');
+  // Embeds live under the Sounds panel Embeds tab; this list stays native.
+  const [embedFilter, setEmbedFilter] = useState<EmbedFilter>('NATIVE');
   const [contentTypeFilter, setContentTypeFilter] = useState<ContentTypeFilter>(
     () => parseContentTypeFilter(search.contentType),
   );
@@ -328,7 +329,7 @@ export function useStudioSoundsState() {
 
   const clearFilters = () => {
     setQuery('');
-    setEmbedFilter('ALL');
+    setEmbedFilter('NATIVE');
     if (contentTypeFilter !== 'ALL') {
       setContentTypeFilterAndUrl('ALL');
     }
@@ -380,7 +381,7 @@ export function useStudioSoundsState() {
 
   const filtersActive =
     Boolean(debouncedQuery.trim()) ||
-    embedFilter !== 'ALL' ||
+    embedFilter !== 'NATIVE' ||
     contentTypeFilter !== 'ALL' ||
     Boolean(uploadedFrom) ||
     Boolean(uploadedTo) ||

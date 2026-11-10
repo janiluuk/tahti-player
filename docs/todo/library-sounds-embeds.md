@@ -18,24 +18,24 @@ panel (`StudioPanel`), and fix missing embed provider thumbnails.
 | 5 | player | Remove top-level Library **Embeds** tab from `LIBRARY_SECTION_TABS` | ✅ Nav no longer lists it |
 | 6 | player | Keep artist-only gate for Embeds content | ✅ Listeners still redirected off Sounds |
 | 7 | player | i18n: Sounds panel tab labels (en + fi) | ✅ `library.soundsPanel*` keys |
-| 8 | player | Storybook: Sounds with Embeds tab selected | Play asserts Embeds panel |
+| 8 | player | Storybook: Sounds with Embeds tab selected | ✅ EmbedsTab + Hearthis on Embeds |
 | 9 | player | E2E: `/library/embeds` redirect + Embeds tab | ✅ routes-library redirect |
 | 10 | player | VIEW-CATALOG + user-manual Embeds path | ✅ VIEW-CATALOG updated |
 | 11 | player | `EmbedTrackRow`: pass `bannerUrl` / cover into artwork | ✅ Thumb + play overlay |
-| 12 | player | Map studio sound `bannerUrl` for embed providers in list | Sounds list thumbs for embeds |
-| 13 | player | SoundCloud panel: use API `thumbnailUrl` when non-null | Panel cards show art |
-| 14 | org | Persist cover on embed import (hearthis/mixcloud/spotify/bandcamp) | `bannerUrl` set on create |
+| 12 | player | Map studio sound `bannerUrl` for embed providers in list | ✅ EmbedSoundCard artworkUrl |
+| 13 | player | SoundCloud panel: use API `thumbnailUrl` when non-null | ✅ + seed fallback |
+| 14 | org | Persist cover on embed import (hearthis/mixcloud/spotify/bandcamp) | ✅ import routes set bannerUrl |
 | 15 | org | Backfill missing embed `bannerUrl` from provider oEmbed/OG | Worker or one-shot job |
 | 16 | player | Client: if embed has no banner, fetch oEmbed thumbnail once | Soft fill without reload |
-| 17 | player | Default artwork seed when no provider thumb | Never blank placeholder |
+| 17 | player | Default artwork seed when no provider thumb | ✅ MediaArtwork seed on rows |
 | 18 | player | Channel public Embeds tab uses same cover field | Channel page thumbs |
-| 19 | player | Unit: EmbedTrackRow with bannerUrl | Assert MediaArtwork src |
+| 19 | player | Unit: EmbedTrackRow with bannerUrl | ✅ EmbedTrackRow.test |
 | 20 | player | Unit: LibraryEmbedsView groups still work after move | Smoke test |
-| 21 | player | Hide embed filter Select on Sounds tab (embeds live on Embeds tab) | Or keep + document |
-| 22 | player | Sounds list default filter excludes pure embeds (optional) | Native tracks on Sounds tab |
+| 21 | player | Hide embed filter Select on Sounds tab (embeds live on Embeds tab) | ✅ Source Select removed |
+| 22 | player | Sounds list default filter excludes pure embeds (optional) | ✅ default NATIVE |
 | 23 | player | Empty Embeds tab CTA still opens import add-ons | Empty state intact |
 | 24 | player | seo / documentLinks drop standalone Embeds title if unused | No dead title keys |
-| 25 | player | Finnish batch for new Sounds/Embeds chrome | fi_FI keys |
+| 25 | player | Finnish batch for new Sounds/Embeds chrome | ✅ soundsPanel* fi_FI |
 | 26 | player | Admin ChannelTracksPanel: show embed thumbs if present | Same cover field |
 | 27 | player | e2e journey: open Sounds → Embeds → play one embed | Mock app |
 | 28 | player | Fold `embed-thumbnails.md` into this todo when thumbs fixed | Delete sibling todo |

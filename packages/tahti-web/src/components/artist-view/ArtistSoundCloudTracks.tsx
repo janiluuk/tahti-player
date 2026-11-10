@@ -65,8 +65,9 @@ export function ArtistSoundCloudTracks({
             <li key={embed.id} className="flex flex-col gap-2">
               <div className="flex items-center gap-3">
                 <MediaArtwork
-                  src={embed.thumbnailUrl}
+                  src={embed.thumbnailUrl ?? undefined}
                   alt=""
+                  seed={embed.id}
                   size="thumb"
                   playLabel={webT()('a11yNamed.playOnSoundCloud', {
                     name: title,

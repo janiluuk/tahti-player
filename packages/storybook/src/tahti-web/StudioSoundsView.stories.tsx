@@ -37,6 +37,18 @@ type Story = StoryObj<typeof meta>;
 
 export const Sounds: Story = {};
 
+export const EmbedsTab: Story = {
+  decorators: [withTahtiRouter('/library/sounds?tab=embeds')],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('tab', { name: 'Embeds' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await expect(canvas.getByTestId('sounds-panel-embeds')).toBeVisible();
+  },
+};
+
 /** Search, Type, Sort by, sort order and the Track size button share the
  * filter row; the size picked there drives the list below. */
 export const FilterRow: Story = {
@@ -104,8 +116,9 @@ export const AmbientCovers: Story = {
   },
 };
 
-/** Hearthis embeds live in the Embeds section (provider widget), not mixed into ambient rows. */
+/** Hearthis embeds live under the Sounds → Embeds panel tab. */
 export const HearthisRowEmbed: Story = {
+  decorators: [withTahtiRouter('/library/sounds?tab=embeds')],
   beforeEach: () => {
     usePlayerStore.setState({ currentId: null, status: 'idle', queue: [] });
     return () => {
@@ -114,19 +127,20 @@ export const HearthisRowEmbed: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await canvas.findByRole('button', {
+    const panel = await canvas.findByTestId('sounds-panel-embeds');
+    await expect(canvas.getByRole('tab', { name: 'Embeds' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
+    await within(panel).findByRole('button', {
       name: 'Play Imported from hearthis.at on hearthis.at',
     });
-    const embeds = await canvas.findByTestId('sounds-embeds-section');
-    await expect(
-      within(embeds).getByRole('heading', { name: 'Embeds' }),
-    ).toBeVisible();
     await userEvent.click(
-      within(embeds).getByRole('button', {
+      within(panel).getByRole('button', {
         name: 'Play Imported from hearthis.at on hearthis.at',
       }),
     );
-    const embed = await within(embeds).findByTestId('hearthis-row-embed');
+    const embed = await within(panel).findByTestId('hearthis-row-embed');
     await expect(embed).toBeVisible();
     await expect(embed.className).toMatch(/max-h-28/);
     await expect(
