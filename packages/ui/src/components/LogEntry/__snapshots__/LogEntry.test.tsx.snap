@@ -15,7 +15,7 @@ exports[`LogEntry > (Snapshot) renders core log entry 1`] = `
     class="text-foreground/60 whitespace-nowrap"
     data-testid="log-timestamp"
   >
-    12:30:45.123
+    14:30:45.123
   </span>
   <button
     aria-label="Filter by INFO"
@@ -97,7 +97,7 @@ exports[`LogEntry > (Snapshot) renders plugin log entry 1`] = `
     class="text-foreground/60 whitespace-nowrap"
     data-testid="log-timestamp"
   >
-    12:30:45.123
+    14:30:45.123
   </span>
   <button
     aria-label="Filter by INFO"

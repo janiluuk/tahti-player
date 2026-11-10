@@ -633,7 +633,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             class="text-foreground/60 whitespace-nowrap"
             data-testid="log-timestamp"
           >
-            10:00:00.000
+            12:00:00.000
           </span>
           <button
             aria-label="Filter by ERROR"
@@ -718,7 +718,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             class="text-foreground/60 whitespace-nowrap"
             data-testid="log-timestamp"
           >
-            10:00:01.000
+            12:00:01.000
           </span>
           <button
             aria-label="Filter by WARN"
@@ -803,7 +803,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             class="text-foreground/60 whitespace-nowrap"
             data-testid="log-timestamp"
           >
-            10:00:02.000
+            12:00:02.000
           </span>
           <button
             aria-label="Filter by INFO"
@@ -888,7 +888,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             class="text-foreground/60 whitespace-nowrap"
             data-testid="log-timestamp"
           >
-            10:00:03.000
+            12:00:03.000
           </span>
           <button
             aria-label="Filter by DEBUG"
@@ -973,7 +973,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             class="text-foreground/60 whitespace-nowrap"
             data-testid="log-timestamp"
           >
-            10:00:04.000
+            12:00:04.000
           </span>
           <button
             aria-label="Filter by TRACE"
@@ -1058,7 +1058,7 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             class="text-foreground/60 whitespace-nowrap"
             data-testid="log-timestamp"
           >
-            10:00:05.000
+            12:00:05.000
           </span>
           <button
             aria-label="Filter by INFO"
