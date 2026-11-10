@@ -1,5 +1,5 @@
 import { PlayIcon } from 'lucide-react';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, MediaArtwork } from '@tahti-player/ui';
@@ -11,6 +11,7 @@ import {
   embedSrcFor,
   type EmbedProvider,
 } from '../lib/embedSrc';
+import { fetchEmbedThumbnail } from '../lib/embedThumbnail';
 import { usePlayerStore } from '../stores/playerStore';
 import { useHearthisEmbedClaim } from './HearthisEmbedHost';
 import { HearthisEmbedSurface } from './HearthisEmbedSurface';
@@ -22,6 +23,8 @@ type Props = {
   embedUri: string;
   /** Provider or stored cover; falls back to default artwork when missing. */
   artworkUrl?: string | null;
+  /** Original provider page URL when known (helps soft-fill thumbnails). */
+  sourceUrl?: string | null;
   className?: string;
   /** Render as a plain block when the caller already owns the list item. */
   as?: 'li' | 'div';
@@ -43,12 +46,14 @@ export function EmbedTrackRow({
   provider,
   embedUri,
   artworkUrl,
+  sourceUrl,
   className,
   as: Container = 'li',
   actions,
 }: Props) {
   const { t } = useTranslation('web');
   const [embedOpen, setEmbedOpen] = useState(false);
+  const [softArtworkUrl, setSoftArtworkUrl] = useState<string | null>(null);
   const src = embedSrcFor(provider, embedUri);
   const label = EMBED_PROVIDER_LABEL[provider];
   const currentId = usePlayerStore((state) => state.currentId);
@@ -59,6 +64,25 @@ export function EmbedTrackRow({
   const isCurrent = currentId === playerId;
   const isPlaying = isCurrent && (status === 'playing' || status === 'loading');
   useHearthisEmbedClaim(provider === 'HEARTHIS' && isCurrent);
+
+  useEffect(() => {
+    if (artworkUrl || softArtworkUrl) {
+      return;
+    }
+    let cancelled = false;
+    void fetchEmbedThumbnail({ provider, embedUri, sourceUrl }).then(
+      (thumb) => {
+        if (!cancelled && thumb) {
+          setSoftArtworkUrl(thumb);
+        }
+      },
+    );
+    return () => {
+      cancelled = true;
+    };
+  }, [artworkUrl, softArtworkUrl, provider, embedUri, sourceUrl]);
+
+  const resolvedArtwork = artworkUrl ?? softArtworkUrl;
 
   if (!src) {
     return null;
@@ -131,7 +155,7 @@ export function EmbedTrackRow({
                 <span className="relative size-10 shrink-0">
                   <MediaArtwork
                     size="sm"
-                    src={artworkUrl ?? undefined}
+                    src={resolvedArtwork ?? undefined}
                     alt=""
                     seed={embedUri}
                     className="size-10 rounded-md"
