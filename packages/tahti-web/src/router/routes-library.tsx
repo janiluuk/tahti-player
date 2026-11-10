@@ -156,7 +156,13 @@ export const libraryHistoryRoute = createRoute({
 export const libraryFollowingRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/following',
-  component: () => <LibraryView tab="following" />,
+  beforeLoad: () => {
+    throw redirect({
+      to: '/settings/$section',
+      params: { section: 'artist' },
+      search: { tab: 'following' },
+    });
+  },
 });
 
 export const librarySmartLinksRoute = createRoute({

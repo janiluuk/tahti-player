@@ -5,6 +5,7 @@ import {
   Share2,
   Sparkles,
   UserCircle2,
+  UserPlus,
   Users,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -50,6 +51,7 @@ import {
 import { useAuthModalStore } from '../../../stores/authModalStore';
 import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
+import { LibraryFollowingView } from '../../LibraryFollowingView';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
 import { ChannelMembersEditor } from '../ChannelMembersEditor';
 import { NameplateFields, nameplatePatch } from '../NameplateFields';
@@ -474,6 +476,12 @@ export function ArtistPanel() {
           {msg && <SettingsHint>{msg}</SettingsHint>}
         </div>
       ),
+    },
+    {
+      id: 'following',
+      label: t('settingsBody.artist.tabFollowing'),
+      icon: <UserPlus size={14} />,
+      content: <LibraryFollowingView />,
     },
     {
       id: 'connections',

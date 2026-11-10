@@ -20,7 +20,11 @@ const libraryRoutes: RouteVisit[] = [
     heading: /^Favorites$/,
   },
   { path: '/library/history', heading: /^History$/ },
-  { path: '/library/following', heading: /^Following$/ },
+  {
+    path: '/library/following',
+    heading: /^Artist$/,
+    url: /\/settings\/artist\?tab=following/,
+  },
   // The local-files tab exists only in the desktop app; on the web it
   // falls back to the library overview instead of an empty tab.
   { path: '/library/local', heading: 'Library overview', url: /\/library$/ },

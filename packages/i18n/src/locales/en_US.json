@@ -2691,6 +2691,7 @@
         "tabIdentity": "Identity",
         "tabStory": "Story",
         "tabPeople": "People",
+        "tabFollowing": "Following",
         "tabConnections": "Connections",
         "tabBranding": "Branding",
         "tabGallery": "Gallery",
@@ -7095,7 +7096,8 @@
       "addSource": "Add source",
       "suggestedFeeds": "Suggested feeds",
       "newsSources": "News sources",
-      "latestNewsMergesTheseFeeds": "Latest News merges these feeds, newest first.",
+      "latestNewsMergesTheseFeeds": "From Tahti is always included. Add music-blog presets or your own RSS/Atom feeds; Latest News merges them, newest first.",
+      "alwaysIncluded": "Always included — same posts as Discover and /news",
       "name": "Name",
       "rssOrAtomUrl": "RSS or Atom URL"
     },

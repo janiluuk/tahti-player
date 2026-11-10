@@ -37,7 +37,7 @@ export function DiscoverAddWidgetButton({
           </span>
         </Button>
       }
-      panelClassName="w-72 px-1"
+      panelClassName="w-72 px-0 py-1"
     >
       <Popover.Menu>
         {availableToAdd.map((id) => {
@@ -47,14 +47,16 @@ export function DiscoverAddWidgetButton({
               key={id}
               closeOnClick
               onClick={() => onAdd(id)}
-              icon={<Icon size={16} aria-hidden />}
-              className="rounded-md"
+              icon={<Icon size={14} aria-hidden className="opacity-70" />}
+              className="rounded-sm"
             >
-              <span className="flex flex-col">
-                <span className="font-semibold">
+              <span className="flex min-w-0 flex-col gap-0.5">
+                <span className="text-foreground text-xs font-medium">
                   {t(WIDGET_LABEL_KEYS[id])}
                 </span>
-                <span className="text-xs opacity-80">{description}</span>
+                <span className="text-foreground-secondary text-[11px] leading-snug">
+                  {description}
+                </span>
               </span>
             </Popover.Item>
           );

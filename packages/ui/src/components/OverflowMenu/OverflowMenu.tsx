@@ -45,7 +45,7 @@ export const OverflowMenu: FC<OverflowMenuProps> = ({
         </Button>
       )
     }
-    panelClassName="min-w-44 px-0 py-0"
+    panelClassName="min-w-44 px-0 py-1"
   >
     <Popover.Menu aria-label={label}>
       {items.map((item) => (

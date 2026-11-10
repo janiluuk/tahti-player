@@ -18,4 +18,4 @@ Signed out, the heart asks you to sign in.
 
 ## Who you follow
 
-**Library → Following** lists the artists and channels you follow, each linking to their page. Follow someone from their page; their posts also appear in **Discover → Feed**. A listener opening **Library** lands on **Favorites**.
+**Settings → Artist** (or **Profile** for listeners) → **Following** lists the artists and channels you follow, each linking to their page. Follow someone from their page; their posts also appear in **Discover → Feed**. A listener opening **Library** lands on **Favorites**.

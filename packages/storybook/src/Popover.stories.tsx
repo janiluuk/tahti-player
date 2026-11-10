@@ -67,7 +67,7 @@ export const AllAnchors: Story = {
 export const SectionedMenu: Story = {
   render: () => (
     <Popover
-      panelClassName="bg-background px-0 py-0"
+      panelClassName="px-0 py-1"
       trigger={<Button>Recent</Button>}
       anchor="bottom"
     >
@@ -102,7 +102,7 @@ const onDelete = fn();
 export const DropdownMenu: Story = {
   render: () => (
     <Popover
-      panelClassName="bg-background px-0 py-0"
+      panelClassName="px-0 py-1"
       trigger={<Button>Actions</Button>}
       anchor="bottom"
     >
@@ -158,7 +158,7 @@ export const InlineToolbar: Story = {
       <Popover
         anchor="bottom end"
         className="shrink-0"
-        panelClassName="bg-background px-0 py-0"
+        panelClassName="px-0 py-1"
         trigger={
           <Button variant="secondary" className="gap-1.5">
             Newest first

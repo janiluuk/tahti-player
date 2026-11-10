@@ -10,43 +10,25 @@ import {
 } from './_lib/decorators';
 
 const meta = {
-  title: 'Tahti/Library/LibraryFollowing',
+  title: 'Tahti/Library/LibraryHistory',
   component: LibraryView,
-  args: { tab: 'following' },
+  args: { tab: 'history' },
   parameters: {
     docs: {
       description: {
         component:
-          'Library → Following: the artists and channels you follow, each linking to their page. Library → History shows what you listened to.',
+          'Library → History: what you listened to. Following moved to Settings → Artist (Profile) → Following.',
       },
     },
   },
-  decorators: [withPageSurface(), withTahtiRouter('/library/following')],
+  decorators: [withPageSurface(), withTahtiRouter('/library/history')],
 } satisfies Meta<typeof LibraryView>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Listener: Story = {
-  decorators: [withMockAuth(MOCK_USERS.listener)],
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await expect(
-      canvas.getByRole('tab', { name: 'Following' }),
-    ).toHaveAttribute('aria-selected', 'true');
-    const list = await canvas.findByTestId('library-following');
-    await expect(
-      (await within(list).findAllByRole('link')).length,
-    ).toBeGreaterThan(0);
-  },
-};
-
 export const History: Story = {
-  args: { tab: 'history' },
-  decorators: [
-    withMockAuth(MOCK_USERS.listener),
-    withTahtiRouter('/library/history'),
-  ],
+  decorators: [withMockAuth(MOCK_USERS.listener)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole('tab', { name: 'History' })).toHaveAttribute(
