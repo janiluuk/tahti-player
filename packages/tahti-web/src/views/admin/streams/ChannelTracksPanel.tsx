@@ -1,4 +1,4 @@
-import { SearchIcon } from 'lucide-react';
+import { SearchIcon, Trash2Icon } from 'lucide-react';
 import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -10,17 +10,26 @@ import {
   InlineError,
   Input,
   SaveButton,
+  Select,
   Textarea,
   Toggle,
 } from '@tahti-player/ui';
 
 import {
+  deleteAdminChannelSound,
   fetchAdminChannelSounds,
   patchAdminChannelSound,
   type AdminChannelSound,
 } from '../../../api/admin';
+import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { PageEmpty } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import {
+  selectableContentTypes,
+  type ContentTypeId,
+} from '../../../content/contentTypes';
+
+const PAGE_SIZE = 50;
 
 function TrackEditDialog({
   slug,
@@ -37,6 +46,10 @@ function TrackEditDialog({
   const [title, setTitle] = useState(sound.title);
   const [artistName, setArtistName] = useState(sound.artistName ?? '');
   const [genre, setGenre] = useState(sound.genre ?? '');
+  const [tags, setTags] = useState((sound.tags ?? []).join(', '));
+  const [contentType, setContentType] = useState<ContentTypeId | ''>(
+    (sound.contentType as ContentTypeId | null | undefined) ?? '',
+  );
   const [description, setDescription] = useState(sound.description ?? '');
   const [isPublic, setIsPublic] = useState(sound.isPublic);
   const [saving, setSaving] = useState(false);
@@ -49,6 +62,12 @@ function TrackEditDialog({
       title: title.trim(),
       artistName: artistName.trim() || null,
       genre: genre.trim() || null,
+      tags: tags
+        .split(',')
+        .map((tag) => tag.trim())
+        .filter(Boolean)
+        .slice(0, 20),
+      ...(contentType ? { contentType } : {}),
       description: description.trim(),
       isPublic,
     }).then((result) => {
@@ -93,6 +112,32 @@ function TrackEditDialog({
           maxLength={80}
           onChange={(event) => setGenre(event.target.value)}
         />
+        <Input
+          label={t('adminChannelTracks.tags')}
+          value={tags}
+          maxLength={400}
+          placeholder={t('adminChannelTracks.tagsPlaceholder')}
+          onChange={(event) => setTags(event.target.value)}
+        />
+        <Select
+          label={t('adminChannelTracks.contentType')}
+          value={contentType || 'UNCHANGED'}
+          onValueChange={(value) =>
+            setContentType(
+              value === 'UNCHANGED' ? '' : (value as ContentTypeId),
+            )
+          }
+          options={[
+            {
+              id: 'UNCHANGED',
+              label: t('adminChannelTracks.leaveContentType'),
+            },
+            ...selectableContentTypes(t).map((type) => ({
+              id: type.id,
+              label: type.label,
+            })),
+          ]}
+        />
         <Textarea
           label={t('adminChannelTracks.description')}
           value={description}
@@ -124,26 +169,56 @@ function TrackEditDialog({
 export function ChannelTracksPanel() {
   const { t } = useTranslation('web');
   const [slugInput, setSlugInput] = useState('');
+  const [query, setQuery] = useState('');
   const [slug, setSlug] = useState<string | null>(null);
   const [sounds, setSounds] = useState<AdminChannelSound[]>([]);
+  const [total, setTotal] = useState(0);
+  const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [editing, setEditing] = useState<AdminChannelSound | null>(null);
+  const [pendingDelete, setPendingDelete] = useState<AdminChannelSound | null>(
+    null,
+  );
+  const [deleting, setDeleting] = useState(false);
 
-  const load = () => {
-    const nextSlug = slugInput.trim().toLowerCase();
+  const load = (nextOffset = 0, nextSlug = slugInput.trim().toLowerCase()) => {
     setLoading(true);
     setError(null);
-    void fetchAdminChannelSounds(nextSlug).then((result) => {
+    void fetchAdminChannelSounds(nextSlug, {
+      limit: PAGE_SIZE,
+      offset: nextOffset,
+      q: query,
+    }).then((result) => {
       setLoading(false);
       if (!result.ok) {
         setSlug(null);
         setSounds([]);
+        setTotal(0);
         setError(result.error);
         return;
       }
       setSlug(nextSlug);
+      setOffset(nextOffset);
       setSounds(result.data);
+      setTotal(result.total);
+    });
+  };
+
+  const confirmDelete = () => {
+    if (!slug || !pendingDelete || deleting) {
+      return;
+    }
+    const doomed = pendingDelete;
+    setPendingDelete(null);
+    setDeleting(true);
+    void deleteAdminChannelSound(slug, doomed.id).then((result) => {
+      setDeleting(false);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      load(offset, slug);
     });
   };
 
@@ -156,7 +231,7 @@ export function ChannelTracksPanel() {
         className="flex flex-wrap items-end gap-2"
         onSubmit={(event) => {
           event.preventDefault();
-          load();
+          load(0);
         }}
       >
         <Input
@@ -166,6 +241,13 @@ export function ChannelTracksPanel() {
           label={t('adminChannelTracks.channelSlug')}
           value={slugInput}
           onChange={(event) => setSlugInput(event.target.value)}
+          className="max-w-xs"
+        />
+        <Input
+          type="search"
+          label={t('adminChannelTracks.searchTracks')}
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
           className="max-w-xs"
         />
         <Button
@@ -187,38 +269,80 @@ export function ChannelTracksPanel() {
         sounds.length === 0 ? (
           <PageEmpty title={t('empties.channelNoTracks')} />
         ) : (
-          <ul
-            className="divide-border mt-4 divide-y"
-            data-testid="channel-tracks"
-          >
-            {sounds.map((sound) => (
-              <li
-                key={sound.id}
-                className="flex items-center justify-between gap-3 py-2 text-sm"
+          <>
+            <p className="text-foreground-secondary mt-3 text-sm">
+              {t('adminChannelTracks.pageSummary', {
+                shown: sounds.length,
+                total,
+              })}
+            </p>
+            <ul
+              className="divide-border mt-2 divide-y"
+              data-testid="channel-tracks"
+            >
+              {sounds.map((sound) => (
+                <li
+                  key={sound.id}
+                  className="flex items-center justify-between gap-3 py-2 text-sm"
+                >
+                  <span className="flex min-w-0 flex-1 items-center gap-2">
+                    <span className="truncate font-medium">{sound.title}</span>
+                    {sound.genre ? (
+                      <span className="text-foreground-secondary text-xs">
+                        {sound.genre}
+                      </span>
+                    ) : null}
+                    {!sound.isPublic ? (
+                      <Badge variant="pill" color="secondary">
+                        {t('adminChannelTracks.private')}
+                      </Badge>
+                    ) : null}
+                  </span>
+                  <span className="flex shrink-0 items-center gap-1">
+                    <EditIconButton
+                      variant="text"
+                      label={t('channelTracksPanelLabels.editTitle', {
+                        title: sound.title,
+                      })}
+                      onClick={() => setEditing(sound)}
+                    />
+                    <Button
+                      type="button"
+                      size="icon-sm"
+                      variant="text"
+                      className="text-destructive"
+                      aria-label={t('adminChannelTracks.removeTrack', {
+                        title: sound.title,
+                      })}
+                      onClick={() => setPendingDelete(sound)}
+                    >
+                      <Trash2Icon size={14} aria-hidden />
+                    </Button>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={loading || offset <= 0}
+                onClick={() => load(Math.max(0, offset - PAGE_SIZE), slug)}
               >
-                <span className="flex min-w-0 flex-1 items-center gap-2">
-                  <span className="truncate font-medium">{sound.title}</span>
-                  {sound.genre ? (
-                    <span className="text-foreground-secondary text-xs">
-                      {sound.genre}
-                    </span>
-                  ) : null}
-                  {!sound.isPublic ? (
-                    <Badge variant="pill" color="secondary">
-                      {t('adminChannelTracks.private')}
-                    </Badge>
-                  ) : null}
-                </span>
-                <EditIconButton
-                  variant="text"
-                  label={t('channelTracksPanelLabels.editTitle', {
-                    title: sound.title,
-                  })}
-                  onClick={() => setEditing(sound)}
-                />
-              </li>
-            ))}
-          </ul>
+                {t('adminChannelTracks.previousPage')}
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={loading || offset + sounds.length >= total}
+                onClick={() => load(offset + PAGE_SIZE, slug)}
+              >
+                {t('adminChannelTracks.nextPage')}
+              </Button>
+            </div>
+          </>
         )
       ) : null}
 
@@ -237,6 +361,22 @@ export function ChannelTracksPanel() {
           }}
         />
       ) : null}
+
+      <ConfirmDialog
+        destructive
+        isOpen={pendingDelete !== null}
+        title={
+          pendingDelete
+            ? t('adminChannelTracks.deleteNamed', {
+                title: pendingDelete.title,
+              })
+            : t('adminChannelTracks.deleteTrack')
+        }
+        description={t('adminChannelTracks.deleteCannotUndo')}
+        confirmLabel={t('actions.delete')}
+        onCancel={() => setPendingDelete(null)}
+        onConfirm={confirmDelete}
+      />
     </StudioPanel>
   );
 }

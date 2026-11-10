@@ -6,6 +6,7 @@ import {
   ZoomIn,
   ZoomOut,
 } from 'lucide-react';
+import { AnimatePresence, useReducedMotion } from 'motion/react';
 import { ReactNode, useEffect, useState } from 'react';
 
 import { cn } from '../../utils';
@@ -20,6 +21,7 @@ import {
   trackRowClass,
   trackRowMinHeightClass,
 } from '../TrackTable/utils/rowClass';
+import { CardsRowItemMotion } from './CardsRowItemMotion';
 import { useCardsRow } from './useCardsRow';
 
 /** Rows with at least this many items get a filter box. The same count
@@ -202,6 +204,23 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
     filterable &&
     (items.length >= CARDS_ROW_FILTER_MIN_ITEMS || !isEmpty(filterText.trim()));
 
+  const itemsEmpty = isEmpty(filteredItems);
+  const reduceMotion = useReducedMotion();
+  const [showEmpty, setShowEmpty] = useState(itemsEmpty);
+  useEffect(() => {
+    if (!itemsEmpty) {
+      setShowEmpty(false);
+      return;
+    }
+    // Reduced-motion / test mocks skip exit callbacks — flip empty immediately.
+    if (reduceMotion) {
+      setShowEmpty(true);
+      return;
+    }
+    const timer = window.setTimeout(() => setShowEmpty(true), 280);
+    return () => window.clearTimeout(timer);
+  }, [itemsEmpty, reduceMotion]);
+
   return (
     <div
       data-testid={testId}
@@ -243,17 +262,27 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
               value={filterText}
               onChange={(event) => setFilterText(event.target.value)}
               endAddon={
-                <Tooltip content="Clear filter" side="top">
-                  <button
-                    data-testid="cards-row-clear-filter"
-                    type="button"
-                    className="text-foreground cursor-pointer"
-                    onClick={clearFilter}
-                    aria-label="Clear filter"
+                filterText.trim() ? (
+                  <Tooltip content="Clear filter" side="top">
+                    <button
+                      data-testid="cards-row-clear-filter"
+                      type="button"
+                      className="cursor-pointer"
+                      onClick={clearFilter}
+                      aria-label="Clear filter"
+                    >
+                      <Filter size={14} />
+                    </button>
+                  </Tooltip>
+                ) : (
+                  <span
+                    data-testid="cards-row-filter-idle"
+                    aria-hidden
+                    className="pointer-events-none"
                   >
                     <Filter size={14} />
-                  </button>
-                </Tooltip>
+                  </span>
+                )
               }
             />
           ) : null}
@@ -325,7 +354,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
         </div>
       </div>
 
-      {isEmpty(filteredItems) ? (
+      {showEmpty ? (
         <EmptyState
           data-testid="cards-row-nothing-found"
           size="sm"
@@ -349,40 +378,52 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
           data-testid="cards-row-list"
           className="border-border text-foreground border-(length:--border-width) [&>li:last-child]:border-b-0"
         >
-          {filteredItems.map((item, index) => (
-            <li
-              key={item.id}
-              className={cn('list-none', trackRowClass(index, false))}
-            >
-              {renderItem ? (
-                <CardLayoutContext.Provider value="row">
-                  <div className="*:w-full">{renderItem(item)}</div>
-                </CardLayoutContext.Provider>
-              ) : item.onClick ? (
-                <button
-                  type="button"
-                  data-testid="cards-row-list-item"
-                  className={cn(
-                    'flex w-full cursor-pointer items-center gap-2 pr-2 text-left',
-                    trackRowMinHeightClass,
-                  )}
-                  onClick={item.onClick}
-                >
-                  <ListItemBody item={item} />
-                </button>
-              ) : (
-                <div
-                  data-testid="cards-row-list-item"
-                  className={cn(
-                    'flex w-full items-center gap-2 pr-2 text-left',
-                    trackRowMinHeightClass,
-                  )}
-                >
-                  <ListItemBody item={item} />
-                </div>
-              )}
-            </li>
-          ))}
+          <AnimatePresence
+            initial={false}
+            mode="popLayout"
+            onExitComplete={() => {
+              if (itemsEmpty) {
+                setShowEmpty(true);
+              }
+            }}
+          >
+            {filteredItems.map((item, index) => (
+              <CardsRowItemMotion
+                key={item.id}
+                itemId={item.id}
+                as="li"
+                className={cn('list-none', trackRowClass(index, false))}
+              >
+                {renderItem ? (
+                  <CardLayoutContext.Provider value="row">
+                    <div className="*:w-full">{renderItem(item)}</div>
+                  </CardLayoutContext.Provider>
+                ) : item.onClick ? (
+                  <button
+                    type="button"
+                    data-testid="cards-row-list-item"
+                    className={cn(
+                      'flex w-full cursor-pointer items-center gap-2 pr-2 text-left',
+                      trackRowMinHeightClass,
+                    )}
+                    onClick={item.onClick}
+                  >
+                    <ListItemBody item={item} />
+                  </button>
+                ) : (
+                  <div
+                    data-testid="cards-row-list-item"
+                    className={cn(
+                      'flex w-full items-center gap-2 pr-2 text-left',
+                      trackRowMinHeightClass,
+                    )}
+                  >
+                    <ListItemBody item={item} />
+                  </div>
+                )}
+              </CardsRowItemMotion>
+            ))}
+          </AnimatePresence>
         </ul>
       ) : isFull ? (
         <CardLayoutContext.Provider value="full">
@@ -390,22 +431,37 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
             data-testid="cards-row-full"
             className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
           >
-            {filteredItems.map((item) =>
-              renderItem ? (
-                <div key={item.id} className="min-w-0 *:w-full">
-                  {renderItem(item)}
-                </div>
-              ) : (
-                <Card
-                  key={item.id}
-                  src={item.imageUrl}
-                  title={item.title}
-                  subtitle={item.subtitle}
-                  onClick={item.onClick}
-                  surface={cardSurface}
-                />
-              ),
-            )}
+            <AnimatePresence
+              initial={false}
+              mode="popLayout"
+              onExitComplete={() => {
+                if (itemsEmpty) {
+                  setShowEmpty(true);
+                }
+              }}
+            >
+              {filteredItems.map((item) =>
+                renderItem ? (
+                  <CardsRowItemMotion
+                    key={item.id}
+                    itemId={item.id}
+                    className="min-w-0 *:w-full"
+                  >
+                    {renderItem(item)}
+                  </CardsRowItemMotion>
+                ) : (
+                  <CardsRowItemMotion key={item.id} itemId={item.id}>
+                    <Card
+                      src={item.imageUrl}
+                      title={item.title}
+                      subtitle={item.subtitle}
+                      onClick={item.onClick}
+                      surface={cardSurface}
+                    />
+                  </CardsRowItemMotion>
+                ),
+              )}
+            </AnimatePresence>
           </div>
         </CardLayoutContext.Provider>
       ) : (
@@ -414,26 +470,41 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
           className="scrollbar-hide flex gap-2 overflow-x-auto overflow-y-visible [scroll-behavior:smooth] pb-2"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          {filteredItems.map((item) =>
-            renderItem ? (
-              <div
-                key={item.id}
-                className="flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
-              >
-                {renderItem(item)}
-              </div>
-            ) : (
-              <Card
-                key={item.id}
-                className="flex-shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
-                src={item.imageUrl}
-                title={item.title}
-                subtitle={item.subtitle}
-                onClick={item.onClick}
-                surface={cardSurface}
-              />
-            ),
-          )}
+          <AnimatePresence
+            initial={false}
+            mode="popLayout"
+            onExitComplete={() => {
+              if (itemsEmpty) {
+                setShowEmpty(true);
+              }
+            }}
+          >
+            {filteredItems.map((item) =>
+              renderItem ? (
+                <CardsRowItemMotion
+                  key={item.id}
+                  itemId={item.id}
+                  className="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+                >
+                  {renderItem(item)}
+                </CardsRowItemMotion>
+              ) : (
+                <CardsRowItemMotion
+                  key={item.id}
+                  itemId={item.id}
+                  className="shrink-0 [contain-intrinsic-size:auto_12rem] [content-visibility:auto]"
+                >
+                  <Card
+                    src={item.imageUrl}
+                    title={item.title}
+                    subtitle={item.subtitle}
+                    onClick={item.onClick}
+                    surface={cardSurface}
+                  />
+                </CardsRowItemMotion>
+              ),
+            )}
+          </AnimatePresence>
         </div>
       )}
     </div>

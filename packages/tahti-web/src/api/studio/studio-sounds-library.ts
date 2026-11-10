@@ -81,6 +81,7 @@ export type StudioSoundListFilter = {
   uploadedTo?: string;
   genre?: string;
   tag?: string;
+  tags?: string[];
   bpmMin?: number;
   bpmMax?: number;
   key?: string;
@@ -139,6 +140,7 @@ export type StudioSoundBulkPatch = {
   contentType?: string;
   isPublic?: boolean;
   isFallback?: boolean;
+  pinned?: boolean;
   downloadsEnabled?: boolean;
   commentsEnabled?: boolean;
   license?: string;
@@ -151,6 +153,13 @@ function soundListQueryString(
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(query)) {
     if (value === undefined || value === null || value === '') {
+      continue;
+    }
+    if (Array.isArray(value)) {
+      if (value.length === 0) {
+        continue;
+      }
+      params.set(key, value.join(','));
       continue;
     }
     params.set(key, String(value));
@@ -197,6 +206,12 @@ function filterMockSounds(
     if (filter.tag && !(item.tags ?? []).includes(filter.tag)) {
       return false;
     }
+    if (filter.tags?.length) {
+      const have = new Set(item.tags ?? []);
+      if (!filter.tags.every((tag) => have.has(tag))) {
+        return false;
+      }
+    }
     if (filter.isPublic != null && Boolean(item.isPublic) !== filter.isPublic) {
       return false;
     }
@@ -231,8 +246,54 @@ function filterMockSounds(
         }
       }
     }
+    const bpm = item.bpm ?? null;
+    if (filter.bpmMin != null && (bpm == null || bpm < filter.bpmMin)) {
+      return false;
+    }
+    if (filter.bpmMax != null && (bpm == null || bpm > filter.bpmMax)) {
+      return false;
+    }
+    if (
+      filter.key &&
+      !(item.musicalKey ?? '').toLowerCase().includes(filter.key.toLowerCase())
+    ) {
+      return false;
+    }
     return true;
   });
+}
+
+export type StudioSoundCoversBackfillResult = {
+  assigned: number;
+  totalMatched: number;
+};
+
+export async function backfillStudioSoundCovers(): Promise<
+  | { ok: true; data: StudioSoundCoversBackfillResult }
+  | { ok: false; error: string }
+> {
+  if (isForceMock()) {
+    let assigned = 0;
+    for (const sound of mockSoundStore) {
+      if (!sound.bannerUrl) {
+        sound.bannerUrl = '/presets/cover-mock.png';
+        assigned += 1;
+      }
+    }
+    return { ok: true, data: { assigned, totalMatched: assigned } };
+  }
+  try {
+    const { data } = await requestJson<StudioSoundCoversBackfillResult>(
+      '/api/me/sound/covers/backfill',
+      { method: 'POST', body: '{}' },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not backfill covers',
+    };
+  }
 }
 
 /** Paged Sounds list (`limit` required so the API returns `{ items, total }`). */
@@ -275,7 +336,12 @@ export async function fetchStudioSoundsPage(
 
 export async function fetchStudioSoundIds(
   filter: StudioSoundListFilter = {},
-): Promise<{ data: { ids: string[]; total: number }; meta: FetchMeta }> {
+): Promise<{
+  data: { ids: string[]; total: number };
+  meta: FetchMeta;
+  /** Present when the API refused the select-all (ids cap). */
+  tooLarge?: { totalMatched: number; error: string };
+}> {
   if (isForceMock()) {
     const filtered = filterMockSounds([...mockSoundStore], filter);
     return {
@@ -289,6 +355,23 @@ export async function fetchStudioSoundIds(
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
+    if (err instanceof RequestJsonError && err.status === 413) {
+      const body = err.body as
+        { error?: string; totalMatched?: number } | undefined;
+      const totalMatched =
+        typeof body?.totalMatched === 'number' ? body.totalMatched : 0;
+      return {
+        data: { ids: [], total: 0 },
+        meta: apiErrorMeta(err),
+        tooLarge: {
+          totalMatched,
+          error:
+            typeof body?.error === 'string'
+              ? body.error
+              : err.message || 'Too many matches; refine the filter.',
+        },
+      };
+    }
     if (allowMockFallback()) {
       const filtered = filterMockSounds([...mockSoundStore], filter);
       return {
@@ -328,6 +411,71 @@ export async function fetchStudioSoundFacets(
         }
       }
       facets.tag = [...counts.entries()].map(([value, count]) => ({
+        value,
+        count,
+      }));
+    }
+    if (fields.includes('contentType')) {
+      const counts = new Map<string, number>();
+      for (const item of filtered) {
+        if (!item.contentType) {
+          continue;
+        }
+        counts.set(item.contentType, (counts.get(item.contentType) ?? 0) + 1);
+      }
+      facets.contentType = [...counts.entries()].map(([value, count]) => ({
+        value,
+        count,
+      }));
+    }
+    if (fields.includes('source')) {
+      const counts = new Map<string, number>();
+      for (const item of filtered) {
+        const value = item.embedProvider ?? 'native';
+        counts.set(value, (counts.get(value) ?? 0) + 1);
+      }
+      facets.source = [...counts.entries()].map(([value, count]) => ({
+        value,
+        count,
+      }));
+    }
+    if (fields.includes('status')) {
+      const counts = new Map<string, number>();
+      for (const item of filtered) {
+        if (!item.status) {
+          continue;
+        }
+        counts.set(item.status, (counts.get(item.status) ?? 0) + 1);
+      }
+      facets.status = [...counts.entries()].map(([value, count]) => ({
+        value,
+        count,
+      }));
+    }
+    if (fields.includes('uploadedYear')) {
+      const counts = new Map<string, number>();
+      for (const item of filtered) {
+        if (!item.createdAt) {
+          continue;
+        }
+        const year = String(new Date(item.createdAt).getUTCFullYear());
+        counts.set(year, (counts.get(year) ?? 0) + 1);
+      }
+      facets.uploadedYear = [...counts.entries()].map(([value, count]) => ({
+        value,
+        count,
+      }));
+    }
+    if (fields.includes('musicalKey')) {
+      const counts = new Map<string, number>();
+      for (const item of filtered) {
+        const key = item.musicalKey ?? item.keyDetected;
+        if (!key) {
+          continue;
+        }
+        counts.set(key, (counts.get(key) ?? 0) + 1);
+      }
+      facets.musicalKey = [...counts.entries()].map(([value, count]) => ({
         value,
         count,
       }));

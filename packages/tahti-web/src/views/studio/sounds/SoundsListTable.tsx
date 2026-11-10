@@ -240,6 +240,7 @@ function SoundsListTableView({
       onSortChange={table.setSort}
       selectedIds={selectedIds}
       onSelectedIdsChange={setSelectedIds}
+      hideSelectionChrome
       layouts={table.layouts}
       renderActions={(sound) => (
         <StudioSoundRowMenu

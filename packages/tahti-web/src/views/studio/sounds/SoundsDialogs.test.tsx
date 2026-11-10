@@ -28,6 +28,9 @@ function stateWith(overrides: Partial<StudioSoundsState>) {
     pendingBulkDelete: false,
     setPendingBulkDelete: vi.fn(),
     confirmBulkDelete: vi.fn(),
+    bulkConfirmMismatch: null,
+    setBulkConfirmMismatch: vi.fn(),
+    confirmBulkMismatch: vi.fn(),
     selectedIds: new Set<string>(),
     ...overrides,
   } as unknown as StudioSoundsState;
@@ -63,5 +66,20 @@ describe('SoundsDialogs', () => {
     expect(screen.getByRole('button', { name: 'Delete' }).className).toContain(
       'bg-accent-red',
     );
+  });
+
+  it('asks to continue when confirmTotal drifts', () => {
+    render(
+      <SoundsDialogs
+        state={stateWith({
+          bulkConfirmMismatch: { totalMatched: 7, kind: 'delete' },
+        })}
+      />,
+    );
+    expect(screen.getByText('Selection count changed')).toBeTruthy();
+    expect(
+      screen.getByText(/The library now has 7 matching sounds/),
+    ).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Continue' })).toBeTruthy();
   });
 });

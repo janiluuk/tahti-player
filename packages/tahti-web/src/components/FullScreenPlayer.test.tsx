@@ -182,16 +182,49 @@ describe('FullScreenPlayer radio programme', () => {
     usePlayerStore.getState().clearQueue();
   });
 
-  it('shows what the station says is on, with the station name second', async () => {
+  it('shows the station as the show line and the programme as the track', async () => {
     stationNowPlaying.value = {
       title: 'Aamulähetys · Juontaja',
       artist: 'YleX',
     };
     await open('playing');
+    const titleBlock = screen.getByTestId('full-screen-player-title');
+    expect(within(titleBlock).getByText('YleX')).toBeTruthy();
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(
       'Aamulähetys · Juontaja',
     );
-    expect(screen.getByText('YleX')).toBeTruthy();
+  });
+
+  it('splits a show — track programme into separate lines', async () => {
+    stationNowPlaying.value = {
+      title: 'Iltapäivä — Night Drive',
+      artist: 'YleX',
+    };
+    await open('playing');
+    const titleBlock = screen.getByTestId('full-screen-player-title');
+    expect(within(titleBlock).getByText('YleX')).toBeTruthy();
+    expect(within(titleBlock).getByText('Iltapäivä')).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe(
+      'Night Drive',
+    );
+  });
+});
+
+describe('splitShowAndTrack', () => {
+  it('keeps plain titles as the track', async () => {
+    const { splitShowAndTrack } = await import('./FullScreenPlayer');
+    expect(splitShowAndTrack('Night Drive')).toEqual({
+      show: null,
+      track: 'Night Drive',
+    });
+  });
+
+  it('splits on an em dash', async () => {
+    const { splitShowAndTrack } = await import('./FullScreenPlayer');
+    expect(splitShowAndTrack('Aamu — Track One')).toEqual({
+      show: 'Aamu',
+      track: 'Track One',
+    });
   });
 });
 

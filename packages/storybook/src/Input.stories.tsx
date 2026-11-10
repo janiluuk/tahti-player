@@ -69,6 +69,7 @@ export const ErrorNoDescription: Story = {
 };
 
 export const WithEndAddon: Story = {
+  name: 'End addon (idle — empty field)',
   args: {
     label: 'Search',
     placeholder: 'Filter tracks',
@@ -79,6 +80,26 @@ export const WithEndAddon: Story = {
         strokeWidth={3}
       />
     ),
+  },
+  play: async ({ canvasElement }) => {
+    const addon = within(canvasElement).getByTestId('input-end-addon');
+    await expect(addon).not.toHaveAttribute('data-active');
+  },
+};
+
+export const WithEndAddonActive: Story = {
+  name: 'End addon (active — field modified)',
+  args: {
+    label: 'Search',
+    placeholder: 'Filter tracks',
+    value: 'midnight',
+    endAddon: (
+      <FilterIcon className="h-4 w-4" aria-hidden="true" strokeWidth={3} />
+    ),
+  },
+  play: async ({ canvasElement }) => {
+    const addon = within(canvasElement).getByTestId('input-end-addon');
+    await expect(addon).toHaveAttribute('data-active', 'true');
   },
 };
 

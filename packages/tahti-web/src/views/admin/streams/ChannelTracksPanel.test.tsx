@@ -38,14 +38,19 @@ describe('ChannelTracksPanel', () => {
   });
 
   it('opens a channel and saves an edited title', async () => {
-    const fetch = vi
-      .spyOn(admin, 'fetchAdminChannelSounds')
-      .mockResolvedValue({ ok: true, data: [SOUND] });
+    const fetch = vi.spyOn(admin, 'fetchAdminChannelSounds').mockResolvedValue({
+      ok: true,
+      data: [SOUND],
+      total: 1,
+    });
     const patch = vi
       .spyOn(admin, 'patchAdminChannelSound')
       .mockResolvedValue({ ok: true, data: { ...SOUND, title: 'Aamu II' } });
     await openChannel(' Moon ');
-    expect(fetch).toHaveBeenCalledWith('moon');
+    expect(fetch).toHaveBeenCalledWith(
+      'moon',
+      expect.objectContaining({ limit: 50, offset: 0 }),
+    );
 
     fireEvent.click(screen.getByRole('button', { name: 'Edit Aamu' }));
     expect(
@@ -62,10 +67,28 @@ describe('ChannelTracksPanel', () => {
       title: 'Aamu II',
       artistName: null,
       genre: 'Ambient',
+      tags: [],
       description: 'Morning set',
       isPublic: true,
     });
     expect(screen.getByText('Aamu II')).toBeTruthy();
+  });
+
+  it('removes a track after confirm', async () => {
+    vi.spyOn(admin, 'fetchAdminChannelSounds').mockResolvedValue({
+      ok: true,
+      data: [SOUND],
+      total: 1,
+    });
+    const del = vi
+      .spyOn(admin, 'deleteAdminChannelSound')
+      .mockResolvedValue({ ok: true });
+    await openChannel('moon');
+    fireEvent.click(screen.getByRole('button', { name: 'Remove Aamu' }));
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /^Delete$/ }));
+    });
+    expect(del).toHaveBeenCalledWith('moon', 's1');
   });
 
   it('shows the API error when the channel is not found', async () => {

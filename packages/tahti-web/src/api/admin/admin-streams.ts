@@ -289,6 +289,8 @@ export type AdminChannelSound = {
   artistName: string | null;
   description: string | null;
   genre: string | null;
+  tags?: string[];
+  contentType?: string | null;
   isPublic: boolean;
   releasedAt: string | null;
 };
@@ -298,7 +300,15 @@ export type AdminChannelSoundPatch = {
   artistName?: string | null;
   description?: string;
   genre?: string | null;
+  tags?: string[];
+  contentType?: string;
   isPublic?: boolean;
+};
+
+export type AdminChannelSoundListQuery = {
+  limit?: number;
+  offset?: number;
+  q?: string;
 };
 
 const mockChannelSounds = new Map<string, AdminChannelSound[]>();
@@ -333,25 +343,86 @@ function mockSoundsFor(key: string): AdminChannelSound[] {
 
 export async function fetchAdminChannelSounds(
   slug: string,
+  query: AdminChannelSoundListQuery = {},
 ): Promise<
-  { ok: true; data: AdminChannelSound[] } | { ok: false; error: string }
+  | { ok: true; data: AdminChannelSound[]; total: number }
+  | { ok: false; error: string }
 > {
   const key = slug.trim().toLowerCase();
   if (!key) {
     return { ok: false, error: 'Enter a channel slug.' };
   }
+  const limit = query.limit ?? 50;
+  const offset = query.offset ?? 0;
+  const q = query.q?.trim();
   if (isForceMock()) {
-    return { ok: true, data: mockSoundsFor(key).map((row) => ({ ...row })) };
+    let rows = mockSoundsFor(key).map((row) => ({ ...row }));
+    if (q) {
+      const needle = q.toLowerCase();
+      rows = rows.filter(
+        (row) =>
+          row.title.toLowerCase().includes(needle) ||
+          (row.genre?.toLowerCase().includes(needle) ?? false),
+      );
+    }
+    return {
+      ok: true,
+      data: rows.slice(offset, offset + limit),
+      total: rows.length,
+    };
   }
   try {
-    const data = await getJson<AdminChannelSound[]>(
-      `/api/admin/channels/${encodeURIComponent(key)}/sound`,
+    const params = new URLSearchParams();
+    params.set('limit', String(limit));
+    params.set('offset', String(offset));
+    if (q) {
+      params.set('q', q);
+    }
+    const data = await getJson<
+      AdminChannelSound[] | { items: AdminChannelSound[]; total: number }
+    >(
+      `/api/admin/channels/${encodeURIComponent(key)}/sound?${params.toString()}`,
     );
-    return { ok: true, data: Array.isArray(data) ? data : [] };
+    if (Array.isArray(data)) {
+      return { ok: true, data, total: data.length };
+    }
+    return {
+      ok: true,
+      data: Array.isArray(data.items) ? data.items : [],
+      total: typeof data.total === 'number' ? data.total : 0,
+    };
   } catch (err) {
     return {
       ok: false,
       error: err instanceof Error ? err.message : 'Could not load the tracks',
+    };
+  }
+}
+
+export async function deleteAdminChannelSound(
+  slug: string,
+  soundId: string,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const key = slug.trim().toLowerCase();
+  if (isForceMock()) {
+    const rows = mockSoundsFor(key);
+    const index = rows.findIndex((row) => row.id === soundId);
+    if (index < 0) {
+      return { ok: false, error: 'Sound item not found' };
+    }
+    rows.splice(index, 1);
+    return { ok: true };
+  }
+  try {
+    await sendJson(
+      `/api/admin/channels/${encodeURIComponent(key)}/sound/${encodeURIComponent(soundId)}`,
+      'DELETE',
+    );
+    return { ok: true };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not delete the track',
     };
   }
 }
@@ -377,6 +448,11 @@ export async function patchAdminChannelSound(
         patch.description !== undefined
           ? patch.description || null
           : rows[index]!.description,
+      tags: patch.tags !== undefined ? patch.tags : (rows[index]!.tags ?? []),
+      contentType:
+        patch.contentType !== undefined
+          ? patch.contentType
+          : rows[index]!.contentType,
     };
     rows[index] = updated;
     return { ok: true, data: { ...updated } };

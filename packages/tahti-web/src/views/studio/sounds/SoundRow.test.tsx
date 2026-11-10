@@ -93,7 +93,9 @@ describe('SoundRow', () => {
     fireEvent.click(
       screen.getByRole('checkbox', { name: 'Select Night Drive' }),
     );
-    expect(state.toggleSelected).toHaveBeenCalledWith('s1');
+    expect(state.toggleSelected).toHaveBeenCalledWith('s1', {
+      shift: false,
+    });
   });
 
   it('explains a failed upload and retries it', async () => {

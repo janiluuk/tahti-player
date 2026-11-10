@@ -29,6 +29,7 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
     selectAllMatching,
     selectingAll,
     allMatchingSelected,
+    selectionNotice,
     setPendingBulkDelete,
     setBulkEditOpen,
     bulkBusy,
@@ -46,7 +47,17 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
   const selected = items.filter((item) => selectedIds.has(item.id));
 
   if (selectedIds.size === 0) {
-    return null;
+    if (!selectionNotice) {
+      return null;
+    }
+    return (
+      <div
+        role="status"
+        className="border-border bg-background-secondary text-foreground-secondary mb-3 rounded-lg border px-3 py-2 text-sm"
+      >
+        {selectionNotice}
+      </div>
+    );
   }
 
   const allShownSelected =
@@ -63,6 +74,11 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
       aria-busy={selectingAll || bulkBusy || releaseBusy || undefined}
       className="border-border bg-background-secondary mb-3 flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 text-sm"
     >
+      {selectionNotice ? (
+        <p role="status" className="text-foreground-secondary w-full text-xs">
+          {selectionNotice}
+        </p>
+      ) : null}
       <span className="font-medium">
         {t('library.soundsSelectedCount', { count: selectionCount })}
         {matching ? ` ${t('library.soundsSelectedAll', { total })}` : ''}

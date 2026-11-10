@@ -588,12 +588,12 @@ describe('admin channel sounds', () => {
       .mockImplementation(
         async () => new Response(JSON.stringify([]), { status: 200 }),
       );
-    await fetchAdminChannelSounds(' Moon ');
+    await fetchAdminChannelSounds(' Moon ', { limit: 50, offset: 0 });
     await patchAdminChannelSound('moon', 's1', { title: 'Aamu' });
     expect(
       fetchSpy.mock.calls.map(([url, init]) => [url, init?.method ?? 'GET']),
     ).toEqual([
-      ['/tahti-api/api/admin/channels/moon/sound', 'GET'],
+      ['/tahti-api/api/admin/channels/moon/sound?limit=50&offset=0', 'GET'],
       ['/tahti-api/api/admin/channels/moon/sound/s1', 'PATCH'],
     ]);
   });

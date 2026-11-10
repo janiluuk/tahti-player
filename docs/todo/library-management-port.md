@@ -14,35 +14,47 @@ local files already have this stack; this todo is cloud Sounds only.
 - [x] Selection bar: select-all matching, bulk delete/edit
 - [x] Select-all-matching → Mix order (ids) + Add to release (title resolve)
   (`feat/library-mgmt-followups`, #1991)
+- [x] Filters: BPM + key, status + visibility + pinned
+- [x] Bulk edit: genreCustom, license, downloads, comments, releasedAt, isFallback
+- [x] Selection clears when leaving list density
+- [x] List view: CatalogTable hides inline selection chrome (SoundsSelectionBar only)
+- [x] Covers backfill button (calls org `POST …/covers/backfill`)
+- [x] Suggest playlist beyond Mix order — **wontfix** (org)
+- [x] E2E journey sketch: `e2e/library-sounds-bulk.spec.ts`
+- [x] Ambient titles strip leading artist when artist is listed beside them
+- [x] CardsRow fade-out on item removal (favorites / filter / any drop)
+- [x] Input end-addon active only when field modified (filter search)
 
-## Next 20 slices (in order)
+## Next 30 slices
 
 Canonical table lives in the sibling org todo (same numbering). Player-owned
-rows below; org rows are blockers for the matching UI.
+rows below; org rows are blockers for the matching UI. PR for prior UI: #1992.
 
 | # | Repo | Slice | Done when |
 | - | ---- | ----- | --------- |
-| 1 | org | Bulk-by-ids: report non-owned ids in `failed[]` | — |
-| 2 | org | Bulk-patch `isFallback` rotation parity | — |
-| 3 | org | Bulk-patch `isPublic` follower notify | — |
-| 4 | org | OpenAPI bulk request + 409 shapes | — |
-| 5 | org | OpenAPI dual GET `/api/me/sound` | — |
-| 6 | org | Facets tag without 5k sample | — |
-| 7 | org | Facets uploadedYear omit date filters | — |
-| 8 | org | Library-mgmt integration tests in CI | — |
-| 9 | org | `POST …/covers/backfill` | — |
-| 10 | org | Bulk mutate `where` includes `channelId` | — |
-| 11 | player | Filters: BPM + key | SoundFilters wired to API |
-| 12 | player | Filters: status + visibility + pinned | SoundFilters wired |
-| 13 | player | Bulk edit: `genreCustom` | Dialog |
-| 14 | player | Bulk edit: license / downloads / comments | Dialog + i18n |
-| 15 | player | Bulk edit: `releasedAt` (+ fallback after org #2) | Dialog |
-| 16 | player | Selection outside list view (or clear on leave) | Consistent UX |
-| 17 | player | Single selection toolbar in list view | No duplicate toolbars |
-| 18 | player | Covers backfill UI (needs org #9) | Button + toast |
-| 19 | org+player | Full Suggest playlist (duration/flow) or wontfix | Product call |
-| 20 | player | E2E: select-all → bulk edit/delete + Mix order | Journey on mock |
+| 1–10 | org | See sibling (413 OpenAPI, pinned/clear-tags bulk, multi-tag, key facet, year SQL, admin delete/page, tests) | — |
+| 11 | player | Honesty toast when bulk `ok` but `failed.length > 0` | ✅ |
+| 12 | player | Map 409 `totalMatched` to re-confirm dialog | ✅ |
+| 13 | player | Surface ids `413` as toolbar `selectionNotice` | ✅ |
+| 14 | player | Pass `serverFilter` into facets; refetch on filter change | ✅ |
+| 15 | player | `uploadedYear` facet Select → year date bounds | ✅ |
+| 16 | player | Facet-backed counts on contentType / source / status | ✅ |
+| 17 | player | `isFallback` filter | ✅ |
+| 18 | player | Always-visible Clear filters when active | ✅ |
+| 19 | player | Active-filter chip strip | ✅ |
+| 20 | player | Search clear `endAddon` idle→active | ✅ |
+| 21 | player | Shift-click range select via ordered ids | ✅ |
+| 22 | player | Bulk edit: `subGenres` | ✅ |
+| 23 | player | Bulk edit: clear-tags (after org #4) | ✅ |
+| 24 | player | Bulk genre options from live facets | ✅ |
+| 25 | player | Stats strip clickable → filters | ✅ |
+| 26 | player | Tag multi-select (after org #5) | ✅ |
+| 27 | player | `musicalKey` facet Select (after org #6) | ✅ |
+| 28 | player | Admin ChannelTracksPanel Remove + richer edit | ✅ |
+| 29 | player | Admin channel tracks paged/filtered (after org #9) | ✅ |
+| 30 | player | Harden bulk e2e + units for #11/#14/#21 | ✅ units (#12 dialog, filters, admin remove) |
 
-## Deferred outside these 20
+## Deferred outside this port
 
 - Native desktop Phase 6–7 (`desktop-pro-library.md`)
+- iTunes optional copy-into-folder (import already shipped)
