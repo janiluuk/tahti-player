@@ -8,11 +8,7 @@ vi.mock('../../../api/studio/sound-mix-order', () => ({
   suggestSoundMixOrder: vi.fn(),
 }));
 
-const TRACKS = [
-  { id: 'a', title: 'Opener', bpm: 118, key: 'Am' },
-  { id: 'b', title: 'Lift', bpm: 122, key: '9A' },
-  { id: 'c', title: 'No Key', bpm: 120, key: null },
-];
+const IDS = ['a', 'b', 'c'];
 
 describe('SoundsMixOrderDialog', () => {
   afterEach(() => {
@@ -35,13 +31,13 @@ describe('SoundsMixOrderDialog', () => {
       render(
         <SoundsMixOrderDialog
           isOpen
-          tracks={TRACKS}
+          soundIds={IDS}
           onClose={vi.fn()}
           onUseOrder={onUseOrder}
         />,
       );
     });
-    expect(suggestSoundMixOrder).toHaveBeenCalledWith(TRACKS);
+    expect(suggestSoundMixOrder).toHaveBeenCalledWith(IDS);
     const list = await screen.findByRole('list', {
       name: 'Suggested mix order',
     });
@@ -60,13 +56,21 @@ describe('SoundsMixOrderDialog', () => {
   it('says so when no track has a key', async () => {
     vi.mocked(suggestSoundMixOrder).mockResolvedValue({
       ok: true,
-      data: { items: [], unplaced: TRACKS },
+      data: {
+        items: [],
+        unplaced: IDS.map((id) => ({
+          id,
+          title: id,
+          bpm: null,
+          key: null,
+        })),
+      },
     });
     await act(async () => {
       render(
         <SoundsMixOrderDialog
           isOpen
-          tracks={TRACKS}
+          soundIds={IDS}
           onClose={vi.fn()}
           onUseOrder={vi.fn()}
         />,

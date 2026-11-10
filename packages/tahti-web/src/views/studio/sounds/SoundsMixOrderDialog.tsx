@@ -12,7 +12,7 @@ import { PageError, PageLoading } from '../../../components/PageStates';
 
 type Props = {
   isOpen: boolean;
-  tracks: MixOrderTrack[];
+  soundIds: string[];
   onClose: () => void;
   /** Ordered ids (keyed tracks first, then the unplaced ones) to add to a playlist. */
   onUseOrder: (ids: string[]) => void;
@@ -21,7 +21,7 @@ type Props = {
 /** Selected sounds in a DJ-style mix order (Camelot key, then BPM). */
 export function SoundsMixOrderDialog({
   isOpen,
-  tracks,
+  soundIds,
   onClose,
   onUseOrder,
 }: Props) {
@@ -29,15 +29,17 @@ export function SoundsMixOrderDialog({
   const [order, setOrder] = useState<MixOrder | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
+  const idsKey = soundIds.join(',');
 
   useEffect(() => {
     if (!isOpen) {
       return;
     }
+    const ids = idsKey ? idsKey.split(',') : [];
     let active = true;
     setOrder(null);
     setError(null);
-    void suggestSoundMixOrder(tracks).then((result) => {
+    void suggestSoundMixOrder(ids).then((result) => {
       if (!active) {
         return;
       }
@@ -50,7 +52,7 @@ export function SoundsMixOrderDialog({
     return () => {
       active = false;
     };
-  }, [isOpen, tracks, attempt]);
+  }, [isOpen, attempt, idsKey]);
 
   const detail = (track: MixOrderTrack & { camelot?: string }) =>
     [

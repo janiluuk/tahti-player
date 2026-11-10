@@ -15,30 +15,46 @@ export type MixOrder = {
   unplaced: MixOrderTrack[];
 };
 
+/** Cap aligned with tahti-org `SuggestPlaylistBodySchema` (max 500 ids). */
+export const STUDIO_SOUND_MIX_ORDER_MAX_IDS = 500;
+
 /** Mock: keyed tracks by tempo, the rest unplaced (the API walks the Camelot wheel). */
-function mockMixOrder(tracks: MixOrderTrack[]): MixOrder {
-  const keyed = tracks.filter((t) => t.key);
+function mockMixOrder(ids: string[]): MixOrder {
   return {
-    items: [...keyed]
-      .sort((a, b) => (a.bpm ?? Infinity) - (b.bpm ?? Infinity))
-      .map((t) => ({ ...t, camelot: t.key ?? '' })),
-    unplaced: tracks.filter((t) => !t.key),
+    items: ids.slice(0, Math.max(0, ids.length - 1)).map((id, index) => ({
+      id,
+      title: id,
+      bpm: 120 + index,
+      key: '8A',
+      camelot: '8A',
+    })),
+    unplaced:
+      ids.length > 0
+        ? [
+            {
+              id: ids[ids.length - 1]!,
+              title: ids[ids.length - 1]!,
+              bpm: null,
+              key: null,
+            },
+          ]
+        : [],
   };
 }
 
 /** `POST /api/me/sound/suggest-playlist`: your selected sounds in mix order. Nothing is saved. */
 export async function suggestSoundMixOrder(
-  tracks: MixOrderTrack[],
+  ids: string[],
 ): Promise<{ ok: true; data: MixOrder } | { ok: false; error: string }> {
   if (isForceMock()) {
-    return { ok: true, data: mockMixOrder(tracks) };
+    return { ok: true, data: mockMixOrder(ids) };
   }
   try {
     const { data } = await requestJson<MixOrder>(
       '/api/me/sound/suggest-playlist',
       {
         method: 'POST',
-        body: JSON.stringify({ ids: tracks.map((t) => t.id) }),
+        body: JSON.stringify({ ids }),
       },
     );
     return { ok: true, data };
