@@ -206,6 +206,7 @@ export function LibraryEmbedsView() {
                 provider={item.embedProvider}
                 embedUri={item.embedUri}
                 artworkUrl={item.bannerUrl}
+                sourceUrl={item.embedSourceUrl}
               />
             ))}
           </ul>

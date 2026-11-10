@@ -25,8 +25,8 @@ panel (`StudioPanel`), and fix missing embed provider thumbnails.
 | 12 | player | Map studio sound `bannerUrl` for embed providers in list | ✅ EmbedSoundCard artworkUrl |
 | 13 | player | SoundCloud panel: use API `thumbnailUrl` when non-null | ✅ + seed fallback |
 | 14 | org | Persist cover on embed import (hearthis/mixcloud/spotify/bandcamp) | ✅ import routes set bannerUrl |
-| 15 | org | Backfill missing embed `bannerUrl` from provider oEmbed/OG | Worker or one-shot job |
-| 16 | player | Client: if embed has no banner, fetch oEmbed thumbnail once | Soft fill without reload |
+| 15 | org | Backfill missing embed `bannerUrl` from provider oEmbed/OG | ⏳ tahti-org#1092 hearthis path |
+| 16 | player | Client: if embed has no banner, fetch oEmbed thumbnail once | Soft fill via noembed in EmbedTrackRow |
 | 17 | player | Default artwork seed when no provider thumb | ✅ MediaArtwork seed on rows |
 | 18 | player | Channel public Embeds tab uses same cover field | ✅ playables coverUrl ← bannerUrl |
 | 19 | player | Unit: EmbedTrackRow with bannerUrl | ✅ EmbedTrackRow.test |

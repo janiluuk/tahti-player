@@ -90,6 +90,8 @@ export type StudioSound = {
   embedProvider?:
     'HEARTHIS' | 'MIXCLOUD' | 'SPOTIFY' | 'BANDCAMP' | 'MIKSERI' | null;
   embedUri?: string | null;
+  /** Original provider page URL when the import stored one. */
+  embedSourceUrl?: string | null;
   /** Copy pushed to the artist's own hearthis.at account, if any. */
   hearthisExportStatus?:
     'pending' | 'submitted' | 'delivered' | 'failed' | null;
