@@ -14,6 +14,7 @@ import { Button, Popover } from '@tahti-player/ui';
 
 import { deleteStudioCollection, patchStudioCollection } from '../api/studio';
 import type { StudioCollection } from '../api/studio-types';
+import { webT } from '../lib/webT';
 import { ConfirmDialog } from './ConfirmDialog';
 
 /** "⋮" more-options menu shared by the Collection and Playlist editors —
@@ -118,8 +119,8 @@ export function StudioCollectionMoreMenu({
             size="icon"
             aria-label={
               onDeleted
-                ? `More options for ${col.name}`
-                : `More options for ${kindLabel}`
+                ? webT()('templateText.moreOptionsFor', { name: col.name })
+                : webT()('templateText.moreOptionsFor', { name: kindLabel })
             }
           >
             <MoreVerticalIcon size={16} aria-hidden />

@@ -21,6 +21,7 @@ import {
 
 import { fetchChannel } from '../api/client';
 import { channelRssFeedUrl } from '../lib/channelRssFeed';
+import { webT } from '../lib/webT';
 
 export function ChannelShareButton({
   channelSlug,
@@ -46,7 +47,7 @@ export function ChannelShareButton({
   const url = `${window.location.origin}/channel/${channelSlug}`;
   const embedUrl = `${window.location.origin}/embed/c/${channelSlug}`;
   const embedSnippet = `<iframe src="${embedUrl}" width="100%" height="180" frameborder="0" allow="autoplay"></iframe>`;
-  const text = `Listen to ${displayName} on Tahti`;
+  const text = webT()('templateText.listenOnTahti', { name: displayName });
 
   useEffect(() => {
     if (!open) {

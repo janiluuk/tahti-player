@@ -14,6 +14,7 @@ import {
   fetchTrackExportStatus,
   type TrackExportStatus,
 } from '../api/sources';
+import { webT } from '../lib/webT';
 import { EXPORT_TARGETS } from '../plugins/export';
 
 const MIXCLOUD_TARGET = EXPORT_TARGETS.find(
@@ -28,7 +29,9 @@ function describe(status: TrackExportStatus): string {
     case 'DONE':
       return 'Uploaded to Mixcloud.';
     case 'FAILED':
-      return status.error ? `Upload failed: ${status.error}` : 'Upload failed.';
+      return status.error
+        ? webT()('templateText.uploadFailed', { name: status.error })
+        : 'Upload failed.';
     case 'UPLOADING':
       return 'Uploading to Mixcloud… We notify you when it is done.';
     default:

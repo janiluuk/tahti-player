@@ -13,6 +13,7 @@ import {
   type AvatarTheme,
 } from '../../../lib/avatarTheme';
 import { cn } from '../../../lib/cn';
+import { webT } from '../../../lib/webT';
 
 /** Swatches for the fill drawn in place of a missing profile picture. Each
  * pick saves straight away; "Default" clears it back to the generated art. */
@@ -54,7 +55,7 @@ export function AvatarThemePicker({
           return (
             <Tooltip
               key={avatarThemeCss(preset)}
-              content={`Avatar colour ${index + 1}`}
+              content={webT()('templateText.avatarColour', { name: index + 1 })}
               side="top"
             >
               <Button
@@ -62,7 +63,9 @@ export function AvatarThemePicker({
                 size="icon-sm"
                 variant="text"
                 disabled={busy}
-                aria-label={`Avatar colour ${index + 1}`}
+                aria-label={webT()('templateText.avatarColour', {
+                  name: index + 1,
+                })}
                 aria-pressed={selected}
                 className={cn(
                   'size-8 rounded-full p-0 text-white',

@@ -10,6 +10,7 @@ import {
   setNewsletterSubscription,
   subscribeNewsletterByEmail,
 } from '../api/client';
+import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
 
 type Props = {
@@ -83,7 +84,11 @@ function SignedInToggle({
         disabled={subscribed === null || busy}
         aria-pressed={subscribed ?? false}
         aria-label={
-          iconOnly ? `Subscribe to ${artistDisplayName}'s updates` : undefined
+          iconOnly
+            ? webT()('templateText.subscribeUpdates', {
+                name: artistDisplayName,
+              })
+            : undefined
         }
         onClick={toggle}
       >

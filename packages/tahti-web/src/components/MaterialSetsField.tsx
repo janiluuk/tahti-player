@@ -15,6 +15,7 @@ import {
   type SetMembershipEntry,
 } from '../api/studio/studio-set-membership';
 import { toastWithUndo } from '../lib/undoToast';
+import { webT } from '../lib/webT';
 import {
   MaterialMembershipCreateFooter,
   MaterialMembershipList,
@@ -129,9 +130,11 @@ export function MaterialSetsField({ soundId }: Props) {
           ) ?? null,
       );
       if (added.itemId) {
-        toastWithUndo(`Added to ${entry.name}.`, {
+        toastWithUndo(webT()('templateText.addedToDot', { name: entry.name }), {
           undo: () => removeStudioCollectionItem(entry.slug, added.itemId!),
-          undoneMessage: `Removed from ${entry.name}.`,
+          undoneMessage: webT()('templateText.removedFrom', {
+            name: entry.name,
+          }),
           onUndone: () => {
             setRows(
               (prev) =>

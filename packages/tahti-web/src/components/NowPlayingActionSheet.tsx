@@ -14,6 +14,7 @@ import { ActionSheet } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
 import { soundIdFromPlayableId } from '../lib/soundId';
+import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
 import { useLibraryStore } from '../stores/libraryStore';
@@ -54,7 +55,7 @@ export function NowPlayingActionSheet({ isOpen, onClose, playable }: Props) {
     : null;
 
   const share = async (url: string) => {
-    const text = `Listen to ${playable.title} on Tahti`;
+    const text = webT()('templateText.listenOnTahti', { name: playable.title });
     if (typeof navigator.share === 'function') {
       try {
         await navigator.share({ title: playable.title, text, url });

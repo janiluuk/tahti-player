@@ -11799,6 +11799,24 @@
     },
     "listenAddonsPanelLabels": {
       "addALink": "Lisää {{name}}-linkki"
+    },
+    "templateText": {
+      "removedFrom": "Poistettu kohteesta {{name}}.",
+      "addedTo": "Lisätty kohteeseen {{name}}",
+      "addedToDot": "Lisätty kohteeseen {{name}}.",
+      "listenOnTahti": "Kuuntele {{name}} Tahdissa",
+      "subscribeUpdates": "Tilaa päivitykset: {{name}}",
+      "stationUnavailable": "Asema ei ole saatavilla · {{name}}",
+      "moreOptionsFor": "Lisää valintoja: {{name}}",
+      "uploadFailed": "Lataus epäonnistui: {{name}}",
+      "subscribeFanTiers": "Tilaa fanitasot: {{name}}",
+      "stopWatching": "Lopeta seuraaminen: {{name}}",
+      "connectedAs": "Yhdistetty käyttäjänä {{name}}",
+      "avatarColour": "Avatarin väri {{name}}",
+      "titleForImage": "Kuvan {{name}} otsikko",
+      "backTo": "Takaisin: {{name}}",
+      "viewImageFull": "Näytä kuva {{name}} täysikokoisena",
+      "writeCommentAt": "Kirjoita kommentti kohtaan {{name}}"
     }
   },
   "studioEditor": {

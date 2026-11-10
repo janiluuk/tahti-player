@@ -2,6 +2,7 @@ import { Button, ImageReveal } from '@tahti-player/ui';
 
 import { PostLink } from '../../../components/PostLink';
 import { dateLocaleTag } from '../../../lib/locale';
+import { webT } from '../../../lib/webT';
 
 export function PostPreview({
   title,
@@ -45,7 +46,9 @@ export function PostPreview({
               variant="text"
               className="bg-background-secondary aspect-video h-auto overflow-hidden rounded-lg p-0"
               onClick={() => onImageClick?.(index)}
-              aria-label={`View image ${index + 1} full size`}
+              aria-label={webT()('templateText.viewImageFull', {
+                name: index + 1,
+              })}
             >
               <ImageReveal src={image} alt="" className="size-full" />
             </Button>
