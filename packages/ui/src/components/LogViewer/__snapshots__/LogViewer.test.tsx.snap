@@ -27,7 +27,8 @@ exports[`LogViewer > (Snapshot) renders empty state 1`] = `
             value=""
           />
           <div
-            class="bg-primary text-primary-foreground border-border flex items-center gap-2 border-l-(length:--border-width) px-3 text-sm"
+            class="border-border flex items-center gap-2 border-l-(length:--border-width) px-3 text-sm bg-background-secondary text-foreground-secondary"
+            data-testid="input-end-addon"
           >
             <svg
               aria-hidden="true"
@@ -304,7 +305,8 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
             value=""
           />
           <div
-            class="bg-primary text-primary-foreground border-border flex items-center gap-2 border-l-(length:--border-width) px-3 text-sm"
+            class="border-border flex items-center gap-2 border-l-(length:--border-width) px-3 text-sm bg-background-secondary text-foreground-secondary"
+            data-testid="input-end-addon"
           >
             <svg
               aria-hidden="true"
