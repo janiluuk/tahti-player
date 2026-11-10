@@ -1618,6 +1618,7 @@
       "soundsSelectAllMatching": "Valitse kaikki {{total}} osumaa",
       "soundsSelectAllShown": "Valitse kaikki {{count}} näytettyä",
       "soundsAddToRelease": "Lisää julkaisuun",
+      "soundsAddToReleaseLoadError": "Valittuja ääniä ei voitu ladata julkaisua varten.",
       "soundsAddToPlaylist": "Lisää soittolistaan",
       "soundsClear": "Tyhjennä",
       "soundsBulkEditTitle_one": "Muokkaa 1 ääntä",
@@ -1689,6 +1690,7 @@
       "mixOrderUnplaced_other": "{{count}} kappaleella ei ole sävellajia, ja ne tulevat loppuun:",
       "mixOrderBpm": "{{bpm}} BPM",
       "mixOrderUse": "Lisää soittolistalle tässä järjestyksessä",
+      "mixOrderTooMany": "Miksausjärjestys toimii enintään {{max}} äänellä. Rajaa suodatusta tai poista osa valinnasta.",
       "collectionTabs": {
         "all": "Kaikki",
         "albums": "Albumit",

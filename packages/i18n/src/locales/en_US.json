@@ -1618,6 +1618,7 @@
       "soundsSelectAllMatching": "Select all {{total}} matching",
       "soundsSelectAllShown": "Select all {{count}} shown",
       "soundsAddToRelease": "Add to release",
+      "soundsAddToReleaseLoadError": "Could not load the selected sounds for a release.",
       "soundsAddToPlaylist": "Add to playlist",
       "soundsClear": "Clear",
       "soundsBulkEditTitle_one": "Edit 1 sound",
@@ -1689,6 +1690,7 @@
       "mixOrderUnplaced_other": "{{count}} tracks have no key and go at the end:",
       "mixOrderBpm": "{{bpm}} BPM",
       "mixOrderUse": "Add to a playlist in this order",
+      "mixOrderTooMany": "Mix order works with up to {{max}} sounds. Narrow the filter or clear some of the selection.",
       "collectionTabs": {
         "all": "All",
         "albums": "Albums",

@@ -590,6 +590,37 @@ export function useStudioSoundsState() {
     })();
   };
 
+  /** Titles for Add to release — covers select-all-matching beyond the loaded page. */
+  const tracksForRelease = async (): Promise<
+    Array<{ id: string; title: string }>
+  > => {
+    const titles = new Map(items.map((item) => [item.id, item.title] as const));
+    const missing = [...selectedIds].filter((id) => !titles.has(id));
+    if (missing.length > 0) {
+      const pageSize = 50;
+      let offset = 0;
+      while (missing.some((id) => !titles.has(id)) && offset < total) {
+        const page = await fetchStudioSoundsPage({
+          ...serverFilter,
+          sort: listSort,
+          limit: pageSize,
+          offset,
+        });
+        for (const item of page.data.items) {
+          titles.set(item.id, item.title);
+        }
+        if (page.data.items.length === 0) {
+          break;
+        }
+        offset += page.data.items.length;
+      }
+    }
+    return [...selectedIds].map((id) => ({
+      id,
+      title: titles.get(id) ?? id,
+    }));
+  };
+
   const applyBulkEdit = (patch: StudioSoundBulkPatch) => {
     const target = buildBulkTarget();
     if ('error' in target) {
@@ -684,6 +715,7 @@ export function useStudioSoundsState() {
     bulkBusy,
     allMatchingSelected,
     clearSelection,
+    tracksForRelease,
     serverFilter,
     selectedIds,
     setSelectedIds,

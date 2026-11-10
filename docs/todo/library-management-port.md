@@ -1,7 +1,7 @@
 # Library management port (theDAW → Library Sounds UI)
 
 **Status:** partial  
-**Updated:** 2026-11-03  
+**Updated:** 2026-11-10  
 **Sibling:** `../tahti-org/docs/todo/library-management-port.md` (API)
 
 Wire Studio / Library → Sounds to the new tahti-org management endpoints
@@ -14,8 +14,11 @@ files already have this stack; this todo is cloud Sounds only.
 - [x] Server-driven `useStudioSoundsState` (debounce `q`, discard stale)
 - [x] Stats strip on the Sounds list; Genre/Tag facet filters (#1855); Mix order from the selection (#1851, tahti-org#1070)
 - [x] Selection bar: select-all matching, bulk delete, bulk edit
+- [x] Select-all-matching also feeds Mix order (ids → API) and Add to release (paged title resolve)
 - [x] Route allowlist / API-REFERENCE / tests
 
 ## Deferred
 
 - Native desktop Phase 6–7 leftovers (`desktop-pro-library.md`)
+- Bulk edit UI fields beyond genre/tags/type/visibility (license, downloads, comments, `genreCustom`, `releasedAt`)
+- Cover / artwork bulk backfill (API deferred too)

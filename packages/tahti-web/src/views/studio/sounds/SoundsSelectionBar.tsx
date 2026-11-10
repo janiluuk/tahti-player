@@ -7,11 +7,12 @@ import {
   XIcon,
 } from 'lucide-react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
-import type { MixOrderTrack } from '../../../api/studio/sound-mix-order';
+import { STUDIO_SOUND_MIX_ORDER_MAX_IDS } from '../../../api/studio/sound-mix-order';
 import { AddToPlaylistPanel } from '../../../components/AddToPlaylistPanel';
 import { AddToReleasePanel } from '../../../components/AddToReleasePanel';
 import { SoundsMixOrderDialog } from './SoundsMixOrderDialog';
@@ -31,11 +32,16 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
     setPendingBulkDelete,
     setBulkEditOpen,
     bulkBusy,
+    tracksForRelease,
   } = state;
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [releaseOpen, setReleaseOpen] = useState(false);
+  const [releaseTracks, setReleaseTracks] = useState<
+    Array<{ id: string; title: string }>
+  >([]);
+  const [releaseBusy, setReleaseBusy] = useState(false);
   const [mixOpen, setMixOpen] = useState(false);
-  const [mixTracks, setMixTracks] = useState<MixOrderTrack[]>([]);
+  const [mixIds, setMixIds] = useState<string[]>([]);
   const [orderedIds, setOrderedIds] = useState<string[] | null>(null);
   const selected = items.filter((item) => selectedIds.has(item.id));
 
@@ -48,16 +54,17 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
   const matching =
     allMatchingSelected ||
     (total > 0 && selectedIds.size >= total && allShownSelected);
+  const selectionCount = selectedIds.size;
 
   return (
     <div
       role="toolbar"
       aria-label={t('library.soundsSelectedAria')}
-      aria-busy={selectingAll || bulkBusy || undefined}
+      aria-busy={selectingAll || bulkBusy || releaseBusy || undefined}
       className="border-border bg-background-secondary mb-3 flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 text-sm"
     >
       <span className="font-medium">
-        {t('library.soundsSelectedCount', { count: selectedIds.size })}
+        {t('library.soundsSelectedCount', { count: selectionCount })}
         {matching ? ` ${t('library.soundsSelectedAll', { total })}` : ''}
       </span>
       {!matching ? (
@@ -89,8 +96,21 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
           size="sm"
           variant="secondary"
           className="gap-1.5"
-          disabled={bulkBusy || selected.length === 0}
-          onClick={() => setReleaseOpen(true)}
+          disabled={bulkBusy || releaseBusy || selectionCount === 0}
+          onClick={() => {
+            setReleaseBusy(true);
+            void tracksForRelease()
+              .then((tracks) => {
+                setReleaseTracks(tracks);
+                setReleaseOpen(true);
+              })
+              .catch(() => {
+                toast.error(t('library.soundsAddToReleaseLoadError'));
+              })
+              .finally(() => {
+                setReleaseBusy(false);
+              });
+          }}
         >
           <Disc3Icon size={15} aria-hidden />
           {t('library.soundsAddToRelease')}
@@ -99,16 +119,17 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
           size="sm"
           variant="secondary"
           className="gap-1.5"
-          disabled={bulkBusy || selected.length < 2}
+          disabled={bulkBusy || selectionCount < 2}
           onClick={() => {
-            setMixTracks(
-              selected.map((item) => ({
-                id: item.id,
-                title: item.title,
-                bpm: item.effectiveBpm ?? item.bpm ?? null,
-                key: item.effectiveKey ?? item.musicalKey ?? null,
-              })),
-            );
+            if (selectionCount > STUDIO_SOUND_MIX_ORDER_MAX_IDS) {
+              toast.error(
+                t('library.mixOrderTooMany', {
+                  max: STUDIO_SOUND_MIX_ORDER_MAX_IDS,
+                }),
+              );
+              return;
+            }
+            setMixIds([...selectedIds]);
             setMixOpen(true);
           }}
         >
@@ -154,18 +175,18 @@ export function SoundsSelectionBar({ state }: { state: StudioSoundsState }) {
       </div>
       <AddToReleasePanel
         isOpen={releaseOpen}
-        tracks={selected.map((item) => ({ id: item.id, title: item.title }))}
+        tracks={releaseTracks}
         onClose={() => setReleaseOpen(false)}
       />
       <AddToPlaylistPanel
         isOpen={playlistOpen}
         soundIds={orderedIds ?? [...selectedIds]}
-        trackTitle={selected[0]?.title ?? ''}
+        trackTitle={selected[0]?.title ?? releaseTracks[0]?.title ?? ''}
         onClose={() => setPlaylistOpen(false)}
       />
       <SoundsMixOrderDialog
         isOpen={mixOpen}
-        tracks={mixTracks}
+        soundIds={mixIds}
         onClose={() => setMixOpen(false)}
         onUseOrder={(ids) => {
           setMixOpen(false);

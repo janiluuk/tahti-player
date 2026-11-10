@@ -29,7 +29,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | open    | [channel-page-metrics-about-events.md](channel-page-metrics-about-events.md) | Channel page: followers/following/plays today/yesterday/total/downloads with per-metric public toggle, tidy About, upcoming + past events incl. ones the artist plays at |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
-| partial | [library-management-port.md](library-management-port.md) | Port theDAW library management to Library Sounds: paged API client, facets/stats, bulk delete/edit |
+| partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt mostly shipped; left: bulk-edit field parity, cover backfill, desktop Phase 6–7 |
 | partial | [server-peaks-in-track-lists.md](server-peaks-in-track-lists.md) | Server waveform peaks on every track list (search, Selects, New to you, profile fallback); left: studio collections, radio/feed |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
