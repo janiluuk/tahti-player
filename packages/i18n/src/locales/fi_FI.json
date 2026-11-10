@@ -11796,6 +11796,9 @@
       "removeFromListen": "Poista {{name}} Kuuntele-sivulta",
       "playOnSoundCloud": "Toista {{name}} SoundCloudissa",
       "playBackgroundMusic": "Toista taustamusiikki: {{name}}"
+    },
+    "listenAddonsPanelLabels": {
+      "addALink": "Lisää {{name}}-linkki"
     }
   },
   "studioEditor": {

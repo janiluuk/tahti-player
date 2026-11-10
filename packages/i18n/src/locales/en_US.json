@@ -11796,6 +11796,9 @@
       "removeFromListen": "Remove {{name}} from Listen",
       "playOnSoundCloud": "Play {{name}} on SoundCloud",
       "playBackgroundMusic": "Play {{name}}'s background music"
+    },
+    "listenAddonsPanelLabels": {
+      "addALink": "Add a {{name}} link"
     }
   },
   "studioEditor": {
