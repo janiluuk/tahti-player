@@ -19,7 +19,7 @@ export function toastWithUndo<T extends { ok: true }>(
   toast.success(message, {
     duration: UNDO_TOAST_DURATION_MS,
     action: {
-      label: 'Undo',
+      label: i18n.t('web:undoToastLeftovers.undo'),
       onClick: () => {
         void options
           .undo()

@@ -190,7 +190,6 @@ export function ChannelView({ slug }: { slug: string }) {
     [listenerWidgetInstances, layout],
   );
 
-  // The URL owns edit mode, so the browser's back button leaves it too.
   useEffect(() => {
     setEditing(Boolean(search.edit && isOwner));
   }, [search.edit, isOwner]);
