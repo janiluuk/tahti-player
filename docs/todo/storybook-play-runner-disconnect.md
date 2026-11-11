@@ -20,6 +20,7 @@ A single `vitest --project storybook` browser session drops all its websockets a
 
 - Playwright context `reducedMotion: 'reduce'` (`packages/storybook/vitest.config.ts`): WebGL visualizers stay static, stories run much faster, so CI shards finish well under 90s. Stories about motion opt back in with `withMotionAllowed` (`packages/storybook/src/_lib/motion.tsx`).
 - CI retries a shard once when it disconnects without a failing story (`.github/workflows/ci.yml`).
+- CI runs ten shards of ~50 files (was six of 85, which hit the drop on master 2026-11-11, retry included); two jobs run five shards each.
 - Locally, run stories in chunks of ~60 files.
 
 ## Next
