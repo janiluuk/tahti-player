@@ -21,6 +21,7 @@ import { StudioGate } from '../components/StudioGate';
 import { StudioPanel } from '../components/StudioPanel';
 import { sortLibraryItems, type LibrarySort } from '../lib/librarySort';
 import { dateLocaleTag } from '../lib/locale';
+import { releaseStateLabel, releaseTypeLabel } from '../lib/releaseLabels';
 import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 const DSP_LABELS: Record<string, string> = {
@@ -183,19 +184,33 @@ export function LibrarySmartLinksView() {
                           }
                           subtitle={
                             <>
-                              {release.type} · {release.state}
+                              {releaseTypeLabel(release.type, t)} ·{' '}
+                              {releaseStateLabel(release.state, t)}
                               {typeof release._count?.tracks === 'number'
-                                ? ` · ${release._count.tracks} track${release._count.tracks === 1 ? '' : 's'}`
+                                ? ` · ${t('librarySmartLinksView.trackCount', { count: release._count.tracks })}`
                                 : ''}
                             </>
                           }
                           meta={
                             <>
                               {targets.length > 0
-                                ? `${targets.length} DSP link${targets.length === 1 ? '' : 's'}: ${targets.map(([provider]) => targetLabel(provider)).join(', ')}`
-                                : 'No DSP links added yet'}
+                                ? t('librarySmartLinksView.dspLinks', {
+                                    count: targets.length,
+                                    names: targets
+                                      .map(([provider]) =>
+                                        targetLabel(provider),
+                                      )
+                                      .join(', '),
+                                  })
+                                : t('librarySmartLinksView.noDspLinks')}
                               {typeof release.smartLinkViewCount === 'number'
-                                ? ` · ${release.smartLinkViewCount.toLocaleString(dateLocaleTag())} views`
+                                ? ` · ${t('librarySmartLinksView.viewCount', {
+                                    count: release.smartLinkViewCount,
+                                    views:
+                                      release.smartLinkViewCount.toLocaleString(
+                                        dateLocaleTag(),
+                                      ),
+                                  })}`
                                 : ''}
                             </>
                           }
