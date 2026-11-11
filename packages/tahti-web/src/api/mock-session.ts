@@ -268,6 +268,8 @@ export function buildMockLoginUser(
       goneLiveAt: null,
       customDomain: null,
       customDomainVerified: false,
+      ingest: 'disconnected',
+      reconnectDeadline: null,
     },
     ...(isMockListenerEmail(email)
       ? {

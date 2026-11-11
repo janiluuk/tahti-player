@@ -3,12 +3,6 @@ import { describe, expect, it } from 'vitest';
 import { i18n } from '@tahti-player/i18n';
 
 import {
-  GO_LIVE_TABS,
-  goLiveTabPath,
-  isGoLiveSessionRoute,
-  isGoLiveSessionTabActive,
-} from '../views/studio/go-live/goLiveTabs';
-import {
   BROADCAST_SUBNAV_ITEMS,
   CATALOG_SUBNAV_ITEMS,
   getStudioPrimaryRoute,
@@ -128,10 +122,10 @@ describe('StudioNav section coverage', () => {
     }
   });
 
-  it('lights Go live, and only Go live, on the green-room tab of /studio/go-live', () => {
+  it('lights Go live, and only Go live, on the green-room step of /studio/go-live', () => {
     for (const location of [
-      '/studio/go-live?tab=green-room',
-      '/studio/go-live?tab=prep',
+      '/studio/go-live?step=green-room',
+      '/studio/go-live?step=show-info',
     ]) {
       const lit = BROADCAST_SUBNAV_ITEMS.filter((item) =>
         isBroadcastSubnavActive(location, item.to),
@@ -141,32 +135,7 @@ describe('StudioNav section coverage', () => {
         '/studio/broadcast',
       ]);
       expect(isStudioBroadcastGroup(location), location).toBe(true);
-      expect(isGoLiveSessionRoute(location), location).toBe(true);
     }
-  });
-
-  it('on go-live session chrome, lights exactly one Prep tab from the URL', () => {
-    expect(isGoLiveSessionTabActive('/studio/go-live', 'prep')).toBe(true);
-    expect(
-      isGoLiveSessionTabActive(
-        '/studio/go-live?tab=credentials',
-        'credentials',
-      ),
-    ).toBe(true);
-    expect(
-      isGoLiveSessionTabActive('/studio/go-live?tab=green-room', 'green-room'),
-    ).toBe(true);
-    expect(
-      isGoLiveSessionTabActive('/studio/go-live?tab=credentials', 'prep'),
-    ).toBe(false);
-    expect(isGoLiveSessionRoute('/studio/schedule')).toBe(false);
-    expect(GO_LIVE_TABS.map(goLiveTabPath)).toEqual([
-      '/studio/go-live',
-      '/studio/go-live?tab=credentials',
-      '/studio/go-live?tab=recording',
-      '/studio/go-live?tab=destinations',
-      '/studio/go-live?tab=green-room',
-    ]);
   });
 
   it('keeps Go live unlit on the Channel green-room section', () => {

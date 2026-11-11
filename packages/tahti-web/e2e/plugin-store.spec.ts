@@ -65,7 +65,7 @@ test('Studio Go Live multistream: every API-supported provider is selectable, an
   page,
 }) => {
   await signIn(page);
-  await page.goto('/studio/go-live?tab=destinations');
+  await page.goto('/studio/go-live?step=destinations');
 
   await expect(page.getByText('YouTube')).toBeVisible();
 

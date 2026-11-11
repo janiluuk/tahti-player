@@ -653,7 +653,7 @@ async function main() {
     }
 
     // Go live
-    await page.goto(`${BASE}/studio/go-live`, {
+    await page.goto(`${BASE}/studio/go-live?step=encoder`, {
       waitUntil: 'domcontentloaded',
     });
     await settle(page, 1000);
@@ -669,35 +669,27 @@ async function main() {
     }
     await shot(page, '09-signal-ready.png', 'after test connection');
 
-    // Show info if required
-    const showInfo = page.getByRole('button', { name: /Show info/i });
-    if (await showInfo.count()) {
-      await showInfo.first().click();
-      await settle(page, 500);
-      await shot(page, '09-show-info-modal.png');
-      const titleField = page.getByLabel(/title|show name|name/i).first();
-      if (await titleField.count()) {
-        await titleField.fill(`Recurring Night live (${stamp})`);
-      }
-      const confirmInfo = page.getByRole('button', {
-        name: /Save|Confirm|Done|Close/i,
-      });
-      if (await confirmInfo.count()) {
-        await confirmInfo.last().click();
-        await settle(page, 500);
-      }
+    await page.goto(`${BASE}/studio/go-live?step=show-info`, {
+      waitUntil: 'domcontentloaded',
+    });
+    await settle(page, 800);
+    const titleField = page.getByLabel('Show name');
+    if (await titleField.count()) {
+      await titleField.fill(`Recurring Night live (${stamp})`);
+      await titleField.blur();
+      await settle(page, 1500);
+      await shot(page, '09-show-info.png');
     }
 
-    const goLive = page.getByRole('button', {
-      name: /Go Live|Take over rotation/i,
-    });
+    const goLive = page.getByRole('button', { name: 'Start broadcast' });
     if (await goLive.count()) {
-      const disabled = await goLive.first().isDisabled();
+      const disabled =
+        (await goLive.first().getAttribute('aria-disabled')) === 'true';
       if (disabled) {
         note(
           'ux',
           'go live',
-          'Go Live button still disabled after Test connection — check show info / weekly cap',
+          'Start broadcast still disabled after Test connection — check show info / weekly cap',
         );
         await shot(page, '09-go-live-disabled.png');
       } else {
@@ -714,7 +706,7 @@ async function main() {
         ok('went live');
       }
     } else {
-      note('blocker', 'go live', 'Go Live button not found');
+      note('blocker', 'go live', 'Start broadcast button not found');
     }
     await shot(page, '09-live-0m.png', 'live t=0');
 

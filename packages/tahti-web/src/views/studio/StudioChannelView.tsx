@@ -256,7 +256,7 @@ function GreenRoomSection() {
         ) : null}
         <ButtonLink
           to="/studio/go-live"
-          search={{ tab: 'green-room' }}
+          search={{ step: 'green-room' }}
           size="sm"
           variant="secondary"
         >

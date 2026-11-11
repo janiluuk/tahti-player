@@ -1,3 +1,7 @@
+## 2026-11-11 — Go live page
+
+Studio → Broadcast → Go live is a stepper (show info, encoder, credentials, recording, destinations, green room) with a status chip and autosaving show info. Old `?tab=` links rewrite to `?step=`. Quiet navigation and the Schedule/Channel merges were already on master. Folded `go-live-redesign.md`.
+
 ## 2026-11-10 — library-sounds-embeds + embed-thumbnails
 
 Library → Embeds lives under Sounds (`?tab=embeds`, redirect from

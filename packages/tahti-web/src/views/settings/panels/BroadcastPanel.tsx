@@ -151,7 +151,7 @@ export function BroadcastPanel({
           <ButtonLink
             className="w-fit"
             to="/studio/go-live"
-            search={{ tab: 'green-room' }}
+            search={{ step: 'green-room' }}
             onClick={closeSettings}
             size="sm"
             variant="secondary"
@@ -171,7 +171,7 @@ export function BroadcastPanel({
           <ButtonLink
             className="w-fit"
             to="/studio/go-live"
-            search={{ tab: 'destinations' }}
+            search={{ step: 'destinations' }}
             onClick={closeSettings}
             size="sm"
             variant="secondary"

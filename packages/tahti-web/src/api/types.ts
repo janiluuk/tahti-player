@@ -454,6 +454,10 @@ export type AuthUser = {
     goneLiveAt?: string | null;
     customDomain?: string | null;
     customDomainVerified?: boolean;
+    /** Encoder link; `reconnecting` while a dropped LIVE encoder has until
+     * `reconnectDeadline` to come back. */
+    ingest?: 'connected' | 'reconnecting' | 'disconnected';
+    reconnectDeadline?: string | null;
   } | null;
 };
 

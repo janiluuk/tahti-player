@@ -6,6 +6,7 @@ import {
   patchBroadcastPreflight,
   postEndBroadcast,
   postGoLive,
+  resetMockBroadcastPreflight,
 } from './broadcast';
 import { seedSeries } from './shows/mock';
 import { createShowSeries, fetchEpisodesForShow } from './shows/series';
@@ -15,6 +16,7 @@ describe('mock broadcast preflight with a series', () => {
     vi.stubEnv('VITE_FORCE_MOCK', '1');
     localStorage.clear();
     await postEndBroadcast();
+    resetMockBroadcastPreflight();
   });
 
   afterEach(() => {
@@ -36,7 +38,7 @@ describe('mock broadcast preflight with a series', () => {
     });
     expect(result.data.episodeNumber).toBe(series.nextEpisodeNumber);
     expect(result.data.title).toBe('Friday set');
-    expect(result.data).not.toHaveProperty('seriesId');
+    expect(result.data.seriesId).toBe(series.id);
 
     const reloaded = await fetchBroadcastPreflight();
     expect(reloaded.data?.plannedLiveShow?.seriesId).toBe(series.id);
@@ -44,10 +46,7 @@ describe('mock broadcast preflight with a series', () => {
 
   it('names the episode after the series when no title is set', async () => {
     const series = seedSeries()[1]!;
-    const result = await patchBroadcastPreflight({
-      title: null,
-      seriesId: series.id,
-    });
+    const result = await patchBroadcastPreflight({ seriesId: series.id });
     if ('error' in result) {
       throw new Error(result.error);
     }
@@ -58,7 +57,7 @@ describe('mock broadcast preflight with a series', () => {
 
   it('rejects a series that does not exist', async () => {
     const result = await patchBroadcastPreflight({ seriesId: 'missing' });
-    expect(result).toEqual({ error: 'Show not found' });
+    expect(result).toEqual({ error: 'Show not found', status: 404 });
   });
 
   it('creates a live episode on go live and parks it when the show ends', async () => {
@@ -113,5 +112,36 @@ describe('mock broadcast preflight with a series', () => {
       throw new Error(result.error);
     }
     expect(result.data.plannedLiveShow?.seriesId).toBe(created.data.id);
+  });
+
+  it('accepts private visibility and a cover before the encoder connects', async () => {
+    const result = await patchBroadcastPreflight({
+      visibility: 'PRIVATE',
+      artworkUrl: 'https://cdn.test/cover.png',
+    });
+    if ('error' in result) {
+      throw new Error(result.error);
+    }
+    expect(result.data).toMatchObject({
+      session: 'NONE',
+      visibility: 'PRIVATE',
+      artworkUrl: 'https://cdn.test/cover.png',
+      coverUrl: 'https://cdn.test/cover.png',
+    });
+  });
+
+  it('locks type, visibility and series while live but allows the current value', async () => {
+    await patchBroadcastPreflight({ title: 'Live now' });
+    await postGoLive();
+    expect(await patchBroadcastPreflight({ visibility: 'FAN_ONLY' })).toEqual({
+      error: 'Not editable while live',
+      status: 409,
+    });
+    const same = await patchBroadcastPreflight({
+      visibility: 'PUBLIC',
+      title: 'Renamed',
+    });
+    expect('data' in same && same.data.title).toBe('Renamed');
+    await postEndBroadcast();
   });
 });

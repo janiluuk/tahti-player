@@ -57,7 +57,10 @@ export const studioRoute = createRoute({
 export const studioGoLiveRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/go-live',
-  validateSearch: (search: Record<string, unknown>): { tab?: string } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { step?: string; tab?: string } => ({
+    step: typeof search.step === 'string' ? search.step : undefined,
     tab: typeof search.tab === 'string' ? search.tab : undefined,
   }),
   component: StudioGoLiveView,

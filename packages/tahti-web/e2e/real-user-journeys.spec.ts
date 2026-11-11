@@ -342,7 +342,7 @@ test('stream manager: stopping a live broadcast requires confirmation after enco
   page,
 }) => {
   await signIn(page);
-  await page.goto('/studio/go-live');
+  await page.goto('/studio/go-live?step=encoder');
 
   // Prep no longer hosts rotation transport controls — those live in the
   // top-nav 24/7 rotation stream manager.
@@ -351,7 +351,9 @@ test('stream manager: stopping a live broadcast requires confirmation after enco
   ).toHaveCount(0);
 
   await page.getByRole('button', { name: 'Test connection' }).click();
-  await expect(page.getByText(/connected/i)).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByText(/connected/i).first()).toBeVisible({
+    timeout: 10_000,
+  });
 
   await page.getByRole('button', { name: /Open live panel/ }).click();
   await page.getByRole('menuitem', { name: '24/7 rotation' }).click();
@@ -365,5 +367,5 @@ test('stream manager: stopping a live broadcast requires confirmation after enco
   await expect(dialog).toContainText('Stop your live stream?');
   await dialog.getByRole('button', { name: 'Cancel' }).click();
   await expect(dialog).toBeHidden();
-  await expect(page.getByText(/connected/i)).toBeVisible();
+  await expect(page.getByText(/connected/i).first()).toBeVisible();
 });

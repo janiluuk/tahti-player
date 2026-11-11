@@ -57,7 +57,7 @@ export function MultistreamStatusPanel({ slug }: { slug: string }) {
       action={
         <ButtonLink
           to="/studio/go-live"
-          search={{ tab: 'destinations' }}
+          search={{ step: 'destinations' }}
           size="sm"
           variant="ghost"
         >
