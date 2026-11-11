@@ -1292,7 +1292,10 @@
       "needsAcknowledgement": "Needs acknowledgement",
       "acknowledge": "Acknowledge",
       "showOlder": "Show older",
-      "loading": "Loading…"
+      "loading": "Loading…",
+      "eventInvites": "Event invites",
+      "acceptInvite": "Accept invite: {{title}}",
+      "declineInvite": "Decline invite: {{title}}"
     },
     "player": {
       "next": "Next",
@@ -1726,6 +1729,7 @@
       "coversBackfillBusy": "Assigning covers…",
       "coversBackfillDone_one": "Assigned a cover to 1 sound",
       "coversBackfillDone_other": "Assigned covers to {{count}} sounds",
+      "coversBackfillSources": "From the provider: {{provider}} · From presets: {{presets}}",
       "coversBackfillNone": "Every sound already has a cover",
       "coversBackfillError": "Could not fill missing covers",
       "soundPinned": ", pinned",

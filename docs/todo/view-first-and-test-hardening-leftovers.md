@@ -15,7 +15,7 @@ changed, because it needs a product call or more than a mechanical fix.
 
 ## Bugs found, not fixed
 
-- [ ] `api/admin/admin-users.ts`: the list and CSV export now send `role=` (tahti-org #1085 filters by the web's account-role split, so studio-tier and free-with-channel artists are found). Left: once #1085 is released, drop the client-side role filter and its page-count fallback.
+- None open.
 
 ## Dead code to decide on (not deleted)
 

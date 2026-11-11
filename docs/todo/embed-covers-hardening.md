@@ -1,7 +1,7 @@
 # Embed covers hardening
 
 **Status:** partial  
-**Updated:** 2026-11-11 (slices 23, 27, 28: tahti-org #1099 thumbnail proxy; the player asks it instead of noembed)  
+**Updated:** 2026-11-11 (slices 17, 18, 20, 24, 25, 29; only 19, an optional nightly worker job, is left)  
 **Follows:** library-sounds-embeds + embed-thumbnails (HISTORY 2026-11-10)
 
 Close the gaps left after Embeds-under-Sounds and the first cover pass:
@@ -41,19 +41,19 @@ Note: the backfill only sees rows with `bannerUrl: null`, but every embed import
 | 14 | player | Soft-fill concurrency limit (e.g. 2–3 in flight) | Done: at most 3 lookups in flight |
 | 15 | player | Soft-fill failure marking (null cache) per provider+uri | Done: empty session value means a known miss |
 | 16 | player | Storybook: Embeds tab row without banner soft-fills | Done: `EmbedSoftFill` play asserts the mock proxy cover |
-| 17 | player | Unit: soft-fill + PATCH called once | Mock fetch + patch |
-| 18 | player | Unit: hearthis soft-fill with `sourceUrl` | Cover path uses page URL |
+| 17 | player | Unit: soft-fill + PATCH called once | Done: `persistSoftCover.test.ts` (one PATCH per sound) |
+| 18 | player | Unit: hearthis soft-fill with `sourceUrl` | Done: `embedThumbnail.test.ts` sends the page URL to the proxy |
 | 19 | org | Optional worker job: nightly embed cover backfill | Ops can run without artist clicking the button |
-| 20 | player | Surfaces covers-backfill result counts (provider vs preset) | Toast / strip distinguishes sources |
+| 20 | player | Surfaces covers-backfill result counts (provider vs preset) | Done: tahti-org #1100 `fromProvider` / `fromPresets`; the toast description splits them |
 | 21 | player | Channel public Embeds: soft-fill only (no PATCH) | Done: SoundCloud panel uses soft-fill and does not write |
 | 22 | player | Artist profile embeds section: same soft-fill path | Done: `ArtistSoundCloudTracks` uses the same soft-fill |
 | 23 | player | Admin ChannelTracksPanel: soft-fill when `bannerUrl` null | Done: soft-fill only, no PATCH |
-| 24 | player | Finnish/en copy if new backfill toast strings appear | i18n keys, not hardcoded English |
-| 25 | player | Document soft-fill + backfill in user-manual Embeds note | One short “covers” paragraph |
+| 24 | player | Finnish/en copy if new backfill toast strings appear | Done: `library.coversBackfill*` in en and fi |
+| 25 | player | Document soft-fill + backfill in user-manual Embeds note | Done: Uploads and tracks → Covers for embeds |
 | 26 | player | E2E: Embeds row without banner gains artwork (mock noembed) | Done: mock Mixcloud row with no banner gets the mock proxy cover |
 | 27 | org | Allowlist / document noembed dependency or replace with first-party oEmbed proxy | Done: #1099 first-party proxy |
 | 28 | player | Prefer first-party `/api/.../oembed-thumb` if org adds proxy | Done: noembed dropped |
-| 29 | player | VIEW-CATALOG / Storybook Missing: no blank embed thumbs | Missing states noted or covered |
+| 29 | player | VIEW-CATALOG / Storybook Missing: no blank embed thumbs | Done: Library Embeds row points at the EmbedSoftFill story |
 | 30 | player | Fold this todo when slices ship; strip INDEX | HISTORY + delete |
 
 ## Deferred

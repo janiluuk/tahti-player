@@ -6686,3 +6686,7 @@ Embed covers come from the first-party `GET /api/v1/embeds/thumbnail` (tahti-org
 ## 2026-11-11 — Edit a release from the public page (0.0.372)
 
 The public release page shows the standard edit icon when the signed-in user owns the release or is a board admin. Signed-out visitors and everyone else do not see it. The link opens the existing Studio release editor in edit mode. The mock app resolves the demo user's release and another artist's release so that editor opens offline.
+
+## 2026-11-11 — Event invites in the popover, cover sources, seek before load (0.0.373)
+
+Pending event tags show at the top of the notifications popover with Accept and Decline, sharing the Studio Invites panel's data. Fill missing covers says how many came from the provider and how many from presets (tahti-org #1100), and the user manual explains embed covers. A seek made while a track is still loading lands once the audio has metadata. Admin People trusts the server role filter. Unit tests, the NotificationEventInvites story and mock-app checks pass.

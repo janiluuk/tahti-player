@@ -564,13 +564,21 @@ export function AudioEngine() {
     if (!audio || seekTarget == null) {
       return;
     }
-    try {
-      audio.currentTime = seekTarget;
-    } catch {
-      // Some live HLS sources reject seeks — ignore.
+    const apply = () => {
+      try {
+        audio.currentTime = seekTarget;
+      } catch {
+        // Some live HLS sources reject seeks — ignore.
+      }
+      clearSeekTarget();
+    };
+    if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) {
+      apply();
+      return;
     }
-    clearSeekTarget();
-  }, [seekTarget, clearSeekTarget]);
+    audio.addEventListener('loadedmetadata', apply, { once: true });
+    return () => audio.removeEventListener('loadedmetadata', apply);
+  }, [seekTarget, clearSeekTarget, elementGeneration]);
 
   return (
     <>

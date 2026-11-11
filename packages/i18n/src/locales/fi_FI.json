@@ -1292,7 +1292,10 @@
       "needsAcknowledgement": "Vaatii kuittauksen",
       "acknowledge": "Kuittaa",
       "showOlder": "Näytä vanhemmat",
-      "loading": "Ladataan…"
+      "loading": "Ladataan…",
+      "eventInvites": "Tapahtumakutsut",
+      "acceptInvite": "Hyväksy kutsu: {{title}}",
+      "declineInvite": "Hylkää kutsu: {{title}}"
     },
     "player": {
       "next": "Seuraava",
@@ -1726,6 +1729,7 @@
       "coversBackfillBusy": "Määritetään kansia…",
       "coversBackfillDone_one": "Kansi määritettiin 1 äänelle",
       "coversBackfillDone_other": "Kannet määritettiin {{count}} äänelle",
+      "coversBackfillSources": "Palvelusta: {{provider}} · Oletuskuvista: {{presets}}",
       "coversBackfillNone": "Jokaisella äänellä on jo kansi",
       "coversBackfillError": "Puuttuvia kansia ei voitu täyttää",
       "soundPinned": ", kiinnitetty",
