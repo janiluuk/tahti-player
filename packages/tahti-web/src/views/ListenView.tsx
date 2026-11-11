@@ -43,8 +43,9 @@ import {
 } from '../components/listen-view/useListenSections';
 import { WelcomeStrip } from '../components/listen-view/WelcomeStrip';
 import { useListenerWidgetBlocks } from '../components/ListenerWidgetsSection';
-import { PageLoading } from '../components/PageStates';
+import { PageEmpty, PageLoading } from '../components/PageStates';
 import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
+import { RemoveWidgetDialog } from '../components/RemoveWidgetDialog';
 import { radioStationIdForPlayable } from '../content/radioStations';
 import { scheduleIdleRoutePrefetch } from '../lib/idleRoutePrefetch';
 import { prefetchListenCardIntent } from '../lib/intentRoutePrefetch';
@@ -133,8 +134,18 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
   const sections = useListenSections(signedIn, user?.id ?? '');
   const listenOrder = useListenerWidgetsStore((s) => s.listenOrder);
   const setListenOrder = useListenerWidgetsStore((s) => s.setListenOrder);
+  const hiddenListenBlockIds = useListenerWidgetsStore(
+    (s) => s.hiddenListenBlockIds,
+  );
+  const hideListenBlock = useListenerWidgetsStore((s) => s.hideListenBlock);
+  const resetListenLayout = useListenerWidgetsStore((s) => s.resetListenLayout);
   const widgetBlocks = useListenerWidgetBlocks();
   const [reordering, setReordering] = useState(false);
+  const [pendingRemove, setPendingRemove] = useState<{
+    id: string;
+    label: string;
+  } | null>(null);
+  const [resetOpen, setResetOpen] = useState(false);
   useEffect(() => scheduleIdleRoutePrefetch(), []);
 
   const playNow = async (slug: string) => {
@@ -311,7 +322,6 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                   defaultLayout="cards"
                   data-testid="listen-recently-played"
                   title={t('listen.recentlyPlayed')}
-                  filterable={false}
                   badge={t('listen.history')}
                   badgeColor="yellow"
                   items={recentItems}
@@ -424,10 +434,10 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
     },
   ];
   const newListener = !signedIn || history.length === 0;
-  const orderedBlocks = orderListenBlocks(
-    newListener ? radioRowFirst(dashboardBlocks) : dashboardBlocks,
-    listenOrder,
-  );
+  const visibleBlocks = (
+    newListener ? radioRowFirst(dashboardBlocks) : dashboardBlocks
+  ).filter((block) => !hiddenListenBlockIds.includes(block.id));
+  const orderedBlocks = orderListenBlocks(visibleBlocks, listenOrder);
 
   return (
     <div className="relative flex w-full min-w-0 flex-col gap-6">
@@ -493,6 +503,16 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                 </Button>
               </Tooltip>
               <AddListenWidgetDialog />
+              {reordering || hiddenListenBlockIds.length > 0 ? (
+                <Button
+                  size="sm"
+                  variant="secondary"
+                  onClick={() => setResetOpen(true)}
+                  data-testid="listen-reset-widgets"
+                >
+                  {t('listenLayout.reset')}
+                </Button>
+              ) : null}
             </>
           ) : undefined
         }
@@ -509,12 +529,51 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           <div className="flex flex-col gap-4" data-testid="listen-dashboard">
             {signedIn ? <GuidelinesBanner /> : null}
             {signedIn ? null : <WelcomeStrip />}
-            <SortableBlocks
-              blocks={orderedBlocks}
-              reordering={reordering}
-              onReorder={setListenOrder}
-            />
+            {orderedBlocks.length === 0 ? (
+              <PageEmpty
+                title={t('listenLayout.emptyTitle')}
+                description={t('listenLayout.emptyDescription')}
+              />
+            ) : (
+              <SortableBlocks
+                blocks={orderedBlocks}
+                reordering={reordering}
+                onReorder={setListenOrder}
+                onRemove={(id) => {
+                  const block = orderedBlocks.find((item) => item.id === id);
+                  setPendingRemove({ id, label: block?.label ?? id });
+                }}
+                removeLabel={(label) => t('listenLayout.remove', { label })}
+              />
+            )}
             {widgetBlocks.dialog}
+            <RemoveWidgetDialog
+              isOpen={pendingRemove != null}
+              label={pendingRemove?.label ?? ''}
+              detail={t('listenLayout.removeDetail', {
+                label: pendingRemove?.label ?? '',
+              })}
+              onCancel={() => setPendingRemove(null)}
+              onConfirm={() => {
+                if (pendingRemove) {
+                  hideListenBlock(pendingRemove.id);
+                }
+                setPendingRemove(null);
+              }}
+            />
+            <RemoveWidgetDialog
+              isOpen={resetOpen}
+              label={t('listenLayout.reset')}
+              title={t('listenLayout.resetTitle')}
+              detail={t('listenLayout.resetDetail')}
+              confirmLabel={t('listenLayout.reset')}
+              onCancel={() => setResetOpen(false)}
+              onConfirm={() => {
+                resetListenLayout();
+                setResetOpen(false);
+                setReordering(false);
+              }}
+            />
           </div>
         ) : null}
       </ViewShell>

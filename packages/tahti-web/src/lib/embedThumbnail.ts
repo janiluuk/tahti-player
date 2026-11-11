@@ -9,7 +9,106 @@ type HearthisTrackPayload = {
   artwork_url_retina?: string | null;
 };
 
-const cache = new Map<string, string | null>();
+const MEMORY = new Map<string, string | null>();
+const PENDING = new Map<string, Promise<string | null>>();
+const STORAGE_PREFIX = 'tahti-web:embed-thumb:';
+const MAX_IN_FLIGHT = 3;
+
+let inFlight = 0;
+const waiters: Array<() => void> = [];
+
+function withLimit<T>(task: () => Promise<T>): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const run = () => {
+      inFlight += 1;
+      task()
+        .then(resolve, reject)
+        .finally(() => {
+          inFlight -= 1;
+          waiters.shift()?.();
+        });
+    };
+    if (inFlight < MAX_IN_FLIGHT) {
+      run();
+    } else {
+      waiters.push(run);
+    }
+  });
+}
+
+function readStored(pageUrl: string): string | null | undefined {
+  if (MEMORY.has(pageUrl)) {
+    return MEMORY.get(pageUrl) ?? null;
+  }
+  try {
+    const raw = sessionStorage.getItem(STORAGE_PREFIX + pageUrl);
+    if (raw === null) {
+      return undefined;
+    }
+    const value = raw === '' ? null : raw;
+    MEMORY.set(pageUrl, value);
+    return value;
+  } catch {
+    return undefined;
+  }
+}
+
+function writeStored(pageUrl: string, value: string | null) {
+  MEMORY.set(pageUrl, value);
+  try {
+    sessionStorage.setItem(STORAGE_PREFIX + pageUrl, value ?? '');
+  } catch {
+    return;
+  }
+}
+
+export function clearEmbedThumbnailMemory() {
+  MEMORY.clear();
+  PENDING.clear();
+}
+
+export function clearEmbedThumbnailCache() {
+  clearEmbedThumbnailMemory();
+  inFlight = 0;
+  waiters.length = 0;
+  try {
+    for (const key of Object.keys(sessionStorage)) {
+      if (key.startsWith(STORAGE_PREFIX)) {
+        sessionStorage.removeItem(key);
+      }
+    }
+  } catch {
+    return;
+  }
+}
+
+function remember(
+  pageUrl: string,
+  load: () => Promise<string | null>,
+): Promise<string | null> {
+  const stored = readStored(pageUrl);
+  if (stored !== undefined) {
+    return Promise.resolve(stored);
+  }
+  const pending = PENDING.get(pageUrl);
+  if (pending) {
+    return pending;
+  }
+  const promise = withLimit(load)
+    .then((value) => {
+      writeStored(pageUrl, value);
+      return value;
+    })
+    .catch(() => {
+      writeStored(pageUrl, null);
+      return null;
+    })
+    .finally(() => {
+      PENDING.delete(pageUrl);
+    });
+  PENDING.set(pageUrl, promise);
+  return promise;
+}
 
 function pageUrlFor(
   provider: EmbedProvider,
@@ -55,22 +154,20 @@ export function hearthisApiUrl(pageUrl: string): string | null {
     : null;
 }
 
-async function lookupThumbnail(
-  provider: EmbedProvider,
-  pageUrl: string,
-): Promise<string | null> {
-  if (provider === 'HEARTHIS') {
-    const apiUrl = hearthisApiUrl(pageUrl);
-    if (!apiUrl) {
-      return null;
-    }
-    const res = await fetch(apiUrl);
-    if (!res.ok) {
-      return null;
-    }
-    const data = (await res.json()) as HearthisTrackPayload;
-    return data.artwork_url_retina?.trim() || data.artwork_url?.trim() || null;
+async function lookupHearthis(pageUrl: string): Promise<string | null> {
+  const apiUrl = hearthisApiUrl(pageUrl);
+  if (!apiUrl) {
+    return null;
   }
+  const res = await fetch(apiUrl);
+  if (!res.ok) {
+    return null;
+  }
+  const data = (await res.json()) as HearthisTrackPayload;
+  return data.artwork_url_retina?.trim() || data.artwork_url?.trim() || null;
+}
+
+async function lookupOembed(pageUrl: string): Promise<string | null> {
   const res = await fetch(
     `https://noembed.com/embed?url=${encodeURIComponent(pageUrl)}`,
   );
@@ -94,15 +191,17 @@ export async function fetchEmbedThumbnail(input: {
   if (!pageUrl) {
     return null;
   }
-  if (cache.has(pageUrl)) {
-    return cache.get(pageUrl) ?? null;
+  return remember(pageUrl, () =>
+    input.provider === 'HEARTHIS'
+      ? lookupHearthis(pageUrl)
+      : lookupOembed(pageUrl),
+  );
+}
+
+export function fetchOembedThumbnail(pageUrl: string): Promise<string | null> {
+  const trimmed = pageUrl.trim();
+  if (!trimmed) {
+    return Promise.resolve(null);
   }
-  try {
-    const thumb = await lookupThumbnail(input.provider, pageUrl);
-    cache.set(pageUrl, thumb);
-    return thumb;
-  } catch {
-    cache.set(pageUrl, null);
-    return null;
-  }
+  return remember(trimmed, () => lookupOembed(trimmed));
 }

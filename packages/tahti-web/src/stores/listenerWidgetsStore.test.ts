@@ -19,6 +19,7 @@ describe('listener widgets store', () => {
       stationOverrides: {},
       savedBrowserStations: [],
       listenOrder: [],
+      hiddenListenBlockIds: [],
     });
   });
 
@@ -263,5 +264,17 @@ describe('listener widgets store', () => {
     ) as { instances: Array<{ surfaces?: string[] }> };
     expect(upgraded.instances[0].surfaces).toEqual(['listen', 'feed']);
     expect(upgraded.instances[1].surfaces).toBeUndefined();
+  });
+
+  it('hides a Listen section without deleting the widget', () => {
+    const store = useListenerWidgetsStore.getState();
+    store.addInstance('youtube', 'https://youtu.be/x', 'Clip');
+    const id = useListenerWidgetsStore.getState().instances[0]?.id;
+    store.hideListenBlock(widgetBlockId(id!));
+    expect(useListenerWidgetsStore.getState().instances).toHaveLength(1);
+    store.resetListenLayout();
+    expect(useListenerWidgetsStore.getState().hiddenListenBlockIds).toEqual([]);
+    expect(useListenerWidgetsStore.getState().listenOrder).toEqual([]);
+    expect(useListenerWidgetsStore.getState().instances).toHaveLength(1);
   });
 });

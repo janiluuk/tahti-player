@@ -12,7 +12,7 @@ Requests from the 2026-11-03 session not shipped yet. Shipped items moved to HIS
 - [ ] "tahti.live" in the top menu: not found in web code or live DOM; ask where it shows (desktop app menu?).
 
 ## Listen / Discover
-- [ ] Recently played: no text search (CardsRow `filterable={false}` is set; verify on live).
+- [x] Recently played: text search. `filterable` is the CardsRow default (on), so the filter box shows once the row has enough items.
 
 ## Track page
 - [ ] Like button placement and icon actions: done in #1800; verify.

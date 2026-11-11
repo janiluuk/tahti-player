@@ -5,6 +5,7 @@ import {
   DEFAULT_ENABLED_STATION_IDS,
   type RadioStation,
 } from '../content/radioStations';
+import { webT } from '../lib/webT';
 
 export const NEWS_WIDGET_TYPE_ID = 'news';
 
@@ -17,6 +18,39 @@ export const isWidgetBlockId = (id: string) => id.startsWith('widget:');
 export const BROWSER_STATIONS_BLOCK_ID = widgetBlockId('browser-stations');
 export const FAVORITES_BLOCK_ID = widgetBlockId('favorites');
 export const LATEST_NEWS_BLOCK_ID = widgetBlockId('latest-news');
+
+const LISTEN_BLOCK_LABEL_KEYS: Record<string, string> = {
+  'recently-played': 'listen.recentlyPlayedAndSelects',
+  selects: 'listen.tahtiSelects',
+  'new-releases': 'listen.newReleases',
+  'on-air': 'listen.liveAndReplays',
+  trending: 'listen.trending',
+  'coming-up': 'listen.comingUp',
+  'new-tracks': 'listen.newTracks',
+  radio: 'nav.radio',
+  'disco-widgets': 'listen.communityWidgets',
+  [BROWSER_STATIONS_BLOCK_ID]: 'listenerWidgetsSectionMore.savedStations',
+  [FAVORITES_BLOCK_ID]: 'listenerWidgetsSectionMore.favorites',
+  [LATEST_NEWS_BLOCK_ID]: 'listenerWidgetsSectionMore.latestNews',
+};
+
+export function listenBlockLabel(
+  id: string,
+  instances: ListenerWidgetInstance[] = [],
+): string {
+  const translate = webT();
+  const key = LISTEN_BLOCK_LABEL_KEYS[id];
+  if (key) {
+    return translate(key as 'nav.radio');
+  }
+  if (isWidgetBlockId(id)) {
+    const instanceId = id.slice('widget:'.length);
+    return (
+      instances.find((instance) => instance.id === instanceId)?.label ?? id
+    );
+  }
+  return id;
+}
 
 const toFront = (order: string[], id: string) => [
   id,
@@ -95,7 +129,12 @@ type ListenerWidgetsState = {
   savedBrowserStations: SavedBrowserStation[];
   /** Listen page block order set from the Order toggle; new widgets go first. */
   listenOrder: string[];
+  /** Sections taken off Listen. Settings (embeds, stations) stay. */
+  hiddenListenBlockIds: string[];
   setListenOrder: (ids: string[]) => void;
+  hideListenBlock: (id: string) => void;
+  showListenBlock: (id: string) => void;
+  resetListenLayout: () => void;
   installType: (typeId: string) => void;
   uninstallType: (typeId: string) => void;
   addInstance: (
@@ -121,8 +160,23 @@ export const useListenerWidgetsStore = create<ListenerWidgetsState>()(
       stationOverrides: {},
       savedBrowserStations: [],
       listenOrder: [],
+      hiddenListenBlockIds: [],
       setListenOrder: (ids) =>
         set((s) => ({ listenOrder: mergeBlockOrder(ids, s.listenOrder) })),
+      hideListenBlock: (id) =>
+        set((s) =>
+          s.hiddenListenBlockIds.includes(id)
+            ? s
+            : { hiddenListenBlockIds: [...s.hiddenListenBlockIds, id] },
+        ),
+      showListenBlock: (id) =>
+        set((s) => ({
+          hiddenListenBlockIds: s.hiddenListenBlockIds.filter(
+            (item) => item !== id,
+          ),
+        })),
+      resetListenLayout: () =>
+        set({ listenOrder: [], hiddenListenBlockIds: [] }),
       installType: (typeId) =>
         set((s) =>
           s.installedTypeIds.includes(typeId)

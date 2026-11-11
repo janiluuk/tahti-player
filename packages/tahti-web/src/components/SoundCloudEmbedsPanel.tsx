@@ -3,7 +3,7 @@ import { useEffect, useState, type FormEvent } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, ExternalLink, Input, MediaArtwork } from '@tahti-player/ui';
+import { Button, ExternalLink, Input } from '@tahti-player/ui';
 
 import {
   addArtistEmbed,
@@ -14,6 +14,7 @@ import {
 import { toastWithUndo } from '../lib/undoToast';
 import { webT } from '../lib/webT';
 import { PageEmpty, PageError } from './PageStates';
+import { SoftMediaArtwork } from './SoftMediaArtwork';
 import { StudioPanel } from './StudioPanel';
 
 const MAX_EMBEDS = 20;
@@ -121,8 +122,9 @@ export function SoundCloudEmbedsPanel() {
             >
               {embeds.map((embed) => (
                 <li key={embed.id} className="flex items-center gap-3 py-2">
-                  <MediaArtwork
-                    src={embed.thumbnailUrl ?? undefined}
+                  <SoftMediaArtwork
+                    src={embed.thumbnailUrl}
+                    pageUrl={embed.url}
                     alt=""
                     seed={embed.id}
                     size="thumb"

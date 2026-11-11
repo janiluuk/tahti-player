@@ -20,8 +20,6 @@ import {
 
 import type { StudioSound } from '../../../api/studio-types';
 import { AddToPlaylistButton } from '../../../components/AddToPlaylistButton';
-import { useHearthisEmbedClaim } from '../../../components/HearthisEmbedHost';
-import { HearthisEmbedSurface } from '../../../components/HearthisEmbedSurface';
 import { StudioSoundRowMenu } from '../../../components/StudioSoundRowMenu';
 import {
   canRetrySoundProcessing,
@@ -33,7 +31,6 @@ import {
   embedSrcFor,
 } from '../../../lib/embedSrc';
 import { useDominantColor } from '../../../lib/useDominantColor';
-import { usePlayerStore } from '../../../stores/playerStore';
 import { formatUploadDate } from './SoundsAmbientList';
 import { soundStatusExtras } from './soundStatusExtras';
 import type { StudioSoundsState } from './useStudioSoundsState';
@@ -87,16 +84,6 @@ export function SoundRow({
     !item.embedProvider &&
     (item.status === 'PENDING' || item.status === 'PROCESSING');
   const rgb = useDominantColor(item.bannerUrl);
-  const currentId = usePlayerStore((s) => s.currentId);
-  const playerStatus = usePlayerStore((s) => s.status);
-  const hearthisActive =
-    item.embedProvider === 'HEARTHIS' &&
-    Boolean(item.embedUri) &&
-    currentId === `sound:${item.id}`;
-  const hearthisPlaying =
-    hearthisActive &&
-    (playerStatus === 'playing' || playerStatus === 'loading');
-  useHearthisEmbedClaim(hearthisActive);
 
   const embedSrc =
     item.embedProvider && item.embedUri
@@ -210,19 +197,6 @@ export function SoundRow({
             </Button>
           </Tooltip>
         )}
-        {hearthisActive && item.embedUri ? (
-          <div
-            className="border-border relative w-full max-w-md basis-full overflow-hidden rounded-lg border contain-paint sm:w-[min(100%,18rem)] sm:basis-auto"
-            data-testid="hearthis-row-embed"
-          >
-            <HearthisEmbedSurface
-              embedUri={item.embedUri}
-              title={item.title}
-              autoplay={hearthisPlaying}
-              compact
-            />
-          </div>
-        ) : null}
         {!item.embedProvider ? (
           <Tooltip content={t('soundRow.downloadOriginal')} side="top">
             <Button

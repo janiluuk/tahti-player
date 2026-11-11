@@ -4,6 +4,9 @@ import { Button, Dialog } from '@tahti-player/ui';
 type Props = {
   isOpen: boolean;
   label: string;
+  title?: string;
+  detail?: string;
+  confirmLabel?: string;
   onCancel: () => void;
   onConfirm: () => void;
 };
@@ -14,21 +17,25 @@ type Props = {
 export function RemoveWidgetDialog({
   isOpen,
   label,
+  title,
+  detail,
+  confirmLabel,
   onCancel,
   onConfirm,
 }: Props) {
   const { t } = useTranslation('web');
   return (
     <Dialog.Root isOpen={isOpen} onClose={onCancel}>
-      <Dialog.Title>Remove {label}?</Dialog.Title>
+      <Dialog.Title>
+        {title ?? t('removeWidgetDialog.title', { label })}
+      </Dialog.Title>
       <Dialog.Description>
-        This takes {label} off your Listen dashboard. You can add it back later
-        from Manage widgets.
+        {detail ?? t('removeWidgetDialog.detail', { label })}
       </Dialog.Description>
       <Dialog.Actions>
         <Dialog.Close>{t('removeWidgetDialog.cancel')}</Dialog.Close>
         <Button variant="secondary" intent="danger" onClick={onConfirm}>
-          {t('removeWidgetDialog.remove')}
+          {confirmLabel ?? t('removeWidgetDialog.remove')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

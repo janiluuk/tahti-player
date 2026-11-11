@@ -270,14 +270,16 @@ export function FullScreenPlayer() {
       data-driving={driving || undefined}
       data-testid="full-screen-player"
     >
-      <div className="bg-background/35 absolute inset-0 backdrop-blur-md">
-        <ChannelVisualizer
-          className="h-full w-full"
-          artworkUrl={coverUrl}
-          engineMode={engineMode}
-          showModeButtons={false}
-        />
-      </div>
+      {embed ? null : (
+        <div className="bg-background/35 absolute inset-0 backdrop-blur-md">
+          <ChannelVisualizer
+            className="h-full w-full"
+            artworkUrl={coverUrl}
+            engineMode={engineMode}
+            showModeButtons={false}
+          />
+        </div>
+      )}
 
       <div className="absolute inset-x-0 top-0 z-20 flex items-start justify-between px-4 pt-[max(1rem,env(safe-area-inset-top))] pb-4">
         <Tooltip content={t('player.backToPlayer')} side="right">
@@ -288,7 +290,7 @@ export function FullScreenPlayer() {
           />
         </Tooltip>
         <div className="flex items-start gap-2">
-          {!driving ? (
+          {!driving && !embed ? (
             <VisualizerModeMenu
               mode={engineMode}
               onModeChange={onEngineModeChange}
@@ -388,77 +390,96 @@ export function FullScreenPlayer() {
           </>
         ) : null}
 
-        <div
-          className={cn(
-            'flex aspect-square shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-2xl',
-            driving
-              ? 'w-[min(20rem,48vh)] sm:w-[min(24rem,52vh)]'
-              : 'w-[min(14rem,30vh)] sm:w-[min(18rem,34vh)] md:w-[min(22rem,36vh)]',
-            isLive
-              ? 'border-white/20 bg-white/10 p-6 inset-ring inset-ring-white/10 backdrop-blur-xl backdrop-saturate-150 sm:p-8'
-              : 'border-border bg-background-secondary',
-          )}
-        >
-          {coverUrl ? (
-            <MediaArtwork
-              src={coverUrl}
-              alt={isLive ? `${artist} logo` : ''}
-              fit={isLive ? 'contain' : 'cover'}
-              imageReveal={false}
-              className="relative size-full"
-            />
-          ) : null}
-        </div>
-
-        <div
-          className={cn(
-            TITLE_OVERLAY,
-            'shrink-0',
-            driving ? 'px-7 py-5' : 'max-w-md',
-          )}
-          data-testid="full-screen-player-title"
-        >
-          {showName ? (
-            <p
-              className={cn(
-                'font-heading text-foreground mb-1.5 truncate font-bold tracking-[0.14em] uppercase',
-                driving ? 'text-sm sm:text-base' : 'text-xs sm:text-sm',
-              )}
+        {embed ? (
+          embedHostedElsewhere ? null : (
+            <div
+              className="flex w-full max-w-2xl flex-col"
+              data-testid="full-screen-player-embed"
             >
-              {showName}
-            </p>
-          ) : null}
-          <h1
-            className={cn(
-              'font-heading text-foreground line-clamp-3 font-extrabold tracking-tight text-balance',
-              driving
-                ? 'text-4xl sm:text-5xl'
-                : 'text-2xl sm:text-3xl md:text-4xl',
-            )}
-          >
-            {trackName}
-          </h1>
-          {artistLine ? (
-            <p
-              className={cn(
-                'font-heading text-foreground mt-2 truncate font-bold',
-                driving ? 'text-xl sm:text-2xl' : 'text-base sm:text-lg',
-              )}
-            >
-              {artistLine}
-            </p>
-          ) : null}
-          {soundId && playable && !driving ? (
-            <div className="mt-3 flex justify-center">
-              <AddToPlaylistButton
-                soundId={soundId}
-                trackTitle={playable.title}
-                variant="secondary"
-                iconOnly={false}
+              <EmbedSurface
+                provider={embed.provider}
+                embedUri={embed.embedUri}
+                title={title}
+                autoplay={restoredPending !== playable?.id}
+                mountKey={reloadNonce}
               />
             </div>
-          ) : null}
-        </div>
+          )
+        ) : (
+          <>
+            <div
+              className={cn(
+                'flex aspect-square shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-2xl',
+                driving
+                  ? 'w-[min(20rem,48vh)] sm:w-[min(24rem,52vh)]'
+                  : 'w-[min(14rem,30vh)] sm:w-[min(18rem,34vh)] md:w-[min(22rem,36vh)]',
+                isLive
+                  ? 'border-white/20 bg-white/10 p-6 inset-ring inset-ring-white/10 backdrop-blur-xl backdrop-saturate-150 sm:p-8'
+                  : 'border-border bg-background-secondary',
+              )}
+            >
+              {coverUrl ? (
+                <MediaArtwork
+                  src={coverUrl}
+                  alt={isLive ? `${artist} logo` : ''}
+                  fit={isLive ? 'contain' : 'cover'}
+                  imageReveal={false}
+                  className="relative size-full"
+                />
+              ) : null}
+            </div>
+
+            <div
+              className={cn(
+                TITLE_OVERLAY,
+                'shrink-0',
+                driving ? 'px-7 py-5' : 'max-w-md',
+              )}
+              data-testid="full-screen-player-title"
+            >
+              {showName ? (
+                <p
+                  className={cn(
+                    'font-heading text-foreground mb-1.5 truncate font-bold tracking-[0.14em] uppercase',
+                    driving ? 'text-sm sm:text-base' : 'text-xs sm:text-sm',
+                  )}
+                >
+                  {showName}
+                </p>
+              ) : null}
+              <h1
+                className={cn(
+                  'font-heading text-foreground line-clamp-3 font-extrabold tracking-tight text-balance',
+                  driving
+                    ? 'text-4xl sm:text-5xl'
+                    : 'text-2xl sm:text-3xl md:text-4xl',
+                )}
+              >
+                {trackName}
+              </h1>
+              {artistLine ? (
+                <p
+                  className={cn(
+                    'font-heading text-foreground mt-2 truncate font-bold',
+                    driving ? 'text-xl sm:text-2xl' : 'text-base sm:text-lg',
+                  )}
+                >
+                  {artistLine}
+                </p>
+              ) : null}
+              {soundId && playable && !driving ? (
+                <div className="mt-3 flex justify-center">
+                  <AddToPlaylistButton
+                    soundId={soundId}
+                    trackTitle={playable.title}
+                    variant="secondary"
+                    iconOnly={false}
+                  />
+                </div>
+              ) : null}
+            </div>
+          </>
+        )}
 
         <div
           className={cn(
@@ -466,15 +487,6 @@ export function FullScreenPlayer() {
             driving ? 'max-w-lg gap-4' : 'max-w-md',
           )}
         >
-          {embed && !embedHostedElsewhere ? (
-            <EmbedSurface
-              provider={embed.provider}
-              embedUri={embed.embedUri}
-              title={title}
-              autoplay={restoredPending !== playable?.id}
-              mountKey={reloadNonce}
-            />
-          ) : null}
           <p
             role="status"
             className="text-foreground-secondary h-4 text-xs tracking-wide uppercase"
@@ -491,8 +503,8 @@ export function FullScreenPlayer() {
               isLive ? (repeatMode === 'off' ? 'off' : 'all') : repeatMode
             }
             showDiscovery={false}
-            showShuffle={!driving}
-            showRepeat={!driving}
+            showShuffle={!driving && !embed}
+            showRepeat={!driving && !embed}
             labels={{
               shuffleOn: isLive
                 ? t('player.shuffleArchiveOnly')
@@ -521,7 +533,7 @@ export function FullScreenPlayer() {
             onShuffleToggle={toggleShuffle}
             onRepeatToggle={cycleRepeat}
           />
-          {isLive && status === 'error' ? (
+          {embed ? null : isLive && status === 'error' ? (
             <div className="text-foreground-secondary text-xs tracking-wide uppercase">
               {t('fullScreenPlayerText.error')}
             </div>
@@ -536,7 +548,7 @@ export function FullScreenPlayer() {
               <ConnectedSeekBar labelClassName={SEEK_LABEL_CHIP} />
             </div>
           )}
-          {!isMobile && !driving && (
+          {!isMobile && !driving && !embed && (
             <PlayerBar.Volume
               value={muted ? 0 : Math.round(volume * 100)}
               onValueChange={(v) => setVolume(v / 100)}

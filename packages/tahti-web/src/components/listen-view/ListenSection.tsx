@@ -50,10 +50,12 @@ export function ListenSection({
     >
       <SectionTitle title={title} badge={badge} badgeColor={badgeColor} />
       {status === 'loading' ? (
-        <PageLoading label={`Loading ${title.toLowerCase()}…`} />
+        <PageLoading
+          label={t('listenSection.loading', { title: title.toLowerCase() })}
+        />
       ) : status === 'error' ? (
         <PageError
-          title={`${title} couldn't load`}
+          title={t('listenSection.couldNotLoad', { title })}
           description={t('loadErrors.theRestOfListenStillWorks')}
           onRetry={onRetry}
         />

@@ -1,3 +1,13 @@
+## 2026-11-11 - Embed replaces the player (0.0.366)
+
+An embed-only track (no stream URL the audio engine can play) replaces the
+player bar and the full-screen player. Artwork, title, seek, and volume are
+not stacked under the provider widget. Skip, queue, and expand/back stay.
+A stream URL still uses the normal player. Listen can hide a section while
+reordering and put it back from Add widget or Reset widgets. SoundCloud
+covers soft-fill through noembed with a session cache and a limit of three
+lookups. Recently played search uses the CardsRow filter.
+
 ## 2026-11-11 - Go live stepper (0.0.365)
 
 Studio → Broadcast → Go live opens on the first required step still to do.

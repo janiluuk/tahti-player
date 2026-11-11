@@ -1,9 +1,15 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { fetchEmbedThumbnail, hearthisApiUrl } from './embedThumbnail';
+import {
+  clearEmbedThumbnailCache,
+  clearEmbedThumbnailMemory,
+  fetchEmbedThumbnail,
+  hearthisApiUrl,
+} from './embedThumbnail';
 
 describe('fetchEmbedThumbnail', () => {
   afterEach(() => {
+    clearEmbedThumbnailCache();
     vi.unstubAllGlobals();
     vi.restoreAllMocks();
   });
@@ -78,6 +84,58 @@ describe('fetchEmbedThumbnail', () => {
     await expect(fetchEmbedThumbnail(input)).resolves.toBeNull();
     await expect(fetchEmbedThumbnail(input)).resolves.toBeNull();
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps a failed lookup in session storage', async () => {
+    const fetchMock = vi.fn().mockResolvedValue({ ok: false });
+    vi.stubGlobal('fetch', fetchMock);
+    const input = {
+      provider: 'SPOTIFY' as const,
+      embedUri: 'cached-miss',
+    };
+    await fetchEmbedThumbnail(input);
+    clearEmbedThumbnailMemory();
+    await fetchEmbedThumbnail(input);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('looks up at most three covers at once', async () => {
+    const resolvers: Array<(value: unknown) => void> = [];
+    const fetchMock = vi.fn().mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolvers.push(resolve);
+        }),
+    );
+    vi.stubGlobal('fetch', fetchMock);
+    const pending = Promise.all(
+      ['a', 'b', 'c', 'd', 'e'].map((id) =>
+        fetchEmbedThumbnail({ provider: 'SPOTIFY', embedUri: id }),
+      ),
+    );
+    await Promise.resolve();
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    const ok = () => ({
+      ok: true,
+      json: async () => ({ thumbnail_url: 'https://cdn.example/a.jpg' }),
+    });
+    resolvers.shift()?.(ok());
+    for (let i = 0; i < 8; i += 1) {
+      await Promise.resolve();
+    }
+    expect(fetchMock).toHaveBeenCalledTimes(4);
+    for (let guard = 0; guard < 8; guard += 1) {
+      const batch = resolvers.splice(0);
+      if (batch.length === 0) {
+        break;
+      }
+      batch.forEach((resolve) => resolve(ok()));
+      for (let i = 0; i < 8; i += 1) {
+        await Promise.resolve();
+      }
+    }
+    await pending;
+    expect(fetchMock).toHaveBeenCalledTimes(5);
   });
 });
 

@@ -25,7 +25,6 @@ import { radioStationIdForPlayable } from '../content/radioStations';
 import { useIsMobile } from '../hooks/useIsMobile';
 import { usePlaybackErrorToast } from '../hooks/usePlaybackErrorToast';
 import { usePlayerStationNowPlaying } from '../hooks/useStationNowPlaying';
-import { EMBED_PROVIDER_LABEL } from '../lib/embedSrc';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { streamFailureLabel } from '../lib/streamFailure';
 import { useAuthStore } from '../stores/authStore';
@@ -71,6 +70,7 @@ export function ConnectedPlayerBar() {
   const setFullScreenPlayerOpen = useLayoutStore(
     (s) => s.setFullScreenPlayerOpen,
   );
+  const fullScreenPlayerOpen = useLayoutStore((s) => s.fullScreenPlayerOpen);
 
   const [signedOutPopoverOpen, setSignedOutPopoverOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -218,18 +218,6 @@ export function ConnectedPlayerBar() {
         onShuffleToggle={toggleShuffle}
         onRepeatToggle={cycleRepeat}
       />
-      {embed ? (
-        <p
-          className="text-foreground-secondary text-xs"
-          data-testid="player-embed-note"
-        >
-          Plays in the{' '}
-          {EMBED_PROVIDER_LABEL[
-            embed.provider.toUpperCase() as keyof typeof EMBED_PROVIDER_LABEL
-          ] ?? embed.provider}{' '}
-          player above
-        </p>
-      ) : null}
       {status === 'error' ? (
         <div
           className="flex flex-wrap items-center gap-x-2"
@@ -322,31 +310,80 @@ export function ConnectedPlayerBar() {
   const seekBar = isLive || embed ? null : <ConnectedSeekBar />;
 
   const embedHostedInRow = Boolean(embed) && hearthisHostedInRow;
-  // The provider's widget at its own size, in a strip above the bar. It is
-  // the transport for the track, so the bar leaves out play/pause.
-  const embedStrip =
-    embed && !embedHostedInRow ? (
-      <div
-        className="flex w-full justify-center px-4 pt-2"
-        data-testid="hearthis-player-embed"
-      >
-        <div className="w-full max-w-2xl">
-          <EmbedSurface
-            provider={embed.provider}
-            embedUri={embed.embedUri}
-            title={title}
-            autoplay={restoredPending !== playable?.id}
-            mountKey={reloadNonce}
-            compact
-          />
-        </div>
-      </div>
-    ) : null;
 
   const barShellClass = cn(
     'flex w-full shrink-0 flex-col',
     playerBarEnterClass,
   );
+
+  if (embed) {
+    const skipControls = (
+      <PlayerBar.Controls
+        hidePlayPause
+        showShuffle={false}
+        showRepeat={false}
+        isPlaying={isPlaying}
+        isLoading={isLoading}
+        isShuffleActive={false}
+        repeatMode="off"
+        showDiscovery={false}
+        labels={{
+          shuffleOn: t('player.shuffleOn'),
+          shuffleOff: t('player.shuffleOff'),
+          repeatOff: t('player.repeatOff'),
+          repeatAll: t('player.repeatAll'),
+          repeatOne: t('player.repeatOne'),
+          next: t('player.next'),
+          previous: t('player.previous'),
+          play: t('actions.playItem', { title }),
+          pause: t('actions.pauseItem', { title }),
+        }}
+        onPlayPause={onPlayPause}
+        onNext={next}
+        onPrevious={previous}
+        onShuffleToggle={toggleShuffle}
+        onRepeatToggle={cycleRepeat}
+      />
+    );
+    return (
+      <div
+        className={cn(
+          barShellClass,
+          'bg-background-secondary border-border border-t',
+        )}
+        data-testid={isMobile ? 'mobile-player-bar' : 'player-embed-host'}
+      >
+        {embedHostedInRow || fullScreenPlayerOpen ? null : (
+          <div className="w-full px-4 pt-2" data-testid="hearthis-player-embed">
+            <EmbedSurface
+              provider={embed.provider}
+              embedUri={embed.embedUri}
+              title={title}
+              autoplay={restoredPending !== playable?.id}
+              mountKey={reloadNonce}
+            />
+          </div>
+        )}
+        <div className="flex items-center justify-end gap-2 px-4 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+          {skipControls}
+          {isMobile ? null : (
+            <Tooltip content={t('player.openFullScreen')} side="top">
+              <Button
+                size="icon-sm"
+                variant="text"
+                onClick={() => setFullScreenPlayerOpen(true)}
+                aria-label={t('player.openFullScreen')}
+                data-testid="expand-full-screen-player"
+              >
+                <Maximize2Icon size={16} />
+              </Button>
+            </Tooltip>
+          )}
+          {queueButton}
+        </div>
+      </div>
+    );
+  }
 
   if (isMobile) {
     return (
@@ -357,7 +394,6 @@ export function ConnectedPlayerBar() {
         )}
         data-testid="mobile-player-bar"
       >
-        {embedStrip}
         {seekBar ? <div className="px-4 pt-2">{seekBar}</div> : null}
         <div className="flex w-full items-center gap-3 px-4 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
           <Button
@@ -397,7 +433,6 @@ export function ConnectedPlayerBar() {
 
   return (
     <div className={barShellClass}>
-      {embedStrip}
       <PlayerBar
         left={
           <div className="flex min-w-0 items-center gap-2">

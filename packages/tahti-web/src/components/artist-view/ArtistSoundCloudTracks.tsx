@@ -1,7 +1,7 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { ExternalLink, MediaArtwork, SectionTitle } from '@tahti-player/ui';
+import { ExternalLink, SectionTitle } from '@tahti-player/ui';
 
 import {
   fetchChannelSoundCloudEmbeds,
@@ -9,6 +9,7 @@ import {
   type ChannelSoundCloudEmbed,
 } from '../../api/channel-embeds';
 import { webT } from '../../lib/webT';
+import { SoftMediaArtwork } from '../SoftMediaArtwork';
 import { SourceServiceIcon } from '../SourceServiceIcon';
 
 /**
@@ -64,8 +65,9 @@ export function ArtistSoundCloudTracks({
           return (
             <li key={embed.id} className="flex flex-col gap-2">
               <div className="flex items-center gap-3">
-                <MediaArtwork
-                  src={embed.thumbnailUrl ?? undefined}
+                <SoftMediaArtwork
+                  src={embed.thumbnailUrl}
+                  pageUrl={embed.url}
                   alt=""
                   seed={embed.id}
                   size="thumb"
