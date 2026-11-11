@@ -112,27 +112,28 @@ export function EngagementSection({
         <div className="border-border mt-4 flex flex-wrap items-center justify-between gap-3 border-t pt-4 text-sm">
           <span className="text-foreground-secondary">
             {grant?.eligible
-              ? `Estimated ${grant.year} grant share`
-              : `Progress toward ${grant?.year ?? new Date().getFullYear()} grant eligibility`}
+              ? t('overviewTab.estimatedGrantShare', { year: grant.year })
+              : t('overviewTab.grantProgress', {
+                  year: grant?.year ?? new Date().getFullYear(),
+                })}
           </span>
           <strong>
             {grant?.eligible
               ? `€${((grant.estimateCents ?? 0) / 100).toFixed(2)}`
-              : `${grant?.units ?? 0} units`}
+              : t('overviewTab.units', { count: grant?.units ?? 0 })}
           </strong>
         </div>
       </StudioPanel>
 
       <p className="text-foreground-secondary text-xs">
-        Fan subscription payouts and grant history remain under{' '}
+        {t('overviewTab.payoutsUnder')}{' '}
         <Link
           to="/studio/audience"
           className="underline-offset-2 hover:underline"
         >
           {t('overviewTab.revenue')}
         </Link>
-        . Listener geography is aggregated and does not identify individual
-        listeners.
+        {t('overviewTab.geographyNote')}
       </p>
     </div>
   );

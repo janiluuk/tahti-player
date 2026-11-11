@@ -6657,7 +6657,13 @@
     "overviewTab": {
       "revenue": "Revenue",
       "keyMetrics": "Key metrics",
-      "engagementUnits": "Engagement units"
+      "engagementUnits": "Engagement units",
+      "estimatedGrantShare": "Estimated {{year}} grant share",
+      "grantProgress": "Progress toward {{year}} grant eligibility",
+      "units_one": "1 unit",
+      "units_other": "{{count}} units",
+      "payoutsUnder": "Fan subscription payouts and grant history remain under",
+      "geographyNote": ". Listener geography is aggregated and does not identify individual listeners."
     },
     "hourlyDialog": {
       "distributionOfPlaysAcrossThe": "Distribution of plays across the day. Click another day on the chart to compare.",
@@ -8474,7 +8480,28 @@
       "memberRegister": "Member register",
       "passed": "Passed",
       "failed": "Failed",
-      "deferred": "Deferred"
+      "deferred": "Deferred",
+      "governanceItem": "Governance item",
+      "voted": "Voted",
+      "votedChoice": "Voted {{choice}}",
+      "votedForTopic": "Voted for topic",
+      "removedVote": "Removed vote",
+      "commented": "Commented",
+      "memberMotionsDesc": "Open member motions and the public governance portal.",
+      "openCount_one": "1 open",
+      "openCount_other": "{{count}} open",
+      "venueQueueDesc": "Review and verify venue submissions for the events calendar.",
+      "pendingCount_one": "1 pending",
+      "pendingCount_other": "{{count}} pending",
+      "annualReportDesc": "Generate and store the yearly nonprofit activity report.",
+      "lastYear": "Last: {{year}}",
+      "boardResolutionsDesc": "Record and publish formal board decisions and vote outcomes — form below.",
+      "thisYearCount_one": "1 this year",
+      "thisYearCount_other": "{{count}} this year",
+      "agmDesc": "Agenda builder, open motions, member notice checklist, and minutes links.",
+      "grantsDesc": "Yearly grant cycles, applications, and payout tracking.",
+      "auditLogDesc": "Searchable log of privileged actions across the platform.",
+      "memberRegisterDesc": "Full member list, exportable for the AGM notice mailing."
     },
     "bulkEditBarMore": {
       "leaveAsIs": "Leave as is",
@@ -11728,7 +11755,9 @@
     },
     "subscribeViewStates": {
       "starting": "Starting…",
-      "subscribe": "Subscribe"
+      "subscribe": "Subscribe",
+      "checkoutNotStripe": "Checkout URL was not from Stripe",
+      "takingYouToCheckout": "Taking you to checkout…"
     },
     "trackAccessGateStates": {
       "subscribeInstead": "Subscribe instead",
