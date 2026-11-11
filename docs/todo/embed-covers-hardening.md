@@ -1,18 +1,17 @@
 # Embed covers hardening
 
 **Status:** partial  
-**Updated:** 2026-11-11 (slices 16 and 26: Embeds tab soft-fills a missing cover in Storybook and the mock e2e)  
+**Updated:** 2026-11-11 (slices 5–6 landed on main as tahti-org #1098; #1094 and #1095 stay open only because those branches cannot be force-pushed)  
 **Follows:** library-sounds-embeds + embed-thumbnails (HISTORY 2026-11-10)
 
 Close the gaps left after Embeds-under-Sounds and the first cover pass:
 provider-accurate backfill beyond hearthis, persist client soft-fills,
 hearthis soft-fill when `embedSourceUrl` exists, caching, and coverage.
 
-## Shipped (2026-11-11, slices 1–10, PRs open)
+## Shipped (2026-11-11, slices 1–10 landed)
 
 - 1–4: tahti-org #1093. The backfill asks Mixcloud (API pictures), Spotify (public oEmbed) and Bandcamp (`og:image` from an https `*.bandcamp.com` URL; no Bandcamp enum exists) before presets. Mikseri is skipped on purpose because its embed page has no artwork and no public cover endpoint exists.
-- 5: tahti-org #1094 (on #1093). At most 25 lookups, 5 s each, 20 s total; rows past the cap get presets.
-- 6: tahti-org #1095 (on #1094). Route test with stubbed `fetch`.
+- 5–6: tahti-org #1098. At most 25 lookups, 5 s each, 20 s total; rows past the cap get presets. The route test stubs `fetch` for Mixcloud and Spotify. The same commits were #1094 and #1095, which still target the already-merged cover branches because that repo rejects force-push.
 - 7: tahti-org #1096. `SoundViewSchema` names `bannerUrl`/`embed*`. `embedProvider` stays a string because a nullable enum in the list's `anyOf` union made Fastify answer 500.
 - 8 (+18): tahti-player #1998. Hearthis soft-fill reads `api-v2.hearthis.at/<user>/<track>/` artwork (noembed has no hearthis provider).
 - 9 (+17): tahti-player #1999. `EmbedTrackRow onSoftArtwork` → `persistSoftCover` PATCHes `bannerUrl` once per sound per session (Library → Embeds, Sounds embed cards).
@@ -28,8 +27,8 @@ Note: the backfill only sees rows with `bannerUrl: null`, but every embed import
 | 2 | org | Covers backfill: Spotify provider artwork before presets | Spotify embeds get album art URL |
 | 3 | org | Covers backfill: Bandcamp provider artwork before presets | Bandcamp embeds get cover when resolvable |
 | 4 | org | Covers backfill: Mikseri provider artwork (or document skip) | Mikseri covered or explicitly deferred with reason |
-| 5 | org | Cap provider lookups per backfill request + timeout | No hung / spammy runs; presets still fill the rest |
-| 6 | org | Unit: backfill restores Mixcloud/Spotify cover when mocked | Tests without live provider calls |
+| 5 | org | Cap provider lookups per backfill request + timeout | Done: #1098, 25 lookups, 5 s each, 20 s total |
+| 6 | org | Unit: backfill restores Mixcloud/Spotify cover when mocked | Done: #1098 route test with stubbed `fetch` |
 | 7 | org | Expose `embedSourceUrl` on Sound list DTO / OpenAPI if missing | Client can soft-fill hearthis with a page URL |
 | 8 | player | Soft-fill hearthis when `embedSourceUrl` is set (noembed or hearthis oembed) | Hearthis rows without `bannerUrl` get a thumb |
 | 9 | player | After soft-fill success, `PATCH` sound `bannerUrl` once | Soft fill persists; next load skips network |
