@@ -6694,3 +6694,7 @@ Pending event tags show at the top of the notifications popover with Accept and 
 ## 2026-11-11 — Release track stems (0.0.374)
 
 Studio release Advanced tab can upload, replace, play and remove stems (vocals, drums, bass, other) on each track. Listeners see and play those stems on the release smart link, the profile tracklist dialog and the linked track page when the release is already visible. Mock API supports the flow under `VITE_FORCE_MOCK`.
+
+## 2026-11-11 — Phone track rows stay aligned (0.0.375)
+
+Ambient track rows keep the cover, title and waveform on one line at every density, including a 390 px phone. Phone covers are larger (128 / 112 / 80 px). Desktop cover sizes stay as they were.
