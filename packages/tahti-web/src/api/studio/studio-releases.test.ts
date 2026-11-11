@@ -1,6 +1,50 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { deleteStudioRelease, patchStudioRelease } from './studio-releases';
+import { setMockSessionUser } from '../mock-session';
+import {
+  deleteStudioRelease,
+  fetchStudioRelease,
+  patchStudioRelease,
+} from './studio-releases';
+
+describe('fetchStudioRelease mock', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    setMockSessionUser(null);
+  });
+
+  it('loads the demo user’s own release by profile id', async () => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+    setMockSessionUser({
+      id: 'mock-demo',
+      email: 'demo@tahti.live',
+      username: 'demo',
+      displayName: 'Demo Artist',
+      role: 'ARTIST',
+      isMember: true,
+    });
+    const result = await fetchStudioRelease('demo-rel-1');
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.data.smartLinkSlug).toBe('demo-release-1');
+    expect(result.ok && result.data.title).toBe('First Light EP');
+  });
+
+  it('loads another artist’s release by id for an admin editor open', async () => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+    setMockSessionUser({
+      id: 'mock-board',
+      email: 'board@tahti.live',
+      username: 'board-jani',
+      displayName: 'Jani (Board)',
+      role: 'BOARD',
+      isBoard: true,
+      isMember: true,
+    });
+    const result = await fetchStudioRelease('northern-lights-rel-1');
+    expect(result.ok).toBe(true);
+    expect(result.ok && result.data.title).toBe('First Light EP');
+  });
+});
 
 describe('patchStudioRelease', () => {
   afterEach(() => {

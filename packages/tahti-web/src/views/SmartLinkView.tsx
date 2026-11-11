@@ -8,6 +8,7 @@ import {
   ButtonAnchor,
   ButtonLink,
   ClampedText,
+  EditIconLink,
   ExternalLink,
 } from '@tahti-player/ui';
 
@@ -25,6 +26,7 @@ import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { ReleaseTrackDownloads } from '../components/ReleaseTrackDownloads';
 import { ReportButton } from '../components/ReportButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
+import { hasAccountRole } from '../lib/accountRoles';
 import { resolveArtworkVisualizerPreset } from '../lib/artworkVisualizer';
 import { dspServiceLabel } from '../lib/dspServices';
 import { releaseTypeLabel } from '../lib/releaseLabels';
@@ -109,6 +111,7 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
   }
 
   const isOwner = Boolean(me && me.username === data.artist.username);
+  const canEdit = isOwner || hasAccountRole(me, 'BOARD');
   const targets = Object.entries(data.targets).filter(([, url]) => url?.trim());
   const releaseYear = data.release.releaseDate
     ? new Date(data.release.releaseDate).getFullYear()
@@ -183,6 +186,15 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
         stats={headerStats}
         actions={
           <>
+            {canEdit ? (
+              <EditIconLink
+                to="/studio/releases/$id"
+                params={{ id: data.release.id }}
+                search={{ edit: true }}
+                label={t('actions.editInStudio')}
+                className="bg-background border-border rounded-md border-(length:--border-width)"
+              />
+            ) : null}
             <EmbedButton target={{ kind: 'release', id: data.release.id }} />
             {isOwner ? null : (
               <ReportButton

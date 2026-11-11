@@ -80,6 +80,53 @@ describe('SmartLinkView', () => {
     ).toBeNull();
   });
 
+  it('shows the Studio edit link to the release owner', async () => {
+    useAuthStore.setState({ user: { username: 'tahti' } as AuthUser });
+    await renderSmartLink({});
+    const edit = within(screen.getByTestId('release-social-header')).getByRole(
+      'link',
+      { name: 'Edit in Studio' },
+    );
+    expect(edit.getAttribute('href')).toBe('/studio/releases/r1?edit=true');
+  });
+
+  it('shows the Studio edit link to a board admin', async () => {
+    useAuthStore.setState({
+      user: {
+        username: 'board-jani',
+        role: 'BOARD',
+        isBoard: true,
+      } as AuthUser,
+    });
+    await renderSmartLink({});
+    expect(
+      within(screen.getByTestId('release-social-header')).getByRole('link', {
+        name: 'Edit in Studio',
+      }),
+    ).toBeTruthy();
+  });
+
+  it('hides the Studio edit link from a non-owner listener', async () => {
+    useAuthStore.setState({
+      user: { username: 'listener-liina', role: 'LISTENER' } as AuthUser,
+    });
+    await renderSmartLink({});
+    expect(
+      within(screen.getByTestId('release-social-header')).queryByRole('link', {
+        name: 'Edit in Studio',
+      }),
+    ).toBeNull();
+  });
+
+  it('hides the Studio edit link when signed out', async () => {
+    await renderSmartLink({});
+    expect(
+      within(screen.getByTestId('release-social-header')).queryByRole('link', {
+        name: 'Edit in Studio',
+      }),
+    ).toBeNull();
+  });
+
   it('shows the "Powered by Tahti" footer linking home when turned on', async () => {
     await renderSmartLink({ showPoweredByFooter: true });
     const link = screen.getByRole('link', { name: 'Powered by Tahti' });

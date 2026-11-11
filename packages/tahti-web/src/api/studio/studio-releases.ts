@@ -1,6 +1,7 @@
 import type { FetchMeta } from '../client';
-import { DEMO_MP3 } from '../mock';
+import { DEMO_MP3, mockProfile } from '../mock';
 import { mockFixture } from '../mock-overrides';
+import { getMockSessionUser } from '../mock-session';
 import { apiErrorMeta, isForceMock } from '../mode';
 import type {
   FingerprintMatch,
@@ -12,8 +13,46 @@ import { requestJson } from './studio-request';
 
 // ── Releases ────────────────────────────────────────────────────────────────
 
+function studioReleaseFromProfile(
+  username: string,
+  releaseId?: string,
+): StudioRelease[] {
+  const profile = mockProfile(username);
+  return profile.releases
+    .filter((release) => !releaseId || release.id === releaseId)
+    .map((release) => ({
+      id: release.id,
+      title: release.title,
+      type: release.type ?? 'EP',
+      state: 'PUBLISHED',
+      releaseDate: (release.releaseDate ?? '2026-01-01').slice(0, 10),
+      description: release.description ?? null,
+      artworkUrl: release.artworkUrl ?? null,
+      smartLinkSlug: release.smartLinkSlug ?? `${username}-release-1`,
+      smartLinkViewCount: 42,
+      showPoweredByFooter: false,
+      pinnedAt: release.pinnedAt ?? null,
+      tracks: (release.tracks ?? []).map((track, index) => ({
+        id: `${release.id}-track-${track.position ?? index + 1}`,
+        position: track.position ?? index + 1,
+        title: track.title,
+        soundId: track.soundId ?? null,
+        status: 'READY',
+        durationSec: track.durationSec ?? null,
+        sourceKey: track.playUrl
+          ? `releases/mock/${release.id}-${index}.wav`
+          : undefined,
+      })),
+      _count: { tracks: release.tracks?.length ?? 0 },
+    }));
+}
+
 function mockStudioReleaseRows(): StudioRelease[] {
-  return [
+  const session = getMockSessionUser();
+  const owned = session?.username
+    ? studioReleaseFromProfile(session.username)
+    : [];
+  const fixtures: StudioRelease[] = [
     {
       id: 'rel-mock-1',
       title: 'After Hours',
@@ -87,6 +126,20 @@ function mockStudioReleaseRows(): StudioRelease[] {
       _count: { tracks: 1 },
     },
   ];
+  const seen = new Set(owned.map((release) => release.id));
+  return [...owned, ...fixtures.filter((release) => !seen.has(release.id))];
+}
+
+function mockStudioReleaseById(id: string): StudioRelease | null {
+  const fromList = mockStudioReleaseRows().find((release) => release.id === id);
+  if (fromList) {
+    return fromList;
+  }
+  const match = id.match(/^(.+)-rel-\d+$/);
+  if (!match?.[1]) {
+    return null;
+  }
+  return studioReleaseFromProfile(match[1], id)[0] ?? null;
 }
 
 export async function fetchStudioReleases(): Promise<{
@@ -94,12 +147,13 @@ export async function fetchStudioReleases(): Promise<{
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
+    const releases = mockStudioReleaseRows();
     return {
       data: mockFixture('studioReleases', {
         page: 1,
         limit: 100,
-        total: 3,
-        releases: mockStudioReleaseRows(),
+        total: releases.length,
+        releases,
       }),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
@@ -121,8 +175,7 @@ export async function fetchStudioRelease(
   id: string,
 ): Promise<{ ok: true; data: StudioRelease } | { ok: false; error: string }> {
   if (isForceMock()) {
-    const { data } = await fetchStudioReleases();
-    const release = data.releases.find((r) => r.id === id);
+    const release = mockStudioReleaseById(id);
     return release
       ? { ok: true, data: release }
       : { ok: false, error: 'Release not found' };
@@ -154,7 +207,7 @@ export async function patchStudioRelease(
     return {
       ok: true,
       data: {
-        ...(mockStudioReleaseRows().find((row) => row.id === id) ?? {
+        ...(mockStudioReleaseById(id) ?? {
           id,
           title: 'Mock EP',
           type: 'EP',
