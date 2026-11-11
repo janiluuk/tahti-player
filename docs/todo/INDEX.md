@@ -30,7 +30,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
 | partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: next 30 slices (failed[] toasts, facets+filter, isFallback, clear filters; org API) |
-| open    | [embed-covers-hardening.md](embed-covers-hardening.md) | Next 30: provider backfill beyond hearthis, persist soft-fill, hearthis sourceUrl, cache, Storybook/e2e |
+| partial | [embed-covers-hardening.md](embed-covers-hardening.md) | Slices 1–10 (+17, 18) in PRs (org #1093–#1096, web #1998–#2000); left: SoundCloud panel, cache, concurrency, Storybook/e2e, public surfaces, noembed proxy |
 | open    | [listen-reorder-remove-widget.md](listen-reorder-remove-widget.md) | Listen reorder mode: remove a widget with confirm (add-back or Reset widgets → defaults) |
 | partial | [server-peaks-in-track-lists.md](server-peaks-in-track-lists.md) | Server waveform peaks on every track list (search, Selects, New to you, profile fallback); left: studio collections, radio/feed |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |

@@ -1,12 +1,24 @@
 # Embed covers hardening
 
-**Status:** open  
-**Updated:** 2026-11-10  
+**Status:** partial  
+**Updated:** 2026-11-11  
 **Follows:** library-sounds-embeds + embed-thumbnails (HISTORY 2026-11-10)
 
 Close the gaps left after Embeds-under-Sounds and the first cover pass:
 provider-accurate backfill beyond hearthis, persist client soft-fills,
 hearthis soft-fill when `embedSourceUrl` exists, caching, and coverage.
+
+## Shipped (2026-11-11, slices 1–10, PRs open)
+
+- 1–4: tahti-org #1093. The backfill asks Mixcloud (API pictures), Spotify (public oEmbed) and Bandcamp (`og:image` from an https `*.bandcamp.com` URL; no Bandcamp enum exists) before presets. Mikseri is skipped on purpose because its embed page has no artwork and no public cover endpoint exists.
+- 5: tahti-org #1094 (on #1093). At most 25 lookups, 5 s each, 20 s total; rows past the cap get presets.
+- 6: tahti-org #1095 (on #1094). Route test with stubbed `fetch`.
+- 7: tahti-org #1096. `SoundViewSchema` names `bannerUrl`/`embed*`. `embedProvider` stays a string because a nullable enum in the list's `anyOf` union made Fastify answer 500.
+- 8 (+18): tahti-player #1998. Hearthis soft-fill reads `api-v2.hearthis.at/<user>/<track>/` artwork (noembed has no hearthis provider).
+- 9 (+17): tahti-player #1999. `EmbedTrackRow onSoftArtwork` → `persistSoftCover` PATCHes `bannerUrl` once per sound per session (Library → Embeds, Sounds embed cards).
+- 10: tahti-player #2000 (on #1999). No write when signed out, without a channel, or before the profile loads.
+
+Note: the backfill only sees rows with `bannerUrl: null`, but every embed import calls `assignPresetCovers` right after create. Embeds imported that way already hold a preset and never get provider art from the backfill. Whether to replace presets with provider art (by matching against the preset URLs) is a product call.
 
 ## Next 30 slices
 
