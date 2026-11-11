@@ -43,7 +43,10 @@ export function ReleaseTrackStemsList({
       <p className="text-foreground-secondary text-xs font-medium tracking-wide uppercase">
         {t('releaseStems.heading')}
       </p>
-      <ul className="flex flex-col gap-1">
+      <ul
+        className="flex flex-col gap-1"
+        aria-label={t('releaseTrackStems.listAria', { title: trackTitle })}
+      >
         {ready.map((stem) => {
           const streamUrl = stem.audioUrl ?? stem.playUrl ?? '';
           return (

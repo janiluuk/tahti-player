@@ -40,7 +40,11 @@ export const Default: Story = {
     await expect(
       canvas.getByRole('list', { name: /Stems for Moonlight Drive/i }),
     ).toBeInTheDocument();
-    await userEvent.click(canvas.getByRole('button', { name: 'Play Vocals' }));
+    await userEvent.click(
+      canvas.getByRole('button', {
+        name: 'Play Vocals stem for Moonlight Drive',
+      }),
+    );
   },
 };
 
