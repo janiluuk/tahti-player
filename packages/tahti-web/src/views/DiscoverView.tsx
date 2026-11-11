@@ -4,6 +4,7 @@ import {
   CompassIcon,
   MapPinIcon,
   NewspaperIcon,
+  PartyPopperIcon,
   PlusIcon,
   SlidersHorizontalIcon,
   UsersIcon,
@@ -53,6 +54,10 @@ import type {
 import { DirectoryArtistsBrowser } from '../components/DirectoryArtistsBrowser';
 import { DiscoverAddWidgetButton } from '../components/discover/DiscoverAddWidgetButton';
 import { DiscoverFeedPanel } from '../components/discover/DiscoverFeedPanel';
+import {
+  DiscoverPartiesPanel,
+  DiscoverPartiesRow,
+} from '../components/discover/DiscoverPartiesPanel';
 import {
   DiscoverWaveformPlayer,
   type DiscoverSelection,
@@ -107,6 +112,7 @@ const DISCOVER_TABS: Array<{
 }> = [
   { id: 'discover', labelKey: 'discover.tabDiscover', icon: CompassIcon },
   { id: 'feed', labelKey: 'discover.tabFeed', icon: NewspaperIcon },
+  { id: 'parties', labelKey: 'discover.tabParties', icon: PartyPopperIcon },
   { id: 'artists', labelKey: 'discover.tabArtists', icon: UsersIcon },
   { id: 'groups', labelKey: 'discover.tabGroups', icon: UsersRoundIcon },
   { id: 'venues', labelKey: 'discover.tabVenues', icon: MapPinIcon },
@@ -465,9 +471,13 @@ export function DiscoverView() {
           />
         ) : null}
 
+        {activeTab === 'parties' ? <DiscoverPartiesPanel /> : null}
+
         {activeTab === 'groups' ? <GroupsDirectory /> : null}
 
         {activeTab === 'discover' ? <HomeNews /> : null}
+
+        {activeTab === 'discover' ? <DiscoverPartiesRow /> : null}
 
         {activeTab === 'discover' ? (
           <div className="flex flex-col gap-3">

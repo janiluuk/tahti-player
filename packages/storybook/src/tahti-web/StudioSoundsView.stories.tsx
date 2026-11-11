@@ -150,31 +150,14 @@ export const HearthisRowEmbed: Story = {
   },
 };
 
-const SOFT_COVER = 'https://img.example/mixcloud-soft.jpg';
+const SOFT_COVER = '/mock/dj-moonlight/cover-moonlight-drive.svg';
 
-/** An Embeds row with no stored cover asks noembed and shows that artwork. */
+/** An Embeds row with no stored cover asks the Tahti thumbnail proxy (mocked) and shows that artwork. */
 export const EmbedSoftFill: Story = {
   decorators: [withTahtiRouter('/library/sounds?tab=embeds')],
   beforeEach: () => {
     clearEmbedThumbnailCache();
-    const original = window.fetch.bind(window);
-    window.fetch = async (input, init) => {
-      const url =
-        typeof input === 'string'
-          ? input
-          : input instanceof URL
-            ? input.href
-            : input.url;
-      if (url.includes('noembed.com/embed')) {
-        return new Response(JSON.stringify({ thumbnail_url: SOFT_COVER }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-      return original(input, init);
-    };
     return () => {
-      window.fetch = original;
       clearEmbedThumbnailCache();
     };
   },

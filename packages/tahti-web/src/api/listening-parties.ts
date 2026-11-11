@@ -11,6 +11,7 @@ import {
   createMockListeningParty,
   listMockChannelListeningParties,
   listMockMyListeningParties,
+  listMockPublicListeningParties,
   mockListeningParty,
   mockListeningPartyStreamUrl,
   updateMockListeningParty,
@@ -182,6 +183,32 @@ export async function fetchChannelListeningParties(slug: string): Promise<{
   try {
     const { data } = await requestJson<{ items: ListeningPartySummaryDto[] }>(
       `/api/channels/${encodeURIComponent(slug)}/listening-parties`,
+    );
+    return {
+      data: Array.isArray(data.items) ? data.items : [],
+      meta: { source: 'api' },
+    };
+  } catch (err) {
+    return { data: [], meta: apiErrorMeta(err) };
+  }
+}
+
+export async function fetchPublicListeningParties(limit = 20): Promise<{
+  data: ListeningPartySummaryDto[];
+  meta: FetchMeta;
+}> {
+  if (isForceMock()) {
+    return {
+      data: mockFixture(
+        'publicListeningParties',
+        listMockPublicListeningParties(limit),
+      ),
+      meta: mockMeta,
+    };
+  }
+  try {
+    const { data } = await requestJson<{ items: ListeningPartySummaryDto[] }>(
+      `/api/v1/listening-parties?limit=${limit}`,
     );
     return {
       data: Array.isArray(data.items) ? data.items : [],

@@ -3,12 +3,30 @@ import { CalendarDaysIcon, MapPinIcon, TicketIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { ExternalLink, MediaArtwork } from '@tahti-player/ui';
+import { Badge, ExternalLink, MediaArtwork } from '@tahti-player/ui';
 
 import type { ArtistEvent } from '../../api/events';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
 import { EventParticipantChips } from './EventParticipantChips';
 import { EventStatusBadge } from './EventStatusBadge';
+
+function eventLocalTime(startAt: string, timezone: string | null) {
+  if (!timezone) {
+    return null;
+  }
+  try {
+    if (timezone === Intl.DateTimeFormat().resolvedOptions().timeZone) {
+      return null;
+    }
+    return new Intl.DateTimeFormat(undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: timezone,
+    }).format(new Date(startAt));
+  } catch {
+    return null;
+  }
+}
 
 export type EventCardHost = {
   displayName: string;
@@ -38,6 +56,7 @@ export function EventCard({
     ? event.participants
     : event.participants.filter((p) => p.status === 'ACCEPTED');
   const ticketUrl = event.ticketUrl ?? event.eventUrl;
+  const localTime = eventLocalTime(event.startAt, event.timezone);
 
   return (
     <article
@@ -69,6 +88,11 @@ export function EventCard({
             )}
           </h3>
           <EventStatusBadge status={event.status} />
+          {event.visibility === 'FANS' ? (
+            <Badge variant="pill" color="purple">
+              {t('events.fansOnly')}
+            </Badge>
+          ) : null}
           {badge}
         </div>
         {host ? (
@@ -91,10 +115,21 @@ export function EventCard({
           <time dateTime={event.startAt}>
             {formatScheduleWindow(event.startAt, event.endAt)}
           </time>
+          {localTime && event.timezone ? (
+            <span data-testid="event-local-time">
+              ·{' '}
+              {t('events.localTime', {
+                time: localTime,
+                zone: event.timezone.replace(/_/g, ' '),
+              })}
+            </span>
+          ) : null}
         </p>
         <p className="text-foreground-secondary flex items-center gap-1.5 text-xs">
           <MapPinIcon size={14} aria-hidden />
-          {[event.place, event.location].filter(Boolean).join(', ')}
+          {[event.venue?.name ?? event.place, event.location]
+            .filter(Boolean)
+            .join(', ')}
         </p>
         {showDescription && event.description ? (
           <p className="text-foreground-secondary line-clamp-3 text-xs whitespace-pre-wrap">

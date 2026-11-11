@@ -339,6 +339,20 @@ export function listMockChannelListeningParties(
     .slice(0, 10);
 }
 
+export function listMockPublicListeningParties(
+  limit: number,
+): ListeningPartySummaryDto[] {
+  const now = Date.now();
+  const rows = records.map((record) => toSummary(record, now));
+  const live = rows
+    .filter((row) => row.state === 'LIVE')
+    .sort((a, b) => a.startAt.localeCompare(b.startAt));
+  const upcoming = rows
+    .filter((row) => row.state === 'SCHEDULED')
+    .sort((a, b) => a.startAt.localeCompare(b.startAt));
+  return [...live, ...upcoming].slice(0, limit);
+}
+
 function myUsername(): string | null {
   return getMockSessionUser()?.username ?? null;
 }

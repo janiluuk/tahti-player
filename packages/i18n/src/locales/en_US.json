@@ -1376,6 +1376,7 @@
       "tabArtists": "Artists",
       "tabGroups": "Groups",
       "tabVenues": "Venues",
+      "tabParties": "Parties",
       "sections": "Discover sections",
       "genres": "Genres",
       "contentTypes": "Content types",
@@ -1414,6 +1415,16 @@
       "moreGenres": "+{{count}} more",
       "fewerGenres": "Fewer genres",
       "groupsSearchPlaceholder": "Group name, genre…"
+    },
+    "discoverParties": {
+      "startParty": "Start a party",
+      "loading": "Loading listening parties…",
+      "loadFailed": "Could not load listening parties",
+      "emptyTitle": "No listening parties right now",
+      "emptyDescription": "Artists schedule parties for their releases. Live and upcoming ones show up here.",
+      "rowTitle": "Listening parties",
+      "seeAll": "See all",
+      "openNamed": "Open the listening party for {{title}}"
     },
     "library": {
       "sections": "Library sections",
@@ -10381,6 +10392,13 @@
       "coverImageLinkOptional": "Cover image link (optional)",
       "endOptional": "End (optional)",
       "endAfterStart": "End must be after the start.",
+      "timezone": "Time zone",
+      "timezoneNotSet": "Not set",
+      "timezoneDescription": "Shown next to the time for people in other time zones.",
+      "fansOnly": "Fans only",
+      "fansOnlyDescription": "Only your fan subscribers see it. Followers and social accounts are not told about it.",
+      "localTime": "{{time}} in {{zone}}",
+      "noVenue": "No venue",
       "saveDraft": "Save as draft",
       "publish": "Publish",
       "publishConfirmTitle": "Publish {{title}}?",

@@ -1,92 +1,16 @@
-import { readFileSync } from 'node:fs';
 import { mkdtemp, readdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { TEST_CONFIG } from '../test-helpers';
+import { API, CONFIG, fixture, SET_URL, stubApis } from './hearthis-api-stub';
 import {
   hearthisToRelease,
   releaseUrl,
   runHearthisRelease,
   stateFilePath,
 } from './hearthis-release.mjs';
-
-const CONFIG = { ...TEST_CONFIG, apiUrl: 'https://api.tahti.test' };
-const API = CONFIG.apiUrl;
-const SET_URL = 'https://hearthis.at/set/378936-9675121/';
-
-const fixture = (name: string) =>
-  JSON.parse(
-    readFileSync(new URL(`./fixtures/${name}`, import.meta.url), 'utf8'),
-  );
-
-function json(body: unknown, status = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { 'content-type': 'application/json' },
-  });
-}
-
-type Calls = { method: string; url: string; body: unknown }[];
-
-function stubApis({
-  catalog = fixture('tahti-hearthis-set-tracks.json'),
-  releases = [] as { id: string; title: string }[],
-  failUploadOf = null as string | null,
-} = {}) {
-  const calls: Calls = [];
-  let uploads = 0;
-  const preparedTitles = new Map<string, string>();
-  const fetchMock = vi.fn(async (url: string, init: RequestInit = {}) => {
-    const method = init.method ?? 'GET';
-    const body =
-      typeof init.body === 'string' ? JSON.parse(init.body) : undefined;
-    calls.push({ method, url, body });
-    if (url.startsWith(`${API}/api/v1/imports/hearthis/sets/`)) {
-      return json(catalog);
-    }
-    if (url.startsWith('https://api-v2.hearthis.at/')) {
-      return json(fixture('hearthis-track.json'));
-    }
-    if (url.startsWith(`${API}/api/me/releases?`)) {
-      return json({ releases, total: releases.length, page: 1, limit: 100 });
-    }
-    if (url.startsWith('https://hearthis.app/')) {
-      return new Response(`audio:${url}`, {
-        headers: { 'content-type': 'audio/wav' },
-      });
-    }
-    if (url === `${API}/api/uploads/prepare`) {
-      const id = `up-${++uploads}`;
-      preparedTitles.set(id, (body as { title: string }).title);
-      if (failUploadOf && (body as { title: string }).title === failUploadOf) {
-        return json({ error: 'Storage is full' }, 507);
-      }
-      return json({ uploadId: id, uploadUrl: `https://storage.test/${id}` });
-    }
-    if (url.startsWith('https://storage.test/')) {
-      return new Response(null, { headers: { etag: '"e"' } });
-    }
-    if (url === `${API}/api/uploads/complete`) {
-      const { uploadId } = body as { uploadId: string };
-      return json({ itemId: `sound-${uploadId.slice(3)}` });
-    }
-    if (url.startsWith(`${API}/api/me/sound/`)) {
-      const id = decodeURIComponent(url.split('/').pop() ?? '');
-      return json({ id, title: `title of ${id}`, durationSec: null });
-    }
-    if (url === `${API}/api/me/releases` && method === 'POST') {
-      return json({ id: 'rel-1', title: (body as { title: string }).title });
-    }
-    if (url === `${API}/api/me/releases/rel-1/artwork/from-url`) {
-      return json({ artworkUrl: 'https://cdn.tahti.test/a.jpg' });
-    }
-    throw new Error(`unexpected ${method} ${url}`);
-  });
-  vi.stubGlobal('fetch', fetchMock);
-  return { calls, preparedTitles };
-}
+import { LEDGER_FILENAME } from './hearthis-sounds.mjs';
 
 describe('hearthisToRelease', () => {
   let dir: string;
@@ -162,7 +86,12 @@ describe('hearthisToRelease', () => {
         },
       }),
     );
-    const { calls } = stubApis();
+    const { calls } = stubApis({
+      library: [
+        { id: 'old-1', title: tracks[0].title, durationSec: 1 },
+        { id: 'old-2', title: tracks[1].title, durationSec: 1 },
+      ],
+    });
 
     const result = await hearthisToRelease(CONFIG, SET_URL, { outDir: dir });
 
@@ -308,6 +237,123 @@ describe('hearthisToRelease', () => {
       tracks: [{ soundId: 'sound-1' }],
     });
     expect(result.plan.title).toMatch(/^Nightriders vol. 43/);
+  });
+});
+
+describe('hearthisToRelease with the upload ledger', () => {
+  let dir: string;
+
+  beforeEach(async () => {
+    dir = await mkdtemp(join(tmpdir(), 'tahti-release-ledger-'));
+  });
+
+  afterEach(async () => {
+    vi.unstubAllGlobals();
+    await rm(dir, { recursive: true, force: true });
+  });
+
+  it('records every upload in the ledger by hearthis.at track id', async () => {
+    stubApis();
+
+    await hearthisToRelease(CONFIG, SET_URL, { outDir: dir });
+
+    const ledger = JSON.parse(
+      await readFile(join(dir, LEDGER_FILENAME), 'utf8'),
+    );
+    const ids = fixture('tahti-hearthis-set-tracks.json').tracks.map(
+      (track: { id: string }) => track.id,
+    );
+    expect(Object.keys(ledger.sounds).sort()).toEqual([...ids].sort());
+    expect(ledger.sounds[ids[0]]).toMatchObject({
+      soundId: 'sound-1',
+      from: 'upload',
+    });
+  });
+
+  it('reuses a library upload with the same title and length instead of uploading it', async () => {
+    const tracks = fixture('tahti-hearthis-set-tracks.json').tracks;
+    const { calls } = stubApis({
+      library: [
+        {
+          id: 'mine-2',
+          title: `  ${tracks[1].title.toUpperCase()} `,
+          durationSec: tracks[1].durationSec + 1,
+          status: 'READY',
+          embedProvider: null,
+        },
+      ],
+    });
+
+    const result = await hearthisToRelease(CONFIG, SET_URL, { outDir: dir });
+
+    expect(
+      calls.filter((call) => call.url.endsWith('/api/uploads/prepare')),
+    ).toHaveLength(2);
+    expect(result.rows[1]).toMatchObject({
+      status: 'in library',
+      soundId: 'mine-2',
+      matchedBy: 'title + duration',
+    });
+  });
+
+  it('does not stop on a non-downloadable track that is already uploaded', async () => {
+    const catalog = fixture('tahti-hearthis-set-tracks.json');
+    catalog.tracks[1] = {
+      ...catalog.tracks[1],
+      downloadable: false,
+      downloadUrl: null,
+    };
+    await writeFile(
+      join(dir, LEDGER_FILENAME),
+      JSON.stringify({
+        sounds: { [catalog.tracks[1].id]: { soundId: 'kept-2' } },
+      }),
+    );
+    stubApis({
+      catalog,
+      library: [{ id: 'kept-2', title: 'x', durationSec: 5 }],
+    });
+
+    const result = await hearthisToRelease(CONFIG, SET_URL, { outDir: dir });
+
+    expect(result.stopped).toBeNull();
+    expect(result.rows.map((row) => row.soundId)).toEqual([
+      'sound-1',
+      'kept-2',
+      'sound-2',
+    ]);
+  });
+
+  it('dry-run says how many tracks are new and how many are reused', async () => {
+    const tracks = fixture('tahti-hearthis-set-tracks.json').tracks;
+    await writeFile(
+      join(dir, LEDGER_FILENAME),
+      JSON.stringify({ sounds: { [tracks[0].id]: { soundId: 'kept-1' } } }),
+    );
+    stubApis({
+      library: [
+        { id: 'kept-1', title: 'x', durationSec: 5 },
+        {
+          id: 'mine-3',
+          title: tracks[2].title,
+          durationSec: tracks[2].durationSec,
+        },
+      ],
+    });
+
+    const run = await runHearthisRelease(CONFIG, SET_URL, {
+      outDir: dir,
+      dryRun: true,
+      log: () => {},
+    });
+
+    expect(run.output).toContain(
+      'would upload 1, reuse 1 from the ledger and 1 from your library',
+    );
+    const ledger = JSON.parse(
+      await readFile(join(dir, LEDGER_FILENAME), 'utf8'),
+    );
+    expect(Object.keys(ledger.sounds)).toEqual([tracks[0].id]);
   });
 });
 

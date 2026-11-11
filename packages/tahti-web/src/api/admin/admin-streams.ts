@@ -294,6 +294,9 @@ export type AdminChannelSound = {
   isPublic: boolean;
   releasedAt: string | null;
   bannerUrl?: string | null;
+  embedProvider?: string | null;
+  embedUri?: string | null;
+  embedSourceUrl?: string | null;
 };
 
 export type AdminChannelSoundPatch = {
@@ -337,6 +340,19 @@ function mockSoundsFor(key: string): AdminChannelSound[] {
         isPublic: false,
         releasedAt: '2026-09-10T00:00:00.000Z',
         bannerUrl: null,
+      },
+      {
+        id: `${key}-sound-3`,
+        title: 'Yöajo',
+        artistName: null,
+        description: null,
+        genre: 'House',
+        isPublic: true,
+        releasedAt: '2026-09-20T00:00:00.000Z',
+        bannerUrl: null,
+        embedProvider: 'MIXCLOUD',
+        embedUri: 'tahti-story/yoajo',
+        embedSourceUrl: 'https://www.mixcloud.com/tahti-story/yoajo/',
       },
     ];
     mockChannelSounds.set(key, rows);

@@ -1,4 +1,5 @@
 import type { FetchMeta } from './client';
+import { mockVenues } from './mock';
 import { mockFixture } from './mock-overrides';
 import { failMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
@@ -6,6 +7,14 @@ import { requestJson } from './request-json';
 export type ArtistEventStatus = 'DRAFT' | 'PUBLISHED' | 'CANCELLED';
 export type ArtistEventRole = 'PERFORMER' | 'HOST' | 'GUEST';
 export type ArtistEventParticipantStatus = 'PENDING' | 'ACCEPTED' | 'DECLINED';
+export type ArtistEventVisibility = 'PUBLIC' | 'FANS';
+
+export type ArtistEventVenue = {
+  id: string;
+  slug: string;
+  name: string;
+  city: string;
+};
 
 export type ArtistEventParticipant = {
   username: string;
@@ -27,6 +36,9 @@ export type ArtistEvent = {
   imageUrl: string | null;
   startAt: string;
   endAt: string | null;
+  timezone: string | null;
+  venue: ArtistEventVenue | null;
+  visibility: ArtistEventVisibility;
   status: ArtistEventStatus;
   publishedAt: string | null;
   participants: ArtistEventParticipant[];
@@ -43,6 +55,9 @@ export function normalizeEvent(
     ticketUrl: raw.ticketUrl ?? null,
     imageUrl: raw.imageUrl ?? null,
     endAt: raw.endAt ?? null,
+    timezone: raw.timezone ?? null,
+    venue: raw.venue ?? null,
+    visibility: raw.visibility === 'FANS' ? 'FANS' : 'PUBLIC',
     status: raw.status ?? 'PUBLISHED',
     publishedAt: raw.publishedAt ?? null,
     participants: Array.isArray(raw.participants) ? raw.participants : [],
@@ -53,6 +68,9 @@ const mockBase = {
   ticketUrl: null,
   imageUrl: null,
   endAt: null,
+  timezone: null,
+  venue: null,
+  visibility: 'PUBLIC' as ArtistEventVisibility,
   status: 'PUBLISHED' as const,
   publishedAt: '2026-08-01T10:00:00.000Z',
   participants: [] as ArtistEventParticipant[],
@@ -82,6 +100,13 @@ export const mockEvents: ArtistEvent[] = [
     ticketUrl: 'https://tickets.example/kuudes-linja',
     startAt: '2026-09-19T21:00:00.000Z',
     endAt: '2026-09-20T02:00:00.000Z',
+    timezone: 'Europe/Helsinki',
+    venue: {
+      id: 'venue-1',
+      slug: 'kuudes-linja',
+      name: 'Kuudes Linja',
+      city: 'Helsinki',
+    },
     participants: [
       {
         username: 'northern-signals',
@@ -145,6 +170,7 @@ export const mockEvents: ArtistEvent[] = [
     location: 'Espoo, Finland',
     eventUrl: null,
     startAt: '2026-09-12T16:30:00.000Z',
+    visibility: 'FANS',
   },
   {
     ...mockBase,
@@ -192,9 +218,26 @@ export type CreateArtistEventInput = {
   imageUrl?: string;
   startAt: string;
   endAt?: string | null;
+  timezone?: string | null;
+  venueId?: string | null;
+  visibility?: ArtistEventVisibility;
   status?: 'DRAFT' | 'PUBLISHED';
   shareTo?: Array<'MASTODON' | 'BLUESKY'>;
 };
+
+function mockEventVenue(
+  venueId: string | null | undefined,
+): ArtistEventVenue | null {
+  const venue = venueId ? mockVenues().find((v) => v.id === venueId) : null;
+  return venue
+    ? {
+        id: venue.id,
+        slug: venue.slug,
+        name: venue.name,
+        city: venue.city ?? '',
+      }
+    : null;
+}
 
 export async function createEvent(
   input: CreateArtistEventInput,
@@ -212,6 +255,9 @@ export async function createEvent(
       imageUrl: input.imageUrl ?? null,
       startAt: input.startAt,
       endAt: input.endAt ?? null,
+      timezone: input.timezone ?? null,
+      venue: mockEventVenue(input.venueId),
+      visibility: input.visibility ?? 'PUBLIC',
       status,
       publishedAt: status === 'PUBLISHED' ? new Date().toISOString() : null,
       participants: [],
@@ -245,8 +291,10 @@ export async function updateEvent(
     if (!row) {
       return { ok: false, error: 'Event not found' };
     }
+    const { venueId, ...fields } = input;
     Object.assign(row, {
-      ...input,
+      ...fields,
+      ...(venueId !== undefined ? { venue: mockEventVenue(venueId) } : {}),
       ...(input.eventUrl !== undefined
         ? { eventUrl: input.eventUrl || null }
         : {}),

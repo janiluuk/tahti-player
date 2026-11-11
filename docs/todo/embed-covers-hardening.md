@@ -1,7 +1,7 @@
 # Embed covers hardening
 
 **Status:** partial  
-**Updated:** 2026-11-11 (slices 5–6 landed on main as tahti-org #1098; #1094 and #1095 stay open only because those branches cannot be force-pushed)  
+**Updated:** 2026-11-11 (slices 23, 27, 28: tahti-org #1099 thumbnail proxy; the player asks it instead of noembed)  
 **Follows:** library-sounds-embeds + embed-thumbnails (HISTORY 2026-11-10)
 
 Close the gaps left after Embeds-under-Sounds and the first cover pass:
@@ -16,6 +16,8 @@ hearthis soft-fill when `embedSourceUrl` exists, caching, and coverage.
 - 8 (+18): tahti-player #1998. Hearthis soft-fill reads `api-v2.hearthis.at/<user>/<track>/` artwork (noembed has no hearthis provider).
 - 9 (+17): tahti-player #1999. `EmbedTrackRow onSoftArtwork` → `persistSoftCover` PATCHes `bannerUrl` once per sound per session (Library → Embeds, Sounds embed cards).
 - 10: tahti-player #2000 (on #1999). No write when signed out, without a channel, or before the profile loads.
+
+- 23, 27, 28: tahti-org #1099 adds `GET /api/v1/embeds/thumbnail?url=` (SoundCloud and YouTube oEmbed, the backfill's lookups for hearthis, Mixcloud, Spotify and Bandcamp; 6 h cache, 120/min per IP). `lib/embedThumbnail.ts` calls it instead of noembed and the hearthis API; mock mode answers with a bundled cover. The admin channel tracks panel soft-fills rows with no `bannerUrl` and never writes.
 
 Note: the backfill only sees rows with `bannerUrl: null`, but every embed import calls `assignPresetCovers` right after create. Embeds imported that way already hold a preset and never get provider art from the backfill. Whether to replace presets with provider art (by matching against the preset URLs) is a product call.
 
@@ -38,19 +40,19 @@ Note: the backfill only sees rows with `bannerUrl: null`, but every embed import
 | 13 | player | SessionStorage (or IndexedDB) cache for soft-fill URLs | Done: `sessionStorage` key `tahti-web:embed-thumb:` |
 | 14 | player | Soft-fill concurrency limit (e.g. 2–3 in flight) | Done: at most 3 lookups in flight |
 | 15 | player | Soft-fill failure marking (null cache) per provider+uri | Done: empty session value means a known miss |
-| 16 | player | Storybook: Embeds tab row without banner soft-fills | Done: `EmbedSoftFill` play asserts the img src is the stubbed noembed thumb |
+| 16 | player | Storybook: Embeds tab row without banner soft-fills | Done: `EmbedSoftFill` play asserts the mock proxy cover |
 | 17 | player | Unit: soft-fill + PATCH called once | Mock fetch + patch |
 | 18 | player | Unit: hearthis soft-fill with `sourceUrl` | Cover path uses page URL |
 | 19 | org | Optional worker job: nightly embed cover backfill | Ops can run without artist clicking the button |
 | 20 | player | Surfaces covers-backfill result counts (provider vs preset) | Toast / strip distinguishes sources |
 | 21 | player | Channel public Embeds: soft-fill only (no PATCH) | Done: SoundCloud panel uses soft-fill and does not write |
 | 22 | player | Artist profile embeds section: same soft-fill path | Done: `ArtistSoundCloudTracks` uses the same soft-fill |
-| 23 | player | Admin ChannelTracksPanel: soft-fill when `bannerUrl` null | Board view matches artist library |
+| 23 | player | Admin ChannelTracksPanel: soft-fill when `bannerUrl` null | Done: soft-fill only, no PATCH |
 | 24 | player | Finnish/en copy if new backfill toast strings appear | i18n keys, not hardcoded English |
 | 25 | player | Document soft-fill + backfill in user-manual Embeds note | One short “covers” paragraph |
-| 26 | player | E2E: Embeds row without banner gains artwork (mock noembed) | Done: mock Mixcloud row with no banner; e2e stubs noembed and asserts the img src |
-| 27 | org | Allowlist / document noembed dependency or replace with first-party oEmbed proxy | No silent third-party hard dep without a note |
-| 28 | player | Prefer first-party `/api/.../oembed-thumb` if org adds proxy | Drop noembed when proxy lands |
+| 26 | player | E2E: Embeds row without banner gains artwork (mock noembed) | Done: mock Mixcloud row with no banner gets the mock proxy cover |
+| 27 | org | Allowlist / document noembed dependency or replace with first-party oEmbed proxy | Done: #1099 first-party proxy |
+| 28 | player | Prefer first-party `/api/.../oembed-thumb` if org adds proxy | Done: noembed dropped |
 | 29 | player | VIEW-CATALOG / Storybook Missing: no blank embed thumbs | Missing states noted or covered |
 | 30 | player | Fold this todo when slices ship; strip INDEX | HISTORY + delete |
 

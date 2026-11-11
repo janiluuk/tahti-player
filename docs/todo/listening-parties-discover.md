@@ -1,10 +1,20 @@
 # Listening parties on Discover
 
-**Status:** open
+**Status:** partial
 
 Requested 2026-11-10: move listening parties to the Discover page, as a widget and a tab, where you can make your own party or join someone else's.
 
-## Today
+## Shipped (2026-11-11)
+
+- tahti-org #1099: `GET /api/v1/listening-parties?limit=` (1–50, default 20) returns `{ items }`, live first then upcoming soonest first, without cancelled parties or suspended hosts.
+- Discover → Parties tab (`/discover?tab=parties`, `DiscoverPartiesPanel`, `ListeningPartyList`) with Start a party for channel owners, and a three-row widget on the Discover tab linking to it (plan items 1–2, joining only).
+
+## Left
+
+- Reminders from a party row.
+- Plan items 3 (non-artist hosting) and 4 (Studio filter) are product calls.
+
+## Before
 
 - Artists host parties for their own releases: Studio → Broadcast → Schedule → Listening parties (`/studio/schedule?show=parties`, merged there by the Go live nav work), create at `/studio/listening-parties/new` or from a release's party button.
 - Listeners join from the party page `/party/<id>`, reached from the artist's link or the banner on their channel page. There is no list of parties across artists.

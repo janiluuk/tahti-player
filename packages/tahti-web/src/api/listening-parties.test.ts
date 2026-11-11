@@ -6,6 +6,7 @@ import {
   fetchChannelListeningParties,
   fetchListeningParty,
   fetchMyListeningParties,
+  fetchPublicListeningParties,
   listeningPartyTrackStreamUrl,
   updateListeningParty,
 } from './listening-parties';
@@ -71,6 +72,21 @@ describe('listening parties against the API', () => {
       '/tahti-api/api/channels/night%20drive/listening-parties',
       '/tahti-api/api/me/listening-parties',
     ]);
+  });
+
+  it('reads the public list across channels with a limit', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockImplementation(async () =>
+        Response.json({ items: [{ id: 'lp1' }] }),
+      );
+    await expect(fetchPublicListeningParties(3)).resolves.toEqual({
+      data: [{ id: 'lp1' }],
+      meta: { source: 'api' },
+    });
+    expect(fetchSpy.mock.calls[0]![0]).toBe(
+      '/tahti-api/api/v1/listening-parties?limit=3',
+    );
   });
 
   it('sends create, reschedule and cancel to the artist routes', async () => {
@@ -141,6 +157,16 @@ describe('listening parties in the offline mock app', () => {
     setMockSessionUser(null);
     vi.unstubAllEnvs();
     vi.restoreAllMocks();
+  });
+
+  it('lists live parties first, then upcoming ones, without ended or canceled', async () => {
+    const { data } = await fetchPublicListeningParties();
+    expect(data.map((row) => row.state)).toEqual(['LIVE', 'SCHEDULED']);
+    expect(data.map((row) => row.id)).toEqual([
+      MOCK_LISTENING_PARTY_IDS.live,
+      MOCK_LISTENING_PARTY_IDS.scheduled,
+    ]);
+    expect((await fetchPublicListeningParties(1)).data).toHaveLength(1);
   });
 
   it('seeds one party per state', async () => {

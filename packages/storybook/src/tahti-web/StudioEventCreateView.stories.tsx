@@ -16,7 +16,7 @@ const meta: Meta<typeof StudioEventCreateView> = {
     docs: {
       description: {
         component:
-          'Studio → Events → Add event (`/studio/events/new`) and Edit event (`/studio/events/:id/edit`): title, place, a venue from the directory that fills place and location, location, ticket link, description and start time. The submit button stays disabled until title, place, location and start are set.',
+          'Studio → Events → Add event (`/studio/events/new`) and Edit event (`/studio/events/:id/edit`): title, place, a venue from the directory that fills place and location, location, ticket link, description, start time, time zone and a Fans only switch (fans-only events skip the share targets). The submit button stays disabled until title, place, location and start are set.',
       },
     },
     mockData: mockData({ myEvents: eventsAroundToday }),
@@ -83,6 +83,26 @@ export const EditEvent: Story = {
     await expect(
       canvas.getByRole('button', { name: 'Save changes' }),
     ).toBeEnabled();
+  },
+};
+
+export const EditFansOnlyEvent: Story = {
+  args: { eventId: 'evt-mock-6' },
+  parameters: {
+    mockData: mockData({
+      myEvents: (base) => base.filter((event) => event.visibility === 'FANS'),
+    }),
+  },
+  decorators: [withTahtiRouter('/studio/events/evt-mock-6/edit')],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('textbox', { name: 'Title' }),
+    ).toHaveValue('Forest Cover — outdoor listening session');
+    const fansOnly = canvas.getByRole('switch', { name: /Fans only/ });
+    await expect(fansOnly).toHaveAttribute('aria-checked', 'true');
+    await userEvent.click(fansOnly);
+    await expect(fansOnly).toHaveAttribute('aria-checked', 'false');
   },
 };
 

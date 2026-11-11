@@ -4,21 +4,22 @@ import {
   clearEmbedThumbnailCache,
   clearEmbedThumbnailMemory,
   fetchEmbedThumbnail,
-  hearthisApiUrl,
+  fetchOembedThumbnail,
 } from './embedThumbnail';
 
 describe('fetchEmbedThumbnail', () => {
   afterEach(() => {
     clearEmbedThumbnailCache();
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
     vi.restoreAllMocks();
   });
 
-  it('returns the noembed thumbnail for a Spotify track id', async () => {
+  it('asks the Tahti API proxy for a Spotify track id', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
-        thumbnail_url: 'https://cdn.example/spotify.jpg',
+        thumbnailUrl: 'https://cdn.example/spotify.jpg',
       }),
     });
     vi.stubGlobal('fetch', fetchMock);
@@ -31,12 +32,12 @@ describe('fetchEmbedThumbnail', () => {
     ).resolves.toBe('https://cdn.example/spotify.jpg');
 
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringContaining(
-        encodeURIComponent(
-          'https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT',
-        ),
-      ),
+      `/tahti-api/api/v1/embeds/thumbnail?url=${encodeURIComponent(
+        'https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT',
+      )}`,
+      expect.anything(),
     );
+    expect(String(fetchMock.mock.calls[0]?.[0])).not.toContain('noembed');
   });
 
   it('skips hearthis without a source URL', async () => {
@@ -51,12 +52,11 @@ describe('fetchEmbedThumbnail', () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it('reads hearthis artwork from the public API when the page URL is known', async () => {
+  it('sends a hearthis page URL to the proxy when it is known', async () => {
     const fetchMock = vi.fn().mockResolvedValue({
       ok: true,
       json: async () => ({
-        artwork_url: 'https://img.hearthis.at/small.jpg',
-        artwork_url_retina: 'https://img.hearthis.at/retina.jpg',
+        thumbnailUrl: 'https://img.hearthis.at/retina.jpg',
       }),
     });
     vi.stubGlobal('fetch', fetchMock);
@@ -69,7 +69,10 @@ describe('fetchEmbedThumbnail', () => {
       }),
     ).resolves.toBe('https://img.hearthis.at/retina.jpg');
     expect(fetchMock).toHaveBeenCalledWith(
-      'https://api-v2.hearthis.at/candana-dj/credo/',
+      `/tahti-api/api/v1/embeds/thumbnail?url=${encodeURIComponent(
+        'https://hearthis.at/candana-dj/credo/',
+      )}`,
+      expect.anything(),
     );
   });
 
@@ -117,7 +120,7 @@ describe('fetchEmbedThumbnail', () => {
     expect(fetchMock).toHaveBeenCalledTimes(3);
     const ok = () => ({
       ok: true,
-      json: async () => ({ thumbnail_url: 'https://cdn.example/a.jpg' }),
+      json: async () => ({ thumbnailUrl: 'https://cdn.example/a.jpg' }),
     });
     resolvers.shift()?.(ok());
     for (let i = 0; i < 8; i += 1) {
@@ -137,15 +140,32 @@ describe('fetchEmbedThumbnail', () => {
     await pending;
     expect(fetchMock).toHaveBeenCalledTimes(5);
   });
-});
 
-describe('hearthisApiUrl', () => {
-  it('maps a track page to the API and rejects other pages', () => {
-    expect(hearthisApiUrl('https://hearthis.at/dj/track')).toBe(
-      'https://api-v2.hearthis.at/dj/track/',
+  it('retries after the proxy rate-limits a lookup', async () => {
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce({ ok: false, status: 429 })
+      .mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => ({ thumbnailUrl: 'https://cdn.example/later.jpg' }),
+      });
+    vi.stubGlobal('fetch', fetchMock);
+    const page = 'https://soundcloud.com/dj/limited';
+    await expect(fetchOembedThumbnail(page)).resolves.toBeNull();
+    await expect(fetchOembedThumbnail(page)).resolves.toBe(
+      'https://cdn.example/later.jpg',
     );
-    expect(hearthisApiUrl('https://hearthis.at/dj/')).toBeNull();
-    expect(hearthisApiUrl('https://evil.example/dj/track/')).toBeNull();
-    expect(hearthisApiUrl('not a url')).toBeNull();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('answers a bundled cover without the network in mock mode', async () => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    await expect(
+      fetchOembedThumbnail('https://www.mixcloud.com/dj/mock-mix/'),
+    ).resolves.toBe('/mock/dj-moonlight/cover-moonlight-drive.svg');
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 });

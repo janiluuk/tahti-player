@@ -24,11 +24,12 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; add-on table rows, native review and dropped pricing claims left |
 | partial | [ambient-track-list-mobile.md](ambient-track-list-mobile.md) | Phone list default shipped; left: AmbientTrackRow phone layout (alignment across densities, larger thumb) — needs a visual pass at 390 px |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
+| partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |
 | open    | [channel-page-metrics-about-events.md](channel-page-metrics-about-events.md) | Channel page: followers/following/plays today/yesterday/total/downloads with per-metric public toggle, tidy About, upcoming + past events incl. ones the artist plays at |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
 | partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: next 30 slices (failed[] toasts, facets+filter, isFallback, clear filters; org API) |
-| partial | [embed-covers-hardening.md](embed-covers-hardening.md) | Lookup cap landed as tahti-org #1098; left: noembed proxy, admin soft-fill (admin sounds have no embed URL) |
+| partial | [embed-covers-hardening.md](embed-covers-hardening.md) | Proxy + admin soft-fill landed (tahti-org #1099); left: slices 17–20, 24, 25, 29, 30 |
 | partial | [server-peaks-in-track-lists.md](server-peaks-in-track-lists.md) | Server waveform peaks on every track list (search, Selects, New to you, profile fallback); left: studio collections, radio/feed |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
@@ -42,7 +43,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard now renders its last result at once and refreshes in the background; left: measure API time, sweep governance overview, financial, Discover |
 | partial | [channel-programme-in-schedule.md](channel-programme-in-schedule.md) | Studio → Broadcast → Schedule shows the 24/7 and offline programme; make it the place where you manage the channel's programme |
 | open    | [google-facebook-login.md](google-facebook-login.md) | Sign up and log in with Google and Facebook: API OAuth callbacks, OAuth apps (ops), buttons on log in / sign up, account linking |
-| partial | [event-calendar.md](event-calendar.md) | Event calendar under Discover → Feed: artists create events, tag people, preview, publish, syndicate (Mastodon/Bluesky/.ics); slices 1–12 shipped; left: timezone/venue/visibility fields (need API design), invites in the notifications popover |
+| partial | [event-calendar.md](event-calendar.md) | Event calendar under Discover → Feed: artists create events, tag people, preview, publish, syndicate (Mastodon/Bluesky/.ics); slices 1–12 and timezone/venue/visibility shipped; left: invites in the notifications popover |
 | partial | [navigation-performance.md](navigation-performance.md) | Back/forward speed: GET cache, atlas out of the shell and gzip level 6 done; left: render cached data without a loader frame, drop mock fixtures from prod, split table/dnd out of the shell |
 | open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` on events/updates/editor/playlist/collection/release, radio presets, theme submissions; plugin-store disconnect; left: none known) |
 | open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | One Storybook play session drops its sockets ~90s in (local every run, CI long shards); reduced motion + CI retry mitigate; cause not found |
@@ -52,7 +53,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
 | partial | [listening-party.md](listening-party.md) | Digital-only v1 merged (tahti-org#1029, tahti-player#1704); real-API check after deploy, then playout, formats/pre-orders/physical |
-| open    | [listening-parties-discover.md](listening-parties-discover.md) | Move listening parties to Discover as a tab and a widget where you can start your own or join others; needs a public parties list API |
+| partial | [listening-parties-discover.md](listening-parties-discover.md) | Discover → Parties tab and widget shipped; left: reminders, non-artist hosting and Studio filter product calls |
 
 ## Blocked on a decision, credentials or manual testing
 

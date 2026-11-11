@@ -9,7 +9,6 @@ import {
   EditIconButton,
   InlineError,
   Input,
-  MediaArtwork,
   SaveButton,
   Select,
   Textarea,
@@ -24,13 +23,26 @@ import {
 } from '../../../api/admin';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { PageEmpty } from '../../../components/PageStates';
+import { SoftMediaArtwork } from '../../../components/SoftMediaArtwork';
 import { StudioPanel } from '../../../components/StudioPanel';
 import {
   selectableContentTypes,
   type ContentTypeId,
 } from '../../../content/contentTypes';
+import type { EmbedProvider } from '../../../lib/embedSrc';
+import { embedPageUrl } from '../../../lib/embedThumbnail';
 
 const PAGE_SIZE = 50;
+
+function soundEmbedPage(sound: AdminChannelSound): string | null {
+  if (sound.embedSourceUrl?.trim()) {
+    return sound.embedSourceUrl.trim();
+  }
+  if (!sound.embedProvider || !sound.embedUri) {
+    return null;
+  }
+  return embedPageUrl(sound.embedProvider as EmbedProvider, sound.embedUri);
+}
 
 function TrackEditDialog({
   slug,
@@ -287,8 +299,9 @@ export function ChannelTracksPanel() {
                   className="flex items-center justify-between gap-3 py-2 text-sm"
                 >
                   <span className="flex min-w-0 flex-1 items-center gap-2">
-                    <MediaArtwork
-                      src={sound.bannerUrl ?? undefined}
+                    <SoftMediaArtwork
+                      src={sound.bannerUrl}
+                      pageUrl={soundEmbedPage(sound)}
                       alt=""
                       seed={sound.id}
                       size="thumb"
