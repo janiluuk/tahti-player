@@ -2,7 +2,7 @@ import { ListPlusIcon, MusicIcon, PlayIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation, type TFunction } from '@tahti-player/i18n';
+import { useTranslation } from '@tahti-player/i18n';
 import type { Track } from '@tahti-player/model';
 import {
   backButtonCornerClassName,
@@ -19,7 +19,6 @@ import {
   Toggle,
   Tooltip,
   TrackTable,
-  type SelectOption,
 } from '@tahti-player/ui';
 
 import {
@@ -62,17 +61,7 @@ import { toastWithUndo } from '../../../lib/undoToast';
 import { useEditMode } from '../../../lib/useEditMode';
 import { usePlayerStore } from '../../../stores/playerStore';
 import { useStudioContributions } from '../useStudioContributions';
-
-function trackOrderOptions(t: TFunction<'web'>): SelectOption[] {
-  return [
-    {
-      id: 'MANUAL',
-      label: t('studioPlaylistEditorViewMore.manualTracklistOrder'),
-    },
-    { id: 'TIME', label: t('studioPlaylistEditorViewMore.oldestFirst') },
-    { id: 'NAME', label: t('studioPlaylistEditorViewMore.titleAZ') },
-  ];
-}
+import { playlistTrackOrderOptions } from './playlistTrackOrderOptions';
 
 export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const { t } = useTranslation('web');
@@ -482,7 +471,7 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       onValueChange={(value) =>
                         setTrackSortMode(value as CollectionTrackSortMode)
                       }
-                      options={trackOrderOptions(t)}
+                      options={playlistTrackOrderOptions(t)}
                     />
                   </div>
                 </StudioPanel>

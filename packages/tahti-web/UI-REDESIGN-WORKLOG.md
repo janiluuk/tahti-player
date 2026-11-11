@@ -1,3 +1,10 @@
+## 2026-11-11 - Newest-first collections and SoundCloud covers (0.0.368)
+
+Sort sounds can keep Newest first and Title Z–A after a new track is
+added: the public page, RSS feed, and collection embed follow that
+direction. Studio → SoundCloud saves a cover the first time one is found.
+The collection and playlist track-order menus list those directions too.
+
 ## 2026-11-11 - Mock likes stay in Favorites (0.0.367)
 
 Liking a track in the mock app keeps it in this browser, so Library →

@@ -252,8 +252,8 @@ export type StudioCollectionItem = {
   unavailable?: boolean;
 } & CollectionItemContribution;
 
-/** MANUAL = drag order; TIME = oldest first (track upload or release date); NAME = A-Z by title. */
-export type CollectionTrackSortMode = 'MANUAL' | 'TIME' | 'NAME';
+export type CollectionTrackSortMode =
+  'MANUAL' | 'TIME' | 'TIME_DESC' | 'NAME' | 'NAME_DESC';
 
 export type StudioCollection = {
   id?: string;
