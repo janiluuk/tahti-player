@@ -7664,7 +7664,14 @@
       "manage": "Hallitse",
       "filterSmartlinksByPlatform": "Suodata älylinkit alustan mukaan",
       "sortSmartlinks": "Järjestä älylinkit",
-      "openSmartlink": "Avaa älylinkki"
+      "openSmartlink": "Avaa älylinkki",
+      "trackCount_one": "1 kappale",
+      "trackCount_other": "{{count}} kappaletta",
+      "dspLinks_one": "1 palvelulinkki: {{names}}",
+      "dspLinks_other": "{{count}} palvelulinkkiä: {{names}}",
+      "noDspLinks": "Palvelulinkkejä ei ole vielä lisätty",
+      "viewCount_one": "1 katselu",
+      "viewCount_other": "{{views}} katselua"
     },
     "chatView": {
       "openChat": "Avaa keskustelu",
