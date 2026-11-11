@@ -353,12 +353,12 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # One Chromium page serves a whole Vitest run, and past roughly 100
-        # story files its renderer gets killed ("Browser connection was
-        # closed"), so the ~400 files still run as six shards of ~65. Each
-        # job runs three of them one after another: a shard takes about a
-        # minute, while a job's checkout, install and Playwright setup cost
-        # about as much again, so six jobs mostly repeated setup.
+        # One Chromium page serves a whole Vitest run, and its renderer gets
+        # killed ("Browser connection was closed") about 90 s in; at ~500
+        # story files, six shards of 85 crossed that line. Ten shards keep
+        # each run near 50 files. Each job runs five of them one after
+        # another, because a job's checkout, install and Playwright setup
+        # cost more than a shard does.
         group: [1, 2]
 
     steps:
@@ -391,17 +391,17 @@ jobs:
         run: |
           set -o pipefail
           failed=0
-          first=$(( (${{ matrix.group }} - 1) * 3 + 1 ))
+          first=$(( (${{ matrix.group }} - 1) * 5 + 1 ))
           # A Chromium renderer crash ("Browser connection was closed") aborts
           # the shard without any story failing; that shard gets one retry.
           # Real story failures are never retried.
-          for shard in $first $((first + 1)) $((first + 2)); do
-            echo "::group::Stories shard $shard/6"
+          for shard in $(seq "$first" $((first + 4))); do
+            echo "::group::Stories shard $shard/10"
             log="shard-$shard.log"
-            if ! pnpm --filter @tahti-player/storybook test --shard="$shard/6" 2>&1 | tee "$log"; then
+            if ! pnpm --filter @tahti-player/storybook test --shard="$shard/10" 2>&1 | tee "$log"; then
               if grep -q "Browser connection was closed" "$log" && ! grep -qE "FAIL.*\.stories\.tsx" "$log"; then
-                echo "::warning::Stories shard $shard/6: browser crashed, retrying once"
-                pnpm --filter @tahti-player/storybook test --shard="$shard/6" || failed=1
+                echo "::warning::Stories shard $shard/10: browser crashed, retrying once"
+                pnpm --filter @tahti-player/storybook test --shard="$shard/10" || failed=1
               else
                 failed=1
               fi
