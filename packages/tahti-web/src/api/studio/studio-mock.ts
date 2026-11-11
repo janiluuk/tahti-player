@@ -133,4 +133,23 @@ export const mockSoundStore: StudioSound[] = [
     embedProvider: 'SPOTIFY',
     embedUri: '4cOdK2wGLETKBW3PvgPWqT',
   },
+  {
+    id: 'arch-mock-7',
+    title: 'Coverless night drive',
+    status: 'READY',
+    durationSec: 1800,
+    bannerUrl: null,
+    genre: 'house',
+    contentType: 'DJ_SET',
+    isPublic: true,
+    visibility: 'PUBLIC',
+    releasedAt: null,
+    downloadsEnabled: false,
+    commentsEnabled: true,
+    createdAt: new Date().toISOString(),
+    embedProvider: 'MIXCLOUD',
+    embedUri: 'tahti-story/coverless-night-drive',
+    embedSourceUrl:
+      'https://www.mixcloud.com/tahti-story/coverless-night-drive/',
+  },
 ];

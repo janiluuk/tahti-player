@@ -7,6 +7,30 @@ test.beforeEach(async ({ page }) => {
   await signIn(page);
 });
 
+test('artist: an Embeds row without a cover soft-fills one', async ({
+  page,
+}) => {
+  await page.route('https://noembed.com/embed**', (route) =>
+    route.fulfill({
+      contentType: 'application/json',
+      body: JSON.stringify({
+        thumbnail_url: 'https://img.example/mixcloud-soft.jpg',
+      }),
+    }),
+  );
+  await page.goto('/library/sounds?tab=embeds');
+  await acknowledgeGuidelines(page);
+  const panel = page.getByTestId('sounds-panel-embeds');
+  const play = panel.getByRole('button', {
+    name: 'Play Coverless night drive on Mixcloud',
+  });
+  await expect(play).toBeVisible({ timeout: 15_000 });
+  await expect(play.locator('img')).toHaveAttribute(
+    'src',
+    'https://img.example/mixcloud-soft.jpg',
+  );
+});
+
 test('artist: Sounds → Embeds tab plays a hearthis embed', async ({ page }) => {
   await page.goto('/library/sounds');
   await acknowledgeGuidelines(page);

@@ -1,3 +1,9 @@
+## 2026-11-11 - Embeds tab fills a missing cover (0.0.369)
+
+Library → Sounds → Embeds shows a Mixcloud row that has no stored cover.
+The row asks noembed and uses that artwork. Storybook and the mock e2e
+stub the lookup and check the image.
+
 ## 2026-11-11 - Newest-first collections and SoundCloud covers (0.0.368)
 
 Sort sounds can keep Newest first and Title Z–A after a new track is
