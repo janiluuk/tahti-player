@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Badge, ButtonLink } from '@tahti-player/ui';
 
 import {
@@ -13,15 +13,28 @@ import { StudioPanel } from './StudioPanel';
 
 const REFRESH_MS = 15_000;
 
-const STATUS_BADGE: Record<
+function statusBadge(
+  t: TFunction<'web'>,
+): Record<
   RtmpTargetLiveStatus['status'],
   { label: string; color: 'green' | 'red' | 'secondary' }
-> = {
-  connected: { label: 'Streaming', color: 'green' },
-  error: { label: 'Error', color: 'red' },
-  offline: { label: 'Not streaming', color: 'secondary' },
-  disabled: { label: 'Off', color: 'secondary' },
-};
+> {
+  return {
+    connected: {
+      label: t('multistreamStatusPanelLeftovers.streaming'),
+      color: 'green',
+    },
+    error: { label: t('multistreamStatusPanelLeftovers.error'), color: 'red' },
+    offline: {
+      label: t('multistreamStatusPanelLeftovers.notStreaming'),
+      color: 'secondary',
+    },
+    disabled: {
+      label: t('multistreamStatusPanelLeftovers.off'),
+      color: 'secondary',
+    },
+  };
+}
 
 /** Whether each multistream destination is receiving the stream right now. */
 export function MultistreamStatusPanel({ slug }: { slug: string }) {
@@ -69,7 +82,9 @@ export function MultistreamStatusPanel({ slug }: { slug: string }) {
         <PageErrorBanner
           title={t('loadErrors.couldnTCheckMultistreamStatus')}
           description={
-            targets?.length ? 'Showing the last known status.' : error
+            targets?.length
+              ? t('multistreamStatusPanelLeftovers.showingLastKnown')
+              : error
           }
           onRetry={load}
         />
@@ -79,7 +94,7 @@ export function MultistreamStatusPanel({ slug }: { slug: string }) {
         data-testid="multistream-status"
       >
         {(targets ?? []).map((target) => {
-          const badge = STATUS_BADGE[target.status];
+          const badge = statusBadge(t)[target.status];
           return (
             <li key={target.id} className="flex flex-col gap-1 py-2">
               <div className="flex items-center justify-between gap-3">

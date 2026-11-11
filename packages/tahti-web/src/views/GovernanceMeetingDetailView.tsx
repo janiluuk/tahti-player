@@ -52,7 +52,9 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
           setMeeting(null);
           setNotFound(false);
           setLoadError(
-            err instanceof Error ? err.message : 'Could not load meetings.',
+            err instanceof Error
+              ? err.message
+              : t('governanceMeetingDetailViewLeftovers.couldNotLoadMeetings'),
           );
         }
       })

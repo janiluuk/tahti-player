@@ -6,6 +6,7 @@ import type {
   NativeLibraryImportResult,
   TahtiNativeLibrary,
 } from '../../lib/nativeLibrary';
+import { webT } from '../../lib/webT';
 import { describeImportFailures } from './importFailures';
 
 // The panel remounts on every visit to the library; offer an interrupted
@@ -51,23 +52,20 @@ export function useNativeImport(
   >(() => Promise.resolve());
 
   const reportImportResult = (result: NativeLibraryImportResult) => {
+    const t = webT();
     lastFailedPathsRef.current = result.errors.map((failure) => failure.path);
     if (result.imported > 0) {
       toast.success(
-        result.imported === 1
-          ? 'Imported 1 track.'
-          : `Imported ${result.imported} tracks.`,
+        t('nativeImportLeftovers.imported', { count: result.imported }),
       );
     }
     if (result.errors.length) {
       toast.error(
-        result.errors.length === 1
-          ? '1 file could not be imported.'
-          : `${result.errors.length} files could not be imported.`,
+        t('nativeImportLeftovers.filesFailed', { count: result.errors.length }),
         {
           description: describeImportFailures(result.errors),
           action: {
-            label: 'Retry',
+            label: t('nativeImportLeftovers.retry'),
             onClick: () => void retry(),
           },
         },
@@ -75,11 +73,14 @@ export function useNativeImport(
     }
     if (result.cancelled) {
       toast.info(
-        'Import cancelled.',
+        t('nativeImportLeftovers.importCancelled'),
         library?.resumeImport
           ? {
-              description: 'Files already imported are kept.',
-              action: { label: 'Resume', onClick: () => void resume() },
+              description: t('nativeImportLeftovers.filesKept'),
+              action: {
+                label: t('nativeImportLeftovers.resume'),
+                onClick: () => void resume(),
+              },
             }
           : undefined,
       );
@@ -91,9 +92,7 @@ export function useNativeImport(
       result.skipped
     ) {
       toast.info(
-        result.skipped === 1
-          ? '1 file was not a supported audio format.'
-          : `${result.skipped} files were not a supported audio format.`,
+        t('nativeImportLeftovers.unsupported', { count: result.skipped }),
       );
     }
   };
@@ -111,7 +110,11 @@ export function useNativeImport(
         reportImportResult(await action(library));
         await refreshRef.current();
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : 'Import failed.');
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : webT()('nativeImportLeftovers.importFailed'),
+        );
       } finally {
         setLoading(false);
         setProgress(null);
@@ -152,15 +155,17 @@ export function useNativeImport(
           return;
         }
         pendingImportOffered = true;
+        const t = webT();
         toast.info(
-          pending.files === 1
-            ? 'An import was interrupted with 1 file left.'
-            : `An import was interrupted with ${pending.files} files left.`,
+          t('nativeImportLeftovers.interrupted', { count: pending.files }),
           {
             duration: Infinity,
-            action: { label: 'Resume', onClick: () => void resume() },
+            action: {
+              label: t('nativeImportLeftovers.resume'),
+              onClick: () => void resume(),
+            },
             cancel: {
-              label: 'Discard',
+              label: t('nativeImportLeftovers.discard'),
               onClick: () => void library.discardPendingImport?.(),
             },
           },

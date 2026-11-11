@@ -114,12 +114,6 @@ export type ChannelBackdropCardProps = {
   className?: string;
 };
 
-const DEFAULT_NAV_ITEMS: ChannelBackdropNavItem[] = [
-  { id: 'home', label: 'Stage', active: true },
-  { id: 'tracks', label: 'Tracks' },
-  { id: 'about', label: 'About' },
-];
-
 function shownBackdropLinks(
   links:
     Array<{ label: string; url: string; hidden?: boolean }> | null | undefined,
@@ -184,7 +178,7 @@ export function ChannelBackdropCard({
   visualSettingsJson,
   badge,
   identityActions,
-  navItems = DEFAULT_NAV_ITEMS,
+  navItems: navItemsProp,
   quickAdd,
   onEditIdentity,
   onEditBackground,
@@ -198,6 +192,16 @@ export function ChannelBackdropCard({
 }: ChannelBackdropCardProps) {
   const { t } = useTranslation('web');
   const backdropLinks = shownBackdropLinks(links, showOffFeatures);
+  const defaultNavItems: ChannelBackdropNavItem[] = [
+    {
+      id: 'home',
+      label: t('channelBackdropCardLeftovers.stage'),
+      active: true,
+    },
+    { id: 'tracks', label: t('channelBackdropCardLeftovers.tracks') },
+    { id: 'about', label: t('channelBackdropCardLeftovers.about') },
+  ];
+  const navItems = navItemsProp ?? defaultNavItems;
   const NameTag = nameAsHeading ? 'h1' : 'div';
   const showVideo =
     showVideoOverride ??
@@ -338,8 +342,16 @@ export function ChannelBackdropCard({
             <div
               role={onEditIdentity ? 'button' : undefined}
               tabIndex={onEditIdentity ? 0 : undefined}
-              aria-label={onEditIdentity ? 'Edit backdrop design' : undefined}
-              title={onEditIdentity ? 'Edit backdrop design' : undefined}
+              aria-label={
+                onEditIdentity
+                  ? t('channelBackdropCardLeftovers.editBackdropDesign')
+                  : undefined
+              }
+              title={
+                onEditIdentity
+                  ? t('channelBackdropCardLeftovers.editBackdropDesign')
+                  : undefined
+              }
               onClick={
                 onEditIdentity
                   ? (event) => {
@@ -498,8 +510,16 @@ export function ChannelBackdropCard({
         <div
           role={onEditBackground ? 'button' : undefined}
           tabIndex={onEditBackground ? 0 : undefined}
-          aria-label={onEditBackground ? 'Edit player design' : undefined}
-          title={onEditBackground ? 'Edit player design' : undefined}
+          aria-label={
+            onEditBackground
+              ? t('channelBackdropCardLeftovers.editPlayerDesign')
+              : undefined
+          }
+          title={
+            onEditBackground
+              ? t('channelBackdropCardLeftovers.editPlayerDesign')
+              : undefined
+          }
           onClick={
             onEditBackground
               ? (event) => {

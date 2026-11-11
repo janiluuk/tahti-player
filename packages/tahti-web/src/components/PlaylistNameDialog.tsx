@@ -47,7 +47,7 @@ export function PlaylistNameDialog({
       setError(
         failure instanceof Error
           ? failure.message
-          : i18n.t('web:batch51.couldNotSave'),
+          : t('playlistNameDialogLeftovers.couldNotSave'),
       );
     } finally {
       setBusy(false);

@@ -83,7 +83,9 @@ export function ChannelPlaylistBlock({
         }
         setCollection(null);
         setLoadError(
-          err instanceof Error ? err.message : 'Could not load this playlist.',
+          err instanceof Error
+            ? err.message
+            : t('channelPlaylistBlockLeftovers.couldNotLoadPlaylist'),
         );
         setLoading(false);
       });

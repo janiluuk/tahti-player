@@ -87,7 +87,9 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
       } catch (err) {
         if (!cancelled) {
           setLoadError(
-            err instanceof Error ? err.message : 'Could not load this episode.',
+            err instanceof Error
+              ? err.message
+              : t('studioEpisodeReviewViewLeftovers.couldNotLoadEpisode'),
           );
         }
       }
@@ -130,7 +132,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
         return;
       }
       setEpisode(r.data);
-      const text = 'Episode approved — ready to schedule or publish.';
+      const text = t('studioEpisodeReviewViewLeftovers.episodeApproved');
       setMsg(text);
       toast.success(text);
     } catch {

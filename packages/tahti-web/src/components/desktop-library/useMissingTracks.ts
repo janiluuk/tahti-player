@@ -39,7 +39,11 @@ export function useMissingTracks(
         );
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Re-scan failed.');
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:useMissingTracksLeftovers.rescanFailed'),
+      );
     } finally {
       setBusy(false);
     }
@@ -60,7 +64,11 @@ export function useMissingTracks(
         i18n.t('web:toasts.locatedNamedQuotes', { title: replacement.title }),
       );
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Relink failed.');
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:useMissingTracksLeftovers.relinkFailed'),
+      );
     } finally {
       setBusy(false);
     }

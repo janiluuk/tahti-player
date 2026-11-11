@@ -1,7 +1,7 @@
 import { UploadCloudIcon, XIcon } from 'lucide-react';
 import { useState, type FC } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -34,32 +34,37 @@ type Props = {
   onGalleryUploaded?: (image: PressKitImageItem) => void;
 };
 
-const PURPOSES: Array<{
+const ACCEPTED_IMAGES = 'image/jpeg,image/png,image/webp';
+
+function purposes(t: TFunction<'web'>): Array<{
   id: ImagePurpose;
   label: string;
   description: string;
-}> = [
-  {
-    id: 'profile',
-    label: 'Profile image',
-    description: 'The main artist image shown with your identity.',
-  },
-  {
-    id: 'gallery',
-    label: 'Gallery',
-    description: 'A public image for your artist page gallery.',
-  },
-  {
-    id: 'press-kit',
-    label: 'Press kit',
-    description: 'Include this image in your downloadable press kit.',
-  },
-];
+}> {
+  return [
+    {
+      id: 'profile',
+      label: t('artistImagePurposePickerLeftovers.profileImage'),
+      description: t('artistImagePurposePickerLeftovers.profileImageHint'),
+    },
+    {
+      id: 'gallery',
+      label: t('artistImagePurposePickerLeftovers.gallery'),
+      description: t('artistImagePurposePickerLeftovers.galleryHint'),
+    },
+    {
+      id: 'press-kit',
+      label: t('artistImagePurposePickerLeftovers.pressKit'),
+      description: t('artistImagePurposePickerLeftovers.pressKitHint'),
+    },
+  ];
+}
 
-const ACCEPTED_IMAGES = 'image/jpeg,image/png,image/webp';
-
-function purposeDescription(purpose: ImagePurpose): string {
-  return PURPOSES.find((option) => option.id === purpose)?.description ?? '';
+function purposeDescription(
+  purpose: ImagePurpose,
+  t: TFunction<'web'>,
+): string {
+  return purposes(t).find((option) => option.id === purpose)?.description ?? '';
 }
 
 export const ArtistImagePurposePicker: FC<Props> = ({
@@ -252,13 +257,13 @@ export const ArtistImagePurposePicker: FC<Props> = ({
                   {image.file.name}
                 </p>
                 <p className="text-foreground-secondary mt-1 text-xs">
-                  {purposeDescription(image.purpose)}
+                  {purposeDescription(image.purpose, t)}
                 </p>
                 <div
                   className="mt-3 grid gap-2 sm:grid-cols-3"
                   role="radiogroup"
                 >
-                  {PURPOSES.map((purpose) => (
+                  {purposes(t).map((purpose) => (
                     <Button
                       variant="plain"
                       size="flexible"

@@ -1,5 +1,7 @@
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 const UNDO_TOAST_DURATION_MS = 8000;
 
 type UndoFailure = { ok: false; error: string };
@@ -31,7 +33,9 @@ export function toastWithUndo<T extends { ok: true }>(
           })
           .catch((failure: unknown) =>
             toast.error(
-              failure instanceof Error ? failure.message : 'Could not undo.',
+              failure instanceof Error
+                ? failure.message
+                : i18n.t('web:undoToastLeftovers.couldNotUndo'),
             ),
           );
       },

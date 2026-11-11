@@ -526,7 +526,11 @@ export function SelectsTab() {
                           </Tooltip>
                         ) : null}
                         <span className="text-foreground-secondary w-20 text-right text-xs">
-                          {already ? 'In rotation' : selected ? 'Selected' : ''}
+                          {already
+                            ? t('selectsTabLeftovers.inRotation')
+                            : selected
+                              ? t('selectsTabLeftovers.selected')
+                              : ''}
                         </span>
                       </li>
                     );

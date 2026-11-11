@@ -253,7 +253,7 @@ export function VoiceRecorder({
             value={level}
           />
           <span>
-            {level >= 0.98 ? 'Too loud — lower your microphone gain' : ''}
+            {level >= 0.98 ? t('voiceRecorderLeftovers.tooLoud') : ''}
           </span>
         </div>
       )}

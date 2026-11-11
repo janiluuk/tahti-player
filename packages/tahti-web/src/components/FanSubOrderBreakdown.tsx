@@ -11,45 +11,46 @@ import {
 
 const split = computeFanSubSplit(EXAMPLE_FAN_SUB_GROSS_CENTS);
 
-const LINES: Array<{
-  label: string;
-  amount: string;
-  className: string;
-  total?: boolean;
-}> = [
-  {
-    label: 'Fan pays',
-    amount: eurosFromCents(split.grossCents),
-    className: 'text-foreground',
-  },
-  {
-    label: 'Stripe fees',
-    amount: `−${eurosFromCents(split.stripeFeeCents)}`,
-    className: 'text-accent-orange-strong',
-  },
-  {
-    label: 'Tahti ops fee (2%)',
-    amount: `−${eurosFromCents(split.orgFeeCents)}`,
-    className: 'text-accent-cyan-strong',
-  },
-  {
-    label: 'You receive',
-    amount: eurosFromCents(split.netToArtistCents),
-    className: 'text-accent-green-strong font-semibold',
-    total: true,
-  },
-];
-
 export const FanSubOrderBreakdown: FC = () => {
   const { t } = useTranslation('web');
+  const lines: Array<{
+    label: string;
+    amount: string;
+    className: string;
+    total?: boolean;
+  }> = [
+    {
+      label: t('fanSubOrderBreakdownLeftovers.fanPays'),
+      amount: eurosFromCents(split.grossCents),
+      className: 'text-foreground',
+    },
+    {
+      label: t('fanSubOrderBreakdownLeftovers.stripeFees'),
+      amount: `−${eurosFromCents(split.stripeFeeCents)}`,
+      className: 'text-accent-orange-strong',
+    },
+    {
+      label: t('fanSubOrderBreakdownLeftovers.tahtiOpsFee'),
+      amount: `−${eurosFromCents(split.orgFeeCents)}`,
+      className: 'text-accent-cyan-strong',
+    },
+    {
+      label: t('fanSubOrderBreakdownLeftovers.youReceive'),
+      amount: eurosFromCents(split.netToArtistCents),
+      className: 'text-accent-green-strong font-semibold',
+      total: true,
+    },
+  ];
   return (
     <div data-tour-id="revenue-flow" data-testid="fan-order-flow">
-      <h3 className="text-sm font-bold">Where €5/mo goes</h3>
+      <h3 className="text-sm font-bold">
+        {t('fanSubOrderBreakdownLeftovers.whereGoes')}
+      </h3>
       <p className="text-foreground-secondary mt-1 text-xs">
         {t('fanSubOrderBreakdown.everyFanSubOrderSplits')}
       </p>
       <dl className="border-border divide-border mt-3 divide-y overflow-hidden rounded-lg border">
-        {LINES.map((line) => (
+        {lines.map((line) => (
           <div
             key={line.label}
             className={`flex items-center justify-between gap-3 px-3 py-2.5 text-sm ${

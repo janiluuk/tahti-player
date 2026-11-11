@@ -71,7 +71,11 @@ export function ArtistGalleryPanel({
       const added = result.images;
       onChange([...images, ...added]);
       toastWithUndo(
-        added.length === 1 ? 'Photo added.' : `${added.length} photos added.`,
+        added.length === 1
+          ? t('artistGalleryPanelLeftovers.photoAdded')
+          : t('artistGalleryPanelLeftovers.photosAdded', {
+              count: added.length,
+            }),
         {
           undo: async () => {
             const undone = await Promise.all(

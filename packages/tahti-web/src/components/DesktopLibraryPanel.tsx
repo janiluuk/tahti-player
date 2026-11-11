@@ -269,7 +269,9 @@ export function DesktopLibraryPanel() {
       setTotals(libraryTotals);
     } catch (error) {
       setNativeError(
-        error instanceof Error ? error.message : 'Library unavailable.',
+        error instanceof Error
+          ? error.message
+          : t('desktopLibraryPanelLeftovers.libraryUnavailable'),
       );
     }
   }, [nativeLibrary]);
@@ -310,7 +312,9 @@ export function DesktopLibraryPanel() {
       .catch((error: unknown) => {
         if (!stale) {
           toast.error(
-            error instanceof Error ? error.message : 'Could not load groups.',
+            error instanceof Error
+              ? error.message
+              : t('desktopLibraryPanelLeftovers.couldNotLoadGroups'),
           );
         }
       })
@@ -357,7 +361,9 @@ export function DesktopLibraryPanel() {
       setSelectedIds(new Set());
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Could not remove tracks.',
+        error instanceof Error
+          ? error.message
+          : t('desktopLibraryPanelLeftovers.couldNotRemoveTracks'),
       );
     }
     await refreshNative();

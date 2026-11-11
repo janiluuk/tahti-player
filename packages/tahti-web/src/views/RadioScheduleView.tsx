@@ -738,10 +738,14 @@ export function RadioScheduleView() {
                 <div className="flex flex-col gap-3">
                   {selectedBooking.showTitle && (
                     <p className="text-sm">
-                      <span className="text-foreground-secondary">Show: </span>
+                      <span className="text-foreground-secondary">
+                        {t('radioScheduleViewLeftovers.show')}{' '}
+                      </span>
                       {selectedBooking.showTitle}
                       {selectedBooking.episodeNumber != null
-                        ? ` — Episode #${selectedBooking.episodeNumber}`
+                        ? t('radioScheduleViewLeftovers.episodeNumber', {
+                            number: selectedBooking.episodeNumber,
+                          })
                         : ''}
                     </p>
                   )}

@@ -101,7 +101,9 @@ export function TrackEditorDialog({
       .catch((failure) => {
         if (!cancelled) {
           setLoadError(
-            failure instanceof Error ? failure.message : 'Could not load tags.',
+            failure instanceof Error
+              ? failure.message
+              : t('trackEditorDialogLeftovers.couldNotLoadTags'),
           );
         }
       });
@@ -192,7 +194,9 @@ export function TrackEditorDialog({
       );
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not save the edit.',
+        failure instanceof Error
+          ? failure.message
+          : t('trackEditorDialogLeftovers.couldNotSaveEdit'),
       );
     } finally {
       setBusy(false);

@@ -63,10 +63,14 @@ export function RadioRowCard({
   );
   const unavailable = failure ? (
     <InlineError textSize="xs" announce={false}>
-      Station unavailable · {streamFailureLabel(failure)}
+      {t('radioRowCardLeftovers.stationUnavailable', {
+        reason: streamFailureLabel(failure),
+      })}
     </InlineError>
   ) : null;
-  const failedPlayLabel = failure ? 'Try again' : undefined;
+  const failedPlayLabel = failure
+    ? t('radioRowCardLeftovers.tryAgain')
+    : undefined;
   if (item.kind === 'mine') {
     const { station } = item;
     return (

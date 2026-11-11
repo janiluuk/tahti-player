@@ -68,6 +68,8 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 - Batch 45: Studio playlist/collection/track-edit/release/sound/stats/waveform OrganizeFiles; Admin comments/topics/test-notification/artwork; materials; ArtistStore; context-menu Added to; OAuth/Spotify; Fan billing; TrackEditor undo; ProfileOrder; Onboarding; PlayableTrackTable queue.
 - Batch 44: Studio Recordings / Distribution / Editor list chrome+empties; radio 24/7 settings + rotation source + channel-created + Tahti Radio submit toasts; collection reorder/save + release version/credits toasts; Go live + playlist remove + multistream ConfirmDialogs; channel-designer Save/Delete/Reset and ArtworkPreset Cancel via `web.actions`; grant-report visibility toast; StudioDistribution Storybook.
 
+- Batch 23 (2026-11-11, 50 groups): the leftover English in track analysis, playlist and pro editors, desktop import and library toasts, queue, membership, invoices, association fields, image purpose, fan-sub split, and the small dialogs (`*Leftovers` / `*More` in `en_US.json` and `fi_FI.json`). Module-level lists take `t` so they follow the language.
+
 ## Left
 
 - Listen reorder chrome (2026-11-11): `web.listenSection` loading/error, `web.listenLayout` remove/reset/add-back/empty, `web.removeWidgetDialog` title/detail. Finnish differs from English.

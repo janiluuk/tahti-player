@@ -57,7 +57,9 @@ export function AddToReleasePanel({
       .catch((err) => {
         if (!cancelled) {
           setLoadError(
-            err instanceof Error ? err.message : 'Could not load releases.',
+            err instanceof Error
+              ? err.message
+              : t('addToReleasePanelLeftovers.couldNotLoadReleases'),
           );
         }
       });

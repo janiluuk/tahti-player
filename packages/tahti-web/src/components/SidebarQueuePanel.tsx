@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { Trash2Icon } from 'lucide-react';
 import { useCallback, useMemo } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, ButtonLink, QueuePanel, Tooltip } from '@tahti-player/ui';
 
 import { useTrackLikes } from '../hooks/useTrackLikes';
@@ -14,14 +14,16 @@ import { useQueueBarActions } from './useQueueBarActions';
 
 const QUEUE_VIEWPORT_MAX = 'max-h-80';
 
-const QUEUE_LABELS = {
-  emptyTitle: 'Queue empty',
-  emptySubtitle: 'Play a channel or radio to start listening',
-  removeButton: 'Remove from queue',
-  playbackError: 'Could not play',
-  noCandidates: 'No stream',
-  candidateFailed: 'Stream failed',
-};
+function queueLabels(t: TFunction<'web'>) {
+  return {
+    emptyTitle: t('sidebarQueuePanelLeftovers.queueEmpty'),
+    emptySubtitle: t('sidebarQueuePanelLeftovers.playToStart'),
+    removeButton: t('sidebarQueuePanelLeftovers.removeFromQueue'),
+    playbackError: t('sidebarQueuePanelLeftovers.couldNotPlay'),
+    noCandidates: t('sidebarQueuePanelLeftovers.noStream'),
+    candidateFailed: t('sidebarQueuePanelLeftovers.streamFailed'),
+  };
+}
 
 export function SidebarQueuePanel({
   compact = false,
@@ -107,7 +109,7 @@ export function SidebarQueuePanel({
           onTitleClick={handleTitleClick}
           isLiked={isLiked}
           onToggleLike={signedIn ? handleToggleLike : undefined}
-          labels={QUEUE_LABELS}
+          labels={queueLabels(t)}
           emptyAction={
             <div className="flex flex-wrap items-center justify-center gap-2">
               <ButtonLink to="/discover" size="sm" variant="secondary">

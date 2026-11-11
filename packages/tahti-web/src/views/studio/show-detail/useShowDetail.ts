@@ -95,7 +95,9 @@ export function useShowDetail(id: string) {
       .catch((err) => {
         setShow(null);
         setShowLoadError(
-          err instanceof Error ? err.message : 'Could not load the show.',
+          err instanceof Error
+            ? err.message
+            : i18n.t('web:useShowDetailLeftovers.couldNotLoadShow'),
         );
         toast.error(i18n.t('web:toasts.couldNotLoadShow'));
       })
@@ -108,7 +110,9 @@ export function useShowDetail(id: string) {
       .catch((err) => {
         setEpisodes([]);
         setEpisodesLoadError(
-          err instanceof Error ? err.message : 'Could not load the episodes.',
+          err instanceof Error
+            ? err.message
+            : i18n.t('web:useShowDetailLeftovers.couldNotLoadEpisodes'),
         );
         toast.error(i18n.t('web:toasts.couldNotLoadEpisodes'));
       });
@@ -122,7 +126,9 @@ export function useShowDetail(id: string) {
       .catch((err) => {
         setBookings([]);
         setBookingsLoadError(
-          err instanceof Error ? err.message : 'Could not load bookings.',
+          err instanceof Error
+            ? err.message
+            : i18n.t('web:useShowDetailLeftovers.couldNotLoadBookings'),
         );
       });
   };
@@ -204,7 +210,9 @@ export function useShowDetail(id: string) {
       toast.success(i18n.t('web:toasts.showDetailsSaved'));
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Could not save the show.',
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:useShowDetailLeftovers.couldNotSaveShow'),
       );
     } finally {
       setSavingMeta(false);

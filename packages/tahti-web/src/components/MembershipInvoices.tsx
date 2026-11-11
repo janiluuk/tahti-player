@@ -1,7 +1,7 @@
 import { DownloadIcon, ExternalLinkIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Badge,
   ButtonAnchor,
@@ -17,16 +17,26 @@ import {
 import { ListingDate } from './ListingDate';
 import { PageEmpty } from './PageStates';
 
-const STATUS_LABELS: Record<
+function statusLabels(
+  t: TFunction<'web'>,
+): Record<
   string,
   { label: string; color: 'green' | 'yellow' | 'red' | 'secondary' }
-> = {
-  paid: { label: 'Paid', color: 'green' },
-  open: { label: 'Unpaid', color: 'yellow' },
-  uncollectible: { label: 'Uncollectible', color: 'red' },
-  void: { label: 'Void', color: 'secondary' },
-  draft: { label: 'Draft', color: 'secondary' },
-};
+> {
+  return {
+    paid: { label: t('membershipInvoicesLeftovers.paid'), color: 'green' },
+    open: { label: t('membershipInvoicesLeftovers.unpaid'), color: 'yellow' },
+    uncollectible: {
+      label: t('membershipInvoicesLeftovers.uncollectible'),
+      color: 'red',
+    },
+    void: { label: t('membershipInvoicesLeftovers.void'), color: 'secondary' },
+    draft: {
+      label: t('membershipInvoicesLeftovers.draft'),
+      color: 'secondary',
+    },
+  };
+}
 
 export function MembershipInvoices() {
   const { t } = useTranslation('web');
@@ -71,7 +81,7 @@ export function MembershipInvoices() {
         <ul className="divide-border mt-2 divide-y">
           {invoices.map((invoice) => {
             const status = invoice.status
-              ? (STATUS_LABELS[invoice.status] ?? {
+              ? (statusLabels(t)[invoice.status] ?? {
                   label: invoice.status,
                   color: 'secondary' as const,
                 })
