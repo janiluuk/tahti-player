@@ -213,13 +213,13 @@ test('governance: closed motions show their final decision as a permanent histor
     .filter({ hasText: 'Confirm annual report' });
   await expect(closedMotion.getByText('Closed')).toBeVisible();
   await expect(closedMotion.getByText('Your vote:')).toBeVisible();
-  await expect(closedMotion.getByText('YES', { exact: true })).toBeVisible();
-  await expect(closedMotion.getByText('YES 10')).toBeVisible();
-  await expect(closedMotion.getByText('NO 1')).toBeVisible();
-  await expect(closedMotion.getByText('ABSTAIN 1')).toBeVisible();
+  await expect(closedMotion.getByText('Yes', { exact: true })).toBeVisible();
+  await expect(closedMotion.getByText('Yes 10')).toBeVisible();
+  await expect(closedMotion.getByText('No 1')).toBeVisible();
+  await expect(closedMotion.getByText('Abstain 1')).toBeVisible();
   // A decided motion never shows voting controls again.
   await expect(
-    closedMotion.getByRole('button', { name: 'YES', exact: true }),
+    closedMotion.getByRole('button', { name: 'Yes', exact: true }),
   ).toHaveCount(0);
 });
 
@@ -233,20 +233,20 @@ test('governance: voting on an open motion records the choice and updates the ta
     .getByRole('listitem')
     .filter({ hasText: 'Approve 2026 grant formula' });
   await expect(openMotion.getByText('Open')).toBeVisible();
-  await expect(openMotion.getByText('YES 1')).toBeVisible();
+  await expect(openMotion.getByText('Yes 1')).toBeVisible();
   await expect(openMotion.getByText('Your vote:')).toHaveCount(0);
 
-  await openMotion.getByRole('button', { name: 'YES', exact: true }).click();
+  await openMotion.getByRole('button', { name: 'Yes', exact: true }).click();
 
   await expect(openMotion.getByText('Your vote:')).toBeVisible();
-  await expect(openMotion.getByText('YES 2')).toBeVisible();
+  await expect(openMotion.getByText('Yes 2')).toBeVisible();
   // Edge case: once voted, the motion can't be voted on again -- the
   // choice buttons are gone entirely, not just disabled.
   await expect(
-    openMotion.getByRole('button', { name: 'YES', exact: true }),
+    openMotion.getByRole('button', { name: 'Yes', exact: true }),
   ).toHaveCount(0);
   await expect(
-    openMotion.getByRole('button', { name: 'NO', exact: true }),
+    openMotion.getByRole('button', { name: 'No', exact: true }),
   ).toHaveCount(0);
 });
 

@@ -319,7 +319,7 @@ export function createStudioSoundsBulkActions(deps: BulkDeps) {
             i18n.t('web:library.coversBackfillDone', {
               count: result.data.assigned,
             }),
-            fromProvider != null && fromPresets != null
+            fromProvider !== undefined && fromPresets !== undefined
               ? {
                   description: i18n.t('web:library.coversBackfillSources', {
                     provider: fromProvider,

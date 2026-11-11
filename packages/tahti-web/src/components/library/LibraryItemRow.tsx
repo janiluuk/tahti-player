@@ -22,7 +22,7 @@ export function LibraryItemRow({
   return (
     <div
       className={cn(
-        'flex flex-wrap items-start justify-between gap-4 py-4 first:pt-0 last:pb-0',
+        'flex flex-wrap items-start justify-between gap-4 py-4 first:pt-0 last:pb-0 [li:not(:first-child)>&]:pt-4 [li:not(:last-child)>&]:pb-4',
         className,
       )}
       data-testid="library-item-row"

@@ -64,6 +64,7 @@ export function AudioEngine() {
   const muted = usePlayerStore((s) => s.muted);
   const fadeLevel = usePlayerStore((s) => s.fadeLevel);
   const seekTarget = usePlayerStore((s) => s.seekTarget);
+  const pendingSeekRef = useRef<{ id: string | null; at: number } | null>(null);
   const reloadNonce = usePlayerStore((s) => s.reloadNonce);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const setProgress = usePlayerStore((s) => s.setProgress);
@@ -432,6 +433,20 @@ export function AudioEngine() {
       const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
       updatePositionState(audio.currentTime, duration, audio.playbackRate);
     };
+    const onMetadata = () => {
+      const pending = pendingSeekRef.current;
+      pendingSeekRef.current = null;
+      if (!pending || pending.id !== playable.id) {
+        return;
+      }
+      try {
+        audio.currentTime = pending.at;
+      } catch {
+        return;
+      }
+      const duration = Number.isFinite(audio.duration) ? audio.duration : 0;
+      setProgress(audio.currentTime, duration);
+    };
     // crossOrigin is required for the shared analyser (see the graph
     // effect above): a media element source fed by a non-CORS stream
     // outputs silence, not just a dead visualizer. A host without CORS
@@ -477,6 +492,7 @@ export function AudioEngine() {
     audio.addEventListener('ended', onEnded);
     audio.addEventListener('timeupdate', onTime);
     audio.addEventListener('seeked', onSeeked);
+    audio.addEventListener('loadedmetadata', onMetadata);
     audio.addEventListener('error', onError);
 
     const playDirect = () => {
@@ -535,6 +551,7 @@ export function AudioEngine() {
       audio.removeEventListener('ended', onEnded);
       audio.removeEventListener('timeupdate', onTime);
       audio.removeEventListener('seeked', onSeeked);
+      audio.removeEventListener('loadedmetadata', onMetadata);
       audio.removeEventListener('error', onError);
       cleanup();
     };
@@ -564,21 +581,21 @@ export function AudioEngine() {
     if (!audio || seekTarget == null) {
       return;
     }
-    const apply = () => {
+    if (audio.readyState < HTMLMediaElement.HAVE_METADATA) {
+      pendingSeekRef.current = {
+        id: usePlayerStore.getState().currentId,
+        at: seekTarget,
+      };
+    } else {
+      pendingSeekRef.current = null;
       try {
         audio.currentTime = seekTarget;
       } catch {
         // Some live HLS sources reject seeks — ignore.
       }
-      clearSeekTarget();
-    };
-    if (audio.readyState >= HTMLMediaElement.HAVE_METADATA) {
-      apply();
-      return;
     }
-    audio.addEventListener('loadedmetadata', apply, { once: true });
-    return () => audio.removeEventListener('loadedmetadata', apply);
-  }, [seekTarget, clearSeekTarget, elementGeneration]);
+    clearSeekTarget();
+  }, [seekTarget, clearSeekTarget]);
 
   return (
     <>

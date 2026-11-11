@@ -265,9 +265,9 @@ function filterMockSounds(
 
 export type StudioSoundCoversBackfillResult = {
   assigned: number;
+  totalMatched: number;
   fromProvider?: number;
   fromPresets?: number;
-  totalMatched: number;
 };
 
 export async function backfillStudioSoundCovers(): Promise<
@@ -286,9 +286,9 @@ export async function backfillStudioSoundCovers(): Promise<
       ok: true,
       data: {
         assigned,
+        totalMatched: assigned,
         fromProvider: 0,
         fromPresets: assigned,
-        totalMatched: assigned,
       },
     };
   }

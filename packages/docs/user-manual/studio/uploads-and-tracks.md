@@ -93,7 +93,7 @@ Embeds (linked SoundCloud, Mixcloud, and similar) stay in the list for browsing 
 
 ### Covers for embeds
 
-An embed with no cover of its own shows the cover from its service (SoundCloud, YouTube, hearthis.at, Mixcloud, Spotify or Bandcamp) while you browse, and Tahti saves that cover to the sound the first time you see it on your own channel. **Fill missing covers** does the same for every sound at once: it asks each service first and gives anything still empty an artwork from the board's gallery, then tells you how many covers came from each. Mikseri.net has no cover to fetch, so its embeds get a gallery artwork.
+An embed with no stored cover shows the service's own artwork when Tahti can find it (hearthis.at, Mixcloud, Spotify, Bandcamp, SoundCloud, YouTube), otherwise the default artwork, never an empty square. When you open your own library, a cover found this way is saved on the track, so it loads straight away next time. **Fill missing covers** in Library → Sounds does the same for your whole library at once: it asks each service first and gives the rest a cover from the artwork gallery, then tells you how many came from each. Tahti also runs this every night for embeds that still have no cover. Mikseri.net has no public artwork, so Mikseri embeds always get a gallery cover.
 
 ### One track
 

@@ -1729,8 +1729,8 @@
       "coversBackfillBusy": "Määritetään kansia…",
       "coversBackfillDone_one": "Kansi määritettiin 1 äänelle",
       "coversBackfillDone_other": "Kannet määritettiin {{count}} äänelle",
-      "coversBackfillSources": "Palvelusta: {{provider}} · Oletuskuvista: {{presets}}",
       "coversBackfillNone": "Jokaisella äänellä on jo kansi",
+      "coversBackfillSources": "{{provider}} palvelusta, {{presets}} valmiista kansikuvista",
       "coversBackfillError": "Puuttuvia kansia ei voitu täyttää",
       "soundPinned": ", kiinnitetty",
       "soundPrivate": ", yksityinen",
@@ -4363,6 +4363,32 @@
       "morphAmount": "Muunnoksen määrä",
       "crossfadeCurve": "Ristihäivytyksen käyrä"
     },
+    "governanceLabels": {
+      "typeGeneral": "Yhdistyksen kokous",
+      "typeExtraordinary": "Ylimääräinen yhdistyksen kokous",
+      "typeBoard": "Hallituksen kokous",
+      "stateDraft": "Luonnos",
+      "stateScheduled": "Aikataulutettu",
+      "stateHeld": "Pidetty",
+      "stateMinutesDraft": "Pöytäkirja luonnoksena",
+      "stateApproved": "Pöytäkirja hyväksytty",
+      "stateCancelled": "Peruttu",
+      "voteYes": "Kyllä",
+      "voteNo": "Ei",
+      "voteAbstain": "Tyhjä",
+      "dateNotListed": "Päivää ei ilmoitettu",
+      "quorumMet": "päätösvaltainen",
+      "quorumNotMet": "ei päätösvaltainen",
+      "presentOf": "{{present}}/{{eligible}} paikalla",
+      "yourVote": "Äänesi:",
+      "voteRecorded": "kirjattu",
+      "votesCantChange": "· ääntä ei voi muuttaa",
+      "votedChoice": "Äänestit: {{choice}}.",
+      "tallyChoice": "{{choice}} {{count}}",
+      "membersVoted": "{{votes}}/{{eligible}} jäsentä äänesti",
+      "tallyAtClose": " · tulos julkaistaan suljettaessa",
+      "percentFor": " · {{percent}} % puolesta"
+    },
     "meetingDetail": {
       "signInWithACooperative": "Kirjaudu osuuskunnan jäsentilillä nähdäksesi kokousten pöytäkirjat.",
       "meetingNotFound": "Kokousta ei löytynyt.",
@@ -6635,7 +6661,13 @@
     "overviewTab": {
       "revenue": "Tulot",
       "keyMetrics": "Tärkeimmät luvut",
-      "engagementUnits": "Sitoutumisyksiköt"
+      "engagementUnits": "Sitoutumisyksiköt",
+      "estimatedGrantShare": "Arvioitu osuus vuoden {{year}} avustuksesta",
+      "grantProgress": "Edistyminen kohti vuoden {{year}} avustuskelpoisuutta",
+      "units_one": "1 yksikkö",
+      "units_other": "{{count}} yksikköä",
+      "payoutsUnder": "Fanitilausten maksut ja avustushistoria löytyvät kohdasta",
+      "geographyNote": ". Kuuntelijoiden sijainnit on koottu yhteen eivätkä yksilöi ketään kuuntelijaa."
     },
     "hourlyDialog": {
       "distributionOfPlaysAcrossThe": "Soittojen jakautuminen vuorokauden ajalle. Vertaa napsauttamalla toista päivää kaaviossa.",
@@ -7668,7 +7700,14 @@
       "manage": "Hallitse",
       "filterSmartlinksByPlatform": "Suodata älylinkit alustan mukaan",
       "sortSmartlinks": "Järjestä älylinkit",
-      "openSmartlink": "Avaa älylinkki"
+      "openSmartlink": "Avaa älylinkki",
+      "trackCount_one": "1 kappale",
+      "trackCount_other": "{{count}} kappaletta",
+      "dspLinks_one": "1 palvelulinkki: {{names}}",
+      "dspLinks_other": "{{count}} palvelulinkkiä: {{names}}",
+      "noDspLinks": "Palvelulinkkejä ei ole vielä lisätty",
+      "viewCount_one": "1 katselu",
+      "viewCount_other": "{{views}} katselua"
     },
     "chatView": {
       "openChat": "Avaa keskustelu",
@@ -8452,7 +8491,28 @@
       "memberRegister": "Jäsenluettelo",
       "passed": "Hyväksytty",
       "failed": "Hylätty",
-      "deferred": "Siirretty"
+      "deferred": "Siirretty",
+      "governanceItem": "Hallintoasia",
+      "voted": "Äänesti",
+      "votedChoice": "Äänesti: {{choice}}",
+      "votedForTopic": "Äänesti aihetta",
+      "removedVote": "Poisti äänen",
+      "commented": "Kommentoi",
+      "memberMotionsDesc": "Jäsenten avoimet aloitteet ja julkinen hallintoportaali.",
+      "openCount_one": "1 avoin",
+      "openCount_other": "{{count}} avointa",
+      "venueQueueDesc": "Tarkista ja vahvista tapahtumakalenterin ehdotetut tapahtumapaikat.",
+      "pendingCount_one": "1 odottaa",
+      "pendingCount_other": "{{count}} odottaa",
+      "annualReportDesc": "Luo ja tallenna yhdistyksen vuotuinen toimintakertomus.",
+      "lastYear": "Viimeisin: {{year}}",
+      "boardResolutionsDesc": "Kirjaa ja julkaise hallituksen päätökset ja äänestystulokset – lomake alla.",
+      "thisYearCount_one": "1 tänä vuonna",
+      "thisYearCount_other": "{{count}} tänä vuonna",
+      "agmDesc": "Esityslistan laatija, avoimet aloitteet, kokouskutsun tarkistuslista ja pöytäkirjalinkit.",
+      "grantsDesc": "Vuotuiset avustuskierrokset, hakemukset ja maksujen seuranta.",
+      "auditLogDesc": "Haettava loki alustan kaikista etuoikeutetuista toimista.",
+      "memberRegisterDesc": "Koko jäsenluettelo, vietävissä yhdistyksen kokouskutsun postitukseen."
     },
     "bulkEditBarMore": {
       "leaveAsIs": "Jätä ennalleen",
@@ -11706,7 +11766,9 @@
     },
     "subscribeViewStates": {
       "starting": "Aloitetaan…",
-      "subscribe": "Tilaa"
+      "subscribe": "Tilaa",
+      "checkoutNotStripe": "Maksusivun osoite ei ollut Stripeltä",
+      "takingYouToCheckout": "Siirrytään maksamaan…"
     },
     "trackAccessGateStates": {
       "subscribeInstead": "Tilaa sen sijaan",
