@@ -4147,18 +4147,8 @@
       "greenRoom": "Odotushuone"
     },
     "goLive": {
-      "connectObsStreamlabsTraktorMixxx": "Yhdistä OBS, Streamlabs, Traktor, Mixxx tai muu Icecast-yhteensopiva sovellus Tunnukset-kohdan palvelimella ja striimiavaimella (tai mountilla ja salasanalla) — valitse sovelluksesi sieltä nähdäksesi sitä vastaavat kentät.",
-      "usingObsTheQuotReady": "Käytätkö OBS:ää? Tunnukset-kohdan \"Valmis OBS-asetus\" -lataus sisältää näkymäpohjan, johon tämän kanavan nykyiset tunnukset on jo täytetty.",
-      "youReLiveEncoderAnd": "Olet livenä. Enkooderi ja ohjelman nimi pysyvät tämän istunnon ajan — lopeta lähetys, kun olet valmis.",
-      "fillItInBelow": "Täytä se alle",
-      "openCredentials": "Avaa tunnukset",
-      "connectObsOrAnotherApp": "Yhdistä OBS tai muu sovellus ja tarkista sitten Signaali",
-      "showInfo": "Ohjelman tiedot",
       "howBroadcastingWorksHere": "Miten lähettäminen toimii täällä",
-      "prepChecklist": "Valmistelulista",
-      "goLive": "Mene liveen",
-      "goLiveSession": "Liveistunto",
-      "rotation": "KIERTO"
+      "goLive": "Mene liveen"
     },
     "broadcastCredentials": {
       "readyMadeObsSetup": "Valmis OBS-asetus",
@@ -5063,19 +5053,10 @@
       "leaveEditor": "Poistu editorista"
     },
     "broadcastPreflight": {
-      "confirmShowInfo": "Vahvista ohjelman tiedot",
-      "checkWhatListenersWillSee": "Tarkista, mitä kuuntelijat näkevät, ennen kuin käynnistät enkooderin.",
-      "thisAppearsOnYourChannel": "Tämä näkyy kanavallasi, kun olet livenä.",
-      "confirmed": "Vahvistettu",
-      "showAvatar": "Ohjelman kuva",
       "showName": "Ohjelman nimi",
-      "tagline": "Iskulause",
       "whatIsThisBroadcastAbout": "Mistä tämä lähetys kertoo?",
       "showType": "Ohjelman tyyppi",
-      "visibility": "Näkyvyys",
-      "seriesEpisode": "Sarjan jakso",
-      "episode": "Jakso",
-      "saveShowInfo": "Tallenna ohjelman tiedot"
+      "visibility": "Näkyvyys"
     },
     "pressKit": {
       "downloadZip": "Lataa ZIP",
@@ -6659,11 +6640,6 @@
     "waveformEditor": {
       "showingTheBasicWaveformThe": "Näytetään perusaaltomuoto: tarkempi editori ei käynnistynyt tässä selaimessa. Muokkaus, zoomaus ja pikanäppäimet toimivat silti.",
       "effectsArenTHeardIn": "Efektit eivät vielä kuulu tässä esikuuntelussa: tiedoston palvelin ei salli selaimen käsitellä sitä. Kuulet sen käsittelemättömänä, kunnes editorilla on oma kopio; renderöinnit käyttävät silti kaikkia efektejä."
-    },
-    "signalPanel": {
-      "showInfo": "Ohjelman tiedot",
-      "addYourShowNameAnd": "Lisää ohjelman nimi ja tiedot ennen kuin menet livenä.",
-      "confirmShowInfoAbove": "Vahvista ohjelman tiedot yllä"
     },
     "profileBackdropSection": {
       "removeBackdrop": "Poista taustakuva",
@@ -10691,10 +10667,6 @@
       "openTheGreenRoom": "Avaa green room",
       "goLive": "Mene liveen"
     },
-    "studioGoLiveViewStates": {
-      "onAir": "Lähetyksessä",
-      "beforeYouStart": "Ennen kuin aloitat"
-    },
     "broadcastCredentialsPanelStates": {
       "hideBroadcastingOptions": "Piilota lähetysasetukset",
       "showBroadcastingOptions": "Näytä lähetysasetukset"
@@ -10722,8 +10694,6 @@
       "signalReceivedYouCanGo": "Signaali vastaanotettu. Voit mennä liveen.",
       "signalReady": "Signaali valmis",
       "startYourEncoder": "Käynnistä enkooderi",
-      "takeOverRotation": "Ota rotaation paikka",
-      "goLive": "Mene liveen",
       "yourBroadcastIsOnAir": "Lähetyksesi on käynnissä.",
       "noSignalFromYourEncoder": "Enkooderista ei tule signaalia."
     },
@@ -12303,6 +12273,114 @@
       "submitted": "Ladataan hearthis.atiin…",
       "delivered": "hearthis.at-tililläsi.",
       "failed": "Edellinen vienti epäonnistui. Yritä uudelleen."
+    },
+    "goLivePage": {
+      "loading": "Ladataan Lähetä live",
+      "status": {
+        "offline": "Offline",
+        "ready": "Valmis",
+        "live": "Livenä",
+        "reconnecting": "Yhdistetään uudelleen",
+        "until": "klo {{time}} asti"
+      },
+      "help": {
+        "open": "Miten lähettäminen toimii",
+        "connect": "Yhdistä OBS, Streamlabs, Traktor, Mixxx tai muu Icecast-yhteensopiva sovellus Lähetystunnukset-kohdan palvelimella ja striimiavaimella (tai mountilla ja salasanalla). Valitse sovelluksesi sieltä nähdäksesi sitä vastaavat kentät.",
+        "obs": "Käytätkö OBS:ää? Lähetystunnukset-kohdan \"Valmis OBS-asetus\" -lataus sisältää näkymäpohjan, johon tämän kanavan nykyiset tunnukset on jo täytetty.",
+        "multistream": "Kohteet välittävät lähetyksesi muille alustoille. Kaikkien ohjelmien tallennus- ja green room -oletukset ovat kohdassa Asetukset → Lähetys; tämä sivu koskee käynnissä olevaa istuntoa."
+      },
+      "share": {
+        "copy": "Kopioi kanavan linkki",
+        "copied": "Kanavan linkki kopioitu.",
+        "failed": "Kanavan linkkiä ei voitu kopioida."
+      },
+      "start": {
+        "label": "Aloita lähetys",
+        "busy": "Aloitetaan…",
+        "missing": "Aloittaaksesi {{steps}}.",
+        "usageBlocked": "Tämän viikon lähetysaikasi on käytetty."
+      },
+      "missing": {
+        "show-info": "lisää ohjelman nimi",
+        "credentials": "lataa lähetystunnukset",
+        "encoder": "yhdistä enkooderi",
+        "recording": "määritä tallennus",
+        "destinations": "määritä kohteet",
+        "green-room": "määritä green room"
+      },
+      "end": {
+        "label": "Lopeta lähetys",
+        "confirmTitle": "Lopetetaanko lähetys?",
+        "confirmDescription": "Kuuntelijat eivät enää kuule sinua, ja kanava palaa kiertoonsa.",
+        "confirmLabel": "Lopeta lähetys"
+      },
+      "toasts": {
+        "ended": "Lähetys lopetettu."
+      },
+      "steps": {
+        "show-info": "Ohjelman tiedot",
+        "credentials": "Lähetystunnukset",
+        "encoder": "Enkooderin signaali",
+        "recording": "Tallennus",
+        "destinations": "Kohteet",
+        "green-room": "Green room"
+      },
+      "stepper": {
+        "label": "Lähetä live -vaiheet",
+        "done": "Valmis",
+        "current": "Nykyinen vaihe",
+        "upcoming": "Ei vielä tehty",
+        "error": "Vaatii huomiota",
+        "collapsed": "Vaihe {{position}}/{{total}}: {{title}}"
+      },
+      "caption": {
+        "required": "Pakollinen",
+        "optional": "Valinnainen",
+        "connected": "Yhdistetty",
+        "reconnecting": "Signaali katkesi, yhdistetään",
+        "couldNotLoad": "Lataus epäonnistui",
+        "recordingOn": "Tallennus päällä",
+        "recordingOff": "Tallennus pois",
+        "destinations_one": "{{count}} kohde",
+        "destinations_other": "{{count}} kohdetta"
+      },
+      "next": {
+        "label": "Seuraava: {{step}}",
+        "finalGuidance": "Siinä kaikki. Kun ohjelman nimi ja enkooderin signaali ovat valmiina, paina sivun yläreunan Aloita lähetys."
+      },
+      "autosave": {
+        "saving": "Tallennetaan…",
+        "saved": "Tallennettu",
+        "failed": "Tallennus epäonnistui.",
+        "retry": "Yritä uudelleen"
+      },
+      "showInfo": {
+        "helper": "Tämä näkyy kuuntelijoille kanavallasi lähetyksen aikana. Muutokset tallentuvat automaattisesti.",
+        "helperDraft": "Tämä näkyy kuuntelijoille kanavallasi lähetyksen aikana. Muutokset tallentuvat automaattisesti ja otetaan käyttöön, kun enkooderi yhdistää.",
+        "cover": "Lisää kansikuva",
+        "addCover": "Lisää kansikuva",
+        "changeCover": "Vaihda kansikuva",
+        "change": "Vaihda",
+        "uploading": "Ladataan…",
+        "nameHint": "Pakollinen, enintään {{max}} merkkiä.",
+        "nameRequired": "Lisää ohjelman nimi, jotta voit lähettää.",
+        "tooLong": "Enintään {{max}} merkkiä.",
+        "taglineOptional": "Iskulause (valinnainen)",
+        "fansOnly": "Vain faneille",
+        "series": "Sarja",
+        "episode": "Jakso {{number}}",
+        "seriesEpisodeTitle": "{{series}} - Jakso {{number}}",
+        "lockedWhileLive": "Ei voi muuttaa lähetyksen aikana."
+      },
+      "encoder": {
+        "audio": "Ääni",
+        "startStreaming": "Aloita striimaus OBS:ssä, Traktorissa, Mixxxissä tai muussa Icecast-yhteensopivassa sovelluksessa.",
+        "onAirTitle": "Lähetyksesi on käynnissä",
+        "takeOverTitle": "Valmis ottamaan kierron haltuun",
+        "reconnectingTitle": "Enkooderin signaali katkesi",
+        "reconnectBy": "Enkooderi katkesi. Yhdistä se uudelleen klo {{time}} mennessä, jotta lähetys jatkuu.",
+        "reconnectSoon": "Enkooderi katkesi. Yhdistä se pian uudelleen, jotta lähetys jatkuu."
+      }
     }
   },
   "studioEditor": {

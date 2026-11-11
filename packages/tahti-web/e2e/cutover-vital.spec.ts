@@ -53,15 +53,23 @@ test('artist can sign in and reach broadcast and upload tools', async ({
   await signIn(page);
 
   await page.goto('/studio/go-live');
-  await expect(page.getByRole('heading', { name: 'Go live' })).toBeVisible();
-  await page.getByRole('tab', { name: 'Recording' }).click();
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Go live' }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('status').filter({ hasText: 'Offline' }),
+  ).toBeVisible();
+  await page
+    .getByRole('list', { name: 'Go live steps' })
+    .getByRole('button', { name: /Recording/ })
+    .click();
+  await expect(page).toHaveURL(/\/studio\/go-live\?step=recording$/);
   const recordingToggle = page.getByRole('switch', {
     name: 'Record broadcast',
   });
   await expect(recordingToggle).toHaveAttribute('aria-checked', 'true');
   await recordingToggle.click();
   await page.reload();
-  await page.getByRole('tab', { name: 'Recording' }).click();
   await expect(recordingToggle).toHaveAttribute('aria-checked', 'false');
   await expect(
     page.getByRole('link', { name: 'Open recordings' }),

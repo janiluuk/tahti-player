@@ -42,7 +42,7 @@ describe('StudioNav', () => {
 
   it('shows the four Broadcast pages as a filled sub-nav on Broadcast pages', async () => {
     for (const [current, page] of [
-      ['/studio/go-live?tab=credentials', 'Go live'],
+      ['/studio/go-live?step=credentials', 'Go live'],
       ['/studio/schedule?show=events', 'Schedule'],
       ['/studio/events/new', 'Schedule'],
       ['/studio/channel', 'Channel'],

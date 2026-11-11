@@ -4147,18 +4147,8 @@
       "greenRoom": "Green room"
     },
     "goLive": {
-      "connectObsStreamlabsTraktorMixxx": "Connect OBS, Streamlabs, Traktor, Mixxx, or another Icecast-compatible app using the Server and Stream key (or Mount/Password) under Credentials — pick your app there to see the matching fields.",
-      "usingObsTheQuotReady": "Using OBS? The \"Ready-made OBS setup\" download under Credentials bundles a scene preset with this channel's current credentials already filled in.",
-      "youReLiveEncoderAnd": "You’re live. Encoder and show title stay as set for this session — end the broadcast when you’re done.",
-      "fillItInBelow": "Fill it in below",
-      "openCredentials": "Open Credentials",
-      "connectObsOrAnotherApp": "Connect OBS or another app, then check Signal",
-      "showInfo": "Show info",
       "howBroadcastingWorksHere": "How broadcasting works here",
-      "prepChecklist": "Prep checklist",
-      "goLive": "Go live",
-      "goLiveSession": "Go live session",
-      "rotation": "ROTATION"
+      "goLive": "Go live"
     },
     "broadcastCredentials": {
       "readyMadeObsSetup": "Ready-made OBS setup",
@@ -5063,19 +5053,10 @@
       "leaveEditor": "Leave editor"
     },
     "broadcastPreflight": {
-      "confirmShowInfo": "Confirm show info",
-      "checkWhatListenersWillSee": "Check what listeners will see before you start the encoder.",
-      "thisAppearsOnYourChannel": "This appears on your channel while you are live.",
-      "confirmed": "Confirmed",
-      "showAvatar": "Show avatar",
       "showName": "Show name",
-      "tagline": "Tagline",
       "whatIsThisBroadcastAbout": "What is this broadcast about?",
       "showType": "Show type",
-      "visibility": "Visibility",
-      "seriesEpisode": "Series episode",
-      "episode": "Episode",
-      "saveShowInfo": "Save show info"
+      "visibility": "Visibility"
     },
     "pressKit": {
       "downloadZip": "Download ZIP",
@@ -6659,11 +6640,6 @@
     "waveformEditor": {
       "showingTheBasicWaveformThe": "Showing the basic waveform: the detailed editor couldn’t start in this browser. Editing, zoom and shortcuts still work.",
       "effectsArenTHeardIn": "Effects aren’t heard in this preview yet: the file’s host doesn’t allow the browser to process it. You’re hearing it unprocessed until the editor has its own copy; renders still apply every effect."
-    },
-    "signalPanel": {
-      "showInfo": "Show info",
-      "addYourShowNameAnd": "Add your show name and details before going live.",
-      "confirmShowInfoAbove": "Confirm show info above"
     },
     "profileBackdropSection": {
       "removeBackdrop": "Remove backdrop",
@@ -10691,10 +10667,6 @@
       "openTheGreenRoom": "Open the green room",
       "goLive": "Go live"
     },
-    "studioGoLiveViewStates": {
-      "onAir": "On air",
-      "beforeYouStart": "Before you start"
-    },
     "broadcastCredentialsPanelStates": {
       "hideBroadcastingOptions": "Hide broadcasting options",
       "showBroadcastingOptions": "Show broadcasting options"
@@ -10722,8 +10694,6 @@
       "signalReceivedYouCanGo": "Signal received. You can go live.",
       "signalReady": "Signal ready",
       "startYourEncoder": "Start your encoder",
-      "takeOverRotation": "Take over rotation",
-      "goLive": "Go Live",
       "yourBroadcastIsOnAir": "Your broadcast is on air.",
       "noSignalFromYourEncoder": "No signal from your encoder."
     },
@@ -12303,6 +12273,114 @@
       "submitted": "Uploading to hearthis.at…",
       "delivered": "On your hearthis.at account.",
       "failed": "The last export failed. Try again."
+    },
+    "goLivePage": {
+      "loading": "Loading Go live",
+      "status": {
+        "offline": "Offline",
+        "ready": "Ready",
+        "live": "Live",
+        "reconnecting": "Reconnecting",
+        "until": "until {{time}}"
+      },
+      "help": {
+        "open": "How broadcasting works",
+        "connect": "Connect OBS, Streamlabs, Traktor, Mixxx or another Icecast-compatible app with the server and stream key (or mount and password) under Stream credentials. Pick your app there to see the matching fields.",
+        "obs": "Using OBS? The \"Ready-made OBS setup\" download under Stream credentials bundles a scene preset with this channel's current credentials already filled in.",
+        "multistream": "Destinations mirror your broadcast to other platforms. Recording and green room defaults for every show live in Settings → Broadcast; this page is for the session in progress."
+      },
+      "share": {
+        "copy": "Copy channel link",
+        "copied": "Channel link copied.",
+        "failed": "Couldn't copy the channel link."
+      },
+      "start": {
+        "label": "Start broadcast",
+        "busy": "Starting…",
+        "missing": "To start, {{steps}}.",
+        "usageBlocked": "Your broadcast time for this week is used up."
+      },
+      "missing": {
+        "show-info": "add a show name",
+        "credentials": "load your stream credentials",
+        "encoder": "connect your encoder",
+        "recording": "set up recording",
+        "destinations": "set up destinations",
+        "green-room": "set up the green room"
+      },
+      "end": {
+        "label": "End broadcast",
+        "confirmTitle": "End the broadcast?",
+        "confirmDescription": "Listeners stop hearing you and the channel goes back to its rotation.",
+        "confirmLabel": "End broadcast"
+      },
+      "toasts": {
+        "ended": "Broadcast ended."
+      },
+      "steps": {
+        "show-info": "Show info",
+        "credentials": "Stream credentials",
+        "encoder": "Encoder signal",
+        "recording": "Recording",
+        "destinations": "Destinations",
+        "green-room": "Green room"
+      },
+      "stepper": {
+        "label": "Go live steps",
+        "done": "Done",
+        "current": "Current step",
+        "upcoming": "Not done yet",
+        "error": "Needs attention",
+        "collapsed": "Step {{position}} of {{total}}: {{title}}"
+      },
+      "caption": {
+        "required": "Required",
+        "optional": "Optional",
+        "connected": "Connected",
+        "reconnecting": "Signal lost, reconnecting",
+        "couldNotLoad": "Couldn't load",
+        "recordingOn": "Recording on",
+        "recordingOff": "Recording off",
+        "destinations_one": "{{count}} destination",
+        "destinations_other": "{{count}} destinations"
+      },
+      "next": {
+        "label": "Next: {{step}}",
+        "finalGuidance": "That's everything. Once the show name and encoder signal are done, use Start broadcast at the top of the page."
+      },
+      "autosave": {
+        "saving": "Saving…",
+        "saved": "Saved",
+        "failed": "Couldn't save.",
+        "retry": "Retry"
+      },
+      "showInfo": {
+        "helper": "What listeners see on your channel while you're live. Changes save automatically.",
+        "helperDraft": "What listeners see on your channel while you're live. Changes save automatically and apply when your encoder connects.",
+        "cover": "Add cover",
+        "addCover": "Add a cover image",
+        "changeCover": "Change cover image",
+        "change": "Change",
+        "uploading": "Uploading…",
+        "nameHint": "Required, up to {{max}} characters.",
+        "nameRequired": "Add a show name to go live.",
+        "tooLong": "Keep it to {{max}} characters.",
+        "taglineOptional": "Tagline (optional)",
+        "fansOnly": "Fans only",
+        "series": "Series",
+        "episode": "Episode {{number}}",
+        "seriesEpisodeTitle": "{{series}} - Episode {{number}}",
+        "lockedWhileLive": "Can't be changed while you're live."
+      },
+      "encoder": {
+        "audio": "Audio",
+        "startStreaming": "Start streaming in OBS, Traktor, Mixxx or another Icecast-compatible app.",
+        "onAirTitle": "Your broadcast is on air",
+        "takeOverTitle": "Ready to take over the rotation",
+        "reconnectingTitle": "Encoder signal lost",
+        "reconnectBy": "Your encoder dropped. Reconnect it by {{time}} to keep the broadcast going.",
+        "reconnectSoon": "Your encoder dropped. Reconnect it soon to keep the broadcast going."
+      }
     }
   },
   "studioEditor": {

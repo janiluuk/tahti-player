@@ -6,23 +6,26 @@ import {
   startMockLiveEpisode,
 } from './mock-broadcast-preflight';
 import {
+  getMockIngest,
   getMockSignalConnected,
   getMockChannelState as readMockChannelState,
   setMockChannelLive,
   setMockChannelOffline,
   setMockLiveSlug,
+  setMockReconnecting,
   mockSimulateSignal as writeMockSimulateSignal,
 } from './mock-live-session';
+import { mockFixture } from './mock-overrides';
 import {
   allowMockFallback,
   apiErrorMeta,
   isForceMock,
   mockFallbackMeta,
 } from './mode';
-import { requestJson } from './request-json';
+import { requestJson, RequestJsonError } from './request-json';
 import type { TahtiPlayable } from './types';
 
-export { setMockLiveSlug };
+export { setMockLiveSlug, setMockReconnecting };
 export type { StreamOverlay } from './broadcast-overlay';
 export { fetchStreamOverlay, patchStreamOverlay } from './broadcast-overlay';
 export type { RecentBroadcast } from './broadcast-recordings';
@@ -48,48 +51,126 @@ export type StreamSettings = {
   hlsUrl: string;
 };
 
+/** Encoder link as the API sees it. `reconnecting` is the grace window after
+ * a LIVE encoder drops, until `reconnectDeadline`. */
+export type IngestStatus = 'connected' | 'reconnecting' | 'disconnected';
+
 export type SignalStatus = {
   connected: boolean;
   codec: string | null;
   bitrateKbps: number | null;
   listeners: number | null;
+  ingest?: IngestStatus;
+  reconnectDeadline?: string | null;
 };
 
+export type BroadcastShowType = 'LIVE_SET' | 'TALK';
+export type BroadcastVisibility = 'PUBLIC' | 'FAN_ONLY' | 'PRIVATE';
+
+export const BROADCAST_TITLE_MAX = 140;
+export const BROADCAST_TAGLINE_MAX = 200;
+
+/** `session: 'NONE'` means no encoder yet: edits land in a pre-session
+ * draft that the broadcast picks up when the encoder connects. */
 export type BroadcastPreflight = {
+  session: 'NONE' | 'PREVIEW' | 'LIVE';
   title: string | null;
-  visibility: 'PUBLIC' | 'PRIVATE' | 'FAN_ONLY';
-  autoPublish: boolean;
-  showType: 'LIVE_SET' | 'TALK';
-  episodeNumber: number | null;
   tagline: string | null;
+  showType: BroadcastShowType;
+  visibility: BroadcastVisibility;
+  autoPublish: boolean;
+  episodeNumber: number | null;
+  seriesId: string | null;
+  artworkUrl: string | null;
+  /** `artworkUrl`, else the artist avatar. */
+  coverUrl: string | null;
   plannedRadioShow: {
     episodeNumber: number;
     tagline: string | null;
-    showType: 'LIVE_SET' | 'TALK';
+    showType: BroadcastShowType;
   } | null;
   plannedLiveShow: { seriesId: string; episodeNumber: number | null } | null;
 };
 
-let mockPreflight: BroadcastPreflight = {
+export type BroadcastPreflightPatch = {
+  title?: string;
+  tagline?: string | null;
+  showType?: BroadcastShowType;
+  visibility?: BroadcastVisibility;
+  autoPublish?: boolean;
+  seriesId?: string | null;
+  artworkUrl?: string | null;
+};
+
+const EMPTY_MOCK_PREFLIGHT: BroadcastPreflight = {
+  session: 'NONE',
   title: null,
+  tagline: null,
+  showType: 'LIVE_SET',
   visibility: 'PUBLIC',
   autoPublish: true,
-  showType: 'LIVE_SET',
   episodeNumber: null,
-  tagline: null,
+  seriesId: null,
+  artworkUrl: null,
+  coverUrl: null,
   plannedRadioShow: null,
   plannedLiveShow: null,
 };
+
+const MOCK_PREFLIGHT_STORAGE_KEY = 'tahti-web-mock-preflight';
+
+/** The offline show-info draft survives reloads in sessionStorage, like the
+ * mock live session, so a saved show name is still there after navigating. */
+function readStoredMockPreflight(): BroadcastPreflight {
+  try {
+    const raw = sessionStorage.getItem(MOCK_PREFLIGHT_STORAGE_KEY);
+    if (raw) {
+      return { ...EMPTY_MOCK_PREFLIGHT, ...JSON.parse(raw) };
+    }
+  } catch {
+    // No storage (private mode, tests without a DOM): keep it in memory.
+  }
+  return { ...EMPTY_MOCK_PREFLIGHT };
+}
+
+let mockPreflight: BroadcastPreflight = readStoredMockPreflight();
+
+function storeMockPreflight(next: BroadcastPreflight): void {
+  mockPreflight = next;
+  try {
+    sessionStorage.setItem(MOCK_PREFLIGHT_STORAGE_KEY, JSON.stringify(next));
+  } catch {
+    // No storage: the in-memory copy is enough.
+  }
+}
+
+/** Clears the offline show-info draft (tests and stories). */
+export function resetMockBroadcastPreflight(): void {
+  storeMockPreflight({ ...EMPTY_MOCK_PREFLIGHT });
+}
+
+function mockSession(): BroadcastPreflight['session'] {
+  const state = readMockChannelState();
+  if (state === 'LIVE') {
+    return 'LIVE';
+  }
+  return state === 'PREVIEW' ? 'PREVIEW' : 'NONE';
+}
 
 export async function fetchBroadcastPreflight(): Promise<{
   data: BroadcastPreflight | null;
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
-    return {
-      data: mockPreflight,
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
+    try {
+      const data = await mockFixture('broadcastPreflight', {
+        ...mockPreflight,
+        session: mockSession(),
+      });
+      return { data, meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+    } catch (err) {
+      return { data: null, meta: apiErrorMeta(err) };
+    }
   }
   try {
     const { data } = await requestJson<BroadcastPreflight>(
@@ -102,12 +183,15 @@ export async function fetchBroadcastPreflight(): Promise<{
 }
 
 export async function patchBroadcastPreflight(
-  patch: Partial<BroadcastPreflight> & { seriesId?: string },
-): Promise<{ data: BroadcastPreflight } | { error: string }> {
+  patch: BroadcastPreflightPatch,
+): Promise<{ data: BroadcastPreflight } | { error: string; status?: number }> {
   if (isForceMock()) {
-    const result = applyMockPreflightPatch(mockPreflight, patch);
+    const result = applyMockPreflightPatch(
+      { ...mockPreflight, session: mockSession() },
+      patch,
+    );
     if ('data' in result) {
-      mockPreflight = result.data;
+      storeMockPreflight(result.data);
     }
     return result;
   }
@@ -120,6 +204,7 @@ export async function patchBroadcastPreflight(
   } catch (err) {
     return {
       error: err instanceof Error ? err.message : 'Pre-flight update failed',
+      status: err instanceof RequestJsonError ? err.status : undefined,
     };
   }
 }
@@ -281,6 +366,7 @@ export async function fetchSignalStatus(): Promise<{
         codec: getMockSignalConnected() ? 'aac' : null,
         bitrateKbps: getMockSignalConnected() ? 160 : null,
         listeners: getMockSignalConnected() ? 1 : null,
+        ...getMockIngest(),
       },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
@@ -297,6 +383,8 @@ export async function fetchSignalStatus(): Promise<{
         codec: null,
         bitrateKbps: null,
         listeners: null,
+        ingest: 'disconnected',
+        reconnectDeadline: null,
       },
       meta: apiErrorMeta(err),
     };
@@ -423,7 +511,7 @@ export async function postEndBroadcast(): Promise<
 > {
   if (isForceMock()) {
     setMockChannelOffline();
-    mockPreflight = await endMockLiveEpisode(mockPreflight);
+    storeMockPreflight(await endMockLiveEpisode(mockPreflight));
     return { ok: true };
   }
   try {

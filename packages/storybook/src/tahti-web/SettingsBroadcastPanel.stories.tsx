@@ -75,7 +75,7 @@ export const Multistream: Story = {
     await selectTab(canvas, 'Multistream');
     await expect(
       canvas.getByRole('link', { name: 'Manage live destinations' }),
-    ).toHaveAttribute('href', '/studio/go-live?tab=destinations');
+    ).toHaveAttribute('href', '/studio/go-live?step=destinations');
   },
 };
 

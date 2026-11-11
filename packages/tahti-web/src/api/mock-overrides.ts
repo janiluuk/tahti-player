@@ -8,6 +8,7 @@
  * an empty registry every fixture passes through unchanged.
  */
 import type { PublicPressKitImage } from './artist-settings/press-kit-images';
+import type { BroadcastPreflight } from './broadcast';
 import type { ChannelVisual, ChannelVisualPreset } from './channel-design';
 import type { PublicChannelSchedule } from './channel-schedule';
 import type { ArtistEvent } from './events';
@@ -65,6 +66,8 @@ import type {
  */
 export interface MockFixtures {
   announcements: { data: Announcement[]; args: [] };
+  /** A function override that throws surfaces the Go live load error. */
+  broadcastPreflight: { data: BroadcastPreflight; args: [] };
   channel: { data: PublicChannel; args: [slug: string] };
   channelComments: {
     data: { comments: TrackComment[]; commentsEnabled: boolean };

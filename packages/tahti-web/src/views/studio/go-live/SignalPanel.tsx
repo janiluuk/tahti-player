@@ -1,17 +1,15 @@
-import { RadioIcon } from 'lucide-react';
-
 import { useTranslation } from '@tahti-player/i18n';
-import { Badge, Button } from '@tahti-player/ui';
 
 import { fetchSignalStatus, mockSimulateSignal } from '../../../api/broadcast';
 import { SignalCheckWidget } from '../../../components/SignalCheckWidget';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { webT } from '../../../lib/webT';
 import { BroadcastUsageMeter } from './BroadcastUsageMeter';
+import { formatClockTime } from './goLiveTime';
 import type { GoLiveState } from './useGoLiveState';
 
 /** Screen readers hear when the encoder connects or drops; sighted users
- * see it in the panel title and the enabled Go Live button. */
+ * see it in the panel title and the status chip. */
 export function signalAnnouncement(
   isBroadcastLive: boolean,
   signalOk: boolean,
@@ -41,76 +39,47 @@ export function SignalPanel({ state }: { state: GoLiveState }) {
     setChannelState,
     isBroadcastLive,
     rotationPlaying,
+    reconnecting,
+    reconnectDeadline,
     signalOk,
-    busy,
     usage,
-    setConfirmGoLive,
-    showInfoReady,
-    setShowInfoModalOpen,
-    preflight,
   } = state;
+
+  const title = reconnecting
+    ? t('goLivePage.encoder.reconnectingTitle')
+    : isBroadcastLive
+      ? t('goLivePage.encoder.onAirTitle')
+      : rotationPlaying && signalOk
+        ? t('goLivePage.encoder.takeOverTitle')
+        : signalOk
+          ? t('signalPanelStates.signalReady')
+          : t('signalPanelStates.startYourEncoder');
 
   return (
     <StudioPanel
-      title={
-        isBroadcastLive
-          ? 'Your broadcast is on air'
-          : rotationPlaying
-            ? 'Ready to take over the rotation'
-            : signalOk
-              ? t('signalPanelStates.signalReady')
-              : t('signalPanelStates.startYourEncoder')
-      }
+      title={title}
       description={
-        signalOk
-          ? `${signal?.codec ?? 'Audio'}${signal?.bitrateKbps != null ? ` · ${signal.bitrateKbps} kbps` : ''}`
-          : 'Start streaming in OBS, Traktor, Mixxx, or another Icecast-compatible app.'
-      }
-      action={
-        <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            size="sm"
-            variant="secondary"
-            onClick={() => setShowInfoModalOpen(true)}
-            className="gap-1.5 rounded-full"
-          >
-            <Badge variant="dot" color={showInfoReady ? 'green' : 'yellow'} />
-            {t('signalPanel.showInfo')}
-            <span className="sr-only">
-              {showInfoReady ? ' (confirmed)' : ' (not confirmed yet)'}
-            </span>
-          </Button>
-          {!isBroadcastLive ? (
-            <Button
-              disabled={busy || !signalOk || usage?.blocked}
-              onClick={() => setConfirmGoLive(true)}
-            >
-              <RadioIcon size={16} aria-hidden className="mr-1.5" />
-              {busy
-                ? 'Going live…'
-                : rotationPlaying
-                  ? t('signalPanelStates.takeOverRotation')
-                  : t('signalPanelStates.goLive')}
-            </Button>
-          ) : null}
-        </div>
+        signalOk && !reconnecting
+          ? `${signal?.codec ?? t('goLivePage.encoder.audio')}${signal?.bitrateKbps != null ? ` · ${signal.bitrateKbps} kbps` : ''}`
+          : t('goLivePage.encoder.startStreaming')
       }
     >
       <p className="sr-only" role="status" data-testid="signal-announcement">
         {signalAnnouncement(isBroadcastLive, signalOk, usage?.blocked)}
       </p>
-      {usage ? <BroadcastUsageMeter usage={usage} /> : null}
-      {rotationPlaying && !isBroadcastLive && !preflight?.title ? (
-        <div className="border-border bg-background-secondary flex flex-wrap items-center gap-2 rounded-lg border px-3 py-2 text-sm">
-          <span className="text-foreground-secondary">
-            {t('signalPanel.addYourShowNameAnd')}
-          </span>
-          <span className="text-foreground font-semibold">
-            {t('signalPanel.confirmShowInfoAbove')}
-          </span>
-        </div>
+      {reconnecting ? (
+        <p
+          role="alert"
+          className="border-accent-red text-foreground mb-4 rounded-lg border px-3 py-2 text-sm"
+        >
+          {reconnectDeadline
+            ? t('goLivePage.encoder.reconnectBy', {
+                time: formatClockTime(reconnectDeadline),
+              })
+            : t('goLivePage.encoder.reconnectSoon')}
+        </p>
       ) : null}
+      {usage ? <BroadcastUsageMeter usage={usage} /> : null}
       <SignalCheckWidget
         signal={signal}
         analyser={analyser}

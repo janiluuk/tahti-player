@@ -1,3 +1,10 @@
+## 2026-11-11 - Go live stepper (0.0.365)
+
+Studio → Broadcast → Go live opens on the first required step still to do.
+A status chip (offline, ready, live, reconnecting) sits in the header, and
+show name, tagline and cover autosave. Old `?tab=` addresses rewrite to
+`?step=`.
+
 ## 2026-11-05 - CardsRow list toggle + driving fullscreen (0.0.343)
 
 `CardsRow` toolbar icon toggles cards ↔ compact list (phones default to

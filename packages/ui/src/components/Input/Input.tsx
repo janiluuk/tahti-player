@@ -4,6 +4,9 @@ import {
   ComponentPropsWithoutRef,
   forwardRef,
   useId,
+  useImperativeHandle,
+  useLayoutEffect,
+  useRef,
   useState,
   type ChangeEvent,
   type ReactNode,
@@ -144,6 +147,26 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     .filter(Boolean)
     .join(' ');
 
+  // Headless UI's Input replaces aria-describedby with its own Field
+  // context (undefined outside a <Field>), so the description and error
+  // would never be announced; set it on the element instead.
+  // https://github.com/tailwindlabs/headlessui/blob/@headlessui/react@v2.2.10/packages/@headlessui-react/src/components/input/input.tsx
+  const ariaDescribedBy =
+    rest['aria-describedby'] ?? (describedBy || undefined);
+  const innerRef = useRef<HTMLInputElement>(null);
+  useImperativeHandle(ref, () => innerRef.current as HTMLInputElement);
+  useLayoutEffect(() => {
+    const element = innerRef.current;
+    if (!element) {
+      return;
+    }
+    if (ariaDescribedBy) {
+      element.setAttribute('aria-describedby', ariaDescribedBy);
+    } else {
+      element.removeAttribute('aria-describedby');
+    }
+  }, [ariaDescribedBy]);
+
   const state = error ? 'error' : 'normal';
   const resolvedVariant = variant ?? (type === 'color' ? 'color' : 'text');
   const inputType = type ?? resolvedVariant;
@@ -163,10 +186,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     <HeadlessInput
       as="input"
       id={inputId}
-      ref={ref}
+      ref={innerRef}
       type={inputType}
       aria-labelledby={label ? labelId : undefined}
-      aria-describedby={describedBy || undefined}
       aria-invalid={!!error || undefined}
       aria-errormessage={error ? errorId : undefined}
       inputMode={resolvedVariant === 'number' ? 'numeric' : undefined}

@@ -13,10 +13,12 @@ import {
   getMockChannelState,
   liveChannelPlayable,
   patchAutoRecordEnabled,
+  postEndBroadcast,
   postGoLive,
   setMockLiveSlug,
   type BroadcastPreflight,
   type BroadcastUsage,
+  type IngestStatus,
   type RtmpTarget,
   type SignalStatus,
   type StreamSettings,
@@ -28,10 +30,10 @@ import { usePlayerStore } from '../../../stores/playerStore';
 
 export type Ingest = 'obs' | 'icecast' | 'traktor';
 
-/** Broadcast settings, live signal polling, go-live and recording actions. */
 /** A failure is announced right away (`role="alert"`); success waits its turn. */
 export type GoLiveMessage = { tone: 'error' | 'success'; text: string };
 
+/** Broadcast settings, live signal polling, go-live and recording actions. */
 export function useGoLiveState() {
   const user = useAuthStore((state) => state.user);
   const refresh = useAuthStore((state) => state.refresh);
@@ -57,23 +59,35 @@ export function useGoLiveState() {
   const [recordEnabled, setRecordEnabled] = useState(true);
   const [recordBusy, setRecordBusy] = useState(false);
   const [preflight, setPreflight] = useState<BroadcastPreflight | null>(null);
-  const [showInfoConfirmed, setShowInfoConfirmed] = useState(false);
-  const [showInfoModalOpen, setShowInfoModalOpen] = useState(false);
+  const [preflightError, setPreflightError] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
+  const [confirmEnd, setConfirmEnd] = useState(false);
+  const [localLiveSince, setLocalLiveSince] = useState<string | null>(null);
 
   const slug = user?.channel?.slug ?? '';
   const displayName = user?.displayName ?? slug;
   const streamPlayableId = `live:${slug}`;
   const isMock = import.meta.env.VITE_FORCE_MOCK === '1';
+  const ingestStatus: IngestStatus =
+    signal?.ingest ??
+    user?.channel?.ingest ??
+    (signal?.connected ? 'connected' : 'disconnected');
+  const reconnectDeadline =
+    signal?.reconnectDeadline ?? user?.channel?.reconnectDeadline ?? null;
+  const reconnecting =
+    channelState === 'LIVE' && ingestStatus === 'reconnecting';
   const isBroadcastLive = channelState === 'LIVE' && Boolean(signal?.connected);
-  const rotationPlaying = channelState === 'LIVE' && !signal?.connected;
+  const rotationPlaying =
+    channelState === 'LIVE' && !signal?.connected && !reconnecting;
   const isPreview = channelState === 'PREVIEW';
   const signalOk = Boolean(signal?.connected) || isPreview;
+  const liveSince = user?.channel?.goneLiveAt ?? localLiveSince;
   const isStreamPlaying =
     currentId === streamPlayableId &&
     (playbackStatus === 'playing' || playbackStatus === 'loading');
   const isPreviewListening =
     currentId === streamPlayableId && playbackStatus === 'playing';
-  const showInfoReady = showInfoConfirmed || Boolean(preflight?.title?.trim());
+  const showInfoReady = Boolean(preflight?.title?.trim());
 
   const patchLocalChannel = useCallback((state: string) => {
     setChannelState(state);
@@ -119,6 +133,12 @@ export function useGoLiveState() {
         : null,
     );
     setPreflight(preflightResult.data);
+    setPreflightError(
+      preflightResult.data
+        ? null
+        : (preflightResult.meta.reason ?? 'Show info is unavailable.'),
+    );
+    setLoaded(true);
     setRecordEnabled(recordingResult.data);
     if (
       !settingsResult.data &&
@@ -140,6 +160,15 @@ export function useGoLiveState() {
   useEffect(() => {
     void reload();
   }, [reload]);
+
+  useEffect(() => {
+    if (isBroadcastLive && !localLiveSince) {
+      setLocalLiveSince(new Date().toISOString());
+    }
+    if (channelState !== 'LIVE' && localLiveSince) {
+      setLocalLiveSince(null);
+    }
+  }, [isBroadcastLive, channelState, localLiveSince]);
 
   useEffect(() => {
     if (user?.channel?.state && !isMock) {
@@ -215,6 +244,24 @@ export function useGoLiveState() {
     }
   };
 
+  const onEndBroadcast = async () => {
+    setBusy(true);
+    setMessage(null);
+    const result = await postEndBroadcast();
+    setBusy(false);
+    if (!result.ok) {
+      setMessage({ tone: 'error', text: result.error });
+      toast.error(result.error);
+      return;
+    }
+    patchLocalChannel('OFFLINE');
+    toast.success(i18n.t('web:goLivePage.toasts.ended'));
+    void reload();
+    if (!isMock) {
+      void refresh();
+    }
+  };
+
   const toggleRecording = async () => {
     const next = !recordEnabled;
     setRecordEnabled(next);
@@ -260,10 +307,15 @@ export function useGoLiveState() {
     recordEnabled,
     recordBusy,
     preflight,
-    showInfoConfirmed,
-    setShowInfoConfirmed,
-    showInfoModalOpen,
-    setShowInfoModalOpen,
+    setPreflight,
+    preflightError,
+    loaded,
+    confirmEnd,
+    setConfirmEnd,
+    ingestStatus,
+    reconnectDeadline,
+    reconnecting,
+    liveSince,
     slug,
     displayName,
     streamPlayableId,
@@ -279,6 +331,7 @@ export function useGoLiveState() {
     playStream,
     toggleStreamPlayback,
     onGoLive,
+    onEndBroadcast,
     toggleRecording,
   };
 }

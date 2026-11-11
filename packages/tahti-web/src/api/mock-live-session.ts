@@ -10,11 +10,13 @@ type Stored = {
   signal: boolean;
   state: MockLiveChannelState;
   slug: string | null;
+  reconnectDeadline?: string | null;
 };
 
 let signalConnected = false;
 let channelState: MockLiveChannelState = 'OFFLINE';
 let liveSlug: string | null = null;
+let reconnectDeadline: string | null = null;
 
 function readStored(): Stored | null {
   if (typeof sessionStorage === 'undefined') {
@@ -40,6 +42,7 @@ function writeStored() {
       signal: signalConnected,
       state: channelState,
       slug: liveSlug,
+      reconnectDeadline,
     };
     sessionStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
   } catch {
@@ -55,12 +58,14 @@ function hydrate() {
   signalConnected = Boolean(stored.signal);
   channelState = stored.state || 'OFFLINE';
   liveSlug = stored.slug ?? null;
+  reconnectDeadline = stored.reconnectDeadline ?? null;
 }
 
 hydrate();
 
 export function mockSimulateSignal(connected = true) {
   signalConnected = connected;
+  reconnectDeadline = null;
   if (connected && channelState === 'OFFLINE') {
     channelState = 'PREVIEW';
   }
@@ -89,6 +94,7 @@ export function setMockChannelLive(slug?: string | null) {
     channelState = 'PREVIEW';
   }
   channelState = 'LIVE';
+  reconnectDeadline = null;
   if (slug) {
     liveSlug = slug;
   }
@@ -98,7 +104,30 @@ export function setMockChannelLive(slug?: string | null) {
 export function setMockChannelOffline() {
   channelState = 'OFFLINE';
   signalConnected = false;
+  reconnectDeadline = null;
   writeStored();
+}
+
+/** Drops the mock encoder while LIVE and gives it until `deadline` to come
+ * back, like the API's reconnect grace window. */
+export function setMockReconnecting(deadline: string) {
+  channelState = 'LIVE';
+  signalConnected = false;
+  reconnectDeadline = deadline;
+  writeStored();
+}
+
+export function getMockIngest(): {
+  ingest: 'connected' | 'reconnecting' | 'disconnected';
+  reconnectDeadline: string | null;
+} {
+  if (signalConnected) {
+    return { ingest: 'connected', reconnectDeadline: null };
+  }
+  if (channelState === 'LIVE' && reconnectDeadline) {
+    return { ingest: 'reconnecting', reconnectDeadline };
+  }
+  return { ingest: 'disconnected', reconnectDeadline: null };
 }
 
 /** True when this public channel slug should render as LIVE in mock. */

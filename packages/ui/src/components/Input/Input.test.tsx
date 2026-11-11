@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import '@tahti-player/tailwind-config';
@@ -28,6 +28,21 @@ describe('Input', () => {
       />,
     );
     expect(container.firstChild).toMatchSnapshot();
+  });
+
+  it('points aria-describedby at the description and the error', () => {
+    render(
+      <Input
+        id="described"
+        label="Show name"
+        description="Required."
+        error="Add a show name."
+      />,
+    );
+    expect(screen.getByLabelText('Show name')).toHaveAttribute(
+      'aria-describedby',
+      'described-description described-error',
+    );
   });
 
   it('(Snapshot) renders with endAddon idle when empty', () => {

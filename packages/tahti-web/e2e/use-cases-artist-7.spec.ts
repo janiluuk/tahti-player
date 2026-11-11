@@ -20,10 +20,10 @@ test('artist: Go live reaches the green room, invites a guest and opens it', asy
   await main.getByRole('link', { name: 'Go live' }).click();
   await expect(page).toHaveURL(/\/studio\/go-live$/);
   await main
-    .getByRole('tablist', { name: 'Go live session' })
-    .getByRole('tab', { name: 'Green room' })
+    .getByRole('list', { name: 'Go live steps' })
+    .getByRole('button', { name: /Green room/ })
     .click();
-  await expect(page).toHaveURL(/\/studio\/go-live\?tab=green-room$/);
+  await expect(page).toHaveURL(/\/studio\/go-live\?step=green-room$/);
   await expect(main.getByRole('heading', { name: 'Green room' })).toBeVisible();
 
   const openRoom = main.getByRole('switch', { name: 'Open the green room' });
