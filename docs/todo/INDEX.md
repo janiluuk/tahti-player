@@ -21,6 +21,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
+| open    | [next-50.md](next-50.md) | Next 50 slices already named in the other todos: queue tools, Help Finnish, library, peaks, nav, localization |
 | open    | [admin-queue-tools.md](admin-queue-tools.md) | Admin queue tools: see jobs processing now, waiting and failed; retry, remove, pause; re-queue stuck `PENDING` uploads |
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; add-on table rows, native review and dropped pricing claims left |
 | partial | [ambient-track-list-mobile.md](ambient-track-list-mobile.md) | Phone list default shipped; left: AmbientTrackRow phone layout (alignment across densities, larger thumb) — needs a visual pass at 390 px |
@@ -35,6 +36,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Inbox chips, Overview merge, docs rewrite |
+| open    | [library-for-listeners.md](library-for-listeners.md) | Library is for listeners (saved items, desktop library browse); move Sounds, Collections, Upload, Recordings and Smart links to Studio and change the nav |
 | partial | [finnish-localization.md](finnish-localization.md) | Settings → Language plus chrome/player/Listen/Discover/Library, batches 31–63 (ui library labels, tooltips, state labels, leftover JSX text); left: more web.actions sites, API notification bodies, Upload leftovers, SEO/pageTour |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks, track page like-button check. Recently played search shipped. |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; left: embed downloads (product call) and keeping a stage-hosted embed across routes |
@@ -42,9 +44,9 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
 | partial | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard now renders its last result at once and refreshes in the background; left: measure API time, sweep governance overview, financial, Discover |
+| open    | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Admin overview still slow to load; move the stats to the top of the page; Grafana from tahti.live says it cannot connect |
 | partial | [channel-programme-in-schedule.md](channel-programme-in-schedule.md) | Studio → Broadcast → Schedule shows the 24/7 and offline programme; make it the place where you manage the channel's programme |
 | open    | [google-facebook-login.md](google-facebook-login.md) | Sign up and log in with Google and Facebook: API OAuth callbacks, OAuth apps (ops), buttons on log in / sign up, account linking |
-| partial | [event-calendar.md](event-calendar.md) | Event calendar under Discover → Feed: artists create events, tag people, preview, publish, syndicate (Mastodon/Bluesky/.ics); slices 1–12 and timezone/venue/visibility shipped; left: invites in the notifications popover |
 | partial | [navigation-performance.md](navigation-performance.md) | Back/forward speed: GET cache, atlas out of the shell and gzip level 6 done; left: render cached data without a loader frame, drop mock fixtures from prod, split table/dnd out of the shell |
 | open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` on events/updates/editor/playlist/collection/release, radio presets, theme submissions; plugin-store disconnect; left: none known) |
 | open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | One Storybook play session drops its sockets ~90s in (local every run, CI long shards); reduced motion + CI retry mitigate; cause not found |

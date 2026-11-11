@@ -266,6 +266,8 @@ function filterMockSounds(
 export type StudioSoundCoversBackfillResult = {
   assigned: number;
   totalMatched: number;
+  fromProvider?: number;
+  fromPresets?: number;
 };
 
 export async function backfillStudioSoundCovers(): Promise<
@@ -280,7 +282,15 @@ export async function backfillStudioSoundCovers(): Promise<
         assigned += 1;
       }
     }
-    return { ok: true, data: { assigned, totalMatched: assigned } };
+    return {
+      ok: true,
+      data: {
+        assigned,
+        totalMatched: assigned,
+        fromProvider: 0,
+        fromPresets: assigned,
+      },
+    };
   }
   try {
     const { data } = await requestJson<StudioSoundCoversBackfillResult>(

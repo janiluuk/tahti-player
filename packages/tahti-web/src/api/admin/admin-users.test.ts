@@ -38,7 +38,7 @@ describe('fetchAdminUsers role filter', () => {
 
     const result = await fetchAdminUsers({ role: 'BOARD' });
 
-    expect(getJson.mock.calls[0]![0]).toContain('isBoard=true');
+    expect(getJson.mock.calls[0]![0]).toContain('role=BOARD');
     expect(result.data).toHaveLength(1);
     expect(result.total).toBe(7);
   });
@@ -57,15 +57,15 @@ describe('fetchAdminUsers role filter', () => {
     expect(result.total).toBe(12);
   });
 
-  it('falls back to the page count when the server ignored the filter', async () => {
+  it('keeps the rows and total the server filtered', async () => {
     vi.spyOn(http, 'getJson').mockResolvedValue({
       total: 40,
-      users: [user('a1', { isBoard: false }), user('b1', { isBoard: true })],
+      users: [user('b1', { isBoard: true }), user('b2', { isBoard: true })],
     });
 
     const result = await fetchAdminUsers({ role: 'BOARD' });
 
-    expect(result.data.map((row) => row.id)).toEqual(['b1']);
-    expect(result.total).toBe(1);
+    expect(result.data.map((row) => row.id)).toEqual(['b1', 'b2']);
+    expect(result.total).toBe(40);
   });
 });

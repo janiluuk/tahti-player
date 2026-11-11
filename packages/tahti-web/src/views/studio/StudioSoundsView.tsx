@@ -64,7 +64,7 @@ export function StudioSoundsView() {
   const setPanelTab = (next: SoundsPanelTab) => {
     void navigate({
       to: '/library/sounds',
-      search: (previous) => {
+      search: (previous: unknown) => {
         const current =
           typeof previous === 'object' && previous !== null
             ? { ...(previous as Record<string, unknown>) }

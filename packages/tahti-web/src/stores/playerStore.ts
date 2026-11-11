@@ -377,11 +377,16 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       (cache, item) => rememberPeaks(cache, item.id, item.peaks),
       get().peaksById,
     );
+    const currentItem = items.find((item) => item.id === current);
+    const restoredLive =
+      currentItem?.kind === 'radio' || currentItem?.kind === 'live';
     set({
       peaksById,
       currentPeaks: current ? peaksFor(peaksById, current) : null,
       queue,
       currentId: current,
+      isLive: current ? restoredLive : true,
+      isRealLive: restoredLive && Boolean(currentItem?.isRealLive),
       status: current ? 'paused' : 'idle',
       restoredPending: current,
       error: null,

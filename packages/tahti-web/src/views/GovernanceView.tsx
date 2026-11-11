@@ -57,6 +57,7 @@ import { MotionCard } from '../components/governance/MotionCard';
 import { ListingDate } from '../components/ListingDate';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { hasAccountRole } from '../lib/accountRoles';
+import { meetingStateLabel } from '../lib/governanceLabels';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
@@ -460,13 +461,13 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
                         {meeting.scheduledAt ? (
                           <ListingDate value={meeting.scheduledAt} />
                         ) : (
-                          'Date not listed'
+                          t('governanceLabels.dateNotListed')
                         )}{' '}
-                        · {meeting.state}
+                        · {meetingStateLabel(meeting.state, t)}
                         {meeting.quorumMet !== null &&
-                          ` · quorum ${meeting.quorumMet ? 'met' : 'not met'}`}
+                          ` · ${t(meeting.quorumMet ? 'governanceLabels.quorumMet' : 'governanceLabels.quorumNotMet')}`}
                         {meeting.eligibleMemberCount !== null &&
-                          ` · ${meeting.presentCount} of ${meeting.eligibleMemberCount} present`}
+                          ` · ${t('governanceLabels.presentOf', { present: meeting.presentCount, eligible: meeting.eligibleMemberCount })}`}
                       </div>
                       {agenda.length > 0 ? (
                         <ul className="mt-2 flex flex-col gap-1">

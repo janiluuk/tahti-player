@@ -1292,7 +1292,10 @@
       "needsAcknowledgement": "Needs acknowledgement",
       "acknowledge": "Acknowledge",
       "showOlder": "Show older",
-      "loading": "Loading…"
+      "loading": "Loading…",
+      "eventInvites": "Event invites",
+      "acceptInvite": "Accept invite: {{title}}",
+      "declineInvite": "Decline invite: {{title}}"
     },
     "player": {
       "next": "Next",
@@ -1727,6 +1730,7 @@
       "coversBackfillDone_one": "Assigned a cover to 1 sound",
       "coversBackfillDone_other": "Assigned covers to {{count}} sounds",
       "coversBackfillNone": "Every sound already has a cover",
+      "coversBackfillSources": "{{provider}} from the provider, {{presets}} from artwork presets",
       "coversBackfillError": "Could not fill missing covers",
       "soundPinned": ", pinned",
       "soundPrivate": ", private",
@@ -4359,6 +4363,32 @@
       "morphAmount": "Morph amount",
       "crossfadeCurve": "Crossfade curve"
     },
+    "governanceLabels": {
+      "typeGeneral": "General meeting",
+      "typeExtraordinary": "Extraordinary general meeting",
+      "typeBoard": "Board meeting",
+      "stateDraft": "Draft",
+      "stateScheduled": "Scheduled",
+      "stateHeld": "Held",
+      "stateMinutesDraft": "Minutes in draft",
+      "stateApproved": "Minutes approved",
+      "stateCancelled": "Cancelled",
+      "voteYes": "Yes",
+      "voteNo": "No",
+      "voteAbstain": "Abstain",
+      "dateNotListed": "Date not listed",
+      "quorumMet": "quorum met",
+      "quorumNotMet": "quorum not met",
+      "presentOf": "{{present}} of {{eligible}} present",
+      "yourVote": "Your vote:",
+      "voteRecorded": "recorded",
+      "votesCantChange": "· votes can't be changed",
+      "votedChoice": "Voted {{choice}}.",
+      "tallyChoice": "{{choice}} {{count}}",
+      "membersVoted": "{{votes}} of {{eligible}} members voted",
+      "tallyAtClose": " · tally revealed at close",
+      "percentFor": " · {{percent}}% for"
+    },
     "meetingDetail": {
       "signInWithACooperative": "Sign in with a cooperative membership account to view meeting records.",
       "meetingNotFound": "Meeting not found.",
@@ -6631,7 +6661,13 @@
     "overviewTab": {
       "revenue": "Revenue",
       "keyMetrics": "Key metrics",
-      "engagementUnits": "Engagement units"
+      "engagementUnits": "Engagement units",
+      "estimatedGrantShare": "Estimated {{year}} grant share",
+      "grantProgress": "Progress toward {{year}} grant eligibility",
+      "units_one": "1 unit",
+      "units_other": "{{count}} units",
+      "payoutsUnder": "Fan subscription payouts and grant history remain under",
+      "geographyNote": ". Listener geography is aggregated and does not identify individual listeners."
     },
     "hourlyDialog": {
       "distributionOfPlaysAcrossThe": "Distribution of plays across the day. Click another day on the chart to compare.",
@@ -7664,7 +7700,14 @@
       "manage": "Manage",
       "filterSmartlinksByPlatform": "Filter smartlinks by platform",
       "sortSmartlinks": "Sort smartlinks",
-      "openSmartlink": "Open smartlink"
+      "openSmartlink": "Open smartlink",
+      "trackCount_one": "1 track",
+      "trackCount_other": "{{count}} tracks",
+      "dspLinks_one": "1 DSP link: {{names}}",
+      "dspLinks_other": "{{count}} DSP links: {{names}}",
+      "noDspLinks": "No DSP links added yet",
+      "viewCount_one": "1 view",
+      "viewCount_other": "{{views}} views"
     },
     "chatView": {
       "openChat": "Open chat",
@@ -8448,7 +8491,28 @@
       "memberRegister": "Member register",
       "passed": "Passed",
       "failed": "Failed",
-      "deferred": "Deferred"
+      "deferred": "Deferred",
+      "governanceItem": "Governance item",
+      "voted": "Voted",
+      "votedChoice": "Voted {{choice}}",
+      "votedForTopic": "Voted for topic",
+      "removedVote": "Removed vote",
+      "commented": "Commented",
+      "memberMotionsDesc": "Open member motions and the public governance portal.",
+      "openCount_one": "1 open",
+      "openCount_other": "{{count}} open",
+      "venueQueueDesc": "Review and verify venue submissions for the events calendar.",
+      "pendingCount_one": "1 pending",
+      "pendingCount_other": "{{count}} pending",
+      "annualReportDesc": "Generate and store the yearly nonprofit activity report.",
+      "lastYear": "Last: {{year}}",
+      "boardResolutionsDesc": "Record and publish formal board decisions and vote outcomes — form below.",
+      "thisYearCount_one": "1 this year",
+      "thisYearCount_other": "{{count}} this year",
+      "agmDesc": "Agenda builder, open motions, member notice checklist, and minutes links.",
+      "grantsDesc": "Yearly grant cycles, applications, and payout tracking.",
+      "auditLogDesc": "Searchable log of privileged actions across the platform.",
+      "memberRegisterDesc": "Full member list, exportable for the AGM notice mailing."
     },
     "bulkEditBarMore": {
       "leaveAsIs": "Leave as is",
@@ -11702,7 +11766,9 @@
     },
     "subscribeViewStates": {
       "starting": "Starting…",
-      "subscribe": "Subscribe"
+      "subscribe": "Subscribe",
+      "checkoutNotStripe": "Checkout URL was not from Stripe",
+      "takingYouToCheckout": "Taking you to checkout…"
     },
     "trackAccessGateStates": {
       "subscribeInstead": "Subscribe instead",

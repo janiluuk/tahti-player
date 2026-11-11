@@ -44,12 +44,18 @@ test.describe('listener', () => {
     await main
       .getByRole('button', { name: 'Like Aurora Drift', exact: true })
       .click();
+    await expect(
+      main.getByRole('button', { name: 'Unlike Aurora Drift', exact: true }),
+    ).toBeVisible();
     await open(page, '/library/favorites');
     await expect(main.getByText('Aurora Drift').first()).toBeVisible();
     await open(page, '/t/northern-lights-archive-1');
     await main
       .getByRole('button', { name: 'Unlike Aurora Drift', exact: true })
       .click();
+    await expect(
+      main.getByRole('button', { name: 'Like Aurora Drift', exact: true }),
+    ).toBeVisible();
     await open(page, '/library/favorites');
     await expect(main.getByText('Aurora Drift')).toHaveCount(0);
   });

@@ -115,4 +115,4 @@ before each seek.
 
 | Screen | Issue | Kind | Suggestion |
 | --- | --- | --- | --- |
-| Player bar seek | A seek right after Play, before the stream starts, is lost: playback restarts at 0:00 when the audio loads | bug | Keep the pending `seekTarget` in `playerStore` until the audio has loaded, then apply it |
+| Player bar seek | A seek right after Play, before the stream starts, is lost: playback restarts at 0:00 when the audio loads | bug, fixed 2026-11-11 | `AudioEngine` keeps the `seekTarget` until `loadedmetadata`, then applies it (`AudioEngine.seek.test.tsx`) |

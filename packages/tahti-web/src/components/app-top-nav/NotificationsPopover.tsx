@@ -3,6 +3,7 @@ import { Badge, Button, ButtonLink } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 import { PageEmpty, PageError } from '../PageStates';
+import { NotificationEventInvites } from './NotificationEventInvites';
 import { type TopNavState } from './useTopNavState';
 
 /** The notifications quick view; the account menu's Notifications item
@@ -67,7 +68,13 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
               title={t('notificationsPopover.empty')}
               className="py-3"
             />
-          ) : (
+          ) : null}
+          {notifications.some(
+            (notification) => notification.type === 'EVENT_TAGGED',
+          ) ? (
+            <NotificationEventInvites />
+          ) : null}
+          {notifications.length === 0 ? null : (
             <ul className="tahti-hide-scrollbar flex max-h-80 flex-col gap-1 overflow-y-auto">
               {notifications.map((notification) => (
                 <li

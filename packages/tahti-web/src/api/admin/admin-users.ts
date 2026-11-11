@@ -148,9 +148,6 @@ export function adminUsersExportCsvUrl(filters: {
   if (filters.role) {
     qs.set('role', filters.role);
   }
-  if (filters.role === 'BOARD') {
-    qs.set('isBoard', 'true');
-  }
   if (filters.isMember === 'true' || filters.isMember === 'false') {
     qs.set('isMember', filters.isMember);
   }
@@ -194,26 +191,18 @@ export async function fetchAdminUsers(filters: {
     if (filters.role) {
       qs.set('role', filters.role);
     }
-    if (filters.role === 'BOARD') {
-      qs.set('isBoard', 'true');
-    }
     if (filters.isMember) {
       qs.set('isMember', filters.isMember);
     }
     const data = await getJson<{ total: number; users: AdminUserRow[] }>(
       `/api/admin/users${qs.toString() ? `?${qs.toString()}` : ''}`,
     );
-    const users = data.users.map((user) => ({
-      ...user,
-      role: getAccountRole(user),
-    }));
-    const filteredUsers = filters.role
-      ? users.filter((user) => user.role === filters.role)
-      : users;
-    const serverFiltered = filteredUsers.length === users.length;
     return {
-      data: filteredUsers,
-      total: serverFiltered ? data.total : filteredUsers.length,
+      data: data.users.map((user) => ({
+        ...user,
+        role: getAccountRole(user),
+      })),
+      total: data.total,
       meta: { source: 'api' },
     };
   } catch (err) {
