@@ -1,6 +1,12 @@
 import { Link, useBlocker } from '@tanstack/react-router';
 import { UploadIcon } from 'lucide-react';
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from 'react';
 import { toast } from 'sonner';
 
 import { preferInternalEngine } from '@tahti-player/audio-core';
@@ -66,16 +72,20 @@ function ProEditor({ soundId }: { soundId: string }) {
   const multitrackBounceLabel = t(
     'studioProEditorViewLeftovers.multitrackBounce',
   );
-  const editorModeOptions = [
-    {
-      id: 'trim' as const,
-      label: t('studioProEditorViewLeftovers.trimEffects'),
-    },
-    {
-      id: 'multitrack' as const,
-      label: t('studioProEditorViewLeftovers.multitrackViz'),
-    },
-  ];
+  const editorModeOptions = useMemo(
+    () =>
+      [
+        {
+          id: 'trim' as const,
+          label: t('studioProEditorViewLeftovers.trimEffects'),
+        },
+        {
+          id: 'multitrack' as const,
+          label: t('studioProEditorViewLeftovers.multitrackViz'),
+        },
+      ] as const,
+    [t],
+  );
   const masteringEnabled = useMasteringFeatureStore((state) => state.enabled);
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [title, setTitle] = useState('');
