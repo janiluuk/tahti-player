@@ -18,8 +18,10 @@ function trackOrderOptions(t: TFunction<'web'>): SelectOption[] {
       id: 'MANUAL',
       label: t('collectionEditDetailsPanel.manualTracklistOrder'),
     },
+    { id: 'TIME_DESC', label: t('sortSounds.mode.NEWEST') },
     { id: 'TIME', label: t('collectionEditDetailsPanel.oldestFirst') },
     { id: 'NAME', label: t('collectionEditDetailsPanel.titleAZ') },
+    { id: 'NAME_DESC', label: t('sortSounds.mode.TITLE_DESC') },
   ];
 }
 

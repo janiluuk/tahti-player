@@ -11,6 +11,7 @@ import {
   removeArtistEmbed,
   type ArtistEmbed,
 } from '../api/artist-embeds';
+import { persistEmbedThumbnail } from '../lib/persistEmbedThumbnail';
 import { toastWithUndo } from '../lib/undoToast';
 import { webT } from '../lib/webT';
 import { PageEmpty, PageError } from './PageStates';
@@ -128,6 +129,16 @@ export function SoundCloudEmbedsPanel() {
                     alt=""
                     seed={embed.id}
                     size="thumb"
+                    onSoftArtwork={(url) => {
+                      setEmbeds((current) =>
+                        (current ?? []).map((row) =>
+                          row.id === embed.id && !row.thumbnailUrl
+                            ? { ...row, thumbnailUrl: url }
+                            : row,
+                        ),
+                      );
+                      void persistEmbedThumbnail(embed.id, url);
+                    }}
                   />
                   <div className="min-w-0 flex-1 text-sm">
                     <ExternalLink

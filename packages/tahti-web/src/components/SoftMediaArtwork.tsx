@@ -1,4 +1,4 @@
-import { useEffect, useState, type ComponentProps } from 'react';
+import { useEffect, useRef, useState, type ComponentProps } from 'react';
 
 import { MediaArtwork } from '@tahti-player/ui';
 
@@ -15,6 +15,7 @@ type Props = {
   playLabel?: string;
   isPlaying?: boolean;
   onPlay?: () => void;
+  onSoftArtwork?: (url: string) => void;
 };
 
 export function SoftMediaArtwork({
@@ -26,8 +27,11 @@ export function SoftMediaArtwork({
   playLabel,
   isPlaying,
   onPlay,
+  onSoftArtwork,
 }: Props) {
   const [soft, setSoft] = useState<string | null>(null);
+  const onSoftArtworkRef = useRef(onSoftArtwork);
+  onSoftArtworkRef.current = onSoftArtwork;
 
   useEffect(() => {
     if (src || !pageUrl) {
@@ -36,8 +40,12 @@ export function SoftMediaArtwork({
     }
     let cancelled = false;
     void fetchOembedThumbnail(pageUrl).then((thumb) => {
-      if (!cancelled) {
-        setSoft(thumb);
+      if (cancelled) {
+        return;
+      }
+      setSoft(thumb);
+      if (thumb) {
+        onSoftArtworkRef.current?.(thumb);
       }
     });
     return () => {

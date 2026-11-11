@@ -24,12 +24,11 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; add-on table rows, native review and dropped pricing claims left |
 | partial | [ambient-track-list-mobile.md](ambient-track-list-mobile.md) | Phone list default shipped; left: AmbientTrackRow phone layout (alignment across densities, larger thumb) — needs a visual pass at 390 px |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
-| partial | [collection-sort-dialog.md](collection-sort-dialog.md) | Sort sounds dialog shipped on the Studio collection and playlist editors; left: API sort direction (newest/Z–A), public page entry point |
 | open    | [channel-page-metrics-about-events.md](channel-page-metrics-about-events.md) | Channel page: followers/following/plays today/yesterday/total/downloads with per-metric public toggle, tidy About, upcoming + past events incl. ones the artist plays at |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
 | partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: next 30 slices (failed[] toasts, facets+filter, isFallback, clear filters; org API) |
-| partial | [embed-covers-hardening.md](embed-covers-hardening.md) | Slices 1–11, 13–15, 17–18, 21–22 shipped or in PRs; left: persist SoundCloud thumb (no PATCH route), Storybook/e2e, noembed proxy |
+| partial | [embed-covers-hardening.md](embed-covers-hardening.md) | SoundCloud thumbnail now persists; left: Storybook/e2e cover rows, noembed proxy, admin soft-fill |
 | partial | [server-peaks-in-track-lists.md](server-peaks-in-track-lists.md) | Server waveform peaks on every track list (search, Selects, New to you, profile fallback); left: studio collections, radio/feed |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |

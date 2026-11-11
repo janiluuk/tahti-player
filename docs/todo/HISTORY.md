@@ -1,3 +1,7 @@
+## 2026-11-11 — collection sort direction and SoundCloud covers
+
+Newest first and title Z–A are stored as `TIME_DESC` and `NAME_DESC`. The public collection page, its RSS feed, and the collection embed apply that order when a track is added later. A SoundCloud cover found after create is saved with `PATCH /api/me/embeds/:id`. Folded `collection-sort-dialog.md`.
+
 ## 2026-11-11 — likes are favorites
 
 A track-row heart is an account like, and Library → Favorites lists those likes (#2006). The mock app now keeps a like across a reload so the list still shows it. An artist liking a track from a list is covered in `use-cases-coverage-gap.spec.ts`. Folded `likes-vs-favorites.md`.

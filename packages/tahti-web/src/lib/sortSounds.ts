@@ -1,3 +1,5 @@
+import type { CollectionTrackSortMode } from '../api/studio-types';
+
 export type SoundSortMode =
   'OWN' | 'NEWEST' | 'OLDEST' | 'TITLE_ASC' | 'TITLE_DESC';
 
@@ -42,16 +44,36 @@ export function moveSound<T>(list: T[], from: number, to: number): T[] {
   return next;
 }
 
-/** The public page order a sort maps to; modes the API can't keep
- * (newest first, Z–A) are saved as the artist's own order. */
-export function apiTrackSortMode(
-  mode: SoundSortMode,
-): 'MANUAL' | 'TIME' | 'NAME' {
-  return mode === 'OLDEST' ? 'TIME' : mode === 'TITLE_ASC' ? 'NAME' : 'MANUAL';
+export function apiTrackSortMode(mode: SoundSortMode): CollectionTrackSortMode {
+  if (mode === 'OLDEST') {
+    return 'TIME';
+  }
+  if (mode === 'NEWEST') {
+    return 'TIME_DESC';
+  }
+  if (mode === 'TITLE_ASC') {
+    return 'NAME';
+  }
+  if (mode === 'TITLE_DESC') {
+    return 'NAME_DESC';
+  }
+  return 'MANUAL';
 }
 
 export function soundSortModeFromApi(
-  mode: 'MANUAL' | 'TIME' | 'NAME' | undefined,
+  mode: CollectionTrackSortMode | undefined,
 ): SoundSortMode {
-  return mode === 'TIME' ? 'OLDEST' : mode === 'NAME' ? 'TITLE_ASC' : 'OWN';
+  if (mode === 'TIME') {
+    return 'OLDEST';
+  }
+  if (mode === 'TIME_DESC') {
+    return 'NEWEST';
+  }
+  if (mode === 'NAME') {
+    return 'TITLE_ASC';
+  }
+  if (mode === 'NAME_DESC') {
+    return 'TITLE_DESC';
+  }
+  return 'OWN';
 }

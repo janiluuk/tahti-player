@@ -20,7 +20,7 @@ describe('saveCollectionSoundOrder', () => {
       slug: 'mix',
       items,
       ids: ['i2', 'i1'],
-      mode: 'NEWEST',
+      mode: 'OWN',
       currentMode: 'MANUAL',
     });
     expect(reorder).toHaveBeenCalledWith('mix', ['i2', 'i1']);
@@ -47,6 +47,33 @@ describe('saveCollectionSoundOrder', () => {
     });
     expect(patch).toHaveBeenCalledWith('mix', { trackSortMode: 'TIME' });
     expect(result.ok && result.trackSortMode).toBe('TIME');
+  });
+
+  it('stores newest first and Z–A as directions the public page keeps', async () => {
+    vi.spyOn(studio, 'reorderStudioCollectionItems').mockResolvedValue({
+      ok: true,
+    });
+    const patch = vi
+      .spyOn(studio, 'patchStudioCollection')
+      .mockResolvedValue({ ok: true, data: { slug: 'mix', name: 'Mix' } });
+    const newest = await saveCollectionSoundOrder({
+      slug: 'mix',
+      items,
+      ids: ['i2', 'i1'],
+      mode: 'NEWEST',
+      currentMode: 'MANUAL',
+    });
+    expect(patch).toHaveBeenCalledWith('mix', { trackSortMode: 'TIME_DESC' });
+    expect(newest.ok && newest.trackSortMode).toBe('TIME_DESC');
+    const title = await saveCollectionSoundOrder({
+      slug: 'mix',
+      items,
+      ids: ['i1', 'i2'],
+      mode: 'TITLE_DESC',
+      currentMode: 'TIME_DESC',
+    });
+    expect(patch).toHaveBeenCalledWith('mix', { trackSortMode: 'NAME_DESC' });
+    expect(title.ok && title.trackSortMode).toBe('NAME_DESC');
   });
 
   it('stops at a failed reorder', async () => {

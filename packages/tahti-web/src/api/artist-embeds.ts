@@ -72,6 +72,34 @@ export async function addArtistEmbed(
   }
 }
 
+export async function updateArtistEmbedThumbnail(
+  id: string,
+  thumbnailUrl: string,
+): Promise<{ ok: true; data: ArtistEmbed } | { ok: false; error: string }> {
+  if (isForceMock()) {
+    mockEmbeds = mockEmbeds.map((embed) =>
+      embed.id === id ? { ...embed, thumbnailUrl } : embed,
+    );
+    const embed = mockEmbeds.find((row) => row.id === id);
+    return embed
+      ? { ok: true, data: embed }
+      : { ok: false, error: 'Embed not found' };
+  }
+  try {
+    const data = await sendJson<ArtistEmbed>(
+      `/api/me/embeds/${encodeURIComponent(id)}`,
+      'PATCH',
+      { thumbnailUrl },
+    );
+    return { ok: true, data };
+  } catch (err) {
+    return {
+      ok: false,
+      error: err instanceof Error ? err.message : 'Could not save the cover',
+    };
+  }
+}
+
 export async function removeArtistEmbed(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {

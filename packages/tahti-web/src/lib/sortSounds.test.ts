@@ -48,9 +48,13 @@ describe('moveSound', () => {
 describe('api sort modes', () => {
   it('maps the modes the API keeps and falls back to own order', () => {
     expect(apiTrackSortMode('OLDEST')).toBe('TIME');
+    expect(apiTrackSortMode('NEWEST')).toBe('TIME_DESC');
     expect(apiTrackSortMode('TITLE_ASC')).toBe('NAME');
-    expect(apiTrackSortMode('NEWEST')).toBe('MANUAL');
+    expect(apiTrackSortMode('TITLE_DESC')).toBe('NAME_DESC');
+    expect(apiTrackSortMode('OWN')).toBe('MANUAL');
     expect(soundSortModeFromApi('NAME')).toBe('TITLE_ASC');
+    expect(soundSortModeFromApi('NAME_DESC')).toBe('TITLE_DESC');
+    expect(soundSortModeFromApi('TIME_DESC')).toBe('NEWEST');
     expect(soundSortModeFromApi(undefined)).toBe('OWN');
   });
 });

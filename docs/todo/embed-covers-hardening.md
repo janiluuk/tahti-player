@@ -1,7 +1,7 @@
 # Embed covers hardening
 
 **Status:** partial  
-**Updated:** 2026-11-11 (slices 11, 13–15, 21–22 in the web player; 12 still blocked)  
+**Updated:** 2026-11-11 (slice 12: PATCH /api/me/embeds/:id stores the soft-filled thumbnail)  
 **Follows:** library-sounds-embeds + embed-thumbnails (HISTORY 2026-11-10)
 
 Close the gaps left after Embeds-under-Sounds and the first cover pass:
@@ -35,7 +35,7 @@ Note: the backfill only sees rows with `bannerUrl: null`, but every embed import
 | 9 | player | After soft-fill success, `PATCH` sound `bannerUrl` once | Soft fill persists; next load skips network |
 | 10 | player | Skip soft-fill PATCH when viewer cannot edit (public channel) | Listeners never write |
 | 11 | player | Soft-fill SoundCloud panel rows with null `thumbnailUrl` | Done: `SoftMediaArtwork` asks noembed when `thumbnailUrl` is null |
-| 12 | player | Persist SoundCloud oEmbed thumb via existing embeds API if needed | Blocked: `/api/me/embeds` is GET/POST/DELETE only (no PATCH) |
+| 12 | player | Persist SoundCloud oEmbed thumb via embeds API | Done: `PATCH /api/me/embeds/:id` `{ thumbnailUrl }` and `persistEmbedThumbnail` once per id |
 | 13 | player | SessionStorage (or IndexedDB) cache for soft-fill URLs | Done: `sessionStorage` key `tahti-web:embed-thumb:` |
 | 14 | player | Soft-fill concurrency limit (e.g. 2–3 in flight) | Done: at most 3 lookups in flight |
 | 15 | player | Soft-fill failure marking (null cache) per provider+uri | Done: empty session value means a known miss |
