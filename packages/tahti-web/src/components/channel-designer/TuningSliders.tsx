@@ -30,7 +30,11 @@ export function TuningSliders({
         return (
           <Slider
             key={key}
-            label={key === 'speed' ? 'Speed' : 'Intensity'}
+            label={
+              key === 'speed'
+                ? t('tuningSliders.speed')
+                : t('tuningSliders.intensity')
+            }
             min={0.25}
             max={2}
             step={0.05}

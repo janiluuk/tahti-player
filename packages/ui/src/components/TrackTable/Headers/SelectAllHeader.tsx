@@ -2,6 +2,7 @@ import { HeaderContext } from '@tanstack/react-table';
 
 import { Track } from '@tahti-player/model';
 
+import { useUiLabels } from '../../UiLabels';
 import { useTrackTableContext } from '../TrackTableContext';
 
 type SelectAllHeaderMeta = {
@@ -13,6 +14,7 @@ export function SelectAllHeader<T extends Track>(
   context: HeaderContext<T, unknown>,
 ) {
   const { getItemId } = useTrackTableContext<T>();
+  const uiLabels = useUiLabels();
   const meta = context.table.options.meta as SelectAllHeaderMeta;
   const rows = context.table.getRowModel().rows;
   const ids = rows.map((row) => getItemId(row.original, row.index));
@@ -32,7 +34,9 @@ export function SelectAllHeader<T extends Track>(
           }
         }}
         onChange={() => meta.onToggleAllRows(ids)}
-        aria-label={allSelected ? 'Deselect all rows' : 'Select all rows'}
+        aria-label={
+          allSelected ? uiLabels.deselectAllRows : uiLabels.selectAllRows
+        }
       />
     </th>
   );

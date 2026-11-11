@@ -1,6 +1,7 @@
 import { FC, ReactNode, useEffect, useState } from 'react';
 
 import { DialogRoot } from '../Dialog/DialogRoot';
+import { useUiLabels } from '../UiLabels';
 import { SettingsPanelContent } from './SettingsPanelContent';
 import { SettingsPanelNav } from './SettingsPanelNav';
 
@@ -32,8 +33,9 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
   onTabChange,
   navFooter,
   startOnContent = false,
-  label = 'Settings',
+  label,
 }) => {
+  const labels = useUiLabels();
   const activeTabMeta = tabs.find((tab) => tab.id === activeTab);
   // Below `sm`, nav and content share one screen — list first, then detail.
   // Desktop always shows both; `sm:flex!` on each pane overrides the mobile
@@ -50,7 +52,7 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
     <DialogRoot
       isOpen={isOpen}
       onClose={onClose}
-      aria-label={label}
+      aria-label={label ?? labels.settings}
       // Fill the DialogRoot padded viewport on mobile (`w-full` + dvh), not a
       // second `100vw-2rem` that stacks with the overlay's `p-4`. `min-w-0`
       // + `overflow-hidden` keep section bodies scrolling inside the pane.

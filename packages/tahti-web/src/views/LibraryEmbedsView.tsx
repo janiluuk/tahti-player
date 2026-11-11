@@ -16,6 +16,7 @@ import { SoundCloudEmbedsPanel } from '../components/SoundCloudEmbedsPanel';
 import { SourceServiceIcon } from '../components/SourceServiceIcon';
 import { EMBED_PROVIDER_LABEL, type EmbedProvider } from '../lib/embedSrc';
 import { sortLibraryItems, type LibrarySort } from '../lib/librarySort';
+import { persistSoftCover } from '../lib/persistSoftCover';
 
 const PROVIDER_SOURCE_ICON_ID: Record<EmbedProvider, IntegrationId> = {
   HEARTHIS: 'hearthis',
@@ -207,6 +208,7 @@ export function LibraryEmbedsView() {
                 embedUri={item.embedUri}
                 artworkUrl={item.bannerUrl}
                 sourceUrl={item.embedSourceUrl}
+                onSoftArtwork={(url) => void persistSoftCover(item.id, url)}
               />
             ))}
           </ul>

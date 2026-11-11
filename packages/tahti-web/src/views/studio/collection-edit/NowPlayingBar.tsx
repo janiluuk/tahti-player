@@ -1,5 +1,6 @@
 import { PauseIcon, PlayIcon } from 'lucide-react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, PlayerBar, Tooltip } from '@tahti-player/ui';
 
 import { usePlayerStore } from '../../../stores/playerStore';
@@ -8,6 +9,7 @@ import { usePlayerStore } from '../../../stores/playerStore';
  * `currentTime`/`duration` subscriptions so the (very large) editor view
  * doesn't re-render on every playback tick. */
 export function NowPlayingBar({ title }: { title: string }) {
+  const { t } = useTranslation('web');
   const status = usePlayerStore((s) => s.status);
   const setStatus = usePlayerStore((s) => s.setStatus);
   const currentTime = usePlayerStore((s) => s.currentTime);
@@ -17,11 +19,14 @@ export function NowPlayingBar({ title }: { title: string }) {
 
   return (
     <div className="border-border bg-background-input flex items-center gap-3 rounded-lg border px-3 py-2">
-      <Tooltip content={isPlaying ? 'Pause' : 'Play'} side="top">
+      <Tooltip
+        content={isPlaying ? t('actions.pause') : t('actions.play')}
+        side="top"
+      >
         <Button
           size="icon-sm"
           variant="text"
-          aria-label={isPlaying ? 'Pause' : 'Play'}
+          aria-label={isPlaying ? t('actions.pause') : t('actions.play')}
           onClick={() => setStatus(isPlaying ? 'paused' : 'playing')}
         >
           {isPlaying ? (

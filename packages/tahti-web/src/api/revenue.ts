@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
 import {
@@ -233,8 +235,8 @@ export async function startFanConnectOnboard(): Promise<
       ok: true,
       mockActivated: true,
       message: status.paymentsReady
-        ? 'Onboarding complete — payments ready.'
-        : 'Onboarding updated.',
+        ? i18n.t('web:revenueApi.onboardingComplete')
+        : i18n.t('web:revenueApi.onboardingUpdated'),
     };
   }
   try {
@@ -246,13 +248,16 @@ export async function startFanConnectOnboard(): Promise<
     });
     const url = data.onboardingUrl ?? data.url;
     if (!url) {
-      return { ok: false, error: 'Onboard failed' };
+      return { ok: false, error: i18n.t('web:revenueApi.onboardFailed') };
     }
     return { ok: true, url };
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Onboard failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:revenueApi.onboardFailed'),
     };
   }
 }
@@ -267,13 +272,15 @@ export async function fetchFanConnectPortal(): Promise<
     if (!status.accountId) {
       return {
         ok: false,
-        error: 'Complete onboarding first — no payout account connected yet.',
+        error: i18n.t('web:revenueApi.completeOnboardingFirst'),
       };
     }
     return {
       ok: true,
       mockActivated: true,
-      message: `Payout portal preview for ${status.accountId} — no live redirect in this demo.`,
+      message: i18n.t('web:revenueApi.portalPreview', {
+        accountId: status.accountId,
+      }),
     };
   }
   try {
@@ -284,7 +291,10 @@ export async function fetchFanConnectPortal(): Promise<
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Portal failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:revenueApi.portalFailed'),
     };
   }
 }

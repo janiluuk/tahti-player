@@ -20,6 +20,7 @@ import {
 } from '../../../hooks/useRetrySoundProcessing';
 import { embedSrcFor, type EmbedProvider } from '../../../lib/embedSrc';
 import { dateLocaleTag } from '../../../lib/locale';
+import { persistSoftCover } from '../../../lib/persistSoftCover';
 import { formatDuration } from '../../../lib/playableToTrack';
 import { usePlayerStore } from '../../../stores/playerStore';
 import { SoundsListTable } from './SoundsListTable';
@@ -292,6 +293,7 @@ function EmbedSoundCard({
         embedUri={embedUri}
         artworkUrl={item.bannerUrl}
         sourceUrl={item.embedSourceUrl}
+        onSoftArtwork={(url) => void persistSoftCover(item.id, url)}
         as="div"
         actions={<SoundRowActions item={item} state={state} />}
       />

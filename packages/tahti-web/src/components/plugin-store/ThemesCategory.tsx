@@ -295,8 +295,10 @@ export function VisualizersCategory() {
               author="Tahti"
               description={metadata.description}
               categories={[
-                ...(metadata.audioReactive ? ['Audio reactive'] : []),
-                ...(selected ? ['Preview'] : []),
+                ...(metadata.audioReactive
+                  ? [t('tooltips.audioReactive')]
+                  : []),
+                ...(selected ? [t('tooltips.preview')] : []),
               ]}
               isInstalled={active}
               isInstalling={saving === id}
@@ -317,11 +319,18 @@ export function VisualizersCategory() {
               onClick={() => setPreviewPreset(id)}
               accessory={
                 id === 'MINIMAL' ? undefined : (
-                  <Tooltip content={`Configure ${presetLabel(id)}`} side="top">
+                  <Tooltip
+                    content={t('tooltips.configureNamed', {
+                      name: presetLabel(id),
+                    })}
+                    side="top"
+                  >
                     <Button
                       size="icon-sm"
                       variant="secondary"
-                      aria-label={`Configure ${presetLabel(id)}`}
+                      aria-label={t('tooltips.configureNamed', {
+                        name: presetLabel(id),
+                      })}
                       onClick={(event) => {
                         event.stopPropagation();
                         setPreviewPreset(id);
@@ -345,7 +354,9 @@ export function VisualizersCategory() {
           className="max-w-lg"
         >
           <Dialog.Title>
-            Configure {presetLabel(configurationPreset)}
+            {t('tooltips.configureNamed', {
+              name: presetLabel(configurationPreset),
+            })}
           </Dialog.Title>
           <Dialog.Description>
             {t('themesCategory.tuneThisVisualizerWhileIts')}

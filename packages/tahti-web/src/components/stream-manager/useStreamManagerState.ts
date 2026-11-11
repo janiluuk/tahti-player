@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   fetchChannelManageStats,
   fetchRtmpTargets,
@@ -230,19 +232,19 @@ export function useStreamManagerState({
   const bitrate = stats?.audioBitrateKbps ?? signal?.bitrateKbps;
   const listeners = stats?.listeners ?? signal?.listeners;
   const outputLabel = signalConnected
-    ? 'Live broadcast'
+    ? i18n.t('web:streamManagerStates.liveBroadcast')
     : rotationPlaying
-      ? 'Track rotation'
+      ? i18n.t('web:streamManagerStates.trackRotation')
       : channelState === 'LIVE'
-        ? 'Live output'
-        : 'Offline';
+        ? i18n.t('web:streamManagerStates.liveOutput')
+        : i18n.t('web:streamManagerStates.offline');
   const playerState = signalConnected
-    ? 'Live'
+    ? i18n.t('web:streamManagerStates.live')
     : rotationPlaying
-      ? 'Playing'
+      ? i18n.t('web:streamManagerStates.playing')
       : rotation
-        ? 'Paused'
-        : 'Stopped';
+        ? i18n.t('web:streamManagerStates.paused')
+        : i18n.t('web:streamManagerStates.stopped');
   const durationSec = rotation?.item?.durationSec ?? null;
   const elapsedSinceObserved = rotation
     ? Math.floor((now - rotation.observedAt) / SECOND_MS)
@@ -322,7 +324,11 @@ export function useStreamManagerState({
         fetched.meta.source === 'api' ? (fetched.meta.reason ?? null) : null;
       if (fetchReason) {
         setRotationBusy(false);
-        setRotationMsg(`Could not load collection: ${fetchReason}`);
+        setRotationMsg(
+          i18n.t('web:streamManagerStates.couldNotLoadCollection', {
+            reason: fetchReason,
+          }),
+        );
         return;
       }
       collection = fetched.data;
@@ -336,8 +342,8 @@ export function useStreamManagerState({
       setRotationBusy(false);
       setRotationMsg(
         plan.reason === 'already-in-rotation'
-          ? 'Nothing to add — those tracks are already in the rotation.'
-          : 'Nothing to add — that playlist has no tracks.',
+          ? i18n.t('web:streamManagerStates.nothingToAddAlreadyInRotation')
+          : i18n.t('web:streamManagerStates.nothingToAddEmptyPlaylist'),
       );
       setPlaylistDialogOpen(false);
       return;
@@ -367,9 +373,17 @@ export function useStreamManagerState({
     setRotationMsg(
       failed > 0
         ? replace
-          ? `${added} track${added === 1 ? '' : 's'} added — ${failed} could not be added. Current rotation was left in place.`
-          : `Added ${added} track${added === 1 ? '' : 's'} — ${failed} could not be added.`
-        : `${replace ? 'Replaced rotation with' : 'Added'} ${added} track${added === 1 ? '' : 's'}${replace ? '' : ' to the rotation'}.`,
+          ? i18n.t('web:streamManagerStates.replacePartial', {
+              count: added,
+              failed,
+            })
+          : i18n.t('web:streamManagerStates.addPartial', {
+              count: added,
+              failed,
+            })
+        : replace
+          ? i18n.t('web:streamManagerStates.replaced', { count: added })
+          : i18n.t('web:streamManagerStates.added', { count: added }),
     );
     setPlaylistDialogOpen(false);
   };
@@ -403,7 +417,7 @@ export function useStreamManagerState({
       return;
     }
     setProgramme(result.data);
-    setRotationMsg('Rotation updated.');
+    setRotationMsg(i18n.t('web:streamManagerStates.rotationUpdated'));
   };
 
   const addRotationItem = async (item: ProgrammeItem) => {
@@ -428,7 +442,7 @@ export function useStreamManagerState({
       id: `sound:${item.id}`,
       kind: 'sound',
       title: item.title,
-      artist: 'You',
+      artist: i18n.t('web:streamManagerStates.you'),
       streamUrl: data.url,
       protocol: data.url.includes('.m3u8') ? 'hls' : 'https',
     });
