@@ -102,7 +102,7 @@ Favorites leaves (if the open question is a yes); Co-op is new. Mobile bottom ba
 
 ## Slices (in order)
 
-- [ ] 1. Library 5 tabs + Studio → Music together (the catalog moves in one step); old URLs redirect. (2026-11-02: Library has History and Following tabs and listeners land on Favorites; the catalog move is left.)
+- [ ] 1. Library 5 tabs + Studio → Music together (the catalog moves in one step); old URLs redirect. (2026-11-02: Library has History and Following tabs and listeners land on Favorites; the catalog move is left. 2026-11-11: decided in `library-for-listeners.md` — Library is the listener's storage and the desktop library; Sounds, Collections, Upload, Recordings and Smart links move to Studio.)
 - [ ] 2. Studio Profile: move the Settings modal's Artist and Channel & chat panels; sectioned form with live preview. (2026-11-02: Studio → Profile is a hub of cards that open those Settings panels; moving the forms into Studio is left.)
 - [ ] 3. Studio Broadcast: one agenda; Go live as a full-screen flow; 24/7, Recordings, Tahti Radio as hub cards. (2026-11-02: `/studio/broadcast` hub with on/off-air banner, one Coming up agenda with chips, cards incl. 24/7, Recordings, Tahti Radio; back links replace the seven-tab row. Go live as a full-screen flow is left.)
 - [x] 4. Studio Fans and Stats as single pages (2026-11-02: Studio row is Home · Music · Broadcast · Fans · Stats · Profile; Fans is a hub of Posts, Newsletter, Memberships, Store, Earnings with back links; Stats is one page with sections).
