@@ -309,6 +309,8 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/ReleasePinButton` | `tahti-web/ReleasePinButton.stories.tsx` |
 | `Tahti/Studio/ReleaseTrackAudioUpload` | `tahti-web/ReleaseTrackAudioUpload.stories.tsx` |
 | `Tahti/Studio/Release detail/ReleaseTrackRow` | `tahti-web/ReleaseTrackRow.stories.tsx` |
+| `Tahti/Release/ReleaseTrackStemsList` | `tahti-web/ReleaseTrackStemsList.stories.tsx` |
+| `Tahti/Studio/ReleaseTrackStemsPanel` | `tahti-web/ReleaseTrackStemsPanel.stories.tsx` |
 | `Tahti/Track/ReleaseTracklistDialog` | `tahti-web/ReleaseTracklistDialog.stories.tsx` |
 | `Tahti/Settings/ReleaseVisualDefaultsPanel` | `tahti-web/ReleaseVisualDefaultsPanel.stories.tsx` |
 | `Tahti/Misc/ReportButton` | `tahti-web/ReportButton.stories.tsx` |

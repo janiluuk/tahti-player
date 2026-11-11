@@ -8,6 +8,7 @@ import { Button, MediaArtwork } from '@tahti-player/ui';
 import { CommentItem } from '../../components/CommentItem';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty } from '../../components/PageStates';
+import { ReleaseTrackStemsList } from '../../components/ReleaseTrackStemsList';
 import { TrackAudience } from '../../components/TrackAudience';
 import { cn } from '../../lib/cn';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
@@ -97,6 +98,17 @@ export function TrackBody({ page }: { page: TrackPage }) {
         detail={detail}
         className={tracklist.length > 0 ? 'mt-6' : undefined}
       />
+
+      {detail?.stems && detail.stems.length > 0 ? (
+        <div className="mt-6">
+          <ReleaseTrackStemsList
+            stems={detail.stems}
+            trackTitle={detail.title}
+            artist={detail.artistName}
+            coverUrl={detail.bannerUrl}
+          />
+        </div>
+      ) : null}
     </div>
   );
   const infoTab = {

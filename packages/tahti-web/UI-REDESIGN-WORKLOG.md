@@ -6690,3 +6690,7 @@ The public release page shows the standard edit icon when the signed-in user own
 ## 2026-11-11 — Event invites in the popover, cover sources, seek before load (0.0.373)
 
 Pending event tags show at the top of the notifications popover with Accept and Decline, sharing the Studio Invites panel's data. Fill missing covers says how many came from the provider and how many from presets (tahti-org #1100), and the user manual explains embed covers. A seek made while a track is still loading lands once the audio has metadata. Admin People trusts the server role filter. Unit tests, the NotificationEventInvites story and mock-app checks pass.
+
+## 2026-11-11 — Release track stems (0.0.374)
+
+Studio release Advanced tab can upload, replace, play and remove stems (vocals, drums, bass, other) on each track. Listeners see and play those stems on the release smart link, the profile tracklist dialog and the linked track page when the release is already visible. Mock API supports the flow under `VITE_FORCE_MOCK`.

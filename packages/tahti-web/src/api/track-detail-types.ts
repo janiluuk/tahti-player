@@ -65,6 +65,13 @@ export type PublicTrackDetail = {
   /** Set (with `audioUrl: null`) when the viewer may not stream this track;
    * null when they may. Absent from API builds that predate the gate. */
   gate?: TrackAccessGate | null;
+  stems?: Array<{
+    id: string;
+    role: string;
+    durationSec?: number | null;
+    audioUrl?: string | null;
+    playUrl?: string | null;
+  }>;
 };
 
 export type TrackAccessGate = {

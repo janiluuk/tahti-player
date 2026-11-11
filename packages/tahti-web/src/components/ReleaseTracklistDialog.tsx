@@ -7,6 +7,7 @@ import { webT } from '../lib/webT';
 import { usePlayerStore } from '../stores/playerStore';
 import { MediaIconActions, playQueueFavoriteActions } from './MediaIconActions';
 import { PageEmpty } from './PageStates';
+import { ReleaseTrackStemsList } from './ReleaseTrackStemsList';
 
 export function releaseTrackPlayable(
   track: NonNullable<PublicProfileRelease['tracks']>[number],
@@ -113,55 +114,64 @@ export function ReleaseTracklistDialog({
                   (playerStatus === 'playing' || playerStatus === 'loading');
                 return (
                   <li
-                    key={track.position}
-                    className={`flex items-center gap-3 py-2 first:pt-0 last:pb-0 ${
+                    key={track.id ?? track.position}
+                    className={`flex flex-col gap-1 py-2 first:pt-0 last:pb-0 ${
                       isPlaying
                         ? 'bg-accent-green/10 -mx-2 rounded-lg px-2'
                         : ''
                     }`}
                   >
-                    <span
-                      className={`min-w-0 flex-1 truncate text-sm ${
-                        isPlaying
-                          ? 'text-accent-green-strong font-semibold'
-                          : ''
-                      }`}
-                    >
-                      {track.title}
-                    </span>
-                    {track.durationSec != null && (
-                      <span className="text-foreground-secondary hidden shrink-0 text-xs tabular-nums sm:inline">
-                        {formatDuration(track.durationSec)}
+                    <div className="flex items-center gap-3">
+                      <span
+                        className={`min-w-0 flex-1 truncate text-sm ${
+                          isPlaying
+                            ? 'text-accent-green-strong font-semibold'
+                            : ''
+                        }`}
+                      >
+                        {track.title}
                       </span>
-                    )}
-                    <MediaIconActions
-                      actions={playQueueFavoriteActions({
-                        itemName: track.title,
-                        onPlay: () => playable && play(playable),
-                        onTogglePause: () =>
-                          setPlayerStatus(
-                            playerStatus === 'playing' ||
-                              playerStatus === 'loading'
-                              ? 'paused'
-                              : 'playing',
+                      {track.durationSec != null && (
+                        <span className="text-foreground-secondary hidden shrink-0 text-xs tabular-nums sm:inline">
+                          {formatDuration(track.durationSec)}
+                        </span>
+                      )}
+                      <MediaIconActions
+                        actions={playQueueFavoriteActions({
+                          itemName: track.title,
+                          onPlay: () => playable && play(playable),
+                          onTogglePause: () =>
+                            setPlayerStatus(
+                              playerStatus === 'playing' ||
+                                playerStatus === 'loading'
+                                ? 'paused'
+                                : 'playing',
+                            ),
+                          isPlaying: isActivelyPlaying,
+                          onQueue: () => playable && enqueue(playable),
+                          playDisabled: !playable,
+                          queueDisabled: !playable,
+                          playLabel: webT()('a11yNamed.play', {
+                            name: track.title,
+                          }),
+                          queueLabel: webT()('a11yNamed.queue', {
+                            name: track.title,
+                          }),
+                          queued: Boolean(
+                            playable &&
+                            queue.some(
+                              (queueItem) => queueItem.id === playable.id,
+                            ),
                           ),
-                        isPlaying: isActivelyPlaying,
-                        onQueue: () => playable && enqueue(playable),
-                        playDisabled: !playable,
-                        queueDisabled: !playable,
-                        playLabel: webT()('a11yNamed.play', {
-                          name: track.title,
-                        }),
-                        queueLabel: webT()('a11yNamed.queue', {
-                          name: track.title,
-                        }),
-                        queued: Boolean(
-                          playable &&
-                          queue.some(
-                            (queueItem) => queueItem.id === playable.id,
-                          ),
-                        ),
-                      })}
+                        })}
+                      />
+                    </div>
+                    <ReleaseTrackStemsList
+                      stems={track.stems}
+                      trackTitle={track.title}
+                      artist={artistName}
+                      coverUrl={release.artworkUrl}
+                      className="ml-1 flex flex-col gap-1"
                     />
                   </li>
                 );

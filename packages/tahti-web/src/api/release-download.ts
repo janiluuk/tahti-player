@@ -24,6 +24,13 @@ export type SmartLinkTrack = {
   playCount?: number;
   downloadCount?: number;
   commentCount?: number;
+  stems?: Array<{
+    id: string;
+    role: string;
+    durationSec?: number | null;
+    audioUrl?: string | null;
+    playUrl?: string | null;
+  }>;
 };
 
 /** Presigned URL for one published release track; the API applies the

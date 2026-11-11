@@ -24,6 +24,7 @@ import {
 import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { ReleaseTrackDownloads } from '../components/ReleaseTrackDownloads';
+import { ReleaseTrackStemsList } from '../components/ReleaseTrackStemsList';
 import { ReportButton } from '../components/ReportButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
 import { hasAccountRole } from '../lib/accountRoles';
@@ -238,6 +239,32 @@ export const SmartLinkView: FC<SmartLinkViewProps> = ({ slug }) => {
             : null
         }
       />
+
+      {(data.release.tracks ?? []).some(
+        (track) => Array.isArray(track.stems) && track.stems.length > 0,
+      ) ? (
+        <section
+          className="flex flex-col gap-3"
+          aria-label={t('releaseTrackStems.heading')}
+        >
+          <Eyebrow>{t('releaseTrackStems.heading')}</Eyebrow>
+          <ul className="flex flex-col gap-3">
+            {(data.release.tracks ?? []).map((track) =>
+              track.stems && track.stems.length > 0 ? (
+                <li key={track.id ?? `${track.position}-${track.title}`}>
+                  <p className="mb-1 text-sm font-medium">{track.title}</p>
+                  <ReleaseTrackStemsList
+                    stems={track.stems}
+                    trackTitle={track.title}
+                    artist={data.artist.displayName}
+                    coverUrl={data.release.artworkUrl}
+                  />
+                </li>
+              ) : null,
+            )}
+          </ul>
+        </section>
+      ) : null}
 
       <SmartLinkLockedTracks data={data} />
 
