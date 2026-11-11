@@ -82,7 +82,3 @@ backlog).
 
 - [ ] Studio Collections row "Play" tooltip is English-only (check against #1945 first).
 - [ ] Venue card subtitle (place, capacity) cut off on phones (check against #1945 first).
-- [ ] Smart links rows show raw enums ("EP · DRAFT"); the phone Manage button sits on the divider.
-- [ ] Governance shows raw enums ("SCHEDULED", "Voted YES").
-- [ ] OverviewTab and Subscribe have hard-coded English.
-- [ ] Seeking before playback starts resets to 0:00 when the audio loads (`playerStore` timing).
