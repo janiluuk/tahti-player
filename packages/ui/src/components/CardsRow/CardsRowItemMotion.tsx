@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'motion/react';
-import type { ReactNode } from 'react';
+import { forwardRef, type ReactNode } from 'react';
 
 import { cn } from '../../utils';
 
@@ -13,17 +13,19 @@ type CardsRowItemMotionProps = {
 };
 
 /** Fades + lightly scales out when a CardsRow item leaves (unfavorite, filter, etc.). */
-export function CardsRowItemMotion({
-  itemId,
-  as = 'div',
-  className,
-  children,
-}: CardsRowItemMotionProps) {
+export const CardsRowItemMotion = forwardRef<
+  HTMLDivElement & HTMLLIElement,
+  CardsRowItemMotionProps
+>(function CardsRowItemMotion(
+  { itemId, as = 'div', className, children },
+  ref,
+) {
   const reduceMotion = useReducedMotion();
   const MotionTag = as === 'li' ? motion.li : motion.div;
 
   return (
     <MotionTag
+      ref={ref}
       layout={!reduceMotion}
       initial={false}
       animate={{ opacity: 1, scale: 1 }}
@@ -40,4 +42,4 @@ export function CardsRowItemMotion({
       {children}
     </MotionTag>
   );
-}
+});

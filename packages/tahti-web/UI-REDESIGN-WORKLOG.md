@@ -6678,3 +6678,7 @@ The Radio player expands and collapses from a small chevron tab centred below th
 ## 2026-11-11 — Thumbnail proxy, event fields, public parties (0.0.370)
 
 Embed covers come from the first-party `GET /api/v1/embeds/thumbnail` (tahti-org #1099) instead of noembed; the admin channel tracks panel soft-fills rows without a banner. The event editor adds a time zone, a kept verified venue and a Fans only switch, and `EventCard` shows the venue, the local time and a Fans only badge. Discover has a Parties tab and a three-row widget fed by `GET /api/v1/listening-parties`. Unit tests, Storybook plays (Discover parties, EventCard fans-only, event editor, admin soft cover, Embeds soft fill) and mock-app browser checks pass.
+
+## 2026-11-11 — Radio row flicker and mock journeys (0.0.371)
+
+`CardsRowItemMotion` forwards its ref, so `AnimatePresence` pop-layout exits finish and React stops warning on every Listen page. The Radio row waits for curated presets before adding catalog stations, so a station no longer shows twice while presets load. The mock-app journeys follow the current Library tabs, account likes, the announcement schedule dialog, the event Publish button and the event detail heading.

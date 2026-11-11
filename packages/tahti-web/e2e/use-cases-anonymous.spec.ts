@@ -25,21 +25,16 @@ test('anonymous: plays a track page and pauses it from the player bar', async ({
   expect(errors).toEqual([]);
 });
 
-test('anonymous: reactions ask to log in; a favorite is kept on this device', async ({
-  page,
-}) => {
+test('anonymous: reactions and likes ask to log in', async ({ page }) => {
   await page.goto('/t/demo-archive-1');
   const main = page.getByRole('main');
   await expect(
     main.getByRole('button', { name: 'Log in to react' }),
   ).toBeVisible();
   await main
-    .getByRole('button', { name: 'Favorite Midnight Broadcast', exact: true })
+    .getByRole('button', { name: 'Like Midnight Broadcast', exact: true })
     .click();
-  await page.goto('/library/favorites');
-  await expect(
-    page.getByRole('main').getByText('Midnight Broadcast').first(),
-  ).toBeVisible();
+  await expect(page.getByLabel('Password')).toBeVisible();
 });
 
 test('anonymous: searches and opens a track result', async ({ page }) => {

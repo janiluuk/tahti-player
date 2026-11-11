@@ -29,10 +29,14 @@ test('admin: turns an announcement clip off and plays it every Nth clip', async 
     0,
   );
   await clip.getByRole('button', { name: 'Schedule' }).click();
+  const dialog = page.getByRole('dialog');
+  await dialog.getByRole('button', { name: 'Schedule' }).click();
   await page.getByRole('option', { name: 'Every Nth clip' }).click();
-  await expect(clip.getByRole('spinbutton', { name: 'Every Nth' })).toHaveValue(
-    '4',
-  );
+  await expect(
+    dialog.getByRole('spinbutton', { name: 'Every Nth' }),
+  ).toHaveValue('4');
+  await dialog.getByRole('button', { name: 'Save' }).click();
+  await expect(clip.getByText('Once every 4 clips')).toBeVisible();
 });
 
 test('admin: disables an artwork preset and removes another', async ({

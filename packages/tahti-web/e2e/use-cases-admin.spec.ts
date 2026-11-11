@@ -88,9 +88,7 @@ test('admin: People filters by role', async ({ page }) => {
     .getByRole('radio')
     .filter({ hasText: '@' });
   await expect(people.first()).toBeVisible();
-  for (const label of await people.allInnerTexts()) {
-    expect(label).toMatch(/board/i);
-  }
+  await expect(people.filter({ hasNotText: /board/i })).toHaveCount(0);
 });
 
 test('admin: Announcements opens from the Content hub and links back', async ({
