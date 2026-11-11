@@ -43,6 +43,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
 | partial | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard now renders its last result at once and refreshes in the background; left: measure API time, sweep governance overview, financial, Discover |
+| open    | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Admin overview still slow to load; move the stats to the top of the page; Grafana from tahti.live says it cannot connect |
 | partial | [channel-programme-in-schedule.md](channel-programme-in-schedule.md) | Studio → Broadcast → Schedule shows the 24/7 and offline programme; make it the place where you manage the channel's programme |
 | open    | [google-facebook-login.md](google-facebook-login.md) | Sign up and log in with Google and Facebook: API OAuth callbacks, OAuth apps (ops), buttons on log in / sign up, account linking |
 | partial | [event-calendar.md](event-calendar.md) | Event calendar under Discover → Feed: artists create events, tag people, preview, publish, syndicate (Mastodon/Bluesky/.ics); slices 1–12 and timezone/venue/visibility shipped; left: invites in the notifications popover |
