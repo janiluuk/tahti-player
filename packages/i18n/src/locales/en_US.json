@@ -1727,6 +1727,7 @@
       "coversBackfillDone_one": "Assigned a cover to 1 sound",
       "coversBackfillDone_other": "Assigned covers to {{count}} sounds",
       "coversBackfillNone": "Every sound already has a cover",
+      "coversBackfillSources": "{{provider}} from the provider, {{presets}} from artwork presets",
       "coversBackfillError": "Could not fill missing covers",
       "soundPinned": ", pinned",
       "soundPrivate": ", private",
@@ -7696,7 +7697,14 @@
       "manage": "Manage",
       "filterSmartlinksByPlatform": "Filter smartlinks by platform",
       "sortSmartlinks": "Sort smartlinks",
-      "openSmartlink": "Open smartlink"
+      "openSmartlink": "Open smartlink",
+      "trackCount_one": "1 track",
+      "trackCount_other": "{{count}} tracks",
+      "dspLinks_one": "1 DSP link: {{names}}",
+      "dspLinks_other": "{{count}} DSP links: {{names}}",
+      "noDspLinks": "No DSP links added yet",
+      "viewCount_one": "1 view",
+      "viewCount_other": "{{views}} views"
     },
     "chatView": {
       "openChat": "Open chat",

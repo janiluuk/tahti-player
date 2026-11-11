@@ -91,6 +91,10 @@ In **list view**, tick the checkbox on one or more hosted tracks. A toolbar appe
 
 Embeds (linked SoundCloud, Mixcloud, and similar) stay in the list for browsing and playback, but bulk edit and delete apply to hosted Tahti audio.
 
+### Covers for embeds
+
+An embed with no stored cover shows the service's own artwork when Tahti can find it (hearthis.at, Mixcloud, Spotify, Bandcamp, SoundCloud, YouTube), otherwise the default artwork, never an empty square. When you open your own library, a cover found this way is saved on the track, so it loads straight away next time. **Fill missing covers** in Library → Sounds does the same for your whole library at once: it asks each service first and gives the rest a cover from the artwork gallery, then tells you how many came from each. Tahti also runs this every night for embeds that still have no cover. Mikseri.net has no public artwork, so Mikseri embeds always get a gallery cover.
+
 ### One track
 
 Open a row for the track page, or use the row menu to edit details, pin to your profile, download, or delete a single sound.
