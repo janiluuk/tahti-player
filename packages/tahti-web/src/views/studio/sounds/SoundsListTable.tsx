@@ -1,5 +1,6 @@
 import { memo, useMemo } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   CatalogTable,
@@ -31,15 +32,17 @@ function isProcessingSound(sound: StudioSound): boolean {
 
 function visibilityLabel(sound: StudioSound): string {
   if (sound.visibility === 'UNLISTED') {
-    return 'Unlisted';
+    return webT()('soundsListTableStates.unlisted');
   }
   if (sound.visibility === 'STASH') {
-    return 'Stash';
+    return webT()('soundsListTableStates.stash');
   }
   if (sound.visibility === 'PRIVATE') {
-    return 'Private';
+    return webT()('soundsListTableStates.private');
   }
-  return sound.isPublic === false ? 'Private' : 'Public';
+  return sound.isPublic === false
+    ? webT()('soundsListTableStates.private')
+    : webT()('soundsListTableStates.public');
 }
 
 function statusCell(sound: StudioSound) {
@@ -98,6 +101,7 @@ function SoundsListTableView({
   items: StudioSound[];
   state: StudioSoundsState;
 }) {
+  const { t } = useTranslation('web');
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
   const {
@@ -114,7 +118,7 @@ function SoundsListTableView({
     () => [
       {
         id: 'title',
-        header: 'Title',
+        header: t('soundsListTableStates.title'),
         width: 320,
         sortable: true,
         required: true,
@@ -137,7 +141,9 @@ function SoundsListTableView({
                 isPlaying={isPlaying && status !== 'loading'}
                 isLoading={isCurrent && status === 'loading'}
                 playDisabled={isProcessingSound(sound)}
-                playLabel={`Preview ${sound.title}`}
+                playLabel={t('soundsListTableStates.preview', {
+                  title: sound.title,
+                })}
                 pauseLabel={webT()('a11yNamed.pause', { name: sound.title })}
                 onPlay={() =>
                   embedSrc
@@ -154,14 +160,14 @@ function SoundsListTableView({
       },
       {
         id: 'status',
-        header: 'Status',
+        header: t('soundsListTableStates.status'),
         width: 120,
         sortable: true,
         render: statusCell,
       },
       {
         id: 'duration',
-        header: 'Length',
+        header: t('soundsListTableStates.length'),
         width: 90,
         sortable: true,
         align: 'right',
@@ -170,55 +176,58 @@ function SoundsListTableView({
       },
       {
         id: 'genre',
-        header: 'Genre',
+        header: t('soundsListTableStates.genre'),
         width: 140,
         sortable: true,
         render: (sound) => dash(sound.genre),
       },
       {
         id: 'uploaded',
-        header: 'Uploaded',
+        header: t('soundsListTableStates.uploaded'),
         width: 130,
         sortable: true,
         render: (sound) => dash(formatUploadDate(sound.createdAt)),
       },
       {
         id: 'visibility',
-        header: 'Visibility',
+        header: t('soundsListTableStates.visibility'),
         width: 110,
         sortable: true,
         render: visibilityLabel,
       },
       {
         id: 'downloads',
-        header: 'Downloads',
+        header: t('soundsListTableStates.downloads'),
         width: 110,
-        render: (sound) => (sound.downloadsEnabled === false ? 'Off' : 'On'),
+        render: (sound) =>
+          sound.downloadsEnabled === false
+            ? t('soundsListTableStates.off')
+            : t('soundsListTableStates.on'),
       },
       {
         id: 'access',
-        header: 'Access',
+        header: t('soundsListTableStates.access'),
         width: 130,
         hiddenByDefault: true,
         render: (sound) =>
           sound.accessMode === 'SUBSCRIBERS_ONLY'
-            ? 'Subscribers'
+            ? t('soundsListTableStates.subscribers')
             : sound.accessMode === 'PURCHASE'
-              ? 'For sale'
-              : 'Free',
+              ? t('soundsListTableStates.forSale')
+              : t('soundsListTableStates.free'),
       },
       {
         id: 'source',
-        header: 'Source',
+        header: t('soundsListTableStates.source'),
         width: 120,
         hiddenByDefault: true,
         render: (sound) =>
           sound.embedProvider
             ? (EMBED_PROVIDER_LABEL[sound.embedProvider] ?? sound.embedProvider)
-            : 'Upload',
+            : t('soundsListTableStates.upload'),
       },
     ],
-    [currentId, status, playItem, playEmbedItem],
+    [currentId, status, playItem, playEmbedItem, t],
   );
 
   const table = usePersistedCatalogTable('tahti.librarySounds.table', columns);

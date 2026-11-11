@@ -108,7 +108,8 @@ export function useGoLiveState() {
     setSettingsError(
       settingsResult.data
         ? null
-        : (settingsResult.meta.reason ?? 'Stream settings are unavailable.'),
+        : (settingsResult.meta.reason ??
+            i18n.t('web:goLiveStates.streamSettingsUnavailable')),
     );
     setUsage(usageResult.data);
     setTargets(targetResult.data);
@@ -126,7 +127,9 @@ export function useGoLiveState() {
     ) {
       setMessage({
         tone: 'error',
-        text: `Stream settings: ${settingsResult.meta.reason} — log in as an artist with a channel.`,
+        text: i18n.t('web:goLiveStates.streamSettingsError', {
+          reason: settingsResult.meta.reason,
+        }),
       });
     }
     if (isMock) {
@@ -203,7 +206,7 @@ export function useGoLiveState() {
     patchLocalChannel('LIVE');
     setMessage({
       tone: 'success',
-      text: 'You’re live. The rotation has handed over to your broadcast.',
+      text: i18n.t('web:goLiveStates.liveHandover'),
     });
     toast.success(i18n.t('web:toasts.youreLive'));
     playStream();
@@ -224,7 +227,11 @@ export function useGoLiveState() {
       toast.error(result.error);
       return;
     }
-    toast.success(next ? 'Recording enabled.' : 'Recording disabled.');
+    toast.success(
+      next
+        ? i18n.t('web:goLiveStates.recordingEnabled')
+        : i18n.t('web:goLiveStates.recordingDisabled'),
+    );
   };
 
   const analyser = usePlayerStore((state) => state.analyser);

@@ -63,7 +63,9 @@ export function ListenAddonsPanel({
   const [soundcloudProfileLoading, setSoundcloudProfileLoading] =
     useState(true);
   const [savingSoundcloudProfile, setSavingSoundcloudProfile] = useState(false);
-  const [newsTitle, setNewsTitle] = useState('News');
+  const [newsTitle, setNewsTitle] = useState(() =>
+    t('listenAddonsPanelStates.news'),
+  );
   const [newsFeedUrl, setNewsFeedUrl] = useState('');
   const [newsThumbnailUrl, setNewsThumbnailUrl] = useState('');
   const [newsShowListen, setNewsShowListen] = useState(true);
@@ -156,7 +158,7 @@ export function ListenAddonsPanel({
       } catch {
         setErrorByType((prev) => ({
           ...prev,
-          soundcloud: 'Could not save your SoundCloud profile. Try again.',
+          soundcloud: t('listenAddonsPanelStates.soundcloudSaveFailed'),
         }));
         return;
       } finally {
@@ -179,7 +181,7 @@ export function ListenAddonsPanel({
   const loadHearthisSets = async () => {
     const handle = hearthisUsername.trim();
     if (!handle) {
-      setHearthisSetsError('Enter your hearthis.at username.');
+      setHearthisSetsError(t('listenAddonsPanelStates.enterHearthisUsername'));
       return;
     }
     setHearthisSetsLoading(true);
@@ -218,11 +220,13 @@ export function ListenAddonsPanel({
     );
     const label =
       chart === 'top40'
-        ? `Mikseri Top 40 · ${genre?.label ?? 'All genres'}`
+        ? t('listenAddonsPanelStates.mikseriTop40', {
+            genre: genre?.label ?? t('listenAddonsPanelStates.allGenres'),
+          })
         : chart === 'weekly'
-          ? 'Mikseri weekly songs'
+          ? t('listenAddonsPanelStates.mikseriWeekly')
           : chart === 'promoted'
-            ? 'Mikseri promoted songs'
+            ? t('listenAddonsPanelStates.mikseriPromoted')
             : 'Mikseri Listataivas';
     addInstance('mikseri', mikseriChartEmbedUrl(chart, mikseriGenreId), label);
   };
@@ -230,21 +234,26 @@ export function ListenAddonsPanel({
   const addNewsFeed = () => {
     const url = newsFeedUrl.trim();
     if (!isHttpUrl(url)) {
-      setNewsError('Paste an http(s) RSS or Atom feed URL.');
+      setNewsError(t('listenAddonsPanelStates.pasteFeedUrl'));
       return;
     }
     if (!newsShowListen && !newsShowFeed) {
-      setNewsError('Show this feed on Listen, Feed, or both.');
+      setNewsError(t('listenAddonsPanelStates.showFeedWhere'));
       return;
     }
     const surfaces: ListenerWidgetSurface[] = [
       ...(newsShowListen ? (['listen'] as const) : []),
       ...(newsShowFeed ? (['feed'] as const) : []),
     ];
-    addInstance(NEWS_WIDGET_TYPE_ID, url, newsTitle.trim() || 'News', {
-      thumbnailUrl: newsThumbnailUrl.trim() || undefined,
-      surfaces,
-    });
+    addInstance(
+      NEWS_WIDGET_TYPE_ID,
+      url,
+      newsTitle.trim() || t('listenAddonsPanelStates.news'),
+      {
+        thumbnailUrl: newsThumbnailUrl.trim() || undefined,
+        surfaces,
+      },
+    );
     setNewsFeedUrl('');
     setNewsError(null);
   };
@@ -274,17 +283,21 @@ export function ListenAddonsPanel({
       >
         <Tabs.List>
           <Tabs.Tab>
-            <TabLabel count={installedCount}>Installed</TabLabel>
+            <TabLabel count={installedCount}>
+              {t('listenAddonsPanelStates.installed')}
+            </TabLabel>
           </Tabs.Tab>
           <Tabs.Tab>
-            <TabLabel count={availableCount}>Available</TabLabel>
+            <TabLabel count={availableCount}>
+              {t('listenAddonsPanelStates.available')}
+            </TabLabel>
           </Tabs.Tab>
         </Tabs.List>
       </Tabs.Root>
       <div className={listClassName}>
         {favoritesInstalled === (installTab === 'installed') && (
           <ConfigurableCard
-            title="Favorites"
+            title={t('listenAddonsPanelStates.favorites')}
             open={configuringId === 'favorites'}
             onOpenChange={(open) => setConfiguringId(open ? 'favorites' : null)}
             header={(gear) => (
@@ -292,7 +305,7 @@ export function ListenAddonsPanel({
                 icon={listenAddonIcon('favorites')}
                 name="Favorites"
                 author="Tahti"
-                description="Show your favorite channels and tracks as a section on Listen."
+                description={t('listenAddonsPanelStates.favoritesDescription')}
                 category="Listen"
                 isInstalled={favoritesInstalled}
                 onInstall={() => handleInstall('favorites')}
@@ -304,7 +317,9 @@ export function ListenAddonsPanel({
                         size="sm"
                         variant="text"
                         onClick={() => handleUninstall('favorites')}
-                        aria-label="Uninstall Favorites"
+                        aria-label={t(
+                          'listenAddonsPanelStates.uninstallFavorites',
+                        )}
                       >
                         Uninstall
                       </Button>
@@ -322,7 +337,7 @@ export function ListenAddonsPanel({
         )}
         {newsInstalled === (installTab === 'installed') && (
           <ConfigurableCard
-            title="News"
+            title={t('listenAddonsPanelStates.news')}
             open={configuringId === NEWS_WIDGET_TYPE_ID}
             onOpenChange={(open) =>
               setConfiguringId(open ? NEWS_WIDGET_TYPE_ID : null)
@@ -332,7 +347,7 @@ export function ListenAddonsPanel({
                 icon={listenAddonIcon(NEWS_WIDGET_TYPE_ID)}
                 name="News"
                 author="Tahti"
-                description="Show an RSS or Atom article slider on Listen and in your Feed. Configure a thumbnail and feed URL."
+                description={t('listenAddonsPanelStates.newsDescription')}
                 category="Listen"
                 isInstalled={newsInstalled}
                 onInstall={() => handleInstall(NEWS_WIDGET_TYPE_ID)}
@@ -344,7 +359,7 @@ export function ListenAddonsPanel({
                         size="sm"
                         variant="text"
                         onClick={() => handleUninstall(NEWS_WIDGET_TYPE_ID)}
-                        aria-label="Uninstall News"
+                        aria-label={t('listenAddonsPanelStates.uninstallNews')}
                       >
                         Uninstall
                       </Button>
@@ -380,17 +395,17 @@ export function ListenAddonsPanel({
                   }}
                 >
                   <Input
-                    label="Title"
+                    label={t('listenAddonsPanelStates.title')}
                     value={newsTitle}
                     onChange={(event) => setNewsTitle(event.target.value)}
-                    placeholder="News"
+                    placeholder={t('listenAddonsPanelStates.news')}
                   />
                   <Input
                     inputMode="url"
                     autoCapitalize="none"
                     autoCorrect="off"
                     spellCheck={false}
-                    label="RSS feed URL"
+                    label={t('listenAddonsPanelStates.rssFeedUrl')}
                     value={newsFeedUrl}
                     onChange={(event) => {
                       setNewsError(null);
@@ -400,31 +415,33 @@ export function ListenAddonsPanel({
                     required
                   />
                   <ImageUploadField
-                    label="Thumbnail"
-                    description="Used next to the title and when an article has no image."
+                    label={t('listenAddonsPanelStates.thumbnail')}
+                    description={t(
+                      'listenAddonsPanelStates.thumbnailDescription',
+                    )}
                     value={newsThumbnailUrl}
                     onChange={setNewsThumbnailUrl}
                   />
                   <div className="flex flex-wrap gap-6">
                     <div className="flex items-center justify-between gap-3 text-sm">
-                      <span>Show on Listen</span>
+                      <span>{t('listenAddonsPanelStates.showOnListen')}</span>
                       <Toggle
-                        label="Show on Listen"
+                        label={t('listenAddonsPanelStates.showOnListen')}
                         checked={newsShowListen}
                         onChange={setNewsShowListen}
                       />
                     </div>
                     <div className="flex items-center justify-between gap-3 text-sm">
-                      <span>Show in Feed</span>
+                      <span>{t('listenAddonsPanelStates.showInFeed')}</span>
                       <Toggle
-                        label="Show in Feed"
+                        label={t('listenAddonsPanelStates.showInFeed')}
                         checked={newsShowFeed}
                         onChange={setNewsShowFeed}
                       />
                     </div>
                   </div>
                   <Button size="sm" type="submit" className="self-start">
-                    Add feed
+                    {t('listenAddonsPanelStates.addFeed')}
                   </Button>
                 </form>
                 {newsError ? (
@@ -433,13 +450,12 @@ export function ListenAddonsPanel({
                   </p>
                 ) : null}
                 <p className="text-foreground-secondary text-xs">
-                  Paste a public RSS 2.0 or Atom URL. Articles open in a reader,
-                  with the original one click away.
+                  {t('listenAddonsPanelStates.feedHint')}
                 </p>
               </div>
             ) : (
               <p className="text-foreground-secondary text-sm">
-                Install this add-on to add RSS feeds to Listen and your Feed.
+                {t('listenAddonsPanelStates.installForFeeds')}
               </p>
             )}
           </ConfigurableCard>
@@ -473,9 +489,12 @@ export function ListenAddonsPanel({
                           size="sm"
                           variant="text"
                           onClick={() => handleUninstall(type.id)}
-                          aria-label={`Uninstall ${type.name}`}
+                          aria-label={t(
+                            'listenAddonsPanelStates.uninstallNamed',
+                            { name: type.name },
+                          )}
                         >
-                          Uninstall
+                          {t('listenAddonsPanelStates.uninstall')}
                         </Button>
                       ) : null}
                       {gear}
@@ -542,10 +561,10 @@ export function ListenAddonsPanel({
                       }
                     >
                       {type.id === 'soundcloud' && savingSoundcloudProfile
-                        ? 'Saving…'
+                        ? t('listenAddonsPanelStates.saving')
                         : type.id === 'hearthis' && resolvingHearthisUrl
-                          ? 'Resolving…'
-                          : 'Add'}
+                          ? t('listenAddonsPanelStates.resolving')
+                          : t('listenAddonsPanelStates.add')}
                     </Button>
                   </form>
                   {errorByType[type.id] ? (
@@ -556,7 +575,7 @@ export function ListenAddonsPanel({
                   {type.id === 'hearthis' && (
                     <div className="border-border flex flex-col gap-2 border-t pt-3">
                       <p className="text-foreground-secondary text-xs">
-                        Or browse your own sets to embed one directly.
+                        {t('listenAddonsPanelStates.browseOwnSets')}
                       </p>
                       <form
                         className="flex flex-wrap items-end gap-2"
@@ -569,7 +588,9 @@ export function ListenAddonsPanel({
                           autoCapitalize="none"
                           autoCorrect="off"
                           spellCheck={false}
-                          label="Your hearthis.at username"
+                          label={t(
+                            'listenAddonsPanelStates.yourHearthisUsername',
+                          )}
                           value={hearthisUsername}
                           onChange={(event) =>
                             setHearthisUsername(event.target.value)
@@ -583,7 +604,9 @@ export function ListenAddonsPanel({
                           type="submit"
                           disabled={hearthisSetsLoading}
                         >
-                          {hearthisSetsLoading ? 'Loading…' : 'Load my sets'}
+                          {hearthisSetsLoading
+                            ? t('listenAddonsPanelStates.loading')
+                            : t('listenAddonsPanelStates.loadMySets')}
                         </Button>
                       </form>
                       {hearthisSetsError ? (
@@ -621,8 +644,8 @@ export function ListenAddonsPanel({
                                 onClick={() => void addHearthisSet(set)}
                               >
                                 {addingHearthisSetId === set.id
-                                  ? 'Adding…'
-                                  : 'Add'}
+                                  ? t('listenAddonsPanelStates.adding')
+                                  : t('listenAddonsPanelStates.add')}
                               </Button>
                             </li>
                           ))}
@@ -633,12 +656,10 @@ export function ListenAddonsPanel({
                   {type.id === 'mikseri' ? (
                     <div className="border-border flex flex-col gap-3 border-t pt-3">
                       <p className="text-foreground-secondary text-xs">
-                        Add an official Mikseri chart. Top 40 can be limited to
-                        one major genre; add another widget for each additional
-                        genre you want to follow.
+                        {t('listenAddonsPanelStates.mikseriHint')}
                       </p>
                       <Select
-                        label="Top 40 genre"
+                        label={t('listenAddonsPanelStates.top40Genre')}
                         value={mikseriGenreId}
                         onValueChange={setMikseriGenreId}
                         options={[...mikseriMajorGenres(t)]}
@@ -649,28 +670,28 @@ export function ListenAddonsPanel({
                           variant="secondary"
                           onClick={() => addMikseriChart('top40')}
                         >
-                          Add Top 40
+                          {t('listenAddonsPanelStates.addTop40')}
                         </Button>
                         <Button
                           size="sm"
                           variant="secondary"
                           onClick={() => addMikseriChart('listataivas')}
                         >
-                          Add Listataivas
+                          {t('listenAddonsPanelStates.addListataivas')}
                         </Button>
                         <Button
                           size="sm"
                           variant="secondary"
                           onClick={() => addMikseriChart('weekly')}
                         >
-                          Add weekly songs
+                          {t('listenAddonsPanelStates.addWeekly')}
                         </Button>
                         <Button
                           size="sm"
                           variant="secondary"
                           onClick={() => addMikseriChart('promoted')}
                         >
-                          Add promoted songs
+                          {t('listenAddonsPanelStates.addPromoted')}
                         </Button>
                       </div>
                     </div>
@@ -681,7 +702,7 @@ export function ListenAddonsPanel({
                 </div>
               ) : (
                 <p className="text-foreground-secondary text-sm">
-                  Install this add-on to add and manage embeds.
+                  {t('listenAddonsPanelStates.installForEmbeds')}
                 </p>
               )}
             </ConfigurableCard>

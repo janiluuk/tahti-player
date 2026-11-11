@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -104,7 +106,7 @@ export async function fetchMentions(limit = 20): Promise<Result<Mention[]>> {
     );
     return { ok: true, data: data.mentions };
   } catch (err) {
-    return failure(err, 'Could not load mentions');
+    return failure(err, i18n.t('web:meMentionsApi.couldNotLoad'));
   }
 }
 
@@ -121,7 +123,7 @@ export async function fetchMentionSettings(): Promise<Result<MentionSettings>> {
     );
     return { ok: true, data };
   } catch (err) {
-    return failure(err, 'Could not load mention settings');
+    return failure(err, i18n.t('web:meMentionsApi.couldNotLoadSettings'));
   }
 }
 
@@ -145,7 +147,7 @@ export async function patchMentionSettings(
     });
     return { ok: true, data };
   } catch (err) {
-    return failure(err, 'Could not save');
+    return failure(err, i18n.t('web:meMentionsApi.couldNotSave'));
   }
 }
 
@@ -155,7 +157,7 @@ export async function setMentionMute(
 ): Promise<Result<string>> {
   const username = normalizeHandle(handle);
   if (!/^[\w.-]{1,32}$/.test(username)) {
-    return { ok: false, error: 'Enter a Tahti username.' };
+    return { ok: false, error: i18n.t('web:meMentionsApi.enterUsername') };
   }
   if (isForceMock()) {
     mockSettings = {
@@ -172,6 +174,11 @@ export async function setMentionMute(
     });
     return { ok: true, data: username };
   } catch (err) {
-    return failure(err, muted ? 'Could not mute' : 'Could not unmute');
+    return failure(
+      err,
+      muted
+        ? i18n.t('web:meMentionsApi.couldNotMute')
+        : i18n.t('web:meMentionsApi.couldNotUnmute'),
+    );
   }
 }

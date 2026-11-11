@@ -1,7 +1,7 @@
 import { act, cleanup, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { CopyButton, EditIconButton } from '@tahti-player/ui';
+import { CopyButton, EditIconButton, TopBarNavigation } from '@tahti-player/ui';
 
 import { applyLocale } from '../lib/locale';
 import { WebUiLabelsProvider } from './WebUiLabelsProvider';
@@ -39,5 +39,18 @@ describe('WebUiLabelsProvider', () => {
     expect(screen.getByRole('button', { name: 'Muokkaa' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Valmis' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Kopioi' })).toBeTruthy();
+  });
+
+  it('names the top bar back and forward buttons in Finnish', async () => {
+    await act(async () => {
+      await applyLocale('fi_FI');
+    });
+    render(
+      <WebUiLabelsProvider>
+        <TopBarNavigation />
+      </WebUiLabelsProvider>,
+    );
+    expect(screen.getByRole('button', { name: 'Takaisin' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Eteenpäin' })).toBeTruthy();
   });
 });

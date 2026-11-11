@@ -2,6 +2,7 @@ import { PinIcon, PinOffIcon } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import { patchStudioRelease } from '../../api/studio';
@@ -15,6 +16,7 @@ export function ReleasePinButton({
   release: StudioRelease;
   onChange: (pinnedAt: string | null) => void;
 }) {
+  const { t } = useTranslation('web');
   const [saving, setSaving] = useState(false);
   const pinned = Boolean(release.pinnedAt);
   // Only published releases reach the public profile; unpin stays available so
@@ -22,7 +24,9 @@ export function ReleasePinButton({
   if (!pinned && release.state !== 'PUBLISHED') {
     return null;
   }
-  const label = pinned ? 'Unpin from profile' : 'Pin to profile';
+  const label = pinned
+    ? t('releasePinButton.unpin')
+    : t('releasePinButton.pin');
 
   const toggle = async () => {
     setSaving(true);
@@ -34,7 +38,7 @@ export function ReleasePinButton({
     }
     onChange(result.data.pinnedAt ?? null);
     toast.success(
-      pinned ? 'Unpinned from your profile.' : 'Pinned to your profile.',
+      pinned ? t('releasePinButton.unpinned') : t('releasePinButton.pinned'),
     );
   };
 

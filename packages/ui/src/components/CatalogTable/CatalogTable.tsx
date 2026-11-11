@@ -14,6 +14,7 @@ import { cn } from '../../utils';
 import { Button } from '../Button';
 import { Loader } from '../Loader';
 import { Tooltip } from '../Tooltip';
+import { useUiLabels } from '../UiLabels';
 import {
   CatalogTableSettingsDialog,
   type CatalogLayoutsApi,
@@ -131,6 +132,7 @@ export function CatalogTable<T>({
   className,
 }: CatalogTableProps<T>) {
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const uiLabels = useUiLabels();
   const visibleColumns = useMemo(
     () => resolveCatalogColumns(columns, view),
     [columns, view],
@@ -388,8 +390,8 @@ export function CatalogTable<T>({
           {selectable && selected.size > 0 && !hideSelectionChrome ? (
             <span>
               {selected.size >= total
-                ? `All ${total.toLocaleString('en-US')} selected`
-                : `${selected.size.toLocaleString('en-US')} selected`}
+                ? uiLabels.allSelected(total)
+                : uiLabels.countSelected(selected.size)}
               {onSelectAllMatching &&
               allLoadedSelected &&
               selected.size < total ? (
@@ -400,7 +402,7 @@ export function CatalogTable<T>({
                   onClick={onSelectAllMatching}
                 >
                   {selectingAll ? <Loader size="xs" shape="circle" /> : null}
-                  Select all {total.toLocaleString('en-US')}
+                  {uiLabels.selectAllCount(total)}
                 </Button>
               ) : null}
               <Button
@@ -408,13 +410,13 @@ export function CatalogTable<T>({
                 variant="text"
                 onClick={() => onSelectedIdsChange?.(new Set())}
               >
-                Clear
+                {uiLabels.clear}
               </Button>
             </span>
           ) : (
             <span>
               {rows.length < total
-                ? `${rows.length.toLocaleString('en-US')} of ${total.toLocaleString('en-US')} loaded`
+                ? uiLabels.loadedOf(rows.length, total)
                 : `${total.toLocaleString('en-US')} ${itemNoun}`}
             </span>
           )}
@@ -424,15 +426,15 @@ export function CatalogTable<T>({
             size="inline"
             shape="circle"
             className="opacity-60"
-            label="Loading"
+            label={uiLabels.loading}
           />
         ) : null}
         {toolbar}
-        <Tooltip content="Table settings" side="top">
+        <Tooltip content={uiLabels.tableSettings} side="top">
           <Button
             size="icon-sm"
             variant="text"
-            aria-label="Table settings"
+            aria-label={uiLabels.tableSettings}
             onClick={() => setSettingsOpen(true)}
           >
             <Settings2Icon size={15} aria-hidden />
@@ -444,7 +446,7 @@ export function CatalogTable<T>({
           ref={gridRef}
           role="grid"
           tabIndex={0}
-          aria-label="Rows"
+          aria-label={uiLabels.rows}
           aria-rowcount={total}
           aria-activedescendant={
             activeIndex !== null ? `${gridId}-r${activeIndex}` : undefined
@@ -463,7 +465,7 @@ export function CatalogTable<T>({
                 <input
                   type="checkbox"
                   className="accent-primary h-4 w-4 cursor-pointer"
-                  aria-label="Select all loaded tracks"
+                  aria-label={uiLabels.selectAllLoaded}
                   checked={allLoadedSelected}
                   onChange={(event) =>
                     onSelectedIdsChange?.(
@@ -523,7 +525,7 @@ export function CatalogTable<T>({
                     role="separator"
                     tabIndex={0}
                     aria-orientation="vertical"
-                    aria-label={`Resize ${column.header}`}
+                    aria-label={uiLabels.resizeColumn(column.header)}
                     aria-valuenow={column.pxWidth}
                     aria-valuemin={MIN_COLUMN_WIDTH}
                     aria-valuemax={MAX_COLUMN_WIDTH}
@@ -633,7 +635,7 @@ export function CatalogTable<T>({
                         <input
                           type="checkbox"
                           className="accent-primary h-4 w-4 cursor-pointer"
-                          aria-label={`Select ${getRowLabel(row)}`}
+                          aria-label={uiLabels.selectRow(getRowLabel(row))}
                           checked={selected.has(id)}
                           onChange={() => undefined}
                           onClick={(event) =>
