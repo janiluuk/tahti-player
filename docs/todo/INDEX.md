@@ -28,7 +28,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
 | partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: next 30 slices (failed[] toasts, facets+filter, isFallback, clear filters; org API) |
-| partial | [embed-covers-hardening.md](embed-covers-hardening.md) | Embeds tab soft-fills a missing cover in Storybook and the mock e2e; left: noembed proxy, admin soft-fill (admin sounds have no embed URL) |
+| partial | [embed-covers-hardening.md](embed-covers-hardening.md) | Lookup cap landed as tahti-org #1098; left: noembed proxy, admin soft-fill (admin sounds have no embed URL) |
 | partial | [server-peaks-in-track-lists.md](server-peaks-in-track-lists.md) | Server waveform peaks on every track list (search, Selects, New to you, profile fallback); left: studio collections, radio/feed |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
