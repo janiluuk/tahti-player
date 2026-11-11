@@ -175,7 +175,9 @@ export async function fetchStudioRelease(
   id: string,
 ): Promise<{ ok: true; data: StudioRelease } | { ok: false; error: string }> {
   if (isForceMock()) {
-    const release = mockStudioReleaseById(id);
+    const { data } = await fetchStudioReleases();
+    const release =
+      data.releases.find((r) => r.id === id) ?? mockStudioReleaseById(id);
     return release
       ? { ok: true, data: release }
       : { ok: false, error: 'Release not found' };
