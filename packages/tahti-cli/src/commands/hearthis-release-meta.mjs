@@ -187,9 +187,19 @@ export function selectOwnTracks(catalog, tracks = null, noun = 'release') {
     (track) => !owner || track.userPermalink === owner,
   );
   const selection = tracks ? parseTrackSelection(tracks) : null;
+  const seen = new Set();
+  const repeated = [];
   const planned = own
     .map((track, index) => ({ ...track, position: index + 1 }))
-    .filter((track) => !selection || selection.has(track.position));
+    .filter((track) => !selection || selection.has(track.position))
+    .filter((track) => {
+      if (seen.has(track.id)) {
+        repeated.push(track);
+        return false;
+      }
+      seen.add(track.id);
+      return true;
+    });
   if (planned.length === 0) {
     throw new CliError(
       selection
@@ -201,6 +211,7 @@ export function selectOwnTracks(catalog, tracks = null, noun = 'release') {
     owner,
     own,
     planned,
+    repeated,
     excludedOthers: catalog.tracks.length - own.length,
   };
 }

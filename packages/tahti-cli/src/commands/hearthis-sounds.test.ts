@@ -3,7 +3,12 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { CONFIG, stubApis } from './hearthis-api-stub';
 import { fetchLibrary, findLibraryMatch } from './hearthis-sounds.mjs';
 
-const TRACK = { id: '42', title: 'Night  Drive', durationSec: 300 };
+const TRACK = {
+  id: '42',
+  title: 'Night  Drive',
+  durationSec: 300,
+  url: 'https://hearthis.at/yaniho/night-drive/',
+};
 
 describe('findLibraryMatch', () => {
   it('prefers the hearthis export id over a title match', () => {
@@ -17,26 +22,62 @@ describe('findLibraryMatch', () => {
     });
   });
 
-  it('needs the length within 2 seconds and a known length', () => {
+  it('reuses a same-titled sound within 2 seconds, or one still processing', () => {
     const sound = (id: string, durationSec: number | null) => ({
       id,
-      title: 'Night Drive',
+      title: 'Night  drive',
       durationSec,
     });
-    expect(findLibraryMatch(TRACK, [sound('a', 303)])).toBeNull();
-    expect(findLibraryMatch(TRACK, [sound('a', null)])).toBeNull();
-    expect(findLibraryMatch(TRACK, [sound('a', 298)])?.sound.id).toBe('a');
+    expect(findLibraryMatch(TRACK, [sound('a', 298)])).toMatchObject({
+      sound: { id: 'a' },
+      matchedBy: 'title + duration',
+    });
+    expect(findLibraryMatch(TRACK, [sound('a', null)])).toMatchObject({
+      sound: { id: 'a' },
+      matchedBy: 'title (still processing)',
+    });
   });
 
-  it('never reuses an embed or a sound that failed processing', () => {
+  it('prefers a ready copy when the library already holds two', () => {
     expect(
       findLibraryMatch(TRACK, [
         {
-          id: 'embed',
+          id: 'pending',
+          title: 'Night Drive',
+          durationSec: null,
+          status: 'PENDING',
+        },
+        {
+          id: 'ready',
           title: 'Night Drive',
           durationSec: 300,
-          embedProvider: 'HEARTHIS',
+          status: 'READY',
         },
+      ])?.sound?.id,
+    ).toBe('ready');
+  });
+
+  it('reports a conflict instead of a free upload for a same title with another length', () => {
+    const match = findLibraryMatch(TRACK, [
+      { id: 'other', title: 'Night Drive', durationSec: 420 },
+    ]);
+    expect(match).toMatchObject({ sound: { id: 'other' } });
+    expect(match?.conflict).toMatch(/different length/);
+  });
+
+  it('reports an embed of the track as a conflict and ignores failed sounds', () => {
+    const embed = findLibraryMatch(TRACK, [
+      {
+        id: 'embed',
+        title: 'Renamed embed',
+        durationSec: 300,
+        embedProvider: 'HEARTHIS',
+        embedSourceUrl: `${TRACK.url}?ref=x`,
+      },
+    ]);
+    expect(embed?.conflict).toMatch(/import-embeds/);
+    expect(
+      findLibraryMatch(TRACK, [
         {
           id: 'broken',
           title: 'Night Drive',

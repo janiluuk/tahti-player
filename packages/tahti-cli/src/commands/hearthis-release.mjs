@@ -20,6 +20,7 @@ import {
   planRows,
   resolveKnownSounds,
   soundSummary,
+  uploadBlocker,
   uploadPendingRows,
 } from './hearthis-sounds.mjs';
 import { parseReleaseDate, tracksFromSounds } from './releases-create.mjs';
@@ -175,8 +176,14 @@ export async function hearthisToRelease(
     dryRun,
   });
   result.ledgerPath = known.ledger.path;
-  const rows = planRows(plan.tracks, known.known, dryRun);
+  const rows = planRows(plan.tracks, known.known, dryRun, known.conflicts);
   result.rows = rows;
+
+  const duplicates = rows.filter((row) => row.status === 'possible duplicate');
+  if (duplicates.length > 0) {
+    result.stopped = `${duplicates.length} track(s) may already be in your library, so nothing was uploaded or created: ${duplicates.map((row) => `${String(row.position).padStart(2, '0')} ${row.reason}`).join('; ')}.`;
+    return result;
+  }
 
   const missing = rows.filter((row) => row.status === 'not downloadable');
   if (missing.length > 0) {
@@ -185,6 +192,11 @@ export async function hearthisToRelease(
   }
 
   if (dryRun) {
+    return result;
+  }
+  const blocker = uploadBlocker(rows, known);
+  if (blocker) {
+    result.stopped = blocker;
     return result;
   }
 
