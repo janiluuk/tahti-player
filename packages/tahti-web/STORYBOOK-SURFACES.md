@@ -453,6 +453,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Components/Meter` | `Meter.stories.tsx` |
 | `Components/Mosaic` | `Mosaic.stories.tsx` |
 | `Audio/MultitrackEditor` | `MultitrackEditor.stories.tsx` |
+| `Navigation/NavLinks` | `NavLinks.stories.tsx` |
 | `Components/OverflowMenu` | `OverflowMenu.stories.tsx` |
 | `Components/Pagination` | `Pagination.stories.tsx` |
 | `Audio/PianoRoll` | `PianoRoll.stories.tsx` |

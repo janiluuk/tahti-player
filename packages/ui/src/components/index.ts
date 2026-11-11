@@ -44,6 +44,7 @@ export * from './Loader';
 export * from './Meter';
 export * from './Masonry';
 export * from './Mosaic';
+export * from './NavLinks';
 export * from './SegmentedControl';
 export * from './TahtiJam';
 export * from './TahtiLogo';

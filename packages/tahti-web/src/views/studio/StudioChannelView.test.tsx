@@ -5,12 +5,17 @@ import {
   createRoute,
   createRouter,
   Outlet,
+  redirect,
   RouterProvider,
 } from '@tanstack/react-router';
 import { act, fireEvent, screen } from '@testing-library/react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import {
+  channelTabRedirect,
+  isChannelRadioTab,
+} from '../../lib/channelSections';
 import { useAuthStore } from '../../stores/authStore';
 import { StudioChannelView } from './StudioChannelView';
 
@@ -82,9 +87,18 @@ async function renderChannel(url: string, withChannel = true, board = false) {
   const channelRoute = createRoute({
     getParentRoute: () => rootRoute,
     path: '/studio/channel',
-    validateSearch: (search: Record<string, unknown>): { tab?: string } => ({
-      tab: typeof search.tab === 'string' ? search.tab : undefined,
+    validateSearch: (
+      search: Record<string, unknown>,
+    ): { tab?: string; radio?: string } => ({
+      ...(typeof search.tab === 'string' ? { tab: search.tab } : {}),
+      ...(isChannelRadioTab(search.radio) ? { radio: search.radio } : {}),
     }),
+    beforeLoad: ({ search }) => {
+      const target = channelTabRedirect(search.tab);
+      if (target) {
+        throw redirect(target as never);
+      }
+    },
     component: StudioChannelView,
   });
   const router = createRouter({
@@ -101,48 +115,77 @@ async function renderChannel(url: string, withChannel = true, board = false) {
 const clickTab = (name: string) =>
   act(async () => fireEvent.click(screen.getByRole('tab', { name })));
 
-describe('StudioChannelView section tabs', () => {
-  it('writes the clicked tab to the URL', async () => {
-    const { router } = await renderChannel(
-      '/studio/channel?tab=green-room',
-      true,
-      true,
+const sectionIds = () =>
+  Array.from(document.querySelectorAll('section[id]')).map(
+    (section) => section.id,
+  );
+
+describe('StudioChannelView sections', () => {
+  it('shows Radio and Green room as sections of one page, with no section tabs', async () => {
+    await renderChannel('/studio/channel');
+
+    expect(sectionIds()).toEqual(['radio', 'green-room']);
+    expect(screen.getByRole('heading', { name: 'Radio' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Green room' }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: 'Green room' })).toBeNull();
+    expect(screen.getByRole('tab', { name: 'Stream' })).toHaveAttribute(
+      'aria-selected',
+      'true',
     );
-
-    await clickTab('Selects');
-    expect(router.state.location.search).toEqual({ tab: 'selects' });
-
-    await clickTab('Green room');
-    expect(router.state.location.search).toEqual({ tab: 'green-room' });
   });
 
-  it('writes tab=setup from the Setup tab while there is no channel', async () => {
-    const { router } = await renderChannel(
-      '/studio/channel?tab=green-room',
-      false,
-      true,
-    );
-
-    await clickTab('Setup');
-    expect(router.state.location.search).toEqual({ tab: 'setup' });
-
-    await clickTab('Selects');
-    expect(router.state.location.search).toEqual({ tab: 'selects' });
+  it('adds Selects for the board only', async () => {
+    await renderChannel('/studio/channel', true, true);
+    expect(sectionIds()).toEqual(['radio', 'green-room', 'selects']);
   });
 
-  it('hides the Setup tab once the channel exists', async () => {
-    await renderChannel('/studio/channel?tab=green-room');
-
-    expect(screen.queryByRole('tab', { name: 'Setup' })).toBeNull();
-    expect(screen.getByRole('tab', { name: 'Green room' })).toBeInTheDocument();
+  it('offers channel setup while there is no channel', async () => {
+    await renderChannel('/studio/channel', false);
+    expect(document.body.textContent).toContain('Create artist.tahti.live');
   });
 
-  it('shows Selects only to the board', async () => {
-    await renderChannel('/studio/channel?tab=green-room');
-    expect(screen.queryByRole('tab', { name: 'Selects' })).toBeNull();
-    act(() => root.unmount());
-    root = createRoot(container);
-    await renderChannel('/studio/channel?tab=green-room', true, true);
-    expect(screen.getByRole('tab', { name: 'Selects' })).toBeInTheDocument();
+  it('keeps the Radio tab in ?radio= and the #radio anchor', async () => {
+    const { router } = await renderChannel('/studio/channel');
+
+    await clickTab('Pinned');
+    expect(router.state.location.search).toEqual({ radio: 'pinned' });
+    expect(router.state.location.hash).toBe('radio');
+
+    await clickTab('Stream');
+    expect(router.state.location.search).toEqual({});
   });
+
+  it.each([
+    ['/studio/channel?tab=radio', {}, 'radio', 'Stream'],
+    ['/studio/channel?tab=rotation', { radio: 'rotation' }, 'radio', '24/7'],
+    [
+      '/studio/channel?tab=announcements',
+      { radio: 'rotation' },
+      'radio',
+      '24/7',
+    ],
+    ['/studio/channel?tab=pinned', { radio: 'pinned' }, 'radio', 'Pinned'],
+    [
+      '/studio/channel?tab=multicast',
+      { radio: 'multicast' },
+      'radio',
+      'Multicast',
+    ],
+    ['/studio/channel?tab=green-room', {}, 'green-room', 'Stream'],
+    ['/studio/channel?tab=setup', {}, '', 'Stream'],
+  ])(
+    'redirects the old %s to its section',
+    async (url, search, hash, radioTab) => {
+      const { router } = await renderChannel(url);
+      expect(router.state.location.pathname).toBe('/studio/channel');
+      expect(router.state.location.search).toEqual(search);
+      expect(router.state.location.hash).toBe(hash);
+      expect(screen.getByRole('tab', { name: radioTab })).toHaveAttribute(
+        'aria-selected',
+        'true',
+      );
+    },
+  );
 });

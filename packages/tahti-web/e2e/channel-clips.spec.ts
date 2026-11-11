@@ -16,7 +16,7 @@ test('24/7 clip editor previews, activates, and deletes clips with Studio chrome
   page,
 }) => {
   await signIn(page);
-  await page.goto('/studio/channel?tab=announcements');
+  await page.goto('/studio/channel?radio=rotation#radio');
   await expect(page.getByTestId('studio-navigation')).toBeVisible();
   await expect(
     page.getByRole('tab', { name: '24/7', exact: true }),
@@ -57,7 +57,7 @@ test('records voice as WAV and opens the take as an inactive clip', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/studio/channel?tab=rotation');
+  await page.goto('/studio/channel?radio=rotation#radio');
   const section = page.locator('#channel-clips');
   await section
     .getByRole('button', { name: 'Record voice', exact: true })

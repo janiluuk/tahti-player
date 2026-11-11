@@ -74,5 +74,5 @@ Vitest + Testing Library (jsdom), Storybook 10 play tests in Playwright, Playwri
 
 1. tahti-org PR: pre-session show-info draft, `PRIVATE` visibility, settable `artworkUrl`, reconnecting state (+ OpenAPI / api-client).
 2. ~~Tokens + `color-scheme` + contrast tests; `Stepper` and `Skeleton` primitives.~~ Shipped (`feat/go-live-tokens`): use `border-subtle`, `foreground-disabled`, `focus-ring`, `status-offline` and `Stepper` / `Skeleton` from `@tahti-player/ui` in steps 3-4.
-3. Navigation quiet styles + merges + redirects.
+3. ~~Navigation quiet styles + merges + redirects.~~ Shipped (`feat/go-live-nav`): new `NavLinks` in `@tahti-player/ui` (route links with `aria-current="page"`, `underline` for the Studio row, `fill` for the Broadcast and Music sub-navs, inset `focus-ring` outline); sidebar active is the `background-input` fill. Broadcast sub-nav is Go live, Schedule, Shows, Channel; Events / Listening parties are Schedule filters (`?show=events|parties`), Radio is the `#radio` section of Channel (`?radio=` for its tabs); old routes redirect (`/studio/events[?tab=]`, `/studio/listening-parties`, `/studio/channel?tab=*`). Go live inner tabs unchanged (step 4).
 4. Go live page: header, status chip, stepper, Show info card with autosave.

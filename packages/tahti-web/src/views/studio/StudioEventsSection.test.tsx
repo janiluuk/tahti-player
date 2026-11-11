@@ -10,7 +10,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useAuthStore } from '../../stores/authStore';
-import { StudioEventsView } from './StudioEventsView';
+import { StudioEventsSection } from './StudioEventsSection';
 
 vi.mock('../../api/events', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../../api/events')>()),
@@ -71,8 +71,8 @@ async function renderAt(path: string) {
   const rootRoute = createRootRoute({ component: () => <Outlet /> });
   const listRoute = createRoute({
     getParentRoute: () => rootRoute,
-    path: '/studio/events',
-    component: StudioEventsView,
+    path: '/studio/schedule',
+    component: StudioEventsSection,
   });
   const router = createRouter({
     routeTree: rootRoute.addChildren([listRoute]),
@@ -84,9 +84,9 @@ async function renderAt(path: string) {
   return router;
 }
 
-describe('StudioEventsView tabs', () => {
+describe('StudioEventsSection tabs', () => {
   it('opens the Invites tab from a tag notification link', async () => {
-    await renderAt('/studio/events?tab=invites');
+    await renderAt('/studio/schedule?show=events&tab=invites');
     expect(await screen.findByText('Harbour night')).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: /Invites/ })).toHaveAttribute(
       'aria-selected',
@@ -95,10 +95,13 @@ describe('StudioEventsView tabs', () => {
   });
 
   it('keeps the chosen tab in the address', async () => {
-    const router = await renderAt('/studio/events');
+    const router = await renderAt('/studio/schedule?show=events');
     await act(async () => {
       fireEvent.click(screen.getByRole('tab', { name: /Past/ }));
     });
-    expect(router.state.location.search).toEqual({ tab: 'past' });
+    expect(router.state.location.search).toEqual({
+      show: 'events',
+      tab: 'past',
+    });
   });
 });

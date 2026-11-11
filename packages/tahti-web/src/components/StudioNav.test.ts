@@ -9,10 +9,12 @@ import {
   isGoLiveSessionTabActive,
 } from '../views/studio/go-live/goLiveTabs';
 import {
+  BROADCAST_SUBNAV_ITEMS,
   CATALOG_SUBNAV_ITEMS,
   getStudioPrimaryRoute,
   getStudioSubmenuItems,
   hasStudioNestedNav,
+  isBroadcastSubnavActive,
   isCatalogSubnavActive,
   isStudioBroadcastGroup,
   isStudioDetailRoute,
@@ -20,58 +22,6 @@ import {
   litStudioSubmenuDestinations,
   SUBMENUS,
 } from './StudioNav';
-
-const BROADCAST_SUBNAV_ITEMS = [
-  { to: '/studio/go-live', labelKey: 'studio.onAir' as const },
-  { to: '/studio/schedule', labelKey: 'studio.schedule' as const },
-  { to: '/studio/events', labelKey: 'studio.events' as const },
-  {
-    to: '/studio/listening-parties',
-    labelKey: 'studio.listeningParties' as const,
-  },
-  { to: '/studio/shows', labelKey: 'studio.shows' as const },
-  { to: '/studio/channel', labelKey: 'studio.channel' as const },
-  { to: '/studio/channel?tab=radio', labelKey: 'nav.radio' as const },
-] as const;
-
-const RADIO_CHANNEL_TABS = new Set([
-  'radio',
-  'multicast',
-  'rotation',
-  'announcements',
-  'pinned',
-  'tahti-radio',
-]);
-
-function channelSearchTab(current: string | undefined): string | null {
-  const query = current?.split('?')[1];
-  if (!query) {
-    return null;
-  }
-  return new URLSearchParams(query).get('tab');
-}
-
-const isBroadcastSubnavActive = (current: string | undefined, to: string) => {
-  const pathname = current?.split('?')[0];
-  const tab = channelSearchTab(current);
-  if (to === '/studio/channel?tab=radio') {
-    return (
-      pathname === '/studio/channel' &&
-      tab !== null &&
-      RADIO_CHANNEL_TABS.has(tab)
-    );
-  }
-  if (to === '/studio/channel') {
-    return (
-      pathname === '/studio/channel' &&
-      (tab === null || !RADIO_CHANNEL_TABS.has(tab))
-    );
-  }
-  if (to === '/studio/go-live') {
-    return pathname === '/studio/go-live' || pathname === '/studio/info';
-  }
-  return pathname === to || pathname?.startsWith(`${to}/`) === true;
-};
 
 describe('StudioNav section coverage', () => {
   // A submenu link whose own path doesn't resolve back to the primary
@@ -87,10 +37,13 @@ describe('StudioNav section coverage', () => {
     }
   }
 
-  it('keeps multicast under Radio instead of a Broadcast sibling', () => {
-    const destinations = BROADCAST_SUBNAV_ITEMS.map((item) => item.to);
-    expect(destinations).not.toContain('/studio/channel?tab=multicast');
-    expect(destinations).toContain('/studio/channel?tab=radio');
+  it('has four Broadcast pages: Events, parties and radio are merged away', () => {
+    expect(BROADCAST_SUBNAV_ITEMS.map((item) => item.to)).toEqual([
+      '/studio/go-live',
+      '/studio/schedule',
+      '/studio/shows',
+      '/studio/channel',
+    ]);
   });
 
   it('keeps Library out of the crowded Studio submenu (it has its own main-menu entry)', () => {
@@ -134,7 +87,7 @@ describe('StudioNav section coverage', () => {
       ['/studio/shows', '/studio/broadcast'],
       ['/studio/shows/abc', '/studio/broadcast'],
       ['/studio/channel', '/studio/broadcast'],
-      ['/studio/channel?tab=radio', '/studio/broadcast'],
+      ['/studio/channel?radio=rotation', '/studio/broadcast'],
       ['/studio/fans', '/studio/fans'],
       ['/studio/updates', '/studio/fans'],
       ['/studio/updates?tab=newsletter', '/studio/fans'],
@@ -157,15 +110,15 @@ describe('StudioNav section coverage', () => {
       ['/studio/go-live', '/studio/go-live'],
       ['/studio/info', '/studio/go-live'],
       ['/studio/schedule', '/studio/schedule'],
-      ['/studio/events', '/studio/events'],
+      ['/studio/schedule?show=events', '/studio/schedule'],
+      ['/studio/schedule?show=parties', '/studio/schedule'],
+      ['/studio/events/new', '/studio/schedule'],
+      ['/studio/events/ev-1/edit', '/studio/schedule'],
+      ['/studio/listening-parties/new', '/studio/schedule'],
       ['/studio/shows', '/studio/shows'],
+      ['/studio/shows/abc', '/studio/shows'],
       ['/studio/channel', '/studio/channel'],
-      ['/studio/channel?tab=radio', '/studio/channel?tab=radio'],
-      ['/studio/channel?tab=multicast', '/studio/channel?tab=radio'],
-      ['/studio/channel?tab=rotation', '/studio/channel?tab=radio'],
-      ['/studio/channel?tab=pinned', '/studio/channel?tab=radio'],
-      ['/studio/channel?tab=tahti-radio', '/studio/channel?tab=radio'],
-      ['/studio/channel?tab=announcements', '/studio/channel?tab=radio'],
+      ['/studio/channel?radio=multicast', '/studio/channel'],
     ];
     for (const [location, expectedTo] of covered) {
       const lit = BROADCAST_SUBNAV_ITEMS.filter((item) =>
@@ -216,8 +169,8 @@ describe('StudioNav section coverage', () => {
     ]);
   });
 
-  it('keeps Go live unlit on the Channel green-room tab', () => {
-    const location = '/studio/channel?tab=green-room';
+  it('keeps Go live unlit on the Channel green-room section', () => {
+    const location = '/studio/channel';
     const lit = BROADCAST_SUBNAV_ITEMS.filter((item) =>
       isBroadcastSubnavActive(location, item.to),
     ).map((item) => item.to);

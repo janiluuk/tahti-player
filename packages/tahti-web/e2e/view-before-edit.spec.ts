@@ -74,7 +74,7 @@ test('the Radio Browser add-on can be turned off after activating it', async ({
 test('an event opens read-only and its pencil opens the form', async ({
   page,
 }) => {
-  await page.goto('/studio/events');
+  await page.goto('/studio/schedule?show=events');
   await page.getByRole('tab', { name: 'Past' }).click();
   await page
     .getByRole('link', { name: 'Album release show', exact: true })

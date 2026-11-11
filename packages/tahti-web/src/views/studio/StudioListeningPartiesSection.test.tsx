@@ -12,7 +12,7 @@ import { resetMockOverrides } from '../../api/mock-overrides';
 import { setMockSessionUser } from '../../api/mock-session';
 import { useAuthStore } from '../../stores/authStore';
 import { renderWithRouter } from '../../test/renderWithRouter';
-import { StudioListeningPartiesView } from './StudioListeningPartiesView';
+import { StudioListeningPartiesSection } from './StudioListeningPartiesSection';
 import { StudioListeningPartyFormView } from './StudioListeningPartyFormView';
 
 const ARTIST = {
@@ -41,7 +41,7 @@ describe('Studio listening parties (offline mock)', () => {
   });
 
   it('lists upcoming parties with reschedule and cancel only before the start', async () => {
-    await renderWithRouter(<StudioListeningPartiesView />);
+    await renderWithRouter(<StudioListeningPartiesSection />);
     const rows = await screen.findAllByRole('listitem');
     expect(rows).toHaveLength(2);
     const [live, scheduled] = rows;
@@ -56,7 +56,7 @@ describe('Studio listening parties (offline mock)', () => {
   });
 
   it('shows how many people asked for a reminder on a scheduled party', async () => {
-    await renderWithRouter(<StudioListeningPartiesView />);
+    await renderWithRouter(<StudioListeningPartiesSection />);
     const rows = await screen.findAllByRole('listitem');
     const [live, scheduled] = rows;
     expect(await within(scheduled!).findByText('12 reminders')).toBeTruthy();
@@ -64,7 +64,7 @@ describe('Studio listening parties (offline mock)', () => {
   });
 
   it('cancels a scheduled party after confirming', async () => {
-    await renderWithRouter(<StudioListeningPartiesView />);
+    await renderWithRouter(<StudioListeningPartiesSection />);
     fireEvent.click(
       await screen.findByRole('button', { name: 'Cancel Polar Static' }),
     );

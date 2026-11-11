@@ -13,7 +13,7 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   editor: '/studio/editor',
   // Embeds page removed (no public consumer) — old bookmarks land on Releases.
   embeds: '/studio/releases',
-  events: '/studio/events',
+  events: '/studio/schedule?show=events',
   venues: '/studio/venues',
   recordings: '/library/recordings',
   stash: '/library/stash',
@@ -34,7 +34,7 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   audience: '/studio/audience',
   messages: '/messages',
   sound: '/studio/sounds',
-  'setup-channel': '/studio/channel?tab=setup',
+  'setup-channel': '/studio/channel',
   settings: '/settings',
   'settings/account': '/settings/account',
   'settings/artist-info': '/settings/artist',
@@ -52,10 +52,11 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   'settings/announcements': '/settings/broadcast',
   'settings/green-room': '/settings/broadcast',
   // Tahti Radio opt-in and submissions (incl. board rejection notes) live on
-  // the channel's Tahti Radio tab, not the royalties Distribution page.
-  'settings/distribution': '/studio/channel?tab=tahti-radio',
+  // the Tahti Radio tab of the channel's Radio section, not the royalties
+  // Distribution page.
+  'settings/distribution': '/studio/channel?radio=tahti-radio#radio',
   'settings/moderators': '/settings/channel?tab=moderators',
-  'settings/multistream': '/studio/channel?tab=multicast',
+  'settings/multistream': '/studio/channel?radio=multicast#radio',
   'upload/from-broadcast': '/library/recordings',
 };
 

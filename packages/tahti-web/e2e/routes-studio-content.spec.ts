@@ -134,11 +134,13 @@ test('a sound, its editor, mastering and an editor project open from Editor', as
   await expectLanded(page, errors, mastering, SIDEBAR, 'Reference mastering');
 });
 
-test('events: add and edit forms open from Events', async ({ page }) => {
+test('events: add and edit forms open from Schedule → Events', async ({
+  page,
+}) => {
   const errors = collectPageErrors(page);
   await expectRouteHealthy(page, errors, {
-    path: '/studio/events',
-    heading: 'Events',
+    path: '/studio/schedule?show=events',
+    heading: 'Schedule',
   });
   const edit = await firstHref(
     page,

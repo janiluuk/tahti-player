@@ -1,26 +1,26 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { MOCK_LISTENING_PARTY_IDS } from '@tahti-web/api/listening-parties-mock';
-import { StudioListeningPartiesView } from '@tahti-web/views/studio/StudioListeningPartiesView';
+import { StudioScheduleView } from '@tahti-web/views/studio/StudioScheduleView';
 import { expect, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { mockData } from './_lib/mock-data';
 import { expectVisible, findDialog, selectTab } from './_lib/play';
 
-const meta: Meta<typeof StudioListeningPartiesView> = {
+const meta: Meta<typeof StudioScheduleView> = {
   title: 'Tahti/Studio/StudioListeningPartiesView',
-  component: StudioListeningPartiesView,
+  component: StudioScheduleView,
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
         component:
-          'Studio → Broadcast → Listening parties: Upcoming and Past tabs with each party\'s release, state and start time; Reschedule and Cancel while a party has not started, Open for its public page, and "Schedule listening party" in the header.',
+          'Studio → Broadcast → Schedule, Listening parties filter (`?show=parties`; `/studio/listening-parties` redirects here): Upcoming and Past tabs with each party\'s release, state and start time; Reschedule and Cancel while a party has not started, Open for its public page, and "Schedule listening party" in the header.',
       },
     },
   },
   decorators: [
-    withTahtiRouter('/studio/listening-parties'),
+    withTahtiRouter('/studio/schedule?show=parties'),
     withMockAuth(MOCK_USERS.artist),
   ],
 };
@@ -32,8 +32,9 @@ export const Upcoming: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      await canvas.findByRole('heading', {
-        name: /^Listening parties$|^Kuuntelujuhlat$/,
+      await canvas.findByRole('radio', {
+        name: 'Listening parties',
+        checked: true,
       }),
     ).toBeInTheDocument();
     await expect(

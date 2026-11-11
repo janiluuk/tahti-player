@@ -513,19 +513,22 @@ test('help center documents artist gallery upload and reorder', async ({
   await expect(page.getByText(/no separate Add images button/)).toBeVisible();
 });
 
-test('the Radio page keeps Stream, 24/7, Tahti Radio and Multicast as tabs', async ({
+test('the Channel Radio section keeps Stream, 24/7, Tahti Radio and Multicast as tabs', async ({
   page,
 }) => {
   await signIn(page);
   await page.goto('/studio/channel?tab=radio');
+  await expect(page).toHaveURL(/\/studio\/channel#radio$/);
   await expect(
-    page.getByRole('heading', { name: 'Radio', level: 1 }),
+    page.getByRole('heading', { name: 'Radio', level: 2 }),
   ).toBeVisible();
   await expect(
-    page.getByRole('link', { name: 'Back to Broadcast' }),
-  ).toBeVisible();
+    page
+      .getByRole('navigation', { name: 'Broadcast pages' })
+      .getByRole('link', { name: 'Channel' }),
+  ).toHaveAttribute('aria-current', 'page');
   await page.getByRole('tab', { name: 'Multicast' }).click();
-  await expect(page).toHaveURL(/\/studio\/channel\?tab=multicast/);
+  await expect(page).toHaveURL(/\/studio\/channel\?radio=multicast#radio/);
   await expect(page.getByRole('tab', { name: 'Multicast' })).toHaveAttribute(
     'aria-selected',
     'true',

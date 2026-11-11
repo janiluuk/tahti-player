@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { StudioEventsView } from '@tahti-web/views/studio/StudioEventsView';
+import { StudioScheduleView } from '@tahti-web/views/studio/StudioScheduleView';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { eventsAroundToday } from './_fixtures/studio';
@@ -7,21 +7,21 @@ import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { mockData } from './_lib/mock-data';
 import { expectVisible, selectTab } from './_lib/play';
 
-const meta: Meta<typeof StudioEventsView> = {
+const meta: Meta<typeof StudioScheduleView> = {
   title: 'Tahti/Studio/StudioEventsView',
-  component: StudioEventsView,
+  component: StudioScheduleView,
   parameters: {
     layout: 'fullscreen',
     docs: {
       description: {
         component:
-          'Studio → Events: Upcoming and Past tabs listing each event with its date, place, description and ticket link, plus Edit and Remove per event and "Add event" in the header.',
+          'Studio → Broadcast → Schedule, Events filter (`?show=events`; `/studio/events` redirects here): Upcoming and Past tabs listing each event with its date, place, description and ticket link, plus Edit and Remove per event and "Add event" in the header.',
       },
     },
     mockData: mockData({ myEvents: eventsAroundToday }),
   },
   decorators: [
-    withTahtiRouter('/studio/events'),
+    withTahtiRouter('/studio/schedule?show=events'),
     withMockAuth(MOCK_USERS.artist),
   ],
 };

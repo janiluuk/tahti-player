@@ -52,4 +52,4 @@ Install channel widgets from **Settings → Add-ons → Channel**; they show on 
 
 ## Your channel's 24/7 radio
 
-**Studio → Broadcast → Radio** (and **Channel**) choose what your channel plays when you're not live: your rotation, playback settings and the Tahti Radio rotation you take part in. New uploads can join the rotation automatically.
+The **Radio** section of **Studio → Broadcast → Channel** chooses what your channel plays when you're not live: your rotation, playback settings and the Tahti Radio rotation you take part in. New uploads can join the rotation automatically.

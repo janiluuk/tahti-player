@@ -1,32 +1,14 @@
 import { useRouterState } from '@tanstack/react-router';
-import {
-  ArrowLeftIcon,
-  HeartIcon,
-  LayoutGridIcon,
-  ListMusicIcon,
-  RadioTowerIcon,
-  Share2Icon,
-  SlidersHorizontalIcon,
-  TrendingUpIcon,
-  UserRoundIcon,
-  UsersIcon,
-} from 'lucide-react';
-import type { ReactNode } from 'react';
+import { ArrowLeftIcon, LayoutGridIcon } from 'lucide-react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { ButtonLink, SidebarNavigationItem } from '@tahti-player/ui';
+import { ButtonLink, NavLinks, SidebarNavigationItem } from '@tahti-player/ui';
 
 import { matchesSectionRoute } from '../lib/sectionNavigation';
-import { SectionTabs } from './SectionTabs';
-
-type StudioSubmenuLabelKey =
-  | (typeof SUBMENUS)[keyof typeof SUBMENUS][number]['labelKey']
-  | 'studio.stripe';
 
 type StudioSubmenuItem = {
   to: string;
-  labelKey: StudioSubmenuLabelKey;
-  icon: ReactNode;
+  labelKey: (typeof SUBMENUS)[keyof typeof SUBMENUS][number]['labelKey'];
 };
 
 const PRIMARY = [
@@ -43,62 +25,31 @@ const PRIMARY = [
 
 export const SUBMENUS = {
   '/studio': [
-    {
-      to: '/studio',
-      labelKey: 'studio.home',
-      icon: <LayoutGridIcon size={16} />,
-    },
-    {
-      to: '/studio/releases',
-      labelKey: 'studio.music',
-      icon: <ListMusicIcon size={16} />,
-    },
-    {
-      to: '/studio/broadcast',
-      labelKey: 'studio.goLive',
-      icon: <RadioTowerIcon size={16} />,
-    },
-    {
-      to: '/studio/fans',
-      labelKey: 'studio.fans',
-      icon: <HeartIcon size={16} />,
-    },
-    {
-      to: '/studio/stats',
-      labelKey: 'studio.stats',
-      icon: <TrendingUpIcon size={16} />,
-    },
-    {
-      to: '/studio/profile',
-      labelKey: 'studio.profile',
-      icon: <UserRoundIcon size={16} />,
-    },
+    { to: '/studio', labelKey: 'studio.home' },
+    { to: '/studio/releases', labelKey: 'studio.music' },
+    { to: '/studio/broadcast', labelKey: 'studio.goLive' },
+    { to: '/studio/fans', labelKey: 'studio.fans' },
+    { to: '/studio/stats', labelKey: 'studio.stats' },
+    { to: '/studio/profile', labelKey: 'studio.profile' },
   ],
 } as const;
 
 /** Releases, Distribution and Editor are one job (publish music). One Studio
  * "Music" tab stays lit; the three pages live in `CatalogSubNav`. */
 export const CATALOG_SUBNAV_ITEMS = [
-  {
-    to: '/studio/releases',
-    labelKey: 'studio.releases' as const,
-    icon: <ListMusicIcon size={16} />,
-  },
-  {
-    to: '/studio/distribution',
-    labelKey: 'studio.distribution' as const,
-    icon: <Share2Icon size={16} />,
-  },
-  {
-    to: '/studio/editor',
-    labelKey: 'studio.editor' as const,
-    icon: <SlidersHorizontalIcon size={16} />,
-  },
-  {
-    to: '/studio/groups',
-    labelKey: 'studio.groups' as const,
-    icon: <UsersIcon size={16} />,
-  },
+  { to: '/studio/releases', labelKey: 'studio.releases' as const },
+  { to: '/studio/distribution', labelKey: 'studio.distribution' as const },
+  { to: '/studio/editor', labelKey: 'studio.editor' as const },
+  { to: '/studio/groups', labelKey: 'studio.groups' as const },
+] as const;
+
+/** Events and listening parties are filters of Schedule, and the 24/7 radio
+ * is a section of Channel, so Broadcast has four pages. */
+export const BROADCAST_SUBNAV_ITEMS = [
+  { to: '/studio/go-live', labelKey: 'studio.onAir' as const },
+  { to: '/studio/schedule', labelKey: 'studio.schedule' as const },
+  { to: '/studio/shows', labelKey: 'studio.shows' as const },
+  { to: '/studio/channel', labelKey: 'studio.channel' as const },
 ] as const;
 
 const pathMatches = (pathname: string, prefix: string) =>
@@ -299,14 +250,48 @@ export function CatalogSubNav({ current }: { current?: string }) {
     CATALOG_SUBNAV_ITEMS.find((item) => isCatalogSubnavActive(current, item.to))
       ?.to ?? CATALOG_SUBNAV_ITEMS[0].to;
   return (
-    <SectionTabs
+    <NavLinks
+      variant="fill"
       aria-label={t('studioNavText.musicPages')}
       items={CATALOG_SUBNAV_ITEMS.map((item) => ({
         id: item.to,
         to: item.to,
         label: t(item.labelKey),
-        icon: item.icon,
         active: item.to === selected,
+      }))}
+    />
+  );
+}
+
+export const isBroadcastSubnavActive = (
+  current: string | undefined,
+  to: string,
+) => {
+  const pathname = current?.split('?')[0] ?? '';
+  if (to === '/studio/go-live') {
+    return pathname === '/studio/go-live' || pathname === '/studio/info';
+  }
+  if (to === '/studio/schedule') {
+    return (
+      pathname === '/studio/schedule' ||
+      pathMatches(pathname, '/studio/events') ||
+      pathMatches(pathname, '/studio/listening-parties')
+    );
+  }
+  return pathMatches(pathname, to);
+};
+
+export function BroadcastSubNav({ current }: { current?: string }) {
+  const { t } = useTranslation('web');
+  return (
+    <NavLinks
+      variant="fill"
+      aria-label={t('studioNavText.broadcastPages')}
+      items={BROADCAST_SUBNAV_ITEMS.map((item) => ({
+        id: item.to,
+        to: item.to,
+        label: t(item.labelKey),
+        active: isBroadcastSubnavActive(current, item.to),
       }))}
     />
   );
@@ -357,19 +342,6 @@ export function FansBackLink() {
       to="/studio/fans"
       label={t('studio.fans')}
       testId="studio-fans-back"
-    />
-  );
-}
-
-/** Broadcast is a hub too: Go live, Schedule, Shows, Events, Parties and
- * Channel open from `/studio/broadcast` and link back to it. */
-export function BroadcastBackLink() {
-  const { t } = useTranslation('web');
-  return (
-    <HubBackLink
-      to="/studio/broadcast"
-      label={t('studio.goLive')}
-      testId="studio-broadcast-back"
     />
   );
 }
@@ -449,14 +421,14 @@ function StudioNavigation({ current }: { current?: string }) {
       data-testid="studio-navigation"
     >
       <div className={STUDIO_SECTION_MENU_SLOT} data-studio-section-menu>
-        <SectionTabs
-          variant="segmented"
-          aria-label={`${t(sectionLabel)} pages`}
+        <NavLinks
+          aria-label={t('studioNavText.sectionPages', {
+            section: t(sectionLabel),
+          })}
           items={submenu.map((item) => ({
             id: item.to,
             to: item.to,
             label: t(item.labelKey),
-            icon: item.icon,
             active: isSubmenuActive(current, item.to),
           }))}
         />
@@ -467,7 +439,7 @@ function StudioNavigation({ current }: { current?: string }) {
           data-studio-nested-nav
           data-testid="studio-nested-nav"
         >
-          {showBroadcast ? <BroadcastBackLink /> : null}
+          {showBroadcast ? <BroadcastSubNav current={current} /> : null}
           {showCatalog ? <CatalogSubNav current={current} /> : null}
           {showFansBack ? <FansBackLink /> : null}
         </div>

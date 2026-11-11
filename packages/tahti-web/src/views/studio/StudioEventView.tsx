@@ -60,7 +60,8 @@ export function StudioEventView({ eventId }: { eventId: string }) {
           wrapperClassName={backButtonCornerClassName}
         >
           <BackButtonLink
-            to="/studio/events"
+            to="/studio/schedule"
+            search={{ show: 'events' }}
             aria-label={t('studioEventView.backToEvents')}
           />
         </Tooltip>

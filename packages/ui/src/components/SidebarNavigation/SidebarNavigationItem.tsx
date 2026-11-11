@@ -28,6 +28,7 @@ const MaybeNavLink: FC<{
     return (
       <Link
         to={to}
+        className="rounded-control focus-visible:outline-focus-ring block focus-visible:outline-2 focus-visible:outline-offset-2"
         activeOptions={{ exact: to === '/', includeSearch: false }}
         activeProps={isSelected === false ? {} : selectedProps}
         inactiveProps={isSelected === true ? selectedProps : {}}
@@ -63,7 +64,7 @@ export const SidebarNavigationItem: FC<SidebarNavigationItemProps> = ({
             event.preventDefault();
             event.stopPropagation();
           }}
-          className="text-foreground-secondary flex min-h-8 w-full cursor-not-allowed items-center overflow-hidden rounded-md border-(length:--border-width) border-transparent text-left"
+          className="text-foreground-secondary rounded-control flex min-h-8 w-full cursor-not-allowed items-center overflow-hidden border-(length:--border-width) border-transparent text-left"
         >
           <div className="flex size-8 shrink-0 items-center justify-center">
             {icon}
@@ -89,12 +90,13 @@ export const SidebarNavigationItem: FC<SidebarNavigationItemProps> = ({
               onClick={onClick}
               data-testid="sidebar-navigation-item"
               className={cn(
-                'flex min-h-8 w-full items-center overflow-hidden rounded-md border-(length:--border-width)',
+                'rounded-control flex min-h-8 w-full items-center overflow-hidden border-(length:--border-width)',
                 {
                   'cursor-pointer': onClick,
-                  'bg-primary text-primary-foreground border-border font-bold':
+                  'bg-background-input text-foreground border-border-subtle font-semibold':
                     active,
-                  'hover:bg-background-secondary border-transparent': !active,
+                  'text-foreground-secondary hover:bg-background-secondary hover:text-foreground border-transparent':
+                    !active,
                 },
               )}
             >

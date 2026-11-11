@@ -6,7 +6,6 @@ import { StudioBrandingPanel } from '@tahti-web/views/studio/StudioBrandingView'
 import { StudioChannelView } from '@tahti-web/views/studio/StudioChannelView';
 import { StudioCollectionsView } from '@tahti-web/views/studio/StudioCollectionsView';
 import { StudioDistributionView } from '@tahti-web/views/studio/StudioDistributionView';
-import { StudioEventsView } from '@tahti-web/views/studio/StudioEventsView';
 import { StudioGovernanceView } from '@tahti-web/views/studio/StudioGovernanceView';
 import { StudioReleasesView } from '@tahti-web/views/studio/StudioReleasesView';
 import { StudioRevenueView } from '@tahti-web/views/studio/StudioRevenueView';
@@ -169,7 +168,7 @@ export const StudioDistribution: Story = {
 
 export const StudioChannel: Story = {
   parameters: {
-    docs: { description: { story: 'Lives on Studio → Manage → Channel.' } },
+    docs: { description: { story: 'Lives on Studio → Broadcast → Channel.' } },
   },
   decorators: [withTahtiRouter('/studio/channel')],
   render: () => <StudioChannelView />,
@@ -190,8 +189,12 @@ export const StudioBranding: Story = {
 
 export const StudioEvents: Story = {
   parameters: {
-    docs: { description: { story: 'Lives on Studio → Events.' } },
+    docs: {
+      description: {
+        story: 'Lives on Studio → Broadcast → Schedule → Events.',
+      },
+    },
   },
-  decorators: [withTahtiRouter('/studio/events')],
-  render: () => <StudioEventsView />,
+  decorators: [withTahtiRouter('/studio/schedule?show=events')],
+  render: () => <StudioScheduleView />,
 };

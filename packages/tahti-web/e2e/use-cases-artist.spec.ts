@@ -56,14 +56,46 @@ test('artist: Broadcast agenda chips filter the Coming up list', async ({
   }
 });
 
-test('artist: Go live opens from the Broadcast hub and links back', async ({
+test('artist: Go live opens from the Broadcast hub and the sub-nav moves between Broadcast pages', async ({
   page,
 }) => {
   await open(page, '/studio/broadcast');
   await page.getByRole('main').getByRole('link', { name: 'Go live' }).click();
   await expect(page).toHaveURL(/\/studio\/go-live/);
-  await page.getByTestId('studio-broadcast-back').click();
+  const broadcast = page.getByRole('navigation', { name: 'Broadcast pages' });
+  await expect(broadcast.getByRole('link')).toHaveText([
+    'Go live',
+    'Schedule',
+    'Shows',
+    'Channel',
+  ]);
+  await expect(
+    broadcast.getByRole('link', { name: 'Go live' }),
+  ).toHaveAttribute('aria-current', 'page');
+  await broadcast.getByRole('link', { name: 'Schedule' }).click();
+  await expect(page).toHaveURL(/\/studio\/schedule$/);
+  await page
+    .getByRole('navigation', { name: 'Studio pages' })
+    .getByRole('link', { name: 'Broadcast' })
+    .click();
   await expect(page).toHaveURL(/\/studio\/broadcast$/);
+});
+
+test('artist: old Events, Listening parties and Radio addresses redirect', async ({
+  page,
+}) => {
+  await open(page, '/studio/events?tab=invites');
+  await expect(page).toHaveURL(/\/studio\/schedule\?show=events&tab=invites$/);
+  await expect(
+    page.getByRole('radio', { name: 'Events', checked: true }),
+  ).toBeVisible();
+  await page.goto('/studio/listening-parties');
+  await expect(page).toHaveURL(/\/studio\/schedule\?show=parties$/);
+  await page.goto('/studio/channel?tab=radio');
+  await expect(page).toHaveURL(/\/studio\/channel#radio$/);
+  await expect(
+    page.getByRole('heading', { name: 'Radio', level: 2 }),
+  ).toBeVisible();
 });
 
 test('artist: release detail has four tabs and each opens', async ({

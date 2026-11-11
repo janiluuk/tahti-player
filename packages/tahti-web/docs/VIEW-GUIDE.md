@@ -320,16 +320,16 @@ Check service health and operational status.
 | [Studio / Library / Stash](#studio-stash) | `/studio/stash` |
 | [Studio / Perform / Go live](#studio-go-live) | `/studio/go-live` |
 | [Studio / Perform / Schedule](#studio-schedule) | `/studio/schedule` |
-| [Studio / Perform / Events](#studio-events) | `/studio/events` |
+| [Studio / Perform / Events](#studio-events) | `/studio/schedule?show=events` |
 | [Studio / Perform / New event](#studio-event-new) | `/studio/events/new` |
 | [Studio / Perform / Venues](#studio-venues) | `/studio/venues` |
 | [Studio / Perform / Shows](#studio-shows) | `/studio/shows` |
 | [Studio / Perform / Show detail](#studio-show-detail) | `/studio/shows/show-series-demo` |
 | [Studio / Manage / Channel](#studio-channel) | `/studio/channel` |
-| [Studio / Manage / Radio](#studio-radio) | `/studio/channel?tab=radio` |
-| [Studio / Manage / Green room](#studio-green-room) | `/studio/channel?tab=green-room` |
-| [Studio / Manage / Multicast](#studio-multicast) | `/studio/channel?tab=multicast` |
-| [Studio / Manage / Tahti Selects](#studio-selects) | `/studio/channel?tab=selects` |
+| [Studio / Manage / Radio](#studio-radio) | `/studio/channel#radio` |
+| [Studio / Manage / Green room](#studio-green-room) | `/studio/channel#green-room` |
+| [Studio / Manage / Multicast](#studio-multicast) | `/studio/channel?radio=multicast#radio` |
+| [Studio / Manage / Tahti Selects](#studio-selects) | `/studio/channel#selects` |
 | [Studio / Manage / Moderation](#studio-moderation) | `/studio/moderation` |
 
 ### Studio / Overview
@@ -540,7 +540,7 @@ Plan broadcasts and inspect analytics.
 
 Manage upcoming and past events.
 
-`/studio/events`
+`/studio/schedule?show=events`
 
 ### Studio / Perform / New event
 
@@ -600,7 +600,7 @@ Edit channel information and channel wizard access.
 
 Control stream statistics and 24/7 rotation.
 
-`/studio/channel?tab=radio`
+`/studio/channel#radio`
 
 ### Studio / Manage / Green room
 
@@ -610,7 +610,7 @@ Control stream statistics and 24/7 rotation.
 
 Configure the broadcast preparation space.
 
-`/studio/channel?tab=green-room`
+`/studio/channel#green-room`
 
 ### Studio / Manage / Multicast
 
@@ -620,7 +620,7 @@ Configure the broadcast preparation space.
 
 Activate configured stream destinations.
 
-`/studio/channel?tab=multicast`
+`/studio/channel?radio=multicast#radio`
 
 ### Studio / Manage / Tahti Selects
 
@@ -630,7 +630,7 @@ Activate configured stream destinations.
 
 Curate the community rotation.
 
-`/studio/channel?tab=selects`
+`/studio/channel#selects`
 
 ### Studio / Manage / Moderation
 

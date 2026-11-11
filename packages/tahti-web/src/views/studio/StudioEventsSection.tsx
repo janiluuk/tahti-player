@@ -4,7 +4,6 @@ import {
   CalendarPlusIcon,
   HistoryIcon,
   MailIcon,
-  PlusIcon,
   Trash2Icon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -18,8 +17,6 @@ import {
   ExternalLink,
   MediaArtwork,
   Tabs,
-  Tooltip,
-  ViewShell,
 } from '@tahti-player/ui';
 
 import { deleteEvent, fetchMyEvents, type ArtistEvent } from '../../api/events';
@@ -27,14 +24,14 @@ import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { EventInvitesPanel } from '../../components/events/EventInvitesPanel';
 import { EventStatusBadge } from '../../components/events/EventStatusBadge';
 import { PageEmpty, PageLoading } from '../../components/PageStates';
-import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
 import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
 const EVENT_TABS = ['upcoming', 'past', 'invites'];
 
-export function StudioEventsView() {
+/** The events filter of Studio → Broadcast → Schedule (`?show=events`). */
+export function StudioEventsSection() {
   const { t } = useTranslation('web');
   const [pendingRemove, setPendingRemove] = useState<ArtistEvent | null>(null);
   const navigate = useNavigate();
@@ -149,115 +146,100 @@ export function StudioEventsView() {
     );
 
   return (
-    <StudioGate>
-      <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
-        <ViewShell
-          title={t('studioEvents.title')}
-          classes={{ root: 'px-0 pt-0' }}
-          actions={
-            <Tooltip content={t('studioEvents.addEvent')} side="top">
-              <ButtonLink
-                to="/studio/events/new"
-                size="icon-sm"
-                aria-label={t('studioEvents.addEvent')}
+    <>
+      <Tabs
+        selectedIndex={tabIndex}
+        onChange={(index) =>
+          void navigate({
+            to: '/studio/schedule',
+            search:
+              index === 0
+                ? { show: 'events' }
+                : { show: 'events', tab: EVENT_TABS[index] },
+            replace: true,
+          })
+        }
+        listClassName="border-border border-b pb-3"
+        panelClassName="pt-2"
+        items={[
+          {
+            id: 'upcoming',
+            label: t('studioEvents.upcoming'),
+            icon: <CalendarClockIcon size={14} />,
+            content: (
+              <StudioPanel
+                title={t('studioEvents.upcomingTitle')}
+                description={t('studioEvents.upcomingDescription')}
               >
-                <PlusIcon size={16} aria-hidden />
-              </ButtonLink>
-            </Tooltip>
-          }
-        >
-          <Tabs
-            selectedIndex={tabIndex}
-            onChange={(index) =>
-              void navigate({
-                to: '/studio/events',
-                search: index === 0 ? {} : { tab: EVENT_TABS[index] },
-                replace: true,
+                {loading ? (
+                  <PageLoading label={t('studioEvents.loading')} />
+                ) : (
+                  renderEvents(upcomingEvents, true)
+                )}
+              </StudioPanel>
+            ),
+          },
+          {
+            id: 'past',
+            label: t('studioEvents.past'),
+            icon: <HistoryIcon size={14} />,
+            content: (
+              <StudioPanel
+                title={t('studioEvents.pastTitle')}
+                description={t('studioEvents.pastDescription')}
+              >
+                {loading ? (
+                  <PageLoading label={t('studioEvents.loading')} />
+                ) : (
+                  renderEvents(pastEvents)
+                )}
+              </StudioPanel>
+            ),
+          },
+          {
+            id: 'invites',
+            label: t('events.invites'),
+            icon: <MailIcon size={14} />,
+            content: (
+              <StudioPanel
+                title={t('events.invitesTitle')}
+                description={t('events.invitesDescription')}
+              >
+                <EventInvitesPanel />
+              </StudioPanel>
+            ),
+          },
+        ]}
+      />
+      <ConfirmDialog
+        isOpen={pendingRemove !== null}
+        title={
+          pendingRemove
+            ? t('studioEvents.removeConfirmTitleNamed', {
+                title: pendingRemove.title,
               })
-            }
-            listClassName="border-border border-b pb-3"
-            panelClassName="pt-2"
-            items={[
-              {
-                id: 'upcoming',
-                label: t('studioEvents.upcoming'),
-                icon: <CalendarClockIcon size={14} />,
-                content: (
-                  <StudioPanel
-                    title={t('studioEvents.upcomingTitle')}
-                    description={t('studioEvents.upcomingDescription')}
-                  >
-                    {loading ? (
-                      <PageLoading label={t('studioEvents.loading')} />
-                    ) : (
-                      renderEvents(upcomingEvents, true)
-                    )}
-                  </StudioPanel>
-                ),
-              },
-              {
-                id: 'past',
-                label: t('studioEvents.past'),
-                icon: <HistoryIcon size={14} />,
-                content: (
-                  <StudioPanel
-                    title={t('studioEvents.pastTitle')}
-                    description={t('studioEvents.pastDescription')}
-                  >
-                    {loading ? (
-                      <PageLoading label={t('studioEvents.loading')} />
-                    ) : (
-                      renderEvents(pastEvents)
-                    )}
-                  </StudioPanel>
-                ),
-              },
-              {
-                id: 'invites',
-                label: t('events.invites'),
-                icon: <MailIcon size={14} />,
-                content: (
-                  <StudioPanel
-                    title={t('events.invitesTitle')}
-                    description={t('events.invitesDescription')}
-                  >
-                    <EventInvitesPanel />
-                  </StudioPanel>
-                ),
-              },
-            ]}
-          />
-        </ViewShell>
-        <ConfirmDialog
-          isOpen={pendingRemove !== null}
-          title={
-            pendingRemove
-              ? t('studioEvents.removeConfirmTitleNamed', {
-                  title: pendingRemove.title,
-                })
-              : t('studioEvents.removeConfirmTitle')
+            : t('studioEvents.removeConfirmTitle')
+        }
+        description={t('studioEvents.removeConfirmDescription')}
+        confirmLabel={t('studioEvents.remove')}
+        destructive
+        onCancel={() => setPendingRemove(null)}
+        onConfirm={() => {
+          const event = pendingRemove;
+          if (!event) {
+            return;
           }
-          description={t('studioEvents.removeConfirmDescription')}
-          confirmLabel={t('studioEvents.remove')}
-          destructive
-          onCancel={() => setPendingRemove(null)}
-          onConfirm={() => {
-            const event = pendingRemove;
-            if (!event) {
+          setPendingRemove(null);
+          void deleteEvent(event.id).then((result) => {
+            if (!result.ok) {
+              toast.error(result.error);
               return;
             }
-            setPendingRemove(null);
-            void deleteEvent(event.id).then((result) => {
-              if (!result.ok) {
-                toast.error(result.error);
-                return;
-              }
-              toast.success(t('toasts.eventRemoved', { title: event.title }));
-              reload();
-            });
-          }}
-        />
-      </div>
-    </StudioGate>
+            toast.success(t('toasts.eventRemoved', { title: event.title }));
+            reload();
+          });
+        }}
+      />
+    </>
   );
 }

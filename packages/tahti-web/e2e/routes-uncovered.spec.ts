@@ -8,7 +8,7 @@ import {
 } from './helpers/routeHealth';
 
 const routes: RouteVisit[] = [
-  { path: '/studio/listening-parties', heading: /^Listening parties$/ },
+  { path: '/studio/schedule?show=parties', heading: /^Schedule$/ },
   {
     path: '/studio/listening-parties/new',
     heading: /^Schedule listening party$/,

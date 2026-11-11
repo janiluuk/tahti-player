@@ -92,7 +92,7 @@ export const CHROME_NOTIFICATIONS: TahtiNotification[] = [
     actor: null,
     title: 'Your event is coming up',
     body: 'Album release show starts tomorrow at 18:00.',
-    url: '/studio/events',
+    url: '/studio/schedule?show=events',
     readAt: minutesAgo(30),
     sticky: false,
     createdAt: minutesAgo(120),

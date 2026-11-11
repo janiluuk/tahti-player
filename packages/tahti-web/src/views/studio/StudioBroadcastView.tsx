@@ -57,21 +57,21 @@ export function studioBroadcastItems(t: TFunction<'web'>): HubCardItem[] {
     },
     {
       id: 'events',
-      href: '/studio/events',
+      href: '/studio/schedule?show=events',
       icon: CalendarIcon,
       title: t('studioBroadcastViewMore.events'),
       description: t('studioBroadcastViewMore.gigsAndHappeningsOnYour'),
     },
     {
       id: 'parties',
-      href: '/studio/listening-parties',
+      href: '/studio/schedule?show=parties',
       icon: PartyPopperIcon,
       title: t('studioBroadcastViewMore.listeningParties'),
       description: t('studioBroadcastViewMore.premiereAReleaseWithYour'),
     },
     {
       id: 'radio',
-      href: '/studio/channel?tab=radio',
+      href: '/studio/channel?radio=rotation#radio',
       icon: RepeatIcon,
       title: '24/7 radio',
       description: t('studioBroadcastViewMore.whatYourChannelPlaysWhen'),
@@ -85,7 +85,7 @@ export function studioBroadcastItems(t: TFunction<'web'>): HubCardItem[] {
     },
     {
       id: 'tahti-radio',
-      href: '/studio/channel?tab=tahti-radio',
+      href: '/studio/channel?radio=tahti-radio#radio',
       icon: RadioIcon,
       title: 'Tahti Radio',
       description: t('studioBroadcastViewMore.bookASlotOnThe'),

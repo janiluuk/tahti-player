@@ -53,9 +53,13 @@ editor. See root `AGENTS.md` → Persistent chrome visibility.
 Studio submenu (`StudioNav` `SUBMENUS['/studio']`): Overview, Stats,
 Governance, Posts, Audience, Releases, Editor, Broadcast.
 
-- Broadcast tabs (`BROADCAST_SUBNAV_ITEMS`): Go Live, Schedule, Events,
-  Shows, Channel, Radio (`/studio/channel?tab=radio`). Multicast, 24/7,
-  Announcements, Pinned and Tahti Radio are tabs inside Channel → Radio.
+- Broadcast sub-nav (`BROADCAST_SUBNAV_ITEMS`, links): Go live, Schedule,
+  Shows, Channel. Events and Listening parties are Schedule filters
+  (`?show=events`, `?show=parties`); `/studio/events` and
+  `/studio/listening-parties` redirect there. Radio is a section of Channel
+  (`/studio/channel#radio`); Stream, 24/7 (with announcements), Pinned, Tahti
+  Radio and Multicast are its tabs (`?radio=`). Old `/studio/channel?tab=…`
+  links redirect to the matching section.
 - Audience tabs (`AUDIENCE_SUBNAV_ITEMS`): Overview, Tiers, Stripe (only when
   Stripe is configured).
 
@@ -115,7 +119,7 @@ Desktop right rail: Queue only.
 | Everyone | Library | `/library`, `/library/favorites`, `/library/sounds`, `/library/collections` (+ `/$slug`), `/library/recordings`, `/library/media`, `/library/stash`, `/library/embeds`, `/library/smartlinks`, `/library/local`, `/library/upload` | Favorites is the Library tab. `/favorites` and `/listen/favorites` redirect to `/library/favorites`. Opening Library or Favorites does not ask for sign-in. Other Library tabs stay visible and grayed until there is an account. |
 | Everyone | Help | `/help`, `/help/$slug` | Signed-in users also see their support requests and replies. Articles reach `/status`, `/news`, `/whats-new`, legal pages and `/transparency`. `/help/governance` redirects to `/studio/governance?tab=guide`. |
 | Artist | Studio | `/studio`, `/studio/stats` (+ `/detail`), `/studio/insights` (+ `/$kind/$id`), `/studio/governance`, `/studio/updates`, `/studio/audience` (+ `?tab=tiers`), `/studio/stripe`, `/studio/releases` (+ `/$id`), `/studio/distribution`, `/studio/editor` (+ `/$id`), `/studio/mastering/$id`, `/studio/sounds` (+ `/$id`, `/$id/editor`), `/studio/collections` (+ `/$slug`), `/studio/playlists/$slug`, `/studio/branding` | Sounds, collections and branding have no submenu item; they are reached from Studio home, Library and in-page links, and Studio stays highlighted. |
-| Artist | Broadcast | `/studio/go-live`, `/studio/schedule`, `/studio/events` (+ `/new`, `/$eventId/edit`), `/studio/shows` (+ `/$id`, `/episodes/$episodeId`), `/studio/channel` | Show detail carries visibility (Public / Fans only) and automatic episode numbering. 24/7 programme is on `/studio/schedule`. |
+| Artist | Broadcast | `/studio/go-live`, `/studio/schedule`, `/studio/schedule` (`?show=events`, `?show=parties`; `/studio/events/new`, `/studio/events/$eventId/edit`), `/studio/shows` (+ `/$id`, `/episodes/$episodeId`), `/studio/channel` | Show detail carries visibility (Public / Fans only) and automatic episode numbering. 24/7 programme is on `/studio/schedule`. |
 | Signed in | Settings | `/settings`, `/settings/$section`, `/account`, `/onboarding` | Modal + bookmarkable sections. `/themes` redirects here. `/sources` and `/sources/$id` redirect to Add-ons → Import. `/settings/audience`, `money`, `fan-subs`, `fan-tiers` redirect to `/studio/audience`. |
 | Signed in | Messages (top bar) | `/messages`, `/messages/$id` | Artist and Moderator badges in the inbox and the popover. |
 | Board | Admin | `/admin`, `/admin/logs`, `/admin/moderation` (+ `$tab`), `/admin/users`, `/admin/content`, `/admin/radio`, `/admin/news`, `/admin/streams`, `/admin/venues`, `/admin/top-lists`, `/admin/announcements`, `/admin/storage` (+ `/$userId`), `/admin/artwork-presets`, `/admin/financial`, `/admin/governance` (+ `$tab`), `/admin/grants/$year`, `/admin/addons`, `/admin/status`, `/admin/vendors`, `/admin/i18n`, `/admin/tahti-selects`, `/admin/orphan-pages` (+ `$tab`), `/admin/map` | Queue/detail routes stay contextual. |

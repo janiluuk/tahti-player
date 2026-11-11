@@ -1,6 +1,11 @@
 import { createRoute, redirect } from '@tanstack/react-router';
 
 import {
+  channelTabRedirect,
+  isChannelRadioTab,
+  type ChannelRadioTab,
+} from '../lib/channelSections';
+import {
   movedSettingsSection,
   type MovedSettingsSection,
 } from '../lib/movedSettingsSections';
@@ -16,7 +21,6 @@ import {
   StudioEditorProjectView,
   StudioEpisodeReviewView,
   StudioEventCreateView,
-  StudioEventsView,
   StudioEventView,
   StudioFansView,
   StudioGoLiveView,
@@ -24,7 +28,6 @@ import {
   StudioGroupDetailView,
   StudioGroupsView,
   StudioHomeView,
-  StudioListeningPartiesView,
   StudioListeningPartyFormView,
   StudioMasteringView,
   StudioPlaylistEditorView,
@@ -236,6 +239,14 @@ export const studioStashRoute = createRoute({
 export const studioScheduleRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/schedule',
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { show?: 'events' | 'parties'; tab?: string } => ({
+    ...(search.show === 'events' || search.show === 'parties'
+      ? { show: search.show }
+      : {}),
+    ...(typeof search.tab === 'string' ? { tab: search.tab } : {}),
+  }),
   component: StudioScheduleView,
 });
 
@@ -290,9 +301,18 @@ export const studioSetupChannelRoute = createRoute({
 export const studioChannelRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/channel',
-  validateSearch: (search: Record<string, unknown>): { tab?: string } => ({
-    tab: typeof search.tab === 'string' ? search.tab : undefined,
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { tab?: string; radio?: ChannelRadioTab } => ({
+    ...(typeof search.tab === 'string' ? { tab: search.tab } : {}),
+    ...(isChannelRadioTab(search.radio) ? { radio: search.radio } : {}),
   }),
+  beforeLoad: ({ search }) => {
+    const target = channelTabRedirect(search.tab);
+    if (target) {
+      throw redirect(target as never);
+    }
+  },
   component: StudioChannelView,
 });
 
@@ -482,7 +502,12 @@ export const studioEventsRoute = createRoute({
   path: '/studio/events',
   validateSearch: (search: Record<string, unknown>): { tab?: string } =>
     typeof search.tab === 'string' ? { tab: search.tab } : {},
-  component: StudioEventsView,
+  beforeLoad: ({ search }) => {
+    throw redirect({
+      to: '/studio/schedule',
+      search: { show: 'events', ...(search.tab ? { tab: search.tab } : {}) },
+    });
+  },
 });
 
 export const studioEventCreateRoute = createRoute({
@@ -527,7 +552,9 @@ export const studioGroupDetailRoute = createRoute({
 export const studioListeningPartiesRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/listening-parties',
-  component: StudioListeningPartiesView,
+  beforeLoad: () => {
+    throw redirect({ to: '/studio/schedule', search: { show: 'parties' } });
+  },
 });
 
 export const studioListeningPartyCreateRoute = createRoute({
