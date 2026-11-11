@@ -28,8 +28,9 @@ export const SignedOut: Story = {
     await expect(
       canvas.getByRole('tab', { name: 'Sounds, needs an account' }),
     ).toBeDisabled();
-    await expect(canvas.queryByText('Sign in to see favorites')).toBeNull();
-    await expect(canvas.getByText('No favorite tracks')).toBeVisible();
+    await expect(
+      canvas.getByText('Sign in to see the tracks you like'),
+    ).toBeVisible();
   },
 };
 

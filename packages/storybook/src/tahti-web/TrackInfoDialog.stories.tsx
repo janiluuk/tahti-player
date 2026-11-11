@@ -37,7 +37,7 @@ const playable: TahtiPlayable = {
   channelSlug: 'northern-lights',
 };
 
-// Signed in as the track's own artist — shows love / add-to-playlist and
+// Signed in as the track's own artist — shows like / add-to-playlist and
 // (because the signed-in user has a channel) the Mixcloud export section.
 export const WithArtistTools: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
@@ -75,16 +75,16 @@ export const WithArtistTools: Story = {
     ).toBeDisabled();
     await userEvent.click(dialog.getByRole('button', { name: /Frost Line/ }));
     await expect(selectFrostLine).toHaveBeenCalled();
-    const love = dialog.getByRole('button', { name: 'Love' });
-    await userEvent.click(love);
+    const like = dialog.getByRole('button', { name: 'Like' });
+    await userEvent.click(like);
     await expect(
-      await dialog.findByRole('button', { name: 'Loved' }),
+      await dialog.findByRole('button', { name: 'Unlike' }),
     ).toHaveAttribute('aria-pressed', 'true');
-    await userEvent.click(dialog.getByRole('button', { name: 'Loved' }));
+    await userEvent.click(dialog.getByRole('button', { name: 'Unlike' }));
   },
 };
 
-// A live/ephemeral signal with no catalog entry — no love/playlist icons,
+// A live/ephemeral signal with no catalog entry — no like/playlist icons,
 // no tracklist, and shown to a signed-out listener.
 export const LiveSignalNoCatalogEntry: Story = {
   decorators: [withMockAuth(null)],
@@ -100,7 +100,7 @@ export const LiveSignalNoCatalogEntry: Story = {
   },
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement, 'Track info');
-    await expect(dialog.queryByRole('button', { name: 'Love' })).toBeNull();
+    await expect(dialog.queryByRole('button', { name: 'Like' })).toBeNull();
     await expect(dialog.queryByText('Tracklist')).toBeNull();
     await expect(
       dialog.queryByRole('link', { name: 'Artist page' }),
