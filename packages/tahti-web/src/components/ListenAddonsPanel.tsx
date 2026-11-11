@@ -331,7 +331,7 @@ export function ListenAddonsPanel({
             )}
           >
             <p className="text-foreground-secondary text-sm">
-              Enabled favorites appear on the Listen page.
+              {t('listenAddonsPanelStates.favoritesEnabledHint')}
             </p>
           </ConfigurableCard>
         )}

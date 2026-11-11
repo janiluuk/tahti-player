@@ -336,9 +336,7 @@ export function ItunesImportDialog({
     >
       <Dialog.Title>{t('itunesImport.importItunesLibrary')}</Dialog.Title>
       <Dialog.Description>
-        Brings in tracks, ratings, play counts and playlists from an iTunes or
-        Music.app library export (File → Library → Export Library…). Your audio
-        files are not changed, and tags already in a file are kept.
+        {t('itunesImportText.description')}
       </Dialog.Description>
 
       {state.error ? <InlineError>{state.error}</InlineError> : null}
@@ -378,12 +376,11 @@ export function ItunesImportDialog({
               {t('itunesImport.movedYourMusic')}
             </p>
             <p className="text-foreground-secondary text-xs">
-              Replace the start of the paths in the export with where the files
-              are now
               {state.preview.musicFolder
-                ? ` (the export's music folder is ${state.preview.musicFolder})`
-                : ''}
-              .
+                ? t('itunesImportText.replacePathsWithFolder', {
+                    folder: state.preview.musicFolder,
+                  })
+                : t('itunesImportText.replacePaths')}
             </p>
             {state.drafts.map((draft, index) => (
               <div key={index} className="flex items-end gap-2">
@@ -447,7 +444,7 @@ export function ItunesImportDialog({
                 {state.phase === 'previewing' ? (
                   <Loader size="inline" shape="circle" />
                 ) : null}
-                Preview again
+                {t('itunesImportText.previewAgain')}
               </Button>
             </div>
             {state.dirty ? (

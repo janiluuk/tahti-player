@@ -156,7 +156,7 @@ export function WriteTagsDialog({
           onClick={() => void write()}
         >
           {busy ? <Loader size="inline" shape="circle" /> : null}
-          Write to files
+          {t('writeTagsDialogText.writeToFiles')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

@@ -11,12 +11,12 @@ import {
 } from '../../api/hearthis-export';
 import { fetchMeIntegrations } from '../../api/integrations';
 
-const STATUS_TEXT: Record<HearthisExportStatus, string> = {
-  pending: 'Queued — reopen this dialog later to see how it went.',
-  submitted: 'Uploading to hearthis.at…',
-  delivered: 'On your hearthis.at account.',
-  failed: 'The last export failed. Try again.',
-};
+const STATUS_KEY = {
+  pending: 'hearthisExportStates.pending',
+  submitted: 'hearthisExportStates.submitted',
+  delivered: 'hearthisExportStates.delivered',
+  failed: 'hearthisExportStates.failed',
+} as const satisfies Record<HearthisExportStatus, string>;
 
 export function HearthisExportSection({
   soundId,
@@ -87,21 +87,20 @@ export function HearthisExportSection({
         >
           {!installed ? (
             <>
-              Install the hearthis.at export plugin (needs hearthis.at Premium)
-              in{' '}
+              {t('hearthisExportStates.installBefore')}{' '}
               <Link
                 to="/settings/$section"
                 params={{ section: 'integrations' }}
                 className="underline"
               >
-                Settings → Integrations
+                {t('hearthisExportStates.settingsIntegrations')}
               </Link>{' '}
-              to copy this track to your own hearthis.at account.
+              {t('hearthisExportStates.installAfter')}
             </>
           ) : status ? (
-            STATUS_TEXT[status]
+            t(STATUS_KEY[status])
           ) : (
-            'Copy this track to your own hearthis.at account.'
+            t('hearthisExportStates.copyToAccount')
           )}
         </p>
         {error ? <InlineError className="mt-1">{error}</InlineError> : null}

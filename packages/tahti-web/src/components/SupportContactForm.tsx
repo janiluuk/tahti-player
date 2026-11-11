@@ -51,9 +51,9 @@ export function SupportContactForm({
           {t('supportContact.weReceivedYourMessage')}
         </p>
         <p className="text-foreground-secondary mt-1">
-          Expect a reply within two business days for engagement and billing
-          questions.
-          {email ? ' Replies show up under Your requests.' : null}
+          {email
+            ? t('supportContactFormText.replyTimeWithRequests')
+            : t('supportContactFormText.replyTime')}
         </p>
       </div>
     );

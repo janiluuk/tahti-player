@@ -142,7 +142,7 @@ export function TagChipInput({
       {!atLimit && quickAdds.length > 0 ? (
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-foreground-secondary text-xs">
-            Used before:
+            {t('tagChipInputText.usedBefore')}
           </span>
           {quickAdds.map((tag) => (
             <Button

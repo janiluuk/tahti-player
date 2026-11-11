@@ -75,7 +75,7 @@ function StateLine({
     case 'ENDED':
       return (
         <p className="text-foreground-secondary text-sm">
-          This listening party has ended. Thanks for listening.
+          {t('listeningPartyHeroText.ended')}
           {party.release.smartLinkSlug && !party.release.isPreRelease ? (
             <>
               {' '}

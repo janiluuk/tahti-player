@@ -668,10 +668,7 @@ export function ClipEditorDialog({
                 </InlineError>
               )}
               <p className="text-foreground-secondary text-xs">
-                Programs are complete rotation items. Clips do not interrupt
-                live shows. Enable “Play clips between programs” in 24/7
-                settings to hear active clips. Changes are picked up when the
-                station refreshes its rotation.
+                {t('clipEditorDialogText.programsHint')}
               </p>
             </section>
           </div>
