@@ -1,6 +1,6 @@
 ## 2026-11-11 — release track stems
 
-Studio release Advanced can upload, replace, play and remove vocals, drums, bass and other stems on each track. Listeners see and play them on the release, the profile tracklist and the linked track when the release is already visible. Mock API covers the flow. tahti-web 0.0.373. Folded `release-track-stems.md`.
+Studio release Advanced can upload, replace, play and remove vocals, drums, bass and other stems on each track. Listeners see and play them on the release, the profile tracklist and the linked track when the release is already visible. Mock API covers the flow. tahti-web 0.0.374. Folded `release-track-stems.md`.
 
 ## 2026-11-11 — edit a release from the public page
 
