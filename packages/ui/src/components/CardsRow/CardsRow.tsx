@@ -21,6 +21,7 @@ import {
   trackRowClass,
   trackRowMinHeightClass,
 } from '../TrackTable/utils/rowClass';
+import { useUiLabels } from '../UiLabels';
 import { CardsRowItemMotion } from './CardsRowItemMotion';
 import { useCardsRow } from './useCardsRow';
 
@@ -189,6 +190,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
     canScrollRight,
   } = useCardsRow(items);
 
+  const uiLabels = useUiLabels();
   const layoutLabels: Record<CardsRowLayout, string> = {
     list: labels.showAsList ?? 'Show as list',
     cards: labels.showAsCards ?? 'Show as cards',
@@ -263,13 +265,13 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
               onChange={(event) => setFilterText(event.target.value)}
               endAddon={
                 filterText.trim() ? (
-                  <Tooltip content="Clear filter" side="top">
+                  <Tooltip content={uiLabels.clearFilter} side="top">
                     <button
                       data-testid="cards-row-clear-filter"
                       type="button"
                       className="cursor-pointer"
                       onClick={clearFilter}
-                      aria-label="Clear filter"
+                      aria-label={uiLabels.clearFilter}
                     >
                       <Filter size={14} />
                     </button>
@@ -288,26 +290,26 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
           ) : null}
           {showScroll ? (
             <div className="hidden shrink-0 items-center gap-2 sm:flex">
-              <Tooltip content="Scroll left" side="top">
+              <Tooltip content={uiLabels.scrollLeft} side="top">
                 <Button
                   data-testid="cards-row-scroll-left"
                   size="icon-sm"
                   onClick={scrollLeft}
                   disabled={!canScrollLeft}
                   variant="secondary"
-                  aria-label="Scroll left"
+                  aria-label={uiLabels.scrollLeft}
                 >
                   <ChevronLeft size={16} />
                 </Button>
               </Tooltip>
-              <Tooltip content="Scroll right" side="top">
+              <Tooltip content={uiLabels.scrollRight} side="top">
                 <Button
                   data-testid="cards-row-scroll-right"
                   size="icon-sm"
                   onClick={scrollRight}
                   disabled={!canScrollRight}
                   variant="secondary"
-                  aria-label="Scroll right"
+                  aria-label={uiLabels.scrollRight}
                 >
                   <ChevronRight size={16} />
                 </Button>
@@ -368,7 +370,7 @@ export const CardsRow = <T extends CardsRowItem = CardsRowItem>({
                 variant="secondary"
                 onClick={clearFilter}
               >
-                {labels.clearFilter ?? 'Clear filter'}
+                {labels.clearFilter ?? uiLabels.clearFilter}
               </Button>
             ) : undefined
           }

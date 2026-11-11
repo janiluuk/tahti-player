@@ -2,7 +2,7 @@ import type { TahtiNativeLibrary } from '../lib/nativeLibrary';
 import { PlaylistsBrowser } from './local-playlists/PlaylistsBrowser';
 import { PlaylistView } from './local-playlists/PlaylistView';
 
-export { PLAYLIST_COLUMNS } from './local-playlists/shared';
+export { playlistColumns } from './local-playlists/shared';
 
 type Props = {
   library: TahtiNativeLibrary;

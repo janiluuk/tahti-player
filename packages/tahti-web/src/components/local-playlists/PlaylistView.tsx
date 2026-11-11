@@ -40,7 +40,7 @@ import { ConfirmDialog } from '../ConfirmDialog';
 import { PageEmpty } from '../PageStates';
 import { PlaylistExportDialog } from '../PlaylistExportDialog';
 import { PlaylistNameDialog } from '../PlaylistNameDialog';
-import { PLAYLIST_COLUMNS, playPlaylist, summaryLine } from './shared';
+import { playlistColumns, playPlaylist, summaryLine } from './shared';
 
 const MAX_UNDO = 20;
 
@@ -61,10 +61,8 @@ export function PlaylistView({
   onBrowseTracks,
 }: ViewProps) {
   const { t } = useTranslation('web');
-  const table = usePersistedCatalogTable(
-    'tahti-local-playlist-table',
-    PLAYLIST_COLUMNS,
-  );
+  const columns = useMemo(() => playlistColumns(t), [t]);
+  const table = usePersistedCatalogTable('tahti-local-playlist-table', columns);
   const [summary, setSummary] = useState<NativePlaylistSummary | null>(null);
   const [entries, setEntries] = useState<NativePlaylistEntry[]>([]);
   const [total, setTotal] = useState(0);
@@ -296,8 +294,6 @@ export function PlaylistView({
       void removeRows([...selectedIds]);
     }
   };
-
-  const columns = useMemo(() => PLAYLIST_COLUMNS, []);
 
   if (error && !summary) {
     return (

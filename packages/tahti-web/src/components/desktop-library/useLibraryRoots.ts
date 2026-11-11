@@ -46,13 +46,15 @@ export function useLibraryRoots(
       await library.setWatching(enabled);
       toast.success(
         enabled
-          ? 'Watching folders for changes.'
-          : 'Folder watching paused — use Rescan to pick up changes.',
+          ? i18n.t('web:libraryRootsStates.watching')
+          : i18n.t('web:libraryRootsStates.watchingPaused'),
       );
     } catch (error) {
       setWatching(!enabled);
       toast.error(
-        error instanceof Error ? error.message : 'Could not change watching.',
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:libraryRootsStates.couldNotChangeWatching'),
       );
     }
   };
@@ -126,14 +128,14 @@ export function useLibraryRoots(
           describeRootScan(result);
         }
       },
-      'Could not add folder.',
+      i18n.t('web:libraryRootsStates.couldNotAddFolder'),
     );
 
   const rescanRoots = () =>
     runRootAction(
       'rescan',
       async (library) => describeRootScan(await library.rescanRoots()),
-      'Scan failed.',
+      i18n.t('web:libraryRootsStates.scanFailed'),
     );
 
   const relinkRoot = (root: NativeLibraryRoot) =>
@@ -144,12 +146,17 @@ export function useLibraryRoots(
         if (result) {
           toast.success(
             result.unmatched
-              ? `Relinked ${result.relinked} tracks; ${result.unmatched} not found in the new folder.`
-              : `Relinked ${result.relinked} tracks.`,
+              ? i18n.t('web:libraryRootsStates.relinkedPartial', {
+                  count: result.relinked,
+                  unmatched: result.unmatched,
+                })
+              : i18n.t('web:libraryRootsStates.relinked', {
+                  count: result.relinked,
+                }),
           );
         }
       },
-      'Relink failed.',
+      i18n.t('web:libraryRootsStates.relinkFailed'),
     );
 
   const removeRoot = (root: NativeLibraryRoot) =>
@@ -158,10 +165,12 @@ export function useLibraryRoots(
       async (library) => {
         await library.removeRoot(root.id);
         toast.success(
-          `Stopped tracking “${basename(root.path)}”. Its tracks stay in your library.`,
+          i18n.t('web:libraryRootsStates.stoppedTracking', {
+            folder: basename(root.path),
+          }),
         );
       },
-      'Could not remove folder.',
+      i18n.t('web:libraryRootsStates.couldNotRemoveFolder'),
     );
 
   return {

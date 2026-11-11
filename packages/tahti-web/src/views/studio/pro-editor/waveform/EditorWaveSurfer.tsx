@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 
+import { i18n } from '@tahti-player/i18n';
 import {
   hasPeaks,
   observeThemeChange,
@@ -129,7 +130,7 @@ export function EditorWaveSurfer({
   markers,
   onKeyDown,
   onFallback,
-  label = 'Waveform',
+  label = i18n.t('web:editorWaveSurfer.waveform'),
 }: EditorWaveSurferProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const outerRef = useRef<HTMLDivElement>(null);
@@ -444,14 +445,21 @@ export function EditorWaveSurfer({
       added.push(region);
     };
     (cuts ?? []).forEach((cut, index) =>
-      place(`cut-${index}`, { ...cut, color: cutColor, content: 'Cut' }),
+      place(`cut-${index}`, {
+        ...cut,
+        color: cutColor,
+        content: i18n.t('web:editorWaveSurfer.cut'),
+      }),
     );
     (fades ?? []).forEach((fade, index) =>
       place(`fade-${index}`, {
         start: fade.at,
         end: fade.at + fade.duration,
         color: fade.type === 'in' ? fadeInColor : fadeOutColor,
-        content: fade.type === 'in' ? 'Fade in' : 'Fade out',
+        content:
+          fade.type === 'in'
+            ? i18n.t('web:editorWaveSurfer.fadeIn')
+            : i18n.t('web:editorWaveSurfer.fadeOut'),
       }),
     );
     (markers ?? []).forEach((at, index) =>
@@ -509,7 +517,7 @@ export function EditorWaveSurfer({
       ref={outerRef}
       tabIndex={0}
       role="application"
-      aria-label={`${label}. Space plays or pauses, arrow keys move the playhead, left and right bracket start and end a selection at the playhead, plus and minus zoom, Z zooms to the selection, Delete cuts it, Escape clears it.`}
+      aria-label={i18n.t('web:editorWaveSurfer.keyboardHelp', { label })}
       data-testid="editor-wavesurfer"
       onKeyDown={onKeyDown}
       className="border-border bg-background focus-visible:ring-primary relative w-full overflow-hidden rounded-md border-2 outline-none focus-visible:ring-2"

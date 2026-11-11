@@ -192,7 +192,9 @@ export function SoundRow({
           </Tooltip>
         ) : (
           <Tooltip
-            content={`Play on ${EMBED_PROVIDER_LABEL[item.embedProvider!]} · Shift+click to queue`}
+            content={t('tooltips.playOnShiftQueue', {
+              provider: EMBED_PROVIDER_LABEL[item.embedProvider!],
+            })}
             side="top"
           >
             <Button

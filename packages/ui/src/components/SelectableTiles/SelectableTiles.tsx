@@ -5,6 +5,7 @@ import {
   useFilterChips,
   UseFilterChipsConfig,
 } from '../FilterChips/useFilterChips';
+import { useUiLabels } from '../UiLabels';
 
 export type SelectableTile = {
   id: string;
@@ -52,6 +53,7 @@ export const SelectableTiles: FC<SelectableTilesProps> = (props) => {
     layout = 'row',
     ...rest
   } = props;
+  const labels = useUiLabels();
 
   const hookConfig: UseFilterChipsConfig = multiple
     ? { multiple: true, selected, onChange }
@@ -67,7 +69,7 @@ export const SelectableTiles: FC<SelectableTilesProps> = (props) => {
       data-testid="selectable-tiles"
       className={cn('grid gap-2', className)}
       role={multiple ? 'group' : 'radiogroup'}
-      aria-label="Selectable options"
+      aria-label={labels.selectableOptions}
       {...rest}
     >
       {items.map((item) => {

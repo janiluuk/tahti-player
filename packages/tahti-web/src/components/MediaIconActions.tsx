@@ -104,14 +104,19 @@ export function playQueueFavoriteActions(opts: {
   const actions: MediaIconAction[] = [
     {
       id: 'play',
-      label: opts.isPlaying ? 'Pause' : (opts.playLabel ?? 'Play'),
+      label: opts.isPlaying
+        ? i18n.t('web:actions.pause')
+        : (opts.playLabel ?? i18n.t('web:actions.play')),
       icon: opts.isPlaying ? (
         <PauseIcon size={16} className="fill-current" />
       ) : (
         <PlayIcon size={16} className="fill-current" />
       ),
       ariaLabel: opts.itemName
-        ? `${opts.isPlaying ? 'Pause' : 'Play'} ${opts.itemName}`
+        ? i18n.t(
+            opts.isPlaying ? 'web:actions.pauseItem' : 'web:actions.playItem',
+            { title: opts.itemName },
+          )
         : undefined,
       onClick:
         opts.isPlaying && opts.onTogglePause ? opts.onTogglePause : opts.onPlay,
@@ -121,9 +126,14 @@ export function playQueueFavoriteActions(opts: {
     },
     {
       id: 'queue',
-      label: opts.queued ? 'In queue' : (opts.queueLabel ?? 'Queue'),
+      label: opts.queued
+        ? i18n.t('web:actions.inQueue')
+        : (opts.queueLabel ?? i18n.t('web:actions.queue')),
       ariaLabel: opts.itemName
-        ? `${opts.queued ? 'In queue:' : 'Queue'} ${opts.itemName}`
+        ? i18n.t(
+            opts.queued ? 'web:actions.inQueueItem' : 'web:actions.queueItem',
+            { title: opts.itemName },
+          )
         : undefined,
       icon: opts.queued ? <CheckIcon size={16} /> : <ListPlusIcon size={16} />,
       onClick: opts.onQueue,
