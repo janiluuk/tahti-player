@@ -17,11 +17,68 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
 | blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live verify Centrifugo Send on brand-new channel — playbook ready |
 
+## Next 50 slices
+
+Split out of [next-50.md](next-50.md). One file per slice. The parent file stays until that area is folded.
+
+| Status  | File | One-line |
+| ------- | ---- | -------- |
+| open    | [admin-queue-list-jobs.md](admin-queue-list-jobs.md) | List the jobs that are processing, waiting, and failed |
+| open    | [admin-queue-retry-job.md](admin-queue-retry-job.md) | Retry one failed queue job from Admin |
+| open    | [admin-queue-remove-job.md](admin-queue-remove-job.md) | Remove one job from a queue |
+| open    | [admin-queue-pause.md](admin-queue-pause.md) | Pause and resume a queue |
+| open    | [admin-queue-requeue-pending.md](admin-queue-requeue-pending.md) | Re-queue sounds stuck PENDING with a stored file and no job |
+| open    | [help-finnish-addon-rows.md](help-finnish-addon-rows.md) | Finnish copy for the Help and For artists add-on table rows |
+| open    | [help-finnish-native-review.md](help-finnish-native-review.md) | Native review of the redesigned Help and For artists pages |
+| open    | [help-drop-pricing-claims.md](help-drop-pricing-claims.md) | Remove pricing claims the Help redesign still shows |
+| open    | [ambient-track-row-phone-alignment.md](ambient-track-row-phone-alignment.md) | Align AmbientTrackRow on a 390 px phone across densities |
+| open    | [ambient-track-row-larger-thumb.md](ambient-track-row-larger-thumb.md) | Use a larger thumb on the phone track row |
+| open    | [hearthis-release-product-defaults.md](hearthis-release-product-defaults.md) | Confirm the product defaults for tahti hearthis release |
+| open    | [hearthis-release-live-run.md](hearthis-release-live-run.md) | One live tahti hearthis release run |
+| open    | [hearthis-collection-live-run.md](hearthis-collection-live-run.md) | One live tahti hearthis collection run |
+| open    | [channel-metrics-followers.md](channel-metrics-followers.md) | Show followers and following on the channel, each with a public toggle |
+| open    | [channel-metrics-plays.md](channel-metrics-plays.md) | Show plays today, yesterday, and total, each with a public toggle |
+| open    | [channel-metrics-downloads.md](channel-metrics-downloads.md) | Show downloads on the channel with a public toggle |
+| open    | [channel-about-tidy.md](channel-about-tidy.md) | Tidy the About block on the channel page |
+| open    | [channel-upcoming-events.md](channel-upcoming-events.md) | List upcoming events on the channel, including ones the artist plays at |
+| open    | [channel-past-events.md](channel-past-events.md) | List past events on the channel |
+| open    | [finish-wip-2026-11-04-branches.md](finish-wip-2026-11-04-branches.md) | Finish or close the unfinished 2026-11-04 branches and draft PRs |
+| open    | [spa-performance-bundle-chunks.md](spa-performance-bundle-chunks.md) | Audit the SPA bundle and route chunks before changing them |
+| open    | [spa-performance-lists-first-paint.md](spa-performance-lists-first-paint.md) | Audit long lists and phone first paint |
+| open    | [library-sounds-failed-toasts.md](library-sounds-failed-toasts.md) | Toast each failed item when a Sounds bulk action returns failed[] |
+| open    | [library-sounds-facets-filter.md](library-sounds-facets-filter.md) | Filter Sounds by the facets the library already has |
+| open    | [library-sounds-clear-filters.md](library-sounds-clear-filters.md) | Show isFallback and a way to clear Sounds filters |
+| open    | [embed-covers-slices-17-20.md](embed-covers-slices-17-20.md) | Finish embed cover slices 17–20 |
+| open    | [embed-covers-slices-24-30.md](embed-covers-slices-24-30.md) | Finish embed cover slices 24, 25, 29, and 30 |
+| open    | [server-peaks-studio-collections.md](server-peaks-studio-collections.md) | Show server waveform peaks on studio collection track lists |
+| open    | [server-peaks-radio-feed.md](server-peaks-radio-feed.md) | Show server waveform peaks on radio and the feed |
+| open    | [yaniho-channel-pregenerate-peaks.md](yaniho-channel-pregenerate-peaks.md) | Pre-generate peaks so Yaniho channel tracks are not stuck loading |
+| open    | [artwork-preset-backfill.md](artwork-preset-backfill.md) | Run the artwork-preset cover backfill after tahti-org#1033 is merged |
+| open    | [listings-news-opening-post.md](listings-news-opening-post.md) | Update the listings news opening post once an admin is signed in |
+| open    | [studio-music-catalog.md](studio-music-catalog.md) | Move the catalog into Studio → Music |
+| open    | [studio-profile-forms.md](studio-profile-forms.md) | Edit profile forms from Studio |
+| open    | [broadcast-agenda.md](broadcast-agenda.md) | Give Broadcast an agenda |
+| open    | [inbox-chips.md](inbox-chips.md) | Add chips to the inbox |
+| open    | [studio-overview-merge.md](studio-overview-merge.md) | Merge the extra Studio overview into the simplified nav |
+| open    | [finnish-web-actions.md](finnish-web-actions.md) | Translate the remaining web.actions strings |
+| open    | [finnish-api-notifications.md](finnish-api-notifications.md) | Translate API notification bodies |
+| open    | [finnish-upload-leftovers.md](finnish-upload-leftovers.md) | Translate the remaining Upload strings |
+| open    | [finnish-seo-page-tour.md](finnish-seo-page-tour.md) | Translate SEO strings and the page tour |
+| open    | [board-track-edit-product-call.md](board-track-edit-product-call.md) | Decide how board members edit a track |
+| open    | [embed-track-api-fix.md](embed-track-api-fix.md) | Fix the embed track API in tahti-org |
+| open    | [track-page-like-button.md](track-page-like-button.md) | Check the like button on the track page |
+| open    | [embed-downloads-product-call.md](embed-downloads-product-call.md) | Decide whether an embed offers downloads |
+| open    | [stage-embed-across-routes.md](stage-embed-across-routes.md) | Keep a stage-hosted embed playing when the route changes |
+| open    | [settings-account-only-seven.md](settings-account-only-seven.md) | Keep Settings to seven account-only items |
+| open    | [artist-groups-org-e2e.md](artist-groups-org-e2e.md) | Ship the org side of artist groups and cover it with e2e |
+| open    | [fans-chat-live-verify.md](fans-chat-live-verify.md) | Verify Fans Chat on the hub after merge |
+| open    | [event-invites-notifications.md](event-invites-notifications.md) | Show event invites in the notifications popover |
+
 ## Engineering backlog (no external blocker)
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [next-50.md](next-50.md) | Next 50 slices already named in the other todos: queue tools, Help Finnish, library, peaks, nav, localization |
+| open    | [next-50.md](next-50.md) | Map of the 50 slice files in the Next 50 slices section |
 | open    | [admin-queue-tools.md](admin-queue-tools.md) | Admin queue tools: see jobs processing now, waiting and failed; retry, remove, pause; re-queue stuck `PENDING` uploads |
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; add-on table rows, native review and dropped pricing claims left |
 | partial | [ambient-track-list-mobile.md](ambient-track-list-mobile.md) | Phone list default shipped; left: AmbientTrackRow phone layout (alignment across densities, larger thumb) — needs a visual pass at 390 px |
