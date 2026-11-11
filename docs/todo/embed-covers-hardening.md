@@ -1,7 +1,7 @@
 # Embed covers hardening
 
 **Status:** partial  
-**Updated:** 2026-11-11 (slice 12: PATCH /api/me/embeds/:id stores the soft-filled thumbnail)  
+**Updated:** 2026-11-11 (slices 16 and 26: Embeds tab soft-fills a missing cover in Storybook and the mock e2e)  
 **Follows:** library-sounds-embeds + embed-thumbnails (HISTORY 2026-11-10)
 
 Close the gaps left after Embeds-under-Sounds and the first cover pass:
@@ -39,7 +39,7 @@ Note: the backfill only sees rows with `bannerUrl: null`, but every embed import
 | 13 | player | SessionStorage (or IndexedDB) cache for soft-fill URLs | Done: `sessionStorage` key `tahti-web:embed-thumb:` |
 | 14 | player | Soft-fill concurrency limit (e.g. 2–3 in flight) | Done: at most 3 lookups in flight |
 | 15 | player | Soft-fill failure marking (null cache) per provider+uri | Done: empty session value means a known miss |
-| 16 | player | Storybook: Embeds tab row without banner soft-fills | Play asserts img src becomes non-seed |
+| 16 | player | Storybook: Embeds tab row without banner soft-fills | Done: `EmbedSoftFill` play asserts the img src is the stubbed noembed thumb |
 | 17 | player | Unit: soft-fill + PATCH called once | Mock fetch + patch |
 | 18 | player | Unit: hearthis soft-fill with `sourceUrl` | Cover path uses page URL |
 | 19 | org | Optional worker job: nightly embed cover backfill | Ops can run without artist clicking the button |
@@ -49,7 +49,7 @@ Note: the backfill only sees rows with `bannerUrl: null`, but every embed import
 | 23 | player | Admin ChannelTracksPanel: soft-fill when `bannerUrl` null | Board view matches artist library |
 | 24 | player | Finnish/en copy if new backfill toast strings appear | i18n keys, not hardcoded English |
 | 25 | player | Document soft-fill + backfill in user-manual Embeds note | One short “covers” paragraph |
-| 26 | player | E2E: Embeds row without banner gains artwork (mock noembed) | Mock app journey |
+| 26 | player | E2E: Embeds row without banner gains artwork (mock noembed) | Done: mock Mixcloud row with no banner; e2e stubs noembed and asserts the img src |
 | 27 | org | Allowlist / document noembed dependency or replace with first-party oEmbed proxy | No silent third-party hard dep without a note |
 | 28 | player | Prefer first-party `/api/.../oembed-thumb` if org adds proxy | Drop noembed when proxy lands |
 | 29 | player | VIEW-CATALOG / Storybook Missing: no blank embed thumbs | Missing states noted or covered |

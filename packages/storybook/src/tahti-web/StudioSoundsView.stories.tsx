@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { clearEmbedThumbnailCache } from '@tahti-web/lib/embedThumbnail';
 import { usePlayerStore } from '@tahti-web/stores/playerStore';
 import { StudioSoundsView } from '@tahti-web/views/studio/StudioSoundsView';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
@@ -146,6 +147,47 @@ export const HearthisRowEmbed: Story = {
         name: 'Play Imported from hearthis.at on hearthis.at',
       }),
     ).toBeVisible();
+  },
+};
+
+const SOFT_COVER = 'https://img.example/mixcloud-soft.jpg';
+
+/** An Embeds row with no stored cover asks noembed and shows that artwork. */
+export const EmbedSoftFill: Story = {
+  decorators: [withTahtiRouter('/library/sounds?tab=embeds')],
+  beforeEach: () => {
+    clearEmbedThumbnailCache();
+    const original = window.fetch.bind(window);
+    window.fetch = async (input, init) => {
+      const url =
+        typeof input === 'string'
+          ? input
+          : input instanceof URL
+            ? input.href
+            : input.url;
+      if (url.includes('noembed.com/embed')) {
+        return new Response(JSON.stringify({ thumbnail_url: SOFT_COVER }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      return original(input, init);
+    };
+    return () => {
+      window.fetch = original;
+      clearEmbedThumbnailCache();
+    };
+  },
+  play: async ({ canvasElement }) => {
+    const panel = await within(canvasElement).findByTestId(
+      'sounds-panel-embeds',
+    );
+    const play = await within(panel).findByRole('button', {
+      name: 'Play Coverless night drive on Mixcloud',
+    });
+    await waitFor(() => {
+      expect(play.querySelector('img')).toHaveAttribute('src', SOFT_COVER);
+    });
   },
 };
 
