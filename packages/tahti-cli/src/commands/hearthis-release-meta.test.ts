@@ -10,6 +10,7 @@ import {
   mapHearthisTrack,
   parseHearthisSource,
   releaseCreateBody,
+  selectOwnTracks,
   soundMetadataFor,
 } from './hearthis-release-meta.mjs';
 
@@ -245,5 +246,21 @@ describe('soundMetadataFor', () => {
         releaseDate: null,
       }),
     ).toEqual({ genre: 'House', tags: ['House'] });
+  });
+});
+
+describe('selectOwnTracks', () => {
+  it('plans a track listed twice in a Set only once', () => {
+    const track = (id: string) => ({ id, title: id, userPermalink: 'yaniho' });
+    const result = selectOwnTracks({
+      kind: 'set',
+      url: 'https://hearthis.at/set/1/',
+      set: { userPermalink: 'yaniho' },
+      tracks: [track('a'), track('b'), track('a')],
+    });
+    expect(result.planned.map((t: { id: string }) => t.id)).toEqual(['a', 'b']);
+    expect(
+      result.repeated.map((t: { position: number }) => t.position),
+    ).toEqual([3]);
   });
 });

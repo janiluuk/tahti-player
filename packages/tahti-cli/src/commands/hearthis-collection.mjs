@@ -29,7 +29,9 @@ import {
   downloadPendingRows,
   planRows,
   resolveKnownSounds,
+  sameTitleKey,
   soundSummary,
+  uploadBlocker,
   uploadPendingRows,
 } from './hearthis-sounds.mjs';
 
@@ -292,33 +294,54 @@ export async function hearthisToCollection(
     dryRun,
   });
   result.ledgerPath = known.ledger.path;
-  const rows = planRows(plan.tracks, known.known, dryRun).map((row) => ({
-    ...row,
-    item: null,
-  }));
+  const rows = planRows(plan.tracks, known.known, dryRun, known.conflicts).map(
+    (row) => ({
+      ...row,
+      item: null,
+    }),
+  );
   result.rows = rows;
+  const existingItems = result.collection?.items ?? [];
   const present = new Set(
-    (result.collection?.items ?? []).map(
-      (item) => item.soundId ?? item.sound?.id,
-    ),
+    existingItems.map((item) => item.soundId ?? item.sound?.id),
+  );
+  const presentTitles = new Set(
+    existingItems
+      .map((item) => sameTitleKey(item.sound?.title ?? item.title))
+      .filter(Boolean),
   );
   for (const row of rows) {
     if (row.status === 'not downloadable') {
       row.item = 'skipped';
       row.reason = 'not downloadable on hearthis.at';
-    } else if (row.soundId && present.has(row.soundId)) {
+    } else if (row.status === 'possible duplicate') {
+      row.item = 'skipped';
+    } else if (
+      (row.soundId && present.has(row.soundId)) ||
+      presentTitles.has(sameTitleKey(row.title))
+    ) {
       row.item = 'in collection';
     } else if (dryRun) {
       row.item = 'would add';
     }
   }
 
+  const duplicates = rows.filter((row) => row.status === 'possible duplicate');
+  if (strict && duplicates.length > 0) {
+    result.stopped = `${duplicates.length} track(s) may already be in your library: ${duplicates.map((row) => `${String(row.position).padStart(2, '0')} ${row.reason}`).join('; ')}. Drop --strict to skip them.`;
+    return result;
+  }
   const skipped = rows.filter((row) => row.status === 'not downloadable');
   if (strict && skipped.length > 0) {
     result.stopped = `${skipped.length} track(s) are not downloadable on hearthis.at (${skipped.map((row) => row.position).join(', ')}). Leave them out with --tracks, turn on downloads for them on hearthis.at, or drop --strict to skip them.`;
     return result;
   }
   if (dryRun) {
+    return result;
+  }
+  const blocker = uploadBlocker(rows, known);
+  if (blocker) {
+    result.stopped = blocker;
     return result;
   }
 

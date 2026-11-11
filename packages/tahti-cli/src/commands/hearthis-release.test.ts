@@ -156,6 +156,41 @@ describe('hearthisToRelease', () => {
     expect(forced.release?.id).toBe('rel-1');
   });
 
+  it('stops before uploading when a track may already be in the library', async () => {
+    const first = fixture('tahti-hearthis-set-tracks.json').tracks[0];
+    const { calls } = stubApis({
+      library: [{ id: 'other-length', title: first.title, durationSec: 9999 }],
+    });
+
+    const result = await hearthisToRelease(CONFIG, SET_URL, { outDir: dir });
+
+    expect(result.stopped).toMatch(/may already be in your library/);
+    expect(
+      calls.filter((call) => call.url.endsWith('/api/uploads/prepare')),
+    ).toHaveLength(0);
+  });
+
+  it('stops before uploading while earlier uploads are stuck processing', async () => {
+    const { calls } = stubApis({
+      library: [
+        {
+          id: 'stuck-1',
+          title: 'Something else',
+          durationSec: null,
+          status: 'PENDING',
+          createdAt: '2020-01-01T00:00:00.000Z',
+        },
+      ],
+    });
+
+    const result = await hearthisToRelease(CONFIG, SET_URL, { outDir: dir });
+
+    expect(result.stopped).toMatch(/still processing/);
+    expect(
+      calls.filter((call) => call.url.endsWith('/api/uploads/prepare')),
+    ).toHaveLength(0);
+  });
+
   it('dry-run lists the release without downloading or sending anything', async () => {
     const { calls } = stubApis();
 

@@ -16,6 +16,8 @@ const MAX_LIBRARY_PAGES = 500;
 /** Tahti measures the uploaded audio itself, so its length can differ from
  * hearthis.at's by a second or two. */
 export const DURATION_TOLERANCE_SEC = 2;
+/** Uploads still processing after this long are treated as stuck. */
+export const STUCK_AFTER_MS = 2 * 60 * 60 * 1000;
 
 export function ledgerFilePath(outDir, override = null) {
   return resolve(override ?? join(resolve(outDir), LEDGER_FILENAME));
@@ -117,6 +119,11 @@ export async function fetchLibrary(
   return { sounds, complete: false };
 }
 
+/** Title compared case- and spacing-insensitively. */
+export function sameTitleKey(value) {
+  return normalizeTitle(value);
+}
+
 function normalizeTitle(value) {
   return String(value ?? '')
     .replace(/\s+/g, ' ')
@@ -124,12 +131,49 @@ function normalizeTitle(value) {
     .toLowerCase();
 }
 
+function normalizeUrl(value) {
+  return String(value ?? '')
+    .trim()
+    .replace(/^https?:\/\/(www\.)?/i, '')
+    .replace(/[?#].*$/, '')
+    .replace(/\/+$/, '')
+    .toLowerCase();
+}
+
+function isHearthisEmbedOf(sound, track) {
+  if (!sound.embedProvider) {
+    return false;
+  }
+  const trackUrl = normalizeUrl(track.url);
+  if (trackUrl && normalizeUrl(sound.embedSourceUrl) === trackUrl) {
+    return true;
+  }
+  const uri = String(sound.embedUri ?? '');
+  return Boolean(track.id) && new RegExp(`(^|\\D)${track.id}(\\D|$)`).test(uri);
+}
+
+function closeEnough(sound, track) {
+  return (
+    sound.durationSec != null &&
+    track.durationSec > 0 &&
+    Math.abs(sound.durationSec - track.durationSec) <= DURATION_TOLERANCE_SEC
+  );
+}
+
+const READY_FIRST = (a, b) =>
+  Number(b.status === 'READY') - Number(a.status === 'READY') ||
+  String(a.createdAt ?? '').localeCompare(String(b.createdAt ?? ''));
+
 /**
- * A library sound that already holds this hearthis.at track's audio:
- * a sound exported to hearthis.at as this track (`hearthisExportId`), else an
- * uploaded (non-embed) sound with the same title and a length within
- * DURATION_TOLERANCE_SEC. Embeds are never reused: they play from
- * hearthis.at, not from Tahti.
+ * Whether the library already holds this hearthis.at track. Answers
+ * `{ sound, matchedBy }` for a sound to reuse, `{ conflict, sound }` when
+ * something that may be the same track exists but cannot be reused safely
+ * (a hearthis.at embed, or the same title with a different length), and
+ * null only when nothing in the library looks like this track, which is the
+ * only case where uploading cannot make a duplicate.
+ *
+ * A sound still processing has no length yet, so a title match counts for
+ * it. Sounds that failed processing are ignored.
  */
 export function findLibraryMatch(track, sounds) {
   const usable = sounds.filter((sound) => sound.status !== 'ERROR');
@@ -141,17 +185,40 @@ export function findLibraryMatch(track, sounds) {
     return { sound: exported, matchedBy: 'hearthis export id' };
   }
   const title = normalizeTitle(track.title);
-  if (!title || !(track.durationSec > 0)) {
+  const embed = usable.find(
+    (sound) =>
+      isHearthisEmbedOf(sound, track) ||
+      (sound.embedProvider && title && normalizeTitle(sound.title) === title),
+  );
+  if (embed) {
+    return {
+      conflict: `a hearthis.at embed of this track is in your library (${embed.id}); convert it with \`tahti hearthis import-embeds\` first`,
+      sound: embed,
+    };
+  }
+  if (!title) {
     return null;
   }
-  const same = usable.find(
-    (sound) =>
-      !sound.embedProvider &&
-      normalizeTitle(sound.title) === title &&
-      sound.durationSec != null &&
-      Math.abs(sound.durationSec - track.durationSec) <= DURATION_TOLERANCE_SEC,
-  );
-  return same ? { sound: same, matchedBy: 'title + duration' } : null;
+  const sameTitle = usable
+    .filter(
+      (sound) => !sound.embedProvider && normalizeTitle(sound.title) === title,
+    )
+    .sort(READY_FIRST);
+  const timed = sameTitle.find((sound) => closeEnough(sound, track));
+  if (timed) {
+    return { sound: timed, matchedBy: 'title + duration' };
+  }
+  const untimed = sameTitle.find((sound) => sound.durationSec == null);
+  if (untimed) {
+    return { sound: untimed, matchedBy: 'title (still processing)' };
+  }
+  if (sameTitle.length > 0) {
+    return {
+      conflict: `a sound with the same title but a different length is in your library (${sameTitle[0].id})`,
+      sound: sameTitle[0],
+    };
+  }
+  return null;
 }
 
 /**
@@ -168,8 +235,14 @@ export async function resolveKnownSounds(
   const ledger = await readLedger(ledgerFilePath(outDir, ledgerPath));
   const migrated = await importReleaseStates(outDir, ledger);
   const library = await fetchLibrary(config);
+  if (!library.complete) {
+    throw new CliError(
+      'Your library has more sounds than the CLI can read in one go, so it cannot check every track for an existing copy. Stopping before anything is uploaded.',
+    );
+  }
   const libraryIds = new Set(library.sounds.map((sound) => sound.id));
   const known = new Map();
+  const conflicts = new Map();
   const dropped = [];
   for (const track of tracks) {
     const entry = ledger.sounds[track.id];
@@ -182,6 +255,13 @@ export async function resolveKnownSounds(
       delete ledger.sounds[track.id];
     }
     const match = findLibraryMatch(track, library.sounds);
+    if (match?.conflict) {
+      conflicts.set(track.id, {
+        soundId: match.sound.id,
+        reason: match.conflict,
+      });
+      continue;
+    }
     if (match) {
       known.set(track.id, {
         soundId: match.sound.id,
@@ -203,7 +283,14 @@ export async function resolveKnownSounds(
   if (changed && !dryRun) {
     await writeLedger(ledger);
   }
-  return { ledger, known, dropped, migrated, library };
+  const now = Date.now();
+  const stuck = library.sounds.filter(
+    (sound) =>
+      !sound.embedProvider &&
+      (sound.status === 'PENDING' || sound.status === 'PROCESSING') &&
+      now - Date.parse(sound.createdAt ?? '') > STUCK_AFTER_MS,
+  );
+  return { ledger, known, conflicts, stuck, dropped, migrated, library };
 }
 
 /**
@@ -291,7 +378,10 @@ export async function uploadPendingRows(
   }
 }
 
-export function initialSoundStatus(track, known, dryRun) {
+export function initialSoundStatus(track, known, dryRun, conflicts) {
+  if (conflicts?.has(track.id)) {
+    return 'possible duplicate';
+  }
   const hit = known.get(track.id);
   if (hit) {
     return hit.from === 'library' ? 'in library' : 'uploaded before';
@@ -302,16 +392,16 @@ export function initialSoundStatus(track, known, dryRun) {
   return dryRun ? 'would upload' : 'pending';
 }
 
-export function planRows(tracks, known, dryRun) {
+export function planRows(tracks, known, dryRun, conflicts = new Map()) {
   return tracks.map((track) => ({
     id: track.id,
     position: track.position,
     title: track.title,
     durationSec: track.durationSec,
-    status: initialSoundStatus(track, known, dryRun),
+    status: initialSoundStatus(track, known, dryRun, conflicts),
     soundId: known.get(track.id)?.soundId ?? null,
     matchedBy: known.get(track.id)?.matchedBy ?? null,
-    reason: null,
+    reason: conflicts.get(track.id)?.reason ?? null,
   }));
 }
 
@@ -322,5 +412,16 @@ export function soundSummary(rows) {
     ledger: count('uploaded before'),
     library: count('in library'),
     notDownloadable: count('not downloadable'),
+    possibleDuplicate: count('possible duplicate'),
   };
+}
+
+/** Why a run must not upload yet, or null. Uploading while earlier uploads
+ * sit unprocessed only adds more sounds nobody can play. */
+export function uploadBlocker(rows, known) {
+  const uploads = rows.filter((row) => row.status === 'pending').length;
+  if (uploads === 0 || known.stuck.length === 0) {
+    return null;
+  }
+  return `${known.stuck.length} earlier upload(s) are still processing after more than ${STUCK_AFTER_MS / 3600000} hours (oldest: ${known.stuck[0].title}, ${known.stuck[0].id}). Nothing new is uploaded until they finish or are deleted; check \`tahti library processing\`.`;
 }

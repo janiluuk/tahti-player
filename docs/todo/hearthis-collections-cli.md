@@ -24,3 +24,10 @@ Shipped in `packages/tahti-cli` (no tahti-org change):
 - `--private` = visibility DRAFT. Type is not sent unless `--type` is given (API default CUSTOM).
 - `hearthis collection` skips non-downloadable / failed tracks and exits 1; `--strict` stops. `hearthis release` still stops (a release with a missing track is a different release), but only for tracks that would have to be uploaded.
 - An existing collection with the same name and no state file stops the run; `--slug` adopts it.
+
+## Never duplicate (2026-11-11)
+
+- A library sound with the same title counts as existing while it is still processing (no length yet); a ready copy wins when two exist.
+- Same title with another length, or a hearthis.at embed of the track, is a "possible duplicate": `hearthis release` stops, `hearthis collection` skips and lists it. Convert embeds with `tahti hearthis import-embeds` first.
+- A Set that lists a track twice plans it once; a collection also treats an item with the same title as already there.
+- The run stops when the library cannot be read completely, and before uploading while earlier uploads have been processing for over 2 hours.

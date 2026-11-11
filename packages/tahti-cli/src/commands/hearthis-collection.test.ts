@@ -213,7 +213,7 @@ describe('hearthisToCollection', () => {
     expect(result.rows[0].soundId).toBe('sound-1');
   });
 
-  it('matches the library by hearthis export id, then title + duration, never an embed', async () => {
+  it('matches the library by hearthis export id, then title + duration, and skips a track that has an embed', async () => {
     const { calls } = stubApis({
       library: [
         {
@@ -242,11 +242,11 @@ describe('hearthisToCollection', () => {
       outDir: dir,
     });
 
-    expect(posts(calls, '/api/uploads/prepare')).toHaveLength(1);
+    expect(posts(calls, '/api/uploads/prepare')).toHaveLength(0);
     expect(
       result.rows.map((row) => [row.status, row.soundId, row.matchedBy]),
     ).toEqual([
-      ['uploaded', 'sound-1', null],
+      ['possible duplicate', null, null],
       ['in library', 'native-2', 'title + duration'],
       ['in library', 'exported-3', 'hearthis export id'],
     ]);
