@@ -1,3 +1,9 @@
+## 2026-11-11 — phone track rows, and slices already on master
+
+Ambient track rows stay on one line at every density, with larger phone covers (128 / 112 / 80 px). tahti-web 0.0.375. Folded `ambient-track-row-phone-alignment.md`, `ambient-track-row-larger-thumb.md`, and `ambient-track-list-mobile.md` (phone list default was already shipped; listeners already use the shared row).
+
+Already on master, so the slice files are folded: Sounds bulk failures toast `failed[]`, facets follow the active filter, and isFallback plus clear-filters are in the Sounds filter bar (`library-sounds-failed-toasts.md`, `library-sounds-facets-filter.md`, `library-sounds-clear-filters.md`). A listener's Settings nav is the seven account items in `settingsNav.test.ts` (`settings-account-only-seven.md`). The track page heart uses the same account like as the row, and the mock store keeps it across reload (`track-page-like-button.md`). Event invites sit at the top of the notifications popover (`event-invites-notifications.md`, 0.0.373).
+
 ## 2026-11-11 — release track stems
 
 Studio release Advanced can upload, replace, play and remove vocals, drums, bass and other stems on each track. Listeners see and play them on the release, the profile tracklist and the linked track when the release is already visible. Mock API covers the flow. tahti-web 0.0.374. Folded `release-track-stems.md`.

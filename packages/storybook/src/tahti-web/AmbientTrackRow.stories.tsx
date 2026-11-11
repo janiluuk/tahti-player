@@ -18,7 +18,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Listener/library track row with cover-ambient wash and a scrubbable waveform. Large, medium and small rows use WaveSurfer, with full-width waveforms on phones and an animated processing state.',
+          'Listener/library track row with cover-ambient wash and a scrubbable waveform. Large, medium and small rows stay on one line on a phone, with a larger cover than the old wrapped layout, and an animated processing state.',
       },
     },
   },

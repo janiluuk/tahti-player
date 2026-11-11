@@ -54,7 +54,7 @@ const DENSITY_LAYOUT: Record<
   comfortable: {
     pad: 'gap-3 p-3 sm:gap-4 sm:p-4',
     gap: 'gap-2',
-    art: 'size-28 sm:size-44 lg:size-56',
+    art: 'size-32 sm:size-44 lg:size-56',
     artist: 'text-sm',
     title: 'text-lg sm:text-xl',
     meta: 'text-sm',
@@ -64,7 +64,7 @@ const DENSITY_LAYOUT: Record<
   compact: {
     pad: 'gap-3 p-2.5',
     gap: 'gap-1.5',
-    art: 'size-24 sm:size-40',
+    art: 'size-28 sm:size-40',
     artist: 'text-xs',
     title: 'text-sm sm:text-base',
     meta: 'text-sm',
@@ -74,7 +74,7 @@ const DENSITY_LAYOUT: Record<
   dense: {
     pad: 'gap-2 px-2 py-1.5',
     gap: 'gap-0.5',
-    art: 'size-16',
+    art: 'size-20 sm:size-16',
     artist: 'text-[10px]',
     title: 'text-xs',
     meta: 'text-[10px]',
@@ -334,8 +334,7 @@ function AmbientTrackRowView({
       data-testid="ambient-track-row"
       data-density={density}
       className={cn(
-        'group border-border/40 bg-background-secondary text-foreground flex w-full min-w-0 rounded-lg border',
-        density !== 'dense' && 'flex-wrap sm:flex-nowrap',
+        'group border-border/40 bg-background-secondary text-foreground flex w-full min-w-0 flex-nowrap items-center rounded-lg border',
         layout.pad,
         className,
       )}
@@ -365,13 +364,7 @@ function AmbientTrackRowView({
           </span>
         ) : null}
       </div>
-      <div
-        className={cn(
-          'min-w-0 flex-1 flex-col',
-          density === 'dense' ? 'flex' : 'contents sm:flex',
-          layout.gap,
-        )}
-      >
+      <div className={cn('flex min-w-0 flex-1 flex-col', layout.gap)}>
         <div className="flex min-w-0 flex-1 items-start gap-2">
           <div className="min-w-0 flex-1">
             <p

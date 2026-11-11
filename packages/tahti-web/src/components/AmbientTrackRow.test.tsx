@@ -4,6 +4,33 @@ import { describe, expect, it, vi } from 'vitest';
 import { AmbientTrackRow } from './AmbientTrackRow';
 
 describe('AmbientTrackRow', () => {
+  it('stays one row with a larger phone thumb at every density', () => {
+    const thumbs = {
+      comfortable: 'size-32',
+      compact: 'size-28',
+      dense: 'size-20',
+    } as const;
+    for (const density of ['comfortable', 'compact', 'dense'] as const) {
+      const { unmount } = render(
+        <AmbientTrackRow
+          trackId={density}
+          title={density}
+          artist="Aurora Keys"
+          density={density}
+          ambientRgb={null}
+        />,
+      );
+      const row = screen.getByTestId('ambient-track-row');
+      expect(row.className).toContain('flex-nowrap');
+      expect(row.className).toContain('items-center');
+      expect(row.className).not.toContain('flex-wrap');
+      expect(
+        screen.getByTestId('ambient-track-row-artwork').className,
+      ).toContain(thumbs[density]);
+      unmount();
+    }
+  });
+
   it('gives the seekbar the track length for time read-outs', () => {
     render(
       <AmbientTrackRow

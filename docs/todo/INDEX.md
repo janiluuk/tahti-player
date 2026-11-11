@@ -31,8 +31,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [help-finnish-addon-rows.md](help-finnish-addon-rows.md) | Finnish copy for the Help and For artists add-on table rows |
 | open    | [help-finnish-native-review.md](help-finnish-native-review.md) | Native review of the redesigned Help and For artists pages |
 | open    | [help-drop-pricing-claims.md](help-drop-pricing-claims.md) | Remove pricing claims the Help redesign still shows |
-| open    | [ambient-track-row-phone-alignment.md](ambient-track-row-phone-alignment.md) | Align AmbientTrackRow on a 390 px phone across densities |
-| open    | [ambient-track-row-larger-thumb.md](ambient-track-row-larger-thumb.md) | Use a larger thumb on the phone track row |
 | open    | [hearthis-release-product-defaults.md](hearthis-release-product-defaults.md) | Confirm the product defaults for tahti hearthis release |
 | open    | [hearthis-release-live-run.md](hearthis-release-live-run.md) | One live tahti hearthis release run |
 | open    | [hearthis-collection-live-run.md](hearthis-collection-live-run.md) | One live tahti hearthis collection run |
@@ -45,9 +43,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [finish-wip-2026-11-04-branches.md](finish-wip-2026-11-04-branches.md) | Finish or close the unfinished 2026-11-04 branches and draft PRs |
 | open    | [spa-performance-bundle-chunks.md](spa-performance-bundle-chunks.md) | Audit the SPA bundle and route chunks before changing them |
 | open    | [spa-performance-lists-first-paint.md](spa-performance-lists-first-paint.md) | Audit long lists and phone first paint |
-| open    | [library-sounds-failed-toasts.md](library-sounds-failed-toasts.md) | Toast each failed item when a Sounds bulk action returns failed[] |
-| open    | [library-sounds-facets-filter.md](library-sounds-facets-filter.md) | Filter Sounds by the facets the library already has |
-| open    | [library-sounds-clear-filters.md](library-sounds-clear-filters.md) | Show isFallback and a way to clear Sounds filters |
 | open    | [embed-covers-slices-17-20.md](embed-covers-slices-17-20.md) | Finish embed cover slices 17–20 |
 | open    | [embed-covers-slices-24-30.md](embed-covers-slices-24-30.md) | Finish embed cover slices 24, 25, 29, and 30 |
 | open    | [server-peaks-studio-collections.md](server-peaks-studio-collections.md) | Show server waveform peaks on studio collection track lists |
@@ -66,13 +61,10 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [finnish-seo-page-tour.md](finnish-seo-page-tour.md) | Translate SEO strings and the page tour |
 | open    | [board-track-edit-product-call.md](board-track-edit-product-call.md) | Decide how board members edit a track |
 | open    | [embed-track-api-fix.md](embed-track-api-fix.md) | Fix the embed track API in tahti-org |
-| open    | [track-page-like-button.md](track-page-like-button.md) | Check the like button on the track page |
 | open    | [embed-downloads-product-call.md](embed-downloads-product-call.md) | Decide whether an embed offers downloads |
 | open    | [stage-embed-across-routes.md](stage-embed-across-routes.md) | Keep a stage-hosted embed playing when the route changes |
-| open    | [settings-account-only-seven.md](settings-account-only-seven.md) | Keep Settings to seven account-only items |
 | open    | [artist-groups-org-e2e.md](artist-groups-org-e2e.md) | Ship the org side of artist groups and cover it with e2e |
 | open    | [fans-chat-live-verify.md](fans-chat-live-verify.md) | Verify Fans Chat on the hub after merge |
-| open    | [event-invites-notifications.md](event-invites-notifications.md) | Show event invites in the notifications popover |
 
 ## Engineering backlog (no external blocker)
 
@@ -81,13 +73,12 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [next-50.md](next-50.md) | Map of the 50 slice files in the Next 50 slices section |
 | open    | [admin-queue-tools.md](admin-queue-tools.md) | Admin queue tools: see jobs processing now, waiting and failed; retry, remove, pause; re-queue stuck `PENDING` uploads |
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; add-on table rows, native review and dropped pricing claims left |
-| partial | [ambient-track-list-mobile.md](ambient-track-list-mobile.md) | Phone list default shipped; left: AmbientTrackRow phone layout (alignment across densities, larger thumb) — needs a visual pass at 390 px |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |
 | open    | [channel-page-metrics-about-events.md](channel-page-metrics-about-events.md) | Channel page: followers/following/plays today/yesterday/total/downloads with per-metric public toggle, tidy About, upcoming + past events incl. ones the artist plays at |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
-| partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: next 30 slices (failed[] toasts, facets+filter, isFallback, clear filters; org API) |
+| partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: player slices 11–30 shipped; org API rows remain |
 | partial | [server-peaks-in-track-lists.md](server-peaks-in-track-lists.md) | Server waveform peaks on every track list (search, Selects, New to you, profile fallback); left: studio collections, radio/feed |
 | open    | [yaniho-channel-waveform-peaks.md](yaniho-channel-waveform-peaks.md) | Yaniho channel (`/channel/yaniho`) tracks still show loading over the waveform; pre-generate peaks for every view during pre-processing |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
@@ -95,7 +86,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Inbox chips, Overview merge, docs rewrite |
 | open    | [library-for-listeners.md](library-for-listeners.md) | Library is for listeners (saved items, desktop library browse); move Sounds, Collections, Upload, Recordings and Smart links to Studio and change the nav |
 | partial | [finnish-localization.md](finnish-localization.md) | Settings → Language plus chrome/player/Listen/Discover/Library, batches 31–63 (ui library labels, tooltips, state labels, leftover JSX text); left: more web.actions sites, API notification bodies, Upload leftovers, SEO/pageTour |
-| open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks, track page like-button check. Recently played search shipped. |
+| open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks. Track page like and recently played search shipped. |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; left: embed downloads (product call) and keeping a stage-hosted embed across routes |
 | open    | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Plan: page anatomy rules (one header, one primary action, overflow, one toolbar), Settings account-only in 7 items, duplicate surfaces removed; 9 phases, absorbs navigation-simplification slices 1-3, 7, 9, 10 |
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
