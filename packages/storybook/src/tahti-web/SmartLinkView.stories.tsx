@@ -146,19 +146,58 @@ export const PlayAll: Story = {
   },
 };
 
-// The artist viewing their own release gets no report button.
+// The artist viewing their own release gets no report button and can edit.
 export const Owner: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = await findRelease(canvasElement);
+    const header = within(canvas.getByTestId('release-social-header'));
+    await expect(
+      header.getByRole('link', { name: 'Edit in Studio' }),
+    ).toHaveAttribute(
+      'href',
+      expect.stringMatching(/\/studio\/releases\/.+(\?|&)edit=true/),
+    );
     await expect(
       canvas.queryByRole('button', { name: `Report ${RELEASE_TITLE}` }),
     ).toBeNull();
   },
 };
 
+export const Admin: Story = {
+  decorators: [withMockAuth(MOCK_USERS.board)],
+  play: async ({ canvasElement }) => {
+    const canvas = await findRelease(canvasElement);
+    const header = within(canvas.getByTestId('release-social-header'));
+    await expect(
+      header.getByRole('link', { name: 'Edit in Studio' }),
+    ).toHaveAttribute(
+      'href',
+      expect.stringMatching(/\/studio\/releases\/.+(\?|&)edit=true/),
+    );
+  },
+};
+
+export const Neither: Story = {
+  decorators: [withMockAuth(MOCK_USERS.listener)],
+  play: async ({ canvasElement }) => {
+    const canvas = await findRelease(canvasElement);
+    const header = within(canvas.getByTestId('release-social-header'));
+    await expect(
+      header.queryByRole('link', { name: 'Edit in Studio' }),
+    ).toBeNull();
+  },
+};
+
 export const SignedOut: Story = {
   decorators: [withMockAuth(null)],
+  play: async ({ canvasElement }) => {
+    const canvas = await findRelease(canvasElement);
+    const header = within(canvas.getByTestId('release-social-header'));
+    await expect(
+      header.queryByRole('link', { name: 'Edit in Studio' }),
+    ).toBeNull();
+  },
 };
 
 export const NoPoweredByFooter: Story = {

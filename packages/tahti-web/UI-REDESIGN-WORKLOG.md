@@ -6682,3 +6682,7 @@ Embed covers come from the first-party `GET /api/v1/embeds/thumbnail` (tahti-org
 ## 2026-11-11 — Radio row flicker and mock journeys (0.0.371)
 
 `CardsRowItemMotion` forwards its ref, so `AnimatePresence` pop-layout exits finish and React stops warning on every Listen page. The Radio row waits for curated presets before adding catalog stations, so a station no longer shows twice while presets load. The mock-app journeys follow the current Library tabs, account likes, the announcement schedule dialog, the event Publish button and the event detail heading.
+
+## 2026-11-11 — Edit a release from the public page (0.0.372)
+
+The public release page shows the standard edit icon when the signed-in user owns the release or is a board admin. Signed-out visitors and everyone else do not see it. The link opens the existing Studio release editor in edit mode. The mock app resolves the demo user's release and another artist's release so that editor opens offline.

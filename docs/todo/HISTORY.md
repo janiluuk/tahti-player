@@ -1,3 +1,7 @@
+## 2026-11-11 — edit a release from the public page
+
+The public release page shows `EditIconLink` when the signed-in user owns the release or is a board admin. Signed-out visitors and everyone else do not see it. The link opens the existing Studio release editor with edit mode on. The mock app resolves those release ids so the editor opens offline. Folded `release-edit-owner-admin.md`.
+
 ## 2026-11-11 — collection sort direction and SoundCloud covers
 
 Newest first and title Z–A are stored as `TIME_DESC` and `NAME_DESC`. The public collection page, its RSS feed, and the collection embed apply that order when a track is added later. A SoundCloud cover found after create is saved with `PATCH /api/me/embeds/:id`. Folded `collection-sort-dialog.md`.
