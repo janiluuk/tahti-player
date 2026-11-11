@@ -37,7 +37,6 @@ const state = (overrides: Partial<TrackDetailState> = {}) =>
     status: 'playing',
     currentTime: 90,
     duration: 0,
-    favoriteTracks: [],
     rgb: null,
     tracklist: [],
     purchaseEntitled: true,

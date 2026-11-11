@@ -149,7 +149,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Save and find favorites',
         body: [
-          'Use the heart or Favorite action on a track, playlist, channel, or artist. Open Favorites in the sidebar to play, queue, or unfavorite saved channels and tracks.',
+          'Use the heart on a track to like it: liked tracks are saved to your account and listed under Library → Favorites → Liked tracks on every device. Use Favorite on a playlist, channel, artist or radio station to keep it in Favorites.',
           'Favorites are ordered from newest to oldest.',
         ],
       },

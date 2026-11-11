@@ -11,8 +11,8 @@ import {
 } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
+import { useTrackLikes } from '../hooks/useTrackLikes';
 import { soundIdFromPlayableId } from '../lib/soundId';
-import { useLibraryStore } from '../stores/libraryStore';
 import { AddToPlaylistPanel } from './AddToPlaylistPanel';
 
 export type TrackInfoTracklistEntry = {
@@ -51,13 +51,11 @@ export function TrackInfoDialog({
 }) {
   const { t } = useTranslation('web');
   const [playlistOpen, setPlaylistOpen] = useState(false);
-  const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
-  const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
+  const { canLike, isLiked, toggleLike } = useTrackLikes();
 
   const playable = track?.playable ?? null;
-  const favorited = playable
-    ? favoriteTracks.some((t) => t.id === playable.id)
-    : false;
+  const likeable = playable ? canLike(playable) : false;
+  const liked = playable ? isLiked(playable) : false;
   const soundId = soundIdFromPlayableId(playable?.id);
 
   return (
@@ -88,31 +86,33 @@ export function TrackInfoDialog({
                 )}
                 {playable && (
                   <div className="mt-2 flex items-center gap-1">
-                    <Tooltip
-                      content={
-                        favorited ? t('actions.loved') : t('actions.love')
-                      }
-                      side="top"
-                    >
-                      <Button
-                        size="icon-sm"
-                        variant="text"
-                        aria-label={
-                          favorited ? t('actions.loved') : t('actions.love')
+                    {likeable ? (
+                      <Tooltip
+                        content={
+                          liked ? t('actions.unlike') : t('actions.like')
                         }
-                        aria-pressed={favorited}
-                        onClick={() => toggleFavoriteTrack(playable)}
+                        side="top"
                       >
-                        <HeartIcon
-                          size={16}
-                          className={
-                            favorited
-                              ? 'text-accent-red-strong fill-current'
-                              : undefined
+                        <Button
+                          size="icon-sm"
+                          variant="text"
+                          aria-label={
+                            liked ? t('actions.unlike') : t('actions.like')
                           }
-                        />
-                      </Button>
-                    </Tooltip>
+                          aria-pressed={liked}
+                          onClick={() => toggleLike(playable)}
+                        >
+                          <HeartIcon
+                            size={16}
+                            className={
+                              liked
+                                ? 'text-accent-red-strong fill-current'
+                                : undefined
+                            }
+                          />
+                        </Button>
+                      </Tooltip>
+                    ) : null}
                     {soundId && (
                       <Tooltip content={t('actions.addToPlaylist')} side="top">
                         <Button

@@ -10,6 +10,7 @@ import type {
   PublicProfileTrack,
   TahtiPlayable,
 } from '../../api/types';
+import { useTrackLikes } from '../../hooks/useTrackLikes';
 import { isPinned } from '../../lib/pinnedTracks';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
@@ -146,10 +147,8 @@ export function ArtistReleasesGrid({
   releases,
   artistName,
   channelSlug,
-  isFavorite,
   onPlayRelease,
   onQueueRelease,
-  onToggleFavorite,
   onTitleClick,
 }: {
   releases: Array<{
@@ -158,15 +157,14 @@ export function ArtistReleasesGrid({
   }>;
   artistName: string;
   channelSlug: string | undefined;
-  isFavorite: (playable: TahtiPlayable) => boolean;
   onPlayRelease: (release: PublicProfileRelease) => void;
   onQueueRelease: (
     release: PublicProfileRelease,
     playables: TahtiPlayable[],
   ) => void;
-  onToggleFavorite: (playable: TahtiPlayable) => void;
   onTitleClick: (release: PublicProfileRelease) => void;
 }) {
+  const { canLike, isLiked, toggleLike } = useTrackLikes();
   const { t } = useTranslation('web');
   const navigate = useNavigate();
   return (
@@ -222,9 +220,11 @@ export function ArtistReleasesGrid({
                 }
                 queueLabel={webT()('a11yNamed.queue', { name: release.title })}
                 onFavorite={
-                  playable ? () => onToggleFavorite(playable) : undefined
+                  playable && canLike(playable)
+                    ? () => toggleLike(playable)
+                    : undefined
                 }
-                favorited={playable ? isFavorite(playable) : false}
+                favorited={playable ? isLiked(playable) : false}
               />
             );
           })}

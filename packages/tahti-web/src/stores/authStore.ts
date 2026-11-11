@@ -16,8 +16,10 @@ import {
 } from '../api/client';
 import { setMockSessionUser } from '../api/mock-session';
 import type { AuthUser } from '../api/types';
+import { moveTrackFavoritesToLikesWithToast } from '../lib/moveTrackFavoritesToLikes';
 import { clearSnapshots } from '../lib/useSnapshotFetch';
 import { rehydrateLibraryForUser, useLibraryStore } from './libraryStore';
+import { useSoundLikesStore } from './soundLikesStore';
 
 type AuthState = {
   user: AuthUser | null;
@@ -110,6 +112,12 @@ function stopProfileRetry() {
 async function afterUserChange(user: AuthUser | null) {
   clearSnapshots();
   await rehydrateLibraryForUser(user?.id ?? null);
+  if (useSoundLikesStore.getState().loadedFor !== (user?.id ?? null)) {
+    useSoundLikesStore.getState().reset();
+  }
+  if (user) {
+    void moveTrackFavoritesToLikesWithToast(user.id);
+  }
   if (user?.username) {
     await useLibraryStore.getState().mergeServerFollowing(user.username);
   }

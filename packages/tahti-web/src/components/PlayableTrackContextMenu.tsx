@@ -12,7 +12,7 @@ import {
   WrenchIcon,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -25,16 +25,23 @@ import {
   removeStudioCollectionItem,
 } from '../api/studio';
 import type { StudioCollection } from '../api/studio-types';
+import type { TahtiPlayable } from '../api/types';
+import { useTrackLikes } from '../hooks/useTrackLikes';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { toastWithUndo } from '../lib/undoToast';
 import { useMasteringFeatureStore } from '../plugins/mastering/store';
 import { useAuthStore } from '../stores/authStore';
-import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistPanel } from './AddToPlaylistPanel';
 
 const PLAYLIST_FILTER_THRESHOLD = 5;
 const MAX_VISIBLE_PLAYLISTS = 8;
+
+/** Maps a table row back to the playable it was built from. `Track` drops
+ * the channel slug, which the like API needs. */
+export const PlayableTrackResolverContext = createContext<
+  (track: Track) => TahtiPlayable | null
+>(() => null);
 
 /** Per-row context menu for `PlayableTrackTable` — Storybook TrackContextMenu
  * with With Submenu playlists and Audio tools when the track is an archive
@@ -46,6 +53,7 @@ export function PlayableTrackContextMenu({
   track: Track;
   children: ReactNode;
 }) {
+  const resolvePlayable = useContext(PlayableTrackResolverContext);
   const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
   const [createPlaylistOpen, setCreatePlaylistOpen] = useState(false);
@@ -56,13 +64,8 @@ export function PlayableTrackContextMenu({
   const play = usePlayerStore((state) => state.play);
   const playNext = usePlayerStore((state) => state.playNext);
   const enqueue = usePlayerStore((state) => state.enqueue);
-  const toggleFavoriteTrack = useLibraryStore(
-    (state) => state.toggleFavoriteTrack,
-  );
   const { t } = useTranslation('web');
-  const isFavorite = useLibraryStore((state) =>
-    state.favoriteTracks.some((item) => item.id === track.source.id),
-  );
+  const { canLike, isLiked, toggleLike } = useTrackLikes();
   const masteringEnabled = useMasteringFeatureStore((state) => state.enabled);
   const soundId = soundIdFromPlayableId(track.source.id);
   const artistNames = track.artists.map((artist) => artist.name).join(', ');
@@ -108,6 +111,10 @@ export function PlayableTrackContextMenu({
   const showAudioTools = Boolean(soundId && user);
 
   const toPlayable = () => {
+    const resolved = resolvePlayable(track);
+    if (resolved) {
+      return resolved;
+    }
     const queueItem: QueueItem = {
       id: track.source.id,
       track,
@@ -116,6 +123,13 @@ export function PlayableTrackContextMenu({
     };
     return playableFromQueueItem(queueItem);
   };
+  const likeSubject = resolvePlayable(track) ?? {
+    id: track.source.id,
+    kind: track.source.id.startsWith('sound:')
+      ? ('sound' as const)
+      : ('live' as const),
+  };
+  const liked = isLiked(likeSubject);
 
   const addToPlaylist = async (slug: string, name: string) => {
     if (!soundId) {
@@ -182,26 +196,22 @@ export function PlayableTrackContextMenu({
           >
             {t('trackContextMenu.addToQueue')}
           </TrackContextMenu.Action>
-          <TrackContextMenu.Action
-            icon={
-              <HeartIcon
-                size={16}
-                className={
-                  isFavorite ? 'text-accent-red-strong fill-current' : undefined
-                }
-              />
-            }
-            onClick={() => {
-              const playable = toPlayable();
-              if (playable) {
-                toggleFavoriteTrack(playable);
+          {canLike(likeSubject) ? (
+            <TrackContextMenu.Action
+              icon={
+                <HeartIcon
+                  size={16}
+                  className={
+                    liked ? 'text-accent-red-strong fill-current' : undefined
+                  }
+                />
               }
-            }}
-          >
-            {isFavorite
-              ? t('actions.removeFromFavorites')
-              : t('actions.addToFavorites')}
-          </TrackContextMenu.Action>
+              onClick={() => toggleLike(likeSubject)}
+              data-testid="track-context-menu-like"
+            >
+              {liked ? t('actions.unlike') : t('actions.like')}
+            </TrackContextMenu.Action>
+          ) : null}
           {soundId ? (
             <TrackContextMenu.Submenu>
               <TrackContextMenu.Submenu.Trigger

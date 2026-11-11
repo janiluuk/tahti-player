@@ -8,16 +8,19 @@ import { Button, Dialog, TrackTable } from '@tahti-player/ui';
 
 import { ANNOTATED_ROW_HEIGHT } from '../api/collection-contribution';
 import type { TahtiPlayable } from '../api/types';
+import { useTrackLikes } from '../hooks/useTrackLikes';
 import { playableToTrack } from '../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { titleWithoutArtist } from '../lib/titleWithoutArtist';
 import { trackTableLabels } from '../lib/trackTableLabels';
 import { toastWithUndo } from '../lib/undoToast';
-import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useTrackDetailStore } from '../stores/trackDetailStore';
 import { PageEmpty } from './PageStates';
-import { PlayableTrackContextMenu } from './PlayableTrackContextMenu';
+import {
+  PlayableTrackContextMenu,
+  PlayableTrackResolverContext,
+} from './PlayableTrackContextMenu';
 
 function undoQueueAdd(
   added: TahtiPlayable[],
@@ -95,8 +98,7 @@ export function PlayableTrackTable({
   const currentId = usePlayerStore((s) => s.currentId);
   const playerStatus = usePlayerStore((s) => s.status);
   const setPlayerStatus = usePlayerStore((s) => s.setStatus);
-  const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
-  const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
+  const { canLike, isLiked, toggleLike } = useTrackLikes();
   const [confirmAddAllOpen, setConfirmAddAllOpen] = useState(false);
   const rememberTrackDetail = useTrackDetailStore((s) => s.remember);
 
@@ -180,148 +182,158 @@ export function PlayableTrackTable({
 
   return (
     <>
-      <div className="flex min-h-[240px] flex-col gap-3">
-        <TrackTable
-          tracks={tracks}
-          labels={trackTableLabels}
-          rowHeight={hasAnnotations ? ANNOTATED_ROW_HEIGHT : undefined}
-          classes={
-            quietHeader
-              ? {
-                  header: 'bg-foreground/10 text-inherit border-border/50',
-                }
-              : undefined
-          }
-          features={{
-            header: true,
-            filterable,
-            sortable: true,
-            favorites: true,
-            playAll,
-            addAllToQueue: showAddAllToQueue,
-            reorderable: false,
-            contextMenu: true,
-            selectable,
-          }}
-          display={{
-            displayThumbnail: true,
-            displayFavorite: true,
-            displayArtist: !hideArtist,
-            displayDuration: true,
-            displayAlbum: items.some((i) =>
-              Boolean(i.sourceProvider && i.sourceProvider !== 'tahti'),
-            ),
-            displayReleaseDate: items.some((i) => Boolean(i.releaseDate)),
-            displayQueueControls: !compactActions,
-            displayPosition: false,
-            displayDeleteButton: Boolean(onRemove),
-          }}
-          actions={{
-            onPlayNow: (track) => {
-              const item = resolve(track);
-              if (!item) {
-                return;
-              }
-              if (currentId === item.id) {
-                setPlayerStatus(
-                  playerStatus === 'playing' || playerStatus === 'loading'
-                    ? 'paused'
-                    : 'playing',
-                );
-                return;
-              }
-              const rest = items.filter((i) => i.id !== item.id);
-              play(item, { enqueueRest: rest });
-            },
-            onOpenDetails: openDetail,
-            onOpenDetail: openDetail,
-            onAddToQueue: (track) => {
-              const item = resolve(track);
-              if (item) {
-                if (queue.some((queueItem) => queueItem.id === item.id)) {
-                  toast.info(`“${item.title}” is already in the queue.`);
+      <PlayableTrackResolverContext.Provider value={resolve}>
+        <div className="flex min-h-[240px] flex-col gap-3">
+          <TrackTable
+            tracks={tracks}
+            labels={trackTableLabels}
+            rowHeight={hasAnnotations ? ANNOTATED_ROW_HEIGHT : undefined}
+            classes={
+              quietHeader
+                ? {
+                    header: 'bg-foreground/10 text-inherit border-border/50',
+                  }
+                : undefined
+            }
+            features={{
+              header: true,
+              filterable,
+              sortable: true,
+              favorites: true,
+              playAll,
+              addAllToQueue: showAddAllToQueue,
+              reorderable: false,
+              contextMenu: true,
+              selectable,
+            }}
+            display={{
+              displayThumbnail: true,
+              displayFavorite: true,
+              displayArtist: !hideArtist,
+              displayDuration: true,
+              displayAlbum: items.some((i) =>
+                Boolean(i.sourceProvider && i.sourceProvider !== 'tahti'),
+              ),
+              displayReleaseDate: items.some((i) => Boolean(i.releaseDate)),
+              displayQueueControls: !compactActions,
+              displayPosition: false,
+              displayDeleteButton: Boolean(onRemove),
+            }}
+            actions={{
+              onPlayNow: (track) => {
+                const item = resolve(track);
+                if (!item) {
                   return;
                 }
-                enqueue(item);
-                undoQueueAdd(
-                  [item],
-                  removeFromQueue,
-                  `Added “${item.title}” to the queue.`,
-                );
-              }
-            },
-            onPlayAll: () => {
-              const [head, ...rest] = items;
-              if (head) {
-                play(head, { enqueueRest: rest });
-              }
-            },
-            onAddAllToQueue: () => setConfirmAddAllOpen(true),
-            onToggleFavorite: (track) => {
-              const item = resolve(track);
-              if (item) {
-                toggleFavoriteTrack(item);
-              }
-            },
-            onRemove: onRemove
-              ? (track) => {
-                  const item = resolve(track);
-                  if (item) {
-                    onRemove(item);
-                  }
+                if (currentId === item.id) {
+                  setPlayerStatus(
+                    playerStatus === 'playing' || playerStatus === 'loading'
+                      ? 'paused'
+                      : 'playing',
+                  );
+                  return;
                 }
-              : undefined,
-            onEdit: onEdit
-              ? (track) => {
-                  const item = resolve(track);
-                  if (item) {
-                    onEdit(item);
+                const rest = items.filter((i) => i.id !== item.id);
+                play(item, { enqueueRest: rest });
+              },
+              onOpenDetails: openDetail,
+              onOpenDetail: openDetail,
+              onAddToQueue: (track) => {
+                const item = resolve(track);
+                if (item) {
+                  if (queue.some((queueItem) => queueItem.id === item.id)) {
+                    toast.info(`“${item.title}” is already in the queue.`);
+                    return;
                   }
+                  enqueue(item);
+                  undoQueueAdd(
+                    [item],
+                    removeFromQueue,
+                    `Added “${item.title}” to the queue.`,
+                  );
                 }
-              : undefined,
-            onAddSelectedToQueue: (ids) => {
-              const selected = resolveSelection(ids);
-              const queuedIds = new Set(queue.map((q) => q.id));
-              const newItems = selected.filter(
-                (item) => !queuedIds.has(item.id),
-              );
-              for (const item of newItems) {
-                enqueue(item);
-              }
-              if (newItems.length > 0) {
-                undoQueueAdd(
-                  newItems,
-                  removeFromQueue,
-                  `Added ${newItems.length} track${newItems.length === 1 ? '' : 's'} to the queue.`,
+              },
+              onPlayAll: () => {
+                const [head, ...rest] = items;
+                if (head) {
+                  play(head, { enqueueRest: rest });
+                }
+              },
+              onAddAllToQueue: () => setConfirmAddAllOpen(true),
+              onToggleFavorite: items.some(canLike)
+                ? (track) => {
+                    const item = resolve(track);
+                    if (item) {
+                      toggleLike(item);
+                    }
+                  }
+                : undefined,
+              onRemove: onRemove
+                ? (track) => {
+                    const item = resolve(track);
+                    if (item) {
+                      onRemove(item);
+                    }
+                  }
+                : undefined,
+              onEdit: onEdit
+                ? (track) => {
+                    const item = resolve(track);
+                    if (item) {
+                      onEdit(item);
+                    }
+                  }
+                : undefined,
+              onAddSelectedToQueue: (ids) => {
+                const selected = resolveSelection(ids);
+                const queuedIds = new Set(queue.map((q) => q.id));
+                const newItems = selected.filter(
+                  (item) => !queuedIds.has(item.id),
                 );
-              }
-            },
-            onRemoveSelected: onBulkRemove
-              ? (ids) => onBulkRemove(resolveSelection(ids))
-              : undefined,
-          }}
-          meta={{
-            isTrackFavorite: (track) =>
-              favoriteTracks.some((t) => t.id === track.source.id),
-            isCurrentTrack: (track) => track.source.id === currentId,
-            isTrackPlaying: (track) =>
-              track.source.id === currentId &&
-              (playerStatus === 'playing' || playerStatus === 'loading'),
-            isTrackQueued: (track) =>
-              queue.some((queueItem) => queueItem.id === track.source.id),
-            canEditTrack: onEdit ? () => true : undefined,
-            // Embed-only sources (hearthis.at, etc.) have no internal detail
-            // page to open, so the icon is hidden for them rather than
-            // rendering a dead link.
-            canOpenDetail: (track) =>
-              Boolean(soundIdFromPlayableId(track.source.id)),
-            getTrackAnnotation: annotations
-              ? (track) => annotations.get(track.source.id)
-              : undefined,
-            ContextMenuWrapper: PlayableTrackContextMenu,
-          }}
-        />
-      </div>
+                for (const item of newItems) {
+                  enqueue(item);
+                }
+                if (newItems.length > 0) {
+                  undoQueueAdd(
+                    newItems,
+                    removeFromQueue,
+                    `Added ${newItems.length} track${newItems.length === 1 ? '' : 's'} to the queue.`,
+                  );
+                }
+              },
+              onRemoveSelected: onBulkRemove
+                ? (ids) => onBulkRemove(resolveSelection(ids))
+                : undefined,
+            }}
+            meta={{
+              isTrackFavorite: (track) => {
+                const item = resolve(track);
+                return item ? isLiked(item) : false;
+              },
+              canFavoriteTrack: (track) => {
+                const item = resolve(track);
+                return item ? canLike(item) : false;
+              },
+              isCurrentTrack: (track) => track.source.id === currentId,
+              isTrackPlaying: (track) =>
+                track.source.id === currentId &&
+                (playerStatus === 'playing' || playerStatus === 'loading'),
+              isTrackQueued: (track) =>
+                queue.some((queueItem) => queueItem.id === track.source.id),
+              canEditTrack: onEdit ? () => true : undefined,
+              // Embed-only sources (hearthis.at, etc.) have no internal detail
+              // page to open, so the icon is hidden for them rather than
+              // rendering a dead link.
+              canOpenDetail: (track) =>
+                Boolean(soundIdFromPlayableId(track.source.id)),
+              getTrackAnnotation: annotations
+                ? (track) => annotations.get(track.source.id)
+                : undefined,
+              ContextMenuWrapper: PlayableTrackContextMenu,
+            }}
+          />
+        </div>
+      </PlayableTrackResolverContext.Provider>
       <Dialog.Root
         isOpen={confirmAddAllOpen}
         onClose={() => setConfirmAddAllOpen(false)}

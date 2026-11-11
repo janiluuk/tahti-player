@@ -52,7 +52,6 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     status,
     currentTime,
     duration,
-    favoriteTracks,
     rgb,
     tracklist,
     purchaseEntitled,
@@ -63,7 +62,6 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
   const totalDuration = duration || playable.durationSec || 0;
   const elapsed = isCurrent ? currentTime : 0;
   const progress = isCurrent && totalDuration > 0 ? elapsed / totalDuration : 0;
-  const favorited = favoriteTracks.some((t) => t.id === playable.id);
   const isOwner = Boolean(user && detail?.channel.username === user.username);
   const accessGate = resolveTrackAccessGate(detail, {
     isOwner,
@@ -302,7 +300,6 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     totalDuration,
     elapsed,
     progress,
-    favorited,
     canPlay,
     embedProvider,
     embedUri,

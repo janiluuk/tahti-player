@@ -20,6 +20,9 @@ const STATION: RadioStation = {
   source: 'manual',
 };
 
+const isSaved = (id: string) =>
+  useLibraryStore.getState().favoriteTracks.some((t) => t.id === id);
+
 describe('libraryStore + internet radio stations', () => {
   beforeEach(async () => {
     localStorage.clear();
@@ -31,11 +34,11 @@ describe('libraryStore + internet radio stations', () => {
   it('adds a radio station (as a favorite track) to the library, and it can be found there', () => {
     const playable = playableFromRadioStation(STATION);
 
-    expect(useLibraryStore.getState().isFavoriteTrack(playable.id)).toBe(false);
+    expect(isSaved(playable.id)).toBe(false);
 
-    useLibraryStore.getState().toggleFavoriteTrack(playable);
+    useLibraryStore.getState().toggleFavoriteStation(playable);
 
-    expect(useLibraryStore.getState().isFavoriteTrack(playable.id)).toBe(true);
+    expect(isSaved(playable.id)).toBe(true);
     expect(useLibraryStore.getState().favoriteTracks).toContainEqual(
       expect.objectContaining({
         id: `radio:${STATION.id}`,
@@ -49,11 +52,11 @@ describe('libraryStore + internet radio stations', () => {
   it('removes a previously-added radio station when toggled again', () => {
     const playable = playableFromRadioStation(STATION);
 
-    useLibraryStore.getState().toggleFavoriteTrack(playable);
-    expect(useLibraryStore.getState().isFavoriteTrack(playable.id)).toBe(true);
+    useLibraryStore.getState().toggleFavoriteStation(playable);
+    expect(isSaved(playable.id)).toBe(true);
 
-    useLibraryStore.getState().toggleFavoriteTrack(playable);
-    expect(useLibraryStore.getState().isFavoriteTrack(playable.id)).toBe(false);
+    useLibraryStore.getState().toggleFavoriteStation(playable);
+    expect(isSaved(playable.id)).toBe(false);
     expect(
       useLibraryStore
         .getState()
@@ -74,17 +77,17 @@ describe('libraryStore + internet radio stations', () => {
   it('persists favorite radio stations under the per-user scoped storage key', async () => {
     const playable = playableFromRadioStation(STATION);
     await rehydrateLibraryForUser('user-radio-fan');
-    useLibraryStore.getState().toggleFavoriteTrack(playable);
+    useLibraryStore.getState().toggleFavoriteStation(playable);
 
     const stored = localStorage.getItem('tahti-web:library:user-radio-fan');
     expect(stored).toContain(playable.id);
 
     // Switching scope away and back should not leak into another user's anon library.
     await rehydrateLibraryForUser(null);
-    expect(useLibraryStore.getState().isFavoriteTrack(playable.id)).toBe(false);
+    expect(isSaved(playable.id)).toBe(false);
 
     await rehydrateLibraryForUser('user-radio-fan');
-    expect(useLibraryStore.getState().isFavoriteTrack(playable.id)).toBe(true);
+    expect(isSaved(playable.id)).toBe(true);
   });
 
   it('starts a new account with the history played while signed out', async () => {

@@ -17,7 +17,7 @@ const ROW_LABELS = {
 export function FavoriteStationsRow() {
   const { t } = useTranslation('web');
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
-  const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
+  const toggleFavoriteStation = useLibraryStore((s) => s.toggleFavoriteStation);
   const play = usePlayerStore((s) => s.play);
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
@@ -82,7 +82,7 @@ export function FavoriteStationsRow() {
               play(playable);
             }}
             favorited
-            onFavorite={() => toggleFavoriteTrack(playable)}
+            onFavorite={() => toggleFavoriteStation(playable)}
           />
         );
       }}

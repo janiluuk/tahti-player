@@ -8,7 +8,6 @@ import type {
   PublicProfileRelease,
   TahtiPlayable,
 } from '../../api/types';
-import { useLibraryStore } from '../../stores/libraryStore';
 import { usePlayerStore } from '../../stores/playerStore';
 import { AlbumPlayPromptDialog } from '../artist-view/AlbumPlayPromptDialog';
 import {
@@ -48,10 +47,6 @@ export function ChannelCatalogSections({
   const play = usePlayerStore((state) => state.play);
   const enqueue = usePlayerStore((state) => state.enqueue);
   const queueLength = usePlayerStore((state) => state.queue.length);
-  const favoriteTracks = useLibraryStore((state) => state.favoriteTracks);
-  const toggleFavoriteTrack = useLibraryStore(
-    (state) => state.toggleFavoriteTrack,
-  );
   const { releaseTiles } = useArtistCatalog(
     status === 'ready' ? profile : null,
   );
@@ -122,9 +117,6 @@ export function ChannelCatalogSections({
         releases={releaseTiles}
         artistName={displayName}
         channelSlug={channelSlug}
-        isFavorite={(playable) =>
-          favoriteTracks.some((track) => track.id === playable.id)
-        }
         onPlayRelease={(release) => {
           const playables = releasePlayables(release, displayName, channelSlug);
           if (playables.length === 0) {
@@ -143,7 +135,6 @@ export function ChannelCatalogSections({
           }
           queueAlbum(playables);
         }}
-        onToggleFavorite={toggleFavoriteTrack}
         onTitleClick={setTracklistRelease}
       />
       <ArtistPlaylistsGrid

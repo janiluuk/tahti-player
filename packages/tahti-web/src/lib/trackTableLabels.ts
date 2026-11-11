@@ -10,10 +10,10 @@ export const trackTableLabels: TrackTableLabels = {
     releaseDate: 'Released',
   },
   get favorite() {
-    return i18n.t('web:actions.addToFavorites');
+    return i18n.t('web:actions.like');
   },
   get unfavorite() {
-    return i18n.t('web:actions.removeFromFavorites');
+    return i18n.t('web:actions.unlike');
   },
   get play() {
     return i18n.t('web:actions.play');

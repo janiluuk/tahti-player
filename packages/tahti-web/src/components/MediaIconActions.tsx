@@ -171,3 +171,31 @@ export function playQueueFavoriteActions(opts: {
   }
   return actions;
 }
+
+/** Heart that likes or unlikes a track on the listener's account. */
+export function likeIconAction(opts: {
+  itemName: string;
+  liked: boolean;
+  onToggle: () => void;
+}): MediaIconAction {
+  return {
+    id: 'like',
+    label: i18n.t(opts.liked ? 'web:actions.liked' : 'web:actions.like'),
+    ariaLabel: i18n.t(
+      opts.liked ? 'web:actions.unlikeItem' : 'web:actions.likeItem',
+      { title: opts.itemName },
+    ),
+    icon: (
+      <HeartIcon
+        size={16}
+        className={
+          opts.liked ? 'text-accent-red-strong fill-current' : undefined
+        }
+      />
+    ),
+    onClick: opts.onToggle,
+    active: opts.liked,
+    disableWhenActive: false,
+    variant: 'text',
+  };
+}

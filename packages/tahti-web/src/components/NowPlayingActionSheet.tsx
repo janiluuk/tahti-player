@@ -13,6 +13,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { ActionSheet } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
+import { useTrackLikes } from '../hooks/useTrackLikes';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
@@ -41,11 +42,14 @@ export function NowPlayingActionSheet({ isOpen, onClose, playable }: Props) {
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
   const closeFullScreen = useLayoutStore((s) => s.setFullScreenPlayerOpen);
-  const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
+  const toggleFavoriteStation = useLibraryStore((s) => s.toggleFavoriteStation);
   const { t } = useTranslation('web');
-  const isFavorite = useLibraryStore((s) =>
+  const isStation = playable.kind === 'radio';
+  const stationSaved = useLibraryStore((s) =>
     s.favoriteTracks.some((t) => t.id === playable.id),
   );
+  const { canLike, isLiked, toggleLike } = useTrackLikes();
+  const liked = isLiked(playable);
   const [playlistOpen, setPlaylistOpen] = useState(false);
 
   const soundId = soundIdFromPlayableId(playable.id);
@@ -110,19 +114,33 @@ export function NowPlayingActionSheet({ isOpen, onClose, playable }: Props) {
             {t('nowPlayingActionSheet.share')}
           </ActionSheet.Action>
         ) : null}
-        <ActionSheet.Action
-          icon={
-            <HeartIcon
-              size={22}
-              className={isFavorite ? 'fill-current' : undefined}
-            />
-          }
-          onClick={() => toggleFavoriteTrack(playable)}
-        >
-          {isFavorite
-            ? t('actions.removeFromFavorites')
-            : t('actions.addToFavorites')}
-        </ActionSheet.Action>
+        {isStation ? (
+          <ActionSheet.Action
+            icon={
+              <HeartIcon
+                size={22}
+                className={stationSaved ? 'fill-current' : undefined}
+              />
+            }
+            onClick={() => toggleFavoriteStation(playable)}
+          >
+            {stationSaved
+              ? t('actions.removeFromFavorites')
+              : t('actions.addToFavorites')}
+          </ActionSheet.Action>
+        ) : canLike(playable) ? (
+          <ActionSheet.Action
+            icon={
+              <HeartIcon
+                size={22}
+                className={liked ? 'fill-current' : undefined}
+              />
+            }
+            onClick={() => toggleLike(playable)}
+          >
+            {liked ? t('actions.unlike') : t('actions.like')}
+          </ActionSheet.Action>
+        ) : null}
         {soundId ? (
           <ActionSheet.Action
             icon={<ListMusicIcon size={22} />}

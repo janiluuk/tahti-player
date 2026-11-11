@@ -86,7 +86,6 @@ import { isPinned } from '../../lib/pinnedTracks';
 import { useArtistFollow } from '../../lib/useArtistFollow';
 import { useFollowList } from '../../lib/useFollowList';
 import { useAuthStore } from '../../stores/authStore';
-import { useLibraryStore } from '../../stores/libraryStore';
 import {
   playableFromQueueItem,
   usePlayerStore,
@@ -152,8 +151,6 @@ export function ArtistProfilePage({ username }: { username: string }) {
   const currentId = usePlayerStore((s) => s.currentId);
   const status = usePlayerStore((s) => s.status);
   const queue = usePlayerStore((s) => s.queue);
-  const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
-  const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
 
   const playAlbum = (playables: TahtiPlayable[]) => {
     const [head, ...rest] = playables;
@@ -490,12 +487,8 @@ export function ArtistProfilePage({ username }: { username: string }) {
           releases={releaseTiles}
           artistName={artist.displayName}
           channelSlug={channel?.slug}
-          isFavorite={(playable) =>
-            favoriteTracks.some((t) => t.id === playable.id)
-          }
           onPlayRelease={playOrPromptAlbum}
           onQueueRelease={queueRelease}
-          onToggleFavorite={toggleFavoriteTrack}
           onTitleClick={setTracklistRelease}
         />
       ) : null}
@@ -648,8 +641,6 @@ export function ArtistProfilePage({ username }: { username: string }) {
           pinnedTiles={pinnedTiles}
           onPlay={play}
           onPlayRelease={playOrPromptAlbum}
-          onToggleFavorite={toggleFavoriteTrack}
-          favoriteTracks={favoriteTracks}
           onOpenManager={() => setManagerOpen(true)}
         />
       )}

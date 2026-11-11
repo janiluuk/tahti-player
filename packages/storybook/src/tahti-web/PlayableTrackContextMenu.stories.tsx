@@ -1,11 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { PlayableTrackContextMenu } from '@tahti-web/components/PlayableTrackContextMenu';
+import type { TahtiPlayable } from '@tahti-web/api/types';
+import {
+  PlayableTrackContextMenu,
+  PlayableTrackResolverContext,
+} from '@tahti-web/components/PlayableTrackContextMenu';
+import { playableToTrack } from '@tahti-web/lib/playableToTrack';
+import { useSoundLikesStore } from '@tahti-web/stores/soundLikesStore';
 import { MoreHorizontalIcon } from 'lucide-react';
+import { expect, userEvent, waitFor } from 'storybook/test';
 
 import type { Track } from '@tahti-player/model';
 import { Button } from '@tahti-player/ui';
 
-import { withTahtiRouter } from './_lib/decorators';
+import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { withinBody } from './_lib/play';
 
 const meta: Meta<typeof PlayableTrackContextMenu> = {
   title: 'Tahti/Track/PlayableTrackContextMenu',
@@ -68,4 +76,55 @@ export const LiveTrackNoPlaylistAction: Story = {
     },
   },
   args: { track: liveTrack, children: trigger },
+};
+
+const likeablePlayable: TahtiPlayable = {
+  id: 'sound:story-like-track',
+  kind: 'sound',
+  title: 'Aurora',
+  artist: 'Northern Lights',
+  streamUrl: 'https://example.com/aurora.mp3',
+  protocol: 'https',
+  channelSlug: 'northern-lights',
+};
+
+export const LikeAndUnlike: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Signed in, the menu likes or unlikes the track on the account: the same like the row heart sets, so Library → Liked tracks lists it.',
+      },
+    },
+  },
+  decorators: [
+    withMockAuth(MOCK_USERS.listener),
+    (Story) => (
+      <PlayableTrackResolverContext.Provider
+        value={(track) =>
+          track.source.id === likeablePlayable.id ? likeablePlayable : null
+        }
+      >
+        <Story />
+      </PlayableTrackResolverContext.Provider>
+    ),
+  ],
+  beforeEach: () => {
+    useSoundLikesStore.getState().reset();
+  },
+  args: { track: playableToTrack(likeablePlayable), children: trigger },
+  play: async ({ canvasElement }) => {
+    const body = withinBody(canvasElement);
+    await userEvent.click(body.getByRole('button', { name: 'Track options' }));
+    await userEvent.click(await body.findByText('Like'));
+    await waitFor(() =>
+      expect(useSoundLikesStore.getState().liked.has('story-like-track')).toBe(
+        true,
+      ),
+    );
+    await userEvent.click(
+      await body.findByRole('button', { name: 'Track options' }),
+    );
+    await expect(await body.findByText('Unlike')).toBeInTheDocument();
+  },
 };

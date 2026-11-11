@@ -78,7 +78,10 @@ export async function fetchMyLikes(): Promise<{
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
-    return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
+    return {
+      data: mockFixture('myLikes', []),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
   }
   try {
     const { data } = await requestJson<{ items: LikedTrack[] }>(

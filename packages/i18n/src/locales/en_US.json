@@ -811,7 +811,12 @@
       "undoRepostItem": "Undo repost of {{title}}",
       "openChannel": "Open channel",
       "queue": "Queue",
-      "inQueueItem": "In queue: {{title}}"
+      "inQueueItem": "In queue: {{title}}",
+      "like": "Like",
+      "unlike": "Unlike",
+      "liked": "Liked",
+      "likeItem": "Like {{title}}",
+      "unlikeItem": "Unlike {{title}}"
     },
     "empties": {
       "noModerators": "No moderators yet",
@@ -967,7 +972,6 @@
       "goLiveOrFinishChannelSetup": "Go live or finish channel setup to install add-ons on your public page.",
       "noFavoriteChannels": "No favorite channels",
       "heartOneFromDiscoverArtistsOr": "Heart one from Discover → Artists or a channel page.",
-      "noFavoriteTracks": "No favorite tracks",
       "heartATrackOnItsPage": "Heart a track on its page or in any track list.",
       "noConversationsYet": "No conversations yet",
       "searchForSomeoneAboveOrFind": "Search for someone above, or find artists on Discover.",
@@ -1083,7 +1087,10 @@
       "noAnnualReportsGeneratedYet": "No annual reports generated yet",
       "noLogLinesInTheLast": "No log lines in the last hour.",
       "noShowsMatchThisSearch": "No shows match this search.",
-      "noTracksFound": "No tracks found."
+      "noTracksFound": "No tracks found.",
+      "noLikedTracks": "No liked tracks",
+      "signInToSeeYourLikes": "Sign in to see the tracks you like",
+      "likesFollowYourAccount": "Tracks you like are saved to your account and show up on every device."
     },
     "artistProfile": {
       "joined": "Joined {{month}}",
@@ -2335,7 +2342,9 @@
       "couldNotSavePost": "Could not save the post.",
       "audioUploadedProcessing": "Audio uploaded. It is being processed now.",
       "uploadCancelled": "Upload cancelled.",
-      "channelLayoutSaveFailed": "Could not save the page layout. It is kept on this device."
+      "channelLayoutSaveFailed": "Could not save the page layout. It is kept on this device.",
+      "movedSavedTracksToLikes_one": "Moved {{count}} saved track to your likes",
+      "movedSavedTracksToLikes_other": "Moved {{count}} saved tracks to your likes"
     },
     "settingsLogs": {
       "noLogs": "No log entries yet. Warnings, errors and player events from this tab show up here.",
@@ -7505,10 +7514,8 @@
       "browseArtists": "Browse artists",
       "findMusic": "Find music",
       "channels": "Channels",
-      "tracks": "Tracks",
-      "likedOnTahti": "Liked on Tahti",
-      "noLikedTracksYet": "No liked tracks yet.",
-      "favorites": "Favorites"
+      "favorites": "Favorites",
+      "likedTracks": "Liked tracks"
     },
     "meetingRecordPanels": {
       "remove": "Remove",
@@ -12043,9 +12050,9 @@
     },
     "libraryStoreStates": {
       "followingNotSynced": "Following could not be synced. Your saved artists remain available on this device.",
-      "savedOnDevice": "Saved tracks and listening history stay on this device.",
-      "followingSynced": "Following is synced. Saved tracks and listening history stay on this device.",
-      "followingOffline": "Following is available offline. Saved tracks and listening history stay on this device."
+      "savedOnDevice": "Listening history stays on this device.",
+      "followingSynced": "Following is synced. Listening history stays on this device.",
+      "followingOffline": "Following is available offline. Listening history stays on this device."
     },
     "tuningSliders": {
       "speed": "Speed",

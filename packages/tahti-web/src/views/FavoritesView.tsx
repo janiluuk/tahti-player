@@ -24,6 +24,7 @@ import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
+import { useSoundLikesStore } from '../stores/soundLikesStore';
 
 export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation('web');
@@ -40,22 +41,23 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
   const radioFavorites = favoriteTracks.filter(
     (track) => track.kind === 'radio',
   );
-  const audioFavorites = favoriteTracks.filter(
-    (track) => track.kind === 'sound' || Boolean(track.embed),
-  );
   const [likedTracks, setLikedTracks] = useState<TahtiPlayable[]>([]);
   const [likesError, setLikesError] = useState<string | null>(null);
   const [likesAttempt, setLikesAttempt] = useState(0);
+  const [likesLoaded, setLikesLoaded] = useState(false);
+  const likesImported = useSoundLikesStore((s) => s.importedAt);
 
   useEffect(() => {
     if (!hydrated || !user) {
       setLikedTracks([]);
       setLikesError(null);
+      setLikesLoaded(false);
       return;
     }
     let cancelled = false;
     void fetchMyLikes().then(({ data, meta }) => {
       if (!cancelled) {
+        setLikesLoaded(true);
         setLikesError(meta.source === 'api' ? (meta.reason ?? null) : null);
         setLikedTracks(
           data.flatMap((track) => {
@@ -68,7 +70,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
     return () => {
       cancelled = true;
     };
-  }, [hydrated, likesAttempt, user]);
+  }, [hydrated, likesAttempt, likesImported, user]);
 
   const body = (
     <div className="flex flex-col gap-6">
@@ -175,7 +177,7 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
                   onQueue={() => enqueue(radio)}
                   queueLabel={webT()('a11yNamed.queue', { name: name })}
                   onFavorite={() =>
-                    useLibraryStore.getState().toggleFavoriteTrack(radio)
+                    useLibraryStore.getState().toggleFavoriteStation(radio)
                   }
                   favorited
                 />
@@ -185,10 +187,31 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
         )}
       </SectionShell>
 
-      <SectionShell title={t('favoritesView.tracks')}>
-        {audioFavorites.length === 0 ? (
+      <SectionShell title={t('favoritesView.likedTracks')}>
+        {!hydrated ? null : !user ? (
           <PageEmpty
-            title={t('empties.noFavoriteTracks')}
+            title={t('empties.signInToSeeYourLikes')}
+            description={t('empties.likesFollowYourAccount')}
+            action={
+              <ButtonLink
+                className="w-fit"
+                to="/login"
+                size="sm"
+                variant="secondary"
+              >
+                {t('actions.signIn')}
+              </ButtonLink>
+            }
+          />
+        ) : likesError ? (
+          <PageError
+            title={t('loadErrors.couldNotLoadYourLikes')}
+            description={likesError}
+            onRetry={() => setLikesAttempt((n) => n + 1)}
+          />
+        ) : likesLoaded && likedTracks.length === 0 ? (
+          <PageEmpty
+            title={t('empties.noLikedTracks')}
             description={t('empties.heartATrackOnItsPage')}
             action={
               <ButtonLink
@@ -201,27 +224,13 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
               </ButtonLink>
             }
           />
-        ) : (
-          <PlayableAmbientTrackList items={audioFavorites} />
-        )}
-        {likesError ? (
-          <PageError
-            title={t('loadErrors.couldNotLoadYourLikes')}
-            description={likesError}
-            onRetry={() => setLikesAttempt((n) => n + 1)}
-          />
-        ) : null}
-      </SectionShell>
-
-      {likedTracks.length > 0 ? (
-        <SectionShell title={t('favoritesView.likedOnTahti')}>
+        ) : likesLoaded ? (
           <PlayableAmbientTrackList
             items={likedTracks}
             getTrackMeta={likedTrackMeta}
-            emptyMessage={t('favoritesView.noLikedTracksYet')}
           />
-        </SectionShell>
-      ) : null}
+        ) : null}
+      </SectionShell>
     </div>
   );
 

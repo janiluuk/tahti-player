@@ -22,7 +22,6 @@ import { parsePublicTracklist } from '../../lib/publicTracklist';
 import { syncDocumentMetadata } from '../../lib/seo';
 import { useDominantColor } from '../../lib/useDominantColor';
 import { useAuthStore } from '../../stores/authStore';
-import { useLibraryStore } from '../../stores/libraryStore';
 import {
   playableFromQueueItem,
   usePlayerStore,
@@ -134,8 +133,6 @@ export function useTrackDetail(id: string, shareKey?: string) {
   const status = usePlayerStore((s) => s.status);
   const currentTime = usePlayerStore((s) => s.currentTime);
   const duration = usePlayerStore((s) => s.duration);
-  const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
-  const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
 
   const playable = detail ? playableFromDetail(id, detail) : fastPath;
   const rgb = useDominantColor(playable?.coverUrl);
@@ -227,8 +224,6 @@ export function useTrackDetail(id: string, shareKey?: string) {
     status,
     currentTime,
     duration,
-    toggleFavoriteTrack,
-    favoriteTracks,
     playable,
     rgb,
     tracklist,

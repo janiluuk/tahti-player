@@ -811,7 +811,12 @@
       "undoRepostItem": "Kumoa uudelleenjulkaisu: {{title}}",
       "openChannel": "Avaa kanava",
       "queue": "Jonoon",
-      "inQueueItem": "Jonossa: {{title}}"
+      "inQueueItem": "Jonossa: {{title}}",
+      "like": "Tykkää",
+      "unlike": "Poista tykkäys",
+      "liked": "Tykätty",
+      "likeItem": "Tykkää: {{title}}",
+      "unlikeItem": "Poista tykkäys: {{title}}"
     },
     "empties": {
       "noModerators": "Ei vielä moderaattoreita",
@@ -967,7 +972,6 @@
       "goLiveOrFinishChannelSetup": "Mene liveen tai viimeistele kanavasi asennus asentaaksesi lisäosia julkiselle sivullesi.",
       "noFavoriteChannels": "Ei suosikkikanavia",
       "heartOneFromDiscoverArtistsOr": "Lisää sydän kohdassa Löydä → Artistit tai kanavan sivulla.",
-      "noFavoriteTracks": "Ei suosikkikappaleita",
       "heartATrackOnItsPage": "Lisää kappaleelle sydän sen sivulla tai missä tahansa kappalelistassa.",
       "noConversationsYet": "Ei vielä keskusteluja",
       "searchForSomeoneAboveOrFind": "Hae jotakuta yltä tai etsi artisteja Löydä-sivulta.",
@@ -1083,7 +1087,10 @@
       "noAnnualReportsGeneratedYet": "Vuosikertomuksia ei ole vielä luotu",
       "noLogLinesInTheLast": "Ei lokirivejä viimeisen tunnin ajalta.",
       "noShowsMatchThisSearch": "Mikään ohjelma ei vastaa hakua.",
-      "noTracksFound": "Kappaleita ei löytynyt."
+      "noTracksFound": "Kappaleita ei löytynyt.",
+      "noLikedTracks": "Ei tykättyjä kappaleita",
+      "signInToSeeYourLikes": "Kirjaudu sisään nähdäksesi tykkäämäsi kappaleet",
+      "likesFollowYourAccount": "Tykkäämäsi kappaleet tallentuvat tiliisi ja näkyvät kaikilla laitteillasi."
     },
     "artistProfile": {
       "joined": "Liittynyt {{month}}",
@@ -2335,7 +2342,9 @@
       "couldNotSavePost": "Julkaisua ei voitu tallentaa.",
       "audioUploadedProcessing": "Ääni ladattu. Sitä käsitellään nyt.",
       "uploadCancelled": "Lataus peruutettu.",
-      "channelLayoutSaveFailed": "Sivun asettelua ei voitu tallentaa. Se säilyy tällä laitteella."
+      "channelLayoutSaveFailed": "Sivun asettelua ei voitu tallentaa. Se säilyy tällä laitteella.",
+      "movedSavedTracksToLikes_one": "{{count}} tallennettu kappale siirrettiin tykkäyksiisi",
+      "movedSavedTracksToLikes_other": "{{count}} tallennettua kappaletta siirrettiin tykkäyksiisi"
     },
     "settingsLogs": {
       "noLogs": "Ei lokimerkintöjä vielä. Tämän välilehden varoitukset, virheet ja soittimen tapahtumat näkyvät täällä.",
@@ -7505,10 +7514,8 @@
       "browseArtists": "Selaa artisteja",
       "findMusic": "Löydä musiikkia",
       "channels": "Kanavat",
-      "tracks": "Kappaleet",
-      "likedOnTahti": "Tykätyt Tahdissa",
-      "noLikedTracksYet": "Ei vielä tykättyjä kappaleita.",
-      "favorites": "Suosikit"
+      "favorites": "Suosikit",
+      "likedTracks": "Tykätyt kappaleet"
     },
     "meetingRecordPanels": {
       "remove": "Poista",
@@ -12043,9 +12050,9 @@
     },
     "libraryStoreStates": {
       "followingNotSynced": "Seurattujen synkronointi epäonnistui. Tallentamasi artistit ovat yhä käytettävissä tällä laitteella.",
-      "savedOnDevice": "Tallennetut kappaleet ja kuunteluhistoria pysyvät tällä laitteella.",
-      "followingSynced": "Seuratut on synkronoitu. Tallennetut kappaleet ja kuunteluhistoria pysyvät tällä laitteella.",
-      "followingOffline": "Seuratut ovat käytettävissä offline-tilassa. Tallennetut kappaleet ja kuunteluhistoria pysyvät tällä laitteella."
+      "savedOnDevice": "Kuunteluhistoria pysyy tällä laitteella.",
+      "followingSynced": "Seuratut on synkronoitu. Kuunteluhistoria pysyy tällä laitteella.",
+      "followingOffline": "Seuratut ovat käytettävissä offline-tilassa. Kuunteluhistoria pysyy tällä laitteella."
     },
     "tuningSliders": {
       "speed": "Nopeus",

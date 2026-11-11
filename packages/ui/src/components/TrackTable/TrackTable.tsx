@@ -107,6 +107,7 @@ export function TrackTable<T extends Track = Track>({
       onEdit: actions?.onEdit,
       onOpenDetail: actions?.onOpenDetail,
       isTrackFavorite: meta?.isTrackFavorite,
+      canFavoriteTrack: meta?.canFavoriteTrack,
       isCurrentTrack: meta?.isCurrentTrack,
       isTrackPlaying: meta?.isTrackPlaying,
       isTrackQueued: meta?.isTrackQueued,
