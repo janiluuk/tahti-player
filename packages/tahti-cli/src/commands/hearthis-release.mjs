@@ -9,15 +9,19 @@ import {
   requireToken,
 } from '../api-client.mjs';
 import { formatDuration, formatTable } from '../format.mjs';
-import { uploadSoundFile } from '../sound-upload.mjs';
-import { downloadHearthisSet } from './hearthis-download-set.mjs';
 import { sanitizePathSegment } from './hearthis-paths.mjs';
 import {
   buildReleasePlan,
   fetchHearthisCatalog,
   releaseCreateBody,
-  soundMetadataFor,
 } from './hearthis-release-meta.mjs';
+import {
+  downloadPendingRows,
+  planRows,
+  resolveKnownSounds,
+  soundSummary,
+  uploadPendingRows,
+} from './hearthis-sounds.mjs';
 import { parseReleaseDate, tracksFromSounds } from './releases-create.mjs';
 import { MAX_RELEASES_LIMIT } from './releases-list.mjs';
 
@@ -95,16 +99,6 @@ export function releaseUrl(config, releaseId) {
     : null;
 }
 
-function trackStatus(track, state, dryRun) {
-  if (state.sounds[track.id]?.soundId) {
-    return 'uploaded before';
-  }
-  if (!track.downloadable) {
-    return 'not downloadable';
-  }
-  return dryRun ? 'would upload' : 'pending';
-}
-
 function stopMessage(existing, plan) {
   return `You already have a release titled "${plan.title}" (${existing.id}). Pass --force-new to create another one, or --title to name this one differently.`;
 }
@@ -112,9 +106,10 @@ function stopMessage(existing, plan) {
 /**
  * hearthis.at Set or track → Tahti release: downloads the original audio
  * with the Set downloader, uploads each file as a sound in Set order, then
- * creates a draft release from those sounds and sets the cover. A state file
- * in `outDir` remembers uploaded sounds and the created release, so a rerun
- * after a failure only does what is left.
+ * creates a draft release from those sounds and sets the cover. A track
+ * already in the upload ledger or the library is reused, not uploaded again.
+ * A state file in `outDir` remembers the created release, so a rerun after a
+ * failure only does what is left.
  */
 export async function hearthisToRelease(
   config,
@@ -128,6 +123,7 @@ export async function hearthisToRelease(
     date = null,
     tracks = null,
     flac = false,
+    ledgerPath = null,
     log = () => {},
   } = {},
 ) {
@@ -141,19 +137,16 @@ export async function hearthisToRelease(
   });
   const statePath = stateFilePath(outDir, plan.permalink);
   const state = await readReleaseState(statePath);
-  const rows = plan.tracks.map((track) => ({
-    id: track.id,
-    position: track.position,
-    title: track.title,
-    durationSec: track.durationSec,
-    status: trackStatus(track, state, dryRun),
-    soundId: state.sounds[track.id]?.soundId ?? null,
-    reason: null,
-  }));
+  const fromState = new Map(
+    Object.entries(state.sounds)
+      .filter(([, entry]) => entry?.soundId)
+      .map(([id, entry]) => [id, { soundId: entry.soundId, from: 'ledger' }]),
+  );
   const result = {
     plan,
     statePath,
-    rows,
+    ledgerPath: null,
+    rows: planRows(plan.tracks, fromState, dryRun),
     existingRelease: null,
     release: null,
     releaseUrl: null,
@@ -176,6 +169,15 @@ export async function hearthisToRelease(
     }
   }
 
+  const known = await resolveKnownSounds(config, plan.tracks, {
+    outDir,
+    ledgerPath,
+    dryRun,
+  });
+  result.ledgerPath = known.ledger.path;
+  const rows = planRows(plan.tracks, known.known, dryRun);
+  result.rows = rows;
+
   const missing = rows.filter((row) => row.status === 'not downloadable');
   if (missing.length > 0) {
     result.stopped = `${missing.length} track(s) are not downloadable on hearthis.at (${missing.map((row) => row.position).join(', ')}). Leave them out with --tracks, or turn on downloads for them on hearthis.at.`;
@@ -186,63 +188,20 @@ export async function hearthisToRelease(
     return result;
   }
 
-  const toDownload = rows.filter((row) => row.status === 'pending');
-  const files = new Map();
-  if (toDownload.length > 0) {
-    log(`Downloading ${toDownload.length} file(s) from hearthis.at…`);
-    const download = await downloadHearthisSet(config, plan.source, {
-      catalog,
-      outDir,
-      ownOnly: true,
-      title: plan.title,
-      artwork: false,
-      flac,
-      writeManifest: false,
-      tracks: toDownload.map((row) => row.position).join(','),
-      onProgress: (row) =>
-        log(
-          `  ${String(row.position).padStart(2, '0')} ${row.title}: ${row.status}`,
-        ),
-    });
-    for (const row of download.rows) {
-      if (
-        row.path &&
-        (row.status === 'downloaded' || row.status === 'skipped')
-      ) {
-        files.set(row.id, join(download.outDir, row.path));
-      }
-    }
-    for (const row of toDownload) {
-      const downloaded = download.rows.find((entry) => entry.id === row.id);
-      if (!files.has(row.id)) {
-        row.status = 'failed';
-        row.reason = downloaded?.reason ?? 'download failed';
-      }
-    }
-  }
-
-  for (const row of rows) {
-    if (row.status !== 'pending') {
-      continue;
-    }
-    const track = plan.tracks.find((entry) => entry.id === row.id);
-    log(`Uploading ${String(row.position).padStart(2, '0')} ${row.title}…`);
-    try {
-      row.soundId = await uploadSoundFile(config, files.get(row.id), {
-        title: row.title,
-        metadata: soundMetadataFor(track),
-      });
-      if (!row.soundId) {
-        throw new CliError('the API answered without a sound id');
-      }
-      row.status = 'uploaded';
-      state.sounds[row.id] = { soundId: row.soundId, file: files.get(row.id) };
+  const files = await downloadPendingRows(config, catalog, rows, {
+    outDir,
+    title: plan.title,
+    flac,
+    log,
+  });
+  await uploadPendingRows(config, rows, plan.tracks, files, {
+    ledger: known.ledger,
+    log,
+    onUploaded: async (row, file) => {
+      state.sounds[row.id] = { soundId: row.soundId, file };
       await writeReleaseState(statePath, plan.source, state);
-    } catch (error) {
-      row.status = 'failed';
-      row.reason = error?.message ?? String(error);
-    }
-  }
+    },
+  });
 
   const failed = rows.filter((row) => row.status === 'failed');
   if (failed.length > 0) {
@@ -314,6 +273,13 @@ export function formatReleasePlanHeader(plan) {
   return lines.join('\n');
 }
 
+export function soundCell(row) {
+  if (row.soundId) {
+    return row.matchedBy ? `${row.soundId} (${row.matchedBy})` : row.soundId;
+  }
+  return row.reason ?? '-';
+}
+
 export function formatReleaseRows(rows) {
   return formatTable(
     ['#', 'TITLE', 'DURATION', 'STATUS', 'SOUND / REASON'],
@@ -322,7 +288,7 @@ export function formatReleaseRows(rows) {
       row.title,
       formatDuration(row.durationSec || null),
       row.status,
-      row.soundId ?? row.reason ?? '-',
+      soundCell(row),
     ]),
   );
 }
@@ -356,8 +322,9 @@ export async function runHearthisRelease(config, input, options = {}) {
   } else if (result.stopped) {
     parts.push(`Stopped: ${result.stopped}`);
   } else if (options.dryRun) {
+    const counts = soundSummary(result.rows);
     parts.push(
-      `Dry run: nothing was downloaded, uploaded or created. Progress is kept in ${result.statePath}.`,
+      `Dry run: would upload ${counts.upload}, reuse ${counts.ledger} from the ledger and ${counts.library} from your library, then create the release. Nothing was downloaded, uploaded or created.\nLedger: ${result.ledgerPath}`,
     );
   } else {
     const cover =
