@@ -263,6 +263,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/NewsFeedSuggestions` | `tahti-web/NewsFeedSuggestions.stories.tsx` |
 | `Tahti/Widgets/NewsFeedWidget` | `tahti-web/NewsFeedWidget.stories.tsx` |
 | `Tahti/Misc/NewsletterSubscribeToggle` | `tahti-web/NewsletterSubscribeToggle.stories.tsx` |
+| `Tahti/Events/NotificationEventInvites` | `tahti-web/NotificationEventInvites.stories.tsx` |
 | `Tahti/Misc/NotificationToasts` | `tahti-web/NotificationToasts.stories.tsx` |
 | `Tahti/Social/NotificationsView` | `tahti-web/NotificationsView.stories.tsx` |
 | `Tahti/Studio/CollectionEdit/NowPlayingBar` | `tahti-web/NowPlayingBar.stories.tsx` |

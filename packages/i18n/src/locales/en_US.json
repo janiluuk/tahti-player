@@ -1292,7 +1292,10 @@
       "needsAcknowledgement": "Needs acknowledgement",
       "acknowledge": "Acknowledge",
       "showOlder": "Show older",
-      "loading": "Loading…"
+      "loading": "Loading…",
+      "eventInvites": "Event invites",
+      "acceptInvite": "Accept invite: {{title}}",
+      "declineInvite": "Decline invite: {{title}}"
     },
     "player": {
       "next": "Next",

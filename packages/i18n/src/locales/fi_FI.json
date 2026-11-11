@@ -1292,7 +1292,10 @@
       "needsAcknowledgement": "Vaatii kuittauksen",
       "acknowledge": "Kuittaa",
       "showOlder": "Näytä vanhemmat",
-      "loading": "Ladataan…"
+      "loading": "Ladataan…",
+      "eventInvites": "Tapahtumakutsut",
+      "acceptInvite": "Hyväksy kutsu: {{title}}",
+      "declineInvite": "Hylkää kutsu: {{title}}"
     },
     "player": {
       "next": "Seuraava",

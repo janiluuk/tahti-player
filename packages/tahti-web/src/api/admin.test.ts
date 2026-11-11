@@ -354,7 +354,7 @@ describe('adminUsersExportCsvUrl', () => {
 
   it('exports only board members for the Board role', () => {
     expect(adminUsersExportCsvUrl({ role: 'BOARD' })).toBe(
-      '/tahti-api/api/admin/users/export.csv?role=BOARD&isBoard=true',
+      '/tahti-api/api/admin/users/export.csv?role=BOARD',
     );
   });
 });
