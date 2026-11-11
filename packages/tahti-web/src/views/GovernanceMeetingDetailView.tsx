@@ -13,15 +13,10 @@ import { MeetingConflicts } from '../components/governance/MeetingConflicts';
 import { ListingDate } from '../components/ListingDate';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import { meetingStateLabel, meetingTypeLabel } from '../lib/governanceLabels';
 import { dateLocaleTag } from '../lib/locale';
 import { isSafeHref } from '../lib/safeHref';
 import { useAuthStore } from '../stores/authStore';
-
-const TYPE_LABEL: Record<GovernanceMeeting['type'], string> = {
-  GENERAL: 'General meeting',
-  EXTRAORDINARY_GENERAL: 'Extraordinary general meeting',
-  BOARD: 'Board meeting',
-};
 
 export function GovernanceMeetingDetailView({ id }: { id: string }) {
   const { t } = useTranslation('web');
@@ -110,10 +105,10 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
           <GovernancePanel title={t('meetingDetail.overview')} icon={UsersIcon}>
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="pill" color="secondary">
-                {TYPE_LABEL[meeting.type]}
+                {meetingTypeLabel(meeting.type, t)}
               </Badge>
               <Badge variant="pill" color="blue">
-                {meeting.state}
+                {meetingStateLabel(meeting.state, t)}
               </Badge>
             </div>
             <dl className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
