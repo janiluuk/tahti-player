@@ -1,5 +1,5 @@
 import { PlayIcon } from 'lucide-react';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, MediaArtwork } from '@tahti-player/ui';
@@ -31,6 +31,7 @@ type Props = {
   /** Row actions (edit, stats, queue, more) shown beside the title, so a
    * caller doesn't repeat the title on a second line for them. */
   actions?: ReactNode;
+  onSoftArtwork?: (url: string) => void;
 };
 
 /**
@@ -50,10 +51,13 @@ export function EmbedTrackRow({
   className,
   as: Container = 'li',
   actions,
+  onSoftArtwork,
 }: Props) {
   const { t } = useTranslation('web');
   const [embedOpen, setEmbedOpen] = useState(false);
   const [softArtworkUrl, setSoftArtworkUrl] = useState<string | null>(null);
+  const onSoftArtworkRef = useRef(onSoftArtwork);
+  onSoftArtworkRef.current = onSoftArtwork;
   const src = embedSrcFor(provider, embedUri);
   const label = EMBED_PROVIDER_LABEL[provider];
   const currentId = usePlayerStore((state) => state.currentId);
@@ -74,6 +78,7 @@ export function EmbedTrackRow({
       (thumb) => {
         if (!cancelled && thumb) {
           setSoftArtworkUrl(thumb);
+          onSoftArtworkRef.current?.(thumb);
         }
       },
     );
