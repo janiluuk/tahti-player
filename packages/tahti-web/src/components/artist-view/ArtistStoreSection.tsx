@@ -74,7 +74,9 @@ function StoreTierRow({
           <span className="text-foreground-secondary">
             {listing ? `${tier.name} · ` : ''}
             {tier.priceOptional
-              ? `pay what you want (suggested ${euros(tier.priceCents)})`
+              ? i18n.t('web:artistStoreSectionStates.payWhatYouWant', {
+                  price: euros(tier.priceCents),
+                })
               : euros(tier.priceCents)}
           </span>
         </p>
@@ -91,18 +93,22 @@ function StoreTierRow({
               className="w-20"
               inputMode="decimal"
               value={amount}
-              aria-label={`Amount in euros for ${listing?.title ?? tier.name}`}
+              aria-label={i18n.t('web:artistStoreSectionStates.amountFor', {
+                name: listing?.title ?? tier.name,
+              })}
               onChange={(event) => setAmount(event.target.value)}
             />
           ) : null}
           <Button
             size="sm"
             disabled={busy}
-            aria-label={`Buy ${listing?.title ?? tier.name}`}
+            aria-label={i18n.t('web:artistStoreSectionStates.buyNamed', {
+              name: listing?.title ?? tier.name,
+            })}
             onClick={() => void buy()}
           >
             <ShoppingBagIcon size={14} aria-hidden className="mr-1.5" />
-            Buy
+            {i18n.t('web:artistStoreSectionStates.buy')}
           </Button>
         </div>
       ) : null}
@@ -143,8 +149,8 @@ export function ArtistStoreSection({
       {!paymentsReady ? (
         <p className="text-foreground-secondary text-xs">
           {isOwner
-            ? 'Finish payouts setup under Studio → Revenue before fans can buy.'
-            : 'Purchases open once this artist finishes payouts setup.'}
+            ? t('artistStoreSectionStates.ownerPayoutsSetup')
+            : t('artistStoreSectionStates.purchasesOpenSoon')}
         </p>
       ) : null}
       <ul className="border-border divide-border divide-y overflow-hidden rounded-xl border">

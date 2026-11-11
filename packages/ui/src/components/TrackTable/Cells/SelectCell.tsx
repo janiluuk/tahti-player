@@ -2,6 +2,7 @@ import { CellContext } from '@tanstack/react-table';
 
 import { Track } from '@tahti-player/model';
 
+import { useUiLabels } from '../../UiLabels';
 import { useTrackTableContext } from '../TrackTableContext';
 
 type SelectCellMeta = {
@@ -14,6 +15,7 @@ export const SelectCell = <T extends Track>({
   table,
 }: CellContext<T, unknown>) => {
   const { getItemId } = useTrackTableContext<T>();
+  const uiLabels = useUiLabels();
   const meta = table.options.meta as SelectCellMeta;
   const track = row.original;
   const id = getItemId(track, row.index);
@@ -31,7 +33,9 @@ export const SelectCell = <T extends Track>({
         }}
         onClick={(e) => e.stopPropagation()}
         aria-label={
-          selected ? `Deselect ${track.title}` : `Select ${track.title}`
+          selected
+            ? uiLabels.deselectRow(track.title)
+            : uiLabels.selectRow(track.title)
         }
       />
     </td>

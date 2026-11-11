@@ -48,6 +48,7 @@ import { PageEmpty, PageError } from '../../PageStates';
 import { SourceServiceIcon } from '../../SourceServiceIcon';
 import type { ServicePlugin } from '../serviceCatalog';
 import { ConfigurableCard } from '../shared';
+import { HearthisConnectForm } from './HearthisConnectForm';
 import { readImportedIds, writeImportedIds } from './hearthisImports';
 
 const NEW_PLAYLIST_DESTINATION = '__new_playlist__';
@@ -60,8 +61,6 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
   const enqueue = usePlayerStore((s) => s.enqueue);
 
   const [handle, setHandle] = useState<string | null>(null);
-  const [draft, setDraft] = useState('');
-  const [saving, setSaving] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -130,7 +129,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       })
       .catch(() => {
         if (request === libraryRequest.current) {
-          setLibraryLoadError('Could not load your hearthis.at library.');
+          setLibraryLoadError(t('hearthisCardStates.libraryLoadFailed'));
           toast.error(i18n.t('web:toasts.hearthisLibraryLoadFailed'));
         }
       })
@@ -154,12 +153,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
     }
   }, [user]);
 
-  const save = async () => {
-    const value = draft.trim().replace(/^@/, '');
-    if (!value) {
-      return;
-    }
-    setSaving(true);
+  const saveHandle = async (value: string): Promise<boolean> => {
     setMsg(null);
     try {
       const profile = await fetchMeProfile();
@@ -169,17 +163,16 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       if (!r.ok) {
         setMsg(r.error);
         toast.error(r.error);
-        return;
+        return false;
       }
       setHandle(value);
-      setDraft('');
-      setMsg('Saved.');
+      setMsg(t('hearthisCardStates.saved'));
       toast.success(i18n.t('web:toasts.hearthisUsernameSaved'));
       loadLibrary();
+      return true;
     } catch {
       toast.error(i18n.t('web:toasts.hearthisUsernameSaveFailed'));
-    } finally {
-      setSaving(false);
+      return false;
     }
   };
 
@@ -221,7 +214,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
     }
     const name = newDestinationName.trim();
     if (!name) {
-      setMsg('Give the new playlist a name first.');
+      setMsg(t('hearthisCardStates.namePlaylistFirst'));
       return null;
     }
     const created = await createStudioCollection({
@@ -230,7 +223,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       isPublic: false,
     });
     if (!created.ok || !created.data.id) {
-      setMsg(created.ok ? 'Created playlist has no import ID.' : created.error);
+      setMsg(
+        created.ok ? t('hearthisCardStates.playlistNoImportId') : created.error,
+      );
       return null;
     }
     setDestinationCollections((current) => [created.data, ...current]);
@@ -265,16 +260,16 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
   const importTracksToDestination = async (tracks: HearthisTrack[]) => {
     const resolvedDestinationId = await resolveDestinationId();
     if (!resolvedDestinationId) {
-      setMsg((current) => current ?? 'Choose or create a playlist first.');
+      setMsg(
+        (current) => current ?? t('hearthisCardStates.choosePlaylistFirst'),
+      );
       return;
     }
     const pendingTracks = tracks.filter(
       (track) => !importedRef.current.has(track.id),
     );
     if (pendingTracks.length === 0) {
-      setMsg(
-        'Already imported — each hearthis.at item can only be imported once.',
-      );
+      setMsg(t('hearthisCardStates.alreadyImportedOnce'));
       toast.info(i18n.t('web:toasts.hearthisTracksAlreadyInLibrary'));
       return;
     }
@@ -302,7 +297,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           id: notificationId,
           action: {
             label:
-              result.items.length === 1 ? 'Open track' : 'Open first track',
+              result.items.length === 1
+                ? t('hearthisCardStates.openTrack')
+                : t('hearthisCardStates.openFirstTrack'),
             onClick: () =>
               void navigate({
                 to: '/studio/sounds/$id',
@@ -333,7 +330,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       (track) => !importedRef.current.has(track.id),
     );
     if (pendingTracks.length === 0) {
-      setMsg('Already imported — no duplicate collection was created.');
+      setMsg(t('hearthisCardStates.alreadyImportedCollection'));
       toast.info(i18n.t('web:toasts.hearthisItemsAlreadyInLibrary'));
       return;
     }
@@ -347,7 +344,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       });
       if (!created.ok || !created.data.id) {
         setMsg(
-          created.ok ? 'Created collection has no import ID.' : created.error,
+          created.ok
+            ? t('hearthisCardStates.collectionNoImportId')
+            : created.error,
         );
         toast.error(i18n.t('web:toasts.couldNotCreateDestinationCollection'), {
           id: notificationId,
@@ -386,7 +385,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       setDestinationCollections(collectionsResult.data);
     } catch (error) {
       const text =
-        error instanceof Error ? error.message : 'Collection import failed.';
+        error instanceof Error
+          ? error.message
+          : t('hearthisCardStates.collectionImportFailed');
       setMsg(text);
       toast.error(text, { id: notificationId });
     }
@@ -408,7 +409,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
       );
     } catch (error) {
       setMsg(
-        error instanceof Error ? error.message : 'Collection import failed.',
+        error instanceof Error
+          ? error.message
+          : t('hearthisCardStates.collectionImportFailed'),
       );
     } finally {
       setBusy(false);
@@ -442,41 +445,14 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           description={plugin.description}
           isInstalled={Boolean(handle)}
           onInstall={open}
-          labels={{ install: 'Configure', installed: 'Configured' }}
+          labels={{
+            install: t('hearthisCardStates.configure'),
+            installed: t('hearthisCardStates.configured'),
+          }}
         />
       )}
     >
-      <form
-        className="border-border bg-background-secondary/40 flex flex-wrap items-center gap-2 rounded-lg border p-3"
-        onSubmit={(event) => {
-          event.preventDefault();
-          void save();
-        }}
-      >
-        {handle ? (
-          <span className="text-sm">
-            Connected as <span className="font-medium">@{handle}</span>
-          </span>
-        ) : (
-          <span className="text-foreground-secondary text-sm">
-            Add your hearthis.at username to load your library.
-          </span>
-        )}
-        <Input
-          autoCapitalize="none"
-          autoCorrect="off"
-          spellCheck={false}
-          className="min-w-0 flex-1 basis-40"
-          size="sm"
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          placeholder={handle ? 'Change username…' : 'hearthis.at username'}
-          aria-label="hearthis.at username"
-        />
-        <Button size="sm" disabled={saving || !draft.trim()} type="submit">
-          {saving ? 'Saving…' : handle ? 'Update' : 'Connect'}
-        </Button>
-      </form>
+      <HearthisConnectForm handle={handle} onSave={saveHandle} />
       {msg && (
         <p className="text-foreground-secondary text-xs" role="status">
           {msg}
@@ -503,13 +479,16 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
               setSelected(new Set());
             }}
           >
-            <Tabs.List aria-label="hearthis.at library" className="flex-wrap">
+            <Tabs.List
+              aria-label={t('hearthisCardStates.library')}
+              className="flex-wrap"
+            >
               <Tabs.Tab>
                 <TabLabel
                   icon={<CheckSquareIcon size={14} />}
                   count={library?.tracks.length ?? 0}
                 >
-                  Tracks
+                  {t('hearthisCardStates.tracks')}
                 </TabLabel>
               </Tabs.Tab>
               <Tabs.Tab>
@@ -517,7 +496,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                   icon={<CheckSquareIcon size={14} />}
                   count={library?.sets.length ?? 0}
                 >
-                  DJ sets
+                  {t('hearthisCardStates.djSets')}
                 </TabLabel>
               </Tabs.Tab>
               <Tabs.Tab>
@@ -525,12 +504,12 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                   icon={<FolderDownIcon size={14} />}
                   count={library?.collections.length ?? 0}
                 >
-                  Collections
+                  {t('hearthisCardStates.collections')}
                 </TabLabel>
               </Tabs.Tab>
               <Tabs.Tab>
                 <TabLabel icon={<SearchIcon size={14} />} count={hits.length}>
-                  Search
+                  {t('hearthisCardStates.search')}
                 </TabLabel>
               </Tabs.Tab>
             </Tabs.List>
@@ -556,7 +535,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
             >
               <Input
                 enterKeyHint="search"
-                aria-label="Search hearthis.at"
+                aria-label={t('hearthisCardStates.searchHearthis')}
                 type="search"
                 autoCorrect="off"
                 spellCheck={false}
@@ -564,7 +543,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                 size="sm"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
-                placeholder="Search, or paste a profile link or @handle"
+                placeholder={t('hearthisCardStates.searchPlaceholder')}
               />
               <Button
                 size="sm"
@@ -573,7 +552,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                 type="submit"
               >
                 <SearchIcon size={16} aria-hidden className="mr-1.5" />
-                {searching ? 'Searching…' : 'Search'}
+                {searching
+                  ? t('hearthisCardStates.searching')
+                  : t('hearthisCardStates.search')}
               </Button>
             </form>
           )}
@@ -581,7 +562,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
           {tab !== 'collections' && (
             <div className="border-border bg-background-secondary/40 flex flex-wrap items-center gap-2 rounded-lg border p-3">
               <Select
-                aria-label="Destination playlist"
+                aria-label={t('hearthisCardStates.destinationPlaylist')}
                 className="min-w-0 flex-1 basis-40"
                 options={[
                   { id: '', label: t('hearthisCard.destination') },
@@ -602,8 +583,8 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                   size="sm"
                   value={newDestinationName}
                   onChange={(e) => setNewDestinationName(e.target.value)}
-                  aria-label="New playlist name"
-                  placeholder="Playlist name"
+                  aria-label={t('hearthisCardStates.newPlaylistName')}
+                  placeholder={t('hearthisCardStates.playlistName')}
                   className="min-w-0 flex-1 basis-40"
                 />
               ) : null}
@@ -622,7 +603,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                 }
               >
                 <CheckSquareIcon size={15} className="mr-1.5" aria-hidden />
-                Select all
+                {t('hearthisCardStates.selectAll')}
               </Button>
               <Button
                 size="sm"
@@ -674,7 +655,10 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                       {collection.trackCount} items
                     </p>
                   </div>
-                  <Tooltip content="Import as collection" side="top">
+                  <Tooltip
+                    content={t('hearthisCardStates.importAsCollection')}
+                    side="top"
+                  >
                     <Button
                       size="icon-sm"
                       variant="secondary"
@@ -699,7 +683,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                     }
                   >
                     <CheckSquareIcon size={15} className="mr-1.5" aria-hidden />
-                    Select all
+                    {t('hearthisCardStates.selectAll')}
                   </Button>
                   <Button
                     size="sm"
@@ -742,7 +726,7 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                       {track.username}
                     </div>
                   </div>
-                  <Tooltip content="Queue" side="top">
+                  <Tooltip content={t('actions.queue')} side="top">
                     <Button
                       size="icon-sm"
                       variant="secondary"
@@ -765,7 +749,9 @@ export function HearthisCard({ plugin }: { plugin: ServicePlugin }) {
                     onClick={() => void importTracksToDestination([track])}
                   >
                     <DownloadIcon size={15} className="mr-1.5" aria-hidden />
-                    {importedIds.has(track.id) ? 'Imported' : 'Import'}
+                    {importedIds.has(track.id)
+                      ? t('hearthisCardStates.imported')
+                      : t('hearthisCardStates.import')}
                   </Button>
                   <ExternalLink
                     href={track.url}

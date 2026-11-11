@@ -11,6 +11,7 @@ import {
 import { cn } from '../../utils';
 import { Button } from '../Button';
 import { Tooltip } from '../Tooltip';
+import { useUiLabels } from '../UiLabels';
 
 export type StoryRowProps = {
   title: ReactNode;
@@ -34,6 +35,7 @@ export const StoryRow: FC<StoryRowProps> = ({
   // Two rows can sit on one page (Feed); naming the buttons after the row
   // keeps them distinguishable for screen readers.
   const rowName = typeof title === 'string' ? title : undefined;
+  const labels = useUiLabels();
   const scroller = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(true);
@@ -86,22 +88,24 @@ export const StoryRow: FC<StoryRowProps> = ({
           {actions}
           {atStart && atEnd ? null : (
             <>
-              <Tooltip content="Previous" side="top">
+              <Tooltip content={labels.previous} side="top">
                 <Button
                   variant="secondary"
                   size="icon-sm"
-                  aria-label={rowName ? `Previous: ${rowName}` : 'Previous'}
+                  aria-label={
+                    rowName ? labels.previousNamed(rowName) : labels.previous
+                  }
                   disabled={atStart}
                   onClick={() => page(-1)}
                 >
                   <ChevronLeft size={16} aria-hidden />
                 </Button>
               </Tooltip>
-              <Tooltip content="Next" side="top">
+              <Tooltip content={labels.next} side="top">
                 <Button
                   variant="secondary"
                   size="icon-sm"
-                  aria-label={rowName ? `Next: ${rowName}` : 'Next'}
+                  aria-label={rowName ? labels.nextNamed(rowName) : labels.next}
                   disabled={atEnd}
                   onClick={() => page(1)}
                 >

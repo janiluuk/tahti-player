@@ -1,6 +1,6 @@
 import { toast } from 'sonner';
 
-import { i18n } from '@tahti-player/i18n';
+import { i18n, type TFunction } from '@tahti-player/i18n';
 import { Tooltip, type CatalogColumn } from '@tahti-player/ui';
 
 import { formatTotalDuration, pluralTracks } from '../../lib/libraryFormat';
@@ -15,11 +15,13 @@ import { usePlayerStore } from '../../stores/playerStore';
 
 function unavailableReason(entry: NativePlaylistEntry): string {
   return entry.track
-    ? 'The original file is missing'
-    : 'This track is no longer in your library';
+    ? i18n.t('web:localPlaylistsSharedStates.fileMissing')
+    : i18n.t('web:localPlaylistsSharedStates.notInLibrary');
 }
 
-export const PLAYLIST_COLUMNS: CatalogColumn<NativePlaylistEntry>[] = [
+export const playlistColumns = (
+  t: TFunction<'web'>,
+): CatalogColumn<NativePlaylistEntry>[] => [
   {
     id: 'position',
     header: '#',
@@ -29,7 +31,7 @@ export const PLAYLIST_COLUMNS: CatalogColumn<NativePlaylistEntry>[] = [
   },
   {
     id: 'title',
-    header: 'Title',
+    header: t('localPlaylistsSharedStates.title'),
     width: 280,
     required: true,
     render: (entry) => (
@@ -54,20 +56,21 @@ export const PLAYLIST_COLUMNS: CatalogColumn<NativePlaylistEntry>[] = [
   },
   {
     id: 'artist',
-    header: 'Artist',
+    header: t('localPlaylistsSharedStates.artist'),
     width: 200,
-    render: (entry) => entry.artist || 'Unknown artist',
+    render: (entry) =>
+      entry.artist || t('localPlaylistsSharedStates.unknownArtist'),
   },
   {
     id: 'album',
-    header: 'Album',
+    header: t('localPlaylistsSharedStates.album'),
     width: 180,
     hiddenByDefault: true,
     render: (entry) => entry.track?.album || '—',
   },
   {
     id: 'duration',
-    header: 'Time',
+    header: t('localPlaylistsSharedStates.time'),
     width: 80,
     align: 'right',
     render: (entry) => (entry.duration ? formatDuration(entry.duration) : '—'),
@@ -80,7 +83,11 @@ export function summaryLine(playlist: NativePlaylistSummary) {
     formatTotalDuration(playlist.durationSec),
   ];
   if (playlist.unavailableCount) {
-    parts.push(`${playlist.unavailableCount} unavailable`);
+    parts.push(
+      i18n.t('web:localPlaylistsSharedStates.unavailableCount', {
+        count: playlist.unavailableCount,
+      }),
+    );
   }
   return parts.join(' · ');
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError } from '@tahti-player/ui';
 
 import {
@@ -10,10 +11,6 @@ import type { GovernanceMotion } from '../../api/types';
 import { isMotionProposer } from '../../lib/motionProposer';
 import { useAuthStore } from '../../stores/authStore';
 
-function secondsLabel(count: number): string {
-  return count === 1 ? 'Seconded by 1 member' : `Seconded by ${count} members`;
-}
-
 export function MotionSecondControl({
   motion,
   onChanged,
@@ -21,6 +18,7 @@ export function MotionSecondControl({
   motion: GovernanceMotion;
   onChanged: () => void;
 }) {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -51,8 +49,8 @@ export function MotionSecondControl({
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-foreground-secondary text-xs">
           {count > 0
-            ? secondsLabel(count)
-            : 'No seconds yet. A second asks the board to put this to a vote.'}
+            ? t('motionSecondControl.secondedBy', { count })
+            : t('motionSecondControl.noSecondsYet')}
         </span>
         {canSecond && (
           <Button
@@ -61,7 +59,9 @@ export function MotionSecondControl({
             disabled={busy}
             onClick={toggle}
           >
-            {motion.youSeconded ? 'Withdraw my second' : 'Second this motion'}
+            {motion.youSeconded
+              ? t('motionSecondControl.withdraw')
+              : t('motionSecondControl.second')}
           </Button>
         )}
       </div>

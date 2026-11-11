@@ -1,3 +1,4 @@
+import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink } from '@tahti-player/ui';
 
 import { type RecentBroadcast } from '../../../api/broadcast';
@@ -10,10 +11,13 @@ export function RecentBroadcastRow({
 }: {
   broadcast: RecentBroadcast;
 }) {
+  const { t } = useTranslation('web');
   const title =
     broadcast.title ||
     broadcast.soundTitle ||
-    `Broadcast ${relativeDate(broadcast.startedAt)}`;
+    t('recentBroadcastRow.broadcastWhen', {
+      when: relativeDate(broadcast.startedAt),
+    });
   const published = broadcast.soundStatus === 'READY';
 
   return (
@@ -38,7 +42,9 @@ export function RecentBroadcastRow({
           published ? 'text-accent-green-strong' : 'text-foreground-secondary'
         }`}
       >
-        {published ? 'Published' : 'Recorded'}
+        {published
+          ? t('recentBroadcastRow.published')
+          : t('recentBroadcastRow.recorded')}
       </span>
       <ButtonLink
         to={broadcast.soundId ? '/studio/sounds/$id' : '/library/recordings'}
@@ -46,7 +52,9 @@ export function RecentBroadcastRow({
         size="sm"
         variant="secondary"
       >
-        {broadcast.soundId ? 'Open' : 'Publish'}
+        {broadcast.soundId
+          ? t('recentBroadcastRow.open')
+          : t('recentBroadcastRow.publish')}
       </ButtonLink>
     </li>
   );

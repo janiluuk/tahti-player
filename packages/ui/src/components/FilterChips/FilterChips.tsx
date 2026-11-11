@@ -2,6 +2,7 @@ import { cva } from 'class-variance-authority';
 import { ComponentProps, FC, ReactNode } from 'react';
 
 import { cn } from '../../utils';
+import { useUiLabels } from '../UiLabels';
 import { useFilterChips, UseFilterChipsConfig } from './useFilterChips';
 
 const chipVariants = cva(
@@ -49,6 +50,7 @@ export type FilterChipsProps = SingleSelectProps | MultiSelectProps;
 export const FilterChips: FC<FilterChipsProps> = (props) => {
   const { items, className, multiple, selected, onChange, disabled, ...rest } =
     props;
+  const labels = useUiLabels();
 
   const hookConfig: UseFilterChipsConfig = multiple
     ? { multiple: true, selected, onChange }
@@ -64,7 +66,7 @@ export const FilterChips: FC<FilterChipsProps> = (props) => {
       data-testid="filter-chips"
       className={cn('flex flex-wrap gap-2', className)}
       role={multiple ? 'group' : 'radiogroup'}
-      aria-label="Filter options"
+      aria-label={labels.filterOptions}
       {...rest}
     >
       {items.map((item) => {

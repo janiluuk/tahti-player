@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   fetchFollowing,
   followArtist,
@@ -240,14 +242,13 @@ export const useLibraryStore = create<LibraryState>()(
           import.meta.env.VITE_FORCE_MOCK !== '1'
         ) {
           set({
-            syncNote:
-              'Following could not be synced. Your saved artists remain available on this device.',
+            syncNote: i18n.t('web:libraryStoreStates.followingNotSynced'),
           });
           return;
         }
         if (data.length === 0 && meta.source === 'mock') {
           set({
-            syncNote: 'Saved tracks and listening history stay on this device.',
+            syncNote: i18n.t('web:libraryStoreStates.savedOnDevice'),
           });
           return;
         }
@@ -265,8 +266,8 @@ export const useLibraryStore = create<LibraryState>()(
             favoriteChannels: [...bySlug.values()],
             syncNote:
               meta.source === 'api'
-                ? 'Following is synced. Saved tracks and listening history stay on this device.'
-                : 'Following is available offline. Saved tracks and listening history stay on this device.',
+                ? i18n.t('web:libraryStoreStates.followingSynced')
+                : i18n.t('web:libraryStoreStates.followingOffline'),
           };
         });
       },

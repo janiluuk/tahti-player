@@ -8,6 +8,7 @@ import { cn } from '../../../utils';
 import { Button } from '../../Button';
 import { EditIconButton } from '../../EditIconButton/EditIconButton';
 import { Tooltip } from '../../Tooltip';
+import { useUiLabels } from '../../UiLabels';
 import { useTrackTableContext } from '../TrackTableContext';
 import { ContextMenuWrapperProps } from '../types';
 import { narrowHiddenClass } from '../utils/columns';
@@ -154,6 +155,7 @@ export const ActionsCell = <T extends Track>({
 }: CellContext<T, unknown>) => {
   const meta = table.options.meta as ActionsCellMeta | undefined;
   const { labels, actions } = useTrackTableContext<T>();
+  const uiLabels = useUiLabels();
   const track = row.original;
   const showControls = meta?.displayQueueControls;
   const ContextMenuWrapper = meta?.ContextMenuWrapper;
@@ -184,7 +186,7 @@ export const ActionsCell = <T extends Track>({
         )}
         {canEdit && (
           <EditButton
-            label="Edit track"
+            label={uiLabels.editTrack}
             onClick={() => meta?.onEdit?.(track)}
           />
         )}
@@ -195,7 +197,7 @@ export const ActionsCell = <T extends Track>({
         )}
         {canOpenDetail && (
           <OpenDetailButton
-            label="Open track"
+            label={uiLabels.openTrack}
             onClick={() => meta?.onOpenDetail?.(track)}
             className={actions.onOpenDetails ? narrowHiddenClass : undefined}
           />

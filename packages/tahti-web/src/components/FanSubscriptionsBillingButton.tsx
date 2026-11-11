@@ -34,7 +34,9 @@ export function FanSubscriptionsBillingButton() {
       className="self-start"
     >
       <CreditCardIcon size={14} aria-hidden className="mr-1.5" />
-      {busy ? 'Opening…' : 'Payment method and receipts'}
+      {busy
+        ? i18n.t('web:fanSubscriptionsBilling.opening')
+        : i18n.t('web:fanSubscriptionsBilling.paymentMethodAndReceipts')}
     </Button>
   );
 }

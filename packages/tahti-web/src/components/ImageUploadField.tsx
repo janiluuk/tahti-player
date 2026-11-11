@@ -74,7 +74,7 @@ export function ImageUploadField({
       {value ? (
         <div className="group relative mt-2 inline-block">
           <Tooltip
-            content={`Preview ${label.toLowerCase()}`}
+            content={t('tooltips.previewNamed', { name: label })}
             side="top"
             wrapperClassName="inline-flex"
           >
@@ -83,7 +83,7 @@ export function ImageUploadField({
               size="flexible"
               type="button"
               onClick={chrome.openPreview}
-              aria-label={`Preview ${label.toLowerCase()}`}
+              aria-label={t('tooltips.previewNamed', { name: label })}
               className="block rounded-none whitespace-normal active:scale-100"
             >
               <MediaArtwork
