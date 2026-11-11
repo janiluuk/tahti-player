@@ -102,6 +102,9 @@ export type TrackTableProps<T extends Track = Track> = {
   actions: TrackTableActions<T>;
   meta?: {
     isTrackFavorite?: (track: T) => boolean;
+    /** Per-row gate for the favourite button -- false leaves that row's
+     * cell empty, e.g. a track the listener can't save. */
+    canFavoriteTrack?: (track: T) => boolean;
     isCurrentTrack?: (track: T) => boolean;
     isTrackPlaying?: (track: T) => boolean;
     isTrackQueued?: (track: T) => boolean;

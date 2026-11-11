@@ -20,6 +20,7 @@ import {
   parseNowPlayingOverlaySettings,
   resolveNowPlayingOverlayPreset,
 } from '../../content/nowPlayingOverlayPresets';
+import { useTrackLikes } from '../../hooks/useTrackLikes';
 import type { ArtistLookBlockId } from '../../lib/channelLookElements';
 import {
   colorSchemeCssVars,
@@ -76,8 +77,6 @@ type Props = {
   pinnedTiles: ArtistPinnedTile[];
   onPlay: (playable: TahtiPlayable) => void;
   onPlayRelease: (release: PublicProfileRelease) => void;
-  onToggleFavorite: (playable: TahtiPlayable) => void;
-  favoriteTracks: TahtiPlayable[];
   onOpenManager: () => void;
 };
 
@@ -100,11 +99,10 @@ export function ArtistMusicTab({
   pinnedTiles,
   onPlay,
   onPlayRelease,
-  onToggleFavorite,
-  favoriteTracks,
   onOpenManager,
 }: Props) {
   const { t } = useTranslation('web');
+  const { canLike, isLiked, toggleLike } = useTrackLikes();
   return (
     <section className="flex flex-col gap-8">
       {visibility.player ? (
@@ -298,8 +296,10 @@ export function ArtistMusicTab({
               const { playable } = tile;
               const shared = {
                 glowColor: GLOW_COLORS[i % GLOW_COLORS.length],
-                onFavorite: () => onToggleFavorite(playable),
-                favorited: favoriteTracks.some((t) => t.id === playable.id),
+                onFavorite: canLike(playable)
+                  ? () => toggleLike(playable)
+                  : undefined,
+                favorited: isLiked(playable),
               };
               if (tile.kind === 'release') {
                 const { release } = tile;

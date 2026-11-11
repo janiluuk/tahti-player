@@ -12,6 +12,7 @@ import {
   Share2Icon,
   ShoppingBagIcon,
 } from 'lucide-react';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -34,6 +35,7 @@ import { PlayerWaveform } from '../../components/PlayerWaveform';
 import { ReportButton } from '../../components/ReportButton';
 import { TimelineReactionBar } from '../../components/TimelineReactionBar';
 import { useSoundEngagement } from '../../hooks/useSoundEngagement';
+import { useTrackLikes } from '../../hooks/useTrackLikes';
 import { resolveArtworkVisualizerPreset } from '../../lib/artworkVisualizer';
 import { EMBED_PROVIDER_HEIGHT } from '../../lib/embedSrc';
 import { dateLocaleTag } from '../../lib/locale';
@@ -41,6 +43,7 @@ import { placeholderArtworkUrl } from '../../lib/placeholderArt';
 import { formatDuration } from '../../lib/playableToTrack';
 import { webT } from '../../lib/webT';
 import { useAuthModalStore } from '../../stores/authModalStore';
+import { useSoundLikesStore } from '../../stores/soundLikesStore';
 import { AiGeneratedBadge } from './AiGeneratedBadge';
 import { type TrackPage } from './buildTrackPage';
 import { TRACK_COMMENT_INPUT_ID } from './helpers';
@@ -69,11 +72,9 @@ export function TrackHero({ page }: { page: TrackPage }) {
     downloadBusy,
     buyBusy,
     setEditOpen,
-    toggleFavoriteTrack,
     playable,
     isPlaying,
     totalDuration,
-    favorited,
     canPlay,
     embedProvider,
     embedSrc,
@@ -100,6 +101,21 @@ export function TrackHero({ page }: { page: TrackPage }) {
   const mixVersion = mixVersionLabel(playable.title, detail?.mixVersion);
   const canGoBack = useCanGoBack();
   const like = useSoundEngagement('like', detail?.channelSlug, id);
+  const { isLiked, toggleLike } = useTrackLikes();
+  const likeSubject = {
+    id: `sound:${id}`,
+    kind: 'sound' as const,
+    channelSlug: detail?.channelSlug,
+  };
+  const liked = isLiked(likeSubject);
+  const myLikeCount = useSoundLikesStore((s) => s.counts[id]);
+  const userId = user?.id;
+  const likeActive = like.state?.active;
+  useEffect(() => {
+    if (userId && likeActive !== undefined) {
+      useSoundLikesStore.getState().remember(id, likeActive);
+    }
+  }, [id, likeActive, userId]);
   const repost = useSoundEngagement('repost', detail?.channelSlug, id);
 
   return (
@@ -387,7 +403,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
             ) : null}
             <span className="inline-flex items-center gap-1">
               <HeartIcon size={13} aria-hidden />
-              {like.state?.count ?? detail?.likeCount ?? (favorited ? 1 : 0)}
+              {myLikeCount ?? like.state?.count ?? detail?.likeCount ?? 0}
             </span>
             <ActivityIcon size={13} aria-hidden className="opacity-70" />
           </div>
@@ -402,11 +418,9 @@ export function TrackHero({ page }: { page: TrackPage }) {
             ) : null}
             <Tooltip
               content={
-                favorited
-                  ? t('actions.removeFromFavoritesItem', {
-                      title: playable.title,
-                    })
-                  : t('actions.favoriteItem', { title: playable.title })
+                liked
+                  ? t('actions.unlikeItem', { title: playable.title })
+                  : t('actions.likeItem', { title: playable.title })
               }
               side="top"
             >
@@ -415,24 +429,18 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 className="size-9"
                 variant="secondary"
                 aria-label={
-                  favorited
-                    ? t('actions.removeFromFavoritesItem', {
-                        title: playable.title,
-                      })
-                    : t('actions.favoriteItem', { title: playable.title })
+                  liked
+                    ? t('actions.unlikeItem', { title: playable.title })
+                    : t('actions.likeItem', { title: playable.title })
                 }
-                onClick={() => {
-                  toggleFavoriteTrack(playable);
-                  if (user) {
-                    void like.set(!favorited);
-                  }
-                }}
+                aria-pressed={liked}
+                onClick={() => toggleLike(likeSubject)}
               >
                 <HeartIcon
                   size={15}
                   aria-hidden
                   className={
-                    favorited ? 'fill-accent-red text-accent-red' : undefined
+                    liked ? 'fill-accent-red text-accent-red' : undefined
                   }
                 />
               </Button>

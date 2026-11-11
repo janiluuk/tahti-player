@@ -51,6 +51,8 @@ export type LibraryState = {
   scopeKey: string;
   syncNote: string | null;
   favoriteChannels: FavoriteChannel[];
+  /** Favourite radio stations. Sounds are saved as account likes instead;
+   * the persisted key stays so stored stations keep loading. */
   favoriteTracks: TahtiPlayable[];
   favoritePlaylists: FavoritePlaylist[];
   favoriteChannelDates: Record<string, string>;
@@ -64,10 +66,11 @@ export type LibraryState = {
   ) => Promise<FollowResult | null>;
   setFavoriteChannel: (channel: FavoriteChannel, favorite: boolean) => void;
   isFavoriteChannel: (slug: string) => boolean;
-  toggleFavoriteTrack: (track: TahtiPlayable) => void;
+  toggleFavoriteStation: (station: TahtiPlayable) => void;
+  /** Drops saved items by playable id, e.g. sounds moved to account likes. */
+  removeFavoriteTracks: (ids: string[]) => void;
   toggleFavoritePlaylist: (playlist: FavoritePlaylist) => void;
   markFavoriteHeard: (kind: 'playlist' | 'artist', id: string) => void;
-  isFavoriteTrack: (id: string) => boolean;
   pushHistory: (playable: TahtiPlayable) => void;
   clearHistory: () => void;
   mergeServerFollowing: (username: string) => Promise<void>;
@@ -167,19 +170,39 @@ export const useLibraryStore = create<LibraryState>()(
       isFavoriteChannel: (slug) =>
         get().favoriteChannels.some((c) => c.slug === slug),
 
-      toggleFavoriteTrack: (track) => {
+      toggleFavoriteStation: (station) => {
+        if (station.kind !== 'radio') {
+          return;
+        }
         set((s) => {
-          const exists = s.favoriteTracks.some((t) => t.id === track.id);
+          const exists = s.favoriteTracks.some((t) => t.id === station.id);
           const favoriteTrackDates = { ...s.favoriteTrackDates };
           if (exists) {
-            delete favoriteTrackDates[track.id];
+            delete favoriteTrackDates[station.id];
           } else {
-            favoriteTrackDates[track.id] = new Date().toISOString();
+            favoriteTrackDates[station.id] = new Date().toISOString();
           }
           return {
             favoriteTracks: exists
-              ? s.favoriteTracks.filter((t) => t.id !== track.id)
-              : [track, ...s.favoriteTracks],
+              ? s.favoriteTracks.filter((t) => t.id !== station.id)
+              : [station, ...s.favoriteTracks],
+            favoriteTrackDates,
+          };
+        });
+      },
+
+      removeFavoriteTracks: (ids) => {
+        if (ids.length === 0) {
+          return;
+        }
+        const drop = new Set(ids);
+        set((s) => {
+          const favoriteTrackDates = { ...s.favoriteTrackDates };
+          for (const id of drop) {
+            delete favoriteTrackDates[id];
+          }
+          return {
+            favoriteTracks: s.favoriteTracks.filter((t) => !drop.has(t.id)),
             favoriteTrackDates,
           };
         });
@@ -216,8 +239,6 @@ export const useLibraryStore = create<LibraryState>()(
           return s[key].includes(id) ? s : { [key]: [...s[key], id] };
         });
       },
-
-      isFavoriteTrack: (id) => get().favoriteTracks.some((t) => t.id === id),
 
       pushHistory: (playable) => {
         set((s) => {

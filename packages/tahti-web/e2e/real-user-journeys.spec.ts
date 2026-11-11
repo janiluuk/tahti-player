@@ -11,12 +11,8 @@ import {
 // voting + stats" request: full registration -> login, governance voting
 // mechanics (including the closed-motion history/decision log, which is
 // this app's real equivalent of a "voting history" page), and the studio
-// stats/listener-map page. Two things from the original ask have NO UI in
-// this codebase today and are deliberately not tested here: liking a track
-// (toggleFavoriteTrack is 100% localStorage, never reaches the server, so
-// there is nothing for an artist to be notified about) and following an
-// artist (followArtist/unfollowArtist/fetchFollowing exist in api/client.ts
-// but are not called from any view -- no Follow button exists anywhere).
+// stats/listener-map page. Liking a track and following an artist are not
+// part of these journeys.
 
 test('login form submits on pressing Enter, not just clicking Sign in', async ({
   page,

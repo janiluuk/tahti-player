@@ -37,7 +37,7 @@ export const MemberProfile: Story = {
   collection, smartLink, trackDetail, trackComments, soundItems, directory,
   search, radio, feed, announcements, fanTiers, venueProfile, chatHistory,
   topTracks, latestTracks, studioSounds, studioCollections, studioReleases,
-  userLikes, channelEvents, publicGallery, tagTracks, channelVisual,
+  myLikes, userLikes, channelEvents, publicGallery, tagTracks, channelVisual,
   channelVisualPresets, membership, resetPasswordInfo, setupPasswordInfo,
   chatAccess, chatToken, liveTracklist, channelSchedule, radioShow,
   radioShowNowPlaying, radioShowUpcoming, radioSlots, showBookings,

@@ -14,6 +14,7 @@ import {
 } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../../api/types';
+import { useTrackLikes } from '../../hooks/useTrackLikes';
 import { currentLocale } from '../../lib/locale';
 import { resolveLocalPlayableForReplay } from '../../lib/nativeLibrary';
 import { useLibraryStore, type HistoryEntry } from '../../stores/libraryStore';
@@ -115,8 +116,9 @@ function groupByDay(
 export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
   const { t } = useTranslation('web');
   const localeTag = toBcp47(currentLocale());
-  const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
-  const isFavoriteTrack = useLibraryStore((s) => s.isFavoriteTrack);
+  const toggleFavoriteStation = useLibraryStore((s) => s.toggleFavoriteStation);
+  const favoriteStations = useLibraryStore((s) => s.favoriteTracks);
+  const { canLike, isLiked, toggleLike } = useTrackLikes();
   const clearHistory = useLibraryStore((s) => s.clearHistory);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -245,6 +247,7 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
         >
           {group.entries.map((entry) => {
             const p = entry.playable;
+            const isStation = p.kind === 'radio';
             return (
               <HistoryRow
                 key={`${p.id}-${entry.playedAt}`}
@@ -255,9 +258,19 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
                   minute: '2-digit',
                 })}
                 artworkUrl={p.coverUrl}
-                isFavorite={isFavoriteTrack(p.id)}
+                isFavorite={
+                  isStation
+                    ? favoriteStations.some((station) => station.id === p.id)
+                    : isLiked(p)
+                }
                 isActive={currentId === p.id}
-                onToggleFavorite={() => toggleFavoriteTrack(p)}
+                onToggleFavorite={
+                  isStation
+                    ? () => toggleFavoriteStation(p)
+                    : canLike(p)
+                      ? () => toggleLike(p)
+                      : undefined
+                }
                 onAddToQueue={() => {
                   void resolvePlayableForReplay(p).then(
                     (resolved) => resolved && enqueue(resolved),
@@ -269,8 +282,12 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
                   );
                 }}
                 labels={{
-                  favorite: t('actions.addToFavorites'),
-                  unfavorite: t('actions.removeFromFavorites'),
+                  favorite: isStation
+                    ? t('actions.addToFavorites')
+                    : t('actions.like'),
+                  unfavorite: isStation
+                    ? t('actions.removeFromFavorites')
+                    : t('actions.unlike'),
                   addToQueue: t('library.history.addToQueue'),
                 }}
               />

@@ -5,10 +5,10 @@ import { useCallback, useMemo } from 'react';
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, QueuePanel, Tooltip } from '@tahti-player/ui';
 
+import { useTrackLikes } from '../hooks/useTrackLikes';
 import { cn } from '../lib/cn';
 import { queueWithPlaybackStatus } from '../lib/queueItemStatus';
 import { soundIdFromPlayableId } from '../lib/soundId';
-import { useLibraryStore } from '../stores/libraryStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { useQueueBarActions } from './useQueueBarActions';
 
@@ -44,15 +44,10 @@ export function SidebarQueuePanel({
   const playQueueIndex = usePlayerStore((s) => s.playQueueIndex);
   const removeFromQueue = usePlayerStore((s) => s.removeFromQueue);
   const reorderQueue = usePlayerStore((s) => s.reorderQueue);
-  const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
-  const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
+  const { signedIn, isLiked: isTrackLiked, toggleLike } = useTrackLikes();
   const queueById = useMemo(
     () => new Map(queue.map((item) => [item.id, item])),
     [queue],
-  );
-  const favoriteIds = useMemo(
-    () => new Set(favoriteTracks.map((track) => track.id)),
-    [favoriteTracks],
   );
   const { requestClear, menuItems, dialogs } = useQueueBarActions();
 
@@ -75,19 +70,21 @@ export function SidebarQueuePanel({
   const isLiked = useCallback(
     (id: string) => {
       const soundId = soundIdFor(id);
-      return soundId ? favoriteIds.has(soundId) : false;
+      return soundId
+        ? isTrackLiked({ id: `sound:${soundId}`, kind: 'sound' })
+        : false;
     },
-    [favoriteIds, soundIdFor],
+    [isTrackLiked, soundIdFor],
   );
   const handleToggleLike = useCallback(
     (id: string) => {
       const item = queueById.get(id);
       const playable = item ? playableFromQueueItem(item) : null;
       if (playable) {
-        toggleFavoriteTrack(playable);
+        toggleLike(playable);
       }
     },
-    [queueById, toggleFavoriteTrack],
+    [queueById, toggleLike],
   );
 
   return (
@@ -109,7 +106,7 @@ export function SidebarQueuePanel({
           onRemoveItem={removeFromQueue}
           onTitleClick={handleTitleClick}
           isLiked={isLiked}
-          onToggleLike={handleToggleLike}
+          onToggleLike={signedIn ? handleToggleLike : undefined}
           labels={QUEUE_LABELS}
           emptyAction={
             <div className="flex flex-wrap items-center justify-center gap-2">

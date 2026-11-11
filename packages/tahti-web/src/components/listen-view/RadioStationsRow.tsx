@@ -83,7 +83,7 @@ export function RadioStationsRow({
   const playbackStatus = usePlayerStore((s) => s.status);
   const setPlaybackStatus = usePlayerStore((s) => s.setStatus);
   const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
-  const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
+  const toggleFavoriteStation = useLibraryStore((s) => s.toggleFavoriteStation);
   const enabledStationIds = useListenerWidgetsStore((s) => s.enabledStationIds);
   const stationOverrides = useListenerWidgetsStore((s) => s.stationOverrides);
   const toggleStation = useListenerWidgetsStore((s) => s.toggleStation);
@@ -247,7 +247,7 @@ export function RadioStationsRow({
                 }
                 favorited={favoriteIds.has(item.id)}
                 onFavorite={
-                  favorite ? () => toggleFavoriteTrack(favorite) : undefined
+                  favorite ? () => toggleFavoriteStation(favorite) : undefined
                 }
               />
             );

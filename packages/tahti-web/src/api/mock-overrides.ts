@@ -139,6 +139,7 @@ export interface MockFixtures {
   topTracks: { data: DiscoverTrackItem[]; args: [sort: 'asc' | 'desc'] };
   trackComments: { data: TrackComment[]; args: [id: string] };
   trackDetail: { data: PublicTrackDetail | null; args: [id: string] };
+  myLikes: { data: LikedTrack[]; args: [] };
   userLikes: {
     data: { showLikes: boolean; items: LikedTrack[] };
     args: [username: string];

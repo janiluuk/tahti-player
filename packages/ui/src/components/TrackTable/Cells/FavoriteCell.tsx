@@ -8,6 +8,7 @@ import { useTrackTableContext } from '../TrackTableContext';
 type FavoriteCellMeta = {
   onToggleFavorite: (track: Track) => void;
   isTrackFavorite: (track: Track) => boolean;
+  canFavoriteTrack?: (track: Track) => boolean;
 };
 
 export const FavoriteCell = <T extends Track>({
@@ -18,6 +19,9 @@ export const FavoriteCell = <T extends Track>({
   const { labels } = useTrackTableContext<T>();
   const track = row.original;
 
+  if (meta.canFavoriteTrack && !meta.canFavoriteTrack(track)) {
+    return <td className="w-10" />;
+  }
   const isFavorite = meta.isTrackFavorite(track);
 
   return (

@@ -1,19 +1,19 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { DownloadIcon, PencilIcon, PlusIcon, TrashIcon } from 'lucide-react';
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Input } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
+import { useTrackLikes } from '../hooks/useTrackLikes';
 import { formatDuration } from '../lib/playableToTrack';
 import { soundIdFromPlayableId } from '../lib/soundId';
 import { titleWithoutArtist } from '../lib/titleWithoutArtist';
 import { downloadTrackFromRow } from '../lib/trackDownload';
 import { sortTracks, useTrackSort } from '../lib/trackSort';
 import { useAuthStore } from '../stores/authStore';
-import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { useSoundLikesStore } from '../stores/soundLikesStore';
 import { AddToPlaylistPanel } from './AddToPlaylistPanel';
@@ -26,7 +26,11 @@ import type {
   AmbientTrackRowDensity,
   AmbientTrackStats,
 } from './AmbientTrackRow';
-import { MediaIconActions, playQueueFavoriteActions } from './MediaIconActions';
+import {
+  likeIconAction,
+  MediaIconActions,
+  playQueueFavoriteActions,
+} from './MediaIconActions';
 import { PlayableTrackTable } from './PlayableTrackTable';
 import { TrackSortButton } from './TrackSortButton';
 
@@ -94,8 +98,6 @@ export function PlayableAmbientTrackList({
   const duration = usePlayerStore((s) => s.duration);
   const seekTo = usePlayerStore((s) => s.seekTo);
   const setStatus = usePlayerStore((s) => s.setStatus);
-  const favoriteTracks = useLibraryStore((s) => s.favoriteTracks);
-  const toggleFavoriteTrack = useLibraryStore((s) => s.toggleFavoriteTrack);
   const navigate = useNavigate();
   const { t } = useTranslation('web');
   const resolvedEmptyMessage = emptyMessage ?? t('library.noTracksYet');
@@ -106,13 +108,8 @@ export function PlayableAmbientTrackList({
   const userId = useAuthStore((s) => s.user?.id ?? null);
   const likedIds = useSoundLikesStore((s) => s.liked);
   const likeCounts = useSoundLikesStore((s) => s.counts);
-  const loadLikes = useSoundLikesStore((s) => s.load);
   const toggleLike = useSoundLikesStore((s) => s.toggle);
-  useEffect(() => {
-    if (userId && getTrackMeta) {
-      void loadLikes(userId);
-    }
-  }, [userId, getTrackMeta, loadLikes]);
+  const { canLike, isLiked, toggleLike: toggleTrackLike } = useTrackLikes();
   const [sort, setSort] = useTrackSort();
   const [query, setQuery] = useState('');
   const filtered = useMemo(() => {
@@ -219,12 +216,18 @@ export function PlayableAmbientTrackList({
                 onPlay: () => play(item, { enqueueRest: rest }),
                 onQueue: () => enqueue(item),
                 queued: queue.some((queued) => queued.id === item.id),
-                onFavorite: () => toggleFavoriteTrack(item),
-                favorited: favoriteTracks.some((fav) => fav.id === item.id),
               })
-                .filter(
-                  (action) =>
-                    action.id !== 'play' && !(like && action.id === 'favorite'),
+                .filter((action) => action.id !== 'play')
+                .concat(
+                  !like && canLike(item)
+                    ? [
+                        likeIconAction({
+                          itemName: item.title,
+                          liked: isLiked(item),
+                          onToggle: () => toggleTrackLike(item),
+                        }),
+                      ]
+                    : [],
                 )
                 .concat(
                   userId && soundId && item.kind === 'sound' && !item.embed
@@ -316,7 +319,9 @@ export function PlayableAmbientTrackList({
       currentId,
       status,
       queue,
-      favoriteTracks,
+      canLike,
+      isLiked,
+      toggleTrackLike,
       getAnnotation,
       getTrackMeta,
       userId,
@@ -329,7 +334,6 @@ export function PlayableAmbientTrackList({
       play,
       enqueue,
       setStatus,
-      toggleFavoriteTrack,
       t,
     ],
   );
