@@ -7,6 +7,7 @@ import { ButtonLink, CopyButton, ExternalLink } from '@tahti-player/ui';
 import { apiBase } from '../../../api/http';
 import type { IntegrationId } from '../../../api/sources';
 import { hasAccountRole } from '../../../lib/accountRoles';
+import { withInlineCode } from '../../../lib/inlineCode';
 import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { ConfigureDialogHost } from '../shared';
@@ -55,18 +56,15 @@ export function ServerSetupHelp({
       className="border-border flex flex-col gap-3 rounded-lg border p-3 text-sm"
       data-testid="server-setup-help"
     >
-      <p>
-        {name} is not switched on for Tahti yet, so there is nothing to connect
-        to. The Tahti team has to register Tahti as a {name} app first.
-      </p>
+      <p>{t('serverSetupHelpText.notSwitchedOn', { name })}</p>
       {isBoard && setup ? (
         <ol className="text-foreground-secondary flex list-decimal flex-col gap-2 pl-5">
           <li>
-            Register an app at{' '}
+            {t('serverSetupHelpText.registerAppAt')}{' '}
             <ExternalLink href={setup.portal}>{setup.portal}</ExternalLink>.
           </li>
           <li>
-            <span>Set its redirect URL to </span>
+            <span>{t('serverSetupHelpText.setRedirectUrl')} </span>
             <code className="text-foreground break-all">{callbackUrl}</code>
             <CopyButton
               text={callbackUrl}
@@ -77,13 +75,9 @@ export function ServerSetupHelp({
             />
           </li>
           <li>
-            Set{' '}
-            <code className="text-foreground">{setup.envPrefix}_CLIENT_ID</code>{' '}
-            and{' '}
-            <code className="text-foreground">
-              {setup.envPrefix}_CLIENT_SECRET
-            </code>{' '}
-            on the API (<code>pnpm tahti-ops env set</code>) and redeploy.
+            {withInlineCode(
+              t('serverSetupHelpText.setEnv', { prefix: setup.envPrefix }),
+            )}
           </li>
         </ol>
       ) : (

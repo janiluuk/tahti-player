@@ -192,7 +192,7 @@ export function AdminUserRestrictionsPanel({ userId }: { userId: string }) {
                 ).map((id) => ({ id, label: TYPE_LABELS[id] }))}
               />
               <Select
-                label="For"
+                label={t('adminUserRestrictionsFields.duration')}
                 value={duration}
                 onValueChange={setDuration}
                 options={DURATIONS}

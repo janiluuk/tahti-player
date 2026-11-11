@@ -74,7 +74,7 @@ export function TrackAnalysisSection({
             <Input
               autoCorrect="off"
               spellCheck={false}
-              label="Key"
+              label={t('trackAnalysisFields.key')}
               placeholder="Am, F#m or 8A"
               maxLength={MUSICAL_KEY_MAX_LENGTH}
               value={value.musicalKey}

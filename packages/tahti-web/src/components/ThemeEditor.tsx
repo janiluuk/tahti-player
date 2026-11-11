@@ -310,7 +310,7 @@ function ColorTokenRow({
             ) : null}
           </div>
           <Slider
-            label="Hue"
+            label={t('themeEditorFields.hue')}
             value={hue}
             min={0}
             max={360}

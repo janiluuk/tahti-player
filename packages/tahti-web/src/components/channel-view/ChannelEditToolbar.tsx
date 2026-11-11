@@ -30,9 +30,9 @@ export function ChannelEditToolbar({
           {t('channelEditToolbar.channelDesign')}
         </div>
         <p className="text-foreground-secondary text-xs">
-          Select a block on the page or in Layers, then edit its settings.
-          Layout saves in this browser.
-          {dirty ? ' · unsaved changes' : ' · saved locally'}
+          {dirty
+            ? t('channelEditToolbarText.hintUnsaved')
+            : t('channelEditToolbarText.hintSaved')}
         </p>
         {note && (
           <p className="text-foreground-secondary mt-1 text-xs">{note}</p>

@@ -50,7 +50,7 @@ export function ChannelBlocksSection({
                 <div className="relative aspect-[3/1] w-full">
                   <MediaArtwork
                     src={block.logoUrl}
-                    alt="Channel logo"
+                    alt={t('channelBlocksSectionText.channelLogo')}
                     size="fill"
                     fit="contain"
                     imageReveal={false}

@@ -332,10 +332,9 @@ export function JamView({ code }: { code: string }) {
           </div>
           {!isHost && canControl ? (
             <p className="text-foreground-secondary w-full text-xs">
-              The host has given you control of playback
               {audioUnlocked
-                ? ' - pausing or resuming your player does it for everyone.'
-                : '.'}
+                ? t('jamViewText.controlGivenUnlocked')
+                : t('jamViewText.controlGiven')}
             </p>
           ) : null}
         </GlassPanel>

@@ -185,7 +185,7 @@ export function DuplicatesDialog({
             onClick={() => void compare()}
           >
             {hashing ? <Loader size="inline" shape="circle" /> : null}
-            Compare file contents
+            {t('duplicatesDialogText.compareFileContents')}
           </Button>
           {hashing ? (
             <>

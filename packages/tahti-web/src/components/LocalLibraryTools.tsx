@@ -105,7 +105,7 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
             ) : (
               <ImageIcon size={14} aria-hidden />
             )}
-            Find missing artwork
+            {t('localLibraryToolsText.findMissingArtwork')}
           </Button>
         ) : null}
         <Button
@@ -120,7 +120,7 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
           ) : (
             <DownloadIcon size={14} aria-hidden />
           )}
-          Back up catalog
+          {t('localLibraryToolsText.backUpCatalog')}
         </Button>
         <Button
           className="gap-1.5"

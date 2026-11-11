@@ -10112,7 +10112,8 @@
       "couldNotLoadOlderMessages": "Could not load older messages."
     },
     "channelBlocksSectionText": {
-      "channelBlocks": "Channel blocks"
+      "channelBlocks": "Channel blocks",
+      "channelLogo": "Channel logo"
     },
     "streamManagerDialogText": {
       "streamManager": "Stream Manager"
@@ -12144,7 +12145,8 @@
       "installForEmbeds": "Install this add-on to add and manage embeds.",
       "mikseriTop40": "Mikseri Top 40 · {{genre}}",
       "allGenres": "All genres",
-      "uninstallNamed": "Uninstall {{name}}"
+      "uninstallNamed": "Uninstall {{name}}",
+      "favoritesEnabledHint": "Enabled favorites appear on the Listen page."
     },
     "hearthisCardStates": {
       "libraryLoadFailed": "Could not load your hearthis.at library.",
@@ -12182,6 +12184,114 @@
       "importAsCollection": "Import as collection",
       "imported": "Imported",
       "import": "Import"
+    },
+    "tracklistEditorText": {
+      "divideEqually": "Divide equally",
+      "clearTimestamps": "Clear timestamps",
+      "fileHint": "Import a Traktor playlist or history (`.nml`), a Rekordbox playlist or history export (`.txt`), or a plain-text tracklist file. Traktor history keeps each track's real play time; Rekordbox exports and plain text use a timestamp anywhere on the line — leading (`12:14 Artist – Track`), trailing (`Artist – Track – 12:14`), or (for Rekordbox) the track's length, summed in file order.",
+      "importList": "Import list",
+      "pasteHint": "Paste one track per line. A timestamp anywhere on the line — leading (`12:14 Artist – Track`), trailing (`Artist – Track – 12:14`), minutes:seconds or hours:minutes:seconds — is picked up automatically.",
+      "addLines": "Add lines"
+    },
+    "itunesImportText": {
+      "description": "Brings in tracks, ratings, play counts and playlists from an iTunes or Music.app library export (File → Library → Export Library…). Your audio files are not changed, and tags already in a file are kept.",
+      "replacePaths": "Replace the start of the paths in the export with where the files are now.",
+      "previewAgain": "Preview again",
+      "replacePathsWithFolder": "Replace the start of the paths in the export with where the files are now (the export's music folder is {{folder}})."
+    },
+    "trackAnalysisFields": {
+      "key": "Key"
+    },
+    "localLibraryToolsText": {
+      "findMissingArtwork": "Find missing artwork",
+      "backUpCatalog": "Back up catalog"
+    },
+    "playlistImportText": {
+      "findMissingInFolder": "Find missing files in a folder…",
+      "importPlaylist": "Import playlist"
+    },
+    "channelEditToolbarText": {
+      "hintUnsaved": "Select a block on the page or in Layers, then edit its settings. Layout saves in this browser. · unsaved changes",
+      "hintSaved": "Select a block on the page or in Layers, then edit its settings. Layout saves in this browser. · saved locally"
+    },
+    "jamViewText": {
+      "controlGivenUnlocked": "The host has given you control of playback - pausing or resuming your player does it for everyone.",
+      "controlGiven": "The host has given you control of playback."
+    },
+    "themeEditorFields": {
+      "hue": "Hue"
+    },
+    "channelStoreEditorText": {
+      "putTracksInStore": "3. Put tracks in the Store",
+      "putTracksHint": "Pick a price on a track and it shows in the Store on your channel page. Choose “Not in the store” to take it out — anyone can play it again. Until you add a track, fans only see the prices themselves."
+    },
+    "trackAnalysisText": {
+      "saveCorrection": "Save correction"
+    },
+    "saveQueueLocalText": {
+      "saveLocalPlaylist": "Save local playlist"
+    },
+    "localLibraryFiltersFields": {
+      "tag": "Tag"
+    },
+    "addToPlaylistDialogText": {
+      "createAndAdd": "Create and add"
+    },
+    "duplicatesDialogText": {
+      "compareFileContents": "Compare file contents"
+    },
+    "writeTagsDialogText": {
+      "writeToFiles": "Write to files"
+    },
+    "tagChipInputText": {
+      "usedBefore": "Used before:"
+    },
+    "supportContactFormText": {
+      "replyTimeWithRequests": "Expect a reply within two business days for engagement and billing questions. Replies show up under Your requests.",
+      "replyTime": "Expect a reply within two business days for engagement and billing questions."
+    },
+    "playlistExportDialogText": {
+      "chooseWhereToSave": "Choose where to save…"
+    },
+    "channelAnnouncementsPanelText": {
+      "deleteBodyWithBackground": "This removes the clip and its rotation placement. It also removes your page background music.",
+      "deleteBody": "This removes the clip and its rotation placement.",
+      "deleteTitle": "Delete “{{title}}”?"
+    },
+    "panelHeaderText": {
+      "streamManager": "Stream Manager"
+    },
+    "listeningPartyHeroText": {
+      "ended": "This listening party has ended. Thanks for listening."
+    },
+    "libraryRootsBlockText": {
+      "addFolder": "Add folder"
+    },
+    "adminUserRestrictionsFields": {
+      "duration": "For"
+    },
+    "adminUserDeletePanelText": {
+      "title": "Delete {{name}}’s account?",
+      "body": "This anonymizes the account and cancels its billing for good. Type their username, {{username}}, to confirm."
+    },
+    "clipEditorDialogText": {
+      "programsHint": "Programs are complete rotation items. Clips do not interrupt live shows. Enable “Play clips between programs” in 24/7 settings to hear active clips. Changes are picked up when the station refreshes its rotation."
+    },
+    "serverSetupHelpText": {
+      "registerAppAt": "Register an app at",
+      "setRedirectUrl": "Set its redirect URL to",
+      "notSwitchedOn": "{{name}} is not switched on for Tahti yet, so there is nothing to connect to. The Tahti team has to register Tahti as a {{name}} app first.",
+      "setEnv": "Set `{{prefix}}_CLIENT_ID` and `{{prefix}}_CLIENT_SECRET` on the API (`pnpm tahti-ops env set`) and redeploy."
+    },
+    "hearthisExportStates": {
+      "installBefore": "Install the hearthis.at export plugin (needs hearthis.at Premium) in",
+      "settingsIntegrations": "Settings → Integrations",
+      "installAfter": "to copy this track to your own hearthis.at account.",
+      "copyToAccount": "Copy this track to your own hearthis.at account.",
+      "pending": "Queued — reopen this dialog later to see how it went.",
+      "submitted": "Uploading to hearthis.at…",
+      "delivered": "On your hearthis.at account.",
+      "failed": "The last export failed. Try again."
     }
   },
   "studioEditor": {

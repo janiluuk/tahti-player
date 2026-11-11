@@ -183,7 +183,7 @@ export function AddToPlaylistDialog({
           className="gap-1.5"
         >
           {busy === 'new' ? <Loader size="inline" shape="circle" /> : null}
-          Create and add
+          {t('addToPlaylistDialogText.createAndAdd')}
         </Button>
       </form>
       <Dialog.Actions>
