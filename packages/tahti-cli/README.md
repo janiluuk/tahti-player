@@ -10,7 +10,7 @@ development; see [`docs/todo/tahti-cli-tool.md`](../../docs/todo/tahti-cli-tool.
 
 ## Scope
 
-Read-only commands, plus `import` (folder upload), `sounds upload`, `hearthis release` (hearthis.at Set or track → draft release), `hearthis import-embeds` (hearthis.at embeds → real uploads) and `shell` (interactive
+Read-only commands, plus `import` (folder upload), `sounds upload`, `hearthis release` (hearthis.at Set or track → draft release), `hearthis collection` (hearthis.at Set → collection), `collections create`, `hearthis import-embeds` (hearthis.at embeds → real uploads) and `shell` (interactive
 TUI with mpv playback). Capability catalogs used by Tahti Player
 (`GET /api/me/import-plugins`, `GET /api/me/export-plugins`) are **not** CLI
 commands yet — call them with `curl`/`fetch` against the same API if you need
@@ -92,16 +92,70 @@ pnpm --filter @tahti-player/tahti-cli exec tahti hearthis release https://hearth
   Type defaults to single (1 track), EP (2-6) or album (7+).
 - Each sound gets the track's genre, tags, BPM, description and release day.
 - Tracks uploaded by other hearthis.at accounts are left out. A chosen track
-  that is not downloadable stops the run; leave it out with `--tracks`.
+  that is not downloadable (and not already uploaded) stops the run; leave it
+  out with `--tracks`.
+- A track that already has a Tahti sound is reused, not uploaded again (see
+  [the upload ledger](#the-upload-ledger-no-track-uploaded-twice)).
 - An existing release with the same title stops the run before anything is
   uploaded; `--force-new` creates another one.
-- Progress lives in `<out>/.tahti-release-<permalink>.json`. If an upload
-  fails, no release is created; run the same command again and only the
+- The release id lives in `<out>/.tahti-release-<permalink>.json`. If an
+  upload fails, no release is created; run the same command again and only the
   missing sounds are downloaded and uploaded. After the release exists, a
   rerun prints it instead of creating a second one.
 - The new tracks play the uploaded audio; no hearthis.at embed is made.
 - `TAHTI_WEB_URL` sets the web address in the printed URL when the API is not
   on an `api.<host>` address.
+
+#### hearthis.at → Tahti collection
+
+`tahti hearthis collection` re-makes a hearthis.at Set as a Tahti collection:
+it reuses or uploads a sound for each of the owner's tracks, creates the
+collection once (Set title, description and cover) and adds the sounds in Set
+order. `tahti collections create` makes an empty one by hand.
+
+```bash
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis user-sets yaniho
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis collection https://hearthis.at/set/428061-9675121/ --out ~/Music/hearthis --type mix-series --dry-run
+pnpm --filter @tahti-player/tahti-cli exec tahti hearthis collection https://hearthis.at/set/428061-9675121/ --out ~/Music/hearthis --type mix-series
+pnpm --filter @tahti-player/tahti-cli exec tahti collections create "Nightriders" --type mix-series --private --cover-url https://img.hearthis.at/…/cover.jpg
+```
+
+- Use the same `--out` (or `--ledger`) for every Set and release of the
+  account, so the runs share one ledger.
+- A track that is not downloadable, or fails to download or upload, is skipped
+  and listed in the summary; the run still creates and fills the collection,
+  and exits with 1. `--strict` stops instead, before anything changes.
+- New uploads have to finish processing before they can be added: the run
+  waits up to `--wait` seconds (default 600). Tracks still processing are
+  listed; run the same command again later to add them.
+- The slug lives in `<out>/.tahti-collection-<permalink>.json`: a rerun never
+  creates a second collection and only adds what is missing, each in its Set
+  position. Without a state file, a collection of yours with the same name
+  stops the run; `--slug <slug>` fills that one instead.
+- `--type` is `mix-series`, `album` or `custom` (the API default);
+  `--private` makes it a draft only you see, `--visibility` takes `public`,
+  `unlisted` or `draft`.
+
+#### The upload ledger: no track uploaded twice
+
+`hearthis release` and `hearthis collection` share
+`<out>/.tahti-hearthis-sounds.json` (`--ledger <path>` to move it), which maps
+each hearthis.at track id to its Tahti sound id. Before uploading a track
+they look for an existing sound:
+
+1. the ledger (an entry whose sound is no longer in your library is dropped
+   and the track is uploaded again);
+2. your library (`GET /api/me/sound`, read in pages of 100): a sound exported
+   to hearthis.at as that track (`hearthisExportId`), else an uploaded sound
+   with the same title (case and spacing ignored) and a length within 2 s.
+   hearthis.at embeds are never reused, and neither are sounds that failed
+   processing.
+
+Library matches and every new upload are written to the ledger right away.
+Sound ids kept by older `hearthis release` runs in
+`<out>/.tahti-release-*.json` are copied into the ledger on the next run.
+`--dry-run` shows which tracks would be uploaded and which reused, and writes
+nothing.
 
 ## Auth
 
@@ -186,6 +240,7 @@ Every command accepts `--json` (prints the API response unchanged) and
 | `tahti likes [--limit <n>] [--json]`                                                                                                                                                 | `GET /api/me/likes`                                                                                             | Tracks you loved, newest first (date, artist, title, id); `--limit` is 1-100 (default 50)                                                                                                                                                          |
 | `tahti stash list [--page <n>] [--limit <n>] [--json]`                                                                                                                               | `GET /api/me/stash`                                                                                             | Your private stash files (id, name, size, format, share count) and the range shown; no share links in the table, `--json` includes them                                                                                                            |
 | `tahti collections list [--json]`                                                                                                                                                    | `GET /api/me/collections`                                                                                       | Your collections, newest first (slug, name, type, visibility, item count, created)                                                                                                                                                                 |
+| `tahti collections create <name> [--slug <s>] [--type <t>] [--description <t>] [--private \| --visibility <v>] [--cover-url <url>] [--json]` | `POST /api/me/collections`, `POST /api/me/collections/:slug/cover/from-url` | The new collection's slug, name, type, visibility and whether the cover was set; exits 1 if the cover could not be set; needs the `write` scope |
 | `tahti collections show <slug> [--json]`                                                                                                                                             | `GET /api/me/collections/:slug`                                                                                 | One collection (name, type, visibility, collaborative, description) and its items (#, title, artist, track or release, length, whether it is still public); no signed audio URLs in the table                                                      |
 | `tahti collections add <slug> [<sound-id>...] [--release <id>] [--json]`                                                                                                             | `POST /api/me/collections/:slug/items`                                                                          | One row per item: added, already there, or failed with the reason; exits 1 if any failed; needs the `write` scope                                                                                                                                  |
 | `tahti collections remove <slug> <#>`                                                                                                                                                | `GET /api/me/collections/:slug`, `DELETE /api/me/collections/:slug/items/:itemId`                               | Removes the item numbered `#` in `collections show`; the track or release itself stays; needs the `write` scope                                                                                                                                    |
@@ -194,7 +249,8 @@ Every command accepts `--json` (prints the API response unchanged) and
 | `tahti hearthis sets [--json]`                                                                                                                                                       | `GET /api/v1/imports/hearthis/me-sets`                                                                          | Your hearthis.at Sets (permalink, title, track count, year, artist)                                                                                                                                                                                |
 | `tahti hearthis set <permalink-or-url> [--json]`                                                                                                                                     | `GET /api/v1/imports/hearthis/sets/:permalink/tracks`                                                           | Tracks in one Set (#, title, artist, duration, downloadable, filename)                                                                                                                                                                             |
 | `tahti hearthis download-set <permalink-or-url> [--out <dir>] [--layout <l>] [--own] [--title <t>] [--dry-run] [--force] [--json]`                                                   | same set-tracks route + hearthis.at `download_url`                                                              | Writes `Artist/Album (year)/NN - Track.ext` for downloadable tracks (lossless original when offered); `--layout album` writes `Artist - Album (year)/NN - Track.ext`, `--layout set` writes `Set/Track.ext`; `--own` skips other uploaders' tracks; several permalinks run one after another, with a progress line per track on stderr; `--exclude <regex>` and `--tracks 1,3-5` pick tracks (the others stay on disk with `--sync`); `--cover-name folder` saves `folder.jpg`; every downloaded folder gets a `.hearthis-set.json`, and `--resync <dir>` syncs all of them again with the same options; `--sync` re-downloads files whose size changed and deletes ones no longer in the Set (a track's old copy in another format is only removed once the new file exists); `--flac` converts WAV/AIFF with ffmpeg (an original that is really MP3 stays MP3 even when its download name says .wav; the Content-Type decides); the Set cover is saved as `cover.jpg` |
-| `tahti hearthis release <set-or-track-url> [--out <dir>] [--title <t>] [--type <t>] [--date <YYYY-MM-DD>] [--tracks <list>] [--flac] [--force-new] [--dry-run] [--json]` | set-tracks route (or hearthis.at's public API for one track), `GET /api/me/releases`, the upload routes, `GET /api/me/sound/:id`, `POST /api/me/releases`, `POST /api/me/releases/:id/artwork/from-url` | The release, its tracks with their upload status, and the Studio URL of the new draft release; write scope |
+| `tahti hearthis collection <set-url-or-permalink> [--out <dir>] [--ledger <path>] [--name <t>] [--slug <s>] [--type <t>] [--private \| --visibility <v>] [--tracks <list>] [--flac] [--wait <seconds>] [--strict] [--dry-run] [--json]` | set-tracks route, `GET /api/me/sound` (paged), `GET /api/me/collections[/:slug]`, the upload routes, `GET /api/me/sound/processing`, `POST /api/me/collections`, `.../cover/from-url`, `POST /api/me/collections/:slug/items` | Each track's sound (uploaded, reused from the ledger or library, skipped) and collection result (added, already there, processing, skipped), plus a summary and the Studio URL; exits 1 when anything was skipped or left; write scope |
+| `tahti hearthis release <set-or-track-url> [--out <dir>] [--ledger <path>] [--title <t>] [--type <t>] [--date <YYYY-MM-DD>] [--tracks <list>] [--flac] [--force-new] [--dry-run] [--json]` | set-tracks route (or hearthis.at's public API for one track), `GET /api/me/releases`, `GET /api/me/sound` (paged), the upload routes, `GET /api/me/sound/:id`, `POST /api/me/releases`, `POST /api/me/releases/:id/artwork/from-url` | The release, its tracks with their upload status, and the Studio URL of the new draft release; write scope |
 | `tahti shell`                                                                                                                                                                        | library / search / radio / presets + mpv IPC                                                                    | Interactive TUI; library play uses `GET /api/me/sound/:id/editor/source`                                                                                                                                                                           |
 
 Everything except `search` and `import` is a `GET` route behind `requireAuth`,

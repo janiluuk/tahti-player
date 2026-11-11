@@ -177,20 +177,15 @@ function todayIso(now) {
 }
 
 /**
- * Release metadata for a hearthis.at catalog: only the tracks uploaded by the
- * Set's owner, numbered 1..n in Set order (the same numbering
- * `downloadHearthisSet --own` uses), so `--tracks` picks the same positions.
+ * The tracks uploaded by the Set's owner, numbered 1..n in Set order (the
+ * same numbering `downloadHearthisSet --own` uses), so `--tracks` picks the
+ * same positions for a release, a collection and a download.
  */
-export function buildReleasePlan(
-  catalog,
-  { title = null, type = null, date = null, tracks = null } = {},
-  now = new Date(),
-) {
+export function selectOwnTracks(catalog, tracks = null, noun = 'release') {
   const owner = resolveSetOwner(catalog.set, catalog.tracks);
   const own = catalog.tracks.filter(
     (track) => !owner || track.userPermalink === owner,
   );
-  const others = catalog.tracks.length - own.length;
   const selection = tracks ? parseTrackSelection(tracks) : null;
   const planned = own
     .map((track, index) => ({ ...track, position: index + 1 }))
@@ -198,10 +193,29 @@ export function buildReleasePlan(
   if (planned.length === 0) {
     throw new CliError(
       selection
-        ? `--tracks ${tracks} matches no track (the release has ${own.length}).`
+        ? `--tracks ${tracks} matches no track (the ${noun} has ${own.length}).`
         : `No tracks by the ${catalog.kind === 'track' ? 'track' : 'Set'}'s owner in ${catalog.url}.`,
     );
   }
+  return {
+    owner,
+    own,
+    planned,
+    excludedOthers: catalog.tracks.length - own.length,
+  };
+}
+
+export function buildReleasePlan(
+  catalog,
+  { title = null, type = null, date = null, tracks = null } = {},
+  now = new Date(),
+) {
+  const {
+    owner,
+    own,
+    planned,
+    excludedOthers: others,
+  } = selectOwnTracks(catalog, tracks);
   if (planned.length > MAX_RELEASE_TRACKS) {
     throw new CliError(
       `${planned.length} tracks is more than a release holds (${MAX_RELEASE_TRACKS}). Pick some with --tracks, e.g. --tracks 1-${MAX_RELEASE_TRACKS}.`,

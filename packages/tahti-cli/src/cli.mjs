@@ -10,6 +10,10 @@ import {
 } from './commands/blocks.mjs';
 import { runChannel } from './commands/channel.mjs';
 import {
+  COLLECTION_TYPES,
+  runCollectionsCreate,
+} from './commands/collections-create.mjs';
+import {
   runCollectionsAdd,
   runCollectionsRemove,
 } from './commands/collections-edit.mjs';
@@ -25,6 +29,10 @@ import {
   runDiscussionsShow,
 } from './commands/discussions.mjs';
 import { runFeed } from './commands/feed.mjs';
+import {
+  DEFAULT_PROCESSING_WAIT_SEC,
+  runHearthisCollection,
+} from './commands/hearthis-collection.mjs';
 import {
   findSetManifests,
   runHearthisDownloadSet,
@@ -652,7 +660,7 @@ paths that already exist (unless --force).
   {
     path: ['hearthis', 'release'],
     usage:
-      'tahti hearthis release <set-or-track-url> [--out <dir>] [--title <t>] [--type <t>] [--date <YYYY-MM-DD>] [--tracks <list>] [--flac] [--force-new] [--dry-run] [--json]',
+      'tahti hearthis release <set-or-track-url> [--out <dir>] [--ledger <path>] [--title <t>] [--type <t>] [--date <YYYY-MM-DD>] [--tracks <list>] [--flac] [--force-new] [--dry-run] [--json]',
     summary: 'Re-make a hearthis.at Set or track as a draft Tahti release',
     details: `Reads the Set (GET /api/v1/imports/hearthis/sets/:permalink/tracks) or the
 single track (hearthis.at's public API), downloads the original audio of the
@@ -664,11 +672,16 @@ Title, description, release date (earliest track date), genre and track order
 come from hearthis.at; each sound gets the track's genre, tags, BPM and
 description. A single track becomes a one-track single. The new tracks play
 the uploaded audio; no hearthis.at embed is created.
-Stops before uploading when you already have a release with the same title,
-or when a chosen track is not downloadable. Progress is kept in
-<out>/.tahti-release-<permalink>.json: a rerun skips sounds already uploaded,
-and reports the release instead of creating it twice.
+A track already uploaded by an earlier release or collection run (the upload
+ledger) or already in your library (exported to hearthis.at as that track, or
+an upload with the same title and length within 2 s) is reused, not uploaded
+again. Stops before uploading when you already have a release with the same
+title, or when a chosen track that has to be uploaded is not downloadable.
+The release id is kept in <out>/.tahti-release-<permalink>.json: a rerun
+reports the release instead of creating it twice.
   --out <dir>          Download folder and state file location (default: .)
+  --ledger <path>      Upload ledger, hearthis.at track id → Tahti sound id
+                       (default: <out>/.tahti-hearthis-sounds.json)
   --title <t>          Release title (default: the Set title)
   --type <t>           One of: ${RELEASE_TYPES.map((type) => type.toLowerCase()).join(', ')} (default: single for 1 track,
                        ep for 2-6, album for more)
@@ -683,6 +696,7 @@ on an api.<host> address.`,
     options: {
       ...JSON_OPTION,
       out: { type: 'string' },
+      ledger: { type: 'string' },
       title: { type: 'string' },
       type: { type: 'string' },
       date: { type: 'string' },
@@ -696,12 +710,81 @@ on an api.<host> address.`,
       runHearthisRelease(config, positionals[0], {
         json: values.json,
         outDir: values.out || '.',
+        ledgerPath: values.ledger || null,
         title: values.title || null,
         type: values.type || null,
         date: values.date || null,
         tracks: values.tracks || null,
         flac: values.flac,
         forceNew: values['force-new'],
+        dryRun: values['dry-run'],
+      }),
+  },
+  {
+    path: ['hearthis', 'collection'],
+    usage:
+      'tahti hearthis collection <set-url-or-permalink> [--out <dir>] [--ledger <path>] [--name <t>] [--slug <s>] [--type <t>] [--private | --visibility <v>] [--tracks <list>] [--flac] [--wait <seconds>] [--strict] [--dry-run] [--json]',
+    summary:
+      'Re-make a hearthis.at Set as a Tahti collection, uploading each track once',
+    details: `Reads the Set, reuses a Tahti sound for every track that already has one
+(the upload ledger first, then your library: a sound exported to hearthis.at as
+that track, or an upload with the same title and length within 2 s), downloads
+and uploads the rest like \`hearthis release\`, creates the collection
+(POST /api/me/collections, cover from the Set artwork via
+POST /api/me/collections/:slug/cover/from-url) and adds the sounds in Set
+order. Only tracks uploaded by the Set's owner are included. A track that is
+not downloadable, or fails to download or upload, is skipped and listed;
+the run exits with 1 so you notice. The collection slug is kept in
+<out>/.tahti-collection-<permalink>.json: a rerun never creates a second
+collection and only adds what is missing. Without a state file, an existing
+collection with the same name stops the run (fill it with --slug).
+  --out <dir>          Download folder and state file location (default: .)
+  --ledger <path>      Upload ledger (default: <out>/.tahti-hearthis-sounds.json)
+  --name <t>           Collection name (default: the Set title)
+  --slug <s>           Fill your collection with this slug, or create it with
+                       this slug
+  --type <t>           One of: ${COLLECTION_TYPES.map((type) => type.toLowerCase().replace(/_/g, '-')).join(', ')} (default: the API's, custom)
+  --private            Create it as a draft only you can see
+  --visibility <v>     public, unlisted or draft (default: public)
+  --tracks <list>      Only these positions among the owner's tracks, e.g. 1,3-5
+  --flac               Convert WAV/AIFF downloads to FLAC with ffmpeg first
+  --wait <seconds>     How long to wait for new uploads to finish processing
+                       before adding them (default: ${DEFAULT_PROCESSING_WAIT_SEC}; 0 adds right away,
+                       tracks still processing are added on the next run)
+  --strict             Stop instead of skipping when a track is not
+                       downloadable or fails to download or upload
+  --dry-run            Show what would be uploaded, reused, created and added
+                       without changing anything`,
+    options: {
+      ...JSON_OPTION,
+      out: { type: 'string' },
+      ledger: { type: 'string' },
+      name: { type: 'string' },
+      slug: { type: 'string' },
+      type: { type: 'string' },
+      private: { type: 'boolean', default: false },
+      visibility: { type: 'string' },
+      tracks: { type: 'string' },
+      flac: { type: 'boolean', default: false },
+      wait: { type: 'string' },
+      strict: { type: 'boolean', default: false },
+      'dry-run': { type: 'boolean', default: false },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runHearthisCollection(config, positionals[0], {
+        json: values.json,
+        outDir: values.out || '.',
+        ledgerPath: values.ledger || null,
+        name: values.name || null,
+        slug: values.slug || null,
+        type: values.type || null,
+        private: values.private,
+        visibility: values.visibility || null,
+        tracks: values.tracks || null,
+        flac: values.flac,
+        wait: values.wait,
+        strict: values.strict,
         dryRun: values['dry-run'],
       }),
   },
@@ -1015,6 +1098,42 @@ and item count. Use the slug with \`tahti collections show\`.`,
     options: JSON_OPTION,
     run: (config, { values }) =>
       runCollectionsList(config, { json: values.json }),
+  },
+  {
+    path: ['collections', 'create'],
+    usage:
+      'tahti collections create <name> [--slug <s>] [--type <t>] [--description <t>] [--private | --visibility <v>] [--cover-url <url>] [--json]',
+    summary: 'Create a collection (playlist, album, mix series)',
+    details: `Calls POST /api/me/collections; with --cover-url the API fetches the image
+and sets it as the cover (POST /api/me/collections/:slug/cover/from-url).
+Prints the new slug for \`tahti collections add\`. Needs a token with the
+write scope.
+  --slug <s>           URL slug (default: <username>-<name>, made by the API)
+  --type <t>           One of: ${COLLECTION_TYPES.map((type) => type.toLowerCase().replace(/_/g, '-')).join(', ')} (default: custom)
+  --description <t>    Up to 1000 characters
+  --private            Draft: only you can see it
+  --visibility <v>     public, unlisted or draft (default: public)
+  --cover-url <url>    Cover image to fetch`,
+    options: {
+      ...JSON_OPTION,
+      slug: { type: 'string' },
+      type: { type: 'string' },
+      description: { type: 'string' },
+      private: { type: 'boolean', default: false },
+      visibility: { type: 'string' },
+      'cover-url': { type: 'string' },
+    },
+    positionals: 1,
+    run: (config, { values, positionals }) =>
+      runCollectionsCreate(config, positionals[0], {
+        json: values.json,
+        slug: values.slug,
+        type: values.type,
+        description: values.description,
+        private: values.private,
+        visibility: values.visibility,
+        coverUrl: values['cover-url'],
+      }),
   },
   {
     path: ['collections', 'show'],
