@@ -17,6 +17,7 @@ import {
   Loader,
   Select,
   Textarea,
+  Toggle,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -28,6 +29,7 @@ import {
   fetchMyEvents,
   updateEvent,
   type ArtistEvent,
+  type ArtistEventVenue,
 } from '../../api/events';
 import type { VenueDirectoryItem } from '../../api/types';
 import { EventPreviewDialog } from '../../components/events/EventPreviewDialog';
@@ -37,6 +39,20 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { toDatetimeLocalValue } from '../../lib/datetimeLocal';
 import { toastWithUndo } from '../../lib/undoToast';
+
+const NO_VALUE = '';
+
+function viewerTimeZone(): string {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
+function timeZoneOptions(current: string): string[] {
+  const zones =
+    (
+      Intl as { supportedValuesOf?: (key: string) => string[] }
+    ).supportedValuesOf?.('timeZone') ?? [];
+  return current && !zones.includes(current) ? [current, ...zones] : zones;
+}
 
 /** Add a new event, or edit an existing one when `eventId` is given. */
 export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
@@ -53,6 +69,10 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
   const [imageUrl, setImageUrl] = useState('');
   const [startAt, setStartAt] = useState('');
   const [endAt, setEndAt] = useState('');
+  const [timezone, setTimezone] = useState(editing ? '' : viewerTimeZone());
+  const [venueId, setVenueId] = useState<string | null>(null);
+  const [savedVenue, setSavedVenue] = useState<ArtistEventVenue | null>(null);
+  const [fansOnly, setFansOnly] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [shareTo, setShareTo] = useState<EventShareTarget[]>([]);
   const [busy, setBusy] = useState(false);
@@ -102,6 +122,10 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
     setImageUrl(event.imageUrl ?? '');
     setStartAt(toDatetimeLocalValue(event.startAt));
     setEndAt(event.endAt ? toDatetimeLocalValue(event.endAt) : '');
+    setTimezone(event.timezone ?? '');
+    setVenueId(event.venue?.id ?? null);
+    setSavedVenue(event.venue ?? null);
+    setFansOnly(event.visibility === 'FANS');
   }
 
   const save = (asDraft: boolean) => {
@@ -112,6 +136,9 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
       location: location.trim(),
       startAt: new Date(startAt).toISOString(),
       endAt: endAt ? new Date(endAt).toISOString() : null,
+      timezone: timezone || null,
+      venueId,
+      visibility: fansOnly ? ('FANS' as const) : ('PUBLIC' as const),
     };
     return eventId === undefined
       ? createEvent({
@@ -120,7 +147,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
           ticketUrl: ticketUrl.trim() || undefined,
           imageUrl: imageUrl.trim() || undefined,
           status: asDraft ? 'DRAFT' : 'PUBLISHED',
-          shareTo: asDraft ? [] : shareTo,
+          shareTo: asDraft || fansOnly ? [] : shareTo,
         })
       : updateEvent(eventId, {
           ...fields,
@@ -140,6 +167,19 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
     startAt &&
     !endBeforeStart,
   );
+  const venueChoices: ArtistEventVenue[] = [
+    ...venues.map((venue) => ({
+      id: venue.id,
+      slug: venue.slug,
+      name: venue.name,
+      city: venue.city ?? '',
+    })),
+    ...(savedVenue && !venues.some((venue) => venue.id === savedVenue.id)
+      ? [savedVenue]
+      : []),
+  ];
+  const pickedVenue =
+    venueChoices.find((candidate) => candidate.id === venueId) ?? null;
   const previewEvent: ArtistEvent = {
     id: eventId ?? 'preview',
     title: title.trim() || t('events.untitled'),
@@ -153,6 +193,9 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
       ? new Date(startAt).toISOString()
       : new Date().toISOString(),
     endAt: endAt ? new Date(endAt).toISOString() : null,
+    timezone: timezone || null,
+    venue: pickedVenue,
+    visibility: fansOnly ? 'FANS' : 'PUBLIC',
     status: 'PUBLISHED',
     publishedAt: null,
     participants: [],
@@ -235,13 +278,18 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                       id="event-venue"
                       label={t('eventCreate.venueFromDirectory')}
                       placeholder={t('eventCreate.chooseAVenueOrEnter')}
-                      options={venues.map((venue) => ({
-                        id: venue.slug,
-                        label: `${venue.name}${venue.city ? ` · ${venue.city}` : ''}`,
-                      }))}
-                      onValueChange={(venueSlug) => {
+                      value={venueId ?? NO_VALUE}
+                      options={[
+                        { id: NO_VALUE, label: t('events.noVenue') },
+                        ...venueChoices.map((venue) => ({
+                          id: venue.id,
+                          label: `${venue.name}${venue.city ? ` · ${venue.city}` : ''}`,
+                        })),
+                      ]}
+                      onValueChange={(nextId) => {
+                        setVenueId(nextId === NO_VALUE ? null : nextId);
                         const venue = venues.find(
-                          (candidate) => candidate.slug === venueSlug,
+                          (candidate) => candidate.id === nextId,
                         );
                         if (venue) {
                           setPlace(venue.name);
@@ -336,8 +384,31 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                       endBeforeStart ? t('events.endAfterStart') : undefined
                     }
                   />
+                  <Select
+                    id="event-timezone"
+                    label={t('events.timezone')}
+                    description={t('events.timezoneDescription')}
+                    value={timezone || NO_VALUE}
+                    onValueChange={(next) =>
+                      setTimezone(next === NO_VALUE ? '' : next)
+                    }
+                    options={[
+                      { id: NO_VALUE, label: t('events.timezoneNotSet') },
+                      ...timeZoneOptions(timezone).map((zone) => ({
+                        id: zone,
+                        label: zone.replace(/_/g, ' '),
+                      })),
+                    ]}
+                  />
                 </div>
-                {!editing ? (
+                <Toggle
+                  showLabel
+                  label={t('events.fansOnly')}
+                  description={t('events.fansOnlyDescription')}
+                  checked={fansOnly}
+                  onChange={setFansOnly}
+                />
+                {!editing && !fansOnly ? (
                   <EventShareTargets value={shareTo} onChange={setShareTo} />
                 ) : null}
                 <div className="flex flex-wrap gap-2">

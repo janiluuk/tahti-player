@@ -117,6 +117,7 @@ export interface MockFixtures {
   };
   profile: { data: PublicProfile; args: [username: string] };
   publicGallery: { data: PublicPressKitImage[]; args: [username: string] };
+  publicListeningParties: { data: ListeningPartySummaryDto[]; args: [] };
   radio: { data: RadioNowPlaying; args: [] };
   radioShow: { data: PublicRadioShow | null; args: [channelSlug: string] };
   radioShowNowPlaying: {
