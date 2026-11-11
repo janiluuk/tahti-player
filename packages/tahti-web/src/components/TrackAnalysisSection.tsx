@@ -363,7 +363,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
             className="gap-1.5"
           >
             {busy === 'save' ? <Loader size="inline" shape="circle" /> : null}
-            Save correction
+            {t('trackAnalysisText.saveCorrection')}
           </Button>
           <Button
             size="sm"

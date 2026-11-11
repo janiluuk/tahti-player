@@ -276,7 +276,7 @@ export function LocalLibraryFilters({
         </div>
         {tags.length > 0 || draft.tag ? (
           <Select
-            label="Tag"
+            label={t('localLibraryFiltersFields.tag')}
             value={draft.tag ?? ANY_TAG}
             onValueChange={(name) =>
               set({ tag: name === ANY_TAG ? null : name })

@@ -62,7 +62,7 @@ export function LibraryRootsBlock({
           ) : (
             <FolderPlusIcon size={14} aria-hidden />
           )}
-          Add folder
+          {t('libraryRootsBlockText.addFolder')}
         </Button>
         {roots.length > 0 && canToggleWatching ? (
           <Toggle

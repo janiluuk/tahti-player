@@ -122,11 +122,11 @@ function StoreTrackAssigner({ revision }: { revision: number }) {
   return (
     <div className="flex flex-col gap-3">
       <div>
-        <p className="text-sm font-medium">3. Put tracks in the Store</p>
+        <p className="text-sm font-medium">
+          {t('channelStoreEditorText.putTracksInStore')}
+        </p>
         <p className="text-foreground-secondary text-xs">
-          Pick a price on a track and it shows in the Store on your channel
-          page. Choose “Not in the store” to take it out — anyone can play it
-          again. Until you add a track, fans only see the prices themselves.
+          {t('channelStoreEditorText.putTracksHint')}
         </p>
       </div>
       {!loaded ? (

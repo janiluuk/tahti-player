@@ -10112,7 +10112,8 @@
       "couldNotLoadOlderMessages": "Vanhempia viestejä ei voitu ladata."
     },
     "channelBlocksSectionText": {
-      "channelBlocks": "Kanavan lohkot"
+      "channelBlocks": "Kanavan lohkot",
+      "channelLogo": "Kanavan logo"
     },
     "streamManagerDialogText": {
       "streamManager": "Striimin hallinta"
@@ -12144,7 +12145,8 @@
       "installForEmbeds": "Asenna tämä lisäosa lisätäksesi ja hallitaksesi upotuksia.",
       "mikseriTop40": "Mikseri Top 40 · {{genre}}",
       "allGenres": "Kaikki tyylilajit",
-      "uninstallNamed": "Poista: {{name}}"
+      "uninstallNamed": "Poista: {{name}}",
+      "favoritesEnabledHint": "Käyttöön otetut suosikit näkyvät Kuuntele-sivulla."
     },
     "hearthisCardStates": {
       "libraryLoadFailed": "hearthis.at-kirjastosi lataus epäonnistui.",
@@ -12182,6 +12184,114 @@
       "importAsCollection": "Tuo kokoelmana",
       "imported": "Tuotu",
       "import": "Tuo"
+    },
+    "tracklistEditorText": {
+      "divideEqually": "Jaa tasan",
+      "clearTimestamps": "Tyhjennä aikaleimat",
+      "fileHint": "Tuo Traktor-soittolista tai -historia (`.nml`), Rekordbox-soittolistan tai -historian vienti (`.txt`) tai tekstimuotoinen kappalelista. Traktor-historia säilyttää kunkin kappaleen todellisen soittoajan; Rekordbox-viennit ja pelkkä teksti käyttävät aikaleimaa missä tahansa rivillä - alussa (`12:14 Artist – Track`), lopussa (`Artist – Track – 12:14`) tai (Rekordboxissa) kappaleen kestoa tiedoston järjestyksessä summattuna.",
+      "importList": "Tuo lista",
+      "pasteHint": "Liitä yksi kappale riville. Aikaleima missä tahansa rivillä - alussa (`12:14 Artist – Track`), lopussa (`Artist – Track – 12:14`), minuutit:sekunnit tai tunnit:minuutit:sekunnit - tunnistetaan automaattisesti.",
+      "addLines": "Lisää rivit"
+    },
+    "itunesImportText": {
+      "description": "Tuo kappaleet, arviot, soittokerrat ja soittolistat iTunes- tai Music.app-kirjaston viennistä (Arkisto → Kirjasto → Vie kirjasto…). Äänitiedostojasi ei muuteta, ja tiedostossa jo olevat tagit säilyvät.",
+      "replacePaths": "Korvaa viennin polkujen alku tiedostojen nykyisellä sijainnilla.",
+      "previewAgain": "Esikatsele uudelleen",
+      "replacePathsWithFolder": "Korvaa viennin polkujen alku tiedostojen nykyisellä sijainnilla (viennin musiikkikansio on {{folder}})."
+    },
+    "trackAnalysisFields": {
+      "key": "Sävellaji"
+    },
+    "localLibraryToolsText": {
+      "findMissingArtwork": "Etsi puuttuvat kansikuvat",
+      "backUpCatalog": "Varmuuskopioi luettelo"
+    },
+    "playlistImportText": {
+      "findMissingInFolder": "Etsi puuttuvat tiedostot kansiosta…",
+      "importPlaylist": "Tuo soittolista"
+    },
+    "channelEditToolbarText": {
+      "hintUnsaved": "Valitse lohko sivulta tai Tasoista ja muokkaa sen asetuksia. Asettelu tallentuu tähän selaimeen. · tallentamattomia muutoksia",
+      "hintSaved": "Valitse lohko sivulta tai Tasoista ja muokkaa sen asetuksia. Asettelu tallentuu tähän selaimeen. · tallennettu paikallisesti"
+    },
+    "jamViewText": {
+      "controlGivenUnlocked": "Isäntä on antanut sinulle toiston hallinnan - kun pysäytät tai jatkat soitintasi, se tapahtuu kaikille.",
+      "controlGiven": "Isäntä on antanut sinulle toiston hallinnan."
+    },
+    "themeEditorFields": {
+      "hue": "Sävy"
+    },
+    "channelStoreEditorText": {
+      "putTracksInStore": "3. Lisää kappaleita kauppaan",
+      "putTracksHint": "Valitse kappaleelle hinta, niin se näkyy kanavasivusi kaupassa. Valitse “Ei kaupassa” poistaaksesi sen - silloin kuka tahansa voi taas soittaa sen. Ennen kuin lisäät kappaleen, fanit näkevät vain hinnat."
+    },
+    "trackAnalysisText": {
+      "saveCorrection": "Tallenna korjaus"
+    },
+    "saveQueueLocalText": {
+      "saveLocalPlaylist": "Tallenna paikallinen soittolista"
+    },
+    "localLibraryFiltersFields": {
+      "tag": "Tagi"
+    },
+    "addToPlaylistDialogText": {
+      "createAndAdd": "Luo ja lisää"
+    },
+    "duplicatesDialogText": {
+      "compareFileContents": "Vertaa tiedostojen sisältöä"
+    },
+    "writeTagsDialogText": {
+      "writeToFiles": "Kirjoita tiedostoihin"
+    },
+    "tagChipInputText": {
+      "usedBefore": "Käytetty aiemmin:"
+    },
+    "supportContactFormText": {
+      "replyTimeWithRequests": "Vastaamme osallistumista ja laskutusta koskeviin kysymyksiin kahden arkipäivän kuluessa. Vastaukset näkyvät kohdassa Omat pyynnöt.",
+      "replyTime": "Vastaamme osallistumista ja laskutusta koskeviin kysymyksiin kahden arkipäivän kuluessa."
+    },
+    "playlistExportDialogText": {
+      "chooseWhereToSave": "Valitse tallennuspaikka…"
+    },
+    "channelAnnouncementsPanelText": {
+      "deleteBodyWithBackground": "Tämä poistaa klipin ja sen paikan kierrossa. Samalla poistuu sivusi taustamusiikki.",
+      "deleteBody": "Tämä poistaa klipin ja sen paikan kierrossa.",
+      "deleteTitle": "Poistetaanko “{{title}}”?"
+    },
+    "panelHeaderText": {
+      "streamManager": "Lähetyksen hallinta"
+    },
+    "listeningPartyHeroText": {
+      "ended": "Tämä kuuntelujuhla on päättynyt. Kiitos kuuntelusta."
+    },
+    "libraryRootsBlockText": {
+      "addFolder": "Lisää kansio"
+    },
+    "adminUserRestrictionsFields": {
+      "duration": "Kesto"
+    },
+    "adminUserDeletePanelText": {
+      "title": "Poistetaanko tili: {{name}}?",
+      "body": "Tämä anonymisoi tilin ja lopettaa sen laskutuksen pysyvästi. Vahvista kirjoittamalla käyttäjänimi {{username}}."
+    },
+    "clipEditorDialogText": {
+      "programsHint": "Ohjelmat ovat kokonaisia kierron kohteita. Klipit eivät keskeytä livelähetyksiä. Ota käyttöön “Soita klippejä ohjelmien välissä” 24/7-asetuksissa kuullaksesi aktiiviset klipit. Muutokset tulevat voimaan, kun asema päivittää kiertonsa."
+    },
+    "serverSetupHelpText": {
+      "registerAppAt": "Rekisteröi sovellus osoitteessa",
+      "setRedirectUrl": "Aseta sen uudelleenohjausosoitteeksi",
+      "notSwitchedOn": "{{name}} ei ole vielä käytössä Tahdissa, joten yhdistettävää ei ole. Tahti-tiimin on ensin rekisteröitävä Tahti {{name}}-sovellukseksi.",
+      "setEnv": "Aseta `{{prefix}}_CLIENT_ID` ja `{{prefix}}_CLIENT_SECRET` API:lle (`pnpm tahti-ops env set`) ja julkaise uudelleen."
+    },
+    "hearthisExportStates": {
+      "installBefore": "Asenna hearthis.at-vientilaajennus (vaatii hearthis.at Premiumin) kohdassa",
+      "settingsIntegrations": "Asetukset → Integraatiot",
+      "installAfter": "kopioidaksesi tämän kappaleen omalle hearthis.at-tilillesi.",
+      "copyToAccount": "Kopioi tämä kappale omalle hearthis.at-tilillesi.",
+      "pending": "Jonossa - avaa tämä ikkuna myöhemmin nähdäksesi, miten kävi.",
+      "submitted": "Ladataan hearthis.atiin…",
+      "delivered": "hearthis.at-tililläsi.",
+      "failed": "Edellinen vienti epäonnistui. Yritä uudelleen."
     }
   },
   "studioEditor": {

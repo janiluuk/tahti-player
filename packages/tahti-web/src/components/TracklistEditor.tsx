@@ -28,6 +28,7 @@ import {
 
 import { searchMentionUsers, type MentionUser } from '../api/mentions';
 import type { TracklistEntry } from '../api/studio-types';
+import { withInlineCode } from '../lib/inlineCode';
 import { parseTracklist, readTracklistFile } from '../lib/tracklistImport';
 import { ClientCapabilityNotice } from './ClientCapabilityNotice';
 import { PageEmpty } from './PageStates';
@@ -395,7 +396,7 @@ export const TracklistEditor: FC<Props> = ({
                     onClick={distribute}
                   >
                     <EqualIcon size={16} aria-hidden className="mr-1.5" />{' '}
-                    Divide equally
+                    {t('tracklistEditorText.divideEqually')}
                   </Button>
                   <Button
                     size="sm"
@@ -417,7 +418,7 @@ export const TracklistEditor: FC<Props> = ({
                     }
                   >
                     <RotateCcwIcon size={16} aria-hidden className="mr-1.5" />{' '}
-                    Clear timestamps
+                    {t('tracklistEditorText.clearTimestamps')}
                   </Button>
                 </div>
               </div>
@@ -443,16 +444,7 @@ export const TracklistEditor: FC<Props> = ({
                     content: (
                       <div className="flex flex-col gap-4">
                         <p className="text-foreground-secondary text-sm">
-                          Import a Traktor playlist or history (
-                          <code>.nml</code>), a Rekordbox playlist or history
-                          export (<code>.txt</code>), or a plain-text tracklist
-                          file. Traktor history keeps each track&apos;s real
-                          play time; Rekordbox exports and plain text use a
-                          timestamp anywhere on the line — leading (
-                          <code>12:14 Artist – Track</code>), trailing (
-                          <code>Artist – Track – 12:14</code>), or (for
-                          Rekordbox) the track&apos;s length, summed in file
-                          order.
+                          {withInlineCode(t('tracklistEditorText.fileHint'))}
                         </p>
                         <div
                           className={`border-border rounded-xl border border-dashed p-4 transition-colors ${dragActive ? 'border-primary bg-primary/10' : 'bg-background-secondary/30'}`}
@@ -487,7 +479,7 @@ export const TracklistEditor: FC<Props> = ({
                                 aria-hidden
                                 className="mr-1.5"
                               />{' '}
-                              Import list
+                              {t('tracklistEditorText.importList')}
                             </Button>
                             <HiddenFileInput
                               ref={fileInputRef}
@@ -514,11 +506,7 @@ export const TracklistEditor: FC<Props> = ({
                     content: (
                       <div className="flex flex-col gap-4">
                         <p className="text-foreground-secondary text-sm">
-                          Paste one track per line. A timestamp anywhere on the
-                          line — leading (<code>12:14 Artist – Track</code>),
-                          trailing (<code>Artist – Track – 12:14</code>),
-                          minutes:seconds or hours:minutes:seconds — is picked
-                          up automatically.
+                          {withInlineCode(t('tracklistEditorText.pasteHint'))}
                         </p>
                         <form
                           className="grid gap-2 sm:grid-cols-[1fr_auto] sm:items-end"
@@ -552,7 +540,7 @@ export const TracklistEditor: FC<Props> = ({
                               aria-hidden
                               className="mr-1.5"
                             />{' '}
-                            Add lines
+                            {t('tracklistEditorText.addLines')}
                           </Button>
                         </form>
                       </div>

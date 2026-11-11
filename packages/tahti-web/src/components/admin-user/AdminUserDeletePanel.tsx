@@ -85,10 +85,11 @@ export function AdminUserDeletePanel({
       )}
 
       <Dialog.Root isOpen={open} onClose={close}>
-        <Dialog.Title>Delete {user.displayName}’s account?</Dialog.Title>
+        <Dialog.Title>
+          {t('adminUserDeletePanelText.title', { name: user.displayName })}
+        </Dialog.Title>
         <Dialog.Description>
-          This anonymizes the account and cancels its billing for good. Type
-          their username, {user.username}, to confirm.
+          {t('adminUserDeletePanelText.body', { username: user.username })}
         </Dialog.Description>
         <Input
           autoCapitalize="none"

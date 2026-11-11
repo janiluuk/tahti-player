@@ -201,7 +201,7 @@ export function PlaylistImportDialog({
                   {busy === 'scan' ? (
                     <Loader size="inline" shape="circle" />
                   ) : null}
-                  Find missing files in a folder…
+                  {t('playlistImportText.findMissingInFolder')}
                 </Button>
                 <span className="text-foreground-secondary min-w-0 flex-1 truncate text-xs">
                   {relinkRoot
@@ -262,7 +262,7 @@ export function PlaylistImportDialog({
             type="submit"
           >
             {busy === 'import' ? <Loader size="inline" shape="circle" /> : null}
-            Import playlist
+            {t('playlistImportText.importPlaylist')}
           </Button>
         </Dialog.Actions>
       </form>

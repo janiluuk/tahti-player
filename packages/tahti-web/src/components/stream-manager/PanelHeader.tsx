@@ -72,7 +72,7 @@ export function PanelHeader({
           ) : (
             <RadioIcon size={18} className="text-primary-strong" aria-hidden />
           )}
-          Stream Manager
+          {t('panelHeaderText.streamManager')}
         </div>
         <div
           className="mt-1 flex flex-wrap items-center text-xs"

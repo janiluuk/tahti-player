@@ -111,7 +111,7 @@ export function SaveQueueLocalDialog({ isOpen, onClose, library }: Props) {
             type="submit"
           >
             {busy ? <Loader size="inline" shape="circle" /> : null}
-            Save local playlist
+            {t('saveQueueLocalText.saveLocalPlaylist')}
           </Button>
         </Dialog.Actions>
       </form>

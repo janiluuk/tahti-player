@@ -389,12 +389,15 @@ export function ChannelAnnouncementsPanel() {
           }
         }}
       >
-        <Dialog.Title>Delete “{pendingDelete?.title}”?</Dialog.Title>
+        <Dialog.Title>
+          {t('channelAnnouncementsPanelText.deleteTitle', {
+            title: pendingDelete?.title ?? '',
+          })}
+        </Dialog.Title>
         <Dialog.Description>
-          This removes the clip and its rotation placement.
           {pendingDelete?.isProfileBackground
-            ? ' It also removes your page background music.'
-            : ''}
+            ? t('channelAnnouncementsPanelText.deleteBodyWithBackground')
+            : t('channelAnnouncementsPanelText.deleteBody')}
         </Dialog.Description>
         {deleteError && <InlineError>{deleteError}</InlineError>}
         <Dialog.Actions>

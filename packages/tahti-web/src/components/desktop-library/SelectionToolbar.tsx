@@ -66,7 +66,7 @@ export function SelectionToolbar({
         ) : (
           <PlayIcon size={14} aria-hidden />
         )}
-        Play all
+        {t('actions.playAll')}
       </Button>
       <Button
         className="gap-1.5"

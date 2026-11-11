@@ -112,7 +112,7 @@ export function PlaylistExportDialog({ playlist, library, onClose }: Props) {
         <Dialog.Close>{t('playlistExportDialog.cancel')}</Dialog.Close>
         <Button className="gap-1.5" disabled={busy} onClick={() => void run()}>
           {busy ? <Loader size="inline" shape="circle" /> : null}
-          Choose where to save…
+          {t('playlistExportDialogText.chooseWhereToSave')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>
