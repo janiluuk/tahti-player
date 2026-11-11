@@ -1,3 +1,7 @@
+## 2026-11-11 — likes are favorites
+
+A track-row heart is an account like, and Library → Favorites lists those likes (#2006). The mock app now keeps a like across a reload so the list still shows it. An artist liking a track from a list is covered in `use-cases-coverage-gap.spec.ts`. Folded `likes-vs-favorites.md`.
+
 ## 2026-11-11 — listen reorder can hide a section
 
 While Listen order mode is on, each section has a remove control. Confirm

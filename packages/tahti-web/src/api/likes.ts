@@ -1,7 +1,10 @@
 import { mockFixture } from './mock-overrides';
 import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 import { requestJson } from './request-json';
+import type { PublicTrackDetail } from './track-detail-types';
 import type { TahtiPlayable } from './types';
+
+const MOCK_LIKES_KEY = 'tahti-web:mock-likes';
 
 /** GET /api/me/likes row — a track the signed-in listener liked. */
 export type LikedTrack = {
@@ -71,15 +74,64 @@ export function likedTrackToPlayable(track: LikedTrack): TahtiPlayable | null {
   return playable;
 }
 
-/** The tracks you liked anywhere, newest first. Signed-out listeners and
- * mock sessions get an empty list. */
+function readStoredMockLikes(): LikedTrack[] {
+  try {
+    const raw = localStorage.getItem(MOCK_LIKES_KEY);
+    if (!raw) {
+      return [];
+    }
+    const parsed = JSON.parse(raw) as LikedTrack[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+export function likedTrackFromDetail(detail: PublicTrackDetail): LikedTrack {
+  return {
+    id: detail.id,
+    title: detail.title,
+    bannerUrl: detail.bannerUrl,
+    audioUrl: detail.audioUrl,
+    channelSlug: detail.channelSlug,
+    artistUsername: detail.channel.username,
+    artistDisplayName: detail.artistName || detail.channel.displayName,
+    likedAt: new Date().toISOString(),
+    url: `/t/${detail.id}`,
+    durationSec: detail.durationSec,
+    genre: detail.genre,
+  };
+}
+
+export function rememberMockLike(track: LikedTrack) {
+  const next = [
+    track,
+    ...readStoredMockLikes().filter((item) => item.id !== track.id),
+  ];
+  localStorage.setItem(MOCK_LIKES_KEY, JSON.stringify(next));
+}
+
+export function forgetMockLike(id: string) {
+  localStorage.setItem(
+    MOCK_LIKES_KEY,
+    JSON.stringify(readStoredMockLikes().filter((item) => item.id !== id)),
+  );
+}
+
+/** The tracks you liked anywhere, newest first. Signed-out listeners get
+ * an empty list. A mock session keeps likes made in this browser. */
 export async function fetchMyLikes(): Promise<{
   data: LikedTrack[];
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
+    const stored = readStoredMockLikes();
+    const storedIds = new Set(stored.map((track) => track.id));
+    const seeded = mockFixture('myLikes', []).filter(
+      (track) => !storedIds.has(track.id),
+    );
     return {
-      data: mockFixture('myLikes', []),
+      data: [...stored, ...seeded],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
