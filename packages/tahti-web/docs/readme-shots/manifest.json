@@ -418,7 +418,7 @@
     "errors": []
   },
   {
-    "path": "/studio/events",
+    "path": "/studio/schedule?show=events",
     "file": "studio-events.png",
     "id": "studio-events",
     "title": "Studio / Perform / Events",
@@ -472,7 +472,7 @@
     "errors": []
   },
   {
-    "path": "/studio/channel?tab=radio",
+    "path": "/studio/channel#radio",
     "file": "studio-radio.png",
     "id": "studio-radio",
     "title": "Studio / Manage / Radio",
@@ -481,7 +481,7 @@
     "errors": []
   },
   {
-    "path": "/studio/channel?tab=green-room",
+    "path": "/studio/channel#green-room",
     "file": "studio-green-room.png",
     "id": "studio-green-room",
     "title": "Studio / Manage / Green room",
@@ -490,7 +490,7 @@
     "errors": []
   },
   {
-    "path": "/studio/channel?tab=multicast",
+    "path": "/studio/channel?radio=multicast#radio",
     "file": "studio-multicast.png",
     "id": "studio-multicast",
     "title": "Studio / Manage / Multicast",
@@ -499,7 +499,7 @@
     "errors": []
   },
   {
-    "path": "/studio/channel?tab=selects",
+    "path": "/studio/channel#selects",
     "file": "studio-selects.png",
     "id": "studio-selects",
     "title": "Studio / Manage / Tahti Selects",

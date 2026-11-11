@@ -9,14 +9,16 @@ export function appendSearchParams(
   path: string,
   search: CallbackSearch,
 ): string {
-  const params = new URLSearchParams();
+  const [beforeHash = path, hash] = path.split('#');
+  const [pathname = beforeHash, existing] = beforeHash.split('?');
+  const params = new URLSearchParams(existing ?? '');
   Object.entries(search).forEach(([key, value]) => {
     if (typeof value === 'string' && value.length > 0) {
       params.set(key, value);
     }
   });
   const query = params.toString();
-  return query ? `${path}?${query}` : path;
+  return `${pathname}${query ? `?${query}` : ''}${hash ? `#${hash}` : ''}`;
 }
 
 export function resolveDashboardCallbackRedirect(

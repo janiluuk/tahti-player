@@ -18,9 +18,14 @@ type Story = StoryObj<typeof meta>;
 export const Overview: Story = {
   args: { current: '/studio', global: true },
   play: async ({ canvasElement }) => {
+    const studio = within(canvasElement).getByRole('navigation', {
+      name: 'Studio pages',
+    });
+    await expect(studio).toBeVisible();
+    await expect(within(canvasElement).queryByRole('tablist')).toBeNull();
     await expect(
-      within(canvasElement).getByRole('tablist', { name: 'Studio pages' }),
-    ).toBeVisible();
+      within(studio).getByRole('link', { name: 'Home' }),
+    ).toHaveAttribute('aria-current', 'page');
     await expect(
       canvasElement.querySelector('[data-studio-nested-nav]'),
     ).toBeNull();
@@ -43,8 +48,33 @@ export const ManageActive: Story = {
   args: { current: '/studio/channel', global: true },
 };
 
-export const ManageRadioActive: Story = {
-  args: { current: '/studio/channel?tab=radio', global: true },
+/** Broadcast pages get a second row: four quiet filled links, the current
+ * one marked with `aria-current="page"`. */
+export const BroadcastSubNav: Story = {
+  args: { current: '/studio/schedule?show=events', global: true },
+  decorators: [withTahtiRouter('/studio/schedule?show=events')],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const broadcast = canvas.getByRole('navigation', {
+      name: 'Broadcast pages',
+    });
+    const links = within(broadcast).getAllByRole('link');
+    await expect(links.map((link) => link.textContent)).toEqual([
+      'Go live',
+      'Schedule',
+      'Shows',
+      'Channel',
+    ]);
+    const schedule = within(broadcast).getByRole('link', { name: 'Schedule' });
+    await expect(schedule).toHaveAttribute('aria-current', 'page');
+    await expect(schedule).toHaveClass('bg-background-input');
+    await expect(schedule).not.toHaveClass('bg-primary');
+    await expect(
+      within(
+        canvas.getByRole('navigation', { name: 'Studio pages' }),
+      ).getByRole('link', { name: 'Broadcast' }),
+    ).toHaveAttribute('aria-current', 'page');
+  },
 };
 
 export const StripeActive: Story = {
@@ -100,9 +130,10 @@ export const FansPageBackLink: Story = {
   decorators: [withTahtiRouter('/studio/updates')],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      canvas.getByRole('tab', { name: 'Fans', selected: true }),
-    ).toBeVisible();
+    await expect(canvas.getByRole('link', { name: 'Fans' })).toHaveAttribute(
+      'aria-current',
+      'page',
+    );
     await expect(canvas.getByTestId('studio-fans-back')).toHaveAttribute(
       'href',
       '/studio/fans',

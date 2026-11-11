@@ -7763,7 +7763,9 @@
       "scheduledShowEpisodes": "Scheduled show episodes",
       "oneOffAndRecurringEpisodes": "One-off and recurring episodes generated from your shows.",
       "channelProgramme": "Channel programme",
-      "channelProgrammeDescription": "What your channel plays around live shows: the 24/7 rotation, the offline fallback and announcements."
+      "channelProgrammeDescription": "What your channel plays around live shows: the 24/7 rotation, the offline fallback and announcements.",
+      "filterBroadcasts": "Broadcasts",
+      "filterLabel": "Show on the schedule"
     },
     "releaseSmartLinkStats": {
       "smartLinkStats": "Smart link stats",
@@ -9968,7 +9970,9 @@
       "pushToHearthisAt": "Push to hearthis.at"
     },
     "studioNavText": {
-      "musicPages": "Music pages"
+      "musicPages": "Music pages",
+      "broadcastPages": "Broadcast pages",
+      "sectionPages": "{{section}} pages"
     },
     "releaseTrackRowText": {
       "openOnBandcamp": "Open on Bandcamp"

@@ -57,7 +57,7 @@ test('artist schedules a listening party and cancels it', async ({ page }) => {
   await page.getByRole('option', { name: /^Neon Tide/ }).click();
   await main.getByLabel('Starts').fill('2027-03-20T20:00');
   await main.getByRole('button', { name: 'Schedule party' }).click();
-  await page.goto('/studio/listening-parties');
+  await page.goto('/studio/schedule?show=parties');
   await expect(
     main.getByRole('heading', { name: 'No listening parties scheduled' }),
   ).toHaveCount(0);

@@ -17,7 +17,7 @@ const meta: Meta<typeof EventInvitesPanel> = {
     },
   },
   decorators: [
-    withTahtiRouter('/studio/events'),
+    withTahtiRouter('/studio/schedule?show=events'),
     withMockAuth(MOCK_USERS.artist),
   ],
 };

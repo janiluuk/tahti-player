@@ -1,26 +1,17 @@
-import { Navigate, useNavigate, useSearch } from '@tanstack/react-router';
+import { useLocation, useNavigate, useSearch } from '@tanstack/react-router';
 import {
-  DoorOpenIcon,
   ListMusicIcon,
   MessageSquareIcon,
   PinIcon,
   PlusIcon,
   RadioIcon,
   RadioTowerIcon,
-  Settings2Icon,
-  SparklesIcon,
   WifiIcon,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
-import {
-  Button,
-  ButtonLink,
-  TabLabel,
-  Tabs,
-  ViewShell,
-} from '@tahti-player/ui';
+import { Button, ButtonLink, Tabs, ViewShell } from '@tahti-player/ui';
 
 import {
   fetchStatsPlays,
@@ -38,42 +29,16 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StudioRadioSubmissionPanel } from '../../components/StudioRadioSubmissionPanel';
 import { hasAccountRole } from '../../lib/accountRoles';
+import {
+  isChannelRadioTab,
+  type ChannelRadioTab,
+  type ChannelSection,
+} from '../../lib/channelSections';
 import { dateLocaleTag } from '../../lib/locale';
 import { useAuthStore } from '../../stores/authStore';
 import { useChannelSetupModalStore } from '../../stores/channelSetupModalStore';
 import { SelectsTab } from '../admin/moderation/tabs/SelectsTab';
 import { BroadcastPanel } from '../settings/SettingsPanels';
-
-type Tab = 'setup' | 'radio' | 'green-room' | 'selects';
-type RadioTab =
-  | 'stream'
-  | 'rotation'
-  | 'announcements'
-  | 'pinned'
-  | 'tahti-radio'
-  | 'multicast';
-
-const RADIO_STATS_RANGES: StatsPlaysRange[] = ['1', '7', '30'];
-
-function channelSectionTabItems(t: TFunction<'web'>) {
-  return [
-    {
-      id: 'setup' as const,
-      label: t('studioChannelViewMore.setup'),
-      icon: Settings2Icon,
-    },
-    {
-      id: 'green-room' as const,
-      label: t('studioChannelViewMore.greenRoom'),
-      icon: DoorOpenIcon,
-    },
-    {
-      id: 'selects' as const,
-      label: t('studioChannelViewMore.selects'),
-      icon: SparklesIcon,
-    },
-  ];
-}
 
 function radioSettingTabs(t: TFunction<'web'>) {
   return [
@@ -94,26 +59,10 @@ function radioSettingTabs(t: TFunction<'web'>) {
       label: t('studioChannelViewMore.multicast'),
       icon: WifiIcon,
     },
-  ] as const;
+  ] satisfies { id: ChannelRadioTab; label: string; icon: unknown }[];
 }
 
-const isTab = (value: string | undefined): value is Tab =>
-  ['setup', 'radio', 'green-room', 'selects'].includes(value ?? '');
-
-const DEEP_LINKED_RADIO_TABS = [
-  'rotation',
-  'announcements',
-  'pinned',
-  'multicast',
-  'tahti-radio',
-] as const;
-
-const isDeepLinkedRadioTab = (
-  value: string | undefined,
-): value is (typeof DEEP_LINKED_RADIO_TABS)[number] =>
-  (DEEP_LINKED_RADIO_TABS as readonly string[]).includes(value ?? '');
-
-const DESIGNER_TABS = new Set(['design', 'profile']);
+const RADIO_STATS_RANGES: StatsPlaysRange[] = ['1', '7', '30'];
 
 function ChannelOverallStats() {
   const { t } = useTranslation('web');
@@ -179,236 +128,209 @@ function ChannelOverallStats() {
   );
 }
 
-export function StudioChannelView() {
+function ChannelSectionBlock({
+  id,
+  title,
+  children,
+}: {
+  id: ChannelSection;
+  title: string;
+  children: ReactNode;
+}) {
+  return (
+    <section
+      id={id}
+      aria-labelledby={`${id}-title`}
+      className="flex scroll-mt-4 flex-col gap-4"
+      data-testid={`channel-section-${id}`}
+    >
+      <h2
+        id={`${id}-title`}
+        className="font-display text-lg font-bold tracking-tight"
+      >
+        {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
+function RadioSection({ tab }: { tab: ChannelRadioTab }) {
   const { t } = useTranslation('web');
-  const search = useSearch({ strict: false }) as { tab?: string };
   const navigate = useNavigate();
+  const channel = useAuthStore((s) => s.user?.channel);
+  const tabs = radioSettingTabs(t);
+
+  const panel = (id: ChannelRadioTab) => {
+    if (id === 'stream') {
+      return channel?.slug ? (
+        <div className="flex flex-col gap-4">
+          <StreamManagerPanel
+            slug={channel.slug}
+            channelState={channel.state}
+          />
+          <MultistreamStatusPanel slug={channel.slug} />
+          <ChannelOverallStats />
+        </div>
+      ) : (
+        <StudioPanel title={t('studioChannelView.streamManager')}>
+          <p className="text-foreground-secondary text-sm">
+            {t('studioChannelView.createYourChannelFirstTo')}
+          </p>
+        </StudioPanel>
+      );
+    }
+    if (id === 'rotation') {
+      return (
+        <div className="flex flex-col gap-4">
+          {channel?.slug ? <RotationSourcePicker slug={channel.slug} /> : null}
+          <ChannelRadioPlaylistPanel />
+          <ChannelAnnouncementsPanel />
+        </div>
+      );
+    }
+    if (id === 'pinned') {
+      return channel?.slug ? (
+        <PinnedAnnouncementsPanel slug={channel.slug} />
+      ) : null;
+    }
+    if (id === 'tahti-radio') {
+      return <StudioRadioSubmissionPanel />;
+    }
+    return <BroadcastPanel section="multistream" />;
+  };
+
+  return (
+    <ChannelSectionBlock id="radio" title={t('studioChannelViewStates.radio')}>
+      <Tabs
+        selectedIndex={Math.max(
+          0,
+          tabs.findIndex((item) => item.id === tab),
+        )}
+        onChange={(index) => {
+          const next = tabs[index];
+          if (!next) {
+            return;
+          }
+          void navigate({
+            to: '/studio/channel',
+            search: next.id === 'stream' ? {} : { radio: next.id },
+            hash: 'radio',
+            hashScrollIntoView: false,
+            resetScroll: false,
+            replace: true,
+          });
+        }}
+        listClassName="flex-wrap"
+        panelClassName="pt-2"
+        items={tabs.map((item) => ({
+          id: item.id,
+          label: item.label,
+          icon: <item.icon size={14} />,
+          content: panel(item.id),
+        }))}
+      />
+    </ChannelSectionBlock>
+  );
+}
+
+function GreenRoomSection() {
+  const { t } = useTranslation('web');
+  const username = useAuthStore((s) => s.user?.username);
+  return (
+    <ChannelSectionBlock
+      id="green-room"
+      title={t('studioChannelViewMore.greenRoom')}
+    >
+      <div className="flex flex-wrap items-center gap-2">
+        {username ? (
+          <ButtonLink
+            to="/u/$username/green-room"
+            params={{ username }}
+            size="sm"
+            variant="secondary"
+          >
+            <MessageSquareIcon size={14} aria-hidden className="mr-1.5" />
+            {t('studioChannelView.openGreenRoomChat')}
+          </ButtonLink>
+        ) : null}
+        <ButtonLink
+          to="/studio/go-live"
+          search={{ tab: 'green-room' }}
+          size="sm"
+          variant="secondary"
+        >
+          {t('studioChannelView.sessionOnBroadcast')}
+        </ButtonLink>
+      </div>
+      <BroadcastPanel section="green-room" />
+    </ChannelSectionBlock>
+  );
+}
+
+/** Scrolls to the section named in the address hash once it has rendered. */
+function useScrollToSection(hash: string) {
+  useEffect(() => {
+    if (!hash) {
+      return;
+    }
+    const frame = requestAnimationFrame(() => {
+      document.getElementById(hash)?.scrollIntoView?.({ block: 'start' });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [hash]);
+}
+
+function ChannelSections() {
+  const { t } = useTranslation('web');
+  const search = useSearch({ strict: false }) as { radio?: string };
+  const hash = useLocation({ select: (location) => location.hash });
   const user = useAuthStore((s) => s.user);
   const openChannelSetup = useChannelSetupModalStore((s) => s.open);
   const channel = user?.channel;
-  const [tab, setTab] = useState<Tab>(channel ? 'green-room' : 'setup');
-  const [radioTab, setRadioTab] = useState<RadioTab>('stream');
+  const radioTab = isChannelRadioTab(search.radio) ? search.radio : 'stream';
+  useScrollToSection(hash);
 
-  useEffect(() => {
-    if (DESIGNER_TABS.has(search.tab ?? '')) {
-      return;
-    }
-    if (isDeepLinkedRadioTab(search.tab)) {
-      setTab('radio');
-      setRadioTab(search.tab === 'announcements' ? 'rotation' : search.tab);
-      return;
-    }
-    if (channel && (!search.tab || search.tab === 'setup')) {
-      setTab('green-room');
-      return;
-    }
-    if (isTab(search.tab) && (search.tab !== 'setup' || !channel)) {
-      setTab(search.tab);
-      if (search.tab === 'radio') {
-        setRadioTab('stream');
-      }
-    } else if (!channel) {
-      setTab('setup');
-    }
-  }, [channel, search.tab]);
-
-  useEffect(() => {
-    if (DESIGNER_TABS.has(search.tab ?? '')) {
-      return;
-    }
-    if (!channel && !search.tab) {
-      void navigate({
-        to: '/studio/channel',
-        search: { tab: 'setup' },
-        replace: true,
-      });
-      return;
-    }
-    if (channel && (!search.tab || search.tab === 'setup')) {
-      void navigate({
-        to: '/studio/channel',
-        search: { tab: 'green-room' },
-        replace: true,
-      });
-    }
-  }, [channel, navigate, search.tab]);
-
-  if (search.tab === 'design') {
-    return <Navigate to="/settings/$section" params={{ section: 'channel' }} />;
-  }
-  if (search.tab === 'profile') {
-    return (
-      <Navigate
-        to="/settings/$section"
-        params={{ section: 'artist' }}
-        search={{ tab: 'branding' }}
-      />
-    );
-  }
-
-  const channelSectionTabs = channelSectionTabItems(t).filter(
-    (item) =>
-      (item.id !== 'setup' || !channel) &&
-      (item.id !== 'selects' || hasAccountRole(user, 'BOARD')),
+  return (
+    <ViewShell
+      title={t('studioChannelViewStates.channel')}
+      classes={{ root: 'px-0 pt-0', content: 'gap-8' }}
+    >
+      {!channel && (
+        <StudioPanel title={t('studioChannelView.channelSetup')}>
+          <div className="flex flex-col items-start gap-3">
+            <p className="text-foreground-secondary text-sm">
+              Create {user?.username ?? 'your-name'}.tahti.live to unlock
+              broadcasting, uploads, and your public channel.
+            </p>
+            <Button disabled={!user} onClick={openChannelSetup}>
+              <PlusIcon size={16} aria-hidden className="mr-1.5" />
+              Create {user?.username ?? 'your-name'}.tahti.live
+            </Button>
+          </div>
+        </StudioPanel>
+      )}
+      <RadioSection tab={radioTab} />
+      <GreenRoomSection />
+      {hasAccountRole(user, 'BOARD') ? (
+        <ChannelSectionBlock
+          id="selects"
+          title={t('studioChannelViewMore.selects')}
+        >
+          <SelectsTab />
+        </ChannelSectionBlock>
+      ) : null}
+    </ViewShell>
   );
+}
 
+/** Studio → Broadcast → Channel: the Radio, Green room and (board) Selects
+ * sections on one page. */
+export function StudioChannelView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        {tab !== 'radio' ? (
-          <Tabs.Root
-            selectedIndex={Math.max(
-              0,
-              channelSectionTabs.findIndex((item) => item.id === tab),
-            )}
-            onChange={(index) => {
-              const next = channelSectionTabs[index];
-              if (!next) {
-                return;
-              }
-              setTab(next.id);
-              void navigate({
-                to: '/studio/channel',
-                search: { tab: next.id },
-              });
-            }}
-          >
-            <Tabs.List className="w-fit flex-wrap">
-              {channelSectionTabs.map((item) => (
-                <Tabs.Tab key={item.id}>
-                  <TabLabel icon={<item.icon size={14} />}>
-                    {item.label}
-                  </TabLabel>
-                </Tabs.Tab>
-              ))}
-            </Tabs.List>
-          </Tabs.Root>
-        ) : (
-          <Tabs.Root
-            selectedIndex={Math.max(
-              0,
-              radioSettingTabs(t).findIndex((item) => item.id === radioTab),
-            )}
-            onChange={(index) => {
-              const next = radioSettingTabs(t)[index];
-              if (!next) {
-                return;
-              }
-              setRadioTab(next.id);
-              void navigate({
-                to: '/studio/channel',
-                search: {
-                  tab: isDeepLinkedRadioTab(next.id) ? next.id : 'radio',
-                },
-              });
-            }}
-          >
-            <Tabs.List className="w-fit flex-wrap">
-              {radioSettingTabs(t).map((item) => (
-                <Tabs.Tab key={item.id}>
-                  <TabLabel icon={<item.icon size={14} />}>
-                    {item.label}
-                  </TabLabel>
-                </Tabs.Tab>
-              ))}
-            </Tabs.List>
-          </Tabs.Root>
-        )}
-        <ViewShell
-          title={
-            tab === 'radio'
-              ? t('studioChannelViewStates.radio')
-              : t('studioChannelViewStates.channel')
-          }
-          classes={{ root: 'px-0 pt-0' }}
-        >
-          {tab === 'setup' && !channel && (
-            <StudioPanel title={t('studioChannelView.channelSetup')}>
-              <div className="flex flex-col items-start gap-3">
-                <p className="text-foreground-secondary text-sm">
-                  Create {user?.username ?? 'your-name'}.tahti.live to unlock
-                  broadcasting, uploads, and your public channel.
-                </p>
-                <Button disabled={!user} onClick={openChannelSetup}>
-                  <PlusIcon size={16} aria-hidden className="mr-1.5" />
-                  Create {user?.username ?? 'your-name'}.tahti.live
-                </Button>
-              </div>
-            </StudioPanel>
-          )}
-
-          {tab === 'radio' && (
-            <div className="flex flex-col gap-4">
-              {radioTab === 'stream' ? (
-                channel?.slug ? (
-                  <>
-                    <StreamManagerPanel
-                      slug={channel.slug}
-                      channelState={channel.state}
-                    />
-                    <MultistreamStatusPanel slug={channel.slug} />
-                    <ChannelOverallStats />
-                  </>
-                ) : (
-                  <StudioPanel title={t('studioChannelView.streamManager')}>
-                    <p className="text-foreground-secondary text-sm">
-                      {t('studioChannelView.createYourChannelFirstTo')}
-                    </p>
-                  </StudioPanel>
-                )
-              ) : radioTab === 'rotation' ? (
-                <>
-                  {channel?.slug ? (
-                    <RotationSourcePicker slug={channel.slug} />
-                  ) : null}
-                  <ChannelRadioPlaylistPanel />
-                  <ChannelAnnouncementsPanel />
-                </>
-              ) : radioTab === 'pinned' ? (
-                channel?.slug ? (
-                  <PinnedAnnouncementsPanel slug={channel.slug} />
-                ) : null
-              ) : radioTab === 'tahti-radio' ? (
-                <StudioRadioSubmissionPanel />
-              ) : radioTab === 'multicast' ? (
-                <BroadcastPanel section="multistream" />
-              ) : null}
-            </div>
-          )}
-
-          {tab === 'green-room' && (
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-wrap items-center gap-2">
-                {user?.username ? (
-                  <ButtonLink
-                    to="/u/$username/green-room"
-                    params={{ username: user.username }}
-                    size="sm"
-                    variant="secondary"
-                  >
-                    <MessageSquareIcon
-                      size={14}
-                      aria-hidden
-                      className="mr-1.5"
-                    />
-                    {t('studioChannelView.openGreenRoomChat')}
-                  </ButtonLink>
-                ) : null}
-                <ButtonLink
-                  to="/studio/go-live"
-                  search={{ tab: 'green-room' }}
-                  size="sm"
-                  variant="secondary"
-                >
-                  {t('studioChannelView.sessionOnBroadcast')}
-                </ButtonLink>
-              </div>
-              <BroadcastPanel section="green-room" />
-            </div>
-          )}
-
-          {tab === 'selects' && <SelectsTab />}
-        </ViewShell>
+        <ChannelSections />
       </div>
     </StudioGate>
   );

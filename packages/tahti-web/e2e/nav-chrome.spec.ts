@@ -45,18 +45,18 @@ test('desktop chrome stays mounted from Listen through Library, Studio and Admin
   await expectChrome(page, [SHELL, TOP_NAV, SIDEBAR, STUDIO_NAV]);
 
   // A sticky policy notice can sit over the Studio tabs at the top of the
-  // screen until it is acknowledged, so the tab is chosen by keyboard.
+  // screen until it is acknowledged, so the link is followed by keyboard.
   await page
     .locator(STUDIO_NAV)
-    .getByRole('tab', { name: 'Music', exact: true })
+    .getByRole('link', { name: 'Music', exact: true })
     .press('Enter');
   await expect(page).toHaveURL(/\/studio\/releases$/);
   await expectChrome(page, [SHELL, TOP_NAV, SIDEBAR, STUDIO_NAV]);
   await expect(
     page
       .locator(STUDIO_NAV)
-      .getByRole('tab', { name: 'Releases', exact: true }),
-  ).toHaveAttribute('aria-selected', 'true');
+      .getByRole('link', { name: 'Releases', exact: true }),
+  ).toHaveAttribute('aria-current', 'page');
 
   await promoteToBoard(page);
   await page.goto('/admin');

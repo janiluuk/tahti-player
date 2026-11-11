@@ -59,7 +59,8 @@ const SECTIONS = [
   { label: 'Liked Songs', icon: <Heart size={16} /> },
 ];
 
-/** Items with `onClick` are buttons; the selected one gets the primary fill. */
+/** Items with `onClick` are buttons; the selected one gets the quiet
+ * control-surface fill, never the accent. */
 export const Selectable = {
   render: function SelectableSidebar() {
     const [selected, setSelected] = useState('Home');
@@ -82,11 +83,12 @@ export const Selectable = {
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
     const liked = canvas.getByRole('button', { name: 'Liked Songs' });
-    await expect(liked).not.toHaveClass('bg-primary');
+    await expect(liked).not.toHaveClass('bg-background-input');
     await userEvent.click(liked);
-    await expect(liked).toHaveClass('bg-primary');
+    await expect(liked).toHaveClass('bg-background-input', 'font-semibold');
+    await expect(liked).not.toHaveClass('bg-primary');
     await expect(canvas.getByRole('button', { name: 'Home' })).not.toHaveClass(
-      'bg-primary',
+      'bg-background-input',
     );
   },
 };

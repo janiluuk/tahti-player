@@ -76,6 +76,21 @@ describe('SidebarNavigation', () => {
     expect(item).toBeInTheDocument();
   });
 
+  it('marks the selected item with a quiet control-surface fill, not the accent', () => {
+    render(
+      <SidebarNavigation>
+        <SidebarNavigationItem icon={<GaugeIcon />} label="Studio" isSelected />
+        <SidebarNavigationItem icon={<HeartIcon />} label="Library" />
+      </SidebarNavigation>,
+    );
+    const [selected, other] = screen.getAllByTestId('sidebar-navigation-item');
+    expect(selected?.className).toContain('bg-background-input');
+    expect(selected?.className).toContain('text-foreground');
+    expect(selected?.className).toContain('font-semibold');
+    expect(selected?.className).not.toContain('bg-primary');
+    expect(other?.className).toContain('text-foreground-secondary');
+  });
+
   it('does not show tooltips in normal mode', async () => {
     renderSidebar();
 

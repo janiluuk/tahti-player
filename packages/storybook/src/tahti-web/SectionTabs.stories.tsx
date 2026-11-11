@@ -113,7 +113,7 @@ export const StudioManage: Story = {
       },
       {
         id: 'radio',
-        to: '/studio/channel?tab=radio',
+        to: '/studio/channel?radio=rotation',
         label: 'Radio',
         icon: <RadioIcon size={16} aria-hidden />,
       },

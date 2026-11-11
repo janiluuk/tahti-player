@@ -75,16 +75,6 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
             label: 'Schedule',
             path: '/studio/schedule',
           },
-          {
-            id: 'studio-go-live-events',
-            label: 'Events',
-            path: '/studio/events',
-          },
-          {
-            id: 'studio-go-live-listening-parties',
-            label: 'Listening parties',
-            path: '/studio/listening-parties',
-          },
           { id: 'studio-go-live-shows', label: 'Shows', path: '/studio/shows' },
           {
             id: 'studio-go-live-channel',
@@ -94,7 +84,7 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
           {
             id: 'studio-go-live-radio',
             label: '24/7 radio',
-            path: '/studio/channel?tab=radio',
+            path: '/studio/channel?radio=rotation#radio',
           },
           {
             id: 'studio-go-live-recordings',
@@ -104,7 +94,7 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
           {
             id: 'studio-go-live-tahti-radio',
             label: 'Tahti Radio',
-            path: '/studio/channel?tab=tahti-radio',
+            path: '/studio/channel?radio=tahti-radio#radio',
           },
         ],
       },

@@ -51,4 +51,12 @@ describe('appendSearchParams', () => {
       }),
     ).toBe('/studio');
   });
+
+  it('merges into a target that already has a query and keeps its hash', () => {
+    expect(
+      appendSearchParams('/studio/channel?radio=multicast#radio', {
+        status: 'ok',
+      }),
+    ).toBe('/studio/channel?radio=multicast&status=ok#radio');
+  });
 });

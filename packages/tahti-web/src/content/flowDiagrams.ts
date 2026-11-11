@@ -400,7 +400,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Public --> Artist["/u/:username"]
   Public --> Green["/u/:username/green-room"]
   ShowD -.->|channel schedule| Channel["/channel/:slug · Upcoming shows"]
-  Events["/studio/events"] --> New["/studio/events/new"]
+  Events["/studio/schedule?show=events"] --> New["/studio/events/new"]
   Events --> Edit["/studio/events/:eventId/edit"]
   New --> VenueReg["/venues/register"]
   Edit --> VenueReg
@@ -517,7 +517,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   DRel --> Cat["/studio/releases/:id · /studio/collections/:slug · /studio/editor/:id"]
   DIns --> Ins["/studio/stats/detail · /studio/insights/:kind/:id"]
   DSet --> Set["/settings/:section · /studio/updates · /studio/audience"]
-  DRadio --> TR["/studio/channel?tab=tahti-radio"]
+  DRadio --> TR["/studio/channel?radio=tahti-radio#radio"]
   DImp --> Imp["/sources/:id → Settings → Add-ons · Import"]
   subgraph returns["Return parameters on /dashboard"]
     Q1["?mixcloud="] --> R1["/settings/plugin-store?category=import"]
@@ -1141,7 +1141,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
       'StudioNav: Overview · Stats · Governance · Posts · Audience · Releases · Editor · Broadcast, with Broadcast tabs for Go Live · Schedule · Events · Shows · Channel · Radio. Tracks, collections and upload are reached from Studio home and Library. Import lives in Settings → Add-ons.',
     mermaid: `flowchart TD
   Login["/login"] --> Studio["/studio"]
-  Studio --> Setup["/studio/channel?tab=setup if needed"]
+  Studio --> Setup["/studio/channel if needed"]
 
   Studio --> St["/studio/stats"]
   Studio --> Gov["/studio/governance"]
@@ -1160,14 +1160,14 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
 
   Studio --> GL["/studio/go-live"]
   Studio --> Sch["/studio/schedule"]
-  Studio --> Ev["/studio/events"]
+  Studio --> Ev["/studio/schedule?show=events"]
   Ev --> EvNew["/studio/events/new"]
   Ev --> EvEdit["/studio/events/:eventId/edit"]
   Studio --> Shows["/studio/shows"]
   Shows --> ShowD["/studio/shows/:id · visibility · numbering"]
   ShowD --> Ep["/studio/shows/episodes/:episodeId"]
   Studio --> Ch["/studio/channel"]
-  Studio --> Radio["/studio/channel?tab=radio"]
+  Studio --> Radio["/studio/channel#radio"]
 
   Studio --> Settings["Settings modal"]
   Settings --> Addons["Add-ons · Import"]
@@ -1191,7 +1191,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   C --> M[Weekly live-time meter]
   C --> D[Go Live]
   D --> E[Player bar · open channel]
-  D --> F["Multistream · /studio/channel?tab=multicast"]
+  D --> F["Multistream · /studio/channel?radio=multicast#radio"]
   D --> G["Recordings · /library/recordings"]
 `,
   },

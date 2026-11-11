@@ -81,7 +81,7 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
       const event = result.data.find((candidate) => candidate.id === eventId);
       if (!event) {
         toast.error(i18n.t('web:toasts.eventNotFound'));
-        void navigate({ to: '/studio/events' });
+        void navigate({ to: '/studio/schedule', search: { show: 'events' } });
         return;
       }
       prefill(event);
@@ -199,7 +199,10 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                           },
                         });
                       }
-                      void navigate({ to: '/studio/events' });
+                      void navigate({
+                        to: '/studio/schedule',
+                        search: { show: 'events' },
+                      });
                     })
                     .catch(() => {
                       setBusy(false);
@@ -338,7 +341,12 @@ export function StudioEventCreateView({ eventId }: { eventId?: string } = {}) {
                   <EventShareTargets value={shareTo} onChange={setShareTo} />
                 ) : null}
                 <div className="flex flex-wrap gap-2">
-                  <ButtonLink to="/studio/events" size="sm" variant="secondary">
+                  <ButtonLink
+                    to="/studio/schedule"
+                    search={{ show: 'events' }}
+                    size="sm"
+                    variant="secondary"
+                  >
                     <ArrowLeftIcon size={14} aria-hidden className="mr-1.5" />
                     {t('eventCreate.cancel')}
                   </ButtonLink>

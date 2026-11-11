@@ -72,7 +72,7 @@ test('an artist answers an event invite from Studio Events', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/studio/events');
+  await page.goto('/studio/schedule?show=events');
   await page.getByRole('tab', { name: 'Invites' }).click();
   await expect(page.getByText('Kaiku Collective night')).toBeVisible();
   await page.getByRole('button', { name: 'Accept' }).click();

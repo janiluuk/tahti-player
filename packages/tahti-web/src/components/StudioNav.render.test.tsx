@@ -1,14 +1,9 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { cleanup, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { renderWithRouter } from '../test/renderWithRouter';
 import { hasStudioNestedNav, StudioNav, SUBMENUS } from './StudioNav';
-
-vi.mock('@tanstack/react-router', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@tanstack/react-router')>()),
-  useNavigate: () => vi.fn(),
-}));
 
 vi.mock('../hooks/useStripeConfigured', () => ({
   useStripeConfigured: () => false,
@@ -18,46 +13,71 @@ afterEach(cleanup);
 
 const nestedTabRows = () => screen.queryAllByTestId('studio-nested-nav');
 
-describe('StudioNav nested sub-tab row', () => {
-  it('leaves out the empty sub-tab row and its separator on Studio home', () => {
-    render(<StudioNav current="/studio" />);
+describe('StudioNav', () => {
+  it('renders the Studio row as links, not tabs, with the current page marked', async () => {
+    await renderWithRouter(<StudioNav current="/studio" />);
 
+    const studio = screen.getByRole('navigation', { name: 'Studio pages' });
+    expect(screen.queryByRole('tablist')).toBeNull();
+    const current = within(studio).getByRole('link', { name: 'Home' });
+    expect(current).toHaveAttribute('aria-current', 'page');
+    expect(current.className).toContain('border-foreground');
+    expect(current.className).not.toContain('bg-primary');
+    expect(current.querySelector('svg')).toBeNull();
     expect(
-      screen.getByRole('tablist', { name: 'Studio pages' }),
-    ).toBeInTheDocument();
-    expect(screen.getAllByRole('tablist')).toHaveLength(1);
+      within(studio).getByRole('link', { name: 'Music' }),
+    ).not.toHaveAttribute('aria-current');
     expect(nestedTabRows()).toHaveLength(0);
   });
 
-  it('shows a back link to the Broadcast hub on Go live and Channel, not a tab row', async () => {
-    for (const current of [
-      '/studio/go-live?tab=credentials',
-      '/studio/channel?tab=setup',
-    ]) {
+  it('keeps the Studio tab order', async () => {
+    await renderWithRouter(<StudioNav current="/studio" />);
+    const studio = screen.getByRole('navigation', { name: 'Studio pages' });
+    expect(
+      within(studio)
+        .getAllByRole('link')
+        .map((link) => link.textContent),
+    ).toEqual(['Home', 'Music', 'Broadcast', 'Fans', 'Stats', 'Profile']);
+  });
+
+  it('shows the four Broadcast pages as a filled sub-nav on Broadcast pages', async () => {
+    for (const [current, page] of [
+      ['/studio/go-live?tab=credentials', 'Go live'],
+      ['/studio/schedule?show=events', 'Schedule'],
+      ['/studio/events/new', 'Schedule'],
+      ['/studio/channel', 'Channel'],
+    ] as const) {
       const { unmount } = await renderWithRouter(
         <StudioNav current={current} />,
       );
+      const broadcast = screen.getByRole('navigation', {
+        name: 'Broadcast pages',
+      });
       expect(
-        screen.queryByRole('tablist', { name: 'Broadcast pages' }),
-      ).toBeNull();
-      expect(screen.getByTestId('studio-broadcast-back')).toHaveAttribute(
-        'href',
-        '/studio/broadcast',
-      );
+        within(broadcast)
+          .getAllByRole('link')
+          .map((link) => link.textContent),
+      ).toEqual(['Go live', 'Schedule', 'Shows', 'Channel']);
+      const active = within(broadcast).getByRole('link', { name: page });
+      expect(active, current).toHaveAttribute('aria-current', 'page');
+      expect(active.className).toContain('bg-background-input');
+      expect(
+        screen
+          .getByRole('navigation', { name: 'Studio pages' })
+          .querySelector('[aria-current="page"]')?.textContent,
+      ).toBe('Broadcast');
       unmount();
     }
     await renderWithRouter(<StudioNav current="/studio/broadcast" />);
-    expect(screen.queryByTestId('studio-broadcast-back')).toBeNull();
+    expect(
+      screen.queryByRole('navigation', { name: 'Broadcast pages' }),
+    ).toBeNull();
   });
 
-  it('leaves Stats and Governance without a nested chrome row', () => {
-    render(<StudioNav current="/studio/stats?tab=plays" />);
-    expect(screen.queryByRole('tablist', { name: 'Stats pages' })).toBeNull();
-    expect(nestedTabRows()).toHaveLength(0);
-    cleanup();
-    render(<StudioNav current="/studio/governance" />);
+  it('leaves Stats without a nested row', async () => {
+    await renderWithRouter(<StudioNav current="/studio/stats?tab=plays" />);
     expect(
-      screen.queryByRole('tablist', { name: 'Governance pages' }),
+      screen.queryByRole('navigation', { name: 'Stats pages' }),
     ).toBeNull();
     expect(nestedTabRows()).toHaveLength(0);
   });
@@ -73,26 +93,25 @@ describe('StudioNav nested sub-tab row', () => {
     ['/studio/audience', true],
     ['/studio/go-live', true],
     ['/studio/schedule', true],
-  ])('%s has a sub-tab row: %s', (route, expected) => {
+  ])('%s has a sub-nav row: %s', (route, expected) => {
     expect(hasStudioNestedNav(route)).toBe(expected);
   });
 
-  it('only renders a nested row for tabs that have sub-tabs', () => {
+  it('only renders a nested row for tabs that have sub-pages', async () => {
     for (const item of SUBMENUS['/studio']) {
-      const { unmount } = render(<StudioNav current={item.to} />);
+      const { unmount } = await renderWithRouter(
+        <StudioNav current={item.to} />,
+      );
       expect(nestedTabRows()).toHaveLength(hasStudioNestedNav(item.to) ? 1 : 0);
       unmount();
     }
   });
 
-  it('shows Music pages as the underline tab row below the Studio row', async () => {
+  it('shows Music pages as a filled sub-nav below the Studio row', async () => {
     await renderWithRouter(<StudioNav current="/studio/releases" />);
-    const music = screen.getByRole('tablist', { name: 'Music pages' });
+    const music = screen.getByRole('navigation', { name: 'Music pages' });
     expect(
-      within(music).getByRole('tab', { name: /Releases/, selected: true }),
-    ).toBeTruthy();
-    expect(
-      screen.queryByRole('radiogroup', { name: 'Music pages' }),
-    ).toBeNull();
+      within(music).getByRole('link', { name: 'Releases' }),
+    ).toHaveAttribute('aria-current', 'page');
   });
 });

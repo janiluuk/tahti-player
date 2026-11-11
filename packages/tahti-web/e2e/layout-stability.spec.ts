@@ -8,7 +8,7 @@ const studioRoutes = [
   '/studio/editor',
   '/studio/go-live',
   '/studio/schedule',
-  '/studio/events',
+  '/studio/schedule?show=events',
   '/studio/shows',
   '/studio/channel',
 ] as const;

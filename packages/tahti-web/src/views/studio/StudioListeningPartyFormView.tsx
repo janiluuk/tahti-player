@@ -68,7 +68,10 @@ export function StudioListeningPartyFormView({
         if (!data) {
           if (notFound) {
             toast.error(i18n.t('web:toasts.listeningPartyNotFound'));
-            void navigate({ to: '/studio/listening-parties' });
+            void navigate({
+              to: '/studio/schedule',
+              search: { show: 'parties' },
+            });
             return;
           }
           setLoadError(meta.reason ?? 'Could not load the listening party');
@@ -144,7 +147,7 @@ export function StudioListeningPartyFormView({
         },
       );
     }
-    void navigate({ to: '/studio/listening-parties' });
+    void navigate({ to: '/studio/schedule', search: { show: 'parties' } });
   };
 
   return (
@@ -230,7 +233,8 @@ export function StudioListeningPartyFormView({
                 />
                 <div className="flex flex-wrap gap-2">
                   <ButtonLink
-                    to="/studio/listening-parties"
+                    to="/studio/schedule"
+                    search={{ show: 'parties' }}
                     size="sm"
                     variant="secondary"
                   >

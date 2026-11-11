@@ -31,7 +31,7 @@ When the party is over, the page says so and links to the release once it is pub
 2. Pick the start time (at least five minutes from now, and within a year) and, if you like, a note to listeners. The note shows on the party page.
 3. Share the party link. Your channel page also shows a banner for it.
 
-Your parties are listed under **Studio → Broadcast → Listening parties**. A scheduled party shows how many fans asked for a reminder (for example "12 reminders"). Until a party starts you can **Reschedule** it (new time or note) or **Cancel** it. Two parties on your channel cannot overlap.
+Your parties are listed under **Studio → Broadcast → Schedule → Listening parties**. A scheduled party shows how many fans asked for a reminder (for example "12 reminders"). Until a party starts you can **Reschedule** it (new time or note) or **Cancel** it. Two parties on your channel cannot overlap.
 
 During the party, chat as you normally would; the chat posts a "Now playing" line as each track starts. Fans buy through your purchase tiers, which the party page shows while your store is open and Stripe is connected; set them up under **Studio → Fans → Store**.
 

@@ -23,7 +23,7 @@ test('artist: schedules a listening party for a release', async ({ page }) => {
   await main(page).getByLabel('Starts').fill('2027-02-20T20:00');
   await expect(schedule).toBeEnabled();
   await schedule.click();
-  await expect(page).toHaveURL(/\/studio\/listening-parties(\/|$)/);
+  await expect(page).toHaveURL(/\/studio\/schedule\?show=parties$/);
   await expect(page.getByText('Something went wrong')).toHaveCount(0);
 });
 

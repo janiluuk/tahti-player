@@ -90,7 +90,7 @@ async function renderEdit(eventId: string) {
   });
   const listRoute = createRoute({
     getParentRoute: () => rootRoute,
-    path: '/studio/events',
+    path: '/studio/schedule',
     component: () => <div>Events list</div>,
   });
   const router = createRouter({

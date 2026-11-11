@@ -96,7 +96,7 @@ Plan broadcasts and inspect analytics. · [`/studio/schedule`](./docs/VIEW-GUIDE
 
 <picture><source media="(prefers-color-scheme: light)" srcset="./docs/readme-shots/studio-radio--light.png" /><img src="./docs/readme-shots/studio-radio.png" alt="Studio / Manage / Radio" width="1680" /></picture>
 
-Control stream statistics and 24/7 rotation. · [`/studio/channel?tab=radio`](./docs/VIEW-GUIDE.md#studio-radio)
+Control stream statistics and 24/7 rotation. · [`/studio/channel#radio`](./docs/VIEW-GUIDE.md#studio-radio)
 
 #### Studio / Branding
 

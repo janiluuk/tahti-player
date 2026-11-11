@@ -5,7 +5,6 @@ import {
   ExternalLinkIcon,
   HistoryIcon,
   PencilIcon,
-  PlusIcon,
   XCircleIcon,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -18,8 +17,6 @@ import {
   ButtonLink,
   MediaArtwork,
   Tabs,
-  Tooltip,
-  ViewShell,
 } from '@tahti-player/ui';
 
 import {
@@ -31,12 +28,13 @@ import {
 import { fetchPartyReminder } from '../../api/listening-party-reminders';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
-import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { formatScheduleWindow } from '../../lib/scheduleTime';
 import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
-export function StudioListeningPartiesView() {
+/** The listening-parties filter of Studio → Broadcast → Schedule
+ * (`?show=parties`). */
+export function StudioListeningPartiesSection() {
   const { t } = useTranslation('web');
   const [pendingCancel, setPendingCancel] =
     useState<ListeningPartySummaryDto | null>(null);
@@ -222,91 +220,71 @@ export function StudioListeningPartiesView() {
   };
 
   return (
-    <StudioGate>
-      <div className="studio-page-layout mx-auto flex max-w-3xl flex-col gap-6">
-        <ViewShell
-          title={t('studioListeningParties.title')}
-          classes={{ root: 'px-0 pt-0' }}
-          actions={
-            <Tooltip content={t('studioListeningParties.schedule')} side="top">
-              <ButtonLink
-                to="/studio/listening-parties/new"
-                size="icon-sm"
-                aria-label={t('studioListeningParties.schedule')}
+    <>
+      <Tabs
+        listClassName="border-border border-b pb-3"
+        panelClassName="pt-2"
+        items={[
+          {
+            id: 'upcoming',
+            label: t('studioListeningParties.upcoming'),
+            icon: <CalendarClockIcon size={14} />,
+            content: (
+              <StudioPanel
+                title={t('studioListeningParties.upcomingTitle')}
+                description={t('studioListeningParties.upcomingDescription')}
               >
-                <PlusIcon size={16} aria-hidden />
-              </ButtonLink>
-            </Tooltip>
+                {renderList(
+                  upcoming,
+                  t('studioListeningParties.emptyUpcoming'),
+                  true,
+                )}
+              </StudioPanel>
+            ),
+          },
+          {
+            id: 'past',
+            label: t('studioListeningParties.past'),
+            icon: <HistoryIcon size={14} />,
+            content: (
+              <StudioPanel title={t('studioListeningParties.pastTitle')}>
+                {renderList(past, t('studioListeningParties.emptyPast'))}
+              </StudioPanel>
+            ),
+          },
+        ]}
+      />
+      <ConfirmDialog
+        destructive
+        isOpen={pendingCancel !== null}
+        title={
+          pendingCancel
+            ? t('studioListeningParties.cancelTitle', {
+                title: pendingCancel.release.title,
+              })
+            : t('studioListeningParties.cancelTitleFallback')
+        }
+        description={t('studioListeningParties.cancelDescription')}
+        confirmLabel={t('studioListeningParties.cancelConfirm')}
+        onCancel={() => setPendingCancel(null)}
+        onConfirm={() => {
+          const party = pendingCancel;
+          if (!party) {
+            return;
           }
-        >
-          <Tabs
-            listClassName="border-border border-b pb-3"
-            panelClassName="pt-2"
-            items={[
-              {
-                id: 'upcoming',
-                label: t('studioListeningParties.upcoming'),
-                icon: <CalendarClockIcon size={14} />,
-                content: (
-                  <StudioPanel
-                    title={t('studioListeningParties.upcomingTitle')}
-                    description={t(
-                      'studioListeningParties.upcomingDescription',
-                    )}
-                  >
-                    {renderList(
-                      upcoming,
-                      t('studioListeningParties.emptyUpcoming'),
-                      true,
-                    )}
-                  </StudioPanel>
-                ),
-              },
-              {
-                id: 'past',
-                label: t('studioListeningParties.past'),
-                icon: <HistoryIcon size={14} />,
-                content: (
-                  <StudioPanel title={t('studioListeningParties.pastTitle')}>
-                    {renderList(past, t('studioListeningParties.emptyPast'))}
-                  </StudioPanel>
-                ),
-              },
-            ]}
-          />
-        </ViewShell>
-        <ConfirmDialog
-          destructive
-          isOpen={pendingCancel !== null}
-          title={
-            pendingCancel
-              ? t('studioListeningParties.cancelTitle', {
-                  title: pendingCancel.release.title,
-                })
-              : t('studioListeningParties.cancelTitleFallback')
-          }
-          description={t('studioListeningParties.cancelDescription')}
-          confirmLabel={t('studioListeningParties.cancelConfirm')}
-          onCancel={() => setPendingCancel(null)}
-          onConfirm={() => {
-            const party = pendingCancel;
-            if (!party) {
+          setPendingCancel(null);
+          void cancelListeningParty(party.id).then((result) => {
+            if (!result.ok) {
+              toast.error(result.error);
               return;
             }
-            setPendingCancel(null);
-            void cancelListeningParty(party.id).then((result) => {
-              if (!result.ok) {
-                toast.error(result.error);
-                return;
-              }
-              toast.success(
-                t('toasts.partyCanceled', { title: party.release.title }),
-              );
-              reload();
-            });
-          }}
-        />
-      </div>
-    </StudioGate>
+            toast.success(
+              t('toasts.partyCanceled', { title: party.release.title }),
+            );
+            reload();
+          });
+        }}
+      />
+    </>
   );
 }

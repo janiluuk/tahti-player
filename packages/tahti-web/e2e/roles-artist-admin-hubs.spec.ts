@@ -13,8 +13,8 @@ test('artist: Studio has six tabs and the Profile hub opens a Settings panel', a
   await page.goto('/studio');
   await acknowledgeGuidelines(page);
   const studioTabs = page
-    .getByRole('tablist', { name: 'Studio pages' })
-    .getByRole('tab');
+    .getByRole('navigation', { name: 'Studio pages' })
+    .getByRole('link');
   await expect(studioTabs).toHaveText([
     'Home',
     'Music',

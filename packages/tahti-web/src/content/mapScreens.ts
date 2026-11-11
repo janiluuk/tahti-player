@@ -1144,7 +1144,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           { label: 'Open recordings', to: '/library/recordings' },
           {
             label: 'If no channel yet, land on setup',
-            to: '/studio/channel?tab=setup',
+            to: '/studio/channel',
           },
         ],
         old: {
@@ -1180,7 +1180,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/setup-channel-gated.png',
-          route: '/studio/channel?tab=setup',
+          route: '/studio/channel',
           caption: 'Nuclear combines channel setup and design',
         },
         storybookUrl: storybookStory(
@@ -1953,7 +1953,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/studio-channel-radio.png',
-          route: '/studio/channel?tab=radio',
+          route: '/studio/channel#radio',
           caption: 'Channel radio controls',
         },
       },
@@ -1971,7 +1971,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Return to Radio controls',
-            to: '/studio/channel?tab=radio',
+            to: '/studio/channel#radio',
           },
           { label: 'Open the public channel', to: '/channel/$slug' },
         ],
@@ -1982,7 +1982,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/studio-channel-announcements.png',
-          route: '/studio/channel?tab=announcements',
+          route: '/studio/channel?radio=rotation#radio',
           caption: 'Announcements editor',
         },
         storybookUrl: storybookStory(
@@ -2006,7 +2006,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           { label: 'Browse Tracks', to: '/studio/sounds' },
           {
             label: 'Return to Radio controls',
-            to: '/studio/channel?tab=radio',
+            to: '/studio/channel#radio',
           },
         ],
         old: {
@@ -2016,7 +2016,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/studio-channel-tahti-radio.png',
-          route: '/studio/channel?tab=tahti-radio',
+          route: '/studio/channel?radio=tahti-radio#radio',
           caption: 'Tahti Radio submission panel',
         },
       },
@@ -2072,7 +2072,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/studio-events.png',
-          route: '/studio/events',
+          route: '/studio/schedule?show=events',
           caption: 'Events listing',
         },
       },
@@ -2089,7 +2089,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Save the event',
         ],
         goesTo: [
-          { label: 'Return to Events', to: '/studio/events' },
+          { label: 'Return to Events', to: '/studio/schedule?show=events' },
           {
             label: 'Register a venue that is not listed',
             to: '/venues/register',
@@ -2118,7 +2118,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Cancel back to Events',
         ],
         goesTo: [
-          { label: 'Return to Events', to: '/studio/events' },
+          { label: 'Return to Events', to: '/studio/schedule?show=events' },
           {
             label: 'Register a venue that is not listed',
             to: '/venues/register',

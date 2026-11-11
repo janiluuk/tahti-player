@@ -22,7 +22,8 @@ export function RotationEmptyWarning({ slug }: { slug: string }) {
         {ownsChannel ? (
           <ButtonLink
             to="/studio/channel"
-            search={{ tab: 'rotation' }}
+            search={{ radio: 'rotation' }}
+            hash="radio"
             size="sm"
             variant="secondary"
           >

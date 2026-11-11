@@ -44,7 +44,7 @@ describe('navigation active states', () => {
     ['/studio', 'studio'],
     ['/studio/go-live', 'studio'],
     ['/studio/schedule', 'studio'],
-    ['/studio/channel?tab=radio', 'studio'],
+    ['/studio/channel?radio=rotation', 'studio'],
     ['/library', 'library'],
     ['/library/sounds', 'library'],
     ['/library/upload', 'library'],
