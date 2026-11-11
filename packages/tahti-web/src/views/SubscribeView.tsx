@@ -248,10 +248,10 @@ export function SubscribeView({
                         }
                         if ('checkoutUrl' in res) {
                           if (!assignStripeRedirectUrl(res.checkoutUrl)) {
-                            setNote('Checkout URL was not from Stripe');
+                            setNote(t('subscribeViewStates.checkoutNotStripe'));
                             return;
                           }
-                          setNote('Taking you to checkout…');
+                          setNote(t('subscribeViewStates.takingYouToCheckout'));
                           return;
                         }
                         setNote(res.message);

@@ -6658,7 +6658,13 @@
     "overviewTab": {
       "revenue": "Tulot",
       "keyMetrics": "Tärkeimmät luvut",
-      "engagementUnits": "Sitoutumisyksiköt"
+      "engagementUnits": "Sitoutumisyksiköt",
+      "estimatedGrantShare": "Arvioitu osuus vuoden {{year}} avustuksesta",
+      "grantProgress": "Edistyminen kohti vuoden {{year}} avustuskelpoisuutta",
+      "units_one": "1 yksikkö",
+      "units_other": "{{count}} yksikköä",
+      "payoutsUnder": "Fanitilausten maksut ja avustushistoria löytyvät kohdasta",
+      "geographyNote": ". Kuuntelijoiden sijainnit on koottu yhteen eivätkä yksilöi ketään kuuntelijaa."
     },
     "hourlyDialog": {
       "distributionOfPlaysAcrossThe": "Soittojen jakautuminen vuorokauden ajalle. Vertaa napsauttamalla toista päivää kaaviossa.",
@@ -8482,7 +8488,28 @@
       "memberRegister": "Jäsenluettelo",
       "passed": "Hyväksytty",
       "failed": "Hylätty",
-      "deferred": "Siirretty"
+      "deferred": "Siirretty",
+      "governanceItem": "Hallintoasia",
+      "voted": "Äänesti",
+      "votedChoice": "Äänesti: {{choice}}",
+      "votedForTopic": "Äänesti aihetta",
+      "removedVote": "Poisti äänen",
+      "commented": "Kommentoi",
+      "memberMotionsDesc": "Jäsenten avoimet aloitteet ja julkinen hallintoportaali.",
+      "openCount_one": "1 avoin",
+      "openCount_other": "{{count}} avointa",
+      "venueQueueDesc": "Tarkista ja vahvista tapahtumakalenterin ehdotetut tapahtumapaikat.",
+      "pendingCount_one": "1 odottaa",
+      "pendingCount_other": "{{count}} odottaa",
+      "annualReportDesc": "Luo ja tallenna yhdistyksen vuotuinen toimintakertomus.",
+      "lastYear": "Viimeisin: {{year}}",
+      "boardResolutionsDesc": "Kirjaa ja julkaise hallituksen päätökset ja äänestystulokset – lomake alla.",
+      "thisYearCount_one": "1 tänä vuonna",
+      "thisYearCount_other": "{{count}} tänä vuonna",
+      "agmDesc": "Esityslistan laatija, avoimet aloitteet, kokouskutsun tarkistuslista ja pöytäkirjalinkit.",
+      "grantsDesc": "Vuotuiset avustuskierrokset, hakemukset ja maksujen seuranta.",
+      "auditLogDesc": "Haettava loki alustan kaikista etuoikeutetuista toimista.",
+      "memberRegisterDesc": "Koko jäsenluettelo, vietävissä yhdistyksen kokouskutsun postitukseen."
     },
     "bulkEditBarMore": {
       "leaveAsIs": "Jätä ennalleen",
@@ -11736,7 +11763,9 @@
     },
     "subscribeViewStates": {
       "starting": "Aloitetaan…",
-      "subscribe": "Tilaa"
+      "subscribe": "Tilaa",
+      "checkoutNotStripe": "Maksusivun osoite ei ollut Stripeltä",
+      "takingYouToCheckout": "Siirrytään maksamaan…"
     },
     "trackAccessGateStates": {
       "subscribeInstead": "Tilaa sen sijaan",

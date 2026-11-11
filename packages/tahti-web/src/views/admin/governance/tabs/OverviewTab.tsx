@@ -33,6 +33,7 @@ import {
 import type { BoardResolution } from '../../../../api/types';
 import { PageEmpty, PageErrorBanner } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { voteChoiceLabel } from '../../../../lib/governanceLabels';
 import { apiResult, useSnapshotFetch } from '../../../../lib/useSnapshotFetch';
 import type { AdminGovernanceTabId } from '../governanceNav';
 import { LegalHoldControl } from '../records/LegalHoldControl';
@@ -112,18 +113,23 @@ export function OverviewTab() {
     textMeta(entry, 'subjectTitle') ??
     textMeta(entry, 'title') ??
     entry.targetId ??
-    'Governance item';
+    t('overviewTabMore.governanceItem');
   const activityAction = (entry: AdminActivityEntry) => {
     if (entry.action === 'VOTE_CAST') {
-      return `Voted ${textMeta(entry, 'choice') ?? ''}`.trim();
+      const choice = textMeta(entry, 'choice');
+      return choice
+        ? t('overviewTabMore.votedChoice', {
+            choice: voteChoiceLabel(choice, t),
+          })
+        : t('overviewTabMore.voted');
     }
     if (entry.action === 'FEATURE_REQUEST_VOTE') {
-      return 'Voted for topic';
+      return t('overviewTabMore.votedForTopic');
     }
     if (entry.action === 'FEATURE_REQUEST_UNVOTE') {
-      return 'Removed vote';
+      return t('overviewTabMore.removedVote');
     }
-    return 'Commented';
+    return t('overviewTabMore.commented');
   };
 
   const cards: {
@@ -137,58 +143,66 @@ export function OverviewTab() {
     {
       icon: VoteIcon,
       title: t('overviewTabMore.memberMotionsVoting'),
-      desc: 'Open member motions and the public governance portal.',
-      badge: overview ? `${overview.openMotions} open` : undefined,
+      desc: t('overviewTabMore.memberMotionsDesc'),
+      badge: overview
+        ? t('overviewTabMore.openCount', { count: overview.openMotions })
+        : undefined,
       to: '/governance',
     },
     {
       icon: BuildingIcon,
       title: t('overviewTabMore.venueVerificationQueue'),
-      desc: 'Review and verify venue submissions for the events calendar.',
+      desc: t('overviewTabMore.venueQueueDesc'),
       badge: overview
-        ? `${overview.pendingVenueVerifications} pending`
+        ? t('overviewTabMore.pendingCount', {
+            count: overview.pendingVenueVerifications,
+          })
         : undefined,
       to: '/admin/venues',
     },
     {
       icon: ScrollTextIcon,
       title: t('overviewTabMore.annualReportGenerator'),
-      desc: 'Generate and store the yearly nonprofit activity report.',
+      desc: t('overviewTabMore.annualReportDesc'),
       badge: overview?.lastAnnualReportYear
-        ? `Last: ${overview.lastAnnualReportYear}`
+        ? t('overviewTabMore.lastYear', {
+            year: overview.lastAnnualReportYear,
+          })
         : undefined,
       tab: 'reports',
     },
     {
       icon: GavelIcon,
       title: t('overviewTabMore.boardResolutions'),
-      desc: 'Record and publish formal board decisions and vote outcomes — form below.',
+      desc: t('overviewTabMore.boardResolutionsDesc'),
       badge: overview
-        ? `${overview.boardResolutionsThisYear} this year`
+        ? t('overviewTabMore.thisYearCount', {
+            count: overview.boardResolutionsThisYear,
+          })
         : undefined,
     },
     {
       icon: VoteIcon,
       title: t('overviewTabMore.annualGeneralMeeting'),
-      desc: 'Agenda builder, open motions, member notice checklist, and minutes links.',
+      desc: t('overviewTabMore.agmDesc'),
       tab: 'agm',
     },
     {
       icon: BanknoteIcon,
       title: t('overviewTabMore.grants'),
-      desc: 'Yearly grant cycles, applications, and payout tracking.',
+      desc: t('overviewTabMore.grantsDesc'),
       tab: 'grants',
     },
     {
       icon: ShieldCheckIcon,
       title: t('overviewTabMore.auditLog'),
-      desc: 'Searchable log of privileged actions across the platform.',
+      desc: t('overviewTabMore.auditLogDesc'),
       to: '/admin/logs',
     },
     {
       icon: FileTextIcon,
       title: t('overviewTabMore.memberRegister'),
-      desc: 'Full member list, exportable for the AGM notice mailing.',
+      desc: t('overviewTabMore.memberRegisterDesc'),
       to: '/admin/users',
     },
   ];
