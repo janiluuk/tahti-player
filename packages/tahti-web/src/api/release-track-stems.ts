@@ -61,6 +61,17 @@ export function resetMockReleaseTrackStems(): void {
   mockStems.clear();
 }
 
+export function seedMockReleaseTrackStem(
+  releaseId: string,
+  trackId: string,
+  stem: ReleaseTrackStem,
+): void {
+  const current = mockReleaseTrackStems(releaseId, trackId).filter(
+    (row) => row.role !== stem.role,
+  );
+  mockStems.set(mockKey(releaseId, trackId), [...current, stem]);
+}
+
 export const RELEASE_TRACK_STEM_TYPES = [
   'audio/wav',
   'audio/flac',

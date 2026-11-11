@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { resetMockReleaseTrackStems } from '@tahti-web/api/release-track-stems';
+import {
+  resetMockReleaseTrackStems,
+  seedMockReleaseTrackStem,
+} from '@tahti-web/api/release-track-stems';
 import { ReleaseTrackStemsPanel } from '@tahti-web/views/studio/release-detail/ReleaseTrackStemsPanel';
 import { expect, userEvent, within } from 'storybook/test';
 
@@ -10,6 +13,14 @@ const meta: Meta<typeof ReleaseTrackStemsPanel> = {
   tags: ['autodocs'],
   beforeEach: () => {
     resetMockReleaseTrackStems();
+    seedMockReleaseTrackStem('rel-mock-1', 't2', {
+      id: 'stem-drums',
+      role: 'drums',
+      status: 'READY',
+      durationSec: 180,
+      audioUrl: 'https://example.com/drums.mp3',
+      createdAt: '2026-11-11T00:00:00.000Z',
+    });
   },
 };
 
@@ -53,9 +64,9 @@ export const EmptyAndPopulated: Story = {
       canvas.getByRole('heading', { name: 'Stems' }),
     ).toBeInTheDocument();
     await expect(
-      canvas.getByText('No stems on this track yet.'),
-    ).toBeInTheDocument();
-    await expect(canvas.getByText('Drums')).toBeInTheDocument();
+      await canvas.findAllByText('No stems on this track yet.'),
+    ).toHaveLength(1);
+    await expect(await canvas.findByText('Drums')).toBeInTheDocument();
     await userEvent.click(
       canvas.getAllByRole('button', { name: /Add stem/i })[0]!,
     );
