@@ -3,6 +3,7 @@ import { DiscoverView } from '@tahti-web/views/DiscoverView';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { mockData } from './_lib/mock-data';
 import { selectTab } from './_lib/play';
 
 const meta: Meta<typeof DiscoverView> = {
@@ -13,7 +14,7 @@ const meta: Meta<typeof DiscoverView> = {
     docs: {
       description: {
         component:
-          'The Discover page (`/discover`) with Discover / Feed / Artists / Groups / Venues tabs (`?tab=`). Discover has the genre / type / unheard filters, news feeds and the widget columns (with "add widget"); Artists is the directory browser; Groups lists public artist collectives (same `GroupsDirectory` as `/groups`); Venues lists verified venues with a "Register a venue" link.',
+          'The Discover page (`/discover`) with Discover / Feed / Parties / Artists / Groups / Venues tabs (`?tab=`). Parties lists live and upcoming public listening parties (`GET /api/v1/listening-parties`); the Discover tab shows the first three as a row with a See all link. Discover has the genre / type / unheard filters, news feeds and the widget columns (with "add widget"); Artists is the directory browser; Groups lists public artist collectives (same `GroupsDirectory` as `/groups`); Venues lists verified venues with a "Register a venue" link.',
       },
     },
   },
@@ -76,6 +77,49 @@ export const GroupsTab: Story = {
     await expect(
       canvas.getByRole('link', { name: 'Vinyl Crate Diggers' }),
     ).toBeVisible();
+  },
+};
+
+export const PartiesTab: Story = {
+  decorators: [withTahtiRouter('/discover?tab=parties')],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const panel = within(await canvas.findByTestId('discover-parties'));
+    const rows = await panel.findAllByTestId('listening-party-row');
+    await expect(rows.length).toBeGreaterThan(1);
+    await expect(
+      within(rows[0]).getByText('Listening party · live now'),
+    ).toBeVisible();
+    await expect(
+      within(rows[0]).getByRole('link', {
+        name: /Open the listening party for/,
+      }),
+    ).toHaveAttribute('href', expect.stringMatching(/^\/party\//));
+  },
+};
+
+export const PartiesEmpty: Story = {
+  decorators: [withTahtiRouter('/discover?tab=parties')],
+  parameters: { mockData: mockData({ publicListeningParties: () => [] }) },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByText('No listening parties right now'),
+    ).toBeVisible();
+  },
+};
+
+export const PartiesRowOnDiscover: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const row = within(await canvas.findByTestId('discover-parties-row'));
+    await expect(row.getAllByTestId('listening-party-row').length).toBeLessThan(
+      4,
+    );
+    const seeAll = canvas
+      .getAllByRole('link', { name: /See all/ })
+      .map((link) => link.getAttribute('href'));
+    await expect(seeAll).toContain('/discover?tab=parties');
   },
 };
 

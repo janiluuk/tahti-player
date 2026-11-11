@@ -1376,6 +1376,7 @@
       "tabArtists": "Artistit",
       "tabGroups": "Ryhmät",
       "tabVenues": "Esiintymispaikat",
+      "tabParties": "Kuuntelubileet",
       "sections": "Löydä-osiot",
       "genres": "Tyylilajit",
       "contentTypes": "Sisältötyypit",
@@ -1414,6 +1415,16 @@
       "moreGenres": "+{{count}} lisää",
       "fewerGenres": "Vähemmän tyylilajeja",
       "groupsSearchPlaceholder": "Ryhmän nimi, tyylilaji…"
+    },
+    "discoverParties": {
+      "startParty": "Järjestä bileet",
+      "loading": "Ladataan kuuntelubileitä…",
+      "loadFailed": "Kuuntelubileitä ei voitu ladata",
+      "emptyTitle": "Ei kuuntelubileitä juuri nyt",
+      "emptyDescription": "Artistit järjestävät bileitä julkaisuilleen. Käynnissä olevat ja tulevat näkyvät tässä.",
+      "rowTitle": "Kuuntelubileet",
+      "seeAll": "Näytä kaikki",
+      "openNamed": "Avaa julkaisun {{title}} kuuntelubileet"
     },
     "library": {
       "sections": "Kirjaston osiot",
@@ -10381,6 +10392,13 @@
       "coverImageLinkOptional": "Kansikuvan linkki (valinnainen)",
       "endOptional": "Päättyy (valinnainen)",
       "endAfterStart": "Päättymisen on oltava alun jälkeen.",
+      "timezone": "Aikavyöhyke",
+      "timezoneNotSet": "Ei asetettu",
+      "timezoneDescription": "Näytetään ajan vieressä muissa aikavyöhykkeissä oleville.",
+      "fansOnly": "Vain faneille",
+      "fansOnlyDescription": "Näkyy vain fanitilaajillesi. Seuraajille ja somessa siitä ei kerrota.",
+      "localTime": "{{time}} ({{zone}})",
+      "noVenue": "Ei tapahtumapaikkaa",
       "saveDraft": "Tallenna luonnoksena",
       "publish": "Julkaise",
       "publishConfirmTitle": "Julkaistaanko {{title}}?",

@@ -10,14 +10,6 @@ test.beforeEach(async ({ page }) => {
 test('artist: an Embeds row without a cover soft-fills one', async ({
   page,
 }) => {
-  await page.route('https://noembed.com/embed**', (route) =>
-    route.fulfill({
-      contentType: 'application/json',
-      body: JSON.stringify({
-        thumbnail_url: 'https://img.example/mixcloud-soft.jpg',
-      }),
-    }),
-  );
   await page.goto('/library/sounds?tab=embeds');
   await acknowledgeGuidelines(page);
   const panel = page.getByTestId('sounds-panel-embeds');
@@ -27,7 +19,7 @@ test('artist: an Embeds row without a cover soft-fills one', async ({
   await expect(play).toBeVisible({ timeout: 15_000 });
   await expect(play.locator('img')).toHaveAttribute(
     'src',
-    'https://img.example/mixcloud-soft.jpg',
+    '/mock/dj-moonlight/cover-moonlight-drive.svg',
   );
 });
 

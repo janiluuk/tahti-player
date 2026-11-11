@@ -26,12 +26,21 @@ const existing: ArtistEvent = {
   startAt: '2026-11-01T18:00:00.000Z',
 };
 
+const fansEvent: ArtistEvent = {
+  ...existing,
+  id: 'evt-2',
+  title: 'Rehearsal',
+  timezone: 'Europe/Helsinki',
+  venue: { id: 'venue-own', slug: 'kellari', name: 'Kellari', city: 'Turku' },
+  visibility: 'FANS',
+};
+
 const createEvent = vi.fn();
 const updateEvent = vi.fn();
 
 vi.mock('../../api/events', () => ({
   fetchMyEvents: async () => ({
-    data: [existing],
+    data: [existing, fansEvent],
     meta: { source: 'api' as const },
   }),
   createEvent: (...args: unknown[]) => createEvent(...args),
@@ -134,11 +143,33 @@ describe('StudioEventCreateView editing', () => {
       location: 'Helsinki',
       startAt: existing.startAt,
       endAt: null,
+      timezone: null,
+      venueId: null,
+      visibility: 'PUBLIC',
       eventUrl: '',
       ticketUrl: '',
       imageUrl: '',
     });
     expect(await screen.findByText('Events list')).toBeInTheDocument();
+  });
+
+  it('keeps the time zone and saved venue and can make a fans-only event public', async () => {
+    await renderEdit('evt-2');
+    const fansOnly = screen.getByRole('switch', { name: /Fans only/ });
+    expect(fansOnly).toHaveAttribute('aria-checked', 'true');
+    expect(screen.getByText(/Kellari · Turku/)).toBeInTheDocument();
+    await act(async () => fireEvent.click(fansOnly));
+    await act(async () =>
+      fireEvent.click(screen.getByRole('button', { name: 'Save changes' })),
+    );
+    expect(updateEvent).toHaveBeenCalledWith(
+      'evt-2',
+      expect.objectContaining({
+        timezone: 'Europe/Helsinki',
+        venueId: 'venue-own',
+        visibility: 'PUBLIC',
+      }),
+    );
   });
 
   it('goes back to the list when the event is not the artist’s', async () => {

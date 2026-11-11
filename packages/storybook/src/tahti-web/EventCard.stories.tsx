@@ -58,6 +58,30 @@ export const Cancelled: Story = {
   },
 };
 
+export const FansOnlyAtVenue: Story = {
+  args: {
+    event: {
+      ...tagged,
+      visibility: 'FANS',
+      timezone: 'Pacific/Auckland',
+      venue: {
+        id: 'venue-1',
+        slug: 'kuudes-linja',
+        name: 'Kuudes Linja',
+        city: 'Helsinki',
+      },
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(canvas.getByText('Fans only')).toBeVisible();
+    await expect(canvas.getByText(/Kuudes Linja/)).toBeVisible();
+    await expect(canvas.getByTestId('event-local-time')).toHaveTextContent(
+      'Pacific/Auckland',
+    );
+  },
+};
+
 export const Draft: Story = {
   args: { event: draft },
   play: async ({ canvasElement }) => {

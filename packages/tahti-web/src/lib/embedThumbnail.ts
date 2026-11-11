@@ -1,18 +1,18 @@
+import { apiBase } from '../api/http';
+import { isForceMock } from '../api/mode';
 import type { EmbedProvider } from './embedSrc';
 
-type OembedPayload = {
-  thumbnail_url?: string;
-};
-
-type HearthisTrackPayload = {
-  artwork_url?: string | null;
-  artwork_url_retina?: string | null;
+type EmbedThumbnailPayload = {
+  thumbnailUrl?: string | null;
 };
 
 const MEMORY = new Map<string, string | null>();
 const PENDING = new Map<string, Promise<string | null>>();
 const STORAGE_PREFIX = 'tahti-web:embed-thumb:';
 const MAX_IN_FLIGHT = 3;
+const MOCK_THUMBNAIL = '/mock/dj-moonlight/cover-moonlight-drive.svg';
+
+class RateLimited extends Error {}
 
 let inFlight = 0;
 const waiters: Array<() => void> = [];
@@ -99,8 +99,10 @@ function remember(
       writeStored(pageUrl, value);
       return value;
     })
-    .catch(() => {
-      writeStored(pageUrl, null);
+    .catch((err: unknown) => {
+      if (!(err instanceof RateLimited)) {
+        writeStored(pageUrl, null);
+      }
       return null;
     })
     .finally(() => {
@@ -110,7 +112,7 @@ function remember(
   return promise;
 }
 
-function pageUrlFor(
+export function embedPageUrl(
   provider: EmbedProvider,
   embedUri: string,
   sourceUrl?: string | null,
@@ -138,64 +140,34 @@ function pageUrlFor(
   }
 }
 
-export function hearthisApiUrl(pageUrl: string): string | null {
-  let url: URL;
-  try {
-    url = new URL(pageUrl);
-  } catch {
-    return null;
+async function lookupThumbnail(pageUrl: string): Promise<string | null> {
+  if (isForceMock()) {
+    return pageUrl.startsWith('https://') ? MOCK_THUMBNAIL : null;
   }
-  if (!/^(www\.)?hearthis\.at$/i.test(url.hostname)) {
-    return null;
-  }
-  const path = url.pathname.replace(/\/?$/, '/');
-  return /^\/[^/]+\/[^/]+\/$/.test(path)
-    ? `https://api-v2.hearthis.at${path}`
-    : null;
-}
-
-async function lookupHearthis(pageUrl: string): Promise<string | null> {
-  const apiUrl = hearthisApiUrl(pageUrl);
-  if (!apiUrl) {
-    return null;
-  }
-  const res = await fetch(apiUrl);
-  if (!res.ok) {
-    return null;
-  }
-  const data = (await res.json()) as HearthisTrackPayload;
-  return data.artwork_url_retina?.trim() || data.artwork_url?.trim() || null;
-}
-
-async function lookupOembed(pageUrl: string): Promise<string | null> {
   const res = await fetch(
-    `https://noembed.com/embed?url=${encodeURIComponent(pageUrl)}`,
+    `${apiBase()}/api/v1/embeds/thumbnail?url=${encodeURIComponent(pageUrl)}`,
+    { headers: { Accept: 'application/json' } },
   );
+  if (res.status === 429) {
+    throw new RateLimited();
+  }
   if (!res.ok) {
     return null;
   }
-  const data = (await res.json()) as OembedPayload;
-  return data.thumbnail_url?.trim() || null;
+  const data = (await res.json()) as EmbedThumbnailPayload;
+  return data.thumbnailUrl?.trim() || null;
 }
 
-/**
- * Best-effort provider thumbnail: hearthis.at's public API for hearthis
- * pages, noembed (CORS) for the rest. Cached per page URL.
- */
 export async function fetchEmbedThumbnail(input: {
   provider: EmbedProvider;
   embedUri: string;
   sourceUrl?: string | null;
 }): Promise<string | null> {
-  const pageUrl = pageUrlFor(input.provider, input.embedUri, input.sourceUrl);
+  const pageUrl = embedPageUrl(input.provider, input.embedUri, input.sourceUrl);
   if (!pageUrl) {
     return null;
   }
-  return remember(pageUrl, () =>
-    input.provider === 'HEARTHIS'
-      ? lookupHearthis(pageUrl)
-      : lookupOembed(pageUrl),
-  );
+  return remember(pageUrl, () => lookupThumbnail(pageUrl));
 }
 
 export function fetchOembedThumbnail(pageUrl: string): Promise<string | null> {
@@ -203,5 +175,5 @@ export function fetchOembedThumbnail(pageUrl: string): Promise<string | null> {
   if (!trimmed) {
     return Promise.resolve(null);
   }
-  return remember(trimmed, () => lookupOembed(trimmed));
+  return remember(trimmed, () => lookupThumbnail(trimmed));
 }

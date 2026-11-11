@@ -12,6 +12,7 @@ type Props = {
   seed: string;
   alt: string;
   size?: ArtworkProps['size'];
+  className?: string;
   playLabel?: string;
   isPlaying?: boolean;
   onPlay?: () => void;
@@ -24,6 +25,7 @@ export function SoftMediaArtwork({
   seed,
   alt,
   size,
+  className,
   playLabel,
   isPlaying,
   onPlay,
@@ -59,6 +61,7 @@ export function SoftMediaArtwork({
       alt={alt}
       seed={seed}
       size={size}
+      className={className}
       playLabel={playLabel}
       isPlaying={isPlaying}
       onPlay={onPlay}

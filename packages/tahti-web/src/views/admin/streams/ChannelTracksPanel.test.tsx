@@ -9,6 +9,7 @@ import {
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../../api/admin';
+import { clearEmbedThumbnailCache } from '../../../lib/embedThumbnail';
 import { ChannelTracksPanel } from './ChannelTracksPanel';
 
 const SOUND: admin.AdminChannelSound = {
@@ -35,6 +36,42 @@ describe('ChannelTracksPanel', () => {
   afterEach(() => {
     cleanup();
     vi.restoreAllMocks();
+    vi.unstubAllGlobals();
+    clearEmbedThumbnailCache();
+  });
+
+  it('soft-fills the cover of an embed with no stored banner', async () => {
+    vi.spyOn(admin, 'fetchAdminChannelSounds').mockResolvedValue({
+      ok: true,
+      data: [
+        {
+          ...SOUND,
+          id: 'e1',
+          title: 'Yöajo',
+          bannerUrl: null,
+          embedProvider: 'MIXCLOUD',
+          embedUri: 'dj/yoajo',
+          embedSourceUrl: 'https://www.mixcloud.com/dj/yoajo/',
+        },
+      ],
+      total: 1,
+    });
+    const fetchMock = vi.fn().mockResolvedValue({
+      ok: true,
+      status: 200,
+      json: async () => ({ thumbnailUrl: 'https://cdn.example/yoajo.jpg' }),
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    await openChannel('moon');
+    const list = await screen.findByTestId('channel-tracks');
+    await vi.waitFor(() => {
+      expect(list.querySelector('img')?.getAttribute('src')).toBe(
+        'https://cdn.example/yoajo.jpg',
+      );
+    });
+    expect(String(fetchMock.mock.calls[0]?.[0])).toContain(
+      encodeURIComponent('https://www.mixcloud.com/dj/yoajo/'),
+    );
   });
 
   it('opens a channel and saves an edited title', async () => {

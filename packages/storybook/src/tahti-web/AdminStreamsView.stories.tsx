@@ -40,3 +40,29 @@ export const Default: Story = {
     ).toHaveAttribute('aria-expanded', 'true');
   },
 };
+
+export const ChannelTracksSoftCover: Story = {
+  render: () => (
+    <div className="p-6">
+      <AdminStreamsView />
+    </div>
+  ),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const open = await canvas.findByRole('button', { name: /Open tracks/ });
+    const form = within(open.closest('form') as HTMLElement);
+    await userEvent.type(
+      form.getByLabelText('Channel slug'),
+      'northern-lights',
+    );
+    await userEvent.click(open);
+    const list = await canvas.findByTestId('channel-tracks');
+    const row = within(list).getByText('Yöajo').closest('li');
+    await waitFor(() =>
+      expect(row?.querySelector('img')).toHaveAttribute(
+        'src',
+        '/mock/dj-moonlight/cover-moonlight-drive.svg',
+      ),
+    );
+  },
+};

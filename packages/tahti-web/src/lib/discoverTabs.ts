@@ -1,4 +1,5 @@
-export type DiscoverTab = 'discover' | 'feed' | 'artists' | 'venues' | 'groups';
+export type DiscoverTab =
+  'discover' | 'feed' | 'parties' | 'artists' | 'venues' | 'groups';
 
 export type FeedView = 'stories' | 'calendar';
 
@@ -9,6 +10,7 @@ export type DiscoverSearch = {
 
 const SEARCH_TABS = new Set<Exclude<DiscoverTab, 'discover'>>([
   'feed',
+  'parties',
   'artists',
   'venues',
   'groups',
