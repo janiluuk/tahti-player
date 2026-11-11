@@ -1,3 +1,9 @@
+## 2026-11-11 - Mock likes stay in Favorites (0.0.367)
+
+Liking a track in the mock app keeps it in this browser, so Library →
+Favorites still lists it after the next page load. An artist liking a track
+from a list is covered by the mock e2e.
+
 ## 2026-11-11 - Embed replaces the player (0.0.366)
 
 An embed-only track (no stream URL the audio engine can play) replaces the

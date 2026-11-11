@@ -6,6 +6,34 @@ import {
   signInAsListener,
 } from './helpers/auth';
 
+test('artist: likes a track from a list and finds it in Favorites', async ({
+  page,
+}) => {
+  test.setTimeout(60_000);
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await signIn(page);
+  await page.goto('/u/northern-lights');
+  await acknowledgeGuidelines(page);
+  const row = page
+    .getByRole('listitem')
+    .filter({ has: page.getByRole('heading', { name: 'Archive Session 02' }) })
+    .first();
+  await row
+    .getByRole('button', {
+      name: 'Like Archive Session 02 (1 like)',
+      exact: true,
+    })
+    .click();
+  await expect(
+    row.getByRole('button', { name: /Unlike Archive Session 02/ }),
+  ).toBeVisible();
+  await page.goto('/library/favorites');
+  await acknowledgeGuidelines(page);
+  await expect(
+    page.getByRole('main').getByText('Archive Session 02').first(),
+  ).toBeVisible();
+});
+
 test('anonymous: queues a track from an artist page without signing in', async ({
   page,
 }) => {

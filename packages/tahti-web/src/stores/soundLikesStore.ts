@@ -1,7 +1,13 @@
 import { create } from 'zustand';
 
 import { fetchTrackDetail } from '../api/client';
-import { fetchMyLikes } from '../api/likes';
+import {
+  fetchMyLikes,
+  forgetMockLike,
+  likedTrackFromDetail,
+  rememberMockLike,
+} from '../api/likes';
+import { isForceMock } from '../api/mode';
 import { setSoundEngagement } from '../api/sound-engagement';
 
 type SoundLikesState = {
@@ -59,6 +65,16 @@ export const useSoundLikesStore = create<SoundLikesState>((set, get) => ({
     const result = await setSoundEngagement('like', slug, soundId, active);
     if (!result.ok) {
       return result.error;
+    }
+    if (isForceMock()) {
+      if (result.data.active) {
+        const detail = await fetchTrackDetail(soundId);
+        if (detail.data) {
+          rememberMockLike(likedTrackFromDetail(detail.data));
+        }
+      } else {
+        forgetMockLike(soundId);
+      }
     }
     const liked = new Set(get().liked);
     if (result.data.active) {

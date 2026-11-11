@@ -31,11 +31,17 @@ test('listener: follows an artist and finds them under Settings → Profile → 
 });
 
 test('listener: likes a track and finds it in Favorites', async ({ page }) => {
+  test.setTimeout(60_000);
   await open(page, '/t/demo-archive-2');
-  await page
+  const like = page
     .getByRole('main')
-    .getByRole('button', { name: 'Favorite Archive Session 02', exact: true })
-    .click();
+    .getByRole('button', { name: 'Like Archive Session 02', exact: true });
+  await like.click();
+  await expect(
+    page
+      .getByRole('main')
+      .getByRole('button', { name: /Unlike Archive Session 02/ }),
+  ).toBeVisible();
   await open(page, '/library/favorites');
   await expect(
     page.getByRole('main').getByText('Archive Session 02').first(),

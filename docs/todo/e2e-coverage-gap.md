@@ -34,7 +34,7 @@ Re-checked 2026-11-09 against the specs (several cells had gone stale).
 | Channel and artist pages, follow | ◐ | ✅ (follow, channel comment) | ◐ (designer parity) | — |
 | Player: play, pause, seek, fullscreen | ✅ (play, pause) | ✅ (seek, full screen skip / pause / minimize) | ✅ (minimize, queue) | — |
 | Queue | ❌ | ✅ | ✅ | — |
-| Favorites | — | ✅ | ◐ | — |
+| Favorites | — | ✅ | ✅ (like a listed track) | — |
 | Playlists (own, collaborative add / undo) | — | ✅ (create from a track, collaborative add / undo) | ◐ (editor opens) | — |
 | Library History / Following | — | ✅ | ◐ | — |
 | Listening stats | — | ◐ (Stats / History tabs) | ❌ | — |
@@ -73,7 +73,8 @@ each role exercises.
 - [x] Listener: Radio station filter and the public schedule's week paging (`use-cases-coverage-gap.spec.ts`).
 - [x] Anonymous queue, artist History listening stats and Library playlists (`use-cases-coverage-gap.spec.ts`).
 - [x] Artist Latest News sources and Admin Co-op beyond opening tabs (grant cycle preview, governance tabs) (`use-cases-coverage-gap-2.spec.ts`).
-- [ ] Remaining: Artist favorites (blocked by `likes-vs-favorites.md`) and settings.
+- [x] Artist: likes a track from an artist-page list and finds it under Library → Favorites (`use-cases-coverage-gap.spec.ts`).
+- [ ] Remaining: artist Settings coverage, and the collection player (placement is a product decision).
 
 ## Run and review (next)
 

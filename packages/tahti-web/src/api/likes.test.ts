@@ -3,7 +3,9 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   fetchMyLikes,
   fetchUserLikes,
+  forgetMockLike,
   likedTrackToPlayable,
+  rememberMockLike,
   type LikedTrack,
 } from './likes';
 
@@ -71,6 +73,18 @@ describe('likes', () => {
     );
     expect(result.showLikes).toBe(true);
     expect(result.data.map((track) => track.id)).toEqual(['s1']);
+  });
+
+  it('keeps a mock like for Favorites after a reload', async () => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+    localStorage.removeItem('tahti-web:mock-likes');
+    rememberMockLike(liked({ id: 'kept', title: 'Kept' }));
+    const result = await fetchMyLikes();
+    expect(result.meta.source).toBe('mock');
+    expect(result.data.map((track) => track.title)).toEqual(['Kept']);
+    forgetMockLike('kept');
+    await expect(fetchMyLikes()).resolves.toMatchObject({ data: [] });
+    vi.unstubAllEnvs();
   });
 
   it('hides likes the user keeps private', async () => {
