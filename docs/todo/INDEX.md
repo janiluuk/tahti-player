@@ -30,7 +30,6 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
 | partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: next 30 slices (failed[] toasts, facets+filter, isFallback, clear filters; org API) |
-| partial | [embed-covers-hardening.md](embed-covers-hardening.md) | Proxy + admin soft-fill landed (tahti-org #1099); left: slices 17–20, 24, 25, 29, 30 |
 | partial | [server-peaks-in-track-lists.md](server-peaks-in-track-lists.md) | Server waveform peaks on every track list (search, Selects, New to you, profile fallback); left: studio collections, radio/feed |
 | open    | [yaniho-channel-waveform-peaks.md](yaniho-channel-waveform-peaks.md) | Yaniho channel (`/channel/yaniho`) tracks still show loading over the waveform; pre-generate peaks for every view during pre-processing |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
