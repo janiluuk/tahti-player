@@ -11,6 +11,7 @@ import {
 } from '../../api/client';
 import type { GovernanceMotion } from '../../api/types';
 import { toDatetimeLocalValue } from '../../lib/datetimeLocal';
+import { voteChoiceLabel } from '../../lib/governanceLabels';
 import { numericDate } from '../../lib/relativeDate';
 import { EditIconButton } from '../EditIconButton';
 import { MotionDiscussion } from './MotionDiscussion';
@@ -236,26 +237,30 @@ export function MotionCard({
       />
       {m.youVoted && (
         <p className="mt-2 text-sm">
-          Your vote:{' '}
+          {t('governanceLabels.yourVote')}{' '}
           <Badge variant="pill" color="cyan">
-            {m.yourChoice ?? 'recorded'}
+            {m.yourChoice
+              ? voteChoiceLabel(m.yourChoice, t)
+              : t('governanceLabels.voteRecorded')}
           </Badge>{' '}
           <span className="text-foreground-secondary text-xs">
-            · votes can&apos;t be changed
+            {t('governanceLabels.votesCantChange')}
           </span>
         </p>
       )}
       {m.tally && (
         <div className="mt-3 flex flex-wrap gap-2 text-xs">
-          <span className="border-border rounded border px-2 py-1">
-            YES {m.tally.YES}
-          </span>
-          <span className="border-border rounded border px-2 py-1">
-            NO {m.tally.NO}
-          </span>
-          <span className="border-border rounded border px-2 py-1">
-            ABSTAIN {m.tally.ABSTAIN}
-          </span>
+          {(['YES', 'NO', 'ABSTAIN'] as const).map((choice) => (
+            <span
+              key={choice}
+              className="border-border rounded border px-2 py-1"
+            >
+              {t('governanceLabels.tallyChoice', {
+                choice: voteChoiceLabel(choice, t),
+                count: m.tally?.[choice] ?? 0,
+              })}
+            </span>
+          ))}
         </div>
       )}
       {typeof eligibleVoters === 'number' &&
@@ -263,11 +268,23 @@ export function MotionCard({
         typeof m.totalVotes === 'number' &&
         (m.state === 'OPEN' || m.state === 'CLOSED') && (
           <p className="text-foreground-secondary mt-2 text-xs">
-            {m.totalVotes} of {eligibleVoters} members voted
+            {t('governanceLabels.membersVoted', {
+              votes: m.totalVotes,
+              eligible: eligibleVoters,
+            })}
             {m.state === 'OPEN'
-              ? ' · tally revealed at close'
+              ? t('governanceLabels.tallyAtClose')
               : m.tally
-                ? ` · ${Math.round(((m.tally.YES ?? 0) / Math.max(1, m.tally.YES + m.tally.NO + m.tally.ABSTAIN)) * 100)}% for`
+                ? t('governanceLabels.percentFor', {
+                    percent: Math.round(
+                      ((m.tally.YES ?? 0) /
+                        Math.max(
+                          1,
+                          m.tally.YES + m.tally.NO + m.tally.ABSTAIN,
+                        )) *
+                        100,
+                    ),
+                  })
                 : ''}
           </p>
         )}
@@ -287,14 +304,20 @@ export function MotionCard({
                 setVoting(true);
                 void voteOnMotion(m.id, choice).then((r) => {
                   setVoting(false);
-                  setActionMsg(r.ok ? `Voted ${choice}.` : r.error);
+                  setActionMsg(
+                    r.ok
+                      ? t('governanceLabels.votedChoice', {
+                          choice: voteChoiceLabel(choice, t),
+                        })
+                      : r.error,
+                  );
                   if (r.ok) {
                     onChanged();
                   }
                 });
               }}
             >
-              {choice}
+              {voteChoiceLabel(choice, t)}
             </Button>
           ))}
         </div>
