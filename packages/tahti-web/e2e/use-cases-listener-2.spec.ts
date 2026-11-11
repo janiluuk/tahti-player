@@ -38,20 +38,17 @@ test.describe('listener', () => {
     await signInAsListener(page);
   });
 
-  test('favorites a track and removes it again', async ({ page }) => {
+  test('likes a track and removes it again', async ({ page }) => {
     await open(page, '/t/northern-lights-archive-1');
     const main = page.getByRole('main');
     await main
-      .getByRole('button', { name: 'Favorite Aurora Drift', exact: true })
+      .getByRole('button', { name: 'Like Aurora Drift', exact: true })
       .click();
     await open(page, '/library/favorites');
     await expect(main.getByText('Aurora Drift').first()).toBeVisible();
     await open(page, '/t/northern-lights-archive-1');
     await main
-      .getByRole('button', {
-        name: /^(Unfavorite|Remove from favorites|Favorited)/,
-      })
-      .first()
+      .getByRole('button', { name: 'Unlike Aurora Drift', exact: true })
       .click();
     await open(page, '/library/favorites');
     await expect(main.getByText('Aurora Drift')).toHaveCount(0);

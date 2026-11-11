@@ -14,7 +14,7 @@ test('anonymous: Library keeps account tabs visible but disabled', async ({
   await page.goto('/library');
   await expect(page.getByRole('tab', { name: 'Favorites' })).toBeEnabled();
   await expect(
-    page.getByRole('tab', { name: 'Following, needs an account' }),
+    page.getByRole('tab', { name: 'History, needs an account' }),
   ).toBeDisabled();
   expect(errors).toEqual([]);
 });
@@ -62,14 +62,14 @@ test('listener: no Studio in the sidebar; Studio and Admin explain the gate', as
   expect(errors).toEqual([]);
 });
 
-test('listener: Library opens on Favorites and lists who you follow', async ({
+test('listener: Library opens on Favorites; the old Following link opens Settings', async ({
   page,
 }) => {
   await signInAsListener(page);
   await page.goto('/library');
   await expect(page).toHaveURL(/\/library\/favorites$/);
   await acknowledgeGuidelines(page);
-  await page.getByRole('tab', { name: 'Following' }).click();
-  await expect(page).toHaveURL(/\/library\/following$/);
+  await page.goto('/library/following');
+  await expect(page).toHaveURL(/\/settings\/artist\?tab=following/);
   await expect(page.getByTestId('library-following')).toBeVisible();
 });

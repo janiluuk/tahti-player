@@ -141,8 +141,8 @@ test('artist: adds an event and finds it under Events', async ({ page }) => {
   await page.getByRole('textbox', { name: 'Place' }).fill('Kaiku');
   await page.getByRole('textbox', { name: 'Location' }).fill('Helsinki');
   await page.getByLabel('Start').fill('2027-01-15T21:00');
-  await page.getByRole('button', { name: 'Add event' }).click();
-  await expect(page).toHaveURL(/\/studio\/events$/);
+  await page.getByRole('button', { name: 'Publish' }).click();
+  await expect(page).toHaveURL(/\/studio\/schedule\?show=events$/);
   await expect(page.getByRole('main').getByText(title)).toBeVisible();
 });
 

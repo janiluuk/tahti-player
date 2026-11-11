@@ -140,9 +140,10 @@ export function RadioStationsRow({
   // in any station that doesn't already have a board-curated preset enabled
   // for it (matched by name) — the preset's admin-uploaded artwork wins when
   // both exist for the same station.
+  const presetsSettled = presets.status !== 'loading';
   const items = useMemo<RadioRowItem[]>(() => {
     const presetNames = new Set(radioPresets.map((preset) => preset.name));
-    const catalog = enabledStationIds
+    const catalog = (presetsSettled ? enabledStationIds : [])
       .map((id) => {
         const station = radioStation(id);
         return station ? { ...station, ...stationOverrides[id] } : undefined;
@@ -169,7 +170,13 @@ export function RadioStationsRow({
         station,
       })),
     ];
-  }, [radioPresets, enabledStationIds, stationOverrides, ownStations]);
+  }, [
+    radioPresets,
+    presetsSettled,
+    enabledStationIds,
+    stationOverrides,
+    ownStations,
+  ]);
 
   const nowPlayingFor = (item: RadioRowItem) =>
     item.kind === 'preset' ? presetNowPlaying[item.preset.id] : undefined;

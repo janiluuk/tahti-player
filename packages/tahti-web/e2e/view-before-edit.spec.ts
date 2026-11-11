@@ -82,7 +82,7 @@ test('an event opens read-only and its pencil opens the form', async ({
     .click();
   await expect(page).toHaveURL(/\/studio\/events\/evt-mock-1$/);
   await expect(
-    page.getByRole('heading', { name: 'Album release show' }),
+    page.getByRole('heading', { name: 'Album release show', level: 1 }),
   ).toBeVisible();
   await expect(page.getByLabel('Title')).toHaveCount(0);
   await page.getByRole('link', { name: 'Edit Album release show' }).click();
