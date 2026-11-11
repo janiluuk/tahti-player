@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { EmbedTrackRow } from '@tahti-web/components/EmbedTrackRow';
+import { clearEmbedThumbnailCache } from '@tahti-web/lib/embedThumbnail';
+import { expect, waitFor, within } from 'storybook/test';
 
 const meta: Meta<typeof EmbedTrackRow> = {
   title: 'Tahti/Media/EmbedTrackRow',
@@ -47,5 +49,33 @@ export const Bandcamp: Story = {
     title: 'Downtempo EP',
     provider: 'BANDCAMP',
     embedUri: 'album=1234567890',
+  },
+};
+
+/** No stored cover: the row asks the thumbnail proxy (a bundled cover in
+ * mock mode) and never stays on an empty thumbnail. */
+export const NoStoredCover: Story = {
+  args: {
+    title: 'Coverless mix',
+    provider: 'MIXCLOUD',
+    embedUri: 'https://www.mixcloud.com/northern-lights/coverless-mix/',
+    artworkUrl: null,
+  },
+  beforeEach: () => {
+    clearEmbedThumbnailCache();
+    return () => {
+      clearEmbedThumbnailCache();
+    };
+  },
+  play: async ({ canvasElement }) => {
+    const play = await within(canvasElement).findByRole('button', {
+      name: 'Play Coverless mix on Mixcloud',
+    });
+    await waitFor(() => {
+      expect(play.querySelector('img')).toHaveAttribute(
+        'src',
+        '/mock/dj-moonlight/cover-moonlight-drive.svg',
+      );
+    });
   },
 };
