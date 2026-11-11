@@ -13,8 +13,6 @@ import {
 } from '../lib/embedSrc';
 import { fetchEmbedThumbnail } from '../lib/embedThumbnail';
 import { usePlayerStore } from '../stores/playerStore';
-import { useHearthisEmbedClaim } from './HearthisEmbedHost';
-import { HearthisEmbedSurface } from './HearthisEmbedSurface';
 import { LibraryItemRow } from './library/LibraryItemRow';
 
 type Props = {
@@ -67,7 +65,6 @@ export function EmbedTrackRow({
   const playerId = `hearthis:${embedUri}`;
   const isCurrent = currentId === playerId;
   const isPlaying = isCurrent && (status === 'playing' || status === 'loading');
-  useHearthisEmbedClaim(provider === 'HEARTHIS' && isCurrent);
 
   useEffect(() => {
     if (artworkUrl || softArtworkUrl) {
@@ -118,19 +115,7 @@ export function EmbedTrackRow({
     <Container
       className={`border-border overflow-hidden rounded-lg border ${className ?? ''}`}
     >
-      {provider === 'HEARTHIS' && isCurrent ? (
-        <div
-          className="relative max-h-28 overflow-hidden contain-paint"
-          data-testid="hearthis-row-embed"
-        >
-          <HearthisEmbedSurface
-            embedUri={embedUri}
-            title={title}
-            autoplay={isPlaying}
-            compact
-          />
-        </div>
-      ) : embedOpen ? (
+      {embedOpen && provider !== 'HEARTHIS' ? (
         <iframe
           title={title}
           src={src}

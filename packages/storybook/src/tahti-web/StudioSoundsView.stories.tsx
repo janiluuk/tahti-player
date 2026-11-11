@@ -140,14 +140,12 @@ export const HearthisRowEmbed: Story = {
         name: 'Play Imported from hearthis.at on hearthis.at',
       }),
     );
-    const embed = await within(panel).findByTestId('hearthis-row-embed');
-    await expect(embed).toBeVisible();
-    await expect(embed.className).toMatch(/max-h-28/);
+    await expect(within(panel).queryByTestId('hearthis-row-embed')).toBeNull();
     await expect(
-      canvasElement.querySelector(
-        '[data-testid="connected-player-bar"] [data-testid="hearthis-row-embed"]',
-      ),
-    ).toBeNull();
+      within(panel).getByRole('button', {
+        name: 'Play Imported from hearthis.at on hearthis.at',
+      }),
+    ).toBeVisible();
   },
 };
 

@@ -102,6 +102,7 @@ export const PlayingArchive: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getAllByText('Midnight Drift')[0]).toBeVisible();
+    await expect(canvas.queryByTestId('hearthis-player-embed')).toBeNull();
 
     await userEvent.click(canvas.getByTestId('player-pause-button'));
     await expect(usePlayerStore.getState().status).toBe('paused');
@@ -247,9 +248,9 @@ const embedQueueItem: QueueItem = {
   addedAtIso: new Date().toISOString(),
 };
 
-/** An embed-only track: the compact hearthis.at widget shows above
- * the bar and is the transport, so the bar has no play/pause of its own
- * (no second, out-of-step play state). Next / previous stay. */
+/** An embed-only track replaces the player. The provider widget is the
+ * only player surface; skip and the queue stay because the widget has
+ * neither. */
 export const EmbedTrack: Story = {
   decorators: [
     withSeededPlayerBar({
@@ -260,19 +261,14 @@ export const EmbedTrack: Story = {
   ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const strip = canvas.getByTestId('hearthis-player-embed');
-    const frame = strip.querySelector('iframe');
+    const host = canvas.getByTestId('player-embed-host');
+    const frame = host.querySelector('iframe');
     await expect(frame).not.toBeNull();
-    await expect(frame!.getAttribute('height')).toBe('96');
     await expect(canvas.queryByTestId('player-play-button')).toBeNull();
     await expect(canvas.queryByTestId('player-pause-button')).toBeNull();
+    await expect(canvas.queryByTestId('now-playing-title')).toBeNull();
+    await expect(canvas.queryByTestId('player-embed-note')).toBeNull();
     await expect(canvas.getByTestId('player-next-button')).toBeVisible();
-    await expect(canvas.getByTestId('player-embed-note')).toHaveTextContent(
-      'Plays in the hearthis.at player above',
-    );
     await expect(canvas.queryByRole('slider', { name: /^Seek/ })).toBeNull();
-    await expect(canvas.getByTestId('now-playing-title')).toHaveTextContent(
-      "Don't Turn Away From Love LP - 04",
-    );
   },
 };

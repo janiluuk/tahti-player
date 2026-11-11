@@ -70,6 +70,7 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 
 ## Left
 
+- Listen reorder chrome (2026-11-11): `web.listenSection` loading/error, `web.listenLayout` remove/reset/add-back/empty, `web.removeWidgetDialog` title/detail. Finnish differs from English.
 - [ ] Notification **item** title/body from the API. Hardcoded `toast.*(English literal)` call sites cleared through batch 48; ConfirmDialogs through 49; PageEmpty / PageError titles and descriptions done through batch 57 (`web.empties.*`, `web.loadErrors.*`); `PageLoading` labels through batch 58 (`web.loading.*`, done in batch 61); `Tooltip content` literals done through batch 62 (dev tools stay English); keep sweeping leftover chrome labels.
 - [ ] Library Upload page leftovers beyond dialog/import-source/release-track picker (batch 41–43). History Stats chart axis labels stay chart-kept. Genre option labels in bulk edit stay English catalog names.
 - [ ] Studio and Admin page bodies beyond batches 41–50 (admin hub card descriptions per page stay English), channel schedule “Next up” stays schedule Kept, more Radio station chrome beyond up-next/shows empties.

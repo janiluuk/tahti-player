@@ -6845,7 +6845,24 @@
     },
     "removeWidgetDialog": {
       "cancel": "Cancel",
-      "remove": "Remove"
+      "remove": "Remove",
+      "title": "Remove {{label}}?",
+      "detail": "This takes {{label}} off your Listen dashboard. You can add it back later from Manage widgets."
+    },
+    "listenLayout": {
+      "remove": "Remove {{label}}",
+      "removeDetail": "This takes {{label}} off your Listen dashboard. Add it back from Add widget, or choose Reset widgets to restore every section. Only its place goes away — its settings stay.",
+      "reset": "Reset widgets",
+      "resetTitle": "Reset widgets?",
+      "resetDetail": "Restores every Listen section and the default order. Widget settings stay.",
+      "addBack": "Add {{label}} back",
+      "hiddenSections": "Hidden sections",
+      "emptyTitle": "Nothing on Listen",
+      "emptyDescription": "Add a section back from Add widget, or reset widgets to restore the full dashboard."
+    },
+    "listenSection": {
+      "loading": "Loading {{title}}…",
+      "couldNotLoad": "{{title}} couldn't load"
     },
     "releaseTracksToRotation": {
       "addFromYourReleases": "Add from your releases",

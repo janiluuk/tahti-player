@@ -1,3 +1,10 @@
+## 2026-11-11 — listen reorder can hide a section
+
+While Listen order mode is on, each section has a remove control. Confirm
+hides that section from the dashboard and keeps the widget settings. Add
+widget lists hidden sections; Reset widgets restores the default set and
+does not delete widget instances. Folded `listen-reorder-remove-widget.md`.
+
 ## 2026-11-11 — Go live page
 
 Studio → Broadcast → Go live is a stepper (show info, encoder, credentials, recording, destinations, green room) with a status chip and autosaving show info. Old `?tab=` links rewrite to `?step=`. Quiet navigation and the Schedule/Channel merges were already on master. Folded `go-live-redesign.md`.

@@ -6845,7 +6845,24 @@
     },
     "removeWidgetDialog": {
       "cancel": "Peruuta",
-      "remove": "Poista"
+      "remove": "Poista",
+      "title": "Poistetaanko {{label}}?",
+      "detail": "Tämä ottaa {{label}} pois Kuuntele-näkymästä. Voit lisätä sen myöhemmin takaisin kohdasta Hallitse widgettejä."
+    },
+    "listenLayout": {
+      "remove": "Poista {{label}}",
+      "removeDetail": "Tämä ottaa {{label}} pois Kuuntele-näkymästä. Lisää se takaisin Lisää widget -painikkeesta, tai palauta kaikki osiot Palauta widgetit -painikkeella. Vain paikka poistuu — asetukset säilyvät.",
+      "reset": "Palauta widgetit",
+      "resetTitle": "Palautetaanko widgetit?",
+      "resetDetail": "Palauttaa kaikki Kuuntele-osiot ja oletusjärjestyksen. Widgettien asetukset säilyvät.",
+      "addBack": "Lisää {{label}} takaisin",
+      "hiddenSections": "Piilotetut osiot",
+      "emptyTitle": "Kuuntele on tyhjä",
+      "emptyDescription": "Lisää osio takaisin Lisää widget -painikkeesta, tai palauta widgetit, niin koko näkymä palaa."
+    },
+    "listenSection": {
+      "loading": "Ladataan: {{title}}…",
+      "couldNotLoad": "{{title}} ei latautunut"
     },
     "releaseTracksToRotation": {
       "addFromYourReleases": "Lisää julkaisuistasi",

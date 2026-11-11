@@ -15,7 +15,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVerticalIcon } from 'lucide-react';
+import { GripVerticalIcon, XIcon } from 'lucide-react';
 import { FC, ReactNode } from 'react';
 
 import { cn } from '../../utils';
@@ -32,6 +32,9 @@ type SortableBlocksProps = {
   reordering: boolean;
   onReorder: (ids: string[]) => void;
   moveLabel?: (label: string) => string;
+  /** Shown on each block only while reordering. */
+  onRemove?: (id: string) => void;
+  removeLabel?: (label: string) => string;
   className?: string;
 };
 
@@ -47,7 +50,9 @@ const SortableBlockFrame: FC<{
   block: SortableBlock;
   reordering: boolean;
   moveLabel: (label: string) => string;
-}> = ({ block, reordering, moveLabel }) => {
+  onRemove?: (id: string) => void;
+  removeLabel: (label: string) => string;
+}> = ({ block, reordering, moveLabel, onRemove, removeLabel }) => {
   const {
     attributes,
     listeners,
@@ -89,6 +94,18 @@ const SortableBlockFrame: FC<{
             <GripVerticalIcon size={16} aria-hidden />
           </Button>
           <span className="truncate">{block.label}</span>
+          {onRemove ? (
+            <Button
+              type="button"
+              size="icon-sm"
+              variant="text"
+              className="ml-auto"
+              aria-label={removeLabel(block.label)}
+              onClick={() => onRemove(block.id)}
+            >
+              <XIcon size={16} aria-hidden />
+            </Button>
+          ) : null}
         </div>
       ) : null}
       {block.content}
@@ -105,6 +122,8 @@ export const SortableBlocks: FC<SortableBlocksProps> = ({
   reordering,
   onReorder,
   moveLabel = (label) => `Move ${label}`,
+  onRemove,
+  removeLabel = (label) => `Remove ${label}`,
   className,
 }) => {
   const sensors = useSensors(
@@ -142,6 +161,8 @@ export const SortableBlocks: FC<SortableBlocksProps> = ({
               block={block}
               reordering={reordering}
               moveLabel={moveLabel}
+              onRemove={onRemove}
+              removeLabel={removeLabel}
             />
           ))}
         </div>

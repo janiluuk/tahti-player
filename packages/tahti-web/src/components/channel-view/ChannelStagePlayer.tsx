@@ -18,6 +18,7 @@ import {
   resolveNowPlayingOverlayPreset,
 } from '../../content/nowPlayingOverlayPresets';
 import { prefetchHls } from '../../lib/hlsLoader';
+import { useLayoutStore } from '../../stores/layoutStore';
 import {
   playableFromQueueItem,
   usePlayerStore,
@@ -87,7 +88,9 @@ export function ChannelStagePlayer({
   const currentPlayable =
     currentId && trackIds?.has(currentId) ? activePlayable : null;
   const stageEmbed = currentPlayable?.embed ? currentPlayable : null;
-  useHearthisEmbedClaim(Boolean(stageEmbed));
+  const fullScreenOpen = useLayoutStore((s) => s.fullScreenPlayerOpen);
+  const stageShowsEmbed = Boolean(stageEmbed) && !fullScreenOpen;
+  useHearthisEmbedClaim(stageShowsEmbed);
   const { t } = useTranslation('web');
   const favorited = follow?.following ?? false;
   const favoriteLabel = signedIn
@@ -188,7 +191,7 @@ export function ChannelStagePlayer({
     </div>
   );
 
-  if (stageEmbed?.embed) {
+  if (stageEmbed?.embed && stageShowsEmbed) {
     return (
       <div
         className="bg-background-secondary relative flex flex-col gap-3 px-4 pt-10 pb-4 sm:px-6"

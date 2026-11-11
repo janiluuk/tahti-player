@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { useEffect } from 'react';
 
 import { SortableBlocks, type SortableBlock } from './SortableBlocks';
@@ -47,6 +47,29 @@ describe('SortableBlocks', () => {
       <SortableBlocks blocks={blocks} reordering={false} onReorder={vi.fn()} />,
     );
     expect(mounts).toHaveBeenCalledTimes(2);
+  });
+
+  it('offers remove only while reordering', () => {
+    const onRemove = vi.fn();
+    const { rerender } = render(
+      <SortableBlocks
+        blocks={blocks}
+        reordering={false}
+        onReorder={vi.fn()}
+        onRemove={onRemove}
+      />,
+    );
+    expect(screen.queryByRole('button', { name: 'Remove Radio' })).toBeNull();
+    rerender(
+      <SortableBlocks
+        blocks={blocks}
+        reordering
+        onReorder={vi.fn()}
+        onRemove={onRemove}
+      />,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Remove News' }));
+    expect(onRemove).toHaveBeenCalledWith('news');
   });
 
   it('uses a custom move label', () => {

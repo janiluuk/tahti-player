@@ -15,10 +15,6 @@ vi.mock('../lib/embedThumbnail', () => ({
   fetchEmbedThumbnail: vi.fn().mockResolvedValue(null),
 }));
 
-vi.mock('./HearthisEmbedHost', () => ({
-  useHearthisEmbedClaim: () => undefined,
-}));
-
 describe('EmbedTrackRow', () => {
   afterEach(() => {
     cleanup();

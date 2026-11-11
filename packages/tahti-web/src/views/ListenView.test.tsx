@@ -249,6 +249,7 @@ describe('ListenView block order', () => {
       installedTypeIds: [],
       savedBrowserStations: [],
       listenOrder: [],
+      hiddenListenBlockIds: [],
     });
   });
 
@@ -360,5 +361,30 @@ describe('ListenView block order', () => {
     expect(ids.indexOf('new-tracks')).toBeGreaterThan(
       ids.indexOf('recently-played'),
     );
+  });
+
+  it('removes a section while ordering and restores it with Reset widgets', async () => {
+    await renderListen();
+    fireEvent.click(screen.getByRole('button', { name: 'Order sections' }));
+    expect(
+      screen.queryByRole('button', { name: 'Remove New releases' }),
+    ).toBeTruthy();
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Remove New releases' }),
+    );
+    expect(screen.getByText(/Add it back from Add widget/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /^Remove$/ }));
+    expect(blockIds()).not.toContain('new-releases');
+    expect(useListenerWidgetsStore.getState().hiddenListenBlockIds).toContain(
+      'new-releases',
+    );
+
+    fireEvent.click(screen.getByTestId('listen-reset-widgets'));
+    const dialog = screen.getByRole('dialog');
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: 'Reset widgets' }),
+    );
+    expect(blockIds()).toContain('new-releases');
+    expect(useListenerWidgetsStore.getState().hiddenListenBlockIds).toEqual([]);
   });
 });

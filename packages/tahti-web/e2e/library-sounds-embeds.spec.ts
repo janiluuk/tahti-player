@@ -22,5 +22,7 @@ test('artist: Sounds → Embeds tab plays a hearthis embed', async ({ page }) =>
   });
   await expect(play).toBeVisible({ timeout: 15_000 });
   await play.click();
-  await expect(panel.getByTestId('hearthis-row-embed')).toBeVisible();
+  await expect(panel.getByTestId('hearthis-row-embed')).toHaveCount(0);
+  await expect(page.getByTestId('hearthis-player-embed')).toBeVisible();
+  await expect(page.getByTestId('now-playing-title')).toHaveCount(0);
 });

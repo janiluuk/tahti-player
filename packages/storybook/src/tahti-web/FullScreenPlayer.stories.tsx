@@ -93,12 +93,56 @@ export const ArchiveTrack: Story = {
     const heading = player.getByRole('heading', { name: 'Midnight Drift' });
     // The overlay fades in, so wait out the entrance animation.
     await waitFor(() => expect(heading).toBeVisible());
+    await expect(player.queryByTestId('full-screen-player-embed')).toBeNull();
     await userEvent.click(player.getByTestId('player-pause-button'));
     await expect(usePlayerStore.getState().status).toBe('paused');
     await userEvent.click(
       player.getByRole('button', { name: 'Minimize player' }),
     );
     await expect(useLayoutStore.getState().fullScreenPlayerOpen).toBe(false);
+  },
+};
+
+const embedQueueItem: QueueItem = {
+  id: 'sound:embed-1',
+  track: {
+    title: 'Imported from hearthis.at',
+    artists: [{ name: 'Yaniho', roles: ['performer'] }],
+    durationMs: 180000,
+    source: { provider: 'hearthis', id: 'yaniho/imported' },
+    streamCandidates: [],
+    artwork: {
+      items: [
+        { url: 'https://picsum.photos/seed/embed-fs/512', purpose: 'cover' },
+      ],
+    },
+  },
+  status: 'idle',
+  addedAtIso: new Date().toISOString(),
+};
+
+export const EmbedOnly: Story = {
+  decorators: [
+    withSeededFullScreenPlayer({
+      queue: [embedQueueItem],
+    }),
+  ],
+  play: async ({ canvasElement }) => {
+    const body = withinBody(canvasElement);
+    const player = within(
+      await body.findByRole('dialog', { name: 'Now playing, full screen' }),
+    );
+    await waitFor(() =>
+      expect(player.getByTestId('full-screen-player-embed')).toBeVisible(),
+    );
+    await expect(
+      player.queryByRole('heading', { name: 'Imported from hearthis.at' }),
+    ).toBeNull();
+    await expect(player.queryByTestId('player-pause-button')).toBeNull();
+    await expect(player.getByTestId('player-next-button')).toBeVisible();
+    await expect(
+      player.getByRole('button', { name: 'Minimize player' }),
+    ).toBeVisible();
   },
 };
 

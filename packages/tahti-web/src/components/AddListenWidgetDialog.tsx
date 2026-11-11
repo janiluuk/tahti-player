@@ -18,7 +18,10 @@ import {
 } from '../content/listenerWidgets';
 import { isHttpUrl } from '../lib/parseRss';
 import { useAuthStore } from '../stores/authStore';
-import { useListenerWidgetsStore } from '../stores/listenerWidgetsStore';
+import {
+  listenBlockLabel,
+  useListenerWidgetsStore,
+} from '../stores/listenerWidgetsStore';
 import { ListenAddonsPanel } from './ListenAddonsPanel';
 import { SourceServiceIcon } from './SourceServiceIcon';
 
@@ -76,6 +79,11 @@ export function AddListenWidgetDialog() {
   const { t } = useTranslation('web');
   const signedIn = useAuthStore((s) => Boolean(s.user));
   const addInstance = useListenerWidgetsStore((s) => s.addInstance);
+  const hiddenListenBlockIds = useListenerWidgetsStore(
+    (s) => s.hiddenListenBlockIds,
+  );
+  const showListenBlock = useListenerWidgetsStore((s) => s.showListenBlock);
+  const instances = useListenerWidgetsStore((s) => s.instances);
   const [isOpen, setIsOpen] = useState(false);
   const [view, setView] = useState<'services' | 'playlist' | 'addons'>(
     'services',
@@ -174,6 +182,32 @@ export function AddListenWidgetDialog() {
             <Dialog.Description>
               {t('addListenWidget.chooseService')}
             </Dialog.Description>
+            {hiddenListenBlockIds.length > 0 ? (
+              <section
+                className="mt-4 flex flex-col gap-2"
+                data-testid="add-listen-widget-hidden"
+              >
+                <h3 className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
+                  {t('listenLayout.hiddenSections')}
+                </h3>
+                <ul className="flex flex-col gap-1">
+                  {hiddenListenBlockIds.map((id) => {
+                    const name = listenBlockLabel(id, instances);
+                    return (
+                      <li key={id}>
+                        <Button
+                          variant="secondary"
+                          size="sm"
+                          onClick={() => showListenBlock(id)}
+                        >
+                          {t('listenLayout.addBack', { label: name })}
+                        </Button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            ) : null}
             <ul className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3">
               {LISTENER_WIDGET_TYPES.map((service) => (
                 <li key={service.id}>
