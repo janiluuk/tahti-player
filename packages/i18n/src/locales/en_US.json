@@ -1727,6 +1727,7 @@
       "coversBackfillDone_one": "Assigned a cover to 1 sound",
       "coversBackfillDone_other": "Assigned covers to {{count}} sounds",
       "coversBackfillNone": "Every sound already has a cover",
+      "coversBackfillSources": "{{provider}} from the provider, {{presets}} from artwork presets",
       "coversBackfillError": "Could not fill missing covers",
       "soundPinned": ", pinned",
       "soundPrivate": ", private",

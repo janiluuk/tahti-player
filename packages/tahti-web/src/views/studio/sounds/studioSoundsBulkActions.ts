@@ -314,10 +314,19 @@ export function createStudioSoundsBulkActions(deps: BulkDeps) {
         if (result.data.assigned === 0) {
           toast.message(i18n.t('web:library.coversBackfillNone'));
         } else {
+          const { fromProvider, fromPresets } = result.data;
           toast.success(
             i18n.t('web:library.coversBackfillDone', {
               count: result.data.assigned,
             }),
+            fromProvider !== undefined && fromPresets !== undefined
+              ? {
+                  description: i18n.t('web:library.coversBackfillSources', {
+                    provider: fromProvider,
+                    presets: fromPresets,
+                  }),
+                }
+              : undefined,
           );
         }
         deps.reload();

@@ -1727,6 +1727,7 @@
       "coversBackfillDone_one": "Kansi määritettiin 1 äänelle",
       "coversBackfillDone_other": "Kannet määritettiin {{count}} äänelle",
       "coversBackfillNone": "Jokaisella äänellä on jo kansi",
+      "coversBackfillSources": "{{provider}} palvelusta, {{presets}} valmiista kansikuvista",
       "coversBackfillError": "Puuttuvia kansia ei voitu täyttää",
       "soundPinned": ", kiinnitetty",
       "soundPrivate": ", yksityinen",
