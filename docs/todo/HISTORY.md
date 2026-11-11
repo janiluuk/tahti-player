@@ -1,3 +1,7 @@
+## 2026-11-11 — release track stems
+
+Studio release Advanced can upload, replace, play and remove vocals, drums, bass and other stems on each track. Listeners see and play them on the release, the profile tracklist and the linked track when the release is already visible. Mock API covers the flow. tahti-web 0.0.374. Folded `release-track-stems.md`.
+
 ## 2026-11-11 — edit a release from the public page
 
 The public release page shows `EditIconLink` when the signed-in user owns the release or is a board admin. Signed-out visitors and everyone else do not see it. The link opens the existing Studio release editor with edit mode on. The mock app resolves those release ids so the editor opens offline. Folded `release-edit-owner-admin.md`.

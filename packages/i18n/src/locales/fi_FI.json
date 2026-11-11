@@ -2078,6 +2078,8 @@
       "soundsSelected_other": "{{count}} ääntä valittu",
       "couldNotLoadMusic": "Musiikkia ei voitu ladata.",
       "releaseDeleted": "Julkaisu poistettu.",
+      "stemUploaded": "{{role}}-stem ladattu.",
+      "stemRemoved": "{{role}}-stem poistettu.",
       "releaseSaved": "Tallennettu.",
       "couldNotSaveRelease": "Julkaisua ei voitu tallentaa.",
       "couldNotPublishRelease": "Julkaisua ei voitu julkaista.",
@@ -3006,7 +3008,29 @@
       "publish": "Julkaise",
       "versionsEmptyTitle": "Tällä julkaisulla ei ole vielä kappaleita",
       "versionsEmptyDescription": "Lisää ensin kappaleet, sitten hallitse niiden versioita.",
-      "creditsEmpty": "Tällä kappaleella ei ole vielä krediittejä."
+      "creditsEmpty": "Tällä kappaleella ei ole vielä krediittejä.",
+      "stemsTitle": "Stemmit",
+      "stemsDescription": "Lataa laulu-, rumpu-, basso- tai muita stemmejä kullekin kappaleelle. Kuuntelijat voivat soittaa niitä julkaisulla.",
+      "stemsEmpty": "Tällä kappaleella ei ole vielä stemmejä.",
+      "stemsAdd": "Lisää stem",
+      "stemsReplace": "Korvaa",
+      "stemsRemove": "Poista stem",
+      "stemsRemoveRole": "Poista {{role}}-stem",
+      "stemsRoleLabel": "Stemmin rooli",
+      "stemsPickerTitle": "Ääni: {{role}}",
+      "stemsBrowse": "Valitse äänitiedosto",
+      "stemsNoTracksTitle": "Julkaisulla ei ole vielä kappaleita",
+      "stemsNoTracksDescription": "Lisää ensin kappaleet, sitten stemmit."
+    },
+    "releaseTrackStems": {
+      "heading": "Stemmit",
+      "playRole": "Soita {{role}}",
+      "listAria": "Stemmit kappaleelle {{title}}",
+      "stemOfTrack": "{{role}}"
+    },
+    "releaseStems": {
+      "heading": "Stemmit",
+      "playAria": "Soita {{role}}-stem kappaleelle {{title}}"
     },
     "adminContentReports": {
       "filterAll": "Kaikki",

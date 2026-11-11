@@ -3,6 +3,7 @@ import { DEMO_MP3, mockProfile } from '../mock';
 import { mockFixture } from '../mock-overrides';
 import { getMockSessionUser } from '../mock-session';
 import { apiErrorMeta, isForceMock } from '../mode';
+import { mockReleaseTrackStems } from '../release-track-stems';
 import type {
   FingerprintMatch,
   StudioRelease,
@@ -12,6 +13,16 @@ import type {
 import { requestJson } from './studio-request';
 
 // ── Releases ────────────────────────────────────────────────────────────────
+
+function withMockStems(
+  releaseId: string,
+  tracks: NonNullable<StudioRelease['tracks']>,
+): NonNullable<StudioRelease['tracks']> {
+  return tracks.map((track) => ({
+    ...track,
+    stems: mockReleaseTrackStems(releaseId, track.id),
+  }));
+}
 
 function studioReleaseFromProfile(
   username: string,
@@ -32,17 +43,20 @@ function studioReleaseFromProfile(
       smartLinkViewCount: 42,
       showPoweredByFooter: false,
       pinnedAt: release.pinnedAt ?? null,
-      tracks: (release.tracks ?? []).map((track, index) => ({
-        id: `${release.id}-track-${track.position ?? index + 1}`,
-        position: track.position ?? index + 1,
-        title: track.title,
-        soundId: track.soundId ?? null,
-        status: 'READY',
-        durationSec: track.durationSec ?? null,
-        sourceKey: track.playUrl
-          ? `releases/mock/${release.id}-${index}.wav`
-          : undefined,
-      })),
+      tracks: withMockStems(
+        release.id,
+        (release.tracks ?? []).map((track, index) => ({
+          id: `${release.id}-track-${track.position ?? index + 1}`,
+          position: track.position ?? index + 1,
+          title: track.title,
+          soundId: track.soundId ?? null,
+          status: 'READY' as const,
+          durationSec: track.durationSec ?? null,
+          sourceKey: track.playUrl
+            ? `releases/mock/${release.id}-${index}.wav`
+            : undefined,
+        })),
+      ),
       _count: { tracks: release.tracks?.length ?? 0 },
     }));
 }
@@ -62,7 +76,7 @@ function mockStudioReleaseRows(): StudioRelease[] {
       smartLinkSlug: 'after-hours',
       smartLinkViewCount: 214,
       showPoweredByFooter: false,
-      tracks: [
+      tracks: withMockStems('rel-mock-1', [
         {
           id: 't1',
           position: 1,
@@ -86,7 +100,7 @@ function mockStudioReleaseRows(): StudioRelease[] {
           sourceKey: 'releases/mock/t2.wav',
           fingerprintMatch: null,
         },
-      ],
+      ]),
       _count: { tracks: 2 },
     },
     {

@@ -57,6 +57,7 @@ import { ReleaseSmartLinksPanel } from './release-detail/ReleaseSmartLinksPanel'
 import { ReleaseSmartLinkStats } from './release-detail/ReleaseSmartLinkStats';
 import { ReleaseStatsPanel } from './release-detail/ReleaseStatsPanel';
 import { ReleaseTrackCreditsPanel } from './release-detail/ReleaseTrackCreditsPanel';
+import { ReleaseTrackStemsPanel } from './release-detail/ReleaseTrackStemsPanel';
 import { ReleaseTrackVersionsPanel } from './release-detail/ReleaseTrackVersionsPanel';
 import { useReleaseDetail } from './release-detail/useReleaseDetail';
 
@@ -676,6 +677,26 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                         <ReleaseTrackVersionsPanel
                           releaseId={id}
                           tracks={release.tracks ?? []}
+                        />
+                      }
+                      {
+                        <ReleaseTrackStemsPanel
+                          releaseId={id}
+                          tracks={release.tracks ?? []}
+                          onTrackStemsSaved={(trackId, stems) =>
+                            setRelease((current) =>
+                              current
+                                ? {
+                                    ...current,
+                                    tracks: current.tracks?.map((track) =>
+                                      track.id === trackId
+                                        ? { ...track, stems }
+                                        : track,
+                                    ),
+                                  }
+                                : current,
+                            )
+                          }
                         />
                       }
                       {

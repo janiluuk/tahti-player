@@ -236,11 +236,19 @@ export type PublicProfileRelease = {
   pinned?: boolean;
   pinnedAt?: string | null;
   tracks?: Array<{
+    id?: string;
     position: number;
     title: string;
     durationSec?: number | null;
     soundId?: string | null;
     playUrl?: string | null;
+    stems?: Array<{
+      id: string;
+      role: string;
+      durationSec?: number | null;
+      audioUrl?: string | null;
+      playUrl?: string | null;
+    }>;
   }>;
 };
 

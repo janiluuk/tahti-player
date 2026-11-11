@@ -150,6 +150,15 @@ export type FingerprintMatch = {
   artist?: string;
 };
 
+export type StudioReleaseTrackStem = {
+  id: string;
+  role: 'vocals' | 'drums' | 'bass' | 'other' | string;
+  status: string;
+  durationSec?: number | null;
+  audioUrl?: string | null;
+  createdAt?: string;
+};
+
 export type StudioReleaseTrack = {
   id: string;
   position: number;
@@ -160,6 +169,7 @@ export type StudioReleaseTrack = {
   sourceKey?: string | null;
   fingerprintMatch?: FingerprintMatch | null;
   credits?: TrackCredit[] | null;
+  stems?: StudioReleaseTrackStem[];
 };
 
 export const TRACK_CREDIT_ROLES = [

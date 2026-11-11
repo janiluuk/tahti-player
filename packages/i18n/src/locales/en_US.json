@@ -2078,6 +2078,8 @@
       "soundsSelected_other": "{{count}} sounds selected",
       "couldNotLoadMusic": "Could not load your music.",
       "releaseDeleted": "Release deleted.",
+      "stemUploaded": "{{role}} stem uploaded.",
+      "stemRemoved": "{{role}} stem removed.",
       "releaseSaved": "Saved.",
       "couldNotSaveRelease": "Could not save the release.",
       "couldNotPublishRelease": "Could not publish the release.",
@@ -3006,7 +3008,29 @@
       "publish": "Publish",
       "versionsEmptyTitle": "No tracks on this release yet",
       "versionsEmptyDescription": "Add tracks first, then manage their versions.",
-      "creditsEmpty": "No credits on this track yet."
+      "creditsEmpty": "No credits on this track yet.",
+      "stemsTitle": "Stems",
+      "stemsDescription": "Upload vocals, drums, bass or other stems for each track. Listeners can play them on the release.",
+      "stemsEmpty": "No stems on this track yet.",
+      "stemsAdd": "Add stem",
+      "stemsReplace": "Replace",
+      "stemsRemove": "Remove stem",
+      "stemsRemoveRole": "Remove {{role}} stem",
+      "stemsRoleLabel": "Stem role",
+      "stemsPickerTitle": "Audio for {{role}}",
+      "stemsBrowse": "Choose audio file",
+      "stemsNoTracksTitle": "No tracks on this release yet",
+      "stemsNoTracksDescription": "Add tracks first, then attach stems."
+    },
+    "releaseTrackStems": {
+      "heading": "Stems",
+      "playRole": "Play {{role}}",
+      "listAria": "Stems for {{title}}",
+      "stemOfTrack": "{{role}}"
+    },
+    "releaseStems": {
+      "heading": "Stems",
+      "playAria": "Play {{role}} stem for {{title}}"
     },
     "adminContentReports": {
       "filterAll": "All",

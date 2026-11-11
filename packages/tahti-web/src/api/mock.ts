@@ -22,6 +22,7 @@ import { mockChatStoreMessages } from './mock-chat-store';
 import { isMockChannelLive } from './mock-live-session';
 import { mockFixture } from './mock-overrides';
 import { getMockFreeSubscriptionsEnabled } from './mock-profile-preferences';
+import { mockReleaseTrackStems } from './release-track-stems';
 import type {
   Announcement,
   BoardResolution,
@@ -848,9 +849,14 @@ function buildMockTrackDetail(id: string): PublicTrackDetail | null {
             purchaseTierPriceOptional: false,
           }
         : {};
+  const stems =
+    mockProfile(slug)
+      .releases.flatMap((release) => release.tracks ?? [])
+      .find((track) => track.soundId === id)?.stems ?? [];
   return {
     id: item.id,
     title: item.title,
+    stems,
     artistName: item.artistName ?? channel.user.displayName,
     channelSlug: slug,
     channel: {
@@ -975,27 +981,42 @@ function buildMockProfile(username: string): PublicProfile {
   const releaseSlugFor = (i: number) => `${username}-release-${i + 1}`;
   const favoritesSlug = mockFavoritesSlug(username);
 
-  const releases = content.releases.map((rel, i) => ({
-    id: `${username}-rel-${i + 1}`,
-    title: rel.title,
-    type: rel.type,
-    artworkUrl: content.releaseArtwork?.[i] ?? null,
-    smartLinkSlug: releaseSlugFor(i),
-    releaseDate: [
-      '2026-04-01T00:00:00.000Z',
-      '2026-01-15T00:00:00.000Z',
-      '2025-10-03T00:00:00.000Z',
-    ][i % 3],
-    genre: GENRE_TAGS[content.genres[0] ?? ''] ?? content.genres[0] ?? null,
-    description: rel.description,
-    tracks: archive.slice(i * 2, i * 2 + 2).map((a, j) => ({
-      position: j + 1,
-      title: a.title,
-      durationSec: a.durationSec,
-      soundId: a.id,
-      playUrl: a.audioUrl,
-    })),
-  }));
+  const releases = content.releases.map((rel, i) => {
+    const id = `${username}-rel-${i + 1}`;
+    return {
+      id,
+      title: rel.title,
+      type: rel.type,
+      artworkUrl: content.releaseArtwork?.[i] ?? null,
+      smartLinkSlug: releaseSlugFor(i),
+      releaseDate: [
+        '2026-04-01T00:00:00.000Z',
+        '2026-01-15T00:00:00.000Z',
+        '2025-10-03T00:00:00.000Z',
+      ][i % 3],
+      genre: GENRE_TAGS[content.genres[0] ?? ''] ?? content.genres[0] ?? null,
+      description: rel.description,
+      tracks: archive.slice(i * 2, i * 2 + 2).map((a, j) => {
+        const position = j + 1;
+        const trackId = `${id}-track-${position}`;
+        return {
+          id: trackId,
+          position,
+          title: a.title,
+          durationSec: a.durationSec,
+          soundId: a.id,
+          playUrl: a.audioUrl,
+          stems: mockReleaseTrackStems(id, trackId).map((stem) => ({
+            id: stem.id,
+            role: stem.role,
+            durationSec: stem.durationSec,
+            audioUrl: stem.audioUrl,
+            playUrl: stem.audioUrl,
+          })),
+        };
+      }),
+    };
+  });
 
   return {
     artist: {
@@ -1168,14 +1189,24 @@ function buildMockCollection(
 }
 
 function buildMockSmartLink(smartLinkSlug: string): SmartLinkView {
+  const studioSlugMatch =
+    smartLinkSlug === 'after-hours'
+      ? { releaseId: 'rel-mock-1', trackIds: ['t1', 't2'] as const }
+      : smartLinkSlug === 'neon-tide'
+        ? { releaseId: 'rel-mock-2', trackIds: ['t3'] as const }
+        : smartLinkSlug === 'studio-sessions-vol-1'
+          ? { releaseId: 'rel-mock-3', trackIds: ['t4'] as const }
+          : null;
   const username =
-    smartLinkSlug.match(/^(.*)-release-\d+$/)?.[1] ?? 'northern-lights';
+    smartLinkSlug.match(/^(.*)-release-\d+$/)?.[1] ??
+    (studioSlugMatch ? 'demo' : 'northern-lights');
   const profile = mockProfile(username);
   const matched = profile.releases.find(
     (r) => r.smartLinkSlug === smartLinkSlug,
   );
   const release = matched ?? {
     ...profile.releases[0]!,
+    id: studioSlugMatch?.releaseId ?? profile.releases[0]!.id,
     title: smartLinkSlug
       .split('-')
       .filter(Boolean)
@@ -1192,16 +1223,32 @@ function buildMockSmartLink(smartLinkSlug: string): SmartLinkView {
       genre: release.genre,
       description: release.description,
       smartLinkSlug,
-      tracks: (release.tracks ?? []).map((t) => ({
-        id: `${release.id}-track-${t.position}`,
-        soundId: t.soundId ?? null,
-        title: t.title,
-        position: t.position,
-        durationSec: t.durationSec ?? null,
-        isrc: null,
-        audioUrl: t.playUrl ?? null,
-        gate: null,
-      })),
+      tracks: (release.tracks ?? []).map((t, index) => {
+        const trackId =
+          studioSlugMatch?.trackIds[index] ??
+          `${release.id}-track-${t.position}`;
+        const stemReleaseId = studioSlugMatch?.releaseId ?? release.id;
+        const stems = mockReleaseTrackStems(stemReleaseId, trackId).map(
+          (stem) => ({
+            id: stem.id,
+            role: stem.role,
+            durationSec: stem.durationSec,
+            audioUrl: stem.audioUrl,
+            playUrl: stem.audioUrl,
+          }),
+        );
+        return {
+          id: trackId,
+          soundId: t.soundId ?? null,
+          title: t.title,
+          position: t.position,
+          durationSec: t.durationSec ?? null,
+          isrc: null,
+          audioUrl: t.playUrl ?? null,
+          gate: null,
+          stems,
+        };
+      }),
     },
     artist: {
       username: profile.artist.username,
