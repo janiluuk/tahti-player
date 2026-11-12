@@ -18,13 +18,13 @@ test('admin: Inbox chips switch queues and keep the URL in step', async ({
 }) => {
   const errors = collectPageErrors(page);
   await open(page, '/admin/moderation/beta');
-  const queues = page.getByRole('tablist', { name: 'Inbox queues' });
+  const queues = page.getByRole('radiogroup', { name: 'Inbox queues' });
   await expect(
-    queues.getByRole('tab', { name: /^Beta applications/ }),
-  ).toHaveAttribute('aria-selected', 'true');
-  await queues.getByRole('tab', { name: /^Support/ }).click();
+    queues.getByRole('radio', { name: /^Beta applications/ }),
+  ).toHaveAttribute('aria-checked', 'true');
+  await queues.getByRole('radio', { name: /^Support/ }).click();
   await expect(page).toHaveURL(/\/admin\/moderation\/support$/);
-  await queues.getByRole('tab', { name: 'Themes' }).click();
+  await queues.getByRole('radio', { name: 'Themes' }).click();
   await expect(page).toHaveURL(/\/admin\/moderation\/themes$/);
   expect(errors).toEqual([]);
 });

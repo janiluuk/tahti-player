@@ -6702,3 +6702,7 @@ Ambient track rows keep the cover, title and waveform on one line at every densi
 ## 2026-11-12 — One embed widget across routes (0.0.376)
 
 A stage-hosted embed stays the same widget when you leave the channel, open the full-screen player, or drop back to the player bar. The iframe is not mounted again, so playback does not restart.
+
+## 2026-11-12 — Inbox queue chips (0.0.377)
+
+Admin Inbox queues are filter chips. Support stays idle until another queue is picked; that queue then shows as selected. Counts still appear on Support and Beta when the dashboard has them.

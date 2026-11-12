@@ -1,3 +1,11 @@
+## 2026-11-12 — inbox chips, Finnish add-on rows, SPA audit
+
+Admin Inbox queues are filter chips. The Support chip stays idle until the board picks another queue. tahti-web 0.0.377. Folded `inbox-chips.md`.
+
+The Help add-ons table already has a Finnish row for every add-on (`pluginHelpCatalog.fi.ts`). For artists has no separate table. Folded `help-finnish-addon-rows.md`.
+
+SPA audit, source only, no bundle change. Listen (`routes-listen.tsx`) is in the first load. The other route views are dynamic imports in `router-lazy-views.ts`. The largest view modules by source are Studio release detail, the radio schedule, the playlist editor, Governance, What is it, and the channel page. Track tables, the queue panel, the catalog table and the log viewer virtualize. Listen and channel track rows do not, so a long phone list paints every row. Discover cards use `content-visibility`. Folded `spa-performance-bundle-chunks.md`, `spa-performance-lists-first-paint.md`, and `performance-audit-spa-2026-11-04.md`.
+
 ## 2026-11-12 — one embed widget across routes
 
 A stage-hosted embed keeps a single iframe when the listener leaves the channel, opens the full-screen player, or returns to the player bar, so playback does not restart. tahti-web 0.0.376. Folded `stage-embed-across-routes.md`.

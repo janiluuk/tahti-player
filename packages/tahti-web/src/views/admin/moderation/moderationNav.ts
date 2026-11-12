@@ -30,6 +30,11 @@ export const ADMIN_MODERATION_TABS: AdminModerationTabItem[] = [
 
 export const DEFAULT_ADMIN_MODERATION_TAB: AdminModerationTabId = 'support';
 
+/** The default queue stays an idle chip until the board picks another queue. */
+export function inboxChipSelected(active: AdminModerationTabId): string {
+  return active === DEFAULT_ADMIN_MODERATION_TAB ? '' : active;
+}
+
 export function isAdminModerationTabId(
   value: string | undefined,
 ): value is AdminModerationTabId {

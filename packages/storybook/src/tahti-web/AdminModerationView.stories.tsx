@@ -23,20 +23,26 @@ function renderTab(tab?: AdminModerationTabId) {
   );
 }
 
-/** Asserts the page heading and that `label` is the selected queue chip. */
-async function expectQueue(canvasElement: HTMLElement, label: string) {
+/** Asserts the page heading and the queue chip for `label`. The default Support chip stays idle. */
+async function expectQueue(
+  canvasElement: HTMLElement,
+  label: string,
+  pressed: boolean,
+) {
   const canvas = within(canvasElement);
   await waitFor(() =>
     expect(
       canvas.getByRole('heading', { level: 1, name: 'Inbox' }),
     ).toBeVisible(),
   );
-  const queues = within(canvas.getByRole('tablist', { name: 'Inbox queues' }));
-  await expect(queues.getAllByRole('tab')).toHaveLength(7);
+  const queues = within(
+    canvas.getByRole('radiogroup', { name: 'Inbox queues' }),
+  );
+  await expect(queues.getAllByRole('radio')).toHaveLength(7);
   await waitFor(() =>
     expect(
-      queues.getByRole('tab', { name: new RegExp(`^${label}`) }),
-    ).toHaveAttribute('aria-selected', 'true'),
+      queues.getByRole('radio', { name: new RegExp(`^${label}`) }),
+    ).toHaveAttribute('aria-checked', pressed ? 'true' : 'false'),
   );
   return canvas;
 }
@@ -45,7 +51,7 @@ async function expectQueue(canvasElement: HTMLElement, label: string) {
 export const Default: Story = {
   render: renderTab(),
   play: async ({ canvasElement }) => {
-    const canvas = await expectQueue(canvasElement, 'Support');
+    const canvas = await expectQueue(canvasElement, 'Support', false);
     const ticket = await canvas.findByRole('heading', {
       level: 2,
       name: 'Cannot connect OBS to multistream target',
@@ -64,7 +70,7 @@ export const Default: Story = {
 export const BetaApplicationsTab: Story = {
   render: renderTab('beta'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectQueue(canvasElement, 'Beta applications');
+    const canvas = await expectQueue(canvasElement, 'Beta applications', true);
     await waitFor(() =>
       expect(canvas.getByText('Kaiku Collective')).toBeVisible(),
     );
@@ -85,7 +91,7 @@ export const BetaApplicationsTab: Story = {
 export const RadioSubmissionsTab: Story = {
   render: renderTab('radio-submissions'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectQueue(canvasElement, 'Radio submissions');
+    const canvas = await expectQueue(canvasElement, 'Radio submissions', true);
     await waitFor(() =>
       expect(canvas.getByRole('heading', { name: 'Auditing' })).toBeVisible(),
     );
@@ -104,7 +110,7 @@ export const RadioSubmissionsTab: Story = {
 export const ContentReportsTab: Story = {
   render: renderTab('content-reports'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectQueue(canvasElement, 'Content reports');
+    const canvas = await expectQueue(canvasElement, 'Content reports', true);
     await waitFor(() =>
       expect(
         canvas.getByRole('link', {
@@ -126,7 +132,7 @@ export const ContentReportsTab: Story = {
 export const FeatureRequestsTab: Story = {
   render: renderTab('feature-requests'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectQueue(canvasElement, 'Feature requests');
+    const canvas = await expectQueue(canvasElement, 'Feature requests', true);
     await waitFor(() =>
       expect(
         canvas.getByText('Crossfade between archive tracks'),
@@ -145,7 +151,7 @@ export const FeatureRequestsTab: Story = {
 export const MissedShowsTab: Story = {
   render: renderTab('missed-shows'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectQueue(canvasElement, 'Missed shows');
+    const canvas = await expectQueue(canvasElement, 'Missed shows', true);
     await waitFor(() =>
       expect(canvas.getByRole('heading', { name: 'Queue · 2' })).toBeVisible(),
     );
@@ -156,7 +162,7 @@ export const MissedShowsTab: Story = {
 export const ThemesTab: Story = {
   render: renderTab('themes'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectQueue(canvasElement, 'Themes');
+    const canvas = await expectQueue(canvasElement, 'Themes', true);
     await waitFor(() =>
       expect(
         canvas.getByRole('heading', { name: 'Community themes' }),
