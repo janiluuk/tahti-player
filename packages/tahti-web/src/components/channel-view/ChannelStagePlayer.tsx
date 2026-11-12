@@ -26,6 +26,7 @@ import {
 import { EmbedSurface } from '../EmbedSurface';
 import { useHearthisEmbedClaim } from '../HearthisEmbedHost';
 import { NowPlayingOverlay } from '../NowPlayingOverlay';
+import { EmbedSlot } from '../PlayingEmbedDock';
 import { Eyebrow } from '../tahti/Eyebrow';
 import { WaveformSeekbar } from '../tahti/WaveformSeekbar';
 import { ChannelAirBadge, channelAirState } from './ChannelAirBadge';
@@ -79,8 +80,6 @@ export function ChannelStagePlayer({
   const seekTo = usePlayerStore((s) => s.seekTo);
   const setPlaybackStatus = usePlayerStore((s) => s.setStatus);
   const queue = usePlayerStore((s) => s.queue);
-  const restoredPending = usePlayerStore((s) => s.restoredPending);
-  const reloadNonce = usePlayerStore((s) => s.reloadNonce);
   const activeItem = currentId
     ? queue.find((item) => item.id === currentId)
     : undefined;
@@ -205,12 +204,10 @@ export function ChannelStagePlayer({
             {stageEmbed.artist}
           </p>
         </div>
-        <EmbedSurface
-          provider={stageEmbed.embed.provider}
-          embedUri={stageEmbed.embed.embedUri}
-          title={stageEmbed.title}
-          autoplay={restoredPending !== stageEmbed.id}
-          mountKey={reloadNonce}
+        <EmbedSlot
+          id="channel-stage"
+          priority={20}
+          testId="channel-stage-embed-frame"
         />
       </div>
     );

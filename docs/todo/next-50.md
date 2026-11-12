@@ -43,6 +43,5 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 42. [ ] [Board track-edit product call](board-track-edit-product-call.md) (`ui-requests-2026-11-03.md`).
 43. [ ] [Embed track API fix](embed-track-api-fix.md) (`ui-requests-2026-11-03.md`).
 45. [ ] [Embed downloads product call](embed-downloads-product-call.md) (`listen-artist-channel-cleanup.md`).
-46. [ ] [Keep a stage embed across routes](stage-embed-across-routes.md) (`listen-artist-channel-cleanup.md`).
 48. [ ] [Artist groups org deploy and e2e](artist-groups-org-e2e.md) (`artist-groups.md`).
 49. [ ] [Fans Chat live verify](fans-chat-live-verify.md) (`studio-fans-chat.md`).

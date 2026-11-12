@@ -8,6 +8,8 @@ import {
   type ReactNode,
 } from 'react';
 
+import { PlayingEmbedDock } from './PlayingEmbedDock';
+
 type HearthisEmbedHostContextValue = {
   claimed: boolean;
   claim: () => () => void;
@@ -33,6 +35,7 @@ export function HearthisEmbedHostProvider({
   return (
     <HearthisEmbedHostContext.Provider value={value}>
       {children}
+      <PlayingEmbedDock />
     </HearthisEmbedHostContext.Provider>
   );
 }
