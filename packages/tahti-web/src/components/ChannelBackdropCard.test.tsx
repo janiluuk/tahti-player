@@ -178,7 +178,27 @@ describe('ChannelBackdropCard backdrop', () => {
     expect(edit?.contains(showMore!)).toBe(false);
   });
 
-  // KNOWN GAP: the WebGL gallery styles offered in the designer's "Gallery
+  it('puts links under the bio without repeating the channel name', () => {
+    const el = render({
+      bio: 'Late night sets.',
+      linksVisible: true,
+      links: [
+        { label: 'Bandcamp', url: 'https://bandcamp.com/night' },
+        { label: 'Artist', url: 'javascript:alert(1)' },
+        { label: 'Hidden', url: 'https://example.com/hidden', hidden: true },
+      ],
+    });
+    const row = el.querySelector('[data-testid="channel-backdrop-links"]');
+    expect(row?.textContent).toBe('Bandcamp');
+    expect(
+      el.querySelectorAll('[data-testid="channel-backdrop-card-name"]'),
+    ).toHaveLength(1);
+    expect(row?.querySelector('a')?.getAttribute('href')).toBe(
+      'https://bandcamp.com/night',
+    );
+  });
+
+  // KNOWN GAP: the WebGL gallery styles offered in the designer's "Gallery"
   // style" select have no renderer anywhere; only STATIC_SLIDESHOW draws.
   it.fails.each([
     'TWISTED_WAVE_GLSL',

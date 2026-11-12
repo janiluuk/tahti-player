@@ -16,9 +16,10 @@ paragraphs and links).
    Profile (or Channel settings); hidden metrics are not sent by the public
    API at all, not just hidden in CSS. Default: followers + total plays on,
    the rest off (product call — confirm with the user).
-3. **About section placed neatly**: bio paragraphs keep line breaks, links are
-   clickable, sits next to/under the metrics rather than floating; check 390,
-   768 and 1366 px (with queue panel open).
+3. **About section placed neatly**: shipped 0.0.378. The bio keeps line
+   breaks and the channel links sit under it. The separate Links card is
+   gone, and the row does not repeat the channel name. Metrics beside it
+   are still open.
 4. **Events**: list the artist's **upcoming and past** events — including
    events where the artist is a **participant / lineup member**, not only the
    events they created. Upcoming soonest first, past newest first, past

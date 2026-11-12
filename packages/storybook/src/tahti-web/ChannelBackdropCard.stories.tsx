@@ -34,6 +34,17 @@ export const Gradient: Story = {
   },
 };
 
+export const WithLinks: Story = {
+  args: {
+    headerStyle: 'GRADIENT',
+    linksVisible: true,
+    links: [
+      { label: 'Bandcamp', url: 'https://bandcamp.com/northern-lights' },
+      { label: 'Site', url: 'https://northernlights.example' },
+    ],
+  },
+};
+
 export const Solid: Story = {
   args: {
     headerStyle: 'SOLID',

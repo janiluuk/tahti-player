@@ -45,6 +45,8 @@ export type ChannelHeroBlockProps = {
    * 'avatar' items by ChannelView, not read from `layout` here directly. */
   avatarVisible: boolean;
   bioVisible: boolean;
+  links?: Array<{ label: string; url: string; hidden?: boolean }> | null;
+  linksVisible: boolean;
   subscribeVisible: boolean;
   /** While editing: features that are off stay in place, faded. */
   showOffFeatures?: boolean;
@@ -80,6 +82,8 @@ export function ChannelHeroBlock({
   onSelectNavTab,
   avatarVisible,
   bioVisible,
+  links,
+  linksVisible,
   subscribeVisible,
   showOffFeatures = false,
   stagePlayer,
@@ -122,6 +126,8 @@ export function ChannelHeroBlock({
         avatarUrl={channel.user.avatarUrl}
         avatarPosterUrl={avatarPoster(channel.user)}
         bio={channel.user.bio}
+        links={links}
+        linksVisible={linksVisible}
         avatarVisible={avatarVisible}
         bioVisible={bioVisible}
         subscribeVisible={subscribeVisible}

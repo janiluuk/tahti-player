@@ -14,6 +14,7 @@ import {
   isValidHeaderBackdropUrl,
   resolvePublicVisualizerPreset,
 } from '../api/channel-design';
+import { isSafeChannelLinkUrl } from '../lib/safeHref';
 import { ChannelSlideshowBackdrop } from './ChannelSlideshowBackdrop';
 import { ChannelVisualizer, type VisualColorScheme } from './ChannelVisualizer';
 import { TahtiMemberBadge } from './TahtiMemberBadge';
@@ -42,6 +43,8 @@ export type ChannelBackdropCardProps = {
   /** Still first frame of an animated `avatarUrl`. */
   avatarPosterUrl?: string | null;
   bio?: string | null;
+  links?: Array<{ label: string; url: string; hidden?: boolean }> | null;
+  linksVisible?: boolean;
   /** Backdrop toggles (Channel Designer → Backdrop settings) — bio/CTA
    * folded into the backdrop instead of being separate draggable page
    * blocks; avatar was always shown before this toggle existed, so it
@@ -117,6 +120,20 @@ const DEFAULT_NAV_ITEMS: ChannelBackdropNavItem[] = [
   { id: 'about', label: 'About' },
 ];
 
+function shownBackdropLinks(
+  links:
+    Array<{ label: string; url: string; hidden?: boolean }> | null | undefined,
+  showHidden: boolean,
+) {
+  return (links ?? []).filter(
+    (link) =>
+      link.label.trim() &&
+      link.url.trim() &&
+      isSafeChannelLinkUrl(link.url) &&
+      (showHidden || !link.hidden),
+  );
+}
+
 /** The channel page's identity + backdrop + stage, merged into one hero
  * card — shared by ChannelDesigner's preview and ChannelView's real page so
  * the two can no longer drift apart the way the old separate mockup did.
@@ -134,6 +151,8 @@ export function ChannelBackdropCard({
   avatarUrl,
   avatarPosterUrl,
   bio,
+  links,
+  linksVisible = false,
   avatarVisible = true,
   bioVisible = true,
   subscribeVisible = false,
@@ -178,6 +197,7 @@ export function ChannelBackdropCard({
   className,
 }: ChannelBackdropCardProps) {
   const { t } = useTranslation('web');
+  const backdropLinks = shownBackdropLinks(links, showOffFeatures);
   const NameTag = nameAsHeading ? 'h1' : 'div';
   const showVideo =
     showVideoOverride ??
@@ -369,6 +389,30 @@ export function ChannelBackdropCard({
               >
                 {bio}
               </ClampedText>
+            ) : null}
+            {(linksVisible || showOffFeatures) && backdropLinks.length > 0 ? (
+              <div
+                data-testid="channel-backdrop-links"
+                className={`mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm ${
+                  linksVisible ? '' : 'opacity-40'
+                }`}
+              >
+                {backdropLinks.map((link) => (
+                  <a
+                    key={`${link.label}-${link.url}`}
+                    href={link.url}
+                    target={
+                      link.url.startsWith('mailto:') ? undefined : '_blank'
+                    }
+                    rel="noopener noreferrer"
+                    className={
+                      link.hidden ? 'underline opacity-50' : 'underline'
+                    }
+                  >
+                    {link.label}
+                  </a>
+                ))}
+              </div>
             ) : null}
           </div>
           {identityActions ? (

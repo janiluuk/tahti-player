@@ -114,6 +114,8 @@ export function ChannelPagePreview({
         channelSlug={channelSlug}
         avatarUrl={avatarUrl}
         bio={bio}
+        links={visual.channelLinks}
+        linksVisible={layout?.find((i) => i.type === 'links')?.visible ?? false}
         avatarVisible={
           layout?.find((i) => i.type === 'avatar')?.visible ?? true
         }

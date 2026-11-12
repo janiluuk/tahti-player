@@ -36,7 +36,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [channel-metrics-followers.md](channel-metrics-followers.md) | Show followers and following on the channel, each with a public toggle |
 | open    | [channel-metrics-plays.md](channel-metrics-plays.md) | Show plays today, yesterday, and total, each with a public toggle |
 | open    | [channel-metrics-downloads.md](channel-metrics-downloads.md) | Show downloads on the channel with a public toggle |
-| open    | [channel-about-tidy.md](channel-about-tidy.md) | Tidy the About block on the channel page |
 | open    | [channel-upcoming-events.md](channel-upcoming-events.md) | List upcoming events on the channel, including ones the artist plays at |
 | open    | [channel-past-events.md](channel-past-events.md) | List past events on the channel |
 | open    | [finish-wip-2026-11-04-branches.md](finish-wip-2026-11-04-branches.md) | Finish or close the unfinished 2026-11-04 branches and draft PRs |
@@ -51,10 +50,8 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [studio-profile-forms.md](studio-profile-forms.md) | Edit profile forms from Studio |
 | open    | [broadcast-agenda.md](broadcast-agenda.md) | Give Broadcast an agenda |
 | open    | [studio-overview-merge.md](studio-overview-merge.md) | Merge the extra Studio overview into the simplified nav |
-| open    | [finnish-web-actions.md](finnish-web-actions.md) | Translate the remaining web.actions strings |
 | open    | [finnish-api-notifications.md](finnish-api-notifications.md) | Translate API notification bodies |
 | open    | [finnish-upload-leftovers.md](finnish-upload-leftovers.md) | Translate the remaining Upload strings |
-| open    | [finnish-seo-page-tour.md](finnish-seo-page-tour.md) | Translate SEO strings and the page tour |
 | open    | [board-track-edit-product-call.md](board-track-edit-product-call.md) | Decide how board members edit a track |
 | open    | [embed-track-api-fix.md](embed-track-api-fix.md) | Fix the embed track API in tahti-org |
 | open    | [embed-downloads-product-call.md](embed-downloads-product-call.md) | Decide whether an embed offers downloads |
@@ -70,7 +67,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; left: native review and which pricing claims to restore |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |
-| open    | [channel-page-metrics-about-events.md](channel-page-metrics-about-events.md) | Channel page: followers/following/plays today/yesterday/total/downloads with per-metric public toggle, tidy About, upcoming + past events incl. ones the artist plays at |
+| open    | [channel-page-metrics-about-events.md](channel-page-metrics-about-events.md) | Channel page metrics and events; About is the bio plus links under the name (0.0.378) |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: player slices 11–30 shipped; org API rows remain |
 | partial | [server-peaks-in-track-lists.md](server-peaks-in-track-lists.md) | Server waveform peaks on every track list (search, Selects, New to you, profile fallback); left: studio collections, radio/feed |
@@ -79,7 +76,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; Inbox queue chips shipped (0.0.377); left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Overview merge, docs rewrite |
 | open    | [library-for-listeners.md](library-for-listeners.md) | Library is for listeners (saved items, desktop library browse); move Sounds, Collections, Upload, Recordings and Smart links to Studio and change the nav |
-| partial | [finnish-localization.md](finnish-localization.md) | Settings → Language plus chrome/player/Listen/Discover/Library, batches 31–63 (ui library labels, tooltips, state labels, leftover JSX text); left: more web.actions sites, API notification bodies, Upload leftovers, SEO/pageTour |
+| partial | [finnish-localization.md](finnish-localization.md) | Settings → Language plus chrome/player/Listen/Discover/Library; web.actions, SEO and the page tour have Finnish; left: API notification bodies and Upload leftovers |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks. Track page like and recently played search shipped. |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; stage embed stays one widget (0.0.376); left: embed downloads (product call) |
 | open    | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Plan: page anatomy rules (one header, one primary action, overflow, one toolbar), Settings account-only in 7 items, duplicate surfaces removed; 9 phases, absorbs navigation-simplification slices 1-3, 7, 9, 10 |

@@ -41,6 +41,7 @@ const meta: Meta<typeof ChannelHeroBlock> = {
     onSelectNavTab: fn(),
     avatarVisible: true,
     bioVisible: true,
+    linksVisible: false,
     subscribeVisible: true,
     stagePlayer: (
       <div className="p-6 text-sm text-white" data-testid="story-stage">
