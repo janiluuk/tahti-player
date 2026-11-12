@@ -62,7 +62,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [board-track-edit-product-call.md](board-track-edit-product-call.md) | Decide how board members edit a track |
 | open    | [embed-track-api-fix.md](embed-track-api-fix.md) | Fix the embed track API in tahti-org |
 | open    | [embed-downloads-product-call.md](embed-downloads-product-call.md) | Decide whether an embed offers downloads |
-| open    | [stage-embed-across-routes.md](stage-embed-across-routes.md) | Keep a stage-hosted embed playing when the route changes |
 | open    | [artist-groups-org-e2e.md](artist-groups-org-e2e.md) | Ship the org side of artist groups and cover it with e2e |
 | open    | [fans-chat-live-verify.md](fans-chat-live-verify.md) | Verify Fans Chat on the hub after merge |
 
@@ -87,7 +86,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [library-for-listeners.md](library-for-listeners.md) | Library is for listeners (saved items, desktop library browse); move Sounds, Collections, Upload, Recordings and Smart links to Studio and change the nav |
 | partial | [finnish-localization.md](finnish-localization.md) | Settings → Language plus chrome/player/Listen/Discover/Library, batches 31–63 (ui library labels, tooltips, state labels, leftover JSX text); left: more web.actions sites, API notification bodies, Upload leftovers, SEO/pageTour |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks. Track page like and recently played search shipped. |
-| partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; left: embed downloads (product call) and keeping a stage-hosted embed across routes |
+| partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; stage embed stays one widget (0.0.376); left: embed downloads (product call) |
 | open    | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Plan: page anatomy rules (one header, one primary action, overflow, one toolbar), Settings account-only in 7 items, duplicate surfaces removed; 9 phases, absorbs navigation-simplification slices 1-3, 7, 9, 10 |
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |

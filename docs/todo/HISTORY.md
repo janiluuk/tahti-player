@@ -1,3 +1,7 @@
+## 2026-11-12 — one embed widget across routes
+
+A stage-hosted embed keeps a single iframe when the listener leaves the channel, opens the full-screen player, or returns to the player bar, so playback does not restart. tahti-web 0.0.376. Folded `stage-embed-across-routes.md`.
+
 ## 2026-11-11 — phone track rows, and slices already on master
 
 Ambient track rows stay on one line at every density, with larger phone covers (128 / 112 / 80 px). tahti-web 0.0.375. Folded `ambient-track-row-phone-alignment.md`, `ambient-track-row-larger-thumb.md`, and `ambient-track-list-mobile.md` (phone list default was already shipped; listeners already use the shared row).

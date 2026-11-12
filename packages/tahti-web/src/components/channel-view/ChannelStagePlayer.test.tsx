@@ -9,6 +9,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { PublicChannel, TahtiPlayable } from '../../api/types';
 import { usePlayerStore } from '../../stores/playerStore';
+import { HearthisEmbedHostProvider } from '../HearthisEmbedHost';
 import { ChannelStagePlayer } from './ChannelStagePlayer';
 
 vi.mock('../EmbedSurface', () => ({
@@ -45,16 +46,18 @@ async function renderStage(
   const router = createRouter({
     routeTree: createRootRoute({
       component: () => (
-        <ChannelStagePlayer
-          channel={channel}
-          slug="night-drive"
-          live={false}
-          subtle={false}
-          chatOn
-          follow={null}
-          signedIn={false}
-          {...props}
-        />
+        <HearthisEmbedHostProvider>
+          <ChannelStagePlayer
+            channel={channel}
+            slug="night-drive"
+            live={false}
+            subtle={false}
+            chatOn
+            follow={null}
+            signedIn={false}
+            {...props}
+          />
+        </HearthisEmbedHostProvider>
       ),
     }),
     history: createMemoryHistory({ initialEntries: ['/'] }),
@@ -94,6 +97,11 @@ describe('ChannelStagePlayer', () => {
 
     expect(screen.getByTestId('channel-stage-embed')).toHaveTextContent(
       'Night mix',
+    );
+    const slot = screen.getByTestId('channel-stage-embed-frame');
+    expect(slot.querySelector('[data-testid="embed-surface"]')).toBeNull();
+    expect(screen.getByTestId('playing-embed-holder')).toContainElement(
+      screen.getByTestId('embed-surface'),
     );
     expect(screen.getByTestId('embed-surface')).toHaveTextContent('hearthis');
     expect(screen.getByTestId('channel-air-badge')).toBeInTheDocument();
@@ -235,7 +243,11 @@ describe('ChannelStagePlayer', () => {
           }),
         ],
       });
-      expect(screen.queryByTestId('embed-surface')).toBeNull();
+      expect(screen.queryByTestId('channel-stage-embed-widget')).toBeNull();
+      expect(screen.getAllByTestId('embed-surface')).toHaveLength(1);
+      expect(screen.getByTestId('playing-embed-holder')).toContainElement(
+        screen.getByTestId('embed-surface'),
+      );
     });
   });
 });

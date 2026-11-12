@@ -34,10 +34,10 @@ import { usePlaybackPrefsStore } from '../stores/playbackPrefsStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
 import { ChannelVisualizer } from './ChannelVisualizer';
-import { EmbedSurface } from './EmbedSurface';
 import { useHearthisEmbedClaimed } from './HearthisEmbedHost';
 import { NowPlayingActionSheet } from './NowPlayingActionSheet';
 import { ConnectedSeekBar, PlayerLiveIndicator } from './PlayerSeekBar';
+import { EmbedSlot } from './PlayingEmbedDock';
 import { VisualizerModeMenu } from './VisualizerModeMenu';
 
 const ANIMATION_MS = 280;
@@ -231,8 +231,6 @@ export function FullScreenPlayer() {
   const isLoading = status === 'loading';
   const embed = playable?.embed;
   const embedHostedElsewhere = useHearthisEmbedClaimed();
-  const restoredPending = usePlayerStore((s) => s.restoredPending);
-  const reloadNonce = usePlayerStore((s) => s.reloadNonce);
 
   const rgb = useDominantColor(coverUrl);
   const swipe = useHorizontalSwipe({
@@ -392,18 +390,12 @@ export function FullScreenPlayer() {
 
         {embed ? (
           embedHostedElsewhere ? null : (
-            <div
+            <EmbedSlot
+              id="full-screen"
+              priority={30}
               className="flex w-full max-w-2xl flex-col"
-              data-testid="full-screen-player-embed"
-            >
-              <EmbedSurface
-                provider={embed.provider}
-                embedUri={embed.embedUri}
-                title={title}
-                autoplay={restoredPending !== playable?.id}
-                mountKey={reloadNonce}
-              />
-            </div>
+              testId="full-screen-player-embed"
+            />
           )
         ) : (
           <>

@@ -1,5 +1,6 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/react-vite';
 import { ConnectedPlayerBar } from '@tahti-web/components/ConnectedPlayerBar';
+import { HearthisEmbedHostProvider } from '@tahti-web/components/HearthisEmbedHost';
 import { useLayoutStore } from '@tahti-web/stores/layoutStore';
 import { usePlayerStore } from '@tahti-web/stores/playerStore';
 import { expect, fireEvent, userEvent, waitFor, within } from 'storybook/test';
@@ -248,11 +249,16 @@ const embedQueueItem: QueueItem = {
   addedAtIso: new Date().toISOString(),
 };
 
-/** An embed-only track replaces the player. The provider widget is the
- * only player surface; skip and the queue stay because the widget has
- * neither. */
+/** An embed-only track replaces the player. The bar reserves a slot; the
+ * dock paints the one provider widget over it. Skip and the queue stay
+ * because the widget has neither. */
 export const EmbedTrack: Story = {
   decorators: [
+    (Story) => (
+      <HearthisEmbedHostProvider>
+        <Story />
+      </HearthisEmbedHostProvider>
+    ),
     withSeededPlayerBar({
       queue: [embedQueueItem, ...mockQueue],
       currentId: 'sound:embed-1',
@@ -262,7 +268,11 @@ export const EmbedTrack: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const host = canvas.getByTestId('player-embed-host');
-    const frame = host.querySelector('iframe');
+    const slot = within(host).getByTestId('hearthis-player-embed');
+    await expect(slot.querySelector('iframe')).toBeNull();
+    const frame = canvas
+      .getByTestId('playing-embed-holder')
+      .querySelector('iframe');
     await expect(frame).not.toBeNull();
     await expect(canvas.queryByTestId('player-play-button')).toBeNull();
     await expect(canvas.queryByTestId('player-pause-button')).toBeNull();

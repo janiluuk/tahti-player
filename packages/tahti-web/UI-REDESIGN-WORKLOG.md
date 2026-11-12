@@ -6698,3 +6698,7 @@ Studio release Advanced tab can upload, replace, play and remove stems (vocals, 
 ## 2026-11-11 — Phone track rows stay aligned (0.0.375)
 
 Ambient track rows keep the cover, title and waveform on one line at every density, including a 390 px phone. Phone covers are larger (128 / 112 / 80 px). Desktop cover sizes stay as they were.
+
+## 2026-11-12 — One embed widget across routes (0.0.376)
+
+A stage-hosted embed stays the same widget when you leave the channel, open the full-screen player, or drop back to the player bar. The iframe is not mounted again, so playback does not restart.

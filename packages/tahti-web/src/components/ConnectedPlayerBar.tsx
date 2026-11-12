@@ -31,9 +31,9 @@ import { useAuthStore } from '../stores/authStore';
 import { useLayoutStore } from '../stores/layoutStore';
 import { playableFromQueueItem, usePlayerStore } from '../stores/playerStore';
 import { AddToPlaylistButton } from './AddToPlaylistButton';
-import { EmbedSurface } from './EmbedSurface';
 import { useHearthisEmbedClaimed } from './HearthisEmbedHost';
 import { ConnectedSeekBar, PlayerLiveBadge } from './PlayerSeekBar';
+import { EmbedSlot } from './PlayingEmbedDock';
 import { SidebarQueuePanel } from './SidebarQueuePanel';
 
 export function ConnectedPlayerBar() {
@@ -65,8 +65,6 @@ export function ConnectedPlayerBar() {
   const toggleQueueRail = useLayoutStore((s) => s.toggleQueueRail);
   const toggleBottomQueue = useLayoutStore((s) => s.toggleBottomQueue);
   const bottomQueueOpen = useLayoutStore((s) => s.bottomQueueOpen);
-  const restoredPending = usePlayerStore((s) => s.restoredPending);
-  const reloadNonce = usePlayerStore((s) => s.reloadNonce);
   const setFullScreenPlayerOpen = useLayoutStore(
     (s) => s.setFullScreenPlayerOpen,
   );
@@ -354,15 +352,12 @@ export function ConnectedPlayerBar() {
         data-testid={isMobile ? 'mobile-player-bar' : 'player-embed-host'}
       >
         {embedHostedInRow || fullScreenPlayerOpen ? null : (
-          <div className="w-full px-4 pt-2" data-testid="hearthis-player-embed">
-            <EmbedSurface
-              provider={embed.provider}
-              embedUri={embed.embedUri}
-              title={title}
-              autoplay={restoredPending !== playable?.id}
-              mountKey={reloadNonce}
-            />
-          </div>
+          <EmbedSlot
+            id="player-bar"
+            priority={10}
+            className="w-full px-4 pt-2"
+            testId="hearthis-player-embed"
+          />
         )}
         <div className="flex items-center justify-end gap-2 px-4 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
           {skipControls}
