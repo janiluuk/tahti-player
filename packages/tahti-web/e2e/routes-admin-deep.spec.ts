@@ -106,10 +106,12 @@ async function expectAdminPage(page: Page, route: AdminVisit): Promise<void> {
   await expect(page.getByText('Page not found')).toHaveCount(0);
   if (route.tab && `${route.path} ${route.url ?? ''}`.includes('moderation')) {
     await expect(
-      page.getByRole('tablist', { name: 'Inbox queues' }).getByRole('tab', {
-        name: new RegExp(`^${route.tab}`),
-        selected: true,
-      }),
+      page
+        .getByRole('radiogroup', { name: 'Inbox queues' })
+        .getByRole('radio', {
+          name: new RegExp(`^${route.tab}`),
+          checked: true,
+        }),
     ).toBeVisible();
   } else if (route.tab) {
     await expect(

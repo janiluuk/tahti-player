@@ -28,7 +28,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [admin-queue-remove-job.md](admin-queue-remove-job.md) | Remove one job from a queue |
 | open    | [admin-queue-pause.md](admin-queue-pause.md) | Pause and resume a queue |
 | open    | [admin-queue-requeue-pending.md](admin-queue-requeue-pending.md) | Re-queue sounds stuck PENDING with a stored file and no job |
-| open    | [help-finnish-addon-rows.md](help-finnish-addon-rows.md) | Finnish copy for the Help and For artists add-on table rows |
 | open    | [help-finnish-native-review.md](help-finnish-native-review.md) | Native review of the redesigned Help and For artists pages |
 | open    | [help-drop-pricing-claims.md](help-drop-pricing-claims.md) | Remove pricing claims the Help redesign still shows |
 | open    | [hearthis-release-product-defaults.md](hearthis-release-product-defaults.md) | Confirm the product defaults for tahti hearthis release |
@@ -41,8 +40,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [channel-upcoming-events.md](channel-upcoming-events.md) | List upcoming events on the channel, including ones the artist plays at |
 | open    | [channel-past-events.md](channel-past-events.md) | List past events on the channel |
 | open    | [finish-wip-2026-11-04-branches.md](finish-wip-2026-11-04-branches.md) | Finish or close the unfinished 2026-11-04 branches and draft PRs |
-| open    | [spa-performance-bundle-chunks.md](spa-performance-bundle-chunks.md) | Audit the SPA bundle and route chunks before changing them |
-| open    | [spa-performance-lists-first-paint.md](spa-performance-lists-first-paint.md) | Audit long lists and phone first paint |
 | open    | [embed-covers-slices-17-20.md](embed-covers-slices-17-20.md) | Finish embed cover slices 17–20 |
 | open    | [embed-covers-slices-24-30.md](embed-covers-slices-24-30.md) | Finish embed cover slices 24, 25, 29, and 30 |
 | open    | [server-peaks-studio-collections.md](server-peaks-studio-collections.md) | Show server waveform peaks on studio collection track lists |
@@ -53,7 +50,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [studio-music-catalog.md](studio-music-catalog.md) | Move the catalog into Studio → Music |
 | open    | [studio-profile-forms.md](studio-profile-forms.md) | Edit profile forms from Studio |
 | open    | [broadcast-agenda.md](broadcast-agenda.md) | Give Broadcast an agenda |
-| open    | [inbox-chips.md](inbox-chips.md) | Add chips to the inbox |
 | open    | [studio-overview-merge.md](studio-overview-merge.md) | Merge the extra Studio overview into the simplified nav |
 | open    | [finnish-web-actions.md](finnish-web-actions.md) | Translate the remaining web.actions strings |
 | open    | [finnish-api-notifications.md](finnish-api-notifications.md) | Translate API notification bodies |
@@ -71,18 +67,17 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | ------- | ---- | -------- |
 | open    | [next-50.md](next-50.md) | Map of the 50 slice files in the Next 50 slices section |
 | open    | [admin-queue-tools.md](admin-queue-tools.md) | Admin queue tools: see jobs processing now, waiting and failed; retry, remove, pause; re-queue stuck `PENDING` uploads |
-| partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; add-on table rows, native review and dropped pricing claims left |
+| partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; left: native review and which pricing claims to restore |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |
 | open    | [channel-page-metrics-about-events.md](channel-page-metrics-about-events.md) | Channel page: followers/following/plays today/yesterday/total/downloads with per-metric public toggle, tidy About, upcoming + past events incl. ones the artist plays at |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
-| open    | [performance-audit-spa-2026-11-04.md](performance-audit-spa-2026-11-04.md) | SPA performance audit (bundle, route chunks, long lists, phone first paint); findings before code |
 | partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: player slices 11–30 shipped; org API rows remain |
 | partial | [server-peaks-in-track-lists.md](server-peaks-in-track-lists.md) | Server waveform peaks on every track list (search, Selects, New to you, profile fallback); left: studio collections, radio/feed |
 | open    | [yaniho-channel-waveform-peaks.md](yaniho-channel-waveform-peaks.md) | Yaniho channel (`/channel/yaniho`) tracks still show loading over the waveform; pre-generate peaks for every view during pre-processing |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
-| partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Inbox chips, Overview merge, docs rewrite |
+| partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; Inbox queue chips shipped (0.0.377); left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Overview merge, docs rewrite |
 | open    | [library-for-listeners.md](library-for-listeners.md) | Library is for listeners (saved items, desktop library browse); move Sounds, Collections, Upload, Recordings and Smart links to Studio and change the nav |
 | partial | [finnish-localization.md](finnish-localization.md) | Settings → Language plus chrome/player/Listen/Discover/Library, batches 31–63 (ui library labels, tooltips, state labels, leftover JSX text); left: more web.actions sites, API notification bodies, Upload leftovers, SEO/pageTour |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks. Track page like and recently played search shipped. |

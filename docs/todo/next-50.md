@@ -9,7 +9,6 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 3. [ ] [Admin queue: remove a job](admin-queue-remove-job.md) (`admin-queue-tools.md`).
 4. [ ] [Admin queue: pause and resume](admin-queue-pause.md) (`admin-queue-tools.md`).
 5. [ ] [Re-queue stuck PENDING uploads](admin-queue-requeue-pending.md) (`admin-queue-tools.md`).
-6. [ ] [Help Finnish add-on table rows](help-finnish-addon-rows.md) (`help-pages-finnish-redesign.md`).
 7. [ ] [Help pages native review](help-finnish-native-review.md) (`help-pages-finnish-redesign.md`).
 8. [ ] [Drop Help pricing claims](help-drop-pricing-claims.md) (`help-pages-finnish-redesign.md`).
 11. [ ] [HearThis release product defaults](hearthis-release-product-defaults.md) (`hearthis-to-tahti-release-cli.md`).
@@ -22,8 +21,6 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 18. [ ] [Channel upcoming events](channel-upcoming-events.md) (`channel-page-metrics-about-events.md`).
 19. [ ] [Channel past events](channel-past-events.md) (`channel-page-metrics-about-events.md`).
 20. [ ] [Finish 2026-11-04 WIP branches](finish-wip-2026-11-04-branches.md) (`finish-wip-2026-11-04.md`).
-21. [ ] [SPA bundle and route chunks](spa-performance-bundle-chunks.md) (`performance-audit-spa-2026-11-04.md`).
-22. [ ] [SPA long lists and phone first paint](spa-performance-lists-first-paint.md) (`performance-audit-spa-2026-11-04.md`).
 26. [ ] [Embed cover slices 17–20](embed-covers-slices-17-20.md) (`embed-covers-hardening.md`).
 27. [ ] [Embed cover slices 24, 25, 29, 30](embed-covers-slices-24-30.md) (`embed-covers-hardening.md`).
 28. [ ] [Peaks on studio collections](server-peaks-studio-collections.md) (`server-peaks-in-track-lists.md`).
@@ -34,7 +31,6 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 33. [ ] [Move catalog to Studio Music](studio-music-catalog.md) (`navigation-simplification.md`).
 34. [ ] [Profile forms live in Studio](studio-profile-forms.md) (`navigation-simplification.md`).
 35. [ ] [Broadcast agenda](broadcast-agenda.md) (`navigation-simplification.md`).
-36. [ ] [Inbox chips](inbox-chips.md) (`navigation-simplification.md`).
 37. [ ] [Merge the Studio overview](studio-overview-merge.md) (`navigation-simplification.md`).
 38. [ ] [Finnish for web.actions](finnish-web-actions.md) (`finnish-localization.md`).
 39. [ ] [Finnish API notification bodies](finnish-api-notifications.md) (`finnish-localization.md`).
