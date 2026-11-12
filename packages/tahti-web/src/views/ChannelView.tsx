@@ -235,11 +235,10 @@ export function ChannelView({ slug }: { slug: string }) {
     return () => cancelAnimationFrame(frame);
   }, [activeNavTab?.id]);
 
-  // Every hook stays above the early returns below. Bio/CTA/avatar live in
-  // the backdrop; the fallbacks match defaultChannelPageLayout's defaults.
   const avatarVisible =
     layout.find((i) => i.type === 'avatar')?.visible ?? true;
   const bioVisible = layout.find((i) => i.type === 'about')?.visible ?? true;
+  const linksVisible = layout.find((i) => i.type === 'links')?.visible ?? false;
   const subscribeOn =
     layout.find((i) => i.type === 'subscribe')?.visible ?? false;
   const subscribeVisible =
@@ -494,6 +493,8 @@ export function ChannelView({ slug }: { slug: string }) {
             onSelectNavTab={setActiveNavTabId}
             avatarVisible={avatarVisible}
             bioVisible={bioVisible}
+            links={channelLinksDraft}
+            linksVisible={linksVisible}
             subscribeVisible={editing ? subscribeOn : subscribeVisible}
             showOffFeatures={editing}
             stagePlayer={stagePlayer}

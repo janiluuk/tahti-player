@@ -17,7 +17,6 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 14. [ ] [Channel followers and following](channel-metrics-followers.md) (`channel-page-metrics-about-events.md`).
 15. [ ] [Channel play counts](channel-metrics-plays.md) (`channel-page-metrics-about-events.md`).
 16. [ ] [Channel download count](channel-metrics-downloads.md) (`channel-page-metrics-about-events.md`).
-17. [ ] [Tidy the channel About](channel-about-tidy.md) (`channel-page-metrics-about-events.md`).
 18. [ ] [Channel upcoming events](channel-upcoming-events.md) (`channel-page-metrics-about-events.md`).
 19. [ ] [Channel past events](channel-past-events.md) (`channel-page-metrics-about-events.md`).
 20. [ ] [Finish 2026-11-04 WIP branches](finish-wip-2026-11-04-branches.md) (`finish-wip-2026-11-04.md`).
@@ -32,10 +31,8 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 34. [ ] [Profile forms live in Studio](studio-profile-forms.md) (`navigation-simplification.md`).
 35. [ ] [Broadcast agenda](broadcast-agenda.md) (`navigation-simplification.md`).
 37. [ ] [Merge the Studio overview](studio-overview-merge.md) (`navigation-simplification.md`).
-38. [ ] [Finnish for web.actions](finnish-web-actions.md) (`finnish-localization.md`).
 39. [ ] [Finnish API notification bodies](finnish-api-notifications.md) (`finnish-localization.md`).
 40. [ ] [Finnish upload leftovers](finnish-upload-leftovers.md) (`finnish-localization.md`).
-41. [ ] [Finnish SEO and page tour](finnish-seo-page-tour.md) (`finnish-localization.md`).
 42. [ ] [Board track-edit product call](board-track-edit-product-call.md) (`ui-requests-2026-11-03.md`).
 43. [ ] [Embed track API fix](embed-track-api-fix.md) (`ui-requests-2026-11-03.md`).
 45. [ ] [Embed downloads product call](embed-downloads-product-call.md) (`listen-artist-channel-cleanup.md`).

@@ -11,7 +11,9 @@ import {
  * them visible. With 2+ navigation tabs, an item assigned to a tab shows
  * only while that tab is active; an item in no tab always shows, so a block
  * added after the tabs exist doesn't vanish. Bio, CTA and avatar are part
- * of the backdrop, never their own block, in either mode.
+ * of the backdrop, never their own block, in either mode. Links sit
+ * under the bio in that same block, so the links layer does not paint a
+ * second card.
  *
  * Radio stations show programming instead of artist identity: no bio,
  * links or subscribe CTA, and always a Programming block. */
@@ -48,6 +50,7 @@ export function channelVisibleItems({
         })
   ).filter(
     (item) =>
+      item.type !== 'links' &&
       !BACKDROP_FOLDED_ITEM_TYPES.includes(item.type as ChannelPageItemType),
   );
   if (!isRadioChannel) {

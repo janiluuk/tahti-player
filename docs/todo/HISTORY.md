@@ -1,3 +1,9 @@
+## 2026-11-12 — channel About is the bio and its links
+
+The channel About block is the bio and the channel links under the name. The separate Links card is gone, and the row does not repeat the channel name. Unsafe and hidden links stay out. tahti-web 0.0.378. Folded `channel-about-tidy.md`.
+
+`web.actions`, `web.seo` and `web.pageTour` already have a Finnish string for every English key, and the page title and tour read them through i18n. Folded `finnish-web-actions.md` and `finnish-seo-page-tour.md`.
+
 ## 2026-11-12 — inbox chips, Finnish add-on rows, SPA audit
 
 Admin Inbox queues are filter chips. The Support chip stays idle until the board picks another queue. tahti-web 0.0.377. Folded `inbox-chips.md`.

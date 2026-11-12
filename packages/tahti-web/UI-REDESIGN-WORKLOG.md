@@ -6706,3 +6706,7 @@ A stage-hosted embed stays the same widget when you leave the channel, open the 
 ## 2026-11-12 — Inbox queue chips (0.0.377)
 
 Admin Inbox queues are filter chips. Support stays idle until another queue is picked; that queue then shows as selected. Counts still appear on Support and Beta when the dashboard has them.
+
+## 2026-11-12 — Channel About is bio and links (0.0.378)
+
+Channel links sit under the bio in the backdrop. The old Links card is not rendered, and the link row does not repeat the channel name. Hidden links and unsafe URLs stay out.
