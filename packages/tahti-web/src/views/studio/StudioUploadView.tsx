@@ -181,8 +181,11 @@ export function StudioUploadView() {
     play({
       id: playableId,
       kind: 'sound',
-      title: recording.title || recording.soundTitle || 'Recorded broadcast',
-      artist: 'Recorded broadcast',
+      title:
+        recording.title ||
+        recording.soundTitle ||
+        t('library.recordedBroadcast'),
+      artist: t('library.recordedBroadcast'),
       streamUrl: source.data.url,
       protocol: source.data.url.includes('.m3u8') ? 'hls' : 'https',
       durationSec: recording.durationSec,

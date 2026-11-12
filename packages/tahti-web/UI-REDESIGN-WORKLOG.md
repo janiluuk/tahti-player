@@ -6710,3 +6710,7 @@ Admin Inbox queues are filter chips. Support stays idle until another queue is p
 ## 2026-11-12 — Channel About is bio and links (0.0.378)
 
 Channel links sit under the bio in the backdrop. The old Links card is not rendered, and the link row does not repeat the channel name. Hidden links and unsafe URLs stay out.
+
+## 2026-11-13 — Listen row alignment and upload label (0.0.379)
+
+Recently played and Tahti Selects both omit the filter bar, so the first Listen row lines up. A recorded broadcast with no title uses the existing Finnish label.

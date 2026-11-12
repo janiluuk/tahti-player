@@ -51,7 +51,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [broadcast-agenda.md](broadcast-agenda.md) | Give Broadcast an agenda |
 | open    | [studio-overview-merge.md](studio-overview-merge.md) | Merge the extra Studio overview into the simplified nav |
 | open    | [finnish-api-notifications.md](finnish-api-notifications.md) | Translate API notification bodies |
-| open    | [finnish-upload-leftovers.md](finnish-upload-leftovers.md) | Translate the remaining Upload strings |
 | open    | [board-track-edit-product-call.md](board-track-edit-product-call.md) | Decide how board members edit a track |
 | open    | [embed-track-api-fix.md](embed-track-api-fix.md) | Fix the embed track API in tahti-org |
 | open    | [embed-downloads-product-call.md](embed-downloads-product-call.md) | Decide whether an embed offers downloads |
@@ -76,7 +75,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; Inbox queue chips shipped (0.0.377); left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Overview merge, docs rewrite |
 | open    | [library-for-listeners.md](library-for-listeners.md) | Library is for listeners (saved items, desktop library browse); move Sounds, Collections, Upload, Recordings and Smart links to Studio and change the nav |
-| partial | [finnish-localization.md](finnish-localization.md) | Settings → Language plus chrome/player/Listen/Discover/Library; web.actions, SEO and the page tour have Finnish; left: API notification bodies and Upload leftovers |
+| partial | [finnish-localization.md](finnish-localization.md) | Settings → Language plus chrome/player/Listen/Discover/Library; web.actions, SEO, the page tour and the Upload broadcast label have Finnish; left: API notification bodies |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks. Track page like and recently played search shipped. |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; stage embed stays one widget (0.0.376); left: embed downloads (product call) |
 | open    | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Plan: page anatomy rules (one header, one primary action, overflow, one toolbar), Settings account-only in 7 items, duplicate surfaces removed; 9 phases, absorbs navigation-simplification slices 1-3, 7, 9, 10 |
