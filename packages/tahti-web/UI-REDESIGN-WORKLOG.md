@@ -1,3 +1,8 @@
+## 2026-11-13 - Monitoring logs live under Logs (0.0.395)
+
+Admin → Monitoring no longer embeds container logs. Open them from
+Admin → Logs → Container logs (service links still deep-link there).
+
 ## 2026-11-13 - Fans chat tabs and restyled messages (0.0.393)
 
 Studio → Fans → Chat puts Access, Messages, Moderators and Bans on their
