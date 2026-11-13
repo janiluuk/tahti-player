@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -40,7 +42,7 @@ export async function uploadProfileBackdrop(
       { method: 'POST', body: JSON.stringify({ uploadKey: prep.uploadKey }) },
     );
     if (!data.backdropUrl) {
-      throw new Error('The backdrop was saved but has no URL yet');
+      throw new Error(i18n.t('web:batch56.backdropNoUrl'));
     }
     return { ok: true, data: { backdropUrl: data.backdropUrl } };
   } catch (err) {

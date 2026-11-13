@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 import type { LogoPlacement } from './studio-extras/profile';
@@ -56,7 +58,7 @@ export async function uploadProfileLogo(
       { method: 'POST', body: JSON.stringify({ uploadKey: prep.uploadKey }) },
     );
     if (!data.logoUrl) {
-      throw new Error('The logo was saved but has no URL yet');
+      throw new Error(i18n.t('web:batch56.logoNoUrl'));
     }
     return { ok: true, data: { logoUrl: data.logoUrl } };
   } catch (err) {

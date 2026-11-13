@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { fetchDirectory, fetchProfile } from './client';
 import { apiBase } from './http';
 import { mockLatestTracks, mockNewToYou, mockTopTracks } from './mock';
@@ -88,7 +90,9 @@ export async function fetchPublicCollections(
         meta: mockFallbackMeta(err),
       };
     }
-    throw err instanceof Error ? err : new Error('Public collections failed');
+    throw err instanceof Error
+      ? err
+      : new Error(i18n.t('web:batch56.publicCollectionsFailed'));
   }
 }
 

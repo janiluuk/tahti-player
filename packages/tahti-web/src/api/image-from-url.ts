@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -23,7 +25,7 @@ export async function setReleaseArtworkFromUrl(
       { method: 'POST', body: JSON.stringify({ sourceUrl }) },
     );
     if (!data.artworkUrl) {
-      throw new Error('The artwork was saved but has no URL yet');
+      throw new Error(i18n.t('web:batch56.artworkNoUrl'));
     }
     return { ok: true, url: data.artworkUrl };
   } catch (err) {
@@ -44,7 +46,7 @@ export async function setCollectionCoverFromUrl(
       { method: 'POST', body: JSON.stringify({ sourceUrl }) },
     );
     if (!data.url) {
-      throw new Error('The cover was saved but has no URL yet');
+      throw new Error(i18n.t('web:batch56.coverNoUrl'));
     }
     return { ok: true, url: data.url };
   } catch (err) {

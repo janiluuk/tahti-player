@@ -212,12 +212,12 @@ export function DiscoWidgetManagerPanel({
       return;
     }
     const blockId = placed.block.id;
-    toastWithUndo('Logo added to your channel.', {
+    toastWithUndo(i18n.t('web:batch56.logoAdded'), {
       undo: async () => {
         const removed = await layout.removeBlock(blockId);
         return removed ? { ok: false, error: removed } : { ok: true };
       },
-      undoneMessage: 'Logo removed.',
+      undoneMessage: i18n.t('web:batch56.logoRemoved'),
     });
   }
 

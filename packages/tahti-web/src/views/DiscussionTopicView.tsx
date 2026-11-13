@@ -62,9 +62,9 @@ function ReplyForm({
     }
     setBody('');
     const created = result.data;
-    toastWithUndo('Reply posted. You follow this topic now.', {
+    toastWithUndo(i18n.t('web:batch56.replyPosted'), {
       undo: () => removeDiscussionPost(topicId, created.id),
-      undoneMessage: 'Reply removed.',
+      undoneMessage: i18n.t('web:batch56.replyRemoved'),
       onUndone: () => onPosted(),
     });
     onPosted();

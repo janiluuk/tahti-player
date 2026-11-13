@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { parseRssXml, type RssArticle } from '../lib/parseRss';
 import { apiBase } from './http';
 import {
@@ -76,7 +78,7 @@ export async function fetchRssArticles(feedUrl: string): Promise<{
     }
     const body = (await res.json()) as { xml?: string; error?: string };
     if (!body.xml) {
-      throw new Error(body.error ?? 'Empty feed');
+      throw new Error(body.error ?? i18n.t('web:batch56.emptyFeed'));
     }
     const parsed = parseRssXml(body.xml);
     return {

@@ -320,7 +320,7 @@ export function OnboardingView() {
                         />
                       </div>
                       <Textarea
-                        label="Bio"
+                        label={t('channelFeatures.bio')}
                         tone="secondary"
                         value={bio}
                         onChange={(e) => setBio(e.target.value)}

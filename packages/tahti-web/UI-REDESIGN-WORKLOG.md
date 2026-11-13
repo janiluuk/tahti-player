@@ -6742,3 +6742,7 @@ Comments, the green room, motions, stems, chat, announcements, stations, discuss
 ## 2026-11-13 — Thirty more error labels (0.0.389)
 
 Newsletter unsubscribe, channel layout, downloads, distribution checkout, themes, comments, events, embeds, text layers, and unfollow follow the app language in English and Finnish when the server sends no message of its own.
+
+## 2026-11-13 — Forty more labels (0.0.390)
+
+Undo toasts (pinned announcements, clips, share links, logos, replies, comments, artwork, publishing), the artwork search progress, seventeen load and save errors, and the onboarding bio, map comment edit and track version fields follow the app language in English and Finnish.

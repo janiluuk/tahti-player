@@ -92,9 +92,9 @@ export function AdminArtworkPresetsView() {
         ? { ...current, presets: [...current.presets, created] }
         : current,
     );
-    toastWithUndo('Artwork added.', {
+    toastWithUndo(i18n.t('web:batch56.artworkAdded'), {
       undo: () => deleteAdminArtworkPreset(created.id),
-      undoneMessage: 'Artwork removed.',
+      undoneMessage: i18n.t('web:toasts.artworkRemoved'),
       onUndone: () =>
         setState((current) =>
           current.status === 'ready'
