@@ -189,7 +189,6 @@ export function ChannelView({ slug }: { slug: string }) {
         })),
     [listenerWidgetInstances, layout],
   );
-
   useEffect(() => {
     setEditing(Boolean(search.edit && isOwner));
   }, [search.edit, isOwner]);
