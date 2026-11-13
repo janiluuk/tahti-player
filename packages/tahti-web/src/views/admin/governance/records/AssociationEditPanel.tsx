@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -14,7 +14,7 @@ import { StudioPanel } from '../../../../components/StudioPanel';
 
 type Field = keyof AssociationFields;
 
-function associationFields(t: (key: string) => string): Array<{
+function associationFields(t: TFunction<'web'>): Array<{
   key: Field;
   label: string;
   maxLength: number;

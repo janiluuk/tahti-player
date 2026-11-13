@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { ArrowDown, ArrowUp, Puzzle, Settings2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -35,7 +35,7 @@ import { PageEmpty, PageLoading } from '../PageStates';
 import { useChannelAddonBlocks } from './useChannelAddonBlocks';
 
 function widthOptions(
-  t: (key: string) => string,
+  t: TFunction<'web'>,
 ): { id: ChannelBlockWidth; label: string }[] {
   return [
     { id: 'FULL', label: t('discoWidgetManagerPanelLeftovers.full') },
