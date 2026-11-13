@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import { getJson, sendJson } from '../http';
 import { failMeta, isForceMock } from '../mode';
@@ -93,7 +95,7 @@ export async function generateAdminAnnualReport(
     if (existing?.approvedAt) {
       return {
         ok: false,
-        error: 'An approved report is corrected, not regenerated',
+        error: i18n.t('web:batch58.reportCorrectedNotRegenerated'),
       };
     }
     const report = mockReport(year, new Date().toISOString());
@@ -138,10 +140,10 @@ export async function approveAnnualReport(
   if (isForceMock()) {
     const report = mockAnnualReport(year);
     if (!report) {
-      return { ok: false, error: 'No report has been generated for that year' };
+      return { ok: false, error: i18n.t('web:batch58.noReportForYear') };
     }
     if (report.approvedAt) {
-      return { ok: false, error: 'This report is already approved' };
+      return { ok: false, error: i18n.t('web:batch58.reportAlreadyApproved') };
     }
     updateMockAnnualReport(year, {
       approvedAt: new Date().toISOString(),
@@ -165,10 +167,10 @@ export async function publishAnnualReport(
   if (isForceMock()) {
     const report = mockAnnualReport(year);
     if (!report?.approvedAt) {
-      return { ok: false, error: 'Only an approved report can be published' };
+      return { ok: false, error: i18n.t('web:batch58.onlyApprovedCanPublish') };
     }
     if (report.publishedAt) {
-      return { ok: false, error: 'This report is already published' };
+      return { ok: false, error: i18n.t('web:batch58.reportAlreadyPublished') };
     }
     updateMockAnnualReport(year, { publishedAt: new Date().toISOString() });
     return { ok: true };
@@ -191,12 +193,12 @@ export async function setAnnualReportFiling(
   if (isForceMock()) {
     const report = mockAnnualReport(year);
     if (!report?.approvedAt) {
-      return { ok: false, error: 'Only an approved report can be filed' };
+      return { ok: false, error: i18n.t('web:batch58.onlyApprovedCanFile') };
     }
     if (filing.filedAt && filing.filedAt < report.approvedAt.slice(0, 10)) {
       return {
         ok: false,
-        error: 'A report cannot be filed before it was approved',
+        error: i18n.t('web:batch58.cannotFileBeforeApproved'),
       };
     }
     updateMockAnnualReport(year, {
@@ -241,7 +243,7 @@ export async function correctAnnualReport(
       };
     }
     if (report.legalHoldAt) {
-      return { ok: false, error: 'This report is on legal hold' };
+      return { ok: false, error: i18n.t('web:batch58.reportOnLegalHold') };
     }
     const now = new Date().toISOString();
     mockRevisions.set(year, [
@@ -291,7 +293,7 @@ export async function setAnnualReportLegalHold(
 ): Promise<AnnualReportResult> {
   if (isForceMock()) {
     if (!mockAnnualReport(year)) {
-      return { ok: false, error: 'No report has been generated for that year' };
+      return { ok: false, error: i18n.t('web:batch58.noReportForYear') };
     }
     updateMockAnnualReport(
       year,

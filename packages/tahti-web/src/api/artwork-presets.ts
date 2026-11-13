@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { getJson, mutate, sendJson } from './http';
 import { failMeta, isForceMock } from './mode';
@@ -92,7 +94,7 @@ export async function patchAdminArtworkPreset(
   if (isForceMock()) {
     const current = mockPresets.find((preset) => preset.id === id);
     if (!current) {
-      return { ok: false, error: 'Preset not found' };
+      return { ok: false, error: i18n.t('web:batch58.presetNotFound') };
     }
     const updated = { ...current, ...patch };
     mockPresets = mockPresets.map((preset) =>

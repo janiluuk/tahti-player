@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { sendJson } from '../http';
 import { isForceMock } from '../mode';
 
@@ -21,7 +23,7 @@ export async function setRecordLegalHold(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const trimmed = reason?.trim() || null;
   if (reason !== null && !trimmed) {
-    return { ok: false, error: 'Give the reason for the hold' };
+    return { ok: false, error: i18n.t('web:batch58.giveHoldReason') };
   }
   if (isForceMock()) {
     return { ok: true };

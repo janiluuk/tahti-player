@@ -123,7 +123,7 @@ function mockCandidacy(
 ): CandidacyResult {
   const election = mockElections.find((e) => e.id === id);
   if (!election) {
-    return { ok: false, error: 'Election not found' };
+    return { ok: false, error: i18n.t('web:batch58.electionNotFound') };
   }
   if (standing && !election.nominationsOpen) {
     return { ok: false, error: 'Nominations for this election are closed' };

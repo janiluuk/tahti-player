@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
 import {
@@ -554,7 +556,7 @@ export async function uploadAdminGovernanceMinutes(
       minutesKey: `mock/governance/meetings/${meetingId}/minutes.pdf`,
     });
     if (!patched.data) {
-      return { ok: false, error: 'Meeting not found' };
+      return { ok: false, error: i18n.t('web:batch58.meetingNotFound') };
     }
     return { ok: true, data: patched.data };
   }
@@ -582,7 +584,7 @@ export async function uploadAdminGovernanceMinutes(
       minutesKey: prep.minutesKey,
     });
     if (!patched.data) {
-      return { ok: false, error: 'Could not save the uploaded minutes' };
+      return { ok: false, error: i18n.t('web:batch58.couldNotSaveMinutes') };
     }
     return { ok: true, data: patched.data };
   } catch (err) {

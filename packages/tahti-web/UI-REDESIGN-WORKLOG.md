@@ -6750,3 +6750,7 @@ Undo toasts (pinned announcements, clips, share links, logos, replies, comments,
 ## 2026-11-13 — Forty more fallbacks (0.0.391)
 
 Admin account labels, gallery and theme names, waveform and upload errors, Drive and image reading, discussions, the green room, and studio stats fallbacks follow the app language in English and Finnish when the server sends no message of its own. Six of them reuse keys that were already translated.
+
+## 2026-11-13 — Forty admin error labels (0.0.392)
+
+Add-on, report, payout, agenda, election, meeting, and preset errors follow the app language in English and Finnish when the server sends no message of its own.

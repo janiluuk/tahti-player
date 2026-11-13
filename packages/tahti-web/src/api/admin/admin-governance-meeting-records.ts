@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { getJson, sendJson } from '../http';
 import { isForceMock } from '../mode';
 import {
@@ -57,7 +59,7 @@ export async function declareAdminGovernanceConflict(
   const displayName = input.displayName.trim();
   const matter = input.matter.trim();
   if (!displayName || !matter) {
-    return { ok: false, error: 'Give the name and the matter.' };
+    return { ok: false, error: i18n.t('web:batch58.giveNameAndMatter') };
   }
   if (isForceMock()) {
     return mockDeclareGovernanceConflict(meetingId, {

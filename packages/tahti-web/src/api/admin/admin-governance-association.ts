@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { AssociationProfile } from '../governance-association';
 import { mockAssociationProfile } from '../governance-association';
 import { sendJson } from '../http';
@@ -22,7 +24,7 @@ export async function patchAssociationProfile(
   fields: Partial<AssociationFields>,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (fields.businessId && !BUSINESS_ID_PATTERN.test(fields.businessId)) {
-    return { ok: false, error: 'Business ID must look like 1234567-8' };
+    return { ok: false, error: i18n.t('web:batch58.businessIdFormat') };
   }
   if (isForceMock()) {
     Object.assign(mockAssociationProfile(), fields);

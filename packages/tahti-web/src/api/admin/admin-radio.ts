@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
 import {
@@ -323,7 +325,7 @@ export async function patchAdminInternetRadioPreset(
   if (isForceMock()) {
     const updated = patchMockInternetRadioPreset(id, patch);
     if (!updated) {
-      return { ok: false, error: 'Preset not found' };
+      return { ok: false, error: i18n.t('web:batch58.presetNotFound') };
     }
     return { ok: true, data: updated };
   }
@@ -454,7 +456,7 @@ export async function fetchAdminRadioSubmissionAudio(id: string): Promise<
   if (isForceMock()) {
     const row = mockRadioSubmissions().find((item) => item.id === id);
     if (!row?.sound.audioUrl) {
-      return { ok: false, error: 'No playable audio' };
+      return { ok: false, error: i18n.t('web:batch58.noPlayableAudio') };
     }
     return {
       ok: true,

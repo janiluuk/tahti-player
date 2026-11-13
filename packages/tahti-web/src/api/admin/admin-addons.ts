@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
 import { failMeta, isForceMock } from '../mode';
@@ -216,7 +218,7 @@ export async function updateAdminAddon(
   if (isForceMock()) {
     const existing = mockAddons.find((addon) => addon.id === id);
     if (!existing) {
-      return { ok: false, error: 'Add-on not found' };
+      return { ok: false, error: i18n.t('web:batch58.addonNotFound') };
     }
     const updated: AdminAddon = {
       ...existing,
@@ -249,7 +251,7 @@ export async function deleteAdminAddon(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (isForceMock()) {
     if (!mockAddons.some((addon) => addon.id === id)) {
-      return { ok: false, error: 'Add-on not found' };
+      return { ok: false, error: i18n.t('web:batch58.addonNotFound') };
     }
     mockAddons = mockAddons.filter((addon) => addon.id !== id);
     mockInstallsBySurface = Object.fromEntries(
@@ -270,7 +272,7 @@ function mockModerate(
 ): { ok: true; data: AdminAddon } | { ok: false; error: string } {
   const existing = mockAddons.find((addon) => addon.id === id);
   if (!existing) {
-    return { ok: false, error: 'Add-on not found' };
+    return { ok: false, error: i18n.t('web:batch58.addonNotFound') };
   }
   const updated: AdminAddon = {
     ...existing,
@@ -367,24 +369,24 @@ export async function publishAdminAddonVersion(
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
   const version = input.version.trim();
   if (!ADDON_VERSION_PATTERN.test(version)) {
-    return { ok: false, error: 'Version must look like 1.0.0' };
+    return { ok: false, error: i18n.t('web:batch58.versionFormat') };
   }
   if (input.file.size === 0) {
-    return { ok: false, error: 'The bundle file is empty' };
+    return { ok: false, error: i18n.t('web:batch58.bundleEmpty') };
   }
   if (input.file.size > ADDON_BUNDLE_MAX_BYTES) {
-    return { ok: false, error: 'Bundles can be at most 2 MB' };
+    return { ok: false, error: i18n.t('web:batch58.bundleTooLarge') };
   }
   const changelog = input.changelog?.trim() || undefined;
   if (isForceMock()) {
     const existing = mockAddons.find((addon) => addon.id === id);
     if (!existing) {
-      return { ok: false, error: 'Add-on not found' };
+      return { ok: false, error: i18n.t('web:batch58.addonNotFound') };
     }
     if (existing.currentVersion === version) {
       return {
         ok: false,
-        error: 'That version is already published — bump it',
+        error: i18n.t('web:batch58.versionPublished'),
       };
     }
     const updated: AdminAddon = {
@@ -433,7 +435,7 @@ export async function setAdminAddonEnabledByDefault(
   if (isForceMock()) {
     const existing = mockAddons.find((addon) => addon.id === id);
     if (!existing) {
-      return { ok: false, error: 'Add-on not found' };
+      return { ok: false, error: i18n.t('web:batch58.addonNotFound') };
     }
     const updated: AdminAddon = { ...existing, enabledByDefault };
     mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
@@ -461,7 +463,7 @@ export async function setAdminAddonDefaultConfig(
   if (isForceMock()) {
     const existing = mockAddons.find((addon) => addon.id === id);
     if (!existing) {
-      return { ok: false, error: 'Add-on not found' };
+      return { ok: false, error: i18n.t('web:batch58.addonNotFound') };
     }
     const updated: AdminAddon = { ...existing, defaultConfigJson };
     mockAddons = mockAddons.map((addon) => (addon.id === id ? updated : addon));
@@ -568,11 +570,11 @@ export async function createAdminAddonInstall(
   if (isForceMock()) {
     const widget = mockAddons.find((addon) => addon.id === widgetId);
     if (!widget || widget.scope !== 'ADMIN' || widget.status !== 'APPROVED') {
-      return { ok: false, error: 'Widget not found' };
+      return { ok: false, error: i18n.t('web:batch58.widgetNotFound') };
     }
     const list = mockInstallsBySurface[surface] ?? [];
     if (list.some((install) => install.widget.id === widgetId)) {
-      return { ok: false, error: 'Already installed on that surface' };
+      return { ok: false, error: i18n.t('web:batch58.alreadyInstalled') };
     }
     const install: AdminAddonInstall = {
       id: `install-${Date.now()}`,
@@ -618,7 +620,7 @@ export async function patchAdminAddonInstall(
     const list = mockInstallsBySurface[surface] ?? [];
     const existing = list.find((install) => install.id === id);
     if (!existing) {
-      return { ok: false, error: 'Install not found' };
+      return { ok: false, error: i18n.t('web:batch58.installNotFound') };
     }
     const updated: AdminAddonInstall = { ...existing, ...patch };
     mockInstallsBySurface = {
@@ -649,7 +651,7 @@ export async function deleteAdminAddonInstall(
   if (isForceMock()) {
     const list = mockInstallsBySurface[surface] ?? [];
     if (!list.some((install) => install.id === id)) {
-      return { ok: false, error: 'Install not found' };
+      return { ok: false, error: i18n.t('web:batch58.installNotFound') };
     }
     mockInstallsBySurface = {
       ...mockInstallsBySurface,

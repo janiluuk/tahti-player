@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import {
   announcementDurationSec,
   readAudioFileDuration,
@@ -193,7 +195,7 @@ export async function fetchAdminAnnouncementSource(
   if (isForceMock()) {
     const clip = announcementState().find((c) => c.id === id);
     if (!clip?.audioUrl) {
-      return { ok: false, error: 'Announcement not found' };
+      return { ok: false, error: i18n.t('web:batch58.announcementNotFound') };
     }
     return {
       ok: true,

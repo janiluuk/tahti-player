@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import type { GovernanceAuditor } from '../governance-association';
 import { getJson, sendJson } from '../http';
@@ -61,7 +63,7 @@ export async function createAdminAuditor(
   const name = auditor.name.trim();
   const firm = auditor.firm?.trim() || undefined;
   if (auditor.termEnd && auditor.termEnd <= auditor.termStart) {
-    return { ok: false, error: 'The term must end after it starts' };
+    return { ok: false, error: i18n.t('web:batch58.termEndAfterStart') };
   }
   if (isForceMock()) {
     mockAuditors = [
@@ -104,11 +106,11 @@ export async function endAdminAuditorTerm(
   if (isForceMock()) {
     const auditor = mockAuditors.find((a) => a.id === id);
     if (!auditor) {
-      return { ok: false, error: 'Auditor not found' };
+      return { ok: false, error: i18n.t('web:batch58.auditorNotFound') };
     }
     const end = new Date(termEnd).toISOString();
     if (end <= auditor.termStart) {
-      return { ok: false, error: 'The term must end after it starts' };
+      return { ok: false, error: i18n.t('web:batch58.termEndAfterStart') };
     }
     mockAuditors = mockAuditors.map((a) =>
       a.id === id ? { ...a, termEnd: end } : a,
