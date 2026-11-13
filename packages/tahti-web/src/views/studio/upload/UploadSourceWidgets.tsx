@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
-import { Card, CardGrid } from '@tahti-player/ui';
+import { Button, Card, CardGrid } from '@tahti-player/ui';
 
 import type { ConnectionStatus, IntegrationId } from '../../../api/sources';
 import { servicePluginsForCategory } from '../../../components/plugin-store/serviceCatalog';
@@ -13,6 +13,8 @@ import {
   importSourcePlugins,
   type ImportSourcePlugin,
 } from '../../../plugins/import-sources';
+import { ImportWizard } from './ImportWizard';
+import { WIZARD_SERVICES, type WizardService } from './importWizardCatalog';
 
 const IMPORT_PLUGINS = servicePluginsForCategory('import');
 
@@ -66,6 +68,7 @@ export function UploadSourceWidgets() {
     Partial<Record<IntegrationId, ConnectionStatus>>
   >({});
   const [selectedId, setSelectedId] = useState<IntegrationId | null>(null);
+  const [wizard, setWizard] = useState<WizardService | 'pick' | null>(null);
   const [statusTick, setStatusTick] = useState(0);
 
   useEffect(() => {
@@ -103,6 +106,9 @@ export function UploadSourceWidgets() {
       >
         {t('library.uploadSourcesTitle')}
       </h2>
+      <Button className="mb-3" onClick={() => setWizard('pick')}>
+        {t('library.importWizardOpen')}
+      </Button>
       <CardGrid className="grid-cols-[repeat(auto-fit,minmax(12rem,1fr))]">
         {UPLOAD_SOURCES.map((source) => {
           const status = statuses[source.id];
@@ -118,6 +124,13 @@ export function UploadSourceWidgets() {
                   : undefined
               }
               onClick={() => {
+                const wizardService = WIZARD_SERVICES.find(
+                  (id) => id === source.id,
+                );
+                if (wizardService && status?.configured !== false) {
+                  setWizard(wizardService);
+                  return;
+                }
                 if (configurePluginFor(source.id)) {
                   setSelectedId(source.id);
                 } else if (source.studioDeepLink) {
@@ -140,6 +153,7 @@ export function UploadSourceWidgets() {
           <ServiceCard plugin={selectedPlugin} />
         </ConfigureDialogHost.Provider>
       ) : null}
+      <ImportWizard start={wizard} onClose={() => setWizard(null)} />
     </section>
   );
 }
