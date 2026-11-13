@@ -2,6 +2,7 @@ import type { ComponentType, ReactNode } from 'react';
 
 /** Elevated studio panel — consistent padding, border, subtle depth. */
 export function StudioPanel({
+  id,
   title,
   icon: Icon,
   description,
@@ -9,6 +10,7 @@ export function StudioPanel({
   children,
   className = '',
 }: {
+  id?: string;
   title?: string;
   /** Optional leading icon rendered before the title. */
   icon?: ComponentType<{ size?: number; 'aria-hidden'?: boolean }>;
@@ -19,6 +21,7 @@ export function StudioPanel({
 }) {
   return (
     <section
+      id={id}
       className={`border-border bg-background-secondary/40 rounded-xl border p-5 shadow-sm sm:p-6 ${className}`}
     >
       {(title || action) && (

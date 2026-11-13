@@ -47,7 +47,7 @@ test('large and medium music rows fit a phone and render real waveforms', async 
   page,
 }) => {
   await signIn(page);
-  await page.goto('/library/sounds');
+  await page.goto('/studio/sounds');
   const list = page.getByTestId('ambient-track-list');
   await expect(list).toBeVisible();
   for (const size of ['Large', 'Medium']) {

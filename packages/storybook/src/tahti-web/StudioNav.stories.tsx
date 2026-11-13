@@ -140,3 +140,51 @@ export const FansPageBackLink: Story = {
     );
   },
 };
+
+/** The catalog moved in from Library: Tracks and Collections are Music chips
+ * next to Releases, and Upload keeps Tracks lit. */
+export const MusicCatalogChips: Story = {
+  args: { current: '/studio/upload', global: true },
+  decorators: [withTahtiRouter('/studio/upload')],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      within(
+        canvas.getByRole('navigation', { name: 'Studio pages' }),
+      ).getByRole('link', { name: 'Music' }),
+    ).toHaveAttribute('aria-current', 'page');
+    const music = canvas.getByRole('navigation', { name: 'Music pages' });
+    await expect(
+      within(music)
+        .getAllByRole('link')
+        .map((link) => link.textContent),
+    ).toEqual([
+      'Releases',
+      'Tracks',
+      'Collections',
+      'Distribution',
+      'Editor',
+      'Groups',
+    ]);
+    await expect(
+      within(music).getByRole('link', { name: 'Tracks' }),
+    ).toHaveAttribute('aria-current', 'page');
+  },
+};
+
+/** Recordings opens from a Broadcast hub card, so it links back to the hub
+ * instead of showing the Broadcast chips. */
+export const RecordingsBackLink: Story = {
+  args: { current: '/studio/recordings', global: true },
+  decorators: [withTahtiRouter('/studio/recordings')],
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.queryByRole('navigation', { name: 'Broadcast pages' }),
+    ).toBeNull();
+    await expect(canvas.getByTestId('studio-broadcast-back')).toHaveAttribute(
+      'href',
+      '/studio/broadcast',
+    );
+  },
+};

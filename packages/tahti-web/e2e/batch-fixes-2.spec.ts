@@ -88,9 +88,9 @@ test('old Studio moderation, playlists and collections addresses still redirect'
   await page.goto('/studio/moderation');
   await expect(page).toHaveURL(/\/studio\/fans$/);
   await page.goto('/studio/playlists');
-  await expect(page).toHaveURL(/\/library\/collections$/);
+  await expect(page).toHaveURL(/\/studio\/collections$/);
   await page.goto('/studio/collections');
-  await expect(page).toHaveURL(/\/library\/collections$/);
+  await expect(page).toHaveURL(/\/studio\/collections$/);
   await expect(page.getByText('Page not found')).toHaveCount(0);
 });
 

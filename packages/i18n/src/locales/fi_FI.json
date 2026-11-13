@@ -685,7 +685,8 @@
       "channel": "Kanava",
       "home": "Koti",
       "fans": "Fanit",
-      "profile": "Profiili"
+      "profile": "Profiili",
+      "tracks": "Kappaleet"
     },
     "settings": {
       "signInPrompt": "Kirjaudu sisään tili-, artisti- ja studioasetuksia varten.",
@@ -1846,7 +1847,8 @@
       "mediaPurgeDescription_other": "{{count}} tiedostoa ({{size}}) ei ole profiilisi, kanavasi, julkaisujesi tai minkään muun sinulle kuuluvan käytössä. Ne poistetaan pysyvästi.",
       "mediaPurgeConfirm": "Poista käyttämättömät",
       "mediaPurged_one": "Poistettiin {{count}} käyttämätön tiedosto, vapautui {{size}}.",
-      "mediaPurged_other": "Poistettiin {{count}} käyttämätöntä tiedostoa, vapautui {{size}}."
+      "mediaPurged_other": "Poistettiin {{count}} käyttämätöntä tiedostoa, vapautui {{size}}.",
+      "moreTrackActions": "Lisää kappaletoimintoja"
     },
     "date": {
       "today": "Tänään",
@@ -7576,7 +7578,13 @@
       "agendaFilter": "Ohjelman suodatin",
       "broadcastTools": "Lähetystyökalut",
       "listenInPlayer": "Kuuntele soittimessa",
-      "pauseInPlayer": "Tauko"
+      "pauseInPlayer": "Tauko",
+      "kindShow": "Ohjelma",
+      "kindEvent": "Tapahtuma",
+      "kindParty": "Kuuntelujuhla",
+      "live": "Livenä",
+      "filterAll": "Kaikki",
+      "radio247": "24/7-radio"
     },
     "socialAutoPost": {
       "disconnect": "Katkaise yhteys",
@@ -7732,7 +7740,10 @@
       "sessionOnBroadcast": "Istunto Lähetys-sivulla",
       "overallStatistics": "Kokonaistilastot",
       "channelSetup": "Kanavan asetukset",
-      "streamManager": "Lähetyksen hallinta"
+      "streamManager": "Lähetyksen hallinta",
+      "programmeOnSchedule": "24/7-ohjelma on Aikataulussa",
+      "programmeOnScheduleDescription": "Rotaatiota, offline-varaohjelmaa ja ilmoituksia hallitaan Aikataulussa ohjelmiesi vieressä.",
+      "openSchedule": "Avaa Aikataulu"
     },
     "releaseStatsPanel": {
       "anonymizedCountriesForThisRelease": "Anonymisoidut maat tämän julkaisun lasketuille soitoille ja latauksille.",
@@ -8295,7 +8306,7 @@
     },
     "studioSoundView": {
       "stillProcessingThisCanTake": "Käsitellään vielä. Pidemmissä tiedostoissa tämä voi kestää minuutin. Toisto, aaltomuoto ja pikakorjaukset avautuvat, kun se on valmis; alla olevia tietoja voi muokata ja tallentaa jo nyt.",
-      "backToLibrarySounds": "Takaisin kirjaston ääniin"
+      "backToTracks": "Takaisin kappaleisiin"
     },
     "agmTab": {
       "saving": "Tallennetaan…",
@@ -8361,7 +8372,11 @@
     },
     "upcomingShowsSection": {
       "viewAmpEdit": "Näytä ja muokkaa",
-      "upcomingShows": "Tulevat ohjelmat"
+      "upcomingShows": "Tulevat ohjelmat",
+      "nextUp": "Seuraavaksi: {{title}}",
+      "moreComingUp_one": "{{count}} muu tulossa",
+      "moreComingUp_other": "{{count}} muuta tulossa",
+      "openAgenda": "Avaa ohjelma"
     },
     "recentActivitySection": {
       "recentUploads": "Viimeisimmät lataukset",

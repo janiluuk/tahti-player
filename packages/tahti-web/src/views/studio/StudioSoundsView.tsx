@@ -1,8 +1,9 @@
 import { Navigate, useNavigate, useSearch } from '@tanstack/react-router';
-import { LinkIcon, Music2Icon } from 'lucide-react';
+import { ImageIcon, LinkIcon, ListOrderedIcon, Music2Icon } from 'lucide-react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, Tabs, ViewShell } from '@tahti-player/ui';
+import { Button, OverflowMenu, Tabs, ViewShell } from '@tahti-player/ui';
 
 import { AddToMusicActions } from '../../components/AddToMusicActions';
 import {
@@ -16,14 +17,13 @@ import { StudioPanel } from '../../components/StudioPanel';
 import { hasStudioAccess } from '../../lib/accountRoles';
 import { useAuthStore } from '../../stores/authStore';
 import { LibraryEmbedsView } from '../LibraryEmbedsView';
-import { LibrarySectionTabs } from '../LibraryView';
 import { SoundActiveFilterChips } from './sounds/SoundActiveFilterChips';
 import { SoundFilters } from './sounds/SoundFilters';
 import { SoundsAmbientList } from './sounds/SoundsAmbientList';
 import { SoundsDialogs } from './sounds/SoundsDialogs';
 import { SoundsSelectionBar } from './sounds/SoundsSelectionBar';
 import { SoundsStatsStrip } from './sounds/SoundsStatsStrip';
-import { TrackOrderButton } from './sounds/TrackOrderButton';
+import { TrackOrderDialog } from './sounds/TrackOrderDialog';
 import { useStudioSoundsState } from './sounds/useStudioSoundsState';
 
 type SoundsPanelTab = 'sounds' | 'embeds';
@@ -39,6 +39,8 @@ export function StudioSoundsView() {
   const panelTab: SoundsPanelTab =
     search.tab === 'embeds' ? 'embeds' : 'sounds';
   const state = useStudioSoundsState();
+  const [trackOrderOpen, setTrackOrderOpen] = useState(false);
+  const canOrderTracks = useAuthStore((auth) => Boolean(auth.user?.username));
   const listener = useAuthStore(
     (auth) =>
       Boolean(auth.user) && auth.profileLoaded && !hasStudioAccess(auth.user),
@@ -58,12 +60,12 @@ export function StudioSoundsView() {
   } = state;
 
   if (listener) {
-    return <Navigate to="/library" />;
+    return <Navigate to="/library/favorites" />;
   }
 
   const setPanelTab = (next: SoundsPanelTab) => {
     void navigate({
-      to: '/library/sounds',
+      to: '/studio/sounds',
       search: (previous: unknown) => {
         const current =
           typeof previous === 'object' && previous !== null
@@ -110,7 +112,7 @@ export function StudioSoundsView() {
     <PageEmpty
       title={t('library.soundsEmptyTitle')}
       description={t('library.soundsEmptyDescription')}
-      action={<AddToMusicActions align="center" uploadTo="/library/upload" />}
+      action={<AddToMusicActions align="center" uploadTo="/studio/upload" />}
     />
   ) : (
     <>
@@ -135,31 +137,44 @@ export function StudioSoundsView() {
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6 px-1 py-2">
-        <LibrarySectionTabs active="sounds" />
         <ViewShell
           title={t('library.soundsTitle')}
           classes={{ root: 'px-0 pt-0' }}
-        >
-          {panelTab === 'sounds' ? (
-            <div className="mb-4 flex flex-wrap items-start justify-between gap-2">
+          actions={
+            <div
+              className="flex flex-wrap items-center gap-2"
+              data-testid="studio-sounds-actions"
+            >
               <AddToMusicActions onUploaded={reload} />
-              <div className="flex flex-wrap items-center gap-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="secondary"
-                  disabled={state.coversBusy || state.bulkBusy}
-                  onClick={() => state.backfillCovers()}
-                >
-                  {state.coversBusy
-                    ? t('library.coversBackfillBusy')
-                    : t('library.coversBackfill')}
-                </Button>
-                <TrackOrderButton />
-              </div>
+              <OverflowMenu
+                label={t('library.moreTrackActions')}
+                items={[
+                  {
+                    id: 'covers',
+                    label: state.coversBusy
+                      ? t('library.coversBackfillBusy')
+                      : t('library.coversBackfill'),
+                    icon: <ImageIcon size={14} aria-hidden />,
+                    disabled: state.coversBusy || state.bulkBusy,
+                    onSelect: () => {
+                      void state.backfillCovers();
+                    },
+                  },
+                  ...(canOrderTracks
+                    ? [
+                        {
+                          id: 'order',
+                          label: t('library.trackOrderButton'),
+                          icon: <ListOrderedIcon size={14} aria-hidden />,
+                          onSelect: () => setTrackOrderOpen(true),
+                        },
+                      ]
+                    : []),
+                ]}
+              />
             </div>
-          ) : null}
-
+          }
+        >
           <StudioPanel>
             <Tabs
               className="min-w-0"
@@ -200,6 +215,10 @@ export function StudioSoundsView() {
           </StudioPanel>
         </ViewShell>
         <SoundsDialogs state={state} />
+        <TrackOrderDialog
+          isOpen={trackOrderOpen}
+          onClose={() => setTrackOrderOpen(false)}
+        />
       </div>
     </StudioGate>
   );

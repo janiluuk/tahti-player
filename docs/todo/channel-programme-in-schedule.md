@@ -11,6 +11,6 @@ Settings → Channel / Broadcast and the channel designer.
 
 - [ ] Inventory where the programme is edited today (rotation editor, fallback / autoplay when offline, auto-enroll archive into fallback, announcements, radio playlist panel) and which of those Schedule only shows read-only.
 - [x] Announcements, offline fallback and auto-enroll switches moved to Schedule's "Channel programme" panel (`ProgrammeToggles`); Settings → Broadcast says where they went and links there. Recording switches stay in Settings.
-- [ ] Make Schedule the one place to edit the rest: rotation (add, reorder, remove), offline fallback on/off and source, announcements in the programme; Settings keeps only defaults and links here.
-- [ ] Leave links from Settings → Broadcast and the channel designer to Schedule so existing paths still lead to it.
-- [ ] Stories + e2e: edit the 24/7 rotation and the offline programme from Schedule.
+- [x] Make Schedule the one place to edit the rest (2026-11-13): the rotation source picker, radio playlist and announcement clips sit under Schedule's "Channel programme" panel (`#channel-programme`); Studio → Channel → 24/7 is a pointer card to it, and the Broadcast hub's 24/7 card opens it.
+- [ ] Leave links from Settings → Broadcast and the channel designer to Schedule so existing paths still lead to it. (Settings → Broadcast and Studio → Channel → 24/7 link there; the channel designer does not yet.)
+- [ ] Stories + e2e: edit the 24/7 rotation and the offline programme from Schedule. (`channel-clips.spec.ts` now edits announcement clips on Schedule; rotation story left.)

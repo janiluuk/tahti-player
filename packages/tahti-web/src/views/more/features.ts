@@ -275,7 +275,7 @@ export const FEATURES: FeatureRow[] = [
   {
     feature: 'Studio upload',
     tahti: '/dashboard/upload',
-    nuclear: '/library/upload',
+    nuclear: '/studio/upload',
     status: 'live',
     notes: 'prepare → PUT → complete (mock offline)',
   },

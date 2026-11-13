@@ -56,7 +56,7 @@ export function RecordingPanel({ state }: { state: GoLiveState }) {
         />
       </div>
       <Link
-        to="/library/recordings"
+        to="/studio/recordings"
         aria-label={t('goLiveRecording.openRecordings')}
         className="text-foreground-secondary mt-3 inline-flex items-center gap-1.5 text-xs underline-offset-2 hover:underline"
       >

@@ -88,7 +88,7 @@ export function StatusBarContent({
       <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1">
         <Tooltip content={soundsLabel} side="top">
           <Link
-            to="/library/sounds"
+            to="/studio/sounds"
             className="text-foreground hover:bg-background-secondary inline-flex items-center gap-1.5 rounded-md px-1.5 py-1"
             data-testid="status-bar-sounds"
             aria-label={soundsLabel}

@@ -29,7 +29,6 @@ import {
   UPLOAD_AUDIO_FORMATS_LABEL,
 } from '../../lib/uploadAudioFormats';
 import { usePlayerStore } from '../../stores/playerStore';
-import { LibrarySectionTabs } from '../LibraryView';
 import { UploadSourceWidgets } from './upload/UploadSourceWidgets';
 
 function formatRecordingDuration(seconds?: number | null): string {
@@ -224,7 +223,6 @@ export function StudioUploadView() {
   return (
     <StudioGate>
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
-        <LibrarySectionTabs active="upload" />
         <ViewShell
           title={t('library.uploadTitle')}
           classes={{ root: 'px-0 pt-0' }}

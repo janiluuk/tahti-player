@@ -162,17 +162,18 @@ test('library is its own sidebar section with Library tabs, not a Studio tab', a
       .getByTestId('sidebar-navigation-item')
       .filter({ hasText: /^Library$/ }),
   ).toHaveClass(/bg-primary/);
-  await expect(page.getByRole('tab', { name: 'Overview' })).toHaveAttribute(
+  await expect(page).toHaveURL(/\/library\/favorites$/);
+  await expect(page.getByRole('tab', { name: 'Favorites' })).toHaveAttribute(
     'aria-selected',
     'true',
   );
-  await expect(page.getByRole('tab', { name: 'Sounds' })).toBeVisible();
-  await expect(page.getByRole('tab', { name: 'Collections' })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Sounds' })).toHaveCount(0);
+  await expect(page.getByRole('tab', { name: 'Collections' })).toHaveCount(0);
 
   await acknowledgeGuidelines(page);
-  await page.getByRole('tab', { name: 'Sounds' }).click();
-  await expect(page).toHaveURL(/\/library\/sounds$/);
-  await expect(page.getByRole('tab', { name: 'Sounds' })).toHaveAttribute(
+  await page.getByRole('tab', { name: 'History' }).click();
+  await expect(page).toHaveURL(/\/library\/history$/);
+  await expect(page.getByRole('tab', { name: 'History' })).toHaveAttribute(
     'aria-selected',
     'true',
   );
@@ -190,8 +191,8 @@ test('library is its own sidebar section with Library tabs, not a Studio tab', a
   ).toBeVisible();
   await mobilePrimary.getByRole('button', { name: 'More' }).click();
   await page.getByRole('dialog').getByRole('link', { name: 'Library' }).click();
-  await expect(page).toHaveURL(/\/library$/);
-  await expect(page.getByRole('tab', { name: 'Overview' })).toBeVisible();
+  await expect(page).toHaveURL(/\/library\/favorites$/);
+  await expect(page.getByRole('tab', { name: 'Favorites' })).toBeVisible();
 
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto('/library/favorites');

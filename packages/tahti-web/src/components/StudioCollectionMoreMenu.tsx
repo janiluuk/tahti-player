@@ -103,7 +103,7 @@ export function StudioCollectionMoreMenu({
       if (onDeleted) {
         onDeleted();
       } else {
-        void navigate({ to: '/library/collections' });
+        void navigate({ to: '/studio/collections' });
       }
     });
   };

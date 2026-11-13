@@ -59,7 +59,7 @@ test('artist: the store switch shows or hides the Store on the channel', async (
 test('artist: the track editor has Basics, Sharing and Advanced tabs', async ({
   page,
 }) => {
-  await open(page, '/library/sounds');
+  await open(page, '/studio/sounds');
   await main(page)
     .getByRole('button', { name: 'Edit Studio sketch A' })
     .click();

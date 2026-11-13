@@ -108,7 +108,7 @@ export function StudioHomeView() {
                     </ul>
                     <div className="border-border border-t px-4 py-3">
                       <Link
-                        to="/library/recordings"
+                        to="/studio/recordings"
                         className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
                       >
                         {t('studioHub.viewAllRecordings')}

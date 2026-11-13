@@ -2,7 +2,6 @@ import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { StudioGate } from '../../components/StudioGate';
-import { LibrarySectionTabs } from '../LibraryView';
 import { RecordingsPanel } from './recordings/RecordingsPanel';
 import { useRecordingsState } from './recordings/useRecordingsState';
 
@@ -30,7 +29,6 @@ export function StudioRecordingsView({
     >
       {!embedded ? (
         <>
-          <LibrarySectionTabs active="recordings" />
           <ViewShell
             title={t('studioRecordings.title')}
             classes={{ root: 'px-0 pt-0' }}

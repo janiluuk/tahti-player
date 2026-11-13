@@ -31,10 +31,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [yaniho-channel-pregenerate-peaks.md](yaniho-channel-pregenerate-peaks.md) | Pre-generate peaks so Yaniho channel tracks are not stuck loading |
 | open    | [artwork-preset-backfill.md](artwork-preset-backfill.md) | Run the artwork-preset cover backfill after tahti-org#1033 is merged |
 | open    | [listings-news-opening-post.md](listings-news-opening-post.md) | Update the listings news opening post once an admin is signed in |
-| open    | [studio-music-catalog.md](studio-music-catalog.md) | Move the catalog into Studio → Music |
 | open    | [studio-profile-forms.md](studio-profile-forms.md) | Edit profile forms from Studio |
-| open    | [broadcast-agenda.md](broadcast-agenda.md) | Give Broadcast an agenda |
-| open    | [studio-overview-merge.md](studio-overview-merge.md) | Merge the extra Studio overview into the simplified nav |
 | open    | [finnish-api-notifications.md](finnish-api-notifications.md) | Translate API notification bodies |
 | open    | [board-track-edit-product-call.md](board-track-edit-product-call.md) | Decide how board members edit a track |
 | open    | [embed-downloads-product-call.md](embed-downloads-product-call.md) | Decide whether an embed offers downloads |
@@ -58,19 +55,18 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [spotify-listen-widget-artist-playlist.md](spotify-listen-widget-artist-playlist.md) | After lane-handoff leftover PRs: add a Listen widget for a Spotify artist or playlist URL |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
-| partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; Inbox queue chips shipped (0.0.377); left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Overview merge, docs rewrite |
-| open    | [library-for-listeners.md](library-for-listeners.md) | Library is for listeners (saved items, desktop library browse); move Sounds, Collections, Upload, Recordings and Smart links to Studio and change the nav |
+| partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, catalog in Studio → Music and Library for listeners (2026-11-13), one Broadcast agenda; left: Profile forms in Studio, Go live full-screen flow, Inbox side panel, Admin Overview merge, docs rewrite |
 | partial | [finnish-localization.md](finnish-localization.md) | Settings → Language plus chrome/player/Listen/Discover/Library; web.actions, SEO, the page tour, the Upload broadcast label, batches 51–58 (playback, themes, multicast, API errors, downloads, embeds, chat, stems, broadcast, undo toasts, admin fallbacks, and governance errors), and the 50 leftover groups (analysis, desktop import, queue, membership) have Finnish; left: API notification bodies |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks. Track page like and recently played search shipped. |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; stage embed stays one widget (0.0.376); left: embed downloads (product call) |
-| open    | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Plan: page anatomy rules (one header, one primary action, overflow, one toolbar), Settings account-only in 7 items, duplicate surfaces removed; 9 phases, absorbs navigation-simplification slices 1-3, 7, 9, 10 |
+| partial | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Page anatomy rules + Settings account-only; phase 0 blocks exist, phase 1 catalog move shipped (2026-11-13), Tracks header on the anatomy rule; left: Library Playlists/Files tabs, phases 2-8 |
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
 | open    | [fans-chat-tabs-restyle.md](fans-chat-tabs-restyle.md) | Fans Chat: Access/Messages/Moderators/Bans as tabs; restyle recent messages |
 | open    | [listener-stats-origin-url.md](listener-stats-origin-url.md) | Listener stats: show full referrer/origin URL, not only host |
 | partial | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard now renders its last result at once and refreshes in the background; left: measure API time, sweep governance overview, financial, Discover |
 | open    | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Community stats sit at the top of the overview (0.0.380); left: the overview is still slow, and Grafana from tahti.live cannot connect |
-| partial | [channel-programme-in-schedule.md](channel-programme-in-schedule.md) | Studio → Broadcast → Schedule shows the 24/7 and offline programme; make it the place where you manage the channel's programme |
+| partial | [channel-programme-in-schedule.md](channel-programme-in-schedule.md) | Rotation source, radio playlist, announcements and programme switches are edited on Schedule (2026-11-13); left: channel designer link, inventory check, stories |
 | open    | [google-facebook-login.md](google-facebook-login.md) | Sign up and log in with Google and Facebook: API OAuth callbacks, OAuth apps (ops), buttons on log in / sign up, account linking |
 | partial | [navigation-performance.md](navigation-performance.md) | Back/forward speed: GET cache, atlas out of the shell and gzip level 6 done; left: render cached data without a loader frame, drop mock fixtures from prod, split table/dnd out of the shell |
 | open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` on events/updates/editor/playlist/collection/release, radio presets, theme submissions; plugin-store disconnect; left: none known) |

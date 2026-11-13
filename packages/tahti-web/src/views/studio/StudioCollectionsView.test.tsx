@@ -50,10 +50,6 @@ vi.mock('./CollectionOrderButton', () => ({
   CollectionOrderButton: () => null,
 }));
 
-vi.mock('../LibraryView', () => ({
-  LibrarySectionTabs: () => null,
-}));
-
 let container: HTMLDivElement;
 let root: Root;
 

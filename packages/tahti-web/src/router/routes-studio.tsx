@@ -9,6 +9,7 @@ import {
   movedSettingsSection,
   type MovedSettingsSection,
 } from '../lib/movedSettingsSections';
+import { parseStudioSoundsSearch } from '../lib/studioSoundsSearch';
 import { editSearch } from '../lib/useEditMode';
 import { StudioSetupChannelRedirect } from '../views/studio/StudioSetupChannelRedirect';
 import { appLayoutRoute } from './router-core';
@@ -16,6 +17,7 @@ import {
   StudioBroadcastView,
   StudioChannelView,
   StudioCollectionEditView,
+  StudioCollectionsView,
   StudioDistributionView,
   StudioEditorListView,
   StudioEditorProjectView,
@@ -33,12 +35,15 @@ import {
   StudioPlaylistEditorView,
   StudioProEditorView,
   StudioProfileView,
+  StudioRecordingsView,
   StudioReleaseDetailView,
   StudioReleasesView,
   StudioRevenueView,
   StudioScheduleView,
   StudioShowDetailView,
   StudioShowsView,
+  StudioSmartLinksView,
+  StudioSoundsView,
   StudioSoundView,
   StudioStatsDetailView,
   StudioStatsView,
@@ -77,28 +82,44 @@ export const studioBroadcastInfoRoute = createRoute({
 export const studioSoundsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/sounds',
-  beforeLoad: () => {
-    throw redirect({ to: '/library/sounds' });
+  validateSearch: parseStudioSoundsSearch,
+  beforeLoad: ({ search }) => {
+    if (search.folder === 'files') {
+      throw redirect({ to: '/library/stash' });
+    }
+    if (search.folder === 'clips') {
+      throw redirect({
+        to: '/studio/sounds',
+        search: { contentType: 'CLIP' },
+      });
+    }
+    if (search.folder === 'sound') {
+      throw redirect({ to: '/studio/sounds' });
+    }
   },
+  component: StudioSoundsView,
 });
 
-/** Old path, kept as a redirect — linked from bookmarks, old shares, and
- * the "archive" naming this page used before the Sounds rename. */
+/** Linked from bookmarks, old shares, and the "archive" naming this page
+ * used before the Sounds rename. */
 export const studioArchiveRedirectRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/archive',
   beforeLoad: () => {
-    throw redirect({ to: '/library/sounds' });
+    throw redirect({ to: '/studio/sounds' });
   },
 });
 
-/** Old path — Recordings is now a Library tab, not a Studio one. */
 export const studioRecordingsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/recordings',
-  beforeLoad: () => {
-    throw redirect({ to: '/library/recordings' });
-  },
+  component: StudioRecordingsView,
+});
+
+export const studioSmartLinksRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/smartlinks',
+  component: StudioSmartLinksView,
 });
 
 export const studioSoundItemRoute = createRoute({
@@ -183,9 +204,7 @@ export const studioReleaseDetailRoute = createRoute({
 export const studioCollectionsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/collections',
-  beforeLoad: () => {
-    throw redirect({ to: '/library/collections' });
-  },
+  component: StudioCollectionsView,
 });
 
 export const studioCollectionEditRoute = createRoute({
@@ -202,15 +221,15 @@ export const studioCollectionEditRoute = createRoute({
 export const studioUploadRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/upload',
-  beforeLoad: () => {
-    throw redirect({ to: '/library/upload' });
-  },
+  component: StudioUploadView,
 });
 
 export const libraryUploadRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/upload',
-  component: StudioUploadView,
+  beforeLoad: () => {
+    throw redirect({ to: '/studio/upload' });
+  },
 });
 
 export const studioEditorRoute = createRoute({
@@ -397,7 +416,7 @@ export const studioPlaylistsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/playlists',
   beforeLoad: () => {
-    throw redirect({ to: '/library/collections' });
+    throw redirect({ to: '/studio/collections' });
   },
 });
 

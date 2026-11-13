@@ -34,7 +34,7 @@ function tinyWav(): Buffer {
 }
 
 test('artist: uploads a track and lands on its page', async ({ page }) => {
-  await open(page, '/library/upload');
+  await open(page, '/studio/upload');
   const upload = main(page).getByRole('button', { name: 'Upload file' });
   await expect(upload).toBeDisabled();
   await page.locator('input[type=file]').first().setInputFiles({
@@ -89,7 +89,7 @@ test('artist: saves the profile story', async ({ page }) => {
 
 test('artist: renames a track in the track editor', async ({ page }) => {
   const title = `Studio sketch B ${Date.now()}`;
-  await open(page, '/library/sounds');
+  await open(page, '/studio/sounds');
   await main(page)
     .getByRole('button', { name: 'Edit Studio sketch A' })
     .click();

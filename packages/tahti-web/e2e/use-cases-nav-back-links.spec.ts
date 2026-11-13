@@ -114,7 +114,7 @@ test('a radio show leads back to Radio', async ({ page }) => {
   await back(page, '/radio/show/northern-lights', 'Radio', /\/radio$/);
 });
 
-test('mastering and the pro editor lead straight to Library Sounds', async ({
+test('mastering and the pro editor lead straight to Studio Tracks', async ({
   page,
 }) => {
   await signIn(page);
@@ -122,13 +122,13 @@ test('mastering and the pro editor lead straight to Library Sounds', async ({
     page,
     '/studio/mastering/arch-mock-1',
     'Sounds',
-    /\/library\/sounds$/,
+    /\/studio\/sounds$/,
   );
   await back(
     page,
     '/studio/sounds/arch-mock-1/editor',
     'Sounds',
-    /\/library\/sounds$/,
+    /\/studio\/sounds$/,
   );
 });
 

@@ -141,16 +141,8 @@ function isChatRoute(path: string): boolean {
 function isLibrarySidebarRoute(path: string): boolean {
   return (
     matchesSectionRoute(path, ['/library']) ||
-    path.startsWith('/studio/sounds') ||
-    path.startsWith('/studio/archive') ||
-    path === '/studio/collections' ||
-    path.startsWith('/studio/collections/') ||
-    path === '/studio/playlists' ||
-    path.startsWith('/studio/playlists/') ||
     path === '/studio/stash' ||
-    path.startsWith('/studio/stash/') ||
-    path === '/studio/recordings' ||
-    path.startsWith('/studio/recordings/')
+    path.startsWith('/studio/stash/')
   );
 }
 

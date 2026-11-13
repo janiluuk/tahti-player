@@ -75,7 +75,7 @@ describe('OAuthServiceCard connecting', () => {
     expect(window.location.href).toBe(startHref);
     expect(
       screen.getByRole('link', { name: 'Upload files' }).getAttribute('href'),
-    ).toBe('/library/upload');
+    ).toBe('/studio/upload');
   });
 
   it('offers to check again when the status could not be read', async () => {

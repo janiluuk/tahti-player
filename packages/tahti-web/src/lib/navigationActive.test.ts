@@ -48,9 +48,12 @@ describe('navigation active states', () => {
     ['/library', 'library'],
     ['/library/sounds', 'library'],
     ['/library/upload', 'library'],
-    ['/studio/sounds', 'library'],
-    ['/studio/sounds/arch-1', 'library'],
-    ['/studio/collections', 'library'],
+    ['/studio/sounds', 'studio'],
+    ['/studio/sounds/arch-1', 'studio'],
+    ['/studio/collections', 'studio'],
+    ['/studio/upload', 'studio'],
+    ['/studio/recordings', 'studio'],
+    ['/studio/smartlinks', 'studio'],
     ['/admin', 'admin'],
     ['/admin/users', 'admin'],
     ['/help', 'help'],
@@ -103,7 +106,7 @@ describe('navigation active states', () => {
     expect(activeMobileItem('/favorites')).toBe('library');
     expect(activeMobileItem('/library/favorites')).toBe('library');
     expect(activeMobileItem('/library')).toBe('library');
-    expect(activeMobileItem('/studio/sounds')).toBe('library');
+    expect(activeMobileItem('/studio/sounds')).toBe('studio');
     expect(activeMobileItem('/studio/go-live')).toBe('studio');
   });
 

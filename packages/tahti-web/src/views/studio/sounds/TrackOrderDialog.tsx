@@ -1,18 +1,21 @@
-import { ListOrderedIcon } from 'lucide-react';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button } from '@tahti-player/ui';
 
 import { fetchProfile } from '../../../api/client';
 import { reorderPublicTracks } from '../../../api/profile-order';
 import { ProfileOrderDialog } from '../../../components/ProfileOrderDialog';
 import { useAuthStore } from '../../../stores/authStore';
 
-export function TrackOrderButton() {
+export function TrackOrderDialog({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+}) {
   const { t } = useTranslation('web');
   const username = useAuthStore((s) => s.user?.username);
-  const [open, setOpen] = useState(false);
 
   const load = useCallback(async () => {
     if (!username) {
@@ -30,20 +33,14 @@ export function TrackOrderButton() {
   }
 
   return (
-    <>
-      <Button variant="secondary" size="sm" onClick={() => setOpen(true)}>
-        <ListOrderedIcon size={14} aria-hidden className="mr-1.5" />
-        {t('library.trackOrderButton')}
-      </Button>
-      <ProfileOrderDialog
-        isOpen={open}
-        title={t('library.trackOrderTitle')}
-        description={t('library.trackOrderDescription')}
-        empty={t('library.trackOrderEmpty')}
-        load={load}
-        save={reorderPublicTracks}
-        onClose={() => setOpen(false)}
-      />
-    </>
+    <ProfileOrderDialog
+      isOpen={isOpen}
+      title={t('library.trackOrderTitle')}
+      description={t('library.trackOrderDescription')}
+      empty={t('library.trackOrderEmpty')}
+      load={load}
+      save={reorderPublicTracks}
+      onClose={onClose}
+    />
   );
 }

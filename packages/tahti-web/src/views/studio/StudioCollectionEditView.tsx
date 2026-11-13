@@ -22,14 +22,7 @@ import { TextLayerPanel } from './collection-edit/TextLayerPanel';
 import { TracklistPanel } from './collection-edit/TracklistPanel';
 import { useCollectionEditState } from './collection-edit/useCollectionEditState';
 
-export function StudioCollectionEditView({
-  slug,
-  nav = 'studio',
-}: {
-  slug: string;
-  /** Which top navigation this page was reached through. */
-  nav?: 'studio' | 'library';
-}) {
+export function StudioCollectionEditView({ slug }: { slug: string }) {
   const { t } = useTranslation('web');
   const state = useCollectionEditState(slug);
   const { col, isAlbumLike, loadError, reload } = state;
@@ -57,11 +50,7 @@ export function StudioCollectionEditView({
             wrapperClassName={backButtonCornerClassName}
           >
             <BackButtonLink
-              to={
-                nav === 'library'
-                  ? '/library/collections'
-                  : '/studio/collections'
-              }
+              to="/studio/collections"
               aria-label={t('studioCollectionEditView.backToCollections')}
             />
           </Tooltip>

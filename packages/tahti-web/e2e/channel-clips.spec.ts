@@ -12,15 +12,12 @@ test.use({
   },
 });
 
-test('24/7 clip editor previews, activates, and deletes clips with Studio chrome mounted', async ({
+test('Schedule clip editor previews, activates, and deletes clips with Studio chrome mounted', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/studio/channel?radio=rotation#radio');
+  await page.goto('/studio/schedule#channel-programme');
   await expect(page.getByTestId('studio-navigation')).toBeVisible();
-  await expect(
-    page.getByRole('tab', { name: '24/7', exact: true }),
-  ).toHaveAttribute('aria-selected', 'true');
   const section = page.locator('#channel-clips');
   await section
     .getByRole('button', { name: /^Edit / })
@@ -57,7 +54,7 @@ test('records voice as WAV and opens the take as an inactive clip', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/studio/channel?radio=rotation#radio');
+  await page.goto('/studio/schedule#channel-programme');
   const section = page.locator('#channel-clips');
   await section
     .getByRole('button', { name: 'Record voice', exact: true })

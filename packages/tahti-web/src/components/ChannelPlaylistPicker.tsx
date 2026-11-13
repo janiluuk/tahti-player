@@ -91,7 +91,7 @@ export function ChannelPlaylistPicker({
       <PageEmpty
         title={t('empties.noLibraryPlaylists')}
         action={
-          <ButtonLink to="/library/collections" size="sm" variant="secondary">
+          <ButtonLink to="/studio/collections" size="sm" variant="secondary">
             <PlusIcon size={16} aria-hidden />
             {t('emptyActions.newCollection')}
           </ButtonLink>

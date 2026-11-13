@@ -111,7 +111,7 @@ export function BroadcastControls({ nav }: { nav: TopNavState }) {
         wrapperClassName="hidden sm:inline-flex"
       >
         <ButtonLink
-          to="/library/upload"
+          to="/studio/upload"
           variant="text"
           size="icon-sm"
           className={iconBtnClass}

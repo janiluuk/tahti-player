@@ -5,6 +5,7 @@ import {
   DiscAlbumIcon,
   ExternalLinkIcon,
   LibraryIcon,
+  Link2Icon,
   MoreHorizontalIcon,
   PlusIcon,
   SearchIcon,
@@ -171,14 +172,15 @@ export function StudioReleasesView() {
           classes={{ root: 'px-0 pt-0' }}
           actions={
             <div className="flex items-center gap-2">
-              <Tooltip content={t('studioReleases.distribution')} side="top">
+              <Tooltip content={t('library.tabSmartLinks')} side="top">
                 <ButtonLink
-                  to="/studio/distribution"
+                  to="/studio/smartlinks"
                   size="icon-sm"
                   variant="text"
-                  aria-label={t('studioReleases.distribution')}
+                  aria-label={t('library.tabSmartLinks')}
+                  data-testid="studio-releases-smartlinks"
                 >
-                  <Share2Icon size={16} aria-hidden />
+                  <Link2Icon size={16} aria-hidden />
                 </ButtonLink>
               </Tooltip>
               <ReleaseCsvImportButton onImported={reload} />

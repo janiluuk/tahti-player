@@ -84,7 +84,7 @@ export function GoogleDriveImport({
         </Button>
         {unavailable ? (
           <ButtonLink
-            to="/library/upload"
+            to="/studio/upload"
             size="sm"
             variant="secondary"
             onClick={() => useSettingsModalStore.getState().close()}

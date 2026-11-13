@@ -7,17 +7,36 @@ import {
   type RouteVisit,
 } from './helpers/routeHealth';
 
+// The artist catalog moved to Studio → Music; its old Library links redirect.
 const libraryRoutes: RouteVisit[] = [
-  { path: '/library/sounds', heading: /^Sounds$/ },
-  { path: '/library/collections', heading: /^Collections$/ },
-  { path: '/library/recordings', heading: /^Recordings$/ },
+  { path: '/library', heading: /^Favorites$/, url: /\/library\/favorites$/ },
+  {
+    path: '/library/sounds',
+    heading: /^Sounds$/,
+    url: /\/studio\/sounds$/,
+  },
+  {
+    path: '/library/collections',
+    heading: /^Collections$/,
+    url: /\/studio\/collections$/,
+  },
+  {
+    path: '/library/recordings',
+    heading: /^Recordings$/,
+    url: /\/studio\/recordings$/,
+  },
   { path: '/library/stash', heading: /^Stash$/ },
   {
     path: '/library/embeds',
     heading: /^Sounds$/,
-    url: /\/library\/sounds\?tab=embeds/,
+    url: /\/studio\/sounds\?tab=embeds/,
   },
-  { path: '/library/smartlinks', heading: /^Smart links$/ },
+  {
+    path: '/library/smartlinks',
+    heading: /^Smart links$/,
+    url: /\/studio\/smartlinks$/,
+  },
+  { path: '/library/upload', heading: /^Upload$/, url: /\/studio\/upload$/ },
   { path: '/library/media', heading: /^Media$/ },
   {
     path: '/library/favorites',
@@ -30,8 +49,12 @@ const libraryRoutes: RouteVisit[] = [
     url: /\/settings\/artist\?tab=following/,
   },
   // The local-files tab exists only in the desktop app; on the web it
-  // falls back to the library overview instead of an empty tab.
-  { path: '/library/local', heading: 'Library overview', url: /\/library$/ },
+  // falls back to Favorites instead of an empty tab.
+  {
+    path: '/library/local',
+    heading: /^Favorites$/,
+    url: /\/library\/favorites$/,
+  },
 ];
 
 test('library tabs and their aliases render for a signed-in artist', async ({

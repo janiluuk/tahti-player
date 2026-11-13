@@ -62,8 +62,6 @@ const PAGE_TITLE_KEYS: [string, ParseKeys<'web'>][] = [
 const LIBRARY_PAGE_TITLE_KEYS: [string, ParseKeys<'web'>][] = [
   ['/library/favorites', 'library.tabFavorites'],
   ['/library/history', 'library.tabHistory'],
-  ['/library/sounds', 'library.tabSounds'],
-  ['/library/smartlinks', 'library.tabSmartLinks'],
   ['/library/local', 'library.tabLocal'],
 ];
 

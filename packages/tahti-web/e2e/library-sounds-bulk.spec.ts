@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 async function openSounds(page: Page) {
-  await page.goto('/library/sounds');
+  await page.goto('/studio/sounds');
   await acknowledgeGuidelines(page);
   await expect(page.getByRole('heading', { name: /^Sounds$/ })).toBeVisible();
 }
