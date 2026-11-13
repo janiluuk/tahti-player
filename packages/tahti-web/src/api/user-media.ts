@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import {
   imageUploadTypeError,
   resolveImageUploadContentType,
@@ -127,7 +129,10 @@ export async function uploadUserMediaFile(
   } catch (error) {
     return {
       ok: false,
-      error: error instanceof Error ? error.message : 'Media upload failed',
+      error:
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:batch53.mediaUploadFailed'),
     };
   }
 }
@@ -147,7 +152,10 @@ export async function deleteUserMedia(
   } catch (error) {
     return {
       ok: false,
-      error: error instanceof Error ? error.message : 'Media deletion failed',
+      error:
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:batch53.mediaDeletionFailed'),
     };
   }
 }
@@ -176,7 +184,9 @@ export async function fetchUnusedMedia(): Promise<
     return {
       ok: false,
       error:
-        error instanceof Error ? error.message : 'Could not check media use',
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:batch53.couldNotCheckMediaUse'),
     };
   }
 }
@@ -206,7 +216,10 @@ export async function purgeUnusedMedia(): Promise<
   } catch (error) {
     return {
       ok: false,
-      error: error instanceof Error ? error.message : 'Could not purge media',
+      error:
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:batch53.couldNotPurgeMedia'),
     };
   }
 }

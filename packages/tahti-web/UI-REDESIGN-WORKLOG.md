@@ -6722,3 +6722,7 @@ Community stats sit at the top of the admin overview, ahead of system health. Fi
 ## 2026-11-13 — Fifty more labels (0.0.381)
 
 Playback errors, themes, distribution checks, multicast, onboarding, search, and chat moderation follow the app language in English and Finnish.
+
+## 2026-11-13 — Fifty API error labels (0.0.382)
+
+When a request fails without a server message, group, store, support, event, governance, media, embed, track version, password link, and API token errors follow the app language in English and Finnish.

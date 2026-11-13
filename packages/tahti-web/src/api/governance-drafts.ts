@@ -28,7 +28,9 @@ export async function withdrawMotionDraft(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not withdraw the motion',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotWithdrawMotion'),
     };
   }
 }
@@ -68,7 +70,10 @@ export async function editMotionDraft(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not save the draft',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotSaveDraft'),
     };
   }
 }

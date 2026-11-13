@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { getJson } from './http';
 import { DEMO_MP3 } from './mock';
@@ -108,7 +110,7 @@ export async function uploadReleaseTrackStem(
 > {
   const contentType = file.type || 'audio/mpeg';
   if (!RELEASE_TRACK_STEM_TYPES.includes(contentType)) {
-    return { ok: false, error: 'Use WAV, FLAC, MP3, AAC or AIFF' };
+    return { ok: false, error: i18n.t('web:batch53.useAudioFormats') };
   }
   if (isForceMock()) {
     const key = mockKey(releaseId, trackId);

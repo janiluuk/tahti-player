@@ -143,7 +143,9 @@ export async function patchArtistGroup(
 ): Promise<{ ok: true; data: MyArtistGroup } | { ok: false; error: string }> {
   if (isForceMock()) {
     const data = mockPatchGroup(slug, patch);
-    return data ? { ok: true, data } : { ok: false, error: 'Group not found' };
+    return data
+      ? { ok: true, data }
+      : { ok: false, error: i18n.t('web:batch53.groupNotFound') };
   }
   try {
     const { data } = await requestJson<MyArtistGroup>(
@@ -154,7 +156,10 @@ export async function patchArtistGroup(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not update group',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotUpdateGroup'),
     };
   }
 }
@@ -173,7 +178,10 @@ export async function deleteArtistGroup(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not delete group',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotDeleteGroup'),
     };
   }
 }
@@ -199,7 +207,10 @@ export async function joinArtistGroup(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not join group',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotJoinGroup'),
     };
   }
 }
@@ -218,7 +229,10 @@ export async function leaveArtistGroup(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not leave group',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotLeaveGroup'),
     };
   }
 }
@@ -278,7 +292,10 @@ export async function submitGroupSound(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not submit track',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotSubmitTrack'),
     };
   }
 }
@@ -380,7 +397,10 @@ export async function resolveGroupJoinRequest(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not resolve request',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotResolveRequest'),
     };
   }
 }
@@ -417,7 +437,10 @@ export async function approveGroupSubmission(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not approve',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotApprove'),
     };
   }
 }
@@ -438,7 +461,10 @@ export async function rejectGroupSubmission(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not reject',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotReject'),
     };
   }
 }

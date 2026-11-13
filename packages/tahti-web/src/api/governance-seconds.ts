@@ -65,7 +65,9 @@ export async function withdrawMotionSecond(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not withdraw your second',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotWithdrawSecond'),
     };
   }
 }

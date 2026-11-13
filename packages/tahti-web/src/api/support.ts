@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import { isForceMock } from './mode';
 
@@ -49,7 +51,10 @@ export async function submitSupportTicket(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not send your message',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotSendMessage'),
     };
   }
 }
@@ -100,7 +105,9 @@ export async function fetchMySupportTickets(): Promise<
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not load your requests',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotLoadRequests'),
     };
   }
 }
@@ -133,7 +140,10 @@ export async function replyToSupportTicket(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not send your reply',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotSendReply'),
     };
   }
 }
@@ -155,7 +165,10 @@ export async function closeSupportTicket(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not close the request',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotCloseRequest'),
     };
   }
 }

@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
 import {
@@ -121,7 +123,10 @@ export async function createApiToken(
   } catch (error) {
     return {
       ok: false,
-      error: error instanceof Error ? error.message : 'Failed to create token',
+      error:
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:batch53.failedToCreateToken'),
     };
   }
 }
@@ -141,7 +146,10 @@ export async function revokeApiToken(
   } catch (error) {
     return {
       ok: false,
-      error: error instanceof Error ? error.message : 'Failed to revoke token',
+      error:
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:batch53.failedToRevokeToken'),
     };
   }
 }

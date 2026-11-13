@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import {
   getAuthSession,
   usesNativeAuthStorage,
@@ -270,7 +272,10 @@ export async function fetchSetupPasswordInfo(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Invalid or expired link',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.invalidOrExpiredLink'),
     };
   }
 }
@@ -300,7 +305,10 @@ export async function submitSetupPassword(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not set password',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotSetPassword'),
     };
   }
 }
@@ -351,7 +359,10 @@ export async function fetchResetPasswordInfo(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Invalid or expired link',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.invalidOrExpiredLink'),
     };
   }
 }
@@ -379,7 +390,10 @@ export async function submitResetPassword(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not reset password',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotResetPassword'),
     };
   }
 }

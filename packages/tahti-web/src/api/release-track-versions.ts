@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { getJson } from './http';
 import { failMeta, isForceMock } from './mode';
@@ -83,7 +85,10 @@ export async function activateReleaseTrackVersion(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not switch versions',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotSwitchVersions'),
     };
   }
 }
@@ -109,7 +114,7 @@ export async function uploadReleaseTrackVersion(
   const label = versionLabel.trim() || file.name || 'New version';
   const contentType = file.type || 'audio/mpeg';
   if (!RELEASE_TRACK_VERSION_TYPES.includes(contentType)) {
-    return { ok: false, error: 'Use WAV, FLAC, MP3, AAC or AIFF' };
+    return { ok: false, error: i18n.t('web:batch53.useAudioFormats') };
   }
   if (isForceMock()) {
     const current = mockFor(trackId);
@@ -166,7 +171,9 @@ export async function uploadReleaseTrackVersion(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not upload the version',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotUploadVersion'),
     };
   }
 }
