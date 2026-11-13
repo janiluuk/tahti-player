@@ -272,6 +272,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
           title: item.title,
           artist: item.artist.displayName,
           coverUrl: item.bannerUrl ?? undefined,
+          peaks: item.peaks ?? null,
           streamUrl: item.audioUrl,
           protocol: 'https',
           channelSlug: item.channelSlug,

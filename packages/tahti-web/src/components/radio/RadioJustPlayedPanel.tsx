@@ -84,6 +84,7 @@ export function RadioJustPlayedPanel({
                   title: item.title,
                   artist: item.artistName,
                   coverUrl: item.artworkUrl ?? undefined,
+                  peaks: item.peaks ?? null,
                   streamUrl: item.audioUrl,
                   protocol: 'https',
                 }

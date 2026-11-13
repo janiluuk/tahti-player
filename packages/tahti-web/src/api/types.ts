@@ -767,6 +767,7 @@ export type FeedItem =
       channelSlug: string;
       /** Present when the track is independently playable from the feed. */
       audioUrl?: string | null;
+      peaks?: number[] | null;
     }
   | {
       kind: 'release';
