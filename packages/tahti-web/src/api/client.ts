@@ -298,6 +298,10 @@ export async function fetchTrackComments(
   }
 }
 
+function messageOr(err: unknown, message: string): string {
+  return err instanceof Error ? err.message : message;
+}
+
 export async function postTrackComment(
   id: string,
   body: string,
@@ -325,10 +329,7 @@ export async function postTrackComment(
   } catch (err) {
     return {
       ok: false,
-      error:
-        err instanceof Error
-          ? err.message
-          : i18n.t('web:batch55.couldNotPostComment'),
+      error: messageOr(err, i18n.t('web:batch55.couldNotPostComment')),
     };
   }
 }
@@ -1076,10 +1077,7 @@ export async function createFeatureRequest(input: {
   } catch (err) {
     return {
       ok: false,
-      error:
-        err instanceof Error
-          ? err.message
-          : i18n.t('web:batch55.couldNotSubmitIdea'),
+      error: messageOr(err, i18n.t('web:batch55.couldNotSubmitIdea')),
     };
   }
 }
@@ -1237,10 +1235,7 @@ export async function setNewsletterSubscription(
   } catch (err) {
     return {
       ok: false,
-      error:
-        err instanceof Error
-          ? err.message
-          : i18n.t('web:batch55.couldNotUpdateSubscription'),
+      error: messageOr(err, i18n.t('web:batch55.couldNotUpdateSubscription')),
     };
   }
 }
