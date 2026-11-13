@@ -13055,6 +13055,38 @@
     },
     "governanceMeetingDetailViewLeftovers": {
       "couldNotLoadMeetings": "Could not load meetings."
+    },
+    "batch54": {
+      "unsubscribeInvalid": "This unsubscribe link is invalid or was already used.",
+      "couldNotReachTahti": "Could not reach Tahti. Try again.",
+      "couldNotStartExport": "Could not start the export",
+      "couldNotSaveGallery": "Could not save gallery settings",
+      "couldNotLoadLayout": "Could not load the channel layout",
+      "couldNotPlaceAddon": "Could not place the add-on",
+      "couldNotPlaceLogo": "Could not place the logo",
+      "couldNotChangeWidth": "Could not change the width",
+      "couldNotReorderLayout": "Could not reorder the channel layout",
+      "downloadsOff": "The artist has turned off downloads for this track.",
+      "downloadUnavailable": "Download unavailable",
+      "checkoutFailed": "Checkout failed",
+      "payDistributionFee": "Pay the distribution fee before submitting to Revelator",
+      "needUpcIsrc": "Add a UPC or ISRC on every track before DSP submit",
+      "failedToSaveCatalog": "Failed to save catalog",
+      "themeNotFound": "Theme not found",
+      "passwordRequired": "Password required",
+      "couldNotSaveOrder": "Could not save the collection order",
+      "couldNotDeleteComment": "Could not delete comment",
+      "couldNotPublishEvent": "Could not publish the event",
+      "couldNotSaveTags": "Could not save the tags",
+      "couldNotAnswerInvite": "Could not answer the invite",
+      "couldNotRetry": "Could not retry",
+      "embedChannelFailed": "Embed channel failed",
+      "embedReleaseFailed": "Embed release failed",
+      "embedCollectionFailed": "Embed collection failed",
+      "couldNotLoadTextLayer": "Could not load the text layer",
+      "couldNotSaveTextLayer": "Could not save the text layer",
+      "couldNotAddToRelease": "Could not add it to the release",
+      "unfollowFailed": "Unfollow failed"
     }
   },
   "studioEditor": {

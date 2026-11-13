@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import {
   allowMockFallback,
   isForceMock,
@@ -89,7 +91,7 @@ export async function disableTotp(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   if (isForceMock()) {
     if (!password) {
-      return { ok: false, error: 'Password required' };
+      return { ok: false, error: i18n.t('web:batch54.passwordRequired') };
     }
     mockTotpEnabled = false;
     return { ok: true };

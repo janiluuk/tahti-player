@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { listenerFingerprint } from '../lib/listenerFingerprint';
 import { apiBase } from './http';
 import { DEMO_MP3 } from './mock';
@@ -5,8 +7,9 @@ import { ensureMockUploadedSound } from './mock-uploads';
 import { isForceMock } from './mode';
 import { withShareKey } from './share-key';
 
-export const DOWNLOADS_DISABLED_MESSAGE =
-  'The artist has turned off downloads for this track.';
+function downloadsDisabledMessage(): string {
+  return i18n.t('web:batch54.downloadsOff');
+}
 
 export type PublicSoundDownloadResult =
   | { ok: true; url: string; filename?: string }
@@ -32,7 +35,7 @@ export async function fetchPublicSoundDownload(
     if (uploaded?.downloadsEnabled === false) {
       return {
         ok: false,
-        error: DOWNLOADS_DISABLED_MESSAGE,
+        error: downloadsDisabledMessage(),
         downloadsDisabled: true,
       };
     }
@@ -47,7 +50,7 @@ export async function fetchPublicSoundDownload(
   }
   const fp = encodeURIComponent(listenerFingerprint());
   const path = `/api/v1/c/${encodeURIComponent(channelSlug)}/sounds/${encodeURIComponent(itemId)}/download`;
-  let lastError = 'Download unavailable';
+  let lastError = i18n.t('web:batch54.downloadUnavailable');
   for (const format of [SOUND_DOWNLOAD_SOURCE_FORMAT, undefined]) {
     const query = format ? `?fp=${fp}&format=${format}` : `?fp=${fp}`;
     try {
@@ -62,7 +65,7 @@ export async function fetchPublicSoundDownload(
       if (body.code === 'downloads_disabled') {
         return {
           ok: false,
-          error: DOWNLOADS_DISABLED_MESSAGE,
+          error: downloadsDisabledMessage(),
           downloadsDisabled: true,
         };
       }

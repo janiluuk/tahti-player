@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import { listMockFollowing, mockFollow, mockUnfollow } from './mock-session';
 import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
@@ -90,7 +92,7 @@ export function followArtist(username: string): Promise<FollowResult> {
 }
 
 export function unfollowArtist(username: string): Promise<FollowResult> {
-  return sendFollow(username, 'DELETE', 'Unfollow failed');
+  return sendFollow(username, 'DELETE', i18n.t('web:batch54.unfollowFailed'));
 }
 
 export type FollowListDirection = 'followers' | 'following';

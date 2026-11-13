@@ -208,7 +208,7 @@ export function DiscoWidgetManagerPanel({
       url: uploaded.data.url,
     });
     if (placed.error || !placed.block) {
-      setError(placed.error ?? 'Could not place the logo');
+      setError(placed.error ?? i18n.t('web:batch54.couldNotPlaceLogo'));
       return;
     }
     const blockId = placed.block.id;

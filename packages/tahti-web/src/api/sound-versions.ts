@@ -219,7 +219,10 @@ export async function fetchVersionDownloadUrl(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Download unavailable',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch54.downloadUnavailable'),
     };
   }
 }

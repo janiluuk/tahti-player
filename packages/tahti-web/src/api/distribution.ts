@@ -312,7 +312,10 @@ export async function startRevelatorCheckout(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Checkout failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch54.checkoutFailed'),
     };
   }
 }
@@ -327,7 +330,7 @@ export async function submitToRevelator(
     if (!billing.paid) {
       return {
         ok: false,
-        error: 'Pay the distribution fee before submitting to Revelator',
+        error: i18n.t('web:batch54.payDistributionFee'),
       };
     }
     const catalog = mockCatalog(releaseId);
@@ -337,7 +340,7 @@ export async function submitToRevelator(
     if (!hasIdentifier) {
       return {
         ok: false,
-        error: 'Add a UPC or ISRC on every track before DSP submit',
+        error: i18n.t('web:batch54.needUpcIsrc'),
       };
     }
     mockStatusByRelease[releaseId] = {
@@ -479,7 +482,10 @@ export async function patchReleaseCatalog(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Failed to save catalog',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch54.failedToSaveCatalog'),
     };
   }
 }

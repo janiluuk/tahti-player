@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import {
   channelToPlayable,
@@ -65,7 +67,9 @@ export async function fetchEmbedChannel(slug: string): Promise<{
     return { data, meta: { source: 'api' }, playable };
   } catch (err) {
     if (!allowMockFallback()) {
-      throw err instanceof Error ? err : new Error('Embed channel failed');
+      throw err instanceof Error
+        ? err
+        : new Error(i18n.t('web:batch54.embedChannelFailed'));
     }
     const ch = mockChannel(slug);
     return {
@@ -157,7 +161,9 @@ export async function fetchEmbedRelease(id: string): Promise<{
     return { data, meta: { source: 'api' }, playables };
   } catch (err) {
     if (!allowMockFallback()) {
-      throw err instanceof Error ? err : new Error('Embed release failed');
+      throw err instanceof Error
+        ? err
+        : new Error(i18n.t('web:batch54.embedReleaseFailed'));
     }
     const data: ReleaseEmbedView = {
       id,
@@ -259,7 +265,9 @@ export async function fetchEmbedCollection(slug: string): Promise<{
     return { data, meta: { source: 'api' }, playables };
   } catch (err) {
     if (!allowMockFallback()) {
-      throw err instanceof Error ? err : new Error('Embed collection failed');
+      throw err instanceof Error
+        ? err
+        : new Error(i18n.t('web:batch54.embedCollectionFailed'));
     }
     const col = mockCollection(slug);
     return {

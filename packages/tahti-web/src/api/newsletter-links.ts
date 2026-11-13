@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { apiBase } from './http';
 import { isForceMock } from './mode';
 
@@ -22,10 +24,10 @@ export async function unsubscribeFromNewsletter(
       ok: false,
       error:
         res.status === 404
-          ? 'This unsubscribe link is invalid or was already used.'
+          ? i18n.t('web:batch54.unsubscribeInvalid')
           : `Could not unsubscribe (${res.status}).`,
     };
   } catch {
-    return { ok: false, error: 'Could not reach Tahti. Try again.' };
+    return { ok: false, error: i18n.t('web:batch54.couldNotReachTahti') };
   }
 }

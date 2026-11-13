@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -17,7 +19,10 @@ export async function deleteComment(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not delete comment',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch54.couldNotDeleteComment'),
     };
   }
 }

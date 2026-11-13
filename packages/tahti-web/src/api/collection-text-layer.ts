@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -33,7 +35,10 @@ export async function fetchCollectionTextLayer(
     const { data } = await requestJson<CollectionTextLayer>(path(slug));
     return { ok: true, data };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not load the text layer') };
+    return {
+      ok: false,
+      error: message(err, i18n.t('web:batch54.couldNotLoadTextLayer')),
+    };
   }
 }
 
@@ -52,6 +57,9 @@ export async function saveCollectionTextLayer(
     });
     return { ok: true, data };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not save the text layer') };
+    return {
+      ok: false,
+      error: message(err, i18n.t('web:batch54.couldNotSaveTextLayer')),
+    };
   }
 }

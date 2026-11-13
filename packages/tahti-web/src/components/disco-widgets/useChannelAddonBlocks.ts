@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   addonInstallIdOf,
   createAddonBlock,
@@ -137,7 +139,7 @@ export function useChannelAddonBlocks(enabled: boolean) {
   }): Promise<{ error: Failure; block?: ChannelBlockView }> => {
     const result = await createLogoBlock(config, 'FULL');
     if (result.error || !result.data) {
-      return { error: result.error ?? 'Could not place the logo' };
+      return { error: result.error ?? i18n.t('web:batch54.couldNotPlaceLogo') };
     }
     setBlocks((prev) => [...prev, result.data]);
     return { error: null, block: result.data };

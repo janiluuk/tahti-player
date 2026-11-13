@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -33,7 +35,9 @@ export async function publishSoundToRelease(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not add it to the release',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch54.couldNotAddToRelease'),
     };
   }
 }

@@ -6738,3 +6738,7 @@ Upload has one import path: pick SoundCloud, hearthis.at, Spotify, or Mixcloud, 
 ## 2026-11-13 — Fifty more error labels (0.0.388)
 
 Comments, the green room, motions, stems, chat, announcements, stations, discussions, group roles, settings, blocks, subscriptions, Discord, Mastodon, and stream keys follow the app language in English and Finnish when the server sends no message of its own.
+
+## 2026-11-13 — Thirty more error labels (0.0.389)
+
+Newsletter unsubscribe, channel layout, downloads, distribution checkout, themes, comments, events, embeds, text layers, and unfollow follow the app language in English and Finnish when the server sends no message of its own.
