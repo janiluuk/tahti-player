@@ -1,3 +1,9 @@
+## 2026-11-13 - Channel manager Listen in player (0.0.394)
+
+Studio → Broadcast → Channel manager has a Listen in player control that
+starts the artist's station in the bottom player (and Pause while it is
+playing). The same toggle is wired into Stream Manager's play/pause.
+
 ## 2026-11-13 - Fans chat tabs and restyled messages (0.0.393)
 
 Studio → Fans → Chat puts Access, Messages, Moderators and Bans on their

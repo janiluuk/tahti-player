@@ -7572,7 +7572,9 @@
       "comingUp": "Coming up",
       "showsEventsAndListeningParties": "Shows, events and listening parties, soonest first.",
       "agendaFilter": "Agenda filter",
-      "broadcastTools": "Broadcast tools"
+      "broadcastTools": "Broadcast tools",
+      "listenInPlayer": "Listen in player",
+      "pauseInPlayer": "Pause"
     },
     "socialAutoPost": {
       "disconnect": "Disconnect",
