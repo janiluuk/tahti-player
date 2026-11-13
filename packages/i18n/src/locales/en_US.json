@@ -7514,7 +7514,11 @@
       "enableLiveChatOnMy": "Enable live chat on my channel",
       "whenThisIsOffListeners": "When this is off, listeners do not see a chat on your channel page.",
       "showTodaySListenerCount": "Show today’s listener count in my chat",
-      "listenersSeeHowManyPeople": "Listeners see how many people tuned in today."
+      "listenersSeeHowManyPeople": "Listeners see how many people tuned in today.",
+      "tabAccess": "Access",
+      "tabMessages": "Messages",
+      "tabModerators": "Moderators",
+      "tabBans": "Bans"
     },
     "artistGalleryPanel": {
       "startSlideshow": "Start slideshow",

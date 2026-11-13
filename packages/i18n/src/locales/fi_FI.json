@@ -7514,7 +7514,11 @@
       "enableLiveChatOnMy": "Ota livekeskustelu käyttöön kanavallani",
       "whenThisIsOffListeners": "Kun tämä on pois, kuuntelijat eivät näe keskustelua kanavasivullasi.",
       "showTodaySListenerCount": "Näytä tämän päivän kuuntelijamäärä keskustelussani",
-      "listenersSeeHowManyPeople": "Kuuntelijat näkevät, kuinka moni on kuunnellut tänään."
+      "listenersSeeHowManyPeople": "Kuuntelijat näkevät, kuinka moni on kuunnellut tänään.",
+      "tabAccess": "Pääsy",
+      "tabMessages": "Viestit",
+      "tabModerators": "Moderaattorit",
+      "tabBans": "Porttikiellot"
     },
     "artistGalleryPanel": {
       "startSlideshow": "Aloita diaesitys",

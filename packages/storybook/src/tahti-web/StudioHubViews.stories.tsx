@@ -49,6 +49,22 @@ export const Fans: Story = {
     await expect(
       canvas.getByRole('heading', { name: 'Chat' }),
     ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('tab', { name: /^Messages$|^Viestit$/ }),
+    ).toHaveAttribute('aria-selected', 'true');
+    await expect(
+      canvas.getByRole('heading', {
+        name: /^Recent messages$|^Viimeisimmät viestit$/,
+      }),
+    ).toBeInTheDocument();
+    await userEvent.click(
+      canvas.getByRole('tab', { name: /^Moderators$|^Moderaattorit$/ }),
+    );
+    await expect(
+      canvas.getByRole('heading', {
+        name: /^Channel moderators$|^Kanavan moderaattorit$/,
+      }),
+    ).toBeInTheDocument();
   },
 };
 

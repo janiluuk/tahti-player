@@ -40,6 +40,7 @@ test('artist: adds a chat moderator and removes one', async ({ page }) => {
   await signIn(page);
   await open(page, '/studio/fans');
   const chat = page.getByTestId('fans-chat-settings');
+  await chat.getByRole('tab', { name: 'Moderators' }).click();
   const add = chat.getByRole('button', { name: 'Add moderator' });
   await expect(add).toBeDisabled();
   await chat.getByRole('textbox', { name: 'Username' }).fill('listener-one');

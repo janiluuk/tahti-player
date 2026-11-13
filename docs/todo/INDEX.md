@@ -64,6 +64,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Plan: page anatomy rules (one header, one primary action, overflow, one toolbar), Settings account-only in 7 items, duplicate surfaces removed; 9 phases, absorbs navigation-simplification slices 1-3, 7, 9, 10 |
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
+| open    | [fans-chat-tabs-restyle.md](fans-chat-tabs-restyle.md) | Fans Chat: Access/Messages/Moderators/Bans as tabs; restyle recent messages |
 | partial | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard now renders its last result at once and refreshes in the background; left: measure API time, sweep governance overview, financial, Discover |
 | open    | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Community stats sit at the top of the overview (0.0.380); left: the overview is still slow, and Grafana from tahti.live cannot connect |
 | partial | [channel-programme-in-schedule.md](channel-programme-in-schedule.md) | Studio → Broadcast → Schedule shows the 24/7 and offline programme; make it the place where you manage the channel's programme |
