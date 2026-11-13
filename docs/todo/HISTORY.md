@@ -1,6 +1,6 @@
 ## 2026-11-13 — Import wizard
 
-Studio upload opens one wizard for SoundCloud, hearthis.at, Spotify, and Mixcloud: pick the service, choose tracks or playlists, confirm, then a progress bar. A saved profile or an existing connection skips setup. tahti-web 0.0.386.
+Studio upload opens one wizard for SoundCloud, hearthis.at, Spotify, and Mixcloud: pick the service, choose tracks or playlists, confirm, then a progress bar. A saved profile or an existing connection skips setup. tahti-web 0.0.387.
 
 ## 2026-11-13 — Radio and feed peaks; embed track API folded
 

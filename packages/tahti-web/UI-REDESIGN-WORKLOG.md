@@ -6731,6 +6731,6 @@ When a request fails without a server message, group, store, support, event, gov
 
 The remaining English in track analysis, the playlist and pro editors, desktop import and library toasts, the queue, membership and invoices, association fields, image purpose, the fan-sub split, and the small dialogs follows the app language in English and Finnish. Lists that sit outside a component take the translator as an argument.
 
-## 2026-11-13 — Import wizard (0.0.386)
+## 2026-11-13 — Import wizard (0.0.387)
 
 Upload has one import path: pick SoundCloud, hearthis.at, Spotify, or Mixcloud, choose tracks or playlists, confirm, then watch a progress bar. A saved profile or an existing connection skips the setup step. Help stays linked from the wizard.
