@@ -32,7 +32,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'What is tahti.live?',
         body: [
-          'tahti.live is a nonprofit broadcasting platform for independent artists — built to support artists, not algorithms. Listening is free and lossless on member channels; artist membership is €40/year and funds your own channel, releases, and live shows.',
+          'tahti.live is a nonprofit broadcasting platform for independent artists — built to support artists, not algorithms. Listening is free and lossless on member channels. Artist membership funds your own channel, releases, and live shows — see Settings → Membership for current terms.',
           'One member, one vote: proposals and the AGM govern the platform, not a company board. Nearly all fan-support money goes to the artist, and the code is open source under AGPL.',
           'See the full pitch — plans, funding, and governance — at /what-is-it.',
         ],
@@ -244,7 +244,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'Fan support and orders',
         body: [
           'Studio → Fans → Earnings lists latest fan-sub orders, payout statistics, and the split of a typical order.',
-          'Open the earnings guide from that page for Stripe fees, the 2% operational fee, and grants.',
+          'Open the earnings guide from that page for where fan-sub orders and grants appear in Studio.',
         ],
       },
     ],
@@ -462,8 +462,8 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Tahti ry member',
         body: [
-          'Unlimited live time and cooperative support (€40/year membership).',
-          'Membership is support for the org, not a consumer “plan”.',
+          'Unlimited live time and cooperative support through membership.',
+          'Membership is support for the org, not a consumer “plan”. Current terms live under Settings → Membership.',
           'Members see more on Governance (/governance): the current board, board elections (stand for election or withdraw while nominations are open), the published annual reports, and the association’s registered details and auditors.',
           'Something wrong in your member details or a published record? Use Request a correction on Governance; the board’s answer appears there, and you can withdraw a request while it waits.',
         ],
@@ -479,16 +479,15 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Where to look',
         body: [
-          'Studio → Fans → Earnings is the order management screen: latest fan-sub orders, subscriber and payout statistics, and a breakdown of a typical €5 order.',
-          'When Stripe is enabled, Studio also adds a Stripe dashboard for your payout account and the Express dashboard. Press H, or the help icon on Audience, for a guided tour.',
+          'Studio → Fans → Earnings is the order management screen: latest fan-sub orders, subscriber and payout statistics, and the live split for each order.',
+          'When Stripe is enabled, Studio also adds a Stripe dashboard for your payout account and the Express dashboard. Press H, or the help icon on Audience, for a guided tour. Your Stripe dashboard shows what actually reached you.',
         ],
       },
       {
         heading: 'The money flow',
         body: [
-          'A listener pays you monthly through Stripe. On a €5 order, Stripe keeps about €0.45 (2.9% + €0.30), Tahti keeps €0.10 as a 2% operational fee, and you receive €4.45 via Stripe Connect in the ledger model.',
-          'That split is what Audience and this guide show. We are still checking that every live Stripe payout matches €4.45, so treat the on-screen number as the documented split, not a guaranteed bank deposit. Your Stripe dashboard shows what actually reached you.',
-          'The 2% fee covers Connect platform costs, billing support, disputes, and GDPR work. It is operational, not org profit — leftover from that line rolls into the next artist grant pool.',
+          'A listener pays you monthly through Stripe Connect. Platform and card fees come off the top; the rest is yours. Studio → Fans → Earnings shows the live numbers for each order — use that screen, not this guide, as the source of truth.',
+          'Operational fees that stay with Tahti fund Connect platform costs, billing support, disputes, and GDPR work. Leftover from that line rolls into the next artist grant pool.',
         ],
       },
       {

@@ -28,6 +28,7 @@ import { dateLocaleTag } from '../../lib/locale';
 import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { CronHistoryDialog } from './status/CronHistoryDialog';
 import { cronOutcomeColor, cronOutcomeLabel } from './status/cronOutcome';
+import { QueuesJobsPanel } from './status/QueuesJobsPanel';
 import { WorkersPanel } from './status/WorkersPanel';
 
 export function AdminStatusView() {
@@ -249,6 +250,7 @@ export function AdminStatusView() {
                   </StudioPanel>
                 </div>
               )}
+              <QueuesJobsPanel />
               <WorkersPanel />
               <CronHistoryDialog
                 jobName={cronJob}

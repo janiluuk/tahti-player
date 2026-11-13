@@ -53,15 +53,15 @@ describe('shared jam help', () => {
 });
 
 describe('earnings help', () => {
-  it('explains the fan-sub order split and points at Studio Audience', () => {
+  it('points at Studio Earnings without hard-coded fee amounts', () => {
     const article = getHelpArticle('earnings');
     expect(article?.title).toBe('Earnings and fan-sub orders');
     const flow = article?.sections.find(
       (section) => section.heading === 'The money flow',
     );
-    expect(flow?.body.some((line) => line.includes('€4.45'))).toBe(true);
+    expect(flow?.body.some((line) => line.includes('€'))).toBe(false);
     expect(
-      flow?.body.some((line) => line.includes('not a guaranteed bank deposit')),
+      flow?.body.some((line) => line.includes('Studio → Fans → Earnings')),
     ).toBe(true);
     const where = article?.sections.find(
       (section) => section.heading === 'Where to look',

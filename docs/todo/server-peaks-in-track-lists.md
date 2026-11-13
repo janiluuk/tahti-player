@@ -24,6 +24,6 @@ Paired API PR: tahti-org `feat/peaks-in-track-lists` (search, Tahti Selects gall
 
 ## Left
 
-- [ ] Studio collection editor and Stream Manager playlists (`GET /api/me/collections/:slug`, editor/source): no peaks; rows are `TrackTable`, not waveform rows, so only the player bar falls back.
+- [x] Studio collection editor playables (`GET /api/me/collections/:slug`): peaks + banner on collection items (API `collectionItemInclude` + studio playables).
 - [ ] Radio "Just played" (`GET /api/v1/radio/recently-played`) and Feed track cards (`GET /api/me/feed`): no peaks; not waveform rows.
 - [ ] Production: count READY sounds with audio and `peaks IS NULL` after the next 03:00 UTC sweep (24 per run).

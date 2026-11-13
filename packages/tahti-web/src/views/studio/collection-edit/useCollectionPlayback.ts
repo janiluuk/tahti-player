@@ -26,6 +26,7 @@ export function useCollectionPlayback(items: StudioCollectionItem[]) {
     title: string;
     artistName?: string | null;
     bannerUrl?: string | null;
+    peaks?: number[] | null;
     embedProvider?: string | null;
     embedUri?: string | null;
     durationSec?: number | null;
@@ -53,6 +54,8 @@ export function useCollectionPlayback(items: StudioCollectionItem[]) {
       kind: 'sound',
       title: sound.title,
       artist,
+      coverUrl: sound.bannerUrl ?? undefined,
+      peaks: sound.peaks ?? null,
       streamUrl,
       protocol: streamUrl.includes('.m3u8') ? 'hls' : 'https',
     };

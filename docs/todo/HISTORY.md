@@ -1,3 +1,7 @@
+## 2026-11-13 — Admin queue list, Help pricing, studio collection peaks
+
+Admin → Status lists media-queue jobs by state (waiting / active / delayed / failed / completed) with title, owner, age and attempts (`QueuesJobsPanel`, `GET /api/admin/queues/media/jobs` in tahti-org). Help earnings copy no longer hard-codes euro fee amounts. Studio collection playables carry server `peaks` and `bannerUrl`. tahti-web 0.0.384. Folded `admin-queue-list-jobs.md`, `help-drop-pricing-claims.md`, `server-peaks-studio-collections.md`, and the stale embed-cover slice leftovers (`embed-covers-slices-17-20.md`, `embed-covers-slices-24-30.md`) already covered when embed covers hardening folded.
+
 ## 2026-11-13 — Listen row alignment, upload broadcast label
 
 Recently played and Tahti Selects no longer show a filter bar, so the cards in the first Listen row start on the same line. tahti-web 0.0.379.

@@ -115,7 +115,7 @@ function collectionItemPlayable(
     return null;
   }
   const artist = sound.artist?.displayName ?? fallbackArtist;
-  const coverUrl = placeholderArtworkUrl(sound.id);
+  const coverUrl = sound.bannerUrl ?? placeholderArtworkUrl(sound.id);
   const audio = sound.audioUrl ?? item.audioUrl;
   if (audio) {
     return {
@@ -124,6 +124,7 @@ function collectionItemPlayable(
       title: sound.title,
       artist,
       coverUrl,
+      peaks: sound.peaks ?? null,
       streamUrl: audio,
       protocol: audio.includes('.m3u8') ? 'hls' : 'https',
     };
@@ -136,6 +137,7 @@ function collectionItemPlayable(
       title: sound.title,
       artist,
       coverUrl,
+      peaks: sound.peaks ?? null,
       streamUrl: '',
       protocol: 'https',
       sourceProvider: provider,
