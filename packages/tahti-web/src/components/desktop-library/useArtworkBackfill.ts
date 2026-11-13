@@ -71,13 +71,16 @@ export function useArtworkBackfill(
         void backfill.cancel();
       },
     };
-    toast.loading('Looking for missing artwork…', {
+    toast.loading(i18n.t('web:batch56.lookingForArtwork'), {
       id: TOAST_ID,
       action: cancel,
     });
     const unsubscribe = backfill.onProgress(({ done, total }) => {
       toast.loading(
-        `Looking for missing artwork… ${done.toLocaleString('en-US')} of ${total.toLocaleString('en-US')}`,
+        i18n.t('web:batch56.lookingForArtworkProgress', {
+          done: done.toLocaleString('en-US'),
+          total: total.toLocaleString('en-US'),
+        }),
         { id: TOAST_ID, action: cancel },
       );
     });

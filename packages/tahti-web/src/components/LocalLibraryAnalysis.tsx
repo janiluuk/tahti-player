@@ -37,8 +37,10 @@ export async function runAnalysis(
   try {
     const result = await library.analysis.analyze(ids, force);
     if (result.cancelled) {
-      toast.message('Analysis stopped.', {
-        description: `${analysisResultMessage(result)}. Run it again to continue where it left off.`,
+      toast.message(i18n.t('web:batch56.analysisStopped'), {
+        description: i18n.t('web:batch56.analysisRunAgain', {
+          result: analysisResultMessage(result),
+        }),
       });
     } else {
       toast.success(i18n.t('web:toasts.analysisFinished'), {

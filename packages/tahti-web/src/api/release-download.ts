@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { listenerFingerprint } from '../lib/listenerFingerprint';
 import { apiBase } from './http';
 import { isForceMock } from './mode';
@@ -62,7 +64,7 @@ export async function downloadReleaseTrack(
     }
     return {
       ok: false,
-      error: body.error ?? 'Download failed',
+      error: body.error ?? i18n.t('web:batch56.downloadFailed'),
       ...(body.gates?.length && body.soundId
         ? { unlockSoundId: body.soundId }
         : {}),

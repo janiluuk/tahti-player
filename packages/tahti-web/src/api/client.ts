@@ -156,7 +156,7 @@ export async function fetchChannel(slug: string): Promise<{
         playable: channelToPlayable(data),
       };
     }
-    throw err instanceof Error ? err : new Error('Channel fetch failed');
+    throw errorOr(err, i18n.t('web:batch56.channelFetchFailed'));
   }
 }
 
@@ -298,6 +298,10 @@ export async function fetchTrackComments(
   }
 }
 
+function errorOr(err: unknown, message: string): Error {
+  return err instanceof Error ? err : new Error(message);
+}
+
 function messageOr(err: unknown, message: string): string {
   return err instanceof Error ? err.message : message;
 }
@@ -357,7 +361,7 @@ export async function fetchProfile(username: string): Promise<{
     if (allowMockFallback()) {
       return { data: mockProfile(username), meta: mockFallbackMeta(err) };
     }
-    throw err instanceof Error ? err : new Error('Profile fetch failed');
+    throw errorOr(err, i18n.t('web:batch56.profileFetchFailed'));
   }
 }
 
@@ -398,7 +402,7 @@ export async function fetchCollection(slug: string): Promise<{
     if (allowMockFallback()) {
       return { data: mockCollection(slug), meta: mockFallbackMeta(err) };
     }
-    throw err instanceof Error ? err : new Error('Collection fetch failed');
+    throw errorOr(err, i18n.t('web:batch56.collectionFetchFailed'));
   }
 }
 
@@ -417,9 +421,7 @@ export async function fetchCollectionSubscription(slug: string): Promise<{
     if (allowMockFallback()) {
       return { subscribed: false, subscriberCount: 0 };
     }
-    throw err instanceof Error
-      ? err
-      : new Error('Collection subscription failed');
+    throw errorOr(err, i18n.t('web:batch56.collectionSubscriptionFailed'));
   }
 }
 
@@ -461,7 +463,7 @@ export async function fetchSmartLink(smartLinkSlug: string): Promise<{
         meta: mockFallbackMeta(err),
       };
     }
-    throw err instanceof Error ? err : new Error('Smart link fetch failed');
+    throw errorOr(err, i18n.t('web:batch56.smartLinkFetchFailed'));
   }
 }
 
@@ -657,7 +659,7 @@ export async function requestChatToken(
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    throw err instanceof Error ? err : new Error('Could not join chat');
+    throw errorOr(err, i18n.t('web:batch56.couldNotJoinChat'));
   }
 }
 
@@ -779,7 +781,7 @@ export async function fetchTransparencyYtd(): Promise<{
     if (allowMockFallback()) {
       return { data: mockTransparencyYtd(), meta: mockFallbackMeta(err) };
     }
-    throw err instanceof Error ? err : new Error('Transparency YTD failed');
+    throw errorOr(err, i18n.t('web:batch56.transparencyYtdFailed'));
   }
 }
 
@@ -803,7 +805,7 @@ export async function fetchTransparencyGrants(year?: number): Promise<{
     if (allowMockFallback()) {
       return { data: mockTransparencyGrants(y), meta: mockFallbackMeta(err) };
     }
-    throw err instanceof Error ? err : new Error('Transparency grants failed');
+    throw errorOr(err, i18n.t('web:batch56.transparencyGrantsFailed'));
   }
 }
 

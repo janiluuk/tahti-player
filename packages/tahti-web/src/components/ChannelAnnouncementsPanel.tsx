@@ -107,9 +107,9 @@ export function ChannelAnnouncementsPanel() {
     const created = result.clip;
     setClips((current) => [created, ...current]);
     setRecording(false);
-    toastWithUndo('Clip uploaded inactive. Preview it before activating.', {
+    toastWithUndo(i18n.t('web:batch56.clipUploadedInactive'), {
       undo: () => deleteAnnouncementClip(created.id),
-      undoneMessage: 'Clip removed.',
+      undoneMessage: i18n.t('web:batch56.clipRemoved'),
       onUndone: () =>
         setClips((current) => current.filter((clip) => clip.id !== created.id)),
     });

@@ -237,7 +237,7 @@ export async function uploadAnnouncementClip(file: File): Promise<
       body: file,
     });
     if (!uploadResponse.ok) {
-      throw new Error('Audio upload failed');
+      throw new Error(i18n.t('web:batch56.audioUploadFailed'));
     }
     const clip = await requestJson<AnnouncementClip>(
       '/api/me/announcements/complete',

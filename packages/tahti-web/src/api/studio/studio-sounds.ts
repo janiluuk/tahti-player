@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import { apiBase } from '../http';
 import { DEMO_MP3 } from '../mock';
@@ -126,7 +128,9 @@ export async function fetchStudioSound(id: string): Promise<{
         mockSoundStore.find((a) => a.id === id) ?? mockSoundStore[0]!;
       return { data: { ...item, id }, meta: mockFallbackMeta(err) };
     }
-    throw err instanceof Error ? err : new Error('Track fetch failed');
+    throw err instanceof Error
+      ? err
+      : new Error(i18n.t('web:batch56.trackFetchFailed'));
   }
 }
 

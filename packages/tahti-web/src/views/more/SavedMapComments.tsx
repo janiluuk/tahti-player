@@ -188,7 +188,7 @@ function CommentRow({ comment }: { comment: MapComment }) {
       {!editing ? (
         <div className="mt-2 flex flex-wrap gap-2">
           <EditIconButton
-            label="Edit comment"
+            label={i18n.t('web:adminPageCommentsPanel.editComment')}
             variant="text"
             onClick={() => {
               setDraft(comment.text);

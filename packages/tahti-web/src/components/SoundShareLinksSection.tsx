@@ -97,9 +97,9 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
     const created = result.data;
     setShares((current) => [...current, created]);
     setGranteeUsername('');
-    toastWithUndo('Share link created.', {
+    toastWithUndo(t('batch56.shareLinkCreated'), {
       undo: () => revokeSoundShare(soundId, created.id),
-      undoneMessage: 'Share link removed.',
+      undoneMessage: t('batch56.shareLinkRemoved'),
       onUndone: () => {
         setShares((current) =>
           current.filter((share) => share.id !== created.id),

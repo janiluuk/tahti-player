@@ -170,9 +170,9 @@ export function useReleaseDetail(id: string) {
         return;
       }
       setRelease(r.data);
-      toastWithUndo('Published.', {
+      toastWithUndo(i18n.t('web:batch56.published'), {
         undo: () => patchStudioRelease(id, { state: 'DRAFT' }),
-        undoneMessage: 'Back to draft.',
+        undoneMessage: i18n.t('web:batch56.backToDraft'),
         onUndone: (result) => setRelease(result.data),
       });
     } catch {

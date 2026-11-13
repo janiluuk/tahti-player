@@ -62,9 +62,9 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
     const created = result.announcement;
     setBody('');
     setItems((current) => [created, ...current].slice(0, 3));
-    toastWithUndo('Announcement pinned.', {
+    toastWithUndo(i18n.t('web:batch56.announcementPinned'), {
       undo: () => deletePinnedAnnouncement(created.id),
-      undoneMessage: 'Announcement removed.',
+      undoneMessage: i18n.t('web:batch56.announcementRemoved'),
       onUndone: () =>
         setItems((current) => current.filter((item) => item.id !== created.id)),
     });

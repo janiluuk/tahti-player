@@ -167,9 +167,9 @@ export function buildTrackPage(t: TrackDetailState, playable: TahtiPlayable) {
     const created = result.data;
     setComments((current) => [...current, created]);
     setCommentBody('');
-    toastWithUndo('Comment posted.', {
+    toastWithUndo(i18n.t('web:channelComments.commentPosted'), {
       undo: () => deleteComment(created.id),
-      undoneMessage: 'Comment removed.',
+      undoneMessage: i18n.t('web:channelComments.commentRemoved'),
       onUndone: () => {
         setComments((current) =>
           current.filter((comment) => comment.id !== created.id),

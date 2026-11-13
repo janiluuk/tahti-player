@@ -146,7 +146,7 @@ function TrackVersions({
         <div className="flex flex-col gap-2">
           <Input
             label={t('releaseTrackVersionsPanel.versionLabel')}
-            placeholder="Remaster 2026"
+            placeholder={t('batch56.versionPlaceholder')}
             value={label}
             onChange={(event) => setLabel(event.target.value)}
           />
