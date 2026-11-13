@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { putWithProgress, UploadAbortedError } from '../../lib/putWithProgress';
 import { isForceMock } from '../mode';
 import { requestJson } from '../request-json';
@@ -59,7 +61,7 @@ export async function uploadReleaseTrackAudio(
     return {
       ok: false,
       cancelled: false,
-      error: 'Use WAV, FLAC, MP3, AAC or AIFF',
+      error: i18n.t('web:batch53.useAudioFormats'),
     };
   }
   try {

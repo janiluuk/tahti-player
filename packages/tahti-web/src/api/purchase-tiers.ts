@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 /**
  * One-time purchase tiers (mock + live API client).
  */
@@ -145,7 +147,9 @@ export async function createPurchaseTier(input: {
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not create purchase tier',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotCreatePurchaseTier'),
     };
   }
 }
@@ -190,7 +194,10 @@ export async function setSoundAccess(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not set track access',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotSetTrackAccess'),
     };
   }
 }
@@ -207,14 +214,14 @@ export async function checkoutPurchaseTier(
   if (isForceMock()) {
     const user = getMockSessionUser();
     if (!user) {
-      return { ok: false, error: 'Log in to buy' };
+      return { ok: false, error: i18n.t('web:batch53.logInToBuy') };
     }
     const artistTiers = readAllTiers().find(
       (e) => e.artistUsername === username,
     );
     const tier = artistTiers?.tiers.find((row) => row.id === tierId);
     if (!tier || !tier.active) {
-      return { ok: false, error: 'Tier not found' };
+      return { ok: false, error: i18n.t('web:batch53.tierNotFound') };
     }
     const amountCents = opts?.amountCents ?? tier.priceCents;
     const title = opts?.trackTitle ?? tier.name;
@@ -455,7 +462,10 @@ export async function fetchStoreSettings(): Promise<
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not load the store',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotLoadStore'),
     };
   }
 }
@@ -476,7 +486,10 @@ export async function setStoreEnabled(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not update the store',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotUpdateStore'),
     };
   }
 }

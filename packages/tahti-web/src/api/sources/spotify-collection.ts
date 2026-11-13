@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { apiBase } from '../http';
 import { isForceMock } from '../mode';
 import { requestJson } from '../request-json';
@@ -76,6 +78,9 @@ export async function addSpotifyTrack(
     );
     return { ok: true, data: { soundId: data.soundId } };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not add the track') };
+    return {
+      ok: false,
+      error: message(err, i18n.t('web:batch53.couldNotAddTrack')),
+    };
   }
 }

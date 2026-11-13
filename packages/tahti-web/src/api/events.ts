@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { mockVenues } from './mock';
 import { mockFixture } from './mock-overrides';
@@ -275,7 +277,10 @@ export async function createEvent(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not add event',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotAddEvent'),
     };
   }
 }
@@ -289,7 +294,7 @@ export async function updateEvent(
   if (isForceMock()) {
     const row = mockEvents.find((e) => e.id === id);
     if (!row) {
-      return { ok: false, error: 'Event not found' };
+      return { ok: false, error: i18n.t('web:batch53.eventNotFound') };
     }
     const { venueId, ...fields } = input;
     Object.assign(row, {
@@ -317,7 +322,10 @@ export async function updateEvent(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not save event',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotSaveEvent'),
     };
   }
 }
@@ -340,7 +348,10 @@ export async function deleteEvent(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not delete event',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotDeleteEvent'),
     };
   }
 }

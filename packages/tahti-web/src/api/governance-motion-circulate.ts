@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import { isForceMock } from './mode';
 
@@ -10,7 +12,7 @@ export async function circulateMotion(
 ): Promise<{ ok: true; notified: number } | { ok: false; error: string }> {
   if (isForceMock()) {
     if (mockCirculated.has(motionId)) {
-      return { ok: false, error: 'This draft has already been circulated' };
+      return { ok: false, error: i18n.t('web:batch53.draftAlreadyCirculated') };
     }
     mockCirculated.add(motionId);
     return { ok: true, notified: 41 };
@@ -25,7 +27,9 @@ export async function circulateMotion(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not circulate the draft',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotCirculateDraft'),
     };
   }
 }

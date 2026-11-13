@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import {
   mockEvents,
@@ -147,7 +149,7 @@ async function transition(
   if (isForceMock()) {
     const row = mockEvents.find((event) => event.id === id);
     if (!row) {
-      return { ok: false, error: 'Event not found' };
+      return { ok: false, error: i18n.t('web:batch53.eventNotFound') };
     }
     if (action === 'publish') {
       row.status = 'PUBLISHED';
@@ -172,7 +174,7 @@ async function transition(
         err,
         action === 'publish'
           ? 'Could not publish the event'
-          : 'Could not cancel the event',
+          : i18n.t('web:batch53.couldNotCancelEvent'),
       ),
     };
   }
@@ -199,7 +201,7 @@ export async function setEventParticipants(
   if (isForceMock()) {
     const row = mockEvents.find((event) => event.id === id);
     if (!row) {
-      return { ok: false, error: 'Event not found' };
+      return { ok: false, error: i18n.t('web:batch53.eventNotFound') };
     }
     row.participants = participants.map((p) => {
       const existing = row.participants.find((e) => e.username === p.username);
@@ -355,7 +357,7 @@ const mockShares = new Map<string, EventShare[]>([
         id: 'share-mock-2',
         platform: 'BLUESKY',
         state: 'FAILED',
-        error: 'Bluesky session expired',
+        error: i18n.t('web:batch53.blueskySessionExpired'),
         createdAt: '2026-08-01T10:00:00.000Z',
         sentAt: null,
       },
@@ -393,7 +395,7 @@ export async function retryEventShare(
   if (isForceMock()) {
     const share = mockShares.get(eventId)?.find((row) => row.id === shareId);
     if (!share) {
-      return { ok: false, error: 'Share not found' };
+      return { ok: false, error: i18n.t('web:batch53.shareNotFound') };
     }
     share.state = 'PENDING';
     share.error = null;

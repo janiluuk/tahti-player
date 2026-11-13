@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { getJson, sendJson } from './http';
 import { failMeta, isForceMock } from './mode';
@@ -67,7 +69,10 @@ export async function addArtistEmbed(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not add the track',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotAddTrack'),
     };
   }
 }
@@ -83,7 +88,7 @@ export async function updateArtistEmbedThumbnail(
     const embed = mockEmbeds.find((row) => row.id === id);
     return embed
       ? { ok: true, data: embed }
-      : { ok: false, error: 'Embed not found' };
+      : { ok: false, error: i18n.t('web:batch53.embedNotFound') };
   }
   try {
     const data = await sendJson<ArtistEmbed>(
@@ -95,7 +100,10 @@ export async function updateArtistEmbedThumbnail(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not save the cover',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotSaveCover'),
     };
   }
 }
@@ -113,7 +121,10 @@ export async function removeArtistEmbed(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not remove the track',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotRemoveTrack'),
     };
   }
 }

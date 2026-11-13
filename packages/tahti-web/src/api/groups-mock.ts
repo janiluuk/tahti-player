@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type {
   ArtistGroupRole,
   ArtistGroupSummary,
@@ -222,7 +224,7 @@ export function mockJoinGroup(
   | { ok: false; error: string } {
   const group = getStore().find((row) => row.slug === slug);
   if (!group) {
-    return { ok: false, error: 'Group not found' };
+    return { ok: false, error: i18n.t('web:batch53.groupNotFound') };
   }
   if (group.joinPolicy === 'REQUEST') {
     pendingJoin.add(slug);
@@ -275,7 +277,7 @@ export function mockSubmitGroupSound(
   | { ok: false; error: string } {
   const group = getStore().find((row) => row.slug === slug);
   if (!group) {
-    return { ok: false, error: 'Group not found' };
+    return { ok: false, error: i18n.t('web:batch53.groupNotFound') };
   }
   if (group.submitPolicy === 'APPROVE' && group.role === 'MEMBER') {
     return { ok: true, added: false, pending: true, itemId: null };

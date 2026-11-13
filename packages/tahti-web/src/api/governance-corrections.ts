@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 
@@ -96,7 +98,10 @@ export async function requestCorrection(input: {
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not send the request',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotSendRequest'),
     };
   }
 }
@@ -110,7 +115,7 @@ export async function withdrawCorrection(
     if (!row || row.state !== 'OPEN') {
       return {
         ok: false,
-        error: 'This request is no longer waiting for an answer',
+        error: i18n.t('web:batch53.requestNoLongerWaiting'),
       };
     }
     mockCorrections = mockCorrections.map((c) =>
@@ -128,7 +133,9 @@ export async function withdrawCorrection(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not withdraw the request',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch53.couldNotWithdrawRequest'),
     };
   }
 }
