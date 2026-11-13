@@ -8204,7 +8204,9 @@
     "workersPanel": {
       "close": "Close",
       "history": "History",
-      "workers": "Workers"
+      "workers": "Workers",
+      "emptyLanesTitle": "No worker covering these lanes",
+      "emptyLanesBody": "Jobs on {{lanes}} will wait or fail until a worker with that --queues lane is online."
     },
     "reportsTab": {
       "generateReport": "Generate report",

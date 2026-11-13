@@ -37,6 +37,10 @@ describe('WorkersPanel', () => {
     vi.spyOn(admin, 'fetchAdminWorkers').mockResolvedValue({
       ok: true,
       workers: [WORKER, { ...WORKER, name: 'mail-1', status: 'online' }],
+      laneCoverage: [
+        { lane: 'transcode', onlineWorkers: 0 },
+        { lane: 'mail', onlineWorkers: 1 },
+      ],
     });
     const history = vi
       .spyOn(admin, 'fetchAdminWorkerHistory')
@@ -61,6 +65,9 @@ describe('WorkersPanel', () => {
     ).toBeTruthy();
     expect(screen.getByText('Offline')).toBeTruthy();
     expect(screen.getAllByText(/tahti-worker-1 · pid 4211/)).toHaveLength(2);
+    expect(screen.getByTestId('workers-empty-lanes')).toHaveTextContent(
+      /transcode/,
+    );
 
     await act(async () => {
       fireEvent.click(screen.getAllByRole('button', { name: 'History' })[0]!);
@@ -88,6 +95,7 @@ describe('WorkersPanel', () => {
       vi.spyOn(admin, 'fetchAdminWorkers').mockResolvedValue({
         ok: true,
         workers: [{ ...WORKER, name: 'mail-1', status: 'online' }],
+        laneCoverage: [{ lane: 'transcode', onlineWorkers: 1 }],
       });
       await act(async () => {
         render(<WorkersPanel />);
