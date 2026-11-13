@@ -230,7 +230,9 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
       });
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not save.',
+        failure instanceof Error
+          ? failure.message
+          : i18n.t('web:batch51.couldNotSave'),
       );
     } finally {
       setBusy(null);

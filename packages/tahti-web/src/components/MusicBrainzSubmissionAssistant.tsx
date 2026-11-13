@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Box,
   Button,
@@ -72,7 +72,7 @@ export function MusicBrainzSubmissionAssistant({
         >
           <div className="font-medium">{title}</div>
           <div className="text-foreground-secondary">
-            {artistName || 'Artist credit not set'}
+            {artistName || i18n.t('web:batch51.artistCreditNotSet')}
           </div>
           {releaseDate ? (
             <div className="text-foreground-secondary text-xs">

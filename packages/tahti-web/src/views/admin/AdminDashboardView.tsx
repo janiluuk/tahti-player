@@ -111,6 +111,7 @@ export function AdminDashboardView() {
                 </StudioPanel>
               ) : (
                 <>
+                  <CommunityStatsPanel />
                   <StudioPanel title={t('adminDashboard.systemHealth')}>
                     <div className="grid gap-3 sm:grid-cols-2">
                       {(
@@ -362,8 +363,6 @@ export function AdminDashboardView() {
                       })}
                     </ul>
                   </StudioPanel>
-
-                  <CommunityStatsPanel />
 
                   <div>
                     <Button

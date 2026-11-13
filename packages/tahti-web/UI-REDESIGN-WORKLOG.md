@@ -6714,3 +6714,7 @@ Channel links sit under the bio in the backdrop. The old Links card is not rende
 ## 2026-11-13 — Listen row alignment and upload label (0.0.379)
 
 Recently played and Tahti Selects both omit the filter bar, so the first Listen row lines up. A recorded broadcast with no title uses the existing Finnish label.
+
+## 2026-11-13 — Admin stats first, 50 more labels (0.0.380)
+
+Community stats sit at the top of the admin overview, ahead of system health. Fifty leftover labels (export, chat, smart playlists, integrations, booking, and the mail tiles) follow the app language in English and Finnish.

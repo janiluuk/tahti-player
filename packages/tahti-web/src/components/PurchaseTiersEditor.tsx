@@ -1,7 +1,7 @@
 import { CircleDollarSignIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -220,7 +220,7 @@ export function PurchaseTiersEditor({ onChanged }: { onChanged?: () => void }) {
             e.preventDefault();
             const eurosN = Number(eurosAmt.replace(',', '.'));
             if (!Number.isFinite(eurosN) || eurosN < 0) {
-              setMsg('Enter a price of at least €0.');
+              setMsg(i18n.t('web:batch51.priceAtLeastZero'));
               return;
             }
             if (!name.trim() || busy) {

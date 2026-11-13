@@ -1,6 +1,6 @@
 import { useShallow } from 'zustand/react/shallow';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Meter } from '@tahti-player/ui';
 
 import { useDesktopUpdateStore } from '../lib/updates/desktopUpdates';
@@ -66,13 +66,13 @@ export function DesktopUpdatesRow() {
           {status === 'checking'
             ? 'Checking…'
             : status === 'up-to-date'
-              ? 'You have the latest version.'
+              ? i18n.t('web:batch51.latestVersion')
               : status === 'available' && update
                 ? `Tahti Player ${update.version} is available.`
                 : status === 'installing'
                   ? `Installing… ${progress}%`
                   : status === 'ready'
-                    ? 'Installed. Restart Tahti Player to use it.'
+                    ? i18n.t('web:batch51.restartToUse')
                     : null}
         </p>
       </div>

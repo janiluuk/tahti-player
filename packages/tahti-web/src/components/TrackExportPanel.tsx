@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonAnchor, InlineError, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -27,15 +27,15 @@ export const EXPORT_STATUS_POLL_MS = 10_000;
 function describe(status: TrackExportStatus): string {
   switch (status.status) {
     case 'DONE':
-      return 'Uploaded to Mixcloud.';
+      return i18n.t('web:batch51.uploadedToMixcloud');
     case 'FAILED':
       return status.error
         ? webT()('templateText.uploadFailed', { name: status.error })
         : 'Upload failed.';
     case 'UPLOADING':
-      return 'Uploading to Mixcloud… We notify you when it is done.';
+      return i18n.t('web:batch51.uploadingToMixcloud');
     default:
-      return 'Queued for upload. We notify you when it is done.';
+      return i18n.t('web:batch51.queuedForUpload');
   }
 }
 
@@ -129,7 +129,7 @@ export function TrackExportPanel({ soundId }: { soundId: string }) {
               ? 'Checking export status…'
               : status
                 ? describe(status)
-                : 'Send this item to your connected account.'}
+                : i18n.t('web:batch51.sendToConnectedAccount')}
           </p>
         </div>
         {status?.url ? (

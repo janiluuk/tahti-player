@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -145,13 +145,13 @@ export function ChannelLayersMenu({
             ? 'Editing Background'
             : selectedItem
               ? `Editing ${layerLabel(selectedItem)}`
-              : 'Choose a section to edit'}
+              : i18n.t('web:batch51.chooseSectionToEdit')}
         </p>
         <p className="text-foreground-secondary mt-1 text-xs">
           {panel === 'layers'
-            ? 'Select a row to edit. Drag to reorder; use the eye to show or hide.'
+            ? i18n.t('web:batch51.selectRowToEdit')
             : panel === 'look'
-              ? 'Settings apply to the selected section. Save changes when ready.'
+              ? i18n.t('web:batch51.settingsApplyToSection')
               : panel === 'add'
                 ? t('channelLayersMenuStates.addAPlaylistOrAnother')
                 : t('channelLayersMenuStates.startWithALayoutThen')}

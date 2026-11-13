@@ -1,4 +1,4 @@
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 
 import { TagChipInput } from './TagChipInput';
 
@@ -16,7 +16,7 @@ export function SubgenreTagInput({ value, onChange, suggestions }: Props) {
   return (
     <TagChipInput
       label={t('subgenreTagInputText.subGenres')}
-      addLabel="Add a sub-genre"
+      addLabel={i18n.t('web:batch51.addSubGenre')}
       placeholder="# Add a sub-genre"
       maxCount={12}
       maxLength={40}

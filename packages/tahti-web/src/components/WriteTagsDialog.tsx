@@ -94,7 +94,9 @@ export function WriteTagsDialog({
       }
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not write tags.',
+        failure instanceof Error
+          ? failure.message
+          : i18n.t('web:batch51.couldNotWriteTags'),
       );
     } finally {
       setBusy(false);

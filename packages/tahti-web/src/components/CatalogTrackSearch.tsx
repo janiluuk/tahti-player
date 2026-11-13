@@ -1,7 +1,7 @@
 import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Input } from '@tahti-player/ui';
 
 import { searchCatalogTracks, type CatalogTrack } from '../api/catalog-search';
@@ -10,7 +10,7 @@ import { PageEmpty } from './PageStates';
 const PAGE_SIZE = 20;
 
 export function CatalogTrackSearch({
-  label = 'Search the catalog',
+  label = i18n.t('web:batch51.searchTheCatalog'),
   excludeIds = [],
   onAdd,
 }: {

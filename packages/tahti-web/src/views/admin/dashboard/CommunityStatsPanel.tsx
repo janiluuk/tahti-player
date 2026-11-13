@@ -1,7 +1,7 @@
 import { LifeBuoyIcon, MailIcon, MessagesSquareIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { StatTile, type StatTone } from '@tahti-player/ui';
 
 import {
@@ -28,8 +28,8 @@ function formatCount(value: number | null | undefined): string {
 
 function mailboxSublabel(box: AdminMailbox | undefined): string {
   return box
-    ? `${formatCount(box.total)} in the inbox`
-    : 'Mail stats unavailable';
+    ? i18n.t('web:batch51.inTheInbox', { count: formatCount(box.total) })
+    : i18n.t('web:batch51.mailStatsUnavailable');
 }
 
 export function CommunityStatsPanel() {
@@ -74,7 +74,10 @@ export function CommunityStatsPanel() {
           value={stats.chatSeries.length > 0 ? formatCount(total) : '—'}
           sublabel={
             busiest
-              ? `Busiest ${numericDate(new Date(`${busiest.date}T00:00:00`))}: ${formatCount(busiest.count)}`
+              ? i18n.t('web:batch51.busiest', {
+                  date: numericDate(new Date(`${busiest.date}T00:00:00`)),
+                  count: formatCount(busiest.count),
+                })
               : undefined
           }
         />

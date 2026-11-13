@@ -1,4 +1,4 @@
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 
 import { useDesktopMcpStore } from '../lib/mcp/desktop';
 import { DesktopServiceRow } from './DesktopServiceRow';
@@ -12,8 +12,8 @@ export function McpIntegrationRow() {
       testId="integration-mcp"
       label={t('mcpIntegrationRow.mcpServer')}
       description={t('mcpIntegrationRow.letsAnAiToolSuch')}
-      copyLabel="Copy MCP server URL"
-      failure="The MCP server could not start"
+      copyLabel={i18n.t('web:batch51.copyMcpUrl')}
+      failure={i18n.t('web:batch51.mcpCouldNotStart')}
     />
   );
 }

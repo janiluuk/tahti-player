@@ -114,7 +114,7 @@ export function SmartPlaylistDialog({
       toast.error(
         failure instanceof Error
           ? failure.message
-          : 'Could not save the smart playlist.',
+          : i18n.t('web:batch51.couldNotSaveSmartPlaylist'),
       );
     } finally {
       setSaving(false);

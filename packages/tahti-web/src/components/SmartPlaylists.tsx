@@ -108,7 +108,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
       setLoadError(
         failure instanceof Error
           ? failure.message
-          : 'Could not load smart playlists.',
+          : i18n.t('web:batch51.couldNotLoadSmartPlaylists'),
       );
     }
   }, [library]);
@@ -205,7 +205,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                         void run(
                           list.id,
                           () => playSmart(library, list.id, false),
-                          'Could not play.',
+                          i18n.t('web:batch51.couldNotPlay'),
                         )
                       }
                     >
@@ -223,7 +223,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                         void run(
                           list.id,
                           () => playSmart(library, list.id, true),
-                          'Could not play.',
+                          i18n.t('web:batch51.couldNotPlay'),
                         )
                       }
                     >
@@ -332,7 +332,7 @@ export function SmartPlaylists({ library, onPlaylistCreated }: Props) {
                 );
                 await load();
               },
-              'Could not delete.',
+              i18n.t('web:batch51.couldNotDelete'),
             );
           }
         }}

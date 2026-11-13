@@ -41,7 +41,7 @@ describe('AdminDashboardView', () => {
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 
-  it('leads with system health and links to status, monitoring and logs', async () => {
+  it('leads with community stats, then system health and the status links', async () => {
     vi.spyOn(admin, 'fetchAdminDashboard').mockResolvedValue({
       data: {
         kpis: { activeMembers: 3, liveNow: 0, betaQueue: 1, openTickets: 2 },
@@ -66,7 +66,8 @@ describe('AdminDashboardView', () => {
     const headings = (await screen.findAllByRole('heading', { level: 2 })).map(
       (heading) => heading.textContent,
     );
-    expect(headings[0]).toBe('System health');
+    expect(headings[0]).toBe('Chat and mail');
+    expect(headings).toContain('System health');
     expect(screen.getByRole('link', { name: 'Status checks' })).toHaveAttribute(
       'href',
       '/admin/status',

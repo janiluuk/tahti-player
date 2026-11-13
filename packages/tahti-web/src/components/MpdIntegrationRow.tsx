@@ -1,4 +1,4 @@
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 
 import { useDesktopMpdStore } from '../lib/mpd/desktop';
 import { DesktopServiceRow } from './DesktopServiceRow';
@@ -12,8 +12,8 @@ export function MpdIntegrationRow() {
       testId="integration-mpd"
       label={t('mpdIntegrationRow.mpdServer')}
       description={t('mpdIntegrationRow.letsAnMpdClientSuch')}
-      copyLabel="Copy MPD server address"
-      failure="The MPD server could not start"
+      copyLabel={i18n.t('web:batch51.copyMpdAddress')}
+      failure={i18n.t('web:batch51.mpdCouldNotStart')}
     />
   );
 }

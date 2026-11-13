@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Input } from '@tahti-player/ui';
 
 import {
@@ -337,7 +337,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
               if (data.error) {
                 showChatError(
                   data.error.message,
-                  'Your message was not sent. Try again in a moment.',
+                  i18n.t('web:batch51.messageNotSent'),
                 );
               }
               continue;
@@ -404,7 +404,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
   async function join() {
     const h = pendingHandle.trim().slice(0, 32);
     if (!h) {
-      showError('Pick a handle to join.');
+      showError(i18n.t('web:batch51.pickHandleToJoin'));
       return;
     }
     const hcaptchaToken =
@@ -442,7 +442,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
       // locally — that reads as sent but nobody else ever sees it. Stay on
       // the join form and let the user retry once the real thing works.
       resetCaptcha();
-      showChatError(err, 'Could not join chat. Try again in a moment.');
+      showChatError(err, i18n.t('web:batch51.couldNotJoinChat'));
     } finally {
       setJoining(false);
     }
@@ -487,7 +487,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
     // can't actually reach the live channel must not be echoed locally as
     // if it had — that looks sent but nobody else ever sees it.
     if (mode !== 'mock') {
-      showError('Not connected - message not sent. Try again in a moment.');
+      showError(i18n.t('web:batch51.notConnectedMessage'));
       return;
     }
 
@@ -559,10 +559,7 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
         <ChatReactionBar
           slug={slug}
           onError={(m) =>
-            showChatError(
-              m,
-              'Your reaction was not sent. Try again in a moment.',
-            )
+            showChatError(m, i18n.t('web:batch51.reactionNotSent'))
           }
         />
       )}

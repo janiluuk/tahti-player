@@ -1,7 +1,7 @@
 import { ActivityIcon, CheckCircle2Icon, Mic2Icon } from 'lucide-react';
 import { useEffect, useRef } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import type { SignalStatus } from '../api/broadcast';
@@ -137,7 +137,7 @@ export const SignalCheckWidget = ({
         <div className="min-w-0 flex-1 basis-40">
           <p className="text-sm font-semibold">
             {state === 'waiting'
-              ? 'Waiting for your signal…'
+              ? i18n.t('web:batch51.waitingForSignal')
               : state === 'checking'
                 ? t('signalCheckWidgetStates.listeningThatsReallyYou')
                 : t('signalCheckWidgetStates.youreConnected')}

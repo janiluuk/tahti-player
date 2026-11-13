@@ -7,9 +7,6 @@ import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 import { useSettingsModalStore } from '../stores/settingsModalStore';
 import { UploadTrackDialog } from './UploadTrackDialog';
 
-const UPLOAD_HINT =
-  'Quick upload in a dialog. For the full journey, use Library → Upload.';
-
 type Props = {
   size?: 'sm' | 'default';
   /** Center actions (e.g. empty state). */
@@ -45,7 +42,7 @@ export function AddToMusicActions({
             {t('addToMusicActions.upload')}
           </ButtonLink>
         ) : (
-          <Tooltip content={UPLOAD_HINT} side="top">
+          <Tooltip content={t('batch51.quickUploadHint')} side="top">
             <Button
               size={size}
               onClick={() => setUploadOpen(true)}
