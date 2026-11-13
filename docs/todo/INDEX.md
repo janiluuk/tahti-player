@@ -58,6 +58,8 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: player slices 11–30 shipped; org API rows remain |
 | open    | [yaniho-channel-waveform-peaks.md](yaniho-channel-waveform-peaks.md) | Yaniho channel (`/channel/yaniho`) tracks still show loading over the waveform; pre-generate peaks for every view during pre-processing |
+| open    | [processing-track-opens-not-found.md](processing-track-opens-not-found.md) | Clicking a PENDING/PROCESSING track shows not found; open the track view with an animated processing indicator instead of the waveform |
+| open    | [spotify-listen-widget-artist-playlist.md](spotify-listen-widget-artist-playlist.md) | After lane-handoff leftover PRs: add a Listen widget for a Spotify artist or playlist URL |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, Library History/Following shipped; Inbox queue chips shipped (0.0.377); left: catalog move to Studio → Music, Profile forms in Studio, Broadcast agenda, Overview merge, docs rewrite |

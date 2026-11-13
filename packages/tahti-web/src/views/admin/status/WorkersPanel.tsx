@@ -2,13 +2,14 @@ import { HistoryIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Badge, Button, Dialog, InlineError } from '@tahti-player/ui';
+import { Alert, Badge, Button, Dialog, InlineError } from '@tahti-player/ui';
 
 import {
   fetchAdminWorkerHistory,
   fetchAdminWorkers,
   type AdminWorker,
   type AdminWorkerJobEvent,
+  type AdminWorkerLaneCoverage,
 } from '../../../api/admin';
 import {
   PageEmpty,
@@ -27,6 +28,13 @@ const EVENT_COLORS: Record<
   failed: 'red',
   active: 'cyan',
 };
+
+function emptyLanes(coverage: AdminWorkerLaneCoverage[]): string[] {
+  return coverage
+    .filter((row) => row.onlineWorkers === 0)
+    .map((row) => row.lane)
+    .sort();
+}
 
 function WorkerHistoryDialog({
   worker,
@@ -117,6 +125,9 @@ function WorkerHistoryDialog({
 export function WorkersPanel() {
   const { t } = useTranslation('web');
   const [workers, setWorkers] = useState<AdminWorker[] | null>(null);
+  const [laneCoverage, setLaneCoverage] = useState<AdminWorkerLaneCoverage[]>(
+    [],
+  );
   const [error, setError] = useState<string | null>(null);
   const [historyFor, setHistoryFor] = useState<AdminWorker | null>(null);
 
@@ -128,6 +139,7 @@ export function WorkersPanel() {
       return;
     }
     setWorkers(result.workers);
+    setLaneCoverage(result.laneCoverage);
   }, []);
 
   useEffect(() => {
@@ -135,6 +147,7 @@ export function WorkersPanel() {
   }, [load]);
 
   const offline = workers?.filter((worker) => worker.status === 'offline');
+  const uncovered = emptyLanes(laneCoverage);
 
   return (
     <StudioPanel
@@ -156,61 +169,76 @@ export function WorkersPanel() {
       ) : workers.length === 0 ? (
         <PageEmpty title={t('empties.noWorkersReported')} />
       ) : (
-        <ul className="divide-border divide-y">
-          {workers.map((worker) => (
-            <li
-              key={worker.name}
-              className="flex flex-wrap items-center justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0"
+        <div className="flex flex-col gap-3">
+          {uncovered.length > 0 ? (
+            <Alert
+              tone="warning"
+              title={t('workersPanel.emptyLanesTitle')}
+              data-testid="workers-empty-lanes"
             >
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2 font-medium">
-                  {worker.name}
-                  <Badge
-                    variant="pill"
-                    color={worker.status === 'online' ? 'green' : 'red'}
-                  >
-                    {worker.status === 'online'
-                      ? t('workersPanelStates.online')
-                      : t('workersPanelStates.offline')}
-                  </Badge>
-                  {worker.lanes.map((lane) => (
-                    <Badge key={lane} variant="pill" color="secondary">
-                      {lane}
-                    </Badge>
-                  ))}
-                </div>
-                <div className="text-foreground-secondary text-xs">
-                  {[
-                    worker.hostname,
-                    worker.pid != null ? `pid ${worker.pid}` : null,
-                    worker.updatedAt
-                      ? `seen ${humanizePastDate(worker.updatedAt)}`
-                      : null,
-                  ]
-                    .filter(Boolean)
-                    .join(' · ')}
-                </div>
-                {worker.lastJobName ? (
-                  <div className="text-foreground-secondary text-xs">
-                    Last job: {worker.lastJobName}
-                    {worker.lastJobStatus ? ` (${worker.lastJobStatus})` : ''}
-                    {worker.lastJobAt
-                      ? ` · ${humanizePastDate(worker.lastJobAt)}`
-                      : ''}
-                  </div>
-                ) : null}
-              </div>
-              <Button
-                size="sm"
-                variant="text"
-                onClick={() => setHistoryFor(worker)}
+              {t('workersPanel.emptyLanesBody', {
+                lanes: new Intl.ListFormat(dateLocaleTag(), {
+                  type: 'conjunction',
+                }).format(uncovered),
+              })}
+            </Alert>
+          ) : null}
+          <ul className="divide-border divide-y">
+            {workers.map((worker) => (
+              <li
+                key={worker.name}
+                className="flex flex-wrap items-center justify-between gap-3 py-2 text-sm first:pt-0 last:pb-0"
               >
-                <HistoryIcon size={14} aria-hidden className="mr-1.5" />
-                {t('workersPanel.history')}
-              </Button>
-            </li>
-          ))}
-        </ul>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2 font-medium">
+                    {worker.name}
+                    <Badge
+                      variant="pill"
+                      color={worker.status === 'online' ? 'green' : 'red'}
+                    >
+                      {worker.status === 'online'
+                        ? t('workersPanelStates.online')
+                        : t('workersPanelStates.offline')}
+                    </Badge>
+                    {worker.lanes.map((lane) => (
+                      <Badge key={lane} variant="pill" color="secondary">
+                        {lane}
+                      </Badge>
+                    ))}
+                  </div>
+                  <div className="text-foreground-secondary text-xs">
+                    {[
+                      worker.hostname,
+                      worker.pid != null ? `pid ${worker.pid}` : null,
+                      worker.updatedAt
+                        ? `seen ${humanizePastDate(worker.updatedAt)}`
+                        : null,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
+                  </div>
+                  {worker.lastJobName ? (
+                    <div className="text-foreground-secondary text-xs">
+                      Last job: {worker.lastJobName}
+                      {worker.lastJobStatus ? ` (${worker.lastJobStatus})` : ''}
+                      {worker.lastJobAt
+                        ? ` · ${humanizePastDate(worker.lastJobAt)}`
+                        : ''}
+                    </div>
+                  ) : null}
+                </div>
+                <Button
+                  size="sm"
+                  variant="text"
+                  onClick={() => setHistoryFor(worker)}
+                >
+                  <HistoryIcon size={14} aria-hidden className="mr-1.5" />
+                  {t('workersPanel.history')}
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
       <WorkerHistoryDialog
         worker={historyFor}

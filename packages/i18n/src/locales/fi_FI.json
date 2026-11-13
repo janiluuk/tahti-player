@@ -8204,7 +8204,9 @@
     "workersPanel": {
       "close": "Sulje",
       "history": "Historia",
-      "workers": "Työprosessit"
+      "workers": "Työprosessit",
+      "emptyLanesTitle": "Näillä kaistoilla ei ole työprosessia",
+      "emptyLanesBody": "Työt kaistoilla {{lanes}} odottavat tai epäonnistuvat, kunnes --queues-kaistan työprosessi on verkossa."
     },
     "reportsTab": {
       "generateReport": "Luo raportti",

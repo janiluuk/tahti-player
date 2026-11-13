@@ -16,6 +16,11 @@ export type AdminWorker = {
   lastJobAt: string | null;
 };
 
+export type AdminWorkerLaneCoverage = {
+  lane: string;
+  onlineWorkers: number;
+};
+
 export type AdminWorkerJobEvent = {
   jobId: string;
   jobName: string;
@@ -58,17 +63,44 @@ function mockWorkers(): AdminWorker[] {
   ];
 }
 
+function mockLaneCoverage(workers: AdminWorker[]): AdminWorkerLaneCoverage[] {
+  const lanes = new Map<string, number>();
+  for (const worker of workers) {
+    if (worker.status !== 'online') {
+      continue;
+    }
+    for (const lane of worker.lanes) {
+      lanes.set(lane, (lanes.get(lane) ?? 0) + 1);
+    }
+  }
+  return [...lanes.entries()].map(([lane, onlineWorkers]) => ({
+    lane,
+    onlineWorkers,
+  }));
+}
+
 export async function fetchAdminWorkers(): Promise<
-  { ok: true; workers: AdminWorker[] } | { ok: false; error: string }
+  | {
+      ok: true;
+      workers: AdminWorker[];
+      laneCoverage: AdminWorkerLaneCoverage[];
+    }
+  | { ok: false; error: string }
 > {
   if (isForceMock()) {
-    return { ok: true, workers: mockWorkers() };
+    const workers = mockWorkers();
+    return { ok: true, workers, laneCoverage: mockLaneCoverage(workers) };
   }
   try {
-    const data = await getJson<{ workers: AdminWorker[] }>(
-      '/api/admin/workers',
-    );
-    return { ok: true, workers: data.workers };
+    const data = await getJson<{
+      workers: AdminWorker[];
+      laneCoverage?: AdminWorkerLaneCoverage[];
+    }>('/api/admin/workers');
+    return {
+      ok: true,
+      workers: data.workers,
+      laneCoverage: data.laneCoverage ?? mockLaneCoverage(data.workers),
+    };
   } catch (err) {
     return {
       ok: false,

@@ -1,3 +1,9 @@
+## 2026-11-13 — Admin Workers empty-lane warning
+
+Admin → Status → Workers warns when `laneCoverage` has a lane with
+`onlineWorkers === 0` (jobs would wait or fail). Uses API
+`laneCoverage` from tahti-org. tahti-web 0.0.391.
+
 ## 2026-11-13 — Import wizard
 
 Studio upload opens one wizard for SoundCloud, hearthis.at, Spotify, and Mixcloud: pick the service, choose tracks or playlists, confirm, then a progress bar. A saved profile or an existing connection skips setup. tahti-web 0.0.387.
