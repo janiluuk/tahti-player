@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { TracklistEntry } from '../api/studio-types';
 
 function parseTimestamp(value: string): number | null {
@@ -221,7 +223,9 @@ function readFileAsArrayBuffer(file: File): Promise<ArrayBuffer> {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result as ArrayBuffer);
     reader.onerror = () =>
-      reject(reader.error ?? new Error('Could not read tracklist file'));
+      reject(
+        reader.error ?? new Error(i18n.t('web:batch57.couldNotReadTracklist')),
+      );
     reader.readAsArrayBuffer(file);
   });
 }

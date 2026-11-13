@@ -2,7 +2,7 @@ import { Link, useParams } from '@tanstack/react-router';
 import { CheckIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -299,7 +299,10 @@ export function AdminGrantCycleView() {
                             key={`${grant.publishedAs ?? 'anonymous'}-${index}`}
                             className="flex justify-between gap-3 py-2 text-sm"
                           >
-                            <span>{grant.publishedAs ?? 'Anonymous'}</span>
+                            <span>
+                              {grant.publishedAs ??
+                                i18n.t('web:batch57.anonymous')}
+                            </span>
                             <span>
                               {formatEurString(grant.amountCents)} ·{' '}
                               {grant.state}

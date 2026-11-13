@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError, Textarea } from '@tahti-player/ui';
 
 import {
@@ -40,7 +40,9 @@ export function CandidacyControl({
     void action().then((result) => {
       setBusy(false);
       if (!result.ok) {
-        setError(result.error ?? 'Something went wrong');
+        setError(
+          result.error ?? i18n.t('web:appErrorFallback.somethingWentWrong'),
+        );
         return;
       }
       setWriting(false);

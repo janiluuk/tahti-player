@@ -1,6 +1,6 @@
 import { Link } from '@tanstack/react-router';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   DataTable,
@@ -33,7 +33,7 @@ export function FanSubArtistsPanel() {
     async () => {
       const result = await fetchFanSubArtists();
       if (!result.data) {
-        throw new Error('Fan subscription artists unavailable');
+        throw new Error(i18n.t('web:batch57.fanSubArtistsUnavailable'));
       }
       return result.data;
     },

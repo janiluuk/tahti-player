@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -36,7 +36,9 @@ export function AdminFinancialView() {
     async () => {
       const res = await fetchAdminFinancial(year);
       if (!res.data) {
-        throw new Error(res.meta.reason ?? 'No financial data');
+        throw new Error(
+          res.meta.reason ?? i18n.t('web:batch57.noFinancialData'),
+        );
       }
       return res.data;
     },

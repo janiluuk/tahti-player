@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   BreadcrumbCurrent,
   BreadcrumbLink,
@@ -190,8 +190,11 @@ export function AdminContentView() {
                                   </p>
                                 </Tooltip>
                                 <p className="text-foreground-secondary text-xs">
-                                  {broadcast.artistName ?? 'Unknown artist'} ·{' '}
-                                  {formatDuration(broadcast.durationSec)}
+                                  {broadcast.artistName ??
+                                    i18n.t(
+                                      'web:studioEditorList.unknownArtist',
+                                    )}{' '}
+                                  · {formatDuration(broadcast.durationSec)}
                                 </p>
                               </div>
                               <ListingDate

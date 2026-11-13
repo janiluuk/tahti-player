@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -186,7 +186,7 @@ export function ClipEditorDialog({
     void fetch(source.originalUrl, { signal: controller.signal })
       .then((r) => {
         if (!r.ok) {
-          throw new Error('Waveform unavailable');
+          throw new Error(i18n.t('web:batch57.waveformUnavailable'));
         }
         return r.arrayBuffer();
       })

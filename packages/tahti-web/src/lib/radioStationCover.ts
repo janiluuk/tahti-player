@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import {
   fetchAdminInternetRadioPresets,
   patchAdminInternetRadioPreset,
@@ -41,7 +43,9 @@ function fileToDataUrl(file: File): Promise<string> {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result));
     reader.onerror = () =>
-      reject(reader.error ?? new Error('Could not read image'));
+      reject(
+        reader.error ?? new Error(i18n.t('web:batch57.couldNotReadImage')),
+      );
     reader.readAsDataURL(file);
   });
 }
@@ -59,7 +63,10 @@ export async function uploadRadioCoverFile(
     } catch (error) {
       return {
         ok: false,
-        error: error instanceof Error ? error.message : 'Could not read image',
+        error:
+          error instanceof Error
+            ? error.message
+            : i18n.t('web:batch57.couldNotReadImage'),
       };
     }
   }

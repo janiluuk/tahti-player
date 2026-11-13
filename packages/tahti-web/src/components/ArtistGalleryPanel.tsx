@@ -291,7 +291,7 @@ export function ArtistGalleryPanel({
                   size="flexible"
                   className="block w-full rounded-none p-0"
                   onClick={() => setLightbox(index)}
-                  aria-label={img.title ?? 'View photo'}
+                  aria-label={img.title ?? i18n.t('web:batch57.viewPhoto')}
                 >
                   <ImageReveal
                     src={img.imageUrl}
@@ -390,7 +390,9 @@ export function ArtistGalleryPanel({
         <ImageLightbox
           images={images}
           index={lightbox}
-          label={images[lightbox]?.title ?? 'Gallery slideshow'}
+          label={
+            images[lightbox]?.title ?? i18n.t('web:batch57.gallerySlideshow')
+          }
           onIndexChange={setLightbox}
           onClose={() => setLightbox(null)}
           onDeleteCurrent={

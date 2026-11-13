@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type {
   GoogleDrivePickedFile,
   GoogleDrivePickerConfig,
@@ -64,7 +66,8 @@ function loadGapiScript(): Promise<void> {
     script.src = GAPI_SRC;
     script.async = true;
     script.onload = () => resolve();
-    script.onerror = () => reject(new Error('Could not reach Google Drive.'));
+    script.onerror = () =>
+      reject(new Error(i18n.t('web:batch57.couldNotReachDrive')));
     document.head.appendChild(script);
   });
 }
@@ -77,7 +80,7 @@ export function loadGooglePicker(): Promise<GooglePickerApi> {
         new Promise<GooglePickerApi>((resolve, reject) => {
           const google = window as GoogleWindow;
           if (!google.gapi) {
-            reject(new Error('Could not reach Google Drive.'));
+            reject(new Error(i18n.t('web:batch57.couldNotReachDrive')));
             return;
           }
           google.gapi.load('picker', () => {
@@ -85,7 +88,7 @@ export function loadGooglePicker(): Promise<GooglePickerApi> {
             if (picker) {
               resolve(picker);
             } else {
-              reject(new Error('Google Drive picker did not load.'));
+              reject(new Error(i18n.t('web:batch57.drivePickerDidNotLoad')));
             }
           });
         }),

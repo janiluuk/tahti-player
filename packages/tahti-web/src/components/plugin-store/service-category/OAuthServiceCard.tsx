@@ -317,7 +317,9 @@ export function OAuthServiceCard({
                 />
               ) : bandcampAlbums.length === 0 ? (
                 <PageEmpty
-                  title={bandcampMessage ?? 'No Bandcamp releases were found.'}
+                  title={
+                    bandcampMessage ?? i18n.t('web:batch57.noBandcampReleases')
+                  }
                 />
               ) : !bandcampImportAvailable ? (
                 <p className="text-foreground-secondary text-sm">

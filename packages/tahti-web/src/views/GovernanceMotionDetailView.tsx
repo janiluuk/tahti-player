@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Box, Button, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMembers, fetchGovernanceMotion } from '../api/client';
@@ -111,7 +111,7 @@ export function GovernanceMotionDetailView({ id }: { id: string }) {
 
       {user && !loading && !forbidden && !motion && (
         <p className="text-foreground-secondary text-sm">
-          {error ?? 'Motion not found.'}
+          {error ?? i18n.t('web:batch57.motionNotFound')}
         </p>
       )}
 

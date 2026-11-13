@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, MediaArtwork } from '@tahti-player/ui';
 
 import { formatLibrarySize } from '../lib/libraryFormat';
@@ -128,7 +128,9 @@ export function TrackInspectorDialog({
   const sections = ['Tags', 'File'] as const;
   return (
     <Dialog.Root isOpen={track !== null} onClose={onClose}>
-      <Dialog.Title>{track?.title ?? 'Track details'}</Dialog.Title>
+      <Dialog.Title>
+        {track?.title ?? i18n.t('web:batch57.trackDetails')}
+      </Dialog.Title>
       <Dialog.Description>
         {track?.artist || 'Unknown artist'}
       </Dialog.Description>
