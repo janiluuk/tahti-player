@@ -45,6 +45,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
+| open    | [monitoring-logs-to-logs-tab.md](monitoring-logs-to-logs-tab.md) | Move Monitoring container logs under Admin → Logs |
 | open | [channel-manager-play-in-player.md](channel-manager-play-in-player.md) | Broadcast Channel manager: Listen in player control |
 | open    | [next-50.md](next-50.md) | Map of the 50 slice files in the Next 50 slices section |
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; left: native review |

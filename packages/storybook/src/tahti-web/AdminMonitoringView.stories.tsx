@@ -37,12 +37,16 @@ export const Default: Story = {
       canvas.getByTitle('Tahti vital services — Grafana'),
     ).toBeInTheDocument();
     await expect(canvas.getByText('API')).toBeInTheDocument();
-    await waitFor(() =>
-      expect(
-        canvas.getByRole('heading', {
-          name: 'Container logs (all services)',
-        }),
-      ).toBeInTheDocument(),
-    );
+    await expect(
+      canvas.getByRole('link', { name: 'Full logs page' }),
+    ).toBeInTheDocument();
+    await expect(
+      canvas.getAllByRole('link', { name: 'App logs' }).length,
+    ).toBeGreaterThan(0);
+    await expect(
+      canvas.queryByRole('heading', {
+        name: 'Container logs (all services)',
+      }),
+    ).toBeNull();
   },
 };

@@ -1,5 +1,4 @@
 import { ExternalLinkIcon } from 'lucide-react';
-import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -7,7 +6,6 @@ import {
   BreadcrumbCurrent,
   BreadcrumbLink,
   Breadcrumbs,
-  Button,
   ButtonAnchor,
   ButtonLink,
   Tooltip,
@@ -24,11 +22,9 @@ import {
   grafanaExploreLogsUrl,
   MONITORING_SERVICES,
 } from '../../lib/grafanaMonitoring';
-import { ContainerLogsPanel } from './monitoring/ContainerLogsPanel';
 
 export function AdminMonitoringView() {
   const { t } = useTranslation('web');
-  const [logService, setLogService] = useState<string | undefined>(undefined);
   const vitalUid = GRAFANA_DASHBOARDS.vital.uid;
   const embedSrc = grafanaDashboardEmbedUrl(vitalUid);
 
@@ -94,7 +90,12 @@ export function AdminMonitoringView() {
                     {t('adminMonitoring.grafanaExploreLoki')}
                     <ExternalLinkIcon size={12} aria-hidden className="ml-1" />
                   </ButtonAnchor>
-                  <ButtonLink to="/admin/logs" size="sm" variant="text">
+                  <ButtonLink
+                    to="/admin/logs"
+                    search={{ tab: 'containers' }}
+                    size="sm"
+                    variant="text"
+                  >
                     {t('adminMonitoring.fullLogsPage')}
                   </ButtonLink>
                 </div>
@@ -104,7 +105,6 @@ export function AdminMonitoringView() {
                 <ul className="divide-border divide-y">
                   {MONITORING_SERVICES.map((svc) => {
                     const dash = GRAFANA_DASHBOARDS[svc.grafana.dashboard];
-                    const active = logService === svc.logService;
                     return (
                       <li
                         key={svc.id}
@@ -152,20 +152,6 @@ export function AdminMonitoringView() {
                           >
                             {t('adminMonitoring.appLogs')}
                           </ButtonLink>
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant={active ? 'secondary' : 'text'}
-                            onClick={() => {
-                              setLogService(
-                                active ? undefined : svc.logService,
-                              );
-                            }}
-                          >
-                            {active
-                              ? t('adminMonitoringViewStates.clearFilter')
-                              : t('adminMonitoringViewStates.filterBelow')}
-                          </Button>
                         </div>
                       </li>
                     );
@@ -197,18 +183,6 @@ export function AdminMonitoringView() {
                   </ButtonAnchor>
                 </p>
               </StudioPanel>
-
-              <div id="container-logs">
-                <ContainerLogsPanel
-                  service={logService}
-                  title={
-                    logService
-                      ? `Container logs · ${logService}`
-                      : 'Container logs (all services)'
-                  }
-                  heightClassName="h-[55vh]"
-                />
-              </div>
             </ViewShell>
           </div>
         </AdminPageLayout>
