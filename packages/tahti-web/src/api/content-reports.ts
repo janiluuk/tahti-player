@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -35,7 +37,10 @@ export async function submitContentReport(input: {
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not send the report',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch52.couldNotSendReport'),
     };
   }
 }

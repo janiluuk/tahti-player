@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { apiBase } from './http';
 import {
   allowMockFallback,
@@ -86,13 +88,13 @@ function defaultChecklist(overrides?: {
       id: 'metadata',
       label: 'Release metadata',
       done: true,
-      hint: 'Title, date, description, artwork, and at least one track',
+      hint: i18n.t('web:batch52.checklistMetadataHint'),
     },
     {
       id: 'identifiers',
       label: 'UPC / ISRC',
       done: overrides?.identifiers ?? false,
-      hint: 'UPC on the release or ISRC on every track',
+      hint: i18n.t('web:batch52.checklistIdentifiersHint'),
     },
     {
       id: 'musicbrainz',
@@ -104,7 +106,7 @@ function defaultChecklist(overrides?: {
       id: 'dsp',
       label: 'DSP / smart links',
       done: false,
-      hint: 'Revelator submitted or platform URLs on the smart link',
+      hint: i18n.t('web:batch52.checklistDspHint'),
     },
     {
       id: 'published',

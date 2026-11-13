@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Alert, Badge, Box, Button, InlineError } from '@tahti-player/ui';
 
 import {
@@ -56,7 +56,7 @@ export function MembershipStatusPanel({
       }
       if ('checkoutUrl' in res && res.checkoutUrl) {
         if (!assignStripeRedirectUrl(res.checkoutUrl)) {
-          setError('Checkout URL was not from Stripe');
+          setError(i18n.t('web:batch52.checkoutNotStripe'));
         }
         return;
       }
@@ -81,7 +81,7 @@ export function MembershipStatusPanel({
         return;
       }
       if (!assignStripeRedirectUrl(res.portalUrl)) {
-        setError('Billing portal URL was not from Stripe');
+        setError(i18n.t('web:batch52.billingNotStripe'));
       }
     });
   }

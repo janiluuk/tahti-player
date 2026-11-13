@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { useEffect, useRef, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -106,7 +106,9 @@ export function MessagesView({
         setMessages([]);
         setHasMore(false);
         setOther(null);
-        setThreadError(reason ?? 'Could not load this conversation.');
+        setThreadError(
+          reason ?? i18n.t('web:batch52.couldNotLoadConversation'),
+        );
         return;
       }
       setMessages(r.data.messages);

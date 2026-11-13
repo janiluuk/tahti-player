@@ -1,7 +1,7 @@
 import { RssIcon, TrashIcon } from 'lucide-react';
 import { useRef, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
 
 import { isHttpUrl } from '../lib/parseRss';
@@ -57,7 +57,7 @@ export function NewsSourcesDialog({
       return;
     }
     if (addedUrls.has(trimmed)) {
-      setError('That feed is already a source.');
+      setError(i18n.t('web:batch52.feedAlreadySource'));
       return;
     }
     add(trimmed, title.trim() || hostOf(trimmed));

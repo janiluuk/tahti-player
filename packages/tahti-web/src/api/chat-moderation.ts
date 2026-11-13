@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { mockChatBans } from './artist-settings/mock';
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
@@ -179,7 +181,10 @@ export async function stopModerating(slug: string): Promise<Result> {
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not step down',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch52.couldNotStepDown'),
     };
   }
 }

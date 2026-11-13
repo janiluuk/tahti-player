@@ -8,7 +8,7 @@ import {
 import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -174,9 +174,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           if (resolved) {
             play(resolved);
           } else {
-            toast.error(
-              'Re-import this file from your library to play it again.',
-            );
+            toast.error(i18n.t('web:batch52.reimportToPlay'));
           }
         })
         .catch((error: unknown) => {

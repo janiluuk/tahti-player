@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { MediaArtwork, SectionTitle, ViewShell } from '@tahti-player/ui';
 
 import { fetchSearch } from '../api/listen';
@@ -50,7 +50,9 @@ export function SearchResultsView({ q }: { q: string }) {
           setState({
             status: 'error',
             message:
-              err instanceof Error ? err.message : 'Could not run this search.',
+              err instanceof Error
+                ? err.message
+                : i18n.t('web:batch52.couldNotRunSearch'),
           });
         }
       });

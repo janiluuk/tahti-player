@@ -14,7 +14,7 @@ import {
 import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   PlayerShell,
   PlayerWorkspace,
@@ -463,7 +463,7 @@ export function AppShell() {
       return;
     }
     deferOnboardingPrompt(userId);
-    toast('Finish setting up your profile?', {
+    toast(i18n.t('web:batch52.finishProfile'), {
       description: t('appShell.aFewQuickStepsTo'),
       duration: 8_000,
       action: {

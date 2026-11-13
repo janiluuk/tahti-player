@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonAnchor,
@@ -319,8 +319,7 @@ export function AdminStreamManagerPanel({
                               'adminStreamManagerPanelLabels.forceSlugOffline',
                               { slug: stream.slug },
                             ),
-                            description:
-                              'This ends the broadcast immediately. The artist is notified that the board took it off the air.',
+                            description: i18n.t('web:batch52.endsBroadcast'),
                             confirmLabel: t(
                               'adminStreamManagerPanelFields.takeOffline',
                             ),

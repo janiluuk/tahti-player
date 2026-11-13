@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -235,9 +235,9 @@ function DestinationDialog({
       </Dialog.Title>
       <Dialog.Description>
         {!providerId
-          ? 'Choose a destination to configure.'
+          ? i18n.t('web:batch52.chooseDestination')
           : isCustom
-            ? 'Paste the RTMP address and stream key for this destination.'
+            ? i18n.t('web:batch52.pasteRtmp')
             : `Paste the stream key from your ${selectedProvider?.label} dashboard.`}
       </Dialog.Description>
       <form
@@ -410,9 +410,9 @@ function DestinationDialog({
                     >
                       {testResult.ok
                         ? testResult.reachable
-                          ? 'Reachable — the destination is accepting connections.'
+                          ? i18n.t('web:batch52.destinationReachable')
                           : (testResult.error ??
-                            'Could not reach the destination.')
+                            i18n.t('web:batch52.couldNotReachDestination'))
                         : testResult.error}
                     </p>
                   )}
@@ -630,7 +630,7 @@ function DestinationsGrid({
  * add-destination form + plain provider list. */
 export function MulticastSection({
   scope = 'me',
-  description = 'Configure the destinations that should receive your live broadcast.',
+  description = i18n.t('web:batch52.configureDestinations'),
 }: {
   scope?: RtmpTargetScope;
   description?: string;

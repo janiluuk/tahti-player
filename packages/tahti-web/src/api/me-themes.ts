@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -30,12 +32,12 @@ export function themeSubmissionStatus(theme: MyTheme): string {
   }
   if (theme.visibility === 'PENDING_REVIEW') {
     if (theme.prStatus === 'OPENED') {
-      return 'Approved, being added to the catalog';
+      return i18n.t('web:batch52.themeApprovedAdding');
     }
     if (theme.prStatus === 'PENDING') {
       return 'Approved';
     }
-    return 'Waiting for review';
+    return i18n.t('web:batch52.themeWaitingReview');
   }
   return 'Not submitted';
 }
@@ -48,7 +50,7 @@ export async function fetchMyThemes(): Promise<Result<MyTheme[]>> {
     const { data } = await requestJson<{ themes: MyTheme[] }>('/api/me/themes');
     return { ok: true, data: data.themes };
   } catch (err) {
-    return failure(err, 'Could not load your themes');
+    return failure(err, i18n.t('web:batch52.couldNotLoadThemes'));
   }
 }
 
@@ -71,7 +73,7 @@ export async function submitThemeForReview(
     );
     return { ok: true, data };
   } catch (err) {
-    return failure(err, 'Could not submit the theme');
+    return failure(err, i18n.t('web:batch52.couldNotSubmitTheme'));
   }
 }
 
@@ -84,10 +86,10 @@ export async function submitThemeToCommunity(theme: {
   const vars = theme.vars ?? {};
   const dark = theme.dark ?? {};
   if (!name) {
-    return { ok: false, error: 'The theme needs a name.' };
+    return { ok: false, error: i18n.t('web:batch52.themeNeedsName') };
   }
   if (Object.keys(vars).length === 0 && Object.keys(dark).length === 0) {
-    return { ok: false, error: 'This theme has no colours to share.' };
+    return { ok: false, error: i18n.t('web:batch52.themeNoColours') };
   }
   if (isForceMock()) {
     const created: MyTheme = {
@@ -112,7 +114,7 @@ export async function submitThemeToCommunity(theme: {
     });
     return submitThemeForReview(created.id);
   } catch (err) {
-    return failure(err, 'Could not submit the theme');
+    return failure(err, i18n.t('web:batch52.couldNotSubmitTheme'));
   }
 }
 
@@ -127,6 +129,6 @@ export async function deleteMyTheme(id: string): Promise<Result<null>> {
     });
     return { ok: true, data: null };
   } catch (err) {
-    return failure(err, 'Could not delete the theme');
+    return failure(err, i18n.t('web:batch52.couldNotDeleteTheme'));
   }
 }

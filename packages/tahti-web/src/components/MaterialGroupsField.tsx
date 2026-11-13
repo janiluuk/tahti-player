@@ -216,7 +216,7 @@ export function MaterialGroupsField({ soundId }: Props) {
         <MaterialMembershipList
           search={search}
           onSearchChange={setSearch}
-          searchPlaceholder="Search your groups"
+          searchPlaceholder={i18n.t('web:batch52.searchYourGroups')}
           emptyLabel={
             search.trim()
               ? t('materialGroupsFieldStates.noGroupsMatchThatSearch')

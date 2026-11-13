@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import {
   fetchGovernanceMotion,
@@ -13,7 +15,7 @@ export async function withdrawMotionDraft(
   if (isForceMock()) {
     const motion = removeMockMotion(id);
     if (!motion) {
-      return { ok: false, error: 'Motion not found' };
+      return { ok: false, error: i18n.t('web:batch52.motionNotFound') };
     }
     return { ok: true };
   }

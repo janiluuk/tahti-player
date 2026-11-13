@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, EditIconButton, Input, Textarea } from '@tahti-player/ui';
 
 import { updateNewsPost } from '../api/admin';
@@ -48,7 +48,7 @@ export function PlatformNewsDialog({
       });
       setEditing(false);
     } catch {
-      setError('Could not save the article. Please try again.');
+      setError(i18n.t('web:batch52.couldNotSaveArticle'));
     } finally {
       setBusy(false);
     }

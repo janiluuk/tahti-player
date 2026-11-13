@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { ClipEditorSource, ClipVoiceSettings } from './clip-editor';
 
 const sources = new Map<string, ClipEditorSource>();
@@ -92,7 +94,7 @@ export function applyMockClipPreview(id: string, token: string) {
     source.renderToken !== token ||
     source.draftStatus !== 'READY'
   ) {
-    throw new Error('Generate a fresh preview before saving.');
+    throw new Error(i18n.t('web:batch52.freshPreview'));
   }
   sources.set(id, {
     ...source,

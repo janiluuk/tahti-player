@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import {
   mockApproveSubmission,
@@ -120,7 +122,10 @@ export async function createArtistGroup(input: {
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not create group',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch52.couldNotCreateGroup'),
     };
   }
 }

@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 /**
  * Offline listening-party store (`VITE_FORCE_MOCK=1`, Storybook).
  *
@@ -369,13 +371,13 @@ export function listMockMyListeningParties(): ListeningPartySummaryDto[] {
 function startAtError(startAt: string, now: number): string | null {
   const ms = new Date(startAt).getTime();
   if (!Number.isFinite(ms)) {
-    return 'Pick a start time';
+    return i18n.t('web:batch52.pickStartTime');
   }
   if (ms < now + MIN_LEAD_MS) {
     return 'Start at least 5 minutes from now';
   }
   if (ms > now + MAX_LEAD_MS) {
-    return 'Start within the next year';
+    return i18n.t('web:batch52.startWithinYear');
   }
   return null;
 }

@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { mockMembers } from './artist-settings/mock';
 import type { ChannelMember } from './artist-settings/moderation';
 import { isForceMock } from './mode';
@@ -31,7 +33,10 @@ export async function addChannelMember(input: {
     );
     return { ok: true, data };
   } catch (err) {
-    return { ok: false, error: message(err, 'Could not add the person') };
+    return {
+      ok: false,
+      error: message(err, i18n.t('web:batch52.couldNotAddPerson')),
+    };
   }
 }
 
