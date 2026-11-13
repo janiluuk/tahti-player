@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { onMockOverridesReset } from './mock-overrides';
 import { apiErrorMeta, isForceMock } from './mode';
@@ -61,7 +63,9 @@ export async function setPartyReminder(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not update the reminder',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotUpdateReminder'),
     };
   }
 }

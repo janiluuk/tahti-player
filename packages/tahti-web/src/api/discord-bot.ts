@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { apiBase } from './http';
 import {
   allowMockFallback,
@@ -117,7 +119,7 @@ export async function saveDiscordBotSettings(input: {
       error:
         err instanceof Error
           ? err.message
-          : 'Failed to save Discord bot settings',
+          : i18n.t('web:batch55.failedToSaveDiscord'),
     };
   }
 }

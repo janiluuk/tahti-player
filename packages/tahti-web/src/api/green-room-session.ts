@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { getJson } from './http';
 import { failMeta, isForceMock } from './mode';
@@ -97,7 +99,7 @@ export async function setGreenRoomSessionEnabled(
   } catch (err) {
     return {
       ok: false,
-      error: message(err, 'Could not change the green room'),
+      error: message(err, i18n.t('web:batch55.couldNotChangeGreenRoom')),
     };
   }
 }
@@ -166,7 +168,7 @@ export async function syncGreenRoomInvites(): Promise<
   } catch (err) {
     return {
       ok: false,
-      error: message(err, 'Could not update the guest list'),
+      error: message(err, i18n.t('web:batch55.couldNotUpdateGuestList')),
     };
   }
 }

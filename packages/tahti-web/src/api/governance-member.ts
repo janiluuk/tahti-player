@@ -290,7 +290,7 @@ export async function fetchGovernanceMotion(
       /member/i.test(message);
     return {
       ok: false,
-      error: message || 'Could not load motion',
+      error: message || i18n.t('web:batch55.couldNotLoadMotion'),
       forbidden,
     };
   }
@@ -336,7 +336,10 @@ export async function createGovernanceMotion(input: {
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not submit motion',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotSubmitMotion'),
     };
   }
 }
@@ -546,7 +549,10 @@ export async function patchGovernanceMotion(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Failed to update motion',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.failedToUpdateMotion'),
     };
   }
 }

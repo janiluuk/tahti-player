@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -63,7 +65,9 @@ export async function fetchObsPreset(): Promise<
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not load your OBS setup',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotLoadObsSetup'),
     };
   }
 }

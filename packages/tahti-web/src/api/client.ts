@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { profileTrackToPlayable } from '../lib/artistProfile';
 import { requestJson } from './client-request';
 import type { MotionComment } from './governance-member';
@@ -323,7 +325,10 @@ export async function postTrackComment(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not post comment',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotPostComment'),
     };
   }
 }
@@ -1071,7 +1076,10 @@ export async function createFeatureRequest(input: {
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not submit your idea',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotSubmitIdea'),
     };
   }
 }
@@ -1230,7 +1238,9 @@ export async function setNewsletterSubscription(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not update subscription',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotUpdateSubscription'),
     };
   }
 }

@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { getJson } from './http';
 import { failMeta, isForceMock } from './mode';
@@ -66,7 +68,9 @@ export async function setFallbackCollection(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not switch the rotation',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotSwitchRotation'),
     };
   }
 }

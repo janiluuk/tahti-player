@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { DEMO_MP3 } from './mock';
 import {
@@ -328,7 +330,9 @@ export async function rotateRtmpStreamKey(): Promise<
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not make a new stream key',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotMakeStreamKey'),
     };
   }
 }
@@ -350,7 +354,9 @@ export async function rotateIcecastPassword(): Promise<
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not make a new password',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotMakePassword'),
     };
   }
 }

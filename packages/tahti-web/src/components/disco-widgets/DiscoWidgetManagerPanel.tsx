@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { ArrowDown, ArrowUp, Puzzle, Settings2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { useTranslation, type TFunction } from '@tahti-player/i18n';
+import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -111,7 +111,7 @@ export function DiscoWidgetManagerPanel({
     const result = await createDiscoWidgetInstall(scope, widgetId);
     setInstallingId(null);
     if (result.error || !result.data) {
-      setError(result.error ?? 'Failed to install');
+      setError(result.error ?? i18n.t('web:batch55.failedToInstall'));
       return;
     }
     setInstalls((prev) => [...prev, result.data]);

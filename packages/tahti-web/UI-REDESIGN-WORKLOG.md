@@ -6734,3 +6734,7 @@ The remaining English in track analysis, the playlist and pro editors, desktop i
 ## 2026-11-13 — Import wizard (0.0.387)
 
 Upload has one import path: pick SoundCloud, hearthis.at, Spotify, or Mixcloud, choose tracks or playlists, confirm, then watch a progress bar. A saved profile or an existing connection skips the setup step. Help stays linked from the wizard.
+
+## 2026-11-13 — Fifty more error labels (0.0.388)
+
+Comments, the green room, motions, stems, chat, announcements, stations, discussions, group roles, settings, blocks, subscriptions, Discord, Mastodon, and stream keys follow the app language in English and Finnish when the server sends no message of its own.

@@ -161,7 +161,10 @@ export async function uploadReleaseTrackStem(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not upload the stem',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotUploadStem'),
     };
   }
 }
@@ -190,7 +193,10 @@ export async function deleteReleaseTrackStem(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not remove the stem',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotRemoveStem'),
     };
   }
 }

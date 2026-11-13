@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import { updateMockMotionComments } from './governance-member';
 import { isForceMock } from './mode';
@@ -29,7 +31,9 @@ export async function removeMotionComment(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not remove the comment',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotRemoveComment'),
     };
   }
 }

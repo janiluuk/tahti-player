@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
 import { DEMO_MP3 } from './mock';
@@ -193,7 +195,10 @@ export async function activateSoundVersion(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not switch version',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotSwitchVersion'),
     };
   }
 }
@@ -281,7 +286,10 @@ export async function uploadSoundVersion(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not save revision',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotSaveRevision'),
     };
   }
 }

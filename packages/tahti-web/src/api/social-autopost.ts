@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
 import { failMeta, isForceMock } from './mode';
@@ -129,7 +131,7 @@ export async function saveMastodon(
   } catch (err) {
     return {
       ok: false,
-      error: errorMessage(err, 'Could not connect Mastodon'),
+      error: errorMessage(err, i18n.t('web:batch55.couldNotConnectMastodon')),
     };
   }
 }

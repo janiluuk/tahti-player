@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 import { requestJson } from './request-json';
 
@@ -60,7 +62,9 @@ export async function blockUser(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not block that account',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotBlockAccount'),
     };
   }
 }
@@ -81,7 +85,9 @@ export async function unblockUser(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not unblock that account',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotUnblockAccount'),
     };
   }
 }

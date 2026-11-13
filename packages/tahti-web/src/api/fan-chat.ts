@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { getJson } from './http';
 import { mockFixture } from './mock-overrides';
 import { isForceMock } from './mode';
@@ -30,7 +32,10 @@ export async function requestFanChatToken(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not open the fan room',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotOpenFanRoom'),
     };
   }
 }

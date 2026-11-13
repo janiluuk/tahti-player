@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { getJson, sendJson } from './http';
 import { failMeta, isForceMock } from './mode';
@@ -96,7 +98,10 @@ export async function addMyRadioStation(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not add the station',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotAddStation'),
     };
   }
 }
@@ -118,7 +123,9 @@ export async function removeMyRadioStation(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not remove the station',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotRemoveStation'),
     };
   }
 }

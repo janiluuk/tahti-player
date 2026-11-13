@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 
@@ -234,7 +236,7 @@ export async function setDiscussionFollow(
   } catch (err) {
     return {
       ok: false,
-      error: errorMessage(err, 'Could not update the topic'),
+      error: errorMessage(err, i18n.t('web:batch55.couldNotUpdateTopic')),
     };
   }
 }
@@ -262,7 +264,7 @@ export async function setDiscussionMute(
   } catch (err) {
     return {
       ok: false,
-      error: errorMessage(err, 'Could not update the topic'),
+      error: errorMessage(err, i18n.t('web:batch55.couldNotUpdateTopic')),
     };
   }
 }
@@ -292,7 +294,7 @@ export async function removeDiscussionPost(
   } catch (err) {
     return {
       ok: false,
-      error: errorMessage(err, 'Could not remove the reply'),
+      error: errorMessage(err, i18n.t('web:batch55.couldNotRemoveReply')),
     };
   }
 }
@@ -318,7 +320,10 @@ export async function fetchEarlierDiscussionPosts(
   } catch (err) {
     return {
       ok: false,
-      error: errorMessage(err, 'Could not load earlier replies'),
+      error: errorMessage(
+        err,
+        i18n.t('web:batch55.couldNotLoadEarlierReplies'),
+      ),
     };
   }
 }
@@ -447,7 +452,7 @@ export async function updateDiscussionTopic(
   } catch (err) {
     return {
       ok: false,
-      error: errorMessage(err, 'Could not update the topic'),
+      error: errorMessage(err, i18n.t('web:batch55.couldNotUpdateTopic')),
     };
   }
 }
