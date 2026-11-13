@@ -151,6 +151,12 @@ export function useChannelData(slug: string, refreshKey: number) {
                 ? {
                     ...current,
                     followerCount: profile.data.artist.followerCount ?? null,
+                    followingCount: profile.data.artist.followingCount ?? null,
+                    publicPlays:
+                      profile.data.metrics?.playsTotal ??
+                      profile.data.totals?.plays ??
+                      current.publicPlays,
+                    metrics: profile.data.metrics,
                   }
                 : current,
             );

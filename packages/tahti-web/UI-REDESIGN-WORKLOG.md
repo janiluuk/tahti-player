@@ -1,3 +1,11 @@
+## 2026-11-13 - Channel public metrics and events (0.0.392)
+
+Channel pages show a locale-formatted metrics list (followers, following,
+plays today/yesterday/total, downloads) when the artist enables each count
+in Settings → Visibility. Hidden metrics stay off the public API
+(tahti-org#1108). Upcoming and past calendar events (including accepted
+lineup) sit under the channel extras; past collapses after three.
+
 ## 2026-11-11 - Embeds tab fills a missing cover (0.0.369)
 
 Library → Sounds → Embeds shows a Mixcloud row that has no stored cover.

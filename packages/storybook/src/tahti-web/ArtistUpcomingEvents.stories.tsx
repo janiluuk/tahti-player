@@ -49,3 +49,52 @@ export const WithEvents: Story = {
 export const NoEvents: Story = {
   parameters: { mockData: mockData({ channelEvents: [] }) },
 };
+
+export const WithPastEvents: Story = {
+  args: {
+    channelSlug: 'northern-lights',
+    username: 'northern-lights',
+    includePast: true,
+  },
+  parameters: {
+    mockData: mockData({
+      channelEvents: [
+        ...ARTIST_EVENTS,
+        {
+          ...ARTIST_EVENTS[0]!,
+          id: 'evt-past-1',
+          title: 'Archive night',
+          startAt: '2025-06-01T18:00:00.000Z',
+        },
+        {
+          ...ARTIST_EVENTS[0]!,
+          id: 'evt-past-2',
+          title: 'Spring warm-up',
+          startAt: '2025-04-12T18:00:00.000Z',
+        },
+        {
+          ...ARTIST_EVENTS[0]!,
+          id: 'evt-past-3',
+          title: 'Winter club',
+          startAt: '2025-01-20T20:00:00.000Z',
+        },
+        {
+          ...ARTIST_EVENTS[0]!,
+          id: 'evt-past-4',
+          title: 'New Year close',
+          startAt: '2025-01-02T22:00:00.000Z',
+        },
+      ],
+    }),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      canvas.getByRole('region', { name: 'Past events' }),
+    ).toBeVisible();
+    await expect(canvas.getByText('Archive night')).toBeVisible();
+    await expect(
+      canvas.getByRole('button', { name: /Show 1 more/ }),
+    ).toBeVisible();
+  },
+};

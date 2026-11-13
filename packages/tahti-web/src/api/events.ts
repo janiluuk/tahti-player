@@ -356,25 +356,47 @@ export async function deleteEvent(
   }
 }
 
-/** Upcoming events on an artist's channel (`GET /api/channels/:slug/events`). */
-export async function fetchChannelEvents(slug: string): Promise<{
+export type ChannelEventsScope = 'upcoming' | 'past';
+
+/** Channel calendar events (`GET /api/channels/:slug/events?scope=`). */
+export async function fetchChannelEvents(
+  slug: string,
+  opts?: { scope?: ChannelEventsScope; limit?: number },
+): Promise<{
   data: ArtistEvent[];
   meta: FetchMeta;
 }> {
+  const scope = opts?.scope ?? 'upcoming';
+  const limit = opts?.limit;
   if (isForceMock()) {
     const now = new Date().toISOString();
+    const base = mockEvents.filter((e) => e.status !== 'DRAFT');
+    const fromFixture = mockFixture('channelEvents', base, slug).map(
+      normalizeEvent,
+    );
+    const filtered = fromFixture.filter((e) =>
+      scope === 'upcoming' ? e.startAt >= now : e.startAt < now,
+    );
+    const ordered =
+      scope === 'upcoming'
+        ? [...filtered].sort((a, b) => a.startAt.localeCompare(b.startAt))
+        : [...filtered].sort((a, b) => b.startAt.localeCompare(a.startAt));
+    const data =
+      limit != null
+        ? ordered.slice(0, Math.max(1, Math.min(50, limit)))
+        : ordered;
     return {
-      data: mockFixture(
-        'channelEvents',
-        mockEvents.filter((e) => e.startAt >= now && e.status !== 'DRAFT'),
-        slug,
-      ).map(normalizeEvent),
+      data,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
   try {
+    const params = new URLSearchParams({ scope });
+    if (limit != null) {
+      params.set('limit', String(limit));
+    }
     const { data } = await requestJson<ArtistEvent[]>(
-      `/api/channels/${encodeURIComponent(slug)}/events`,
+      `/api/channels/${encodeURIComponent(slug)}/events?${params}`,
     );
     return {
       data: Array.isArray(data) ? data.map(normalizeEvent) : [],

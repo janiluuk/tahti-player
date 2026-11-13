@@ -193,16 +193,52 @@ export const ProgrammingNothingScheduled: Story = {
   },
 };
 
-/** Followers and plays moved into the social header (Identity → Show
- * follower and play counts), so an old saved `stats` block draws nothing. */
-export const StatsInHeaderOnly: Story = {
+/** Public metrics list (followers + gated plays/downloads). Compact chips
+ * stay in the header via `headerStats`. */
+export const PublicMetrics: Story = {
   args: {
     item: { id: 'stats-1', type: 'stats', visible: true },
-    ctx: blockContext(),
+    ctx: blockContext({
+      channel: {
+        ...blockContext().channel,
+        followerCount: 47875,
+        followingCount: 12,
+        metrics: {
+          playsToday: 40,
+          playsYesterday: 91,
+          playsTotal: 128400,
+          downloads: 3200,
+        },
+      },
+    }),
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.queryByText('Followers')).toBeNull();
+    const list = canvas.getByTestId('channel-public-metrics');
+    await expect(list).toBeVisible();
+    await expect(within(list).getByText('Followers')).toBeVisible();
+    await expect(within(list).getByText('Plays today')).toBeVisible();
+    await expect(within(list).getByText('Downloads')).toBeVisible();
+  },
+};
+
+export const PublicMetricsHidden: Story = {
+  args: {
+    item: { id: 'stats-1', type: 'stats', visible: true },
+    ctx: blockContext({
+      channel: {
+        ...blockContext().channel,
+        followerCount: null,
+        followingCount: null,
+        publicPlays: undefined,
+        metrics: undefined,
+      },
+    }),
+  },
+  play: async ({ canvasElement }) => {
+    await expect(
+      within(canvasElement).queryByTestId('channel-public-metrics'),
+    ).toBeNull();
   },
 };
 

@@ -162,7 +162,11 @@ export function NotificationsVisibilityPanel() {
       | 'showFollowers'
       | 'showFollowing'
       | 'showLikes'
-      | 'showDailyListeners',
+      | 'showDailyListeners'
+      | 'showPlaysTotal'
+      | 'showPlaysToday'
+      | 'showPlaysYesterday'
+      | 'showDownloads',
     value: boolean,
   ) => {
     if (!profile) {
@@ -249,8 +253,30 @@ export function NotificationsVisibilityPanel() {
               />
               <SettingsToggle
                 label={t('settingsBody.account.visibilityShowFollowing')}
-                value={profile.showFollowing ?? true}
+                value={profile.showFollowing ?? false}
                 onChange={(value) => updateVisibility('showFollowing', value)}
+              />
+              <SettingsToggle
+                label={t('settingsBody.account.visibilityShowPlaysTotal')}
+                value={profile.showPlaysTotal ?? true}
+                onChange={(value) => updateVisibility('showPlaysTotal', value)}
+              />
+              <SettingsToggle
+                label={t('settingsBody.account.visibilityShowPlaysToday')}
+                value={profile.showPlaysToday ?? false}
+                onChange={(value) => updateVisibility('showPlaysToday', value)}
+              />
+              <SettingsToggle
+                label={t('settingsBody.account.visibilityShowPlaysYesterday')}
+                value={profile.showPlaysYesterday ?? false}
+                onChange={(value) =>
+                  updateVisibility('showPlaysYesterday', value)
+                }
+              />
+              <SettingsToggle
+                label={t('settingsBody.account.visibilityShowDownloads')}
+                value={profile.showDownloads ?? false}
+                onChange={(value) => updateVisibility('showDownloads', value)}
               />
               <SettingsToggle
                 label={t('settingsBody.account.visibilityShowLikes')}

@@ -1,19 +1,22 @@
 import type { PublicChannelBlock } from '../../api/channel-blocks';
 import type { DiscoWidgetRenderItem } from '../../api/disco-widgets';
 import { withoutPlacedAddons } from '../../lib/channelBlockLayout';
+import { ArtistUpcomingEvents } from '../artist-view/ArtistUpcomingEvents';
 import { ChannelBlocksSection } from '../disco-widgets/ChannelBlocksSection';
 import { DiscoWidgetsSection } from '../disco-widgets/DiscoWidgetsSection';
 import { ChannelUpcomingShows } from './ChannelUpcomingShows';
 
-/** Upcoming shows, the add-on block layout and the remaining add-ons below a channel page. */
+/** Calendar events, upcoming shows, add-on blocks and remaining add-ons. */
 export function ChannelExtrasSections({
   slug,
+  username,
   blocks,
   widgets,
   widgetsStatus,
   onRetryWidgets,
 }: {
   slug: string;
+  username?: string;
   blocks: PublicChannelBlock[];
   widgets: DiscoWidgetRenderItem[];
   widgetsStatus: 'loading' | 'ready' | 'error';
@@ -21,6 +24,11 @@ export function ChannelExtrasSections({
 }) {
   return (
     <>
+      <ArtistUpcomingEvents
+        channelSlug={slug}
+        username={username}
+        includePast
+      />
       <ChannelUpcomingShows slug={slug} />
       <ChannelBlocksSection blocks={blocks} />
       <DiscoWidgetsSection

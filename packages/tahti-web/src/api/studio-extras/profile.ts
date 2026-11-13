@@ -38,6 +38,10 @@ export type ProfileFields = {
   showDailyListeners?: boolean;
   /** False hides the share button on the channel page for every visitor. */
   showShareButton?: boolean;
+  showPlaysTotal?: boolean;
+  showPlaysToday?: boolean;
+  showPlaysYesterday?: boolean;
+  showDownloads?: boolean;
   /** Handles for cross-posting/import sources — e.g. { hearthisAt: 'myhandle' }. */
   socialLinks?: Record<string, string> | null;
   /** Wide banner behind the artist page header. */
@@ -70,9 +74,13 @@ export let mockProfile: ProfileFields = {
   defaultLocation: null,
   showJoinDate: true,
   showFollowers: true,
-  showFollowing: true,
+  showFollowing: false,
   showLikes: true,
   showDailyListeners: true,
+  showPlaysTotal: true,
+  showPlaysToday: false,
+  showPlaysYesterday: false,
+  showDownloads: false,
   socialLinks: {},
   publicAttribution: true,
 };
@@ -117,6 +125,10 @@ export async function fetchMeProfile(): Promise<{
         showFollowing: false,
         showLikes: false,
         showDailyListeners: false,
+        showPlaysTotal: false,
+        showPlaysToday: false,
+        showPlaysYesterday: false,
+        showDownloads: false,
         socialLinks: {},
       },
       meta: apiErrorMeta(err),
@@ -144,6 +156,10 @@ export type ProfilePatch = Partial<
     | 'showLikes'
     | 'showDailyListeners'
     | 'showShareButton'
+    | 'showPlaysTotal'
+    | 'showPlaysToday'
+    | 'showPlaysYesterday'
+    | 'showDownloads'
     | 'socialLinks'
     | 'nameplateText'
     | 'nameplateColor'

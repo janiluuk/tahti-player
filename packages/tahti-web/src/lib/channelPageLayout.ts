@@ -103,11 +103,11 @@ export const CHANNEL_PAGE_ITEM_META: Record<
   },
   stats: {
     label: 'Stats',
-    hint: 'Replaced by the counts in the header (headerStats)',
+    hint: 'Public metrics list (followers, plays, downloads)',
   },
   headerStats: {
     label: 'Header counts',
-    hint: 'Followers and plays in the header — toggle from Identity',
+    hint: 'Compact followers and plays in the header',
   },
   events: {
     label: 'Live shows',
@@ -205,7 +205,7 @@ export function channelLayoutPresets(
         item('subscribe', false),
         item('chat', false),
         item('links', false),
-        item('stats', false),
+        item('stats', true),
         item('headerStats', true),
       ],
       look: {
@@ -232,7 +232,7 @@ export function channelLayoutPresets(
         item('about', true),
         item('chat', false),
         item('links', false),
-        item('stats', false),
+        item('stats', true),
         item('headerStats', true),
       ],
       look: {
@@ -286,7 +286,7 @@ export function channelLayoutPresets(
         item('about', true),
         item('links', false),
         item('chat', false),
-        item('stats', false),
+        item('stats', true),
         item('headerStats', true),
       ],
       look: {
@@ -322,7 +322,7 @@ export function defaultChannelPageLayout(): Array<{
     item('about', true),
     item('links', false),
     item('subscribe', true),
-    item('stats', false),
+    item('stats', true),
     item('headerStats', true),
     item('events', false),
     item('chat', false),
@@ -523,15 +523,15 @@ export function normalizeLayout(items: ChannelPageItem[]): ChannelPageItem[] {
   }
   for (const def of defaultChannelPageLayout()) {
     if (!seenTypes.has(def.type)) {
-      // 'avatar' predates this toggle existing at all -- every layout saved
-      // before this change is missing the item entirely, and the avatar
-      // was always shown unconditionally, so backfill it visible rather
-      // than following every other type's "new blocks default off" rule.
-      // Same for 'headerStats': the header always showed the counts before
-      // the toggle existed.
+      // 'avatar' / 'headerStats' predates their toggles — they were always
+      // shown, so backfill visible. 'stats' is the public metrics list
+      // (followers / plays / downloads); default it on when missing.
       out.push({
         ...def,
-        visible: def.type === 'avatar' || def.type === 'headerStats',
+        visible:
+          def.type === 'avatar' ||
+          def.type === 'headerStats' ||
+          def.type === 'stats',
       });
     }
   }
