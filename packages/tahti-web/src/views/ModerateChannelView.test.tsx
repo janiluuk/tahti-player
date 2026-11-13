@@ -112,7 +112,7 @@ describe('ModerateChannelView', () => {
     await renderView('mine');
     expect(
       screen.getByRole('link', { name: 'Chat settings' }).getAttribute('href'),
-    ).toBe('/studio/fans');
+    ).toBe('/studio/fans?tab=chat');
   });
 
   it('offers a moderator no link to the owner settings', async () => {

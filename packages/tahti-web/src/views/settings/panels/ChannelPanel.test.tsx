@@ -190,7 +190,7 @@ describe('ChannelPanel chat and moderators', () => {
     expect(screen.getByText('Chat moved to Fans')).toBeTruthy();
     expect(
       screen.getByRole('link', { name: 'Open Fans chat' }),
-    ).toHaveAttribute('href', '/studio/fans');
+    ).toHaveAttribute('href', '/studio/fans?tab=chat');
   });
 
   it('points the Moderators tab at Studio → Fans', async () => {
@@ -203,7 +203,7 @@ describe('ChannelPanel chat and moderators', () => {
     expect(screen.getByText('Moderators moved to Fans')).toBeTruthy();
     expect(
       screen.getByRole('link', { name: 'Open Fans chat' }),
-    ).toHaveAttribute('href', '/studio/fans');
+    ).toHaveAttribute('href', '/studio/fans?tab=chat&section=moderators');
   });
 
   it('opens on the tab a link asks for', async () => {

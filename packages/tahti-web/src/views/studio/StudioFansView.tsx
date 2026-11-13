@@ -1,20 +1,58 @@
+import { useNavigate, useSearch } from '@tanstack/react-router';
 import {
   BanknoteIcon,
   HeartIcon,
+  LayoutGridIcon,
+  MessageSquareIcon,
   NewspaperIcon,
   SendIcon,
   ShoppingBagIcon,
 } from 'lucide-react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { HubCards, ViewShell, type HubCardItem } from '@tahti-player/ui';
+import {
+  HubCards,
+  TabLabel,
+  Tabs,
+  ViewShell,
+  type HubCardItem,
+} from '@tahti-player/ui';
 
 import { renderHubLink } from '../../components/HubLink';
 import { ChannelChatSettings } from '../../components/moderation/ChannelChatSettings';
 import { StudioGate } from '../../components/StudioGate';
 
-export function StudioFansView() {
+export type StudioFansTab = 'tools' | 'chat';
+export type StudioFansChatSection =
+  'access' | 'messages' | 'moderators' | 'bans';
+
+function chatSectionFromSearch(
+  value: unknown,
+): StudioFansChatSection | undefined {
+  return value === 'access' ||
+    value === 'messages' ||
+    value === 'moderators' ||
+    value === 'bans'
+    ? value
+    : undefined;
+}
+
+export function StudioFansView({
+  tab: tabProp,
+  chatSection: chatSectionProp,
+}: {
+  tab?: StudioFansTab;
+  chatSection?: StudioFansChatSection;
+} = {}) {
   const { t } = useTranslation('web');
+  const navigate = useNavigate();
+  const search = useSearch({ strict: false }) as {
+    tab?: string;
+    section?: string;
+  };
+  const tab: StudioFansTab =
+    tabProp ?? (search.tab === 'chat' ? 'chat' : 'tools');
+  const chatSection = chatSectionProp ?? chatSectionFromSearch(search.section);
 
   const items: HubCardItem[] = [
     {
@@ -54,6 +92,8 @@ export function StudioFansView() {
     },
   ];
 
+  const selectedIndex = tab === 'chat' ? 1 : 0;
+
   return (
     <StudioGate requireChannel={false}>
       <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-4 px-1 py-2">
@@ -62,12 +102,38 @@ export function StudioFansView() {
           subtitle={t('studioFans.subtitle')}
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
-          <HubCards
-            aria-label={t('studioFans.ariaLabel')}
-            items={items}
-            renderLink={renderHubLink}
-          />
-          <ChannelChatSettings />
+          <Tabs.Root
+            selectedIndex={selectedIndex}
+            onChange={(index) => {
+              void navigate({
+                to: '/studio/fans',
+                search: index === 1 ? { tab: 'chat' } : {},
+              });
+            }}
+          >
+            <Tabs.List className="border-border border-b">
+              <Tabs.Tab>
+                <TabLabel icon={<LayoutGridIcon size={14} />}>
+                  {t('studioFans.tabTools')}
+                </TabLabel>
+              </Tabs.Tab>
+              <Tabs.Tab>
+                <TabLabel icon={<MessageSquareIcon size={14} />}>
+                  {t('studioFans.tabChat')}
+                </TabLabel>
+              </Tabs.Tab>
+            </Tabs.List>
+          </Tabs.Root>
+
+          {tab === 'chat' ? (
+            <ChannelChatSettings initialTab={chatSection} />
+          ) : (
+            <HubCards
+              aria-label={t('studioFans.ariaLabel')}
+              items={items}
+              renderLink={renderHubLink}
+            />
+          )}
         </ViewShell>
       </div>
     </StudioGate>

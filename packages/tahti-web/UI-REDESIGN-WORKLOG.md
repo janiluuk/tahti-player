@@ -1,3 +1,10 @@
+## 2026-11-13 - Fans Chat tab (0.0.396)
+
+Studio → Fans splits Tools (hub cards) and Chat (access, messages,
+moderators, bans). Deep links use `?tab=chat` and optional `?section=`.
+Profile, Settings → Channel, Moderate channel, and `/studio/moderation`
+point at the Chat tab.
+
 ## 2026-11-13 - Monitoring logs live under Logs (0.0.395)
 
 Admin → Monitoring no longer embeds container logs. Open them from
