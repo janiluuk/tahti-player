@@ -7572,7 +7572,9 @@
       "comingUp": "Tulossa",
       "showsEventsAndListeningParties": "Ohjelmat, tapahtumat ja kuuntelujuhlat, lähimmät ensin.",
       "agendaFilter": "Ohjelman suodatin",
-      "broadcastTools": "Lähetystyökalut"
+      "broadcastTools": "Lähetystyökalut",
+      "listenInPlayer": "Kuuntele soittimessa",
+      "pauseInPlayer": "Tauko"
     },
     "socialAutoPost": {
       "disconnect": "Katkaise yhteys",
