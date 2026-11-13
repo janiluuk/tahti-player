@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   approveAdminAddon,
   createAdminAddonInstall,
@@ -88,7 +90,7 @@ export function useAdminAddons() {
   }) => {
     setPending(false);
     if (!result.ok || !result.data) {
-      setError(result.error ?? 'Update failed');
+      setError(result.error ?? i18n.t('web:batch57.updateFailed'));
       return;
     }
     const updated = result.data;

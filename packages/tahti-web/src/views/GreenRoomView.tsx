@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import {
@@ -146,7 +146,7 @@ export function GreenRoomView({ username }: { username: string }) {
         <PageEmpty
           icon="alert"
           title={t('empties.greenRoomUnavailable')}
-          description={error ?? 'Could not load green room access.'}
+          description={error ?? i18n.t('web:batch57.couldNotLoadGreenRoom')}
           action={checkAgain}
         />
       </ViewShell>

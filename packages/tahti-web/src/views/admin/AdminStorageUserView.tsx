@@ -2,7 +2,7 @@ import { ArrowLeftIcon, PlayIcon } from 'lucide-react';
 
 import 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   BreadcrumbCurrent,
@@ -40,7 +40,7 @@ export function AdminStorageUserView({ userId }: { userId: string }) {
     async () => {
       const res = await fetchAdminStorageUserFiles(userId);
       if (!res.data) {
-        throw new Error('Storage details unavailable');
+        throw new Error(i18n.t('web:batch57.storageDetailsUnavailable'));
       }
       return res.data;
     },

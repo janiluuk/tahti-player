@@ -173,7 +173,9 @@ export function DiscoWidgetManagerPanel({
     ]);
     if (resA.error || resB.error) {
       setPendingId(null);
-      setError(resA.error ?? resB.error ?? 'Failed to reorder');
+      setError(
+        resA.error ?? resB.error ?? i18n.t('web:batch57.failedToReorder'),
+      );
       return;
     }
     const order = installs.map((install) => install.id);

@@ -6746,3 +6746,7 @@ Newsletter unsubscribe, channel layout, downloads, distribution checkout, themes
 ## 2026-11-13 — Forty more labels (0.0.390)
 
 Undo toasts (pinned announcements, clips, share links, logos, replies, comments, artwork, publishing), the artwork search progress, seventeen load and save errors, and the onboarding bio, map comment edit and track version fields follow the app language in English and Finnish.
+
+## 2026-11-13 — Forty more fallbacks (0.0.391)
+
+Admin account labels, gallery and theme names, waveform and upload errors, Drive and image reading, discussions, the green room, and studio stats fallbacks follow the app language in English and Finnish when the server sends no message of its own. Six of them reuse keys that were already translated.

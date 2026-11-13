@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { logClientEvent } from './clientLogs';
@@ -22,7 +24,7 @@ export function startClientLogEvents(): () => void {
       logClientEvent(
         'error',
         'playback',
-        state.error ?? 'Playback failed for an unknown reason',
+        state.error ?? i18n.t('web:batch57.playbackFailedUnknown'),
       );
     }
     if (state.queue.length !== prev.queue.length) {

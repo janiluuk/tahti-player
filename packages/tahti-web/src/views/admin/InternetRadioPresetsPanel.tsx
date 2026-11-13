@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -268,7 +268,7 @@ export function InternetRadioPresetsPanel() {
                     </Badge>
                   </div>
                   <div className="text-foreground-secondary truncate text-xs">
-                    {preset.genre ?? 'No genre'}
+                    {preset.genre ?? i18n.t('web:batch57.noGenre')}
                   </div>
                   <StreamUrlText url={preset.streamUrl} />
                   <StationHealthCell

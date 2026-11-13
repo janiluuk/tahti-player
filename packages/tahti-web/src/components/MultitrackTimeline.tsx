@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Slider } from '@tahti-player/ui';
 
 import type {
@@ -539,7 +539,8 @@ export const MultitrackTimeline = ({
                       }}
                     >
                       <span className="block truncate">
-                        {source?.title ?? 'Unavailable source'}
+                        {source?.title ??
+                          i18n.t('web:batch57.unavailableSource')}
                       </span>
                       <span className="font-mono text-[10px]">
                         {formatTime(clip.durationSec)}

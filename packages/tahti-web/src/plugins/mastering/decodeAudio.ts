@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 export type DecodedTrack = {
   left: Float32Array;
   right: Float32Array;
@@ -38,7 +40,7 @@ export async function decodeSourceAndReference(
       fetch(sourceUrl)
         .then((res) => {
           if (!res.ok) {
-            throw new Error('Could not load the track audio.');
+            throw new Error(i18n.t('web:batch57.couldNotLoadTrackAudio'));
           }
           return res.arrayBuffer();
         })
@@ -47,7 +49,7 @@ export async function decodeSourceAndReference(
         .arrayBuffer()
         .then((buf) => context.decodeAudioData(buf))
         .catch(() => {
-          throw new Error('Could not decode the reference file as audio.');
+          throw new Error(i18n.t('web:batch57.couldNotDecodeReference'));
         }),
     ]);
     return {

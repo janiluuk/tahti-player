@@ -319,7 +319,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
 
   return (
     <ViewShell
-      title={topic?.title ?? 'Discussion'}
+      title={topic?.title ?? i18n.t('web:motionDiscussionStates.discussion')}
       classes={{ root: 'px-0 pt-0 mx-auto max-w-2xl', content: 'gap-4' }}
     >
       <PageBackLink
@@ -343,7 +343,7 @@ export function DiscussionTopicView({ id }: { id: string }) {
       ) : !topic ? (
         <PageError
           title={t('loadErrors.couldNotLoadThisDiscussion')}
-          description={loadError ?? 'Topic not found'}
+          description={loadError ?? i18n.t('web:batch57.topicNotFound')}
           onRetry={reload}
         />
       ) : (

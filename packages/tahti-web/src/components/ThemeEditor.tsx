@@ -112,7 +112,7 @@ function themeDraftFromActive(): ThemeDraftSnapshot {
       }),
   );
   return {
-    name: basic?.name ?? 'My theme',
+    name: basic?.name ?? i18n.t('web:batch57.myTheme'),
     lightValues: dark ? {} : tokens,
     darkValues: dark ? tokens : {},
   };

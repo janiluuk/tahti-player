@@ -299,7 +299,7 @@ export function JamView({ code }: { code: string }) {
 
         <GlassPanel className="flex flex-wrap items-center justify-between gap-3">
           <TahtiJam.NowPlaying
-            title={track?.title ?? 'Nothing playing yet'}
+            title={track?.title ?? i18n.t('web:batch57.nothingPlayingYet')}
             artist={track?.artistName}
             coverUrl={track?.coverUrl ?? undefined}
           />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, MediaArtwork } from '@tahti-player/ui';
 
 import {
@@ -68,7 +68,10 @@ export function CommunityStoryDialog({
       setLoad(
         data
           ? { state: 'ready', story: data }
-          : { state: 'error', reason: meta.reason ?? 'Story not found' },
+          : {
+              state: 'error',
+              reason: meta.reason ?? i18n.t('web:batch57.storyNotFound'),
+            },
       );
     });
     return () => {

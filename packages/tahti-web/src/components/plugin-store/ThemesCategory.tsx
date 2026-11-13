@@ -79,8 +79,9 @@ export function ThemesCategory() {
     ...Object.entries(customThemes).map(([id, theme]) => ({
       id,
       name: theme.name ?? 'Custom theme',
-      author: theme.author ?? 'Imported',
-      description: theme.description ?? 'Imported theme',
+      author: theme.author ?? i18n.t('web:settingsThemes.imported'),
+      description:
+        theme.description ?? i18n.t('web:settingsThemes.importedTheme'),
       palette: asThemePalette(theme.palette),
       tags: theme.tags,
       removable: true,

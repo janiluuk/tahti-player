@@ -1,7 +1,7 @@
 import { CalendarCheckIcon, ScrollTextIcon, UsersIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Badge, ExternalLink, ViewShell } from '@tahti-player/ui';
 
 import { fetchGovernanceMeetings } from '../api/client';
@@ -122,13 +122,13 @@ export function GovernanceMeetingDetailView({ id }: { id: string }) {
                   ? new Date(meeting.scheduledAt).toLocaleString(
                       dateLocaleTag(),
                     )
-                  : 'Not listed'}
+                  : i18n.t('web:batch57.notListed')}
               </dd>
               <dt className="text-foreground-secondary">
                 {t('meetingDetail.location')}
               </dt>
               <dd>
-                {meeting.location ?? 'Not listed'}
+                {meeting.location ?? i18n.t('web:batch57.notListed')}
                 {meeting.remoteUrl && isSafeHref(meeting.remoteUrl) && (
                   <>
                     {' · '}

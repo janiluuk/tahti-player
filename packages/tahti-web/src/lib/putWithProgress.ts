@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 export class UploadAbortedError extends Error {
   constructor() {
     super('Upload cancelled');
@@ -44,7 +46,7 @@ export function putWithProgress(
     };
     xhr.onerror = () => {
       cleanup();
-      reject(new Error('Upload failed - check your connection'));
+      reject(new Error(i18n.t('web:batch57.uploadFailedConnection')));
     };
     xhr.onabort = () => {
       cleanup();

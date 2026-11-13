@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { InlineLoader, SectionTitle } from '@tahti-player/ui';
 
 import {
@@ -38,7 +38,9 @@ export function ChannelChatSettings({
       }
       if (!result.data) {
         setProfile(null);
-        setLoadError(result.meta.reason ?? 'Could not load chat settings.');
+        setLoadError(
+          result.meta.reason ?? i18n.t('web:batch57.couldNotLoadChatSettings'),
+        );
         return;
       }
       setProfile(result.data);

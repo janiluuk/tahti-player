@@ -330,7 +330,8 @@ export function AdminUserEditPanel({
               {t('adminUserEdit.followers')}
             </dt>
             <dd>
-              {publicProfile?.artist.followerCount ?? 'Hidden or unavailable'}
+              {publicProfile?.artist.followerCount ??
+                i18n.t('web:batch57.hiddenOrUnavailable')}
             </dd>
           </div>
           <div>
@@ -380,7 +381,7 @@ export function AdminUserEditPanel({
               {t('adminUserEdit.channel')}
             </dt>
             <dd className="mt-1 text-sm font-medium">
-              {detail.channel?.state ?? 'No channel'}
+              {detail.channel?.state ?? i18n.t('web:batch57.noChannel')}
             </dd>
             <dd className="text-foreground-secondary text-xs">
               {detail.channel
@@ -478,7 +479,9 @@ export function AdminUserEditPanel({
               <dt className="text-foreground-secondary">
                 {t('adminUserEdit.memberNumber')}
               </dt>
-              <dd>{detail.memberNumber ?? 'Not assigned'}</dd>
+              <dd>
+                {detail.memberNumber ?? i18n.t('web:adminUserEdit.notAssigned')}
+              </dd>
               <dt className="text-foreground-secondary">
                 {t('adminUserEdit.associationMember')}
               </dt>

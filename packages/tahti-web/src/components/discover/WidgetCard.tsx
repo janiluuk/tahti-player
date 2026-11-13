@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useState, type ReactNode } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -172,7 +172,7 @@ export function WidgetCard({
           </div>
           <h3 className="mt-4 text-lg font-semibold">{artist.displayName}</h3>
           <p className="text-foreground-secondary mt-2 line-clamp-4 max-w-xl text-sm">
-            {artist.bio ?? 'Discover this artist’s music on Tahti.'}
+            {artist.bio ?? i18n.t('web:batch57.discoverArtistMusic')}
           </p>
           <ButtonLink
             to="/channel/$slug"
