@@ -22,7 +22,7 @@ export async function changePassword(
   if (isForceMock()) {
     return {
       ok: true,
-      message: 'Password changed. Other devices were signed out.',
+      message: i18n.t('web:batch58.passwordChanged'),
     };
   }
   try {

@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import { apiBase, getJson, mutate } from '../http';
 import { failMeta, isForceMock } from '../mode';
@@ -286,7 +288,7 @@ export function retryFanSubPayout(
     if (!row || row.state !== 'FAILED') {
       return Promise.resolve({
         ok: false,
-        error: 'Only FAILED payouts can be retried',
+        error: i18n.t('web:batch58.onlyFailedPayouts'),
       });
     }
     row.state = 'PENDING';

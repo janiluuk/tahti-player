@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import type { GovernanceBoardRole } from '../governance-board';
 import { getJson, sendJson } from '../http';
@@ -80,7 +82,7 @@ export async function createAdminElection(
 ): Promise<BoardActionResult> {
   const title = election.title.trim();
   if (election.role === 'CHAIR' && election.seats !== 1) {
-    return { ok: false, error: 'There is one chair' };
+    return { ok: false, error: i18n.t('web:batch58.oneChair') };
   }
   if (isForceMock()) {
     mockElections = [
@@ -131,13 +133,13 @@ export async function updateAdminElection(
   if (isForceMock()) {
     const current = mockElections.find((e) => e.id === id);
     if (!current) {
-      return { ok: false, error: 'Election not found' };
+      return { ok: false, error: i18n.t('web:batch58.electionNotFound') };
     }
     if (current.decidedAt || current.cancelledAt) {
-      return { ok: false, error: 'This election no longer takes changes' };
+      return { ok: false, error: i18n.t('web:batch58.electionNoChanges') };
     }
     if (current.role === 'CHAIR' && change.seats && change.seats !== 1) {
-      return { ok: false, error: 'There is one chair' };
+      return { ok: false, error: i18n.t('web:batch58.oneChair') };
     }
     updateMockAdminElection(id, {
       ...(change.title !== undefined ? { title: change.title.trim() } : {}),
@@ -290,10 +292,10 @@ export async function recordElectionResult(
   result: ElectionResult,
 ): Promise<BoardActionResult> {
   if (result.electedUserIds.length === 0) {
-    return { ok: false, error: 'Choose who was elected' };
+    return { ok: false, error: i18n.t('web:batch58.chooseWhoElected') };
   }
   if (result.termEnd && result.termEnd <= result.termStart) {
-    return { ok: false, error: 'The term must end after it starts' };
+    return { ok: false, error: i18n.t('web:batch58.termEndAfterStart') };
   }
   if (isForceMock()) {
     const list = mockCandidates.get(id) ?? [];

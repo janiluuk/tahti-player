@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import type { GovernanceBoardRole } from '../governance-board';
 import { getJson, sendJson } from '../http';
@@ -81,7 +83,7 @@ export async function createAdminBoardTerm(
   term: NewBoardTerm,
 ): Promise<BoardActionResult> {
   if (term.termEnd && term.termEnd <= term.termStart) {
-    return { ok: false, error: 'The term must end after it starts' };
+    return { ok: false, error: i18n.t('web:batch58.termEndAfterStart') };
   }
   if (isForceMock()) {
     mockTerms = [
@@ -123,14 +125,17 @@ export async function endAdminBoardTerm(
   if (isForceMock()) {
     const term = mockTerms.find((t) => t.id === id);
     if (!term) {
-      return { ok: false, error: 'Board term not found' };
+      return { ok: false, error: i18n.t('web:batch58.boardTermNotFound') };
     }
     const end = new Date(termEnd).toISOString();
     if (end <= term.termStart) {
-      return { ok: false, error: 'The term must end after it starts' };
+      return { ok: false, error: i18n.t('web:batch58.termEndAfterStart') };
     }
     if (term.termEnd && end > term.termEnd) {
-      return { ok: false, error: 'A term can be shortened, not extended' };
+      return {
+        ok: false,
+        error: i18n.t('web:batch58.termShortenedNotExtended'),
+      };
     }
     mockTerms = mockTerms.map((t) =>
       t.id === id ? { ...t, termEnd: end, endReason: reason ?? null } : t,

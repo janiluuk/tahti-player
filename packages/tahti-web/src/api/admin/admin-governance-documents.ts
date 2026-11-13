@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { sendJson } from '../http';
 import { isForceMock } from '../mode';
 import type { GovernanceDocument } from '../types';
@@ -17,7 +19,7 @@ export async function patchAdminGovernanceDocument(
   { ok: true; data: GovernanceDocument } | { ok: false; error: string }
 > {
   if (change.title !== undefined && !change.title.trim()) {
-    return { ok: false, error: 'Give the document a title' };
+    return { ok: false, error: i18n.t('web:batch58.giveDocumentTitle') };
   }
   const body = {
     ...change,
@@ -27,7 +29,7 @@ export async function patchAdminGovernanceDocument(
     if (document.legalHoldAt) {
       return {
         ok: false,
-        error: 'The document is under a legal hold and cannot be changed',
+        error: i18n.t('web:batch58.documentLegalHold'),
       };
     }
     const { archived, ...rest } = body;

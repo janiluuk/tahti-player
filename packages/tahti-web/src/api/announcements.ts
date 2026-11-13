@@ -272,7 +272,7 @@ export async function patchAnnouncementClip(
   if (isForceMock()) {
     const clip = mockClips.find((item) => item.id === id);
     if (!clip) {
-      return { ok: false, error: 'Announcement not found' };
+      return { ok: false, error: i18n.t('web:batch58.announcementNotFound') };
     }
     Object.assign(clip, patch);
     return { ok: true, clip: { ...clip } };

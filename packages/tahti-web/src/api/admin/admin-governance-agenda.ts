@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { getJson, sendJson } from '../http';
 import { isForceMock } from '../mode';
 
@@ -81,7 +83,7 @@ export async function createAdminAgendaItem(
   const title = input.title.trim();
   const description = input.description?.trim() || undefined;
   if (!title) {
-    return { ok: false, error: 'Give the item a title' };
+    return { ok: false, error: i18n.t('web:batch58.giveItemTitle') };
   }
   if (isForceMock()) {
     const items = mockAgendaItems(meetingId);
@@ -122,7 +124,7 @@ export async function updateAdminAgendaItem(
   change: AgendaItemChange,
 ): Promise<AgendaResult> {
   if (change.title !== undefined && !change.title.trim()) {
-    return { ok: false, error: 'Give the item a title' };
+    return { ok: false, error: i18n.t('web:batch58.giveItemTitle') };
   }
   if (isForceMock()) {
     setMockAgendaItems(

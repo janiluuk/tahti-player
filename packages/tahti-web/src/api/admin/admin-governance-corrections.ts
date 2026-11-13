@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from '../client';
 import type {
   CorrectionState,
@@ -73,15 +75,15 @@ export async function answerAdminCorrection(
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const resolutionNote = answer.resolutionNote.trim();
   if (!resolutionNote) {
-    return { ok: false, error: 'Tell the member what was decided' };
+    return { ok: false, error: i18n.t('web:batch58.tellMemberDecision') };
   }
   if (isForceMock()) {
     const row = mockQueue.find((r) => r.id === id);
     if (!row) {
-      return { ok: false, error: 'Correction request not found' };
+      return { ok: false, error: i18n.t('web:batch58.correctionNotFound') };
     }
     if (row.state !== 'OPEN') {
-      return { ok: false, error: 'This request was already answered' };
+      return { ok: false, error: i18n.t('web:batch58.requestAlreadyAnswered') };
     }
     mockQueue = mockQueue.map((r) =>
       r.id === id
