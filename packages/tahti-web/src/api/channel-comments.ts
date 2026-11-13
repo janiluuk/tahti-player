@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { getJson } from './http';
 import { mockFixture } from './mock-overrides';
@@ -72,7 +74,10 @@ export async function postChannelComment(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not post comment',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotPostComment'),
     };
   }
 }

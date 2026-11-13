@@ -164,7 +164,10 @@ export async function standForElection(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not put you forward',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotPutYouForward'),
     };
   }
 }

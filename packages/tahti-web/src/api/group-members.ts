@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import type { ArtistGroupRole } from './groups';
 import {
@@ -62,7 +64,10 @@ export async function removeGroupMember(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not remove member',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotRemoveMember'),
     };
   }
 }
@@ -85,7 +90,10 @@ export async function setGroupMemberRole(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not change the role',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotChangeRole'),
     };
   }
 }
@@ -108,7 +116,9 @@ export async function transferArtistGroup(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not hand over the group',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotHandOverGroup'),
     };
   }
 }

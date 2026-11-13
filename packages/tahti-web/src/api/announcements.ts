@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import {
   announcementDurationSec,
   readAudioFileDuration,
@@ -128,7 +130,7 @@ export async function postPinnedAnnouncement(
       error:
         error instanceof Error
           ? error.message
-          : 'Could not publish announcement',
+          : i18n.t('web:batch55.couldNotPublishAnnouncement'),
     };
   }
 }
@@ -154,7 +156,7 @@ export async function deletePinnedAnnouncement(
       error:
         error instanceof Error
           ? error.message
-          : 'Could not delete announcement',
+          : i18n.t('web:batch55.couldNotDeleteAnnouncement'),
     };
   }
 }
@@ -256,7 +258,7 @@ export async function uploadAnnouncementClip(file: File): Promise<
       error:
         error instanceof Error
           ? error.message
-          : 'Could not upload announcement',
+          : i18n.t('web:batch55.couldNotUploadAnnouncement'),
     };
   }
 }
@@ -287,7 +289,7 @@ export async function patchAnnouncementClip(
       error:
         error instanceof Error
           ? error.message
-          : 'Could not update announcement',
+          : i18n.t('web:batch55.couldNotUpdateAnnouncement'),
     };
   }
 }
@@ -314,7 +316,7 @@ export async function deleteAnnouncementClip(
       error:
         error instanceof Error
           ? error.message
-          : 'Could not delete announcement',
+          : i18n.t('web:batch55.couldNotDeleteAnnouncement'),
     };
   }
 }
@@ -335,7 +337,9 @@ export async function setProfileBackgroundClip(
     return {
       ok: false,
       error:
-        error instanceof Error ? error.message : 'Could not update page music',
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:batch55.couldNotUpdatePageMusic'),
     };
   }
 }
@@ -358,7 +362,10 @@ export async function fetchAnnouncementPreview(id: string): Promise<
   } catch (error) {
     return {
       ok: false,
-      error: error instanceof Error ? error.message : 'Could not load preview',
+      error:
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:batch55.couldNotLoadPreview'),
     };
   }
 }
@@ -394,7 +401,10 @@ export async function renderAnnouncementTrim(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not trim the clip',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotTrimClip'),
     };
   }
 }

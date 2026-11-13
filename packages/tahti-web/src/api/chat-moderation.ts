@@ -75,7 +75,10 @@ export async function fetchModerationMessages(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not load messages',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotLoadMessages'),
     };
   }
 }
@@ -98,7 +101,10 @@ export async function removeChatMessage(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not remove message',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotRemoveMessage'),
     };
   }
 }
@@ -161,7 +167,10 @@ export async function fetchModeratedChannels(): Promise<
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not load channels',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotLoadChannels'),
     };
   }
 }

@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -72,7 +74,10 @@ export async function setSoundEngagement(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not save that',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.couldNotSaveThat'),
     };
   }
 }

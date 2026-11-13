@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import {
   allowMockFallback,
   apiErrorMeta,
@@ -106,7 +108,10 @@ export async function createDiscoWidgetInstall(
     return { error: null, data };
   } catch (err) {
     return {
-      error: err instanceof Error ? err.message : 'Failed to install',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch55.failedToInstall'),
     };
   }
 }

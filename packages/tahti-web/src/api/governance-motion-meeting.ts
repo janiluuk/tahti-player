@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import { isForceMock } from './mode';
 
@@ -45,7 +47,7 @@ export async function linkMotionAgendaItem(
   } catch (err) {
     return {
       ok: false,
-      error: errorText(err, 'Could not change the agenda item'),
+      error: errorText(err, i18n.t('web:batch55.couldNotChangeAgendaItem')),
     };
   }
 }
