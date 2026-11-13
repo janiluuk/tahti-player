@@ -1,3 +1,11 @@
+## 2026-11-13 — Fans page Chat tab
+
+Studio → Fans: Tools | Chat top tabs; chat settings live under Chat
+(`?tab=chat`, optional `?section=`). Profile, Settings Channel,
+Moderate channel and `/studio/moderation` deep-link there. tahti-web
+0.0.396. Folded `fans-chat-page-tab.md`. Live verify remains in
+`fans-chat-live-verify.md`.
+
 ## 2026-11-13 — Admin Workers empty-lane warning
 
 Admin → Status → Workers warns when `laneCoverage` has a lane with

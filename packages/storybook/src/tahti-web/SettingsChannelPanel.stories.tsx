@@ -106,7 +106,7 @@ export const Chat: Story = {
     await expectVisible(await canvas.findByText('Chat moved to Fans'));
     await expect(
       canvas.getByRole('link', { name: 'Open Fans chat' }),
-    ).toHaveAttribute('href', '/studio/fans');
+    ).toHaveAttribute('href', '/studio/fans?tab=chat');
   },
 };
 
@@ -117,7 +117,7 @@ export const Moderators: Story = {
     await expectVisible(await canvas.findByText('Moderators moved to Fans'));
     await expect(
       canvas.getByRole('link', { name: 'Open Fans chat' }),
-    ).toHaveAttribute('href', '/studio/fans');
+    ).toHaveAttribute('href', '/studio/fans?tab=chat&section=moderators');
   },
 };
 

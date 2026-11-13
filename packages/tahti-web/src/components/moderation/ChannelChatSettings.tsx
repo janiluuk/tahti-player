@@ -30,15 +30,22 @@ const CHAT_TABS: ChatTab[] = ['access', 'messages', 'moderators', 'bans'];
  * Shared by Studio → Fans so Settings no longer duplicates the same controls. */
 export function ChannelChatSettings({
   headingId = 'fans-chat',
+  initialTab = 'messages',
 }: {
   headingId?: string;
+  /** Which moderation sub-tab to open (e.g. Profile → Moderators). */
+  initialTab?: ChatTab;
 }) {
   const { t } = useTranslation('web');
   const [profile, setProfile] = useState<ProfileFields | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [bansVersion, setBansVersion] = useState(0);
-  const [tab, setTab] = useState<ChatTab>('messages');
+  const [tab, setTab] = useState<ChatTab>(initialTab);
+
+  useEffect(() => {
+    setTab(initialTab);
+  }, [initialTab]);
 
   useEffect(() => {
     let cancelled = false;

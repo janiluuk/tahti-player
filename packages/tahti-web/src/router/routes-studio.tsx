@@ -463,6 +463,21 @@ export const studioBroadcastRoute = createRoute({
 export const studioFansRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/fans',
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): {
+    tab?: 'chat';
+    section?: 'access' | 'messages' | 'moderators' | 'bans';
+  } => ({
+    tab: search.tab === 'chat' ? 'chat' : undefined,
+    section:
+      search.section === 'access' ||
+      search.section === 'messages' ||
+      search.section === 'moderators' ||
+      search.section === 'bans'
+        ? search.section
+        : undefined,
+  }),
   component: StudioFansView,
 });
 
@@ -488,7 +503,7 @@ export const studioModerationRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/moderation',
   beforeLoad: () => {
-    throw redirect({ to: '/studio/fans' });
+    throw redirect({ to: '/studio/fans', search: { tab: 'chat' } });
   },
 });
 
