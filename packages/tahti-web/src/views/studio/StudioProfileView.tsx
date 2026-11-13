@@ -110,14 +110,14 @@ export function studioProfileChannelItems(t: TFunction<'web'>): HubCardItem[] {
     },
     {
       id: 'chat',
-      href: '/studio/fans',
+      href: '/studio/fans?tab=chat',
       icon: MessageSquareIcon,
       title: t('studioProfileView.chat'),
       description: t('studioProfileView.whoCanChatOnYour'),
     },
     {
       id: 'moderators',
-      href: '/studio/fans',
+      href: '/studio/fans?tab=chat&section=moderators',
       icon: ShieldIcon,
       title: t('studioProfileView.moderators'),
       description: t('studioProfileView.peopleWhoCanModerateYour'),
