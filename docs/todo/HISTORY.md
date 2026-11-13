@@ -1,3 +1,9 @@
+## 2026-11-13 — Listen row alignment, upload broadcast label
+
+Recently played and Tahti Selects no longer show a filter bar, so the cards in the first Listen row start on the same line. tahti-web 0.0.379.
+
+A recorded broadcast with no title uses `library.recordedBroadcast` ("Tallennettu lähetys"). Folded `finnish-upload-leftovers.md`.
+
 ## 2026-11-12 — channel About is the bio and its links
 
 The channel About block is the bio and the channel links under the name. The separate Links card is gone, and the row does not repeat the channel name. Unsafe and hidden links stay out. tahti-web 0.0.378. Folded `channel-about-tidy.md`.

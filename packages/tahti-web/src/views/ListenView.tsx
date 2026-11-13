@@ -324,6 +324,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                   title={t('listen.recentlyPlayed')}
                   badge={t('listen.history')}
                   badgeColor="yellow"
+                  filterable={false}
                   items={recentItems}
                   labels={{
                     ...rowLabels,

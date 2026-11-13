@@ -32,7 +32,6 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 35. [ ] [Broadcast agenda](broadcast-agenda.md) (`navigation-simplification.md`).
 37. [ ] [Merge the Studio overview](studio-overview-merge.md) (`navigation-simplification.md`).
 39. [ ] [Finnish API notification bodies](finnish-api-notifications.md) (`finnish-localization.md`).
-40. [ ] [Finnish upload leftovers](finnish-upload-leftovers.md) (`finnish-localization.md`).
 42. [ ] [Board track-edit product call](board-track-edit-product-call.md) (`ui-requests-2026-11-03.md`).
 43. [ ] [Embed track API fix](embed-track-api-fix.md) (`ui-requests-2026-11-03.md`).
 45. [ ] [Embed downloads product call](embed-downloads-product-call.md) (`listen-artist-channel-cleanup.md`).

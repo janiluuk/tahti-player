@@ -151,6 +151,7 @@ export function TahtiSelectsRow() {
         defaultLayout="cards"
         data-testid="listen-tahti-selects"
         title={t('listen.tahtiSelects')}
+        filterable={false}
         items={items}
         labels={rowLabels}
         renderItem={renderTrack}
