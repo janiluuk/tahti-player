@@ -23,10 +23,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [admin-queue-retry-job.md](admin-queue-retry-job.md) | Retry one failed queue job from Admin |
-| open    | [admin-queue-remove-job.md](admin-queue-remove-job.md) | Remove one job from a queue |
-| open    | [admin-queue-pause.md](admin-queue-pause.md) | Pause and resume a queue |
-| open    | [admin-queue-requeue-pending.md](admin-queue-requeue-pending.md) | Re-queue sounds stuck PENDING with a stored file and no job |
 | open    | [help-finnish-native-review.md](help-finnish-native-review.md) | Native review of the redesigned Help and For artists pages |
 | open    | [hearthis-release-product-defaults.md](hearthis-release-product-defaults.md) | Confirm the product defaults for tahti hearthis release |
 | open    | [hearthis-release-live-run.md](hearthis-release-live-run.md) | One live tahti hearthis release run |
@@ -55,7 +51,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | open    | [next-50.md](next-50.md) | Map of the 50 slice files in the Next 50 slices section |
-| open    | [admin-queue-tools.md](admin-queue-tools.md) | Admin queue tools: see jobs processing now, waiting and failed; retry, remove, pause; re-queue stuck `PENDING` uploads |
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; left: native review |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |

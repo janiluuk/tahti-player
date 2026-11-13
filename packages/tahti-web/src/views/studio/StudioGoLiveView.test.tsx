@@ -137,6 +137,7 @@ beforeEach(() => {
 afterEach(() => {
   act(() => root.unmount());
   container.remove();
+  document.body.replaceChildren();
   vi.unstubAllEnvs();
   vi.clearAllMocks();
   useAuthStore.setState({ user: null, hydrated: true, loading: false });
@@ -259,7 +260,7 @@ describe('StudioGoLiveView live states', () => {
       screen.queryByRole('button', { name: /Start broadcast/ }),
     ).toBeNull();
     await act(async () =>
-      fireEvent.click(screen.getByRole('button', { name: 'End broadcast' })),
+      fireEvent.click(screen.getByTestId('go-live-end-broadcast')),
     );
     const dialog = screen.getByRole('dialog');
     expect(dialog).toHaveTextContent('End the broadcast?');
@@ -293,7 +294,10 @@ describe('StudioGoLiveView live states', () => {
       'error',
     );
     expect(screen.getByRole('alert')).toHaveTextContent(/Reconnect it by/);
-    expect(screen.getByRole('button', { name: 'End broadcast' })).toBeVisible();
+    expect(
+      screen.queryByRole('button', { name: /Start broadcast/ }),
+    ).toBeNull();
+    expect(screen.getByTestId('go-live-end-broadcast')).toBeInTheDocument();
   });
 });
 

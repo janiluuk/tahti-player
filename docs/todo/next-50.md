@@ -4,10 +4,6 @@
 
 Each slice has its own file. This list is only the map. Fold a slice file when that slice ships; fold the parent when the parent's leftover is gone.
 
-2. [ ] [Admin queue: retry a failed job](admin-queue-retry-job.md) (`admin-queue-tools.md`).
-3. [ ] [Admin queue: remove a job](admin-queue-remove-job.md) (`admin-queue-tools.md`).
-4. [ ] [Admin queue: pause and resume](admin-queue-pause.md) (`admin-queue-tools.md`).
-5. [ ] [Re-queue stuck PENDING uploads](admin-queue-requeue-pending.md) (`admin-queue-tools.md`).
 7. [ ] [Help pages native review](help-finnish-native-review.md) (`help-pages-finnish-redesign.md`).
 11. [ ] [HearThis release product defaults](hearthis-release-product-defaults.md) (`hearthis-to-tahti-release-cli.md`).
 12. [ ] [HearThis release live run](hearthis-release-live-run.md) (`hearthis-to-tahti-release-cli.md`).

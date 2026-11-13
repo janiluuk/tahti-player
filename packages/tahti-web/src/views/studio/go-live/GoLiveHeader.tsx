@@ -128,6 +128,7 @@ export function GoLiveHeader({
               ACTION_BUTTON,
               'border-border-input text-foreground hover:bg-background-secondary rounded-md border-2 bg-transparent',
             )}
+            data-testid="go-live-end-broadcast"
             disabled={busy}
             onClick={onEnd}
           >
