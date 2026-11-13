@@ -1,3 +1,9 @@
+## 2026-11-13 - Fans chat tabs and restyled messages (0.0.393)
+
+Studio → Fans → Chat puts Access, Messages, Moderators and Bans on their
+own tabs. Recent messages use a chat-like row (avatar, handle, body,
+actions) instead of bordered cards.
+
 ## 2026-11-13 - Channel public metrics and events (0.0.392)
 
 Channel pages show a locale-formatted metrics list (followers, following,

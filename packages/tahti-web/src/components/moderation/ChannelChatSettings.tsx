@@ -1,8 +1,14 @@
+import {
+  MessageSquareIcon,
+  ShieldBanIcon,
+  UserRoundCogIcon,
+  UsersIcon,
+} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
-import { InlineLoader, SectionTitle } from '@tahti-player/ui';
+import { InlineLoader, SectionTitle, Tabs } from '@tahti-player/ui';
 
 import {
   fetchMeProfile,
@@ -16,6 +22,10 @@ import { ChatAccessPanel } from './ChatAccessPanel';
 import { ChatBansPanel } from './ChatBansPanel';
 import { ChatMessagesPanel } from './ChatMessagesPanel';
 
+type ChatTab = 'access' | 'messages' | 'moderators' | 'bans';
+
+const CHAT_TABS: ChatTab[] = ['access', 'messages', 'moderators', 'bans'];
+
 /** Live-chat on/off plus the moderation panels artists use for their channel.
  * Shared by Studio → Fans so Settings no longer duplicates the same controls. */
 export function ChannelChatSettings({
@@ -28,6 +38,7 @@ export function ChannelChatSettings({
   const [loadError, setLoadError] = useState<string | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [bansVersion, setBansVersion] = useState(0);
+  const [tab, setTab] = useState<ChatTab>('messages');
 
   useEffect(() => {
     let cancelled = false;
@@ -115,12 +126,43 @@ export function ChannelChatSettings({
       )}
 
       {profile?.chatEnabled !== false ? (
-        <div className="flex flex-col gap-4">
-          <ChatAccessPanel />
-          <ChannelModeratorsPanel />
-          <ChatMessagesPanel onBanned={() => setBansVersion((v) => v + 1)} />
-          <ChatBansPanel key={bansVersion} />
-        </div>
+        <Tabs
+          variant="underline"
+          selectedIndex={CHAT_TABS.indexOf(tab)}
+          onChange={(index) => setTab(CHAT_TABS[index] ?? 'messages')}
+          listClassName="border-border border-b"
+          panelClassName="pt-3"
+          items={[
+            {
+              id: 'access',
+              label: t('channelChatSettings.tabAccess'),
+              icon: <UsersIcon size={14} />,
+              content: <ChatAccessPanel />,
+            },
+            {
+              id: 'messages',
+              label: t('channelChatSettings.tabMessages'),
+              icon: <MessageSquareIcon size={14} />,
+              content: (
+                <ChatMessagesPanel
+                  onBanned={() => setBansVersion((v) => v + 1)}
+                />
+              ),
+            },
+            {
+              id: 'moderators',
+              label: t('channelChatSettings.tabModerators'),
+              icon: <UserRoundCogIcon size={14} />,
+              content: <ChannelModeratorsPanel />,
+            },
+            {
+              id: 'bans',
+              label: t('channelChatSettings.tabBans'),
+              icon: <ShieldBanIcon size={14} />,
+              content: <ChatBansPanel key={bansVersion} />,
+            },
+          ]}
+        />
       ) : profile ? (
         <p className="text-foreground-secondary text-sm">
           {t('channelChatSettings.turnChatOnAboveTo')}

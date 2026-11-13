@@ -12,6 +12,7 @@ import {
   type ModerationChatMessage,
 } from '../../api/chat-moderation';
 import { useAuthStore } from '../../stores/authStore';
+import { ChatAvatar } from '../ChatAvatar';
 import { ConfirmDialog } from '../ConfirmDialog';
 import { PageEmpty, PageLoading } from '../PageStates';
 import { StudioPanel } from '../StudioPanel';
@@ -100,32 +101,45 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
       ) : messages.length === 0 ? (
         <PageEmpty title={t('empties.noMessages')} />
       ) : (
-        <ul className="flex max-h-96 flex-col gap-2 overflow-y-auto">
+        <ul
+          className="divide-border flex max-h-96 flex-col divide-y overflow-y-auto"
+          aria-label={t('chatMessagesPanel.recentMessages')}
+        >
           {messages.map((message) => (
             <li
               key={message.id}
-              className="border-border flex items-start justify-between gap-2 rounded-md border px-3 py-2 text-sm"
+              className="flex items-start gap-2.5 py-2.5 first:pt-0 last:pb-0"
+              data-testid="fans-chat-message"
             >
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                  <span className="font-semibold">{message.handle}</span>
-                  {message.channelRole && (
+              <ChatAvatar handle={message.handle} />
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                  <span
+                    className={
+                      message.channelRole === 'owner'
+                        ? 'text-primary-strong text-sm font-semibold'
+                        : 'text-foreground text-sm font-semibold'
+                    }
+                  >
+                    {message.handle}
+                  </span>
+                  {message.channelRole ? (
                     <Badge variant="pill" color="secondary">
                       {message.channelRole === 'owner'
                         ? t('chatMessagesPanelStates.owner')
                         : t('chatMessagesPanelStates.moderator')}
                     </Badge>
-                  )}
-                  {message.fanOnly && (
+                  ) : null}
+                  {message.fanOnly ? (
                     <Badge variant="pill" color="secondary">
                       {t('chatMessagesPanel.fanRoom')}
                     </Badge>
-                  )}
-                  {message.banned && (
+                  ) : null}
+                  {message.banned ? (
                     <Badge variant="pill" color="secondary">
                       {t('chatMessagesPanel.banned')}
                     </Badge>
-                  )}
+                  ) : null}
                   <time
                     dateTime={message.createdAt}
                     className="text-foreground-secondary text-xs"
@@ -133,10 +147,12 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
                     {moderationTime(message.createdAt)}
                   </time>
                 </div>
-                <p className="break-words">{message.text}</p>
+                <p className="text-foreground mt-0.5 text-sm leading-snug break-words">
+                  {message.text}
+                </p>
               </div>
-              <div className="flex shrink-0 items-center gap-1">
-                {message.canBan && !message.banned && (
+              <div className="flex shrink-0 items-center gap-0.5">
+                {message.canBan && !message.banned ? (
                   <Tooltip
                     content={t('chatMessagesPanel.banSender')}
                     side="top"
@@ -152,7 +168,7 @@ export function ChatMessagesPanel({ slug: slugProp, onBanned }: Props) {
                       <BanIcon size={14} aria-hidden />
                     </Button>
                   </Tooltip>
-                )}
+                ) : null}
                 <Tooltip
                   content={t('chatMessagesPanel.removeMessage')}
                   side="top"
