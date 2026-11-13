@@ -26,6 +26,8 @@ import { ShowEpisodeList } from '../ShowEpisodeList';
 import { SocialLinkIcon } from '../SocialLinkIcon';
 import { Eyebrow } from '../tahti/Eyebrow';
 import { ChannelCatalogSections } from './ChannelCatalogSections';
+import { ChannelPublicMetrics } from './ChannelPublicMetrics';
+import { buildChannelPublicMetricRows } from './channelPublicMetrics';
 import type { ChannelTrackMeta } from './channelTrackMeta';
 import { RadioProgrammingGrid } from './RadioProgrammingGrid';
 import type { ChannelSection, ChannelSectionStatus } from './useChannelData';
@@ -464,10 +466,30 @@ export function renderChannelBlock(
           }}
         />
       );
-    case 'stats':
+    case 'stats': {
+      const hasMetrics =
+        buildChannelPublicMetricRows(channel, {
+          playsToday: '',
+          playsYesterday: '',
+        }).length > 0;
+      if (!hasMetrics) {
+        return null;
+      }
+      return (
+        <section
+          className={editing ? '' : 'border-border rounded-lg border'}
+          data-testid="channel-block-stats"
+        >
+          <ChannelPublicMetrics
+            channel={channel}
+            className={editing ? '' : 'px-4 py-3'}
+          />
+        </section>
+      );
+    }
     case 'headerStats':
-      // Followers and plays show in the social header; `headerStats` only
-      // switches them on and off there.
+      // Compact follower/play chips stay in the social header; Identity
+      // → headerStats only toggles those. The full metrics list is `stats`.
       return null;
     default: {
       // Exhaustiveness guard: adding a type to CHANNEL_PAGE_ITEM_TYPES

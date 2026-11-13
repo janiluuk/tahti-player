@@ -1694,14 +1694,20 @@ export function mockProfile(username: string): PublicProfile {
   const profile = buildMockProfile(username);
   const sum = (key: 'playCount' | 'likeCount' | 'downloadCount') =>
     profile.tracks.reduce((total, track) => total + (track[key] ?? 0), 0);
+  const plays = sum('playCount');
+  const downloads = sum('downloadCount');
   return mockFixture(
     'profile',
     {
       ...profile,
       totals: {
-        plays: sum('playCount'),
+        plays,
         likes: sum('likeCount'),
-        downloads: sum('downloadCount'),
+        downloads,
+      },
+      metrics: {
+        playsTotal: plays,
+        downloads,
       },
     },
     username,

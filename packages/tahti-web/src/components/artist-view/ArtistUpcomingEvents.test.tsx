@@ -71,7 +71,9 @@ describe('ArtistUpcomingEvents', () => {
       },
     ]);
 
-    expect(fetchChannelEvents).toHaveBeenCalledWith('night-drive');
+    expect(fetchChannelEvents).toHaveBeenCalledWith('night-drive', {
+      scope: 'upcoming',
+    });
     expect(
       screen.getByRole('link', { name: 'Listening session' }),
     ).toHaveAttribute('href', '/events/e2');
@@ -86,6 +88,35 @@ describe('ArtistUpcomingEvents', () => {
   it('renders nothing when there are no upcoming events', async () => {
     const { container } = await renderEvents([]);
     expect(container).toBeEmptyDOMElement();
+  });
+
+  it('lists past events when includePast is set', async () => {
+    vi.mocked(fetchChannelEvents).mockImplementation(async (_slug, opts) => ({
+      data:
+        opts?.scope === 'past'
+          ? [
+              {
+                id: 'past-1',
+                title: 'Last week',
+                description: '',
+                place: 'Club',
+                location: 'Helsinki',
+                eventUrl: null,
+                startAt: '2026-01-01T18:00:00.000Z',
+                ...extra,
+              },
+            ]
+          : [],
+      meta: { source: 'api' },
+    }));
+    await renderWithRouter(
+      <ArtistUpcomingEvents channelSlug="night-drive" includePast />,
+    );
+    expect(fetchChannelEvents).toHaveBeenCalledWith('night-drive', {
+      scope: 'past',
+    });
+    expect(screen.getByRole('region', { name: 'Past events' })).toBeTruthy();
+    expect(screen.getByText('Last week')).toBeInTheDocument();
   });
 
   it('shows an error instead of hiding when events fail to load', async () => {

@@ -2631,6 +2631,10 @@
         "visibilityShowJoinDate": "Näytä liittymispäivä profiilissani",
         "visibilityShowFollowers": "Näytä seuraajani profiilissani",
         "visibilityShowFollowing": "Näytä ketä seuraan profiilissani",
+        "visibilityShowPlaysTotal": "Näytä kokonaiskuuntelut kanavallani",
+        "visibilityShowPlaysToday": "Näytä tämän päivän kuuntelut kanavallani",
+        "visibilityShowPlaysYesterday": "Näytä eiliset kuuntelut kanavallani",
+        "visibilityShowDownloads": "Näytä lataukset kanavallani",
         "visibilityShowLikes": "Näytä tykkäämäni kappaleet profiilissani",
         "visibilityShowConnections": "Näytä yhteyteni artistiprofiilissa",
         "visibilityUploadsTitle": "Julkaisut ja kommentit",
@@ -10292,7 +10296,15 @@
       "listeningParty": "Kuuntelujuhlat"
     },
     "artistUpcomingEventsText": {
-      "upcomingEvents": "Tulevat tapahtumat"
+      "upcomingEvents": "Tulevat tapahtumat",
+      "pastEvents": "Menneet tapahtumat",
+      "showMorePast": "Näytä {{count}} lisää",
+      "showFewerPast": "Näytä vähemmän"
+    },
+    "channelPublicMetrics": {
+      "title": "Kanavan tilastot",
+      "playsToday": "Kuuntelut tänään",
+      "playsYesterday": "Kuuntelut eilen"
     },
     "entityStats": {
       "followers_one": "Seuraaja",

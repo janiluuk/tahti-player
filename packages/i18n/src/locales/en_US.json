@@ -2631,6 +2631,10 @@
         "visibilityShowJoinDate": "Show join date on my profile",
         "visibilityShowFollowers": "Show my followers on my profile",
         "visibilityShowFollowing": "Show who I follow on my profile",
+        "visibilityShowPlaysTotal": "Show total plays on my channel",
+        "visibilityShowPlaysToday": "Show plays today on my channel",
+        "visibilityShowPlaysYesterday": "Show plays yesterday on my channel",
+        "visibilityShowDownloads": "Show downloads on my channel",
         "visibilityShowLikes": "Show tracks I like on my profile",
         "visibilityShowConnections": "Show my connections on my artist profile",
         "visibilityUploadsTitle": "Uploads and comments",
@@ -10292,7 +10296,15 @@
       "listeningParty": "Listening party"
     },
     "artistUpcomingEventsText": {
-      "upcomingEvents": "Upcoming events"
+      "upcomingEvents": "Upcoming events",
+      "pastEvents": "Past events",
+      "showMorePast": "Show {{count}} more",
+      "showFewerPast": "Show fewer"
+    },
+    "channelPublicMetrics": {
+      "title": "Channel stats",
+      "playsToday": "Plays today",
+      "playsYesterday": "Plays yesterday"
     },
     "entityStats": {
       "followers_one": "Follower",

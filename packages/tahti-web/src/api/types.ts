@@ -3,6 +3,7 @@ import type {
   ChannelNowPlayingNext,
 } from './channel-now-playing-types';
 import type { PostCategory } from './community-stories';
+import type { PublicChannelMetrics } from './public-channel-metrics';
 import type { PublicProfileArtist } from './public-profile-artist';
 
 export type ChannelDirectoryItem = {
@@ -11,15 +12,13 @@ export type ChannelDirectoryItem = {
   displayName: string;
   avatarUrl: string | null;
   genres: string[];
-  /** True while live or replaying — API field from `/api/v1/channels/directory`. */
+  /** Live or replaying — from `/api/v1/channels/directory`. */
   isActive?: boolean;
   /** Older alias; prefer `isActive`. */
   live?: boolean;
-  /** Self-selected artist roles (dj/producer/band/etc) — see
-   * ARTIST_ROLE_OPTIONS in views/settings/SettingsPanels.tsx. */
+  /** Self-selected roles (dj/producer/band/…). */
   artistRoles?: string[];
-  /** True while the channel is live right now — the directory's "radio
-   * host" filter is defined as having an active running show. */
+  /** True while the channel has an active running show. */
   hasActiveShows?: boolean;
 };
 
@@ -128,12 +127,12 @@ export type PublicChannel = {
   };
   nowPlaying: ChannelNowPlaying | null;
   nowPlayingNext?: ChannelNowPlayingNext | null;
-  /** Public follower count for the channel's Stats block — sourced from the
-   * artist profile (GET /api/v1/u/:username/profile), fetched alongside the
-   * channel so the backdrop's Stats element has something real to show. */
+  /** From GET /api/v1/u/:username/profile (with the channel fetch). */
   followerCount?: number | null;
-  /** Deduplicated plays across the channel's public tracks (tahti-org #1026). */
+  followingCount?: number | null;
+  /** Deduplicated plays across public tracks (tahti-org #1026). */
   publicPlays?: number;
+  metrics?: PublicChannelMetrics;
 };
 
 export type RadioNowPlaying = {
@@ -279,8 +278,12 @@ export type PublicProfile = import('./purchase-tiers').ProfileStore & {
     presskit: string;
   };
   backgroundMusicUrl?: string | null;
-  /** Public totals across the listed tracks (tahti-org #1025). */
-  totals?: { plays: number; likes: number; downloads: number };
+  totals?: {
+    plays?: number;
+    likes: number;
+    downloads?: number;
+  };
+  metrics?: PublicChannelMetrics;
 };
 
 export type CollectionSound = {
