@@ -1,3 +1,10 @@
 {
-  "/api/admin/i18n/languages": "The API has no translation routes. Admin \u2192 Languages shows \"Not available yet\" on a 404 instead of offering Add/Import."
+  "/api/admin/i18n/languages": "The API has no translation routes. Admin → Languages shows \"Not available yet\" on a 404 instead of offering Add/Import.",
+  "/api/admin/queues/media/paused": "Ships with tahti-org#1105 (media queue pause state).",
+  "/api/admin/queues/media/pause": "Ships with tahti-org#1105 (pause media queue).",
+  "/api/admin/queues/media/resume": "Ships with tahti-org#1105 (resume media queue).",
+  "/api/admin/queues/media/stuck-pending": "Ships with tahti-org#1105 (list stuck PENDING uploads).",
+  "/api/admin/queues/media/stuck-pending/requeue": "Ships with tahti-org#1105 (re-queue stuck PENDING uploads).",
+  "/api/admin/queues/media/jobs/:param/retry": "Ships with tahti-org#1105 (retry failed media job).",
+  "/api/admin/queues/media/jobs/:param": "Ships with tahti-org#1105 (remove media job)."
 }

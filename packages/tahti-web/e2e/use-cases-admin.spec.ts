@@ -69,12 +69,17 @@ test('admin: publishes a news post', async ({ page }) => {
   await expect(page.getByRole('main').getByText(headline)).toBeVisible();
 });
 
-test('admin: the dashboard leads with health and links to status checks', async ({
+test('admin: the dashboard leads with community stats and links to status checks', async ({
   page,
 }) => {
   await open(page, '/admin');
   const headings = page.getByRole('main').getByRole('heading', { level: 2 });
-  await expect(headings.first()).toHaveText('System health');
+  await expect(headings.first()).toHaveText('Chat and mail');
+  await expect(
+    page
+      .getByRole('main')
+      .getByRole('heading', { level: 2, name: 'System health' }),
+  ).toBeVisible();
   await page.getByRole('link', { name: 'Status checks' }).click();
   await expect(page).toHaveURL(/\/admin\/status$/);
 });

@@ -5,11 +5,18 @@ import { Button, FilterChips, InlineError } from '@tahti-player/ui';
 
 import {
   fetchAdminQueueJobs,
+  fetchAdminQueuePaused,
+  pauseAdminMediaQueue,
+  removeAdminQueueJob,
+  resumeAdminMediaQueue,
+  retryAdminQueueJob,
   type AdminQueueJob,
   type AdminQueueJobState,
 } from '../../../api/admin/admin-queue-jobs';
+import { ConfirmDialog } from '../../../components/ConfirmDialog';
 import { PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
+import { StuckPendingPanel } from './StuckPendingPanel';
 
 const STATES: AdminQueueJobState[] = [
   'waiting',
@@ -49,32 +56,101 @@ export function QueuesJobsPanel() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [attempt, setAttempt] = useState(0);
+  const [paused, setPaused] = useState<boolean | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [removeJob, setRemoveJob] = useState<AdminQueueJob | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
-    void fetchAdminQueueJobs({ state, limit: 50 }).then((result) => {
+    void Promise.all([
+      fetchAdminQueueJobs({ state, limit: 50 }),
+      fetchAdminQueuePaused(),
+    ]).then(([jobsResult, pausedResult]) => {
       if (cancelled) {
         return;
       }
       setLoading(false);
-      if (!result.data) {
+      if (pausedResult.data) {
+        setPaused(pausedResult.data.paused);
+      }
+      if (!jobsResult.data) {
         setJobs(null);
-        setError(result.meta.reason ?? t('adminQueues.loadError'));
+        setError(jobsResult.meta.reason ?? t('adminQueues.loadError'));
         return;
       }
       setError(null);
-      setJobs(result.data.jobs);
-      setTotal(result.data.total);
+      setJobs(jobsResult.data.jobs);
+      setTotal(jobsResult.data.total);
     });
     return () => {
       cancelled = true;
     };
   }, [state, attempt, t]);
 
+  const refresh = () => setAttempt((n) => n + 1);
+
+  const onPauseToggle = async () => {
+    setActionError(null);
+    const result =
+      paused === true
+        ? await resumeAdminMediaQueue()
+        : await pauseAdminMediaQueue();
+    if (!result.ok) {
+      setActionError(result.error);
+      return;
+    }
+    setPaused(result.paused);
+  };
+
+  const onRetry = async (job: AdminQueueJob) => {
+    setActionError(null);
+    setBusyId(job.id);
+    const result = await retryAdminQueueJob(job.id);
+    setBusyId(null);
+    if (!result.ok) {
+      setActionError(result.error);
+      return;
+    }
+    refresh();
+  };
+
+  const onConfirmRemove = async () => {
+    if (!removeJob) {
+      return;
+    }
+    setActionError(null);
+    setBusyId(removeJob.id);
+    const result = await removeAdminQueueJob(removeJob.id);
+    setBusyId(null);
+    setRemoveJob(null);
+    if (!result.ok) {
+      setActionError(result.error);
+      return;
+    }
+    refresh();
+  };
+
   return (
-    <div data-testid="admin-queues-jobs">
+    <div className="flex flex-col gap-6" data-testid="admin-queues-jobs">
       <StudioPanel title={t('adminQueues.title')}>
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => void onPauseToggle()}
+          >
+            {paused
+              ? t('adminQueues.resumeQueue')
+              : t('adminQueues.pauseQueue')}
+          </Button>
+          {paused ? (
+            <span className="text-foreground-secondary text-xs">
+              {t('adminQueues.pausedHint')}
+            </span>
+          ) : null}
+        </div>
         <FilterChips
           aria-label={t('adminQueues.stateFilter')}
           items={STATES.map((id) => ({
@@ -88,14 +164,13 @@ export function QueuesJobsPanel() {
         {error ? (
           <div className="mt-3 flex flex-col gap-2">
             <InlineError>{error}</InlineError>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => setAttempt((n) => n + 1)}
-            >
+            <Button size="sm" variant="secondary" onClick={refresh}>
               {t('actions.tryAgain')}
             </Button>
           </div>
+        ) : null}
+        {actionError ? (
+          <InlineError className="mt-2">{actionError}</InlineError>
         ) : null}
         {!loading && !error && jobs ? (
           <>
@@ -114,7 +189,7 @@ export function QueuesJobsPanel() {
                 {jobs.map((job) => (
                   <li
                     key={job.id}
-                    className="flex flex-col gap-0.5 py-2 text-sm first:pt-0 last:pb-0"
+                    className="flex flex-col gap-1 py-2 text-sm first:pt-0 last:pb-0"
                   >
                     <div className="flex items-center justify-between gap-2">
                       <span className="min-w-0 truncate font-medium">
@@ -138,6 +213,27 @@ export function QueuesJobsPanel() {
                         {job.failedReason}
                       </p>
                     ) : null}
+                    <div className="flex flex-wrap gap-2">
+                      {job.state === 'failed' ? (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          disabled={busyId === job.id}
+                          onClick={() => void onRetry(job)}
+                        >
+                          {t('adminQueues.retry')}
+                        </Button>
+                      ) : null}
+                      <Button
+                        size="sm"
+                        variant="text"
+                        className="text-destructive"
+                        disabled={busyId === job.id}
+                        onClick={() => setRemoveJob(job)}
+                      >
+                        {t('adminQueues.remove')}
+                      </Button>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -145,6 +241,18 @@ export function QueuesJobsPanel() {
           </>
         ) : null}
       </StudioPanel>
+
+      <StuckPendingPanel />
+
+      <ConfirmDialog
+        destructive
+        isOpen={removeJob !== null}
+        title={t('adminQueues.removeTitle')}
+        description={t('adminQueues.removeDescription')}
+        confirmLabel={t('adminQueues.remove')}
+        onCancel={() => setRemoveJob(null)}
+        onConfirm={() => void onConfirmRemove()}
+      />
     </div>
   );
 }
