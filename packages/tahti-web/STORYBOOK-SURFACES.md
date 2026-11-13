@@ -215,6 +215,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/Home/HomeTiles` | `tahti-web/HomeTiles.stories.tsx` |
 | `Tahti/Media/ImageLightbox` | `tahti-web/ImageLightbox.stories.tsx` |
 | `Tahti/Media/ImageUploadField` | `tahti-web/ImageUploadField.stories.tsx` |
+| `Tahti/Studio/ImportWizard` | `tahti-web/ImportWizard.stories.tsx` |
 | `Tahti/Page/InPageNav` | `tahti-web/InPageNav.stories.tsx` |
 | `Tahti/Misc/ItunesImportDialog` | `tahti-web/ItunesImportDialog.stories.tsx` |
 | `Tahti/Desktop/JamRemote` | `tahti-web/JamRemote.stories.tsx` |
