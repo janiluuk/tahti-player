@@ -134,6 +134,8 @@ export type RadioRecentlyPlayedItem = {
   soundId?: string | null;
   /** Present when the listener may replay the track (access gates apply). */
   audioUrl?: string | null;
+  /** Stored waveform peaks when the sound is still replayable. */
+  peaks?: number[] | null;
 };
 
 export async function fetchRadioRecentlyPlayed(): Promise<{

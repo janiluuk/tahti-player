@@ -37,7 +37,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [channel-upcoming-events.md](channel-upcoming-events.md) | List upcoming events on the channel, including ones the artist plays at |
 | open    | [channel-past-events.md](channel-past-events.md) | List past events on the channel |
 | open    | [finish-wip-2026-11-04-branches.md](finish-wip-2026-11-04-branches.md) | Finish or close the unfinished 2026-11-04 branches and draft PRs |
-| open    | [server-peaks-radio-feed.md](server-peaks-radio-feed.md) | Show server waveform peaks on radio and the feed |
 | open    | [yaniho-channel-pregenerate-peaks.md](yaniho-channel-pregenerate-peaks.md) | Pre-generate peaks so Yaniho channel tracks are not stuck loading |
 | open    | [artwork-preset-backfill.md](artwork-preset-backfill.md) | Run the artwork-preset cover backfill after tahti-org#1033 is merged |
 | open    | [listings-news-opening-post.md](listings-news-opening-post.md) | Update the listings news opening post once an admin is signed in |
@@ -47,7 +46,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [studio-overview-merge.md](studio-overview-merge.md) | Merge the extra Studio overview into the simplified nav |
 | open    | [finnish-api-notifications.md](finnish-api-notifications.md) | Translate API notification bodies |
 | open    | [board-track-edit-product-call.md](board-track-edit-product-call.md) | Decide how board members edit a track |
-| open    | [embed-track-api-fix.md](embed-track-api-fix.md) | Fix the embed track API in tahti-org |
 | open    | [embed-downloads-product-call.md](embed-downloads-product-call.md) | Decide whether an embed offers downloads |
 | open    | [artist-groups-org-e2e.md](artist-groups-org-e2e.md) | Ship the org side of artist groups and cover it with e2e |
 | open    | [fans-chat-live-verify.md](fans-chat-live-verify.md) | Verify Fans Chat on the hub after merge |
@@ -64,7 +62,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [channel-page-metrics-about-events.md](channel-page-metrics-about-events.md) | Channel page metrics and events; About is the bio plus links under the name (0.0.378) |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: player slices 11–30 shipped; org API rows remain |
-| partial | [server-peaks-in-track-lists.md](server-peaks-in-track-lists.md) | Server waveform peaks on every track list (search, Selects, New to you, profile fallback); left: radio/feed |
 | open    | [yaniho-channel-waveform-peaks.md](yaniho-channel-waveform-peaks.md) | Yaniho channel (`/channel/yaniho`) tracks still show loading over the waveform; pre-generate peaks for every view during pre-processing |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |

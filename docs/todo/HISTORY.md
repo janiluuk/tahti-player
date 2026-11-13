@@ -1,3 +1,9 @@
+## 2026-11-13 — Radio and feed peaks; embed track API folded
+
+Radio Just played and Feed track playables carry server `peaks`. Depends on tahti-org#1106. Folded `server-peaks-radio-feed.md` and `server-peaks-in-track-lists.md`.
+
+`GET /api/tracks/:id` already returns `embedProvider` / `embedUri` (tahti-org#1052). Folded `embed-track-api-fix.md`; parent still wants a live Mixcloud/hearthis verify after deploy.
+
 ## 2026-11-13 — Admin queue list, Help pricing, studio collection peaks
 
 Admin → Status lists media-queue jobs by state (waiting / active / delayed / failed / completed) with title, owner, age and attempts (`QueuesJobsPanel`, `GET /api/admin/queues/media/jobs` in tahti-org). Help earnings copy no longer hard-codes euro fee amounts. Studio collection playables carry server `peaks` and `bannerUrl`. tahti-web 0.0.384. Folded `admin-queue-list-jobs.md`, `help-drop-pricing-claims.md`, `server-peaks-studio-collections.md`, and the stale embed-cover slice leftovers (`embed-covers-slices-17-20.md`, `embed-covers-slices-24-30.md`) already covered when embed covers hardening folded.

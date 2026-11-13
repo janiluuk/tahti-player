@@ -18,7 +18,6 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 18. [ ] [Channel upcoming events](channel-upcoming-events.md) (`channel-page-metrics-about-events.md`).
 19. [ ] [Channel past events](channel-past-events.md) (`channel-page-metrics-about-events.md`).
 20. [ ] [Finish 2026-11-04 WIP branches](finish-wip-2026-11-04-branches.md) (`finish-wip-2026-11-04.md`).
-29. [ ] [Peaks on radio and the feed](server-peaks-radio-feed.md) (`server-peaks-in-track-lists.md`).
 30. [ ] [Pre-generate Yaniho channel peaks](yaniho-channel-pregenerate-peaks.md) (`yaniho-channel-waveform-peaks.md`).
 31. [ ] [Run artwork preset cover backfill](artwork-preset-backfill.md) (`artwork-preset-covers.md`).
 32. [ ] [Listings news opening post](listings-news-opening-post.md) (`listings-news-polish.md`).
@@ -28,7 +27,6 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 37. [ ] [Merge the Studio overview](studio-overview-merge.md) (`navigation-simplification.md`).
 39. [ ] [Finnish API notification bodies](finnish-api-notifications.md) (`finnish-localization.md`).
 42. [ ] [Board track-edit product call](board-track-edit-product-call.md) (`ui-requests-2026-11-03.md`).
-43. [ ] [Embed track API fix](embed-track-api-fix.md) (`ui-requests-2026-11-03.md`).
 45. [ ] [Embed downloads product call](embed-downloads-product-call.md) (`listen-artist-channel-cleanup.md`).
 48. [ ] [Artist groups org deploy and e2e](artist-groups-org-e2e.md) (`artist-groups.md`).
 49. [ ] [Fans Chat live verify](fans-chat-live-verify.md) (`studio-fans-chat.md`).
