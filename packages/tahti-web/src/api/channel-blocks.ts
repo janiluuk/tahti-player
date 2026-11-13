@@ -89,7 +89,7 @@ export async function fetchMyChannelBlocks(): Promise<
     );
     return { error: null, data: data.blocks };
   } catch (err) {
-    return failure(err, 'Could not load the channel layout');
+    return failure(err, i18n.t('web:batch54.couldNotLoadLayout'));
   }
 }
 
@@ -114,7 +114,7 @@ export async function createAddonBlock(
     );
     return { error: null, data };
   } catch (err) {
-    return failure(err, 'Could not place the add-on');
+    return failure(err, i18n.t('web:batch54.couldNotPlaceAddon'));
   }
 }
 
@@ -148,7 +148,7 @@ export async function createLogoBlock(
     );
     return { error: null, data };
   } catch (err) {
-    return failure(err, 'Could not place the logo');
+    return failure(err, i18n.t('web:batch54.couldNotPlaceLogo'));
   }
 }
 
@@ -166,7 +166,7 @@ export async function patchChannelBlockWidth(
     );
     return { error: null, data };
   } catch (err) {
-    return failure(err, 'Could not change the width');
+    return failure(err, i18n.t('web:batch54.couldNotChangeWidth'));
   }
 }
 
@@ -183,7 +183,7 @@ export async function reorderChannelBlocks(
     });
     return { error: null, data: undefined };
   } catch (err) {
-    return failure(err, 'Could not reorder the channel layout');
+    return failure(err, i18n.t('web:batch54.couldNotReorderLayout'));
   }
 }
 

@@ -267,7 +267,10 @@ export async function checkoutPurchaseTier(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Checkout failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch54.checkoutFailed'),
     };
   }
 }

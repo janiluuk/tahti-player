@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -29,5 +31,5 @@ export const reorderProfileCollections = (slugs: string[]) =>
   put(
     '/api/me/collections/reorder',
     { slugs },
-    'Could not save the collection order',
+    i18n.t('web:batch54.couldNotSaveOrder'),
   );

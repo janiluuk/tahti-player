@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
 import {
@@ -102,7 +104,7 @@ export async function patchChannelGallery(
       error:
         error instanceof Error
           ? error.message
-          : 'Could not save gallery settings',
+          : i18n.t('web:batch54.couldNotSaveGallery'),
     };
   }
 }

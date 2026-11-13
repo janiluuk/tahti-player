@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -24,7 +26,10 @@ export async function exportSoundToHearthis(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not start the export',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch54.couldNotStartExport'),
     };
   }
 }

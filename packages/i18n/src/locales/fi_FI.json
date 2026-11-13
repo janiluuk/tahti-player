@@ -13055,6 +13055,38 @@
     },
     "governanceMeetingDetailViewLeftovers": {
       "couldNotLoadMeetings": "Kokouksia ei voitu ladata."
+    },
+    "batch54": {
+      "unsubscribeInvalid": "Tämä perumislinkki on virheellinen tai se on jo käytetty.",
+      "couldNotReachTahti": "Tahtea ei tavoitettu. Yritä uudelleen.",
+      "couldNotStartExport": "Vientiä ei voitu aloittaa",
+      "couldNotSaveGallery": "Gallerian asetuksia ei voitu tallentaa",
+      "couldNotLoadLayout": "Kanavan asettelua ei voitu ladata",
+      "couldNotPlaceAddon": "Lisäosaa ei voitu sijoittaa",
+      "couldNotPlaceLogo": "Logoa ei voitu sijoittaa",
+      "couldNotChangeWidth": "Leveyttä ei voitu muuttaa",
+      "couldNotReorderLayout": "Kanavan asettelua ei voitu järjestää uudelleen",
+      "downloadsOff": "Artisti on poistanut tämän kappaleen lataukset käytöstä.",
+      "downloadUnavailable": "Lataus ei ole käytettävissä",
+      "checkoutFailed": "Kassa epäonnistui",
+      "payDistributionFee": "Maksa jakelumaksu ennen lähettämistä Revelatoriin",
+      "needUpcIsrc": "Lisää UPC tai ISRC jokaiselle kappaleelle ennen DSP-lähetystä",
+      "failedToSaveCatalog": "Katalogia ei voitu tallentaa",
+      "themeNotFound": "Teemaa ei löydy",
+      "passwordRequired": "Salasana vaaditaan",
+      "couldNotSaveOrder": "Kokoelmien järjestystä ei voitu tallentaa",
+      "couldNotDeleteComment": "Kommenttia ei voitu poistaa",
+      "couldNotPublishEvent": "Tapahtumaa ei voitu julkaista",
+      "couldNotSaveTags": "Tunnisteita ei voitu tallentaa",
+      "couldNotAnswerInvite": "Kutsuun ei voitu vastata",
+      "couldNotRetry": "Uudelleenyritys epäonnistui",
+      "embedChannelFailed": "Kanavan upotus epäonnistui",
+      "embedReleaseFailed": "Julkaisun upotus epäonnistui",
+      "embedCollectionFailed": "Kokoelman upotus epäonnistui",
+      "couldNotLoadTextLayer": "Tekstikerrosta ei voitu ladata",
+      "couldNotSaveTextLayer": "Tekstikerrosta ei voitu tallentaa",
+      "couldNotAddToRelease": "Sitä ei voitu lisätä julkaisuun",
+      "unfollowFailed": "Seuraamisen lopetus epäonnistui"
     }
   },
   "studioEditor": {

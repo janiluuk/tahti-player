@@ -173,7 +173,7 @@ async function transition(
       error: errorText(
         err,
         action === 'publish'
-          ? 'Could not publish the event'
+          ? i18n.t('web:batch54.couldNotPublishEvent')
           : i18n.t('web:batch53.couldNotCancelEvent'),
       ),
     };
@@ -223,7 +223,10 @@ export async function setEventParticipants(
     );
     return { ok: true, data: normalizeEvent(data) };
   } catch (err) {
-    return { ok: false, error: errorText(err, 'Could not save the tags') };
+    return {
+      ok: false,
+      error: errorText(err, i18n.t('web:batch54.couldNotSaveTags')),
+    };
   }
 }
 
@@ -294,7 +297,10 @@ export async function answerEventInvite(
     );
     return { ok: true };
   } catch (err) {
-    return { ok: false, error: errorText(err, 'Could not answer the invite') };
+    return {
+      ok: false,
+      error: errorText(err, i18n.t('web:batch54.couldNotAnswerInvite')),
+    };
   }
 }
 
@@ -408,6 +414,9 @@ export async function retryEventShare(
     );
     return { ok: true, data };
   } catch (err) {
-    return { ok: false, error: errorText(err, 'Could not retry') };
+    return {
+      ok: false,
+      error: errorText(err, i18n.t('web:batch54.couldNotRetry')),
+    };
   }
 }

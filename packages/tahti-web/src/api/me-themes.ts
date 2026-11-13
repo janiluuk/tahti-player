@@ -60,7 +60,7 @@ export async function submitThemeForReview(
   if (isForceMock()) {
     const theme = mockThemes.find((item) => item.id === id);
     if (!theme) {
-      return { ok: false, error: 'Theme not found' };
+      return { ok: false, error: i18n.t('web:batch54.themeNotFound') };
     }
     theme.visibility = 'PENDING_REVIEW';
     theme.moderationNote = null;
