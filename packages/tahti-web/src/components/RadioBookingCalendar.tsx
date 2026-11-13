@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonLink,
@@ -196,7 +196,7 @@ export function RadioBookingCalendar({
     setMsg(null);
     const start = combineDateAndTime(selectedDate, startTime);
     if (!start) {
-      setMsg('Enter a valid start time.');
+      setMsg(i18n.t('web:batch51.enterValidStartTime'));
       return;
     }
     const end = new Date(start.getTime() + durationHours * 3600_000);
@@ -205,7 +205,7 @@ export function RadioBookingCalendar({
     if (!selectedShow) {
       if (!note.trim()) {
         setBusy(false);
-        setMsg('Enter a show name to create a new show.');
+        setMsg(i18n.t('web:batch51.enterShowName'));
         return;
       }
       const created = await createShowSeries({

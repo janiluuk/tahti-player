@@ -1,7 +1,7 @@
 import { ArrowLeftIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Input, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -114,7 +114,7 @@ export function FanChatRoom({
                   setError(
                     chatErrorFor(
                       msg.error.message,
-                      'Your message was not sent. Try again in a moment.',
+                      i18n.t('web:batch51.messageNotSent'),
                     ).message,
                   );
                 }

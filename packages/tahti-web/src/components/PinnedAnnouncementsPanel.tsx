@@ -2,7 +2,7 @@ import { PinIcon, SendIcon, Trash2Icon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, InlineLoader, Input, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -37,7 +37,9 @@ export function PinnedAnnouncementsPanel({ slug }: { slug: string }) {
       })
       .catch((err) => {
         setLoadError(
-          err instanceof Error ? err.message : 'Could not load announcements.',
+          err instanceof Error
+            ? err.message
+            : i18n.t('web:batch51.couldNotLoadAnnouncements'),
         );
       })
       .finally(() => setLoading(false));

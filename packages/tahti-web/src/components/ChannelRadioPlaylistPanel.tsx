@@ -2,7 +2,7 @@ import { ListMusicIcon, PlusIcon, RadioIcon } from 'lucide-react';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -241,9 +241,7 @@ export const ChannelRadioPlaylistPanel: FC = () => {
     const { data, meta } = await fetchStudioCollection(selectedSlug);
     if (meta.source === 'api' && meta.reason) {
       setBusy(false);
-      toast.error(
-        'Could not load that playlist, so the rotation was left unchanged.',
-      );
+      toast.error(i18n.t('web:batch51.playlistRotationUnchanged'));
       return;
     }
     const soundIds = (data.items ?? [])

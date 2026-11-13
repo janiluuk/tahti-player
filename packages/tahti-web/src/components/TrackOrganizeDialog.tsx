@@ -112,7 +112,9 @@ export function TrackOrganizeDialog({
       });
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not save.',
+        failure instanceof Error
+          ? failure.message
+          : i18n.t('web:batch51.couldNotSave'),
       );
     } finally {
       setBusy(false);

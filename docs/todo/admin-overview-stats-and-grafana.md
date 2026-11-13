@@ -15,10 +15,8 @@ slow calls in tahti-org if the API is the wait.
 
 ## Stats belong at the top
 
-On the admin overview, the stats sit below the rest of the page
-(`CommunityStatsPanel` is rendered after system health, queues and the
-other panels in `AdminDashboardView`). Move those stats to the top of the
-overview so they are the first thing on the page.
+Done in 0.0.380. `CommunityStatsPanel` is the first block on the admin
+overview, above system health.
 
 ## Grafana cannot connect
 

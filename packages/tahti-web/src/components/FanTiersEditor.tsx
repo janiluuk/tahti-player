@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -203,7 +203,7 @@ export function FanTiersEditor() {
             e.preventDefault();
             const eurosN = Number(eurosAmt.replace(',', '.'));
             if (!Number.isFinite(eurosN) || eurosN < 1) {
-              setMsg('Enter a price of at least €1.');
+              setMsg(i18n.t('web:batch51.priceAtLeastOne'));
               return;
             }
             if (!name.trim() || busy) {

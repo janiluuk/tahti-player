@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -128,7 +128,7 @@ export function AdminUserEditPanel({
       (!Number.isInteger(parsedMemberNumber) || parsedMemberNumber <= 0)
     ) {
       setBusy(false);
-      setStatus('Member number must be a positive whole number.');
+      setStatus(i18n.t('web:batch51.memberNumberWhole'));
       return;
     }
     const result = await patchAdminUser(detail.id, {
@@ -151,7 +151,7 @@ export function AdminUserEditPanel({
       return;
     }
     if (!detail.suspendedAt && !suspendReason.trim()) {
-      setStatus('Add a reason before suspending this account.');
+      setStatus(i18n.t('web:batch51.reasonBeforeSuspend'));
       return;
     }
     setBusy(true);
@@ -321,7 +321,7 @@ export function AdminUserEditPanel({
               {detail.memberSince ? (
                 <ListingDate value={detail.memberSince} />
               ) : (
-                'Not a member'
+                i18n.t('web:batch51.notAMember')
               )}
             </dd>
           </div>

@@ -1,7 +1,7 @@
 import { QRCodeSVG } from 'qrcode.react';
 import { useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button } from '@tahti-player/ui';
 
 import { resetJamPairing, useDesktopJamStore } from '../lib/jam/desktop';
@@ -18,8 +18,8 @@ export function JamIntegrationRow() {
       testId="integration-jam"
       label={t('jamRow.tahtiJam')}
       description={t('jamRow.controlThePlayerFromA')}
-      copyLabel="Copy Tahti Jam link"
-      failure="Tahti Jam could not start"
+      copyLabel={i18n.t('web:batch51.copyJamLink')}
+      failure={i18n.t('web:batch51.jamCouldNotStart')}
     >
       {url ? (
         <div className="flex flex-col items-start gap-3">

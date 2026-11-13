@@ -1,4 +1,4 @@
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 
 import { useDesktopDiscordStore } from '../lib/discord/presence';
 import { DesktopServiceRow } from './DesktopServiceRow';
@@ -12,7 +12,7 @@ export function DiscordIntegrationRow() {
       testId="integration-discord"
       label={t('discordIntegrationRow.discordRichPresence')}
       description={t('discordIntegrationRow.showsWhatYouReListening')}
-      failure="Could not connect to Discord"
+      failure={i18n.t('web:batch51.couldNotConnectDiscord')}
     />
   );
 }

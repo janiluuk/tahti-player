@@ -244,7 +244,9 @@ export function PlaylistView({
       });
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not play.',
+        failure instanceof Error
+          ? failure.message
+          : i18n.t('web:batch51.couldNotPlay'),
       );
     } finally {
       setBusy(false);

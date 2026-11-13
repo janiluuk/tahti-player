@@ -213,7 +213,7 @@ export function MaterialSetsField({ soundId }: Props) {
         <MaterialMembershipList
           search={search}
           onSearchChange={setSearch}
-          searchPlaceholder="Search your sets"
+          searchPlaceholder={i18n.t('web:batch51.searchYourSets')}
           emptyLabel={
             search.trim()
               ? t('materialSetsFieldStates.noSetsMatchThatSearch')

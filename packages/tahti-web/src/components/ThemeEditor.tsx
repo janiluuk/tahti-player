@@ -1,7 +1,7 @@
 import { ChevronDownIcon, XIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { useTranslation, type TFunction } from '@tahti-player/i18n';
+import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
 import { applyAdvancedTheme, type AdvancedTheme } from '@tahti-player/themes';
 import {
   Box,
@@ -421,7 +421,7 @@ export function ThemeEditor() {
       setSaveMsg(result.error);
       return;
     }
-    setSaveMsg('Saved and applied.');
+    setSaveMsg(i18n.t('web:batch51.savedAndApplied'));
     setSavedDraft({
       name: trimmed,
       lightValues: { ...lightValues },
@@ -466,7 +466,7 @@ export function ThemeEditor() {
     setImportJson('');
     setImportMsg(null);
     setNameError(undefined);
-    setSaveMsg('Theme imported and applied.');
+    setSaveMsg(i18n.t('web:batch51.themeImported'));
   };
 
   return (

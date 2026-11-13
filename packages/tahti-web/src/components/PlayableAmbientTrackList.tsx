@@ -3,7 +3,7 @@ import { DownloadIcon, PencilIcon, PlusIcon, TrashIcon } from 'lucide-react';
 import { useMemo, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Input } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
@@ -263,7 +263,9 @@ export function PlayableAmbientTrackList({
                             ).then((outcome) => {
                               if (outcome.kind === 'gated') {
                                 toast.info(
-                                  'The artist asks you to follow or share before downloading.',
+                                  i18n.t(
+                                    'web:batch51.followOrShareBeforeDownload',
+                                  ),
                                 );
                                 void navigate({
                                   to: '/t/$id',
