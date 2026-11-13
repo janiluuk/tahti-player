@@ -16,7 +16,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Mikä tahti.live on?',
         body: [
-          'tahti.live on voittoa tavoittelematon lähetysalusta itsenäisille artisteille. Se on tehty tukemaan artisteja, ei algoritmeja. Kuuntelu on ilmaista ja jäsenkanavilla häviötöntä. Artistijäsenyys maksaa 40 €/vuosi ja rahoittaa oman kanavasi, julkaisusi ja livelähetyksesi.',
+          'tahti.live on voittoa tavoittelematon lähetysalusta itsenäisille artisteille. Se on tehty tukemaan artisteja, ei algoritmeja. Kuuntelu on ilmaista ja jäsenkanavilla häviötöntä. Artistijäsenyys rahoittaa oman kanavasi, julkaisusi ja livelähetyksesi — ajantasaiset ehdot ovat Asetukset → Jäsenyys -sivulla.',
           'Yksi jäsen, yksi ääni: alustaa ohjaavat jäsenten aloitteet ja vuosikokous, ei yrityksen hallitus. Lähes kaikki fanien tuki menee artistille, ja koodi on avointa AGPL-lisenssillä.',
           'Koko esittely, suunnitelmat, rahoitus ja hallinto: /what-is-it.',
         ],
@@ -219,7 +219,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
         heading: 'Fanituki ja tilaukset',
         body: [
           'Studio → Fanit → Ansiot näyttää viimeisimmät fanitilaukset, maksutilastot ja tyypillisen tilauksen jakautumisen.',
-          'Sivulta aukeava ansio-opas kertoo Stripen kuluista, 2 %:n toimintamaksusta ja apurahoista.',
+          'Sivulta aukeava ansio-opas kertoo, missä fanitilaukset ja apurahat näkyvät Studiossa.',
         ],
       },
     ],
@@ -425,7 +425,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Tahti ry:n jäsen',
         body: [
-          'Rajaton liveaika ja osuuskunnan tukeminen (jäsenyys 40 €/vuosi).',
+          'Rajaton liveaika ja osuuskunnan tukeminen jäsenyyden kautta. Ajantasaiset ehdot ovat Asetukset → Jäsenyys -sivulla.',
           'Jäsenyys on yhdistyksen tukemista, ei kuluttajan "tilaus".',
           'Jäsenet näkevät Hallinto-sivulla (/governance) enemmän: nykyisen hallituksen, hallitusvaalit (asetu ehdolle tai vetäydy ehdokasasettelun aikana), julkaistut vuosikertomukset sekä yhdistyksen rekisteritiedot ja tilintarkastajat.',
           'Onko jäsentiedoissasi tai julkaistussa tiedossa virhe? Käytä Hallinto-sivun Pyydä korjausta -toimintoa; hallituksen vastaus näkyy siellä, ja voit perua pyynnön sen odottaessa.',
@@ -441,16 +441,15 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Mistä katsoa',
         body: [
-          'Studio → Fanit → Ansiot on tilausten hallintanäkymä: viimeisimmät fanitilaukset, tilaaja- ja maksutilastot sekä tyypillisen 5 euron tilauksen erittely.',
-          'Kun Stripe on käytössä, Studioon tulee myös Stripe-kojelauta maksutilillesi ja Express-kojelauta. Paina H tai Yleisö-sivun ohjeikonia opastettua kierrosta varten.',
+          'Studio → Fanit → Ansiot on tilausten hallintanäkymä: viimeisimmät fanitilaukset, tilaaja- ja maksutilastot sekä kunkin tilauksen ajantasainen jako.',
+          'Kun Stripe on käytössä, Studioon tulee myös Stripe-kojelauta maksutilillesi ja Express-kojelauta. Paina H tai Yleisö-sivun ohjeikonia opastettua kierrosta varten. Stripe-kojelautasi näyttää, mitä oikeasti tuli perille.',
         ],
       },
       {
         heading: 'Rahan kulku',
         body: [
-          'Kuuntelija maksaa sinulle kuukausittain Stripen kautta. 5 euron tilauksesta Stripe pitää noin 0,45 € (2,9 % + 0,30 €), Tahti pitää 0,10 € 2 %:n toimintamaksuna, ja sinä saat 4,45 € Stripe Connectin kautta kirjanpitomallissa.',
-          'Tämä jako näkyy Yleisö-sivulla ja tässä oppaassa. Tarkistamme vielä, että jokainen Stripen maksu vastaa 4,45 €:a, joten pidä näytön lukua dokumentoituna jakona, ei taattuna tilisiirtona. Stripe-kojelautasi näyttää, mitä oikeasti tuli perille.',
-          '2 %:n maksu kattaa Connect-alustan kulut, laskutustuen, riitatapaukset ja GDPR-työn. Se on toimintakulu, ei yhdistyksen voittoa; ylijäämä siirtyy seuraavaan artistien apurahapottiin.',
+          'Kuuntelija maksaa sinulle kuukausittain Stripe Connectin kautta. Alusta- ja korttimaksut vähennetään ensin; loput ovat sinun. Studio → Fanit → Ansiot näyttää kunkin tilauksen luvut — käytä sitä, älä tätä opasta, totuuden lähteenä.',
+          'Tahtille jäävät toimintamaksut kattavat Connect-alustan kulut, laskutustuen, riitatapaukset ja GDPR-työn. Ylijäämä siirtyy seuraavaan artistien apurahapottiin.',
         ],
       },
       {

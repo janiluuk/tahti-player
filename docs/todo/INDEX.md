@@ -23,13 +23,11 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [admin-queue-list-jobs.md](admin-queue-list-jobs.md) | List the jobs that are processing, waiting, and failed |
 | open    | [admin-queue-retry-job.md](admin-queue-retry-job.md) | Retry one failed queue job from Admin |
 | open    | [admin-queue-remove-job.md](admin-queue-remove-job.md) | Remove one job from a queue |
 | open    | [admin-queue-pause.md](admin-queue-pause.md) | Pause and resume a queue |
 | open    | [admin-queue-requeue-pending.md](admin-queue-requeue-pending.md) | Re-queue sounds stuck PENDING with a stored file and no job |
 | open    | [help-finnish-native-review.md](help-finnish-native-review.md) | Native review of the redesigned Help and For artists pages |
-| open    | [help-drop-pricing-claims.md](help-drop-pricing-claims.md) | Remove pricing claims the Help redesign still shows |
 | open    | [hearthis-release-product-defaults.md](hearthis-release-product-defaults.md) | Confirm the product defaults for tahti hearthis release |
 | open    | [hearthis-release-live-run.md](hearthis-release-live-run.md) | One live tahti hearthis release run |
 | open    | [hearthis-collection-live-run.md](hearthis-collection-live-run.md) | One live tahti hearthis collection run |
@@ -39,9 +37,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [channel-upcoming-events.md](channel-upcoming-events.md) | List upcoming events on the channel, including ones the artist plays at |
 | open    | [channel-past-events.md](channel-past-events.md) | List past events on the channel |
 | open    | [finish-wip-2026-11-04-branches.md](finish-wip-2026-11-04-branches.md) | Finish or close the unfinished 2026-11-04 branches and draft PRs |
-| open    | [embed-covers-slices-17-20.md](embed-covers-slices-17-20.md) | Finish embed cover slices 17–20 |
-| open    | [embed-covers-slices-24-30.md](embed-covers-slices-24-30.md) | Finish embed cover slices 24, 25, 29, and 30 |
-| open    | [server-peaks-studio-collections.md](server-peaks-studio-collections.md) | Show server waveform peaks on studio collection track lists |
 | open    | [server-peaks-radio-feed.md](server-peaks-radio-feed.md) | Show server waveform peaks on radio and the feed |
 | open    | [yaniho-channel-pregenerate-peaks.md](yaniho-channel-pregenerate-peaks.md) | Pre-generate peaks so Yaniho channel tracks are not stuck loading |
 | open    | [artwork-preset-backfill.md](artwork-preset-backfill.md) | Run the artwork-preset cover backfill after tahti-org#1033 is merged |
@@ -63,13 +58,13 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | ------- | ---- | -------- |
 | open    | [next-50.md](next-50.md) | Map of the 50 slice files in the Next 50 slices section |
 | open    | [admin-queue-tools.md](admin-queue-tools.md) | Admin queue tools: see jobs processing now, waiting and failed; retry, remove, pause; re-queue stuck `PENDING` uploads |
-| partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; left: native review and which pricing claims to restore |
+| partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; left: native review |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |
 | open    | [channel-page-metrics-about-events.md](channel-page-metrics-about-events.md) | Channel page metrics and events; About is the bio plus links under the name (0.0.378) |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
 | partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: player slices 11–30 shipped; org API rows remain |
-| partial | [server-peaks-in-track-lists.md](server-peaks-in-track-lists.md) | Server waveform peaks on every track list (search, Selects, New to you, profile fallback); left: studio collections, radio/feed |
+| partial | [server-peaks-in-track-lists.md](server-peaks-in-track-lists.md) | Server waveform peaks on every track list (search, Selects, New to you, profile fallback); left: radio/feed |
 | open    | [yaniho-channel-waveform-peaks.md](yaniho-channel-waveform-peaks.md) | Yaniho channel (`/channel/yaniho`) tracks still show loading over the waveform; pre-generate peaks for every view during pre-processing |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |

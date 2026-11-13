@@ -8049,6 +8049,21 @@
       "queueHealth": "Jonojen kunto",
       "cronJobs": "Ajastetut tehtävät"
     },
+    "adminQueues": {
+      "title": "Mediajonon työt",
+      "stateFilter": "Työn tila",
+      "loadError": "Jonotöitä ei voitu ladata.",
+      "empty": "Ei töitä tässä tilassa.",
+      "showing": "Näytetään {{shown}} / {{total}}",
+      "attempts": "{{count}} yritystä",
+      "states": {
+        "waiting": "Odottavat",
+        "active": "Käynnissä",
+        "delayed": "Viivästetyt",
+        "failed": "Epäonnistuneet",
+        "completed": "Valmiit"
+      }
+    },
     "stemMixer": {
       "muteSoloOrTurnDown": "Mykistä, soolaa tai hiljennä stemmi toiston aikana. Vaihto-napsautus sooloon kuuntelee vain sen stemmin.",
       "reset": "Palauta",

@@ -249,6 +249,7 @@ export type StudioCollectionItem = {
     audioUrl?: string | null;
     createdAt?: string | null;
     bannerUrl?: string | null;
+    peaks?: number[] | null;
   } | null;
   audioUrl?: string | null;
   release?: {

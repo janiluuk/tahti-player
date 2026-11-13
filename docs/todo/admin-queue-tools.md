@@ -17,7 +17,7 @@ Existing pieces:
 
 Plan:
 
-1. API (tahti-org): per queue, list active / waiting / delayed / failed / recently completed jobs with the item they work on (sound title, owner), age and attempts; paged.
+1. ~~API (tahti-org): per queue, list active / waiting / delayed / failed / recently completed jobs with the item they work on (sound title, owner), age and attempts; paged.~~ Shipped: `GET /api/admin/queues/media/jobs` + Admin → Status `QueuesJobsPanel`.
 2. API actions: retry a failed job, remove a job, pause/resume a queue, re-queue a sound's processing.
 3. Stuck items: list sounds `PENDING` with a stored file and no job for over an hour; re-queue one or all. Let `retry-processing` accept such sounds too, and add a worker sweep that re-queues them.
 4. Admin UI (tahti-web): a Queues page under Admin → Status with tabs per state, live counts, the items now processing, and the actions above (destructive ones confirm in red).

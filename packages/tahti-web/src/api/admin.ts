@@ -21,6 +21,7 @@ export * from './admin/admin-user-restrictions';
 export * from './admin/admin-selects';
 export * from './admin/admin-streams';
 export * from './admin/admin-workers';
+export * from './admin/admin-queue-jobs';
 
 export * from './admin/admin-support';
 
