@@ -6,6 +6,8 @@ import {
   DiscIcon,
   MicIcon,
   PartyPopperIcon,
+  PauseIcon,
+  PlayIcon,
   RadioIcon,
   RadioTowerIcon,
   RepeatIcon,
@@ -16,6 +18,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Badge,
+  Button,
   ButtonLink,
   FilterChips,
   HubCards,
@@ -31,6 +34,7 @@ import { PageEmpty, PageLoading } from '../../components/PageStates';
 import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { usePlayChannelInPlayer } from '../../hooks/usePlayChannelInPlayer';
 import {
   buildBroadcastAgenda,
   type AgendaItem,
@@ -161,6 +165,8 @@ export function StudioBroadcastView() {
   const { t } = useTranslation('web');
   const channel = useAuthStore((state) => state.user?.channel);
   const live = channel?.state === 'LIVE';
+  const { isPlaying: listeningInPlayer, toggle: toggleListenInPlayer } =
+    usePlayChannelInPlayer(channel?.slug);
   const [agenda, setAgenda] = useState<AgendaItem[] | null>(null);
   const [filter, setFilter] = useState('all');
   const emptyCreate =
@@ -240,20 +246,42 @@ export function StudioBroadcastView() {
               data-testid="broadcast-channel-manager"
               className="flex flex-col gap-3"
             >
-              <div>
-                <h2
-                  id="broadcast-channel-manager-title"
-                  className="font-display text-lg font-bold tracking-tight"
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h2
+                    id="broadcast-channel-manager-title"
+                    className="font-display text-lg font-bold tracking-tight"
+                  >
+                    {t('studioBroadcastView.channelManager')}
+                  </h2>
+                  <p className="text-foreground-secondary mt-1 text-sm">
+                    {t('studioBroadcastView.liveStatusRotationAndStream')}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  className="gap-1.5"
+                  data-testid="broadcast-listen-in-player"
+                  aria-pressed={listeningInPlayer}
+                  onClick={toggleListenInPlayer}
                 >
-                  {t('studioBroadcastView.channelManager')}
-                </h2>
-                <p className="text-foreground-secondary mt-1 text-sm">
-                  {t('studioBroadcastView.liveStatusRotationAndStream')}
-                </p>
+                  {listeningInPlayer ? (
+                    <PauseIcon size={16} aria-hidden />
+                  ) : (
+                    <PlayIcon size={16} aria-hidden />
+                  )}
+                  {listeningInPlayer
+                    ? t('studioBroadcastView.pauseInPlayer')
+                    : t('studioBroadcastView.listenInPlayer')}
+                </Button>
               </div>
               <StreamManagerPanel
                 slug={channel.slug}
                 channelState={channel.state ?? 'OFFLINE'}
+                isPlaying={listeningInPlayer}
+                onPlaybackToggle={toggleListenInPlayer}
               />
             </section>
           ) : null}

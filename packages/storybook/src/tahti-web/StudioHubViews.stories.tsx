@@ -116,6 +116,9 @@ export const Broadcast: Story = {
     await expect(
       canvas.getByTestId('broadcast-channel-manager'),
     ).toBeInTheDocument();
+    await expect(
+      canvas.getByTestId('broadcast-listen-in-player'),
+    ).toHaveTextContent('Listen in player');
     const agenda = await canvas.findByRole('list', { name: 'Coming up' });
     const all = within(agenda).getAllByTestId('broadcast-agenda-row').length;
     await userEvent.click(canvas.getByRole('radio', { name: 'Events' }));
