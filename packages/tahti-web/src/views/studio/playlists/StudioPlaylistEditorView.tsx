@@ -94,7 +94,9 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
   const playerStatus = usePlayerStore((s) => s.status);
   const setPlayerStatus = usePlayerStore((s) => s.setStatus);
   const isDjSet = normalizeCollectionStyle(col?.style) === 'DJ_SET_SERIES';
-  const kindLabel = isDjSet ? 'DJ set' : 'playlist';
+  const kindLabel = isDjSet
+    ? t('studioPlaylistEditorViewLeftovers.djSet')
+    : t('studioPlaylistEditorViewLeftovers.playlist');
 
   const reload = () => {
     void Promise.all([
@@ -381,7 +383,11 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                     ? () => setPendingCoverDelete(true)
                     : undefined
                 }
-                subtitle={isDjSet ? 'DJ set' : 'Playlist'}
+                subtitle={
+                  isDjSet
+                    ? t('studioPlaylistEditorViewLeftovers.djSet')
+                    : t('studioPlaylistEditorViewLeftovers.playlistTitle')
+                }
                 description={description.trim() || undefined}
                 stats={headerStats}
                 actions={
@@ -390,7 +396,9 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                       variant="pill"
                       color={isPublic ? 'green' : 'secondary'}
                     >
-                      {isPublic ? 'Public' : 'Private'}
+                      {isPublic
+                        ? t('studioPlaylistEditorViewLeftovers.public')
+                        : t('studioPlaylistEditorViewLeftovers.private')}
                     </Badge>
                     {editing ? (
                       <SaveButton
@@ -721,7 +729,9 @@ export function StudioPlaylistEditorView({ slug }: { slug: string }) {
                 labels={{
                   title: t('studioPlaylistEditorView.coverImage'),
                   description: t('studioPlaylistEditorView.jpegPngWebpOrGif'),
-                  browse: uploadingImage ? 'Uploading…' : 'Choose image',
+                  browse: uploadingImage
+                    ? t('studioPlaylistEditorViewLeftovers.uploading')
+                    : t('studioPlaylistEditorViewLeftovers.chooseImage'),
                 }}
                 accept="image/jpeg,image/png,image/webp,image/gif"
                 disabled={uploadingImage}

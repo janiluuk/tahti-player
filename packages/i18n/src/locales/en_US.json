@@ -12662,6 +12662,291 @@
       "invalidOrExpiredLink": "Invalid or expired link",
       "failedToCreateToken": "Failed to create token",
       "failedToRevokeToken": "Failed to revoke token"
+    },
+    "trackAnalysisSectionMore": {
+      "bpm": "BPM",
+      "key": "Key",
+      "replayGainTrack": "ReplayGain (track)",
+      "replayGainAlbum": "ReplayGain (album)",
+      "loudness": "Loudness",
+      "truePeak": "True peak",
+      "yourCorrection": "{{value}} (your correction)",
+      "fromFileTag": "{{value}} (from the file's tag)",
+      "estimate": "{{value}} (estimate{{confidence}})",
+      "percentSure": " ({{percent}}% sure)",
+      "peakSuffix": ", peak {{peak}}",
+      "couldNotUndo": "Could not undo.",
+      "couldNotSave": "Could not save.",
+      "tapAlongHint": "Tap along with the beat to set the BPM.",
+      "keepTapping": "Keep tapping…",
+      "bpmFromTaps": "{{bpm}} BPM from {{count}} taps",
+      "halfTempo": "Half tempo",
+      "halfTempoBpm": "Half tempo, {{bpm}} BPM",
+      "doubleTempo": "Double tempo",
+      "doubleTempoBpm": "Double tempo, {{bpm}} BPM"
+    },
+    "trackEditAnalysisSectionMore": {
+      "bpm": "BPM",
+      "originalMixPlaceholder": "Original Mix",
+      "detectedHint": "Detected: {{detected}}. Turn off to enter your own.",
+      "readFromTagsHint": "Read from file tags or analyzed from the audio after upload."
+    },
+    "studioPlaylistEditorViewLeftovers": {
+      "djSet": "DJ set",
+      "playlist": "playlist",
+      "playlistTitle": "Playlist",
+      "public": "Public",
+      "private": "Private",
+      "uploading": "Uploading…",
+      "chooseImage": "Choose image"
+    },
+    "selectsTabLeftovers": {
+      "inRotation": "In rotation",
+      "selected": "Selected"
+    },
+    "trackEditorDialogLeftovers": {
+      "couldNotLoadTags": "Could not load tags.",
+      "couldNotSaveEdit": "Could not save the edit."
+    },
+    "voiceRecorderLeftovers": {
+      "tooLoud": "Too loud — lower your microphone gain"
+    },
+    "studioEpisodeReviewViewLeftovers": {
+      "couldNotLoadEpisode": "Could not load this episode.",
+      "episodeApproved": "Episode approved — ready to schedule or publish."
+    },
+    "oAuthServiceCardLeftovers": {
+      "importing": "Importing…",
+      "importAll": "Import all ({{count}})"
+    },
+    "radioRowCardLeftovers": {
+      "tryAgain": "Try again",
+      "stationUnavailable": "Station unavailable · {{reason}}"
+    },
+    "channelBackdropCardLeftovers": {
+      "stage": "Stage",
+      "tracks": "Tracks",
+      "about": "About",
+      "editBackdropDesign": "Edit backdrop design",
+      "editPlayerDesign": "Edit player design"
+    },
+    "artistGalleryPanelLeftovers": {
+      "photoAdded": "Photo added.",
+      "photosAdded": "{{count}} photos added."
+    },
+    "takeMetamorphDialogLeftovers": {
+      "couldNotDownloadVersion": "Could not download the version ({{status}})",
+      "morphFailed": "The morph failed.",
+      "live": " (live)",
+      "pickTwoDifferent": "Pick two different versions."
+    },
+    "studioProEditorViewLeftovers": {
+      "trimEffects": "Trim / effects",
+      "multitrackViz": "Multitrack + viz",
+      "editedMix": "Edited mix",
+      "multitrackBounce": "Multitrack bounce"
+    },
+    "radioScheduleViewLeftovers": {
+      "show": "Show:",
+      "episodeNumber": "— Episode #{{number}}"
+    },
+    "discoWidgetManagerPanelLeftovers": {
+      "full": "Full",
+      "half": "Half",
+      "third": "Third"
+    },
+    "smartRuleValueInputLeftovers": {
+      "major": "{{note}} major",
+      "minor": "{{note}} minor",
+      "camelotLabel": "{{code}} · {{label}}",
+      "days": "Days",
+      "and": "and",
+      "date": "Date",
+      "star_one": "{{count}} star",
+      "star_other": "{{count}} stars",
+      "andDuration": "and (m:ss)",
+      "length": "Length (m:ss)"
+    },
+    "channelViewLeftovers": {
+      "externalPlayer": "External player"
+    },
+    "nativeImportLeftovers": {
+      "filesFailed_one": "{{count}} file could not be imported.",
+      "filesFailed_other": "{{count}} files could not be imported.",
+      "retry": "Retry",
+      "importCancelled": "Import cancelled.",
+      "filesKept": "Files already imported are kept.",
+      "resume": "Resume",
+      "importFailed": "Import failed.",
+      "unsupported_one": "{{count}} file was not a supported audio format.",
+      "unsupported_other": "{{count}} files were not a supported audio format.",
+      "interrupted_one": "An import was interrupted with {{count}} file left.",
+      "interrupted_other": "An import was interrupted with {{count}} files left.",
+      "discard": "Discard",
+      "imported_one": "Imported {{count}} track.",
+      "imported_other": "Imported {{count}} tracks."
+    },
+    "playerStoreLeftovers": {
+      "addedToQueue_one": "Added {{count}} track to queue",
+      "addedToQueue_other": "Added {{count}} tracks to queue",
+      "addedNamedToQueue": "Added \"{{title}}\" to queue"
+    },
+    "membershipApiLeftovers": {
+      "checkoutNoUrl": "Checkout did not return a URL",
+      "checkoutFailed": "Checkout failed",
+      "portalNoUrl": "Billing portal did not return a URL",
+      "portalFailed": "Could not open billing portal",
+      "mockVerificationSent": "Mock verification email sent.",
+      "verificationSent": "Verification email sent.",
+      "deletionFailed": "Deletion request failed",
+      "cancelFailed": "Could not cancel subscription",
+      "invoicesFailed": "Could not load invoices",
+      "resendFailed": "Could not resend verification email",
+      "subscriptionNotFound": "Subscription not found"
+    },
+    "associationEditPanelLeftovers": {
+      "name": "Name",
+      "businessId": "Business ID",
+      "registerNumber": "Register number",
+      "domicile": "Domicile",
+      "contactEmail": "Contact email",
+      "postalAddress": "Postal address",
+      "website": "Website",
+      "businessIdFormat": "Business ID must look like 1234567-8."
+    },
+    "artistImagePurposePickerLeftovers": {
+      "profileImage": "Profile image",
+      "profileImageHint": "The main artist image shown with your identity.",
+      "gallery": "Gallery",
+      "galleryHint": "A public image for your artist page gallery.",
+      "pressKit": "Press kit",
+      "pressKitHint": "Include this image in your downloadable press kit."
+    },
+    "fanSubOrderBreakdownLeftovers": {
+      "fanPays": "Fan pays",
+      "stripeFees": "Stripe fees",
+      "tahtiOpsFee": "Tahti ops fee (2%)",
+      "youReceive": "You receive",
+      "whereGoes": "Where €5/mo goes"
+    },
+    "membershipInvoicesLeftovers": {
+      "paid": "Paid",
+      "unpaid": "Unpaid",
+      "uncollectible": "Uncollectible",
+      "void": "Void",
+      "draft": "Draft"
+    },
+    "multistreamStatusPanelLeftovers": {
+      "streaming": "Streaming",
+      "error": "Error",
+      "notStreaming": "Not streaming",
+      "off": "Off",
+      "showingLastKnown": "Showing the last known status."
+    },
+    "clipEditorDialogLeftovers": {
+      "couldNotLoadAudio": "Could not load audio",
+      "couldNotCheckPreview": "Could not check preview",
+      "couldNotGeneratePreview": "Could not generate preview",
+      "couldNotSaveClip": "Could not save clip"
+    },
+    "localPlaylistViewLeftovers": {
+      "couldNotLoadMore": "Could not load more.",
+      "couldNotUndo": "Could not undo.",
+      "couldNotMove": "Could not move.",
+      "couldNotRemove": "Could not remove.",
+      "couldNotPlay": "Could not play.",
+      "couldNotLinkFile": "Could not link the file."
+    },
+    "desktopLibraryPanelLeftovers": {
+      "libraryUnavailable": "Library unavailable.",
+      "couldNotLoadGroups": "Could not load groups.",
+      "couldNotRemoveTracks": "Could not remove tracks."
+    },
+    "useShowDetailLeftovers": {
+      "couldNotLoadShow": "Could not load the show.",
+      "couldNotLoadEpisodes": "Could not load the episodes.",
+      "couldNotLoadBookings": "Could not load bookings.",
+      "couldNotSaveShow": "Could not save the show."
+    },
+    "sidebarQueuePanelLeftovers": {
+      "queueEmpty": "Queue empty",
+      "playToStart": "Play a channel or radio to start listening",
+      "removeFromQueue": "Remove from queue",
+      "couldNotPlay": "Could not play",
+      "noStream": "No stream",
+      "streamFailed": "Stream failed"
+    },
+    "soundShareLinksSectionLeftovers": {
+      "couldNotLoadShareLinks": "Could not load share links.",
+      "never": "Never"
+    },
+    "trackOrganizeDialogLeftovers": {
+      "couldNotLoadLabels": "Could not load labels.",
+      "couldNotSave": "Could not save."
+    },
+    "backupRestoreDialogLeftovers": {
+      "couldNotRestore": "Could not restore.",
+      "notFoundExample": "Not found, for example:"
+    },
+    "localLibraryAnalysisLeftovers": {
+      "couldNotAnalyze": "Could not analyze.",
+      "couldNotPause": "Could not pause."
+    },
+    "localLibraryToolsLeftovers": {
+      "couldNotBackUp": "Could not back up.",
+      "couldNotOpenFile": "Could not open the file."
+    },
+    "prepareTracksLeftovers": {
+      "track": "Track",
+      "couldNotAddToPrepare": "Could not add to Prepare.",
+      "tracksAdded": "{{count}} tracks",
+      "addedTo": "{{what}} added to {{playlist}}{{created}}.",
+      "newPlaylist": " (new playlist)"
+    },
+    "useMissingTracksLeftovers": {
+      "rescanFailed": "Re-scan failed.",
+      "relinkFailed": "Relink failed."
+    },
+    "useSelectionActionsLeftovers": {
+      "couldNotSelectAll": "Could not select all tracks.",
+      "couldNotUseSelection": "Could not use the selection."
+    },
+    "undoToastLeftovers": {
+      "undo": "Undo",
+      "couldNotUndo": "Could not undo."
+    },
+    "addToPlaylistDialogLeftovers": {
+      "couldNotAdd": "Could not add to playlist."
+    },
+    "addToReleasePanelLeftovers": {
+      "couldNotLoadReleases": "Could not load releases."
+    },
+    "audioRevisionListLeftovers": {
+      "couldNotLoadRevisions": "Could not load revisions."
+    },
+    "channelPlaylistBlockLeftovers": {
+      "couldNotLoadPlaylist": "Could not load this playlist."
+    },
+    "duplicatesDialogLeftovers": {
+      "couldNotCompare": "Could not compare files."
+    },
+    "organizeFilesDialogLeftovers": {
+      "couldNotPickFolder": "Could not pick a folder."
+    },
+    "playHistoryDialogLeftovers": {
+      "couldNotClearHistory": "Could not clear history."
+    },
+    "playlistExportDialogLeftovers": {
+      "exportFailed": "Export failed."
+    },
+    "playlistImportDialogLeftovers": {
+      "importFailed": "Import failed."
+    },
+    "playlistNameDialogLeftovers": {
+      "couldNotSave": "Could not save."
+    },
+    "governanceMeetingDetailViewLeftovers": {
+      "couldNotLoadMeetings": "Could not load meetings."
     }
   },
   "studioEditor": {

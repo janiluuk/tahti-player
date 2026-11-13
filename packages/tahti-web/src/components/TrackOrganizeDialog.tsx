@@ -60,7 +60,9 @@ export function TrackOrganizeDialog({
     setTagInput('');
     load().catch((failure) =>
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not load labels.',
+        failure instanceof Error
+          ? failure.message
+          : t('trackOrganizeDialogLeftovers.couldNotLoadLabels'),
       ),
     );
   }, [isOpen, load]);
@@ -114,7 +116,7 @@ export function TrackOrganizeDialog({
       toast.error(
         failure instanceof Error
           ? failure.message
-          : i18n.t('web:batch51.couldNotSave'),
+          : t('trackOrganizeDialogLeftovers.couldNotSave'),
       );
     } finally {
       setBusy(false);

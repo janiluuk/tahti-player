@@ -75,7 +75,9 @@ export function useSelectionActions({
       );
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Could not select all tracks.',
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:useSelectionActionsLeftovers.couldNotSelectAll'),
       );
     } finally {
       setSelectingAll(false);
@@ -128,7 +130,9 @@ export function useSelectionActions({
       }
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Could not use the selection.',
+        error instanceof Error
+          ? error.message
+          : i18n.t('web:useSelectionActionsLeftovers.couldNotUseSelection'),
       );
     } finally {
       setSelectionBusy(false);

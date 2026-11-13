@@ -12662,6 +12662,291 @@
       "invalidOrExpiredLink": "Virheellinen tai vanhentunut linkki",
       "failedToCreateToken": "Tunnisteen luonti epäonnistui",
       "failedToRevokeToken": "Tunnisteen mitätöinti epäonnistui"
+    },
+    "trackAnalysisSectionMore": {
+      "bpm": "BPM",
+      "key": "Sävellaji",
+      "replayGainTrack": "ReplayGain (kappale)",
+      "replayGainAlbum": "ReplayGain (albumi)",
+      "loudness": "Äänekkyys",
+      "truePeak": "Todellinen huippu",
+      "yourCorrection": "{{value}} (oma korjaus)",
+      "fromFileTag": "{{value}} (tiedoston tagista)",
+      "estimate": "{{value}} (arvio{{confidence}})",
+      "percentSure": " ({{percent}} % varma)",
+      "peakSuffix": ", huippu {{peak}}",
+      "couldNotUndo": "Kumoaminen epäonnistui.",
+      "couldNotSave": "Tallennus epäonnistui.",
+      "tapAlongHint": "Napauta tahdissa asettaaksesi BPM:n.",
+      "keepTapping": "Jatka napauttamista…",
+      "bpmFromTaps": "{{bpm}} BPM {{count}} napautuksesta",
+      "halfTempo": "Puolita tempo",
+      "halfTempoBpm": "Puolita tempo, {{bpm}} BPM",
+      "doubleTempo": "Tuplaa tempo",
+      "doubleTempoBpm": "Tuplaa tempo, {{bpm}} BPM"
+    },
+    "trackEditAnalysisSectionMore": {
+      "bpm": "BPM",
+      "originalMixPlaceholder": "Alkuperäinen miksaus",
+      "detectedHint": "Havaittu: {{detected}}. Poista käytöstä syöttääksesi oman.",
+      "readFromTagsHint": "Luetaan tiedoston tageista tai analysoidaan äänestä latauksen jälkeen."
+    },
+    "studioPlaylistEditorViewLeftovers": {
+      "djSet": "DJ-setti",
+      "playlist": "soittolista",
+      "playlistTitle": "Soittolista",
+      "public": "Julkinen",
+      "private": "Yksityinen",
+      "uploading": "Ladataan…",
+      "chooseImage": "Valitse kuva"
+    },
+    "selectsTabLeftovers": {
+      "inRotation": "Rotaatiossa",
+      "selected": "Valittu"
+    },
+    "trackEditorDialogLeftovers": {
+      "couldNotLoadTags": "Tageja ei voitu ladata.",
+      "couldNotSaveEdit": "Muokkausta ei voitu tallentaa."
+    },
+    "voiceRecorderLeftovers": {
+      "tooLoud": "Liian kovalla — laske mikrofonin vahvistusta"
+    },
+    "studioEpisodeReviewViewLeftovers": {
+      "couldNotLoadEpisode": "Tätä jaksoa ei voitu ladata.",
+      "episodeApproved": "Jakso hyväksytty — valmis aikataulutukseen tai julkaisuun."
+    },
+    "oAuthServiceCardLeftovers": {
+      "importing": "Tuodaan…",
+      "importAll": "Tuo kaikki ({{count}})"
+    },
+    "radioRowCardLeftovers": {
+      "tryAgain": "Yritä uudelleen",
+      "stationUnavailable": "Asema ei ole käytettävissä · {{reason}}"
+    },
+    "channelBackdropCardLeftovers": {
+      "stage": "Lava",
+      "tracks": "Kappaleet",
+      "about": "Tietoja",
+      "editBackdropDesign": "Muokkaa taustan ulkoasua",
+      "editPlayerDesign": "Muokkaa soittimen ulkoasua"
+    },
+    "artistGalleryPanelLeftovers": {
+      "photoAdded": "Kuva lisätty.",
+      "photosAdded": "{{count}} kuvaa lisätty."
+    },
+    "takeMetamorphDialogLeftovers": {
+      "couldNotDownloadVersion": "Versiota ei voitu ladata ({{status}})",
+      "morphFailed": "Muunnos epäonnistui.",
+      "live": " (live)",
+      "pickTwoDifferent": "Valitse kaksi eri versiota."
+    },
+    "studioProEditorViewLeftovers": {
+      "trimEffects": "Leikkaus / tehosteet",
+      "multitrackViz": "Moniraita + viz",
+      "editedMix": "Muokattu miksaus",
+      "multitrackBounce": "Moniraidan bounce"
+    },
+    "radioScheduleViewLeftovers": {
+      "show": "Ohjelma:",
+      "episodeNumber": "— Jakso #{{number}}"
+    },
+    "discoWidgetManagerPanelLeftovers": {
+      "full": "Koko",
+      "half": "Puolikas",
+      "third": "Kolmannes"
+    },
+    "smartRuleValueInputLeftovers": {
+      "major": "{{note}} duuri",
+      "minor": "{{note}} molli",
+      "camelotLabel": "{{code}} · {{label}}",
+      "days": "Päivät",
+      "and": "ja",
+      "date": "Päivä",
+      "star_one": "{{count}} tähti",
+      "star_other": "{{count}} tähteä",
+      "andDuration": "ja (m:ss)",
+      "length": "Pituus (m:ss)"
+    },
+    "channelViewLeftovers": {
+      "externalPlayer": "Ulkoinen soitin"
+    },
+    "nativeImportLeftovers": {
+      "filesFailed_one": "{{count}} tiedostoa ei voitu tuoda.",
+      "filesFailed_other": "{{count}} tiedostoa ei voitu tuoda.",
+      "retry": "Yritä uudelleen",
+      "importCancelled": "Tuonti peruutettu.",
+      "filesKept": "Jo tuodut tiedostot säilytetään.",
+      "resume": "Jatka",
+      "importFailed": "Tuonti epäonnistui.",
+      "unsupported_one": "{{count}} tiedosto ei ollut tuettu äänimuoto.",
+      "unsupported_other": "{{count}} tiedostoa ei ollut tuettu äänimuoto.",
+      "interrupted_one": "Tuonti keskeytyi, {{count}} tiedosto jäljellä.",
+      "interrupted_other": "Tuonti keskeytyi, {{count}} tiedostoa jäljellä.",
+      "discard": "Hylkää",
+      "imported_one": "Tuotu {{count}} kappale.",
+      "imported_other": "Tuotu {{count}} kappaletta."
+    },
+    "playerStoreLeftovers": {
+      "addedToQueue_one": "{{count}} kappale lisätty jonoon",
+      "addedToQueue_other": "{{count}} kappaletta lisätty jonoon",
+      "addedNamedToQueue": "\"{{title}}\" lisätty jonoon"
+    },
+    "membershipApiLeftovers": {
+      "checkoutNoUrl": "Kassa ei palauttanut osoitetta",
+      "checkoutFailed": "Kassalle siirtyminen epäonnistui",
+      "portalNoUrl": "Laskutusportaali ei palauttanut osoitetta",
+      "portalFailed": "Laskutusportaalia ei voitu avata",
+      "mockVerificationSent": "Mock-vahvistussähköposti lähetetty.",
+      "verificationSent": "Vahvistussähköposti lähetetty.",
+      "deletionFailed": "Poistopyyntö epäonnistui",
+      "cancelFailed": "Tilausta ei voitu peruuttaa",
+      "invoicesFailed": "Laskuja ei voitu ladata",
+      "resendFailed": "Vahvistussähköpostia ei voitu lähettää uudelleen",
+      "subscriptionNotFound": "Tilausta ei löytynyt"
+    },
+    "associationEditPanelLeftovers": {
+      "name": "Nimi",
+      "businessId": "Y-tunnus",
+      "registerNumber": "Rekisterinumero",
+      "domicile": "Kotipaikka",
+      "contactEmail": "Yhteyssähköposti",
+      "postalAddress": "Postiosoite",
+      "website": "Verkkosivusto",
+      "businessIdFormat": "Y-tunnuksen on oltava muotoa 1234567-8."
+    },
+    "artistImagePurposePickerLeftovers": {
+      "profileImage": "Profiilikuva",
+      "profileImageHint": "Pääasiallinen artistikuva, joka näkyy identiteettisi kanssa.",
+      "gallery": "Galleria",
+      "galleryHint": "Julkinen kuva artistisivusi galleriaan.",
+      "pressKit": "Lehdistökansio",
+      "pressKitHint": "Sisällytä tämä kuva ladattavaan lehdistökansioon."
+    },
+    "fanSubOrderBreakdownLeftovers": {
+      "fanPays": "Fani maksaa",
+      "stripeFees": "Stripe-kulut",
+      "tahtiOpsFee": "Tahtin toimintamaksu (2 %)",
+      "youReceive": "Sinä saat",
+      "whereGoes": "Mihin 5 €/kk menee"
+    },
+    "membershipInvoicesLeftovers": {
+      "paid": "Maksettu",
+      "unpaid": "Maksamatta",
+      "uncollectible": "Perimiskelvoton",
+      "void": "Mitätöity",
+      "draft": "Luonnos"
+    },
+    "multistreamStatusPanelLeftovers": {
+      "streaming": "Striimataan",
+      "error": "Virhe",
+      "notStreaming": "Ei striimata",
+      "off": "Pois",
+      "showingLastKnown": "Näytetään viimeisin tunnettu tila."
+    },
+    "clipEditorDialogLeftovers": {
+      "couldNotLoadAudio": "Ääntä ei voitu ladata",
+      "couldNotCheckPreview": "Esikuuntelua ei voitu tarkistaa",
+      "couldNotGeneratePreview": "Esikuuntelua ei voitu luoda",
+      "couldNotSaveClip": "Klippiä ei voitu tallentaa"
+    },
+    "localPlaylistViewLeftovers": {
+      "couldNotLoadMore": "Lisää ei voitu ladata.",
+      "couldNotUndo": "Kumoaminen epäonnistui.",
+      "couldNotMove": "Siirto epäonnistui.",
+      "couldNotRemove": "Poisto epäonnistui.",
+      "couldNotPlay": "Toisto epäonnistui.",
+      "couldNotLinkFile": "Tiedostoa ei voitu linkittää."
+    },
+    "desktopLibraryPanelLeftovers": {
+      "libraryUnavailable": "Kirjasto ei ole käytettävissä.",
+      "couldNotLoadGroups": "Ryhmiä ei voitu ladata.",
+      "couldNotRemoveTracks": "Kappaleita ei voitu poistaa."
+    },
+    "useShowDetailLeftovers": {
+      "couldNotLoadShow": "Ohjelmaa ei voitu ladata.",
+      "couldNotLoadEpisodes": "Jaksoja ei voitu ladata.",
+      "couldNotLoadBookings": "Varauksia ei voitu ladata.",
+      "couldNotSaveShow": "Ohjelmaa ei voitu tallentaa."
+    },
+    "sidebarQueuePanelLeftovers": {
+      "queueEmpty": "Jono on tyhjä",
+      "playToStart": "Toista kanavaa tai radiota aloittaaksesi kuuntelun",
+      "removeFromQueue": "Poista jonosta",
+      "couldNotPlay": "Toisto epäonnistui",
+      "noStream": "Ei virtaa",
+      "streamFailed": "Virta epäonnistui"
+    },
+    "soundShareLinksSectionLeftovers": {
+      "couldNotLoadShareLinks": "Jakolinkkejä ei voitu ladata.",
+      "never": "Ei koskaan"
+    },
+    "trackOrganizeDialogLeftovers": {
+      "couldNotLoadLabels": "Nimikkeitä ei voitu ladata.",
+      "couldNotSave": "Tallennus epäonnistui."
+    },
+    "backupRestoreDialogLeftovers": {
+      "couldNotRestore": "Palautus epäonnistui.",
+      "notFoundExample": "Ei löytynyt, esimerkiksi:"
+    },
+    "localLibraryAnalysisLeftovers": {
+      "couldNotAnalyze": "Analyysi epäonnistui.",
+      "couldNotPause": "Keskeytys epäonnistui."
+    },
+    "localLibraryToolsLeftovers": {
+      "couldNotBackUp": "Varmuuskopiointi epäonnistui.",
+      "couldNotOpenFile": "Tiedostoa ei voitu avata."
+    },
+    "prepareTracksLeftovers": {
+      "track": "Kappale",
+      "couldNotAddToPrepare": "Valmisteluun lisääminen epäonnistui.",
+      "tracksAdded": "{{count}} kappaletta",
+      "addedTo": "{{what}} lisätty soittolistaan {{playlist}}{{created}}.",
+      "newPlaylist": " (uusi soittolista)"
+    },
+    "useMissingTracksLeftovers": {
+      "rescanFailed": "Uudelleenskannaus epäonnistui.",
+      "relinkFailed": "Uudelleenlinkitys epäonnistui."
+    },
+    "useSelectionActionsLeftovers": {
+      "couldNotSelectAll": "Kaikkia kappaleita ei voitu valita.",
+      "couldNotUseSelection": "Valintaa ei voitu käyttää."
+    },
+    "undoToastLeftovers": {
+      "undo": "Kumoa",
+      "couldNotUndo": "Kumoaminen epäonnistui."
+    },
+    "addToPlaylistDialogLeftovers": {
+      "couldNotAdd": "Soittolistaan lisääminen epäonnistui."
+    },
+    "addToReleasePanelLeftovers": {
+      "couldNotLoadReleases": "Julkaisuja ei voitu ladata."
+    },
+    "audioRevisionListLeftovers": {
+      "couldNotLoadRevisions": "Versioita ei voitu ladata."
+    },
+    "channelPlaylistBlockLeftovers": {
+      "couldNotLoadPlaylist": "Tätä soittolistaa ei voitu ladata."
+    },
+    "duplicatesDialogLeftovers": {
+      "couldNotCompare": "Tiedostoja ei voitu vertailla."
+    },
+    "organizeFilesDialogLeftovers": {
+      "couldNotPickFolder": "Kansiota ei voitu valita."
+    },
+    "playHistoryDialogLeftovers": {
+      "couldNotClearHistory": "Historiaa ei voitu tyhjentää."
+    },
+    "playlistExportDialogLeftovers": {
+      "exportFailed": "Vienti epäonnistui."
+    },
+    "playlistImportDialogLeftovers": {
+      "importFailed": "Tuonti epäonnistui."
+    },
+    "playlistNameDialogLeftovers": {
+      "couldNotSave": "Tallennus epäonnistui."
+    },
+    "governanceMeetingDetailViewLeftovers": {
+      "couldNotLoadMeetings": "Kokouksia ei voitu ladata."
     }
   },
   "studioEditor": {

@@ -380,7 +380,11 @@ export function OAuthServiceCard({
                     disabled={scBusy}
                     onClick={() => void importSoundcloud(scTracks, true)}
                   >
-                    {scBusy ? 'Importing…' : `Import all (${scTracks.length})`}
+                    {scBusy
+                      ? t('oAuthServiceCardLeftovers.importing')
+                      : t('oAuthServiceCardLeftovers.importAll', {
+                          count: scTracks.length,
+                        })}
                   </Button>
                 )}
               </div>

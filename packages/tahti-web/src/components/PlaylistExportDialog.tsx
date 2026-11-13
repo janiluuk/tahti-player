@@ -68,7 +68,11 @@ export function PlaylistExportDialog({ playlist, library, onClose }: Props) {
         onClose();
       }
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Export failed.');
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : t('playlistExportDialogLeftovers.exportFailed'),
+      );
     } finally {
       setBusy(false);
     }

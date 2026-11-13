@@ -2,7 +2,7 @@ import { ActivityIcon, HandIcon, Undo2Icon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, Input, Loader, Tooltip } from '@tahti-player/ui';
 
 import {
@@ -61,41 +61,69 @@ export function Waveform({ peaks }: { peaks: number[] }) {
 }
 
 const rounded = (value: number) => Math.round(value * 10) / 10;
-const percent = (value: number | null) =>
-  value === null ? '' : ` (${Math.round(value * 100)}% sure)`;
 
 /** Label/value rows for the analysis, with each value's origin spelled out. */
 export function analysisRows(
   detail: NativeAnalysisDetail,
   notation: KeyNotation = 'musical',
+  t: TFunction<'web'> = i18n.getFixedT(null, 'web'),
 ): Array<{ label: string; value: string }> {
   const showKey = (raw: string) => {
     const shown = formatKey(raw, notation) ?? raw;
     const key = parseKey(raw);
     return notation !== 'musical' && key ? `${shown} · ${keyName(key)}` : shown;
   };
+  const conf = (value: number | null) =>
+    value === null
+      ? ''
+      : t('trackAnalysisSectionMore.percentSure', {
+          percent: Math.round(value * 100),
+        });
   const rows: Array<{ label: string; value: string }> = [];
   const bpm =
     detail.userBpm !== null
-      ? `${rounded(detail.userBpm)} (your correction)`
+      ? t('trackAnalysisSectionMore.yourCorrection', {
+          value: rounded(detail.userBpm),
+        })
       : detail.tagBpm !== null
-        ? `${rounded(detail.tagBpm)} (from the file's tag)`
+        ? t('trackAnalysisSectionMore.fromFileTag', {
+            value: rounded(detail.tagBpm),
+          })
         : detail.bpmEstimate !== null
-          ? `${rounded(detail.bpmEstimate)} (estimate${percent(detail.bpmConfidence)})`
+          ? t('trackAnalysisSectionMore.estimate', {
+              value: rounded(detail.bpmEstimate),
+              confidence: conf(detail.bpmConfidence),
+            })
           : '—';
   const key =
     detail.userKey !== null
-      ? `${showKey(detail.userKey)} (your correction)`
+      ? t('trackAnalysisSectionMore.yourCorrection', {
+          value: showKey(detail.userKey),
+        })
       : detail.tagKey !== null
-        ? `${showKey(detail.tagKey)} (from the file's tag)`
+        ? t('trackAnalysisSectionMore.fromFileTag', {
+            value: showKey(detail.tagKey),
+          })
         : detail.keyEstimate !== null
-          ? `${showKey(detail.keyEstimate)} (estimate${percent(detail.keyConfidence)})`
+          ? t('trackAnalysisSectionMore.estimate', {
+              value: showKey(detail.keyEstimate),
+              confidence: conf(detail.keyConfidence),
+            })
           : '—';
-  rows.push({ label: 'BPM', value: bpm }, { label: 'Key', value: key });
+  rows.push(
+    { label: t('trackAnalysisSectionMore.bpm'), value: bpm },
+    { label: t('trackAnalysisSectionMore.key'), value: key },
+  );
   const replayGain = (gain?: number | null, peak?: number | null) =>
     gain == null
       ? null
-      : `${gain > 0 ? '+' : ''}${gain.toFixed(2)} dB${peak == null ? '' : `, peak ${peak.toFixed(3)}`}`;
+      : `${gain > 0 ? '+' : ''}${gain.toFixed(2)} dB${
+          peak == null
+            ? ''
+            : t('trackAnalysisSectionMore.peakSuffix', {
+                peak: peak.toFixed(3),
+              })
+        }`;
   const trackGain = replayGain(
     detail.replaygainTrackGain,
     detail.replaygainTrackPeak,
@@ -105,22 +133,28 @@ export function analysisRows(
     detail.replaygainAlbumPeak,
   );
   if (trackGain) {
-    rows.push({ label: 'ReplayGain (track)', value: trackGain });
+    rows.push({
+      label: t('trackAnalysisSectionMore.replayGainTrack'),
+      value: trackGain,
+    });
   }
   if (albumGain) {
-    rows.push({ label: 'ReplayGain (album)', value: albumGain });
+    rows.push({
+      label: t('trackAnalysisSectionMore.replayGainAlbum'),
+      value: albumGain,
+    });
   }
   if (detail.analyzed) {
     rows.push(
       {
-        label: 'Loudness',
+        label: t('trackAnalysisSectionMore.loudness'),
         value:
           detail.loudnessLufs === null
             ? '—'
             : `${detail.loudnessLufs.toFixed(1)} LUFS`,
       },
       {
-        label: 'True peak',
+        label: t('trackAnalysisSectionMore.truePeak'),
         value:
           detail.truePeakDbtp === null
             ? '—'
@@ -222,7 +256,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
                 toast.error(
                   failure instanceof Error
                     ? failure.message
-                    : 'Could not undo.',
+                    : t('trackAnalysisSectionMore.couldNotUndo'),
                 ),
               );
           },
@@ -232,7 +266,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
       toast.error(
         failure instanceof Error
           ? failure.message
-          : i18n.t('web:batch51.couldNotSave'),
+          : t('trackAnalysisSectionMore.couldNotSave'),
       );
     } finally {
       setBusy(null);
@@ -255,7 +289,7 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
       {detail?.analyzed ? <Waveform peaks={detail.peaks} /> : null}
       {detail ? (
         <dl className="mt-1 grid grid-cols-[8rem_1fr] gap-x-3 gap-y-1 text-sm">
-          {analysisRows(detail, notation).map((row) => (
+          {analysisRows(detail, notation, t).map((row) => (
             <div key={row.label} className="contents">
               <dt className="text-foreground-secondary">{row.label}</dt>
               <dd className="min-w-0 break-words">{row.value}</dd>
@@ -328,10 +362,13 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
             aria-live="polite"
           >
             {taps.length === 0
-              ? 'Tap along with the beat to set the BPM.'
+              ? t('trackAnalysisSectionMore.tapAlongHint')
               : tapped === null
-                ? 'Keep tapping…'
-                : `${tapped} BPM from ${taps.length} taps`}
+                ? t('trackAnalysisSectionMore.keepTapping')
+                : t('trackAnalysisSectionMore.bpmFromTaps', {
+                    bpm: tapped,
+                    count: taps.length,
+                  })}
           </span>
           <Button
             size="sm"
@@ -339,7 +376,9 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
             disabled={half === null}
             onClick={() => half !== null && setBpmText(String(half))}
             aria-label={
-              half === null ? 'Half tempo' : `Half tempo, ${half} BPM`
+              half === null
+                ? t('trackAnalysisSectionMore.halfTempo')
+                : t('trackAnalysisSectionMore.halfTempoBpm', { bpm: half })
             }
           >
             ½×
@@ -350,7 +389,9 @@ export function TrackAnalysisSection({ library, track, onChanged }: Props) {
             disabled={double === null}
             onClick={() => double !== null && setBpmText(String(double))}
             aria-label={
-              double === null ? 'Double tempo' : `Double tempo, ${double} BPM`
+              double === null
+                ? t('trackAnalysisSectionMore.doubleTempo')
+                : t('trackAnalysisSectionMore.doubleTempoBpm', { bpm: double })
             }
           >
             2×

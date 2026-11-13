@@ -8,6 +8,7 @@ import { isInternetRadioPlayableId } from '../content/radioStations';
 import { FADE_IN_MS, FADE_OUT_MS, rampLevel } from '../lib/audioFade';
 import { playableToTrack } from '../lib/playableToTrack';
 import type { StreamFailure } from '../lib/streamFailure';
+import { webT } from '../lib/webT';
 import { useLayoutStore } from './layoutStore';
 import { useLibraryStore } from './libraryStore';
 import { peaksFor, rememberPeaks, type PeaksCache } from './peaksCache';
@@ -366,7 +367,9 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     // NOT auto-open -- without a toast, adding to queue while it's
     // collapsed (or the bar itself was hidden) gives no feedback at all.
     if (!wasBarVisible || !useLayoutStore.getState().bottomQueueOpen) {
-      toast(`Added "${item.title}" to queue`);
+      toast(
+        webT()('playerStoreLeftovers.addedNamedToQueue', { title: item.title }),
+      );
     }
   },
 
@@ -424,11 +427,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       return 0;
     }
     set((s) => ({ queue: [...s.queue, ...fresh], playerBarVisible: true }));
-    toast(
-      fresh.length === 1
-        ? 'Added 1 track to queue'
-        : `Added ${fresh.length} tracks to queue`,
-    );
+    toast(webT()('playerStoreLeftovers.addedToQueue', { count: fresh.length }));
     return fresh.length;
   },
 

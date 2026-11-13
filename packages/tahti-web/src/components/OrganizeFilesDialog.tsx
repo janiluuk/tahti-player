@@ -113,7 +113,9 @@ export function OrganizeFilesDialog({
       }
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not pick a folder.',
+        failure instanceof Error
+          ? failure.message
+          : t('organizeFilesDialogLeftovers.couldNotPickFolder'),
       );
     }
   };

@@ -71,7 +71,9 @@ export function SoundShareLinksSection({ soundId }: { soundId: string }) {
       })
       .catch((err) => {
         setLoadError(
-          err instanceof Error ? err.message : 'Could not load share links.',
+          err instanceof Error
+            ? err.message
+            : t('soundShareLinksSectionLeftovers.couldNotLoadShareLinks'),
         );
       })
       .finally(() => setLoading(false));

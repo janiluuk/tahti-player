@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Loader } from '@tahti-player/ui';
 
 type Props = {
@@ -47,7 +47,7 @@ export function PlaylistNameDialog({
       setError(
         failure instanceof Error
           ? failure.message
-          : i18n.t('web:batch51.couldNotSave'),
+          : t('playlistNameDialogLeftovers.couldNotSave'),
       );
     } finally {
       setBusy(false);

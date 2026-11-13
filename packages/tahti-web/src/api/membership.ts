@@ -1,3 +1,4 @@
+import { webT } from '../lib/webT';
 import { requestJson } from './client-request';
 import { mockFixture } from './mock-overrides';
 import {
@@ -82,11 +83,17 @@ export async function startMembershipCheckout(opts?: {
         memberNumber: data.memberNumber,
       };
     }
-    return { ok: false, error: data.error ?? 'Checkout did not return a URL' };
+    return {
+      ok: false,
+      error: data.error ?? webT()('membershipApiLeftovers.checkoutNoUrl'),
+    };
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Checkout failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : webT()('membershipApiLeftovers.checkoutFailed'),
     };
   }
 }
@@ -108,13 +115,15 @@ export async function startMembershipPortal(): Promise<
     }
     return {
       ok: false,
-      error: data.error ?? 'Billing portal did not return a URL',
+      error: data.error ?? webT()('membershipApiLeftovers.portalNoUrl'),
     };
   } catch (err) {
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not open billing portal',
+        err instanceof Error
+          ? err.message
+          : webT()('membershipApiLeftovers.portalFailed'),
     };
   }
 }
@@ -136,13 +145,15 @@ export async function startFanSubscriptionsPortal(): Promise<
     }
     return {
       ok: false,
-      error: data.error ?? 'Billing portal did not return a URL',
+      error: data.error ?? webT()('membershipApiLeftovers.portalNoUrl'),
     };
   } catch (err) {
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not open billing portal',
+        err instanceof Error
+          ? err.message
+          : webT()('membershipApiLeftovers.portalFailed'),
     };
   }
 }
@@ -155,21 +166,28 @@ export async function resendVerificationEmail(
   email: string,
 ): Promise<{ ok: true; message: string } | { ok: false; error: string }> {
   if (isForceMock()) {
-    return { ok: true, message: 'Mock verification email sent.' };
+    return {
+      ok: true,
+      message: webT()('membershipApiLeftovers.mockVerificationSent'),
+    };
   }
   try {
     const { data } = await requestJson<{ message?: string; error?: string }>(
       '/api/auth/resend-verification',
       { method: 'POST', body: JSON.stringify({ email }) },
     );
-    return { ok: true, message: data.message ?? 'Verification email sent.' };
+    return {
+      ok: true,
+      message:
+        data.message ?? webT()('membershipApiLeftovers.verificationSent'),
+    };
   } catch (err) {
     return {
       ok: false,
       error:
         err instanceof Error
           ? err.message
-          : 'Could not resend verification email',
+          : webT()('membershipApiLeftovers.resendFailed'),
     };
   }
 }
@@ -189,7 +207,10 @@ export async function requestAccountDeletion(
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Deletion request failed',
+      error:
+        err instanceof Error
+          ? err.message
+          : webT()('membershipApiLeftovers.deletionFailed'),
     };
   }
 }
@@ -238,7 +259,10 @@ export async function cancelMySubscription(
   if (isForceMock()) {
     const row = mockCancelSubscription(id);
     if (!row) {
-      return { ok: false, error: 'Subscription not found' };
+      return {
+        ok: false,
+        error: webT()('membershipApiLeftovers.subscriptionNotFound'),
+      };
     }
     return { ok: true };
   }
@@ -252,7 +276,9 @@ export async function cancelMySubscription(
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not cancel subscription',
+        err instanceof Error
+          ? err.message
+          : webT()('membershipApiLeftovers.cancelFailed'),
     };
   }
 }
@@ -307,7 +333,10 @@ export async function fetchMembershipInvoices(): Promise<
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not load invoices',
+      error:
+        err instanceof Error
+          ? err.message
+          : webT()('membershipApiLeftovers.invoicesFailed'),
     };
   }
 }

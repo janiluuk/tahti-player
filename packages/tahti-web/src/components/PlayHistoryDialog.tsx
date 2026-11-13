@@ -108,7 +108,9 @@ export function PlayHistoryDialog({
       await load(0);
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not clear history.',
+        failure instanceof Error
+          ? failure.message
+          : t('playHistoryDialogLeftovers.couldNotClearHistory'),
       );
     }
   };

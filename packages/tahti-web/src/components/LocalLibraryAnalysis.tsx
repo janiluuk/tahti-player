@@ -11,6 +11,7 @@ import type {
   NativeAnalysisSummary,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
+import { webT } from '../lib/webT';
 
 /** Toast text for a finished (or cancelled) analysis run. */
 export function analysisResultMessage(result: NativeAnalysisResult): string {
@@ -47,7 +48,9 @@ export async function runAnalysis(
     return result;
   } catch (failure) {
     toast.error(
-      failure instanceof Error ? failure.message : 'Could not analyze.',
+      failure instanceof Error
+        ? failure.message
+        : webT()('localLibraryAnalysisLeftovers.couldNotAnalyze'),
     );
     return null;
   }
@@ -123,7 +126,9 @@ export function LocalLibraryAnalysis({ library, onChanged }: Props) {
     } catch (failure) {
       setPaused(!next);
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not pause.',
+        failure instanceof Error
+          ? failure.message
+          : t('localLibraryAnalysisLeftovers.couldNotPause'),
       );
     }
   };

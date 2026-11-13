@@ -124,7 +124,9 @@ export function BackupRestoreDialog({
       );
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not restore.',
+        failure instanceof Error
+          ? failure.message
+          : t('backupRestoreDialogLeftovers.couldNotRestore'),
       );
     } finally {
       setBusy(false);

@@ -140,7 +140,11 @@ export function PlaylistImportDialog({
       onImported(outcome.playlist);
       onClose();
     } catch (failure) {
-      setError(failure instanceof Error ? failure.message : 'Import failed.');
+      setError(
+        failure instanceof Error
+          ? failure.message
+          : t('playlistImportDialogLeftovers.importFailed'),
+      );
     } finally {
       setBusy(null);
     }

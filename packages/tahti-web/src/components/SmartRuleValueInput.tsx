@@ -1,3 +1,4 @@
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Input, Select } from '@tahti-player/ui';
 
 import {
@@ -7,40 +8,56 @@ import {
   type KeyNotation,
 } from '../lib/musicalKey';
 import type { NativeSmartRule } from '../lib/nativeLibrary';
+import { webT } from '../lib/webT';
 import { useDjPrefsStore } from '../stores/djPrefsStore';
 import { fieldKind } from './smartPlaylistRules';
 
 const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-const KEY_OPTIONS = NOTES.flatMap((note) => [
-  { id: note, label: `${note} major` },
-  { id: `${note}m`, label: `${note} minor` },
-]);
+function keyOptionLabels(t: TFunction<'web'>) {
+  return NOTES.flatMap((note) => [
+    { id: note, label: t('smartRuleValueInputLeftovers.major', { note }) },
+    {
+      id: `${note}m`,
+      label: t('smartRuleValueInputLeftovers.minor', { note }),
+    },
+  ]);
+}
 
-export function keyOptions(notation: KeyNotation) {
+export function keyOptions(
+  notation: KeyNotation,
+  t: TFunction<'web'> = webT(),
+) {
+  const options = keyOptionLabels(t);
   if (notation === 'musical') {
-    return KEY_OPTIONS;
+    return options;
   }
-  return KEY_OPTIONS.map((option) => {
-    const key = parseKey(option.id)!;
-    return {
-      option,
-      number: camelotNumber(key),
-      minor: key.minor,
-      code: formatKey(option.id, notation)!,
-    };
-  })
+  return options
+    .map((option) => {
+      const key = parseKey(option.id)!;
+      return {
+        option,
+        number: camelotNumber(key),
+        minor: key.minor,
+        code: formatKey(option.id, notation)!,
+      };
+    })
     .sort((a, b) => a.number - b.number || Number(b.minor) - Number(a.minor))
     .map(({ option, code }) => ({
       id: option.id,
-      label: `${code} · ${option.label}`,
+      label: t('smartRuleValueInputLeftovers.camelotLabel', {
+        code,
+        label: option.label,
+      }),
     }));
 }
 
-const RATING_OPTIONS = [0, 1, 2, 3, 4, 5].map((stars) => ({
-  id: String(stars),
-  label: stars === 1 ? '1 star' : `${stars} stars`,
-}));
+function ratingOptions(t: TFunction<'web'>) {
+  return [0, 1, 2, 3, 4, 5].map((stars) => ({
+    id: String(stars),
+    label: t('smartRuleValueInputLeftovers.star', { count: stars }),
+  }));
+}
 
 /** `m:ss` (or plain seconds) → seconds as a string; unparseable text passes through for the API to reject. */
 export function durationToSeconds(text: string): string {
@@ -67,6 +84,7 @@ type Props = {
 
 /** The value box for one side of a rule, typed to its field and condition. */
 export function SmartRuleValueInput({ rule, which, label, onChange }: Props) {
+  const { t } = useTranslation('web');
   const value = rule[which] ?? '';
   const kind = fieldKind(rule.field);
   const notation = useDjPrefsStore((state) => state.keyNotation);
@@ -75,7 +93,13 @@ export function SmartRuleValueInput({ rule, which, label, onChange }: Props) {
     const relative = rule.op === 'inLastDays' || rule.op === 'notInLastDays';
     return (
       <Input
-        label={relative ? 'Days' : label === 'and' ? 'and' : 'Date'}
+        label={
+          relative
+            ? t('smartRuleValueInputLeftovers.days')
+            : label === 'and'
+              ? t('smartRuleValueInputLeftovers.and')
+              : t('smartRuleValueInputLeftovers.date')
+        }
         type={relative ? 'number' : 'date'}
         min={relative ? 0 : undefined}
         value={value}
@@ -89,7 +113,7 @@ export function SmartRuleValueInput({ rule, which, label, onChange }: Props) {
         label={label}
         value={value || '0'}
         onValueChange={onChange}
-        options={RATING_OPTIONS}
+        options={ratingOptions(t)}
       />
     );
   }
@@ -99,14 +123,18 @@ export function SmartRuleValueInput({ rule, which, label, onChange }: Props) {
         label={label}
         value={value || 'C'}
         onValueChange={onChange}
-        options={keyOptions(notation)}
+        options={keyOptions(notation, t)}
       />
     );
   }
   if (rule.field === 'duration') {
     return (
       <Input
-        label={label === 'and' ? 'and (m:ss)' : 'Length (m:ss)'}
+        label={
+          label === 'and'
+            ? t('smartRuleValueInputLeftovers.andDuration')
+            : t('smartRuleValueInputLeftovers.length')
+        }
         placeholder="3:30"
         value={secondsToDuration(value)}
         onChange={(event) => onChange(durationToSeconds(event.target.value))}

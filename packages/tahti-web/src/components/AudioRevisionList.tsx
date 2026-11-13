@@ -106,7 +106,9 @@ export function AudioRevisionList({
       })
       .catch((err) => {
         setLoadError(
-          err instanceof Error ? err.message : 'Could not load revisions.',
+          err instanceof Error
+            ? err.message
+            : t('audioRevisionListLeftovers.couldNotLoadRevisions'),
         );
       });
   }, [soundId]);

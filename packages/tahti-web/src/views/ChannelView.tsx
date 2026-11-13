@@ -182,13 +182,13 @@ export function ChannelView({ slug }: { slug: string }) {
         .map((instance) => ({
           id: instance.id,
           label: instance.label,
-          hint: listenerWidgetType(instance.typeId)?.name ?? 'External player',
+          hint:
+            listenerWidgetType(instance.typeId)?.name ??
+            t('channelViewLeftovers.externalPlayer'),
           embedInstanceId: instance.id,
         })),
     [listenerWidgetInstances, layout],
   );
-
-  // The URL owns edit mode, so the browser's back button leaves it too.
   useEffect(() => {
     setEditing(Boolean(search.edit && isOwner));
   }, [search.edit, isOwner]);

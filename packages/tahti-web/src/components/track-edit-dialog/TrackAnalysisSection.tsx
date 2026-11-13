@@ -60,7 +60,7 @@ export function TrackAnalysisSection({
           <div className="grid gap-3 sm:grid-cols-3">
             <Input
               type="number"
-              label="BPM"
+              label={t('trackEditAnalysisSectionMore.bpm')}
               inputMode="numeric"
               min={BPM_MIN}
               max={BPM_MAX}
@@ -84,7 +84,9 @@ export function TrackAnalysisSection({
             />
             <Input
               label={t('trackEditAnalysis.version')}
-              placeholder="Original Mix"
+              placeholder={t(
+                'trackEditAnalysisSectionMore.originalMixPlaceholder',
+              )}
               maxLength={MIX_VERSION_MAX_LENGTH}
               value={value.mixVersion}
               error={mixVersionError(value.mixVersion) ?? undefined}
@@ -95,8 +97,8 @@ export function TrackAnalysisSection({
             label={t('trackEditAnalysis.useDetectedBpmAndKey')}
             hint={
               detected
-                ? `Detected: ${detected}. Turn off to enter your own.`
-                : 'Read from file tags or analyzed from the audio after upload.'
+                ? t('trackEditAnalysisSectionMore.detectedHint', { detected })
+                : t('trackEditAnalysisSectionMore.readFromTagsHint')
             }
             checked={value.useDetectedBpmKey}
             onChange={(useDetectedBpmKey) => set({ useDetectedBpmKey })}

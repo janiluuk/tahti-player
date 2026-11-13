@@ -109,7 +109,9 @@ export function DuplicatesDialog({
       await load();
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not compare files.',
+        failure instanceof Error
+          ? failure.message
+          : t('duplicatesDialogLeftovers.couldNotCompare'),
       );
     } finally {
       stop();

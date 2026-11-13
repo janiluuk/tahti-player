@@ -95,7 +95,9 @@ export function AddToPlaylistDialog({
       onClose();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : 'Could not add to playlist.',
+        error instanceof Error
+          ? error.message
+          : t('addToPlaylistDialogLeftovers.couldNotAdd'),
       );
     } finally {
       setBusy(null);

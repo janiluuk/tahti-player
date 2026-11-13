@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, InlineError, Input } from '@tahti-player/ui';
 
 import {
@@ -14,19 +14,49 @@ import { StudioPanel } from '../../../../components/StudioPanel';
 
 type Field = keyof AssociationFields;
 
-const FIELDS: Array<{
+function associationFields(t: TFunction<'web'>): Array<{
   key: Field;
   label: string;
   maxLength: number;
-}> = [
-  { key: 'name', label: 'Name', maxLength: 200 },
-  { key: 'businessId', label: 'Business ID', maxLength: 9 },
-  { key: 'registerNumber', label: 'Register number', maxLength: 40 },
-  { key: 'domicile', label: 'Domicile', maxLength: 100 },
-  { key: 'contactEmail', label: 'Contact email', maxLength: 200 },
-  { key: 'postalAddress', label: 'Postal address', maxLength: 500 },
-  { key: 'website', label: 'Website', maxLength: 500 },
-];
+}> {
+  return [
+    {
+      key: 'name',
+      label: t('associationEditPanelLeftovers.name'),
+      maxLength: 200,
+    },
+    {
+      key: 'businessId',
+      label: t('associationEditPanelLeftovers.businessId'),
+      maxLength: 9,
+    },
+    {
+      key: 'registerNumber',
+      label: t('associationEditPanelLeftovers.registerNumber'),
+      maxLength: 40,
+    },
+    {
+      key: 'domicile',
+      label: t('associationEditPanelLeftovers.domicile'),
+      maxLength: 100,
+    },
+    {
+      key: 'contactEmail',
+      label: t('associationEditPanelLeftovers.contactEmail'),
+      maxLength: 200,
+    },
+    {
+      key: 'postalAddress',
+      label: t('associationEditPanelLeftovers.postalAddress'),
+      maxLength: 500,
+    },
+    {
+      key: 'website',
+      label: t('associationEditPanelLeftovers.website'),
+      maxLength: 500,
+    },
+  ];
+}
 
 const EMPTY: Record<Field, string> = {
   name: '',
@@ -53,7 +83,7 @@ export function AssociationEditPanel() {
       setValues(
         profile
           ? (Object.fromEntries(
-              FIELDS.map(({ key }) => [key, profile[key] ?? '']),
+              associationFields(t).map(({ key }) => [key, profile[key] ?? '']),
             ) as Record<Field, string>)
           : EMPTY,
       );
@@ -76,11 +106,14 @@ export function AssociationEditPanel() {
           e.preventDefault();
           const businessId = values.businessId.trim();
           if (businessId && !BUSINESS_ID_PATTERN.test(businessId)) {
-            setError('Business ID must look like 1234567-8.');
+            setError(t('associationEditPanelLeftovers.businessIdFormat'));
             return;
           }
           const fields = Object.fromEntries(
-            FIELDS.map(({ key }) => [key, values[key].trim() || null]),
+            associationFields(t).map(({ key }) => [
+              key,
+              values[key].trim() || null,
+            ]),
           ) as AssociationFields;
           setBusy(true);
           setError(null);
@@ -95,7 +128,7 @@ export function AssociationEditPanel() {
           });
         }}
       >
-        {FIELDS.map((field) => (
+        {associationFields(t).map((field) => (
           <Input
             key={field.key}
             label={field.label}

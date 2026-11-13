@@ -27,6 +27,7 @@ import {
   MORPH_CURVE_LABELS,
   morphableVersions,
 } from '../../../lib/takeMetamorph';
+import { webT } from '../../../lib/webT';
 
 export type TakeLoader = (
   soundId: string,
@@ -41,7 +42,11 @@ const loadTakeFromApi: TakeLoader = async (soundId, versionId, ctx) => {
   }
   const res = await fetch(link.url, { credentials: 'include' });
   if (!res.ok) {
-    throw new Error(`Could not download the version (${res.status})`);
+    throw new Error(
+      webT()('takeMetamorphDialogLeftovers.couldNotDownloadVersion', {
+        status: res.status,
+      }),
+    );
   }
   return ctx.decodeAudioData(await res.arrayBuffer());
 };
@@ -176,7 +181,11 @@ export function TakeMetamorphDialog({
     try {
       await job();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'The morph failed.');
+      setError(
+        err instanceof Error
+          ? err.message
+          : t('takeMetamorphDialogLeftovers.morphFailed'),
+      );
     } finally {
       setBusy(null);
     }
@@ -217,7 +226,7 @@ export function TakeMetamorphDialog({
 
   const versionOptions = (versions ?? []).map((v) => ({
     id: v.id,
-    label: `v${v.versionNumber}${v.versionLabel ? ` · ${v.versionLabel}` : ''}${v.isActive ? ' (live)' : ''}`,
+    label: `v${v.versionNumber}${v.versionLabel ? ` · ${v.versionLabel}` : ''}${v.isActive ? t('takeMetamorphDialogLeftovers.live') : ''}`,
   }));
 
   const close = () => {
@@ -255,7 +264,11 @@ export function TakeMetamorphDialog({
                 label={t('takeMetamorph.bleedInTheSoundOf')}
                 options={versionOptions}
                 value={donorId}
-                error={samePick ? 'Pick two different versions.' : undefined}
+                error={
+                  samePick
+                    ? t('takeMetamorphDialogLeftovers.pickTwoDifferent')
+                    : undefined
+                }
                 onValueChange={(id) => {
                   stopPreview();
                   setDonorId(id);

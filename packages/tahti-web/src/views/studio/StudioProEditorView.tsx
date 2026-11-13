@@ -1,6 +1,12 @@
 import { Link, useBlocker } from '@tanstack/react-router';
 import { UploadIcon } from 'lucide-react';
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type KeyboardEvent,
+} from 'react';
 import { toast } from 'sonner';
 
 import { preferInternalEngine } from '@tahti-player/audio-core';
@@ -53,13 +59,6 @@ import type { EditorPeaks } from './pro-editor/waveform/useWaveformData';
 import { WaveformEditor } from './pro-editor/WaveformEditor';
 import { useMultitrackSession } from './useMultitrackSession';
 
-const DEFAULT_VERSION_LABEL = 'Edited mix';
-const MULTITRACK_BOUNCE_LABEL = 'Multitrack bounce';
-const EDITOR_MODE_OPTIONS = [
-  { id: 'trim', label: 'Trim / effects' },
-  { id: 'multitrack', label: 'Multitrack + viz' },
-] as const;
-
 /** Keyed by sound so navigating between tracks starts from a clean editor
  * (selection, markers, zoom, unsaved edits, audio) instead of carrying the
  * previous track's state over. */
@@ -69,6 +68,24 @@ export function StudioProEditorView({ soundId }: { soundId: string }) {
 
 function ProEditor({ soundId }: { soundId: string }) {
   const { t } = useTranslation('web');
+  const defaultVersionLabel = t('studioProEditorViewLeftovers.editedMix');
+  const multitrackBounceLabel = t(
+    'studioProEditorViewLeftovers.multitrackBounce',
+  );
+  const editorModeOptions = useMemo(
+    () =>
+      [
+        {
+          id: 'trim' as const,
+          label: t('studioProEditorViewLeftovers.trimEffects'),
+        },
+        {
+          id: 'multitrack' as const,
+          label: t('studioProEditorViewLeftovers.multitrackViz'),
+        },
+      ] as const,
+    [t],
+  );
   const masteringEnabled = useMasteringFeatureStore((state) => state.enabled);
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [title, setTitle] = useState('');
@@ -78,7 +95,7 @@ function ProEditor({ soundId }: { soundId: string }) {
   const [serverPeaks, setServerPeaks] = useState<EditorPeaks | null>(null);
   const [history, setHistory] = useState<EditHistory<EditList>>(emptyHistory);
   const lastEditRef = useRef<{ key: string; at: number } | null>(null);
-  const [versionLabel, setVersionLabel] = useState(DEFAULT_VERSION_LABEL);
+  const [versionLabel, setVersionLabel] = useState(defaultVersionLabel);
   const [message, setMessage] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const {
@@ -303,7 +320,7 @@ function ProEditor({ soundId }: { soundId: string }) {
       const result = await renderEditorDraft(
         soundId,
         chainForRender(editList, useAudioFxStore.getState().enabledPluginIds),
-        versionLabel.trim() || DEFAULT_VERSION_LABEL,
+        versionLabel.trim() || defaultVersionLabel,
         activate,
       );
       if (!result.ok) {
@@ -380,7 +397,7 @@ function ProEditor({ soundId }: { soundId: string }) {
           <SegmentedControl
             aria-label={t('proEditor.editorMode')}
             className="w-fit"
-            options={EDITOR_MODE_OPTIONS}
+            options={editorModeOptions}
             value={editorMode}
             onChange={(mode) => {
               if (mode === editorMode) {
@@ -439,7 +456,7 @@ function ProEditor({ soundId }: { soundId: string }) {
                       const uploaded = await uploadSoundVersion(
                         soundId,
                         file,
-                        versionLabel.trim() || MULTITRACK_BOUNCE_LABEL,
+                        versionLabel.trim() || multitrackBounceLabel,
                       );
                       if (uploaded.ok) {
                         toast.success(
@@ -598,7 +615,7 @@ function ProEditor({ soundId }: { soundId: string }) {
           onClose={() => setRenderPromptOpen(false)}
         >
           <Dialog.Title>
-            Render “{versionLabel.trim() || DEFAULT_VERSION_LABEL}”
+            Render “{versionLabel.trim() || defaultVersionLabel}”
           </Dialog.Title>
           <Dialog.Description>
             {t('proEditor.overwriteReplacesWhatAposS')}

@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { ArrowDown, ArrowUp, Puzzle, Settings2 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -34,11 +34,15 @@ import { ConfirmDialog } from '../ConfirmDialog';
 import { PageEmpty, PageLoading } from '../PageStates';
 import { useChannelAddonBlocks } from './useChannelAddonBlocks';
 
-const WIDTH_OPTIONS: { id: ChannelBlockWidth; label: string }[] = [
-  { id: 'FULL', label: 'Full' },
-  { id: 'HALF', label: 'Half' },
-  { id: 'THIRD', label: 'Third' },
-];
+function widthOptions(
+  t: TFunction<'web'>,
+): { id: ChannelBlockWidth; label: string }[] {
+  return [
+    { id: 'FULL', label: t('discoWidgetManagerPanelLeftovers.full') },
+    { id: 'HALF', label: t('discoWidgetManagerPanelLeftovers.half') },
+    { id: 'THIRD', label: t('discoWidgetManagerPanelLeftovers.third') },
+  ];
+}
 
 export function DiscoWidgetManagerPanel({
   scope,
@@ -283,7 +287,7 @@ export function DiscoWidgetManagerPanel({
                         onChange={(width) =>
                           void handleLogoWidth(block.id, width)
                         }
-                        options={WIDTH_OPTIONS}
+                        options={widthOptions(t)}
                       />
                       <Button
                         size="sm"
@@ -404,7 +408,7 @@ export function DiscoWidgetManagerPanel({
                               'discoWidgetManagerPanelLabels.widthOfNameOnYour',
                               { name: install.widget.name },
                             )}
-                            options={WIDTH_OPTIONS}
+                            options={widthOptions(t)}
                             value={layout.widthOf(install.id)}
                             onChange={(width) =>
                               void handleWidth(install.id, width)

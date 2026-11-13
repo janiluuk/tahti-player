@@ -134,7 +134,9 @@ export function PlaylistView({
       setTotal(page.entries.length === 0 ? entries.length : page.total);
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not load more.',
+        failure instanceof Error
+          ? failure.message
+          : t('localPlaylistViewLeftovers.couldNotLoadMore'),
       );
     } finally {
       if (request === requestRef.current) {
@@ -162,7 +164,9 @@ export function PlaylistView({
       await load();
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not undo.',
+        failure instanceof Error
+          ? failure.message
+          : t('localPlaylistViewLeftovers.couldNotUndo'),
       );
     } finally {
       setBusy(false);
@@ -190,7 +194,9 @@ export function PlaylistView({
       await load();
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not move.',
+        failure instanceof Error
+          ? failure.message
+          : t('localPlaylistViewLeftovers.couldNotMove'),
       );
     } finally {
       setBusy(false);
@@ -219,7 +225,9 @@ export function PlaylistView({
       await load();
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not remove.',
+        failure instanceof Error
+          ? failure.message
+          : t('localPlaylistViewLeftovers.couldNotRemove'),
       );
     } finally {
       setBusy(false);
@@ -246,7 +254,7 @@ export function PlaylistView({
       toast.error(
         failure instanceof Error
           ? failure.message
-          : i18n.t('web:batch51.couldNotPlay'),
+          : t('localPlaylistViewLeftovers.couldNotPlay'),
       );
     } finally {
       setBusy(false);
@@ -264,7 +272,9 @@ export function PlaylistView({
       }
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not link the file.',
+        failure instanceof Error
+          ? failure.message
+          : t('localPlaylistViewLeftovers.couldNotLinkFile'),
       );
     } finally {
       setBusy(false);

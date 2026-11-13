@@ -44,7 +44,9 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
       }
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not back up.',
+        failure instanceof Error
+          ? failure.message
+          : t('localLibraryToolsLeftovers.couldNotBackUp'),
       );
     } finally {
       setBackingUp(false);
@@ -59,7 +61,9 @@ export function LocalLibraryTools({ library, onChanged }: Props) {
       }
     } catch (failure) {
       toast.error(
-        failure instanceof Error ? failure.message : 'Could not open the file.',
+        failure instanceof Error
+          ? failure.message
+          : t('localLibraryToolsLeftovers.couldNotOpenFile'),
       );
     }
   };

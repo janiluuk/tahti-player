@@ -108,7 +108,11 @@ export function ClipEditorDialog({
       }
     } catch (err) {
       if (alive.current) {
-        setError(err instanceof Error ? err.message : 'Could not load audio');
+        setError(
+          err instanceof Error
+            ? err.message
+            : t('clipEditorDialogLeftovers.couldNotLoadAudio'),
+        );
       }
     } finally {
       if (alive.current) {
@@ -159,7 +163,9 @@ export function ClipEditorDialog({
         if (!cancelled) {
           setPending(null);
           setError(
-            err instanceof Error ? err.message : 'Could not check preview',
+            err instanceof Error
+              ? err.message
+              : t('clipEditorDialogLeftovers.couldNotCheckPreview'),
           );
         }
       }
@@ -260,7 +266,9 @@ export function ClipEditorDialog({
       setDirty(true);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : 'Could not generate preview',
+        err instanceof Error
+          ? err.message
+          : t('clipEditorDialogLeftovers.couldNotGeneratePreview'),
       );
     } finally {
       setBusy(false);
@@ -282,7 +290,11 @@ export function ClipEditorDialog({
       });
       onSaved();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not save clip');
+      setError(
+        err instanceof Error
+          ? err.message
+          : t('clipEditorDialogLeftovers.couldNotSaveClip'),
+      );
     } finally {
       if (alive.current) {
         setBusy(false);
