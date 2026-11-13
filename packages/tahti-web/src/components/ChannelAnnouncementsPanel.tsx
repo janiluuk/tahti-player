@@ -2,7 +2,7 @@ import { MicIcon, PlayIcon, Trash2Icon } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   Dialog,
@@ -220,8 +220,7 @@ export function ChannelAnnouncementsPanel() {
           title: uploading
             ? t('channelAnnouncementsPanelStates.uploadingClip')
             : t('channelAnnouncementsPanelStates.uploadAudio'),
-          description:
-            'WAV, FLAC, AIFF, or other audio · up to 10 minutes / 50 MB. Originals stay unchanged.',
+          description: i18n.t('web:batch52.clipAudioHint'),
           browse: uploading
             ? t('channelAnnouncementsPanelStates.uploading')
             : t('channelAnnouncementsPanelStates.chooseAudio'),
@@ -375,9 +374,7 @@ export function ChannelAnnouncementsPanel() {
           onSaved={() => {
             setEditor(null);
             reload();
-            toast.success(
-              'Clip saved. Rotation changes apply when the station refreshes its playlist.',
-            );
+            toast.success(i18n.t('web:batch52.clipSaved'));
           }}
         />
       )}

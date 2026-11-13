@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import type { GovernanceBoardRole } from './governance-board';
 import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
@@ -181,7 +183,7 @@ export async function withdrawCandidacy(id: string): Promise<CandidacyResult> {
       error:
         err instanceof Error
           ? err.message
-          : 'Could not withdraw your candidacy',
+          : i18n.t('web:batch52.couldNotWithdrawCandidacy'),
     };
   }
 }

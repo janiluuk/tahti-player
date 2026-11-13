@@ -1,6 +1,6 @@
 import { ScrollTextIcon } from 'lucide-react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Alert, Button, ButtonAnchor } from '@tahti-player/ui';
 
 import { useNotificationInboxStore } from '../stores/notificationInboxStore';
@@ -25,10 +25,7 @@ export function GuidelinesBanner() {
       className="mb-2"
     >
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <span>
-          {sticky.body ??
-            'Please review the community guidelines before continuing.'}
-        </span>
+        <span>{sticky.body ?? i18n.t('web:batch52.reviewGuidelines')}</span>
         <div className="flex flex-wrap gap-2">
           {sticky.url ? (
             <ButtonAnchor href={sticky.url} size="sm" variant="secondary">

@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { apiBase } from './http';
 import { mockFixture } from './mock-overrides';
 import { isForceMock } from './mode';
@@ -62,8 +64,7 @@ export async function fetchMeIntegrations(): Promise<{
         {
           slug: 'listenbrainz',
           name: 'ListenBrainz',
-          description:
-            'Scrobble plays of Tahti tracks to your ListenBrainz account.',
+          description: i18n.t('web:batch52.scrobbleListenBrainz'),
           scope: 'SCROBBLE',
           authKind: 'API_KEY',
           installed: mockInstalled.has('listenbrainz'),
@@ -72,8 +73,7 @@ export async function fetchMeIntegrations(): Promise<{
         {
           slug: 'lastfm',
           name: 'Last.fm',
-          description:
-            'Scrobble plays of Tahti tracks to your Last.fm profile.',
+          description: i18n.t('web:batch52.scrobbleLastFm'),
           scope: 'SCROBBLE',
           authKind: 'OAUTH',
           installed: false,
@@ -165,7 +165,9 @@ export async function prepareLastFmWithOwnKey(input: {
     return {
       ok: false,
       error:
-        err instanceof Error ? err.message : 'Could not start Last.fm sign-in',
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch52.couldNotStartLastFm'),
     };
   }
 }

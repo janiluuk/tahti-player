@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   fetchListeningParty,
   type ListeningPartyDto,
@@ -44,7 +46,7 @@ export function useListeningParty(id: string): {
             ? { status: 'not-found' }
             : {
                 status: 'error',
-                error: meta.reason ?? 'Could not load this listening party',
+                error: meta.reason ?? i18n.t('web:batch52.couldNotLoadParty'),
               },
         );
       });

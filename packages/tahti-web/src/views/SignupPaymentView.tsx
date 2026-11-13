@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, InlineError } from '@tahti-player/ui';
 
 import { fetchMembership, startMembershipCheckout } from '../api/client';
@@ -96,7 +96,7 @@ export function SignupPaymentView() {
                 }
                 if ('checkoutUrl' in res && res.checkoutUrl) {
                   if (!assignStripeRedirectUrl(res.checkoutUrl)) {
-                    setError('Checkout URL was not from Stripe');
+                    setError(i18n.t('web:batch52.checkoutNotStripe'));
                   }
                   return;
                 }

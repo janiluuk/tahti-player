@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import type { DiscoWidgetRenderItem } from './disco-widgets';
 import {
   allowMockFallback,
@@ -196,6 +198,6 @@ export async function deleteChannelBlock(id: string): Promise<ActionResult> {
     );
     return { error: null, data: undefined };
   } catch (err) {
-    return failure(err, 'Could not remove the block');
+    return failure(err, i18n.t('web:batch52.couldNotRemoveBlock'));
   }
 }

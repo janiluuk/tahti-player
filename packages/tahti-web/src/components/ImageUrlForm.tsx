@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, Input } from '@tahti-player/ui';
 
 const isHttpUrl = (value: string) => {
@@ -49,7 +49,9 @@ export function ImageUrlForm({
         description={t('imageUrlForm.aDirectLinkToA')}
         value={url}
         placeholder="https://example.com/cover.jpg"
-        error={trimmed && !valid ? 'Enter a full http(s) link' : undefined}
+        error={
+          trimmed && !valid ? i18n.t('web:batch52.enterFullLink') : undefined
+        }
         onChange={(event) => setUrl(event.target.value)}
       />
       <Button type="submit" className="self-start" disabled={busy || !valid}>

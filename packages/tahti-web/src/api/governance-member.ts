@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import {
   mockGovernanceDocuments,
@@ -264,7 +266,7 @@ export async function fetchGovernanceMotion(
   if (isForceMock()) {
     const motion = mockMotions.find((m) => m.id === id);
     if (!motion) {
-      return { ok: false, error: 'Motion not found' };
+      return { ok: false, error: i18n.t('web:batch52.motionNotFound') };
     }
     return {
       ok: true,

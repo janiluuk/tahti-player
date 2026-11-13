@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { requestJson } from './client-request';
 import { updateMockMotion } from './governance-member';
 import { isForceMock } from './mode';
@@ -18,10 +20,10 @@ function mockSecond(id: string, seconded: boolean): MotionSecondResult {
     return { ...m, youSeconded: seconded, secondCount: Math.max(0, count) };
   });
   if (!motion) {
-    return { ok: false, error: 'Motion not found' };
+    return { ok: false, error: i18n.t('web:batch52.motionNotFound') };
   }
   if (motion.state !== 'DRAFT') {
-    return { ok: false, error: 'Only a draft motion can be seconded' };
+    return { ok: false, error: i18n.t('web:batch52.onlyDraftCanBeSeconded') };
   }
   return { ok: true, secondCount: motion.secondCount ?? 0 };
 }
@@ -39,7 +41,10 @@ export async function secondMotion(id: string): Promise<MotionSecondResult> {
   } catch (err) {
     return {
       ok: false,
-      error: err instanceof Error ? err.message : 'Could not second the motion',
+      error:
+        err instanceof Error
+          ? err.message
+          : i18n.t('web:batch52.couldNotSecondMotion'),
     };
   }
 }

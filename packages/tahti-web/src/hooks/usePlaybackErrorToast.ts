@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
+import { i18n } from '@tahti-player/i18n';
+
 import { streamFailureDescription } from '../lib/streamFailure';
 import { usePlayerStore } from '../stores/playerStore';
 
@@ -33,7 +35,7 @@ export function usePlaybackErrorToast(title: string | undefined) {
         ? `${title ? `${title} is` : 'This station is'} unavailable. ${
             failure
               ? streamFailureDescription(failure)
-              : 'The stream may be off air — try again in a moment.'
+              : i18n.t('web:batch52.streamOffAir')
           }`
         : `Can’t play ${name} right now. Try again, or pick another track.`,
       {

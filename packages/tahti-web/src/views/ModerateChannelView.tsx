@@ -3,7 +3,7 @@ import { Lock, ShieldOff } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, EmptyState, ViewShell } from '@tahti-player/ui';
 
 import {
@@ -125,7 +125,7 @@ export function ModerateChannelView({ slug }: { slug: string }) {
           <div className="flex flex-col gap-3">
             <p className="text-foreground-secondary text-sm">
               {channel.isOwner
-                ? 'Your channel. Who may post is in the chat settings, and who moderates is under Moderators.'
+                ? i18n.t('web:batch52.yourChannelModerators')
                 : `You moderate this chat for ${channel.displayName}. You can remove messages and ban people from posting.`}
             </p>
             <div className="flex flex-wrap gap-2">

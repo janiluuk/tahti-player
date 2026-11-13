@@ -1,3 +1,5 @@
+import { i18n } from '@tahti-player/i18n';
+
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -68,7 +70,7 @@ export async function requestEmailChange(
  * (`POST /api/auth/email-change/confirm`); works signed out. */
 export async function confirmEmailChange(token: string): Promise<Result> {
   if (isForceMock()) {
-    return { ok: true, message: 'Your account now uses the new address.' };
+    return { ok: true, message: i18n.t('web:batch52.accountUsesNewAddress') };
   }
   try {
     const { data } = await requestJson<{ message: string }>(
@@ -77,7 +79,7 @@ export async function confirmEmailChange(token: string): Promise<Result> {
     );
     return { ok: true, message: data.message };
   } catch (err) {
-    return failure(err, 'Could not confirm the new address');
+    return failure(err, i18n.t('web:batch52.couldNotConfirmAddress'));
   }
 }
 
@@ -107,6 +109,6 @@ export async function cancelEmailChange(): Promise<Result> {
     await requestJson('/api/me/email', { method: 'DELETE' });
     return { ok: true, message: 'Cancelled.' };
   } catch (err) {
-    return failure(err, 'Could not cancel the change');
+    return failure(err, i18n.t('web:batch52.couldNotCancelChange'));
   }
 }
