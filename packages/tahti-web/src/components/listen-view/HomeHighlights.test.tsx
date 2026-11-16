@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { cleanup, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -132,5 +132,31 @@ describe('HomeHighlights', () => {
     await waitFor(() =>
       expect(screen.getByRole('button', { name: /Retry/ })).toBeVisible(),
     );
+  });
+
+  it('shows the last loaded Selects at once and keeps them when the refresh fails', async () => {
+    const fetch = vi.spyOn(discover, 'fetchTahtiSelects').mockResolvedValue({
+      data: [track('s1', 'Acoustic Set')],
+      meta: { source: 'api' },
+    });
+    await renderWithRouter(<TahtiSelectsRow />);
+    expect(
+      await screen.findByRole('link', { name: 'Acoustic Set' }),
+    ).toBeVisible();
+    cleanup();
+
+    fetch.mockReturnValue(new Promise(() => {}));
+    await renderWithRouter(<TahtiSelectsRow />);
+    expect(screen.getByRole('link', { name: 'Acoustic Set' })).toBeVisible();
+    cleanup();
+
+    fetch.mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await renderWithRouter(<TahtiSelectsRow />);
+    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(3));
+    expect(screen.getByRole('link', { name: 'Acoustic Set' })).toBeVisible();
+    expect(screen.queryByRole('button', { name: /Retry/ })).toBeNull();
   });
 });

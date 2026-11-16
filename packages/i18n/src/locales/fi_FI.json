@@ -2887,6 +2887,7 @@
       "clearReadError": "Luettuja ilmoituksia ei voitu tyhjentää."
     },
     "trackDetail": {
+      "processing": "Käsitellään. Soitin ilmestyy tähän, kun kappale on valmis.",
       "commentsEmptyTitle": "Ei vielä kommentteja.",
       "commentsEmptyDescription": "Ole ensimmäinen kommentoija.",
       "genre": "Genre",
@@ -3319,6 +3320,7 @@
       "revokeAria": "Kumoa linkki"
     },
     "stash": {
+      "loading": "Ladataan stash-tiedostoja…",
       "empty": "Ei stash-tiedostoja vielä",
       "loadError": "Stash-tiedostoja ei voitu ladata",
       "deleteTitle": "Poistetaanko tiedosto?",

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 import { DownloadIcon, PencilIcon, PlusIcon, TrashIcon } from 'lucide-react';
-import { useMemo, useState, type ReactNode } from 'react';
+import { lazy, Suspense, useMemo, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
@@ -31,8 +31,16 @@ import {
   MediaIconActions,
   playQueueFavoriteActions,
 } from './MediaIconActions';
-import { PlayableTrackTable } from './PlayableTrackTable';
+import { PageLoading } from './PageStates';
 import { TrackSortButton } from './TrackSortButton';
+
+// The table pulls @tanstack/table-core into whichever chunk imports it; lazy
+// here keeps it out of the app shell that Listen (the index route) lives in.
+const PlayableTrackTable = lazy(() =>
+  import('./PlayableTrackTable').then((m) => ({
+    default: m.PlayableTrackTable,
+  })),
+);
 
 export function PlayableAmbientTrackList({
   items,
@@ -373,20 +381,22 @@ export function PlayableAmbientTrackList({
           ) : undefined
         }
         renderList={() => (
-          <PlayableTrackTable
-            items={sorted}
-            emptyMessage={shownEmptyMessage}
-            // One filter per list: the toolbar's when it has one, else the
-            // table's own.
-            filterable={!filterBox && !toolbarStart}
-            playAll={playAll}
-            compactActions={compactActions}
-            getAnnotation={getAnnotation}
-            onEdit={onEdit}
-            onRemove={onRemove}
-            selectable={selectable}
-            onBulkRemove={onBulkRemove}
-          />
+          <Suspense fallback={<PageLoading label={t('loading.loading')} />}>
+            <PlayableTrackTable
+              items={sorted}
+              emptyMessage={shownEmptyMessage}
+              // One filter per list: the toolbar's when it has one, else the
+              // table's own.
+              filterable={!filterBox && !toolbarStart}
+              playAll={playAll}
+              compactActions={compactActions}
+              getAnnotation={getAnnotation}
+              onEdit={onEdit}
+              onRemove={onRemove}
+              selectable={selectable}
+              onBulkRemove={onBulkRemove}
+            />
+          </Suspense>
         )}
       />
       {playlistTarget ? (

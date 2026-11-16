@@ -2887,6 +2887,7 @@
       "clearReadError": "Could not clear read notifications."
     },
     "trackDetail": {
+      "processing": "Processing. The player appears here when the track is ready.",
       "commentsEmptyTitle": "No comments yet.",
       "commentsEmptyDescription": "Be the first to comment.",
       "genre": "Genre",
@@ -3319,6 +3320,7 @@
       "revokeAria": "Revoke link"
     },
     "stash": {
+      "loading": "Loading stash files…",
       "empty": "No stash files yet",
       "loadError": "Could not load stash files",
       "deleteTitle": "Delete file?",

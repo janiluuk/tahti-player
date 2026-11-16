@@ -1,5 +1,5 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import { useCallback, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -15,6 +15,7 @@ import { isForceMock } from '../../api/mode';
 import type { DiscoverTrackItem, TahtiPlayable } from '../../api/types';
 import { useDiscoverTrackPlayback } from '../../hooks/useDiscoverTrackPlayback';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
+import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { webT } from '../../lib/webT';
 import { usePlayerStore } from '../../stores/playerStore';
 import { smartLinkPlayables } from '../../views/smart-link/smartLinkTracks';
@@ -31,30 +32,28 @@ function useRowLabels() {
 
 type Section<T> = { data: T[]; status: ListenSectionStatus };
 
+const NO_ITEMS: never[] = [];
+
+/** One row's items, kept as a snapshot under `key`: a revisit renders the
+ * last result at once and refreshes in the background; a failed refresh
+ * keeps the saved items. */
 function useSection<T>(
+  key: string,
   load: () => Promise<{ data: T[]; meta: FetchMeta }>,
 ): Section<T> & { retry: () => void } {
-  const [state, setState] = useState<Section<T>>({
-    data: [],
-    status: 'loading',
+  const { data, error, retry } = useSnapshotFetch<T[]>(key, async () => {
+    const { data: items, meta } = await load();
+    if (meta.reason && !isForceMock()) {
+      throw new Error(meta.reason);
+    }
+    return items;
   });
-  const [attempt, setAttempt] = useState(0);
-  useEffect(() => {
-    let cancelled = false;
-    setState((s) => ({ ...s, status: 'loading' }));
-    void load().then(({ data, meta }) => {
-      if (cancelled) {
-        return;
-      }
-      const failed = Boolean(meta.reason) && !isForceMock();
-      setState({ data, status: failed ? 'error' : 'ready' });
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [load, attempt]);
-  const retry = useCallback(() => setAttempt((n) => n + 1), []);
-  return { ...state, retry };
+  const status: ListenSectionStatus = data
+    ? 'ready'
+    : error
+      ? 'error'
+      : 'loading';
+  return { data: data ?? NO_ITEMS, status, retry };
 }
 
 type TrackRowItem = {
@@ -132,7 +131,7 @@ const loadReleases = () => fetchLatestReleases(12);
 export function TahtiSelectsRow() {
   const { t } = useTranslation('web');
   const rowLabels = useRowLabels();
-  const selects = useSection(loadSelects);
+  const selects = useSection('listen:selects', loadSelects);
   const items: TrackRowItem[] = selects.data.map((track) => ({
     id: track.id,
     title: track.title,
@@ -164,7 +163,7 @@ export function TahtiSelectsRow() {
 export function TrendingRow() {
   const { t } = useTranslation('web');
   const rowLabels = useRowLabels();
-  const trending = useSection(loadTrending);
+  const trending = useSection('listen:trending', loadTrending);
   const items: TrackRowItem[] = trending.data
     .slice(0, 12)
     .map((track, index) => ({
@@ -294,7 +293,7 @@ function ReleaseCard({ release }: { release: LatestRelease }) {
 export function NewReleasesRow() {
   const { t } = useTranslation('web');
   const rowLabels = useRowLabels();
-  const releases = useSection(loadReleases);
+  const releases = useSection('listen:new-releases', loadReleases);
   const items: ReleaseRowItem[] = releases.data
     .filter((release) => Boolean(release.smartLinkSlug))
     .map((release) => ({ id: release.id, title: release.title, release }));

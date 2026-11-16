@@ -86,4 +86,30 @@ describe('AcrossDevicesPanel', () => {
     await renderPanel();
     expect(screen.queryByTestId('history-across-devices')).toBeNull();
   });
+
+  it('shows the last loaded period at once and keeps it when the refresh fails', async () => {
+    const fetchListening = vi.spyOn(api, 'fetchMyListening').mockResolvedValue({
+      data: api.MOCK_MY_LISTENING,
+      meta: { source: 'api' },
+    });
+    await renderPanel();
+    expect(screen.getByText('96')).toBeTruthy();
+    cleanup();
+
+    fetchListening.mockReturnValue(new Promise(() => {}));
+    await renderPanel();
+    expect(screen.getByText('96')).toBeTruthy();
+    expect(screen.queryByText('Loading your listening…')).toBeNull();
+    cleanup();
+
+    fetchListening.mockResolvedValue({
+      data: null,
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await renderPanel();
+    expect(
+      screen.getByText('Could not refresh; showing the last loaded version.'),
+    ).toBeTruthy();
+    expect(screen.getByText('96')).toBeTruthy();
+  });
 });

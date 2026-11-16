@@ -5,8 +5,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as discoWidgets from '../../api/disco-widgets';
 import * as discover from '../../api/discover';
 import * as listen from '../../api/listen';
+import { clearSnapshots } from '../../lib/useSnapshotFetch';
 import {
-  clearListenSectionCache,
+  latestTrackMeta,
   LISTEN_CACHE_TTL_MS,
   useListenSections,
 } from './useListenSections';
@@ -20,7 +21,7 @@ const apiFailure = { source: 'api' as const, reason: 'HTTP 503' };
 describe('useListenSections', () => {
   beforeEach(() => {
     vi.stubEnv('VITE_FORCE_MOCK', '1');
-    clearListenSectionCache();
+    clearSnapshots();
   });
 
   afterEach(() => {
@@ -219,6 +220,40 @@ describe('useListenSections', () => {
         expect(b.result.current.discoWidgets.status).toBe('ready'),
       );
       expect(mine).toHaveBeenCalledTimes(2);
+    });
+
+    it('keeps sections in the session snapshot store, New tracks with their meta', async () => {
+      vi.spyOn(listen, 'fetchOnAirChannels').mockResolvedValue(
+        onAirOnce('first') as never,
+      );
+      vi.spyOn(discover, 'fetchLatestTracks').mockResolvedValue({
+        data: [
+          {
+            id: 'sound:t1',
+            title: 'Night Drive',
+            artist: 'Liis Kask',
+            channelSlug: 'liis-kask',
+            coverUrl: null,
+            audioUrl: 'https://example.com/t1.mp3',
+            genre: 'Ambient',
+            playCount: 7,
+          },
+        ],
+        meta: { source: 'api' },
+      } as never);
+      const first = renderHook(() => useListenSections(false));
+      await waitFor(() =>
+        expect(first.result.current.latestTracks.status).toBe('ready'),
+      );
+      first.unmount();
+      expect(
+        sessionStorage.getItem('tahti-web:snapshot:listen-section:onAir'),
+      ).toContain('first');
+
+      const second = renderHook(() => useListenSections(false));
+      const [track] = second.result.current.latestTracks.data;
+      expect(track?.title).toBe('Night Drive');
+      expect(latestTrackMeta(track!)?.genre).toBe('Ambient');
     });
   });
 });

@@ -27,6 +27,7 @@ import {
   Input,
   MediaArtwork,
   Tooltip,
+  TrackProcessing,
 } from '@tahti-player/ui';
 
 import { ChannelVisualizer } from '../../components/ChannelVisualizer';
@@ -97,6 +98,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
     showBuyTrack,
     startBuy,
     accessGate,
+    processing,
   } = page;
   const mixVersion = mixVersionLabel(playable.title, detail?.mixVersion);
   const canGoBack = useCanGoBack();
@@ -301,6 +303,12 @@ export function TrackHero({ page }: { page: TrackPage }) {
                     onSignIn={() => useAuthModalStore.getState().open('login')}
                   />
                 </>
+              ) : processing ? (
+                <TrackProcessing
+                  variant="waveform"
+                  label={t('trackDetail.processing')}
+                  className="h-28 border-white/30 bg-black/30 text-white/80"
+                />
               ) : null}
             </div>
           </div>

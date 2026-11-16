@@ -1,3 +1,17 @@
+## 2026-11-16 - Listen, Library and the release page open at once (0.0.402)
+
+Listen's rows (Selects, Trending, New releases, Coming up) and its
+dashboard sections, Library History's "Across devices", both Stash lists,
+the Studio release page and the admin chat and mail stats show their last
+loaded result straight away and refresh in the background. The Listen
+sections also survive a reload in the same tab. The admin overview loads
+its chat and mail stats next to the dashboard instead of after it. Opening
+your own upload while it is still processing shows the track page with a
+processing indicator where the player goes, instead of "Track
+unavailable", and the page checks again until the track is ready. The
+track table loads on its own, so the app shell is 150 KB smaller (44 KB
+gzipped).
+
 ## 2026-11-16 - Spotify artists on Listen, Finnish widget copy, more journeys (0.0.401)
 
 Listen → Add widget → Spotify takes an artist link as well as a playlist,

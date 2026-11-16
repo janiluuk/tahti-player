@@ -97,6 +97,7 @@ export function AdminDashboardView() {
               }
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
             >
+              <CommunityStatsPanel />
               {loading ? (
                 <StudioPanel>
                   <PageLoading label={t('loading.loadingDashboard')} />
@@ -111,7 +112,6 @@ export function AdminDashboardView() {
                 </StudioPanel>
               ) : (
                 <>
-                  <CommunityStatsPanel />
                   <StudioPanel title={t('adminDashboard.systemHealth')}>
                     <div className="grid gap-3 sm:grid-cols-2">
                       {(

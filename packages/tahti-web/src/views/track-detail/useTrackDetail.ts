@@ -1,5 +1,5 @@
 import { useRouter } from '@tanstack/react-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import {
   fetchChannel,
@@ -12,10 +12,13 @@ import { listMockSubscriptions } from '../../api/mock-session';
 import { isForceMock } from '../../api/mode';
 import { mockOwnsPurchaseTier } from '../../api/purchase-tiers';
 import type { DownloadGateStatus } from '../../api/sound-download-gates';
+import { fetchStudioSound } from '../../api/studio';
+import type { StudioSound } from '../../api/studio-types';
 import {
   type PublicChannel,
   type PublicProfile,
   type PublicTrackDetail,
+  type TahtiPlayable,
   type TrackComment,
 } from '../../api/types';
 import { parsePublicTracklist } from '../../lib/publicTracklist';
@@ -29,6 +32,30 @@ import {
 } from '../../stores/playerStore';
 import { useTrackDetailStore } from '../../stores/trackDetailStore';
 import { playableFromDetail } from './helpers';
+
+const PROCESSING_POLL_MS = 15_000;
+
+function isProcessing(sound: StudioSound): boolean {
+  return (
+    !sound.embedProvider &&
+    (sound.status === 'PENDING' || sound.status === 'PROCESSING')
+  );
+}
+
+/** The owner's view of an upload the public track API does not serve yet:
+ * no stream, so the page shows the processing state instead of a player. */
+function processingPlayable(sound: StudioSound, artist: string): TahtiPlayable {
+  return {
+    id: `sound:${sound.id}`,
+    kind: 'sound',
+    title: sound.title,
+    artist,
+    coverUrl: sound.bannerUrl ?? undefined,
+    streamUrl: '',
+    protocol: 'https',
+    durationSec: sound.durationSec ?? undefined,
+  };
+}
 
 export function useTrackDetail(id: string, shareKey?: string) {
   const router = useRouter();
@@ -49,7 +76,12 @@ export function useTrackDetail(id: string, shareKey?: string) {
     mutate,
   } = useSnapshotFetch<PublicTrackDetail | null>(
     `track:${id}:${shareKey ?? ''}`,
-    async () => apiResult(await fetchTrackDetail(id, shareKey)),
+    async () => {
+      const result = await fetchTrackDetail(id, shareKey);
+      // The API answers 404 for a missing, private or still-processing
+      // track: that is "not found", not a failed load to retry.
+      return result.meta.reason?.endsWith('→ 404') ? null : apiResult(result);
+    },
   );
   const setDetail = (next: PublicTrackDetail | null) => mutate(() => next);
   const [channel, setChannel] = useState<PublicChannel | null>(null);
@@ -73,6 +105,55 @@ export function useTrackDetail(id: string, shareKey?: string) {
   const [pwywAmt, setPwywAmt] = useState('');
   const [purchaseBump, setPurchaseBump] = useState(0);
   const [editOpen, setEditOpen] = useState(false);
+
+  // The public track API 404s until an upload is READY. For the owner, a
+  // missing track that Studio still lists as processing opens the track page
+  // with a processing state and checks again until it is ready.
+  const viewerId = user?.id ?? null;
+  const missing = !loading && !loadError && detail === null;
+  const [processingSound, setProcessingSound] = useState<StudioSound | null>(
+    null,
+  );
+  useEffect(() => {
+    setProcessingSound(null);
+  }, [id, viewerId]);
+  useEffect(() => {
+    if (!missing || !viewerId) {
+      return;
+    }
+    let cancelled = false;
+    fetchStudioSound(id)
+      .then((result) => {
+        if (cancelled) {
+          return;
+        }
+        const usable = result.meta.source === 'api' || isForceMock();
+        setProcessingSound(
+          usable && isProcessing(result.data) ? result.data : null,
+        );
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setProcessingSound(null);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [missing, viewerId, id]);
+  const processing = detail ? null : processingSound;
+  const retryLoadRef = useRef(retryLoad);
+  retryLoadRef.current = retryLoad;
+  useEffect(() => {
+    if (!processing) {
+      return;
+    }
+    const timer = window.setInterval(
+      () => retryLoadRef.current(),
+      PROCESSING_POLL_MS,
+    );
+    return () => window.clearInterval(timer);
+  }, [processing]);
 
   const channelSlug = detail?.channelSlug;
   const artistUsername = detail?.channel.username;
@@ -142,7 +223,15 @@ export function useTrackDetail(id: string, shareKey?: string) {
   const currentTime = usePlayerStore((s) => s.currentTime);
   const duration = usePlayerStore((s) => s.duration);
 
-  const playable = detail ? playableFromDetail(id, detail) : fastPath;
+  const playable = detail
+    ? playableFromDetail(id, detail)
+    : (fastPath ??
+      (processing
+        ? processingPlayable(
+            processing,
+            user?.displayName || user?.username || '',
+          )
+        : null));
   const rgb = useDominantColor(playable?.coverUrl);
   const tracklist = useMemo(
     () => parsePublicTracklist(detail?.tracklist),
@@ -207,6 +296,7 @@ export function useTrackDetail(id: string, shareKey?: string) {
     loading,
     loadError,
     retryLoad,
+    processing: processing !== null,
     playlistOpen,
     setPlaylistOpen,
     downloadBusy,

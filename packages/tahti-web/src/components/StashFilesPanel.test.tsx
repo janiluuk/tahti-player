@@ -45,4 +45,32 @@ describe('StashFilesPanel', () => {
     );
     expect(await screen.findByText('Deleted stems.wav.')).toBeTruthy();
   });
+
+  it('shows the last loaded files at once and keeps them when the refresh fails', async () => {
+    stash.fetchStashFiles.mockResolvedValue({
+      data: [{ id: 's1', filename: 'stems.wav', shareCount: 0, shares: [] }],
+      meta: { source: 'api' },
+    });
+    render(<StashFilesPanel filesOnly />);
+    expect(await screen.findByText('stems.wav')).toBeTruthy();
+    cleanup();
+
+    stash.fetchStashFiles.mockReturnValue(new Promise(() => {}));
+    render(<StashFilesPanel filesOnly />);
+    expect(screen.getByText('stems.wav')).toBeTruthy();
+    expect(screen.queryByText('Loading stash files…')).toBeNull();
+    cleanup();
+
+    stash.fetchStashFiles.mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    render(<StashFilesPanel filesOnly />);
+    expect(
+      await screen.findByText(
+        'Could not refresh; showing the last loaded version.',
+      ),
+    ).toBeTruthy();
+    expect(screen.getByText('stems.wav')).toBeTruthy();
+  });
 });

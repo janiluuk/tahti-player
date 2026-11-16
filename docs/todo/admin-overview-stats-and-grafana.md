@@ -13,6 +13,12 @@ first open, or a refresh with no snapshot, feel fast. Measure what
 `fetchAdminDashboard` and the panels wait on, and cache or precompute the
 slow calls in tahti-org if the API is the wait.
 
+Web side done 2026-11-16: `CommunityStatsPanel` keeps its own snapshot
+(`admin-community-stats`; a refresh where all three calls fail keeps the
+saved numbers) and renders above the dashboard's loading state, so its
+three calls run next to the dashboard's ten instead of after them. Left is
+the API side only (tahti-org).
+
 ## Stats belong at the top
 
 Done in 0.0.380. `CommunityStatsPanel` is the first block on the admin

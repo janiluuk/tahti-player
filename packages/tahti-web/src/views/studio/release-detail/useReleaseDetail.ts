@@ -1,4 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type SetStateAction,
+} from 'react';
 import { toast } from 'sonner';
 
 import { i18n } from '@tahti-player/i18n';
@@ -23,6 +29,7 @@ import type { TahtiPlayable } from '../../../api/types';
 import { playableFromStudioHearthis } from '../../../lib/embedPlayback';
 import { toastWithUndo } from '../../../lib/undoToast';
 import { useEditMode } from '../../../lib/useEditMode';
+import { useSnapshotFetch } from '../../../lib/useSnapshotFetch';
 import { useAuthStore } from '../../../stores/authStore';
 import { usePlayerStore } from '../../../stores/playerStore';
 
@@ -34,14 +41,38 @@ export function useReleaseDetail(id: string) {
   const setPlaybackStatus = usePlayerStore((state) => state.setStatus);
   const play = usePlayerStore((state) => state.play);
   const enqueue = usePlayerStore((state) => state.enqueue);
-  const [release, setRelease] = useState<StudioRelease | null>(null);
-  const [description, setDescription] = useState('');
-  const [loaded, setLoaded] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [loadAttempt, setLoadAttempt] = useState(0);
+  const {
+    data: savedRelease,
+    loading,
+    error: loadError,
+    updatedAt,
+    retry: retryLoad,
+    mutate,
+  } = useSnapshotFetch<StudioRelease | null>(
+    `studio-release:${user?.id ?? ''}:${id}`,
+    async () => {
+      const result = await fetchStudioRelease(id);
+      if (result.ok) {
+        return result.data;
+      }
+      if (/not found/i.test(result.error)) {
+        return null;
+      }
+      throw new Error(result.error);
+    },
+  );
+  const release = savedRelease ?? null;
+  const setRelease = (next: SetStateAction<StudioRelease | null>) =>
+    mutate((current) => (typeof next === 'function' ? next(current) : next));
+  const [description, setDescription] = useState(
+    () => release?.description ?? '',
+  );
+  const syncedDescription = useRef(description);
   const [publishing, setPublishing] = useState(false);
   const [confirmPublish, setConfirmPublish] = useState(false);
-  const [artworkPreview, setArtworkPreview] = useState<string | null>(null);
+  const [artworkPreview, setArtworkPreview] = useState<string | null>(
+    () => release?.artworkUrl ?? null,
+  );
   const [artworkPickerOpen, setArtworkPickerOpen] = useState(false);
   const [applyingArtwork, setApplyingArtwork] = useState(false);
   const [pendingArtworkDelete, setPendingArtworkDelete] = useState(false);
@@ -49,39 +80,18 @@ export function useReleaseDetail(id: string) {
   const [detailsExpanded, setDetailsExpanded] = useEditMode();
   const [soundsById, setSoundsById] = useState<Record<string, StudioSound>>({});
 
+  // A refresh replaces the description only while the form still shows the
+  // last loaded one, so typing is never overwritten.
   useEffect(() => {
-    let cancelled = false;
-    setLoaded(false);
-    setLoadError(null);
-    fetchStudioRelease(id)
-      .then((result) => {
-        if (cancelled) {
-          return;
-        }
-        if (!result.ok) {
-          setRelease(null);
-          setLoadError(/not found/i.test(result.error) ? null : result.error);
-          return;
-        }
-        setRelease(result.data);
-        setDescription(result.data.description ?? '');
-        setArtworkPreview(result.data.artworkUrl ?? null);
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setRelease(null);
-          setLoadError('Could not load the release.');
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoaded(true);
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [id, loadAttempt]);
+    if (!release) {
+      return;
+    }
+    const next = release.description ?? '';
+    const previous = syncedDescription.current;
+    syncedDescription.current = next;
+    setDescription((current) => (current === previous ? next : current));
+    setArtworkPreview(release.artworkUrl ?? null);
+  }, [updatedAt, id]);
 
   useEffect(() => {
     let cancelled = false;
@@ -292,9 +302,9 @@ export function useReleaseDetail(id: string) {
     setRelease,
     description,
     setDescription,
-    loaded,
+    loaded: !loading,
     loadError,
-    retryLoad: () => setLoadAttempt((n) => n + 1),
+    retryLoad,
     publishing,
     confirmPublish,
     setConfirmPublish,

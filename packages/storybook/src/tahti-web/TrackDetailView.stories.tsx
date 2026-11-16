@@ -290,3 +290,28 @@ export const OverriddenTrack: Story = {
     );
   },
 };
+
+// The owner opens an upload that is still processing: the public track API
+// does not serve it yet, so the page shows the processing state where the
+// waveform goes instead of "Track unavailable".
+export const ProcessingUpload: Story = {
+  decorators: [withMockAuth(MOCK_USERS.artist)],
+  parameters: {
+    mockData: mockData({
+      trackDetail: () => null,
+      studioSounds: [
+        { id: TRACK_ID, title: 'Fresh upload', status: 'PROCESSING' },
+      ],
+    }),
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(
+      await canvas.findByRole('heading', { name: 'Fresh upload' }),
+    ).toBeVisible();
+    await expect(canvas.getByTestId('track-processing')).toHaveTextContent(
+      'Processing. The player appears here when the track is ready.',
+    );
+    await expect(canvas.queryByText('Track unavailable')).toBeNull();
+  },
+};

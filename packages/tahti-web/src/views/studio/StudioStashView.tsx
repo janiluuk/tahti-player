@@ -1,5 +1,5 @@
 import { ArchiveIcon, FolderInputIcon, Lock } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -16,6 +16,7 @@ import type { StudioSound } from '../../api/studio-types';
 import {
   PageEmpty,
   PageError,
+  PageErrorBanner,
   PageGate,
   PageLoading,
 } from '../../components/PageStates';
@@ -24,9 +25,22 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { TrackEditDialog } from '../../components/TrackEditDialog';
 import { hasStudioAccess } from '../../lib/accountRoles';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { useAuthModalStore } from '../../stores/authModalStore';
 import { useAuthStore } from '../../stores/authStore';
 import { LibrarySectionTabs } from '../LibraryView';
+
+const NO_SOUNDS: StudioSound[] = [];
+
+function stashTracks(sounds: StudioSound[]): StudioSound[] {
+  return sounds.filter(
+    (item) =>
+      item.visibility === 'STASH' ||
+      item.visibility === 'PRIVATE' ||
+      item.visibility === 'UNLISTED' ||
+      item.isPublic === false,
+  );
+}
 
 function ListenerStash({ embedded }: { embedded: boolean }) {
   const { t } = useTranslation('web');
@@ -64,33 +78,20 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
   const profileLoaded = useAuthStore((s) => s.profileLoaded);
   const openAuth = useAuthModalStore((s) => s.open);
   const [tab, setTab] = useState<'all' | 'files'>('all');
-  const [items, setItems] = useState<StudioSound[]>([]);
-  const [itemsLoading, setItemsLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
   const [editingId, setEditingId] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!hasStudioAccess(user)) {
-      return;
-    }
-    setItemsLoading(true);
-    void fetchStudioSounds().then((result) => {
-      setLoadError(
-        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
-      );
-      setItemsLoading(false);
-      setItems(
-        result.data.filter(
-          (item) =>
-            item.visibility === 'STASH' ||
-            item.visibility === 'PRIVATE' ||
-            item.visibility === 'UNLISTED' ||
-            item.isPublic === false,
-        ),
-      );
-    });
-  }, [user, attempt]);
+  const studio = hasStudioAccess(user);
+  const {
+    data,
+    loading: itemsLoading,
+    error: loadError,
+    retry,
+    mutate,
+  } = useSnapshotFetch<StudioSound[]>(
+    `stash-tracks:${studio ? (user?.id ?? '') : ''}`,
+    async () =>
+      studio ? stashTracks(apiResult(await fetchStudioSounds())) : [],
+  );
+  const items = data ?? NO_SOUNDS;
 
   if (!hydrated) {
     return <PageLoading label={t('studioStash.loadingSession')} />;
@@ -154,7 +155,7 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
           <PageError
             title={t('studioStash.loadError')}
             description={loadError}
-            onRetry={() => setAttempt((n) => n + 1)}
+            onRetry={retry}
           />
         ) : items.length === 0 ? (
           <PageEmpty
@@ -168,28 +169,39 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
             }
           />
         ) : (
-          <ul className="mt-4 flex flex-col gap-2">
-            {items.map((item) => (
-              <li
-                key={item.id}
-                className="border-border flex items-center gap-3 rounded-lg border px-3 py-2"
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{item.title}</p>
-                  <p className="text-foreground-secondary text-xs">
-                    {item.contentType ?? 'Track'} · {item.status}
-                  </p>
-                </div>
-                <EditIconButton
-                  variant="text"
-                  label={t('studioStashViewLabels.editTitle', {
-                    title: item.title,
-                  })}
-                  onClick={() => setEditingId(item.id)}
+          <>
+            {loadError ? (
+              <div className="mt-4">
+                <PageErrorBanner
+                  title={t('pageStates.refreshFailed')}
+                  description={loadError}
+                  onRetry={retry}
                 />
-              </li>
-            ))}
-          </ul>
+              </div>
+            ) : null}
+            <ul className="mt-4 flex flex-col gap-2">
+              {items.map((item) => (
+                <li
+                  key={item.id}
+                  className="border-border flex items-center gap-3 rounded-lg border px-3 py-2"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{item.title}</p>
+                    <p className="text-foreground-secondary text-xs">
+                      {item.contentType ?? 'Track'} · {item.status}
+                    </p>
+                  </div>
+                  <EditIconButton
+                    variant="text"
+                    label={t('studioStashViewLabels.editTitle', {
+                      title: item.title,
+                    })}
+                    onClick={() => setEditingId(item.id)}
+                  />
+                </li>
+              ))}
+            </ul>
+          </>
         )}
       </StudioPanel>
     );
@@ -218,8 +230,10 @@ export function StudioStashView({ embedded = false }: { embedded?: boolean }) {
           soundId={editingId}
           onClose={() => setEditingId(null)}
           onSaved={(saved) =>
-            setItems((current) =>
-              current.map((item) => (item.id === saved.id ? saved : item)),
+            mutate((current) =>
+              (current ?? []).map((item) =>
+                item.id === saved.id ? saved : item,
+              ),
             )
           }
         />

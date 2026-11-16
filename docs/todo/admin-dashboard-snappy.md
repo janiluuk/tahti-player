@@ -18,6 +18,8 @@ The admin dashboard (`/admin`) takes a long time to load, every time it is opene
 
 - 2026-11-16, 10 more, the most visited views: channel (the channel and each section as its own snapshot; the profile lookup shares the artist page snapshot), artist profile, track detail, collection, event, Feed, Favorites (likes), Embeds (Studio → Music → Tracks), Following (Settings → Artist; extra pages kept through `mutate`) and Discover (a snapshot per widget via `peekSnapshot`/`saveSnapshot`, plus the artist directory). A failed refresh keeps the saved result and shows a "Could not refresh" banner (`pageStates.refreshFailed`).
 
+- 2026-11-16: the overview's chat and mail stats (`CommunityStatsPanel`) have their own snapshot and load next to the dashboard instead of after it; Listen's rows and sections, the Studio release page, Library History's "Across devices" and both Stash lists are on `useSnapshotFetch` too.
+
 ## Plan
 
 - [ ] Measure: what `/admin` fetches on open (`fetchAdminDashboard` and the panels' own calls), how long each takes, and whether the API side is the slow part (`../tahti-org`).

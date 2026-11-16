@@ -19,7 +19,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import * as discover from '../api/discover';
 import * as listen from '../api/listen';
 import type { AuthUser } from '../api/types';
-import { clearListenSectionCache } from '../components/listen-view/useListenSections';
+import { clearSnapshots } from '../lib/useSnapshotFetch';
 import { useAuthStore, type AuthUser } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import {
@@ -56,7 +56,7 @@ async function renderListen() {
 describe('ListenView sections', () => {
   beforeEach(() => {
     vi.stubEnv('VITE_FORCE_MOCK', '1');
-    clearListenSectionCache();
+    clearSnapshots();
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
   });
 
@@ -242,7 +242,7 @@ describe('ListenView sections', () => {
 describe('ListenView block order', () => {
   beforeEach(() => {
     vi.stubEnv('VITE_FORCE_MOCK', '1');
-    clearListenSectionCache();
+    clearSnapshots();
     vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null);
     useListenerWidgetsStore.setState({
       instances: [],

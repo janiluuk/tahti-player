@@ -3,6 +3,7 @@ import { i18n } from '@tahti-player/i18n';
 import type { FetchMeta } from '../client';
 import { apiBase } from '../http';
 import { DEMO_MP3 } from '../mock';
+import { mockFixture } from '../mock-overrides';
 import { getMockUploadedSound, patchMockUploadedSound } from '../mock-uploads';
 import {
   allowMockFallback,
@@ -110,7 +111,8 @@ export async function fetchStudioSound(id: string): Promise<{
   meta: FetchMeta;
 }> {
   if (isForceMock()) {
-    const item = mockSoundStore.find((a) => a.id === id) ?? {
+    const store = mockFixture('studioSounds', [...mockSoundStore]);
+    const item = store.find((a) => a.id === id) ?? {
       ...mockSoundStore[0]!,
       id,
       title: `Mock ${id}`,
