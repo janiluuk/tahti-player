@@ -3,7 +3,7 @@ import { StudioScheduleView } from '@tahti-web/views/studio/StudioScheduleView';
 import { expect, userEvent, within } from 'storybook/test';
 
 import { withToaster } from './_fixtures/track-release';
-import { withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { findToast, withinBody } from './_lib/play';
 
 const meta: Meta<typeof StudioScheduleView> = {
@@ -27,7 +27,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 export const ChannelProgramme: Story = {
-  decorators: [withToaster()],
+  decorators: [withToaster(), withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(

@@ -36,7 +36,7 @@ const movedSettings: RouteVisit[] = [
 const settingsSections: RouteVisit[] = [
   { path: '/settings', heading: /^Account$/, url: /\/settings\/account$/ },
   { path: '/settings/account', heading: /^Account$/ },
-  { path: '/settings/playback', heading: /^Playback$/ },
+  { path: '/settings/playback', heading: 'Playback & language' },
   { path: '/settings/integrations', heading: /^Integrations$/ },
   { path: '/settings/themes', heading: /^Themes$/ },
   { path: '/settings/plugin-store', heading: /^Add-ons$/ },
@@ -84,7 +84,7 @@ const oldStudioBookmarks: RouteVisit[] = [
   {
     path: '/studio/moderation',
     heading: /^Fans$/,
-    url: /\/studio\/fans$/,
+    url: /\/studio\/fans\?tab=chat$/,
   },
 ];
 
