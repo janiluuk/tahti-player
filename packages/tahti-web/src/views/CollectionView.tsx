@@ -42,7 +42,12 @@ import {
 } from '../components/EntitySocialHeader';
 import { OwnerCollectionSortSounds } from '../components/OwnerCollectionSortSounds';
 import { PageFrame } from '../components/PageHeader';
-import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../components/PageStates';
 import { ReportButton } from '../components/ReportButton';
 import { RssFeedButton } from '../components/RssFeedButton';
 import { Eyebrow } from '../components/tahti/Eyebrow';
@@ -53,6 +58,7 @@ import { contrastingText } from '../lib/colorScheme';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
 import { syncDocumentMetadata } from '../lib/seo';
 import { useDominantColor } from '../lib/useDominantColor';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
 import { usePlayerStore } from '../stores/playerStore';
@@ -114,12 +120,14 @@ function contributionsByPlayableId(
 
 export function CollectionView({ slug }: { slug: string }) {
   const { t } = useTranslation('web');
-  const [collection, setCollection] = useState<
+  const {
+    data: collection,
+    loading,
+    error: loadError,
+    retry,
+  } = useSnapshotFetch<
     (PublicCollection & Partial<CollectionTextLayer>) | null
-  >(null);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
+  >(`collection:${slug}`, async () => apiResult(await fetchCollection(slug)));
   const me = useAuthStore((s) => s.user);
   const play = usePlayerStore((s) => s.play);
   const enqueue = usePlayerStore((s) => s.enqueue);
@@ -137,47 +145,23 @@ export function CollectionView({ slug }: { slug: string }) {
   const [subscriptionBusy, setSubscriptionBusy] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setLoadError(null);
-    void fetchCollection(slug)
-      .then((res) => {
-        if (cancelled) {
-          return;
-        }
-        setCollection(res.data);
-        setLoadError(
-          res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
-        );
-        if (res.data) {
-          syncDocumentMetadata(window.location.pathname, {
-            title: `${res.data.name} by ${res.data.user.displayName} on Tahti`,
-            description:
-              res.data.description ??
-              `Listen to ${res.data.name}, a collection by ${res.data.user.displayName} on Tahti.`,
-            image: res.data.coverUrl ?? placeholderArtworkUrl(res.data.slug),
-          });
-        }
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          setCollection(null);
-          setLoadError(
-            err instanceof Error
-              ? err.message
-              : 'Could not load this collection.',
-          );
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [slug, attempt]);
+    if (!collection) {
+      return;
+    }
+    syncDocumentMetadata(window.location.pathname, {
+      title: `${collection.name} by ${collection.user.displayName} on Tahti`,
+      description:
+        collection.description ??
+        `Listen to ${collection.name}, a collection by ${collection.user.displayName} on Tahti.`,
+      image: collection.coverUrl ?? placeholderArtworkUrl(collection.slug),
+    });
+  }, [
+    collection?.name,
+    collection?.user.displayName,
+    collection?.description,
+    collection?.coverUrl,
+    collection?.slug,
+  ]);
 
   useEffect(() => {
     let cancelled = false;
@@ -218,12 +202,12 @@ export function CollectionView({ slug }: { slug: string }) {
     return <PageLoading label={t('collectionPage.loading')} />;
   }
 
-  if (loadError) {
+  if (loadError && !collection) {
     return (
       <PageError
         title={t('collectionPage.loadError')}
         description={loadError}
-        onRetry={() => setAttempt((n) => n + 1)}
+        onRetry={retry}
       />
     );
   }
@@ -277,13 +261,6 @@ export function CollectionView({ slug }: { slug: string }) {
     }
   };
 
-  const reloadCollection = () =>
-    void fetchCollection(slug).then((res) => {
-      if (res.data) {
-        setCollection(res.data);
-      }
-    });
-
   const queueAll = () => {
     for (const item of playables) {
       enqueue(item);
@@ -335,6 +312,13 @@ export function CollectionView({ slug }: { slug: string }) {
             aria-label={t('collectionView.backToListen')}
           />
         </Tooltip>
+        {loadError ? (
+          <PageErrorBanner
+            title={t('pageStates.refreshFailed')}
+            description={loadError}
+            onRetry={retry}
+          />
+        ) : null}
 
         <EntitySocialHeader
           title={collection.name}
@@ -406,10 +390,7 @@ export function CollectionView({ slug }: { slug: string }) {
               {t('actions.startJam')}
             </Button>
             {isOwner ? (
-              <OwnerCollectionSortSounds
-                slug={slug}
-                onSaved={reloadCollection}
-              />
+              <OwnerCollectionSortSounds slug={slug} onSaved={retry} />
             ) : null}
             {!isOwner ? (
               <Button
@@ -527,7 +508,7 @@ export function CollectionView({ slug }: { slug: string }) {
             existingSoundIds={collection.items.flatMap((item) =>
               item.sound ? [item.sound.id] : [],
             )}
-            onAdded={reloadCollection}
+            onAdded={retry}
           />
         ) : null}
       </PageFrame>

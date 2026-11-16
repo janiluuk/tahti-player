@@ -11,6 +11,7 @@ import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as discoverApi from '../api/discover';
 import type { AuthUser } from '../api/types';
 import { allOrSpecific } from '../lib/allOrSpecific';
 import { parseDiscoverSearch } from '../lib/discoverTabs';
@@ -61,6 +62,8 @@ function createDiscoverRouter(initialEntry: string) {
   });
 }
 
+const mountedRoots: Root[] = [];
+
 async function renderDiscover(path: string): Promise<{
   container: HTMLDivElement;
   root: Root;
@@ -68,6 +71,7 @@ async function renderDiscover(path: string): Promise<{
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
+  mountedRoots.push(root);
   const router = createDiscoverRouter(path);
   await act(async () => {
     root.render(<RouterProvider router={router} />);
@@ -119,7 +123,11 @@ describe('DiscoverView', () => {
   });
 
   afterEach(() => {
+    for (const root of mountedRoots.splice(0)) {
+      act(() => root.unmount());
+    }
     document.body.replaceChildren();
+    vi.restoreAllMocks();
     vi.unstubAllEnvs();
     vi.unstubAllGlobals();
   });
@@ -198,6 +206,67 @@ describe('DiscoverView', () => {
     expect(
       container.querySelector('[aria-label="Browse artists"]'),
     ).not.toBeNull();
+  });
+
+  describe('widget snapshots', () => {
+    const widgetText = (container: HTMLElement) =>
+      container.querySelector('[data-widget-id="latest-tracks"]')
+        ?.textContent ?? '';
+
+    beforeEach(() => {
+      useDiscoverStore.setState({ enabledWidgets: ['latest-tracks'] });
+    });
+
+    it('shows the last loaded widget at once on a revisit', async () => {
+      const first = await renderDiscover('/discover');
+      const loaded = widgetText(first.container);
+      act(() => first.root.unmount());
+      mountedRoots.splice(mountedRoots.indexOf(first.root), 1);
+
+      vi.spyOn(discoverApi, 'fetchLatestTracks').mockReturnValue(
+        new Promise(() => {}),
+      );
+      const second = await renderDiscover('/discover');
+
+      expect(widgetText(second.container)).toBe(loaded);
+      expect(
+        second.container.querySelector(
+          '[data-widget-id="latest-tracks"] [role="status"]',
+        ),
+      ).toBeNull();
+    });
+
+    it('keeps the saved widget and flags a failed refresh', async () => {
+      const first = await renderDiscover('/discover');
+      const loaded = widgetText(first.container);
+      act(() => first.root.unmount());
+      mountedRoots.splice(mountedRoots.indexOf(first.root), 1);
+
+      vi.spyOn(discoverApi, 'fetchLatestTracks').mockResolvedValue({
+        data: [],
+        meta: { source: 'api', reason: 'HTTP 503' },
+      });
+      const second = await renderDiscover('/discover');
+
+      expect(widgetText(second.container)).toBe(loaded);
+      expect(second.container.textContent).toContain(
+        'Could not refresh; showing the last loaded version.',
+      );
+      expect(second.container.textContent).toContain('HTTP 503');
+    });
+
+    it('shows the widget error when nothing was saved', async () => {
+      vi.spyOn(discoverApi, 'fetchLatestTracks').mockResolvedValue({
+        data: [],
+        meta: { source: 'api', reason: 'HTTP 503' },
+      });
+      const { container } = await renderDiscover('/discover');
+
+      expect(widgetText(container)).toContain('HTTP 503');
+      expect(container.textContent).not.toContain(
+        'Could not refresh; showing the last loaded version.',
+      );
+    });
   });
 
   it.each([

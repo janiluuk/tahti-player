@@ -72,7 +72,7 @@ import {
 import { DiscoverGatewayBackground } from '../components/DiscoverGatewayBackground';
 import { GroupsDirectory } from '../components/GroupsDirectory';
 import { HomeNews } from '../components/listen-view/HomeNews';
-import { PageError } from '../components/PageStates';
+import { PageError, PageErrorBanner } from '../components/PageStates';
 import {
   PHONE_SCROLL_TAB_LIST,
   useSelectedTabInView,
@@ -83,6 +83,12 @@ import { hasAccountRole } from '../lib/accountRoles';
 import { ALL_FILTER_ID, allOrSpecific } from '../lib/allOrSpecific';
 import { discoverTabFromSearch, type DiscoverTab } from '../lib/discoverTabs';
 import { PRESET_GENRES } from '../lib/genres';
+import {
+  apiResult,
+  peekSnapshot,
+  saveSnapshot,
+  useSnapshotFetch,
+} from '../lib/useSnapshotFetch';
 import { useAuthStore } from '../stores/authStore';
 import {
   ALL_WIDGET_IDS,
@@ -91,6 +97,8 @@ import {
 } from '../stores/discoverStore';
 import { usePlayerStore } from '../stores/playerStore';
 
+const NO_ARTISTS: ChannelDirectoryItem[] = [];
+
 function apiReason(meta: FetchMeta): string | null {
   return meta.source === 'api' ? (meta.reason ?? null) : null;
 }
@@ -98,6 +106,7 @@ function apiReason(meta: FetchMeta): string | null {
 type WidgetData = {
   loading: boolean;
   error?: string | null;
+  refreshError?: string | null;
   items: DiscoverTrackItem[];
   collections?: DiscoverCollection[];
   releases?: LatestRelease[];
@@ -161,15 +170,28 @@ export function DiscoverView() {
   const play = usePlayerStore((state) => state.play);
   const user = useAuthStore((state) => state.user);
   const isAdmin = hasAccountRole(user, 'BOARD');
-  const [data, setData] = useState<Record<string, WidgetData>>({});
+  const viewerId = user?.id ?? null;
+  const widgetKey = (id: DiscoverWidgetId) =>
+    `discover-widget:${id}:${JSON.stringify([
+      viewerId,
+      genreFilter,
+      contentTypeFilter,
+      randomArtistRotationDays,
+      randomTrackGenres,
+    ])}`;
+  const [data, setData] = useState<Record<string, WidgetData>>(() =>
+    Object.fromEntries(
+      enabledWidgets.flatMap((id) => {
+        const saved = peekSnapshot<WidgetData>(widgetKey(id));
+        return saved ? [[id, saved]] : [];
+      }),
+    ),
+  );
   const [genresOpen, setGenresOpen] = useState(false);
   const [contentTypesOpen, setContentTypesOpen] = useState(false);
   const [selectedTrack, setSelectedTrack] = useState<DiscoverSelection | null>(
     null,
   );
-  const [artists, setArtists] = useState<ChannelDirectoryItem[]>([]);
-  const [artistsLoading, setArtistsLoading] = useState(true);
-  const [artistsError, setArtistsError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const search = useSearch({ strict: false }) as {
     tab?: string;
@@ -187,30 +209,26 @@ export function DiscoverView() {
     [genreFilter, contentTypeFilter],
   );
 
-  useEffect(() => {
-    let cancelled = false;
-    setArtistsLoading(true);
-    void fetchDirectory().then((result) => {
-      if (!cancelled) {
-        setArtists(
-          result.data.items.filter((artist) => artist.slug !== 'tahti-radio'),
-        );
-        setArtistsError(apiReason(result.meta));
-        setArtistsLoading(false);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [contentTypeFilter, genreFilter, randomArtistRotationDays, reloadKey]);
+  const directory = useSnapshotFetch<ChannelDirectoryItem[]>(
+    'discover-artists',
+    async () =>
+      apiResult(await fetchDirectory()).items.filter(
+        (artist) => artist.slug !== 'tahti-radio',
+      ),
+  );
+  const artists = directory.data ?? NO_ARTISTS;
+  const artistsLoading = directory.loading;
+  const artistsError = directory.data ? null : directory.error;
 
   useEffect(() => {
     let cancelled = false;
 
     for (const id of enabledWidgets) {
+      const key = widgetKey(id);
+      const saved = peekSnapshot<WidgetData>(key);
       setData((prev) => ({
         ...prev,
-        [id]: { loading: true, items: prev[id]?.items ?? [] },
+        [id]: saved ?? { loading: true, items: prev[id]?.items ?? [] },
       }));
 
       const load = async (): Promise<WidgetData> => {
@@ -333,9 +351,19 @@ export function DiscoverView() {
       };
 
       void load().then((result) => {
-        if (!cancelled) {
-          setData((prev) => ({ ...prev, [id]: result }));
+        if (cancelled) {
+          return;
         }
+        if (!result.error) {
+          saveSnapshot(key, result);
+        }
+        setData((prev) => ({
+          ...prev,
+          [id]:
+            result.error && saved
+              ? { ...saved, refreshError: result.error }
+              : result,
+        }));
       });
     }
 
@@ -348,6 +376,7 @@ export function DiscoverView() {
     randomArtistRotationDays,
     randomTrackGenres,
     reloadKey,
+    viewerId,
   ]);
 
   const shuffleRandomTrack = () =>
@@ -366,6 +395,11 @@ export function DiscoverView() {
           }
         : prev;
     });
+
+  const widgetRefreshError =
+    enabledWidgets
+      .map((id) => data[id]?.refreshError)
+      .find((reason) => reason) ?? null;
 
   const availableToAdd = ALL_WIDGET_IDS.filter(
     (id) => !enabledWidgets.includes(id),
@@ -565,6 +599,14 @@ export function DiscoverView() {
           </div>
         ) : null}
 
+        {activeTab === 'discover' && widgetRefreshError ? (
+          <PageErrorBanner
+            title={t('pageStates.refreshFailed')}
+            description={widgetRefreshError}
+            onRetry={() => setReloadKey((n) => n + 1)}
+          />
+        ) : null}
+
         {activeTab === 'discover' && columnWidgets.length > 0 && (
           <Masonry data-testid="discover-widget-columns">
             {columnWidgets.map((id, index) => {
@@ -651,7 +693,7 @@ export function DiscoverView() {
           <PageError
             title={t('discover.artistDirectoryError')}
             description={artistsError}
-            onRetry={() => setReloadKey((n) => n + 1)}
+            onRetry={directory.retry}
           />
         ) : activeTab === 'artists' ? (
           <DirectoryArtistsBrowser

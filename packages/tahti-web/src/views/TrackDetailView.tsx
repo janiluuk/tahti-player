@@ -4,7 +4,12 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Dialog, Input } from '@tahti-player/ui';
 
 import { AddToPlaylistPanel } from '../components/AddToPlaylistPanel';
-import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../components/PageStates';
 import { TrackEditDialog } from '../components/TrackEditDialog';
 import { buildTrackPage } from './track-detail/buildTrackPage';
 import { DownloadGateDialog } from './track-detail/DownloadGateDialog';
@@ -83,6 +88,15 @@ export function TrackDetailView({
       className="-mx-6 -mt-6 min-h-full md:-mx-8 md:-mt-8"
       data-testid="track-listen-page"
     >
+      {loadError ? (
+        <div className="px-6 pt-6 md:px-8 md:pt-8">
+          <PageErrorBanner
+            title={translate('pageStates.refreshFailed')}
+            description={loadError}
+            onRetry={retryLoad}
+          />
+        </div>
+      ) : null}
       <TrackHero page={page} />
 
       <TrackBody page={page} />

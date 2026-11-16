@@ -1,5 +1,4 @@
 import { CalendarPlusIcon, RssIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -18,27 +17,24 @@ import {
   type CalendarEvent,
 } from '../api/event-calendar';
 import { EventCard } from '../components/events/EventCard';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import {
+  PageEmpty,
+  PageErrorBanner,
+  PageLoading,
+} from '../components/PageStates';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 /** Public page for one published or cancelled event (`/events/$eventId`). */
 export function EventView({ eventId }: { eventId: string }) {
   const { t } = useTranslation('web');
-  const [event, setEvent] = useState<CalendarEvent | null | undefined>(
-    undefined,
+  const {
+    data: event,
+    loading,
+    error,
+    retry,
+  } = useSnapshotFetch<CalendarEvent | null>(`event:${eventId}`, async () =>
+    apiResult(await fetchPublicEvent(eventId)),
   );
-
-  useEffect(() => {
-    let cancelled = false;
-    setEvent(undefined);
-    void fetchPublicEvent(eventId).then((result) => {
-      if (!cancelled) {
-        setEvent(result.data);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [eventId]);
 
   const corner = (
     <Tooltip
@@ -54,14 +50,14 @@ export function EventView({ eventId }: { eventId: string }) {
     </Tooltip>
   );
 
-  if (event === undefined) {
+  if (loading) {
     return (
       <ViewShell title={t('events.calendar')} corner={corner}>
         <PageLoading label={t('events.loading')} />
       </ViewShell>
     );
   }
-  if (event === null) {
+  if (!event) {
     return (
       <ViewShell title={t('events.calendar')} corner={corner}>
         <PageEmpty
@@ -80,6 +76,13 @@ export function EventView({ eventId }: { eventId: string }) {
       data-testid="event-page"
       classes={{ content: 'mx-auto w-full max-w-2xl gap-4' }}
     >
+      {error ? (
+        <PageErrorBanner
+          title={t('pageStates.refreshFailed')}
+          description={error}
+          onRetry={retry}
+        />
+      ) : null}
       <EventCard
         event={event}
         host={{

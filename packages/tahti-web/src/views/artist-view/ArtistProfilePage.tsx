@@ -25,7 +25,6 @@ import {
 } from '@tahti-player/ui';
 
 import { resolvePublicVisualizerPreset } from '../../api/channel-design';
-import { fetchProfile } from '../../api/client';
 import type { FollowListDirection } from '../../api/follows';
 import { artistLogo } from '../../api/profile-logo';
 import type { PublicProfileRelease, TahtiPlayable } from '../../api/types';
@@ -62,7 +61,12 @@ import { ChannelVisualizer } from '../../components/ChannelVisualizer';
 import { type EntitySocialStat } from '../../components/EntitySocialHeader';
 import { FollowListDialog } from '../../components/FollowListDialog';
 import { ImageLightbox } from '../../components/ImageLightbox';
-import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../../components/PageStates';
 import { QueueConfirmDialog } from '../../components/QueueConfirmDialog';
 import {
   releasePlayables,
@@ -118,7 +122,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
   const isOwnerEarly = isSelfEarly && (hasStudioAccess(me) || !profileLoaded);
   const {
     profile,
-    setProfile,
+    updateProfile,
     loading,
     loadError,
     retry,
@@ -247,7 +251,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
     return <PageLoading label={t('loading.loadingArtist')} />;
   }
 
-  if (loadError) {
+  if (loadError && !profile) {
     return (
       <PageError
         title={t('loadErrors.couldNotLoadThisArtist')}
@@ -401,6 +405,13 @@ export function ArtistProfilePage({ username }: { username: string }) {
       {artist.showPageHero === false ? (
         <div className={backButtonCornerClassName}>{backToListen}</div>
       ) : null}
+      {loadError ? (
+        <PageErrorBanner
+          title={t('pageStates.refreshFailed')}
+          description={loadError}
+          onRetry={retry}
+        />
+      ) : null}
 
       <ArtistPageHero
         hidden={artist.showPageHero === false}
@@ -507,7 +518,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
           discoWidgets={discoWidgets}
           surfaceStyle={sectionSurfaceStyle}
           onFullBioSaved={(fullBio) =>
-            setProfile((prev) =>
+            updateProfile((prev) =>
               prev ? { ...prev, artist: { ...prev.artist, fullBio } } : prev,
             )
           }
@@ -703,11 +714,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
       <TrackEditDialog
         soundId={editingSoundId}
         onClose={() => setEditingSoundId(null)}
-        onSaved={() => {
-          void fetchProfile(username)
-            .then((res) => setProfile(res.data))
-            .catch(() => undefined);
-        }}
+        onSaved={retry}
       />
 
       {avatarOpen && artist.avatarUrl ? (

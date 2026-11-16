@@ -1,5 +1,5 @@
 import { LinkIcon } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, FilterChips } from '@tahti-player/ui';
@@ -11,12 +11,18 @@ import { EmbedTrackRow } from '../components/EmbedTrackRow';
 import { LibraryFilteredEmpty } from '../components/library/LibraryFilteredEmpty';
 import { LibrarySectionToolbar } from '../components/library/LibrarySectionToolbar';
 import { LibrarySortSelect } from '../components/library/LibrarySortSelect';
-import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../components/PageStates';
 import { SoundCloudEmbedsPanel } from '../components/SoundCloudEmbedsPanel';
 import { SourceServiceIcon } from '../components/SourceServiceIcon';
 import { EMBED_PROVIDER_LABEL, type EmbedProvider } from '../lib/embedSrc';
 import { sortLibraryItems, type LibrarySort } from '../lib/librarySort';
 import { persistSoftCover } from '../lib/persistSoftCover';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 
 const PROVIDER_SOURCE_ICON_ID: Record<EmbedProvider, IntegrationId> = {
   HEARTHIS: 'hearthis',
@@ -40,35 +46,22 @@ const isEmbedItem = (item: StudioSound): item is EmbedItem =>
  * Tahti-hosted audio in the regular Tracks list. */
 export function LibraryEmbedsView() {
   const { t } = useTranslation('web');
-  const [items, setItems] = useState<StudioSound[] | null>(null);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
+  const {
+    data: items,
+    loading,
+    error: loadError,
+    retry,
+  } = useSnapshotFetch<EmbedItem[]>('library-embeds', async () =>
+    apiResult(await fetchStudioSounds()).filter(isEmbedItem),
+  );
   const [providerFilter, setProviderFilter] = useState<string>('ALL');
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState<LibrarySort>('newest');
-
-  useEffect(() => {
-    let cancelled = false;
-    void fetchStudioSounds().then((result) => {
-      if (!cancelled) {
-        setLoadError(
-          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
-        );
-        setItems(result.data);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [attempt]);
 
   const groups = useMemo(() => {
     const needle = query.trim().toLowerCase();
     const byProvider = new Map<EmbedProvider, EmbedItem[]>();
     for (const item of items ?? []) {
-      if (!isEmbedItem(item)) {
-        continue;
-      }
       if (providerFilter !== 'ALL' && item.embedProvider !== providerFilter) {
         continue;
       }
@@ -100,9 +93,7 @@ export function LibraryEmbedsView() {
   const providerChips = useMemo(() => {
     const ids = new Set<EmbedProvider>();
     for (const item of items ?? []) {
-      if (isEmbedItem(item)) {
-        ids.add(item.embedProvider);
-      }
+      ids.add(item.embedProvider);
     }
     return [
       { id: 'ALL', label: 'All' },
@@ -114,11 +105,11 @@ export function LibraryEmbedsView() {
     ];
   }, [items]);
 
-  if (items === null) {
+  if (loading) {
     return <PageLoading label={t('loading.loadingEmbeds')} />;
   }
 
-  const hasAnyEmbeds = (items ?? []).some(isEmbedItem);
+  const hasAnyEmbeds = (items ?? []).length > 0;
 
   return (
     <div className="flex flex-col gap-8">
@@ -145,17 +136,21 @@ export function LibraryEmbedsView() {
           />
         </LibrarySectionToolbar>
       ) : null}
-      {loadError ? (
+      {loadError && items ? (
+        <PageErrorBanner
+          title={t('pageStates.refreshFailed')}
+          description={loadError}
+          onRetry={retry}
+        />
+      ) : null}
+      {loadError && !items ? (
         <PageError
           title={t('library.embedsLoadError')}
           description={loadError}
-          onRetry={() => {
-            setItems(null);
-            setAttempt((n) => n + 1);
-          }}
+          onRetry={retry}
         />
       ) : null}
-      {!loadError && groups.length === 0 ? (
+      {items && groups.length === 0 ? (
         hasAnyEmbeds ? (
           <LibraryFilteredEmpty
             noun="embeds"

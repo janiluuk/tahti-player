@@ -63,4 +63,41 @@ describe('LibraryEmbedsView', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Clear search' }));
     expect(screen.getByText('Harbour Dub')).toBeTruthy();
   });
+
+  it('shows the last loaded embeds at once and keeps them when the refresh fails', async () => {
+    const harbour = {
+      data: [
+        {
+          id: 'e1',
+          title: 'Harbour Dub',
+          embedProvider: 'MIXCLOUD',
+          embedUri: 'https://www.mixcloud.com/ada/harbour-dub/',
+        },
+      ],
+      meta: { source: 'api' },
+    } as never;
+    const fetch = vi
+      .spyOn(studio, 'fetchStudioSounds')
+      .mockResolvedValue(harbour);
+    const first = await renderWithRouter(<LibraryEmbedsView />);
+    expect(await screen.findByText('Harbour Dub')).toBeTruthy();
+    first.unmount();
+
+    fetch.mockReturnValue(new Promise(() => {}));
+    const second = await renderWithRouter(<LibraryEmbedsView />);
+    expect(screen.getByText('Harbour Dub')).toBeTruthy();
+    second.unmount();
+
+    fetch.mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await renderWithRouter(<LibraryEmbedsView />);
+    expect(
+      await screen.findByText(
+        'Could not refresh; showing the last loaded version.',
+      ),
+    ).toBeTruthy();
+    expect(screen.getByText('Harbour Dub')).toBeTruthy();
+  });
 });

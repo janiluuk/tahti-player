@@ -34,6 +34,16 @@ function writeSnapshot<T>(key: string, value: T) {
   }
 }
 
+/** The saved value for `key`, for views that keep several snapshots in one
+ * state (one per widget) instead of one `useSnapshotFetch` each. */
+export function peekSnapshot<T>(key: string): T | null {
+  return readSnapshot<T>(key)?.value ?? null;
+}
+
+export function saveSnapshot<T>(key: string, value: T) {
+  writeSnapshot(key, value);
+}
+
 export function clearSnapshots() {
   memory.clear();
   try {

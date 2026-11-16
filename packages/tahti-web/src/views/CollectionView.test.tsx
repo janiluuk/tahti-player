@@ -269,3 +269,33 @@ describe('CollectionView load errors', () => {
     expect(screen.getByText('boom')).toBeTruthy();
   });
 });
+
+describe('CollectionView snapshot', () => {
+  it('shows the last loaded collection at once on a revisit', async () => {
+    collection = makeCollection([item(1)]);
+    await renderView();
+    cleanup();
+
+    fetchCollectionImpl = () => new Promise(() => {});
+    await mountView();
+    expect(screen.getByText('Track 1')).toBeTruthy();
+    expect(screen.queryByText('Loading collection…')).toBeNull();
+  });
+
+  it('keeps the saved collection and says the refresh failed', async () => {
+    collection = makeCollection([item(1)]);
+    await renderView();
+    cleanup();
+
+    fetchCollectionImpl = async () => {
+      throw new Error('HTTP 503');
+    };
+    await mountView();
+    expect(
+      await screen.findByText(
+        'Could not refresh; showing the last loaded version.',
+      ),
+    ).toBeTruthy();
+    expect(screen.getByText('Track 1')).toBeTruthy();
+  });
+});

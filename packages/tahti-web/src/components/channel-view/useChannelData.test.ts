@@ -124,6 +124,38 @@ describe('useChannelData', () => {
     expect(result.current.channelFailed).toBe(false);
   });
 
+  it('renders the last loaded channel and tracks at once on a revisit', async () => {
+    const first = renderHook(() => useChannelData('northern-lights', 0));
+    await waitFor(() =>
+      expect(first.result.current.sectionStatus.sounds).toBe('ready'),
+    );
+    first.unmount();
+
+    vi.spyOn(client, 'fetchChannel').mockImplementation(never);
+    vi.spyOn(client, 'fetchChannelSound').mockImplementation(never);
+    const { result } = renderHook(() => useChannelData('northern-lights', 0));
+    expect(result.current.loading).toBe(false);
+    expect(result.current.channel?.slug).toBe('northern-lights');
+    expect(result.current.sectionStatus.sounds).toBe('ready');
+    expect(result.current.sounds.length).toBeGreaterThan(0);
+  });
+
+  it('keeps the saved channel and reports the failed refresh', async () => {
+    const first = renderHook(() => useChannelData('northern-lights', 0));
+    await waitFor(() => expect(first.result.current.loading).toBe(false));
+    first.unmount();
+
+    vi.spyOn(client, 'fetchChannel').mockRejectedValue(
+      new TypeError('Failed to fetch'),
+    );
+    const { result } = renderHook(() => useChannelData('northern-lights', 0));
+    await waitFor(() =>
+      expect(result.current.refreshError).toBe('Failed to fetch'),
+    );
+    expect(result.current.channel?.slug).toBe('northern-lights');
+    expect(result.current.channelFailed).toBe(false);
+  });
+
   it('reports a network failure and retries the channel', async () => {
     const fetchSpy = vi
       .spyOn(client, 'fetchChannel')

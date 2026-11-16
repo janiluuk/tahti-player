@@ -6981,7 +6981,8 @@
     },
     "pageStates": {
       "retry": "Retry",
-      "loadingPage": "Loading page"
+      "loadingPage": "Loading page",
+      "refreshFailed": "Could not refresh; showing the last loaded version."
     },
     "mpdIntegrationRow": {
       "mpdServer": "MPD server",

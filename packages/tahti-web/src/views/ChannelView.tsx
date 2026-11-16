@@ -55,7 +55,11 @@ import { StreamManagerDialog } from '../components/channel-view/StreamManagerDia
 import { useChannelPlayables } from '../components/channel-view/useChannelPlayables';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
 import { EntitySocialHeader } from '../components/EntitySocialHeader';
-import { PageError, PageLoading } from '../components/PageStates';
+import {
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../components/PageStates';
 import { RadioStationDial } from '../components/radio/RadioStationDial';
 import { listenerWidgetType } from '../content/listenerWidgets';
 import { useChannelAutoplay } from '../hooks/useChannelAutoplay';
@@ -125,6 +129,7 @@ export function ChannelView({ slug }: { slug: string }) {
     storefront,
     loading,
     channelFailed,
+    refreshError,
     retryChannel,
     sectionStatus,
     retrySection,
@@ -611,6 +616,13 @@ export function ChannelView({ slug }: { slug: string }) {
       <div className="relative z-10 flex w-full flex-col gap-1.5 px-4 py-3 sm:px-6 sm:py-4">
         {!editing && !heroVisible && !headerShown ? (
           <div className={backButtonCornerClassName}>{backButton}</div>
+        ) : null}
+        {refreshError ? (
+          <PageErrorBanner
+            title={t('pageStates.refreshFailed')}
+            description={refreshError}
+            onRetry={retryChannel}
+          />
         ) : null}
         {!heroVisible && <ChannelTopBar text={channel.topBarText} />}
         {!heroVisible && (pageActions ?? featureSettings) ? (

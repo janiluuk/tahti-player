@@ -188,4 +188,28 @@ describe('FeedView', () => {
       await screen.findByRole('heading', { name: 'Latest News' }),
     ).toBeTruthy();
   });
+
+  it('shows the last loaded feed at once and keeps it when the refresh fails', async () => {
+    await renderFeed();
+    expect(await screen.findByText('Thursday show moved')).toBeTruthy();
+    cleanup();
+
+    const fetch = vi
+      .spyOn(client, 'fetchFeed')
+      .mockReturnValue(new Promise(() => {}));
+    await renderFeed();
+    expect(screen.getByText('Thursday show moved')).toBeTruthy();
+    expect(screen.queryByText('Loading your feed…')).toBeNull();
+    cleanup();
+
+    fetch.mockResolvedValue({
+      data: { followingCount: 0, items: [] },
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await renderFeed();
+    expect(
+      await screen.findByText('Could not refresh your feed.'),
+    ).toBeTruthy();
+    expect(screen.getByText('Thursday show moved')).toBeTruthy();
+  });
 });
