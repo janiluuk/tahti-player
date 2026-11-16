@@ -3,11 +3,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from '@tahti-player/i18n';
 import { StoryCard, StoryRow } from '@tahti-player/ui';
 
-import {
-  POST_CATEGORY_LABELS,
-  type CommunityStory,
-} from '../api/community-stories';
+import type { CommunityStory } from '../api/community-stories';
 import { fetchChannelPosts, type ArtistPost } from '../api/studio-extras/posts';
+import { postCategoryLabel } from '../lib/postLabels';
 import { storyDate } from '../lib/storyDate';
 import { CommunityStoryDialog } from './discover/CommunityStoryDialog';
 import { PageEmpty, PageLoading } from './PageStates';
@@ -49,12 +47,13 @@ export function artistPostStory(
 export function ArtistStoryFeed({
   posts,
   author,
-  title = 'Stories',
+  title,
 }: {
   posts: ArtistPost[];
   author: StoryAuthor;
   title?: string;
 }) {
+  const { t } = useTranslation('web');
   const [openId, setOpenId] = useState<string | null>(null);
   const stories = useMemo(
     () => posts.map((post) => artistPostStory(post, author)),
@@ -65,7 +64,10 @@ export function ArtistStoryFeed({
   }
   return (
     <>
-      <StoryRow title={title} data-testid="artist-story-feed">
+      <StoryRow
+        title={title ?? t('postLabels.stories')}
+        data-testid="artist-story-feed"
+      >
         {stories.map((story, index) => (
           <StoryCard
             key={story.id}
@@ -73,14 +75,18 @@ export function ArtistStoryFeed({
             imageSrc={story.imageUrl}
             artworkSeed={story.id}
             meta={[
-              POST_CATEGORY_LABELS[story.category] ?? 'Story',
+              postCategoryLabel(story.category, t),
               storyDate(story.publishAt),
             ]
               .filter(Boolean)
               .join(' · ')}
             title={story.title ?? story.excerpt}
             onOpen={() => setOpenId(story.id)}
-            openLabel={`Read ${story.title ?? 'story'}`}
+            openLabel={
+              story.title
+                ? t('feedStory.readTitle', { title: story.title })
+                : t('postLabels.readStory')
+            }
             excerpt={story.title ? story.excerpt : undefined}
             authorName={author.displayName || author.username}
             authorAvatarSrc={author.avatarUrl}

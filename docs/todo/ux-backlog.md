@@ -77,8 +77,3 @@ backlog).
     the empty-state duplicate of the header "+" are `secondary`; the header
     "+" and dialog submits stay primary (Playlists, Collections, Releases,
     Editor, Updates).
-
-## Found during the 2026-11-09 batches, not yet fixed
-
-- [ ] Studio Collections row "Play" tooltip is English-only (check against #1945 first).
-- [ ] Venue card subtitle (place, capacity) cut off on phones (check against #1945 first).

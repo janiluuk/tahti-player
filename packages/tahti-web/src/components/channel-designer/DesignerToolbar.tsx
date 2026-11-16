@@ -52,6 +52,7 @@ export function DesignerToolbar({
         <Popover.Menu>
           <Popover.Item
             icon={<BookmarkPlusIcon size={16} />}
+            closeOnClick
             onClick={onOpenSavePresetModal}
           >
             {t('designerToolbar.savePreset')}
@@ -59,6 +60,7 @@ export function DesignerToolbar({
           <Popover.Item
             icon={<RotateCcwIcon size={16} />}
             disabled={!dirty || busy}
+            closeOnClick
             onClick={onRequestReset}
           >
             {t('designerToolbar.reset')}

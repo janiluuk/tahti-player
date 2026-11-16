@@ -118,7 +118,18 @@ export function VenuesDirectory() {
                   {venue.name}
                 </Link>
               }
-              subtitle={[place, capacity].filter(Boolean).join(' · ')}
+              subtitle={
+                place || capacity ? (
+                  <>
+                    {place ? (
+                      <span className="block truncate">{place}</span>
+                    ) : null}
+                    {capacity ? (
+                      <span className="block truncate">{capacity}</span>
+                    ) : null}
+                  </>
+                ) : null
+              }
             />
           );
         })}

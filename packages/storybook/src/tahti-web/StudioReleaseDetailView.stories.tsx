@@ -57,7 +57,7 @@ export const Overview: Story = {
         canvas.getByRole('heading', { name: 'After Hours' }),
       ).toBeVisible(),
     );
-    await expect(canvas.getByText('ALBUM · PUBLISHED')).toBeVisible();
+    await expect(canvas.getByText('Album · Published')).toBeVisible();
     await expect(
       canvas.getByRole('button', { name: 'Published' }),
     ).toBeDisabled();

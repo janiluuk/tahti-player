@@ -104,7 +104,8 @@ describe('VenuesDirectory', () => {
     expect(
       container.querySelector('img[src="/artwork/kaiku.webp"]'),
     ).toBeTruthy();
-    expect(screen.getByText('Helsinki, 🇫🇮 Finland · cap. 300')).toBeTruthy();
+    expect(screen.getByText('Helsinki, 🇫🇮 Finland')).toBeTruthy();
+    expect(screen.getByText('cap. 300')).toBeTruthy();
   });
 
   it('offers Register a venue as a button link when there are none', async () => {

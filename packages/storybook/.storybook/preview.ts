@@ -29,7 +29,9 @@ import {
 // dialog and popover enter/leave) made assertions race them on busy CI
 // runners: "element is not visible" mid fade-in, a closing popover still in
 // the DOM. Motion is already reduced below; this does the same for CSS.
-if (import.meta.env.VITEST) {
+// @storybook/addon-vitest sets VITEST_STORYBOOK ("true" from the Storybook
+// UI, "false" from the CLI) in the browser; VITEST is only defined in Node.
+if (import.meta.env.VITEST_STORYBOOK !== undefined) {
   const style = document.createElement('style');
   style.setAttribute('data-storybook-test', 'no-animations');
   style.textContent =

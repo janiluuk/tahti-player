@@ -11,6 +11,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { Button, ButtonLink, Tooltip } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../api/studio-types';
+import { soundStatusLabel } from '../../lib/soundStatusLabel';
 import { AudioRevisionList } from '../AudioRevisionList';
 import { PlayerWaveform } from '../PlayerWaveform';
 import { StationIdClipForm } from './StationIdClipForm';
@@ -63,8 +64,11 @@ export function AudioTab({
         </p>
         <p className="text-foreground-secondary mt-3 text-xs">
           {item.durationSec != null
-            ? `${Math.round(item.durationSec / 60)} min · ${item.status}`
-            : 'Source details are available after processing.'}
+            ? t('soundStatus.minutesAndStatus', {
+                minutes: Math.round(item.durationSec / 60),
+                status: soundStatusLabel(item.status, t),
+              })
+            : t('soundStatus.detailsAfterProcessing')}
         </p>
         {!item.embedUri && item.status === 'READY' && (
           <div className="border-border mt-3 grid grid-cols-2 gap-x-4 gap-y-2 border-t pt-3 text-xs sm:grid-cols-3">

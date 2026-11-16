@@ -53,4 +53,14 @@ describe('AgmTab meeting records', () => {
     await userEvent.click(screen.getByRole('button', { name: 'Done editing' }));
     expect(screen.queryByLabelText('State')).not.toBeInTheDocument();
   });
+
+  it('shows the meeting state and roll-call line as words, not enums', async () => {
+    render(<AgmTab />);
+    await screen.findByRole('button', { name: 'Edit state of Spring AGM' });
+    expect(screen.getByText('Scheduled')).toBeInTheDocument();
+    expect(screen.queryByText('SCHEDULED')).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/Date not scheduled · 0 of 10 present/),
+    ).toBeInTheDocument();
+  });
 });
