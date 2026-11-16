@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildChannelPublicMetricRows } from './channelPublicMetrics';
+import { buildChannelPublicMetricRows } from './channelPublicMetricRows';
 
 const labels = {
   playsToday: 'Plays today',

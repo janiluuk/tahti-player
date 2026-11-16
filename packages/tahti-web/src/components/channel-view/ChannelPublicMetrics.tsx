@@ -5,7 +5,7 @@ import { dateLocaleTag } from '../../lib/locale';
 import {
   buildChannelPublicMetricRows,
   type ChannelPublicMetricRow,
-} from './channelPublicMetrics';
+} from './channelPublicMetricRows';
 
 export function ChannelPublicMetrics({
   channel,

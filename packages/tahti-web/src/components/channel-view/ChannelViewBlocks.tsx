@@ -27,7 +27,7 @@ import { SocialLinkIcon } from '../SocialLinkIcon';
 import { Eyebrow } from '../tahti/Eyebrow';
 import { ChannelCatalogSections } from './ChannelCatalogSections';
 import { ChannelPublicMetrics } from './ChannelPublicMetrics';
-import { buildChannelPublicMetricRows } from './channelPublicMetrics';
+import { buildChannelPublicMetricRows } from './channelPublicMetricRows';
 import type { ChannelTrackMeta } from './channelTrackMeta';
 import { RadioProgrammingGrid } from './RadioProgrammingGrid';
 import type { ChannelSection, ChannelSectionStatus } from './useChannelData';
