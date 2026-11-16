@@ -72,6 +72,8 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 
 ## Left
 
+- Listen widgets (2026-11-16): add-on descriptions, help text and the Streaming category (`web.listenerWidgetTypes`, read through getters on `LISTENER_WIDGET_TYPES` so the module list follows the language), pasted-link errors (`web.listenerWidgetInput`), Spotify fallbacks and the unrecognised-link notice (`web.listenerWidgetEmbedText`), and the saved-station card Play and Internet radio labels (`web.listenerWidgetsSectionText`).
+
 - Listen reorder chrome (2026-11-11): `web.listenSection` loading/error, `web.listenLayout` remove/reset/add-back/empty, `web.removeWidgetDialog` title/detail. Finnish differs from English.
 - [ ] Notification **item** title/body from the API. Hardcoded `toast.*(English literal)` call sites cleared through batch 48; ConfirmDialogs through 49; PageEmpty / PageError titles and descriptions done through batch 57 (`web.empties.*`, `web.loadErrors.*`); `PageLoading` labels through batch 58 (`web.loading.*`, done in batch 61); `Tooltip content` literals done through batch 62 (dev tools stay English); keep sweeping leftover chrome labels.
 - Upload page chrome is translated. A recorded broadcast with no title uses `library.recordedBroadcast` (0.0.379). History Stats chart axis labels stay chart-kept. Genre option labels in bulk edit stay English catalog names.

@@ -1,6 +1,13 @@
 # Listener stats: full origin / referrer URL
 
-**Status:** open
+**Status:** blocked
+
+## Blocked on (checked 2026-11-16)
+
+tahti-org `origin/main` stores only `referrerHost` on listen sessions
+(`listen-heartbeat.ts` → `normalizeReferrerHost`; `ListenHeartbeatBodySchema` in `@tahti/shared`
+has no URL field) and Stats → Audience groups by that host. The web has no
+full URL to show until step 1 below ships in tahti-org.
 
 ## Goal
 

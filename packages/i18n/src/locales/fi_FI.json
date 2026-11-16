@@ -13282,6 +13282,63 @@
       "minutesAndStatus": "{{minutes}} min · {{status}}",
       "detailsAfterProcessing": "Lähteen tiedot näkyvät käsittelyn jälkeen.",
       "now": "Nyt"
+    },
+    "listenerWidgetTypes": {
+      "streaming": "Suoratoisto",
+      "soundcloud": {
+        "description": "Soita SoundCloud-kappale, -setti, -soittolista tai artistin julkinen profiili (uusimmat julkiset kappaleet) suoraan SoundCloudin omalla upotetulla soittimella.",
+        "helpText": "Liitä SoundCloud-kappaleen, -setin tai -soittolistan osoite, tai artistin profiilin osoite, niin näet hänen uusimmat julkiset kappaleensa."
+      },
+      "youtube": {
+        "description": "Soita YouTube-video tai -soittolista suoraan YouTuben omalla upotetulla soittimella.",
+        "helpText": "Liitä YouTube-videon tai -soittolistan osoite."
+      },
+      "spotify": {
+        "description": "Näytä julkinen Spotify-soittolista tai artistin kappaleet tavallisena kappalelistana (soi Spotifyn upotuksella soitinpalkissa).",
+        "helpText": "Liitä julkisen Spotify-soittolistan tai artistin osoite. Kappaleet näkyvät tavallisessa taulukossa; yksityiset soittolistat eivät lataudu."
+      },
+      "hearthis": {
+        "description": "Soita hearthis.at-kappale tai -setti suoraan hearthis.at:n virallisella upotetulla soittimella.",
+        "helpText": "Liitä mikä tahansa hearthis.at-kappaleen tai -setin linkki (tai kappaleen numerotunnus), niin upotus selvitetään automaattisesti. Voit myös selata omia settejäsi alla."
+      },
+      "bandcamp": {
+        "description": "Soita Bandcamp-kappale tai -albumi suoraan Bandcampin omalla upotetulla soittimella.",
+        "helpText": "Valitse Bandcampin kappale- tai albumisivulla Share / Embed ja liitä luotu bandcamp.com/EmbeddedPlayer/…-linkki tähän (tavallisessa bandcamp.com-sivun osoitteessa ei ole tunnusta, jota Bandcampin upotus tarvitsee)."
+      },
+      "mikseri": {
+        "description": "Soita oma Mikseri-soittolistasi tai -kappaleesi, Top 40 tyylilajeittain, Listataivas ja muut viralliset listat.",
+        "helpText": "Liitä virallinen Mikserin upotusosoite, Mikserin kappalesivu tai kappaleen numerotunnus."
+      }
+    },
+    "listenerWidgetInput": {
+      "unknownAddon": "Tuntematon lisäosa.",
+      "soundcloudMissing": "Lisää SoundCloud-profiilin, -kappaleen, -setin tai -soittolistan osoite.",
+      "missing": "Lisää linkki ({{service}}).",
+      "soundcloudInvalid": "Käytä SoundCloud-profiilin, -kappaleen, -setin tai -soittolistan osoitetta, esimerkiksi https://soundcloud.com/oma-nimi.",
+      "unrecognized": "Linkkiä ei tunnistettu ({{service}}). {{help}}",
+      "spotifyTrack": "Tämä on Spotify-kappaleen linkki. Liitä sen sijaan soittolistan tai artistin linkki.",
+      "spotifyAlbum": "Tämä on Spotify-albumin linkki. Liitä sen sijaan soittolistan tai artistin linkki.",
+      "spotifyPodcast": "Spotify-podcasteja ei voi lisätä Kuuntele-sivulle. Liitä sen sijaan soittolistan tai artistin linkki."
+    },
+    "listenerWidgetEmbedText": {
+      "loadingArtist": "Ladataan artistia…",
+      "artistNoTracks": "Tällä artistilla ei ole kappaleita.",
+      "artistNoPlayable": "Tällä artistilla ei ole soitettavia kappaleita.",
+      "playlistNoPlayable": "Tällä soittolistalla ei ole soitettavia kappaleita.",
+      "showingEmbed": "{{error}} Näytetään Spotifyn upotus, kun se on mahdollista.",
+      "couldNotLoad": "Tätä Spotify-linkkiä ei voitu ladata. Poista se ja kokeile uudelleen julkisen soittolistan tai artistin linkillä.",
+      "unrecognizedService": "Osoitetta ei tunnistettu. Poista se ja liitä linkki uudelleen ({{service}}).",
+      "unrecognized": "Osoitetta ei tunnistettu. Poista se ja liitä linkki uudelleen."
+    },
+    "listenerWidgetsSectionText": {
+      "play": "Soita: {{name}}",
+      "internetRadio": "Nettiradio"
+    },
+    "addListenWidgetSpotify": {
+      "title": "Lisää soittolista tai artisti Spotifysta",
+      "link": "Soittolistan tai artistin linkki",
+      "linkedArtist": "Linkitetty Spotify-artistisi",
+      "yourArtist": "Spotify-artistisi"
     }
   },
   "studioEditor": {

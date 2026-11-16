@@ -1,3 +1,16 @@
+## 2026-11-16 - Spotify artists on Listen, Finnish widget copy, more journeys (0.0.401)
+
+Listen → Add widget → Spotify takes an artist link as well as a playlist,
+and offers the Spotify artist linked in Add-ons as a one-click pick. The
+row lists the artist's tracks and falls back to Spotify's artist embed
+when the lookup fails. Album, track and podcast links get a clear reason
+instead of a generic error. The Spotify add-on now shows as connected
+once an artist is linked. Listen add-on descriptions, help text, link
+errors, Spotify fallbacks and the saved-station card follow the app
+language in Finnish. A new mock e2e spec covers Radio play and pause,
+Discover Artists and Venues, the Spotify artist widget and switching the
+app to Finnish in Settings.
+
 ## 2026-11-16 - Skipping a track that has not started keeps playing (0.0.400)
 
 Pressing Next before the current track has started (a slow stream) no

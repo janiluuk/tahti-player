@@ -42,8 +42,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [monitoring-logs-to-logs-tab.md](monitoring-logs-to-logs-tab.md) | Move Monitoring container logs under Admin → Logs |
-| open | [channel-manager-play-in-player.md](channel-manager-play-in-player.md) | Broadcast Channel manager: Listen in player control |
 | open    | [next-50.md](next-50.md) | Map of the 50 slice files in the Next 50 slices section |
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; left: native review |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
@@ -52,7 +50,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: player slices 11–30 shipped; org API rows remain |
 | open    | [yaniho-channel-waveform-peaks.md](yaniho-channel-waveform-peaks.md) | Yaniho channel (`/channel/yaniho`) tracks still show loading over the waveform; pre-generate peaks for every view during pre-processing |
 | open    | [processing-track-opens-not-found.md](processing-track-opens-not-found.md) | Clicking a PENDING/PROCESSING track shows not found; open the track view with an animated processing indicator instead of the waveform |
-| open    | [spotify-listen-widget-artist-playlist.md](spotify-listen-widget-artist-playlist.md) | After lane-handoff leftover PRs: add a Listen widget for a Spotify artist or playlist URL |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, catalog in Studio → Music and Library for listeners (2026-11-13), one Broadcast agenda; left: Profile forms in Studio, Go live full-screen flow, Inbox side panel, Admin Overview merge, docs rewrite |
@@ -62,8 +59,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Page anatomy rules + Settings account-only; phase 0 blocks exist, phase 1 catalog move shipped (2026-11-13), Tracks header on the anatomy rule; left: Library Playlists/Files tabs, phases 2-8 |
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
-| open    | [fans-chat-tabs-restyle.md](fans-chat-tabs-restyle.md) | Fans Chat: Access/Messages/Moderators/Bans as tabs; restyle recent messages |
-| open    | [listener-stats-origin-url.md](listener-stats-origin-url.md) | Listener stats: show full referrer/origin URL, not only host |
 | partial | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard now renders its last result at once and refreshes in the background; left: measure API time and cache slow calls server-side |
 | open    | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Community stats sit at the top of the overview (0.0.380); left: the overview is still slow, and Grafana from tahti.live cannot connect |
 | partial | [channel-programme-in-schedule.md](channel-programme-in-schedule.md) | Rotation source, radio playlist, announcements and programme switches are edited on Schedule (2026-11-13); left: channel designer link, inventory check, stories |
@@ -71,7 +66,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [navigation-performance.md](navigation-performance.md) | Back/forward speed: GET cache, atlas out of the shell and gzip level 6 done; left: snapshots for Listen, release, Library History and Stash, drop mock fixtures from prod, split table/dnd out of the shell |
 | open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` on events/updates/editor/playlist/collection/release, radio presets, theme submissions; plugin-store disconnect; left: none known) |
 | open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | One Storybook play session drops its sockets ~90s in (local every run, CI long shards); reduced motion + CI retry mitigate; cause not found |
-| open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles e2e matrix on the mock app; left: collection player (placement), Go live → green room, Radio/Discover journeys after their rework, Player seek/fullscreen, open findings |
+| open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles e2e matrix on the mock app; Radio, Discover, Listen widget and artist Settings journeys added (`use-cases-coverage-gap-3`, `-4`); left: collection player (placement), Go live → green room, Player seek/fullscreen, open findings |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | Back-link convention + checks; left: cross-section trail on phones (design call) |
 | open    | [view-first-and-test-hardening-leftovers.md](view-first-and-test-hardening-leftovers.md) | Release ops form-first, a gallery-wipe bug, stale-fetch guards, dead code needing a call |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
@@ -83,6 +78,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
+| blocked | [listener-stats-origin-url.md](listener-stats-origin-url.md) | Listener stats: full referrer/origin URL; the API stores only `referrerHost`, so tahti-org must persist and expose the URL first |
 | blocked | [dead-end-leftovers.md](dead-end-leftovers.md) | OAuth app credentials (ops), Bandcamp API approval, Google Drive Picker, governance Retry |
 | partial | [channel-layout-server-side.md](channel-layout-server-side.md) | Page layout saved on the channel (tahti-org #1075 + web); left: deploy the API first, and the per-browser player/backdrop look visibility |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |

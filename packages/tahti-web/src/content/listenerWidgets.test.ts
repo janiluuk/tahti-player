@@ -1,11 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { i18n } from '@tahti-player/i18n';
+
 import {
   fetchHearthisUserSets,
   LISTENER_WIDGET_TYPES,
   listenerWidgetType,
   mikseriChartEmbedUrl,
   mikseriEmbedUrl,
+  parseSpotifyListenLink,
   resolveHearthisPageEmbedUrl,
   resolveListenerWidgetInput,
   soundcloudProfileUrl,
@@ -366,5 +369,85 @@ describe('Spotify playlist listener embed', () => {
     ).toBeNull();
     expect(spotify?.toEmbedUrl('https://spotify.com/playlist/abc')).toBeNull();
     expect(spotify?.toEmbedUrl('https://example.com/playlist/abc')).toBeNull();
+  });
+
+  it('turns a Spotify artist URL or URI into the official artist embed', () => {
+    expect(
+      spotify?.toEmbedUrl(
+        'https://open.spotify.com/intl-fi/artist/0OdUWJ0sBjDrqHygGUXeCF?si=x',
+      ),
+    ).toBe('https://open.spotify.com/embed/artist/0OdUWJ0sBjDrqHygGUXeCF');
+    expect(spotify?.toEmbedUrl('spotify:artist:0OdUWJ0sBjDrqHygGUXeCF')).toBe(
+      'https://open.spotify.com/embed/artist/0OdUWJ0sBjDrqHygGUXeCF',
+    );
+  });
+
+  it('names the kind of every Spotify link it recognises', () => {
+    expect(
+      parseSpotifyListenLink('https://open.spotify.com/artist/abc123'),
+    ).toEqual({ kind: 'artist', id: 'abc123' });
+    expect(
+      parseSpotifyListenLink('https://open.spotify.com/album/abc123'),
+    ).toEqual({ kind: 'unsupported', what: 'album' });
+    expect(parseSpotifyListenLink('spotify:episode:abc123')).toEqual({
+      kind: 'unsupported',
+      what: 'episode',
+    });
+    expect(parseSpotifyListenLink('https://example.com/artist/x')).toBeNull();
+  });
+});
+
+describe('resolveListenerWidgetInput for Spotify', () => {
+  it('accepts an artist link', () => {
+    expect(
+      resolveListenerWidgetInput(
+        'spotify',
+        'https://open.spotify.com/artist/0OdUWJ0sBjDrqHygGUXeCF',
+      ),
+    ).toMatchObject({ ok: true });
+  });
+
+  it('says why an album, track or podcast link cannot be added', () => {
+    expect(
+      resolveListenerWidgetInput(
+        'spotify',
+        'https://open.spotify.com/album/4aawyAB9vmqN3uQ7FjRGTy',
+      ),
+    ).toEqual({
+      ok: false,
+      error:
+        'This is a Spotify album link. Paste a playlist or artist link instead.',
+    });
+    expect(
+      resolveListenerWidgetInput(
+        'spotify',
+        'https://open.spotify.com/track/4uLU6hMCjMI75M1A2tjpeg',
+      ),
+    ).toMatchObject({ ok: false, error: expect.stringContaining('track') });
+    expect(
+      resolveListenerWidgetInput(
+        'spotify',
+        'https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk',
+      ),
+    ).toMatchObject({ ok: false, error: expect.stringContaining('podcasts') });
+  });
+});
+
+describe('listener widget copy', () => {
+  afterEach(async () => {
+    await i18n.changeLanguage('en_US');
+  });
+
+  it('follows the app language', async () => {
+    await i18n.loadLanguages('fi_FI');
+    const spotify = listenerWidgetType('spotify');
+    expect(spotify?.category).toBe('Streaming');
+    await i18n.changeLanguage('fi_FI');
+    expect(spotify?.category).toBe('Suoratoisto');
+    expect(spotify?.helpText).toContain('Spotify-soittolistan');
+    expect(resolveListenerWidgetInput('youtube', '')).toEqual({
+      ok: false,
+      error: 'Lisää linkki (YouTube).',
+    });
   });
 });

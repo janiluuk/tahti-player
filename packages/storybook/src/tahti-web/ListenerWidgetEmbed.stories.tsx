@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ListenerWidgetEmbed } from '@tahti-web/components/ListenerWidgetEmbed';
+import { expect, within } from 'storybook/test';
 
 const meta: Meta<typeof ListenerWidgetEmbed> = {
   title: 'Tahti/Widgets/ListenerWidgetEmbed',
@@ -77,6 +78,45 @@ export const Bandcamp: Story = {
   },
 };
 
+export const SpotifyPlaylist: Story = {
+  args: {
+    instance: {
+      id: 'widget-5',
+      typeId: 'spotify',
+      input: 'https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M',
+      label: 'Late night picks',
+      addedAt: new Date().toISOString(),
+    },
+    onRemove: () => {},
+  },
+  play: async ({ canvasElement }) => {
+    await expect(
+      await within(canvasElement).findByText('Night Drive'),
+    ).toBeInTheDocument();
+  },
+};
+
+export const SpotifyArtist: Story = {
+  args: {
+    instance: {
+      id: 'widget-6',
+      typeId: 'spotify',
+      input: 'https://open.spotify.com/artist/0OdUWJ0sBjDrqHygGUXeCF',
+      label: 'Mock Artist on Spotify',
+      addedAt: new Date().toISOString(),
+    },
+    onRemove: () => {},
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expect(await canvas.findByText('Night Drive')).toBeInTheDocument();
+    await expect(canvas.getByTestId('listener-widget-embed')).toHaveAttribute(
+      'data-widget-type',
+      'spotify',
+    );
+  },
+};
+
 export const UnrecognizedUrl: Story = {
   args: {
     instance: {
@@ -87,5 +127,10 @@ export const UnrecognizedUrl: Story = {
       addedAt: new Date().toISOString(),
     },
     onRemove: () => {},
+  },
+  play: async ({ canvasElement }) => {
+    await expect(within(canvasElement).getByRole('alert')).toHaveTextContent(
+      "Couldn't recognize this URL. Remove it and try pasting the SoundCloud link again.",
+    );
   },
 };

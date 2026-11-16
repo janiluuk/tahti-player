@@ -13282,6 +13282,63 @@
       "minutesAndStatus": "{{minutes}} min · {{status}}",
       "detailsAfterProcessing": "Source details are available after processing.",
       "now": "Now"
+    },
+    "listenerWidgetTypes": {
+      "streaming": "Streaming",
+      "soundcloud": {
+        "description": "Play a SoundCloud track, set, playlist, or an artist's public profile (their recent public tracks) inline using SoundCloud's own embedded player.",
+        "helpText": "Paste a SoundCloud track, set, or playlist URL, or an artist profile URL for a rolling feed of their public tracks."
+      },
+      "youtube": {
+        "description": "Play a YouTube video or playlist inline using YouTube's own embedded player.",
+        "helpText": "Paste a YouTube video or playlist URL."
+      },
+      "spotify": {
+        "description": "Show a public Spotify playlist or an artist's tracks as a normal track list (plays via Spotify's embed in the player bar).",
+        "helpText": "Paste a public Spotify playlist or artist URL. Tracks appear in the usual table; private playlists will not load."
+      },
+      "hearthis": {
+        "description": "Play a hearthis.at track or set inline using hearthis.at's official embedded player.",
+        "helpText": "Paste any hearthis.at track or set link (or a numeric track ID) and the embed resolves automatically. Or browse your own sets below."
+      },
+      "bandcamp": {
+        "description": "Play a Bandcamp track or album inline using Bandcamp's own embedded player.",
+        "helpText": "On the Bandcamp track or album page, use Share / Embed and paste the generated bandcamp.com/EmbeddedPlayer/… link here (a plain bandcamp.com page URL doesn't carry the id Bandcamp's embed needs)."
+      },
+      "mikseri": {
+        "description": "Play your own Mikseri playlist or track, Top 40 by genre, Listataivas, and other official charts.",
+        "helpText": "Paste an official Mikseri embed URL, a Mikseri track page, or a numeric track ID."
+      }
+    },
+    "listenerWidgetInput": {
+      "unknownAddon": "Unknown add-on.",
+      "soundcloudMissing": "Add a SoundCloud profile, track, set, or playlist URL.",
+      "missing": "Add a {{service}} link.",
+      "soundcloudInvalid": "Use a SoundCloud profile, track, set, or playlist URL such as https://soundcloud.com/your-name.",
+      "unrecognized": "Couldn't recognize this {{service}} link. {{help}}",
+      "spotifyTrack": "This is a Spotify track link. Paste a playlist or artist link instead.",
+      "spotifyAlbum": "This is a Spotify album link. Paste a playlist or artist link instead.",
+      "spotifyPodcast": "Spotify podcasts can't be added to Listen. Paste a playlist or artist link instead."
+    },
+    "listenerWidgetEmbedText": {
+      "loadingArtist": "Loading artist…",
+      "artistNoTracks": "This artist has no tracks.",
+      "artistNoPlayable": "This artist has no playable tracks.",
+      "playlistNoPlayable": "This playlist has no playable tracks.",
+      "showingEmbed": "{{error}} Showing Spotify's embed instead when possible.",
+      "couldNotLoad": "Couldn't load this Spotify link. Remove it and try a public playlist or artist link again.",
+      "unrecognizedService": "Couldn't recognize this URL. Remove it and try pasting the {{service}} link again.",
+      "unrecognized": "Couldn't recognize this URL. Remove it and try pasting the link again."
+    },
+    "listenerWidgetsSectionText": {
+      "play": "Play {{name}}",
+      "internetRadio": "Internet radio"
+    },
+    "addListenWidgetSpotify": {
+      "title": "Add a playlist or artist from Spotify",
+      "link": "Playlist or artist link",
+      "linkedArtist": "Your linked Spotify artist",
+      "yourArtist": "Your Spotify artist"
     }
   },
   "studioEditor": {

@@ -295,13 +295,14 @@ export async function fetchConnectionStatus(
   }
   try {
     if (id === 'spotify') {
-      const { data } = await requestJson<{ spotifyArtistId?: string | null }>(
-        path,
-      );
+      const { data } = await requestJson<{
+        configured?: boolean;
+        profile?: { artistId?: string | null } | null;
+      }>(path);
       return {
         data: {
-          connected: Boolean(data.spotifyArtistId),
-          configured: true,
+          connected: Boolean(data.profile?.artistId),
+          configured: data.configured !== false,
         },
         meta: { source: 'api' },
       };

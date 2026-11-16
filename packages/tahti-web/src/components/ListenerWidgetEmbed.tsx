@@ -11,12 +11,16 @@ import {
 } from '@tahti-player/ui';
 
 import {
+  fetchSpotifyArtistTracks,
   fetchSpotifyPlaylistTracks,
   spotifyCoverUrl,
   type SpotifyTrack,
 } from '../api/sources';
 import type { TahtiPlayable } from '../api/types';
-import { listenerWidgetType } from '../content/listenerWidgets';
+import {
+  listenerWidgetType,
+  parseSpotifyListenLink,
+} from '../content/listenerWidgets';
 import { playableFromEmbed } from '../lib/embedPlayback';
 import type { ListenerWidgetInstance } from '../stores/listenerWidgetsStore';
 import { PlayableAmbientTrackList } from './PlayableAmbientTrackList';
@@ -34,7 +38,7 @@ function spotifyTracksToPlayables(tracks: SpotifyTrack[]): TahtiPlayable[] {
   );
 }
 
-function SpotifyPlaylistTracks({
+function SpotifyWidgetTracks({
   instance,
   onRemove,
 }: {
@@ -44,6 +48,7 @@ function SpotifyPlaylistTracks({
   const { t } = useTranslation('web');
   const type = listenerWidgetType(instance.typeId);
   const embedUrl = type?.toEmbedUrl(instance.input);
+  const isArtist = parseSpotifyListenLink(instance.input)?.kind === 'artist';
   const [status, setStatus] = useState<'loading' | 'ready' | 'fallback'>(
     'loading',
   );
@@ -54,7 +59,10 @@ function SpotifyPlaylistTracks({
     let cancelled = false;
     setStatus('loading');
     setLoadError(null);
-    void fetchSpotifyPlaylistTracks(instance.input).then((result) => {
+    const fetchTracks = isArtist
+      ? fetchSpotifyArtistTracks
+      : fetchSpotifyPlaylistTracks;
+    void fetchTracks(instance.input).then((result) => {
       if (cancelled) {
         return;
       }
@@ -66,7 +74,11 @@ function SpotifyPlaylistTracks({
       }
       if (result.data.length === 0) {
         setItems([]);
-        setLoadError('This playlist has no playable tracks.');
+        setLoadError(
+          isArtist
+            ? t('listenerWidgetEmbedText.artistNoPlayable')
+            : t('listenerWidgetEmbedText.playlistNoPlayable'),
+        );
         setStatus('fallback');
         return;
       }
@@ -76,7 +88,7 @@ function SpotifyPlaylistTracks({
     return () => {
       cancelled = true;
     };
-  }, [instance.input]);
+  }, [instance.input, isArtist, t]);
 
   return (
     <Box
@@ -112,14 +124,22 @@ function SpotifyPlaylistTracks({
       </div>
       {status === 'loading' ? (
         <InlineLoader
-          label={t('listenerWidgetEmbed.loadingPlaylist')}
+          label={
+            isArtist
+              ? t('listenerWidgetEmbedText.loadingArtist')
+              : t('listenerWidgetEmbed.loadingPlaylist')
+          }
           className="py-6"
         />
       ) : null}
       {status === 'ready' ? (
         <PlayableAmbientTrackList
           items={items}
-          emptyMessage={t('listenerWidgetEmbed.thisPlaylistHasNoTracks')}
+          emptyMessage={
+            isArtist
+              ? t('listenerWidgetEmbedText.artistNoTracks')
+              : t('listenerWidgetEmbed.thisPlaylistHasNoTracks')
+          }
           compactActions
         />
       ) : null}
@@ -127,7 +147,9 @@ function SpotifyPlaylistTracks({
         <div className="flex flex-col gap-2">
           {loadError ? (
             <p className="text-foreground-secondary text-xs" role="status">
-              {loadError} Showing Spotify&apos;s embed instead when possible.
+              {t('listenerWidgetEmbedText.showingEmbed', {
+                error: loadError,
+              })}
             </p>
           ) : null}
           {embedUrl && type ? (
@@ -142,7 +164,7 @@ function SpotifyPlaylistTracks({
             />
           ) : (
             <InlineError textSize="xs">
-              {t('listenerWidgetEmbed.couldnAposTLoadThis')}
+              {t('listenerWidgetEmbedText.couldNotLoad')}
             </InlineError>
           )}
         </div>
@@ -151,9 +173,9 @@ function SpotifyPlaylistTracks({
   );
 }
 
-/** Renders one enabled external widget instance. Spotify playlists resolve to
- * a normal track table (embed playback in the player bar); other platforms
- * use their official iframe embeds. */
+/** Renders one enabled external widget instance. Spotify playlists and
+ * artists resolve to a normal track table (embed playback in the player bar);
+ * other platforms use their official iframe embeds. */
 export function ListenerWidgetEmbed({
   instance,
   onRemove,
@@ -165,7 +187,7 @@ export function ListenerWidgetEmbed({
 }) {
   const { t } = useTranslation('web');
   if (instance.typeId === 'spotify') {
-    return <SpotifyPlaylistTracks instance={instance} onRemove={onRemove} />;
+    return <SpotifyWidgetTracks instance={instance} onRemove={onRemove} />;
   }
 
   const type = listenerWidgetType(instance.typeId);
@@ -215,8 +237,11 @@ export function ListenerWidgetEmbed({
         />
       ) : (
         <p className="text-foreground-secondary text-xs" role="alert">
-          Couldn&apos;t recognize this URL — remove it and try pasting the
-          {type ? ` ${type.name}` : ''} link again.
+          {type
+            ? t('listenerWidgetEmbedText.unrecognizedService', {
+                service: type.name,
+              })
+            : t('listenerWidgetEmbedText.unrecognized')}
         </p>
       )}
     </Box>
