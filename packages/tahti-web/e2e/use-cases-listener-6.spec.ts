@@ -59,6 +59,10 @@ test('listener: seeks halfway through a track from the player bar', async ({
 test('listener: the full-screen player skips, pauses and minimizes', async ({
   page,
 }) => {
+  // Mock tracks stream from soundhelix.com. Holding those requests keeps every
+  // track loading, which is also the slow-network case where skipping before
+  // the first track starts must not leave the next one paused.
+  await page.route('https://www.soundhelix.com/**', () => undefined);
   await playNightDrive(page);
   await page
     .getByRole('contentinfo')

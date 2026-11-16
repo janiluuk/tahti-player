@@ -39,6 +39,10 @@ test('listener: a scheduled party offers to join at the start', async ({
 test('artist: adds a chat moderator and removes one', async ({ page }) => {
   await signIn(page);
   await open(page, '/studio/fans');
+  await page
+    .getByRole('main')
+    .getByRole('tab', { name: 'Chat', exact: true })
+    .click();
   const chat = page.getByTestId('fans-chat-settings');
   await chat.getByRole('tab', { name: 'Moderators' }).click();
   const add = chat.getByRole('button', { name: 'Add moderator' });

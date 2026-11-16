@@ -391,6 +391,21 @@ export function AudioEngine() {
         }, STREAM_START_TIMEOUT_MS)
       : undefined;
 
+    // A play request that a newer load interrupted rejects with AbortError
+    // after that load began. The newer source owns the status by then, so
+    // marking it paused would stop a track that is still loading.
+    const startPlayback = () => {
+      void audio.play().catch((err: unknown) => {
+        if (
+          disposed ||
+          (err instanceof DOMException && err.name === 'AbortError')
+        ) {
+          return;
+        }
+        setStatus('paused');
+      });
+    };
+
     const onPlaying = () => {
       clearTimeout(startTimer);
       setStatus('playing');
@@ -469,7 +484,7 @@ export function AudioEngine() {
         }
         audio.crossOrigin = null;
         audio.src = url;
-        void audio.play().catch(() => setStatus('paused'));
+        startPlayback();
         return;
       }
       const code = audio.error?.code;
@@ -497,7 +512,7 @@ export function AudioEngine() {
 
     const playDirect = () => {
       audio.src = url;
-      void audio.play().catch(() => setStatus('paused'));
+      startPlayback();
     };
 
     if (!isHls || prefersNativeHls(audio)) {
@@ -525,7 +540,7 @@ export function AudioEngine() {
           hls.loadSource(url);
           hls.attachMedia(audio);
           hls.on(HlsPlayer.Events.MANIFEST_PARSED, () => {
-            void audio.play().catch(() => setStatus('paused'));
+            startPlayback();
           });
         })
         .catch(() => {

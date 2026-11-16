@@ -1,5 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
+import { hasMockLike } from './likes';
 import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
@@ -32,7 +33,14 @@ export async function fetchSoundEngagement(
   soundId: string,
 ): Promise<SoundEngagement | null> {
   if (isForceMock()) {
-    return mockState.get(`${kind}:${soundId}`) ?? { active: false, count: 0 };
+    const known = mockState.get(`${kind}:${soundId}`);
+    if (known) {
+      return known;
+    }
+    // Mock likes outlive a reload in localStorage while mockState does not;
+    // reporting them as unliked would make the track page drop the like.
+    const active = kind === 'like' && hasMockLike(soundId);
+    return { active, count: active ? 1 : 0 };
   }
   try {
     const { data } = await requestJson<Record<string, unknown>>(

@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { forgetMockLike, rememberMockLike } from './likes';
 import { fetchSoundEngagement, setSoundEngagement } from './sound-engagement';
 
 const json = (body: unknown, status = 200) =>
@@ -76,5 +77,32 @@ describe('sound likes', () => {
     expect(fetchMock.mock.calls[1]?.[0]).toBe(
       '/tahti-api/api/v1/c/night/sounds/s1/repost',
     );
+  });
+
+  it('reports a mock like kept from before a reload as liked', async () => {
+    vi.stubEnv('VITE_FORCE_MOCK', '1');
+    localStorage.removeItem('tahti-web:mock-likes');
+    rememberMockLike({
+      id: 'kept-after-reload',
+      title: 'Kept',
+      bannerUrl: null,
+      audioUrl: null,
+      channelSlug: 'night',
+      artistUsername: 'night',
+      artistDisplayName: 'Night',
+      likedAt: '2026-10-01T12:00:00.000Z',
+      url: '/t/kept-after-reload',
+    });
+    expect(
+      await fetchSoundEngagement('like', 'night', 'kept-after-reload'),
+    ).toEqual({ active: true, count: 1 });
+    expect(
+      await fetchSoundEngagement('repost', 'night', 'kept-after-reload'),
+    ).toEqual({ active: false, count: 0 });
+    forgetMockLike('kept-after-reload');
+    expect(
+      await fetchSoundEngagement('like', 'night', 'kept-after-reload'),
+    ).toEqual({ active: false, count: 0 });
+    vi.unstubAllEnvs();
   });
 });
