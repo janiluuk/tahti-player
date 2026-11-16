@@ -79,7 +79,7 @@ const NO_LINKS: Record<string, string> = {};
  * as the channel resolves while tracks, widgets and shows report their own
  * `sectionStatus`. Every part renders its last result for the slug at once
  * and refreshes in the background. `refreshKey` (bumped after look/link
- * saves) refetches only the channel. */
+ * saves) refetches only the channel and its artist profile. */
 export function useChannelData(slug: string, refreshKey: number) {
   const main = useSnapshotFetch<PublicChannel | null>(
     `channel:${slug}`,

@@ -1,3 +1,11 @@
+## 2026-11-16 - Most visited views open at once (0.0.398)
+
+Channel, artist profile, track, collection, event, Feed, Favorites,
+the Embeds and Following lists and Discover show their last loaded
+result straight away and refresh in the background. Discover keeps a
+snapshot per widget. If a refresh fails the saved page stays, with a
+"Could not refresh" banner and Retry.
+
 ## 2026-11-13 - Fans Chat tab (0.0.396)
 
 Studio → Fans splits Tools (hub cards) and Chat (access, messages,

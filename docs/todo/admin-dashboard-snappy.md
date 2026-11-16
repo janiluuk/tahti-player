@@ -16,8 +16,9 @@ The admin dashboard (`/admin`) takes a long time to load, every time it is opene
 
 - 2026-11-09, 10 more: admin governance overview (one snapshot for overview, activity and resolutions, with a load/refresh error banner), Users (one snapshot per debounced filter set), Studio Distribution (releases and royalties as two snapshots, so each keeps its own error state), Editor list (projects and library), Mastering, Studio group detail (the settings form follows a refresh only while untouched), public group page, Radio show (the show is snapshotted, now playing keeps polling live), Subscribe and Smart link page. Mastering, Subscribe and Smart link show the error instead of the saved data when the refresh fails (audio URLs and prices must be current); Mastering and Subscribe also wait for the refresh before matching or checkout.
 
+- 2026-11-16, 10 more, the most visited views: channel (the channel and each section as its own snapshot; the profile lookup shares the artist page snapshot), artist profile, track detail, collection, event, Feed, Favorites (likes), Embeds (Studio → Music → Tracks), Following (Settings → Artist; extra pages kept through `mutate`) and Discover (a snapshot per widget via `peekSnapshot`/`saveSnapshot`, plus the artist directory). A failed refresh keeps the saved result and shows a "Could not refresh" banner (`pageStates.refreshFailed`).
+
 ## Plan
 
 - [ ] Measure: what `/admin` fetches on open (`fetchAdminDashboard` and the panels' own calls), how long each takes, and whether the API side is the slow part (`../tahti-org`).
 - [ ] If the API call itself is slow, cache or precompute it server-side (separate tahti-org slice).
-- [ ] Left on the old pattern: Discover (per-widget state with its own loading flags; needs a snapshot per widget, not a drop-in).
