@@ -97,13 +97,13 @@ test('artist publishes a draft release and its smart link page opens', async ({
   await signIn(page);
   await page.goto('/studio/releases/rel-mock-3');
   const main = page.getByRole('main');
-  await expect(main.getByText('EP · DRAFT')).toBeVisible();
+  await expect(main.getByText('EP · Draft')).toBeVisible();
   await main.getByRole('button', { name: 'Publish', exact: true }).click();
   await page
     .getByRole('dialog')
     .getByRole('button', { name: 'Publish', exact: true })
     .click();
-  await expect(main.getByText('EP · PUBLISHED')).toBeVisible();
+  await expect(main.getByText('EP · Published')).toBeVisible();
   await main.getByRole('link', { name: 'Open release embed' }).click();
   await expect(page).toHaveURL(/\/r\/[^/]+$/);
   await expect(

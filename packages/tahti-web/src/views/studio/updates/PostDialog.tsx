@@ -18,10 +18,7 @@ import {
   Textarea,
 } from '@tahti-player/ui';
 
-import {
-  POST_CATEGORY_LABELS,
-  type PostCategory,
-} from '../../../api/community-stories';
+import type { PostCategory } from '../../../api/community-stories';
 import {
   createArtistPost,
   deleteArtistPost,
@@ -37,6 +34,7 @@ import {
 } from '../../../lib/datetimeLocal';
 import { dateLocaleTag } from '../../../lib/locale';
 import { isHttpUrl } from '../../../lib/parseRss';
+import { POST_CATEGORIES, postCategoryLabel } from '../../../lib/postLabels';
 import { toastWithUndo } from '../../../lib/undoToast';
 import { PostPreview } from './PostPreview';
 
@@ -206,9 +204,10 @@ export function PostDialog({
               description={t('postDialog.shownOnThePostCard')}
               value={category}
               onValueChange={(value) => setCategory(value as PostCategory)}
-              options={(
-                Object.keys(POST_CATEGORY_LABELS) as PostCategory[]
-              ).map((id) => ({ id, label: POST_CATEGORY_LABELS[id] }))}
+              options={POST_CATEGORIES.map((id) => ({
+                id,
+                label: postCategoryLabel(id, t),
+              }))}
             />
             <Input
               label={t('postDialog.titleOptional')}

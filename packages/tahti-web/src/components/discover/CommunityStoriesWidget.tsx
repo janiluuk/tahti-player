@@ -6,9 +6,9 @@ import { StoryCard, StoryRow } from '@tahti-player/ui';
 
 import {
   fetchCommunityStories,
-  POST_ACTIVITY_LABELS,
   type CommunityStory,
 } from '../../api/community-stories';
+import { postActivityLabel } from '../../lib/postLabels';
 import { storyDate } from '../../lib/storyDate';
 import { PageEmpty, PageError, PageLoading } from '../PageStates';
 import { CommunityStoryDialog } from './CommunityStoryDialog';
@@ -80,11 +80,15 @@ export function CommunityStoriesWidget() {
             index={index}
             imageSrc={story.imageUrl}
             artworkSeed={story.id}
-            kind={POST_ACTIVITY_LABELS[story.category] ?? 'shared a story'}
+            kind={postActivityLabel(story.category, t)}
             date={storyDate(story.publishAt)}
             title={story.title ?? story.excerpt}
             onOpen={() => setOpenId(story.id)}
-            openLabel={`Read ${story.title ?? 'story'}`}
+            openLabel={
+              story.title
+                ? t('feedStory.readTitle', { title: story.title })
+                : t('postLabels.readStory')
+            }
             excerpt={story.title ? story.excerpt : undefined}
             authorName={story.author.displayName || story.author.username}
             authorAvatarSrc={story.author.avatarUrl}

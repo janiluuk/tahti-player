@@ -14,6 +14,7 @@ import { Button, Tooltip, TrackContextMenu } from '@tahti-player/ui';
 
 import type { StudioSound } from '../api/studio-types';
 import { isPinned } from '../lib/pinnedTracks';
+import { soundStatusLabel } from '../lib/soundStatusLabel';
 import { useMasteringFeatureStore } from '../plugins/mastering/store';
 
 type StudioSoundRowMenuProps = {
@@ -53,7 +54,10 @@ export function StudioSoundRowMenu({
         </TrackContextMenu.Trigger>
       </Tooltip>
       <TrackContextMenu.Content>
-        <TrackContextMenu.Header title={item.title} subtitle={item.status} />
+        <TrackContextMenu.Header
+          title={item.title}
+          subtitle={item.status ? soundStatusLabel(item.status, t) : undefined}
+        />
         <TrackContextMenu.Action
           icon={pinned ? <PinOffIcon size={16} /> : <PinIcon size={16} />}
           onClick={() => {

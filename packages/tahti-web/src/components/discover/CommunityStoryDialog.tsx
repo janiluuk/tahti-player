@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { i18n, useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, Dialog, MediaArtwork } from '@tahti-player/ui';
 
 import {
   fetchCommunityStory,
-  POST_CATEGORY_LABELS,
   type CommunityStory,
   type CommunityStoryDetail,
 } from '../../api/community-stories';
+import { postCategoryLabel } from '../../lib/postLabels';
 import { storyDate } from '../../lib/storyDate';
 import {
   FeedStoryArticle,
@@ -114,7 +114,7 @@ export function CommunityStoryDialog({
                     {story.title ?? story.excerpt}
                   </span>
                   <span className="text-foreground-secondary block truncate text-xs">
-                    {POST_CATEGORY_LABELS[story.category] ?? 'Story'} ·{' '}
+                    {postCategoryLabel(story.category, t)} ·{' '}
                     {story.author.displayName || story.author.username} ·{' '}
                     {storyDate(story.publishAt)}
                   </span>
@@ -146,7 +146,7 @@ export function CommunityStoryDialog({
         <div data-testid="community-story">
           {load.state === 'ready' ? (
             <FeedStoryArticle
-              story={toFeedStory(load.story)}
+              story={toFeedStory(load.story, t)}
               onClose={onClose}
               closeLabel={t('communityStoryDialog.close')}
               actions={pager}
@@ -192,12 +192,15 @@ function storyImages(story: CommunityStoryDetail): string[] {
       : [];
 }
 
-function toFeedStory(story: CommunityStoryDetail): FeedStory {
+function toFeedStory(
+  story: CommunityStoryDetail,
+  t: TFunction<'web'>,
+): FeedStory {
   const author = story.author.displayName || story.author.username;
   return {
     id: story.id,
-    kind: POST_CATEGORY_LABELS[story.category] ?? 'Story',
-    title: story.title ?? `${author}’s story`,
+    kind: postCategoryLabel(story.category, t),
+    title: story.title ?? t('postLabels.authorsStory', { name: author }),
     publishedAt: story.publishAt,
     author: {
       name: author,

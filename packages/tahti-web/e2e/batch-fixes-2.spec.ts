@@ -75,7 +75,7 @@ test('a release has one Edit details toggle and keeps its title when published',
     .getByRole('dialog')
     .getByRole('button', { name: 'Publish', exact: true })
     .click();
-  await expect(main.getByText('EP · PUBLISHED')).toBeVisible();
+  await expect(main.getByText('EP · Published')).toBeVisible();
   await expect(
     main.getByRole('heading', { level: 1, name: 'Studio Sessions Vol. 1' }),
   ).toBeVisible();

@@ -45,6 +45,7 @@ import { MusicBrainzSubmissionAssistant } from '../../components/MusicBrainzSubm
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { releaseStateLabel, releaseTypeLabel } from '../../lib/releaseLabels';
 import { trackTableLabels } from '../../lib/trackTableLabels';
 import {
   RELEASE_DETAIL_TABS,
@@ -225,7 +226,7 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                   ? () => setPendingArtworkDelete(true)
                   : undefined
               }
-              subtitle={`${release.type} · ${release.state}`}
+              subtitle={`${releaseTypeLabel(release.type, t)} · ${releaseStateLabel(release.state, t)}`}
               description={description.trim() || undefined}
               stats={headerStats}
               actions={

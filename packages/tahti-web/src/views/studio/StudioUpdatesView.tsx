@@ -12,7 +12,6 @@ import {
   ViewShell,
 } from '@tahti-player/ui';
 
-import { POST_CATEGORY_LABELS } from '../../api/community-stories';
 import {
   deleteArtistPost,
   deleteNewsletterDraft,
@@ -35,6 +34,7 @@ import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { dateLocaleTag } from '../../lib/locale';
 import { newsletterDeliverySummary } from '../../lib/newsletterDelivery';
+import { postCategoryLabel } from '../../lib/postLabels';
 import { storyDate } from '../../lib/storyDate';
 import { useAuthStore } from '../../stores/authStore';
 import { NewDraftDialog } from './updates/NewDraftDialog';
@@ -237,10 +237,10 @@ export function StudioUpdatesView({
                 >
                   {posts.map((p, index) => {
                     const story = artistPostStory(p, storyAuthor);
-                    const postTitle = p.title || 'Untitled';
+                    const postTitle = p.title || t('postLabels.untitled');
                     const kind = isScheduledPost(p)
-                      ? 'Scheduled'
-                      : (POST_CATEGORY_LABELS[story.category] ?? 'Story');
+                      ? t('postLabels.scheduled')
+                      : postCategoryLabel(story.category, t);
                     return (
                       <li
                         key={p.id}

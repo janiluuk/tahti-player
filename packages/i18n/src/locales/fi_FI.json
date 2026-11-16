@@ -2987,7 +2987,8 @@
       "tracksCount_other": "{{count}} kappaletta",
       "stateDraft": "Luonnos",
       "stateScheduled": "Ajastettu",
-      "statePublished": "Julkaistu"
+      "statePublished": "Julkaistu",
+      "typeRemix": "Remix"
     },
     "adminMissedShows": {
       "filterAll": "Kaikki",
@@ -4447,7 +4448,14 @@
       "tallyChoice": "{{choice}} {{count}}",
       "membersVoted": "{{votes}}/{{eligible}} jäsentä äänesti",
       "tallyAtClose": " · tulos julkaistaan suljettaessa",
-      "percentFor": " · {{percent}} % puolesta"
+      "percentFor": " · {{percent}} % puolesta",
+      "motionStateDraft": "Luonnos",
+      "motionStateOpen": "Avoinna",
+      "motionStateClosed": "Suljettu",
+      "motionStateCancelled": "Peruttu",
+      "attendancePresent": "Paikalla",
+      "attendanceAbsent": "Poissa",
+      "attendanceExcused": "Estynyt"
     },
     "meetingDetail": {
       "signInWithACooperative": "Kirjaudu osuuskunnan jäsentilillä nähdäksesi kokousten pöytäkirjat.",
@@ -8561,7 +8569,11 @@
       "policy": "Toimintaperiaate",
       "financialStatement": "Tilinpäätös",
       "auditReport": "Tilintarkastuskertomus",
-      "other": "Muu"
+      "other": "Muu",
+      "dateNotScheduled": "Päivää ei ole sovittu",
+      "votesCount_one": "{{count}} ääni",
+      "votesCount_other": "{{count}} ääntä",
+      "opensCloses": "Avautuu {{opens}} · Sulkeutuu {{closes}}"
     },
     "waveformEditorMore": {
       "clearAllCuts": "Poistetaanko kaikki leikkaukset?",
@@ -13240,6 +13252,36 @@
       "couldNotSaveMinutes": "Ladattuja pöytäkirjoja ei voitu tallentaa",
       "presetNotFound": "Esiasetusta ei löytynyt",
       "noPlayableAudio": "Ei toistettavaa ääntä"
+    },
+    "postLabels": {
+      "categoryStory": "Tarina",
+      "categoryNews": "Uutinen",
+      "categoryAnnouncement": "Tiedote",
+      "activityStory": "jakoi tarinan",
+      "activityNews": "jakoi uutisen",
+      "activityAnnouncement": "julkaisi tiedotteen",
+      "releasedSingle": "julkaisi singlen",
+      "releasedEp": "julkaisi EP:n",
+      "releasedAlbum": "julkaisi albumin",
+      "releasedCompilation": "julkaisi kokoelman",
+      "releasedRemix": "julkaisi remixin",
+      "releasedMusic": "julkaisi uutta musiikkia",
+      "releasedTrack": "julkaisi kappaleen",
+      "kindTrack": "Kappale",
+      "authorsStory": "Tarina: {{name}}",
+      "untitled": "Nimetön",
+      "scheduled": "Ajastettu",
+      "stories": "Tarinat",
+      "readStory": "Lue tarina"
+    },
+    "soundStatus": {
+      "pending": "Odottaa käsittelyä",
+      "processing": "Käsitellään",
+      "ready": "Valmis",
+      "error": "Käsittely epäonnistui",
+      "minutesAndStatus": "{{minutes}} min · {{status}}",
+      "detailsAfterProcessing": "Lähteen tiedot näkyvät käsittelyn jälkeen.",
+      "now": "Nyt"
     }
   },
   "studioEditor": {

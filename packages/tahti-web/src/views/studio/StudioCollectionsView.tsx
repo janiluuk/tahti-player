@@ -563,7 +563,12 @@ export function StudioCollectionsView() {
                                 : null;
                             if (loadReason) {
                               toast.error(
-                                `Could not load collection: ${loadReason}`,
+                                t(
+                                  'streamManagerStates.couldNotLoadCollection',
+                                  {
+                                    reason: loadReason,
+                                  },
+                                ),
                               );
                               return;
                             }

@@ -50,11 +50,3 @@ changed, because it needs a product call or more than a mechanical fix.
 - [x] `AmbientCard` — decided keep (2026-11-04 batch 31): reserved for mosaic
   / ambient grid layouts; no production consumer yet; do not delete without a
   Storybook replacement plan.
-
-## Tests
-
-- [ ] Storybook plays under heavy CPU load (a full run next to the web unit
-  suite) failed on `TabsPanel` content still at `opacity: 0` and on closing
-  dialogs still in the DOM (`relative z-50` expected null), although
-  `useSkipEnterMotion` and `MotionGlobalConfig.skipAnimations` are on. All
-  pass when run alone; find why the Tabs enter fade is not skipped there.

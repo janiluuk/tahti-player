@@ -5,6 +5,7 @@ export const RELEASE_TYPE_LABEL_KEYS = {
   EP: 'studioReleases.typeEp',
   ALBUM: 'studioReleases.typeAlbum',
   COMPILATION: 'studioReleases.typeCompilation',
+  REMIX: 'studioReleases.typeRemix',
 } as const;
 
 const RELEASE_STATE_KEYS = {

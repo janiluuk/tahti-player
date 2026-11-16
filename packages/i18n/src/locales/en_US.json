@@ -2987,7 +2987,8 @@
       "tracksCount_other": "{{count}} tracks",
       "stateDraft": "Draft",
       "stateScheduled": "Scheduled",
-      "statePublished": "Published"
+      "statePublished": "Published",
+      "typeRemix": "Remix"
     },
     "adminMissedShows": {
       "filterAll": "All",
@@ -4447,7 +4448,14 @@
       "tallyChoice": "{{choice}} {{count}}",
       "membersVoted": "{{votes}} of {{eligible}} members voted",
       "tallyAtClose": " · tally revealed at close",
-      "percentFor": " · {{percent}}% for"
+      "percentFor": " · {{percent}}% for",
+      "motionStateDraft": "Draft",
+      "motionStateOpen": "Open",
+      "motionStateClosed": "Closed",
+      "motionStateCancelled": "Cancelled",
+      "attendancePresent": "Present",
+      "attendanceAbsent": "Absent",
+      "attendanceExcused": "Excused"
     },
     "meetingDetail": {
       "signInWithACooperative": "Sign in with a cooperative membership account to view meeting records.",
@@ -8561,7 +8569,11 @@
       "policy": "Policy",
       "financialStatement": "Financial statement",
       "auditReport": "Audit report",
-      "other": "Other"
+      "other": "Other",
+      "dateNotScheduled": "Date not scheduled",
+      "votesCount_one": "{{count}} vote",
+      "votesCount_other": "{{count}} votes",
+      "opensCloses": "Opens {{opens}} · Closes {{closes}}"
     },
     "waveformEditorMore": {
       "clearAllCuts": "Clear all cuts?",
@@ -13240,6 +13252,36 @@
       "couldNotSaveMinutes": "Could not save the uploaded minutes",
       "presetNotFound": "Preset not found",
       "noPlayableAudio": "No playable audio"
+    },
+    "postLabels": {
+      "categoryStory": "Story",
+      "categoryNews": "News",
+      "categoryAnnouncement": "Announcement",
+      "activityStory": "shared a story",
+      "activityNews": "shared news",
+      "activityAnnouncement": "posted an announcement",
+      "releasedSingle": "released a single",
+      "releasedEp": "released an EP",
+      "releasedAlbum": "released an album",
+      "releasedCompilation": "released a compilation",
+      "releasedRemix": "released a remix",
+      "releasedMusic": "released new music",
+      "releasedTrack": "released a track",
+      "kindTrack": "Track",
+      "authorsStory": "{{name}}’s story",
+      "untitled": "Untitled",
+      "scheduled": "Scheduled",
+      "stories": "Stories",
+      "readStory": "Read story"
+    },
+    "soundStatus": {
+      "pending": "Waiting to process",
+      "processing": "Processing",
+      "ready": "Ready",
+      "error": "Processing failed",
+      "minutesAndStatus": "{{minutes}} min · {{status}}",
+      "detailsAfterProcessing": "Source details are available after processing.",
+      "now": "Now"
     }
   },
   "studioEditor": {

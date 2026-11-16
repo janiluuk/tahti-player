@@ -37,6 +37,11 @@ import type {
 } from '../../../../api/types';
 import { PageEmpty } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import {
+  attendanceStatusLabel,
+  meetingStateLabel,
+  motionStateLabel,
+} from '../../../../lib/governanceLabels';
 import { numericDay } from '../../../../lib/relativeDate';
 import { isSafeHref } from '../../../../lib/safeHref';
 import { formatScheduleWindow } from '../../../../lib/scheduleTime';
@@ -50,10 +55,6 @@ import {
   ConflictsPanel,
   NoticeDeliveriesPanel,
 } from './MeetingRecordPanels';
-
-function motionStateLabel(state: AdminMotion['state']): string {
-  return state.charAt(0) + state.slice(1).toLowerCase();
-}
 
 const ATTENDANCE_BADGE_COLOR: Record<
   GovernanceAttendanceStatus,
@@ -113,7 +114,7 @@ function AttendancePanel({ meeting }: { meeting: GovernanceMeeting }) {
                 variant="pill"
                 color={ATTENDANCE_BADGE_COLOR[record.status]}
               >
-                {record.status}
+                {attendanceStatusLabel(record.status, t)}
               </Badge>
             </li>
           ))}
@@ -308,7 +309,7 @@ export function AgmTab() {
                 <div className="flex flex-wrap justify-between gap-2">
                   <span className="font-medium">{meeting.title}</span>
                   <span className="text-foreground-secondary flex items-center gap-1 text-xs">
-                    {meeting.state}
+                    {meetingStateLabel(meeting.state, t)}
                     <EditIconButton
                       label={t('agmTabLabels.editStateOfTitle', {
                         title: meeting.title,
@@ -328,9 +329,12 @@ export function AgmTab() {
                 <p className="text-foreground-secondary mt-1 text-xs">
                   {meeting.scheduledAt
                     ? formatScheduleWindow(meeting.scheduledAt)
-                    : 'Date not scheduled'}{' '}
-                  · {meeting.presentCount}/{meeting.eligibleMemberCount ?? '—'}{' '}
-                  present
+                    : t('agmTabMore.dateNotScheduled')}{' '}
+                  ·{' '}
+                  {t('governanceLabels.presentOf', {
+                    present: meeting.presentCount,
+                    eligible: meeting.eligibleMemberCount ?? '—',
+                  })}
                 </p>
                 {editingMeetingId === meeting.id ? (
                   <div className="mt-2 flex max-w-xs items-center gap-2">
@@ -490,11 +494,15 @@ export function AgmTab() {
                     {m.advisory
                       ? t('agmTabStates.advisory')
                       : t('agmTabStates.binding')}{' '}
-                    · {motionStateLabel(m.state)} · {m.totalVotes} votes
+                    · {motionStateLabel(m.state, t)} ·{' '}
+                    {t('agmTabMore.votesCount', { count: m.totalVotes })}
                   </div>
                 </div>
                 <div className="text-foreground-secondary text-xs">
-                  Opens {numericDay(m.openAt)} · Closes {numericDay(m.closeAt)}
+                  {t('agmTabMore.opensCloses', {
+                    opens: numericDay(m.openAt),
+                    closes: numericDay(m.closeAt),
+                  })}
                 </div>
               </li>
             ))}

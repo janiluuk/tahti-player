@@ -7,6 +7,7 @@ import { Box, Button, Select, Tooltip } from '@tahti-player/ui';
 import type { ProgrammeItem } from '../api/studio-extras';
 import { cn } from '../lib/cn';
 import { formatDuration } from '../lib/playableToTrack';
+import { soundStatusLabel } from '../lib/soundStatusLabel';
 import { PageEmpty } from './PageStates';
 
 type ChannelRotationEditorProps = {
@@ -192,12 +193,12 @@ export const ChannelRotationEditor: FC<ChannelRotationEditorProps> = ({
                     </div>
                     {isCurrent ? (
                       <span className="text-primary-strong shrink-0 text-[10px] font-semibold tracking-wide uppercase">
-                        Now
+                        {t('soundStatus.now')}
                       </span>
                     ) : null}
                   </div>
                   <div className="text-foreground-secondary text-xs">
-                    {duration ?? item.status}
+                    {duration ?? soundStatusLabel(item.status, t)}
                   </div>
                 </div>
                 <div className="flex shrink-0 gap-1">

@@ -13,10 +13,6 @@ import {
 } from '@tahti-player/ui';
 
 import { fetchArtistPlayables, fetchFeed, fetchProfile } from '../api/client';
-import {
-  POST_ACTIVITY_LABELS,
-  POST_CATEGORY_LABELS,
-} from '../api/community-stories';
 import type {
   FeedItem,
   FeedResponse,
@@ -33,6 +29,12 @@ import {
 } from '../components/PageStates';
 import { releasePlayables } from '../components/ReleaseTracklistDialog';
 import { StoryTitleButton } from '../components/StoryTitleButton';
+import {
+  postActivityLabel,
+  postCategoryLabel,
+  releaseActivityLabel,
+} from '../lib/postLabels';
+import { releaseTypeLabel } from '../lib/releaseLabels';
 import { storyDate } from '../lib/storyDate';
 import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 import { webT } from '../lib/webT';
@@ -40,33 +42,15 @@ import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
 
-const RELEASE_ACTIVITY: Record<string, string> = {
-  SINGLE: 'released a single',
-  EP: 'released an EP',
-  ALBUM: 'released an album',
-  COMPILATION: 'released a compilation',
-  REMIX: 'released a remix',
-};
-
-function feedActivity(item: FeedItem): string {
+function feedActivity(item: FeedItem, t: TFunction<'web'>): string {
   if (item.kind === 'post') {
-    return item.category
-      ? POST_ACTIVITY_LABELS[item.category]
-      : 'shared a story';
+    return postActivityLabel(item.category, t);
   }
   if (item.kind === 'track') {
-    return 'released a track';
+    return t('postLabels.releasedTrack');
   }
-  return RELEASE_ACTIVITY[item.releaseType] ?? 'released new music';
+  return releaseActivityLabel(item.releaseType, t);
 }
-
-const RELEASE_KINDS: Record<string, string> = {
-  SINGLE: 'Single',
-  EP: 'EP',
-  ALBUM: 'Album',
-  COMPILATION: 'Compilation',
-  REMIX: 'Remix',
-};
 
 function feedStory(item: FeedItem, t: TFunction<'web'>): FeedStory {
   const name = item.artist.displayName || item.artist.username;
@@ -78,7 +62,7 @@ function feedStory(item: FeedItem, t: TFunction<'web'>): FeedStory {
   if (item.kind === 'post') {
     return {
       id: item.id,
-      kind: item.category ? POST_CATEGORY_LABELS[item.category] : 'Story',
+      kind: postCategoryLabel(item.category, t),
       title: item.title || t('feedStory.postedUpdate', { name }),
       publishedAt: item.date,
       author,
@@ -92,8 +76,8 @@ function feedStory(item: FeedItem, t: TFunction<'web'>): FeedStory {
     id: item.id,
     kind:
       item.kind === 'track'
-        ? 'Track'
-        : (RELEASE_KINDS[item.releaseType] ?? 'Release'),
+        ? t('postLabels.kindTrack')
+        : releaseTypeLabel(item.releaseType, t),
     title: item.title,
     publishedAt: item.date,
     author,
@@ -430,7 +414,7 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
               }
               artworkSeed={`${item.kind}-${item.id}`}
               media={feedMedia(item)}
-              kind={feedActivity(item)}
+              kind={feedActivity(item, t)}
               date={storyDate(item.date)}
               dateTime={item.date}
               title={

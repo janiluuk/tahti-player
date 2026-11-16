@@ -19,6 +19,7 @@ import {
   type SoundVersion,
 } from '../api/sound-versions';
 import { usePolling } from '../hooks/usePolling';
+import { soundStatusLabel } from '../lib/soundStatusLabel';
 import { webT } from '../lib/webT';
 import { usePlayerStore } from '../stores/playerStore';
 import { ListingDate } from './ListingDate';
@@ -393,7 +394,7 @@ export function AudioRevisionList({
                     ) : null}
                     {version.status !== 'READY' ? (
                       <Badge variant="pill" color="orange">
-                        {version.status}
+                        {soundStatusLabel(version.status, t)}
                       </Badge>
                     ) : null}
                   </div>
