@@ -6,7 +6,7 @@ test.beforeEach(async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
 });
 
-test('artist: Studio has six tabs and the Profile hub opens a Settings panel', async ({
+test('artist: Studio has six tabs and the Profile hub opens a Studio form page', async ({
   page,
 }) => {
   await signIn(page);
@@ -29,12 +29,11 @@ test('artist: Studio has six tabs and the Profile hub opens a Settings panel', a
     .getByRole('list', { name: 'Artist profile settings' })
     .getByRole('link', { name: /Story/ })
     .click();
-  await expect(page).toHaveURL(/\/settings\/artist\?tab=story$/);
+  await expect(page).toHaveURL(/\/studio\/profile\/story$/);
   await expect(
-    page
-      .getByRole('dialog', { name: 'Settings' })
-      .getByRole('tab', { name: 'Story' }),
-  ).toHaveAttribute('aria-selected', 'true');
+    page.getByRole('main').getByRole('heading', { level: 1, name: 'Story' }),
+  ).toBeVisible();
+  await expect(page.getByRole('dialog', { name: 'Settings' })).toHaveCount(0);
 });
 
 test('artist: a Fans page links back to the Fans hub', async ({ page }) => {
