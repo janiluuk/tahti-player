@@ -6,8 +6,8 @@ Slice 49 of the next-50 queue. Parent: [`studio-fans-chat.md`](studio-fans-chat.
 
 ## Goal
 
-Verify Fans Chat on the hub after merge.
+Verify Fans → Chat tab against the deployed API after merge.
 
 ## Done when
 
-Open Fans Chat against the deployed API and note what still fails.
+Open Studio → Fans → Chat against the deployed API and note what still fails.

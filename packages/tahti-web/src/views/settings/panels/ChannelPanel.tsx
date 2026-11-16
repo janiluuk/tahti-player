@@ -375,7 +375,7 @@ export function ChannelPanel() {
               title={t('settingsBody.channel.chatMovedTitle')}
               description={t('settingsBody.channel.chatMovedDescription')}
             >
-              <ButtonAnchor href="/studio/fans" size="sm">
+              <ButtonAnchor href="/studio/fans?tab=chat" size="sm">
                 {t('settingsBody.channel.openFansChat')}
               </ButtonAnchor>
             </StudioPanel>
@@ -390,7 +390,10 @@ export function ChannelPanel() {
               title={t('settingsBody.channel.moderatorsMovedTitle')}
               description={t('settingsBody.channel.moderatorsMovedDescription')}
             >
-              <ButtonAnchor href="/studio/fans" size="sm">
+              <ButtonAnchor
+                href="/studio/fans?tab=chat&section=moderators"
+                size="sm"
+              >
                 {t('settingsBody.channel.openFansChat')}
               </ButtonAnchor>
             </StudioPanel>

@@ -3561,6 +3561,8 @@
       "title": "Fanit",
       "subtitle": "Kaikki sinun ja tukijoidesi välillä: julkaisut, uutiskirje, jäsenyydet, kauppa, chat ja tulot.",
       "ariaLabel": "Fanityökalut",
+      "tabTools": "Työkalut",
+      "tabChat": "Chat",
       "postsTitle": "Julkaisut",
       "postsDescription": "Päivitykset kanavasivullasi ja seuraajien syötteissä.",
       "newsletterTitle": "Uutiskirje",

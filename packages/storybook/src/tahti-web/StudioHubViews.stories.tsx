@@ -18,7 +18,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, channel manager, one agenda of shows, events and parties, and tool cards), **Fans** (posts, newsletter, memberships, store, earnings, plus live chat on the page) and **Profile** (artist profile and channel page settings). Each card opens a focused page.',
+          'Studio sections that are hubs instead of a second row of tabs: **Broadcast** (on/off air, Go live, channel manager, one agenda of shows, events and parties, and tool cards), **Fans** (Tools hub cards; Chat tab for live chat settings) and **Profile** (artist profile and channel page settings). Each card opens a focused page.',
       },
     },
   },
@@ -36,6 +36,12 @@ export const Fans: Story = {
     await expect(
       await canvas.findByRole('heading', { name: /^Fans$|^Fanit$/ }),
     ).toBeInTheDocument();
+    await expect(
+      canvas.getByRole('tab', { name: /^Tools$|^Työkalut$/ }),
+    ).toHaveAttribute('aria-selected', 'true');
+    await expect(
+      canvas.getByRole('tab', { name: /^Chat$/ }),
+    ).toBeInTheDocument();
     const links = within(
       canvas.getByRole('list', { name: /^Fans tools$|^Fanityökalut$/ }),
     ).getAllByRole('link');
@@ -47,10 +53,14 @@ export const Fans: Story = {
       '/studio/audience',
     ]);
     await expect(
-      canvas.getByRole('heading', { name: 'Chat' }),
-    ).toBeInTheDocument();
+      canvas.queryByRole('heading', {
+        name: /^Recent messages$|^Viimeisimmät viestit$/,
+      }),
+    ).toBeNull();
+
+    await userEvent.click(canvas.getByRole('tab', { name: /^Chat$/ }));
     await expect(
-      canvas.getByRole('tab', { name: /^Messages$|^Viestit$/ }),
+      await canvas.findByRole('tab', { name: /^Messages$|^Viestit$/ }),
     ).toHaveAttribute('aria-selected', 'true');
     await expect(
       canvas.getByRole('heading', {
@@ -94,8 +104,11 @@ export const Profile: Story = {
     );
     await expect(chat).toBeDefined();
     await expect(moderators).toBeDefined();
-    await expect(chat).toHaveAttribute('href', '/studio/fans');
-    await expect(moderators).toHaveAttribute('href', '/studio/fans');
+    await expect(chat).toHaveAttribute('href', '/studio/fans?tab=chat');
+    await expect(moderators).toHaveAttribute(
+      'href',
+      '/studio/fans?tab=chat&section=moderators',
+    );
   },
 };
 

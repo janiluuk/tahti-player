@@ -3561,6 +3561,8 @@
       "title": "Fans",
       "subtitle": "Everything between you and the people who support you: posts, the newsletter, memberships, the store, chat and what you earn.",
       "ariaLabel": "Fans tools",
+      "tabTools": "Tools",
+      "tabChat": "Chat",
       "postsTitle": "Posts",
       "postsDescription": "Updates on your channel page and in your followers’ feeds.",
       "newsletterTitle": "Newsletter",
