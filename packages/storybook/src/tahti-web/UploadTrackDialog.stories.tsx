@@ -31,7 +31,7 @@ export const Default: Story = {
     await expect(dialog.getByRole('button', { name: 'Upload' })).toBeDisabled();
     await expect(
       dialog.getByRole('link', { name: 'Open full upload page' }),
-    ).toHaveAttribute('href', '/library/upload');
+    ).toHaveAttribute('href', '/studio/upload');
   },
 };
 

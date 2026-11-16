@@ -31,6 +31,6 @@ describe('ChannelPlaylistPicker', () => {
     ).toBeTruthy();
     expect(
       screen.getByRole('link', { name: /New collection/ }).getAttribute('href'),
-    ).toBe('/library/collections');
+    ).toBe('/studio/collections');
   });
 });

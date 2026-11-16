@@ -61,7 +61,7 @@ const meta: Meta<typeof StudioCollectionsView> = {
     docs: {
       description: {
         component:
-          'Studio → Collections: library section tabs, search, type filters, and the quick-create dialog for albums, EPs, playlists, DJ sets, podcasts, and series.',
+          'Studio → Music → Collections: search, type filters, and the quick-create dialog for albums, EPs, playlists, DJ sets, podcasts, and series.',
       },
     },
     mockData: mockData({ studioCollections: withRichCollections }),

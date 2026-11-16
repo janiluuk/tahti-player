@@ -1,8 +1,8 @@
 # Simplify Studio, Library, Settings and Admin
 
-**Status:** open
+**Status:** partial
 
-Plan only (2026-11-03); nothing implemented. Goal: a calmer, more professional UI. Every main view has one header, one primary action, one toolbar row and at most one tab row under the section row.
+Planned 2026-11-03. Shipped so far: phase 0 building blocks (`ViewShell` `actions`, `OverflowMenu`, `FilterBar` are in `@tahti-player/ui`); phase 1 catalog move (2026-11-13: Sounds, Collections, Upload, Smart links in Studio → Music, Recordings under Broadcast, Library Overview gone, old URLs redirect); Tracks header follows rules 2-3 (Upload primary, Import, the rest in `OverflowMenu`); Releases header links Smart links instead of repeating the Distribution chip. Left in phase 1: Library Playlists and Files (chips) tabs. Goal: a calmer, more professional UI. Every main view has one header, one primary action, one toolbar row and at most one tab row under the section row.
 
 Builds on [`navigation-simplification.md`](navigation-simplification.md) (the IA regroup, slices 1-10). This plan adds **Settings**, **page anatomy** (what sits on a page, not just where it lives) and the duplicate surfaces left after that regroup. Where a phase finishes a slice from that file, it says so; that slice is then ticked there, not re-planned here.
 

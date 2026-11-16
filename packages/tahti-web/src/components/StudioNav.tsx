@@ -34,10 +34,12 @@ export const SUBMENUS = {
   ],
 } as const;
 
-/** Releases, Distribution and Editor are one job (publish music). One Studio
- * "Music" tab stays lit; the three pages live in `CatalogSubNav`. */
+/** The artist's catalog is one job (publish music). One Studio "Music" tab
+ * stays lit; its pages live in `CatalogSubNav`. */
 export const CATALOG_SUBNAV_ITEMS = [
   { to: '/studio/releases', labelKey: 'studio.releases' as const },
+  { to: '/studio/sounds', labelKey: 'studio.tracks' as const },
+  { to: '/studio/collections', labelKey: 'studio.collections' as const },
   { to: '/studio/distribution', labelKey: 'studio.distribution' as const },
   { to: '/studio/editor', labelKey: 'studio.editor' as const },
   { to: '/studio/groups', labelKey: 'studio.groups' as const },
@@ -68,11 +70,16 @@ const SECTION_PREFIXES: Record<string, readonly string[]> = {
     '/studio/stripe',
     '/studio/profile',
     '/studio/releases',
+    '/studio/sounds',
+    '/studio/collections',
+    '/studio/upload',
+    '/studio/smartlinks',
     '/studio/distribution',
     '/studio/editor',
     '/studio/groups',
     '/studio/mastering',
     '/studio/setup-channel',
+    '/studio/recordings',
     '/studio/broadcast',
     '/studio/go-live',
     '/studio/info',
@@ -124,7 +131,8 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
       pathname?.startsWith('/studio/listening-parties/') === true ||
       pathname === '/studio/shows' ||
       pathname?.startsWith('/studio/shows/') === true ||
-      pathname === '/studio/channel'
+      pathname === '/studio/channel' ||
+      pathname === '/studio/recordings'
     );
   }
   if (to === '/studio/fans') {
@@ -139,41 +147,13 @@ const isSubmenuActive = (current: string | undefined, to: string) => {
     );
   }
   if (to === '/studio/releases') {
-    return (
-      pathname === '/studio/releases' ||
-      pathname?.startsWith('/studio/releases/') === true ||
-      pathname === '/studio/distribution' ||
-      pathname?.startsWith('/studio/distribution/') === true ||
-      pathname === '/studio/editor' ||
-      pathname?.startsWith('/studio/editor/') === true ||
-      pathname === '/studio/groups' ||
-      pathname?.startsWith('/studio/groups/') === true ||
-      pathname === '/studio/mastering' ||
-      pathname?.startsWith('/studio/mastering/') === true
-    );
+    return isStudioCatalogGroup(current);
   }
-  return (
-    (to.includes('?')
-      ? current === to
-      : to === '/library' || to === '/studio'
-        ? pathname === to
-        : pathname === to || pathname?.startsWith(`${to}/`) === true) ||
-    (to === '/library/sounds' &&
-      (pathname?.startsWith('/studio/sounds') === true ||
-        pathname?.startsWith('/studio/archive') === true)) ||
-    (to === '/library/collections' &&
-      (pathname === '/studio/collections' ||
-        pathname?.startsWith('/studio/collections/') === true ||
-        pathname === '/studio/playlists' ||
-        pathname?.startsWith('/studio/playlists/') === true ||
-        pathname === '/studio/stash' ||
-        pathname?.startsWith('/studio/stash/') === true ||
-        pathname === '/studio/recordings' ||
-        pathname?.startsWith('/studio/recordings/') === true ||
-        pathname === '/library/recordings' ||
-        pathname === '/library/media' ||
-        pathname === '/library/smartlinks'))
-  );
+  return to.includes('?')
+    ? current === to
+    : to === '/studio'
+      ? pathname === to
+      : pathname === to || pathname?.startsWith(`${to}/`) === true;
 };
 
 export function litStudioSubmenuDestinations(
@@ -201,24 +181,26 @@ export function isStudioBroadcastGroup(current: string | undefined): boolean {
     pathname.startsWith('/studio/listening-parties/') ||
     pathname === '/studio/shows' ||
     pathname.startsWith('/studio/shows/') ||
-    pathname === '/studio/channel'
+    pathname === '/studio/channel' ||
+    pathname === '/studio/recordings'
   );
 }
 
+const CATALOG_PREFIXES = [
+  '/studio/releases',
+  '/studio/sounds',
+  '/studio/collections',
+  '/studio/upload',
+  '/studio/smartlinks',
+  '/studio/distribution',
+  '/studio/editor',
+  '/studio/groups',
+  '/studio/mastering',
+] as const;
+
 export function isStudioCatalogGroup(current: string | undefined): boolean {
   const pathname = current?.split('?')[0] ?? '';
-  return (
-    pathname === '/studio/releases' ||
-    pathname.startsWith('/studio/releases/') ||
-    pathname === '/studio/distribution' ||
-    pathname.startsWith('/studio/distribution/') ||
-    pathname === '/studio/editor' ||
-    pathname.startsWith('/studio/editor/') ||
-    pathname === '/studio/groups' ||
-    pathname.startsWith('/studio/groups/') ||
-    pathname === '/studio/mastering' ||
-    pathname.startsWith('/studio/mastering/')
-  );
+  return CATALOG_PREFIXES.some((prefix) => pathMatches(pathname, prefix));
 }
 
 export const isCatalogSubnavActive = (
@@ -238,10 +220,13 @@ export const isCatalogSubnavActive = (
       pathMatches(pathname, '/studio/mastering')
     );
   }
-  if (to === '/studio/groups') {
-    return pathMatches(pathname, '/studio/groups');
+  if (to === '/studio/sounds') {
+    return (
+      pathMatches(pathname, '/studio/sounds') ||
+      pathMatches(pathname, '/studio/upload')
+    );
   }
-  return pathname === to;
+  return pathMatches(pathname, to);
 };
 
 export function CatalogSubNav({ current }: { current?: string }) {
@@ -333,6 +318,22 @@ function HubBackLink({
   );
 }
 
+/** Recordings opens from a Broadcast hub card, so it shows a back link to the
+ * hub rather than the Broadcast chips, none of which it belongs to. */
+export function BroadcastBackLink() {
+  const { t } = useTranslation('web');
+  return (
+    <HubBackLink
+      to="/studio/broadcast"
+      label={t('studio.goLive')}
+      testId="studio-broadcast-back"
+    />
+  );
+}
+
+const onBroadcastHubCardPage = (current: string | undefined) =>
+  current?.split('?')[0] === '/studio/recordings';
+
 /** Fans is a hub: its pages open from cards on `/studio/fans` and show a
  * back link to it instead of a second row of tabs. */
 export function FansBackLink() {
@@ -387,6 +388,8 @@ export function isStudioDetailRoute(current: string | undefined): boolean {
   const pathname = current?.split('?')[0] ?? '';
   return (
     /^\/studio\/releases\/[^/]+$/.test(pathname) ||
+    /^\/studio\/sounds\/[^/]+(\/editor)?$/.test(pathname) ||
+    /^\/studio\/collections\/[^/]+$/.test(pathname) ||
     /^\/studio\/shows\/(?!episodes\/)[^/]+$/.test(pathname) ||
     /^\/studio\/shows\/episodes\/[^/]+$/.test(pathname)
   );
@@ -409,7 +412,9 @@ function StudioNavigation({ current }: { current?: string }) {
 
   const showBroadcast =
     isStudioBroadcastGroup(current) &&
-    !onHubItself(current, '/studio/broadcast');
+    !onHubItself(current, '/studio/broadcast') &&
+    !onBroadcastHubCardPage(current);
+  const showBroadcastBack = onBroadcastHubCardPage(current);
   const showCatalog = isStudioCatalogGroup(current);
   const showFansBack =
     isStudioFansGroup(current) && current?.split('?')[0] !== '/studio/fans';
@@ -440,6 +445,7 @@ function StudioNavigation({ current }: { current?: string }) {
           data-testid="studio-nested-nav"
         >
           {showBroadcast ? <BroadcastSubNav current={current} /> : null}
+          {showBroadcastBack ? <BroadcastBackLink /> : null}
           {showCatalog ? <CatalogSubNav current={current} /> : null}
           {showFansBack ? <FansBackLink /> : null}
         </div>

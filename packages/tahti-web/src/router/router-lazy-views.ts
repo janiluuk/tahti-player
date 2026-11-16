@@ -478,6 +478,14 @@ export const StudioShowsView = lazyRouteComponent(
   () => import('../views/studio/StudioShowsView'),
   'StudioShowsView',
 );
+export const StudioRecordingsView = lazyRouteComponent(
+  () => import('../views/studio/StudioRecordingsView'),
+  'StudioRecordingsView',
+);
+export const StudioSmartLinksView = lazyRouteComponent(
+  () => import('../views/studio/StudioSmartLinksView'),
+  'StudioSmartLinksView',
+);
 export const StudioSoundsView = lazyRouteComponent(
   () => import('../views/studio/StudioSoundsView'),
   'StudioSoundsView',

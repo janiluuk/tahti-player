@@ -18,12 +18,9 @@ import {
   type StatsPlays,
   type StatsPlaysRange,
 } from '../../api/studio-extras';
-import { ChannelAnnouncementsPanel } from '../../components/ChannelAnnouncementsPanel';
-import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
 import { MultistreamStatusPanel } from '../../components/MultistreamStatusPanel';
 import { PageLoading } from '../../components/PageStates';
 import { PinnedAnnouncementsPanel } from '../../components/PinnedAnnouncementsPanel';
-import { RotationSourcePicker } from '../../components/RotationSourcePicker';
 import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -182,11 +179,23 @@ function RadioSection({ tab }: { tab: ChannelRadioTab }) {
     }
     if (id === 'rotation') {
       return (
-        <div className="flex flex-col gap-4">
-          {channel?.slug ? <RotationSourcePicker slug={channel.slug} /> : null}
-          <ChannelRadioPlaylistPanel />
-          <ChannelAnnouncementsPanel />
-        </div>
+        <StudioPanel
+          title={t('studioChannelView.programmeOnSchedule')}
+          action={
+            <ButtonLink
+              to="/studio/schedule"
+              hash="channel-programme"
+              size="sm"
+              variant="secondary"
+            >
+              {t('studioChannelView.openSchedule')}
+            </ButtonLink>
+          }
+        >
+          <p className="text-foreground-secondary text-sm">
+            {t('studioChannelView.programmeOnScheduleDescription')}
+          </p>
+        </StudioPanel>
       );
     }
     if (id === 'pinned') {

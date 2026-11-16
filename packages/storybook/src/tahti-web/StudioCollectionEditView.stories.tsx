@@ -27,7 +27,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const ReadOnly: Story = {
-  decorators: [withTahtiRouter(`/library/collections/${SLUG}`)],
+  decorators: [withTahtiRouter(`/studio/collections/${SLUG}`)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
@@ -44,7 +44,7 @@ export const ReadOnly: Story = {
 };
 
 export const Editing: Story = {
-  decorators: [withTahtiRouter(`/library/collections/${SLUG}`)],
+  decorators: [withTahtiRouter(`/studio/collections/${SLUG}`)],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await userEvent.click(

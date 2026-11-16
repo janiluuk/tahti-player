@@ -9,6 +9,17 @@ contextually, so an orphan is not mistaken for a missing feature. The
 `/more` atlas mirrors this file in `src/content/flowDiagrams.ts` (Nuclear
 pack) and `src/content/mapScreens.ts`.
 
+**2026-11-13 changes:** Library is for listeners: Favorites · History ·
+Media · Stash (+ Local files on desktop), and `/library` opens Favorites.
+The artist catalog is Studio → Music: chips Releases · Tracks
+(`/studio/sounds`) · Collections (`/studio/collections`) · Distribution ·
+Editor · Groups; Upload (`/studio/upload`) keeps Tracks lit; Smart links
+(`/studio/smartlinks`) opens from the Releases header. Recordings
+(`/studio/recordings`) is a Broadcast hub card with a back link. The 24/7
+rotation, offline fallback and announcements are edited on Schedule
+(`/studio/schedule#channel-programme`); Channel → 24/7 links there. Old
+`/library/…` catalog links redirect.
+
 **2026-10-16 changes:** Settings section is **Channel & chat** (not
 "Channel & design"), with tabs Channel Designer · Discovery · Username &
 domain · Chat · Moderators. Library's horizontal tabs include **Upload**.
@@ -63,11 +74,10 @@ Governance, Posts, Audience, Releases, Editor, Broadcast.
 - Audience tabs (`AUDIENCE_SUBNAV_ITEMS`): Overview, Tiers, Stripe (only when
   Stripe is configured).
 
-Library tabs (`LibraryView`): Overview, Favorites, Tracks, Collections, Upload,
-Recordings, Media, Stash, Embeds, Smart links, Local files. Upload lands on
-`/library/upload`. **Local files** (`/library/local`) is a tab only when the
+Library tabs (`LibraryView`): Favorites, History, Media, Stash, Local files.
+**Local files** (`/library/local`) is a tab only when the
 desktop app is providing the on-disk library; the browser redirects that
-route to `/library`. On that tab the disc icon opens DJ settings (key
+route to `/library/favorites`. On that tab the disc icon opens DJ settings (key
 notation, tempo range for mixable tracks, half and double tempo). It is not
 a separate chrome entry. **History** there is the on-device listen log, not
 `/listen/history`.
@@ -116,7 +126,7 @@ Desktop right rail: Queue only.
 | Everyone | Listen | `/`, `/channel/$slug`, `/u/$username`, `/u/$username/c/$slug`, `/r/$slug`, `/t/$id`, `/search?tag=`, `/v/$slug` | Public playback destinations. `/feed`, `/listen/feed` and `/listen/history` are contextual from Listen, not chrome items. Tag search is reached from tag chips on a track page; venue pages from "Recorded at" on a track page and the Discover Venues tab. |
 | Everyone | Radio | `/radio`, `/radio/show/$channelSlug`, `/radio/station/$stationId` | Radio show pages list past episodes with name, artwork and recording. `/schedule` is linked from the channel page programme block and the booking calendar, not from Radio. |
 | Everyone | Discover | `/discover`, `/discover?tab=artists`, `/discover?tab=venues` | `/venues` redirects to the Venues tab. |
-| Everyone | Library | `/library`, `/library/favorites`, `/library/sounds`, `/library/collections` (+ `/$slug`), `/library/recordings`, `/library/media`, `/library/stash`, `/library/embeds`, `/library/smartlinks`, `/library/local`, `/library/upload` | Favorites is the Library tab. `/favorites` and `/listen/favorites` redirect to `/library/favorites`. Opening Library or Favorites does not ask for sign-in. Other Library tabs stay visible and grayed until there is an account. |
+| Everyone | Library | `/library` (→ Favorites), `/library/favorites`, `/library/history`, `/library/media`, `/library/stash`, `/library/local` | Favorites is the Library tab. `/favorites` and `/listen/favorites` redirect to `/library/favorites`. Opening Library or Favorites does not ask for sign-in. Other Library tabs stay visible and grayed until there is an account. |
 | Everyone | Help | `/help`, `/help/$slug` | Signed-in users also see their support requests and replies. Articles reach `/status`, `/news`, `/whats-new`, legal pages and `/transparency`. `/help/governance` redirects to `/studio/governance?tab=guide`. |
 | Artist | Studio | `/studio`, `/studio/stats` (+ `/detail`), `/studio/insights` (+ `/$kind/$id`), `/studio/governance`, `/studio/updates`, `/studio/audience` (+ `?tab=tiers`), `/studio/stripe`, `/studio/releases` (+ `/$id`), `/studio/distribution`, `/studio/editor` (+ `/$id`), `/studio/mastering/$id`, `/studio/sounds` (+ `/$id`, `/$id/editor`), `/studio/collections` (+ `/$slug`), `/studio/playlists/$slug`, `/studio/branding` | Sounds, collections and branding have no submenu item; they are reached from Studio home, Library and in-page links, and Studio stays highlighted. |
 | Artist | Broadcast | `/studio/go-live`, `/studio/schedule`, `/studio/schedule` (`?show=events`, `?show=parties`; `/studio/events/new`, `/studio/events/$eventId/edit`), `/studio/shows` (+ `/$id`, `/episodes/$episodeId`), `/studio/channel` | Show detail carries visibility (Public / Fans only) and automatic episode numbering. 24/7 programme is on `/studio/schedule`. |
@@ -157,13 +167,14 @@ These routes are real but should not become extra top-level navigation items:
   `/admin/disco-widgets` → `/admin/addons`;
   `/admin/radio-station-suggestions` → orphan-pages tab.
 - Studio aliases: `/studio/info` → go-live; `/studio/archive*` → sounds;
-  `/studio/upload` → `/library/upload`; `/studio/stash` → `/library/stash`;
-  `/studio/recordings` → `/library/recordings`; `/studio/playlists` →
-  collections; `/studio/revenue` → audience; `/studio/venues` →
+  `/studio/stash` → `/library/stash`; `/studio/playlists` → collections; `/studio/revenue` → audience; `/studio/venues` →
   `/admin/venues`; `/studio/moderation` → Settings → Channel;
   `/studio/channel?tab=design|profile` → Settings → Artist.
 - `/library/releases` → `/studio/releases`; `/library/messages` →
-  `/messages`; `/library/history` → `/listen/history`.
+  `/messages`; `/library/sounds`, `/library/embeds` → `/studio/sounds`;
+  `/library/collections` (+ `/$slug`) → `/studio/collections`;
+  `/library/upload` → `/studio/upload`; `/library/recordings` →
+  `/studio/recordings`; `/library/smartlinks` → `/studio/smartlinks`.
 
 ## Orphan pages (production, content-bearing, no chrome item)
 
@@ -175,8 +186,6 @@ Re-audited 2026-10-03 against `AppShell` / `StudioNav` / `AdminNav` /
 | --- | --- | --- |
 | `/schedule` | Channel page programme block + booking calendar | Public programme page. Radio chrome does not link it. Distinct from `/studio/schedule` (Studio → Broadcast). |
 | `/studio/distribution` | Studio Releases row + export add-on deep links | Not a submenu item; Releases stays highlighted on it. |
-| `/studio/sounds` (+ `/$id`) | Studio home, Upload, Library Tracks | No StudioNav item; `SECTION_PREFIXES` keeps Studio highlighted. |
-| `/studio/collections` (+ `/$slug`) | Studio home, Upload, Library Collections | Same pattern as Sounds. |
 | `/studio/branding` | Settings → Artist → Branding shares the panel; old `/dashboard/channel/edit` | No StudioNav item. |
 | `/search?tag=` | Tag chips on the track page only | Intentional: tag search is a drill-down, not a browse surface. |
 

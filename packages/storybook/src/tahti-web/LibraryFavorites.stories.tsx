@@ -26,7 +26,7 @@ export const SignedOut: Story = {
       canvas.getByRole('tab', { name: 'Favorites' }),
     ).toHaveAttribute('aria-selected', 'true');
     await expect(
-      canvas.getByRole('tab', { name: 'Sounds, needs an account' }),
+      canvas.getByRole('tab', { name: 'History, needs an account' }),
     ).toBeDisabled();
     await expect(
       canvas.getByText('Sign in to see the tracks you like'),
@@ -41,6 +41,7 @@ export const SignedIn: Story = {
     await expect(
       canvas.getByRole('tab', { name: 'Favorites' }),
     ).toHaveAttribute('aria-selected', 'true');
-    await expect(canvas.getByRole('tab', { name: 'Sounds' })).toBeEnabled();
+    await expect(canvas.getByRole('tab', { name: 'History' })).toBeEnabled();
+    await expect(canvas.queryByRole('tab', { name: 'Sounds' })).toBeNull();
   },
 };

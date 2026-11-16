@@ -47,7 +47,7 @@ export function RecentBroadcastRow({
           : t('recentBroadcastRow.recorded')}
       </span>
       <ButtonLink
-        to={broadcast.soundId ? '/studio/sounds/$id' : '/library/recordings'}
+        to={broadcast.soundId ? '/studio/sounds/$id' : '/studio/recordings'}
         params={broadcast.soundId ? { id: broadcast.soundId } : undefined}
         size="sm"
         variant="secondary"

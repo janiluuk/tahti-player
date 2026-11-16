@@ -11,12 +11,15 @@ import {
   ViewShell,
 } from '@tahti-player/ui';
 
+import { ChannelAnnouncementsPanel } from '../../components/ChannelAnnouncementsPanel';
 import { ChannelRadioPlaylistPanel } from '../../components/ChannelRadioPlaylistPanel';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { ProgrammeToggles } from '../../components/ProgrammeToggles';
 import { RestrictionNotice } from '../../components/RestrictionNotice';
+import { RotationSourcePicker } from '../../components/RotationSourcePicker';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
+import { useAuthStore } from '../../stores/authStore';
 import {
   endAtFor,
   formatDate,
@@ -127,6 +130,7 @@ function ScheduleBroadcasts({
   form: ReturnType<typeof useScheduleForm>;
 }) {
   const { t } = useTranslation('web');
+  const channelSlug = useAuthStore((state) => state.user?.channel?.slug);
   const {
     shows,
     scheduledShows,
@@ -226,13 +230,16 @@ function ScheduleBroadcasts({
       <ScheduleAnalytics />
 
       <StudioPanel
+        id="channel-programme"
         title={t('studioScheduleView.channelProgramme')}
         description={t('studioScheduleView.channelProgrammeDescription')}
       >
         <ProgrammeToggles />
       </StudioPanel>
 
+      {channelSlug ? <RotationSourcePicker slug={channelSlug} /> : null}
       <ChannelRadioPlaylistPanel />
+      <ChannelAnnouncementsPanel />
 
       <ScheduleEditorDialog form={form} />
     </>

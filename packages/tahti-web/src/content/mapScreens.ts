@@ -1133,7 +1133,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           { label: 'Go Live', to: '/studio/go-live' },
           { label: 'Open Schedule', to: '/studio/schedule' },
           { label: 'Open Tracks', to: '/studio/sounds' },
-          { label: 'Upload a track', to: '/library/upload' },
+          { label: 'Upload a track', to: '/studio/upload' },
           { label: 'Open Collections', to: '/studio/collections' },
           { label: 'Open Releases', to: '/studio/releases' },
           { label: 'Open an upcoming show', to: '/studio/shows/$id' },
@@ -1141,7 +1141,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           { label: 'Open Stats', to: '/studio/stats' },
           { label: 'Open Revenue', to: '/studio/audience' },
           { label: 'Open Channel look', to: '/studio/channel' },
-          { label: 'Open recordings', to: '/library/recordings' },
+          { label: 'Open recordings', to: '/studio/recordings' },
           {
             label: 'If no channel yet, land on setup',
             to: '/studio/channel',
@@ -1205,7 +1205,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Open recordings once broadcasting',
-            to: '/library/recordings',
+            to: '/studio/recordings',
           },
           {
             label: 'Open the public channel page once live',
@@ -1253,7 +1253,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/upload.png',
-          route: '/library/upload',
+          route: '/studio/upload',
           caption: 'Nuclear upload - /studio/upload redirects here.',
         },
       },
@@ -1982,7 +1982,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/studio-channel-announcements.png',
-          route: '/studio/channel?radio=rotation#radio',
+          route: '/studio/schedule#channel-programme',
           caption: 'Announcements editor',
         },
         storybookUrl: storybookStory(

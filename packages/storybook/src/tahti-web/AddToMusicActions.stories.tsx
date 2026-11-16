@@ -46,11 +46,11 @@ export const Compact: Story = {
 export const EmptyArchiveUploadPage: Story = {
   args: {
     align: 'center',
-    uploadTo: '/library/upload',
+    uploadTo: '/studio/upload',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const upload = canvas.getByRole('link', { name: 'Upload' });
-    await expect(upload).toHaveAttribute('href', '/library/upload');
+    await expect(upload).toHaveAttribute('href', '/studio/upload');
   },
 };

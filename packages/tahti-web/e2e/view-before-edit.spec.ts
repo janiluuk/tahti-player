@@ -9,7 +9,7 @@ test.beforeEach(async ({ page }) => {
 test('a collection opens read-only and Edit details reveals the form', async ({
   page,
 }) => {
-  await page.goto('/library/collections/midnight-archive');
+  await page.goto('/studio/collections/midnight-archive');
   await expect(page.getByRole('heading', { name: 'Tracklist' })).toBeVisible();
   await expect(page.getByLabel('Release date')).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Save' })).toHaveCount(0);

@@ -104,7 +104,7 @@ export function UploadTrackDialog({ isOpen, onClose, onUploaded }: Props) {
         </div>
         <Dialog.Actions>
           <ButtonLink
-            to="/library/upload"
+            to="/studio/upload"
             variant="text"
             size="sm"
             className="mr-auto"

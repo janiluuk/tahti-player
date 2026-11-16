@@ -21,7 +21,7 @@ export function StudioTrackInsightsView({
       <div className="studio-page-layout mx-auto flex max-w-5xl flex-col gap-6">
         {kind === 'sound' ? (
           <PageBackLink
-            to="/library/sounds"
+            to="/studio/sounds"
             label={t('studioTrackInsightsView.sounds')}
           />
         ) : releaseId ? (

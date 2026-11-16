@@ -134,25 +134,25 @@ test('artist library starts with a searchable archive and track tools', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/library/sounds');
+  await page.goto('/studio/sounds');
 
-  await expect(page.getByRole('tab', { name: 'Sounds' })).toHaveAttribute(
-    'aria-selected',
-    'true',
+  const music = page.getByRole('navigation', { name: 'Music pages' });
+  await expect(music.getByRole('link', { name: 'Tracks' })).toHaveAttribute(
+    'aria-current',
+    'page',
   );
-  await expect(page.getByRole('tab', { name: 'Recordings' })).toBeVisible();
-  await expect(page.getByRole('tab', { name: 'Collections' })).toBeVisible();
+  await expect(music.getByRole('link', { name: 'Collections' })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Sounds' })).toBeVisible();
   await expect(page.getByText('Northern Lights — Live Set')).toBeVisible();
   await expect(page.getByText('Studio sketch A')).toBeVisible();
   await expect(page.getByText(/Pinned \d+/)).toBeVisible();
   await expect(page.getByRole('tab', { name: 'Messages' })).toHaveCount(0);
-  await page.getByRole('tab', { name: 'Collections' }).click();
-  await expect(page).toHaveURL(/\/library\/collections$/);
+  await music.getByRole('link', { name: 'Collections' }).click();
+  await expect(page).toHaveURL(/\/studio\/collections$/);
   await expect(
     page.getByRole('heading', { name: 'Collections' }),
   ).toBeVisible();
-  await page.getByRole('tab', { name: 'Sounds' }).click();
+  await music.getByRole('link', { name: 'Tracks' }).click();
 
   await page.getByLabel('Search sounds').fill('Studio sketch');
   await expect(page.getByText('Northern Lights — Live Set')).not.toBeVisible();
@@ -170,7 +170,9 @@ test('artist library starts with a searchable archive and track tools', async ({
   await expect(
     page.getByRole('tablist', { name: 'Library sections' }),
   ).toHaveCount(0);
-  await expect(page.getByRole('link', { name: 'Back to Music' })).toBeVisible();
+  await expect(
+    page.getByRole('link', { name: 'Back to Tracks' }),
+  ).toBeVisible();
   await expect(page.getByRole('tab', { name: 'Details' })).toBeVisible();
   await expect(page.getByLabel('Release date')).toBeVisible();
   await expect(page.getByLabel('Audience')).toBeVisible();
@@ -198,7 +200,7 @@ test('collections combine albums, EPs, DJ sets, and playlists', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/library/collections');
+  await page.goto('/studio/collections');
 
   await expect(page.getByRole('tab', { name: /Albums/ })).toBeVisible();
   await expect(page.getByRole('tab', { name: /EPs/ })).toBeVisible();
@@ -244,7 +246,7 @@ test('collections combine albums, EPs, DJ sets, and playlists', async ({
   await expect(page.getByRole('link', { name: 'Playlists' })).toHaveCount(0);
 
   await page.goto('/library/embeds');
-  await expect(page).toHaveURL(/\/library\/sounds\?tab=embeds/);
+  await expect(page).toHaveURL(/\/studio\/sounds\?tab=embeds/);
   await expect(
     page.getByRole('tab', { name: 'Embeds', selected: true }),
   ).toBeVisible();

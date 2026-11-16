@@ -198,40 +198,67 @@ describe('StudioNav section coverage', () => {
     expect(getStudioPrimaryRoute('/studio/stripe')).toBe('/studio');
   });
 
-  it('lights nothing in Studio for Library-domain routes (they moved to the main-menu Library item)', () => {
+  it('keeps listener Library routes out of Studio', () => {
     for (const location of [
       '/library',
-      '/library/sounds',
-      '/studio/sounds',
-      '/studio/sounds/arch-1',
-      '/studio/archive/arch-1',
-      '/library/collections',
-      '/studio/collections',
-      '/studio/playlists',
-      '/studio/stash',
-      '/library/smartlinks',
+      '/library/favorites',
+      '/library/history',
       '/library/media',
-      '/library/upload',
+      '/library/stash',
+      '/studio/stash',
     ]) {
       expect(litStudioSubmenuDestinations(location), location).toEqual([]);
       expect(getStudioPrimaryRoute(location), location).toBeNull();
     }
   });
 
-  it('does not treat Library routes as a Studio primary section (AppShell renders StudioNav whenever this is truthy)', () => {
+  it('lights Music for the catalog pages that moved in from Library', () => {
     for (const location of [
-      '/library',
-      '/library/sounds',
-      '/library/collections',
-      '/library/recordings',
-      '/library/smartlinks',
-      '/library/upload',
-      '/library/media',
       '/studio/sounds',
+      '/studio/sounds?tab=embeds',
       '/studio/collections',
+      '/studio/upload',
+      '/studio/smartlinks',
     ]) {
-      expect(getStudioPrimaryRoute(location), location).toBeNull();
+      expect(getStudioPrimaryRoute(location), location).toBe('/studio');
+      expect(litStudioSubmenuDestinations(location), location).toEqual([
+        '/studio/releases',
+      ]);
+      expect(hasStudioNestedNav(location), location).toBe(true);
     }
+  });
+
+  it('lights the Tracks and Collections chips on their pages', () => {
+    const lit = (location: string) =>
+      CATALOG_SUBNAV_ITEMS.filter((item) =>
+        isCatalogSubnavActive(location, item.to),
+      ).map((item) => item.to);
+    expect(lit('/studio/sounds')).toEqual(['/studio/sounds']);
+    expect(lit('/studio/upload')).toEqual(['/studio/sounds']);
+    expect(lit('/studio/collections')).toEqual(['/studio/collections']);
+    expect(lit('/studio/smartlinks')).toEqual([]);
+  });
+
+  it('lights Broadcast on Recordings and shows a back link instead of chips', () => {
+    expect(litStudioSubmenuDestinations('/studio/recordings')).toEqual([
+      '/studio/broadcast',
+    ]);
+    expect(
+      BROADCAST_SUBNAV_ITEMS.filter((item) =>
+        isBroadcastSubnavActive('/studio/recordings', item.to),
+      ),
+    ).toEqual([]);
+  });
+
+  it('keeps track and collection detail pages free of the section row', () => {
+    for (const location of [
+      '/studio/sounds/arch-1',
+      '/studio/sounds/arch-1/editor',
+      '/studio/collections/late-nights',
+    ]) {
+      expect(isStudioDetailRoute(location), location).toBe(true);
+    }
+    expect(isStudioDetailRoute('/studio/sounds')).toBe(false);
   });
 });
 

@@ -18,7 +18,7 @@ const routes: RouteVisit[] = [
     heading: /^Releases$/,
     url: /\/studio\/releases$/,
   },
-  { path: '/library/upload', heading: /^Upload$/ },
+  { path: '/studio/upload', heading: /^Upload$/ },
   { path: '/library/messages', heading: /^Messages$/, url: /\/messages$/ },
   {
     path: '/library/following',

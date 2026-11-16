@@ -24,7 +24,7 @@ export function EmptyDiscographyPrompt({ state }: { state: StudioHomeState }) {
             <PlusIcon size={14} aria-hidden className="mr-1.5" />
             {t('studioHub.addAlbum')}
           </ButtonLink>
-          <ButtonLink to="/library/upload" size="sm">
+          <ButtonLink to="/studio/upload" size="sm">
             <PlusIcon size={14} aria-hidden className="mr-1.5" />
             {t('studioHub.addTrack')}
           </ButtonLink>

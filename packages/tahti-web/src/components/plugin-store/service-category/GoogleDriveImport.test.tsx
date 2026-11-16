@@ -111,7 +111,7 @@ describe('GoogleDriveImport', () => {
     expect(DriveImport.chooseButton.element).toBeDisabled();
     expect(
       screen.getByRole('link', { name: 'Upload files' }).getAttribute('href'),
-    ).toBe('/library/upload');
+    ).toBe('/studio/upload');
     expect(picker.load).not.toHaveBeenCalled();
   });
 

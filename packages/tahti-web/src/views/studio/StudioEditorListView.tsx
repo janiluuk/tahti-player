@@ -388,7 +388,7 @@ export function StudioEditorListView() {
                     action={
                       sounds.length === 0 ? (
                         <ButtonLink
-                          to="/library/upload"
+                          to="/studio/upload"
                           size="sm"
                           variant="secondary"
                         >

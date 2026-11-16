@@ -7,7 +7,7 @@ test('artwork Play buttons can be reached and used from the keyboard', async ({
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await signIn(page);
-  await page.goto('/library/sounds');
+  await page.goto('/studio/sounds');
   await acknowledgeGuidelines(page);
   const play = page
     .getByRole('main')

@@ -86,7 +86,7 @@ export function ServerSetupHelp({
         </p>
       )}
       <ButtonLink
-        to="/library/upload"
+        to="/studio/upload"
         size="sm"
         variant="secondary"
         className="gap-1.5 self-start"

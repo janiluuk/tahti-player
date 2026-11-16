@@ -16,7 +16,7 @@ describe('getPageTourSteps', () => {
       '/studio/shows',
       '/studio/audience',
       '/admin/users',
-      '/library/sounds',
+      '/studio/sounds',
     ]) {
       const steps = getPageTourSteps(pathname);
       expect(steps[0]?.id).toBe('page-purpose');
@@ -113,7 +113,7 @@ describe('page tour text', () => {
     '/studio/audience',
     '/studio/stripe',
     '/studio/upload',
-    '/library/sounds',
+    '/studio/sounds',
     '/admin/users',
     '/radio',
     '/u/aino',

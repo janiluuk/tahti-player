@@ -84,12 +84,12 @@ const DEFAULT_ITEMS: NavigationStructureItem[] = [
           {
             id: 'studio-go-live-radio',
             label: '24/7 radio',
-            path: '/studio/channel?radio=rotation#radio',
+            path: '/studio/schedule#channel-programme',
           },
           {
             id: 'studio-go-live-recordings',
             label: 'Recordings',
-            path: '/library/recordings',
+            path: '/studio/recordings',
           },
           {
             id: 'studio-go-live-tahti-radio',

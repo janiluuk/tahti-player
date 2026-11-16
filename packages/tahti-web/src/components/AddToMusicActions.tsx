@@ -13,7 +13,7 @@ type Props = {
   align?: 'start' | 'center';
   onUploaded?: () => void;
   /** When set, Upload navigates here instead of opening the quick dialog. */
-  uploadTo?: '/library/upload';
+  uploadTo?: '/studio/upload';
 };
 
 /** Upload + Import — entry points for adding tracks to the Music archive.

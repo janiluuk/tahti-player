@@ -6,7 +6,7 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   '': '/studio',
   broadcast: '/studio/go-live',
   archive: '/studio/sounds',
-  upload: '/library/upload',
+  upload: '/studio/upload',
   releases: '/studio/releases',
   collections: '/studio/collections',
   distribution: '/studio/distribution',
@@ -15,7 +15,7 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   embeds: '/studio/releases',
   events: '/studio/schedule?show=events',
   venues: '/studio/venues',
-  recordings: '/library/recordings',
+  recordings: '/studio/recordings',
   stash: '/library/stash',
   schedule: '/studio/schedule',
   stats: '/studio/stats',
@@ -57,7 +57,7 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   'settings/distribution': '/studio/channel?radio=tahti-radio#radio',
   'settings/moderators': '/settings/channel?tab=moderators',
   'settings/multistream': '/studio/channel?radio=multicast#radio',
-  'upload/from-broadcast': '/library/recordings',
+  'upload/from-broadcast': '/studio/recordings',
 };
 
 /** Resolve /dashboard/... rest path to Nuclear target, or /studio fallback. */

@@ -12,7 +12,7 @@ import {
   withToaster,
 } from './_fixtures/track-release';
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
-import { findToast, pickTrackView } from './_lib/play';
+import { findToast, pickTrackView, withinBody } from './_lib/play';
 
 const meta: Meta<typeof StudioSoundsView> = {
   title: 'Tahti/Studio/StudioSoundsView',
@@ -22,13 +22,13 @@ const meta: Meta<typeof StudioSoundsView> = {
     docs: {
       description: {
         component:
-          'Artist sound-library surface at Library → Sounds. One list with a Type filter (Track, Clip, DJ Set, …); Stash lives under Library → Stash.',
+          'Artist tracks at Studio → Music → Tracks. Upload and Import sit in the header with the rest in a ⋯ menu; one list with a Type filter (Track, Clip, DJ Set, …).',
       },
     },
   },
   decorators: [
     withToaster(),
-    withTahtiRouter('/library/sounds'),
+    withTahtiRouter('/studio/sounds'),
     withMockAuth(),
   ],
 };
@@ -38,8 +38,35 @@ type Story = StoryObj<typeof meta>;
 
 export const Sounds: Story = {};
 
+/** One header: Upload is the primary action beside Import, and cover
+ * backfill and track order wait in the ⋯ menu. */
+export const HeaderActions: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const actions = await canvas.findByTestId('studio-sounds-actions');
+    await expect(
+      within(actions).getByRole('button', { name: 'Upload' }),
+    ).toBeVisible();
+    await expect(
+      within(actions).getByRole('button', { name: 'Import' }),
+    ).toBeVisible();
+    await expect(
+      canvas.queryByRole('button', { name: 'Fill missing covers' }),
+    ).toBeNull();
+    await userEvent.click(
+      within(actions).getByRole('button', { name: 'More track actions' }),
+    );
+    const body = withinBody(canvasElement);
+    await waitFor(() =>
+      expect(
+        body.getByRole('button', { name: 'Order on your profile' }),
+      ).toBeVisible(),
+    );
+  },
+};
+
 export const EmbedsTab: Story = {
-  decorators: [withTahtiRouter('/library/sounds?tab=embeds')],
+  decorators: [withTahtiRouter('/studio/sounds?tab=embeds')],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(canvas.getByRole('tab', { name: 'Embeds' })).toHaveAttribute(
@@ -119,7 +146,7 @@ export const AmbientCovers: Story = {
 
 /** Hearthis embeds live under the Sounds → Embeds panel tab. */
 export const HearthisRowEmbed: Story = {
-  decorators: [withTahtiRouter('/library/sounds?tab=embeds')],
+  decorators: [withTahtiRouter('/studio/sounds?tab=embeds')],
   beforeEach: () => {
     usePlayerStore.setState({ currentId: null, status: 'idle', queue: [] });
     return () => {
@@ -154,7 +181,7 @@ const SOFT_COVER = '/mock/dj-moonlight/cover-moonlight-drive.svg';
 
 /** An Embeds row with no stored cover asks the Tahti thumbnail proxy (mocked) and shows that artwork. */
 export const EmbedSoftFill: Story = {
-  decorators: [withTahtiRouter('/library/sounds?tab=embeds')],
+  decorators: [withTahtiRouter('/studio/sounds?tab=embeds')],
   beforeEach: () => {
     clearEmbedThumbnailCache();
     return () => {

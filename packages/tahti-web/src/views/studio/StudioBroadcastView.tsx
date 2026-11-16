@@ -75,14 +75,14 @@ export function studioBroadcastItems(t: TFunction<'web'>): HubCardItem[] {
     },
     {
       id: 'radio',
-      href: '/studio/channel?radio=rotation#radio',
+      href: '/studio/schedule#channel-programme',
       icon: RepeatIcon,
-      title: '24/7 radio',
+      title: t('studioBroadcastView.radio247'),
       description: t('studioBroadcastViewMore.whatYourChannelPlaysWhen'),
     },
     {
       id: 'recordings',
-      href: '/library/recordings',
+      href: '/studio/recordings',
       icon: DiscIcon,
       title: t('studioBroadcastViewMore.recordings'),
       description: t('studioBroadcastViewMore.pastBroadcastsReadyToPublish'),
@@ -104,11 +104,11 @@ export function studioBroadcastItems(t: TFunction<'web'>): HubCardItem[] {
   ];
 }
 
-const KIND_LABELS: Record<AgendaKind, string> = {
-  show: 'Show',
-  event: 'Event',
-  party: 'Party',
-};
+const KIND_LABEL_KEYS = {
+  show: 'studioBroadcastView.kindShow',
+  event: 'studioBroadcastView.kindEvent',
+  party: 'studioBroadcastView.kindParty',
+} as const satisfies Record<AgendaKind, string>;
 
 const EMPTY_CREATE = {
   event: { to: '/studio/events/new', label: 'emptyActions.addEvent' },
@@ -121,7 +121,7 @@ const EMPTY_CREATE = {
 
 function filters(t: TFunction<'web'>) {
   return [
-    { id: 'all', label: 'All' },
+    { id: 'all', label: t('studioBroadcastView.filterAll') },
     { id: 'show', label: t('studioBroadcastViewMore.shows') },
     { id: 'event', label: t('studioBroadcastViewMore.events') },
     { id: 'party', label: t('studioBroadcastViewMore.parties') },
@@ -131,6 +131,7 @@ function filters(t: TFunction<'web'>) {
 const formatStart = (iso: string) => formatScheduleWindow(iso);
 
 function AgendaRow({ item }: { item: AgendaItem }) {
+  const { t } = useTranslation('web');
   return (
     <li>
       <Link
@@ -140,7 +141,9 @@ function AgendaRow({ item }: { item: AgendaItem }) {
         data-testid="broadcast-agenda-row"
       >
         <Badge variant="pill" color={item.live ? 'red' : 'secondary'}>
-          {item.live ? 'Live' : KIND_LABELS[item.kind]}
+          {item.live
+            ? t('studioBroadcastView.live')
+            : t(KIND_LABEL_KEYS[item.kind])}
         </Badge>
         <span className="flex min-w-0 flex-1 flex-col">
           <span className="truncate text-sm font-semibold">{item.title}</span>

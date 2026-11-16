@@ -26,7 +26,7 @@ test('full player view: back arrow actually minimizes the player', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/library/sounds');
+  await page.goto('/studio/sounds');
   await clearToasts(page);
   await page
     .getByRole('button', { name: /^Play / })

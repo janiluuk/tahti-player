@@ -57,7 +57,7 @@ export const SOURCE_DEFS: SourceDef[] = [
     description:
       'Upload audio files into your archive (prepare → MinIO → complete).',
     oauthStartPath: null,
-    studioDeepLink: '/library/upload',
+    studioDeepLink: '/studio/upload',
     kind: 'upload',
     capabilities: {
       connect: false,

@@ -78,7 +78,7 @@ export function MusicAudienceGrids({
             color="bg-accent-orange"
           />
           <StudioActionTile
-            to="/library/upload"
+            to="/studio/upload"
             icon={UploadCloudIcon}
             label={t('studioHomeGrid.upload')}
             subtitle={t('studioHomeGrid.addAudio')}

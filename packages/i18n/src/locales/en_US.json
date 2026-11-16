@@ -685,7 +685,8 @@
       "channel": "Channel",
       "home": "Home",
       "fans": "Fans",
-      "profile": "Profile"
+      "profile": "Profile",
+      "tracks": "Tracks"
     },
     "settings": {
       "signInPrompt": "Sign in for account, artist, and studio settings.",
@@ -1846,7 +1847,8 @@
       "mediaPurgeDescription_other": "{{count}} files ({{size}}) aren't used by your profile, channel, posts, releases or anything else you own. They will be deleted for good.",
       "mediaPurgeConfirm": "Delete unused",
       "mediaPurged_one": "Deleted {{count}} unused file, freed {{size}}.",
-      "mediaPurged_other": "Deleted {{count}} unused files, freed {{size}}."
+      "mediaPurged_other": "Deleted {{count}} unused files, freed {{size}}.",
+      "moreTrackActions": "More track actions"
     },
     "date": {
       "today": "Today",
@@ -7576,7 +7578,13 @@
       "agendaFilter": "Agenda filter",
       "broadcastTools": "Broadcast tools",
       "listenInPlayer": "Listen in player",
-      "pauseInPlayer": "Pause"
+      "pauseInPlayer": "Pause",
+      "kindShow": "Show",
+      "kindEvent": "Event",
+      "kindParty": "Party",
+      "live": "Live",
+      "filterAll": "All",
+      "radio247": "24/7 radio"
     },
     "socialAutoPost": {
       "disconnect": "Disconnect",
@@ -7732,7 +7740,10 @@
       "sessionOnBroadcast": "Session on Broadcast",
       "overallStatistics": "Overall statistics",
       "channelSetup": "Channel setup",
-      "streamManager": "Stream manager"
+      "streamManager": "Stream manager",
+      "programmeOnSchedule": "The 24/7 programme is on Schedule",
+      "programmeOnScheduleDescription": "Rotation, offline fallback and announcements are managed on Schedule, next to your shows.",
+      "openSchedule": "Open Schedule"
     },
     "releaseStatsPanel": {
       "anonymizedCountriesForThisRelease": "Anonymized countries for this release's counted plays and downloads.",
@@ -8295,7 +8306,7 @@
     },
     "studioSoundView": {
       "stillProcessingThisCanTake": "Still processing — this can take a minute for longer files. Playback, the waveform, and quick fixes will unlock once it's ready; metadata below is safe to edit and save now.",
-      "backToLibrarySounds": "Back to Library sounds"
+      "backToTracks": "Back to Tracks"
     },
     "agmTab": {
       "saving": "Saving…",
@@ -8361,7 +8372,11 @@
     },
     "upcomingShowsSection": {
       "viewAmpEdit": "View & edit",
-      "upcomingShows": "Upcoming shows"
+      "upcomingShows": "Upcoming shows",
+      "nextUp": "Next: {{title}}",
+      "moreComingUp_one": "{{count}} more coming up",
+      "moreComingUp_other": "{{count}} more coming up",
+      "openAgenda": "Open the agenda"
     },
     "recentActivitySection": {
       "recentUploads": "Recent uploads",

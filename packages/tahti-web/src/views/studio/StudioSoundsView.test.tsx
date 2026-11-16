@@ -11,11 +11,10 @@ import { StudioSoundsView } from './StudioSoundsView';
 vi.mock('../../components/StudioGate', () => ({
   StudioGate: ({ children }: { children: ReactNode }) => children,
 }));
-vi.mock('../LibraryView', () => ({ LibrarySectionTabs: () => null }));
 vi.mock('../../components/AddToMusicActions', () => ({
   AddToMusicActions: () => null,
 }));
-vi.mock('./sounds/TrackOrderButton', () => ({ TrackOrderButton: () => null }));
+vi.mock('./sounds/TrackOrderDialog', () => ({ TrackOrderDialog: () => null }));
 vi.mock('./sounds/SoundsAmbientList', () => ({
   SoundsAmbientList: ({ items }: { items: StudioSound[] }) => (
     <ul>

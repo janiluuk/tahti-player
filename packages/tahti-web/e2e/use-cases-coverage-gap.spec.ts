@@ -93,7 +93,7 @@ test('artist: History shows listening stats across devices', async ({
 test('artist: Library → Playlists lists the playlists', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await signIn(page);
-  await page.goto('/library/collections');
+  await page.goto('/studio/collections');
   await acknowledgeGuidelines(page);
   await expect(
     page.getByRole('heading', { level: 1, name: 'Collections' }),

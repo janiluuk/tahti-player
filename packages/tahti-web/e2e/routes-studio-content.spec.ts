@@ -82,7 +82,7 @@ test('collection and playlist editors open from Collections', async ({
 }) => {
   const errors = collectPageErrors(page);
   await expectRouteHealthy(page, errors, {
-    path: '/library/collections',
+    path: '/studio/collections',
     heading: 'Collections',
   });
   const collection = await firstHref(

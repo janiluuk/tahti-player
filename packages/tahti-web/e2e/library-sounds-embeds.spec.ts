@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 test('artist: an Embeds row without a cover soft-fills one', async ({
   page,
 }) => {
-  await page.goto('/library/sounds?tab=embeds');
+  await page.goto('/studio/sounds?tab=embeds');
   await acknowledgeGuidelines(page);
   const panel = page.getByTestId('sounds-panel-embeds');
   const play = panel.getByRole('button', {
@@ -24,13 +24,13 @@ test('artist: an Embeds row without a cover soft-fills one', async ({
 });
 
 test('artist: Sounds → Embeds tab plays a hearthis embed', async ({ page }) => {
-  await page.goto('/library/sounds');
+  await page.goto('/studio/sounds');
   await acknowledgeGuidelines(page);
   await expect(page.getByRole('heading', { name: /^Sounds$/ })).toBeVisible();
 
   await page.getByRole('tab', { name: 'Embeds' }).click();
   await expect(page.getByTestId('sounds-panel-embeds')).toBeVisible();
-  await expect(page).toHaveURL(/\/library\/sounds\?tab=embeds/);
+  await expect(page).toHaveURL(/\/studio\/sounds\?tab=embeds/);
 
   const panel = page.getByTestId('sounds-panel-embeds');
   const play = panel.getByRole('button', {

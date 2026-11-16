@@ -975,7 +975,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   subgraph studio["Studio routes"]
     ST["/studio"]
     GL["/studio/go-live · Broadcast tabs"]
-    CAT["Releases · Editor · /studio/sounds · /studio/collections · /library/upload"]
+    CAT["Releases · Editor · /studio/sounds · /studio/collections · /studio/upload"]
     Gov["/studio/governance"]
   end
 
@@ -1043,7 +1043,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Settings --> Sources["Add-ons · Import"]:::auth
   Listen --> Studio["Studio · overview · catalog · broadcast"]:::studio
   Studio --> GoLive["Broadcast · Go live · schedule · events · shows · channel · radio"]:::studio
-  Studio --> Music["Catalog · sounds · releases · collections · /library/upload · editor"]:::studio
+  Studio --> Music["Catalog · sounds · releases · collections · /studio/upload · editor"]:::studio
   Studio --> Publish["Studio · governance · posts · audience · stripe · stats"]:::studio
   Listen --> Public["Transparency · help · news · legal · embeds · /jam/:code"]:::pub
   Listen --> Admin["Board admin · in-app /admin/*"]:::board
@@ -1153,7 +1153,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Studio --> Arch["/studio/sounds"]
   Arch --> Snd["/studio/sounds/:id · track editor"]
   Studio --> Coll["/studio/collections"]
-  Studio --> Up["/library/upload"]
+  Studio --> Up["/studio/upload"]
   Up --> Snd
   Studio --> Lib["/library"]
   Studio --> Brand["/studio/branding · avatar colour · GIF picture"]
@@ -1192,7 +1192,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   C --> D[Go Live]
   D --> E[Player bar · open channel]
   D --> F["Multistream · /studio/channel?radio=multicast#radio"]
-  D --> G["Recordings · /library/recordings"]
+  D --> G["Recordings · /studio/recordings"]
 `,
   },
   {
@@ -1427,7 +1427,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Gate -->|No| LoginOrSetup[Login or setup]
   Gate -->|Yes| Home[Studio home]
   Home --> GL["/studio/go-live"]
-  Home --> Up["/library/upload"]
+  Home --> Up["/studio/upload"]
   Up --> Snd["/studio/sounds/:id"]
   Home --> Arch["/studio/sounds"]
   Arch --> Snd

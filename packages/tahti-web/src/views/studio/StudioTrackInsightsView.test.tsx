@@ -41,12 +41,12 @@ describe('StudioTrackInsightsView back link', () => {
 
   it('leads a sound back to Sounds', async () => {
     await renderWithRouter(<StudioTrackInsightsView kind="sound" id="s1" />, {
-      paths: ['/library/sounds'],
+      paths: ['/studio/sounds'],
     });
 
     expect(screen.getByTestId('page-back-link')).toHaveAttribute(
       'href',
-      '/library/sounds',
+      '/studio/sounds',
     );
   });
 });

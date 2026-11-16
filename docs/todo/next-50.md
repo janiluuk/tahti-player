@@ -12,10 +12,7 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 30. [ ] [Pre-generate Yaniho channel peaks](yaniho-channel-pregenerate-peaks.md) (`yaniho-channel-waveform-peaks.md`).
 31. [ ] [Run artwork preset cover backfill](artwork-preset-backfill.md) (`artwork-preset-covers.md`).
 32. [ ] [Listings news opening post](listings-news-opening-post.md) (`listings-news-polish.md`).
-33. [ ] [Move catalog to Studio Music](studio-music-catalog.md) (`navigation-simplification.md`).
 34. [ ] [Profile forms live in Studio](studio-profile-forms.md) (`navigation-simplification.md`).
-35. [ ] [Broadcast agenda](broadcast-agenda.md) (`navigation-simplification.md`).
-37. [ ] [Merge the Studio overview](studio-overview-merge.md) (`navigation-simplification.md`).
 39. [ ] [Finnish API notification bodies](finnish-api-notifications.md) (`finnish-localization.md`).
 42. [ ] [Board track-edit product call](board-track-edit-product-call.md) (`ui-requests-2026-11-03.md`).
 45. [ ] [Embed downloads product call](embed-downloads-product-call.md) (`listen-artist-channel-cleanup.md`).

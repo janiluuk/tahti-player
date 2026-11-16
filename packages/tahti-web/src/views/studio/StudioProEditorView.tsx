@@ -355,7 +355,7 @@ function ProEditor({ soundId }: { soundId: string }) {
         onKeyDown={onEditorKeyDown}
       >
         <div className="flex flex-wrap gap-3 text-xs">
-          <PageBackLink to="/library/sounds" label={t('proEditor.sounds')} />
+          <PageBackLink to="/studio/sounds" label={t('proEditor.sounds')} />
           <Link
             to="/studio/sounds/$id"
             params={{ id: soundId }}

@@ -51,27 +51,27 @@ const settingsSections: RouteVisit[] = [
   { path: '/themes', heading: /^Themes$/, url: /\/settings\/themes$/ },
 ];
 
-// Old Studio bookmarks for pages that moved to Library, Settings or Venues.
+// Studio bookmarks for pages that now live in Library, Settings or Venues, plus the Studio catalog pages.
 const oldStudioBookmarks: RouteVisit[] = [
   { path: '/studio/info', heading: 'Go live', url: /\/studio\/go-live$/ },
-  { path: '/studio/sounds', heading: /^Sounds$/, url: /\/library\/sounds$/ },
-  { path: '/studio/archive', heading: /^Sounds$/, url: /\/library\/sounds$/ },
+  { path: '/studio/sounds', heading: /^Sounds$/, url: /\/studio\/sounds$/ },
+  { path: '/studio/archive', heading: /^Sounds$/, url: /\/studio\/sounds$/ },
   {
     path: '/studio/recordings',
     heading: /^Recordings$/,
-    url: /\/library\/recordings$/,
+    url: /\/studio\/recordings$/,
   },
   {
     path: '/studio/collections',
     heading: /^Collections$/,
-    url: /\/library\/collections$/,
+    url: /\/studio\/collections$/,
   },
   {
     path: '/studio/playlists',
     heading: /^Collections$/,
-    url: /\/library\/collections$/,
+    url: /\/studio\/collections$/,
   },
-  { path: '/studio/upload', heading: /^Upload$/, url: /\/library\/upload$/ },
+  { path: '/studio/upload', heading: /^Upload$/, url: /\/studio\/upload$/ },
   { path: '/studio/stash', heading: /^Stash$/, url: /\/library\/stash$/ },
   { path: '/studio/venues', heading: 'My venues', url: /\/venues\/mine$/ },
   {

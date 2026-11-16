@@ -10,6 +10,7 @@ import {
   fanCheckoutReturn,
   parseFanCheckoutReturnSearch,
 } from '../lib/fanCheckoutReturn';
+import { parseStudioSoundsSearch } from '../lib/studioSoundsSearch';
 import { appLayoutRoute } from './router-core';
 import {
   ArtistView,
@@ -28,9 +29,6 @@ import {
   NewsView,
   NotificationsView,
   SmartLinkView,
-  StudioCollectionEditView,
-  StudioCollectionsView,
-  StudioSoundsView,
   SubscribeView,
   TrackDetailView,
   VenueDetailView,
@@ -46,38 +44,23 @@ const LibraryView = lazyRouteComponent(
   'LibraryView',
 );
 
+/** The artist overview is Studio Home; Library opens on Favorites. */
 export const libraryRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library',
-  component: () => <LibraryView tab="library" />,
+  beforeLoad: () => {
+    throw redirect({ to: '/library/favorites', replace: true });
+  },
 });
 
+/** The catalog lives in Studio → Music; these keep old Library links working. */
 export const librarySoundsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/sounds',
-  validateSearch: (
-    search: Record<string, unknown>,
-  ): { contentType?: string; folder?: string; tab?: 'embeds' } => ({
-    contentType:
-      typeof search.contentType === 'string' ? search.contentType : undefined,
-    folder: typeof search.folder === 'string' ? search.folder : undefined,
-    tab: search.tab === 'embeds' ? 'embeds' : undefined,
-  }),
+  validateSearch: parseStudioSoundsSearch,
   beforeLoad: ({ search }) => {
-    if (search.folder === 'files') {
-      throw redirect({ to: '/library/stash' });
-    }
-    if (search.folder === 'clips') {
-      throw redirect({
-        to: '/library/sounds',
-        search: { contentType: 'CLIP' },
-      });
-    }
-    if (search.folder === 'sound') {
-      throw redirect({ to: '/library/sounds' });
-    }
+    throw redirect({ to: '/studio/sounds', search, replace: true });
   },
-  component: StudioSoundsView,
 });
 
 export const libraryReleasesRoute = createRoute({
@@ -88,9 +71,8 @@ export const libraryReleasesRoute = createRoute({
   },
 });
 
-/** `?tab=` sub-tabs are legacy bookmarks — each now has its own clean
- * `/library/<tab>` route, so old links redirect forward instead of
- * being rendered inline here. */
+/** `?tab=` sub-tabs are legacy bookmarks for pages that each have their own
+ * route now. */
 export const libraryCollectionsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/collections',
@@ -108,26 +90,37 @@ export const libraryCollectionsRoute = createRoute({
         : undefined,
   }),
   beforeLoad: ({ search }) => {
+    if (search.tab === 'embeds') {
+      throw redirect({ to: '/studio/sounds', search: { tab: 'embeds' } });
+    }
+    if (search.tab === 'recordings') {
+      throw redirect({ to: '/studio/recordings' });
+    }
     if (search.tab) {
       throw redirect({ to: `/library/${search.tab}` });
     }
+    throw redirect({ to: '/studio/collections', replace: true });
   },
-  component: StudioCollectionsView,
 });
 
 export const libraryCollectionEditRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/collections/$slug',
-  component: function LibraryCollectionEditRoute() {
-    const { slug } = libraryCollectionEditRoute.useParams();
-    return <StudioCollectionEditView slug={slug} nav="library" />;
+  beforeLoad: ({ params }) => {
+    throw redirect({
+      to: '/studio/collections/$slug',
+      params,
+      replace: true,
+    });
   },
 });
 
 export const libraryRecordingsRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/recordings',
-  component: () => <LibraryView tab="recordings" />,
+  beforeLoad: () => {
+    throw redirect({ to: '/studio/recordings', replace: true });
+  },
 });
 
 export const libraryStashRoute = createRoute({
@@ -141,7 +134,7 @@ export const libraryEmbedsRoute = createRoute({
   path: '/library/embeds',
   beforeLoad: () => {
     throw redirect({
-      to: '/library/sounds',
+      to: '/studio/sounds',
       search: { tab: 'embeds' },
     });
   },
@@ -174,7 +167,9 @@ export const libraryFollowingRoute = createRoute({
 export const librarySmartLinksRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/smartlinks',
-  component: () => <LibraryView tab="smartlinks" />,
+  beforeLoad: () => {
+    throw redirect({ to: '/studio/smartlinks', replace: true });
+  },
 });
 
 export const libraryMediaRoute = createRoute({
@@ -189,7 +184,7 @@ export const libraryLocalRoute = createRoute({
   beforeLoad: async () => {
     const { getNativeLibrary } = await import('../lib/nativeLibrary');
     if (!getNativeLibrary()) {
-      throw redirect({ to: '/library' });
+      throw redirect({ to: '/library/favorites' });
     }
   },
   component: () => <LibraryView tab="local" />,

@@ -147,7 +147,7 @@ export function useStudioSoundsState() {
   const setContentTypeFilterAndUrl = (next: ContentTypeFilter) => {
     setContentTypeFilter(next);
     void navigate({
-      to: '/library/sounds',
+      to: '/studio/sounds',
       search: next === 'ALL' ? {} : { contentType: next },
       replace: true,
     });

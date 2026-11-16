@@ -35,10 +35,6 @@ vi.mock('../../plugins/import-sources', () => ({
   importSourcePlugins: [],
 }));
 
-vi.mock('../LibraryView', () => ({
-  LibrarySectionTabs: () => null,
-}));
-
 let container: HTMLDivElement;
 let root: Root;
 
