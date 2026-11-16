@@ -1,6 +1,6 @@
 {
   "name": "@tahti-player/player",
-  "version": "1.47.330",
+  "version": "1.47.331",
   "private": true,
   "type": "module",
   "scripts": {
