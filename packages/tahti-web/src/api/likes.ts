@@ -118,6 +118,13 @@ export function forgetMockLike(id: string) {
   );
 }
 
+export function hasMockLike(id: string): boolean {
+  return (
+    readStoredMockLikes().some((track) => track.id === id) ||
+    mockFixture('myLikes', []).some((track) => track.id === id)
+  );
+}
+
 /** The tracks you liked anywhere, newest first. Signed-out listeners get
  * an empty list. A mock session keeps likes made in this browser. */
 export async function fetchMyLikes(): Promise<{
