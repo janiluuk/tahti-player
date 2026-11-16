@@ -25,6 +25,33 @@ describe('fetchConnectionStatus', () => {
     expect(data).toEqual({ connected: false, configured: false });
   });
 
+  it('reads Spotify as connected from the linked artist profile', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () =>
+        json({
+          configured: true,
+          profile: { artistId: 'abc', name: 'Aino', imageUrl: null },
+        }),
+      ),
+    );
+
+    const { data } = await fetchConnectionStatus('spotify');
+
+    expect(data).toEqual({ connected: true, configured: true });
+  });
+
+  it('reads Spotify as not connected when no artist is linked', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => json({ configured: false, profile: null })),
+    );
+
+    const { data } = await fetchConnectionStatus('spotify');
+
+    expect(data).toEqual({ connected: false, configured: false });
+  });
+
   it('marks a failed status request as unavailable, not as needing setup', async () => {
     vi.stubGlobal(
       'fetch',

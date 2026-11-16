@@ -1,5 +1,7 @@
 import type { TFunction } from '@tahti-player/i18n';
 
+import { webT } from '../lib/webT';
+
 /** Listener widgets — pluggable, app-store-style embeds that play content
  * from an external platform inline on the Listen page, using that
  * platform's own official embedded player (SoundCloud's Widget API,
@@ -214,11 +216,42 @@ function youtubeEmbedUrl(input: string): string | null {
   return null;
 }
 
-function spotifyPlaylistEmbedUrl(input: string): string | null {
+export type SpotifyListenLink =
+  | { kind: 'playlist' | 'artist'; id: string }
+  | { kind: 'unsupported'; what: 'track' | 'album' | 'show' | 'episode' };
+
+const SPOTIFY_LINK_KINDS = [
+  'playlist',
+  'artist',
+  'track',
+  'album',
+  'show',
+  'episode',
+] as const;
+
+function spotifyLinkFromParts(kind: string, id: string): SpotifyListenLink {
+  if (kind === 'playlist' || kind === 'artist') {
+    return { kind, id };
+  }
+  return {
+    kind: 'unsupported',
+    what: kind as 'track' | 'album' | 'show' | 'episode',
+  };
+}
+
+/** Reads a pasted Spotify link or `spotify:` URI. Playlists and artists can
+ * become a Listen widget; tracks, albums and podcasts are recognised so the
+ * user is told why they cannot. */
+export function parseSpotifyListenLink(
+  input: string,
+): SpotifyListenLink | null {
   const trimmed = input.trim();
-  const uriMatch = /^spotify:playlist:([A-Za-z0-9]+)$/.exec(trimmed);
+  const uriMatch =
+    /^spotify:(playlist|artist|track|album|show|episode):([A-Za-z0-9]+)$/.exec(
+      trimmed,
+    );
   if (uriMatch) {
-    return `https://open.spotify.com/embed/playlist/${encodeURIComponent(uriMatch[1])}`;
+    return spotifyLinkFromParts(uriMatch[1], uriMatch[2]);
   }
   let url: URL;
   try {
@@ -230,11 +263,18 @@ function spotifyPlaylistEmbedUrl(input: string): string | null {
   if (host !== 'open.spotify.com' && !host.endsWith('.spotify.com')) {
     return null;
   }
-  const pathMatch = /\/playlist\/([A-Za-z0-9]+)/.exec(url.pathname);
-  if (!pathMatch) {
+  const pathMatch = new RegExp(
+    `/(${SPOTIFY_LINK_KINDS.join('|')})/([A-Za-z0-9]+)`,
+  ).exec(url.pathname);
+  return pathMatch ? spotifyLinkFromParts(pathMatch[1], pathMatch[2]) : null;
+}
+
+function spotifyEmbedUrl(input: string): string | null {
+  const link = parseSpotifyListenLink(input);
+  if (!link || link.kind === 'unsupported') {
     return null;
   }
-  return `https://open.spotify.com/embed/playlist/${encodeURIComponent(pathMatch[1])}`;
+  return `https://open.spotify.com/embed/${link.kind}/${encodeURIComponent(link.id)}`;
 }
 
 function hearthisEmbedUrl(input: string): string | null {
@@ -382,86 +422,82 @@ function hearthisEmbedUrlForId(trackId: string): string {
   return `https://hearthis.at/embed/${encodeURIComponent(trackId)}/transparent_black/?${params.toString()}`;
 }
 
-export const LISTENER_WIDGET_TYPES: ListenerWidgetType[] = [
-  {
-    id: 'soundcloud',
-    name: 'SoundCloud',
-    author: 'SoundCloud',
-    description:
-      "Play a SoundCloud track, set, playlist, or an artist's public profile (their recent public tracks) inline using SoundCloud's own embedded player.",
-    category: 'Streaming',
-    placeholder: 'https://soundcloud.com/artist/track',
-    helpText:
-      'Paste a SoundCloud track, set, or playlist URL — or an artist profile URL for a rolling feed of their public tracks.',
-    embedHeight: 166,
-    toEmbedUrl: soundcloudEmbedUrl,
-  },
-  {
-    id: 'youtube',
-    name: 'YouTube',
-    author: 'YouTube',
-    description:
-      "Play a YouTube video or playlist inline using YouTube's own embedded player.",
-    category: 'Streaming',
-    placeholder: 'https://www.youtube.com/watch?v=…',
-    helpText: 'Paste a YouTube video or playlist URL.',
-    embedHeight: 220,
-    toEmbedUrl: youtubeEmbedUrl,
-  },
-  {
-    id: 'spotify',
-    name: 'Spotify',
-    author: 'Spotify',
-    description:
-      'Show tracks from a public Spotify playlist as a normal track list (plays via Spotify embed in the player bar).',
-    category: 'Streaming',
-    placeholder: 'https://open.spotify.com/playlist/…',
-    helpText:
-      'Paste a public Spotify playlist URL. Tracks appear in the usual table; private playlists will not load.',
-    embedHeight: 352,
-    toEmbedUrl: spotifyPlaylistEmbedUrl,
-  },
-  {
-    id: 'hearthis',
-    name: 'hearthis.at',
-    author: 'hearthis.at',
-    description:
-      "Play a hearthis.at track or set inline using hearthis.at's official embedded player.",
-    category: 'Streaming',
-    placeholder:
-      'https://hearthis.at/yourname/your-track/ or a numeric track ID',
-    helpText:
-      'Paste any hearthis.at track or set link (or a numeric track ID) — the embed resolves automatically. Or browse your own sets below.',
-    embedHeight: 150,
-    toEmbedUrl: hearthisEmbedUrl,
-  },
-  {
-    id: 'bandcamp',
-    name: 'Bandcamp',
-    author: 'Bandcamp',
-    description:
-      "Play a Bandcamp track or album inline using Bandcamp's own embedded player.",
-    category: 'Streaming',
-    placeholder: 'https://bandcamp.com/EmbeddedPlayer/album=…',
-    helpText:
-      "On the Bandcamp track/album page, use Share / Embed → paste the generated bandcamp.com/EmbeddedPlayer/… link here (a plain bandcamp.com page URL doesn't carry the id Bandcamp's embed needs).",
-    embedHeight: 120,
-    toEmbedUrl: bandcampEmbedUrl,
-  },
-  {
-    id: 'mikseri',
-    name: 'Mikseri.net',
-    author: 'Mikseri.net',
-    description:
-      'Play your own Mikseri playlist or track, Top 40 by genre, Listataivas, and other official charts.',
-    category: 'Streaming',
-    placeholder: 'https://www.mikseri.net/embed/?type=2&parameter=…',
-    helpText:
-      'Paste an official Mikseri embed URL, a Mikseri track page, or a numeric track ID.',
-    embedHeight: 190,
-    toEmbedUrl: mikseriEmbedUrl,
-  },
-];
+type ListenerWidgetTypeBase = Omit<
+  ListenerWidgetType,
+  'description' | 'helpText' | 'category'
+>;
+
+/** Description, help text and category follow the app language each time
+ * they are read, so the catalog can stay a module-level list. */
+function withLocalizedCopy(base: ListenerWidgetTypeBase): ListenerWidgetType {
+  return Object.defineProperties(base, {
+    description: {
+      enumerable: true,
+      get: () => webT()(`listenerWidgetTypes.${base.id}.description`),
+    },
+    helpText: {
+      enumerable: true,
+      get: () => webT()(`listenerWidgetTypes.${base.id}.helpText`),
+    },
+    category: {
+      enumerable: true,
+      get: () => webT()('listenerWidgetTypes.streaming'),
+    },
+  }) as ListenerWidgetType;
+}
+
+export const LISTENER_WIDGET_TYPES: ListenerWidgetType[] = (
+  [
+    {
+      id: 'soundcloud',
+      name: 'SoundCloud',
+      author: 'SoundCloud',
+      placeholder: 'https://soundcloud.com/artist/track',
+      embedHeight: 166,
+      toEmbedUrl: soundcloudEmbedUrl,
+    },
+    {
+      id: 'youtube',
+      name: 'YouTube',
+      author: 'YouTube',
+      placeholder: 'https://www.youtube.com/watch?v=…',
+      embedHeight: 220,
+      toEmbedUrl: youtubeEmbedUrl,
+    },
+    {
+      id: 'spotify',
+      name: 'Spotify',
+      author: 'Spotify',
+      placeholder: 'https://open.spotify.com/playlist/…',
+      embedHeight: 352,
+      toEmbedUrl: spotifyEmbedUrl,
+    },
+    {
+      id: 'hearthis',
+      name: 'hearthis.at',
+      author: 'hearthis.at',
+      placeholder: 'https://hearthis.at/yourname/your-track/',
+      embedHeight: 150,
+      toEmbedUrl: hearthisEmbedUrl,
+    },
+    {
+      id: 'bandcamp',
+      name: 'Bandcamp',
+      author: 'Bandcamp',
+      placeholder: 'https://bandcamp.com/EmbeddedPlayer/album=…',
+      embedHeight: 120,
+      toEmbedUrl: bandcampEmbedUrl,
+    },
+    {
+      id: 'mikseri',
+      name: 'Mikseri.net',
+      author: 'Mikseri.net',
+      placeholder: 'https://www.mikseri.net/embed/?type=2&parameter=…',
+      embedHeight: 190,
+      toEmbedUrl: mikseriEmbedUrl,
+    },
+  ] satisfies ListenerWidgetTypeBase[]
+).map((base) => withLocalizedCopy(base));
 
 export function listenerWidgetType(id: string): ListenerWidgetType | undefined {
   return LISTENER_WIDGET_TYPES.find((t) => t.id === id);
@@ -471,22 +507,30 @@ export type ResolvedListenerWidgetInput =
   | { ok: true; input: string; saveSoundcloudProfile: boolean }
   | { ok: false; error: string };
 
+const SPOTIFY_UNSUPPORTED_KEYS = {
+  track: 'listenerWidgetInput.spotifyTrack',
+  album: 'listenerWidgetInput.spotifyAlbum',
+  show: 'listenerWidgetInput.spotifyPodcast',
+  episode: 'listenerWidgetInput.spotifyPodcast',
+} as const;
+
 export function resolveListenerWidgetInput(
   typeId: string,
   rawInput: string,
 ): ResolvedListenerWidgetInput {
+  const t = webT();
   const input = rawInput.trim();
   const type = listenerWidgetType(typeId);
   if (!type) {
-    return { ok: false, error: 'Unknown add-on.' };
+    return { ok: false, error: t('listenerWidgetInput.unknownAddon') };
   }
   if (!input) {
     return {
       ok: false,
       error:
         typeId === 'soundcloud'
-          ? 'Add a SoundCloud profile, track, set, or playlist URL.'
-          : `Add a ${type.name} link.`,
+          ? t('listenerWidgetInput.soundcloudMissing')
+          : t('listenerWidgetInput.missing', { service: type.name }),
     };
   }
   if (typeId === 'soundcloud') {
@@ -497,16 +541,21 @@ export function resolveListenerWidgetInput(
     if (type.toEmbedUrl(input)) {
       return { ok: true, input, saveSoundcloudProfile: false };
     }
-    return {
-      ok: false,
-      error:
-        'Use a SoundCloud profile, track, set, or playlist URL such as https://soundcloud.com/your-name.',
-    };
+    return { ok: false, error: t('listenerWidgetInput.soundcloudInvalid') };
+  }
+  if (typeId === 'spotify') {
+    const link = parseSpotifyListenLink(input);
+    if (link?.kind === 'unsupported') {
+      return { ok: false, error: t(SPOTIFY_UNSUPPORTED_KEYS[link.what]) };
+    }
   }
   if (!type.toEmbedUrl(input)) {
     return {
       ok: false,
-      error: `Couldn't recognize this ${type.name} link. ${type.helpText}`,
+      error: t('listenerWidgetInput.unrecognized', {
+        service: type.name,
+        help: type.helpText,
+      }),
     };
   }
   return { ok: true, input, saveSoundcloudProfile: false };

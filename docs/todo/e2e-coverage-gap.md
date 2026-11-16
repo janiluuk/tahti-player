@@ -27,10 +27,10 @@ Re-checked 2026-11-09 against the specs (several cells had gone stale).
 
 | Feature | Anonymous | Listener | Artist | Admin |
 | --- | --- | --- | --- | --- |
-| Front page (Listen), sections, order | ✅ (plays a release card) | ✅ (hide a section, Reset widgets) | ◐ | — |
+| Front page (Listen), sections, order | ✅ (plays a release card) | ✅ (hide a section, Reset widgets, adds a Spotify artist row) | ◐ | — |
 | Latest News carousel, Sources | ✅ (news post dialog) | ✅ (add / remove a source) | ❌ | — |
-| Radio, schedule, radio show | ✅ (favorite a station) | ❌ | ◐ | — |
-| Discover, search, tags | ✅ (search opens a track) | ◐ (Feed pages on) | ✅ (widget order sticks) | — |
+| Radio, schedule, radio show | ✅ (favorite a station) | ✅ (filter, play / pause a station, schedule weeks) | ◐ | — |
+| Discover, search, tags | ✅ (search opens a track) | ✅ (Artists genre filter opens the artist, Venues on a phone) | ✅ (widget order sticks) | — |
 | Channel and artist pages, follow | ◐ | ✅ (follow, channel comment) | ◐ (designer parity) | — |
 | Player: play, pause, seek, fullscreen | ✅ (play, pause) | ✅ (seek, full screen skip / pause / minimize) | ✅ (minimize, queue) | — |
 | Queue | ❌ | ✅ | ✅ | — |
@@ -45,8 +45,8 @@ Re-checked 2026-11-09 against the specs (several cells had gone stale).
 | Public reader: release, track, embeds, legal | ✅ | — | — | — |
 | Sign up, log in, verify, reset password | ✅ (register, Enter submits) | ✅ (listener sign-up) | ✅ | — |
 | Notifications, account menu dots | — | ✅ | ✅ (filter, mark read) | ✅ (mark read) |
-| Settings (account, playback, appearance) | — | ✅ (playback switch, theme) | ✅ (Artist role and city) | — |
-| Add-ons (Listen widgets, themes, visualizers) | — | ✅ (Radio Browser on / off) | ✅ (stale) | — |
+| Settings (account, playback, appearance) | — | ✅ (playback switch, theme) | ✅ (Artist role and city, language to Finnish and back) | — |
+| Add-ons (Listen widgets, themes, visualizers) | — | ✅ (Radio Browser on / off, Spotify artist widget) | ✅ (stale) | — |
 | Membership and Co-op governance | ✅ (prompted to log in, history) | ✅ (correction request to the board) | ✅ (vote, discuss, draft motion) | ◐ |
 | Studio Home, stream manager | — | gate ✅ | ✅ | — |
 | Uploads, tracks, track editor, mastering | — | gate ✅ | ✅ | — |
@@ -75,6 +75,7 @@ each role exercises.
 - [x] Artist Latest News sources and Admin Co-op beyond opening tabs (grant cycle preview, governance tabs) (`use-cases-coverage-gap-2.spec.ts`).
 - [x] Artist: likes a track from an artist-page list and finds it under Library → Favorites (`use-cases-coverage-gap.spec.ts`).
 - [x] Artist Settings → Artist, listener Listen section hide / reset, artist Discover widget order, anonymous radio favorite (`use-cases-coverage-gap-3.spec.ts`).
+- [x] Listener Radio play / pause, Discover Artists and Venues, a Spotify artist Listen widget, and artist Settings language (`use-cases-coverage-gap-4.spec.ts`).
 - [ ] Remaining: the collection player (placement is a product decision).
 
 ## Run and review (next)

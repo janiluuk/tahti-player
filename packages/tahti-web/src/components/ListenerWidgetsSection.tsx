@@ -110,8 +110,13 @@ export function useListenerWidgetBlocks(): {
               <Card
                 src={station.favicon}
                 title={station.name}
-                subtitle={station.country ?? 'Internet radio'}
-                playLabel="Play"
+                subtitle={
+                  station.country ??
+                  t('listenerWidgetsSectionText.internetRadio')
+                }
+                playLabel={t('listenerWidgetsSectionText.play', {
+                  name: station.name,
+                })}
                 onPlay={() => {
                   const playables = savedBrowserStations
                     .filter((row) => Boolean(row.streamUrl))
@@ -119,7 +124,9 @@ export function useListenerWidgetBlocks(): {
                       id: `radio:${row.id}`,
                       kind: 'radio' as const,
                       title: row.name,
-                      artist: row.country ?? 'Internet radio',
+                      artist:
+                        row.country ??
+                        t('listenerWidgetsSectionText.internetRadio'),
                       coverUrl: row.favicon,
                       streamUrl: row.streamUrl,
                       protocol: 'https' as const,

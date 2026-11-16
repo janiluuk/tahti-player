@@ -398,6 +398,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/TracklistEditor` | `tahti-web/TracklistEditor.stories.tsx` |
 | `Tahti/Track/UploadTrackDialog` | `tahti-web/UploadTrackDialog.stories.tsx` |
 | `Tahti/Discover/VenueDetailView` | `tahti-web/VenueDetailView.stories.tsx` |
+| `Tahti/Discover/VenuesDirectory` | `tahti-web/VenuesDirectory.stories.tsx` |
 | `Tahti/Auth/VerifyView` | `tahti-web/VerifyView.stories.tsx` |
 | `Tahti/Player/VisualizerModeMenu` | `tahti-web/VisualizerModeMenu.stories.tsx` |
 | `Tahti/Player/WaveformCanvas` | `tahti-web/WaveformCanvas.stories.tsx` |

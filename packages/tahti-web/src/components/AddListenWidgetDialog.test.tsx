@@ -7,6 +7,7 @@ import {
 } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import * as distribution from '../api/distribution';
 import * as catalog from '../api/sources/catalog';
 import * as soundcloud from '../api/sources/soundcloud';
 import { useAuthStore, type AuthUser } from '../stores/authStore';
@@ -62,7 +63,7 @@ describe('AddListenWidgetDialog', () => {
   it('says what is wrong with a link it cannot use', async () => {
     render(<AddListenWidgetDialog />);
     await openService('spotify');
-    fireEvent.change(screen.getByLabelText('Playlist link'), {
+    fireEvent.change(screen.getByLabelText('Playlist or artist link'), {
       target: { value: 'https://example.com/not-spotify' },
     });
     await act(async () => {
@@ -70,6 +71,40 @@ describe('AddListenWidgetDialog', () => {
     });
     expect(screen.getByRole('alert')).toBeTruthy();
     expect(useListenerWidgetsStore.getState().instances).toHaveLength(0);
+  });
+
+  it('adds a Spotify artist and turns away an album link with a reason', async () => {
+    render(<AddListenWidgetDialog />);
+    await openService('spotify');
+    expect(
+      screen.getByRole('heading', {
+        name: 'Add a playlist or artist from Spotify',
+      }),
+    ).toBeTruthy();
+    const link = screen.getByLabelText('Playlist or artist link');
+    fireEvent.change(link, {
+      target: {
+        value: 'https://open.spotify.com/album/4aawyAB9vmqN3uQ7FjRGTy',
+      },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('add-listen-widget-submit'));
+    });
+    expect(screen.getByRole('alert').textContent).toBe(
+      'This is a Spotify album link. Paste a playlist or artist link instead.',
+    );
+    fireEvent.change(link, {
+      target: {
+        value: 'https://open.spotify.com/artist/0OdUWJ0sBjDrqHygGUXeCF',
+      },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('add-listen-widget-submit'));
+    });
+    expect(useListenerWidgetsStore.getState().instances[0]).toMatchObject({
+      typeId: 'spotify',
+      input: 'https://open.spotify.com/artist/0OdUWJ0sBjDrqHygGUXeCF',
+    });
   });
 
   it('lists a signed-in listener’s own SoundCloud playlists to pick from', async () => {
@@ -102,6 +137,34 @@ describe('AddListenWidgetDialog', () => {
     expect(useListenerWidgetsStore.getState().instances[0]).toMatchObject({
       typeId: 'soundcloud',
       label: 'Night drive',
+    });
+  });
+
+  it('offers the Spotify artist linked in Add-ons as a pick', async () => {
+    useAuthStore.setState({ user: { username: 'aino' } as AuthUser });
+    vi.spyOn(distribution, 'fetchSpotifyArtistProfile').mockResolvedValue({
+      data: {
+        configured: true,
+        profile: { artistId: 'abc123', name: 'Aino', imageUrl: null },
+      },
+      meta: { source: 'api' },
+    });
+    render(<AddListenWidgetDialog />);
+    await openService('spotify');
+    expect(await screen.findByText('Your linked Spotify artist')).toBeTruthy();
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: /Aino/ }));
+    });
+    expect(
+      (screen.getByLabelText('Playlist or artist link') as HTMLInputElement)
+        .value,
+    ).toBe('https://open.spotify.com/artist/abc123');
+    await act(async () => {
+      fireEvent.click(screen.getByTestId('add-listen-widget-submit'));
+    });
+    expect(useListenerWidgetsStore.getState().instances[0]).toMatchObject({
+      typeId: 'spotify',
+      label: 'Aino',
     });
   });
 });

@@ -2,9 +2,10 @@ import { ArrowLeftIcon, ListMusicIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
 
+import { fetchSpotifyArtistProfile } from '../api/distribution';
 import { fetchConnectionStatus } from '../api/sources/catalog';
 import type { IntegrationId } from '../api/sources/catalog';
 import { fetchSoundcloudPlaylists } from '../api/sources/soundcloud';
@@ -25,7 +26,12 @@ import {
 import { ListenAddonsPanel } from './ListenAddonsPanel';
 import { SourceServiceIcon } from './SourceServiceIcon';
 
-type OwnPlaylist = { id: string; title: string; url: string; count: number };
+type OwnPlaylist = {
+  id: string;
+  title: string;
+  url: string;
+  count?: number;
+};
 
 const ICON_ID: Record<string, IntegrationId> = {
   soundcloud: 'soundcloud',
@@ -38,8 +44,26 @@ const ICON_ID: Record<string, IntegrationId> = {
 
 /** The signed-in listener's own playlists on a service, when Tahti can list
  * them: SoundCloud through the connected account, hearthis.at through the
- * handle on their profile. Other services take a pasted link only. */
-async function loadOwnPlaylists(typeId: string): Promise<OwnPlaylist[]> {
+ * handle on their profile, and the Spotify artist linked in Add-ons. Other
+ * services take a pasted link only. */
+async function loadOwnPlaylists(
+  typeId: string,
+  t: TFunction<'web'>,
+): Promise<OwnPlaylist[]> {
+  if (typeId === 'spotify') {
+    const { data } = await fetchSpotifyArtistProfile();
+    const profile = data.profile;
+    if (!profile?.artistId) {
+      return [];
+    }
+    return [
+      {
+        id: profile.artistId,
+        title: profile.name || t('addListenWidgetSpotify.yourArtist'),
+        url: `https://open.spotify.com/artist/${encodeURIComponent(profile.artistId)}`,
+      },
+    ];
+  }
   if (typeId === 'soundcloud') {
     const status = await fetchConnectionStatus('soundcloud');
     if (!status.data.connected) {
@@ -102,7 +126,7 @@ export function AddListenWidgetDialog() {
     }
     let cancelled = false;
     setOwn(null);
-    void loadOwnPlaylists(type.id)
+    void loadOwnPlaylists(type.id, t)
       .catch(() => [])
       .then((list) => {
         if (!cancelled) {
@@ -112,7 +136,7 @@ export function AddListenWidgetDialog() {
     return () => {
       cancelled = true;
     };
-  }, [type, signedIn]);
+  }, [type, signedIn, t]);
 
   const close = () => {
     setIsOpen(false);
@@ -258,7 +282,9 @@ export function AddListenWidgetDialog() {
         ) : type ? (
           <>
             <Dialog.Title>
-              {t('addListenWidget.fromService', { service: type.name })}
+              {type.id === 'spotify'
+                ? t('addListenWidgetSpotify.title')
+                : t('addListenWidget.fromService', { service: type.name })}
             </Dialog.Title>
             <Button
               variant="text"
@@ -271,7 +297,11 @@ export function AddListenWidgetDialog() {
             </Button>
             <div className="mt-2 flex flex-col gap-3">
               <Input
-                label={t('addListenWidget.playlistUrl')}
+                label={
+                  type.id === 'spotify'
+                    ? t('addListenWidgetSpotify.link')
+                    : t('addListenWidget.playlistUrl')
+                }
                 placeholder={type.placeholder}
                 value={url}
                 onChange={(event) => {
@@ -297,9 +327,11 @@ export function AddListenWidgetDialog() {
               {own && own.length > 0 ? (
                 <section className="flex flex-col gap-1">
                   <h3 className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-                    {t('addListenWidget.yourPlaylists', {
-                      service: type.name,
-                    })}
+                    {type.id === 'spotify'
+                      ? t('addListenWidgetSpotify.linkedArtist')
+                      : t('addListenWidget.yourPlaylists', {
+                          service: type.name,
+                        })}
                   </h3>
                   <ul
                     className="flex max-h-56 flex-col gap-1 overflow-y-auto"
@@ -322,11 +354,13 @@ export function AddListenWidgetDialog() {
                           <span className="min-w-0 flex-1 truncate text-sm">
                             {playlist.title}
                           </span>
-                          <span className="text-foreground-secondary text-xs">
-                            {t('addListenWidget.trackCount', {
-                              count: playlist.count,
-                            })}
-                          </span>
+                          {playlist.count !== undefined ? (
+                            <span className="text-foreground-secondary text-xs">
+                              {t('addListenWidget.trackCount', {
+                                count: playlist.count,
+                              })}
+                            </span>
+                          ) : null}
                         </Button>
                       </li>
                     ))}
