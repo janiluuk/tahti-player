@@ -1,3 +1,11 @@
+## 2026-11-16 - Words instead of enums, venue cards on phones (0.0.399)
+
+Feed, community stories, Studio updates, release headers, sound status,
+the channel rotation and AGM meetings show translated words (Finnish too)
+instead of values like `PUBLISHED` or `PROCESSING`. Venue cards put place
+and capacity on their own lines so phones do not cut them off. The channel
+designer's More menu closes after Save preset or Reset.
+
 ## 2026-11-16 - Most visited views open at once (0.0.398)
 
 Channel, artist profile, track, collection, event, Feed, Favorites,
