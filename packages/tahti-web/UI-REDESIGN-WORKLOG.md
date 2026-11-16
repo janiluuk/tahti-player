@@ -1,3 +1,11 @@
+## 2026-11-16 - Skipping a track that has not started keeps playing (0.0.400)
+
+Pressing Next before the current track has started (a slow stream) no
+longer leaves the next track paused at 0:00. A track liked in the mock
+app stays liked after a reload. The desktop build works again on macOS
+and Windows: the channel metrics helper no longer shares a file name,
+apart from case, with its component.
+
 ## 2026-11-16 - Words instead of enums, venue cards on phones (0.0.399)
 
 Feed, community stories, Studio updates, release headers, sound status,
