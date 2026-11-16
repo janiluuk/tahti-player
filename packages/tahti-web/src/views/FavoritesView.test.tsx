@@ -170,6 +170,43 @@ describe('FavoritesView', () => {
     expect(await screen.findByText('Morning Fog')).toBeInTheDocument();
   });
 
+  it('shows the last loaded likes at once on a revisit', async () => {
+    const fetch = vi.spyOn(likes, 'fetchMyLikes').mockResolvedValue({
+      data: [LIKED],
+      meta: { source: 'api' },
+    });
+    const first = renderFavorites();
+    expect(await screen.findByText('Morning Fog')).toBeInTheDocument();
+    first.unmount();
+
+    fetch.mockReturnValue(new Promise(() => {}));
+    renderFavorites();
+    expect(await screen.findByText('Morning Fog')).toBeInTheDocument();
+    expect(screen.queryByText('No liked tracks')).toBeNull();
+  });
+
+  it('keeps the saved likes and says the refresh failed', async () => {
+    const fetch = vi.spyOn(likes, 'fetchMyLikes').mockResolvedValue({
+      data: [LIKED],
+      meta: { source: 'api' },
+    });
+    const first = renderFavorites();
+    expect(await screen.findByText('Morning Fog')).toBeInTheDocument();
+    first.unmount();
+
+    fetch.mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    renderFavorites();
+    expect(
+      await screen.findByText(
+        'Could not refresh; showing the last loaded version.',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Morning Fog')).toBeInTheDocument();
+  });
+
   it('keeps favourite radio stations with the channels', async () => {
     useLibraryStore.setState({
       favoriteTracks: [

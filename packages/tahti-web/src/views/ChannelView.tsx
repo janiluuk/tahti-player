@@ -28,10 +28,11 @@ import {
   ChannelLayersPanel,
   ChannelListeningPartyBanner,
   ChannelLiveTracklist,
-  ChannelNotFound,
   ChannelPageBackdrop,
+  ChannelRefreshBanner,
   ChannelStagePlayer,
   ChannelTopBar,
+  ChannelUnavailable,
   heroVisualizerSettingsFor,
   renderChannelBlock,
   useChannelData,
@@ -55,7 +56,6 @@ import { StreamManagerDialog } from '../components/channel-view/StreamManagerDia
 import { useChannelPlayables } from '../components/channel-view/useChannelPlayables';
 import type { ChannelDesignerHandle } from '../components/ChannelDesigner';
 import { EntitySocialHeader } from '../components/EntitySocialHeader';
-import { PageError, PageLoading } from '../components/PageStates';
 import { RadioStationDial } from '../components/radio/RadioStationDial';
 import { listenerWidgetType } from '../content/listenerWidgets';
 import { useChannelAutoplay } from '../hooks/useChannelAutoplay';
@@ -125,6 +125,7 @@ export function ChannelView({ slug }: { slug: string }) {
     storefront,
     loading,
     channelFailed,
+    refreshError,
     retryChannel,
     sectionStatus,
     retrySection,
@@ -275,22 +276,15 @@ export function ChannelView({ slug }: { slug: string }) {
 
   useEditRail(editing && !isMobile, 'Channel design', layersMenu);
 
-  if (loading) {
-    return <PageLoading label={t('loading.loadingChannel')} />;
-  }
-
-  if (!channel && channelFailed) {
+  if (loading || !channel) {
     return (
-      <PageError
-        title={t('loadErrors.couldnTLoadThisChannel')}
-        description={t('loadErrors.checkYourConnectionAndTryAgain')}
+      <ChannelUnavailable
+        slug={slug}
+        loading={loading}
+        failed={channelFailed}
         onRetry={retryChannel}
       />
     );
-  }
-
-  if (!channel) {
-    return <ChannelNotFound slug={slug} />;
   }
 
   const live = channel.state === 'LIVE' && Boolean(channel.hlsUrl);
@@ -612,6 +606,7 @@ export function ChannelView({ slug }: { slug: string }) {
         {!editing && !heroVisible && !headerShown ? (
           <div className={backButtonCornerClassName}>{backButton}</div>
         ) : null}
+        <ChannelRefreshBanner error={refreshError} onRetry={retryChannel} />
         {!heroVisible && <ChannelTopBar text={channel.topBarText} />}
         {!heroVisible && (pageActions ?? featureSettings) ? (
           <div className="flex flex-wrap items-center justify-end gap-2 pl-14">

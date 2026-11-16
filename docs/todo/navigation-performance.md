@@ -46,10 +46,11 @@ network again, even for a page seen seconds ago.
 
 - [ ] Views still render their loader for one frame on a cache hit (state
       starts as loading). Views on `lib/useSnapshotFetch.ts` (admin, Studio,
-      co-op pages, Smart link, Subscribe, Radio show, group pages) already
-      render their saved result synchronously; the most visited ones still
-      don't (Listen, Discover, artist profile, channel, track, release,
-      Library tabs).
+      co-op pages, Smart link, Subscribe, Radio show, group pages, Discover,
+      artist profile, channel, track, collection, event, Feed, Favorites,
+      Library Media, the Embeds and Following lists) already render their
+      saved result synchronously; still left: Listen, the release page and
+      Library History and Stash.
 - [ ] Make mock mode a build-time constant so production drops the fixtures
       (touches ~40 api files and the tests that stub `VITE_*` env per test).
 - [ ] `@tanstack/table-core` and `@dnd-kit` load with the shell; check which

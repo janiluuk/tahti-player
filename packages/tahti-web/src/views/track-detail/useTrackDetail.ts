@@ -21,6 +21,7 @@ import {
 import { parsePublicTracklist } from '../../lib/publicTracklist';
 import { syncDocumentMetadata } from '../../lib/seo';
 import { useDominantColor } from '../../lib/useDominantColor';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { useAuthStore } from '../../stores/authStore';
 import {
   playableFromQueueItem,
@@ -40,7 +41,17 @@ export function useTrackDetail(id: string, shareKey?: string) {
   const fastPath =
     remembered ?? (queueItem ? playableFromQueueItem(queueItem) : null);
 
-  const [detail, setDetail] = useState<PublicTrackDetail | null>(null);
+  const {
+    data: detail,
+    loading,
+    error: loadError,
+    retry: retryLoad,
+    mutate,
+  } = useSnapshotFetch<PublicTrackDetail | null>(
+    `track:${id}:${shareKey ?? ''}`,
+    async () => apiResult(await fetchTrackDetail(id, shareKey)),
+  );
+  const setDetail = (next: PublicTrackDetail | null) => mutate(() => next);
   const [channel, setChannel] = useState<PublicChannel | null>(null);
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [comments, setComments] = useState<TrackComment[]>([]);
@@ -52,9 +63,6 @@ export function useTrackDetail(id: string, shareKey?: string) {
   const [deletingCommentId, setDeletingCommentId] = useState<string | null>(
     null,
   );
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
   const [playlistOpen, setPlaylistOpen] = useState(false);
   const [downloadBusy, setDownloadBusy] = useState(false);
   const [downloadGates, setDownloadGates] = useState<DownloadGateStatus | null>(
@@ -66,52 +74,52 @@ export function useTrackDetail(id: string, shareKey?: string) {
   const [purchaseBump, setPurchaseBump] = useState(0);
   const [editOpen, setEditOpen] = useState(false);
 
-  const reloadDetail = () => {
-    void fetchTrackDetail(id, shareKey).then(({ data }) => {
-      setDetail(data);
-    });
-  };
+  const channelSlug = detail?.channelSlug;
+  const artistUsername = detail?.channel.username;
 
   useEffect(() => {
+    if (!detail) {
+      return;
+    }
+    syncDocumentMetadata(window.location.pathname, {
+      title: `${detail.title} by ${detail.artistName} on Tahti`,
+      image: detail.bannerUrl ?? undefined,
+    });
+  }, [detail?.title, detail?.artistName, detail?.bannerUrl]);
+
+  useEffect(() => {
+    if (!channelSlug) {
+      return;
+    }
     let cancelled = false;
-    setLoading(true);
-    setLoadError(null);
-    void fetchTrackDetail(id, shareKey)
-      .then(({ data, meta }) => {
-        if (cancelled) {
-          return;
-        }
-        setDetail(data);
-        setLoadError(meta.source === 'api' ? (meta.reason ?? null) : null);
-        if (data) {
-          syncDocumentMetadata(window.location.pathname, {
-            title: `${data.title} by ${data.artistName} on Tahti`,
-            image: data.bannerUrl ?? undefined,
-          });
-          void fetchChannel(data.channelSlug).then((result) =>
-            setChannel(result.data),
-          );
-          void fetchProfile(data.channel.username).then((result) =>
-            setProfile(result.data),
-          );
+    void fetchChannel(channelSlug)
+      .then((result) => {
+        if (!cancelled) {
+          setChannel(result.data);
         }
       })
-      .catch((err) => {
-        if (!cancelled) {
-          setLoadError(
-            err instanceof Error ? err.message : 'Could not load this track.',
-          );
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      });
+      .catch(() => undefined);
     return () => {
       cancelled = true;
     };
-  }, [id, shareKey, attempt]);
+  }, [channelSlug]);
+
+  useEffect(() => {
+    if (!artistUsername) {
+      return;
+    }
+    let cancelled = false;
+    void fetchProfile(artistUsername)
+      .then((result) => {
+        if (!cancelled) {
+          setProfile(result.data);
+        }
+      })
+      .catch(() => undefined);
+    return () => {
+      cancelled = true;
+    };
+  }, [artistUsername]);
 
   useEffect(() => {
     let cancelled = false;
@@ -197,9 +205,8 @@ export function useTrackDetail(id: string, shareKey?: string) {
     deletingCommentId,
     setDeletingCommentId,
     loading,
-    setLoading,
     loadError,
-    retryLoad: () => setAttempt((n) => n + 1),
+    retryLoad,
     playlistOpen,
     setPlaylistOpen,
     downloadBusy,
@@ -216,7 +223,7 @@ export function useTrackDetail(id: string, shareKey?: string) {
     setPurchaseBump,
     editOpen,
     setEditOpen,
-    reloadDetail,
+    reloadDetail: retryLoad,
     play,
     setStatus,
     seekTo,

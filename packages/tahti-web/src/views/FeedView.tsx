@@ -19,6 +19,7 @@ import {
 } from '../api/community-stories';
 import type {
   FeedItem,
+  FeedResponse,
   PublicProfileRelease,
   TahtiPlayable,
 } from '../api/types';
@@ -33,6 +34,7 @@ import {
 import { releasePlayables } from '../components/ReleaseTracklistDialog';
 import { StoryTitleButton } from '../components/StoryTitleButton';
 import { storyDate } from '../lib/storyDate';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 import { webT } from '../lib/webT';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -105,15 +107,23 @@ function feedStory(item: FeedItem, t: TFunction<'web'>): FeedStory {
   };
 }
 
+const NO_ITEMS: FeedItem[] = [];
+
 export function FeedView({ embedded = false }: { embedded?: boolean }) {
   const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const hydrated = useAuthStore((s) => s.hydrated);
-  const [items, setItems] = useState<FeedItem[]>([]);
-  const [followingCount, setFollowingCount] = useState(0);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
+  const userId = user?.id ?? null;
+  const {
+    data: feed,
+    loading,
+    error: loadError,
+    retry,
+  } = useSnapshotFetch<FeedResponse | null>(`feed:${userId ?? ''}`, async () =>
+    userId ? apiResult(await fetchFeed()) : null,
+  );
+  const items = feed?.items ?? NO_ITEMS;
+  const followingCount = feed?.followingCount ?? 0;
   const [openItem, setOpenItem] = useState<FeedItem | null>(null);
   const [feedPlayables, setFeedPlayables] = useState<
     Record<string, TahtiPlayable>
@@ -126,90 +136,88 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
   const queue = usePlayerStore((s) => s.queue);
 
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
+    if (items.length === 0) {
       return;
     }
-    setLoading(true);
-    setLoadError(null);
-    void fetchFeed().then((res) => {
-      setItems(res.data.items);
-      setFollowingCount(res.data.followingCount);
-      setLoadError(
-        res.meta.source === 'api' ? (res.meta.reason ?? null) : null,
-      );
-      setLoading(false);
-      const tracks = res.data.items.filter(
-        (item): item is Extract<FeedItem, { kind: 'track' }> =>
-          item.kind === 'track' && !item.audioUrl,
-      );
-      const trackUsernames = [
-        ...new Set(tracks.map((item) => item.artist.username)),
-      ];
-      // One playables fetch per artist, then map each track — avoids N+1.
-      void Promise.all(
-        trackUsernames.map(async (username) => {
-          const result = await fetchArtistPlayables(username);
-          return [username, result.data] as const;
-        }),
-      ).then((entries) => {
-        const byUsername = new Map(entries);
-        setFeedPlayables(
-          Object.fromEntries(
-            tracks.flatMap((item) => {
-              const catalog = byUsername.get(item.artist.username) ?? [];
-              const playable =
-                catalog.find(
-                  (candidate) => candidate.id === `sound:${item.id}`,
-                ) ??
-                catalog.find((candidate) => candidate.title === item.title);
-              return playable ? [[item.id, playable]] : [];
-            }),
-          ),
-        );
-      });
-
-      const releases = res.data.items.filter(
-        (item): item is Extract<FeedItem, { kind: 'release' }> =>
-          item.kind === 'release',
-      );
-      const usernames = [
-        ...new Set(releases.map((item) => item.artist.username)),
-      ];
-      void Promise.all(
-        usernames.map((username) =>
-          fetchProfile(username)
-            .then(
-              (result) =>
-                [username, result.data.releases] as [
-                  string,
-                  PublicProfileRelease[],
-                ],
-            )
-            .catch(() => [username, []] as [string, PublicProfileRelease[]]),
+    let cancelled = false;
+    const tracks = items.filter(
+      (item): item is Extract<FeedItem, { kind: 'track' }> =>
+        item.kind === 'track' && !item.audioUrl,
+    );
+    const trackUsernames = [
+      ...new Set(tracks.map((item) => item.artist.username)),
+    ];
+    // One playables fetch per artist, then map each track — avoids N+1.
+    void Promise.all(
+      trackUsernames.map(async (username) => {
+        const result = await fetchArtistPlayables(username);
+        return [username, result.data] as const;
+      }),
+    ).then((entries) => {
+      if (cancelled) {
+        return;
+      }
+      const byUsername = new Map(entries);
+      setFeedPlayables(
+        Object.fromEntries(
+          tracks.flatMap((item) => {
+            const catalog = byUsername.get(item.artist.username) ?? [];
+            const playable =
+              catalog.find(
+                (candidate) => candidate.id === `sound:${item.id}`,
+              ) ?? catalog.find((candidate) => candidate.title === item.title);
+            return playable ? [[item.id, playable]] : [];
+          }),
         ),
-      ).then((profiles) => {
-        const releasesByUsername = new Map(profiles);
-        setReleaseFeedPlayables(
-          Object.fromEntries(
-            releases.flatMap((item) => {
-              const artistReleases =
-                releasesByUsername.get(item.artist.username) ?? [];
-              const release = artistReleases.find((r) => r.id === item.id);
-              if (!release) {
-                return [];
-              }
-              const playables = releasePlayables(
-                release,
-                item.artist.displayName,
-              );
-              return playables.length > 0 ? [[item.id, playables]] : [];
-            }),
-          ),
-        );
-      });
+      );
     });
-  }, [user, attempt]);
+
+    const releases = items.filter(
+      (item): item is Extract<FeedItem, { kind: 'release' }> =>
+        item.kind === 'release',
+    );
+    const usernames = [
+      ...new Set(releases.map((item) => item.artist.username)),
+    ];
+    void Promise.all(
+      usernames.map((username) =>
+        fetchProfile(username)
+          .then(
+            (result) =>
+              [username, result.data.releases] as [
+                string,
+                PublicProfileRelease[],
+              ],
+          )
+          .catch(() => [username, []] as [string, PublicProfileRelease[]]),
+      ),
+    ).then((profiles) => {
+      if (cancelled) {
+        return;
+      }
+      const releasesByUsername = new Map(profiles);
+      setReleaseFeedPlayables(
+        Object.fromEntries(
+          releases.flatMap((item) => {
+            const artistReleases =
+              releasesByUsername.get(item.artist.username) ?? [];
+            const release = artistReleases.find((r) => r.id === item.id);
+            if (!release) {
+              return [];
+            }
+            const playables = releasePlayables(
+              release,
+              item.artist.displayName,
+            );
+            return playables.length > 0 ? [[item.id, playables]] : [];
+          }),
+        ),
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [items]);
 
   const wrapFeed = (body: ReactNode) =>
     embedded ? (
@@ -378,14 +386,14 @@ export function FeedView({ embedded = false }: { embedded?: boolean }) {
         <PageErrorBanner
           title={t('loadErrors.couldNotRefreshYourFeed')}
           description={loadError}
-          onRetry={() => setAttempt((n) => n + 1)}
+          onRetry={retry}
         />
       ) : null}
       {loadError && items.length === 0 ? (
         <PageError
           title={t('loadErrors.couldNotLoadYourFeed')}
           description={loadError}
-          onRetry={() => setAttempt((n) => n + 1)}
+          onRetry={retry}
         />
       ) : items.length === 0 ? (
         <PageEmpty

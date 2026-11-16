@@ -6981,7 +6981,8 @@
     },
     "pageStates": {
       "retry": "Yritä uudelleen",
-      "loadingPage": "Ladataan sivua"
+      "loadingPage": "Ladataan sivua",
+      "refreshFailed": "Päivitys epäonnistui; näytetään viimeksi ladattu versio."
     },
     "mpdIntegrationRow": {
       "mpdServer": "MPD-palvelin",

@@ -9,52 +9,42 @@ import { fetchProfile } from '../../api/client';
 import { fetchPublicMentions, type PublicMention } from '../../api/mentions';
 import type { PublicProfile } from '../../api/types';
 import { syncDocumentMetadata } from '../../lib/seo';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 
 export function useArtistProfileLoad(username: string, isOwner: boolean) {
-  const [profile, setProfile] = useState<PublicProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
+  const {
+    data: profile,
+    loading,
+    error: loadError,
+    retry,
+    mutate: updateProfile,
+  } = useSnapshotFetch<PublicProfile | null>(
+    `artist-profile:${username}`,
+    async () => apiResult(await fetchProfile(username)),
+  );
   const [galleryImages, setGalleryImages] = useState<PublicPressKitImage[]>([]);
   const [galleryLoaded, setGalleryLoaded] = useState(false);
   const [galleryError, setGalleryError] = useState<string | null>(null);
   const [taggedIn, setTaggedIn] = useState<PublicMention[]>([]);
   const [mentionsError, setMentionsError] = useState<string | null>(null);
 
+  const artist = profile?.artist;
+  useEffect(() => {
+    if (!artist) {
+      return;
+    }
+    const { displayName, bio, avatarUrl } = artist;
+    syncDocumentMetadata(window.location.pathname, {
+      title: `${displayName} on Tahti`,
+      description:
+        bio ??
+        `Explore ${displayName}'s music, releases, collections, and live channel on Tahti.`,
+      image: avatarUrl ?? undefined,
+    });
+  }, [artist?.displayName, artist?.bio, artist?.avatarUrl]);
+
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    setLoadError(null);
-    void fetchProfile(username)
-      .then((res) => {
-        if (cancelled) {
-          return;
-        }
-        setProfile(res.data);
-        if (res.data) {
-          const { displayName, bio, avatarUrl } = res.data.artist;
-          syncDocumentMetadata(window.location.pathname, {
-            title: `${displayName} on Tahti`,
-            description:
-              bio ??
-              `Explore ${displayName}'s music, releases, collections, and live channel on Tahti.`,
-            image: avatarUrl ?? undefined,
-          });
-        }
-      })
-      .catch((err) => {
-        if (!cancelled) {
-          setProfile(null);
-          setLoadError(
-            err instanceof Error ? err.message : 'Could not load this artist.',
-          );
-        }
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      });
     setMentionsError(null);
     void fetchPublicMentions(username)
       .then((mentions) => {
@@ -75,7 +65,7 @@ export function useArtistProfileLoad(username: string, isOwner: boolean) {
     return () => {
       cancelled = true;
     };
-  }, [username, attempt]);
+  }, [username]);
 
   useEffect(() => {
     let cancelled = false;
@@ -118,10 +108,10 @@ export function useArtistProfileLoad(username: string, isOwner: boolean) {
 
   return {
     profile,
-    setProfile,
+    updateProfile,
     loading,
     loadError,
-    retry: () => setAttempt((n) => n + 1),
+    retry,
     galleryImages,
     setGalleryImages,
     galleryLoaded,

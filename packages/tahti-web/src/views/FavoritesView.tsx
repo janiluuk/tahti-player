@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -15,11 +15,16 @@ import {
   fetchMyLikes,
   likedTrackMeta,
   likedTrackToPlayable,
+  type LikedTrack,
 } from '../api/likes';
-import type { TahtiPlayable } from '../api/types';
-import { PageEmpty, PageError } from '../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+} from '../components/PageStates';
 import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { placeholderArtworkUrl } from '../lib/placeholderArt';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
 import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
 import { useLibraryStore } from '../stores/libraryStore';
@@ -41,36 +46,31 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
   const radioFavorites = favoriteTracks.filter(
     (track) => track.kind === 'radio',
   );
-  const [likedTracks, setLikedTracks] = useState<TahtiPlayable[]>([]);
-  const [likesError, setLikesError] = useState<string | null>(null);
-  const [likesAttempt, setLikesAttempt] = useState(0);
-  const [likesLoaded, setLikesLoaded] = useState(false);
   const likesImported = useSoundLikesStore((s) => s.importedAt);
-
+  const userId = hydrated ? (user?.id ?? null) : null;
+  const {
+    data: likedRows,
+    error: likesError,
+    retry: retryLikes,
+  } = useSnapshotFetch<LikedTrack[]>(`my-likes:${userId ?? ''}`, async () =>
+    userId ? apiResult(await fetchMyLikes()) : [],
+  );
+  const likesLoaded = likedRows !== null;
+  const likedTracks = useMemo(
+    () =>
+      (likedRows ?? []).flatMap((track) => {
+        const playable = likedTrackToPlayable(track);
+        return playable ? [playable] : [];
+      }),
+    [likedRows],
+  );
+  const shownImport = useRef(likesImported);
   useEffect(() => {
-    if (!hydrated || !user) {
-      setLikedTracks([]);
-      setLikesError(null);
-      setLikesLoaded(false);
-      return;
+    if (shownImport.current !== likesImported) {
+      shownImport.current = likesImported;
+      retryLikes();
     }
-    let cancelled = false;
-    void fetchMyLikes().then(({ data, meta }) => {
-      if (!cancelled) {
-        setLikesLoaded(true);
-        setLikesError(meta.source === 'api' ? (meta.reason ?? null) : null);
-        setLikedTracks(
-          data.flatMap((track) => {
-            const playable = likedTrackToPlayable(track);
-            return playable ? [playable] : [];
-          }),
-        );
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [hydrated, likesAttempt, likesImported, user]);
+  }, [likesImported]);
 
   const body = (
     <div className="flex flex-col gap-6">
@@ -203,11 +203,11 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
               </ButtonLink>
             }
           />
-        ) : likesError ? (
+        ) : likesError && !likesLoaded ? (
           <PageError
             title={t('loadErrors.couldNotLoadYourLikes')}
             description={likesError}
-            onRetry={() => setLikesAttempt((n) => n + 1)}
+            onRetry={retryLikes}
           />
         ) : likesLoaded && likedTracks.length === 0 ? (
           <PageEmpty
@@ -225,10 +225,19 @@ export function FavoritesView({ embedded = false }: { embedded?: boolean }) {
             }
           />
         ) : likesLoaded ? (
-          <PlayableAmbientTrackList
-            items={likedTracks}
-            getTrackMeta={likedTrackMeta}
-          />
+          <>
+            {likesError ? (
+              <PageErrorBanner
+                title={t('pageStates.refreshFailed')}
+                description={likesError}
+                onRetry={retryLikes}
+              />
+            ) : null}
+            <PlayableAmbientTrackList
+              items={likedTracks}
+              getTrackMeta={likedTrackMeta}
+            />
+          </>
         ) : null}
       </SectionShell>
     </div>

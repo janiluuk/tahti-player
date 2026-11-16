@@ -171,6 +171,35 @@ describe('ArtistView', () => {
     expect(container.textContent).not.toContain('Artist not found');
   });
 
+  it('shows the last loaded profile at once on a revisit', async () => {
+    const first = await renderArtist('northern-lights');
+    expect(
+      first.container.querySelector('[data-testid="artist-social-header"]'),
+    ).not.toBeNull();
+    act(() => first.root.unmount());
+
+    vi.spyOn(client, 'fetchProfile').mockReturnValue(new Promise(() => {}));
+    const { container } = await renderArtist('northern-lights');
+    expect(
+      container.querySelector('[data-testid="artist-social-header"]'),
+    ).not.toBeNull();
+    expect(container.textContent).not.toContain('Loading artist');
+  });
+
+  it('keeps the saved profile and says the refresh failed', async () => {
+    const first = await renderArtist('northern-lights');
+    act(() => first.root.unmount());
+
+    vi.spyOn(client, 'fetchProfile').mockRejectedValue(new Error('offline'));
+    const { container } = await renderArtist('northern-lights');
+    expect(
+      container.querySelector('[data-testid="artist-social-header"]'),
+    ).not.toBeNull();
+    expect(container.textContent).toContain(
+      'Could not refresh; showing the last loaded version.',
+    );
+  });
+
   it('survives failing side requests (look, posts, mentions) and still renders', async () => {
     vi.spyOn(client, 'fetchChannel').mockRejectedValue(new Error('boom'));
     const { container } = await renderArtist('northern-lights');

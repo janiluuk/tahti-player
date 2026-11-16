@@ -64,4 +64,37 @@ describe('LibraryFollowingView', () => {
       ).toBeInTheDocument(),
     );
   });
+
+  it('shows the last loaded list at once on a revisit', async () => {
+    const fetch = vi.spyOn(follows, 'fetchFollowList').mockResolvedValue({
+      users: [user('kaamos', 'Kaamos Crew')],
+      hasMore: false,
+    });
+    const first = await renderWithRouter(<LibraryFollowingView />);
+    expect(await screen.findByText('Kaamos Crew')).toBeInTheDocument();
+    first.unmount();
+
+    fetch.mockReturnValue(new Promise(() => {}));
+    await renderWithRouter(<LibraryFollowingView />);
+    expect(screen.getByText('Kaamos Crew')).toBeInTheDocument();
+  });
+
+  it('keeps the saved list and says the refresh failed', async () => {
+    const fetch = vi.spyOn(follows, 'fetchFollowList').mockResolvedValue({
+      users: [user('kaamos', 'Kaamos Crew')],
+      hasMore: false,
+    });
+    const first = await renderWithRouter(<LibraryFollowingView />);
+    expect(await screen.findByText('Kaamos Crew')).toBeInTheDocument();
+    first.unmount();
+
+    fetch.mockResolvedValue(null);
+    await renderWithRouter(<LibraryFollowingView />);
+    expect(
+      await screen.findByText(
+        'Could not refresh; showing the last loaded version.',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Kaamos Crew')).toBeInTheDocument();
+  });
 });
