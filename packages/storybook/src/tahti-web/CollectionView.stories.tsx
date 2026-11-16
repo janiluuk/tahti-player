@@ -47,7 +47,7 @@ export const CollaborativeVisitor: Story = {
     await step(
       'contribution lines credit other people by username',
       async () => {
-        const lines = canvas.getAllByTestId('collection-contribution');
+        const lines = await canvas.findAllByTestId('collection-contribution');
         await expect(lines).toHaveLength(3);
         await expect(lines[0]).toHaveTextContent('“Where it all started.”');
         await expect(lines[1]).toHaveTextContent(
