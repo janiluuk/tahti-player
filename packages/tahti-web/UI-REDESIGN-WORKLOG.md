@@ -6786,6 +6786,6 @@ Admin account labels, gallery and theme names, waveform and upload errors, Drive
 
 Add-on, report, payout, agenda, election, meeting, and preset errors follow the app language in English and Finnish when the server sends no message of its own.
 
-## 2026-11-16 — Catalog in Studio → Music, Library for listeners (0.0.396)
+## 2026-11-16 — Catalog in Studio → Music, Library for listeners (0.0.397)
 
 Tracks, Collections, Upload and Smart links live in Studio → Music, and Recordings is a Broadcast card with a back link. Library keeps what a listener saves: Favorites, History, Media, Stash and, on desktop, Local files; it opens on Favorites. Old Library catalog links redirect. Studio Home points at the Broadcast agenda instead of its own list, and the 24/7 rotation, radio playlist and announcement clips are edited on Schedule. The Tracks header shows Upload and Import, with the rest in a ⋯ menu.
