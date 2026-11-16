@@ -1,5 +1,4 @@
 import { LifeBuoyIcon, MailIcon, MessagesSquareIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
 import { StatTile, type StatTone } from '@tahti-player/ui';
@@ -13,6 +12,7 @@ import {
 import { PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { numericDate } from '../../../lib/relativeDate';
+import { useSnapshotFetch } from '../../../lib/useSnapshotFetch';
 
 const DAYS = 30;
 
@@ -32,21 +32,29 @@ function mailboxSublabel(box: AdminMailbox | undefined): string {
     : i18n.t('web:batch51.mailStatsUnavailable');
 }
 
+const NO_STATS: AdminCommunityStats = {
+  chatLast24h: null,
+  chatSeries: [],
+  mail: null,
+};
+
 export function CommunityStatsPanel() {
   const { t } = useTranslation('web');
-  const [stats, setStats] = useState<AdminCommunityStats | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    void fetchAdminCommunityStats(DAYS).then((result) => {
-      if (!cancelled) {
-        setStats(result);
+  const { data, error } = useSnapshotFetch<AdminCommunityStats>(
+    'admin-community-stats',
+    async () => {
+      const result = await fetchAdminCommunityStats(DAYS);
+      if (
+        result.chatLast24h === null &&
+        result.mail === null &&
+        result.chatSeries.length === 0
+      ) {
+        throw new Error('Community stats unavailable');
       }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+      return result;
+    },
+  );
+  const stats = data ?? (error ? NO_STATS : null);
 
   if (!stats) {
     return (

@@ -3,6 +3,8 @@ import { act, cleanup, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as client from '../api/client';
+import * as studio from '../api/studio';
+import { useAuthStore } from '../stores/authStore';
 import { renderWithRouter } from '../test/renderWithRouter';
 import { TrackDetailView } from './TrackDetailView';
 
@@ -82,5 +84,67 @@ describe('TrackDetailView', () => {
     await settle();
     expect(screen.getByText('HTTP 503')).toBeTruthy();
     expect(screen.queryByTestId('track-listen-page')).toBeNull();
+  });
+
+  describe('an upload that is still processing', () => {
+    beforeEach(() => {
+      useAuthStore.setState({
+        user: { id: 'u-artist', username: 'artist', displayName: 'Artist' },
+      } as never);
+      vi.spyOn(client, 'fetchTrackDetail').mockResolvedValue({
+        data: null,
+        meta: { source: 'api' },
+      });
+    });
+    afterEach(() => {
+      useAuthStore.setState({ user: null });
+    });
+
+    it('opens the track page with the processing state for the owner', async () => {
+      vi.spyOn(studio, 'fetchStudioSound').mockResolvedValue({
+        data: { id: 'up1', title: 'Fresh upload', status: 'PROCESSING' },
+        meta: { source: 'api' },
+      });
+      await renderWithRouter(<TrackDetailView id="up1" />);
+      await settle();
+      expect(screen.getByTestId('track-listen-page')).toBeTruthy();
+      expect(
+        screen.getByRole('heading', { name: 'Fresh upload' }),
+      ).toBeTruthy();
+      expect(screen.getByTestId('track-processing').textContent).toContain(
+        'The player appears here when the track is ready.',
+      );
+      expect(screen.queryByText('Track unavailable')).toBeNull();
+    });
+
+    it('treats the API 404 for a processing upload as not found, not a failed load', async () => {
+      vi.stubEnv('VITE_FORCE_MOCK', '');
+      vi.mocked(client.fetchTrackDetail).mockRestore();
+      vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+        new Response('{"error":"Track not found"}', { status: 404 }),
+      );
+      vi.spyOn(studio, 'fetchStudioSound').mockResolvedValue({
+        data: { id: 'up2', title: 'Fresh upload', status: 'PENDING' },
+        meta: { source: 'api' },
+      });
+      await renderWithRouter(<TrackDetailView id="up2" />);
+      await settle();
+      expect(screen.getByTestId('track-processing')).toBeTruthy();
+      expect(
+        screen.queryByText(
+          'Could not refresh; showing the last loaded version.',
+        ),
+      ).toBeNull();
+    });
+
+    it('still says unavailable when the sound is ready but not public', async () => {
+      vi.spyOn(studio, 'fetchStudioSound').mockResolvedValue({
+        data: { id: 'up1', title: 'Fresh upload', status: 'READY' },
+        meta: { source: 'api' },
+      });
+      await renderWithRouter(<TrackDetailView id="up1" />);
+      await settle();
+      expect(screen.getByText('Track unavailable')).toBeTruthy();
+    });
   });
 });

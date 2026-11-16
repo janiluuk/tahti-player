@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type Dispatch,
@@ -23,6 +24,7 @@ import {
 import type { DiscoverTrackItem, TahtiPlayable } from '../../api/types';
 import { discoverTrackPlayable } from '../../lib/discoverTrackPlayable';
 import { isPlausiblePublicName } from '../../lib/publicDisplayName';
+import { peekSnapshot, saveSnapshot } from '../../lib/useSnapshotFetch';
 
 export type ListenSectionStatus = 'loading' | 'ready' | 'error';
 
@@ -87,10 +89,13 @@ export function latestTrackMeta(playable: TahtiPlayable) {
   };
 }
 
-async function loadLatestTracks(): Promise<TahtiPlayable[]> {
-  const tracks = unwrap(
-    await fetchLatestTracks({ genres: [], contentTypes: [] }),
-  );
+async function loadLatestTracks(): Promise<DiscoverTrackItem[]> {
+  return unwrap(await fetchLatestTracks({ genres: [], contentTypes: [] }));
+}
+
+/** The playable "New tracks" rows for `tracks`, each remembering the API
+ * item it came from for `latestTrackMeta`. */
+function latestTrackPlayables(tracks: DiscoverTrackItem[]): TahtiPlayable[] {
   const playables: TahtiPlayable[] = [];
   for (const track of tracks) {
     const playable = discoverTrackPlayable(track);
@@ -128,11 +133,16 @@ async function loadDiscoWidgets(
 /** How long a section's last result is reused without asking the API again. */
 export const LISTEN_CACHE_TTL_MS = 60_000;
 
-const sectionCache = new Map<string, { data: unknown; at: number }>();
+type CachedSection = { data: unknown; at: number };
 
-/** Forgets every cached section. */
-export function clearListenSectionCache() {
-  sectionCache.clear();
+/** Sections live in the shared snapshot store (memory + sessionStorage), so
+ * a reload in the same tab and a sign-in/out behave like the other views. */
+function readSection(cacheKey: string): CachedSection | null {
+  return peekSnapshot<CachedSection>(`listen-section:${cacheKey}`);
+}
+
+function writeSection(cacheKey: string, section: CachedSection) {
+  saveSnapshot(`listen-section:${cacheKey}`, section);
 }
 
 /** Loads one Listen section on its own, so a slow or failed request only
@@ -147,7 +157,7 @@ function useListenSection<T>(
   cacheKey: string,
 ): [ListenSectionState<T>, Dispatch<SetStateAction<T>>] {
   const [state, setState] = useState<ListenSectionState<T>>(() => {
-    const hit = sectionCache.get(cacheKey);
+    const hit = readSection(cacheKey);
     return hit
       ? { data: hit.data as T, status: 'ready' }
       : { data: empty, status: 'loading' };
@@ -155,8 +165,7 @@ function useListenSection<T>(
   const shownKey = useRef(cacheKey);
 
   useEffect(() => {
-    const hit = sectionCache.get(cacheKey) as
-      { data: T; at: number } | undefined;
+    const hit = readSection(cacheKey) as { data: T; at: number } | null;
     const keyChanged = shownKey.current !== cacheKey;
     shownKey.current = cacheKey;
     if (hit && reloadKey === 0 && Date.now() - hit.at < LISTEN_CACHE_TTL_MS) {
@@ -175,7 +184,7 @@ function useListenSection<T>(
     });
     load()
       .then((data) => {
-        sectionCache.set(cacheKey, { data, at: Date.now() });
+        writeSection(cacheKey, { data, at: Date.now() });
         if (!cancelled) {
           setState({ data, status: 'ready' });
         }
@@ -202,9 +211,9 @@ function useListenSection<T>(
           typeof next === 'function'
             ? (next as (current: T) => T)(prev.data)
             : next;
-        const cached = sectionCache.get(cacheKey);
+        const cached = readSection(cacheKey);
         if (cached) {
-          sectionCache.set(cacheKey, { ...cached, data });
+          writeSection(cacheKey, { ...cached, data });
         }
         return { ...prev, data };
       });
@@ -217,7 +226,7 @@ function useListenSection<T>(
 
 const NO_CHANNELS: OnAirChannel[] = [];
 const NO_PRESETS: EnabledInternetRadioPreset[] = [];
-const NO_TRACKS: TahtiPlayable[] = [];
+const NO_TRACKS: DiscoverTrackItem[] = [];
 const NO_WIDGETS: DiscoWidgetRenderItem[] = [];
 
 /** Everything the Listen dashboard fetches, one independent section each.
@@ -241,11 +250,18 @@ export function useListenSections(signedIn: boolean, viewerId = '') {
     reloadKeys.presets,
     'presets',
   );
-  const [latestTracks] = useListenSection(
+  const [latestTrackItems] = useListenSection(
     loadLatestTracks,
     NO_TRACKS,
     reloadKeys.latestTracks,
     'latestTracks',
+  );
+  const latestTracks = useMemo<ListenSectionState<TahtiPlayable[]>>(
+    () => ({
+      status: latestTrackItems.status,
+      data: latestTrackPlayables(latestTrackItems.data),
+    }),
+    [latestTrackItems],
   );
   const [discoWidgets] = useListenSection(
     loadWidgets,

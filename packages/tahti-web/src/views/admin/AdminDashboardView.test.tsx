@@ -77,4 +77,18 @@ describe('AdminDashboardView', () => {
       '/admin/logs',
     );
   });
+
+  it('shows community stats while the dashboard calls are still loading', async () => {
+    vi.spyOn(admin, 'fetchAdminDashboard').mockReturnValue(
+      new Promise(() => undefined),
+    );
+    vi.spyOn(admin, 'fetchAdminCommunityStats').mockResolvedValue({
+      chatLast24h: 184,
+      chatSeries: [],
+      mail: null,
+    });
+    await renderWithRouter(<AdminDashboardView />);
+    expect(await screen.findByText('184')).toBeTruthy();
+    expect(screen.getByText('Loading dashboard…')).toBeTruthy();
+  });
 });

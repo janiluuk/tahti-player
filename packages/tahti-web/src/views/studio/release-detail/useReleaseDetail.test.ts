@@ -86,3 +86,57 @@ describe('useReleaseDetail publish', () => {
     expect(result.current.release?.state).toBe('PUBLISHED');
   });
 });
+
+describe('useReleaseDetail snapshot', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    fetchStudioSounds.mockResolvedValue({ data: [] });
+  });
+
+  it('shows the last loaded release at once and keeps it when the refresh fails', async () => {
+    fetchStudioRelease.mockResolvedValue({
+      ok: true,
+      data: { ...release('DRAFT'), description: 'Liner notes' },
+    });
+    const first = renderHook(() => useReleaseDetail('r1'));
+    await waitFor(() =>
+      expect(first.result.current.release?.title).toBe('Night Drive'),
+    );
+    first.unmount();
+
+    fetchStudioRelease.mockReturnValue(new Promise(() => {}));
+    const second = renderHook(() => useReleaseDetail('r1'));
+    expect(second.result.current.release?.title).toBe('Night Drive');
+    expect(second.result.current.description).toBe('Liner notes');
+    expect(second.result.current.loaded).toBe(true);
+    second.unmount();
+
+    fetchStudioRelease.mockResolvedValue({ ok: false, error: 'HTTP 502' });
+    const third = renderHook(() => useReleaseDetail('r1'));
+    await waitFor(() =>
+      expect(third.result.current.loadError).toBe('HTTP 502'),
+    );
+    expect(third.result.current.release?.title).toBe('Night Drive');
+  });
+
+  it('keeps a typed description when a refresh lands', async () => {
+    fetchStudioRelease.mockResolvedValue({
+      ok: true,
+      data: { ...release('DRAFT'), description: 'Old notes' },
+    });
+    const first = renderHook(() => useReleaseDetail('r1'));
+    await waitFor(() =>
+      expect(first.result.current.description).toBe('Old notes'),
+    );
+    act(() => first.result.current.setDescription('Typing…'));
+    fetchStudioRelease.mockResolvedValue({
+      ok: true,
+      data: { ...release('DRAFT'), description: 'New notes' },
+    });
+    act(() => first.result.current.retryLoad());
+    await waitFor(() =>
+      expect(first.result.current.release?.description).toBe('New notes'),
+    );
+    expect(first.result.current.description).toBe('Typing…');
+  });
+});

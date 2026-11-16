@@ -90,4 +90,42 @@ describe('CommunityStatsPanel', () => {
     expect(tone('hello@ unread')).toBe('purple');
     expect(tone('support@ unread')).toBe('orange');
   });
+
+  it('shows the last loaded stats at once and keeps them when every call fails', async () => {
+    const fetchStats = vi
+      .spyOn(admin, 'fetchAdminCommunityStats')
+      .mockResolvedValue({ chatLast24h: 184, chatSeries: [], mail: null });
+    await act(async () => {
+      render(<CommunityStatsPanel />);
+    });
+    expect(screen.getByText('184')).toBeTruthy();
+    cleanup();
+
+    fetchStats.mockReturnValue(new Promise(() => {}));
+    render(<CommunityStatsPanel />);
+    expect(screen.getByText('184')).toBeTruthy();
+    cleanup();
+
+    fetchStats.mockResolvedValue({
+      chatLast24h: null,
+      chatSeries: [],
+      mail: null,
+    });
+    await act(async () => {
+      render(<CommunityStatsPanel />);
+    });
+    expect(screen.getByText('184')).toBeTruthy();
+  });
+
+  it('shows dashes when every call fails and nothing was saved', async () => {
+    vi.spyOn(admin, 'fetchAdminCommunityStats').mockResolvedValue({
+      chatLast24h: null,
+      chatSeries: [],
+      mail: null,
+    });
+    await act(async () => {
+      render(<CommunityStatsPanel />);
+    });
+    expect(screen.getAllByText('—').length).toBeGreaterThan(0);
+  });
 });

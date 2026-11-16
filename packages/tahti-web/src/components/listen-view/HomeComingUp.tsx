@@ -1,5 +1,4 @@
 import { useNavigate } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
 
 import { toBcp47, useTranslation } from '@tahti-player/i18n';
 import { Card, CardsRow } from '@tahti-player/ui';
@@ -10,6 +9,7 @@ import {
 } from '../../api/upcoming-events';
 import { currentLocale } from '../../lib/locale';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { PageError } from '../PageStates';
 
 function formatEventStart(value: string): string {
@@ -72,25 +72,18 @@ function EventCard({ event }: { event: UpcomingEvent }) {
   );
 }
 
+const NO_EVENTS: UpcomingEvent[] = [];
+
 export function HomeComingUp() {
   const { t } = useTranslation('web');
-  const [events, setEvents] = useState<UpcomingEvent[]>([]);
-  const [loadError, setLoadError] = useState<string | null>(null);
-  const [attempt, setAttempt] = useState(0);
-  useEffect(() => {
-    let cancelled = false;
-    void fetchUpcomingEvents().then((result) => {
-      if (!cancelled) {
-        setLoadError(
-          result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
-        );
-        setEvents(result.data);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [attempt]);
+  const {
+    data,
+    error: loadError,
+    retry,
+  } = useSnapshotFetch<UpcomingEvent[]>('listen:coming-up', async () =>
+    apiResult(await fetchUpcomingEvents()),
+  );
+  const events = data ?? NO_EVENTS;
   if (events.length === 0) {
     if (!loadError) {
       return null;
@@ -100,7 +93,7 @@ export function HomeComingUp() {
         <PageError
           title={t('listen.couldNotLoadEvents')}
           description={loadError}
-          onRetry={() => setAttempt((n) => n + 1)}
+          onRetry={retry}
         />
       </div>
     );

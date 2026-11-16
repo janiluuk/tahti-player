@@ -80,6 +80,8 @@ describe('BrowserLocalFiles', () => {
 
     pickTrackView('List');
     const list = screen.getByTestId('ambient-track-list');
-    expect(within(list).getAllByRole('checkbox').length).toBeGreaterThan(1);
+    expect(
+      (await within(list).findAllByRole('checkbox')).length,
+    ).toBeGreaterThan(1);
   });
 });

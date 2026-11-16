@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import * as upcoming from '../../api/upcoming-events';
@@ -90,5 +90,28 @@ describe('HomeComingUp', () => {
     fetchEvents.mockResolvedValue({ data: [event], meta: { source: 'api' } });
     fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
     expect(await screen.findByText('Album release show')).toBeVisible();
+  });
+
+  it('shows the last loaded events at once and keeps them when the refresh fails', async () => {
+    const fetchEvents = vi
+      .spyOn(upcoming, 'fetchUpcomingEvents')
+      .mockResolvedValue({ data: [event], meta: { source: 'api' } });
+    await renderWithRouter(<HomeComingUp />);
+    expect(await screen.findByText('Album release show')).toBeVisible();
+    cleanup();
+
+    fetchEvents.mockReturnValue(new Promise(() => {}));
+    await renderWithRouter(<HomeComingUp />);
+    expect(screen.getByText('Album release show')).toBeVisible();
+    cleanup();
+
+    fetchEvents.mockResolvedValue({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await renderWithRouter(<HomeComingUp />);
+    await waitFor(() => expect(fetchEvents).toHaveBeenCalledTimes(3));
+    expect(screen.getByText('Album release show')).toBeVisible();
+    expect(screen.queryByTestId('listen-coming-up-error')).toBeNull();
   });
 });

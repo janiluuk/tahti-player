@@ -17,8 +17,9 @@ import {
 } from '../../api/me-listening';
 import { formatListeningDuration } from '../../lib/historyStats';
 import { dateLocaleTag } from '../../lib/locale';
+import { useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { useAuthStore } from '../../stores/authStore';
-import { PageError, PageLoading } from '../PageStates';
+import { PageError, PageErrorBanner, PageLoading } from '../PageStates';
 
 const minutesLabel = (minutes: number) =>
   formatListeningDuration(minutes * 60_000);
@@ -29,7 +30,8 @@ export function AcrossDevicesPanel({
   onHasListening?: (hasListening: boolean) => void;
 } = {}) {
   const { t } = useTranslation('web');
-  const signedIn = useAuthStore((s) => Boolean(s.user));
+  const userId = useAuthStore((s) => s.user?.id ?? null);
+  const signedIn = userId !== null;
   const navigate = useNavigate();
   const RANGE_OPTIONS: SegmentedControlOption<MyListeningRange>[] = [
     { id: '7', label: t('library.days7') },
@@ -37,32 +39,26 @@ export function AcrossDevicesPanel({
     { id: 'all', label: t('library.allTime') },
   ];
   const [range, setRange] = useState<MyListeningRange>('30');
-  const [listening, setListening] = useState<MyListening | null>(null);
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(
-    'loading',
-  );
-  const [attempt, setAttempt] = useState(0);
-
-  useEffect(() => {
-    if (!signedIn) {
-      return;
-    }
-    let cancelled = false;
-    setStatus('loading');
-    void fetchMyListening(range).then((result) => {
-      if (cancelled) {
-        return;
+  const {
+    data: listening,
+    loading,
+    error,
+    retry,
+  } = useSnapshotFetch<MyListening | null>(
+    `listening:${userId ?? ''}:${range}`,
+    async () => {
+      if (!userId) {
+        return null;
       }
-      setListening(result.data);
-      setStatus(result.data ? 'ready' : 'error');
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, [signedIn, range, attempt]);
+      const result = await fetchMyListening(range);
+      if (!result.data) {
+        throw new Error(result.meta.reason ?? 'fetch failed');
+      }
+      return result.data;
+    },
+  );
 
-  const hasListening =
-    signedIn && status === 'ready' && (listening?.listens ?? 0) > 0;
+  const hasListening = signedIn && (listening?.listens ?? 0) > 0;
   useEffect(() => {
     onHasListening?.(hasListening);
   }, [hasListening, onHasListening]);
@@ -93,15 +89,19 @@ export function AcrossDevicesPanel({
           onChange={setRange}
         />
       </div>
-      {status === 'loading' ? (
+      {loading ? (
         <PageLoading label={t('library.loadingListening')} />
-      ) : status === 'error' || !listening ? (
-        <PageError
-          title={t('library.listeningLoadError')}
-          onRetry={() => setAttempt((n) => n + 1)}
-        />
+      ) : !listening ? (
+        <PageError title={t('library.listeningLoadError')} onRetry={retry} />
       ) : (
         <>
+          {error ? (
+            <PageErrorBanner
+              title={t('pageStates.refreshFailed')}
+              description={error}
+              onRetry={retry}
+            />
+          ) : null}
           <div className="grid grid-cols-2 gap-3 sm:max-w-md">
             <StatTile
               label={t('library.timeListened')}

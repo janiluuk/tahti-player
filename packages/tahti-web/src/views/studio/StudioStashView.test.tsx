@@ -129,4 +129,32 @@ describe('StudioStashView for artists', () => {
     });
     expect(await screen.findByText('Demo take')).toBeInTheDocument();
   });
+
+  it('shows the last loaded stash at once and keeps it when the refresh fails', async () => {
+    fetchStudioSounds.mockResolvedValueOnce({
+      data: [{ id: 's1', title: 'Demo take', visibility: 'STASH' }],
+      meta: { source: 'api' },
+    });
+    await renderStash();
+    expect(await screen.findByText('Demo take')).toBeInTheDocument();
+    cleanup();
+
+    fetchStudioSounds.mockReturnValueOnce(new Promise(() => {}));
+    await renderStash();
+    expect(screen.getByText('Demo take')).toBeInTheDocument();
+    expect(screen.queryByText('Loading your stash…')).toBeNull();
+    cleanup();
+
+    fetchStudioSounds.mockResolvedValueOnce({
+      data: [],
+      meta: { source: 'api', reason: 'HTTP 502' },
+    });
+    await renderStash();
+    expect(
+      await screen.findByText(
+        'Could not refresh; showing the last loaded version.',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Demo take')).toBeInTheDocument();
+  });
 });

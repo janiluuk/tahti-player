@@ -22,10 +22,19 @@ import {
 } from '../api/studio';
 import type { StudioCollection, StudioSound } from '../api/studio-types';
 import { toastWithUndo } from '../lib/undoToast';
+import { apiResult, useSnapshotFetch } from '../lib/useSnapshotFetch';
+import { useAuthStore } from '../stores/authStore';
 import { usePlayerStore } from '../stores/playerStore';
 import { ConfirmDialog } from './ConfirmDialog';
-import { PageEmpty, PageError } from './PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from './PageStates';
 import { StudioPanel } from './StudioPanel';
+
+const NO_FILES: StashFile[] = [];
 
 const EXPIRY_OPTIONS = [1, 3, 7, 30, 0] as const;
 const MILLISECONDS_PER_DAY = 86_400_000;
@@ -54,7 +63,6 @@ export const StashFilesPanel = ({
 } = {}) => {
   const { t } = useTranslation('web');
   const play = usePlayerStore((state) => state.play);
-  const [files, setFiles] = useState<StashFile[]>([]);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [sharingFileId, setSharingFileId] = useState<string | null>(null);
@@ -64,21 +72,20 @@ export const StashFilesPanel = ({
   const [soundItems, setSoundItems] = useState<StudioSound[]>([]);
   const [collections, setCollections] = useState<StudioCollection[]>([]);
   const [pendingDelete, setPendingDelete] = useState<StashFile | null>(null);
-  const [filesError, setFilesError] = useState<string | null>(null);
   const [moveListsError, setMoveListsError] = useState<string | null>(null);
   const [moveListsAttempt, setMoveListsAttempt] = useState(0);
 
-  const reload = () =>
-    fetchStashFiles().then((result) => {
-      setFiles(result.data);
-      setFilesError(
-        result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
-      );
-    });
-
-  useEffect(() => {
-    void reload();
-  }, []);
+  const viewerId = useAuthStore((state) => state.user?.id ?? '');
+  const {
+    data: savedFiles,
+    loading: filesLoading,
+    error: filesError,
+    retry: reload,
+    mutate: mutateFiles,
+  } = useSnapshotFetch<StashFile[]>(`stash-files:${viewerId}`, async () =>
+    apiResult(await fetchStashFiles()),
+  );
+  const files = savedFiles ?? NO_FILES;
 
   useEffect(() => {
     if (filesOnly) {
@@ -160,10 +167,10 @@ export const StashFilesPanel = ({
       undo: () => revokeStashShare(created.id),
       undoneMessage: 'Share access removed.',
       onUndone: () => {
-        void reload();
+        reload();
       },
     });
-    await reload();
+    reload();
   };
 
   const revokeShare = async (_fileId: string, shareId: string) => {
@@ -178,7 +185,7 @@ export const StashFilesPanel = ({
     }
     setMessage('Share access revoked.');
     toast.success(i18n.t('web:toasts.shareAccessRevoked'));
-    await reload();
+    reload();
   };
 
   const uploadFile = (file: File) => {
@@ -196,10 +203,10 @@ export const StashFilesPanel = ({
         undo: () => deleteStashFile(result.id),
         undoneMessage: `Removed ${file.name}.`,
         onUndone: () => {
-          void reload();
+          reload();
         },
       });
-      void reload();
+      reload();
     });
   };
 
@@ -299,11 +306,20 @@ export const StashFilesPanel = ({
       ) : null}
 
       <StudioPanel>
-        {filesError && files.length === 0 ? (
+        {filesError && files.length > 0 ? (
+          <PageErrorBanner
+            title={t('pageStates.refreshFailed')}
+            description={filesError}
+            onRetry={reload}
+          />
+        ) : null}
+        {filesLoading ? (
+          <PageLoading label={t('stash.loading')} />
+        ) : filesError && files.length === 0 ? (
           <PageError
             title={t('stash.loadError')}
             description={filesError}
-            onRetry={() => void reload()}
+            onRetry={reload}
           />
         ) : files.length === 0 ? (
           <PageEmpty title={t('stash.empty')} />
@@ -514,8 +530,8 @@ export const StashFilesPanel = ({
               setMessage(result.error);
               return;
             }
-            setFiles((current) =>
-              current.filter((candidate) => candidate.id !== file.id),
+            mutateFiles((current) =>
+              (current ?? []).filter((candidate) => candidate.id !== file.id),
             );
             setMessage(`Deleted ${file.filename}.`);
           });

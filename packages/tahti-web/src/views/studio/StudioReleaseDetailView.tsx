@@ -42,7 +42,12 @@ import { FingerprintTrackPanel } from '../../components/FingerprintTrackPanel';
 import { ImageUrlForm } from '../../components/ImageUrlForm';
 import { MusicBrainzRegisterPrompt } from '../../components/MusicBrainzRegisterPrompt';
 import { MusicBrainzSubmissionAssistant } from '../../components/MusicBrainzSubmissionAssistant';
-import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
+import {
+  PageEmpty,
+  PageError,
+  PageErrorBanner,
+  PageLoading,
+} from '../../components/PageStates';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { releaseStateLabel, releaseTypeLabel } from '../../lib/releaseLabels';
@@ -214,6 +219,13 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
           </StudioPanel>
         ) : (
           <>
+            {loadError ? (
+              <PageErrorBanner
+                title={t('pageStates.refreshFailed')}
+                description={loadError}
+                onRetry={retryLoad}
+              />
+            ) : null}
             <EntitySocialHeader
               title={release.title}
               imageUrl={artworkPreview}
