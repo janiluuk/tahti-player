@@ -431,7 +431,7 @@ export function ImportWizard({
               ) : (
                 <p className="text-foreground-secondary text-sm">
                   {t('library.importWizardNoCollection')}{' '}
-                  <Link to="/library/collections" className="underline">
+                  <Link to="/studio/collections" className="underline">
                     {t('library.importWizardCollections')}
                   </Link>
                 </p>

@@ -7,7 +7,7 @@ import {
   type RouteVisit,
 } from './helpers/routeHealth';
 
-// The artist catalog moved to Studio → Music; its old Library links redirect.
+// Library catalog paths are bookmarks for Studio → Music pages and redirect there.
 const libraryRoutes: RouteVisit[] = [
   { path: '/library', heading: /^Favorites$/, url: /\/library\/favorites$/ },
   {

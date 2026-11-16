@@ -141,8 +141,8 @@ export const FansPageBackLink: Story = {
   },
 };
 
-/** The catalog moved in from Library: Tracks and Collections are Music chips
- * next to Releases, and Upload keeps Tracks lit. */
+/** Tracks and Collections are Music chips next to Releases, and Upload keeps
+ * Tracks lit. */
 export const MusicCatalogChips: Story = {
   args: { current: '/studio/upload', global: true },
   decorators: [withTahtiRouter('/studio/upload')],

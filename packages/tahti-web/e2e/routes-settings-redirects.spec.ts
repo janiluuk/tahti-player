@@ -51,7 +51,7 @@ const settingsSections: RouteVisit[] = [
   { path: '/themes', heading: /^Themes$/, url: /\/settings\/themes$/ },
 ];
 
-// Old Studio bookmarks for pages that moved to Library, Settings or Venues, and catalog pages that are Studio again.
+// Studio bookmarks for pages that now live in Library, Settings or Venues, plus the Studio catalog pages.
 const oldStudioBookmarks: RouteVisit[] = [
   { path: '/studio/info', heading: 'Go live', url: /\/studio\/go-live$/ },
   { path: '/studio/sounds', heading: /^Sounds$/, url: /\/studio\/sounds$/ },
