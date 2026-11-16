@@ -7,6 +7,7 @@ import {
   Badge,
   Button,
   ButtonAnchor,
+  ButtonLink,
   CopyButton,
   Toggle,
 } from '@tahti-player/ui';
@@ -22,7 +23,6 @@ import { StudioPanel } from '../../../components/StudioPanel';
 import { usePolling } from '../../../hooks/usePolling';
 import { webT } from '../../../lib/webT';
 import { useAuthStore } from '../../../stores/authStore';
-import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { GreenRoomInviteForm } from './GreenRoomInviteForm';
 
 const REFRESH_MS = 20_000;
@@ -101,13 +101,14 @@ export function GreenRoomSessionPanel() {
       title={t('greenRoomSession.greenRoom')}
       description={t('greenRoomSession.letInvitedGuestsHearYour')}
       action={
-        <Button
+        <ButtonLink
           size="sm"
           variant="ghost"
-          onClick={() => useSettingsModalStore.getState().open('broadcast')}
+          to="/studio/channel"
+          hash="green-room"
         >
-          Open Settings › Broadcast
-        </Button>
+          {t('greenRoomSession.openSettings')}
+        </ButtonLink>
       }
     >
       {username ? (

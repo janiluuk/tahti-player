@@ -27,7 +27,7 @@ const meta: Meta<typeof AccountPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Account, in four groups: Sign-in & security (session, devices, two-factor, API tokens), Membership & billing (membership, governance, your fan subscriptions, purchases), Notifications (notifications & visibility, mentions) and Privacy & data (data export, blocked accounts, deletion request, storage). Signed out it only offers Log in.',
+          'Settings → Account, in four groups: Sign-in & security (session, devices, two-factor, API tokens), Membership & billing (membership, a Governance link to Co-op, your fan subscriptions, purchases), Notifications (notifications & visibility, mentions) and Privacy & data (data export, blocked accounts, deletion request, storage). Signed out it only offers Log in.',
       },
     },
   },
@@ -110,6 +110,20 @@ export const SubscriptionsAndPurchases: Story = {
       'href',
       '/t/mock-track-1',
     );
+  },
+};
+
+export const GovernanceLinksToCoop: Story = {
+  name: 'Governance links to Co-op',
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await openGroup(canvas, 'Membership & billing', 'Governance');
+    await expect(
+      await canvas.findByRole('link', { name: 'Open Co-op' }),
+    ).toHaveAttribute('href', '/governance');
+    await expect(
+      canvas.queryByRole('tablist', { name: /Governance/ }),
+    ).toBeNull();
   },
 };
 

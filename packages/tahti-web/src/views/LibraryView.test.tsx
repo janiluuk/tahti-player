@@ -7,6 +7,8 @@ import { renderWithRouter } from '../test/renderWithRouter';
 import { LibraryView } from './LibraryView';
 
 vi.mock('./FavoritesView', () => ({ FavoritesView: () => null }));
+vi.mock('./LibraryMediaView', () => ({ LibraryMediaView: () => null }));
+vi.mock('./studio/StudioStashView', () => ({ StudioStashView: () => null }));
 
 describe('LibraryView tabs', () => {
   beforeEach(() => {
@@ -35,7 +37,19 @@ describe('LibraryView tabs', () => {
     const tabs = (await screen.findAllByRole('tab')).map(
       (tab) => tab.textContent,
     );
-    expect(tabs).toEqual(['Favorites', 'History', 'Media', 'Stash']);
+    expect(tabs).toEqual(['Favorites', 'History', 'Following', 'Files']);
+  });
+
+  it('shows Media and Stash as chips under Files, without Local on the web', async () => {
+    await renderWithRouter(<LibraryView tab="files" kind="stash" />);
+    expect(await screen.findByRole('heading', { name: 'Files' })).toBeTruthy();
+    const kinds = screen
+      .getAllByRole('radio')
+      .map((chip) => [chip.textContent, chip.getAttribute('aria-checked')]);
+    expect(kinds).toEqual([
+      ['Media', 'false'],
+      ['Stash', 'true'],
+    ]);
   });
 
   it('opens on Favorites without an overview tab', async () => {

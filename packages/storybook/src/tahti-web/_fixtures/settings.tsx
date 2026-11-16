@@ -15,7 +15,7 @@ export function resetSettingsModal(): void {
 }
 
 /**
- * `/settings/*` and `/studio/branding` render nothing themselves: they open
+ * `/settings/*` renders nothing itself: it opens
  * the settings modal that AppShell keeps mounted. Render the route next to
  * that modal so the story shows what the route really shows.
  */

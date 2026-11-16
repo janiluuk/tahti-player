@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   movedSettingsSection,
   movedSettingsTarget,
+  movedStudioSettingsPath,
 } from './movedSettingsSections';
 
 describe('movedSettingsSection', () => {
@@ -31,5 +32,26 @@ describe('movedSettingsTarget', () => {
       to: '/studio/audience',
       search: { movedFrom: 'money' },
     });
+  });
+});
+
+describe('movedStudioSettingsPath', () => {
+  it.each([
+    ['channel', undefined, '/studio/profile/appearance'],
+    ['channel', 'discovery', '/studio/profile/discovery'],
+    ['channel', 'domain', '/studio/profile/domain'],
+    ['channel', 'moderators', '/studio/fans?tab=chat&section=moderators'],
+    ['channel', 'chat', '/studio/fans?tab=chat'],
+    ['broadcast', undefined, '/studio/channel'],
+    ['broadcast', 'radio', '/studio/recordings#recording-settings'],
+    ['broadcast', 'green-room', '/studio/channel#green-room'],
+    ['broadcast', 'multistream', '/studio/channel?radio=multicast#radio'],
+  ])('sends /settings/%s?tab=%s to %s', (section, tab, path) => {
+    expect(movedStudioSettingsPath(section, tab)).toBe(path);
+  });
+
+  it('leaves the sections that are still in Settings alone', () => {
+    expect(movedStudioSettingsPath('artist', 'identity')).toBeNull();
+    expect(movedStudioSettingsPath('account', undefined)).toBeNull();
   });
 });

@@ -7,7 +7,6 @@ export type ArtistSettingsSection =
   | 'identity'
   | 'story'
   | 'people'
-  | 'following'
   | 'connections'
   | 'branding'
   | 'gallery'
@@ -15,16 +14,6 @@ export type ArtistSettingsSection =
   | 'release-visuals';
 
 export type AccountSettingsSection = 'subscriptions' | 'api-tokens';
-
-export const CHANNEL_SETTINGS_SECTIONS = [
-  'appearance',
-  'discovery',
-  'domain',
-  'chat',
-  'moderators',
-] as const;
-
-export type ChannelSettingsSection = (typeof CHANNEL_SETTINGS_SECTIONS)[number];
 
 export type PlaybackSettingsSection = 'playback' | 'language';
 
@@ -41,8 +30,6 @@ type SettingsModalState = {
   artistSection: ArtistSettingsSection | null;
   /** Sub-tab when activeTab === 'account'. */
   accountSection: AccountSettingsSection | null;
-  /** Sub-tab when activeTab === 'channel'. */
-  channelSection: ChannelSettingsSection | null;
   playbackSection: PlaybackSettingsSection | null;
   openedToSection: boolean;
   /**
@@ -57,7 +44,6 @@ type SettingsModalState = {
     pluginCategory?: PluginCategoryTarget,
     artistSection?: ArtistSettingsSection,
     accountSection?: AccountSettingsSection,
-    channelSection?: ChannelSettingsSection,
     playbackSection?: PlaybackSettingsSection,
   ) => void;
   close: () => void;
@@ -71,18 +57,10 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
   pluginCategory: null,
   artistSection: null,
   accountSection: null,
-  channelSection: null,
   playbackSection: null,
   openedToSection: false,
   dismissRouteOpen: false,
-  open: (
-    tab,
-    pluginCategory,
-    artistSection,
-    accountSection,
-    channelSection,
-    playbackSection,
-  ) =>
+  open: (tab, pluginCategory, artistSection, accountSection, playbackSection) =>
     set((state) => ({
       isOpen: true,
       dismissRouteOpen: false,
@@ -93,7 +71,6 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
       pluginCategory: pluginCategory ?? null,
       artistSection: artistSection ?? null,
       accountSection: accountSection ?? null,
-      channelSection: channelSection ?? null,
       playbackSection: playbackSection ?? null,
     })),
   close: () => set({ isOpen: false, dismissRouteOpen: true }),
@@ -102,7 +79,6 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
       activeTab: tab,
       artistSection: null,
       accountSection: null,
-      channelSection: null,
       playbackSection: null,
     }),
   clearDismissRouteOpen: () => set({ dismissRouteOpen: false }),

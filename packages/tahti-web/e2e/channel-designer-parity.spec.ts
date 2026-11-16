@@ -24,7 +24,7 @@ async function signIn(
 }
 
 async function openChannelDesigner(page: import('@playwright/test').Page) {
-  await page.goto('/settings/channel');
+  await page.goto('/studio/profile/appearance');
   await expect(page.getByTestId('channel-backdrop-card').first()).toBeVisible();
 }
 

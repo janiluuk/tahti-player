@@ -2,10 +2,9 @@ import { Link } from '@tanstack/react-router';
 import { CircleDotIcon, FolderOpenIcon } from 'lucide-react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, Toggle } from '@tahti-player/ui';
+import { ButtonLink, Toggle } from '@tahti-player/ui';
 
 import { StudioPanel } from '../../../components/StudioPanel';
-import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import type { GoLiveState } from './useGoLiveState';
 
 export function RecordingPanel({ state }: { state: GoLiveState }) {
@@ -17,15 +16,15 @@ export function RecordingPanel({ state }: { state: GoLiveState }) {
       title={t('goLiveRecording.recording')}
       description={t('goLiveRecording.forThisBroadcastOnlyDefault')}
       action={
-        <Button
+        <ButtonLink
           variant="plain"
           size="flexible"
-          type="button"
+          to="/studio/recordings"
+          hash="recording-settings"
           className="text-foreground-secondary inline-block rounded-none text-xs whitespace-normal underline-offset-2 hover:underline active:scale-100"
-          onClick={() => useSettingsModalStore.getState().open('broadcast')}
         >
           {t('goLiveRecording.prefs')}
-        </Button>
+        </ButtonLink>
       }
     >
       <div className="border-border bg-background flex w-full items-center gap-3 rounded-lg border p-3">

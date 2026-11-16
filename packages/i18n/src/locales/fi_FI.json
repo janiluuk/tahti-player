@@ -1848,7 +1848,9 @@
       "mediaPurgeConfirm": "Poista käyttämättömät",
       "mediaPurged_one": "Poistettiin {{count}} käyttämätön tiedosto, vapautui {{size}}.",
       "mediaPurged_other": "Poistettiin {{count}} käyttämätöntä tiedostoa, vapautui {{size}}.",
-      "moreTrackActions": "Lisää kappaletoimintoja"
+      "moreTrackActions": "Lisää kappaletoimintoja",
+      "tabFiles": "Tiedostot",
+      "fileKinds": "Tiedostotyypit"
     },
     "date": {
       "today": "Tänään",
@@ -2686,7 +2688,9 @@
         "mentionSurfaceTracklist": "kappalelista",
         "mentionSurfaceChat": "chat",
         "mentionSurfaceDiscussion": "keskustelu",
-        "mentionSurfacePost": "julkaisu"
+        "mentionSurfacePost": "julkaisu",
+        "governanceMoved": "Aloitteet, kokoukset, asiakirjat ja äänesi ovat sivupalkin Osuuskunta-kohdassa.",
+        "openCoop": "Avaa Osuuskunta"
       },
       "channel": {
         "loadError": "Kanavaprofiilia ei voitu ladata",
@@ -3486,7 +3490,9 @@
       "openBroadcast": "Avaa lähetysstudio",
       "draftsHeading": "Luonnokset · ei vielä julkaistu ({{count}})",
       "panelSummary_one": "{{count}} nauhoitus ohjelmittain ryhmiteltynä. Julkaisemattomat luonnokset ovat ylhäällä.",
-      "panelSummary_other": "{{count}} nauhoitusta ohjelmittain ryhmiteltyinä. Julkaisemattomat luonnokset ovat ylhäällä."
+      "panelSummary_other": "{{count}} nauhoitusta ohjelmittain ryhmiteltyinä. Julkaisemattomat luonnokset ovat ylhäällä.",
+      "settingsTitle": "Tallennuksen oletukset",
+      "settingsDescription": "Tallennetaanko ja julkaistaanko uudet lähetykset. Mene liveen -näkymässä voit muuttaa tätä yhden lähetyksen ajaksi."
     },
     "studioDistribution": {
       "title": "Jakelu",
@@ -4354,7 +4360,9 @@
       "whatDynamicDoes": "Mitä Dynaaminen tekee",
       "speed": "Nopeus",
       "intensity": "Voimakkuus",
-      "scale": "Koko"
+      "scale": "Koko",
+      "channelDesignHint": "Otsikon tyyli, värimaailma ja visualisoinnin näkyvyys asetetaan kohdassa",
+      "channelDesignLink": "Studio → Profiili → Kanavan ulkoasu"
     },
     "transparencyPage": {
       "category": "Luokka",
@@ -5975,8 +5983,9 @@
       "openTheGreenRoom": "Avaa green room",
       "nobodyIsInvitedYet": "Ketään ei ole vielä kutsuttu.",
       "greenRoom": "Green room",
-      "letInvitedGuestsHearYour": "Anna kutsuttujen vieraiden kuulla lähetyksesi ennen kuin se on julkinen. Kutsujen oletussäännöt ovat kohdassa Asetukset → Lähetys.",
-      "copyLink": "Kopioi linkki"
+      "letInvitedGuestsHearYour": "Anna kutsuttujen vieraiden kuulla lähetyksesi ennen kuin se on julkinen. Kutsujen oletussäännöt ovat kohdassa Studio → Lähetys → Kanava.",
+      "copyLink": "Kopioi linkki",
+      "openSettings": "Green roomin asetukset"
     },
     "electionResult": {
       "recordTheResult": "Kirjaa tulos",
@@ -6065,7 +6074,7 @@
       "recordBroadcast": "Tallenna lähetys",
       "editAndReleaseSavedRecordings": "Muokkaa ja julkaise tallennuksia",
       "recording": "Tallennus",
-      "forThisBroadcastOnlyDefault": "Vain tälle lähetykselle. Tulevien lähetysten oletus on kohdassa Asetukset → Lähetys → Radio.",
+      "forThisBroadcastOnlyDefault": "Vain tälle lähetykselle. Tulevien lähetysten oletus on Nauhoitukset-sivulla.",
       "openRecordings": "Avaa tallennukset"
     },
     "channelMembers": {
@@ -6209,7 +6218,7 @@
     },
     "studioProfile": {
       "profile": "Profiili",
-      "howYouLookToListeners": "Miltä näytät kuuntelijoille: artistiprofiilisi ja kanavasivusi. Jokainen kortti avaa omat asetuksensa.",
+      "howYouLookToListeners": "Miltä näytät kuuntelijoille: artistiprofiilisi ja kanavasivusi. Jokainen kortti avaa oman sivunsa.",
       "artistProfile": "Artistiprofiili",
       "artistProfileSettings": "Artistiprofiilin asetukset",
       "channelPage": "Kanavasivu",
@@ -7768,9 +7777,10 @@
       "addMultistreamDestination": "Lisää monilähetyksen kohde",
       "chooseAPlatformToConfigure": "Valitse määritettävä alusta.",
       "multistream": "Monilähetys",
-      "destinationsForThisSessionAdd": "Tämän istunnon kohteet. Lisää ja muokkaa kohteita täällä; Asetukset → Lähetys vain peilaa saman listan.",
+      "destinationsForThisSessionAdd": "Tämän istunnon kohteet. Lisää ja muokkaa kohteita täällä; Studio → Lähetys → Kanava → Monilähetys näyttää saman listan.",
       "addDestination": "Lisää kohde",
-      "removeDestination": "Poista kohde"
+      "removeDestination": "Poista kohde",
+      "openSettings": "Tallennetut kohteet"
     },
     "creditsEditor": {
       "creditsRoles": "Tekijät ja roolit",
@@ -8177,7 +8187,10 @@
     "studioBrandingView": {
       "signInToDesignYour": "Kirjaudu sisään suunnitellaksesi julkista kanavaasi.",
       "artistBranding": "Artistin brändi",
-      "channelDesigner": "Kanavan suunnittelu"
+      "channelDesigner": "Kanavan suunnittelu",
+      "programmeTitle": "Kanavan ohjelma",
+      "programmeHint": "Mitä kanavasi soittaa live-lähetysten ympärillä, kuten 24/7-rotaatio, offline-varaohjelma ja tiedotteet, asetetaan Aikataulu-sivulla.",
+      "openProgramme": "Avaa kanavan ohjelma"
     },
     "topListsTab": {
       "contentRankings": "Sisällön sijoitukset",
@@ -10641,7 +10654,7 @@
       "status": "Tila",
       "shareOnPublish": "Ilmoita julkaistaessa",
       "shareConnectHint": "Yhdistä Mastodon tai Bluesky, niin voit ilmoittaa tapahtumista niissä.",
-      "shareConnectLink": "Asetukset → Artisti",
+      "shareConnectLink": "Studio → Profiili → Linkit",
       "shares": "Ilmoitukset",
       "sharePENDING": "Lähetetään",
       "shareSENT": "Julkaistu",
@@ -12520,7 +12533,7 @@
         "open": "Miten lähettäminen toimii",
         "connect": "Yhdistä OBS, Streamlabs, Traktor, Mixxx tai muu Icecast-yhteensopiva sovellus Lähetystunnukset-kohdan palvelimella ja striimiavaimella (tai mountilla ja salasanalla). Valitse sovelluksesi sieltä nähdäksesi sitä vastaavat kentät.",
         "obs": "Käytätkö OBS:ää? Lähetystunnukset-kohdan \"Valmis OBS-asetus\" -lataus sisältää näkymäpohjan, johon tämän kanavan nykyiset tunnukset on jo täytetty.",
-        "multistream": "Kohteet välittävät lähetyksesi muille alustoille. Kaikkien ohjelmien tallennus- ja green room -oletukset ovat kohdassa Asetukset → Lähetys; tämä sivu koskee käynnissä olevaa istuntoa."
+        "multistream": "Kohteet välittävät lähetyksesi muille alustoille. Tallennuksen oletukset ovat Nauhoitukset-sivulla ja green roomin oletukset kohdassa Studio → Lähetys → Kanava; tämä sivu koskee käynnissä olevaa lähetystä."
       },
       "share": {
         "copy": "Kopioi kanavan linkki",

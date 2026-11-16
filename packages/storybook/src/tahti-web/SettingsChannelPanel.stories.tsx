@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ChannelPanel } from '@tahti-web/views/settings/panels/ChannelPanel';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
-import { resetSettingsModal } from './_fixtures/settings';
 import { withToaster } from './_fixtures/track-release';
 import {
   MOCK_USERS,
@@ -10,12 +9,7 @@ import {
   withPageSurface,
   withTahtiRouter,
 } from './_lib/decorators';
-import {
-  expectNoDialog,
-  expectVisible,
-  openDialog,
-  selectTab,
-} from './_lib/play';
+import { expectNoDialog, expectVisible, openDialog } from './_lib/play';
 
 const meta: Meta<typeof ChannelPanel> = {
   title: 'Tahti/Settings/ChannelPanel',
@@ -25,15 +19,14 @@ const meta: Meta<typeof ChannelPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Channel & chat: Channel Designer (its own stories live under Tahti/Channel Designer), Discovery (share button and the rest of how the channel is found), Username & domain (slug availability, rename with a confirm, custom domain). Chat and Moderators tabs point at Studio → Fans.',
+          'One channel page form per Studio → Profile page: Channel design (`appearance`, the Channel Designer, whose own stories live under Tahti/Channel Designer), How fans find you (`discovery`: share button and the rest of how the channel is found), Address and domain (`domain`: slug availability, rename with a confirm, custom domain). Chat and moderators are in Studio → Fans; old `/settings/channel?tab=` links redirect.',
       },
     },
   },
-  beforeEach: resetSettingsModal,
   decorators: [
     withPageSurface(),
     withToaster(),
-    withTahtiRouter('/settings/channel'),
+    withTahtiRouter('/studio/profile/discovery'),
     withMockAuth(MOCK_USERS.artist),
   ],
 };
@@ -41,27 +34,11 @@ const meta: Meta<typeof ChannelPanel> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Tabs: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await expect(
-      canvas.getByRole('tab', { name: 'Channel Designer' }),
-    ).toHaveAttribute('aria-selected', 'true');
-    for (const name of [
-      'Discovery',
-      'Username & domain',
-      'Chat',
-      'Moderators',
-    ]) {
-      await expectVisible(canvas.getByRole('tab', { name }));
-    }
-  },
-};
-
 export const Discovery: Story = {
+  args: { section: 'discovery' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await selectTab(canvas, 'Discovery');
+    await expect(canvas.queryByRole('tab')).toBeNull();
     await expectVisible(
       await canvas.findByRole('switch', {
         name: 'Show share button on my channel',
@@ -72,10 +49,10 @@ export const Discovery: Story = {
 
 // Rename is disabled until the slug changes, and asks before renaming.
 export const RenameChannel: Story = {
+  args: { section: 'domain' },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await selectTab(canvas, 'Username & domain');
-    const slug = canvas.getByRole('textbox', {
+    const slug = await canvas.findByRole('textbox', {
       name: 'Channel slug / username',
     });
     await waitFor(() => expect(slug).toHaveValue('northern-lights'));
@@ -99,29 +76,8 @@ export const RenameChannel: Story = {
   },
 };
 
-export const Chat: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await selectTab(canvas, 'Chat');
-    await expectVisible(await canvas.findByText('Chat moved to Fans'));
-    await expect(
-      canvas.getByRole('link', { name: 'Open Fans chat' }),
-    ).toHaveAttribute('href', '/studio/fans?tab=chat');
-  },
-};
-
-export const Moderators: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    await selectTab(canvas, 'Moderators');
-    await expectVisible(await canvas.findByText('Moderators moved to Fans'));
-    await expect(
-      canvas.getByRole('link', { name: 'Open Fans chat' }),
-    ).toHaveAttribute('href', '/studio/fans?tab=chat&section=moderators');
-  },
-};
-
 export const SignedOut: Story = {
+  args: { section: 'discovery' },
   decorators: [withMockAuth(null)],
   play: async ({ canvasElement }) => {
     await expectVisible(

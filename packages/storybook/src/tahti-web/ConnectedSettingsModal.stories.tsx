@@ -44,12 +44,26 @@ export const SignedInAccount: Story = {
   decorators: [withMockAuth(MOCK_USERS.listener), withOpenSettings('account')],
 };
 
-export const ArtistTab: Story = {
-  decorators: [withMockAuth(MOCK_USERS.artist), withOpenSettings('artist')],
+export const ListenerProfileTab: Story = {
+  decorators: [withMockAuth(MOCK_USERS.listener), withOpenSettings('artist')],
+  play: async ({ canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    await expect(
+      await body.findByRole('heading', { level: 1, name: 'Profile' }),
+    ).toBeVisible();
+  },
 };
 
-export const ChannelDesignTab: Story = {
-  decorators: [withMockAuth(MOCK_USERS.artist), withOpenSettings('channel')],
+export const ArtistSettingsAreAccountOnly: Story = {
+  name: 'Artist: account-only list, profile forms in Studio',
+  decorators: [withMockAuth(MOCK_USERS.artist), withOpenSettings('account')],
+  play: async ({ canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    await body.findByRole('heading', { level: 1, name: 'Account' });
+    for (const name of ['Profile', 'Artist', 'Channel & chat', 'Broadcast']) {
+      await expect(body.queryByRole('tab', { name })).toBeNull();
+    }
+  },
 };
 
 export const ThemesTab: Story = {

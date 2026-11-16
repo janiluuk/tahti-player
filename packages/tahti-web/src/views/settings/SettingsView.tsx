@@ -1,4 +1,4 @@
-import { useRouterState } from '@tanstack/react-router';
+import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 
@@ -8,12 +8,12 @@ import {
   isPluginCategoryTarget,
   pluginAudienceForTarget,
 } from '../../content/pluginStoreCategories';
+import { movedProfileSettingsPath } from '../../lib/studioProfileSections';
+import { useAuthStore } from '../../stores/authStore';
 import {
-  CHANNEL_SETTINGS_SECTIONS,
   useSettingsModalStore,
   type AccountSettingsSection,
   type ArtistSettingsSection,
-  type ChannelSettingsSection,
 } from '../../stores/settingsModalStore';
 import { isSettingsSectionId, type SettingsSectionId } from './settingsNav';
 import { socialCallbackToast } from './socialCallback';
@@ -22,7 +22,6 @@ const ARTIST_SECTIONS: readonly ArtistSettingsSection[] = [
   'identity',
   'story',
   'people',
-  'following',
   'connections',
   'branding',
   'gallery',
@@ -44,10 +43,57 @@ function isAccountSettingsSection(
   return value === 'subscriptions' || value === 'api-tokens';
 }
 
-function isChannelSettingsSection(
-  value: string | null,
-): value is ChannelSettingsSection {
-  return CHANNEL_SETTINGS_SECTIONS.some((id) => id === value);
+function showCallbackToast(
+  params: URLSearchParams,
+  status: string | null,
+  social: string | null,
+  category: string | null,
+) {
+  const providerLabel = (() => {
+    const categoryLabel = (
+      params.get('provider') ??
+      category ??
+      ''
+    ).toLowerCase();
+    if (categoryLabel.includes('soundcloud')) {
+      return 'SoundCloud';
+    }
+    if (categoryLabel.includes('bandcamp')) {
+      return 'Bandcamp';
+    }
+    if (categoryLabel.includes('mixcloud')) {
+      return 'Mixcloud';
+    }
+    if (categoryLabel.includes('spotify')) {
+      return 'Spotify';
+    }
+    if (categoryLabel.includes('google-drive')) {
+      return 'Google Drive';
+    }
+    if (categoryLabel.includes('hearthis')) {
+      return 'hearthis.at';
+    }
+    return null;
+  })();
+  if (status === 'connected') {
+    toast.success(
+      providerLabel
+        ? i18n.t('web:authToasts.connected', { provider: providerLabel })
+        : i18n.t('web:authToasts.connectedGeneric'),
+    );
+  } else if (status === 'login') {
+    toast.info(i18n.t('web:authToasts.signInFirst'));
+  } else if (status) {
+    toast.error(
+      providerLabel
+        ? i18n.t('web:authToasts.connectFailed', { provider: providerLabel })
+        : i18n.t('web:authToasts.connectFailedGeneric'),
+    );
+  }
+  const socialToast = socialCallbackToast(social);
+  if (socialToast) {
+    toast[socialToast.kind](socialToast.message);
+  }
 }
 
 /** Deep link `/settings` → Nuclear SettingsPanel modal. Also the landing
@@ -55,6 +101,8 @@ function isChannelSettingsSection(
  * `?social=` are surfaced as a toast, same as the retired Sources page did. */
 export function SettingsView() {
   const open = useSettingsModalStore((s) => s.open);
+  const navigate = useNavigate();
+  const hasChannel = useAuthStore((s) => Boolean(s.user?.channel));
   const searchStr = useRouterState({
     select: (state) => state.location.searchStr,
   });
@@ -85,6 +133,29 @@ export function SettingsView() {
     );
     const category = params.get('category');
     const tab = params.get('tab');
+    const status = params.get('status');
+    const social = params.get('social');
+    const callbackKey = `${status ?? ''}|${social ?? ''}|${category ?? ''}`;
+    if ((status || social) && toastedCallbackRef.current !== callbackKey) {
+      toastedCallbackRef.current = callbackKey;
+      showCallbackToast(params, status, social, category);
+    }
+    // An artist's profile forms live in Studio → Profile and Following is a
+    // Library tab; Settings → Artist is the listener's profile.
+    if (section === 'artist' && (hasChannel || tab === 'following')) {
+      useSettingsModalStore.getState().close();
+      void navigate({
+        href: movedProfileSettingsPath('artist', tab),
+        replace: true,
+      });
+      return;
+    }
+    // Themes have one browser, Settings → Themes; an old Add-ons → Themes
+    // link opens it.
+    if (section === 'plugin-store' && category === 'themes') {
+      open('themes');
+      return;
+    }
     open(
       section,
       isPluginCategoryTarget(category)
@@ -94,7 +165,6 @@ export function SettingsView() {
           : undefined,
       section === 'artist' && isArtistSettingsSection(tab) ? tab : undefined,
       section === 'account' && isAccountSettingsSection(tab) ? tab : undefined,
-      section === 'channel' && isChannelSettingsSection(tab) ? tab : undefined,
       section === 'playback'
         ? rawSectionId === 'language' || tab === 'language'
           ? 'language'
@@ -104,62 +174,7 @@ export function SettingsView() {
     if (!isSettingsSectionId(sectionId)) {
       useSettingsModalStore.setState({ openedToSection: false });
     }
-    const status = params.get('status');
-    const social = params.get('social');
-    if (!status && !social) {
-      return;
-    }
-    const callbackKey = `${status ?? ''}|${social ?? ''}|${category ?? ''}`;
-    if (toastedCallbackRef.current === callbackKey) {
-      return;
-    }
-    toastedCallbackRef.current = callbackKey;
-    const providerLabel = (() => {
-      const categoryLabel = (
-        params.get('provider') ??
-        category ??
-        ''
-      ).toLowerCase();
-      if (categoryLabel.includes('soundcloud')) {
-        return 'SoundCloud';
-      }
-      if (categoryLabel.includes('bandcamp')) {
-        return 'Bandcamp';
-      }
-      if (categoryLabel.includes('mixcloud')) {
-        return 'Mixcloud';
-      }
-      if (categoryLabel.includes('spotify')) {
-        return 'Spotify';
-      }
-      if (categoryLabel.includes('google-drive')) {
-        return 'Google Drive';
-      }
-      if (categoryLabel.includes('hearthis')) {
-        return 'hearthis.at';
-      }
-      return null;
-    })();
-    if (status === 'connected') {
-      toast.success(
-        providerLabel
-          ? i18n.t('web:authToasts.connected', { provider: providerLabel })
-          : i18n.t('web:authToasts.connectedGeneric'),
-      );
-    } else if (status === 'login') {
-      toast.info(i18n.t('web:authToasts.signInFirst'));
-    } else if (status) {
-      toast.error(
-        providerLabel
-          ? i18n.t('web:authToasts.connectFailed', { provider: providerLabel })
-          : i18n.t('web:authToasts.connectFailedGeneric'),
-      );
-    }
-    const socialToast = socialCallbackToast(social);
-    if (socialToast) {
-      toast[socialToast.kind](socialToast.message);
-    }
-  }, [open, pathname, searchStr, section, sectionId]);
+  }, [hasChannel, navigate, open, pathname, searchStr, section, sectionId]);
 
   return null;
 }

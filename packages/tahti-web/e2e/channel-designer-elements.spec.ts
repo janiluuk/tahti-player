@@ -20,7 +20,7 @@ async function signIn(page: import('@playwright/test').Page) {
 }
 
 async function openChannelDesigner(page: import('@playwright/test').Page) {
-  await page.goto('/settings/channel');
+  await page.goto('/studio/profile/appearance');
   const editor = page.getByTestId('channel-element-editor');
   await expect(editor).toBeVisible();
   return editor;

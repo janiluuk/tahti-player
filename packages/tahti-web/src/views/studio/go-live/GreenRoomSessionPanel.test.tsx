@@ -3,7 +3,6 @@ import {
   act,
   cleanup,
   fireEvent,
-  render,
   screen,
   within,
 } from '@testing-library/react';
@@ -12,6 +11,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import * as api from '../../../api/green-room-session';
 import type { AuthUser } from '../../../api/types';
 import { useAuthStore } from '../../../stores/authStore';
+import { renderWithRouter } from '../../../test/renderWithRouter';
 import { GreenRoomSessionPanel } from './GreenRoomSessionPanel';
 
 const session = (
@@ -43,7 +43,7 @@ async function renderPanel(data: api.GreenRoomSession) {
     data,
     meta: { source: 'api' },
   });
-  return act(async () => render(<GreenRoomSessionPanel />));
+  return renderWithRouter(<GreenRoomSessionPanel />);
 }
 
 describe('GreenRoomSessionPanel', () => {

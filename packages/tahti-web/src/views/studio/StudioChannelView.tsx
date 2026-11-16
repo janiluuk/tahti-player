@@ -25,7 +25,6 @@ import { StreamManagerPanel } from '../../components/StreamManagerPanel';
 import { StudioGate } from '../../components/StudioGate';
 import { StudioPanel } from '../../components/StudioPanel';
 import { StudioRadioSubmissionPanel } from '../../components/StudioRadioSubmissionPanel';
-import { hasAccountRole } from '../../lib/accountRoles';
 import {
   isChannelRadioTab,
   type ChannelRadioTab,
@@ -34,7 +33,6 @@ import {
 import { dateLocaleTag } from '../../lib/locale';
 import { useAuthStore } from '../../stores/authStore';
 import { useChannelSetupModalStore } from '../../stores/channelSetupModalStore';
-import { SelectsTab } from '../admin/moderation/tabs/SelectsTab';
 import { BroadcastPanel } from '../settings/SettingsPanels';
 
 function radioSettingTabs(t: TFunction<'web'>) {
@@ -321,20 +319,12 @@ function ChannelSections() {
       )}
       <RadioSection tab={radioTab} />
       <GreenRoomSection />
-      {hasAccountRole(user, 'BOARD') ? (
-        <ChannelSectionBlock
-          id="selects"
-          title={t('studioChannelViewMore.selects')}
-        >
-          <SelectsTab />
-        </ChannelSectionBlock>
-      ) : null}
     </ViewShell>
   );
 }
 
-/** Studio → Broadcast → Channel: the Radio, Green room and (board) Selects
- * sections on one page. */
+/** Studio → Broadcast → Channel: the Radio and Green room sections on one
+ * page. */
 export function StudioChannelView() {
   return (
     <StudioGate requireChannel={false}>

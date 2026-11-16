@@ -46,13 +46,12 @@ test('listener: hides a Listen section, it stays hidden, Reset brings it back', 
   await expect(trending).toBeVisible();
 });
 
-test('artist: Settings → Artist saves a creative role and city', async ({
+test('artist: Studio → Profile → Identity saves a creative role and city', async ({
   page,
 }) => {
   await signIn(page);
-  await open(page, '/settings/artist');
-  const dialog = page.getByRole('dialog', { name: 'Settings' });
-  const identity = () => dialog.getByRole('tabpanel', { name: 'Identity' });
+  await open(page, '/studio/profile/identity');
+  const identity = () => page.getByTestId('studio-profile-section-identity');
   await identity().getByRole('checkbox', { name: 'DJ', exact: true }).click();
   await identity()
     .getByRole('textbox', { name: 'City / location' })
@@ -62,11 +61,12 @@ test('artist: Settings → Artist saves a creative role and city', async ({
 
   // The mock API keeps the profile in memory, so leave and come back inside
   // the app instead of reloading.
-  await dialog.getByRole('button', { name: 'Account', exact: true }).click();
-  await expect(
-    dialog.getByRole('heading', { level: 1, name: 'Account' }),
-  ).toBeVisible();
-  await dialog.getByRole('button', { name: 'Artist', exact: true }).click();
+  await page.getByTestId('page-back-link').click();
+  await expect(page).toHaveURL(/\/studio\/profile$/);
+  await page
+    .getByRole('list', { name: 'Artist profile settings' })
+    .getByRole('link', { name: /Identity/ })
+    .click();
   await expect(
     identity().getByRole('checkbox', { name: 'DJ', exact: true }),
   ).toBeChecked();

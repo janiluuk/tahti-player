@@ -22,7 +22,7 @@ const meta: Meta<typeof ArtistPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Artist, in three groups: Profile (identity, story, people for a band or collective, and Following), Social links, press kit (social connections, news feed, auto-post; press kit) and Artist branding (branding, gallery, release visual defaults). Signed out it only links to sign-in.',
+          'Profile forms in three groups: Profile (identity, story, people for a band or collective), Social links, press kit (social connections, news feed, auto-post; press kit) and Artist branding (branding, gallery, release visual defaults). A listener sees it as Settings → Profile; an artist gets each form on its own Studio → Profile page (`section`). Following is Library → Following. Signed out it only links to sign-in.',
       },
     },
   },
@@ -100,12 +100,24 @@ export const StoryTab: Story = {
   },
 };
 
-export const Following: Story = {
+export const NoFollowingTab: Story = {
+  name: 'Following lives in Library',
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await openGroup(canvas, 'Profile', 'Following');
-    const list = await canvas.findByTestId('library-following');
-    await expect(list).toBeVisible();
+    await canvas.findByRole('textbox', { name: 'Display name' });
+    await expect(canvas.queryByRole('tab', { name: 'Following' })).toBeNull();
+  },
+};
+
+export const OneSection: Story = {
+  name: 'One form (Studio → Profile page)',
+  args: { section: 'connections' },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await expectVisible(
+      await canvas.findByRole('button', { name: 'Save social links' }),
+    );
+    await expect(canvas.queryByRole('tab')).toBeNull();
   },
 };
 

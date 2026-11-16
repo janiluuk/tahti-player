@@ -1,4 +1,4 @@
-import { Cast, Mic, Radio as RadioIcon } from 'lucide-react';
+import { Cast, Mic } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -8,7 +8,6 @@ import {
   InlineLoader,
   SelectableTile,
   SelectableTiles,
-  Tabs,
 } from '@tahti-player/ui';
 
 import {
@@ -19,19 +18,14 @@ import {
 } from '../../../api/artist-settings';
 import { MulticastSection } from '../../../components/MulticastSection';
 import { PageError } from '../../../components/PageStates';
-import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint, SettingsToggle } from '../SettingsFields';
-import { BroadcastRecordingToggles } from './BroadcastRecordingToggles';
 
-export type BroadcastSection = 'radio' | 'green-room' | 'multistream';
+export type BroadcastSection = 'green-room' | 'multistream';
 
-export function BroadcastPanel({
-  section,
-}: {
-  section?: BroadcastSection;
-} = {}) {
+/** Green room and multistream defaults, shown as sections of Studio →
+ * Broadcast → Channel. */
+export function BroadcastPanel({ section }: { section: BroadcastSection }) {
   const { t } = useTranslation('web');
-  const closeSettings = useSettingsModalStore((s) => s.close);
   const greenRoomPoolOptions: SelectableTile[] = [
     {
       id: 'MODERATORS_AND_SUBS',
@@ -86,28 +80,6 @@ export function BroadcastPanel({
 
   const items = [
     {
-      id: 'radio',
-      label: t('settingsBody.broadcast.radioTab'),
-      icon: <RadioIcon size={14} />,
-      content: (
-        <div className="flex flex-col gap-6">
-          <SettingsHint>
-            {t('settingsBody.broadcast.programmeMoved')}
-          </SettingsHint>
-          <BroadcastRecordingToggles />
-          <ButtonLink
-            className="w-fit"
-            to="/studio/schedule"
-            onClick={closeSettings}
-            size="sm"
-            variant="secondary"
-          >
-            {t('settingsBody.broadcast.openSchedule')}
-          </ButtonLink>
-        </div>
-      ),
-    },
-    {
       id: 'green-room',
       label: t('settingsBody.broadcast.greenRoomTab'),
       icon: <Mic size={14} />,
@@ -152,7 +124,6 @@ export function BroadcastPanel({
             className="w-fit"
             to="/studio/go-live"
             search={{ step: 'green-room' }}
-            onClick={closeSettings}
             size="sm"
             variant="secondary"
           >
@@ -172,7 +143,6 @@ export function BroadcastPanel({
             className="w-fit"
             to="/studio/go-live"
             search={{ step: 'destinations' }}
-            onClick={closeSettings}
             size="sm"
             variant="secondary"
           >
@@ -189,7 +159,6 @@ export function BroadcastPanel({
       <ButtonLink
         className="h-auto min-h-9 w-fit max-w-full py-1.5 whitespace-normal"
         to="/studio/go-live"
-        onClick={closeSettings}
         size="sm"
         variant="secondary"
       >
@@ -198,19 +167,10 @@ export function BroadcastPanel({
     </div>
   );
 
-  if (section) {
-    return (
-      <div className="flex flex-col gap-6">
-        {studioBroadcastLink}
-        {items.find((item) => item.id === section)?.content}
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col gap-6">
       {studioBroadcastLink}
-      <Tabs listClassName="flex-wrap" items={items} />
+      {items.find((item) => item.id === section)?.content}
     </div>
   );
 }

@@ -62,7 +62,7 @@ test('listener: no Studio in the sidebar; Studio and Admin explain the gate', as
   expect(errors).toEqual([]);
 });
 
-test('listener: Library opens on Favorites; the old Following link opens Settings', async ({
+test('listener: Library opens on Favorites; Following is a Library tab', async ({
   page,
 }) => {
   await signInAsListener(page);
@@ -70,6 +70,8 @@ test('listener: Library opens on Favorites; the old Following link opens Setting
   await expect(page).toHaveURL(/\/library\/favorites$/);
   await acknowledgeGuidelines(page);
   await page.goto('/library/following');
-  await expect(page).toHaveURL(/\/settings\/artist\?tab=following/);
+  await expect(page).toHaveURL(/\/library\/following$/);
   await expect(page.getByTestId('library-following')).toBeVisible();
+  await page.goto('/settings/artist?tab=following');
+  await expect(page).toHaveURL(/\/library\/following$/);
 });

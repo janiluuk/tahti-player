@@ -5,7 +5,6 @@ import {
   Share2,
   Sparkles,
   UserCircle2,
-  UserPlus,
   Users,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
@@ -50,8 +49,10 @@ import {
 } from '../../../lib/releaseVisualizer';
 import { useAuthModalStore } from '../../../stores/authModalStore';
 import { useAuthStore } from '../../../stores/authStore';
-import { useSettingsModalStore } from '../../../stores/settingsModalStore';
-import { LibraryFollowingView } from '../../LibraryFollowingView';
+import {
+  useSettingsModalStore,
+  type ArtistSettingsSection,
+} from '../../../stores/settingsModalStore';
 import { StudioBrandingPanel } from '../../studio/StudioBrandingView';
 import { ChannelMembersEditor } from '../ChannelMembersEditor';
 import { NameplateFields, nameplatePatch } from '../NameplateFields';
@@ -174,11 +175,16 @@ function PronounsField({
   );
 }
 
-export function ArtistPanel() {
+/** Every artist form behind tabs, or with `section` just that one form, as
+ * on a Studio → Profile page. */
+export function ArtistPanel({
+  section,
+}: { section?: ArtistSettingsSection } = {}) {
   const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const refreshAuth = useAuthStore((s) => s.refresh);
-  const artistSection = useSettingsModalStore((s) => s.artistSection);
+  const modalSection = useSettingsModalStore((s) => s.artistSection);
+  const artistSection = section ?? modalSection;
   const [profile, setProfile] = useState<ProfileFields | null>(null);
   const [members, setMembers] = useState<ChannelMember[]>([]);
   const [social, setSocial] = useState<SocialConnections | null>(null);
@@ -478,12 +484,6 @@ export function ArtistPanel() {
       ),
     },
     {
-      id: 'following',
-      label: t('settingsBody.artist.tabFollowing'),
-      icon: <UserPlus size={14} />,
-      content: <LibraryFollowingView />,
-    },
-    {
       id: 'connections',
       label: t('settingsBody.artist.tabConnections'),
       icon: <Share2 size={14} />,
@@ -599,6 +599,14 @@ export function ArtistPanel() {
   ].filter(
     (item) => item.id !== 'people' || profile?.artistKind === 'COLLECTIVE',
   );
+  if (section) {
+    return (
+      <div className="min-w-0">
+        {tabItems.find((item) => item.id === section)?.content ?? null}
+      </div>
+    );
+  }
+
   const grouped = groupTabs(artistTabGroups(t), tabItems);
   const landing = tabLanding(grouped, artistSection);
 

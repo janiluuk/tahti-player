@@ -17,7 +17,7 @@ import {
   User,
   Wallet,
 } from 'lucide-react';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -77,12 +77,6 @@ import { SettingsHint, SettingsInfo } from '../SettingsFields';
 import { accountTabLanding, groupAccountTabs } from './accountTabGroups';
 import { MentionsPanel } from './MentionsPanel';
 import { NotificationsVisibilityPanel } from './NotificationsPanel';
-
-const GovernanceView = lazy(() =>
-  import('../../GovernanceView').then((module) => ({
-    default: module.GovernanceView,
-  })),
-);
 
 function euros(cents: number | string): string {
   const n = typeof cents === 'string' ? Number(cents) : cents;
@@ -268,13 +262,20 @@ export function AccountPanel() {
       label: t('settingsBody.account.tabGovernance'),
       icon: <Landmark size={14} />,
       content: (
-        <Suspense
-          fallback={
-            <PageLoading label={t('settingsBody.account.loadingGovernance')} />
-          }
-        >
-          <GovernanceView embedded />
-        </Suspense>
+        <div className="flex flex-col items-start gap-3">
+          <SettingsHint>
+            {t('settingsBody.account.governanceMoved')}
+          </SettingsHint>
+          <ButtonLink
+            to="/governance"
+            onClick={closeSettings}
+            size="sm"
+            variant="secondary"
+            data-testid="account-open-coop"
+          >
+            {t('settingsBody.account.openCoop')}
+          </ButtonLink>
+        </div>
       ),
     },
     {

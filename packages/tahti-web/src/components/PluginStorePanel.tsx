@@ -30,7 +30,7 @@ import {
   DspUrlPasteCard,
   ServiceCategory,
 } from './plugin-store/ServiceCategory';
-import { VisualizersCategory } from './plugin-store/ThemesCategory';
+import { VisualizersCategory } from './plugin-store/VisualizersCategory';
 
 const categoryKey = (id: PluginCategoryId) =>
   id === 'listener' ? 'Listener' : id === 'artist' ? 'Artist' : 'Admin';

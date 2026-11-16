@@ -25,7 +25,11 @@ const libraryRoutes: RouteVisit[] = [
     heading: /^Recordings$/,
     url: /\/studio\/recordings$/,
   },
-  { path: '/library/stash', heading: /^Stash$/ },
+  {
+    path: '/library/stash',
+    heading: /^Files$/,
+    url: /\/library\/files\?kind=stash$/,
+  },
   {
     path: '/library/embeds',
     heading: /^Sounds$/,
@@ -37,17 +41,14 @@ const libraryRoutes: RouteVisit[] = [
     url: /\/studio\/smartlinks$/,
   },
   { path: '/library/upload', heading: /^Upload$/, url: /\/studio\/upload$/ },
-  { path: '/library/media', heading: /^Media$/ },
+  { path: '/library/media', heading: /^Files$/, url: /\/library\/files$/ },
+  { path: '/library/files', heading: /^Files$/ },
   {
     path: '/library/favorites',
     heading: /^Favorites$/,
   },
   { path: '/library/history', heading: /^History$/ },
-  {
-    path: '/library/following',
-    heading: /^Artist$/,
-    url: /\/settings\/artist\?tab=following/,
-  },
+  { path: '/library/following', heading: /^Following$/ },
   // The local-files tab exists only in the desktop app; on the web it
   // falls back to Favorites instead of an empty tab.
   {

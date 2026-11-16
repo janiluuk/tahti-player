@@ -90,14 +90,15 @@ export const Profile: Story = {
       canvas.getByRole('list', { name: 'Artist profile settings' }),
     ).getAllByRole('link');
     await expect(artist).toHaveLength(8);
-    await expect(artist[0]).toHaveAttribute(
-      'href',
-      '/settings/artist?tab=identity',
-    );
+    await expect(artist[0]).toHaveAttribute('href', '/studio/profile/identity');
     const channel = within(
       canvas.getByRole('list', { name: 'Channel page settings' }),
     ).getAllByRole('link');
     await expect(channel[0]).toHaveTextContent('Channel design');
+    await expect(channel[0]).toHaveAttribute(
+      'href',
+      '/studio/profile/appearance',
+    );
     const chat = channel.find((link) => /Chat/.test(link.textContent ?? ''));
     const moderators = channel.find((link) =>
       /Moderators/.test(link.textContent ?? ''),

@@ -60,8 +60,8 @@ export function EventShareTargets({
         <p className="text-foreground-secondary text-xs">
           {t('events.shareConnectHint')}{' '}
           <Link
-            to="/settings/$section"
-            params={{ section: 'artist' }}
+            to="/studio/profile/$section"
+            params={{ section: 'connections' }}
             className="text-primary-strong hover:underline"
           >
             {t('events.shareConnectLink')}

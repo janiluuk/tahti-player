@@ -32,6 +32,19 @@ test('Studio Insights leads back to Stats, not to itself', async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
+test('Studio Profile form pages lead back to Profile', async ({ page }) => {
+  const errors = collectPageErrors(page);
+  await signIn(page);
+  for (const from of [
+    '/studio/profile/identity',
+    '/studio/profile/gallery',
+    '/studio/profile/appearance',
+  ]) {
+    await back(page, from, 'Profile', /\/studio\/profile$/);
+  }
+  expect(errors).toEqual([]);
+});
+
 test('governance meeting, motion, members and discussions lead back to Governance', async ({
   page,
 }) => {

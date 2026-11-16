@@ -63,7 +63,7 @@ test('desktop chrome stays mounted from Listen through Library, Studio and Admin
   await expectChrome(page, [SHELL, TOP_NAV, SIDEBAR, ADMIN_SHELL]);
   await expect(page.locator(STUDIO_NAV)).toHaveCount(0);
 
-  await page.goto('/library/media');
+  await page.goto('/library/files');
   await expectChrome(page, [SHELL, TOP_NAV, SIDEBAR]);
   await expect(page.locator(BOTTOM_NAV)).toBeHidden();
   expect(errors).toEqual([]);

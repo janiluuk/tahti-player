@@ -6840,3 +6840,7 @@ Add-on, report, payout, agenda, election, meeting, and preset errors follow the 
 ## 2026-11-16 — Catalog in Studio → Music, Library for listeners (0.0.397)
 
 Tracks, Collections, Upload and Smart links live in Studio → Music, and Recordings is a Broadcast card with a back link. Library keeps what a listener saves: Favorites, History, Media, Stash and, on desktop, Local files; it opens on Favorites. Old Library catalog links redirect. Studio Home points at the Broadcast agenda instead of its own list, and the 24/7 rotation, radio playlist and announcement clips are edited on Schedule. The Tracks header shows Upload and Import, with the rest in a ⋯ menu.
+
+## 2026-11-16 — Profile forms in Studio, account-only Settings (0.0.403)
+
+Each Studio → Profile card opens its own page with a back link: identity, story, people, links, branding, gallery, press kit, release visuals, channel design, how fans find you, and address and domain. Settings keeps account things only; old Artist, Channel & chat and Broadcast links land on the Studio page. Recording defaults sit on the Recordings page, and Go live links to them and to Channel's green room and multistream. Library is Favorites, History, Following and Files, with Media, Stash and Local files as chips. The Channel Designer links to Schedule's channel programme, Account → Governance links to Co-op, and Tahti Selects is in Admin only.

@@ -9,6 +9,7 @@ import {
   movedSettingsSection,
   type MovedSettingsSection,
 } from '../lib/movedSettingsSections';
+import { isStudioProfileSection } from '../lib/studioProfileSections';
 import { parseStudioSoundsSearch } from '../lib/studioSoundsSearch';
 import { editSearch } from '../lib/useEditMode';
 import { StudioSetupChannelRedirect } from '../views/studio/StudioSetupChannelRedirect';
@@ -34,6 +35,7 @@ import {
   StudioMasteringView,
   StudioPlaylistEditorView,
   StudioProEditorView,
+  StudioProfileSectionView,
   StudioProfileView,
   StudioRecordingsView,
   StudioReleaseDetailView,
@@ -85,7 +87,7 @@ export const studioSoundsRoute = createRoute({
   validateSearch: parseStudioSoundsSearch,
   beforeLoad: ({ search }) => {
     if (search.folder === 'files') {
-      throw redirect({ to: '/library/stash' });
+      throw redirect({ to: '/library/files', search: { kind: 'stash' } });
     }
     if (search.folder === 'clips') {
       throw redirect({
@@ -254,7 +256,7 @@ export const studioStashRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/stash',
   beforeLoad: () => {
-    throw redirect({ to: '/library/stash' });
+    throw redirect({ to: '/library/files', search: { kind: 'stash' } });
   },
 });
 
@@ -352,25 +354,15 @@ export const studioBrandingRoute = createRoute({
         : undefined,
   }),
   beforeLoad: ({ search }) => {
-    // Branding / gallery / press kit live under Settings → Artist. Channel
-    // Designer lives under Settings → Channel. Keep this path as a
-    // bookmark-friendly redirect.
-    if (search.tab === 'channel-designer') {
-      throw redirect({
-        to: '/settings/$section',
-        params: { section: 'channel' },
-      });
-    }
-    const tab =
-      search.tab === 'gallery'
-        ? 'gallery'
-        : search.tab === 'press-kit'
-          ? 'press-kit'
-          : 'branding';
     throw redirect({
-      to: '/settings/$section',
-      params: { section: 'artist' },
-      search: { tab },
+      to: '/studio/profile/$section',
+      params: {
+        section:
+          search.tab === 'channel-designer'
+            ? 'appearance'
+            : (search.tab ?? 'branding'),
+      },
+      replace: true,
     });
   },
 });
@@ -504,6 +496,22 @@ export const studioProfileRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/profile',
   component: StudioProfileView,
+});
+
+export const studioProfileSectionRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/studio/profile/$section',
+  beforeLoad: ({ params }) => {
+    if (!isStudioProfileSection(params.section)) {
+      throw redirect({ to: '/studio/profile', replace: true });
+    }
+  },
+  component: function StudioProfileSectionRoute() {
+    const { section } = studioProfileSectionRoute.useParams();
+    return isStudioProfileSection(section) ? (
+      <StudioProfileSectionView section={section} />
+    ) : null;
+  },
 });
 
 export const studioStripeRoute = createRoute({

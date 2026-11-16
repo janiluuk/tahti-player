@@ -19,11 +19,15 @@ describe('settingsNavFor', () => {
     ]);
   });
 
-  it('shows an artist every section', () => {
-    const nav = settingsNavFor({ signedIn: true, hasChannel: true });
-    expect(nav.map((item) => item.id)).toContain('channel');
-    expect(nav.map((item) => item.id)).toContain('broadcast');
-    expect(nav.find((item) => item.id === 'artist')?.label).toBe('Artist');
+  it('keeps an artist to account sections; the profile forms are in Studio', () => {
+    expect(ids({ signedIn: true, hasChannel: true })).toEqual([
+      'account',
+      'playback',
+      'integrations',
+      'themes',
+      'plugin-store',
+      'whats-new',
+    ]);
   });
 
   it('has no Logs section; client logs live in Admin → Logs', () => {
@@ -34,7 +38,7 @@ describe('settingsNavFor', () => {
     ).not.toContain('logs');
   });
 
-  it('hides the channel sections from a listener with no channel', () => {
+  it('gives a listener with no channel their Profile', () => {
     const nav = settingsNavFor({ signedIn: true, hasChannel: false });
     expect(nav.map((item) => item.id)).toEqual([
       'account',
@@ -53,18 +57,23 @@ describe('settingsNavFor', () => {
 
   it('gives no description to sections whose tabs already list their content', () => {
     const nav = settingsNavFor({ signedIn: true, hasChannel: true });
-    for (const id of ['account', 'artist', 'channel', 'broadcast']) {
-      expect(nav.find((item) => item.id === id)?.description).toBeUndefined();
-    }
+    expect(
+      nav.find((item) => item.id === 'account')?.description,
+    ).toBeUndefined();
+    expect(
+      settingsNavFor({ signedIn: true, hasChannel: false }).find(
+        (item) => item.id === 'artist',
+      )?.description,
+    ).toBeUndefined();
     expect(
       nav.find((item) => item.id === 'playback')?.description,
     ).toBeTruthy();
   });
 
   it('sends a deep link to an unavailable section somewhere that exists', () => {
-    const listener = { signedIn: true, hasChannel: false };
-    expect(isSettingsSectionAvailable('broadcast', listener)).toBe(false);
-    expect(fallbackSettingsSection(listener)).toBe('account');
+    const artist = { signedIn: true, hasChannel: true };
+    expect(isSettingsSectionAvailable('artist', artist)).toBe(false);
+    expect(fallbackSettingsSection(artist)).toBe('account');
     const visitor = { signedIn: false, hasChannel: false };
     expect(isSettingsSectionAvailable('account', visitor)).toBe(false);
     expect(fallbackSettingsSection(visitor)).toBe('themes');

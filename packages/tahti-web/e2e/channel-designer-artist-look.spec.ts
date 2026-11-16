@@ -30,7 +30,7 @@ test('a saved backdrop design change shows up on the artist page header', async 
 }) => {
   await signIn(page);
 
-  await page.goto('/settings/channel');
+  await page.goto('/studio/profile/appearance');
   const designerCard = page.getByTestId('channel-backdrop-card').first();
   await expect(designerCard).toBeVisible();
   const initialStyle = await designerCard.getAttribute('data-header-style');

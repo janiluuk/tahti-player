@@ -470,13 +470,13 @@ test('admin radio recognises rotation playback and uses the standard playlist ed
   ).toHaveCount(2);
 });
 
-test('artist branding keeps the picture, gallery and press kit in Settings → Artist', async ({
+test('artist branding keeps the picture, gallery and press kit in Studio → Profile', async ({
   page,
 }) => {
   await signIn(page);
   await page.goto('/studio/branding');
-  await expect(page).toHaveURL(/\/settings\/artist\?tab=branding/);
-  const settings = page.getByRole('dialog', { name: 'Settings' });
+  await expect(page).toHaveURL(/\/studio\/profile\/branding$/);
+  let settings = page.getByRole('main');
   await expect(
     settings.getByRole('heading', { name: 'Profile picture' }),
   ).toBeVisible();
@@ -484,7 +484,8 @@ test('artist branding keeps the picture, gallery and press kit in Settings → A
     settings.getByRole('button', { name: 'Change profile picture' }),
   ).toBeVisible();
 
-  await settings.getByRole('tab', { name: 'Gallery' }).click();
+  await page.goto('/studio/profile/gallery');
+  settings = page.getByRole('main');
   const publicGallery = settings.getByRole('switch', {
     name: 'Public gallery',
   });
@@ -492,8 +493,8 @@ test('artist branding keeps the picture, gallery and press kit in Settings → A
   await publicGallery.click();
   await expect(publicGallery).toBeChecked({ checked: !wasPublic });
 
-  await settings.getByRole('tab', { name: 'Social links, press kit' }).click();
-  await settings.getByRole('tab', { name: 'Press kit' }).click();
+  await page.goto('/studio/profile/press-kit');
+  settings = page.getByRole('main');
   await settings.getByRole('button', { name: 'Save bio' }).click();
   await expect(page.getByText('Press kit bio saved.')).toBeVisible();
   await settings.getByLabel('Drop press-kit photos here').setInputFiles(

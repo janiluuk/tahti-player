@@ -1,14 +1,9 @@
 // @vitest-environment jsdom
-import {
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as broadcast from '../../../api/broadcast';
+import { renderWithRouter } from '../../../test/renderWithRouter';
 import { MultistreamPanel } from './MultistreamPanel';
 
 vi.mock('sonner', () => ({ toast: { error: vi.fn(), success: vi.fn() } }));
@@ -24,7 +19,7 @@ describe('MultistreamPanel', () => {
       .spyOn(broadcast, 'deleteRtmpTarget')
       .mockResolvedValue({ ok: true });
     const reload = vi.fn();
-    render(
+    await renderWithRouter(
       <MultistreamPanel
         targets={[
           {

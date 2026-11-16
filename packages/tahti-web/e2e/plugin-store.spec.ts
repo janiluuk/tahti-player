@@ -93,12 +93,12 @@ test('Studio Go Live multistream: every API-supported provider is selectable, an
   ).toBeVisible();
 });
 
-test('Settings > Broadcast > Multistream: provider picker and existing-target labels use the registry too', async ({
+test('Channel > Multicast: provider picker and existing-target labels use the registry too', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/settings/broadcast');
-  await page.getByRole('tab', { name: /Multistream/ }).click();
+  await page.goto('/settings/broadcast?tab=multistream');
+  await expect(page).toHaveURL(/\/studio\/channel\?radio=multicast#radio$/);
 
   // The seeded YouTube target's label/author must resolve through the
   // registry, not display the raw wire id -- this panel had its own copy
@@ -122,11 +122,11 @@ test('Settings > Broadcast > Multistream: provider picker and existing-target la
   );
 });
 
-test('Settings artist connections: profile link fields render for export destinations', async ({
+test('Studio Profile links: profile link fields render for export destinations', async ({
   page,
 }) => {
   await signIn(page);
-  await page.goto('/settings/artist?tab=connections');
+  await page.goto('/studio/profile/connections');
 
   await expect(page.getByLabel('Spotify')).toBeVisible();
   await expect(page.getByLabel('Bandcamp')).toBeVisible();

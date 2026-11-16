@@ -1386,7 +1386,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/stash.png',
-          route: '/library/stash',
+          route: '/library/files?kind=stash',
           caption: 'Nuclear stash',
         },
       },
@@ -1653,8 +1653,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         id: 'artist-channel-design',
         title: 'Channel design',
         viewName: 'Channel design',
-        caption:
-          'Look, presets, accent — Settings → Channel & chat → Channel Designer.',
+        caption: 'Look, presets, accent — Studio → Profile → Channel design.',
         actions: [
           'Pick a visual preset',
           'Pick a brand accent',
@@ -1778,7 +1777,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         ],
         goesTo: [
           { label: 'Open Audience (fan tiers)', to: '/studio/audience' },
-          { label: 'Open Broadcast / green room', to: '/settings/broadcast' },
+          {
+            label: 'Open Broadcast / green room',
+            to: '/studio/channel#green-room',
+          },
           { label: 'Open Themes', to: '/settings/themes' },
           { label: 'Open Add-ons', to: '/settings/plugin-store' },
           { label: 'Open member Governance', to: '/governance' },
@@ -1941,7 +1943,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           {
             label: 'Open Channel Designer',
-            to: '/settings/artist?tab=branding',
+            to: '/studio/profile/appearance',
           },
           { label: 'Open Go Live', to: '/studio/go-live' },
           { label: 'Open the Tracks library', to: '/studio/sounds' },
@@ -2171,7 +2173,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         title: 'Studio branding',
         viewName: 'Studio Branding',
         caption:
-          'Profile picture (animated GIFs allowed), avatar colour when there is no picture, backdrop and logo. The same panel is Settings → Artist → Branding.',
+          'Profile picture (animated GIFs allowed), avatar colour when there is no picture, backdrop and logo. The same panel is Studio → Profile → Branding.',
         actions: [
           'Upload a profile picture, including an animated GIF',
           'Pick an avatar colour when there is no picture',
@@ -2190,9 +2192,9 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
       {
         id: 'settings-artist-connections',
         title: 'Artist connections and auto-post',
-        viewName: 'Settings · Artist · Connections',
+        viewName: 'Studio · Profile · Links',
         caption:
-          'Social links plus X and Instagram connections for auto-posting. The OAuth return lands on /settings/artist?tab=connections&social= and shows the result as a toast.',
+          'Social links plus X and Instagram connections for auto-posting. The OAuth return lands on /settings/artist?tab=connections&social=, shows the result as a toast and moves an artist on to /studio/profile/connections.',
         actions: [
           'Edit social links',
           'Set the news feed shown on the artist page',
@@ -2204,7 +2206,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           caption: 'Prod connections - not captured for auto-post',
         },
         new: {
-          route: '/settings/artist?tab=connections',
+          route: '/studio/profile/connections',
           caption: 'Artist connections - shot pending',
         },
       },
@@ -2311,7 +2313,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         ],
         goesTo: [
           { label: 'Open account security', to: '/settings/account' },
-          { label: 'Open artist settings', to: '/settings/artist' },
+          { label: 'Open Studio profile', to: '/studio/profile' },
         ],
         old: {
           absent: true,

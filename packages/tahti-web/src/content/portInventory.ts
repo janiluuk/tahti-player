@@ -65,7 +65,7 @@ export const PORT_BACKLOG: PortInventoryItem[] = [
   {
     id: 'stash-share',
     surface: 'Stash share links',
-    route: '/library/stash',
+    route: '/library/files?kind=stash',
     status: 'done',
     detail: 'Grant expiring read/download access and revoke active shares.',
     section: 'backlog',
@@ -278,7 +278,7 @@ export const PORT_GAP_HIGHLIGHTS: PortInventoryItem[] = [
   {
     id: 'gap-stash-upload',
     surface: 'Stash upload / delete',
-    route: '/library/stash',
+    route: '/library/files?kind=stash',
     status: 'done',
     detail:
       'Prepare → PUT → register, delete, share, and revoke are in-client.',
@@ -287,10 +287,10 @@ export const PORT_GAP_HIGHLIGHTS: PortInventoryItem[] = [
   {
     id: 'gap-press-kit-gallery',
     surface: 'Press-kit gallery',
-    route: '/settings/artist?tab=gallery',
+    route: '/studio/profile/gallery',
     status: 'done',
     detail:
-      '/api/me/press-kit/images/* upload/delete; ArtistGalleryPanel wired into Settings → Artist → Gallery.',
+      '/api/me/press-kit/images/* upload/delete; ArtistGalleryPanel wired into Studio → Profile → Gallery.',
     section: 'gap',
   },
 ];

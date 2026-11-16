@@ -44,9 +44,6 @@ vi.mock('../../components/StreamManagerPanel', () => ({
 vi.mock('../../components/StudioRadioSubmissionPanel', () => ({
   StudioRadioSubmissionPanel: () => null,
 }));
-vi.mock('../admin/moderation/tabs/SelectsTab', () => ({
-  SelectsTab: () => null,
-}));
 vi.mock('../settings/SettingsPanels', () => ({
   BroadcastPanel: () => null,
 }));
@@ -136,9 +133,23 @@ describe('StudioChannelView sections', () => {
     );
   });
 
-  it('adds Selects for the board only', async () => {
+  it('keeps Tahti Selects out of Studio, even for the board', async () => {
     await renderChannel('/studio/channel', true, true);
-    expect(sectionIds()).toEqual(['radio', 'green-room', 'selects']);
+    expect(sectionIds()).toEqual(['radio', 'green-room']);
+  });
+
+  it.each([
+    ['design', '/studio/profile/appearance'],
+    ['profile', '/studio/profile/branding'],
+    ['selects', '/admin/tahti-selects'],
+  ])('sends the old ?tab=%s to %s', (tab, path) => {
+    const target = channelTabRedirect(tab);
+    expect(target).not.toBeNull();
+    expect(
+      'params' in target!
+        ? target.to.replace('$section', target.params.section)
+        : target!.to,
+    ).toBe(path);
   });
 
   it('offers channel setup while there is no channel', async () => {

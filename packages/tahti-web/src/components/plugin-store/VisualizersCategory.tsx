@@ -1,9 +1,8 @@
 import { Link } from '@tanstack/react-router';
-import { CircleHelpIcon, Eye, SettingsIcon } from 'lucide-react';
+import { Eye, SettingsIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { toast } from 'sonner';
 
-import { i18n, useTranslation } from '@tahti-player/i18n';
+import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Box,
@@ -11,8 +10,6 @@ import {
   Dialog,
   PluginStoreItem,
   Slider,
-  ThemeController,
-  ThemeStoreItem,
   Toggle,
   Tooltip,
 } from '@tahti-player/ui';
@@ -27,155 +24,15 @@ import {
   type VisualPresetSettings,
   type VisualSettingsMap,
 } from '../../api/channel-design';
-import { useThemeStore } from '../../plugins/themes';
 import {
   visualizerMetadata,
   visualizerSupportsAudioReactive,
 } from '../../plugins/visualizers/meta';
 import { useSettingsModalStore } from '../../stores/settingsModalStore';
 import { ChannelVisualizer } from '../ChannelVisualizer';
-import { ThemeEditor } from '../ThemeEditor';
-import { ThemeVisualizationSettings } from '../ThemeVisualizationSettings';
-import { ConfigurableCard } from './shared';
 
 function visualizerDescription(id: string): string {
   return visualizerMetadata(id).description;
-}
-
-function asThemePalette(
-  palette: readonly string[] | undefined,
-): [string, string, string, string] {
-  const fallback = ['#888888', '#666666', '#444444', '#222222'] as const;
-  return [
-    palette?.[0] ?? fallback[0],
-    palette?.[1] ?? fallback[1],
-    palette?.[2] ?? fallback[2],
-    palette?.[3] ?? fallback[3],
-  ];
-}
-
-export function ThemesCategory() {
-  const { t } = useTranslation('web');
-  const themes = useThemeStore((s) => s.themes);
-  const customThemes = useThemeStore((s) => s.customThemes);
-  const themeId = useThemeStore((s) => s.themeId);
-  const dark = useThemeStore((s) => s.dark);
-  const colorMode = useThemeStore((s) => s.colorMode);
-  const setTheme = useThemeStore((s) => s.setTheme);
-  const setColorMode = useThemeStore((s) => s.setColorMode);
-  const removeCustomTheme = useThemeStore((s) => s.removeCustomTheme);
-  const dynamicEnabled = colorMode === 'dynamic';
-
-  const all = [
-    ...themes.map((theme) => ({
-      id: theme.id,
-      name: theme.name,
-      author: 'Tahti',
-      description: t('themesCategoryFields.builtInTheme'),
-      palette: theme.palette,
-      tags: undefined as string[] | undefined,
-      removable: false,
-    })),
-    ...Object.entries(customThemes).map(([id, theme]) => ({
-      id,
-      name: theme.name ?? 'Custom theme',
-      author: theme.author ?? i18n.t('web:settingsThemes.imported'),
-      description:
-        theme.description ?? i18n.t('web:settingsThemes.importedTheme'),
-      palette: asThemePalette(theme.palette),
-      tags: theme.tags,
-      removable: true,
-    })),
-  ];
-
-  const themeCard = (theme: (typeof all)[number]) => (
-    <ThemeStoreItem
-      key={theme.id}
-      name={theme.name}
-      description={theme.description}
-      author={theme.author}
-      palette={asThemePalette(theme.palette)}
-      tags={theme.tags}
-      isInstalled
-      isActive={theme.id === themeId}
-      onInstall={() => setTheme(theme.id)}
-      onApply={() => setTheme(theme.id)}
-      onUninstall={
-        theme.removable
-          ? () => {
-              removeCustomTheme(theme.id);
-              toast.success(
-                i18n.t('web:toasts.removedThemeNamed', { name: theme.name }),
-              );
-            }
-          : undefined
-      }
-      labels={{
-        apply: 'Apply',
-        active: 'Active',
-        uninstall: 'Remove',
-      }}
-    />
-  );
-
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-wrap items-center gap-4">
-        <ThemeController
-          isDark={dark}
-          onThemeChange={(nextDark) =>
-            setColorMode(nextDark ? 'dark' : 'light')
-          }
-          showLabels
-        />
-        <div className="flex items-center gap-2">
-          <Toggle
-            checked={dynamicEnabled}
-            onChange={(enabled) => {
-              if (enabled) {
-                setColorMode('dynamic');
-                return;
-              }
-              setColorMode(dark ? 'dark' : 'light');
-            }}
-            label={t('themesCategory.dynamicTheme')}
-          />
-          <span className="text-sm font-medium">
-            {t('themesCategory.dynamic')}
-          </span>
-          <Tooltip content={t('themesCategory.darkFrom7pmTo7am')}>
-            <CircleHelpIcon
-              size={14}
-              className="text-foreground-secondary"
-              aria-label={t('themesCategory.whatDynamicDoes')}
-            />
-          </Tooltip>
-        </div>
-      </div>
-      {all.map((theme) =>
-        theme.id === 'nuclear:tahti-dark' ? (
-          <ConfigurableCard
-            key={theme.id}
-            title={theme.name}
-            header={themeCard(theme)}
-          >
-            <ThemeVisualizationSettings themeId={theme.id} />
-          </ConfigurableCard>
-        ) : (
-          themeCard(theme)
-        ),
-      )}
-      <Box variant="tertiary" shadow="none" className="gap-2 py-3">
-        <p className="text-sm font-medium">
-          {t('themesCategory.customThemeEditor')}
-        </p>
-        <p className="text-foreground-secondary text-xs">
-          {t('themesCategory.clickAColorToExpand')}
-        </p>
-        <ThemeEditor />
-      </Box>
-    </div>
-  );
 }
 
 function presetLabel(id: string): string {
@@ -473,16 +330,15 @@ export function VisualizersCategory() {
         </Dialog.Root>
       ) : null}
       <p className="text-foreground-secondary text-xs">
-        Header style, color scheme, and enable/disable live in{' '}
+        {t('themesCategory.channelDesignHint')}{' '}
         <Link
-          to="/settings/$section"
-          params={{ section: 'channel' }}
+          to="/studio/profile/$section"
+          params={{ section: 'appearance' }}
           className="underline underline-offset-2"
           onClick={() => useSettingsModalStore.getState().close()}
         >
-          Settings → Channel & chat → Channel Designer
+          {t('themesCategory.channelDesignLink')}
         </Link>
-        .
       </p>
     </div>
   );
