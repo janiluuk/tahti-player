@@ -74,30 +74,35 @@ Governance, Posts, Audience, Releases, Editor, Broadcast.
 - Audience tabs (`AUDIENCE_SUBNAV_ITEMS`): Overview, Tiers, Stripe (only when
   Stripe is configured).
 
-Library tabs (`LibraryView`): Favorites, History, Media, Stash, Local files.
-**Local files** (`/library/local`) is a tab only when the
-desktop app is providing the on-disk library; the browser redirects that
-route to `/library/favorites`. On that tab the disc icon opens DJ settings (key
+Library tabs (`LibraryView`): Favorites, History, Following, Files. Files
+(`/library/files?kind=`) shows Media, Stash and Local files as chips.
+**Local files** is a chip only when the
+desktop app is providing the on-disk library; in the browser `/library/local`
+redirects to `/library/favorites`. On that tab the disc icon opens DJ settings (key
 notation, tempo range for mixable tracks, half and double tempo). It is not
 a separate chrome entry. **History** there is the on-device listen log, not
 `/listen/history`.
 
-Settings modal sections (`SETTINGS_NAV`): Account, Artist, Channel & chat,
-Broadcast, Playback, Integrations (group "Settings"); Language, Themes,
-Add-ons, Logs, What's new (group "App"). Signed out, only Playback, Language,
-Themes, Add-ons, Logs and What's new show. An unknown `$section` opens
+Settings modal sections (`settingsNav`) are account-only: Account, Profile
+(only for an account without a channel), Playback & language, Integrations
+(group "Settings"); Themes, Add-ons, What's new (group "App"). Signed out,
+only Playback, Themes, Add-ons and What's new show. An artist's profile,
+channel and broadcast forms are Studio pages: `/settings/artist?tab=…` (for a
+channel owner), `/settings/channel?tab=…` and `/settings/broadcast?tab=…`
+redirect there. An unknown `$section` opens
 Account. Section titles, group headings and the main chrome follow the
 Language setting (English or Suomi).
 
-- Account tabs: Session, Security, Membership, Governance, Storage,
+- Account tabs: Session, Security, Membership, Governance (a link to Co-op), Storage,
   Notifications & visibility (grant report name toggle, show liked tracks,
   comments default), Mentions, Your subs.
-- Artist tabs: Identity, Story, People, Connections (social links, news
-  feed, X and Instagram auto-post), Branding (profile picture incl. GIF,
-  avatar colour, backdrop, logo - same panel as `/studio/branding`),
-  Gallery, Press kit, Releases.
-- Channel & chat tabs: Channel Designer, Discovery, Username & domain,
-  Chat, Moderators.
+- Studio → Profile pages (`/studio/profile/$section`): Identity, Story,
+  People, Links (`connections`: social links, news feed, X and Instagram
+  auto-post), Branding (profile picture incl. GIF, avatar colour, backdrop,
+  logo), Gallery, Press kit, Release visuals, Channel design (`appearance`),
+  How fans find you (`discovery`), Address and domain (`domain`). Chat and
+  Moderators are in Studio → Fans. A listener's Settings → Profile keeps the
+  artist forms as tabs.
 
 Admin sections (`ADMIN_SECTIONS`):
 
@@ -126,11 +131,11 @@ Desktop right rail: Queue only.
 | Everyone | Listen | `/`, `/channel/$slug`, `/u/$username`, `/u/$username/c/$slug`, `/r/$slug`, `/t/$id`, `/search?tag=`, `/v/$slug` | Public playback destinations. `/feed`, `/listen/feed` and `/listen/history` are contextual from Listen, not chrome items. Tag search is reached from tag chips on a track page; venue pages from "Recorded at" on a track page and the Discover Venues tab. |
 | Everyone | Radio | `/radio`, `/radio/show/$channelSlug`, `/radio/station/$stationId` | Radio show pages list past episodes with name, artwork and recording. `/schedule` is linked from the channel page programme block and the booking calendar, not from Radio. |
 | Everyone | Discover | `/discover`, `/discover?tab=artists`, `/discover?tab=venues` | `/venues` redirects to the Venues tab. |
-| Everyone | Library | `/library` (→ Favorites), `/library/favorites`, `/library/history`, `/library/media`, `/library/stash`, `/library/local` | Favorites is the Library tab. `/favorites` and `/listen/favorites` redirect to `/library/favorites`. Opening Library or Favorites does not ask for sign-in. Other Library tabs stay visible and grayed until there is an account. |
+| Everyone | Library | `/library` (→ Favorites), `/library/favorites`, `/library/history`, `/library/following`, `/library/files` (`?kind=stash`, `?kind=local`); `/library/media`, `/library/stash`, `/library/local` redirect to Files | Favorites is the Library tab. `/favorites` and `/listen/favorites` redirect to `/library/favorites`. Opening Library or Favorites does not ask for sign-in. Other Library tabs stay visible and grayed until there is an account. |
 | Everyone | Help | `/help`, `/help/$slug` | Signed-in users also see their support requests and replies. Articles reach `/status`, `/news`, `/whats-new`, legal pages and `/transparency`. `/help/governance` redirects to `/studio/governance?tab=guide`. |
-| Artist | Studio | `/studio`, `/studio/stats` (+ `/detail`), `/studio/insights` (+ `/$kind/$id`), `/studio/governance`, `/studio/updates`, `/studio/audience` (+ `?tab=tiers`), `/studio/stripe`, `/studio/releases` (+ `/$id`), `/studio/distribution`, `/studio/editor` (+ `/$id`), `/studio/mastering/$id`, `/studio/sounds` (+ `/$id`, `/$id/editor`), `/studio/collections` (+ `/$slug`), `/studio/playlists/$slug`, `/studio/branding` | Sounds, collections and branding have no submenu item; they are reached from Studio home, Library and in-page links, and Studio stays highlighted. |
+| Artist | Studio | `/studio`, `/studio/stats` (+ `/detail`), `/studio/insights` (+ `/$kind/$id`), `/studio/governance`, `/studio/updates`, `/studio/audience` (+ `?tab=tiers`), `/studio/stripe`, `/studio/releases` (+ `/$id`), `/studio/distribution`, `/studio/editor` (+ `/$id`), `/studio/mastering/$id`, `/studio/sounds` (+ `/$id`, `/$id/editor`), `/studio/collections` (+ `/$slug`), `/studio/playlists/$slug`, `/studio/profile` (+ `/$section`), `/studio/recordings` (`#recording-settings`); `/studio/branding` redirects to `/studio/profile/$section` | Sounds, collections and branding have no submenu item; they are reached from Studio home, Library and in-page links, and Studio stays highlighted. |
 | Artist | Broadcast | `/studio/go-live`, `/studio/schedule`, `/studio/schedule` (`?show=events`, `?show=parties`; `/studio/events/new`, `/studio/events/$eventId/edit`), `/studio/shows` (+ `/$id`, `/episodes/$episodeId`), `/studio/channel` | Show detail carries visibility (Public / Fans only) and automatic episode numbering. 24/7 programme is on `/studio/schedule`. |
-| Signed in | Settings | `/settings`, `/settings/$section`, `/account`, `/onboarding` | Modal + bookmarkable sections. `/themes` redirects here. `/sources` and `/sources/$id` redirect to Add-ons → Import. `/settings/audience`, `money`, `fan-subs`, `fan-tiers` redirect to `/studio/audience`. |
+| Signed in | Settings | `/settings`, `/settings/$section`, `/account`, `/onboarding` | Modal + bookmarkable sections. `/themes` redirects here. `/sources` and `/sources/$id` redirect to Add-ons → Import. `/settings/audience`, `money`, `fan-subs`, `fan-tiers` redirect to `/studio/audience`; `/settings/channel` and `/settings/broadcast` (and `/settings/artist` for a channel owner) redirect to Studio. `/settings/plugin-store?category=themes` opens Themes. |
 | Signed in | Messages (top bar) | `/messages`, `/messages/$id` | Artist and Moderator badges in the inbox and the popover. |
 | Board | Admin | `/admin`, `/admin/logs`, `/admin/moderation` (+ `$tab`), `/admin/users`, `/admin/content`, `/admin/radio`, `/admin/news`, `/admin/streams`, `/admin/venues`, `/admin/top-lists`, `/admin/announcements`, `/admin/storage` (+ `/$userId`), `/admin/artwork-presets`, `/admin/financial`, `/admin/governance` (+ `$tab`), `/admin/grants/$year`, `/admin/addons`, `/admin/status`, `/admin/vendors`, `/admin/i18n`, `/admin/tahti-selects`, `/admin/orphan-pages` (+ `$tab`), `/admin/map` | Queue/detail routes stay contextual. |
 
@@ -167,9 +172,10 @@ These routes are real but should not become extra top-level navigation items:
   `/admin/disco-widgets` → `/admin/addons`;
   `/admin/radio-station-suggestions` → orphan-pages tab.
 - Studio aliases: `/studio/info` → go-live; `/studio/archive*` → sounds;
-  `/studio/stash` → `/library/stash`; `/studio/playlists` → collections; `/studio/revenue` → audience; `/studio/venues` →
+  `/studio/stash` → `/library/files?kind=stash`; `/studio/playlists` → collections; `/studio/revenue` → audience; `/studio/venues` →
   `/admin/venues`; `/studio/moderation` → Settings → Channel;
-  `/studio/channel?tab=design|profile` → Settings → Artist.
+  `/studio/channel?tab=design|profile` → `/studio/profile/appearance|branding`;
+  `/studio/channel?tab=selects` → `/admin/tahti-selects`.
 - `/library/releases` → `/studio/releases`; `/library/messages` →
   `/messages`; `/library/sounds`, `/library/embeds` → `/studio/sounds`;
   `/library/collections` (+ `/$slug`) → `/studio/collections`;

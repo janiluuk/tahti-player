@@ -8,7 +8,6 @@ import { WhatsNewPanel } from '../WhatsNewView';
 import { AccountPanel } from './panels/AccountPanel';
 import { ArtistPanel, ReleaseVisualDefaultsPanel } from './panels/ArtistPanel';
 import { BroadcastPanel, type BroadcastSection } from './panels/BroadcastPanel';
-import { ChannelPanel } from './panels/ChannelPanel';
 import { IntegrationsPanel } from './panels/IntegrationsPanel';
 import { PlaybackLanguagePanel } from './panels/PlaybackLanguagePanel';
 import { ThemesPanel } from './panels/ThemesPanel';
@@ -31,9 +30,7 @@ export function SettingsSectionBody({
   const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const signedIn = Boolean(user);
-  const hasChannel = useAuthStore(
-    (s) => Boolean(s.user?.channel) || !s.profileLoaded,
-  );
+  const hasChannel = useAuthStore((s) => Boolean(s.user?.channel));
 
   switch (section) {
     case 'account':
@@ -41,12 +38,6 @@ export function SettingsSectionBody({
       break;
     case 'artist':
       content = <ArtistPanel />;
-      break;
-    case 'channel':
-      content = <ChannelPanel />;
-      break;
-    case 'broadcast':
-      content = <BroadcastPanel />;
       break;
     case 'playback':
       content = <PlaybackLanguagePanel />;

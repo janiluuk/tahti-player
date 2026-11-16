@@ -2,7 +2,11 @@
 
 **Status:** partial
 
-Planned 2026-11-03. Shipped so far: phase 0 building blocks (`ViewShell` `actions`, `OverflowMenu`, `FilterBar` are in `@tahti-player/ui`); phase 1 catalog move (2026-11-13: Sounds, Collections, Upload, Smart links in Studio → Music, Recordings under Broadcast, Library Overview gone, old URLs redirect); Tracks header follows rules 2-3 (Upload primary, Import, the rest in `OverflowMenu`); Releases header links Smart links instead of repeating the Distribution chip. Left in phase 1: Library Playlists and Files (chips) tabs. Goal: a calmer, more professional UI. Every main view has one header, one primary action, one toolbar row and at most one tab row under the section row.
+Planned 2026-11-03. Shipped so far: phase 0 building blocks (`ViewShell` `actions`, `OverflowMenu`, `FilterBar` are in `@tahti-player/ui`); phase 1 catalog move (2026-11-13: Sounds, Collections, Upload, Smart links in Studio → Music, Recordings under Broadcast, Library Overview gone, old URLs redirect); Tracks header follows rules 2-3 (Upload primary, Import, the rest in `OverflowMenu`); Releases header links Smart links instead of repeating the Distribution chip.
+
+2026-11-16 batch: Library is Favorites · History · Following · Files; Files puts Media, Stash and (desktop) Local behind chips (`/library/files?kind=`), `/library/media|stash|local` redirect; Following moved from Settings → Artist to `/library/following`. Phase 2 forms: every artist and channel form is its own Studio → Profile page (`/studio/profile/$section`, back link to the hub, no tab rows); Settings → Artist (for a channel owner), Channel & chat and Broadcast left the modal and their `?tab=` links, `/studio/branding` and the legacy prod paths redirect there. Broadcast prefs: recording switches on `/studio/recordings#recording-settings`, green room and multistream on Studio → Channel; Go live links there instead of opening Settings. Phase 4 pieces: Settings is Account, Profile (listeners only), Playback, Integrations, Themes, Add-ons, What's new; the dead Add-ons themes list (`ThemesCategory`) is gone and `?category=themes` opens Settings → Themes; Account → Governance links to Co-op instead of embedding it. Selects left Studio → Channel (Admin → Content only; `?tab=selects` redirects).
+
+Left: Library Playlists tab (needs a listener playlist list; product call on what it holds), Profile live preview beside the form, phase 3 (Go live stepper, a design call), the rest of phase 4 (Security / Notifications as own items, Integrations into Playback, About), phases 5-8. Goal: a calmer, more professional UI. Every main view has one header, one primary action, one toolbar row and at most one tab row under the section row.
 
 Builds on [`navigation-simplification.md`](navigation-simplification.md) (the IA regroup, slices 1-10). This plan adds **Settings**, **page anatomy** (what sits on a page, not just where it lives) and the duplicate surfaces left after that regroup. Where a phase finishes a slice from that file, it says so; that slice is then ticked there, not re-planned here.
 
@@ -67,7 +71,7 @@ Counts come from a file-level grep of each view and its folder (`<Button|ButtonL
 | Health | Admin Dashboard System health + Monitoring panel, Admin Status, Admin Monitoring, Admin Logs, Settings → Logs (board) | Five places to answer "is it up?" |
 | Selects | Admin → Content → Tahti Selects, Studio → Channel → Selects (board only) | Admin tool shown inside Studio |
 | Co-op membership | Settings → Account → Membership & billing → Governance tab, sidebar Co-op | Two homes |
-| Dead code | `BroadcastSubNav` (`StudioNav.tsx:423`) has no callers | Remove |
+| Dead code | `BroadcastSubNav` (`StudioNav.tsx:423`) has no callers | Remove (2026-11-16: it does have a caller, the Broadcast row in `StudioNav`; keep) |
 
 ## 2. Target information architecture
 

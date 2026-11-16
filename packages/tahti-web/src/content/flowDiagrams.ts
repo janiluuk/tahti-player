@@ -525,7 +525,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     Q3["?fansubs="] --> R3["/studio/audience"]
     Q4["?membership="] --> R4["/settings/account"]
     Q5["?distribution="] --> R5["/studio/distribution"]
-    Q6["?social="] --> R6["/settings/artist?tab=connections"]
+    Q6["?social="] --> R6["/settings/artist?tab=connections → /studio/profile/connections"]
   end
   subgraph aliases["Route aliases"]
     AC["/c/:slug"] --> Ch["/channel/:slug"]
@@ -1237,7 +1237,7 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     St[Studio routes] --> GL[Broadcast · Go Live]
     St --> Cat[Catalog · Releases · Editor]
     Src[Settings → Add-ons · Import] --> Cat
-    Prof[Studio Branding · Settings → Artist] --> St
+    Prof[Studio → Profile pages] --> St
     Cat --> PubPages[Public track · smart link · artist page]
   end
   subgraph api["Public API"]

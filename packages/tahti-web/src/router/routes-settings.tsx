@@ -3,6 +3,7 @@ import { createRoute, redirect } from '@tanstack/react-router';
 import {
   movedSettingsSection,
   movedSettingsTarget,
+  movedStudioSettingsPath,
 } from '../lib/movedSettingsSections';
 import { appLayoutRoute } from './router-core';
 import { OnboardingView, SettingsView } from './router-lazy-views';
@@ -16,7 +17,14 @@ export const settingsRoute = createRoute({
 export const settingsSectionRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/settings/$section',
-  beforeLoad: ({ params }) => {
+  beforeLoad: ({ params, search }) => {
+    const moved = movedStudioSettingsPath(
+      params.section,
+      (search as Record<string, unknown>).tab,
+    );
+    if (moved) {
+      throw redirect({ href: moved, replace: true });
+    }
     if (params.section === 'logs') {
       throw redirect({
         to: '/admin/logs',
@@ -24,9 +32,9 @@ export const settingsSectionRoute = createRoute({
         replace: true,
       });
     }
-    const moved = movedSettingsSection(params.section);
-    if (moved) {
-      throw redirect(movedSettingsTarget(moved));
+    const movedToAudience = movedSettingsSection(params.section);
+    if (movedToAudience) {
+      throw redirect(movedSettingsTarget(movedToAudience));
     }
   },
   component: () => <SettingsView />,

@@ -2,6 +2,8 @@ import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { StudioGate } from '../../components/StudioGate';
+import { StudioPanel } from '../../components/StudioPanel';
+import { BroadcastRecordingToggles } from '../settings/panels/BroadcastRecordingToggles';
 import { RecordingsPanel } from './recordings/RecordingsPanel';
 import { useRecordingsState } from './recordings/useRecordingsState';
 
@@ -34,6 +36,15 @@ export function StudioRecordingsView({
             classes={{ root: 'px-0 pt-0' }}
           >
             <RecordingsPanel state={state} action={browseShowsAction} />
+            <StudioPanel
+              id="recording-settings"
+              title={t('studioRecordings.settingsTitle')}
+              description={t('studioRecordings.settingsDescription')}
+            >
+              <div className="flex flex-col gap-4">
+                <BroadcastRecordingToggles />
+              </div>
+            </StudioPanel>
           </ViewShell>
         </>
       ) : (

@@ -1848,7 +1848,9 @@
       "mediaPurgeConfirm": "Delete unused",
       "mediaPurged_one": "Deleted {{count}} unused file, freed {{size}}.",
       "mediaPurged_other": "Deleted {{count}} unused files, freed {{size}}.",
-      "moreTrackActions": "More track actions"
+      "moreTrackActions": "More track actions",
+      "tabFiles": "Files",
+      "fileKinds": "File types"
     },
     "date": {
       "today": "Today",
@@ -2686,7 +2688,9 @@
         "mentionSurfaceTracklist": "a tracklist",
         "mentionSurfaceChat": "chat",
         "mentionSurfaceDiscussion": "a discussion",
-        "mentionSurfacePost": "a post"
+        "mentionSurfacePost": "a post",
+        "governanceMoved": "Motions, meetings, documents and your votes live under Co-op in the sidebar.",
+        "openCoop": "Open Co-op"
       },
       "channel": {
         "loadError": "Could not load your channel profile",
@@ -3486,7 +3490,9 @@
       "openBroadcast": "Open broadcast studio",
       "draftsHeading": "Drafts · not yet published ({{count}})",
       "panelSummary_one": "{{count}} recording, grouped by show. Drafts that haven't been published yet are pinned at the top.",
-      "panelSummary_other": "{{count}} recordings, grouped by show. Drafts that haven't been published yet are pinned at the top."
+      "panelSummary_other": "{{count}} recordings, grouped by show. Drafts that haven't been published yet are pinned at the top.",
+      "settingsTitle": "Recording defaults",
+      "settingsDescription": "Whether new broadcasts are recorded and published. Go live can change it for one show."
     },
     "studioDistribution": {
       "title": "Distribution",
@@ -4354,7 +4360,9 @@
       "whatDynamicDoes": "What Dynamic does",
       "speed": "Speed",
       "intensity": "Intensity",
-      "scale": "Scale"
+      "scale": "Scale",
+      "channelDesignHint": "Header style, colour scheme and whether the visualizer shows are set in",
+      "channelDesignLink": "Studio → Profile → Channel design"
     },
     "transparencyPage": {
       "category": "Category",
@@ -5975,8 +5983,9 @@
       "openTheGreenRoom": "Open the green room",
       "nobodyIsInvitedYet": "Nobody is invited yet.",
       "greenRoom": "Green room",
-      "letInvitedGuestsHearYour": "Let invited guests hear your stream before it goes public. Default invite rules live in Settings → Broadcast.",
-      "copyLink": "Copy link"
+      "letInvitedGuestsHearYour": "Let invited guests hear your stream before it goes public. Default invite rules live in Studio → Broadcast → Channel.",
+      "copyLink": "Copy link",
+      "openSettings": "Green room settings"
     },
     "electionResult": {
       "recordTheResult": "Record the result",
@@ -6065,7 +6074,7 @@
       "recordBroadcast": "Record broadcast",
       "editAndReleaseSavedRecordings": "Edit and release saved recordings",
       "recording": "Recording",
-      "forThisBroadcastOnlyDefault": "For this broadcast only. Default on/off for future shows is in Settings → Broadcast → Radio.",
+      "forThisBroadcastOnlyDefault": "For this broadcast only. The default for future shows is on the Recordings page.",
       "openRecordings": "Open recordings"
     },
     "channelMembers": {
@@ -6209,7 +6218,7 @@
     },
     "studioProfile": {
       "profile": "Profile",
-      "howYouLookToListeners": "How you look to listeners: your artist profile and your channel page. Each card opens its own settings.",
+      "howYouLookToListeners": "How you look to listeners: your artist profile and your channel page. Each card opens its own page.",
       "artistProfile": "Artist profile",
       "artistProfileSettings": "Artist profile settings",
       "channelPage": "Channel page",
@@ -7768,9 +7777,10 @@
       "addMultistreamDestination": "Add multistream destination",
       "chooseAPlatformToConfigure": "Choose a platform to configure.",
       "multistream": "Multistream",
-      "destinationsForThisSessionAdd": "Destinations for this session. Add or edit targets here; Settings → Broadcast only mirrors the same list for convenience.",
+      "destinationsForThisSessionAdd": "Destinations for this session. Add or edit targets here; Studio → Broadcast → Channel → Multicast shows the same list.",
       "addDestination": "Add destination",
-      "removeDestination": "Remove destination"
+      "removeDestination": "Remove destination",
+      "openSettings": "Saved destinations"
     },
     "creditsEditor": {
       "creditsRoles": "Credits & roles",
@@ -8177,7 +8187,10 @@
     "studioBrandingView": {
       "signInToDesignYour": "Sign in to design your public channel.",
       "artistBranding": "Artist branding",
-      "channelDesigner": "Channel Designer"
+      "channelDesigner": "Channel Designer",
+      "programmeTitle": "Channel programme",
+      "programmeHint": "What your channel plays around live shows, such as the 24/7 rotation, the offline fallback and announcements, is set on Schedule.",
+      "openProgramme": "Open the channel programme"
     },
     "topListsTab": {
       "contentRankings": "Content rankings",
@@ -10641,7 +10654,7 @@
       "status": "Status",
       "shareOnPublish": "Announce when published",
       "shareConnectHint": "Connect Mastodon or Bluesky to announce events there.",
-      "shareConnectLink": "Settings → Artist",
+      "shareConnectLink": "Studio → Profile → Links",
       "shares": "Announcements",
       "sharePENDING": "Sending",
       "shareSENT": "Posted",
@@ -12520,7 +12533,7 @@
         "open": "How broadcasting works",
         "connect": "Connect OBS, Streamlabs, Traktor, Mixxx or another Icecast-compatible app with the server and stream key (or mount and password) under Stream credentials. Pick your app there to see the matching fields.",
         "obs": "Using OBS? The \"Ready-made OBS setup\" download under Stream credentials bundles a scene preset with this channel's current credentials already filled in.",
-        "multistream": "Destinations mirror your broadcast to other platforms. Recording and green room defaults for every show live in Settings → Broadcast; this page is for the session in progress."
+        "multistream": "Destinations mirror your broadcast to other platforms. Recording defaults live on the Recordings page and green room defaults in Studio → Broadcast → Channel; this page is for the session in progress."
       },
       "share": {
         "copy": "Copy channel link",

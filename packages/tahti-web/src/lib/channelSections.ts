@@ -1,6 +1,6 @@
 /** Studio → Broadcast → Channel is one page of sections (`#radio`,
- * `#green-room`, `#selects`); the Radio section's own tabs live in
- * `?radio=`. Old `?tab=` links redirect here. */
+ * `#green-room`); the Radio section's own tabs live in `?radio=`. Old
+ * `?tab=` links redirect here. Tahti Selects is an Admin tool. */
 export const CHANNEL_RADIO_TABS = [
   'stream',
   'rotation',
@@ -11,7 +11,7 @@ export const CHANNEL_RADIO_TABS = [
 
 export type ChannelRadioTab = (typeof CHANNEL_RADIO_TABS)[number];
 
-export type ChannelSection = 'radio' | 'green-room' | 'selects';
+export type ChannelSection = 'radio' | 'green-room';
 
 export const isChannelRadioTab = (value: unknown): value is ChannelRadioTab =>
   (CHANNEL_RADIO_TABS as readonly unknown[]).includes(value);
@@ -24,11 +24,11 @@ export type ChannelTabRedirect =
       replace: true;
     }
   | {
-      to: '/settings/$section';
-      params: { section: 'channel' | 'artist' };
-      search?: { tab: 'branding' };
+      to: '/studio/profile/$section';
+      params: { section: 'appearance' | 'branding' };
       replace: true;
-    };
+    }
+  | { to: '/admin/tahti-selects'; replace: true };
 
 /** Where an old `/studio/channel?tab=…` link goes now, or null when the
  * address needs no redirect. */
@@ -40,16 +40,15 @@ export function channelTabRedirect(
   }
   if (tab === 'design') {
     return {
-      to: '/settings/$section',
-      params: { section: 'channel' },
+      to: '/studio/profile/$section',
+      params: { section: 'appearance' },
       replace: true,
     };
   }
   if (tab === 'profile') {
     return {
-      to: '/settings/$section',
-      params: { section: 'artist' },
-      search: { tab: 'branding' },
+      to: '/studio/profile/$section',
+      params: { section: 'branding' },
       replace: true,
     };
   }
@@ -72,8 +71,11 @@ export function channelTabRedirect(
       replace: true,
     };
   }
-  if (tab === 'green-room' || tab === 'selects') {
+  if (tab === 'green-room') {
     return { to: '/studio/channel', search: {}, hash: tab, replace: true };
+  }
+  if (tab === 'selects') {
+    return { to: '/admin/tahti-selects', replace: true };
   }
   return { to: '/studio/channel', search: {}, replace: true };
 }

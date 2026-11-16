@@ -24,18 +24,6 @@ vi.mock('../../studio/StudioBrandingView', () => ({
 vi.mock('./ChannelAutoplayToggle', () => ({
   ChannelAutoplayToggle: () => <div>autoplay toggle</div>,
 }));
-vi.mock('../../../components/moderation/ChatAccessPanel', () => ({
-  ChatAccessPanel: () => <div>chat access panel</div>,
-}));
-vi.mock('../../../components/moderation/ChatMessagesPanel', () => ({
-  ChatMessagesPanel: () => <div>chat messages panel</div>,
-}));
-vi.mock('../../../components/moderation/ChatBansPanel', () => ({
-  ChatBansPanel: () => <div>chat bans panel</div>,
-}));
-vi.mock('../../../components/moderation/ChannelModeratorsPanel', () => ({
-  ChannelModeratorsPanel: () => <div>moderators panel</div>,
-}));
 
 const profile = {
   id: 'u1',
@@ -47,10 +35,7 @@ const profile = {
 
 async function openDiscovery() {
   await act(async () => {
-    render(<ChannelPanel />);
-  });
-  await act(async () => {
-    fireEvent.click(screen.getByRole('tab', { name: /Discovery/ }));
+    render(<ChannelPanel section="discovery" />);
   });
 }
 
@@ -159,7 +144,7 @@ describe('ChannelPanel discovery', () => {
   });
 });
 
-describe('ChannelPanel chat and moderators', () => {
+describe('ChannelPanel address and domain', () => {
   beforeEach(() => {
     useAuthStore.setState({
       user: {
@@ -180,68 +165,12 @@ describe('ChannelPanel chat and moderators', () => {
     vi.restoreAllMocks();
   });
 
-  it('points the Chat tab at Studio → Fans', async () => {
-    await act(async () => {
-      render(<ChannelPanel />);
-    });
-    await act(async () => {
-      fireEvent.click(screen.getByRole('tab', { name: /Chat/ }));
-    });
-    expect(screen.getByText('Chat moved to Fans')).toBeTruthy();
-    expect(
-      screen.getByRole('link', { name: 'Open Fans chat' }),
-    ).toHaveAttribute('href', '/studio/fans?tab=chat');
-  });
-
-  it('points the Moderators tab at Studio → Fans', async () => {
-    await act(async () => {
-      render(<ChannelPanel />);
-    });
-    await act(async () => {
-      fireEvent.click(screen.getByRole('tab', { name: /Moderators/ }));
-    });
-    expect(screen.getByText('Moderators moved to Fans')).toBeTruthy();
-    expect(
-      screen.getByRole('link', { name: 'Open Fans chat' }),
-    ).toHaveAttribute('href', '/studio/fans?tab=chat&section=moderators');
-  });
-
-  it('opens on the tab a link asks for', async () => {
-    window.history.replaceState(null, '', '/settings/channel?tab=moderators');
-    await act(async () => {
-      render(<ChannelPanel />);
-    });
-    expect(
-      screen
-        .getByRole('tab', { name: /Moderators/ })
-        .getAttribute('aria-selected'),
-    ).toBe('true');
-    expect(screen.getByText('Moderators moved to Fans')).toBeTruthy();
-    window.history.replaceState(null, '', '/settings/channel');
-  });
-
-  it('opens on the first tab when the link names no known tab', async () => {
-    window.history.replaceState(null, '', '/settings/channel?tab=nope');
-    await act(async () => {
-      render(<ChannelPanel />);
-    });
-    expect(
-      screen
-        .getByRole('tab', { name: /Channel Designer/ })
-        .getAttribute('aria-selected'),
-    ).toBe('true');
-    window.history.replaceState(null, '', '/settings/channel');
-  });
-
   it('asks before renaming the channel', async () => {
     const rename = vi
       .spyOn(channelDesign, 'updateChannelSlug')
       .mockResolvedValue({ ok: false, error: 'Taken' } as never);
     await act(async () => {
-      render(<ChannelPanel />);
-    });
-    await act(async () => {
-      fireEvent.click(screen.getByRole('tab', { name: /Username/ }));
+      render(<ChannelPanel section="domain" />);
     });
     const button = screen.getByRole('button', { name: 'Rename' });
     expect((button as HTMLButtonElement).disabled).toBe(true);
@@ -266,10 +195,7 @@ describe('ChannelPanel chat and moderators', () => {
   it('says in red when a name is taken and plainly when it is free', async () => {
     const check = vi.spyOn(channelDesign, 'checkSlugAvailable');
     await act(async () => {
-      render(<ChannelPanel />);
-    });
-    await act(async () => {
-      fireEvent.click(screen.getByRole('tab', { name: /Username/ }));
+      render(<ChannelPanel section="domain" />);
     });
     const button = screen.getByRole('button', { name: 'Check availability' });
     fireEvent.change(screen.getByLabelText('Channel slug / username'), {

@@ -2,7 +2,7 @@
 
 **Status:** partial
 
-Plan only (2026-10-28); nothing implemented yet. Goal: every section fits in **one row of tabs**, pages stay spacious, and everything sits in the context of its section. Long forms never read like a tax return.
+Planned 2026-10-28; slices 1, 2, 4, 5, 6 and 8 shipped (see the list). Goal: every section fits in **one row of tabs**, pages stay spacious, and everything sits in the context of its section. Long forms never read like a tax return.
 
 Built from a code inventory of `StudioNav.tsx` (`SUBMENUS`, `*_SUBNAV_ITEMS`), `AdminNav.tsx` (`ADMIN_SECTIONS`, `PRIMARY`), `LibraryView.tsx` (`LIBRARY_SECTION_TABS`) and `router/routes-*.tsx` at `64f00ee95`.
 
@@ -103,11 +103,11 @@ Favorites leaves (if the open question is a yes); Co-op is new. Mobile bottom ba
 ## Slices (in order)
 
 - [x] 1. Library 5 tabs + Studio → Music together (the catalog moves in one step); old URLs redirect. (2026-11-13: Music chips Releases · Tracks · Collections · Distribution · Editor · Groups; Upload, Smart links under Music; Recordings a Broadcast card; Library is Favorites · History · Media · Stash (+ Local); `/library` opens Favorites; old `/library/…` catalog links redirect. Library Playlists/Files tabs stay in `simplify-studio-library-settings-admin.md` phase 1.)
-- [ ] 2. Studio Profile: move the Settings modal's Artist and Channel & chat panels; sectioned form with live preview. (2026-11-02: Studio → Profile is a hub of cards that open those Settings panels; moving the forms into Studio is left.)
+- [x] 2. Studio Profile: move the Settings modal's Artist and Channel & chat panels. (2026-11-16: each form is its own page at `/studio/profile/$section` with a back link to the Profile hub; Settings → Artist (for a channel owner), Channel & chat and Broadcast left the modal and redirect there; Following is Library → Following. The live preview beside the form stays in `simplify-studio-library-settings-admin.md`.)
 - [ ] 3. Studio Broadcast: one agenda; Go live as a full-screen flow; 24/7, Recordings, Tahti Radio as hub cards. (2026-11-02: `/studio/broadcast` hub with on/off-air banner, one Coming up agenda with chips, cards incl. 24/7, Recordings, Tahti Radio. 2026-11-13: Studio Home links to the agenda instead of its own list; Recordings is `/studio/recordings` with a back link. Go live as a full-screen flow is left.)
 - [x] 4. Studio Fans and Stats as single pages (2026-11-02: Studio row is Home · Music · Broadcast · Fans · Stats · Profile; Fans is a hub of Posts, Newsletter, Memberships, Store, Earnings with back links; Stats is one page with sections).
 - [x] 5. Release detail 7 → 4 tabs; track editor dialog 5 → 3 tabs (2026-11-02: release detail Overview · Links · Stats · Advanced; track editor Basics · Sharing · Advanced).
-- [x] 6. Co-op sidebar item; governance out of Studio; Selects Admin-only (2026-11-02: sidebar **Co-op** for members and the board → `/governance`, lit on `/governance*` and the old `/studio/governance*`; the Studio tab row has no Governance; Studio → Channel → Selects shows to the board only).
+- [x] 6. Co-op sidebar item; governance out of Studio; Selects Admin-only (2026-11-02: sidebar **Co-op** for members and the board → `/governance`, lit on `/governance*` and the old `/studio/governance*`; the Studio tab row has no Governance; Studio → Channel → Selects shows to the board only; 2026-11-16: Selects left Studio → Channel entirely and `?tab=selects` opens Admin → Content → Selects).
 - [ ] 7. Admin Inbox (unified queues). (2026-11-12: queue chips shipped, 0.0.377. Support stays idle until another queue is picked. The open item in a side panel and counts for the queues other than support and beta are left.)
 - [x] 8. Admin Content, Co-op and Platform hubs (2026-11-02: six sections Overview · Inbox · People · Content · Co-op · Platform; hubs at `/admin/hubs/$hub`, back links on their pages; route guard test for `ADMIN_TAB_ONLY_ROUTES`).
 - [ ] 9. Admin Overview merge (Dashboard, Status, Monitoring). (2026-11-02: the dashboard leads with System health and links to Status checks, Monitoring and View logs; folding Status and Monitoring into it is left.)

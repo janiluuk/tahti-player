@@ -11,9 +11,7 @@ describe('artist gallery help', () => {
 
     expect(gallery).toBeDefined();
     expect(
-      gallery?.body.some((line) =>
-        line.includes('Settings → Artist → Gallery'),
-      ),
+      gallery?.body.some((line) => line.includes('Studio → Profile → Gallery')),
     ).toBe(true);
     expect(
       gallery?.body.some((line) => line.includes('Drag a photo to reorder')),

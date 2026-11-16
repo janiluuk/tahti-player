@@ -77,8 +77,8 @@ test('artist: saves a newsletter draft', async ({ page }) => {
 
 test('artist: saves the profile story', async ({ page }) => {
   const story = `Started on a borrowed synth ${Date.now()}.`;
-  await open(page, '/settings/artist?tab=story');
-  const dialog = page.getByRole('dialog', { name: 'Settings' });
+  await open(page, '/studio/profile/story');
+  const dialog = page.getByRole('main');
   await dialog.getByRole('textbox', { name: 'Your story' }).fill(story);
   await dialog.getByRole('button', { name: 'Save story' }).click();
   await expect(page.getByText('Artist info saved.')).toBeVisible();

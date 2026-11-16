@@ -237,6 +237,10 @@ export const StudioProfileView = lazyRouteComponent(
   () => import('../views/studio/StudioProfileView'),
   'StudioProfileView',
 );
+export const StudioProfileSectionView = lazyRouteComponent(
+  () => import('../views/studio/StudioProfileSectionView'),
+  'StudioProfileSectionView',
+);
 export const StudioRevenueView = lazyRouteComponent(
   () => import('../views/studio/StudioRevenueView'),
   'StudioRevenueView',
@@ -421,10 +425,6 @@ export const OnboardingView = lazyRouteComponent(
 export const StudioPlaylistEditorView = lazyRouteComponent(
   () => import('../views/studio/playlists/StudioPlaylistEditorView'),
   'StudioPlaylistEditorView',
-);
-export const StudioBrandingView = lazyRouteComponent(
-  () => import('../views/studio/StudioBrandingView'),
-  'StudioBrandingView',
 );
 export const StudioChannelView = lazyRouteComponent(
   () => import('../views/studio/StudioChannelView'),

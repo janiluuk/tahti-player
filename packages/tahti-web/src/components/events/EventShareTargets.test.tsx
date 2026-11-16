@@ -39,7 +39,7 @@ describe('EventShareTargets', () => {
     expect(screen.queryByLabelText(/Bluesky/)).not.toBeInTheDocument();
   });
 
-  it('points to Settings when nothing is connected', async () => {
+  it('points to Studio → Profile → Links when nothing is connected', async () => {
     vi.spyOn(social, 'fetchSocialAutoPost').mockResolvedValue({
       data: {
         mastodon: off,
@@ -51,7 +51,7 @@ describe('EventShareTargets', () => {
     });
     await renderWithRouter(<EventShareTargets value={[]} onChange={vi.fn()} />);
     expect(
-      await screen.findByRole('link', { name: 'Settings → Artist' }),
-    ).toHaveAttribute('href', '/settings/artist');
+      await screen.findByRole('link', { name: 'Studio → Profile → Links' }),
+    ).toHaveAttribute('href', '/studio/profile/connections');
   });
 });

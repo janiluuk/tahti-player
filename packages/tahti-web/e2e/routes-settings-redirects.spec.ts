@@ -31,13 +31,11 @@ const movedSettings: RouteVisit[] = [
   },
 ];
 
-// Every Settings section opens the Settings dialog on itself.
+// Every Settings section opens the Settings dialog on itself. Settings is
+// account-only: an artist's profile, channel and broadcast forms are in Studio.
 const settingsSections: RouteVisit[] = [
   { path: '/settings', heading: /^Account$/, url: /\/settings\/account$/ },
   { path: '/settings/account', heading: /^Account$/ },
-  { path: '/settings/artist', heading: /^Artist$/ },
-  { path: '/settings/channel', heading: 'Channel & chat' },
-  { path: '/settings/broadcast', heading: /^Broadcast$/ },
   { path: '/settings/playback', heading: /^Playback$/ },
   { path: '/settings/integrations', heading: /^Integrations$/ },
   { path: '/settings/themes', heading: /^Themes$/ },
@@ -72,7 +70,11 @@ const oldStudioBookmarks: RouteVisit[] = [
     url: /\/studio\/collections$/,
   },
   { path: '/studio/upload', heading: /^Upload$/, url: /\/studio\/upload$/ },
-  { path: '/studio/stash', heading: /^Stash$/, url: /\/library\/stash$/ },
+  {
+    path: '/studio/stash',
+    heading: /^Files$/,
+    url: /\/library\/files\?kind=stash$/,
+  },
   { path: '/studio/venues', heading: 'My venues', url: /\/venues\/mine$/ },
   {
     path: '/studio/setup-channel',
@@ -86,30 +88,51 @@ const oldStudioBookmarks: RouteVisit[] = [
   },
 ];
 
-// Old Studio bookmarks for pages that moved into the Settings dialog.
-const oldStudioSettingsBookmarks: RouteVisit[] = [
+// Artist, Channel & chat and Broadcast left Settings for Studio pages; their
+// bookmarks and the old Studio branding links land there.
+const movedToStudio: RouteVisit[] = [
+  { path: '/settings/artist', heading: /^Profile$/, url: /\/studio\/profile$/ },
+  {
+    path: '/settings/artist?tab=story',
+    heading: /^Story$/,
+    url: /\/studio\/profile\/story$/,
+  },
+  {
+    path: '/settings/channel',
+    heading: 'Channel design',
+    url: /\/studio\/profile\/appearance$/,
+  },
+  {
+    path: '/settings/channel?tab=domain',
+    heading: 'Address and domain',
+    url: /\/studio\/profile\/domain$/,
+  },
+  {
+    path: '/settings/broadcast',
+    heading: /^Channel$/,
+    url: /\/studio\/channel$/,
+  },
+  {
+    path: '/settings/broadcast?tab=radio',
+    heading: 'Recording defaults',
+    url: /\/studio\/recordings#recording-settings$/,
+  },
   {
     path: '/studio/branding',
     heading: 'Profile picture',
-    url: /\/settings\/artist\?tab=branding$/,
+    url: /\/studio\/profile\/branding$/,
   },
   {
     path: '/studio/branding?tab=gallery',
     heading: /^Gallery$/,
-    url: /\/settings\/artist\?tab=gallery$/,
+    url: /\/studio\/profile\/gallery$/,
   },
   {
     path: '/studio/branding?tab=channel-designer',
-    heading: 'Channel & chat',
-    url: /\/settings\/channel$/,
+    heading: 'Channel design',
+    url: /\/studio\/profile\/appearance$/,
   },
 ];
-
-function selectedTab(page: Page, name: string) {
-  return page
-    .getByRole('dialog')
-    .getByRole('tab', { name, exact: true, selected: true });
-}
 
 // The open Settings dialog hides the page behind it, `<main>` included, so
 // these pages are checked through the dialog instead of `expectRouteHealthy`.
@@ -169,17 +192,12 @@ test('old Studio bookmarks land on the page that replaced them', async ({
   }
 });
 
-test('old Studio branding bookmarks open their Settings tab', async ({
+test('Artist, Channel & chat and Broadcast bookmarks land in Studio', async ({
   page,
 }) => {
   const errors = collectPageErrors(page);
-  for (const route of oldStudioSettingsBookmarks) {
-    await expectSettingsDialog(page, errors, route);
+  for (const route of movedToStudio) {
+    await expectRouteHealthy(page, errors, route);
+    await expect(page.getByRole('dialog')).toHaveCount(0);
   }
-
-  await expectSettingsDialog(page, errors, {
-    path: '/settings/channel?tab=moderators',
-    heading: 'Channel & chat',
-  });
-  await expect(selectedTab(page, 'Moderators')).toBeVisible();
 });

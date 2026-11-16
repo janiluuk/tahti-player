@@ -61,7 +61,6 @@ export function ConnectedSettingsModal() {
   const openedToSection = useSettingsModalStore((s) => s.openedToSection);
   const artistSection = useSettingsModalStore((s) => s.artistSection);
   const accountSection = useSettingsModalStore((s) => s.accountSection);
-  const channelSection = useSettingsModalStore((s) => s.channelSection);
   const playbackSection = useSettingsModalStore((s) => s.playbackSection);
   const pluginCategory = useSettingsModalStore((s) => s.pluginCategory);
   const user = useAuthStore((s) => s.user);
@@ -69,8 +68,7 @@ export function ConnectedSettingsModal() {
   const signedIn = Boolean(user);
   const returnPathRef = useRef<string | null>(null);
 
-  const profileLoaded = useAuthStore((s) => s.profileLoaded);
-  const hasChannel = Boolean(user?.channel) || !profileLoaded;
+  const hasChannel = Boolean(user?.channel);
 
   const audience = { signedIn, hasChannel };
   const nav = settingsNavFor(audience);
@@ -104,7 +102,6 @@ export function ConnectedSettingsModal() {
       section: resolvedTab,
       artistSection,
       accountSection,
-      channelSection,
       playbackSection,
       pluginCategory,
     });
@@ -117,7 +114,6 @@ export function ConnectedSettingsModal() {
   }, [
     accountSection,
     artistSection,
-    channelSection,
     isOpen,
     locationHref,
     navigate,

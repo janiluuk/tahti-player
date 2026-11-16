@@ -10,6 +10,10 @@ import {
   fanCheckoutReturn,
   parseFanCheckoutReturnSearch,
 } from '../lib/fanCheckoutReturn';
+import {
+  isLibraryFileKind,
+  type LibraryFileKind,
+} from '../lib/libraryFileKinds';
 import { parseStudioSoundsSearch } from '../lib/studioSoundsSearch';
 import { appLayoutRoute } from './router-core';
 import {
@@ -97,7 +101,10 @@ export const libraryCollectionsRoute = createRoute({
       throw redirect({ to: '/studio/recordings' });
     }
     if (search.tab) {
-      throw redirect({ to: `/library/${search.tab}` });
+      throw redirect({
+        to: '/library/files',
+        search: search.tab === 'stash' ? { kind: 'stash' } : {},
+      });
     }
     throw redirect({ to: '/studio/collections', replace: true });
   },
@@ -126,7 +133,29 @@ export const libraryRecordingsRoute = createRoute({
 export const libraryStashRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/stash',
-  component: () => <LibraryView tab="stash" />,
+  beforeLoad: () => {
+    throw redirect({
+      to: '/library/files',
+      search: { kind: 'stash' },
+      replace: true,
+    });
+  },
+});
+
+/** Library → Files: media, stash and (desktop) local files behind chips. */
+export const libraryFilesRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/library/files',
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { kind?: LibraryFileKind } =>
+    isLibraryFileKind(search.kind) && search.kind !== 'media'
+      ? { kind: search.kind }
+      : {},
+  component: function LibraryFilesRoute() {
+    const { kind } = libraryFilesRoute.useSearch();
+    return <LibraryView tab="files" kind={kind ?? 'media'} />;
+  },
 });
 
 export const libraryEmbedsRoute = createRoute({
@@ -155,13 +184,7 @@ export const libraryHistoryRoute = createRoute({
 export const libraryFollowingRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/following',
-  beforeLoad: () => {
-    throw redirect({
-      to: '/settings/$section',
-      params: { section: 'artist' },
-      search: { tab: 'following' },
-    });
-  },
+  component: () => <LibraryView tab="following" />,
 });
 
 export const librarySmartLinksRoute = createRoute({
@@ -175,7 +198,9 @@ export const librarySmartLinksRoute = createRoute({
 export const libraryMediaRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/media',
-  component: () => <LibraryView tab="media" />,
+  beforeLoad: () => {
+    throw redirect({ to: '/library/files', replace: true });
+  },
 });
 
 export const libraryLocalRoute = createRoute({
@@ -186,8 +211,12 @@ export const libraryLocalRoute = createRoute({
     if (!getNativeLibrary()) {
       throw redirect({ to: '/library/favorites' });
     }
+    throw redirect({
+      to: '/library/files',
+      search: { kind: 'local' },
+      replace: true,
+    });
   },
-  component: () => <LibraryView tab="local" />,
 });
 
 export const libraryMessagesRoute = createRoute({

@@ -226,6 +226,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Widgets/LegalDocShell` | `tahti-web/LegalDocShell.stories.tsx` |
 | `Tahti/Library/LibraryFavorites` | `tahti-web/LibraryFavorites.stories.tsx` |
 | `Tahti/Library/LibraryHistory` | `tahti-web/LibraryFollowing.stories.tsx` |
+| `Tahti/Library/LibraryFollowingFiles` | `tahti-web/LibraryFollowingFiles.stories.tsx` |
 | `Tahti/Library/LibraryItemRow` | `tahti-web/LibraryItemRow.stories.tsx` |
 | `Tahti/Widgets/ListenAddonsPanel` | `tahti-web/ListenAddonsPanel.stories.tsx` |
 | `Tahti/Listen/ListenSection` | `tahti-web/ListenSection.stories.tsx` |
@@ -347,7 +348,6 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Radio/StationUnavailableNotice` | `tahti-web/StationUnavailableNotice.stories.tsx` |
 | `Tahti/Player/StemMixer` | `tahti-web/StemMixer.stories.tsx` |
 | `Tahti/Studio/StreamManagerPanel` | `tahti-web/StreamManagerPanel.stories.tsx` |
-| `Tahti/Studio/StudioBrandingView` | `tahti-web/StudioBrandingView.stories.tsx` |
 | `Tahti/Studio/StudioCollectionEditView` | `tahti-web/StudioCollectionEditView.stories.tsx` |
 | `Tahti/Studio/StudioCollectionsView` | `tahti-web/StudioCollectionsView.stories.tsx` |
 | `Tahti/Studio/Distribution panels` | `tahti-web/StudioDistributionPanels.stories.tsx` |
@@ -367,6 +367,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/StudioNav` | `tahti-web/StudioNav.stories.tsx` |
 | `Tahti/Page/StudioPanel` | `tahti-web/StudioPanel.stories.tsx` |
 | `Tahti/Studio/StudioPlaylistEditorView` | `tahti-web/StudioPlaylistEditorView.stories.tsx` |
+| `Tahti/Studio/StudioProfileSectionView` | `tahti-web/StudioProfileSectionView.stories.tsx` |
 | `Tahti/Studio/StudioReleaseDetailView` | `tahti-web/StudioReleaseDetailView.stories.tsx` |
 | `Tahti/Studio/StudioScheduleView` | `tahti-web/StudioScheduleView.stories.tsx` |
 | `Tahti/Studio/StudioShowDetailView` | `tahti-web/StudioShowDetailView.stories.tsx` |

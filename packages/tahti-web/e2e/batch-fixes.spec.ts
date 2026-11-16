@@ -26,8 +26,8 @@ test('a mock release page is titled after its slug', async ({ page }) => {
 
 test('the press kit lists photos once with both limits', async ({ page }) => {
   await signIn(page);
-  await page.goto('/settings/artist?tab=press-kit');
-  const settings = page.getByRole('dialog', { name: 'Settings' });
+  await page.goto('/studio/profile/press-kit');
+  const settings = page.getByRole('main');
   await expect(settings.getByText(/up to 30 photos/)).toBeVisible();
   await expect(settings.getByText('Press kit images')).toHaveCount(0);
   await expect(
@@ -37,8 +37,8 @@ test('the press kit lists photos once with both limits', async ({ page }) => {
 
 test('Branding has no second "Artist branding" heading', async ({ page }) => {
   await signIn(page);
-  await page.goto('/settings/artist?tab=branding');
-  const settings = page.getByRole('dialog', { name: 'Settings' });
+  await page.goto('/studio/profile/branding');
+  const settings = page.getByRole('main');
   await expect(
     settings.getByRole('heading', { name: 'Profile picture' }),
   ).toBeVisible();

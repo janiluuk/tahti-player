@@ -2,10 +2,14 @@
 import { cleanup, render } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
+import { useAuthStore } from '../../stores/authStore';
 import { useSettingsModalStore } from '../../stores/settingsModalStore';
 import { SettingsView } from './SettingsView';
 
+const navigate = vi.hoisted(() => vi.fn());
+
 vi.mock('@tanstack/react-router', () => ({
+  useNavigate: () => navigate,
   useRouterState: ({
     select,
   }: {
@@ -24,13 +28,14 @@ vi.mock('@tanstack/react-router', () => ({
 describe('SettingsView', () => {
   afterEach(() => {
     cleanup();
+    navigate.mockClear();
+    useAuthStore.setState({ user: null });
     window.history.replaceState(null, '', '/');
     useSettingsModalStore.setState({
       isOpen: false,
       dismissRouteOpen: false,
       artistSection: null,
       accountSection: null,
-      channelSection: null,
     });
   });
 
@@ -61,15 +66,43 @@ describe('SettingsView', () => {
     expect(state.accountSection).toBe('api-tokens');
   });
 
-  it('opens Channel on the moderators tab from a moderation link', () => {
-    window.history.replaceState(null, '', '/settings/channel?tab=moderators');
+  it('sends an artist to the Studio → Profile page for an old Artist tab', () => {
+    useAuthStore.setState({
+      user: { id: 'u1', username: 'a', channel: { slug: 'a' } } as never,
+    });
+    window.history.replaceState(
+      null,
+      '',
+      '/settings/artist?tab=connections&social=instagram_connected',
+    );
     render(<SettingsView />);
-    const state = useSettingsModalStore.getState();
-    expect(state.activeTab).toBe('channel');
-    expect(state.channelSection).toBe('moderators');
+    expect(navigate).toHaveBeenCalledWith({
+      href: '/studio/profile/connections',
+      replace: true,
+    });
+    expect(useSettingsModalStore.getState().isOpen).toBe(false);
   });
 
-  it('opens Artist Connections from a dashboard bookmark', () => {
+  it('sends Following to the Library tab', () => {
+    window.history.replaceState(null, '', '/settings/artist?tab=following');
+    render(<SettingsView />);
+    expect(navigate).toHaveBeenCalledWith({
+      href: '/library/following',
+      replace: true,
+    });
+  });
+
+  it('opens Settings → Themes for an old Add-ons → Themes link', () => {
+    window.history.replaceState(
+      null,
+      '',
+      '/settings/plugin-store?category=themes',
+    );
+    render(<SettingsView />);
+    expect(useSettingsModalStore.getState().activeTab).toBe('themes');
+  });
+
+  it('opens a listener profile tab from a bookmark', () => {
     window.history.replaceState(null, '', '/settings/artist?tab=connections');
     render(<SettingsView />);
     const state = useSettingsModalStore.getState();

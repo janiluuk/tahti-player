@@ -1,11 +1,9 @@
 import type { LucideIcon } from 'lucide-react';
 import {
   BlocksIcon,
-  Paintbrush,
   Palette,
   PlayCircle,
   Plug,
-  Radio,
   Sparkles,
   User,
   UserCircle2,
@@ -17,11 +15,12 @@ import { webT } from '../../lib/webT';
 
 type WebKey = ParseKeys<'web'>;
 
+/** Account-only. An artist's profile, channel and broadcast forms live in
+ * Studio → Profile and Studio → Broadcast; `artist` is the listener's
+ * profile for an account without a channel. */
 export type SettingsSectionId =
   | 'account'
   | 'artist'
-  | 'channel'
-  | 'broadcast'
   | 'playback'
   | 'integrations'
   | 'themes'
@@ -59,23 +58,9 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
     },
     {
       id: 'artist',
-      label: t('settingsNav.artist'),
-      labelKey: 'settings.artist',
+      label: t('settingsNav.profile'),
+      labelKey: 'settings.profile',
       Icon: UserCircle2,
-      group: 'Settings',
-    },
-    {
-      id: 'channel',
-      label: t('settingsNav.channelChat'),
-      labelKey: 'settings.channelChat',
-      Icon: Paintbrush,
-      group: 'Settings',
-    },
-    {
-      id: 'broadcast',
-      label: t('settingsNav.broadcast'),
-      labelKey: 'settings.broadcast',
-      Icon: Radio,
       group: 'Settings',
     },
     {
@@ -142,23 +127,10 @@ export function isPublicSettingsSection(id: SettingsSectionId): boolean {
   return PUBLIC_SETTINGS_SECTION_IDS.includes(id);
 }
 
-/** Sections that configure a channel; an account without one has nothing
- * for them to act on. */
-export const CHANNEL_SETTINGS_SECTION_IDS: readonly SettingsSectionId[] = [
-  'channel',
-  'broadcast',
-];
-
-function profileNavOverride(t: TFunction<'web'>) {
-  return {
-    label: t('settingsNav.profile'),
-    labelKey: 'settings.profile',
-  } as const;
-}
-
 export type SettingsNavAudience = {
   signedIn: boolean;
-  /** False for a listener account that has not created a channel. */
+  /** True once the account is known to have a channel. Its profile forms are
+   * then in Studio → Profile, not here. */
   hasChannel: boolean;
 };
 
@@ -169,19 +141,15 @@ export function isSettingsSectionAvailable(
   if (!audience.signedIn) {
     return isPublicSettingsSection(id);
   }
-  return audience.hasChannel || !CHANNEL_SETTINGS_SECTION_IDS.includes(id);
+  return id !== 'artist' || !audience.hasChannel;
 }
 
 export function settingsNavFor(
   audience: SettingsNavAudience,
 ): SettingsNavItem[] {
-  return settingsNav(webT())
-    .filter((item) => isSettingsSectionAvailable(item.id, audience))
-    .map((item) =>
-      item.id === 'artist' && audience.signedIn && !audience.hasChannel
-        ? { ...item, ...profileNavOverride(webT()) }
-        : item,
-    );
+  return settingsNav(webT()).filter((item) =>
+    isSettingsSectionAvailable(item.id, audience),
+  );
 }
 
 export function fallbackSettingsSection(

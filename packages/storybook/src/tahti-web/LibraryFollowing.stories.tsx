@@ -17,7 +17,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Library → History: what you listened to. Following moved to Settings → Artist (Profile) → Following.',
+          'Library → History: what you listened to. Following and Files are their own Library tabs (Tahti/Library/LibraryFollowingFiles).',
       },
     },
   },

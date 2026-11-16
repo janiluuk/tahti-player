@@ -16,7 +16,7 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   events: '/studio/schedule?show=events',
   venues: '/studio/venues',
   recordings: '/studio/recordings',
-  stash: '/library/stash',
+  stash: '/library/files?kind=stash',
   schedule: '/studio/schedule',
   stats: '/studio/stats',
   channel: '/studio/channel',
@@ -45,17 +45,17 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   'settings/connections': '/settings/artist?tab=connections',
   'settings/api': '/settings/account?tab=api-tokens',
   'settings/notifications': '/settings/account',
-  'settings/domain': '/settings/channel',
-  'settings/discovery': '/settings/channel?tab=discovery',
+  'settings/domain': '/studio/profile/domain',
+  'settings/discovery': '/studio/profile/discovery',
   'settings/internet-radio': '/settings/plugin-store?category=radio',
   'settings/themes': '/settings/themes',
-  'settings/announcements': '/settings/broadcast',
-  'settings/green-room': '/settings/broadcast',
+  'settings/announcements': '/studio/schedule#channel-programme',
+  'settings/green-room': '/studio/channel#green-room',
   // Tahti Radio opt-in and submissions (incl. board rejection notes) live on
   // the Tahti Radio tab of the channel's Radio section, not the royalties
   // Distribution page.
   'settings/distribution': '/studio/channel?radio=tahti-radio#radio',
-  'settings/moderators': '/settings/channel?tab=moderators',
+  'settings/moderators': '/studio/fans?tab=chat&section=moderators',
   'settings/multistream': '/studio/channel?radio=multicast#radio',
   'upload/from-broadcast': '/studio/recordings',
 };

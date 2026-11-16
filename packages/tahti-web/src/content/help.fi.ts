@@ -37,7 +37,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
         body: [
           'Kuuntele on koti: jatka kuuntelua, yhteisöradio ja kuka on nyt lähetyksessä. Syöte näyttää seuraamiesi artistien julkaisut, Historia viimeksi soitetut.',
           'Löydä sisältää widgetit, artistihakemiston (haku ja suodattimet) ja tapahtumapaikat. Suosikeissa ovat tallennetut kanavat, radiot ja kappaleet.',
-          'Studion välilehdet (Yleiskatsaus, Tilastot, …) ovat Studion valikossa. Sivujen omat alivälilehdet ovat suoraan Studion valikkorivin alla, sivun otsikon yläpuolella. Brändäys, galleria ja lehdistöpaketti ovat kohdassa Asetukset → Artisti; Kanavasuunnittelija on kohdassa Asetukset → Kanava ja chat.',
+          'Studion välilehdet (Yleiskatsaus, Tilastot, …) ovat Studion valikossa. Sivujen omat alivälilehdet ovat suoraan Studion valikkorivin alla, sivun otsikon yläpuolella. Brändäys, galleria ja lehdistöpaketti ovat kohdassa Studio → Profiili; niin on myös Kanavasuunnittelija (Kanavan ulkoasu).',
           'Paina H, niin saat opastetun kierroksen nykyisen sivun säätimiin. Pidemmät ohjeet ovat tässä ohjekeskuksessa.',
         ],
       },
@@ -201,7 +201,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Artistigalleria',
         body: [
-          'Avaa Asetukset → Artisti → Galleria lisätäksesi kuvia julkiselle artistisivullesi. Lataa kuvia gallerian otsikon plus-ikonista; erillistä Lisää kuvia -painiketta ei ole.',
+          'Avaa Studio → Profiili → Galleria lisätäksesi kuvia julkiselle artistisivullesi. Lataa kuvia gallerian otsikon plus-ikonista; erillistä Lisää kuvia -painiketta ei ole.',
           'Kytke Julkinen päälle, niin galleria näkyy profiilissasi, tai pidä se pois päältä, kun järjestelet kuvia.',
           'Vedä kuvaa muuttaaksesi järjestystä, tai käytä nuolia hiiren ollessa kuvan päällä. Valitse kuvat ruksilla ja poista ne, joita et halua.',
           'Mukaan valitsemasi kuvat voivat näkyä myös lehdistöpaketissasi. Kanavan taustat ja diaesitykset kerrotaan oppaassa Suunnittele kanavasi.',
@@ -211,7 +211,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
         heading: 'Studion sivut',
         body: [
           'Studion sivun alivälilehdet ovat Studion valikkorivin alla ja sivun otsikon yläpuolella, samoin kuin Tilastoissa (Yleiskatsaus / Soitot / Kärkilistat).',
-          'Kappaleet sisältää arkistosi ja tiedostosi. Brändäys (profiilikuva, galleria, lehdistöpaketti) on kohdassa Asetukset → Artisti; Kanavasuunnittelija on kohdassa Asetukset → Kanava ja chat. Päivitykset ovat julkaisut ja uutiskirje. Kanava sisältää lähetysavaimet, radioasetukset ja monilähetyksen.',
+          'Kappaleet sisältää arkistosi ja tiedostosi. Brändäys (profiilikuva, galleria, lehdistöpaketti) on kohdassa Studio → Profiili, Kanavasuunnittelijan (Kanavan ulkoasu) vieressä. Päivitykset ovat julkaisut ja uutiskirje. Kanava sisältää lähetysavaimet, radioasetukset ja monilähetyksen.',
           'Ylläpidon moderointijonot (tuki, beta, radio, ilmoitukset) toimivat samalla tavalla Ylläpidon valikossa.',
         ],
       },
@@ -232,7 +232,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Valitse ulkoasu',
         body: [
-          'Avaa Asetukset → Kanava ja chat → Kanavasuunnittelija. Esikatselu näyttää, mitä kuuntelijat näkevät julkisella kanavallasi ja artistisivullasi.',
+          'Avaa Studio → Profiili → Kanavan ulkoasu. Esikatselu näyttää, mitä kuuntelijat näkevät julkisella kanavallasi ja artistisivullasi.',
           'Valitse lohko elementtivalikosta: julkaisut, kappaleet, uusimmat, syöte, uutiset, soitin tai tausta. Piilota lohko silmäpainikkeella.',
           'Soitin säätää lavaa, visualisointia, liukuväriä ja peitettä. Tausta säätää otsikon tyyliä, diaesitystä ja sivun värejä.',
         ],

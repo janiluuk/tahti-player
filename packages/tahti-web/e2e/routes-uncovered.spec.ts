@@ -20,11 +20,7 @@ const routes: RouteVisit[] = [
   },
   { path: '/studio/upload', heading: /^Upload$/ },
   { path: '/library/messages', heading: /^Messages$/, url: /\/messages$/ },
-  {
-    path: '/library/following',
-    heading: /^Artist$/,
-    url: /\/settings\/artist\?tab=following/,
-  },
+  { path: '/library/following', heading: /^Following$/ },
   { path: '/library/history', heading: /^History$/ },
   { path: '/governance/discussions', heading: /^Discussions$/ },
 ];

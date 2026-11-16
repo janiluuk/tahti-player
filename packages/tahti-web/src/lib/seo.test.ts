@@ -25,6 +25,8 @@ describe('metadataForPath', () => {
     ['/library', 'Library · Tahti'],
     ['/studio/sounds', 'Sounds · Studio · Tahti'],
     ['/library/media', 'Media · Library · Tahti'],
+    ['/library/files', 'Files · Library · Tahti'],
+    ['/library/following', 'Following · Library · Tahti'],
     ['/library/collections', 'Collections · Library · Tahti'],
     ['/discover', 'Discover · Tahti'],
     ['/governance/members', 'Member directory · Tahti'],

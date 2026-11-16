@@ -1,4 +1,3 @@
-import { useRouterState, useSearch } from '@tanstack/react-router';
 import {
   DownloadIcon,
   ImagesIcon,
@@ -8,12 +7,11 @@ import {
 import { FC, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { SectionTitle, TabLabel, Tabs } from '@tahti-player/ui';
+import { ButtonLink, SectionTitle, TabLabel, Tabs } from '@tahti-player/ui';
 
 import { ChannelDesigner } from '../../components/ChannelDesigner';
 import { ConfirmDialog } from '../../components/ConfirmDialog';
 import { StudioPanel } from '../../components/StudioPanel';
-import { useSettingsModalStore } from '../../stores/settingsModalStore';
 import { GallerySection } from './branding/GallerySection';
 import { PressKitSection } from './branding/PressKitSection';
 import { ProfileBackdropSection } from './branding/ProfileBackdropSection';
@@ -29,12 +27,6 @@ export const STUDIO_BRANDING_SECTIONS = [
 ] as const;
 
 export type StudioBrandingSection = (typeof STUDIO_BRANDING_SECTIONS)[number];
-
-export function isStudioBrandingSection(
-  value: string | undefined,
-): value is StudioBrandingSection {
-  return STUDIO_BRANDING_SECTIONS.some((section) => section === value);
-}
 
 export const StudioBrandingPanel: FC<{
   section?: StudioBrandingSection;
@@ -133,13 +125,33 @@ export const StudioBrandingPanel: FC<{
       ) : null}
       {tab === 'channel-designer' ? (
         profile ? (
-          <ChannelDesigner
-            displayName={profile.displayName}
-            username={profile.username}
-            channelSlug={user?.channel?.slug}
-            avatarUrl={avatarUrl}
-            bio={profile.bio}
-          />
+          <>
+            <ChannelDesigner
+              displayName={profile.displayName}
+              username={profile.username}
+              channelSlug={user?.channel?.slug}
+              avatarUrl={avatarUrl}
+              bio={profile.bio}
+            />
+            <StudioPanel
+              title={t('studioBrandingView.programmeTitle')}
+              action={
+                <ButtonLink
+                  to="/studio/schedule"
+                  hash="channel-programme"
+                  size="sm"
+                  variant="secondary"
+                  data-testid="channel-designer-programme-link"
+                >
+                  {t('studioBrandingView.openProgramme')}
+                </ButtonLink>
+              }
+            >
+              <p className="text-foreground-secondary text-sm">
+                {t('studioBrandingView.programmeHint')}
+              </p>
+            </StudioPanel>
+          </>
         ) : (
           <StudioPanel title={t('studioBrandingView.channelDesigner')}>
             <p className="text-foreground-secondary text-sm">
@@ -188,28 +200,4 @@ export const StudioBrandingPanel: FC<{
       />
     </div>
   );
-};
-
-export const StudioBrandingView: FC = () => {
-  const open = useSettingsModalStore((state) => state.open);
-  const pathname = useRouterState({
-    select: (state) => state.location.pathname,
-  });
-  const search = useSearch({ strict: false }) as { tab?: string };
-  const section = isStudioBrandingSection(search.tab) ? search.tab : 'branding';
-
-  useEffect(() => {
-    // ConnectedSettingsModal bookmark-syncs to `/settings/...`. Once there,
-    // SettingsView owns the modal — do not reopen Artist over Channel.
-    if (pathname.startsWith('/settings')) {
-      return;
-    }
-    if (section === 'channel-designer') {
-      open('channel');
-      return;
-    }
-    open('artist', undefined, section);
-  }, [open, pathname, section]);
-
-  return null;
 };

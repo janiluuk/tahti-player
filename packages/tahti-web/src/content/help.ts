@@ -53,7 +53,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         body: [
           'Listen is home for continue-listening, community radio, and who’s on air. Feed shows posts from artists you follow; History is what you played recently.',
           'Discover has widgets, an artists directory (search and filters), and venues. Favorites holds saved channels, radio, and tracks.',
-          'Studio section tabs (Overview, Stats, …) stay under the Studio nav. On pages with their own subtabs — Stats, Tracks, Updates, Channel, and similar — those subtabs sit directly under Studio’s nav row, above the page title. Branding, gallery, and press kit live under Settings → Artist; Channel Designer lives under Settings → Channel & chat.',
+          'Studio section tabs (Overview, Stats, …) stay under the Studio nav. On pages with their own subtabs — Stats, Tracks, Updates, Channel, and similar — those subtabs sit directly under Studio’s nav row, above the page title. Branding, gallery, and press kit live under Studio → Profile; so does the Channel Designer (Channel design).',
           'Press H for a guided tour of the controls on the current page. Longer how-tos live in this Help center.',
         ],
       },
@@ -226,7 +226,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Artist gallery',
         body: [
-          'Open Settings → Artist → Gallery to add photos to your public artist page. Use the plus icon in the gallery header to upload — there is no separate Add images button.',
+          'Open Studio → Profile → Gallery to add photos to your public artist page. Use the plus icon in the gallery header to upload — there is no separate Add images button.',
           'Turn Public on so the gallery appears on your profile, or leave it off while you arrange photos.',
           'Drag a photo to reorder it, or use the arrows on hover. Check photos to select them, then remove the ones you do not want.',
           'Photos you include can also appear in your press kit. Channel backdrops and slideshows are covered in Design your channel.',
@@ -236,7 +236,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
         heading: 'Studio pages',
         body: [
           'Subtabs for a Studio page sit under the Studio navigation row and above the page title — the same layout as Stats (Overview / Plays / Top lists).',
-          'Tracks holds your archive and files. Branding covers profile picture, gallery, and press kit under Settings → Artist (Channel Designer lives under Settings → Channel & chat). Updates is posts and newsletter. Channel covers stream keys, radio settings, and multicast.',
+          'Tracks holds your archive and files. Branding covers profile picture, gallery, and press kit under Studio → Profile, next to the Channel Designer (Channel design). Updates is posts and newsletter. Channel covers stream keys, radio settings, and multicast.',
           'Admin Moderation queues (support, beta, radio, reports) use the same pattern under Admin nav.',
         ],
       },
@@ -258,7 +258,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Choose a look',
         body: [
-          'Open Settings → Channel & chat → Channel Designer. The preview shows what listeners see on your public channel and artist page.',
+          'Open Studio → Profile → Channel design. The preview shows what listeners see on your public channel and artist page.',
           'Pick a block from the element menu: releases, tracks, latest, feed, news, player, or backdrop. Hide a block with the eye button.',
           'Player controls the stage, visualizer, gradient, and overlay. Backdrop controls header style, slideshow, and page colors.',
         ],
