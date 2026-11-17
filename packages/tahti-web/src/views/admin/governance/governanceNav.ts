@@ -16,11 +16,9 @@ export type AdminGovernanceTabItem = {
   label: string;
 };
 
-/** One admin page, one tab per governance area — see AdminGovernanceView.
- * These used to be four standalone `/admin/*` routes (`/admin/governance`,
- * `/admin/reports`, `/admin/grants`, `/admin/agm`); they now redirect into
- * `/admin/governance/$tab`, the canonical addressable URL for each tab —
- * same convention as `/admin/moderation/$tab`. */
+/** Hub cards on `/admin/governance`; each area opens
+ * `/admin/governance/$tab`. Legacy `/admin/reports`, `/admin/grants`, and
+ * `/admin/agm` redirect into those URLs. */
 export function adminGovernanceTabs(
   t: TFunction<'web'>,
 ): AdminGovernanceTabItem[] {
@@ -28,7 +26,7 @@ export function adminGovernanceTabs(
     { id: 'overview', label: t('governanceNav.overview') },
     { id: 'reports', label: t('governanceNav.annualReports') },
     { id: 'grants', label: t('governanceNav.grants') },
-    { id: 'agm', label: 'AGM' },
+    { id: 'agm', label: t('governanceNav.agm') },
     { id: 'board', label: t('governanceNav.board') },
     { id: 'discussions', label: t('governanceNav.discussions') },
     { id: 'records', label: t('governanceNav.records') },

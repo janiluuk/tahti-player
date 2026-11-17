@@ -14,6 +14,7 @@ Users can pick English or Suomi in **Settings → Language**. English is the def
 
 ## Translated
 
+- 2026-11-17: Admin Governance hub card copy (`adminGovernanceHub.*`), `governanceNav.agm` (Vuosikokous), Settings Appearance/About labels.
 - Desktop sidebar, mobile drawer and bottom nav (including More), top bar (menu, back and forward, search, log in) and the account menu.
 - Settings: section titles, descriptions, group headings and the Log in button. The Language panel itself. Studio nav was already translated.
 - Player bar: play, pause, previous, next, shuffle, repeat and loop, mute, volume, queue and full screen, plus the "nothing playing" text and error lines.

@@ -49,15 +49,15 @@ const settingsSections: RouteVisit[] = [
     heading: 'Playback & language',
     url: /\/settings\/(integrations|playback)/,
   },
-  { path: '/settings/themes', heading: /^Themes$/ },
+  { path: '/settings/themes', heading: /^Appearance$/ },
   { path: '/settings/plugin-store', heading: /^Add-ons$/ },
-  { path: '/settings/whats-new', heading: "What's new" },
+  { path: '/settings/whats-new', heading: /^About$/ },
   {
     path: '/settings/no-such-section',
     heading: /^Account$/,
     url: /\/settings\/account$/,
   },
-  { path: '/themes', heading: /^Themes$/, url: /\/settings\/themes$/ },
+  { path: '/themes', heading: /^Appearance$/, url: /\/settings\/themes$/ },
 ];
 
 // Studio bookmarks for pages that now live in Library, Settings or Venues, plus the Studio catalog pages.

@@ -53,17 +53,20 @@ test('board: Co-op grants previews a grant cycle and lists past disbursements', 
   await expect(page.getByText(/2025/).first()).toBeVisible();
 });
 
-test('board: Co-op governance tabs open their content', async ({ page }) => {
+test('board: Co-op governance hub cards open their content', async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await signInAsBoard(page);
   await open(page, '/admin/governance');
-  await expect(page.getByText('Member activity')).toBeVisible();
-  for (const tab of ['Annual reports', 'Board', 'Records']) {
-    await page.getByRole('tab', { name: tab }).click();
-    await expect(page.getByRole('tab', { name: tab })).toHaveAttribute(
-      'aria-selected',
-      'true',
-    );
+  const hub = page.getByRole('list', { name: 'Governance areas' });
+  await expect(hub.getByRole('link', { name: /Overview/ })).toBeVisible();
+  for (const area of ['Annual reports', 'Board', 'Records']) {
+    await hub.getByRole('link', { name: new RegExp(area) }).click();
+    await expect(
+      page.getByRole('heading', { level: 1, name: area }),
+    ).toBeVisible();
     await expect(page.getByText('Page not found')).toHaveCount(0);
+    await open(page, '/admin/governance');
   }
 });

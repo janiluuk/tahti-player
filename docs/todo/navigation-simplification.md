@@ -81,7 +81,7 @@ Upload, Recordings, Embeds, Smart links and the artist catalog move to Studio. T
 | **Inbox** | Every review queue in one list | Moderation's 7 tabs (support, beta applications, radio submissions, reports, feature requests, missed shows, themes), add-on review | Type chips with counts; the open item in a side panel |
 | **People** | Users, roles, membership, per-user storage | Users, Storage → user | Search and filters; user detail in a side panel |
 | **Content** | News, announcements, Tahti Selects, top lists, radio (feature, stations, opt-outs, history), venues, artwork presets | Content, News, Announcements, Selects, Top lists, Radio, Venues, Artwork presets | Hub cards → focused pages; Radio's 4 tabs become chips |
-| **Co-op** | Board, AGM, grants, annual reports, records, discussions, finances and ledger | Governance (7 tabs), Financial, `/admin/grants/$year` | Hub cards; each grant year is a detail page |
+| **Co-op** | Board, AGM, grants, annual reports, records, discussions, finances and ledger | Governance hub + `$tab` areas, Financial, `/admin/grants/$year` | Hub cards; each grant year is a detail page |
 | **Platform** | Add-ons, languages, vendors, storage, logs, monitoring, orphan pages, screen map | Add-ons, Languages, Vendors, Storage, Logs, Monitoring, Orphan pages, Map | Hub cards; Map and orphan pages under a "Diagnostics" card |
 
 ## Sidebar after

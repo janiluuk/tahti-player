@@ -1,9 +1,10 @@
-import { Link, useSearch } from '@tanstack/react-router';
+import { Link, useNavigate, useSearch } from '@tanstack/react-router';
 import {
   BarChart3Icon,
   Disc3Icon,
   DiscAlbumIcon,
   ExternalLinkIcon,
+  FileUpIcon,
   LibraryIcon,
   Link2Icon,
   MoreHorizontalIcon,
@@ -25,6 +26,7 @@ import {
   FilterChips,
   Input,
   MediaArtwork,
+  OverflowMenu,
   Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
@@ -75,6 +77,7 @@ const RELEASE_TYPE_DEFS = [
 
 export function StudioReleasesView() {
   const { t } = useTranslation('web');
+  const navigate = useNavigate();
   const releaseTypes = RELEASE_TYPE_DEFS.map((item) => ({
     id: item.id,
     label: t(item.labelKey),
@@ -84,6 +87,7 @@ export function StudioReleasesView() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
+  const [csvOpen, setCsvOpen] = useState(false);
   const [openMoreId, setOpenMoreId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
   const [type, setType] = useState('SINGLE');
@@ -171,19 +175,10 @@ export function StudioReleasesView() {
           title={t('studioReleases.title')}
           classes={{ root: 'px-0 pt-0' }}
           actions={
-            <div className="flex items-center gap-2">
-              <Tooltip content={t('library.tabSmartLinks')} side="top">
-                <ButtonLink
-                  to="/studio/smartlinks"
-                  size="icon-sm"
-                  variant="text"
-                  aria-label={t('library.tabSmartLinks')}
-                  data-testid="studio-releases-smartlinks"
-                >
-                  <Link2Icon size={16} aria-hidden />
-                </ButtonLink>
-              </Tooltip>
-              <ReleaseCsvImportButton onImported={reload} />
+            <div
+              className="flex items-center gap-2"
+              data-testid="studio-releases-actions"
+            >
               <Tooltip content={t('studioReleases.newRelease')} side="top">
                 <Button
                   size="icon-sm"
@@ -193,6 +188,32 @@ export function StudioReleasesView() {
                   <PlusIcon size={16} aria-hidden />
                 </Button>
               </Tooltip>
+              <OverflowMenu
+                label={t('studioReleases.moreActions')}
+                data-testid="studio-releases-more"
+                items={[
+                  {
+                    id: 'smartlinks',
+                    label: t('library.tabSmartLinks'),
+                    icon: <Link2Icon size={14} aria-hidden />,
+                    onSelect: () => {
+                      void navigate({ to: '/studio/smartlinks' });
+                    },
+                  },
+                  {
+                    id: 'csv',
+                    label: t('releaseCsvImportButton.importFromCsv'),
+                    icon: <FileUpIcon size={14} aria-hidden />,
+                    onSelect: () => setCsvOpen(true),
+                  },
+                ]}
+              />
+              <ReleaseCsvImportButton
+                hideTrigger
+                open={csvOpen}
+                onOpenChange={setCsvOpen}
+                onImported={reload}
+              />
             </div>
           }
         >

@@ -91,7 +91,8 @@ Co-op · Platform**.
 - Platform hub (`/admin/hubs/platform`): Add-ons, Languages, Vendors, Storage,
   Streams, Logs, Orphan pages, Map.
 
-Admin tabbed pages: Governance (`/admin/governance/$tab`) and Moderation
+Admin hub + detail: Governance hub at `/admin/governance`, areas at
+`/admin/governance/$tab`. Admin tabbed pages: Moderation
 queue chips on `/admin/moderation`.
 
 Mobile bottom nav is Listen / Discover / Radio, plus Studio (a real tab for

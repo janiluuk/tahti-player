@@ -78,6 +78,16 @@ describe('settingsNavFor', () => {
     ).toBeTruthy();
   });
 
+  it("labels Themes as Appearance and What's new as About", () => {
+    const nav = settingsNavFor({ signedIn: true, hasChannel: true });
+    expect(nav.find((item) => item.id === 'themes')?.labelKey).toBe(
+      'settings.appearance',
+    );
+    expect(nav.find((item) => item.id === 'whats-new')?.labelKey).toBe(
+      'settings.about',
+    );
+  });
+
   it('sends a deep link to an unavailable section somewhere that exists', () => {
     const artist = { signedIn: true, hasChannel: true };
     expect(isSettingsSectionAvailable('artist', artist)).toBe(false);

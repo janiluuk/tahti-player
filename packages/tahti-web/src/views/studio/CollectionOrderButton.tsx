@@ -9,9 +9,19 @@ import { fetchStudioCollections } from '../../api/studio';
 import { ProfileOrderDialog } from '../../components/ProfileOrderDialog';
 import { publicCollectionsInProfileOrder } from '../../lib/profileCollectionOrder';
 
-export function CollectionOrderButton() {
+export function CollectionOrderButton({
+  open: openProp,
+  onOpenChange,
+  hideTrigger = false,
+}: {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hideTrigger?: boolean;
+} = {}) {
   const { t } = useTranslation('web');
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = openProp ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
 
   const load = useCallback(async () => {
     const { data, meta } = await fetchStudioCollections();
@@ -26,16 +36,18 @@ export function CollectionOrderButton() {
 
   return (
     <>
-      <Tooltip content={t('library.collectionOrderTooltip')} side="top">
-        <Button
-          size="icon-sm"
-          variant="secondary"
-          aria-label={t('library.collectionOrderAria')}
-          onClick={() => setOpen(true)}
-        >
-          <ListOrderedIcon size={16} aria-hidden />
-        </Button>
-      </Tooltip>
+      {hideTrigger ? null : (
+        <Tooltip content={t('library.collectionOrderTooltip')} side="top">
+          <Button
+            size="icon-sm"
+            variant="secondary"
+            aria-label={t('library.collectionOrderAria')}
+            onClick={() => setOpen(true)}
+          >
+            <ListOrderedIcon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
+      )}
       <ProfileOrderDialog
         isOpen={open}
         title={t('library.collectionOrderTitle')}
