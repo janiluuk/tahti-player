@@ -6,6 +6,7 @@ import {
   ADMIN_HUB_DESCRIPTION_KEYS,
   ADMIN_SECTIONS,
   adminHubItems,
+  adminPageDescriptionKey,
   adminPageLabelKey,
   AdminPageLayout,
   adminSectionLabelKey,
@@ -24,12 +25,13 @@ export function AdminHubView({ hub }: { hub: AdminHubId }) {
     : (section?.label ?? t('adminNav.title'));
   const items = adminHubItems(path).map((item) => {
     const key = adminPageLabelKey(item.to);
+    const descriptionKey = adminPageDescriptionKey(item.to);
     return {
       id: item.to,
       href: item.to,
       icon: item.Icon,
       title: key ? t(key) : item.label,
-      description: item.description,
+      description: descriptionKey ? t(descriptionKey) : item.description,
     };
   });
 

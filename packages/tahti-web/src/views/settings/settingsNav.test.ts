@@ -23,7 +23,6 @@ describe('settingsNavFor', () => {
     expect(ids({ signedIn: true, hasChannel: true })).toEqual([
       'account',
       'playback',
-      'integrations',
       'themes',
       'plugin-store',
       'whats-new',
@@ -44,7 +43,6 @@ describe('settingsNavFor', () => {
       'account',
       'artist',
       'playback',
-      'integrations',
       'themes',
       'plugin-store',
       'whats-new',

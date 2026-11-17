@@ -729,7 +729,7 @@
       "accountTabGroupNotifications": "Notifications",
       "accountTabGroupPrivacyData": "Privacy & data",
       "playbackLanguage": "Playback & language",
-      "playbackLanguageDescription": "Volume, shuffle, repeat, skip duration and the app language"
+      "playbackLanguageDescription": "Playback, language, and desktop integrations."
     },
     "language": {
       "label": "Language",
@@ -1216,7 +1216,31 @@
       "missedShowsEmpty": "No missed shows in this view",
       "venuesEmpty": "No venues found",
       "venuesLoadError": "Could not load venues",
-      "venuesTitle": "Venues"
+      "venuesTitle": "Venues",
+      "dashboardDescription": "Platform-wide overview — activity, health, and shortcuts.",
+      "logsDescription": "Live container logs from every service in the production stack.",
+      "moderationDescription": "Support, beta applications, radio submissions, Selects, content reports, and feature requests — one tabbed queue.",
+      "usersDescription": "Search accounts and edit role, membership, and suspension.",
+      "contentDescription": "System content overview — catalog totals, latest uploads, and recordings.",
+      "radioDescription": "Tahti Radio and Tahti Selects rotation, live from the station.",
+      "newsDescription": "Publish platform-wide news posts.",
+      "streamsDescription": "Monitor live ingest and stream health across channels.",
+      "venuesDescription": "Verify and manage registered venue listings.",
+      "topListsDescription": "Editorial top-track and top-artist lists.",
+      "announcementsDescription": "Site-wide banners and announcement messages.",
+      "storageDescription": "Disk/object storage space, quotas, and every uploaded file across the platform.",
+      "artworkPresetsDescription": "Choose and replace the abstract artwork defaults for uploads.",
+      "financialDescription": "Membership revenue, payouts, and financial records.",
+      "governanceDescription": "Member votes, annual reports, grants, and AGM — one tabbed hub.",
+      "addonsDescription": "Register and manage available listener, artist, and admin add-ons.",
+      "vendorsDescription": "Track vendors, integrations, launch checks, and DPAs.",
+      "i18nDescription": "Add languages and import translation CSVs.",
+      "tahtiSelectsDescription": "Manage the Tahti Selects editorial stream and rotation.",
+      "orphanPagesDescription": "Real pages that shipped without a menu entry or an in-app link, gathered here as tabs.",
+      "mapDescription": "Screen atlas of listener, studio, and admin surfaces.",
+      "hubContentCardDescription": "News, announcements, Selects, top lists, radio, venues, artwork presets and the catalog.",
+      "hubCoopCardDescription": "Board, AGM, grants, annual reports, records and finances.",
+      "hubPlatformCardDescription": "Add-ons, languages, vendors, storage, streams, logs and diagnostics."
     },
     "channelShare": {
       "title": "Share channel",

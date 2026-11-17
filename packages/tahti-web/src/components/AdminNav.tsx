@@ -108,8 +108,43 @@ export const ADMIN_HUB_DESCRIPTION_KEYS = {
   '/admin/hubs/platform': 'adminNav.hubPlatformDescription',
 } as const satisfies Record<string, ParseKeys<'web'>>;
 
+export const ADMIN_PAGE_DESCRIPTION_KEYS = {
+  '/admin': 'adminPages.dashboardDescription',
+  '/admin/logs': 'adminPages.logsDescription',
+  '/admin/moderation': 'adminPages.moderationDescription',
+  '/admin/users': 'adminPages.usersDescription',
+  '/admin/content': 'adminPages.contentDescription',
+  '/admin/radio': 'adminPages.radioDescription',
+  '/admin/news': 'adminPages.newsDescription',
+  '/admin/streams': 'adminPages.streamsDescription',
+  '/admin/venues': 'adminPages.venuesDescription',
+  '/admin/top-lists': 'adminPages.topListsDescription',
+  '/admin/announcements': 'adminPages.announcementsDescription',
+  '/admin/storage': 'adminPages.storageDescription',
+  '/admin/artwork-presets': 'adminPages.artworkPresetsDescription',
+  '/admin/financial': 'adminPages.financialDescription',
+  '/admin/governance': 'adminPages.governanceDescription',
+  '/admin/addons': 'adminPages.addonsDescription',
+  '/admin/vendors': 'adminPages.vendorsDescription',
+  '/admin/i18n': 'adminPages.i18nDescription',
+  '/admin/tahti-selects': 'adminPages.tahtiSelectsDescription',
+  '/admin/orphan-pages': 'adminPages.orphanPagesDescription',
+  '/admin/map': 'adminPages.mapDescription',
+  '/admin/hubs/content': 'adminPages.hubContentCardDescription',
+  '/admin/hubs/coop': 'adminPages.hubCoopCardDescription',
+  '/admin/hubs/platform': 'adminPages.hubPlatformCardDescription',
+} as const satisfies Record<string, ParseKeys<'web'>>;
+
 export function adminPageLabelKey(to: string): ParseKeys<'web'> | null {
   return ADMIN_PAGE_KEYS[to as keyof typeof ADMIN_PAGE_KEYS] ?? null;
+}
+
+export function adminPageDescriptionKey(to: string): ParseKeys<'web'> | null {
+  return (
+    ADMIN_PAGE_DESCRIPTION_KEYS[
+      to as keyof typeof ADMIN_PAGE_DESCRIPTION_KEYS
+    ] ?? null
+  );
 }
 
 export function adminSectionLabelKey(id: string): ParseKeys<'web'> | null {

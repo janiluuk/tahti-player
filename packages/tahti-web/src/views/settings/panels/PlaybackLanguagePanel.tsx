@@ -5,10 +5,15 @@ import {
   useSettingsModalStore,
   type PlaybackSettingsSection,
 } from '../../../stores/settingsModalStore';
+import { IntegrationsPanel } from './IntegrationsPanel';
 import { LanguagePanel } from './LanguagePanel';
 import { PlaybackPanel } from './PlaybackPanel';
 
-const SECTIONS: readonly PlaybackSettingsSection[] = ['playback', 'language'];
+const SECTIONS: readonly PlaybackSettingsSection[] = [
+  'playback',
+  'language',
+  'integrations',
+];
 
 export function PlaybackLanguagePanel() {
   const { t } = useTranslation('web');
@@ -37,6 +42,11 @@ export function PlaybackLanguagePanel() {
           id: 'language',
           label: t('settings.language'),
           content: <LanguagePanel />,
+        },
+        {
+          id: 'integrations',
+          label: t('settings.integrations'),
+          content: <IntegrationsPanel />,
         },
       ]}
     />

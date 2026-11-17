@@ -37,7 +37,11 @@ const settingsSections: RouteVisit[] = [
   { path: '/settings', heading: /^Account$/, url: /\/settings\/account$/ },
   { path: '/settings/account', heading: /^Account$/ },
   { path: '/settings/playback', heading: 'Playback & language' },
-  { path: '/settings/integrations', heading: /^Integrations$/ },
+  {
+    path: '/settings/integrations',
+    heading: 'Playback & language',
+    url: /\/settings\/(integrations|playback)/,
+  },
   { path: '/settings/themes', heading: /^Themes$/ },
   { path: '/settings/plugin-store', heading: /^Add-ons$/ },
   { path: '/settings/whats-new', heading: "What's new" },

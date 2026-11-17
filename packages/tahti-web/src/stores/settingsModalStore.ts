@@ -15,7 +15,7 @@ export type ArtistSettingsSection =
 
 export type AccountSettingsSection = 'subscriptions' | 'api-tokens';
 
-export type PlaybackSettingsSection = 'playback' | 'language';
+export type PlaybackSettingsSection = 'playback' | 'language' | 'integrations';
 
 type SettingsModalState = {
   isOpen: boolean;
