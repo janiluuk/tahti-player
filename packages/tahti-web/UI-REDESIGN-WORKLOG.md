@@ -1,3 +1,9 @@
+## 2026-11-17 - Settings Security and Notifications (0.0.406)
+
+Settings gains Security and Notifications as their own side-list items.
+Account keeps session, membership, purchases and privacy; old Account tab
+deep links for devices, tokens, alerts and mentions redirect.
+
 ## 2026-11-17 - Admin hub Finnish, Integrations under Playback (0.0.405)
 
 Admin hub card descriptions follow the app language. Settings folds

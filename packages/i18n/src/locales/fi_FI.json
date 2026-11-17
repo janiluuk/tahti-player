@@ -696,7 +696,7 @@
       "apiDocs": "API-ohjeet",
       "about": "Tietoa",
       "account": "Tili",
-      "accountDescription": "Istunto, tietoturva, jäsenyys, ilmoitukset",
+      "accountDescription": "Istunto, jäsenyys, ostokset ja yksityisyys",
       "artist": "Artisti",
       "artistDescription": "Profiili, ilme, some-linkit, jäsenet, pressikitti",
       "channel": "Kanava ja ilme",
@@ -729,7 +729,12 @@
       "accountTabGroupNotifications": "Ilmoitukset",
       "accountTabGroupPrivacyData": "Yksityisyys ja data",
       "playbackLanguage": "Toisto ja kieli",
-      "playbackLanguageDescription": "Toisto, kieli ja työpöytäintegraatiot."
+      "playbackLanguageDescription": "Toisto, kieli ja työpöytäintegraatiot.",
+      "security": "Turvallisuus",
+      "securityDescription": "Salasana, laitteet, kaksivaiheinen tunnistus ja API-tunnukset.",
+      "notifications": "Ilmoitukset",
+      "notificationsDescription": "Sähköposti, sovellusilmoitukset ja maininnat.",
+      "accountTabGroupProfile": "Profiili ja tiedot"
     },
     "language": {
       "label": "Kieli",

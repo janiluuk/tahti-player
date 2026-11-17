@@ -1,6 +1,8 @@
 import type { LucideIcon } from 'lucide-react';
 import {
+  Bell,
   BlocksIcon,
+  Lock,
   Palette,
   PlayCircle,
   Sparkles,
@@ -18,7 +20,14 @@ type WebKey = ParseKeys<'web'>;
  * Studio → Profile and Studio → Broadcast; `artist` is the listener's
  * profile for an account without a channel. */
 export type SettingsSectionId =
-  'account' | 'artist' | 'playback' | 'themes' | 'plugin-store' | 'whats-new';
+  | 'account'
+  | 'security'
+  | 'notifications'
+  | 'artist'
+  | 'playback'
+  | 'themes'
+  | 'plugin-store'
+  | 'whats-new';
 
 export type SettingsNavGroup = 'Settings' | 'App';
 
@@ -47,6 +56,24 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
       label: t('settingsNav.account'),
       labelKey: 'settings.account',
       Icon: User,
+      group: 'Settings',
+    },
+    {
+      id: 'security',
+      label: t('settings.security'),
+      labelKey: 'settings.security',
+      description: t('settings.securityDescription'),
+      descriptionKey: 'settings.securityDescription',
+      Icon: Lock,
+      group: 'Settings',
+    },
+    {
+      id: 'notifications',
+      label: t('settings.notifications'),
+      labelKey: 'settings.notifications',
+      description: t('settings.notificationsDescription'),
+      descriptionKey: 'settings.notificationsDescription',
+      Icon: Bell,
       group: 'Settings',
     },
     {

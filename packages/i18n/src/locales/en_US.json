@@ -696,7 +696,7 @@
       "apiDocs": "API docs",
       "about": "About",
       "account": "Account",
-      "accountDescription": "Session, security, membership, notifications",
+      "accountDescription": "Session, membership, purchases, and privacy",
       "artist": "Artist",
       "artistDescription": "Profile, branding, social links, members, press kit",
       "channel": "Channel & design",
@@ -729,7 +729,12 @@
       "accountTabGroupNotifications": "Notifications",
       "accountTabGroupPrivacyData": "Privacy & data",
       "playbackLanguage": "Playback & language",
-      "playbackLanguageDescription": "Playback, language, and desktop integrations."
+      "playbackLanguageDescription": "Playback, language, and desktop integrations.",
+      "security": "Security",
+      "securityDescription": "Password, devices, two-factor, and API tokens.",
+      "notifications": "Notifications",
+      "notificationsDescription": "Email, in-app alerts, and mentions.",
+      "accountTabGroupProfile": "Profile & data"
     },
     "language": {
       "label": "Language",

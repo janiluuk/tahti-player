@@ -22,6 +22,8 @@ describe('settingsNavFor', () => {
   it('keeps an artist to account sections; the profile forms are in Studio', () => {
     expect(ids({ signedIn: true, hasChannel: true })).toEqual([
       'account',
+      'security',
+      'notifications',
       'playback',
       'themes',
       'plugin-store',
@@ -41,6 +43,8 @@ describe('settingsNavFor', () => {
     const nav = settingsNavFor({ signedIn: true, hasChannel: false });
     expect(nav.map((item) => item.id)).toEqual([
       'account',
+      'security',
+      'notifications',
       'artist',
       'playback',
       'themes',
@@ -53,7 +57,7 @@ describe('settingsNavFor', () => {
     );
   });
 
-  it('gives no description to sections whose tabs already list their content', () => {
+  it('gives no description to Account whose tabs already list their content', () => {
     const nav = settingsNavFor({ signedIn: true, hasChannel: true });
     expect(
       nav.find((item) => item.id === 'account')?.description,
@@ -63,6 +67,12 @@ describe('settingsNavFor', () => {
         (item) => item.id === 'artist',
       )?.description,
     ).toBeUndefined();
+    expect(
+      nav.find((item) => item.id === 'security')?.description,
+    ).toBeTruthy();
+    expect(
+      nav.find((item) => item.id === 'notifications')?.description,
+    ).toBeTruthy();
     expect(
       nav.find((item) => item.id === 'playback')?.description,
     ).toBeTruthy();

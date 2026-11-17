@@ -14,7 +14,13 @@ import {
   useSettingsModalStore,
   type AccountSettingsSection,
   type ArtistSettingsSection,
+  type NotificationsSettingsSection,
+  type SecuritySettingsSection,
 } from '../../stores/settingsModalStore';
+import {
+  isNotificationsTabId,
+  isSecurityTabId,
+} from './panels/accountTabGroups';
 import { isSettingsSectionId, type SettingsSectionId } from './settingsNav';
 import { socialCallbackToast } from './socialCallback';
 
@@ -37,10 +43,34 @@ function isArtistSettingsSection(
   );
 }
 
+const ACCOUNT_SECTIONS: readonly AccountSettingsSection[] = [
+  'session',
+  'membership',
+  'governance',
+  'storage',
+  'subscriptions',
+  'purchases',
+  'privacy',
+];
+
 function isAccountSettingsSection(
   value: string | null,
 ): value is AccountSettingsSection {
-  return value === 'subscriptions' || value === 'api-tokens';
+  return Boolean(
+    value && ACCOUNT_SECTIONS.includes(value as AccountSettingsSection),
+  );
+}
+
+function isSecuritySettingsSection(
+  value: string | null,
+): value is SecuritySettingsSection {
+  return isSecurityTabId(value);
+}
+
+function isNotificationsSettingsSection(
+  value: string | null,
+): value is NotificationsSettingsSection {
+  return isNotificationsTabId(value);
 }
 
 function showCallbackToast(
@@ -159,22 +189,53 @@ export function SettingsView() {
       open('themes');
       return;
     }
-    open(
-      section,
-      isPluginCategoryTarget(category)
-        ? category
-        : category
-          ? pluginAudienceForTarget(category)
-          : undefined,
-      section === 'artist' && isArtistSettingsSection(tab) ? tab : undefined,
-      section === 'account' && isAccountSettingsSection(tab) ? tab : undefined,
+    // Security and Notifications left Account; old ?tab= bookmarks follow.
+    if (section === 'account' && isSecurityTabId(tab)) {
+      void navigate({
+        href: `/settings/security?tab=${tab}`,
+        replace: true,
+      });
+      return;
+    }
+    if (section === 'account' && isNotificationsTabId(tab)) {
+      void navigate({
+        href:
+          tab === 'notifications'
+            ? '/settings/notifications'
+            : `/settings/notifications?tab=${tab}`,
+        replace: true,
+      });
+      return;
+    }
+    const pluginCategory = isPluginCategoryTarget(category)
+      ? category
+      : category
+        ? pluginAudienceForTarget(category)
+        : undefined;
+    const playbackSection =
       section === 'playback'
         ? rawSectionId === 'language' || tab === 'language'
           ? 'language'
           : rawSectionId === 'integrations' || tab === 'integrations'
             ? 'integrations'
             : 'playback'
-        : undefined,
+        : undefined;
+    open(
+      section,
+      pluginCategory,
+      section === 'artist' && isArtistSettingsSection(tab) ? tab : undefined,
+      section === 'account' && isAccountSettingsSection(tab) ? tab : undefined,
+      playbackSection,
+      section === 'security' && isSecuritySettingsSection(tab)
+        ? tab
+        : section === 'security'
+          ? 'password-email'
+          : undefined,
+      section === 'notifications' && isNotificationsSettingsSection(tab)
+        ? tab
+        : section === 'notifications'
+          ? 'notifications'
+          : undefined,
     );
     if (!isSettingsSectionId(sectionId)) {
       useSettingsModalStore.setState({ openedToSection: false });

@@ -1,3 +1,7 @@
+## 2026-11-17 — Settings Security and Notifications as own items (30 slices)
+
+Settings side list gains Security (password, devices, 2FA, API tokens) and Notifications (alerts, mentions). Account keeps session, membership, purchases and privacy. Old `/settings/account?tab=api-tokens|devices|…` and notification tabs redirect. tahti-web 0.0.406. Advances simplify-studio phase 4.
+
 ## 2026-11-17 — Admin hub Finnish + Settings Integrations under Playback (30 slices)
 
 Admin Content/Co-op/Platform hub cards use Finnish descriptions (`adminPages.*Description`). Settings folds Integrations into Playback & language (third tab; `/settings/integrations` still opens it). What's new nav label follows i18n. NAVIGATION-SITEMAP and NAVIGATION-GAPS rewritten for the shipped Studio/Library/Admin/Settings IA (navigation-simplification slice 10). tahti-web 0.0.405.

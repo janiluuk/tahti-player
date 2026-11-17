@@ -66,9 +66,10 @@ Files (`/library/files?kind=`) shows Media, Stash and Local files as chips.
 **Local files** is a chip only when the desktop app provides the on-disk
 library. Playlists as a Library tab is still open product work.
 
-Settings modal sections (`settingsNav`) are account-only: Account, Profile
-(only for an account without a channel), Playback & language (tabs Playback ·
-Language · Integrations); Themes, Add-ons, What's new (group "App"). Signed
+Settings modal sections (`settingsNav`) are account-only: Account, Security,
+Notifications, Profile (only for an account without a channel), Playback &
+language (tabs Playback · Language · Integrations); Themes, Add-ons, What's
+new (group "App"). Signed
 out, only Playback, Themes, Add-ons and What's new show. An artist's
 profile, channel and broadcast forms are Studio pages;
 `/settings/artist?tab=…` (for a channel owner), `/settings/channel?tab=…`
