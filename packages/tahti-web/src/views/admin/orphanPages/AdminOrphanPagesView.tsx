@@ -51,6 +51,9 @@ export function AdminOrphanPagesView({ tab }: { tab?: AdminOrphanPageTabId }) {
               {t('adminOrphanPagesViewText.admin')}
             </BreadcrumbLink>
             <AdminHubBreadcrumb hub="platform" />
+            <BreadcrumbLink to="/admin/diagnostics">
+              {t('adminPages.diagnostics')}
+            </BreadcrumbLink>
             <BreadcrumbCurrent>
               {t('adminOrphanPagesViewText.orphanPages')}
             </BreadcrumbCurrent>

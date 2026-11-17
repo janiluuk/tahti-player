@@ -200,6 +200,9 @@ export function AdminLogsView() {
                 {t('adminLogsView.admin')}
               </BreadcrumbLink>
               <AdminHubBreadcrumb hub="platform" />
+              <BreadcrumbLink to="/admin/diagnostics">
+                {t('adminPages.diagnostics')}
+              </BreadcrumbLink>
               <BreadcrumbLink to="/admin/logs">
                 {t('adminLogsView.logs')}
               </BreadcrumbLink>

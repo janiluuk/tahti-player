@@ -1,5 +1,5 @@
 import { Link, useNavigate, useSearch } from '@tanstack/react-router';
-import { CircleHelpIcon } from 'lucide-react';
+import { BookOpenIcon, CircleHelpIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -7,7 +7,7 @@ import {
   Alert,
   Button,
   ButtonLink,
-  Tooltip,
+  OverflowMenu,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -142,6 +142,33 @@ export function StudioRevenueView() {
         <ViewShell
           title={pageTitle}
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+          actions={
+            !showTiers && !showStore ? (
+              <OverflowMenu
+                label={t('studioRevenue2.moreActions')}
+                data-testid="studio-revenue-more"
+                items={[
+                  {
+                    id: 'guide',
+                    label: t('studioRevenue2.earningsGuide'),
+                    icon: <BookOpenIcon size={14} aria-hidden />,
+                    onSelect: () => {
+                      void navigate({
+                        to: '/help/$slug',
+                        params: { slug: 'earnings' },
+                      });
+                    },
+                  },
+                  {
+                    id: 'tour',
+                    label: t('studioRevenue2.helpTakeAGuidedTour'),
+                    icon: <CircleHelpIcon size={14} aria-hidden />,
+                    onSelect: () => openTour(),
+                  },
+                ]}
+              />
+            ) : undefined
+          }
         >
           {movedFrom ? (
             <Alert
@@ -164,28 +191,6 @@ export function StudioRevenueView() {
                 </Button>
               </div>
             </Alert>
-          ) : null}
-          {!showTiers && !showStore ? (
-            <div className="flex items-center gap-2">
-              <ButtonLink
-                to="/help/$slug"
-                params={{ slug: 'earnings' }}
-                size="sm"
-                variant="secondary"
-              >
-                {t('studioRevenue2.earningsGuide')}
-              </ButtonLink>
-              <Tooltip content={t('studioRevenue2.help')} side="top">
-                <Button
-                  size="icon-sm"
-                  variant="secondary"
-                  aria-label={t('studioRevenue2.helpTakeAGuidedTour')}
-                  onClick={() => openTour()}
-                >
-                  <CircleHelpIcon size={16} aria-hidden />
-                </Button>
-              </Tooltip>
-            </div>
           ) : null}
 
           {showTiers ? (

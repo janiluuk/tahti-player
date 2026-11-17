@@ -6,6 +6,7 @@ import {
   BreadcrumbLink,
   Breadcrumbs,
   Button,
+  FilterBar,
   FilterChips,
   InlineError,
   Tooltip,
@@ -103,54 +104,57 @@ export function AdminAddonsView() {
             <ViewShell
               title={t('adminAddonsView.addOns')}
               classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
+              actions={
+                <Tooltip
+                  content={t('adminAddonsView.registerANewAddOn')}
+                  side="top"
+                >
+                  <Button
+                    type="button"
+                    size="icon-sm"
+                    aria-label={t('adminAddonsView.registerANewAddOn')}
+                    onClick={openRegister}
+                  >
+                    <PlusIcon size={18} aria-hidden />
+                  </Button>
+                </Tooltip>
+              }
             >
               <p className="text-foreground-secondary text-sm">
-                Covers the sandboxed widget-bundle store behind two of the 13
-                Settings → Add-ons categories: Discovery (Listen page) and
-                Channel (artist page). The other 11 are fixed code registries or
-                private per-user connections with nothing to moderate here.
+                {t('adminAddonsView.intro')}
               </p>
-              <Tooltip
-                content={t('adminAddonsView.registerANewAddOn')}
-                side="top"
-              >
-                <Button
-                  type="button"
-                  size="icon-sm"
-                  aria-label={t('adminAddonsView.registerANewAddOn')}
-                  onClick={openRegister}
-                >
-                  <PlusIcon size={18} aria-hidden />
-                </Button>
-              </Tooltip>
 
-              <FilterChips
-                aria-label={t('adminAddonsView.addOnTypes')}
-                className="border-border border-b pb-3"
-                items={[
-                  { id: 'ALL', label: t('adminAddonsViewMore.allAddOns') },
-                  ...SCOPES.map((item) => ({ id: item.id, label: item.label })),
-                ]}
-                selected={scope}
-                onChange={(id) => setScope(id as AdminAddonScope | 'ALL')}
-              />
-
-              <FilterChips
-                aria-label={t('adminAddonsView.addOnReviewStatus')}
-                className="border-border border-b pb-3"
-                items={[
-                  { id: 'ALL', label: t('adminAddonsViewMore.allStatuses') },
-                  {
-                    id: 'PENDING',
-                    label:
-                      pendingCount > 0
-                        ? `Needs review (${pendingCount})`
-                        : 'Needs review',
-                  },
-                ]}
-                selected={needsReviewOnly ? 'PENDING' : 'ALL'}
-                onChange={(id) => setNeedsReviewOnly(id === 'PENDING')}
-              />
+              <FilterBar className="border-border border-b pb-3">
+                <FilterChips
+                  aria-label={t('adminAddonsView.addOnTypes')}
+                  items={[
+                    { id: 'ALL', label: t('adminAddonsViewMore.allAddOns') },
+                    ...SCOPES.map((item) => ({
+                      id: item.id,
+                      label: item.label,
+                    })),
+                  ]}
+                  selected={scope}
+                  onChange={(id) => setScope(id as AdminAddonScope | 'ALL')}
+                />
+                <FilterChips
+                  aria-label={t('adminAddonsView.addOnReviewStatus')}
+                  items={[
+                    { id: 'ALL', label: t('adminAddonsViewMore.allStatuses') },
+                    {
+                      id: 'PENDING',
+                      label:
+                        pendingCount > 0
+                          ? t('adminAddonsView.needsReviewCount', {
+                              count: pendingCount,
+                            })
+                          : t('adminAddonsView.needsReview'),
+                    },
+                  ]}
+                  selected={needsReviewOnly ? 'PENDING' : 'ALL'}
+                  onChange={(id) => setNeedsReviewOnly(id === 'PENDING')}
+                />
+              </FilterBar>
 
               {error &&
               !registerOpen &&

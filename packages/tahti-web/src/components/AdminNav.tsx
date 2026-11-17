@@ -23,6 +23,7 @@ import {
   RadioTowerIcon,
   ServerIcon,
   ShieldCheckIcon,
+  StethoscopeIcon,
   TrophyIcon,
   UsersIcon,
 } from 'lucide-react';
@@ -88,6 +89,7 @@ const ADMIN_PAGE_KEYS = {
   '/admin/tahti-selects': 'adminPages.tahtiSelects',
   '/admin/orphan-pages': 'adminPages.orphanPages',
   '/admin/map': 'adminPages.map',
+  '/admin/diagnostics': 'adminPages.diagnostics',
   '/admin/hubs/content': 'adminNav.sectionContent',
   '/admin/hubs/coop': 'adminNav.sectionCoop',
   '/admin/hubs/platform': 'adminNav.sectionPlatform',
@@ -130,6 +132,7 @@ export const ADMIN_PAGE_DESCRIPTION_KEYS = {
   '/admin/tahti-selects': 'adminPages.tahtiSelectsDescription',
   '/admin/orphan-pages': 'adminPages.orphanPagesDescription',
   '/admin/map': 'adminPages.mapDescription',
+  '/admin/diagnostics': 'adminPages.diagnosticsDescription',
   '/admin/hubs/content': 'adminPages.hubContentCardDescription',
   '/admin/hubs/coop': 'adminPages.hubCoopCardDescription',
   '/admin/hubs/platform': 'adminPages.hubPlatformCardDescription',
@@ -262,7 +265,7 @@ export const PRIMARY = [
     Icon: LandmarkIcon,
     icon: <LandmarkIcon size={16} aria-hidden />,
     description:
-      'Member votes, annual reports, grants, and AGM — one tabbed hub.',
+      'Member votes, annual reports, grants, and AGM — hub of area cards.',
   },
   {
     to: '/admin/addons',
@@ -271,6 +274,13 @@ export const PRIMARY = [
     icon: <BlocksIcon size={16} aria-hidden />,
     description:
       'Register and manage available listener, artist, and admin add-ons.',
+  },
+  {
+    to: '/admin/diagnostics',
+    label: 'Diagnostics',
+    Icon: StethoscopeIcon,
+    icon: <StethoscopeIcon size={16} aria-hidden />,
+    description: 'Logs, orphan pages, and the screen atlas.',
   },
   {
     to: '/admin/vendors',
@@ -394,12 +404,21 @@ export const ADMIN_SECTIONS: readonly AdminSection[] = [
       '/admin/vendors',
       '/admin/storage',
       '/admin/streams',
+      '/admin/diagnostics',
       '/admin/logs',
       '/admin/orphan-pages',
       '/admin/map',
     ]),
   },
 ];
+
+/** Opened from Diagnostics hub cards; stay in the Platform section but
+ * do not appear as Platform hub cards themselves. */
+const PLATFORM_DIAGNOSTICS_PAGES = new Set([
+  '/admin/logs',
+  '/admin/orphan-pages',
+  '/admin/map',
+]);
 
 export function adminSectionForPath(
   current: string | undefined,
@@ -411,7 +430,21 @@ export function adminSectionForPath(
 
 export function adminHubItems(hub: string) {
   const section = ADMIN_SECTIONS.find((item) => item.hub === hub);
-  return section ? section.items.filter((item) => item.to !== hub) : [];
+  if (!section) {
+    return [];
+  }
+  return section.items.filter((item) => {
+    if (item.to === hub) {
+      return false;
+    }
+    if (
+      hub === '/admin/hubs/platform' &&
+      PLATFORM_DIAGNOSTICS_PAGES.has(item.to)
+    ) {
+      return false;
+    }
+    return true;
+  });
 }
 
 const SUBMENU_SLOT_CLASS = 'min-h-7';

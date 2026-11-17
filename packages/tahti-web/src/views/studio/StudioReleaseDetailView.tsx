@@ -21,8 +21,8 @@ import {
   backButtonCornerClassName,
   BackButtonLink,
   Button,
-  ButtonLink,
   EditIconButton,
+  OverflowMenu,
   SaveButton,
   Tabs,
   Textarea,
@@ -243,53 +243,6 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
               stats={headerStats}
               actions={
                 <>
-                  <Tooltip
-                    content={t('studioReleaseDetail.openEmbedAria')}
-                    side="top"
-                  >
-                    <ButtonLink
-                      to="/r/$slug"
-                      params={{ slug: release.smartLinkSlug }}
-                      size="icon"
-                      variant="secondary"
-                      aria-label={t('studioReleaseDetail.openEmbedAria')}
-                    >
-                      <Code2Icon size={16} aria-hidden />
-                    </ButtonLink>
-                  </Tooltip>
-                  <Tooltip
-                    content={t('studioReleaseDetail.schedulePartyAria')}
-                    side="top"
-                  >
-                    <ButtonLink
-                      to="/studio/listening-parties/new"
-                      search={{ releaseId: release.id }}
-                      size="icon"
-                      variant="secondary"
-                      aria-label={t('studioReleaseDetail.schedulePartyAria')}
-                      disabled={!release.tracks?.length}
-                    >
-                      <PartyPopperIcon size={16} aria-hidden />
-                    </ButtonLink>
-                  </Tooltip>
-                  <Tooltip
-                    content={t('studioReleaseDetail.deleteAria')}
-                    side="top"
-                  >
-                    <Button
-                      size="icon"
-                      variant="secondary"
-                      aria-label={t('studioReleaseDetail.deleteAria')}
-                      disabled={deleting}
-                      onClick={() => setConfirmDelete(true)}
-                    >
-                      <Trash2Icon
-                        className="text-accent-red-strong"
-                        size={16}
-                        aria-hidden
-                      />
-                    </Button>
-                  </Tooltip>
                   {detailsExpanded ? (
                     <SaveButton saving={saving} onClick={() => void save()} />
                   ) : null}
@@ -297,6 +250,49 @@ export function StudioReleaseDetailView({ id }: { id: string }) {
                     label={i18n.t('web:actions.editDetails')}
                     editing={detailsExpanded}
                     onClick={() => setDetailsExpanded(!detailsExpanded)}
+                  />
+                  <OverflowMenu
+                    label={t('studioReleaseDetail.moreActions')}
+                    data-testid="studio-release-more"
+                    items={[
+                      {
+                        id: 'embed',
+                        label: t('studioReleaseDetail.openEmbedAria'),
+                        icon: <Code2Icon size={14} aria-hidden />,
+                        onSelect: () => {
+                          void navigate({
+                            to: '/r/$slug',
+                            params: { slug: release.smartLinkSlug },
+                          });
+                        },
+                      },
+                      {
+                        id: 'party',
+                        label: t('studioReleaseDetail.schedulePartyAria'),
+                        icon: <PartyPopperIcon size={14} aria-hidden />,
+                        disabled: !release.tracks?.length,
+                        onSelect: () => {
+                          void navigate({
+                            to: '/studio/listening-parties/new',
+                            search: { releaseId: release.id },
+                          });
+                        },
+                      },
+                      {
+                        id: 'delete',
+                        label: t('studioReleaseDetail.deleteAria'),
+                        icon: (
+                          <Trash2Icon
+                            className="text-accent-red-strong"
+                            size={14}
+                            aria-hidden
+                          />
+                        ),
+                        destructive: true,
+                        disabled: deleting,
+                        onSelect: () => setConfirmDelete(true),
+                      },
+                    ]}
                   />
                 </>
               }

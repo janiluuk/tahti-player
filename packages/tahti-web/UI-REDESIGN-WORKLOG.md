@@ -1,3 +1,9 @@
+## 2026-11-17 - Diagnostics hub, Release/Earnings overflow, Add-ons FilterBar (0.0.408)
+
+Platform → Diagnostics hub cards for Logs, Orphan pages and Map. Studio Release
+detail and Earnings put secondary actions in OverflowMenu. Admin Add-ons uses
+ViewShell actions and one FilterBar row. Finnish for the new Diagnostics copy.
+
 ## 2026-11-17 - Governance hub, Settings About/Appearance, Studio overflow (0.0.407)
 
 Admin Governance is hub cards at `/admin/governance` with focused area pages

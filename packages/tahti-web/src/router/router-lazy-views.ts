@@ -169,6 +169,10 @@ export const AdminMapView = lazyRouteComponent(
   () => import('../views/admin/AdminMapView'),
   'AdminMapView',
 );
+export const AdminDiagnosticsView = lazyRouteComponent(
+  () => import('../views/admin/AdminDiagnosticsView'),
+  'AdminDiagnosticsView',
+);
 export const AdminStorageView = lazyRouteComponent(
   () => import('../views/admin/AdminStorageView'),
   'AdminStorageView',
