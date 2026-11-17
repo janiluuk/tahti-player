@@ -19,7 +19,14 @@ import {
   ViewShell,
 } from '@tahti-player/ui';
 
-import { fetchAdminDashboard } from '../../../api/admin';
+import {
+  fetchAdminContentReports,
+  fetchAdminDashboard,
+  fetchAdminFeatureRequests,
+  fetchAdminMissedShows,
+  fetchAdminRadioSubmissions,
+  fetchAdminThemes,
+} from '../../../api/admin';
 import { AdminGate } from '../../../components/AdminGate';
 import { AdminPageLayout } from '../../../components/AdminNav';
 import { AdminMissedShowsPanel } from '../AdminMissedShowsView';
@@ -86,15 +93,47 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
     : DEFAULT_ADMIN_MODERATION_TAB;
 
   useEffect(() => {
-    void fetchAdminDashboard().then((result) => {
-      setPendingCount(
-        result.data.kpis.betaQueue + result.data.kpis.openTickets,
-      );
+    let cancelled = false;
+    void Promise.all([
+      fetchAdminDashboard(),
+      fetchAdminRadioSubmissions(),
+      fetchAdminContentReports('OPEN'),
+      fetchAdminFeatureRequests('OPEN'),
+      fetchAdminMissedShows('OPEN'),
+      fetchAdminThemes('PENDING_REVIEW'),
+    ]).then(([dashboard, radio, reports, features, missed, themes]) => {
+      if (cancelled) {
+        return;
+      }
+      const support = dashboard.data.kpis.openTickets;
+      const beta = dashboard.data.kpis.betaQueue;
+      const radioCount = radio.data.length;
+      const reportsCount = reports.data.length;
+      const featuresCount = features.data.length;
+      const missedCount = missed.data.length;
+      const themesCount = themes.ok ? themes.themes.length : 0;
       setQueueCounts({
-        support: result.data.kpis.openTickets,
-        beta: result.data.kpis.betaQueue,
+        support,
+        beta,
+        'radio-submissions': radioCount,
+        'content-reports': reportsCount,
+        'feature-requests': featuresCount,
+        'missed-shows': missedCount,
+        themes: themesCount,
       });
+      setPendingCount(
+        support +
+          beta +
+          radioCount +
+          reportsCount +
+          featuresCount +
+          missedCount +
+          themesCount,
+      );
     });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (

@@ -19,12 +19,10 @@ import {
   AdminLogsView,
   AdminMapView,
   AdminModerationView,
-  AdminMonitoringView,
   AdminNewsView,
   AdminOrphanPagesView,
   AdminRadioView,
   AdminSelectsView,
-  AdminStatusView,
   AdminStorageUserView,
   AdminStorageView,
   AdminStreamsView,
@@ -63,7 +61,9 @@ export const adminLogsRoute = createRoute({
 export const adminMonitoringRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/monitoring',
-  component: AdminMonitoringView,
+  beforeLoad: () => {
+    throw redirect({ to: '/admin', hash: 'monitoring' });
+  },
 });
 
 // Beta applications, radio submissions, Selects, support, content reports,
@@ -380,7 +380,9 @@ export const adminDiscoWidgetsRedirectRoute = createRoute({
 export const adminStatusRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/status',
-  component: AdminStatusView,
+  beforeLoad: () => {
+    throw redirect({ to: '/admin', hash: 'status-checks' });
+  },
 });
 
 export const adminI18nRoute = createRoute({

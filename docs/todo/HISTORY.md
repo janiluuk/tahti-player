@@ -1,3 +1,7 @@
+## 2026-11-17 — Admin Overview merge and Inbox counts (30 slices)
+
+Admin Overview is one page: Status checks, queue jobs, workers and Grafana monitoring sit on `/admin`; `/admin/status` and `/admin/monitoring` redirect there with hash anchors; Overview has no second row; Logs moved under Platform with a hub breadcrumb. Inbox chips show pending counts for every queue (support, beta, radio, reports, features, missed shows, themes). Dashboard health/KPI labels, queue lines, finance and the action dialog, plus Support status badges and filters, have Finnish. VIEW-CATALOG and mapScreens updated. tahti-web 0.0.404. Ticked navigation-simplification slices 7 and 9; simplify phase 6 leftovers for Overview/Inbox counts closed; slice 10 docs rewrite still open.
+
 ## 2026-11-13 — Fans page Chat tab
 
 Studio → Fans: Tools | Chat top tabs; chat settings live under Chat

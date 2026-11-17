@@ -4749,7 +4749,12 @@
       "searchSubjectMessageRequester": "Hae aiheella, viestillä, lähettäjällä…",
       "searchSupportTickets": "Hae tukipyyntöjä",
       "writeAReply": "Kirjoita vastaus…",
-      "replyToTicket": "Vastaa tukipyyntöön"
+      "replyToTicket": "Vastaa tukipyyntöön",
+      "statusOpen": "Avoin",
+      "statusInProgress": "Käynnissä",
+      "statusResolved": "Ratkaistu",
+      "filterAll": "Kaikki",
+      "statusAria": "Tukitiketin tila"
     },
     "adminDiscussions": {
       "everyMemberGetsANotification": "Jokainen jäsen saa ilmoituksen, kun aihe avataan.",
@@ -5363,7 +5368,26 @@
       "cronJobs": "Ajastetut työt",
       "recentAuditEvents": "Viimeisimmät tarkastustapahtumat",
       "updating": "Päivitetään…",
-      "showingSaved": "Näytetään viimeksi ladatut tiedot; päivitys epäonnistui."
+      "showingSaved": "Näytetään viimeksi ladatut tiedot; päivitys epäonnistui.",
+      "ok": "OK",
+      "down": "Alhaalla",
+      "healthIcecast": "Icecast / Liquidsoap",
+      "healthMinio": "MinIO-tallennus",
+      "healthPostgresBackup": "Postgres-varmuuskopio",
+      "healthFanSubPayouts": "Fanijäsenyyden maksut",
+      "kpiActiveMembers": "Aktiiviset jäsenet",
+      "kpiLiveNow": "Live nyt",
+      "kpiBetaQueue": "Beta-jono",
+      "kpiOpenTickets": "Avoimet tiketit",
+      "ticketsNeedReply": "{{count}} odottaa vastausta",
+      "actionWaitingDetail": "Tämä odottaa ylläpidon toimenpidettä. Avaa jono ja tarkista tietue ennen kuin teet “{{action}}”.",
+      "queueWaiting": "{{waiting}} odottaa",
+      "queueFailed": ", {{failed}} epäonnistui",
+      "financeBreakdown": "Tulot {{revenue}} · Kulut {{costs}}",
+      "versionLine": "Versio {{version}} · ",
+      "uptimeHours": "Käynnissä {{hours}} h",
+      "checked": "tarkistettu",
+      "latencyMs": "{{ms}} ms"
     },
     "proEditor": {
       "metadata": "Metatiedot",
@@ -11298,7 +11322,8 @@
     },
     "adminDashboardViewStates": {
       "hideMore": "Piilota lisää",
-      "financeStreamsQueuesAudit": "Talous, virrat, jonot ja tarkastus"
+      "financeStreamsQueuesAudit": "Talous, virrat, jonot ja tarkastus",
+      "financeStreamsAudit": "Rahoitus, streamit ja auditointi"
     },
     "adminI18nViewStates": {
       "adding": "Lisätään…",

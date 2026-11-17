@@ -23,6 +23,7 @@ import {
 
 import { fetchAdminDashboard, type AdminAuditRow } from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
+import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
@@ -198,6 +199,7 @@ export function AdminLogsView() {
               <BreadcrumbLink to="/admin">
                 {t('adminLogsView.admin')}
               </BreadcrumbLink>
+              <AdminHubBreadcrumb hub="platform" />
               <BreadcrumbLink to="/admin/logs">
                 {t('adminLogsView.logs')}
               </BreadcrumbLink>

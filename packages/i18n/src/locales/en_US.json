@@ -4749,7 +4749,12 @@
       "searchSubjectMessageRequester": "Search subject, message, requester…",
       "searchSupportTickets": "Search support tickets",
       "writeAReply": "Write a reply…",
-      "replyToTicket": "Reply to ticket"
+      "replyToTicket": "Reply to ticket",
+      "statusOpen": "Open",
+      "statusInProgress": "In progress",
+      "statusResolved": "Resolved",
+      "filterAll": "All",
+      "statusAria": "Support ticket status"
     },
     "adminDiscussions": {
       "everyMemberGetsANotification": "Every member gets a notification when the topic opens.",
@@ -5363,7 +5368,26 @@
       "cronJobs": "Cron jobs",
       "recentAuditEvents": "Recent audit events",
       "updating": "Updating…",
-      "showingSaved": "Showing the last loaded data; refresh failed."
+      "showingSaved": "Showing the last loaded data; refresh failed.",
+      "ok": "OK",
+      "down": "Down",
+      "healthIcecast": "Icecast / Liquidsoap",
+      "healthMinio": "MinIO storage",
+      "healthPostgresBackup": "Postgres backup",
+      "healthFanSubPayouts": "Fan-sub payouts",
+      "kpiActiveMembers": "Active members",
+      "kpiLiveNow": "Live now",
+      "kpiBetaQueue": "Beta queue",
+      "kpiOpenTickets": "Open tickets",
+      "ticketsNeedReply": "{{count}} need a reply",
+      "actionWaitingDetail": "This item is waiting for an admin action. Open its queue to inspect the full record before completing “{{action}}”.",
+      "queueWaiting": "{{waiting}} waiting",
+      "queueFailed": ", {{failed}} failed",
+      "financeBreakdown": "Revenue {{revenue}} · Costs {{costs}}",
+      "versionLine": "Version {{version}} · ",
+      "uptimeHours": "Uptime {{hours}}h",
+      "checked": "checked",
+      "latencyMs": "{{ms}} ms"
     },
     "proEditor": {
       "metadata": "Metadata",
@@ -11298,7 +11322,8 @@
     },
     "adminDashboardViewStates": {
       "hideMore": "Hide more",
-      "financeStreamsQueuesAudit": "Finance, streams, queues & audit"
+      "financeStreamsQueuesAudit": "Finance, streams, queues & audit",
+      "financeStreamsAudit": "Finance, streams and audit"
     },
     "adminI18nViewStates": {
       "adding": "Adding…",

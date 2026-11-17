@@ -68,6 +68,7 @@ describe('AdminNav section coverage', () => {
       (item) => item.to,
     );
     expect(platform).toContain('/admin/addons');
+    expect(platform).toContain('/admin/logs');
     expect(platform).toContain('/admin/map');
     expect(platform).not.toContain('/admin/hubs/platform');
     expect(adminHubItems('/admin/hubs/coop').map((item) => item.to)).toEqual([

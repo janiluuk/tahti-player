@@ -31,24 +31,27 @@ import { StudioPanel } from '../../../../components/StudioPanel';
 import { dateLocaleTag } from '../../../../lib/locale';
 import { ModerationTabs } from '../ModerationTabs';
 
-function statusBadge(status: AdminSupportStatus): {
+function statusBadge(
+  status: AdminSupportStatus,
+  t: TFunction<'web'>,
+): {
   label: string;
   color: 'orange' | 'cyan' | 'green';
 } {
   if (status === 'OPEN') {
-    return { label: 'Open', color: 'orange' };
+    return { label: t('supportTab.statusOpen'), color: 'orange' };
   }
   if (status === 'IN_PROGRESS') {
-    return { label: 'In progress', color: 'cyan' };
+    return { label: t('supportTab.statusInProgress'), color: 'cyan' };
   }
-  return { label: 'Resolved', color: 'green' };
+  return { label: t('supportTab.statusResolved'), color: 'green' };
 }
 
 type SupportFilter = AdminSupportStatus | 'all' | 'awaiting';
 
 function filters(t: TFunction<'web'>): { id: SupportFilter; label: string }[] {
   return [
-    { id: 'all', label: 'All' },
+    { id: 'all', label: t('supportTab.filterAll') },
     { id: 'awaiting', label: t('supportTabMore.needsReply') },
     { id: 'OPEN', label: t('supportTabMore.open') },
     { id: 'IN_PROGRESS', label: t('supportTabMore.inProgress') },
@@ -206,7 +209,7 @@ export function SupportTab() {
             ...item,
             icon: FILTER_TAB_ICONS[item.id],
           }))}
-          ariaLabel="Support ticket status"
+          ariaLabel={t('supportTab.statusAria')}
           onChange={(id) => setFilter(id as SupportFilter)}
           className="min-w-0 flex-1"
         />
@@ -252,7 +255,7 @@ export function SupportTab() {
           ) : (
             <ul className="divide-border divide-y">
               {tickets.map((ticket) => {
-                const badge = statusBadge(ticket.status);
+                const badge = statusBadge(ticket.status, t);
                 return (
                   <li key={ticket.id}>
                     <Button
@@ -310,9 +313,9 @@ export function SupportTab() {
                     <h2 className="text-sm font-semibold">{detail.subject}</h2>
                     <Badge
                       variant="pill"
-                      color={statusBadge(detail.status).color}
+                      color={statusBadge(detail.status, t).color}
                     >
-                      {statusBadge(detail.status).label}
+                      {statusBadge(detail.status, t).label}
                     </Badge>
                   </div>
                   <p className="text-foreground-secondary text-xs">

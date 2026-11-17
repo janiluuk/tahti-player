@@ -2223,7 +2223,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         ],
         goesTo: [
           { label: 'Return to Admin overview', to: '/admin' },
-          { label: 'Open platform status', to: '/admin/status' },
+          { label: 'Open platform status', to: '/admin#status-checks' },
           { label: 'Open Admin logs', to: '/admin/logs' },
         ],
         old: {
@@ -2291,7 +2291,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/admin-status.png',
-          route: '/admin/status',
+          route: '/admin#status-checks',
           caption: 'Platform and service status',
         },
         storybookUrl: storybookStory('Tahti/Admin/AdminStatusView', 'Default'),
@@ -2394,7 +2394,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         ],
         goesTo: [
           { label: 'Open Admin logs', to: '/admin/logs' },
-          { label: 'Open Monitoring hub', to: '/admin/monitoring' },
+          { label: 'Open Monitoring hub', to: '/admin#monitoring' },
         ],
         old: {
           absent: true,
@@ -2428,7 +2428,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         goesTo: [
           { label: 'Return to Admin overview', to: '/admin' },
           { label: 'Open Admin logs', to: '/admin/logs' },
-          { label: 'Open platform status', to: '/admin/status' },
+          { label: 'Open platform status', to: '/admin#status-checks' },
         ],
         old: {
           absent: true,
@@ -2436,7 +2436,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           caption: 'No direct Nuclear-era capture',
         },
         new: {
-          route: '/admin/monitoring',
+          route: '/admin#monitoring',
           caption: 'Grafana vitals embed and container logs hub',
         },
         storybookUrl: storybookStory(
