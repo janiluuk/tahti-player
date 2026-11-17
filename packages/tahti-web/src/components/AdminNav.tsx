@@ -1,6 +1,5 @@
 import { useNavigate } from '@tanstack/react-router';
 import {
-  ActivityIcon,
   ArrowLeftIcon,
   BanknoteIcon,
   BlocksIcon,
@@ -15,7 +14,6 @@ import {
   LanguagesIcon,
   LayoutGridIcon,
   LibraryIcon,
-  LineChartIcon,
   MapIcon,
   MapPinIcon,
   MegaphoneIcon,
@@ -62,6 +60,8 @@ export const ADMIN_TAB_ONLY_ROUTES = [
   '/admin/hubs/$hub',
   '/admin/missed-shows',
   '/admin/storage/$userId',
+  '/admin/status', // → /admin#status-checks
+  '/admin/monitoring', // → /admin#monitoring
 ] as const;
 
 const ADMIN_PAGE_KEYS = {
@@ -131,14 +131,6 @@ export const PRIMARY = [
     icon: <FileTextIcon size={16} aria-hidden />,
     description:
       'Live container logs from every service in the production stack.',
-  },
-  {
-    to: '/admin/monitoring',
-    label: 'Monitoring',
-    Icon: LineChartIcon,
-    icon: <LineChartIcon size={16} aria-hidden />,
-    description:
-      'Grafana vital stats embed, service dashboards, and container logs.',
   },
   {
     to: '/admin/moderation',
@@ -246,13 +238,6 @@ export const PRIMARY = [
       'Register and manage available listener, artist, and admin add-ons.',
   },
   {
-    to: '/admin/status',
-    label: 'Status',
-    Icon: ActivityIcon,
-    icon: <ActivityIcon size={16} aria-hidden />,
-    description: 'Platform status page content and incident history.',
-  },
-  {
     to: '/admin/vendors',
     label: 'Vendors',
     Icon: Building2Icon,
@@ -329,12 +314,7 @@ export const ADMIN_SECTIONS: readonly AdminSection[] = [
   {
     id: 'overview',
     label: 'Overview',
-    items: pages([
-      '/admin',
-      '/admin/status',
-      '/admin/monitoring',
-      '/admin/logs',
-    ]),
+    items: pages(['/admin']),
   },
   {
     id: 'inbox',
@@ -379,6 +359,7 @@ export const ADMIN_SECTIONS: readonly AdminSection[] = [
       '/admin/vendors',
       '/admin/storage',
       '/admin/streams',
+      '/admin/logs',
       '/admin/orphan-pages',
       '/admin/map',
     ]),

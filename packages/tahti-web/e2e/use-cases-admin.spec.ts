@@ -81,7 +81,10 @@ test('admin: the dashboard leads with community stats and links to status checks
       .getByRole('heading', { level: 2, name: 'System health' }),
   ).toBeVisible();
   await page.getByRole('link', { name: 'Status checks' }).click();
-  await expect(page).toHaveURL(/\/admin\/status$/);
+  await expect(page).toHaveURL(/\/admin(?:\/)?#status-checks$/);
+  await expect(
+    page.getByRole('heading', { level: 2, name: 'Status checks' }),
+  ).toBeVisible();
 });
 
 test('admin: People filters by role', async ({ page }) => {

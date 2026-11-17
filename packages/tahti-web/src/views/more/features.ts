@@ -219,7 +219,7 @@ export const FEATURES: FeatureRow[] = [
   {
     feature: 'Platform status',
     tahti: '/status',
-    nuclear: '/admin/status',
+    nuclear: '/admin#status-checks',
     status: 'live',
     notes: 'Merged into Admin → Status with service, queue, and cron data',
   },

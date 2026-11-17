@@ -3,6 +3,7 @@ import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../api/admin';
+import * as client from '../../api/client';
 import { renderWithRouter } from '../../test/renderWithRouter';
 import { AdminDashboardView } from './AdminDashboardView';
 
@@ -41,7 +42,7 @@ describe('AdminDashboardView', () => {
     expect(fetch).toHaveBeenCalledTimes(2);
   });
 
-  it('leads with community stats, then system health and the status links', async () => {
+  it('leads with community stats, then system health and in-page status links', async () => {
     vi.spyOn(admin, 'fetchAdminDashboard').mockResolvedValue({
       data: {
         kpis: { activeMembers: 3, liveNow: 0, betaQueue: 1, openTickets: 2 },
@@ -60,17 +61,31 @@ describe('AdminDashboardView', () => {
       },
       meta: { source: 'api' },
     } as never);
+    vi.spyOn(admin, 'fetchAdminStatus').mockResolvedValue({
+      data: {
+        status: 'operational',
+        uptimeSec: 3600,
+        ts: new Date().toISOString(),
+        checks: { api: { state: 'up', critical: true, latencyMs: 12 } },
+      },
+      meta: { source: 'api' },
+    } as never);
+    vi.spyOn(client, 'fetchPlatformStatus').mockResolvedValue({
+      data: null,
+      meta: { source: 'api' },
+    } as never);
     await renderWithRouter(<AdminDashboardView />, {
-      paths: ['/admin/status', '/admin/monitoring', '/admin/logs'],
+      paths: ['/admin', '/admin/logs'],
     });
     const headings = (await screen.findAllByRole('heading', { level: 2 })).map(
       (heading) => heading.textContent,
     );
     expect(headings[0]).toBe('Chat and mail');
     expect(headings).toContain('System health');
+    expect(headings).toContain('Status checks');
     expect(screen.getByRole('link', { name: 'Status checks' })).toHaveAttribute(
       'href',
-      '/admin/status',
+      '/admin#status-checks',
     );
     expect(screen.getByRole('link', { name: 'View logs' })).toHaveAttribute(
       'href',

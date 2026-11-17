@@ -1,3 +1,7 @@
+## 2026-11-17 - Admin Overview merge and Inbox counts (0.0.404)
+
+Admin Overview folds Status and Monitoring into `/admin` (status checks, queues, workers, Grafana). Old `/admin/status` and `/admin/monitoring` URLs redirect with hash anchors; Logs lives under Platform. Every Inbox queue chip shows a pending count. Dashboard and Support chrome gained Finnish labels.
+
 ## 2026-11-16 - Listen, Library and the release page open at once (0.0.402)
 
 Listen's rows (Selects, Trending, New releases, Coming up) and its
