@@ -1195,7 +1195,7 @@
       "sectionPlatform": "Platform",
       "hubContentDescription": "News, announcements, Selects, top lists, radio, venues, artwork presets and the catalog.",
       "hubCoopDescription": "Board, AGM, grants, annual reports, records and finances.",
-      "hubPlatformDescription": "Add-ons, languages, vendors, storage, streams, logs and diagnostics."
+      "hubPlatformDescription": "Add-ons, languages, vendors, storage, streams and diagnostics."
     },
     "adminPages": {
       "dashboard": "Dashboard",
@@ -1221,6 +1221,7 @@
       "tahtiSelects": "Tahti Selects",
       "orphanPages": "Orphan pages",
       "map": "Map",
+      "diagnostics": "Diagnostics",
       "missedShowsEmpty": "No missed shows in this view",
       "venuesEmpty": "No venues found",
       "venuesLoadError": "Could not load venues",
@@ -1239,16 +1240,21 @@
       "storageDescription": "Disk/object storage space, quotas, and every uploaded file across the platform.",
       "artworkPresetsDescription": "Choose and replace the abstract artwork defaults for uploads.",
       "financialDescription": "Membership revenue, payouts, and financial records.",
-      "governanceDescription": "Member votes, annual reports, grants, and AGM — one tabbed hub.",
+      "governanceDescription": "Member votes, annual reports, grants, and AGM — hub of area cards.",
       "addonsDescription": "Register and manage available listener, artist, and admin add-ons.",
       "vendorsDescription": "Track vendors, integrations, launch checks, and DPAs.",
       "i18nDescription": "Add languages and import translation CSVs.",
       "tahtiSelectsDescription": "Manage the Tahti Selects editorial stream and rotation.",
       "orphanPagesDescription": "Real pages that shipped without a menu entry or an in-app link, gathered here as tabs.",
       "mapDescription": "Screen atlas of listener, studio, and admin surfaces.",
+      "diagnosticsDescription": "Logs, orphan pages, and the screen atlas.",
       "hubContentCardDescription": "News, announcements, Selects, top lists, radio, venues, artwork presets and the catalog.",
       "hubCoopCardDescription": "Board, AGM, grants, annual reports, records and finances.",
-      "hubPlatformCardDescription": "Add-ons, languages, vendors, storage, streams, logs and diagnostics."
+      "hubPlatformCardDescription": "Add-ons, languages, vendors, storage, streams and diagnostics."
+    },
+    "adminDiagnosticsView": {
+      "admin": "Admin",
+      "toolsAria": "Diagnostics tools"
     },
     "channelShare": {
       "title": "Share channel",
@@ -3049,6 +3055,7 @@
       "openEmbedAria": "Open release embed",
       "schedulePartyAria": "Schedule listening party",
       "deleteAria": "Delete release",
+      "moreActions": "More release actions",
       "artworkLabel": "Release artwork",
       "publishTitle": "Publish this release?",
       "publishDescription": "Publishing makes the release and its smart link visible to listeners.",
@@ -5270,6 +5277,7 @@
       "thisPageHasMoved": "This page has moved",
       "help": "Help",
       "helpTakeAGuidedTour": "Help — take a guided tour of order management",
+      "moreActions": "More earnings actions",
       "fanSubscriptionTiers": "Fan subscription tiers",
       "setTheMonthlySupportTiers": "Set the monthly support tiers fans can subscribe to.",
       "channelStore": "Channel store",
@@ -8033,7 +8041,10 @@
       "addOns": "Add-ons",
       "registerANewAddOn": "Register a new add-on",
       "addOnTypes": "Add-on types",
-      "addOnReviewStatus": "Add-on review status"
+      "addOnReviewStatus": "Add-on review status",
+      "intro": "Covers the sandboxed widget-bundle store behind two of the 13 Settings → Add-ons categories: Discovery (Listen page) and Channel (artist page). The other 11 are fixed code registries or private per-user connections with nothing to moderate here.",
+      "needsReview": "Needs review",
+      "needsReviewCount": "Needs review ({{count}})"
     },
     "manageDialog": {
       "enabledByDefault": "Enabled by default",

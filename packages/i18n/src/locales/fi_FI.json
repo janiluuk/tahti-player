@@ -1195,7 +1195,7 @@
       "sectionPlatform": "Alusta",
       "hubContentDescription": "Uutiset, tiedotteet, Selects, huippulistat, radio, esiintymispaikat, kansikuvien esiasetukset ja katalogi.",
       "hubCoopDescription": "Hallitus, yhtiökokous, apurahat, vuosikertomukset, asiakirjat ja talous.",
-      "hubPlatformDescription": "Lisäosat, kielet, toimittajat, tallennustila, streamit, lokit ja diagnostiikka."
+      "hubPlatformDescription": "Lisäosat, kielet, toimittajat, tallennustila, streamit ja diagnostiikka."
     },
     "adminPages": {
       "dashboard": "Koontinäyttö",
@@ -1221,6 +1221,7 @@
       "tahtiSelects": "Tahti Selects",
       "orphanPages": "Orvot sivut",
       "map": "Kartta",
+      "diagnostics": "Diagnostiikka",
       "missedShowsEmpty": "Ei myöhästyneitä show'ta tässä näkymässä",
       "venuesEmpty": "Ei tapahtumapaikkoja",
       "venuesLoadError": "Tapahtumapaikkoja ei voitu ladata",
@@ -1239,16 +1240,21 @@
       "storageDescription": "Levy-/objektitallennustila, kiintiöt ja jokainen alustalle ladattu tiedosto.",
       "artworkPresetsDescription": "Valitse ja vaihda latausten abstraktit kansikuvien oletukset.",
       "financialDescription": "Jäsenyystulot, maksut ja talouskirjanpito.",
-      "governanceDescription": "Jäsenten äänestykset, vuosikertomukset, apurahat ja yhtiökokous — yksi välilehtihubi.",
+      "governanceDescription": "Jäsenten äänestykset, vuosikertomukset, apurahat ja vuosikokous — aluekorttien hubi.",
       "addonsDescription": "Rekisteröi ja hallinnoi kuuntelijan, artistin ja adminin lisäosia.",
       "vendorsDescription": "Seuraa toimittajia, integraatioita, julkaisutarkistuksia ja tietosuojasopimuksia.",
       "i18nDescription": "Lisää kieliä ja tuo käännös-CSV:itä.",
       "tahtiSelectsDescription": "Hallinnoi Tahti Selects -toimituksellista streamia ja rotaatiota.",
       "orphanPagesDescription": "Oikeat sivut ilman valikkokohtaa tai sovelluslinkkiä, kerätty tähän välilehdiksi.",
       "mapDescription": "Kuuntelijan, studion ja hallinnan näyttöjen atlas.",
+      "diagnosticsDescription": "Lokit, orvot sivut ja näyttöatlas.",
       "hubContentCardDescription": "Uutiset, tiedotteet, Selects, huippulistat, radio, esiintymispaikat, kansikuvien esiasetukset ja katalogi.",
       "hubCoopCardDescription": "Hallitus, yhtiökokous, apurahat, vuosikertomukset, asiakirjat ja talous.",
-      "hubPlatformCardDescription": "Lisäosat, kielet, toimittajat, tallennustila, streamit, lokit ja diagnostiikka."
+      "hubPlatformCardDescription": "Lisäosat, kielet, toimittajat, tallennustila, streamit ja diagnostiikka."
+    },
+    "adminDiagnosticsView": {
+      "admin": "Ylläpito",
+      "toolsAria": "Diagnostiikan työkalut"
     },
     "channelShare": {
       "title": "Jaa kanava",
@@ -3049,6 +3055,7 @@
       "openEmbedAria": "Avaa julkaisun upotus",
       "schedulePartyAria": "Aikatauluta kuuntelobileet",
       "deleteAria": "Poista julkaisu",
+      "moreActions": "Lisää julkaisutoimintoja",
       "artworkLabel": "Julkaisun kansikuva",
       "publishTitle": "Julkaise tämä julkaisu?",
       "publishDescription": "Julkaisu tekee julkaisun ja sen älylinkin näkyväksi kuuntelijoille.",
@@ -5270,6 +5277,7 @@
       "thisPageHasMoved": "Tämä sivu on siirtynyt",
       "help": "Ohje",
       "helpTakeAGuidedTour": "Ohje — opastettu kierros tilausten hallintaan",
+      "moreActions": "Lisää tulotoimintoja",
       "fanSubscriptionTiers": "Fanitilausten tasot",
       "setTheMonthlySupportTiers": "Määritä kuukausittaiset tukitasot, joita fanit voivat tilata.",
       "channelStore": "Kanavan kauppa",
@@ -8033,7 +8041,10 @@
       "addOns": "Lisäosat",
       "registerANewAddOn": "Rekisteröi uusi lisäosa",
       "addOnTypes": "Lisäosien tyypit",
-      "addOnReviewStatus": "Lisäosan tarkastuksen tila"
+      "addOnReviewStatus": "Lisäosan tarkastuksen tila",
+      "intro": "Kattaa hiekkalaatikoidun widget-kaupan kahdesta 13:sta Asetukset → Lisäosat -kategoriasta: Löytäminen (Listen) ja Kanava (artistisivu). Muut 11 ovat kiinteitä rekistereitä tai yksityisiä käyttäjäyhteyksiä, joita ei moderoida täällä.",
+      "needsReview": "Tarkastettava",
+      "needsReviewCount": "Tarkastettava ({{count}})"
     },
     "manageDialog": {
       "enabledByDefault": "Oletuksena käytössä",

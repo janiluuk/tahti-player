@@ -8,7 +8,9 @@ Planned 2026-11-03. Shipped so far: phase 0 building blocks (`ViewShell` `action
 
 2026-11-17 batch: Settings labels Appearance (`themes`) and About (`whats-new`); phase 5 Releases/Collections headers use one primary + `OverflowMenu`; phase 7 Governance is hub cards at `/admin/governance` with focused `/admin/governance/$tab` pages (no tab row). Phase 6 + 8 and Security/Notifications as own Settings items shipped earlier the same day; Integrations is a Playback & language tab.
 
-Left: Library Playlists tab (needs a listener playlist list; product call on what it holds), Profile live preview beside the form, phase 3 (Go live stepper, a design call), the rest of phase 5 (Home/Sounds/Posts/Earnings/Release detail budgets), the rest of phase 7 (Storage/Add-ons/Radio/Diagnostics). Goal: a calmer, more professional UI. Every main view has one header, one primary action, one toolbar row and at most one tab row under the section row.
+2026-11-17 afternoon batch: phase 5 Release detail + Earnings OverflowMenus; phase 7 Platform Diagnostics hub (Logs / Orphan pages / Map), Add-ons ViewShell + FilterBar, Storage trailing-space cleanup. Finnish for Diagnostics and Add-ons intro.
+
+Left: Library Playlists tab (needs a listener playlist list; product call on what it holds), Profile live preview beside the form, phase 3 (Go live stepper, a design call), the rest of phase 5 (Home/Sounds/Posts budgets), the rest of phase 7 (Radio anatomy). Goal: a calmer, more professional UI. Every main view has one header, one primary action, one toolbar row and at most one tab row under the section row.
 
 Builds on [`navigation-simplification.md`](navigation-simplification.md) (the IA regroup, slices 1-10). This plan adds **Settings**, **page anatomy** (what sits on a page, not just where it lives) and the duplicate surfaces left after that regroup. Where a phase finishes a slice from that file, it says so; that slice is then ticked there, not re-planned here.
 

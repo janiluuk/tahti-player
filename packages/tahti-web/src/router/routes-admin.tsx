@@ -11,6 +11,7 @@ import {
   AdminArtworkPresetsView,
   AdminContentView,
   AdminDashboardView,
+  AdminDiagnosticsView,
   AdminFinancialView,
   AdminGovernanceView,
   AdminGrantCycleView,
@@ -354,6 +355,12 @@ export const adminMapRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/admin/map',
   component: AdminMapView,
+});
+
+export const adminDiagnosticsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/admin/diagnostics',
+  component: AdminDiagnosticsView,
 });
 
 export const adminVenuesRoute = createRoute({

@@ -22,7 +22,10 @@ export function AdminMapView() {
                 {t('adminMapViewText.admin')}
               </BreadcrumbLink>
               <AdminHubBreadcrumb hub="platform" />
-              <BreadcrumbCurrent>Map</BreadcrumbCurrent>
+              <BreadcrumbLink to="/admin/diagnostics">
+                {t('adminPages.diagnostics')}
+              </BreadcrumbLink>
+              <BreadcrumbCurrent>{t('adminPages.map')}</BreadcrumbCurrent>
             </Breadcrumbs>
             <MoreView />
           </div>

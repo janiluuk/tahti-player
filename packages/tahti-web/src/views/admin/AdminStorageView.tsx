@@ -73,7 +73,7 @@ export function AdminStorageView() {
                   },
                 ]}
               />
-            </ViewShell>{' '}
+            </ViewShell>
           </div>
         </AdminPageLayout>
       </div>

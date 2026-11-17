@@ -89,7 +89,8 @@ Co-op · Platform**.
   lists, Radio, Venues, Artwork presets, Catalog.
 - Co-op hub (`/admin/hubs/coop`): Governance, Financial, Grants.
 - Platform hub (`/admin/hubs/platform`): Add-ons, Languages, Vendors, Storage,
-  Streams, Logs, Orphan pages, Map.
+  Streams, Diagnostics. Diagnostics hub (`/admin/diagnostics`): Logs, Orphan
+  pages, Map.
 
 Admin hub + detail: Governance hub at `/admin/governance`, areas at
 `/admin/governance/$tab`. Admin tabbed pages: Moderation
