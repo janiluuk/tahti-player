@@ -1,4 +1,4 @@
-import { Bell, Lock, Shield, Wallet } from 'lucide-react';
+import { User, Wallet } from 'lucide-react';
 
 import {
   groupTabs,
@@ -11,16 +11,10 @@ export type AccountTabGroup = TabGroup;
 
 export const ACCOUNT_TAB_GROUPS: readonly AccountTabGroup[] = [
   {
-    id: 'sign-in',
-    labelKey: 'settings.accountTabGroupSignInSecurity',
-    Icon: Lock,
-    tabIds: [
-      'session',
-      'password-email',
-      'devices',
-      'two-factor',
-      'api-tokens',
-    ],
+    id: 'profile',
+    labelKey: 'settings.accountTabGroupProfile',
+    Icon: User,
+    tabIds: ['session', 'privacy', 'storage'],
   },
   {
     id: 'membership-billing',
@@ -28,19 +22,32 @@ export const ACCOUNT_TAB_GROUPS: readonly AccountTabGroup[] = [
     Icon: Wallet,
     tabIds: ['membership', 'governance', 'subscriptions', 'purchases'],
   },
-  {
-    id: 'notifications',
-    labelKey: 'settings.accountTabGroupNotifications',
-    Icon: Bell,
-    tabIds: ['notifications', 'mentions'],
-  },
-  {
-    id: 'privacy-data',
-    labelKey: 'settings.accountTabGroupPrivacyData',
-    Icon: Shield,
-    tabIds: ['privacy', 'storage'],
-  },
 ];
+
+export const SECURITY_TAB_IDS = [
+  'password-email',
+  'devices',
+  'two-factor',
+  'api-tokens',
+] as const;
+
+export const NOTIFICATIONS_TAB_IDS = ['notifications', 'mentions'] as const;
+
+export function isSecurityTabId(
+  value: string | null | undefined,
+): value is (typeof SECURITY_TAB_IDS)[number] {
+  return Boolean(
+    value && (SECURITY_TAB_IDS as readonly string[]).includes(value),
+  );
+}
+
+export function isNotificationsTabId(
+  value: string | null | undefined,
+): value is (typeof NOTIFICATIONS_TAB_IDS)[number] {
+  return Boolean(
+    value && (NOTIFICATIONS_TAB_IDS as readonly string[]).includes(value),
+  );
+}
 
 export function groupAccountTabs<T extends { id: string }>(
   tabs: readonly T[],

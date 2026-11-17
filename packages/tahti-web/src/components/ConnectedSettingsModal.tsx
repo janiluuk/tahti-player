@@ -61,6 +61,10 @@ export function ConnectedSettingsModal() {
   const openedToSection = useSettingsModalStore((s) => s.openedToSection);
   const artistSection = useSettingsModalStore((s) => s.artistSection);
   const accountSection = useSettingsModalStore((s) => s.accountSection);
+  const securitySection = useSettingsModalStore((s) => s.securitySection);
+  const notificationsSection = useSettingsModalStore(
+    (s) => s.notificationsSection,
+  );
   const playbackSection = useSettingsModalStore((s) => s.playbackSection);
   const pluginCategory = useSettingsModalStore((s) => s.pluginCategory);
   const user = useAuthStore((s) => s.user);
@@ -102,6 +106,8 @@ export function ConnectedSettingsModal() {
       section: resolvedTab,
       artistSection,
       accountSection,
+      securitySection,
+      notificationsSection,
       playbackSection,
       pluginCategory,
     });
@@ -117,9 +123,11 @@ export function ConnectedSettingsModal() {
     isOpen,
     locationHref,
     navigate,
+    notificationsSection,
     playbackSection,
     pluginCategory,
     resolvedTab,
+    securitySection,
   ]);
 
   useEffect(() => {

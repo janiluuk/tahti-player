@@ -36,6 +36,13 @@ const movedSettings: RouteVisit[] = [
 const settingsSections: RouteVisit[] = [
   { path: '/settings', heading: /^Account$/, url: /\/settings\/account$/ },
   { path: '/settings/account', heading: /^Account$/ },
+  { path: '/settings/security', heading: /^Security$/ },
+  { path: '/settings/notifications', heading: /^Notifications$/ },
+  {
+    path: '/settings/account?tab=api-tokens',
+    heading: /^Security$/,
+    url: /\/settings\/security/,
+  },
   { path: '/settings/playback', heading: 'Playback & language' },
   {
     path: '/settings/integrations',

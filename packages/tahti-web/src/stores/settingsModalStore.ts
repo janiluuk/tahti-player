@@ -13,7 +13,19 @@ export type ArtistSettingsSection =
   | 'press-kit'
   | 'release-visuals';
 
-export type AccountSettingsSection = 'subscriptions' | 'api-tokens';
+export type AccountSettingsSection =
+  | 'session'
+  | 'membership'
+  | 'governance'
+  | 'storage'
+  | 'subscriptions'
+  | 'purchases'
+  | 'privacy';
+
+export type SecuritySettingsSection =
+  'password-email' | 'devices' | 'two-factor' | 'api-tokens';
+
+export type NotificationsSettingsSection = 'notifications' | 'mentions';
 
 export type PlaybackSettingsSection = 'playback' | 'language' | 'integrations';
 
@@ -30,6 +42,8 @@ type SettingsModalState = {
   artistSection: ArtistSettingsSection | null;
   /** Sub-tab when activeTab === 'account'. */
   accountSection: AccountSettingsSection | null;
+  securitySection: SecuritySettingsSection | null;
+  notificationsSection: NotificationsSettingsSection | null;
   playbackSection: PlaybackSettingsSection | null;
   openedToSection: boolean;
   /**
@@ -45,6 +59,8 @@ type SettingsModalState = {
     artistSection?: ArtistSettingsSection,
     accountSection?: AccountSettingsSection,
     playbackSection?: PlaybackSettingsSection,
+    securitySection?: SecuritySettingsSection,
+    notificationsSection?: NotificationsSettingsSection,
   ) => void;
   close: () => void;
   setActiveTab: (tab: SettingsSectionId) => void;
@@ -57,10 +73,20 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
   pluginCategory: null,
   artistSection: null,
   accountSection: null,
+  securitySection: null,
+  notificationsSection: null,
   playbackSection: null,
   openedToSection: false,
   dismissRouteOpen: false,
-  open: (tab, pluginCategory, artistSection, accountSection, playbackSection) =>
+  open: (
+    tab,
+    pluginCategory,
+    artistSection,
+    accountSection,
+    playbackSection,
+    securitySection,
+    notificationsSection,
+  ) =>
     set((state) => ({
       isOpen: true,
       dismissRouteOpen: false,
@@ -71,6 +97,8 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
       pluginCategory: pluginCategory ?? null,
       artistSection: artistSection ?? null,
       accountSection: accountSection ?? null,
+      securitySection: securitySection ?? null,
+      notificationsSection: notificationsSection ?? null,
       playbackSection: playbackSection ?? null,
     })),
   close: () => set({ isOpen: false, dismissRouteOpen: true }),
@@ -79,6 +107,8 @@ export const useSettingsModalStore = create<SettingsModalState>((set) => ({
       activeTab: tab,
       artistSection: null,
       accountSection: null,
+      securitySection: null,
+      notificationsSection: null,
       playbackSection: null,
     }),
   clearDismissRouteOpen: () => set({ dismissRouteOpen: false }),

@@ -37,6 +37,21 @@ describe('buildSettingsPath', () => {
     ).toBe('/settings/themes');
   });
 
+  it('keeps Security and Notifications tabs in the URL', () => {
+    expect(
+      buildSettingsPath({ section: 'security', securitySection: 'api-tokens' }),
+    ).toBe('/settings/security?tab=api-tokens');
+    expect(
+      buildSettingsPath({
+        section: 'notifications',
+        notificationsSection: 'mentions',
+      }),
+    ).toBe('/settings/notifications?tab=mentions');
+    expect(buildSettingsPath({ section: 'security' })).toBe(
+      '/settings/security',
+    );
+  });
+
   it('keeps the Language and Integrations tabs of Playback in the URL', () => {
     expect(
       buildSettingsPath({ section: 'playback', playbackSection: 'language' }),

@@ -1,17 +1,12 @@
 import { Link } from '@tanstack/react-router';
 import {
-  AtSign,
-  Bell,
   CreditCardIcon,
   Database,
   Download,
   Keyboard,
-  KeyRound,
   Landmark,
-  Lock,
   LogInIcon,
   LogOutIcon,
-  MonitorSmartphone,
   Shield,
   Trash2,
   User,
@@ -48,12 +43,8 @@ import type {
   MembershipStatus,
   PurchaseRow,
 } from '../../../api/types';
-import { ApiTokensPanel } from '../../../components/ApiTokensPanel';
 import { BlockedAccounts } from '../../../components/BlockedAccounts';
-import { ChangeEmailForm } from '../../../components/ChangeEmailForm';
-import { ChangePasswordForm } from '../../../components/ChangePasswordForm';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
-import { DevicesSessionsPanel } from '../../../components/DevicesSessionsPanel';
 import { FanSubscriptionsBillingButton } from '../../../components/FanSubscriptionsBillingButton';
 import { ListingDate } from '../../../components/ListingDate';
 import { MembershipInvoices } from '../../../components/MembershipInvoices';
@@ -64,7 +55,6 @@ import {
   PageLoading,
 } from '../../../components/PageStates';
 import { RestrictionNotices } from '../../../components/RestrictionNotice';
-import { SecurityTotpPanel } from '../../../components/SecurityTotpPanel';
 import {
   fanSubscriptionStatusLabel,
   hasPortalManagedSubscription,
@@ -75,8 +65,6 @@ import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint, SettingsInfo } from '../SettingsFields';
 import { accountTabLanding, groupAccountTabs } from './accountTabGroups';
-import { MentionsPanel } from './MentionsPanel';
-import { NotificationsVisibilityPanel } from './NotificationsPanel';
 
 function euros(cents: number | string): string {
   const n = typeof cents === 'string' ? Number(cents) : cents;
@@ -197,35 +185,6 @@ export function AccountPanel() {
       ),
     },
     {
-      id: 'password-email',
-      label: t('settingsBody.account.tabPasswordEmail'),
-      icon: <KeyRound size={14} />,
-      content: (
-        <div className="flex flex-col gap-8">
-          <ChangePasswordForm />
-          <ChangeEmailForm currentEmail={user.email ?? null} />
-        </div>
-      ),
-    },
-    {
-      id: 'devices',
-      label: t('settingsBody.account.tabDevices'),
-      icon: <MonitorSmartphone size={14} />,
-      content: <DevicesSessionsPanel />,
-    },
-    {
-      id: 'two-factor',
-      label: t('settingsBody.account.tabTwoFactor'),
-      icon: <Lock size={14} />,
-      content: <SecurityTotpPanel />,
-    },
-    {
-      id: 'api-tokens',
-      label: t('settingsBody.account.tabApiTokens'),
-      icon: <KeyRound size={14} />,
-      content: <ApiTokensPanel />,
-    },
-    {
       id: 'membership',
       label: t('settingsBody.account.tabMembership'),
       icon: <Wallet size={14} />,
@@ -283,18 +242,6 @@ export function AccountPanel() {
       label: t('settingsBody.account.tabStorage'),
       icon: <Database size={14} />,
       content: <AccountStoragePanel />,
-    },
-    {
-      id: 'notifications',
-      label: t('settingsBody.account.tabNotifications'),
-      icon: <Bell size={14} />,
-      content: <NotificationsVisibilityPanel />,
-    },
-    {
-      id: 'mentions',
-      label: t('settingsBody.account.tabMentions'),
-      icon: <AtSign size={14} />,
-      content: <MentionsPanel />,
     },
     {
       id: 'subscriptions',

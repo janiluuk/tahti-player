@@ -9,6 +9,8 @@ import { AccountPanel } from './panels/AccountPanel';
 import { ArtistPanel, ReleaseVisualDefaultsPanel } from './panels/ArtistPanel';
 import { BroadcastPanel, type BroadcastSection } from './panels/BroadcastPanel';
 import { PlaybackLanguagePanel } from './panels/PlaybackLanguagePanel';
+import { SecurityPanel } from './panels/SecurityPanel';
+import { SettingsNotificationsPanel } from './panels/SettingsNotificationsPanel';
 import { ThemesPanel } from './panels/ThemesPanel';
 import { settingsNavFor, type SettingsSectionId } from './settingsNav';
 
@@ -34,6 +36,12 @@ export function SettingsSectionBody({
   switch (section) {
     case 'account':
       content = <AccountPanel />;
+      break;
+    case 'security':
+      content = <SecurityPanel />;
+      break;
+    case 'notifications':
+      content = <SettingsNotificationsPanel />;
       break;
     case 'artist':
       content = <ArtistPanel />;
