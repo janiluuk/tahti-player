@@ -27,8 +27,11 @@ export function buildSettingsPath({
     params.set('tab', artistSection);
   } else if (section === 'account' && accountSection) {
     params.set('tab', accountSection);
-  } else if (section === 'playback' && playbackSection === 'language') {
-    params.set('tab', 'language');
+  } else if (
+    section === 'playback' &&
+    (playbackSection === 'language' || playbackSection === 'integrations')
+  ) {
+    params.set('tab', playbackSection);
   } else if (section === 'plugin-store' && pluginCategory) {
     params.set('category', pluginCategory);
   }

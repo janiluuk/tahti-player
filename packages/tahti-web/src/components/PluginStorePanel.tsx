@@ -95,7 +95,6 @@ export function PluginStorePanel() {
 
 function ScrobblingMovedNotice() {
   const { t } = useTranslation('web');
-  const setActiveTab = useSettingsModalStore((s) => s.setActiveTab);
   return (
     <Box
       variant="tertiary"
@@ -108,7 +107,11 @@ function ScrobblingMovedNotice() {
       <Button
         size="sm"
         variant="secondary"
-        onClick={() => setActiveTab('integrations')}
+        onClick={() =>
+          useSettingsModalStore
+            .getState()
+            .open('playback', undefined, undefined, undefined, 'integrations')
+        }
       >
         {t('settingsAddOns.openIntegrations')}
       </Button>

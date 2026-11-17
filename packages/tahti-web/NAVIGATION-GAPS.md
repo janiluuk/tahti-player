@@ -10,6 +10,18 @@ Building those per-screen diagrams required grep-verifying every real
 `/more` atlas's claims. Findings below are real, source-grounded gaps in the
 **Nuclear (this client)** navigation graph, not documentation drift.
 
+## 2026-11-17 — Sitemap rewrite vs older findings
+
+[NAVIGATION-SITEMAP.md](NAVIGATION-SITEMAP.md) now matches the shipped
+Studio / Library / Admin / Settings IA (six Studio tabs, Library Files
+chips, Admin hubs, Integrations under Playback). Older rows below that
+still mention Settings → Artist / Channel & design, Library catalog tabs,
+or Admin Overview as a second row are historical: those redirects and
+regroups shipped in 2026-11-13–17. Still open from the navigation plan:
+Go live as a full-screen flow, Library Playlists tab, and a product call
+on the phone cross-section trail
+([navigation-flow-audit.md](../../docs/todo/navigation-flow-audit.md)).
+
 ## 2026-11-04 — `/listen/*` legacy aliases (no main-menu entry)
 
 `src/router/routes-listen.tsx` keeps a few **`/listen/…` paths** for bookmarks

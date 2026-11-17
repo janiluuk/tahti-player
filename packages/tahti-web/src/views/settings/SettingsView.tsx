@@ -111,7 +111,10 @@ export function SettingsView() {
   });
   const toastedCallbackRef = useRef<string | null>(null);
   const rawSectionId = pathname.match(/^\/settings\/([^/]+)/)?.[1];
-  const sectionId = rawSectionId === 'language' ? 'playback' : rawSectionId;
+  const sectionId =
+    rawSectionId === 'language' || rawSectionId === 'integrations'
+      ? 'playback'
+      : rawSectionId;
   const section: SettingsSectionId = isSettingsSectionId(sectionId)
     ? sectionId
     : 'account';
@@ -168,7 +171,9 @@ export function SettingsView() {
       section === 'playback'
         ? rawSectionId === 'language' || tab === 'language'
           ? 'language'
-          : 'playback'
+          : rawSectionId === 'integrations' || tab === 'integrations'
+            ? 'integrations'
+            : 'playback'
         : undefined,
     );
     if (!isSettingsSectionId(sectionId)) {

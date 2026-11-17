@@ -729,7 +729,7 @@
       "accountTabGroupNotifications": "Ilmoitukset",
       "accountTabGroupPrivacyData": "Yksityisyys ja data",
       "playbackLanguage": "Toisto ja kieli",
-      "playbackLanguageDescription": "Äänenvoimakkuus, sekoitus, toisto, ohituksen kesto ja sovelluksen kieli"
+      "playbackLanguageDescription": "Toisto, kieli ja työpöytäintegraatiot."
     },
     "language": {
       "label": "Kieli",
@@ -1216,7 +1216,31 @@
       "missedShowsEmpty": "Ei myöhästyneitä show'ta tässä näkymässä",
       "venuesEmpty": "Ei tapahtumapaikkoja",
       "venuesLoadError": "Tapahtumapaikkoja ei voitu ladata",
-      "venuesTitle": "Tapahtumapaikat"
+      "venuesTitle": "Tapahtumapaikat",
+      "dashboardDescription": "Alustan yleiskatsaus — toiminta, terveys ja oikotiet.",
+      "logsDescription": "Live-lokit kaikista tuotannon palveluista.",
+      "moderationDescription": "Tuki, beta-hakemukset, radioehdotukset, Selects, sisältöilmoitukset ja ominaisuuspyynnöt — yksi välilehtijono.",
+      "usersDescription": "Etsi tilejä ja muokkaa roolia, jäsenyyttä ja jäädytystä.",
+      "contentDescription": "Järjestelmän sisällön yleiskatsaus — katalogin määrät, uusimmat lataukset ja tallenteet.",
+      "radioDescription": "Tahti Radio ja Tahti Selects -rotaatio, live-asemalta.",
+      "newsDescription": "Julkaise alustanlaajuisia uutisia.",
+      "streamsDescription": "Seuraa live-ingestointia ja streamin terveyttä kaikilla kanavilla.",
+      "venuesDescription": "Vahvista ja hallinnoi rekisteröityjä esiintymispaikkoja.",
+      "topListsDescription": "Toimitukselliset huippukappale- ja huippuartistilistat.",
+      "announcementsDescription": "Sivustonlaajuiset bannerit ja tiedotteet.",
+      "storageDescription": "Levy-/objektitallennustila, kiintiöt ja jokainen alustalle ladattu tiedosto.",
+      "artworkPresetsDescription": "Valitse ja vaihda latausten abstraktit kansikuvien oletukset.",
+      "financialDescription": "Jäsenyystulot, maksut ja talouskirjanpito.",
+      "governanceDescription": "Jäsenten äänestykset, vuosikertomukset, apurahat ja yhtiökokous — yksi välilehtihubi.",
+      "addonsDescription": "Rekisteröi ja hallinnoi kuuntelijan, artistin ja adminin lisäosia.",
+      "vendorsDescription": "Seuraa toimittajia, integraatioita, julkaisutarkistuksia ja tietosuojasopimuksia.",
+      "i18nDescription": "Lisää kieliä ja tuo käännös-CSV:itä.",
+      "tahtiSelectsDescription": "Hallinnoi Tahti Selects -toimituksellista streamia ja rotaatiota.",
+      "orphanPagesDescription": "Oikeat sivut ilman valikkokohtaa tai sovelluslinkkiä, kerätty tähän välilehdiksi.",
+      "mapDescription": "Kuuntelijan, studion ja hallinnan näyttöjen atlas.",
+      "hubContentCardDescription": "Uutiset, tiedotteet, Selects, huippulistat, radio, esiintymispaikat, kansikuvien esiasetukset ja katalogi.",
+      "hubCoopCardDescription": "Hallitus, yhtiökokous, apurahat, vuosikertomukset, asiakirjat ja talous.",
+      "hubPlatformCardDescription": "Lisäosat, kielet, toimittajat, tallennustila, streamit, lokit ja diagnostiikka."
     },
     "channelShare": {
       "title": "Jaa kanava",

@@ -1,6 +1,6 @@
 {
   "name": "@tahti-player/tahti-web",
-  "version": "0.0.404",
+  "version": "0.0.405",
   "private": true,
   "type": "module",
   "description": "Tahti listening, artist, and governance web client",

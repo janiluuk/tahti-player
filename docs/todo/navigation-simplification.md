@@ -2,7 +2,7 @@
 
 **Status:** partial
 
-Planned 2026-10-28; slices 1, 2, 4, 5, 6 and 8 shipped (see the list). Goal: every section fits in **one row of tabs**, pages stay spacious, and everything sits in the context of its section. Long forms never read like a tax return.
+Planned 2026-10-28; slices 1, 2, 4–10 shipped (see the list); slice 3 left for Go live as a full-screen flow. Goal: every section fits in **one row of tabs**, pages stay spacious, and everything sits in the context of its section. Long forms never read like a tax return.
 
 Built from a code inventory of `StudioNav.tsx` (`SUBMENUS`, `*_SUBNAV_ITEMS`), `AdminNav.tsx` (`ADMIN_SECTIONS`, `PRIMARY`), `LibraryView.tsx` (`LIBRARY_SECTION_TABS`) and `router/routes-*.tsx` at `64f00ee95`.
 
@@ -98,7 +98,7 @@ Favorites leaves (if the open question is a yes); Co-op is new. Mobile bottom ba
 - [x] The editor sidebar doesn't collapse on `/studio/sounds/$id/editor` (`AppShell.tsx:349` regex).
 - [x] `/admin/grants/$year` lights no section.
 - [x] Double redirect `/studio/channel?tab=design` → `/studio/branding` → `/settings/channel`.
-- [ ] `NAVIGATION-SITEMAP.md`, `NAVIGATION-GAPS.md`, `docs/VIEW-CATALOG.md`, `ADMIN_TAB_ONLY_ROUTES` (`AdminNav.tsx:41-53`) and `stores/navigationStructureStore.ts` don't match the code; rewrite them from the new structure.
+- [x] `NAVIGATION-SITEMAP.md`, `NAVIGATION-GAPS.md`, `docs/VIEW-CATALOG.md`, `ADMIN_TAB_ONLY_ROUTES` (`AdminNav.tsx:41-53`) and `stores/navigationStructureStore.ts` don't match the code; rewrite them from the new structure. (2026-11-17: sitemap/gaps/VIEW-CATALOG updated; ADMIN_TAB_ONLY_ROUTES and navigationStructureStore already matched hubs.)
 
 ## Slices (in order)
 
@@ -111,4 +111,4 @@ Favorites leaves (if the open question is a yes); Co-op is new. Mobile bottom ba
 - [x] 7. Admin Inbox (unified queues). (2026-11-12: queue chips shipped, 0.0.377. Support stays idle until another queue is picked. 2026-11-17: every queue chip shows a pending count; Support already opens the ticket in a side panel.)
 - [x] 8. Admin Content, Co-op and Platform hubs (2026-11-02: six sections Overview · Inbox · People · Content · Co-op · Platform; hubs at `/admin/hubs/$hub`, back links on their pages; route guard test for `ADMIN_TAB_ONLY_ROUTES`).
 - [x] 9. Admin Overview merge (Dashboard, Status, Monitoring). (2026-11-17: Status checks, queue jobs, workers and Grafana monitoring live on `/admin`; `/admin/status` and `/admin/monitoring` redirect there; Overview has no second row; Logs moved under Platform.)
-- [ ] 10. Docs and screen atlas rewrite; Storybook surfaces and VIEW-CATALOG in sync. (2026-11-17: VIEW-CATALOG and mapScreens updated for the Overview merge; sitemap/gaps rewrite still open.)
+- [x] 10. Docs and screen atlas rewrite; Storybook surfaces and VIEW-CATALOG in sync. (2026-11-17: VIEW-CATALOG/mapScreens for Overview merge; NAVIGATION-SITEMAP + NAVIGATION-GAPS rewritten for Studio/Library/Admin/Settings IA.)

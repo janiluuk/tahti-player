@@ -3,7 +3,6 @@ import {
   BlocksIcon,
   Palette,
   PlayCircle,
-  Plug,
   Sparkles,
   User,
   UserCircle2,
@@ -19,13 +18,7 @@ type WebKey = ParseKeys<'web'>;
  * Studio → Profile and Studio → Broadcast; `artist` is the listener's
  * profile for an account without a channel. */
 export type SettingsSectionId =
-  | 'account'
-  | 'artist'
-  | 'playback'
-  | 'integrations'
-  | 'themes'
-  | 'plugin-store'
-  | 'whats-new';
+  'account' | 'artist' | 'playback' | 'themes' | 'plugin-store' | 'whats-new';
 
 export type SettingsNavGroup = 'Settings' | 'App';
 
@@ -73,15 +66,6 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
       group: 'Settings',
     },
     {
-      id: 'integrations',
-      label: t('settingsNav.integrations'),
-      labelKey: 'settings.integrations',
-      description: t('settingsNav.scrobblingAndDesktopAppIntegrations'),
-      descriptionKey: 'settings.integrationsDescription',
-      Icon: Plug,
-      group: 'Settings',
-    },
-    {
       id: 'themes',
       label: t('settingsNav.themes'),
       labelKey: 'settings.themes',
@@ -101,7 +85,7 @@ export function settingsNav(t: TFunction<'web'>): SettingsNavItem[] {
     },
     {
       id: 'whats-new',
-      label: "What's new",
+      label: t('settings.whatsNew'),
       labelKey: 'settings.whatsNew',
       description: t('settingsNav.whatChangedInEachRelease'),
       descriptionKey: 'settings.whatsNewDescription',

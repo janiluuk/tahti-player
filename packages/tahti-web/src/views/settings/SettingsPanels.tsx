@@ -8,7 +8,6 @@ import { WhatsNewPanel } from '../WhatsNewView';
 import { AccountPanel } from './panels/AccountPanel';
 import { ArtistPanel, ReleaseVisualDefaultsPanel } from './panels/ArtistPanel';
 import { BroadcastPanel, type BroadcastSection } from './panels/BroadcastPanel';
-import { IntegrationsPanel } from './panels/IntegrationsPanel';
 import { PlaybackLanguagePanel } from './panels/PlaybackLanguagePanel';
 import { ThemesPanel } from './panels/ThemesPanel';
 import { settingsNavFor, type SettingsSectionId } from './settingsNav';
@@ -41,9 +40,6 @@ export function SettingsSectionBody({
       break;
     case 'playback':
       content = <PlaybackLanguagePanel />;
-      break;
-    case 'integrations':
-      content = <IntegrationsPanel />;
       break;
     case 'themes':
       content = <ThemesPanel />;
