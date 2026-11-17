@@ -707,10 +707,13 @@
       "audienceDescription": "Fanitasot, tilaukset, apurahat",
       "themes": "Teemat",
       "themesDescription": "Sovelluksen ulkoasu",
+      "appearance": "Ulkoasu",
+      "appearanceDescription": "Teemat ja sovelluksen ilme.",
       "pluginStore": "Lisäosat",
       "pluginStoreDescription": "Teemat, visualisoinnit, radio, upotukset, löytäminen, kanavawidgetit, vienti, tuonti, multicast, sormenjäljet, äänilisäosat — yksi selain",
       "whatsNew": "Mitä uutta",
       "whatsNewDescription": "Mitä kussakin julkaisussa muuttui",
+      "aboutDescription": "Mitä kussakin julkaisussa muuttui.",
       "groupSettings": "Asetukset",
       "groupApp": "Sovellus",
       "channelChat": "Kanava ja chat",
@@ -1878,6 +1881,7 @@
       "mediaPurged_one": "Poistettiin {{count}} käyttämätön tiedosto, vapautui {{size}}.",
       "mediaPurged_other": "Poistettiin {{count}} käyttämätöntä tiedostoa, vapautui {{size}}.",
       "moreTrackActions": "Lisää kappaletoimintoja",
+      "moreCollectionActions": "Lisää kokoelmatoimintoja",
       "tabFiles": "Tiedostot",
       "fileKinds": "Tiedostotyypit"
     },
@@ -2987,6 +2991,7 @@
       "title": "Julkaisut",
       "distribution": "Jakelu",
       "newRelease": "Uusi julkaisu",
+      "moreActions": "Lisää julkaisutoimintoja",
       "releaseType": "Julkaisun tyyppi",
       "releaseDate": "Julkaisupäivä",
       "creating": "Luodaan…",
@@ -7014,6 +7019,18 @@
       "admin": "Ylläpito",
       "governance": "Hallinto"
     },
+    "adminGovernanceHub": {
+      "subtitle": "Osuuskunnan hallinnon työkalut — valitse alue.",
+      "toolsAria": "Hallinnon alueet",
+      "backToGovernance": "Takaisin hallintoon",
+      "overviewDescription": "Jäsenten toiminta ja hallituksen päätökset.",
+      "reportsDescription": "Vuosikertomusten luonti, hyväksyntä ja julkaisu.",
+      "grantsDescription": "Avustuskierrokset ja maksuhistoria.",
+      "agmDescription": "Esityslista, esitykset ja vuosikokous.",
+      "boardDescription": "Hallituskaudet ja vaalien tulokset.",
+      "discussionsDescription": "Kiinnitetyt ja avoimet osuuskunnan aiheet.",
+      "recordsDescription": "Pöytäkirjariidat ja hallinnon asiakirjat."
+    },
     "recordedAtVenuePicker": {
       "recordedAtOptional": "Äänitetty paikassa (valinnainen)",
       "shownOnTheTrackPage": "Näytetään kappaleen sivulla linkkinä tapahtumapaikkaan."
@@ -9235,6 +9252,7 @@
       "overview": "Yleiskatsaus",
       "annualReports": "Vuosikertomukset",
       "grants": "Avustukset",
+      "agm": "Vuosikokous",
       "board": "Hallitus",
       "discussions": "Keskustelut",
       "records": "Asiakirjat"

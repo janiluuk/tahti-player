@@ -707,10 +707,13 @@
       "audienceDescription": "Fan tiers, subscriptions, grants",
       "themes": "Themes",
       "themesDescription": "App appearance",
+      "appearance": "Appearance",
+      "appearanceDescription": "Themes and look of the app.",
       "pluginStore": "Add-ons",
       "pluginStoreDescription": "Themes, visualizers, radio, embeds, discovery, channel widgets, export, import, multicast, fingerprinting, audio plugins — one browser",
       "whatsNew": "What's new",
       "whatsNewDescription": "What changed in each release",
+      "aboutDescription": "What changed in each release.",
       "groupSettings": "Settings",
       "groupApp": "App",
       "channelChat": "Channel & chat",
@@ -1878,6 +1881,7 @@
       "mediaPurged_one": "Deleted {{count}} unused file, freed {{size}}.",
       "mediaPurged_other": "Deleted {{count}} unused files, freed {{size}}.",
       "moreTrackActions": "More track actions",
+      "moreCollectionActions": "More collection actions",
       "tabFiles": "Files",
       "fileKinds": "File types"
     },
@@ -2987,6 +2991,7 @@
       "title": "Releases",
       "distribution": "Distribution",
       "newRelease": "New release",
+      "moreActions": "More release actions",
       "releaseType": "Release type",
       "releaseDate": "Release date",
       "creating": "Creating…",
@@ -7014,6 +7019,18 @@
       "admin": "Admin",
       "governance": "Governance"
     },
+    "adminGovernanceHub": {
+      "subtitle": "Co-op governance tools — pick an area.",
+      "toolsAria": "Governance areas",
+      "backToGovernance": "Back to Governance",
+      "overviewDescription": "Member activity and board resolutions.",
+      "reportsDescription": "Generate, approve and publish annual reports.",
+      "grantsDescription": "Grant cycles and disbursement history.",
+      "agmDescription": "Agenda, motions and the annual general meeting.",
+      "boardDescription": "Board terms and election results.",
+      "discussionsDescription": "Pinned and open co-op topics.",
+      "recordsDescription": "Minutes disputes and governance records."
+    },
     "recordedAtVenuePicker": {
       "recordedAtOptional": "Recorded at (optional)",
       "shownOnTheTrackPage": "Shown on the track page, linking to the venue."
@@ -9235,6 +9252,7 @@
       "overview": "Overview",
       "annualReports": "Annual reports",
       "grants": "Grants",
+      "agm": "AGM",
       "board": "Board",
       "discussions": "Discussions",
       "records": "Records"

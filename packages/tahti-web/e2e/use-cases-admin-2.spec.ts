@@ -102,15 +102,19 @@ test('admin: storage shows usage and the file list', async ({ page }) => {
   );
 });
 
-test('admin: Co-op governance tabs for grants and the AGM open', async ({
+test('admin: Co-op governance hub cards open grants and the AGM', async ({
   page,
 }) => {
   await open(page, '/admin/governance');
+  const hub = main(page).getByRole('list', { name: 'Governance areas' });
+  await expect(hub.getByRole('link', { name: /Overview/ })).toBeVisible();
   for (const name of ['Grants', 'AGM', 'Records']) {
-    await main(page).getByRole('tab', { name, exact: true }).click();
+    await hub.getByRole('link', { name: new RegExp(name) }).click();
     await expect(
-      main(page).getByRole('tab', { name, exact: true }),
-    ).toHaveAttribute('aria-selected', 'true');
+      main(page).getByRole('heading', { level: 1, name }),
+    ).toBeVisible();
+    await expect(page.getByTestId('admin-governance-back')).toBeVisible();
+    await open(page, '/admin/governance');
   }
   await expect(page.getByText('Something went wrong')).toHaveCount(0);
 });

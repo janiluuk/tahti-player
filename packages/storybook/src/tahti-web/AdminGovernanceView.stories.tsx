@@ -23,47 +23,37 @@ function renderTab(tab?: AdminGovernanceTabId) {
   );
 }
 
-/** Asserts the page heading and that `label` is the selected section tab. */
-async function expectSection(canvasElement: HTMLElement, label: string) {
+/** Asserts the area heading and that the hub back link is present. */
+async function expectArea(canvasElement: HTMLElement, label: string) {
   const canvas = within(canvasElement);
   await waitFor(() =>
     expect(
-      canvas.getByRole('heading', { level: 1, name: 'Governance' }),
+      canvas.getByRole('heading', { level: 1, name: label }),
     ).toBeVisible(),
   );
-  const sections = within(
-    canvas.getByRole('tablist', { name: 'Governance sections' }),
-  );
-  await expect(sections.getAllByRole('tab')).toHaveLength(7);
-  await expect(sections.getByRole('tab', { name: label })).toHaveAttribute(
-    'aria-selected',
-    'true',
-  );
+  await expect(canvas.getByTestId('admin-governance-back')).toBeVisible();
+  await expect(
+    canvas.queryByRole('tablist', { name: 'Governance sections' }),
+  ).toBeNull();
   return canvas;
 }
 
-/** No `tab` prop: lands on Overview, with member activity and resolutions. */
+/** No `tab` prop: hub of seven area cards. */
 export const Default: Story = {
   render: renderTab(),
   play: async ({ canvasElement }) => {
-    const canvas = await expectSection(canvasElement, 'Overview');
+    const canvas = within(canvasElement);
     await waitFor(() =>
       expect(
-        canvas.getByRole('heading', { name: 'Member activity' }),
+        canvas.getByRole('heading', { level: 1, name: 'Governance' }),
       ).toBeVisible(),
     );
-    await expect(
-      canvas.getByRole('heading', { level: 2, name: 'Board resolutions' }),
-    ).toBeVisible();
-    await expect(
-      canvas.getByRole('textbox', { name: 'Resolution title' }),
-    ).toBeVisible();
-    await expect(
-      canvas.getByRole('button', { name: 'Record resolution' }),
-    ).toBeVisible();
-    await expect(
-      canvas.getByRole('link', { name: /Member motions & voting/ }),
-    ).toBeVisible();
+    const tools = within(
+      canvas.getByRole('list', { name: 'Governance areas' }),
+    );
+    await expect(tools.getAllByRole('link')).toHaveLength(7);
+    await expect(tools.getByRole('link', { name: /Overview/ })).toBeVisible();
+    await expect(tools.getByRole('link', { name: /AGM/ })).toBeVisible();
   },
 };
 
@@ -71,7 +61,7 @@ export const Default: Story = {
 export const ReportsTab: Story = {
   render: renderTab('reports'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectSection(canvasElement, 'Annual reports');
+    const canvas = await expectArea(canvasElement, 'Annual reports');
     await waitFor(() =>
       expect(canvas.getByText('Annual report 2025')).toBeVisible(),
     );
@@ -86,7 +76,7 @@ export const ReportsTab: Story = {
 export const ApproveAndPublishAnnualReport: Story = {
   render: renderTab('reports'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectSection(canvasElement, 'Annual reports');
+    const canvas = await expectArea(canvasElement, 'Annual reports');
     const approve = await canvas.findByRole('button', {
       name: 'Approve report 2025',
     });
@@ -111,7 +101,7 @@ export const ApproveAndPublishAnnualReport: Story = {
 export const GrantsTab: Story = {
   render: renderTab('grants'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectSection(canvasElement, 'Grants');
+    const canvas = await expectArea(canvasElement, 'Grants');
     await waitFor(() =>
       expect(
         canvas.getByRole('heading', { name: 'Disbursement history' }),
@@ -130,7 +120,7 @@ export const GrantsTab: Story = {
 export const AgmTab: Story = {
   render: renderTab('agm'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectSection(canvasElement, 'AGM');
+    const canvas = await expectArea(canvasElement, 'AGM');
     await waitFor(() =>
       expect(
         canvas.getByRole('heading', { name: 'Agenda builder' }),
@@ -165,7 +155,7 @@ export const AgmTab: Story = {
 export const BoardTab: Story = {
   render: renderTab('board'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectSection(canvasElement, 'Board');
+    const canvas = await expectArea(canvasElement, 'Board');
     await waitFor(() => expect(canvas.getByText('Mart Saar')).toBeVisible());
     await expect(canvas.getByText('Serving')).toBeVisible();
   },
@@ -175,7 +165,7 @@ export const BoardTab: Story = {
 export const RecordElectionResult: Story = {
   render: renderTab('board'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectSection(canvasElement, 'Board');
+    const canvas = await expectArea(canvasElement, 'Board');
     await userEvent.click(
       await canvas.findByRole('button', {
         name: 'Candidates: Board members for 2027',
@@ -198,7 +188,7 @@ export const RecordElectionResult: Story = {
 export const RecordsTab: Story = {
   render: renderTab('records'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectSection(canvasElement, 'Records');
+    const canvas = await expectArea(canvasElement, 'Records');
     await waitFor(() =>
       expect(
         canvas.getByText('My home municipality is Espoo, not Helsinki.'),
@@ -214,12 +204,13 @@ export const RecordsTab: Story = {
     );
   },
 };
+
 /** Discussions: the mock app's pinned open topic and closed topic, with
  * Pin / Close controls and the form to open a new one. */
 export const DiscussionsTab: Story = {
   render: renderTab('discussions'),
   play: async ({ canvasElement }) => {
-    const canvas = await expectSection(canvasElement, 'Discussions');
+    const canvas = await expectArea(canvasElement, 'Discussions');
     await waitFor(() =>
       expect(
         canvas.getByRole('link', {

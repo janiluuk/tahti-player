@@ -1,3 +1,9 @@
+## 2026-11-17 - Governance hub, Settings About/Appearance, Studio overflow (0.0.407)
+
+Admin Governance is hub cards at `/admin/governance` with focused area pages
+(no tab row). Settings labels Appearance and About. Releases and Collections
+headers use one primary action plus OverflowMenu. Finnish for the hub and AGM.
+
 ## 2026-11-17 - Settings Security and Notifications (0.0.406)
 
 Settings gains Security and Notifications as their own side-list items.

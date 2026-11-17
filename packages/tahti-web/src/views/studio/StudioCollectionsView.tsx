@@ -5,6 +5,7 @@ import {
   HeadphonesIcon,
   LibraryIcon,
   ListMusicIcon,
+  ListOrderedIcon,
   Mic2Icon,
   PlayIcon,
   PlusIcon,
@@ -23,6 +24,7 @@ import {
   FilterChips,
   Input,
   MediaArtwork,
+  OverflowMenu,
   Select,
   TabLabel,
   Tabs,
@@ -158,6 +160,7 @@ export function StudioCollectionsView() {
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
+  const [orderOpen, setOrderOpen] = useState(false);
   const [name, setName] = useState('');
   const [style, setStyle] = useState<CreateStyle>('ALBUM');
   const [filter, setFilter] = useState<CollectionFilter>('ALL');
@@ -288,8 +291,10 @@ export function StudioCollectionsView() {
           classes={{ root: 'px-0 pt-0' }}
           actions={
             canCreate ? (
-              <div className="flex items-center gap-2">
-                <CollectionOrderButton />
+              <div
+                className="flex items-center gap-2"
+                data-testid="studio-collections-actions"
+              >
                 <Tooltip content={t('library.newCollection')} side="top">
                   <Button
                     size="icon-sm"
@@ -301,6 +306,23 @@ export function StudioCollectionsView() {
                     <PlusIcon size={16} aria-hidden />
                   </Button>
                 </Tooltip>
+                <OverflowMenu
+                  label={t('library.moreCollectionActions')}
+                  data-testid="studio-collections-more"
+                  items={[
+                    {
+                      id: 'order',
+                      label: t('library.collectionOrderAria'),
+                      icon: <ListOrderedIcon size={14} aria-hidden />,
+                      onSelect: () => setOrderOpen(true),
+                    },
+                  ]}
+                />
+                <CollectionOrderButton
+                  hideTrigger
+                  open={orderOpen}
+                  onOpenChange={setOrderOpen}
+                />
               </div>
             ) : undefined
           }

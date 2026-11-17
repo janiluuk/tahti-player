@@ -80,12 +80,11 @@ const legacyRoutes: AdminVisit[] = [
 const tabRoutes: AdminVisit[] = [
   { path: '/admin/addons', heading: /^Add-ons$/ },
   { path: '/admin/moderation/themes', heading: /^Inbox$/, tab: 'Themes' },
-  { path: '/admin/governance/agm', heading: /^Governance$/, tab: 'AGM' },
-  { path: '/admin/governance/board', heading: /^Governance$/, tab: 'Board' },
+  { path: '/admin/governance/agm', heading: /^AGM$/ },
+  { path: '/admin/governance/board', heading: /^Board$/ },
   {
     path: '/admin/governance/records',
-    heading: /^Governance$/,
-    tab: 'Records',
+    heading: /^Records$/,
   },
   { path: '/admin/orphan-pages', heading: /^Orphan pages$/ },
   { path: '/admin/content', heading: /^Catalog$/ },

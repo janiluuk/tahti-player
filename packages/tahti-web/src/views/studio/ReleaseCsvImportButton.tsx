@@ -19,11 +19,19 @@ import {
 
 export function ReleaseCsvImportButton({
   onImported,
+  open: openProp,
+  onOpenChange,
+  hideTrigger = false,
 }: {
   onImported: () => void;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hideTrigger?: boolean;
 }) {
   const { t } = useTranslation('web');
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = openProp ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
   const [csv, setCsv] = useState('');
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<ReleaseImportResult | null>(null);
@@ -61,16 +69,18 @@ export function ReleaseCsvImportButton({
 
   return (
     <>
-      <Tooltip content={t('releaseCsvImportButton.importFromCsv')} side="top">
-        <Button
-          size="icon-sm"
-          variant="secondary"
-          aria-label={t('releaseCsvImportButton.importReleasesFromCsv')}
-          onClick={() => setOpen(true)}
-        >
-          <FileUpIcon size={16} aria-hidden />
-        </Button>
-      </Tooltip>
+      {hideTrigger ? null : (
+        <Tooltip content={t('releaseCsvImportButton.importFromCsv')} side="top">
+          <Button
+            size="icon-sm"
+            variant="secondary"
+            aria-label={t('releaseCsvImportButton.importReleasesFromCsv')}
+            onClick={() => setOpen(true)}
+          >
+            <FileUpIcon size={16} aria-hidden />
+          </Button>
+        </Tooltip>
+      )}
       <Dialog.Root isOpen={open} onClose={close} className="max-w-xl">
         <Dialog.Title>
           {t('releaseCsvImportButton.importReleasesFromCsv')}

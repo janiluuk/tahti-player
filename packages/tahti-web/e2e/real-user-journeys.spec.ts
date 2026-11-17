@@ -127,10 +127,12 @@ test('governance navigation keeps member, artist, and board entries reachable an
     'href',
     '/admin/hubs/coop',
   );
+  await expect(
+    page.getByRole('list', { name: 'Governance areas' }),
+  ).toBeVisible();
 
-  // AGM (and Annual reports / Grants) are now tabs inside the single
-  // consolidated /admin/governance page, not their own Admin Co-op
-  // entries — /admin/agm redirects to /admin/governance/agm.
+  // AGM (and Annual reports / Grants) are hub cards under Governance —
+  // /admin/agm redirects to /admin/governance/agm.
   await page.goto('/admin/agm');
   await expect(page).toHaveURL(/\/admin\/governance\/agm$/);
   await expect(page.getByRole('tab', { name: 'Co-op' })).toHaveAttribute(
@@ -142,10 +144,9 @@ test('governance navigation keeps member, artist, and board entries reachable an
     '/admin/hubs/coop',
   );
   await expect(
-    page
-      .getByRole('tablist', { name: 'Governance sections' })
-      .getByRole('tab', { name: 'AGM' }),
-  ).toHaveAttribute('aria-selected', 'true');
+    page.getByRole('heading', { level: 1, name: 'AGM' }),
+  ).toBeVisible();
+  await expect(page.getByTestId('admin-governance-back')).toBeVisible();
 });
 
 test('library is its own sidebar section with Library tabs, not a Studio tab', async ({
