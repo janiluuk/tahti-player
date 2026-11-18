@@ -27,7 +27,12 @@ export function StudioHomeView() {
     recentBroadcasts,
     broadcastsError,
     reloadOverview,
+    hasEmptyDiscography,
   } = state;
+  const showBroadcasts =
+    recentBroadcasts.length > 0 ||
+    Boolean(broadcastsError) ||
+    !hasEmptyDiscography;
 
   return (
     <StudioGate requireChannel={false}>
@@ -56,18 +61,14 @@ export function StudioHomeView() {
             </div>
           ) : null}
           {!channel ? (
-            <p className="text-foreground-secondary text-sm">
-              <Button
-                type="button"
-                size="sm"
-                variant="text"
-                onClick={openChannelSetup}
-                className="h-auto p-0 underline underline-offset-2"
-              >
+            <div className="flex flex-col items-start gap-3">
+              <p className="text-foreground-secondary text-sm">
+                {t('studioHomeView.createChannelToUnlock')}
+              </p>
+              <Button type="button" size="sm" onClick={openChannelSetup}>
                 {t('studioHomeView.createYourChannel')}
-              </Button>{' '}
-              to unlock Music and Broadcast.
-            </p>
+              </Button>
+            </div>
           ) : null}
 
           {!channel ? null : (
@@ -78,45 +79,47 @@ export function StudioHomeView() {
               />
               <EmptyDiscographyPrompt state={state} />
               <RecentActivitySection />
-              <Group title={t('studioHub.recentBroadcasts')}>
-                {broadcastsError && recentBroadcasts.length === 0 ? (
-                  <PageError
-                    title={t('studioHub.broadcastsLoadError')}
-                    description={broadcastsError}
-                    onRetry={reloadOverview}
-                  />
-                ) : recentBroadcasts.length === 0 ? (
-                  <PageEmpty
-                    className="border-border rounded-xl border"
-                    title={t('studioHub.noBroadcastsTitle')}
-                    description={t('studioHub.noBroadcastsDescription')}
-                    action={
-                      <ButtonLink to="/studio/go-live">
-                        {t('studioHub.goLive')}
-                      </ButtonLink>
-                    }
-                  />
-                ) : (
-                  <div className="border-border overflow-hidden rounded-xl border">
-                    <ul>
-                      {recentBroadcasts.slice(0, 3).map((broadcast) => (
-                        <RecentBroadcastRow
-                          key={broadcast.id}
-                          broadcast={broadcast}
-                        />
-                      ))}
-                    </ul>
-                    <div className="border-border border-t px-4 py-3">
-                      <Link
-                        to="/studio/recordings"
-                        className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
-                      >
-                        {t('studioHub.viewAllRecordings')}
-                      </Link>
+              {showBroadcasts ? (
+                <Group title={t('studioHub.recentBroadcasts')}>
+                  {broadcastsError && recentBroadcasts.length === 0 ? (
+                    <PageError
+                      title={t('studioHub.broadcastsLoadError')}
+                      description={broadcastsError}
+                      onRetry={reloadOverview}
+                    />
+                  ) : recentBroadcasts.length === 0 ? (
+                    <PageEmpty
+                      className="border-border rounded-xl border"
+                      title={t('studioHub.noBroadcastsTitle')}
+                      description={t('studioHub.noBroadcastsDescription')}
+                      action={
+                        <ButtonLink to="/studio/go-live">
+                          {t('studioHub.goLive')}
+                        </ButtonLink>
+                      }
+                    />
+                  ) : (
+                    <div className="border-border overflow-hidden rounded-xl border">
+                      <ul>
+                        {recentBroadcasts.slice(0, 3).map((broadcast) => (
+                          <RecentBroadcastRow
+                            key={broadcast.id}
+                            broadcast={broadcast}
+                          />
+                        ))}
+                      </ul>
+                      <div className="border-border border-t px-4 py-3">
+                        <Link
+                          to="/studio/recordings"
+                          className="text-foreground-secondary text-xs underline-offset-2 hover:underline"
+                        >
+                          {t('studioHub.viewAllRecordings')}
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </Group>
+                  )}
+                </Group>
+              ) : null}
               <UpcomingShowsSection state={state} />
               <GovernanceSection state={state} />
             </HomeTileStagger>

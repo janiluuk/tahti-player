@@ -142,7 +142,8 @@ describe('navigation active states', () => {
   it('lights Co-op for the governance pages, also the old Studio ones', () => {
     expect(activeSidebarItem('/governance')).toBe('coop');
     expect(activeSidebarItem('/governance/motions/m1')).toBe('coop');
-    expect(activeSidebarItem('/studio/governance?tab=topics')).toBe('coop');
+    expect(activeSidebarItem('/governance/guide')).toBe('coop');
+    expect(activeSidebarItem('/governance/documents')).toBe('coop');
     expect(activeSidebarItem('/studio/stats')).toBe('studio');
   });
 

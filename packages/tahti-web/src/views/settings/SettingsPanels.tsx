@@ -6,12 +6,12 @@ import { Loader } from '@tahti-player/ui';
 import { useAuthStore } from '../../stores/authStore';
 import { WhatsNewPanel } from '../WhatsNewView';
 import { AccountPanel } from './panels/AccountPanel';
+import { AppearancePanel } from './panels/AppearancePanel';
 import { ArtistPanel, ReleaseVisualDefaultsPanel } from './panels/ArtistPanel';
 import { BroadcastPanel, type BroadcastSection } from './panels/BroadcastPanel';
-import { PlaybackLanguagePanel } from './panels/PlaybackLanguagePanel';
+import { PlaybackSettingsPanel } from './panels/PlaybackSettingsPanel';
 import { SecurityPanel } from './panels/SecurityPanel';
 import { SettingsNotificationsPanel } from './panels/SettingsNotificationsPanel';
-import { ThemesPanel } from './panels/ThemesPanel';
 import { settingsNavFor, type SettingsSectionId } from './settingsNav';
 
 const PluginStorePanel = lazy(() =>
@@ -47,10 +47,10 @@ export function SettingsSectionBody({
       content = <ArtistPanel />;
       break;
     case 'playback':
-      content = <PlaybackLanguagePanel />;
+      content = <PlaybackSettingsPanel />;
       break;
     case 'themes':
-      content = <ThemesPanel />;
+      content = <AppearancePanel />;
       break;
     case 'plugin-store':
       content = (

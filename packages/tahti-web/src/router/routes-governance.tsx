@@ -5,6 +5,8 @@ import {
   DiscussionsView,
   DiscussionTopicView,
   FeatureRequestsView,
+  GovernanceDocumentsView,
+  GovernanceGuideView,
   GovernanceMeetingDetailView,
   GovernanceMembersView,
   GovernanceMotionDetailView,
@@ -46,6 +48,18 @@ export const publicGovernanceHistoryRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/governance/history',
   component: PublicGovernanceHistoryView,
+});
+
+export const governanceGuideRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/governance/guide',
+  component: GovernanceGuideView,
+});
+
+export const governanceDocumentsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/governance/documents',
+  component: GovernanceDocumentsView,
 });
 
 export const featureRequestsRoute = createRoute({

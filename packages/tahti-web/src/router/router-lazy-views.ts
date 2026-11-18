@@ -60,6 +60,14 @@ export const GovernanceMeetingDetailView = lazyRouteComponent(
   () => import('../views/GovernanceMeetingDetailView'),
   'GovernanceMeetingDetailView',
 );
+export const GovernanceGuideView = lazyRouteComponent(
+  () => import('../views/GovernanceGuideView'),
+  'GovernanceGuideView',
+);
+export const GovernanceDocumentsView = lazyRouteComponent(
+  () => import('../views/GovernanceGuideView'),
+  'GovernanceDocumentsView',
+);
 export const PublicGovernanceHistoryView = lazyRouteComponent(
   () => import('../views/PublicGovernanceHistoryView'),
   'PublicGovernanceHistoryView',
@@ -224,10 +232,6 @@ export const StudioEventCreateView = lazyRouteComponent(
 export const StudioEventView = lazyRouteComponent(
   () => import('../views/studio/StudioEventView'),
   'StudioEventView',
-);
-export const StudioGovernanceView = lazyRouteComponent(
-  () => import('../views/studio/StudioGovernanceView'),
-  'StudioGovernanceView',
 );
 export const StudioBroadcastView = lazyRouteComponent(
   () => import('../views/studio/StudioBroadcastView'),

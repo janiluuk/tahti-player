@@ -7,19 +7,20 @@ import {
 } from '../content/documentLinks';
 import { webT } from '../lib/webT';
 import { useAuthStore } from '../stores/authStore';
+import { GovernanceDocumentsView } from './GovernanceGuideView';
 import { HelpHubView } from './HelpView';
-import { StudioGovernanceView } from './studio/StudioGovernanceView';
 
 vi.mock('@tanstack/react-router', async (importOriginal) => ({
   ...(await importOriginal<typeof import('@tanstack/react-router')>()),
   Link: ({ children }: { children: React.ReactNode }) => <a>{children}</a>,
   useNavigate: () => vi.fn(),
-  useRouterState: () => '/studio/governance',
+  useRouterState: () => '/governance/documents',
 }));
 
 vi.mock('../components/StudioNav', () => ({ StudioNav: () => null }));
+vi.mock('../components/PageBackLink', () => ({ PageBackLink: () => null }));
 
-describe('governance documents live in Studio → Governance, not Help', () => {
+describe('governance documents live in Co-op → Documents, not Help', () => {
   afterEach(() => {
     cleanup();
     useAuthStore.setState({ user: null, hydrated: false });
@@ -37,7 +38,7 @@ describe('governance documents live in Studio → Governance, not Help', () => {
     }
   });
 
-  it('Studio → Governance → Documents lists them', () => {
+  it('Co-op → Documents lists them', () => {
     useAuthStore.setState({
       hydrated: true,
       user: {
@@ -49,7 +50,7 @@ describe('governance documents live in Studio → Governance, not Help', () => {
         roles: ['ARTIST'],
       },
     });
-    render(<StudioGovernanceView tab="documents" />);
+    render(<GovernanceDocumentsView />);
     const documents = screen.getByTestId('governance-documents');
     for (const doc of governanceDocuments(webT())) {
       expect(within(documents).getByText(doc.title)).toBeTruthy();

@@ -250,8 +250,9 @@ export function AdminGrantCycleView() {
                       </HorizontalScroll>
                     )}
                     <p className="text-foreground-secondary mt-3 text-xs">
-                      Sum check: allocations {sumCheckOk ? '=' : '≠'} pool to
-                      the cent using largest remainder.
+                      {sumCheckOk
+                        ? t('adminCoopText.sumCheckOk')
+                        : t('adminCoopText.sumCheckOff')}
                     </p>
                   </SectionShell>
 

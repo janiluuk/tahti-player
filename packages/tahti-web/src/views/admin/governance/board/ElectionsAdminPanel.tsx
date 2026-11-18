@@ -20,6 +20,7 @@ import {
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { numericDay } from '../../../../lib/relativeDate';
+import { webT } from '../../../../lib/webT';
 import { BOARD_ROLE_OPTIONS } from './AddBoardTermForm';
 import { ElectionActions } from './ElectionActions';
 import { ElectionCandidates } from './ElectionCandidates';
@@ -28,19 +29,20 @@ export function electionStage(election: AdminElection): {
   label: string;
   color: 'green' | 'secondary' | 'yellow' | 'red';
 } {
+  const t = webT();
   if (election.cancelledAt) {
-    return { label: 'Cancelled', color: 'red' };
+    return { label: t('governanceLabels.stateCancelled'), color: 'red' };
   }
   if (election.decidedAt) {
-    return { label: 'Decided', color: 'secondary' };
+    return { label: t('electionsPanelText.decided'), color: 'secondary' };
   }
   if (
     election.nominationsCloseAt &&
     new Date(election.nominationsCloseAt) <= new Date()
   ) {
-    return { label: 'Nominations closed', color: 'yellow' };
+    return { label: t('adminCoopText.nominationsClosed'), color: 'yellow' };
   }
-  return { label: 'Nominations open', color: 'green' };
+  return { label: t('adminCoopText.nominationsOpen'), color: 'green' };
 }
 
 function NewElectionForm({

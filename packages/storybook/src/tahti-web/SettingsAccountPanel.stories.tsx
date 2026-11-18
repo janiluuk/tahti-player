@@ -19,8 +19,6 @@ import {
   selectTab,
 } from './_lib/play';
 
-type Scope = ReturnType<typeof within>;
-
 const meta: Meta<typeof AccountPanel> = {
   title: 'Tahti/Settings/AccountPanel',
   component: AccountPanel,
@@ -29,7 +27,7 @@ const meta: Meta<typeof AccountPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Account: Profile & data (session, privacy, storage) and Membership & billing (membership, Governance link to Co-op, fan subscriptions, purchases). Password, devices, 2FA and API tokens are under Settings → Security; notifications under Settings → Notifications. Signed out it only offers Log in.',
+          'Settings → Account is one tab row: Session, Membership (with a link to Co-op), Your subs, Purchases, Storage and Privacy & data. Security and Notifications are their own Settings items. Signed out it only offers Log in.',
       },
     },
   },
@@ -45,31 +43,21 @@ const meta: Meta<typeof AccountPanel> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-async function openGroup(scope: Scope, group: string, tab: string) {
-  await selectTab(scope, group);
-  // Group and tab can share a name; the group's panel holds the tab row.
-  const panel = scope.getAllByRole('tabpanel')[0]!;
-  await selectTab(within(panel), tab);
-}
-
 export const Session: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(
-      canvas.getByRole('tab', { name: 'Profile & data' }),
-    ).toHaveAttribute('aria-selected', 'true');
     await expect(canvas.getByRole('tab', { name: 'Session' })).toHaveAttribute(
       'aria-selected',
       'true',
     );
+    await expect(canvas.getAllByRole('tablist')).toHaveLength(1);
+    await expect(canvas.queryByRole('tab', { name: 'Governance' })).toBeNull();
     await expectVisible(canvas.getByText('@listener-liina'));
     await expectVisible(canvas.getByText('Liina'));
     await expect(
       canvas.getByRole('link', { name: 'Keyboard shortcuts' }),
     ).toHaveAttribute('href', '/help/keyboard-shortcuts');
     await expectVisible(canvas.getByRole('button', { name: 'Log out' }));
-    await expectVisible(canvas.getByRole('tab', { name: 'Privacy & data' }));
-    await expectVisible(canvas.getByRole('tab', { name: 'Storage' }));
   },
 };
 
@@ -91,7 +79,7 @@ export const Devices: Story = {
 export const SubscriptionsAndPurchases: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await openGroup(canvas, 'Membership & billing', 'Your subs');
+    await selectTab(canvas, 'Your subs');
     await expect(
       await canvas.findByRole('link', { name: 'Northern Lights' }),
     ).toHaveAttribute('href', '/u/northern-lights');
@@ -118,11 +106,11 @@ export const SubscriptionsAndPurchases: Story = {
   },
 };
 
-export const GovernanceLinksToCoop: Story = {
-  name: 'Governance links to Co-op',
+export const MembershipLinksToCoop: Story = {
+  name: 'Membership links to Co-op',
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await openGroup(canvas, 'Membership & billing', 'Governance');
+    await selectTab(canvas, 'Membership');
     await expect(
       await canvas.findByRole('link', { name: 'Open Co-op' }),
     ).toHaveAttribute('href', '/governance');
@@ -153,11 +141,10 @@ export const NotificationsAndMentions: Story = {
   },
 };
 
-// The deletion request needs a reason and confirms with its ticket id.
 export const RequestDeletion: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await openGroup(canvas, 'Profile & data', 'Privacy & data');
+    await selectTab(canvas, 'Privacy & data');
     await expect(
       canvas.getByRole('link', { name: /Data export/ }),
     ).toHaveAttribute('href', '/tahti-api/api/me/data-export.json');
@@ -179,7 +166,7 @@ export const RequestDeletion: Story = {
 export const Storage: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await openGroup(canvas, 'Profile & data', 'Storage');
+    await selectTab(canvas, 'Storage');
     await expectVisible(
       await canvas.findByRole('heading', { name: 'Your storage' }),
     );

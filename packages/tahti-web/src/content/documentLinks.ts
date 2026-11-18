@@ -3,9 +3,8 @@ import type { TFunction } from '@tahti-player/i18n';
 export type DocumentLink = { title: string; description: string; to: string };
 
 /**
- * The cooperative's governance records. They live in Studio → Governance →
- * Documents, never at the top of Help (user decision 2026-09-28,
- * docs/DECISIONS.md).
+ * The cooperative's governance records. They live in Co-op → Documents,
+ * never at the top of Help (user decision 2026-09-28, docs/DECISIONS.md).
  */
 export function governanceDocuments(
   t: TFunction<'web'>,

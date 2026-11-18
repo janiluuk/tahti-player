@@ -117,14 +117,6 @@ export const StatsSubtabs: Story = {
   },
 };
 
-export const GovernanceSubtabs: Story = {
-  args: { current: '/studio/governance?tab=documents', global: true },
-  decorators: [withTahtiRouter('/studio/governance?tab=documents')],
-  play: async ({ canvasElement }) => {
-    await expectNoNestedTabs(canvasElement);
-  },
-};
-
 export const FansPageBackLink: Story = {
   args: { current: '/studio/updates', global: true },
   decorators: [withTahtiRouter('/studio/updates')],

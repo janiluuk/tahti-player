@@ -106,10 +106,10 @@ export const PORT_BACKLOG: PortInventoryItem[] = [
   {
     id: 'member-invites',
     surface: 'Channel member invites',
-    route: '/studio/moderation',
+    route: '/studio/fans?tab=chat&section=moderators',
     status: 'missing',
     detail:
-      'Adding a moderator by existing username is live-API and done (`/studio/moderation`). A genuine email invite — for someone without a Tahti account yet, with an accept-token flow — is a separate, larger feature with no backing API; not clearly needed given the username flow already covers the common case.',
+      'Adding a moderator by existing username is live-API and done (Studio → Fans → Chat → Moderators). A genuine email invite — for someone without a Tahti account yet, with an accept-token flow — is a separate, larger feature with no backing API; not clearly needed given the username flow already covers the common case.',
     section: 'backlog',
   },
   {

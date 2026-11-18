@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
@@ -25,10 +25,17 @@ import { StudioPanel } from '../../../../components/StudioPanel';
 import { numericDay } from '../../../../lib/relativeDate';
 import { webT } from '../../../../lib/webT';
 
-const KIND_OPTIONS: Array<{ id: GovernanceAuditor['kind']; label: string }> = [
-  { id: 'OPERATIONS_INSPECTOR', label: 'Operations inspector' },
-  { id: 'AUDITOR', label: 'Auditor' },
-];
+function kindOptions(
+  t: TFunction<'web'>,
+): Array<{ id: GovernanceAuditor['kind']; label: string }> {
+  return [
+    {
+      id: 'OPERATIONS_INSPECTOR',
+      label: t('auditorsPanelStates.operationsInspector'),
+    },
+    { id: 'AUDITOR', label: t('auditorsPanelStates.auditor') },
+  ];
+}
 
 export function auditorServing(
   auditor: GovernanceAuditor,
@@ -45,7 +52,9 @@ function roleLabel(auditor: GovernanceAuditor): string {
     auditor.kind === 'AUDITOR'
       ? webT()('auditorsPanelStates.auditor')
       : webT()('auditorsPanelStates.operationsInspector');
-  return auditor.deputy ? `Deputy ${role.toLowerCase()}` : role;
+  return auditor.deputy
+    ? webT()('adminCoopText.deputyRole', { role: role.toLowerCase() })
+    : role;
 }
 
 function AddAuditorForm({ onAdded }: { onAdded: () => void }) {
@@ -108,7 +117,7 @@ function AddAuditorForm({ onAdded }: { onAdded: () => void }) {
         label={t('auditors.role')}
         value={kind}
         onValueChange={(value) => setKind(value as GovernanceAuditor['kind'])}
-        options={KIND_OPTIONS}
+        options={kindOptions(t)}
       />
       <Toggle
         label={t('auditors.deputy')}

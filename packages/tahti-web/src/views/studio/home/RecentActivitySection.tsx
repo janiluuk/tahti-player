@@ -126,7 +126,7 @@ export function RecentActivitySection() {
         ) : null}
         {incomeCents != null ? (
           <Link
-            to="/studio/revenue"
+            to="/studio/audience"
             className={`${cardClass} hover:bg-background-secondary transition-colors`}
           >
             <span className={labelClass}>

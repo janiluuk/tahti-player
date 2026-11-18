@@ -599,7 +599,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Motions and votes',
         body: [
-          'Open Governance (/governance; artists also find it in Studio → Governance). A motion starts as a draft that members second; once it has enough seconds the board opens it for voting.',
+          'Open Co-op in the sidebar (/governance). A motion starts as a draft that members second; once it has enough seconds the board opens it for voting.',
           'Read a motion, discuss it in its comments, and vote while it is open. Its page shows who seconded it, the result certificate once it closes, and the meeting it was taken up at.',
         ],
       },

@@ -25,6 +25,8 @@ use `BackButtonLink` with `aria-label="Back to …"`.
 (`AdminHubBreadcrumb`, guarded by `AdminNav.test.ts`); release track insights
 opened from a release take `?release=` and go back to that release's Stats tab.
 
+2026-11-18: Feature requests uses `PageBackLink` to Governance (was a raw `← Governance` link); the new Co-op Guide and Documents pages lead back to Governance and are in `use-cases-nav-back-links`. `lib/noRedirectLinks.test.ts` fails when an in-app link points at a redirect-only address, and every `/dashboard/*` target lands in one hop (`prodPathRedirects.test.ts`).
+
 ## Open
 
 | Where | Issue | Why not fixed yet |

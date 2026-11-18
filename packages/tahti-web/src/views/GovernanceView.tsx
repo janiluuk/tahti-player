@@ -72,7 +72,7 @@ function LoadErrorCaption({
   const { t } = useTranslation('web');
   return (
     <p className="text-foreground-secondary mb-2 text-xs" role="status">
-      Could not refresh this list: {message}{' '}
+      {t('adminCoopText.couldNotRefreshList', { message })}{' '}
       <Button
         variant="plain"
         size="flexible"
@@ -108,15 +108,19 @@ function quickLinks(t: TFunction<'web'>) {
       icon: ScrollTextIcon,
     },
     {
-      to: '/studio/governance' as const,
-      search: { tab: 'guide' } as const,
+      to: '/governance/documents' as const,
+      label: t('governanceGuide.documentsTitle'),
+      icon: FileTextIcon,
+    },
+    {
+      to: '/governance/guide' as const,
       label: t('governanceView.governanceHelp'),
       icon: HelpCircleIcon,
     },
   ];
 }
 
-export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
+export function GovernanceView() {
   const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const isBoard = hasAccountRole(user, 'BOARD');
@@ -261,23 +265,20 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
 
   const body = (
     <>
-      {!embedded && (
-        <div className="flex flex-wrap gap-2">
-          {quickLinks(t).map((link) => (
-            <ButtonLink
-              key={link.label}
-              to={link.to}
-              search={'search' in link ? link.search : undefined}
-              onClick={closeSettings}
-              size="sm"
-              variant="secondary"
-            >
-              <link.icon size={14} aria-hidden className="mr-1.5" />
-              {link.label}
-            </ButtonLink>
-          ))}
-        </div>
-      )}
+      <div className="flex flex-wrap gap-2">
+        {quickLinks(t).map((link) => (
+          <ButtonLink
+            key={link.label}
+            to={link.to}
+            onClick={closeSettings}
+            size="sm"
+            variant="secondary"
+          >
+            <link.icon size={14} aria-hidden className="mr-1.5" />
+            {link.label}
+          </ButtonLink>
+        ))}
+      </div>
 
       {user && !loading && !forbidden && (
         <GovernanceStatChips
@@ -776,10 +777,6 @@ export function GovernanceView({ embedded = false }: { embedded?: boolean }) {
       )}
     </>
   );
-
-  if (embedded) {
-    return <div className="flex flex-col gap-6">{body}</div>;
-  }
 
   return (
     <ViewShell

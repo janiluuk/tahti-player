@@ -24,6 +24,7 @@ import {
 import type { GovernanceQuarterlyReport } from '../../../../api/types';
 import { PageEmpty, PageLoading } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
+import { webT } from '../../../../lib/webT';
 import { ModerationTabs } from '../ModerationTabs';
 
 function currentQuarterLabel(): string {
@@ -147,15 +148,24 @@ function statusBadge(status: AdminFeatureRequestStatus): {
 } {
   switch (status) {
     case 'OPEN':
-      return { label: 'Open', color: 'orange' };
+      return { label: webT()('featureRequestsTabMore.open'), color: 'orange' };
     case 'PLANNED':
-      return { label: 'Planned', color: 'cyan' };
+      return {
+        label: webT()('featureRequestsTabMore.planned'),
+        color: 'cyan',
+      };
     case 'IN_PROGRESS':
-      return { label: 'In progress', color: 'cyan' };
+      return {
+        label: webT()('featureRequestsTabMore.inProgress'),
+        color: 'cyan',
+      };
     case 'DONE':
-      return { label: 'Done', color: 'green' };
+      return { label: webT()('featureRequestsTabMore.done'), color: 'green' };
     default:
-      return { label: 'Declined', color: 'secondary' };
+      return {
+        label: webT()('featureRequestsTabMore.declined'),
+        color: 'secondary',
+      };
   }
 }
 

@@ -1,3 +1,5 @@
+import type { TFunction } from '@tahti-player/i18n';
+
 import {
   type AdminAddon,
   type AdminAddonRegisterInput,
@@ -12,11 +14,15 @@ import {
 // installed onto a shared surface (e.g. the homepage) via the "Admin
 // surface installs" panel below, rather than the enabled-by-default /
 // scoped-install pattern the other two use.
-export const SCOPES: Array<{ id: AdminAddonScope; label: string }> = [
-  { id: 'LISTENER', label: 'Listener (Discovery)' },
-  { id: 'ARTIST', label: 'Artist (Channel)' },
-  { id: 'ADMIN', label: 'Admin surface' },
-];
+export function addonScopes(
+  t: TFunction<'web'>,
+): Array<{ id: AdminAddonScope; label: string }> {
+  return [
+    { id: 'LISTENER', label: t('adminCoopText.scopeListener') },
+    { id: 'ARTIST', label: t('adminCoopText.scopeArtist') },
+    { id: 'ADMIN', label: t('adminCoopText.scopeAdmin') },
+  ];
+}
 
 export const EMPTY_DRAFT: AdminAddonRegisterInput = {
   slug: '',

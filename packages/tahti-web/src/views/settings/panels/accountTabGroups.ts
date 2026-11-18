@@ -1,28 +1,21 @@
-import { User, Wallet } from 'lucide-react';
+/** Account is one tab row. Governance left it for Co-op; an old
+ * `?tab=governance` link opens Membership, which links there. */
+export const ACCOUNT_TAB_IDS = [
+  'session',
+  'membership',
+  'subscriptions',
+  'purchases',
+  'storage',
+  'privacy',
+] as const;
 
-import {
-  groupTabs,
-  tabLanding,
-  type GroupedTabs,
-  type TabGroup,
-} from './tabGroups';
+export type AccountTabId = (typeof ACCOUNT_TAB_IDS)[number];
 
-export type AccountTabGroup = TabGroup;
-
-export const ACCOUNT_TAB_GROUPS: readonly AccountTabGroup[] = [
-  {
-    id: 'profile',
-    labelKey: 'settings.accountTabGroupProfile',
-    Icon: User,
-    tabIds: ['session', 'privacy', 'storage'],
-  },
-  {
-    id: 'membership-billing',
-    labelKey: 'settings.accountTabGroupMembershipBilling',
-    Icon: Wallet,
-    tabIds: ['membership', 'governance', 'subscriptions', 'purchases'],
-  },
-];
+/** The tab a deep link to Account opens. */
+export function accountTabIndex(tabId: string | null | undefined): number {
+  const target = tabId === 'governance' ? 'membership' : tabId;
+  return Math.max(0, (ACCOUNT_TAB_IDS as readonly unknown[]).indexOf(target));
+}
 
 export const SECURITY_TAB_IDS = [
   'password-email',
@@ -46,25 +39,5 @@ export function isNotificationsTabId(
 ): value is (typeof NOTIFICATIONS_TAB_IDS)[number] {
   return Boolean(
     value && (NOTIFICATIONS_TAB_IDS as readonly string[]).includes(value),
-  );
-}
-
-export function groupAccountTabs<T extends { id: string }>(
-  tabs: readonly T[],
-): GroupedTabs<T> {
-  return groupTabs(ACCOUNT_TAB_GROUPS, tabs);
-}
-
-/** Where a deep link to one Account tab lands: its group and its place in it. */
-export function accountTabLanding(tabId: string | null): {
-  group: number;
-  tab: number;
-} {
-  return tabLanding(
-    groupTabs(
-      ACCOUNT_TAB_GROUPS,
-      ACCOUNT_TAB_GROUPS.flatMap((group) => group.tabIds.map((id) => ({ id }))),
-    ),
-    tabId,
   );
 }

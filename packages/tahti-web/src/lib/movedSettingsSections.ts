@@ -1,11 +1,14 @@
+import type { ParseKeys } from '@tahti-player/i18n';
+
 import { movedProfileSettingsPath } from './studioProfileSections';
+import { webT } from './webT';
 
 const MOVED_SETTINGS_SECTIONS = {
-  audience: 'Audience',
-  money: 'Money',
-  'fan-subs': 'Fan subscriptions',
-  'fan-tiers': 'Fan tiers',
-} as const;
+  audience: 'studioMoneyText.movedAudience',
+  money: 'studioMoneyText.movedMoney',
+  'fan-subs': 'studioMoneyText.movedFanSubs',
+  'fan-tiers': 'studioMoneyText.movedFanTiers',
+} as const satisfies Record<string, ParseKeys<'web'>>;
 
 export type MovedSettingsSection = keyof typeof MOVED_SETTINGS_SECTIONS;
 
@@ -21,7 +24,7 @@ export function movedSettingsSection(
 export function movedSettingsSectionLabel(
   section: MovedSettingsSection,
 ): string {
-  return MOVED_SETTINGS_SECTIONS[section];
+  return webT()(MOVED_SETTINGS_SECTIONS[section]);
 }
 
 /** Where a bookmark to a former Settings section lands in Studio. */

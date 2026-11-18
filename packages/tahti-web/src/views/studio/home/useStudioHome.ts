@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { useTranslation } from '@tahti-player/i18n';
+
 import {
   fetchRecentBroadcasts,
   type RecentBroadcast,
@@ -31,6 +33,7 @@ function apiErrorReason(meta: FetchMeta): string | null {
 
 /** Loads and derives every number/list shown on the Studio home dashboard. */
 export function useStudioHome() {
+  const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
   const profileLoaded = useAuthStore((s) => s.profileLoaded);
   const openChannelSetup = useChannelSetupModalStore((s) => s.open);
@@ -158,7 +161,7 @@ export function useStudioHome() {
       })
       .catch(() => {
         if (!cancelled) {
-          setGovernanceError('Could not load governance.');
+          setGovernanceError(t('studioHub.governanceLoadError'));
         }
       });
     return () => {
@@ -183,15 +186,19 @@ export function useStudioHome() {
       .map((motion) => ({
         id: `motion-${motion.id}`,
         title: motion.title,
-        detail: `${motion.commentCount} discussion comment${motion.commentCount === 1 ? '' : 's'}`,
-        to: '/studio/governance' as const,
+        detail: t('studioHub.discussionComments', {
+          count: motion.commentCount ?? 0,
+        }),
+        to: '/governance' as const,
       })),
     ...unresolvedRequests
       .filter((request) => request.commentCount > 0)
       .map((request) => ({
         id: `request-${request.id}`,
         title: request.title,
-        detail: `${request.commentCount} discussion comment${request.commentCount === 1 ? '' : 's'}`,
+        detail: t('studioHub.discussionComments', {
+          count: request.commentCount,
+        }),
         to: '/governance/feature-requests' as const,
       })),
   ].slice(0, 5);

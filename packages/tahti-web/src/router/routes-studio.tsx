@@ -27,7 +27,6 @@ import {
   StudioEventView,
   StudioFansView,
   StudioGoLiveView,
-  StudioGovernanceView,
   StudioGroupDetailView,
   StudioGroupsView,
   StudioHomeView,
@@ -291,22 +290,23 @@ export const studioStatsRoute = createRoute({
   },
 });
 
+/** Governance lives in Co-op; old Studio links land on the matching Co-op
+ * page. */
 export const studioGovernanceRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/studio/governance',
-  validateSearch: (
-    search: Record<string, unknown>,
-  ): { tab?: 'topics' | 'documents' | 'guide' } => ({
-    tab:
-      search.tab === 'topics' || search.tab === 'feature-requests'
-        ? 'topics'
-        : search.tab === 'documents' || search.tab === 'guide'
-          ? search.tab
-          : undefined,
-  }),
-  component: function StudioGovernanceRoute() {
-    const search = studioGovernanceRoute.useSearch();
-    return <StudioGovernanceView tab={search.tab ?? 'motions'} />;
+  beforeLoad: ({ search }) => {
+    const tab = (search as { tab?: unknown }).tab;
+    if (tab === 'topics' || tab === 'feature-requests') {
+      throw redirect({ to: '/governance/feature-requests' });
+    }
+    if (tab === 'documents') {
+      throw redirect({ to: '/governance/documents' });
+    }
+    if (tab === 'guide') {
+      throw redirect({ to: '/governance/guide' });
+    }
+    throw redirect({ to: '/governance' });
   },
 });
 

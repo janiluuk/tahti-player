@@ -2,7 +2,7 @@ import { Link } from '@tanstack/react-router';
 import { RotateCcwIcon } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import { Badge, Button, InlineError, Select } from '@tahti-player/ui';
 
 import {
@@ -19,11 +19,13 @@ import {
 } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 
-const FILTERS = [
-  { id: '', label: 'Pending and failed' },
-  { id: 'FAILED', label: 'Failed' },
-  { id: 'PENDING', label: 'Pending' },
-];
+function payoutFilters(t: TFunction<'web'>) {
+  return [
+    { id: '', label: t('adminCoopText.pendingAndFailed') },
+    { id: 'FAILED', label: t('adminCoopText.failed') },
+    { id: 'PENDING', label: t('adminCoopText.pending') },
+  ];
+}
 
 function formatEur(cents: number): string {
   return `€${(cents / 100).toLocaleString('fi-FI', { minimumFractionDigits: 2 })}`;
@@ -90,7 +92,7 @@ export function FanSubPayoutQueue({ onChanged }: { onChanged?: () => void }) {
           onValueChange={(value) =>
             setState(value as '' | AdminFanSubPayoutState)
           }
-          options={FILTERS}
+          options={payoutFilters(t)}
         />
       }
     >

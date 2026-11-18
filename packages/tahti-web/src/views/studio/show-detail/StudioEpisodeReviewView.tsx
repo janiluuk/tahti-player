@@ -344,8 +344,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                     {t('episodeReview.goLiveToRecord')}
                   </ButtonLink>
                   <p className="text-foreground-secondary w-full text-xs">
-                    After the broadcast ends, open Studio → Recordings to edit
-                    and attach the saved capture, then return here to approve.
+                    {t('studioMoneyText.episodeAfterBroadcast')}
                   </p>
                 </div>
               )}

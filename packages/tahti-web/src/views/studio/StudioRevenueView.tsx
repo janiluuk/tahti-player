@@ -178,9 +178,10 @@ export function StudioRevenueView() {
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span>
-                  Settings › {movedSettingsSectionLabel(movedFrom)} is now
-                  Studio › Fans › {pageTitle}. Update any bookmark that pointed
-                  to the old address.
+                  {t('studioMoneyText.movedNotice', {
+                    from: movedSettingsSectionLabel(movedFrom),
+                    page: pageTitle,
+                  })}
                 </span>
                 <Button
                   size="sm"

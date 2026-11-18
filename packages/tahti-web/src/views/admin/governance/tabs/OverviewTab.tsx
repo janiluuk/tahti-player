@@ -292,10 +292,9 @@ export function OverviewTab() {
           )}
         </div>
         <p className="text-foreground-secondary mt-3 text-xs">
-          Every governance vote and comment is attributed to the account that
-          performed it and retains the subject context in the audit log.{' '}
+          {t('adminCoopText.auditAttribution')}{' '}
           <Link to="/admin/logs" className="underline-offset-2 hover:underline">
-            Open full audit log →
+            {t('adminCoopText.openAuditLog')}
           </Link>
         </p>
       </StudioPanel>

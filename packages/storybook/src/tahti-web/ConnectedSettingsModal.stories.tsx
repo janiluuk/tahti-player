@@ -70,15 +70,28 @@ export const ThemesTab: Story = {
   decorators: [withMockAuth(MOCK_USERS.listener), withOpenSettings('themes')],
 };
 
-export const LanguageTab: Story = {
-  name: 'Playback & language, Language tab',
-  decorators: [withMockAuth(null), withOpenSettings('playback', 'language')],
+export const LanguageInAppearance: Story = {
+  name: 'Appearance, language above themes',
+  decorators: [withMockAuth(null), withOpenSettings('themes')],
+  play: async ({ canvasElement }) => {
+    const body = within(canvasElement.ownerDocument.body);
+    await body.findByRole('heading', { level: 1, name: 'Appearance' });
+    await expect(body.getByTestId('language-panel')).toBeVisible();
+  },
+};
+
+export const PlaybackTabs: Story = {
+  name: 'Playback, Integrations tab',
+  decorators: [
+    withMockAuth(null),
+    withOpenSettings('playback', 'integrations'),
+  ],
   play: async ({ canvasElement }) => {
     const body = within(canvasElement.ownerDocument.body);
     await expect(
-      await body.findByRole('tab', { name: 'Language', selected: true }),
+      await body.findByRole('tab', { name: 'Integrations', selected: true }),
     ).toBeVisible();
-    await expect(body.getByTestId('language-panel')).toBeVisible();
+    await expect(body.queryByRole('tab', { name: 'Language' })).toBeNull();
     await userEvent.click(body.getByRole('tab', { name: 'Playback' }));
     await expect(
       body.getByRole('tab', { name: 'Playback', selected: true }),

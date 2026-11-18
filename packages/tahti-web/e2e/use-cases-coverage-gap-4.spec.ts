@@ -104,12 +104,13 @@ test('artist: switches the app to Finnish in Settings and back', async ({
   await page.setViewportSize({ width: 1440, height: 900 });
   await signIn(page);
   await open(page, '/settings/playback?tab=language');
+  await expect(page).toHaveURL(/\/settings\/themes/);
   const settings = page.getByRole('dialog', { name: 'Settings' });
   await settings.getByRole('button', { name: 'Language', exact: true }).click();
   await page.getByRole('option', { name: 'Suomi', exact: true }).click();
   const finnishHeading = page.getByRole('heading', {
     level: 1,
-    name: 'Toisto ja kieli',
+    name: 'Ulkoasu',
   });
   await expect(finnishHeading).toBeVisible();
   await page.reload();
@@ -121,6 +122,6 @@ test('artist: switches the app to Finnish in Settings and back', async ({
     .click();
   await page.getByRole('option', { name: 'English', exact: true }).click();
   await expect(
-    page.getByRole('heading', { level: 1, name: 'Playback & language' }),
+    page.getByRole('heading', { level: 1, name: 'Appearance' }),
   ).toBeVisible();
 });

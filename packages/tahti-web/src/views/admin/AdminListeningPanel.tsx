@@ -16,9 +16,9 @@ import { StatNumber } from '../../components/tahti/StatNumber';
 import { dateLocaleTag } from '../../lib/locale';
 
 const RANGES = [
-  { id: '7', label: '7 days' },
-  { id: '30', label: '30 days' },
-  { id: 'all', label: 'All time' },
+  { id: '7', labelKey: 'library.days7' },
+  { id: '30', labelKey: 'library.days30' },
+  { id: 'all', labelKey: 'library.allTime' },
 ] as const;
 
 /** Platform listening for the board, from listen sessions (Admin → Content). */
@@ -53,7 +53,10 @@ export function AdminListeningPanel() {
     >
       <div className="flex flex-col gap-4">
         <FilterChips
-          items={RANGES}
+          items={RANGES.map((range) => ({
+            id: range.id,
+            label: t(range.labelKey),
+          }))}
           selected={range}
           onChange={(id) => setRange(id as AdminListeningRange)}
           aria-label={t('adminListeningPanel.listeningPeriod')}

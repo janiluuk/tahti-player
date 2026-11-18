@@ -16,7 +16,7 @@ import {
 } from '../../../api/admin';
 import { ImageUploadField } from '../../../components/ImageUploadField';
 import { webT } from '../../../lib/webT';
-import { SCOPES } from './shared';
+import { addonScopes } from './shared';
 
 /** Registers a new add-on, or with `editing` edits one's metadata (slug and
  * type are fixed once registered). */
@@ -80,7 +80,7 @@ export function RegisterDialog({
               onValueChange={(value) =>
                 onChange({ ...draft, scope: value as AdminAddonScope })
               }
-              options={SCOPES.map((scope) => ({
+              options={addonScopes(t).map((scope) => ({
                 id: scope.id,
                 label: scope.label,
               }))}

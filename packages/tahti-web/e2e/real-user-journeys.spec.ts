@@ -94,17 +94,16 @@ test('governance navigation keeps member, artist, and board entries reachable an
   await expect(coop).toHaveAttribute('aria-current', 'page');
 
   await page.goto('/studio/governance');
+  await expect(page).toHaveURL(/\/governance$/);
   await expect(coop).toHaveAttribute('aria-current', 'page');
-  await expect(page.getByRole('tab', { name: 'Motions' })).toHaveAttribute(
-    'aria-selected',
-    'true',
-  );
-  await page.getByRole('tab', { name: 'Topics' }).click();
-  await expect(page).toHaveURL(/\/studio\/governance\?tab=topics$/);
-  await expect(page.getByRole('tab', { name: 'Topics' })).toHaveAttribute(
-    'aria-selected',
-    'true',
-  );
+  await page.goto('/studio/governance?tab=topics');
+  await expect(page).toHaveURL(/\/governance\/feature-requests$/);
+  await expect(coop).toHaveAttribute('aria-current', 'page');
+  await page.goto('/help/governance');
+  await expect(page).toHaveURL(/\/governance\/guide$/);
+  await expect(
+    page.getByRole('heading', { level: 1, name: 'Governance guide' }),
+  ).toBeVisible();
   await expect(coop).toHaveAttribute('aria-current', 'page');
 
   await page.evaluate(() => {

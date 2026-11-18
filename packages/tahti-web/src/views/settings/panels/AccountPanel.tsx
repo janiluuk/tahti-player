@@ -64,7 +64,7 @@ import { useAuthModalStore } from '../../../stores/authModalStore';
 import { useAuthStore } from '../../../stores/authStore';
 import { useSettingsModalStore } from '../../../stores/settingsModalStore';
 import { SettingsHint, SettingsInfo } from '../SettingsFields';
-import { accountTabLanding, groupAccountTabs } from './accountTabGroups';
+import { ACCOUNT_TAB_IDS, accountTabIndex } from './accountTabGroups';
 
 function euros(cents: number | string): string {
   const n = typeof cents === 'string' ? Number(cents) : cents;
@@ -188,52 +188,49 @@ export function AccountPanel() {
       id: 'membership',
       label: t('settingsBody.account.tabMembership'),
       icon: <Wallet size={14} />,
-      content:
-        !membership && membershipError ? (
-          <PageError
-            title={t('settingsBody.account.membershipLoadError')}
-            description={membershipError}
-            onRetry={() => {
-              setMembershipError(null);
-              setMembershipAttempt((n) => n + 1);
-            }}
-          />
-        ) : !membership ? (
-          <PageLoading label={t('settingsBody.account.membershipLoading')} />
-        ) : (
-          <div className="flex flex-col gap-6">
-            <MembershipStatusPanel
-              membership={membership}
-              userEmail={user.email}
-              onChange={() => {
-                void fetchMembership().then((r) => setMembership(r.data));
+      content: (
+        <div className="flex flex-col gap-6">
+          {!membership && membershipError ? (
+            <PageError
+              title={t('settingsBody.account.membershipLoadError')}
+              description={membershipError}
+              onRetry={() => {
+                setMembershipError(null);
+                setMembershipAttempt((n) => n + 1);
               }}
             />
-            <MembershipInvoices />
+          ) : !membership ? (
+            <PageLoading label={t('settingsBody.account.membershipLoading')} />
+          ) : (
+            <>
+              <MembershipStatusPanel
+                membership={membership}
+                userEmail={user.email}
+                onChange={() => {
+                  void fetchMembership().then((r) => setMembership(r.data));
+                }}
+              />
+              <MembershipInvoices />
+              <SettingsHint>
+                {t('settingsBody.account.membershipRenewalHint')}
+              </SettingsHint>
+            </>
+          )}
+          <div className="flex flex-col items-start gap-3">
             <SettingsHint>
-              {t('settingsBody.account.membershipRenewalHint')}
+              {t('settingsBody.account.governanceMoved')}
             </SettingsHint>
+            <ButtonLink
+              to="/governance"
+              onClick={closeSettings}
+              size="sm"
+              variant="secondary"
+              data-testid="account-open-coop"
+            >
+              <Landmark size={15} aria-hidden className="mr-1.5" />
+              {t('settingsBody.account.openCoop')}
+            </ButtonLink>
           </div>
-        ),
-    },
-    {
-      id: 'governance',
-      label: t('settingsBody.account.tabGovernance'),
-      icon: <Landmark size={14} />,
-      content: (
-        <div className="flex flex-col items-start gap-3">
-          <SettingsHint>
-            {t('settingsBody.account.governanceMoved')}
-          </SettingsHint>
-          <ButtonLink
-            to="/governance"
-            onClick={closeSettings}
-            size="sm"
-            variant="secondary"
-            data-testid="account-open-coop"
-          >
-            {t('settingsBody.account.openCoop')}
-          </ButtonLink>
         </div>
       ),
     },
@@ -399,7 +396,9 @@ export function AccountPanel() {
     },
   ];
 
-  const landing = accountTabLanding(accountSection);
+  const orderedTabs = ACCOUNT_TAB_IDS.flatMap((id) =>
+    tabItems.filter((item) => item.id === id),
+  );
 
   return (
     <div className="flex min-w-0 flex-col gap-4">
@@ -407,24 +406,10 @@ export function AccountPanel() {
       <Tabs
         key={accountSection ?? 'session'}
         className="min-w-0"
-        listClassName="flex-wrap"
-        defaultIndex={landing.group}
-        items={groupAccountTabs(tabItems).map(({ group, tabs }, index) => ({
-          id: group.id,
-          label: group.labelKey
-            ? t(group.labelKey as 'settings.accountTabGroupSignInSecurity')
-            : (group.label ?? group.id),
-          icon: <group.Icon size={14} />,
-          content: (
-            <Tabs
-              className="min-w-0"
-              listClassName="border-border flex-wrap gap-1 border-b pb-2"
-              panelClassName="pt-3"
-              defaultIndex={index === landing.group ? landing.tab : 0}
-              items={tabs}
-            />
-          ),
-        }))}
+        listClassName="border-border flex-wrap gap-1 border-b pb-2"
+        panelClassName="pt-3"
+        defaultIndex={accountTabIndex(accountSection)}
+        items={orderedTabs}
       />
     </div>
   );

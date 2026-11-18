@@ -54,6 +54,8 @@ test('governance meeting, motion, members and discussions lead back to Governanc
     '/governance/motions/motion-1',
     '/governance/members',
     '/governance/discussions',
+    '/governance/guide',
+    '/governance/documents',
   ]) {
     await back(page, from, 'Governance', /\/governance$/);
   }

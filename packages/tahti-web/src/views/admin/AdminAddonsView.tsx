@@ -26,7 +26,7 @@ import { ManageDialog } from './addons/ManageDialog';
 import { PublishDialog } from './addons/PublishDialog';
 import { RegisterDialog } from './addons/RegisterDialog';
 import { RejectDialog } from './addons/RejectDialog';
-import { SCOPES } from './addons/shared';
+import { addonScopes } from './addons/shared';
 import { useAdminAddons } from './addons/useAdminAddons';
 
 export function AdminAddonsView() {
@@ -129,7 +129,7 @@ export function AdminAddonsView() {
                   aria-label={t('adminAddonsView.addOnTypes')}
                   items={[
                     { id: 'ALL', label: t('adminAddonsViewMore.allAddOns') },
-                    ...SCOPES.map((item) => ({
+                    ...addonScopes(t).map((item) => ({
                       id: item.id,
                       label: item.label,
                     })),

@@ -101,18 +101,19 @@ function ChannelOverallStats() {
                 className="border-border bg-background-secondary/40 rounded-lg border p-3"
               >
                 <p className="text-foreground-secondary text-xs font-semibold tracking-wide uppercase">
-                  Last {range} day{range === '1' ? '' : 's'}
+                  {t('studioChannelText.lastDays', { count: Number(range) })}
                 </p>
                 <p className="mt-2 text-2xl font-bold tabular-nums">
                   {periodStats?.totalPlays.toLocaleString(dateLocaleTag()) ??
                     '—'}
                 </p>
                 <p className="text-foreground-secondary text-xs">
-                  plays ·{' '}
-                  {periodStats?.totalDownloads.toLocaleString(
-                    dateLocaleTag(),
-                  ) ?? '—'}{' '}
-                  downloads
+                  {t('studioChannelText.playsAndDownloads', {
+                    downloads:
+                      periodStats?.totalDownloads.toLocaleString(
+                        dateLocaleTag(),
+                      ) ?? '—',
+                  })}
                 </p>
               </div>
             );
@@ -307,12 +308,15 @@ function ChannelSections() {
         <StudioPanel title={t('studioChannelView.channelSetup')}>
           <div className="flex flex-col items-start gap-3">
             <p className="text-foreground-secondary text-sm">
-              Create {user?.username ?? 'your-name'}.tahti.live to unlock
-              broadcasting, uploads, and your public channel.
+              {t('studioChannelText.createToUnlock', {
+                host: `${user?.username ?? 'your-name'}.tahti.live`,
+              })}
             </p>
             <Button disabled={!user} onClick={openChannelSetup}>
               <PlusIcon size={16} aria-hidden className="mr-1.5" />
-              Create {user?.username ?? 'your-name'}.tahti.live
+              {t('studioChannelText.createHost', {
+                host: `${user?.username ?? 'your-name'}.tahti.live`,
+              })}
             </Button>
           </div>
         </StudioPanel>
