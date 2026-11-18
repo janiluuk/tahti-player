@@ -11,6 +11,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   FilterBar,
+  Input,
   Select,
   SortMenuButton,
   Tooltip,

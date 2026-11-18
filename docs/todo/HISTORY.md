@@ -1,6 +1,6 @@
 ## 2026-11-18 — List searches on one FilterBar (30 slices)
 
-Sounds, Releases, Shows, Collections, Recordings, Library media/embeds/smart links, History, Help, the artist directory, admin files/users/venues/top lists/Selects, governance members, the member register, the editor library picker, add-tracks, and the desktop library search sit on `@tahti-player/ui` `FilterBar`. The bar can take a trailing search control that stays idle until the field has a value (`WithEndAddon` / `WithEndAddonActive`). tahti-web 0.0.414. Simplify phase 5 Sounds FilterBar is done; Playlists, Profile preview, Go live and Radio anatomy stay open.
+Sounds, Releases, Shows, Collections, Recordings, Library media/embeds/smart links, History, Help, the artist directory, admin files/users/venues/top lists/Selects, governance members, the member register, the editor library picker, add-tracks, and the desktop library search sit on `@tahti-player/ui` `FilterBar`. The bar can take a trailing search control that stays idle until the field has a value (`WithEndAddon` / `WithEndAddonActive`). tahti-web 0.0.415. Simplify phase 5 Sounds FilterBar is done; Playlists, Profile preview, Go live and Radio anatomy stay open.
 
 ## 2026-11-18 — Prod mock tree-shake (30 slices)
 
