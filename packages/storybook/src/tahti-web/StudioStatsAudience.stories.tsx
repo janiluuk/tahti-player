@@ -53,7 +53,9 @@ export const Sources: Story = {
     await expect(
       await canvas.findByRole('link', { name: /instagram\.com\/p\/abc/ }),
     ).toBeInTheDocument();
-    await expect(canvas.getByText(/Other pages/)).toBeInTheDocument();
+    await expect(
+      canvas.getByText(/Other pages · \d+ listens/),
+    ).toBeInTheDocument();
   },
 };
 
