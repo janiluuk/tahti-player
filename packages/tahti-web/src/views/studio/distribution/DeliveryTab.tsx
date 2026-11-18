@@ -88,11 +88,11 @@ export function DeliveryTab({
           role="status"
           className="border-accent-amber bg-accent-amber/10 text-foreground rounded-md border px-3 py-2 text-xs"
         >
-          Platform stub mode —{' '}
-          {stubPlatforms
-            .map((row) => `${row.label} (${row.detail})`)
-            .join('; ')}
-          . DSP submit is refused in production until keys are configured.
+          {t('studioMoneyText.platformStubMode', {
+            platforms: stubPlatforms
+              .map((row) => `${row.label} (${row.detail})`)
+              .join('; '),
+          })}
         </div>
       ) : null}
       <p className="text-foreground-secondary text-xs">
@@ -100,11 +100,11 @@ export function DeliveryTab({
       </p>
       {revelatorStatus && (
         <p className="text-xs">
-          Status: <strong>{revelatorStatus}</strong>
+          {t('studioMoneyText.status')} <strong>{revelatorStatus}</strong>
           {revelatorId && (
             <span className="text-foreground-secondary">
               {' '}
-              · id {revelatorId}
+              {t('studioMoneyText.revelatorId', { id: revelatorId })}
             </span>
           )}
         </p>
@@ -112,17 +112,21 @@ export function DeliveryTab({
       {billing && !billing.paid && (
         <p className="text-foreground-secondary text-xs">
           {billing.feeCents === 0 && billing.studioIncludedRemaining != null
-            ? `Studio included slot (${billing.studioIncludedRemaining} left this year)`
-            : `Distribution fee: ${euros(billing.feeCents)}`}
+            ? t('studioMoneyText.includedSlot', {
+                count: billing.studioIncludedRemaining,
+              })
+            : t('studioMoneyText.distributionFee', {
+                fee: euros(billing.feeCents),
+              })}
         </p>
       )}
       {billing?.paid && (
         <p className="text-foreground-secondary text-xs">
           {billing.waived ? (
-            'Fee waived (Studio included)'
+            t('studioMoneyText.feeWaived')
           ) : (
             <>
-              Distribution fee paid
+              {t('studioMoneyText.feePaid')}
               {billing.distributionPaidAt ? (
                 <>
                   {' '}

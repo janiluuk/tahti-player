@@ -1,6 +1,6 @@
 # Tahti Player navigation sitemap
 
-Updated 2026-11-17 from `src/router/routes-*.tsx`, `AppShell.tsx`,
+Updated 2026-11-18 from `src/router/routes-*.tsx`, `AppShell.tsx`,
 `StudioNav.tsx`, `AdminNav.tsx`, `MobileChrome.tsx`, `LibraryView.tsx`,
 `views/settings/settingsNav.ts` and `lib/prodPathRedirects.ts`. This is the
 navigation audit source of truth for the Nuclear client. Persistent chrome
@@ -8,6 +8,17 @@ is listed separately from routes that exist but are only reached
 contextually, so an orphan is not mistaken for a missing feature. The
 `/more` atlas mirrors this file in `src/content/flowDiagrams.ts` (Nuclear
 pack) and `src/content/mapScreens.ts`.
+
+**2026-11-18 changes:** Governance is wholly Co-op: the guide and the
+cooperative's documents are `/governance/guide` and `/governance/documents`
+(back link to Governance); `/studio/governance` (any `?tab=`) and
+`/help/governance` redirect there. Settings → Account is one tab row
+(Session · Membership · Your subs · Purchases · Storage · Privacy & data;
+the Co-op link sits under Membership, `?tab=governance` opens it). Language
+moved from Playback to Appearance (`/settings/language` and
+`/settings/playback?tab=language` open Appearance). Legacy `/dashboard/*`
+paths land in one hop (no target is itself a redirect), and in-app links
+never point at a redirect-only address (`lib/noRedirectLinks.test.ts`).
 
 **2026-11-17 changes:** Admin Overview is one page (Status and Monitoring
 redirect into `/admin`); Inbox chips show pending counts; Settings folds
@@ -66,16 +77,16 @@ Files (`/library/files?kind=`) shows Media, Stash and Local files as chips.
 **Local files** is a chip only when the desktop app provides the on-disk
 library. Playlists as a Library tab is still open product work.
 
-Settings modal sections (`settingsNav`) are account-only: Account, Security,
-Notifications, Profile (only for an account without a channel), Playback &
-language (tabs Playback · Language · Integrations); Themes, Add-ons, What's
-new (group "App"). Signed
-out, only Playback, Themes, Add-ons and What's new show. An artist's
+Settings modal sections (`settingsNav`) are account-only: Account (one tab
+row), Security, Notifications, Profile (only for an account without a
+channel), Playback (tabs Playback · Integrations); Appearance (Language,
+then themes), Add-ons, About (group "App"). Signed out, only Playback,
+Appearance, Add-ons and About show. An artist's
 profile, channel and broadcast forms are Studio pages;
 `/settings/artist?tab=…` (for a channel owner), `/settings/channel?tab=…`
 and `/settings/broadcast?tab=…` redirect there.
-`/settings/integrations` and `/settings/language` open Playback & language
-on the matching tab. An unknown `$section` opens Account.
+`/settings/integrations` opens Playback on its Integrations tab;
+`/settings/language` and `/settings/playback?tab=language` open Appearance. An unknown `$section` opens Account.
 
 Admin sections (`ADMIN_SECTIONS`): **Overview · Inbox · People · Content ·
 Co-op · Platform**.
@@ -112,8 +123,8 @@ Desktop right rail: Queue only.
 | Everyone | Discover | `/discover` (+ `?tab=artists`, `venues`, `parties`, `feed`) | `/venues` redirects to the Venues tab. |
 | Everyone | Library | `/library` (→ Favorites), `/library/favorites`, `/library/history`, `/library/following`, `/library/files`; `/library/media`, `/library/stash`, `/library/local` redirect to Files | Opening Library or Favorites does not ask for sign-in. Other tabs stay visible and grayed until there is an account. |
 | Everyone | Help | `/help`, `/help/$slug` | Articles reach `/status`, `/news`, `/whats-new`, legal pages and `/transparency`. |
-| Artist | Studio | `/studio`, Music catalog under `/studio/sounds`, `/studio/collections`, `/studio/releases`, and related Music routes, Broadcast hub and children, Fans hub and children, `/studio/stats`, `/studio/profile` (+ `/$section`) | Detail pages swap the section row for a back link. |
-| Members | Co-op | `/governance` (+ motion/meeting detail) | Was Studio → Governance. |
+| Artist | Studio | `/studio`, music catalog under `/studio/sounds`, `/studio/collections`, `/studio/releases`, and related routes; broadcast and fans hubs and children; `/studio/stats`; `/studio/profile` (+ `/$section`) | Detail pages swap the section row for a back link. |
+| Members | Co-op | `/governance` (+ motion/meeting detail, `/governance/guide`, `/governance/documents`) | Was Studio → Governance; `/studio/governance` redirects. |
 | Signed in | Settings | `/settings`, `/settings/$section`, `/account`, `/onboarding` | Modal + bookmarkable sections. `/themes` redirects here. `/settings/plugin-store?category=themes` opens Themes. |
 | Board | Admin | `/admin`, hubs, `/admin/moderation`, `/admin/users`, content/platform tools, `/admin/governance` (+ `$tab`), `/admin/grants/$year` | Queue/detail routes stay contextual. |
 
@@ -136,6 +147,9 @@ These routes are real but should not become extra top-level navigation items:
 - Admin aliases: `/admin/status`, `/admin/monitoring` → `/admin#…`;
   `/admin/activity` → logs; moderation and governance tab aliases as before;
   `/admin/disco-widgets` → `/admin/addons`.
+- Governance aliases: `/studio/governance` → `/governance` (`?tab=topics` →
+  feature requests, `documents`, `guide` → the Co-op pages);
+  `/help/governance` → `/governance/guide`.
 - Studio aliases: `/studio/info` → go-live; `/studio/archive*` → sounds;
   `/studio/stash` → `/library/files?kind=stash`; `/studio/channel?tab=selects`
   → `/admin/tahti-selects`; branding/profile tabs → `/studio/profile/$section`.

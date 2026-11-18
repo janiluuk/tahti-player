@@ -135,7 +135,7 @@ export function StudioMasteringView({ soundId }: { soundId: string }) {
                   {source.durationSec != null
                     ? `${Math.round(source.durationSec)}s — `
                     : ''}
-                  This is the track that will be matched to your reference.
+                  {t('studioMoneyText.masteringSource')}
                 </p>
               </StudioPanel>
 

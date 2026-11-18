@@ -6,16 +6,14 @@ import {
   type PlaybackSettingsSection,
 } from '../../../stores/settingsModalStore';
 import { IntegrationsPanel } from './IntegrationsPanel';
-import { LanguagePanel } from './LanguagePanel';
 import { PlaybackPanel } from './PlaybackPanel';
 
 const SECTIONS: readonly PlaybackSettingsSection[] = [
   'playback',
-  'language',
   'integrations',
 ];
 
-export function PlaybackLanguagePanel() {
+export function PlaybackSettingsPanel() {
   const { t } = useTranslation('web');
   const playbackSection = useSettingsModalStore((s) => s.playbackSection);
   const selectedIndex = Math.max(
@@ -37,11 +35,6 @@ export function PlaybackLanguagePanel() {
           id: 'playback',
           label: t('settings.playback'),
           content: <PlaybackPanel />,
-        },
-        {
-          id: 'language',
-          label: t('settings.language'),
-          content: <LanguagePanel />,
         },
         {
           id: 'integrations',

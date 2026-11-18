@@ -104,7 +104,8 @@ test('artist publishes a draft release and its smart link page opens', async ({
     .getByRole('button', { name: 'Publish', exact: true })
     .click();
   await expect(main.getByText('EP · Published')).toBeVisible();
-  await main.getByRole('link', { name: 'Open release embed' }).click();
+  await main.getByRole('button', { name: 'More release actions' }).click();
+  await page.getByRole('button', { name: 'Open release embed' }).click();
   await expect(page).toHaveURL(/\/r\/[^/]+$/);
   await expect(
     page.getByRole('heading', { name: /^Studio Sessions Vol/ }).first(),

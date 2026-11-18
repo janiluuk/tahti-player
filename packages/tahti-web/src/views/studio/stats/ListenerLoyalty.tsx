@@ -58,18 +58,28 @@ export function ListenerLoyalty({
         />
       ) : !loyalty ? null : loyalty.points.length === 0 ? (
         <p className="text-foreground-secondary text-sm">
-          The curve appears once at least {loyalty.minBucket} listens of your
-          tracks report how far they got.
+          {t('studioStatsText.loyaltyWaiting', { count: loyalty.minBucket })}
         </p>
       ) : (
         <div data-testid="stats-loyalty" className="flex flex-col gap-3">
           <p className="text-sm">
-            {halfway ? `${percent(halfway.share)} got halfway` : null}
+            {halfway
+              ? t('studioStatsText.gotHalfway', {
+                  percent: percent(halfway.share),
+                })
+              : null}
             {halfway && end ? ' · ' : null}
-            {end ? `${percent(end.share)} listened to the end` : null}
+            {end
+              ? t('studioStatsText.listenedToEnd', {
+                  percent: percent(end.share),
+                })
+              : null}
             <span className="text-foreground-secondary">
               {' '}
-              ({loyalty.total.toLocaleString(dateLocaleTag())} listens)
+              {t('studioStatsText.listensTotal', {
+                count: loyalty.total,
+                formatted: loyalty.total.toLocaleString(dateLocaleTag()),
+              })}
             </span>
           </p>
           <div
@@ -82,10 +92,16 @@ export function ListenerLoyalty({
               labels={{
                 weekdays: loyalty.points.map((point) => String(point.percent)),
               }}
-              formatValue={(value) => `${Math.round(value)} % still listening`}
+              formatValue={(value) =>
+                t('studioStatsText.stillListening', {
+                  percent: Math.round(value),
+                })
+              }
             />
           </div>
-          <p className="text-foreground-secondary text-xs">% of the track</p>
+          <p className="text-foreground-secondary text-xs">
+            {t('studioStatsText.percentOfTrack')}
+          </p>
         </div>
       )}
     </StudioPanel>

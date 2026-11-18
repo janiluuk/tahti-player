@@ -27,7 +27,7 @@ export type SecuritySettingsSection =
 
 export type NotificationsSettingsSection = 'notifications' | 'mentions';
 
-export type PlaybackSettingsSection = 'playback' | 'language' | 'integrations';
+export type PlaybackSettingsSection = 'playback' | 'integrations';
 
 type SettingsModalState = {
   isOpen: boolean;

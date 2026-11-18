@@ -14,16 +14,16 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   // Embeds page removed (no public consumer) — old bookmarks land on Releases.
   embeds: '/studio/releases',
   events: '/studio/schedule?show=events',
-  venues: '/studio/venues',
+  venues: '/venues/mine',
   recordings: '/studio/recordings',
   stash: '/library/files?kind=stash',
   schedule: '/studio/schedule',
   stats: '/studio/stats',
   channel: '/studio/channel',
-  'channel/edit': '/studio/branding?tab=channel-designer',
-  'settings/media': '/settings/artist',
-  'settings/presskit': '/studio/branding?tab=press-kit',
-  'settings/branding': '/settings/artist',
+  'channel/edit': '/studio/profile/appearance',
+  'settings/media': '/studio/profile/branding',
+  'settings/presskit': '/studio/profile/press-kit',
+  'settings/branding': '/studio/profile/branding',
   'tahti-radio-slots': '/studio/shows',
   shows: '/studio/shows',
   playlists: '/studio/collections',
@@ -37,14 +37,14 @@ export const DASHBOARD_REDIRECTS: Record<string, string> = {
   'setup-channel': '/studio/channel',
   settings: '/settings',
   'settings/account': '/settings/account',
-  'settings/artist-info': '/settings/artist',
-  'settings/members': '/settings/artist',
+  'settings/artist-info': '/studio/profile/identity',
+  'settings/members': '/studio/profile/people',
   'settings/fan-subs': '/studio/audience',
   'settings/money': '/studio/audience',
   'settings/audience': '/studio/audience',
-  'settings/connections': '/settings/artist?tab=connections',
-  'settings/api': '/settings/account?tab=api-tokens',
-  'settings/notifications': '/settings/account',
+  'settings/connections': '/studio/profile/connections',
+  'settings/api': '/settings/security?tab=api-tokens',
+  'settings/notifications': '/settings/notifications',
   'settings/domain': '/studio/profile/domain',
   'settings/discovery': '/studio/profile/discovery',
   'settings/internet-radio': '/settings/plugin-store?category=radio',
@@ -106,7 +106,7 @@ export function resolveDashboardRedirect(rest: string | undefined): string {
     return '/studio/stats';
   }
   if (first === 'moderate') {
-    return '/studio/moderation';
+    return '/studio/fans?tab=chat';
   }
   if (DASHBOARD_REDIRECTS[first]) {
     return DASHBOARD_REDIRECTS[first];

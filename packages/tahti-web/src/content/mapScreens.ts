@@ -963,8 +963,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           },
           { label: 'Open transparency ledger', to: '/transparency' },
           {
-            label: 'Open governance help',
-            to: '/studio/governance?tab=guide',
+            label: 'Open governance guide',
+            to: '/governance/guide',
           },
         ],
         old: {
@@ -2024,10 +2024,10 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
       },
       {
         id: 'artist-governance',
-        title: 'Artist governance',
-        viewName: 'Studio Governance',
+        title: 'Governance guide and documents',
+        viewName: 'Co-op Guide / Documents',
         caption:
-          'Review member-gated motions and participate in the artist governance workflow.',
+          'How governance works and the cooperative records; old /studio/governance links redirect to Co-op.',
         actions: [
           'Review active motions',
           'Read discussion and context',
@@ -2035,10 +2035,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           'Submit a feature request',
         ],
         goesTo: [
-          {
-            label: 'Switch Motions / Topics tabs (same route)',
-            to: '/studio/governance',
-          },
+          { label: 'Back to Co-op', to: '/governance' },
+          { label: 'Open documents', to: '/governance/documents' },
         ],
         old: {
           absent: true,
@@ -2047,8 +2045,8 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         },
         new: {
           image: '/map/nuclear/studio-governance.png',
-          route: '/studio/governance',
-          caption: 'Governance workspace',
+          route: '/governance/guide',
+          caption: 'Governance guide',
         },
       },
       {
@@ -2185,7 +2183,7 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
           caption: 'Prod branding settings - not captured in the atlas',
         },
         new: {
-          route: '/studio/branding',
+          route: '/studio/profile/branding',
           caption: 'Studio branding - shot pending',
         },
       },

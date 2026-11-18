@@ -52,7 +52,7 @@ export const Account: Story = {
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
     await expectSection(dialog, 'Account');
-    await expectSelectedTab(dialog, 'Profile & data');
+    await expectSelectedTab(dialog, 'Session');
     await expectVisible(dialog.getByText('@northern-lights'));
   },
 };
@@ -76,7 +76,6 @@ export const AccountSubscriptions: Story = {
   decorators: [withTahtiRouter('/settings/account?tab=subscriptions')],
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
-    await expectSelectedTab(dialog, 'Membership & billing');
     await expectSelectedTab(dialog, 'Your subs');
   },
 };
@@ -86,7 +85,7 @@ export const ConnectedCallback: Story = {
   decorators: [withTahtiRouter('/settings/integrations?status=connected')],
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
-    await expectSection(dialog, 'Playback & language');
+    await expectSection(dialog, 'Playback');
     await expectSelectedTab(dialog, 'Integrations');
     await findToast(canvasElement, 'Connected.');
   },
@@ -97,6 +96,7 @@ export const SignedOut: Story = {
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
     await expectSection(dialog, 'Appearance');
+    await expect(dialog.getByTestId('language-panel')).toBeVisible();
     await expect(dialog.queryByText('Account')).toBeNull();
   },
 };

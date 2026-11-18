@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   CalendarHeatmap,
   DayOfWeekChart,
@@ -26,12 +26,16 @@ import { dateLocaleTag } from '../../lib/locale';
 import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { useThemeStore } from '../../plugins/themes';
 
-const RANGES: Array<{ id: StatsPlaysRange; label: string }> = [
-  { id: '1', label: 'Today' },
-  { id: '7', label: '7 days' },
-  { id: '30', label: '30 days' },
-  { id: 'all', label: 'All time' },
-];
+function statsRanges(
+  t: TFunction<'web'>,
+): Array<{ id: StatsPlaysRange; label: string }> {
+  return [
+    { id: '1', label: t('studioStatsText.rangeToday') },
+    { id: '7', label: t('library.days7') },
+    { id: '30', label: t('library.days30') },
+    { id: 'all', label: t('library.allTime') },
+  ];
+}
 
 const HEATMAP_DAY_THRESHOLD = 30;
 
@@ -89,7 +93,7 @@ export function StudioStatsDetailView() {
           classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
         >
           <FilterChips
-            items={RANGES}
+            items={statsRanges(t)}
             selected={range}
             onChange={(id) => setRange(id as StatsPlaysRange)}
             aria-label={t('studioStatsDetailView.playsTimeRange')}

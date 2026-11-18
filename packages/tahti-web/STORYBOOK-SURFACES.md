@@ -204,6 +204,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Studio/GenrePicker` | `tahti-web/GenrePicker.stories.tsx` |
 | `Tahti/Widgets/GlobalSearch` | `tahti-web/GlobalSearch.stories.tsx` |
 | `Tahti/Media/GlowMediaTile` | `tahti-web/GlowMediaTile.stories.tsx` |
+| `Tahti/Governance/GovernanceGuideView` | `tahti-web/GovernanceGuideView.stories.tsx` |
 | `Tahti/Governance/Member panels` | `tahti-web/GovernanceMemberPanels.stories.tsx` |
 | `Tahti/Groups/GroupDetailView` | `tahti-web/GroupDetailView.stories.tsx` |
 | `Tahti/Discover/GroupsDirectory` | `tahti-web/GroupsDirectory.stories.tsx` |
@@ -333,6 +334,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Settings/IntegrationsPanel` | `tahti-web/SettingsIntegrationsPanel.stories.tsx` |
 | `Tahti/Settings/LanguagePanel` | `tahti-web/SettingsLanguagePanel.stories.tsx` |
 | `Tahti/Settings/PlaybackPanel` | `tahti-web/SettingsPlaybackPanel.stories.tsx` |
+| `Tahti/Settings/SecurityAndNotificationsPanels` | `tahti-web/SettingsSecurityNotificationsPanels.stories.tsx` |
 | `Tahti/Settings/ThemesPanel` | `tahti-web/SettingsThemesPanel.stories.tsx` |
 | `Tahti/Settings/SettingsView` | `tahti-web/SettingsView.stories.tsx` |
 | `Tahti/Auth/SetupPasswordView` | `tahti-web/SetupPasswordView.stories.tsx` |

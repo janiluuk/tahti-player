@@ -976,7 +976,6 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
     ST["/studio"]
     GL["/studio/go-live · Broadcast tabs"]
     CAT["Releases · Editor · /studio/sounds · /studio/collections · /studio/upload"]
-    Gov["/studio/governance"]
   end
 
   subgraph settings["Settings modal"]
@@ -1005,7 +1004,6 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   ST --> GL
   ST --> CAT
   ST --> LIB
-  ST --> Gov
   SET --> Foot
   U -->|owner| Design[Profile Design tab]
 `,
@@ -1144,7 +1142,6 @@ export const FLOW_DIAGRAMS: FlowDiagram[] = [
   Studio --> Setup["/studio/channel if needed"]
 
   Studio --> St["/studio/stats"]
-  Studio --> Gov["/studio/governance"]
   Studio --> Upd["/studio/updates · edit · schedule"]
   Studio --> Rev["/studio/audience"]
   Studio --> Rel["/studio/releases · pin to profile"]

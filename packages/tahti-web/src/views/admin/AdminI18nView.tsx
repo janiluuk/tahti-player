@@ -258,8 +258,11 @@ export function AdminI18nView() {
 
               <Dialog.Root isOpen={importOpen} onClose={closeImport}>
                 <Dialog.Title>
-                  Import CSV
-                  {importLanguage ? ` — ${importLanguage.name}` : ''}
+                  {importLanguage
+                    ? t('adminCoopText.importCsvFor', {
+                        language: importLanguage.name,
+                      })
+                    : t('adminI18nView.importCsv')}
                 </Dialog.Title>
                 <div className="mt-4">
                   <FilePicker

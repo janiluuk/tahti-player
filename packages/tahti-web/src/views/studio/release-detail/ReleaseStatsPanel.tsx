@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { AudioLinesIcon, DownloadIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
+import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   SegmentedControl,
   StatTile,
@@ -23,11 +23,15 @@ import { dateLocaleTag } from '../../../lib/locale';
 import { formatPlayCount } from '../../../lib/topListEntries';
 import { STUDIO_METRIC_TONES } from '../stats/metricTones';
 
-const PERIOD_OPTIONS: SegmentedControlOption<InsightsPeriod>[] = [
-  { id: '7d', label: '7d' },
-  { id: '30d', label: '30d' },
-  { id: 'all', label: 'All time' },
-];
+function periodOptions(
+  t: TFunction<'web'>,
+): SegmentedControlOption<InsightsPeriod>[] {
+  return [
+    { id: '7d', label: '7d' },
+    { id: '30d', label: '30d' },
+    { id: 'all', label: t('library.allTime') },
+  ];
+}
 
 type TrackStats = { track: StudioReleaseTrack; insights: TrackInsights | null };
 
@@ -110,7 +114,7 @@ export function ReleaseStatsPanel({
       <div className="flex justify-end">
         <SegmentedControl
           aria-label={t('releaseStatsPanel.period')}
-          options={PERIOD_OPTIONS}
+          options={periodOptions(t)}
           value={period}
           onChange={setPeriod}
         />

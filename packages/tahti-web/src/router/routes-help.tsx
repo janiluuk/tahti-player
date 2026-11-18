@@ -22,13 +22,12 @@ export const helpSlugRoute = createRoute({
   },
 });
 
-/** Old path — the governance guide moved into Studio → Governance's own
- * Guide tab, closer to where members actually use it. */
+/** Old path; the governance guide is a Co-op page. */
 export const helpGovernanceRedirectRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/help/governance',
   beforeLoad: () => {
-    throw redirect({ to: '/studio/governance', search: { tab: 'guide' } });
+    throw redirect({ to: '/governance/guide' });
   },
 });
 

@@ -74,7 +74,7 @@ export function AdminOrphanPagesView({ tab }: { tab?: AdminOrphanPageTabId }) {
               {ADMIN_ORPHAN_PAGE_TABS.map((item) => (
                 <Tabs.Tab key={item.id}>
                   <TabLabel icon={<RadioIcon size={14} />}>
-                    {item.label}
+                    {t(item.labelKey)}
                   </TabLabel>
                 </Tabs.Tab>
               ))}

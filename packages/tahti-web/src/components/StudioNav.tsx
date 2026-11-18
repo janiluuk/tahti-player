@@ -62,7 +62,6 @@ const SECTION_PREFIXES: Record<string, readonly string[]> = {
     '/studio',
     '/studio/stats',
     '/studio/insights',
-    '/studio/governance',
     '/studio/fans',
     '/studio/updates',
     '/studio/audience',

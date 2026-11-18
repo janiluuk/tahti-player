@@ -708,7 +708,7 @@
       "themes": "Themes",
       "themesDescription": "App appearance",
       "appearance": "Appearance",
-      "appearanceDescription": "Themes and look of the app.",
+      "appearanceDescription": "Language, themes and the look of the app.",
       "pluginStore": "Add-ons",
       "pluginStoreDescription": "Themes, visualizers, radio, embeds, discovery, channel widgets, export, import, multicast, fingerprinting, audio plugins — one browser",
       "whatsNew": "What's new",
@@ -719,7 +719,7 @@
       "channelChat": "Channel & chat",
       "profile": "Profile",
       "playback": "Playback",
-      "playbackDescription": "Volume, shuffle, repeat and skip duration",
+      "playbackDescription": "Playback and desktop integrations.",
       "integrations": "Integrations",
       "integrationsDescription": "Scrobbling and desktop-app integrations",
       "addOnsDescription": "Listener, artist and admin tools in role-based lists",
@@ -727,17 +727,10 @@
       "logsDescription": "Client warnings and errors from this tab, plus links to server container logs",
       "language": "Language",
       "languageDescription": "The language of menus, buttons and dates",
-      "accountTabGroupSignInSecurity": "Sign-in & security",
-      "accountTabGroupMembershipBilling": "Membership & billing",
-      "accountTabGroupNotifications": "Notifications",
-      "accountTabGroupPrivacyData": "Privacy & data",
-      "playbackLanguage": "Playback & language",
-      "playbackLanguageDescription": "Playback, language, and desktop integrations.",
       "security": "Security",
       "securityDescription": "Password, devices, two-factor, and API tokens.",
       "notifications": "Notifications",
-      "notificationsDescription": "Email, in-app alerts, and mentions.",
-      "accountTabGroupProfile": "Profile & data"
+      "notificationsDescription": "Email, in-app alerts, and mentions."
     },
     "language": {
       "label": "Language",
@@ -2462,7 +2455,9 @@
       "noBroadcastsTitle": "No broadcasts yet",
       "noBroadcastsDescription": "Go live when you are ready — finished shows land here as recordings.",
       "goLive": "Go live",
-      "viewAllRecordings": "View all recordings →"
+      "viewAllRecordings": "View all recordings →",
+      "discussionComments_one": "{{count}} discussion comment",
+      "discussionComments_other": "{{count}} discussion comments"
     },
     "adminModeration": {
       "inbox": "Inbox",
@@ -2524,7 +2519,6 @@
         "tabTwoFactor": "Two-factor authentication",
         "tabApiTokens": "API tokens",
         "tabMembership": "Membership",
-        "tabGovernance": "Governance",
         "tabStorage": "Storage",
         "tabNotifications": "Notifications & visibility",
         "tabMentions": "Mentions",
@@ -3651,14 +3645,15 @@
       "removeNewsletterDescription": "This removes the draft or past send from your list. It cannot be undone.",
       "sendDescriptionFans": "This emails all of your fan subscribers now. It cannot be undone.",
       "untitledPost": "Untitled",
-      "writeAPost": "Write a post",
       "preview": "Preview",
       "newDraft": "New draft",
       "send": "Send",
       "postPreview": "Post preview",
       "close": "Close",
       "newPost": "New post",
-      "postImageViewer": "Post image viewer"
+      "postImageViewer": "Post image viewer",
+      "postsEmptyDescription": "Share news, show notes or tour dates with your followers. New post starts one.",
+      "draftsEmptyDescription": "Draft a newsletter when you are ready to write to your subscribers. New draft starts one."
     },
     "studioBranding": {
       "replaceGalleryTitle": "Replace all {{count}} existing gallery images?",
@@ -7252,7 +7247,6 @@
       "country": "Country"
     },
     "featureRequestsView": {
-      "openFullPage": "Open full page",
       "signInWithACooperative": "Sign in with a cooperative membership account to propose and vote.",
       "logIn": "Log in",
       "manageMembership": "Manage membership",
@@ -8152,7 +8146,11 @@
       "haveYourSay": "Have your say",
       "reviewOpenVotesAndFollow": "Review open votes and follow discussions that are still unresolved.",
       "needsYourOpinion": "Needs your opinion",
-      "ongoingDiscussions": "Ongoing discussions"
+      "ongoingDiscussions": "Ongoing discussions",
+      "openMotion": "Open motion",
+      "openTopic": "Open topic",
+      "openCoop": "Open Co-op →",
+      "nothingToDo": "Nothing waiting for your vote and no open discussions."
     },
     "spotifyImportPanel": {
       "addFromSpotify": "Add from Spotify",
@@ -8269,7 +8267,8 @@
     "studioHomeView": {
       "createYourChannel": "Create your channel",
       "studio": "Studio",
-      "accountStatus": "Account status"
+      "accountStatus": "Account status",
+      "createChannelToUnlock": "Create your channel to unlock Music and Broadcast."
     },
     "studioBrandingView": {
       "signInToDesignYour": "Sign in to design your public channel.",
@@ -13449,6 +13448,86 @@
       "link": "Playlist or artist link",
       "linkedArtist": "Your linked Spotify artist",
       "yourArtist": "Your Spotify artist"
+    },
+    "governanceGuide": {
+      "documentsTitle": "Documents",
+      "guideTitle": "Governance guide",
+      "whereItLives": "Members open Co-op from the sidebar for motions, discussions, topics and the cooperative's records. The board also works in Admin → Co-op, which holds the governance areas and the AGM.",
+      "discussionsBody": "The board opens discussion topics for members to talk something through before anything is decided. Open them from Co-op → Discussions; every member is notified when a topic opens."
+    },
+    "studioStatsText": {
+      "freeDownloads": "Free downloads",
+      "paidDownloads": "Paid downloads",
+      "fanSubscriptions": "Fan subscriptions",
+      "plays": "Plays",
+      "downloads": "Downloads",
+      "smartLinkClicks": "Smart-link clicks",
+      "followers": "Followers",
+      "minutesListened": "Minutes listened",
+      "minutesStreamed": "Minutes streamed",
+      "today": "{{value}} today",
+      "selectedPeriod": "Selected period",
+      "currentAudience": "Current audience",
+      "listensAverage": "{{listens}} listens · {{minutes}} min on average",
+      "estimatedDelivery": "Estimated from {{days}}d delivery at 192 kbps",
+      "broadcastsIn_one": "{{count}} broadcast in {{days}}d",
+      "broadcastsIn_other": "{{count}} broadcasts in {{days}}d",
+      "loyaltyWaiting_one": "The curve appears once at least {{count}} listen of your tracks reports how far it got.",
+      "loyaltyWaiting_other": "The curve appears once at least {{count}} listens of your tracks report how far they got.",
+      "gotHalfway": "{{percent}} got halfway",
+      "listenedToEnd": "{{percent}} listened to the end",
+      "listensTotal_one": "({{formatted}} listen)",
+      "listensTotal_other": "({{formatted}} listens)",
+      "stillListening": "{{percent}} % still listening",
+      "percentOfTrack": "% of the track",
+      "rangeToday": "Today"
+    },
+    "studioChannelText": {
+      "lastDays_one": "Last {{count}} day",
+      "lastDays_other": "Last {{count}} days",
+      "playsAndDownloads": "plays · {{downloads}} downloads",
+      "createToUnlock": "Create {{host}} to unlock broadcasting, uploads and your public channel.",
+      "createHost": "Create {{host}}"
+    },
+    "studioMoneyText": {
+      "movedNotice": "Settings › {{from}} is now Studio › Fans › {{page}}. Update any bookmark that pointed to the old address.",
+      "movedAudience": "Audience",
+      "movedMoney": "Money",
+      "movedFanSubs": "Fan subscriptions",
+      "movedFanTiers": "Fan tiers",
+      "stripePayoutSchedule": "Express dashboard payouts to your bank follow Stripe’s schedule. A paid order here means Tahti booked the period.",
+      "masteringSource": "This is the track that will be matched to your reference.",
+      "platformStubMode": "Platform stub mode: {{platforms}}. DSP submit is refused in production until keys are configured.",
+      "status": "Status:",
+      "revelatorId": "· id {{id}}",
+      "includedSlot_one": "Studio included slot ({{count}} left this year)",
+      "includedSlot_other": "Studio included slot ({{count}} left this year)",
+      "distributionFee": "Distribution fee: {{fee}}",
+      "feeWaived": "Fee waived (Studio included)",
+      "feePaid": "Distribution fee paid",
+      "episodeAfterBroadcast": "After the broadcast ends, open Studio → Recordings to edit and attach the saved capture, then return here to approve."
+    },
+    "adminCoopText": {
+      "importCsvFor": "Import CSV — {{language}}",
+      "sumCheckOk": "Sum check: allocations = pool to the cent using largest remainder.",
+      "sumCheckOff": "Sum check: allocations ≠ pool to the cent using largest remainder.",
+      "agmNoticeLaw": "Finnish association law (yhdistyslaki 24 §) requires written notice to all members at least seven days before the AGM. The notice must state the date, venue, and agenda.",
+      "auditAttribution": "Every governance vote and comment is attributed to the account that performed it and retains the subject context in the audit log.",
+      "openAuditLog": "Open full audit log →",
+      "nominationsClosed": "Nominations closed",
+      "nominationsOpen": "Nominations open",
+      "startsLater": "Starts later",
+      "ended": "Ended",
+      "deputyRole": "Deputy {{role}}",
+      "pendingAndFailed": "Pending and failed",
+      "failed": "Failed",
+      "pending": "Pending",
+      "scopeListener": "Listener (Discovery)",
+      "scopeArtist": "Artist (Channel)",
+      "scopeAdmin": "Admin surface",
+      "radioStationSuggestions": "Radio station suggestions",
+      "featureRequestsGated": "Feature requests are open to active Tahti ry members. Signed in as @{{username}}.",
+      "couldNotRefreshList": "Could not refresh this list: {{message}}"
     }
   },
   "studioEditor": {

@@ -16,6 +16,7 @@ import {
 } from '../../../../components/PageStates';
 import { StudioPanel } from '../../../../components/StudioPanel';
 import { numericDay } from '../../../../lib/relativeDate';
+import { webT } from '../../../../lib/webT';
 import { AddBoardTermForm } from './AddBoardTermForm';
 import { EndBoardTermForm } from './EndBoardTermForm';
 
@@ -30,13 +31,14 @@ function termStatus(term: AdminBoardTerm): {
   label: string;
   color: 'green' | 'secondary' | 'blue';
 } {
+  const t = webT();
   if (isTermCurrent(term)) {
-    return { label: 'Serving', color: 'green' };
+    return { label: t('auditorsPanelStates.serving'), color: 'green' };
   }
   if (new Date(term.termStart) > new Date()) {
-    return { label: 'Starts later', color: 'blue' };
+    return { label: t('adminCoopText.startsLater'), color: 'blue' };
   }
-  return { label: 'Ended', color: 'secondary' };
+  return { label: t('adminCoopText.ended'), color: 'secondary' };
 }
 
 /** Every board term the association has recorded, current ones first. */

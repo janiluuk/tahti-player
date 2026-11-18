@@ -1,16 +1,8 @@
-import { Link } from '@tanstack/react-router';
 import { LightbulbIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-import { useTranslation } from '@tahti-player/i18n';
-import {
-  Badge,
-  Button,
-  ButtonLink,
-  Input,
-  Textarea,
-  ViewShell,
-} from '@tahti-player/ui';
+import { useTranslation, type ParseKeys } from '@tahti-player/i18n';
+import { Badge, Button, Input, Textarea, ViewShell } from '@tahti-player/ui';
 
 import {
   createFeatureRequest,
@@ -22,6 +14,7 @@ import {
 } from '../api/client';
 import type { FeatureRequest, FeatureRequestStatus } from '../api/types';
 import { ListingDate } from '../components/ListingDate';
+import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -29,24 +22,25 @@ import { useSettingsModalStore } from '../stores/settingsModalStore';
 
 const STATUS_BADGE: Record<
   FeatureRequestStatus,
-  { color: 'blue' | 'purple' | 'orange' | 'green' | 'secondary'; label: string }
+  {
+    color: 'blue' | 'purple' | 'orange' | 'green' | 'secondary';
+    labelKey: ParseKeys<'web'>;
+  }
 > = {
-  OPEN: { color: 'blue', label: 'Open' },
-  PLANNED: { color: 'purple', label: 'Planned' },
-  IN_PROGRESS: { color: 'orange', label: 'In progress' },
-  DONE: { color: 'green', label: 'Done' },
-  DECLINED: { color: 'secondary', label: 'Declined' },
-  DUPLICATE: { color: 'secondary', label: 'Duplicate' },
+  OPEN: { color: 'blue', labelKey: 'featureRequestsTabMore.open' },
+  PLANNED: { color: 'purple', labelKey: 'featureRequestsTabMore.planned' },
+  IN_PROGRESS: {
+    color: 'orange',
+    labelKey: 'featureRequestsTabMore.inProgress',
+  },
+  DONE: { color: 'green', labelKey: 'featureRequestsTabMore.done' },
+  DECLINED: { color: 'secondary', labelKey: 'featureRequestsTabMore.declined' },
+  DUPLICATE: { color: 'secondary', labelKey: 'tooltips.duplicate' },
 };
 
-export function FeatureRequestsView({
-  embedded = false,
-}: {
-  embedded?: boolean;
-}) {
+export function FeatureRequestsView() {
   const { t } = useTranslation('web');
   const user = useAuthStore((s) => s.user);
-  const closeSettings = useSettingsModalStore((s) => s.close);
   const [requests, setRequests] = useState<FeatureRequest[]>([]);
   const [forbidden, setForbidden] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -105,23 +99,10 @@ export function FeatureRequestsView({
   const body = (
     <>
       <div className="flex flex-wrap items-center justify-between gap-2">
-        {!embedded ? (
-          <Link
-            to="/governance"
-            onClick={closeSettings}
-            className="text-foreground-secondary text-xs hover:underline"
-          >
-            ← Governance
-          </Link>
-        ) : (
-          <ButtonLink
-            to="/governance/feature-requests"
-            size="sm"
-            variant="secondary"
-          >
-            {t('featureRequestsView.openFullPage')}
-          </ButtonLink>
-        )}
+        <PageBackLink
+          to="/governance"
+          label={t('governanceMembersView.governance')}
+        />
         {user && !forbidden ? (
           <Button
             size="sm"
@@ -154,8 +135,9 @@ export function FeatureRequestsView({
       {user && !loading && forbidden && (
         <div className="border-border flex flex-col gap-3 rounded-lg border p-4">
           <p className="text-sm">
-            Feature requests are gated to active Tahti ry members. Signed in as
-            @{user.username}.
+            {t('adminCoopText.featureRequestsGated', {
+              username: user.username,
+            })}
           </p>
           <Button
             size="sm"
@@ -269,7 +251,7 @@ export function FeatureRequestsView({
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <h2 className="font-display text-lg font-bold">{r.title}</h2>
                   <Badge variant="pill" color={badge.color}>
-                    {badge.label}
+                    {t(badge.labelKey)}
                   </Badge>
                 </div>
                 <p className="text-foreground-secondary mt-1 text-sm">
@@ -414,10 +396,6 @@ export function FeatureRequestsView({
       )}
     </>
   );
-
-  if (embedded) {
-    return <div className="flex flex-col gap-6">{body}</div>;
-  }
 
   return (
     <ViewShell

@@ -519,9 +519,7 @@ export function AgmTab() {
         </summary>
         <div className="mt-3 flex flex-col gap-3 text-sm">
           <p className="text-foreground-secondary text-xs">
-            Finnish association law (yhdistyslaki 24 §) requires written notice
-            to all members at least seven days before the AGM. The notice must
-            state the date, venue, and agenda.
+            {t('adminCoopText.agmNoticeLaw')}
           </p>
           <ul className="text-foreground-secondary list-disc space-y-1 pl-5 text-xs">
             <li>{t('agmTab.dateTimeAndVenuePhysical')}</li>

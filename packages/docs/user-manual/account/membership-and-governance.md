@@ -10,7 +10,7 @@ Take or renew membership in **Settings → Account → Membership & billing** (p
 
 ## Governance (members)
 
-Open **Governance** (`/governance`; artists also see it as **Studio → Governance**):
+Open **Co-op** in the sidebar (`/governance`). Its **Guide** (`/governance/guide`) explains how governance works and **Documents** (`/governance/documents`) lists the cooperative's records:
 
 - **Motions:** read proposals, discuss them, second a draft, and vote while a motion is open. A motion's page shows who seconded it, the result certificate when it closes, and the meeting it was taken up at.
 - **Meetings:** agendas, documents and decisions of meetings and the AGM.

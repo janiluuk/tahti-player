@@ -1,15 +1,20 @@
+import type { ParseKeys } from '@tahti-player/i18n';
+
 export type AdminOrphanPageTabId = 'radio-station-suggestions';
 
 export type AdminOrphanPageTabItem = {
   id: AdminOrphanPageTabId;
-  label: string;
+  labelKey: ParseKeys<'web'>;
 };
 
 /** Real admin pages that shipped with no nav entry and no in-app link — see
  * NAVIGATION-SITEMAP.md. Gathered here as tabs, same convention as
  * AdminModerationView, so nothing built stays permanently unreachable. */
 export const ADMIN_ORPHAN_PAGE_TABS: AdminOrphanPageTabItem[] = [
-  { id: 'radio-station-suggestions', label: 'Radio station suggestions' },
+  {
+    id: 'radio-station-suggestions',
+    labelKey: 'adminCoopText.radioStationSuggestions',
+  },
 ];
 
 export const DEFAULT_ADMIN_ORPHAN_PAGE_TAB: AdminOrphanPageTabId =

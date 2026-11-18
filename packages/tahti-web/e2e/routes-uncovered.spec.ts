@@ -23,6 +23,16 @@ const routes: RouteVisit[] = [
   { path: '/library/following', heading: /^Following$/ },
   { path: '/library/history', heading: /^History$/ },
   { path: '/governance/discussions', heading: /^Discussions$/ },
+  {
+    path: '/studio/governance?tab=documents',
+    heading: /^Documents$/,
+    url: /\/governance\/documents$/,
+  },
+  {
+    path: '/help/governance',
+    heading: /^Governance guide$/,
+    url: /\/governance\/guide$/,
+  },
 ];
 
 test('routes with no other e2e visit render for a signed-in artist', async ({

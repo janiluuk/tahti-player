@@ -299,19 +299,19 @@ export function useStatsData() {
   const engagementEntries = [
     {
       id: 'free-downloads',
-      label: 'Free downloads',
+      label: i18n.t('web:studioStatsText.freeDownloads'),
       sublabel: `${grant?.freeDownloads ?? 0} × 1`,
       value: grant?.freeDownloads ?? 0,
     },
     {
       id: 'paid-downloads',
-      label: 'Paid downloads',
+      label: i18n.t('web:studioStatsText.paidDownloads'),
       sublabel: `${grant?.paidDownloads ?? 0} × 5`,
       value: (grant?.paidDownloads ?? 0) * 5,
     },
     {
       id: 'fan-subs',
-      label: 'Fan subscriptions',
+      label: i18n.t('web:studioStatsText.fanSubscriptions'),
       sublabel: `€${grant?.fanSubEuros ?? 0} × 1`,
       value: grant?.fanSubEuros ?? 0,
     },
@@ -319,52 +319,64 @@ export function useStatsData() {
 
   const keyMetrics = [
     {
-      label: 'Plays',
+      label: i18n.t('web:studioStatsText.plays'),
       value: plays.totalPlays,
-      note: `${summary.playsToday.toLocaleString(dateLocaleTag())} today`,
+      note: i18n.t('web:studioStatsText.today', {
+        value: summary.playsToday.toLocaleString(dateLocaleTag()),
+      }),
       icon: AudioLinesIcon,
       tone: STUDIO_METRIC_TONES.plays,
     },
     {
-      label: 'Downloads',
+      label: i18n.t('web:studioStatsText.downloads'),
       value: plays.totalDownloads,
-      note: `${summary.downloadsToday.toLocaleString(dateLocaleTag())} today`,
+      note: i18n.t('web:studioStatsText.today', {
+        value: summary.downloadsToday.toLocaleString(dateLocaleTag()),
+      }),
       icon: DownloadIcon,
       tone: STUDIO_METRIC_TONES.downloads,
     },
     {
-      label: 'Smart-link clicks',
+      label: i18n.t('web:studioStatsText.smartLinkClicks'),
       value: plays.totalSmartLinkClicks ?? 0,
-      note: 'Selected period',
+      note: i18n.t('web:studioStatsText.selectedPeriod'),
       icon: ExternalLinkIcon,
       tone: STUDIO_METRIC_TONES.smartLinkClicks,
     },
     {
-      label: 'Followers',
+      label: i18n.t('web:studioStatsText.followers'),
       value: summary.followerCount,
-      note: 'Current audience',
+      note: i18n.t('web:studioStatsText.currentAudience'),
       icon: UsersIcon,
       tone: STUDIO_METRIC_TONES.followers,
     },
     listening
       ? {
-          label: 'Minutes listened',
+          label: i18n.t('web:studioStatsText.minutesListened'),
           value: listening.minutes,
-          note: `${listening.listens.toLocaleString(dateLocaleTag())} listens · ${listening.averageMinutes.toLocaleString(dateLocaleTag())} min on average`,
+          note: i18n.t('web:studioStatsText.listensAverage', {
+            listens: listening.listens.toLocaleString(dateLocaleTag()),
+            minutes: listening.averageMinutes.toLocaleString(dateLocaleTag()),
+          }),
           icon: UsersIcon,
           tone: STUDIO_METRIC_TONES.minutesListened,
         }
       : {
-          label: 'Minutes listened',
+          label: i18n.t('web:studioStatsText.minutesListened'),
           value: minutesListened,
-          note: `Estimated from ${egress.windowDays}d delivery at 192 kbps`,
+          note: i18n.t('web:studioStatsText.estimatedDelivery', {
+            days: egress.windowDays,
+          }),
           icon: UsersIcon,
           tone: STUDIO_METRIC_TONES.minutesListened,
         },
     {
-      label: 'Minutes streamed',
+      label: i18n.t('web:studioStatsText.minutesStreamed'),
       value: minutesStreamed,
-      note: `${live.totalBroadcasts} broadcasts in ${live.windowDays}d`,
+      note: i18n.t('web:studioStatsText.broadcastsIn', {
+        count: live.totalBroadcasts,
+        days: live.windowDays,
+      }),
       icon: RadioTowerIcon,
       tone: STUDIO_METRIC_TONES.minutesStreamed,
     },

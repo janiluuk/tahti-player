@@ -14,7 +14,7 @@ Open **Settings** at the bottom of the sidebar (on a phone: **More → Settings*
 | **Broadcast** | Radio, Green room, Multistream | Defaults for going live. See [Broadcasting](../studio/broadcasting.md). |
 | **Playback** | — | Skip length for Shift + ←/→, your own internet radio stations, and other player preferences. |
 | **Integrations** | — | ListenBrainz and Last.fm scrobbling. In the desktop app also Tahti Jam, the MCP and MPD servers, Discord, and app updates. |
-| **Language** | - | The language of menus, buttons and dates: **English** or **Suomi**. |
+| **Language** | - | At the top of **Appearance**: the language of menus, buttons and dates, **English** or **Suomi**. |
 | **Themes** | Browse, Editor, Import JSON | Pick a theme, light/dark/dynamic mode, or make your own. See [Themes](../../themes/themes.md). |
 | **Add-ons** | Listener, Artist | Visualizers, import sources, widgets and more. See [Add-ons](add-ons.md). |
 | **Logs** | — | Recent app activity, for troubleshooting. |
@@ -22,7 +22,7 @@ Open **Settings** at the bottom of the sidebar (on a phone: **More → Settings*
 
 ## Language
 
-**Settings → Language** switches menus, buttons and dates between **English** and **Suomi** (Finnish). Titles and names stay as their creators wrote them. The choice is kept in this browser. In Finnish, Jam is called **Bileet**.
+**Settings → Appearance → Language** switches menus, buttons and dates between **English** and **Suomi** (Finnish). Titles and names stay as their creators wrote them. The choice is kept in this browser. In Finnish, Jam is called **Bileet**.
 
 ## Security
 

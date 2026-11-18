@@ -88,7 +88,6 @@ describe('StudioNav', () => {
     ['/studio/distribution', true],
     ['/studio/editor', true],
     ['/studio/stats', false],
-    ['/studio/governance', false],
     ['/studio/updates', true],
     ['/studio/audience', true],
     ['/studio/go-live', true],

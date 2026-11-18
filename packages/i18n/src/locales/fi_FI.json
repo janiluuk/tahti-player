@@ -708,7 +708,7 @@
       "themes": "Teemat",
       "themesDescription": "Sovelluksen ulkoasu",
       "appearance": "Ulkoasu",
-      "appearanceDescription": "Teemat ja sovelluksen ilme.",
+      "appearanceDescription": "Kieli, teemat ja sovelluksen ilme.",
       "pluginStore": "Lisäosat",
       "pluginStoreDescription": "Teemat, visualisoinnit, radio, upotukset, löytäminen, kanavawidgetit, vienti, tuonti, multicast, sormenjäljet, äänilisäosat — yksi selain",
       "whatsNew": "Mitä uutta",
@@ -719,7 +719,7 @@
       "channelChat": "Kanava ja chat",
       "profile": "Profiili",
       "playback": "Toisto",
-      "playbackDescription": "Äänenvoimakkuus, satunnaistoisto, toisto ja ohitusaika",
+      "playbackDescription": "Toisto ja työpöytäintegraatiot.",
       "integrations": "Integraatiot",
       "integrationsDescription": "Scrobblaus ja työpöytäsovelluksen integraatiot",
       "addOnsDescription": "Kuuntelijan, artistin ja ylläpidon työkalut roolin mukaan",
@@ -727,17 +727,10 @@
       "logsDescription": "Tämän välilehden varoitukset ja virheet sekä linkit palvelimen konttilokeihin",
       "language": "Kieli",
       "languageDescription": "Valikoiden, painikkeiden ja päivämäärien kieli",
-      "accountTabGroupSignInSecurity": "Kirjautuminen ja tietoturva",
-      "accountTabGroupMembershipBilling": "Jäsenyys ja laskutus",
-      "accountTabGroupNotifications": "Ilmoitukset",
-      "accountTabGroupPrivacyData": "Yksityisyys ja data",
-      "playbackLanguage": "Toisto ja kieli",
-      "playbackLanguageDescription": "Toisto, kieli ja työpöytäintegraatiot.",
       "security": "Turvallisuus",
       "securityDescription": "Salasana, laitteet, kaksivaiheinen tunnistus ja API-tunnukset.",
       "notifications": "Ilmoitukset",
-      "notificationsDescription": "Sähköposti, sovellusilmoitukset ja maininnat.",
-      "accountTabGroupProfile": "Profiili ja tiedot"
+      "notificationsDescription": "Sähköposti, sovellusilmoitukset ja maininnat."
     },
     "language": {
       "label": "Kieli",
@@ -2462,7 +2455,9 @@
       "noBroadcastsTitle": "Ei lähetyksiä vielä",
       "noBroadcastsDescription": "Mene liveen kun olet valmis — valmiit ohjelmat tulevat tänne nauhoituksina.",
       "goLive": "Mene liveen",
-      "viewAllRecordings": "Näytä kaikki nauhoitukset →"
+      "viewAllRecordings": "Näytä kaikki nauhoitukset →",
+      "discussionComments_one": "{{count}} keskustelukommentti",
+      "discussionComments_other": "{{count}} keskustelukommenttia"
     },
     "adminModeration": {
       "inbox": "Postilaatikko",
@@ -2524,7 +2519,6 @@
         "tabTwoFactor": "Kaksivaiheinen tunnistus",
         "tabApiTokens": "API-avaimet",
         "tabMembership": "Jäsenyys",
-        "tabGovernance": "Hallinto",
         "tabStorage": "Tallennustila",
         "tabNotifications": "Ilmoitukset ja näkyvyys",
         "tabMentions": "Maininnat",
@@ -3651,14 +3645,15 @@
       "removeNewsletterDescription": "Tämä poistaa luonnoksen tai aiemman lähetyksen listaltasi. Sitä ei voi perua.",
       "sendDescriptionFans": "Tämä lähettää sähköpostin kaikille fanitilaajillesi nyt. Sitä ei voi perua.",
       "untitledPost": "Nimetön",
-      "writeAPost": "Kirjoita julkaisu",
       "preview": "Esikatselu",
       "newDraft": "Uusi luonnos",
       "send": "Lähetä",
       "postPreview": "Julkaisun esikatselu",
       "close": "Sulje",
       "newPost": "Uusi julkaisu",
-      "postImageViewer": "Julkaisun kuvankatselin"
+      "postImageViewer": "Julkaisun kuvankatselin",
+      "postsEmptyDescription": "Jaa uutisia, ohjelmatietoja tai keikkapäiviä seuraajillesi. Uusi julkaisu aloittaa sellaisen.",
+      "draftsEmptyDescription": "Luo uutiskirjeluonnos, kun olet valmis kirjoittamaan tilaajillesi. Uusi luonnos aloittaa sellaisen."
     },
     "studioBranding": {
       "replaceGalleryTitle": "Korvataanko kaikki {{count}} nykyistä galleriakuvaa?",
@@ -7252,7 +7247,6 @@
       "country": "Maa"
     },
     "featureRequestsView": {
-      "openFullPage": "Avaa koko sivu",
       "signInWithACooperative": "Kirjaudu osuuskunnan jäsentilillä ehdottaaksesi ja äänestääksesi.",
       "logIn": "Kirjaudu sisään",
       "manageMembership": "Hallitse jäsenyyttä",
@@ -8152,7 +8146,11 @@
       "haveYourSay": "Kerro mielipiteesi",
       "reviewOpenVotesAndFollow": "Käy läpi avoimet äänestykset ja seuraa ratkaisemattomia keskusteluja.",
       "needsYourOpinion": "Tarvitsee mielipiteesi",
-      "ongoingDiscussions": "Käynnissä olevat keskustelut"
+      "ongoingDiscussions": "Käynnissä olevat keskustelut",
+      "openMotion": "Avaa aloite",
+      "openTopic": "Avaa aihe",
+      "openCoop": "Avaa Osuuskunta →",
+      "nothingToDo": "Ei äänestyksiä odottamassa eikä avoimia keskusteluja."
     },
     "spotifyImportPanel": {
       "addFromSpotify": "Lisää Spotifysta",
@@ -8269,7 +8267,8 @@
     "studioHomeView": {
       "createYourChannel": "Luo kanavasi",
       "studio": "Studio",
-      "accountStatus": "Tilin tila"
+      "accountStatus": "Tilin tila",
+      "createChannelToUnlock": "Luo kanavasi, niin Musiikki ja Lähetys avautuvat."
     },
     "studioBrandingView": {
       "signInToDesignYour": "Kirjaudu sisään suunnitellaksesi julkista kanavaasi.",
@@ -13449,6 +13448,86 @@
       "link": "Soittolistan tai artistin linkki",
       "linkedArtist": "Linkitetty Spotify-artistisi",
       "yourArtist": "Spotify-artistisi"
+    },
+    "governanceGuide": {
+      "documentsTitle": "Asiakirjat",
+      "guideTitle": "Hallinnon opas",
+      "whereItLives": "Jäsenet avaavat Osuuskunnan sivupalkista: siellä ovat aloitteet, keskustelut, aiheet ja osuuskunnan asiakirjat. Hallitus työskentelee lisäksi kohdassa Admin → Osuuskunta, jossa ovat hallinnon osa-alueet ja vuosikokous.",
+      "discussionsBody": "Hallitus avaa keskusteluaiheita, joissa jäsenet voivat pohtia asiaa ennen kuin mitään päätetään. Avaa ne kohdasta Osuuskunta → Keskustelut; jokainen jäsen saa ilmoituksen, kun aihe avataan."
+    },
+    "studioStatsText": {
+      "freeDownloads": "Ilmaiset lataukset",
+      "paidDownloads": "Maksulliset lataukset",
+      "fanSubscriptions": "Fanitilaukset",
+      "plays": "Kuuntelukerrat",
+      "downloads": "Lataukset",
+      "smartLinkClicks": "Älylinkkien klikkaukset",
+      "followers": "Seuraajat",
+      "minutesListened": "Kuunnellut minuutit",
+      "minutesStreamed": "Lähetetyt minuutit",
+      "today": "{{value}} tänään",
+      "selectedPeriod": "Valittu jakso",
+      "currentAudience": "Nykyinen yleisö",
+      "listensAverage": "{{listens}} kuuntelua · keskimäärin {{minutes}} min",
+      "estimatedDelivery": "Arvio {{days}} päivän toimituksista (192 kbps)",
+      "broadcastsIn_one": "{{count}} lähetys {{days}} päivässä",
+      "broadcastsIn_other": "{{count}} lähetystä {{days}} päivässä",
+      "loyaltyWaiting_one": "Käyrä näkyy, kun vähintään {{count}} kappaleidesi kuuntelu kertoo, kuinka pitkälle se eteni.",
+      "loyaltyWaiting_other": "Käyrä näkyy, kun vähintään {{count}} kappaleidesi kuuntelua kertoo, kuinka pitkälle ne etenivät.",
+      "gotHalfway": "{{percent}} pääsi puoliväliin",
+      "listenedToEnd": "{{percent}} kuunteli loppuun",
+      "listensTotal_one": "({{formatted}} kuuntelu)",
+      "listensTotal_other": "({{formatted}} kuuntelua)",
+      "stillListening": "{{percent}} % kuuntelee yhä",
+      "percentOfTrack": "% kappaleesta",
+      "rangeToday": "Tänään"
+    },
+    "studioChannelText": {
+      "lastDays_one": "Viimeinen {{count}} päivä",
+      "lastDays_other": "Viimeiset {{count}} päivää",
+      "playsAndDownloads": "kuuntelukertaa · {{downloads}} latausta",
+      "createToUnlock": "Luo {{host}}, niin lähetykset, lataukset ja julkinen kanavasi avautuvat.",
+      "createHost": "Luo {{host}}"
+    },
+    "studioMoneyText": {
+      "movedNotice": "Asetukset › {{from}} on nyt Studio › Fanit › {{page}}. Päivitä kirjanmerkit, jotka osoittivat vanhaan osoitteeseen.",
+      "movedAudience": "Yleisö",
+      "movedMoney": "Raha",
+      "movedFanSubs": "Fanitilaukset",
+      "movedFanTiers": "Fanitasot",
+      "stripePayoutSchedule": "Express-hallintapaneelin maksut pankkitilillesi noudattavat Stripen aikataulua. Maksettu tilaus tässä tarkoittaa, että Tahti on kirjannut jakson.",
+      "masteringSource": "Tämä kappale sovitetaan referenssiisi.",
+      "platformStubMode": "Alustojen testitila: {{platforms}}. Palveluihin lähetys estetään tuotannossa, kunnes avaimet on määritetty.",
+      "status": "Tila:",
+      "revelatorId": "· tunnus {{id}}",
+      "includedSlot_one": "Studion sisältämä paikka ({{count}} jäljellä tänä vuonna)",
+      "includedSlot_other": "Studion sisältämä paikka ({{count}} jäljellä tänä vuonna)",
+      "distributionFee": "Jakelumaksu: {{fee}}",
+      "feeWaived": "Maksu poistettu (sisältyy Studioon)",
+      "feePaid": "Jakelumaksu maksettu",
+      "episodeAfterBroadcast": "Kun lähetys päättyy, avaa Studio → Tallenteet, muokkaa ja liitä tallennettu taltiointi ja palaa sitten tänne hyväksymään."
+    },
+    "adminCoopText": {
+      "importCsvFor": "Tuo CSV — {{language}}",
+      "sumCheckOk": "Summatarkistus: jaot = potti sentilleen suurimman jäännöksen menetelmällä.",
+      "sumCheckOff": "Summatarkistus: jaot ≠ potti sentilleen suurimman jäännöksen menetelmällä.",
+      "agmNoticeLaw": "Yhdistyslaki (24 §) edellyttää kirjallista kutsua kaikille jäsenille vähintään seitsemän päivää ennen vuosikokousta. Kutsussa on mainittava päivämäärä, paikka ja asialista.",
+      "auditAttribution": "Jokainen hallinnon äänestys ja kommentti kirjataan sen tehneelle tilille, ja tarkastuslokiin jää asiayhteys.",
+      "openAuditLog": "Avaa koko tarkastusloki →",
+      "nominationsClosed": "Ehdollepano suljettu",
+      "nominationsOpen": "Ehdollepano auki",
+      "startsLater": "Alkaa myöhemmin",
+      "ended": "Päättynyt",
+      "deputyRole": "Vara-{{role}}",
+      "pendingAndFailed": "Odottavat ja epäonnistuneet",
+      "failed": "Epäonnistuneet",
+      "pending": "Odottavat",
+      "scopeListener": "Kuuntelija (Discover)",
+      "scopeArtist": "Artisti (kanava)",
+      "scopeAdmin": "Admin-pinta",
+      "radioStationSuggestions": "Radioasemaehdotukset",
+      "featureRequestsGated": "Ominaisuustoiveet ovat Tahti ry:n aktiivisille jäsenille. Kirjautunut käyttäjänä @{{username}}.",
+      "couldNotRefreshList": "Listaa ei voitu päivittää: {{message}}"
     }
   },
   "studioEditor": {

@@ -18,7 +18,7 @@ describe('LibraryMediaView', () => {
       meta: { source: 'api', reason: 'HTTP 502' },
     });
     await renderWithRouter(<LibraryMediaView />, {
-      paths: ['/studio/branding'],
+      paths: ['/studio/profile/branding'],
     });
     expect(
       await screen.findByText('Could not load your media files'),
@@ -30,7 +30,7 @@ describe('LibraryMediaView', () => {
     expect(await screen.findByText(/No media files yet/)).toBeTruthy();
     expect(
       screen.getByRole('link', { name: 'Open Branding' }).getAttribute('href'),
-    ).toBe('/studio/branding');
+    ).toBe('/studio/profile/branding');
   });
 
   it('filters by kind and clears the filter from the empty state', async () => {
@@ -54,7 +54,7 @@ describe('LibraryMediaView', () => {
       meta: { source: 'api' },
     } as never);
     await renderWithRouter(<LibraryMediaView />, {
-      paths: ['/studio/branding'],
+      paths: ['/studio/profile/branding'],
     });
     expect(await screen.findByText('bg.png')).toBeTruthy();
     expect(screen.getByText('loop.mp4')).toBeTruthy();
@@ -95,7 +95,7 @@ describe('LibraryMediaView', () => {
       meta: { source: 'api' },
     });
     await renderWithRouter(<LibraryMediaView />, {
-      paths: ['/studio/branding'],
+      paths: ['/studio/profile/branding'],
     });
     await screen.findByText('b-old.png');
 
@@ -134,7 +134,7 @@ describe('LibraryMediaView', () => {
       meta: { source: 'api' },
     } as never);
     await renderWithRouter(<LibraryMediaView />, {
-      paths: ['/studio/branding'],
+      paths: ['/studio/profile/branding'],
     });
     await screen.findByText('bg.png');
 
@@ -171,7 +171,7 @@ describe('LibraryMediaView', () => {
       .spyOn(userMedia, 'deleteUserMedia')
       .mockResolvedValue({ ok: true } as never);
     await renderWithRouter(<LibraryMediaView />, {
-      paths: ['/studio/branding'],
+      paths: ['/studio/profile/branding'],
     });
     fireEvent.click(
       await screen.findByRole('button', { name: 'Remove bg.png' }),
@@ -205,7 +205,7 @@ describe('LibraryMediaView', () => {
       data: { deleted: 3, freedBytes: 3 * 1024 * 1024 },
     });
     await renderWithRouter(<LibraryMediaView />, {
-      paths: ['/studio/branding'],
+      paths: ['/studio/profile/branding'],
     });
     fireEvent.click(
       await screen.findByRole('button', { name: 'Purge unused' }),
@@ -237,7 +237,7 @@ describe('LibraryMediaView', () => {
     });
     const purge = vi.spyOn(userMedia, 'purgeUnusedMedia');
     await renderWithRouter(<LibraryMediaView />, {
-      paths: ['/studio/branding'],
+      paths: ['/studio/profile/branding'],
     });
     fireEvent.click(
       await screen.findByRole('button', { name: 'Purge unused' }),

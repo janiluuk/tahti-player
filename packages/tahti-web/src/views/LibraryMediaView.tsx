@@ -169,7 +169,12 @@ export function LibraryMediaView() {
           title={t('library.mediaEmptyTitle')}
           description={t('library.mediaEmptyDescription')}
           action={
-            <ButtonLink to="/studio/branding" size="sm" variant="secondary">
+            <ButtonLink
+              to="/studio/profile/$section"
+              params={{ section: 'branding' }}
+              size="sm"
+              variant="secondary"
+            >
               {t('library.mediaOpenBranding')}
             </ButtonLink>
           }

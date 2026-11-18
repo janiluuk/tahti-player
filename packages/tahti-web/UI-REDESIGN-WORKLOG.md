@@ -11,6 +11,16 @@ follow the app language, task progress uses `progressbar`, and the Sounds
 bulk-edit selects are named by their field. New mock e2e:
 `use-cases-hardening.spec.ts`.
 
+## 2026-11-18 - Co-op governance pages, one-row Account, Language in Appearance (0.0.412)
+
+Governance's guide and documents are Co-op pages (`/governance/guide`,
+`/governance/documents`); `/studio/governance` and `/help/governance`
+redirect. Settings → Account is one tab row with the Co-op link under
+Membership, and Language sits at the top of Appearance. Studio Home shows
+one empty state at a time, Posts has one labelled primary, legacy
+`/dashboard/*` paths and in-app links land in one hop. Finnish for the
+leftover Studio, Co-op and Admin page text.
+
 ## 2026-11-18 - Server peaks only, phone play icons, dnd-kit out of the shell (0.0.411)
 
 Waveforms draw only the server's stored peaks: `@tahti-player/ui`

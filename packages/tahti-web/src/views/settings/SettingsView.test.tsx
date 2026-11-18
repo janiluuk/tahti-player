@@ -76,6 +76,25 @@ describe('SettingsView', () => {
     expect(state.securitySection).toBe('api-tokens');
   });
 
+  it('opens Account on Membership for an old Governance tab link', () => {
+    window.history.replaceState(null, '', '/settings/account?tab=governance');
+    render(<SettingsView />);
+    const state = useSettingsModalStore.getState();
+    expect(state.activeTab).toBe('account');
+    expect(state.accountSection).toBe('governance');
+  });
+
+  it.each(['/settings/language', '/settings/playback?tab=language'])(
+    'opens Appearance for the old Language address %s',
+    (address) => {
+      window.history.replaceState(null, '', address);
+      render(<SettingsView />);
+      const state = useSettingsModalStore.getState();
+      expect(state.isOpen).toBe(true);
+      expect(state.activeTab).toBe('themes');
+    },
+  );
+
   it('sends an artist to the Studio → Profile page for an old Artist tab', () => {
     useAuthStore.setState({
       user: { id: 'u1', username: 'a', channel: { slug: 'a' } } as never,

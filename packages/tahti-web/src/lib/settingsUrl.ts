@@ -49,10 +49,7 @@ export function buildSettingsPath({
     notificationsSection !== 'notifications'
   ) {
     params.set('tab', notificationsSection);
-  } else if (
-    section === 'playback' &&
-    (playbackSection === 'language' || playbackSection === 'integrations')
-  ) {
+  } else if (section === 'playback' && playbackSection === 'integrations') {
     params.set('tab', playbackSection);
   } else if (section === 'plugin-store' && pluginCategory) {
     params.set('category', pluginCategory);

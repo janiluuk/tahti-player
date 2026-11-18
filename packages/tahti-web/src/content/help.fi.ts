@@ -544,7 +544,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Aloitteet ja äänestykset',
         body: [
-          'Avaa Hallinto (/governance; artistit löytävät sen myös kohdasta Studio → Hallinto). Aloite alkaa luonnoksena, jota jäsenet kannattavat; kun kannattajia on tarpeeksi, hallitus avaa sen äänestykseen.',
+          'Avaa Osuuskunta sivupalkista (/governance). Aloite alkaa luonnoksena, jota jäsenet kannattavat; kun kannattajia on tarpeeksi, hallitus avaa sen äänestykseen.',
           'Lue aloite, keskustele siitä kommenteissa ja äänestä sen ollessa auki. Aloitteen sivulla näkyvät kannattajat, tulostodistus sen sulkeuduttua ja kokous, jossa se käsiteltiin.',
         ],
       },

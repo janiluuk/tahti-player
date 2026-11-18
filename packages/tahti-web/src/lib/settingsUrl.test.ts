@@ -52,10 +52,7 @@ describe('buildSettingsPath', () => {
     );
   });
 
-  it('keeps the Language and Integrations tabs of Playback in the URL', () => {
-    expect(
-      buildSettingsPath({ section: 'playback', playbackSection: 'language' }),
-    ).toBe('/settings/playback?tab=language');
+  it('keeps the Integrations tab of Playback in the URL', () => {
     expect(
       buildSettingsPath({
         section: 'playback',

@@ -142,9 +142,11 @@ export function SettingsView() {
   const toastedCallbackRef = useRef<string | null>(null);
   const rawSectionId = pathname.match(/^\/settings\/([^/]+)/)?.[1];
   const sectionId =
-    rawSectionId === 'language' || rawSectionId === 'integrations'
-      ? 'playback'
-      : rawSectionId;
+    rawSectionId === 'language'
+      ? 'themes'
+      : rawSectionId === 'integrations'
+        ? 'playback'
+        : rawSectionId;
   const section: SettingsSectionId = isSettingsSectionId(sectionId)
     ? sectionId
     : 'account';
@@ -189,6 +191,11 @@ export function SettingsView() {
       open('themes');
       return;
     }
+    // Language moved from Playback to Appearance.
+    if (section === 'playback' && tab === 'language') {
+      open('themes');
+      return;
+    }
     // Security and Notifications left Account; old ?tab= bookmarks follow.
     if (section === 'account' && isSecurityTabId(tab)) {
       void navigate({
@@ -214,11 +221,9 @@ export function SettingsView() {
         : undefined;
     const playbackSection =
       section === 'playback'
-        ? rawSectionId === 'language' || tab === 'language'
-          ? 'language'
-          : rawSectionId === 'integrations' || tab === 'integrations'
-            ? 'integrations'
-            : 'playback'
+        ? rawSectionId === 'integrations' || tab === 'integrations'
+          ? 'integrations'
+          : 'playback'
         : undefined;
     open(
       section,

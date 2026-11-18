@@ -48,9 +48,7 @@ describe('AccountPanel membership', () => {
       render(<RouterProvider router={router} />);
     });
     await act(async () => {
-      fireEvent.click(
-        screen.getByRole('tab', { name: /Membership & billing/ }),
-      );
+      fireEvent.click(screen.getByRole('tab', { name: /^Membership$/ }));
     });
     expect(screen.getByText('Could not load your membership')).toBeTruthy();
     await act(async () => {

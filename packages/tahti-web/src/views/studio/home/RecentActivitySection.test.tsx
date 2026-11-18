@@ -37,7 +37,7 @@ describe('RecentActivitySection', () => {
     expect(screen.getByText(/2:05/)).toBeVisible();
     expect(screen.getByText(/1:02:00/)).toBeVisible();
     const income = screen.getByRole('link', { name: /Fan subscriptions/ });
-    expect(income).toHaveAttribute('href', '/studio/revenue');
+    expect(income).toHaveAttribute('href', '/studio/audience');
     expect(income.textContent).toMatch(/12[.,]40/);
   });
 

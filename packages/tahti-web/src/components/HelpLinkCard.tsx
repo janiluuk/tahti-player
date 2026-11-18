@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 import { Box } from '@tahti-player/ui';
 
-/** A linked card used by Help and Studio → Governance → Documents. */
+/** A linked card used by Help and Co-op → Documents. */
 export function HelpLinkCard({
   title,
   description,

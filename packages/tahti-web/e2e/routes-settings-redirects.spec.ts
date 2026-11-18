@@ -43,11 +43,21 @@ const settingsSections: RouteVisit[] = [
     heading: /^Security$/,
     url: /\/settings\/security/,
   },
-  { path: '/settings/playback', heading: 'Playback & language' },
+  { path: '/settings/playback', heading: /^Playback$/ },
   {
     path: '/settings/integrations',
-    heading: 'Playback & language',
+    heading: /^Playback$/,
     url: /\/settings\/(integrations|playback)/,
+  },
+  {
+    path: '/settings/language',
+    heading: /^Appearance$/,
+    url: /\/settings\/themes/,
+  },
+  {
+    path: '/settings/playback?tab=language',
+    heading: /^Appearance$/,
+    url: /\/settings\/themes/,
   },
   { path: '/settings/themes', heading: /^Appearance$/ },
   { path: '/settings/plugin-store', heading: /^Add-ons$/ },

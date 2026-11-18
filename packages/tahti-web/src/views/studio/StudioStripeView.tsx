@@ -195,8 +195,7 @@ export function StudioStripeView() {
               ) : null}
 
               <p className="text-foreground-secondary text-xs">
-                Express dashboard payouts to your bank follow Stripe’s schedule.
-                A paid order here means Tahti booked the period.{' '}
+                {t('studioMoneyText.stripePayoutSchedule')}{' '}
                 <Link
                   to="/studio/audience"
                   className="text-foreground underline underline-offset-2"

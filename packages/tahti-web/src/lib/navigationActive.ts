@@ -43,7 +43,7 @@ export function activeSidebarItem(
   if (isChatRoute(path)) {
     return 'chat';
   }
-  if (matchesSectionRoute(path, ['/governance', '/studio/governance'])) {
+  if (matchesSectionRoute(path, ['/governance'])) {
     return 'coop';
   }
   if (getStudioPrimaryRoute(path) === '/studio') {

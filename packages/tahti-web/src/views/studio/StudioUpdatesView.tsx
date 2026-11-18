@@ -163,31 +163,29 @@ export function StudioUpdatesView({
           classes={{ root: 'px-0 pt-0' }}
           actions={
             tab === 'posts' ? (
-              <Tooltip content={t('studioUpdates.newPost')} side="top">
-                <Button
-                  size="icon-sm"
-                  onClick={() => {
-                    setMsg(null);
-                    setPostEditor({});
-                  }}
-                  aria-label={t('studioUpdates.newPost')}
-                >
-                  <PlusIcon size={16} aria-hidden />
-                </Button>
-              </Tooltip>
+              <Button
+                size="sm"
+                onClick={() => {
+                  setMsg(null);
+                  setPostEditor({});
+                }}
+                data-testid="studio-posts-primary"
+              >
+                <PlusIcon size={16} aria-hidden className="mr-1.5" />
+                {t('studioUpdates.newPost')}
+              </Button>
             ) : (
-              <Tooltip content={t('studioUpdates.newDraft')} side="top">
-                <Button
-                  size="icon-sm"
-                  onClick={() => {
-                    setMsg(null);
-                    setDraftOpen(true);
-                  }}
-                  aria-label={t('studioUpdates.newDraft')}
-                >
-                  <PlusIcon size={16} aria-hidden />
-                </Button>
-              </Tooltip>
+              <Button
+                size="sm"
+                onClick={() => {
+                  setMsg(null);
+                  setDraftOpen(true);
+                }}
+                data-testid="studio-posts-primary"
+              >
+                <PlusIcon size={16} aria-hidden className="mr-1.5" />
+                {t('studioUpdates.newDraft')}
+              </Button>
             )
           }
         >
@@ -202,33 +200,7 @@ export function StudioUpdatesView({
               {posts.length === 0 ? (
                 <PageEmpty
                   title={t('empties.noPostsYet')}
-                  description={
-                    isEmpty
-                      ? 'Share news, show notes, or tour dates with your followers.'
-                      : undefined
-                  }
-                  action={
-                    isEmpty ? (
-                      <Button
-                        variant="secondary"
-                        onClick={() => setPostEditor({})}
-                      >
-                        <PlusIcon size={16} aria-hidden className="mr-1.5" />
-                        {t('studioUpdates.writeAPost')}
-                      </Button>
-                    ) : (
-                      <Tooltip content={t('studioUpdates.newPost')} side="top">
-                        <Button
-                          size="icon-sm"
-                          variant="secondary"
-                          onClick={() => setPostEditor({})}
-                          aria-label={t('studioUpdates.newPost')}
-                        >
-                          <PlusIcon size={16} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                    )
-                  }
+                  description={t('studioUpdates.postsEmptyDescription')}
                 />
               ) : (
                 <ul
@@ -322,30 +294,7 @@ export function StudioUpdatesView({
               {drafts.length === 0 ? (
                 <PageEmpty
                   title={t('empties.noDraftsYet')}
-                  description={
-                    isEmpty
-                      ? 'Draft a newsletter or post when you are ready to publish.'
-                      : undefined
-                  }
-                  action={
-                    isEmpty ? (
-                      <Button onClick={() => setDraftOpen(true)}>
-                        <PlusIcon size={16} aria-hidden className="mr-1.5" />
-                        {t('studioUpdates.newDraft')}
-                      </Button>
-                    ) : (
-                      <Tooltip content={t('studioUpdates.newDraft')} side="top">
-                        <Button
-                          size="icon-sm"
-                          variant="secondary"
-                          onClick={() => setDraftOpen(true)}
-                          aria-label={t('studioUpdates.newDraft')}
-                        >
-                          <PlusIcon size={16} aria-hidden />
-                        </Button>
-                      </Tooltip>
-                    )
-                  }
+                  description={t('studioUpdates.draftsEmptyDescription')}
                 />
               ) : (
                 <ul className="divide-border divide-y">
