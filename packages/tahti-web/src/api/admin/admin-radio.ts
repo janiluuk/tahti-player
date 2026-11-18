@@ -148,7 +148,7 @@ export async function fetchAdminRadioRotation(): Promise<{
 export async function searchAdminRadioBrowse(
   q: string,
 ): Promise<{ data: AdminRadioBrowseItem[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const query = q.toLowerCase();
     return {
       data: mockRadioBrowse().filter((item) =>
@@ -168,7 +168,7 @@ export async function searchAdminRadioBrowse(
 }
 
 export function addToRadioRotation(item: AdminRadioBrowseItem) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     radioRotationState().push({
       id: `radio-rotation-${Date.now()}`,
       soundId: item.id,
@@ -188,7 +188,7 @@ export function addToRadioRotation(item: AdminRadioBrowseItem) {
 }
 
 export function removeFromRadioRotation(id: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockRadioRotation = radioRotationState().filter((item) => item.id !== id);
     return Promise.resolve({ ok: true } as const);
   }
@@ -199,7 +199,7 @@ export function removeFromRadioRotation(id: string) {
 }
 
 export function reorderRadioRotation(itemIds: string[]) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const byId = new Map(radioRotationState().map((item) => [item.id, item]));
     mockRadioRotation = itemIds
       .map((id) => byId.get(id))
