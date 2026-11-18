@@ -1,3 +1,7 @@
+## 2026-11-18 — Prod mock tree-shake (30 slices)
+
+`isForceMock()` and `allowMockFallback()` in `api/mode.ts` are single `import.meta.env` expressions that Vite inlines and Rollup folds, so a production build drops `api/mock*` while tests can still flip them with `vi.stubEnv`. Call sites pass `null` into `withMockFallback` when fixtures are off; the listening-party mock loads its state lazily so it no longer pins its fixtures. `VITE_FORCE_MOCK=1` and Vite dev still serve the offline demo. Production `TahtiApp` 1289 KB / 399 KB gzipped; mock fixture markers (`lp-mock-scheduled`, `AURORA42`) are absent from every chunk. tahti-web 0.0.414. Folded `prod-mock-tree-shake.md`. Live back/forward check stays in `navigation-performance.md`.
+
 ## 2026-11-18 — Hardening, screen-reader batch and coverage (10 slices)
 
 Web CSP in one nginx `map` with `/embed/*` framable by any site and the widget sandbox framable by Tahti hosts (`deployNginxConf.test.ts`); client upload magic-byte check (`lib/audioMagic.ts`); screen-reader fixes from a code audit (auth/page-loading status, search count, notifications region/unread/count, toast and copy announcements, progressbar roles, import status, bulk-edit select names); `use-cases-hardening` mock e2e; Storybook disconnect bisect rules out time alone; beta finding "track editing lives under Library" closed by the 0.0.397 Studio → Music move. tahti-web 0.0.411. Leftovers stay in `final-season-hardening.md` P2 #23.

@@ -1,13 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { fetchExportPlugins } from './export-plugins';
-import { allowMockFallback, isForceMock } from './mode';
-
-vi.mock('./mode', () => ({
-  isForceMock: vi.fn(() => false),
-  allowMockFallback: vi.fn(() => false),
-}));
-
 vi.mock('./http', () => ({
   apiBase: () => 'https://api.example.test',
 }));
@@ -15,10 +7,13 @@ vi.mock('./http', () => ({
 describe('fetchExportPlugins', () => {
   afterEach(() => {
     vi.unstubAllGlobals();
-    vi.clearAllMocks();
+    vi.unstubAllEnvs();
+    vi.resetModules();
   });
 
   it('returns API providers when the request succeeds', async () => {
+    vi.stubEnv('VITE_FORCE_MOCK', '0');
+    vi.stubEnv('VITE_ALLOW_MOCK_FALLBACK', '0');
     vi.stubGlobal(
       'fetch',
       vi.fn(async () => ({
@@ -40,6 +35,7 @@ describe('fetchExportPlugins', () => {
       })),
     );
 
+    const { fetchExportPlugins } = await import('./export-plugins');
     await expect(fetchExportPlugins()).resolves.toMatchObject({
       source: 'api',
       data: [{ id: 'revelator' }],
@@ -47,8 +43,8 @@ describe('fetchExportPlugins', () => {
   });
 
   it('fails closed when mock fallback is off', async () => {
-    vi.mocked(isForceMock).mockReturnValue(false);
-    vi.mocked(allowMockFallback).mockReturnValue(false);
+    vi.stubEnv('VITE_FORCE_MOCK', '0');
+    vi.stubEnv('VITE_ALLOW_MOCK_FALLBACK', '0');
     vi.stubGlobal(
       'fetch',
       vi.fn(async () => ({
@@ -57,12 +53,13 @@ describe('fetchExportPlugins', () => {
       })),
     );
 
+    const { fetchExportPlugins } = await import('./export-plugins');
     await expect(fetchExportPlugins()).rejects.toThrow(/export-plugins/);
   });
 
   it('uses mock fixtures only when fallback is allowed', async () => {
-    vi.mocked(isForceMock).mockReturnValue(false);
-    vi.mocked(allowMockFallback).mockReturnValue(true);
+    vi.stubEnv('VITE_FORCE_MOCK', '0');
+    vi.stubEnv('VITE_ALLOW_MOCK_FALLBACK', '1');
     vi.stubGlobal(
       'fetch',
       vi.fn(async () => {
@@ -70,6 +67,7 @@ describe('fetchExportPlugins', () => {
       }),
     );
 
+    const { fetchExportPlugins } = await import('./export-plugins');
     await expect(fetchExportPlugins()).resolves.toMatchObject({
       source: 'mock',
       data: [{ id: 'revelator' }],

@@ -7,6 +7,11 @@
  * - Vite `dev` — still allows mock fallback when the API is down, unless
  *   `VITE_ALLOW_MOCK_FALLBACK=0`.
  * - `VITE_ALLOW_MOCK_FALLBACK=1` — force fallback on even in production (emergency).
+ *
+ * Both flag functions read `import.meta.env` on every call (tests flip it with
+ * `vi.stubEnv`) and must stay single env expressions: Vite inlines the env
+ * values and Rollup folds the call to a literal, which is what lets a
+ * production build drop the `api/mock*` fixtures behind `if (isForceMock())`.
  */
 
 export type FetchMeta = { source: 'api' | 'mock'; reason?: string };
@@ -16,16 +21,12 @@ export function isForceMock(): boolean {
 }
 
 export function allowMockFallback(): boolean {
-  if (isForceMock()) {
-    return true;
-  }
-  if (import.meta.env.VITE_ALLOW_MOCK_FALLBACK === '1') {
-    return true;
-  }
-  if (import.meta.env.VITE_ALLOW_MOCK_FALLBACK === '0') {
-    return false;
-  }
-  return Boolean(import.meta.env.DEV);
+  return (
+    import.meta.env.VITE_FORCE_MOCK === '1' ||
+    import.meta.env.VITE_ALLOW_MOCK_FALLBACK === '1' ||
+    (import.meta.env.VITE_ALLOW_MOCK_FALLBACK !== '0' &&
+      import.meta.env.DEV === true)
+  );
 }
 
 /** API failed and the caller is returning empty/null stand-in data — not a
@@ -53,13 +54,15 @@ export function mockFallbackMeta(err: unknown): FetchMeta {
   };
 }
 
-/** Prefer mock fixtures only when fallback is allowed; otherwise empty + api error. */
+/** Prefer mock fixtures only when fallback is allowed; otherwise empty + api error.
+ * Pass `null` for `mock` when fixtures are compile-time disabled so the mock
+ * module is not referenced from production call sites. */
 export function withMockFallback<T>(
   err: unknown,
-  mock: () => T,
+  mock: (() => T) | null,
   empty: () => T,
 ): { data: T; meta: FetchMeta } {
-  if (allowMockFallback()) {
+  if (mock && allowMockFallback()) {
     return { data: mock(), meta: mockFallbackMeta(err) };
   }
   return { data: empty(), meta: apiErrorMeta(err) };

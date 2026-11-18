@@ -5,7 +5,12 @@ import {
   resolveImageUploadContentType,
 } from '../lib/imageUploadContentType';
 import { apiBase } from './http';
-import { isForceMock, withMockFallback, type FetchMeta } from './mode';
+import {
+  allowMockFallback,
+  isForceMock,
+  withMockFallback,
+  type FetchMeta,
+} from './mode';
 
 async function readErrorMessage(
   response: Response,
@@ -69,7 +74,7 @@ export async function fetchUserMedia(): Promise<{
   } catch (error) {
     return withMockFallback(
       error,
-      () => [...mockMedia],
+      allowMockFallback() ? () => [...mockMedia] : null,
       () => [],
     );
   }

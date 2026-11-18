@@ -109,7 +109,11 @@ export async function fetchEnabledInternetRadioPresets(): Promise<{
     );
     return { data: data.presets, meta: { source: 'api' } };
   } catch (err) {
-    return withMockFallback(err, mockEnabledInternetRadioPresets, () => []);
+    return withMockFallback(
+      err,
+      allowMockFallback() ? mockEnabledInternetRadioPresets : null,
+      () => [],
+    );
   }
 }
 
@@ -154,7 +158,11 @@ export async function fetchRadioRecentlyPlayed(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    return withMockFallback(err, mockRadioRecentlyPlayed, () => []);
+    return withMockFallback(
+      err,
+      allowMockFallback() ? mockRadioRecentlyPlayed : null,
+      () => [],
+    );
   }
 }
 
@@ -200,6 +208,10 @@ export async function fetchRadioFeatureHistory(): Promise<{
     );
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
-    return withMockFallback(err, mockRadioFeatureHistory, () => []);
+    return withMockFallback(
+      err,
+      allowMockFallback() ? mockRadioFeatureHistory : null,
+      () => [],
+    );
   }
 }

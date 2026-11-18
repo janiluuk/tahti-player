@@ -8,6 +8,7 @@ import {
 } from './mock';
 import { mockFixture } from './mock-overrides';
 import {
+  allowMockFallback,
   apiErrorMeta,
   isForceMock,
   withMockFallback,
@@ -87,7 +88,11 @@ export async function fetchDirectory(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    return withMockFallback(err, mockDirectory, () => ({ items: [] }));
+    return withMockFallback(
+      err,
+      allowMockFallback() ? mockDirectory : null,
+      () => ({ items: [] }),
+    );
   }
 }
 
@@ -118,7 +123,7 @@ export async function fetchSearch(
   } catch (err) {
     return withMockFallback(
       err,
-      () => mockSearch(q, type),
+      allowMockFallback() ? () => mockSearch(q, type) : null,
       () => empty,
     );
   }
@@ -195,7 +200,7 @@ export async function fetchOnAirChannels(): Promise<{
       meta: { source: 'api' },
     };
   } catch (err) {
-    return withMockFallback(err, mock, empty);
+    return withMockFallback(err, allowMockFallback() ? mock : null, empty);
   }
 }
 

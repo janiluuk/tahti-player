@@ -24,8 +24,9 @@ network again, even for a page seen seconds ago.
   headlessui 96 KB, motion 123 KB, tanstack table 51 KB, dnd-kit 44 KB.
 - `content/mapScreens.ts` (62 KB, the screen atlas) was in the shell via
   `RightRailPanel` → `AdminPageCommentsPanel` → map helpers.
-- Mock fixtures (`api/mock.ts` 26 KB and smaller mock files) ship in
-  production because `allowMockFallback()` is a runtime call.
+- Mock fixtures (`api/mock.ts` 26 KB and smaller mock files) used to ship
+  in production because `allowMockFallback()` was a runtime call. They are
+  compile-time constants now (see Done).
 - nginx already sends `immutable` for hashed `/assets/*` and `no-cache` for
   `index.html`, but gzipped at the default level 1 (shell 508 KB vs 434 KB at
   level 6).
@@ -62,7 +63,12 @@ network again, even for a page seen seconds ago.
 
 ## Left
 
-- [ ] Make mock mode a build-time constant so production drops the fixtures
-      (touches ~40 api files and the tests that stub `VITE_*` env per test).
+- [x] Make mock mode a build-time constant so production drops the fixtures
+      (2026-11-18, 0.0.414): `isForceMock()` and `allowMockFallback()` in
+      `api/mode.ts` fold to literals at build time. Call sites branch on them, and
+      `withMockFallback` takes `null` when fixtures are off, so Rollup drops
+      `api/mock*`. Production build: `TahtiApp` 1289 KB, 399 KB gzipped.
+      `lp-mock-scheduled`, `AURORA42` and the listening-party fixtures are
+      absent from every chunk.
 - [ ] Check the effect on a real browser against the live API (back/forward
       between Listen, an artist profile and a track).

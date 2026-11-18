@@ -1,3 +1,9 @@
+## 2026-11-18 - Production builds drop offline mock fixtures (0.0.414)
+
+Beta and production builds no longer ship the offline demo fixtures.
+The mock-mode checks fold away at build time, so the mock catalog is absent
+from the shell (`TahtiApp` 1289 KB, 399 KB gzipped). `VITE_FORCE_MOCK=1` still runs the offline demo.
+
 ## 2026-11-18 - Tahti Radio admin playlist manager (0.0.413)
 
 Admin → Radio gains a Playlist tab that edits the curated `tahti-radio`
