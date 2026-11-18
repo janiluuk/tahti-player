@@ -73,7 +73,11 @@ async function openFromAccountMenu(
   await userEvent.click(canvas.getByRole('button', { name: account }));
   const menu = within(await canvas.findByRole('menu'));
   await userEvent.click(menu.getByRole('menuitem', { name: item }));
-  return within(await canvas.findByRole('menu'));
+  return within(
+    item === 'Notifications'
+      ? await canvas.findByRole('region', { name: 'Notifications' })
+      : await canvas.findByRole('menu'),
+  );
 }
 
 /** Notifications and messages live in the account menu; the avatar carries
@@ -97,7 +101,8 @@ export const AccountUnreadPill: Story = {
   },
 };
 
-/** Sticky "Needs acknowledgement" row and a read row. */
+/** Sticky "Needs acknowledgement" row and a read row, in a region named
+ * Notifications (a quick view, not a menu). */
 export const NotificationsOpen: Story = {
   decorators: [withMockAuth(MOCK_USERS.artist)],
   play: async ({ canvasElement }) => {
