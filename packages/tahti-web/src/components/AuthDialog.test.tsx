@@ -90,4 +90,35 @@ describe('AuthDialog', () => {
       'Add an uppercase letter.',
     );
   });
+
+  it('opens a check-your-email modal after registration succeeds', async () => {
+    const register = vi.fn(async () => 'ok');
+    useAuthModalStore.setState({ mode: 'join' });
+    useAuthStore.setState({ error: null, register });
+    render(<AuthDialog />);
+
+    fireEvent.change(screen.getByLabelText('Email'), {
+      target: { value: 'new@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText('Artist name'), {
+      target: { value: 'Nova' },
+    });
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'Password-A1' },
+    });
+    fireEvent.change(screen.getByLabelText('Confirm password'), {
+      target: { value: 'Password-A1' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
+
+    expect(register).toHaveBeenCalled();
+    expect(
+      await screen.findByRole('heading', { name: /Check your email/i }),
+    ).toBeVisible();
+    expect(
+      screen.getByText(/We sent a verification link to new@example.com/),
+    ).toBeVisible();
+    expect(screen.getByRole('button', { name: 'Got it' })).toBeVisible();
+    expect(screen.queryByRole('button', { name: 'Create account' })).toBeNull();
+  });
 });

@@ -1,5 +1,10 @@
 import { Link } from '@tanstack/react-router';
-import { KeyRoundIcon, LogInIcon, UserPlusIcon } from 'lucide-react';
+import {
+  KeyRoundIcon,
+  LogInIcon,
+  MailCheckIcon,
+  UserPlusIcon,
+} from 'lucide-react';
 import { FC, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -58,14 +63,19 @@ export const AuthDialog: FC = () => {
   const [artistName, setArtistName] = useState('');
   const [artistKind, setArtistKind] = useState<AccountKind>('SINGLE');
   const [totpCode, setTotpCode] = useState('');
-  const [message, setMessage] = useState<string | null>(null);
+  const [registrationSuccessEmail, setRegistrationSuccessEmail] = useState<
+    string | null
+  >(null);
+  const mockRegistration =
+    import.meta.env.VITE_FORCE_MOCK === '1' &&
+    registrationSuccessEmail !== null;
 
   useEffect(() => {
     if (!isOpen) {
+      setRegistrationSuccessEmail(null);
       return;
     }
     clearError();
-    setMessage(null);
     setTotpCode('');
     setConfirmPassword('');
   }, [isOpen, mode, clearError]);
@@ -75,17 +85,20 @@ export const AuthDialog: FC = () => {
   }, [artistName]);
 
   useEffect(() => {
-    if (user && isOpen && !totpChallengeId) {
+    if (user && isOpen && !totpChallengeId && !registrationSuccessEmail) {
       close();
     }
-  }, [user, isOpen, totpChallengeId, close]);
+  }, [user, isOpen, totpChallengeId, registrationSuccessEmail, close]);
 
   const handleClose = () => {
     cancelTotp();
+    setRegistrationSuccessEmail(null);
     close();
   };
 
-  const titleIcon = totpChallengeId ? (
+  const titleIcon = registrationSuccessEmail ? (
+    <MailCheckIcon size={18} aria-hidden />
+  ) : totpChallengeId ? (
     <KeyRoundIcon size={18} aria-hidden />
   ) : mode === 'join' ? (
     <UserPlusIcon size={18} aria-hidden />
@@ -103,14 +116,55 @@ export const AuthDialog: FC = () => {
     SINGLE: t('auth.artistName'),
     COLLECTIVE: t('auth.collectiveName'),
   };
-  const title = totpChallengeId
-    ? t('auth.twoFactorTitle')
-    : mode === 'join'
-      ? t('auth.join')
-      : t('auth.logIn');
+  const title = registrationSuccessEmail
+    ? t('auth.registrationSuccessTitle')
+    : totpChallengeId
+      ? t('auth.twoFactorTitle')
+      : mode === 'join'
+        ? t('auth.join')
+        : t('auth.logIn');
   const passwordIssue = password.length > 0 ? passwordProblem(password) : null;
   const passwordsDoNotMatch =
     confirmPassword.length > 0 && password !== confirmPassword;
+
+  if (registrationSuccessEmail) {
+    return (
+      <Dialog.Root isOpen={isOpen} onClose={handleClose}>
+        <Dialog.Title>
+          <span className="inline-flex items-center gap-2">
+            {titleIcon}
+            {title}
+          </span>
+        </Dialog.Title>
+        <div className="mt-4 flex flex-col items-center gap-4 text-center">
+          <MailCheckIcon size={48} className="text-foreground" aria-hidden />
+          <Dialog.Description>
+            {mockRegistration
+              ? t('auth.registrationSuccessMockDescription')
+              : t('auth.registrationSuccessDescription', {
+                  email: registrationSuccessEmail,
+                })}
+          </Dialog.Description>
+        </div>
+        <Dialog.Actions>
+          {mockRegistration ? (
+            <Button
+              onClick={() => {
+                setRegistrationSuccessEmail(null);
+                setMode('login');
+              }}
+            >
+              {t('auth.registrationSuccessSignIn')}
+            </Button>
+          ) : (
+            <Button onClick={handleClose}>
+              {t('auth.registrationSuccessGotIt')}
+            </Button>
+          )}
+        </Dialog.Actions>
+      </Dialog.Root>
+    );
+  }
 
   return (
     <Dialog.Root
@@ -271,12 +325,6 @@ export const AuthDialog: FC = () => {
             <AuthDialogError message={t('auth.passwordsDoNotMatch')} />
           ) : null}
           {error ? <AuthDialogError message={error} /> : null}
-          <p
-            role="status"
-            className="text-foreground-secondary text-sm empty:hidden"
-          >
-            {message}
-          </p>
           <Dialog.Actions>
             <Button variant="text" size="sm" onClick={() => setMode('login')}>
               {t('auth.logIn')}
@@ -300,16 +348,13 @@ export const AuthDialog: FC = () => {
                   username,
                   displayName: artistName,
                 })
-                  .then((msg) => {
+                  .then(() => {
                     if (artistKind === 'LISTENER') {
                       persistListenerSignup();
                     } else {
                       persistPendingArtistKind(artistKind);
                     }
-                    setMessage(msg);
-                    if (import.meta.env.VITE_FORCE_MOCK === '1') {
-                      setMode('login');
-                    }
+                    setRegistrationSuccessEmail(email.trim());
                   })
                   .catch(() => undefined);
               }}

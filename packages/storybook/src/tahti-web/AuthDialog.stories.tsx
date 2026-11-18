@@ -118,3 +118,39 @@ export const TwoFactorChallenge: Story = {
     await expect(dialog.getByRole('button', { name: 'Back' })).toBeVisible();
   },
 };
+
+/** Successful join replaces the form with a check-your-email modal. */
+export const RegistrationSuccess: Story = {
+  decorators: [
+    (Story) => {
+      useAuthStore.setState({
+        user: null,
+        hydrated: true,
+        loading: false,
+        error: null,
+        totpChallengeId: null,
+        register: async () => 'Registration successful',
+      });
+      useAuthModalStore.setState({ isOpen: true, mode: 'join' });
+      return <Story />;
+    },
+  ],
+  play: async ({ canvasElement }) => {
+    const dialog = await findDialog(canvasElement, /Join/);
+    await userEvent.type(dialog.getByLabelText('Email'), 'join@example.com');
+    await userEvent.type(dialog.getByLabelText('Artist name'), 'Joiner');
+    await userEvent.type(dialog.getByLabelText('Password'), 'Secret-pass1');
+    await userEvent.type(
+      dialog.getByLabelText('Confirm password'),
+      'Secret-pass1',
+    );
+    await userEvent.click(
+      dialog.getByRole('button', { name: 'Create account' }),
+    );
+    const success = await findDialog(canvasElement, /Check your email/);
+    await expect(
+      success.getByText(/We sent a verification link to join@example.com/),
+    ).toBeVisible();
+    await expect(success.getByRole('button', { name: 'Got it' })).toBeVisible();
+  },
+};
