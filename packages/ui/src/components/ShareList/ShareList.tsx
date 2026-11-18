@@ -8,6 +8,8 @@ export type ShareListItem = {
   label: string;
   share: number;
   icon?: ReactNode;
+  title?: string;
+  href?: string;
 };
 
 type ShareListProps = ComponentProps<'div'> & {
@@ -64,7 +66,21 @@ export const ShareList: FC<ShareListProps> = ({
                   {item.icon}
                 </span>
               ) : null}
-              <span className="min-w-0 truncate">{item.label}</span>
+              {item.href ? (
+                <a
+                  href={item.href}
+                  title={item.title ?? item.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-foreground min-w-0 truncate underline-offset-2 hover:underline"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <span className="min-w-0 truncate" title={item.title}>
+                  {item.label}
+                </span>
+              )}
               <span className="text-foreground-secondary tabular-nums">
                 {formatShare(item.share)}
               </span>

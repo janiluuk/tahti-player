@@ -8462,7 +8462,11 @@
     },
     "referrerSources": {
       "whereListenersCameFrom": "Mistä kuuntelijat tulivat",
-      "referringSites": "Viittaavat sivustot"
+      "referringSites": "Viittaavat sivustot",
+      "referringPages": "Viittaavat sivut",
+      "groupBy": "Ryhmittele viittauslähteet",
+      "sites": "Sivustot",
+      "pages": "Sivut"
     },
     "listenerLocations": {
       "countries": "Maat",
@@ -9824,7 +9828,8 @@
       "editTitle": "Muokkaa: {{title}}"
     },
     "referrerSourcesLabels": {
-      "theSiteAListenerWas": "Sivusto, jolla kuuntelija oli ennen Tahden avaamista, kuunteluiden mukaan tällä jaksolla. Suora tarkoittaa, ettei viittaavaa sivustoa ole: kirjoitettu osoite, kirjanmerkki, sovellus tai chatista avattu jaettu linkki. Sivustot, joilla on alle {{minBucket}} kuuntelua, ryhmitellään kohtaan Muut sivustot."
+      "theSiteAListenerWas": "Sivusto, jolla kuuntelija oli ennen Tahden avaamista, kuunteluiden mukaan tällä jaksolla. Suora tarkoittaa, ettei viittaavaa sivustoa ole: kirjoitettu osoite, kirjanmerkki, sovellus tai chatista avattu jaettu linkki. Sivustot, joilla on alle {{minBucket}} kuuntelua, ryhmitellään kohtaan Muut sivustot.",
+      "thePageAListenerWas": "Sivu, jolla kuuntelija oli ennen Tahden avaamista, kuunteluiden mukaan tällä jaksolla. Suora tarkoittaa, ettei viittaavaa sivua ole. Sivut, joilla on alle {{minBucket}} kuuntelua, ryhmitellään kohtaan Muut sivut."
     },
     "audienceBreakdownLabels": {
       "sharesOfListensInThis": "Kuunteluiden osuudet tällä jaksolla. Nimet, joilla on alle {{minBucket}} kuuntelua, ryhmitellään kohtaan Muut."

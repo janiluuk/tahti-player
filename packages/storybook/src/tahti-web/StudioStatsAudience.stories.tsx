@@ -49,6 +49,11 @@ export const Sources: Story = {
     await expect(
       canvas.getByText('Direct or unknown · 501 listens'),
     ).toBeInTheDocument();
+    await userEvent.click(canvas.getByRole('radio', { name: 'Pages' }));
+    await expect(
+      await canvas.findByRole('link', { name: /instagram\.com\/p\/abc/ }),
+    ).toBeInTheDocument();
+    await expect(canvas.getByText(/Other pages/)).toBeInTheDocument();
   },
 };
 

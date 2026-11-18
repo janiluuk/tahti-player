@@ -1,3 +1,8 @@
+## 2026-11-18 - Referrer sources Sites / Pages mode (0.0.410)
+
+Studio Stats “Where listeners came from” can group by site (host) or page
+(full referrer URL), with truncated labels, tooltips, and external links.
+
 ## 2026-11-18 - Owner moderator row + referrerUrl heartbeat + no client peaks decode (0.0.409)
 
 Fans → Chat → Moderators shows the channel owner with a badge and no Remove.
