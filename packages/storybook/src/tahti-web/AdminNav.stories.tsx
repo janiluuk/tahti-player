@@ -43,7 +43,7 @@ export const Default: Story = {
     ]);
     await expectSection(canvasElement, 'Overview');
     await expect(
-      canvas.queryByRole('tablist', { name: 'Admin Overview' }),
+      within(canvasElement).queryByRole('tablist', { name: 'Admin Overview' }),
     ).toBeNull();
   },
 };
