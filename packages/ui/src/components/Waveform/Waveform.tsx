@@ -13,11 +13,6 @@ import { cn } from '../../utils';
 import { observeThemeChange, readCssVar } from '../../utils/themeChange';
 import { formatTimeSeconds } from '../../utils/time';
 import {
-  audioVersionFromUrl,
-  getDecodedPeaks,
-  setDecodedPeaks,
-} from './decodedPeaksCache';
-import {
   hasPeaks,
   peaksKey,
   peaksToWaveSurfer,
@@ -27,10 +22,6 @@ import {
 export type WaveformProps = {
   peaks?: number[] | null;
   durationSec: number;
-  audioUrl?: string;
-  /** Stable id (e.g. the track id) for peaks decoded from `audioUrl`, so
-   * they are reused after a reload even though signed URLs change. */
-  cacheKey?: string;
   /** Global player `<audio>` when binding progress/seek to one source. */
   media?: HTMLMediaElement | null;
   /** 0..1 progress when not using `media` (or while media is unbound). */
@@ -62,8 +53,6 @@ function clamp01(value: number): number {
 export const Waveform: FC<WaveformProps> = ({
   peaks,
   durationSec,
-  audioUrl,
-  cacheKey,
   media = null,
   progress,
   onSeek,
@@ -77,46 +66,29 @@ export const Waveform: FC<WaveformProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WaveSurfer | null>(null);
-  const [ready, setReady] = useState(false);
-  const [decoded, setDecoded] = useState(false);
   const [failed, setFailed] = useState(false);
   const onSeekRef = useRef(onSeek);
   onSeekRef.current = onSeek;
   const peaksRef = useRef(peaks);
   peaksRef.current = peaks;
-  const cacheKeyRef = useRef(cacheKey);
-  cacheKeyRef.current = cacheKey;
   const heightRef = useRef(height);
   heightRef.current = height;
+  const progressRef = useRef(progress);
+  progressRef.current = progress;
 
   const seekable = Boolean(onSeek || media);
   const key = peaksKey(peaks);
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || (durationSec <= 0 && !audioUrl)) {
+    if (!container || durationSec <= 0) {
       return;
     }
 
     let cancelled = false;
     const subscriptions: (() => void)[] = [];
     const current = peaksRef.current;
-    const needsPeaks = !media && !hasPeaks(current);
-    const decodeKey = needsPeaks
-      ? (cacheKeyRef.current ?? audioUrl)
-      : undefined;
-    const audioVersion = audioVersionFromUrl(audioUrl);
-    const cached = decodeKey
-      ? getDecodedPeaks(decodeKey, {
-          durationSec,
-          version: audioVersion,
-        })
-      : undefined;
-    const source = needsPeaks && !cached ? audioUrl : undefined;
-    // Known peaks draw at once, so only a real decode shows the loading pulse.
-    setReady(!source);
     setFailed(false);
-    setDecoded(Boolean(cached));
 
     const interactive = Boolean(onSeekRef.current || media);
     void Promise.all([
@@ -131,7 +103,7 @@ export const Waveform: FC<WaveformProps> = ({
 
         // Peaks + duration must always be present: without them wavesurfer
         // fetches and decodes the media `src`, and a later `load('')` would
-        // strip the global player's source.
+        // strip the global player's source. Peaks come from the server only.
         const options: ConstructorParameters<typeof WaveSurferCtor>[0] = {
           container: root,
           height: heightRef.current,
@@ -167,38 +139,14 @@ export const Waveform: FC<WaveformProps> = ({
           options.media = media;
         }
 
-        if (cached) {
-          options.peaks = cached.peaks;
-          options.duration = cached.duration;
-          options.normalize = true;
-        } else if (source) {
-          delete options.peaks;
-          delete options.duration;
-          options.url = source;
-          options.normalize = true;
-        }
         const ws = WaveSurferCtor.create(options);
-        subscriptions.push(
-          ws.on('error', () => {
-            setReady(true);
-            setFailed(true);
-          }),
-        );
-        if (source && !cached) {
-          subscriptions.push(
-            ws.on('decode', (duration) => {
-              setDecoded(true);
-              setDecodedPeaks(decodeKey!, {
-                peaks: ws.exportPeaks({ maxLength: 4096 }),
-                duration,
-                version: audioVersion,
-              });
-            }),
-          );
+        const startAt = progressRef.current;
+        if (!media && startAt != null && Number.isFinite(startAt)) {
+          ws.setTime(clamp01(startAt) * durationSec);
         }
+        subscriptions.push(ws.on('error', () => setFailed(true)));
         wsRef.current = ws;
 
-        subscriptions.push(ws.on('ready', () => setReady(true)));
         subscriptions.push(
           ws.on('interaction', (time: number) => {
             onSeekRef.current?.(
@@ -216,7 +164,6 @@ export const Waveform: FC<WaveformProps> = ({
       })
       .catch(() => {
         if (!cancelled) {
-          setReady(true);
           setFailed(true);
         }
       });
@@ -229,7 +176,7 @@ export const Waveform: FC<WaveformProps> = ({
       wsRef.current?.destroy();
       wsRef.current = null;
     };
-  }, [durationSec, media, key, audioUrl, seekable]);
+  }, [durationSec, media, key, seekable]);
 
   useEffect(() => {
     const ws = wsRef.current;
@@ -247,7 +194,7 @@ export const Waveform: FC<WaveformProps> = ({
     if (Math.abs(ws.getCurrentTime() - time) > 0.05) {
       ws.setTime(time);
     }
-  }, [progress, durationSec, media, ready]);
+  }, [progress, durationSec, media]);
 
   const currentFraction = (): number => {
     if (media && durationSec > 0) {
@@ -316,13 +263,11 @@ export const Waveform: FC<WaveformProps> = ({
           }
         : { role: 'img' })}
       aria-label={ariaLabel}
-      data-waveform={hasPeaks(peaks) || decoded ? 'peaks' : 'empty'}
-      data-state={failed ? 'error' : ready ? 'ready' : 'loading'}
+      data-waveform={hasPeaks(peaks) ? 'peaks' : 'empty'}
+      data-state={failed ? 'error' : 'ready'}
       onKeyDown={handleKeyDown}
       className={cn(
         'focus-visible:ring-primary min-h-12 w-full overflow-hidden rounded-sm outline-none focus-visible:ring-2',
-        !ready &&
-          'bg-background-secondary/40 animate-pulse motion-reduce:animate-none',
         className,
       )}
       style={{ height, ...style }}

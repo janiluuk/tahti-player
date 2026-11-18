@@ -218,12 +218,13 @@ export type AmbientTrackRowProps = {
   like?: AmbientTrackLike;
   peaks?: number[] | null;
   processing?: boolean;
-  audioUrl?: string;
-  loadAudioUrl?: () => Promise<string | undefined>;
   /** Playback position, 0–1. */
   progress?: number;
   density?: AmbientTrackRowDensity;
   isPlaying?: boolean;
+  /** The playing or paused track: on touch screens only this row shows a
+   * play / pause control on its artwork. */
+  isCurrent?: boolean;
   onPlay?: () => void;
   onSeek?: (fraction: number) => void;
   /** Listener-facing extras (like / add / download) — not Studio tooling. */
@@ -252,11 +253,11 @@ function AmbientTrackRowView({
   stats,
   like,
   peaks,
-  audioUrl,
   processing = false,
   progress = 0,
   density = 'comfortable',
   isPlaying = false,
+  isCurrent,
   onPlay,
   onSeek,
   actions,
@@ -315,6 +316,7 @@ function AmbientTrackRowView({
           size="fill"
           imageReveal={Boolean(coverUrl)}
           isPlaying={isPlaying}
+          isCurrent={isCurrent}
           hideActivePlay={density === 'dense'}
           onPlay={playable ? onPlay : undefined}
           playLabel={webT()('a11yNamed.play', { name: title })}
@@ -382,8 +384,6 @@ function AmbientTrackRowView({
               <Waveform
                 progress={progress}
                 peaks={peaks}
-                cacheKey={trackId}
-                audioUrl={peaks?.length ? audioUrl : undefined}
                 durationSec={durationSec ?? 1}
                 onSeek={onSeek}
                 aria-label={t('ambientTrackRowLabels.seekTitle', { title })}

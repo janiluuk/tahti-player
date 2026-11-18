@@ -98,8 +98,25 @@ const movedY = (element: HTMLElement | null | undefined) =>
  * ArrowDown moves it, Space drops it. dnd-kit ignores ArrowDown until it
  * has measured the drop targets, so ArrowDown is pressed again only after
  * a second with no move (a quicker retry overshoots by a slot), and the drop
- * waits until the displaced block has moved too. */
-export async function keyboardMoveDown(handle: HTMLElement) {
+ * waits until the displaced block has moved too. A `SortableBlocks` stack
+ * loads dnd-kit lazily and swaps its handles in, so the handle is looked up
+ * again by its label once the drag layer is ready. */
+export async function keyboardMoveDown(initialHandle: HTMLElement) {
+  const label = initialHandle.getAttribute('aria-label');
+  const handle =
+    initialHandle.closest('[data-sortable-block]') && label
+      ? await waitFor(
+          () => {
+            const ready =
+              initialHandle.ownerDocument.querySelector<HTMLElement>(
+                `[data-drag-ready] [aria-label="${CSS.escape(label)}"]`,
+              );
+            expect(ready).not.toBeNull();
+            return ready!;
+          },
+          { timeout: 3000 },
+        )
+      : initialHandle;
   const block = handle.closest<HTMLElement>('[data-sortable-block]');
   const next = block?.nextElementSibling as HTMLElement | null;
   handle.focus();

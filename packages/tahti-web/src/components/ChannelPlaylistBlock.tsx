@@ -186,6 +186,7 @@ export function ChannelPlaylistBlock({
                 title={item.title}
                 subtitle={item.artist}
                 isPlaying={isPlaying}
+                isCurrent={isCurrent}
                 playLabel={webT()('a11yNamed.play', { name: item.title })}
                 pauseLabel={webT()('a11yNamed.pause', { name: item.title })}
                 onPlay={() => {

@@ -2,6 +2,10 @@
 
 Web CSP in one nginx `map` with `/embed/*` framable by any site and the widget sandbox framable by Tahti hosts (`deployNginxConf.test.ts`); client upload magic-byte check (`lib/audioMagic.ts`); screen-reader fixes from a code audit (auth/page-loading status, search count, notifications region/unread/count, toast and copy announcements, progressbar roles, import status, bulk-edit select names); `use-cases-hardening` mock e2e; Storybook disconnect bisect rules out time alone; beta finding "track editing lives under Library" closed by the 0.0.397 Studio → Music move. tahti-web 0.0.411. Leftovers stay in `final-season-hardening.md` P2 #23.
 
+## 2026-11-18 — Server peaks only, phone play icons, dnd-kit out of the shell (10 slices)
+
+Waveforms never decode audio in the browser (ui `Waveform` decode path, loading pulse and `decodedPeaksCache` removed; app start clears the old key); mock `/channel/yaniho` peaks catalog, `use-cases-waveforms` e2e and the peaks contract + list → mapper → endpoint map in `docs/DATA-FLOW.md`. On phones only the playing or paused item shows play / pause on its artwork (`MediaArtwork` `isCurrent`). Queue panel and Listen reorder load dnd-kit lazily (`TahtiApp` 429 → 413 KB gzipped). tahti-web 0.0.411. Folded `mobile-play-icon-active-only.md` and `yaniho-channel-waveform-peaks.md` (absorbed into `server-peaks-everywhere.md`, whose player slices are all done).
+
 ## 2026-11-18 — Library management port folded
 
 Cloud Sounds library management Next 30 (org OpenAPI/pinned/tags/key facet/admin

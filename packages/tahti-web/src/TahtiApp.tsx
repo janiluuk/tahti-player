@@ -8,6 +8,7 @@ import { AppErrorBoundary } from './components/AppErrorBoundary';
 import { WebUiLabelsProvider } from './components/WebUiLabelsProvider';
 import { startClientLogEvents } from './lib/clientLogEvents';
 import { installClientLogCapture, logClientEvent } from './lib/clientLogs';
+import { dropStaleStorage } from './lib/dropStaleStorage';
 import { defaultArtworkUrl } from './lib/placeholderArt';
 import { startLocalPlayCounting } from './lib/playCounting';
 import { startPlayerPrefsPersistence } from './lib/playerPrefsPersistence';
@@ -46,6 +47,7 @@ export async function mountTahtiApp(rootElement: HTMLElement) {
   startClientLogEvents();
   startLocalPlayCounting();
   startTruncatedTextTitles();
+  dropStaleStorage();
   createRoot(rootElement).render(
     <StrictMode>
       <TahtiApp />

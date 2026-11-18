@@ -167,75 +167,34 @@ describe('Waveform', () => {
   });
 });
 
-describe('waveform audio fallback', () => {
-  it('decodes missing peaks and reuses the cached waveform', async () => {
-    const first = render(
-      <Waveform audioUrl="https://audio.test/cache.mp3" durationSec={12} />,
-    );
-    await vi.waitFor(() => expect(instances).toHaveLength(1));
-    expect(instances[0]!.options.url).toBe('https://audio.test/cache.mp3');
-    expect(instances[0]!.options.peaks).toBeUndefined();
-    act(() => instances[0]!.handlers.decode!(12));
-    first.unmount();
-    render(
-      <Waveform audioUrl="https://audio.test/cache.mp3" durationSec={12} />,
-    );
-    await vi.waitFor(() => expect(instances).toHaveLength(2));
-    expect(instances[1]!.options.url).toBeUndefined();
-    expect(instances[1]!.options.peaks).toEqual([[0, 0.8, 0.2]]);
-  });
-  it('decodes again under the same key once the audio file changed', async () => {
-    const first = render(
-      <Waveform
-        cacheKey="track-9"
-        audioUrl="https://audio.test/v1.mp3?sig=a"
-        durationSec={12}
-      />,
-    );
-    await vi.waitFor(() => expect(instances).toHaveLength(1));
-    act(() => instances[0]!.handlers.decode!(12));
-    first.unmount();
-
-    const same = render(
-      <Waveform
-        cacheKey="track-9"
-        audioUrl="https://audio.test/v1.mp3?sig=b"
-        durationSec={12}
-      />,
-    );
-    await vi.waitFor(() => expect(instances).toHaveLength(2));
-    expect(instances[1]!.options.url).toBeUndefined();
-    same.unmount();
-
-    render(
-      <Waveform
-        cacheKey="track-9"
-        audioUrl="https://audio.test/v2.mp3?sig=c"
-        durationSec={12}
-      />,
-    );
-    await vi.waitFor(() => expect(instances).toHaveLength(3));
-    expect(instances[2]!.options.url).toBe('https://audio.test/v2.mp3?sig=c');
-  });
-  it('does not fetch audio when peaks already exist', async () => {
-    render(
-      <Waveform
-        audioUrl="https://audio.test/known.mp3"
-        peaks={[0, 255, 20]}
-        durationSec={12}
-      />,
-    );
+describe('waveform without stored peaks', () => {
+  it('draws calm placeholder bars without fetching audio', async () => {
+    render(<Waveform peaks={null} durationSec={12} />);
     await vi.waitFor(() => expect(instances).toHaveLength(1));
     expect(instances[0]!.options.url).toBeUndefined();
     expect(instances[0]!.options.peaks).toBeTruthy();
+    const el = screen.getByRole('img');
+    expect(el).toHaveAttribute('data-waveform', 'empty');
+    expect(el).toHaveAttribute('data-state', 'ready');
   });
-  it('reports decode failure without leaving a loading state', async () => {
-    render(
-      <Waveform audioUrl="https://audio.test/fail.mp3" durationSec={12} />,
-    );
+
+  it('never shows a loading state when the duration is unknown', () => {
+    render(<Waveform peaks={null} durationSec={0} />);
+    expect(screen.getByRole('img')).toHaveAttribute('data-state', 'ready');
+    expect(instances).toHaveLength(0);
+  });
+
+  it('reports a drawing failure as an error, not a loading state', async () => {
+    render(<Waveform peaks={[1, 2]} durationSec={12} />);
     await vi.waitFor(() => expect(instances).toHaveLength(1));
     act(() => instances[0]!.handlers.error!(new Error('Unavailable')));
     expect(screen.getByRole('img')).toHaveAttribute('data-state', 'error');
+  });
+
+  it('starts at the given progress once drawn', async () => {
+    render(<Waveform peaks={[1, 2, 3]} durationSec={100} progress={0.25} />);
+    await vi.waitFor(() => expect(instances).toHaveLength(1));
+    expect(instances[0]!.setTime).toHaveBeenCalledWith(25);
   });
 });
 

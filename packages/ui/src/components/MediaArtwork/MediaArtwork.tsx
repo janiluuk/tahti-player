@@ -67,6 +67,10 @@ export type MediaArtworkProps = {
   playLabel?: string;
   pauseLabel?: string;
   isPlaying?: boolean;
+  /** The playing or paused item. On touch screens only the current item
+   * shows its play / pause control; idle items stay clean and a tap on the
+   * artwork still plays them. Defaults to `isPlaying || isLoading`. */
+  isCurrent?: boolean;
   /** Keeps the pause control hover-only while playing, for list thumbnails
    * where a resting control would cover the artwork. The row shows which
    * track is current. */
@@ -118,6 +122,11 @@ const overlayIconSize = {
 const overlayReveal =
   'opacity-100 transition-opacity [@media(hover:hover)_and_(pointer:fine)]:opacity-0 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100';
 
+/** Hover / focus show the control; hidden at rest on touch too, so a list
+ * of idle items is not a column of play buttons. Keyboard focus shows it. */
+const idleReveal =
+  'opacity-0 transition-opacity focus-visible:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-hover:opacity-100 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:opacity-100';
+
 export const MediaArtwork: FC<MediaArtworkProps> = ({
   src,
   alt,
@@ -134,6 +143,7 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   playLabel = 'Play',
   pauseLabel = 'Pause',
   isPlaying = false,
+  isCurrent: isCurrentProp,
   hideActivePlay = false,
   isLoading = false,
   playDisabled,
@@ -236,6 +246,13 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
   };
 
   const hasPlay = Boolean(onPlay);
+  const isCurrent = isCurrentProp ?? (isPlaying || isLoading);
+  const playReveal =
+    (isPlaying && !hideActivePlay) || isLoading
+      ? 'opacity-100'
+      : isCurrent
+        ? overlayReveal
+        : idleReveal;
   const hasSecondary = secondary.length > 0;
   const interactive = hasPlay || hasSecondary || Boolean(onArtworkClick);
   const queueOnShift = Boolean(onQueue) && !queueDisabled && !isPlaying;
@@ -350,8 +367,9 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                 'bg-black/35'
               : [
                   'bg-black/0 [@media(hover:hover)_and_(pointer:fine)]:group-focus-within:bg-black/45 [@media(hover:hover)_and_(pointer:fine)]:group-hover:bg-black/45',
-                  // Always dim slightly on touch so controls read clearly
-                  '[@media(hover:none)]:bg-black/35',
+                  // On touch only the current item keeps a resting dim
+                  // behind its visible control.
+                  isCurrent && '[@media(hover:none)]:bg-black/35',
                 ],
           )}
           aria-hidden
@@ -375,11 +393,10 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   aria-pressed={isPlaying || undefined}
                   aria-busy={isLoading || undefined}
                   data-testid="media-artwork-play"
+                  data-current={isCurrent || undefined}
                   className={cn(
                     'pointer-events-auto size-6 rounded-full text-white active:scale-[0.96] motion-reduce:active:scale-100',
-                    (isPlaying && !hideActivePlay) || isLoading
-                      ? 'opacity-100'
-                      : overlayReveal,
+                    playReveal,
                   )}
                   onClick={handlePlayClick}
                 >
@@ -427,11 +444,10 @@ export const MediaArtwork: FC<MediaArtworkProps> = ({
                   aria-pressed={isPlaying || undefined}
                   aria-busy={isLoading || undefined}
                   data-testid="media-artwork-play"
+                  data-current={isCurrent || undefined}
                   className={cn(
                     'pointer-events-auto rounded-full active:scale-[0.96] motion-reduce:active:scale-100',
-                    (isPlaying && !hideActivePlay) || isLoading
-                      ? 'opacity-100'
-                      : overlayReveal,
+                    playReveal,
                     size === 'thumb'
                       ? 'text-white'
                       : ['shadow-md', size === 'md' ? 'size-9' : 'size-11'],

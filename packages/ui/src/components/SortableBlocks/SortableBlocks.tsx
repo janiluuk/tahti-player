@@ -1,22 +1,13 @@
-import {
-  closestCenter,
-  DndContext,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  type DragEndEvent,
-} from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import { GripVerticalIcon, XIcon } from 'lucide-react';
-import { FC, ReactNode } from 'react';
+import {
+  FC,
+  ReactNode,
+  useEffect,
+  useState,
+  type CSSProperties,
+  type HTMLAttributes,
+  type Ref,
+} from 'react';
 
 import { cn } from '../../utils';
 import { Button } from '../Button';
@@ -27,7 +18,7 @@ export type SortableBlock = {
   content: ReactNode;
 };
 
-type SortableBlocksProps = {
+export type SortableBlocksProps = {
   blocks: SortableBlock[];
   reordering: boolean;
   onReorder: (ids: string[]) => void;
@@ -38,135 +29,139 @@ type SortableBlocksProps = {
   className?: string;
 };
 
-const POINTER_SENSOR_OPTIONS = {
-  activationConstraint: { distance: 5 },
+/** What the drag layer adds to a block once dnd-kit has loaded. */
+export type BlockFrameSortable = {
+  setNodeRef: Ref<HTMLDivElement>;
+  setActivatorNodeRef: Ref<HTMLButtonElement>;
+  style: CSSProperties | undefined;
+  isDragging: boolean;
+  handleProps: HTMLAttributes<HTMLButtonElement>;
 };
 
-const KEYBOARD_SENSOR_OPTIONS = {
-  coordinateGetter: sortableKeyboardCoordinates,
-};
-
-const SortableBlockFrame: FC<{
+export type BlockFrameProps = {
   block: SortableBlock;
   reordering: boolean;
   moveLabel: (label: string) => string;
   onRemove?: (id: string) => void;
   removeLabel: (label: string) => string;
-}> = ({ block, reordering, moveLabel, onRemove, removeLabel }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    setActivatorNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: block.id, disabled: !reordering });
+  sortable?: BlockFrameSortable;
+};
 
-  return (
-    <div
-      ref={setNodeRef}
-      data-sortable-block={block.id}
-      style={
-        reordering
-          ? { transform: CSS.Transform.toString(transform), transition }
-          : undefined
-      }
-      className={cn(
-        'relative flex min-w-0 flex-col',
-        reordering &&
-          'border-border bg-background gap-2 rounded-xl border border-dashed p-2',
-        isDragging && 'z-10 opacity-70 shadow-lg',
-      )}
-    >
-      {reordering ? (
-        <div className="text-foreground-secondary flex items-center gap-2 text-xs font-bold tracking-wide uppercase">
+export const BlockFrame: FC<BlockFrameProps> = ({
+  block,
+  reordering,
+  moveLabel,
+  onRemove,
+  removeLabel,
+  sortable,
+}) => (
+  <div
+    ref={sortable?.setNodeRef}
+    data-sortable-block={block.id}
+    style={reordering ? sortable?.style : undefined}
+    className={cn(
+      'relative flex min-w-0 flex-col',
+      reordering &&
+        'border-border bg-background gap-2 rounded-xl border border-dashed p-2',
+      sortable?.isDragging && 'z-10 opacity-70 shadow-lg',
+    )}
+  >
+    {reordering ? (
+      <div className="text-foreground-secondary flex items-center gap-2 text-xs font-bold tracking-wide uppercase">
+        <Button
+          ref={sortable?.setActivatorNodeRef}
+          type="button"
+          size="icon-sm"
+          variant="text"
+          className="cursor-grab touch-none active:cursor-grabbing"
+          aria-label={moveLabel(block.label)}
+          {...sortable?.handleProps}
+        >
+          <GripVerticalIcon size={16} aria-hidden />
+        </Button>
+        <span className="truncate">{block.label}</span>
+        {onRemove ? (
           <Button
-            ref={setActivatorNodeRef}
             type="button"
             size="icon-sm"
             variant="text"
-            className="cursor-grab touch-none active:cursor-grabbing"
-            aria-label={moveLabel(block.label)}
-            {...attributes}
-            {...listeners}
+            className="ml-auto"
+            aria-label={removeLabel(block.label)}
+            onClick={() => onRemove(block.id)}
           >
-            <GripVerticalIcon size={16} aria-hidden />
+            <XIcon size={16} aria-hidden />
           </Button>
-          <span className="truncate">{block.label}</span>
-          {onRemove ? (
-            <Button
-              type="button"
-              size="icon-sm"
-              variant="text"
-              className="ml-auto"
-              aria-label={removeLabel(block.label)}
-              onClick={() => onRemove(block.id)}
-            >
-              <XIcon size={16} aria-hidden />
-            </Button>
-          ) : null}
-        </div>
-      ) : null}
-      {block.content}
-    </div>
-  );
-};
+        ) : null}
+      </div>
+    ) : null}
+    {block.content}
+  </div>
+);
+
+type BlocksDndModule = typeof import('./sortableBlocksDnd');
+
+let loadedDnd: BlocksDndModule | null = null;
+
+/** dnd-kit loads in its own chunk the first time a stack starts
+ * reordering, so pages that only show blocks keep it out of the shell. */
+function useBlocksDnd(wanted: boolean): BlocksDndModule | null {
+  const [module, setModule] = useState<BlocksDndModule | null>(loadedDnd);
+  useEffect(() => {
+    if (!wanted || module) {
+      return;
+    }
+    let cancelled = false;
+    void import('./sortableBlocksDnd').then((next) => {
+      loadedDnd = next;
+      if (!cancelled) {
+        setModule(next);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [wanted, module]);
+  return module;
+}
 
 /** A vertical stack of page blocks. With `reordering` on, each block gets a
  * dashed frame and a drag handle (pointer or keyboard: Space, arrows,
- * Space); off, the blocks render as a plain stack. The tree stays the same
- * either way, so toggling never remounts a block's content. */
-export const SortableBlocks: FC<SortableBlocksProps> = ({
-  blocks,
-  reordering,
-  onReorder,
-  moveLabel = (label) => `Move ${label}`,
-  onRemove,
-  removeLabel = (label) => `Remove ${label}`,
-  className,
-}) => {
-  const sensors = useSensors(
-    useSensor(PointerSensor, POINTER_SENSOR_OPTIONS),
-    useSensor(KeyboardSensor, KEYBOARD_SENSOR_OPTIONS),
-  );
-  const ids = blocks.map((block) => block.id);
+ * Space); off, the blocks render as a plain stack. The drag layer joins the
+ * tree the first time reordering turns on (block content mounts again
+ * once, then); after that, toggling never remounts a block's content. */
+export const SortableBlocks: FC<SortableBlocksProps> = (props) => {
+  const {
+    blocks,
+    reordering,
+    moveLabel = (label) => `Move ${label}`,
+    onRemove,
+    removeLabel = (label) => `Remove ${label}`,
+    className,
+  } = props;
+  const [hasReordered, setHasReordered] = useState(reordering);
+  if (reordering && !hasReordered) {
+    setHasReordered(true);
+  }
+  const dnd = useBlocksDnd(hasReordered);
 
-  const handleDragEnd = ({ active, over }: DragEndEvent) => {
-    if (!over || active.id === over.id) {
-      return;
-    }
-    const from = ids.indexOf(String(active.id));
-    const to = ids.indexOf(String(over.id));
-    if (from < 0 || to < 0) {
-      return;
-    }
-    onReorder(arrayMove(ids, from, to));
-  };
-
+  if (dnd && hasReordered) {
+    return <dnd.SortableBlocksDnd {...props} />;
+  }
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
+    <div
+      className={cn('flex flex-col gap-4', className)}
+      data-reordering={reordering ? '' : undefined}
     >
-      <SortableContext items={ids} strategy={verticalListSortingStrategy}>
-        <div
-          className={cn('flex flex-col gap-4', className)}
-          data-reordering={reordering ? '' : undefined}
-        >
-          {blocks.map((block) => (
-            <SortableBlockFrame
-              key={block.id}
-              block={block}
-              reordering={reordering}
-              moveLabel={moveLabel}
-              onRemove={onRemove}
-              removeLabel={removeLabel}
-            />
-          ))}
-        </div>
-      </SortableContext>
-    </DndContext>
+      {blocks.map((block) => (
+        <BlockFrame
+          key={block.id}
+          block={block}
+          reordering={reordering}
+          moveLabel={moveLabel}
+          onRemove={onRemove}
+          removeLabel={removeLabel}
+        />
+      ))}
+    </div>
   );
 };

@@ -2,7 +2,7 @@
 
 **Status:** open
 
-Slice 30 of the next-50 queue. Parent: [`yaniho-channel-waveform-peaks.md`](yaniho-channel-waveform-peaks.md). Checking this off does not close the parent; fold the parent when its own leftover is gone.
+Slice 30 of the next-50 queue. Parent: [`server-peaks-everywhere.md`](server-peaks-everywhere.md) (slices 4–5: backfill script and the prod Yaniho run in `../tahti-org`). The web side is done: views never decode audio, so this is only the data gap.
 
 ## Goal
 

@@ -45,6 +45,45 @@ describe('MediaArtwork play / queue', () => {
     );
   });
 
+  it('on touch, shows play / pause only on the current item', () => {
+    const touchVisible = /(^|\s)opacity-100(\s|$)/;
+    const { rerender } = render(<MediaArtwork size="md" onPlay={vi.fn()} />);
+    const idle = screen.getByTestId('media-artwork-play');
+    expect(idle.className).toMatch(/(^|\s)opacity-0(\s|$)/);
+    expect(idle.className).not.toMatch(touchVisible);
+    expect(idle).not.toHaveAttribute('data-current');
+
+    rerender(<MediaArtwork size="md" onPlay={vi.fn()} isCurrent />);
+    const paused = screen.getByTestId('media-artwork-play');
+    expect(paused.className).toMatch(touchVisible);
+    expect(paused.className).toMatch(/group-hover:opacity-100/);
+    expect(paused).toHaveAttribute('data-current', 'true');
+
+    rerender(<MediaArtwork size="md" onPlay={vi.fn()} isPlaying />);
+    expect(screen.getByTestId('media-artwork-play')).toHaveAttribute(
+      'data-current',
+      'true',
+    );
+  });
+
+  it('dims idle artwork on touch only for the current item', () => {
+    const { container, rerender } = render(
+      <MediaArtwork size="sm" onPlay={vi.fn()} />,
+    );
+    const dim = () =>
+      container.querySelector('div[aria-hidden="true"]')?.className ?? '';
+    expect(dim()).not.toMatch(/hover:none/);
+    rerender(<MediaArtwork size="sm" onPlay={vi.fn()} isCurrent />);
+    expect(dim()).toMatch(/hover:none/);
+  });
+
+  it('still plays an idle item from a tap on its hidden control', () => {
+    const onPlay = vi.fn();
+    render(<MediaArtwork size="thumb" onPlay={onPlay} />);
+    fireEvent.click(screen.getByTestId('media-artwork-play'));
+    expect(onPlay).toHaveBeenCalledTimes(1);
+  });
+
   it('plays on click and queues on Shift+click when onQueue is set', () => {
     const onPlay = vi.fn();
     const onQueue = vi.fn();

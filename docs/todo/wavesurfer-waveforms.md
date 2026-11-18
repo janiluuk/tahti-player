@@ -6,6 +6,10 @@ the player `src`, and theme / resize re-creation. Desktop / full ProWaveform
 deletion remain. Batch 91: editor wheel only zooms with Ctrl/⌘, theme
 re-create, labelled overlays, fallback notice.
 
+2026-11-18 (0.0.411): the preview `Waveform` no longer decodes audio at all
+(no `audioUrl`, no browser peaks cache, no loading pulse); previews draw the
+stored peaks or flat bars. Only the Studio Pro editor decodes.
+
 Requested 2026-10-21: integrate [wavesurfer.js](https://github.com/katspaugh/wavesurfer.js)
 ([wavesurfer.xyz](https://wavesurfer.xyz/)) and use it for the waveforms in the
 audio editor and in previews. Unblocked 2026-10-21 (“go with the waveform

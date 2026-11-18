@@ -7,7 +7,6 @@ import { Waveform } from '@tahti-player/ui';
 import {
   WAVEFORM_DEMO_DURATION,
   WAVEFORM_DEMO_PEAKS,
-  WAVEFORM_DEMO_URL,
 } from './tahti-web/_fixtures/waveformAudio';
 
 const SAMPLE_PEAKS = Array.from({ length: 180 }, (_, i) => {
@@ -36,7 +35,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'WaveSurfer waveform with stored peaks or browser audio decoding, high-DPI rendering and keyboard seeking. Audio examples use a local synthesized WAV fixture.',
+          'WaveSurfer waveform drawn from the stored server peaks, with high-DPI rendering and keyboard seeking. It never fetches or decodes audio: a track without peaks draws calm flat bars.',
       },
     },
   },
@@ -71,6 +70,21 @@ export const Empty: Story = {
     peaks: [],
     durationSec: 60,
     height: 72,
+  },
+};
+
+/** A READY track whose peaks are missing: flat bars at once, never a
+ * loading pulse and never an audio download. */
+export const NoServerPeaks: Story = {
+  args: {
+    peaks: null,
+    durationSec: 240,
+    height: 72,
+  },
+  play: async ({ canvasElement }) => {
+    const wave = within(canvasElement).getByRole('img', { name: 'Waveform' });
+    await expect(wave).toHaveAttribute('data-state', 'ready');
+    await expect(wave).toHaveAttribute('data-waveform', 'empty');
   },
 };
 
@@ -121,16 +135,6 @@ export const HighResolution: Story = {
     await expect(wave).toHaveAttribute('data-waveform', 'peaks');
     await expect(wave).toBeVisible();
   },
-};
-
-export const DecodeAudio: Story = {
-  args: {
-    peaks: null,
-    audioUrl: WAVEFORM_DEMO_URL,
-    durationSec: WAVEFORM_DEMO_DURATION,
-    height: 112,
-  },
-  play: HighResolution.play,
 };
 
 export const PhoneWidth: Story = {

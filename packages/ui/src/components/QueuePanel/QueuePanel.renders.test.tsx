@@ -1,11 +1,16 @@
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import { FC } from 'react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { QueueItem as QueueItemType } from '@tahti-player/model';
 
 import type { QueueItemProps } from '../QueueItem/types';
 import { QueuePanel, resolveReorder } from './QueuePanel';
+import { preloadQueueDnd } from './useQueueDnd';
+
+beforeAll(async () => {
+  await preloadQueueDnd();
+});
 
 const renderCounts = new Map<string, number>();
 

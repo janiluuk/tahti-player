@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useEffect } from 'react';
 
 import { SortableBlocks, type SortableBlock } from './SortableBlocks';
@@ -38,14 +38,31 @@ describe('SortableBlocks', () => {
     ).toBeInTheDocument();
   });
 
-  it('keeps block content mounted when reordering is toggled', () => {
-    const { rerender } = render(
-      <SortableBlocks blocks={blocks} reordering={false} onReorder={vi.fn()} />,
+  it('keeps block content mounted when reordering is toggled after the drag layer loaded', async () => {
+    const { container, rerender } = render(
+      <SortableBlocks blocks={blocks} reordering onReorder={vi.fn()} />,
     );
-    rerender(<SortableBlocks blocks={blocks} reordering onReorder={vi.fn()} />);
+    await waitFor(() =>
+      expect(container.querySelector('[data-drag-ready]')).not.toBeNull(),
+    );
+    mounts.mockClear();
     rerender(
       <SortableBlocks blocks={blocks} reordering={false} onReorder={vi.fn()} />,
     );
+    rerender(<SortableBlocks blocks={blocks} reordering onReorder={vi.fn()} />);
+    expect(mounts).not.toHaveBeenCalled();
+    expect(screen.getByRole('button', { name: 'Move Radio' })).toHaveAttribute(
+      'aria-roledescription',
+      'sortable',
+    );
+  });
+
+  it('keeps dnd-kit out of a stack that never reorders', async () => {
+    const { container } = render(
+      <SortableBlocks blocks={blocks} reordering={false} onReorder={vi.fn()} />,
+    );
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(container.querySelector('[data-drag-ready]')).toBeNull();
     expect(mounts).toHaveBeenCalledTimes(2);
   });
 

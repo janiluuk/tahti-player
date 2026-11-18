@@ -1,1 +1,5 @@
-export * from './SortableBlocks';
+export {
+  SortableBlocks,
+  type SortableBlock,
+  type SortableBlocksProps,
+} from './SortableBlocks';

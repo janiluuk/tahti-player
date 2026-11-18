@@ -5,8 +5,3 @@ export {
   peaksToWaveSurfer,
   PLACEHOLDER_PEAKS,
 } from './peaks';
-export {
-  audioVersionFromUrl,
-  getDecodedPeaks,
-  type DecodedPeaksAudio,
-} from './decodedPeaksCache';
