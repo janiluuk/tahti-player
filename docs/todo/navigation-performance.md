@@ -64,7 +64,7 @@ network again, even for a page seen seconds ago.
 ## Left
 
 - [x] Make mock mode a build-time constant so production drops the fixtures
-      (2026-11-18, 0.0.413): `isForceMock()` and `allowMockFallback()` in
+      (2026-11-18, 0.0.414): `isForceMock()` and `allowMockFallback()` in
       `api/mode.ts` fold to literals at build time. Call sites branch on them, and
       `withMockFallback` takes `null` when fixtures are off, so Rollup drops
       `api/mock*`. Production build: `TahtiApp` 1289 KB, 399 KB gzipped.

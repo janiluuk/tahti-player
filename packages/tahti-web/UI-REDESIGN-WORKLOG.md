@@ -1,4 +1,4 @@
-## 2026-11-18 - Production builds drop offline mock fixtures (0.0.413)
+## 2026-11-18 - Production builds drop offline mock fixtures (0.0.414)
 
 Beta and production builds no longer ship the offline demo fixtures.
 The mock-mode checks fold away at build time, so the mock catalog is absent
