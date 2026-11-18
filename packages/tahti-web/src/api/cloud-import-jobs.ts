@@ -1,5 +1,5 @@
 import type { FetchMeta } from './client';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 export type CloudImportStatus = 'QUEUED' | 'DOWNLOADING' | 'DONE' | 'FAILED';
@@ -27,7 +27,7 @@ export async function fetchCloudImportJobs(): Promise<{
   data: CloudImportJob[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {

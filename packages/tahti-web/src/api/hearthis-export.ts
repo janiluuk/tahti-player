@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 export type HearthisExportStatus =
@@ -13,7 +13,7 @@ export async function exportSoundToHearthis(
 ): Promise<
   { ok: true; status: HearthisExportStatus } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, status: 'pending' };
   }
   try {

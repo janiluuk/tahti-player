@@ -1,4 +1,4 @@
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 export type ReleaseImportResult = {
@@ -27,7 +27,7 @@ export async function importReleasesCsv(
 ): Promise<
   { ok: true; data: ReleaseImportResult } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       data: {

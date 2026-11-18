@@ -1,3 +1,7 @@
+## 2026-11-18 — Prod mock tree-shake (30 slices)
+
+`FORCE_MOCK` and `ALLOW_MOCK_FALLBACK` are compile-time consts in `api/mode.ts`. API call sites branch on them (and pass `null` into `withMockFallback` when fixtures are off) so a production build drops `api/mock*`. `VITE_FORCE_MOCK=1` and Vite dev still serve the offline demo. Production `TahtiApp` 1335.70 KB / 414.43 KB gzipped; fixture markers (`northern-lights-archive-6`, `lp-mock-scheduled`, `AURORA42`) are absent from every chunk. tahti-web 0.0.413. Folded `prod-mock-tree-shake.md`. Live back/forward check stays in `navigation-performance.md`.
+
 ## 2026-11-18 — Hardening, screen-reader batch and coverage (10 slices)
 
 Web CSP in one nginx `map` with `/embed/*` framable by any site and the widget sandbox framable by Tahti hosts (`deployNginxConf.test.ts`); client upload magic-byte check (`lib/audioMagic.ts`); screen-reader fixes from a code audit (auth/page-loading status, search count, notifications region/unread/count, toast and copy announcements, progressbar roles, import status, bulk-edit select names); `use-cases-hardening` mock e2e; Storybook disconnect bisect rules out time alone; beta finding "track editing lives under Library" closed by the 0.0.397 Studio → Music move. tahti-web 0.0.411. Leftovers stay in `final-season-hardening.md` P2 #23.

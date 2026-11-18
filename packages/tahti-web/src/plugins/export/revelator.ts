@@ -1,5 +1,5 @@
 import { apiBase } from '../../api/http';
-import { isForceMock } from '../../api/mode';
+import { FORCE_MOCK } from '../../api/mode';
 import type {
   ExportProvider,
   ExportStatusResult,
@@ -42,7 +42,7 @@ export const revelatorExportProvider: ExportProvider = {
   label: 'Revelator / DSP delivery',
   behavioral: true,
   async submit(releaseId: string): Promise<ExportSubmitResult> {
-    if (isForceMock()) {
+    if (FORCE_MOCK) {
       return { ok: true, status: 'pending' };
     }
     try {
@@ -59,7 +59,7 @@ export const revelatorExportProvider: ExportProvider = {
     }
   },
   async status(releaseId: string): Promise<ExportStatusResult> {
-    if (isForceMock()) {
+    if (FORCE_MOCK) {
       return {
         ok: true,
         revelatorId: 'mock-revelator',

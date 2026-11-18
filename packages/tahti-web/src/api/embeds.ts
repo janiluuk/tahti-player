@@ -8,9 +8,9 @@ import {
   mockCollection,
 } from './mock';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   failMeta,
-  isForceMock,
+  FORCE_MOCK,
   type FetchMeta,
 } from './mode';
 import type {
@@ -30,7 +30,7 @@ export async function fetchEmbedChannel(slug: string): Promise<{
   meta: FetchMeta;
   playable: TahtiPlayable | null;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const ch = mockChannel(slug);
     const data: ChannelEmbedView = {
       slug: ch.slug,
@@ -66,7 +66,7 @@ export async function fetchEmbedChannel(slug: string): Promise<{
       : null;
     return { data, meta: { source: 'api' }, playable };
   } catch (err) {
-    if (!allowMockFallback()) {
+    if (!ALLOW_MOCK_FALLBACK) {
       throw err instanceof Error
         ? err
         : new Error(i18n.t('web:batch54.embedChannelFailed'));
@@ -94,7 +94,7 @@ export async function fetchEmbedRelease(id: string): Promise<{
   meta: FetchMeta;
   playables: TahtiPlayable[];
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const data: ReleaseEmbedView = {
       id,
       title: 'Mock release',
@@ -160,7 +160,7 @@ export async function fetchEmbedRelease(id: string): Promise<{
     }
     return { data, meta: { source: 'api' }, playables };
   } catch (err) {
-    if (!allowMockFallback()) {
+    if (!ALLOW_MOCK_FALLBACK) {
       throw err instanceof Error
         ? err
         : new Error(i18n.t('web:batch54.embedReleaseFailed'));
@@ -201,7 +201,7 @@ export async function fetchEmbedCollection(slug: string): Promise<{
   meta: FetchMeta;
   playables: TahtiPlayable[];
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const col = mockCollection(slug);
     const data: CollectionEmbedView = {
       slug: col.slug,
@@ -264,7 +264,7 @@ export async function fetchEmbedCollection(slug: string): Promise<{
     }
     return { data, meta: { source: 'api' }, playables };
   } catch (err) {
-    if (!allowMockFallback()) {
+    if (!ALLOW_MOCK_FALLBACK) {
       throw err instanceof Error
         ? err
         : new Error(i18n.t('web:batch54.embedCollectionFailed'));

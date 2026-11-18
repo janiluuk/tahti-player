@@ -4,7 +4,7 @@ import type { FetchMeta } from './client';
 import { apiBase } from './http';
 import { DEMO_MP3 } from './mock';
 import { getMockUploadedSound } from './mock-uploads';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 
 async function requestJson<T>(
   path: string,
@@ -158,7 +158,7 @@ export async function fetchSoundVersions(soundId: string): Promise<{
   data: SoundVersion[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockVersions(soundId).map((version) => ({ ...version })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -178,7 +178,7 @@ export async function activateSoundVersion(
   soundId: string,
   versionId: string,
 ): Promise<{ ok: true; data: SoundVersion[] } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const versions = mockVersions(soundId).map((v) => ({
       ...v,
       isActive: v.id === versionId,
@@ -207,7 +207,7 @@ export async function fetchVersionDownloadUrl(
   soundId: string,
   versionId: string,
 ): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const stored = mockVersionFiles.get(versionId);
     return { ok: true, url: stored?.url ?? DEMO_MP3 };
   }
@@ -236,7 +236,7 @@ export async function uploadSoundVersion(
   | { ok: false; error: string }
 > {
   const label = versionLabel.trim() || file.name || 'New revision';
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const row = addMockSoundVersion(soundId, {
       versionLabel: label,
       url: URL.createObjectURL(file),

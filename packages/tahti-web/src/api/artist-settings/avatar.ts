@@ -1,5 +1,5 @@
 import { firstFramePng } from '../../lib/gifPoster';
-import { isForceMock } from '.././mode';
+import { FORCE_MOCK } from '.././mode';
 import { requestJson } from '.././request-json';
 import { ACCEPTED_PRESS_KIT_TYPES } from './press-kit-images';
 
@@ -60,7 +60,7 @@ export async function uploadProfileAvatar(
       return { ok: false, error: 'Could not read the first frame of that GIF' };
     }
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       avatarUrl: URL.createObjectURL(file),
@@ -95,7 +95,7 @@ export async function uploadProfileAvatar(
 export async function removeProfileAvatar(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {

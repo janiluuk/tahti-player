@@ -1,9 +1,9 @@
 import type { FetchMeta } from '.././client';
 import { apiBase } from '.././http';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
@@ -35,7 +35,7 @@ export async function fetchPressKitMeta(): Promise<{
   data: PressKitMeta;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: { ...mockPress },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -45,7 +45,7 @@ export async function fetchPressKitMeta(): Promise<{
     const { data } = await requestJson<ProfileBio>('/api/me/profile');
     return { data: pressKitFromProfile(data), meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return {
         data: { ...mockPress, hasZip: false, downloadPath: null },
         meta: mockFallbackMeta(err),
@@ -61,7 +61,7 @@ export async function fetchPressKitMeta(): Promise<{
 export async function patchPressKitBio(
   bioShort: string,
 ): Promise<{ ok: true; data: PressKitMeta } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     setMockPress({ ...mockPress, bioShort });
     syncMockPressKitMeta();
     return { ok: true, data: { ...mockPress } };

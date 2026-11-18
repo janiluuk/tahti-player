@@ -1,9 +1,9 @@
 import type { FetchMeta } from './client';
 import { mockFixture } from './mock-overrides';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from './mode';
 import { requestJson, RequestJsonError } from './request-json';
@@ -150,7 +150,7 @@ export async function fetchConversations(): Promise<{
   data: ConversationSummary[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFixture('conversations', mockConversationsWithReadState()),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -162,7 +162,7 @@ export async function fetchConversations(): Promise<{
     );
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return {
         data: mockFixture('conversations', [...mockConversations]),
         meta: mockFallbackMeta(err),
@@ -187,7 +187,7 @@ function mockConversationDetail(id: string): ConversationDetail | null {
 export async function fetchConversation(
   id: string,
 ): Promise<{ data: ConversationDetail | null; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFixture('conversation', mockConversationDetail(id), id),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -199,7 +199,7 @@ export async function fetchConversation(
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockConversationDetail(id), meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
@@ -212,7 +212,7 @@ export async function fetchOlderMessages(
   conversationId: string,
   beforeId: string,
 ): Promise<{ messages: ChatDm[]; hasMore: boolean } | null> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { messages: [], hasMore: false };
   }
   try {
@@ -232,7 +232,7 @@ export async function sendDm(
   conversationId: string,
   body: string,
 ): Promise<{ ok: true; data: ChatDm } | DmFailure> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const msg: ChatDm = {
       id: `m-${Date.now()}`,
       senderUsername: 'demo',
@@ -275,7 +275,7 @@ export async function sendDm(
 export async function startConversation(
   username: string,
 ): Promise<{ ok: true; conversationId: string } | DmFailure> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const existing = mockConversations.find(
       (c) => c.otherUser.username === username,
     );
@@ -350,7 +350,7 @@ export async function searchUsers(q: string): Promise<{
   }>;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockSearchUsers(q),
       meta: { source: 'mock' },
@@ -362,7 +362,7 @@ export async function searchUsers(q: string): Promise<{
     >(`/api/users/search?q=${encodeURIComponent(q)}`);
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return {
         data: mockSearchUsers(q),
         meta: mockFallbackMeta(err),

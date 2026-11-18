@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson, mutate } from '../http';
-import { failMeta, isForceMock } from '../mode';
+import { failMeta, FORCE_MOCK } from '../mode';
 
 // ── Content reports ─────────────────────────────────────────────────────────
 
@@ -98,7 +98,7 @@ export async function fetchAdminContentReports(
   status?: AdminContentReportStatus,
   targetType?: AdminContentReportRow['targetType'],
 ): Promise<{ data: AdminContentReportRow[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (!mockContentReportsState) {
       mockContentReportsState = mockContentReports();
     }
@@ -131,7 +131,7 @@ export function resolveContentReport(
   status: 'REVIEWING' | 'ACTIONED' | 'DISMISSED',
   note?: string,
 ) {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const row = (mockContentReportsState ?? mockContentReports()).find(
       (r) => r.id === id,
     );

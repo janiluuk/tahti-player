@@ -4,6 +4,7 @@ import { fetchAdminMissedShows, updateAdminMissedShow } from './admin-support';
 
 vi.mock('../mode', async (original) => ({
   ...(await original<typeof import('../mode')>()),
+  FORCE_MOCK: true,
   isForceMock: () => true,
 }));
 

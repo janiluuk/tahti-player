@@ -7,12 +7,12 @@ import {
   removeMockMotion,
   updateMockMotion,
 } from './governance-member';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 
 export async function withdrawMotionDraft(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const motion = removeMockMotion(id);
     if (!motion) {
       return { ok: false, error: i18n.t('web:batch52.motionNotFound') };
@@ -41,7 +41,7 @@ export async function editMotionDraft(
 ): Promise<
   { ok: true; secondsCleared: number } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const current = await fetchGovernanceMotion(id);
     if (
       current.ok &&

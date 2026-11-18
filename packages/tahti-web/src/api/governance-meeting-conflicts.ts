@@ -1,5 +1,5 @@
 import { requestJson } from './client-request';
-import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
+import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
 
 /** A conflict of interest as the published minutes record it. */
 export type MemberConflictDeclaration = {
@@ -32,7 +32,7 @@ export function mockMeetingConflicts(
 export async function fetchMeetingConflicts(
   meetingId: string,
 ): Promise<{ data: MemberConflictDeclaration[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockMeetingConflicts(meetingId),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

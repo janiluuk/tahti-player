@@ -13,9 +13,9 @@ import {
 import { getMockSessionUser, mockRecordPurchase } from './mock-session';
 import { patchMockUploadedSound } from './mock-uploads';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from './mode';
 import { requestJson } from './request-json';
@@ -80,7 +80,7 @@ export async function fetchMyPurchaseTiers(): Promise<{
   data: PurchaseTierRow[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const row = readAllTiers().find((e) => e.artistUsername === artistKey());
     return {
       data: row?.tiers ?? [],
@@ -93,7 +93,7 @@ export async function fetchMyPurchaseTiers(): Promise<{
     );
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: [], meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
@@ -108,7 +108,7 @@ export async function createPurchaseTier(input: {
 }): Promise<
   { ok: true; data: PurchaseTierRow } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const username = artistKey();
     const all = readAllTiers();
     const existing = all.find((e) => e.artistUsername === username);
@@ -174,7 +174,7 @@ export async function setSoundAccess(
       : access.accessMode;
   const purchaseTierId =
     accessMode === 'PURCHASE' ? access.purchaseTierId : null;
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     // Two disconnected mock stores back this one sound: mockSoundStore
     // (studio.ts, read by the Studio editor) and the mock-uploads.ts store
     // (read by the public track-detail page) — keep both in sync, same as
@@ -211,7 +211,7 @@ export async function checkoutPurchaseTier(
   | { ok: true; checkoutUrl: string }
   | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const user = getMockSessionUser();
     if (!user) {
       return { ok: false, error: i18n.t('web:batch53.logInToBuy') };
@@ -279,7 +279,7 @@ export async function setPurchaseTierActive(
   id: string,
   active: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const username = artistKey();
     const all = readAllTiers();
     const row = all.find((e) => e.artistUsername === username);
@@ -357,7 +357,7 @@ export async function fetchMyPurchaseOrders(): Promise<{
   data: PurchaseOrderRow[] | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const artist = artistKey();
     return {
       data: listMockCommerceTrackOrders()
@@ -451,7 +451,7 @@ export function readMockStorefront(username: string): {
 export async function fetchStoreSettings(): Promise<
   { ok: true; storeEnabled: boolean } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       storeEnabled: readStoreEnabled()[artistKey()] === true,
@@ -476,7 +476,7 @@ export async function fetchStoreSettings(): Promise<
 export async function setStoreEnabled(
   storeEnabled: boolean,
 ): Promise<{ ok: true; storeEnabled: boolean } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     writeStoreEnabled(artistKey(), storeEnabled);
     return { ok: true, storeEnabled };
   }

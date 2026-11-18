@@ -1,5 +1,5 @@
 import { apiBase } from '../api/http';
-import { isForceMock } from '../api/mode';
+import { FORCE_MOCK } from '../api/mode';
 import type { EmbedProvider } from './embedSrc';
 
 type EmbedThumbnailPayload = {
@@ -141,7 +141,7 @@ export function embedPageUrl(
 }
 
 async function lookupThumbnail(pageUrl: string): Promise<string | null> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return pageUrl.startsWith('https://') ? MOCK_THUMBNAIL : null;
   }
   const res = await fetch(

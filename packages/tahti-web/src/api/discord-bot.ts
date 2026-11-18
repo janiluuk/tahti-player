@@ -2,9 +2,9 @@ import { i18n } from '@tahti-player/i18n';
 
 import { apiBase } from './http';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
   type FetchMeta,
 } from './mode';
@@ -65,7 +65,7 @@ export async function fetchDiscordBotSettings(): Promise<{
   data: DiscordBotSettings;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockSettings(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -75,7 +75,7 @@ export async function fetchDiscordBotSettings(): Promise<{
     const data = await getJson<DiscordBotSettings>('/api/admin/discord-bot');
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockSettings(), meta: mockFallbackMeta(err) };
     }
     return {
@@ -96,7 +96,7 @@ export async function saveDiscordBotSettings(input: {
 }): Promise<
   { ok: true; data: DiscordBotSettings } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       data: {
@@ -129,7 +129,7 @@ export async function saveDiscordBotSettings(input: {
 export async function restartDiscordBot(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {

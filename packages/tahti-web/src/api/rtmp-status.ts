@@ -1,6 +1,6 @@
 import type { FetchMeta } from './client';
 import { getJson } from './http';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 
 export type RtmpTargetLiveStatus = {
   id: string;
@@ -16,7 +16,7 @@ export async function fetchRtmpTargetStatuses(slug: string): Promise<{
   data: RtmpTargetLiveStatus[] | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: [
         {

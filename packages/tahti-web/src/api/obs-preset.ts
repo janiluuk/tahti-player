@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 export type ObsRecommendedSettings = {
@@ -55,7 +55,7 @@ const MOCK_PRESET: ObsPreset = {
 export async function fetchObsPreset(): Promise<
   { ok: true; data: ObsPreset } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, data: MOCK_PRESET };
   }
   try {

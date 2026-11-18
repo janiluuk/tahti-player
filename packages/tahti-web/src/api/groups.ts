@@ -16,9 +16,9 @@ import {
   mockSubmitGroupSound,
 } from './groups-mock';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from './mode';
 import { requestJson } from './request-json';
@@ -86,7 +86,7 @@ export async function fetchMyGroups(): Promise<{
   data: MyArtistGroup[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFetchMyGroups(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -96,7 +96,7 @@ export async function fetchMyGroups(): Promise<{
     const { data } = await requestJson<MyArtistGroup[]>('/api/me/groups');
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockFetchMyGroups(), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
@@ -110,7 +110,7 @@ export async function createArtistGroup(input: {
   joinPolicy?: GroupJoinPolicy;
   submitPolicy?: GroupSubmitPolicy;
 }): Promise<{ ok: true; data: MyArtistGroup } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, data: mockCreateGroup(input) };
   }
   try {
@@ -141,7 +141,7 @@ export async function patchArtistGroup(
     submitPolicy: GroupSubmitPolicy;
   }>,
 ): Promise<{ ok: true; data: MyArtistGroup } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const data = mockPatchGroup(slug, patch);
     return data
       ? { ok: true, data }
@@ -167,7 +167,7 @@ export async function patchArtistGroup(
 export async function deleteArtistGroup(
   slug: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {
@@ -191,7 +191,7 @@ export async function joinArtistGroup(
 ): Promise<
   { ok: true; joined: boolean; pending: boolean } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return mockJoinGroup(slug);
   }
   try {
@@ -218,7 +218,7 @@ export async function joinArtistGroup(
 export async function leaveArtistGroup(
   slug: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return mockLeaveGroup(slug);
   }
   try {
@@ -240,7 +240,7 @@ export async function leaveArtistGroup(
 export async function fetchSoundGroupMembership(
   soundId: string,
 ): Promise<{ data: GroupMembershipEntry[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockGroupMembership(soundId),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -252,7 +252,7 @@ export async function fetchSoundGroupMembership(
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return {
         data: mockGroupMembership(soundId),
         meta: mockFallbackMeta(err),
@@ -270,7 +270,7 @@ export async function submitGroupSound(
   | { ok: true; added: boolean; pending: boolean; itemId: string | null }
   | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return mockSubmitGroupSound(slug, soundId);
   }
   try {
@@ -308,7 +308,7 @@ export async function fetchPublicGroups(query?: {
   data: { items: ArtistGroupSummary[]; total: number };
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFetchPublicGroups(query?.q),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -332,7 +332,7 @@ export async function fetchPublicGroups(query?: {
     }>('/api/v1/groups' + (qs ? `?${qs}` : ''));
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return {
         data: mockFetchPublicGroups(query?.q),
         meta: mockFallbackMeta(err),
@@ -345,7 +345,7 @@ export async function fetchPublicGroups(query?: {
 export async function fetchPublicGroup(
   slug: string,
 ): Promise<{ data: PublicGroupDetail | null; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFetchPublicGroup(slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -357,7 +357,7 @@ export async function fetchPublicGroup(
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockFetchPublicGroup(slug), meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
@@ -367,7 +367,7 @@ export async function fetchPublicGroup(
 export async function fetchGroupJoinRequests(
   slug: string,
 ): Promise<{ data: GroupJoinRequest[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {
@@ -385,7 +385,7 @@ export async function resolveGroupJoinRequest(
   requestId: string,
   action: 'APPROVE' | 'REJECT',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return mockResolveJoinRequest();
   }
   try {
@@ -408,7 +408,7 @@ export async function resolveGroupJoinRequest(
 export async function fetchGroupSubmissions(
   slug: string,
 ): Promise<{ data: GroupSoundSubmission[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {
@@ -425,7 +425,7 @@ export async function approveGroupSubmission(
   slug: string,
   submissionId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return mockApproveSubmission();
   }
   try {
@@ -449,7 +449,7 @@ export async function rejectGroupSubmission(
   slug: string,
   submissionId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return mockRejectSubmission();
   }
   try {

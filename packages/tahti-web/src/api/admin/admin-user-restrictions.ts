@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson, sendJson } from '../http';
-import { failMeta, isForceMock } from '../mode';
+import { failMeta, FORCE_MOCK } from '../mode';
 
 export type AccountRestrictionType = 'LIVE_SHOW_BOOKING' | 'UPLOAD' | 'LOGIN';
 
@@ -50,7 +50,7 @@ export function isRestrictionActive(
 export async function fetchAccountRestrictions(
   userId: string,
 ): Promise<{ data: AccountRestriction[] | null; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockList(userId).map((entry) => ({ ...entry })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -83,7 +83,7 @@ export async function createAccountRestriction(
   ) {
     return { ok: false, error: 'Duration must be 1 to 3650 days' };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const now = Date.now();
     const created: AccountRestriction = {
       id: `mock-restriction-${now}`,
@@ -118,7 +118,7 @@ export async function liftAccountRestriction(
   userId: string,
   restrictionId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const entry = mockList(userId).find((item) => item.id === restrictionId);
     if (!entry) {
       return { ok: false, error: 'Restriction not found' };

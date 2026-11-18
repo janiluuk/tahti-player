@@ -1,5 +1,5 @@
 import { getJson } from '../http';
-import { isForceMock } from '../mode';
+import { FORCE_MOCK } from '../mode';
 
 export type AdminMailbox = { unseen: number; total: number };
 
@@ -29,7 +29,7 @@ export function summarizeChatSeries(
 export async function fetchAdminCommunityStats(
   days = 30,
 ): Promise<AdminCommunityStats> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const today = Date.UTC(2026, 8, 29);
     return {
       chatLast24h: 184,

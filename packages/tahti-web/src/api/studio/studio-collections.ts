@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { mockFixture, onMockOverridesReset } from '../mock-overrides';
-import { apiErrorMeta, isForceMock } from '../mode';
+import { apiErrorMeta, FORCE_MOCK } from '../mode';
 import type {
   CollectionTrackSortMode,
   StudioCollection,
@@ -94,7 +94,7 @@ export function fetchStudioCollections(): Promise<StudioCollectionsResult> {
 }
 
 async function loadStudioCollections(): Promise<StudioCollectionsResult> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: getMockCollectionStore().map((row) => ({ ...row })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -114,7 +114,7 @@ export async function fetchStudioCollectionCount(): Promise<{
   data: number;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const { data } = await fetchStudioCollections();
     return {
       data: data.length,
@@ -157,7 +157,7 @@ export async function fetchStudioCollection(slug: string): Promise<{
   data: StudioCollection;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const listed = getMockCollectionStore().find((row) => row.slug === slug);
     return {
       data: {
@@ -208,7 +208,7 @@ export async function addStudioCollectionItem(
       : item.soundId
         ? { soundId: item.soundId }
         : { releaseId: item.releaseId };
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, itemId: null };
   }
   try {
@@ -232,7 +232,7 @@ export async function reorderStudioCollectionItems(
   slug: string,
   itemIds: string[],
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {
@@ -256,7 +256,7 @@ export async function removeStudioCollectionItem(
   slug: string,
   itemId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {
@@ -276,7 +276,7 @@ export async function removeStudioCollectionItem(
 export async function deleteStudioCollection(
   slug: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {
@@ -304,7 +304,7 @@ export async function createStudioCollection(input: {
 }): Promise<
   { ok: true; data: StudioCollection } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const slug =
       input.name
         .toLowerCase()
@@ -380,7 +380,7 @@ export async function patchStudioCollection(
 ): Promise<
   { ok: true; data: StudioCollection } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       data: {
@@ -425,7 +425,7 @@ export async function uploadCollectionCover(
   slug: string,
   file: File,
 ): Promise<{ ok: true; coverUrl: string } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const url = URL.createObjectURL(file);
     return { ok: true, coverUrl: url };
   }
@@ -488,7 +488,7 @@ const DEFAULT_COLLECTION_GALLERY: CollectionGallery = {
 export async function fetchCollectionGallery(
   slug: string,
 ): Promise<{ data: CollectionGallery; meta: { loaded: boolean } }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: DEFAULT_COLLECTION_GALLERY, meta: { loaded: true } };
   }
   try {
@@ -511,7 +511,7 @@ export async function patchCollectionGallery(
 ): Promise<
   { ok: true; data: CollectionGallery } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       data: {

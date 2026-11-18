@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { create } from 'zustand';
 
-import { isForceMock } from '../api/mode';
+import { FORCE_MOCK } from '../api/mode';
 import { probeRadioStream } from '../api/radio-sources';
 import type { StreamFailure } from '../lib/streamFailure';
 
@@ -30,7 +30,7 @@ type StationHealthState = {
 // Background checks are skipped in mock mode (Storybook) and unit tests,
 // which would otherwise reach real stream hosts. A background timeout is
 // left inconclusive: a slow host should not mark a whole list unavailable.
-const PRECHECK_ENABLED = !isForceMock() && import.meta.env.MODE !== 'test';
+const PRECHECK_ENABLED = !FORCE_MOCK && import.meta.env.MODE !== 'test';
 
 export const useStationHealthStore = create<StationHealthState>((set, get) => ({
   byUrl: {},

@@ -4,7 +4,7 @@ import {
   fetchAdminInternetRadioPresets,
   patchAdminInternetRadioPreset,
 } from '../api/admin';
-import { isForceMock } from '../api/mode';
+import { FORCE_MOCK } from '../api/mode';
 import type { AuthUser } from '../api/types';
 import { uploadUserMediaFile } from '../api/user-media';
 import { RADIO_STATIONS } from '../content/radioStations';
@@ -56,7 +56,7 @@ export async function uploadRadioCoverFile(
   if (!resolveImageUploadContentType(file)) {
     return { ok: false, error: imageUploadTypeError(file) };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     try {
       const url = await fileToDataUrl(file);
       return { ok: true, data: { url } };

@@ -5,7 +5,7 @@ import {
   mockClipPreview,
   mockClipSource,
 } from './clip-editor-mock';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 export type ClipVoiceSettings = AnnouncementTrim & {
@@ -50,14 +50,14 @@ const path = (id: string) =>
   `/api/me/announcements/${encodeURIComponent(id)}/editor`;
 
 export async function fetchClipEditorSource(id: string) {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return mockClipSource(id);
   }
   return (await requestJson<ClipEditorSource>(`${path(id)}/source`)).data;
 }
 
 export async function previewClipEdit(id: string, settings: ClipVoiceSettings) {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return mockClipPreview(id, settings);
   }
   return (
@@ -79,7 +79,7 @@ export async function applyClipEdit(
     renderToken: string;
   },
 ) {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     applyMockClipPreview(id, settings.renderToken);
     const result = await patchAnnouncementClip(id, settings);
     if (!result.ok) {

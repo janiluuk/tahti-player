@@ -1,5 +1,5 @@
 import type { FetchMeta } from './client';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 /** `true`/`false` once the artist has chosen, `null` while they haven't. */
@@ -13,7 +13,7 @@ export async function fetchMusicbrainzDefault(): Promise<{
   data: MusicbrainzDefault;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockDefault,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -41,7 +41,7 @@ export async function fetchMusicbrainzDefault(): Promise<{
 export async function saveMusicbrainzDefault(
   value: MusicbrainzDefault,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockDefault = value;
     return { ok: true };
   }

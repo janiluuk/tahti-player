@@ -1,6 +1,6 @@
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 
 async function requestJson<T>(
   path: string,
@@ -96,7 +96,7 @@ export async function fetchTrackInsights(
   id: string,
   period: InsightsPeriod = '30d',
 ): Promise<{ data: TrackInsights | null; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockInsights(period, 'Mock track'),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

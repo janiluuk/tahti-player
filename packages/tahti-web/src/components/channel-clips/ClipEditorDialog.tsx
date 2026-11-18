@@ -22,7 +22,7 @@ import {
   type ClipPlacement,
   type ClipVoiceSettings,
 } from '../../api/clip-editor';
-import { isForceMock } from '../../api/mode';
+import { FORCE_MOCK } from '../../api/mode';
 import type { ProgrammeItem } from '../../api/studio-extras';
 import { EveryNthInput } from '../../views/admin/announcements/EveryNthInput';
 import { ConfirmDialog } from '../ConfirmDialog';
@@ -322,7 +322,7 @@ export function ClipEditorDialog({
         className="max-w-3xl"
       >
         <Dialog.Title>{t('clipEditor.editClip')}</Dialog.Title>
-        {isForceMock() && (
+        {FORCE_MOCK && (
           <p role="status" className="text-sm">
             {t('clipEditor.offlineDemoProcessingIsSimulated')}
           </p>

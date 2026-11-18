@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import { getJson } from './http';
 import { mockFixture } from './mock-overrides';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 export type FanChatToken = { token: string; handle: string; channel: string };
@@ -13,7 +13,7 @@ export const MOCK_FAN_CHAT_TOKEN = 'mock-token';
 export async function requestFanChatToken(
   slug: string,
 ): Promise<{ ok: true; data: FanChatToken } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       data: {
@@ -44,7 +44,7 @@ export async function requestFanChatToken(
 export async function fetchFanChatHistory(
   slug: string,
 ): Promise<Array<{ id?: string; handle: string; text: string; ts: number }>> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return mockFixture('fanChatHistory', [], slug);
   }
   try {

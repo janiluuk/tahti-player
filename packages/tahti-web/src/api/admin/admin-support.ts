@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
-import { failMeta, isForceMock } from '../mode';
+import { failMeta, FORCE_MOCK } from '../mode';
 
 // ── Support ─────────────────────────────────────────────────────────────────
 
@@ -147,7 +147,7 @@ export async function fetchAdminSupportTickets(params?: {
   const status = params?.status;
   const awaitingReply = params?.awaitingReply === true;
   const q = params?.q?.trim();
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     let data = getMockSupportTickets();
     if (status) {
       data = data.filter((t) => t.status === status);
@@ -192,7 +192,7 @@ export async function fetchAdminSupportTickets(params?: {
 export async function fetchAdminSupportTicketDetail(
   id: string,
 ): Promise<{ data: AdminSupportTicketDetail | null; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const ticket = getMockSupportTickets().find((t) => t.id === id) ?? null;
     return {
       data: ticket,
@@ -215,7 +215,7 @@ export async function updateAdminSupportTicketStatus(
 ): Promise<
   { ok: true; data: AdminSupportTicketDetail } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const ticket = getMockSupportTickets().find((t) => t.id === id);
     if (!ticket) {
       return { ok: false, error: 'Ticket not found' };
@@ -251,7 +251,7 @@ export async function postAdminSupportTicketMessage(
 ): Promise<
   { ok: true; data: AdminSupportTicketDetail } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const ticket = getMockSupportTickets().find((t) => t.id === id);
     if (!ticket) {
       return { ok: false, error: 'Ticket not found' };
@@ -338,7 +338,7 @@ let mockMissedShows: AdminMissedShow[] = [
 export async function fetchAdminMissedShows(
   status?: AdminMissedShowStatus,
 ): Promise<{ data: AdminMissedShow[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockMissedShows.filter((show) => !status || show.status === status),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -362,7 +362,7 @@ export async function updateAdminMissedShow(
   id: string,
   status: AdminMissedShowStatus,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (!mockMissedShows.some((show) => show.id === id)) {
       return { ok: false, error: 'Missed show not found' };
     }

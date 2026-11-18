@@ -1,4 +1,4 @@
-import { isForceMock } from '../mode';
+import { FORCE_MOCK } from '../mode';
 import { requestJson } from '../request-json';
 
 export type MixOrderTrack = {
@@ -46,7 +46,7 @@ function mockMixOrder(ids: string[]): MixOrder {
 export async function suggestSoundMixOrder(
   ids: string[],
 ): Promise<{ ok: true; data: MixOrder } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, data: mockMixOrder(ids) };
   }
   try {

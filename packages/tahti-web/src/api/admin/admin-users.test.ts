@@ -5,6 +5,7 @@ import { fetchAdminUsers, type AdminUserRow } from './admin-users';
 
 vi.mock('../mode', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../mode')>()),
+  FORCE_MOCK: false,
   isForceMock: () => false,
 }));
 

@@ -8,9 +8,9 @@ import {
   TAHTI_RADIO_SLUG,
 } from './mock';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
   withMockFallback,
   type FetchMeta,
@@ -27,7 +27,7 @@ export async function fetchRadio(): Promise<{
   meta: FetchMeta;
   playable: TahtiPlayable | null;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const data = mockRadio();
     return {
       data,
@@ -61,7 +61,7 @@ export async function fetchRadio(): Promise<{
     }
     return { data, meta: { source: 'api' }, playable: radioToPlayable(data) };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       const data = mockRadio();
       return {
         data,
@@ -97,7 +97,7 @@ export async function fetchEnabledInternetRadioPresets(): Promise<{
   data: EnabledInternetRadioPreset[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockEnabledInternetRadioPresets(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -109,7 +109,11 @@ export async function fetchEnabledInternetRadioPresets(): Promise<{
     );
     return { data: data.presets, meta: { source: 'api' } };
   } catch (err) {
-    return withMockFallback(err, mockEnabledInternetRadioPresets, () => []);
+    return withMockFallback(
+      err,
+      ALLOW_MOCK_FALLBACK ? mockEnabledInternetRadioPresets : null,
+      () => [],
+    );
   }
 }
 
@@ -142,7 +146,7 @@ export async function fetchRadioRecentlyPlayed(): Promise<{
   data: RadioRecentlyPlayedItem[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockRadioRecentlyPlayed(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -154,7 +158,11 @@ export async function fetchRadioRecentlyPlayed(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    return withMockFallback(err, mockRadioRecentlyPlayed, () => []);
+    return withMockFallback(
+      err,
+      ALLOW_MOCK_FALLBACK ? mockRadioRecentlyPlayed : null,
+      () => [],
+    );
   }
 }
 
@@ -188,7 +196,7 @@ export async function fetchRadioFeatureHistory(): Promise<{
   data: RadioFeatureHistoryItem[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockRadioFeatureHistory(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -200,6 +208,10 @@ export async function fetchRadioFeatureHistory(): Promise<{
     );
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
-    return withMockFallback(err, mockRadioFeatureHistory, () => []);
+    return withMockFallback(
+      err,
+      ALLOW_MOCK_FALLBACK ? mockRadioFeatureHistory : null,
+      () => [],
+    );
   }
 }

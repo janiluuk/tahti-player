@@ -14,7 +14,7 @@ import {
   getMockSessionUser,
   setMockSessionUser,
 } from './mock-session';
-import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
+import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
 import type { AuthUser } from './types';
 
 type LoginTokenFields = {
@@ -48,7 +48,7 @@ export async function fetchAuthMe(): Promise<{
   data: AuthUser | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: getMockSessionUser(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -93,7 +93,7 @@ export async function loginRequest(
   | { ok: true; requiresTotp: true; challengeId: string }
   | { ok: false; error: string; mock?: boolean }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     // Demo 2FA: email contains "+totp" or password is "totp-demo"
     if (email.includes('+totp') || password === 'totp-demo') {
       return {
@@ -145,7 +145,7 @@ export async function loginTotpRequest(
   challengeId: string,
   code: string,
 ): Promise<{ ok: true; user: AuthUser } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (
       challengeId === 'mock-totp-challenge' &&
       (code === '000000' || code === '123456')
@@ -202,7 +202,7 @@ export async function registerRequest(input: {
   username: string;
   displayName: string;
 }): Promise<{ ok: true; message: string } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       message:
@@ -229,7 +229,7 @@ export async function registerRequest(input: {
 export async function verifyEmailRequest(
   token: string,
 ): Promise<{ ok: true; message: string } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, message: 'Mock verify OK' };
   }
   try {
@@ -250,7 +250,7 @@ export async function verifyEmailRequest(
 export async function fetchSetupPasswordInfo(
   token: string,
 ): Promise<PasswordLinkInfo> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return mockFixture(
       'setupPasswordInfo',
       {
@@ -285,7 +285,7 @@ export async function submitSetupPassword(
   password: string,
   email?: string,
 ): Promise<{ ok: true; user: AuthUser } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const user = buildMockLoginUser(email || 'newartist@tahti.live');
     setMockSessionUser(user);
     return { ok: true, user };
@@ -318,7 +318,7 @@ export async function submitSetupPassword(
 export async function submitForgotPassword(email: string): Promise<string> {
   const fallback =
     'If an account exists for that email, we sent a link to reset your password.';
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return fallback;
   }
   try {
@@ -337,7 +337,7 @@ export async function submitForgotPassword(email: string): Promise<string> {
 export async function fetchResetPasswordInfo(
   token: string,
 ): Promise<PasswordLinkInfo> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return mockFixture(
       'resetPasswordInfo',
       {
@@ -372,7 +372,7 @@ export async function submitResetPassword(
   password: string,
   email?: string,
 ): Promise<{ ok: true; user: AuthUser } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const user = buildMockLoginUser(email || 'newartist@tahti.live');
     setMockSessionUser(user);
     return { ok: true, user };
@@ -399,7 +399,7 @@ export async function submitResetPassword(
 }
 
 export async function logoutRequest(): Promise<void> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     clearMockSessionUser();
     return;
   }

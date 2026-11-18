@@ -1,4 +1,4 @@
-import { isForceMock } from '.././mode';
+import { FORCE_MOCK } from '.././mode';
 import { requestJson, RequestJsonError } from '.././request-json';
 
 /** `GET /api/me/google-drive/picker-config`: a short-lived Drive token plus
@@ -27,7 +27,7 @@ export type GoogleDrivePickerConfigResult =
     };
 
 export async function fetchGoogleDrivePickerConfig(): Promise<GoogleDrivePickerConfigResult> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: false,
       reason: 'not-configured',
@@ -71,7 +71,7 @@ export async function fetchGoogleDrivePickerConfig(): Promise<GoogleDrivePickerC
 export async function importGoogleDriveFiles(
   files: GoogleDrivePickedFile[],
 ): Promise<{ ok: true; count: number } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, count: files.length };
   }
   let queued = 0;

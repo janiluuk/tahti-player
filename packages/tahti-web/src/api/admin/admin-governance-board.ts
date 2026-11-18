@@ -3,7 +3,7 @@ import { i18n } from '@tahti-player/i18n';
 import type { FetchMeta } from '../client';
 import type { GovernanceBoardRole } from '../governance-board';
 import { getJson, sendJson } from '../http';
-import { failMeta, isForceMock } from '../mode';
+import { failMeta, FORCE_MOCK } from '../mode';
 
 /** A board term as the board sees it (GET /api/admin/governance/board-terms):
  * current, past and future, with why it ended. */
@@ -57,7 +57,7 @@ export async function fetchAdminBoardTerms(): Promise<{
   data: AdminBoardTerm[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [...mockTerms], meta: MOCK_META };
   }
   try {
@@ -85,7 +85,7 @@ export async function createAdminBoardTerm(
   if (term.termEnd && term.termEnd <= term.termStart) {
     return { ok: false, error: i18n.t('web:batch58.termEndAfterStart') };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockTerms = [
       {
         id: `term-${Date.now()}`,
@@ -122,7 +122,7 @@ export async function endAdminBoardTerm(
   endReason?: string,
 ): Promise<BoardActionResult> {
   const reason = endReason?.trim() || undefined;
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const term = mockTerms.find((t) => t.id === id);
     if (!term) {
       return { ok: false, error: i18n.t('web:batch58.boardTermNotFound') };

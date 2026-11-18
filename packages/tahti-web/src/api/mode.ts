@@ -7,25 +7,29 @@
  * - Vite `dev` — still allows mock fallback when the API is down, unless
  *   `VITE_ALLOW_MOCK_FALLBACK=0`.
  * - `VITE_ALLOW_MOCK_FALLBACK=1` — force fallback on even in production (emergency).
+ *
+ * Prefer the `FORCE_MOCK` / `ALLOW_MOCK_FALLBACK` consts at call sites so Rollup
+ * can drop `api/mock*` when they fold to false in a production build.
  */
 
 export type FetchMeta = { source: 'api' | 'mock'; reason?: string };
 
+export const FORCE_MOCK: boolean = import.meta.env.VITE_FORCE_MOCK === '1';
+
+export const ALLOW_MOCK_FALLBACK: boolean = FORCE_MOCK
+  ? true
+  : import.meta.env.VITE_ALLOW_MOCK_FALLBACK === '1'
+    ? true
+    : import.meta.env.VITE_ALLOW_MOCK_FALLBACK === '0'
+      ? false
+      : Boolean(import.meta.env.DEV);
+
 export function isForceMock(): boolean {
-  return import.meta.env.VITE_FORCE_MOCK === '1';
+  return FORCE_MOCK;
 }
 
 export function allowMockFallback(): boolean {
-  if (isForceMock()) {
-    return true;
-  }
-  if (import.meta.env.VITE_ALLOW_MOCK_FALLBACK === '1') {
-    return true;
-  }
-  if (import.meta.env.VITE_ALLOW_MOCK_FALLBACK === '0') {
-    return false;
-  }
-  return Boolean(import.meta.env.DEV);
+  return ALLOW_MOCK_FALLBACK;
 }
 
 /** API failed and the caller is returning empty/null stand-in data — not a
@@ -53,13 +57,15 @@ export function mockFallbackMeta(err: unknown): FetchMeta {
   };
 }
 
-/** Prefer mock fixtures only when fallback is allowed; otherwise empty + api error. */
+/** Prefer mock fixtures only when fallback is allowed; otherwise empty + api error.
+ * Pass `null` for `mock` when fixtures are compile-time disabled so the mock
+ * module is not referenced from production call sites. */
 export function withMockFallback<T>(
   err: unknown,
-  mock: () => T,
+  mock: (() => T) | null,
   empty: () => T,
 ): { data: T; meta: FetchMeta } {
-  if (allowMockFallback()) {
+  if (mock && ALLOW_MOCK_FALLBACK) {
     return { data: mock(), meta: mockFallbackMeta(err) };
   }
   return { data: empty(), meta: apiErrorMeta(err) };

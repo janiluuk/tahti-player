@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { FetchMeta } from './client';
 import { getJson, mutate, sendJson } from './http';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 
 export type ArtworkPreset = {
   id: string;
@@ -29,7 +29,7 @@ export async function fetchArtworkPresets(): Promise<{
   data: ArtworkPreset[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockPresets.filter((preset) => preset.enabled),
       meta: { source: 'mock' },
@@ -49,7 +49,7 @@ export async function fetchAdminArtworkPresets(): Promise<{
   data: ArtworkPreset[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [...mockPresets], meta: { source: 'mock' } };
   }
   try {
@@ -65,7 +65,7 @@ export async function fetchAdminArtworkPresets(): Promise<{
 export async function createAdminArtworkPreset(
   url: string,
 ): Promise<Result<ArtworkPreset>> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const preset: ArtworkPreset = {
       id: `artwork-preset-${Date.now()}`,
       url,
@@ -91,7 +91,7 @@ export async function patchAdminArtworkPreset(
   id: string,
   patch: { enabled?: boolean },
 ): Promise<Result<ArtworkPreset>> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const current = mockPresets.find((preset) => preset.id === id);
     if (!current) {
       return { ok: false, error: i18n.t('web:batch58.presetNotFound') };
@@ -117,7 +117,7 @@ export async function patchAdminArtworkPreset(
 export async function deleteAdminArtworkPreset(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockPresets = mockPresets.filter((preset) => preset.id !== id);
     return { ok: true };
   }

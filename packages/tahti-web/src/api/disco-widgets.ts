@@ -1,9 +1,9 @@
 import { i18n } from '@tahti-player/i18n';
 
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
   type FetchMeta,
 } from './mode';
@@ -46,14 +46,14 @@ type ActionResult<T = void> =
   { error: null; data: T } | { error: string; data?: undefined };
 
 function emptyMeta(err: unknown): FetchMeta {
-  return allowMockFallback() ? mockFallbackMeta(err) : apiErrorMeta(err);
+  return ALLOW_MOCK_FALLBACK ? mockFallbackMeta(err) : apiErrorMeta(err);
 }
 
 export async function fetchDiscoWidgetStore(scope: DiscoWidgetScope): Promise<{
   data: DiscoWidgetStoreItem[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {
@@ -72,7 +72,7 @@ export async function fetchDiscoWidgetInstalls(
   data: DiscoWidgetInstallView[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   const path =
@@ -93,7 +93,7 @@ export async function createDiscoWidgetInstall(
   scope: DiscoWidgetScope,
   widgetId: string,
 ): Promise<ActionResult<DiscoWidgetInstallView>> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { error: 'Disco-widgets are unavailable in mock mode' };
   }
   const path =
@@ -121,7 +121,7 @@ export async function patchDiscoWidgetInstall(
   id: string,
   patch: { enabled?: boolean; position?: number },
 ): Promise<ActionResult<DiscoWidgetInstallView>> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { error: 'Disco-widgets are unavailable in mock mode' };
   }
   const path =
@@ -145,7 +145,7 @@ export async function removeDiscoWidgetInstall(
   scope: DiscoWidgetScope,
   id: string,
 ): Promise<ActionResult> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { error: 'Disco-widgets are unavailable in mock mode' };
   }
   const path =
@@ -166,7 +166,7 @@ export async function fetchDiscoverDiscoWidgets(): Promise<{
   data: DiscoWidgetRenderItem[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {
@@ -183,7 +183,7 @@ export async function fetchHomepageDiscoWidgets(): Promise<{
   data: DiscoWidgetRenderItem[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {
@@ -200,7 +200,7 @@ export async function fetchChannelDiscoWidgets(slug: string): Promise<{
   data: DiscoWidgetRenderItem[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {

@@ -11,7 +11,7 @@ import {
   prepareLastFmWithOwnKey,
   uninstallMeIntegration,
 } from '../../api/integrations';
-import { isForceMock } from '../../api/mode';
+import { FORCE_MOCK } from '../../api/mode';
 import { SettingsToggle } from '../../views/settings/SettingsFields';
 
 /** Settings → Integrations row: toggle on starts the Last.fm OAuth redirect,
@@ -63,7 +63,7 @@ export function LastFmIntegrationRow() {
   }, []);
 
   const connect = () => {
-    if (isForceMock()) {
+    if (FORCE_MOCK) {
       setBusy(true);
       void installMeIntegration('lastfm', {}).then((result) => {
         setBusy(false);
@@ -128,7 +128,7 @@ export function LastFmIntegrationRow() {
           }
         }}
       />
-      {!connected && !isForceMock() ? (
+      {!connected && !FORCE_MOCK ? (
         ownKeyOpen ? (
           <form
             className="mt-3 flex flex-col gap-3"

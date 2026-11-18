@@ -1,4 +1,4 @@
-import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
+import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
 import { requestJson } from './request-json';
 
 /** GET /api/me/collection-subscriptions row. */
@@ -19,7 +19,7 @@ export async function fetchSubscribedCollections(): Promise<{
   data: SubscribedCollection[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {

@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 /** Pull a hearthis.at embed's real audio into Tahti (only when the artist
@@ -9,7 +9,7 @@ import { requestJson } from './request-json';
 export async function importHearthisEmbedAudio(
   soundId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {

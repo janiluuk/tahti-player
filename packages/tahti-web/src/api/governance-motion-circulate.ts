@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { requestJson } from './client-request';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 
 const mockCirculated = new Set<string>();
 
@@ -10,7 +10,7 @@ const mockCirculated = new Set<string>();
 export async function circulateMotion(
   motionId: string,
 ): Promise<{ ok: true; notified: number } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (mockCirculated.has(motionId)) {
       return { ok: false, error: i18n.t('web:batch53.draftAlreadyCirculated') };
     }

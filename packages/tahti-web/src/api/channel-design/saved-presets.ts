@@ -1,9 +1,9 @@
 import type { FetchMeta } from '.././client';
 import { mockFixture } from '.././mock-overrides';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
@@ -26,7 +26,7 @@ export async function fetchChannelVisualPresets(): Promise<{
   data: ChannelVisualPreset[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFixture('channelVisualPresets', [...mockVisualPresets]),
       meta: { source: 'mock' },
@@ -38,7 +38,7 @@ export async function fetchChannelVisualPresets(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: [...mockVisualPresets], meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
@@ -52,7 +52,7 @@ export async function saveChannelVisualPreset(
 ): Promise<
   { ok: true; data: ChannelVisualPreset } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const now = new Date().toISOString();
     const existing = mockVisualPresets.find((p) => p.name === name);
     const preset: ChannelVisualPreset = existing
@@ -86,7 +86,7 @@ export async function saveChannelVisualPreset(
 export async function deleteChannelVisualPreset(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockVisualPresets = mockVisualPresets.filter((p) => p.id !== id);
     return { ok: true };
   }

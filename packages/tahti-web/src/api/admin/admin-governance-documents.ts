@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { sendJson } from '../http';
-import { isForceMock } from '../mode';
+import { FORCE_MOCK } from '../mode';
 import type { GovernanceDocument } from '../types';
 
 export type DocumentChange = {
@@ -25,7 +25,7 @@ export async function patchAdminGovernanceDocument(
     ...change,
     ...(change.title !== undefined ? { title: change.title.trim() } : {}),
   };
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (document.legalHoldAt) {
       return {
         ok: false,

@@ -3,7 +3,7 @@ import { i18n } from '@tahti-player/i18n';
 import type { FetchMeta } from '../client';
 import type { GovernanceBoardRole } from '../governance-board';
 import { getJson, sendJson } from '../http';
-import { failMeta, isForceMock } from '../mode';
+import { failMeta, FORCE_MOCK } from '../mode';
 import { errorText, type BoardActionResult } from './admin-governance-board';
 
 /** An election as the board manages it (GET /api/admin/governance/elections). */
@@ -55,7 +55,7 @@ export async function fetchAdminElections(): Promise<{
   data: AdminElection[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [...mockElections], meta: MOCK_META };
   }
   try {
@@ -84,7 +84,7 @@ export async function createAdminElection(
   if (election.role === 'CHAIR' && election.seats !== 1) {
     return { ok: false, error: i18n.t('web:batch58.oneChair') };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockElections = [
       {
         id: `election-${Date.now()}`,
@@ -130,7 +130,7 @@ export async function updateAdminElection(
   id: string,
   change: ElectionChange,
 ): Promise<BoardActionResult> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const current = mockElections.find((e) => e.id === id);
     if (!current) {
       return { ok: false, error: i18n.t('web:batch58.electionNotFound') };
@@ -172,7 +172,7 @@ export async function cancelAdminElection(
   reason: string,
 ): Promise<BoardActionResult> {
   const trimmed = reason.trim();
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     updateMockAdminElection(id, {
       cancelledAt: new Date().toISOString(),
       cancelReason: trimmed,
@@ -227,7 +227,7 @@ const mockCandidates = new Map<string, AdminElectionCandidate[]>([
 export async function fetchAdminElectionCandidates(
   id: string,
 ): Promise<{ data: AdminElectionCandidate[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { data: [...(mockCandidates.get(id) ?? [])], meta: MOCK_META };
   }
   try {
@@ -247,7 +247,7 @@ export async function nominateElectionCandidate(
   statement?: string,
 ): Promise<BoardActionResult> {
   const trimmed = statement?.trim() || undefined;
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const list = mockCandidates.get(id) ?? [];
     mockCandidates.set(id, [
       ...list.filter((c) => c.userId !== member.userId),
@@ -297,7 +297,7 @@ export async function recordElectionResult(
   if (result.termEnd && result.termEnd <= result.termStart) {
     return { ok: false, error: i18n.t('web:batch58.termEndAfterStart') };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const list = mockCandidates.get(id) ?? [];
     mockCandidates.set(
       id,

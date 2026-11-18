@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { FetchMeta } from '../client';
 import { apiBase, getJson, mutate } from '../http';
-import { failMeta, isForceMock } from '../mode';
+import { failMeta, FORCE_MOCK } from '../mode';
 
 // ── Financial ───────────────────────────────────────────────────────────────
 
@@ -127,7 +127,7 @@ export async function fetchAdminFinancial(
   data: AdminFinancialOverview | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (!mockFinancialState) {
       mockFinancialState = mockFinancialOverview();
     }
@@ -172,7 +172,7 @@ export async function createLedgerEntry(
   if (invalid) {
     return { ok: false, error: invalid };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const row: AdminLedgerEntry = {
       id: `ledg-${Date.now()}`,
       ...entry,
@@ -251,7 +251,7 @@ export async function fetchFanSubPayouts(
   data: { payouts: AdminFanSubPayout[]; total: number } | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const payouts = mockPayouts().filter((row) =>
       state ? row.state === state : row.state !== 'PAID',
     );
@@ -283,7 +283,7 @@ export async function fetchFanSubPayouts(
 export function retryFanSubPayout(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const row = mockPayouts().find((payout) => payout.id === id);
     if (!row || row.state !== 'FAILED') {
       return Promise.resolve({
@@ -312,7 +312,7 @@ export type AdminLegacyMember = {
 export async function fetchLegacyMembers(): Promise<
   { ok: true; data: AdminLegacyMember[] } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       data: [
@@ -380,7 +380,7 @@ export async function fetchFanSubArtists(): Promise<{
   data: AdminFanSubArtist[] | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFanSubArtists(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

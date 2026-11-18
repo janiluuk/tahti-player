@@ -6,7 +6,7 @@ import {
 } from '../../lib/audioFileDuration';
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
-import { failMeta, isForceMock } from '../mode';
+import { failMeta, FORCE_MOCK } from '../mode';
 
 // ── Announcements ───────────────────────────────────────────────────────────
 
@@ -75,7 +75,7 @@ export async function fetchAdminAnnouncements(): Promise<{
   data: { clips: AdminAnnouncementClip[]; systemEnabled: boolean };
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: {
         clips: announcementState().map((clip) => ({ ...clip })),
@@ -102,7 +102,7 @@ export async function fetchAdminAnnouncements(): Promise<{
 }
 
 export function setAnnouncementsSystemEnabled(enabled: boolean) {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockAnnouncementsSystemEnabled = enabled;
     return Promise.resolve({ ok: true } as const);
   }
@@ -117,7 +117,7 @@ export async function patchAnnouncementClip(
     Pick<AdminAnnouncementClip, 'isEnabled' | 'scheduleMode' | 'everyNth'>
   >,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const clip = announcementState().find((c) => c.id === id);
     if (clip) {
       Object.assign(clip, patch);
@@ -132,7 +132,7 @@ export async function patchAnnouncementClip(
 }
 
 export function deleteAnnouncementClip(id: string) {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockAnnouncementClips = announcementState().filter((c) => c.id !== id);
     return Promise.resolve({ ok: true } as const);
   }
@@ -146,7 +146,7 @@ export async function uploadAnnouncementClip(
 > {
   const title = file.name.replace(/\.[^.]+$/, '').trim() || 'Announcement';
   const contentType = file.type || 'audio/mpeg';
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const clip: AdminAnnouncementClip = {
       id: `ann-${Date.now()}`,
       title,
@@ -192,7 +192,7 @@ export async function fetchAdminAnnouncementSource(
 ): Promise<
   { ok: true; source: AdminAnnouncementSource } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const clip = announcementState().find((c) => c.id === id);
     if (!clip?.audioUrl) {
       return { ok: false, error: i18n.t('web:batch58.announcementNotFound') };
@@ -248,7 +248,7 @@ export async function renderAdminAnnouncement(
   id: string,
   trim: AdminAnnouncementTrim,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const clip = announcementState().find((c) => c.id === id);
     if (clip) {
       clip.durationSec = Math.round(trim.endSec - trim.startSec);

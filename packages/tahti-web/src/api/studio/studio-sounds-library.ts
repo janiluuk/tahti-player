@@ -1,9 +1,9 @@
 import type { FetchMeta } from '../client';
 import { mockFixture } from '../mock-overrides';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from '../mode';
 import { RequestJsonError } from '../request-json';
@@ -50,7 +50,7 @@ export async function fetchStudioSounds(): Promise<{
   data: StudioSound[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     applySavedMockSoundAccess();
     return {
       data: mockFixture('studioSounds', [...mockSoundStore]),
@@ -61,7 +61,7 @@ export async function fetchStudioSounds(): Promise<{
     const { data } = await requestJson<StudioSound[]>('/api/me/sound');
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return {
         data: mockFixture('studioSounds', [...mockSoundStore]),
         meta: mockFallbackMeta(err),
@@ -274,7 +274,7 @@ export async function backfillStudioSoundCovers(): Promise<
   | { ok: true; data: StudioSoundCoversBackfillResult }
   | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     let assigned = 0;
     for (const sound of mockSoundStore) {
       if (!sound.bannerUrl) {
@@ -311,7 +311,7 @@ export async function fetchStudioSoundsPage(
   query: StudioSoundListQuery,
 ): Promise<{ data: StudioSoundListPage; meta: FetchMeta }> {
   const limit = query.limit ?? 50;
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     applySavedMockSoundAccess();
     const filtered = filterMockSounds([...mockSoundStore], query);
     const offset = query.offset ?? 0;
@@ -329,7 +329,7 @@ export async function fetchStudioSoundsPage(
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       const filtered = filterMockSounds([...mockSoundStore], query);
       const offset = query.offset ?? 0;
       return {
@@ -352,7 +352,7 @@ export async function fetchStudioSoundIds(
   /** Present when the API refused the select-all (ids cap). */
   tooLarge?: { totalMatched: number; error: string };
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const filtered = filterMockSounds([...mockSoundStore], filter);
     return {
       data: { ids: filtered.map((item) => item.id), total: filtered.length },
@@ -382,7 +382,7 @@ export async function fetchStudioSoundIds(
         },
       };
     }
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       const filtered = filterMockSounds([...mockSoundStore], filter);
       return {
         data: { ids: filtered.map((item) => item.id), total: filtered.length },
@@ -397,7 +397,7 @@ export async function fetchStudioSoundFacets(
   fields: readonly string[],
   filter: StudioSoundListFilter = {},
 ): Promise<{ data: StudioSoundFacets; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const filtered = filterMockSounds([...mockSoundStore], filter);
     const facets: Record<string, StudioSoundFacetValue[]> = {};
     if (fields.includes('genre')) {
@@ -504,7 +504,7 @@ export async function fetchStudioSoundFacets(
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return {
         data: { facets: {}, total: 0 },
         meta: mockFallbackMeta(err),
@@ -526,7 +526,7 @@ export async function fetchStudioSoundStats(
     errorCount: 0,
     readyCount: 0,
   };
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const filtered = filterMockSounds([...mockSoundStore], filter);
     return {
       data: {
@@ -552,7 +552,7 @@ export async function fetchStudioSoundStats(
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: empty, meta: mockFallbackMeta(err) };
     }
     return { data: empty, meta: apiErrorMeta(err) };
@@ -567,7 +567,7 @@ export async function bulkDeleteStudioSounds(
   | { ok: true; data: StudioSoundBulkDeleteResult }
   | { ok: false; error: string; totalMatched?: number }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const ids =
       'ids' in body
         ? body.ids
@@ -616,7 +616,7 @@ export async function bulkPatchStudioSounds(
   | { ok: true; data: StudioSoundBulkPatchResult }
   | { ok: false; error: string; totalMatched?: number }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const ids =
       'ids' in body
         ? body.ids

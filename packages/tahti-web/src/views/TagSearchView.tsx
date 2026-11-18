@@ -4,7 +4,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, ViewShell } from '@tahti-player/ui';
 
 import { fetchTracksByTag } from '../api/listen';
-import { isForceMock } from '../api/mode';
+import { FORCE_MOCK } from '../api/mode';
 import type { SearchTrackResult } from '../api/types';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { SearchTrackResults } from '../components/SearchTrackResults';
@@ -67,7 +67,7 @@ export function TagSearchView({ tag }: { tag?: string }) {
       ) : state.tracks.length === 0 ? (
         <PageEmpty
           title={
-            isForceMock()
+            FORCE_MOCK
               ? `No tracks tagged “${trimmed}” in mock fixtures`
               : `No public tracks tagged “${trimmed}” yet`
           }

@@ -1,6 +1,6 @@
 import type { FetchMeta } from './client';
 import { getJson } from './http';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 
 export type ArtistNewsItem = {
   title: string;
@@ -14,7 +14,7 @@ export async function fetchArtistNewsFeed(username: string): Promise<{
   data: ArtistNewsItem[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: [
         {

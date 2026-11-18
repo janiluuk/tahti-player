@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { requestJson } from './client-request';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 
 export type SupportTicketCategory =
   'ENGAGEMENT_DISPUTE' | 'TECHNICAL' | 'FINANCIAL' | 'OTHER';
@@ -39,7 +39,7 @@ export type MySupportTicket = {
 export async function submitSupportTicket(
   input: SupportTicketInput,
 ): Promise<{ ok: true; ticketId: string } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, ticketId: `mock-ticket-${Date.now()}` };
   }
   try {
@@ -93,7 +93,7 @@ function mockMySupportTickets(): MySupportTicket[] {
 export async function fetchMySupportTickets(): Promise<
   { ok: true; tickets: MySupportTicket[] } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, tickets: mockMySupportTickets() };
   }
   try {
@@ -119,7 +119,7 @@ export async function replyToSupportTicket(
 ): Promise<
   { ok: true; reply: MySupportTicketReply } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       reply: {
@@ -153,7 +153,7 @@ export async function replyToSupportTicket(
 export async function closeSupportTicket(
   ticketId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {

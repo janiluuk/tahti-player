@@ -2,7 +2,6 @@ import { i18n } from '@tahti-player/i18n';
 
 import { profileTrackToPlayable } from '../lib/artistProfile';
 import { requestJson } from './client-request';
-import type { MotionComment } from './governance-member';
 import { apiBase } from './http';
 import {
   channelToPlayable,
@@ -30,9 +29,9 @@ import { mockFixture } from './mock-overrides';
 import { getMockSessionUser, mockActivateSubscription } from './mock-session';
 import { ensureMockUploadedSound, getMockUploadedSound } from './mock-uploads';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
   withMockFallback,
   type FetchMeta,
@@ -47,7 +46,6 @@ import type {
   ChatMessage,
   ChatTokenResponse,
   FanTiersResponse,
-  FeatureRequest,
   PlatformStatus,
   PublicChannel,
   PublicCollection,
@@ -124,7 +122,7 @@ export async function fetchChannel(slug: string): Promise<{
   meta: FetchMeta;
   playable: TahtiPlayable | null;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const data = normalizePublicChannel(mockChannel(slug));
     return {
       data,
@@ -148,7 +146,7 @@ export async function fetchChannel(slug: string): Promise<{
       playable: channelToPlayable(normalized),
     };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       const data = normalizePublicChannel(mockChannel(slug));
       return {
         data,
@@ -164,7 +162,7 @@ export async function fetchChannelSound(slug: string): Promise<{
   data: ChannelSoundItem[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockSoundItems(slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -178,7 +176,7 @@ export async function fetchChannelSound(slug: string): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      () => mockSoundItems(slug),
+      ALLOW_MOCK_FALLBACK ? () => mockSoundItems(slug) : null,
       () => [],
     );
   }
@@ -246,7 +244,7 @@ export async function fetchTrackDetail(
   data: PublicTrackDetail | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     await ensureMockUploadedSound(id);
     return {
       data: mockTrackDetail(id) ?? mockTrackDetailFromUpload(id),
@@ -261,7 +259,9 @@ export async function fetchTrackDetail(
   } catch (err) {
     return withMockFallback(
       err,
-      () => mockTrackDetail(id) ?? mockTrackDetailFromUpload(id),
+      ALLOW_MOCK_FALLBACK
+        ? () => mockTrackDetail(id) ?? mockTrackDetailFromUpload(id)
+        : null,
       () => null,
     );
   }
@@ -274,7 +274,7 @@ export async function fetchTrackComments(
   data: { comments: TrackComment[]; commentsEnabled: boolean };
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: {
         comments: mockTrackComments(id),
@@ -292,8 +292,10 @@ export async function fetchTrackComments(
   } catch (err) {
     return withMockFallback(
       err,
-      () => ({ comments: mockTrackComments(id), commentsEnabled: true }),
-      () => ({ comments: mockTrackComments(id), commentsEnabled: true }),
+      ALLOW_MOCK_FALLBACK
+        ? () => ({ comments: mockTrackComments(id), commentsEnabled: true })
+        : null,
+      () => ({ comments: [], commentsEnabled: true }),
     );
   }
 }
@@ -311,7 +313,7 @@ export async function postTrackComment(
   body: string,
   shareKey?: string,
 ): Promise<{ ok: true; data: TrackComment } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       data: {
@@ -346,7 +348,7 @@ export async function fetchProfile(username: string): Promise<{
   data: PublicProfile;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockProfile(username),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -358,7 +360,7 @@ export async function fetchProfile(username: string): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockProfile(username), meta: mockFallbackMeta(err) };
     }
     throw errorOr(err, i18n.t('web:batch56.profileFetchFailed'));
@@ -387,7 +389,7 @@ export async function fetchCollection(slug: string): Promise<{
   data: PublicCollection;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockCollection(slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -399,7 +401,7 @@ export async function fetchCollection(slug: string): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockCollection(slug), meta: mockFallbackMeta(err) };
     }
     throw errorOr(err, i18n.t('web:batch56.collectionFetchFailed'));
@@ -410,7 +412,7 @@ export async function fetchCollectionSubscription(slug: string): Promise<{
   subscribed: boolean;
   subscriberCount: number;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { subscribed: false, subscriberCount: 0 };
   }
   try {
@@ -418,7 +420,7 @@ export async function fetchCollectionSubscription(slug: string): Promise<{
       `/api/v1/collections/${encodeURIComponent(slug)}/subscribe`,
     );
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { subscribed: false, subscriberCount: 0 };
     }
     throw errorOr(err, i18n.t('web:batch56.collectionSubscriptionFailed'));
@@ -429,7 +431,7 @@ export async function setCollectionSubscription(
   slug: string,
   subscribed: boolean,
 ): Promise<{ subscribed: boolean; subscriberCount: number }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { subscribed, subscriberCount: subscribed ? 1 : 0 };
   }
   const { data } = await requestJson<{
@@ -445,7 +447,7 @@ export async function fetchSmartLink(smartLinkSlug: string): Promise<{
   data: SmartLinkView;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockSmartLink(smartLinkSlug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -457,7 +459,7 @@ export async function fetchSmartLink(smartLinkSlug: string): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return {
         data: mockSmartLink(smartLinkSlug),
         meta: mockFallbackMeta(err),
@@ -471,7 +473,7 @@ export async function fetchVenues(): Promise<{
   data: VenueDirectoryItem[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockVenues(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -481,7 +483,11 @@ export async function fetchVenues(): Promise<{
     const data = await getJson<VenueDirectoryItem[]>('/api/v1/venues');
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    return withMockFallback(err, mockVenues, () => []);
+    return withMockFallback(
+      err,
+      ALLOW_MOCK_FALLBACK ? mockVenues : null,
+      () => [],
+    );
   }
 }
 
@@ -489,7 +495,7 @@ export async function fetchVenueProfile(slug: string): Promise<{
   data: VenueProfile | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockVenueProfile(slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -503,7 +509,7 @@ export async function fetchVenueProfile(slug: string): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      () => mockVenueProfile(slug),
+      ALLOW_MOCK_FALLBACK ? () => mockVenueProfile(slug) : null,
       () => null,
     );
   }
@@ -533,7 +539,7 @@ export type RegisterVenueInput = {
 export async function registerVenue(
   input: RegisterVenueInput,
 ): Promise<{ ok: true; slug: string } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (!getMockSessionUser()) {
       return { ok: false, error: 'Log in first to register a venue.' };
     }
@@ -577,7 +583,7 @@ export async function fetchChatAccess(slug: string): Promise<{
   data: ChatAccess;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFixture('chatAccess', mockChatAccess(), slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -589,13 +595,17 @@ export async function fetchChatAccess(slug: string): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    return withMockFallback(err, mockChatAccess, () => ({
-      fanChatEnabled: false,
-      isSupporter: false,
-      canJoinFanChat: false,
-      subscribersOnly: false,
-      canPostInChat: false,
-    }));
+    return withMockFallback(
+      err,
+      ALLOW_MOCK_FALLBACK ? mockChatAccess : null,
+      () => ({
+        fanChatEnabled: false,
+        isSupporter: false,
+        canJoinFanChat: false,
+        subscribersOnly: false,
+        canPostInChat: false,
+      }),
+    );
   }
 }
 
@@ -603,7 +613,7 @@ export async function fetchChatHistory(slug: string): Promise<{
   data: ChatMessage[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockChatHistory(slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -621,7 +631,7 @@ export async function fetchChatHistory(slug: string): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      () => mockChatHistory(slug),
+      ALLOW_MOCK_FALLBACK ? () => mockChatHistory(slug) : null,
       () => [],
     );
   }
@@ -632,7 +642,7 @@ export async function requestChatToken(
   handle: string,
   hcaptchaToken?: string,
 ): Promise<{ data: ChatTokenResponse; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFixture(
         'chatToken',
@@ -666,7 +676,7 @@ export async function requestChatToken(
 export async function requestChatViewerToken(
   slug: string,
 ): Promise<string | null> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return null;
   }
   try {
@@ -686,7 +696,7 @@ export async function fetchFanTiers(username: string): Promise<{
   data: FanTiersResponse;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFanTiers(username),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -700,7 +710,7 @@ export async function fetchFanTiers(username: string): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      () => mockFanTiers(username),
+      ALLOW_MOCK_FALLBACK ? () => mockFanTiers(username) : null,
       () => ({
         artist: {
           id: '',
@@ -724,7 +734,7 @@ export async function startFanSubscribe(
   | { ok: true; activated: true; message: string }
   | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (!getMockSessionUser()) {
       return { ok: false, error: 'Log in first to activate a fan sub.' };
     }
@@ -768,7 +778,7 @@ export async function fetchTransparencyYtd(): Promise<{
   data: TransparencyYtd;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockTransparencyYtd(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -778,7 +788,7 @@ export async function fetchTransparencyYtd(): Promise<{
     const data = await getJson<TransparencyYtd>('/api/v1/transparency/ytd');
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockTransparencyYtd(), meta: mockFallbackMeta(err) };
     }
     throw errorOr(err, i18n.t('web:batch56.transparencyYtdFailed'));
@@ -790,7 +800,7 @@ export async function fetchTransparencyGrants(year?: number): Promise<{
   meta: FetchMeta;
 }> {
   const y = year ?? new Date().getFullYear();
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockTransparencyGrants(y),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -802,7 +812,7 @@ export async function fetchTransparencyGrants(year?: number): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockTransparencyGrants(y), meta: mockFallbackMeta(err) };
     }
     throw errorOr(err, i18n.t('web:batch56.transparencyGrantsFailed'));
@@ -813,7 +823,7 @@ export async function fetchTransparencyLedger(): Promise<{
   data: TransparencyLedgerEntry[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockTransparencyLedger(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -825,7 +835,11 @@ export async function fetchTransparencyLedger(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    return withMockFallback(err, mockTransparencyLedger, () => []);
+    return withMockFallback(
+      err,
+      ALLOW_MOCK_FALLBACK ? mockTransparencyLedger : null,
+      () => [],
+    );
   }
 }
 
@@ -834,7 +848,7 @@ export async function fetchTransparencyResolutions(year?: number): Promise<{
   meta: FetchMeta;
 }> {
   const y = year ?? new Date().getFullYear();
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockTransparencyResolutions(y),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -848,7 +862,7 @@ export async function fetchTransparencyResolutions(year?: number): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      () => mockTransparencyResolutions(y),
+      ALLOW_MOCK_FALLBACK ? () => mockTransparencyResolutions(y) : null,
       () => [],
     );
   }
@@ -860,7 +874,7 @@ export * from './embeds';
 export async function postListenEvent(
   soundId: string,
 ): Promise<{ recorded: boolean; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       recorded: true,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -884,7 +898,7 @@ export async function fetchPlatformStatus(): Promise<{
   data: PlatformStatus;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: {
         status: 'ok',
@@ -937,241 +951,13 @@ export * from './governance-member';
 
 export * from './support';
 
-let mockFeatureRequests: FeatureRequest[] = [
-  {
-    id: 'fr-1',
-    title: 'Crossfade between archive tracks',
-    description:
-      'Would love a short crossfade option on the archive player, same as the 24/7 rotation already has.',
-    status: 'PLANNED',
-    proposer: 'Demo Member',
-    voteCount: 6,
-    youVoted: false,
-    commentCount: 1,
-    reviewNote: null,
-    reviewedAt: null,
-    mergedIntoId: null,
-    mergedIntoTitle: null,
-    createdAt: new Date(Date.now() - 86_400_000 * 5).toISOString(),
-  },
-  {
-    id: 'fr-2',
-    title: 'Bulk-tag tracks in the archive',
-    description:
-      'Selecting multiple archive items and applying a genre or visibility change at once would save a lot of clicking.',
-    status: 'OPEN',
-    proposer: 'Northern Lights',
-    voteCount: 2,
-    youVoted: false,
-    commentCount: 1,
-    reviewNote: null,
-    reviewedAt: null,
-    mergedIntoId: null,
-    mergedIntoTitle: null,
-    createdAt: new Date(Date.now() - 86_400_000 * 1).toISOString(),
-  },
-  {
-    id: 'fr-3',
-    title: 'Show listening history on Listen',
-    description:
-      'Members asked for a History tab. The board closed this after it shipped.',
-    status: 'DONE',
-    proposer: 'Kaiku Collective',
-    voteCount: 12,
-    youVoted: true,
-    commentCount: 2,
-    reviewNote: 'Resolved: Listen now has a History tab.',
-    reviewedAt: new Date(Date.now() - 86_400_000 * 20).toISOString(),
-    mergedIntoId: null,
-    mergedIntoTitle: null,
-    createdAt: new Date(Date.now() - 86_400_000 * 40).toISOString(),
-  },
-];
-
-const mockFeatureRequestComments: Record<string, MotionComment[]> = {
-  'fr-1': [
-    {
-      id: 'frc-1',
-      body: 'Mock comment — agreed, this would help a lot during transitions.',
-      authorDisplayName: 'Demo Member',
-      createdAt: new Date().toISOString(),
-    },
-  ],
-  'fr-2': [
-    {
-      id: 'frc-2-need',
-      body: 'This is still unresolved — tagging one track at a time does not scale.',
-      authorDisplayName: 'Northern Lights',
-      createdAt: new Date().toISOString(),
-    },
-  ],
-  'fr-3': [
-    {
-      id: 'frc-3-ask',
-      body: 'We needed a place to find what we already played.',
-      authorDisplayName: 'Kaiku Collective',
-      createdAt: new Date().toISOString(),
-    },
-    {
-      id: 'frc-3-done',
-      body: 'Resolved — History is on the Listen tab row.',
-      authorDisplayName: 'Board',
-      createdAt: new Date().toISOString(),
-    },
-  ],
-};
-
-export async function fetchFeatureRequests(): Promise<{
-  data: FeatureRequest[];
-  meta: FetchMeta;
-  forbidden?: boolean;
-}> {
-  if (isForceMock()) {
-    return {
-      data: mockFeatureRequests.map((r) => ({ ...r })),
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<FeatureRequest[]>(
-      '/api/v1/governance/feature-requests',
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    const message = err instanceof Error ? err.message : '';
-    const forbidden =
-      message.includes('401') ||
-      message.includes('403') ||
-      /member/i.test(message);
-    return { data: [], meta: apiErrorMeta(err), forbidden };
-  }
-}
-
-export async function createFeatureRequest(input: {
-  title: string;
-  description: string;
-}): Promise<{ ok: true; data: FeatureRequest } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    const row: FeatureRequest = {
-      id: `fr-${Date.now()}`,
-      title: input.title,
-      description: input.description,
-      status: 'OPEN',
-      proposer: 'You',
-      voteCount: 0,
-      youVoted: false,
-      commentCount: 0,
-      reviewNote: null,
-      reviewedAt: null,
-      mergedIntoId: null,
-      mergedIntoTitle: null,
-      createdAt: new Date().toISOString(),
-    };
-    mockFeatureRequests = [row, ...mockFeatureRequests];
-    return { ok: true, data: row };
-  }
-  try {
-    const { data } = await requestJson<FeatureRequest>(
-      '/api/v1/governance/feature-requests',
-      { method: 'POST', body: JSON.stringify(input) },
-    );
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: messageOr(err, i18n.t('web:batch55.couldNotSubmitIdea')),
-    };
-  }
-}
-
-export async function voteFeatureRequest(
-  id: string,
-  vote: boolean,
-): Promise<{ ok: true; voteCount: number } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    let voteCount = 0;
-    mockFeatureRequests = mockFeatureRequests.map((r) => {
-      if (r.id !== id) {
-        return r;
-      }
-      voteCount = Math.max(0, r.voteCount + (vote ? 1 : -1));
-      return { ...r, youVoted: vote, voteCount };
-    });
-    return { ok: true, voteCount };
-  }
-  try {
-    const { data } = await requestJson<{ ok: true; voteCount: number }>(
-      `/api/v1/governance/feature-requests/${encodeURIComponent(id)}/vote`,
-      { method: vote ? 'POST' : 'DELETE' },
-    );
-    return data;
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Vote failed',
-    };
-  }
-}
-
-export async function fetchFeatureRequestComments(id: string): Promise<{
-  data: MotionComment[];
-  meta: FetchMeta;
-}> {
-  if (isForceMock()) {
-    return {
-      data: [...(mockFeatureRequestComments[id] ?? [])],
-      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
-    };
-  }
-  try {
-    const data = await getJson<MotionComment[]>(
-      `/api/v1/governance/feature-requests/${encodeURIComponent(id)}/comments`,
-    );
-    return { data, meta: { source: 'api' } };
-  } catch (err) {
-    return { data: [], meta: apiErrorMeta(err) };
-  }
-}
-
-export async function postFeatureRequestComment(
-  id: string,
-  body: string,
-): Promise<{ ok: true; data: MotionComment } | { ok: false; error: string }> {
-  if (isForceMock()) {
-    const row: MotionComment = {
-      id: `frc-${Date.now()}`,
-      body,
-      authorDisplayName: 'You',
-      createdAt: new Date().toISOString(),
-    };
-    mockFeatureRequestComments[id] = [
-      ...(mockFeatureRequestComments[id] ?? []),
-      row,
-    ];
-    mockFeatureRequests = mockFeatureRequests.map((r) =>
-      r.id === id ? { ...r, commentCount: r.commentCount + 1 } : r,
-    );
-    return { ok: true, data: row };
-  }
-  try {
-    const { data } = await requestJson<MotionComment>(
-      `/api/v1/governance/feature-requests/${encodeURIComponent(id)}/comments`,
-      { method: 'POST', body: JSON.stringify({ body }) },
-    );
-    return { ok: true, data };
-  } catch (err) {
-    return {
-      ok: false,
-      error: err instanceof Error ? err.message : 'Comment failed',
-    };
-  }
-}
+export * from './feature-requests';
 
 export async function fetchAnnouncements(): Promise<{
   data: Announcement[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const { listMockPublishedNews } = await import('./admin');
     return {
       data: listMockPublishedNews().map((post) => ({
@@ -1191,7 +977,11 @@ export async function fetchAnnouncements(): Promise<{
     const data = await getJson<Announcement[]>('/api/v1/news');
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    return withMockFallback(err, mockAnnouncements, () => []);
+    return withMockFallback(
+      err,
+      ALLOW_MOCK_FALLBACK ? mockAnnouncements : null,
+      () => [],
+    );
   }
 }
 
@@ -1204,7 +994,7 @@ const mockNewsletterSubs = new Set<string>();
 export async function fetchNewsletterSubscription(
   artistUsername: string,
 ): Promise<{ subscribed: boolean }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { subscribed: mockNewsletterSubs.has(artistUsername) };
   }
   try {
@@ -1220,7 +1010,7 @@ export async function setNewsletterSubscription(
   artistUsername: string,
   subscribed: boolean,
 ): Promise<{ ok: true; subscribed: boolean } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (subscribed) {
       mockNewsletterSubs.add(artistUsername);
     } else {
@@ -1249,7 +1039,7 @@ export async function subscribeNewsletterByEmail(
 ): Promise<
   { ok: true; alreadySubscribed: boolean } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, alreadySubscribed: false };
   }
   try {

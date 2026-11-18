@@ -1,8 +1,8 @@
 import type { FetchMeta } from '../client';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from '../mode';
 import { fetchStudioCollections } from './studio-collections';
@@ -25,7 +25,7 @@ export type SetMembershipEntry = {
 export async function fetchSoundSetMembership(
   soundId: string,
 ): Promise<{ data: SetMembershipEntry[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const collections = await fetchStudioCollections();
     const data: SetMembershipEntry[] = collections.data
       .filter((c) => {
@@ -62,7 +62,7 @@ export async function fetchSoundSetMembership(
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: [], meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };

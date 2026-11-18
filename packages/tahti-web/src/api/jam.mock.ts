@@ -1,5 +1,5 @@
 import { getMockSessionUser } from './mock-session';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import type { JamParticipant, JamSession, JamTrack } from './types';
 
 /** Stable demo Jam code for mock mode, docs, and Storybook (`_fixtures/jam.ts`). */
@@ -38,7 +38,7 @@ export function resetMockJamSessions(): void {
 }
 
 export function mockJamActive(): boolean {
-  return isForceMock() && mockJamEnabled;
+  return FORCE_MOCK && mockJamEnabled;
 }
 
 function sessionUserParticipant(role: JamParticipant['role']): JamParticipant {

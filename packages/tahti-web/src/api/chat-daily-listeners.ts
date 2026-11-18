@@ -1,6 +1,6 @@
 import type { FetchMeta } from './client';
 import { getJson } from './http';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 
 export type ChatDailyListeners = {
   /** Null when the artist hides the count. */
@@ -12,7 +12,7 @@ export async function fetchChatDailyListeners(slug: string): Promise<{
   data: ChatDailyListeners | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: { count: 27, enabled: true },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

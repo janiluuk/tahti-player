@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { FetchMeta } from './client';
 import { getJson, sendJson } from './http';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 
 /** A listener's own internet radio station, played straight from its
  * stream URL in the browser (never relayed through Tahti). */
@@ -48,7 +48,7 @@ export async function fetchMyRadioStations(): Promise<{
   data: MyRadioStation[] | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockStations,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -70,7 +70,7 @@ export async function fetchMyRadioStations(): Promise<{
 export async function addMyRadioStation(
   station: NewRadioStation,
 ): Promise<{ ok: true; data: MyRadioStation } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const created: MyRadioStation = {
       id: `mock-station-${Date.now()}`,
       presetId: null,
@@ -109,7 +109,7 @@ export async function addMyRadioStation(
 export async function removeMyRadioStation(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockStations = mockStations.filter((station) => station.id !== id);
     return { ok: true };
   }

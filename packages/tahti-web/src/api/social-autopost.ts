@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 export const DEFAULT_SOCIAL_TEMPLATE =
@@ -75,7 +75,7 @@ export async function fetchSocialAutoPost(): Promise<{
   data: SocialAutoPostSettings | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: cloneMock(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -113,7 +113,7 @@ function applyMock(
 export async function saveMastodon(
   input: MastodonConnectInput,
 ): Promise<Result> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (!mockSettings.mastodon.connected && !input.accessToken) {
       return { ok: false, error: 'Access token is required' };
     }
@@ -137,7 +137,7 @@ export async function saveMastodon(
 }
 
 export async function saveBluesky(input: BlueskyConnectInput): Promise<Result> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (!mockSettings.bluesky.connected && !input.appPassword) {
       return { ok: false, error: 'App password is required' };
     }
@@ -162,7 +162,7 @@ export async function patchSocialOAuth(
   platform: SocialOAuthPlatform,
   input: SocialTriggerSettings,
 ): Promise<Result> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const current = mockSettings[platform];
     if (!current.connected) {
       return { ok: false, error: 'Connect first' };
@@ -193,7 +193,7 @@ export async function patchSocialOAuth(
 export async function disconnectSocial(
   platform: SocialAutoPostPlatform | SocialOAuthPlatform,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockSettings = {
       ...mockSettings,
       [platform]:
@@ -232,7 +232,7 @@ export async function fetchSocialPosts(): Promise<{
   data: SocialPostLog[] | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockPosts.map((post) => ({ ...post })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -250,7 +250,7 @@ export async function postToSocial(
   platform: SocialPostPlatform,
   message: string,
 ): Promise<{ ok: true; post: SocialPostLog } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const post: SocialPostLog = {
       id: `mock-social-post-${Date.now()}`,
       platform,

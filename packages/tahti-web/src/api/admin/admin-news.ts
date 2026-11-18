@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson, mutate } from '../http';
-import { failMeta, isForceMock } from '../mode';
+import { failMeta, FORCE_MOCK } from '../mode';
 
 // ── News ────────────────────────────────────────────────────────────────────
 
@@ -79,7 +79,7 @@ export async function fetchAdminNews(): Promise<{
   data: AdminNewsPost[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: newsState(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -106,7 +106,7 @@ export async function createNewsPost(input: {
   linkLabel?: string;
   publish: boolean;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const posts = newsState();
     posts.unshift({
       id: `news-${Date.now()}`,
@@ -136,7 +136,7 @@ export async function updateNewsPost(
     publish?: boolean;
   },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const post = newsState().find((p) => p.id === id);
     if (post) {
       if (input.headline != null) {
@@ -167,7 +167,7 @@ export async function updateNewsPost(
 export async function deleteNewsPost(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockNewsState = newsState().filter((p) => p.id !== id);
     persistNewsState(mockNewsState);
     return { ok: true };
@@ -181,7 +181,7 @@ export async function sendAdminTestNotification(input: {
   body?: string;
   url?: string;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   return mutate('/api/admin/notifications/test', 'POST', input);

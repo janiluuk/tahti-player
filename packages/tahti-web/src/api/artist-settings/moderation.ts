@@ -1,5 +1,5 @@
 import type { FetchMeta } from '.././client';
-import { failMeta, isForceMock } from '.././mode';
+import { failMeta, FORCE_MOCK } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockChatBans, mockMembers, mockMods } from './mock';
 
@@ -35,7 +35,7 @@ export async function fetchChannelMembers(): Promise<{
   data: ChannelMember[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: [...mockMembers],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -76,7 +76,7 @@ export async function fetchModerators(): Promise<{
   data: ModeratorRow[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: [...mockMods],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -95,7 +95,7 @@ export async function fetchModerators(): Promise<{
 export async function addModerator(
   username: string,
 ): Promise<{ ok: true; data: ModeratorRow } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const row: ModeratorRow = {
       id: `mod-mock-${Date.now()}`,
       username,
@@ -123,7 +123,7 @@ export async function addModerator(
 export async function removeModerator(
   userId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const idx = mockMods.findIndex((m) => m.id === userId);
     if (idx >= 0) {
       mockMods.splice(idx, 1);
@@ -150,7 +150,7 @@ export async function fetchChatBans(slug: string): Promise<{
   data: ChatBan[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: [...mockChatBans],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -173,7 +173,7 @@ export async function unbanChat(
   slug: string,
   ban: Pick<ChatBan, 'id' | 'fingerprintHash'>,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const idx = mockChatBans.findIndex(
       (b) => b.fingerprintHash === ban.fingerprintHash,
     );
@@ -205,7 +205,7 @@ export async function fetchChatSettings(): Promise<{
   data: { subscribersOnly: boolean } | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: { subscribersOnly: mockChatSubscribersOnly },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -226,7 +226,7 @@ export async function setChatSubscribersOnly(
 ): Promise<
   { ok: true; subscribersOnly: boolean } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockChatSubscribersOnly = subscribersOnly;
     return { ok: true, subscribersOnly };
   }

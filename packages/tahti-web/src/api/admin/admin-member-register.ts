@@ -1,5 +1,5 @@
 import { getJson } from '../http';
-import { isForceMock } from '../mode';
+import { FORCE_MOCK } from '../mode';
 
 /** A row of the association's member register (GET /api/admin/members). The
  * API includes the email; screens show names and usernames only. */
@@ -36,7 +36,7 @@ export function mockMemberRegister(): MemberRegisterRow[] {
 export async function fetchMemberRegister(): Promise<
   { ok: true; data: MemberRegisterRow[] } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, data: mockMemberRegister() };
   }
   try {

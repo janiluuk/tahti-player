@@ -1,6 +1,6 @@
 import type { FetchMeta } from './client';
 import { getJson } from './http';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 
 export type SoundAudiencePersonWire = {
   username: string;
@@ -105,7 +105,7 @@ export async function fetchSoundAudience(
   soundId: string,
   page?: { tab: SoundAudienceTab; offset: number; limit?: number },
 ): Promise<{ data: SoundAudience; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: page ? EMPTY : mockAudience(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

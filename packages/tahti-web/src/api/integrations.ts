@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import { apiBase } from './http';
 import { mockFixture } from './mock-overrides';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 
 async function requestJson<T>(
   path: string,
@@ -58,7 +58,7 @@ export async function fetchMeIntegrations(): Promise<{
   data: IntegrationView[];
   source: 'api' | 'mock';
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFixture('meIntegrations', [
         {
@@ -93,7 +93,7 @@ export async function installMeIntegration(
   slug: string,
   fields: Record<string, string>,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (slug === 'listenbrainz' && !fields.userToken?.trim()) {
       return { ok: false, error: 'User token is required.' };
     }
@@ -123,7 +123,7 @@ export async function installMeIntegration(
 export async function uninstallMeIntegration(
   slug: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockInstalled.delete(slug);
     return { ok: true };
   }

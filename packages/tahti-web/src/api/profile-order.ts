@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 type Result = { ok: true } | { ok: false; error: string };
@@ -10,7 +10,7 @@ async function put(
   body: unknown,
   fallback: string,
 ): Promise<Result> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {

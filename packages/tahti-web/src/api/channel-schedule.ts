@@ -1,6 +1,6 @@
 import { getJson } from './http';
 import { mockFixture } from './mock-overrides';
-import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
+import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
 
 export type PublicChannelScheduleShow = {
   id: string;
@@ -69,7 +69,7 @@ export async function fetchChannelSchedule(slug: string): Promise<{
   data: PublicChannelSchedule;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFixture('channelSchedule', mockSchedule(), slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson } from '../http';
-import { failMeta, isForceMock } from '../mode';
+import { failMeta, FORCE_MOCK } from '../mode';
 
 // ── Top lists ───────────────────────────────────────────────────────────────
 
@@ -82,7 +82,7 @@ export async function fetchAdminTopLists(
   dimension: AdminTopListDimension,
   sort: AdminTopListSort,
 ): Promise<{ data: AdminTopListBucket[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const buckets = mockTopLists(dimension).map((b) => ({
       bucket: b.bucket,
       entries: [...b.entries].sort((a, c) =>

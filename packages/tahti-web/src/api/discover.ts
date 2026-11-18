@@ -4,10 +4,10 @@ import { fetchDirectory, fetchProfile } from './client';
 import { apiBase } from './http';
 import { mockLatestTracks, mockNewToYou, mockTopTracks } from './mock';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
   failMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
   type FetchMeta,
 } from './mode';
@@ -38,7 +38,7 @@ export async function fetchPublicCollections(
   data: DiscoverCollection[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: [
         {
@@ -84,7 +84,7 @@ export async function fetchPublicCollections(
       meta: { source: 'api' },
     };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return {
         data: [],
         meta: mockFallbackMeta(err),
@@ -232,7 +232,7 @@ export async function fetchTopTracks(
   sort: TopTracksSort,
   filters: DiscoverFilters,
 ): Promise<{ data: DiscoverTrackItem[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockTopTracks(sort),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -258,7 +258,7 @@ export async function fetchTopTracks(
     );
     return { data: merged.map(topListEntryToTrack), meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockTopTracks(sort), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: mockFallbackMeta(err) };
@@ -322,7 +322,7 @@ async function fetchLatestForGenre(
 export async function fetchLatestTracks(
   filters: DiscoverFilters,
 ): Promise<{ data: DiscoverTrackItem[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockLatestTracks(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -346,7 +346,7 @@ export async function fetchLatestTracks(
       meta: { source: 'api' },
     };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockLatestTracks(), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
@@ -362,7 +362,7 @@ export async function fetchNewToYou(): Promise<{
   preferenceGenres: string[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const mock = mockNewToYou();
     return {
       data: mock.items,
@@ -384,7 +384,7 @@ export async function fetchNewToYou(): Promise<{
       meta: { source: 'api' },
     };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       const mock = mockNewToYou();
       return {
         data: mock.items,
@@ -421,7 +421,7 @@ function lovedEntryToTrack(entry: WireLovedEntry): DiscoverTrackItem {
 export async function fetchLovedTracks(
   filters: DiscoverFilters,
 ): Promise<{ data: DiscoverTrackItem[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockTopTracks('desc').map((item, index) => ({
         ...item,
@@ -458,7 +458,7 @@ export async function fetchLovedTracks(
       meta: { source: 'api' },
     };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return {
         data: mockTopTracks('desc').map((item, index) => ({
           ...item,
@@ -475,7 +475,7 @@ export async function fetchTahtiSelects(): Promise<{
   data: DiscoverTrackItem[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockLatestTracks().slice(0, 6),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

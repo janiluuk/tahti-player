@@ -1,5 +1,5 @@
 import type { FetchMeta } from './client';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 /** One row of `GET /api/v1/events/upcoming`: an artist event plus who
@@ -58,7 +58,7 @@ export async function fetchUpcomingEvents(limit = 12): Promise<{
   data: UpcomingEvent[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockUpcoming(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

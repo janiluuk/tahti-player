@@ -1,4 +1,4 @@
-import { isForceMock } from '../mode';
+import { FORCE_MOCK } from '../mode';
 import { mockSoundStore } from './studio-mock';
 import { requestJson } from './studio-request';
 
@@ -6,7 +6,7 @@ import { requestJson } from './studio-request';
 export async function retrySoundProcessing(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const item = mockSoundStore.find((sound) => sound.id === id);
     if (!item || item.status !== 'ERROR') {
       return { ok: false, error: 'Only a failed upload can be retried.' };

@@ -1,8 +1,8 @@
 import type { FetchMeta } from '.././client';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
@@ -51,7 +51,7 @@ export async function fetchShowRefBySoundItemId(): Promise<{
 export async function fetchEpisode(
   id: string,
 ): Promise<{ data: StudioEpisode | null; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const all = seedEpisodes();
     return {
       data: all.find((e) => e.id === id) ?? null,
@@ -64,7 +64,7 @@ export async function fetchEpisode(
     );
     return { data: episodeFromWire(data), meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       const all = seedEpisodes();
       return {
         data: all.find((e) => e.id === id) ?? null,
@@ -86,7 +86,7 @@ export async function createEpisode(input: {
   /** Override title; defaults to "{show} — Episode {n}". */
   title?: string;
 }): Promise<{ ok: true; data: StudioEpisode } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const seriesList = seedSeries();
     const show = seriesList.find((s) => s.id === input.showId);
     if (!show) {
@@ -155,7 +155,7 @@ export async function patchEpisode(
     >
   >,
 ): Promise<{ ok: true; data: StudioEpisode } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const list = seedEpisodes();
     const idx = list.findIndex((e) => e.id === id);
     if (idx < 0) {

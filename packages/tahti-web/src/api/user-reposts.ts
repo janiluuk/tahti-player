@@ -1,6 +1,6 @@
 import type { FetchMeta } from './client';
 import { getJson } from './http';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 
 export type RepostedTrack = {
   id: string;
@@ -18,7 +18,7 @@ export async function fetchUserReposts(username: string): Promise<{
   data: RepostedTrack[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: [
         {

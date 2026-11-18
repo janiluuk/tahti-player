@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson } from '../http';
-import { apiErrorMeta, isForceMock } from '../mode';
+import { apiErrorMeta, FORCE_MOCK } from '../mode';
 
 export type AdminListeningRange = '7' | '30' | 'all';
 
@@ -74,7 +74,7 @@ function emptyListening(range: AdminListeningRange): AdminListening {
 export async function fetchAdminListening(
   range: AdminListeningRange,
 ): Promise<{ data: AdminListening; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockListening(range),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

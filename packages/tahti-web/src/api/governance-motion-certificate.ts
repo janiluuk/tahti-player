@@ -1,5 +1,5 @@
 import { requestJson } from './client-request';
-import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
+import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
 
 export type MotionTally = { YES: number; NO: number; ABSTAIN: number };
 
@@ -66,7 +66,7 @@ export function setMockMotionCertificate(certificate: MotionCertificate): void {
 export async function fetchMotionCertificate(
   motionId: string,
 ): Promise<{ data: MotionCertificate | null; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockMotionCertificate(motionId),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -92,7 +92,7 @@ export async function correctMotionResult(
   if (!note) {
     return { ok: false, error: 'Say what the correction is about' };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const current = mockMotionCertificate(motionId);
     const total = input.tally
       ? input.tally.YES + input.tally.NO + input.tally.ABSTAIN

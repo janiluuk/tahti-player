@@ -1,8 +1,8 @@
 import type { FetchMeta } from './client';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from './mode';
 import { requestJson } from './request-json';
@@ -45,7 +45,7 @@ const mockRecordings: RecentBroadcast[] = [
 export async function fetchRecentBroadcasts(
   limit = 50,
 ): Promise<{ data: RecentBroadcast[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockRecordings,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -57,7 +57,7 @@ export async function fetchRecentBroadcasts(
     );
     return { data: data.broadcasts ?? [], meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockRecordings, meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };

@@ -1,5 +1,5 @@
 import { apiBase } from './http';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 
 export type VersionProgress = {
   status: 'PENDING' | 'PROCESSING' | 'READY' | 'ERROR' | string;
@@ -17,7 +17,7 @@ export function subscribeToVersionProgress(
   versionId: string,
   onProgress: (progress: VersionProgress) => void,
 ): () => void {
-  if (isForceMock() || typeof EventSource === 'undefined') {
+  if (FORCE_MOCK || typeof EventSource === 'undefined') {
     return () => {};
   }
   const source = new EventSource(

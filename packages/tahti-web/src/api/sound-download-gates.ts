@@ -1,6 +1,6 @@
 import { listenerFingerprint } from '../lib/listenerFingerprint';
 import { getJson } from './http';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 export type DownloadGateStatus = {
@@ -19,7 +19,7 @@ export async function fetchDownloadGates(
   slug: string,
   soundId: string,
 ): Promise<DownloadGateStatus | null> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return null;
   }
   try {
@@ -36,7 +36,7 @@ export async function acknowledgeRepost(
   slug: string,
   soundId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {

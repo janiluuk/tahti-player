@@ -1,5 +1,5 @@
 import { requestJson } from './client-request';
-import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
+import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
 
 export type GovernanceBoardRole =
   'CHAIR' | 'VICE_CHAIR' | 'SECRETARY' | 'TREASURER' | 'MEMBER' | 'DEPUTY';
@@ -55,7 +55,7 @@ export async function fetchCurrentBoard(): Promise<{
   data: BoardSeat[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockCurrentBoard(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

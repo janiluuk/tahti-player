@@ -1,9 +1,9 @@
 import type { StoredVisualPreset } from './channel-design/presets';
 import type { FetchMeta } from './client';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from './mode';
 import { requestJson } from './request-json';
@@ -36,7 +36,7 @@ export async function fetchStreamOverlay(): Promise<{
   data: StreamOverlay;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: { ...mockStreamOverlay },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -48,7 +48,7 @@ export async function fetchStreamOverlay(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: { ...mockStreamOverlay }, meta: mockFallbackMeta(err) };
     }
     return { data: { ...EMPTY_STREAM_OVERLAY }, meta: apiErrorMeta(err) };
@@ -58,7 +58,7 @@ export async function fetchStreamOverlay(): Promise<{
 export async function patchStreamOverlay(
   patch: StreamOverlay,
 ): Promise<{ ok: true; data: StreamOverlay } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockStreamOverlay = { ...patch };
     return { ok: true, data: { ...mockStreamOverlay } };
   }

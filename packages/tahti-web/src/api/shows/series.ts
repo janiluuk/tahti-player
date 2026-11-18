@@ -1,9 +1,9 @@
 import type { FetchMeta } from '.././client';
 import { mockFixture } from '.././mock-overrides';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
@@ -28,7 +28,7 @@ export async function fetchShowSeries(): Promise<{
   data: StudioShowSeries[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFixture('showSeries', seedSeries()),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -40,7 +40,7 @@ export async function fetchShowSeries(): Promise<{
     );
     return { data: data.series.map(seriesFromWire), meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: seedSeries(), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
@@ -51,7 +51,7 @@ export async function fetchShowSchedule(): Promise<{
   data: { series: StudioShowSeries[]; scheduledShows: ScheduledShow[] };
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: { series: seedSeries(), scheduledShows: [] },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -70,7 +70,7 @@ export async function fetchShowSchedule(): Promise<{
       meta: { source: 'api' },
     };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return {
         data: { series: seedSeries(), scheduledShows: [] },
         meta: mockFallbackMeta(err),
@@ -110,7 +110,7 @@ export async function createShowSeries(input: {
   if (!title) {
     return { ok: false, error: 'Title is required' };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const list = seedSeries();
     const series: StudioShowSeries = {
       id: `show-${Date.now()}`,
@@ -201,7 +201,7 @@ export async function scheduleShowEpisode(
     artworkUrl?: string | null;
   },
 ): Promise<{ ok: true; data: ScheduledShow } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const show = seedSeries().find((item) => item.id === seriesId);
     if (!show) {
       return { ok: false, error: 'Show not found' };
@@ -243,7 +243,7 @@ export async function scheduleShowEpisode(
 export async function cancelScheduledShow(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {
@@ -291,7 +291,7 @@ export async function patchShowSeries(
 ): Promise<
   { ok: true; data: StudioShowSeries } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const list = seedSeries();
     const idx = list.findIndex((s) => s.id === id);
     if (idx < 0) {
@@ -383,7 +383,7 @@ export async function fetchShowSeriesById(
 export async function fetchEpisodesForShow(
   showId: string,
 ): Promise<{ data: StudioEpisode[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const all = seedEpisodes();
     return {
       data: all
@@ -401,7 +401,7 @@ export async function fetchEpisodesForShow(
       meta: { source: 'api' },
     };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       const all = seedEpisodes();
       return {
         data: all

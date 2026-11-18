@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 const BACKDROP_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -18,7 +18,7 @@ export async function uploadProfileBackdrop(
   if (!BACKDROP_TYPES.includes(contentType)) {
     return { ok: false, error: 'Use JPEG, PNG, or WebP' };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, data: { backdropUrl: URL.createObjectURL(file) } };
   }
   try {
@@ -53,7 +53,7 @@ export async function uploadProfileBackdrop(
 export async function removeProfileBackdrop(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {

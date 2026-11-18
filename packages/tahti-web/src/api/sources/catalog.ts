@@ -1,7 +1,7 @@
 import type { FetchMeta } from '.././client';
 import { apiBase } from '.././http';
 import { isMockOauthConnected } from '.././mock-session';
-import { isForceMock } from '.././mode';
+import { FORCE_MOCK } from '.././mode';
 import { requestJson } from '.././request-json';
 import { asOauthId, failMeta } from './shared';
 
@@ -253,10 +253,10 @@ export async function fetchConnectionStatus(
   ) {
     return {
       data: { connected: true, configured: true },
-      meta: { source: isForceMock() ? 'mock' : 'api' },
+      meta: { source: FORCE_MOCK ? 'mock' : 'api' },
     };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const oauthId = asOauthId(id);
     if (oauthId) {
       return {

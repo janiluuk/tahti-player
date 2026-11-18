@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 const MOCK_KEY = 'tahti-web-mock-channel-autoplay';
@@ -9,7 +9,7 @@ const MOCK_KEY = 'tahti-web-mock-channel-autoplay';
  * (`GET /api/me/channel/autoplay`, PLAT-086). `null` when it could not be
  * read, so the toggle is not drawn with a guess. */
 export async function fetchChannelAutoplay(): Promise<boolean | null> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return localStorage.getItem(MOCK_KEY) !== 'false';
   }
   try {
@@ -25,7 +25,7 @@ export async function fetchChannelAutoplay(): Promise<boolean | null> {
 export async function setChannelAutoplay(
   autoplayEnabled: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     localStorage.setItem(MOCK_KEY, String(autoplayEnabled));
     return { ok: true };
   }

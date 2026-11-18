@@ -6,7 +6,7 @@ import {
   listMockSubscriptions,
   mockCancelSubscription,
 } from './mock-session';
-import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
+import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
 import type {
   FanSubscriptionRow,
   MembershipStatus,
@@ -22,7 +22,7 @@ export async function fetchMembership(): Promise<{
   data: MembershipStatus | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFixture('membership', {
         status: 'ACTIVE',
@@ -52,7 +52,7 @@ export async function startMembershipCheckout(opts?: {
   | { ok: true; activated: true; memberNumber?: number }
   | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       activated: true,
@@ -102,7 +102,7 @@ export async function startMembershipCheckout(opts?: {
 export async function startMembershipPortal(): Promise<
   { ok: true; portalUrl: string } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, portalUrl: 'https://billing.stripe.com/mock-session' };
   }
   try {
@@ -133,7 +133,7 @@ export async function startMembershipPortal(): Promise<
 export async function startFanSubscriptionsPortal(): Promise<
   { ok: true; portalUrl: string } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, portalUrl: 'https://billing.stripe.com/mock-session' };
   }
   try {
@@ -165,7 +165,7 @@ export async function startFanSubscriptionsPortal(): Promise<
 export async function resendVerificationEmail(
   email: string,
 ): Promise<{ ok: true; message: string } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       message: webT()('membershipApiLeftovers.mockVerificationSent'),
@@ -195,7 +195,7 @@ export async function resendVerificationEmail(
 export async function requestAccountDeletion(
   reason: string,
 ): Promise<{ ok: true; ticketId: string } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, ticketId: 'mock-deletion-001' };
   }
   try {
@@ -219,7 +219,7 @@ export async function fetchMySubscriptions(): Promise<{
   data: FanSubscriptionRow[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: listMockSubscriptions(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -237,7 +237,7 @@ export async function fetchMyPurchases(): Promise<{
   data: PurchaseRow[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: listMockPurchases(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -256,7 +256,7 @@ export async function fetchMyPurchases(): Promise<{
 export async function cancelMySubscription(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const row = mockCancelSubscription(id);
     if (!row) {
       return {
@@ -308,7 +308,7 @@ export function formatInvoiceAmount(cents: number, currency: string): string {
 export async function fetchMembershipInvoices(): Promise<
   { ok: true; invoices: MembershipInvoice[] } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       invoices: [

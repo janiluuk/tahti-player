@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { FetchMeta } from './client';
 import { onMockOverridesReset } from './mock-overrides';
-import { apiErrorMeta, isForceMock } from './mode';
+import { apiErrorMeta, FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 export type PartyReminder = { reminded: boolean; count: number };
@@ -27,7 +27,7 @@ function reminderPath(partyId: string) {
 export async function fetchPartyReminder(
   partyId: string,
 ): Promise<{ data: PartyReminder | null; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockState(partyId),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -46,7 +46,7 @@ export async function setPartyReminder(
   partyId: string,
   remind: boolean,
 ): Promise<{ ok: true; data: PartyReminder } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (remind) {
       mockReminded.add(partyId);
     } else {

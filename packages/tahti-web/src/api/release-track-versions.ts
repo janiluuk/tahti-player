@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { FetchMeta } from './client';
 import { getJson } from './http';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 export type ReleaseTrackVersion = {
@@ -46,7 +46,7 @@ export async function fetchReleaseTrackVersions(
   releaseId: string,
   trackId: string,
 ): Promise<{ data: ReleaseTrackVersion[] | null; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFor(trackId),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -68,7 +68,7 @@ export async function activateReleaseTrackVersion(
 ): Promise<
   { ok: true; data: ReleaseTrackVersion[] } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const next = mockFor(trackId).map((version) => ({
       ...version,
       isActive: version.id === versionId,
@@ -116,7 +116,7 @@ export async function uploadReleaseTrackVersion(
   if (!RELEASE_TRACK_VERSION_TYPES.includes(contentType)) {
     return { ok: false, error: i18n.t('web:batch53.useAudioFormats') };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const current = mockFor(trackId);
     const created: ReleaseTrackVersion = {
       id: `${trackId}-v${current.length + 1}`,

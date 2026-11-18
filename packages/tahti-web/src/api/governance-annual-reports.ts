@@ -1,5 +1,5 @@
 import { requestJson } from './client-request';
-import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
+import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
 
 export type PublishedAnnualReport = {
   year: number;
@@ -35,7 +35,7 @@ export async function fetchAnnualReports(): Promise<{
   data: PublishedAnnualReport[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockAnnualReports(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

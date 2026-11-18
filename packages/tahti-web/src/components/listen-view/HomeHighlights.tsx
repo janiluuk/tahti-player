@@ -11,7 +11,7 @@ import {
   fetchLatestReleases,
   type LatestRelease,
 } from '../../api/latest-releases';
-import { isForceMock } from '../../api/mode';
+import { FORCE_MOCK } from '../../api/mode';
 import type { DiscoverTrackItem, TahtiPlayable } from '../../api/types';
 import { useDiscoverTrackPlayback } from '../../hooks/useDiscoverTrackPlayback';
 import { placeholderArtworkUrl } from '../../lib/placeholderArt';
@@ -43,7 +43,7 @@ function useSection<T>(
 ): Section<T> & { retry: () => void } {
   const { data, error, retry } = useSnapshotFetch<T[]>(key, async () => {
     const { data: items, meta } = await load();
-    if (meta.reason && !isForceMock()) {
+    if (meta.reason && !FORCE_MOCK) {
       throw new Error(meta.reason);
     }
     return items;

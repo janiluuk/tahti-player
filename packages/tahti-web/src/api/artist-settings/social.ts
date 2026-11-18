@@ -1,8 +1,8 @@
 import type { FetchMeta } from '.././client';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
@@ -63,7 +63,7 @@ export async function fetchSocialConnections(): Promise<{
   data: SocialConnections;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: { ...mockSocial },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -78,7 +78,7 @@ export async function fetchSocialConnections(): Promise<{
       meta: { source: 'api' },
     };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: { ...mockSocial }, meta: mockFallbackMeta(err) };
     }
     return { data: socialConnectionsFromLinks(null), meta: apiErrorMeta(err) };
@@ -92,7 +92,7 @@ export async function patchSocialConnections(
 ): Promise<
   { ok: true; data: SocialConnections } | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     setMockSocial({ ...mockSocial, ...patch });
     return { ok: true, data: { ...mockSocial } };
   }

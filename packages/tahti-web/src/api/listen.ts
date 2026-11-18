@@ -8,8 +8,9 @@ import {
 } from './mock';
 import { mockFixture } from './mock-overrides';
 import {
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   withMockFallback,
   type FetchMeta,
 } from './mode';
@@ -75,7 +76,7 @@ export async function fetchDirectory(): Promise<{
   data: ChannelDirectoryResponse;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockDirectory(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -87,7 +88,11 @@ export async function fetchDirectory(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    return withMockFallback(err, mockDirectory, () => ({ items: [] }));
+    return withMockFallback(
+      err,
+      ALLOW_MOCK_FALLBACK ? mockDirectory : null,
+      () => ({ items: [] }),
+    );
   }
 }
 
@@ -104,7 +109,7 @@ export async function fetchSearch(
   if (!q.trim()) {
     return { data: empty, meta: { source: 'api' } };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockSearch(q, type),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -118,7 +123,7 @@ export async function fetchSearch(
   } catch (err) {
     return withMockFallback(
       err,
-      () => mockSearch(q, type),
+      ALLOW_MOCK_FALLBACK ? () => mockSearch(q, type) : null,
       () => empty,
     );
   }
@@ -136,7 +141,7 @@ export async function fetchTracksByTag(
   if (!trimmed) {
     return { ok: true, tracks: [] };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       tracks: mockFixture('tagTracks', mockTracksMatchingTag(trimmed), trimmed),
@@ -183,7 +188,7 @@ export async function fetchOnAirChannels(): Promise<{
     replaying: [],
     recent: [],
   });
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mock(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -195,7 +200,7 @@ export async function fetchOnAirChannels(): Promise<{
       meta: { source: 'api' },
     };
   } catch (err) {
-    return withMockFallback(err, mock, empty);
+    return withMockFallback(err, ALLOW_MOCK_FALLBACK ? mock : null, empty);
   }
 }
 
@@ -204,7 +209,7 @@ export async function fetchFeed(): Promise<{
   data: FeedResponse;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFeed(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

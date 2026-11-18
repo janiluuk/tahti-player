@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { FetchMeta } from './client';
 import { getJson } from './http';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 export type FallbackCollectionOption = {
@@ -32,7 +32,7 @@ export async function fetchFallbackCollections(slug: string): Promise<{
   data: FallbackCollectionOption[] | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockOptions(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -54,7 +54,7 @@ export async function setFallbackCollection(
   slug: string,
   collectionId: string | null,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockActiveId = collectionId;
     return { ok: true };
   }

@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson } from '../http';
-import { failMeta, isForceMock } from '../mode';
+import { failMeta, FORCE_MOCK } from '../mode';
 
 export type LegalHoldKind =
   'MEETING' | 'DOCUMENT' | 'RESOLUTION' | 'ANNUAL_REPORT';
@@ -28,7 +28,7 @@ const MOCK_HOLDS: GovernanceLegalHold[] = [
 export async function fetchGovernanceLegalHolds(
   kinds?: LegalHoldKind[],
 ): Promise<{ data: GovernanceLegalHold[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: MOCK_HOLDS.filter((h) => !kinds?.length || kinds.includes(h.kind)),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

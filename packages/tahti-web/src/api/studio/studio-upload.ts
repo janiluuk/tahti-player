@@ -2,7 +2,7 @@ import { sniffAudioFile } from '../../lib/audioMagic';
 import type { FetchMeta } from '../client';
 import { getMockSessionUser } from '../mock-session';
 import { registerMockUploadedSound } from '../mock-uploads';
-import { isForceMock } from '../mode';
+import { FORCE_MOCK } from '../mode';
 import { RequestJsonError } from '../request-json';
 import { mockSoundStore } from './studio-mock';
 import { requestJson } from './studio-request';
@@ -20,7 +20,7 @@ export async function uploadSoundFile(input: {
   if ((await sniffAudioFile(input.file)) === 'not-audio') {
     return { ok: false, error: NOT_AUDIO_MESSAGE };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const id = `arch-mock-${Date.now()}`;
     const channelSlug = getMockSessionUser()?.username ?? 'demo';
     const mime = input.file.type || 'audio/wav';

@@ -1,4 +1,4 @@
-import { isForceMock } from '../api/mode';
+import { FORCE_MOCK } from '../api/mode';
 import {
   readMockStorefront,
   type PublicStoreTier,
@@ -38,7 +38,7 @@ export function resolveStorefront(profile: PublicProfile): ChannelStorefront {
     paymentsReady: profile.storePaymentsReady !== false,
     items: storeListingsFromTracks(profile.tracks),
   };
-  if (!isForceMock()) {
+  if (!FORCE_MOCK) {
     return fromProfile;
   }
   const mock = readMockStorefront(profile.artist.username);

@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 
 export type MentionSurface =
@@ -81,7 +81,7 @@ function failure(err: unknown, fallback: string): { ok: false; error: string } {
 }
 
 export async function fetchMentions(limit = 20): Promise<Result<Mention[]>> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       data: [
@@ -111,7 +111,7 @@ export async function fetchMentions(limit = 20): Promise<Result<Mention[]>> {
 }
 
 export async function fetchMentionSettings(): Promise<Result<MentionSettings>> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       data: { ...mockSettings, muted: [...mockSettings.muted] },
@@ -134,7 +134,7 @@ export async function patchMentionSettings(
 ): Promise<
   Result<Pick<MentionSettings, 'mentionsEnabled' | 'publicMentionsEnabled'>>
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockSettings = { ...mockSettings, ...patch };
     return { ok: true, data: mockSettings };
   }
@@ -159,7 +159,7 @@ export async function setMentionMute(
   if (!/^[\w.-]{1,32}$/.test(username)) {
     return { ok: false, error: i18n.t('web:meMentionsApi.enterUsername') };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockSettings = {
       ...mockSettings,
       muted: muted

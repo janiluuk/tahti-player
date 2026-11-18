@@ -1,9 +1,9 @@
 import type { FetchMeta } from '../client';
 import { getJson, mutate } from '../http';
 import {
-  allowMockFallback,
+  ALLOW_MOCK_FALLBACK,
   apiErrorMeta,
-  isForceMock,
+  FORCE_MOCK,
   mockFallbackMeta,
 } from '../mode';
 
@@ -36,7 +36,7 @@ export async function fetchAdminVenues(): Promise<{
   data: AdminVenue[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: [
         {
@@ -71,7 +71,7 @@ export async function setAdminVenueVerification(
   slug: string,
   verified: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   return mutate(
@@ -217,7 +217,7 @@ export async function fetchAdminContentOverview(): Promise<{
   data: AdminContentOverview;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockContentOverview(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -229,7 +229,7 @@ export async function fetchAdminContentOverview(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockContentOverview(), meta: mockFallbackMeta(err) };
     }
     return {
@@ -333,7 +333,7 @@ export async function fetchAdminDashboard(): Promise<{
   data: AdminDashboard;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockDashboard(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -408,7 +408,7 @@ export async function fetchAdminDashboard(): Promise<{
       meta: { source: 'api' },
     };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: mockDashboard(), meta: mockFallbackMeta(err) };
     }
     return {

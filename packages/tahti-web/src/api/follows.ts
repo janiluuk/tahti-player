@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import { requestJson } from './client-request';
 import { listMockFollowing, mockFollow, mockUnfollow } from './mock-session';
-import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
+import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
 import type { FollowListUser } from './types';
 
 export type FollowStatus = {
@@ -22,7 +22,7 @@ export async function fetchFollowing(username: string): Promise<{
   data: FollowListUser[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     void username;
     return {
       data: listMockFollowing(),
@@ -42,7 +42,7 @@ export async function fetchFollowing(username: string): Promise<{
 export async function fetchFollowStatus(
   username: string,
 ): Promise<FollowStatus | null> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       following: listMockFollowing().some((u) => u.username === username),
       followerCount: null,
@@ -61,7 +61,7 @@ async function sendFollow(
   method: 'POST' | 'DELETE',
   fallbackError: string,
 ): Promise<FollowResult> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (method === 'POST') {
       mockFollow(username);
     } else {
@@ -107,7 +107,7 @@ export async function fetchFollowList(
   direction: FollowListDirection,
   offset = 0,
 ): Promise<FollowListPage | null> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       users: direction === 'following' ? listMockFollowing() : [],
       hasMore: false,

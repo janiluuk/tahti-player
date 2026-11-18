@@ -1,5 +1,5 @@
 import type { FetchMeta } from '.././client';
-import { failMeta, isForceMock } from '.././mode';
+import { failMeta, FORCE_MOCK } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockGreenRoom, setMockGreenRoom } from './mock';
 
@@ -32,7 +32,7 @@ export async function fetchGreenRoomAccess(
   | { ok: true; data: GreenRoomAccess }
   | { ok: false; needsLogin: boolean; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       data: {
@@ -67,7 +67,7 @@ export async function fetchGreenRoomAccess(
 export async function joinGreenRoom(
   channelSlug: string,
 ): Promise<GreenRoomAccess | null> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return null;
   }
   try {
@@ -95,7 +95,7 @@ export async function fetchGreenRoomPrefs(): Promise<{
   data: GreenRoomPrefs;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: { ...mockGreenRoom },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -114,7 +114,7 @@ export async function fetchGreenRoomPrefs(): Promise<{
 export async function patchGreenRoomPrefs(
   patch: Partial<GreenRoomPrefs>,
 ): Promise<{ ok: true; data: GreenRoomPrefs } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     setMockGreenRoom({ ...mockGreenRoom, ...patch });
     return { ok: true, data: { ...mockGreenRoom } };
   }

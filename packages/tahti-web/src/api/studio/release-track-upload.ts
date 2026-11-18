@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { putWithProgress, UploadAbortedError } from '../../lib/putWithProgress';
-import { isForceMock } from '../mode';
+import { FORCE_MOCK } from '../mode';
 import { requestJson } from '../request-json';
 
 export const RELEASE_TRACK_AUDIO_TYPES = [
@@ -65,7 +65,7 @@ export async function uploadReleaseTrackAudio(
     };
   }
   try {
-    if (isForceMock()) {
+    if (FORCE_MOCK) {
       await mockProgress(options.onProgress, options.signal);
       return { ok: true, sourceKey: `mock/${trackId}`, status: 'SCANNING' };
     }

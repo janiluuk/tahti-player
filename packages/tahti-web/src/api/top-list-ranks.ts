@@ -1,5 +1,5 @@
 import { getJson } from './http';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 
 const MAX_IDS = 100;
 
@@ -12,7 +12,7 @@ export async function fetchTopListRanks(
   if (ids.length === 0) {
     return {};
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return ids[0] ? { [ids[0]]: 3 } : {};
   }
   try {

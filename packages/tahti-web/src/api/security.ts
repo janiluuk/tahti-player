@@ -1,8 +1,8 @@
 import { i18n } from '@tahti-player/i18n';
 
 import {
-  allowMockFallback,
-  isForceMock,
+  ALLOW_MOCK_FALLBACK,
+  FORCE_MOCK,
   mockFallbackMeta,
   type FetchMeta,
 } from './mode';
@@ -14,7 +14,7 @@ export async function fetchTotpStatus(): Promise<{
   data: { enabled: boolean };
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: { enabled: mockTotpEnabled },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -26,7 +26,7 @@ export async function fetchTotpStatus(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (allowMockFallback()) {
+    if (ALLOW_MOCK_FALLBACK) {
       return { data: { enabled: false }, meta: mockFallbackMeta(err) };
     }
     throw err;
@@ -37,7 +37,7 @@ export async function setupTotp(): Promise<
   | { ok: true; secret: string; otpauthUri: string }
   | { ok: false; error: string }
 > {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       ok: true,
       secret: 'MOCKSECRETABCDEFGH',
@@ -62,7 +62,7 @@ export async function setupTotp(): Promise<
 export async function confirmTotp(
   code: string,
 ): Promise<{ ok: true; backupCodes: string[] } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (code.replace(/\s/g, '').length < 6) {
       return { ok: false, error: 'Invalid code' };
     }
@@ -89,7 +89,7 @@ export async function confirmTotp(
 export async function disableTotp(
   password: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     if (!password) {
       return { ok: false, error: i18n.t('web:batch54.passwordRequired') };
     }

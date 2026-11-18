@@ -3,7 +3,7 @@ import { i18n } from '@tahti-player/i18n';
 import type { FetchMeta } from './client';
 import { getJson } from './http';
 import { mockFixture } from './mock-overrides';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 import { requestJson } from './request-json';
 import type { TrackComment } from './types';
 
@@ -22,7 +22,7 @@ export async function fetchChannelComments(slug: string): Promise<{
   data: { comments: TrackComment[]; commentsEnabled: boolean } | null;
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockFixture(
         'channelComments',
@@ -53,7 +53,7 @@ export async function postChannelComment(
   slug: string,
   body: string,
 ): Promise<{ ok: true; data: TrackComment } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const comment: TrackComment = {
       id: `mock-channel-comment-${Date.now()}`,
       body,

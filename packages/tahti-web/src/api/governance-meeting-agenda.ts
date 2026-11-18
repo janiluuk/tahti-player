@@ -1,5 +1,5 @@
 import { requestJson } from './client-request';
-import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
+import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
 
 /** An agenda item as members see it, with the records filed under it:
  * motions past draft, published resolutions and published documents.
@@ -61,7 +61,7 @@ export function mockMeetingAgenda(meetingId: string): MemberAgendaItem[] {
 export async function fetchMeetingAgenda(
   meetingId: string,
 ): Promise<{ data: MemberAgendaItem[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: mockMeetingAgenda(meetingId),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

@@ -1,5 +1,5 @@
 import { getJson, sendJson } from './http';
-import { isForceMock } from './mode';
+import { FORCE_MOCK } from './mode';
 
 export type CatalogTrack = {
   id: string;
@@ -41,7 +41,7 @@ export async function searchCatalogTracks(
   | { ok: false; error: string }
 > {
   const query = q.trim();
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const needle = query.toLowerCase();
     return {
       ok: true,
@@ -77,7 +77,7 @@ export async function addTrackToCollaborativePlaylist(
   soundId: string,
   note?: string,
 ): Promise<{ ok: true; itemId: string | null } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, itemId: `mock-collab-${Date.now()}` };
   }
   const trimmed = note?.trim();
@@ -98,7 +98,7 @@ export async function removeOwnCollaborativeAdd(
   slug: string,
   itemId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true };
   }
   try {

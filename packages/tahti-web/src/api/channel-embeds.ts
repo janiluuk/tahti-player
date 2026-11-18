@@ -1,6 +1,6 @@
 import type { FetchMeta } from './client';
 import { getJson } from './http';
-import { failMeta, isForceMock } from './mode';
+import { failMeta, FORCE_MOCK } from './mode';
 
 export type ChannelSoundCloudEmbed = {
   id: string;
@@ -17,7 +17,7 @@ export async function fetchChannelSoundCloudEmbeds(slug: string): Promise<{
   data: ChannelSoundCloudEmbed[];
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return {
       data: [
         {

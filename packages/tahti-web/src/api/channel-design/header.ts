@@ -1,4 +1,4 @@
-import { isForceMock } from '.././mode';
+import { FORCE_MOCK } from '.././mode';
 import { requestJson } from '.././request-json';
 
 export const HEADER_STYLES = ['GRADIENT', 'SOLID', 'VIDEO_LOOP'] as const;
@@ -94,7 +94,7 @@ export async function uploadChannelHeaderVideo(
       error: 'Use an MP4/WebM video or a JPEG/PNG/WebP/GIF image.',
     };
   }
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, videoBackgroundUrl: URL.createObjectURL(file) };
   }
   try {

@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
-import { failMeta, isForceMock } from '../mode';
+import { failMeta, FORCE_MOCK } from '../mode';
 
 // ── Tahti Selects ───────────────────────────────────────────────────────────
 
@@ -98,7 +98,7 @@ export async function fetchAdminSelects(): Promise<{
   data: { items: AdminSelectsItem[]; stream: AdminSelectsStream };
   meta: FetchMeta;
 }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const current = selectsState()[0] ?? null;
     return {
       data: {
@@ -147,7 +147,7 @@ export async function fetchAdminSelects(): Promise<{
 export async function searchAdminSelectsBrowse(
   q: string,
 ): Promise<{ data: AdminSelectsBrowseItem[]; meta: FetchMeta }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const query = q.toLowerCase();
     return {
       data: mockSelectsBrowse().filter((i) =>
@@ -167,7 +167,7 @@ export async function searchAdminSelectsBrowse(
 }
 
 export function addToSelectsRotation(item: AdminSelectsBrowseItem) {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     selectsState().push({
       id: `sel-${Date.now()}`,
       soundId: item.id,
@@ -186,7 +186,7 @@ export function addToSelectsRotation(item: AdminSelectsBrowseItem) {
 }
 
 export function removeFromSelectsRotation(id: string) {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockSelectsItems = selectsState().filter((i) => i.id !== id);
     return Promise.resolve({ ok: true } as const);
   }
@@ -197,7 +197,7 @@ export function removeFromSelectsRotation(id: string) {
 }
 
 export function reorderSelectsRotation(itemIds: string[]) {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     const byId = new Map(selectsState().map((item) => [item.id, item]));
     mockSelectsItems = itemIds
       .map((id) => byId.get(id))
@@ -210,7 +210,7 @@ export function reorderSelectsRotation(itemIds: string[]) {
 }
 
 export function startSelectsStream() {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockSelectsStreamRunning = true;
     return Promise.resolve({ ok: true } as const);
   }
@@ -218,7 +218,7 @@ export function startSelectsStream() {
 }
 
 export function stopSelectsStream() {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     mockSelectsStreamRunning = false;
     return Promise.resolve({ ok: true } as const);
   }
@@ -230,7 +230,7 @@ export type SelectsGenerateMode = 'add' | 'replace';
 export async function generateSelectsRotation(
   mode: SelectsGenerateMode,
 ): Promise<{ ok: true; added: number } | { ok: false; error: string }> {
-  if (isForceMock()) {
+  if (FORCE_MOCK) {
     return { ok: true, added: 10 };
   }
   try {
