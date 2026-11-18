@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { apiBase } from '../http';
-import { FORCE_MOCK } from '../mode';
+import { isForceMock } from '../mode';
 import { requestJson } from '../request-json';
 
 /** One Spotify track as tahti-org's import routes return it. */
@@ -29,7 +29,7 @@ const MOCK_TRACK: SpotifyTrack = {
 };
 
 async function list(path: string): Promise<Result<SpotifyTrack[]>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: [MOCK_TRACK] };
   }
   try {
@@ -68,7 +68,7 @@ export async function addSpotifyTrack(
   collectionId: string,
   spotifyUri: string,
 ): Promise<Result<{ soundId: string }>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: { soundId: `spotify-${spotifyUri}` } };
   }
   try {

@@ -12,7 +12,7 @@ import {
 } from '@tahti-player/ui';
 
 import { fetchAnnouncements } from '../api/client';
-import { FORCE_MOCK } from '../api/mode';
+import { isForceMock } from '../api/mode';
 import { fetchRssArticles } from '../api/rss-feed';
 import type { Announcement } from '../api/types';
 import { aggregateNews, type AggregatedArticle } from '../lib/newsAggregate';
@@ -91,7 +91,7 @@ export function LatestNewsWidget({
       }
       const platformFailed =
         Boolean(platform.meta.reason) &&
-        !FORCE_MOCK &&
+        !isForceMock() &&
         platform.data.length === 0;
       const platformPosts = platformFailed ? [] : platform.data;
       const rssFeeds = feeds as Array<{

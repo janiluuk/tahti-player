@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { apiBase } from './http';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 /** Follows an emailed unsubscribe link. The API answers with a redirect to
  * `/newsletter/unsubscribed` when the token is valid and a 404 when it
@@ -9,7 +9,7 @@ import { FORCE_MOCK } from './mode';
 export async function unsubscribeFromNewsletter(
   token: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {

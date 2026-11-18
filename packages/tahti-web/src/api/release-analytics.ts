@@ -1,6 +1,6 @@
 import type { FetchMeta } from './client';
 import { getJson } from './http';
-import { failMeta, FORCE_MOCK } from './mode';
+import { failMeta, isForceMock } from './mode';
 
 export type ReleaseSmartLinkAnalytics = {
   releaseId: string;
@@ -13,7 +13,7 @@ export type ReleaseSmartLinkAnalytics = {
 export async function fetchReleaseSmartLinkAnalytics(
   releaseId: string,
 ): Promise<{ data: ReleaseSmartLinkAnalytics | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         releaseId,

@@ -7,7 +7,7 @@ import {
   mockGovernanceMembers,
   mockGovernanceQuarterlyReports,
 } from './governanceMocks';
-import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
+import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 import type {
   GovernanceDocument,
   GovernanceMeeting,
@@ -201,7 +201,7 @@ export async function fetchGovernanceMotions(
   forbidden?: boolean;
 }> {
   const limit = opts.limit ?? 100;
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     let start = 0;
     if (opts.cursor) {
       const idx = mockMotions.findIndex((m) => m.id === opts.cursor);
@@ -263,7 +263,7 @@ export async function fetchGovernanceMotion(
   | { ok: true; data: GovernanceMotionDetail }
   | { ok: false; error: string; forbidden?: boolean }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const motion = mockMotions.find((m) => m.id === id);
     if (!motion) {
       return { ok: false, error: i18n.t('web:batch52.motionNotFound') };
@@ -305,7 +305,7 @@ export async function createGovernanceMotion(input: {
 }): Promise<
   { ok: true; data: GovernanceMotionDraft } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row: GovernanceMotionDraft = {
       id: `motion-${Date.now()}`,
       state: 'DRAFT',
@@ -349,7 +349,7 @@ export async function fetchPublicGovernanceMotions(year?: number): Promise<{
   meta: FetchMeta;
 }> {
   const query = year ? `?year=${encodeURIComponent(year)}` : '';
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -392,7 +392,7 @@ export async function fetchGovernanceMeetings(): Promise<{
   data: GovernanceMeeting[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockGovernanceMeetings(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -412,7 +412,7 @@ export async function fetchGovernanceDocuments(): Promise<{
   data: GovernanceDocument[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockGovernanceDocuments(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -433,7 +433,7 @@ export async function fetchGovernanceMembers(): Promise<{
   meta: FetchMeta;
   forbidden?: boolean;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockGovernanceMembers(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -458,7 +458,7 @@ export async function fetchGovernanceQuarterlyReports(): Promise<{
   data: GovernanceQuarterlyReport[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockGovernanceQuarterlyReports(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -478,7 +478,7 @@ export async function voteOnMotion(
   id: string,
   choice: 'YES' | 'NO' | 'ABSTAIN',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockMotions = mockMotions.map((m) => {
       if (m.id !== id || m.youVoted) {
         return m;
@@ -524,7 +524,7 @@ export async function patchGovernanceMotion(
     closeAt?: string;
   },
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockMotions = mockMotions.map((m) =>
       m.id === id
         ? {
@@ -561,7 +561,7 @@ export async function fetchMotionComments(id: string): Promise<{
   data: MotionComment[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [...(mockMotionComments[id] ?? [])],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -588,7 +588,7 @@ export async function fetchMotionCommentsBulk(ids: string[]): Promise<{
   if (ids.length === 0) {
     return { data: {}, meta: { source: 'api' } };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: Object.fromEntries(
         ids.map((id) => [id, [...(mockMotionComments[id] ?? [])]]),
@@ -610,7 +610,7 @@ export async function postMotionComment(
   id: string,
   body: string,
 ): Promise<{ ok: true; data: MotionComment } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row: MotionComment = {
       id: `c-${Date.now()}`,
       body,

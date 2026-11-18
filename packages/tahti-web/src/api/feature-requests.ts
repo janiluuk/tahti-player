@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import { requestJson } from './client-request';
 import type { MotionComment } from './governance-member';
-import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
+import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 import type { FeatureRequest } from './types';
 
 let mockFeatureRequests: FeatureRequest[] | null = null;
@@ -112,7 +112,7 @@ export async function fetchFeatureRequests(): Promise<{
   meta: FetchMeta;
   forbidden?: boolean;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: featureRequestFixtures().map((row) => ({ ...row })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -137,7 +137,7 @@ export async function createFeatureRequest(input: {
   title: string;
   description: string;
 }): Promise<{ ok: true; data: FeatureRequest } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row: FeatureRequest = {
       id: `fr-${Date.now()}`,
       title: input.title,
@@ -174,7 +174,7 @@ export async function voteFeatureRequest(
   id: string,
   vote: boolean,
 ): Promise<{ ok: true; voteCount: number } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     let voteCount = 0;
     mockFeatureRequests = featureRequestFixtures().map((row) => {
       if (row.id !== id) {
@@ -203,7 +203,7 @@ export async function fetchFeatureRequestComments(id: string): Promise<{
   data: MotionComment[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [...(featureRequestCommentFixtures()[id] ?? [])],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -223,7 +223,7 @@ export async function postFeatureRequestComment(
   id: string,
   body: string,
 ): Promise<{ ok: true; data: MotionComment } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row: MotionComment = {
       id: `frc-${Date.now()}`,
       body,

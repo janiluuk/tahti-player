@@ -1,9 +1,9 @@
 import type { FetchMeta } from '../client';
 import { DEMO_MP3 } from '../mock';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from '../mode';
 import { addMockSoundVersion } from '../sound-versions';
@@ -48,7 +48,7 @@ export async function fetchEditorProjects(): Promise<{
   data: EditorProjectRow[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [...mockProjects],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -60,7 +60,7 @@ export async function fetchEditorProjects(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: [...mockProjects], meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
@@ -73,7 +73,7 @@ export async function createEditorProject(input: {
 }): Promise<
   { ok: true; data: EditorProjectRow } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row: EditorProjectRow = {
       id: `proj-mock-${Date.now()}`,
       title: input.title ?? 'Untitled session',
@@ -104,7 +104,7 @@ export async function fetchEditorProject(id: string): Promise<{
   data: EditorProjectDetail;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row = mockProjects.find((p) => p.id === id) ?? {
       id,
       title: 'Mock project',
@@ -145,7 +145,7 @@ export async function updateEditorProject(
 ): Promise<
   { ok: true; data: EditorProjectDetail } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const project = mockProjects.find((item) => item.id === id);
     if (!project) {
       return { ok: false, error: 'Project not found' };
@@ -172,7 +172,7 @@ export async function updateEditorProject(
 export async function deleteEditorProject(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockProjects = mockProjects.filter((item) => item.id !== id);
     mockProjectTimelines.delete(id);
     return { ok: true };
@@ -196,7 +196,7 @@ export async function fetchEditorDraft(soundId: string): Promise<{
   data: EditorDraft;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const existing = mockDrafts.get(soundId);
     if (existing) {
       return {
@@ -234,7 +234,7 @@ export async function saveEditorDraft(
   editList: EditList,
   expectedUpdatedAt?: string | null,
 ): Promise<{ ok: true; updatedAt: string } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const updatedAt = new Date().toISOString();
     mockDrafts.set(soundId, {
       editList,
@@ -274,7 +274,7 @@ export async function renderEditorDraft(
 ): Promise<
   { ok: true; versionId: string; status: string } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row = addMockSoundVersion(soundId, {
       versionLabel,
       activate,

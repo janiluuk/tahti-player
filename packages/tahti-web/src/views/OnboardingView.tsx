@@ -32,7 +32,7 @@ import {
 } from '../api/artist-settings';
 import { checkSlugAvailable, updateChannelSlug } from '../api/channel-design';
 import { provisionChannel } from '../api/channel-provision';
-import { FORCE_MOCK } from '../api/mode';
+import { isForceMock } from '../api/mode';
 import { fetchMeProfile, patchMeProfile } from '../api/studio-extras';
 import { GenrePicker } from '../components/GenrePicker';
 import { PageLoading } from '../components/PageStates';
@@ -138,7 +138,7 @@ export function OnboardingView() {
       setSlug(user.channel?.slug ?? user.username);
       // socialLinks is replaced wholesale on save, so a profile that failed
       // to load must not be written back over the stored links.
-      const loaded = !profile.meta.reason || FORCE_MOCK;
+      const loaded = !profile.meta.reason || isForceMock();
       setSocialLinks(loaded ? (profile.data.socialLinks ?? {}) : null);
       setGenres(
         normalizeGenresForPicker(

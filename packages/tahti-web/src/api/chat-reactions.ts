@@ -1,11 +1,11 @@
 import { getJson } from './http';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 /** Anonymous token for the `reactions:<slug>` channel (`GET /api/chat/:slug/reactions-token`). */
 export async function fetchReactionsToken(
   slug: string,
 ): Promise<string | null> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return null;
   }
   try {

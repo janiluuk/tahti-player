@@ -1,4 +1,4 @@
-import { FORCE_MOCK } from '.././mode';
+import { isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockVisual, setMockVisual } from './mock';
 import { normalizeChannelVisual, type ChannelVisual } from './visual';
@@ -7,7 +7,7 @@ import { toChannelVisualApiPatch, type ChannelVisualPatch } from './visual-api';
 export async function patchChannelVisual(
   patch: ChannelVisualPatch,
 ): Promise<{ ok: true; data: ChannelVisual } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     setMockVisual({
       ...mockVisual,
       ...(patch.showSiteSidebar !== undefined

@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson, sendJson } from '../http';
-import { failMeta, FORCE_MOCK } from '../mode';
+import { failMeta, isForceMock } from '../mode';
 
 export type AdminEngagementAdjustment = {
   units: number;
@@ -33,7 +33,7 @@ export async function fetchAdminUserEngagement(
   userId: string,
   year: number,
 ): Promise<{ data: AdminUserEngagement | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const adjustments = mockEngagementAdjustments(userId).filter(
       (entry) => new Date(entry.createdAt).getUTCFullYear() === year,
     );
@@ -71,7 +71,7 @@ export async function createEngagementAdjustment(input: {
   if (!reason) {
     return { ok: false, error: 'A reason is required' };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockEngagementAdjustments(input.userId).unshift({
       units: input.units,
       reason,

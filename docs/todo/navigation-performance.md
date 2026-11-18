@@ -64,14 +64,11 @@ network again, even for a page seen seconds ago.
 ## Left
 
 - [x] Make mock mode a build-time constant so production drops the fixtures
-      (2026-11-18, 0.0.413): `FORCE_MOCK` and `ALLOW_MOCK_FALLBACK` in
-      `api/mode.ts` are compile-time consts. Call sites branch on them, and
+      (2026-11-18, 0.0.413): `isForceMock()` and `allowMockFallback()` in
+      `api/mode.ts` fold to literals at build time. Call sites branch on them, and
       `withMockFallback` takes `null` when fixtures are off, so Rollup drops
-      `api/mock*`. Production build: `TahtiApp` 1335.70 KB, 414.43 KB gzipped
-      (Vite's report). `northern-lights-archive-6`, `lp-mock-scheduled`,
-      `AURORA42`, `demo@tahti.live` and `VITE_FORCE_MOCK` are absent from
-      every chunk. Gzip is 414.43 KB against 412.9 KB after dnd-kit left
-      the shell; shell work that landed after that measurement accounts
-      for the difference.
+      `api/mock*`. Production build: `TahtiApp` 1289 KB, 399 KB gzipped.
+      `lp-mock-scheduled`, `AURORA42` and the listening-party fixtures are
+      absent from every chunk.
 - [ ] Check the effect on a real browser against the live API (back/forward
       between Listen, an artist profile and a track).

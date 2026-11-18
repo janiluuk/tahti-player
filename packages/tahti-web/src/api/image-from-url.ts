@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 type ImageResult = { ok: true; url: string } | { ok: false; error: string };
@@ -16,7 +16,7 @@ export async function setReleaseArtworkFromUrl(
   releaseId: string,
   sourceUrl: string,
 ): Promise<ImageResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, url: sourceUrl };
   }
   try {
@@ -37,7 +37,7 @@ export async function setCollectionCoverFromUrl(
   slug: string,
   sourceUrl: string,
 ): Promise<ImageResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, url: sourceUrl };
   }
   try {
@@ -57,7 +57,7 @@ export async function setCollectionCoverFromUrl(
 export async function setProfileAvatarFromUrl(
   sourceUrl: string,
 ): Promise<ImageResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, url: sourceUrl };
   }
   try {
@@ -75,7 +75,7 @@ export async function setChannelMemberPictureFromUrl(
   memberId: string,
   sourceUrl: string,
 ): Promise<ImageResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, url: sourceUrl };
   }
   try {

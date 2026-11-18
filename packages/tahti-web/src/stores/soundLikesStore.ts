@@ -7,7 +7,7 @@ import {
   likedTrackFromDetail,
   rememberMockLike,
 } from '../api/likes';
-import { FORCE_MOCK } from '../api/mode';
+import { isForceMock } from '../api/mode';
 import { setSoundEngagement } from '../api/sound-engagement';
 
 type SoundLikesState = {
@@ -66,7 +66,7 @@ export const useSoundLikesStore = create<SoundLikesState>((set, get) => ({
     if (!result.ok) {
       return result.error;
     }
-    if (FORCE_MOCK) {
+    if (isForceMock()) {
       if (result.data.active) {
         const detail = await fetchTrackDetail(soundId);
         if (detail.data) {

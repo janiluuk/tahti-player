@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { FetchMeta } from './client';
 import { getJson } from './http';
-import { failMeta, FORCE_MOCK } from './mode';
+import { failMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type GreenRoomInvite = {
@@ -54,7 +54,7 @@ export async function fetchGreenRoomSession(): Promise<{
   data: GreenRoomSession | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockSession,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -73,7 +73,7 @@ export async function fetchGreenRoomSession(): Promise<{
 export async function setGreenRoomSessionEnabled(
   enabled: boolean,
 ): Promise<Result<GreenRoomSession>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockSession = {
       ...mockSession,
       enabled,
@@ -107,7 +107,7 @@ export async function setGreenRoomSessionEnabled(
 export async function removeGreenRoomInvite(
   userId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockSession = {
       ...mockSession,
       invites: mockSession.invites.filter((invite) => invite.userId !== userId),
@@ -128,7 +128,7 @@ export async function removeGreenRoomInvite(
 export async function inviteToGreenRoom(
   username: string,
 ): Promise<Result<GreenRoomInvite>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const invite: GreenRoomInvite = {
       userId: `mock-${username}`,
       username,
@@ -156,7 +156,7 @@ export async function inviteToGreenRoom(
 export async function syncGreenRoomInvites(): Promise<
   Result<GreenRoomSession>
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: mockSession };
   }
   try {

@@ -3,10 +3,10 @@ import { i18n } from '@tahti-player/i18n';
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
   failMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from '../mode';
 import type {
@@ -55,7 +55,7 @@ export async function fetchAdminGovernanceOverview(): Promise<{
   data: AdminGovernanceOverview;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockGovernanceOverview(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -67,7 +67,7 @@ export async function fetchAdminGovernanceOverview(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: mockGovernanceOverview(), meta: mockFallbackMeta(err) };
     }
     return {
@@ -142,7 +142,7 @@ let mockFeatureRequestsState: AdminFeatureRequestRow[] | null = null;
 export async function fetchAdminFeatureRequests(
   status?: AdminFeatureRequestStatus,
 ): Promise<{ data: AdminFeatureRequestRow[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     if (!mockFeatureRequestsState) {
       mockFeatureRequestsState = mockFeatureRequests();
     }
@@ -167,7 +167,7 @@ export function updateFeatureRequestStatus(
   status: AdminFeatureRequestStatus,
   note?: string,
 ) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row = (mockFeatureRequestsState ?? mockFeatureRequests()).find(
       (r) => r.id === id,
     );
@@ -201,7 +201,7 @@ export async function fetchAdminFeatureRequestReports(): Promise<{
   data: GovernanceQuarterlyReport[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockQuarterlyReports,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -224,7 +224,7 @@ export async function generateFeatureRequestQuarterlyReport(input?: {
   { ok: true; data: GovernanceQuarterlyReport } | { ok: false; error: string }
 > {
   const { year, quarter } = { ...currentQuarter(), ...input };
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const existing = mockQuarterlyReports.find(
       (r) => r.year === year && r.quarter === quarter,
     );
@@ -270,7 +270,7 @@ export async function fetchAdminGrants(): Promise<{
   data: AdminGrantYearSummary[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockGrantHistory(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -370,7 +370,7 @@ function mockGrantPreview(year: number): AdminGrantPreview {
 export async function fetchAdminGrantPreview(
   year: number,
 ): Promise<{ data: AdminGrantPreview | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockGrantPreview(year),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -389,7 +389,7 @@ export async function fetchAdminGrantPreview(
 export async function fetchAdminGrantHistory(
   year: number,
 ): Promise<{ data: AdminGrantHistoryDetail | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockGrantHistoryDetail(year),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -450,7 +450,7 @@ export async function fetchAdminAgmMotions(): Promise<{
   data: AdminMotion[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockAgmMotions(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -471,7 +471,7 @@ export async function fetchAdminGovernanceMeetings(): Promise<{
   data: GovernanceMeeting[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: MOCK_GOVERNANCE_MEETINGS,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -498,7 +498,7 @@ export async function createAdminGovernanceMeeting(input: {
   quorumRequired?: number;
   agenda?: Array<{ title: string; description?: string }>;
 }): Promise<{ data: GovernanceMeeting | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockCreateGovernanceMeeting(input);
   }
   try {
@@ -530,7 +530,7 @@ export async function patchAdminGovernanceMeeting(
     >
   > & { agenda?: unknown },
 ): Promise<{ data: GovernanceMeeting | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockPatchGovernanceMeeting(id, input);
   }
   try {
@@ -551,7 +551,7 @@ export async function uploadAdminGovernanceMinutes(
 ): Promise<
   { ok: true; data: GovernanceMeeting } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const patched = await patchAdminGovernanceMeeting(meetingId, {
       minutesKey: `mock/governance/meetings/${meetingId}/minutes.pdf`,
     });
@@ -598,7 +598,7 @@ export async function uploadAdminGovernanceMinutes(
 export async function fetchAdminGovernanceAttendance(
   meetingId: string,
 ): Promise<{ data: GovernanceAttendanceItem[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockGovernanceAttendance(meetingId);
   }
   try {
@@ -618,7 +618,7 @@ export async function upsertAdminGovernanceAttendance(
   meetingId: string,
   input: UpsertGovernanceAttendance,
 ): Promise<{ data: GovernanceAttendanceItem | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockUpsertGovernanceAttendance(meetingId, input);
   }
   try {
@@ -637,7 +637,7 @@ export async function fetchAdminGovernanceDocuments(): Promise<{
   data: GovernanceDocument[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: MOCK_GOVERNANCE_DOCUMENTS,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -664,7 +664,7 @@ export async function createAdminGovernanceDocument(input: {
   publishedAt?: string | null;
   meetingId?: string | null;
 }): Promise<{ data: GovernanceDocument | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockCreateGovernanceDocument(input);
   }
   try {
@@ -683,7 +683,7 @@ export async function fetchAdminResolutions(publishedOnly = false): Promise<{
   data: BoardResolution[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: MOCK_BOARD_RESOLUTIONS.filter(
         (resolution) => !publishedOnly || resolution.publishedAt,
@@ -711,7 +711,7 @@ export async function createAdminResolution(input: {
   voteAgainst: number;
   voteAbstain: number;
 }): Promise<{ data: BoardResolution | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockCreateResolution(input);
   }
   try {
@@ -732,7 +732,7 @@ export async function patchAdminResolution(
     Pick<BoardResolution, 'title' | 'body' | 'outcome' | 'publishedAt'>
   >,
 ): Promise<{ data: BoardResolution | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockPatchResolution(id, input);
   }
   try {

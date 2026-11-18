@@ -1,5 +1,5 @@
 import type { FetchMeta } from '.././client';
-import { failMeta, FORCE_MOCK } from '.././mode';
+import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import { type StatsPlaysQuery, type StatsPlaysRange } from './stats-plays';
 
@@ -21,7 +21,7 @@ export async function fetchStorageUsage(): Promise<{
   data: StorageUsage;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         usedBytes: 86_000_000,
@@ -67,7 +67,7 @@ export async function fetchStatsSummary(): Promise<{
   data: StatsSummary;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         playsToday: 42,
@@ -102,7 +102,7 @@ export async function fetchStatsTopTracks(
   data: StatsTopTrack[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -144,7 +144,7 @@ export async function fetchStatsTopCountries(
   data: StatsTopCountry[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         { country: 'FI', count: 120 },
@@ -184,7 +184,7 @@ export async function fetchStatsTopLists(
   data: StatsTopListBucket[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         {

@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
-import { failMeta, FORCE_MOCK } from '../mode';
+import { failMeta, isForceMock } from '../mode';
 
 // ── Storage ─────────────────────────────────────────────────────────────────
 
@@ -105,7 +105,7 @@ export async function fetchAdminStorage(): Promise<{
   data: AdminStorageOverview | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     if (!mockStorageState) {
       mockStorageState = mockStorageOverview();
     }
@@ -123,7 +123,7 @@ export async function fetchAdminStorage(): Promise<{
 }
 
 export function setUserStorageQuota(userId: string, quotaBytes: number) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row = mockStorageState?.users.find((u) => u.userId === userId);
     if (row) {
       row.quotaBytes = quotaBytes;
@@ -213,7 +213,7 @@ export async function fetchAdminStorageUserFiles(userId: string): Promise<{
   data: AdminStorageUserDetail | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockStorageUserDetail(userId),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -375,7 +375,7 @@ export async function fetchAdminFiles(f: AdminFileFilters = {}): Promise<{
   total: number;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     if (!mockAdminFilesState) {
       mockAdminFilesState = mockAdminFiles();
     }
@@ -411,7 +411,7 @@ export async function fetchAdminFiles(f: AdminFileFilters = {}): Promise<{
 }
 
 export async function fetchAdminFileFacets(): Promise<AdminFileFacets> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const files = mockAdminFilesState ?? mockAdminFiles();
     return {
       users: files.map((file) => ({
@@ -433,7 +433,7 @@ export async function fetchAdminFileFacets(): Promise<AdminFileFacets> {
 }
 
 export function deleteAdminFile(id: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockAdminFilesState = (mockAdminFilesState ?? mockAdminFiles()).filter(
       (f) => f.id !== id,
     );
@@ -459,7 +459,7 @@ export async function fetchAdminFileAudio(id: string): Promise<{
   data: AdminFileAudio | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const file = (mockAdminFilesState ?? mockAdminFiles()).find(
       (f) => f.id === id,
     );
@@ -514,7 +514,7 @@ export async function bulkPatchAdminFiles(
   if (ids.length > 200) {
     return { ok: false, error: 'Edit at most 200 files at a time.' };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const files = mockAdminFilesState ?? mockAdminFiles();
     let updated = 0;
     for (const file of files) {
@@ -566,7 +566,7 @@ export async function bulkDeleteAdminFiles(
   if (ids.length > 200) {
     return { ok: false, error: 'Delete at most 200 files at a time.' };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const files = mockAdminFilesState ?? mockAdminFiles();
     mockAdminFilesState = files.filter((file) => !ids.includes(file.id));
     return {

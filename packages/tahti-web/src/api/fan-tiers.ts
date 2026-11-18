@@ -1,8 +1,8 @@
 import type { FetchMeta } from './client';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from './mode';
 import { requestJson } from './request-json';
@@ -35,7 +35,7 @@ export async function fetchMyFanTiers(): Promise<{
   data: FanTierRow[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockTiers.map((t) => ({ ...t })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -45,7 +45,7 @@ export async function fetchMyFanTiers(): Promise<{
     const { data } = await requestJson<FanTierRow[]>('/api/me/fan-tiers');
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return {
         data: mockTiers.map((t) => ({ ...t })),
         meta: mockFallbackMeta(err),
@@ -61,7 +61,7 @@ export async function createFanTier(input: {
   description?: string;
   perks?: string[];
 }): Promise<{ ok: true; data?: FanTierRow } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row: FanTierRow = {
       id: `tier-mock-${Date.now()}`,
       name: input.name,
@@ -91,7 +91,7 @@ export async function setFanTierActive(
   id: string,
   active: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockTiers = mockTiers.map((t) => (t.id === id ? { ...t, active } : t));
     return { ok: true };
   }

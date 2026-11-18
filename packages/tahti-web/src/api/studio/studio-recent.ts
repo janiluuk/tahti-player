@@ -1,5 +1,5 @@
 import type { FetchMeta } from '../client';
-import { FORCE_MOCK } from '../mode';
+import { isForceMock } from '../mode';
 import { requestJson } from '../request-json';
 
 export type RecentSound = {
@@ -19,7 +19,7 @@ export async function fetchRecentSounds(): Promise<{
   data: RecentSound[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -46,7 +46,7 @@ export async function fetchFanPayoutSummary(): Promise<{
   data: { thisMonthNetCents: number } | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: { thisMonthNetCents: 1240 },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

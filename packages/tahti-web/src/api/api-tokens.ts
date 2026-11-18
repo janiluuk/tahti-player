@@ -3,9 +3,9 @@ import { i18n } from '@tahti-player/i18n';
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from './mode';
 
@@ -63,7 +63,7 @@ export async function fetchApiTokens(): Promise<{
   data: ApiToken[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [...mockTokens],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -73,7 +73,7 @@ export async function fetchApiTokens(): Promise<{
     const data = await requestJson<ApiToken[]>('/api/me/api-tokens');
     return { data, meta: { source: 'api' } };
   } catch (error) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: [...mockTokens], meta: mockFallbackMeta(error) };
     }
     return { data: [], meta: apiErrorMeta(error) };
@@ -85,7 +85,7 @@ export async function createApiToken(
   scopes: Array<'read' | 'write'>,
   expiresInDays?: number,
 ): Promise<{ ok: true; data: CreatedApiToken } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const token: CreatedApiToken = {
       id: `token-mock-${Date.now()}`,
       name,
@@ -134,7 +134,7 @@ export async function createApiToken(
 export async function revokeApiToken(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockTokens = mockTokens.filter((token) => token.id !== id);
     return { ok: true };
   }

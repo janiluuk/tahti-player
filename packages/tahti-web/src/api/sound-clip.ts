@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export const SOUND_CLIP_MAX_DURATION_SEC = 60;
@@ -14,7 +14,7 @@ export async function createClipFromSound(
   | { ok: true; data: { clipId: string; title: string; durationSec: number } }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: {

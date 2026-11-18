@@ -1,7 +1,7 @@
 import type { FetchMeta } from './client';
 import { apiBase, getJson } from './http';
 import { listMockCommerceAudit } from './mock-commerce-ledger';
-import { failMeta, FORCE_MOCK } from './mode';
+import { failMeta, isForceMock } from './mode';
 
 export * from './admin/admin-announcements';
 export * from './admin/admin-beta';
@@ -242,7 +242,7 @@ export async function fetchAdminActivity(
   const page = filters.page ?? 1;
   const limit = filters.limit ?? 50;
 
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const ledger = listMockCommerceAudit().map((row) => ({
       id: row.id,
       action: row.action,
@@ -418,7 +418,7 @@ export async function fetchAdminContainerLogs(
   lokiReachable: boolean;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       entries: mockLogEntries(),
       lokiReachable: true,

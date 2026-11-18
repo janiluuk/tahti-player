@@ -157,7 +157,6 @@ export default defineConfig(({ command, mode }) => {
     env.VITE_TAHTI_API_PROXY_TARGET ||
     env.VITE_TAHTI_API_URL ||
     'http://localhost:15011';
-  const forceMock = env.VITE_FORCE_MOCK === '1';
 
   return {
     define: {
@@ -168,8 +167,6 @@ export default defineConfig(({ command, mode }) => {
       // builds and ships the same dist/ in one step).
       __BUILD_TIME__: JSON.stringify(new Date().toISOString()),
       __RELEASE_TAG_DATE__: JSON.stringify(releaseTagDate),
-      // Mirrors mode.ts FORCE_MOCK for any leftover call sites / tooling.
-      __TAHTI_FORCE_MOCK__: forceMock ? 'true' : 'false',
     },
     plugins: [
       react(),

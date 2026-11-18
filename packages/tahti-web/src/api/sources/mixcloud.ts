@@ -1,6 +1,6 @@
 import { apiBase } from '../http';
 import { installMeIntegration } from '../integrations';
-import { FORCE_MOCK } from '../mode';
+import { isForceMock } from '../mode';
 import { requestJson } from '../request-json';
 
 export type MixcloudCloudcast = {
@@ -29,7 +29,7 @@ const MOCK_CLOUDCAST: MixcloudCloudcast = {
 };
 
 async function list(path: string): Promise<Result<MixcloudCloudcast[]>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: [MOCK_CLOUDCAST] };
   }
   try {
@@ -62,7 +62,7 @@ export async function addMixcloudCloudcast(
   collectionId: string,
   cloudcastUrl: string,
 ): Promise<Result<{ soundId: string }>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: { soundId: `mixcloud-${cloudcastUrl}` } };
   }
   const installed = await installMeIntegration('mixcloud-import', {});

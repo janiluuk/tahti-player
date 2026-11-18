@@ -9,7 +9,7 @@ import {
 } from '../../api/client';
 import { listMockCommerceFanSubs } from '../../api/mock-commerce-ledger';
 import { listMockSubscriptions } from '../../api/mock-session';
-import { FORCE_MOCK } from '../../api/mode';
+import { isForceMock } from '../../api/mode';
 import { mockOwnsPurchaseTier } from '../../api/purchase-tiers';
 import type { DownloadGateStatus } from '../../api/sound-download-gates';
 import { fetchStudioSound } from '../../api/studio';
@@ -127,7 +127,7 @@ export function useTrackDetail(id: string, shareKey?: string) {
         if (cancelled) {
           return;
         }
-        const usable = result.meta.source === 'api' || FORCE_MOCK;
+        const usable = result.meta.source === 'api' || isForceMock();
         setProcessingSound(
           usable && isProcessing(result.data) ? result.data : null,
         );
@@ -244,7 +244,7 @@ export function useTrackDetail(id: string, shareKey?: string) {
     if (user?.username === detail.channel.username) {
       return true;
     }
-    if (!FORCE_MOCK) {
+    if (!isForceMock()) {
       return detail.gate === null;
     }
     const subscribedInSession = listMockSubscriptions().some(

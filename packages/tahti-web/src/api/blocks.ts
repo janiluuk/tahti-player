@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
+import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 import { requestJson } from './request-json';
 
 /** An account the signed-in user has blocked from messaging them. */
@@ -19,7 +19,7 @@ export async function fetchBlockedUsersResult(): Promise<{
   data: BlockedUser[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { data: mockBlocked, meta: { source: 'mock' } };
   }
   try {
@@ -42,7 +42,7 @@ export async function fetchBlockedUsers(): Promise<BlockedUser[]> {
 export async function blockUser(
   username: string,
 ): Promise<{ ok: true; data: BlockedUser } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const data: BlockedUser = {
       username,
       displayName: username,
@@ -72,7 +72,7 @@ export async function blockUser(
 export async function unblockUser(
   username: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockBlocked = mockBlocked.filter((b) => b.username !== username);
     return { ok: true };
   }

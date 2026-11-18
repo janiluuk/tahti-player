@@ -1,6 +1,6 @@
 import type { FetchMeta } from '.././client';
 import { DEMO_MP3 } from '.././mock';
-import { FORCE_MOCK } from '.././mode';
+import { isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import { failMeta } from './shared';
 
@@ -31,7 +31,7 @@ export async function fetchStashFiles(): Promise<{
   data: StashFile[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -60,7 +60,7 @@ export async function fetchStashDownload(id: string): Promise<{
   data: { url: string; filename?: string } | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: { url: DEMO_MP3, filename: 'mock.mp3' },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -79,7 +79,7 @@ export async function fetchStashDownload(id: string): Promise<{
 export async function uploadStashFile(
   file: File,
 ): Promise<{ ok: true; id: string } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, id: `mock-stash-${Date.now()}` };
   }
   try {
@@ -123,7 +123,7 @@ export async function uploadStashFile(
 export async function deleteStashFile(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -147,7 +147,7 @@ export async function createStashShare(
     expiresInDays?: number;
   },
 ): Promise<{ ok: true; data: StashShare } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const now = new Date();
     const share: StashShare = {
       id: `mock-share-${Date.now()}`,
@@ -195,7 +195,7 @@ export async function createStashShare(
 export async function revokeStashShare(
   shareId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockStashShares = mockStashShares.filter((share) => share.id !== shareId);
     return { ok: true };
   }

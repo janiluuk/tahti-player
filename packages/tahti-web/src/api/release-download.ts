@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import { listenerFingerprint } from '../lib/listenerFingerprint';
 import { apiBase } from './http';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import type { TrackAccessGate } from './track-detail-types';
 
 /** One release track as `GET /api/v1/r/:slug` returns it. `audioUrl` is
@@ -45,7 +45,7 @@ export async function downloadReleaseTrack(
   | { ok: true; url: string }
   | { ok: false; error: string; unlockSoundId?: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, url: 'https://example.com/mock-download.opus' };
   }
   try {

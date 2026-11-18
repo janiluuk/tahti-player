@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import { requestJson } from './client-request';
 import { updateMockMotion } from './governance-member';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 export type MotionSecondResult =
   { ok: true; secondCount: number } | { ok: false; error: string };
@@ -29,7 +29,7 @@ function mockSecond(id: string, seconded: boolean): MotionSecondResult {
 }
 
 export async function secondMotion(id: string): Promise<MotionSecondResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockSecond(id, true);
   }
   try {
@@ -52,7 +52,7 @@ export async function secondMotion(id: string): Promise<MotionSecondResult> {
 export async function withdrawMotionSecond(
   id: string,
 ): Promise<MotionSecondResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockSecond(id, false);
   }
   try {

@@ -1,12 +1,12 @@
 import { setMockOauthConnected, type MockOauthId } from '.././mock-session';
-import { FORCE_MOCK } from '.././mode';
+import { isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 
 /** Mock-only: flip an OAuth integration to connected without leaving the app. */
 export async function connectIntegrationMock(
   id: MockOauthId,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (!FORCE_MOCK) {
+  if (!isForceMock()) {
     return { ok: false, error: 'connectIntegrationMock is mock-only' };
   }
   setMockOauthConnected(id, true);
@@ -16,7 +16,7 @@ export async function connectIntegrationMock(
 export async function disconnectIntegration(
   id: 'bandcamp' | 'soundcloud' | 'google-drive' | 'mixcloud' | 'musicbrainz',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     setMockOauthConnected(id, false);
     return { ok: true };
   }

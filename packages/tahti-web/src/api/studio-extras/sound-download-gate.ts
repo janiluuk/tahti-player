@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson } from '../http';
-import { failMeta, FORCE_MOCK } from '../mode';
+import { failMeta, isForceMock } from '../mode';
 
 export type SoundDownloadGateStats = {
   repostToDownload: boolean;
@@ -15,7 +15,7 @@ export async function fetchSoundDownloadGateStats(soundId: string): Promise<{
   data: SoundDownloadGateStats | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         repostToDownload: true,

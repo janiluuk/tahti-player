@@ -1,4 +1,4 @@
-import { FORCE_MOCK } from '../mode';
+import { isForceMock } from '../mode';
 import { requestJson } from '../request-json';
 
 /** Presigned URL (5 minutes) for your own release track. Opus by default;
@@ -7,7 +7,7 @@ export async function downloadStudioReleaseTrack(
   releaseId: string,
   trackId: string,
 ): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, url: 'https://example.com/mock-release-track.opus' };
   }
   try {

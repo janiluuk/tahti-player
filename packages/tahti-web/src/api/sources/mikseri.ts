@@ -1,4 +1,4 @@
-import { FORCE_MOCK } from '../mode';
+import { isForceMock } from '../mode';
 import { requestJson } from '../request-json';
 
 type Result<T> = { ok: true; data: T } | { ok: false; error: string };
@@ -15,7 +15,7 @@ export type MikseriTrackInput = {
 export async function addMikseriTrack(
   input: MikseriTrackInput,
 ): Promise<Result<{ soundId: string; embedUrl: string }>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: {

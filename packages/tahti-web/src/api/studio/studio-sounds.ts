@@ -6,10 +6,10 @@ import { DEMO_MP3 } from '../mock';
 import { mockFixture } from '../mock-overrides';
 import { getMockUploadedSound, patchMockUploadedSound } from '../mock-uploads';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
   failMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from '../mode';
 import type {
@@ -62,7 +62,7 @@ function mockProcessingStatus(ids: readonly string[]): SoundProcessingStatus {
 export async function fetchSoundProcessingStatus(
   ids: readonly string[],
 ): Promise<{ data: SoundProcessingStatus; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockProcessingStatus(ids),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -76,7 +76,7 @@ export async function fetchSoundProcessingStatus(
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: mockProcessingStatus(ids), meta: mockFallbackMeta(err) };
     }
     return { data: { processing: [], settled: [] }, meta: apiErrorMeta(err) };
@@ -87,7 +87,7 @@ export async function fetchStudioSoundCount(): Promise<{
   data: number;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockSoundStore.length,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -99,7 +99,7 @@ export async function fetchStudioSoundCount(): Promise<{
     );
     return { data: data.count, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: mockSoundStore.length, meta: mockFallbackMeta(err) };
     }
     return { data: 0, meta: apiErrorMeta(err) };
@@ -110,7 +110,7 @@ export async function fetchStudioSound(id: string): Promise<{
   data: StudioSound;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const store = mockFixture('studioSounds', [...mockSoundStore]);
     const item = store.find((a) => a.id === id) ?? {
       ...mockSoundStore[0]!,
@@ -125,7 +125,7 @@ export async function fetchStudioSound(id: string): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       const item =
         mockSoundStore.find((a) => a.id === id) ?? mockSoundStore[0]!;
       return { data: { ...item, id }, meta: mockFallbackMeta(err) };
@@ -144,7 +144,7 @@ export async function fetchStudioSoundDownload(id: string): Promise<
     }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       url: getMockUploadedSound(id)?.objectUrl ?? DEMO_MP3,
@@ -169,7 +169,7 @@ export async function patchStudioSound(
   id: string,
   patch: StudioSoundPatch,
 ): Promise<{ ok: true; data: StudioSound } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const idx = mockSoundStore.findIndex((a) => a.id === id);
     const { pinned, ...rest } = patch;
     patchMockUploadedSound(id, {
@@ -300,7 +300,7 @@ export async function fetchSoundShares(soundId: string): Promise<{
   data: SoundShare[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockSoundShares[soundId] ?? [],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -324,7 +324,7 @@ export async function createSoundShare(
     expiresInDays?: number;
   },
 ): Promise<{ ok: true; data: SoundShare } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const now = new Date();
     const share: SoundShare = {
       id: `mock-sound-share-${Date.now()}`,
@@ -362,7 +362,7 @@ export async function revokeSoundShare(
   soundId: string,
   shareId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockSoundShares = {
       ...mockSoundShares,
       [soundId]: (mockSoundShares[soundId] ?? []).filter(
@@ -404,7 +404,7 @@ export async function fetchMyRadioSubmissions(): Promise<{
   data: RadioSubmission[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {
@@ -429,7 +429,7 @@ export async function submitTracksToRadioRotation(
   soundIds: string[],
   note?: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -450,7 +450,7 @@ export async function fetchMetaStreamPreference(): Promise<{
   data: MetaStreamPreference;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: { metaStreamOptOut: false },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -473,7 +473,7 @@ export async function patchMetaStreamPreference(optOut: boolean): Promise<
     }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: { metaStreamOptOut: optOut } };
   }
   try {
@@ -500,7 +500,7 @@ export async function uploadSoundBanner(
   soundId: string,
   file: File,
 ): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, url: URL.createObjectURL(file) };
   }
   try {
@@ -541,7 +541,7 @@ export async function uploadSoundBanner(
 export async function deleteStudioSound(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const idx = mockSoundStore.findIndex((a) => a.id === id);
     if (idx >= 0) {
       mockSoundStore.splice(idx, 1);
@@ -565,7 +565,7 @@ export async function fetchEditorSource(soundId: string): Promise<{
   data: EditorSource;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const item = mockSoundStore.find((a) => a.id === soundId);
     return {
       data: {
@@ -595,7 +595,7 @@ export async function fetchEditorSource(soundId: string): Promise<{
  * Pro multitrack path instead of the MinIO presigned URL from `editor/source`.
  */
 export async function fetchEditorStreamBlob(soundId: string): Promise<Blob> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const res = await fetch(DEMO_MP3);
     if (!res.ok) {
       throw new Error(`Mock editor stream failed (${res.status})`);

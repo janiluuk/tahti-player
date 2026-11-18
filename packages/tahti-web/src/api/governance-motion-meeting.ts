@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { requestJson } from './client-request';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 export type LinkResult = { ok: true } | { ok: false; error: string };
 
@@ -15,7 +15,7 @@ export async function linkMotionMeeting(
   motionId: string,
   meetingId: string | null,
 ): Promise<LinkResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -35,7 +35,7 @@ export async function linkMotionAgendaItem(
   motionId: string,
   agendaItemId: string | null,
 ): Promise<LinkResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {

@@ -8,7 +8,7 @@ import {
   mockSetGroupMemberRole,
   mockTransferGroup,
 } from './groups-mock';
-import { apiErrorMeta, FORCE_MOCK } from './mode';
+import { apiErrorMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type GroupMember = {
@@ -29,7 +29,7 @@ function groupPath(slug: string) {
 export async function fetchGroupMembers(
   slug: string,
 ): Promise<{ data: GroupMember[]; total: number; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const data = mockFetchGroupMembers(slug);
     return {
       data,
@@ -52,7 +52,7 @@ export async function removeGroupMember(
   slug: string,
   username: string,
 ): Promise<Result> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockRemoveGroupMember(slug, username);
   }
   try {
@@ -78,7 +78,7 @@ export async function setGroupMemberRole(
   username: string,
   role: 'ADMIN' | 'MEMBER',
 ): Promise<Result> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockSetGroupMemberRole(slug, username, role);
   }
   try {
@@ -103,7 +103,7 @@ export async function transferArtistGroup(
   slug: string,
   username: string,
 ): Promise<Result> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockTransferGroup(slug, username);
   }
   try {

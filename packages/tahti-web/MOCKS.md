@@ -30,9 +30,10 @@ Offline demo state lives in [`src/api/mock-session.ts`](src/api/mock-session.ts)
 
 ## Live vs mock (demock)
 
-Production / beta builds bake `FORCE_MOCK` and `ALLOW_MOCK_FALLBACK` to
-`false` (`src/api/mode.ts`), so Rollup can drop `api/mock*` from the shell
-when call sites branch on those consts. Fixtures stay for
+Production / beta builds fold `isForceMock()` and `allowMockFallback()`
+(`src/api/mode.ts`) to `false`, so Rollup can drop `api/mock*` from the shell.
+Keep both as single `import.meta.env` expressions, and keep mock modules free
+of import-time side effects, or the fixtures stay in the bundle. Fixtures stay for
 `VITE_FORCE_MOCK=1` and Vite `dev` (unless `VITE_ALLOW_MOCK_FALLBACK=0`).
 Use `FEATURES.md` for the port + demock checklist.
 

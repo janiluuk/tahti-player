@@ -3,7 +3,7 @@ import { i18n } from '@tahti-player/i18n';
 import type { FetchMeta } from '../client';
 import type { GovernanceAuditor } from '../governance-association';
 import { getJson, sendJson } from '../http';
-import { failMeta, FORCE_MOCK } from '../mode';
+import { failMeta, isForceMock } from '../mode';
 
 export type AuditorActionResult = { ok: true } | { ok: false; error: string };
 
@@ -35,7 +35,7 @@ export async function fetchAdminAuditors(): Promise<{
   data: GovernanceAuditor[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { data: [...mockAuditors], meta: MOCK_META };
   }
   try {
@@ -65,7 +65,7 @@ export async function createAdminAuditor(
   if (auditor.termEnd && auditor.termEnd <= auditor.termStart) {
     return { ok: false, error: i18n.t('web:batch58.termEndAfterStart') };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockAuditors = [
       ...mockAuditors,
       {
@@ -103,7 +103,7 @@ export async function endAdminAuditorTerm(
   id: string,
   termEnd: string,
 ): Promise<AuditorActionResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const auditor = mockAuditors.find((a) => a.id === id);
     if (!auditor) {
       return { ok: false, error: i18n.t('web:batch58.auditorNotFound') };

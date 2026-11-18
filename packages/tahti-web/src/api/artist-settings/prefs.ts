@@ -1,8 +1,8 @@
 import type { FetchMeta } from '.././client';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
@@ -21,7 +21,7 @@ export async function fetchNotificationPrefs(): Promise<{
   data: NotificationPrefs;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: { ...mockNotifications },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -33,7 +33,7 @@ export async function fetchNotificationPrefs(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: { ...mockNotifications }, meta: mockFallbackMeta(err) };
     }
     return {
@@ -53,7 +53,7 @@ export async function patchNotificationPrefs(
 ): Promise<
   { ok: true; data: NotificationPrefs } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     setMockNotifications({ ...mockNotifications, ...patch });
     return { ok: true, data: { ...mockNotifications } };
   }

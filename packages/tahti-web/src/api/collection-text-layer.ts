@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type CollectionTextLayer = {
@@ -28,7 +28,7 @@ const path = (slug: string) =>
 export async function fetchCollectionTextLayer(
   slug: string,
 ): Promise<Result<CollectionTextLayer>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: mockLayers.get(slug) ?? EMPTY };
   }
   try {
@@ -46,7 +46,7 @@ export async function saveCollectionTextLayer(
   slug: string,
   layer: CollectionTextLayer,
 ): Promise<Result<CollectionTextLayer>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockLayers.set(slug, layer);
     return { ok: true, data: layer };
   }

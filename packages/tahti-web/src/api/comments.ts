@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 /** Delete a track or channel comment — allowed for its author and for the
@@ -8,7 +8,7 @@ import { requestJson } from './request-json';
 export async function deleteComment(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {

@@ -4,7 +4,7 @@ import { listenerFingerprint } from '../lib/listenerFingerprint';
 import { apiBase } from './http';
 import { DEMO_MP3 } from './mock';
 import { ensureMockUploadedSound } from './mock-uploads';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { withShareKey } from './share-key';
 
 function downloadsDisabledMessage(): string {
@@ -30,7 +30,7 @@ export async function fetchPublicSoundDownload(
   itemId: string,
   shareKey?: string,
 ): Promise<PublicSoundDownloadResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const uploaded = await ensureMockUploadedSound(itemId);
     if (uploaded?.downloadsEnabled === false) {
       return {

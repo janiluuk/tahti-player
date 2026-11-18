@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import { requestJson } from './client-request';
 import type { GovernanceBoardRole } from './governance-board';
-import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
+import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 
 export type ElectionCandidate = {
   displayName: string;
@@ -92,7 +92,7 @@ export async function fetchGovernanceElections(): Promise<{
   data: GovernanceElection[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockGovernanceElections(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -152,7 +152,7 @@ export async function standForElection(
   statement?: string,
 ): Promise<CandidacyResult> {
   const trimmed = statement?.trim() || undefined;
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockCandidacy(id, true, trimmed);
   }
   try {
@@ -174,7 +174,7 @@ export async function standForElection(
 
 /** A candidate withdraws, until the result is recorded. */
 export async function withdrawCandidacy(id: string): Promise<CandidacyResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockCandidacy(id, false);
   }
   try {

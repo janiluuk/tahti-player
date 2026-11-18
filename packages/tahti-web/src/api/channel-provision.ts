@@ -1,12 +1,12 @@
 import { clearGetCache } from './getCache';
 import { apiBase } from './http';
 import { getMockSessionUser, setMockSessionUser } from './mock-session';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 export async function provisionChannel(): Promise<
   { ok: true; slug: string } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const user = getMockSessionUser();
     if (!user) {
       return { ok: false, error: 'Log in first to create a channel.' };

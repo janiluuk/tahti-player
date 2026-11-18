@@ -1,6 +1,6 @@
 import { getJson } from './http';
 import { mockFixture } from './mock-overrides';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 export type LiveTracklistEntry = {
   startSec: number;
@@ -16,7 +16,7 @@ export type LiveTracklistEntry = {
 export async function fetchLiveTracklist(
   slug: string,
 ): Promise<LiveTracklistEntry[]> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockFixture(
       'liveTracklist',
       [

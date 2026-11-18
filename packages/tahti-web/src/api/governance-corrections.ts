@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { requestJson } from './client-request';
-import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
+import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 
 export type CorrectionSubject = 'MEMBER_REGISTER' | 'GOVERNANCE_RECORD';
 export type CorrectionState = 'OPEN' | 'ACCEPTED' | 'REJECTED' | 'WITHDRAWN';
@@ -48,7 +48,7 @@ export async function fetchMyCorrections(): Promise<{
   data: GovernanceCorrection[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockCorrections,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -71,7 +71,7 @@ export async function requestCorrection(input: {
   { ok: true; data: GovernanceCorrection } | { ok: false; error: string }
 > {
   const details = input.details.trim();
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row: GovernanceCorrection = {
       id: `corr-${Date.now()}`,
       subject: input.subject,
@@ -110,7 +110,7 @@ export async function requestCorrection(input: {
 export async function withdrawCorrection(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row = mockCorrections.find((c) => c.id === id);
     if (!row || row.state !== 'OPEN') {
       return {

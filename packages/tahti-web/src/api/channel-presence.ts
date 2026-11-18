@@ -1,10 +1,10 @@
 import { getJson } from './http';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 export async function fetchChannelPresence(
   slug: string,
 ): Promise<number | null> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return 12;
   }
   try {

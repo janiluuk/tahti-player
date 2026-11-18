@@ -1,5 +1,5 @@
 import { mockFixture } from './mock-overrides';
-import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
+import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 import { requestJson } from './request-json';
 import type { PublicTrackDetail } from './track-detail-types';
 import type { TahtiPlayable } from './types';
@@ -131,7 +131,7 @@ export async function fetchMyLikes(): Promise<{
   data: LikedTrack[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const stored = readStoredMockLikes();
     const storedIds = new Set(stored.map((track) => track.id));
     const seeded = mockFixture('myLikes', []).filter(
@@ -160,7 +160,7 @@ export async function fetchUserLikes(username: string): Promise<{
   data: LikedTrack[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const mock = mockFixture(
       'userLikes',
       { showLikes: false, items: [] },

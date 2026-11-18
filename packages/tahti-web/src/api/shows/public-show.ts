@@ -1,7 +1,7 @@
 import type { FetchMeta } from '.././client';
 import { TAHTI_RADIO_SLUG } from '.././mock';
 import { mockFixture } from '.././mock-overrides';
-import { apiErrorMeta, FORCE_MOCK } from '.././mode';
+import { apiErrorMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import { mockBookings, seedEpisodes } from './mock';
 import {
@@ -13,7 +13,7 @@ import {
 export async function fetchPublicRadioShow(
   channelSlug: string,
 ): Promise<{ data: PublicRadioShow | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const now = Date.now();
     const matchingBookings = mockBookings.filter(
       (booking) => booking.channelSlug === channelSlug,
@@ -93,7 +93,7 @@ export type RadioShowNowPlayingTrack = {
 export async function fetchRadioShowNowPlaying(
   channelSlug: string,
 ): Promise<{ data: RadioShowNowPlayingTrack | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockFixture('radioShowNowPlaying', null, channelSlug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -148,7 +148,7 @@ const MOCK_TAHTI_RADIO_ROTATION: RadioShowUpcomingTrack[] = [
 export async function fetchRadioShowUpcoming(
   channelSlug: string,
 ): Promise<{ data: RadioShowUpcomingTrack[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockFixture(
         'radioShowUpcoming',
@@ -189,7 +189,7 @@ export async function fetchPublicRadioSlots(
   from: string,
   to: string,
 ): Promise<{ data: PublicRadioSlot[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const start = new Date(from).getTime();
     const end = new Date(to).getTime();
     const slots: PublicRadioSlot[] = mockBookings

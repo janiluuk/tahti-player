@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 /** Add this sound (or one of its ready versions) to a release as a new
@@ -12,7 +12,7 @@ export async function publishSoundToRelease(
   | { ok: true; data: { trackId: string; status: string } }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: { trackId: `mock-track-${Date.now()}`, status: 'SCANNING' },

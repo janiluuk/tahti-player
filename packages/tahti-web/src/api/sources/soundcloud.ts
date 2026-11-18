@@ -1,6 +1,6 @@
 import type { FetchMeta } from '.././client';
 import { DEMO_MP3 } from '.././mock';
-import { FORCE_MOCK } from '.././mode';
+import { isForceMock } from '.././mode';
 import { requestJson, RequestJsonError } from '.././request-json';
 import type { TahtiPlayable } from '.././types';
 import { failMeta, SOUNDCLOUD_IMPORT_BATCH_SIZE } from './shared';
@@ -32,7 +32,7 @@ export async function fetchSoundcloudTracks(): Promise<{
   needsReconnect?: boolean;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -61,7 +61,7 @@ export async function fetchSoundcloudTracks(): Promise<{
 export async function importSoundcloudTracks(
   tracks: Array<{ trackId: string; title: string }>,
 ): Promise<{ ok: true; count: number } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, count: tracks.length };
   }
   try {
@@ -135,7 +135,7 @@ const MOCK_PLAYLIST: SoundcloudPlaylist = {
 export async function fetchSoundcloudPlaylists(): Promise<
   SoundcloudPlaylist[]
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return [MOCK_PLAYLIST];
   }
   const { data } = await requestJson<{ playlists: SoundcloudPlaylist[] }>(
@@ -147,7 +147,7 @@ export async function fetchSoundcloudPlaylists(): Promise<
 export async function fetchSoundcloudPlaylistTracks(
   playlistId: string,
 ): Promise<SoundcloudPlaylistTrack[]> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const expiresAt = new Date(Date.now() + 12 * 3600_000).toISOString();
     return [1, 2, 3].map((n) => ({
       id: `sc-mock-${n}`,
@@ -182,7 +182,7 @@ export function isSoundcloudLink(input: string): boolean {
 export async function resolveSoundcloudPlaylist(
   link: string,
 ): Promise<SoundcloudPlaylist> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return MOCK_PLAYLIST;
   }
   const { data } = await requestJson<{ playlist: SoundcloudPlaylist }>(

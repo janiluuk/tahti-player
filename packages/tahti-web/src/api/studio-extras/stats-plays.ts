@@ -1,5 +1,5 @@
 import type { FetchMeta } from '.././client';
-import { failMeta, FORCE_MOCK } from '.././mode';
+import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 
 export type StatsPlaysRange = '1' | '7' | '30' | 'all' | 'custom';
@@ -104,7 +104,7 @@ export async function fetchStatsPlays(
     typeof rangeOrQuery === 'string' ? { range: rangeOrQuery } : rangeOrQuery;
   const range = query.range ?? '30';
 
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const daily =
       range === 'custom' && query.from && query.to
         ? mockDailyBetween(query.from, query.to)
@@ -171,7 +171,7 @@ export async function fetchStatsPlaysHourly(date: string): Promise<{
   data: number[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const seed = date.split('-').reduce((sum, part) => sum + Number(part), 0);
     const hours = Array.from({ length: 24 }, (_, hour) => {
       if (hour < 6) {
@@ -209,7 +209,7 @@ export async function fetchStatsPlaysHourly(date: string): Promise<{
 export async function fetchListenerGeo(
   period: ListenerGeoPeriod = '30d',
 ): Promise<{ data: ListenerGeoPoint[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         { countryCode: 'FI', displayName: 'Finland', count: 180 },
@@ -236,7 +236,7 @@ export async function fetchChannelEgressStats(): Promise<{
   data: ChannelEgressStats;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         windowDays: 30,
@@ -263,7 +263,7 @@ export async function fetchChannelLiveStats(): Promise<{
   data: ChannelLiveStats;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         windowDays: 14,

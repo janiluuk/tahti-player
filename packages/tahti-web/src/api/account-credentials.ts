@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type PendingEmailChange = { newEmail: string; expiresAt: string };
@@ -19,7 +19,7 @@ export async function changePassword(
   currentPassword: string,
   newPassword: string,
 ): Promise<Result> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       message: i18n.t('web:batch58.passwordChanged'),
@@ -45,7 +45,7 @@ export async function requestEmailChange(
   newEmail: string,
   password: string,
 ): Promise<Result> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockPending = {
       newEmail,
       expiresAt: new Date(Date.now() + 86_400_000).toISOString(),
@@ -69,7 +69,7 @@ export async function requestEmailChange(
 /** Finishes an email change from the link sent to the new address
  * (`POST /api/auth/email-change/confirm`); works signed out. */
 export async function confirmEmailChange(token: string): Promise<Result> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, message: i18n.t('web:batch52.accountUsesNewAddress') };
   }
   try {
@@ -86,7 +86,7 @@ export async function confirmEmailChange(token: string): Promise<Result> {
 /** The email change waiting for its link to be opened (`GET /api/me/email`).
  * A failed read gives none. */
 export async function fetchPendingEmailChange(): Promise<PendingEmailChange | null> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockPending;
   }
   try {
@@ -101,7 +101,7 @@ export async function fetchPendingEmailChange(): Promise<PendingEmailChange | nu
 
 /** Takes back a pending email change (`DELETE /api/me/email`). */
 export async function cancelEmailChange(): Promise<Result> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockPending = null;
     return { ok: true, message: 'Cancelled.' };
   }

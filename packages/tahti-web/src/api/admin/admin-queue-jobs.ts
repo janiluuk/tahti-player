@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
-import { failMeta, FORCE_MOCK } from '../mode';
+import { failMeta, isForceMock } from '../mode';
 
 export type AdminQueueJobState =
   'waiting' | 'active' | 'delayed' | 'failed' | 'completed';
@@ -51,7 +51,7 @@ export async function fetchAdminQueueJobs(input: {
   jobName?: string;
 }): Promise<{ data: AdminQueueJobList | null; meta: FetchMeta }> {
   const state = input.state ?? 'waiting';
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         state,
@@ -106,7 +106,7 @@ export async function fetchAdminQueuePaused(): Promise<{
   data: { paused: boolean } | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: { paused: false },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -125,7 +125,7 @@ export async function fetchAdminQueuePaused(): Promise<{
 export async function pauseAdminMediaQueue(): Promise<
   { ok: true; paused: boolean } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, paused: true };
   }
   try {
@@ -145,7 +145,7 @@ export async function pauseAdminMediaQueue(): Promise<
 export async function resumeAdminMediaQueue(): Promise<
   { ok: true; paused: boolean } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, paused: false };
   }
   try {
@@ -165,7 +165,7 @@ export async function resumeAdminMediaQueue(): Promise<
 export async function retryAdminQueueJob(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   return mutate(
@@ -177,7 +177,7 @@ export async function retryAdminQueueJob(
 export async function removeAdminQueueJob(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   return mutate(
@@ -190,7 +190,7 @@ export async function fetchAdminStuckPending(): Promise<{
   data: AdminStuckPendingList | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         total: 1,
@@ -224,7 +224,7 @@ export async function requeueAdminStuckPending(input: {
 }): Promise<
   { ok: true; enqueued: number; ids: string[] } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       enqueued: input.all ? 1 : 1,

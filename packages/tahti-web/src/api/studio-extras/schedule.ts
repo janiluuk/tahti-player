@@ -1,5 +1,5 @@
 import type { FetchMeta } from '.././client';
-import { failMeta, FORCE_MOCK } from '.././mode';
+import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 
 export type ChannelSchedule = {
@@ -100,7 +100,7 @@ export async function fetchChannelSchedule(): Promise<{
   data: ChannelSchedule;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: { ...mockSchedule },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -122,7 +122,7 @@ export async function fetchChannelSchedule(): Promise<{
 export async function patchChannelSchedule(
   patch: Partial<ChannelSchedule>,
 ): Promise<{ ok: true; data: ChannelSchedule } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockSchedule = { ...mockSchedule, ...patch };
     return { ok: true, data: { ...mockSchedule } };
   }
@@ -147,7 +147,7 @@ export async function fetchUpcomingBroadcasts(): Promise<{
   data: UpcomingBroadcast[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const first = mockSchedule.nextBroadcastAt;
     return {
       data: first
@@ -204,7 +204,7 @@ export async function fetchProgramme(): Promise<{
   data: ProgrammeView;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: { ...mockProgramme, items: [...mockProgramme.items] },
       meta: { source: 'mock' },
@@ -246,7 +246,7 @@ export async function patchProgramme(
     >
   > & { items?: ProgrammeItemPatch[] },
 ): Promise<{ ok: true; data: ProgrammeView } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockProgramme = {
       ...mockProgramme,
       ...patch,
@@ -288,7 +288,7 @@ export async function addReleaseTrackToProgramme(input: {
   title: string;
   durationSec?: number | null;
 }): Promise<{ ok: true; data: ProgrammeView } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const order = mockProgramme.items.filter((item) => item.isFallback).length;
     mockProgramme = {
       ...mockProgramme,

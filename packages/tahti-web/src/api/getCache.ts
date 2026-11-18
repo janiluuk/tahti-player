@@ -1,4 +1,4 @@
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 const TTL_MS = 30_000;
 const MAX_ENTRIES = 300;
@@ -19,7 +19,7 @@ function enabled(): boolean {
   if (enabledOverride !== null) {
     return enabledOverride;
   }
-  return import.meta.env.MODE !== 'test' && !FORCE_MOCK;
+  return import.meta.env.MODE !== 'test' && !isForceMock();
 }
 
 export function isCacheableGet(path: string): boolean {

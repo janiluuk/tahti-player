@@ -8,7 +8,6 @@ const { requestJson } = vi.hoisted(() => ({ requestJson: vi.fn() }));
 vi.mock('../request-json', () => ({ requestJson }));
 vi.mock('../mode', async (importOriginal) => ({
   ...(await importOriginal<typeof import('../mode')>()),
-  FORCE_MOCK: false,
   isForceMock: () => false,
 }));
 

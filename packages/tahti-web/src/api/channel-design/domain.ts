@@ -1,11 +1,11 @@
 import type { FetchMeta } from '.././client';
-import { failMeta, FORCE_MOCK } from '.././mode';
+import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 
 export async function checkSlugAvailable(
   slug: string,
 ): Promise<{ available: boolean; reason?: string; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       available: slug.length >= 3 && slug !== 'taken',
       reason: slug === 'taken' ? 'taken' : undefined,
@@ -40,7 +40,7 @@ export type ChannelSlugRenamed = {
 export async function updateChannelSlug(
   slug: string,
 ): Promise<ChannelSlugRenamed | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     if (slug.length < 3) {
       return { ok: false, error: 'Slug too short' };
     }
@@ -78,7 +78,7 @@ export async function setCustomDomain(
   | { ok: true; domain: string; txtHost: string; txtRecord: string }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       domain,
@@ -107,7 +107,7 @@ export async function setCustomDomain(
 export async function verifyCustomDomain(): Promise<
   { ok: true; verified: boolean } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, verified: true };
   }
   try {

@@ -1,5 +1,5 @@
 import { requestJson } from './client-request';
-import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
+import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 
 export type MotionSeconder = {
   displayName: string;
@@ -24,7 +24,7 @@ function motionPath(id: string): string {
 export async function fetchMotionSeconders(
   id: string,
 ): Promise<{ data: MotionSeconder[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [...(mockSeconders[id] ?? [])],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

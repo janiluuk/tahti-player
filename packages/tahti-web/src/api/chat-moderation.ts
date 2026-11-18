@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { mockChatBans } from './artist-settings/mock';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 /** A chat message as the channel's owner and moderators see it
@@ -64,7 +64,7 @@ export async function fetchModerationMessages(
 ): Promise<
   { ok: true; data: ModerationChatMessage[] } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: [...mockMessages] };
   }
   try {
@@ -89,7 +89,7 @@ export async function removeChatMessage(
   slug: string,
   id: string,
 ): Promise<Result> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockMessages = mockMessages.filter((m) => m.id !== id);
     return { ok: true };
   }
@@ -114,7 +114,7 @@ export async function banChatMessageSender(
   slug: string,
   id: string,
 ): Promise<Result> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const sender = mockMessages.find((m) => m.id === id)?.handle;
     if (sender && !mockChatBans.some((b) => b.handle === sender)) {
       mockChatBans.unshift({
@@ -158,7 +158,7 @@ let mockModerated: ModeratedChannel[] = [
 export async function fetchModeratedChannels(): Promise<
   { ok: true; data: ModeratedChannel[] } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: [...mockModerated] };
   }
   try {
@@ -178,7 +178,7 @@ export async function fetchModeratedChannels(): Promise<
 /** Gives up the signed-in account's moderator role on someone else's
  * channel (`DELETE /api/me/moderate/:slug`). */
 export async function stopModerating(slug: string): Promise<Result> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockModerated = mockModerated.filter((c) => c.slug !== slug || c.isOwner);
     return { ok: true };
   }

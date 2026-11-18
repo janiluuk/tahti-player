@@ -1,9 +1,9 @@
 import type { FetchMeta } from '.././client';
 import { mockFixture } from '.././mock-overrides';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
@@ -14,7 +14,7 @@ export async function fetchShowBookings(
   from: string,
   to: string,
 ): Promise<{ data: StudioShowBooking[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockFixture(
         'showBookings',
@@ -35,7 +35,7 @@ export async function fetchShowBookings(
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: mockBookings, meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
@@ -50,7 +50,7 @@ export async function createShowBooking(input: {
 }): Promise<
   { ok: true; data: StudioShowBooking } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const booking: StudioShowBooking = {
       id: `booking-${Date.now()}`,
       startAt: input.startAt,
@@ -93,7 +93,7 @@ export async function updateShowBooking(
 ): Promise<
   { ok: true; data: StudioShowBooking } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     let updated: StudioShowBooking | undefined;
     setMockBookings(
       mockBookings.map((b) => {
@@ -133,7 +133,7 @@ export async function updateShowBooking(
 export async function cancelShowBooking(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     setMockBookings(mockBookings.filter((b) => b.id !== id));
     return { ok: true };
   }

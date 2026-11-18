@@ -1,5 +1,5 @@
 import type { FetchMeta } from '.././client';
-import { failMeta, FORCE_MOCK } from '.././mode';
+import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import type { StatsPlaysRange } from './stats-plays';
 
@@ -120,7 +120,7 @@ export async function fetchStatsAudience(
   dimension: StatsAudienceDimension,
   window: StatsAudienceWindow,
 ): Promise<{ data: StatsAudience; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockStatsAudience(dimension),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -172,7 +172,7 @@ export const MOCK_STATS_LOCATIONS: StatsLocations = {
 export async function fetchStatsLocations(
   window: StatsAudienceWindow,
 ): Promise<{ data: StatsLocations; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: MOCK_STATS_LOCATIONS,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -208,7 +208,7 @@ export const MOCK_STATS_LOYALTY: StatsLoyalty = {
 export async function fetchStatsLoyalty(
   window: StatsAudienceWindow,
 ): Promise<{ data: StatsLoyalty; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: MOCK_STATS_LOYALTY,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -236,7 +236,7 @@ export type StatsListening = {
 export async function fetchStatsListening(
   window: StatsAudienceWindow,
 ): Promise<{ data: StatsListening | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: { listens: 820, minutes: 5_310, averageMinutes: 6.5 },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

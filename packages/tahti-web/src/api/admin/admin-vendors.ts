@@ -1,9 +1,9 @@
 import type { FetchMeta } from '../client';
 import { getJson } from '../http';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from '../mode';
 
@@ -34,7 +34,7 @@ export async function fetchAdminIntegrationStatus(): Promise<{
   data: AdminIntegrationStatus[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockIntegrationStatus(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -53,7 +53,7 @@ export async function fetchAdminIntegrationStatus(): Promise<{
       meta: { source: 'api' },
     };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: mockIntegrationStatus(), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };

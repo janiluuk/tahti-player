@@ -1,7 +1,7 @@
 import { getAccountRole } from '../../lib/accountRoles';
 import type { FetchMeta } from '../client';
 import { apiBase, getJson, sendJson } from '../http';
-import { failMeta, FORCE_MOCK } from '../mode';
+import { failMeta, isForceMock } from '../mode';
 import type { AccountRole } from '../types';
 
 // ── Users ───────────────────────────────────────────────────────────────────
@@ -160,7 +160,7 @@ export async function fetchAdminUsers(filters: {
   role?: string;
   isMember?: string;
 }): Promise<{ data: AdminUserRow[]; total: number; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     let rows = mockUsers();
     if (filters.q) {
       const q = filters.q.toLowerCase();
@@ -213,7 +213,7 @@ export async function fetchAdminUsers(filters: {
 export async function fetchAdminUser(
   id: string,
 ): Promise<{ data: AdminUserDetail | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const user = mockUsers().find((candidate) => candidate.id === id);
     return {
       data: user ? mockUserDetail(user) : null,
@@ -237,7 +237,7 @@ export async function patchAdminUser(
   id: string,
   patch: AdminUserPatch,
 ): Promise<{ ok: true; data: AdminUserDetail } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const users = mockUsers();
     const index = users.findIndex((candidate) => candidate.id === id);
     if (index < 0) {
@@ -285,7 +285,7 @@ export async function suspendAdminUser(
   id: string,
   reason: string,
 ): Promise<{ ok: true; data: AdminUserDetail } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const user = mockUsers().find((candidate) => candidate.id === id);
     if (!user) {
       return { ok: false, error: 'User not found' };
@@ -312,7 +312,7 @@ export async function suspendAdminUser(
 export async function unsuspendAdminUser(
   id: string,
 ): Promise<{ ok: true; data: AdminUserDetail } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const user = mockUsers().find((candidate) => candidate.id === id);
     if (!user) {
       return { ok: false, error: 'User not found' };
@@ -346,7 +346,7 @@ export async function deleteAdminUserAccount(
 ): Promise<
   { ok: true; data: AdminAccountDeletionResult } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const users = mockUsers();
     const index = users.findIndex((candidate) => candidate.id === id);
     if (index < 0) {
@@ -388,7 +388,7 @@ export async function setAdminChannelKind(
 ): Promise<
   { ok: true; channelKind: ChannelKind } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, channelKind };
   }
   try {

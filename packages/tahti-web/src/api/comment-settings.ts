@@ -1,4 +1,4 @@
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type CommentSettings = {
@@ -27,7 +27,7 @@ const message = (err: unknown, fallback: string) =>
 export async function fetchCommentSettings(): Promise<
   { ok: true; data: CommentSettings } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: mockSettings };
   }
   try {
@@ -53,7 +53,7 @@ export async function fetchCommentSettings(): Promise<
 export async function setChannelCommentsEnabled(
   enabled: boolean,
 ): Promise<{ ok: true; enabled: boolean } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockSettings = { ...mockSettings, channelCommentsEnabled: enabled };
     return { ok: true, enabled };
   }
@@ -86,7 +86,7 @@ async function patchCommentDefault(
 export async function setNewUploadCommentsEnabled(
   enabled: boolean,
 ): Promise<{ ok: true; enabled: boolean } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockSettings = { ...mockSettings, newUploadCommentsEnabled: enabled };
     return { ok: true, enabled };
   }
@@ -97,7 +97,7 @@ export async function setNewUploadCommentsEnabled(
 export async function setNewChannelCommentsEnabled(
   enabled: boolean,
 ): Promise<{ ok: true; enabled: boolean } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockSettings = { ...mockSettings, newChannelCommentsEnabled: enabled };
     return { ok: true, enabled };
   }

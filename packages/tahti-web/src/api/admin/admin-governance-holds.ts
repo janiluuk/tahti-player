@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { sendJson } from '../http';
-import { FORCE_MOCK } from '../mode';
+import { isForceMock } from '../mode';
 
 export type HoldableRecord = 'meeting' | 'document' | 'resolution';
 
@@ -25,7 +25,7 @@ export async function setRecordLegalHold(
   if (reason !== null && !trimmed) {
     return { ok: false, error: i18n.t('web:batch58.giveHoldReason') };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {

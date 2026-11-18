@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 import type { LogoPlacement } from './studio-extras/profile';
 
@@ -34,7 +34,7 @@ export async function uploadProfileLogo(
       error: 'Use PNG or WebP so the logo keeps its transparency',
     };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: { logoUrl: URL.createObjectURL(file) } };
   }
   try {
@@ -69,7 +69,7 @@ export async function uploadProfileLogo(
 export async function setProfileLogoPlacement(
   logoPlacement: LogoPlacement,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -83,7 +83,7 @@ export async function setProfileLogoPlacement(
 export async function removeProfileLogo(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {

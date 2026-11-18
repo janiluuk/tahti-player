@@ -1,6 +1,6 @@
 ## 2026-11-18 — Prod mock tree-shake (30 slices)
 
-`FORCE_MOCK` and `ALLOW_MOCK_FALLBACK` are compile-time consts in `api/mode.ts`. API call sites branch on them (and pass `null` into `withMockFallback` when fixtures are off) so a production build drops `api/mock*`. `VITE_FORCE_MOCK=1` and Vite dev still serve the offline demo. Production `TahtiApp` 1335.70 KB / 414.43 KB gzipped; fixture markers (`northern-lights-archive-6`, `lp-mock-scheduled`, `AURORA42`) are absent from every chunk. tahti-web 0.0.413. Folded `prod-mock-tree-shake.md`. Live back/forward check stays in `navigation-performance.md`.
+`isForceMock()` and `allowMockFallback()` in `api/mode.ts` are single `import.meta.env` expressions that Vite inlines and Rollup folds, so a production build drops `api/mock*` while tests can still flip them with `vi.stubEnv`. Call sites pass `null` into `withMockFallback` when fixtures are off; the listening-party mock loads its state lazily so it no longer pins its fixtures. `VITE_FORCE_MOCK=1` and Vite dev still serve the offline demo. Production `TahtiApp` 1289 KB / 399 KB gzipped; mock fixture markers (`lp-mock-scheduled`, `AURORA42`) are absent from every chunk. tahti-web 0.0.413. Folded `prod-mock-tree-shake.md`. Live back/forward check stays in `navigation-performance.md`.
 
 ## 2026-11-18 — Hardening, screen-reader batch and coverage (10 slices)
 

@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
-import { failMeta, FORCE_MOCK } from '../mode';
+import { failMeta, isForceMock } from '../mode';
 import type {
   ProgrammeItem,
   ProgrammeItemPatch,
@@ -48,7 +48,7 @@ export async function fetchAdminStreams(): Promise<{
   data: AdminLiveStreamRow[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockLiveStreams(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -65,7 +65,7 @@ export async function fetchAdminStreams(): Promise<{
 }
 
 export function restartStream(slug: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -75,14 +75,14 @@ export function restartStream(slug: string) {
 }
 
 export function skipStreamTrack(slug: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(`/api/admin/channels/${encodeURIComponent(slug)}/skip`, 'POST');
 }
 
 export function pauseStream(slug: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -92,7 +92,7 @@ export function pauseStream(slug: string) {
 }
 
 export function resumeStream(slug: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -102,7 +102,7 @@ export function resumeStream(slug: string) {
 }
 
 export function forceStreamOffline(slug: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -139,7 +139,7 @@ export async function fetchAdminChannelProgramme(
   if (!key) {
     return { ok: false, error: 'Enter a channel slug.' };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const existing = mockChannelProgrammes.get(key) ?? {
       fallbackMode: 'ordered',
       fallbackEnabled: true,
@@ -205,7 +205,7 @@ export async function saveAdminChannelProgramme(
 ): Promise<{ ok: true; data: ProgrammeView } | { ok: false; error: string }> {
   const key = slug.trim().toLowerCase();
   const patch = { ...settings, items: programmePatchFromItems(items) };
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const saved: ProgrammeView = {
       ...settings,
       library: mockChannelProgrammes.get(key)?.library,
@@ -238,7 +238,7 @@ export async function addAdminReleaseTrackToRotation(
   releaseTrackId: string,
 ): Promise<{ ok: true; data: ProgrammeView } | { ok: false; error: string }> {
   const key = slug.trim().toLowerCase();
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const existing = mockChannelProgrammes.get(key);
     if (!existing) {
       return { ok: false, error: 'Open the rotation first.' };
@@ -374,7 +374,7 @@ export async function fetchAdminChannelSounds(
   const limit = query.limit ?? 50;
   const offset = query.offset ?? 0;
   const q = query.q?.trim();
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     let rows = mockSoundsFor(key).map((row) => ({ ...row }));
     if (q) {
       const needle = q.toLowerCase();
@@ -423,7 +423,7 @@ export async function deleteAdminChannelSound(
   soundId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
   const key = slug.trim().toLowerCase();
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const rows = mockSoundsFor(key);
     const index = rows.findIndex((row) => row.id === soundId);
     if (index < 0) {
@@ -454,7 +454,7 @@ export async function patchAdminChannelSound(
   { ok: true; data: AdminChannelSound } | { ok: false; error: string }
 > {
   const key = slug.trim().toLowerCase();
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const rows = mockSoundsFor(key);
     const index = rows.findIndex((row) => row.id === soundId);
     if (index < 0) {

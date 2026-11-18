@@ -1,5 +1,5 @@
 import { getJson } from '../http';
-import { FORCE_MOCK } from '../mode';
+import { isForceMock } from '../mode';
 
 export type AdminWorker = {
   name: string;
@@ -87,7 +87,7 @@ export async function fetchAdminWorkers(): Promise<
     }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const workers = mockWorkers();
     return { ok: true, workers, laneCoverage: mockLaneCoverage(workers) };
   }
@@ -114,7 +114,7 @@ export async function fetchAdminWorkerHistory(
 ): Promise<
   { ok: true; history: AdminWorkerJobEvent[] } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       history: [
@@ -164,7 +164,7 @@ export async function fetchAdminCronHistory(
   | { ok: true; runs: AdminCronRun[]; total: number }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const now = Date.now();
     const runs: AdminCronRun[] = [0, 1, 2].map((index) => ({
       id: String(100 - index),

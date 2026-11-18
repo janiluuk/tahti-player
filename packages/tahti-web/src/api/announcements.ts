@@ -12,9 +12,9 @@ import {
 } from './clip-editor-mock';
 import { apiBase } from './http';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from './mode';
 import { requestJson as requestApiJson } from './request-json';
@@ -77,7 +77,7 @@ export async function fetchPinnedAnnouncementsWithMeta(slug: string): Promise<{
   data: PinnedAnnouncement[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [...mockPinnedAnnouncements],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -105,7 +105,7 @@ export async function postPinnedAnnouncement(
 ): Promise<
   { ok: true; announcement: PinnedAnnouncement } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const announcement = {
       id: `announcement-${Date.now()}`,
       body,
@@ -138,7 +138,7 @@ export async function postPinnedAnnouncement(
 export async function deletePinnedAnnouncement(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const index = mockPinnedAnnouncements.findIndex((item) => item.id === id);
     if (index >= 0) {
       mockPinnedAnnouncements.splice(index, 1);
@@ -165,7 +165,7 @@ export async function fetchAnnouncementClips(): Promise<{
   data: AnnouncementClip[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [...mockClips],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -177,7 +177,7 @@ export async function fetchAnnouncementClips(): Promise<{
     );
     return { data: data.clips, meta: { source: 'api' } };
   } catch (error) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: [...mockClips], meta: mockFallbackMeta(error) };
     }
     return { data: [], meta: apiErrorMeta(error) };
@@ -198,7 +198,7 @@ export async function uploadAnnouncementClip(file: File): Promise<
     };
   }
   const title = file.name.replace(/\.[^.]+$/, '').trim() || 'Announcement';
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const clip: AnnouncementClip = {
       id: `announcement-${Date.now()}`,
       title,
@@ -269,7 +269,7 @@ export async function patchAnnouncementClip(
 ): Promise<
   { ok: true; clip: AnnouncementClip } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const clip = mockClips.find((item) => item.id === id);
     if (!clip) {
       return { ok: false, error: i18n.t('web:batch58.announcementNotFound') };
@@ -297,7 +297,7 @@ export async function patchAnnouncementClip(
 export async function deleteAnnouncementClip(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const index = mockClips.findIndex((item) => item.id === id);
     if (index >= 0) {
       removeMockClipSource(id);
@@ -324,7 +324,7 @@ export async function deleteAnnouncementClip(
 export async function setProfileBackgroundClip(
   clipId: string | null,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -351,7 +351,7 @@ export async function fetchAnnouncementPreview(id: string): Promise<
     }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, url: mockClipSource(id).url };
   }
   try {
@@ -387,7 +387,7 @@ export async function renderAnnouncementTrim(
   | { ok: true; renderStatus: AnnouncementClip['renderStatus'] }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, renderStatus: 'PROCESSING' };
   }
   try {

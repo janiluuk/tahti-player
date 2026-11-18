@@ -3,7 +3,7 @@ import { i18n } from '@tahti-player/i18n';
 import type { AssociationProfile } from '../governance-association';
 import { mockAssociationProfile } from '../governance-association';
 import { sendJson } from '../http';
-import { FORCE_MOCK } from '../mode';
+import { isForceMock } from '../mode';
 
 export type AssociationFields = Pick<
   AssociationProfile,
@@ -26,7 +26,7 @@ export async function patchAssociationProfile(
   if (fields.businessId && !BUSINESS_ID_PATTERN.test(fields.businessId)) {
     return { ok: false, error: i18n.t('web:batch58.businessIdFormat') };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     Object.assign(mockAssociationProfile(), fields);
     return { ok: true };
   }

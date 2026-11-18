@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { FetchMeta } from '../client';
 import { getJson, sendJson } from '../http';
-import { failMeta, FORCE_MOCK } from '../mode';
+import { failMeta, isForceMock } from '../mode';
 
 /** A row of GET /api/admin/reports: the generated file and where the report
  * stands (approved, published, filed with the register, corrected, held). */
@@ -74,7 +74,7 @@ export async function fetchAdminAnnualReports(): Promise<{
   data: AdminAnnualReport[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { data: [...MOCK_ANNUAL_REPORTS], meta: MOCK_META };
   }
   try {
@@ -90,7 +90,7 @@ export async function fetchAdminAnnualReports(): Promise<{
 export async function generateAdminAnnualReport(
   year: number,
 ): Promise<AnnualReportResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const existing = mockAnnualReport(year);
     if (existing?.approvedAt) {
       return {
@@ -137,7 +137,7 @@ export async function approveAnnualReport(
   year: number,
   meetingId?: string,
 ): Promise<AnnualReportResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const report = mockAnnualReport(year);
     if (!report) {
       return { ok: false, error: i18n.t('web:batch58.noReportForYear') };
@@ -164,7 +164,7 @@ export async function approveAnnualReport(
 export async function publishAnnualReport(
   year: number,
 ): Promise<AnnualReportResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const report = mockAnnualReport(year);
     if (!report?.approvedAt) {
       return { ok: false, error: i18n.t('web:batch58.onlyApprovedCanPublish') };
@@ -190,7 +190,7 @@ export async function setAnnualReportFiling(
   year: number,
   filing: { filedAt: string | null; filingReference?: string | null },
 ): Promise<AnnualReportResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const report = mockAnnualReport(year);
     if (!report?.approvedAt) {
       return { ok: false, error: i18n.t('web:batch58.onlyApprovedCanFile') };
@@ -233,7 +233,7 @@ export async function correctAnnualReport(
   note: string,
 ): Promise<AnnualReportResult> {
   const trimmed = note.trim();
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const report = mockAnnualReport(year);
     if (!report?.approvedAt) {
       return {
@@ -272,7 +272,7 @@ export async function correctAnnualReport(
 export async function fetchAnnualReportRevisions(
   year: number,
 ): Promise<{ data: AnnualReportRevision[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { data: mockRevisions.get(year) ?? [], meta: MOCK_META };
   }
   try {
@@ -291,7 +291,7 @@ export async function setAnnualReportLegalHold(
   year: number,
   reason: string | null,
 ): Promise<AnnualReportResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     if (!mockAnnualReport(year)) {
       return { ok: false, error: i18n.t('web:batch58.noReportForYear') };
     }

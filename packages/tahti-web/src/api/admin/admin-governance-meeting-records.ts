@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { getJson, sendJson } from '../http';
-import { FORCE_MOCK } from '../mode';
+import { isForceMock } from '../mode';
 import {
   mockDeclareGovernanceConflict,
   mockGovernanceConflicts,
@@ -33,7 +33,7 @@ export async function fetchAdminGovernanceConflicts(
   | { ok: true; data: GovernanceConflictDeclaration[] }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockGovernanceConflicts(meetingId);
   }
   try {
@@ -61,7 +61,7 @@ export async function declareAdminGovernanceConflict(
   if (!displayName || !matter) {
     return { ok: false, error: i18n.t('web:batch58.giveNameAndMatter') };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockDeclareGovernanceConflict(meetingId, {
       displayName,
       matter,
@@ -88,7 +88,7 @@ export async function declareAdminGovernanceConflict(
 export async function removeAdminGovernanceConflict(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockRemoveGovernanceConflict(id);
   }
   try {
@@ -110,7 +110,7 @@ export async function fetchAdminGovernanceNoticeDeliveries(
 ): Promise<
   { ok: true; data: GovernanceNoticeDelivery[] } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockGovernanceNoticeDeliveries(meetingId);
   }
   try {

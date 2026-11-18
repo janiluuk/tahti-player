@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 let mockOptOut = false;
@@ -8,7 +8,7 @@ let mockOptOut = false;
 export async function fetchTopListsOptOut(): Promise<
   { ok: true; optOut: boolean } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, optOut: mockOptOut };
   }
   try {
@@ -30,7 +30,7 @@ export async function fetchTopListsOptOut(): Promise<
 export async function setTopListsOptOut(
   optOut: boolean,
 ): Promise<{ ok: true; optOut: boolean } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockOptOut = optOut;
     return { ok: true, optOut };
   }

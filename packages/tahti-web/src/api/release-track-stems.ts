@@ -3,7 +3,7 @@ import { i18n } from '@tahti-player/i18n';
 import type { FetchMeta } from './client';
 import { getJson } from './http';
 import { DEMO_MP3 } from './mock';
-import { failMeta, FORCE_MOCK } from './mode';
+import { failMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export const RELEASE_TRACK_STEM_ROLES = [
@@ -86,7 +86,7 @@ export async function fetchReleaseTrackStems(
   releaseId: string,
   trackId: string,
 ): Promise<{ data: ReleaseTrackStem[] | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockReleaseTrackStems(releaseId, trackId),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -112,7 +112,7 @@ export async function uploadReleaseTrackStem(
   if (!RELEASE_TRACK_STEM_TYPES.includes(contentType)) {
     return { ok: false, error: i18n.t('web:batch53.useAudioFormats') };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const key = mockKey(releaseId, trackId);
     const current = mockReleaseTrackStems(releaseId, trackId).filter(
       (stem) => stem.role !== role,
@@ -174,7 +174,7 @@ export async function deleteReleaseTrackStem(
   trackId: string,
   stemId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const key = mockKey(releaseId, trackId);
     mockStems.set(
       key,

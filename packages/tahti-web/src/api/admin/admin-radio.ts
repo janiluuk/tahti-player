@@ -9,10 +9,10 @@ import {
   patchMockInternetRadioPreset,
 } from '../internetRadioPresetsMockStore';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
   failMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from '../mode';
 
@@ -129,7 +129,7 @@ export async function fetchAdminRadioRotation(): Promise<{
   data: AdminRadioRotationItem[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: radioRotationState(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -261,7 +261,7 @@ export async function fetchAdminRadio(): Promise<{
   data: AdminRadioData;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockRadioAdmin(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -291,7 +291,7 @@ export async function fetchAdminRadio(): Promise<{
       meta: { source: 'api' },
     };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: mockRadioAdmin(), meta: mockFallbackMeta(err) };
     }
     return {
@@ -307,7 +307,7 @@ export async function fetchAdminRadio(): Promise<{
 }
 
 export function radioMoveToFront(channelId: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -317,7 +317,7 @@ export function radioMoveToFront(channelId: string) {
 }
 
 export function radioOptOut(channelId: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -327,7 +327,7 @@ export function radioOptOut(channelId: string) {
 }
 
 export function radioRemoveOptOut(channelId: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -363,7 +363,7 @@ export async function fetchAdminInternetRadioPresets(): Promise<{
   data: AdminInternetRadioPreset[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: listMockInternetRadioPresets(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -384,7 +384,7 @@ export async function createAdminInternetRadioPreset(
 ): Promise<
   { ok: true; data: AdminInternetRadioPreset } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const preset = createMockInternetRadioPreset({
       genre: null,
       description: null,
@@ -416,7 +416,7 @@ export async function patchAdminInternetRadioPreset(
 ): Promise<
   { ok: true; data: AdminInternetRadioPreset } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const updated = patchMockInternetRadioPreset(id, patch);
     if (!updated) {
       return { ok: false, error: i18n.t('web:batch58.presetNotFound') };
@@ -441,7 +441,7 @@ export async function patchAdminInternetRadioPreset(
 export async function deleteAdminInternetRadioPreset(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     deleteMockInternetRadioPreset(id);
     return { ok: true };
   }
@@ -515,7 +515,7 @@ export async function fetchAdminRadioSubmissions(): Promise<{
   data: AdminRadioSubmission[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockRadioSubmissions(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -547,7 +547,7 @@ export async function fetchAdminRadioSubmissionAudio(id: string): Promise<
     }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row = mockRadioSubmissions().find((item) => item.id === id);
     if (!row?.sound.audioUrl) {
       return { ok: false, error: i18n.t('web:batch58.noPlayableAudio') };
@@ -579,7 +579,7 @@ export async function fetchAdminRadioSubmissionAudio(id: string): Promise<
 }
 
 export function approveRadioSubmission(id: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -589,7 +589,7 @@ export function approveRadioSubmission(id: string) {
 }
 
 export function rejectRadioSubmission(id: string, note?: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -656,7 +656,7 @@ export async function fetchAdminRadioStationSuggestions(): Promise<{
   data: AdminRadioStationSuggestion[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockRadioStationSuggestions(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -673,7 +673,7 @@ export async function fetchAdminRadioStationSuggestions(): Promise<{
 }
 
 export function approveRadioStationSuggestion(id: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -683,7 +683,7 @@ export function approveRadioStationSuggestion(id: string) {
 }
 
 export function rejectRadioStationSuggestion(id: string, note?: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return Promise.resolve({ ok: true } as const);
   }
   return mutate(
@@ -704,7 +704,7 @@ export type RadioStationSuggestionInput = {
 export async function submitRadioStationSuggestion(
   input: RadioStationSuggestionInput,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   const result = await mutate('/api/me/radio-station-suggestions', 'POST', {

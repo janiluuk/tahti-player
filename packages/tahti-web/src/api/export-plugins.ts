@@ -1,5 +1,5 @@
 import { apiBase } from './http';
-import { ALLOW_MOCK_FALLBACK, FORCE_MOCK } from './mode';
+import { allowMockFallback, isForceMock } from './mode';
 
 export type ExportPluginProviderRow = {
   contractVersion: 1;
@@ -29,7 +29,7 @@ export async function fetchExportPlugins(): Promise<{
   data: ExportPluginProviderRow[];
   source: 'api' | 'mock';
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { data: MOCK_EXPORT_PLUGINS, source: 'mock' };
   }
   try {
@@ -48,7 +48,7 @@ export async function fetchExportPlugins(): Promise<{
       source: 'api',
     };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: MOCK_EXPORT_PLUGINS, source: 'mock' };
     }
     throw err instanceof Error ? err : new Error('export-plugins fetch failed');

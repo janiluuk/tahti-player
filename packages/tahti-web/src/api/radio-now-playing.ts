@@ -1,5 +1,5 @@
 import { getJson } from './http';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { readIcyStreamTitle } from './radio-sources';
 
 type StationProgramme = { title: string | null; artist: string | null };
@@ -33,7 +33,7 @@ export function formatStationProgramme(
 export async function fetchStationProgramme(
   programmingUrl: string,
 ): Promise<string | null> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return null;
   }
   const cached = cache.get(programmingUrl);

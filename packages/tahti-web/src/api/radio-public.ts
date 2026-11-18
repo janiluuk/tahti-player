@@ -8,9 +8,9 @@ import {
   TAHTI_RADIO_SLUG,
 } from './mock';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
   withMockFallback,
   type FetchMeta,
@@ -27,7 +27,7 @@ export async function fetchRadio(): Promise<{
   meta: FetchMeta;
   playable: TahtiPlayable | null;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const data = mockRadio();
     return {
       data,
@@ -61,7 +61,7 @@ export async function fetchRadio(): Promise<{
     }
     return { data, meta: { source: 'api' }, playable: radioToPlayable(data) };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       const data = mockRadio();
       return {
         data,
@@ -97,7 +97,7 @@ export async function fetchEnabledInternetRadioPresets(): Promise<{
   data: EnabledInternetRadioPreset[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockEnabledInternetRadioPresets(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -111,7 +111,7 @@ export async function fetchEnabledInternetRadioPresets(): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK ? mockEnabledInternetRadioPresets : null,
+      allowMockFallback() ? mockEnabledInternetRadioPresets : null,
       () => [],
     );
   }
@@ -146,7 +146,7 @@ export async function fetchRadioRecentlyPlayed(): Promise<{
   data: RadioRecentlyPlayedItem[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockRadioRecentlyPlayed(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -160,7 +160,7 @@ export async function fetchRadioRecentlyPlayed(): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK ? mockRadioRecentlyPlayed : null,
+      allowMockFallback() ? mockRadioRecentlyPlayed : null,
       () => [],
     );
   }
@@ -196,7 +196,7 @@ export async function fetchRadioFeatureHistory(): Promise<{
   data: RadioFeatureHistoryItem[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockRadioFeatureHistory(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -210,7 +210,7 @@ export async function fetchRadioFeatureHistory(): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK ? mockRadioFeatureHistory : null,
+      allowMockFallback() ? mockRadioFeatureHistory : null,
       () => [],
     );
   }

@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { hasMockLike } from './likes';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type SoundEngagementKind = 'like' | 'repost';
@@ -32,7 +32,7 @@ export async function fetchSoundEngagement(
   slug: string,
   soundId: string,
 ): Promise<SoundEngagement | null> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const known = mockState.get(`${kind}:${soundId}`);
     if (known) {
       return known;
@@ -58,7 +58,7 @@ export async function setSoundEngagement(
   soundId: string,
   active: boolean,
 ): Promise<{ ok: true; data: SoundEngagement } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const prev = mockState.get(`${kind}:${soundId}`) ?? {
       active: false,
       count: 0,

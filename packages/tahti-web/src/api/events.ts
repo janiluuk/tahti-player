@@ -3,7 +3,7 @@ import { i18n } from '@tahti-player/i18n';
 import type { FetchMeta } from './client';
 import { mockVenues } from './mock';
 import { mockFixture } from './mock-overrides';
-import { failMeta, FORCE_MOCK } from './mode';
+import { failMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type ArtistEventStatus = 'DRAFT' | 'PUBLISHED' | 'CANCELLED';
@@ -193,7 +193,7 @@ export async function fetchMyEvents(): Promise<{
   data: ArtistEvent[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockFixture('myEvents', [...mockEvents]).map(normalizeEvent),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -244,7 +244,7 @@ function mockEventVenue(
 export async function createEvent(
   input: CreateArtistEventInput,
 ): Promise<{ ok: true; data: ArtistEvent } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const status = input.status ?? 'PUBLISHED';
     const row: ArtistEvent = {
       id: `evt-mock-${Date.now()}`,
@@ -291,7 +291,7 @@ export async function updateEvent(
   id: string,
   input: Partial<CreateArtistEventInput>,
 ): Promise<{ ok: true; data: ArtistEvent } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row = mockEvents.find((e) => e.id === id);
     if (!row) {
       return { ok: false, error: i18n.t('web:batch53.eventNotFound') };
@@ -333,7 +333,7 @@ export async function updateEvent(
 export async function deleteEvent(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const idx = mockEvents.findIndex((e) => e.id === id);
     if (idx >= 0) {
       mockEvents.splice(idx, 1);
@@ -368,7 +368,7 @@ export async function fetchChannelEvents(
 }> {
   const scope = opts?.scope ?? 'upcoming';
   const limit = opts?.limit;
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const now = new Date().toISOString();
     const base = mockEvents.filter((e) => e.status !== 'DRAFT');
     const fromFixture = mockFixture('channelEvents', base, slug).map(

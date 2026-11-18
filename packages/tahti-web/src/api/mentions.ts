@@ -1,7 +1,7 @@
 import { apiBase } from './http';
 import {
-  ALLOW_MOCK_FALLBACK,
-  FORCE_MOCK,
+  allowMockFallback,
+  isForceMock,
   mockFallbackMeta,
   type FetchMeta,
 } from './mode';
@@ -40,7 +40,7 @@ export async function searchMentionUsers(query: string): Promise<{
   if (normalized.length < 2) {
     return { data: [], meta: { source: 'api' } };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const users = [
       { username: 'midnight-cartography', displayName: 'Midnight Cartography' },
       { username: 'northern-signals', displayName: 'Northern Signals' },
@@ -56,7 +56,7 @@ export async function searchMentionUsers(query: string): Promise<{
   } catch (error) {
     return {
       data: [],
-      meta: ALLOW_MOCK_FALLBACK
+      meta: allowMockFallback()
         ? mockFallbackMeta(error)
         : { source: 'api', reason: String(error) },
     };
@@ -83,7 +83,7 @@ export async function fetchPublicMentions(username: string): Promise<{
   data: PublicMention[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockPublicMentions(username),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -97,7 +97,7 @@ export async function fetchPublicMentions(username: string): Promise<{
   } catch (error) {
     return {
       data: [],
-      meta: ALLOW_MOCK_FALLBACK
+      meta: allowMockFallback()
         ? mockFallbackMeta(error)
         : { source: 'api', reason: String(error) },
     };

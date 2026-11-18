@@ -1,5 +1,5 @@
 import { apiBase } from './http';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 /** Count a click from a smart link page through to a streaming service, for
  * the artist's smart-link stats. Fire-and-forget: `keepalive` lets it finish
@@ -8,7 +8,7 @@ export function recordSmartLinkClick(
   smartLinkSlug: string,
   platform: string,
 ): void {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return;
   }
   const referer =

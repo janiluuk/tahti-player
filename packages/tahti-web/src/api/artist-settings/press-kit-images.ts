@@ -1,6 +1,6 @@
 import type { FetchMeta } from '.././client';
 import { mockFixture } from '.././mock-overrides';
-import { failMeta, FORCE_MOCK } from '.././mode';
+import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import { apiBase } from '../http';
 import { getMockSessionUser } from '../mock-session';
@@ -52,7 +52,7 @@ export let mockGalleryImageCounter = 0;
 export async function fetchPublicPressKitImages(
   username: string,
 ): Promise<{ data: PublicPressKitImage[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockFixture(
         'publicGallery',
@@ -83,7 +83,7 @@ export async function fetchMyPressKitImages(): Promise<{
   data: PressKitImageItem[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockGalleryImages.map((i) => ({ ...i })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -102,7 +102,7 @@ export async function fetchMyPressKitImages(): Promise<{
 export async function setPressKitGalleryPublic(
   pressKitGalleryPublic: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockGalleryPublic = pressKitGalleryPublic;
     return { ok: true };
   }
@@ -129,7 +129,7 @@ export async function uploadPressKitImage(
   if (!ACCEPTED_PRESS_KIT_TYPES.includes(type)) {
     return { ok: false, error: 'Use JPEG, PNG, or WebP' };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     if (mockGalleryImages.length >= MAX_PRESS_KIT_IMAGES) {
       return {
         ok: false,
@@ -209,7 +209,7 @@ export async function updatePressKitImage(
 ): Promise<
   { ok: true; data: PressKitImageItem } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const current = mockGalleryImages.find((image) => image.id === id);
     if (!current) {
       return { ok: false, error: 'Image not found' };
@@ -235,7 +235,7 @@ export async function updatePressKitImage(
 export async function deletePressKitImage(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockGalleryImages = mockGalleryImages.filter((i) => i.id !== id);
     syncMockPressKitMeta();
     notifyPressKitGalleryReload();

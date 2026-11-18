@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { requestJson } from './client-request';
-import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
+import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 
 export type DiscussionTopicStatus = 'OPEN' | 'CLOSED';
 
@@ -138,7 +138,7 @@ export async function fetchDiscussionTopics(): Promise<{
   data: DiscussionTopic[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: sortTopics(mockTopics.map(summary)),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -158,7 +158,7 @@ export async function fetchDiscussionTopic(id: string): Promise<{
   data: DiscussionTopicDetail | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const topic = updateMockTopic(id, (t) => ({ ...t, unreadCount: 0 }));
     return {
       data: topic ?? null,
@@ -178,7 +178,7 @@ export async function replyToDiscussion(
   body: string,
 ): Promise<DiscussionResult<DiscussionPost>> {
   const trimmed = body.trim();
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const topic = mockTopics.find((t) => t.id === id);
     if (!topic) {
       return { ok: false, error: 'Topic not found' };
@@ -217,7 +217,7 @@ export async function setDiscussionFollow(
   id: string,
   following: boolean,
 ): Promise<DiscussionResult<DiscussionParticipation>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const topic = updateMockTopic(id, (t) => ({
       ...t,
       following,
@@ -245,7 +245,7 @@ export async function setDiscussionMute(
   id: string,
   muted: boolean,
 ): Promise<DiscussionResult<DiscussionParticipation>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const topic = updateMockTopic(id, (t) => ({
       ...t,
       following: true,
@@ -273,7 +273,7 @@ export async function removeDiscussionPost(
   id: string,
   postId: string,
 ): Promise<DiscussionResult<null>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const topic = mockTopics.find((t) => t.id === id);
     if (!topic?.posts.some((p) => p.id === postId)) {
       return { ok: false, error: 'Post not found' };
@@ -306,7 +306,7 @@ export async function fetchEarlierDiscussionPosts(
 ): Promise<
   DiscussionResult<{ posts: DiscussionPost[]; hasEarlierPosts: boolean }>
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: { posts: [], hasEarlierPosts: false } };
   }
   try {
@@ -332,7 +332,7 @@ export async function fetchEarlierDiscussionPosts(
 export async function markAllDiscussionsRead(): Promise<
   DiscussionResult<{ marked: number }>
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     let marked = 0;
     mockTopics = mockTopics.map((t) => {
       if (t.following && t.unreadCount) {
@@ -359,7 +359,7 @@ export async function editDiscussionPost(
   body: string,
 ): Promise<DiscussionResult<DiscussionPost>> {
   const trimmed = body.trim();
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const topic = mockTopics.find((t) => t.id === id);
     const post = topic?.posts.find((p) => p.id === postId);
     if (!topic || !post) {
@@ -403,7 +403,7 @@ export type UpdateDiscussionTopicInput = Partial<CreateDiscussionTopicInput> & {
 export async function createDiscussionTopic(
   input: CreateDiscussionTopicInput,
 ): Promise<DiscussionResult<DiscussionTopic>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const now = new Date().toISOString();
     const topic: DiscussionTopicDetail = {
       id: `topic-${Date.now()}`,
@@ -437,7 +437,7 @@ export async function updateDiscussionTopic(
   id: string,
   input: UpdateDiscussionTopicInput,
 ): Promise<DiscussionResult<DiscussionTopic>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const topic = updateMockTopic(id, (t) => ({ ...t, ...input }));
     return topic
       ? { ok: true, data: summary(topic) }

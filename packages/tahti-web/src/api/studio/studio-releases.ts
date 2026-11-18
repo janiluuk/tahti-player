@@ -2,7 +2,7 @@ import type { FetchMeta } from '../client';
 import { DEMO_MP3, mockProfile } from '../mock';
 import { mockFixture } from '../mock-overrides';
 import { getMockSessionUser } from '../mock-session';
-import { apiErrorMeta, FORCE_MOCK } from '../mode';
+import { apiErrorMeta, isForceMock } from '../mode';
 import { mockReleaseTrackStems } from '../release-track-stems';
 import type {
   FingerprintMatch,
@@ -160,7 +160,7 @@ export async function fetchStudioReleases(): Promise<{
   data: StudioReleaseList;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const releases = mockStudioReleaseRows();
     return {
       data: mockFixture('studioReleases', {
@@ -188,7 +188,7 @@ export async function fetchStudioReleases(): Promise<{
 export async function fetchStudioRelease(
   id: string,
 ): Promise<{ ok: true; data: StudioRelease } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const { data } = await fetchStudioReleases();
     const release =
       data.releases.find((r) => r.id === id) ?? mockStudioReleaseById(id);
@@ -219,7 +219,7 @@ export async function patchStudioRelease(
     showPoweredByFooter?: boolean;
   },
 ): Promise<{ ok: true; data: StudioRelease } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: {
@@ -260,7 +260,7 @@ export async function patchStudioRelease(
 export async function deleteStudioRelease(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -284,7 +284,7 @@ export async function patchStudioReleaseVisual(
   | { ok: true; data: Pick<StudioRelease, 'visualPreset'> }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: { visualPreset } };
   }
   try {
@@ -312,7 +312,7 @@ export async function addStudioReleaseTrack(
   | { ok: true; data: NonNullable<StudioRelease['tracks']>[number] }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: {
@@ -344,7 +344,7 @@ export async function reorderStudioReleaseTracks(
   releaseId: string,
   trackIds: string[],
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -368,7 +368,7 @@ export async function removeStudioReleaseTrack(
   releaseId: string,
   trackId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -391,7 +391,7 @@ export async function createStudioRelease(input: {
   releaseDate: string;
   description?: string;
 }): Promise<{ ok: true; data: StudioRelease } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const id = `rel-mock-${Date.now()}`;
     const row: StudioRelease = {
       id,
@@ -424,7 +424,7 @@ export async function uploadReleaseArtwork(
   releaseId: string,
   file: File,
 ): Promise<{ ok: true; artworkUrl: string } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, artworkUrl: URL.createObjectURL(file) };
   }
   try {
@@ -462,7 +462,7 @@ export async function uploadReleaseArtwork(
 export async function removeReleaseArtwork(
   releaseId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -502,7 +502,7 @@ async function runTrackFingerprint(
 ): Promise<
   { ok: true; data: FingerprintResult } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: {
@@ -564,7 +564,7 @@ export async function fetchSoundStems(soundId: string): Promise<{
   data: StemJob[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -603,7 +603,7 @@ export async function requestSoundStems(
   soundId: string,
   stemSet: StemSet = 'TWO_STEM',
 ): Promise<{ ok: true; status: string } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, status: 'PENDING' };
   }
   try {
@@ -636,7 +636,7 @@ export async function patchReleaseTrackCredits(
         : {}),
     }))
     .filter((credit) => credit.role && credit.name);
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, credits: cleaned.length > 0 ? cleaned : null };
   }
   try {

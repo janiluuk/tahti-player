@@ -1,6 +1,6 @@
 import type { FetchMeta } from './client';
 import { getJson } from './http';
-import { failMeta, FORCE_MOCK } from './mode';
+import { failMeta, isForceMock } from './mode';
 
 export type PostCategory = 'STORY' | 'NEWS' | 'ANNOUNCEMENT';
 
@@ -79,7 +79,7 @@ export async function fetchCommunityStories(limit = 12): Promise<{
   data: CommunityStory[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockStories(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -119,7 +119,7 @@ const MOCK_BODIES: Record<string, string> = {
 export async function fetchCommunityStory(
   id: string,
 ): Promise<{ data: CommunityStoryDetail | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const story = mockStories().find((item) => item.id === id);
     return {
       data: story

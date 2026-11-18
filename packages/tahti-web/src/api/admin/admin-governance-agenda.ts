@@ -1,7 +1,7 @@
 import { i18n } from '@tahti-player/i18n';
 
 import { getJson, sendJson } from '../http';
-import { FORCE_MOCK } from '../mode';
+import { isForceMock } from '../mode';
 
 /** One item on a meeting's agenda, in agenda order (`position`). */
 export type GovernanceAgendaItem = {
@@ -62,7 +62,7 @@ export function errorText(err: unknown, fallback: string): string {
 export async function fetchAdminAgendaItems(
   meetingId: string,
 ): Promise<AgendaResult<GovernanceAgendaItem[]>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: [...mockAgendaItems(meetingId)] };
   }
   try {
@@ -85,7 +85,7 @@ export async function createAdminAgendaItem(
   if (!title) {
     return { ok: false, error: i18n.t('web:batch58.giveItemTitle') };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const items = mockAgendaItems(meetingId);
     setMockAgendaItems(meetingId, [
       ...items,
@@ -126,7 +126,7 @@ export async function updateAdminAgendaItem(
   if (change.title !== undefined && !change.title.trim()) {
     return { ok: false, error: i18n.t('web:batch58.giveItemTitle') };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     setMockAgendaItems(
       item.meetingId,
       mockAgendaItems(item.meetingId).map((current) =>
@@ -152,7 +152,7 @@ export async function updateAdminAgendaItem(
 export async function deleteAdminAgendaItem(
   item: Pick<GovernanceAgendaItem, 'id' | 'meetingId'>,
 ): Promise<AgendaResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     setMockAgendaItems(
       item.meetingId,
       mockAgendaItems(item.meetingId).filter((c) => c.id !== item.id),
@@ -175,7 +175,7 @@ export async function reorderAdminAgendaItems(
   meetingId: string,
   ids: string[],
 ): Promise<AgendaResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const byId = new Map(mockAgendaItems(meetingId).map((i) => [i.id, i]));
     setMockAgendaItems(
       meetingId,

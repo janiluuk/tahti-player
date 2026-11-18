@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type MyThemeVisibility = 'PRIVATE' | 'PENDING_REVIEW' | 'REJECTED';
@@ -43,7 +43,7 @@ export function themeSubmissionStatus(theme: MyTheme): string {
 }
 
 export async function fetchMyThemes(): Promise<Result<MyTheme[]>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, data: [...mockThemes] };
   }
   try {
@@ -57,7 +57,7 @@ export async function fetchMyThemes(): Promise<Result<MyTheme[]>> {
 export async function submitThemeForReview(
   id: string,
 ): Promise<Result<MyTheme>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const theme = mockThemes.find((item) => item.id === id);
     if (!theme) {
       return { ok: false, error: i18n.t('web:batch54.themeNotFound') };
@@ -91,7 +91,7 @@ export async function submitThemeToCommunity(theme: {
   if (Object.keys(vars).length === 0 && Object.keys(dark).length === 0) {
     return { ok: false, error: i18n.t('web:batch52.themeNoColours') };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const created: MyTheme = {
       id: `mock-theme-${Date.now()}`,
       name,
@@ -119,7 +119,7 @@ export async function submitThemeToCommunity(theme: {
 }
 
 export async function deleteMyTheme(id: string): Promise<Result<null>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockThemes = mockThemes.filter((item) => item.id !== id);
     return { ok: true, data: null };
   }

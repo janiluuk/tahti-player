@@ -1,5 +1,5 @@
 import type { FetchMeta } from '.././client';
-import { failMeta, FORCE_MOCK } from '.././mode';
+import { failMeta, isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import type { PostCategory } from '../community-stories';
 
@@ -81,7 +81,7 @@ export async function fetchArtistPosts(): Promise<{
   data: ArtistPost[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockPosts.map((post) => ({ ...post, images: [...post.images] })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -104,7 +104,7 @@ export async function fetchChannelPosts(slug: string): Promise<{
   data: ArtistPost[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockPosts.map((post) => ({ ...post, images: [...post.images] })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -144,7 +144,7 @@ export async function createArtistPost(input: {
   publishAt?: string;
   category?: PostCategory;
 }): Promise<{ ok: true; data: ArtistPost } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row: ArtistPost = {
       id: `post-mock-${Date.now()}`,
       title: input.title ?? null,
@@ -188,7 +188,7 @@ export async function updateArtistPost(
   id: string,
   patch: ArtistPostPatch,
 ): Promise<{ ok: true; data: ArtistPost } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const current = mockPosts.find((post) => post.id === id);
     if (!current) {
       return { ok: false, error: 'Post not found.' };
@@ -218,7 +218,7 @@ export async function uploadArtistPostImage(
   if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
     return { ok: false, error: 'Choose a JPEG, PNG, or WebP image.' };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const imageUrl = URL.createObjectURL(file);
     const current = mockPosts.find((post) => post.id === postId);
     if (!current) {
@@ -263,7 +263,7 @@ export async function uploadArtistPostImage(
 export async function deleteArtistPost(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockPosts = mockPosts.filter((p) => p.id !== id);
     return { ok: true };
   }
@@ -284,7 +284,7 @@ export async function fetchNewsletterDrafts(): Promise<{
   data: NewsletterDraft[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [...mockDrafts],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -305,7 +305,7 @@ export async function fetchNewsletterDrafts(): Promise<{
 export async function deleteNewsletterDraft(
   draftId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const draft = mockDrafts.find((entry) => entry.id === draftId);
     if (!draft) {
       return { ok: false, error: 'Draft not found' };
@@ -337,7 +337,7 @@ export async function sendNewsletterDraft(
   draftId: string,
   audience?: 'all' | 'fans',
 ): Promise<{ ok: true; queued?: number } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockDrafts = mockDrafts.map((d) =>
       d.id === draftId
         ? { ...d, state: 'SENT', sentAt: new Date().toISOString() }
@@ -366,7 +366,7 @@ export async function createNewsletterDraft(input: {
 }): Promise<
   { ok: true; data: NewsletterDraft } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row: NewsletterDraft = {
       id: `nl-mock-${Date.now()}`,
       subject: input.subject,
@@ -401,7 +401,7 @@ export async function postChatReaction(
   slug: string,
   emoji: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {
@@ -429,7 +429,7 @@ export async function fetchNewsletterSubscriberStats(): Promise<{
   data: NewsletterSubscriberStats | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         total: 48,

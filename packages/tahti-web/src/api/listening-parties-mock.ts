@@ -110,7 +110,7 @@ const POLAR_STATIC: MockRelease = {
   pLine: '℗ 2026 Northern Lights',
   cLine: '© 2026 Northern Lights',
   labelImprint: 'Polar Records',
-  tracks: [
+  tracks: /* @__PURE__ */ [
     ['Cold Open', 192],
     ['Aurora Drift', 247],
     ['Static Bloom', 205],
@@ -148,7 +148,7 @@ const FOREST_COVER: MockRelease = {
   pLine: '℗ 2026 Northern Lights',
   cLine: null,
   labelImprint: null,
-  tracks: [
+  tracks: /* @__PURE__ */ [
     ['Haukkalampi', 201],
     ['Birch Light', 176],
     ['Trail Fund', 233],
@@ -237,22 +237,33 @@ function loadRecords(): MockPartyRecord[] {
 
 function persist() {
   try {
-    globalThis.sessionStorage?.setItem(STORAGE_KEY, JSON.stringify(records));
+    globalThis.sessionStorage?.setItem(
+      STORAGE_KEY,
+      JSON.stringify(mockRecords()),
+    );
   } catch {
     return;
   }
 }
 
-let records: MockPartyRecord[] = loadRecords();
+// Loaded on first use, not at import: top-level state would keep this module
+// (and its fixtures) in production chunks after `isForceMock()` folds away.
+let loadedRecords: MockPartyRecord[] | null = null;
 
-onMockOverridesReset(() => {
-  records = seed();
-  try {
-    globalThis.sessionStorage?.removeItem(STORAGE_KEY);
-  } catch {
-    return;
+function mockRecords(): MockPartyRecord[] {
+  if (loadedRecords === null) {
+    loadedRecords = loadRecords();
+    onMockOverridesReset(() => {
+      loadedRecords = seed();
+      try {
+        globalThis.sessionStorage?.removeItem(STORAGE_KEY);
+      } catch {
+        return;
+      }
+    });
   }
-});
+  return loadedRecords;
+}
 
 function timelineOf(record: MockPartyRecord, now: number) {
   return computeListeningPartyTimeline({
@@ -316,7 +327,7 @@ function toSummary(
 }
 
 export function mockListeningParty(id: string): ListeningPartyDto | null {
-  const record = records.find((row) => row.id === id);
+  const record = mockRecords().find((row) => row.id === id);
   return record ? toDto(record) : null;
 }
 
@@ -333,7 +344,7 @@ export function listMockChannelListeningParties(
   slug: string,
 ): ListeningPartySummaryDto[] {
   const now = Date.now();
-  return records
+  return mockRecords()
     .filter((record) => hostFor(record.hostKey).channel.slug === slug)
     .map((record) => toSummary(record, now))
     .filter((row) => row.state === 'SCHEDULED' || row.state === 'LIVE')
@@ -345,7 +356,7 @@ export function listMockPublicListeningParties(
   limit: number,
 ): ListeningPartySummaryDto[] {
   const now = Date.now();
-  const rows = records.map((record) => toSummary(record, now));
+  const rows = mockRecords().map((record) => toSummary(record, now));
   const live = rows
     .filter((row) => row.state === 'LIVE')
     .sort((a, b) => a.startAt.localeCompare(b.startAt));
@@ -362,7 +373,7 @@ function myUsername(): string | null {
 export function listMockMyListeningParties(): ListeningPartySummaryDto[] {
   const me = myUsername();
   const now = Date.now();
-  return records
+  return mockRecords()
     .filter((record) => record.hostKey === me)
     .map((record) => toSummary(record, now))
     .sort((a, b) => b.startAt.localeCompare(a.startAt));
@@ -388,7 +399,7 @@ function overlaps(
 ): MockPartyRecord | undefined {
   const start = new Date(candidate.startAt).getTime();
   const end = timelineOf(candidate, now).endAt.getTime();
-  return records.find((other) => {
+  return mockRecords().find((other) => {
     if (
       other.id === candidate.id ||
       other.hostKey !== candidate.hostKey ||
@@ -496,7 +507,7 @@ export async function createMockListeningParty(
   if (overlaps(record, now)) {
     return { ok: false, error: OVERLAP_ERROR, status: 409 };
   }
-  records.push(record);
+  mockRecords().push(record);
   persist();
   return { ok: true, data: toDto(record, now) };
 }
@@ -506,7 +517,7 @@ function ownRecord(
 ):
   | { ok: true; record: MockPartyRecord }
   | { ok: false; error: string; status: number } {
-  const record = records.find((row) => row.id === id);
+  const record = mockRecords().find((row) => row.id === id);
   if (!record) {
     return { ok: false, error: 'Listening party not found', status: 404 };
   }

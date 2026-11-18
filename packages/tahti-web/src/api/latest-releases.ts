@@ -1,6 +1,6 @@
 import type { FetchMeta } from './client';
 import { getJson } from './http';
-import { failMeta, FORCE_MOCK } from './mode';
+import { failMeta, isForceMock } from './mode';
 
 export type LatestRelease = {
   id: string;
@@ -20,7 +20,7 @@ export async function fetchLatestReleases(limit = 10): Promise<{
   data: LatestRelease[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         {

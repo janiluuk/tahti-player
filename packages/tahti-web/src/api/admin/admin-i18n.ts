@@ -2,9 +2,9 @@ import type { FetchMeta } from '../client';
 import { clearGetCache } from '../getCache';
 import { apiBase, getJson, sendJson } from '../http';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from '../mode';
 
@@ -66,7 +66,7 @@ export async function fetchAdminLanguages(): Promise<{
   /** The server has no translation routes, so nothing here can be saved. */
   unavailable?: true;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockLanguages(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -83,7 +83,7 @@ export async function fetchAdminLanguages(): Promise<{
     if (isMissingRoute(err)) {
       return { data: [], meta: apiErrorMeta(err), unavailable: true };
     }
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: mockLanguages(), meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
@@ -94,7 +94,7 @@ export async function createAdminLanguage(input: {
   code: string;
   name: string;
 }): Promise<{ ok: true; data: AdminLanguage } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     if (mockLanguages().some((l) => l.code === input.code)) {
       return { ok: false, error: `Language "${input.code}" already exists.` };
     }
@@ -144,7 +144,7 @@ export async function importAdminLanguageCsv(
     skipped: dataRows.length - validRows.length,
   };
 
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const lang = mockLanguages().find((l) => l.code === code);
     if (!lang) {
       return { ok: false, error: `Unknown language "${code}".` };

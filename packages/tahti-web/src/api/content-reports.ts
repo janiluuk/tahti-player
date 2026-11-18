@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type ContentReportTarget =
@@ -21,7 +21,7 @@ export async function submitContentReport(input: {
   reason: ContentReportReason;
   details?: string;
 }): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   const { details, ...target } = input;

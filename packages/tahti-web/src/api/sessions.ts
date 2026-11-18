@@ -1,5 +1,5 @@
 import { requestJson } from './client-request';
-import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
+import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 
 export type DeviceSession = {
   id: string;
@@ -13,7 +13,7 @@ export async function fetchDeviceSessions(): Promise<{
   data: DeviceSession[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -38,7 +38,7 @@ export async function fetchDeviceSessions(): Promise<{
 }
 
 export async function revokeDeviceSession(id: string): Promise<void> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return;
   }
   await requestJson(`/api/me/sessions/${encodeURIComponent(id)}`, {
@@ -47,7 +47,7 @@ export async function revokeDeviceSession(id: string): Promise<void> {
 }
 
 export async function revokeAllDeviceSessions(): Promise<void> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return;
   }
   await requestJson('/api/me/sessions', { method: 'DELETE' });

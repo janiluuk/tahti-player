@@ -2,9 +2,9 @@ import type { AvatarTheme } from '../../lib/avatarTheme';
 import type { FetchMeta } from '.././client';
 import { setMockFreeSubscriptionsEnabled } from '.././mock-profile-preferences';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
@@ -89,7 +89,7 @@ export async function fetchMeProfile(): Promise<{
   data: ProfileFields;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: { ...mockProfile },
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -99,7 +99,7 @@ export async function fetchMeProfile(): Promise<{
     const { data } = await requestJson<ProfileFields>('/api/me/profile');
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return {
         data: { ...mockProfile, username: 'unknown' },
         meta: mockFallbackMeta(err),
@@ -173,7 +173,7 @@ export type ProfilePatch = Partial<
 export async function patchMeProfile(
   patch: ProfilePatch,
 ): Promise<{ ok: true; data: ProfileFields } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockProfile = { ...mockProfile, ...patch };
     if (patch.freeSubscriptionsEnabled !== undefined) {
       setMockFreeSubscriptionsEnabled(

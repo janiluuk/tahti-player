@@ -1,4 +1,4 @@
-import { FORCE_MOCK } from '.././mode';
+import { isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import { oauthStartUrl } from './catalog';
 
@@ -12,7 +12,7 @@ export async function fetchTrackExportStatus(
   soundId: string,
   target: 'mixcloud',
 ): Promise<TrackExportStatus | null> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return null;
   }
   try {
@@ -40,7 +40,7 @@ export async function exportTrack(
   | { ok: true; status: TrackExportStatus }
   | { ok: false; error: string; connectUrl?: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       status: { status: 'PENDING', url: null, error: null },

@@ -1,5 +1,5 @@
 import { apiBase } from './http';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 export type ListenSource =
   | 'CHANNEL_PAGE'
@@ -72,7 +72,7 @@ export function sendListenHeartbeat(
   referrerHost: string | null = entryReferrer.host,
   referrerUrl: string | null = entryReferrer.url,
 ): void {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return;
   }
   void fetch(`${apiBase()}/api/v1/listen/heartbeat`, {

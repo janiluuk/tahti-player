@@ -9,7 +9,7 @@ import {
   type ArtistEventRole,
 } from './events';
 import { apiBase } from './http';
-import { failMeta, FORCE_MOCK } from './mode';
+import { failMeta, isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type CalendarEvent = ArtistEvent & {
@@ -76,7 +76,7 @@ export async function fetchEventCalendar(params: {
 }): Promise<{ data: CalendarEvent[]; meta: FetchMeta }> {
   const from = params.from.toISOString();
   const to = params.to.toISOString();
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const rows = mockCalendarRows().filter(
       (event) =>
         event.status !== 'DRAFT' &&
@@ -117,7 +117,7 @@ export async function fetchPublicEvent(id: string): Promise<{
   data: CalendarEvent | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row = mockCalendarRows().find(
       (event) => event.id === id && event.status !== 'DRAFT',
     );
@@ -146,7 +146,7 @@ async function transition(
   action: 'publish' | 'cancel',
   shareTo: EventShareTarget[] = [],
 ): Promise<Result<ArtistEvent>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row = mockEvents.find((event) => event.id === id);
     if (!row) {
       return { ok: false, error: i18n.t('web:batch53.eventNotFound') };
@@ -198,7 +198,7 @@ export async function setEventParticipants(
   id: string,
   participants: EventParticipantInput[],
 ): Promise<Result<ArtistEvent>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row = mockEvents.find((event) => event.id === id);
     if (!row) {
       return { ok: false, error: i18n.t('web:batch53.eventNotFound') };
@@ -256,7 +256,7 @@ export async function fetchEventInvites(): Promise<{
   data: EventInvite[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockInvites.map((invite) => ({ ...invite })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -283,7 +283,7 @@ export async function answerEventInvite(
   eventId: string,
   answer: 'accept' | 'decline',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const invite = mockInvites.find((row) => row.event.id === eventId);
     if (invite) {
       invite.status = answer === 'accept' ? 'ACCEPTED' : 'DECLINED';
@@ -377,7 +377,7 @@ export async function fetchEventShares(id: string): Promise<{
   data: EventShare[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: (mockShares.get(id) ?? []).map((share) => ({ ...share })),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -398,7 +398,7 @@ export async function retryEventShare(
   eventId: string,
   shareId: string,
 ): Promise<Result<EventShare>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const share = mockShares.get(eventId)?.find((row) => row.id === shareId);
     if (!share) {
       return { ok: false, error: i18n.t('web:batch53.shareNotFound') };

@@ -2,9 +2,9 @@ import type { ChannelPageItem } from '../../lib/channelPageLayout';
 import type { FetchMeta } from '.././client';
 import { mockFixture } from '.././mock-overrides';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from '.././mode';
 import { requestJson } from '.././request-json';
@@ -21,7 +21,7 @@ export async function fetchChannelVisual(): Promise<{
   data: ChannelVisual;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockFixture('channelVisual', { ...mockVisual }),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -33,7 +33,7 @@ export async function fetchChannelVisual(): Promise<{
     >('/api/me/channel/visual');
     return { data: normalizeChannelVisual(data), meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: { ...mockVisual }, meta: mockFallbackMeta(err) };
     }
     return {

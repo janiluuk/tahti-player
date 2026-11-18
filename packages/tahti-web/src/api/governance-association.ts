@@ -1,5 +1,5 @@
 import { requestJson } from './client-request';
-import { apiErrorMeta, FORCE_MOCK, type FetchMeta } from './mode';
+import { apiErrorMeta, isForceMock, type FetchMeta } from './mode';
 
 export type GovernanceAuditor = {
   id: string;
@@ -66,7 +66,7 @@ export async function fetchAssociationProfile(): Promise<{
   data: AssociationProfile | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockAssociationProfile(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

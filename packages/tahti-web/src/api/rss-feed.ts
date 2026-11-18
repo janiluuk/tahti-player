@@ -3,9 +3,9 @@ import { i18n } from '@tahti-player/i18n';
 import { parseRssXml, type RssArticle } from '../lib/parseRss';
 import { apiBase } from './http';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
   type FetchMeta,
 } from './mode';
@@ -58,7 +58,7 @@ export async function fetchRssArticles(feedUrl: string): Promise<{
   feedTitle?: string;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: MOCK_RSS_ARTICLES,
       feedTitle: 'Tahti News',
@@ -87,7 +87,7 @@ export async function fetchRssArticles(feedUrl: string): Promise<{
       meta: { source: 'api' },
     };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return {
         data: MOCK_RSS_ARTICLES,
         feedTitle: 'Tahti News',

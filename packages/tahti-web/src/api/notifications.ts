@@ -3,9 +3,9 @@
  * other mock fixtures reappear on every reload. */
 import { mockFixture } from './mock-overrides';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
   type FetchMeta,
 } from './mode';
@@ -59,7 +59,7 @@ export type TahtiNotification = {
 };
 
 function emptyMeta(err: unknown): FetchMeta {
-  return ALLOW_MOCK_FALLBACK ? mockFallbackMeta(err) : apiErrorMeta(err);
+  return allowMockFallback() ? mockFallbackMeta(err) : apiErrorMeta(err);
 }
 
 function mockNotifications(includeInboxExtras: boolean): TahtiNotification[] {
@@ -171,7 +171,7 @@ export async function fetchStickyNotifications(): Promise<{
   data: TahtiNotification[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockNotifications(false),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -300,7 +300,7 @@ export async function fetchNotifications(
   hasMore: boolean;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const data = before || kind ? [] : mockNotifications(true);
     return {
       data,
@@ -336,7 +336,7 @@ export async function fetchNotifications(
 }
 
 export async function dismissNotification(id: string): Promise<void> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     dismissMockNotification(id);
     return;
   }
@@ -347,7 +347,7 @@ export async function dismissNotification(id: string): Promise<void> {
 }
 
 export async function markAllNotificationsRead(): Promise<void> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     for (const item of mockNotifications(true)) {
       dismissMockNotification(item.id);
     }
@@ -361,7 +361,7 @@ export async function markAllNotificationsRead(): Promise<void> {
 /** Removes one notification (tahti-org `DELETE /api/me/notifications/:id`).
  * An unacknowledged sticky notice can't be removed; the API answers 409. */
 export async function removeNotification(id: string): Promise<void> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     dismissMockNotification(id);
     return;
   }
@@ -372,7 +372,7 @@ export async function removeNotification(id: string): Promise<void> {
 
 /** Removes every notification already read; returns how many went. */
 export async function clearReadNotifications(): Promise<number> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const read = mockNotifications(true).filter((item) => item.readAt);
     for (const item of read) {
       dismissMockNotification(item.id);
@@ -395,7 +395,7 @@ export type NotificationUnreadCounts = {
  * `GET /api/me/notifications/unread-counts`); null when it can't be read, so
  * the filter chips simply show no counts. */
 export async function fetchNotificationUnreadCounts(): Promise<NotificationUnreadCounts | null> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const unread = mockNotifications(true).filter((item) => !item.readAt);
     const byKind = { social: 0, music: 0, money: 0, governance: 0, other: 0 };
     for (const item of unread) {

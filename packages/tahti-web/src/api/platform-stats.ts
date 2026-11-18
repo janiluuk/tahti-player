@@ -1,5 +1,5 @@
 import { getJson } from './http';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 export type PlatformStats = {
   activeArtists: number;
@@ -9,7 +9,7 @@ export type PlatformStats = {
 };
 
 export async function fetchPlatformStats(): Promise<PlatformStats | null> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       activeArtists: 42,
       broadcastsThisMonth: 118,

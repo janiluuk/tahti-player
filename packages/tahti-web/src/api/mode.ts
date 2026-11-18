@@ -8,28 +8,25 @@
  *   `VITE_ALLOW_MOCK_FALLBACK=0`.
  * - `VITE_ALLOW_MOCK_FALLBACK=1` — force fallback on even in production (emergency).
  *
- * Prefer the `FORCE_MOCK` / `ALLOW_MOCK_FALLBACK` consts at call sites so Rollup
- * can drop `api/mock*` when they fold to false in a production build.
+ * Both flag functions read `import.meta.env` on every call (tests flip it with
+ * `vi.stubEnv`) and must stay single env expressions: Vite inlines the env
+ * values and Rollup folds the call to a literal, which is what lets a
+ * production build drop the `api/mock*` fixtures behind `if (isForceMock())`.
  */
 
 export type FetchMeta = { source: 'api' | 'mock'; reason?: string };
 
-export const FORCE_MOCK: boolean = import.meta.env.VITE_FORCE_MOCK === '1';
-
-export const ALLOW_MOCK_FALLBACK: boolean = FORCE_MOCK
-  ? true
-  : import.meta.env.VITE_ALLOW_MOCK_FALLBACK === '1'
-    ? true
-    : import.meta.env.VITE_ALLOW_MOCK_FALLBACK === '0'
-      ? false
-      : Boolean(import.meta.env.DEV);
-
 export function isForceMock(): boolean {
-  return FORCE_MOCK;
+  return import.meta.env.VITE_FORCE_MOCK === '1';
 }
 
 export function allowMockFallback(): boolean {
-  return ALLOW_MOCK_FALLBACK;
+  return (
+    import.meta.env.VITE_FORCE_MOCK === '1' ||
+    import.meta.env.VITE_ALLOW_MOCK_FALLBACK === '1' ||
+    (import.meta.env.VITE_ALLOW_MOCK_FALLBACK !== '0' &&
+      import.meta.env.DEV === true)
+  );
 }
 
 /** API failed and the caller is returning empty/null stand-in data — not a
@@ -65,7 +62,7 @@ export function withMockFallback<T>(
   mock: (() => T) | null,
   empty: () => T,
 ): { data: T; meta: FetchMeta } {
-  if (mock && ALLOW_MOCK_FALLBACK) {
+  if (mock && allowMockFallback()) {
     return { data: mock(), meta: mockFallbackMeta(err) };
   }
   return { data: empty(), meta: apiErrorMeta(err) };

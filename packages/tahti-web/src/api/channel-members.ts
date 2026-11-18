@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import { mockMembers } from './artist-settings/mock';
 import type { ChannelMember } from './artist-settings/moderation';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 type MemberResult =
@@ -15,7 +15,7 @@ export async function addChannelMember(input: {
   name: string;
   role: string;
 }): Promise<MemberResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const member: ChannelMember = {
       id: `mock-member-${Date.now()}`,
       name: input.name,
@@ -44,7 +44,7 @@ export async function updateChannelMember(
   id: string,
   patch: { name?: string; role?: string },
 ): Promise<MemberResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const member = mockMembers.find((item) => item.id === id);
     if (!member) {
       return { ok: false, error: 'Member not found' };
@@ -66,7 +66,7 @@ export async function updateChannelMember(
 export async function removeChannelMember(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const index = mockMembers.findIndex((item) => item.id === id);
     if (index >= 0) {
       mockMembers.splice(index, 1);
@@ -93,7 +93,7 @@ export async function uploadChannelMemberPicture(
   if (!MEMBER_PICTURE_TYPES.includes(contentType)) {
     return { ok: false, error: 'Use JPEG, PNG, or WebP' };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const url = URL.createObjectURL(file);
     const member = mockMembers.find((item) => item.id === id);
     if (member) {
@@ -132,7 +132,7 @@ export async function uploadChannelMemberPicture(
 export async function clearChannelMemberPicture(
   id: string,
 ): Promise<MemberResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const member = mockMembers.find((item) => item.id === id);
     if (!member) {
       return { ok: false, error: 'Member not found' };
@@ -155,7 +155,7 @@ export async function clearChannelMemberPicture(
 export async function reorderChannelMembers(
   ids: string[],
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockMembers.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
     mockMembers.forEach((member, position) => {
       member.position = position;
@@ -177,7 +177,7 @@ export async function reorderChannelMembers(
 export async function fetchPublicChannelMembers(
   slug: string,
 ): Promise<ChannelMember[]> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return [...mockMembers];
   }
   try {

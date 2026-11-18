@@ -29,9 +29,9 @@ import { mockFixture } from './mock-overrides';
 import { getMockSessionUser, mockActivateSubscription } from './mock-session';
 import { ensureMockUploadedSound, getMockUploadedSound } from './mock-uploads';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
   withMockFallback,
   type FetchMeta,
@@ -122,7 +122,7 @@ export async function fetchChannel(slug: string): Promise<{
   meta: FetchMeta;
   playable: TahtiPlayable | null;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const data = normalizePublicChannel(mockChannel(slug));
     return {
       data,
@@ -146,7 +146,7 @@ export async function fetchChannel(slug: string): Promise<{
       playable: channelToPlayable(normalized),
     };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       const data = normalizePublicChannel(mockChannel(slug));
       return {
         data,
@@ -162,7 +162,7 @@ export async function fetchChannelSound(slug: string): Promise<{
   data: ChannelSoundItem[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockSoundItems(slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -176,7 +176,7 @@ export async function fetchChannelSound(slug: string): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK ? () => mockSoundItems(slug) : null,
+      allowMockFallback() ? () => mockSoundItems(slug) : null,
       () => [],
     );
   }
@@ -244,7 +244,7 @@ export async function fetchTrackDetail(
   data: PublicTrackDetail | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     await ensureMockUploadedSound(id);
     return {
       data: mockTrackDetail(id) ?? mockTrackDetailFromUpload(id),
@@ -259,7 +259,7 @@ export async function fetchTrackDetail(
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK
+      allowMockFallback()
         ? () => mockTrackDetail(id) ?? mockTrackDetailFromUpload(id)
         : null,
       () => null,
@@ -274,7 +274,7 @@ export async function fetchTrackComments(
   data: { comments: TrackComment[]; commentsEnabled: boolean };
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         comments: mockTrackComments(id),
@@ -292,7 +292,7 @@ export async function fetchTrackComments(
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK
+      allowMockFallback()
         ? () => ({ comments: mockTrackComments(id), commentsEnabled: true })
         : null,
       () => ({ comments: [], commentsEnabled: true }),
@@ -313,7 +313,7 @@ export async function postTrackComment(
   body: string,
   shareKey?: string,
 ): Promise<{ ok: true; data: TrackComment } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       data: {
@@ -348,7 +348,7 @@ export async function fetchProfile(username: string): Promise<{
   data: PublicProfile;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockProfile(username),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -360,7 +360,7 @@ export async function fetchProfile(username: string): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: mockProfile(username), meta: mockFallbackMeta(err) };
     }
     throw errorOr(err, i18n.t('web:batch56.profileFetchFailed'));
@@ -389,7 +389,7 @@ export async function fetchCollection(slug: string): Promise<{
   data: PublicCollection;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockCollection(slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -401,7 +401,7 @@ export async function fetchCollection(slug: string): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: mockCollection(slug), meta: mockFallbackMeta(err) };
     }
     throw errorOr(err, i18n.t('web:batch56.collectionFetchFailed'));
@@ -412,7 +412,7 @@ export async function fetchCollectionSubscription(slug: string): Promise<{
   subscribed: boolean;
   subscriberCount: number;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { subscribed: false, subscriberCount: 0 };
   }
   try {
@@ -420,7 +420,7 @@ export async function fetchCollectionSubscription(slug: string): Promise<{
       `/api/v1/collections/${encodeURIComponent(slug)}/subscribe`,
     );
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { subscribed: false, subscriberCount: 0 };
     }
     throw errorOr(err, i18n.t('web:batch56.collectionSubscriptionFailed'));
@@ -431,7 +431,7 @@ export async function setCollectionSubscription(
   slug: string,
   subscribed: boolean,
 ): Promise<{ subscribed: boolean; subscriberCount: number }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { subscribed, subscriberCount: subscribed ? 1 : 0 };
   }
   const { data } = await requestJson<{
@@ -447,7 +447,7 @@ export async function fetchSmartLink(smartLinkSlug: string): Promise<{
   data: SmartLinkView;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockSmartLink(smartLinkSlug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -459,7 +459,7 @@ export async function fetchSmartLink(smartLinkSlug: string): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return {
         data: mockSmartLink(smartLinkSlug),
         meta: mockFallbackMeta(err),
@@ -473,7 +473,7 @@ export async function fetchVenues(): Promise<{
   data: VenueDirectoryItem[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockVenues(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -485,7 +485,7 @@ export async function fetchVenues(): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK ? mockVenues : null,
+      allowMockFallback() ? mockVenues : null,
       () => [],
     );
   }
@@ -495,7 +495,7 @@ export async function fetchVenueProfile(slug: string): Promise<{
   data: VenueProfile | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockVenueProfile(slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -509,7 +509,7 @@ export async function fetchVenueProfile(slug: string): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK ? () => mockVenueProfile(slug) : null,
+      allowMockFallback() ? () => mockVenueProfile(slug) : null,
       () => null,
     );
   }
@@ -539,7 +539,7 @@ export type RegisterVenueInput = {
 export async function registerVenue(
   input: RegisterVenueInput,
 ): Promise<{ ok: true; slug: string } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     if (!getMockSessionUser()) {
       return { ok: false, error: 'Log in first to register a venue.' };
     }
@@ -583,7 +583,7 @@ export async function fetchChatAccess(slug: string): Promise<{
   data: ChatAccess;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockFixture('chatAccess', mockChatAccess(), slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -597,7 +597,7 @@ export async function fetchChatAccess(slug: string): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK ? mockChatAccess : null,
+      allowMockFallback() ? mockChatAccess : null,
       () => ({
         fanChatEnabled: false,
         isSupporter: false,
@@ -613,7 +613,7 @@ export async function fetchChatHistory(slug: string): Promise<{
   data: ChatMessage[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockChatHistory(slug),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -631,7 +631,7 @@ export async function fetchChatHistory(slug: string): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK ? () => mockChatHistory(slug) : null,
+      allowMockFallback() ? () => mockChatHistory(slug) : null,
       () => [],
     );
   }
@@ -642,7 +642,7 @@ export async function requestChatToken(
   handle: string,
   hcaptchaToken?: string,
 ): Promise<{ data: ChatTokenResponse; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockFixture(
         'chatToken',
@@ -676,7 +676,7 @@ export async function requestChatToken(
 export async function requestChatViewerToken(
   slug: string,
 ): Promise<string | null> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return null;
   }
   try {
@@ -696,7 +696,7 @@ export async function fetchFanTiers(username: string): Promise<{
   data: FanTiersResponse;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockFanTiers(username),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -710,7 +710,7 @@ export async function fetchFanTiers(username: string): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK ? () => mockFanTiers(username) : null,
+      allowMockFallback() ? () => mockFanTiers(username) : null,
       () => ({
         artist: {
           id: '',
@@ -734,7 +734,7 @@ export async function startFanSubscribe(
   | { ok: true; activated: true; message: string }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     if (!getMockSessionUser()) {
       return { ok: false, error: 'Log in first to activate a fan sub.' };
     }
@@ -778,7 +778,7 @@ export async function fetchTransparencyYtd(): Promise<{
   data: TransparencyYtd;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockTransparencyYtd(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -788,7 +788,7 @@ export async function fetchTransparencyYtd(): Promise<{
     const data = await getJson<TransparencyYtd>('/api/v1/transparency/ytd');
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: mockTransparencyYtd(), meta: mockFallbackMeta(err) };
     }
     throw errorOr(err, i18n.t('web:batch56.transparencyYtdFailed'));
@@ -800,7 +800,7 @@ export async function fetchTransparencyGrants(year?: number): Promise<{
   meta: FetchMeta;
 }> {
   const y = year ?? new Date().getFullYear();
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockTransparencyGrants(y),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -812,7 +812,7 @@ export async function fetchTransparencyGrants(year?: number): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: mockTransparencyGrants(y), meta: mockFallbackMeta(err) };
     }
     throw errorOr(err, i18n.t('web:batch56.transparencyGrantsFailed'));
@@ -823,7 +823,7 @@ export async function fetchTransparencyLedger(): Promise<{
   data: TransparencyLedgerEntry[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockTransparencyLedger(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -837,7 +837,7 @@ export async function fetchTransparencyLedger(): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK ? mockTransparencyLedger : null,
+      allowMockFallback() ? mockTransparencyLedger : null,
       () => [],
     );
   }
@@ -848,7 +848,7 @@ export async function fetchTransparencyResolutions(year?: number): Promise<{
   meta: FetchMeta;
 }> {
   const y = year ?? new Date().getFullYear();
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockTransparencyResolutions(y),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -862,7 +862,7 @@ export async function fetchTransparencyResolutions(year?: number): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK ? () => mockTransparencyResolutions(y) : null,
+      allowMockFallback() ? () => mockTransparencyResolutions(y) : null,
       () => [],
     );
   }
@@ -874,7 +874,7 @@ export * from './embeds';
 export async function postListenEvent(
   soundId: string,
 ): Promise<{ recorded: boolean; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       recorded: true,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -898,7 +898,7 @@ export async function fetchPlatformStatus(): Promise<{
   data: PlatformStatus;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         status: 'ok',
@@ -957,7 +957,7 @@ export async function fetchAnnouncements(): Promise<{
   data: Announcement[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const { listMockPublishedNews } = await import('./admin');
     return {
       data: listMockPublishedNews().map((post) => ({
@@ -979,7 +979,7 @@ export async function fetchAnnouncements(): Promise<{
   } catch (err) {
     return withMockFallback(
       err,
-      ALLOW_MOCK_FALLBACK ? mockAnnouncements : null,
+      allowMockFallback() ? mockAnnouncements : null,
       () => [],
     );
   }
@@ -994,7 +994,7 @@ const mockNewsletterSubs = new Set<string>();
 export async function fetchNewsletterSubscription(
   artistUsername: string,
 ): Promise<{ subscribed: boolean }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { subscribed: mockNewsletterSubs.has(artistUsername) };
   }
   try {
@@ -1010,7 +1010,7 @@ export async function setNewsletterSubscription(
   artistUsername: string,
   subscribed: boolean,
 ): Promise<{ ok: true; subscribed: boolean } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     if (subscribed) {
       mockNewsletterSubs.add(artistUsername);
     } else {
@@ -1039,7 +1039,7 @@ export async function subscribeNewsletterByEmail(
 ): Promise<
   { ok: true; alreadySubscribed: boolean } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, alreadySubscribed: false };
   }
   try {

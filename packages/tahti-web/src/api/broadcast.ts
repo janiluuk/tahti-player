@@ -19,9 +19,9 @@ import {
 } from './mock-live-session';
 import { mockFixture } from './mock-overrides';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from './mode';
 import { requestJson, RequestJsonError } from './request-json';
@@ -163,7 +163,7 @@ export async function fetchBroadcastPreflight(): Promise<{
   data: BroadcastPreflight | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     try {
       const data = await mockFixture('broadcastPreflight', {
         ...mockPreflight,
@@ -187,7 +187,7 @@ export async function fetchBroadcastPreflight(): Promise<{
 export async function patchBroadcastPreflight(
   patch: BroadcastPreflightPatch,
 ): Promise<{ data: BroadcastPreflight } | { error: string; status?: number }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const result = applyMockPreflightPatch(
       { ...mockPreflight, session: mockSession() },
       patch,
@@ -289,7 +289,7 @@ export async function fetchStreamSettings(): Promise<{
   data: StreamSettings | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: MOCK_SETTINGS,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -301,7 +301,7 @@ export async function fetchStreamSettings(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: MOCK_SETTINGS, meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
@@ -313,7 +313,7 @@ let mockRotation = 0;
 export async function rotateRtmpStreamKey(): Promise<
   { ok: true; streamKey: string } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockRotation += 1;
     return {
       ok: true,
@@ -340,7 +340,7 @@ export async function rotateRtmpStreamKey(): Promise<
 export async function rotateIcecastPassword(): Promise<
   { ok: true; password: string } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockRotation += 1;
     return { ok: true, password: `mock-icecast-pass-${mockRotation}` };
   }
@@ -365,7 +365,7 @@ export async function fetchSignalStatus(): Promise<{
   data: SignalStatus;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         connected: getMockSignalConnected(),
@@ -400,7 +400,7 @@ export async function fetchSignalStatus(): Promise<{
 export async function fetchChannelManageStats(
   slug: string,
 ): Promise<{ data: ChannelManageStats | null; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: {
         audioBitrateKbps: getMockSignalConnected() ? 160 : 192,
@@ -427,7 +427,7 @@ export async function fetchBroadcastUsage(): Promise<{
   data: BroadcastUsage | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: MOCK_USAGE,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -439,7 +439,7 @@ export async function fetchBroadcastUsage(): Promise<{
     );
     return { data, meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: MOCK_USAGE, meta: mockFallbackMeta(err) };
     }
     return { data: null, meta: apiErrorMeta(err) };
@@ -450,7 +450,7 @@ export async function fetchAutoRecordEnabled(): Promise<{
   data: boolean;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const stored = localStorage.getItem(MOCK_RECORDING_STORAGE_KEY);
     return {
       data: stored === null ? true : stored === 'true',
@@ -470,7 +470,7 @@ export async function fetchAutoRecordEnabled(): Promise<{
 export async function patchAutoRecordEnabled(
   autoRecordEnabled: boolean,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     localStorage.setItem(MOCK_RECORDING_STORAGE_KEY, String(autoRecordEnabled));
     return { ok: true };
   }
@@ -494,7 +494,7 @@ export async function patchAutoRecordEnabled(
 export async function postGoLive(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     setMockChannelLive();
     await startMockLiveEpisode(mockPreflight);
     return { ok: true };
@@ -515,7 +515,7 @@ export async function postGoLive(): Promise<
 export async function postEndBroadcast(): Promise<
   { ok: true } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     setMockChannelOffline();
     storeMockPreflight(await endMockLiveEpisode(mockPreflight));
     return { ok: true };
@@ -540,7 +540,7 @@ async function postChannelTransport(
   slug: string,
   action: 'skip' | 'previous' | 'pause' | 'resume',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true };
   }
   try {

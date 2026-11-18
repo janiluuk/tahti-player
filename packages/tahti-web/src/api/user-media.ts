@@ -6,8 +6,8 @@ import {
 } from '../lib/imageUploadContentType';
 import { apiBase } from './http';
 import {
-  ALLOW_MOCK_FALLBACK,
-  FORCE_MOCK,
+  allowMockFallback,
+  isForceMock,
   withMockFallback,
   type FetchMeta,
 } from './mode';
@@ -65,7 +65,7 @@ export async function fetchUserMedia(): Promise<{
   data: UserMediaFile[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { data: [...mockMedia], meta: { source: 'mock' } };
   }
   try {
@@ -74,7 +74,7 @@ export async function fetchUserMedia(): Promise<{
   } catch (error) {
     return withMockFallback(
       error,
-      ALLOW_MOCK_FALLBACK ? () => [...mockMedia] : null,
+      allowMockFallback() ? () => [...mockMedia] : null,
       () => [],
     );
   }
@@ -83,7 +83,7 @@ export async function fetchUserMedia(): Promise<{
 export async function uploadUserMediaFile(
   file: File,
 ): Promise<{ ok: true; data: UserMediaFile } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const contentType = resolveImageUploadContentType(file);
     if (!contentType) {
       return { ok: false, error: imageUploadTypeError(file) };
@@ -145,7 +145,7 @@ export async function uploadUserMediaFile(
 export async function deleteUserMedia(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockMedia = mockMedia.filter((file) => file.id !== id);
     return { ok: true };
   }
@@ -171,7 +171,7 @@ export type UnusedMedia = { count: number; totalBytes: number; ids: string[] };
 export async function fetchUnusedMedia(): Promise<
   { ok: true; data: UnusedMedia } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const unused = mockMedia.slice(1);
     return {
       ok: true,
@@ -201,7 +201,7 @@ export async function purgeUnusedMedia(): Promise<
   | { ok: true; data: { deleted: number; freedBytes: number } }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const unused = mockMedia.slice(1);
     mockMedia = mockMedia.slice(0, 1);
     return {

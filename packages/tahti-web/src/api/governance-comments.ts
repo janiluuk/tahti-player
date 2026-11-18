@@ -2,13 +2,13 @@ import { i18n } from '@tahti-player/i18n';
 
 import { requestJson } from './client-request';
 import { updateMockMotionComments } from './governance-member';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 export async function removeMotionComment(
   motionId: string,
   commentId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     let found = false;
     updateMockMotionComments(motionId, (comments) =>
       comments.map((c) => {

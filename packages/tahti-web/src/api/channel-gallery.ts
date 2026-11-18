@@ -3,9 +3,9 @@ import { i18n } from '@tahti-player/i18n';
 import type { FetchMeta } from './client';
 import { apiBase } from './http';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from './mode';
 
@@ -63,7 +63,7 @@ export async function fetchChannelGallery(): Promise<{
   data: ChannelGallery;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: readMockGallery(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -73,7 +73,7 @@ export async function fetchChannelGallery(): Promise<{
     const data = await requestJson<ChannelGallery>('/api/me/channel/gallery');
     return { data, meta: { source: 'api' } };
   } catch (error) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: DEFAULT_GALLERY, meta: mockFallbackMeta(error) };
     }
     return { data: DEFAULT_GALLERY, meta: apiErrorMeta(error) };
@@ -83,7 +83,7 @@ export async function fetchChannelGallery(): Promise<{
 export async function patchChannelGallery(
   patch: Partial<ChannelGallery>,
 ): Promise<{ ok: true; data: ChannelGallery } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const data = { ...readMockGallery(), ...patch };
     try {
       localStorage.setItem(MOCK_GALLERY_KEY, JSON.stringify(data));

@@ -1,6 +1,6 @@
 import { i18n } from '@tahti-player/i18n';
 
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 let mockAutoPublish = true;
@@ -10,7 +10,7 @@ let mockAutoPublish = true;
 export async function fetchAutoPublishBroadcast(): Promise<
   { ok: true; autoPublish: boolean } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, autoPublish: mockAutoPublish };
   }
   try {
@@ -32,7 +32,7 @@ export async function fetchAutoPublishBroadcast(): Promise<
 export async function setAutoPublishBroadcast(
   autoPublish: boolean,
 ): Promise<{ ok: true; autoPublish: boolean } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockAutoPublish = autoPublish;
     return { ok: true, autoPublish };
   }

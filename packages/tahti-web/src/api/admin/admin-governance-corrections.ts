@@ -6,7 +6,7 @@ import type {
   GovernanceCorrection,
 } from '../governance-corrections';
 import { getJson, sendJson } from '../http';
-import { failMeta, FORCE_MOCK } from '../mode';
+import { failMeta, isForceMock } from '../mode';
 
 /** A member's correction request as the board sees it, with who asked. */
 export type AdminGovernanceCorrection = GovernanceCorrection & {
@@ -46,7 +46,7 @@ export function mockCorrectionQueue(): AdminGovernanceCorrection[] {
 export async function fetchAdminCorrections(
   state?: CorrectionState,
 ): Promise<{ data: AdminGovernanceCorrection[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockQueue.filter((row) => !state || row.state === state),
       meta: MOCK_META,
@@ -77,7 +77,7 @@ export async function answerAdminCorrection(
   if (!resolutionNote) {
     return { ok: false, error: i18n.t('web:batch58.tellMemberDecision') };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const row = mockQueue.find((r) => r.id === id);
     if (!row) {
       return { ok: false, error: i18n.t('web:batch58.correctionNotFound') };

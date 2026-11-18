@@ -1,4 +1,4 @@
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 import { requestJson } from './request-json';
 
 export type RestrictionType = 'UPLOAD' | 'LIVE_SHOW_BOOKING' | 'LOGIN';
@@ -14,7 +14,7 @@ export type MyRestriction = {
 /** The account's active restrictions. A failed read gives none, so the
  * notice stays hidden and the API's own refusal still explains it. */
 export async function fetchMyRestrictions(): Promise<MyRestriction[]> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return [];
   }
   try {

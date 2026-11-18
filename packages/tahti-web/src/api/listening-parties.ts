@@ -17,7 +17,7 @@ import {
   updateMockListeningParty,
 } from './listening-parties-mock';
 import { mockFixture } from './mock-overrides';
-import { apiErrorMeta, FORCE_MOCK } from './mode';
+import { apiErrorMeta, isForceMock } from './mode';
 import { requestJson, RequestJsonError } from './request-json';
 
 export type ListeningPartyState = 'SCHEDULED' | 'LIVE' | 'ENDED' | 'CANCELED';
@@ -133,7 +133,7 @@ export async function fetchListeningParty(id: string): Promise<{
   meta: FetchMeta;
   notFound: boolean;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const data = mockFixture('listeningParty', mockListeningParty(id), id);
     return { data, meta: mockMeta, notFound: data === null };
   }
@@ -159,7 +159,7 @@ export function listeningPartyTrackStreamUrl(
   partyId: string,
   trackId: string,
 ): string {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockListeningPartyStreamUrl(trackId);
   }
   return `${apiBase()}/api/v1/listening-parties/${encodeURIComponent(partyId)}/tracks/${encodeURIComponent(trackId)}/stream`;
@@ -170,7 +170,7 @@ export async function fetchChannelListeningParties(slug: string): Promise<{
   data: ListeningPartySummaryDto[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockFixture(
         'channelListeningParties',
@@ -197,7 +197,7 @@ export async function fetchPublicListeningParties(limit = 20): Promise<{
   data: ListeningPartySummaryDto[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockFixture(
         'publicListeningParties',
@@ -224,7 +224,7 @@ export async function fetchMyListeningParties(): Promise<{
   data: ListeningPartySummaryDto[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockFixture('myListeningParties', listMockMyListeningParties()),
       meta: mockMeta,
@@ -246,7 +246,7 @@ export async function fetchMyListeningParties(): Promise<{
 export async function createListeningParty(
   body: CreateListeningPartyBody,
 ): Promise<ListeningPartyMutationResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return createMockListeningParty(body);
   }
   try {
@@ -266,7 +266,7 @@ export async function updateListeningParty(
   id: string,
   body: UpdateListeningPartyBody,
 ): Promise<ListeningPartyMutationResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return updateMockListeningParty(id, body);
   }
   try {
@@ -283,7 +283,7 @@ export async function updateListeningParty(
 export async function cancelListeningParty(
   id: string,
 ): Promise<ListeningPartyMutationResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return cancelMockListeningParty(id);
   }
   try {

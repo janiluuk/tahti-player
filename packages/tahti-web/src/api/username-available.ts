@@ -1,5 +1,5 @@
 import { getJson } from './http';
-import { FORCE_MOCK } from './mode';
+import { isForceMock } from './mode';
 
 export type UsernameAvailability = {
   available: boolean;
@@ -13,7 +13,7 @@ const MOCK_TAKEN = new Set(['demo', 'tahti']);
 export async function fetchUsernameAvailability(
   username: string,
 ): Promise<UsernameAvailability | null> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return MOCK_TAKEN.has(username)
       ? {
           available: false,

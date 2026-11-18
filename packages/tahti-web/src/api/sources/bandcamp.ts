@@ -1,5 +1,5 @@
 import type { FetchMeta } from '.././client';
-import { FORCE_MOCK } from '.././mode';
+import { isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import { failMeta } from './shared';
 
@@ -21,7 +21,7 @@ export async function fetchBandcampAlbums(): Promise<{
   importAvailable?: boolean;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -65,7 +65,7 @@ export async function fetchBandcampAlbums(): Promise<{
 export async function importBandcampAlbum(
   album: BandcampAlbum,
 ): Promise<{ ok: true; count: number } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, count: album.trackCount ?? 0 };
   }
   // Catalog honesty: GET /api/me/import-plugins marks bandcamp import:false —

@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
-import { failMeta, FORCE_MOCK } from '../mode';
+import { failMeta, isForceMock } from '../mode';
 
 // ── Beta applications ──────────────────────────────────────────────────────
 
@@ -72,7 +72,7 @@ function mockBetaApplications(): AdminBetaApplication[] {
 export async function fetchAdminBetaApplications(
   status?: AdminBetaStatus,
 ): Promise<{ data: AdminBetaApplication[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const all = mockBetaApplications();
     return {
       data: status ? all.filter((a) => a.status === status) : all,
@@ -99,7 +99,7 @@ export async function approveBetaApplication(
 ): Promise<
   { ok: true; setupUrl: string | null } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       setupUrl: `https://beta.tahti.live/setup-password?token=mock-${id}`,
@@ -118,7 +118,7 @@ export async function approveBetaApplication(
 }
 
 export async function rejectBetaApplication(id: string) {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true } as const;
   }
   return mutate(
@@ -132,7 +132,7 @@ export async function resendBetaSetupLink(
 ): Promise<
   { ok: true; setupUrl: string | null } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       ok: true,
       setupUrl: `https://beta.tahti.live/setup-password?token=resent-${id}`,

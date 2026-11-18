@@ -2,9 +2,9 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { DiscoWidgetRenderItem } from './disco-widgets';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
   type FetchMeta,
 } from './mode';
@@ -61,7 +61,7 @@ export async function fetchChannelBlocks(slug: string): Promise<{
   data: PublicChannelBlock[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { data: [], meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' } };
   }
   try {
@@ -72,7 +72,7 @@ export async function fetchChannelBlocks(slug: string): Promise<{
   } catch (err) {
     return {
       data: [],
-      meta: ALLOW_MOCK_FALLBACK ? mockFallbackMeta(err) : apiErrorMeta(err),
+      meta: allowMockFallback() ? mockFallbackMeta(err) : apiErrorMeta(err),
     };
   }
 }
@@ -80,7 +80,7 @@ export async function fetchChannelBlocks(slug: string): Promise<{
 export async function fetchMyChannelBlocks(): Promise<
   ActionResult<ChannelBlockView[]>
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { error: null, data: [] };
   }
   try {
@@ -97,7 +97,7 @@ export async function createAddonBlock(
   addonInstallId: string,
   width: ChannelBlockWidth,
 ): Promise<ActionResult<ChannelBlockView>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { error: MOCK_ERROR };
   }
   try {
@@ -122,7 +122,7 @@ export async function createLogoBlock(
   config: { assetId: string; url: string },
   width: ChannelBlockWidth = 'FULL',
 ): Promise<ActionResult<ChannelBlockView>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       error: null,
       data: {
@@ -156,7 +156,7 @@ export async function patchChannelBlockWidth(
   id: string,
   width: ChannelBlockWidth,
 ): Promise<ActionResult<ChannelBlockView>> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { error: MOCK_ERROR };
   }
   try {
@@ -173,7 +173,7 @@ export async function patchChannelBlockWidth(
 export async function reorderChannelBlocks(
   ids: string[],
 ): Promise<ActionResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { error: MOCK_ERROR };
   }
   try {
@@ -188,7 +188,7 @@ export async function reorderChannelBlocks(
 }
 
 export async function deleteChannelBlock(id: string): Promise<ActionResult> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { error: MOCK_ERROR };
   }
   try {

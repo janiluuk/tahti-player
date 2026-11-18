@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { FetchMeta } from './client';
 import { getJson, sendJson } from './http';
-import { failMeta, FORCE_MOCK } from './mode';
+import { failMeta, isForceMock } from './mode';
 
 export type ArtistEmbed = {
   id: string;
@@ -31,7 +31,7 @@ export async function fetchArtistEmbeds(): Promise<{
   data: ArtistEmbed[] | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockEmbeds,
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -48,7 +48,7 @@ export async function fetchArtistEmbeds(): Promise<{
 export async function addArtistEmbed(
   url: string,
 ): Promise<{ ok: true; data: ArtistEmbed } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const embed: ArtistEmbed = {
       id: `mock-embed-${Date.now()}`,
       provider: 'soundcloud',
@@ -81,7 +81,7 @@ export async function updateArtistEmbedThumbnail(
   id: string,
   thumbnailUrl: string,
 ): Promise<{ ok: true; data: ArtistEmbed } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockEmbeds = mockEmbeds.map((embed) =>
       embed.id === id ? { ...embed, thumbnailUrl } : embed,
     );
@@ -111,7 +111,7 @@ export async function updateArtistEmbedThumbnail(
 export async function removeArtistEmbed(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     mockEmbeds = mockEmbeds.filter((embed) => embed.id !== id);
     return { ok: true };
   }

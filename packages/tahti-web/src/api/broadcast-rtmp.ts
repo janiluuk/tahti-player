@@ -1,9 +1,9 @@
 import type { MulticastProviderId } from '../plugins/multicast';
 import type { FetchMeta } from './client';
 import {
-  ALLOW_MOCK_FALLBACK,
+  allowMockFallback,
   apiErrorMeta,
-  FORCE_MOCK,
+  isForceMock,
   mockFallbackMeta,
 } from './mode';
 import { requestJson } from './request-json';
@@ -59,7 +59,7 @@ export async function fetchRtmpTargets(scope: RtmpTargetScope = 'me'): Promise<{
   data: RtmpTarget[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [...readMockTargets(scope)],
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
@@ -69,7 +69,7 @@ export async function fetchRtmpTargets(scope: RtmpTargetScope = 'me'): Promise<{
     const { data } = await requestJson<RtmpTarget[]>(rtmpTargetsPath(scope));
     return { data: Array.isArray(data) ? data : [], meta: { source: 'api' } };
   } catch (err) {
-    if (ALLOW_MOCK_FALLBACK) {
+    if (allowMockFallback()) {
       return { data: [...readMockTargets(scope)], meta: mockFallbackMeta(err) };
     }
     return { data: [], meta: apiErrorMeta(err) };
@@ -87,7 +87,7 @@ export async function createRtmpTarget(
   },
   scope: RtmpTargetScope = 'me',
 ): Promise<{ ok: true; target: RtmpTarget } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     if (input.streamKey.trim() === 'fail') {
       return { ok: false, error: 'Ingest rejected the stream key.' };
     }
@@ -122,7 +122,7 @@ export async function patchRtmpTarget(
   patch: { enabled?: boolean; alwaysMirror?: boolean; label?: string },
   scope: RtmpTargetScope = 'me',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     writeMockTargets(
       scope,
       readMockTargets(scope).map((t) => (t.id === id ? { ...t, ...patch } : t)),
@@ -147,7 +147,7 @@ export async function deleteRtmpTarget(
   id: string,
   scope: RtmpTargetScope = 'me',
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     writeMockTargets(
       scope,
       readMockTargets(scope).filter((t) => t.id !== id),
@@ -174,7 +174,7 @@ export async function testRtmpTarget(
   | { ok: true; reachable: boolean; error?: string }
   | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return { ok: true, reachable: true };
   }
   try {

@@ -5,7 +5,7 @@ import { useTranslation } from '@tahti-player/i18n';
 import { ButtonLink, StoryCard, StoryRow } from '@tahti-player/ui';
 
 import { fetchAnnouncements } from '../../api/client';
-import { FORCE_MOCK } from '../../api/mode';
+import { isForceMock } from '../../api/mode';
 import type { Announcement } from '../../api/types';
 import { storyDate } from '../../lib/storyDate';
 import { PlatformNewsDialog } from '../PlatformNewsDialog';
@@ -28,7 +28,7 @@ export function HomeNews({ limit = 3 }: { limit?: number }) {
       if (cancelled) {
         return;
       }
-      const failed = Boolean(meta.reason) && !FORCE_MOCK;
+      const failed = Boolean(meta.reason) && !isForceMock();
       setPosts(failed ? [] : data);
       setStatus(failed ? 'error' : 'ready');
     });

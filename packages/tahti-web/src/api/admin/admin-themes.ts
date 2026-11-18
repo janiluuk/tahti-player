@@ -1,5 +1,5 @@
 import { getJson, sendJson } from '../http';
-import { FORCE_MOCK } from '../mode';
+import { isForceMock } from '../mode';
 
 export type AdminThemeVisibility = 'PRIVATE' | 'PENDING_REVIEW' | 'REJECTED';
 
@@ -63,7 +63,7 @@ export function themeSwatches(theme: AdminTheme, limit = 6): string[] {
 export async function fetchAdminThemes(
   visibility?: AdminThemeVisibility,
 ): Promise<{ ok: true; themes: AdminTheme[] } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const themes = themeState().filter(
       (theme) => !visibility || theme.visibility === visibility,
     );
@@ -86,7 +86,7 @@ export async function fetchAdminThemes(
 export async function approveAdminTheme(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const theme = themeState().find((item) => item.id === id);
     if (theme) {
       theme.prStatus = 'PENDING';
@@ -115,7 +115,7 @@ export async function rejectAdminTheme(
   if (!note) {
     return { ok: false, error: 'Tell the author why the theme was rejected.' };
   }
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const theme = themeState().find((item) => item.id === id);
     if (theme) {
       theme.visibility = 'REJECTED';

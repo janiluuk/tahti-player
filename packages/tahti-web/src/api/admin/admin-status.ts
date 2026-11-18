@@ -1,6 +1,6 @@
 import type { FetchMeta } from '../client';
 import { apiBase } from '../http';
-import { failMeta, FORCE_MOCK } from '../mode';
+import { failMeta, isForceMock } from '../mode';
 
 // ── Status ──────────────────────────────────────────────────────────────────
 
@@ -48,7 +48,7 @@ export async function fetchAdminStatus(): Promise<{
   data: AdminStatusData | null;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockStatusData(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },

@@ -1,7 +1,7 @@
 import { playableFromHearthisEmbed } from '../../lib/embedPlayback';
 import { useProcessingJobsStore } from '../../stores/processingJobsStore';
 import type { FetchMeta } from '.././client';
-import { FORCE_MOCK } from '.././mode';
+import { isForceMock } from '.././mode';
 import { requestJson } from '.././request-json';
 import type { TahtiPlayable } from '.././types';
 import { failMeta, HEARTHIS_IMPORT_BATCH_SIZE } from './shared';
@@ -106,7 +106,7 @@ export async function fetchHearthisLibrary(): Promise<{
   data: HearthisLibrary;
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const track: HearthisTrack = {
       id: 'ht-mock-1',
       url: 'https://hearthis.at/mockartist/deep-space-transmission/',
@@ -193,7 +193,7 @@ export async function fetchHearthisLibrary(): Promise<{
 export async function fetchHearthisCollectionTracks(
   permalink: string,
 ): Promise<HearthisTrack[]> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const [set] = (await fetchHearthisLibrary()).data.sets;
     return [1, 2, 3, 4].map((n) => ({
       ...set!,
@@ -224,7 +224,7 @@ export async function importHearthisTracks(
   artworkFailed: number;
   items: Array<{ trackId: string; soundId: string }>;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       imported: tracks.length,
       failed: 0,
@@ -329,7 +329,7 @@ export async function searchHearthisTracks(q: string): Promise<{
   data: HearthisTrack[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: [
         {
@@ -390,7 +390,7 @@ export async function fetchHearthisArtistTracks(profile: string): Promise<{
   data: HearthisTrack[];
   meta: FetchMeta;
 }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return searchHearthisTracks(profile);
   }
   try {

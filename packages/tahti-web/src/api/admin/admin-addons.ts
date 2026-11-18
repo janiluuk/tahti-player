@@ -2,7 +2,7 @@ import { i18n } from '@tahti-player/i18n';
 
 import type { FetchMeta } from '../client';
 import { getJson, mutate, sendJson } from '../http';
-import { failMeta, FORCE_MOCK } from '../mode';
+import { failMeta, isForceMock } from '../mode';
 
 // ── Admin add-ons ────────────────────────────────────────────────────────
 
@@ -128,7 +128,7 @@ export async function fetchAdminAddons(
   scope?: AdminAddonScope,
   status?: AdminAddonStatus,
 ): Promise<{ data: AdminAddon[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return {
       data: mockAddons.filter(
         (addon) =>
@@ -169,7 +169,7 @@ export type AdminAddonRegisterInput = {
 export async function registerAdminAddon(
   input: AdminAddonRegisterInput,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const addon: AdminAddon = {
       id: `addon-${Date.now()}`,
       ...input,
@@ -215,7 +215,7 @@ export async function updateAdminAddon(
     categories: input.categories,
     ...(input.iconUrl?.trim() ? { iconUrl: input.iconUrl.trim() } : {}),
   };
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const existing = mockAddons.find((addon) => addon.id === id);
     if (!existing) {
       return { ok: false, error: i18n.t('web:batch58.addonNotFound') };
@@ -249,7 +249,7 @@ export async function updateAdminAddon(
 export async function deleteAdminAddon(
   id: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     if (!mockAddons.some((addon) => addon.id === id)) {
       return { ok: false, error: i18n.t('web:batch58.addonNotFound') };
     }
@@ -288,7 +288,7 @@ export async function approveAdminAddon(
   id: string,
   moderationNote?: string,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockModerate(id, 'APPROVED', moderationNote ?? null);
   }
   try {
@@ -310,7 +310,7 @@ export async function rejectAdminAddon(
   id: string,
   moderationNote: string,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockModerate(id, 'REJECTED', moderationNote);
   }
   try {
@@ -332,7 +332,7 @@ export async function disableAdminAddon(
   id: string,
   moderationNote?: string,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     return mockModerate(id, 'DISABLED', moderationNote ?? null);
   }
   try {
@@ -378,7 +378,7 @@ export async function publishAdminAddonVersion(
     return { ok: false, error: i18n.t('web:batch58.bundleTooLarge') };
   }
   const changelog = input.changelog?.trim() || undefined;
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const existing = mockAddons.find((addon) => addon.id === id);
     if (!existing) {
       return { ok: false, error: i18n.t('web:batch58.addonNotFound') };
@@ -432,7 +432,7 @@ export async function setAdminAddonEnabledByDefault(
   id: string,
   enabledByDefault: boolean,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const existing = mockAddons.find((addon) => addon.id === id);
     if (!existing) {
       return { ok: false, error: i18n.t('web:batch58.addonNotFound') };
@@ -460,7 +460,7 @@ export async function setAdminAddonDefaultConfig(
   id: string,
   defaultConfigJson: Record<string, unknown> | null,
 ): Promise<{ ok: true; data: AdminAddon } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const existing = mockAddons.find((addon) => addon.id === id);
     if (!existing) {
       return { ok: false, error: i18n.t('web:batch58.addonNotFound') };
@@ -545,7 +545,7 @@ let mockInstallsBySurface: Record<string, AdminAddonInstall[]> = {
 export async function fetchAdminAddonInstalls(
   surface: string,
 ): Promise<{ data: AdminAddonInstall[]; meta: FetchMeta }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const list = [...(mockInstallsBySurface[surface] ?? [])].sort(
       (a, b) => a.position - b.position,
     );
@@ -567,7 +567,7 @@ export async function createAdminAddonInstall(
 ): Promise<
   { ok: true; data: AdminAddonInstall } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const widget = mockAddons.find((addon) => addon.id === widgetId);
     if (!widget || widget.scope !== 'ADMIN' || widget.status !== 'APPROVED') {
       return { ok: false, error: i18n.t('web:batch58.widgetNotFound') };
@@ -616,7 +616,7 @@ export async function patchAdminAddonInstall(
 ): Promise<
   { ok: true; data: AdminAddonInstall } | { ok: false; error: string }
 > {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const list = mockInstallsBySurface[surface] ?? [];
     const existing = list.find((install) => install.id === id);
     if (!existing) {
@@ -648,7 +648,7 @@ export async function deleteAdminAddonInstall(
   id: string,
   surface: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  if (FORCE_MOCK) {
+  if (isForceMock()) {
     const list = mockInstallsBySurface[surface] ?? [];
     if (!list.some((install) => install.id === id)) {
       return { ok: false, error: i18n.t('web:batch58.installNotFound') };
