@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminStatusView } from '@tahti-web/views/admin/AdminStatusView';
-import { expect, waitFor, within } from 'storybook/test';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
+import { findDialog } from './_lib/play';
 
 const meta: Meta<typeof AdminStatusView> = {
   title: 'Tahti/Admin/AdminStatusView',
@@ -35,5 +36,9 @@ export const Default: Story = {
     await expect(
       canvas.getByRole('heading', { name: 'Workers' }),
     ).toBeVisible();
+    await userEvent.click(
+      canvas.getAllByRole('button', { name: 'History' })[0]!,
+    );
+    await findDialog(canvasElement);
   },
 };
