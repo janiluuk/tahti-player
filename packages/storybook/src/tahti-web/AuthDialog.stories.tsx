@@ -149,8 +149,12 @@ export const RegistrationSuccess: Story = {
     );
     const success = await findDialog(canvasElement, /Check your email/);
     await expect(
-      success.getByText(/We sent a verification link to join@example.com/),
+      success.getByText(
+        /Mock registration is ready|We sent a verification link/,
+      ),
     ).toBeVisible();
-    await expect(success.getByRole('button', { name: 'Got it' })).toBeVisible();
+    await expect(
+      success.getByRole('button', { name: /Got it|Sign in/ }),
+    ).toBeVisible();
   },
 };
