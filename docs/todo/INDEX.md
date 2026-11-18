@@ -75,7 +75,8 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| partial | [listener-stats-origin-url.md](listener-stats-origin-url.md) | Heartbeat sends referrerUrl; owner-mod hide-remove done; left: Stats URL mode UI |
+| partial | [listener-stats-origin-url.md](listener-stats-origin-url.md) | Heartbeat + owner-mod done; ReferrerSources Sites/Pages mode in progress |
+| open    | [mobile-play-icon-active-only.md](mobile-play-icon-active-only.md) | Mobile: show play/pause on artwork only for the playing/paused item, not every idle row |
 | blocked | [dead-end-leftovers.md](dead-end-leftovers.md) | OAuth app credentials (ops), Bandcamp API approval, Google Drive Picker, governance Retry |
 | partial | [channel-layout-server-side.md](channel-layout-server-side.md) | Page layout saved on the channel (tahti-org #1075 + web); left: deploy the API first, and the per-browser player/backdrop look visibility |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |

@@ -2,7 +2,7 @@ import { ExternalLinkIcon, LinkIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { ShareList } from '@tahti-player/ui';
+import { SegmentedControl, ShareList } from '@tahti-player/ui';
 
 import {
   fetchStatsAudience,
@@ -12,20 +12,14 @@ import {
 import { PageError, PageLoading } from '../../../components/PageStates';
 import { StudioPanel } from '../../../components/StudioPanel';
 import { dateLocaleTag } from '../../../lib/locale';
+import {
+  DIRECT,
+  isHttpReferrerUrl,
+  OTHER,
+  referrerSourceLabel,
+} from '../../../lib/referrerSourceLabel';
 
-const DIRECT = 'Direct';
-const OTHER = 'Other';
-
-function sourceLabel(name: string, count: number): string {
-  const listens = `${count.toLocaleString(dateLocaleTag())} ${count === 1 ? 'listen' : 'listens'}`;
-  if (name === DIRECT) {
-    return `Direct or unknown · ${listens}`;
-  }
-  if (name === OTHER) {
-    return `Other sites · ${listens}`;
-  }
-  return `${name} · ${listens}`;
-}
+type ReferrerMode = 'host' | 'url';
 
 export function ReferrerSources({
   window,
@@ -33,17 +27,19 @@ export function ReferrerSources({
   window: Omit<StatsAudienceWindow, 'includeBots'>;
 }) {
   const { t } = useTranslation('web');
+  const [mode, setMode] = useState<ReferrerMode>('host');
   const [sources, setSources] = useState<StatsAudience | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>(
     'loading',
   );
   const [reloadKey, setReloadKey] = useState(0);
   const { range, from, to, soundId } = window;
+  const dimension = mode === 'url' ? 'referrerUrl' : 'source';
 
   useEffect(() => {
     let cancelled = false;
     setStatus('loading');
-    void fetchStatsAudience('source', { range, from, to, soundId }).then(
+    void fetchStatsAudience(dimension, { range, from, to, soundId }).then(
       (result) => {
         if (cancelled) {
           return;
@@ -59,17 +55,31 @@ export function ReferrerSources({
     return () => {
       cancelled = true;
     };
-  }, [range, from, to, soundId, reloadKey]);
+  }, [range, from, to, soundId, reloadKey, dimension]);
 
   const items = sources?.items ?? [];
   const minBucket = sources?.minBucket ?? 5;
+  const locale = dateLocaleTag();
 
   return (
     <StudioPanel
       title={t('referrerSources.whereListenersCameFrom')}
-      description={t('referrerSourcesLabels.theSiteAListenerWas', {
-        minBucket,
-      })}
+      description={
+        mode === 'url'
+          ? t('referrerSourcesLabels.thePageAListenerWas', { minBucket })
+          : t('referrerSourcesLabels.theSiteAListenerWas', { minBucket })
+      }
+      action={
+        <SegmentedControl
+          aria-label={t('referrerSources.groupBy')}
+          options={[
+            { id: 'host', label: t('referrerSources.sites') },
+            { id: 'url', label: t('referrerSources.pages') },
+          ]}
+          value={mode}
+          onChange={setMode}
+        />
+      }
     >
       {status === 'loading' ? (
         <PageLoading label={t('loading.loadingSources')} />
@@ -81,19 +91,41 @@ export function ReferrerSources({
       ) : (
         <ShareList
           data-testid="stats-referrers"
-          aria-label={t('referrerSources.referringSites')}
+          aria-label={
+            mode === 'url'
+              ? t('referrerSources.referringPages')
+              : t('referrerSources.referringSites')
+          }
           emptyLabel="Sources fill in as people listen."
-          items={items.map((item) => ({
-            id: item.name,
-            label: sourceLabel(item.name, item.count),
-            share: item.share,
-            icon:
-              item.name === DIRECT || item.name === OTHER ? (
-                <LinkIcon size={14} />
-              ) : (
-                <ExternalLinkIcon size={14} />
-              ),
-          }))}
+          items={items.map((item) => {
+            const label = referrerSourceLabel(
+              item.name,
+              item.count,
+              mode,
+              locale,
+            );
+            const linkable =
+              mode === 'url' &&
+              item.name !== DIRECT &&
+              item.name !== OTHER &&
+              isHttpReferrerUrl(item.name);
+            return {
+              id: item.name,
+              label,
+              share: item.share,
+              title:
+                mode === 'url' && item.name !== DIRECT && item.name !== OTHER
+                  ? item.name
+                  : undefined,
+              href: linkable ? item.name : undefined,
+              icon:
+                item.name === DIRECT || item.name === OTHER ? (
+                  <LinkIcon size={14} />
+                ) : (
+                  <ExternalLinkIcon size={14} />
+                ),
+            };
+          })}
         />
       )}
     </StudioPanel>

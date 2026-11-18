@@ -8,7 +8,9 @@
 
 - Heartbeat client sends `referrerUrl` (+ host)
 - Channel moderators: owner badge, no Remove (slices 26–28)
-- `StatsAudienceDimension` includes `referrerUrl` for later UI
+- `StatsAudienceDimension` includes `referrerUrl`
+- ReferrerSources Sites / Pages toggle (slices 15–23): truncate, tooltip,
+  external links, i18n, Storybook play, mocks
 
 Studio listener stats (and track insights / audience panels) should show the
 **full origin URL** listeners were referred from, not only the referrer host.
