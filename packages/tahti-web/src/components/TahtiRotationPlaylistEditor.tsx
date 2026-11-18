@@ -6,6 +6,7 @@ import { TrackTable } from '@tahti-player/ui';
 
 import type { AdminSelectsItem } from '../api/admin';
 import { trackTableLabels } from '../lib/trackTableLabels';
+import { usePlayerStore } from '../stores/playerStore';
 
 const SECONDS_PER_MINUTE = 60;
 const SECONDS_PER_HOUR = 3600;
@@ -33,26 +34,43 @@ type TahtiRotationPlaylistEditorProps = {
   onRemove: (item: AdminSelectsItem) => void;
   onPreview: (item: AdminSelectsItem) => void;
   readOnly?: boolean;
+  busy?: boolean;
+  nowPlayingItemId?: string | null;
 };
 
 export const TahtiRotationPlaylistEditor: FC<
   TahtiRotationPlaylistEditorProps
-> = ({ items, onReorder, onRemove, onPreview, readOnly = false }) => {
+> = ({
+  items,
+  onReorder,
+  onRemove,
+  onPreview,
+  readOnly = false,
+  busy = false,
+  nowPlayingItemId = null,
+}) => {
   const { t } = useTranslation('web');
+  const currentId = usePlayerStore((state) => state.currentId);
+  const playbackStatus = usePlayerStore((state) => state.status);
   const tracks = useMemo(() => items.map(toTrack), [items]);
   const totalSeconds = items.reduce(
     (total, item) => total + (item.durationSec ?? 0),
     0,
   );
+  const interactive = !readOnly && !busy;
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3" aria-busy={busy || undefined}>
       <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
         <span className="font-semibold">
-          {items.length} track{items.length === 1 ? '' : 's'}
+          {t('tahtiRotationPlaylistEditorText.trackCount', {
+            count: items.length,
+          })}
         </span>
         <span className="text-foreground-secondary font-mono">
-          {formatTotalDuration(totalSeconds)} total
+          {t('tahtiRotationPlaylistEditorText.totalDuration', {
+            duration: formatTotalDuration(totalSeconds),
+          })}
         </span>
       </div>
       <TrackTable
@@ -64,7 +82,7 @@ export const TahtiRotationPlaylistEditor: FC<
         getItemId={(_track, index) => items[index]?.id ?? String(index)}
         features={{
           header: true,
-          reorderable: !readOnly,
+          reorderable: interactive,
           filterable: false,
           sortable: false,
         }}
@@ -72,13 +90,39 @@ export const TahtiRotationPlaylistEditor: FC<
           displayPosition: true,
           displayArtist: true,
           displayDuration: true,
-          displayDeleteButton: !readOnly,
-          displayQueueControls: !readOnly,
+          displayDeleteButton: interactive,
+          displayQueueControls: interactive,
           displayThumbnail: false,
+        }}
+        meta={{
+          isCurrentTrack: (track) => {
+            const item = items.find(
+              (candidate) => candidate.id === track.source.id,
+            );
+            if (!item) {
+              return false;
+            }
+            if (nowPlayingItemId && item.id === nowPlayingItemId) {
+              return true;
+            }
+            return currentId === `sound:${item.soundId}`;
+          },
+          isTrackPlaying: (track) => {
+            const item = items.find(
+              (candidate) => candidate.id === track.source.id,
+            );
+            if (!item) {
+              return false;
+            }
+            return (
+              currentId === `sound:${item.soundId}` &&
+              (playbackStatus === 'playing' || playbackStatus === 'loading')
+            );
+          },
         }}
         actions={{
           onReorder: (fromIndex, toIndex) => {
-            if (readOnly) {
+            if (!interactive) {
               return;
             }
             const next = [...items];
@@ -90,7 +134,7 @@ export const TahtiRotationPlaylistEditor: FC<
             onReorder(next);
           },
           onRemove: (_track, index) => {
-            if (readOnly) {
+            if (!interactive) {
               return;
             }
             const item = items[index];

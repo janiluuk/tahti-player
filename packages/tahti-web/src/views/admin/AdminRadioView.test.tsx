@@ -21,6 +21,12 @@ vi.mock('../../components/MulticastSection', () => ({
 vi.mock('../../components/TahtiRotationPlaylistEditor', () => ({
   TahtiRotationPlaylistEditor: () => null,
 }));
+vi.mock('./TahtiRadioPlaylistPanel', () => ({
+  TahtiRadioPlaylistPanel: () => null,
+}));
+vi.mock('./InternetRadioPresetsPanel', () => ({
+  InternetRadioPresetsPanel: () => null,
+}));
 
 const EMPTY = {
   nowPlaying: { live: false, slug: null, artistName: null },

@@ -1,6 +1,7 @@
-/** Admin → Radio page sections (Feature · Stations · Opt-outs · History); `presets` stays the URL id. */
+/** Admin → Radio page sections (Feature · Playlist · Stations · Opt-outs · History); `presets` stays the URL id. */
 export const ADMIN_RADIO_TABS = [
   'feature',
+  'playlist',
   'presets',
   'opt-outs',
   'history',

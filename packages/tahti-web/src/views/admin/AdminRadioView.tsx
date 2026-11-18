@@ -4,7 +4,7 @@ import {
   BanIcon,
   CheckCircle2Icon,
   HistoryIcon,
-  ListPlusIcon,
+  ListMusicIcon,
   PauseIcon,
   PlayIcon,
   RadioTowerIcon,
@@ -20,7 +20,6 @@ import {
   BreadcrumbLink,
   Breadcrumbs,
   Button,
-  ButtonLink,
   MediaArtwork,
   Tabs,
   ViewShell,
@@ -33,7 +32,7 @@ import {
   radioOptOut,
   radioRemoveOptOut,
   type AdminRadioData,
-  type AdminSelectsItem,
+  type AdminRadioRotationItem,
 } from '../../api/admin';
 import { fetchRadioStation } from '../../api/client';
 import { AdminGate } from '../../components/AdminGate';
@@ -43,7 +42,6 @@ import { ListingDate } from '../../components/ListingDate';
 import { MulticastSection } from '../../components/MulticastSection';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
-import { TahtiRotationPlaylistEditor } from '../../components/TahtiRotationPlaylistEditor';
 import { usePlayerStore } from '../../stores/playerStore';
 import {
   ADMIN_RADIO_TABS,
@@ -51,9 +49,11 @@ import {
   type AdminRadioTabId,
 } from './adminRadioTabs';
 import { InternetRadioPresetsPanel } from './InternetRadioPresetsPanel';
+import { TahtiRadioPlaylistPanel } from './TahtiRadioPlaylistPanel';
 
 const ADMIN_RADIO_TAB_LABELS: Record<AdminRadioTabId, string> = {
   feature: 'Feature',
+  playlist: 'Playlist',
   presets: 'Stations',
   'opt-outs': 'Opt-outs',
   history: 'History',
@@ -66,7 +66,7 @@ export function AdminRadioView() {
   const playbackStatus = usePlayerStore((state) => state.status);
   const setPlaybackStatus = usePlayerStore((state) => state.setStatus);
   const [data, setData] = useState<AdminRadioData | null>(null);
-  const [rotation, setRotation] = useState<AdminSelectsItem[]>([]);
+  const [rotation, setRotation] = useState<AdminRadioRotationItem[]>([]);
   const [station, setStation] = useState<Awaited<
     ReturnType<typeof fetchRadioStation>
   > | null>(null);
@@ -107,21 +107,6 @@ export function AdminRadioView() {
       return;
     }
     play({ ...station.playable, id: stationPlayableId });
-  };
-
-  const preview = (item: AdminSelectsItem) => {
-    if (!item.audioUrl) {
-      return;
-    }
-    play({
-      id: `sound:${item.soundId}`,
-      kind: 'sound',
-      title: item.title,
-      artist: item.artistName,
-      streamUrl: item.audioUrl,
-      protocol: item.audioUrl.includes('.m3u8') ? 'hls' : 'https',
-      channelSlug: item.channelSlug,
-    });
   };
 
   const navigate = useNavigate();
@@ -309,30 +294,29 @@ export function AdminRadioView() {
                             description={t(
                               'adminRadioView.dragTracksIntoTheExact',
                             )}
+                            action={
+                              <Button
+                                size="sm"
+                                variant="secondary"
+                                onClick={() => setTab('playlist')}
+                              >
+                                <ListMusicIcon
+                                  size={16}
+                                  aria-hidden
+                                  className="mr-1.5"
+                                />
+                                {t('adminRadioViewMore.openPlaylist')}
+                              </Button>
+                            }
                           >
-                            {rotation.length === 0 ? (
-                              <PageEmpty
-                                title={t('empties.adminRadioNoRotation')}
-                                action={
-                                  <ButtonLink
-                                    to="/admin/tahti-selects"
-                                    size="sm"
-                                    variant="secondary"
-                                  >
-                                    <ListPlusIcon size={16} aria-hidden />
-                                    {t('emptyActions.addToSelects')}
-                                  </ButtonLink>
-                                }
-                              />
-                            ) : (
-                              <TahtiRotationPlaylistEditor
-                                items={rotation}
-                                onPreview={preview}
-                                readOnly
-                                onReorder={() => undefined}
-                                onRemove={() => undefined}
-                              />
-                            )}
+                            <p className="text-foreground-secondary text-sm">
+                              {rotation.length === 0
+                                ? t('empties.adminRadioNoRotation')
+                                : t(
+                                    'adminRadioViewMore.playlistSummaryTracks',
+                                    { count: rotation.length },
+                                  )}
+                            </p>
                           </StudioPanel>
 
                           <StudioPanel
@@ -437,6 +421,12 @@ export function AdminRadioView() {
                           </StudioPanel>
                         </div>
                       ),
+                    },
+                    {
+                      id: 'playlist',
+                      label: t('adminRadioViewMore.playlist'),
+                      icon: <ListMusicIcon size={14} aria-hidden />,
+                      content: <TahtiRadioPlaylistPanel />,
                     },
                     {
                       id: 'presets',

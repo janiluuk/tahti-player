@@ -1,9 +1,14 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
+  addToRadioRotation,
+  fetchAdminRadioRotation,
   radioMoveToFront,
   radioOptOut,
   radioRemoveOptOut,
+  removeFromRadioRotation,
+  reorderRadioRotation,
+  searchAdminRadioBrowse,
 } from './admin-radio';
 
 function stubFetch() {
@@ -39,5 +44,50 @@ describe('admin radio rotation paths', () => {
     expect(String(fetchSpy.mock.calls[0]![0])).toMatch(
       /\/api\/admin\/radio\/reset-rotation\/ch1$/,
     );
+  });
+
+  it('loads the curated playlist from /api/admin/tahti-radio', async () => {
+    const fetchSpy = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(
+        new Response(JSON.stringify({ items: [] }), { status: 200 }),
+      );
+    await fetchAdminRadioRotation();
+    expect(String(fetchSpy.mock.calls[0]![0])).toMatch(
+      /\/api\/admin\/tahti-radio$/,
+    );
+  });
+
+  it('browses, adds, reorders and removes through /api/admin/tahti-radio', async () => {
+    const fetchSpy = stubFetch();
+    await searchAdminRadioBrowse('night');
+    expect(String(fetchSpy.mock.calls[0]![0])).toMatch(
+      /\/api\/admin\/tahti-radio\/browse\?q=night$/,
+    );
+
+    await addToRadioRotation({
+      id: 'sound-1',
+      title: 'Night',
+      durationSec: 120,
+      license: 'CC_BY',
+      artistName: 'Aino',
+      channelSlug: 'aino',
+    });
+    expect(String(fetchSpy.mock.calls[1]![0])).toMatch(
+      /\/api\/admin\/tahti-radio\/items$/,
+    );
+    expect(fetchSpy.mock.calls[1]![1]?.method).toBe('POST');
+
+    await reorderRadioRotation(['a', 'b']);
+    expect(String(fetchSpy.mock.calls[2]![0])).toMatch(
+      /\/api\/admin\/tahti-radio\/reorder$/,
+    );
+    expect(fetchSpy.mock.calls[2]![1]?.method).toBe('PUT');
+
+    await removeFromRadioRotation('item 1');
+    expect(String(fetchSpy.mock.calls[3]![0])).toMatch(
+      /\/api\/admin\/tahti-radio\/items\/item%201$/,
+    );
+    expect(fetchSpy.mock.calls[3]![1]?.method).toBe('DELETE');
   });
 });

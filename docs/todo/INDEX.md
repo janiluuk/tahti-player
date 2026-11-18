@@ -42,6 +42,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | open    | [registration-form-redesign.md](registration-form-redesign.md) | Modernize AuthDialog Join: clearer layout and field-level validation / error indication |
+| partial | [tahti-radio-playlist-manager.md](tahti-radio-playlist-manager.md) | Admin Radio Playlist tab + `/api/admin/tahti-radio` client; left: deploy org API, optional SelectsTab reuse |
 | open    | [next-50.md](next-50.md) | Map of the 50 slice files in the Next 50 slices section |
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; left: native review |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |

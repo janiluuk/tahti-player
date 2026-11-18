@@ -7,9 +7,10 @@ import {
 } from './adminRadioTabs';
 
 describe('adminRadioTabs', () => {
-  it('lists Feature · Presets · Opt-outs · History', () => {
+  it('lists Feature · Playlist · Presets · Opt-outs · History', () => {
     expect(ADMIN_RADIO_TABS).toEqual([
       'feature',
+      'playlist',
       'presets',
       'opt-outs',
       'history',
@@ -18,6 +19,7 @@ describe('adminRadioTabs', () => {
 
   it('defaults unknown search to feature', () => {
     expect(adminRadioTabFromSearch(undefined)).toBe('feature');
+    expect(adminRadioTabFromSearch('playlist')).toBe('playlist');
     expect(adminRadioTabFromSearch('presets')).toBe('presets');
     expect(isAdminRadioTabId('opt-outs')).toBe(true);
     expect(isAdminRadioTabId('multicast')).toBe(false);
