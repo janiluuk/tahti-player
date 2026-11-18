@@ -54,7 +54,8 @@ network again, even for a page seen seconds ago.
 - [x] `@dnd-kit` out of the shell (2026-11-18, 0.0.411): `QueuePanel` renders
       focusable rows at once and loads its drag layer (`queueDnd.tsx`) when
       the browser is idle; `SortableBlocks` loads `sortableBlocksDnd.tsx` the
-      first time a stack starts reordering (Listen's Order sections). Block
+      first time a stack starts reordering (Listen's Order sections button
+      preloads it on hover or focus). Block
       content mounts again once at that first switch, never after.
       Production build: `TahtiApp` 1381.5 → 1334.7 KB, 428.6 → 412.9 KB
       gzipped (Vite's report); dnd-kit is a 45 KB chunk.

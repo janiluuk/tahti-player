@@ -101,18 +101,31 @@ export const BlockFrame: FC<BlockFrameProps> = ({
 type BlocksDndModule = typeof import('./sortableBlocksDnd');
 
 let loadedDnd: BlocksDndModule | null = null;
+let pendingDnd: Promise<BlocksDndModule> | null = null;
+
+/** Starts loading the drag layer, e.g. when the pointer reaches a
+ * "reorder" toggle, so turning reordering on swaps it in at once. */
+export function preloadSortableBlocks(): Promise<BlocksDndModule> {
+  pendingDnd ??= import('./sortableBlocksDnd').then((module) => {
+    loadedDnd = module;
+    return module;
+  });
+  return pendingDnd;
+}
 
 /** dnd-kit loads in its own chunk the first time a stack starts
  * reordering, so pages that only show blocks keep it out of the shell. */
 function useBlocksDnd(wanted: boolean): BlocksDndModule | null {
   const [module, setModule] = useState<BlocksDndModule | null>(loadedDnd);
+  if (wanted && !module && loadedDnd) {
+    setModule(loadedDnd);
+  }
   useEffect(() => {
     if (!wanted || module) {
       return;
     }
     let cancelled = false;
-    void import('./sortableBlocksDnd').then((next) => {
-      loadedDnd = next;
+    void preloadSortableBlocks().then((next) => {
       if (!cancelled) {
         setModule(next);
       }

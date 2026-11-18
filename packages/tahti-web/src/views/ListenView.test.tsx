@@ -14,7 +14,17 @@ import {
   waitFor,
   within,
 } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import {
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  vi,
+} from 'vitest';
+
+import { preloadSortableBlocks } from '@tahti-player/ui';
 
 import * as discover from '../api/discover';
 import * as listen from '../api/listen';
@@ -27,6 +37,10 @@ import {
   useListenerWidgetsStore,
 } from '../stores/listenerWidgetsStore';
 import { ListenView } from './ListenView';
+
+beforeAll(async () => {
+  await preloadSortableBlocks();
+});
 
 vi.mock('sonner', () => ({
   toast: { error: vi.fn(), success: vi.fn(), info: vi.fn() },
