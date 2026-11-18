@@ -4196,6 +4196,7 @@
     "channelModerators": {
       "title": "Channel moderators",
       "description": "People you trust to look after your channel's chat: they can remove messages and ban people from posting. They cannot change your channel or its settings. Tahti tells them when you add them.",
+      "ownerBadge": "You · owner",
       "remove": "Remove moderator",
       "removeNamed": "Remove {{name}} as moderator",
       "username": "Username",

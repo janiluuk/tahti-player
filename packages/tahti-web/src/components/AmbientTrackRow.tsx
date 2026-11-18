@@ -11,7 +11,6 @@ import { useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
   Button,
-  getDecodedPeaks,
   MediaArtwork,
   TrackProcessing,
   Waveform,
@@ -255,7 +254,6 @@ function AmbientTrackRowView({
   peaks,
   audioUrl,
   processing = false,
-  loadAudioUrl,
   progress = 0,
   density = 'comfortable',
   isPlaying = false,
@@ -287,42 +285,6 @@ function AmbientTrackRowView({
     observer.observe(rowRef.current);
     return () => observer.disconnect();
   }, []);
-  const loadAudioRef = useRef(loadAudioUrl);
-  loadAudioRef.current = loadAudioUrl;
-  const canLoadAudio = Boolean(loadAudioUrl);
-  const [loadedAudioUrl, setLoadedAudioUrl] = useState<string>();
-  useEffect(() => {
-    setLoadedAudioUrl(undefined);
-    if (
-      processing ||
-      !visible ||
-      peaks?.length ||
-      audioUrl ||
-      !canLoadAudio ||
-      getDecodedPeaks(trackId, { durationSec })
-    ) {
-      return;
-    }
-    let cancelled = false;
-    void loadAudioRef.current!()
-      .then((url) => {
-        if (!cancelled) {
-          setLoadedAudioUrl(url);
-        }
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, [
-    visible,
-    trackId,
-    peaks,
-    audioUrl,
-    canLoadAudio,
-    processing,
-    durationSec,
-  ]);
   const sampled = useDominantColor(ambientRgb === undefined ? coverUrl : null);
   const rgb = ambientRgb === undefined ? sampled : ambientRgb;
   const layout = DENSITY_LAYOUT[density];
@@ -421,7 +383,7 @@ function AmbientTrackRowView({
                 progress={progress}
                 peaks={peaks}
                 cacheKey={trackId}
-                audioUrl={audioUrl ?? loadedAudioUrl}
+                audioUrl={peaks?.length ? audioUrl : undefined}
                 durationSec={durationSec ?? 1}
                 onSeek={onSeek}
                 aria-label={t('ambientTrackRowLabels.seekTitle', { title })}

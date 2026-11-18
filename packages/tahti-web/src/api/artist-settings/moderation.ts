@@ -19,6 +19,7 @@ export type ModeratorRow = {
   displayName: string;
   canTimeout: boolean;
   canDelete: boolean;
+  isOwner?: boolean;
 };
 
 export type ChatBan = {
@@ -57,6 +58,7 @@ export type ChannelModeratorApiRow = {
   username: string;
   displayName: string;
   grantedAt: string;
+  isOwner?: boolean;
 };
 
 export function toModeratorRow(row: ChannelModeratorApiRow): ModeratorRow {
@@ -64,9 +66,9 @@ export function toModeratorRow(row: ChannelModeratorApiRow): ModeratorRow {
     id: row.userId,
     username: row.username,
     displayName: row.displayName,
-    // Delegated moderators can ban/unban chat; prod has no finer-grained split.
     canTimeout: true,
     canDelete: true,
+    isOwner: Boolean(row.isOwner),
   };
 }
 

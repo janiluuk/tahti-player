@@ -1,3 +1,9 @@
+## 2026-11-18 - Owner moderator row + referrerUrl heartbeat + no client peaks decode (0.0.409)
+
+Fans → Chat → Moderators shows the channel owner with a badge and no Remove.
+Listen heartbeat also sends `referrerUrl`. Ambient track rows no longer fetch
+audio to decode waveforms when server peaks are missing.
+
 ## 2026-11-17 - Diagnostics hub, Release/Earnings overflow, Add-ons FilterBar (0.0.408)
 
 Platform → Diagnostics hub cards for Logs, Orphan pages and Map. Studio Release

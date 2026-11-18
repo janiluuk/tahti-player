@@ -94,25 +94,34 @@ export function ChannelModeratorsPanel() {
                 key={moderator.id}
                 className="border-border flex flex-wrap items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm"
               >
-                <span>
-                  {moderator.displayName} (@{moderator.username})
+                <span className="flex min-w-0 flex-wrap items-center gap-2">
+                  <span>
+                    {moderator.displayName} (@{moderator.username})
+                  </span>
+                  {moderator.isOwner ? (
+                    <span className="text-foreground-secondary text-xs">
+                      {t('channelModerators.ownerBadge')}
+                    </span>
+                  ) : null}
                 </span>
-                <Tooltip content={t('channelModerators.remove')} side="top">
-                  <Button
-                    size="icon-sm"
-                    variant="text"
-                    aria-label={t('channelModerators.removeNamed', {
-                      name: moderator.displayName,
-                    })}
-                    onClick={() => setPendingRemove(moderator)}
-                  >
-                    <Trash2Icon
-                      className="text-accent-red-strong"
-                      size={14}
-                      aria-hidden
-                    />
-                  </Button>
-                </Tooltip>
+                {moderator.isOwner ? null : (
+                  <Tooltip content={t('channelModerators.remove')} side="top">
+                    <Button
+                      size="icon-sm"
+                      variant="text"
+                      aria-label={t('channelModerators.removeNamed', {
+                        name: moderator.displayName,
+                      })}
+                      onClick={() => setPendingRemove(moderator)}
+                    >
+                      <Trash2Icon
+                        className="text-accent-red-strong"
+                        size={14}
+                        aria-hidden
+                      />
+                    </Button>
+                  </Tooltip>
+                )}
               </li>
             ))}
           </ul>

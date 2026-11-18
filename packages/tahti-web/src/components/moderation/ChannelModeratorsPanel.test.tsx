@@ -99,6 +99,27 @@ describe('ChannelModeratorsPanel', () => {
     expect(remove).toHaveBeenCalledWith('m1');
   });
 
+  it('lists the owner without a remove control', async () => {
+    const owner: api.ModeratorRow = {
+      id: 'owner',
+      username: 'demo',
+      displayName: 'Demo Artist',
+      canTimeout: true,
+      canDelete: true,
+      isOwner: true,
+    };
+    await renderPanel([owner, ADA]);
+    expect(screen.getByText('You · owner')).toBeTruthy();
+    expect(
+      screen.queryByRole('button', {
+        name: 'Remove Demo Artist as moderator',
+      }),
+    ).toBeNull();
+    expect(
+      screen.getByRole('button', { name: 'Remove Ada Mod as moderator' }),
+    ).toBeTruthy();
+  });
+
   it('shows its chrome in Finnish', async () => {
     await act(async () => {
       await applyLocale('fi_FI');
