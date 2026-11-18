@@ -2,7 +2,7 @@ import { LibraryIcon, ListFilterIcon, UploadIcon, XIcon } from 'lucide-react';
 import type { MutableRefObject } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, EmptyState, Input } from '@tahti-player/ui';
+import { Button, EmptyState, FilterBar } from '@tahti-player/ui';
 
 import type { usePersistedCatalogTable } from '../../hooks/usePersistedCatalogTable';
 import {
@@ -284,17 +284,15 @@ export function DesktopLibraryContent({
               </Button>
             </div>
           ) : null}
-          <div className="flex items-end gap-2">
-            <div className="min-w-0 flex-1">
-              <Input
-                enterKeyHint="search"
-                type="search"
-                label={t('desktopLibraryContent.searchDesktopLibrary')}
-                placeholder={t('desktopLibraryContent.titleArtistAlbumGenreOr')}
-                value={query}
-                onChange={(event) => onQueryChange(event.target.value)}
-              />
-            </div>
+          <FilterBar
+            className="items-end"
+            searchValue={query}
+            onSearchChange={onQueryChange}
+            searchFieldLabel={t('desktopLibraryContent.searchDesktopLibrary')}
+            searchPlaceholder={t(
+              'desktopLibraryContent.titleArtistAlbumGenreOr',
+            )}
+          >
             <Button
               className="gap-1.5"
               variant={activeFilterCount ? 'secondary' : 'text'}
@@ -308,7 +306,7 @@ export function DesktopLibraryContent({
               <ListFilterIcon size={15} aria-hidden />
               Filters{activeFilterCount ? ` (${activeFilterCount})` : ''}
             </Button>
-          </div>
+          </FilterBar>
           {tracks.length ? (
             <NativeTrackTable
               table={table}

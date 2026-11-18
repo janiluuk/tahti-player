@@ -1,8 +1,8 @@
-import { PauseIcon, PlayIcon, PlusIcon, SearchIcon } from 'lucide-react';
+import { PauseIcon, PlayIcon, PlusIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
+import { Button, Dialog, FilterBar, Tooltip } from '@tahti-player/ui';
 
 import type { StudioSound } from '../../../api/studio-types';
 import { PageEmpty } from '../../../components/PageStates';
@@ -73,14 +73,11 @@ export function AddTracksDialog({
         {t('collectionAddTracks.chooseLibraryTracksToAdd')}
       </Dialog.Description>
       <div className="mt-4 flex min-w-0 flex-col gap-3">
-        <Input
-          enterKeyHint="search"
-          type="search"
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={t('collectionAddTracks.searchTracksByTitleGenre')}
-          aria-label={t('collectionAddTracks.searchLibraryTracks')}
-          endAddon={<SearchIcon size={16} aria-hidden />}
+        <FilterBar
+          searchValue={query}
+          onSearchChange={setQuery}
+          searchPlaceholder={t('collectionAddTracks.searchTracksByTitleGenre')}
+          searchLabel={t('collectionAddTracks.searchLibraryTracks')}
         />
         <div className="border-border max-h-96 min-h-0 overflow-auto rounded-md border">
           {available.length === 0 ? (

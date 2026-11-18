@@ -1,12 +1,12 @@
 import { useNavigate } from '@tanstack/react-router';
-import { ListFilterIcon, SearchIcon } from 'lucide-react';
+import { ListFilterIcon } from 'lucide-react';
 import { useState } from 'react';
 
 import { useTranslation, type TFunction } from '@tahti-player/i18n';
 import {
   Button,
+  FilterBar,
   FilterChips,
-  Input,
   TopList,
   ViewShell,
 } from '@tahti-player/ui';
@@ -94,17 +94,14 @@ export function AdminTopListsView() {
             classes={{ root: 'px-0 pt-0', content: 'gap-4' }}
           >
             <div className="flex flex-col gap-3">
-              <Input
-                enterKeyHint="search"
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={t('adminTopListsView.searchTitleArtistOrChannel')}
-                aria-label={t('adminTopListsView.searchTopLists')}
+              <FilterBar
                 className="max-w-xl"
-                startAddon={
-                  <SearchIcon size={16} aria-hidden className="opacity-70" />
-                }
+                searchValue={query}
+                onSearchChange={setQuery}
+                searchPlaceholder={t(
+                  'adminTopListsView.searchTitleArtistOrChannel',
+                )}
+                searchLabel={t('adminTopListsView.searchTopLists')}
               />
               <div className="flex flex-wrap items-center gap-2">
                 <ListFilterIcon

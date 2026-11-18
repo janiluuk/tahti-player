@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Badge, Button, InlineLoader, Input } from '@tahti-player/ui';
+import { Badge, Button, FilterBar, InlineLoader } from '@tahti-player/ui';
 
 import {
   fetchMemberRegister,
@@ -77,13 +77,13 @@ export function MemberRegisterPanel() {
         />
       ) : (
         <div className="flex flex-col gap-2">
-          <Input
-            enterKeyHint="search"
-            type="search"
-            label={t('memberRegisterPanel.findAMember')}
-            placeholder={t('memberRegisterPanel.nameUsernameOrMemberNumber')}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
+          <FilterBar
+            searchValue={query}
+            onSearchChange={setQuery}
+            searchFieldLabel={t('memberRegisterPanel.findAMember')}
+            searchPlaceholder={t(
+              'memberRegisterPanel.nameUsernameOrMemberNumber',
+            )}
           />
           {shown.length === 0 ? (
             <PageEmpty

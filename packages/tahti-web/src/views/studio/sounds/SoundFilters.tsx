@@ -10,6 +10,7 @@ import {
 import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
+  FilterBar,
   Input,
   Select,
   SortMenuButton,
@@ -108,34 +109,29 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
 
   return (
     <>
-      <div className="mb-4 flex flex-wrap items-center gap-3">
-        <Input
-          enterKeyHint="search"
-          type="search"
-          aria-label={t('library.searchSounds')}
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder={t('library.searchPlaceholder')}
-          className="max-w-md flex-1"
-          startAddon={
-            <SearchIcon size={14} aria-hidden className="opacity-70" />
-          }
-          endAddon={
-            queryActive ? (
-              <button
-                type="button"
-                className="inline-flex items-center justify-center"
-                aria-label={t('library.clearSearch')}
-                onClick={() => setQuery('')}
-              >
-                <XIcon size={14} aria-hidden />
-              </button>
-            ) : (
-              <SearchIcon size={14} aria-hidden className="opacity-0" />
-            )
-          }
-          endAddonActive={queryActive}
-        />
+      <FilterBar
+        className="mb-4"
+        searchValue={query}
+        onSearchChange={setQuery}
+        searchLabel={t('library.searchSounds')}
+        searchPlaceholder={t('library.searchPlaceholder')}
+        searchClassName="max-w-md"
+        searchEndAddon={
+          queryActive ? (
+            <button
+              type="button"
+              className="inline-flex items-center justify-center"
+              aria-label={t('library.clearSearch')}
+              onClick={() => setQuery('')}
+            >
+              <XIcon size={14} aria-hidden />
+            </button>
+          ) : (
+            <SearchIcon size={14} aria-hidden className="opacity-0" />
+          )
+        }
+        searchEndAddonActive={queryActive}
+      >
         {filtersActive ? (
           <Button
             type="button"
@@ -233,7 +229,7 @@ export function SoundFilters({ state }: { state: StudioSoundsState }) {
         <span className="text-foreground-secondary text-xs">
           {t('library.pinnedCount', { count: pinnedCount })}
         </span>
-      </div>
+      </FilterBar>
       {filtersOpen && (
         <div className="border-border mb-4 flex flex-wrap items-end gap-3 border-b pb-4">
           <Select

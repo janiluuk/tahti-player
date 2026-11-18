@@ -1,9 +1,14 @@
 import { Link } from '@tanstack/react-router';
-import { RadioIcon, SearchIcon } from 'lucide-react';
+import { RadioIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, ButtonLink, Input, SortMenuButton } from '@tahti-player/ui';
+import {
+  Button,
+  ButtonLink,
+  FilterBar,
+  SortMenuButton,
+} from '@tahti-player/ui';
 
 import {
   PageEmpty,
@@ -48,16 +53,13 @@ export function RecordingsPanel({
         })}
         action={action}
       >
-        <div className="mb-4 flex flex-col gap-2 sm:flex-row">
-          <Input
-            enterKeyHint="search"
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={t('studioRecordings.searchPlaceholder')}
-            aria-label={t('studioRecordings.searchAria')}
-            endAddon={<SearchIcon size={16} aria-hidden />}
-          />
+        <FilterBar
+          className="mb-4"
+          searchValue={query}
+          onSearchChange={setQuery}
+          searchPlaceholder={t('studioRecordings.searchPlaceholder')}
+          searchLabel={t('studioRecordings.searchAria')}
+        >
           <SortMenuButton
             label={t('studioRecordings.sortLabel')}
             value={sort}
@@ -69,7 +71,7 @@ export function RecordingsPanel({
             ]}
             defaultValue="newest"
           />
-        </div>
+        </FilterBar>
         {loading ? (
           <PageLoading label={t('studioRecordings.loading')} />
         ) : loadError && recordings.length === 0 ? (

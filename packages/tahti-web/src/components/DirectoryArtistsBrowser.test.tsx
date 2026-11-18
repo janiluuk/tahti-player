@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import type { ChannelDirectoryItem } from '../api/types';
@@ -37,10 +37,10 @@ describe('DirectoryArtistsBrowser genre chips', () => {
 
   it('sizes the search field from its wrapper so it cannot be squashed', async () => {
     await renderWithRouter(<DirectoryArtistsBrowser artists={artists} />);
-    const wrapper = screen.getByTestId('directory-artists-search');
-    expect(wrapper.className).toContain('min-w-48');
-    expect(wrapper.className).toContain('flex-1');
-    const field = screen.getByRole('searchbox', { name: 'Search' });
+    const bar = screen.getByTestId('directory-artists-search');
+    const field = within(bar).getByRole('searchbox', { name: 'Search' });
+    const wrapper = field.closest('.min-w-48');
+    expect(wrapper?.className).toContain('flex-1');
     expect(field.className).not.toContain('min-w-48');
   });
 });

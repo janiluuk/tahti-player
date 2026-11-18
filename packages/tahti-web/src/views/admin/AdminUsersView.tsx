@@ -1,11 +1,11 @@
-import { DownloadIcon, SearchIcon, UserRoundIcon } from 'lucide-react';
+import { DownloadIcon, UserRoundIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
   Button,
   ButtonAnchor,
-  Input,
+  FilterBar,
   MediaArtwork,
   Select,
   SelectableList,
@@ -92,16 +92,11 @@ export const AdminUsersView = () => {
 
             <div className="grid min-h-[36rem] grid-cols-1 gap-4 lg:grid-cols-[20rem_minmax(0,1fr)]">
               <StudioPanel className="flex min-h-0 flex-col gap-3">
-                <Input
-                  enterKeyHint="search"
-                  type="search"
-                  aria-label={t('adminUsersView.searchUsers')}
-                  placeholder={t('adminUsersView.nameEmailOrUsername')}
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
-                  startAddon={
-                    <SearchIcon size={15} aria-hidden className="opacity-70" />
-                  }
+                <FilterBar
+                  searchValue={query}
+                  onSearchChange={setQuery}
+                  searchLabel={t('adminUsersView.searchUsers')}
+                  searchPlaceholder={t('adminUsersView.nameEmailOrUsername')}
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <Select

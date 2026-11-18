@@ -10,7 +10,6 @@ import {
   PlayIcon,
   PlusIcon,
   RadioTowerIcon,
-  SearchIcon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
@@ -21,6 +20,7 @@ import {
   ButtonLink,
   Dialog,
   EditIconLink,
+  FilterBar,
   FilterChips,
   Input,
   MediaArtwork,
@@ -424,16 +424,11 @@ export function StudioCollectionsView() {
 
           <StudioPanel>
             <div className="mb-4 flex flex-col gap-3">
-              <Input
-                enterKeyHint="search"
-                type="search"
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder={t('library.searchCollectionsPlaceholder')}
-                aria-label={t('library.searchCollections')}
-                startAddon={
-                  <SearchIcon size={14} aria-hidden className="opacity-70" />
-                }
+              <FilterBar
+                searchValue={query}
+                onSearchChange={setQuery}
+                searchPlaceholder={t('library.searchCollectionsPlaceholder')}
+                searchLabel={t('library.searchCollections')}
               />
               <Tabs.Root
                 selectedIndex={

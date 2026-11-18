@@ -4,7 +4,7 @@ import { lazy, Suspense, useMemo, useState, type ReactNode } from 'react';
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
-import { Input } from '@tahti-player/ui';
+import { FilterBar } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../api/types';
 import { useTrackLikes } from '../hooks/useTrackLikes';
@@ -132,13 +132,11 @@ export function PlayableAmbientTrackList({
   const sorted = useMemo(() => sortTracks(filtered, sort), [filtered, sort]);
   const filterBox =
     filterable && items.length > 1 ? (
-      <Input
-        enterKeyHint="search"
-        type="search"
-        aria-label={t('library.filterTracks')}
-        placeholder={t('library.filterTracks')}
-        value={query}
-        onChange={(event) => setQuery(event.target.value)}
+      <FilterBar
+        searchValue={query}
+        onSearchChange={setQuery}
+        searchLabel={t('library.filterTracks')}
+        searchPlaceholder={t('library.filterTracks')}
       />
     ) : undefined;
   const shownEmptyMessage =

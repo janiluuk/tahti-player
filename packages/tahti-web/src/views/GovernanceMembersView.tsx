@@ -3,7 +3,13 @@ import { LandmarkIcon, UsersIcon } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Badge, Button, Input, StatChip, ViewShell } from '@tahti-player/ui';
+import {
+  Badge,
+  Button,
+  FilterBar,
+  StatChip,
+  ViewShell,
+} from '@tahti-player/ui';
 
 import { fetchGovernanceMembers } from '../api/client';
 import type { GovernanceMember } from '../api/types';
@@ -86,13 +92,13 @@ export function GovernanceMembersView() {
 
       {user && !loading && (
         <>
-          <Input
-            enterKeyHint="search"
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            aria-label={t('governanceMembersView.searchByNameOrUsername')}
-            placeholder={t('governanceMembersView.searchByNameOrUsername')}
+          <FilterBar
+            searchValue={query}
+            onSearchChange={setQuery}
+            searchLabel={t('governanceMembersView.searchByNameOrUsername')}
+            searchPlaceholder={t(
+              'governanceMembersView.searchByNameOrUsername',
+            )}
           />
           {loadError && members.length > 0 ? (
             <PageErrorBanner

@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
-import { Button, FilePicker, Input, Tooltip } from '@tahti-player/ui';
+import { Button, FilePicker, FilterBar, Tooltip } from '@tahti-player/ui';
 
 import type { TahtiPlayable } from '../../api/types';
 import {
@@ -95,13 +95,13 @@ export function BrowserLocalFiles() {
                   : 'No playable files. Re-import the files below to play them.'
               }
               toolbarStart={
-                <Input
-                  enterKeyHint="search"
-                  type="search"
-                  aria-label={t('browserLocalFiles.searchLocalFiles')}
-                  placeholder={t('browserLocalFiles.titleArtistOrFileName')}
-                  value={query}
-                  onChange={(event) => setQuery(event.target.value)}
+                <FilterBar
+                  searchValue={query}
+                  onSearchChange={setQuery}
+                  searchLabel={t('browserLocalFiles.searchLocalFiles')}
+                  searchPlaceholder={t(
+                    'browserLocalFiles.titleArtistOrFileName',
+                  )}
                 />
               }
               selectable

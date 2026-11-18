@@ -1,7 +1,6 @@
-import { SearchIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
-import { Input } from '@tahti-player/ui';
+import { FilterBar } from '@tahti-player/ui';
 
 import { cn } from '../../lib/cn';
 
@@ -20,23 +19,22 @@ export function LibrarySectionToolbar({
   className?: string;
   children?: ReactNode;
 }) {
+  if (!onQueryChange) {
+    return (
+      <div className={cn('flex flex-wrap items-center gap-2', className)}>
+        {children}
+      </div>
+    );
+  }
   return (
-    <div className={cn('flex flex-col gap-4', className)}>
-      {onQueryChange ? (
-        <Input
-          enterKeyHint="search"
-          type="search"
-          value={query ?? ''}
-          onChange={(event) => onQueryChange(event.target.value)}
-          placeholder={searchPlaceholder}
-          aria-label={searchLabel ?? searchPlaceholder}
-          className="max-w-md"
-          startAddon={
-            <SearchIcon size={14} aria-hidden className="opacity-70" />
-          }
-        />
-      ) : null}
+    <FilterBar
+      className={className}
+      searchValue={query ?? ''}
+      onSearchChange={onQueryChange}
+      searchPlaceholder={searchPlaceholder}
+      searchLabel={searchLabel ?? searchPlaceholder}
+    >
       {children}
-    </div>
+    </FilterBar>
   );
 }
