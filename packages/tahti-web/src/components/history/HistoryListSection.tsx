@@ -5,9 +5,9 @@ import { toast } from 'sonner';
 import { i18n, toBcp47, useTranslation } from '@tahti-player/i18n';
 import {
   Button,
+  FilterBar,
   HistoryDayGroup,
   HistoryRow,
-  Input,
   Pagination,
   Select,
   Tooltip,
@@ -202,26 +202,23 @@ export function HistoryListSection({ history }: { history: HistoryEntry[] }) {
             <PlusIcon size={16} strokeWidth={3} />
           </Button>
         </Tooltip>
-        <div className="ml-auto flex w-full max-w-sm items-center gap-2">
-          <Input
-            enterKeyHint="search"
-            type="search"
-            size="sm"
-            value={filter}
-            onChange={(event) => {
-              setFilter(event.target.value);
-              setPage(1);
-            }}
-            placeholder={t('library.history.filter')}
-            aria-label={t('library.history.filter')}
-            endAddon={
-              <FilterIcon className="h-4 w-4" aria-hidden strokeWidth={3} />
-            }
-          />
+        <FilterBar
+          className="ml-auto w-full max-w-sm"
+          searchValue={filter}
+          onSearchChange={(value) => {
+            setFilter(value);
+            setPage(1);
+          }}
+          searchPlaceholder={t('library.history.filter')}
+          searchLabel={t('library.history.filter')}
+          searchEndAddon={
+            <FilterIcon className="h-4 w-4" aria-hidden strokeWidth={3} />
+          }
+        >
           <Button variant="text" size="sm" onClick={clearHistory}>
             {t('library.history.clearAll')}
           </Button>
-        </div>
+        </FilterBar>
       </div>
 
       {filtered.length === 0 ? (

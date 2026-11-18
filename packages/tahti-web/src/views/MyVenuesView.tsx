@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { MapPinIcon, SearchIcon } from 'lucide-react';
+import { MapPinIcon } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
@@ -8,7 +8,7 @@ import {
   Button,
   ButtonLink,
   EditIconButton,
-  Input,
+  FilterBar,
   SectionTitle,
   ViewShell,
 } from '@tahti-player/ui';
@@ -163,17 +163,12 @@ export function MyVenuesView() {
         />
       ) : (
         <>
-          <Input
-            enterKeyHint="search"
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={t('myVenuesView.searchVenues')}
-            aria-label={t('myVenuesView.searchVenues2')}
+          <FilterBar
             className="max-w-md"
-            startAddon={
-              <SearchIcon size={14} aria-hidden className="opacity-70" />
-            }
+            searchValue={query}
+            onSearchChange={setQuery}
+            searchPlaceholder={t('myVenuesView.searchVenues')}
+            searchLabel={t('myVenuesView.searchVenues2')}
           />
           {filtered.length === 0 ? (
             <PageEmpty

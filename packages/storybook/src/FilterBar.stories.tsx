@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
+import { XIcon } from 'lucide-react';
 import { useState } from 'react';
 import { expect, userEvent, within } from 'storybook/test';
 
@@ -56,6 +57,47 @@ export const SearchAndChips: Story = {
       'aria-checked',
       'true',
     );
+  },
+};
+
+export const WithEndAddon: Story = {
+  render: function WithEndAddonStory() {
+    return (
+      <FilterBar
+        searchValue=""
+        onSearchChange={() => undefined}
+        searchPlaceholder="Search sounds…"
+        searchEndAddon={<XIcon size={14} aria-hidden />}
+      />
+    );
+  },
+};
+
+export const WithEndAddonActive: Story = {
+  render: function WithEndAddonActiveStory() {
+    const [query, setQuery] = useState('beat');
+    return (
+      <FilterBar
+        searchValue={query}
+        onSearchChange={setQuery}
+        searchPlaceholder="Search sounds…"
+        searchEndAddon={
+          <button
+            type="button"
+            aria-label="Clear search"
+            onClick={() => setQuery('')}
+          >
+            <XIcon size={14} aria-hidden />
+          </button>
+        }
+        searchEndAddonActive={query.trim().length > 0}
+      />
+    );
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('button', { name: 'Clear search' }));
+    await expect(canvas.getByRole('searchbox')).toHaveValue('');
   },
 };
 

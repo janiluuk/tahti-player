@@ -2,7 +2,7 @@ import { SlidersHorizontalIcon } from 'lucide-react';
 import { useMemo, useState, type FC } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, FilterChips, Input } from '@tahti-player/ui';
+import { Button, FilterBar, FilterChips } from '@tahti-player/ui';
 
 import {
   isDirectoryArtistActive,
@@ -177,20 +177,15 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
       aria-label={t('directoryArtistsBrowser.browseArtists')}
     >
       <div className="border-border bg-background-secondary/40 flex flex-col gap-3 rounded-xl border p-3 sm:p-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <div
-            data-testid="directory-artists-search"
-            className="min-w-48 flex-1"
-          >
-            <Input
-              enterKeyHint="search"
-              type="search"
-              label={t('directoryArtistsBrowser.search')}
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={t('directoryArtistsBrowser.artistNameUsernameGenre')}
-            />
-          </div>
+        <FilterBar
+          data-testid="directory-artists-search"
+          searchValue={query}
+          onSearchChange={setQuery}
+          searchFieldLabel={t('directoryArtistsBrowser.search')}
+          searchPlaceholder={t(
+            'directoryArtistsBrowser.artistNameUsernameGenre',
+          )}
+        >
           <FilterChips
             aria-label={t('directoryArtistsBrowser.directoryControls')}
             multiple
@@ -226,7 +221,7 @@ export const DirectoryArtistsBrowser: FC<DirectoryArtistsBrowserProps> = ({
               }
             />
           ) : null}
-        </div>
+        </FilterBar>
 
         {filtersExpanded ? (
           <div className="border-border flex flex-col gap-3 border-t pt-3">

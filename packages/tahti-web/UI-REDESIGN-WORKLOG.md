@@ -1,3 +1,10 @@
+## 2026-11-18 - List pages share one FilterBar (0.0.415)
+
+Sounds and the other catalog searches (Releases, Shows, Collections,
+Recordings, Library, History, Help, directory, admin lists) use one
+`FilterBar` row. A trailing control on the search field stays idle until
+there is a query, then turns active.
+
 ## 2026-11-18 - Production builds drop offline mock fixtures (0.0.414)
 
 Beta and production builds no longer ship the offline demo fixtures.

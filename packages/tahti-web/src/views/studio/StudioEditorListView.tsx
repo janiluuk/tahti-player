@@ -11,6 +11,7 @@ import {
   Button,
   ButtonLink,
   Dialog,
+  FilterBar,
   Input,
   Select,
   Tabs,
@@ -357,13 +358,11 @@ export function StudioEditorListView() {
                 </Tabs.List>
               </Tabs.Root>
               <div className="flex min-w-0 flex-col gap-3">
-                <Input
-                  enterKeyHint="search"
-                  type="search"
-                  value={libraryQuery}
-                  onChange={(event) => setLibraryQuery(event.target.value)}
-                  placeholder={t('studioEditorList.searchLibrary')}
-                  aria-label={t('studioEditorList.searchLibraryAria')}
+                <FilterBar
+                  searchValue={libraryQuery}
+                  onSearchChange={setLibraryQuery}
+                  searchPlaceholder={t('studioEditorList.searchLibrary')}
+                  searchLabel={t('studioEditorList.searchLibraryAria')}
                 />
                 {soundsError && sounds.length > 0 ? (
                   <PageErrorBanner

@@ -8,8 +8,8 @@ import {
   BreadcrumbLink,
   Breadcrumbs,
   Button,
+  FilterBar,
   InlineError,
-  Input,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -104,13 +104,13 @@ export function AdminVenuesView() {
             >
               <StudioPanel>
                 <div className="flex flex-col gap-3">
-                  <Input
-                    enterKeyHint="search"
-                    type="search"
-                    label={t('adminVenuesView.searchVenues')}
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    placeholder={t('adminVenuesView.nameCitySlugOrSubmitter')}
+                  <FilterBar
+                    searchValue={query}
+                    onSearchChange={setQuery}
+                    searchFieldLabel={t('adminVenuesView.searchVenues')}
+                    searchPlaceholder={t(
+                      'adminVenuesView.nameCitySlugOrSubmitter',
+                    )}
                   />
                   <p className="text-foreground-secondary text-xs">
                     {t('adminVenuesView.verifyingAVenueOrTaking')}

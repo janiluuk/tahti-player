@@ -16,7 +16,7 @@ import {
   Button,
   ButtonLink,
   Dialog,
-  Input,
+  FilterBar,
   Select,
   SortMenuButton,
   Tooltip,
@@ -296,19 +296,13 @@ export function FilesBrowserTab() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-wrap items-center gap-2">
-        <Input
-          enterKeyHint="search"
-          type="search"
-          aria-label={t('filesBrowser.searchFiles')}
-          placeholder={t('filesBrowser.searchByTitleArtistOr')}
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="max-w-sm flex-1"
-          startAddon={
-            <SearchIcon size={15} aria-hidden className="opacity-70" />
-          }
-        />
+      <FilterBar
+        searchValue={query}
+        onSearchChange={setQuery}
+        searchLabel={t('filesBrowser.searchFiles')}
+        searchPlaceholder={t('filesBrowser.searchByTitleArtistOr')}
+        searchClassName="max-w-sm"
+      >
         <Select
           label={t('filesBrowser.uploader')}
           value={userId}
@@ -390,7 +384,7 @@ export function FilesBrowserTab() {
             defaultValue="name"
           />
         </div>
-      </div>
+      </FilterBar>
 
       {selectedIds.size > 0 ? (
         <BulkEditBar

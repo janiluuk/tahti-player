@@ -5,13 +5,12 @@ import {
   PlusIcon,
   PowerIcon,
   RadioTowerIcon,
-  SearchIcon,
   SparklesIcon,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
-import { Button, Dialog, Input, Tooltip } from '@tahti-player/ui';
+import { Button, Dialog, FilterBar, Tooltip } from '@tahti-player/ui';
 
 import {
   addToSelectsRotation,
@@ -420,14 +419,11 @@ export function SelectsTab() {
             ))}
           </nav>
           <div className="flex min-w-0 flex-col gap-3">
-            <Input
-              enterKeyHint="search"
-              type="search"
-              aria-label={t('selectsTab.searchContent')}
-              placeholder={t('selectsTab.searchTracksByTitle')}
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              endAddon={<SearchIcon size={16} aria-hidden />}
+            <FilterBar
+              searchValue={query}
+              onSearchChange={setQuery}
+              searchLabel={t('selectsTab.searchContent')}
+              searchPlaceholder={t('selectsTab.searchTracksByTitle')}
             />
             <div className="border-border min-h-0 overflow-auto rounded-md border">
               {browseError ? (

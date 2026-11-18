@@ -1,11 +1,5 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import {
-  MicIcon,
-  PlusIcon,
-  RadioIcon,
-  SearchIcon,
-  UploadIcon,
-} from 'lucide-react';
+import { MicIcon, PlusIcon, RadioIcon, UploadIcon } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -14,6 +8,7 @@ import {
   Button,
   ButtonLink,
   Dialog,
+  FilterBar,
   FilterChips,
   Input,
   MediaArtwork,
@@ -274,25 +269,14 @@ export function StudioShowsView() {
               />
             ) : (
               <>
-                <div className="mb-4 max-w-sm">
-                  <Input
-                    enterKeyHint="search"
-                    size="sm"
-                    tone="secondary"
-                    type="search"
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    placeholder={t('studioShows.searchPlaceholder')}
-                    aria-label={t('studioShows.searchPlaceholder')}
-                    startAddon={
-                      <SearchIcon
-                        size={14}
-                        aria-hidden
-                        className="opacity-70"
-                      />
-                    }
-                  />
-                </div>
+                <FilterBar
+                  className="mb-4 max-w-sm"
+                  searchValue={query}
+                  onSearchChange={setQuery}
+                  searchLabel={t('studioShows.searchPlaceholder')}
+                  searchPlaceholder={t('studioShows.searchPlaceholder')}
+                  searchTone="secondary"
+                />
                 {filteredShows.length === 0 ? (
                   <PageEmpty
                     title={t('empties.noShowsMatchThisSearch')}

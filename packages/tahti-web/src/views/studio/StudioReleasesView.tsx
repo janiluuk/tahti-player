@@ -9,7 +9,6 @@ import {
   Link2Icon,
   MoreHorizontalIcon,
   PlusIcon,
-  SearchIcon,
   Share2Icon,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
@@ -23,6 +22,7 @@ import {
   Dialog,
   EditIconLink,
   ExternalLink,
+  FilterBar,
   FilterChips,
   Input,
   MediaArtwork,
@@ -296,25 +296,14 @@ export function StudioReleasesView() {
               />
             ) : (
               <>
-                <div className="mb-4 max-w-sm">
-                  <Input
-                    enterKeyHint="search"
-                    size="sm"
-                    tone="secondary"
-                    type="search"
-                    aria-label={t('studioReleases.searchAria')}
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    placeholder={t('studioReleases.searchPlaceholder')}
-                    startAddon={
-                      <SearchIcon
-                        size={14}
-                        aria-hidden
-                        className="opacity-70"
-                      />
-                    }
-                  />
-                </div>
+                <FilterBar
+                  className="mb-4 max-w-sm"
+                  searchValue={query}
+                  onSearchChange={setQuery}
+                  searchLabel={t('studioReleases.searchAria')}
+                  searchPlaceholder={t('studioReleases.searchPlaceholder')}
+                  searchTone="secondary"
+                />
                 {filteredReleases.length === 0 ? (
                   <PageEmpty
                     title={t('studioReleases.noMatch', {

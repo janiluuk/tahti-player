@@ -11,7 +11,6 @@ import {
   LightbulbIcon,
   PlugIcon,
   RadioTowerIcon,
-  SearchIcon,
   Share2Icon,
   ShieldCheckIcon,
   SparklesIcon,
@@ -35,8 +34,8 @@ import {
   DataTableHeaderCell,
   DataTableRow,
   ExternalLink,
+  FilterBar,
   HorizontalScroll,
-  Input,
   SectionShell,
   Tooltip,
   ViewShell,
@@ -265,17 +264,12 @@ export function HelpHubView() {
           </div>
         </div>
         <div data-help-hub-panel className="mt-5 flex items-center gap-3">
-          <Input
-            enterKeyHint="search"
-            type="search"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={t('helpView.searchGuides')}
-            aria-label={t('helpView.searchHelpGuides')}
+          <FilterBar
             className="w-full sm:max-w-md"
-            startAddon={
-              <SearchIcon size={16} aria-hidden className="opacity-70" />
-            }
+            searchValue={query}
+            onSearchChange={setQuery}
+            searchPlaceholder={t('helpView.searchGuides')}
+            searchLabel={t('helpView.searchHelpGuides')}
           />
           <Badge
             variant="pill"

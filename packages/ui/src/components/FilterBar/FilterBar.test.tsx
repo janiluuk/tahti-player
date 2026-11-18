@@ -22,6 +22,29 @@ describe('FilterBar', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('keeps a search end addon idle until the field has a value', () => {
+    const { rerender } = render(
+      <FilterBar
+        searchValue=""
+        onSearchChange={() => undefined}
+        searchEndAddon={<span>Clear</span>}
+      />,
+    );
+    const addon = screen.getByText('Clear').parentElement;
+    expect(addon?.className).not.toMatch(/text-primary/);
+    rerender(
+      <FilterBar
+        searchValue="beat"
+        onSearchChange={() => undefined}
+        searchEndAddon={<span>Clear</span>}
+        searchEndAddonActive
+      />,
+    );
+    expect(screen.getByText('Clear').parentElement?.className).toMatch(
+      /text-primary/,
+    );
+  });
+
   it('forwards search typing', async () => {
     const onSearchChange = vi.fn();
     const user = userEvent.setup();
