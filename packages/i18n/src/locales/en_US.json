@@ -1120,7 +1120,9 @@
       "results": "Search results",
       "searching": "Searching…",
       "noResultsTitle": "No results for “{{query}}”.",
-      "noResultsDescription": "Try another spelling, or browse Discover and Radio."
+      "noResultsDescription": "Try another spelling, or browse Discover and Radio.",
+      "resultCount_one": "{{count}} result",
+      "resultCount_other": "{{count}} results"
     },
     "settingsIntegrations": {
       "scrobbling": "Scrobbling",
@@ -1334,7 +1336,8 @@
       "loading": "Loading…",
       "eventInvites": "Event invites",
       "acceptInvite": "Accept invite: {{title}}",
-      "declineInvite": "Decline invite: {{title}}"
+      "declineInvite": "Decline invite: {{title}}",
+      "unread": "Unread"
     },
     "player": {
       "next": "Next",
@@ -6367,7 +6370,9 @@
       "importProgress": "Import progress",
       "ifAnImportFailsWe": "If an import fails, we notify you.",
       "queued": "Queued",
-      "importing": "Importing"
+      "importing": "Importing",
+      "failed": "Failed",
+      "failedWithError": "Failed: {{error}}"
     },
     "addBoardTerm": {
       "saveTerm": "Save term",
@@ -12182,7 +12187,8 @@
       "selectAllRows": "Select all rows",
       "deselectAllRows": "Deselect all rows",
       "editTrack": "Edit track",
-      "openTrack": "Open track"
+      "openTrack": "Open track",
+      "notifications": "Notifications"
     },
     "broadcastPanel": {
       "defaultsHint": "Defaults for radio, green room, and multistream live here. Run the live session from Studio › Broadcast.",

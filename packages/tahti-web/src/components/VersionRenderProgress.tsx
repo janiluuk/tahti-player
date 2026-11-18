@@ -46,6 +46,7 @@ export function VersionRenderProgress({
   return (
     <div className="mt-1.5 flex max-w-xs items-center gap-2 text-xs">
       <Meter
+        role="progressbar"
         value={pct}
         className="flex-1"
         aria-label={t('versionRenderProgressLabels.renderingPct', { pct })}

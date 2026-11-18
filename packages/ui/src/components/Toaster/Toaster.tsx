@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { Toaster as SonnerToaster, toast, type ExternalToast } from 'sonner';
 
+import { useUiLabels } from '../UiLabels';
+
 type ToasterProps = {
   position?:
     | 'top-left'
@@ -57,8 +59,10 @@ const ToasterImpl: FC<ToasterProps> = ({
   expand = false,
   closeButton = false,
 }) => {
+  const labels = useUiLabels();
   return (
     <SonnerToaster
+      containerAriaLabel={labels.notifications}
       style={{ fontFamily: 'inherit', overflowWrap: 'anywhere' }}
       position={position}
       offset={{ top: 72, right: 24, bottom: 24, left: 24 }}
@@ -68,6 +72,7 @@ const ToasterImpl: FC<ToasterProps> = ({
       closeButton={closeButton}
       toastOptions={{
         unstyled: true,
+        closeButtonAriaLabel: labels.close,
         classNames: {
           toast:
             'bg-background text-foreground border-border border-(length:--border-width) shadow-shadow rounded-md text-sm flex items-start gap-3 p-3.5 w-[min(22rem,calc(100vw-2rem))] select-none [&_[data-content]]:min-w-0 [&_[data-content]]:flex-1 [&_[data-title]]:font-semibold [&_[data-title]]:leading-snug',

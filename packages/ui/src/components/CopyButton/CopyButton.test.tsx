@@ -22,6 +22,23 @@ describe('CopyButton', () => {
     expect(writeText).toHaveBeenCalledWith('copy me');
   });
 
+  it('announces the copy when no toast says so', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue();
+
+    render(<CopyButton text="copy me" data-testid="copy-btn" />);
+    expect(screen.getByRole('status')).toHaveTextContent('');
+
+    await user.click(screen.getByTestId('copy-btn'));
+
+    expect(screen.getByRole('status')).toHaveTextContent('Copied');
+  });
+
+  it('leaves the announcement to the toast when there is one', () => {
+    render(<CopyButton text="copy me" toastMessage />);
+    expect(screen.queryByRole('status')).toBeNull();
+  });
+
   it('switches to check icon after copying', async () => {
     const user = userEvent.setup();
     vi.spyOn(navigator.clipboard, 'writeText').mockResolvedValue();

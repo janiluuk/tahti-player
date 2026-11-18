@@ -82,7 +82,7 @@ const CopyButtonImpl: FC<CopyButtonProps> = ({
     }, feedbackDurationMs);
   };
 
-  return (
+  const button = (
     <Tooltip content={accessibleLabel} side="top">
       <Button
         size={size ?? (label ? 'sm' : 'icon-sm')}
@@ -100,6 +100,16 @@ const CopyButtonImpl: FC<CopyButtonProps> = ({
         )}
       </Button>
     </Tooltip>
+  );
+  return toastMessage ? (
+    button
+  ) : (
+    <>
+      {button}
+      <span role="status" className="sr-only">
+        {copied ? labels.copied : null}
+      </span>
+    </>
   );
 };
 

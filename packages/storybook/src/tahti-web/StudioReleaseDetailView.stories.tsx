@@ -141,7 +141,7 @@ export const UploadTrackAudio: Story = {
     );
     await waitFor(() =>
       expect(
-        canvas.getByRole('meter', { name: /Uploading Polar Night/ }),
+        canvas.getByRole('progressbar', { name: /Uploading Polar Night/ }),
       ).toBeVisible(),
     );
     await findToast(
@@ -175,7 +175,7 @@ export const UploadNewTrack: Story = {
     await userEvent.click(upload);
     await waitFor(() =>
       expect(
-        dialog.getByRole('meter', { name: /Uploading midnight-sun/ }),
+        dialog.getByRole('progressbar', { name: /Uploading midnight-sun/ }),
       ).toBeVisible(),
     );
     await findToast(

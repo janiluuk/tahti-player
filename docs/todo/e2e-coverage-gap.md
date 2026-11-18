@@ -44,12 +44,12 @@ Re-checked 2026-11-09 against the specs (several cells had gone stale).
 | Support an artist: fan sub, track purchase | ✅ (guest email sub) | ✅ (buy, subscribe, cancel; stale) | ✅ (sees orders) | ✅ (audit log) |
 | Public reader: release, track, embeds, legal | ✅ | — | — | — |
 | Sign up, log in, verify, reset password | ✅ (register, Enter submits) | ✅ (listener sign-up) | ✅ | — |
-| Notifications, account menu dots | — | ✅ | ✅ (filter, mark read) | ✅ (mark read) |
+| Notifications, account menu dots | — | ✅ (unread announced, named quick view) | ✅ (filter, mark read) | ✅ (mark read) |
 | Settings (account, playback, appearance) | — | ✅ (playback switch, theme) | ✅ (Artist role and city, language to Finnish and back) | — |
 | Add-ons (Listen widgets, themes, visualizers) | — | ✅ (Radio Browser on / off, Spotify artist widget) | ✅ (stale) | — |
 | Membership and Co-op governance | ✅ (prompted to log in, history) | ✅ (correction request to the board) | ✅ (vote, discuss, draft motion) | ◐ |
 | Studio Home, stream manager | — | gate ✅ | ✅ | — |
-| Uploads, tracks, track editor, mastering | — | gate ✅ | ✅ | — |
+| Uploads, tracks, track editor, mastering | — | gate ✅ | ✅ (refuses a PDF named .mp3) | — |
 | Releases, distribution, smart links | — | — | ✅ (create, publish draft, smart link) | — |
 | Broadcast: go live, green room, schedule, shows, events | — | — | ✅ (new show, event, party, stream stop, green room open / invite / page) | — |
 | Channel designer, branding, gallery, press kit | — | — | ✅ (stale) | — |
@@ -76,6 +76,7 @@ each role exercises.
 - [x] Artist: likes a track from an artist-page list and finds it under Library → Favorites (`use-cases-coverage-gap.spec.ts`).
 - [x] Artist Settings → Artist, listener Listen section hide / reset, artist Discover widget order, anonymous radio favorite (`use-cases-coverage-gap-3.spec.ts`).
 - [x] Listener Radio play / pause, Discover Artists and Venues, a Spotify artist Listen widget, and artist Settings language (`use-cases-coverage-gap-4.spec.ts`).
+- [x] Artist refuses a non-audio upload, search announces its result count, listener notifications say which are unread (`use-cases-hardening.spec.ts`).
 - [ ] Remaining: the collection player (placement is a product decision).
 
 ## Run and review (next)

@@ -293,6 +293,16 @@ export function GlobalSearch({
         ) : null}
       </div>
 
+      <p role="status" className="sr-only">
+        {!open || !hasQuery
+          ? null
+          : loading
+            ? t('search.searching')
+            : hasResults
+              ? t('search.resultCount', { count: flatOptions.length })
+              : t('search.noResultsTitle', { query: trimmed })}
+      </p>
+
       {open && hasQuery && (
         <div
           id="global-search-listbox"

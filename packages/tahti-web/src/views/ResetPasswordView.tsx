@@ -100,7 +100,9 @@ export function ResetPasswordView() {
           variant="tertiary"
           className="h-auto w-auto flex-col gap-3 rounded-xl"
         >
-          <p className="text-sm">{t('auth.resetSignedIn')}</p>
+          <p role="status" className="text-sm">
+            {t('auth.resetSignedIn')}
+          </p>
         </Box>
       ) : infoError ? (
         <div className="flex flex-col gap-3">

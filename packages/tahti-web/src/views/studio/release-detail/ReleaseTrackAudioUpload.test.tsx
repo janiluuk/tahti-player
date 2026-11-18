@@ -65,7 +65,9 @@ describe('ReleaseTrackAudioUpload', () => {
 
     expect(upload.mock.calls[0]!.slice(0, 2)).toEqual(['r1', 't1']);
     expect(
-      screen.getByRole('meter', { name: 'Uploading Night Drive, 40%' }),
+      screen.getByRole('progressbar', {
+        name: 'Uploading Night Drive, 40%',
+      }),
     ).toBeTruthy();
     await act(async () => {
       finish({ ok: true, sourceKey: 'k', status: 'SCANNING' });

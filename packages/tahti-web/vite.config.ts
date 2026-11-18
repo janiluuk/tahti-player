@@ -87,7 +87,7 @@ function discoWidgetSandboxMiddleware(
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader(
     'Content-Security-Policy',
-    "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; img-src https: data:; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+    "default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; img-src https: data:; connect-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'",
   );
   res.end(html);
 }

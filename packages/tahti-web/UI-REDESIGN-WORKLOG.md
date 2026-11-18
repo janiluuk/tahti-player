@@ -1,3 +1,16 @@
+## 2026-11-18 - Hardening, screen-reader fixes and test coverage (0.0.411)
+
+Tahti embeds can be framed on other sites again: nginx sends one CSP from a
+`map`, with `frame-ancestors *` on `/embed/*` only, and the add-on widget
+sandbox accepts Tahti hosts as parents instead of `'none'`. Uploads refuse a
+file whose first bytes are plainly not audio before sending it. Screen
+readers now hear auth results, page loading, the search result count, the
+unread notification count and which notifications are unread, copy
+confirmations and import job status; the toast region and its close button
+follow the app language, task progress uses `progressbar`, and the Sounds
+bulk-edit selects are named by their field. New mock e2e:
+`use-cases-hardening.spec.ts`.
+
 ## 2026-11-18 - Referrer sources Sites / Pages mode (0.0.410)
 
 Studio Stats “Where listeners came from” can group by site (host) or page

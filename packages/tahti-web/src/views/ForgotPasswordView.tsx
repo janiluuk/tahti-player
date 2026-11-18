@@ -54,9 +54,12 @@ export function ForgotPasswordView() {
           autoComplete="email"
           autoFocus
         />
-        {message ? (
-          <p className="text-accent-green-strong text-sm">{message}</p>
-        ) : null}
+        <p
+          role="status"
+          className="text-accent-green-strong text-sm empty:hidden"
+        >
+          {message}
+        </p>
         <Button disabled={!canSubmit} type="submit">
           {loading
             ? t('forgotPasswordViewStates.sending')

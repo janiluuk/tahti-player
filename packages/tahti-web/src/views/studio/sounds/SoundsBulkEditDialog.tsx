@@ -159,10 +159,9 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
       </Dialog.Description>
       <div className="mt-4 flex max-h-[70vh] flex-col gap-4 overflow-y-auto">
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-genre-label">{t('library.soundsBulkGenre')}</span>
           <Select
             id="bulk-genre"
-            aria-labelledby="bulk-genre-label"
+            label={t('library.soundsBulkGenre')}
             value={genre}
             onValueChange={setGenre}
             options={[
@@ -203,10 +202,9 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
           </span>
         </label>
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-tags-choice-label">{t('library.soundsBulkTags')}</span>
           <Select
             id="bulk-tags-choice"
-            aria-labelledby="bulk-tags-choice-label"
+            label={t('library.soundsBulkTags')}
             value={tagsChoice}
             onValueChange={(value) => setTagsChoice(value as TagsChoice)}
             options={[
@@ -232,12 +230,9 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
           </label>
         ) : null}
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-content-type-label">
-            {t('library.soundsBulkType')}
-          </span>
           <Select
             id="bulk-content-type"
-            aria-labelledby="bulk-content-type-label"
+            label={t('library.soundsBulkType')}
             value={contentType}
             onValueChange={(value) =>
               setContentType(value as ContentTypeId | '')
@@ -252,12 +247,9 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
           />
         </div>
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-visibility-label">
-            {t('library.soundsBulkVisibility')}
-          </span>
           <Select
             id="bulk-visibility"
-            aria-labelledby="bulk-visibility-label"
+            label={t('library.soundsBulkVisibility')}
             value={visibility}
             onValueChange={(value) => setVisibility(value as VisibilityChoice)}
             options={[
@@ -268,10 +260,9 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
           />
         </div>
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-pinned-label">{t('library.soundsBulkPinned')}</span>
           <Select
             id="bulk-pinned"
-            aria-labelledby="bulk-pinned-label"
+            label={t('library.soundsBulkPinned')}
             value={pinned}
             onValueChange={(value) => setPinned(value as PinnedChoice)}
             options={[
@@ -282,10 +273,9 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
           />
         </div>
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-license-label">{t('library.soundsBulkLicense')}</span>
           <Select
             id="bulk-license"
-            aria-labelledby="bulk-license-label"
+            label={t('library.soundsBulkLicense')}
             value={license}
             onValueChange={setLicense}
             options={LICENSES.map(([id, label]) => ({
@@ -295,12 +285,9 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
           />
         </div>
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-downloads-label">
-            {t('library.soundsBulkDownloads')}
-          </span>
           <Select
             id="bulk-downloads"
-            aria-labelledby="bulk-downloads-label"
+            label={t('library.soundsBulkDownloads')}
             value={downloads}
             onValueChange={(value) => setDownloads(value as TriChoice)}
             options={[
@@ -311,12 +298,9 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
           />
         </div>
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-comments-label">
-            {t('library.soundsBulkComments')}
-          </span>
           <Select
             id="bulk-comments"
-            aria-labelledby="bulk-comments-label"
+            label={t('library.soundsBulkComments')}
             value={comments}
             onValueChange={(value) => setComments(value as TriChoice)}
             options={[
@@ -327,12 +311,9 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
           />
         </div>
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-released-label">
-            {t('library.soundsBulkReleasedAt')}
-          </span>
           <Select
             id="bulk-released"
-            aria-labelledby="bulk-released-label"
+            label={t('library.soundsBulkReleasedAt')}
             value={releasedChoice}
             onValueChange={(value) =>
               setReleasedChoice(value as ReleasedChoice)
@@ -360,12 +341,9 @@ export function SoundsBulkEditDialog({ state }: { state: StudioSoundsState }) {
           </label>
         ) : null}
         <div className="flex flex-col gap-1.5 text-sm">
-          <span id="bulk-fallback-label">
-            {t('library.soundsBulkFallback')}
-          </span>
           <Select
             id="bulk-fallback"
-            aria-labelledby="bulk-fallback-label"
+            label={t('library.soundsBulkFallback')}
             value={fallback}
             onValueChange={(value) => setFallback(value as FallbackChoice)}
             options={[

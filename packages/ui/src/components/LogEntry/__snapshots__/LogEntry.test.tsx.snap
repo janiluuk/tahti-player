@@ -78,6 +78,10 @@ exports[`LogEntry > (Snapshot) renders core log entry 1`] = `
         </svg>
       </button>
     </div>
+    <span
+      class="sr-only"
+      role="status"
+    />
   </div>
 </div>
 `;
@@ -160,6 +164,10 @@ exports[`LogEntry > (Snapshot) renders plugin log entry 1`] = `
         </svg>
       </button>
     </div>
+    <span
+      class="sr-only"
+      role="status"
+    />
   </div>
 </div>
 `;

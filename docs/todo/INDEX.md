@@ -12,7 +12,7 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | partial | [beta-launch-findings.md](beta-launch-findings.md) | Test releases on the front page; open Studio/listener/platform findings from the beta e2e run and the legacy parity sweep |
-| open    | [final-season-hardening.md](final-season-hardening.md) | Batch A/B and the deploy-bundle API-origin assert shipped; left: P2 hardening (CSRF/CORS, CSP enforce, upload magic, SR pass) |
+| open    | [final-season-hardening.md](final-season-hardening.md) | Batch A/B, the deploy-bundle API-origin assert, web CSP embed/sandbox framing, client upload magic and an SR code-audit batch shipped; left: CSRF/CORS and API-edge CSP (tahti-org), audit leftovers + a real screen-reader run |
 | partial | [first-100-users-infra.md](first-100-users-infra.md) | Verified on vimage 2026-11-02: rate limits fail closed, disk fine; backup restore test + vimage6 push fixed in tahti-org#1042; left: leaked restore containers, MinIO mirror + DR alias |
 | open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
 | blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live verify Centrifugo Send on brand-new channel — playbook ready |
@@ -62,8 +62,8 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [google-facebook-login.md](google-facebook-login.md) | Sign up and log in with Google and Facebook: API OAuth callbacks, OAuth apps (ops), buttons on log in / sign up, account linking |
 | partial | [navigation-performance.md](navigation-performance.md) | Back/forward speed: GET cache, snapshots on every main view, atlas and the track table out of the shell, gzip level 6 done; left: drop mock fixtures from prod, dnd-kit (queue panel) out of the shell, real-browser check |
 | open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` on events/updates/editor/playlist/collection/release, radio presets, theme submissions; plugin-store disconnect; left: none known) |
-| open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | One Storybook play session drops its sockets ~90s in (local every run, CI long shards); reduced motion + CI retry mitigate; cause not found |
-| open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles e2e matrix on the mock app; Radio, Discover, Listen widget and artist Settings journeys added (`use-cases-coverage-gap-3`, `-4`); left: collection player (placement), Go live → green room, Player seek/fullscreen, open findings |
+| open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | One Storybook play session drops its sockets ~90s in (local every run, CI long shards); reduced motion + CI retry mitigate; time alone ruled out (2026-11-18), next: bisect by file count |
+| open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles e2e matrix on the mock app; Radio, Discover, Listen widget and artist Settings journeys added (`use-cases-coverage-gap-3`, `-4`); non-audio upload, search count and unread notifications (`use-cases-hardening`); left: collection player (placement), open findings |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | Back-link convention + checks; left: cross-section trail on phones (design call) |
 | open    | [view-first-and-test-hardening-leftovers.md](view-first-and-test-hardening-leftovers.md) | Release ops form-first, dead code needing a call |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |

@@ -172,6 +172,7 @@ function CommitProgress({
         {STAGES[progress.stage]}… {n(progress.done)} of {n(progress.total)}
       </p>
       <Meter
+        role="progressbar"
         value={progress.done}
         max={Math.max(progress.total, 1)}
         aria-label={STAGES[progress.stage]}

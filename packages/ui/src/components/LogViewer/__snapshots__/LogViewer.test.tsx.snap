@@ -696,6 +696,10 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
                 </svg>
               </button>
             </div>
+            <span
+              class="sr-only"
+              role="status"
+            />
           </div>
         </div>
       </div>
@@ -781,6 +785,10 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
                 </svg>
               </button>
             </div>
+            <span
+              class="sr-only"
+              role="status"
+            />
           </div>
         </div>
       </div>
@@ -866,6 +874,10 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
                 </svg>
               </button>
             </div>
+            <span
+              class="sr-only"
+              role="status"
+            />
           </div>
         </div>
       </div>
@@ -951,6 +963,10 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
                 </svg>
               </button>
             </div>
+            <span
+              class="sr-only"
+              role="status"
+            />
           </div>
         </div>
       </div>
@@ -1036,6 +1052,10 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
                 </svg>
               </button>
             </div>
+            <span
+              class="sr-only"
+              role="status"
+            />
           </div>
         </div>
       </div>
@@ -1121,6 +1141,10 @@ exports[`LogViewer > (Snapshot) renders with logs 1`] = `
                 </svg>
               </button>
             </div>
+            <span
+              class="sr-only"
+              role="status"
+            />
           </div>
         </div>
       </div>

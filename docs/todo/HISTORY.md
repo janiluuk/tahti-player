@@ -1,3 +1,7 @@
+## 2026-11-18 — Hardening, screen-reader batch and coverage (10 slices)
+
+Web CSP in one nginx `map` with `/embed/*` framable by any site and the widget sandbox framable by Tahti hosts (`deployNginxConf.test.ts`); client upload magic-byte check (`lib/audioMagic.ts`); screen-reader fixes from a code audit (auth/page-loading status, search count, notifications region/unread/count, toast and copy announcements, progressbar roles, import status, bulk-edit select names); `use-cases-hardening` mock e2e; Storybook disconnect bisect rules out time alone; beta finding "track editing lives under Library" closed by the 0.0.397 Studio → Music move. tahti-web 0.0.411. Leftovers stay in `final-season-hardening.md` P2 #23.
+
 ## 2026-11-18 — Library management port folded
 
 Cloud Sounds library management Next 30 (org OpenAPI/pinned/tags/key facet/admin

@@ -45,6 +45,8 @@ export type UiLabels = {
   deselectAllRows: string;
   editTrack: string;
   openTrack: string;
+  /** Names the toast region. */
+  notifications: string;
 };
 
 const formatCount = (value: number) => value.toLocaleString('en-US');
@@ -94,6 +96,7 @@ export const defaultUiLabels: UiLabels = {
   deselectAllRows: 'Deselect all rows',
   editTrack: 'Edit track',
   openTrack: 'Open track',
+  notifications: 'Notifications',
 };
 
 const UiLabelsContext = createContext<UiLabels>(defaultUiLabels);
