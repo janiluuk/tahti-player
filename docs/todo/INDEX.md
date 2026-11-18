@@ -46,7 +46,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
-| partial | [library-management-port.md](library-management-port.md) | Cloud Sounds library mgmt: player slices 11–30 shipped; org API rows remain |
 | open    | [yaniho-channel-waveform-peaks.md](yaniho-channel-waveform-peaks.md) | Yaniho channel (`/channel/yaniho`) tracks still show loading over the waveform; pre-generate peaks for every view during pre-processing |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
@@ -75,7 +74,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| blocked | [listener-stats-origin-url.md](listener-stats-origin-url.md) | Listener stats: full referrer/origin URL; the API stores only `referrerHost`, so tahti-org must persist and expose the URL first |
+| open    | [listener-stats-origin-url.md](listener-stats-origin-url.md) | Next 30: referrer/origin URL on listen sessions + Studio Stats; also owner-moderator hide-remove (org #1109) |
 | blocked | [dead-end-leftovers.md](dead-end-leftovers.md) | OAuth app credentials (ops), Bandcamp API approval, Google Drive Picker, governance Retry |
 | partial | [channel-layout-server-side.md](channel-layout-server-side.md) | Page layout saved on the channel (tahti-org #1075 + web); left: deploy the API first, and the per-browser player/backdrop look visibility |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
