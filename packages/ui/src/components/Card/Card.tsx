@@ -23,6 +23,9 @@ type CardProps = {
   playLabel?: string;
   pauseLabel?: string;
   isPlaying?: boolean;
+  /** The playing or paused item: on touch screens only it shows a play /
+   * pause control. Defaults to `isPlaying`. */
+  isCurrent?: boolean;
   playDisabled?: boolean;
   onQueue?: () => void;
   queueLabel?: string;
@@ -47,6 +50,7 @@ export const Card: FC<CardProps> = ({
   playLabel,
   pauseLabel,
   isPlaying,
+  isCurrent,
   playDisabled,
   onQueue,
   queueLabel,
@@ -76,6 +80,7 @@ export const Card: FC<CardProps> = ({
       playLabel={playLabel ?? (named ? `Play ${named}` : undefined)}
       pauseLabel={pauseLabel ?? (named ? `Pause ${named}` : undefined)}
       isPlaying={isPlaying}
+      isCurrent={isCurrent}
       hideActivePlay={isRow}
       playDisabled={playDisabled}
       onQueue={onQueue}

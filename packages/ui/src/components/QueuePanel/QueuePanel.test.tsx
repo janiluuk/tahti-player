@@ -1,9 +1,14 @@
 import { render, screen } from '@testing-library/react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
 
 import type { QueueItem as QueueItemType } from '@tahti-player/model';
 
 import { QueuePanel } from './QueuePanel';
+import { preloadQueueDnd } from './useQueueDnd';
+
+beforeAll(async () => {
+  await preloadQueueDnd();
+});
 
 const createMockItem = (
   id: string,

@@ -14,6 +14,7 @@ import {
   Button,
   Card,
   CardsRow,
+  preloadSortableBlocks,
   SortableBlocks,
   TabLabel,
   Tabs,
@@ -486,6 +487,8 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
                   aria-pressed={reordering}
                   aria-label={t('listen.orderSections')}
                   onClick={() => setReordering((on) => !on)}
+                  onPointerEnter={() => void preloadSortableBlocks()}
+                  onFocus={() => void preloadSortableBlocks()}
                   data-testid="listen-order-toggle"
                   className="md:w-auto md:gap-2 md:px-4"
                 >

@@ -2,17 +2,33 @@
 
 **Status:** partial  
 **Updated:** 2026-11-18  
-**Absorbs leftovers from:** [yaniho-channel-waveform-peaks.md](yaniho-channel-waveform-peaks.md),
-[yaniho-channel-pregenerate-peaks.md](yaniho-channel-pregenerate-peaks.md)
+**Absorbs leftovers from:** `yaniho-channel-waveform-peaks.md` (deleted
+2026-11-18), [yaniho-channel-pregenerate-peaks.md](yaniho-channel-pregenerate-peaks.md)
 
 ## Shipped (player)
 
 - AmbientTrackRow no longer fetches audio to decode peaks (READY+null → empty bars)
 - Owner moderator badge / hide-remove (slices 26–28)
+- 2026-11-18 (0.0.411), slices 12–21 and 25: `@tahti-player/ui` `Waveform`
+  has no decode path or loading pulse (`audioUrl`, `cacheKey` and
+  `decodedPeaksCache` removed; app start clears the old
+  `tahti.decodedPeaks.v1` key), so no channel, profile, Library, Studio,
+  track page, player bar or queue waveform can fetch audio. Stories
+  `Waveform/NoServerPeaks` and `AmbientTrackList/ServerPeaksStates`; mock
+  `/channel/yaniho` catalog with one peaks gap; e2e
+  `use-cases-waveforms.spec.ts`; contract and list → mapper → endpoint map
+  in [`docs/DATA-FLOW.md`](../DATA-FLOW.md#waveform-peaks-contract).
+  Slice 24 needs no string: a missing waveform is calm flat bars.
+  Absorbed and deleted `yaniho-channel-waveform-peaks.md`.
 
 Waveforms must never start work in the browser. Peaks are generated in
 pre-processing and returned on every playable surface. Yaniho’s channel page
 still shows loading bars when peaks are missing on READY sounds.
+
+## Left
+
+Org slices 1–11, 22, 23 (`../tahti-org`), the prod Yaniho backfill (5) and
+the live verify (30). Every player slice is shipped.
 
 ## Next 30 slices (in order)
 

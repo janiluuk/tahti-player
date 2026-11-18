@@ -53,6 +53,7 @@ export function WidgetTrackRow({
         className={cn('shrink-0 rounded', isCurrent && 'ring-primary ring-2')}
         imageReveal={Boolean(item.coverUrl)}
         isPlaying={isPlaying}
+        isCurrent={isCurrent}
         playDisabled={loading}
         onPlay={() => {
           void togglePlay();

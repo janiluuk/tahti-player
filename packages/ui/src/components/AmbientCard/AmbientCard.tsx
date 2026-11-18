@@ -18,6 +18,9 @@ export type AmbientCardProps = {
   playLabel?: string;
   pauseLabel?: string;
   isPlaying?: boolean;
+  /** The playing or paused item: on touch screens only it shows a play /
+   * pause control. Defaults to `isPlaying`. */
+  isCurrent?: boolean;
   playDisabled?: boolean;
   onQueue?: () => void;
   queueLabel?: string;
@@ -41,6 +44,7 @@ export const AmbientCard: FC<AmbientCardProps> = ({
   playLabel,
   pauseLabel,
   isPlaying,
+  isCurrent,
   playDisabled,
   onQueue,
   queueLabel,
@@ -119,6 +123,7 @@ export const AmbientCard: FC<AmbientCardProps> = ({
             playLabel={playLabel}
             pauseLabel={pauseLabel}
             isPlaying={isPlaying}
+            isCurrent={isCurrent}
             playDisabled={playDisabled}
             onQueue={onQueue}
             queueLabel={queueLabel}

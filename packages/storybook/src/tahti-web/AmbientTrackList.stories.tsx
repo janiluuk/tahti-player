@@ -8,10 +8,6 @@ import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { Button, Input, Select } from '@tahti-player/ui';
 
-import {
-  WAVEFORM_DEMO_DURATION,
-  WAVEFORM_DEMO_URL,
-} from './_fixtures/waveformAudio';
 import { pickTrackView, withinBody } from './_lib/play';
 import { mockAmbientPeaks } from './mockAmbientPeaks';
 
@@ -364,28 +360,41 @@ export const PhoneDefaultsToList: Story = {
   },
 };
 
-/** Missing peaks stay empty flat bars — no client audio decode. */
-export const DecodeMissingPeaks: Story = {
+/** A channel catalog as the API sends it: READY rows with stored peaks, a
+ * READY row whose peaks are missing (flat bars, no loading pulse) and an
+ * upload still processing. No row fetches audio to draw its waveform. */
+export const ServerPeaksStates: Story = {
   args: {
-    items: ITEMS.map((item) => ({
-      ...item,
-      peaks: null,
-      audioUrl: WAVEFORM_DEMO_URL,
-      durationSec: WAVEFORM_DEMO_DURATION,
-      durationLabel: '0:03',
-    })),
+    items: [
+      ITEMS[0]!,
+      { ...ITEMS[1]!, title: 'Missing peaks', peaks: null },
+      {
+        ...ITEMS[2]!,
+        title: 'Still processing',
+        peaks: null,
+        processing: true,
+      },
+    ],
     persistDensity: false,
-    defaultDensity: 'comfortable',
+    defaultDensity: 'compact',
   },
   play: async ({ canvasElement }) => {
-    const rows = within(canvasElement).getAllByTestId('ambient-track-row');
-    await expect(rows).toHaveLength(3);
-    for (const row of rows) {
-      row.scrollIntoView({ block: 'nearest' });
-      const wave = await within(row).findByRole('img', { name: /^Seek / });
-      await waitFor(() => expect(wave).toHaveAttribute('data-state', 'ready'));
-      await expect(wave).toHaveAttribute('data-waveform', 'empty');
+    const canvas = within(canvasElement);
+    await expect(canvas.getByRole('status')).toHaveTextContent(
+      'Processing audio',
+    );
+    const stored = await canvas.findByRole('img', {
+      name: `Seek ${ITEMS[0]!.title}`,
+    });
+    const missing = canvas.getByRole('img', { name: 'Seek Missing peaks' });
+    await expect(stored).toHaveAttribute('data-waveform', 'peaks');
+    await expect(missing).toHaveAttribute('data-waveform', 'empty');
+    for (const wave of [stored, missing]) {
+      await expect(wave).toHaveAttribute('data-state', 'ready');
     }
+    await expect(
+      canvasElement.querySelector('[data-state="loading"]'),
+    ).toBeNull();
   },
 };
 

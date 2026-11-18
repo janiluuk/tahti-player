@@ -16,9 +16,11 @@ export const ThumbnailCell = <T extends Track>({
   const meta = table.options.meta as
     | {
         isTrackPlaying?: (candidate: T) => boolean;
+        isCurrentTrack?: (candidate: T) => boolean;
       }
     | undefined;
   const isPlaying = meta?.isTrackPlaying?.(track) ?? false;
+  const isCurrent = meta?.isCurrentTrack?.(track) ?? isPlaying;
 
   return (
     <td className="w-16 p-0 text-center">
@@ -46,6 +48,7 @@ export const ThumbnailCell = <T extends Track>({
           playLabel={`${labels.play} ${track.title}`}
           pauseLabel={`${labels.pause} ${track.title}`}
           isPlaying={isPlaying}
+          isCurrent={isCurrent}
           hideActivePlay
         />
       </div>

@@ -1,4 +1,4 @@
-import { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import {
   defaultRangeExtractor,
   useVirtualizer,
@@ -23,8 +23,8 @@ import type { QueueItem as QueueItemType } from '@tahti-player/model';
 import { cn } from '../../utils';
 import { type QueueItemLabels } from '../QueueItem/types';
 import { ScrollableArea } from '../ScrollableArea';
-import { QueueReorderLayer } from './QueueReorderLayer';
 import { ReorderableQueueItem } from './ReorderableQueueItem';
+import { useQueueDnd, type QueueDndModule } from './useQueueDnd';
 
 /**
  * Above this many items, rows outside the viewport skip layout and paint
@@ -132,6 +132,22 @@ export type QueuePanelProps = {
   };
 };
 
+const ReorderLayer: FC<{
+  dnd: QueueDndModule | null;
+  items: string[];
+  onDragStart: (event: DragStartEvent) => void;
+  onDragEnd: (event: DragEndEvent) => void;
+  onDragCancel: () => void;
+  children: ReactNode;
+}> = ({ dnd, children, ...layer }) =>
+  dnd ? (
+    <dnd.QueueReorderLayer enabled {...layer}>
+      {children}
+    </dnd.QueueReorderLayer>
+  ) : (
+    <>{children}</>
+  );
+
 const QueuePanelView: FC<QueuePanelProps> = ({
   items,
   currentItemId,
@@ -150,6 +166,7 @@ const QueuePanelView: FC<QueuePanelProps> = ({
   classes,
 }) => {
   const itemIds = useMemo(() => items.map((item) => item.id), [items]);
+  const dnd = useQueueDnd(reorderable && items.length > 0);
   const indexById = useMemo(
     () => new Map(itemIds.map((id, index) => [id, index])),
     [itemIds],
@@ -333,6 +350,7 @@ const QueuePanelView: FC<QueuePanelProps> = ({
           isCurrent={item.id === currentItemId}
           isCollapsed={isCollapsed}
           isReorderable={reorderable}
+          dnd={dnd}
           onSelect={handleSelect}
           onRemove={handleRemove}
           onSelectCandidate={handleSelectCandidate}
@@ -355,8 +373,8 @@ const QueuePanelView: FC<QueuePanelProps> = ({
         viewportClassName="min-h-0"
         viewportRef={viewportRef}
       >
-        <QueueReorderLayer
-          enabled={reorderable}
+        <ReorderLayer
+          dnd={dnd}
           items={itemIds}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
@@ -418,7 +436,7 @@ const QueuePanelView: FC<QueuePanelProps> = ({
               })}
             </div>
           )}
-        </QueueReorderLayer>
+        </ReorderLayer>
       </ScrollableArea>
     </div>
   );

@@ -51,15 +51,18 @@ network again, even for a page seen seconds ago.
       loads `PlayableTrackTable` lazily (it was the only shell user, through
       Listen's New tracks). Production build 2026-11-16: `TahtiApp` 1524 →
       1374 KB, 471 → 427 KB gzipped at level 6; the table is a 72 KB chunk.
+- [x] `@dnd-kit` out of the shell (2026-11-18, 0.0.411): `QueuePanel` renders
+      focusable rows at once and loads its drag layer (`queueDnd.tsx`) when
+      the browser is idle; `SortableBlocks` loads `sortableBlocksDnd.tsx` the
+      first time a stack starts reordering (Listen's Order sections button
+      preloads it on hover or focus). Block
+      content mounts again once at that first switch, never after.
+      Production build: `TahtiApp` 1381.5 → 1334.7 KB, 428.6 → 412.9 KB
+      gzipped (Vite's report); dnd-kit is a 45 KB chunk.
 
 ## Left
 
 - [ ] Make mock mode a build-time constant so production drops the fixtures
       (touches ~40 api files and the tests that stub `VITE_*` env per test).
-- [ ] `@dnd-kit` still loads with the shell: the always-mounted queue panel
-      (`SidebarQueuePanel` → `@tahti-player/ui` `QueuePanel`, whose rows use
-      `useSortable`) needs it, and Listen's `SortableBlocks` too. Splitting
-      it means loading the queue's reorder layer lazily inside
-      `@tahti-player/ui`.
 - [ ] Check the effect on a real browser against the live API (back/forward
       between Listen, an artist profile and a track).

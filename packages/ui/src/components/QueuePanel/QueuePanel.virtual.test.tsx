@@ -4,6 +4,11 @@ import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 import type { QueueItem as QueueItemType } from '@tahti-player/model';
 
 import { QueuePanel, VIRTUALIZE_THRESHOLD } from './QueuePanel';
+import { preloadQueueDnd } from './useQueueDnd';
+
+beforeAll(async () => {
+  await preloadQueueDnd();
+});
 
 const item = (index: number): QueueItemType => ({
   id: `item-${index}`,

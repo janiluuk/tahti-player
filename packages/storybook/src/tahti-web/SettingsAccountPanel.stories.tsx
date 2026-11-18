@@ -58,21 +58,24 @@ export const Session: Story = {
     await expect(
       canvas.getByRole('tab', { name: 'Profile & data' }),
     ).toHaveAttribute('aria-selected', 'true');
+    await expect(canvas.getByRole('tab', { name: 'Session' })).toHaveAttribute(
+      'aria-selected',
+      'true',
+    );
     await expectVisible(canvas.getByText('@listener-liina'));
     await expectVisible(canvas.getByText('Liina'));
     await expect(
       canvas.getByRole('link', { name: 'Keyboard shortcuts' }),
     ).toHaveAttribute('href', '/help/keyboard-shortcuts');
     await expectVisible(canvas.getByRole('button', { name: 'Log out' }));
-    await expectVisible(canvas.getByRole('tab', { name: 'Session' }));
     await expectVisible(canvas.getByRole('tab', { name: 'Privacy & data' }));
     await expectVisible(canvas.getByRole('tab', { name: 'Storage' }));
   },
 };
 
 export const Devices: Story = {
-  render: () => <SecurityPanel />,
   decorators: [withTahtiRouter('/settings/security?tab=devices')],
+  render: () => <SecurityPanel />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await selectTab(canvas, 'Devices');

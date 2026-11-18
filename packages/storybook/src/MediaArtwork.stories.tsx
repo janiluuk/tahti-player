@@ -28,7 +28,7 @@ const meta: Meta<typeof MediaArtwork> = {
     docs: {
       description: {
         component:
-          'Cover art with optional play / queue / favorite overlays. Size `thumb` is the standard track-row thumbnail. Queue, favorite, and extra `actions` only appear as corner overlays on `lg` and `fill` — smaller sizes show play only so overlays stay readable. When `onQueue` is set, the play control’s label notes “Shift+click to queue”; holding Shift swaps the play icon for a queue icon and Shift+click runs `onQueue` instead of `onPlay`. Hover (fine pointer) or always-on (touch) reveals controls.',
+          'Cover art with optional play / queue / favorite overlays. Size `thumb` is the standard track-row thumbnail. Queue, favorite, and extra `actions` only appear as corner overlays on `lg` and `fill` — smaller sizes show play only so overlays stay readable. When `onQueue` is set, the play control’s label notes “Shift+click to queue”; holding Shift swaps the play icon for a queue icon and Shift+click runs `onQueue` instead of `onPlay`. Hover (fine pointer) reveals the play control; on touch only the current (playing or paused) item shows it, and a tap on idle artwork still plays.',
       },
     },
   },
@@ -85,6 +85,66 @@ export const Medium: Story = {
 
 export const Large: Story = {
   render: () => <Interactive size="lg" />,
+};
+
+function TouchList() {
+  const tracks = ['Kaamos Bloom', 'Aurora Drift', 'Polar Static'];
+  const [current, setCurrent] = useState(1);
+  const [playing, setPlaying] = useState(false);
+  return (
+    <ul className="m-0 flex list-none flex-col gap-2 p-0">
+      {tracks.map((title, index) => {
+        const isCurrent = index === current;
+        return (
+          <li key={title} className="flex items-center gap-3">
+            <MediaArtwork
+              src={SAMPLE_IMAGE}
+              alt={title}
+              size="thumb"
+              className="rounded"
+              isCurrent={isCurrent}
+              isPlaying={isCurrent && playing}
+              playLabel={`Play ${title}`}
+              pauseLabel={`Pause ${title}`}
+              onPlay={() => {
+                if (isCurrent) {
+                  setPlaying((value) => !value);
+                  return;
+                }
+                setCurrent(index);
+                setPlaying(true);
+              }}
+            />
+            <span className="text-sm">{title}</span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** Phones: idle rows show no play button at rest; the current row keeps its
+ * play (paused) or pause (playing) control. Tapping idle artwork plays it
+ * and moves the control there. */
+export const TouchCurrentOnly: Story = {
+  render: () => <TouchList />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const kaamos = canvas.getByRole('button', { name: 'Play Kaamos Bloom' });
+    const aurora = canvas.getByRole('button', { name: 'Play Aurora Drift' });
+    await expect(kaamos).not.toHaveAttribute('data-current');
+    await expect(kaamos.className).toMatch(/(^|\s)opacity-0(\s|$)/);
+    await expect(aurora).toHaveAttribute('data-current', 'true');
+    await expect(aurora.className).toMatch(/(^|\s)opacity-100(\s|$)/);
+    await userEvent.click(kaamos);
+    const pause = await canvas.findByRole('button', {
+      name: 'Pause Kaamos Bloom',
+    });
+    await expect(pause).toHaveAttribute('data-current', 'true');
+    await expect(
+      canvas.getByRole('button', { name: 'Play Aurora Drift' }),
+    ).not.toHaveAttribute('data-current');
+  },
 };
 
 /** Documents Shift+held icon swap and Shift+click queue for the shared play control. */

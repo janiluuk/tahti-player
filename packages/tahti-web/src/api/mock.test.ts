@@ -3,8 +3,11 @@ import { describe, expect, it } from 'vitest';
 import {
   MOCK_GATED_PURCHASE_TRACK_ID,
   MOCK_GATED_SUBSCRIBERS_TRACK_ID,
+  MOCK_PEAKS_CATALOG_SLUG,
+  MOCK_PEAKS_GAP_TRACK_ID,
   mockSearch,
   mockSmartLink,
+  mockSoundItems,
   mockTrackDetail,
   soundItemToPlayable,
 } from './mock';
@@ -115,5 +118,26 @@ describe('mockTrackDetail', () => {
       purchaseTierName: 'Single unlock (demo)',
       purchaseTierPriceCents: 300,
     });
+  });
+});
+
+describe('Yaniho-like peaks catalog', () => {
+  it('stores peaks on every READY set except the backfill gap', () => {
+    const items = mockSoundItems(MOCK_PEAKS_CATALOG_SLUG);
+    expect(items.length).toBeGreaterThanOrEqual(10);
+    for (const item of items) {
+      if (item.id === MOCK_PEAKS_GAP_TRACK_ID) {
+        expect(item.peaks).toBeNull();
+      } else {
+        expect(item.peaks).toHaveLength(600);
+      }
+    }
+    expect(
+      soundItemToPlayable(items[0]!, MOCK_PEAKS_CATALOG_SLUG)?.peaks,
+    ).toHaveLength(600);
+  });
+
+  it('keeps the gap on the track page too', () => {
+    expect(mockTrackDetail(MOCK_PEAKS_GAP_TRACK_ID)?.peaks).toBeNull();
   });
 });

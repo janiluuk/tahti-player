@@ -692,7 +692,39 @@ const GENRE_TAGS: Record<string, string> = {
   acoustic: 'folk',
 };
 
+/** Mock slug shaped like the Yaniho channel: a long catalog of DJ sets,
+ * every READY set with stored peaks except one still waiting for the
+ * peaks backfill, so mock mode shows both waveform states. */
+export const MOCK_PEAKS_CATALOG_SLUG = 'yaniho';
+export const MOCK_PEAKS_GAP_TRACK_ID = `${MOCK_PEAKS_CATALOG_SLUG}-archive-9`;
+const MOCK_PEAKS_CATALOG_SIZE = 12;
+
+function buildMockPeaksCatalog(): ChannelSoundItem[] {
+  const slug = MOCK_PEAKS_CATALOG_SLUG;
+  return Array.from({ length: MOCK_PEAKS_CATALOG_SIZE }, (_, i) => {
+    const id = `${slug}-archive-${i + 1}`;
+    return {
+      id,
+      title: `Moody Electronica vol. ${40 - i}`,
+      artistName: 'Yaniho',
+      durationSec: 2763 + i * 97,
+      bannerUrl: null,
+      audioUrl: DEMO_MP3,
+      genre: 'progressive-house',
+      createdAt: new Date(Date.UTC(2026, 9, 30 - i * 2, 20)).toISOString(),
+      peaks: id === MOCK_PEAKS_GAP_TRACK_ID ? null : mockPeaks(id, 600),
+      likeCount: (i * 5 + 3) % 17,
+      playCount: 240 - i * 13,
+      downloadCount: (i * 7 + 2) % 11,
+      downloadsEnabled: true,
+    };
+  });
+}
+
 function buildMockSoundItems(slug: string): ChannelSoundItem[] {
+  if (slug === MOCK_PEAKS_CATALOG_SLUG) {
+    return buildMockPeaksCatalog();
+  }
   const channel = mockChannel(slug);
   const content = stationContent(slug);
   const artist = channel.user.displayName;
@@ -896,7 +928,7 @@ function buildMockTrackDetail(id: string): PublicTrackDetail | null {
     releasedAt: item.createdAt ?? new Date(0).toISOString(),
     effectiveBpm: null,
     effectiveKey: null,
-    peaks: mockPeaks(item.id, isSet ? 220 : 100),
+    peaks: item.peaks === null ? null : mockPeaks(item.id, isSet ? 220 : 100),
     commentCount: isSet ? 3 : 0,
     downloadCount: isSet ? 13 : 0,
     likeCount: isSet ? 9 : 2,

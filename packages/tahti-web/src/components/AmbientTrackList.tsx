@@ -210,6 +210,7 @@ export function AmbientTrackList({
               surface="neutral"
               onPlay={item.onPlay}
               isPlaying={item.isPlaying}
+              isCurrent={item.isCurrent}
               playLabel={webT()('a11yNamed.play', { name: item.title })}
               pauseLabel={webT()('a11yNamed.pause', { name: item.title })}
             />

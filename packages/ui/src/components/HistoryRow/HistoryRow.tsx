@@ -61,6 +61,7 @@ export const HistoryRow: FC<HistoryRowProps> = ({
         alt={title}
         imageReveal={false}
         onPlay={onPlayNow}
+        isCurrent={isActive}
         playLabel="Play"
         placeholder={
           <Music

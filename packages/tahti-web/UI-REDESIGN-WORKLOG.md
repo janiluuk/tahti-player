@@ -11,6 +11,23 @@ follow the app language, task progress uses `progressbar`, and the Sounds
 bulk-edit selects are named by their field. New mock e2e:
 `use-cases-hardening.spec.ts`.
 
+## 2026-11-18 - Server peaks only, phone play icons, dnd-kit out of the shell (0.0.411)
+
+Waveforms draw only the server's stored peaks: `@tahti-player/ui`
+`Waveform` lost its browser decode path (`audioUrl`, `cacheKey`, the
+`decodedPeaksCache` localStorage cache, which app start now clears) and its
+loading pulse, so a READY track without peaks draws calm flat bars at once.
+Track rows, Studio Sounds and `PlayerWaveform` stopped passing audio URLs.
+Mock mode has a Yaniho-like catalog at `/channel/yaniho` (twelve sets, one
+waiting for the peaks backfill); `use-cases-waveforms` checks it never sits
+loading or downloads audio. On phones only the playing or paused item shows
+a play / pause control on its artwork (`MediaArtwork` `isCurrent`, wired
+through track rows, grid cards, the track table, Discover widget rows,
+History rows and the channel playlist block). The queue panel's drag layer
+and Listen's section reorder load dnd-kit lazily: production `TahtiApp`
+1381 → 1335 KB (429 → 413 KB gzipped). Stories: `Waveform/NoServerPeaks`,
+`AmbientTrackList/ServerPeaksStates`, `MediaArtwork/TouchCurrentOnly`.
+
 ## 2026-11-18 - Referrer sources Sites / Pages mode (0.0.410)
 
 Studio Stats “Where listeners came from” can group by site (host) or page

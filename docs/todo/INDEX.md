@@ -46,8 +46,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
-| partial | [server-peaks-everywhere.md](server-peaks-everywhere.md) | Ambient rows skip client peaks decode; owner-mod UI shipped; left: prod Yaniho backfill + remaining list surfaces |
-| open    | [yaniho-channel-waveform-peaks.md](yaniho-channel-waveform-peaks.md) | Yaniho channel waveforms stuck loading — absorbed into server-peaks-everywhere Next 30 |
+| partial | [server-peaks-everywhere.md](server-peaks-everywhere.md) | Every player slice shipped (no browser decode anywhere, mock peaks catalog, e2e, DATA-FLOW contract, 0.0.411); left: org DTO/backfill slices, prod Yaniho backfill, live verify |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, catalog in Studio → Music and Library for listeners (2026-11-13), one Broadcast agenda, Profile forms on Studio pages (2026-11-16), Admin Overview merge + Inbox counts + sitemap/gaps rewrite + Governance hub cards (2026-11-17); left: Go live full-screen flow |
@@ -60,7 +59,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard now renders its last result at once and refreshes in the background; left: measure API time and cache slow calls server-side |
 | open    | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Community stats at the top (0.0.380) with their own snapshot, loading next to the dashboard (0.0.401); left: measure and cache the slow API calls (tahti-org), and Grafana from tahti.live cannot connect |
 | open    | [google-facebook-login.md](google-facebook-login.md) | Sign up and log in with Google and Facebook: API OAuth callbacks, OAuth apps (ops), buttons on log in / sign up, account linking |
-| partial | [navigation-performance.md](navigation-performance.md) | Back/forward speed: GET cache, snapshots on every main view, atlas and the track table out of the shell, gzip level 6 done; left: drop mock fixtures from prod, dnd-kit (queue panel) out of the shell, real-browser check |
+| partial | [navigation-performance.md](navigation-performance.md) | Back/forward speed: GET cache, snapshots on every main view, atlas and the track table out of the shell, gzip level 6 done; dnd-kit out of the shell (0.0.411); left: drop mock fixtures from prod, real-browser check |
 | open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` on events/updates/editor/playlist/collection/release, radio presets, theme submissions; plugin-store disconnect; left: none known) |
 | open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | One Storybook play session drops its sockets ~90s in (local every run, CI long shards); reduced motion + CI retry mitigate; time alone ruled out (2026-11-18), next: bisect by file count |
 | open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles e2e matrix on the mock app; Radio, Discover, Listen widget and artist Settings journeys added (`use-cases-coverage-gap-3`, `-4`); non-audio upload, search count and unread notifications (`use-cases-hardening`); left: collection player (placement), open findings |
@@ -76,12 +75,11 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | Status  | File | One-line |
 | ------- | ---- | -------- |
 | partial | [listener-stats-origin-url.md](listener-stats-origin-url.md) | Heartbeat + owner-mod done; ReferrerSources Sites/Pages mode in progress |
-| open    | [mobile-play-icon-active-only.md](mobile-play-icon-active-only.md) | Mobile: show play/pause on artwork only for the playing/paused item, not every idle row |
 | blocked | [dead-end-leftovers.md](dead-end-leftovers.md) | OAuth app credentials (ops), Bandcamp API approval, Google Drive Picker, governance Retry |
 | partial | [channel-layout-server-side.md](channel-layout-server-side.md) | Page layout saved on the channel (tahti-org #1075 + web); left: deploy the API first, and the per-browser player/backdrop look visibility |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
-| partial | [wavesurfer-waveforms.md](wavesurfer-waveforms.md) | wavesurfer.js shipped (batch 88) and fixed (batch 89: silence bars, player `src`, theme); desktop / full ProWaveform delete remain |
+| partial | [wavesurfer-waveforms.md](wavesurfer-waveforms.md) | wavesurfer.js shipped (batch 88) and fixed (batch 89: silence bars, player `src`, theme); previews never decode audio (0.0.411); desktop / full ProWaveform delete remain |
 | blocked | [ai-dj-radio-dj-port.md](ai-dj-radio-dj-port.md) | POC not committed; no prod ship without go-ahead |
 | blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
 | blocked | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Multi-phase 13-category project not started |
