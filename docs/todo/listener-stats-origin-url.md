@@ -1,8 +1,14 @@
 # Listener stats: full origin / referrer URL
 
-**Status:** open  
+**Status:** partial  
 **Updated:** 2026-11-18  
 **Sibling:** `../tahti-org/docs/todo/listener-stats-origin-url.md` (API)
+
+## Shipped (player)
+
+- Heartbeat client sends `referrerUrl` (+ host)
+- Channel moderators: owner badge, no Remove (slices 26–28)
+- `StatsAudienceDimension` includes `referrerUrl` for later UI
 
 Studio listener stats (and track insights / audience panels) should show the
 **full origin URL** listeners were referred from, not only the referrer host.

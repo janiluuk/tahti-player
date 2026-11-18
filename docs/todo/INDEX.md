@@ -46,7 +46,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
-| open    | [server-peaks-everywhere.md](server-peaks-everywhere.md) | Next 30: server peaks on every surface + Yaniho backfill; also owner-moderator UI (org #1109) |
+| partial | [server-peaks-everywhere.md](server-peaks-everywhere.md) | Ambient rows skip client peaks decode; owner-mod UI shipped; left: prod Yaniho backfill + remaining list surfaces |
 | open    | [yaniho-channel-waveform-peaks.md](yaniho-channel-waveform-peaks.md) | Yaniho channel waveforms stuck loading — absorbed into server-peaks-everywhere Next 30 |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
@@ -75,7 +75,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| open    | [listener-stats-origin-url.md](listener-stats-origin-url.md) | Next 30: referrer/origin URL on listen sessions + Studio Stats; also owner-moderator hide-remove (org #1109) |
+| partial | [listener-stats-origin-url.md](listener-stats-origin-url.md) | Heartbeat sends referrerUrl; owner-mod hide-remove done; left: Stats URL mode UI |
 | blocked | [dead-end-leftovers.md](dead-end-leftovers.md) | OAuth app credentials (ops), Bandcamp API approval, Google Drive Picker, governance Retry |
 | partial | [channel-layout-server-side.md](channel-layout-server-side.md) | Page layout saved on the channel (tahti-org #1075 + web); left: deploy the API first, and the per-browser player/backdrop look visibility |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |

@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import {
   listenSourceForPath,
   referrerHostOf,
+  referrerUrlOf,
   sendListenHeartbeat,
 } from './listen-heartbeat';
 
@@ -34,11 +35,13 @@ describe('listen heartbeat', () => {
       'CHANNEL_PAGE',
       { positionSec: 30, durationSec: 200 },
       'instagram.com',
+      'https://instagram.com/p/abc',
     );
     expect(JSON.parse(fetchSpy.mock.calls[0]![1]!.body as string)).toEqual({
       soundId: 's1',
       source: 'CHANNEL_PAGE',
       referrerHost: 'instagram.com',
+      referrerUrl: 'https://instagram.com/p/abc',
       positionSec: 30,
       durationSec: 200,
     });
@@ -55,6 +58,18 @@ describe('listen heartbeat', () => {
       referrerHostOf('https://beta.tahti.live/u/x', 'beta.tahti.live'),
     ).toBeNull();
     expect(referrerHostOf('', 'beta.tahti.live')).toBeNull();
+  });
+
+  it('keeps an outside referrer URL without credentials or fragment', () => {
+    expect(
+      referrerUrlOf(
+        'https://user:x@www.instagram.com/p/abc#frag',
+        'beta.tahti.live',
+      ),
+    ).toBe('https://www.instagram.com/p/abc');
+    expect(
+      referrerUrlOf('https://beta.tahti.live/u/x', 'beta.tahti.live'),
+    ).toBeNull();
   });
 
   it('maps the page to a listen source', () => {

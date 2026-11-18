@@ -30,10 +30,36 @@ export function referrerHostOf(
   }
 }
 
-const entryReferrerHost =
+/** Full document.referrer for the API (server strips credentials/fragment). */
+export function referrerUrlOf(
+  referrer: string,
+  ownHost: string,
+): string | null {
+  if (!referrer || !referrerHostOf(referrer, ownHost)) {
+    return null;
+  }
+  try {
+    const url = new URL(referrer);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+      return null;
+    }
+    url.username = '';
+    url.password = '';
+    url.hash = '';
+    const out = url.toString();
+    return out.length > 2048 ? out.slice(0, 2048) : out;
+  } catch {
+    return null;
+  }
+}
+
+const entryReferrer =
   typeof document === 'undefined'
-    ? null
-    : referrerHostOf(document.referrer, window.location.hostname);
+    ? { host: null as string | null, url: null as string | null }
+    : {
+        host: referrerHostOf(document.referrer, window.location.hostname),
+        url: referrerUrlOf(document.referrer, window.location.hostname),
+      };
 
 /** "Still listening" ping for listen-time stats. The API opens or extends
  * a listen session per listener and closes it when the pings stop. Tracks
@@ -43,7 +69,8 @@ export function sendListenHeartbeat(
   target: ListenTarget,
   source: ListenSource,
   position?: ListenPosition,
-  referrerHost: string | null = entryReferrerHost,
+  referrerHost: string | null = entryReferrer.host,
+  referrerUrl: string | null = entryReferrer.url,
 ): void {
   if (isForceMock()) {
     return;
@@ -57,6 +84,7 @@ export function sendListenHeartbeat(
       ...target,
       source,
       ...(referrerHost ? { referrerHost } : {}),
+      ...(referrerUrl ? { referrerUrl } : {}),
       ...(position ?? {}),
     }),
   }).catch(() => undefined);

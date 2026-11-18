@@ -6,7 +6,13 @@ import type { StatsPlaysRange } from './stats-plays';
 export type StatsShare = { name: string; count: number; share: number };
 
 export type StatsAudienceDimension =
-  'browser' | 'os' | 'deviceType' | 'deviceVendor' | 'source' | 'surface';
+  | 'browser'
+  | 'os'
+  | 'deviceType'
+  | 'deviceVendor'
+  | 'source'
+  | 'referrerUrl'
+  | 'surface';
 
 export type StatsAudience = {
   dimension: StatsAudienceDimension;
@@ -84,6 +90,12 @@ const MOCK_AUDIENCE: Record<StatsAudienceDimension, [string, number][]> = {
     ['google.com', 88],
     ['bandcamp.com', 51],
     ['Other', 38],
+  ],
+  referrerUrl: [
+    ['Direct', 480],
+    ['https://instagram.com/p/abc', 90],
+    ['https://google.com/search?q=tahti', 55],
+    ['Other', 40],
   ],
 };
 

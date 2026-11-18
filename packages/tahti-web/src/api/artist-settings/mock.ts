@@ -58,6 +58,14 @@ export const mockMembers: ChannelMember[] = [
 
 export const mockMods: ModeratorRow[] = [
   {
+    id: 'owner1',
+    username: 'demo',
+    displayName: 'Demo Artist',
+    canTimeout: true,
+    canDelete: true,
+    isOwner: true,
+  },
+  {
     id: 'mod1',
     username: 'mod-ada',
     displayName: 'Ada Mod',

@@ -4196,6 +4196,7 @@
     "channelModerators": {
       "title": "Kanavan moderaattorit",
       "description": "Ihmiset, joihin luotat kanavasi chatin hoidossa: he voivat poistaa viestejä ja estää ihmisiä kirjoittamasta. He eivät voi muuttaa kanavaasi tai sen asetuksia. Tahti kertoo heille, kun lisäät heidät.",
+      "ownerBadge": "Sinä · omistaja",
       "remove": "Poista moderaattori",
       "removeNamed": "Poista {{name}} moderaattoreista",
       "username": "Käyttäjänimi",

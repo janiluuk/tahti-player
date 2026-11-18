@@ -1,9 +1,14 @@
 # Server peaks everywhere (Yaniho + lists)
 
-**Status:** open  
+**Status:** partial  
 **Updated:** 2026-11-18  
 **Absorbs leftovers from:** [yaniho-channel-waveform-peaks.md](yaniho-channel-waveform-peaks.md),
 [yaniho-channel-pregenerate-peaks.md](yaniho-channel-pregenerate-peaks.md)
+
+## Shipped (player)
+
+- AmbientTrackRow no longer fetches audio to decode peaks (READY+null → empty bars)
+- Owner moderator badge / hide-remove (slices 26–28)
 
 Waveforms must never start work in the browser. Peaks are generated in
 pre-processing and returned on every playable surface. Yaniho’s channel page
