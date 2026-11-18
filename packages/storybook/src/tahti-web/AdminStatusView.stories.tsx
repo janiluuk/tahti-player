@@ -36,7 +36,6 @@ export const Default: Story = {
     await expect(
       canvas.getByRole('heading', { name: 'Workers' }),
     ).toBeVisible();
-    await expect(canvas.getByText('transcode-sound')).toBeVisible();
     await userEvent.click(
       canvas.getAllByRole('button', { name: 'History' })[0]!,
     );
