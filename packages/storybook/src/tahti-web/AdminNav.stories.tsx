@@ -4,24 +4,6 @@ import { expect, within } from 'storybook/test';
 
 import { withTahtiRouter } from './_lib/decorators';
 
-async function expectSelected(
-  canvasElement: HTMLElement,
-  section: string,
-  page: string,
-) {
-  const canvas = within(canvasElement);
-  const sections = canvas.getByRole('tablist', { name: 'Admin sections' });
-  await expect(
-    within(sections).getByRole('tab', { name: section }),
-  ).toHaveAttribute('aria-selected', 'true');
-  const pages = canvas.getByRole('tablist', { name: `Admin ${section}` });
-  await expect(within(pages).getByRole('tab', { name: page })).toHaveAttribute(
-    'aria-selected',
-    'true',
-  );
-  return within(pages);
-}
-
 const meta: Meta<typeof AdminNav> = {
   title: 'Tahti/Admin/AdminNav',
   component: AdminNav,
@@ -59,10 +41,10 @@ export const Default: Story = {
       'Co-op',
       'Platform',
     ]);
-    const pages = await expectSelected(canvasElement, 'Overview', 'Dashboard');
-    for (const name of ['Status', 'Monitoring']) {
-      await expect(pages.getByRole('tab', { name })).toBeVisible();
-    }
+    await expectSection(canvasElement, 'Overview');
+    await expect(
+      canvas.queryByRole('tablist', { name: 'Admin Overview' }),
+    ).toBeNull();
   },
 };
 

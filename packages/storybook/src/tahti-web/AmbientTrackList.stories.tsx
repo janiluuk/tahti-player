@@ -364,6 +364,7 @@ export const PhoneDefaultsToList: Story = {
   },
 };
 
+/** Missing peaks stay empty flat bars — no client audio decode. */
 export const DecodeMissingPeaks: Story = {
   args: {
     items: ITEMS.map((item) => ({
@@ -376,7 +377,16 @@ export const DecodeMissingPeaks: Story = {
     persistDensity: false,
     defaultDensity: 'comfortable',
   },
-  play: Default.play,
+  play: async ({ canvasElement }) => {
+    const rows = within(canvasElement).getAllByTestId('ambient-track-row');
+    await expect(rows).toHaveLength(3);
+    for (const row of rows) {
+      row.scrollIntoView({ block: 'nearest' });
+      const wave = await within(row).findByRole('img', { name: /^Seek / });
+      await waitFor(() => expect(wave).toHaveAttribute('data-state', 'ready'));
+      await expect(wave).toHaveAttribute('data-waveform', 'empty');
+    }
+  },
 };
 
 export const ProcessingUpload: Story = {

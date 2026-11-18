@@ -12,7 +12,13 @@ import {
 } from './_fixtures/track-release';
 import { MOCK_USERS, withMockAuth, withTahtiRouter } from './_lib/decorators';
 import { mockData } from './_lib/mock-data';
-import { expectVisible, findDialog, findToast, selectTab } from './_lib/play';
+import {
+  expectVisible,
+  findDialog,
+  findToast,
+  selectTab,
+  withinBody,
+} from './_lib/play';
 
 type Scope = ReturnType<typeof within>;
 
@@ -141,7 +147,7 @@ export const UploadTrackAudio: Story = {
     );
     await waitFor(() =>
       expect(
-        canvas.getByRole('meter', { name: /Uploading Polar Night/ }),
+        canvas.getByRole('progressbar', { name: /Uploading Polar Night/ }),
       ).toBeVisible(),
     );
     await findToast(
@@ -175,7 +181,7 @@ export const UploadNewTrack: Story = {
     await userEvent.click(upload);
     await waitFor(() =>
       expect(
-        dialog.getByRole('meter', { name: /Uploading midnight-sun/ }),
+        dialog.getByRole('progressbar', { name: /Uploading midnight-sun/ }),
       ).toBeVisible(),
     );
     await findToast(
@@ -192,7 +198,10 @@ export const DeleteAsksFirst: Story = {
     const canvas = within(canvasElement);
     await canvas.findByRole('heading', { name: 'After Hours' });
     await userEvent.click(
-      canvas.getByRole('button', { name: 'Delete release' }),
+      canvas.getByRole('button', { name: 'More release actions' }),
+    );
+    await userEvent.click(
+      withinBody(canvasElement).getByRole('button', { name: 'Delete release' }),
     );
     const dialog = await findDialog(canvasElement, 'Delete this release?');
     await expect(

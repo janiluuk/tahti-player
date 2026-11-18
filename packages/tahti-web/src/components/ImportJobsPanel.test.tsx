@@ -45,7 +45,10 @@ describe('ImportJobsPanel', () => {
     await renderWithRouter(<ImportJobsPanel />);
 
     expect(await screen.findByText('Queued one')).toBeVisible();
-    expect(screen.getByRole('status')).toHaveTextContent('Queued');
+    const [queued, imported, failed] = screen.getAllByRole('status');
+    expect(queued).toHaveTextContent('Queued');
+    expect(imported).toHaveTextContent('Imported — open track');
+    expect(failed).toHaveTextContent('Failed: Not audio');
     expect(
       screen.getByRole('link', { name: 'Imported — open track' }),
     ).toHaveAttribute('href', '/studio/sounds/s9');

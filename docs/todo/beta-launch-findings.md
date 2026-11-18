@@ -36,8 +36,6 @@ Next `apps/web` removed 2026-10-28). Remaining host/build decisions are in
 - [x] Own channel track table hides the Artist column for the owner (batch 79).
 - [x] Library section tabs stay a single scrollable row (`PHONE_SCROLL_TAB_LIST`).
 - [x] Collections list uses one label — "Edit" (batch 79).
-- [ ] Track editing lives under Library while uploads/releases are reached from
-  Studio; the sidebar highlight jumps mid-task.
 - [x] Channel designer links to the public channel ("Open my channel →").
 - [x] Tracks rows have aria-labels / tooltips on icon actions.
 - [ ] Sign-in lands an artist on `/`, not Studio (product call).

@@ -1,3 +1,4 @@
+import { sniffAudioFile } from '../../lib/audioMagic';
 import type { FetchMeta } from '../client';
 import { getMockSessionUser } from '../mock-session';
 import { registerMockUploadedSound } from '../mock-uploads';
@@ -16,6 +17,9 @@ export async function uploadSoundFile(input: {
 > {
   const filename = input.file.name || 'upload.wav';
   const title = input.title?.trim() || titleFromFilename(filename);
+  if ((await sniffAudioFile(input.file)) === 'not-audio') {
+    return { ok: false, error: NOT_AUDIO_MESSAGE };
+  }
   if (isForceMock()) {
     const id = `arch-mock-${Date.now()}`;
     const channelSlug = getMockSessionUser()?.username ?? 'demo';

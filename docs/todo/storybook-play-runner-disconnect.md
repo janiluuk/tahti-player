@@ -23,7 +23,16 @@ A single `vitest --project storybook` browser session drops all its websockets a
 - CI runs ten shards of ~50 files (was six of 85, which hit the drop on master 2026-11-11, retry included); two jobs run five shards each.
 - Locally, run stories in chunks of ~60 files.
 
+## Bisect by time (2026-11-18)
+
+Neither run dropped on the Mac, so time alone does not cause it:
+
+- A story-free browser test that waits 150s in one Chromium session (plain `@vitest/browser-playwright`, `--disable-dev-shm-usage`): passes.
+- One story whose `play` waits 150s, run through the `storybook` project (preview, decorators, `reducedMotion`): passes.
+
+The drop needs many story files in one session: the tester iframe reloading per file, or something a set of stories leaves behind (sockets, workers, timers).
+
 ## Next
 
-- [ ] Bisect by time: a story-free file that only waits 120s in one session, to see whether the drop needs any story at all.
+- [ ] Bisect by count: run the same 60 files with `--no-file-parallelism` in halves until one file (or a pair) reproduces the drop under 90s; log open WebSockets/workers per file via `performance`/CDP.
 - [ ] Try Chromium with `--disable-features=...` for websocket throttling, or a newer Playwright Chromium.

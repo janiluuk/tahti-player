@@ -206,7 +206,7 @@ export function NotificationsView() {
     >
       <div className="flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <p className="text-foreground-secondary text-sm">
+          <p role="status" className="text-foreground-secondary text-sm">
             {unreadCount === 0
               ? t('notificationsPage.allCaughtUp')
               : t('notificationsPage.unreadCount', { count: unreadCount })}
@@ -292,6 +292,11 @@ export function NotificationsView() {
                   )}
                 >
                   <div className="min-w-0 flex-1">
+                    {unread ? (
+                      <span className="sr-only">
+                        {t('notificationsPopover.unread')}{' '}
+                      </span>
+                    ) : null}
                     {needsAck ? (
                       <Badge variant="pill" color="yellow" className="mb-1">
                         {t('notificationsPage.needsAck')}

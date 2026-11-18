@@ -27,11 +27,13 @@ describe('VersionRenderProgress', () => {
     act(() =>
       push({ status: 'PROCESSING', pct: 0.42, segment: 2, segmentCount: 5 }),
     );
-    expect(screen.getByRole('meter', { name: 'Rendering, 42%' })).toBeTruthy();
+    expect(
+      screen.getByRole('progressbar', { name: 'Rendering, 42%' }),
+    ).toBeTruthy();
     expect(screen.getByText('42% · part 2 of 5')).toBeTruthy();
     act(() => push({ status: 'READY', pct: 1 }));
     expect(onDone).toHaveBeenCalled();
-    expect(screen.queryByRole('meter')).toBeNull();
+    expect(screen.queryByRole('progressbar')).toBeNull();
     unmount();
     expect(stop).toHaveBeenCalled();
   });

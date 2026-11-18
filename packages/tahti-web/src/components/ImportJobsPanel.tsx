@@ -26,11 +26,16 @@ function sourceLabel(source: string): string {
 
 function JobStatus({ job }: { job: CloudImportJob }) {
   const { t } = useTranslation('web');
-  if (job.status === 'QUEUED') {
-    return <TrackProcessing label={t('importJobs.queued')} />;
-  }
-  if (job.status === 'DOWNLOADING') {
-    return <TrackProcessing label={t('importJobs.importing')} />;
+  if (job.status === 'QUEUED' || job.status === 'DOWNLOADING') {
+    const label = t(
+      job.status === 'QUEUED' ? 'importJobs.queued' : 'importJobs.importing',
+    );
+    return (
+      <>
+        <TrackProcessing decorative label={label} />
+        <span className="sr-only">{label}</span>
+      </>
+    );
   }
   if (job.status === 'DONE') {
     return job.soundId ? (
@@ -49,7 +54,9 @@ function JobStatus({ job }: { job: CloudImportJob }) {
   }
   return (
     <span className="text-accent-red-strong text-xs">
-      Failed{job.error ? `: ${job.error}` : ''}
+      {job.error
+        ? t('importJobs.failedWithError', { error: job.error })
+        : t('importJobs.failed')}
     </span>
   );
 }
@@ -96,7 +103,9 @@ export function ImportJobsPanel() {
             <Badge variant="pill" color="cyan">
               {sourceLabel(job.source)}
             </Badge>
-            <JobStatus job={job} />
+            <span role="status">
+              <JobStatus job={job} />
+            </span>
           </li>
         ))}
       </ul>

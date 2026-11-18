@@ -29,7 +29,9 @@ describe('uploadSoundFile', () => {
       .mockResolvedValueOnce(json({ itemId: 's1' }, 201));
 
     const result = await uploadSoundFile({
-      file: new File(['RIFF'], 'Night_Drive_final.wav', { type: 'audio/wav' }),
+      file: new File(['RIFF\0\0\0\0WAVE'], 'Night_Drive_final.wav', {
+        type: 'audio/wav',
+      }),
     });
 
     expect(result).toMatchObject({ ok: true, itemId: 's1' });
@@ -67,7 +69,7 @@ describe('uploadSoundFile', () => {
         )
         .mockResolvedValueOnce(new Response(null, { status: 200 }))
         .mockResolvedValueOnce(json(complete, 415));
-    const file = new File(['%PDF'], 'song.mp3', { type: 'audio/mpeg' });
+    const file = new File(['not a sound'], 'song.mp3', { type: 'audio/mpeg' });
 
     respond({ error: 'not_audio', message: 'This file is not an audio file.' });
     expect(await uploadSoundFile({ file })).toEqual({
@@ -81,5 +83,16 @@ describe('uploadSoundFile', () => {
       ok: false,
       error: NOT_AUDIO_MESSAGE,
     });
+  });
+
+  it('refuses a file that is plainly not audio before uploading it', async () => {
+    const fetchSpy = vi.spyOn(globalThis, 'fetch');
+    const file = new File(['%PDF-1.7'], 'song.mp3', { type: 'audio/mpeg' });
+
+    expect(await uploadSoundFile({ file })).toEqual({
+      ok: false,
+      error: NOT_AUDIO_MESSAGE,
+    });
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 });

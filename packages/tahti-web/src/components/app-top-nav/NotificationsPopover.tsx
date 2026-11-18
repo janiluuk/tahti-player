@@ -27,10 +27,14 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
       {notificationsOpen ? (
         <div
           className="border-border bg-background absolute top-[calc(100%+6px)] right-0 z-40 w-72 rounded-lg border p-2 shadow-lg"
-          role="menu"
+          role="region"
+          aria-labelledby="notifications-popover-title"
         >
           <div className="flex items-center justify-between gap-2 px-2 py-1">
-            <span className="text-sm font-semibold">
+            <span
+              id="notifications-popover-title"
+              className="text-sm font-semibold"
+            >
               {t('notificationsPopover.title')}
             </span>
             <ButtonLink
@@ -88,6 +92,11 @@ export function NotificationsPopover({ nav }: { nav: TopNavState }) {
                 >
                   <div className="flex items-start gap-2">
                     <div className="min-w-0 flex-1">
+                      {notification.readAt ? null : (
+                        <span className="sr-only">
+                          {t('notificationsPopover.unread')}{' '}
+                        </span>
+                      )}
                       {notification.sticky && !notification.readAt ? (
                         <Badge variant="pill" color="yellow" className="mb-1">
                           {t('notificationsPopover.needsAcknowledgement')}

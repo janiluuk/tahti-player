@@ -100,7 +100,9 @@ export function SetupPasswordView() {
           variant="tertiary"
           className="h-auto w-auto flex-col gap-3 rounded-xl"
         >
-          <p className="text-sm">{t('auth.setupSignedIn')}</p>
+          <p role="status" className="text-sm">
+            {t('auth.setupSignedIn')}
+          </p>
         </Box>
       ) : infoError ? (
         <div className="flex flex-col gap-3">

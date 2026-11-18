@@ -1120,7 +1120,9 @@
       "results": "Hakutulokset",
       "searching": "Haetaan…",
       "noResultsTitle": "Ei tuloksia haulle ”{{query}}”.",
-      "noResultsDescription": "Kokeile toista kirjoitusasua tai selaa Löydä- ja Radio-sivuja."
+      "noResultsDescription": "Kokeile toista kirjoitusasua tai selaa Löydä- ja Radio-sivuja.",
+      "resultCount_one": "{{count}} tulos",
+      "resultCount_other": "{{count}} tulosta"
     },
     "settingsIntegrations": {
       "scrobbling": "Scrobblaus",
@@ -1334,7 +1336,8 @@
       "loading": "Ladataan…",
       "eventInvites": "Tapahtumakutsut",
       "acceptInvite": "Hyväksy kutsu: {{title}}",
-      "declineInvite": "Hylkää kutsu: {{title}}"
+      "declineInvite": "Hylkää kutsu: {{title}}",
+      "unread": "Lukematon"
     },
     "player": {
       "next": "Seuraava",
@@ -6367,7 +6370,9 @@
       "importProgress": "Tuonnin edistyminen",
       "ifAnImportFailsWe": "Jos tuonti epäonnistuu, ilmoitamme sinulle.",
       "queued": "Jonossa",
-      "importing": "Tuodaan"
+      "importing": "Tuodaan",
+      "failed": "Epäonnistui",
+      "failedWithError": "Epäonnistui: {{error}}"
     },
     "addBoardTerm": {
       "saveTerm": "Tallenna kausi",
@@ -12182,7 +12187,8 @@
       "selectAllRows": "Valitse kaikki rivit",
       "deselectAllRows": "Poista kaikkien rivien valinta",
       "editTrack": "Muokkaa kappaletta",
-      "openTrack": "Avaa kappale"
+      "openTrack": "Avaa kappale",
+      "notifications": "Ilmoitukset"
     },
     "broadcastPanel": {
       "defaultsHint": "Radion, vihreän huoneen ja monilähetyksen oletukset ovat täällä. Livelähetys hoidetaan kohdassa Studio › Lähetys.",

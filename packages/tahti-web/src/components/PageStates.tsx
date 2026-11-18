@@ -21,7 +21,7 @@ export function RouteChunkSkeleton() {
 
 export function PageLoading({ label }: { label?: string }) {
   return (
-    <div className="flex flex-col items-center gap-3 py-10">
+    <div role="status" className="flex flex-col items-center gap-3 py-10">
       <CenteredLoader size="lg" />
       {label && <p className="text-foreground-secondary text-sm">{label}</p>}
     </div>

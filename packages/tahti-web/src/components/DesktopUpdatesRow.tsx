@@ -78,6 +78,7 @@ export function DesktopUpdatesRow() {
       </div>
       {status === 'installing' ? (
         <Meter
+          role="progressbar"
           value={progress}
           aria-label={t('desktopUpdatesRow.updateDownload')}
         />

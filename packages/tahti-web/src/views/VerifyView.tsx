@@ -71,7 +71,9 @@ export function VerifyView() {
           variant="tertiary"
           className="h-auto w-auto flex-col gap-3 rounded-xl"
         >
-          <p className="text-sm">{message}</p>
+          <p role="status" className="text-sm">
+            {message}
+          </p>
           <ButtonLink to="/login">{t('verifyView.continueToLogin')}</ButtonLink>
         </Box>
       ) : (
@@ -92,9 +94,12 @@ export function VerifyView() {
             description={t('verifyView.fromTokenInTheEmail')}
           />
           {error && <InlineError>{error}</InlineError>}
-          {message && !error && (
-            <p className="text-foreground-secondary text-sm">{message}</p>
-          )}
+          <p
+            role="status"
+            className="text-foreground-secondary text-sm empty:hidden"
+          >
+            {message && !error ? message : null}
+          </p>
           <Button disabled={loading || !token.trim()} type="submit">
             {loading
               ? t('verifyViewStates.verifying')

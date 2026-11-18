@@ -55,6 +55,7 @@ export function WebUiLabelsProvider({ children }: { children: ReactNode }) {
       deselectAllRows: t('uiLabels.deselectAllRows'),
       editTrack: t('uiLabels.editTrack'),
       openTrack: t('uiLabels.openTrack'),
+      notifications: t('uiLabels.notifications'),
     };
   }, [t, language]);
   return <UiLabelsProvider value={labels}>{children}</UiLabelsProvider>;

@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AdminStatusView } from '@tahti-web/views/admin/AdminStatusView';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, waitFor, within } from 'storybook/test';
 
 import { withMockAuth, withTahtiRouter } from './_lib/decorators';
-import { findDialog } from './_lib/play';
 
 const meta: Meta<typeof AdminStatusView> = {
   title: 'Tahti/Admin/AdminStatusView',
@@ -24,17 +23,17 @@ export const Default: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await waitFor(() =>
-      expect(canvas.getByRole('heading', { name: 'Cron jobs' })).toBeVisible(),
+      expect(
+        canvas.getByRole('heading', { name: 'Status checks' }),
+      ).toBeVisible(),
     );
     await expect(canvas.getByText('postgres')).toBeVisible();
     await expect(canvas.getByText('live-streams')).toBeVisible();
-    await expect(canvas.getByText('6 live streams fresh')).toBeVisible();
     await expect(
-      canvas.getByText('1 of 2 offline (no heartbeat recently).'),
+      canvas.getByRole('heading', { name: 'Media queue jobs' }),
     ).toBeVisible();
-    await userEvent.click(
-      canvas.getByRole('button', { name: 'nightly-backup run history' }),
-    );
-    await findDialog(canvasElement);
+    await expect(
+      canvas.getByRole('heading', { name: 'Workers' }),
+    ).toBeVisible();
   },
 };

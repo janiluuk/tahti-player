@@ -271,9 +271,12 @@ export const AuthDialog: FC = () => {
             <AuthDialogError message={t('auth.passwordsDoNotMatch')} />
           ) : null}
           {error ? <AuthDialogError message={error} /> : null}
-          {message ? (
-            <p className="text-foreground-secondary text-sm">{message}</p>
-          ) : null}
+          <p
+            role="status"
+            className="text-foreground-secondary text-sm empty:hidden"
+          >
+            {message}
+          </p>
           <Dialog.Actions>
             <Button variant="text" size="sm" onClick={() => setMode('login')}>
               {t('auth.logIn')}

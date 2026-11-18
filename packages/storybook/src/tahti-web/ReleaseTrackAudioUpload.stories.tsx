@@ -44,7 +44,7 @@ export const NoAudio: Story = {
       canvas.getByLabelText(`Audio for ${NO_AUDIO.title}`),
       audioFile(),
     );
-    const meter = await canvas.findByRole('meter', {
+    const meter = await canvas.findByRole('progressbar', {
       name: /Uploading Polar Night/,
     });
     await expect(meter).toBeVisible();
@@ -70,7 +70,7 @@ export const CancelUpload: Story = {
       canvas.getByLabelText(`Audio for ${NO_AUDIO.title}`),
       audioFile(),
     );
-    await canvas.findByRole('meter', { name: /Uploading Polar Night/ });
+    await canvas.findByRole('progressbar', { name: /Uploading Polar Night/ });
     await userEvent.click(canvas.getByRole('button', { name: 'Cancel' }));
     await findToast(canvasElement, 'Upload cancelled.');
     await waitFor(() =>

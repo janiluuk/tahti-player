@@ -1,6 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { defaultUiLabels, UiLabelsProvider } from '../UiLabels';
 import { showNotificationToast, toast, Toaster } from './Toaster';
 
 describe('Toaster', () => {
@@ -16,6 +17,25 @@ describe('Toaster', () => {
   it('(Snapshot) renders the host', () => {
     const { container } = render(<Toaster />);
     expect(container).toMatchSnapshot();
+  });
+
+  it('names the region and the close button from the UI labels', async () => {
+    render(
+      <UiLabelsProvider
+        value={{
+          ...defaultUiLabels,
+          notifications: 'Ilmoitukset',
+          close: 'Sulje',
+        }}
+      >
+        <Toaster closeButton />
+      </UiLabelsProvider>,
+    );
+    toast('Tallennettu');
+    expect(
+      await screen.findByRole('region', { name: /^Ilmoitukset/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Sulje' })).toBeInTheDocument();
   });
 
   it('shows a toast message', async () => {
