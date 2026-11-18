@@ -58,3 +58,26 @@ export const Default: Story = {
 export const Empty: Story = {
   args: { items: [] },
 };
+
+export const Busy: Story = {
+  args: { items, busy: true },
+};
+
+export const LongList: Story = {
+  args: {
+    items: Array.from({ length: 24 }, (_, index) => ({
+      id: `selects-long-${index}`,
+      soundId: `archive-long-${index}`,
+      title: `Rotation track ${index + 1}`,
+      durationSec: 180 + index,
+      license: index % 2 === 0 ? 'CC_BY' : 'CC0',
+      artistName: 'Northern Lights',
+      channelSlug: 'northern-lights',
+      addedBy: 'board-jani',
+    })),
+  },
+};
+
+export const ReadOnly: Story = {
+  args: { items, readOnly: true },
+};

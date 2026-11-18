@@ -28,13 +28,20 @@ export const Default: Story = {
     });
     // The Feature tab panel fades in from opacity 0 on mount.
     await waitFor(() => expect(rotation).toBeVisible());
-    await expect(canvas.getByText('Night Transit')).toBeVisible();
+    await expect(
+      canvas.getByText(/2 tracks in the curated rotation/),
+    ).toBeVisible();
+    await expect(
+      canvas.getByRole('button', { name: 'Open playlist' }),
+    ).toBeVisible();
     await expect(
       canvas.getByRole('heading', { name: 'Eligible channels (2)' }),
     ).toBeVisible();
     await expect(
       canvas.getAllByRole('button', { name: 'Opt out' }),
     ).toHaveLength(2);
+    await selectTab(canvas, 'Playlist');
+    await expect(await canvas.findByText('Night Transit')).toBeVisible();
     await selectTab(canvas, 'Stations');
   },
 };

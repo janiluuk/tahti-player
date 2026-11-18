@@ -3934,6 +3934,7 @@
       "couldNotLoadListening": "Could not load listening",
       "couldNotLoadRecentAuditEntries": "Could not load recent audit entries",
       "couldNotLoadTahtiRadio": "Could not load Tahti Radio",
+      "couldNotLoadRadioPlaylist": "Could not load the radio playlist",
       "couldNotLoadStatus": "Could not load status.",
       "couldNotLoadThisUserS": "Could not load this user's storage.",
       "couldNotLoadTopLists": "Could not load top lists",
@@ -4051,6 +4052,7 @@
       "loadingRecentAuditEntries": "Loading recent audit entries…",
       "loadingNews": "Loading news…",
       "loadingRadio": "Loading radio…",
+      "loadingRadioPlaylist": "Loading radio playlist…",
       "loadingServiceStatus": "Loading service status…",
       "loadingStorageDetails": "Loading storage details…",
       "loadingTopLists": "Loading top lists…",
@@ -8823,9 +8825,34 @@
     },
     "adminRadioViewMore": {
       "feature": "Feature",
+      "playlist": "Playlist",
       "stations": "Stations",
       "optOuts": "Opt-outs",
-      "history": "History"
+      "history": "History",
+      "openPlaylist": "Open playlist",
+      "playlistSummaryTracks": "{{count}} tracks in the curated rotation — edit them on the Playlist tab."
+    },
+    "tahtiRadioPlaylistPanel": {
+      "curatedRotationDescription": "Curated Tahti Radio rotation — loops between live member features. Only public, ready archive tracks can be added.",
+      "dragTracksDescription": "Drag tracks into the order listeners hear between live shows.",
+      "nowPlayingTrack": "On air now: {{title}}",
+      "addTracks": "Add tracks",
+      "addTracksTitle": "Add tracks to Tahti Radio",
+      "addTracksDescription": "Browse public, ready archive tracks. Select one or more, then append them to the rotation.",
+      "contentTypes": "Content types",
+      "tracks": "Tracks",
+      "searchContent": "Search content",
+      "searchTracksByTitle": "Search tracks by title…",
+      "availableTracks": "Available tracks",
+      "noTracksMatch": "No public archive tracks match “{{query}}”.",
+      "noEligibleTracks": "No eligible archive tracks found.",
+      "adding": "Adding…",
+      "removeTrackTitle": "Remove from rotation?",
+      "removeTrackDescription": "Remove “{{title}}” from the Tahti Radio playlist.",
+      "removeTrackConfirm": "Remove"
+    },
+    "tahtiRadioPlaylistPanelLabels": {
+      "currentRotationLength": "Playlist ({{length}})"
     },
     "adminAnnouncementsView": {
       "chooseAShortMp3Wav": "Choose a short MP3, WAV, FLAC, or AIFF clip.",
@@ -10344,7 +10371,10 @@
       "addsASmallFooterLinking": "Adds a small footer linking to Tahti at the bottom of the public smart-link page."
     },
     "tahtiRotationPlaylistEditorText": {
-      "tahtiRadioRotationPlaylist": "Tahti Radio rotation playlist"
+      "tahtiRadioRotationPlaylist": "Tahti Radio rotation playlist",
+      "trackCount_one": "{{count}} track",
+      "trackCount_other": "{{count}} tracks",
+      "totalDuration": "{{duration}} total"
     },
     "stemsPanelText": {
       "stems": "Stems"

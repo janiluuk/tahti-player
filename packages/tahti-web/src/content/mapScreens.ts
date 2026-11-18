@@ -2485,9 +2485,17 @@ export const MAP_CASE_GROUPS: MapCaseGroup[] = [
         id: 'admin-radio',
         title: 'Admin radio',
         viewName: 'Admin · Radio',
-        caption: 'Tahti Radio and Selects rotation.',
-        actions: ['Review rotation', 'Inspect live station state'],
-        goesTo: [{ label: 'Open Tahti Selects', to: '/admin/tahti-selects' }],
+        caption:
+          'Tahti Radio feature queue, curated playlist, stations and opt-outs.',
+        actions: [
+          'Open playlist',
+          'Review rotation',
+          'Inspect live station state',
+        ],
+        goesTo: [
+          { label: 'Open playlist', to: '/admin/radio?tab=playlist' },
+          { label: 'Open Tahti Selects', to: '/admin/tahti-selects' },
+        ],
         old: {
           absent: true,
           route: '—',

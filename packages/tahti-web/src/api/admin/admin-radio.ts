@@ -58,28 +58,72 @@ export type AdminRadioRotationItem = {
   addedBy: string;
 };
 
-const mockRadioRotation: AdminRadioRotationItem[] = [
-  {
-    id: 'radio-rotation-1',
-    soundId: 'radio-archive-1',
-    title: 'Night Transit',
-    artistName: 'Aino Virta',
-    durationSec: 288,
-    channelSlug: 'tahti-radio',
-    license: 'CC_BY',
-    addedBy: 'radio-editorial',
-  },
-  {
-    id: 'radio-rotation-2',
-    soundId: 'radio-archive-2',
-    title: 'Signal Bloom',
-    artistName: 'Lumo Collective',
-    durationSec: 346,
-    channelSlug: 'tahti-radio',
-    license: 'CC_BY_SA',
-    addedBy: 'radio-editorial',
-  },
-];
+export type AdminRadioBrowseItem = {
+  id: string;
+  title: string;
+  durationSec: number | null;
+  license: string;
+  artistName: string;
+  channelSlug: string;
+  audioUrl?: string | null;
+};
+
+let mockRadioRotation: AdminRadioRotationItem[] | null = null;
+
+function radioRotationState(): AdminRadioRotationItem[] {
+  if (!mockRadioRotation) {
+    mockRadioRotation = [
+      {
+        id: 'radio-rotation-1',
+        soundId: 'radio-archive-1',
+        title: 'Night Transit',
+        artistName: 'Aino Virta',
+        durationSec: 288,
+        channelSlug: 'northern-lights',
+        license: 'CC_BY',
+        addedBy: 'radio-editorial',
+        audioUrl:
+          'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+      },
+      {
+        id: 'radio-rotation-2',
+        soundId: 'radio-archive-2',
+        title: 'Signal Bloom',
+        artistName: 'Lumo Collective',
+        durationSec: 346,
+        channelSlug: 'lumo-collective',
+        license: 'CC_BY_SA',
+        addedBy: 'radio-editorial',
+        audioUrl:
+          'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+      },
+    ];
+  }
+  return mockRadioRotation;
+}
+
+function mockRadioBrowse(): AdminRadioBrowseItem[] {
+  return [
+    {
+      id: 'radio-archive-3',
+      title: 'Harbor Lights',
+      durationSec: 301,
+      license: 'CC_BY',
+      artistName: 'DJ Moonlight',
+      channelSlug: 'dj-moonlight',
+      audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+    },
+    {
+      id: 'radio-archive-4',
+      title: 'Glass Orchard',
+      durationSec: 254,
+      license: 'ALL_RIGHTS_RESERVED',
+      artistName: 'Kaiku Collective',
+      channelSlug: 'kaiku-collective',
+      audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+    },
+  ];
+}
 
 export async function fetchAdminRadioRotation(): Promise<{
   data: AdminRadioRotationItem[];
@@ -87,34 +131,84 @@ export async function fetchAdminRadioRotation(): Promise<{
 }> {
   if (isForceMock()) {
     return {
-      data: mockRadioRotation,
+      data: radioRotationState(),
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
   try {
-    const data = await getJson<
-      Array<{
-        id: string;
-        title: string;
-        artistName: string;
-        durationSec?: number | null;
-        artistUsername?: string | null;
-      }>
-    >('/api/v1/radio/rotation');
-    return {
-      data: data.map((item) => ({
-        ...item,
-        soundId: item.id,
-        durationSec: item.durationSec ?? null,
-        channelSlug: item.artistUsername ?? 'tahti-radio',
-        license: '',
-        addedBy: 'radio-editorial',
-      })),
-      meta: { source: 'api' },
-    };
+    const data = await getJson<{ items: AdminRadioRotationItem[] }>(
+      '/api/admin/tahti-radio',
+    );
+    return { data: data.items ?? [], meta: { source: 'api' } };
   } catch (err) {
     return { data: [], meta: failMeta(err) };
   }
+}
+
+export async function searchAdminRadioBrowse(
+  q: string,
+): Promise<{ data: AdminRadioBrowseItem[]; meta: FetchMeta }> {
+  if (isForceMock()) {
+    const query = q.toLowerCase();
+    return {
+      data: mockRadioBrowse().filter((item) =>
+        item.title.toLowerCase().includes(query),
+      ),
+      meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
+    };
+  }
+  try {
+    const data = await getJson<{ items: AdminRadioBrowseItem[] }>(
+      `/api/admin/tahti-radio/browse?q=${encodeURIComponent(q)}`,
+    );
+    return { data: data.items, meta: { source: 'api' } };
+  } catch (err) {
+    return { data: [], meta: failMeta(err) };
+  }
+}
+
+export function addToRadioRotation(item: AdminRadioBrowseItem) {
+  if (isForceMock()) {
+    radioRotationState().push({
+      id: `radio-rotation-${Date.now()}`,
+      soundId: item.id,
+      title: item.title,
+      durationSec: item.durationSec,
+      license: item.license,
+      artistName: item.artistName,
+      channelSlug: item.channelSlug,
+      addedBy: 'you',
+      audioUrl: item.audioUrl,
+    });
+    return Promise.resolve({ ok: true } as const);
+  }
+  return mutate('/api/admin/tahti-radio/items', 'POST', {
+    soundId: item.id,
+  });
+}
+
+export function removeFromRadioRotation(id: string) {
+  if (isForceMock()) {
+    mockRadioRotation = radioRotationState().filter((item) => item.id !== id);
+    return Promise.resolve({ ok: true } as const);
+  }
+  return mutate(
+    `/api/admin/tahti-radio/items/${encodeURIComponent(id)}`,
+    'DELETE',
+  );
+}
+
+export function reorderRadioRotation(itemIds: string[]) {
+  if (isForceMock()) {
+    const byId = new Map(radioRotationState().map((item) => [item.id, item]));
+    mockRadioRotation = itemIds
+      .map((id) => byId.get(id))
+      .filter((item): item is AdminRadioRotationItem => Boolean(item));
+    return Promise.resolve({ ok: true } as const);
+  }
+  return mutate('/api/admin/tahti-radio/reorder', 'PUT', {
+    itemIds,
+  });
 }
 
 function mockRadioAdmin(): AdminRadioData {

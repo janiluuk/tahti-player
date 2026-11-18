@@ -1,3 +1,10 @@
+## 2026-11-18 - Tahti Radio admin playlist manager (0.0.413)
+
+Admin → Radio gains a Playlist tab that edits the curated `tahti-radio`
+rotation (add / reorder / remove) via `/api/admin/tahti-radio`. Feature keeps
+a short summary and Open playlist. Shared rotation editor: i18n counts, busy
+state, now-playing highlight.
+
 ## 2026-11-18 - Hardening, screen-reader fixes and test coverage (0.0.411)
 
 Tahti embeds can be framed on other sites again: nginx sends one CSP from a

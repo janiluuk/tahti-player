@@ -3934,6 +3934,7 @@
       "couldNotLoadListening": "Kuuntelutietoja ei voitu ladata",
       "couldNotLoadRecentAuditEntries": "Viimeisimpiä lokimerkintöjä ei voitu ladata",
       "couldNotLoadTahtiRadio": "Tahti Radiota ei voitu ladata",
+      "couldNotLoadRadioPlaylist": "Radion soittolistaa ei voitu ladata",
       "couldNotLoadStatus": "Tilaa ei voitu ladata.",
       "couldNotLoadThisUserS": "Käyttäjän tallennustilaa ei voitu ladata.",
       "couldNotLoadTopLists": "Top-listoja ei voitu ladata",
@@ -4051,6 +4052,7 @@
       "loadingRecentAuditEntries": "Ladataan viimeisimpiä lokimerkintöjä…",
       "loadingNews": "Ladataan uutisia…",
       "loadingRadio": "Ladataan radiota…",
+      "loadingRadioPlaylist": "Ladataan radion soittolistaa…",
       "loadingServiceStatus": "Ladataan palvelujen tilaa…",
       "loadingStorageDetails": "Ladataan tallennustilan tietoja…",
       "loadingTopLists": "Ladataan top-listoja…",
@@ -8823,9 +8825,34 @@
     },
     "adminRadioViewMore": {
       "feature": "Nosto",
+      "playlist": "Soittolista",
       "stations": "Asemat",
       "optOuts": "Kieltäytymiset",
-      "history": "Historia"
+      "history": "Historia",
+      "openPlaylist": "Avaa soittolista",
+      "playlistSummaryTracks": "{{count}} kappaletta curated-rotaatiossa — muokkaa Soittolista-välilehdellä."
+    },
+    "tahtiRadioPlaylistPanel": {
+      "curatedRotationDescription": "Tahti Radion curated-rotaatio — pyörii live-nostojen välillä. Vain julkisia, valmiita arkistokappaleita voi lisätä.",
+      "dragTracksDescription": "Vedä kappaleet siihen järjestykseen, jossa kuulijat kuulevat ne live-lähetysten välillä.",
+      "nowPlayingTrack": "Nyt soi: {{title}}",
+      "addTracks": "Lisää kappaleita",
+      "addTracksTitle": "Lisää kappaleita Tahti Radioon",
+      "addTracksDescription": "Selaa julkisia, valmiita arkistokappaleita. Valitse yksi tai useampi ja lisää ne rotaation loppuun.",
+      "contentTypes": "Sisältötyypit",
+      "tracks": "Kappaleet",
+      "searchContent": "Hae sisältöä",
+      "searchTracksByTitle": "Hae kappaleita otsikolla…",
+      "availableTracks": "Saatavilla olevat kappaleet",
+      "noTracksMatch": "Mikään julkinen arkistokappale ei vastaa hakua “{{query}}”.",
+      "noEligibleTracks": "Kelvollisia arkistokappaleita ei löytynyt.",
+      "adding": "Lisätään…",
+      "removeTrackTitle": "Poistetaanko rotaatiosta?",
+      "removeTrackDescription": "Poista “{{title}}” Tahti Radion soittolistasta.",
+      "removeTrackConfirm": "Poista"
+    },
+    "tahtiRadioPlaylistPanelLabels": {
+      "currentRotationLength": "Soittolista ({{length}})"
     },
     "adminAnnouncementsView": {
       "chooseAShortMp3Wav": "Valitse lyhyt MP3-, WAV-, FLAC- tai AIFF-klippi.",
@@ -10344,7 +10371,10 @@
       "addsASmallFooterLinking": "Lisää julkisen smart-link-sivun alareunaan pienen Tahti-linkin."
     },
     "tahtiRotationPlaylistEditorText": {
-      "tahtiRadioRotationPlaylist": "Tahti Radion kiertosoittolista"
+      "tahtiRadioRotationPlaylist": "Tahti Radion kiertosoittolista",
+      "trackCount_one": "{{count}} kappale",
+      "trackCount_other": "{{count}} kappaletta",
+      "totalDuration": "{{duration}} yhteensä"
     },
     "stemsPanelText": {
       "stems": "Raidat"
