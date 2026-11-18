@@ -1,3 +1,10 @@
+## 2026-11-18 — Library management port folded
+
+Cloud Sounds library management Next 30 (org OpenAPI/pinned/tags/key facet/admin
+page + player honesty/filters/facets) all shipped. Folded
+`library-management-port.md`. Follow-on audience URL work is in
+`listener-stats-origin-url.md`.
+
 ## 2026-11-17 — Settings Security and Notifications as own items (30 slices)
 
 Settings side list gains Security (password, devices, 2FA, API tokens) and Notifications (alerts, mentions). Account keeps session, membership, purchases and privacy. Old `/settings/account?tab=api-tokens|devices|…` and notification tabs redirect. tahti-web 0.0.406. Advances simplify-studio phase 4.
