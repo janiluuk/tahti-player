@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AccountPanel } from '@tahti-web/views/settings/panels/AccountPanel';
+import { SecurityPanel } from '@tahti-web/views/settings/panels/SecurityPanel';
+import { SettingsNotificationsPanel } from '@tahti-web/views/settings/panels/SettingsNotificationsPanel';
 import { expect, userEvent, waitFor, within } from 'storybook/test';
 
 import { resetSettingsModal } from './_fixtures/settings';
@@ -27,7 +29,7 @@ const meta: Meta<typeof AccountPanel> = {
     docs: {
       description: {
         component:
-          'Settings → Account, in four groups: Sign-in & security (session, devices, two-factor, API tokens), Membership & billing (membership, a Governance link to Co-op, your fan subscriptions, purchases), Notifications (notifications & visibility, mentions) and Privacy & data (data export, blocked accounts, deletion request, storage). Signed out it only offers Log in.',
+          'Settings → Account: Profile & data (session, privacy, storage) and Membership & billing (membership, Governance link to Co-op, fan subscriptions, purchases). Password, devices, 2FA and API tokens are under Settings → Security; notifications under Settings → Notifications. Signed out it only offers Log in.',
       },
     },
   },
@@ -54,7 +56,7 @@ export const Session: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     await expect(
-      canvas.getByRole('tab', { name: 'Sign-in & security' }),
+      canvas.getByRole('tab', { name: 'Profile & data' }),
     ).toHaveAttribute('aria-selected', 'true');
     await expectVisible(canvas.getByText('@listener-liina'));
     await expectVisible(canvas.getByText('Liina'));
@@ -62,18 +64,18 @@ export const Session: Story = {
       canvas.getByRole('link', { name: 'Keyboard shortcuts' }),
     ).toHaveAttribute('href', '/help/keyboard-shortcuts');
     await expectVisible(canvas.getByRole('button', { name: 'Log out' }));
-    await expectVisible(canvas.getByRole('tab', { name: 'Devices' }));
-    await expectVisible(
-      canvas.getByRole('tab', { name: 'Two-factor authentication' }),
-    );
-    await expectVisible(canvas.getByRole('tab', { name: 'API tokens' }));
+    await expectVisible(canvas.getByRole('tab', { name: 'Session' }));
+    await expectVisible(canvas.getByRole('tab', { name: 'Privacy & data' }));
+    await expectVisible(canvas.getByRole('tab', { name: 'Storage' }));
   },
 };
 
 export const Devices: Story = {
+  render: () => <SecurityPanel />,
+  decorators: [withTahtiRouter('/settings/security?tab=devices')],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await openGroup(canvas, 'Sign-in & security', 'Devices');
+    await selectTab(canvas, 'Devices');
     await expectVisible(canvas.getByText(/Each sign-in keeps its own session/));
     await expectVisible(canvas.getByText('This browser'));
     await expectVisible(canvas.getByText('This device'));
@@ -128,9 +130,11 @@ export const GovernanceLinksToCoop: Story = {
 };
 
 export const NotificationsAndMentions: Story = {
+  render: () => <SettingsNotificationsPanel />,
+  decorators: [withTahtiRouter('/settings/notifications')],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await openGroup(canvas, 'Notifications', 'Notifications & visibility');
+    await selectTab(canvas, 'Notifications & visibility');
     await expectVisible(
       await canvas.findByRole('switch', {
         name: 'Show my followers on my profile',
@@ -150,7 +154,7 @@ export const NotificationsAndMentions: Story = {
 export const RequestDeletion: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await openGroup(canvas, 'Privacy & data', 'Privacy & data');
+    await openGroup(canvas, 'Profile & data', 'Privacy & data');
     await expect(
       canvas.getByRole('link', { name: /Data export/ }),
     ).toHaveAttribute('href', '/tahti-api/api/me/data-export.json');
@@ -172,7 +176,7 @@ export const RequestDeletion: Story = {
 export const Storage: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await openGroup(canvas, 'Privacy & data', 'Storage');
+    await openGroup(canvas, 'Profile & data', 'Storage');
     await expectVisible(
       await canvas.findByRole('heading', { name: 'Your storage' }),
     );

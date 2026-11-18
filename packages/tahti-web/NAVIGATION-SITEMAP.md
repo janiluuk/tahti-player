@@ -112,7 +112,7 @@ Desktop right rail: Queue only.
 | Everyone | Discover | `/discover` (+ `?tab=artists`, `venues`, `parties`, `feed`) | `/venues` redirects to the Venues tab. |
 | Everyone | Library | `/library` (→ Favorites), `/library/favorites`, `/library/history`, `/library/following`, `/library/files`; `/library/media`, `/library/stash`, `/library/local` redirect to Files | Opening Library or Favorites does not ask for sign-in. Other tabs stay visible and grayed until there is an account. |
 | Everyone | Help | `/help`, `/help/$slug` | Articles reach `/status`, `/news`, `/whats-new`, legal pages and `/transparency`. |
-| Artist | Studio | `/studio`, Music catalog under `/studio/sounds|collections|releases|…`, Broadcast hub and children, Fans hub and children, `/studio/stats`, `/studio/profile` (+ `/$section`) | Detail pages swap the section row for a back link. |
+| Artist | Studio | `/studio`, Music catalog under `/studio/sounds`, `/studio/collections`, `/studio/releases`, and related Music routes, Broadcast hub and children, Fans hub and children, `/studio/stats`, `/studio/profile` (+ `/$section`) | Detail pages swap the section row for a back link. |
 | Members | Co-op | `/governance` (+ motion/meeting detail) | Was Studio → Governance. |
 | Signed in | Settings | `/settings`, `/settings/$section`, `/account`, `/onboarding` | Modal + bookmarkable sections. `/themes` redirects here. `/settings/plugin-store?category=themes` opens Themes. |
 | Board | Admin | `/admin`, hubs, `/admin/moderation`, `/admin/users`, content/platform tools, `/admin/governance` (+ `$tab`), `/admin/grants/$year` | Queue/detail routes stay contextual. |
@@ -139,8 +139,9 @@ These routes are real but should not become extra top-level navigation items:
 - Studio aliases: `/studio/info` → go-live; `/studio/archive*` → sounds;
   `/studio/stash` → `/library/files?kind=stash`; `/studio/channel?tab=selects`
   → `/admin/tahti-selects`; branding/profile tabs → `/studio/profile/$section`.
-- Library catalog aliases: `/library/sounds|collections|upload|smartlinks|…`
-  → Studio Music / Broadcast as before.
+- Library catalog aliases: `/library/sounds`, `/library/collections`,
+  `/library/upload`, `/library/smartlinks`, and related paths → Studio Music /
+  Broadcast as before.
 
 ## Orphan pages (production, content-bearing, no chrome item)
 

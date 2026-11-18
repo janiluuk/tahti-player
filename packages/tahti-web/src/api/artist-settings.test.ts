@@ -41,6 +41,7 @@ describe('channel moderation API', () => {
         displayName: 'Mod One',
         canTimeout: true,
         canDelete: true,
+        isOwner: false,
       },
     ]);
     expect(fetchMock).toHaveBeenCalledWith(

@@ -59,10 +59,7 @@ export const Default: Story = {
       'Co-op',
       'Platform',
     ]);
-    const pages = await expectSelected(canvasElement, 'Overview', 'Dashboard');
-    for (const name of ['Status', 'Monitoring']) {
-      await expect(pages.getByRole('tab', { name })).toBeVisible();
-    }
+    await expectSelected(canvasElement, 'Overview', 'Dashboard');
   },
 };
 

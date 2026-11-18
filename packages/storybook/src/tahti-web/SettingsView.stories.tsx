@@ -52,7 +52,7 @@ export const Account: Story = {
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
     await expectSection(dialog, 'Account');
-    await expectSelectedTab(dialog, 'Sign-in & security');
+    await expectSelectedTab(dialog, 'Profile & data');
     await expectVisible(dialog.getByText('@northern-lights'));
   },
 };
@@ -86,7 +86,8 @@ export const ConnectedCallback: Story = {
   decorators: [withTahtiRouter('/settings/integrations?status=connected')],
   play: async ({ canvasElement }) => {
     const dialog = await findDialog(canvasElement);
-    await expectSection(dialog, 'Integrations');
+    await expectSection(dialog, 'Playback & language');
+    await expectSelectedTab(dialog, 'Integrations');
     await findToast(canvasElement, 'Connected.');
   },
 };

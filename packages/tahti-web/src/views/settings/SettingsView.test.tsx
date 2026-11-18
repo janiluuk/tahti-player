@@ -58,12 +58,22 @@ describe('SettingsView', () => {
     expect(useSettingsModalStore.getState().accountSection).toBeNull();
   });
 
-  it('opens Account on API tokens from a dashboard bookmark', () => {
+  it('redirects old Account API-token bookmarks to Security', () => {
     window.history.replaceState(null, '', '/settings/account?tab=api-tokens');
+    render(<SettingsView />);
+    expect(navigate).toHaveBeenCalledWith({
+      href: '/settings/security?tab=api-tokens',
+      replace: true,
+    });
+  });
+
+  it('opens Security on API tokens from a dashboard bookmark', () => {
+    window.history.replaceState(null, '', '/settings/security?tab=api-tokens');
     render(<SettingsView />);
     const state = useSettingsModalStore.getState();
     expect(state.isOpen).toBe(true);
-    expect(state.accountSection).toBe('api-tokens');
+    expect(state.activeTab).toBe('security');
+    expect(state.securitySection).toBe('api-tokens');
   });
 
   it('sends an artist to the Studio → Profile page for an old Artist tab', () => {

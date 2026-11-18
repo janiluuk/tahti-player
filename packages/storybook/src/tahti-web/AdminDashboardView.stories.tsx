@@ -36,10 +36,10 @@ export const Default: Story = {
     ).toBeVisible();
     await expect(canvas.getByText('Fan-sub payouts')).toBeVisible();
     await expect(
-      canvas.getByRole('heading', { name: 'Monitoring' }),
+      canvas.getByRole('heading', { name: 'Grafana dashboards' }),
     ).toBeVisible();
     await expect(
-      canvas.getByRole('link', { name: 'Operations hub' }),
+      canvas.getByRole('link', { name: 'Full logs page' }),
     ).toBeVisible();
     await expect(
       canvas.getByRole('heading', { name: 'Chat and mail' }),
