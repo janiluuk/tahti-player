@@ -1,8 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
-import { i18n } from '@tahti-player/i18n';
-
 import {
   fetchFollowing,
   followArtist,
@@ -46,21 +44,41 @@ function redactEphemeralStreamUrl(playable: TahtiPlayable): TahtiPlayable {
   return { ...playable, streamUrl: '' };
 }
 
-export type LibraryState = {
-  /** Current storage scope: `anon` or user id. */
-  scopeKey: string;
-  syncNote: string | null;
+type PersistedLibrarySlice = {
   favoriteChannels: FavoriteChannel[];
-  /** Favourite radio stations. Sounds are saved as account likes instead;
-   * the persisted key stays so stored stations keep loading. */
   favoriteTracks: TahtiPlayable[];
   favoritePlaylists: FavoritePlaylist[];
-  favoriteChannelDates: Record<string, string>;
-  favoriteTrackDates: Record<string, string>;
-  favoritePlaylistDates: Record<string, string>;
-  heardFavoritePlaylists: string[];
-  heardFavoriteArtists: string[];
   history: HistoryEntry[];
+  scopeKey: string;
+};
+
+function normalizePersistedLibrary(
+  persisted: unknown,
+): PersistedLibrarySlice | undefined {
+  if (!persisted || typeof persisted !== 'object') {
+    return undefined;
+  }
+  const p = persisted as Partial<PersistedLibrarySlice> &
+    Record<string, unknown>;
+  return {
+    favoriteChannels: Array.isArray(p.favoriteChannels)
+      ? p.favoriteChannels
+      : [],
+    favoriteTracks: Array.isArray(p.favoriteTracks) ? p.favoriteTracks : [],
+    favoritePlaylists: Array.isArray(p.favoritePlaylists)
+      ? p.favoritePlaylists
+      : [],
+    history: Array.isArray(p.history)
+      ? (p.history as HistoryEntry[]).map((entry) => ({
+          ...entry,
+          playable: redactEphemeralStreamUrl(entry.playable),
+        }))
+      : [],
+    scopeKey: typeof p.scopeKey === 'string' ? p.scopeKey : 'anon',
+  };
+}
+
+export type LibraryState = PersistedLibrarySlice & {
   toggleFavoriteChannel: (
     channel: FavoriteChannel,
   ) => Promise<FollowResult | null>;
@@ -70,7 +88,6 @@ export type LibraryState = {
   /** Drops saved items by playable id, e.g. sounds moved to account likes. */
   removeFavoriteTracks: (ids: string[]) => void;
   toggleFavoritePlaylist: (playlist: FavoritePlaylist) => void;
-  markFavoriteHeard: (kind: 'playlist' | 'artist', id: string) => void;
   pushHistory: (playable: TahtiPlayable) => void;
   clearHistory: () => void;
   mergeServerFollowing: (username: string) => Promise<void>;
@@ -115,15 +132,9 @@ export const useLibraryStore = create<LibraryState>()(
   persist(
     (set, get) => ({
       scopeKey: 'anon',
-      syncNote: null,
       favoriteChannels: [],
       favoriteTracks: [],
       favoritePlaylists: [],
-      favoriteChannelDates: {},
-      favoriteTrackDates: {},
-      favoritePlaylistDates: {},
-      heardFavoritePlaylists: [],
-      heardFavoriteArtists: [],
       history: [],
 
       toggleFavoriteChannel: async (channel) => {
@@ -152,17 +163,10 @@ export const useLibraryStore = create<LibraryState>()(
           if (exists === favorite) {
             return s;
           }
-          const favoriteChannelDates = { ...s.favoriteChannelDates };
-          if (favorite) {
-            favoriteChannelDates[channel.slug] = new Date().toISOString();
-          } else {
-            delete favoriteChannelDates[channel.slug];
-          }
           return {
             favoriteChannels: favorite
               ? [channel, ...s.favoriteChannels]
               : s.favoriteChannels.filter((c) => c.slug !== channel.slug),
-            favoriteChannelDates,
           };
         });
       },
@@ -176,17 +180,10 @@ export const useLibraryStore = create<LibraryState>()(
         }
         set((s) => {
           const exists = s.favoriteTracks.some((t) => t.id === station.id);
-          const favoriteTrackDates = { ...s.favoriteTrackDates };
-          if (exists) {
-            delete favoriteTrackDates[station.id];
-          } else {
-            favoriteTrackDates[station.id] = new Date().toISOString();
-          }
           return {
             favoriteTracks: exists
               ? s.favoriteTracks.filter((t) => t.id !== station.id)
               : [station, ...s.favoriteTracks],
-            favoriteTrackDates,
           };
         });
       },
@@ -196,16 +193,9 @@ export const useLibraryStore = create<LibraryState>()(
           return;
         }
         const drop = new Set(ids);
-        set((s) => {
-          const favoriteTrackDates = { ...s.favoriteTrackDates };
-          for (const id of drop) {
-            delete favoriteTrackDates[id];
-          }
-          return {
-            favoriteTracks: s.favoriteTracks.filter((t) => !drop.has(t.id)),
-            favoriteTrackDates,
-          };
-        });
+        set((s) => ({
+          favoriteTracks: s.favoriteTracks.filter((t) => !drop.has(t.id)),
+        }));
       },
 
       toggleFavoritePlaylist: (playlist) => {
@@ -213,30 +203,13 @@ export const useLibraryStore = create<LibraryState>()(
           const exists = s.favoritePlaylists.some(
             (item) => item.slug === playlist.slug,
           );
-          const favoritePlaylistDates = { ...s.favoritePlaylistDates };
-          if (exists) {
-            delete favoritePlaylistDates[playlist.slug];
-          } else {
-            favoritePlaylistDates[playlist.slug] = new Date().toISOString();
-          }
           return {
             favoritePlaylists: exists
               ? s.favoritePlaylists.filter(
                   (item) => item.slug !== playlist.slug,
                 )
               : [playlist, ...s.favoritePlaylists],
-            favoritePlaylistDates,
           };
-        });
-      },
-
-      markFavoriteHeard: (kind, id) => {
-        set((s) => {
-          const key =
-            kind === 'playlist'
-              ? 'heardFavoritePlaylists'
-              : 'heardFavoriteArtists';
-          return s[key].includes(id) ? s : { [key]: [...s[key], id] };
         });
       },
 
@@ -262,15 +235,9 @@ export const useLibraryStore = create<LibraryState>()(
           meta.reason !== 'VITE_FORCE_MOCK' &&
           import.meta.env.VITE_FORCE_MOCK !== '1'
         ) {
-          set({
-            syncNote: i18n.t('web:libraryStoreStates.followingNotSynced'),
-          });
           return;
         }
         if (data.length === 0 && meta.source === 'mock') {
-          set({
-            syncNote: i18n.t('web:libraryStoreStates.savedOnDevice'),
-          });
           return;
         }
         set((s) => {
@@ -283,29 +250,19 @@ export const useLibraryStore = create<LibraryState>()(
               avatarUrl: u.avatarUrl,
             });
           }
-          return {
-            favoriteChannels: [...bySlug.values()],
-            syncNote:
-              meta.source === 'api'
-                ? i18n.t('web:libraryStoreStates.followingSynced')
-                : i18n.t('web:libraryStoreStates.followingOffline'),
-          };
+          return { favoriteChannels: [...bySlug.values()] };
         });
       },
     }),
     {
       name: STORAGE_PREFIX,
-      version: 2,
+      version: 3,
       storage: scopedStorage,
+      migrate: (persisted) => normalizePersistedLibrary(persisted) ?? {},
       partialize: (s) => ({
         favoriteChannels: s.favoriteChannels,
         favoriteTracks: s.favoriteTracks,
         favoritePlaylists: s.favoritePlaylists,
-        favoriteChannelDates: s.favoriteChannelDates,
-        favoriteTrackDates: s.favoriteTrackDates,
-        favoritePlaylistDates: s.favoritePlaylistDates,
-        heardFavoritePlaylists: s.heardFavoritePlaylists,
-        heardFavoriteArtists: s.heardFavoriteArtists,
         history: s.history.map((entry) => ({
           ...entry,
           playable: redactEphemeralStreamUrl(entry.playable),
@@ -326,22 +283,13 @@ export async function rehydrateLibraryForUser(userId: string | null) {
     return;
   }
   activeScope = nextScope;
-  // Clear in-memory state so the UI doesn't flash the previous scope's data
-  // while rehydrate is in flight — suspended so this reset itself doesn't
-  // get written to the new scope's storage ahead of the real rehydrate read.
   suspendPersistWrites = true;
   useLibraryStore.setState({
     scopeKey: nextScope,
     favoriteChannels: [],
     favoriteTracks: [],
     favoritePlaylists: [],
-    favoriteChannelDates: {},
-    favoriteTrackDates: {},
-    favoritePlaylistDates: {},
-    heardFavoritePlaylists: [],
-    heardFavoriteArtists: [],
     history: [],
-    syncNote: null,
   });
   suspendPersistWrites = false;
   await useLibraryStore.persist.rehydrate();

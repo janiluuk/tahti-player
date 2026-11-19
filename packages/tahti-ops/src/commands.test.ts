@@ -25,9 +25,28 @@ describe('shortcut commands', () => {
 
   it('lists the new commands in help', async () => {
     await main(['--help']);
-    for (const command of ['desktop', 'test', 'e2e', 'snapshots']) {
+    for (const command of [
+      'desktop',
+      'test',
+      'e2e',
+      'snapshots',
+      'storybook surfaces',
+      'github close-external-issue',
+    ]) {
       expect(output()).toContain(`tahti-ops ${command}`);
     }
+  });
+
+  it('dry-runs storybook surfaces check', async () => {
+    expect(await main(['storybook', 'surfaces', '--check', '--dry-run'])).toBe(
+      0,
+    );
+    expect(output()).toContain('dry-run: storybook surfaces --check');
+  });
+
+  it('validates the github close-external-issue workflow hook', async () => {
+    expect(await main(['github', 'close-external-issue'])).toBe(0);
+    expect(output()).toContain('close-external-issue.cjs');
   });
 
   it('dry-runs desktop build + launch', async () => {

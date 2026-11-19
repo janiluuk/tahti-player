@@ -27,6 +27,21 @@ desktop views were removed in 2026-10.
 
 ## Tahti Web (`packages/tahti-web`)
 
+### Redirect-only library paths (no mounted view)
+
+These URLs exist for bookmarks, e2e catalog checks and SEO metadata only. Each
+`beforeLoad` redirects before a view mounts; the catalog home is
+`/studio/collections` (`StudioCollectionsView`), not Library.
+
+| Path | Redirect target |
+| --- | --- |
+| `/library/collections` | `/studio/collections` (legacy `?tab=` → files / recordings / embeds) |
+| `/library/collections/$slug` | `/studio/collections/$slug` |
+| `/library/sounds`, `/library/releases`, `/library/recordings`, `/library/upload`, `/library/smartlinks`, `/library/media`, `/library/embeds`, `/library/stash` | Studio or `/library/files` equivalents (see `routes-library.tsx`) |
+
+Route-aware titles for `/library/collections*` may still appear briefly for old
+links; they are not a second Collections catalog surface.
+
 ### Core Listen / Discovery Views
 
 | View                        | Route                      | File                              | Storybook | Candidate For                                                                                                                                                                                                         |
@@ -80,7 +95,8 @@ desktop views were removed in 2026-10.
 
 | View                                        | Route                 | File                                  | Storybook | Candidate For                                                                                                                    |
 | ------------------------------------------- | --------------------- | ------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| [Library](#library)                         | `/library` (redirects to `/library/favorites`) | `src/views/LibraryView.tsx`           | Has Story | Listener tabs only: Favorites · History · Following · Files. The artist catalog is Studio → Music. Signed-out account tabs stay visible and disabled. `Tahti/Library/LibraryFollowingFiles`. |
+| [Library](#library)                         | `/library` (redirects to `/library/favorites`) | `src/views/LibraryView.tsx`           | Has Story | Listener tabs: Favorites · Playlists · History · Following · Files. The artist catalog is Studio → Music. Signed-out account tabs stay visible and disabled. `Tahti/Library/LibraryFollowingFiles`. |
+| Library Playlists | `/library/playlists` | `LibraryPlaylistsView` in `LibraryView` | Candidate | Own PLAYLIST/DJ_SET_SERIES collections + saved `favoritePlaylists`. EmptyState + FilterBar. |
 | Library History | `/library/history` | `HistoryView` embedded in `LibraryView` | Has Story | `Tahti/Library/LibraryHistory`. |
 | Library Following | `/library/following` (`/settings/artist?tab=following` redirects) | `LibraryFollowingView` in `LibraryView` | Has Story | `Tahti/Library/LibraryFollowingFiles` Following. Empty state links to Discover. Missing states: empty (follows nothing), load error. |
 | Library Files | `/library/files?kind=media|stash|local` (`/library/media`, `/library/stash`, `/library/local` redirect) | `LibraryView` tab `files`: `FilterChips` over `LibraryMediaView`, `StudioStashView embedded`, `DesktopLibraryPanel` | Has Story | `Tahti/Library/LibraryFollowingFiles` FilesMedia / FilesStash. Local files only in the desktop app. |
@@ -100,8 +116,8 @@ desktop views were removed in 2026-10.
 | [Recordings](#recordings)             | `/studio/recordings` (Broadcast hub card, back link to Broadcast; `/library/recordings` redirects) | `src/views/studio/StudioRecordingsView.tsx`                       | No Story                         | PlayableTrackTable                                                                                                                                                                                                                             |
 | [Releases](#releases)                 | `/studio/releases`                                              | `src/views/studio/StudioReleasesView.tsx`                         | Has Story (`LatestViewSurfaces.stories.tsx` → StudioReleases)                         | CopyButton, Dialog, FilterChips, Input, Tooltip — release-type picker now uses `FilterChips` directly (`StudioToggleChip` deleted 2026-09-14)                                                                                                  |
 | [Release Detail](#release-detail)     | `/studio/releases/$id`                                          | `src/views/studio/StudioReleaseDetailView.tsx`                    | Has Story (`ReleaseTrackStemsPanel`, `ReleaseTrackStemsList`) | TrackTable, ImageUploadField, release track stems panel                                                                                                                                                                                         |
-| [Collections](#collections-studio)    | `/studio/collections` (Studio → Music → Collections; `/library/collections` (+ `/$slug`), `/studio/playlists` redirect) | `src/views/studio/StudioCollectionsView.tsx`                      | `StudioCollectionsView.stories.tsx` | FilterChips, Input, Select, Tabs, ImageReveal — style picker now uses `FilterChips` directly (`StudioToggleChip` deleted 2026-09-14)                                                                                                          |
-| [Collection Edit](#collection-edit)   | `/studio/collections/$slug`                                     | `src/views/studio/StudioCollectionEditView.tsx`                   | Story (ReadOnly, Editing)        | Badge, Input, Textarea, Select, TrackTable, Dialog, FilePicker — raw `<input type="date">` (~line 629) and inline chip buttons (~line 647) duplicate `Input`/`FilterChips`, see sweep section below                                            |
+| [Collections](#collections-studio)    | `/studio/collections` (Studio → Music → Collections; `/library/collections*` redirect-only; `/studio/playlists` list → here) | `src/views/studio/StudioCollectionsView.tsx`                      | `StudioCollectionsView.stories.tsx` | FilterChips, Input, Select, Tabs, ImageReveal — style picker now uses `FilterChips` directly (`StudioToggleChip` deleted 2026-09-14)                                                                                                          |
+| [Collection Edit](#collection-edit)   | `/studio/collections/$slug` (`/library/collections/$slug` redirect-only) | `src/views/studio/StudioCollectionEditView.tsx`                   | Story (ReadOnly, Editing)        | Badge, Input, Textarea, Select, TrackTable, Dialog, FilePicker — raw `<input type="date">` (~line 629) and inline chip buttons (~line 647) duplicate `Input`/`FilterChips`, see sweep section below                                            |
 | [Upload](#upload)                     | `/studio/upload` (`/library/upload` redirects)                 | `src/views/studio/StudioUploadView.tsx`                           | Has Story (`LatestViewSurfaces.stories.tsx` → StudioUpload)                         | FilePicker, Progress                                                                                                                                                                                                                           |
 | [Editor List](#editor-list)           | `/studio/editor`                                                | `src/views/studio/StudioEditorListView.tsx`                       | No Story                         | CardGrid                                                                                                                                                                                                                                       |
 | [Editor Project](#editor-project)     | `/studio/editor/$id`                                            | `src/views/studio/StudioEditorProjectView.tsx`                    | No Story                         | WaveformCanvas                                                                                                                                                                                                                                 |

@@ -16,7 +16,12 @@ Planned 2026-11-03. Shipped so far: phase 0 building blocks (`ViewShell` `action
 
 2026-11-19: Profile live preview beside identity / story / people forms on Studio → Profile pages; Admin → Radio Feature tab meets the anatomy budget (panels + secondary row actions, no header primary pile-up) and the eligible-channel featured labels are i18n’d.
 
-Left: Library Playlists tab (needs a listener playlist list; product call on what it holds), phase 3 (Go live stepper, a design call). Goal: a calmer, more professional UI. Every main view has one header, one primary action, one toolbar row and at most one tab row under the section row.
+2026-11-19 next-30: Library is Favorites · Playlists · History · Following · Files
+(`/library/playlists` = own PLAYLIST/DJ_SET_SERIES + saved favorites). Go live is a
+chrome takeover (no StudioNav / sidebar / mobile bottom nav). Channel multistream
+deep-links to Go live `?step=destinations` (green-room defaults stay on Channel).
+
+Left: phase 3 Go live stepper polish (design call). Goal: a calmer, more professional UI. Every main view has one header, one primary action, one toolbar row and at most one tab row under the section row.
 
 Builds on [`navigation-simplification.md`](navigation-simplification.md) (the IA regroup, slices 1-10). This plan adds **Settings**, **page anatomy** (what sits on a page, not just where it lives) and the duplicate surfaces left after that regroup. Where a phase finishes a slice from that file, it says so; that slice is then ticked there, not re-planned here.
 

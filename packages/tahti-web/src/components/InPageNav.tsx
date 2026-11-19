@@ -23,6 +23,7 @@ export type InPageNavItem = {
  * Orphan in live app routes today (Storybook-only); prefer `Tabs` /
  * `SectionTabs` directly for new surfaces. See docs/todo/tabs-migration.md.
  */
+/** Storybook-first (`Tahti/Page/InPageNav`); reserved for long-form in-page tabs. */
 export function InPageNav({
   items,
   'aria-label': ariaLabel = 'Section',

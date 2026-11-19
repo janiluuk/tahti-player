@@ -153,9 +153,10 @@ These routes are real but should not become extra top-level navigation items:
 - Studio aliases: `/studio/info` → go-live; `/studio/archive*` → sounds;
   `/studio/stash` → `/library/files?kind=stash`; `/studio/channel?tab=selects`
   → `/admin/tahti-selects`; branding/profile tabs → `/studio/profile/$section`.
-- Library catalog aliases: `/library/sounds`, `/library/collections`,
-  `/library/upload`, `/library/smartlinks`, and related paths → Studio Music /
-  Broadcast as before.
+- Library catalog aliases (redirect-only, no mounted view): `/library/sounds`,
+  `/library/collections`, `/library/collections/$slug`, `/library/upload`,
+  `/library/smartlinks`, and related paths → Studio Music / Broadcast (see
+  VIEW-CATALOG § Redirect-only library paths).
 
 ## Orphan pages (production, content-bearing, no chrome item)
 

@@ -64,6 +64,35 @@ describe('ChannelBlocksSection', () => {
     ]);
   });
 
+  it('packs a FULL logo ahead of thirds without sharing the logo row', () => {
+    render(
+      <ChannelBlocksSection
+        blocks={[
+          {
+            id: 'logo',
+            type: 'LOGO',
+            width: 'FULL',
+            position: 0,
+            logoUrl: 'https://cdn.example/logo.png',
+            addon: null,
+          },
+          addonBlock('a', 'THIRD'),
+          addonBlock('b', 'THIRD'),
+          addonBlock('c', 'THIRD'),
+        ]}
+      />,
+    );
+
+    const rows = screen.getAllByTestId('channel-block-row');
+    expect(rows).toHaveLength(2);
+    expect(within(rows[0]!).getByAltText('Channel logo')).toBeTruthy();
+    expect(
+      within(rows[1]!)
+        .getAllByTestId('channel-block')
+        .map((block) => block.dataset.width),
+    ).toEqual(['THIRD', 'THIRD', 'THIRD']);
+  });
+
   it('renders nothing without blocks', () => {
     render(<ChannelBlocksSection blocks={[]} />);
 

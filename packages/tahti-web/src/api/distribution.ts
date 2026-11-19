@@ -236,6 +236,11 @@ function recomputeMockChecklist(
 }
 
 // ── API ──────────────────────────────────────────────────────────────────────
+// Revelator: `fetchExportPlugins` (export-plugins.ts) is the tested catalog
+// client. `payAndSubmitToRevelator` is the Studio distribution entry point.
+// `fetchRevelatorStatus` is exported for a future release-status UI; keep it
+// out of the main panel until that ships. `startRevelatorCheckout` stays
+// module-local (used by payAndSubmit).
 
 export async function fetchRevelatorStatus(releaseId: string): Promise<{
   data: RevelatorReleaseStatus | null;
@@ -283,7 +288,7 @@ export async function fetchRevelatorBilling(releaseId: string): Promise<{
   }
 }
 
-export async function startRevelatorCheckout(
+async function startRevelatorCheckout(
   releaseId: string,
 ): Promise<
   { ok: true; data: RevelatorCheckoutResponse } | { ok: false; error: string }

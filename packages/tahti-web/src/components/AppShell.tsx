@@ -41,6 +41,7 @@ import {
 import { hasAccountRole, hasStudioAccess } from '../lib/accountRoles';
 import { isAudioEditorPath } from '../lib/audioEditorPath';
 import { cn } from '../lib/cn';
+import { isGoLiveTakeoverPath } from '../lib/goLivePath';
 import { activeSidebarItem } from '../lib/navigationActive';
 import { navigationPathname } from '../lib/navigationPathname';
 import {
@@ -342,10 +343,12 @@ export function AppShell() {
     artistSite,
     channel: artistChannel,
     theme: siteTheme,
-    hideSidebar: hideSiteSidebar,
+    hideSidebar: hideArtistSidebar,
     hideBottomBar: hideSiteBottomBar,
     showRightRail,
   } = useArtistSiteChrome(pathname);
+  const goLiveTakeover = isGoLiveTakeoverPath(pathname);
+  const hideSiteSidebar = hideArtistSidebar || goLiveTakeover;
   const navigationLocation = useRouterState({
     select: (state) => state.location.pathname + state.location.searchStr,
   });
@@ -652,7 +655,9 @@ export function AppShell() {
               )}
               data-studio-shell
             >
-              {studioAccess && getStudioPrimaryRoute(pathname) ? (
+              {studioAccess &&
+              !goLiveTakeover &&
+              getStudioPrimaryRoute(pathname) ? (
                 <StudioNav current={navigationLocation} />
               ) : null}
               <RouteContent>
@@ -667,7 +672,7 @@ export function AppShell() {
             {!fullScreenPlayerOpen && !hideSiteBottomBar && (
               <ConnectedPlayerBar />
             )}
-            {!hideSiteBottomBar && (
+            {!hideSiteBottomBar && !goLiveTakeover && (
               <MobileBottomNav
                 onOpenMore={() => setMobileNavOpen(true)}
                 moreOpen={mobileNavOpen}
@@ -708,7 +713,9 @@ export function AppShell() {
                 )}
                 data-studio-shell
               >
-                {studioAccess && getStudioPrimaryRoute(pathname) ? (
+                {studioAccess &&
+                !goLiveTakeover &&
+                getStudioPrimaryRoute(pathname) ? (
                   <StudioNav current={navigationLocation} />
                 ) : null}
                 <RouteContent>

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Deprecated: prefer `pnpm desktop` / `tahti-ops desktop run` from the repo root.
 
 set -euo pipefail
 

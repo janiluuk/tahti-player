@@ -66,6 +66,11 @@ test('desktop chrome stays mounted from Listen through Library, Studio and Admin
   await page.goto('/library/files');
   await expectChrome(page, [SHELL, TOP_NAV, SIDEBAR]);
   await expect(page.locator(BOTTOM_NAV)).toBeHidden();
+
+  await page.goto('/studio/go-live');
+  await expectChrome(page, [SHELL, TOP_NAV]);
+  await expect(page.locator(STUDIO_NAV)).toHaveCount(0);
+  await expect(page.locator(SIDEBAR)).toHaveCount(0);
   expect(errors).toEqual([]);
 });
 

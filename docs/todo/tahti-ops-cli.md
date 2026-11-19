@@ -26,6 +26,8 @@ install the product CLI without deploy SSH tooling.
 | `tahti-ops test [group…]` | `turbo test` / per-package `pnpm --filter … test` | groups web ui player storybook types lint all; args after `--` |
 | `tahti-ops e2e journeys\|tasks\|playwright` | `run-e2e-journeys.sh`, `*-tasks-journey.mjs`, `pnpm test:e2e` | `--env-file` for real-backend credentials |
 | `tahti-ops snapshots list\|update` | `vitest run -u` per package, `generate-storybook-surfaces.mjs` | groups ui player hifi surfaces, or all; `--only <test>`; prints changed `.snap` files |
+| `tahti-ops storybook surfaces` | `scripts/generate-storybook-surfaces.mjs` | `--check` / `--report` / `--stage`; same as `pnpm storybook:surfaces` |
+| `tahti-ops github close-external-issue` | `scripts/close-external-issue.cjs` | Validates workflow hook; GitHub API runs in `close-external-issues.yml` only |
 | `tahti-ops deploy web\|storybook` | `deploy-vimage.sh` in each package | `--ci` dispatches `deploy-tahti-web-selfhosted.yml` |
 | `tahti-ops release prepare <version>` | `scripts/deploy-production.sh` (deleted) | wraps `prepare-release.mjs`; `--build` adds `tauri build`; refuses an existing tag |
 | `tahti-ops check size` | `scripts/check-file-size.mjs` (deleted) | `--update` / `--prune`; baseline stays in `scripts/file-size-baseline.json`; CI via `pnpm check:file-size` |
@@ -98,8 +100,8 @@ Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` lab
 | deploy-production.sh | `release prepare` | shipped (script deleted) |
 | scripts/ci/* | keep CI-only; optional `ci digest` | planned |
 | check-file-size.mjs | `check size` | shipped (script deleted) |
-| generate-storybook-surfaces.mjs | `storybook surfaces` | planned |
-| close-external-issue.cjs | `github …` | planned |
+| generate-storybook-surfaces.mjs | `storybook surfaces` | shipped |
+| close-external-issue.cjs | `github close-external-issue` | shipped (validate locally; API in CI) |
 
 ### Keep package-local
 

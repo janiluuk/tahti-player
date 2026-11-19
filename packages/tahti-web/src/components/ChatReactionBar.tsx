@@ -11,16 +11,15 @@ import { Eyebrow } from './tahti/Eyebrow';
 // (packages/shared/src/dto/chat.ts in the main tahti repo) -- anything
 // outside this set gets rejected server-side with "Invalid emoji".
 const REACTION_EMOJIS = ['💜', '🔥', '🎶', '🎵', '🌟', '👏', '✨'] as const;
-const REACTION_EMOJI_LABELS: Record<(typeof REACTION_EMOJIS)[number], string> =
-  {
-    '💜': 'purple heart',
-    '🔥': 'fire',
-    '🎶': 'musical notes',
-    '🎵': 'musical note',
-    '🌟': 'glowing star',
-    '👏': 'clapping hands',
-    '✨': 'sparkles',
-  };
+const REACTION_EMOJI_LABEL_KEYS = {
+  '💜': 'chatReactionBar.emojiPurpleHeart',
+  '🔥': 'chatReactionBar.emojiFire',
+  '🎶': 'chatReactionBar.emojiMusicalNotes',
+  '🎵': 'chatReactionBar.emojiMusicalNote',
+  '🌟': 'chatReactionBar.emojiGlowingStar',
+  '👏': 'chatReactionBar.emojiClappingHands',
+  '✨': 'chatReactionBar.emojiSparkles',
+} as const satisfies Record<(typeof REACTION_EMOJIS)[number], string>;
 
 const INCOMING_VISIBLE_MS = 4000;
 const INCOMING_MAX = 12;
@@ -63,7 +62,9 @@ export function ChatReactionBar({
           size="xs"
           variant="text"
           disabled={busy}
-          aria-label={`React with ${REACTION_EMOJI_LABELS[emoji]}`}
+          aria-label={t('chatReactionBar.reactWith', {
+            label: t(REACTION_EMOJI_LABEL_KEYS[emoji]),
+          })}
           onClick={() => {
             setBusy(true);
             void postChatReaction(slug, emoji).then((r) => {
@@ -83,7 +84,10 @@ export function ChatReactionBar({
       {sent && (
         <span className="text-foreground-secondary text-xs" role="status">
           Sent {sent}
-          <span className="sr-only"> ({REACTION_EMOJI_LABELS[sent]})</span>
+          <span className="sr-only">
+            {' '}
+            ({t(REACTION_EMOJI_LABEL_KEYS[sent])})
+          </span>
         </span>
       )}
       {incoming.length > 0 && (

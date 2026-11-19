@@ -1,3 +1,14 @@
+## 2026-11-19 — Next 30 slices (Go live, Playlists, a11y, hygiene, ops)
+
+Go live chrome takeover (`isGoLiveTakeoverPath`); Library → Playlists
+(own + saved); Channel multistream deep-links to Go live; a11y P2 #23 leftovers
+(stable pressed names, chat Connecting status, Jam search labels, en/fi chrome);
+nginx CSP guards; view-first dead-code honesty; EditorWaveSurfer parity tests
+(ProWaveform delete deferred); tahti-ops storybook/github folds; Storybook
+file-count note; library-playlists + nav-perf snapshot remount assert; channel
+blocks logo/third packing. Folded `next-30-slices.md`. tahti-web 0.0.422 /
+ui 0.0.27.
+
 ## 2026-11-19 — Desktop ambient cheap path + PlayerBar blur (harden/perf)
 
 Ambient backdrop: no AA, DPR 1, 15 fps; dropped `mix-blend-screen`. BottomBar /

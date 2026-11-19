@@ -30,6 +30,34 @@ describe('useSnapshotFetch', () => {
     expect(second.result.current.refreshing).toBe(false);
   });
 
+  it('navigation remount keeps the snapshot without a blank loading state', async () => {
+    let loads = 0;
+    const first = renderHook(() =>
+      useSnapshotFetch('nav', async () => {
+        loads += 1;
+        return { page: 'listen' };
+      }),
+    );
+    await waitFor(() =>
+      expect(first.result.current.data).toEqual({ page: 'listen' }),
+    );
+    expect(loads).toBe(1);
+    first.unmount();
+
+    const remount = renderHook(() =>
+      useSnapshotFetch('nav', async () => {
+        loads += 1;
+        return { page: 'listen-refreshed' };
+      }),
+    );
+    expect(remount.result.current.data).toEqual({ page: 'listen' });
+    expect(remount.result.current.loading).toBe(false);
+    await waitFor(() =>
+      expect(remount.result.current.data).toEqual({ page: 'listen-refreshed' }),
+    );
+    expect(loads).toBe(2);
+  });
+
   it('keeps the snapshot and reports the error when a refresh fails', async () => {
     const ok = renderHook(() =>
       useSnapshotFetch('e', () => Promise.resolve('saved')),

@@ -149,3 +149,22 @@ export const PhoneWidth: Story = {
     ),
   ],
 };
+
+/** Desktop player preview surface: stored peaks only, no decode (same contract
+ * as tahti-web large previews). */
+export const DesktopPreview: Story = {
+  args: {
+    peaks: WAVEFORM_DEMO_PEAKS,
+    durationSec: WAVEFORM_DEMO_DURATION,
+    progress: 0.42,
+    height: 128,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Peaks-only preview for the future desktop embed of @tahti-player/ui Waveform — no audioUrl and no browser decode.',
+      },
+    },
+  },
+};

@@ -8,8 +8,6 @@ Each slice has its own file. This list is only the map. Fold a slice file when t
 11. [ ] [HearThis release product defaults](hearthis-release-product-defaults.md) (`hearthis-to-tahti-release-cli.md`).
 12. [ ] [HearThis release live run](hearthis-release-live-run.md) (`hearthis-to-tahti-release-cli.md`).
 13. [ ] [HearThis collection live run](hearthis-collection-live-run.md) (`hearthis-collections-cli.md`).
-20. [ ] [Finish 2026-11-04 WIP branches](finish-wip-2026-11-04-branches.md) (`finish-wip-2026-11-04.md`).
-30. [ ] [Pre-generate Yaniho channel peaks](yaniho-channel-pregenerate-peaks.md) (`server-peaks-everywhere.md`).
 31. [ ] [Run artwork preset cover backfill](artwork-preset-backfill.md) (`artwork-preset-covers.md`).
 32. [ ] [Listings news opening post](listings-news-opening-post.md) (`listings-news-polish.md`).
 39. [ ] [Finnish API notification bodies](finnish-api-notifications.md) (`finnish-localization.md`).

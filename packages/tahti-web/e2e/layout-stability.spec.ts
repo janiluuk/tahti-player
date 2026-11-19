@@ -6,7 +6,6 @@ const studioRoutes = [
   '/studio',
   '/studio/releases',
   '/studio/editor',
-  '/studio/go-live',
   '/studio/schedule',
   '/studio/schedule?show=events',
   '/studio/shows',
@@ -131,6 +130,17 @@ test('Studio shell stays full-width and keeps navigation geometry stable', async
     '[data-studio-shell]',
     '[data-studio-navigation]',
     '[data-studio-navigation]',
+  );
+});
+
+test('Go live hides Studio nav as a chrome takeover', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await signIn(page);
+  await page.goto('/studio/go-live');
+  await expect(page.locator('[data-studio-shell]').first()).toBeVisible();
+  await expect(page.locator('[data-studio-navigation]')).toHaveCount(0);
+  await expect(page.locator('[data-testid="sidebar-navigation"]')).toHaveCount(
+    0,
   );
 });
 

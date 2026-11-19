@@ -5,6 +5,8 @@ import { cn } from '../../utils';
 
 export type TahtiJamSearchBarLabels = {
   placeholder: string;
+  search?: string;
+  clear?: string;
 };
 
 export type TahtiJamSearchBarProps = {
@@ -42,6 +44,7 @@ export const TahtiJamSearchBar: FC<TahtiJamSearchBarProps> = ({
         value={value}
         onChange={handleChange}
         placeholder={labels.placeholder}
+        aria-label={labels.search ?? labels.placeholder}
         enterKeyHint="search"
         autoComplete="off"
         autoCorrect="off"
@@ -53,10 +56,11 @@ export const TahtiJamSearchBar: FC<TahtiJamSearchBarProps> = ({
         <button
           type="button"
           onClick={handleClear}
+          aria-label={labels.clear ?? 'Clear search'}
           className="text-foreground-secondary hover:text-foreground shrink-0 transition-colors"
           data-testid="jam-search-clear"
         >
-          <X className="size-5" />
+          <X className="size-5" aria-hidden />
         </button>
       )}
     </div>

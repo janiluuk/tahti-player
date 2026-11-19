@@ -35,7 +35,7 @@ Re-checked 2026-11-09 against the specs (several cells had gone stale).
 | Player: play, pause, seek, fullscreen | ✅ (play, pause) | ✅ (seek, full screen skip / pause / minimize) | ✅ (minimize, queue) | — |
 | Queue | ❌ | ✅ | ✅ | — |
 | Favorites | — | ✅ | ✅ (like a listed track) | — |
-| Playlists (own, collaborative add / undo) | — | ✅ (create from a track, collaborative add / undo) | ◐ (editor opens) | — |
+| Playlists (own, collaborative add / undo) | — | ✅ (create from a track, collaborative add / undo; Library → Playlists tab at 1440/390) | ◐ (editor opens) | — |
 | Library History / Following | — | ✅ | ◐ | — |
 | Listening stats | — | ◐ (Stats / History tabs) | ❌ | — |
 | Comments, chat, messages | ✅ (comment asks to log in) | ✅ | ✅ (moderation) | — |
@@ -102,6 +102,13 @@ is wrong and a suggested fix, then turn the agreed ones into slices.
 | Screen | Issue | Kind | Suggestion |
 | --- | --- | --- | --- |
 | Library (`/library/*`) | Twelve tabs in one row (Overview … Smart links) | messy | Per the navigation plan, move the catalog tabs to Studio → Music |
+
+### Findings from mock multi-viewport pass (2026-11-19)
+
+| Screen | Issue | Kind | Suggestion |
+| --- | --- | --- | --- |
+| Go live (`/studio/go-live`) | StudioNav + sidebar stayed mounted on a takeover surface | messy | Hide StudioNav / sidebar / mobile bottom nav via `isGoLiveTakeoverPath` (shipped) |
+| Library Playlists | Tab missing from Library sections; create path unclear | gap | `/library/playlists` + Create playlist → Studio collections (shipped; `library-playlists.spec.ts`) |
 
 ## Specs on the mock app
 

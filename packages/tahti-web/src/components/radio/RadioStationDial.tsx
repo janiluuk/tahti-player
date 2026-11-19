@@ -54,7 +54,7 @@ export function RadioStationDial({
   return (
     <div
       role="group"
-      aria-label={`${label}: swipe or use the arrow keys to change station`}
+      aria-label={t('radioStationDialLabels.stage', { label })}
       aria-keyshortcuts="ArrowLeft ArrowRight"
       tabIndex={0}
       className={cn(

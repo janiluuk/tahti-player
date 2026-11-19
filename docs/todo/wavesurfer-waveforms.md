@@ -70,3 +70,13 @@ migration”).
 7. ~~**Old code**~~ (batch 88) — keep ambient canvas + player-bar
    `WaveformSeekbar`; replace large preview call sites; ProWaveform remains
    fallback until editor parity is done.
+
+## Slice 14–24 follow-up (2026-11-19)
+
+- [x] `EditorWaveSurfer` parity tests: trim overlays, zoom/view window,
+  selection region update/clear (`EditorWaveSurfer.test.tsx`).
+- [x] `@tahti-player/ui` `Waveform` Storybook `DesktopPreview` (peaks-only,
+  no decode) for future desktop embed.
+- [ ] **ProWaveform deletion** — deferred: fallback still wired from
+  `WaveformEditor` (`onFallback`); parity tests exist but manual editor QA and
+  removing `ProWaveformHandle` ref plumbing remain before delete.

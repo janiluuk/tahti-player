@@ -70,7 +70,17 @@ export const MixedWidths: Story = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await expect(canvas.getAllByTestId('channel-block-row')).toHaveLength(3);
+    const rows = canvas.getAllByTestId('channel-block-row');
+    await expect(rows).toHaveLength(3);
+    await expect(within(rows[0]!).getByAltText('Channel logo')).toBeTruthy();
+    await expect(
+      within(rows[1]!)
+        .getAllByTestId('channel-block')
+        .map((block) => block.dataset.width),
+    ).toEqual(['HALF', 'HALF']);
+    await expect(
+      within(rows[2]!).getByTestId('channel-block').dataset.width,
+    ).toBe('THIRD');
   },
 };
 

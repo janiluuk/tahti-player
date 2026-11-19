@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Deprecated: prefer `tahti-ops desktop launch` (or `pnpm desktop` after build).
 
 set -euo pipefail
 
@@ -12,7 +13,7 @@ application_path="$repository_root/packages/player/src-tauri/target/release/taht
 
 if [[ ! -x "$application_path" ]]; then
   echo "No compiled Linux player was found at $application_path." >&2
-  echo "Run pnpm player:build:run first." >&2
+  echo "Run pnpm desktop or tahti-ops desktop run first." >&2
   exit 1
 fi
 
