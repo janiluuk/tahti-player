@@ -57,7 +57,7 @@ Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` lab
 
 | Script | `tahti-ops` surface | Status |
 | --- | --- | --- |
-| stack-up.sh | `stack up` / `stack down` | planned |
+| stack-up.sh | `stack up` / `stack down` | done (`stack-up.mjs`) |
 | stack-smoke.sh | `stack smoke` | shipped |
 | unified-smoke.sh | `stack smoke --unified` | planned |
 | status-monitor.sh | `stack status` | planned |
@@ -86,7 +86,7 @@ Shared: `--help`, `--dry-run`, `TAHTI_ORG_ROOT`, short `→` / `✓` / `✗` lab
 | channel-load-test.sh / editor-load-test.sh | `load channel` / `load editor` | planned |
 | check-design-tokens.sh / check-reference-token-values.sh / check-font-weight-cap.sh / design-conformance-routes.sh | `check design …` | planned |
 | dev-setup.sh | `dev setup` | planned |
-| ci-check.sh | `ci check` | planned |
+| (lint + prettier + type-check) | `check ci` | done (`check-ci.mjs`) |
 | ci-docker-cleanup.sh / docker-disk-cleanup.sh | `docker cleanup` | planned |
 | run-e2e-journeys.sh | `e2e journeys` | planned |
 | capture-e2e-screenshots.mjs / capture-mobile-screenshots.mjs / e2e-screenshots.sh / demo-live-screenshots.mjs | `e2e capture …` | planned |

@@ -3,6 +3,10 @@
 
 set -euo pipefail
 
+if [[ -z "${TAHTI_OPS_QUIET:-}" ]]; then
+  echo "note: prefer \`pnpm tahti-ops desktop launch\` after a build." >&2
+fi
+
 if [[ "$(uname -s)" != "Linux" ]]; then
   echo "This command must be run on Linux." >&2
   exit 1

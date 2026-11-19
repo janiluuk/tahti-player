@@ -18,6 +18,10 @@
 
 set -euo pipefail
 
+if [[ -z "${TAHTI_OPS_QUIET:-}" ]]; then
+  echo "note: prefer \`pnpm tahti-ops e2e journeys\` from the monorepo root." >&2
+fi
+
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 

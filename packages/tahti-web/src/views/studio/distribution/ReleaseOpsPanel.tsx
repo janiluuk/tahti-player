@@ -32,6 +32,7 @@ import {
   patchReleaseCatalog,
   payAndSubmitToRevelator,
 } from '../../../api/distribution';
+import { fetchExportPlugins } from '../../../api/export-plugins';
 import type {
   ReleaseCatalog,
   ReleaseChecklistItem,
@@ -78,10 +79,37 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState(false);
   const [confirmSubmit, setConfirmSubmit] = useState(false);
+  const [exportSubmitEnabled, setExportSubmitEnabled] = useState(true);
+  const [exportProviderName, setExportProviderName] = useState('Revelator');
   const [activeMethods, setActiveMethods] = useState<Set<string>>(
     new Set(['upc', 'musicbrainz', 'discogs', 'rights']),
   );
   const methodsInitialised = useRef(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    void fetchExportPlugins()
+      .then((result) => {
+        if (cancelled) {
+          return;
+        }
+        const revelator = result.data.find((row) => row.id === 'revelator');
+        if (revelator) {
+          setExportProviderName(revelator.name);
+          setExportSubmitEnabled(revelator.capabilities.submit);
+        } else if (result.source === 'api') {
+          setExportSubmitEnabled(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setExportSubmitEnabled(false);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const revelatorStatus =
     catalog?.revelatorStatus ?? release.revelatorStatus ?? null;
@@ -484,6 +512,8 @@ export function ReleaseOpsPanel({ release }: { release: StudioRelease }) {
         royalties={royalties}
         royaltiesError={royaltiesError}
         onRetryRoyalties={() => setRoyaltiesLoaded(false)}
+        exportSubmitEnabled={exportSubmitEnabled}
+        exportProviderName={exportProviderName}
       />
     </div>
   );

@@ -48,9 +48,14 @@ pnpm tahti-ops env list
 pnpm tahti-ops env get RATE_LIMIT_AUTH_MAX
 pnpm tahti-ops env preset ratelimit-loose --dry-run
 
-# local compose smoke (needs Docker + ../tahti-org)
+# local compose (needs Docker + ../tahti-org)
+pnpm tahti-ops stack up [--seed] [--no-cache]
+pnpm tahti-ops stack down
 pnpm tahti-ops stack smoke --dry-run
 pnpm tahti-ops stack smoke
+
+# local CI gate
+pnpm tahti-ops check ci --dry-run
 
 # backup ages
 pnpm tahti-ops backup status --dry-run
@@ -85,6 +90,7 @@ Progress lines go to stderr (`→` / `✓` / `✗`); script stdout is unchanged.
 | Instead of | Use |
 | --- | --- |
 | `../tahti-org/scripts/stack-env.sh …` | `pnpm tahti-ops env …` |
+| `../tahti-org/scripts/stack-up.sh` | `pnpm tahti-ops stack up` / `stack down` |
 | `../tahti-org/scripts/stack-smoke.sh` | `pnpm tahti-ops stack smoke` |
 | `../tahti-org/scripts/backup.sh status` | `pnpm tahti-ops backup status` |
 | `../tahti-org/scripts/deploy_prod.sh` | `pnpm tahti-ops deploy stack` |

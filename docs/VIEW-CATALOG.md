@@ -42,6 +42,17 @@ These URLs exist for bookmarks, e2e catalog checks and SEO metadata only. Each
 Route-aware titles for `/library/collections*` may still appear briefly for old
 links; they are not a second Collections catalog surface.
 
+### Storybook-only surfaces (no production importer)
+
+Keep for Storybook / future placement; do not delete without a product home.
+
+| Component | Story | Notes |
+| --- | --- | --- |
+| `CollectionPlayerWidget` | `Tahti/Collections/CollectionPlayerWidget` | Placement is a product call |
+| `InPageNav` | `Tahti/Page/InPageNav` | No production importer today |
+| `HomeTiles` `CompactBroadcastTile` / `SummaryStat` | Studio Home tiles stories | Studio home uses other tiles |
+| `sourceTileSubtitle` | `SourceServiceIcon` story only | Helper for Storybook |
+
 ### Core Listen / Discovery Views
 
 | View                        | Route                      | File                              | Storybook | Candidate For                                                                                                                                                                                                         |

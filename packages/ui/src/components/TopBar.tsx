@@ -8,6 +8,7 @@ type TopBarProps = {
   draggable?: boolean;
 };
 
+/** @deprecated Desktop chrome shell — prefer app-local headers; keep for Storybook. */
 export const TopBar: FC<TopBarProps> = ({ children, className = '' }) => {
   return (
     <header

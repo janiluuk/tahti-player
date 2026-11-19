@@ -1,4 +1,4 @@
-import { mkdtempSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -159,6 +159,26 @@ describe('shortcut commands', () => {
     expect(output()).toContain(
       'gh workflow run deploy-tahti-web-selfhosted.yml --ref master',
     );
+  });
+
+  it('dry-runs stack up and stack down', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'tahti-ops-org-'));
+    mkdirSync(join(root, 'scripts'));
+    writeFileSync(join(root, 'scripts/stack-up.sh'), '#!/bin/bash\necho up\n');
+    vi.stubEnv('TAHTI_ORG_ROOT', root);
+    await main(['stack', 'up', '--seed', '--dry-run']);
+    expect(output()).toContain('dry-run: stack up');
+    logSpy.mockClear();
+    await main(['stack', 'down', '--dry-run']);
+    expect(output()).toContain('dry-run: stack down');
+  });
+
+  it('dry-runs the local CI check chain', async () => {
+    await main(['check', 'ci', '--dry-run']);
+    const text = output();
+    expect(text).toContain('dry-run: ci lint');
+    expect(text).toContain('prettier --check');
+    expect(text).toContain('dry-run: ci type-check');
   });
 
   it('reads credentials from an env file', () => {

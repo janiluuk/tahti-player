@@ -12,6 +12,7 @@ type TopBarNavigationProps = {
   canGoForward?: boolean;
 };
 
+/** @deprecated Desktop chrome history buttons — keep for Storybook. */
 export const TopBarNavigation: FC<TopBarNavigationProps> = ({
   onBack,
   onForward,

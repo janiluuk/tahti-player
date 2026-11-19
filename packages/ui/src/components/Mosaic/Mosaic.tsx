@@ -3,6 +3,7 @@ import { FC } from 'react';
 import { cn } from '../../utils';
 import { ImageReveal } from '../ImageReveal/ImageReveal';
 
+/** @deprecated Library mosaic tile — no production consumer; keep for Storybook. */
 export const MOSAIC_SIZE = 4;
 
 type MosaicProps = {
@@ -10,6 +11,7 @@ type MosaicProps = {
   className?: string;
 };
 
+/** @deprecated Library mosaic tile — no production consumer; keep for Storybook. */
 export const Mosaic: FC<MosaicProps> = ({ urls, className }) => {
   return (
     <div className={cn('grid grid-cols-2 grid-rows-2', className)}>

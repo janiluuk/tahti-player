@@ -30,5 +30,6 @@
 ## Possible follow-ups (pick after the results)
 
 - Default the ambient background off when GPU rendering is unavailable/forced off, or add a frame-time governor that drops to a still background.
-- Audit remaining `backdrop-blur` on scrolling surfaces outside the player chrome.
+- [x] 2026-11-19 (next-30): `JamView`, `FullScreenPlayer`, `EntitySocialHeader` `backdrop-blur-xl/2xl` → `sm` (tahti-web scroll/takeover surfaces).
+- Audit remaining `backdrop-blur` on scrolling surfaces outside the player chrome (`AmbientCard` in ui still uses `xl` for overlay chips).
 - Fold this file into HISTORY when the scroll check is confirmed.

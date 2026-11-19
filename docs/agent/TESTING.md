@@ -120,6 +120,24 @@ it('shows empty state when no playlists', async () => {
 });
 ```
 
+### Storybook play tests (headless Chromium)
+
+The Storybook Vitest project can drop its browser connection after many story
+files in one session (~90s of reload churn). **Locally**, run at most **~60
+story files per invocation** and bisect when a chunk fails:
+
+```bash
+cd packages/storybook
+pnpm exec vitest --project storybook --no-file-parallelism \
+  src/tahti-web/Studio*.stories.tsx
+# Halve the glob until one file reproduces, or use tahti-ops:
+pnpm tahti-ops test storybook -- src/tahti-web/Admin*.stories.tsx
+```
+
+CI shards (~50 files) plus one retry; Chromium launches with
+`--disable-dev-shm-usage` (see `packages/storybook/vitest.config.ts`) so small
+`/dev/shm` runners do not kill the renderer mid-run.
+
 ## CI pipeline (`.github/workflows/ci.yml`)
 
 - **`changes`** decides what runs. A PR that only touches Markdown, `docs/`, `packages/docs/` or images skips everything below; the `CI` gate counts skipped jobs as passed. Finer outputs (`web`, `storybook`, `player`) skip UI/player work on PRs that do not touch those packages (master and manual runs still run everything).

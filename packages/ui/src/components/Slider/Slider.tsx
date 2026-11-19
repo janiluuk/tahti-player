@@ -136,6 +136,7 @@ const SliderRoot: FC<
   );
 };
 
+/** @deprecated Compose via `Slider` compound API only when needed in Storybook. */
 export const SliderHeader: FC<{ label?: string; showValue?: boolean }> = ({
   label,
   showValue = true,
@@ -159,6 +160,7 @@ export const SliderHeader: FC<{ label?: string; showValue?: boolean }> = ({
   );
 };
 
+/** @deprecated Prefer the composed `Slider` export. */
 export const SliderTrack: FC = () => {
   const { percentage } = useSliderContext();
   return (
@@ -177,6 +179,7 @@ export const SliderTrack: FC = () => {
   );
 };
 
+/** @deprecated Prefer the composed `Slider` export. */
 export const SliderRangeInput: FC = () => {
   const {
     inputId,
@@ -215,10 +218,12 @@ export const SliderRangeInput: FC = () => {
   );
 };
 
+/** @deprecated Prefer the composed `Slider` export. */
 export const SliderSurface: FC<PropsWithChildren> = ({ children }) => (
   <div className="relative h-6 w-full overscroll-contain">{children}</div>
 );
 
+/** @deprecated Prefer the composed `Slider` export. */
 export const SliderFooter: FC<{
   startLabel?: string;
   endLabel?: string;

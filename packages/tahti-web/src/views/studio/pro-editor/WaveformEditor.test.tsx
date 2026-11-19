@@ -1,8 +1,13 @@
-import { render, screen } from '@testing-library/react';
-import { forwardRef, useEffect } from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { WaveformEditor } from './WaveformEditor';
+
+const toastError = vi.fn();
+
+vi.mock('sonner', () => ({
+  toast: { error: (...args: unknown[]) => toastError(...args) },
+}));
 
 vi.mock('../../../lib/audioPreviewGraph', () => ({
   useAudioPreviewGraph: () => ({ effectsBlocked: false }),
@@ -19,27 +24,13 @@ vi.mock('./waveform/useWaveformData', () => ({
 
 vi.mock('./waveform/EditorWaveSurfer', () => ({
   EditorWaveSurfer: ({ onFallback }: { onFallback?: () => void }) => {
-    useEffect(() => {
-      onFallback?.();
-    }, [onFallback]);
+    onFallback?.();
     return <div data-testid="editor-wavesurfer" />;
   },
 }));
 
-vi.mock('./waveform/ProWaveform', () => ({
-  ProWaveform: forwardRef(function ProWaveform() {
-    return <div data-testid="pro-waveform" />;
-  }),
-}));
-
-vi.mock('./waveform/ProMinimap', () => ({
-  ProMinimap: forwardRef(function ProMinimap() {
-    return <div data-testid="pro-minimap" />;
-  }),
-}));
-
 describe('WaveformEditor', () => {
-  it('says so when it falls back to the basic waveform', async () => {
+  it('keeps wavesurfer mounted and toasts when initialisation fails', async () => {
     render(
       <WaveformEditor
         sourceUrl={null}
@@ -54,10 +45,8 @@ describe('WaveformEditor', () => {
       />,
     );
 
-    expect(await screen.findByTestId('pro-waveform')).toBeInTheDocument();
-    expect(screen.getByTestId('editor-basic-waveform')).toHaveTextContent(
-      'Showing the basic waveform',
-    );
-    expect(screen.queryByTestId('editor-wavesurfer')).toBeNull();
+    expect(screen.getByTestId('editor-wavesurfer')).toBeInTheDocument();
+    expect(screen.queryByTestId('editor-basic-waveform')).toBeNull();
+    await waitFor(() => expect(toastError).toHaveBeenCalled());
   });
 });

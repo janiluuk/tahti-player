@@ -36,6 +36,8 @@ export function DeliveryTab({
   royalties,
   royaltiesError = null,
   onRetryRoyalties,
+  exportSubmitEnabled = true,
+  exportProviderName = 'Revelator',
 }: {
   revelatorStatus: string | null;
   revelatorId: string | null;
@@ -50,6 +52,9 @@ export function DeliveryTab({
   royalties: RevelatorRoyaltyReportRow[];
   royaltiesError?: string | null;
   onRetryRoyalties?: () => void;
+  /** From `GET /api/me/export-plugins` capabilities.submit for revelator. */
+  exportSubmitEnabled?: boolean;
+  exportProviderName?: string;
 }) {
   const [platforms, setPlatforms] = useState<DistributionPlatformMode[]>([]);
   const [platformsError, setPlatformsError] = useState<string | null>(null);
@@ -140,17 +145,19 @@ export function DeliveryTab({
       <Button
         size="sm"
         className="self-start"
-        disabled={busy || !canSubmit || revelatorStub}
+        disabled={busy || !canSubmit || revelatorStub || !exportSubmitEnabled}
         onClick={() => setConfirmSubmit(true)}
       >
         {!busy && <SendIcon size={14} aria-hidden className="mr-1.5" />}
         {busy
           ? 'Submitting…'
-          : revelatorStub
-            ? 'Revelator stub — configure keys'
-            : billing && !billing.paid && billing.feeCents > 0
-              ? `Pay ${euros(billing.feeCents)} & submit`
-              : 'Submit to Revelator'}
+          : !exportSubmitEnabled
+            ? `${exportProviderName} unavailable`
+            : revelatorStub
+              ? `${exportProviderName} stub — configure keys`
+              : billing && !billing.paid && billing.feeCents > 0
+                ? `Pay ${euros(billing.feeCents)} & submit`
+                : `Submit to ${exportProviderName}`}
       </Button>
 
       <ConfirmDialog

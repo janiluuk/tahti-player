@@ -9,7 +9,6 @@ import {
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
-import { Alert } from '@tahti-player/ui';
 
 import type { EditList } from '../../../api/studio-types';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';
@@ -24,8 +23,6 @@ import {
   nearestListedCrossing,
   nearestZeroCrossing,
 } from './waveform/peaks';
-import { ProMinimap, type ProMinimapHandle } from './waveform/ProMinimap';
-import { ProWaveform, type ProWaveformHandle } from './waveform/ProWaveform';
 import { useWaveformData, type EditorPeaks } from './waveform/useWaveformData';
 import {
   clampView,
@@ -90,8 +87,6 @@ export function WaveformEditor({
 }: Props) {
   const { t } = useTranslation('web');
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const waveRef = useRef<ProWaveformHandle>(null);
-  const minimapRef = useRef<ProMinimapHandle>(null);
   const clockRef = useRef<HTMLSpanElement>(null);
   const [playing, setPlaying] = useState(false);
   const [pausedAt, setPausedAt] = useState(0);
@@ -101,13 +96,14 @@ export function WaveformEditor({
   const [snapToZero, setSnapToZero] = useState(true);
   const [skipCuts, setSkipCuts] = useState(true);
   const [confirm, setConfirm] = useState<Confirm | null>(null);
-  const [useWavesurfer, setUseWavesurfer] = useState(true);
   const [audioEl, setAudioEl] = useState<HTMLAudioElement | null>(null);
   const bindAudio = useCallback((element: HTMLAudioElement | null) => {
     audioRef.current = element;
     setAudioEl(element);
   }, []);
-  const fallbackToCanvas = useCallback(() => setUseWavesurfer(false), []);
+  const onWaveSurferFallback = useCallback(() => {
+    toast.error(t('waveformEditor.wavesurferFailed'));
+  }, [t]);
 
   const { effectsBlocked } = useAudioPreviewGraph(audioRef, editList);
   const duration = editList.sourceDuration;
@@ -231,8 +227,6 @@ export function WaveformEditor({
           t = cut.end;
         }
       }
-      waveRef.current?.setPlayhead(t);
-      minimapRef.current?.setPlayhead(t);
       if (clockRef.current) {
         clockRef.current.textContent = formatClock(t, MS);
       }
@@ -502,69 +496,23 @@ export function WaveformEditor({
         />
 
         <div className="p-5 sm:p-6">
-          {useWavesurfer ? (
-            <EditorWaveSurfer
-              peaks={data}
-              durationSec={duration}
-              media={audioEl}
-              playhead={pausedAt}
-              selection={selection}
-              onSeek={seek}
-              onSelect={setSelection}
-              view={view}
-              onViewChange={setView}
-              snap={snap}
-              cuts={editList.cuts}
-              fades={editList.fades}
-              markers={markers}
-              onKeyDown={onKeyDown}
-              onFallback={fallbackToCanvas}
-            />
-          ) : (
-            <>
-              <Alert
-                tone="info"
-                className="mb-2"
-                data-testid="editor-basic-waveform"
-              >
-                {t('waveformEditor.showingTheBasicWaveformThe')}
-              </Alert>
-              <ProWaveform
-                ref={waveRef}
-                data={data}
-                durationSec={duration}
-                view={view}
-                minSpan={minSpan}
-                onViewChange={setView}
-                overlay={{
-                  cuts: editList.cuts,
-                  fades: editList.fades,
-                  selection,
-                  markers,
-                }}
-                playhead={pausedAt}
-                onSeek={seek}
-                onSelect={setSelection}
-                snap={snap}
-                onKeyDown={onKeyDown}
-              />
-            </>
-          )}
-
-          {useWavesurfer ? null : (
-            <div className="mt-2">
-              <ProMinimap
-                ref={minimapRef}
-                data={data}
-                durationSec={duration}
-                view={view}
-                minSpan={minSpan}
-                cuts={editList.cuts}
-                playhead={pausedAt}
-                onViewChange={setView}
-              />
-            </div>
-          )}
+          <EditorWaveSurfer
+            peaks={data}
+            durationSec={duration}
+            media={audioEl}
+            playhead={pausedAt}
+            selection={selection}
+            onSeek={seek}
+            onSelect={setSelection}
+            view={view}
+            onViewChange={setView}
+            snap={snap}
+            cuts={editList.cuts}
+            fades={editList.fades}
+            markers={markers}
+            onKeyDown={onKeyDown}
+            onFallback={onWaveSurferFallback}
+          />
 
           <div className="text-foreground-secondary mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-xs">
             <span>

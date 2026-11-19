@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { validateProductionBuildEnvironment } from './buildPolicy';
+import {
+  assertProductionBundleFreeOfMockMarkers,
+  PRODUCTION_MOCK_MARKERS,
+  validateProductionBuildEnvironment,
+} from './buildPolicy';
 
 describe('validateProductionBuildEnvironment', () => {
   it('accepts development and strict production builds', () => {
@@ -24,4 +28,14 @@ describe('validateProductionBuildEnvironment', () => {
       ).toThrow(`${key}=1`);
     },
   );
+
+  it('rejects known mock fixture markers in bundle text', () => {
+    const sample = `export const routes = ['/party/${PRODUCTION_MOCK_MARKERS[0]}'];`;
+    expect(() => assertProductionBundleFreeOfMockMarkers(sample)).toThrow(
+      PRODUCTION_MOCK_MARKERS[0],
+    );
+    expect(() =>
+      assertProductionBundleFreeOfMockMarkers('export function ok() {}'),
+    ).not.toThrow();
+  });
 });

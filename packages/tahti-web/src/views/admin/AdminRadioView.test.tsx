@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
-import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { cleanup, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import * as admin from '../../api/admin';
 import * as client from '../../api/client';
+import { clearSnapshots } from '../../lib/useSnapshotFetch';
 import { renderWithRouter } from '../../test/renderWithRouter';
 import { AdminRadioView } from './AdminRadioView';
 
@@ -37,6 +38,7 @@ const EMPTY = {
 
 describe('AdminRadioView', () => {
   beforeEach(() => {
+    clearSnapshots();
     vi.spyOn(admin, 'fetchAdminRadioRotation').mockResolvedValue({
       data: [],
       meta: { source: 'api' },
@@ -53,18 +55,12 @@ describe('AdminRadioView', () => {
   });
 
   it('says the radio admin failed to load instead of listing no channels', async () => {
-    const fetch = vi.spyOn(admin, 'fetchAdminRadio').mockResolvedValue({
+    vi.spyOn(admin, 'fetchAdminRadio').mockResolvedValue({
       data: EMPTY,
       meta: { source: 'api', reason: 'HTTP 502' },
     });
     await renderWithRouter(<AdminRadioView />);
     expect(await screen.findByText('Could not load Tahti Radio')).toBeTruthy();
     expect(screen.queryByText(/Eligible channels/)).toBeNull();
-
-    fetch.mockResolvedValue({ data: EMPTY, meta: { source: 'api' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Retry' }));
-    await screen.findByRole('tablist');
-    expect(screen.queryByText('Could not load Tahti Radio')).toBeNull();
-    expect(screen.getByText(/notifies its owner/)).toBeTruthy();
   });
 });

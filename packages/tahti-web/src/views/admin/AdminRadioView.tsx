@@ -11,7 +11,7 @@ import {
   Settings2Icon,
   XCircleIcon,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import {
@@ -42,6 +42,7 @@ import { ListingDate } from '../../components/ListingDate';
 import { MulticastSection } from '../../components/MulticastSection';
 import { PageEmpty, PageError, PageLoading } from '../../components/PageStates';
 import { StudioPanel } from '../../components/StudioPanel';
+import { apiResult, useSnapshotFetch } from '../../lib/useSnapshotFetch';
 import { usePlayerStore } from '../../stores/playerStore';
 import {
   ADMIN_RADIO_TABS,
@@ -65,34 +66,37 @@ export function AdminRadioView() {
   const currentId = usePlayerStore((state) => state.currentId);
   const playbackStatus = usePlayerStore((state) => state.status);
   const setPlaybackStatus = usePlayerStore((state) => state.setStatus);
-  const [data, setData] = useState<AdminRadioData | null>(null);
+  const {
+    data,
+    loading,
+    error: loadError,
+    retry,
+  } = useSnapshotFetch<AdminRadioData | null>('admin-radio', async () =>
+    apiResult(fetchAdminRadio()),
+  );
   const [rotation, setRotation] = useState<AdminRadioRotationItem[]>([]);
   const [station, setStation] = useState<Awaited<
     ReturnType<typeof fetchRadioStation>
   > | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
+  const refreshAuxiliary = useCallback(() => {
+    void Promise.all([fetchAdminRadioRotation(), fetchRadioStation()]).then(
+      ([rotationResult, stationResult]) => {
+        setRotation(rotationResult.data);
+        setStation(stationResult);
+      },
+    );
+  }, []);
+
   const reload = () => {
-    void Promise.all([
-      fetchAdminRadio(),
-      fetchAdminRadioRotation(),
-      fetchRadioStation(),
-    ]).then(([radioResult, rotationResult, stationResult]) => {
-      setLoadError(
-        radioResult.meta.source === 'api'
-          ? (radioResult.meta.reason ?? null)
-          : null,
-      );
-      setData(radioResult.data);
-      setRotation(rotationResult.data);
-      setStation(stationResult);
-      setLoading(false);
-    });
+    void retry();
+    refreshAuxiliary();
   };
 
-  useEffect(reload, []);
+  useEffect(() => {
+    refreshAuxiliary();
+  }, [refreshAuxiliary]);
 
   const stationPlayableId = 'radio:tahti-radio';
   const stationPlaying =
@@ -161,20 +165,23 @@ export function AdminRadioView() {
                 </p>
               )}
 
-              {loading || !data ? (
+              {loading ? (
                 <StudioPanel>
                   <PageLoading label={t('loading.loadingRadio')} />
                 </StudioPanel>
-              ) : loadError ? (
+              ) : loadError && !data ? (
                 <StudioPanel>
                   <PageError
                     title={t('loadErrors.couldNotLoadTahtiRadio')}
                     description={loadError}
                     onRetry={() => {
-                      setLoading(true);
-                      reload();
+                      retry();
                     }}
                   />
+                </StudioPanel>
+              ) : !data ? (
+                <StudioPanel>
+                  <PageLoading label={t('loading.loadingRadio')} />
                 </StudioPanel>
               ) : (
                 <Tabs
