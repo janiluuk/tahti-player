@@ -1,3 +1,10 @@
+## 2026-11-19 — Desktop ambient cheap path + PlayerBar blur (harden/perf)
+
+Ambient backdrop: no AA, DPR 1, 15 fps; dropped `mix-blend-screen`. BottomBar /
+PlayerBar `backdrop-blur-sm`. MPD `password` parse + dead_code cleanup. Platform
+notes match compositing defaults. tahti-web 0.0.421 / ui 0.0.26 / player
+1.47.349. Scroll check remains in `desktop-ui-slowness.md`.
+
 ## 2026-11-19 — Language uiLocale persist + finish-wip-2026-11-04 folded
 
 Language panel PATCHes `uiLocale`; auth hydrates from profile. Folded

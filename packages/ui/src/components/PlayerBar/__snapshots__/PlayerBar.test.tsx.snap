@@ -3,7 +3,7 @@
 exports[`PlayerBar > (Snapshot) active states render 1`] = `
 <DocumentFragment>
   <footer
-    class="bg-background/95 border-border flex h-[4.5rem] items-center border-t-(length:--border-width) shadow-[0_-10px_30px_rgba(0,0,0,0.16)] backdrop-blur-xl px-5"
+    class="bg-background/95 border-border flex h-[4.5rem] items-center border-t-(length:--border-width) shadow-[0_-10px_30px_rgba(0,0,0,0.16)] backdrop-blur-sm px-5"
   >
     <div
       class="grid w-full grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,1fr)] items-center gap-5"
@@ -332,7 +332,7 @@ exports[`PlayerBar > (Snapshot) active states render 1`] = `
 exports[`PlayerBar > (Snapshot) default render 1`] = `
 <DocumentFragment>
   <footer
-    class="bg-background/95 border-border flex h-[4.5rem] items-center border-t-(length:--border-width) shadow-[0_-10px_30px_rgba(0,0,0,0.16)] backdrop-blur-xl px-5"
+    class="bg-background/95 border-border flex h-[4.5rem] items-center border-t-(length:--border-width) shadow-[0_-10px_30px_rgba(0,0,0,0.16)] backdrop-blur-sm px-5"
   >
     <div
       class="grid w-full grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,1fr)] items-center gap-5"
@@ -653,7 +653,7 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
     style="width: 420px;"
   >
     <footer
-      class="bg-background/95 border-border flex h-[4.5rem] items-center border-t-(length:--border-width) shadow-[0_-10px_30px_rgba(0,0,0,0.16)] backdrop-blur-xl px-5"
+      class="bg-background/95 border-border flex h-[4.5rem] items-center border-t-(length:--border-width) shadow-[0_-10px_30px_rgba(0,0,0,0.16)] backdrop-blur-sm px-5"
     >
       <div
         class="grid w-full grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,1fr)] items-center gap-5"
@@ -972,7 +972,7 @@ exports[`PlayerBar > (Snapshot) long metadata truncation 1`] = `
 exports[`PlayerBar > (Snapshot) no artwork fallback 1`] = `
 <DocumentFragment>
   <footer
-    class="bg-background/95 border-border flex h-[4.5rem] items-center border-t-(length:--border-width) shadow-[0_-10px_30px_rgba(0,0,0,0.16)] backdrop-blur-xl px-5"
+    class="bg-background/95 border-border flex h-[4.5rem] items-center border-t-(length:--border-width) shadow-[0_-10px_30px_rgba(0,0,0,0.16)] backdrop-blur-sm px-5"
   >
     <div
       class="grid w-full grid-cols-[minmax(0,1fr)_minmax(0,2.5fr)_minmax(0,1fr)] items-center gap-5"

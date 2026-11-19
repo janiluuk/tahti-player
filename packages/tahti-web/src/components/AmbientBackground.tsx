@@ -72,7 +72,7 @@ export function AmbientBackground() {
 
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-0 mix-blend-screen"
+      className="pointer-events-none fixed inset-0 z-0"
       style={{ opacity }}
       aria-hidden
       data-ambient-background
@@ -91,6 +91,8 @@ export function AmbientBackground() {
           colorScheme={AMBIENT_SCHEME}
           visualSettingsJson={`{"${preset}":{"speed":${speed},"intensity":${intensity}}}`}
           audioReactive={audioReactive}
+          backdrop
+          showModeButtons={false}
           className="h-full w-full"
         />
       )}

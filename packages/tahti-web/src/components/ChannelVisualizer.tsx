@@ -42,6 +42,8 @@ type Props = {
    * under other content and cannot be clicked. */
   showModeButtons?: boolean;
   onEngineModeChange?: (mode: VisualizerMode) => void;
+  /** Cheap full-window ambient path (lower DPR / FPS, no antialias). */
+  backdrop?: boolean;
 };
 
 const ThreeVisualizer = lazy(() =>
@@ -189,6 +191,7 @@ export const ChannelVisualizer = ({
   engineMode,
   showModeButtons = true,
   onEngineModeChange,
+  backdrop = false,
 }: Props) => {
   const [canAnimate, setCanAnimate] = useState(false);
   const [offscreen, setOffscreen] = useState(false);
@@ -286,6 +289,7 @@ export const ChannelVisualizer = ({
         settings={settingsOverride ?? settings}
         artworkUrl={artworkUrl}
         audioReactive={resolvedAudioReactive}
+        backdrop={backdrop}
       />
     </Suspense>
   );
