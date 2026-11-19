@@ -24,6 +24,7 @@ import {
   type AdminSelectsItem,
   type AdminSelectsStream,
 } from '../../../../api/admin';
+import { ConfirmDialog } from '../../../../components/ConfirmDialog';
 import {
   PageEmpty,
   PageError,
@@ -69,7 +70,11 @@ export function SelectsTab() {
   const [generateOpen, setGenerateOpen] = useState(false);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [adding, setAdding] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
+  const [pendingRemove, setPendingRemove] = useState<AdminSelectsItem | null>(
+    null,
+  );
   const recoveryAttempted = useRef(false);
   const selectsPlayableId = 'live:tahti-selects';
   const isStreamPlaying =
@@ -323,6 +328,7 @@ export function SelectsTab() {
         ) : (
           <TahtiRotationPlaylistEditor
             items={items}
+            busy={busy}
             onPreview={(item) => {
               if (!item.audioUrl) {
                 return;
@@ -340,8 +346,10 @@ export function SelectsTab() {
             onReorder={(next) => {
               const previous = items;
               setItems(next);
+              setBusy(true);
               void reorderSelectsRotation(next.map((item) => item.id)).then(
                 (result) => {
+                  setBusy(false);
                   if (!result.ok) {
                     setItems(previous);
                     setMsg(result.error);
@@ -349,18 +357,41 @@ export function SelectsTab() {
                 },
               );
             }}
-            onRemove={(item) => {
-              void removeFromSelectsRotation(item.id).then((result) => {
-                if (!result.ok) {
-                  setMsg(result.error);
-                } else {
-                  reload();
-                }
-              });
-            }}
+            onRemove={(item) => setPendingRemove(item)}
           />
         )}
       </StudioPanel>
+
+      <ConfirmDialog
+        isOpen={pendingRemove !== null}
+        onCancel={() => setPendingRemove(null)}
+        title={t('selectsTab.removeTrackTitle')}
+        description={
+          pendingRemove
+            ? t('selectsTab.removeTrackDescription', {
+                title: pendingRemove.title,
+              })
+            : ''
+        }
+        confirmLabel={t('selectsTab.removeTrackConfirm')}
+        destructive
+        onConfirm={() => {
+          const item = pendingRemove;
+          setPendingRemove(null);
+          if (!item) {
+            return;
+          }
+          setBusy(true);
+          void removeFromSelectsRotation(item.id).then((result) => {
+            setBusy(false);
+            if (!result.ok) {
+              setMsg(result.error);
+            } else {
+              reload();
+            }
+          });
+        }}
+      />
 
       <SelectsGenerateDialog
         isOpen={generateOpen}

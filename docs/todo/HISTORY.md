@@ -1,3 +1,11 @@
+## 2026-11-19 — Registration form redesign + Selects confirm
+
+AuthDialog Join is two sections (account + password) with field-level `Input` errors for email, name, password rules, and confirm mismatch; username availability still feeds the name field. `Input` error text is `role="alert"`. Admin Selects rotation remove uses the same ConfirmDialog + busy pattern as Tahti Radio. tahti-web 0.0.416 / ui 0.0.25. Folded `registration-form-redesign.md`.
+
+## 2026-11-19 — Tahti Radio admin playlist manager
+
+Admin → Radio → Playlist edits curated rotation via `/api/admin/tahti-radio/*` (org #1115). `TahtiRadioPlaylistPanel` adds/removes/reorders with confirm + busy; Feature tab links to Playlist. Shared `TahtiRotationPlaylistEditor` hardening. tahti-web 0.0.413. Folded `tahti-radio-playlist-manager.md`. Deploy the org API before relying on live playlist edits.
+
 ## 2026-11-18 — List searches on one FilterBar (30 slices)
 
 Sounds, Releases, Shows, Collections, Recordings, Library media/embeds/smart links, History, Help, the artist directory, admin files/users/venues/top lists/Selects, governance members, the member register, the editor library picker, add-tracks, and the desktop library search sit on `@tahti-player/ui` `FilterBar`. The bar can take a trailing search control that stays idle until the field has a value (`WithEndAddon` / `WithEndAddonActive`). tahti-web 0.0.415. Simplify phase 5 Sounds FilterBar is done; Playlists, Profile preview, Go live and Radio anatomy stay open.

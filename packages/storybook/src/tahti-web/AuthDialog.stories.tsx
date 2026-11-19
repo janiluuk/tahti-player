@@ -71,6 +71,12 @@ export const Join: Story = {
     await expect(
       dialog.getByText('Create an account, then verify your email.'),
     ).toBeVisible();
+    await expect(
+      dialog.getByRole('heading', { name: 'Your account' }),
+    ).toBeVisible();
+    await expect(
+      dialog.getByRole('heading', { name: 'Password' }),
+    ).toBeVisible();
     const create = dialog.getByRole('button', { name: 'Create account' });
     await expect(create).toBeDisabled();
 

@@ -14,9 +14,11 @@ const VALID_USERNAME = /^[a-z0-9_-]{2,32}$/;
 export function UsernameAvailabilityHint({
   username,
   onPick,
+  onAvailability,
 }: {
   username: string;
   onPick: (username: string) => void;
+  onAvailability?: (available: boolean | null) => void;
 }) {
   const [result, setResult] = useState<{
     username: string;
@@ -25,13 +27,18 @@ export function UsernameAvailabilityHint({
 
   useEffect(() => {
     if (!VALID_USERNAME.test(username)) {
+      onAvailability?.(null);
       return;
     }
+    onAvailability?.(null);
     let cancelled = false;
     const timer = window.setTimeout(() => {
       void fetchUsernameAvailability(username).then((availability) => {
         if (!cancelled) {
           setResult({ username, availability });
+          onAvailability?.(
+            availability == null ? null : availability.available,
+          );
         }
       });
     }, CHECK_DELAY_MS);
@@ -39,7 +46,7 @@ export function UsernameAvailabilityHint({
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [username]);
+  }, [username, onAvailability]);
 
   if (!username) {
     return null;

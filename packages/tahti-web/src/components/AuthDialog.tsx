@@ -28,6 +28,9 @@ import { UsernameAvailabilityHint } from './UsernameAvailabilityHint';
 
 type AccountKind = ArtistKind | 'LISTENER';
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const VALID_USERNAME = /^[a-z0-9_-]{2,32}$/;
+
 const slugifyUsername = (value: string) =>
   value
     .toLowerCase()
@@ -66,6 +69,10 @@ export const AuthDialog: FC = () => {
   const [registrationSuccessEmail, setRegistrationSuccessEmail] = useState<
     string | null
   >(null);
+  const [attempted, setAttempted] = useState(false);
+  const [usernameAvailable, setUsernameAvailable] = useState<boolean | null>(
+    null,
+  );
   const mockRegistration =
     import.meta.env.VITE_FORCE_MOCK === '1' &&
     registrationSuccessEmail !== null;
@@ -78,10 +85,13 @@ export const AuthDialog: FC = () => {
     clearError();
     setTotpCode('');
     setConfirmPassword('');
+    setAttempted(false);
+    setUsernameAvailable(null);
   }, [isOpen, mode, clearError]);
 
   useEffect(() => {
     setUsername(slugifyUsername(artistName));
+    setUsernameAvailable(null);
   }, [artistName]);
 
   useEffect(() => {
@@ -123,9 +133,36 @@ export const AuthDialog: FC = () => {
       : mode === 'join'
         ? t('auth.join')
         : t('auth.logIn');
-  const passwordIssue = password.length > 0 ? passwordProblem(password) : null;
-  const passwordsDoNotMatch =
-    confirmPassword.length > 0 && password !== confirmPassword;
+
+  const trimmedEmail = email.trim();
+  const emailIssue = !trimmedEmail
+    ? t('auth.emailRequired')
+    : EMAIL_PATTERN.test(trimmedEmail)
+      ? null
+      : t('auth.emailInvalid');
+  const nameIssue = !artistName.trim()
+    ? t('auth.nameRequired')
+    : usernameAvailable === false
+      ? t('auth.usernameTaken')
+      : username && !VALID_USERNAME.test(username)
+        ? t('auth.usernameInvalid')
+        : null;
+  const passwordIssue =
+    password.length > 0
+      ? passwordProblem(password)
+      : t('auth.passwordRequired');
+  const confirmIssue = !confirmPassword
+    ? t('auth.confirmPasswordRequired')
+    : password !== confirmPassword
+      ? t('auth.passwordsDoNotMatch')
+      : null;
+  const joinReady =
+    !emailIssue &&
+    !nameIssue &&
+    !passwordProblem(password) &&
+    Boolean(confirmPassword) &&
+    password === confirmPassword &&
+    usernameAvailable !== false;
 
   if (registrationSuccessEmail) {
     return (
@@ -195,6 +232,11 @@ export const AuthDialog: FC = () => {
             autoComplete="one-time-code"
             autoCapitalize="characters"
             spellCheck={false}
+            error={
+              attempted && totpCode.length < 6
+                ? t('auth.totpTooShort')
+                : undefined
+            }
           />
           {error ? <AuthDialogError message={error} /> : null}
           <Dialog.Actions>
@@ -204,6 +246,10 @@ export const AuthDialog: FC = () => {
             <Button
               disabled={loading || totpCode.length < 6}
               onClick={() => {
+                setAttempted(true);
+                if (totpCode.length < 6) {
+                  return;
+                }
                 void completeTotp(totpCode)
                   .then(() => close())
                   .catch(() => undefined);
@@ -218,7 +264,8 @@ export const AuthDialog: FC = () => {
           className="mt-4 flex flex-col gap-3"
           onSubmit={(e) => {
             e.preventDefault();
-            if (loading || !email || !password) {
+            setAttempted(true);
+            if (loading || emailIssue || !password) {
               return;
             }
             void login(email, password)
@@ -239,6 +286,7 @@ export const AuthDialog: FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             autoComplete="email"
+            error={attempted && emailIssue ? emailIssue : undefined}
           />
           <Input
             label={t('auth.password')}
@@ -246,6 +294,9 @@ export const AuthDialog: FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             autoComplete="current-password"
+            error={
+              attempted && !password ? t('auth.passwordRequired') : undefined
+            }
           />
           {error ? <AuthDialogError message={error} /> : null}
           <Link
@@ -259,27 +310,46 @@ export const AuthDialog: FC = () => {
             <Button variant="text" size="sm" onClick={() => setMode('join')}>
               {t('auth.join')}
             </Button>
-            <Button type="submit" disabled={loading || !email || !password}>
+            <Button
+              type="submit"
+              disabled={loading || Boolean(emailIssue) || !password}
+            >
               {loading ? t('auth.signingIn') : t('auth.signIn')}
             </Button>
           </Dialog.Actions>
         </form>
       ) : (
-        <div className="mt-4 flex flex-col gap-4">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="sm:col-span-2">
-              <Input
-                inputMode="email"
-                autoCapitalize="none"
-                autoCorrect="off"
-                spellCheck={false}
-                label={t('auth.email')}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                autoComplete="email"
-              />
-            </div>
-            <div className="flex flex-col gap-1.5 sm:col-span-2">
+        <form
+          className="mt-4 flex flex-col gap-5"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setAttempted(true);
+            if (loading || !joinReady) {
+              return;
+            }
+            clearError();
+            void register({
+              email: trimmedEmail,
+              password,
+              username,
+              displayName: artistName.trim(),
+            })
+              .then(() => {
+                if (artistKind === 'LISTENER') {
+                  persistListenerSignup();
+                } else {
+                  persistPendingArtistKind(artistKind);
+                }
+                setRegistrationSuccessEmail(trimmedEmail);
+              })
+              .catch(() => undefined);
+          }}
+        >
+          <section className="flex flex-col gap-3">
+            <h3 className="text-foreground text-sm font-semibold">
+              {t('auth.sectionAccount')}
+            </h3>
+            <div className="flex flex-col gap-1.5">
               <span className="text-foreground-secondary text-xs font-medium">
                 {t('auth.accountType')}
               </span>
@@ -290,79 +360,82 @@ export const AuthDialog: FC = () => {
                 onChange={setArtistKind}
               />
             </div>
-            <div className="flex flex-col gap-1 sm:col-span-2">
+            <Input
+              inputMode="email"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              label={t('auth.email')}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+              error={attempted && emailIssue ? emailIssue : undefined}
+            />
+            <div className="flex flex-col gap-1">
               <Input
                 label={nameLabel[artistKind]}
                 value={artistName}
                 onChange={(e) => setArtistName(e.target.value)}
                 autoComplete="name"
+                error={attempted && nameIssue ? nameIssue : undefined}
               />
               <UsernameAvailabilityHint
                 username={username}
                 onPick={setUsername}
+                onAvailability={setUsernameAvailable}
               />
             </div>
-            <Input
-              label={t('auth.password')}
-              variant="password"
-              size="sm"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              description={passwordRulesHint()}
-              autoComplete="new-password"
-            />
-            <Input
-              label={t('auth.confirmPassword')}
-              variant="password"
-              size="sm"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              autoComplete="new-password"
-            />
-          </div>
-          {passwordIssue ? <AuthDialogError message={passwordIssue} /> : null}
-          {passwordsDoNotMatch ? (
-            <AuthDialogError message={t('auth.passwordsDoNotMatch')} />
-          ) : null}
+          </section>
+
+          <section className="flex flex-col gap-3">
+            <h3 className="text-foreground text-sm font-semibold">
+              {t('auth.sectionPassword')}
+            </h3>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Input
+                label={t('auth.password')}
+                variant="password"
+                size="sm"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                description={
+                  attempted && passwordIssue ? undefined : passwordRulesHint()
+                }
+                error={
+                  attempted && passwordIssue
+                    ? passwordIssue
+                    : password.length > 0 && passwordProblem(password)
+                      ? passwordProblem(password)!
+                      : undefined
+                }
+                autoComplete="new-password"
+              />
+              <Input
+                label={t('auth.confirmPassword')}
+                variant="password"
+                size="sm"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                error={
+                  (attempted || confirmPassword.length > 0) && confirmIssue
+                    ? confirmIssue
+                    : undefined
+                }
+                autoComplete="new-password"
+              />
+            </div>
+          </section>
+
           {error ? <AuthDialogError message={error} /> : null}
           <Dialog.Actions>
             <Button variant="text" size="sm" onClick={() => setMode('login')}>
               {t('auth.logIn')}
             </Button>
-            <Button
-              disabled={
-                loading ||
-                !email ||
-                !password ||
-                Boolean(passwordIssue) ||
-                !confirmPassword ||
-                passwordsDoNotMatch ||
-                !username ||
-                !artistName
-              }
-              onClick={() => {
-                clearError();
-                void register({
-                  email,
-                  password,
-                  username,
-                  displayName: artistName,
-                })
-                  .then(() => {
-                    if (artistKind === 'LISTENER') {
-                      persistListenerSignup();
-                    } else {
-                      persistPendingArtistKind(artistKind);
-                    }
-                    setRegistrationSuccessEmail(email.trim());
-                  })
-                  .catch(() => undefined);
-              }}
-            >
+            <Button type="submit" disabled={loading || !joinReady}>
               {loading ? t('auth.creating') : t('auth.createAccount')}
             </Button>
           </Dialog.Actions>
-        </div>
+        </form>
       )}
     </Dialog.Root>
   );
