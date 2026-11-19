@@ -1,3 +1,10 @@
+## 2026-11-19 — Yaniho peaks prod verify folded
+
+Prod Yaniho: 100 READY sounds, 0 missing peaks/editorPeaks (LAN SQL dry-run on
+vimage). Folded `yaniho-channel-pregenerate-peaks.md` and
+`server-peaks-everywhere.md` (player slices + prod gap cleared; org Prometheus
+gauge already on main).
+
 ## 2026-11-19 — Listener stats URL fold + UX backlog + Storybook bisect note
 
 Folded `listener-stats-origin-url.md` (ReferrerSources Sites/Pages, track insights
