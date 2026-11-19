@@ -9,6 +9,7 @@ import {
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
+import { Alert } from '@tahti-player/ui';
 
 import type { EditList } from '../../../api/studio-types';
 import { ConfirmDialog } from '../../../components/ConfirmDialog';

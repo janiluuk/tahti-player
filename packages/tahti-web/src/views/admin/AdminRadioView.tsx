@@ -72,7 +72,7 @@ export function AdminRadioView() {
     error: loadError,
     retry,
   } = useSnapshotFetch<AdminRadioData | null>('admin-radio', async () =>
-    apiResult(fetchAdminRadio()),
+    apiResult(await fetchAdminRadio()),
   );
   const [rotation, setRotation] = useState<AdminRadioRotationItem[]>([]);
   const [station, setStation] = useState<Awaited<
