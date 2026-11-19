@@ -28,7 +28,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [hearthis-release-live-run.md](hearthis-release-live-run.md) | One live tahti hearthis release run |
 | open    | [hearthis-collection-live-run.md](hearthis-collection-live-run.md) | One live tahti hearthis collection run |
 | open    | [finish-wip-2026-11-04-branches.md](finish-wip-2026-11-04-branches.md) | Deferred to a later session: finish or close 2026-11-04 WIP branches/draft PRs |
-| open    | [yaniho-channel-pregenerate-peaks.md](yaniho-channel-pregenerate-peaks.md) | Pre-generate peaks so Yaniho channel tracks are not stuck loading |
 | open    | [artwork-preset-backfill.md](artwork-preset-backfill.md) | Run the artwork-preset cover backfill after tahti-org#1033 is merged |
 | open    | [listings-news-opening-post.md](listings-news-opening-post.md) | Update the listings news opening post once an admin is signed in |
 | blocked | [finnish-api-notifications.md](finnish-api-notifications.md) | API notification FI blocked until org persists User.uiLocale from Language panel |
@@ -46,7 +45,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |
 | open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Deferred: inventory/finish 2026-11-04 WIP branches after the leftovers batch |
-| partial | [server-peaks-everywhere.md](server-peaks-everywhere.md) | Every player slice shipped; left: org prod Yaniho backfill + live verify |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, catalog in Studio → Music and Library for listeners (2026-11-13), one Broadcast agenda, Profile forms on Studio pages (2026-11-16), Admin Overview merge + Inbox counts + sitemap/gaps rewrite + Governance hub cards (2026-11-17), governance guide/documents in Co-op + one-hop legacy redirects (2026-11-18); left: Go live full-screen flow |
