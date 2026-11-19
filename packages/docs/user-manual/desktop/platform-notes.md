@@ -38,13 +38,15 @@ The app sets these environment variables when it starts, unless you have already
 | Variable | Value | Why |
 | -------- | ----- | --- |
 | `WEBKIT_DISABLE_DMABUF_RENDERER` | `1` | Avoids a blank window on NVIDIA and some other GPUs. |
-| `WEBKIT_DISABLE_COMPOSITING_MODE` | `1` | Avoids crashes when resizing on NVIDIA and the Steam Deck. |
 | `GST_PLUGIN_FEATURE_RANK` | `pipewiresink:NONE` | Sends audio through PulseAudio so the latency settings below apply. |
 | `PULSE_LATENCY_MSEC` | `60` | Keeps Bluetooth headphones playing on PipeWire. |
 | `PIPEWIRE_LATENCY` | `1024/48000` | Same as above. |
+
+GPU compositing stays on by default. The app only sets `WEBKIT_DISABLE_COMPOSITING_MODE=1` on SteamOS, or when you start with `TAHTI_SAFE_RENDERING=1` (safer software path if resize/GPU glitches appear).
 
 To use a different value, set the variable before you start the app, for example:
 
 ```bash
 WEBKIT_DISABLE_DMABUF_RENDERER=0 ./Tahti.Player_*_amd64.AppImage
+TAHTI_SAFE_RENDERING=1 ./Tahti.Player_*_amd64.AppImage
 ```

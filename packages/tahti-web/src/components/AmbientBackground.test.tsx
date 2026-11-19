@@ -61,6 +61,8 @@ describe('AmbientBackground', () => {
     expect(
       container.querySelector('[data-ambient-paused]'),
     ).not.toBeInTheDocument();
+    const root = container.querySelector('[data-ambient-background]');
+    expect(root?.className).not.toContain('mix-blend-screen');
   });
 
   it('pauses when prefers-reduced-motion is set', () => {

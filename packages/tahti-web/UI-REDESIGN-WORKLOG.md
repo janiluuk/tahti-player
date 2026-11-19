@@ -1,3 +1,7 @@
+## 2026-11-19 - Desktop ambient cheap path + PlayerBar blur (0.0.421)
+
+Ambient backdrop quality down; no mix-blend-screen; PlayerBar/BottomBar softer blur. player 1.47.349 / ui 0.0.26.
+
 ## 2026-11-19 - Hide Admin nav unless board (0.0.419)
 
 Sidebar Admin is board-only; removed the signed-out disabled Admin placeholder.

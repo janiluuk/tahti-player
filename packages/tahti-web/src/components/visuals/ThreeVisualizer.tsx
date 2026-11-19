@@ -27,15 +27,18 @@ export type ThreeVisualizerProps = {
   className?: string;
   artworkUrl?: string | null;
   audioReactive?: boolean;
+  /** Full-window ambient path: lower fill-rate and FPS; channel stages stay sharp. */
+  backdrop?: boolean;
 };
 
 const CAMERA_DISTANCE = 8;
 const CAMERA_FOV = 55;
 const MAX_PIXEL_RATIO = 2;
+const BACKDROP_MAX_PIXEL_RATIO = 1;
 const FREQUENCY_SAMPLE_COUNT = 96;
-// The scene is a backdrop: 30 fps looks the same and halves the GPU (or, on
-// software-rendered WebKit, CPU) cost of a full-window canvas.
+// Channel stages: 30 fps. Ambient backdrop: 15 fps under WebKit software fill.
 const FRAME_INTERVAL_MS = 1000 / 30;
+const BACKDROP_FRAME_INTERVAL_MS = 1000 / 15;
 
 function readLevel(analyser: AnalyserNode | null, frequencyData: Uint8Array) {
   if (!analyser) {
@@ -80,6 +83,7 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
   className,
   artworkUrl,
   audioReactive = true,
+  backdrop = false,
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const analyser = usePlayerStore((state) => state.analyser);
@@ -96,13 +100,17 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
       return;
     }
 
+    const maxPixelRatio = backdrop ? BACKDROP_MAX_PIXEL_RATIO : MAX_PIXEL_RATIO;
+    const frameIntervalMs = backdrop
+      ? BACKDROP_FRAME_INTERVAL_MS
+      : FRAME_INTERVAL_MS;
     const renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
-      antialias: true,
+      antialias: !backdrop,
       powerPreference: 'high-performance',
     });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, MAX_PIXEL_RATIO));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, maxPixelRatio));
     renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     const scene = new THREE.Scene();
@@ -128,7 +136,7 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
     let frequencyData = new Uint8Array(new ArrayBuffer(128));
     const timer = new THREE.Timer();
     const stop = startVisibleRenderLoop(canvas, {
-      minFrameMs: FRAME_INTERVAL_MS,
+      minFrameMs: frameIntervalMs,
       pauseWhileScrolling: true,
       onResize: ({ width, height }) => {
         renderer.setSize(width, height, false);
@@ -158,7 +166,7 @@ export const ThreeVisualizer: FC<ThreeVisualizerProps> = ({
       disposeScene(scene);
       renderer.dispose();
     };
-  }, [artworkUrl, preset, scheme, settings]);
+  }, [artworkUrl, backdrop, preset, scheme, settings]);
 
   return (
     <div
