@@ -1,3 +1,7 @@
+## 2026-11-19 — Hide Admin nav unless board
+
+Sidebar Admin link only renders for `BOARD` accounts; signed-out users no longer see a disabled Admin entry. tahti-web 0.0.419.
+
 ## 2026-11-19 — Discover party reminders, Profile live preview, Radio Feature anatomy
 
 Discover → Parties rows (and the Discover widget list) set reminders beside Join / Open. Studio → Profile identity / story / people show a sticky public-page live preview. Admin → Radio Feature tab meets the anatomy budget; eligible-channel featured labels are i18n’d. ReleaseOps collapsed header kept as the view-first summary. tahti-web 0.0.418. Leftovers stay in `listening-parties-discover.md`, `simplify-studio-library-settings-admin.md`, and `view-first-and-test-hardening-leftovers.md`.

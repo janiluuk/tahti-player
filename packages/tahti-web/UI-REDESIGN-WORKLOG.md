@@ -1,3 +1,7 @@
+## 2026-11-19 - Hide Admin nav unless board (0.0.419)
+
+Sidebar Admin is board-only; removed the signed-out disabled Admin placeholder.
+
 ## 2026-11-19 - Discover party reminders, Profile live preview, Radio Feature (0.0.418)
 
 Discover Parties rows remind; Studio Profile identity/story/people get a live preview; Admin Radio Feature featured labels i18n’d and anatomy leftover cleared.
