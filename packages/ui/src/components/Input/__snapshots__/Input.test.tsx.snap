@@ -97,8 +97,10 @@ exports[`Input > (Snapshot) renders with error and no description 1`] = `
     value=""
   />
   <p
+    aria-live="polite"
     class="text-accent-red-strong text-xs select-none"
     id="input-username-error-error"
+    role="alert"
   >
     Username is already taken
   </p>

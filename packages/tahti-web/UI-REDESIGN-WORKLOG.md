@@ -1,3 +1,9 @@
+## 2026-11-19 - Registration form redesign + Selects confirm (0.0.416)
+
+Join uses account and password sections with field-level Input errors.
+Selects rotation remove matches Radio (ConfirmDialog + busy). Input errors
+are `role="alert"`.
+
 ## 2026-11-18 - List pages share one FilterBar (0.0.415)
 
 Sounds and the other catalog searches (Releases, Shows, Collections,

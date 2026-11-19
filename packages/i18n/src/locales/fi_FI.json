@@ -1934,6 +1934,16 @@
       "displayName": "Näyttönimi",
       "artistName": "Artistinimi",
       "collectiveName": "Kollektiivin nimi",
+      "sectionAccount": "Tilisi",
+      "sectionPassword": "Salasana",
+      "emailRequired": "Syötä sähköpostiosoite.",
+      "emailInvalid": "Syötä kelvollinen sähköpostiosoite.",
+      "nameRequired": "Syötä nimi.",
+      "usernameInvalid": "Käyttäjätunnuksessa on oltava 2–32 kirjainta, numeroa, - tai _.",
+      "usernameTaken": "Käyttäjätunnus on varattu.",
+      "passwordRequired": "Syötä salasana.",
+      "confirmPasswordRequired": "Vahvista salasana.",
+      "totpTooShort": "Syötä vähintään 6 merkkiä.",
       "passwordsDoNotMatch": "Salasanat eivät täsmää.",
       "registrationSuccessTitle": "Tarkista sähköpostisi",
       "registrationSuccessDescription": "Lähetimme vahvistuslinkin osoitteeseen {{email}}. Avaa se ja vahvista osoitteesi ennen sisäänkirjautumista.",
@@ -7188,7 +7198,10 @@
       "thisContentTypeIsNot": "Tämä sisältötyyppi ei ole saatavilla Selects-rajapinnasta",
       "searchContent": "Hae sisältöä",
       "searchTracksByTitle": "Hae kappaleita nimellä…",
-      "availableTracks": "Saatavilla olevat kappaleet"
+      "availableTracks": "Saatavilla olevat kappaleet",
+      "removeTrackTitle": "Poistetaanko rotaatiosta?",
+      "removeTrackDescription": "Poista “{{title}}” Tahti Selects -soittolistasta.",
+      "removeTrackConfirm": "Poista"
     },
     "tracklistEditor": {
       "addPin": "Lisää kiinnitys",

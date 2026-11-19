@@ -121,4 +121,19 @@ describe('AuthDialog', () => {
     expect(screen.getByRole('button', { name: 'Got it' })).toBeVisible();
     expect(screen.queryByRole('button', { name: 'Create account' })).toBeNull();
   });
+
+  it('groups join fields under account and password sections', () => {
+    useAuthModalStore.setState({ mode: 'join' });
+    useAuthStore.setState({ error: null });
+    render(<AuthDialog />);
+
+    expect(screen.getByRole('heading', { name: 'Your account' })).toBeVisible();
+    expect(screen.getByRole('heading', { name: 'Password' })).toBeVisible();
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'password-a' },
+    });
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      'Add an uppercase letter.',
+    );
+  });
 });

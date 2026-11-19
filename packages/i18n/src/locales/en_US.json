@@ -1934,6 +1934,16 @@
       "displayName": "Display name",
       "artistName": "Artist name",
       "collectiveName": "Collective name",
+      "sectionAccount": "Your account",
+      "sectionPassword": "Password",
+      "emailRequired": "Enter your email.",
+      "emailInvalid": "Enter a valid email address.",
+      "nameRequired": "Enter a name.",
+      "usernameInvalid": "Your handle needs 2–32 letters, numbers, - or _.",
+      "usernameTaken": "That handle is taken.",
+      "passwordRequired": "Enter a password.",
+      "confirmPasswordRequired": "Confirm your password.",
+      "totpTooShort": "Enter at least 6 characters.",
       "passwordsDoNotMatch": "Passwords do not match.",
       "registrationSuccessTitle": "Check your email",
       "registrationSuccessDescription": "We sent a verification link to {{email}}. Open that email and confirm your address before you sign in.",
@@ -7188,7 +7198,10 @@
       "thisContentTypeIsNot": "This content type is not available from the Selects API",
       "searchContent": "Search content",
       "searchTracksByTitle": "Search tracks by title…",
-      "availableTracks": "Available tracks"
+      "availableTracks": "Available tracks",
+      "removeTrackTitle": "Remove from rotation?",
+      "removeTrackDescription": "Remove “{{title}}” from the Tahti Selects playlist.",
+      "removeTrackConfirm": "Remove"
     },
     "tracklistEditor": {
       "addPin": "Add pin",
