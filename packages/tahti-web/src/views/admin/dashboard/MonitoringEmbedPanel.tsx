@@ -1,4 +1,5 @@
 import { ExternalLinkIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import { useTranslation } from '@tahti-player/i18n';
 import { Alert, ButtonAnchor, ButtonLink } from '@tahti-player/ui';
@@ -16,12 +17,26 @@ export function MonitoringEmbedPanel() {
   const { t } = useTranslation('web');
   const vitalUid = GRAFANA_DASHBOARDS.vital.uid;
   const embedSrc = grafanaDashboardEmbedUrl(vitalUid);
+  const [embedLoaded, setEmbedLoaded] = useState(false);
+  const [embedTimedOut, setEmbedTimedOut] = useState(false);
+
+  useEffect(() => {
+    setEmbedLoaded(false);
+    setEmbedTimedOut(false);
+    const timer = window.setTimeout(() => setEmbedTimedOut(true), 12_000);
+    return () => window.clearTimeout(timer);
+  }, [embedSrc]);
 
   return (
     <div id="monitoring" className="flex scroll-mt-20 flex-col gap-4">
       <Alert tone="neutral">
         {t('adminMonitoring.grafanaEmbedsNeedYouSigned')}
       </Alert>
+      {!embedLoaded && embedTimedOut ? (
+        <Alert tone="warning">
+          {t('adminMonitoring.grafanaEmbedDidNotLoad')}
+        </Alert>
+      ) : null}
 
       <StudioPanel title={t('adminMonitoring.grafanaDashboards')}>
         <div className="flex flex-wrap gap-2">
@@ -128,6 +143,7 @@ export function MonitoringEmbedPanel() {
             className="h-full w-full border-0"
             referrerPolicy="no-referrer-when-downgrade"
             allow="fullscreen"
+            onLoad={() => setEmbedLoaded(true)}
           />
         </div>
         <p className="text-foreground-secondary mt-2 text-xs">

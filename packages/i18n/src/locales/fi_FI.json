@@ -4688,6 +4688,7 @@
       "admin": "Ylläpito",
       "monitoring": "Valvonta",
       "grafanaEmbedsNeedYouSigned": "Grafana-upotukset vaativat kirjautumisen osoitteeseen grafana.tahti.live tässä selaimessa. Jos paneeli on tyhjä, avaa Grafana uuteen välilehteen, kirjaudu ja lataa tämä sivu uudelleen.",
+      "grafanaEmbedDidNotLoad": "Grafana-paneelia ei saatu ladattua tähän kehykseen. Kirjaudu grafana.tahti.live -sivulle toisessa välilehdessä, salli evästeet kyseiselle isännälle ja lataa tämä sivu uudelleen tai käytä alla olevaa linkkiä koko kojelautaan.",
       "grafanaExploreLoki": "Grafana Explore (Loki)",
       "fullLogsPage": "Koko lokisivu",
       "grafanaLogs": "Grafana-lokit",
@@ -6868,7 +6869,8 @@
     },
     "waveformEditor": {
       "showingTheBasicWaveformThe": "Näytetään perusaaltomuoto: tarkempi editori ei käynnistynyt tässä selaimessa. Muokkaus, zoomaus ja pikanäppäimet toimivat silti.",
-      "effectsArenTHeardIn": "Efektit eivät vielä kuulu tässä esikuuntelussa: tiedoston palvelin ei salli selaimen käsitellä sitä. Kuulet sen käsittelemättömänä, kunnes editorilla on oma kopio; renderöinnit käyttävät silti kaikkia efektejä."
+      "effectsArenTHeardIn": "Efektit eivät vielä kuulu tässä esikuuntelussa: tiedoston palvelin ei salli selaimen käsitellä sitä. Kuulet sen käsittelemättömänä, kunnes editorilla on oma kopio; renderöinnit käyttävät silti kaikkia efektejä.",
+      "wavesurferFailed": "Yksityiskohtaista aaltomuotoa ei voitu käynnistää tässä selaimessa. Lataa editori uudelleen."
     },
     "profileBackdropSection": {
       "removeBackdrop": "Poista taustakuva",

@@ -277,7 +277,7 @@ export function EntitySocialHeader({
       ) : null}
       <div
         className={cn(
-          'pointer-events-none absolute inset-0 -z-10 backdrop-blur-xl',
+          'pointer-events-none absolute inset-0 -z-10 backdrop-blur-sm',
           !scheme && 'bg-primary/75',
         )}
         style={scrimStyle}

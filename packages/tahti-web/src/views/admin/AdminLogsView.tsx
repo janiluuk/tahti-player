@@ -21,7 +21,11 @@ import {
   type LogEntryData,
 } from '@tahti-player/ui';
 
-import { fetchAdminDashboard, type AdminAuditRow } from '../../api/admin';
+import {
+  fetchAdminDashboard,
+  type AdminAuditRow,
+  type AdminDashboard,
+} from '../../api/admin';
 import { AdminGate } from '../../components/AdminGate';
 import { AdminHubBreadcrumb } from '../../components/AdminHubBreadcrumb';
 import { AdminPageLayout } from '../../components/AdminNav';
@@ -32,6 +36,7 @@ import {
   grafanaDashboardUrl,
   grafanaExploreLogsUrl,
 } from '../../lib/grafanaMonitoring';
+import { peekSnapshot } from '../../lib/useSnapshotFetch';
 import { AdminActivityView } from './AdminActivityView';
 import { ClientLogsPanel } from './monitoring/ClientLogsPanel';
 import { ContainerLogsPanel } from './monitoring/ContainerLogsPanel';
@@ -65,13 +70,25 @@ function RecentAuditEntries() {
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
+    let cancelled = false;
+    const cached = peekSnapshot<AdminDashboard>('admin-dashboard');
+    if (cached?.audit.length) {
+      setEntries(cached.audit);
+      setLoading(false);
+    }
     void fetchAdminDashboard().then((result) => {
+      if (cancelled) {
+        return;
+      }
       setEntries(result.data.audit);
       setLoadError(
         result.meta.source === 'api' ? (result.meta.reason ?? null) : null,
       );
       setLoading(false);
     });
+    return () => {
+      cancelled = true;
+    };
   }, [attempt]);
 
   const logs = entries.map(toAuditLogEntry);

@@ -10,6 +10,7 @@ type TopBarLogoProps = {
   className?: string;
 };
 
+/** @deprecated Desktop chrome logo — keep for Storybook / legacy shells. */
 export const TopBarLogo: FC<TopBarLogoProps> = ({ className }) => (
   <>
     <span className="ml-0.5 dark:hidden">

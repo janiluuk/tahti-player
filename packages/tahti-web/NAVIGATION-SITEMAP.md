@@ -26,6 +26,9 @@ Integrations under Playback & language (`/settings/integrations` still
 opens that tab). Library Files chips and Studio Profile forms stay as
 shipped 2026-11-16.
 
+**2026-11-19 changes:** Library is Favorites · Playlists · History · Following ·
+Files; Go live is a chrome takeover (no StudioNav / sidebar / mobile bottom nav).
+
 **2026-11-16 changes:** Library is Favorites · History · Following · Files;
 Files puts Media, Stash and (desktop) Local behind chips. Studio → Profile
 forms are `/studio/profile/$section`. Settings is account-only (no Artist /
@@ -65,17 +68,17 @@ Fans · Stats · Profile**.
   from the Releases header.
 - Broadcast hub (`/studio/broadcast`): on/off-air banner, Coming up agenda
   with chips All · Shows · Events · Parties, cards for Go live, Schedule,
-  24/7, Recordings, Tahti Radio. Go live as a full-screen flow is still open
+  24/7, Recordings, Tahti Radio. Go live is a chrome takeover (shipped)
   work.
 - Fans hub: Posts · Newsletter · Memberships · Store · Earnings (back links).
 - Profile hub: cards → `/studio/profile/$section` (Identity, Story, People,
   Links, Branding, Gallery, Press kit, Release visuals, Channel design,
   Discovery, Address and domain). Chat and Moderators live under Fans.
 
-Library tabs (`LibraryView`): **Favorites · History · Following · Files**.
+Library tabs (`LibraryView`): **Favorites · Playlists · History · Following · Files**.
 Files (`/library/files?kind=`) shows Media, Stash and Local files as chips.
 **Local files** is a chip only when the desktop app provides the on-disk
-library. Playlists as a Library tab is still open product work.
+library. Playlists lists own PLAYLIST/DJ_SET_SERIES plus saved favorites.
 
 Settings modal sections (`settingsNav`) are account-only: Account (one tab
 row), Security, Notifications, Profile (only for an account without a

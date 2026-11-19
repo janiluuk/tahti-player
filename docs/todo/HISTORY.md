@@ -1,3 +1,15 @@
+## 2026-11-19 — Next 30 slices 2 (ProWaveform, Go live, export, ops, admin)
+
+ProWaveform/ProMinimap deleted (EditorWaveSurfer-only); Go live Storybook
+`?step=` + keyboard, mobile bottom-nav e2e, release-detail chrome e2e, nav docs;
+`fetchExportPlugins` → Delivery/ReleaseOps; VIEW-CATALOG Storybook-only honesty;
+`@tahti-player/ui` unused exports `@deprecated`; `tahti-ops stack up|down` +
+`check ci`; admin dashboard timing marks, moderation/logs peekSnapshot, Radio
+snapshots, Grafana embed failure copy, prod mock-marker assert; softer blur;
+audioMagic vectors; auth BroadcastChannel tests; channel block packing edges;
+viewport matrix e2e (1440/768/390). Folded `next-30-slices-2.md`. tahti-web
+0.0.423 / ui 0.0.28.
+
 ## 2026-11-19 — Next 30 slices (Go live, Playlists, a11y, hygiene, ops)
 
 Go live chrome takeover (`isGoLiveTakeoverPath`); Library → Playlists

@@ -2,6 +2,7 @@
 import { parseArgs } from 'node:util';
 
 import { runBackupStatus } from './commands/backup-status.mjs';
+import { runCheckCi } from './commands/check-ci.mjs';
 import {
   BASELINE_FILE,
   LINE_LIMIT,
@@ -24,6 +25,7 @@ import {
   updateSnapshots,
 } from './commands/snapshots.mjs';
 import { runStackSmoke } from './commands/stack-smoke.mjs';
+import { runStackDown, runStackUp } from './commands/stack-up.mjs';
 import { runStorybookSurfaces } from './commands/storybook.mjs';
 import { runTests, testGroups } from './commands/test.mjs';
 import { OpsError } from './paths.mjs';
@@ -63,6 +65,38 @@ Examples:
       'dry-run': { type: 'boolean', default: false },
     },
     run: ({ values }) => runStackSmoke({ dryRun: Boolean(values['dry-run']) }),
+  },
+  {
+    path: ['stack', 'up'],
+    usage: 'tahti-ops stack up [--seed] [--no-cache] [--dry-run]',
+    summary: 'Bring up the local Docker stack (sibling tahti-org compose)',
+    details: `Wraps \`$TAHTI_ORG_ROOT/scripts/stack-up.sh\` (same checkout as stack smoke).
+  --seed      Load screenshot demo fixtures after migrate
+  --no-cache  Rebuild images without cache
+  --dry-run   Print the action without running it`,
+    passthrough: true,
+    run: (_parsed, argv) => {
+      const { dryRun, args } = splitDryRun(argv);
+      const unknown = args.find(
+        (arg) =>
+          arg.startsWith('-') && arg !== '--seed' && arg !== '--no-cache',
+      );
+      if (unknown) {
+        throw new OpsError(`Unknown option: ${unknown}`);
+      }
+      return runStackUp(args, { dryRun });
+    },
+  },
+  {
+    path: ['stack', 'down'],
+    usage: 'tahti-ops stack down [--dry-run]',
+    summary: 'Tear down the local Docker stack',
+    details: `Wraps \`stack-up.sh --down\` in the tahti-org checkout.
+  --dry-run   Print the action without running it`,
+    options: {
+      'dry-run': { type: 'boolean', default: false },
+    },
+    run: ({ values }) => runStackDown({ dryRun: Boolean(values['dry-run']) }),
   },
   {
     path: ['backup', 'status'],
@@ -217,6 +251,10 @@ ${Object.entries(testGroups())
   .map(([name, group]) => `  ${name.padEnd(10)} ${group.summary}`)
   .join('\n')}
 
+Storybook plays: keep local chunks to about 60 story files per Chromium session
+(see docs/agent/TESTING.md). Pass globs after --, e.g.
+  tahti-ops test storybook -- src/tahti-web/Studio*.stories.tsx
+
 Arguments after -- go to the test runner, e.g.
   tahti-ops test web -- src/views/ListenView.test.tsx`,
     passthrough: true,
@@ -329,6 +367,21 @@ This command checks the files exist; it does not call the GitHub API.`,
     },
     run: ({ values }) =>
       runGithubCloseExternalIssue({ dryRun: Boolean(values['dry-run']) }),
+  },
+  {
+    path: ['check', 'ci'],
+    usage: 'tahti-ops check ci [--dry-run]',
+    summary: 'Run lint, Prettier check, and type-check (local CI gate)',
+    details: `Runs, in order:
+  pnpm lint
+  pnpm exec prettier --check .
+  pnpm type-check
+
+  --dry-run   Print each step without running it`,
+    options: {
+      'dry-run': { type: 'boolean', default: false },
+    },
+    run: ({ values }) => runCheckCi({ dryRun: Boolean(values['dry-run']) }),
   },
   {
     path: ['check', 'size'],

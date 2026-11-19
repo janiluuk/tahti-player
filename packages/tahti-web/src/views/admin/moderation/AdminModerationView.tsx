@@ -26,9 +26,11 @@ import {
   fetchAdminMissedShows,
   fetchAdminRadioSubmissions,
   fetchAdminThemes,
+  type AdminDashboard,
 } from '../../../api/admin';
 import { AdminGate } from '../../../components/AdminGate';
 import { AdminPageLayout } from '../../../components/AdminNav';
+import { peekSnapshot } from '../../../lib/useSnapshotFetch';
 import { AdminMissedShowsPanel } from '../AdminMissedShowsView';
 import {
   ADMIN_MODERATION_TABS,
@@ -94,19 +96,16 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
 
   useEffect(() => {
     let cancelled = false;
-    void Promise.all([
-      fetchAdminDashboard(),
-      fetchAdminRadioSubmissions(),
-      fetchAdminContentReports('OPEN'),
-      fetchAdminFeatureRequests('OPEN'),
-      fetchAdminMissedShows('OPEN'),
-      fetchAdminThemes('PENDING_REVIEW'),
-    ]).then(([dashboard, radio, reports, features, missed, themes]) => {
-      if (cancelled) {
-        return;
-      }
-      const support = dashboard.data.kpis.openTickets;
-      const beta = dashboard.data.kpis.betaQueue;
+    const applyCounts = (
+      dashboard: AdminDashboard,
+      radio: Awaited<ReturnType<typeof fetchAdminRadioSubmissions>>,
+      reports: Awaited<ReturnType<typeof fetchAdminContentReports>>,
+      features: Awaited<ReturnType<typeof fetchAdminFeatureRequests>>,
+      missed: Awaited<ReturnType<typeof fetchAdminMissedShows>>,
+      themes: Awaited<ReturnType<typeof fetchAdminThemes>>,
+    ) => {
+      const support = dashboard.kpis.openTickets;
+      const beta = dashboard.kpis.betaQueue;
       const radioCount = radio.data.length;
       const reportsCount = reports.data.length;
       const featuresCount = features.data.length;
@@ -130,7 +129,41 @@ export function AdminModerationView({ tab }: { tab?: AdminModerationTabId }) {
           missedCount +
           themesCount,
       );
+    };
+
+    const cached = peekSnapshot<AdminDashboard>('admin-dashboard');
+    const dashboardInitial = cached
+      ? Promise.resolve({
+          data: cached,
+          meta: { source: 'api' as const },
+        })
+      : fetchAdminDashboard();
+
+    void Promise.all([
+      dashboardInitial,
+      fetchAdminRadioSubmissions(),
+      fetchAdminContentReports('OPEN'),
+      fetchAdminFeatureRequests('OPEN'),
+      fetchAdminMissedShows('OPEN'),
+      fetchAdminThemes('PENDING_REVIEW'),
+    ]).then(([dashboard, radio, reports, features, missed, themes]) => {
+      if (cancelled) {
+        return;
+      }
+      applyCounts(dashboard.data, radio, reports, features, missed, themes);
     });
+    if (cached) {
+      void fetchAdminDashboard().then((dashboard) => {
+        if (cancelled) {
+          return;
+        }
+        setQueueCounts((counts) => ({
+          ...counts,
+          support: dashboard.data.kpis.openTickets,
+          beta: dashboard.data.kpis.betaQueue,
+        }));
+      });
+    }
     return () => {
       cancelled = true;
     };

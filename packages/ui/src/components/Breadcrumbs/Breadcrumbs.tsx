@@ -50,7 +50,9 @@ export const Breadcrumbs: FC<BreadcrumbsProps> = ({
 
 export type BreadcrumbAnchorProps = ComponentPropsWithoutRef<'a'>;
 
-/** A plain `<a>` crumb, for links outside the router. */
+/**
+ * @deprecated Prefer `BreadcrumbLink` (router) crumbs; keep for non-router demos.
+ */
 export const BreadcrumbAnchor = forwardRef<
   HTMLAnchorElement,
   BreadcrumbAnchorProps

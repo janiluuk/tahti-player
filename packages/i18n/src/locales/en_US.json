@@ -4688,6 +4688,7 @@
       "admin": "Admin",
       "monitoring": "Monitoring",
       "grafanaEmbedsNeedYouSigned": "Grafana embeds need you signed in at grafana.tahti.live in this browser. If the panel is blank, open Grafana in a new tab and sign in, then reload this page.",
+      "grafanaEmbedDidNotLoad": "The Grafana panel did not load in this frame. Sign in at grafana.tahti.live in another tab, allow cookies for that host, then reload this page or use Open full vital services dashboard below.",
       "grafanaExploreLoki": "Grafana Explore (Loki)",
       "fullLogsPage": "Full logs page",
       "grafanaLogs": "Grafana logs",
@@ -6868,7 +6869,8 @@
     },
     "waveformEditor": {
       "showingTheBasicWaveformThe": "Showing the basic waveform: the detailed editor couldn’t start in this browser. Editing, zoom and shortcuts still work.",
-      "effectsArenTHeardIn": "Effects aren’t heard in this preview yet: the file’s host doesn’t allow the browser to process it. You’re hearing it unprocessed until the editor has its own copy; renders still apply every effect."
+      "effectsArenTHeardIn": "Effects aren’t heard in this preview yet: the file’s host doesn’t allow the browser to process it. You’re hearing it unprocessed until the editor has its own copy; renders still apply every effect.",
+      "wavesurferFailed": "Couldn’t start the detailed waveform in this browser. Try reloading the editor."
     },
     "profileBackdropSection": {
       "removeBackdrop": "Remove backdrop",

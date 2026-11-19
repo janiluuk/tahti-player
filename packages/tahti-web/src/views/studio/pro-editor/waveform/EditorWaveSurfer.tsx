@@ -112,7 +112,7 @@ type Session = {
 
 /** Pro-editor waveform on wavesurfer.js: Regions for the selection, plus
  * Timeline, Minimap, Zoom and Hover. Lazy-loads the library; calls
- * `onFallback` if it cannot start so the caller can show `ProWaveform`. */
+ * `onFallback` if it cannot start so the caller can toast an error. */
 export function EditorWaveSurfer({
   peaks,
   durationSec,

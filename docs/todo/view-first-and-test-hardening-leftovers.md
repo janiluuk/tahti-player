@@ -23,9 +23,9 @@ changed, because it needs a product call or more than a mechanical fix.
   `fetchRevelatorStatus` / `startRevelatorCheckout` are module-local in
   `distribution.ts`; Studio uses `payAndSubmitToRevelator`. `fetchExportPlugins`
   is kept (tested client for `GET /api/me/export-plugins`).
-- [ ] Unwired API clients: remaining export-plugin UI consumers. `importSoundBanner`
-  was deleted (batch 32); `fetchStudioSoundFacets` is wired via
-  `useUsedBeforeTags`.
+- [x] Unwired API clients: Delivery / ReleaseOps wire `fetchExportPlugins`
+  (2026-11-19 next-30-2). `importSoundBanner` was deleted (batch 32);
+  `fetchStudioSoundFacets` is wired via `useUsedBeforeTags`.
 - [x] `lib/locale.ts` locale note is stale (batch 33): `detectLocale` is gone
   and `applyLocale` is called from `stores/languageStore.ts`; nothing to delete.
 - [ ] `lib/relativeDate.ts` `numericDate` is now used by `numericDay` and
@@ -41,16 +41,14 @@ changed, because it needs a product call or more than a mechanical fix.
   `fetchStickyNotifications`, `channelLookElements` adjacent/toggle helpers,
   `clampTimelineDuration`, `litStudioSubmenuDestinations`,
   `SIDEBAR_UNLIT_INTENTIONAL`, `encodeWavPcm16Blob`, go-live tab helpers.
-- [ ] Stories-only exports (keep for Storybook; do not delete without placement):
-  `CollectionPlayerWidget` (`Tahti/Collections/CollectionPlayerWidget`),
-  `InPageNav` (`Tahti/Page/InPageNav` — no production importer today),
-  `HomeTiles` `CompactBroadcastTile` / `SummaryStat`,
-  `sourceTileSubtitle` (`SourceServiceIcon` story only).
+- [x] Stories-only exports documented in VIEW-CATALOG (2026-11-19 next-30-2):
+  `CollectionPlayerWidget`, `InPageNav`, HomeTiles leftovers,
+  `sourceTileSubtitle` — keep for Storybook; do not delete without placement.
 - [x] `/library/collections*` catalog honesty (2026-11-19 slice 14): redirect-only
   aliases documented in VIEW-CATALOG / NAVIGATION-SITEMAP; canonical catalog is
   `/studio/collections` (+ `$slug` edit).
-- [ ] `@tahti-player/ui` exports with no consumer (library, keep unless
-  pruned on purpose): `Mosaic`, `TopBar*`, `BackButtonAnchor`,
+- [x] `@tahti-player/ui` unused exports marked `@deprecated` + barrel test
+  (2026-11-19 next-30-2): `Mosaic`, `TopBar*`, `BackButtonAnchor`,
   `BreadcrumbAnchor`, `Slider` subparts.
 - [x] `AmbientCard` — decided keep (2026-11-04 batch 31): reserved for mosaic
   / ambient grid layouts; no production consumer yet; do not delete without a

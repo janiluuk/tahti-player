@@ -339,6 +339,13 @@ export async function fetchAdminDashboard(): Promise<{
       meta: { source: 'mock', reason: 'VITE_FORCE_MOCK' },
     };
   }
+  const perfEnabled =
+    import.meta.env.DEV &&
+    typeof performance !== 'undefined' &&
+    performance.mark;
+  if (perfEnabled) {
+    performance.mark('admin-dashboard:fan-out-start');
+  }
   try {
     const [
       members,
@@ -375,6 +382,14 @@ export async function fetchAdminDashboard(): Promise<{
       getJson<AdminCronRow[]>('/api/admin/stats/cron-runs'),
       getJson<AdminAuditRow[]>('/api/admin/audit/recent'),
     ]);
+    if (perfEnabled) {
+      performance.mark('admin-dashboard:fan-out-end');
+      performance.measure(
+        'admin-dashboard:fan-out',
+        'admin-dashboard:fan-out-start',
+        'admin-dashboard:fan-out-end',
+      );
+    }
     const revenue = Object.entries(ytd.byCategory)
       .filter(([k]) => k.startsWith('REVENUE_'))
       .reduce((s, [, v]) => s + parseInt(v, 10), 0);

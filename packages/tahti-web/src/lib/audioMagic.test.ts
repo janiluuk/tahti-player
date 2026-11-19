@@ -23,6 +23,11 @@ describe('sniffAudioBytes', () => {
     ['M4A', bytes([0, 0, 0, 32], 'ftypM4A ')],
     ['WebM / Matroska', bytes([0x1a, 0x45, 0xdf, 0xa3])],
     ['WMA', bytes([0x30, 0x26, 0xb2, 0x75])],
+    ['CAF', bytes('caff', [0, 0, 0, 1])],
+    ['BW64', bytes('BW64', [0, 0, 0, 0], 'WAVE')],
+    ['WavPack', bytes('wvpk', [0x20, 0x12])],
+    ['DSDIFF', bytes('FRM8', [0, 0, 0, 0], 'DSD ')],
+    ['AMR narrowband', bytes('#!AMR\n')],
   ])('%s is audio', (_, head) => {
     expect(sniffAudioBytes(head)).toBe('audio');
   });
@@ -40,6 +45,10 @@ describe('sniffAudioBytes', () => {
     ['WebP image', bytes('RIFF', [0, 0, 0, 0], 'WEBPVP8 ')],
     ['AVI video', bytes('RIFF', [0, 0, 0, 0], 'AVI LIST')],
     ['empty file', bytes()],
+    ['SQLite database', bytes('SQLite format 3\0')],
+    ['bplist', bytes('bplist00')],
+    ['7z archive', bytes([0x37, 0x7a, 0xbc, 0xaf, 0x27, 0x1c])],
+    ['RTF document', bytes('{\\rtf1')],
   ])('%s is not audio', (_, head) => {
     expect(sniffAudioBytes(head)).toBe('not-audio');
   });

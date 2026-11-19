@@ -77,6 +77,6 @@ migration”).
   selection region update/clear (`EditorWaveSurfer.test.tsx`).
 - [x] `@tahti-player/ui` `Waveform` Storybook `DesktopPreview` (peaks-only,
   no decode) for future desktop embed.
-- [ ] **ProWaveform deletion** — deferred: fallback still wired from
-  `WaveformEditor` (`onFallback`); parity tests exist but manual editor QA and
-  removing `ProWaveformHandle` ref plumbing remain before delete.
+- [x] **ProWaveform deletion** (2026-11-19 next-30-2): `ProWaveform` /
+  `ProMinimap` removed; editor is `EditorWaveSurfer` only (toast on
+  wavesurfer failure). Desktop peaks-only embed remains deferred.

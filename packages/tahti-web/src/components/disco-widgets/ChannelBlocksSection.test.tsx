@@ -98,4 +98,53 @@ describe('ChannelBlocksSection', () => {
 
     expect(screen.queryByTestId('channel-blocks')).toBeNull();
   });
+
+  it('wraps HALF plus two THIRDs across rows', () => {
+    render(
+      <ChannelBlocksSection
+        blocks={[
+          addonBlock('half', 'HALF'),
+          addonBlock('t1', 'THIRD'),
+          addonBlock('t2', 'THIRD'),
+        ]}
+      />,
+    );
+
+    const rows = screen.getAllByTestId('channel-block-row');
+    expect(rows).toHaveLength(2);
+    expect(
+      within(rows[0]!)
+        .getAllByTestId('channel-block')
+        .map((block) => block.dataset.width),
+    ).toEqual(['HALF', 'THIRD']);
+    expect(
+      within(rows[1]!)
+        .getAllByTestId('channel-block')
+        .map((block) => block.dataset.width),
+    ).toEqual(['THIRD']);
+  });
+
+  it('skips empty logo slots', () => {
+    render(
+      <ChannelBlocksSection
+        blocks={[
+          {
+            id: 'logo-empty',
+            type: 'LOGO',
+            width: 'FULL',
+            position: 0,
+            logoUrl: null,
+            addon: null,
+          },
+          addonBlock('a', 'FULL'),
+        ]}
+      />,
+    );
+
+    const rows = screen.getAllByTestId('channel-block-row');
+    expect(rows).toHaveLength(2);
+    expect(screen.getByText('Widget a')).toBeTruthy();
+    expect(screen.queryByAltText('Channel logo')).toBeNull();
+    expect(within(rows[0]!).getByTestId('channel-block').textContent).toBe('');
+  });
 });

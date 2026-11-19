@@ -39,7 +39,7 @@ function GlassPanel({
 }) {
   return (
     <div
-      className={`border-border/60 bg-background/40 shadow-primary/10 rounded-2xl border p-5 shadow-[0_0_60px_-20px_var(--tw-shadow-color)] backdrop-blur-2xl ${className}`}
+      className={`border-border/60 bg-background/40 shadow-primary/10 rounded-2xl border p-5 shadow-[0_0_60px_-20px_var(--tw-shadow-color)] backdrop-blur-sm ${className}`}
     >
       {children}
     </div>

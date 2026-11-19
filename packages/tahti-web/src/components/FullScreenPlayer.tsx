@@ -56,7 +56,7 @@ const SEEK_LABEL_CHIP =
  * the pair always contrasts, opaque enough that busy viz frames cannot wash
  * the type out. */
 const TITLE_OVERLAY =
-  'relative z-20 max-w-lg rounded-2xl bg-background/92 px-6 py-4 text-center shadow-[0_12px_48px_rgba(0,0,0,0.55)] ring-2 ring-foreground/25 backdrop-blur-xl';
+  'relative z-20 max-w-lg rounded-2xl bg-background/92 px-6 py-4 text-center shadow-[0_12px_48px_rgba(0,0,0,0.55)] ring-2 ring-foreground/25 backdrop-blur-sm';
 
 /** Pull a show / programme name apart from a track title when the station
  * string uses the usual "Show — Track" or "Show · Host — Track" separators. */
@@ -406,7 +406,7 @@ export function FullScreenPlayer() {
                   ? 'w-[min(20rem,48vh)] sm:w-[min(24rem,52vh)]'
                   : 'w-[min(14rem,30vh)] sm:w-[min(18rem,34vh)] md:w-[min(22rem,36vh)]',
                 isLive
-                  ? 'border-white/20 bg-white/10 p-6 inset-ring inset-ring-white/10 backdrop-blur-xl backdrop-saturate-150 sm:p-8'
+                  ? 'border-white/20 bg-white/10 p-6 inset-ring inset-ring-white/10 backdrop-blur-sm backdrop-saturate-150 sm:p-8'
                   : 'border-border bg-background-secondary',
               )}
             >

@@ -3,6 +3,10 @@
 
 set -euo pipefail
 
+if [[ -z "${TAHTI_OPS_QUIET:-}" ]]; then
+  echo "note: prefer \`pnpm tahti-ops desktop run\` from the repo root." >&2
+fi
+
 repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$repository_root"
 
