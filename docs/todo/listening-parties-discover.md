@@ -9,9 +9,12 @@ Requested 2026-11-10: move listening parties to the Discover page, as a widget a
 - tahti-org #1099: `GET /api/v1/listening-parties?limit=` (1–50, default 20) returns `{ items }`, live first then upcoming soonest first, without cancelled parties or suspended hosts.
 - Discover → Parties tab (`/discover?tab=parties`, `DiscoverPartiesPanel`, `ListeningPartyList`) with Start a party for channel owners, and a three-row widget on the Discover tab linking to it (plan items 1–2, joining only).
 
+## Shipped (2026-11-19)
+
+- Reminders from a party row on Discover → Parties (and the Discover widget list): `ListeningPartyReminderButton` beside Join / Open.
+
 ## Left
 
-- Reminders from a party row.
 - Plan items 3 (non-artist hosting) and 4 (Studio filter) are product calls.
 
 ## Before

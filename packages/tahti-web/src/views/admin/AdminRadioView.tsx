@@ -347,13 +347,17 @@ export function AdminRadioView() {
                                         <span>/c/{ch.slug} ·</span>
                                         {ch.lastFeaturedAt ? (
                                           <>
-                                            <span>last featured</span>
+                                            <span>
+                                              {t('adminRadioView.lastFeatured')}
+                                            </span>
                                             <ListingDate
                                               value={ch.lastFeaturedAt}
                                             />
                                           </>
                                         ) : (
-                                          <span>never featured</span>
+                                          <span>
+                                            {t('adminRadioView.neverFeatured')}
+                                          </span>
                                         )}
                                       </div>
                                     </div>

@@ -30,7 +30,7 @@ export function StudioProfileSectionView({
 
   return (
     <StudioGate requireChannel={channelForm}>
-      <div className="studio-page-layout mx-auto flex max-w-4xl flex-col gap-4 px-1 py-2">
+      <div className="studio-page-layout mx-auto flex max-w-6xl flex-col gap-4 px-1 py-2">
         <PageBackLink to="/studio/profile" label={t('studioProfile.profile')} />
         <ViewShell
           title={card?.title ?? t('studioProfile.profile')}

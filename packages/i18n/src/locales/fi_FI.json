@@ -6304,7 +6304,10 @@
       "artistProfile": "Artistiprofiili",
       "artistProfileSettings": "Artistiprofiilin asetukset",
       "channelPage": "Kanavasivu",
-      "channelPageSettings": "Kanavasivun asetukset"
+      "channelPageSettings": "Kanavasivun asetukset",
+      "livePreview": "Esikatselu",
+      "livePreviewHint": "Päivittyy kun muokkaat. Tallenna lomake julkaistaksesi muutoksen.",
+      "livePreviewEmptyBio": "Lisää lyhyt bio, niin se näkyy tässä."
     },
     "soundDetailsTab": {
       "allowComments": "Salli kommentit",
@@ -7184,7 +7187,9 @@
       "mirrorTahtiRadioToYoutube": "Peilaa Tahti Radio YouTubeen, Twitchiin ja muihin RTMP-kohteisiin.",
       "destinationsThatReceiveTheTahti": "Kohteet, jotka vastaanottavat Tahti Radion lähetyksen.",
       "optedOut": "Jätetty pois",
-      "featureHistory": "Nostohistoria"
+      "featureHistory": "Nostohistoria",
+      "lastFeatured": "viimeksi nostettu",
+      "neverFeatured": "ei koskaan nostettu"
     },
     "selectsTab": {
       "alwaysOnCuratedRotationLoops": "Aina päällä oleva kuratoitu rotaatio, joka toistuu loputtomasti. Vain julkisia arkiston kohteita voi lisätä.",

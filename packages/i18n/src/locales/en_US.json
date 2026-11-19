@@ -6304,7 +6304,10 @@
       "artistProfile": "Artist profile",
       "artistProfileSettings": "Artist profile settings",
       "channelPage": "Channel page",
-      "channelPageSettings": "Channel page settings"
+      "channelPageSettings": "Channel page settings",
+      "livePreview": "Live preview",
+      "livePreviewHint": "Updates as you edit. Save the form to publish the change.",
+      "livePreviewEmptyBio": "Add a short bio to show it here."
     },
     "soundDetailsTab": {
       "allowComments": "Allow comments",
@@ -7184,7 +7187,9 @@
       "mirrorTahtiRadioToYoutube": "Mirror Tahti Radio to YouTube, Twitch and other RTMP destinations.",
       "destinationsThatReceiveTheTahti": "Destinations that receive the Tahti Radio stream.",
       "optedOut": "Opted out",
-      "featureHistory": "Feature history"
+      "featureHistory": "Feature history",
+      "lastFeatured": "last featured",
+      "neverFeatured": "never featured"
     },
     "selectsTab": {
       "alwaysOnCuratedRotationLoops": "Always-on curated rotation — loops endlessly. Only public archive items can be added.",

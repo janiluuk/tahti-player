@@ -1,3 +1,7 @@
+## 2026-11-19 - Discover party reminders, Profile live preview, Radio Feature (0.0.418)
+
+Discover Parties rows remind; Studio Profile identity/story/people get a live preview; Admin Radio Feature featured labels i18n’d and anatomy leftover cleared.
+
 ## 2026-11-19 - What is Tahti page redesign (0.0.417)
 
 `/what-is-it` rebuilt from the org README: who it is for, what it does,
