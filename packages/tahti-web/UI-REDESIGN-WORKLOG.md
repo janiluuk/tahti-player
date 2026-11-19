@@ -1,3 +1,8 @@
+## 2026-11-19 - What is Tahti page redesign (0.0.417)
+
+`/what-is-it` rebuilt from the org README: who it is for, what it does,
+features, money glance and constitutional rules. Shorter, visual, EN/FI.
+
 ## 2026-11-19 - Registration form redesign + Selects confirm (0.0.416)
 
 Join uses account and password sections with field-level Input errors.

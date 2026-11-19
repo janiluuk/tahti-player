@@ -183,13 +183,13 @@ Every extracted Studio panel now has a story: the branding sections under `Tahti
 | ----------------------------- | ----------------------------------------- | ---------------------------- | --------- | -------------------------- |
 | [Help Hub](#help-hub)         | `/help`                                   | `src/views/HelpView.tsx`     | Has Story | LegalDocShell, Card layout |
 | [Legal / About](#legal-about) | `/about`, `/how-it-works`, `/for-artists` | `src/views/LegalView.tsx`    | No Story  | LegalDocShell              |
+| [What Is It](#what-is-it)     | `/what-is-it`                             | `src/views/WhatIsItView.tsx` | Has Story | Marketing / For Artists    |
 | [Terms](#terms)               | `/terms`                                  | `src/views/TermsView.tsx`    | No Story  | LegalDocShell              |
 | [Privacy](#privacy)           | `/privacy`                                | `src/views/PrivacyView.tsx`  | No Story  | LegalDocShell              |
 | [AGPL](#agpl)                 | `/agpl`                                   | `src/views/AgplView.tsx`     | No Story  | LegalDocShell              |
 | [Status](#status)             | `/status`                                 | `src/views/StatusView.tsx`   | No Story  | StatChip, Table            |
 | [News](#news)                 | `/news`                                   | `src/views/NewsView.tsx`     | Has Story (PlatformNewsDialog) | StoryRow, StoryCard, FeedStoryDialog          |
 | [What's New](#whats-new-web)  | `/whats-new`                              | `src/views/WhatsNewView.tsx` | Has Story | Timeline + Dialog (full cycle) |
-| [What Is It](#what-is-it)     | `/what-is-it`                             | `src/views/WhatIsItView.tsx` | No Story  | Marketing layout           |
 
 ### Utility / Alias Views
 
