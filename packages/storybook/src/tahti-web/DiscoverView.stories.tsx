@@ -95,6 +95,9 @@ export const PartiesTab: Story = {
         name: /Open the listening party for/,
       }),
     ).toHaveAttribute('href', expect.stringMatching(/^\/party\//));
+    await expect(
+      (await panel.findAllByRole('button', { name: 'Remind me' })).length,
+    ).toBeGreaterThan(0);
   },
 };
 

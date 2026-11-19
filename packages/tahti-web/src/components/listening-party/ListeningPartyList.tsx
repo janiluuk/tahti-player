@@ -7,6 +7,7 @@ import { ButtonLink, MediaArtwork } from '@tahti-player/ui';
 import type { ListeningPartySummaryDto } from '../../api/listening-parties';
 import { Eyebrow } from '../tahti/Eyebrow';
 import { PARTY_START_FORMAT } from './format';
+import { ListeningPartyReminderButton } from './ListeningPartyReminderButton';
 
 export function ListeningPartyList({
   parties,
@@ -58,20 +59,26 @@ export function ListeningPartyList({
                 )}
               </p>
             </div>
-            <ButtonLink
-              to="/party/$id"
-              params={{ id: party.id }}
-              size="sm"
-              variant={live ? 'default' : 'secondary'}
-              aria-label={t('discoverParties.openNamed', {
-                title: party.release.title,
-              })}
-            >
-              <PartyPopperIcon size={14} aria-hidden className="mr-1.5" />
-              {live
-                ? t('channelListeningPartyBannerStates.joinNow')
-                : t('channelListeningPartyBannerStates.openParty')}
-            </ButtonLink>
+            <div className="flex flex-wrap items-center gap-2">
+              <ListeningPartyReminderButton
+                partyId={party.id}
+                state={party.state}
+              />
+              <ButtonLink
+                to="/party/$id"
+                params={{ id: party.id }}
+                size="sm"
+                variant={live ? 'default' : 'secondary'}
+                aria-label={t('discoverParties.openNamed', {
+                  title: party.release.title,
+                })}
+              >
+                <PartyPopperIcon size={14} aria-hidden className="mr-1.5" />
+                {live
+                  ? t('channelListeningPartyBannerStates.joinNow')
+                  : t('channelListeningPartyBannerStates.openParty')}
+              </ButtonLink>
+            </div>
           </li>
         );
       })}

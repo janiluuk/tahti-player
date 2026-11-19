@@ -8,10 +8,10 @@ changed, because it needs a product call or more than a mechanical fix.
 
 ## View-first
 
-- [ ] `views/studio/distribution/ReleaseOpsPanel.tsx`: "Release ops" opens
-  straight into the Catalog & credits form (catalog tiles, UPC/ISRC inputs,
-  CreditsEditor). It is an ops workspace opened by an explicit button, so
-  decide whether it needs a read-only summary first.
+- [x] `views/studio/distribution/ReleaseOpsPanel.tsx` (2026-11-19): the
+  collapsed header is already the read-only summary (title, type, state,
+  tracks, UPC, smart link, Revelator badge). Expand opens Catalog / Delivery /
+  Guides — no extra summary layer.
 
 ## Bugs found, not fixed
 

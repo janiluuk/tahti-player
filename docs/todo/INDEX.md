@@ -53,7 +53,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [finnish-localization.md](finnish-localization.md) | Language in Settings → Appearance (2026-11-18) plus chrome/player/Listen/Discover/Library; web.actions, SEO, the page tour, the Upload broadcast label, batches 51–58, leftover groups, Admin dashboard/Support chrome, Admin hub cards, Governance hub + AGM (2026-11-17), Studio/Co-op/Admin page bodies (2026-11-18) have Finnish; left: API notification bodies |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks. Track page like and recently played search shipped. |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; stage embed stays one widget (0.0.376); left: embed downloads (product call) |
-| partial | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Page anatomy + Diagnostics hub + Release/Earnings OverflowMenus + Add-ons FilterBar (2026-11-17); Settings phase 4 done, Home and Posts budgets (2026-11-18); list searches on one FilterBar including Sounds (2026-11-18, 0.0.415); left: Library Playlists, Profile live preview, phase 3, Radio |
+| partial | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Page anatomy + Diagnostics hub + Release/Earnings OverflowMenus + Add-ons FilterBar (2026-11-17); Settings phase 4 done, Home and Posts budgets (2026-11-18); list searches on one FilterBar including Sounds (2026-11-18, 0.0.415); Profile live preview + Radio Feature budget (2026-11-19); left: Library Playlists, phase 3 Go live |
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
 | partial | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard now renders its last result at once and refreshes in the background; left: measure API time and cache slow calls server-side |
@@ -64,11 +64,11 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | One Storybook play session drops its sockets ~90s in (local every run, CI long shards); reduced motion + CI retry mitigate; time alone ruled out (2026-11-18), next: bisect by file count |
 | open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles e2e matrix on the mock app; Radio, Discover, Listen widget and artist Settings journeys added (`use-cases-coverage-gap-3`, `-4`); non-audio upload, search count and unread notifications (`use-cases-hardening`); left: collection player (placement), open findings |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | Back-link convention + checks; left: cross-section trail on phones (design call) |
-| open    | [view-first-and-test-hardening-leftovers.md](view-first-and-test-hardening-leftovers.md) | Release ops form-first, dead code needing a call |
+| open    | [view-first-and-test-hardening-leftovers.md](view-first-and-test-hardening-leftovers.md) | Release ops collapsed summary kept; dead code needing a call |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
 | partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
 | partial | [listening-party.md](listening-party.md) | Digital-only v1 merged (tahti-org#1029, tahti-player#1704); real-API check after deploy, then playout, formats/pre-orders/physical |
-| partial | [listening-parties-discover.md](listening-parties-discover.md) | Discover → Parties tab and widget shipped; left: reminders, non-artist hosting and Studio filter product calls |
+| partial | [listening-parties-discover.md](listening-parties-discover.md) | Discover → Parties tab, widget and row reminders shipped; left: non-artist hosting and Studio filter product calls |
 
 ## Blocked on a decision, credentials or manual testing
 

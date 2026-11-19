@@ -54,6 +54,9 @@ export const Identity: Story = {
       await canvas.findByRole('textbox', { name: 'Display name' }),
     );
     await expectVisible(canvas.getByRole('button', { name: 'Save identity' }));
+    await expectVisible(
+      await canvas.findByTestId('studio-profile-live-preview'),
+    );
   },
 };
 

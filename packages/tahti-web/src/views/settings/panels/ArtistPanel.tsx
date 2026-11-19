@@ -40,6 +40,7 @@ import { ArtistImagePurposePicker } from '../../../components/ArtistImagePurpose
 import { MentionTextarea } from '../../../components/MentionTextarea';
 import { PageError } from '../../../components/PageStates';
 import { SocialLinkIcon } from '../../../components/SocialLinkIcon';
+import { ArtistProfileLivePreview } from '../../../components/studio/ArtistProfileLivePreview';
 import { COUNTRIES, flagEmoji } from '../../../lib/countries';
 import {
   readReleaseVisualizerPreference,
@@ -600,11 +601,29 @@ export function ArtistPanel({
     (item) => item.id !== 'people' || profile?.artistKind === 'COLLECTIVE',
   );
   if (section) {
-    return (
-      <div className="min-w-0">
-        {tabItems.find((item) => item.id === section)?.content ?? null}
-      </div>
-    );
+    const content =
+      tabItems.find((item) => item.id === section)?.content ?? null;
+    const showPreview =
+      Boolean(profile) &&
+      (section === 'identity' || section === 'story' || section === 'people');
+    if (showPreview && profile) {
+      const roleLabels = artistRoles.map((role) =>
+        role in ARTIST_ROLE_LABEL_KEYS
+          ? t(
+              ARTIST_ROLE_LABEL_KEYS[
+                role as keyof typeof ARTIST_ROLE_LABEL_KEYS
+              ],
+            )
+          : role,
+      );
+      return (
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(15rem,18rem)] lg:items-start">
+          <div className="min-w-0">{content}</div>
+          <ArtistProfileLivePreview profile={profile} roleLabels={roleLabels} />
+        </div>
+      );
+    }
+    return <div className="min-w-0">{content}</div>;
   }
 
   const grouped = groupTabs(artistTabGroups(t), tabItems);
