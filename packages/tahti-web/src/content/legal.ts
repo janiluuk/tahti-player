@@ -65,19 +65,19 @@ export const LEGAL_PAGES: LegalPage[] = [
       {
         heading: 'Who it is for',
         paragraphs: [
-          'Independent artists, DJs, bands and collectives who want one home for live shows, 24/7 channels and releases — plus listeners who want lossless audio without ads or tracking, and members who vote on how the platform is run.',
+          'Independent artists, DJs, bands and collectives who want one home for live shows, 24/7 channels, releases and Studio tools — plus listeners who want lossless audio without ads or tracking (with favourites, history and Tahti Jam), and members who vote on how the platform is run.',
         ],
       },
       {
         heading: 'What it does',
         paragraphs: [
-          'Tahti closes the gap between five disconnected vendors (streaming host, release toolkit, fan payments, profile site, opaque terms) with one member-owned platform: always-on channels, Studio tools, fan subscriptions and public grants.',
+          'Tahti closes the gap between five disconnected vendors (streaming host, release toolkit, fan payments, profile site, opaque terms) with one member-owned platform: always-on channels, Channel Designer, audio editor, import/export plugins, fan subscriptions, store tiers and public grants.',
         ],
       },
       {
         heading: 'What you get',
         paragraphs: [
-          'Live broadcasting (OBS / Mixxx / Traktor, green room, multistream, Tahti Radio), library and release tooling, fan-to-artist payments with a 2% ops fee, discovery without algorithmic ranking, co-op governance with a public ledger, and the full stack under AGPL-3.0. Artist membership is €40/year; listening is free. Ninety percent of operating surplus returns to artists as grants.',
+          'Live broadcasting (OBS / Mixxx / Traktor, green room, multistream, auto-record, Tahti Radio + Discord bot), Channel Designer and waveform editor, library/releases with stems and DSP delivery, fan-to-artist payments with a 2% ops fee, Jam and discovery without algorithmic ranking, desktop Tahti Player with a free plugin/theme Store, co-op governance with a public ledger, and the full stack under AGPL-3.0. Artist membership is €40/year; listening is free. Ninety percent of operating surplus returns to artists as grants.',
         ],
       },
       {
