@@ -16,7 +16,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Library is Favorites · History · Following · Files for every account. Following lists who you follow (it used to sit in Settings → Artist). Files puts Media, Stash and, on desktop, Local files behind chips; `/library/media`, `/library/stash` and `/library/local` redirect to `/library/files`.',
+          'Library is Favorites · Playlists · History · Following · Files for every account. Following lists who you follow (it used to sit in Settings → Artist). Files puts Media, Stash and, on desktop, Local files behind chips; `/library/media`, `/library/stash` and `/library/local` redirect to `/library/files`.',
       },
     },
   },
@@ -30,6 +30,7 @@ const expectLibraryTabs = async (canvas: ReturnType<typeof within>) => {
   const tabs = await canvas.findAllByRole('tab');
   await expect(tabs.map((tab) => tab.textContent)).toEqual([
     'Favorites',
+    'Playlists',
     'History',
     'Following',
     'Files',

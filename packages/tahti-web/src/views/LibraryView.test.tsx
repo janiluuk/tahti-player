@@ -37,7 +37,13 @@ describe('LibraryView tabs', () => {
     const tabs = (await screen.findAllByRole('tab')).map(
       (tab) => tab.textContent,
     );
-    expect(tabs).toEqual(['Favorites', 'History', 'Following', 'Files']);
+    expect(tabs).toEqual([
+      'Favorites',
+      'Playlists',
+      'History',
+      'Following',
+      'Files',
+    ]);
   });
 
   it('shows Media and Stash as chips under Files, without Local on the web', async () => {
