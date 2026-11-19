@@ -56,6 +56,8 @@ export type ProfileFields = {
   /** Names this user in the annual grant report; off publishes them as
    * "Channel #<member number>" instead. Defaults to true on the API. */
   publicAttribution?: boolean;
+  /** Preferred UI language for API notifications (`en` | `fi`). Null = auto. */
+  uiLocale?: 'en' | 'fi' | null;
 };
 
 export let mockProfile: ProfileFields = {
@@ -166,6 +168,7 @@ export type ProfilePatch = Partial<
     | 'showPageHero'
     | 'publicAttribution'
     | 'avatarTheme'
+    | 'uiLocale'
   > &
     Record<NonNullableProfileField, string>
 >;

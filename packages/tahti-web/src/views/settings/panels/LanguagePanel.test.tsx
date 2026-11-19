@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { cleanup, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { MobileBottomNav } from '../../../components/MobileChrome';
 import {
@@ -10,6 +10,14 @@ import {
 } from '../../../stores/languageStore';
 import { renderWithRouter } from '../../../test/renderWithRouter';
 import { LanguagePanel } from './LanguagePanel';
+
+vi.mock('../../../api/studio-extras/profile', () => ({
+  patchMeProfile: vi.fn().mockResolvedValue({ ok: true, data: {} }),
+  fetchMeProfile: vi.fn().mockResolvedValue({
+    data: { uiLocale: null },
+    meta: { source: 'mock' },
+  }),
+}));
 
 describe('LanguagePanel', () => {
   afterEach(async () => {

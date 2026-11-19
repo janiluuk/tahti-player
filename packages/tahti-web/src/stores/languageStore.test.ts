@@ -1,13 +1,30 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { LANGUAGE_STORAGE_KEY, useLanguageStore } from './languageStore';
+import {
+  choiceToUiLocale,
+  LANGUAGE_STORAGE_KEY,
+  uiLocaleToChoice,
+  useLanguageStore,
+} from './languageStore';
+
+vi.mock('../api/studio-extras/profile', () => ({
+  patchMeProfile: vi.fn().mockResolvedValue({ ok: true, data: {} }),
+}));
 
 describe('languageStore', () => {
   afterEach(async () => {
     vi.restoreAllMocks();
     localStorage.removeItem(LANGUAGE_STORAGE_KEY);
     await useLanguageStore.getState().setChoice('en_US');
+  });
+
+  it('maps LanguageChoice to API uiLocale', () => {
+    expect(choiceToUiLocale('auto')).toBeNull();
+    expect(choiceToUiLocale('en_US')).toBe('en');
+    expect(choiceToUiLocale('fi_FI')).toBe('fi');
+    expect(uiLocaleToChoice(null)).toBe('auto');
+    expect(uiLocaleToChoice('fi')).toBe('fi_FI');
   });
 
   const rehydrate = async (saved: unknown) => {
