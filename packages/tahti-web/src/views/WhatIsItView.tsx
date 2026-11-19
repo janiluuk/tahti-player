@@ -250,6 +250,29 @@ export function WhatIsItView() {
         </p>
       </section>
 
+      <section className="border-border bg-background-secondary/30 rounded-2xl border p-6 sm:p-8">
+        <Eyebrow>{copy.honestEyebrow}</Eyebrow>
+        <SectionTitle>{copy.honestTitle}</SectionTitle>
+        <p className="text-foreground-secondary mt-3 max-w-3xl text-sm leading-relaxed sm:text-base">
+          {copy.honestLead}
+        </p>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          {copy.honestPoints.map((point) => (
+            <article
+              key={point.title}
+              className="border-border bg-background flex flex-col gap-2 rounded-xl border p-4"
+            >
+              <h3 className="font-display text-base font-bold tracking-tight">
+                {point.title}
+              </h3>
+              <p className="text-foreground-secondary text-sm leading-relaxed">
+                {point.body}
+              </p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="border-border rounded-2xl border p-6 sm:p-8">
         <Eyebrow>{copy.principlesEyebrow}</Eyebrow>
         <SectionTitle>{copy.principlesTitle}</SectionTitle>

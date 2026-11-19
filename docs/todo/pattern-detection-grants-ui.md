@@ -11,8 +11,10 @@ in the org PR.
 - [x] `AdminGrantPreviewArtist.anomalies` + mock
 - [x] Flags column on `AdminGrantCycleView` (tooltip chips)
 - [x] `PATTERN_FRAUD_ALERT` in activity scope / level / messages
+- [x] What is Tahti “Keeping it honest” section (en/fi) + earn feature bullet
+- [x] How it works / legal what-is-it honesty sections; Help earnings; pitch reference HTML
 
 ## Leftovers
 
 - [ ] Artist notify + appeal (org)
-- [ ] Pitch HTML “(building)” → shipped after both PRs merge
+- [ ] Marketing site `website/` still says “(building)” until explicitly updated

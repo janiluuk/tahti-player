@@ -33,6 +33,10 @@ export type WhatIsItCopy = {
   moneyTitle: string;
   moneyStats: Array<{ value: string; label: string }>;
   moneyBody: string;
+  honestEyebrow: string;
+  honestTitle: string;
+  honestLead: string;
+  honestPoints: Array<{ title: string; body: string }>;
   principlesEyebrow: string;
   principlesTitle: string;
   principles: string[];
@@ -121,7 +125,7 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
         points: [
           'Fan subscriptions via Stripe Connect — 2% ops fee into the grant pool.',
           'One-time purchases and pay-what-you-want tiers.',
-          'Annual grants: 90% of operating surplus by engagement units.',
+          'Annual grants: 90% of operating surplus by engagement units, with pattern detection for board review.',
         ],
       },
       discover: {
@@ -162,6 +166,28 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
     ],
     moneyBody:
       'Free-tier artists get MP3 and limited live hours; members broadcast lossless FLAC with no weekly airtime cap. The 2% fan-sub fee covers cards, GDPR and ops — and rolls into the grant pool. No platform cut for Tahti itself.',
+    honestEyebrow: 'Keeping it honest',
+    honestTitle: 'You can’t game what pays nothing to game.',
+    honestLead:
+      'Grants use engagement units from deliberate acts — downloads and fan money — not passive listening. Real fandom is messy; fake activity is too tidy. Pattern detection flags the tidy stuff for humans.',
+    honestPoints: [
+      {
+        title: 'Passive listening earns nothing',
+        body: 'The classic bot-farm trick has no target here. Plays never mint grant units.',
+      },
+      {
+        title: 'Deliberate acts only',
+        body: 'Units come from downloads (rate-limited, deduped, Tor/no-count networks excluded) and fan money on a real card.',
+      },
+      {
+        title: 'Pattern detection',
+        body: 'Batch-created accounts, even download intervals, network IP clusters, and reciprocal rings are flagged on the grant preview and in board audit — humans review before any units are reversed. Artist notice and a formal appeal path are next.',
+      },
+      {
+        title: 'Humans decide',
+        body: 'Nothing is docked silently by an algorithm. We would rather miss something than punish someone who did nothing wrong.',
+      },
+    ],
     principlesEyebrow: 'Three rules',
     principlesTitle: 'Written into the constitution.',
     principles: [
@@ -253,7 +279,7 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
         points: [
           'Fanitilaukset Stripe Connectilla — 2 %:n toimintamaksu apurahapottiin.',
           'Kertostot ja maksa-mitä-haluat-tasot.',
-          'Vuosittaiset apurahat: 90 % toimintaylijäämästä engagement-yksiköillä.',
+          'Vuosittaiset apurahat: 90 % toimintaylijäämästä engagement-yksiköillä, hahmontunnistuksella hallituksen arvioon.',
         ],
       },
       discover: {
@@ -294,6 +320,28 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
     ],
     moneyBody:
       'Ilmaistason artistit lähettävät MP3:lla ja rajoitetulla liveajalla; jäsenet lähettävät häviötöntä FLAC:ia ilman viikoittaista aikakattoa. 2 %:n fanitilausmaksu kattaa kortit, GDPR:n ja ylläpidon — ja menee apurahapottiin. Tahdilla itsellään ei ole omaa leikkausta.',
+    honestEyebrow: 'Pidämme rehellisenä',
+    honestTitle: 'Et voi pelata järjestelmää, joka ei maksa pelaamisesta.',
+    honestLead:
+      'Apurahat perustuvat engagement-yksiköihin tahallisista teoista — latauksista ja fanirahasta — ei passiivisesta kuuntelusta. Aito fanius on sekavaa; tekaistu aktiivisuus on liian siistiä. Hahmontunnistus liputtaa siistin toiminnan ihmisille.',
+    honestPoints: [
+      {
+        title: 'Passiivinen kuuntelu ei tuota mitään',
+        body: 'Klassisella bottifarmilla ei ole maalia täällä. Toistot eivät koskaan luo apurahayksiköitä.',
+      },
+      {
+        title: 'Vain tahalliset teot',
+        body: 'Yksiköt tulevat latauksista (nopeusrajoitukset, deduplikointi, Tor/no-count-verkot pois) ja fanirahasta oikealla kortilla.',
+      },
+      {
+        title: 'Hahmontunnistus',
+        body: 'Erissä luodut tilit, tasaiset latausvälit, IP-klusterit ja vastavuoroiset renkaat liputetaan apurahan esikatseluun ja hallituksen audittiin — ihminen arvioi ennen kuin yksiköitä peruutetaan. Artistin ilmoitus ja muodollinen valituspolku ovat seuraavaksi.',
+      },
+      {
+        title: 'Ihmiset päättävät',
+        body: 'Mikään ei leikkaudu hiljaa algoritmilla. Mieluummin ohitamme jotain kuin rankaisemme syytöntä.',
+      },
+    ],
     principlesEyebrow: 'Kolme sääntöä',
     principlesTitle: 'Kirjattu perussääntöön.',
     principles: [
