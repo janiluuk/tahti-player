@@ -238,26 +238,16 @@ function SidebarNavItems({ compact }: { compact: boolean }) {
               />
             </div>
           ) : null}
-          {isLoggedIn ? (
-            isBoard ? (
-              <div data-tour-id="nav-admin">
-                <SidebarNavigationItem
-                  to="/admin"
-                  icon={<ShieldIcon size={16} />}
-                  label={t('nav.admin')}
-                  isSelected={sidebarActive === 'admin'}
-                />
-              </div>
-            ) : null
-          ) : (
+          {isBoard ? (
             <div data-tour-id="nav-admin">
               <SidebarNavigationItem
-                disabled
+                to="/admin"
                 icon={<ShieldIcon size={16} />}
                 label={t('nav.admin')}
+                isSelected={sidebarActive === 'admin'}
               />
             </div>
-          )}
+          ) : null}
           {!compact ? <MikseriSidebarWidget /> : null}
         </div>
         <div className="border-border mt-2 flex shrink-0 flex-col gap-2 border-t pt-2">

@@ -119,10 +119,8 @@ export const SignedOut: Story = {
     await expect(
       canvas.getByRole('button', { name: 'Studio' }),
     ).toHaveAttribute('aria-disabled', 'true');
-    await expect(canvas.getByRole('button', { name: 'Admin' })).toHaveAttribute(
-      'aria-disabled',
-      'true',
-    );
+    await expect(canvas.queryByRole('button', { name: 'Admin' })).toBeNull();
+    await expect(canvas.queryByRole('link', { name: 'Admin' })).toBeNull();
   },
 };
 
