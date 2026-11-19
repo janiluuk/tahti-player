@@ -408,6 +408,7 @@ Generated from story `title` fields by `pnpm storybook:surfaces` (scripts/genera
 | `Tahti/Player/WaveformCanvas` | `tahti-web/WaveformCanvas.stories.tsx` |
 | `Tahti/Player/WaveformSeekbar` | `tahti-web/WaveformSeekbar.stories.tsx` |
 | `Tahti/Listen/WelcomeStrip` | `tahti-web/WelcomeStrip.stories.tsx` |
+| `Tahti/Reference/What is Tahti` | `tahti-web/WhatIsItView.stories.tsx` |
 | `Tahti/App/WhatsNewView` | `tahti-web/WhatsNewView.stories.tsx` |
 | `Tahti/Discover/WidgetCard` | `tahti-web/WidgetCard.stories.tsx` |
 | `Tahti/Discover/WidgetTrackRow` | `tahti-web/WidgetTrackRow.stories.tsx` |

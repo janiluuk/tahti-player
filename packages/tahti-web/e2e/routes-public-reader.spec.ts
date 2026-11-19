@@ -29,7 +29,7 @@ const infoRoutes: RouteVisit[] = [
   { path: '/agpl', heading: 'Source code & AGPL licence' },
   { path: '/about', heading: 'About Tahti' },
   { path: '/how-it-works', heading: 'How Tahti works' },
-  { path: '/what-is-it', heading: 'What is tahti.live' },
+  { path: '/what-is-it', heading: 'What is Tahti' },
 ];
 
 test('subscribe, release, track and venue pages render for a visitor from outside the app', async ({

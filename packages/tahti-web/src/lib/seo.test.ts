@@ -34,7 +34,7 @@ describe('metadataForPath', () => {
     ['/listen/history', 'History · Tahti'],
     ['/settings', 'Settings · Tahti'],
     ['/about', 'About · Tahti'],
-    ['/what-is-it', 'What is it · Tahti'],
+    ['/what-is-it', 'What is Tahti · Tahti'],
     ['/how-it-works', 'How it works · Tahti'],
     ['/for-artists', 'For artists · Tahti'],
     ['/terms', 'Terms of service · Tahti'],
