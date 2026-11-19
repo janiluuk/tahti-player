@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
+  Badge,
   BreadcrumbCurrent,
   BreadcrumbLink,
   Breadcrumbs,
@@ -19,6 +20,7 @@ import {
   HorizontalScroll,
   InlineError,
   SectionShell,
+  Tooltip,
   ViewShell,
 } from '@tahti-player/ui';
 
@@ -205,6 +207,9 @@ export function AdminGrantCycleView() {
                               <DataTableHeaderCell>
                                 {t('grantCycle.units')}
                               </DataTableHeaderCell>
+                              <DataTableHeaderCell>
+                                {t('grantCycle.flags')}
+                              </DataTableHeaderCell>
                               <DataTableHeaderCell className="text-right">
                                 {t('grantCycle.grant')}
                               </DataTableHeaderCell>
@@ -238,6 +243,35 @@ export function AdminGrantCycleView() {
                                   <DataTableCell>
                                     {artist.units.toLocaleString(
                                       dateLocaleTag(),
+                                    )}
+                                  </DataTableCell>
+                                  <DataTableCell>
+                                    {(artist.anomalies ?? []).length === 0 ? (
+                                      <span className="text-foreground-secondary text-xs">
+                                        —
+                                      </span>
+                                    ) : (
+                                      <div className="flex flex-wrap gap-1">
+                                        {(artist.anomalies ?? []).map(
+                                          (anomaly) => (
+                                            <Tooltip
+                                              key={`${artist.userId}-${anomaly.code}`}
+                                              content={anomaly.message}
+                                            >
+                                              <Badge
+                                                variant="pill"
+                                                color="orange"
+                                                className="cursor-help"
+                                              >
+                                                {anomaly.code.replaceAll(
+                                                  '_',
+                                                  ' ',
+                                                )}
+                                              </Badge>
+                                            </Tooltip>
+                                          ),
+                                        )}
+                                      </div>
                                     )}
                                   </DataTableCell>
                                   <DataTableCell className="text-right font-medium">

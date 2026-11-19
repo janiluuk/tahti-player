@@ -304,6 +304,20 @@ export async function fetchAdminGrants(): Promise<{
   }
 }
 
+export type AdminGrantAnomalyCode =
+  | 'DOMINANT_IP'
+  | 'HIGH_UNIT_SHARE'
+  | 'ANONYMOUS_GRANT'
+  | 'BATCH_ACCOUNTS'
+  | 'EVEN_INTERVALS'
+  | 'NETWORK_CLUSTERS'
+  | 'RECIPROCAL_RINGS';
+
+export type AdminGrantAnomaly = {
+  code: AdminGrantAnomalyCode;
+  message: string;
+};
+
 export type AdminGrantPreviewArtist = {
   userId: string;
   username: string;
@@ -313,6 +327,7 @@ export type AdminGrantPreviewArtist = {
   freeDownloads: number;
   paidDownloads: number;
   fanSubEuros: number;
+  anomalies: AdminGrantAnomaly[];
 };
 
 export type AdminGrantPreview = {
@@ -335,7 +350,7 @@ export type AdminGrantHistoryDetail = AdminGrantYearSummary & {
 };
 
 function mockGrantPreview(year: number): AdminGrantPreview {
-  const artists = [
+  const artists: AdminGrantPreviewArtist[] = [
     {
       userId: 'artist-1',
       username: 'northern-lights',
@@ -345,6 +360,13 @@ function mockGrantPreview(year: number): AdminGrantPreview {
       freeDownloads: 48,
       paidDownloads: 12,
       fanSubEuros: 20,
+      anomalies: [
+        {
+          code: 'NETWORK_CLUSTERS',
+          message:
+            'Top 3 IP hashes are 78% of 42 counted downloads (pattern detection)',
+        },
+      ],
     },
     {
       userId: 'artist-2',
@@ -355,6 +377,7 @@ function mockGrantPreview(year: number): AdminGrantPreview {
       freeDownloads: 32,
       paidDownloads: 5,
       fanSubEuros: 17,
+      anomalies: [],
     },
   ];
   return {

@@ -82,6 +82,7 @@ const ADMIN_AUDIT_TOPIC_ACTIONS: Record<AdminAuditTopicId, readonly string[]> =
       'ENGAGEMENT_ADJUSTMENT',
       'STRIPE_WEBHOOK_ERROR',
       'DOWNLOAD_FRAUD_ALERT',
+      'PATTERN_FRAUD_ALERT',
     ],
     subscriptions: ['FAN_SUBSCRIPTION_CREATE'],
     membership: [
