@@ -1,10 +1,11 @@
-import { MessageSquarePlus } from 'lucide-react';
+import { LockIcon, MessageSquarePlus, MessagesSquareIcon } from 'lucide-react';
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { toast } from 'sonner';
 
 import { i18n, useTranslation } from '@tahti-player/i18n';
 import {
   Badge,
+  Box,
   Button,
   EditIconButton,
   Textarea,
@@ -23,11 +24,13 @@ import {
   type DiscussionTopicDetail,
 } from '../api/governance-discussions';
 import { ConfirmDialog } from '../components/ConfirmDialog';
+import { governanceAccentChip } from '../components/governance/GovernancePanel';
 import { ListingDate } from '../components/ListingDate';
 import { PageBackLink } from '../components/PageBackLink';
 import { PageEmpty, PageError, PageLoading } from '../components/PageStates';
 import { ReportButton } from '../components/ReportButton';
 import { hasAccountRole } from '../lib/accountRoles';
+import { cn } from '../lib/cn';
 import { toastWithUndo } from '../lib/undoToast';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
@@ -134,7 +137,7 @@ function EditReplyForm({
 
   return (
     <form
-      className="mt-2 flex flex-col gap-2"
+      className="flex flex-col gap-2"
       onSubmit={(event) => {
         event.preventDefault();
         void save();
@@ -348,9 +351,25 @@ export function DiscussionTopicView({ id }: { id: string }) {
         />
       ) : (
         <>
-          <section className="flex flex-col gap-2">
+          <Box
+            variant="tertiary"
+            className="border-t-accent-cyan flex flex-col gap-3 border-t-4"
+          >
             <p className="text-foreground-secondary flex flex-wrap items-center gap-2 text-xs">
-              <span>Opened by {topic.createdBy}</span>
+              <span
+                className={cn(
+                  'inline-flex size-8 shrink-0 items-center justify-center rounded-md',
+                  governanceAccentChip('cyan'),
+                )}
+              >
+                <MessagesSquareIcon size={16} aria-hidden />
+              </span>
+              <span>
+                Opened by{' '}
+                <span className="text-foreground font-semibold">
+                  {topic.createdBy}
+                </span>
+              </span>
               <ListingDate value={topic.createdAt} />
               {topic.status === 'CLOSED' ? (
                 <Badge variant="pill" color="secondary">
@@ -358,20 +377,24 @@ export function DiscussionTopicView({ id }: { id: string }) {
                 </Badge>
               ) : null}
             </p>
-            <p className="text-sm whitespace-pre-wrap">{topic.body}</p>
-            <FollowControls
-              topic={topic}
-              onChange={(following, muted) =>
-                setTopic({ ...topic, following, muted })
-              }
-            />
-          </section>
+            <p className="text-sm leading-relaxed whitespace-pre-wrap">
+              {topic.body}
+            </p>
+            <div className="border-border border-t pt-3">
+              <FollowControls
+                topic={topic}
+                onChange={(following, muted) =>
+                  setTopic({ ...topic, following, muted })
+                }
+              />
+            </div>
+          </Box>
 
           <section
             className="flex flex-col gap-3"
             aria-label={t('discussionTopic.replies')}
           >
-            <h2 className="text-lg font-semibold">
+            <h2 className="font-display text-lg font-bold">
               {Math.max(topic.postCount, topic.posts.length) === 1
                 ? '1 reply'
                 : `${Math.max(topic.postCount, topic.posts.length)} replies`}
@@ -408,68 +431,81 @@ export function DiscussionTopicView({ id }: { id: string }) {
                     </Button>
                   </div>
                 ) : null}
-                <ul className="border-border divide-border divide-y rounded-md border text-sm">
+                <ul className="flex flex-col gap-3 text-sm">
                   {topic.posts.map((post) => (
-                    <li key={post.id} className="px-3 py-2">
-                      <div className="flex flex-wrap items-center justify-between gap-2">
-                        <p className="text-foreground-secondary flex flex-wrap items-center gap-x-1.5 text-xs">
-                          <span>{post.author}</span>
-                          <ListingDate value={post.createdAt} />
-                          {post.editedAt ? <span>(edited)</span> : null}
-                        </p>
-                        <span className="flex items-center gap-1">
-                          {post.mine ? null : (
-                            <ReportButton
-                              targetType="DISCUSSION_POST"
-                              targetId={post.id}
-                              label={`the reply by ${post.author}`}
-                              defaultReason="HARASSMENT"
-                              variant="text"
-                            />
-                          )}
-                          {post.mine &&
-                          topic.status === 'OPEN' &&
-                          editingId !== post.id ? (
-                            <EditIconButton
-                              label={t('discussionTopic.editYourReply')}
-                              variant="text"
-                              onClick={() => setEditingId(post.id)}
-                            />
-                          ) : null}
-                          {canRemove(post) ? (
-                            <Button
-                              size="sm"
-                              variant="text"
-                              aria-label={t(
-                                'discussionTopicViewLabels.removeTheReplyByAuthor',
-                                { author: post.author },
-                              )}
-                              onClick={() => setRemoving(post)}
-                            >
-                              {t('discussionTopic.remove')}
-                            </Button>
-                          ) : null}
-                        </span>
-                      </div>
-                      {editingId === post.id ? (
-                        <EditReplyForm
-                          topicId={topic.id}
-                          post={post}
-                          onDone={(saved) => {
-                            setEditingId(null);
-                            if (saved) {
-                              setTopic({
-                                ...topic,
-                                posts: topic.posts.map((p) =>
-                                  p.id === saved.id ? saved : p,
-                                ),
-                              });
-                            }
-                          }}
-                        />
-                      ) : (
-                        <p className="mt-1 whitespace-pre-wrap">{post.body}</p>
-                      )}
+                    <li key={post.id}>
+                      <Box
+                        variant="secondary"
+                        shadow="none"
+                        className={cn(
+                          'flex flex-col gap-2 px-4 py-3',
+                          post.mine && 'border-l-accent-cyan border-l-4',
+                        )}
+                      >
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <p className="text-foreground-secondary flex flex-wrap items-center gap-x-1.5 text-xs">
+                            <span className="text-foreground text-sm font-semibold">
+                              {post.author}
+                            </span>
+                            <ListingDate value={post.createdAt} />
+                            {post.editedAt ? <span>(edited)</span> : null}
+                          </p>
+                          <span className="flex items-center gap-1">
+                            {post.mine ? null : (
+                              <ReportButton
+                                targetType="DISCUSSION_POST"
+                                targetId={post.id}
+                                label={`the reply by ${post.author}`}
+                                defaultReason="HARASSMENT"
+                                variant="text"
+                              />
+                            )}
+                            {post.mine &&
+                            topic.status === 'OPEN' &&
+                            editingId !== post.id ? (
+                              <EditIconButton
+                                label={t('discussionTopic.editYourReply')}
+                                variant="text"
+                                onClick={() => setEditingId(post.id)}
+                              />
+                            ) : null}
+                            {canRemove(post) ? (
+                              <Button
+                                size="sm"
+                                variant="text"
+                                aria-label={t(
+                                  'discussionTopicViewLabels.removeTheReplyByAuthor',
+                                  { author: post.author },
+                                )}
+                                onClick={() => setRemoving(post)}
+                              >
+                                {t('discussionTopic.remove')}
+                              </Button>
+                            ) : null}
+                          </span>
+                        </div>
+                        {editingId === post.id ? (
+                          <EditReplyForm
+                            topicId={topic.id}
+                            post={post}
+                            onDone={(saved) => {
+                              setEditingId(null);
+                              if (saved) {
+                                setTopic({
+                                  ...topic,
+                                  posts: topic.posts.map((p) =>
+                                    p.id === saved.id ? saved : p,
+                                  ),
+                                });
+                              }
+                            }}
+                          />
+                        ) : (
+                          <p className="leading-relaxed whitespace-pre-wrap">
+                            {post.body}
+                          </p>
+                        )}
+                      </Box>
                     </li>
                   ))}
                 </ul>
@@ -478,15 +514,22 @@ export function DiscussionTopicView({ id }: { id: string }) {
           </section>
 
           {topic.status === 'CLOSED' ? (
-            <p className="text-foreground-secondary text-sm">
+            <Box
+              variant="tertiary"
+              shadow="none"
+              className="text-foreground-secondary flex items-center gap-2 text-sm"
+            >
+              <LockIcon size={16} aria-hidden className="shrink-0" />
               {t('discussionTopic.theBoardClosedThisTopic')}
-            </p>
+            </Box>
           ) : (
-            <ReplyForm
-              topicId={topic.id}
-              onPosted={reload}
-              textareaRef={replyRef}
-            />
+            <Box variant="tertiary" className="flex-col">
+              <ReplyForm
+                topicId={topic.id}
+                onPosted={reload}
+                textareaRef={replyRef}
+              />
+            </Box>
           )}
         </>
       )}

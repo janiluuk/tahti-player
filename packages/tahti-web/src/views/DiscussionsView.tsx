@@ -1,5 +1,10 @@
 import { Link } from '@tanstack/react-router';
-import { BellOffIcon, PinIcon } from 'lucide-react';
+import {
+  BellOffIcon,
+  MessageSquareIcon,
+  MessagesSquareIcon,
+  PinIcon,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -11,6 +16,10 @@ import {
   markAllDiscussionsRead,
   type DiscussionTopic,
 } from '../api/governance-discussions';
+import {
+  governanceAccentChip,
+  GovernancePanel,
+} from '../components/governance/GovernancePanel';
 import { ListingDate } from '../components/ListingDate';
 import { PageBackLink } from '../components/PageBackLink';
 import {
@@ -19,6 +28,7 @@ import {
   PageErrorBanner,
   PageLoading,
 } from '../components/PageStates';
+import { cn } from '../lib/cn';
 import { useAuthModalStore } from '../stores/authModalStore';
 import { useAuthStore } from '../stores/authStore';
 
@@ -46,56 +56,76 @@ function matchesFilter(topic: DiscussionTopic, filter: TopicFilter): boolean {
 
 function TopicRow({ topic }: { topic: DiscussionTopic }) {
   const { t } = useTranslation('web');
+  const unread = Boolean(topic.unreadCount);
   return (
-    <li className="border-border bg-background-secondary rounded-md border-(length:--border-width) p-3">
+    <li>
       <Link
         to="/governance/discussions/$id"
         params={{ id: topic.id }}
-        className="flex flex-col gap-1"
+        className="group hover:bg-background-secondary/60 -mx-2 flex items-start gap-3 rounded-md px-2 py-3"
       >
-        <span className="flex flex-wrap items-center gap-2">
+        <span
+          className={cn(
+            'inline-flex size-9 shrink-0 items-center justify-center rounded-md',
+            topic.status === 'CLOSED'
+              ? 'bg-background-secondary text-foreground-secondary'
+              : governanceAccentChip(unread ? 'orange' : 'cyan'),
+          )}
+        >
           {topic.pinned ? (
-            <PinIcon
-              size={14}
-              aria-label={t('discussionsPage.pinned')}
-              className="shrink-0"
-            />
-          ) : null}
-          <span className="font-semibold hover:underline">{topic.title}</span>
-          {topic.unreadCount ? (
-            <Badge variant="pill" color="orange">
-              {topic.unreadCount === 1
-                ? '1 new reply'
-                : `${topic.unreadCount} new replies`}
-            </Badge>
-          ) : null}
-          {topic.status === 'CLOSED' ? (
-            <Badge variant="pill" color="secondary">
-              {t('discussionsPage.closed')}
-            </Badge>
-          ) : null}
-          {topic.following ? (
-            <Badge variant="pill" color="secondary">
-              {topic.muted ? (
-                <>
-                  <BellOffIcon size={12} aria-hidden />{' '}
-                  {t('discussionsPage.muted')}
-                </>
-              ) : (
-                'Following'
-              )}
-            </Badge>
-          ) : null}
+            <PinIcon size={16} aria-label={t('discussionsPage.pinned')} />
+          ) : (
+            <MessagesSquareIcon size={16} aria-hidden />
+          )}
         </span>
-        <span className="text-foreground-secondary flex flex-wrap items-center gap-x-1 text-xs">
-          <span>
-            Started by {topic.createdBy} ·{' '}
-            {topic.postCount === 1 ? '1 reply' : `${topic.postCount} replies`} ·{' '}
-            {topic.lastReplyBy
-              ? `last reply by ${topic.lastReplyBy}`
-              : 'last activity'}
+        <span className="flex min-w-0 flex-1 flex-col gap-1">
+          <span className="flex flex-wrap items-center gap-2">
+            <span
+              className={cn(
+                'font-display text-base group-hover:underline',
+                unread ? 'font-bold' : 'font-semibold',
+              )}
+            >
+              {topic.title}
+            </span>
+            {unread ? (
+              <Badge variant="pill" color="orange">
+                {topic.unreadCount === 1
+                  ? '1 new reply'
+                  : `${topic.unreadCount} new replies`}
+              </Badge>
+            ) : null}
+            {topic.status === 'CLOSED' ? (
+              <Badge variant="pill" color="secondary">
+                {t('discussionsPage.closed')}
+              </Badge>
+            ) : null}
+            {topic.following ? (
+              <Badge variant="pill" color="secondary">
+                {topic.muted ? (
+                  <>
+                    <BellOffIcon size={12} aria-hidden />{' '}
+                    {t('discussionsPage.muted')}
+                  </>
+                ) : (
+                  'Following'
+                )}
+              </Badge>
+            ) : null}
           </span>
-          <ListingDate value={topic.lastPostAt} />
+          <span className="text-foreground-secondary flex flex-wrap items-center gap-x-1 text-xs">
+            <span>
+              Started by {topic.createdBy} ·{' '}
+              {topic.lastReplyBy
+                ? `last reply by ${topic.lastReplyBy}`
+                : 'last activity'}
+            </span>
+            <ListingDate value={topic.lastPostAt} />
+          </span>
+        </span>
+        <span className="text-foreground-secondary flex shrink-0 items-center gap-1 self-center text-xs">
+          <MessageSquareIcon size={14} aria-hidden />
+          {topic.postCount === 1 ? '1 reply' : `${topic.postCount} replies`}
         </span>
       </Link>
     </li>
@@ -141,28 +171,6 @@ export function DiscussionsView() {
       <p className="text-foreground-secondary text-sm">
         {t('discussionsPage.topicsTheBoardOpenedFor')}
       </p>
-      {topics.some((topic) => topic.unreadCount) ? (
-        <div>
-          <Button
-            size="sm"
-            variant="secondary"
-            onClick={() =>
-              void markAllDiscussionsRead().then((result) => {
-                if (!result.ok) {
-                  toast.error(result.error);
-                  return;
-                }
-                setTopics((all) =>
-                  all.map((topic) => ({ ...topic, unreadCount: 0 })),
-                );
-              })
-            }
-          >
-            {t('discussionsPage.markAllRead')}
-          </Button>
-        </div>
-      ) : null}
-
       {!user ? (
         <PageEmpty
           icon="inbox"
@@ -198,13 +206,38 @@ export function DiscussionsView() {
               description={t('empties.whenTheBoardOpensATopic')}
             />
           ) : (
-            <>
-              <FilterChips
-                items={FILTERS}
-                selected={filter}
-                onChange={(id) => setFilter(id as TopicFilter)}
-                aria-label={t('discussionsPage.filterDiscussions')}
-              />
+            <GovernancePanel
+              title={t('discussionsPage.discussionTopics')}
+              icon={MessagesSquareIcon}
+              accent="cyan"
+            >
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <FilterChips
+                  items={FILTERS}
+                  selected={filter}
+                  onChange={(id) => setFilter(id as TopicFilter)}
+                  aria-label={t('discussionsPage.filterDiscussions')}
+                />
+                {topics.some((topic) => topic.unreadCount) ? (
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() =>
+                      void markAllDiscussionsRead().then((result) => {
+                        if (!result.ok) {
+                          toast.error(result.error);
+                          return;
+                        }
+                        setTopics((all) =>
+                          all.map((topic) => ({ ...topic, unreadCount: 0 })),
+                        );
+                      })
+                    }
+                  >
+                    {t('discussionsPage.markAllRead')}
+                  </Button>
+                ) : null}
+              </div>
               {shown.length === 0 ? (
                 <PageEmpty
                   icon="inbox"
@@ -222,7 +255,7 @@ export function DiscussionsView() {
                 />
               ) : (
                 <ul
-                  className="flex flex-col gap-2"
+                  className="divide-border flex flex-col divide-y"
                   aria-label={t('discussionsPage.discussionTopics')}
                 >
                   {shown.map((topic) => (
@@ -230,7 +263,7 @@ export function DiscussionsView() {
                   ))}
                 </ul>
               )}
-            </>
+            </GovernancePanel>
           )}
         </>
       )}
