@@ -1,9 +1,12 @@
 # Server peaks everywhere (Yaniho + lists)
 
 **Status:** partial  
-**Updated:** 2026-11-18  
+**Updated:** 2026-11-19  
 **Absorbs leftovers from:** `yaniho-channel-waveform-peaks.md` (deleted
 2026-11-18), [yaniho-channel-pregenerate-peaks.md](yaniho-channel-pregenerate-peaks.md)
+
+Player list/decode slices are done. Left = org prod Yaniho backfill + live
+verify (`../tahti-org/docs/todo/peaks-gap-audit.md`).
 
 ## Shipped (player)
 
@@ -27,8 +30,8 @@ still shows loading bars when peaks are missing on READY sounds.
 
 ## Left
 
-Org slices 1–11, 22, 23 (`../tahti-org`), the prod Yaniho backfill (5) and
-the live verify (30). Every player slice is shipped.
+Org Prometheus gap gauge shipped; left: prod Yaniho dry-run/enqueue and live
+verify (30). Every player slice is shipped.
 
 ## Next 30 slices (in order)
 
