@@ -17,4 +17,4 @@ in the org PR.
 ## Leftovers
 
 - [ ] Artist notify + appeal (org)
-- [ ] Marketing site `website/` still says “(building)” until explicitly updated
+- [x] Marketing site `website/` updated on sibling org PR (no “(building)”)
