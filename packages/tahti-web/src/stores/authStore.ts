@@ -15,9 +15,11 @@ import {
   verifyEmailRequest,
 } from '../api/client';
 import { setMockSessionUser } from '../api/mock-session';
+import { fetchMeProfile } from '../api/studio-extras/profile';
 import type { AuthUser } from '../api/types';
 import { moveTrackFavoritesToLikesWithToast } from '../lib/moveTrackFavoritesToLikes';
 import { clearSnapshots } from '../lib/useSnapshotFetch';
+import { useLanguageStore } from './languageStore';
 import { rehydrateLibraryForUser, useLibraryStore } from './libraryStore';
 import { useSoundLikesStore } from './soundLikesStore';
 
@@ -117,6 +119,11 @@ async function afterUserChange(user: AuthUser | null) {
   }
   if (user) {
     void moveTrackFavoritesToLikesWithToast(user.id);
+    void fetchMeProfile().then((result) => {
+      void useLanguageStore
+        .getState()
+        .hydrateFromUiLocale(result.data.uiLocale);
+    });
   }
   if (user?.username) {
     await useLibraryStore.getState().mergeServerFollowing(user.username);

@@ -1,3 +1,10 @@
+## 2026-11-19 — Language uiLocale persist + finish-wip-2026-11-04 folded
+
+Language panel PATCHes `uiLocale`; auth hydrates from profile. Folded
+`finish-wip-2026-11-04.md` / `finish-wip-2026-11-04-branches.md` — all Nov 3–5
+WIP PRs already merged; local squash leftover branches pruned. Finnish API
+notification templates remain partial on the org side.
+
 ## 2026-11-19 — Yaniho peaks prod verify folded
 
 Prod Yaniho: 100 READY sounds, 0 missing peaks/editorPeaks (LAN SQL dry-run on

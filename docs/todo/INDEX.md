@@ -27,10 +27,9 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [hearthis-release-product-defaults.md](hearthis-release-product-defaults.md) | Confirm the product defaults for tahti hearthis release |
 | open    | [hearthis-release-live-run.md](hearthis-release-live-run.md) | One live tahti hearthis release run |
 | open    | [hearthis-collection-live-run.md](hearthis-collection-live-run.md) | One live tahti hearthis collection run |
-| open    | [finish-wip-2026-11-04-branches.md](finish-wip-2026-11-04-branches.md) | Deferred to a later session: finish or close 2026-11-04 WIP branches/draft PRs |
 | open    | [artwork-preset-backfill.md](artwork-preset-backfill.md) | Run the artwork-preset cover backfill after tahti-org#1033 is merged |
 | open    | [listings-news-opening-post.md](listings-news-opening-post.md) | Update the listings news opening post once an admin is signed in |
-| blocked | [finnish-api-notifications.md](finnish-api-notifications.md) | API notification FI blocked until org persists User.uiLocale from Language panel |
+| partial | [finnish-api-notifications.md](finnish-api-notifications.md) | Language panel persists uiLocale; left: remaining API notification templates (org) |
 | open    | [board-track-edit-product-call.md](board-track-edit-product-call.md) | Decide how board members edit a track |
 | open    | [embed-downloads-product-call.md](embed-downloads-product-call.md) | Decide whether an embed offers downloads |
 | open    | [artist-groups-org-e2e.md](artist-groups-org-e2e.md) | Ship the org side of artist groups and cover it with e2e |
@@ -44,7 +43,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; left: native review |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |
-| open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Deferred: inventory/finish 2026-11-04 WIP branches after the leftovers batch |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, catalog in Studio → Music and Library for listeners (2026-11-13), one Broadcast agenda, Profile forms on Studio pages (2026-11-16), Admin Overview merge + Inbox counts + sitemap/gaps rewrite + Governance hub cards (2026-11-17), governance guide/documents in Co-op + one-hop legacy redirects (2026-11-18); left: Go live full-screen flow |
