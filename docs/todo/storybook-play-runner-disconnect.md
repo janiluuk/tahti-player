@@ -32,7 +32,22 @@ Neither run dropped on the Mac, so time alone does not cause it:
 
 The drop needs many story files in one session: the tester iframe reloading per file, or something a set of stories leaves behind (sockets, workers, timers).
 
+## File-count bisect note (2026-11-19)
+
+Recipe for the next pass (do not run the full suite in one session):
+
+```bash
+# From packages/storybook — pick ~60 story files, then halves.
+pnpm exec vitest --project storybook --no-file-parallelism \
+  src/tahti-web/Studio*.stories.tsx src/tahti-web/Track*.stories.tsx
+# If it drops: split the glob in half and repeat until one file (or pair)
+# reproduces under ~90s. Log open sockets/workers via CDP Performance /
+# Target.getTargets between files.
+```
+
+CI already uses ten shards (~50 files) + one retry; keep local chunks ≤60.
+
 ## Next
 
-- [ ] Bisect by count: run the same 60 files with `--no-file-parallelism` in halves until one file (or a pair) reproduces the drop under 90s; log open WebSockets/workers per file via `performance`/CDP.
+- [ ] Run the file-count bisect above until one file (or a pair) reproduces; log open WebSockets/workers per file via `performance`/CDP.
 - [ ] Try Chromium with `--disable-features=...` for websocket throttling, or a newer Playwright Chromium.

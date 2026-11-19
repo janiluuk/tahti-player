@@ -1,3 +1,11 @@
+## 2026-11-19 — Listener stats URL fold + UX backlog + Storybook bisect note
+
+Folded `listener-stats-origin-url.md` (ReferrerSources Sites/Pages, track insights
+`soundId` window, owner-moderator hide-remove) and `ux-backlog.md` (de-green left:
+none known). TrackInsights Storybook play asserts Pages URL buckets. Storybook
+play-runner file-count bisect recipe noted. Finnish API notifications blocked on
+org `User.uiLocale`. finish-wip-2026-11-04 deferred to a later session.
+
 ## 2026-11-19 — Hide Admin nav unless board
 
 Sidebar Admin link only renders for `BOARD` accounts; signed-out users no longer see a disabled Admin entry. tahti-web 0.0.419.

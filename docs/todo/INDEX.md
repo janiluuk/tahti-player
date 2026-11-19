@@ -27,11 +27,11 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [hearthis-release-product-defaults.md](hearthis-release-product-defaults.md) | Confirm the product defaults for tahti hearthis release |
 | open    | [hearthis-release-live-run.md](hearthis-release-live-run.md) | One live tahti hearthis release run |
 | open    | [hearthis-collection-live-run.md](hearthis-collection-live-run.md) | One live tahti hearthis collection run |
-| open    | [finish-wip-2026-11-04-branches.md](finish-wip-2026-11-04-branches.md) | Finish or close the unfinished 2026-11-04 branches and draft PRs |
+| open    | [finish-wip-2026-11-04-branches.md](finish-wip-2026-11-04-branches.md) | Deferred to a later session: finish or close 2026-11-04 WIP branches/draft PRs |
 | open    | [yaniho-channel-pregenerate-peaks.md](yaniho-channel-pregenerate-peaks.md) | Pre-generate peaks so Yaniho channel tracks are not stuck loading |
 | open    | [artwork-preset-backfill.md](artwork-preset-backfill.md) | Run the artwork-preset cover backfill after tahti-org#1033 is merged |
 | open    | [listings-news-opening-post.md](listings-news-opening-post.md) | Update the listings news opening post once an admin is signed in |
-| open    | [finnish-api-notifications.md](finnish-api-notifications.md) | Translate API notification bodies |
+| blocked | [finnish-api-notifications.md](finnish-api-notifications.md) | API notification FI blocked until org persists User.uiLocale from Language panel |
 | open    | [board-track-edit-product-call.md](board-track-edit-product-call.md) | Decide how board members edit a track |
 | open    | [embed-downloads-product-call.md](embed-downloads-product-call.md) | Decide whether an embed offers downloads |
 | open    | [artist-groups-org-e2e.md](artist-groups-org-e2e.md) | Ship the org side of artist groups and cover it with e2e |
@@ -45,12 +45,12 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [help-pages-finnish-redesign.md](help-pages-finnish-redesign.md) | Help + For artists redesign with Finnish; left: native review |
 | partial | [hearthis-to-tahti-release-cli.md](hearthis-to-tahti-release-cli.md) | `tahti hearthis release` shipped (slices 1-8); confirm product defaults + one live run |
 | partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |
-| open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Collect and finish or close the unfinished 2026-11-04 WIP branches and draft PRs |
-| partial | [server-peaks-everywhere.md](server-peaks-everywhere.md) | Every player slice shipped (no browser decode anywhere, mock peaks catalog, e2e, DATA-FLOW contract, 0.0.411); left: org DTO/backfill slices, prod Yaniho backfill, live verify |
+| open    | [finish-wip-2026-11-04.md](finish-wip-2026-11-04.md) | Deferred: inventory/finish 2026-11-04 WIP branches after the leftovers batch |
+| partial | [server-peaks-everywhere.md](server-peaks-everywhere.md) | Every player slice shipped; left: org prod Yaniho backfill + live verify |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
 | partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, catalog in Studio → Music and Library for listeners (2026-11-13), one Broadcast agenda, Profile forms on Studio pages (2026-11-16), Admin Overview merge + Inbox counts + sitemap/gaps rewrite + Governance hub cards (2026-11-17), governance guide/documents in Co-op + one-hop legacy redirects (2026-11-18); left: Go live full-screen flow |
-| partial | [finnish-localization.md](finnish-localization.md) | Language in Settings → Appearance (2026-11-18) plus chrome/player/Listen/Discover/Library; web.actions, SEO, the page tour, the Upload broadcast label, batches 51–58, leftover groups, Admin dashboard/Support chrome, Admin hub cards, Governance hub + AGM (2026-11-17), Studio/Co-op/Admin page bodies (2026-11-18) have Finnish; left: API notification bodies |
+| partial | [finnish-localization.md](finnish-localization.md) | UI Finnish largely shipped; left: API notification bodies (blocked — see finnish-api-notifications.md) |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks. Track page like and recently played search shipped. |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; stage embed stays one widget (0.0.376); left: embed downloads (product call) |
 | partial | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Page anatomy + Diagnostics hub + Release/Earnings OverflowMenus + Add-ons FilterBar (2026-11-17); Settings phase 4 done, Home and Posts budgets (2026-11-18); list searches on one FilterBar including Sounds (2026-11-18, 0.0.415); Profile live preview + Radio Feature budget (2026-11-19); left: Library Playlists, phase 3 Go live |
@@ -60,8 +60,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | open    | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Community stats at the top (0.0.380) with their own snapshot, loading next to the dashboard (0.0.401); left: measure and cache the slow API calls (tahti-org), and Grafana from tahti.live cannot connect |
 | open    | [google-facebook-login.md](google-facebook-login.md) | Sign up and log in with Google and Facebook: API OAuth callbacks, OAuth apps (ops), buttons on log in / sign up, account linking |
 | partial | [navigation-performance.md](navigation-performance.md) | Back/forward speed: GET cache, snapshots on every main view, atlas and the track table out of the shell, gzip level 6 done; dnd-kit out of the shell (0.0.411); mock fixtures dropped from prod (0.0.414, TahtiApp 1289 KB / 399 KB gzipped, fixture ids absent); left: real-browser check |
-| open    | [ux-backlog.md](ux-backlog.md) | Open UI/UX polish: de-green `Button` (red `ConfirmDialog destructive` on events/updates/editor/playlist/collection/release, radio presets, theme submissions; plugin-store disconnect; left: none known) |
-| open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | One Storybook play session drops its sockets ~90s in (local every run, CI long shards); reduced motion + CI retry mitigate; time alone ruled out (2026-11-18), next: bisect by file count |
+| open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | Play runner drops ~90s with many files; reduced motion + CI retry; file-count bisect recipe noted (2026-11-19) |
 | open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles e2e matrix on the mock app; Radio, Discover, Listen widget and artist Settings journeys added (`use-cases-coverage-gap-3`, `-4`); non-audio upload, search count and unread notifications (`use-cases-hardening`); left: collection player (placement), open findings |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | Back-link convention + checks; left: cross-section trail on phones (design call) |
 | open    | [view-first-and-test-hardening-leftovers.md](view-first-and-test-hardening-leftovers.md) | Release ops collapsed summary kept; dead code needing a call |
@@ -74,7 +73,6 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| partial | [listener-stats-origin-url.md](listener-stats-origin-url.md) | Heartbeat + owner-mod done; ReferrerSources Sites/Pages mode in progress |
 | blocked | [dead-end-leftovers.md](dead-end-leftovers.md) | OAuth app credentials (ops), Bandcamp API approval, Google Drive Picker, governance Retry |
 | partial | [channel-layout-server-side.md](channel-layout-server-side.md) | Page layout saved on the channel (tahti-org #1075 + web); left: deploy the API first, and the per-browser player/backdrop look visibility |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
