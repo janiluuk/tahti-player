@@ -1,3 +1,7 @@
+## 2026-11-19 — What is Tahti page redesign
+
+`/what-is-it` rebuilt from the org README: who it is for, what it does, features, money glance and constitutional rules. EN/FI content toggle, Storybook play, slim `legal.ts` excerpts. tahti-web 0.0.417 (#2085). Folded `what-is-it-redesign.md`.
+
 ## 2026-11-19 — Registration form redesign + Selects confirm
 
 AuthDialog Join is two sections (account + password) with field-level `Input` errors for email, name, password rules, and confirm mismatch; username availability still feeds the name field. `Input` error text is `role="alert"`. Admin Selects rotation remove uses the same ConfirmDialog + busy pattern as Tahti Radio. tahti-web 0.0.416 / ui 0.0.25. Folded `registration-form-redesign.md`.
