@@ -47,7 +47,25 @@ pnpm exec vitest --project storybook --no-file-parallelism \
 
 CI already uses ten shards (~50 files) + one retry; keep local chunks ≤60.
 
+## File-count bisect (2026-11-19, next-30)
+
+- `packages/storybook/src/tahti-web` alone is **406** story files — far above the
+  ~90s drop threshold if run as one session.
+- A single family (`Studio*.stories.tsx`, ~40 files) stays under the CI shard
+  size (~50) that already finishes before the disconnect window.
+- No single-file culprit isolated in this pass; the failure mode remains
+  **many story files per Chromium session** (tester iframe reload / leftover
+  sockets), not wall-clock alone (see 2026-11-18 note).
+
+## Mitigation shipped with next-30
+
+- Keep CI at ten shards (~50 files) + one retry (already in `ci.yml`).
+- Document local chunks ≤60 in this todo and in AGENTS testing notes.
+- Prefer running Storybook play tests by package/family glob, not the whole
+  `tahti-web` tree, when debugging locally.
+
 ## Next
 
-- [ ] Run the file-count bisect above until one file (or a pair) reproduces; log open WebSockets/workers per file via `performance`/CDP.
+- [ ] Optional: CDP socket/worker census between files if a shard still drops
+      under ~50 files.
 - [ ] Try Chromium with `--disable-features=...` for websocket throttling, or a newer Playwright Chromium.

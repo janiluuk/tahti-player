@@ -4,6 +4,7 @@ import {
   HardDriveIcon,
   HeartIcon,
   HistoryIcon,
+  ListMusicIcon,
   PackageIcon,
   UserPlusIcon,
 } from 'lucide-react';
@@ -27,9 +28,10 @@ import { FavoritesView } from './FavoritesView';
 import { HistoryView } from './HistoryView';
 import { LibraryFollowingView } from './LibraryFollowingView';
 import { LibraryMediaView } from './LibraryMediaView';
+import { LibraryPlaylistsView } from './LibraryPlaylistsView';
 import { StudioStashView } from './studio/StudioStashView';
 
-export type Tab = 'favorites' | 'history' | 'following' | 'files';
+export type Tab = 'favorites' | 'playlists' | 'history' | 'following' | 'files';
 
 /** Library is what a listener keeps. The artist catalog is Studio → Music. */
 export const LIBRARY_SECTION_TABS = [
@@ -38,6 +40,12 @@ export const LIBRARY_SECTION_TABS = [
     labelKey: 'library.tabFavorites' as const,
     icon: HeartIcon,
     to: '/library/favorites',
+  },
+  {
+    id: 'playlists' as const,
+    labelKey: 'library.tabPlaylists' as const,
+    icon: ListMusicIcon,
+    to: '/library/playlists',
   },
   {
     id: 'history' as const,
@@ -200,6 +208,7 @@ export function LibraryView({
             <FavoritesView embedded />
           </div>
         ) : null}
+        {tab === 'playlists' ? <LibraryPlaylistsView /> : null}
         {tab === 'history' ? (
           <div className="mt-2">
             <HistoryView embedded />

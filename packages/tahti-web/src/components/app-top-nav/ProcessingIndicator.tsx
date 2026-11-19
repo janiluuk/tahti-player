@@ -20,7 +20,9 @@ export function ProcessingIndicator({ nav }: { nav: TopNavState }) {
           variant="text"
           size="icon-sm"
           className="inline-flex size-7 items-center justify-center active:scale-100"
-          aria-label={`${processingItems.length} track${processingItems.length === 1 ? '' : 's'} processing`}
+          aria-label={t('processingIndicator.tracksProcessing', {
+            count: processingItems.length,
+          })}
           aria-expanded={processingOpen}
           onClick={() => setProcessingOpen((current) => !current)}
         >

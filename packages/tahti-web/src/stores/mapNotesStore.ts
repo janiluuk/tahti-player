@@ -55,22 +55,18 @@ type MapNotesState = {
   /** Case ids marked reviewed/approved — collapsed by default in the atlas. */
   approvedByCaseId: Record<string, boolean>;
   setDraft: (kind: MapCommentKind, targetId: string, text: string) => void;
-  getDraft: (kind: MapCommentKind, targetId: string) => string;
   /** Persist a new submitted comment; keeps the draft as the saved text. */
   submitComment: (input: SubmitMapCommentInput) => MapComment | null;
   updateComment: (id: string, text: string) => MapComment | null;
   resolveComment: (id: string) => void;
   unresolveComment: (id: string) => void;
   clearComments: () => void;
-  /** Snapshot of submitted comments (exportable). */
-  listComments: () => MapComment[];
-  isCaseApproved: (caseId: string) => boolean;
   setCaseApproved: (caseId: string, approved: boolean) => void;
 };
 
 export const useMapNotesStore = create<MapNotesState>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       draftsByKey: {},
       notesByCaseId: {},
       comments: [],
@@ -94,17 +90,6 @@ export const useMapNotesStore = create<MapNotesState>()(
           }
           return { draftsByKey: nextDrafts, notesByCaseId: nextCases };
         }),
-      getDraft: (kind, targetId) => {
-        const s = get();
-        const key = draftKey(kind, targetId);
-        if (s.draftsByKey[key] != null) {
-          return s.draftsByKey[key]!;
-        }
-        if (kind === 'case') {
-          return s.notesByCaseId[targetId] ?? '';
-        }
-        return '';
-      },
       submitComment: (input) => {
         const text = input.text.trim();
         if (!text) {
@@ -174,8 +159,6 @@ export const useMapNotesStore = create<MapNotesState>()(
           }),
         })),
       clearComments: () => set({ comments: [] }),
-      listComments: () => get().comments,
-      isCaseApproved: (caseId) => Boolean(get().approvedByCaseId[caseId]),
       setCaseApproved: (caseId, approved) =>
         set((s) => {
           const next = { ...s.approvedByCaseId };

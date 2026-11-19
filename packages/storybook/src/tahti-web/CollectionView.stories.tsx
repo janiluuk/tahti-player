@@ -82,14 +82,14 @@ export const CollaborativeVisitor: Story = {
       await userEvent.click(favorite!);
       await waitFor(() =>
         expect(
-          header.getAllByRole('button', {
-            name: /^Remove from favorites: /,
+          header.getByRole('button', {
+            name: /^Favorite /,
             pressed: true,
           }),
-        ).not.toHaveLength(0),
+        ).toBeVisible(),
       );
       await userEvent.click(
-        header.getAllByRole('button', { name: /^Remove from favorites: / })[0]!,
+        header.getByRole('button', { name: /^Favorite /, pressed: true }),
       );
     });
 

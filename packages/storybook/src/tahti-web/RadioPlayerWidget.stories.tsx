@@ -280,17 +280,12 @@ export const FavoriteToggle: Story = {
   render: () => <DemoWidget />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await userEvent.click(
-      canvas.getByRole('button', { name: 'Add to favorites' }),
-    );
-    const remove = canvas.getByRole('button', {
-      name: 'Remove from favorites',
-    });
-    await expect(remove).toBeEnabled();
-    await userEvent.click(remove);
-    await expect(
-      canvas.getByRole('button', { name: 'Add to favorites' }),
-    ).toBeVisible();
+    const favorite = canvas.getByRole('button', { name: 'Add to favorites' });
+    await userEvent.click(favorite);
+    await expect(favorite).toHaveAttribute('aria-pressed', 'true');
+    await expect(favorite).toBeEnabled();
+    await userEvent.click(favorite);
+    await expect(favorite).toHaveAttribute('aria-pressed', 'false');
     await expect(
       canvas.getByRole('link', { name: 'Open channel' }),
     ).toHaveAttribute('href', expect.stringContaining('view=channel'));

@@ -70,5 +70,7 @@ network again, even for a page seen seconds ago.
       `api/mock*`. Production build: `TahtiApp` 1289 KB, 399 KB gzipped.
       `lp-mock-scheduled`, `AURORA42` and the listening-party fixtures are
       absent from every chunk.
+- [x] Mock assert: remount keeps the snapshot without a blank loading state
+      (`useSnapshotFetch.test.ts`, next-30).
 - [ ] Check the effect on a real browser against the live API (back/forward
       between Listen, an artist profile and a track).

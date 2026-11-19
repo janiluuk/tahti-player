@@ -1,3 +1,5 @@
+/** Loaded by .github/workflows/close-external-issues.yml via actions/github-script.
+ *  Validate locally: tahti-ops github close-external-issue */
 module.exports = async ({ github, context }) => {
   const { owner, repo } = context.repo;
   const issueNumber = context.payload.issue.number;

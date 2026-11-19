@@ -11,6 +11,7 @@ import { deployTargets, runDeploy } from './commands/deploy.mjs';
 import { desktopModes, runDesktop } from './commands/desktop.mjs';
 import { runE2e } from './commands/e2e.mjs';
 import { runEnv } from './commands/env.mjs';
+import { runGithubCloseExternalIssue } from './commands/github.mjs';
 import { runPackageAur } from './commands/package-aur.mjs';
 import {
   runFlathubUpdate,
@@ -23,6 +24,7 @@ import {
   updateSnapshots,
 } from './commands/snapshots.mjs';
 import { runStackSmoke } from './commands/stack-smoke.mjs';
+import { runStorybookSurfaces } from './commands/storybook.mjs';
 import { runTests, testGroups } from './commands/test.mjs';
 import { OpsError } from './paths.mjs';
 
@@ -296,6 +298,37 @@ A change in packages/ui often changes player snapshots too:
       }
       throw new OpsError('Try: tahti-ops snapshots list | update <group…|all>');
     },
+  },
+  {
+    path: ['storybook', 'surfaces'],
+    usage:
+      'tahti-ops storybook surfaces [--check|--report|--stage] [--dry-run]',
+    summary: 'Regenerate or validate packages/tahti-web/STORYBOOK-SURFACES.md',
+    details: `Wraps ${'scripts/generate-storybook-surfaces.mjs'} (same as pnpm storybook:surfaces).
+  --check   Exit 1 when the cheat sheet is stale (CI)
+  --report  Print a Markdown diff summary when stale
+  --stage   Regenerate and git add the output (lint-staged)
+  --dry-run Print the node command without running it`,
+    passthrough: true,
+    allowEmpty: true,
+    run: (_parsed, argv) => {
+      const { dryRun, args } = splitDryRun(argv);
+      return runStorybookSurfaces(args, { dryRun });
+    },
+  },
+  {
+    path: ['github', 'close-external-issue'],
+    usage: 'tahti-ops github close-external-issue [--dry-run]',
+    summary:
+      'Show or validate the workflow script that closes unsolicited GitHub issues',
+    details: `The runnable entry is .github/workflows/close-external-issues.yml
+(issues.opened → actions/github-script → scripts/close-external-issue.cjs).
+This command checks the files exist; it does not call the GitHub API.`,
+    options: {
+      'dry-run': { type: 'boolean', default: false },
+    },
+    run: ({ values }) =>
+      runGithubCloseExternalIssue({ dryRun: Boolean(values['dry-run']) }),
   },
   {
     path: ['check', 'size'],

@@ -14,6 +14,7 @@ import { PageError, PageLoading } from './PageStates';
 
 /** A collection that plays where it is shown: play all, play a row, and
  * the playing row highlighted. Links to the full collection page. */
+/** Storybook-first (`Tahti/Collections/CollectionPlayerWidget`); not mounted in routes yet. */
 export function CollectionPlayerWidget({
   slug,
   limit = 5,

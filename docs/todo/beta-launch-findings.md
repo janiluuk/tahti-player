@@ -54,7 +54,9 @@ Next `apps/web` removed 2026-10-28). Remaining host/build decisions are in
     `POST /api/me/channel/blocks` with `type: LOGO` and
     `{ assetId, url }`. Width is Full / Half / Third, remove deletes the
     block, and the create toast can undo. Listeners do not see the editor.
-    Left: a check on beta.
+  - 2026-11-19 (next-30): mock/Storybook regression for logo FULL + three
+    THIRDs packing (`ChannelBlocksSection` test + MixedWidths play). Left: a
+    check on beta.
 - [ ] **Google Drive import** (parity): API exists (`/api/me/google-drive/picker-config`,
   `/import`, cloud-import jobs); tahti-web connects Drive but has no Picker.
   Import progress for queued jobs is shown on Upload (#1412).

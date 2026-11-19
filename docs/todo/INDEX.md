@@ -11,8 +11,8 @@ Shipped work belongs in HISTORY. Rows are grouped by what they wait on.
 
 | Status  | File | One-line |
 | ------- | ---- | -------- |
-| partial | [beta-launch-findings.md](beta-launch-findings.md) | Test releases on the front page; open Studio/listener/platform findings from the beta e2e run and the legacy parity sweep |
-| open    | [final-season-hardening.md](final-season-hardening.md) | Batch A/B, the deploy-bundle API-origin assert, web CSP embed/sandbox framing, client upload magic and an SR code-audit batch shipped; left: CSRF/CORS and API-edge CSP (tahti-org), audit leftovers + a real screen-reader run |
+| partial | [beta-launch-findings.md](beta-launch-findings.md) | Channel blocks packing regression covered; left: beta content cleanup + live beta checks |
+| open    | [final-season-hardening.md](final-season-hardening.md) | Batch A/B + CSP embed/sandbox + SR code-audit (next-30 pressed/Connecting/Jam/i18n); left: CSRF/CORS and API-edge CSP (tahti-org), real screen-reader run |
 | partial | [first-100-users-infra.md](first-100-users-infra.md) | Verified on vimage 2026-11-02: rate limits fail closed, disk fine; backup restore test + vimage6 push fixed in tahti-org#1042; left: leaked restore containers, MinIO mirror + DR alias |
 | open    | [radio-nova-nrj-playback.md](radio-nova-nrj-playback.md) | Radio Nova + NRJ (Bauer AAC streams) do not play in production; reproduce in a real browser |
 | blocked | [fan-live-chat-discoverable.md](fan-live-chat-discoverable.md) | Live verify Centrifugo Send on brand-new channel — playbook ready |
@@ -45,23 +45,23 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [hearthis-collections-cli.md](hearthis-collections-cli.md) | `tahti hearthis collection`, `collections create` and the shared upload ledger shipped; left: one live run |
 | partial | [artwork-preset-covers.md](artwork-preset-covers.md) | Presets as default covers + cover picker shipped; merge tahti-org#1033 and run the backfill |
 | partial | [listings-news-polish.md](listings-news-polish.md) | UI implemented; live opening-post update awaits admin authentication |
-| partial | [navigation-simplification.md](navigation-simplification.md) | Studio six tabs with Fans/Profile hubs, Admin six sections with hubs, catalog in Studio → Music and Library for listeners (2026-11-13), one Broadcast agenda, Profile forms on Studio pages (2026-11-16), Admin Overview merge + Inbox counts + sitemap/gaps rewrite + Governance hub cards (2026-11-17), governance guide/documents in Co-op + one-hop legacy redirects (2026-11-18); left: Go live full-screen flow |
+| partial | [navigation-simplification.md](navigation-simplification.md) | Library Playlists + Go live takeover shipped (next-30); left: Go live stepper polish |
 | partial | [finnish-localization.md](finnish-localization.md) | UI Finnish largely shipped; left: API notification bodies (blocked — see finnish-api-notifications.md) |
 | open    | [ui-requests-2026-11-03.md](ui-requests-2026-11-03.md) | Open queue from the 2026-11-03 session: board track-edit product call, embed track API fix (tahti-org), NRJ, server-side peaks. Track page like and recently played search shipped. |
 | partial | [listen-artist-channel-cleanup.md](listen-artist-channel-cleanup.md) | Shipped 0.0.296; stage embed stays one widget (0.0.376); left: embed downloads (product call) |
-| partial | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Page anatomy + Diagnostics hub + Release/Earnings OverflowMenus + Add-ons FilterBar (2026-11-17); Settings phase 4 done, Home and Posts budgets (2026-11-18); list searches on one FilterBar including Sounds (2026-11-18, 0.0.415); Profile live preview + Radio Feature budget (2026-11-19); left: Library Playlists, phase 3 Go live |
+| partial | [simplify-studio-library-settings-admin.md](simplify-studio-library-settings-admin.md) | Library Playlists + Go live takeover (next-30); left: phase 3 Go live stepper polish |
 | partial | [artist-groups.md](artist-groups.md) | Groups Phases 0–4 + Discover Groups tab + five mock collectives; left: commit/deploy org, e2e |
 | partial | [studio-fans-chat.md](studio-fans-chat.md) | Fans Chat on hub + Settings/Profile pointers; left: live verify after merge |
 | partial | [admin-dashboard-snappy.md](admin-dashboard-snappy.md) | Admin dashboard now renders its last result at once and refreshes in the background; left: measure API time and cache slow calls server-side |
 | open    | [admin-overview-stats-and-grafana.md](admin-overview-stats-and-grafana.md) | Community stats at the top (0.0.380) with their own snapshot, loading next to the dashboard (0.0.401); left: measure and cache the slow API calls (tahti-org), and Grafana from tahti.live cannot connect |
 | open    | [google-facebook-login.md](google-facebook-login.md) | Sign up and log in with Google and Facebook: API OAuth callbacks, OAuth apps (ops), buttons on log in / sign up, account linking |
-| partial | [navigation-performance.md](navigation-performance.md) | Back/forward speed: GET cache, snapshots on every main view, atlas and the track table out of the shell, gzip level 6 done; dnd-kit out of the shell (0.0.411); mock fixtures dropped from prod (0.0.414, TahtiApp 1289 KB / 399 KB gzipped, fixture ids absent); left: real-browser check |
-| open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | Play runner drops ~90s with many files; reduced motion + CI retry; file-count bisect recipe noted (2026-11-19) |
-| open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Features × roles e2e matrix on the mock app; Radio, Discover, Listen widget and artist Settings journeys added (`use-cases-coverage-gap-3`, `-4`); non-audio upload, search count and unread notifications (`use-cases-hardening`); left: collection player (placement), open findings |
+| partial | [navigation-performance.md](navigation-performance.md) | Snapshots/GET cache/shell cuts done; remount assert in `useSnapshotFetch.test`; left: real-browser check vs live API |
+| open    | [storybook-play-runner-disconnect.md](storybook-play-runner-disconnect.md) | Many-file Chromium drop; CI ~50-file shards; 406 tahti-web stories; no single-file culprit yet |
+| open    | [e2e-coverage-gap.md](e2e-coverage-gap.md) | Matrix + Library Playlists viewport e2e; left: collection player placement, open findings |
 | open    | [navigation-flow-audit.md](navigation-flow-audit.md) | Back-link convention + checks; left: cross-section trail on phones (design call) |
-| open    | [view-first-and-test-hardening-leftovers.md](view-first-and-test-hardening-leftovers.md) | Release ops collapsed summary kept; dead code needing a call |
+| open    | [view-first-and-test-hardening-leftovers.md](view-first-and-test-hardening-leftovers.md) | Next-30 pruned unused store getters / Storybook-only notes / Revelator isolation; leftovers needing a call remain |
 | partial | [auth-refresh-tokens.md](auth-refresh-tokens.md) | JWT access + refresh: org #880 + web + CLI `--device` shipped; desktop keychain plugin + cookie cutover remain |
-| partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/ into tahti-ops; shipped: env, smoke, backup status, deploy |
+| partial | [tahti-ops-cli.md](tahti-ops-cli.md) | Fold scripts/; storybook surfaces + close-external-issue wrapped; desktop shims deprecated toward `tahti-ops desktop` |
 | partial | [listening-party.md](listening-party.md) | Digital-only v1 merged (tahti-org#1029, tahti-player#1704); real-API check after deploy, then playout, formats/pre-orders/physical |
 | partial | [listening-parties-discover.md](listening-parties-discover.md) | Discover → Parties tab, widget and row reminders shipped; left: non-artist hosting and Studio filter product calls |
 
@@ -73,7 +73,7 @@ Split out of [next-50.md](next-50.md). One file per slice. The parent file stays
 | partial | [channel-layout-server-side.md](channel-layout-server-side.md) | Page layout saved on the channel (tahti-org #1075 + web); left: deploy the API first, and the per-browser player/backdrop look visibility |
 | blocked | [channel-page-redesign.md](channel-page-redesign.md) | Beta check + wider redesign product go-ahead |
 | blocked | [ui-nav-audit.md](ui-nav-audit.md) | Channel visual redesign open (design/product) |
-| partial | [wavesurfer-waveforms.md](wavesurfer-waveforms.md) | wavesurfer.js shipped (batch 88) and fixed (batch 89: silence bars, player `src`, theme); previews never decode audio (0.0.411); desktop / full ProWaveform delete remain |
+| partial | [wavesurfer-waveforms.md](wavesurfer-waveforms.md) | EditorWaveSurfer trim/zoom/region parity tests; ProWaveform delete still deferred; ui Waveform desktop preview story |
 | blocked | [ai-dj-radio-dj-port.md](ai-dj-radio-dj-port.md) | POC not committed; no prod ship without go-ahead |
 | blocked | [track-visualizer-video-editor.md](track-visualizer-video-editor.md) | PulseForge licence / port decision |
 | blocked | [admin-plugin-management-panel.md](admin-plugin-management-panel.md) | Multi-phase 13-category project not started |

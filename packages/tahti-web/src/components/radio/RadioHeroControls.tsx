@@ -57,15 +57,14 @@ export function RadioStationActions({
   channelSlug: string;
   openChannelLabel: string;
 }) {
-  const heartLabel = favorited ? unfavoriteLabel : favoriteLabel;
   return (
     <div className="flex items-center gap-1.5">
-      <Tooltip content={heartLabel} side="top">
+      <Tooltip content={favorited ? unfavoriteLabel : favoriteLabel} side="top">
         <Button
           size="icon-sm"
           variant="secondary"
           className="size-9"
-          aria-label={heartLabel}
+          aria-label={favoriteLabel}
           aria-pressed={favorited}
           data-testid="radio-favorite-button"
           onClick={onToggleFavorite}

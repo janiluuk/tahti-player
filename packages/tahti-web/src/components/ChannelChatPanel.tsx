@@ -663,18 +663,24 @@ export function ChannelChatPanel({ slug, compact, rail }: Props) {
             send();
           }}
         >
-          <Input
-            enterKeyHint="send"
-            aria-label={t('channelChatPanel.chatMessage')}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder={
-              mode === 'mock' || (mode === 'live' && wsStatus === 'connected')
-                ? `Message as ${handle}`
-                : 'Connecting…'
-            }
-            size="sm"
-          />
+          {mode === 'live' && wsStatus !== 'connected' ? (
+            <p
+              role="status"
+              aria-live="polite"
+              className="text-foreground-secondary flex-1 self-center text-sm"
+            >
+              {t('channelChatPanel.connecting')}
+            </p>
+          ) : (
+            <Input
+              enterKeyHint="send"
+              aria-label={t('channelChatPanel.chatMessage')}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={`Message as ${handle}`}
+              size="sm"
+            />
+          )}
           <Button
             size="sm"
             type="submit"

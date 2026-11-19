@@ -23,6 +23,42 @@ const STATION: RadioStation = {
 const isSaved = (id: string) =>
   useLibraryStore.getState().favoriteTracks.some((t) => t.id === id);
 
+describe('libraryStore persist migrate', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('drops legacy persist keys on v3 rehydrate', async () => {
+    localStorage.setItem(
+      'tahti-web:library:anon',
+      JSON.stringify({
+        state: {
+          favoriteChannels: [{ slug: 'artist-a', displayName: 'Artist A' }],
+          favoriteTracks: [],
+          favoritePlaylists: [],
+          heardFavoritePlaylists: ['old'],
+          syncNote: 'legacy',
+          favoriteTrackDates: { x: '2020-01-01' },
+          history: [],
+          scopeKey: 'anon',
+        },
+        version: 2,
+      }),
+    );
+    await useLibraryStore.persist.rehydrate();
+    const state = useLibraryStore.getState();
+    expect(state.favoriteChannels).toHaveLength(1);
+    expect('heardFavoritePlaylists' in state || 'syncNote' in state).toBe(
+      false,
+    );
+    const raw = JSON.parse(
+      localStorage.getItem('tahti-web:library:anon') ?? '{}',
+    ) as { state: Record<string, unknown> };
+    expect(raw.state.heardFavoritePlaylists).toBeUndefined();
+    expect(raw.state.syncNote).toBeUndefined();
+  });
+});
+
 describe('libraryStore + internet radio stations', () => {
   beforeEach(async () => {
     localStorage.clear();

@@ -1885,7 +1885,22 @@
       "moreTrackActions": "More track actions",
       "moreCollectionActions": "More collection actions",
       "tabFiles": "Files",
-      "fileKinds": "File types"
+      "fileKinds": "File types",
+      "tabPlaylists": "Playlists",
+      "playlists": {
+        "signIn": "Sign in to see your playlists",
+        "filterPlaceholder": "Filter playlists",
+        "filterLabel": "Filter playlists",
+        "loadError": "Couldn't load your playlists",
+        "emptyTitle": "No playlists yet",
+        "emptyDescription": "Create a playlist in Studio, or save someone else's from a collection page.",
+        "create": "Create playlist",
+        "own": "Yours",
+        "saved": "Saved",
+        "itemCount": "{{count}} sounds",
+        "noMatchesTitle": "No matching playlists",
+        "noMatchesDescription": "Try another filter, or create a new playlist in Studio."
+      }
     },
     "date": {
       "today": "Today",
@@ -7001,7 +7016,9 @@
     "processingIndicator": {
       "processingTracks": "Processing tracks",
       "thisStatusUpdatesAutomaticallyYou": "This status updates automatically. You’ll get a notification when a track is ready.",
-      "trackProcessingStatus": "Track processing status"
+      "trackProcessingStatus": "Track processing status",
+      "tracksProcessing_one": "{{count}} track processing",
+      "tracksProcessing_other": "{{count}} tracks processing"
     },
     "broadcastControls": {
       "bookingCalendar": "Booking calendar",
@@ -7549,7 +7566,8 @@
       "send": "Send",
       "chatMessages": "Chat messages",
       "handle": "Handle",
-      "chatMessage": "Chat message"
+      "chatMessage": "Chat message",
+      "connecting": "Connecting…"
     },
     "betaTab": {
       "approvingCreatesAnArtistAccount": "Approving creates an artist account and emails a password setup link.",
@@ -7866,7 +7884,9 @@
       "streamManager": "Stream manager",
       "programmeOnSchedule": "The 24/7 programme is on Schedule",
       "programmeOnScheduleDescription": "Rotation, offline fallback and announcements are managed on Schedule, next to your shows.",
-      "openSchedule": "Open Schedule"
+      "openSchedule": "Open Schedule",
+      "multistreamDestinations": "Live destinations",
+      "multistreamDestinationsDescription": "Manage where your broadcast is sent from Go live."
     },
     "releaseStatsPanel": {
       "anonymizedCountriesForThisRelease": "Anonymized countries for this release's counted plays and downloads.",
@@ -8591,7 +8611,15 @@
     },
     "chatReactionBar": {
       "react": "React",
-      "listenersReactions": "Listeners' reactions"
+      "listenersReactions": "Listeners' reactions",
+      "reactWith": "React with {{label}}",
+      "emojiPurpleHeart": "purple heart",
+      "emojiFire": "fire",
+      "emojiMusicalNotes": "musical notes",
+      "emojiMusicalNote": "musical note",
+      "emojiGlowingStar": "glowing star",
+      "emojiClappingHands": "clapping hands",
+      "emojiSparkles": "sparkles"
     },
     "radioProgrammingGrid": {
       "loadingThisWeekAposS": "Loading this week's shows…",
@@ -9638,7 +9666,8 @@
       "previousName": "Previous: {{name}}",
       "previousStationName": "Previous station: {{name}}",
       "nextName": "Next: {{name}}",
-      "nextStationName": "Next station: {{name}}"
+      "nextStationName": "Next station: {{name}}",
+      "stage": "{{label}}: swipe or use the arrow keys to change station"
     },
     "navigationStructureWidgetLabels": {
       "addSubItemUnderLabel": "Add sub-item under {{label}}",
@@ -13581,6 +13610,11 @@
       "radioStationSuggestions": "Radio station suggestions",
       "featureRequestsGated": "Feature requests are open to active Tahti ry members. Signed in as @{{username}}.",
       "couldNotRefreshList": "Could not refresh this list: {{message}}"
+    },
+    "tahtiJamSearchBar": {
+      "search": "Search",
+      "clear": "Clear search",
+      "placeholder": "Search for music"
     }
   },
   "studioEditor": {

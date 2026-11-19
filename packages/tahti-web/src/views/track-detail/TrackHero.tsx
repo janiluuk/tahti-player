@@ -436,11 +436,7 @@ export function TrackHero({ page }: { page: TrackPage }) {
                 size="icon-sm"
                 className="size-9"
                 variant="secondary"
-                aria-label={
-                  liked
-                    ? t('actions.unlikeItem', { title: playable.title })
-                    : t('actions.likeItem', { title: playable.title })
-                }
+                aria-label={t('actions.likeItem', { title: playable.title })}
                 aria-pressed={liked}
                 onClick={() => toggleLike(likeSubject)}
               >

@@ -159,6 +159,7 @@ export function StudioActionTile({
   );
 }
 
+/** Storybook via `Tahti/Studio/Home/HomeTiles`; not used on Studio Home today. */
 export type CompactBroadcastTileProps = {
   to: '/studio/go-live' | '/studio/schedule';
   icon: LucideIcon;

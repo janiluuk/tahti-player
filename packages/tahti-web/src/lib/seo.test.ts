@@ -27,6 +27,7 @@ describe('metadataForPath', () => {
     ['/library/media', 'Media · Library · Tahti'],
     ['/library/files', 'Files · Library · Tahti'],
     ['/library/following', 'Following · Library · Tahti'],
+    // Redirect-only bookmark; catalog lives at /studio/collections.
     ['/library/collections', 'Collections · Library · Tahti'],
     ['/discover', 'Discover · Tahti'],
     ['/governance/members', 'Member directory · Tahti'],

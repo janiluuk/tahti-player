@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 // Regenerates packages/tahti-web/STORYBOOK-SURFACES.md from each story
+// Prefer: tahti-ops storybook surfaces (or pnpm storybook:surfaces).
 // file's meta `title`.
 //   --check   exit 1 when the file is stale
 //   --report  print a Markdown summary of stale rows (empty when current)

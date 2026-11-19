@@ -29,6 +29,7 @@ exports[`TahtiJamSearchBar > (Snapshot) renders empty 1`] = `
       />
     </svg>
     <input
+      aria-label="Search for music"
       autocomplete="off"
       autocorrect="off"
       class="text-foreground placeholder:text-foreground-secondary min-w-0 flex-1 bg-transparent font-semibold outline-none [&::-webkit-search-cancel-button]:appearance-none"
@@ -72,6 +73,7 @@ exports[`TahtiJamSearchBar > (Snapshot) renders with a value 1`] = `
       />
     </svg>
     <input
+      aria-label="Search for music"
       autocomplete="off"
       autocorrect="off"
       class="text-foreground placeholder:text-foreground-secondary min-w-0 flex-1 bg-transparent font-semibold outline-none [&::-webkit-search-cancel-button]:appearance-none"
@@ -83,6 +85,7 @@ exports[`TahtiJamSearchBar > (Snapshot) renders with a value 1`] = `
       value="Radiohead"
     />
     <button
+      aria-label="Clear search"
       class="text-foreground-secondary hover:text-foreground shrink-0 transition-colors"
       data-testid="jam-search-clear"
       type="button"

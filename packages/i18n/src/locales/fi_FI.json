@@ -1885,7 +1885,22 @@
       "moreTrackActions": "Lisää kappaletoimintoja",
       "moreCollectionActions": "Lisää kokoelmatoimintoja",
       "tabFiles": "Tiedostot",
-      "fileKinds": "Tiedostotyypit"
+      "fileKinds": "Tiedostotyypit",
+      "tabPlaylists": "Soittolistat",
+      "playlists": {
+        "signIn": "Kirjaudu nähdäksesi soittolistasi",
+        "filterPlaceholder": "Suodata soittolistoja",
+        "filterLabel": "Suodata soittolistoja",
+        "loadError": "Soittolistojen lataus epäonnistui",
+        "emptyTitle": "Ei vielä soittolistoja",
+        "emptyDescription": "Luo soittolista Studiossa, tai tallenna toisen kokoelma sen sivulta.",
+        "create": "Luo soittolista",
+        "own": "Omat",
+        "saved": "Tallennetut",
+        "itemCount": "{{count}} ääntä",
+        "noMatchesTitle": "Ei vastaavia soittolistoja",
+        "noMatchesDescription": "Kokeile toista suodatinta, tai luo uusi soittolista Studiossa."
+      }
     },
     "date": {
       "today": "Tänään",
@@ -7001,7 +7016,9 @@
     "processingIndicator": {
       "processingTracks": "Käsitellään kappaleita",
       "thisStatusUpdatesAutomaticallyYou": "Tila päivittyy automaattisesti. Saat ilmoituksen, kun kappale on valmis.",
-      "trackProcessingStatus": "Kappaleiden käsittelyn tila"
+      "trackProcessingStatus": "Kappaleiden käsittelyn tila",
+      "tracksProcessing_one": "{{count}} kappale käsitellään",
+      "tracksProcessing_other": "{{count}} kappaletta käsitellään"
     },
     "broadcastControls": {
       "bookingCalendar": "Varauskalenteri",
@@ -7549,7 +7566,8 @@
       "send": "Lähetä",
       "chatMessages": "Keskusteluviestit",
       "handle": "Nimimerkki",
-      "chatMessage": "Keskusteluviesti"
+      "chatMessage": "Keskusteluviesti",
+      "connecting": "Yhdistetään…"
     },
     "betaTab": {
       "approvingCreatesAnArtistAccount": "Hyväksyminen luo artistitilin ja lähettää sähköpostilla linkin salasanan asettamiseen.",
@@ -7866,7 +7884,9 @@
       "streamManager": "Lähetyksen hallinta",
       "programmeOnSchedule": "24/7-ohjelma on Aikataulussa",
       "programmeOnScheduleDescription": "Rotaatiota, offline-varaohjelmaa ja ilmoituksia hallitaan Aikataulussa ohjelmiesi vieressä.",
-      "openSchedule": "Avaa Aikataulu"
+      "openSchedule": "Avaa Aikataulu",
+      "multistreamDestinations": "Live-kohteet",
+      "multistreamDestinationsDescription": "Hallitse lähetyskohteita Go live -näkymässä."
     },
     "releaseStatsPanel": {
       "anonymizedCountriesForThisRelease": "Anonymisoidut maat tämän julkaisun lasketuille soitoille ja latauksille.",
@@ -8591,7 +8611,15 @@
     },
     "chatReactionBar": {
       "react": "Reagoi",
-      "listenersReactions": "Kuuntelijoiden reaktiot"
+      "listenersReactions": "Kuuntelijoiden reaktiot",
+      "reactWith": "Reagoi: {{label}}",
+      "emojiPurpleHeart": "violetti sydän",
+      "emojiFire": "tuli",
+      "emojiMusicalNotes": "nuotteja",
+      "emojiMusicalNote": "nuotti",
+      "emojiGlowingStar": "hehkuva tähti",
+      "emojiClappingHands": "aplodit",
+      "emojiSparkles": "kipinät"
     },
     "radioProgrammingGrid": {
       "loadingThisWeekAposS": "Ladataan tämän viikon ohjelmia…",
@@ -9638,7 +9666,8 @@
       "previousName": "Edellinen: {{name}}",
       "previousStationName": "Edellinen asema: {{name}}",
       "nextName": "Seuraava: {{name}}",
-      "nextStationName": "Seuraava asema: {{name}}"
+      "nextStationName": "Seuraava asema: {{name}}",
+      "stage": "{{label}}: pyyhkäise tai käytä nuolinäppäimiä vaihtaaksesi asemaa"
     },
     "navigationStructureWidgetLabels": {
       "addSubItemUnderLabel": "Lisää alakohta: {{label}}",
@@ -13581,6 +13610,11 @@
       "radioStationSuggestions": "Radioasemaehdotukset",
       "featureRequestsGated": "Ominaisuustoiveet ovat Tahti ry:n aktiivisille jäsenille. Kirjautunut käyttäjänä @{{username}}.",
       "couldNotRefreshList": "Listaa ei voitu päivittää: {{message}}"
+    },
+    "tahtiJamSearchBar": {
+      "search": "Haku",
+      "clear": "Tyhjennä haku",
+      "placeholder": "Etsi musiikkia"
     }
   },
   "studioEditor": {

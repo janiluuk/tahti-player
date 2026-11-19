@@ -396,13 +396,9 @@ export function CollectionView({ slug }: { slug: string }) {
               <Button
                 variant={isFavorite ? 'default' : 'secondary'}
                 aria-pressed={isFavorite}
-                aria-label={
-                  isFavorite
-                    ? t('actions.removeFromFavoritesItem', {
-                        title: collection.name,
-                      })
-                    : t('actions.favoriteItem', { title: collection.name })
-                }
+                aria-label={t('actions.favoriteItem', {
+                  title: collection.name,
+                })}
                 onClick={() =>
                   toggleFavoritePlaylist({
                     slug,

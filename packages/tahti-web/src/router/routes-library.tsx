@@ -175,6 +175,12 @@ export const libraryFavoritesRoute = createRoute({
   component: () => <LibraryView tab="favorites" />,
 });
 
+export const libraryPlaylistsRoute = createRoute({
+  getParentRoute: () => appLayoutRoute,
+  path: '/library/playlists',
+  component: () => <LibraryView tab="playlists" />,
+});
+
 export const libraryHistoryRoute = createRoute({
   getParentRoute: () => appLayoutRoute,
   path: '/library/history',

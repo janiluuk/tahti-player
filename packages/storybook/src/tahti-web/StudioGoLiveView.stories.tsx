@@ -56,7 +56,7 @@ const meta: Meta<typeof StudioGoLiveView> = {
     docs: {
       description: {
         component:
-          'Studio → Broadcast → Go live: status chip, Start broadcast and a six-step setup (show info, credentials, encoder, recording, destinations, green room).',
+          'Studio → Broadcast → Go live: status chip, Start broadcast and a six-step setup (show info, credentials, encoder, recording, destinations, green room). AppShell treats `/studio/go-live` as a chrome takeover (no StudioNav / sidebar); these stories mount the view alone.',
       },
     },
   },

@@ -148,6 +148,7 @@ export function SourceServiceIcon({ id, size = 'tile' }: Props): ReactNode {
   );
 }
 
+/** Storybook (`SourceServiceIcon` tile subtitle helper); no production list consumer. */
 export function sourceTileSubtitle(id: IntegrationId): string {
   switch (id) {
     case 'upload':

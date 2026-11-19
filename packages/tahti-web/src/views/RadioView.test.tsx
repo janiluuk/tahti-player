@@ -148,13 +148,15 @@ describe('RadioView featured history', () => {
       true,
     );
     expect(heart).toHaveProperty('disabled', false);
-    expect(heart.getAttribute('aria-label')).toBe('Remove from favorites');
+    expect(heart.getAttribute('aria-label')).toBe('Add to favorites');
+    expect(heart.getAttribute('aria-pressed')).toBe('true');
     await act(async () => {
       fireEvent.click(heart);
     });
     expect(useLibraryStore.getState().isFavoriteChannel('tahti-radio')).toBe(
       false,
     );
+    expect(heart.getAttribute('aria-pressed')).toBe('false');
   });
 
   it('starts the player minimized and expands it to the tabs', async () => {

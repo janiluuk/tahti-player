@@ -188,6 +188,64 @@ describe('EditorWaveSurfer', () => {
     render(<EditorWaveSurfer {...baseProps} onFallback={onFallback} />);
     await waitFor(() => expect(onFallback).toHaveBeenCalledTimes(1));
   });
+
+  it('maps trim cuts to non-interactive overlay regions', async () => {
+    render(
+      <EditorWaveSurfer
+        {...baseProps}
+        cuts={[{ start: 2, end: 4 }]}
+        selection={{ start: 0, end: 6 }}
+      />,
+    );
+    await waitFor(() => expect(mocks.regions.addRegion).toHaveBeenCalled());
+    const overlays = (
+      mocks.regions.addRegion.mock.calls as unknown as [
+        { id?: string; drag?: boolean },
+      ][]
+    ).map(([params]) => params);
+    const cut = overlays.find((region) => region.id?.startsWith('overlay:'));
+    expect(cut).toMatchObject({ drag: false });
+  });
+
+  it('zooms and scrolls to the requested view window', async () => {
+    render(
+      <EditorWaveSurfer
+        {...baseProps}
+        view={{ start: 2, end: 8 }}
+        durationSec={12}
+      />,
+    );
+    await waitFor(() => expect(mocks.create).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(mocks.ws.zoom).toHaveBeenCalled());
+    expect(mocks.ws.setScrollTime).toHaveBeenCalledWith(2);
+  });
+
+  it('updates the selection region in place', async () => {
+    const { rerender } = render(
+      <EditorWaveSurfer {...baseProps} selection={{ start: 1, end: 2 }} />,
+    );
+    await waitFor(() => expect(mocks.regions.addRegion).toHaveBeenCalled());
+    mocks.regionHandlers.get('region-created')?.(mocks.region as never);
+    rerender(
+      <EditorWaveSurfer {...baseProps} selection={{ start: 1.5, end: 3 }} />,
+    );
+    await waitFor(() =>
+      expect(mocks.region.setOptions).toHaveBeenCalledWith({
+        start: 1.5,
+        end: 3,
+      }),
+    );
+  });
+
+  it('removes the selection region when trim is cleared', async () => {
+    const { rerender } = render(
+      <EditorWaveSurfer {...baseProps} selection={{ start: 1, end: 2 }} />,
+    );
+    await waitFor(() => expect(mocks.regions.addRegion).toHaveBeenCalled());
+    mocks.regionHandlers.get('region-created')?.(mocks.region as never);
+    rerender(<EditorWaveSurfer {...baseProps} selection={null} />);
+    await waitFor(() => expect(mocks.region.remove).toHaveBeenCalled());
+  });
 });
 
 describe('peak conversion', () => {

@@ -205,7 +205,22 @@ function RadioSection({ tab }: { tab: ChannelRadioTab }) {
     if (id === 'tahti-radio') {
       return <StudioRadioSubmissionPanel />;
     }
-    return <BroadcastPanel section="multistream" />;
+    return (
+      <StudioPanel title={t('studioChannelView.multistreamDestinations')}>
+        <p className="text-foreground-secondary text-sm">
+          {t('studioChannelView.multistreamDestinationsDescription')}
+        </p>
+        <ButtonLink
+          className="mt-3 w-fit"
+          to="/studio/go-live"
+          search={{ step: 'destinations' }}
+          size="sm"
+          variant="secondary"
+        >
+          {t('settingsBody.broadcast.manageLiveDestinations')}
+        </ButtonLink>
+      </StudioPanel>
+    );
   };
 
   return (

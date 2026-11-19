@@ -183,7 +183,11 @@ function RemoteView({
         <TahtiJam.SearchBar
           value={query}
           onChange={setQuery}
-          labels={{ placeholder: 'Search Tahti' }}
+          labels={{
+            placeholder: 'Search Tahti',
+            search: 'Search Tahti',
+            clear: 'Clear search',
+          }}
         />
       </TahtiJam.Header>
       <TahtiJam.Content>

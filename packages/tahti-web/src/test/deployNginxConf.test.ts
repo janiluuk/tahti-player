@@ -63,4 +63,20 @@ describe('deploy/nginx.conf', () => {
     );
     expect(sandbox).not.toContain("frame-ancestors 'none'");
   });
+
+  it('keeps the widget sandbox CSP locked down aside from framing', () => {
+    const sandbox = locationBlock('~ "^/widget-sandbox/([0-9a-f]{64})/?$"');
+    expect(sandbox).toContain("default-src 'none'");
+    expect(sandbox).toContain("connect-src 'none'");
+    expect(sandbox).toContain("base-uri 'none'");
+    expect(sandbox).toContain("form-action 'none'");
+    expect(sandbox).toMatch(/script-src 'self'/);
+  });
+
+  it('does not open frame-ancestors for non-embed SPA routes', () => {
+    const ancestors = mapBlock('tahti_frame_ancestors');
+    expect(ancestors).not.toMatch(/~\^\/library\//);
+    expect(ancestors).not.toMatch(/~\^\/studio\//);
+    expect(ancestors).toMatch(/~\^\/embed\/ "\*";/);
+  });
 });
