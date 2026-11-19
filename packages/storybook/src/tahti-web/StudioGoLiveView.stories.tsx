@@ -260,20 +260,24 @@ export const StepDestinations: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const destinations = await canvas.findByTestId('stepper-step-destinations');
-    await expect(destinations).toHaveAttribute('aria-current', 'step');
+    await expect(destinations).toHaveAttribute('data-status', 'current');
+    await expect(within(destinations).getByRole('button')).toHaveAttribute(
+      'aria-current',
+      'step',
+    );
     within(destinations).getByRole('button').focus();
     await userEvent.tab();
     await userEvent.keyboard('{Enter}');
     await expect(canvas.getByTestId('stepper-step-green-room')).toHaveAttribute(
-      'aria-current',
-      'step',
+      'data-status',
+      'current',
     );
     await userEvent.click(
       within(canvas.getByTestId('stepper-step-recording')).getByRole('button'),
     );
     await expect(canvas.getByTestId('stepper-step-recording')).toHaveAttribute(
-      'aria-current',
-      'step',
+      'data-status',
+      'current',
     );
   },
 };
