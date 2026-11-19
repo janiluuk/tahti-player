@@ -65,19 +65,25 @@ export const LEGAL_PAGES: LegalPage[] = [
       {
         heading: 'Who it is for',
         paragraphs: [
-          'Independent artists, DJs, bands and collectives who want one home for live shows, 24/7 channels and releases — plus listeners who want lossless audio without ads or tracking, and members who vote on how the platform is run.',
+          'Independent artists, DJs, bands and collectives who want one home for live shows, 24/7 channels, releases and Studio tools — plus listeners who want lossless audio without ads or tracking (with favourites, history and Tahti Jam), and members who vote on how the platform is run.',
         ],
       },
       {
         heading: 'What it does',
         paragraphs: [
-          'Tahti closes the gap between five disconnected vendors (streaming host, release toolkit, fan payments, profile site, opaque terms) with one member-owned platform: always-on channels, Studio tools, fan subscriptions and public grants.',
+          'Tahti closes the gap between five disconnected vendors (streaming host, release toolkit, fan payments, profile site, opaque terms) with one member-owned platform: always-on channels, Channel Designer, audio editor, import/export plugins, fan subscriptions, store tiers and public grants.',
         ],
       },
       {
         heading: 'What you get',
         paragraphs: [
-          'Live broadcasting (OBS / Mixxx / Traktor, green room, multistream, Tahti Radio), library and release tooling, fan-to-artist payments with a 2% ops fee, discovery without algorithmic ranking, co-op governance with a public ledger, and the full stack under AGPL-3.0. Artist membership is €40/year; listening is free. Ninety percent of operating surplus returns to artists as grants.',
+          'Live broadcasting (OBS / Mixxx / Traktor, green room, multistream, auto-record, Tahti Radio + Discord bot), Channel Designer and waveform editor, library/releases with stems and DSP delivery, fan-to-artist payments with a 2% ops fee, Jam and discovery without algorithmic ranking, desktop Tahti Player with a free plugin/theme Store, co-op governance with a public ledger, and the full stack under AGPL-3.0. Artist membership is €40/year; listening is free. Ninety percent of operating surplus returns to artists as grants.',
+        ],
+      },
+      {
+        heading: 'Keeping grants honest',
+        paragraphs: [
+          'Grants use engagement units from downloads and fan money — not passive plays. Rate limits, dedup, and Tor/no-count networks already strip the easy bots. Pattern detection then flags batch accounts, even download intervals, network IP clusters, and reciprocal rings for board review on the grant preview; nothing is reversed silently by an algorithm. Artist notification and a formal appeal path are still being finished.',
         ],
       },
     ],
@@ -118,6 +124,13 @@ export const LEGAL_PAGES: LegalPage[] = [
           'Annual surplus: 90% distributed to artists as grants, 10% held in an operating reserve capped at 6 months of costs — anything above that cap goes back to artists too.',
           'No venture capital, no equity, no exit. Tahti ry is a Finnish nonprofit association (yhdistys) — it legally cannot become a for-profit company without dissolving the membership.',
           'Every euro in and out is published, monthly, in an append-only ledger — not a once-a-year PDF.',
+        ],
+      },
+      {
+        heading: 'Keeping the grant pool honest',
+        paragraphs: [
+          'Passive listening never earns grant units. Downloads are rate-limited and deduped; known bot and Tor networks can still download but do not count.',
+          'Pattern detection watches for batch-created accounts, suspiciously even download timing, tight IP clusters, and reciprocal rings that inflate each other. Flags show on the board grant preview and as audit alerts. A human reviews before units are reversed — no silent algorithmic docking. Telling the artist and a formal appeal path are the remaining product pieces.',
         ],
       },
     ],

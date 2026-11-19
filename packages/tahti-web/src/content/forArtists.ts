@@ -53,52 +53,52 @@ export const FOR_ARTISTS_COPY: Record<ContentLocale, ForArtistsCopy> = {
         title: 'Go live',
         lead: 'Broadcast from the software you already use.',
         points: [
-          'Stream from OBS, Mixxx or Traktor with the RTMP or Icecast details from your studio.',
-          'Send the same show to other platforms at the same time.',
-          'Invite guests into a green room before you go on air.',
+          'Stream from OBS, Mixxx, Traktor or the browser with RTMP or Icecast details from Studio.',
+          'Green room, auto-record, show series — and multistream to Twitch, YouTube or Kick.',
+          'Book slots on Tahti Radio; the Discord voice bot can carry the meta-stream.',
         ],
       },
       publish: {
         title: 'Publish',
         lead: 'Your releases, credited properly.',
         points: [
-          'Upload tracks and archive sets.',
-          'Build releases and albums with full credits.',
-          'Share them with smart links and embeds.',
+          'Upload or import tracks, sets and recordings; edit in the waveform editor.',
+          'Build releases with credits, stems, smart links and embeds.',
+          'Deliver to DSPs (Revelator) and publish to Mixcloud from Studio.',
         ],
       },
       program: {
         title: 'Program your channel',
         lead: 'On air even when you are not.',
         points: [
-          'Schedule your shows ahead of time.',
-          'Keep a 24/7 rotation running while you are offline.',
+          'Schedule shows and keep a 24/7 archive or collection rotation.',
+          'Shuffle, fair rotation and auto-enrol new uploads when you want them.',
         ],
       },
       design: {
         title: 'Design it',
         lead: 'A channel that looks like you.',
         points: [
-          "Set your channel's look, backdrop and logo.",
-          'Keep your press kit and gallery on your artist page.',
+          'Channel Designer: looks, audio-reactive visualizers, layout blocks and banners.',
+          'Press kit, gallery and identity live on Settings → Artist info.',
         ],
       },
       earn: {
         title: 'Earn',
         lead: 'Income straight from your fans.',
         points: [
-          'Offer fan subscription tiers and paid tracks.',
-          'Get paid out through Stripe.',
-          'Distribute to streaming services from the studio.',
+          'Fan subscription tiers, one-time store tiers and pay-what-you-want tracks.',
+          'Get paid out through Stripe Connect — 98% to you, 2% ops into the grant pool.',
+          'Qualify for annual artist grants from platform surplus.',
         ],
       },
       grow: {
         title: 'Grow',
         lead: 'Know your audience and reach it.',
         points: [
-          'See who listens, which links get clicked and how downloads convert.',
-          'Send updates to your subscribers.',
-          'Auto-post new releases to Mastodon and Bluesky.',
+          'Stats for plays, downloads, geography and devices.',
+          'Live chat, DMs, posts and newsletters.',
+          'Desktop Tahti Player, plugin Store and tahti CLI for bulk work.',
         ],
       },
     },
@@ -107,7 +107,7 @@ export const FOR_ARTISTS_COPY: Record<ContentLocale, ForArtistsCopy> = {
     steps: [
       {
         title: 'Claim your channel',
-        body: 'Pick your channel slug in Studio. Your channel lives at /channel/your-slug and your profile at /u/your-username.',
+        body: 'Pick your channel slug in Studio. Your channel lives at /c/your-slug and your profile at /u/your-username.',
       },
       {
         title: 'Connect your software',
@@ -122,8 +122,8 @@ export const FOR_ARTISTS_COPY: Record<ContentLocale, ForArtistsCopy> = {
     anywhereTitle: 'Your studio goes with you.',
     anywhere: {
       apps: {
-        title: 'Web, desktop and mobile',
-        body: 'Run your studio at tahti.live or in the desktop app for Windows, macOS and Linux. iOS and Android are supported too.',
+        title: 'Web, desktop and phone',
+        body: 'Run Studio at tahti.live or in the desktop Tahti Player for Windows, macOS and Linux. The same web app works in a phone browser.',
       },
       cli: {
         title: 'Command line',
@@ -169,52 +169,52 @@ export const FOR_ARTISTS_COPY: Record<ContentLocale, ForArtistsCopy> = {
         title: 'Mene liveen',
         lead: 'Lähetä ohjelmalla, jota jo käytät.',
         points: [
-          'Lähetä OBS:llä, Mixxxillä tai Traktorilla studiosi RTMP- tai Icecast-tiedoilla.',
-          'Lähetä sama ohjelma samaan aikaan muillekin alustoille.',
-          'Kutsu vieraat valmistautumishuoneeseen ennen lähetystä.',
+          'Lähetä OBS:llä, Mixxxillä, Traktorilla tai selaimella Studion RTMP- tai Icecast-tiedoilla.',
+          'Green room, automaattinen tallenne, ohjelmasarjat — ja monistriimi Twitchiin, YouTubeen tai Kickiin.',
+          'Varaa aikoja Tahti Radiosta; Discord-äänibotti voi kantaa meta-striimin.',
         ],
       },
       publish: {
         title: 'Julkaise',
         lead: 'Julkaisusi, tekijätiedot kunnossa.',
         points: [
-          'Lataa kappaleita ja arkistosettejä.',
-          'Kokoa julkaisuja ja albumeja täysin tekijätiedoin.',
-          'Jaa ne älylinkeillä ja upotuksilla.',
+          'Lataa tai tuo kappaleita, settejä ja tallenteita; editoi aaltomuotieditorissa.',
+          'Kokoa julkaisuja krediiteillä, stemmeillä, älylinkeillä ja upotuksilla.',
+          'Toimita DSP:lle (Revelator) ja julkaise Mixcloudiin Studiosta.',
         ],
       },
       program: {
         title: 'Ohjelmoi kanavasi',
         lead: 'Lähetyksessä silloinkin, kun et itse ole.',
         points: [
-          'Aikatauluta ohjelmasi etukäteen.',
-          'Pidä 24/7-kierto käynnissä, kun olet poissa.',
+          'Aikatauluta ohjelmat ja pidä 24/7-arkisto- tai kokoelmakierto käynnissä.',
+          'Satunnainen tai tasapuolinen kierto ja uusien latausten automaattinen lisäys.',
         ],
       },
       design: {
         title: 'Suunnittele',
         lead: 'Kanava, joka näyttää sinulta.',
         points: [
-          'Valitse kanavasi ulkoasu, tausta ja logo.',
-          'Pidä lehdistöpaketti ja galleria artistisivullasi.',
+          'Channel Designer: lookit, äänireaktiiviset visualisoijat, lohkot ja bannerit.',
+          'Lehdistöpaketti, galleria ja identiteetti ovat Asetukset → Artistitiedot -osiossa.',
         ],
       },
       earn: {
         title: 'Ansaitse',
         lead: 'Tuloja suoraan faneiltasi.',
         points: [
-          'Tarjoa fanitilaustasoja ja maksullisia kappaleita.',
-          'Saat maksut Stripen kautta.',
-          'Jakele musiikkia suoratoistopalveluihin suoraan studiosta.',
+          'Fanitilaustasot, kertostot ja maksa-mitä-haluat-kappaleet.',
+          'Maksut Stripe Connectilla — 98 % sinulle, 2 % toimintamaksu apurahapottiin.',
+          'Kelpoisuus vuosittaisiin apurahoihin alustan ylijäämästä.',
         ],
       },
       grow: {
         title: 'Kasva',
         lead: 'Tunne yleisösi ja tavoita se.',
         points: [
-          'Näe, ketkä kuuntelevat, mitä linkkejä klikataan ja miten lataukset konvertoivat.',
-          'Lähetä päivityksiä tilaajillesi.',
-          'Julkaise uudet julkaisut automaattisesti Mastodoniin ja Blueskyhin.',
+          'Tilastot toistoista, latauksista, maista ja laitteista.',
+          'Live-chat, yksityisviestit, postaukset ja uutiskirjeet.',
+          'Työpöytä-Tahti Player, laajennus-Store ja tahti-CLI massatyöhön.',
         ],
       },
     },
@@ -223,7 +223,7 @@ export const FOR_ARTISTS_COPY: Record<ContentLocale, ForArtistsCopy> = {
     steps: [
       {
         title: 'Varaa kanavasi',
-        body: 'Valitse kanavasi tunnus Studiossa. Kanavasi on osoitteessa /channel/oma-tunnus ja profiilisi /u/käyttäjänimi.',
+        body: 'Valitse kanavasi tunnus Studiossa. Kanavasi on osoitteessa /c/oma-tunnus ja profiilisi /u/käyttäjänimi.',
       },
       {
         title: 'Yhdistä ohjelmasi',
@@ -238,8 +238,8 @@ export const FOR_ARTISTS_COPY: Record<ContentLocale, ForArtistsCopy> = {
     anywhereTitle: 'Studiosi kulkee mukanasi.',
     anywhere: {
       apps: {
-        title: 'Verkko, työpöytä ja mobiili',
-        body: 'Käytä studiota osoitteessa tahti.live tai työpöytäsovelluksessa (Windows, macOS ja Linux). Myös iOS ja Android ovat tuettuja.',
+        title: 'Verkko, työpöytä ja puhelin',
+        body: 'Käytä Studiota osoitteessa tahti.live tai työpöytä-Tahti Playerissa (Windows, macOS, Linux). Sama web-sovellus toimii myös puhelimen selaimessa.',
       },
       cli: {
         title: 'Komentorivi',

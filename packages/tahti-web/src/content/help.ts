@@ -499,7 +499,7 @@ export const HELP_ARTICLES: HelpArticle[] = [
       {
         heading: 'Grants sit on top',
         body: [
-          'Downloads and fan-sub euros also count toward yearly engagement units. Eligible artists share the cooperative grant pool — that is extra to the money already paid out on each order.',
+          'Downloads and fan-sub euros also count toward yearly engagement units. Eligible artists share the cooperative grant pool — that is extra to the money already paid out on each order. Pattern detection flags tidy fake activity (batch accounts, even intervals, IP clusters, reciprocal rings) for board review on the grant cycle; units are never docked silently.',
         ],
       },
     ],

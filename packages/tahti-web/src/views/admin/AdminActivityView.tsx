@@ -51,6 +51,7 @@ const ACTION_SCOPE: Record<string, string> = {
   GRANT_RUN: 'money',
   STRIPE_WEBHOOK_ERROR: 'money',
   DOWNLOAD_FRAUD_ALERT: 'money',
+  PATTERN_FRAUD_ALERT: 'money',
   MEMBERSHIP_RENEWAL_REMINDER: 'money',
   MEMBERSHIP_LAPSED: 'money',
   ENGAGEMENT_ADJUSTMENT: 'money',
@@ -86,6 +87,7 @@ const ACTION_SCOPE: Record<string, string> = {
 const ACTION_LEVEL: Record<string, LogLevel> = {
   STRIPE_WEBHOOK_ERROR: 'error',
   DOWNLOAD_FRAUD_ALERT: 'error',
+  PATTERN_FRAUD_ALERT: 'error',
   MEMBER_SUSPEND: 'warn',
   USER_SUSPEND: 'warn',
   CHAT_BAN: 'warn',
@@ -148,6 +150,13 @@ function messageFor(entry: AdminActivityEntry): string {
       return title
         ? `${actor} logged a ledger entry — ${title}`
         : `${actor} logged a ledger entry`;
+    }
+    case 'DOWNLOAD_FRAUD_ALERT':
+      return `Download velocity alert on ${str('channelSlug') ?? entry.targetId ?? 'a channel'}`;
+    case 'PATTERN_FRAUD_ALERT': {
+      const code = str('code') ?? 'pattern';
+      const slug = str('channelSlug') ?? entry.targetId ?? 'a channel';
+      return `Pattern ${code.replaceAll('_', ' ').toLowerCase()} on ${slug}`;
     }
     case 'USER_TIER_CHANGE': {
       const from = str('from') ?? 'unknown';

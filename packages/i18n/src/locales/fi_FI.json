@@ -4483,6 +4483,7 @@
       "downloads": "Lataukset",
       "fanSubs": "Fanitilaukset",
       "units": "Yksiköt",
+      "flags": "Liput",
       "grant": "Apuraha",
       "approveDistribution": "Hyväksy jako",
       "pool": "Potti",

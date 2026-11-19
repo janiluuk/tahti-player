@@ -461,7 +461,7 @@ export const HELP_ARTICLES_FI: Record<string, HelpArticleTranslation> = {
       {
         heading: 'Apurahat tulevat päälle',
         body: [
-          'Lataukset ja fanitilausten eurot lasketaan myös vuosittaisiin osallistumisyksiköihin. Kelpoiset artistit jakavat osuuskunnan apurahapotin; se tulee jo tilauksista maksettujen rahojen lisäksi.',
+          'Lataukset ja fanitilausten eurot lasketaan myös vuosittaisiin osallistumisyksiköihin. Kelpoiset artistit jakavat osuuskunnan apurahapotin; se tulee jo tilauksista maksettujen rahojen lisäksi. Hahmontunnistus liputtaa liian siistin tekaistun aktiivisuuden (erissä luodut tilit, tasaiset välit, IP-klusterit, vastavuoroiset renkaat) hallituksen apurahakierroksen arvioon; yksiköitä ei leikata hiljaa.',
         ],
       },
     ],

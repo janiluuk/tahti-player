@@ -33,6 +33,10 @@ export type WhatIsItCopy = {
   moneyTitle: string;
   moneyStats: Array<{ value: string; label: string }>;
   moneyBody: string;
+  honestEyebrow: string;
+  honestTitle: string;
+  honestLead: string;
+  honestPoints: Array<{ title: string; body: string }>;
   principlesEyebrow: string;
   principlesTitle: string;
   principles: string[];
@@ -61,7 +65,7 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
     audience: {
       artists: {
         title: 'Artists & DJs',
-        body: 'Live sets, radio shows, 24/7 channels and releases — without stitching five vendors together.',
+        body: 'Live sets, radio shows, 24/7 channels, releases, Channel Designer and an in-browser editor — without stitching five vendors together.',
       },
       collectives: {
         title: 'Bands & crews',
@@ -69,7 +73,7 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
       },
       listeners: {
         title: 'Listeners',
-        body: 'Tune in anonymously. No ads, no tracking cookies. Lossless FLAC on member channels.',
+        body: 'Tune in anonymously. No ads, no tracking cookies. Lossless FLAC on member channels. Favourites, history and Tahti Jam when you want them.',
       },
       members: {
         title: 'Members',
@@ -83,15 +87,15 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
     doesPoints: [
       {
         title: 'Always-on channel',
-        body: 'Live HLS when you are on air; archive rotation when you are not. One address for fans.',
+        body: 'Live HLS when you are on air; archive rotation when you are not. One address for fans — designed in Channel Designer.',
       },
       {
         title: 'Studio & catalogue',
-        body: 'Upload, edit, release and embed from the same library — credits and metadata included.',
+        body: 'Upload, import, edit, release, embed and deliver to DSPs from the same library — credits, stems and metadata included.',
       },
       {
         title: 'Money that tips your way',
-        body: 'Fan subs go to you. Surplus funds annual grants. The ledger is public.',
+        body: 'Fan subs and store sales go to you. Surplus funds annual grants. The ledger is public.',
       },
     ],
     featuresEyebrow: 'What you get',
@@ -102,17 +106,18 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
         lead: 'Go live from the software you already use.',
         points: [
           'OBS, Mixxx, Traktor or browser — RTMP / Icecast credentials in Studio.',
-          'Green room, auto-record, multistream to Twitch, YouTube or Kick.',
-          'Book slots on Tahti Radio, the community meta-stream.',
+          'Green room, auto-record, show series, multistream to Twitch, YouTube or Kick.',
+          'Channel Designer: looks, visualizers, layout blocks, banners and press kit.',
+          'Book slots on Tahti Radio; Discord voice bot carries the meta-stream.',
         ],
       },
       catalog: {
         title: 'Library & releases',
         lead: 'From upload to official release in one place.',
         points: [
-          'Resumable uploads, cloud import, in-browser editor and revisions.',
-          'Release checklist, credits, MusicBrainz / Discogs / ISRC helpers.',
-          'Smart links, embeds and DSP claim pointers.',
+          'Resumable uploads, import plugins, waveform editor with revisions.',
+          'Release checklist, credits, stems, MusicBrainz / Discogs / ISRC helpers.',
+          'Smart links, embeds, stash, collections — and DSP delivery (Revelator) plus Mixcloud.',
         ],
       },
       earn: {
@@ -120,17 +125,18 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
         lead: 'Direct support plus a shared grant pool.',
         points: [
           'Fan subscriptions via Stripe Connect — 2% ops fee into the grant pool.',
-          'One-time purchases and pay-what-you-want tiers.',
-          'Annual grants: 90% of operating surplus by engagement units.',
+          'One-time store tiers, pay-what-you-want and subscriber-only gates.',
+          'Live chat, DMs, artist posts and newsletters to reach your audience.',
+          'Annual grants: 90% of operating surplus by engagement units, with pattern detection for board review.',
         ],
       },
       discover: {
         title: 'Listen & discover',
         lead: 'No algorithmic feed to game.',
         points: [
-          'What’s live, replays and new releases — ranked by people, not by a black box.',
-          'Signed-in For you is follows and history only.',
-          'Channel, release and third-party embeds.',
+          'What’s live, replays, new releases and Tahti Selects — ranked by people, not a black box.',
+          'Favourites and listening history; signed-in For you is follows and history only.',
+          'Tahti Jam for synced group listening; channel, release and third-party embeds.',
         ],
       },
       govern: {
@@ -147,7 +153,8 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
         lead: 'AGPL-3.0 end to end.',
         points: [
           'Read it, self-host it, fork it — hosted forks share their source.',
-          'Export your catalogue and fan records anytime.',
+          'Desktop Tahti Player (Windows, macOS, Linux) plus a free plugin and theme Store.',
+          'CLI for bulk uploads; export your catalogue and fan records anytime.',
           'Artists keep full copyright on everything they upload.',
         ],
       },
@@ -162,6 +169,28 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
     ],
     moneyBody:
       'Free-tier artists get MP3 and limited live hours; members broadcast lossless FLAC with no weekly airtime cap. The 2% fan-sub fee covers cards, GDPR and ops — and rolls into the grant pool. No platform cut for Tahti itself.',
+    honestEyebrow: 'Keeping it honest',
+    honestTitle: 'You can’t game what pays nothing to game.',
+    honestLead:
+      'Grants use engagement units from deliberate acts — downloads and fan money — not passive listening. Real fandom is messy; fake activity is too tidy. Pattern detection flags the tidy stuff for humans.',
+    honestPoints: [
+      {
+        title: 'Passive listening earns nothing',
+        body: 'The classic bot-farm trick has no target here. Plays never mint grant units.',
+      },
+      {
+        title: 'Deliberate acts only',
+        body: 'Units come from downloads (rate-limited, deduped, Tor/no-count networks excluded) and fan money on a real card.',
+      },
+      {
+        title: 'Pattern detection',
+        body: 'Batch-created accounts, even download intervals, network IP clusters, and reciprocal rings are flagged on the grant preview and in board audit — humans review before any units are reversed. Artist notice and a formal appeal path are next.',
+      },
+      {
+        title: 'Humans decide',
+        body: 'Nothing is docked silently by an algorithm. We would rather miss something than punish someone who did nothing wrong.',
+      },
+    ],
     principlesEyebrow: 'Three rules',
     principlesTitle: 'Written into the constitution.',
     principles: [
@@ -193,7 +222,7 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
     audience: {
       artists: {
         title: 'Artistit ja DJ:t',
-        body: 'Live-setit, radio-ohjelmat, 24/7-kanavat ja julkaisut — ilman viiden palvelun tilkkutäkkiä.',
+        body: 'Live-setit, radio-ohjelmat, 24/7-kanavat, julkaisut, Channel Designer ja selaineditori — ilman viiden palvelun tilkkutäkkiä.',
       },
       collectives: {
         title: 'Bändit ja kollektiivit',
@@ -201,7 +230,7 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
       },
       listeners: {
         title: 'Kuuntelijat',
-        body: 'Kuuntele anonyymisti. Ei mainoksia, ei seurantakeksejä. Häviötön FLAC jäsenkanavilla.',
+        body: 'Kuuntele anonyymisti. Ei mainoksia, ei seurantakeksejä. Häviötön FLAC jäsenkanavilla. Suosikit, historia ja Tahti Jam kun haluat.',
       },
       members: {
         title: 'Jäsenet',
@@ -215,15 +244,15 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
     doesPoints: [
       {
         title: 'Aina päällä oleva kanava',
-        body: 'Live-HLS kun olet ilmassa; arkistorotaatio kun et ole. Yksi osoite faneille.',
+        body: 'Live-HLS kun olet ilmassa; arkistorotaatio kun et ole. Yksi osoite faneille — Channel Designerillä muokattuna.',
       },
       {
         title: 'Studio ja katalogi',
-        body: 'Lataa, editoi, julkaise ja upota samasta kirjastosta — krediitit ja metadata mukana.',
+        body: 'Lataa, tuo, editoi, julkaise, upota ja toimita DSP:lle samasta kirjastosta — krediitit, stemmit ja metadata mukana.',
       },
       {
         title: 'Raha kallistuu sinuun',
-        body: 'Fanitilaukset menevät sinulle. Ylijäämä rahoittaa vuosittaiset apurahat. Kirjanpito on julkinen.',
+        body: 'Fanitilaukset ja kauppa menevät sinulle. Ylijäämä rahoittaa vuosittaiset apurahat. Kirjanpito on julkinen.',
       },
     ],
     featuresEyebrow: 'Mitä saat',
@@ -234,17 +263,18 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
         lead: 'Mene liveen ohjelmistoilla joita jo käytät.',
         points: [
           'OBS, Mixxx, Traktor tai selain — RTMP-/Icecast-tunnukset Studiossa.',
-          'Green room, automaattinen tallenne, monistriimi Twitchiin, YouTubeen tai Kickiin.',
-          'Varaa aikoja Tahti Radiosta, yhteisön meta-striimistä.',
+          'Green room, automaattinen tallenne, ohjelmasarjat, monistriimi Twitchiin, YouTubeen tai Kickiin.',
+          'Channel Designer: lookit, visualisoijat, lohkot, bannerit ja press kit.',
+          'Varaa aikoja Tahti Radiosta; Discord-äänibotti kantaa meta-striimin.',
         ],
       },
       catalog: {
         title: 'Kirjasto ja julkaisut',
         lead: 'Latauksesta viralliseen julkaisuun yhdessä paikassa.',
         points: [
-          'Jatkuvat lataukset, pilvituonti, selaineditori ja versiot.',
-          'Julkaisun tarkistuslista, krediitit, MusicBrainz-/Discogs-/ISRC-apu.',
-          'Älylinkit, upotukset ja DSP-vaatimusten linkit.',
+          'Jatkuvat lataukset, tuontilaajennukset, aaltomuotieditori versioineen.',
+          'Julkaisun tarkistuslista, krediitit, stemmit, MusicBrainz-/Discogs-/ISRC-apu.',
+          'Älylinkit, upotukset, stash, kokoelmat — sekä DSP-toimitus (Revelator) ja Mixcloud.',
         ],
       },
       earn: {
@@ -252,17 +282,18 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
         lead: 'Suora tuki plus yhteinen apurahapotti.',
         points: [
           'Fanitilaukset Stripe Connectilla — 2 %:n toimintamaksu apurahapottiin.',
-          'Kertostot ja maksa-mitä-haluat-tasot.',
-          'Vuosittaiset apurahat: 90 % toimintaylijäämästä engagement-yksiköillä.',
+          'Kertostot, maksa-mitä-haluat ja vain-tilaajille-portit.',
+          'Live-chat, yksityisviestit, artistipostaukset ja uutiskirjeet.',
+          'Vuosittaiset apurahat: 90 % toimintaylijäämästä engagement-yksiköillä, hahmontunnistuksella hallituksen arvioon.',
         ],
       },
       discover: {
         title: 'Kuuntelu ja löytäminen',
         lead: 'Ei algoritmista syötettä pelattavaksi.',
         points: [
-          'Mikä on live, toistot ja uudet julkaisut — ihmisten, ei mustan laatikon mukaan.',
-          'Kirjautuneen Sinulle-näkymä on vain seuraukset ja historia.',
-          'Kanava-, julkaisu- ja kolmannen osapuolen upotukset.',
+          'Mikä on live, toistot, uudet julkaisut ja Tahti Selects — ihmisten, ei mustan laatikon mukaan.',
+          'Suosikit ja kuunteluhistoria; kirjautuneen Sinulle-näkymä on vain seuraukset ja historia.',
+          'Tahti Jam synkronoituun yhteiskuunteluun; kanava-, julkaisu- ja kolmannen osapuolen upotukset.',
         ],
       },
       govern: {
@@ -279,7 +310,8 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
         lead: 'AGPL-3.0 alusta loppuun.',
         points: [
           'Lue, hostaa itse, haaroita — verkossa ajettavat haarukat jakavat lähdekoodinsa.',
-          'Vie katalogisi ja fanitietosi milloin tahansa.',
+          'Työpöytä-Tahti Player (Windows, macOS, Linux) sekä ilmainen laajennus- ja teema-Store.',
+          'CLI massalatauksiin; vie katalogisi ja fanitietosi milloin tahansa.',
           'Artistit säilyttävät täyden tekijänoikeuden kaikkeen lataamaansa.',
         ],
       },
@@ -294,6 +326,28 @@ export const WHAT_IS_IT_COPY: Record<ContentLocale, WhatIsItCopy> = {
     ],
     moneyBody:
       'Ilmaistason artistit lähettävät MP3:lla ja rajoitetulla liveajalla; jäsenet lähettävät häviötöntä FLAC:ia ilman viikoittaista aikakattoa. 2 %:n fanitilausmaksu kattaa kortit, GDPR:n ja ylläpidon — ja menee apurahapottiin. Tahdilla itsellään ei ole omaa leikkausta.',
+    honestEyebrow: 'Pidämme rehellisenä',
+    honestTitle: 'Et voi pelata järjestelmää, joka ei maksa pelaamisesta.',
+    honestLead:
+      'Apurahat perustuvat engagement-yksiköihin tahallisista teoista — latauksista ja fanirahasta — ei passiivisesta kuuntelusta. Aito fanius on sekavaa; tekaistu aktiivisuus on liian siistiä. Hahmontunnistus liputtaa siistin toiminnan ihmisille.',
+    honestPoints: [
+      {
+        title: 'Passiivinen kuuntelu ei tuota mitään',
+        body: 'Klassisella bottifarmilla ei ole maalia täällä. Toistot eivät koskaan luo apurahayksiköitä.',
+      },
+      {
+        title: 'Vain tahalliset teot',
+        body: 'Yksiköt tulevat latauksista (nopeusrajoitukset, deduplikointi, Tor/no-count-verkot pois) ja fanirahasta oikealla kortilla.',
+      },
+      {
+        title: 'Hahmontunnistus',
+        body: 'Erissä luodut tilit, tasaiset latausvälit, IP-klusterit ja vastavuoroiset renkaat liputetaan apurahan esikatseluun ja hallituksen audittiin — ihminen arvioi ennen kuin yksiköitä peruutetaan. Artistin ilmoitus ja muodollinen valituspolku ovat seuraavaksi.',
+      },
+      {
+        title: 'Ihmiset päättävät',
+        body: 'Mikään ei leikkaudu hiljaa algoritmilla. Mieluummin ohitamme jotain kuin rankaisemme syytöntä.',
+      },
+    ],
     principlesEyebrow: 'Kolme sääntöä',
     principlesTitle: 'Kirjattu perussääntöön.',
     principles: [
