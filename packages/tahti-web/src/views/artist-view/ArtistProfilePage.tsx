@@ -61,10 +61,11 @@ import { ChannelVisualizer } from '../../components/ChannelVisualizer';
 import { type EntitySocialStat } from '../../components/EntitySocialHeader';
 import { ImageLightbox } from '../../components/ImageLightbox';
 import {
+  ContentReveal,
   PageEmpty,
   PageError,
   PageErrorBanner,
-  PageLoading,
+  ProfileSkeleton,
 } from '../../components/PageStates';
 import { QueueConfirmDialog } from '../../components/QueueConfirmDialog';
 import {
@@ -246,7 +247,11 @@ export function ArtistProfilePage({ username }: { username: string }) {
   );
 
   if (loading) {
-    return <PageLoading label={t('loading.loadingArtist')} />;
+    return (
+      <div role="status" aria-label={t('loading.loadingArtist')}>
+        <ProfileSkeleton />
+      </div>
+    );
   }
 
   if (loadError && !profile) {
@@ -377,7 +382,7 @@ export function ArtistProfilePage({ username }: { username: string }) {
   );
 
   return (
-    <div
+    <ContentReveal
       // Cancels AppShell's content padding so the artist's colors reach the
       // pane edges, like the track page.
       className="relative isolate -mx-6 -mt-6 flex min-h-full flex-col gap-4 overflow-hidden p-6 md:-mx-8 md:-mt-8 md:p-8"
@@ -786,6 +791,6 @@ export function ArtistProfilePage({ username }: { username: string }) {
           setQueueConfirm(null);
         }}
       />
-    </div>
+    </ContentReveal>
   );
 }

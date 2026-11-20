@@ -44,10 +44,12 @@ import { useRotationNowPlaying } from '../components/channel-view/useRotationNow
 import { RadioStationsRow } from '../components/listen-view/RadioStationsRow';
 import { useRadioPresets } from '../components/listen-view/useListenSections';
 import {
+  CardsRowSkeleton,
+  ContentReveal,
+  HeroSkeleton,
   PageEmpty,
   PageError,
   PageErrorBanner,
-  PageLoading,
 } from '../components/PageStates';
 import { FavoriteStationsRow } from '../components/radio/FavoriteStationsRow';
 import { RadioBookedShowsPanel } from '../components/radio/RadioBookedShowsPanel';
@@ -397,7 +399,14 @@ export function RadioView() {
       classes={{ root: 'px-0 pt-0' }}
     >
       {loading ? (
-        <PageLoading label={t('radio.tuning')} />
+        <div
+          role="status"
+          aria-label={t('radio.tuning')}
+          className="flex flex-col gap-8"
+        >
+          <HeroSkeleton />
+          <CardsRowSkeleton cards={4} />
+        </div>
       ) : !station && stationError ? (
         <PageError
           title={t('radio.loadErrorTitle')}
@@ -416,7 +425,7 @@ export function RadioView() {
           }
         />
       ) : (
-        <div className="flex flex-col gap-6">
+        <ContentReveal className="flex flex-col gap-6">
           <header className="flex items-start justify-between gap-4">
             <div className="flex min-w-0 items-start gap-4">
               <div className="min-w-0 flex-1">
@@ -548,7 +557,7 @@ export function RadioView() {
             onTabChange={selectTab}
             tabs={playerTabs}
           />
-        </div>
+        </ContentReveal>
       )}
 
       <section
