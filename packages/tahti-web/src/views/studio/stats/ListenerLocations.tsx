@@ -75,7 +75,7 @@ export function ListenerLocations({
             <span>{flagEmoji(location.countryCode)}</span>
           ) : undefined,
         }))}
-        emptyLabel="Countries show as people listen."
+        emptyLabel={t('listenerLocationsBatch32.countriesEmpty')}
       />
       <ShareList
         title={t('listenerLocations.cities')}
@@ -87,7 +87,9 @@ export function ListenerLocations({
             <span>{flagEmoji(location.countryCode)}</span>
           ) : undefined,
         }))}
-        emptyLabel={`Cities show once at least ${minBucket} listens share one.`}
+        emptyLabel={t('listenerLocationsBatch32.citiesEmpty', {
+          count: minBucket,
+        })}
       />
     </div>
   );

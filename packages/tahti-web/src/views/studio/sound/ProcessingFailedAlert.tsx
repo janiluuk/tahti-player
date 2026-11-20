@@ -23,8 +23,11 @@ export function ProcessingFailedAlert({
   return (
     <Alert tone="error">
       <p>
-        Processing failed
-        {item.processingError ? `: ${item.processingError}` : ' for this file.'}
+        {item.processingError
+          ? t('processingFailedAlertBatch32.failedWithReason', {
+              reason: item.processingError,
+            })
+          : t('processingFailedAlertBatch32.failedForFile')}
       </p>
       <p>
         {retryable

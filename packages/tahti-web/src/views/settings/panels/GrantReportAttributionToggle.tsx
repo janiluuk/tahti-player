@@ -6,9 +6,6 @@ import { i18n, useTranslation } from '@tahti-player/i18n';
 import { patchMeProfile, type ProfileFields } from '../../../api/studio-extras';
 import { SettingsToggle } from '../SettingsFields';
 
-export const GRANT_REPORT_ATTRIBUTION_LABEL =
-  'Show my name in the annual grant report';
-
 export function GrantReportAttributionToggle({
   profile,
   onSaved,
@@ -25,7 +22,7 @@ export function GrantReportAttributionToggle({
 
   return (
     <SettingsToggle
-      label={GRANT_REPORT_ATTRIBUTION_LABEL}
+      label={t('grantReportAttributionToggleBatch32.label')}
       description={t(
         'grantReportAttributionToggleText.tahtiPublishesWhoReceivedArtist',
       )}

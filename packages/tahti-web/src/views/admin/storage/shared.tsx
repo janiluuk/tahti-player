@@ -27,10 +27,10 @@ import {
   formatFileDate,
 } from '../../../lib/storageFormat';
 
-export const STORAGE_LOCATION_LABELS: Record<'local' | 'r2', string> = {
-  local: 'Local disk',
-  r2: 'Object storage (R2)',
-};
+const STORAGE_LOCATION_LABEL_KEYS = {
+  local: 'storageSharedBatch32.localDisk',
+  r2: 'storageSharedBatch32.objectStorageR2',
+} as const satisfies Record<'local' | 'r2', string>;
 
 export type FileSortKey = 'name' | 'type' | 'size' | 'length';
 
@@ -148,8 +148,8 @@ export function FileDetailDialog({
           </dt>
           <dd>
             {file.storageLocation
-              ? STORAGE_LOCATION_LABELS[file.storageLocation]
-              : 'Not tracked yet'}
+              ? t(STORAGE_LOCATION_LABEL_KEYS[file.storageLocation])
+              : t('storageSharedBatch32.notTrackedYet')}
           </dd>
         </div>
         <div>
@@ -309,7 +309,7 @@ export function DiskSpaceCard({
       {pctUsed != null ? (
         <Meter
           value={pctUsed}
-          aria-label={`${title} used`}
+          aria-label={t('storageSharedBatch32.titleUsed', { title })}
           aria-valuetext={`${Math.round(pctUsed)}%`}
           className="mt-3"
         />

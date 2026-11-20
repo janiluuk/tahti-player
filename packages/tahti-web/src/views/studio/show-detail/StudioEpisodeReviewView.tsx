@@ -164,7 +164,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
         `Episode ${episode.episodeNumber} review`,
       );
       const text = r.ok
-        ? 'Render queued — check the archive editor for progress.'
+        ? t('studioEpisodeReviewViewBatch32.renderQueued')
         : r.error;
       setMsg(text);
       (r.ok ? toast.success : toast.error)(text);
@@ -190,7 +190,7 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
     setEpisode(result.data);
     setPublicTitle(result.data.title);
     setPublicDescription(result.data.description);
-    setMsg('Public show details saved.');
+    setMsg(t('studioEpisodeReviewViewBatch32.publicDetailsSaved'));
     setEditing(false);
   };
 
@@ -202,7 +202,11 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
           classes={{ root: 'px-0 pt-0' }}
           actions={
             <>
-              <Eyebrow>Episode #{episode.episodeNumber}</Eyebrow>
+              <Eyebrow>
+                {t('studioEpisodeReviewViewBatch32.episodeNumber', {
+                  number: episode.episodeNumber,
+                })}
+              </Eyebrow>
               <EditIconButton
                 label={t('episodeReview.editDetails')}
                 editing={editing}
@@ -219,7 +223,9 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
           corner={
             <Tooltip
               content={webT()('templateText.backTo', {
-                name: show?.title ?? 'Show',
+                name:
+                  show?.title ??
+                  t('studioEpisodeReviewViewBatch32.showFallback'),
               })}
               side="right"
               wrapperClassName={backButtonCornerClassName}
@@ -228,7 +234,9 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
                 to="/studio/shows/$id"
                 params={{ id: episode.showId }}
                 aria-label={webT()('templateText.backTo', {
-                  name: show?.title ?? 'Show',
+                  name:
+                    show?.title ??
+                    t('studioEpisodeReviewViewBatch32.showFallback'),
                 })}
               />
             </Tooltip>
@@ -363,8 +371,10 @@ export function StudioEpisodeReviewView({ episodeId }: { episodeId: string }) {
           {!needsApproval && (
             <section className="border-border flex flex-col gap-2 rounded-xl border p-4">
               <p className="text-sm">
-                Episode #{episode.episodeNumber} is{' '}
-                {episodeStatusLabel(episode)}.
+                {t('studioEpisodeReviewViewBatch32.episodeStatus', {
+                  number: episode.episodeNumber,
+                  status: episodeStatusLabel(episode),
+                })}
               </p>
               {episode.soundId && (
                 <ButtonLink

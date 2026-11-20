@@ -244,15 +244,20 @@ export function ReleaseSmartLinksPanel({
     const next = [...tracks, created];
     setTracks(next);
     onReleaseChange({ ...release, tracks: next });
-    toastWithUndo(`${item.title} added to release.`, {
-      undo: () => removeStudioReleaseTrack(release.id, created.id),
-      undoneMessage: `${item.title} removed from the release.`,
-      onUndone: () => {
-        const without = next.filter((track) => track.id !== created.id);
-        setTracks(without);
-        onReleaseChange({ ...release, tracks: without });
+    toastWithUndo(
+      t('releaseSmartLinksPanelBatch32.addedToRelease', { title: item.title }),
+      {
+        undo: () => removeStudioReleaseTrack(release.id, created.id),
+        undoneMessage: t('releaseSmartLinksPanelBatch32.removedFromRelease', {
+          title: item.title,
+        }),
+        onUndone: () => {
+          const without = next.filter((track) => track.id !== created.id);
+          setTracks(without);
+          onReleaseChange({ ...release, tracks: without });
+        },
       },
-    });
+    );
   };
 
   const dspPrefixes = prefixesForServices(pluginPrefixes);
@@ -324,8 +329,11 @@ export function ReleaseSmartLinksPanel({
         </form>
         {missingPluginDsps.length > 0 ? (
           <p className="text-foreground-secondary mt-2 text-xs">
-            Set{' '}
-            {missingPluginDsps.map((service) => service.label).join(' and ')} in{' '}
+            {t('releaseSmartLinksPanelBatch32.missingPluginBefore', {
+              services: missingPluginDsps
+                .map((service) => service.label)
+                .join(t('releaseSmartLinksPanelBatch32.listJoinAnd')),
+            })}{' '}
             <Link
               to="/settings/$section"
               params={{ section: 'plugin-store' }}
@@ -334,13 +342,16 @@ export function ReleaseSmartLinksPanel({
             >
               {t('smartLinks.addOns')}
             </Link>{' '}
-            (import, embed, or export) to use those add-on stream URLs.
+            {t('releaseSmartLinksPanelBatch32.missingPluginAfter')}
           </p>
         ) : null}
         {emptyEnabledDsps.length >= 2 ? (
           <InlineError announce={false} textSize="xs" className="mt-2">
-            Missing smart-link URLs:{' '}
-            {emptyEnabledDsps.map((service) => service.label).join(', ')}.
+            {t('releaseSmartLinksPanelBatch32.missingUrls', {
+              services: emptyEnabledDsps
+                .map((service) => service.label)
+                .join(', '),
+            })}
           </InlineError>
         ) : null}
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
@@ -359,7 +370,7 @@ export function ReleaseSmartLinksPanel({
                   pluginStream
                     ? prefix || 'https://…'
                     : prefix
-                      ? 'slug or full URL'
+                      ? t('releaseSmartLinksPanelBatch32.slugPlaceholder')
                       : 'https://…'
                 }
                 value={value}
@@ -407,7 +418,10 @@ export function ReleaseSmartLinksPanel({
             </ButtonLink>
           </Tooltip>
           <span className="text-foreground-secondary text-xs">
-            {release.smartLinkViewCount ?? 0} views · /r/{release.smartLinkSlug}
+            {t('releaseSmartLinksPanelBatch32.views', {
+              count: release.smartLinkViewCount ?? 0,
+              slug: release.smartLinkSlug,
+            })}
           </span>
         </div>
       </StudioPanel>
@@ -595,7 +609,7 @@ export function ReleaseSmartLinksPanel({
               >
                 <span className="min-w-0 flex-1 truncate">{item.title}</span>
                 <span className="text-foreground-secondary text-xs">
-                  {item.contentType ?? 'Track'}
+                  {item.contentType ?? t('contentTypes.track')}
                 </span>
                 {alreadyAdded ? (
                   <span className="text-xs">{t('smartLinks.added')}</span>
@@ -609,8 +623,10 @@ export function ReleaseSmartLinksPanel({
             <PageEmpty
               title={
                 query.trim()
-                  ? `No library items match “${query.trim()}”.`
-                  : 'No library items match.'
+                  ? t('releaseSmartLinksPanelBatch32.noMatchQuery', {
+                      query: query.trim(),
+                    })
+                  : t('releaseSmartLinksPanelBatch32.noMatch')
               }
               action={
                 query.trim() || contentType !== 'ALL' ? (

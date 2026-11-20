@@ -38,7 +38,7 @@ export function PromptScoreBridgePanel({
   const loadFile = async (file: File) => {
     setError(null);
     if (file.size > MAX_MIDI_BYTES) {
-      setError('That file is too large for a phrase. Use a short MIDI clip.');
+      setError(t('promptScoreBridgePanelBatch32.fileTooLarge'));
       return;
     }
     try {
@@ -52,7 +52,7 @@ export function PromptScoreBridgePanel({
       setError(
         err instanceof MidiPhraseError
           ? err.message
-          : 'This file could not be read as MIDI.',
+          : t('promptScoreBridgePanelBatch32.notMidi'),
       );
     }
   };
@@ -67,9 +67,9 @@ export function PromptScoreBridgePanel({
           accept=".mid,.midi,audio/midi,audio/x-midi"
           labels={{
             title: t('promptScoreBridgePanelFields.midiPhrase'),
-            description: '.mid or .midi, a few bars works best',
-            browse: 'Choose file',
-            selected: 'Analysed',
+            description: t('promptScoreBridgePanelBatch32.fileHint'),
+            browse: t('studioMasteringViewStates.chooseFile'),
+            selected: t('promptScoreBridgePanelBatch32.analysed'),
           }}
           selectedFiles={
             loaded ? [new File([], loaded.fileName, { lastModified: 0 })] : []
@@ -103,7 +103,9 @@ export function PromptScoreBridgePanel({
                   text={prompt}
                   label={t('promptScoreBridge.copy')}
                   variant="secondary"
-                  toastMessage="Prompt snippet copied"
+                  toastMessage={t(
+                    'promptScoreBridgePanelBatch32.snippetCopied',
+                  )}
                   disabled={!prompt.trim()}
                 />
               </div>

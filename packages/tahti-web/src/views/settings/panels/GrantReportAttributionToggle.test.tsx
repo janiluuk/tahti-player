@@ -9,10 +9,9 @@ import {
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { ProfileFields } from '../../../api/studio-extras';
-import {
-  GRANT_REPORT_ATTRIBUTION_LABEL,
-  GrantReportAttributionToggle,
-} from './GrantReportAttributionToggle';
+import { GrantReportAttributionToggle } from './GrantReportAttributionToggle';
+
+const LABEL = 'Show my name in the annual grant report';
 
 const patchMeProfile = vi.fn();
 
@@ -37,7 +36,7 @@ function profile(publicAttribution?: boolean): ProfileFields {
 }
 
 function toggle() {
-  return screen.getByRole('switch', { name: GRANT_REPORT_ATTRIBUTION_LABEL });
+  return screen.getByRole('switch', { name: LABEL });
 }
 
 describe('GrantReportAttributionToggle', () => {
@@ -91,8 +90,6 @@ describe('GrantReportAttributionToggle', () => {
     render(
       <GrantReportAttributionToggle profile={profile()} onSaved={vi.fn()} />,
     );
-    expect(
-      screen.queryByRole('switch', { name: GRANT_REPORT_ATTRIBUTION_LABEL }),
-    ).toBeNull();
+    expect(screen.queryByRole('switch', { name: LABEL })).toBeNull();
   });
 });

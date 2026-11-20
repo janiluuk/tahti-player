@@ -19,11 +19,6 @@ const AdminPageCommentsPanel = lazy(() =>
   })),
 );
 
-const COLLAPSED_LABELS = {
-  removeButton: 'Remove from queue',
-  playbackError: 'Could not play',
-};
-
 function RightRailPanelFade({
   panelKey,
   children,
@@ -190,7 +185,10 @@ function CollapsedQueueBar() {
             isCollapsed
             reorderable={false}
             onSelectItem={playQueueIndex}
-            labels={COLLAPSED_LABELS}
+            labels={{
+              removeButton: t('sidebarQueuePanelLeftovers.removeFromQueue'),
+              playbackError: t('sidebarQueuePanelLeftovers.couldNotPlay'),
+            }}
           />
         ) : (
           <Tooltip content={t('rightRailPanel.openQueue')} side="left">

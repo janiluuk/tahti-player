@@ -57,7 +57,9 @@ function TopUsersChart({ users }: { users: AdminStorageUserRow[] }) {
             </Tooltip>
             <span className="text-foreground-secondary shrink-0 text-xs">
               {formatBytes(u.usedBytes)}
-              {u.unlimited ? ' · unlimited quota' : ''}
+              {u.unlimited
+                ? ` · ${t('storageOverviewTabBatch32.unlimitedQuota')}`
+                : ''}
             </span>
           </div>
           <Meter
@@ -105,9 +107,11 @@ function StorageTypeBreakdown({ files }: { files: AdminFileRow[] }) {
               value: item.bytes,
               color: STORAGE_TYPE_COLORS[index % STORAGE_TYPE_COLORS.length],
             }))}
-            centerLabel="Total usage"
+            centerLabel={t('storageOverviewTabBatch32.totalUsage')}
             centerValue={formatBytes(totalBytes)}
-            aria-label={`File type storage breakdown totaling ${formatBytes(totalBytes)}`}
+            aria-label={t('storageOverviewTabBatch32.breakdownLabel', {
+              total: formatBytes(totalBytes),
+            })}
           />
           <ul className="flex w-full flex-col gap-3 text-sm">
             {breakdown.map((item, index) => (
@@ -244,8 +248,10 @@ export function StorageOverviewTab() {
                       </span>
                     </div>
                     <div className="text-foreground-secondary text-xs">
-                      {formatBytes(row.usedBytes)} of{' '}
-                      {formatQuota(row.quotaBytes, row.unlimited)}
+                      {t('storageOverviewTabBatch32.usedOfQuota', {
+                        used: formatBytes(row.usedBytes),
+                        quota: formatQuota(row.quotaBytes, row.unlimited),
+                      })}
                       {pct != null ? (
                         <>
                           {' · '}

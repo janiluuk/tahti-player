@@ -29,9 +29,10 @@ export function MapCommentForm({
   feature,
   placeholder,
   className,
-  label = 'Your notes',
+  label: labelProp,
 }: Props) {
   const { t } = useTranslation('web');
+  const label = labelProp ?? t('mapCommentFormBatch32.yourNotes');
   const key = mapDraftKey(kind, targetId);
   const draft = useMapNotesStore(
     (s) =>
@@ -46,8 +47,8 @@ export function MapCommentForm({
     if (!savedFlash) {
       return;
     }
-    const t = window.setTimeout(() => setSavedFlash(false), 2000);
-    return () => window.clearTimeout(t);
+    const timer = window.setTimeout(() => setSavedFlash(false), 2000);
+    return () => window.clearTimeout(timer);
   }, [savedFlash]);
 
   const fieldId = `map-comment-${kind}-${targetId}`;
@@ -84,9 +85,11 @@ export function MapCommentForm({
         rows={3}
         value={draft}
         onChange={(e) => setDraft(kind, targetId, e.target.value)}
-        placeholder={placeholder ?? `Notes for “${title}”…`}
+        placeholder={
+          placeholder ?? t('mapCommentFormBatch32.notesFor', { title })
+        }
         className="min-h-[5.5rem] text-sm"
-        aria-label={`${label} for ${title}`}
+        aria-label={t('mapCommentFormBatch32.labelFor', { label, title })}
       />
       <div className="flex flex-wrap items-center gap-3">
         <Button type="submit" size="sm" disabled={!draft.trim()}>
@@ -94,8 +97,8 @@ export function MapCommentForm({
         </Button>
         <p className="text-foreground-secondary text-[11px]">
           {savedFlash
-            ? 'Saved on this device.'
-            : 'Persists in this browser (localStorage).'}
+            ? t('mapCommentFormBatch32.savedOnDevice')
+            : t('mapCommentFormBatch32.persistsInBrowser')}
         </p>
       </div>
     </form>

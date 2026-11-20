@@ -62,9 +62,11 @@ export function PlaysTab({
               {t('playsTab.anonymizedCountriesFromChannelListening')}
             </p>
             <span className="text-foreground-secondary text-xs tabular-nums">
-              Peak day:{' '}
-              {live.peakDailyListeners.toLocaleString(dateLocaleTag())}{' '}
-              listeners
+              {t('playsTabBatch32.peakDay', {
+                count: live.peakDailyListeners,
+                formatted:
+                  live.peakDailyListeners.toLocaleString(dateLocaleTag()),
+              })}
             </span>
           </div>
           <ListenerWorldMap data={listenerGeo} loading={loading} compact />
@@ -87,8 +89,13 @@ export function PlaysTab({
               </StatNumber>
               <p className="text-foreground-secondary text-xs">
                 {busiestDay
-                  ? `Busiest day: ${formatDate(busiestDay.date)} · ${busiestDay.plays.toLocaleString(dateLocaleTag())} plays`
-                  : 'Daily activity appears after your first play.'}
+                  ? t('playsTabBatch32.busiestDay', {
+                      count: busiestDay.plays,
+                      date: formatDate(busiestDay.date),
+                      formatted:
+                        busiestDay.plays.toLocaleString(dateLocaleTag()),
+                    })
+                  : t('playsTabBatch32.dailyActivityEmpty')}
               </p>
             </div>
             <Button
@@ -111,11 +118,14 @@ export function PlaysTab({
                 labels={{
                   months: monthLabelsShort(),
                   weekdays: weekdayLabelsShort(),
-                  legendLess: 'Less',
-                  legendMore: 'More',
+                  legendLess: t('library.legendLess'),
+                  legendMore: t('library.legendMore'),
                 }}
                 formatValue={(value) =>
-                  `${value.toLocaleString(dateLocaleTag())} plays`
+                  t('playsTabBatch32.playsValue', {
+                    count: value,
+                    formatted: value.toLocaleString(dateLocaleTag()),
+                  })
                 }
                 formatDate={formatDate}
                 onDayClick={openDay}
@@ -137,7 +147,10 @@ export function PlaysTab({
                   }
                   labels={{ weekdays: chartLabels }}
                   formatValue={(value) =>
-                    `${value.toLocaleString(dateLocaleTag())} plays`
+                    t('playsTabBatch32.playsValue', {
+                      count: value,
+                      formatted: value.toLocaleString(dateLocaleTag()),
+                    })
                   }
                   onBarClick={(index) => {
                     const day = plays.daily[index];

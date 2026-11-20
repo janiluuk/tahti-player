@@ -31,15 +31,11 @@ export function MikseriImportPanel({
 
   const submit = async () => {
     if (!mikseriTrackEmbedUrl(trackUrl)) {
-      setError(
-        'Paste a Mikseri track page, official track embed, or numeric track ID.',
-      );
+      setError(t('mikseriImportPanelBatch32.invalidTrack'));
       return;
     }
     if (!rightsConfirmed) {
-      setError(
-        'Confirm that you own the track or have permission to embed it.',
-      );
+      setError(t('mikseriImportPanelBatch32.confirmRights'));
       return;
     }
     setBusy(true);
@@ -58,9 +54,11 @@ export function MikseriImportPanel({
       return;
     }
     const addedTitle = title.trim();
-    toastWithUndo(`${addedTitle} added from Mikseri.net.`, {
+    toastWithUndo(t('mikseriImportPanelBatch32.added', { title: addedTitle }), {
       undo: () => onUndoAdd(result.data.soundId),
-      undoneMessage: `${addedTitle} removed.`,
+      undoneMessage: t('mikseriImportPanelBatch32.removed', {
+        title: addedTitle,
+      }),
     });
     setTrackUrl('');
     setTitle('');

@@ -5,13 +5,14 @@ import { toast } from 'sonner';
 import { useTranslation } from '@tahti-player/i18n';
 import { Button, Dialog, InlineError, Loader, Tooltip } from '@tahti-player/ui';
 
+import { dateLocaleTag } from '../lib/locale';
 import type {
   NativeRestorePreview,
   NativeRootMapping,
   TahtiNativeLibrary,
 } from '../lib/nativeLibrary';
 
-const n = (value: number) => value.toLocaleString('en-US');
+const n = (value: number) => value.toLocaleString(dateLocaleTag());
 
 type Props = {
   isOpen: boolean;
@@ -89,7 +90,7 @@ export function BackupRestoreDialog({
       toast.error(
         failure instanceof Error
           ? failure.message
-          : 'Could not choose a folder.',
+          : t('backupRestoreDialogBatch32.couldNotChooseFolder'),
       );
     }
   };
@@ -104,18 +105,36 @@ export function BackupRestoreDialog({
       onRestored();
       onClose();
       toast.success(
-        `Restored ${n(result.tracksRestored)} ${result.tracksRestored === 1 ? 'track' : 'tracks'} and ${n(result.playlistsCreated)} ${result.playlistsCreated === 1 ? 'playlist' : 'playlists'}.`,
+        t('backupRestoreDialogBatch32.restored', {
+          tracks: t('backupRestoreDialogBatch32.trackCount', {
+            count: result.tracksRestored,
+            formatted: n(result.tracksRestored),
+          }),
+          playlists: t('backupRestoreDialogBatch32.playlistCount', {
+            count: result.playlistsCreated,
+            formatted: n(result.playlistsCreated),
+          }),
+        }),
         {
           description:
             [
               result.tracksMissing
-                ? `${n(result.tracksMissing)} files were not found`
+                ? t('backupRestoreDialogBatch32.filesNotFound', {
+                    count: result.tracksMissing,
+                    formatted: n(result.tracksMissing),
+                  })
                 : '',
               result.tracksFailed
-                ? `${n(result.tracksFailed)} could not be read`
+                ? t('backupRestoreDialogBatch32.couldNotBeRead', {
+                    count: result.tracksFailed,
+                    formatted: n(result.tracksFailed),
+                  })
                 : '',
               result.playlistsRenamed
-                ? `${n(result.playlistsRenamed)} playlists were renamed because the name was taken`
+                ? t('backupRestoreDialogBatch32.playlistsRenamed', {
+                    count: result.playlistsRenamed,
+                    formatted: n(result.playlistsRenamed),
+                  })
                 : '',
             ]
               .filter(Boolean)
@@ -153,16 +172,33 @@ export function BackupRestoreDialog({
       ) : (
         <div className="flex max-h-[50vh] flex-col gap-3 overflow-y-auto py-2">
           <p className="text-sm">
-            Backup from {preview.createdAt} UTC: {n(preview.tracks)} tracks,{' '}
-            {n(preview.playlists)} playlists, {n(preview.edits)} hand-edited
-            tags.
+            {t('backupRestoreDialogBatch32.backupSummary', {
+              date: preview.createdAt,
+              tracks: t('backupRestoreDialogBatch32.trackCount', {
+                count: preview.tracks,
+                formatted: n(preview.tracks),
+              }),
+              playlists: t('backupRestoreDialogBatch32.playlistCount', {
+                count: preview.playlists,
+                formatted: n(preview.playlists),
+              }),
+              edits: t('backupRestoreDialogBatch32.editCount', {
+                count: preview.edits,
+                formatted: n(preview.edits),
+              }),
+            })}
           </p>
           <p className="text-sm" role="status">
-            {n(preview.filesFound)} of {n(preview.tracks)} files found
             {preview.filesMissing > 0
-              ? `; ${n(preview.filesMissing)} not found (they will be skipped)`
-              : ''}
-            .
+              ? t('backupRestoreDialogBatch32.filesFoundSomeMissing', {
+                  found: n(preview.filesFound),
+                  total: n(preview.tracks),
+                  missing: n(preview.filesMissing),
+                })
+              : t('backupRestoreDialogBatch32.filesFound', {
+                  found: n(preview.filesFound),
+                  total: n(preview.tracks),
+                })}
           </p>
           {preview.roots.length > 0 ? (
             <div className="flex flex-col gap-2">
@@ -183,8 +219,14 @@ export function BackupRestoreDialog({
                       }
                       title={root.to}
                     >
-                      {root.exists ? '→' : 'Not found:'} {root.to} ·{' '}
-                      {n(root.tracks)} tracks
+                      {root.exists
+                        ? '→'
+                        : t('backupRestoreDialogBatch32.notFoundPrefix')}{' '}
+                      {root.to} ·{' '}
+                      {t('backupRestoreDialogBatch32.trackCount', {
+                        count: root.tracks,
+                        formatted: n(root.tracks),
+                      })}
                     </p>
                   </div>
                   <Button
@@ -202,7 +244,7 @@ export function BackupRestoreDialog({
           ) : null}
           {preview.missingExamples.length > 0 ? (
             <div className="text-foreground-secondary flex flex-col gap-0.5 text-xs">
-              <p>Not found, for example:</p>
+              <p>{t('backupRestoreDialogBatch32.notFoundExamples')}</p>
               {preview.missingExamples.map((path) => (
                 <Tooltip key={path} content={path} side="top">
                   <p className="truncate">{path}</p>
@@ -220,7 +262,7 @@ export function BackupRestoreDialog({
           className="gap-1.5"
         >
           {busy ? <Loader size="inline" shape="circle" /> : null}
-          Restore
+          {t('backupRestoreDialogBatch32.restore')}
         </Button>
       </Dialog.Actions>
     </Dialog.Root>

@@ -106,7 +106,9 @@ export function AdminStreamManagerPanel({
       );
       setMessage(
         result.meta.reason && result.data.length === 0
-          ? `Unable to load live streams: ${result.meta.reason}`
+          ? i18n.t('web:adminStreamManagerPanelBatch32.unableToLoadStreams', {
+              reason: result.meta.reason,
+            })
           : null,
       );
       setLoading(false);
@@ -177,29 +179,38 @@ export function AdminStreamManagerPanel({
                       {stream.isRotation && (
                         <span className="text-foreground-secondary font-normal">
                           {' '}
-                          · rotation
+                          {t('adminStreamManagerPanelBatch32.rotationTag')}
                         </span>
                       )}
                     </div>
                     <div className="text-foreground-secondary truncate text-xs">
-                      /c/{stream.slug} · total duration{' '}
-                      {formatDuration(
-                        stats?.liveDurationSec ?? stream.elapsedSec,
-                      )}
+                      {t('adminStreamManagerPanelBatch32.slugTotalDuration', {
+                        slug: stream.slug,
+                        duration: formatDuration(
+                          stats?.liveDurationSec ?? stream.elapsedSec,
+                        ),
+                      })}
                     </div>
                     {stats ? (
                       <div className="text-foreground-secondary mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs">
                         <span>
-                          {stats.listeners.toLocaleString(dateLocaleTag())}{' '}
-                          listeners
+                          {t('adminStreamManagerPanelBatch32.listeners', {
+                            count: stats.listeners,
+                            formatted:
+                              stats.listeners.toLocaleString(dateLocaleTag()),
+                          })}
                         </span>
                         <span>
-                          {stats.listenerPeak.toLocaleString(dateLocaleTag())}{' '}
-                          peak
+                          {t('adminStreamManagerPanelBatch32.peak', {
+                            formatted:
+                              stats.listenerPeak.toLocaleString(
+                                dateLocaleTag(),
+                              ),
+                          })}
                         </span>
                         {stats.rotationTrackCount === 0 ? (
                           <span className="text-accent-yellow-strong">
-                            24/7 rotation empty
+                            {t('adminStreamManagerPanelBatch32.rotationEmpty')}
                           </span>
                         ) : null}
                       </div>
@@ -251,8 +262,9 @@ export function AdminStreamManagerPanel({
                               'adminStreamManagerPanelLabels.restartAudioForSlug',
                               { slug: stream.slug },
                             ),
-                            description:
-                              'The channel stays live; listeners may briefly reconnect.',
+                            description: t(
+                              'adminStreamManagerPanelBatch32.restartDescription',
+                            ),
                             confirmLabel: t(
                               'adminStreamManagerPanelFields.restart',
                             ),
@@ -434,7 +446,9 @@ export function AdminStreamManagerPanel({
           <>
             <Dialog.Title>{detailsStream.artistName}</Dialog.Title>
             <Dialog.Description>
-              Live channel details for /c/{detailsStream.slug}.
+              {t('adminStreamManagerPanelBatch32.detailsDescription', {
+                slug: detailsStream.slug,
+              })}
             </Dialog.Description>
             <dl className="mt-4 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-sm">
               <dt className="text-foreground-secondary">
@@ -510,7 +524,7 @@ export function AdminStreamManagerPanel({
       </Dialog.Root>
       <ConfirmDialog
         isOpen={pendingConfirm !== null}
-        title={pendingConfirm?.title ?? 'Confirm'}
+        title={pendingConfirm?.title ?? t('actions.confirm')}
         description={pendingConfirm?.description ?? ''}
         confirmLabel={pendingConfirm?.confirmLabel}
         destructive={pendingConfirm?.destructive}

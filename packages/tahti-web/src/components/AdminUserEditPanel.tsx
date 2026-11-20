@@ -48,6 +48,12 @@ import { StudioPanel } from './StudioPanel';
 
 const ROLES = ['BOARD', 'ARTIST', 'LISTENER'] as const;
 
+const ROLE_LABEL_KEYS = {
+  BOARD: 'adminUserEditPanelBatch32.roleBoard',
+  ARTIST: 'adminUserEditPanelBatch32.roleArtist',
+  LISTENER: 'adminUserEditPanelBatch32.roleListener',
+} as const;
+
 /** The user identity/role/membership/suspension editor Admin → Users uses
  * for its selected-user detail column — extracted so any other admin
  * surface (e.g. Admin → Storage's file list) can open the exact same
@@ -142,7 +148,7 @@ export function AdminUserEditPanel({
       return;
     }
     syncDetail(result.data);
-    setStatus('User details saved.');
+    setStatus(t('adminUserEditPanelBatch32.userDetailsSaved'));
     setAccountEditing(false);
   };
 
@@ -257,7 +263,7 @@ export function AdminUserEditPanel({
                   {detail.displayName}
                 </h2>
                 <Badge variant="pill" color="purple">
-                  {detail.role.charAt(0) + detail.role.slice(1).toLowerCase()}
+                  {t(ROLE_LABEL_KEYS[detail.role])}
                 </Badge>
                 {detail.suspendedAt ? (
                   <Badge variant="pill" color="red">
@@ -351,8 +357,18 @@ export function AdminUserEditPanel({
             </dt>
             <dd>
               {publicProfile
-                ? `${publicProfile.tracks.length} tracks · ${publicProfile.releases.length} releases · ${publicProfile.collections.length} collections`
-                : 'Loading…'}
+                ? [
+                    t('adminUserEditPanelBatch32.trackCount', {
+                      count: publicProfile.tracks.length,
+                    }),
+                    t('adminUserEditPanelBatch32.releaseCount', {
+                      count: publicProfile.releases.length,
+                    }),
+                    t('adminUserEditPanelBatch32.collectionCount', {
+                      count: publicProfile.collections.length,
+                    }),
+                  ].join(' · ')
+                : t('adminUserEditPanelBatch32.loading')}
             </dd>
           </div>
         </dl>
@@ -365,7 +381,9 @@ export function AdminUserEditPanel({
             <dd className="font-display mt-1 text-xl font-bold">
               {detail.engagementUnitsYtd}
             </dd>
-            <dd className="text-foreground-secondary text-xs">units YTD</dd>
+            <dd className="text-foreground-secondary text-xs">
+              {t('adminUserEditPanelBatch32.unitsYtd')}
+            </dd>
           </div>
           <div className="bg-background-secondary rounded-lg p-3">
             <dt className="text-foreground-secondary text-xs uppercase">
@@ -374,7 +392,9 @@ export function AdminUserEditPanel({
             <dd className="font-display mt-1 text-xl font-bold">
               {detail.fanSubscriptionsAsArtist}
             </dd>
-            <dd className="text-foreground-secondary text-xs">active</dd>
+            <dd className="text-foreground-secondary text-xs">
+              {t('adminUserEditPanelBatch32.active')}
+            </dd>
           </div>
           <div className="bg-background-secondary rounded-lg p-3">
             <dt className="text-foreground-secondary text-xs uppercase">
@@ -385,8 +405,10 @@ export function AdminUserEditPanel({
             </dd>
             <dd className="text-foreground-secondary text-xs">
               {detail.channel
-                ? `${detail.channel.totalLiveHours.toFixed(1)} live hours`
-                : 'Listener account'}
+                ? t('adminUserEditPanelBatch32.liveHours', {
+                    hours: detail.channel.totalLiveHours.toFixed(1),
+                  })
+                : t('adminUserEditPanelBatch32.listenerAccount')}
             </dd>
             {detail.channel ? (
               <dd className="mt-2">
@@ -442,7 +464,7 @@ export function AdminUserEditPanel({
                 onValueChange={(value) => setEditRole(value as AccountRole)}
                 options={ROLES.map((value) => ({
                   id: value,
-                  label: value.charAt(0) + value.slice(1).toLowerCase(),
+                  label: t(ROLE_LABEL_KEYS[value]),
                 }))}
               />
               <Input
@@ -473,9 +495,7 @@ export function AdminUserEditPanel({
               <dt className="text-foreground-secondary">
                 {t('adminUserEdit.role')}
               </dt>
-              <dd>
-                {detail.role.charAt(0) + detail.role.slice(1).toLowerCase()}
-              </dd>
+              <dd>{t(ROLE_LABEL_KEYS[detail.role])}</dd>
               <dt className="text-foreground-secondary">
                 {t('adminUserEdit.memberNumber')}
               </dt>
@@ -499,13 +519,13 @@ export function AdminUserEditPanel({
           description={
             detail.suspendedAt ? (
               <>
-                {'Suspended '}
+                {t('adminUserEditPanelBatch32.suspendedSince')}{' '}
                 <ListingDate value={detail.suspendedAt} />
                 {detail.suspendReason ? ` · ${detail.suspendReason}` : ''}
-                {'. Restoring it emails them a sign-in link.'}
+                {t('adminUserEditPanelBatch32.restoreNote')}
               </>
             ) : (
-              'Suspension blocks sign-in immediately and is audited. They are emailed your reason, and see it when they try to sign in.'
+              t('adminUserEditPanelBatch32.suspensionNote')
             )
           }
         >
@@ -627,7 +647,9 @@ export function AdminUserEditPanel({
         <ImageLightbox
           images={[{ imageUrl: publicProfile.artist.avatarUrl }]}
           index={0}
-          label={`${detail.displayName} profile picture`}
+          label={t('adminUserEditPanelBatch32.profilePicture', {
+            name: detail.displayName,
+          })}
           onClose={() => setAvatarOpen(false)}
         />
       ) : null}

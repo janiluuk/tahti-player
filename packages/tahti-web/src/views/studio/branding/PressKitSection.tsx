@@ -118,8 +118,8 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
             description: t('pressKitSectionLabels.jpegPngOrWebpUp', {
               MAX_PRESS_KIT_IMAGES,
             }),
-            browse: 'Choose photos',
-            selected: 'Ready to upload',
+            browse: t('pressKitSectionBatch32.choosePhotos'),
+            selected: t('pressKitSectionBatch32.readyToUpload'),
           }}
           onFiles={(files) => {
             setSelectedGalleryFiles(Array.from(files));
@@ -132,14 +132,20 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
           </p>
         ) : (
           <p className="text-foreground-secondary mt-4 mb-3 text-sm">
-            {`${pressImages.length} of ${MAX_PRESS_KIT_SELECTED_IMAGES} photos in the press kit · choosing another drops the oldest choice`}
+            {t('pressKitSectionBatch32.photosInKit', {
+              selected: pressImages.length,
+              max: MAX_PRESS_KIT_SELECTED_IMAGES,
+            })}
           </p>
         )}
         {images.length === 0 ? null : (
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {images.map((image) => {
               const imageLabel =
-                image.title?.trim() || `image ${image.position + 1}`;
+                image.title?.trim() ||
+                t('pressKitSectionBatch32.imageFallback', {
+                  position: image.position + 1,
+                });
               return (
                 <li
                   key={image.id}
@@ -194,7 +200,13 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
                       </span>
                       <div className="flex items-center gap-2">
                         <Toggle
-                          label={`Include ${image.title || `image ${image.position + 1}`} in press kit`}
+                          label={t('pressKitSectionBatch32.includeImage', {
+                            name:
+                              image.title ||
+                              t('pressKitSectionBatch32.imageFallback', {
+                                position: image.position + 1,
+                              }),
+                          })}
                           checked={image.includeInZip}
                           onChange={() => void togglePressKitImage(image)}
                         />
@@ -234,7 +246,11 @@ export function PressKitSection({ kit }: { kit: PressKitState }) {
         description={t('pressKit.whatAPromoterSeesWhen')}
       >
         <PressKitPreview
-          displayName={profile?.displayName ?? user?.displayName ?? 'Artist'}
+          displayName={
+            profile?.displayName ??
+            user?.displayName ??
+            t('pressKitSectionBatch32.artistFallback')
+          }
           bio={pressKit?.bioShort ?? null}
           images={pressImages}
           onEditBio={() => {

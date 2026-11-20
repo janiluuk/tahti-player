@@ -98,7 +98,7 @@ export function ReleaseTrackAudioUpload({
               title: track.title,
             }),
             description: t('releaseTrackAudioUploadFields.wavFlacMp3AacOr'),
-            browse: 'Choose audio file',
+            browse: t('library.chooseAudioFileBrowse'),
           }}
           accept={RELEASE_TRACK_AUDIO_TYPES.join(',')}
           onFiles={(files) => void start(files)}
