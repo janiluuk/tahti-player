@@ -1,3 +1,9 @@
+## 2026-11-20 — Smooth initial load (skeletons + reveal)
+
+Listen sections, Radio hero, artist profile, and route-chunk Suspense use
+reserved-height skeletons instead of compact spinners; ready content fades in
+via `ContentReveal`. Folded `smooth-initial-load.md`. tahti-web 0.0.430.
+
 ## 2026-11-20 — tahti-cli moved to janiluuk/tahti-cli
 
 Cut over: removed `packages/tahti-cli` from this monorepo. Canonical CLI is

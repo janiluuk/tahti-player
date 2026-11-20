@@ -1,3 +1,8 @@
+## 2026-11-20 - Smooth initial load (0.0.430)
+
+Listen / Radio / artist / route chunks: reserved-height skeletons + ContentReveal
+instead of compact PageLoading spinners that collapse then jump.
+
 ## 2026-11-19 - Desktop ambient cheap path + PlayerBar blur (0.0.421)
 
 Ambient backdrop quality down; no mix-blend-screen; PlayerBar/BottomBar softer blur. player 1.47.349 / ui 0.0.26.

@@ -56,6 +56,10 @@ export const Loading: Story = {
   args: { status: 'loading' },
 };
 
+export const LoadingList: Story = {
+  args: { status: 'loading', skeleton: 'list', title: 'New tracks' },
+};
+
 export const LoadFailed: Story = {
   args: { status: 'error' },
 };

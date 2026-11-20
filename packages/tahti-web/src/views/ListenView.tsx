@@ -44,7 +44,7 @@ import {
 } from '../components/listen-view/useListenSections';
 import { WelcomeStrip } from '../components/listen-view/WelcomeStrip';
 import { useListenerWidgetBlocks } from '../components/ListenerWidgetsSection';
-import { PageEmpty, PageLoading } from '../components/PageStates';
+import { PageEmpty, TrackListSkeleton } from '../components/PageStates';
 import { PlayableAmbientTrackList } from '../components/PlayableAmbientTrackList';
 import { RemoveWidgetDialog } from '../components/RemoveWidgetDialog';
 import { radioStationIdForPlayable } from '../content/radioStations';
@@ -400,6 +400,7 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
           empty={sections.latestTracks.data.length === 0}
           emptyTitle={t('listen.noNewTracks')}
           onRetry={() => sections.retry('latestTracks')}
+          skeleton="list"
         >
           <div data-testid="listen-new-tracks">
             <PlayableAmbientTrackList
@@ -527,7 +528,15 @@ export function ListenView({ tab: tabProp = 'listen' }: { tab?: ListenTab }) {
       >
         {tab === 'history' ? (
           <Suspense
-            fallback={<PageLoading label={t('loading.loadingHistory')} />}
+            fallback={
+              <div
+                role="status"
+                aria-label={t('loading.loadingHistory')}
+                className="flex flex-col gap-3"
+              >
+                <TrackListSkeleton rows={5} />
+              </div>
+            }
           >
             <HistoryView embedded />
           </Suspense>
